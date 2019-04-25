@@ -1,0 +1,12 @@
+apiVersion: config.istio.io/v1alpha2
+kind: rule
+metadata:
+  labels: {{ include "labels" . | nindent 4 }} {{ "serving.knative.dev/release: \"devel\"" | nindent 4 }} {{ cat "app:" .Chart.Name | nindent 4 }}
+  name: requestlogtofluentd
+  namespace: istio-system
+spec:
+  actions:
+  - handler: requestloghandler.fluentd
+    instances:
+    - requestlog.logentry
+  match: context.protocol == "http" || context.protocol == "grpc"

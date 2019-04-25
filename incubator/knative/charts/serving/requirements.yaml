@@ -1,4 +1,4 @@
 dependencies:
-  - name: monitoring
-    version: 0.1.0
-    condition: global.serving.monitoring.enabled
+- condition: serving.monitoring.enabled
+  name: monitoring
+  version: 0.2.0

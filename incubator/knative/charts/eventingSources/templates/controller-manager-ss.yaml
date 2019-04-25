@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels: {{ include "labels" . | nindent 4 }} {{ "control-plane: \"controller-manager\"" | nindent 4 }} {{ cat "app:" .Chart.Name | nindent 4 }}
+  name: controller-manager
+  namespace: knative-sources
+spec:
+  selector:
+    matchLabels:
+      control-plane: controller-manager
+  serviceName: controller-manager
+  template:
+    metadata:
+      labels: {{ include "noVersionlabels" . | nindent 8 }} {{ "control-plane: \"controller-manager\"" | nindent 8 }} {{ cat "app:" .Chart.Name | nindent 8 }}
+    spec:
+      containers:
+      - env:
+        - name: K8S_RA_IMAGE
+          value: gcr.io/knative-releases/github.com/knative/eventing-sources/cmd/kuberneteseventsource@sha256:1dde37f4f7f5e7286a5bd2c9fa93fecaddc1e2bde85c75a9c0a656fd8770370c
+        - name: GH_RA_IMAGE
+          value: gcr.io/knative-releases/github.com/knative/eventing-sources/cmd/github_receive_adapter@sha256:155c969b81b29e09fa56e79648cab6c8d3eeb510ff9f225037a2893356b6c1d1
+        - name: CRONJOB_RA_IMAGE
+          value: gcr.io/knative-releases/github.com/knative/eventing-sources/cmd/cronjob_receive_adapter@sha256:c4400e87b6e6ea22b7d7d14df6b620c06b4e219260c6ce2ceb79fef004b9e54c
+        image: {{ .Values.controllerManager.manager.image }}
+        name: manager
+        resources:
+          limits:
+            cpu: 100m
+            memory: 30Mi
+          requests:
+            cpu: 100m
+            memory: 20Mi
+      serviceAccountName: controller-manager
+      terminationGracePeriodSeconds: 10

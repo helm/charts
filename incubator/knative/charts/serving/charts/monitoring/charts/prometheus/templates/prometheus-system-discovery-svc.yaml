@@ -1,20 +1,17 @@
----
 apiVersion: v1
 kind: Service
 metadata:
-  labels: {{ include "labels" . | nindent 4 }}
-    app: {{ .Values.prometheusSystemDiscoveryService.app | quote }} 
-  name: {{ .Values.prometheusSystemDiscoveryService.name | quote }}
-  namespace: "knative-monitoring"
+  labels: {{ include "labels" . | nindent 4 }} {{ "app: \"prometheus\"" | nindent 4 }} {{ "serving.knative.dev/release: \"devel\"" | nindent 4 }}
+  name: prometheus-system-discovery
+  namespace: knative-monitoring
 spec:
   clusterIP: None
   ports:
-  - name: {{ .Values.prometheusSystemDiscoveryService.portName | quote }}
-    port: {{ .Values.prometheusSystemDiscoveryService.port }}
+  - name: web
+    port: 9090
     protocol: TCP
-    targetPort: {{ .Values.prometheusSystemDiscoveryService.targetPort }}
+    targetPort: web
   selector:
-    app: {{ .Values.prometheusSystemDiscoveryService.app | quote }}
+    app: prometheus
   sessionAffinity: None
-  type: {{ .Values.prometheusSystemDiscoveryService.type | quote }}
----
+  type: {{ .Values.prometheusSystemDiscovery.type }}

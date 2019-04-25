@@ -1,0 +1,8 @@
+apiVersion: v1
+data:
+  bootstrap_servers: kafkabroker.kafka:9092
+kind: ConfigMap
+metadata:
+  labels: {{ include "labels" . | nindent 4 }} {{ cat "app:" .Chart.Name | nindent 4 }}
+  name: kafka-channel-controller-config
+  namespace: knative-eventing

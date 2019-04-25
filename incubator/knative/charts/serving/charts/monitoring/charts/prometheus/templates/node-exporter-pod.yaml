@@ -1,25 +1,22 @@
----
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
+  labels: {{ include "labels" . | nindent 4 }} {{ cat "app:" .Chart.Name | nindent 4 }}
   name: node-exporter
-  namespace: "knative-monitoring"
-  labels: {{ include "labels" . | nindent 4 }}
-    app: node-exporter
+  namespace: knative-monitoring
 spec:
   template:
     metadata:
-      labels: {{ include "labels" . | nindent 8 }}
-        app: node-exporter 
+      labels: {{ include "noVersionlabels" . | nindent 8 }} {{ "app: \"node-exporter\"" | nindent 8 }}
       name: node-exporter
-      namespace: "knative-monitoring"
+      namespace: knative-monitoring
     spec:
       containers:
       - args:
         - --web.listen-address=127.0.0.1:9101
         - --path.procfs=/host/proc
         - --path.sysfs=/host/sys
-        image: quay.io/prometheus/node-exporter:v0.15.2
+        image: {{ .Values.nodeExporter.image }}
         name: node-exporter
         resources:
           limits:
@@ -36,13 +33,13 @@ spec:
           name: sys
           readOnly: true
       - args:
-        - --secure-listen-address=:{{ .Values.nodeExporterService.port }}
+        - --secure-listen-address=:{{ .Values.nodeExporter.kubeRbacProxy.https.hostPort }}
         - --upstream=http://127.0.0.1:9101/
-        image: quay.io/coreos/kube-rbac-proxy:v0.3.0
+        image: {{ .Values.nodeExporter.kubeRbacProxy.image }}
         name: kube-rbac-proxy
         ports:
-        - containerPort: {{ .Values.nodeExporterService.port }}
-          hostPort: {{ .Values.nodeExporterService.port }}
+        - containerPort: {{ .Values.nodeExporter.kubeRbacProxy.https.hostPort }}
+          hostPort: {{ .Values.nodeExporter.kubeRbacProxy.https.hostPort }}
           name: https
         resources:
           limits:
@@ -56,7 +53,7 @@ spec:
       securityContext:
         runAsNonRoot: true
         runAsUser: 65534
-      serviceAccountName: {{ .Values.nodeExporter.svcacct.name | quote }}
+      serviceAccountName: node-exporter
       tolerations:
       - effect: NoSchedule
         operator: Exists
@@ -71,4 +68,3 @@ spec:
     rollingUpdate:
       maxUnavailable: 1
     type: RollingUpdate
----

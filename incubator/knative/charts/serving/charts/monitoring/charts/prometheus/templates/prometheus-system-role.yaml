@@ -1,0 +1,25 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  labels: {{ include "labels" . | nindent 4 }} {{ "serving.knative.dev/release: \"devel\"" | nindent 4 }} {{ cat "app:" .Chart.Name | nindent 4 }}
+  name: prometheus-system
+  namespace: istio-system
+rules:
+- apiGroups:
+  - ''
+  resources:
+  - nodes/metrics
+  - nodes
+  - services
+  - endpoints
+  - pods
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - ''
+  resources:
+  - configmaps
+  verbs:
+  - get

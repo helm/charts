@@ -1,0 +1,8 @@
+apiVersion: caching.internal.knative.dev/v1alpha1
+kind: Image
+metadata:
+  labels: {{ include "labels" . | nindent 4 }} {{ cat "app:" .Chart.Name | nindent 4 }}
+  name: nop
+  namespace: knative-build
+spec:
+  image: {{ .Values.nop.image }}

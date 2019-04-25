@@ -1,0 +1,8 @@
+kafkaChannelController:
+  kafkaChannelControllerController:
+    image: gcr.io/knative-releases/github.com/knative/eventing/contrib/kafka/cmd/controller@sha256:5fa8b57594949b7e6d9d99d0dfba5109d0a57c497d34f0d8d84569cb9f2ad19e
+  replicas: 1
+kafkaChannelDispatcher:
+  dispatcher:
+    image: gcr.io/knative-releases/github.com/knative/eventing/contrib/kafka/cmd/dispatcher@sha256:94d0f74892ce19e7f909bc0063b89ba68f85e2d12188f6bf918321542adcec05
+  replicas: 1

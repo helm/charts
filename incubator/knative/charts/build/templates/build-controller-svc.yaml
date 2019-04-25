@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels: {{ include "labels" . | nindent 4 }} {{ "app: \"build-controller\"" | nindent 4 }}
+  name: build-controller
+  namespace: knative-build
+spec:
+  ports:
+  - name: metrics
+    port: 9090
+    protocol: TCP
+    targetPort: 9090
+  selector:
+    app: build-controller

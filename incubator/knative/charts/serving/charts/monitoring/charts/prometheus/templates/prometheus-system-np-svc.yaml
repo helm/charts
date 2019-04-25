@@ -1,16 +1,13 @@
----
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.prometheusSystemNp.service.name | quote }}
-  namespace: "knative-monitoring"
-  labels: {{ include "labels" . | nindent 4 }}
-    app: {{ .Values.prometheusSystemNp.service.app | quote }}
+  labels: {{ include "labels" . | nindent 4 }} {{ "serving.knative.dev/release: \"devel\"" | nindent 4 }} {{ cat "app:" .Chart.Name | nindent 4 }}
+  name: prometheus-system-np
+  namespace: knative-monitoring
 spec:
   ports:
-  - port: {{ .Values.prometheusSystemNp.service.port }}
-    targetPort: {{ .Values.prometheusSystemNp.service.targetPort }}
+  - port: 8080
+    targetPort: 9090
   selector:
-    app: {{ .Values.prometheusSystemNp.service.app | quote }}
-  type: {{ .Values.prometheusSystemNp.service.type | quote }}
----
+    app: prometheus
+  type: {{ .Values.prometheusSystemNp.type }}

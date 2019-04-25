@@ -1,33 +1,25 @@
-global:
-  serving:
-    monitoring:
-      enabled: true
-      elasticsearch:
-        enabled: true
-      prometheus:
-        enabled: true
-      zipkin:
-        enabled: true
-  istio:
-    namespace: "istio-system"
-
 activator:
-  name: "activator"
-  replicas: 3
-
+  image: gcr.io/knative-releases/github.com/knative/serving/cmd/activator@sha256:c75dc977b2a4d16f01f89a1741d6895990b7404b03ffb45725a63104d267b74a
+activatorService:
+  type: ClusterIP
 autoscaler:
-  name: "autoscaler"
-  serviceAccount:
-    name: "autoscaler"
-
+  image: gcr.io/knative-releases/github.com/knative/serving/cmd/autoscaler@sha256:90f1199b3557242d46c4347d101e6767c388387e7cc30d8e6748dbfb10cefaef
+  replicas: 1
 controller:
-  name: "controller"
-  serviceAccount:
-    name: "controller"
-
-ingressGateway:
-  name: "knative-ingressgateway"
-  type: "LoadBalancer"
-
+  image: gcr.io/knative-releases/github.com/knative/serving/cmd/controller@sha256:df02e462373a3e4a408356d8d6240222bfe31f6aebbac804d28a6982532fb45f
+  replicas: 1
+monitoring:
+  elasticsearch:
+    enabled: true
+  enabled: true
+  prometheus:
+    enabled: true
+  zipkin:
+    enabled: false
+  zipkinInMem:
+    enabled: true
+queueProxy:
+  image: gcr.io/knative-releases/github.com/knative/serving/cmd/queue@sha256:cae33dcb4477f87815dfae6fa8e2b1ec850562accb77b7bc36bb3ac12bafead1
 webhook:
-  name: "webhook"
+  image: gcr.io/knative-releases/github.com/knative/serving/cmd/webhook@sha256:72189c6a5610e13794836a49bd2d6269206f434ab881b817d23e31f61493152e
+  replicas: 1

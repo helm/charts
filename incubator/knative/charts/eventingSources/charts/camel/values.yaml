@@ -1,0 +1,3 @@
+camelControllerManager:
+  manager:
+    image: gcr.io/knative-releases/github.com/knative/eventing-sources/contrib/camel/cmd/controller@sha256:1c4631019f85cf63b7d6362a99483fbaae65277a68ac004de15168a79e90be73

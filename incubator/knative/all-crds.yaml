@@ -1,6 +1,8 @@
 apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
 metadata:
+  labels:
+    knative.dev/crd-install: 'true'
   name: builds.build.knative.dev
 spec:
   additionalPrinterColumns:
@@ -24,11 +26,15 @@ spec:
     kind: Build
     plural: builds
   scope: Namespaced
+  subresources:
+    status: {}
   version: v1alpha1
 ---
 apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
 metadata:
+  labels:
+    knative.dev/crd-install: 'true'
   name: buildtemplates.build.knative.dev
 spec:
   additionalPrinterColumns:
@@ -43,11 +49,15 @@ spec:
     kind: BuildTemplate
     plural: buildtemplates
   scope: Namespaced
+  subresources:
+    status: {}
   version: v1alpha1
 ---
 apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
 metadata:
+  labels:
+    knative.dev/crd-install: 'true'
   name: clusterbuildtemplates.build.knative.dev
 spec:
   additionalPrinterColumns:
@@ -62,14 +72,14 @@ spec:
     kind: ClusterBuildTemplate
     plural: clusterbuildtemplates
   scope: Cluster
+  subresources:
+    status: {}
   version: v1alpha1
 ---
 apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
 metadata:
   name: images.caching.internal.knative.dev
-  annotations:
-    "helm.sh/hook": crd-install
 spec:
   group: caching.internal.knative.dev
   names:
@@ -83,13 +93,90 @@ spec:
     - img
     singular: image
   scope: Namespaced
+  subresources:
+    status: {}
   version: v1alpha1
 ---
 apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
 metadata:
+  labels:
+    knative.dev/crd-install: 'true'
+  name: brokers.eventing.knative.dev
+spec:
+  additionalPrinterColumns:
+  - JSONPath: .status.conditions[?(@.type=="Ready")].status
+    name: Ready
+    type: string
+  - JSONPath: .status.conditions[?(@.type=="Ready")].reason
+    name: Reason
+    type: string
+  - JSONPath: .status.address.hostname
+    name: Hostname
+    type: string
+  - JSONPath: .metadata.creationTimestamp
+    name: Age
+    type: date
+  group: eventing.knative.dev
+  names:
+    categories:
+    - all
+    - knative
+    - eventing
+    kind: Broker
+    plural: brokers
+    singular: broker
+  scope: Namespaced
+  subresources:
+    status: {}
+  validation:
+    openAPIV3Schema:
+      properties:
+        spec:
+          properties:
+            channelTemplate:
+              properties:
+                arguments:
+                  additionalProperties: true
+                  type: object
+                provisioner:
+                  properties:
+                    apiVersion:
+                      minLength: 1
+                      type: string
+                    kind:
+                      minLength: 1
+                      type: string
+                    name:
+                      minLength: 1
+                      type: string
+                  required:
+                  - apiVersion
+                  - kind
+                  - name
+                  type: object
+              required:
+              - provisioner
+              type: object
+  version: v1alpha1
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  labels:
+    knative.dev/crd-install: 'true'
   name: channels.eventing.knative.dev
 spec:
+  additionalPrinterColumns:
+  - JSONPath: .status.conditions[?(@.type=="Ready")].status
+    name: Ready
+    type: string
+  - JSONPath: .status.conditions[?(@.type=="Ready")].reason
+    name: Reason
+    type: string
+  - JSONPath: .metadata.creationTimestamp
+    name: Age
+    type: date
   group: eventing.knative.dev
   names:
     categories:
@@ -102,34 +189,86 @@ spec:
     - chan
     singular: channel
   scope: Namespaced
+  subresources:
+    status: {}
+  validation:
+    openAPIV3Schema:
+      properties:
+        spec:
+          properties:
+            arguments:
+              additionalProperties: true
+              type: object
+            provisioner:
+              properties:
+                apiVersion:
+                  minLength: 1
+                  type: string
+                kind:
+                  minLength: 1
+                  type: string
+                name:
+                  minLength: 1
+                  type: string
+              required:
+              - apiVersion
+              - kind
+              - name
+              type: object
+            subscribable:
+              properties:
+                subscribers:
+                  items:
+                    properties:
+                      ref:
+                        properties:
+                          apiVersion:
+                            type: string
+                          kind:
+                            type: string
+                          name:
+                            minLength: 1
+                            type: string
+                          namespace:
+                            minLength: 1
+                            type: string
+                          uid:
+                            minLength: 1
+                            type: string
+                        required:
+                        - namespace
+                        - name
+                        - uid
+                        type: object
+                      replyURI:
+                        minLength: 1
+                        type: string
+                      subscriberURI:
+                        minLength: 1
+                        type: string
+                    required:
+                    - ref
+                  type: array
+              type: object
   version: v1alpha1
 ---
 apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
 metadata:
-  name: subscriptions.eventing.knative.dev
-spec:
-  group: eventing.knative.dev
-  names:
-    categories:
-    - all
-    - knative
-    - eventing
-    kind: Subscription
-    plural: subscriptions
-    shortNames:
-    - sub
-    singular: subscription
-  scope: Namespaced
-  version: v1alpha1
----
-apiVersion: apiextensions.k8s.io/v1beta1
-kind: CustomResourceDefinition
-metadata:
+  labels:
+    knative.dev/crd-install: 'true'
   name: clusterchannelprovisioners.eventing.knative.dev
-  annotations:
-    "helm.sh/hook": crd-install
 spec:
+  additionalPrinterColumns:
+  - JSONPath: .status.conditions[?(@.type=="Ready")].status
+    name: Ready
+    type: string
+  - JSONPath: .status.conditions[?(@.type=="Ready")].reason
+    name: Reason
+    type: string
+  - JSONPath: .metadata.creationTimestamp
+    name: Age
+    type: date
   group: eventing.knative.dev
   names:
     categories:
@@ -143,12 +282,747 @@ spec:
     - ccp
     singular: clusterchannelprovisioner
   scope: Cluster
+  subresources:
+    status: {}
   version: v1alpha1
 ---
 apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
 metadata:
-  name: clusteringresses.networking.internal.knative.dev
+  labels:
+    knative.dev/crd-install: 'true'
+  name: subscriptions.eventing.knative.dev
+spec:
+  additionalPrinterColumns:
+  - JSONPath: .status.conditions[?(@.type=="Ready")].status
+    name: Ready
+    type: string
+  - JSONPath: .status.conditions[?(@.type=="Ready")].reason
+    name: Reason
+    type: string
+  - JSONPath: .metadata.creationTimestamp
+    name: Age
+    type: date
+  group: eventing.knative.dev
+  names:
+    categories:
+    - all
+    - knative
+    - eventing
+    kind: Subscription
+    plural: subscriptions
+    shortNames:
+    - sub
+    singular: subscription
+  scope: Namespaced
+  subresources:
+    status: {}
+  validation:
+    openAPIV3Schema:
+      properties:
+        spec:
+          properties:
+            channel:
+              properties:
+                apiVersion:
+                  minLength: 1
+                  type: string
+                kind:
+                  pattern: ^Channel$
+                  type: string
+                name:
+                  minLength: 1
+                  type: string
+              required:
+              - apiVersion
+              - kind
+              - name
+              type: object
+            reply:
+              properties:
+                channel:
+                  properties:
+                    apiVersion:
+                      minLength: 1
+                      type: string
+                    kind:
+                      pattern: ^Channel$
+                      type: string
+                    name:
+                      minLength: 1
+                      type: string
+                  required:
+                  - apiVersion
+                  - kind
+                  - name
+                  type: object
+              type: object
+            subscriber:
+              properties:
+                dnsName:
+                  minLength: 1
+                  type: string
+                ref:
+                  properties:
+                    apiVersion:
+                      minLength: 1
+                      type: string
+                    kind:
+                      minLength: 1
+                      type: string
+                    name:
+                      minLength: 1
+                      type: string
+                  required:
+                  - apiVersion
+                  - kind
+                  - name
+                  type: object
+                uri:
+                  minLength: 1
+                  type: string
+              type: object
+          required:
+          - channel
+  version: v1alpha1
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  labels:
+    knative.dev/crd-install: 'true'
+  name: triggers.eventing.knative.dev
+spec:
+  additionalPrinterColumns:
+  - JSONPath: .status.conditions[?(@.type=="Ready")].status
+    name: Ready
+    type: string
+  - JSONPath: .status.conditions[?(@.type=="Ready")].reason
+    name: Reason
+    type: string
+  - JSONPath: .spec.broker
+    name: Broker
+    type: string
+  - JSONPath: .status.subscriberURI
+    name: Subscriber_URI
+    type: string
+  - JSONPath: .metadata.creationTimestamp
+    name: Age
+    type: date
+  group: eventing.knative.dev
+  names:
+    categories:
+    - all
+    - knative
+    - eventing
+    kind: Trigger
+    plural: triggers
+    singular: trigger
+  scope: Namespaced
+  subresources:
+    status: {}
+  validation:
+    openAPIV3Schema:
+      properties:
+        spec:
+          properties:
+            broker:
+              type: string
+            filter:
+              properties:
+                sourceAndType:
+                  properties:
+                    source:
+                      type: string
+                    type:
+                      type: string
+                  type: object
+              type: object
+            subscriber:
+              properties:
+                dnsName:
+                  minLength: 1
+                  type: string
+                ref:
+                  properties:
+                    apiVersion:
+                      minLength: 1
+                      type: string
+                    kind:
+                      minLength: 1
+                      type: string
+                    name:
+                      minLength: 1
+                      type: string
+                  required:
+                  - apiVersion
+                  - kind
+                  - name
+                  type: object
+                uri:
+                  minLength: 1
+                  type: string
+              type: object
+          required:
+          - subscriber
+  version: v1alpha1
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  labels:
+    eventing.knative.dev/source: 'true'
+    knative.dev/crd-install: 'true'
+  name: awssqssources.sources.eventing.knative.dev
+spec:
+  group: sources.eventing.knative.dev
+  names:
+    categories:
+    - all
+    - knative
+    - eventing
+    - sources
+    kind: AwsSqsSource
+    plural: awssqssources
+  scope: Namespaced
+  subresources:
+    status: {}
+  validation:
+    openAPIV3Schema:
+      properties:
+        apiVersion:
+          type: string
+        kind:
+          type: string
+        metadata:
+          type: object
+        spec:
+          properties:
+            awsCredsSecret:
+              type: object
+            queueUrl:
+              type: string
+            serviceAccountName:
+              type: string
+            sink:
+              type: object
+          required:
+          - queueUrl
+          type: object
+        status:
+          properties:
+            conditions:
+              items:
+                properties:
+                  lastTransitionTime:
+                    type: string
+                  message:
+                    type: string
+                  reason:
+                    type: string
+                  severity:
+                    type: string
+                  status:
+                    type: string
+                  type:
+                    type: string
+                required:
+                - type
+                - status
+                type: object
+              type: array
+            sinkUri:
+              type: string
+          type: object
+  version: v1alpha1
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  labels:
+    eventing.knative.dev/source: 'true'
+    knative.dev/crd-install: 'true'
+  name: containersources.sources.eventing.knative.dev
+spec:
+  group: sources.eventing.knative.dev
+  names:
+    categories:
+    - all
+    - knative
+    - eventing
+    - sources
+    kind: ContainerSource
+    plural: containersources
+  scope: Namespaced
+  subresources:
+    status: {}
+  validation:
+    openAPIV3Schema:
+      properties:
+        apiVersion:
+          type: string
+        kind:
+          type: string
+        metadata:
+          type: object
+        spec:
+          properties:
+            args:
+              items:
+                type: string
+              type: array
+            env:
+              items:
+                type: object
+              type: array
+            image:
+              minLength: 1
+              type: string
+            serviceAccountName:
+              type: string
+            sink:
+              type: object
+          type: object
+        status:
+          properties:
+            conditions:
+              items:
+                properties:
+                  lastTransitionTime:
+                    type: string
+                  message:
+                    type: string
+                  reason:
+                    type: string
+                  severity:
+                    type: string
+                  status:
+                    type: string
+                  type:
+                    type: string
+                required:
+                - type
+                - status
+                type: object
+              type: array
+            sinkUri:
+              type: string
+          type: object
+  version: v1alpha1
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  labels:
+    eventing.knative.dev/source: 'true'
+    knative.dev/crd-install: 'true'
+  name: cronjobsources.sources.eventing.knative.dev
+spec:
+  group: sources.eventing.knative.dev
+  names:
+    categories:
+    - all
+    - knative
+    - eventing
+    - sources
+    kind: CronJobSource
+    plural: cronjobsources
+  scope: Namespaced
+  subresources:
+    status: {}
+  validation:
+    openAPIV3Schema:
+      properties:
+        apiVersion:
+          type: string
+        kind:
+          type: string
+        metadata:
+          type: object
+        spec:
+          properties:
+            data:
+              type: string
+            schedule:
+              type: string
+            serviceAccountName:
+              type: string
+            sink:
+              type: object
+          required:
+          - schedule
+          type: object
+        status:
+          properties:
+            conditions:
+              items:
+                properties:
+                  lastTransitionTime:
+                    type: string
+                  message:
+                    type: string
+                  reason:
+                    type: string
+                  severity:
+                    type: string
+                  status:
+                    type: string
+                  type:
+                    type: string
+                required:
+                - type
+                - status
+                type: object
+              type: array
+            sinkUri:
+              type: string
+          type: object
+  version: v1alpha1
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  labels:
+    eventing.knative.dev/source: 'true'
+    knative.dev/crd-install: 'true'
+  name: githubsources.sources.eventing.knative.dev
+spec:
+  group: sources.eventing.knative.dev
+  names:
+    categories:
+    - all
+    - knative
+    - eventing
+    - sources
+    kind: GitHubSource
+    plural: githubsources
+  scope: Namespaced
+  subresources:
+    status: {}
+  validation:
+    openAPIV3Schema:
+      properties:
+        apiVersion:
+          type: string
+        kind:
+          type: string
+        metadata:
+          type: object
+        spec:
+          properties:
+            accessToken:
+              properties:
+                secretKeyRef:
+                  type: object
+              type: object
+            eventTypes:
+              items:
+                enum:
+                - commit_comment
+                - create
+                - delete
+                - deployment
+                - deployment_status
+                - fork
+                - gollum
+                - installation
+                - integration_installation
+                - issue_comment
+                - issues
+                - label
+                - member
+                - membership
+                - milestone
+                - organization
+                - org_block
+                - page_build
+                - ping
+                - project_card
+                - project_column
+                - project
+                - public
+                - pull_request
+                - pull_request_review
+                - pull_request_review_comment
+                - push
+                - release
+                - repository
+                - status
+                - team
+                - team_add
+                - watch
+                type: string
+              minItems: 1
+              type: array
+            ownerAndRepository:
+              minLength: 1
+              type: string
+            secretToken:
+              properties:
+                secretKeyRef:
+                  type: object
+              type: object
+            serviceAccountName:
+              type: string
+            sink:
+              type: object
+          required:
+          - ownerAndRepository
+          - eventTypes
+          - accessToken
+          - secretToken
+          type: object
+        status:
+          properties:
+            conditions:
+              items:
+                properties:
+                  lastTransitionTime:
+                    type: string
+                  message:
+                    type: string
+                  reason:
+                    type: string
+                  severity:
+                    type: string
+                  status:
+                    type: string
+                  type:
+                    type: string
+                required:
+                - type
+                - status
+                type: object
+              type: array
+            sinkUri:
+              type: string
+            webhookIDKey:
+              type: string
+          type: object
+  version: v1alpha1
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  labels:
+    eventing.knative.dev/source: 'true'
+    knative.dev/crd-install: 'true'
+  name: kuberneteseventsources.sources.eventing.knative.dev
+spec:
+  group: sources.eventing.knative.dev
+  names:
+    categories:
+    - all
+    - knative
+    - eventing
+    - sources
+    kind: KubernetesEventSource
+    plural: kuberneteseventsources
+  scope: Namespaced
+  subresources:
+    status: {}
+  validation:
+    openAPIV3Schema:
+      properties:
+        apiVersion:
+          type: string
+        kind:
+          type: string
+        metadata:
+          type: object
+        spec:
+          properties:
+            namespace:
+              type: string
+            serviceAccountName:
+              type: string
+            sink:
+              type: object
+          required:
+          - namespace
+          type: object
+        status:
+          properties:
+            conditions:
+              items:
+                properties:
+                  lastTransitionTime:
+                    type: string
+                  message:
+                    type: string
+                  reason:
+                    type: string
+                  severity:
+                    type: string
+                  status:
+                    type: string
+                  type:
+                    type: string
+                required:
+                - type
+                - status
+                type: object
+              type: array
+            sinkUri:
+              type: string
+          type: object
+  version: v1alpha1
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  creationTimestamp: null
+  labels:
+    eventing.knative.dev/source: 'true'
+    knative.dev/crd-install: 'true'
+  name: camelsources.sources.eventing.knative.dev
+spec:
+  group: sources.eventing.knative.dev
+  names:
+    categories:
+    - all
+    - knative
+    - eventing
+    - sources
+    kind: CamelSource
+    plural: camelsources
+  scope: Namespaced
+  subresources:
+    status: {}
+  validation:
+    openAPIV3Schema:
+      properties:
+        apiVersion:
+          type: string
+        kind:
+          type: string
+        metadata:
+          type: object
+        spec:
+          properties:
+            image:
+              type: string
+            serviceAccountName:
+              type: string
+            sink:
+              type: object
+            source:
+              properties:
+                component:
+                  properties:
+                    properties:
+                      type: object
+                    uri:
+                      minLength: 1
+                      type: string
+                  type: object
+              type: object
+          required:
+          - source
+          type: object
+        status:
+          properties:
+            conditions:
+              items:
+                properties:
+                  lastTransitionTime:
+                    type: string
+                  message:
+                    type: string
+                  reason:
+                    type: string
+                  severity:
+                    type: string
+                  status:
+                    type: string
+                  type:
+                    type: string
+                required:
+                - type
+                - status
+                type: object
+              type: array
+            sinkUri:
+              type: string
+          type: object
+  version: v1alpha1
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  labels:
+    eventing.knative.dev/source: 'true'
+    knative.dev/crd-install: 'true'
+  name: gcppubsubsources.sources.eventing.knative.dev
+spec:
+  group: sources.eventing.knative.dev
+  names:
+    categories:
+    - all
+    - knative
+    - eventing
+    - sources
+    kind: GcpPubSubSource
+    plural: gcppubsubsources
+  scope: Namespaced
+  subresources:
+    status: {}
+  validation:
+    openAPIV3Schema:
+      properties:
+        apiVersion:
+          type: string
+        kind:
+          type: string
+        metadata:
+          type: object
+        spec:
+          properties:
+            gcpCredsSecret:
+              type: object
+            googleCloudProject:
+              type: string
+            serviceAccountName:
+              type: string
+            sink:
+              type: object
+            topic:
+              type: string
+          type: object
+        status:
+          properties:
+            conditions:
+              items:
+                properties:
+                  lastTransitionTime:
+                    type: string
+                  message:
+                    type: string
+                  reason:
+                    type: string
+                  severity:
+                    type: string
+                  status:
+                    type: string
+                  type:
+                    type: string
+                required:
+                - type
+                - status
+                type: object
+              type: array
+            sinkUri:
+              type: string
+          type: object
+  version: v1alpha1
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  labels:
+    knative.dev/crd-install: 'true'
+    serving.knative.dev/release: devel
+  name: certificates.networking.internal.knative.dev
 spec:
   additionalPrinterColumns:
   - JSONPath: .status.conditions[?(@.type=="Ready")].status
@@ -163,135 +1037,51 @@ spec:
     - all
     - knative-internal
     - networking
-    kind: ClusterIngress
-    plural: clusteringresses
-    singular: clusteringress
-  scope: Cluster
+    kind: Certificate
+    plural: certificates
+    shortNames:
+    - kcert
+    singular: certificate
+  scope: Namespaced
+  subresources:
+    status: {}
   version: v1alpha1
 ---
 apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
 metadata:
-  name: podautoscalers.autoscaling.internal.knative.dev
+  labels:
+    knative.dev/crd-install: 'true'
+    serving.knative.dev/release: devel
+  name: clusteringresses.networking.internal.knative.dev
 spec:
   additionalPrinterColumns:
-  - JSONPath: .status.conditions[?(@.type=="Ready")].status
+  - JSONPath: .status.conditions[?(@.type=='Ready')].status
     name: Ready
     type: string
-  - JSONPath: .status.conditions[?(@.type=="Ready")].reason
+  - JSONPath: .status.conditions[?(@.type=='Ready')].reason
     name: Reason
     type: string
-  group: autoscaling.internal.knative.dev
+  group: networking.internal.knative.dev
   names:
     categories:
     - all
     - knative-internal
-    - autoscaling
-    kind: PodAutoscaler
-    plural: podautoscalers
-    shortNames:
-    - kpa
-    singular: podautoscaler
-  scope: Namespaced
+    - networking
+    kind: ClusterIngress
+    plural: clusteringresses
+    singular: clusteringress
+  scope: Cluster
+  subresources:
+    status: {}
   version: v1alpha1
 ---
 apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
 metadata:
-  name: revisions.serving.knative.dev
-spec:
-  additionalPrinterColumns:
-  - JSONPath: .status.serviceName
-    name: Service Name
-    type: string
-  - JSONPath: .status.conditions[?(@.type=="Ready")].status
-    name: Ready
-    type: string
-  - JSONPath: .status.conditions[?(@.type=="Ready")].reason
-    name: Reason
-    type: string
-  group: serving.knative.dev
-  names:
-    categories:
-    - all
-    - knative
-    - serving
-    kind: Revision
-    plural: revisions
-    shortNames:
-    - rev
-    singular: revision
-  scope: Namespaced
-  version: v1alpha1
----
-apiVersion: apiextensions.k8s.io/v1beta1
-kind: CustomResourceDefinition
-metadata:
-  name: routes.serving.knative.dev
-spec:
-  additionalPrinterColumns:
-  - JSONPath: .status.domain
-    name: Domain
-    type: string
-  - JSONPath: .status.conditions[?(@.type=="Ready")].status
-    name: Ready
-    type: string
-  - JSONPath: .status.conditions[?(@.type=="Ready")].reason
-    name: Reason
-    type: string
-  group: serving.knative.dev
-  names:
-    categories:
-    - all
-    - knative
-    - serving
-    kind: Route
-    plural: routes
-    shortNames:
-    - rt
-    singular: route
-  scope: Namespaced
-  version: v1alpha1
----
-apiVersion: apiextensions.k8s.io/v1beta1
-kind: CustomResourceDefinition
-metadata:
-  name: services.serving.knative.dev
-spec:
-  additionalPrinterColumns:
-  - JSONPath: .status.domain
-    name: Domain
-    type: string
-  - JSONPath: .status.latestCreatedRevisionName
-    name: LatestCreated
-    type: string
-  - JSONPath: .status.latestReadyRevisionName
-    name: LatestReady
-    type: string
-  - JSONPath: .status.conditions[?(@.type=="Ready")].status
-    name: Ready
-    type: string
-  - JSONPath: .status.conditions[?(@.type=="Ready")].reason
-    name: Reason
-    type: string
-  group: serving.knative.dev
-  names:
-    categories:
-    - all
-    - knative
-    - serving
-    kind: Service
-    plural: services
-    shortNames:
-    - kservice
-    - ksvc
-    singular: service
-  scope: Namespaced
-  version: v1alpha1
----
-apiVersion: apiextensions.k8s.io/v1beta1
-kind: CustomResourceDefinition
-metadata:
+  labels:
+    knative.dev/crd-install: 'true'
+    serving.knative.dev/release: devel
   name: configurations.serving.knative.dev
 spec:
   additionalPrinterColumns:
@@ -301,10 +1091,10 @@ spec:
   - JSONPath: .status.latestReadyRevisionName
     name: LatestReady
     type: string
-  - JSONPath: .status.conditions[?(@.type=="Ready")].status
+  - JSONPath: .status.conditions[?(@.type=='Ready')].status
     name: Ready
     type: string
-  - JSONPath: .status.conditions[?(@.type=="Ready")].reason
+  - JSONPath: .status.conditions[?(@.type=='Ready')].reason
     name: Reason
     type: string
   group: serving.knative.dev
@@ -320,4 +1110,173 @@ spec:
     - cfg
     singular: configuration
   scope: Namespaced
+  subresources:
+    status: {}
+  version: v1alpha1
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  labels:
+    knative.dev/crd-install: 'true'
+    serving.knative.dev/release: devel
+  name: podautoscalers.autoscaling.internal.knative.dev
+spec:
+  additionalPrinterColumns:
+  - JSONPath: .status.conditions[?(@.type=='Ready')].status
+    name: Ready
+    type: string
+  - JSONPath: .status.conditions[?(@.type=='Ready')].reason
+    name: Reason
+    type: string
+  group: autoscaling.internal.knative.dev
+  names:
+    categories:
+    - all
+    - knative-internal
+    - autoscaling
+    kind: PodAutoscaler
+    plural: podautoscalers
+    shortNames:
+    - kpa
+    singular: podautoscaler
+  scope: Namespaced
+  subresources:
+    status: {}
+  version: v1alpha1
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  labels:
+    knative.dev/crd-install: 'true'
+    serving.knative.dev/release: devel
+  name: revisions.serving.knative.dev
+spec:
+  additionalPrinterColumns:
+  - JSONPath: .status.serviceName
+    name: Service Name
+    type: string
+  - JSONPath: .metadata.labels['serving\.knative\.dev/configurationGeneration']
+    name: Generation
+    type: string
+  - JSONPath: .status.conditions[?(@.type=='Ready')].status
+    name: Ready
+    type: string
+  - JSONPath: .status.conditions[?(@.type=='Ready')].reason
+    name: Reason
+    type: string
+  group: serving.knative.dev
+  names:
+    categories:
+    - all
+    - knative
+    - serving
+    kind: Revision
+    plural: revisions
+    shortNames:
+    - rev
+    singular: revision
+  scope: Namespaced
+  subresources:
+    status: {}
+  version: v1alpha1
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  labels:
+    knative.dev/crd-install: 'true'
+    serving.knative.dev/release: devel
+  name: routes.serving.knative.dev
+spec:
+  additionalPrinterColumns:
+  - JSONPath: .status.domain
+    name: Domain
+    type: string
+  - JSONPath: .status.conditions[?(@.type=='Ready')].status
+    name: Ready
+    type: string
+  - JSONPath: .status.conditions[?(@.type=='Ready')].reason
+    name: Reason
+    type: string
+  group: serving.knative.dev
+  names:
+    categories:
+    - all
+    - knative
+    - serving
+    kind: Route
+    plural: routes
+    shortNames:
+    - rt
+    singular: route
+  scope: Namespaced
+  subresources:
+    status: {}
+  version: v1alpha1
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  labels:
+    knative.dev/crd-install: 'true'
+    serving.knative.dev/release: devel
+  name: services.serving.knative.dev
+spec:
+  additionalPrinterColumns:
+  - JSONPath: .status.domain
+    name: Domain
+    type: string
+  - JSONPath: .status.latestCreatedRevisionName
+    name: LatestCreated
+    type: string
+  - JSONPath: .status.latestReadyRevisionName
+    name: LatestReady
+    type: string
+  - JSONPath: .status.conditions[?(@.type=='Ready')].status
+    name: Ready
+    type: string
+  - JSONPath: .status.conditions[?(@.type=='Ready')].reason
+    name: Reason
+    type: string
+  group: serving.knative.dev
+  names:
+    categories:
+    - all
+    - knative
+    - serving
+    kind: Service
+    plural: services
+    shortNames:
+    - kservice
+    - ksvc
+    singular: service
+  scope: Namespaced
+  subresources:
+    status: {}
+  version: v1alpha1
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  labels:
+    knative.dev/crd-install: 'true'
+    serving.knative.dev/release: devel
+  name: serverlessservices.networking.internal.knative.dev
+spec:
+  group: networking.internal.knative.dev
+  names:
+    categories:
+    - all
+    - knative-internal
+    - networking
+    kind: ServerlessService
+    plural: serverlessservices
+    shortNames:
+    - sks
+    singular: serverlessservice
+  scope: Namespaced
+  subresources:
+    status: {}
   version: v1alpha1

@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels: {{ include "labels" . | nindent 4 }} {{ "addonmanager.kubernetes.io/mode: \"Reconcile\"" | nindent 4 }} {{ "app: \"elasticsearch-logging\"" | nindent 4 }} {{ "kubernetes.io/cluster-service: \"true\"" | nindent 4 }} {{ "version: \"v5.6.4\"" | nindent 4 }}
+  name: elasticsearch-logging
+  namespace: knative-monitoring
+spec:
+  replicas: {{ .Values.elasticsearchLogging.replicas }}
+  selector:
+    matchLabels:
+      app: elasticsearch-logging
+      version: v5.6.4
+  serviceName: elasticsearch-logging
+  template:
+    metadata:
+      labels: {{ include "noVersionlabels" . | nindent 8 }} {{ "app: \"elasticsearch-logging\"" | nindent 8 }} {{ "kubernetes.io/cluster-service: \"true\"" | nindent 8 }} {{ "version: \"v5.6.4\"" | nindent 8 }}
+    spec:
+      containers:
+      - env:
+        - name: NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        image: {{ .Values.elasticsearchLogging.image }}
+        name: elasticsearch-logging
+        ports:
+        - containerPort: 9200
+          name: db
+          protocol: TCP
+        - containerPort: 9300
+          name: transport
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 1000m
+          requests:
+            cpu: 100m
+        volumeMounts:
+        - mountPath: /data
+          name: elasticsearch-logging
+      initContainers:
+      - command:
+        - /sbin/sysctl
+        - -w
+        - vm.max_map_count=262144
+        image: {{ .Values.elasticsearchLogging.elasticsearchLoggingInit.image }}
+        name: elasticsearch-logging-init
+        securityContext:
+          privileged: true
+      serviceAccountName: elasticsearch-logging
+      volumes:
+      - emptyDir: {}
+        name: elasticsearch-logging

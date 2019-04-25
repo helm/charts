@@ -1,0 +1,10 @@
+gcpPubsubChannelController:
+  controller:
+    image: gcr.io/knative-releases/github.com/knative/eventing/contrib/gcppubsub/pkg/controller/cmd@sha256:a37c64dc6cf6a22bd8a47766e3de1fb945dcec97d6fe768d675430f16ff011dd
+  replicas: 1
+gcpPubsubChannelDispatcher:
+  dispatcher:
+    image: gcr.io/knative-releases/github.com/knative/eventing/contrib/gcppubsub/pkg/dispatcher/cmd@sha256:ffcc3319ca6b87075e6cac939c15d50862214ace4ff3d4bacb3853d43e9b0efb
+  replicas: 1
+gcpPubsubDispatcher:
+  type: ClusterIP

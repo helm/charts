@@ -1,20 +1,32 @@
-global:
-  build:
-    enabled: true
-    namespace: "knative-build"
-  eventing:
+build:
+  enabled: true
+eventing:
+  enabled: false
+  gcpPubSubProvisioner:
     enabled: false
-    in-memory-provisioner:
+  inMemoryProvisioner:
+    enabled: false
+  kafkaProvisioner:
+    enabled: false
+  natssProvisioner:
+    enabled: false
+eventingSources:
+  camel:
+    enabled: false
+  enabled: false
+  eventDisplay:
+    enabled: false
+  gcpPubSub:
+    enabled: false
+serving:
+  enabled: true
+  monitoring:
+    elasticsearch:
       enabled: true
-    kafka-provisioner:
-      enabled: false
-  serving:
     enabled: true
-    monitoring:
+    prometheus:
       enabled: true
-      elasticsearch:
-        enabled: true
-      prometheus:
-        enabled: true
-      zipkin:
-        enabled: true
+    zipkin:
+      enabled: false
+    zipkinInMem:
+      enabled: true

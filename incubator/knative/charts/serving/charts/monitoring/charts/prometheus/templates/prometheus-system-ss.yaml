@@ -1,22 +1,19 @@
----
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ .Values.prometheusSystemNp.statefulSet.name | quote }}
-  namespace: "knative-monitoring"
-  labels: {{ include "labels" . | nindent 4 }}
-    app: {{ .Values.prometheusSystemNp.statefulSet.app | quote }}
+  labels: {{ include "labels" . | nindent 4 }} {{ "serving.knative.dev/release: \"devel\"" | nindent 4 }} {{ cat "app:" .Chart.Name | nindent 4 }}
+  name: prometheus-system
+  namespace: knative-monitoring
 spec:
-  podManagementPolicy: {{ .Values.prometheusSystemNp.statefulSet.podManagementPolicy | quote }}
-  replicas: {{ .Values.prometheusSystemNp.statefulSet.replicas }}
+  podManagementPolicy: Parallel
+  replicas: {{ .Values.prometheusSystem.replicas }}
   selector:
     matchLabels:
-      app: {{ .Values.prometheusSystemNp.statefulSet.app | quote }}
-  serviceName: {{ .Values.prometheusSystemNp.statefulSet.name | quote }}
+      app: prometheus
+  serviceName: prometheus-system
   template:
     metadata:
-      labels: {{ include "labels" . | nindent 8 }}
-        app: {{ .Values.prometheusSystemNp.statefulSet.app | quote }}
+      labels: {{ include "noVersionlabels" . | nindent 8 }} {{ "app: \"prometheus\"" | nindent 8 }} {{ "serving.knative.dev/release: \"devel\"" | nindent 8 }}
     spec:
       containers:
       - args:
@@ -26,39 +23,41 @@ spec:
         - --storage.tsdb.no-lockfile
         - --web.enable-lifecycle
         - --web.route-prefix=/
-        image: {{ .Values.prometheusSystemNp.statefulSet.image.repository }}:{{ .Values.prometheusSystemNp.statefulSet.image.tag }}
-        imagePullPolicy: {{ .Values.prometheusSystemNp.statefulSet.image.imagePullPolicy }}
+        image: {{ .Values.prometheusSystem.prometheus.image }}
+        imagePullPolicy: IfNotPresent
         livenessProbe:
-          failureThreshold: {{ .Values.prometheusSystemNp.statefulSet.image.livenessProbe.failureThreshold }}
+          failureThreshold: 10
           httpGet:
             path: /-/healthy
-            port: {{ .Values.prometheusSystemNp.statefulSet.image.livenessProbe.port }}
-            scheme: {{ .Values.prometheusSystemNp.statefulSet.image.livenessProbe.scheme }}
-          initialDelaySeconds: {{ .Values.prometheusSystemNp.statefulSet.image.livenessProbe.initialDelaySeconds }}
-          timeoutSeconds: {{ .Values.prometheusSystemNp.statefulSet.image.livenessProbe.timeoutSeconds }}
-        name: {{ .Values.prometheusSystemNp.statefulSet.image.livenessProbe.name }}
+            port: web
+            scheme: HTTP
+          initialDelaySeconds: 30
+          timeoutSeconds: 3
+        name: prometheus
         ports:
-        - containerPort: {{ .Values.prometheusSystemNp.statefulSet.image.livenessProbe.ports.containerPort }}
-          name: {{ .Values.prometheusSystemNp.statefulSet.image.livenessProbe.ports.name }}
+        - containerPort: 9090
+          name: web
           protocol: TCP
         readinessProbe:
-          failureThreshold: {{ .Values.prometheusSystemNp.statefulSet.image.readinessProbe.failureThreshold }}
+          failureThreshold: 10
           httpGet:
             path: /-/ready
-            port: {{ .Values.prometheusSystemNp.statefulSet.image.readinessProbe.port }}
-            scheme: {{ .Values.prometheusSystemNp.statefulSet.image.readinessProbe.scheme }}
-          timeoutSeconds: {{ .Values.prometheusSystemNp.statefulSet.image.readinessProbe.timeoutSeconds }}
+            port: web
+            scheme: HTTP
+          timeoutSeconds: 3
         resources:
+          limits:
+            memory: 1000Mi
           requests:
-            memory: {{ .Values.prometheusSystemNp.statefulSet.image.requestResouceMemory }}
+            memory: 400Mi
         terminationMessagePath: /dev/termination-log
         volumeMounts:
-        - mountPath: /etc/prometheus/
+        - mountPath: /etc/prometheus
           name: prometheus-config-volume
-        - mountPath: /prometheus/
+        - mountPath: /prometheus
           name: prometheus-storage-volume
-      serviceAccountName: {{ .Values.prometheusSystem.svcacct.name | quote }}
-      terminationGracePeriodSeconds: {{ .Values.prometheusSystemNp.statefulSet.terminationGracePeriodSeconds }}
+      serviceAccountName: prometheus-system
+      terminationGracePeriodSeconds: 600
       volumes:
       - configMap:
           defaultMode: 420
@@ -67,5 +66,4 @@ spec:
       - emptyDir: {}
         name: prometheus-storage-volume
   updateStrategy:
-    type: {{ .Values.prometheusSystemNp.statefulSet.updateStrategyType }}
----
+    type: RollingUpdate

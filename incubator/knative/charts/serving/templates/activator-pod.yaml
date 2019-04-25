@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels: {{ include "labels" . | nindent 4 }} {{ "serving.knative.dev/release: \"devel\"" | nindent 4 }} {{ cat "app:" .Chart.Name | nindent 4 }}
+  name: activator
+  namespace: knative-serving
+spec:
+  selector:
+    matchLabels:
+      app: activator
+      role: activator
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: 'true'
+      labels: {{ include "noVersionlabels" . | nindent 8 }} {{ "app: \"activator\"" | nindent 8 }} {{ "role: \"activator\"" | nindent 8 }} {{ "serving.knative.dev/release: \"devel\"" | nindent 8 }}
+    spec:
+      containers:
+      - args:
+        - -logtostderr=false
+        - -stderrthreshold=FATAL
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: SYSTEM_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: CONFIG_LOGGING_NAME
+          value: config-logging
+        image: {{ .Values.activator.image }}
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+        name: activator
+        ports:
+        - containerPort: 8080
+          name: http1-port
+        - containerPort: 8081
+          name: h2c-port
+        - containerPort: 9090
+          name: metrics-port
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+        resources:
+          limits:
+            cpu: 200m
+            memory: 600Mi
+          requests:
+            cpu: 20m
+            memory: 60Mi
+        volumeMounts:
+        - mountPath: /etc/config-logging
+          name: config-logging
+        - mountPath: /etc/config-observability
+          name: config-observability
+      serviceAccountName: controller
+      volumes:
+      - configMap:
+          name: config-logging
+        name: config-logging
+      - configMap:
+          name: config-observability
+        name: config-observability

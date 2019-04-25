@@ -1,234 +1,30 @@
-global:
-  build:
-    namespace: "knative-build"
-  istio:
-    namespace: "istio-system"
-
-configMaps:
-  scalingName: "scaling-config"
-  prometheusScrape: "prometheus-scrape-config"
-
-# resources for grafana-service and deployment (pod)
 grafana:
-  service:
-    name: "grafana"
-    port: 30802
-    targetPort: 3000
-    type: "NodePort"
-  deployment:
-    name: "grafana"
-    replicas: 1
-    image:
-      repository: "quay.io/coreos/monitoring-grafana"
-      tag: 5.0.3
-      pullPolicy: "IfNotPresent"
-      name: "grafana"
-      ports:
-        containerPort: 3000
-        name: "web"
-      resourceLimits:
-        cpu: "200m"
-        memory: "200Mi"
-      resourceRequests:
-        cpu: "100m"
-        memory: "100Mi"
-    securityContext:
-      runAsNonRoot: true
-      runAsUser: 65534
-  configMaps:
-    datasources: "grafana-datasources"
-    dashboards: "grafana-dashboards"
-    definitionPilot: "grafana-dashboard-definition-pilot"
-    definitionMixer: "grafana-dashboard-definition-mixer"
-    definitionK8sStatefulset: "grafana-dashboard-definition-kubernetes-statefulset"
-    definitionK8sResourceRequests: "grafana-dashboard-definition-kubernetes-resource-requests"
-    definitionK8sPods: "grafana-dashboard-definition-kubernetes-pods"
-    definitionK8sNodes: "grafana-dashboard-definition-kubernetes-nodes"
-    definitionK8sDeployment: "grafana-dashboard-definition-kubernetes-deployment"
-    definitionK8sControlPlaneStatus: "grafana-dashboard-definition-kubernetes-control-plane-status"
-    definitionK8sClusterStatus: "grafana-dashboard-definition-kubernetes-cluster-status"
-    definitionK8sClusterHealth: "grafana-dashboard-definition-kubernetes-cluster-health"
-    definitionK8sCapacityPlanning: "grafana-dashboard-definition-kubernetes-capacity-planning"
-    definitionKnativeEfficiency: "grafana-dashboard-definition-knative-efficiency"
-    definitionKnative: "grafana-dashboard-definition-knative"
-    definitionIstio: "grafana-dashboard-definition-istio"
-
-# resources for kube-controller-service
-kubeControllerService:
-  portName: "http-metrics"
-  name: "kube-controller-manager"
-  port: 10252
-  targetPort: 10252
-  type: "ClusterIP"
-
-# resources for kube-state-metrics-service and deployment (pod)
-kubeState:
-  service:
-    name: "kube-state-metrics"
-    mainPort:
-      name: "https-main"
-      port: 8443
-      targetPort: https-main
-    selfPort:
-      name: "https-self"
-      port: 9443
-      targetPort: "https-self"
-  deployment:
-    name: "kube-state-metrics"
-    replicas: 1
-    proxyMainImage:
-      repository: "quay.io/coreos/kube-rbac-proxy"
-      tag: "v0.3.0"
-      pullPolicy: "IfNotPresent"
-      name: "kube-rbac-proxy-main"
-      ports:
-        containerPort: 8443
-        name: "https-main"
-      resourceLimits:
-        cpu: "20m"
-        memory: "40Mi"
-      resourceRequests:
-        cpu: "10m"
-        memory: "20Mi"
-    proxySelfImage:
-      repository: "quay.io/coreos/kube-rbac-proxy"
-      tag: "v0.3.0"
-      pullPolicy: "IfNotPresent"
-      name: "kube-rbac-proxy-self"
-      ports:
-        containerPort: 9443
-        name: "https-self"
-      resourceLimits:
-        cpu: "20m"
-        memory: "40Mi"
-      resourceRequests:
-        cpu: "10m"
-        memory: "20Mi"
-    metricsImage:
-      repository: "quay.io/coreos/kube-state-metrics"
-      tag: "v1.3.0"
-      pullPolicy: "IfNotPresent"
-      name: "kube-state-metrics"
-      container: "kube-state-metrics"
-      cpu: "100m"
-      extraCpu: "1m"
-      memory: "100Mi"
-      extraMemory: "2Mi"
-      threshold: 5
-      deployment: "kube-state-metrics"
-    resizerImage:
-      repository: "k8s.gcr.io/addon-resizer"
-      tag: "1.7"
-      pullPolicy: "IfNotPresent"
-      name: "addon-resizer"
-      resourceLimits:
-        cpu: "100m"
-        memory: "30Mi"
-      resourceRequests:
-        cpu: "100m"
-        memory: "30Mi"
-  securityContext:
-    runAsNonRoot: true
-    runAsUser: 65534
-
-# resources for node-exporter-service
-nodeExporterService:
-  name: "node-exporter"
-  portName: "https"
-  port: 9102
-  type: "ClusterIP"
-
-# resources for prometheus-system-discovery-service
-prometheusSystemDiscoveryService:
-  name: "prometheus-system-discovery"
-  app: "prometheus"
-  portName: "web"
-  port: 9090
-  targetPort: "web"
-  type: "ClusterIP"
-
-# resources for:
-# prometheus-system-np-service, prometheus-system-StatefulSet
-prometheusSystemNp:
-  service:
-    name: "prometheus-system-np"
-    app: "prometheus"
-    port: 8080
-    targetPort: 9090
-    type: "NodePort"
-  statefulSet:
-    name: "prometheus-system"
-    podManagementPolicy: Parallel
-    replicas: 2
-    app: "prometheus"
-    image:
-      repository: "prom/prometheus"
-      tag: "v2.2.1"
-      imagePullPolicy: "IfNotPresent"
-      livenessProbe:
-        failureThreshold: 10
-        port: "web"
-        scheme: "HTTP"
-        initialDelaySeconds: 30
-        timeoutSeconds: 3
-        name: "prometheus"
-        ports:
-          containerPort: 9090
-          name: "web"
-      readinessProbe:
-        failureThreshold: 10
-        port: "web"
-        scheme: "HTTP"
-        timeoutSeconds: 3
-      requestResouceMemory: "400Mi"
-    terminationGracePeriodSeconds: 600
-    updateStrategyType: "RollingUpdate"
-
-# resources for kube-state-metrics
-# ClusterRoleBinding, ClusterRole, RoleBinding
+  image: quay.io/coreos/monitoring-grafana:5.0.3
+  replicas: 1
+  type: NodePort
+kubeControllerManager:
+  type: ClusterIP
 kubeStateMetrics:
-  crb:
-    name: "kube-state-metrics"
-  cr:
-    name: "kube-state-metrics"
-  rb:
-    name: "kube-state-metrics"
-    roleName: "kube-state-metrics-resizer"
-  svcacct:
-    name: "kube-state-metrics"
-
-# resources for node-exporter
-# ClusterRoleBinding, ClusterRole
+  addonResizer:
+    image: k8s.gcr.io/addon-resizer:1.7
+  image: quay.io/coreos/kube-state-metrics:v1.3.0
+  kubeRbacProxyMain:
+    image: quay.io/coreos/kube-rbac-proxy:v0.3.0
+  kubeRbacProxySelf:
+    image: quay.io/coreos/kube-rbac-proxy:v0.3.0
+  replicas: 1
 nodeExporter:
-  cr:
-    name: "node-exporter"
-  crb:
-    name: "node-exporter"
-  svcacct:
-    name: "node-exporter"
-
-# resources for prometheus-system
-# ClusterRoleBinding, ClusterRole, RoleBinding, Role
+  image: quay.io/prometheus/node-exporter:v0.15.2
+  kubeRbacProxy:
+    https:
+      hostPort: 9100
+    image: quay.io/coreos/kube-rbac-proxy:v0.3.0
+  type: ClusterIP
 prometheusSystem:
-  crb:
-    name: "prometheus-system"
-  cr:
-    name: "prometheus-system"
-  rb:
-    name: "prometheus-system"
-    namespace: "default"
-  role:
-    namespace: "default"
-  svcacct:
-    name: "prometheus-system"
-
-revision:
-  metrics:
-    requestCountName: "revisionrequestcount"
-    requestDurationName: "revisionrequestduration"
-    requestSizeName: "revisionrequestsize"
-    responseSizeName: "revisionresponsesize"
-  rule:
-    promHttpName: "revisionpromhttp"
   prometheus:
-    promHandlerName: "revisionpromhandler"
+    image: prom/prometheus:v2.2.1
+  replicas: 2
+prometheusSystemDiscovery:
+  type: ClusterIP
+prometheusSystemNp:
+  type: NodePort

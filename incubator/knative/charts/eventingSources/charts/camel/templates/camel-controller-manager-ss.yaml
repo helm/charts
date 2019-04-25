@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels: {{ include "labels" . | nindent 4 }} {{ "control-plane: \"camel-controller-manager\"" | nindent 4 }} {{ cat "app:" .Chart.Name | nindent 4 }}
+  name: camel-controller-manager
+  namespace: knative-sources
+spec:
+  selector:
+    matchLabels:
+      control-plane: camel-controller-manager
+  serviceName: camel-controller-manager
+  template:
+    metadata:
+      labels: {{ include "noVersionlabels" . | nindent 8 }} {{ "control-plane: \"camel-controller-manager\"" | nindent 8 }} {{ cat "app:" .Chart.Name | nindent 8 }}
+    spec:
+      containers:
+      - image: {{ .Values.camelControllerManager.manager.image }}
+        name: manager
+        resources:
+          limits:
+            cpu: 100m
+            memory: 30Mi
+          requests:
+            cpu: 20m
+            memory: 20Mi
+      serviceAccount: camel-controller-manager
+      terminationGracePeriodSeconds: 10

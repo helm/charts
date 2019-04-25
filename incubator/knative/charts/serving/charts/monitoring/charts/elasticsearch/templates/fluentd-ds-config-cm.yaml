@@ -1,0 +1,11 @@
+apiVersion: v1
+data:
+  100.system.conf: "<system>\n  root_dir /tmp/fluentd-buffers/\n</system>"
+  200.containers.input.conf: "<source>\n  @id fluentd-containers.log\n  @type tail\n  path /var/log/containers/*user-container-*.log,/var/log/containers/*build-step-*.log,/var/log/containers/controller-*controller-*.log,/var/log/containers/webhook-*webhook-*.log,/var/log/containers/*autoscaler-*autoscaler-*.log,/var/log/containers/*queue-proxy-*.log,/var/log/containers/activator-*activator-*.log\n  pos_file /var/log/es-containers.log.pos\n  time_format %Y-%m-%dT%H:%M:%S.%NZ\n  tag raw.kubernetes.*\n  format json\n  read_from_head true\n</source>\n# Combine multi line logs which form an exception stack trace into a single log entry\n<match raw.kubernetes.**>\n  @id raw.kubernetes\n  @type detect_exceptions\n  remove_tag_prefix raw\n  message log\n  stream stream\n  multiline_flush_interval 5\n  max_bytes 500000\n  max_lines 1000\n</match>\n# Add Kubernetes metadata\n<filter kubernetes.**>\n  @type kubernetes_metadata\n</filter>"
+  300.forward.input.conf: "# Takes the messages sent over TCP, e.g. request logs from Istio\n<source>\n  @type forward\n  port 24224\n</source>"
+  900.output.conf: "# Send to Elastic Search\n<match **>\n  @id elasticsearch\n  @type elasticsearch\n  @log_level info\n  include_tag_key true\n  host elasticsearch-logging\n  port 9200\n  logstash_format true\n  <buffer>\n    @type file\n    path /var/log/fluentd-buffers/kubernetes.system.buffer\n    flush_mode interval\n    retry_type exponential_backoff\n    flush_thread_count 2\n    flush_interval 5s\n    retry_forever\n    retry_max_interval 30\n    chunk_limit_size 2M\n    queue_limit_length 8\n    overflow_action block\n  </buffer>\n</match>"
+kind: ConfigMap
+metadata:
+  labels: {{ include "labels" . | nindent 4 }} {{ "addonmanager.kubernetes.io/mode: \"Reconcile\"" | nindent 4 }} {{ "serving.knative.dev/release: \"devel\"" | nindent 4 }} {{ cat "app:" .Chart.Name | nindent 4 }}
+  name: fluentd-ds-config
+  namespace: knative-monitoring

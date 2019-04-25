@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels: {{ include "labels" . | nindent 4 }} {{ cat "app:" .Chart.Name | nindent 4 }}
+  name: natss-controller
+  namespace: knative-eventing
+spec:
+  replicas: {{ .Values.natssController.replicas }}
+  selector:
+    matchLabels:
+      clusterChannelProvisioner: natss
+      role: controller
+  template:
+    metadata:
+      labels: {{ include "noVersionlabels" . | nindent 8 }} {{ "clusterChannelProvisioner: \"natss\"" | nindent 8 }} {{ "role: \"controller\"" | nindent 8 }} {{ cat "app:" .Chart.Name | nindent 8 }}
+    spec:
+      containers:
+      - env:
+        - name: SYSTEM_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        image: {{ .Values.natssController.controller.image }}
+        name: controller
+      serviceAccountName: natss-controller

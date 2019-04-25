@@ -1,10 +1,13 @@
 dependencies:
-  - name: build
-    version: 0.1.0
-    condition: global.build.enabled
-  - name: eventing
-    version: 0.1.0
-    condition: global.eventing.enabled
-  - name: serving
-    version: 0.1.0
-    condition: global.serving.enabled
+- condition: build.enabled
+  name: build
+  version: 0.2.0
+- condition: eventing.enabled
+  name: eventing
+  version: 0.2.0
+- condition: eventingSources.enabled
+  name: eventingSources
+  version: 0.1.0
+- condition: serving.enabled
+  name: serving
+  version: 0.2.0

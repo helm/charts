@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels: {{ include "labels" . | nindent 4 }} {{ "addonmanager.kubernetes.io/mode: \"Reconcile\"" | nindent 4 }} {{ "app: \"kibana-logging\"" | nindent 4 }} {{ "kubernetes.io/cluster-service: \"true\"" | nindent 4 }} {{ "kubernetes.io/name: \"Kibana\"" | nindent 4 }}
+  name: kibana-logging
+  namespace: knative-monitoring
+spec:
+  ports:
+  - port: 5601
+    protocol: TCP
+    targetPort: ui
+  selector:
+    app: kibana-logging
+  type: {{ .Values.kibanaLogging.type }}

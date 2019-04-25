@@ -1,0 +1,9 @@
+apiVersion: v1
+data:
+  _example: "################################\n#                              #\n#    EXAMPLE CONFIGURATION     #\n#                              #\n################################\n\n# This block is not actually functional configuration,\n# but serves to illustrate the available configuration\n# options and document them in a way that is accessible\n# to users that `kubectl edit` this config map.\n#\n# These sample configuration options may be copied out of\n# this block and unindented to actually change the configuration.\n\n# Common configuration for all Knative codebase\nzap-logger-config: |\n  {\n    \"level\": \"info\",\n    \"development\": false,\n    \"outputPaths\": [\"stdout\"],\n    \"errorOutputPaths\": [\"stderr\"],\n    \"encoding\": \"json\",\n    \"encoderConfig\": {\n      \"timeKey\": \"ts\",\n      \"levelKey\": \"level\",\n      \"nameKey\": \"logger\",\n      \"callerKey\": \"caller\",\n      \"messageKey\": \"msg\",\n      \"stacktraceKey\": \"stacktrace\",\n    \
+    \  \"lineEnding\": \"\",\n      \"levelEncoder\": \"\",\n      \"timeEncoder\": \"iso8601\",\n      \"durationEncoder\": \"\",\n      \"callerEncoder\": \"\"\n    }\n  }\n\n# Log level overrides\n# For all components except the autoscaler and queue proxy,\n# changes are be picked up immediately.\n# For autoscaler and queue proxy, changes require recreation of the pods.\nloglevel.controller: \"info\"\nloglevel.autoscaler: \"info\"\nloglevel.queueproxy: \"info\"\nloglevel.webhook: \"info\"\nloglevel.activator: \"info\"\n"
+kind: ConfigMap
+metadata:
+  labels: {{ include "labels" . | nindent 4 }} {{ "serving.knative.dev/release: \"devel\"" | nindent 4 }} {{ cat "app:" .Chart.Name | nindent 4 }}
+  name: config-logging
+  namespace: knative-serving

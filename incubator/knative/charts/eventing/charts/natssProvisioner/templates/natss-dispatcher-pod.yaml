@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels: {{ include "labels" . | nindent 4 }} {{ cat "app:" .Chart.Name | nindent 4 }}
+  name: natss-dispatcher
+  namespace: knative-eventing
+spec:
+  replicas: {{ .Values.natssDispatcher.replicas }}
+  selector:
+    matchLabels:
+      clusterChannelProvisioner: natss
+      role: dispatcher
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: 'true'
+      labels: {{ include "noVersionlabels" . | nindent 8 }} {{ "clusterChannelProvisioner: \"natss\"" | nindent 8 }} {{ "role: \"dispatcher\"" | nindent 8 }} {{ cat "app:" .Chart.Name | nindent 8 }}
+    spec:
+      containers:
+      - env:
+        - name: SYSTEM_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        image: {{ .Values.natssDispatcher.dispatcher.image }}
+        name: dispatcher
+      serviceAccountName: natss-dispatcher

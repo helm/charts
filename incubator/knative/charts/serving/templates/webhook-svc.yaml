@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels: {{ include "labels" . | nindent 4 }} {{ "role: \"webhook\"" | nindent 4 }} {{ "serving.knative.dev/release: \"devel\"" | nindent 4 }} {{ cat "app:" .Chart.Name | nindent 4 }}
+  name: webhook
+  namespace: knative-serving
+spec:
+  ports:
+  - port: 443
+    targetPort: 443
+  selector:
+    role: webhook

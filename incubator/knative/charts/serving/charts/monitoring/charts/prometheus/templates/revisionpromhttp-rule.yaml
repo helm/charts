@@ -1,12 +1,9 @@
----
 apiVersion: config.istio.io/v1alpha2
 kind: rule
 metadata:
-  labels: {{ include "labels" . | nindent 4 }}
-    app: {{ .Values.revision.rule.promHttpName | quote }}
-    istio-protocol: http
-  name: {{ .Values.revision.rule.promHttpName | quote }}
-  namespace: {{ .Values.global.istio.namespace | quote }}
+  labels: {{ include "labels" . | nindent 4 }} {{ "istio-protocol: \"http\"" | nindent 4 }} {{ "serving.knative.dev/release: \"devel\"" | nindent 4 }} {{ cat "app:" .Chart.Name | nindent 4 }}
+  name: revisionpromhttp
+  namespace: istio-system
 spec:
   actions:
   - handler: revisionpromhandler.prometheus
@@ -15,4 +12,3 @@ spec:
     - revisionrequestduration.metric
     - revisionrequestsize.metric
     - revisionresponsesize.metric
----

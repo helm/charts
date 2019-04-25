@@ -5,114 +5,48 @@ This chart installs Knative components for Eventing.
 
 ## Introduction
 
-This is a helm chart for installing Knative Eventing which provides loosely coupled services that can be developed and deployed on independently on Kubernetes. Visit [knative eventing](https://github.com/knative/eventing/blob/master/README.md) for more information.
+This is a helm chart for installing Knative Eventing which provides loosely coupled services that can be developed and deployed on independently on Kubernetes. Visit [Knative Eventing](https://github.com/knative/eventing/blob/master/README.md) for more information.
 
 ## Chart Details
 
 In its default configuration, this chart will create the following Kubernetes resources:
 
-- Internal Services:
-    - in-memory-channel-controller, in-memory-channel-dispatcher, eventing-controller, webhook
-    - eventing-controller-admin
-
-- Knative Eventing Pods:
-    - Deployments: in-memory-channel-controller, in-memory-channel-dispatcher, eventing-controller, webhook
-
-- Custom Resource Definitions:
-    - subscriptions.eventing.knative.dev
-    - channels.eventing.knative.dev
-    - images.caching.internal.knative.dev
-
-## Prerequisites
-
-- Requires kubectl v1.10+.
-- Knative requires a Kubernetes cluster v1.10 or newer with the
-[MutatingAdmissionWebhook admission controller](https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/#how-do-i-turn-on-an-admission-controller)
-enabled.
-- CRD's, for Knative Eventing to run standalone, you must install the crds that are kept in the Knative level of this chart, run the command to install the crds:
-```bash
-$ kubectl apply --filename ./knative/templates/crds.yaml
-
-customresourcedefinition.apiextensions.k8s.io "images.caching.internal.knative.dev" created
-```
-- Istio - You should have Istio installed on your Kubernetes cluster. If you do not have it installed already you can do so by running the following command:
-```bash
-$ kubectl apply --filename https://raw.githubusercontent.com/knative/serving/v0.2.3/third_party/istio-1.0.2/istio.yaml
-```
-or by following these steps:
-[Installing Istio](https://github.com/knative/docs/blob/master/install/Knative-with-any-k8s.md#installing-istio)
-
-## Installing the Chart
-
-Please ensure that you have reviewed the [prerequisites](#prerequisites).
-
-To install the chart using helm cli:
-
-Knative eventing provides you with an option to choose between Kafka or In memory provisioner.
-
-For in-memory-provisioner in [Values.yaml](./values.yaml) set:
-```bash
-in-memory-provisioner:
-    enabled: true
-kafka-provisioner:
-    enabled: false
-```
-For kafka-provisioner in [Values.yaml](./values.yaml) set:
-```bash
-in-memory-provisioner:
-    enabled: false
-kafka-provisioner:
-    enabled: true
-```
-
-Install eventing:
-```bash
-$ helm install ./knative/eventing
-```
+- Knative Eventing:
+    - Deployments: eventing-controller, webhook
+    - ServiceAccount: default, eventing-controller, eventing-webhook
+    - Service: webhook
 
 ### Configuration
 
-If your installing Knative Eventing with a Kafka provisioner you must change `bootstrapServers: " "` to point towards an existing Kafka Broker in the [Values.yaml](./charts/kafka-provisioner/values.yaml).
+| Parameter                                  | Description                              | Default |
+|--------------------------------------------|------------------------------------------|---------|
+| `eventing.enabled`                         | Enable/Disable Knative Eventing          | `false`   |
+| `eventing.eventingController.image`        | Controller Image                         | gcr.io/knative-releases/github.com/knative/eventing/cmd/controller@sha256:de1727c9969d369f2c3c7d628c7b8c46937315ffaaf9fe3ca242ae2a1965f744 | 
+| `eventing.eventingController.replicas`                        | Controller Replicas                      | 1         |
+| `eventing.webhook.image`                   | Webhook Image                            | gcr.io/knative-releases/github.com/knative/eventing/cmd/webhook@sha256:3c0f22b9f9bd9608f804c6b3b8cbef9cc8ebc54bb67d966d3e047f377feb4ccb |
+| `eventing.webhook.replicas`                | Webhook Replicas                         | 1         |
+| `eventing.gcpPubSubProvisioner.enabled`    | Enable/Disable GCP PubSub Provisioner    | `false`   |
+| `eventing.gcpPubSubProvisioner.gcpPubsubChannelController.controller.image` | Controller Image | gcr.io/knative-releases/github.com/knative/eventing/contrib/gcppubsub/pkg/controller/cmd@sha256:a37c64dc6cf6a22bd8a47766e3de1fb945dcec97d6fe768d675430f16ff011dd |
+| `eventing.gcpPubSubProvisioner.gcpPubsubChannelController.replicas` | Controller Replicas | 1     |
+| `eventing.gcpPubSubProvisioner.gcpPubsubChannelDispatcher.dispatcher.image` | Dispatcher Image | gcr.io/knative-releases/github.com/knative/eventing/contrib/gcppubsub/pkg/dispatcher/cmd@sha256:ffcc3319ca6b87075e6cac939c15d50862214ace4ff3d4bacb3853d43e9b0efb | 
+| `eventing.gcpPubSubProvisioner.gcpPubsubChannelDispatcher.replicas` | Dispatcher Replicas | 1     |
+| `eventing.gcpPubSubProvisioner.type`       | GCP PubSub Provisioner Ingress Type      | ClusterIP |
+| `eventing.inMemoryProvisioner.enabled`     | Enable/Disable In-Memory Provisioner     | `false`   |
+| `eventing.inMemoryProvisioner.inMemoryChannelController.controller.image` | Controller Image                    | gcr.io/knative-releases/github.com/knative/eventing/pkg/provisioners/inmemory/controller@sha256:3e4287fba1447d82b80b5fd87983609ba670850c4d28499fe7e60fb87d04cc53 |
+| `eventing.inMemoryProvisioner.inMemoryChannelController.replicas`    | Controller Replicas           | 1         |
+| `eventing.inMemoryProvisioner.inMemoryChannelDispatcher.dispatcher.image` | Dispatcher Image | gcr.io/knative-releases/github.com/knative/eventing/cmd/fanoutsidecar@sha256:f388c5226fb7f29b74038bef5591de05820bcbf7c13e7f5e202f1c5f9d9ab224 | 
+| `eventing.inMemoryProvisioner.inMemoryChannelDispatcher.replicas` | Dispatcher Replicas | 1       |
+| `eventing.kafkaProvisioner.enabled`        | Enable/Disable Kafka Provisioner         | `false`   |
+| `eventing.kafkaProvisioner.kafkaChannelController.kafkaChannelControllerController.image` | Controller Image | gcr.io/knative-releases/github.com/knative/eventing/contrib/kafka/cmd/controller@sha256:5fa8b57594949b7e6d9d99d0dfba5109d0a57c497d34f0d8d84569cb9f2ad19e | 
+| `eventing.kafkaProvisioner.kafkaChannelController.replicas` | Controller Replicas     | 1         | 
+| `eventing.kafkaProvisioner.kafkaChannelDispatcher.dispatcher.image` | Dispatcher Image | gcr.io/knative-releases/github.com/knative/eventing/contrib/kafka/cmd/dispatcher@sha256:94d0f74892ce19e7f909bc0063b89ba68f85e2d12188f6bf918321542adcec05 |
+| `eventing.kafkaProvisioner.kafkaChannelDispatcher.replicas` | Dispatcher Replicas     | 1         | 
+| `eventing.natssProvisioner.enabled`        | Enable/Disable NATS Provisioner          | `false`   |
+| `eventing.natssProvisioner.natssController.controller.image` | Controller Image | gcr.io/knative-releases/github.com/knative/eventing/contrib/natss/pkg/controller@sha256:c0ee52280ba652fa42d6a60ad5e51d7650244043b05e7fd6d693dfbfceb8abd6 |
+| `eventing.natssProvisioner.natssController.replicas` | Controller Replicas            | 1         | 
+| `eventing.natssProvisioner.natssDispatcher.dispatcher.image` | Dispatcher Image       | gcr.io/knative-releases/github.com/knative/eventing/contrib/natss/pkg/dispatcher@sha256:2de14f9876d0288060bae5266e663f9d77c130a8d491680438552b70cf394ca5 |
+| `eventing.natssProvisioner.natssDispatcher.replicas` | Dispatcher Replicas            | 1         |
+Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
-[Values.yaml](./values.yaml) outlines the configuration options that are supported by this chart.
-
-### Verifying the Chart
-
-To verify all Pods are running, try:
-```bash
-$ helm status <my-release> [--tls]
-```
-
-## Uninstalling the Chart
-
-To uninstall/delete the deployment:
-```bash
-$ helm delete <my-release> --purge [--tls]
-```
-
-To uninstall/delete the crds:
-```bash
-$ kubectl delete -f knative/all-crds.yaml
-```
-
-The command removes all the Kubernetes components associated with the chart and deletes the release.
-
-## Limitations
-
-You must use `knative-eventing` namespace to install Knative eventing.
-
-## Documentation
-
-Documentation of the Knative eventing system can be found on the [Knative Eventing Docs](https://github.com/knative/eventing/blob/master/README.md).
-
-To learn more about Knative in general, see the [Overview](https://github.com/knative/docs/blob/master/README.md).
-
-# Support
-
-If you're a developer, operator, or contributor trying to use Knative, the
-following resources are available for you:
-
-- [Knative Users](https://groups.google.com/forum/#!forum/knative-users)
-- [Knative Developers](https://groups.google.com/forum/#!forum/knative-dev)
-
-For contributors to Knative, we also have [Knative Slack](https://slack.knative.dev).
+## Additional Information
+For further information see the top level Knative chart.

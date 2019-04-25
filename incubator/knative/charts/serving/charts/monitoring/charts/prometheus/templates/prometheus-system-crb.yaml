@@ -1,16 +1,13 @@
----
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: {{ .Values.prometheusSystem.crb.name | quote }}
-  labels: {{ include "labels" . | nindent 4 }}
-    app: {{ .Values.prometheusSystem.crb.name | quote }}
+  labels: {{ include "labels" . | nindent 4 }} {{ "serving.knative.dev/release: \"devel\"" | nindent 4 }} {{ cat "app:" .Chart.Name | nindent 4 }}
+  name: prometheus-system
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: {{ .Values.prometheusSystem.cr.name | quote }}
+  name: prometheus-system
 subjects:
 - kind: ServiceAccount
-  name: {{ .Values.prometheusSystem.svcacct.name | quote }}
-  namespace: "knative-monitoring"
----
+  name: prometheus-system
+  namespace: knative-monitoring

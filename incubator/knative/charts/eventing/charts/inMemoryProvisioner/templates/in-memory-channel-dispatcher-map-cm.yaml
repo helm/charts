@@ -1,0 +1,8 @@
+apiVersion: v1
+data:
+  multiChannelFanoutConfig: '{}'
+kind: ConfigMap
+metadata:
+  labels: {{ include "labels" . | nindent 4 }} {{ cat "app:" .Chart.Name | nindent 4 }}
+  name: in-memory-channel-dispatcher-config-map
+  namespace: knative-eventing

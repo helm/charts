@@ -1,35 +1,31 @@
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.grafana.deployment.name | quote }}
-  namespace: "knative-monitoring"
-  labels: {{ include "labels" . | nindent 4 }}
-    app: {{ .Values.grafana.deployment.name | quote }}
+  labels: {{ include "labels" . | nindent 4 }} {{ "serving.knative.dev/release: \"devel\"" | nindent 4 }} {{ cat "app:" .Chart.Name | nindent 4 }}
+  name: grafana
+  namespace: knative-monitoring
 spec:
-  replicas: {{ .Values.grafana.deployment.replicas }}
+  replicas: {{ .Values.grafana.replicas }}
   selector:
     matchLabels:
-      app: {{ .Values.grafana.deployment.name | quote }}
+      app: grafana
   template:
     metadata:
-      labels: {{ include "labels" . | nindent 8 }}
-        app: {{ .Values.grafana.deployment.name | quote }} 
+      labels: {{ include "noVersionlabels" . | nindent 8 }} {{ "app: \"grafana\"" | nindent 8 }} {{ "serving.knative.dev/release: \"devel\"" | nindent 8 }}
     spec:
       containers:
-      - image: {{ .Values.grafana.deployment.image.repository }}:{{ .Values.grafana.deployment.image.tag }}
-        imagePullPolicy: {{ .Values.grafana.deployment.image.pullPolicy }}
-        name: {{ .Values.grafana.deployment.image.name | quote }}
+      - image: {{ .Values.grafana.image }}
+        name: grafana
         ports:
-        - containerPort: {{ .Values.grafana.deployment.image.ports.containerPort }}
-          name: {{ .Values.grafana.deployment.image.ports.name | quote }}
+        - containerPort: 3000
+          name: web
         resources:
           limits:
-            cpu: {{ .Values.grafana.deployment.image.resourceLimits.cpu }}
-            memory: {{ .Values.grafana.deployment.image.resourceLimits.memory }}
+            cpu: 200m
+            memory: 200Mi
           requests:
-            cpu: {{ .Values.grafana.deployment.image.resourceRequests.cpu }}
-            memory: {{ .Values.grafana.deployment.image.resourceRequests.memory }}
+            cpu: 100m
+            memory: 100Mi
         volumeMounts:
         - mountPath: /data
           name: grafana-storage
@@ -41,6 +37,8 @@ spec:
           name: grafana-dashboard-definition-knative
         - mountPath: /grafana-dashboard-definition/knative-efficiency
           name: grafana-dashboard-definition-knative-efficiency
+        - mountPath: /grafana-dashboard-definition/knative-reconciler
+          name: grafana-dashboard-definition-knative-reconciler
         - mountPath: /grafana-dashboard-definition/istio
           name: grafana-dashboard-definition-istio
         - mountPath: /grafana-dashboard-definition/mixer
@@ -68,8 +66,8 @@ spec:
         - mountPath: /grafana-dashboard-definition/scaling
           name: scaling-config
       securityContext:
-        runAsNonRoot: {{ .Values.grafana.deployment.securityContext.runAsNonRoot }}
-        runAsUser: {{ .Values.grafana.deployment.securityContext.runAsUser }}
+        runAsNonRoot: true
+        runAsUser: 65534
       volumes:
       - emptyDir: {}
         name: grafana-storage
@@ -85,6 +83,9 @@ spec:
       - configMap:
           name: grafana-dashboard-definition-knative-efficiency
         name: grafana-dashboard-definition-knative-efficiency
+      - configMap:
+          name: grafana-dashboard-definition-knative-reconciler
+        name: grafana-dashboard-definition-knative-reconciler
       - configMap:
           name: grafana-dashboard-definition-istio
         name: grafana-dashboard-definition-istio
@@ -124,4 +125,3 @@ spec:
       - configMap:
           name: scaling-config
         name: scaling-config
----

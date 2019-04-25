@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels: {{ include "labels" . | nindent 4 }} {{ "addonmanager.kubernetes.io/mode: \"Reconcile\"" | nindent 4 }} {{ "app: \"kibana-logging\"" | nindent 4 }} {{ "kubernetes.io/cluster-service: \"true\"" | nindent 4 }}
+  name: kibana-logging
+  namespace: knative-monitoring
+spec:
+  replicas: {{ .Values.kibanaLogging.replicas }}
+  selector:
+    matchLabels:
+      app: kibana-logging
+  template:
+    metadata:
+      labels: {{ include "noVersionlabels" . | nindent 8 }} {{ "app: \"kibana-logging\"" | nindent 8 }}
+    spec:
+      containers:
+      - env:
+        - name: ELASTICSEARCH_URL
+          value: http://elasticsearch-logging:9200
+        - name: SERVER_BASEPATH
+          value: /api/v1/namespaces/knative-monitoring/services/kibana-logging/proxy
+        - name: XPACK_MONITORING_ENABLED
+          value: 'false'
+        - name: XPACK_SECURITY_ENABLED
+          value: 'false'
+        image: {{ .Values.kibanaLogging.image }}
+        name: kibana-logging
+        ports:
+        - containerPort: 5601
+          name: ui
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 1000m
+          requests:
+            cpu: 100m

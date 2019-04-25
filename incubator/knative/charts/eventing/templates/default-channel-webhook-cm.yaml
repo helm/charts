@@ -1,0 +1,8 @@
+apiVersion: v1
+data:
+  default-channel-config: "clusterdefault:\n  apiversion: eventing.knative.dev/v1alpha1\n  kind: ClusterChannelProvisioner\n  name: in-memory\nnamespacedefaults:\n  some-namespace:\n    apiversion: eventing.knative.dev/v1alpha1\n    kind: ClusterChannelProvisioner\n    name: some-other-provisioner\n"
+kind: ConfigMap
+metadata:
+  labels: {{ include "labels" . | nindent 4 }} {{ cat "app:" .Chart.Name | nindent 4 }}
+  name: default-channel-webhook
+  namespace: knative-eventing

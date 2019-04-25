@@ -1,68 +1,62 @@
----
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ .Values.kubeState.deployment.name | quote }}
-  namespace: "knative-monitoring"
-  labels: {{ include "labels" . | nindent 4 }}
-    app: {{ .Values.kubeState.deployment.name | quote }}
+  labels: {{ include "labels" . | nindent 4 }} {{ cat "app:" .Chart.Name | nindent 4 }}
+  name: kube-state-metrics
+  namespace: knative-monitoring
 spec:
-  replicas: {{ .Values.kubeState.deployment.replicas }}
+  replicas: {{ .Values.kubeStateMetrics.replicas }}
   template:
     metadata:
-      labels: {{ include "labels" . | nindent 8 }}
-        app: {{ .Values.kubeState.deployment.name | quote }}
+      labels: {{ include "noVersionlabels" . | nindent 8 }} {{ "app: \"kube-state-metrics\"" | nindent 8 }}
     spec:
       containers:
       - args:
         - --secure-listen-address=:8443
         - --upstream=http://127.0.0.1:8081/
-        image: {{ .Values.kubeState.deployment.proxyMainImage.repository }}:{{ .Values.kubeState.deployment.proxyMainImage.tag }}
-        imagePullPolicy: {{ .Values.kubeState.deployment.proxyMainImage.pullPolicy }}
-        name: {{ .Values.kubeState.deployment.proxyMainImage.name | quote }}
+        image: {{ .Values.kubeStateMetrics.kubeRbacProxyMain.image }}
+        name: kube-rbac-proxy-main
         ports:
-        - containerPort: {{ .Values.kubeState.deployment.proxyMainImage.ports.containerPort }}
-          name: {{ .Values.kubeState.deployment.proxyMainImage.ports.name | quote }}
+        - containerPort: 8443
+          name: https-main
         resources:
           limits:
-            cpu: {{ .Values.kubeState.deployment.proxyMainImage.resourceLimits.cpu }}
-            memory: {{ .Values.kubeState.deployment.proxyMainImage.resourceLimits.memory }}
+            cpu: 20m
+            memory: 40Mi
           requests:
-            cpu: {{ .Values.kubeState.deployment.proxyMainImage.resourceRequests.cpu }}
-            memory: {{ .Values.kubeState.deployment.proxyMainImage.resourceRequests.memory }}
+            cpu: 10m
+            memory: 20Mi
       - args:
         - --secure-listen-address=:9443
         - --upstream=http://127.0.0.1:8082/
-        image: {{ .Values.kubeState.deployment.proxySelfImage.repository }}:{{ .Values.kubeState.deployment.proxySelfImage.tag }}
-        imagePullPolicy: {{ .Values.kubeState.deployment.proxySelfImage.pullPolicy }}
-        name: {{ .Values.kubeState.deployment.proxySelfImage.name | quote }}
+        image: {{ .Values.kubeStateMetrics.kubeRbacProxySelf.image }}
+        name: kube-rbac-proxy-self
         ports:
-        - containerPort: {{ .Values.kubeState.deployment.proxySelfImage.ports.containerPort }}
-          name: {{ .Values.kubeState.deployment.proxySelfImage.ports.name | quote }}
+        - containerPort: 9443
+          name: https-self
         resources:
           limits:
-            cpu: {{ .Values.kubeState.deployment.proxySelfImage.resourceLimits.cpu }}
-            memory: {{ .Values.kubeState.deployment.proxySelfImage.resourceLimits.memory }}
+            cpu: 20m
+            memory: 40Mi
           requests:
-            cpu: {{ .Values.kubeState.deployment.proxySelfImage.resourceRequests.cpu }}
-            memory: {{ .Values.kubeState.deployment.proxySelfImage.resourceRequests.memory }}
+            cpu: 10m
+            memory: 20Mi
       - args:
         - --host=127.0.0.1
         - --port=8081
         - --telemetry-host=127.0.0.1
         - --telemetry-port=8082
-        image: {{ .Values.kubeState.deployment.metricsImage.repository }}:{{ .Values.kubeState.deployment.metricsImage.tag }}
-        imagePullPolicy: {{ .Values.kubeState.deployment.metricsImage.pullPolicy}}
-        name: {{ .Values.kubeState.deployment.metricsImage.name | quote }}
+        image: {{ .Values.kubeStateMetrics.image }}
+        name: kube-state-metrics
       - command:
         - /pod_nanny
-        - --container={{ .Values.kubeState.deployment.metricsImage.container }}
-        - --cpu={{ .Values.kubeState.deployment.metricsImage.cpu }}
-        - --extra-cpu={{ .Values.kubeState.deployment.metricsImage.extraCpu }}
-        - --memory={{ .Values.kubeState.deployment.metricsImage.memory }}
-        - --extra-memory={{ .Values.kubeState.deployment.metricsImage.extraMemory }}
-        - --threshold={{ .Values.kubeState.deployment.metricsImage.threshold }}
-        - --deployment={{ .Values.kubeState.deployment.metricsImage.deployment }}
+        - --container=kube-state-metrics
+        - --cpu=100m
+        - --extra-cpu=1m
+        - --memory=100Mi
+        - --extra-memory=2Mi
+        - --threshold=5
+        - --deployment=kube-state-metrics
         env:
         - name: MY_POD_NAME
           valueFrom:
@@ -72,18 +66,16 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
-        image: {{ .Values.kubeState.deployment.resizerImage.repository }}:{{ .Values.kubeState.deployment.resizerImage.tag }}
-        imagePullPolicy: {{ .Values.kubeState.deployment.resizerImage.pullPolicy }}
-        name: {{ .Values.kubeState.deployment.resizerImage.name | quote }}
+        image: {{ .Values.kubeStateMetrics.addonResizer.image }}
+        name: addon-resizer
         resources:
           limits:
-            cpu: {{ .Values.kubeState.deployment.resizerImage.resourceLimits.cpu }}
-            memory: {{ .Values.kubeState.deployment.resizerImage.resourceLimits.memory }}
+            cpu: 100m
+            memory: 30Mi
           requests:
-            cpu: {{ .Values.kubeState.deployment.resizerImage.resourceRequests.cpu }}
-            memory: {{ .Values.kubeState.deployment.resizerImage.resourceRequests.memory }}
+            cpu: 100m
+            memory: 30Mi
       securityContext:
-        runAsNonRoot: {{ .Values.kubeState.securityContext.runAsNonRoot }}
-        runAsUser: {{ .Values.kubeState.securityContext.runAsUser }}
-      serviceAccountName: {{ .Values.kubeStateMetrics.svcacct.name | quote }}
----
+        runAsNonRoot: true
+        runAsUser: 65534
+      serviceAccountName: kube-state-metrics

@@ -1,18 +1,15 @@
----
 apiVersion: v1
 kind: Service
 metadata:
-  labels: {{ include "labels" . | nindent 4 }}
-    app: {{ .Values.nodeExporterService.name | quote }} 
-  name: {{ .Values.nodeExporterService.name | quote }}
-  namespace: "knative-monitoring"
+  labels: {{ include "labels" . | nindent 4 }} {{ "app: \"node-exporter\"" | nindent 4 }}
+  name: node-exporter
+  namespace: knative-monitoring
 spec:
   clusterIP: None
   ports:
-  - name: {{ .Values.nodeExporterService.portName | quote }}
-    port: {{ .Values.nodeExporterService.port }}
+  - name: https
+    port: {{ .Values.nodeExporter.kubeRbacProxy.https.hostPort }}
     protocol: TCP
   selector:
-    app: {{ .Values.nodeExporterService.name | quote }}
-  type: {{ .Values.nodeExporterService.type | quote }}
----
+    app: node-exporter
+  type: {{ .Values.nodeExporter.type }}

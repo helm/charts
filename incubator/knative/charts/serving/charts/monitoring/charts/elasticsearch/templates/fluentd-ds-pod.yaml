@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  labels: {{ include "labels" . | nindent 4 }} {{ "addonmanager.kubernetes.io/mode: \"Reconcile\"" | nindent 4 }} {{ "app: \"fluentd-ds\"" | nindent 4 }} {{ "kubernetes.io/cluster-service: \"true\"" | nindent 4 }} {{ "serving.knative.dev/release: \"devel\"" | nindent 4 }} {{ "version: \"v2.0.4\"" | nindent 4 }}
+  name: fluentd-ds
+  namespace: knative-monitoring
+spec:
+  selector:
+    matchLabels:
+      app: fluentd-ds
+      version: v2.0.4
+  template:
+    metadata:
+      annotations:
+        scheduler.alpha.kubernetes.io/critical-pod: ''
+      labels: {{ include "noVersionlabels" . | nindent 8 }} {{ "app: \"fluentd-ds\"" | nindent 8 }} {{ "kubernetes.io/cluster-service: \"true\"" | nindent 8 }} {{ "serving.knative.dev/release: \"devel\"" | nindent 8 }} {{ "version: \"v2.0.4\"" | nindent 8 }}
+    spec:
+      containers:
+      - env:
+        - name: FLUENTD_ARGS
+          value: --no-supervisor -q
+        image: {{ .Values.fluentdDs.image }}
+        name: fluentd-ds
+        resources:
+          limits:
+            memory: 500Mi
+          requests:
+            cpu: 100m
+            memory: 200Mi
+        volumeMounts:
+        - mountPath: /var/log/containers
+          name: varlogcontainers
+          readOnly: true
+        - mountPath: /var/log/pods
+          name: varlogpods
+          readOnly: true
+        - mountPath: /var/lib/docker/containers
+          name: varlibdockercontainers
+          readOnly: true
+        - mountPath: /host/lib
+          name: libsystemddir
+          readOnly: true
+        - mountPath: /etc/fluent/config.d
+          name: config-volume
+      nodeSelector:
+        beta.kubernetes.io/fluentd-ds-ready: 'true'
+      serviceAccountName: fluentd-ds
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - hostPath:
+          path: /var/log/containers
+        name: varlogcontainers
+      - hostPath:
+          path: /var/log/pods
+        name: varlogpods
+      - hostPath:
+          path: /var/lib/docker/containers
+        name: varlibdockercontainers
+      - hostPath:
+          path: /usr/lib64
+        name: libsystemddir
+      - configMap:
+          name: fluentd-ds-config
+        name: config-volume

@@ -1,0 +1,8 @@
+natssController:
+  controller:
+    image: gcr.io/knative-releases/github.com/knative/eventing/contrib/natss/pkg/controller@sha256:c0ee52280ba652fa42d6a60ad5e51d7650244043b05e7fd6d693dfbfceb8abd6
+  replicas: 1
+natssDispatcher:
+  dispatcher:
+    image: gcr.io/knative-releases/github.com/knative/eventing/contrib/natss/pkg/dispatcher@sha256:2de14f9876d0288060bae5266e663f9d77c130a8d491680438552b70cf394ca5
+  replicas: 1

@@ -1,15 +1,12 @@
----
 apiVersion: config.istio.io/v1alpha2
 kind: metric
 metadata:
-  name: {{ .Values.revision.metrics.requestCountName | quote }}
-  namespace: {{ .Values.global.istio.namespace | quote }}
-  labels: {{ include "labels" . | nindent 4 }}
-    app: {{ .Values.revision.metrics.requestCountName | quote }}
+  labels: {{ include "labels" . | nindent 4 }} {{ "serving.knative.dev/release: \"devel\"" | nindent 4 }} {{ cat "app:" .Chart.Name | nindent 4 }}
+  name: revisionrequestcount
+  namespace: istio-system
 spec:
   dimensions:
-    destination_configuration: destination.labels["serving.knative.dev/configuration"]
-      | "unknown"
+    destination_configuration: destination.labels["serving.knative.dev/configuration"] | "unknown"
     destination_k8s_service: destination.service | "unknown"
     destination_namespace: destination.namespace | "unknown"
     destination_revision: destination.labels["serving.knative.dev/revision"] | "unknown"
@@ -17,5 +14,4 @@ spec:
     response_code: response.code | 200
     source_k8s_service: source.service | "unknown"
   monitored_resource_type: '"UNSPECIFIED"'
-  value: "1"
----
+  value: '1'

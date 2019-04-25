@@ -9,73 +9,29 @@ This chart is a subchart of Knative Monitoring. It installs Elasticsearch loggin
 
 ## Chart Details
 
-- Internal Services:
-    - elasticsearch-logging, fluentd-ds, kibana-logging
+In its default configuration, this chart will create the following Kubernetes resources:
 
-- Knative Elasticsearch Pods:
-    - Deployments: kibana-logging
-    - StatefulSet: elasticsearch-logging
-    - DaemonSet: fluentd-ds
-
-## Prerequisites
-
-- Requires kubectl v1.10+.
-- Knative requires a Kubernetes cluster v1.10 or newer with the
-[MutatingAdmissionWebhook admission controller](https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/#how-do-i-turn-on-an-admission-controller)
-enabled.
-- Create a namespace called `knative-monitoring`.
-- Istio - You should have Istio installed on your Kubernetes cluster. If you do not have it installed already you can do so by running the following command:
-```bash
-$ kubectl apply --filename https://raw.githubusercontent.com/knative/serving/v0.2.3/third_party/istio-1.0.2/istio.yaml
-```
-or following these steps:
-[Installing istio](https://github.com/knative/docs/blob/master/install/Knative-with-any-k8s.md#installing-istio)
-
-## Installing the Chart
-
-Please ensure that you have reviewed the [prerequisites](#prerequisites).
-To install the chart using helm cli:
-
-Install Knative elasticsearch for monitoring
-```
-$ helm install ./knative/charts/serving/charts/monitoring/charts/elasticsearch
-```
+- Elasticsearch logging for Knative Monitoring:
+    - Deployments: kibana-logging, activator, autoscaler, controller, webhook
+    - Service: elasticsearch-logging, fluentd-ds, kibana-logging, activator-service, autoscaler, controller, webhook
+    - StatefulSet: elasticsearch-logging, fluentd-ds
+    - Gateway: cluster-local-gateway, knative-ingress-gateway
+    - ServiceAccount: elasticsearch-logging, fluentd-ds, controller
 
 ### Configuration
 
-[Values.yaml](./values.yaml) outlines the configuration options that are supported by this chart.
+| Parameter                                  | Description                              | Default |
+|--------------------------------------------|------------------------------------------|---------|
+| `serving.monitoring.elasticsearch.enabled` | Enable/Disable Elasticsearch Logging     | `true`    |
+| `serving.monitoring.elasticsearch.elasticsearchLogging.elasticsearchLoggingInit.image` | Elasticsearch Logging Init Image | alpine:3.6 |
+| `serving.monitoring.elasticsearch.elasticsearchLogging.image`   | Elasticsearch Image | k8s.gcr.io/elasticsearch:v5.6.4  |
+| `serving.monitoring.elasticsearch.elasticsearchLogging.replicas` | Elasticsearch Replicas | 2     |
+| `serving.monitoring.elasticsearch.fluentdDs.image` | Fluentd Image                    | k8s.gcr.io/fluentd-elasticsearch:v2.0.4 |
+| `serving.monitoring.elasticsearch.kibanaLogging.image` | Kibana Image                 | docker.elastic.co/kibana/kibana:5.6.4 |
+| `serving.monitoring.elasticsearch.kibanaLogging.replicas` | Kibana Replicas           | 1         |
+| `serving.monitoring.elasticsearch.kibanaLogging.type` | Kibana Ingress Type           | NodePort  |
 
-### Verifying the Chart
+Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
-To verify all Pods are running, try:
-```bash
-$ helm status <my-release> [--tls]
-```
-
-## Uninstalling the Chart
-
-To uninstall/delete the deployment:
-
-```bash
-$ helm delete <my-release> --purge [--tls]
-```
-
-The command removes all the Kubernetes components associated with the chart and deletes the release.
-
-## Limitations
-
-You must use `knative-monitoring` namespace to install Knative monitoring.
-
-## Documentation
-
-To learn more about Knative in general, see the [Overview](https://github.com/knative/docs/blob/master/README.md).
-
-# Support
-
-If you're a developer, operator, or contributor trying to use Knative, the
-following resources are available for you:
-
-- [Knative Users](https://groups.google.com/forum/#!forum/knative-users)
-- [Knative Developers](https://groups.google.com/forum/#!forum/knative-dev)
-
-For contributors to Knative, we also have [Knative Slack](https://slack.knative.dev).
+## Additional Information
+For further information see the top level Knative chart.

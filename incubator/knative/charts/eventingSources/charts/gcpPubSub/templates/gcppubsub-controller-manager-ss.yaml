@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels: {{ include "labels" . | nindent 4 }} {{ "control-plane: \"gcppubsub-controller-manager\"" | nindent 4 }} {{ cat "app:" .Chart.Name | nindent 4 }}
+  name: gcppubsub-controller-manager
+  namespace: knative-sources
+spec:
+  selector:
+    matchLabels:
+      control-plane: gcppubsub-controller-manager
+  serviceName: gcppubsub-controller-manager
+  template:
+    metadata:
+      labels: {{ include "noVersionlabels" . | nindent 8 }} {{ "control-plane: \"gcppubsub-controller-manager\"" | nindent 8 }} {{ cat "app:" .Chart.Name | nindent 8 }}
+    spec:
+      containers:
+      - env:
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: /var/secrets/google/key.json
+        - name: GCPPUBSUB_RA_IMAGE
+          value: gcr.io/knative-releases/github.com/knative/eventing-sources/contrib/gcppubsub/cmd/receive_adapter@sha256:b872fe238f2d586a246788f0b97087c0d9f972b33e4687a22a7898c5accdc664
+        image: {{ .Values.gcppubsubControllerManager.manager.image }}
+        name: manager
+        resources:
+          limits:
+            cpu: 100m
+            memory: 30Mi
+          requests:
+            cpu: 20m
+            memory: 20Mi
+        volumeMounts:
+        - mountPath: /var/secrets/google
+          name: google-cloud-key
+      serviceAccount: gcppubsub-controller-manager
+      serviceAccountName: gcppubsub-controller-manager
+      terminationGracePeriodSeconds: 10
+      volumes:
+      - name: google-cloud-key
+        secret:
+          secretName: gcppubsub-source-key

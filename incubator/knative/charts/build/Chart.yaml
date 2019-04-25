@@ -1,12 +1,12 @@
 apiVersion: v1
-appVersion: "0.2.0"
-description: A Helm chart for Kubernetes
-name: build
-version: 0.1.0
-icon: https://raw.githubusercontent.com/knative/docs/master/images/logo/rgb/knative-logo-rgb.jpg
-kubeVersion: ">=1.10.3"
-tillerVersion: ">=2.10.0"
+appVersion: 0.5.0
+description: Knative Build Helm Chart for Kubernetes
+icon: https://raw.githubusercontent.com/knative/docs/master/docs/images/logo/rgb/knative-logo-rgb.jpg
 keywords:
-  - amd64
-  - build
-  - OpenSource
+- amd64
+- ICP
+- OpenSource
+kubeVersion: '>=1.10.3'
+name: build
+tillerVersion: '>=2.9.1'
+version: 0.2.0

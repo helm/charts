@@ -1,0 +1,12 @@
+apiVersion: v1
+appVersion: 0.5.0
+description: Knative Eventing Kafka Provisioner Helm Chart for Kubernetes
+icon: https://raw.githubusercontent.com/knative/docs/master/docs/images/logo/rgb/knative-logo-rgb.jpg
+keywords:
+- amd64
+- ICP
+- OpenSource
+kubeVersion: '>=1.10.3'
+name: kafkaProvisioner
+tillerVersion: '>=2.9.1'
+version: 0.2.0

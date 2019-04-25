@@ -1,0 +1,29 @@
+apiVersion: config.istio.io/v1alpha2
+kind: logentry
+metadata:
+  labels: {{ include "labels" . | nindent 4 }} {{ "serving.knative.dev/release: \"devel\"" | nindent 4 }} {{ cat "app:" .Chart.Name | nindent 4 }}
+  name: requestlog
+  namespace: istio-system
+spec:
+  monitored_resource_type: '"UNSPECIFIED"'
+  severity: '"Info"'
+  timestamp: request.time
+  variables:
+    destinationConfiguration: destination.labels["serving.knative.dev/configuration"] | "unknown"
+    destinationK8sService: destination.service | ""
+    destinationNamespace: destination.namespace | ""
+    destinationRevision: destination.labels["serving.knative.dev/revision"] | "unknown"
+    destinationService: destination.labels["serving.knative.dev/service"] | "unknown"
+    latency: response.duration | "0ms"
+    method: request.method | ""
+    protocol: request.scheme | "http"
+    referer: request.referer | "unknown"
+    requestHost: request.host | ""
+    requestSize: request.size | 0
+    responseCode: response.code | 0
+    responseSize: response.size | 0
+    sourceK8sService: source.service | "unknown"
+    sourceNamespace: source.namespace | "unknown"
+    traceId: request.headers["x-b3-traceid"] | "unknown"
+    url: request.path | ""
+    userAgent: request.useragent | "unknown"

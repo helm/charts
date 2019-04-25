@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels: {{ include "labels" . | nindent 4 }} {{ cat "app:" .Chart.Name | nindent 4 }}
+  name: eventing-controller
+  namespace: knative-eventing
+spec:
+  replicas: {{ .Values.eventingController.replicas }}
+  selector:
+    matchLabels:
+      app: eventing-controller
+  template:
+    metadata:
+      labels: {{ include "noVersionlabels" . | nindent 8 }} {{ "app: \"eventing-controller\"" | nindent 8 }}
+    spec:
+      containers:
+      - args:
+        - -logtostderr
+        - -stderrthreshold
+        - INFO
+        env:
+        - name: SYSTEM_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: CONFIG_LOGGING_NAME
+          value: config-logging
+        - name: BROKER_INGRESS_IMAGE
+          value: gcr.io/knative-releases/github.com/knative/eventing/cmd/broker/ingress@sha256:de17315b7811477df9630c25ec69026bcaad431356ddfca307103fc033eef2f5
+        - name: BROKER_INGRESS_SERVICE_ACCOUNT
+          value: default
+        - name: BROKER_FILTER_IMAGE
+          value: gcr.io/knative-releases/github.com/knative/eventing/cmd/broker/filter@sha256:a488b9ce224c56bdad9099fd1cff95f4949db1b606357394bd72a64ed1fc5de8
+        - name: BROKER_FILTER_SERVICE_ACCOUNT
+          value: eventing-broker-filter
+        image: {{ .Values.eventingController.image }}
+        name: eventing-controller
+        ports:
+        - containerPort: 9090
+          name: metrics
+        resources:
+          limits:
+            memory: 1000Mi
+        terminationMessagePolicy: FallbackToLogsOnError
+        volumeMounts:
+        - mountPath: /etc/config-logging
+          name: config-logging
+      serviceAccountName: eventing-controller
+      volumes:
+      - configMap:
+          name: config-logging
+        name: config-logging

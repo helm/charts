@@ -1,0 +1,8 @@
+apiVersion: v1
+data:
+  key.json: ''
+kind: Secret
+metadata:
+  labels: {{ include "labels" . | nindent 4 }} {{ cat "app:" .Chart.Name | nindent 4 }}
+  name: gcppubsub-source-key
+type: Opaque

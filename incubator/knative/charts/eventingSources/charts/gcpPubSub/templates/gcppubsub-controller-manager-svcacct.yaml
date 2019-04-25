@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels: {{ include "labels" . | nindent 4 }} {{ cat "app:" .Chart.Name | nindent 4 }}
+  name: gcppubsub-controller-manager
+  namespace: knative-sources
+secrets:
+- name: gcppubsub-source-key

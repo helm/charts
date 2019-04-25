@@ -1,11 +1,8 @@
-global:
-  serving:
-    monitoring:
-      elasticsearch:
-        enabled: true
-      prometheus:
-        enabled: true
-      zipkin:
-        enabled: true
-  istio:
-    namespace: "istio-system"
+elasticsearch:
+  enabled: true
+prometheus:
+  enabled: true
+zipkin:
+  enabled: false
+zipkinInMem:
+  enabled: true

@@ -1,0 +1,10 @@
+dependencies:
+- condition: eventingSources.camel.enabled
+  name: camel
+  version: 0.1.0
+- condition: eventingSources.eventDisplay.enabled
+  name: eventDisplay
+  version: 0.1.0
+- condition: eventingSources.gcpPubSub.enabled
+  name: gcpPubSub
+  version: 0.1.0

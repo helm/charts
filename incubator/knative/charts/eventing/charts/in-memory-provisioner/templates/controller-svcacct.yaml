@@ -1,9 +1,0 @@
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: {{ .Values.controller.serviceAccount.name | quote }}
-  namespace: "knative-eventing"
-  labels: {{ include "labels" . | nindent 4 }}
-    app: {{ .Values.controller.name | quote }}
---- 

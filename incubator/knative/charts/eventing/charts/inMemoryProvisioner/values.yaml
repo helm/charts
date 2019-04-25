@@ -1,0 +1,8 @@
+inMemoryChannelController:
+  controller:
+    image: gcr.io/knative-releases/github.com/knative/eventing/pkg/provisioners/inmemory/controller@sha256:3e4287fba1447d82b80b5fd87983609ba670850c4d28499fe7e60fb87d04cc53
+  replicas: 1
+inMemoryChannelDispatcher:
+  dispatcher:
+    image: gcr.io/knative-releases/github.com/knative/eventing/cmd/fanoutsidecar@sha256:f388c5226fb7f29b74038bef5591de05820bcbf7c13e7f5e202f1c5f9d9ab224
+  replicas: 1

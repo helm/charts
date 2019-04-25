@@ -1,17 +1,14 @@
----
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: {{ .Values.kubeStateMetrics.crb.name | quote }}
-  namespace: "knative-monitoring"
-  labels: {{ include "labels" . | nindent 4 }}
-    app: {{ .Values.kubeStateMetrics.crb.name | quote }}
+  labels: {{ include "labels" . | nindent 4 }} {{ cat "app:" .Chart.Name | nindent 4 }}
+  name: kube-state-metrics
+  namespace: knative-monitoring
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: {{ .Values.kubeStateMetrics.cr.name | quote }}
+  name: kube-state-metrics
 subjects:
 - kind: ServiceAccount
-  name: {{ .Values.kubeStateMetrics.svcacct.name | quote }}
-  namespace: "knative-monitoring"
----
+  name: kube-state-metrics
+  namespace: knative-monitoring

@@ -1,44 +1,14 @@
-global:
-  build:
-    namespace: "knative-build"
-
-clusterRole:
-  name: "knative-build-admin"
-
-controller:
-  name: "build-controller"
+buildController:
+  image: gcr.io/knative-releases/github.com/knative/build/cmd/controller@sha256:77b883fec7820bd3219c011796f552f15572a037895fbe7a7c78c7328fd96187
   replicas: 1
-  port: 9090
-  targetPort: 9090
-  serviceAccount:
-    name: "build-controller"
-  image: 
-    repository: "gcr.io/knative-releases/github.com/knative/build/cmd/controller@sha256"
-    tag: "2667d0ff68a406e0103c58145edef916edc1b41695b38964dc6ccb0b38c0aedf"
-    pullPolicy: "IfNotPresent"
-
-credsImage:
-  repository: "gcr.io/knative-releases/github.com/knative/build/cmd/creds-init@sha256"
-  tag: "c1c11fafd337f62eea18a1f02b78e6ae6949779bed72d53d19b2870723a8f104"
-
-gitImage:
-  repository: "gcr.io/knative-releases/github.com/knative/build/cmd/git-init@sha256"
-  tag: "6fa8043ed114920cd61e28db3c942647ba48415fe1208acde2fb2ac0746c9164"
-
-nopImage:
-  repository: "gcr.io/knative-releases/github.com/knative/build/cmd/nop@sha256"
-  tag: "f94e6413749759bc3f80d33e76c36509d6a63f7b206d2ca8fff167a0bb9c77f2"
-
-fetcherImage:
-  repository: "gcr.io/cloud-builders/gcs-fetcher"
-
-webhook:
-  name: "build-webhook"
+buildWebhook:
+  image: gcr.io/knative-releases/github.com/knative/build/cmd/webhook@sha256:488920f65763374a2886860e3b06c3b614ee685b68ec4fdbbcd08d849bb84b71
   replicas: 1
-  port: 443
-  targetPort: 443
-  image:
-    repository: "gcr.io/knative-releases/github.com/knative/build/cmd/webhook@sha256"
-    tag: "58775663a5bc0d782c8505a28cc88616a5e08115959dc62fa07af5ad76c54a97"
-    pullPolicy: "IfNotPresent"
-
+credsInit:
+  image: gcr.io/knative-releases/github.com/knative/build/cmd/creds-init@sha256:ebf58f848c65c50a7158a155db7e0384c3430221564c4bbaf83e8fbde8f756fe
+gcsFetcher:
+  image: gcr.io/cloud-builders/gcs-fetcher
+gitInit:
+  image: gcr.io/knative-releases/github.com/knative/build/cmd/git-init@sha256:09f22919256ba4f7451e4e595227fb852b0a55e5e1e4694cb7df5ba0ad742b23
+nop:
+  image: gcr.io/knative-releases/github.com/knative/build/cmd/nop@sha256:a318ee728d516ff732e2861c02ddf86197e52c6288049695781acb7710c841d4
