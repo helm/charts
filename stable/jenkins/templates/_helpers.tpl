@@ -53,3 +53,14 @@ Create the name of the service account to use
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Create the name of the service account for Jenkins agents to use
+*/}}
+{{- define "jenkins.serviceAccountAgentName" -}}
+{{- if .Values.serviceAccountAgent.create -}}
+    {{ default (printf "%s-%s" (include "jenkins.fullname" .) "agent") .Values.serviceAccountAgent.name }}
+{{- else -}}
+    {{ default "default" .Values.serviceAccountAgent.name }}
+{{- end -}}
+{{- end -}}

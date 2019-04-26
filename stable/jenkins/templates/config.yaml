@@ -44,8 +44,9 @@ data:
               <inheritFrom></inheritFrom>
               <name>{{ .Values.agent.podName }}</name>
               <instanceCap>2147483647</instanceCap>
-              <idleMinutes>0</idleMinutes>
+              <idleMinutes>{{ .Values.agent.idleMinutes }}</idleMinutes>
               <label>{{ .Release.Name }}-{{ .Values.agent.componentName }} {{ .Values.agent.customJenkinsLabels  | join " " }}</label>
+              <serviceAccount>{{ include "jenkins.serviceAccountAgentName" . }}</serviceAccount>
               <nodeSelector>
                 {{- $local := dict "first" true }}
                 {{- range $key, $value := .Values.agent.nodeSelector }}
