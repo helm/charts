@@ -22,7 +22,7 @@ spec:
         release: {{ .Release.Name }}
       {{- if .Values.annotations }}
       annotations:
-      {{ toYaml .Values.annotations | indent 4 }}
+{{ toYaml .Values.annotations | indent 4 }}
       {{- end }} 
     spec:
       containers:
