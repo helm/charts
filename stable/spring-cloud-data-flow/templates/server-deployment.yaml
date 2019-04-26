@@ -60,6 +60,8 @@ spec:
           value: 'false'
         - name: SPRING_CLOUD_KUBERNETES_SECRETS_ENABLE_API
           value: 'true'
+        - name: SPRING_CLOUD_DATAFLOW_FEATURES_SCHEDULES_ENABLED
+          value: 'true'
         - name: SPRING_CLOUD_KUBERNETES_SECRETS_PATHS
           value: /etc/secrets
         - name: SPRING_CLOUD_KUBERNETES_CONFIG_NAME
