@@ -36,14 +36,42 @@ data:
 
     echo "No configuration found in cruise-config.xml. Using default preconfigure_server scripts to configure server" >> /godata/logs/preconfigure.log
 
+    echo "Trying to configure cluster profile." >> /godata/logs/preconfigure.log
+
+    (curl --fail -i 'http://localhost:8153/go/api/admin/elastic/cluster_profiles' \
+      -H'Accept: application/vnd.go.cd.v1+json'  \
+      -H 'Content-Type: application/json' \
+      -X POST -d '{
+        "id": "k8-cluster-profile",
+        "plugin_id": "cd.go.contrib.elasticagent.kubernetes",
+        "properties": [
+              {
+                "key": "go_server_url",
+                "value": "https://{{ template "gocd.fullname" . }}-server:{{ .Values.server.service.httpsPort }}/go"
+            },
+            {
+                "key": "kubernetes_cluster_url",
+                "value": "https://'$KUBERNETES_SERVICE_HOST':'$KUBERNETES_SERVICE_PORT_HTTPS'"
+              },
+              {
+                "key": "namespace",
+                "value": "{{ .Release.Namespace }}"
+              },
+              {
+                "key": "security_token",
+                "value": "'$KUBE_TOKEN'"
+              }
+          ]
+      }' >> /godata/logs/preconfigure.log)
+
     echo "Trying to create an elastic profile now." >> /godata/logs/preconfigure.log
 
     (curl --fail -i 'http://localhost:8153/go/api/elastic/profiles' \
-      -H 'Accept: application/vnd.go.cd.v1+json' \
+      -H 'Accept: application/vnd.go.cd.v2+json' \
       -H 'Content-Type: application/json' \
       -X POST -d '{
         "id": "demo-app",
-        "plugin_id": "cd.go.contrib.elasticagent.kubernetes",
+        "cluster_profile_id": "k8-cluster-profile",
         "properties": [
           {
             "key": "Image",
@@ -60,33 +88,6 @@ data:
           {
             "key": "Privileged",
             "value": "true"
-          }
-        ]
-      }' >> /godata/logs/preconfigure.log)
-
-    echo "Trying to configure plugin settings." >> /godata/logs/preconfigure.log
-
-    (curl --fail -i 'http://localhost:8153/go/api/admin/plugin_settings' \
-      -H 'Accept: application/vnd.go.cd.v1+json' \
-      -H 'Content-Type: application/json' \
-      -X POST -d '{
-        "plugin_id": "cd.go.contrib.elasticagent.kubernetes",
-        "configuration": [
-          {
-            "key": "go_server_url",
-            "value": "https://{{ template "gocd.fullname" . }}-server:{{ .Values.server.service.httpsPort }}/go"
-          },
-          {
-            "key": "kubernetes_cluster_url",
-            "value": "https://'$KUBERNETES_SERVICE_HOST':'$KUBERNETES_SERVICE_PORT_HTTPS'"
-          },
-          {
-            "key": "namespace",
-            "value": "{{ .Release.Namespace }}"
-          },
-          {
-            "key": "security_token",
-            "value": "'$KUBE_TOKEN'"
           }
         ]
       }' >> /godata/logs/preconfigure.log)
