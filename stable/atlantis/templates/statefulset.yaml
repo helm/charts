@@ -77,6 +77,9 @@ spec:
           {{- if .Values.allowForkPRs }}
             - --allow-fork-prs
           {{- end }}
+          {{- if .Values.defaultTFVersion }}
+            - --default-tf-version={{ .Values.defaultTFVersion }}
+          {{- end }}
           ports:
           - name: atlantis
             containerPort: 4141
