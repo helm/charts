@@ -175,6 +175,7 @@ Some third-party systems, e.g. GitHub, use HTML-formatted data in their payload 
 | `agent.containerCap`       | Maximum number of agent                         | 10                     |
 | `agent.podName`            | slave Pod base name                             | Not set                |
 | `agent.idleMinutes`        | Allows the Pod to remain active for reuse       | 0                      |
+| `agent.yamlTemplate`       | The raw yaml of a Pod API Object to merge into the agent spec | Not set                |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
