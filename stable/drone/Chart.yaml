@@ -1,7 +1,7 @@
 name: drone
 home: https://drone.io/
 icon: https://drone.io/apple-touch-icon.png
-version: 2.0.0-rc.8
+version: 2.0.0-rc.10
 appVersion: 1.0.0-rc.5
 description: Drone is a Continuous Delivery system built on container technology
 keywords:

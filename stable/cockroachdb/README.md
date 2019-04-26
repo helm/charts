@@ -104,6 +104,7 @@ The following table lists the configurable parameters of the CockroachDB chart a
 | `Locality`                     | Locality attribute for this deployment           | `""`                                      |
 | `ExtraArgs`                    | Additional command-line arguments                | `[]`                                      |
 | `ExtraSecretMounts`            | Additional secrets to mount at cluster members   | `[]`                                      |
+| `ExtraEnvArgs`                 | Allows to set extra ENV args                     | `[]`                                      |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 

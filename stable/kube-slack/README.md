@@ -24,7 +24,9 @@ $ helm delete my-release
 
 ## Configuration
 
-All configuration parameters are listed in [`values.yaml`](values.yaml). It is required to set the `slackUrl` value.
+All configuration parameters are listed in [`values.yaml`](values.yaml).
+
+The environment values passed to kube-slack can be described in `envVars` parameter. At a minimum, the `envVars.SLACK_URL` value must be set.
 
 ## RBAC
 By default the chart will install the recommended RBAC roles and rolebindings.
