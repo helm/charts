@@ -61,9 +61,9 @@ The following table lists the configurable parameters of the elasticsearch chart
 
 |              Parameter               |                             Description                             |                       Default                       |
 | ------------------------------------ | ------------------------------------------------------------------- | --------------------------------------------------- |
-| `appVersion`                         | Application Version (Elasticsearch)                                 | `6.6.2`                                             |
+| `appVersion`                         | Application Version (Elasticsearch)                                 | `6.7.0`                                             |
 | `image.repository`                   | Container image name                                                | `docker.elastic.co/elasticsearch/elasticsearch-oss` |
-| `image.tag`                          | Container image tag                                                 | `6.6.2`                                             |
+| `image.tag`                          | Container image tag                                                 | `6.7.0`                                             |
 | `image.pullPolicy`                   | Container pull policy                                               | `IfNotPresent`                                      |
 | `initImage.repository`               | Init container image name                                           | `busybox`                                           |
 | `initImage.tag`                      | Init container image tag                                            | `latest`                                            |
@@ -86,6 +86,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `client.tolerations`                 | Client tolerations                                                  | `[]`                                                |
 | `client.serviceAnnotations`          | Client Service annotations                                          | `{}`                                                |
 | `client.serviceType`                 | Client service type                                                 | `ClusterIP`                                         |
+| `client.httpNodePort`                | Client service HTTP NodePort port number. Has no effect if client.serviceType is not `NodePort`.   | `nil`                                         |
 | `client.loadBalancerIP`              | Client loadBalancerIP                                               | `{}`                                                |
 | `client.loadBalancerSourceRanges`    | Client loadBalancerSourceRanges                                     | `{}`                                                |
 | `client.antiAffinity`                | Client anti-affinity policy                                         | `soft`                                              |
@@ -98,6 +99,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `client.ingress.annotations`         | Client Ingress annotations                                          | `{}`                                                |
 | `client.ingress.hosts`               | Client Ingress Hostnames                                            | `[]`                                                |
 | `client.ingress.tls`                 | Client Ingress TLS configuration                                    | `[]`                                                |
+| `client.exposeTransportPort`         | Expose transport port 9300 on client service (ClusterIP)            | `false`                                             |
 | `master.initResources`               | Master initContainer resources requests & limits                    | `{}`                                                |
 | `master.additionalJavaOpts`          | Parameters to be added to `ES_JAVA_OPTS` environment variable for master | `""`                                           |
 | `master.exposeHttp`                  | Expose http port 9200 on master Pods for monitoring, etc            | `false`                                             |
@@ -118,6 +120,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `master.readinessProbe`              | Master container readiness probes                                   | see `values.yaml` for defaults                      |
 | `master.antiAffinity`                | Master anti-affinity policy                                         | `soft`                                              |
 | `master.nodeAffinity`                | Master node affinity policy                                         | `{}`                                                |
+| `master.podManagementPolicy`         | Master pod creation strategy                                        | `OrderedReady`                                      |
 | `master.updateStrategy`              | Master node update strategy policy                                  | `{type: "onDelete"}`                                |
 | `data.initResources`                 | Data initContainer resources requests & limits                      | `{}`                                                |
 | `data.additionalJavaOpts`            | Parameters to be added to `ES_JAVA_OPTS` environment variable for data | `""`                                             |
@@ -139,6 +142,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `data.terminationGracePeriodSeconds` | Data termination grace period (seconds)                             | `3600`                                              |
 | `data.antiAffinity`                  | Data anti-affinity policy                                           | `soft`                                              |
 | `data.nodeAffinity`                  | Data node affinity policy                                           | `{}`                                                |
+| `data.podManagementPolicy`           | Data pod creation strategy                                          | `OrderedReady`                                      |
 | `data.updateStrategy`                | Data node update strategy policy                                    | `{type: "onDelete"}`                                |
 | `sysctlInitContainer.enabled`        | If true, the sysctl init container is enabled (does not stop extraInitContainers from running) | `true`                                              |
 | `extraInitContainers`                | Additional init container passed through the tpl                    | ``                                                  |
@@ -150,6 +154,8 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `serviceAccounts.master.name`        | Name of the master service account to use or create                 | `{{ elasticsearch.master.fullname }}`               |
 | `serviceAccounts.data.create`        | If true, create the data service account                            | `true`                                              |
 | `serviceAccounts.data.name`          | Name of the data service account to use or create                   | `{{ elasticsearch.data.fullname }}`                 |
+| `testFramework.image`                | `test-framework` image repository.                                  | `dduportal/bats`                                    |
+| `testFramework.tag`                  | `test-framework` image tag.                                         | `0.4.0`                                             |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
