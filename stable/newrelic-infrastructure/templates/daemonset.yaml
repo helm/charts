@@ -1,5 +1,5 @@
-{{- if and .Values.licenseKey .Values.cluster }}
-apiVersion: apps/v1beta2
+{{- if and .Values.licenseSecret .Values.cluster }}
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   labels: {{ include "newrelic.labels" . | indent 4 }}
@@ -9,7 +9,7 @@ spec:
     type: {{ .Values.updateStrategy }}
   selector:
     matchLabels:
-      app: {{ template "newrelic.name" . }}
+      app.kubernetes.io/name: {{ template "newrelic.name" . }}
       release: {{.Release.Name }}
   template:
     metadata:
@@ -17,9 +17,7 @@ spec:
       annotations:
 {{ toYaml .Values.podAnnotations | indent 8}}
     {{- end }}
-      labels:
-        app: {{ template "newrelic.name" . }}
-        release: {{.Release.Name }}
+      labels: {{ include "newrelic.labels" . | indent 8 }}
         {{- if .Values.podLabels}}
         {{ toYaml .Values.podLabels }}
         {{- end }}
@@ -35,7 +33,7 @@ spec:
             - name: NRIA_LICENSE_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "newrelic.fullname" . }}-config
+                  name: {{ .Values.licenseSecret }}
                   key: license
             - name: "CLUSTER_NAME"
               value: "{{ .Values.cluster }}"
@@ -88,6 +86,20 @@ spec:
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           {{- end }}
+          livenessProbe:
+            exec:
+              command:
+                - /usr/bin/newrelic-infra
+                - --version
+            initialDelaySeconds: 30
+            periodSeconds: 30
+          readinessProbe:
+            exec:
+              command:
+                - /usr/bin/newrelic-infra
+                - --version
+            initialDelaySeconds: 30
+            periodSeconds: 30
       volumes:
         - name: dev
           hostPath:
