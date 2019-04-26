@@ -104,7 +104,7 @@ image:
 #        steps: [apply]
 
 # allowForkPRs
-# allowForkPRs: false
+allowForkPRs: false
 
 # defaultTFVersion set the default terraform version to be used in atlantis server
 # defaultTFVersion: v0.12.0
