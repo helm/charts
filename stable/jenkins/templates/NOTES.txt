@@ -1,9 +1,9 @@
 1. Get your '{{ .Values.master.adminUser }}' user password by running:
   printf $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "jenkins.fullname" . }} -o jsonpath="{.data.jenkins-admin-password}" | base64 --decode);echo
 
-{{- if .Values.master.hostName }}
+{{- if .Values.master.ingress.hostName }}
 
-2. Visit http://{{ .Values.master.hostName }}
+2. Visit http://{{ .Values.master.ingress.hostName }}
 {{- else }}
 2. Get the Jenkins URL to visit by running these commands in the same shell:
 {{- if contains "NodePort" .Values.master.serviceType }}
@@ -27,7 +27,7 @@
 
 3. Login with the password from step 1 and the username: {{ .Values.master.adminUser }}
 {{ if .Values.master.JCasC.enabled }}
-4. Use Jenkins Configuration as Code by specifying configScripts in your values.yaml file, see documentation: http://{{ .Values.master.hostName }}/configuration-as-code and examples: https://github.com/jenkinsci/configuration-as-code-plugin/tree/master/demos
+4. Use Jenkins Configuration as Code by specifying configScripts in your values.yaml file, see documentation: http://{{ .Values.master.ingress.hostName }}/configuration-as-code and examples: https://github.com/jenkinsci/configuration-as-code-plugin/tree/master/demos
 {{- end }}
 
 For more information on running Jenkins on Kubernetes, visit:
