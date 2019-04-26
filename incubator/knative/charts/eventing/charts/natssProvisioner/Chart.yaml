@@ -6,7 +6,7 @@ keywords:
 - amd64
 - ICP
 - OpenSource
-kubeVersion: '>=1.10.3'
+kubeVersion: '>=1.11.0'
 name: natssProvisioner
 tillerVersion: '>=2.9.1'
 version: 0.2.0
