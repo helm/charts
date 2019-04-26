@@ -40,8 +40,8 @@ Disabling a chart will disable all charts below it in the chart structure. When 
 enabled.
 - Istio - You should have Istio installed on your Kubernetes cluster. If you do not have it installed already you can do so by running the following commands:
 ```bash
-$ kubectl apply --filename https://github.com/knative/serving/releases/download/v0.5.1/istio-crds.yaml
-$ kubectl apply --filename https://github.com/knative/serving/releases/download/v0.5.1/istio.yaml
+$ kubectl apply --filename https://github.com/knative/serving/releases/download/v0.5.2/istio-crds.yaml
+$ kubectl apply --filename https://github.com/knative/serving/releases/download/v0.5.2/istio.yaml
 ```
 or by following these steps:
 [Installing Istio](https://www.knative.dev/docs/install/knative-with-any-k8s/#installing-istio)
