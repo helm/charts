@@ -103,7 +103,7 @@ image:
 #      apply:
 #        steps: [apply]
 
-# allowForkPRs
+# allowForkPRs enables atlantis to run on a fork Pull Requests
 allowForkPRs: false
 
 ## defaultTFVersion set the default terraform version to be used in atlantis server
