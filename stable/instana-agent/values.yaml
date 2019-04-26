@@ -1,0 +1,74 @@
+# name is the value which will be used as the base resource name for various resources associated with the agent.
+# name: instana-agent
+
+zone:
+  # zone.name is the uniquely-identifiable name by which your cluster will be known inside Instana.
+  name: null
+
+agent:
+  # agent.key is the secret token which your agent uses to authenticate to Instana's servers.
+  key: null
+  # agent.mode is used to set agent mode and it can be APM, INFRASTRUCTURE or AWS
+  # mode: APM
+  # agent.downloadKey is optional, if used it doesn't have to match agent.key
+  # downloadKey: null
+  # agent.listenAddress is the IP address the agent HTTP server will listen to.
+  # listenAddress: *
+  # agent.leaderElectorPort is the port on which the leader elector sidecar is exposed.
+  leaderElectorPort: 42655
+
+  # agent.endpointHost is the hostname of the Instana server your agents will connect to.
+  endpointHost: saas-us-west-2.instana.io
+  # agent.endpointPort is the port number (as a String) of the Instana server your agents will connect to.
+  endpointPort: 443
+
+  image:
+    # agent.image.name is the name of the container image of the Instana agent.
+    name: instana/agent
+    # agent.image.tag is the tag name of the agent container image.
+    tag: 1.0.17
+    # agent.image.pullPolicy specifies when to pull the image container.
+    pullPolicy: IfNotPresent
+
+  pod:
+    # agent.pod.annotations are additional annotations to be added to the agent pods.
+    annotations: {}
+
+    # agent.pod.tolerations are tolerations to influence agent pod assignment.
+    #   https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+    tolerations: []
+
+    requests:
+      # agent.pod.requests.memory is the requested memory allocation in MiB for the agent pods.
+      memory: 512
+      # agent.pod.requests.cpu are the requested CPU units allocation for the agent pods.
+      cpu: 0.5
+    limits:
+      # agent.pod.limits.memory set the memory allocation limits in MiB for the agent pods.
+      memory: 512
+      # agent.pod.limits.cpu sets the CPU units allocation limits for the agent pods.
+      cpu: 1.5
+
+  # agent.proxyHost sets the INSTANA_AGENT_PROXY_HOST environment variable.
+  # proxyHost: null
+  # agent.proxyPort sets the INSTANA_AGENT_PROXY_PORT environment variable.
+  # proxyPort: null
+  # agent.proxyProtocol sets the INSTANA_AGENT_PROXY_PROTOCOL environment variable.
+  # proxyProtocol: null
+  # agent.proxyUser sets the INSTANA_AGENT_PROXY_USER environment variable.
+  # proxyUser: null
+  # agent.proxyPassword sets the INSTANA_AGENT_PROXY_PASSWORD environment variable.
+  # proxyPassword: null
+  # agent.proxyUseDNS sets the INSTANA_AGENT_PROXY_USE_DNS environment variable.
+  # proxyUseDNS: null
+
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  # name: instana-agent
