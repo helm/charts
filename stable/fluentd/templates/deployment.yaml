@@ -55,6 +55,9 @@ spec:
           - name: {{ $key | quote }}
             value: {{ $value | quote }}
           {{- end }}
+          {{- if .Values.extraEnvVars }}
+{{ toYaml .Values.extraEnvVars | indent 10 }}
+          {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 12 }}
         ports:
