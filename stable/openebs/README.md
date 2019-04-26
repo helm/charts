@@ -51,7 +51,7 @@ The following table lists the configurable parameters of the OpenEBS chart and t
 | `snapshotOperator.controller.imageTag`  | Image Tag for Snapshot Controller             | `0.8.2`                                   |
 | `snapshotOperator.replicas`             | Number of Snapshot Operator Replicas          | `1`                                       |
 | `ndm.image`                             | Image for Node Disk Manager                   | `quay.io/openebs/openebs/node-disk-manager-amd64` |
-| `ndm.imageTag`                          | Image Tag for Node Disk Manager               | `v0.3.4`                                  |
+| `ndm.imageTag`                          | Image Tag for Node Disk Manager               | `v0.3.5`                                  |
 | `ndm.sparse.enabled`                    | Create Sparse files and cStor Sparse Pool     | `true`                                    |
 | `ndm.sparse.path`                       | Directory where Sparse files are created      | `/var/openebs/sparse`                     |
 | `ndm.sparse.size`                       | Size of the sparse file in bytes              | `10737418240`                             |
