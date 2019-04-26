@@ -74,7 +74,19 @@ The following tables lists the configurable parameters of this chart and their d
 | `ingress.paths`                                   |                                                               | `[]`                                                        |
 | `ingress.hosts`                                   |                                                               | `[]`                                                        |
 | `ingress.tls`                                     |                                                               | `[]`                                                        |
-| `securityContext.allowPrivilegeEscalation`	    | Create & use Pod Security Policy resources                    | `true`						                              |
+| `livenessProbe.enabled`                           | Turn on and off liveness probe                                | `true`                                                      |
+| `livenessProbe.initialDelaySeconds`               | Delay before liveness probe is initiated                      | `30`                                                       |
+| `livenessProbe.periodSeconds`                     | How often to perform the probe                                | `10`                                                        |
+| `livenessProbe.timeoutSeconds`                    | When the probe times out                                      | `2`                                                         |
+| `livenessProbe.successThreshold`                  | Minimum consecutive successes for the probe                   | `1`                                                         |
+| `livenessProbe.failureThreshold`                  | Minimum consecutive failures for the probe                    | `3`                                                         |
+| `readinessProbe.enabled`                          | Turn on and off readiness probe                               | `true`                                                      |
+| `readinessProbe.initialDelaySeconds`              | Delay before readiness probe is initiated                     | `30`                                                        |
+| `readinessProbe.periodSeconds`                    | How often to perform the probe                                | `10`                                                        |
+| `readinessProbe.timeoutSeconds`                   | When the probe times out                                      | `2`                                                         |
+| `readinessProbe.successThreshold`                 | Minimum consecutive successes for the probe                   | `1`                                                         |
+| `readinessProbe.failureThreshold`                 | Minimum consecutive failures for the probe                    | `3`                                                         |
+| `securityContext.allowPrivilegeEscalation`        | Create & use Pod Security Policy resources                    | `true`                                                      |
 | `securitycontext.capabilities.add`                | Collabora needs to run with MKNOD as capabibility             | `[MKNOD]`                                                   |
 | `resources`                                       | Resources required (e.g. CPU, memory)                         | `{}`                                                        |
 | `nodeSelector`                                    | Node labels for pod assignment                                | `{}`                                                        |
