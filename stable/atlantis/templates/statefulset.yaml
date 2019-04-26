@@ -74,12 +74,6 @@ spec:
           {{- end}}
           args:
             - server
-          {{- if .Values.allowForkPRs }}
-            - --allow-fork-prs
-          {{- end }}
-          {{- if .Values.defaultTFVersion }}
-            - --default-tf-version={{ .Values.defaultTFVersion }}
-          {{- end }}
           ports:
           - name: atlantis
             containerPort: 4141
@@ -87,6 +81,14 @@ spec:
           {{- range $key, $value := .Values.environment }}
           - name: {{ $key }}
             value: {{ $value | quote }}
+          {{- end }}
+          {{- if .Values.allowForkPRs }}
+          - name: ATLANTIS_ALLOW_FORK_PRS
+            value: {{ .Values.allowForkPRS }}
+          {{- end }}
+          {{- if .Values.defaultTFVersion }}
+          - name: ATLANTIS_DEFAULT_TF_VERSION
+            value: {{ .Values.defaultTFVersion }}
           {{- end }}
           {{- if .Values.logLevel }}
           - name: ATLANTIS_LOG_LEVEL
