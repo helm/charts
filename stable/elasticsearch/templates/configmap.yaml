@@ -209,12 +209,7 @@ data:
     http () {
         local path="${1}"
         local method="${2:-GET}"
-        if [ -n "${ELASTIC_USERNAME}" ] && [ -n "${ELASTIC_PASSWORD}" ]; then
-          BASIC_AUTH="-u ${ELASTIC_USERNAME}:${ELASTIC_PASSWORD}"
-        else
-          BASIC_AUTH=''
-        fi
-        curl -X${method} -s -k --fail ${BASIC_AUTH} {{ .Values.protocol }}://127.0.0.1:{{ .Values.httpPort }}${path}
+        curl -X${method} -s --fai http://{{ template "elasticsearch.client.fullname" . }}:9200${path}
     }
 
     NODE_NAME=$(awk 'BEGIN {print ENVIRON["node.name"]}')
