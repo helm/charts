@@ -103,6 +103,12 @@ image:
 #      apply:
 #        steps: [apply]
 
+# allowForkPRs enables atlantis to run on a fork Pull Requests
+allowForkPRs: false
+
+## defaultTFVersion set the default terraform version to be used in atlantis server
+# defaultTFVersion: v0.12.0
+
 # We only need to check every 60s since Atlantis is not a high-throughput service.
 livenessProbe:
   enabled: true
