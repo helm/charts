@@ -8,7 +8,7 @@ envVars:
 ## Configuration for the deployment:
 image:
   repository: willwill/kube-slack
-  tag: v3.6.0
+  tag: v4.1.1
   pullPolicy: IfNotPresent
 
 resources: {}
@@ -35,3 +35,7 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+annotations: {}
+  # Specify which annotations must be added to kube-slack pods
+  # fluentbit.io/exclude: true
