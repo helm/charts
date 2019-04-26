@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: sstarcher/helm-exporter
-  tag: 0.1.0
+  tag: 0.3.1
   pullPolicy: Always
 
 nameOverride: ""
