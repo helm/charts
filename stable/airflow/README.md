@@ -89,7 +89,7 @@ airflow:
     HTTPS_PROXY: http://proxy.mycompany.com:1234
 ```
 
-If you are using a private image for your dags (see [Embedded Dags](#embedded-dags)) 
+If you are using a private image for your dags (see [Embedded Dags](#embedded-dags))
 or for use with the KubernetesPodOperator (available in version 1.10.0), then add
 an image pull secret to the airflow config:
 ```yaml
@@ -285,7 +285,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `airflow.executor`                       | the executor to run                                     | `Celery`                  |
 | `airflow.initRetryLoop`                  | max number of retries during container init             |                           |
 | `airflow.image.repository`               | Airflow docker image                                    | `puckel/docker-airflow`   |
-| `airflow.image.tag`                      | Airflow docker tag                                      | `1.10.0-4`                |
+| `airflow.image.tag`                      | Airflow docker tag                                      | `1.10.2`                |
 | `airflow.image.pullPolicy`               | Image pull policy                                       | `IfNotPresent`            |
 | `airflow.image.pullSecret`               | Image pull secret                                       |                           |
 | `airflow.schedulerNumRuns`               | -1 to loop indefinitively, 1 to restart after each exec |                           |
