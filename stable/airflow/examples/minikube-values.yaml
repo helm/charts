@@ -1,7 +1,7 @@
 airflow:
   image:
     repository: puckel/docker-airflow
-    tag: 1.10.0-4
+    tag: 1.10.2
     pullPolicy: IfNotPresent
   service:
     type: NodePort
