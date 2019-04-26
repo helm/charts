@@ -1,7 +1,11 @@
 image:
   repository: "docker.elastic.co/kibana/kibana-oss"
-  tag: "6.6.1"
+  tag: "6.7.0"
   pullPolicy: "IfNotPresent"
+
+testFramework:
+  image: "dduportal/bats"
+  tag: "0.4.0"
 
 commandline:
   args: []
@@ -82,11 +86,13 @@ serviceAccount:
 
 livenessProbe:
   enabled: false
+  path: /status
   initialDelaySeconds: 30
   timeoutSeconds: 10
 
 readinessProbe:
   enabled: false
+  path: /status
   initialDelaySeconds: 30
   timeoutSeconds: 10
   periodSeconds: 10

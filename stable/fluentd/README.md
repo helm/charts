@@ -48,7 +48,7 @@ Parameter | Description | Default
 `output.buffer_queue_limit` | output buffer queue limit | `8`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
 `image.repository` | Image repository | `gcr.io/google-containers/fluentd-elasticsearch`
-`image.tag` | Image tag | `v2.3.1`
+`image.tag` | Image tag | `v2.4.0`
 `imagePullSecrets` | Specify image pull secrets | `nil` (does not add image pull secrets to deployed pods)
 `ingress.enabled` | enable ingress | `false`
 `ingress.labels` | list of labels for the ingress rule | See [values.yaml](values.yaml)
