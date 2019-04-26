@@ -283,6 +283,9 @@ spec:
           value: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}.{{ .Release.Namespace }}.svc.{{ .Values.ClusterDomain }}"
         - name: COCKROACH_CHANNEL
           value: kubernetes-helm
+{{- if .Values.ExtraEnvArgs }}
+{{ toYaml .Values.ExtraEnvArgs | indent 8 }}
+{{- end }}
         volumeMounts:
         - name: datadir
           mountPath: /cockroach/cockroach-data
