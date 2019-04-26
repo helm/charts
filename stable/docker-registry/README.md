@@ -65,7 +65,8 @@ their default values.
 | `swift.authurl`             | Swift authurl                                                                              | `nil`           |
 | `swift.container`           | Swift container                                                                            | `nil`           |
 | `nodeSelector`              | node labels for pod assignment                                                             | `{}`            |
-| `tolerations`               | pod tolerations                                                                            | `[]`            |
+| `tolerations`               | pod tolerations for pod assignment                                                         | `[]`            |
+| `affinity`                  | pod affinity for pod assignment                                                            | `{}`            |
 | `ingress.enabled`           | If true, Ingress will be created                                                           | `false`         |
 | `ingress.annotations`       | Ingress annotations                                                                        | `{}`            |
 | `ingress.labels`            | Ingress labels                                                                             | `{}`            |
