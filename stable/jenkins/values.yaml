@@ -92,7 +92,6 @@ master:
   # Put labels on Jenkins master pod
   podLabels: {}
   # Used to create Ingress record (should used with ServiceType: ClusterIP)
-  # hostName: jenkins.cluster.local
   # nodePort: <to set explicitly, choose port between 30000-32767
   # Enable Kubernetes Liveness and Readiness Probes
   # ~ 2 minutes to allow Jenkins to restart when upgrading plugins. Set ReadinessTimeout to be shorter than LivenessTimeout.
@@ -280,7 +279,8 @@ master:
     # kubernetes.io/tls-acme: "true"
     # Set this path to jenkinsUriPrefix above or use annotations to rewrite path
     # path: "/jenkins"
-    # hostName: jenkins.example.com
+    # configures the hostname e.g. jenkins.example.com
+    hostName:
     tls:
     # - secretName: jenkins.cluster.local
     #   hosts:
