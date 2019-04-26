@@ -21,6 +21,35 @@ To install the chart with the release name `my-release`:
 $ helm install --name my-release stable/jenkins
 ```
 
+## Upgrading an existing Release to a new major version
+
+A major chart version change (like v0.40.0 -> v1.0.0) indicates that there is an incompatible breaking change needing manual actions.
+
+
+### 1.0.0
+
+Breaking changes:
+
+- values have been renamed to follow helm chart best practices for naming conventions so
+  that all variables start with a lowercase letter and words are separated with camelcase
+  https://helm.sh/docs/chart_best_practices/#naming-conventions
+- all resources are now using recommended standard labels
+  https://helm.sh/docs/chart_best_practices/#standard-labels
+
+As a result of the label changes also the selectors of the deployment have been updated.
+Those are immutable so trying an updated will cause an error like:
+
+```
+Error: Deployment.apps "jenkins" is invalid: spec.selector: Invalid value: v1.LabelSelector{MatchLabels:map[string]string{"app.kubernetes.io/component":"jenkins-master", "app.kubernetes.io/instance":"jenkins"}, MatchExpressions:[]v1.LabelSelectorRequirement(nil)}: field is immutable
+```
+
+In order to upgrade, delete the Jenkins Deployment before upgrading:
+
+```
+kubectl delete deploy jenkins
+```
+
+
 ## Configuration
 
 The following tables list the configurable parameters of the Jenkins chart and their default values.
