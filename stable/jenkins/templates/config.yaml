@@ -118,7 +118,7 @@ data:
               <nodeProperties/>
 {{- if .Values.agent.yamlTemplate }}
               <yaml>
-{{ tpl .Values.agent.yamlTemplate . | replace "\"" "&quot;" | indent 4 }}</yaml>
+{{ tpl .Values.agent.yamlTemplate . | html | indent 4 }}</yaml>
 {{- end }}
               <podRetention class="org.csanchez.jenkins.plugins.kubernetes.pod.retention.Default"/>
             </org.csanchez.jenkins.plugins.kubernetes.PodTemplate>
