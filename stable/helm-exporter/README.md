@@ -42,7 +42,7 @@ Parameter | Description | Default
 --- | --- | ---
 `affinity` | affinity configuration for pod assignment | `{}`
 `image.repository` | Image | `sstarcher/helm-exporter`
-`image.tag` | Image tag | `0.1.0`
+`image.tag` | Image tag | `0.3.1`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
 `nodeSelector` | node labels for pod assignment | `{}`
 `resources` | pod resource requests & limits | `{}`
