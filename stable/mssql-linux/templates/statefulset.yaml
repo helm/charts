@@ -1,5 +1,5 @@
 apiVersion: apps/v1beta2
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: {{ template "mssql.fullname" . }}
   labels:
@@ -20,6 +20,7 @@ spec:
     matchLabels:
       app: {{ template "mssql.name" . }}
       release: {{ .Release.Name }}
+  serviceName: {{ template "mssql.fullname" . }}
   template:
     metadata:
       labels:
@@ -35,7 +36,7 @@ spec:
     spec:
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           {{- if .Values.image.pullSecrets }}
           imagePullSecrets:
     {{ toYaml .Values.image.pullSecrets | indent 10 }}
@@ -69,6 +70,8 @@ spec:
               value: /mssql-data/master/mastlog.ldf
             - name: MSSQL_ENABLE_HADR
               value: "{{ .Values.hadr }}"
+            - name: MSSQL_AGENT_ENABLED
+              value: "{{ .Values.agentenabled }}"
             {{ if .Values.resources.limits.memory }}
             - name: MSSQL_MEMORY_LIMIT_MB
               valueFrom:
@@ -104,48 +107,126 @@ spec:
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
     {{- end }}
+      {{- if .Values.persistence.enabled }}
+        {{- if .Values.persistence.existingDataClaim }}
       volumes:
       - name: data
-      {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          {{- if .Values.persistence.existingDataClaim }}
           claimName: {{ .Values.persistence.existingDataClaim }}
-          {{- else }}
-          claimName: {{ template "mssql.fullname" . }}-data
-          {{- end -}}
       {{- else }}
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+        labels:
+          app: "{{ template "mssql.name" . }}"
+          release: {{ .Release.Name | quote }}
+          heritage: "{{ .Release.Service }}"
+      spec:
+        accessModes:
+          - {{ .Values.persistence.dataAccessMode | quote }}
+        resources:
+          requests:
+            storage: {{ .Values.persistence.dataSize | quote }}
+          {{- if .Values.persistence.storageClass }}
+            {{- if (eq "-" .Values.persistence.storageClass) }}
+        storageClassName: ""
+            {{- else }}
+        storageClassName: "{{ .Values.persistence.storageClass }}"
+            {{- end }}
+          {{- end }}
+        {{- end -}}
+      {{- else }}
+      volumes:
+      - name: data
         emptyDir: {}
       {{- end }}
+      {{- if .Values.persistence.enabled }}
+        {{- if .Values.persistence.existingTransactionLogClaim }}
       - name: transactionlog
-      {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          {{- if .Values.persistence.existingTransactionLogClaim }}
           claimName: {{ .Values.persistence.existingTransactionLogClaim }}
-          {{- else }}
-          claimName: {{ template "mssql.fullname" . }}-translog
-          {{- end }}
       {{- else }}
+    - metadata:
+        name: transactionlog
+        labels:
+          app: "{{ template "mssql.name" . }}"
+          release: {{ .Release.Name | quote }}
+          heritage: "{{ .Release.Service }}"
+      spec:
+        accessModes:
+          - {{ .Values.persistence.transactionLogAccessMode | quote }}
+        resources:
+          requests:
+            storage: {{ .Values.persistence.transactionLogSize | quote }}
+          {{- if .Values.persistence.storageClass }}
+            {{- if (eq "-" .Values.persistence.storageClass) }}
+        storageClassName: ""
+            {{- else }}
+        storageClassName: "{{ .Values.persistence.storageClass }}"
+            {{- end }}
+          {{- end }}
+        {{- end -}}
+      {{- else }}
+      - name: transactionlog
         emptyDir: {}
       {{- end }}
+      {{- if .Values.persistence.enabled }}
+        {{- if .Values.persistence.existingBackupClaim }}
       - name: backup
-      {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          {{- if .Values.persistence.existingBackupClaim }}
           claimName: {{ .Values.persistence.existingBackupClaim }}
-          {{- else }}
-          claimName: {{ template "mssql.fullname" . }}-backup
-          {{- end }}
       {{- else }}
+    - metadata:
+        name: backup
+        labels:
+          app: "{{ template "mssql.name" . }}"
+          release: {{ .Release.Name | quote }}
+          heritage: "{{ .Release.Service }}"
+      spec:
+        accessModes:
+          - {{ .Values.persistence.backupAccessMode | quote }}
+        resources:
+          requests:
+            storage: {{ .Values.persistence.backupSize | quote }}
+          {{- if .Values.persistence.storageClass }}
+            {{- if (eq "-" .Values.persistence.storageClass) }}
+        storageClassName: ""
+            {{- else }}
+        storageClassName: "{{ .Values.persistence.storageClass }}"
+            {{- end }}
+          {{- end }}
+        {{- end -}}
+      {{- else }}
+      - name: backup
         emptyDir: {}
       {{- end }}
-      - name: master
       {{- if .Values.persistence.enabled }}
+        {{- if .Values.persistence.existingMasterClaim }}
+      - name: master
         persistentVolumeClaim:
-          {{- if .Values.persistence.existingMasterClaim }}
           claimName: {{ .Values.persistence.existingMasterClaim }}
-          {{- else }}
-          claimName: {{ template "mssql.fullname" . }}-master
-          {{- end }}
       {{- else }}
+    - metadata:
+        name: master
+        labels:
+          app: "{{ template "mssql.name" . }}"
+          release: {{ .Release.Name | quote }}
+          heritage: "{{ .Release.Service }}"
+      spec:
+        accessModes:
+          - {{ .Values.persistence.masterAccessMode | quote }}
+        resources:
+          requests:
+            storage: {{ .Values.persistence.masterSize | quote }}
+          {{- if .Values.persistence.storageClass }}
+            {{- if (eq "-" .Values.persistence.storageClass) }}
+        storageClassName: ""
+            {{- else }}
+        storageClassName: "{{ .Values.persistence.storageClass }}"
+            {{- end }}
+          {{- end }}
+        {{- end -}}
+      {{- else }}
+      - name: master
         emptyDir: {}
       {{- end }}
