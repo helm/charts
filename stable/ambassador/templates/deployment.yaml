@@ -95,10 +95,12 @@ spec:
             - name: STATSD_HOST
               value: "localhost"
             {{- end }}
-            - name: AMBASSADOR_ID
-              value: {{ .Values.ambassador.id | quote }}
+            {{- if .Values.scope.singleNamespace }}
+            - name: AMBASSADOR_SINGLE_NAMESPACE
+              value: "YES"
+            {{- end }}
             - name: AMBASSADOR_NAMESPACE
-              {{- if .Values.namespace.name }}
+              {{- if .Values.namespace }}
               value: {{ .Values.namespace.name | quote }}
               {{ else }}
               valueFrom:

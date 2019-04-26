@@ -2,17 +2,33 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "name" -}}
-{{- default .Chart.Name .Values.nameOverride | trunc 24 -}}
+{{- define "telegraf.name" -}}
+{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*
 Create a default fully qualified app name.
-We truncate at 24 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+If release name contains chart name it will be used as a full name.
 */}}
-{{- define "fullname" -}}
+{{- define "telegraf.fullname" -}}
+{{- if .Values.fullnameOverride -}}
+{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
 {{- $name := default .Chart.Name .Values.nameOverride -}}
-{{- printf "%s-%s" .Release.Name $name | trunc 24 -}}
+{{- if contains $name .Release.Name -}}
+{{- .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Create chart name and version as used by the chart label.
+*/}}
+{{- define "telegraf.chart" -}}
+{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*
@@ -50,9 +66,12 @@ We truncate at 24 chars because some Kubernetes name fields are limited to this 
 {{- end -}}
 
 {{- define "outputs" -}}
+{{- range $outputIdx, $configObject := . -}}
 {{- range $output, $config := . }}
     [[outputs.{{ $output }}]]
   {{- if $config }}
+  {{- $tp := typeOf $config -}}
+  {{- if eq $tp "map[string]interface {}" -}}
     {{- range $key, $value := $config -}}
       {{- $tp := typeOf $value }}
       {{- if eq $tp "string"}}
@@ -83,13 +102,19 @@ We truncate at 24 chars because some Kubernetes name fields are limited to this 
       {{- end }}
     {{- end }}
   {{- end }}
+  {{- end }}
+  {{- end }}
 {{- end }}
 {{- end -}}
 
 {{- define "inputs" -}}
-{{- range $input, $config := . -}}
+{{- range $inputIdx, $configObject := . -}}
+    {{- range $input, $config := . -}}
+
     [[inputs.{{- $input }}]]
-      {{- if $config -}}
+    {{- if $config -}}
+    {{- $tp := typeOf $config -}}
+    {{- if eq $tp "map[string]interface {}" -}}
         {{- range $key, $value := $config -}}
           {{- $tp := typeOf $value -}}
           {{- if eq $tp "string" }}
@@ -158,7 +183,9 @@ We truncate at 24 chars because some Kubernetes name fields are limited to this 
               {{- end }}
             {{- end }}
           {{- end }}
-        {{- end }}
-      {{- end }}
+          {{- end }}
+    {{- end }}
+    {{- end }}
     {{ end }}
+{{- end }}
 {{- end -}}

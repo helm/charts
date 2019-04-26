@@ -1,7 +1,7 @@
 airflow:
   image:
     repository: puckel/docker-airflow
-    tag: 1.10.0-4
+    tag: 1.10.2
     pullPolicy: IfNotPresent
   service:
     type: NodePort
@@ -9,6 +9,8 @@ airflow:
   config:
     AIRFLOW__CORE__LOGGING_LEVEL: DEBUG
     AIRFLOW__CORE__LOAD_EXAMPLES: True
+
+  variables: '{ "environment": "dev" }'
 
 workers:
   replicas: 1

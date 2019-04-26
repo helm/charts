@@ -32,6 +32,7 @@ ports:
 
 service:
   type: ClusterIP
+  port: 8080
   annotations: {}
 
 ingress:
@@ -88,6 +89,20 @@ serviceAccount:
   # The name of the ServiceAccount to use.
   # If not set and create is true, a name is generated using the fullname template
   name:
+
+affinity: {}
+  # podAntiAffinity:
+  #   preferredDuringSchedulingIgnoredDuringExecution:
+  #   - weight: 5
+  #     podAffinityTerm:
+  #       topologyKey: "kubernetes.io/hostname"
+  #       labelSelector:
+  #         matchLabels:
+  #           app: {{ template "dex.name" . }}
+  #           release: "{{ .Release.Name }}"
+
+podDisruptionBudget: {}
+  # maxUnavailable: 1
 
 config:
   issuer: http://dex.io:8080

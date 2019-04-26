@@ -89,7 +89,7 @@ airflow:
     HTTPS_PROXY: http://proxy.mycompany.com:1234
 ```
 
-If you are using a private image for your dags (see [Embedded Dags](#embedded-dags)) 
+If you are using a private image for your dags (see [Embedded Dags](#embedded-dags))
 or for use with the KubernetesPodOperator (available in version 1.10.0), then add
 an image pull secret to the airflow config:
 ```yaml
@@ -114,6 +114,17 @@ airflow:
 ```
 
 Note: As connections may require to include sensitive data - the resulting script is stored encrypted in a kubernetes secret and mounted into the airflow scheduler container. It is probably wise not to put connection data in the default values.yaml and instead create an encrypted my-secret-values.yaml. this way it can be decrypted before the installation and passed to helm with -f <my-secret-values.yaml>
+
+#### Airflow variables
+
+Variables are a generic way to store and retrieve arbitrary content or settings as a simple key value store within Airflow.
+These variables will be automatically imported by the scheduler when it starts up.
+
+Example:
+```yaml
+airflow:
+  variables: '{ "environment": "dev" }'
+```
 
 ### Worker Statefulset
 
@@ -256,6 +267,13 @@ This is controlled by the `logsPersistence.enabled` setting.
 
 Refer to the `Mount a Shared Persistent Volume` section above for details on using persistent volumes.
 
+## Service monitor
+
+The service monitor is something introduced by the [CoresOS prometheus operator](https://github.com/coreos/prometheus-operator).
+To be able to expose metrics to prometheus you need install a plugin, this can be added to the docker image. A good one is: https://github.com/epoch8/airflow-exporter.
+This exposes dag and task based metrics from Airflow.
+For service monitor configuration see the generic [Helm chart Configuration](#helm-chart-configuration).
+
 ## Helm chart Configuration
 
 The following table lists the configurable parameters of the Airflow chart and their default values.
@@ -267,7 +285,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `airflow.executor`                       | the executor to run                                     | `Celery`                  |
 | `airflow.initRetryLoop`                  | max number of retries during container init             |                           |
 | `airflow.image.repository`               | Airflow docker image                                    | `puckel/docker-airflow`   |
-| `airflow.image.tag`                      | Airflow docker tag                                      | `1.10.0-4`                |
+| `airflow.image.tag`                      | Airflow docker tag                                      | `1.10.2`                |
 | `airflow.image.pullPolicy`               | Image pull policy                                       | `IfNotPresent`            |
 | `airflow.image.pullSecret`               | Image pull secret                                       |                           |
 | `airflow.schedulerNumRuns`               | -1 to loop indefinitively, 1 to restart after each exec |                           |
@@ -280,6 +298,11 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `airflow.extraContainers`                | additional containers to run in the scheduler, worker & web pods | `[]`             |
 | `airflow.extraVolumeMounts`              | additional volumeMounts to the main container in scheduler, worker & web pods | `[]`|
 | `airflow.extraVolumes`                   | additional volumes for the scheduler, worker & web pods | `[]`                      |
+| `flower.resources`                       | custom resource configuration for flower pod            | `{}`                      |
+| `web.resources`                          | custom resource configuration for web pod               | `{}`                      |
+| `web.initialStartupDelay`                | amount of time webserver pod should sleep before initializing webserver             | `60`  |
+| `web.initialDelaySeconds`                | initial delay on livenessprobe before checking if webserver is available    | `360` |
+| `scheduler.resources`                    | custom resource configuration for scheduler pod         | `{}`                      |
 | `workers.enabled`                        | enable workers                                          | `true`                    |
 | `workers.replicas`                       | number of workers pods to launch                        | `1`                       |
 | `workers.resources`                      | custom resource configuration for worker pod            | `{}`                      |
@@ -288,6 +311,9 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `workers.secretsDir`                     | directory in which to mount secrets on worker nodes     | /var/airflow/secrets      |
 | `workers.secrets`                        | secrets to mount as volumes on worker nodes             | []                        |
 | `existingAirflowSecret`                  | secret to use for postgres and redis connection         |                           |
+| `nodeSelector`                           | Node labels for pod assignment                          | `{}`                      |
+| `affinity`                               | Affinity labels for pod assignment                      | `{}`                      |
+| `tolerations`                            | Toleration labels for pod assignment                    | `[]`                      |
 | `ingress.enabled`                        | enable ingress                                          | `false`                   |
 | `ingress.web.host`                       | hostname for the webserver ui                           | ""                        |
 | `ingress.web.path`                       | path of the werbserver ui (read `values.yaml`)          | ``                        |
@@ -337,6 +363,10 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `redis.password`                         | Redis password                                          | `airflow`                 |
 | `redis.master.persistence.enabled`       | Enable Redis PVC                                        | `false`                   |
 | `redis.cluster.enabled`                  | enable master-slave cluster                             | `false`                   |
+| `serviceMonitor.enabled`                 | enable service monitor                                  | `false`                   |
+| `serviceMonitor.interval`                | Interval at which metrics should be scraped             | `30s`                     |
+| `serviceMonitor.path`                    | The path at which the metrics should be scraped         | `/admin/metrics`          |
+| `serviceMonitor.selector`                | label Selector for Prometheus to find ServiceMonitors   | `prometheus: kube-prometheus` |
 
 
 Full and up-to-date documentation can be found in the comments of the `values.yaml` file.
