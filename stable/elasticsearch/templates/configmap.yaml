@@ -150,17 +150,6 @@ data:
     rootLogger.appenderRef.console.ref = console
     logger.searchguard.name = com.floragunn
     logger.searchguard.level = info
-{{- else if hasPrefix "7." .Values.appVersion }}
-  log4j2.properties: |-
-    status = error
-    appender.console.type = Console
-    appender.console.name = console
-    appender.console.layout.type = PatternLayout
-    appender.console.layout.pattern = [%d{ISO8601}][%-5p][%-25c{1.}] %marker%m%n
-    rootLogger.level = info
-    rootLogger.appenderRef.console.ref = console
-    logger.searchguard.name = com.floragunn
-    logger.searchguard.level = info
 {{- end }}
 {{- if .Values.data.hooks.drain.enabled }}
   data-pre-stop-hook.sh: |-
