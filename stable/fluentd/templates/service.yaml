@@ -4,7 +4,7 @@ metadata:
   name: {{ template "fluentd.fullname" . }}
   labels:
     app: {{ template "fluentd.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    chart: {{ template "fluentd.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
