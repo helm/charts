@@ -129,11 +129,22 @@ extraArgs: {}
 # extraEnv:
 # - name: SECRET_TO_SAVE
 #   value: secret_value
+#
+# As documented by Amazon, environment variables provide another way to specify configuration options and credentials.
+# So basically, when defined var envs AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY the AWS CLI is loaded from a profile defined in the var envs.
+# Below, an example of configuration setting var envs AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY with an secret named existing-secret which conatins keys aws_access_key_id and aws_secret_access_key
+#
 # - name: AWS_ACCESS_KEY_ID
-#   valueFrom:
-#     secretKeyRef:
-#       name: existing-secret
-#       key: access-key-id
+#  valueFrom:
+#    secretKeyRef:
+#      name: existing-secret
+#      key: aws_access_key_id
+#
+# - name: AWS_SECRET_ACCESS_KEY
+#  valueFrom:
+#    secretKeyRef:
+#      name: existing-secret
+#      key: aws_secret_access_key
 extraEnv: []
 
 ## CPU and Memory limit and request for external-dns

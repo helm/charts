@@ -135,6 +135,32 @@ $ helm install --name my-release -f values.yaml stable/external-dns
 }
 ```
 
+##  Setup AWS CLI using already existing secrets
+
+The way like works configs defined directly by  ```aws.secretKey``` and ```aws.accessKey``` in values.yaml and secrets defined by ValueFrom in ```extraEnvs``` are differents:
+
+1 - When set  ```aws. secretKey``` and ```aws.accessKey``` this Chart stores the infos in an secret of the name provide by value of ```{{ external-dns.fullname }}``` and mount this secret in file of the name ```config``` in ```credentialsPath``` defined in values.yaml (pre external-dns 0.5.9 home dir should be `/root/.aws`), so AWS CLI is  loaded from a profile in the configuration file. But as mentioned, this approach genereted duplication and more importantly credentials stored in helm configs might be checked into version control.
+
+2 - As documented by Amazon, environment variables provide another way to specify configuration options and credentials in AWS CLI. Important note: By precedence of options, It overrides any value loaded from a profile in the configuration file, that is, the values defined in ```aws. secretKey``` and ```aws.accessKey``` will be disregarded in favor ```AWS_ACCESS_KEY_ID``` and ```AWS_SECRET_ACCESS_KEY``` in the case defined both ways. . (https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-envvars.html)
+
+So basically, when defined var envs ```AWS_ACCESS_KEY_ID``` and ```AWS_SECRET_ACCESS_KEY``` the AWS CLI is  loaded from a profile defined in the var envs. Below, an example of configuration setting var envs ```AWS_ACCESS_KEY_ID``` and  ```AWS_SECRET_ACCESS_KEY``` with an secret named ```existing-secret``` which conatins keys ```aws_access_key_id``` and ```aws_secret_access_key```:
+
+```
+extraEnv:
+ - name: AWS_ACCESS_KEY_ID
+   valueFrom:
+     secretKeyRef:
+       name: existing-secret
+       key: aws_access_key_id
+
+ - name: AWS_SECRET_ACCESS_KEY
+   valueFrom:
+     secretKeyRef:
+       name: existing-secret
+       key: aws_secret_access_key
+```
+
+
 [external-dns]: https://github.com/kubernetes-incubator/external-dns
 [Zalando]: https://zalando.github.io/
 [getting-started]: https://github.com/kubernetes-incubator/external-dns/blob/master/README.md#getting-started
