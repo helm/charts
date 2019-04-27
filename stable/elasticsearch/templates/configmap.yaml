@@ -198,10 +198,10 @@ data:
     http () {
         local path="${1}"
         local method="${2:-GET}"
-        curl -X${method} -s --fai http://{{ template "elasticsearch.client.fullname" . }}:9200${path}
+        curl -X${method} -s --fail http://{{ template "elasticsearch.client.fullname" . }}:9200${path}
     }
 
-    NODE_NAME=$(awk 'BEGIN {print ENVIRON["node.name"]}')
+    NODE_NAME=${HOSTNAME}
     echo "Exclude the node ${NODE_NAME} from voting config"
 
     http "/_cluster/voting_config_exclusions/${NODE_NAME}" "POST"
