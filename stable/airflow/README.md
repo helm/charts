@@ -126,6 +126,20 @@ airflow:
   variables: '{ "environment": "dev" }'
 ```
 
+#### Airflow pools
+
+Some systems can get overwhelmed when too many processes hit them at the same time.
+Airflow pools can be used to limit the execution parallelism on arbitrary sets of tasks. For more info see the [airflow
+documentation](https://airflow.apache.org/concepts.html#pools).
+The feature to import pools has only been added in airflow 1.10.2.
+These pools will be automatically imported by the scheduler when it starts up.
+
+Example:
+```yaml
+airflow:
+  pools: '{ "example": { "description": "This is an example of a pool", "slots": 2 } }'
+```
+
 ### Worker Statefulset
 
 Celery workers uses StatefulSet.
@@ -285,7 +299,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `airflow.executor`                       | the executor to run                                     | `Celery`                  |
 | `airflow.initRetryLoop`                  | max number of retries during container init             |                           |
 | `airflow.image.repository`               | Airflow docker image                                    | `puckel/docker-airflow`   |
-| `airflow.image.tag`                      | Airflow docker tag                                      | `1.10.2`                |
+| `airflow.image.tag`                      | Airflow docker tag                                      | `1.10.2`                  |
 | `airflow.image.pullPolicy`               | Image pull policy                                       | `IfNotPresent`            |
 | `airflow.image.pullSecret`               | Image pull secret                                       |                           |
 | `airflow.schedulerNumRuns`               | -1 to loop indefinitively, 1 to restart after each exec |                           |
