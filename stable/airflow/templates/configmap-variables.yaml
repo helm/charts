@@ -1,14 +1,20 @@
-{{- if .Values.airflow.variables }}
+{{- if or .Values.airflow.variables .Values.airflow.pools }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-    name: {{ template "airflow.fullname" . }}-variables
+    name: {{ template "airflow.fullname" . }}-variables-pools
     labels:
         app: {{ template "airflow.name" . }}
         chart: {{ template "airflow.chart" . }}
         release: {{ .Release.Name }}
         heritage: {{ .Release.Service }}
 data:
+{{- if or .Values.airflow.variables }}
     variables.json: |
         {{ .Values.airflow.variables }}
+{{- end }}
+{{- if or .Values.airflow.pools }}
+    pools.json: |
+        {{ .Values.airflow.pools }}
+{{- end }}
 {{- end }}
