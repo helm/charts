@@ -146,6 +146,13 @@ airflow:
   ## Examples:
   ##   variables: '{ "environment": "dev" }'
   variables: {}
+
+  ## Add airflow ppols
+  ## This should be a json string with your pools in it
+  ## Examples:
+  ##   pools: '{ "example": { "description": "This is an example of a pool", "slots": 2 } }'
+  pools: {}
+
   ##
   ## Annotations for the Scheduler, Worker and Web pods
   podAnnotations: {}
