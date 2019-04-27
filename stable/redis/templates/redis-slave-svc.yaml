@@ -1,4 +1,4 @@
-{{- if .Values.cluster.enabled }}
+{{- if and .Values.cluster.enabled (not .Values.sentinel.enabled) }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -20,7 +20,7 @@ spec:
   {{- end -}}
   ports:
   - name: redis
-    port: 6379
+    port: {{ .Values.slave.service.port }}
     targetPort: redis
     {{- if .Values.slave.service.nodePort }}
     nodePort: {{ .Values.slave.service.nodePort }}
@@ -29,4 +29,4 @@ spec:
     app: {{ template "redis.name" . }}
     release: "{{ .Release.Name }}"
     role: slave
-{{- end}}
+{{- end }}

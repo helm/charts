@@ -30,6 +30,7 @@ spec:
     spec:
       serviceAccountName: {{ template "sematext-agent.serviceAccountName" . }}
       containers:
+        {{- if or (.Values.containerToken) (.Values.infraToken) }}
         - name: agent
           image: "{{ .Values.agent.image.repository }}:{{ .Values.agent.image.tag }}"
           imagePullPolicy: {{ .Values.agent.image.pullPolicy }}
@@ -97,6 +98,8 @@ spec:
               protocol: TCP
           resources:
 {{ toYaml .Values.agent.resources | indent 12 }}
+        {{- end }}
+        {{- if .Values.logseneToken }}
         - name: logagent
           image: "{{ .Values.logagent.image.repository }}:{{ .Values.logagent.image.tag }}"
           imagePullPolicy: {{ .Values.logagent.image.pullPolicy }}
@@ -114,6 +117,7 @@ spec:
               mountPath: /var/run/docker.sock
           resources:
 {{ toYaml .Values.logagent.resources | indent 12 }}
+          {{- end }}
       volumes:
         - name: procfs
           hostPath:
