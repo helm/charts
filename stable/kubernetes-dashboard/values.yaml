@@ -62,6 +62,10 @@ service:
   ##
   # nameOverride:
 
+  # LoadBalancerSourcesRange is a list of allowed CIDR values, which are combined with ServicePort to
+  # set allowed inbound rules on the security group assigned to the master load balancer
+  # loadBalancerSourceRanges: []
+
   ## Kubernetes Dashboard Service annotations
   ##
   ## For GCE ingress, the following annotation is required:
