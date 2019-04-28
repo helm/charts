@@ -1,0 +1,6 @@
+Reflector can now be used to perform automatic copy actions on secrets and configmaps.
+{{- if .Values.extensions.certManager.enabled }}
+    - The cert-manager extension is enabled. You can use Reflector annotations on cert-manager certificates to automatically annotate created secretes.
+{{- else }}
+    - The cert-manager extension is NOT enabled. If you need to automatically annotate secrets created by cert-manager, please enable this extension.
+{{- end }}
