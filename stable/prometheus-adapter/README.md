@@ -50,7 +50,7 @@ The following table lists the configurable parameters of the Prometheus Adapter 
 | `resources`                     | CPU/Memory resource requests/limits                                             | `{}`                                        |
 | `rules.default`                 | If `true`, enable a set of default rules in the configmap                       | `true`                                      |
 | `rules.custom`                  | A list of custom configmap rules                                                | `[]`                                        |
-| `rules.existing`                | The name of an existing configMap with rules. Overrides default and custom.     | ``                                          |                                                                                                        
+| `rules.existing`                | The name of an existing configMap with rules. Overrides default, custom and external. | ``                                    |
 | `rules.external`                | A list of custom rules for external metrics API                                 | `[]`                                        |
 | `service.annotations`           | Annotations to add to the service                                               | `{}`                                        |
 | `service.port`                  | Service port to expose                                                          | `443`                                       |
