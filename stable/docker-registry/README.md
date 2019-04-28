@@ -29,7 +29,7 @@ their default values.
 |:----------------------------|:-------------------------------------------------------------------------------------------|:----------------|
 | `image.pullPolicy`          | Container pull policy                                                                      | `IfNotPresent`  |
 | `image.repository`          | Container image to use                                                                     | `registry`      |
-| `image.tag`                 | Container image tag to deploy                                                              | `2.6.2`         |
+| `image.tag`                 | Container image tag to deploy                                                              | `2.7.1`         |
 | `imagePullSecrets`          | Specify image pull secrets                                                                 | `nil` (does not add image pull secrets to deployed pods) |
 | `persistence.accessMode`    | Access mode to use for PVC                                                                 | `ReadWriteOnce` |
 | `persistence.enabled`       | Whether to use a PVC for the Docker storage                                                | `false`         |
