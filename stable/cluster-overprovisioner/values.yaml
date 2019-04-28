@@ -3,6 +3,7 @@ priorityClassOverprovision:
   value: -1
 
 priorityClassDefault:
+  enabled: true
   name: default
   value: 0
 

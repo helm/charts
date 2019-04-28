@@ -39,12 +39,25 @@ data:
     ENABLE_REVERSE_PROXY_AUTHENTICATION = false
     ENABLE_REVERSE_PROXY_AUTO_REGISTRATION = false
 
+    [mailer]
+    ENABLED = {{ .Values.service.gogs.mailerEnabled }}
+    HOST = {{ .Values.service.gogs.mailerHost }}
+    DISABLE_HELO = false
+    HELO_HOSTNAME =
+    SKIP_VERIFY = {{ .Values.service.gogs.mailerSkipVerify }}
+    SUBJECT_PREFIX = {{ .Values.service.gogs.mailerSubjectPrefix }}
+    FROM = {{ .Values.service.gogs.mailerFrom }}
+    USER = {{ .Values.service.gogs.mailerUser }}
+    PASSWD = {{ .Values.service.gogs.mailerPasswd }}
+    USE_PLAIN_TEXT = text/plain
+
     [database]
     DB_TYPE = {{ .Values.service.gogs.databaseType | quote }}
     HOST = {{ template "gogs.database.host" . }}
     NAME = {{ template "gogs.database.name" . }}
     USER = {{ template "gogs.database.user" . }}
     PASSWD = {{ template "gogs.database.password" . }}
+    SSL_MODE = {{ template "gogs.database.ssl_mode" . }}
 
     [security]
     INSTALL_LOCK = {{ .Values.service.gogs.installLock }}

@@ -107,6 +107,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `rbac.enabled`                         | Whether to enable RBAC with a specific cluster role and binding for Traefik                                                  | `false`                                           |
 | `deploymentStrategy`                   | Specify deployment spec rollout strategy                                                                                     | `{}`                                              |
 | `securityContext`                      | Security context                                                                                                             | `{}`                                              |
+| `env`                                  | Environment variables for the container                                                                                      | `{}`                                              |
 | `nodeSelector`                         | Node labels for pod assignment                                                                                               | `{}`                                              |
 | `affinity`                             | Affinity settings                                                                                                            | `{}`                                              |
 | `tolerations`                          | List of node taints to tolerate                                                                                              | `[]`                                              |
@@ -136,7 +137,8 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `acme.challengeType`                   | Type of ACME challenge to perform domain validation. `tls-sni-01` (deprecated), `tls-alpn-01` (recommended), `http-01` or `dns-01` | `tls-sni-01`                                |
 | `acme.delayBeforeCheck`         | By default, the provider will verify the TXT DNS challenge record before letting ACME verify. If delayBeforeCheck is greater than zero, this check is delayed for the configured duration in seconds. Useful when Traefik cannot resolve external DNS queries. | `0` |
 | `acme.dnsProvider.name`                | Which DNS provider to use. See [here](https://github.com/xenolf/lego/tree/master/providers/dns) for the list of possible values. | `nil`                                         |
-| `acme.dnsProvider.$name`               | The configuration environment variables (encoded as a secret) needed for the DNS provider to do DNS challenge. See [here](#example-aws-route-53). | `{}`                         |
+| `acme.dnsProvider.existingSecretName`  | Don't create a secret for DNS provider configuration environment variables, but use the specified one instead. Secret should contain the required environment variables. Useful to avoid storing secrets in helm | `""`                   |
+| `acme.dnsProvider.$name`               | The configuration environment variables (encoded as a secret) needed for the DNS provider to do DNS challenge. Example configuration: [AWS Route 53](#example-aws-route-53), [Google Cloud DNS](#example-gcloud). | `{}` |
 | `acme.email`                           | Email address to be used in certificates obtained from Let's Encrypt                                                         | `admin@example.com`                               |
 | `acme.onHostRule`                      | Whether to generate a certificate for each frontend with Host rule                                                           | `true`                                            |
 | `acme.staging`                         | Whether to get certs from Let's Encrypt's staging environment                                                                | `true`                                            |
@@ -145,6 +147,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `acme.domains.domainsList`             | List of domains & (optional) subject names                                                                                   | `[]`                                              |
 | `acme.domains.domainsList.main`        | Main domain name of the generated certificate                                                                                | *.example.com                                     |
 | `acme.domains.domainsList.sans`        | optional list of alternative subject names to give to the certificate                                                        | `[]`                                              |
+| `acme.resolvers`                       | DNS servers list to use for DNS challenge                                                                                    | `[]`                                              |
 | `acme.persistence.enabled`             | Create a volume to store ACME certs (if ACME is enabled)                                                                     | `true`                                            |
 | `acme.persistence.annotations`         | PVC annotations                                                                                                              | `{}`                                              |
 | `acme.persistence.storageClass`        | Type of `StorageClass` to request, will be cluster-specific                                                                  | `nil` (uses alpha storage class annotation)       |
@@ -204,8 +207,11 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `deployment.podAnnotations`            | Annotations for the Traefik pod definition                                                                                   | None                                              |
 | `deployment.podLabels`                 | Labels for the Traefik pod definition                                                                                        | None                                              |
 | `deployment.hostPort.httpEnabled`      | Whether to enable hostPort binding to host for http.                                                                         | `false`                                           |
+| `deployment.hostPort.httpPort`         | Desired host port used for http requests.                                                                                    | `80`                                              |
 | `deployment.hostPort.httpsEnabled`     | Whether to enable hostPort binding to host for https.                                                                        | `false`                                           |
+| `deployment.hostPort.httpsPort`        | Desired host port used for https requests.                                                                                   | `443`                                             |
 | `deployment.hostPort.dashboardEnabled` | Whether to enable hostPort binding to host for dashboard.                                                                    | `false`                                           |
+| `deployment.hostPort.dashboardPort`    | Desired host port used for accessing dashboard.                                                                              | `8080`                                            |
 | `sendAnonymousUsage`                   | Send anonymous usage statistics.                                                                                             | `false`                                           |
 | `tracing.enabled`                      | Whether to enable request tracing                                                                                            | `false`                                           |
 | `tracing.backend`                      | Tracing backend to use, either `jaeger` or `zipkin` or `datadog`                                                             | None                                              |
@@ -220,8 +226,17 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `tracing.zipkin.id128Bit`              | Use Zipkin 128 bit root span IDs                                                                                             | `true`                                            |
 | `tracing.datadog.localAgentHostPort`   | Location of the Datadog agent where spans will be sent                                                                       | `127.0.0.1:8126`                                  |
 | `tracing.datadog.debug`                | Enables Datadog debugging                                                                                                    | `false`                                           |
-| `tracing.datadog.globalTag`            | Apply shared tag in a form of Key:Value to all the traces                                                                    | `""`                                           |
-| `autoscaling`                          | HorizontalPodAutoscaler for the traefik Deployment                                                                           | `{}`                                           |
+| `tracing.datadog.globalTag`            | Apply shared tag in a form of Key:Value to all the traces                                                                    | `""`                                              |
+| `timeouts.responding.readTimeout`      | The maximum duration for reading the entire request, including the body. If zero, no timeout exists.                         | `"0s"`                                            |
+| `timeouts.responding.writeTimeout`     | The maximum duration before timing out writes of the response. If zero, no timeout exists.                                   | `"0s"`                                            |
+| `timeouts.responding.idleTimeout`      | The maximum duration an idle (keep-alive) connection will remain idle before closing itself. If zero, no timeout exists.     | `"0s"`                                            |
+| `timeouts.forwarding.dialTimeout`      | The amount of time to wait until a connection to a backend server can be established. If zero, no timeout exists.            | `"30s"`                                           |
+| `timeouts.forwarding.responseHeaderTimeout` | The amount of time to wait for a server's response headers after fully writing the request (including its body, if any). If zero, no timeout exists. | `"30s"`              |
+| `autoscaling`                          | HorizontalPodAutoscaler for the traefik Deployment                                                                           | `{}`                                              |
+| `configFiles`                          | Config files to make available in the deployment. key=filename, value=file contents                                          | `{}`                                              |
+| `secretFiles`                          | Secret files to make available in the deployment. key=filename, value=file contents                                          | `{}`                                              |
+| `testFramework.image`                  | `test-framework` image repository.                                                                                           | `dduportal/bats`                                  |
+| `testFramework.tag`                    | `test-framework` image tag.                                                                                                  | `0.4.0`                                           |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 
@@ -357,12 +372,12 @@ acme:
 
 #### Example: AWS Route 53
 
-Route 53 requires the [following configuration variables to be set](values.yaml#L98-L101):
+Using `route53` as DNS provider requires the following configuration variables to be set:
 - `AWS_ACCESS_KEY_ID`
 - `AWS_SECRET_ACCESS_KEY`
 - `AWS_REGION`
 
-The configuration for the DNS provider would look like this:
+The configuration would look like this:
 
 ```yaml
 acme:
@@ -373,6 +388,28 @@ acme:
       AWS_ACCESS_KEY_ID: ...
       AWS_SECRET_ACCESS_KEY: ...
       AWS_REGION: us-east-1
+```
+
+#### Example: Google Cloud DNS
+
+Using `gcloud` as DNS provider requires the following configuration variables to be set:
+- `GCE_PROJECT`
+- `GCE_SERVICE_ACCOUNT_FILE`
+
+The configuration would look like this:
+
+```yaml
+
+secretFiles:
+  gcloud-credentials.json: '{"type":"service_account","project_id":"<projectName>","private_key_id":"<hash>",...}'
+
+acme:
+  enabled: true
+  dnsProvider:
+    name: gcloud
+    gcloud:
+      GCE_PROJECT: <projectName>
+      GCE_SERVICE_ACCOUNT_FILE: /secrets/gcloud-credentials.json
 ```
 
 ### Proxy Protocol
