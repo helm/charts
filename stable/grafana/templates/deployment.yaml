@@ -97,6 +97,10 @@ spec:
             - name: NAMESPACE
               value: "{{ .Values.sidecar.datasources.searchNamespace }}"
             {{- end }}
+            {{- if .Values.sidecar.skipTlsVerify }}
+            - name: SKIP_TLS_VERIFY
+              value: "{{ .Values.sidecar.skipTlsVerify }}"
+            {{- end }}
           resources:
 {{ toYaml .Values.sidecar.resources | indent 12 }}
           volumeMounts:
@@ -121,10 +125,14 @@ spec:
             - name: LABEL
               value: "{{ .Values.sidecar.dashboards.label }}"
             - name: FOLDER
-              value: "{{ .Values.sidecar.dashboards.folder }}"
+              value: "{{ .Values.sidecar.dashboards.folder }}{{- with .Values.sidecar.dashboards.defaultFolderName }}/{{ . }}{{- end }}"
             {{- if .Values.sidecar.dashboards.searchNamespace }}
             - name: NAMESPACE
               value: "{{ .Values.sidecar.dashboards.searchNamespace }}"
+            {{- end }}
+            {{- if .Values.sidecar.skipTlsVerify }}
+            - name: SKIP_TLS_VERIFY
+              value: "{{ .Values.sidecar.skipTlsVerify }}"
             {{- end }}
           resources:
 {{ toYaml .Values.sidecar.resources | indent 12 }}

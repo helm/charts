@@ -60,6 +60,7 @@ spec:
               protocol: TCP
           resources:
 {{ toYaml .Values.defaultBackend.resources | indent 12 }}
+      serviceAccountName: {{ template "nginx-ingress.serviceAccountName" . }}
     {{- if .Values.defaultBackend.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.defaultBackend.nodeSelector | indent 8 }}
