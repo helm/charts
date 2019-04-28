@@ -27,8 +27,11 @@ spec:
       labels:
         app: {{ template "grafana.name" . }}
         release: {{ .Release.Name }}
-{{- with .Values.podAnnotations }}
       annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum/dashboards-json-config: {{ include (print $.Template.BasePath "/dashboards-json-configmap.yaml") . | sha256sum }}
+        checksum/sc-dashboard-provider-config: {{ include (print $.Template.BasePath "/configmap-dashboard-provider.yaml") . | sha256sum }}        
+{{- with .Values.podAnnotations }}
 {{ toYaml . | indent 8 }}
 {{- end }}
     spec:
