@@ -37,6 +37,10 @@ agent:
   ## Labels to be added to pods
   ##
   podLabels: {}
+  ## Used to assign priority to agent pods
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
+  ##
+  priorityClassName: ""
   ## Strategy for DaemonSet updates (requires Kubernetes 1.6+)
   ## Ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/
   ##
@@ -139,6 +143,10 @@ server:
   ## Annotations to be added to pods
   ##
   podAnnotations: {}
+  ## Used to assign priority to server pods
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
+  ##
+  priorityClassName: ""
   ## Strategy for DaemonSet updates (requires Kubernetes 1.6+)
   ## Ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/
   ##
