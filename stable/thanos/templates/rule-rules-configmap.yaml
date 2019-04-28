@@ -1,0 +1,12 @@
+{{- with $.Values.ruleLayer -}}
+{{- if .rules -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels: {{- include "thanos.rule.labels" $ | nindent 4 }}
+  name: {{ print (include "thanos.fullname" $) "-" .component "-rules" | quote }}
+data:
+  rules.yaml: |-
+    {{- .rules | default dict | toYaml | trim | nindent 4 }}
+{{- end -}} {{/* if .rules */}}
+{{- end -}} {{/* with .Values.ruleLayer */}}

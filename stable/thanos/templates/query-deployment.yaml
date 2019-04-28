@@ -38,6 +38,11 @@ spec:
             {{- if .pointToLocalSidecars }}
             - '--store=dns+{{ print (include "thanos.fullname" $) "-" $.Values.sidecarLayer.component }}.{{ $.Release.Namespace }}.svc.cluster.local:{{ $.Values.sidecarLayer.storeApiService.servicePort }}'
             {{- end }}
+            {{- if .pointToLocalRulers }}
+            {{- range $element_index, $pod_index :=  (untilStep 1 (int (add $.Values.ruleLayer.replicaCount 1)) 1) }}
+            - '--store=dns+{{ print (include "thanos.fullname" $) "-" $.Values.ruleLayer.component "-" $element_index }}.{{ print (include "thanos.fullname" $) "-store-" $.Values.ruleLayer.component  }}:{{ $.Values.ruleLayer.storeApiService.servicePort }}'
+            {{- end }}
+            {{- end }}
           ports:
             - name: http
               containerPort: 10902
