@@ -126,9 +126,14 @@ spec:
               GOSSIP_KEY="-config-file /etc/consul/encrypt.json"
             fi
             {{- end }}
+            {{- if .Values.vault.config.storage.consul.token }}
+            echo "{\"acl\":{\"tokens\":{\"agent\":\"{{ .Values.vault.config.storage.consul.token }}\"}}}" > /etc/consul/agent-token.json
+            AGENT_TOKEN="-config-file /etc/consul/agent-token.json"
+            {{- end }}
 
             exec /bin/consul agent \
               $GOSSIP_KEY \
+              $AGENT_TOKEN \
               -join={{- .Values.consulAgent.join }} \
               -data-dir=/etc/consul
         resources:
