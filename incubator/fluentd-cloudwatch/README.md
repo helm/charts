@@ -49,7 +49,7 @@ The following table lists the configurable parameters of the Fluentd Cloudwatch 
 | Parameter                          | Description                                                               | Default                               |
 | ---------------------------- | ------------------------------------------------------------------------- | --------------------------------------|
 | `image.repository`           | Image repository                                                          | `fluent/fluentd-kubernetes-daemonset` |
-| `image.tag`                  | Image tag                                                                 | `v0.12.43-cloudwatch`                 |
+| `image.tag`                  | Image tag                                                                 | `v1.3.3-debian-cloudwatch-1.0`        |
 | `image.pullPolicy`           | Image pull policy                                                         | `IfNotPresent`                        |
 | `resources.limits.cpu`       | CPU limit                                                                 | `100m`                                |
 | `resources.limits.memory`    | Memory limit                                                              | `200Mi`                               |
@@ -72,7 +72,7 @@ The following table lists the configurable parameters of the Fluentd Cloudwatch 
 | `nodeSelector`               | Node labels for pod assignment                                            | `{}`                                  |
 | `affinity`                   | Node affinity for pod assignment                                          | `{}`                                  |
 
-Starting with fluentd-kubernetes-daemonset v0.12.43-cloudwatch, the container runs as user fluentd. To be able to write pos files to the host system, you'll need to run fluentd as root. Add the following extraVars value to run as root.
+If using fluentd-kubernetes-daemonset v0.12.43-cloudwatch, the container runs as user fluentd. To be able to write pos files to the host system, you'll need to run fluentd as root. Add the following extraVars value to run as root.
 
 ```code
 "{ name: FLUENT_UID, value: '0' }"
