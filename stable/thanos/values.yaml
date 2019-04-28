@@ -192,9 +192,21 @@ compactLayer:
 ruleLayer:
   enabled: true
   component: rule
+  persistence:
+    enabled: true
+    size: 50Gi
+    storageClass: ''
+    mountPath: /thanos-rule-persistent-data/
+    accessModes:
+    - ReadWriteOnce
   labels:
     env: test
-  alerting: ''
+  rules: ''
+##
+#    groups:
+#    - name: alerting_rules
+#      rules:
+#      - ...
   binaryArgs:
     - '--log.level=debug'
     - '--cluster.disable'
@@ -208,8 +220,8 @@ ruleLayer:
     uri: ''
 # Volume for --data-dir parameter
   extraEmptyDirMounts:
-    - name: data
-      mountPath: /thanos-rule-data/
+#    - name: data
+#      mountPath: /thanos-rule-data/
   configMap:
     name: config
     mountPath: /etc/thanos-rule/
@@ -245,6 +257,6 @@ ruleLayer:
       cpu: "250m"
   schedulerName:
   securityContext:
-  strategy:
+  updateStrategy:
   terminationGracePeriodSeconds: 15
   tolerations:

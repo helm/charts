@@ -129,6 +129,7 @@ Parameter | Description | Default
 `queryLayer.name` | Part of the name for some components, helps to make keep them unique | `query-layer`
 `queryLayer.nodeSelector` | Snippet (dictionary) of `key: value` pairs for `.spec.template.spec.nodeSelector` | `{}`
 `queryLayer.podAnnotations` | Snippet (dictionary) of `key: value` pairs for `.spec.template.metadata.annotations` | `{}`
+`queryLayer.pointToLocalRulers` | Make rulers deployed with the same chart a target for this queryLayer. Implies `--store=` parameter. | `true`
 `queryLayer.pointToLocalSidecars` | Make a query svc deployed with the same chart a target for this queryLayer. Implies `--store=` parameter. | `true`
 `queryLayer.priorityClassName` | Query `priorityClassName` | `""`
 `queryLayer.queryApiService.annotations` | Snippet (dict) of annotations for `metadata.annotations` of a Service | `{prometheus.io/scrape: 'false'}`
@@ -179,7 +180,7 @@ Parameter | Description | Default
 `ruleLayer.RuleUiServicre.selector` | Snippet (dict) of labels for `.spec.selector` of a service | `[]`
 `ruleLayer.RuleUiServicre.servicePort` | `servicePort` of a Store API `service` of a Ruler | `"10902"`
 `ruleLayer.RuleUiServicre.type` | `type` of a Store API `service` of a Ruler | `"LoadBalancer"`
-`ruleLayer.alerting` | Array of groups with alerting Rulesr | `{env: "test", app: "thanos", component: "Rulre"}`
+`ruleLayer.rules` | Array of groups with alerting/recording rules | `{env: "test", app: "thanos", component: "Rulre"}`
 `ruleLayer.binaryArgs` | List of args that have to be passed to the `thanos Rulre` command | check out in `values.yaml`
 `ruleLayer.name` | Used for labels and label selectors | `rule`
 `ruleLayer.configMap.data` | Snippet (dictionary) of `key: value` pairs to fill the `configMap` with | check out `values.yaml`
@@ -194,6 +195,11 @@ Parameter | Description | Default
 `ruleLayer.image.tag` | Ruler container image tag | `v0.3.2`
 `ruleLayer.labels` | Dictionary of labels assigned to every entity created along with Ruler | `{env: "test", app: "thanos", component: "Rulre"}`
 `ruleLayer.nodeSelector`| Snippet (dictionary) of `key: value` pairs for `.spec.template.spec.nodeSelector` | `{}`
+`ruleLayer.persistence.accessModes` | accessMode for PVC tempalte | `['ReadWriteOnce']`
+`ruleLayer.persistence.enabled` | Enables and disables persistance for rule Layer | `true`
+`ruleLayer.persistence.mountPath` | MountPath for persistance volume | `/thanos-rule-persistent-data/`
+`ruleLayer.persistence.storageClass` | Storageclass for PVC template | `standard`
+`ruleLayer.persistence.size` | size for PVC template | `50Gi`
 `ruleLayer.podAnnotations` | Snippet (dictionary) of `key: value` pairs for `.spec.template.metadata.annotations` | `{}`
 `ruleLayer.pointToLocalQuery.enabled` | If true - implies `--query` binary arg with a value of address local to this Release queryLayer `Service` | `true`
 `ruleLayer.pointToLocalQuery.uri` | Use if `web.route-prefix` or `web.external-prefix` were passed to the target query layer | `''`
