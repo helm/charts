@@ -1,6 +1,6 @@
 image:
   repository: fluent/fluentd-kubernetes-daemonset
-  tag: v0.12.43-cloudwatch
+  tag: v1.3.3-debian-cloudwatch-1.0
 ## Specify an imagePullPolicy (Required)
 ## It's recommended to change this to 'Always' if the image tag is 'latest'
 ## ref: http://kubernetes.io/docs/user-guide/images/#updating-images
