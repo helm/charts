@@ -65,3 +65,12 @@ Get the fully qualified server address
 {{- define "yugabyte.server_address" -}}
 {{- printf "$(HOSTNAME).%s.$(NAMESPACE).svc.%s" .name .domainName }}
 {{- end -}}
+
+{{/*
+Compute the maximum number of unavailable pods based on the number of master replicas
+*/}}
+{{- define "yugabyte.max_unavailable_for_quorum" -}}
+{{- $master_replicas := .Values.replicas.master | int | mul 100 -}}
+{{- $master_replicas := 100 | div (100 | sub (2 | div ($master_replicas | add 100))) -}}
+{{- printf "%d" $master_replicas -}}
+{{- end -}}
