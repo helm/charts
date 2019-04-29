@@ -207,6 +207,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheus.prometheusSpec.replicas` | Number of instances to deploy for a Prometheus deployment. | `1` |
 | `prometheus.prometheusSpec.retention` | Time duration Prometheus shall retain data for. Must match the regular expression `[0-9]+(ms\|s\|m\|h\|d\|w\|y)` (milliseconds seconds minutes hours days weeks years). | `10d` |
 | `prometheus.prometheusSpec.logLevel` | Log level for Prometheus to be configured with. | `info` |
+| `prometheus.prometheusSpec.logFormat` | Log format for Prometheus to be configured with. | `logfmt` |
 | `prometheus.prometheusSpec.scrapeInterval` | Interval between consecutive scrapes. | `""` |
 | `prometheus.prometheusSpec.evaluationInterval` | Interval between consecutive evaluations. | `""` |
 | `prometheus.prometheusSpec.externalLabels` | The labels to add to any time series or alerts when communicating with external systems (federation, remote storage, Alertmanager). | `[]` |
