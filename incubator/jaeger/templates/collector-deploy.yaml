@@ -68,6 +68,16 @@ spec:
               configMapKeyRef:
                 name: {{ template "jaeger.fullname" . }}
                 key: cassandra.keyspace
+          - name: CASSANDRA_USERNAME
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "jaeger.fullname" . }}
+                key: cassandra.username
+          - name: CASSANDRA_PASSWORD
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "jaeger.fullname" . }}
+                key: cassandra.password
           {{- end }}
           {{- if eq .Values.storage.type "elasticsearch" }}
           - name: ES_PASSWORD
