@@ -37,5 +37,8 @@ spec:
   selector:
     app: {{ template "prometheus-operator.name" . }}-operator
     release: {{ .Release.Name | quote }}
+{{- if .Values.prometheusOperator.service.externalTrafficPolicy }}
+  externalTrafficPolicy: {{ .Values.prometheusOperator.service.externalTrafficPolicy }}
+{{- end }}
   type: "{{ .Values.prometheusOperator.service.type }}"
 {{- end }}

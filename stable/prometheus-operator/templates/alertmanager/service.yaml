@@ -38,5 +38,8 @@ spec:
   selector:
     app: alertmanager
     alertmanager: {{ template "prometheus-operator.fullname" . }}-alertmanager
+{{- if .Values.alertmanager.service.externalTrafficPolicy }}
+  externalTrafficPolicy: {{ .Values.alertmanager.service.externalTrafficPolicy }}
+{{- end }}
   type: "{{ .Values.alertmanager.service.type }}"
 {{- end }}

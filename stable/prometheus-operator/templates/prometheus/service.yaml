@@ -43,5 +43,8 @@ spec:
 {{- if .Values.prometheus.service.sessionAffinity }}
   sessionAffinity: {{ .Values.prometheus.service.sessionAffinity }}
 {{- end }}
+{{- if .Values.prometheus.service.externalTrafficPolicy }}
+  externalTrafficPolicy: {{ .Values.prometheus.service.externalTrafficPolicy }}
+{{- end }}
   type: "{{ .Values.prometheus.service.type }}"
 {{- end }}
