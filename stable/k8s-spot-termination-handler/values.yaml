@@ -48,7 +48,7 @@ resources: {}
   #   memory: 32Mi
 
 # Add a priority class to the deamonset
-priorityClassName : "system-node-critical"
+priorityClassName: "system-node-critical"
 
 nodeSelector: {}
   # "node-role.kubernetes.io/spot-worker": "true"

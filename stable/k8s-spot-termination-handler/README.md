@@ -42,4 +42,4 @@ Parameter | Description | Default
 `nodeSelector` | node labels for pod assignment | `{}`
 `tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `affinity` | node/pod affinities (requires Kubernetes >=1.6) | `{}`
-`priorityClassName` | pod priorityClassName for pod | `{}`
+`priorityClassName` | pod priorityClassName for pod. | ``

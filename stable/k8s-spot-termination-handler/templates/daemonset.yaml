@@ -51,9 +51,6 @@ spec:
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}
-      {{- if .Values.priorityClassName }} 
-      priorityClassName: {{ .Values.priorityClassName }}
-      {{- end }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
     {{- end }}
@@ -64,4 +61,7 @@ spec:
     {{- with .Values.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- if .Values.priorityClassName }} 
+      priorityClassName: {{ .Values.priorityClassName }}
     {{- end }}
