@@ -25,6 +25,11 @@ prometheus:
     interval: 10s
     # Alternative namespace to install the ServiceMonitor in
     namespace: ""
+    ## Defaults to whats used if you follow CoreOS [Prometheus Install Instructions](https://github.com/helm/charts/tree/master/stable/prometheus-operator#tldr)
+    ## [Prometheus Selector Label](https://github.com/helm/charts/tree/master/stable/prometheus-operator#prometheus-operator-1)
+    ## [Kube Prometheus Selector Label](https://github.com/helm/charts/tree/master/stable/prometheus-operator#exporters)
+    selector:
+      prometheus: kube-prometheus
 
 image:
   repository: jtblin/kube2iam

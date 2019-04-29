@@ -11,6 +11,9 @@ metadata:
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
+{{- if .Values.prometheus.serviceMonitor.selector }}
+{{ toYaml .Values.prometheus.serviceMonitor.selector | indent 4 }}
+{{- end }}
 spec:
   selector:
     matchLabels:
