@@ -116,7 +116,7 @@ service.annotations: { "getambassador.io/config": "---\napiVersion: ambassador/v
 
 ### Ambassador Pro
 
-Setting `pro.enabled` will install Ambassador Pro as a sidecar to Ambassador with the required CRDs and redis instance.
+Setting `pro.enabled: true` will install Ambassador Pro as a sidecar to Ambassador with the required CRDs and redis instance.
 
 You must set the `pro.licenseKey` to the license key issued to you. Sign up for a [free trial](https://www.getambassador.io/pro/free-trial) of Ambassador Pro or [contact](https://www.getambassador.io/contact) our sales team to obtain a license key. 
 
