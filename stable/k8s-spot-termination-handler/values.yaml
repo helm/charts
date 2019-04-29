@@ -57,3 +57,5 @@ tolerations: []
   #   effect: "NoSchedule"
 
 affinity: {}
+
+podAnnotations: {}
