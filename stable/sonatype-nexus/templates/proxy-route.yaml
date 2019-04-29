@@ -1,0 +1,31 @@
+{{- if .Values.nexusProxyRoute.enabled }}
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: {{ template "nexus.fullname" . }}
+  labels: {{ .Values.nexusProxyRoute.labels }}
+  annotations:
+    {{- range $key, $value := .Values.nexusProxyRoute.annotations }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+spec:
+  host: {{ .Values.nexusProxyRoute.path }}
+  port:
+    {{- if .Values.nexusProxy.svcName }}
+      targetPort: {{ .Values.nexusProxy.svcName }}
+    {{- else }}
+      targetPort: {{ template "nexus.fullname" . }}
+    {{- end }}
+  tls:
+    insecureEdgeTerminationPolicy: Redirect
+    termination: edge
+  to:
+    kind: Service
+{{- if .Values.nexusProxy.svcName }}
+    name: {{ .Values.nexusProxy.svcName }}
+{{- else }}
+    name: {{ template "nexus.fullname" . }}
+{{- end }}
+    weight: 100
+  wildcardPolicy: None
+{{- end }}
