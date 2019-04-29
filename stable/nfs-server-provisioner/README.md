@@ -56,7 +56,7 @@ their default values.
 |:-------------------------------|:----------------------------------------------------------------------------------------------------------------|:---------------------------------------------------------|
 | `imagePullSecrets`             | Specify image pull secrets                                                                                      | `nil` (does not add image pull secrets to deployed pods) |
 | `image.repository`             | The image repository to pull from                                                                               | `quay.io/kubernetes_incubator/nfs-provisioner`           |
-| `image.tag`                    | The image tag to pull from                                                                                      | `v1.0.8`                                                 |
+| `image.tag`                    | The image tag to pull from                                                                                      | `v2.2.1-k8s1.12`                                         |
 | `image.pullPolicy`             | Image pull policy                                                                                               | `IfNotPresent`                                           |
 | `service.type`                 | service type                                                                                                    | `ClusterIP`                                              |
 | `service.nfsPort`              | TCP port on which the nfs-server-provisioner NFS service is exposed                                                    | `2049`                                                   |
@@ -73,7 +73,7 @@ their default values.
 | `storageClass.provisionerName` | The provisioner name for the storageclass                                                                       | `cluster.local/{release-name}-{chart-name}`              |
 | `storageClass.defaultClass`    | Whether to set the created StorageClass as the clusters default StorageClass                                    | `false`                                                  |
 | `storageClass.name`            | The name to assign the created StorageClass                                                                     | `nfs`                                                    |
-| `storageClass.allowVolumeExpansion` | Allow base storage PCV to be dynamically resizeable (set to null to disable )                              | `true                                                    |
+| `storageClass.allowVolumeExpansion` | Allow base storage PCV to be dynamically resizeable (set to null to disable )                              | `true`                                                    |
 | `storageClass.parameters`      | Parameters for StorageClass                                                                                     | `{}`                                                     |
 | `storageClass.mountOptions`    | Mount options for StorageClass                                                                                  | `[ "vers=4.1", "noatime" ]`                              |
 | `storageClass.reclaimPolicy`   | ReclaimPolicy field of the class, which can be either Delete or Retain                                          | `Delete`                                                    |
@@ -84,7 +84,7 @@ their default values.
 
 ```console
 $ helm install stable/nfs-server-provisioner --name my-release \
-  --set=image.tag=v1.0.8,resources.limits.cpu=200m
+  --set=image.tag=v2.2.1-k8s1.12,resources.limits.cpu=200m
 ```
 
 Alternatively, a YAML file that specifies the values for the above parameters
