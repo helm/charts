@@ -52,7 +52,7 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `env`                              | Any additional environment variables for ambassador pods                        | `{}`                          |
 | `image.pullPolicy`                 | Image pull policy                                                               | `IfNotPresent`                |
 | `image.repository`                 | Image                                                                           | `quay.io/datawire/ambassador` |
-| `image.tag`                        | Image tag                                                                       | `0.60.1`                      |
+| `image.tag`                        | Image tag                                                                       | `0.60.2`                      |
 | `imagePullSecrets`                 | Image pull secrets                                                              | `[]`                          |
 | `namespace.name`                   | Set the `AMBASSADOR_NAMESPACE` environment variable                             | `metadata.namespace`          |
 | `scope.singleNamespace`            | Set the `AMBASSADOR_SINGLE_NAMESPACE` environment variable                      | `false`                       |
