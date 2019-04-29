@@ -117,7 +117,12 @@ annotations: {}
 ## Extra Deployment labels
 labels: {}
 
+## Pod annotations
 podAnnotations: {}
+
+## Pod labels
+podLabels: {}
+
 ##    Read more about kube2iam to provide access to s3 https://github.com/jtblin/kube2iam
 #     iam.amazonaws.com/role: role-arn
 
