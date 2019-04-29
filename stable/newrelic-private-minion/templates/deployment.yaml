@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "newrelic-private-minion.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "newrelic-private-minion.name" . }}
+    helm.sh/chart: {{ include "newrelic-private-minion.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "newrelic-private-minion.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "newrelic-private-minion.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+           {{- if .Values.privateLocationKey }}
+            - name: "MINION_PRIVATE_LOCATION_KEY"
+              value: "{{ .Values.privateLocationKey }}"
+           {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: host-tmp
+              mountPath: /tmp
+            - name: host-docker-socket
+              mountPath: /var/run/docker.sock
+      volumes:
+        - name: host-tmp
+          hostPath:
+            path: /tmp
+        - name: host-docker-socket
+          hostPath:
+              path: /var/run/docker.sock
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
