@@ -64,3 +64,21 @@ resources:
   requests:
     cpu: 100m
     memory: 128Mi
+
+metrics:
+  enabled: false
+  image: prom/mysqld-exporter
+  imageTag: v0.10.0
+  imagePullPolicy: IfNotPresent
+  annotations: {}
+
+  livenessProbe:
+    initialDelaySeconds: 15
+    timeoutSeconds: 5
+  readinessProbe:
+    initialDelaySeconds: 5
+    timeoutSeconds: 1
+  resources:
+    requests:
+      cpu: 100m
+      memory: 100Mi
