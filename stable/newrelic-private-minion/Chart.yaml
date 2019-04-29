@@ -3,3 +3,9 @@ appVersion: "2.1.9"
 description: A Helm chart for Kubernetes
 name: newrelic-private-minion
 version: 0.1.0
+home: https://docs.newrelic.com/docs/synthetics/new-relic-synthetics/private-locations/install-containerized-private-minions-cpms
+icon: https://newrelic.com/assets/newrelic/source/NewRelic-logo-square.svg
+keywords:
+  - synthetic
+  - newrelic
+  - monitoring
