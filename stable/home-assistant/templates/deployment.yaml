@@ -42,7 +42,7 @@ spec:
         - mountPath: {{ .Values.git.keyPath }}/id_rsa
           name: git-secret
           subPath: id_rsa
-        - mountPath: {{ .Values.git.keyPath }}id_rsa.pub
+        - mountPath: {{ .Values.git.keyPath | trimSuffix "/" }}/id_rsa.pub
           name: git-secret
           subPath: id_rsa.pub
         - mountPath: {{ .Values.git.keyPath }}/known_hosts
