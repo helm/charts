@@ -152,6 +152,15 @@ halyard:
       orca-local.yml: |-
         tasks:
           useManagedServiceAccounts: true
+  additionalServiceSettings:
+    create: true
+    data:
+      clouddriver.yml: |-
+        kubernetes:
+          volumes:
+            - id: internal-trust-store
+              mountPath: /etc/ssl/certs/java
+              type: secret
 ```
 
 Any files added through `additionalConfigMaps` will be written to disk at `/opt/halyard/additionalConfigMaps`.

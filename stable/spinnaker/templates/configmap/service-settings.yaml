@@ -5,6 +5,12 @@ metadata:
   labels:
 {{ include "spinnaker.standard-labels" . | indent 4 }}
 data:
+{{- if  and .Values.halyard.additionalServiceSettings.create .Values.halyard.additionalServiceSettings.data }}
+{{- range $index, $content := .Values.halyard.additionalServiceSettings.data }}
+  {{ $index }}: |-
+{{ $content | indent 4 }}
+{{- end }}
+{{- end }}
   redis.yml: |-
 
     {{- if .Values.redis.enabled }}

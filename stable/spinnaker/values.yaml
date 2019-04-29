@@ -35,6 +35,11 @@ halyard:
             remoteIpHeader: X-Forwarded-For
             internalProxies: .*
             httpsServerPort: X-Forwarded-Port
+  additionalServiceSettings:
+    create: false
+    ## Uncomment if you want to add additional service settings into halyard.
+    ## Note that service settings for redis, gate, and deck are already defined
+    data: {}
 
   ## Uncomment if you want to add extra commands to the init script
   ## run by the init container before halyard is started.
