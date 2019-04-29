@@ -51,12 +51,12 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: {{ $key }}
-                  key: {{ $value.awsaccesskeyid | quote }}
+                  key: {{ $value.awsaccesskey | quote }}
             - name: AWS_SECRET_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
                   name: {{ $key }}
-                  key: {{ $value.awssecretaccesskey | quote}}
+                  key: {{ $value.awssecretkey | quote}}
             {{- end }}
             {{- end }}
           {{- with .Values.backup.resources }}
