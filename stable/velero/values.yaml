@@ -19,6 +19,11 @@ podAnnotations: {}
 # Resource requests/limits to specify for the Velero deployment. Optional.
 resources: {}
 
+# CRD options
+# Override for creating CRDs for use in cases where helm chart install has
+# previously failed due to https://github.com/helm/charts/issues/11637
+createCustomResources: true
+
 # Init containers to add to the Velero deployment's pod spec. Optional.
 initContainers: []
   # - name:

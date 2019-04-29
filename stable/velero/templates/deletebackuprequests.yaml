@@ -1,3 +1,4 @@
+{{- if .Values.createCustomResources -}}
 apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
 metadata:
@@ -17,3 +18,4 @@ spec:
   names:
     plural: deletebackuprequests
     kind: DeleteBackupRequest
+{{- end }}
