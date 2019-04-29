@@ -23,6 +23,9 @@ spec:
       labels:
         app: {{ template "vault.name" . }}
         release: {{ .Release.Name }}
+{{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | indent 8 }}
+{{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         {{- range $key, $value := .Values.podAnnotations }}
