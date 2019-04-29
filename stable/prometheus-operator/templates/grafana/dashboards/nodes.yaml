@@ -103,6 +103,13 @@ data:
                                 "intervalFactor": 2,
                                 "legendFormat": "load 15m",
                                 "refId": "C"
+                            },
+                            {
+                                "expr": "count(node_cpu_seconds_total{cluster=\"$cluster\", job=\"node-exporter\", instance=\"$instance\", mode=\"user\"})",
+                                "format": "time_series",
+                                "intervalFactor": 2,
+                                "legendFormat": "logical cores",
+                                "refId": "D"
                             }
                         ],
                         "thresholds": [
