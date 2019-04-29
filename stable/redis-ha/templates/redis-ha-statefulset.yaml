@@ -103,7 +103,7 @@ spec:
             {{- else }}
               name: {{ template "redis-ha.fullname" . }}
             {{- end }}
-              key: auth
+              key: {{ .Values.authKey }}
 {{- end }}
         volumeMounts:
         - name: config
@@ -129,7 +129,7 @@ spec:
             {{- else }}
               name: {{ template "redis-ha.fullname" . }}
             {{- end }}
-              key: auth
+              key: {{ .Values.authKey }}
 {{- end }}
         livenessProbe:
           exec:
@@ -168,7 +168,7 @@ spec:
             {{- else }}
               name: {{ template "redis-ha.fullname" . }}
             {{- end }}
-              key: auth
+              key: {{ .Values.authKey }}
 {{- end }}
         livenessProbe:
           exec:
@@ -210,7 +210,7 @@ spec:
               {{- else }}
                 name: {{ template "redis-ha.fullname" . }}
               {{- end }}
-                key: auth
+                key: {{ .Values.authKey }}
         {{- end }}
         livenessProbe:
           httpGet:
