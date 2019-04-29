@@ -132,7 +132,7 @@ spec:
               export PATH=/usr/local/airflow/.local/bin:$PATH &&
               /usr/local/scripts/install-requirements.sh &&
               echo 'executing worker...' &&
-              airflow worker
+              airflow worker {{- if .Values.workers.celery.queues }} -q {{- join "," .Values.workers.celery.queues -}} {{- end }}
           {{- else }}
             - >
               echo 'waiting 60s...' &&
@@ -140,7 +140,7 @@ spec:
               mkdir -p /usr/local/airflow/.local/bin &&
               export PATH=/usr/local/airflow/.local/bin:$PATH &&
               echo 'executing worker...' &&
-              airflow worker
+              airflow worker {{- if .Values.workers.celery.queues }} -q {{- join "," .Values.workers.celery.queues -}} {{- end }}
           {{- end }}
           ports:
             - name: wlog
