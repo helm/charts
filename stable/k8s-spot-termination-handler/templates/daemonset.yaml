@@ -10,6 +10,7 @@ metadata:
 spec:
   template:
     metadata:
+    {{- if .Values.podAnnotations }}
       annotations:
 {{ toYaml .Values.podAnnotations | indent 8 }}
     {{- end }}
