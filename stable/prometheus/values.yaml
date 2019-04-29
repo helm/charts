@@ -183,6 +183,11 @@ alertmanager:
   ##
   podAnnotations: {}
 
+  ## Labels to be added to alertmanager pods
+  ##
+  pod:
+    labels: {}
+
   ## Use a StatefulSet if replicaCount needs to be greater than 1 (see below)
   ##
   replicaCount: 1
@@ -344,6 +349,8 @@ kubeStateMetrics:
   ##
   podAnnotations: {}
 
+  ## Labels to be added to kube-state-metrics pods
+  ##
   pod:
     labels: {}
 
@@ -719,7 +726,11 @@ server:
   ## Annotations to be added to Prometheus server pods
   ##
   podAnnotations: {}
-    # iam.amazonaws.com/role: prometheus
+
+  ## Labels to be added to Prometheus server pods
+  ##
+  pod:
+    labels: {}
 
   ## Use a StatefulSet if replicaCount needs to be greater than 1 (see below)
   ##
@@ -847,6 +858,11 @@ pushgateway:
   ## Annotations to be added to pushgateway pods
   ##
   podAnnotations: {}
+
+  ## Labels to be added to pushgateway pods
+  ##
+  pod:
+    labels: {}
 
   replicaCount: 1
 

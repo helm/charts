@@ -18,6 +18,9 @@ spec:
     {{- end }}
       labels:
         {{- include "prometheus.pushgateway.labels" . | nindent 8 }}
+{{- if .Values.pushgateway.pod.labels }}
+{{ toYaml .Values.pushgateway.pod.labels | indent 8 }}
+{{- end }}
     spec:
       serviceAccountName: {{ template "prometheus.serviceAccountName.pushgateway" . }}
 {{- if .Values.pushgateway.priorityClassName }}
