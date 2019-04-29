@@ -38,7 +38,7 @@ The following table lists the configurable parameters of the Prometheus Adapter 
 | ------------------------------- | ------------------------------------------------------------------------------- | --------------------------------------------|
 | `affinity`                      | Node affinity                                                                   | `{}`                                        |
 | `image.repository`              | Image repository                                                                | `directxman12/k8s-prometheus-adapter-amd64` |
-| `image.tag`                     | Image tag                                                                       | `v0.4.1`                                    |
+| `image.tag`                     | Image tag                                                                       | `v0.5.0`                                    |
 | `image.pullPolicy`              | Image pull policy                                                               | `IfNotPresent`                              |
 | `image.pullSecrets`             | Image pull secrets                                                              | `{}`                                        |
 | `logLevel`                      | Log level                                                                       | `4`                                         |
@@ -50,7 +50,8 @@ The following table lists the configurable parameters of the Prometheus Adapter 
 | `resources`                     | CPU/Memory resource requests/limits                                             | `{}`                                        |
 | `rules.default`                 | If `true`, enable a set of default rules in the configmap                       | `true`                                      |
 | `rules.custom`                  | A list of custom configmap rules                                                | `[]`                                        |
-| `rules.existing`                | The name of an existing configMap with rules. Overrides default and custom.     | ``                                          |
+| `rules.existing`                | The name of an existing configMap with rules. Overrides default, custom and external. | ``                                    |
+| `rules.external`                | A list of custom rules for external metrics API                                 | `[]`                                        |
 | `service.annotations`           | Annotations to add to the service                                               | `{}`                                        |
 | `service.port`                  | Service port to expose                                                          | `443`                                       |
 | `service.type`                  | Type of service to create                                                       | `ClusterIP`                                 |
