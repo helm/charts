@@ -103,6 +103,9 @@ The following table lists the configurable parameters of the Phabricator chart a
 | `metrics.image.pullSecrets`            | Specify docker-registry secret names as an array | `[]` (does not add image pull secrets to deployed pods)      |
 | `metrics.podAnnotations`               | Additional annotations for Metrics exporter pod  | `{prometheus.io/scrape: "true", prometheus.io/port: "9117"}` |
 | `metrics.resources`                    | Exporter resource requests/limit                 | {}                                                    |
+| `nodeSelector`                         | Node labels for pod assignment                   | `nil`                                                  |
+| `affinity`                             | Node/pod affinities                              | `nil`                                                  |
+| `tolerations`                          | List of node taints to tolerate                  | `nil`                                                  |
 
 The above parameters map to the env variables defined in [bitnami/phabricator](http://github.com/bitnami/bitnami-docker-phabricator). For more information please refer to the [bitnami/phabricator](http://github.com/bitnami/bitnami-docker-phabricator) image documentation.
 

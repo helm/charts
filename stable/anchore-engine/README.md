@@ -43,11 +43,48 @@ The recommended way to install the Anchore Engine Chart is with a customized val
     defaultAdminPassword: <PASSWORD>
     defaultAdminEmail: <EMAIL>
   ```
+
+#### Install using Google CloudSQL
+  ```
+  ## anchore_values.yaml
+  postgresql:
+    enabled: false
+    postgresPassword: <CLOUDSQL-PASSWORD>
+    postgresUser: <CLOUDSQL-USER>
+    postgresDatabase: <CLOUDSQL-DATABASE>
+
+  cloudsql:
+    enabled: true
+    instance: "project:zone:cloudsqlinstancename"
+    image:
+      repository: gcr.io/cloudsql-docker/gce-proxy
+      tag: 1.12
+      pullPolicy: IfNotPresent
+  ```
+
+## Upgrading to Chart version 0.12.0
+Redis dependency chart major version updated to v6.1.3 - check redis chart readme for instructions for upgrade.
+
+The ingress configuration has been consolidated to a single global section. This should make it easier to manage the ingress resource. Before performing an upgrade ensure you update your custom values file to reflect this change.
+
+#### Chart v0.12.0 ingress config
+```
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: gce
+  apiPath: /v1/*
+  uiPath: /*
+  apiHosts:
+  - anchore-api.example.com
+  uiHosts:
+  - anchore-ui.example.com
+```
+
 ## Upgrading to Chart version 0.11.0
 The image map has been removed in all configuration sections in favor of individual keys. This should make configuration for tools like skaffold simpler. If using a custom values file, update your `image.repository`, `image.tag`, & `image.pullPolicy` values with `image` & `imagePullPolicy`.
 
-##### v0.11.0 image config
-
+#### Chart v0.11.0 image config
 ```
 anchoreGlobal:
   image: docker.io/anchore/anchore-engine:v0.3.2
@@ -69,16 +106,7 @@ Ingress resources have been changed to work natively with NGINX ingress controll
 
 Service configs have been moved from the anchoreGlobal section, to individual component sections in the values.yaml file. If you're upgrading from a previous install and are using custom ports or serviceTypes, be sure to update your values.yaml file accordingly.
 
-##### v0.9.0 service config
-
-```
-anchoreGlobal:
-  service:
-    type: ClusterIP
-    apiPort: 8228
-```
-
-##### v0.10.0 service config
+#### Chart v0.10.0 service config
 ```
 anchoreApi:
   service:
@@ -107,33 +135,32 @@ All configurations should be appended to your custom `anchore_values.yaml` file 
 
 #### Using Ingress
 
-This configuration allows SSL termination at the LB.
-
-*Note: Ingress controllers can use custom hosts or paths for routing requests. Custom paths or hosts should be set in the corresponding component configuration - anchoreEnterpriseUI.ingress or anchoreApi.ingress*
+This configuration allows SSL termination using your chosen ingress controller.
 
 ##### NGINX Ingress Controller
 ```
-anchoreGlobal:
-  ingress:
-    enabled: true
+ingress:
+  enabled: true
 ```
 
 ##### GCE Ingress Controller
   ```
-  anchoreGlobal:
-    ingress:
-      enabled: true
-      annotations: null
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: gce
+    apiPath: /v1/*
+    uiPath: /*
+    apiHosts:
+      - anchore-api.example.com
+    uiHosts:
+      - anchore-ui.example.com
 
   anchoreApi:
-    ingress:
-      path: /v1/*
     service:
       type: NodePort
 
   anchoreEnterpriseUi:
-    ingress:
-      path: /*
     service
       type: NodePort
   ```
@@ -377,3 +404,9 @@ To use this Helm chart with the enterprise services enabled, perform these steps
   anchore-ui-redis:
     password: <PASSWORD>
   ```
+
+## Custom Secret
+Can be used to override the default secrets.yaml provided
+```
+anchoreGlobal:
+  existingSecret: "foo-bar"

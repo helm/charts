@@ -1,3 +1,4 @@
+{{- if .Values.web.enabled -}}
 {{- if .Values.rbac.create -}}
 {{- if .Values.concourse.web.kubernetes.enabled -}}
 {{- range .Values.concourse.web.kubernetes.teams }}
@@ -21,5 +22,6 @@ subjects:
   name: {{ template "concourse.web.fullname" $ }}
   namespace: {{ $.Release.Namespace }}
 {{- end }}
+{{- end -}}
 {{- end -}}
 {{- end -}}
