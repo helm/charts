@@ -1,1 +1,11 @@
+{{- if .Values.privateLocationKey }}
 1. Private minion is running
+{{ else -}}
+##############################################################################
+####   ERROR: Private locations require a location key.                   ####
+##############################################################################
+
+1. Please setup a private location and add privateLocationKey to your values - https://docs.newrelic.com/docs/synthetics/new-relic-synthetics/private-locations/private-locations-overview-monitor-internal-sites-add-new-locations#create-location
+
+{{ end -}}
+
