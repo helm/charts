@@ -26,7 +26,7 @@ livenessProbe:
 
 image:
   repository: grafana/grafana
-  tag: 6.1.4
+  tag: 6.1.6
   pullPolicy: IfNotPresent
 
 testFramework:
