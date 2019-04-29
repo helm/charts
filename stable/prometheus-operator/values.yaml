@@ -1160,6 +1160,10 @@ prometheus:
     ##
     logLevel: info
 
+    ## Log format for Prometheus be configured in
+    ##
+    logFormat: logfmt
+
     ## Prefix used to register routes, overriding externalUrl route.
     ## Useful for proxies that rewrite URLs.
     ##
