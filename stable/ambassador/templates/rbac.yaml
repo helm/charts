@@ -28,6 +28,7 @@ rules:
     - filterpolicies
     verbs: ["get", "list", "watch"]
   {{- end}}
+
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
 {{- if .Values.rbac.namespaced }}

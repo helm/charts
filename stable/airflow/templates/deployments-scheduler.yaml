@@ -103,9 +103,9 @@ spec:
             - name: connections
               mountPath: /usr/local/connections
           {{- end}}
-          {{- if .Values.airflow.variables }}
-            - name: variables
-              mountPath: /usr/local/variables/
+          {{- if or .Values.airflow.variables .Values.airflow.pools }}
+            - name: variables-pools
+              mountPath: /usr/local/variables-pools/
           {{- end}}
           {{- range .Values.airflow.extraConfigmapMounts }}
             - name: {{ .name }}
@@ -137,7 +137,11 @@ spec:
             {{- end }}
             {{- if .Values.airflow.variables }}
               echo "adding variables" &&
-              airflow variables -i /usr/local/variables/variables.json &&
+              airflow variables -i /usr/local/variables-pools/variables.json &&
+            {{- end }}
+            {{- if .Values.airflow.variables }}
+              echo "adding pools" &&
+              airflow pool -i /usr/local/variables-pools/pools.json &&
             {{- end }}
               echo "executing scheduler" &&
               airflow scheduler -n {{ .Values.airflow.schedulerNumRuns }}
@@ -155,7 +159,11 @@ spec:
             {{- end }}
             {{- if .Values.airflow.variables }}
               echo "adding variables" &&
-              airflow variables -i /usr/local/variables/variables.json &&
+              airflow variables -i /usr/local/variables-pools/variables.json &&
+            {{- end }}
+            {{- if .Values.airflow.variables }}
+              echo "adding pools" &&
+              airflow pool -i /usr/local/variables-pools/pools.json &&
             {{- end }}
               echo "executing scheduler" &&
               airflow scheduler -n {{ .Values.airflow.schedulerNumRuns }}
@@ -198,10 +206,10 @@ spec:
             secretName: {{ template "airflow.fullname" . }}-connections
             defaultMode: 0755
         {{- end }}
-        {{- if .Values.airflow.variables }}
-        - name: variables
+        {{- if or .Values.airflow.variables .Values.airflow.pools }}
+        - name: variables-pools
           configMap:
-            name: {{ template "airflow.fullname" . }}-variables
+            name: {{ template "airflow.fullname" . }}-variables-pools
             defaultMode: 0755
         {{- end }}
         {{- range .Values.airflow.extraConfigmapMounts }}
