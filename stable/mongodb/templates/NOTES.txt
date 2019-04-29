@@ -19,7 +19,7 @@
 
 MongoDB can be accessed via port 27017 on the following DNS name from within your cluster:
 
-    {{ template "mongodb.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+    {{ template "mongodb.fullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}
 
 {{ if .Values.usePassword -}}
 
