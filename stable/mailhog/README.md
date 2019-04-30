@@ -1,5 +1,15 @@
-# Mailhog
+# DEPRECATED - Mailhog
 
+**This chart has been deprecated and moved to its new home:**
+
+- **GitHub repo:** https://github.com/codecentric/helm-charts
+- **Charts repo:** https://codecentric.github.io/helm-charts
+
+```bash
+helm repo add codecentric https://codecentric.github.io/helm-charts
+```
+
+---
 [Mailhog](http://iankent.uk/project/mailhog/) is an e-mail testing tool for developers.
 
 ## TL;DR;

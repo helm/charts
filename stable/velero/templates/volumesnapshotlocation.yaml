@@ -10,9 +10,7 @@ metadata:
 spec:
 {{- with .Values.configuration }}
 {{- with .volumeSnapshotLocation }}
-  provider: {{ .name  }}
-  objectStorage:
-    bucket: {{ .bucket  }}
+  provider: {{ .name }}
 {{ with .config }}
   config:
   {{- with .region }}
