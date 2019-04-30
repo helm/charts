@@ -346,4 +346,4 @@ $ kubectl delete statefulset rabbitmq --cascade=false
 
 ## Support
 
-TODO
+If you encountered a problem running this container, you can file an issue [here](https://github.com/bitnami/bitnami-docker-rabbitmq#issues)
