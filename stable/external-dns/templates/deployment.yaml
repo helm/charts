@@ -104,7 +104,7 @@ spec:
             - --rfc2136-tsig-axfr
               {{- end }}
             {{- else }}
-            - --rfc2136-insecure=false
+            - --rfc2136-insecure
             {{- end }}
           {{- end }}
           volumeMounts:
