@@ -160,6 +160,12 @@ deployRestic: false
 #        - foo
 schedules: {}
 
+# Whether or not to clean up CustomResourceDefintions when deleting a release.
+# This is useful in case there's multiple releases deployed and deleting the CRDs when deleting one would render the other broken.
+# Cleaning up CRDs will delete the BackupStorageLocation and VolumeSnapshotLocation instances, which would have to be reconfigured.
+# Backup data in object storage will _not_ be deleted, however Backup instances in the Kubernetes API will.
+cleanUpCRDs: false
+
 ##
 ## End of additional Velero resource settings.
 ##

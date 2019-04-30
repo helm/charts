@@ -1,0 +1,6 @@
+serviceAccount:
+  server:
+    name: velero
+
+# Always clean up CRDs in CI.
+cleanUpCRDs: true
