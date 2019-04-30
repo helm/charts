@@ -14,7 +14,7 @@
 
 all: push
 
-TAG = 0.1.0
+TAG = 0.2.0
 PREFIX = codylundquist/helm-rethinkdb-cluster
 
 buildprobe:

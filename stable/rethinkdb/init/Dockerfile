@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM rethinkdb:2.3.5
-MAINTAINER Cody Lundquist <cody.lundquist@gmail.com>
+FROM rethinkdb:2.3.6
+LABEL maintainer="Cody Lundquist <cody.lundquist@gmail.com>"
 
 RUN apt-get update && \
     apt-get install -yq curl && \

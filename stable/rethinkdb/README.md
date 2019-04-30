@@ -1,4 +1,4 @@
-# RethinkDB 2.3.5 Helm Chart
+# RethinkDB 2.3.6 Helm Chart
 
 ## Prerequisites Details
 * Kubernetes 1.5+ with Beta APIs enabled.
@@ -48,6 +48,7 @@ Parameter | Description | Default
 `cluster.persistentVolume.size` | Persistent volume size | `1Gi`
 `cluster.persistentVolume.annotations` | Persistent volume annotations | `{}`
 `cluster.rethinkCacheSize` | RethinkDB `cache-size` value in MB | `100`
+`cluster.rethinkCores` | RethinkDB `cores` value. If blank, RethinkDB uses the number of cores of the CPU | `undefined`
 `proxy.replicas` | Number of RethinkDB Proxy replicas | `1`
 `proxy.resources` | Resource configuration for each RethinkDB Proxy Pod | `{}`
 `proxy.podAnnotations` | Annotations to be added to RethinkDB Proxy Pods | `{}`

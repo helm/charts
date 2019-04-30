@@ -1,7 +1,7 @@
 # Specs for the RethinkDB image
 image:
   name: codylundquist/helm-rethinkdb-cluster
-  tag: 0.1.0
+  tag: 0.2.0
   pullPolicy: IfNotPresent
 
 # RethinkDB Cluster Config
@@ -30,12 +30,16 @@ cluster:
       - ReadWriteOnce
     size: 1Gi
     annotations: {}
-  # RethinkDB Cache Size in MB
+  # RethinkDB: Cache Size in MB
   rethinkCacheSize: 100
+  # RethinkDB: Number of Cores to use. If left blank,
+  # RethinkDB uses the number of available cores
+  rethinkCores:
+
   livenessProbe:
     exec:
       command:
-        - /rethinkdb-probe
+      - /rethinkdb-probe
     failureThreshold: 3
     initialDelaySeconds: 15
     periodSeconds: 10
@@ -44,7 +48,7 @@ cluster:
   readinessProbe:
     exec:
       command:
-        - /rethinkdb-probe
+      - /rethinkdb-probe
     failureThreshold: 3
     initialDelaySeconds: 15
     periodSeconds: 10
