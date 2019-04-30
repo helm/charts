@@ -147,11 +147,11 @@ postgresqlDataDir: /bitnami/postgresql
 # extendedConfConfigMap:
 
 ## initdb scripts
-## Specify dictionnary of scripts to be run at first boot
+## Specify dictionary of scripts to be run at first boot
 ## Alternatively, you can put your scripts under the files/docker-entrypoint-initdb.d directory
 ##
 # initdbScripts:
-#   my_init_script.sh:|
+#   my_init_script.sh: |
 #      #!/bin/sh
 #      echo "Do something."
 #
@@ -187,6 +187,12 @@ service:
   ##
   # loadBalancerIP:
 
+  ## Load Balancer sources
+  ## https://kubernetes.io/docs/tasks/access-application-cluster/configure-cloud-provider-firewall/#restrict-access-for-loadbalancer-service
+  ##
+  # loadBalancerSourceRanges:
+  # - 10.10.10.0/24
+
 ## PostgreSQL data Persistent Volume Storage Class
 ## If defined, storageClassName: <storageClass>
 ## If set to "-", storageClassName: "", which disables dynamic provisioning
@@ -199,8 +205,19 @@ persistence:
   ## A manually managed Persistent Volume and Claim
   ## If defined, PVC must be created manually before volume will be bound
   ## The value is evaluated as a template, so, for example, the name can depend on .Release or .Chart
+  ##
   # existingClaim:
+
+  ## The path the volume will be mounted at, useful when using different
+  ## PostgreSQL images.
+  ##
   mountPath: /bitnami/postgresql
+
+  ## The subdirectory of the volume to mount to, useful in dev environments
+  ## and one PV for multiple services.
+  ##
+  subPath: ""
+
   # storageClass: "-"
   accessModes:
     - ReadWriteOnce
@@ -300,7 +317,12 @@ metrics:
     ##
     # pullSecrets:
     #   - myRegistryKeySecretName
-
+  ## Pod Security Context
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+  ##
+  securityContext:
+    enabled: false
+    runAsUser: 1001
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
   ## Configure extra options for liveness and readiness probes
   livenessProbe:

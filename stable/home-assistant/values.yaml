@@ -4,7 +4,7 @@
 
 image:
   repository: homeassistant/home-assistant
-  tag: 0.89.1
+  tag: 0.90.2
   pullPolicy: IfNotPresent
   pullSecrets: []
 
@@ -71,6 +71,22 @@ extraEnvSecrets:
   # MQTT_PASSWORD:
   #   secret: mqtt
   #   key: password
+
+git:
+  enabled: false
+
+  ## we just use the hass-configurator container image
+  ## you can use any image which has git and openssh installed
+  ##
+  image:
+    repository: causticlab/hass-configurator-docker
+    tag: x86_64-0.3.1
+    pullPolicy: IfNotPresent
+
+  # repo:
+  secret: git-creds
+  syncPath: /config
+  keyPath: /root/.ssh
 
 configurator:
   enabled: false

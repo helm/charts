@@ -26,8 +26,12 @@ livenessProbe:
 
 image:
   repository: grafana/grafana
-  tag: 6.0.2
+  tag: 6.1.6
   pullPolicy: IfNotPresent
+
+testFramework:
+  image: "dduportal/bats"
+  tag: "0.4.0"
 
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
@@ -365,7 +369,7 @@ smtp:
 ## Sidecars that collect the configmaps with specified label and stores the included files them into the respective folders
 ## Requires at least Grafana 5 to work and can't be used together with parameters dashboardProviders, datasources and dashboards
 sidecar:
-  image: kiwigrid/k8s-sidecar:0.0.13
+  image: kiwigrid/k8s-sidecar:0.0.16
   imagePullPolicy: IfNotPresent
   resources: {}
 #   limits:
@@ -374,12 +378,16 @@ sidecar:
 #   requests:
 #     cpu: 50m
 #     memory: 50Mi
+  # skipTlsVerify Set to true to skip tls verification for kube api calls
+  # skipTlsVerify: true
   dashboards:
     enabled: false
     # label that the configmaps with dashboards are marked with
     label: grafana_dashboard
-    # folder in the pod that should hold the collected dashboards
+    # folder in the pod that should hold the collected dashboards (unless `defaultFolderName` is set)
     folder: /tmp/dashboards
+    # The default folder name, it will create a subfolder under the `folder` and put dashboards in there instead
+    defaultFolderName: null
     # If specified, the sidecar will search for dashboard config-maps inside this namespace.
     # Otherwise the namespace in which the sidecar is running will be used.
     # It's also possible to specify ALL to search in all namespaces

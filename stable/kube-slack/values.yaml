@@ -1,12 +1,14 @@
-## URL of your Incoming Webhook in Slack:
-slackUrl: ""
-## Time to wait after pod becomes not ready before notifying
-notReadyMinTime: 60000  # in ms
+## Environment values for the deployment
+envVars:
+  ## URL of your Incoming Webhook in Slack:
+  SLACK_URL: ""
+  ## Time to wait after pod becomes not ready before notifying
+  NOT_READY_MIN_TIME: "60000"  # in ms
 
 ## Configuration for the deployment:
 image:
   repository: willwill/kube-slack
-  tag: v3.6.0
+  tag: v4.1.1
   pullPolicy: IfNotPresent
 
 resources: {}
@@ -33,3 +35,7 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+annotations: {}
+  # Specify which annotations must be added to kube-slack pods
+  # fluentbit.io/exclude: true

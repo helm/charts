@@ -93,9 +93,9 @@ server:
     #  server.env.extraEnvVars is the list of environment variables passed to GoCD Server
     extraEnvVars:
       - name: GOCD_PLUGIN_INSTALL_kubernetes-elastic-agents
-        value: https://github.com/gocd/kubernetes-elastic-agents/releases/download/2.1.0-135/kubernetes-elastic-agent-2.1.0-135.jar
+        value: https://github.com/gocd/kubernetes-elastic-agents/releases/download/v3.0.0-156/kubernetes-elastic-agent-3.0.0-156.jar
       - name: GOCD_PLUGIN_INSTALL_docker-registry-artifact-plugin
-        value: https://github.com/gocd/docker-registry-artifact-plugin/releases/download/1.0.0-25/docker-registry-artifact-plugin-1.0.0-25.jar
+        value: https://github.com/gocd/docker-registry-artifact-plugin/releases/download/v1.0.1-92/docker-registry-artifact-plugin-1.0.1-92.jar
   service:
     # server.service.type is the GoCD Server service type
     type: "NodePort"

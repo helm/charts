@@ -144,6 +144,11 @@ alertmanager:
     hosts: []
       # - alertmanager.domain.com
 
+    ## Paths to use for ingress rules - one path should match the alertmanagerSpec.routePrefix
+    ##
+    paths: []
+    # - /
+
     ## TLS configuration for Alertmanager Ingress
     ## Secret must be manually created in the namespace
     ##
@@ -194,7 +199,13 @@ alertmanager:
     ##
     image:
       repository: quay.io/prometheus/alertmanager
-      tag: v0.16.1
+      tag: v0.16.2
+
+    ## If true then the user will be responsible to provide a secret with alertmanager configuration
+    ## So when true the config part will be ignored (including templateFiles) and the one in the secret will be used
+    ##
+    useExistingSecret: false
+
 
     ## Secrets is a list of Secrets in the same namespace as the Alertmanager object, which shall be mounted into the
     ## Alertmanager Pods. The Secrets are mounted into /etc/alertmanager/secrets/.
@@ -317,11 +328,11 @@ grafana:
   adminPassword: prom-operator
 
   ingress:
-    ## If true, Prometheus Ingress will be created
+    ## If true, Grafana Ingress will be created
     ##
     enabled: false
 
-    ## Annotations for Prometheus Ingress
+    ## Annotations for Grafana Ingress
     ##
     annotations: {}
       # kubernetes.io/ingress.class: nginx
@@ -335,16 +346,19 @@ grafana:
     ## Must be provided if Ingress is enable.
     ##
     # hosts:
-    #   - prometheus.domain.com
+    #   - grafana.domain.com
     hosts: []
 
-    ## TLS configuration for prometheus Ingress
+    ## Path for grafana ingress
+    path: /
+
+    ## TLS configuration for grafana Ingress
     ## Secret must be manually created in the namespace
     ##
     tls: []
-    # - secretName: prometheus-general-tls
+    # - secretName: grafana-general-tls
     #   hosts:
-    #   - prometheus.example.com
+    #   - grafana.example.com
 
   sidecar:
     dashboards:
@@ -352,6 +366,7 @@ grafana:
       label: grafana_dashboard
     datasources:
       enabled: true
+      defaultDatasourceEnabled: true
       label: grafana_datasource
 
   extraConfigmapMounts: []
@@ -414,6 +429,13 @@ kubeApiServer:
         component: apiserver
         provider: kubernetes
 
+    ## 	metric relabel configs to apply to samples before ingestion.
+    ##
+    metricRelabelings: []
+    # - action: keep
+    #   regex: 'kube_(daemonset|deployment|pod|namespace|node|statefulset).+'
+    #   sourceLabels: [__name__]
+
 ## Component scraping the kubelet and kubelet-hosted cAdvisor
 ##
 kubelet:
@@ -444,6 +466,15 @@ kubelet:
     #   replacement: $1
     #   action: drop
 
+    # 	relabel configs to apply to samples before ingestion.
+    ##
+    cAdvisorRelabelings: []
+    # - sourceLabels: [__meta_kubernetes_pod_node_name]
+    #   separator: ;
+    #   regex: ^(.*)$
+    #   target_label: nodename
+    #   replacement: $1
+    #   action: replace
 
 ## Component scraping the kube controller manager
 ##
@@ -475,6 +506,23 @@ kubeControllerManager:
     ##
     https: false
 
+    ## 	metric relabel configs to apply to samples before ingestion.
+    ##
+    metricRelabelings: []
+    # - action: keep
+    #   regex: 'kube_(daemonset|deployment|pod|namespace|node|statefulset).+'
+    #   sourceLabels: [__name__]
+
+    # 	relabel configs to apply to samples before ingestion.
+    ##
+    relabelings: []
+    # - sourceLabels: [__meta_kubernetes_pod_node_name]
+    #   separator: ;
+    #   regex: ^(.*)$
+    #   target_label: nodename
+    #   replacement: $1
+    #   action: replace
+
 ## Component scraping coreDns. Use either this or kubeDns
 ##
 coreDns:
@@ -489,6 +537,23 @@ coreDns:
     ##
     interval: ""
 
+    ## 	metric relabel configs to apply to samples before ingestion.
+    ##
+    metricRelabelings: []
+    # - action: keep
+    #   regex: 'kube_(daemonset|deployment|pod|namespace|node|statefulset).+'
+    #   sourceLabels: [__name__]
+
+    # 	relabel configs to apply to samples before ingestion.
+    ##
+    relabelings: []
+    # - sourceLabels: [__meta_kubernetes_pod_node_name]
+    #   separator: ;
+    #   regex: ^(.*)$
+    #   target_label: nodename
+    #   replacement: $1
+    #   action: replace
+
 ## Component scraping kubeDns. Use either this or coreDns
 ##
 kubeDns:
@@ -500,6 +565,24 @@ kubeDns:
     ## Scrape interval. If not set, the Prometheus default scrape interval is used.
     ##
     interval: ""
+
+    ## 	metric relabel configs to apply to samples before ingestion.
+    ##
+    metricRelabelings: []
+    # - action: keep
+    #   regex: 'kube_(daemonset|deployment|pod|namespace|node|statefulset).+'
+    #   sourceLabels: [__name__]
+
+    # 	relabel configs to apply to samples before ingestion.
+    ##
+    relabelings: []
+    # - sourceLabels: [__meta_kubernetes_pod_node_name]
+    #   separator: ;
+    #   regex: ^(.*)$
+    #   target_label: nodename
+    #   replacement: $1
+    #   action: replace
+
 ## Component scraping etcd
 ##
 kubeEtcd:
@@ -542,6 +625,23 @@ kubeEtcd:
     certFile: ""
     keyFile: ""
 
+    ## 	metric relabel configs to apply to samples before ingestion.
+    ##
+    metricRelabelings: []
+    # - action: keep
+    #   regex: 'kube_(daemonset|deployment|pod|namespace|node|statefulset).+'
+    #   sourceLabels: [__name__]
+
+    # 	relabel configs to apply to samples before ingestion.
+    ##
+    relabelings: []
+    # - sourceLabels: [__meta_kubernetes_pod_node_name]
+    #   separator: ;
+    #   regex: ^(.*)$
+    #   target_label: nodename
+    #   replacement: $1
+    #   action: replace
+
 
 ## Component scraping kube scheduler
 ##
@@ -572,6 +672,23 @@ kubeScheduler:
     ##
     https: false
 
+    ## 	metric relabel configs to apply to samples before ingestion.
+    ##
+    metricRelabelings: []
+    # - action: keep
+    #   regex: 'kube_(daemonset|deployment|pod|namespace|node|statefulset).+'
+    #   sourceLabels: [__name__]
+
+    # 	relabel configs to apply to samples before ingestion.
+    ##
+    relabelings: []
+    # - sourceLabels: [__meta_kubernetes_pod_node_name]
+    #   separator: ;
+    #   regex: ^(.*)$
+    #   target_label: nodename
+    #   replacement: $1
+    #   action: replace
+
 ## Component scraping kube state metrics
 ##
 kubeStateMetrics:
@@ -580,6 +697,23 @@ kubeStateMetrics:
     ## Scrape interval. If not set, the Prometheus default scrape interval is used.
     ##
     interval: ""
+
+    ## 	metric relabel configs to apply to samples before ingestion.
+    ##
+    metricRelabelings: []
+    # - action: keep
+    #   regex: 'kube_(daemonset|deployment|pod|namespace|node|statefulset).+'
+    #   sourceLabels: [__name__]
+
+    # 	relabel configs to apply to samples before ingestion.
+    ##
+    relabelings: []
+    # - sourceLabels: [__meta_kubernetes_pod_node_name]
+    #   separator: ;
+    #   regex: ^(.*)$
+    #   target_label: nodename
+    #   replacement: $1
+    #   action: replace
 
 ## Configuration for kube-state-metrics subchart
 ##
@@ -611,6 +745,16 @@ nodeExporter:
     #   regex: ^node_mountstats_nfs_(event|operations|transport)_.+
     #   replacement: $1
     #   action: drop
+
+    ## 	relabel configs to apply to samples before ingestion.
+    ##
+    relabelings: []
+    # - sourceLabels: [__meta_kubernetes_pod_node_name]
+    #   separator: ;
+    #   regex: ^(.*)$
+    #   target_label: nodename
+    #   replacement: $1
+    #   action: replace
 
 ## Configuration for prometheus-node-exporter subchart
 ##
@@ -645,7 +789,7 @@ prometheusOperator:
   ## Port to expose on each node
   ## Only used if service.type is 'NodePort'
   ##
-    nodePort: 38080
+    nodePort: 30080
 
   ## Additional ports to open for Prometheus service
   ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#multi-port-services
@@ -685,6 +829,10 @@ prometheusOperator:
   ## Labels to add to the operator pod
   ##
   podLabels: {}
+
+  ## Annotations to add to the operator pod
+  ##
+  podAnnotations: {}
 
   ## Assign a PriorityClassName to pods if set
   # priorityClassName: ""
@@ -818,7 +966,7 @@ prometheus:
     ## Port to expose on each node
     ## Only used if service.type is 'NodePort'
     ##
-    nodePort: 39090
+    nodePort: 30090
 
     ## Loadbalancer IP
     ## Only use if service.type is "loadbalancer"
@@ -859,6 +1007,11 @@ prometheus:
     #   - prometheus.domain.com
     hosts: []
 
+    ## Paths to use for ingress rules - one path should match the prometheusSpec.routePrefix
+    ##
+    paths: []
+    # - /
+
     ## TLS configuration for Prometheus Ingress
     ## Secret must be manually created in the namespace
     ##
@@ -894,7 +1047,7 @@ prometheus:
     ##
     image:
       repository: quay.io/prometheus/prometheus
-      tag: v2.7.1
+      tag: v2.9.1
 
     ## Tolerations for use with node taints
     ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
@@ -1013,6 +1166,10 @@ prometheus:
     ##
     logLevel: info
 
+    ## Log format for Prometheus be configured in
+    ##
+    logFormat: logfmt
+
     ## Prefix used to register routes, overriding externalUrl route.
     ## Useful for proxies that rewrite URLs.
     ##
@@ -1039,14 +1196,13 @@ prometheus:
 
     ## The remote_read spec configuration for Prometheus.
     ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#remotereadspec
-    remoteRead: {}
+    remoteRead: []
     # - url: http://remote1/read
 
     ## The remote_write spec configuration for Prometheus.
     ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#remotewritespec
-    remoteWrite: {}
-      # remoteWrite:
-      #   - url: http://remote1/push
+    remoteWrite: []
+    # - url: http://remote1/push
 
     ## Resource limits & requests
     ##

@@ -40,6 +40,18 @@ spec:
         - name: {{ .Values.airflow.image.pullSecret }}
       {{- end }}
       restartPolicy: Always
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      {{- end }}
       serviceAccountName: {{ template "airflow.serviceAccountName" . }}
       {{- if .Values.dags.initContainer.enabled }}
       initContainers:
@@ -91,14 +103,17 @@ spec:
             - name: connections
               mountPath: /usr/local/connections
           {{- end}}
-          {{- if .Values.airflow.variables }}
-            - name: variables
-              mountPath: /usr/local/variables/
+          {{- if or .Values.airflow.variables .Values.airflow.pools }}
+            - name: variables-pools
+              mountPath: /usr/local/variables-pools/
           {{- end}}
           {{- range .Values.airflow.extraConfigmapMounts }}
             - name: {{ .name }}
               mountPath: {{ .mountPath }}
               readOnly: {{ .readOnly }}
+              {{ if .subPath }}
+              subPath: {{ .subPath }}
+              {{ end }}
           {{- end }}
 {{- if .Values.airflow.extraVolumeMounts }}
 {{ toYaml .Values.airflow.extraVolumeMounts | indent 12 }}
@@ -122,7 +137,11 @@ spec:
             {{- end }}
             {{- if .Values.airflow.variables }}
               echo "adding variables" &&
-              airflow variables -i /usr/local/variables/variables.json &&
+              airflow variables -i /usr/local/variables-pools/variables.json &&
+            {{- end }}
+            {{- if .Values.airflow.variables }}
+              echo "adding pools" &&
+              airflow pool -i /usr/local/variables-pools/pools.json &&
             {{- end }}
               echo "executing scheduler" &&
               airflow scheduler -n {{ .Values.airflow.schedulerNumRuns }}
@@ -140,7 +159,11 @@ spec:
             {{- end }}
             {{- if .Values.airflow.variables }}
               echo "adding variables" &&
-              airflow variables -i /usr/local/variables/variables.json &&
+              airflow variables -i /usr/local/variables-pools/variables.json &&
+            {{- end }}
+            {{- if .Values.airflow.variables }}
+              echo "adding pools" &&
+              airflow pool -i /usr/local/variables-pools/pools.json &&
             {{- end }}
               echo "executing scheduler" &&
               airflow scheduler -n {{ .Values.airflow.schedulerNumRuns }}
@@ -183,10 +206,10 @@ spec:
             secretName: {{ template "airflow.fullname" . }}-connections
             defaultMode: 0755
         {{- end }}
-        {{- if .Values.airflow.variables }}
-        - name: variables
+        {{- if or .Values.airflow.variables .Values.airflow.pools }}
+        - name: variables-pools
           configMap:
-            name: {{ template "airflow.fullname" . }}-variables
+            name: {{ template "airflow.fullname" . }}-variables-pools
             defaultMode: 0755
         {{- end }}
         {{- range .Values.airflow.extraConfigmapMounts }}
