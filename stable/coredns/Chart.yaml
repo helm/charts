@@ -1,6 +1,6 @@
 name: coredns
-version: 1.5.0
-appVersion: 1.5.0
+version: 1.5.1
+appVersion: 1.5.1
 description: CoreDNS is a DNS server that chains plugins and provides Kubernetes DNS Services
 keywords:
 - coredns
