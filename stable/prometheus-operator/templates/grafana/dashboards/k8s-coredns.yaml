@@ -896,7 +896,7 @@ data:
                         "step": 40
                     },
                     {
-                        "expr": "histogram_quantile(0.90, sum(rate(coredns_dns_response_size_bytes_bucket{instance=\"$instance\",proto=\"udp\"}[5m])) by (le,proto)) ",
+                        "expr": "histogram_quantile(0.90, sum(rate(coredns_dns_response_size_bytes_bucket{instance=~\"$instance\",proto=\"udp\"}[5m])) by (le,proto)) ",
                         "intervalFactor": 2,
                         "legendFormat": "{{`{{proto}}`}}:90%",
                         "refId": "B",
