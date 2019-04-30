@@ -47,6 +47,8 @@ The following table lists the configurable parameters of the Sonarqube chart and
 | `securityContext.fsGroup`                   | Group applied to mounted directories/files|  `999`                                     |
 | `ingress.enabled`                           | Flag for enabling ingress                 | false                                      |
 | `ingress.labels`                            | Ingress additional labels                 | `{}`                                       |
+| `ingress.hosts[0].name`                     | Hostname to your SonarQube installation   | `sonar.organization.com`                   |
+| `ingress.hosts[0].path`                     | Path within the URL structure             | /                                          |
 | `livenessProbe.sonarWebContext`             | SonarQube web context for livenessProbe   | /                                          |
 | `readinessProbe.sonarWebContext`            | SonarQube web context for readinessProbe  | /                                          |
 | `service.type`                              | Kubernetes service type                   | `LoadBalancer`                             |

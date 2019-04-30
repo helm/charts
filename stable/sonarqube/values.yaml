@@ -28,7 +28,11 @@ ingress:
   enabled: false
   # Used to create an Ingress record.
   hosts:
-    - sonar.organization.com
+    - name: sonar.organization.com
+      # default paths for "/" and "/*" will be added
+      path: /
+      # If a different path is defined, that path and {path}/* will be added to the ingress resource
+      # path: /sonarqube
   annotations: {}
   # kubernetes.io/ingress.class: nginx
   # kubernetes.io/tls-acme: "true"
@@ -68,14 +72,22 @@ readinessProbe:
   initialDelaySeconds: 60
   periodSeconds: 30
   failureThreshold: 6
+  # If an ingress *path* other than the root (/) is defined, it should be reflected here
+  # A trailing "/" must be included
   sonarWebContext: /
+  # sonarWebContext: /sonarqube/
 livenessProbe:
   initialDelaySeconds: 60
   periodSeconds: 30
+  # If an ingress *path* other than the root (/) is defined, it should be reflected here
+  # A trailing "/" must be included
   sonarWebContext: /
+  # sonarWebContext: /sonarqube/
 
 # Set extra env variables. Like proxy settings.
 extraEnv: {}
+  # If an ingress *path* is defined, it should be reflected here
+  # sonar.web.context: /sonarqube
 
 resources: {}
 # We usually recommend not to specify default resources and to leave this as a conscious
