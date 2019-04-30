@@ -53,9 +53,9 @@ spec:
           readOnlyRootFilesystem: true
           capabilities:
             drop:
-            - all
+            - ALL
             add:
-            - net_raw
+            - NET_RAW
     {{- with .Values.speaker.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

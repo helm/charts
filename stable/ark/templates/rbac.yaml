@@ -16,39 +16,4 @@ roleRef:
   kind: ClusterRole
   name: cluster-admin
   apiGroup: rbac.authorization.k8s.io
----
-apiVersion: rbac.authorization.k8s.io/v1beta1
-kind: ClusterRole
-metadata:
-  name: {{ template "ark.fullname" . }}-hook
-  labels:
-    kubernetes.io/bootstrapping: rbac-defaults
-    chart: {{ template "ark.chart" . }}
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
-    app: {{ template "ark.name" . }}
-  annotations:
-    rbac.authorization.kubernetes.io/autoupdate: "true"
-rules:
-  - apiGroups: ['ark.heptio.com']
-    verbs: ["*"]
-    resources: ["*"]
----
-apiVersion: rbac.authorization.k8s.io/v1beta1
-kind: ClusterRoleBinding
-metadata:
-  name: {{ template "ark.fullname" . }}-hook
-  labels:
-    chart: {{ template "ark.chart" . }}
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
-    app: {{ template "ark.name" . }}
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: {{ template "ark.fullname" . }}-hook
-subjects:
-  - kind: ServiceAccount
-    name: {{ template "ark.hookServiceAccount" . }}
-    namespace: {{ .Release.Namespace }}
 {{- end }}

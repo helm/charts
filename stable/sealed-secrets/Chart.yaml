@@ -1,0 +1,12 @@
+name: sealed-secrets
+description: A Helm chart for Sealed Secrets
+version: 1.0.2
+appVersion: 0.7.0
+kubeVersion: ">=1.9.0-0"
+home: https://github.com/bitnami-labs/sealed-secrets
+apiVersion: v1
+maintainers:
+  - name: stefanprodan
+    email: stefan.prodan@gmail.com
+  - name: olib963
+    email: olib963@gmail.com

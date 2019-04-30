@@ -16,7 +16,9 @@ spec:
     metadata:
     {{- if .Values.defaultBackend.podAnnotations }}
       annotations:
-{{ toYaml .Values.defaultBackend.podAnnotations | indent 8 }}
+      {{- range $key, $value := .Values.defaultBackend.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+      {{- end }}
     {{- end }}
       labels:
         app: {{ template "nginx-ingress.name" . }}
@@ -58,6 +60,7 @@ spec:
               protocol: TCP
           resources:
 {{ toYaml .Values.defaultBackend.resources | indent 12 }}
+      serviceAccountName: {{ template "nginx-ingress.serviceAccountName" . }}
     {{- if .Values.defaultBackend.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.defaultBackend.nodeSelector | indent 8 }}

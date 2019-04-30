@@ -1,8 +1,9 @@
 dmarc2logstash:
   image:
     repository: jertel/dmarc2logstash
-    tag: 1.0.2
+    tag: 1.0.3
     pullPolicy: IfNotPresent
+  deleteMessages: 1
   resources: {}
   nodeSelector: {}
   tolerations: []
@@ -11,7 +12,7 @@ dmarc2logstash:
 filebeat:
   image:
     repository: docker.elastic.co/beats/filebeat
-    tag: 6.2.4
+    tag: 6.6.0
     pullPolicy: IfNotPresent
   logstash:
     host: ""

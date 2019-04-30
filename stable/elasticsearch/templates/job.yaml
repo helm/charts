@@ -1,0 +1,34 @@
+{{- if .Values.cluster.bootstrapShellCommand }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "elasticsearch.fullname" . }}-bootstrap
+  labels:
+    app: {{ template "elasticsearch.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "10"
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  template:
+    metadata:
+      name: {{ template "elasticsearch.fullname" . }}-bootstrap
+      labels:
+        app: {{ template "elasticsearch.name" . }}
+        chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+        release: {{ .Release.Name }}
+        heritage: {{ .Release.Service }}
+    spec:
+      containers:
+      - name: bootstrap-elasticsearch
+        image: byrnedo/alpine-curl
+        command:
+        - "sh"
+        - "-c"
+        - {{ .Values.cluster.bootstrapShellCommand | quote }}
+      restartPolicy: Never
+  backoffLimit: 20
+{{- end }}

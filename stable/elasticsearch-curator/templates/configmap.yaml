@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "elasticsearch-curator.fullname" . }}-config
+  labels:
+    app: {{ template "elasticsearch-curator.name" . }}
+    chart: {{ template "elasticsearch-curator.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  action_file.yml: {{ required "A valid .Values.configMaps.action_file_yml entry is required!" (toYaml .Values.configMaps.action_file_yml | indent 2) }}
+  config.yml: {{ required "A valid .Values.configMaps.config_yml entry is required!" (toYaml .Values.configMaps.config_yml | indent 2) }}

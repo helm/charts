@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ template "elasticsearch.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: "{{ .Values.client.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "elasticsearch.client.fullname" . }}
+{{- if .Values.client.serviceAnnotations }}
+  annotations:
+{{ toYaml .Values.client.serviceAnnotations | indent 4 }}
+{{- end }}
+
+spec:
+  ports:
+    - name: http
+      port: 9200
+{{- if and .Values.client.httpNodePort (eq .Values.client.serviceType "NodePort") }}
+      nodePort: {{ .Values.client.httpNodePort }}
+{{- end }}
+      targetPort: http
+{{- if .Values.client.exposeTransportPort }}
+    - name: transport
+      port: 9300
+      targetPort: transport
+{{- end }}
+  selector:
+    app: {{ template "elasticsearch.name" . }}
+    component: "{{ .Values.client.name }}"
+    release: {{ .Release.Name }}
+  type: {{ .Values.client.serviceType }}
+{{- if .Values.client.loadBalancerIP }}
+  loadBalancerIP: "{{ .Values.client.loadBalancerIP }}"
+{{- end }}
+  {{if .Values.client.loadBalancerSourceRanges}}
+  loadBalancerSourceRanges:
+    {{range $rangeList := .Values.client.loadBalancerSourceRanges}}
+    - {{ $rangeList }}
+    {{end}}
+  {{end}}

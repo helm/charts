@@ -1,6 +1,6 @@
 dependencies:
 - name: kube-state-metrics
   repository: https://kubernetes-charts.storage.googleapis.com/
-  version: 0.9.0
-digest: sha256:3375a4cf1bc5c4c4dea05d3a9592360b5ffac63ab8fec76c77d45df23194098e
-generated: 2018-09-11T23:58:12.463953326+02:00
+  version: 0.16.0
+digest: sha256:0f9c623d315b30d1b0680cb0146e8740d866d8360eee2fc17d991401e724dfff
+generated: 2019-04-01T16:43:29.032424+02:00

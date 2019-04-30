@@ -1,4 +1,8 @@
-# Keel - automated Kubernetes deployments for the rest of us
+# Keel - automated Kubernetes deployments for the rest of us - DEPRECATED
+
+ **This chart is deprecated! You can find the new chart in:**
+ - **Source:** https://github.com/keel-hq/keel/tree/master/chart/keel
+ - **Charts repository:** https://charts.keel.sh
 
 * Website [https://keel.sh](https://keel.sh)
 * User Guide [https://keel.sh/user-guide/](https://keel.sh/user-guide/)

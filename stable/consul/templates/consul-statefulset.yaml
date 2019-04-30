@@ -7,6 +7,9 @@ metadata:
     release: {{ .Release.Name | quote }}
     chart: {{ template "consul.chart" . }}
     component: "{{ .Release.Name }}-{{ .Values.Component }}"
+{{- if .Values.additionalLabels }}
+{{ toYaml .Values.additionalLabels | indent 4 }}
+{{- end }}
 spec:
   serviceName: "{{ template "consul.fullname" . }}"
   replicas: {{ default 3 .Values.Replicas }}
@@ -24,6 +27,9 @@ spec:
         release: {{ .Release.Name | quote }}
         chart: {{ template "consul.chart" . }}
         component: "{{ .Release.Name }}-{{ .Values.Component }}"
+{{- if .Values.additionalLabels }}
+{{ toYaml .Values.additionalLabels | indent 8 }}
+{{- end }}
     spec:
       securityContext:
         fsGroup: 1000
@@ -103,6 +109,7 @@ spec:
             command:
             - consul
             - members
+            - -http-addr=http://127.0.0.1:{{ .Values.HttpPort }}
           initialDelaySeconds: 300
           timeoutSeconds: 5
         command:
@@ -138,7 +145,7 @@ spec:
             {{- range .Values.ConsulConfig }}
               -config-dir /etc/consul/userconfig/{{ .name }} \
             {{- end}}
-            {{- if .Values.uiService.enabled }}
+            {{- if .Values.ui.enabled }}
               -ui \
             {{- end }}
             {{- if .Values.DisableHostNodeId }}

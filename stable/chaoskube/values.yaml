@@ -5,7 +5,7 @@ name: chaoskube
 image: quay.io/linki/chaoskube
 
 # docker image tag
-imageTag: v0.10.0
+imageTag: v0.12.1
 
 # number of replicas to run
 replicas: 1
@@ -40,7 +40,14 @@ excludedDaysOfYear:
 # Set specific Timezone for Actions to take place
 timezone: UTC
 
+# minimum lifetime of a pod before it's considered for termination (0: immediately)
 minimumAge: 0s
+
+# grace period to give pods when terminating them (negative: pod decides)
+gracePeriod: -1s
+
+# Listening address for metrics handler
+metricsAddress: :8080
 
 priorityClassName: ""
 
@@ -75,3 +82,9 @@ affinity: {}
   #       labelSelector:
   #         matchLabels:
   #           app: chaoskube
+
+podAnnotations: {}
+  ## Annotations for the chaoskube pod.
+  #  podAnnotations:
+  #    prometheus.io/scrape: "true"
+  #    prometheus.io/port: "8080"

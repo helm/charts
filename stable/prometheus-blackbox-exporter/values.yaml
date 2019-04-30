@@ -2,11 +2,14 @@ restartPolicy: Always
 
 image:
   repository: prom/blackbox-exporter
-  tag: v0.12.0
+  tag: v0.14.0
   pullPolicy: IfNotPresent
 
 nodeSelector: {}
+tolerations: []
+affinity: {}
 
+secretConfig: false
 config:
   modules:
     http_2xx:
@@ -17,13 +20,14 @@ config:
         no_follow_redirects: false
         preferred_ip_protocol: "ip4"
 
-resources:
+resources: {}
   # limits:
   #   memory: 300Mi
   # requests:
   #   memory: 50Mi
 
 service:
+  annotations: {}
   type: ClusterIP
   port: 9115
 

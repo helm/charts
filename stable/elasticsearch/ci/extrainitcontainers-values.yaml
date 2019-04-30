@@ -1,0 +1,9 @@
+extraInitContainers: |
+  - name: "plugin-install-ingest-attachment"
+    image: "docker.elastic.co/elasticsearch/elasticsearch-oss:6.6.1"
+    command: ["/bin/bash"]
+    args: ["-c", "yes | /usr/share/elasticsearch/bin/elasticsearch-plugin install ingest-attachment"]
+  - name: "plugin-install-mapper-size"
+    image: "docker.elastic.co/elasticsearch/elasticsearch-oss:6.6.1"
+    command: ["/bin/bash"]
+    args: ["-c", "yes | /usr/share/elasticsearch/bin/elasticsearch-plugin install mapper-size"]

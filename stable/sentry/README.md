@@ -12,9 +12,7 @@ $ helm install --wait stable/sentry
 
 This chart bootstraps a [Sentry](https://sentry.io/) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
-It also packages the [PostgreSQL](https://github.com/kubernetes/charts/tree/master/stable/postgresql) and [Redis](https://github.com/kubernetes/charts/tree/master/stable/redis) which are required for Sentry.
-
-> **Warning**: This chart does not yet allow for you to specify your own database host or redis host.
+It also optionally packages the [PostgreSQL](https://github.com/kubernetes/charts/tree/master/stable/postgresql) and [Redis](https://github.com/kubernetes/charts/tree/master/stable/redis) which are required for Sentry.
 
 ## Prerequisites
 
@@ -35,6 +33,8 @@ $ helm install --name my-release --wait stable/sentry
 The command deploys Sentry on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
 
 > **Tip**: List all releases using `helm list`
+
+> **Warning**: This Chart does not support `helm upgrade` an upgrade will currently reset your installation
 
 ## Uninstalling the Chart
 
@@ -62,6 +62,7 @@ The following table lists the configurable parameters of the Sentry chart and th
 | `image.tag`                          | Sentry image tag                            | `9.0`                                                      |
 | `imagePullPolicy`                    | Image pull policy                           | `IfNotPresent`                                             |
 | `web.podAnnotations`                 | Web pod annotations                         | `{}`                                                       |
+| `web.podLabels`                     | Worker pod extra labels                     | `{}`                                                       |
 | `web.replicacount`                   | Amount of web pods to run                   | `1`                                                        |
 | `web.resources.limits`               | Web resource limits                         | `{cpu: 500m, memory: 500Mi}`                               |
 | `web.resources.requests`             | Web resource requests                       | `{cpu: 300m, memory: 300Mi}`                               |
@@ -71,6 +72,7 @@ The following table lists the configurable parameters of the Sentry chart and th
 | `web.schedulerName`                  | Name of an alternate scheduler for web pod  | `nil`                                                      |
 | `web.tolerations`                    | Toleration labels for web pod assignment    | `[]`                                                       |
 | `cron.podAnnotations`                | Cron pod annotations                        | `{}`                                                       |
+| `cron.podLabels`                     | Worker pod extra labels                     | `{}`                                                       |
 | `cron.replicacount`                  | Amount of cron pods to run                  | `1`                                                        |
 | `cron.resources.limits`              | Cron resource limits                        | `{cpu: 200m, memory: 200Mi}`                               |
 | `cron.resources.requests`            | Cron resource requests                      | `{cpu: 100m, memory: 100Mi}`                               |
@@ -79,6 +81,7 @@ The following table lists the configurable parameters of the Sentry chart and th
 | `cron.schedulerName`                 | Name of an alternate scheduler for cron pod | `nil`                                                      |
 | `cron.tolerations`                   | Toleration labels for cron pod assignment   | `[]`                                                       |
 | `worker.podAnnotations`              | Worker pod annotations                      | `{}`                                                       |
+| `worker.podLabels`                   | Worker pod extra labels                     | `{}`                                                       |
 | `worker.replicacount`                | Amount of worker pods to run                | `2`                                                        |
 | `worker.resources.limits`            | Worker resource limits                      | `{cpu: 300m, memory: 500Mi}`                               |
 | `worker.resources.requests`          | Worker resource requests                    | `{cpu: 100m, memory: 100Mi}`                               |
@@ -99,11 +102,24 @@ The following table lists the configurable parameters of the Sentry chart and th
 | `service.name`                       | Kubernetes service name                     | `sentry`                                                   |
 | `service.externalPort`               | Kubernetes external service port            | `9000`                                                     |
 | `service.internalPort`               | Kubernetes internal service port            | `9000`                                                     |
+| `service.annotations`                | Service annotations                         | `{}`                                                       |
+| `service.nodePort`                   | Kubernetes service NodePort port            | Randomly chosen by Kubernetes                              |
 | `ingress.enabled`                    | Enable ingress controller resource          | `false`                                                    |
 | `ingress.annotations`                | Ingress annotations                         | `{}`                                                       |
 | `ingress.hostname`                   | URL to address your Sentry installation     | `sentry.local`                                             |
 | `ingress.tls`                        | Ingress TLS configuration                   | `[]`                                                       |
+| `postgresql.enabled`                 | Deploy postgres server (see below)          | `true`                                                     |
+| `postgresql.postgresDatabase`        | Postgres database name                      | `sentry`                                                   |
+| `postgresql.postgresUser`            | Postgres username                           | `sentry`                                                   |
+| `postgresql.postgresHost`            | External postgres host                      | `nil`                                                      |
+| `postgresql.postgresPassword`        | External postgres password                  | `nil`                                                      |
+| `postgresql.postgresPort`            | External postgres port                      | `5432`                                                     |
+| `redis.enabled`                      | Deploy redis server (see below)             | `true`                                                     |
+| `redis.host`                         | External redis host                         | `nil`                                                      |
+| `redis.password`                     | External redis password                     | `nil`                                                      |
+| `redis.port`                         | External redis port                         | `6379`                                                     |
 | `persistence.enabled`                | Enable persistence using PVC                | `true`                                                     |
+| `persistence.existingClaim`          | Provide an existing `PersistentVolumeClaim` | `nil`                                                      |
 | `persistence.storageClass`           | PVC Storage Class                           | `nil` (uses alpha storage class annotation)                |
 | `persistence.accessMode`             | PVC Access Mode                             | `ReadWriteOnce`                                            |
 | `persistence.size`                   | PVC Storage Request                         | `10Gi`                                                     |
@@ -127,6 +143,14 @@ $ helm install --name my-release -f values.yaml stable/sentry
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+## PostgresSQL
+
+By default, PostgreSQL is installed as part of the chart. To use an external PostgreSQL server set `postgresql.enabled` to `false` and then set `postgresql.postgresHost` and `postgresql.postgresPassword`. The other options (`postgresql.postgresDatabase`, `postgresql.postgresUser` and `postgresql.postgresPort`) may also want changing from their default values.
+
+## Redis
+
+By default, Redis is installed as part of the chart. To use an external Redis server/cluster set `redis.enabled` to `false` and then set `redis.host`. If your redis cluster uses password define it with `redis.password`, otherwise just omit it. Check the table above for more configuration options.
 
 ## Persistence
 

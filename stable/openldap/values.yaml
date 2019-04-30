@@ -3,6 +3,19 @@
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
+
+# Define deployment strategy - IMPORTANT: use rollingUpdate: null when use Recreate strategy.
+# It prevents from merging with existing map keys which are forbidden.
+strategy: {}
+  # type: RollingUpdate
+  # rollingUpdate:
+  #   maxSurge: 1
+  #   maxUnavailable: 0
+  #
+  # or
+  #
+  # type: Recreate
+  # rollingUpdate: null
 image:
   # From repository https://github.com/osixia/docker-openldap
   repository: osixia/openldap
@@ -12,6 +25,13 @@ image:
 # Spcifies an existing secret to be used for admin and config user passwords
 existingSecret: ""
 
+# settings for enabling TLS
+tls:
+  enabled: false
+  secret: ""  # The name of a kubernetes.io/tls type secret to use for TLS
+  CA:
+    enabled: false
+    secret: ""  # The name of a generic secret to use for custom CA certificate (ca.crt)
 ## Add additional labels to all resources
 extraLabels: {}
 
@@ -20,7 +40,7 @@ service:
   clusterIP: ""
 
   ldapPort: 389
-  sslLdapPort: 636
+  sslLdapPort: 636  # Only used if tls.enabled is true
   ## List of IP addresses at which the service is available
   ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
   ##

@@ -2,8 +2,8 @@ apiVersion: v1
 description: A Helm chart to collect Kubernetes logs with filebeat
 icon: https://www.elastic.co/assets/blt47799dcdcf08438d/logo-elastic-beats-lt.svg
 name: filebeat
-version: 1.0.3
-appVersion: 6.4.2
+version: 1.7.0
+appVersion: 6.7.0
 home: https://www.elastic.co/products/beats/filebeat
 sources:
 - https://www.elastic.co/guide/en/beats/filebeat/current/index.html

@@ -5,7 +5,7 @@ scheduler:
   name: scheduler
   image:
     repository: "daskdev/dask"
-    tag: "0.18.1"
+    tag: 1.1.0
     pullPolicy: IfNotPresent
   replicas: 1
   serviceType: "LoadBalancer"
@@ -17,6 +17,9 @@ scheduler:
     # requests:
     #   cpu: 1.8
     #   memory: 6G
+  tolerations: []
+  nodeSelector: {}
+  affinity: {}
 
 webUI:
   name: webui
@@ -26,7 +29,7 @@ worker:
   name: worker
   image:
     repository: "daskdev/dask"
-    tag: "0.18.1"
+    tag: 1.1.0
     pullPolicy: IfNotPresent
   replicas: 3
   aptPackages: >-
@@ -45,13 +48,16 @@ worker:
     # requests:
     #   cpu: 1
     #   memory: 3G
+  tolerations: []
+  nodeSelector: {}
+  affinity: {}
 
 jupyter:
   name: jupyter
   enabled: true
   image:
     repository: "daskdev/dask-notebook"
-    tag: "0.18.1"
+    tag: 1.1.0
     pullPolicy: IfNotPresent
   replicas: 1
   serviceType: "LoadBalancer"
@@ -69,3 +75,6 @@ jupyter:
     # requests:
     #   cpu: 2
     #   memory: 6G
+  tolerations: []
+  nodeSelector: {}
+  affinity: {}

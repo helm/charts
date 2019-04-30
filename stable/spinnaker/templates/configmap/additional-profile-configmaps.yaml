@@ -1,0 +1,15 @@
+{{ if  .Values.halyard.additionalProfileConfigMaps.create -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "spinnaker.fullname" . }}-additional-profile-config-maps
+  labels:
+{{ include "spinnaker.standard-labels" . | indent 4 }}
+data:
+{{- if  and .Values.halyard.additionalProfileConfigMaps.create .Values.halyard.additionalProfileConfigMaps.data }}
+{{- range $index, $content := .Values.halyard.additionalProfileConfigMaps.data }}
+  {{ $index }}: |-
+{{ $content | indent 4 }}
+{{- end }}
+{{- end }}
+{{- end }}

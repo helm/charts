@@ -23,7 +23,8 @@ spec:
     spec:
       initContainers:
         - name: init-copy
-          image: busybox
+          image: "{{ .Values.initImage.repository }}:{{ .Values.initImage.tag }}"
+          imagePullPolicy: {{ .Values.initImage.pullPolicy }}
           command: ['sh','-c','cp /tmp/chart.ini /default.d; ls -lrt /default.d;']
           volumeMounts:
           - name: config
@@ -61,13 +62,29 @@ spec:
             - name: ERL_FLAGS
               value: "{{ range $k, $v := .Values.erlangFlags }} -{{ $k }} {{ $v }} {{ end }}"
           livenessProbe:
+{{- if .Values.couchdbConfig.chttpd.require_valid_user }}
+            exec:
+              command:
+                - sh
+                - -c
+                - curl -G --silent --fail -u ${COUCHDB_USER}:${COUCHDB_PASSWORD} http://localhost:5984/
+{{- else }}
             httpGet:
               path: /
               port: 5984
+{{- end }}
           readinessProbe:
+{{- if .Values.couchdbConfig.chttpd.require_valid_user }}
+            exec:
+              command:
+                - sh
+                - -c
+                - curl -G --silent --fail -u ${COUCHDB_USER}:${COUCHDB_PASSWORD} http://localhost:5984/_up
+{{- else }}
             httpGet:
               path: /_up
               port: 5984
+{{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           volumeMounts:
@@ -117,9 +134,7 @@ spec:
         name: database-storage
         labels:
           app: {{ template "couchdb.name" . }}
-          chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
           release: {{ .Release.Name }}
-          heritage: {{ .Release.Service }}
       spec:
         accessModes:
         {{- range .Values.persistentVolume.accessModes }}

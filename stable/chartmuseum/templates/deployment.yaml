@@ -6,11 +6,19 @@ metadata:
 {{ toYaml .Values.deployment.annotations | indent 4 }}
   labels:
 {{ include "chartmuseum.labels.standard" . | indent 4 }}
+{{- if .Values.deployment.labels }}
+{{ toYaml .Values.deployment.labels | indent 4 }}
+{{- end }}
 spec:
   replicas: {{ .Values.replicaCount }}
   strategy:
 {{ toYaml .Values.strategy | indent 4 }}
   revisionHistoryLimit: 10
+{{- if .Values.deployment.matchlabes }}
+  selector:
+    matchLabels:
+{{ toYaml .Values.deployment.matchlabes | indent 6 }}
+{{- end }}
   template:
     metadata:
       name: {{ include "chartmuseum.fullname" . }}
@@ -19,6 +27,9 @@ spec:
       labels:
         app: {{ template "chartmuseum.name" . }}
         release: {{ .Release.Name | quote }}
+{{- if .Values.deployment.labels }}
+{{ toYaml .Values.deployment.labels | indent 8 }}
+{{- end }}
     spec:
       containers:
       - name: {{ .Chart.Name }}
@@ -31,10 +42,30 @@ spec:
           value: {{ $value | quote }}
 {{- end }}
 {{- end }}
+{{- range $name, $value := .Values.env.field }}
+{{- if not ( empty $value) }}
+        - name: {{ $name | quote }}
+          valueFrom:
+            fieldRef:
+              fieldPath: {{ $value | quote }}
+{{- end }}
+{{- end }}
 {{- if .Values.gcp.secret.enabled }}
         - name: GOOGLE_APPLICATION_CREDENTIALS
           value: "/etc/secrets/google/credentials.json"
 {{- end }}
+{{- if .Values.env.existingSecret }}
+{{- $secret_name := .Values.env.existingSecret }}
+{{- range $name, $key := .Values.env.existingSecretMappings }}
+{{- if not ( empty $key) }}
+        - name: {{ $name | quote }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ $secret_name | quote }}
+              key: {{ $key | quote }}
+{{- end }}
+{{- end }}
+{{- else }}
 {{- $secret_name := include "chartmuseum.fullname" . }}
 {{- range $name, $value := .Values.env.secret }}
 {{- if not ( empty $value) }}
@@ -45,6 +76,11 @@ spec:
               key: {{ $name | quote }}
 {{- end }}
 {{- end }}
+{{- end }}
+{{- if .Values.bearerAuth.secret.enabled }}
+        -  name: AUTH_CERT_PATH
+           value: /var/keys/public-key.pem
+{{ end }}
         args:
         - --port=8080
 {{- if eq .Values.env.open.STORAGE "local" }}
@@ -63,15 +99,23 @@ spec:
             path: {{ .Values.env.open.CONTEXT_PATH }}/health
             port: http
 {{ toYaml .Values.probes.readiness | indent 10 }}
-{{- if eq .Values.env.open.STORAGE "local" }}
         volumeMounts:
+{{- if eq .Values.env.open.STORAGE "local" }}
         - mountPath: /storage
           name: storage-volume
 {{- end }}
 {{- if  .Values.gcp.secret.enabled }}
-        volumeMounts:
         - mountPath: /etc/secrets/google
           name: {{ include "chartmuseum.fullname" . }}-gcp
+{{- end }}
+{{- if  .Values.oracle.secret.enabled }}
+        - mountPath: /home/chartmuseum/.oci
+          name: {{ include "chartmuseum.fullname" . }}-oracle
+{{- end }}
+{{- if .Values.bearerAuth.secret.enabled }}
+        - name: public-key
+          mountPath: /var/keys
+          readOnly: true
 {{- end }}
       {{- with .Values.resources }}
         resources:
@@ -121,3 +165,18 @@ spec:
             path: credentials.json
       {{ end }}
       {{ end }}
+      {{ if .Values.oracle.secret.enabled }}
+      - name: {{ include "chartmuseum.fullname" . }}-oracle
+        secret:
+          secretName: {{ .Values.oracle.secret.name }}
+          items:
+          - key: {{ .Values.oracle.secret.config }}
+            path: config
+          - key: {{ .Values.oracle.secret.key_file }}
+            path: oci.key
+      {{ end }}
+{{- if .Values.bearerAuth.secret.enabled }}
+      - name: public-key
+        secret:
+          secretName: {{ .Values.bearerAuth.secret.publicKeySecret }}
+{{- end }}

@@ -6,7 +6,7 @@ restartPolicy: Always
 
 image:
   repository: frodenas/stackdriver-exporter
-  tag: v0.5.1
+  tag: v0.6.0
   pullPolicy: IfNotPresent
 
 resources: {}
@@ -25,6 +25,20 @@ service:
 stackdriver:
   # The Google Project ID to gather metrics for
   projectId: "FALSE"
+  # An existing secret which contains credentials.json
+  serviceAccountSecret: ""
+  # A service account key JSON file. Must be provided when no existing secret is used, in this case a new secret will be created holding this service account
+  serviceAccountKey: ""
+  # Max number of retries that should be attempted on 503 errors from Stackdriver
+  maxRetries: 0
+  # How long should Stackdriver_exporter wait for a result from the Stackdriver API
+  httpTimeout: 10s
+  # Max time between each request in an exp backoff scenario
+  maxBackoff: 5s
+  # The amount of jitter to introduce in an exp backoff scenario
+  backoffJitter: 1s
+  # The HTTP statuses that should trigger a retry
+  retryStatuses: 503
   metrics:
     # The prefixes to gather metrics for, we default to just CPU metrics.
     typePrefixes: 'compute.googleapis.com/instance/cpu'
@@ -39,4 +53,22 @@ web:
   # Path under which to expose metrics.
   path: /metrics
 
+## Pod affinity
+##
+affinity: {}
+
 annotations: {}
+
+## Node labels for stackdriver-exporter pod assignment
+## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+##
+nodeSelector: {}
+
+## Node tolerations for stackdriver-exporter scheduling to nodes with taints
+## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+##
+tolerations: []
+  # - key: "key"
+  #   operator: "Equal|Exists"
+  #   value: "value"
+  #   effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"

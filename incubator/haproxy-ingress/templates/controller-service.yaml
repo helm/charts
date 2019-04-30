@@ -11,28 +11,61 @@ metadata:
 {{- end }}
     app: {{ template "haproxy-ingress.name" . }}
     chart: {{ template "haproxy-ingress.chart" . }}
+    component: "{{ .Values.controller.name }}"
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-  name: {{ template "haproxy-ingress.fullname" . }}
+  name: {{ template "haproxy-ingress.controller.fullname" . }}
   namespace: {{ .Release.Namespace }}
 spec:
+{{- if .Values.controller.service.clusterIP }}
   clusterIP: "{{ .Values.controller.service.clusterIP }}"
+{{- end }}
+{{- if .Values.controller.service.externalTrafficPolicy }}
+  externalTrafficPolicy: "{{ .Values.controller.service.externalTrafficPolicy }}"
+{{- end }}
+{{- if .Values.controller.service.externalIPs }}
+  externalIPs:
+{{ toYaml .Values.controller.service.externalIPs | indent 4 }}
+{{- end }}
+{{- if .Values.controller.service.loadBalancerIP }}
+  loadBalancerIP: "{{ .Values.controller.service.loadBalancerIP }}"
+{{- end }}
+{{- if .Values.controller.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+{{ toYaml .Values.controller.service.loadBalancerSourceRanges | indent 4 }}
+{{- end }}
+{{- if (.Values.controller.service.healthCheckNodePort) }}
+  healthCheckNodePort: {{ .Values.controller.service.healthCheckNodePort }}
+{{- end }}
   ports:
-    - name: http
-      port: 80
+  {{- if .Values.controller.enableStaticPorts }}
+  {{- range .Values.controller.service.httpPorts }}
+    - name: "{{ .port }}-http"
+      port: {{ .port }}
       protocol: TCP
-      targetPort: {{ .Values.controller.service.targetPorts.http }}
-      {{- if (and (eq .Values.controller.service.type "NodePort") (not (empty .Values.controller.service.nodePorts.http))) }}
-      nodePort: {{ .Values.controller.service.nodePorts.http }}
+      targetPort: http
+      {{- if (not (empty .nodePort)) }}
+      nodePort: {{ .nodePort }}
       {{- end }}
-    - name: https
-      port: 443
+  {{- end }}
+  {{- range .Values.controller.service.httpsPorts }}
+    - name: "{{ .port }}-https"
+      port: {{ .port }}
       protocol: TCP
-      targetPort: {{ .Values.controller.service.targetPorts.https }}
-      {{- if (and (eq .Values.controller.service.type "NodePort") (not (empty .Values.controller.service.nodePorts.https))) }}
-      nodePort: {{ .Values.controller.service.nodePorts.https }}
+      targetPort: https
+      {{- if (not (empty .nodePort)) }}
+      nodePort: {{ .nodePort }}
       {{- end }}
+  {{- end }}
+  {{- end }}
+  {{- range $key, $value := .Values.controller.tcp }}
+    - name: "{{ tpl $key $ }}-tcp"
+      port: {{ tpl $key $ }}
+      protocol: TCP
+      targetPort: "{{ tpl $key $ }}-tcp"
+  {{- end }}
   selector:
     app: {{ template "haproxy-ingress.name" . }}
+    component: "{{ .Values.controller.name }}"
     release: {{ .Release.Name }}
   type: "{{ .Values.controller.service.type }}"

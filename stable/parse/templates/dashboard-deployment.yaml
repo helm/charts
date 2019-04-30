@@ -5,7 +5,7 @@ metadata:
   name: {{ template "parse.fullname" . }}-dashboard
   labels:
     app: {{ template "parse.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: {{ template "parse.chart" . }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
     component: "dashboard"
@@ -24,15 +24,15 @@ spec:
         release: "{{ .Release.Name }}"
         component: "dashboard"
     spec:
-      {{- if .Values.dashboard.image.pullSecrets }}
-      imagePullSecrets:
-      {{- range .Values.dashboard.image.pullSecrets }}
-        - name: {{ . }}
-      {{- end}}
+      {{- if .Values.dashboard.securityContext.enabled }}
+      securityContext:
+        fsGroup: {{ .Values.dashboard.securityContext.fsGroup }}
+        runAsUser: {{ .Values.dashboard.securityContext.runAsUser }}
       {{- end }}
+{{- include "parse.imagePullSecrets" . | indent 6 }}
       containers:
       - name: {{ template "parse.fullname" . }}
-        image: "{{ .Values.dashboard.image.registry }}/{{ .Values.dashboard.image.repository }}:{{ .Values.dashboard.image.tag }}"
+        image: {{ template "parse.dashboard.image" . }}
         imagePullPolicy: {{ .Values.dashboard.image.pullPolicy | quote }}
         env:
         - name: PARSE_DASHBOARD_USER

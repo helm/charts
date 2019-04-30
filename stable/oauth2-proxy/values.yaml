@@ -5,17 +5,32 @@ config:
   # OAuth client secret
   clientSecret: "XXXXXXXX"
   # Create a new secret with the following command
-  # python -c 'import os,base64; print base64.b64encode(os.urandom(16))'
+  # openssl rand -base64 32 | head -c 32 | base64
+  # Use an existing secret for OAuth2 credentials (see secret.yaml for required fields)
+  # Example:
+  # existingSecret: secret
   cookieSecret: "XXXXXXXXXX"
+  google: {}
+    # adminEmail: xxxx
+    # serviceAccountJson: xxxx
+    # Alternatively, use an existing secret (see google-secret.yaml for required fields)
+    # Example:
+    # existingSecret: google-secret
+  # Default configuration, to be overridden
+  configFile: |-
+    email_domains = [ "*" ]
+    upstreams = [ "file:///dev/null" ]
   # Custom configuration file: oauth2_proxy.cfg
   # configFile: |-
   #   pass_basic_auth = false
   #   pass_access_token = true
-  configFile: ""
+  # Use an existing config map (see configmap.yaml for required fields)
+  # Example:
+  # existingConfig: config
 
 image:
-  repository: "a5huynh/oauth2_proxy"
-  tag: "2.2"
+  repository: "quay.io/pusher/oauth2_proxy"
+  tag: "v3.1.0"
   pullPolicy: "IfNotPresent"
 
 # Optionally specify an array of imagePullSecrets.
@@ -24,10 +39,7 @@ image:
 # imagePullSecrets:
   # - name: myRegistryKeySecretName
 
-extraArgs:
-  email-domain: "*"
-  upstream: "file:///dev/null"
-  http-address: "0.0.0.0:4180"
+extraArgs: {}
 
 # To authorize individual email addresses
 # That is part of extraArgs but since this needs special treatment we need to do a separate section
@@ -48,6 +60,11 @@ authenticatedEmailsFile:
 
 service:
   type: ClusterIP
+  # when service.type is ClusterIP ...
+  # clusterIP: 192.0.2.20
+  # when service.type is LoadBalancer ...
+  # loadBalancerIP: 198.51.100.40
+  # loadBalancerSourceRanges: 203.0.113.0/24
   port: 80
   annotations: {}
   # foo.io/bar: "true"
@@ -88,6 +105,21 @@ tolerations: []
 # Node labels for pod assignment
 # Ref: https://kubernetes.io/docs/user-guide/node-selection/
 nodeSelector: {}
+
+# Configure Kubernetes liveness and readiness probes.
+# Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
+# Disable both when deploying with Istio 1.0 mTLS. https://istio.io/help/faq/security/#k8s-health-checks
+livenessProbe:
+  enabled: true
+  initialDelaySeconds: 0
+  timeoutSeconds: 1
+
+readinessProbe:
+  enabled: true
+  initialDelaySeconds: 0
+  timeoutSeconds: 1
+  periodSeconds: 10
+  successThreshold: 1
 
 podAnnotations: {}
 podLabels: {}

@@ -1,0 +1,27 @@
+{{- if .Values.external.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "schema-registry.fullname" . }}-external
+  labels:
+    app: {{ template "schema-registry.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+spec:
+  type: {{ .Values.external.type }}
+  ports:
+    - name: schema-registry-external
+      port: {{ .Values.external.servicePort }}
+      targetPort: {{ .Values.external.servicePort }}
+      {{- if eq .Values.external.type "NodePort" }}
+      nodePort: {{ .Values.external.nodePort }}
+      {{- end }}
+      protocol: TCP
+  {{- if eq .Values.external.type "LoadBalancer" }}
+  loadBalancerIP: {{ .Values.external.loadBalancerIP }}
+  {{- end }}
+  selector:
+    app: {{ template "schema-registry.name" . }}
+    release: {{ .Release.Name | quote}}
+{{- end }}

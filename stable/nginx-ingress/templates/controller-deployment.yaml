@@ -19,7 +19,9 @@ spec:
     metadata:
       {{- if .Values.controller.podAnnotations }}
       annotations:
-{{ toYaml .Values.controller.podAnnotations | indent 8}}
+      {{- range $key, $value := .Values.controller.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+      {{- end }}
       {{- end }}
       labels:
         app: {{ template "nginx-ingress.name" . }}
@@ -85,8 +87,7 @@ spec:
                 - ALL
                 add:
                 - NET_BIND_SERVICE
-            # www-data -> 33
-            runAsUser: 33
+            runAsUser: {{ .Values.controller.image.runAsUser }}
           {{- end }}
           env:
             - name: POD_NAME

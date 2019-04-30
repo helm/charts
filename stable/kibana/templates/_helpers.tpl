@@ -23,3 +23,18 @@ If release name contains chart name it will be used as a full name.
 {{- end -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Create the name of the service account to use
+*/}}
+{{- define "kibana.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create -}}
+{{ default (include "kibana.fullname" .) .Values.serviceAccount.name }}
+{{- else -}}
+{{- if .Values.serviceAccountName -}}
+{{- .Values.serviceAccountName }}
+{{- else -}}
+{{ default "default" .Values.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
+{{- end -}}

@@ -1,6 +1,11 @@
 ## Default values for Traefik
 image: traefik
-imageTag: 1.7.2
+imageTag: 1.7.9
+
+testFramework:
+  image: "dduportal/bats"
+  tag: "0.4.0"
+
 ## can switch the service type to NodePort if required
 serviceType: LoadBalancer
 # loadBalancerIP: ""
@@ -8,17 +13,20 @@ serviceType: LoadBalancer
 whiteListSourceRange: []
 externalTrafficPolicy: Cluster
 replicas: 1
+# startupArguments:
+#   - "--ping"
+#   - "--ping.entrypoint=http"
 
 podDisruptionBudget: {}
   # maxUnavailable: 1
   # minAvailable: 2
 
+# priorityClassName: ""
+
 # rootCAs: []
 
-cpuRequest: 100m
-memoryRequest: 20Mi
-cpuLimit: 100m
-memoryLimit: 30Mi
+resources: {}
+
 debug:
   enabled: false
 
@@ -27,6 +35,9 @@ deploymentStrategy: {}
   #   maxSurge: 1
   #   maxUnavailable: 0
   # type: RollingUpdate
+
+securityContext: {}
+env: {}
 
 nodeSelector: {}
   # key: value
@@ -48,6 +59,7 @@ tolerations: []
   #   hostname: "localhost"
   #   ip: "127.0.0.1"
   #   publishedService: "namespace/servicename"
+  #   useDefaultPublishedService: false
 proxyProtocol:
   enabled: false
   # trustedIPs is required when enabled
@@ -58,11 +70,36 @@ forwardedHeaders:
   # trustedIPs is required when enabled
   trustedIPs: []
   # - 10.0.0.0/8
+
+## Add arbitrary ConfigMaps to deployment
+## Will be mounted to /configs/, i.e. myconfig.json would
+## be mounted to /configs/myconfig.json.
+configFiles: {}
+  # myconfig.json: |
+  #   filecontents...
+
+## Add arbitrary Secrets to deployment
+## Will be mounted to /secrets/, i.e. file.name would
+## be mounted to /secrets/mysecret.txt.
+## The contents will be base64 encoded when added
+secretFiles: {}
+  # mysecret.txt: |
+  #   filecontents...
+
 ssl:
   enabled: false
   enforced: false
+  permanentRedirect: false
   upstream: false
   insecureSkipVerify: false
+  generateTLS: false
+  # defaultCN: "example.com"
+    # or *.example.com
+  defaultSANList: []
+    # - example.com
+    # - test1.example.com
+  defaultIPList: []
+    # - 1.2.3.4
   # cipherSuites: []
   # https://docs.traefik.io/configuration/entrypoints/#specify-minimum-tls-version
   # tlsMinVersion: VersionTLS12
@@ -131,6 +168,7 @@ kvprovider:
 acme:
   enabled: false
   email: admin@example.com
+  onHostRule: true
   staging: true
   logging: false
   # Configure a Let's Encrypt certificate to be managed by default.
@@ -158,8 +196,12 @@ acme:
   ## Configure dnsProvider to perform domain verification using dns challenge
   ## Applicable only if using the dns-01 challenge type
   delayBeforeCheck: 0
+  resolvers: []
+    # - 1.1.1.1:53
+    # - 8.8.8.8:53
   dnsProvider:
     name: nil
+    existingSecretName: ""
     auroradns:
       AURORA_USER_ID: ""
       AURORA_KEY: ""
@@ -184,6 +226,8 @@ acme:
       DNSMADEEASY_SANDBOX: ""
     dnspod:
       DNSPOD_API_KEY: ""
+    dreamhost:
+      DREAMHOST_API_KEY: ""
     dyn:
       DYN_CUSTOMER_NAME: ""
       DYN_USER_NAME: ""
@@ -213,6 +257,11 @@ acme:
       OTC_PASSWORD: ""
       OTC_PROJECT_NAME: ""
       OTC_IDENTITY_ENDPOINT: ""
+    ovh:
+      OVH_ENDPOINT: ""
+      OVH_APPLICATION_KEY: ""
+      OVH_APPLICATION_SECRET: ""
+      OVH_CONSUMER_KEY: ""
     pdns:
       PDNS_API_URL: ""
     rackspace:
@@ -230,8 +279,10 @@ acme:
       AWS_SECRET_ACCESS_KEY: ""
     vultr:
       VULTR_API_KEY: ""
-  ## Save ACME certs to a persistent volume. WARNING: If you do not do this, you will re-request
-  ## certs every time a pod (re-)starts and you WILL be rate limited!
+  ## Save ACME certs to a persistent volume.
+  ## WARNING: If you do not do this and you did not have configured
+  ## a kvprovider, you will re-request certs every time a pod (re-)starts
+  ## and you WILL be rate limited!
   persistence:
     enabled: true
     annotations: {}
@@ -253,6 +304,7 @@ acme:
 dashboard:
   enabled: false
   domain: traefik.example.com
+  # serviceType: ClusterIP
   service: {}
     # annotations:
     #   key: value
@@ -261,6 +313,10 @@ dashboard:
     #   key: value
     # labels:
     #   key: value
+    # tls:
+      # - hosts:
+      #   - traefik.example.com
+      #   secretName: traefik-default-cert
   auth: {}
     # basic:
     #   username: password
@@ -310,6 +366,9 @@ rbac:
 metrics:
   prometheus:
     enabled: false
+    ## If true, prevents exposing port 8080 on the main Traefik service, reserving
+    ## it to the dashboard service only
+    restrictAccess: false
     # buckets: [0.1,0.3,1.2,5]
   datadog:
     enabled: false
@@ -320,17 +379,23 @@ metrics:
     # address: localhost:8125
     # pushinterval: 10s
 deployment:
+  # labels to add to the pod container metadata
+  # podLabels:
+  #   key: value
   # podAnnotations:
   #   key: value
   hostPort:
     httpEnabled: false
     httpsEnabled: false
     dashboardEnabled: false
+    # httpPort: 80
+    # httpsPort: 443
+    # dashboardPort: 8080
 sendAnonymousUsage: false
 tracing:
   enabled: false
   serviceName: traefik
-  # backend: choices are jaeger, zipkin
+  # backend: choices are jaeger, zipkin, datadog
   # jaeger:
   #   localAgentHostPort: "127.0.0.1:6831"
   #   samplingServerURL: http://localhost:5778/sampling
@@ -341,3 +406,35 @@ tracing:
   #   debug: false
   #   sameSpan: false
   #   id128bit: true
+  # datadog:
+  #   localAgentHostPort: "127.0.0.1:8126"
+  #   debug: false
+  #   globalTag: ""
+
+## Create HorizontalPodAutoscaler object.
+##
+# autoscaling:
+#   minReplicas: 1
+#   maxReplicas: 10
+#   metrics:
+#   - type: Resource
+#     resource:
+#       name: cpu
+#       targetAverageUtilization: 60
+#   - type: Resource
+#     resource:
+#       name: memory
+#       targetAverageUtilization: 60
+
+## Timeouts
+##
+# timeouts:
+#   ## responding are timeouts for incoming requests to the Traefik instance
+#   responding:
+#     readTimeout: 0s
+#     writeTimeout: 0s
+#     idleTimeout: 180s
+#   ## forwarding are timeouts for requests forwarded to the backend servers
+#   forwarding:
+#     dialTimeout: 30s
+#     responseHeaderTimeout: 0s

@@ -80,7 +80,7 @@ spec:
               port: http
             initialDelaySeconds: 30
             timeoutSeconds: 10
-          livenessProbe:
+          readinessProbe:
             httpGet:
               path: /health
               port: http

@@ -1,0 +1,67 @@
+1.  jenkins-operator deployed.
+
+    Check the jenkins-operator logs:
+        export POD=$(kubectl get pods -l app={{ template "jenkins-operator.name" . }} --namespace {{ .Release.Namespace }} --output name)
+        kubectl logs $POD --namespace={{ .Release.Namespace }}
+
+2.  If want to deploy a jenkins instance, please create Custom Resource objects, like so:
+
+a) Create a ServiceAccount :
+
+kubectl create sa jenkins
+
+b) Create admin secret (user: admin, password: password):
+
+kubectl apply -f - <<EOF
+apiVersion: v1
+data:
+  pass: cGFzc3dvcmQ=
+  user: YWRtaW4=
+kind: Secret
+metadata:
+  name: admin-secret
+type: Opaque
+EOF
+
+c) Create jenkins instance custom resource:
+
+kubectl apply -f - <<EOF
+apiVersion: jenkins.jenkinsoperator.maratoid.github.com/v1alpha1
+kind: JenkinsInstance
+metadata:
+  name: jenkinsinstance-sample
+spec:
+  image: "jenkins/jenkins:lts"
+  executors: 1
+  adminsecret: admin-secret
+  location: https://jenkins.example.com
+  adminemail: admin@example.com
+  service:
+    name: jenkins
+    servicetype: ClusterIP
+  serviceaccount: jenkins
+EOF
+
+d) create jenkins job custom resource:
+
+kubectl apply -f - <<EOF
+apiVersion: jenkins.jenkinsoperator.maratoid.github.com/v1alpha1
+kind: JenkinsJob
+metadata:
+  name: samplejob
+spec:
+  jenkinsinstance: jenkinsinstance-sample
+  jobdsl: |
+      freeStyleJob('samplejob') {
+
+          description('Job created from custom resource with JobDSL')
+          displayName('From custom resource DSL')
+
+          steps {
+              shell('echo Hello World!')
+          }
+      }
+EOF
+
+3. For more details on supported custom resource object please refer to jenkins operator documentation:
+        https://github.com/samsung-cnct/jenkins-operator

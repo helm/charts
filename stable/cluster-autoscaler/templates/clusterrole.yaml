@@ -60,6 +60,15 @@ rules:
       - list
       - get
   - apiGroups:
+    - batch
+    resources:
+      - jobs
+      - cronjobs
+    verbs:
+      - watch
+      - list
+      - get
+  - apiGroups:
       - extensions
     resources:
       - replicasets
@@ -78,6 +87,8 @@ rules:
   - apiGroups:
     - apps
     resources:
+    - daemonsets
+    - replicasets
     - statefulsets
     verbs:
     - watch
