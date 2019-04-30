@@ -373,10 +373,9 @@ Fortunately the default jenkins docker image `jenkins/jenkins` contains a user `
 Simply use the following settings to run Jenkins as `jenkins` user with uid `1000`.
 
 ```yaml
-jenkins:
-  master:
-    runAsUser: 1000
-    fsGroup: 1000
+master:
+  runAsUser: 1000
+  fsGroup: 1000
 ```
 
 ## Providing jobs xml
