@@ -8,21 +8,17 @@ metadata:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
 spec:
-  replicas: {{ .Values.proxy.replicas }}
   selector:
     matchLabels:
       app: {{ template "rethinkdb.name" . }}-proxy
-      heritage: {{ .Release.Service | quote }}
       release: {{ .Release.Name | quote }}
-      chart: {{ template "rethinkdb.chart" . }}
+  replicas: {{ .Values.proxy.replicas }}
   template:
     metadata:
       name: {{ template "rethinkdb.fullname" . }}-proxy
       labels:
         app: {{ template "rethinkdb.name" . }}-proxy
-        heritage: {{ .Release.Service | quote }}
         release: {{ .Release.Name | quote }}
-        chart: {{ template "rethinkdb.chart" . }}
       annotations:
       {{- if .Values.proxy.podAnnotations }}
 {{ toYaml .Values.proxy.podAnnotations | indent 8 }}
@@ -43,6 +39,8 @@ spec:
           args:
             - "--bind"
             - "all"
+            - "--driver-port"
+            - "{{ .Values.ports.driver }}"
             {{- if .Values.proxy.driverTLS.enabled }}
             - "--driver-tls-key"
             - "/secrets/driver-key.pem"

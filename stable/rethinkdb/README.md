@@ -1,14 +1,17 @@
-# RethinkDB 2.3.5 Helm Chart
+# RethinkDB 2.4.0 Helm Chart
 
 ## Prerequisites Details
-* Kubernetes 1.5+ with Beta APIs enabled.
-* PV support on the underlying infrastructure.
+
+- Kubernetes 1.5+ with Beta APIs enabled.
+- PV support on the underlying infrastructure.
 
 ## StatefulSet Details
-* https://kubernetes.io/docs/concepts/abstractions/controllers/statefulsets/
+
+- https://kubernetes.io/docs/concepts/abstractions/controllers/statefulsets/
 
 ## StatefulSet Caveats
-* https://kubernetes.io/docs/concepts/abstractions/controllers/statefulsets/#limitations
+
+- https://kubernetes.io/docs/concepts/abstractions/controllers/statefulsets/#limitations
 
 ## Acknowledgment of Previous Works
 
@@ -30,40 +33,41 @@ $ helm install --name my-release stable/rethinkdb
 
 The following table lists the configurable parameters of the rethinkdb chart and their default values.
 
-Parameter | Description | Default
----|---|---
-`image.name` | Custom RethinkDB image name for auto-joining and probe | `codylundquist/helm-rethinkdb-cluster`
-`image.tag` | Custom RethinkDB image tag | `0.1.0`
-`image.pullPolicy` | Custom RethinkDB image pull policy | `IfNotPresent`
-`cluster.replicas` | Number of RethinkDB Cluster replicas | `3`
-`cluster.resources` | Resource configuration for each RethinkDB Cluster Pod | `{}`
-`cluster.podAnnotations` | Annotations to be added to RethinkDB Cluster Pods | `{}`
-`cluster.service.annotations` | Annotations to be added to RethinkDB Cluster Service | `{}`
-`cluster.storageClass.enabled` | If `true`, create a StorageClass for the cluster. **Note**: You must set a provisioner | `false`
-`cluster.storageClass.provisioner` | Provisioner definition for StorageClass | `undefined`
-`cluster.storageClass.parameters` | Parameters for StorageClass | `undefined`
-`cluster.persistentVolume.enabled` | If `true`, persistent volume claims are created | `true`
-`cluster.persistentVolume.storageClass` | Persistent volume storage class | `default`
-`cluster.persistentVolume.accessMode` | Persistent volume access modes | `[ReadWriteOnce]`
-`cluster.persistentVolume.size` | Persistent volume size | `1Gi`
-`cluster.persistentVolume.annotations` | Persistent volume annotations | `{}`
-`cluster.rethinkCacheSize` | RethinkDB `cache-size` value in MB | `100`
-`proxy.replicas` | Number of RethinkDB Proxy replicas | `1`
-`proxy.resources` | Resource configuration for each RethinkDB Proxy Pod | `{}`
-`proxy.podAnnotations` | Annotations to be added to RethinkDB Proxy Pods | `{}`
-`proxy.service.type` | RethinkDB Proxy Service Type | `ClusterIP`
-`proxy.service.annotations` | Annotations to be added to RethinkDB Cluster Service | `{}`
-`proxy.service.clusterIP` | Internal controller proxy service IP | `""`
-`proxy.service.externalIPs` | Controller service external IP addresses | `[]`
-`proxy.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
-`proxy.service.loadBalancerSourceRanges` | List of IP CIDRs allowed access to load balancer (if supported) | `[]`
-`proxy.driverTLS.enabled` | Should RethinkDB Proxy TLS be enabled. **Note**: If enabled, you must set a key and cert | `false`
-`proxy.driverTLS.key` | RSA Private Key | `undefined`
-`proxy.driverTLS.cert` | Certificate | `undefined`
-`ports.cluster` | RethinkDB Cluster Port | `29015`
-`ports.driver` | RethinkDB Driver Port | `28015`
-`ports.admin` | RethinkDB Admin Port | `8080`
-`rethinkdbPassword` | Password for the RethinkDB Admin user | `rethinkdb`
+| Parameter                                | Description                                                                              | Default                                |
+| ---------------------------------------- | ---------------------------------------------------------------------------------------- | -------------------------------------- |
+| `image.name`                             | Custom RethinkDB image name for auto-joining and probe                                   | `codylundquist/helm-rethinkdb-cluster` |
+| `image.tag`                              | Custom RethinkDB image tag                                                               | `2.4.0`                                |
+| `image.pullPolicy`                       | Custom RethinkDB image pull policy                                                       | `IfNotPresent`                         |
+| `cluster.replicas`                       | Number of RethinkDB Cluster replicas                                                     | `3`                                    |
+| `cluster.resources`                      | Resource configuration for each RethinkDB Cluster Pod                                    | `{}`                                   |
+| `cluster.podAnnotations`                 | Annotations to be added to RethinkDB Cluster Pods                                        | `{}`                                   |
+| `cluster.service.annotations`            | Annotations to be added to RethinkDB Cluster Service                                     | `{}`                                   |
+| `cluster.storageClass.enabled`           | If `true`, create a StorageClass for the cluster. **Note**: You must set a provisioner   | `false`                                |
+| `cluster.storageClass.provisioner`       | Provisioner definition for StorageClass                                                  | `undefined`                            |
+| `cluster.storageClass.parameters`        | Parameters for StorageClass                                                              | `undefined`                            |
+| `cluster.persistentVolume.enabled`       | If `true`, persistent volume claims are created                                          | `true`                                 |
+| `cluster.persistentVolume.storageClass`  | Persistent volume storage class                                                          | `default`                              |
+| `cluster.persistentVolume.accessMode`    | Persistent volume access modes                                                           | `[ReadWriteOnce]`                      |
+| `cluster.persistentVolume.size`          | Persistent volume size                                                                   | `1Gi`                                  |
+| `cluster.persistentVolume.annotations`   | Persistent volume annotations                                                            | `{}`                                   |
+| `cluster.rethinkCacheSize`               | RethinkDB `cache-size` value in MB                                                       | `100`                                  |
+| `cluster.rethinkCores`                   | RethinkDB `cores` value. If blank, RethinkDB uses the number of cores of the CPU         | `undefined`                            |
+| `proxy.replicas`                         | Number of RethinkDB Proxy replicas                                                       | `1`                                    |
+| `proxy.resources`                        | Resource configuration for each RethinkDB Proxy Pod                                      | `{}`                                   |
+| `proxy.podAnnotations`                   | Annotations to be added to RethinkDB Proxy Pods                                          | `{}`                                   |
+| `proxy.service.type`                     | RethinkDB Proxy Service Type                                                             | `ClusterIP`                            |
+| `proxy.service.annotations`              | Annotations to be added to RethinkDB Cluster Service                                     | `{}`                                   |
+| `proxy.service.clusterIP`                | Internal controller proxy service IP                                                     | `""`                                   |
+| `proxy.service.externalIPs`              | Controller service external IP addresses                                                 | `[]`                                   |
+| `proxy.service.loadBalancerIP`           | IP address to assign to load balancer (if supported)                                     | `""`                                   |
+| `proxy.service.loadBalancerSourceRanges` | List of IP CIDRs allowed access to load balancer (if supported)                          | `[]`                                   |
+| `proxy.driverTLS.enabled`                | Should RethinkDB Proxy TLS be enabled. **Note**: If enabled, you must set a key and cert | `false`                                |
+| `proxy.driverTLS.key`                    | RSA Private Key                                                                          | `undefined`                            |
+| `proxy.driverTLS.cert`                   | Certificate                                                                              | `undefined`                            |
+| `ports.cluster`                          | RethinkDB Cluster Port                                                                   | `29015`                                |
+| `ports.driver`                           | RethinkDB Driver Port                                                                    | `28015`                                |
+| `ports.admin`                            | RethinkDB Admin Port                                                                     | `8080`                                 |
+| `rethinkdbPassword`                      | Password for the RethinkDB Admin user                                                    | `rethinkdb`                            |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
@@ -75,9 +79,10 @@ $ helm install --name my-release -f values.yaml stable/rethinkdb
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
-## Important: Admin Password Management ##
+## Important: Admin Password Management
 
-The initial admin password is set by the config value `rethinkdbPassword`.  This value is also used by the probe which periodically checks if the RethinkDB Cluster and Proxy are still running.  If you change the RethinkDB admin password via a query (i.e. `r.db('rethinkdb').table('users').update({password: 'new-password'})`) this will cause the probe to fail which then restarts the pods over and over.  To stablize the cluster, you also need to use `helm upgrade` to update the password in the Kubernetes Secrets storage by doing:
+The initial admin password is set by the config value `rethinkdbPassword`. This value is also used by the probe which periodically checks if the RethinkDB Cluster and Proxy are still running. If you change the RethinkDB admin password via a query (i.e. `r.db('rethinkdb').table('users').update({password: 'new-password'})`) this will cause the probe to fail which then restarts the pods over and over. To stablize the cluster, you also need to use `helm upgrade` to update the password in the Kubernetes Secrets storage by doing:
+
 ```console
 $ helm upgrade --set rethinkdbPassword=new-password my-release stable/rethinkdb
 ```
@@ -85,10 +90,12 @@ $ helm upgrade --set rethinkdbPassword=new-password my-release stable/rethinkdb
 ## Opening Up the RethinkDB Admin Console
 
 The admin port is not available outside of the cluster for security reasons. The only way to access the admin console is to use a [Kubernetes Proxy](https://kubernetes.io/docs/concepts/cluster-administration/access-cluster/#manually-constructing-apiserver-proxy-urls). To open up the admin console:
+
 ```console
 $ kubectl proxy
 Starting to serve on 127.0.0.1:8001
 ```
+
 Then use the following URL: http://localhost:8001/api/v1/namespaces/NAMESPACE/services/RELEASE_NAME-rethinkdb-admin/proxy
 Make sure a replace `NAMEPSPACE` with the correct namespace and `RELEASE_NAME` that was used when installing the chart.
 
@@ -108,6 +115,7 @@ $ kubectl delete pvc -l release=my-release
 
 If any RethinkDB server fails it gets re-joined eventually.
 You can test the scenario by killing process of one of the pods:
+
 ```console
 $ kubectl get pods -l release=my-release
 NAME                                          READY     STATUS    RESTARTS   AGE
@@ -127,6 +135,7 @@ $ kubectl exec -it my-release-rethinkdb-cluster-0 -- kill 7
 ## Scaling
 
 Scaling should be managed by `helm upgrade`, which is the recommended way. Example:
+
 ```
 $ helm upgrade --set cluster.replicas=4 my-release stable/rethinkdb
 ```

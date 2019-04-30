@@ -13,8 +13,8 @@ metadata:
   {{- end }}
 spec:
   type: {{ .Values.proxy.service.type }}
-{{- if .Values.proxy.service.clusterIP }}
-  clusterIP: {{ .Values.proxy.service.clusterIP | quote }}
+{{- if not .Values.proxy.service.omitClusterIP }}
+  {{ with .Values.proxy.service.clusterIP }}clusterIP: {{ quote . }}{{ end }}
 {{- end }}
 {{- if .Values.proxy.service.externalIPs }}
   externalIPs:
