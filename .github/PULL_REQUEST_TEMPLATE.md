@@ -38,3 +38,4 @@ even continue reviewing your changes.
 - [ ] [DCO](https://github.com/helm/charts/blob/master/CONTRIBUTING.md#sign-your-work) signed
 - [ ] Chart Version bumped
 - [ ] Variables are documented in the README.md
+- [ ] title of the PR contains starts with chart name e.g. `[stable/chart]`
