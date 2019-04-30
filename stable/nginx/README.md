@@ -82,7 +82,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-Refer to [values.yaml](values.yaml) for the full run-down on defaults. 
+Refer to [values.yaml](values.yaml) for the full run-down on defaults.
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
@@ -94,7 +94,7 @@ $ helm install --name hello-world \
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name hello-world -f values.yaml stable/nginx
+helm install --name hello-world -f values.yaml stable/nginx
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
