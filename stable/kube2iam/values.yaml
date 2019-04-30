@@ -30,6 +30,10 @@ image:
   repository: jtblin/kube2iam
   tag: 0.10.4
   pullPolicy: IfNotPresent
+  ## Specific image digest to use in place of a tag. Digest takes precedence over tag if it is defined.
+  ## ref: https://kubernetes.io/docs/concepts/configuration/overview/#container-images
+  ##
+  # digest: sha256:3e75d7e23bd46c97b2573c8232ce35a8bf445bf05ed3022aca558e77db9af110
 
 # AWS Access keys to inject as environment variables
 aws:

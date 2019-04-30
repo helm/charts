@@ -23,7 +23,11 @@ spec:
     spec:
       containers:
         - name: kube2iam
+          {{- if .Values.image.digest }}
+          image: "{{ .Values.image.repository }}@{{ .Values.image.digest }}"
+          {{- else }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          {{- end }}
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           args:
             - --host-interface={{ .Values.host.interface }}
