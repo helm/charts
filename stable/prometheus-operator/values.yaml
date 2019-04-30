@@ -201,6 +201,12 @@ alertmanager:
       repository: quay.io/prometheus/alertmanager
       tag: v0.16.2
 
+    ## If true then the user will be responsible to provide a secret with alertmanager configuration
+    ## So when true the config part will be ignored (including templateFiles) and the one in the secret will be used
+    ##
+    useExistingSecret: false
+
+
     ## Secrets is a list of Secrets in the same namespace as the Alertmanager object, which shall be mounted into the
     ## Alertmanager Pods. The Secrets are mounted into /etc/alertmanager/secrets/.
     ##
