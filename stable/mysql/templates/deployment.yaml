@@ -31,6 +31,8 @@ spec:
       - name: "remove-lost-found"
         image: "{{ .Values.busybox.image}}:{{ .Values.busybox.tag }}"
         imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+        resources:
+{{ toYaml .Values.initContainer.resources | indent 10 }}
         command:  ["rm", "-fr", "/var/lib/mysql/lost+found"]
         volumeMounts:
         - name: data
@@ -126,8 +128,11 @@ spec:
           subPath: {{ .Values.persistence.subPath }}
           {{- end }}
         {{- if .Values.configurationFiles }}
+        {{- range $key, $val := .Values.configurationFiles }}
         - name: configurations
-          mountPath: /etc/mysql/conf.d
+          mountPath: /etc/mysql/conf.d/{{ $key }}
+          subPath: {{ $key }}
+        {{- end -}}
         {{- end }}
         {{- if .Values.initializationFiles }}
         - name: migrations

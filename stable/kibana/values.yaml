@@ -15,7 +15,7 @@ env: {}
   # To adjust a config option to an env var uppercase + replace `.` with `_`
   # Ref: https://www.elastic.co/guide/en/kibana/current/settings.html
   #
-  # ELASTICSEARCH_URL: http://elasticsearch-client:9200
+  # ELASTICSEARCH_HOSTS: http://elasticsearch-client:9200
   # SERVER_PORT: 5601
   # LOGGING_VERBOSE: "true"
   # SERVER_DEFAULTROUTE: "/app/kibana"
@@ -25,7 +25,7 @@ files:
     ## Default Kibana configuration from kibana-docker.
     server.name: kibana
     server.host: "0"
-    elasticsearch.url: http://elasticsearch:9200
+    elasticsearch.hosts: http://elasticsearch:9200
 
     ## Custom config properties below
     ## Ref: https://www.elastic.co/guide/en/kibana/current/settings.html
