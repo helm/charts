@@ -73,6 +73,9 @@ The following table lists the configurable parameters of the kubernetes-dashboar
 | `serviceAccount.name`               | Service account to be used. If not set and serviceAccount.create is `true` a name is generated using the fullname template. |                                                                            |
 | `livenessProbe.initialDelaySeconds` | Number of seconds to wait before sending first probe                                                                        | 30                                                                         |
 | `livenessProbe.timeoutSeconds`      | Number of seconds to wait for probe response                                                                                | 30                                                                         |
+| `podDisruptionBudget.enabled`       | Create a PodDisruptionBudget                                                                                                | `false`                                                                    |
+| `podDisruptionBudget.minAvailable`  | Minimum available instances; ignored if there is no PodDisruptionBudget                                                     |                                                                            |
+| `podDisruptionBudget.maxUnavailable`| Maximum unavailable instances; ignored if there is no PodDisruptionBudget                                                   |                                                                            |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
