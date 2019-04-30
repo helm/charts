@@ -177,3 +177,11 @@ podLabels: {}
 
 ## Set pod priorityClassName
 # priorityClassName: {}
+
+
+## Init container resources defaults
+initContainer:
+  resources:
+    requests:
+      memory: 10Mi
+      cpu: 10m
