@@ -32,5 +32,5 @@ Parameter | Description | Default
 `service.port` | Service port to expose | `443`
 `service.type` | Type of service to create | `ClusterIP`
 `podDisruptionBudget.enabled` | Create a PodDisruptionBudget | `false`
-`podDisruptionBudget.minAvailable` | Minimum available instances; ignored if there is no PodDisruptionBudget | `1`
-`podDisruptionBudget.maxUnavailable` | Maximum unavailable instances; ignored if there is no PodDisruptionBudget | `1`
+`podDisruptionBudget.minAvailable` | Minimum available instances; ignored if there is no PodDisruptionBudget |
+`podDisruptionBudget.maxUnavailable` | Maximum unavailable instances; ignored if there is no PodDisruptionBudget |
