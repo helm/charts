@@ -21,7 +21,7 @@ spec:
     spec:
     {{- if .Values.deployment.initContainers }}
       initContainers:
-{{ toYaml .Values.deployment.initControllers | indent 8 }}
+        {{- toYaml .Values.deployment.initControllers | nindent 8 }}
     {{- end }}
       containers:
         - name: {{ .Chart.Name }}
