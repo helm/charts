@@ -5,7 +5,7 @@ name: chaoskube
 image: quay.io/linki/chaoskube
 
 # docker image tag
-imageTag: v0.12.1
+imageTag: v0.13.0
 
 # number of replicas to run
 replicas: 1
@@ -39,6 +39,9 @@ excludedDaysOfYear:
 
 # Set specific Timezone for Actions to take place
 timezone: UTC
+
+# If nothing set, defaults to "text". Switch to "json" to enable structured logging
+logFormat:
 
 # minimum lifetime of a pod before it's considered for termination (0: immediately)
 minimumAge: 0s
