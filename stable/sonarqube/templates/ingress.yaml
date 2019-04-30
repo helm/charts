@@ -21,15 +21,15 @@ metadata:
 {{- end }}
 spec:
   rules:
-    {{- range $host := .Values.ingress.hosts }}
-    - host: {{ $host }}
+    {{- range .Values.ingress.hosts }}
+    - host: {{ .name }}
       http:
         paths:
-          - path: /
+          - path: {{ default "/" .path }}
             backend:
               serviceName: {{ $serviceName }}
               servicePort: {{ $servicePort }}
-          - path: /*
+          - path: {{ printf "%s/*" .path }}
             backend:
               serviceName: {{ $serviceName }}
               servicePort: {{ $servicePort }}
