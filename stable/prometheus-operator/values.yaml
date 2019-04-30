@@ -1041,7 +1041,7 @@ prometheus:
     ##
     image:
       repository: quay.io/prometheus/prometheus
-      tag: v2.7.2
+      tag: v2.9.1
 
     ## Tolerations for use with node taints
     ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
@@ -1159,6 +1159,10 @@ prometheus:
     ## Log level for Prometheus be configured in
     ##
     logLevel: info
+
+    ## Log format for Prometheus be configured in
+    ##
+    logFormat: logfmt
 
     ## Prefix used to register routes, overriding externalUrl route.
     ## Useful for proxies that rewrite URLs.

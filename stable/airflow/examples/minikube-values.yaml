@@ -1,7 +1,7 @@
 airflow:
   image:
     repository: puckel/docker-airflow
-    tag: 1.10.0-4
+    tag: 1.10.2
     pullPolicy: IfNotPresent
   service:
     type: NodePort
@@ -11,26 +11,12 @@ airflow:
     AIRFLOW__CORE__LOAD_EXAMPLES: True
 
   variables: '{ "environment": "dev" }'
+  pools: '{ "example": { "description": "This is an example of a pool", "slots": 2 } }'
 
 workers:
   replicas: 1
   celery:
     instances: 1
-
-ingress:
-  enabled: true
-  web:
-    path: "/airflow"
-    host: "minikube"
-    annotations:
-      traefik.frontend.rule.type: PathPrefix
-      kubernetes.io/ingress.class: traefik
-  flower:
-    path: "/airflow/flower"
-    host: "minikube"
-    annotations:
-      traefik.frontend.rule.type: PathPrefixStrip
-      kubernetes.io/ingress.class: traefik
 
 persistence:
   enabled: true
