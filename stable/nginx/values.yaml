@@ -1,10 +1,17 @@
 # Default values for nginx.
 # This is a YAML-formatted file.
 
-## enable to create a service account, role, and rolebinding with least required
+## create a service account, role, and rolebinding with least required
 ## permissions
 rbac:
-  enabled: true
+  create: true
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
 
 deployment:
   ## Number of pods in the replicaSet. Increate as needed to handle SLA and load requirements

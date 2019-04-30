@@ -1,18 +1,25 @@
-{{- if .Values.rbac.enabled }}
+{{- if .Values.rbac.create }}
 kind: ServiceAccount
 apiVersion: v1
 metadata:
-  name: {{ template "nginx.fullname" . }}
+  name: {{ template "nginx.serviceAccountName" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: {{ include "nginx.name" . }}
+    helm.sh/chart: {{ include "nginx.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 ---
-kind: Role 
-{{- if semverCompare "^1.8-0" .Capabilities.KubeVersion.GitVersion }}
+kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
-{{- else }}
-apiVersion: rbac.authorization.k8s.io/v1beta1
-{{- end }}
 metadata:
   name: {{ template "nginx.fullname" . }}
   namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: {{ include "nginx.name" . }}
+    helm.sh/chart: {{ include "nginx.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 rules:
   - apiGroups:
       - ""
@@ -27,19 +34,21 @@ rules:
       - watch
 ---
 kind: RoleBinding
-{{- if semverCompare "^1.8-0" .Capabilities.KubeVersion.GitVersion }}
 apiVersion: rbac.authorization.k8s.io/v1
-{{- else }}
-apiVersion: rbac.authorization.k8s.io/v1beta1
-{{- end }}
 metadata:
   name: {{ template "nginx.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: {{ include "nginx.name" . }}
+    helm.sh/chart: {{ include "nginx.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
   name: {{ template "nginx.fullname" . }}
 subjects:
 - kind: ServiceAccount
-  name: {{ template "nginx.fullname" . }}
+  name: {{ template "nginx.serviceAccountName" . }}
   namespace: {{ .Release.Namespace }}
 {{- end }}

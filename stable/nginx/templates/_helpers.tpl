@@ -63,3 +63,13 @@ Create a configuration configmap name
 {{- end -}}
 {{- end -}}
 
+{{/*
+Create the name of the service account to use
+*/}}
+{{- define "nginx.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create -}}
+    {{ default (include "nginx.fullname" .) .Values.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
