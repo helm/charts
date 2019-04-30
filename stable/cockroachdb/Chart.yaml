@@ -1,7 +1,7 @@
 name: cockroachdb
 home: https://www.cockroachlabs.com
-version: 2.1.2
-appVersion: 2.1.6
+version: 2.1.3
+appVersion: 19.1.0
 description: CockroachDB is a scalable, survivable, strongly-consistent SQL database.
 icon: https://raw.githubusercontent.com/cockroachdb/cockroach/master/docs/media/cockroach_db.png
 sources:
