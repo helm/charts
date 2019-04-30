@@ -12,12 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM rethinkdb:2.3.5
-MAINTAINER Cody Lundquist <cody.lundquist@gmail.com>
+FROM rethinkdb:2.4.0
+LABEL maintainer="Cody Lundquist <cody.lundquist@gmail.com>"
 
 RUN apt-get update && \
-    apt-get install -yq curl && \
-    rm -rf /var/cache/apt/* && rm -rf /var/lib/apt/lists/*
+  apt-get install -yq curl && \
+  rm -rf /var/cache/apt/* && rm -rf /var/lib/apt/lists/*
 
 ADD http://stedolan.github.io/jq/download/linux64/jq /usr/bin/jq
 RUN chmod +x /usr/bin/jq

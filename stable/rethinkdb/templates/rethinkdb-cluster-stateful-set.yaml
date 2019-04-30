@@ -8,22 +8,20 @@ metadata:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
 spec:
-  serviceName: "{{ template "rethinkdb.fullname" . }}-cluster"
-  replicas: {{ .Values.cluster.replicas }}
   selector:
     matchLabels:
       app: "{{ template "rethinkdb.name" . }}-cluster"
-      heritage: {{ .Release.Service | quote }}
       release: {{ .Release.Name | quote }}
-      chart: {{ template "rethinkdb.chart" . }}
+  replicas: {{ .Values.cluster.replicas }}
+  serviceName: "{{ template "rethinkdb.fullname" . }}-cluster"
+  updateStrategy:
+    type: RollingUpdate
   template:
     metadata:
       name: "{{ template "rethinkdb.fullname" . }}-cluster"
       labels:
         app: "{{ template "rethinkdb.name" . }}-cluster"
-        heritage: {{ .Release.Service | quote }}
         release: {{ .Release.Name | quote }}
-        chart: {{ template "rethinkdb.chart" . }}
       annotations:
       {{- if .Values.cluster.podAnnotations }}
 {{ toYaml .Values.cluster.podAnnotations | indent 8 }}
@@ -45,6 +43,10 @@ spec:
             - "--no-http-admin"
             - "--cache-size"
             - {{ .Values.cluster.rethinkCacheSize | quote }}
+            {{- if .Values.cluster.rethinkCores }}
+            - "--cores"
+            - {{ .Values.cluster.rethinkCores | quote }}
+            {{- end }}
           volumeMounts:
             - name: "datadir"
               mountPath: "/data"
@@ -70,17 +72,9 @@ spec:
                 fieldRef:
                   fieldPath: metadata.name
           livenessProbe:
-{{ toYaml .Values.cluster.livenessProbe | indent 12 }}          
+{{ toYaml .Values.cluster.livenessProbe | indent 12 }}
           readinessProbe:
 {{ toYaml .Values.cluster.readinessProbe | indent 12 }}
-            exec:
-              command:
-                - /rethinkdb-probe
-            failureThreshold: 3
-            initialDelaySeconds: 15
-            periodSeconds: 10
-            successThreshold: 1
-            timeoutSeconds: 5
           resources:
 {{ toYaml .Values.cluster.resources | indent 12 }}
 {{- if .Values.cluster.persistentVolume.enabled }}

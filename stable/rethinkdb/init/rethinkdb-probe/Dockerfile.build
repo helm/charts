@@ -1,4 +1,4 @@
-FROM golang:1.6
+FROM golang:1.11.1
 MAINTAINER Chris Dornsife <chris@applariat.com>
 
 # Build container to have a consistent go build environment
