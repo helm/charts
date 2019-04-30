@@ -31,6 +31,8 @@ spec:
       - name: "remove-lost-found"
         image: "{{ .Values.busybox.image}}:{{ .Values.busybox.tag }}"
         imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+        resources:
+{{ toYaml .Values.initContainer.resources | indent 10 }}
         command:  ["rm", "-fr", "/var/lib/mysql/lost+found"]
         volumeMounts:
         - name: data
