@@ -21,7 +21,7 @@ kind: Deployment
 metadata:
   name: {{ include "ambassador.fullname" . }}-pro-redis
   labels:
-    app.kubernetes.io/name: {{ include "ambassador.name" . }}
+    app.kubernetes.io/name: {{ include "ambassador.name" . }}-pro-redis
     helm.sh/chart: {{ include "ambassador.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
@@ -30,13 +30,13 @@ spec:
   selector:
     matchLabels:
       service: ambassador-pro-redis
-      app.kubernetes.io/name: {{ include "ambassador.name" . }}
+      app.kubernetes.io/name: {{ include "ambassador.name" . }}-pro-redis
       app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       labels:
         service: ambassador-pro-redis
-        app.kubernetes.io/name: {{ include "ambassador.name" . }}
+        app.kubernetes.io/name: {{ include "ambassador.name" . }}-pro-redis
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       containers:
