@@ -78,3 +78,8 @@ ExtraSecretMounts: []
 # - name: COCKROACH_ENGINE_MAX_SYNC_DURATION
 #   value: "24h"
 ExtraEnvArgs: []
+# ExtraAnnotations is an object to provide additional annotations to the Statefulset
+# e.g.:
+# ExtraAnnotations:
+#   key: values
+ExtraAnnotations: {}
