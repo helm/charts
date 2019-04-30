@@ -159,3 +159,9 @@ livenessProbe:
   initialDelaySeconds: 30
   # Number of seconds to wait for probe response
   timeoutSeconds: 30
+
+podDisruptionBudget:
+  # https://kubernetes.io/docs/tasks/run-application/configure-pdb/
+  enabled: false
+  minAvailable:
+  maxUnavailable:
