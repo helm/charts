@@ -1,11 +1,14 @@
 {{- if .Values.pro.enabled -}}
----
 apiVersion: v1
 kind: Service
 metadata:
+  name: {{ include "ambassador.fullname" . }}-pro
   labels:
     service: ambassador-pro
-  name: ambassador-pro
+    app.kubernetes.io/name: {{ include "ambassador.name" . }}
+    helm.sh/chart: {{ include "ambassador.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
   annotations:
     getambassador.io/config: |
       ---
