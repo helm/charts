@@ -1,4 +1,4 @@
-{{ if .Values.deployment.enabled }}
+{{ if (or (.Values.deployment.enabled) (.Values.daemonset.enabled)) }}
 apiVersion: v1
 kind: Service
 metadata:
