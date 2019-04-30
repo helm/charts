@@ -126,8 +126,11 @@ spec:
           subPath: {{ .Values.persistence.subPath }}
           {{- end }}
         {{- if .Values.configurationFiles }}
+        {{- range $key, $val := .Values.configurationFiles }}
         - name: configurations
-          mountPath: /etc/mysql/conf.d
+          mountPath: /etc/mysql/conf.d/{{ $key }}
+          subPath: {{ $key }}
+        {{- end -}}
         {{- end }}
         {{- if .Values.initializationFiles }}
         - name: migrations
