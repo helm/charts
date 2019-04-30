@@ -59,7 +59,7 @@ spec:
         image: "{{ .image.repository }}:{{ .image.tag }}"
         imagePullPolicy: {{ .image.pullPolicy }}
         resources:
-{{ toYaml .resources | indent 12 }}
+{{ toYaml .Values.resources | indent 12 }}
         env:
           - name: MY_POD_NAME
             valueFrom:
