@@ -86,6 +86,8 @@ The following table lists the configurable parameters of the Sonarqube chart and
 | `plugins.resources`                         | Plugin Pod resource requests & limits     | `{}`                                       |
 | `plugins.initContainerImage`                | Change init container image               | `[]`                                       |
 | `plugins.deleteDefaultPlugins`              | Remove default plugins and use plugins.install list | `[]`                             |
+| `podLabels`                                 | Map of labels to add to the pods          | `{}`                                       |
+
 
 You can also configure values for the PostgreSQL / MySQL database via the Postgresql [README.md](https://github.com/kubernetes/charts/blob/master/stable/postgresql/README.md) / MySQL [README.md](https://github.com/kubernetes/charts/blob/master/stable/mysql/README.md)
 
