@@ -136,6 +136,39 @@ spec:
           {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+        {{- if .Values.pro.enabled }}
+        - name: ambassador-pro
+          image: "{{ .Values.pro.image.repository }}:{{ .Values.pro.image.tag }}"
+          ports:
+          - name: grpc-auth
+            containerPort: {{ .Values.pro.ports.auth }}
+          - name: grpc-ratelimit
+            containerPort: {{ .Values.pro.ports.ratelimit }}
+          - name: http-debug
+            containerPort: {{ .Values.pro.ports.ratelimitDebug }}
+          env:
+          - name: REDIS_SOCKET_TYPE
+            value: tcp
+          - name: REDIS_URL
+            value: ambassador-pro-redis:6379
+          - name: APRO_AUTH_PORT
+            value: "{{ .Values.pro.ports.auth }}"
+          - name: GRPC_PORT
+            value: "{{ .Values.pro.ports.ratelimit }}"
+          - name: DEBUG_PORT
+            value: "{{ .Values.pro.ports.ratelimitDebug }}"
+          - name: APP_LOG_LEVEL
+            value: "{{ .Values.pro.logLevel  }}"
+          - name: AMBASSADOR_LICENSE_KEY 
+          {{- if .Values.pro.licenseKey.secret }}
+            valueFrom:
+              secretKeyRef:
+                name: ambassador-pro-license-key
+                key: key
+          {{ else }}
+            value: {{ .Values.pro.licenseKey.value }}
+          {{- end }}
+        {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
