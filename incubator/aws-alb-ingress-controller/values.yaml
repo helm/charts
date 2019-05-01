@@ -73,6 +73,10 @@ image:
   repository: docker.io/amazon/aws-alb-ingress-controller
   tag: "v1.1.2"
   pullPolicy: IfNotPresent
+  ## Specific image digest to use in place of a tag. Digest takes precedence over tag if it is defined.
+  ## ref: https://kubernetes.io/docs/concepts/configuration/overview/#container-images
+  ##
+  # digest: sha256:939f2a4213253ed10e30acfad7c82573dc25466599cb13b533d03f275e1870fb
 
 replicaCount: 1
 nameOverride: ""
