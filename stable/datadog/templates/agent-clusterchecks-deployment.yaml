@@ -23,7 +23,11 @@ spec:
       {{- end }}
       containers:
       - name: {{ default .Chart.Name .Values.datadog.name }}
+        {{- if .Values.image.digest }}
+        image: "{{ .Values.image.repository }}@{{ .Values.image.digest }}"
+        {{- else }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        {{- end }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
           - name: DD_API_KEY

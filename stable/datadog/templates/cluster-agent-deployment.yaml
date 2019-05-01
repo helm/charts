@@ -39,7 +39,11 @@ spec:
       {{- end }}
       containers:
       - name: {{ .Values.clusterAgent.containerName }}
+        {{- if .Values.clusterAgent.image.digest }}
+        image: "{{ .Values.clusterAgent.image.repository }}@{{ .Values.clusterAgent.image.digest }}"
+        {{- else }}
         image: "{{ .Values.clusterAgent.image.repository }}:{{ .Values.clusterAgent.image.tag }}"
+        {{- end }}
         imagePullPolicy: {{ .Values.clusterAgent.image.pullPolicy }}
         resources:
 {{ toYaml .Values.clusterAgent.resources | indent 12 }}

@@ -220,6 +220,7 @@ helm install --name <RELEASE_NAME> \
 | `datadog.appKeyExistingSecret`           | If set, use the secret with a provided name instead of creating a new one                 | `nil`                                       |
 | `image.repository`                       | The image repository to pull from                                                         | `datadog/agent`                             |
 | `image.tag`                              | The image tag to pull                                                                     | `6.10.1`                                     |
+| `image.digest`                           | The image digest to pull. Takes precedence over tag if defined                            | `nil`                                       |
 | `image.pullPolicy`                       | Image pull policy                                                                         | `IfNotPresent`                              |
 | `image.pullSecrets`                      | Image pull secrets                                                                        | `nil`                                       |
 | `nameOverride`                           | Override name of app                                                                      | `nil`                                       |
@@ -278,6 +279,7 @@ helm install --name <RELEASE_NAME> \
 | `clusterAgent.containerName`             | The container name for the Cluster Agent                                                  | `cluster-agent`                             |
 | `clusterAgent.image.repository`          | The image repository for the cluster-agent                                                | `datadog/cluster-agent`                     |
 | `clusterAgent.image.tag`                 | The image tag to pull                                                                     | `1.2.0`                                     |
+| `clusterAgent.image.digest`              | The image digest to pull. Takes precedence over tag if defined                            | `nil`                                       |
 | `clusterAgent.image.pullPolicy`          | Image pull policy                                                                         | `IfNotPresent`                              |
 | `clusterAgent.image.pullSecrets`         | Image pull secrets                                                                        | `nil`                                       |
 | `clusterAgent.metricsProvider.enabled`   | Enable Datadog metrics as a source for HPA scaling                                        | `false`                                     |

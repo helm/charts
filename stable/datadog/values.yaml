@@ -20,6 +20,12 @@ image:
   #
   tag: 6.10.1
 
+  ## @param digest - string - optional
+  ## Define the Agent version to use with the image digest.
+  ## Digest takes precedence over tag if defined
+  #
+  # digest: sha256:33b6011daca178ac082762866e16d59bdc5478d8e45f23a7a272287d1251e369
+
   ## @param pullPolicy - string - required
   ## The Kubernetes pull policy.
   #
@@ -284,6 +290,11 @@ clusterAgent:
     repository: datadog/cluster-agent
     tag: 1.2.0
     pullPolicy: IfNotPresent
+    ## @param digest - string - optional
+    ## Define the Agent version to use with the image digest.
+    ## Digest takes precedence over tag if defined
+    #
+    # digest: sha256:5be1524c9607de10224aa0cce3794d7ab52f3b1f83cb605d39b20681c1183725
 
   ## @param token - string - required
   ## This needs to be at least 32 characters a-zA-z
