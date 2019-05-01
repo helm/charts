@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: sstarcher/helm-exporter
-  tag: 0.1.0
+  tag: 0.3.1
   pullPolicy: Always
 
 nameOverride: ""
@@ -26,3 +26,10 @@ serviceAccount:
   # The name of the ServiceAccount to use.
   # If not set and create is true, a name is generated using the fullname template
   name:
+
+serviceMonitor:
+  # Specifies whether a ServiceMonitor should be created
+  create: false
+  interval:
+  namespace:
+  additionalLabels: {}

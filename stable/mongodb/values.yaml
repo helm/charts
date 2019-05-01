@@ -1,8 +1,11 @@
-## Global Docker image registry
-## Please, note that this will override the image registry for all the images, including dependencies, configured to use the global value
+## Global Docker image parameters
+## Please, note that this will override the image parameters, including dependencies, configured to use the global value
+## Current available global Docker image parameters: imageRegistry and imagePullSecrets
 ##
 # global:
-#   imageRegistry:
+#   imageRegistry: myRegistryName
+#   imagePullSecrets:
+#     - myRegistryKeySecretName
 
 image:
   ## Bitnami MongoDB registry
@@ -14,7 +17,7 @@ image:
   ## Bitnami MongoDB image tag
   ## ref: https://hub.docker.com/r/bitnami/mongodb/tags/
   ##
-  tag: 4.0.6
+  tag: 4.0.9
 
   ## Specify a imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -25,7 +28,7 @@ image:
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
   ##
   # pullSecrets:
-  #   - myRegistrKeySecretName
+  #   - myRegistryKeySecretName
 
   ## Set to true if you would like to see extra information on logs
   ## It turns NAMI debugging in minideb
@@ -164,6 +167,11 @@ affinity: {}
 ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
 tolerations: []
 
+## updateStrategy for MongoDB Primary, Secondary and Arbitrer statefulsets
+## ref: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#update-strategies
+updateStrategy:
+  type: RollingUpdate
+
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ##
@@ -172,7 +180,18 @@ persistence:
   ## A manually managed Persistent Volume and Claim
   ## Requires persistence.enabled: true
   ## If defined, PVC must be created manually before volume will be bound
+  ##
   # existingClaim:
+
+  ## The path the volume will be mounted at, useful when using different
+  ## MongoDB images.
+  ##
+  mountPath: /bitnami/mongodb
+
+  ## The subdirectory of the volume to mount to, useful in dev environments
+  ## and one PV for multiple services.
+  ##
+  subPath: ""
 
   ## mongodb data Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
@@ -186,6 +205,19 @@ persistence:
     - ReadWriteOnce
   size: 8Gi
   annotations: {}
+
+# Expose mongodb via ingress. This is possible if using nginx-ingress
+# https://kubernetes.github.io/ingress-nginx/user-guide/exposing-tcp-udp-services/
+ingress:
+  enabled: false
+  annotations: {}
+  labels: {}
+  paths:
+    - /
+  hosts: []
+  tls:
+    - secretName: secret-tls
+      hosts: []
 
 ## Configure the options for init containers to be run before the main app containers
 ## are started. All init containers are run sequentially and must exit without errors
@@ -212,6 +244,10 @@ readinessProbe:
   timeoutSeconds: 5
   failureThreshold: 6
   successThreshold: 1
+
+# Define custom config map with init scripts
+initConfigMap: {}
+#  name: "init-config-map"
 
 # Entries for the MongoDB config file
 configmap:
@@ -264,7 +300,7 @@ metrics:
     ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
     ##
     # pullSecrets:
-    #   - myRegistrKeySecretName
+    #   - myRegistryKeySecretName
 
   ## String with extra arguments to the metrics exporter
   ## ref: https://github.com/dcu/mongodb_exporter/blob/master/mongodb_exporter.go
@@ -282,11 +318,15 @@ metrics:
     initialDelaySeconds: 15
     periodSeconds: 5
     timeoutSeconds: 5
+    failureThreshold: 3
+    successThreshold: 1
   readinessProbe:
     enabled: false
     initialDelaySeconds: 5
     periodSeconds: 5
     timeoutSeconds: 1
+    failureThreshold: 3
+    successThreshold: 1
 
   ## Metrics exporter pod Annotation
   podAnnotations:

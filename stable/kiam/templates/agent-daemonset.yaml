@@ -61,11 +61,15 @@ spec:
           hostPath:
             path: {{ .hostPath }}
       {{- end }}
+      {{- if .Values.agent.priorityClassName }}
+      priorityClassName: {{ .Values.agent.priorityClassName | quote }}
+      {{- end }}
       containers:
         - name: {{ template "kiam.name" . }}-{{ .Values.agent.name }}
         {{- if .Values.agent.host.iptables }}
           securityContext:
-            privileged: true
+            capabilities:
+              add: ["NET_ADMIN"]
         {{- end }}
           image: "{{ .Values.agent.image.repository }}:{{ .Values.agent.image.tag }}"
           imagePullPolicy: {{ .Values.agent.image.pullPolicy }}

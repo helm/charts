@@ -47,11 +47,11 @@ pachd:
  ## For available images please check: https://hub.docker.com/r/pachyderm/pachd/tags/
  image:
   repository: pachyderm/pachd
-  tag: 1.7.3
+  tag: 1.7.11
   pullPolicy: Always
  worker:
   repository: pachyderm/worker
-  tag: 1.7.3
+  tag: 1.7.11
  resources:
   ## For non-local deployments, 1 cpu and 2G of memory requests are recommended
   requests:

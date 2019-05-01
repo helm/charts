@@ -7,19 +7,18 @@ Expand the name of the chart.
 {{- end -}}
 
 {{/*
-Create a default fully qualified concourse name.
+Create a default fully qualified web node(s) name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
-{{- define "concourse.concourse.fullname" -}}
-{{- $name := default .Chart.Name .Values.nameOverride -}}
-{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
-
 {{- define "concourse.web.fullname" -}}
 {{- $name := default "web" .Values.web.nameOverride -}}
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
+{{/*
+Create a default fully qualified worker node(s) name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+*/}}
 {{- define "concourse.worker.fullname" -}}
 {{- $name := default "worker" .Values.worker.nameOverride -}}
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
@@ -45,3 +44,11 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- define "concourse.namespacePrefix" -}}
 {{- default (printf "%s-" .Release.Name ) .Values.concourse.web.kubernetes.namespacePrefix -}}
 {{- end -}}
+
+{{- define "concourse.are-there-additional-volumes.with-the-name.concourse-work-dir" }}
+  {{- range .Values.worker.additionalVolumes }}
+    {{- if .name | eq "concourse-work-dir" }}
+      {{- .name }}
+    {{- end }}
+  {{- end }}
+{{- end }}

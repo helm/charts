@@ -8,7 +8,7 @@ replicaCount: 1
 
 image:
   repository: quay.io/kubernetes_incubator/nfs-provisioner
-  tag: v1.0.9
+  tag: v2.2.1-k8s1.12
   pullPolicy: IfNotPresent
 
 service:
@@ -53,9 +53,14 @@ storageClass:
   ## Ignored if storageClass.create is false
   name: nfs
 
+  # set to null to prevent expansion
+  allowVolumeExpansion: true
   ## StorageClass parameters
-  parameters:
-    mountOptions: vers=4.1
+  parameters: {}
+
+  mountOptions:
+    - vers=4.1
+    - noatime
 
   ## ReclaimPolicy field of the class, which can be either Delete or Retain
   reclaimPolicy: Delete
