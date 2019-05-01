@@ -3,6 +3,10 @@ image:
   name: sumologic/fluentd-kubernetes-sumologic
   tag: v2.3.0
   pullPolicy: IfNotPresent
+  ## Specific image digest to use in place of a tag. Digest takes precedence over tag if it is defined.
+  ## ref: https://kubernetes.io/docs/concepts/configuration/overview/#container-images
+  ##
+  # digest: sha256:0ecf6b71aee94b4d33ce185e20529c7d470fe0d2f0c98d88faeaed0b0a59fa50
 
 ## Annotations to add to the DaemonSet's Pods
 podAnnotations: {}

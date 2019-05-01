@@ -26,7 +26,11 @@ spec:
       {{- end }}
       containers:
         - name: {{ template "sumologic-fluentd.fullname" . }}
+          {{- if .Values.image.digest }}
+          image: "{{ .Values.image.name }}@{{ .Values.image.digest }}"
+          {{- else }}
           image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
+          {{- end }}
           imagePullPolicy: {{.Values.image.pullPolicy}}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
