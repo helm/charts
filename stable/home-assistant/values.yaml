@@ -4,7 +4,7 @@
 
 image:
   repository: homeassistant/home-assistant
-  tag: 0.90.2
+  tag: 0.92.1
   pullPolicy: IfNotPresent
   pullSecrets: []
 
@@ -71,6 +71,13 @@ extraEnvSecrets:
   # MQTT_PASSWORD:
   #   secret: mqtt
   #   key: password
+
+# Enable pod security context (must be `true` if runAsUser or fsGroup are set)
+usePodSecurityContext: true
+# Set runAsUser to 1000 to let home-assistant run as non-root user 'hass' which exists in 'runningman84/alpine-homeassistant' docker image.
+# When setting runAsUser to a different value than 0 also set fsGroup to the same value:
+# runAsUser: <defaults to 0>
+# fsGroup: <will be omitted in deployment if runAsUser is 0>
 
 git:
   enabled: false
