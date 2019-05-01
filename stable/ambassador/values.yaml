@@ -139,7 +139,7 @@ ambassadorConfig: ""
 
 pro:
   enabled: false
-  image: 
+  image:
     repository: quay.io/datawire/ambassador_pro
     tag: amb-sidecar-0.4.0
   ports:
@@ -149,4 +149,5 @@ pro:
   logLevel: info
   licenseKey:
     value:
-    secret: false 
+    secret: false
+    
