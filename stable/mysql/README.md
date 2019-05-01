@@ -92,6 +92,9 @@ The following table lists the configurable parameters of the MySQL chart and the
 | `metrics.readinessProbe.timeoutSeconds`      | When the probe times out                                                                     | 1                                                    |
 | `resources`                                  | CPU/Memory resource requests/limits                                                          | Memory: `256Mi`, CPU: `100m`                         |
 | `configurationFiles`                         | List of mysql configuration files                                                            | `nil`                                                |
+| `securityContext.enabled`                    | Enable security context (mysql pod)                                                          | `false`                                              |
+| `securityContext.fsGroup`                    | Group ID for the container (mysql pod)                                                       | 999                                               |
+| `securityContext.runAsUser`                  | User ID for the container (mysql pod)                                                        | 999                                                |
 | `service.annotations`                        | Kubernetes annotations for mysql                                                             | {}                                                   |
 | `ssl.enabled`                                | Setup and use SSL for MySQL connections                                                      | `false`                                              |
 | `ssl.secret`                                 | Name of the secret containing the SSL certificates                                           | mysql-ssl-certs                                      |
