@@ -1,4 +1,4 @@
-# IMPORTANT: Specify your New Relic API key here.
+# IMPORTANT: Specify a name of a kubernetes secret which contains the New Relic API key here.
 licenseSecret:
 
 # IMPORTANT: The Kubernetes cluster name
@@ -44,7 +44,7 @@ serviceAccount:
 
 # If you wish to provide additional labels to apply to the pod(s), specify
 # them here
-podLabels:
+podLabels: []
 
 # If you wish to provide your own newrelic-infra.yml file include it under the
 # config: value. Documentation for this file can be found at: 
@@ -88,7 +88,7 @@ config:
   #  team: alpha-team
   #
 
-# Node labels for pod assignment
+# Node label(s) to use for scheduling
 # Ref: https://kubernetes.io/docs/user-guide/node-selection/
 nodeSelector: {}
 
@@ -100,4 +100,4 @@ updateStrategy: RollingUpdate
 customAttribues: "'{\"clusterName\":\"$(CLUSTER_NAME)\"}'"
 
 # optional "key" : "value" pairs used as annotations
-podAnnotations: 
+podAnnotations: {}

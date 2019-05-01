@@ -89,7 +89,7 @@ For other configuration options see [Configuration](#configuration) below.
 | ------------------------- | ------------------------------------------------------------ | -------------------------- |
 | `cluster`                 | *Required* Kubernetes cluster name.                          | `nil`                      |
 | `licenseSecret`           | *Required* The name of the kubernetes secret which contains the [license key](https://docs.newrelic.com/docs/accounts/install-new-relic/account-setup/license-key)  for your New Relic Account. | `nil` |
-| `config`                  | An optional `newrelic-infra.yml` file.                       | `nil`                      |
+| `config`                  | An optional `newrelic-infra.yml` file.                       | `nil` See Config File below |
 | `kubeStateMetricsUrl`     | If provided, the discovery process for kube-state-metrics endpoint won't be triggered. Example: http://172.17.0.3:8080 | `nil` |
 | `kubeStateMetricsTimeout` | Timeout for accessing kube-state-metrics in milliseconds. If not set the newrelic default is 5000 | `nil` |
 | `rbac.create`             | Enable Role-based authentication (Boolean)                   | `true`                     |
@@ -102,11 +102,12 @@ For other configuration options see [Configuration](#configuration) below.
 | `nodeSelector`            | Node label(s) to use for scheduling (Map)                    | `{}` (i.e. empty map)      |
 | `tolerations`             | List of node taints to tolerate (requires Kubernetes >= 1.6) | `[]` (i.e. empty list)     |
 | `updateStrategy`          | Strategy for DaemonSet updates (requires Kubernetes >= 1.6)  | `RollingUpdate`            |
-| `podAnnotations`          | Optional key value non-identifying metadata used in daemonset | `nil`                     |
-| `podLabels`               | Optional key value identifying metadata used in daemonset    | `nil`                      |
+| `podAnnotations`          | Optional key value non-identifying metadata used in daemonset | `{}` (i.e. empty map)     |
+| `podLabels`               | Optional array of labels to apply to the daemonset           | `[]` (i.e. empty list)     |
 | `logFile`                 | This can be set to a log file path                           | `nil`                      |
 | `serviceAccount.create`   | Specifies whether a ServiceAccount should be created         | `true`                     |
 | `serviceAccount.name`     | The name of the ServiceAccount to use. If not set and create is true, a name is generated using the fullname template | `nil` |
+| `customAttribues`         | Custom attributes to be passed to the New Relic agent as environment variable NRIA_CUSTOM_ATTRIBUTES | "'{\"clusterName\":\"$(CLUSTER_NAME)\"}'" |
 
 ## Resources
 
@@ -120,7 +121,7 @@ The default set of resources assigned to the pods is shown below:
         cpu: 100m
         memory: 128Mi
 
-# Config file
+# Config File
 
 If you wish to provide your own `newrelic.yml` you may do so under `config`. There are a few notable exceptions you should be aware of. Three options have been omitted because they are handled either by variables, or a secret. They are license_key, log_file and verbose.
 

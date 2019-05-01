@@ -14,6 +14,6 @@ Then run:
     helm upgrade {{ .Release.Name }} \
         --set licenseSecret=YOUR-KEY-HERE \
         --set cluster=YOUR-CLUSTER-NAME \
-        stable/newrelic-infrastructure
+        community/newrelic-infrastructure
 
 {{- end -}}

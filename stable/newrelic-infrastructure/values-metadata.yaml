@@ -1,0 +1,168 @@
+licenseSecret:
+  __metadata:
+    label: Kubernetes Secret Name
+    description: The name of the kubernetes secret which contains the license key for your New Relic Account. See license information at http://ibm.biz/Bdz4Pk
+    type: string
+    required: true
+cluster:
+  __metadata:
+    label: Kubernetes Cluster Name
+    description: Kubernetes cluster name. See https://docs.newrelic.com/docs/kubernetes-monitoring-integration
+    type: string
+    required: true
+kubeStateMetricsUrl:
+  __metadata:
+    label: Kube State Metrics URL
+    description: If provided, the discovery process for kube-state-metrics endpoint won't be triggered. Only HTTP is accepted. Example http://172.17.0.3:8080
+    type: string
+    required: false
+kubeStateMetricsTimeout:
+  __metadata:
+    label: Kube State Metrics Timeout
+    description: Timeout for accessing kube-state-metrics in milliseconds. If not set the newrelic default is 5000
+    type: number
+    required: false
+verboseLog:
+  __metadata:
+    label: Verbose Logging
+    description: Should the agent log verbosely
+    type: boolean
+    required: false
+logFile:
+  __metadata:
+    label: Log File
+    description: This can be set to a log file path. Example default value /var/log/nr-infra.log
+    type: string
+    required: false
+
+image:
+  __metadata:
+    label: Image
+    description: docker image configuration values
+  repository:
+    __metadata:
+      label: Image Name
+      description: Name of docker image
+      type: string
+      required: true
+  tag:
+    __metadata:
+      label: Image Tag
+      description: Tag of docker image
+      type: string
+      required: true
+  pullPolicy:
+    __metadata:
+      label: Image Pull Policy
+      description: Pull policy for docker image
+      type: string
+      required: true
+      
+resources:
+  __metadata:
+    label: Resources
+    description: kubernetes resource configuration values
+  limits:
+    cpu:
+      __metadata:
+        label: CPU
+        description: Kubernetes resource cpu limit
+        type: string
+        required: true
+    memory:
+      __metadata:
+        label: Memory
+        description: Kubernetes resource memory limit
+        type: string
+        required: true
+  requests:
+    cpu:
+      __metadata:
+        label: CPU
+        description: Kubernetes resource request cpu
+        type: string
+        required: true
+    memory:
+      __metadata:
+        label: Memory
+        description: Kubernetes resource request memory
+        type: string
+        required: true
+
+rbac:
+  __metadata:
+    label: Role Based Authorization
+    description: Settings relating to kubernetes role based authentication
+  create:
+    __metadata:
+      label: Create Resources
+      description: Specifies whether RBAC resources should be created
+      type: boolean
+      required: true
+  pspEnabled:
+    __metadata:
+      label: Enable Pod Security Policy 
+      description: Enable pod security policy support
+      type: boolean
+      required: true
+
+serviceAccount:
+  __metadata:
+    label: Service Account
+    description: Settings relating to kubernetes service account
+  create:
+    __metadata:
+      label: Create Service Account
+      description: Specifies whether a ServiceAccount should be created
+      type: boolean
+      required: true
+  name:
+    __metadata:
+      label: Service Account Name
+      description: The name of the ServiceAccount to use. If not set and create is true, a name is generated using the fullname template
+      type: string
+      required: false
+
+podLabels:
+  __metadata:
+    label: Pod Labels
+    description: Label(s) to apply to the daemonset
+    type: string
+    required: false
+config:
+  __metadata:
+    label: Config YAML
+    description: An optional `newrelic-infra.yml` file. See values.yaml for full description.
+    type: string
+    multiline: true
+    required: false
+nodeSelector:
+  __metadata:
+    label: Kubernetes Node Selector
+    description: Node label(s) to use for scheduling. Ref https://kubernetes.io/docs/user-guide/node-selection/
+    type: string
+    required: false
+tolerations:
+  __metadata:
+    label: Kubernetes Tolerations
+    description: List of node taints to tolerate (requires Kubernetes >= 1.6)
+    type: string
+    required: false
+updateStrategy:
+  __metadata:
+    label: Kubernetes Update Strategy
+    description: Strategy for DaemonSet updates (requires Kubernetes >= 1.6)
+    type: string
+    required: false
+customAttribues:
+  __metadata:
+    label: Agent Custom Attributes
+    description: Custom attributes to be passed to the New Relic agent as environment variable NRIA_CUSTOM_ATTRIBUTES
+    type: string
+    required: false
+podAnnotations:
+  __metadata:
+    label: Kubernetes Node Selector
+    description: key value non-identifying metadata used in daemonset
+    type: string
+    required: false

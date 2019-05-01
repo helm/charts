@@ -9,7 +9,7 @@ source:
   - https://github.com/helm/charts/tree/master/stable/newrelic-infrastructure
   - https://github.com/IBM/charts/tree/master/community/newrelic-infrastructure
 engine: gotpl
-icon: https://newrelic.com/assets/newrelic/source/NewRelic-logo-square.svg
+icon: https://newrelic.com/assets/newrelic/source/NewRelic-logo-square.png
 maintainers:
   - name: rk295
     email: robin@kearney.co.uk
