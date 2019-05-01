@@ -17,10 +17,10 @@ This chart will deploy the following:
 
 ## Installing the Chart
 
-To install the chart with the release name `my-release`:
+To install the chart with the release name `my-dask`:
 
 ```bash
-$ helm install --name my-release stable/dask
+$ helm install --name my-dask stable/dask
 ```
 
 ## Configuration
@@ -80,7 +80,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml stable/dask
+$ helm install --name my-dask -f values.yaml stable/dask
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
@@ -109,3 +109,58 @@ worker:
 Note that the Jupyter and Dask worker environments should have matching
 software environments, at least where a user is likely to distribute that
 functionality.
+
+
+### Post Installation
+
+- To get information about running pods:
+  ```
+    $ helm status my-dask 
+  ```
+- To get full Kubernetes specification
+  ``` 
+    $ helm get my-dask
+  ```
+
+
+- The Jupyter notebook server and Dask scheduler expose external services to
+which you can connect to manage notebooks, or connect directly to the Dask
+cluster.   
+
+- You can get these addresses by running the following:
+  ```
+    export DASK_SCHEDULER=$(kubectl get svc --namespace default my-dask-scheduler -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+
+    export DASK_SCHEDULER_UI_IP=$(kubectl get svc --namespace default my-dask-scheduler -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+
+    export JUPYTER_NOTEBOOK_IP=$(kubectl get svc --namespace default my-dask-jupyter -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+
+    echo http://$JUPYTER_NOTEBOOK_IP:80 -- Jupyter notebook
+    echo http://$DASK_SCHEDULER_UI_IP:80  -- Dask dashboard
+    echo http://$DASK_SCHEDULER:8786    -- Dask Client connection
+  ```
+
+- NOTE: The default password to login to the notebook server is `dask`.
+
+- NOTE: It may take a few minutes for the LoadBalancer IP to be available, until that the commands below will not work. 
+
+- You can watch the status by running 
+  ```
+  kubectl get svc --namespace default -w my-dask-jupyter
+  ```
+
+### Uninstalling the Chart
+
+* To uninstall/delete the `my-dask` deployment:
+
+	```bash
+	$ helm delete my-dask
+	```
+  
+  The command removes all the Kubernetes components associated with the chart and deletes the release.  
+
+  ```bash
+  $ helm delete --purge my-dask
+  ```
+
+  The command removes all records and make that name free to be reused for another installation of dask.
