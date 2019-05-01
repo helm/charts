@@ -114,11 +114,11 @@ functionality.
 ### Post Installation
 
 - To get information about running pods:
-  ```
+  ``` bash
     $ helm status my-dask 
   ```
 - To get full Kubernetes specification
-  ``` 
+  ``` bash
     $ helm get my-dask
   ```
 
@@ -128,16 +128,16 @@ which you can connect to manage notebooks, or connect directly to the Dask
 cluster.   
 
 - You can get these addresses by running the following:
-  ```
-    export DASK_SCHEDULER=$(kubectl get svc --namespace default my-dask-scheduler -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  ```bash
+	$ export DASK_SCHEDULER=$(kubectl get svc --namespace default my-dask-scheduler -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 
-    export DASK_SCHEDULER_UI_IP=$(kubectl get svc --namespace default my-dask-scheduler -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  $ export DASK_SCHEDULER_UI_IP=$(kubectl get svc --namespace default my-dask-scheduler -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 
-    export JUPYTER_NOTEBOOK_IP=$(kubectl get svc --namespace default my-dask-jupyter -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  $ export JUPYTER_NOTEBOOK_IP=$(kubectl get svc --namespace default my-dask-jupyter -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 
-    echo http://$JUPYTER_NOTEBOOK_IP:80 -- Jupyter notebook
-    echo http://$DASK_SCHEDULER_UI_IP:80  -- Dask dashboard
-    echo http://$DASK_SCHEDULER:8786    -- Dask Client connection
+  $ echo http://$JUPYTER_NOTEBOOK_IP:80 -- Jupyter notebook
+  $ echo http://$DASK_SCHEDULER_UI_IP:80  -- Dask dashboard
+  $ echo http://$DASK_SCHEDULER:8786    -- Dask Client connection
   ```
 
 - NOTE: The default password to login to the notebook server is `dask`.
@@ -145,8 +145,8 @@ cluster.
 - NOTE: It may take a few minutes for the LoadBalancer IP to be available, until that the commands below will not work. 
 
 - You can watch the status by running 
-  ```
-  kubectl get svc --namespace default -w my-dask-jupyter
+  ```bash
+  $ kubectl get svc --namespace default -w my-dask-jupyter
   ```
 
 ### Uninstalling the Chart
