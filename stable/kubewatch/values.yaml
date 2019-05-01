@@ -55,6 +55,11 @@ image:
   # pullSecrets:
   #   - myRegistryKeySecretName
 
+  ## Specific image digest to use in place of a tag. Digest takes precedence over tag if it is defined.
+  ## ref: https://kubernetes.io/docs/concepts/configuration/overview/#container-images
+  ##
+  # digest: sha256:b023da59a11baff97d7abcd11e1c58e2696665a9756b6297d81530fb59bd749e
+
 rbac:
   # If true, create & use RBAC resources
   #

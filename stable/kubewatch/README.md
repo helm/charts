@@ -45,6 +45,7 @@ The following table lists the configurable parameters of the kubewatch chart and
 | `image.registry`                         | Image registry                       | `docker.io`                       |
 | `image.repository`                       | Image repository                     | `bitnami/kubewatch`               |
 | `image.tag`                              | Image tag                            | `{VERSION}`                       |
+| `image.digest`                           | Image digest. Takes precedence over tag if defined | `""`                |
 | `image.pullPolicy`                       | Image pull policy                    | `Always`                          |
 | `nodeSelector`                           | node labels for pod assignment       | `{}`                              |
 | `podAnnotations`                         | annotations to add to each pod       | `{}`                              |
