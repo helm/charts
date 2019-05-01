@@ -10,6 +10,9 @@ metadata:
     chart: {{ template "buzzfeed-sso.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+{{- range $key, $value := .Values.ingress.extraLabels }}
+    {{ $key }}: {{ $value }}
+{{- end }}
 {{- with .Values.ingress.annotations }}
   annotations:
 {{ toYaml . | indent 4 }}

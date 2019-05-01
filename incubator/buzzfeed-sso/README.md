@@ -85,6 +85,7 @@ Parameter | Description | Default
 `image.tag` | container image tag | `v1.0.0`
 `image.pullPolicy` | container image pull policy | `IfNotPresent`
 `ingress.annotations` | ingress load balancer annotations | `{}`
+`ingress.extraLabels` | extra ingress labels | `{}`
 `ingress.hosts` | proxied hosts | `[]`
 `ingress.tls` | tls certificates for the proxied hosts | `[]`
 `upstreams` | configuration of services that use sso | `[]`

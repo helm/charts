@@ -74,6 +74,7 @@ ingress:
     # kubernetes.io/ingress.class: nginx
     # certmanager.k8s.io/cluster-issuer: my-letsencrypt-issuer
     # ingress.kubernetes.io/ssl-redirect: "true"
+  extraLabels: {}
   hosts: []
   #  - domain: mybackend.mydomain.foo
   #    path: /
