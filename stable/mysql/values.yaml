@@ -95,6 +95,12 @@ persistence:
   size: 8Gi
   annotations: {}
 
+## Security context
+securityContext:
+  enabled: false
+  runAsUser: 999
+  fsGroup: 999
+
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ##
@@ -177,3 +183,11 @@ podLabels: {}
 
 ## Set pod priorityClassName
 # priorityClassName: {}
+
+
+## Init container resources defaults
+initContainer:
+  resources:
+    requests:
+      memory: 10Mi
+      cpu: 10m

@@ -3,6 +3,7 @@
 #
 # The 'opa' key embeds an OPA configuration file. See
 # https://www.openpolicyagent.org/docs/configuration.html for more details.
+# If no default config wanted just set opa: false
 opa:
   services:
     controller:
@@ -11,6 +12,10 @@ opa:
     service: controller
     name: "helm-kubernetes-quickstart"
   default_decision: "/helm_kubernetes_quickstart/main"
+
+# Setup the webhook using cert-manager
+certManager:
+  enabled: false
 
 # To enforce mutating policies, change to MutatingWebhookConfiguration.
 admissionControllerKind: ValidatingWebhookConfiguration
@@ -58,8 +63,13 @@ authz:
 
 # Docker image and tag to deploy.
 image: openpolicyagent/opa
-imageTag: 0.10.5
+imageTag: 0.10.7
 imagePullPolicy: IfNotPresent
+
+# Port to which the opa pod will bind itself
+# NOTE IF you use a different port make sure it maches the ones in the readinessProbe
+# and livenessProbe
+port: 443
 
 mgmt:
   enabled: true
@@ -69,11 +79,13 @@ mgmt:
   extraArgs: []
   resources: {}
   configmapPolicies:
+# NOTE IF you use these, remember to update the RBAC rules below to allow
+#      permissions to get, list, watch, patch and update configmaps
     enabled: false
     namespaces: [opa, kube-federation-scheduling-policy]
     requireLabel: true
   replicate:
-# NOTE IF you use these, remember to update the RBAC rules above to allow
+# NOTE IF you use these, remember to update the RBAC rules below to allow
 #      permissions to replicate these things
     cluster: []
 #     - [group/]version/resource

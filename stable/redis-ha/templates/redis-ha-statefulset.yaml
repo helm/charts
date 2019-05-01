@@ -50,6 +50,21 @@ spec:
 {{ toYaml .Values.securityContext | indent 8 }}
       serviceAccountName: {{ template "redis-ha.serviceAccountName" . }}
       initContainers:
+      {{- if .Values.sysctlImage.enabled }}
+      - name: init-sysctl
+        image: {{ template "redis.sysctl.image" . }}
+        {{- if .Values.sysctlImage.mountHostSys }}
+        volumeMounts:
+        - name: host-sys
+          mountPath: /host-sys
+        {{- end }}
+        command:
+{{ toYaml .Values.sysctlImage.command | indent 10 }}
+        securityContext:
+          runAsNonRoot: false
+          privileged: true
+          runAsUser: 0
+      {{- end }}
 {{- if and .Values.hostPath.path .Values.hostPath.chown }}
       - name: hostpath-chown
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
@@ -88,7 +103,7 @@ spec:
             {{- else }}
               name: {{ template "redis-ha.fullname" . }}
             {{- end }}
-              key: auth
+              key: {{ .Values.authKey }}
 {{- end }}
         volumeMounts:
         - name: config
@@ -114,7 +129,7 @@ spec:
             {{- else }}
               name: {{ template "redis-ha.fullname" . }}
             {{- end }}
-              key: auth
+              key: {{ .Values.authKey }}
 {{- end }}
         livenessProbe:
           exec:
@@ -153,7 +168,7 @@ spec:
             {{- else }}
               name: {{ template "redis-ha.fullname" . }}
             {{- end }}
-              key: auth
+              key: {{ .Values.authKey }}
 {{- end }}
         livenessProbe:
           exec:
@@ -195,7 +210,7 @@ spec:
               {{- else }}
                 name: {{ template "redis-ha.fullname" . }}
               {{- end }}
-                key: auth
+                key: {{ .Values.authKey }}
         {{- end }}
         livenessProbe:
           httpGet:
@@ -217,6 +232,11 @@ spec:
       - name: probes
         configMap:
           name: {{ template "redis-ha.fullname" . }}-probes
+      {{- if .Values.sysctlImage.mountHostSys }}
+      - name: host-sys
+        hostPath:
+          path: /sys
+      {{- end }}          
 {{- if .Values.persistentVolume.enabled }}
   volumeClaimTemplates:
   - metadata:
