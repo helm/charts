@@ -8,6 +8,10 @@ image:
   tag: v1.10.1
   pullPolicy: IfNotPresent
   pullSecrets: []
+  ## Specific image digest to use in place of a tag. Digest takes precedence over tag if it is defined.
+  ## ref: https://kubernetes.io/docs/concepts/configuration/overview/#container-images
+  ##
+  # digest: sha256:4b39fca2ae9bcbac3d74a2a28eb5c0b5630ed982684bd911e929ef2b6a718cab
 
 replicaCount: 1
 
