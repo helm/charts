@@ -4,6 +4,10 @@ image:
   tag: v0.5.13
   pullSecrets: []
   pullPolicy: IfNotPresent
+  ## Specific image digest to use in place of a tag. Digest takes precedence over tag if it is defined.
+  ## ref: https://kubernetes.io/docs/concepts/configuration/overview/#container-images
+  ##
+  # digest: sha256:0280f79b1ed9bd1c03e50ad4d23d58d405869e1089bf4de69783290de53a4257
 
 ## This controls which types of resource external-dns should 'watch' for new
 ## DNS entries.

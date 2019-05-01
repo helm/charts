@@ -24,7 +24,11 @@ spec:
       {{- end }}
       containers:
         - name: {{ template "external-dns.name" . }}
+          {{- if .Values.image.digest }}
+          image: "{{.Values.image.name}}@{{ .Values.image.digest }}"
+          {{- else }}
           image: "{{.Values.image.name}}:{{ .Values.image.tag }}"
+          {{- end }}
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           args:
           {{- if .Values.logLevel }}
