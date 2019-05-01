@@ -35,26 +35,7 @@ spec:
       {{- end }}
       {{- end }}
       initContainers:
-      - name: wait-for-db
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        env:
-        {{- include "kong.env" .  | indent 8 }}
-        {{- if .Values.postgresql.enabled }}
-        - name: KONG_PG_HOST
-          value: {{ template "kong.postgresql.fullname" . }}
-        - name: KONG_PG_PORT
-          value: "{{ .Values.postgresql.service.port }}"
-        - name: KONG_PG_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ template "kong.postgresql.fullname" . }}
-              key: postgresql-password
-        {{- end }}
-        {{- if .Values.cassandra.enabled }}
-        - name: KONG_CASSANDRA_CONTACT_POINTS
-          value: {{ template "kong.cassandra.fullname" . }}
-        {{- end }}
-        command: [ "/bin/sh", "-c", "until kong start; do echo 'waiting for db'; sleep 1; done; kong stop" ]
+      {{- include "kong.wait-for-db" . | nindent 6 }}
       containers:
       - name: admin-api
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
