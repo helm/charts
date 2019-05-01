@@ -43,3 +43,4 @@ Parameter | Description | Default
 `tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `affinity` | node/pod affinities (requires Kubernetes >=1.6) | `{}`
 `podAnnotations` | pod annotations | `{}`
+`priorityClassName` | pod priorityClassName for pod. | ``
