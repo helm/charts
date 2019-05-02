@@ -128,13 +128,14 @@ because it would prevent automatic `PersistentVolume` provisioning.
 
 ## Configuration
 
-* Docker images should be configurable. Image tags should use stable versions.
+* Docker images should be configurable. Image tags should use stable versions. Pulling image by digest should be allowed and supersede the tag if defined.
 
 ```yaml
 image:
   repository: myapp
   tag: 1.2.3
   pullPolicy: IfNotPresent
+  # digest: sha256:33b6011daca178ac082762866e16d59bdc5478d8e45f23a7a272287d1251e369
 ```
 
 * The use of the `default` function should be avoided if possible in favor of defaults in `values.yaml`.
