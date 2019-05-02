@@ -147,6 +147,7 @@ config:
     max_series_per_database: 1000000
     max_values_per_tag: 100000
     trace_logging_enabled: false
+    index_version: tsi1
   coordinator:
     write_timeout: 10s
     max_concurrent_queries: 0
