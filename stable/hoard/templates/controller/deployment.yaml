@@ -1,0 +1,49 @@
+{{- if .Values.controller.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "hoard.fullname" . }}-controller
+  labels:
+    app.kubernetes.io/name: {{ include "hoard.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "hoard.chart" . }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "hoard.name" . }}-controller
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "hoard.name" . }}-controller
+        release: {{ .Release.Name }}
+    spec:
+      serviceAccount: {{ include "hoard.fullname" . }}-controller
+      initContainers:
+      - name: hoard-wait
+        image: busybox:1.28
+        command: ['sh', '-c', 'until nslookup {{ include "hoard.fullname" . }}; do sleep 2; done;']
+      containers:
+      - name: controller
+        image: "{{ .Values.image.repository }}:controller"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+        - name: HOARD_URL
+          value: "{{ include "hoard.fullname" . }}:{{ .Values.service.port }}"
+        resources:
+{{ toYaml .Values.resources | indent 12 }}
+{{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- end }}

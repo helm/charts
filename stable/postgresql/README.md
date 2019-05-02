@@ -20,7 +20,6 @@ Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment
 - PV provisioner support in the underlying infrastructure
 
 ## Installing the Chart
-
 To install the chart with the release name `my-release`:
 
 ```console
@@ -94,12 +93,13 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `service.nodePort`                            | Kubernetes Service nodePort                                                                                            | `nil`                                                       |
 | `service.annotations`                         | Annotations for PostgreSQL service                                                                                     | {}                                                          |
 | `service.loadBalancerIP`                      | loadBalancerIP if service type is `LoadBalancer`                                                                       | `nil`                                                       |
+| `service.loadBalancerSourceRanges`            | Address that are allowed when svc is LoadBalancer                                                                      | []                                                          |
 | `persistence.enabled`                         | Enable persistence using PVC                                                                                           | `true`                                                      |
 | `persistence.existingClaim`                   | Provide an existing `PersistentVolumeClaim`, the value is evaluated as a template.                                     | `nil`                                                       |
 | `persistence.mountPath`                       | Path to mount the volume at                                                                                            | `/bitnami/postgresql`                                       |
 | `persistence.subPath`                         | Subdirectory of the volume to mount at                                                                                 | `""`                                                        |
 | `persistence.storageClass`                    | PVC Storage Class for PostgreSQL volume                                                                                | `nil`                                                       |
-| `persistence.accessMode`                      | PVC Access Mode for PostgreSQL volume                                                                                  | `ReadWriteOnce`                                             |
+| `persistence.accessModes`                     | PVC Access Mode for PostgreSQL volume                                                                                  | `[ReadWriteOnce]`                                           |
 | `persistence.size`                            | PVC Storage Request for PostgreSQL volume                                                                              | `8Gi`                                                       |
 | `persistence.annotations`                     | Annotations for the PVC                                                                                                | `{}`                                                        |
 | `master.nodeSelector`                         | Node labels for pod assignment (postgresql master)                                                                     | `{}`                                                        |
@@ -134,7 +134,7 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `metrics.enabled`                             | Start a prometheus exporter                                                                                            | `false`                                                     |
 | `metrics.service.type`                        | Kubernetes Service type                                                                                                | `ClusterIP`                                                 |
 | `service.clusterIP`                           | Static clusterIP or None for headless services                                                                         | `nil`                                                       |
-| `metrics.service.annotations`                 | Additional annotations for metrics exporter pod                                                                        | `{}`                                                        |
+| `metrics.service.annotations`                 | Additional annotations for metrics exporter pod                                                                        | `{ prometheus.io/scrape: "true", prometheus.io/port: "9187"}` |
 | `metrics.service.loadBalancerIP`              | loadBalancerIP if redis metrics service type is `LoadBalancer`                                                         | `nil`                                                       |
 | `metrics.image.registry`                      | PostgreSQL Image registry                                                                                              | `docker.io`                                                 |
 | `metrics.image.repository`                    | PostgreSQL Image name                                                                                                  | `wrouesnel/postgres_exporter`                               |
@@ -143,8 +143,19 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `metrics.image.pullSecrets`                   | Specify Image pull secrets                                                                                             | `nil` (does not add image pull secrets to deployed pods)    |
 | `metrics.securityContext.enabled`             | Enable security context for metrics                                                                                    | `false`                                                     |
 | `metrics.securityContext.runAsUser`           | User ID for the container for metrics                                                                                  | `1001`                                                      |
+| `metrics.livenessProbe.initialDelaySeconds`   | Delay before liveness probe is initiated                                                                               | 30                                                          |
+| `metrics.livenessProbe.periodSeconds`         | How often to perform the probe                                                                                         | 10                                                          |
+| `metrics.livenessProbe.timeoutSeconds`        | When the probe times out                                                                                               | 5                                                           |
+| `metrics.livenessProbe.failureThreshold`      | Minimum consecutive failures for the probe to be considered failed after having succeeded.                             | 6                                                           |
+| `metrics.livenessProbe.successThreshold`      | Minimum consecutive successes for the probe to be considered successful after having failed                            | 1                                                           |
+| `metrics.readinessProbe.enabled`              | would you like a readinessProbe to be enabled                                                                          | `true`                                                      |
+| `metrics.readinessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated                                                                               | 5                                                           |
+| `metrics.readinessProbe.periodSeconds`        | How often to perform the probe                                                                                         | 10                                                          |
+| `metrics.readinessProbe.timeoutSeconds`       | When the probe times out                                                                                               | 5                                                           |
+| `metrics.readinessProbe.failureThreshold`     | Minimum consecutive failures for the probe to be considered failed after having succeeded.                             | 6                                                           |
+| `metrics.readinessProbe.successThreshold`     | Minimum consecutive successes for the probe to be considered successful after having failed                            | 1                                                           |
 | `extraEnv`                                    | Any extra environment variables you would like to pass on to the pod                                                   | `{}`                                                        |
-| `updateStrategy`                              | Update strategy policy                                                                                                 | `{type: "onDelete"}`                                        |
+| `updateStrategy`                              | Update strategy policy                                                                                                 | `{type: "RollingUpdate"}`                                   |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

@@ -150,7 +150,7 @@ postgresqlDataDir: /bitnami/postgresql
 ## Alternatively, you can put your scripts under the files/docker-entrypoint-initdb.d directory
 ##
 # initdbScripts:
-#   my_init_script.sh:|
+#   my_init_script.sh: |
 #      #!/bin/sh
 #      echo "Do something."
 
@@ -179,6 +179,12 @@ service:
   ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer
   ##
   # loadBalancerIP:
+
+  ## Load Balancer sources
+  ## https://kubernetes.io/docs/tasks/access-application-cluster/configure-cloud-provider-firewall/#restrict-access-for-loadbalancer-service
+  ##
+  # loadBalancerSourceRanges:
+  # - 10.10.10.0/24
 
 ## PostgreSQL data Persistent Volume Storage Class
 ## If defined, storageClassName: <storageClass>
