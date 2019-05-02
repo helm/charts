@@ -168,15 +168,46 @@ spec:
           subPath: elasticsearch.keystore
           readOnly: true
 {{- end }}
-{{- if hasPrefix "7." .Values.appVersion }}
-        - name: config
-          mountPath: /pre-stop-hook.sh
-          subPath: master-pre-stop-hook.sh
-        lifecycle:
-          preStop:
-            exec:
-              command: ["/bin/bash","/pre-stop-hook.sh"]
-{{- end }}
+      - name: elasticsearch-graceful-termination-handler
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+        command:
+        - "sh"
+        - -c
+        - |
+          #!/usr/bin/env bash
+          set -eo pipefail
+
+          http () {
+              local path="${1}"
+              if [ -n "${ELASTIC_USERNAME}" ] && [ -n "${ELASTIC_PASSWORD}" ]; then
+                BASIC_AUTH="-u ${ELASTIC_USERNAME}:${ELASTIC_PASSWORD}"
+              else
+                BASIC_AUTH=''
+              fi
+              curl -XGET -s -k --fail ${BASIC_AUTH} http://{{ template "elasticsearch.client.fullname" . }}:9200${path}
+          }
+
+          cleanup () {
+            while true ; do
+              local master="$(http "/_cat/master")"
+              if [[ $master == *"{{ template "elasticsearch.master.fullname" . }}"* && $master != *"${HOSTNAME}"* ]]; then
+                echo "This node is not master."
+                break
+              fi
+              echo "This node is still master, waiting gracefully for it to step down"
+              sleep 1
+            done
+
+            exit 0
+          }
+
+          trap cleanup SIGTERM
+
+          while true; do
+            sleep 60 &
+            wait $!
+          done
 {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
       {{- range $pullSecret := .Values.image.pullSecrets }}

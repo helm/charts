@@ -115,7 +115,7 @@ data:
     logger.searchguard.level = info
 {{- end }}
 {{- if .Values.data.hooks.drain.enabled }}
-  data-pre-stop-hook.sh: |-
+  pre-stop-hook.sh: |-
     #!/bin/bash
     exec &> >(tee -a "/var/log/elasticsearch-hooks.log")
     NODE_NAME=${HOSTNAME}
@@ -137,7 +137,7 @@ data:
       sleep 1
     done
     echo "Node ${NODE_NAME} is ready to shutdown"
-  data-post-start-hook.sh: |-
+  post-start-hook.sh: |-
     #!/bin/bash
     exec &> >(tee -a "/var/log/elasticsearch-hooks.log")
     NODE_NAME=${HOSTNAME}
@@ -151,36 +151,4 @@ data:
       }"
     fi
     echo "Node ${NODE_NAME} is ready to be used"
-{{- end }}
-
-{{- if hasPrefix "7." .Values.appVersion }}
-  master-pre-stop-hook.sh: |-
-    #!/usr/bin/env bash -e
-    # Exclude node from voting config to prevent https://github.com/elastic/helm-charts/issues/63
-    # reference: https://www.elastic.co/guide/en/elasticsearch/reference/7.0/modules-discovery-adding-removing-nodes.html#modules-discovery-removing-nodes
-    http () {
-        local path="${1}"
-        local method="${2:-GET}"
-        curl -X${method} -s --fail http://{{ template "elasticsearch.client.fullname" . }}:9200${path}
-    }
-
-    NODE_NAME=${HOSTNAME}
-    echo "Exclude the node ${NODE_NAME} from voting config"
-
-    http "/_cluster/voting_config_exclusions/${NODE_NAME}" "POST"
-
-    while true ; do
-      echo -e "Wait for new master node to be elected"
-      if [[ "$(http "/_cat/master")" != *"${NODE_NAME}"* ]]; then
-        break
-      fi
-      sleep 1
-    done
-
-    # Node won't be actually removed from cluster,
-    # so node should be deleted from voting config exclusions
-    echo "Node ${NODE_NAME} is now being deleted from voting config exclusions"
-    http "/_cluster/voting_config_exclusions?wait_for_removal=false" "DELETE"
-
-    echo "Node ${NODE_NAME} is ready to shutdown"
 {{- end }}
