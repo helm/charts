@@ -194,10 +194,10 @@ master:
 
   # Optionally specify additional init-containers
   customInitContainers: []
-  #   - name: CustomInit
-  #     image: "alpine:3.7"
-  #     imagePullPolicy: Always
-  #     command: [ "uname", "-a" ]
+  # - name: custom-init
+  #   image: "alpine:3.7"
+  #   imagePullPolicy: Always
+  #   command: [ "uname", "-a" ]
 
   sidecars:
     configAutoReload:
