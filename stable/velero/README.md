@@ -82,7 +82,6 @@ Parameter | Description | Default
 `metrics.serviceMonitor.enabled` | Set this to `true` to create ServiceMonitor for Prometheus operator | `false`
 `metrics.serviceMonitor.additionalLabels` | Additional labels that can be used so ServiceMonitor will be discovered by Prometheus | `{}`
 `schedules` | A dict of schedules | `{}`
-`cleanUpCRDs` | Set this to `true` to delete any created CustomResourceDefintions and their associated instances. Backup representations in the cluster will be deleted, but data in object storage and volume snapshots are not. | `false`
 
 
 ## How to

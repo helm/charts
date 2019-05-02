@@ -1,8 +1,10 @@
+# This job is meant primarily for cleaning up on CI systems.
+# Using this on production systems, especially those that have multiple releases of Velero, will be destructive.
 {{- if .Values.cleanUpCRDs }}
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: velero-cleanup
+  name: {{ template "velero.fullname" . }}-cleanup
   namespace: {{ .Release.Namespace }}
   annotations:
     "helm.sh/hook": pre-delete
