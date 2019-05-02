@@ -28,7 +28,8 @@ spec:
       {{- end }}
       {{- end }}
       {{- if .Values.hostNetwork }}
-      hostNetwork: {{ .Values.hostNetwork }} 
+      hostNetwork: {{ .Values.hostNetwork }}
+      dnsPolicy: ClusterFirstWithHostNet
       {{- end }}
       initContainers:
       {{- if .Values.git.enabled }}
@@ -39,17 +40,17 @@ spec:
         volumeMounts:
         - mountPath: /config
           name: config
-        - mountPath: {{ .Values.git.keyPath }}/id_rsa
+        - mountPath: {{ .Values.git.keyPath }}
           name: git-secret
-          subPath: id_rsa
-        - mountPath: {{ .Values.git.keyPath | trimSuffix "/" }}/id_rsa.pub
-          name: git-secret
-          subPath: id_rsa.pub
-        - mountPath: {{ .Values.git.keyPath }}/known_hosts
-          name: git-secret
-          subPath: known_hosts
+        {{- if .Values.usePodSecurityContext }}
         securityContext:
-          runAsUser: 0
+          runAsUser: {{ default 0 .Values.runAsUser }}
+        {{- if and (.Values.runAsUser) (.Values.fsGroup) }}
+        {{- if not (eq .Values.runAsUser 0.0) }}
+          fsGroup: {{ .Values.fsGroup }}
+        {{- end }}
+        {{- end }}
+        {{- end }}
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}
@@ -88,6 +89,19 @@ spec:
           volumeMounts:
           - mountPath: /config
             name: config
+          {{- if .Values.git.enabled }}
+          - mountPath: {{ .Values.git.keyPath }}
+            name: git-secret
+          {{- end }}
+          {{- if .Values.usePodSecurityContext }}
+          securityContext:
+            runAsUser: {{ default 0 .Values.runAsUser }}
+          {{- if and (.Values.runAsUser) (.Values.fsGroup) }}
+          {{- if not (eq .Values.runAsUser 0.0) }}
+            fsGroup: {{ .Values.fsGroup }}
+          {{- end }}
+          {{- end }}
+          {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
         {{- if .Values.configurator.enabled }}
@@ -149,15 +163,17 @@ spec:
           - mountPath: /config
             name: config
           {{- if .Values.git.enabled }}
-          - mountPath: {{ .Values.git.keyPath }}/id_rsa
+          - mountPath: {{ .Values.git.keyPath }}
             name: git-secret
-            subPath: id_rsa
-          - mountPath: {{ .Values.git.keyPath }}/id_rsa.pub
-            name: git-secret
-            subPath: id_rsa.pub
-          - mountPath: {{ .Values.git.keyPath }}/known_hosts
-            name: git-secret
-            subPath: known_hosts
+          {{- end }}
+          {{- if .Values.usePodSecurityContext }}
+          securityContext:
+            runAsUser: {{ default 0 .Values.runAsUser }}
+          {{- if and (.Values.runAsUser) (.Values.fsGroup) }}
+          {{- if not (eq .Values.runAsUser 0.0) }}
+            fsGroup: {{ .Values.fsGroup }}
+          {{- end }}
+          {{- end }}
           {{- end }}
           resources:
 {{ toYaml .Values.configurator.resources | indent 12 }}
