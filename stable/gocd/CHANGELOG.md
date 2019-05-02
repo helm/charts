@@ -1,3 +1,7 @@
+### 1.9.1
+
+- Add support for Deployment and Pod annotations.
+
 ### 1.9.0
 
 - Bump up k8s elastic agent plugin to latest.
