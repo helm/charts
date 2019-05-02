@@ -8,6 +8,10 @@ metadata:
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
     component: agent
+  annotations:
+  {{- range $key, $value := .Values.agent.annotations.deployment }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
 spec:
   replicas: {{ .Values.agent.replicaCount }}
   {{- if .Values.agent.deployStrategy }}
@@ -25,6 +29,10 @@ spec:
         app: {{ template "gocd.name" . }}
         release: {{ .Release.Name | quote }}
         component: agent
+      annotations:
+      {{- range $key, $value := .Values.agent.annotations.pod }}
+        {{ $key }}: {{ $value | quote }}
+      {{- end }}
     spec:
       serviceAccountName: {{ template "gocd.agentServiceAccountName" . }}
       {{- if or .Values.agent.persistence.enabled (or .Values.agent.security.ssh.enabled .Values.agent.persistence.extraVolumes) }}
