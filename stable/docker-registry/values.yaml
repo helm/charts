@@ -26,6 +26,13 @@ service:
   # nodePort:
   annotations: {}
   # foo.io/bar: "true"
+
+# enable/disable liveness and readiness probes
+livenessProbe:
+  enabled: true
+readinessProbe:
+  enabled: true
+
 ingress:
   enabled: false
   path: /

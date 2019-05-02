@@ -50,20 +50,24 @@ spec:
           - /etc/docker/registry/config.yml
           ports:
             - containerPort: 5000
-          livenessProbe:
-            httpGet:
+        {{- if .Values.livenessProbe.enabled }}
+        livenessProbe:
+          httpGet:
 {{- if .Values.tlsSecretName }}
-              scheme: HTTPS
+            scheme: HTTPS
 {{- end }}
-              path: /
-              port: 5000
-          readinessProbe:
-            httpGet:
+            path: /
+            port: 5000
+        {{- end }}
+        {{- if .Values.readinessProbe.enabled }}
+        readinessProbe:
+          httpGet:
 {{- if .Values.tlsSecretName }}
-              scheme: HTTPS
+            scheme: HTTPS
 {{- end }}
-              path: /
-              port: 5000
+            path: /
+            port: 5000
+          {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           env:
