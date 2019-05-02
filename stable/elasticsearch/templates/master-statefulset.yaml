@@ -168,7 +168,7 @@ spec:
           subPath: elasticsearch.keystore
           readOnly: true
 {{- end }}
-      - name: elasticsearch-graceful-termination-handler
+      - name: elasticsearch-master-graceful-termination-handler
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         command:
