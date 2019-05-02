@@ -5,11 +5,7 @@
 replicaCount: 3
 daemonSet: false
 
-ambassador:
-  id: default
-
-namespace:
-  single: false
+# namespace:
   # name: default
 
 # Additional container environment variable
@@ -24,8 +20,8 @@ env:
   # AMBASSADOR_DRAIN_TIME: 5
   # sets the number of seconds that Ambassador will wait for the old Envoy to clean up and exit on a restart
   # AMBASSADOR_SHUTDOWN_TIME: 10
-  # sets the number of seconds that Ambassador will wait for the old Envoy to clean up and exit on a restart
-  # AMBASSADOR_SINGLE_NAMESPACE: true
+  # labels Ambassador with an ID to allow for configuring multiple Ambassadors in a cluster
+  # AMBASSADOR_ID: default
 
 imagePullSecrets: []
 
@@ -34,7 +30,7 @@ securityContext:
 
 image:
   repository: quay.io/datawire/ambassador
-  tag: 0.50.3
+  tag: 0.60.3
   pullPolicy: IfNotPresent
 
 nameOverride: ""
@@ -83,6 +79,10 @@ rbac:
   # Specifies whether RBAC resources should be created
   create: true
   namespaced: false
+
+scope:
+  # tells Ambassador to only use resources in the namespace or namespace set by namespace.name
+  singleNamespace: false
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -136,3 +136,17 @@ prometheusExporter:
   #       cluster_name: "$1"
 
 ambassadorConfig: ""
+
+pro:
+  enabled: false
+  image:
+    repository: quay.io/datawire/ambassador_pro
+    tag: amb-sidecar-0.4.0
+  ports:
+    auth: 8500
+    ratelimit: 8501
+    ratelimitDebug: 8502
+  logLevel: info
+  licenseKey:
+    value:
+    secret: false

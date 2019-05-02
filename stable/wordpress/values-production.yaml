@@ -58,6 +58,11 @@ wordpressBlogName: User's Blog!
 ##
 wordpressTablePrefix: wp_
 
+## Skip wizard installation (only if you use an external database that already contains WordPress data)
+## ref: https://github.com/bitnami/bitnami-docker-wordpress#connect-wordpress-docker-container-to-an-existing-database
+##
+wordpressSkipInstall: "no"
+
 ## Set to `yes` to allow the container to be started with blank passwords
 ## ref: https://github.com/bitnami/bitnami-docker-wordpress#environment-variables
 allowEmptyPassword: "yes"
@@ -220,11 +225,12 @@ ingress:
   - name: wordpress.local
     path: /
 
-    # Set this to true in order to enable TLS on the ingress record
-    tls: false
-
-    ## If TLS is set to true, you must declare what secret will store the key/certificate for TLS
-    tlsSecret: wordpress.local-tls
+  ## The tls configuration for the ingress
+  ## see: https://kubernetes.io/docs/concepts/services-networking/ingress/#tls
+  tls:
+  - hosts:
+      - wordpress.local
+    secretName: wordpress.local-tls
 
   secrets:
   ## If you're providing your own certificates, please use this to add the certificates as secrets

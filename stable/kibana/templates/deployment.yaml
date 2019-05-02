@@ -149,7 +149,7 @@ spec:
 {{- if .Values.livenessProbe.enabled }}
         livenessProbe:
           httpGet:
-            path: /status
+            path: {{ .Values.livenessProbe.path }}
             port: {{ .Values.service.internalPort }}
           initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
           timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
@@ -157,7 +157,7 @@ spec:
 {{- if .Values.readinessProbe.enabled }}
         readinessProbe:
           httpGet:
-            path: /status
+            path: {{ .Values.readinessProbe.path }}
             port: {{ .Values.service.internalPort }}
           initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
           timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}

@@ -38,6 +38,13 @@ spec:
       imagePullSecrets:
       - name: {{ .Values.anchoreEnterpriseGlobal.imagePullSecretName }}
       containers:
+      {{- if .Values.cloudsql.enabled  }}
+      - name: cloudsql-proxy
+        image: {{ .Values.cloudsql.image.repository }}:{{ .Values.cloudsql.image.tag }}
+        imagePullPolicy: {{ .Values.cloudsql.image.pullPolicy }}
+        command: ["/cloud_sql_proxy"]
+        args: ["-instances={{ .Values.cloudsql.instance }}=tcp:5432"]
+      {{- end }}
       - name: "{{ .Chart.Name }}-{{ $component }}"
         image: {{ .Values.anchoreEnterpriseGlobal.image }}
         imagePullPolicy: {{ .Values.anchoreEnterpriseGlobal.imagePullPolicy }}
@@ -48,20 +55,21 @@ spec:
           name: feeds-api
         envFrom:
         - secretRef:
-            name: {{ template "anchore-engine.fullname" . }}
+            name: {{ default (include "anchore-engine.fullname" .) .Values.anchoreGlobal.existingSecret }}
         env:
-        {{- range $key, $value := .Values.anchoreGlobal.extraEnv }}
-        - name: {{ $key }}
-          value: {{ $value }}
+        {{- with .Values.anchoreGlobal.extraEnv }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
-        {{- range $key, $value := .Values.anchoreEnterpriseFeeds.extraEnv }}
-        - name: {{ $key }}
-          value: {{ $value }}
+        {{- with .Values.anchoreEnterpriseFeeds.extraEnv }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
         {{- if and (index .Values "anchore-feeds-db" "externalEndpoint") (not (index .Values "anchore-feeds-db" "enabled")) }}
         - name: ANCHORE_DB_HOST
           value: {{ index .Values "anchore-feeds-db" "externalEndpoint" | quote }}
-        {{- else}}
+        {{- else if and (index .Values "cloudsql" "enabled") (not (index .Values "anchore-feeds-db" "enabled")) }}
+        - name: ANCHORE_DB_HOST
+          value: "localhost:5432"
+        {{- else }}
         - name: ANCHORE_DB_HOST
           value: "{{ template "postgres.anchore-feeds-db.fullname" . }}:5432"
         {{- end }}
@@ -69,11 +77,6 @@ spec:
           value: {{ index .Values "anchore-feeds-db" "postgresDatabase" | quote }}
         - name: ANCHORE_DB_USER
           value: {{ index .Values "anchore-feeds-db" "postgresUser"  | quote }}
-        - name: ANCHORE_DB_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ template "anchore-engine.fullname" . }}
-              key: .feedsDbPassword
         - name: ANCHORE_POD_NAME
           valueFrom:
             fieldRef:
