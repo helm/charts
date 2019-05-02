@@ -60,22 +60,8 @@ apiVersion: v1
 kind: Service
 metadata:
   name: "{{ $endpoint.name }}"
-{{- if $root.Values.annotations }}
   annotations:
-  {{ if eq .name "yb-master-service" }}
-    {{- if $root.Values.annotations.master }}
-    {{- if $root.Values.annotations.master.loadbalancer }}
-{{ toYaml $root.Values.annotations.master.loadbalancer | indent 4 }}
-    {{- end}}
-    {{- end}}
-  {{ else }}
-    {{- if $root.Values.annotations.tserver }}
-    {{- if $root.Values.annotations.tserver.loadbalancer }}
-{{ toYaml $root.Values.annotations.tserver.loadbalancer | indent 4 }}
-    {{- end}}
-    {{- end}}
-  {{- end}}
-  {{- end }}
+{{ toYaml $endpoint.annotations | indent 4 }}
   labels:
     app: "{{ $endpoint.app }}"
     heritage: {{ $root.Release.Service | quote }}
@@ -151,6 +137,10 @@ spec:
       app: "{{ .label }}"
   template:
     metadata:
+      {{ if $root.Values.networkAnnotation }}
+      annotations:
+{{ toYaml $root.Values.networkAnnotation | indent 8}}
+      {{ end }}
       labels:
         app: "{{ .label }}"
         heritage: {{ $root.Release.Service | quote }}
