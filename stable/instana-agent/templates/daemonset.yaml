@@ -147,7 +147,7 @@ spec:
             path: /dev
         - name: run
           hostPath:
-            path: /var/run/docker.sock
+            path: /var/run
         - name: sys
           hostPath:
             path: /sys
