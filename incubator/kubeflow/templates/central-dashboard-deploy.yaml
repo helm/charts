@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "kubeflow.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "kubeflow.name" . }}
+    helm.sh/chart: {{ include "kubeflow.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/component: central-dashboard
+spec:
+  replicas: {{ .Values.centralDashboard.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "kubeflow.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: central-dashboard
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "kubeflow.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: central-dashboard
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.centralDashboard.image.repository }}:{{ .Values.centralDashboard.image.tag }}"
+          imagePullPolicy: {{ .Values.centralDashboard.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8082
+              protocol: TCP
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          resources:
+            {{- toYaml .Values.centralDashboard.resources | nindent 12 }}
+      {{- with .Values.centralDashboard.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.centralDashboard.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.centralDashboard.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    getambassador.io/config: |-
+      ---
+      apiVersion: ambassador/v0
+      kind:  Mapping
+      name: webapp_mapping
+      prefix: /jupyter/
+      service: jupyter-web-app.kubeflow
+      add_request_headers:
+      x-forwarded-prefix: /jupyter"
+  name: {{ include "kubeflow.fullname" . }}-jupyter-web-app
+  labels:
+    app.kubernetes.io/name: {{ include "kubeflow.name" . }}
+    helm.sh/chart: {{ include "kubeflow.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/component: jupyter-web-app
+spec:
+  type: {{ .Values.jupyterWebApp.service.type }}
+  ports:
+    - port: {{ .Values.jupyterWebApp.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: {{ include "kubeflow.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: jupyter-web-app

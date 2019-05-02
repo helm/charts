@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    getambassador.io/config: |-
+      ---
+      apiVersion: ambassador/v0
+      kind:  Mapping
+      name: katib-ui-mapping
+      prefix: /katib/
+      rewrite: /katib/
+      service: katib-ui.kubeflow
+  name: {{ include "kubeflow.fullname" . }}-katib-ui
+  labels:
+    app.kubernetes.io/name: {{ include "kubeflow.name" . }}
+    helm.sh/chart: {{ include "kubeflow.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/component: katib-ui
+spec:
+  type: {{ .Values.katibUi.service.type }}
+  ports:
+    - port: {{ .Values.katibUi.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: {{ include "kubeflow.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: katib-ui

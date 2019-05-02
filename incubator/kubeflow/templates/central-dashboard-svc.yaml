@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    getambassador.io/config: |-
+      ---
+      apiVersion: ambassador/v0
+      kind:  Mapping
+      name: centralui-mapping
+      prefix: /
+      rewrite: /
+      service: centraldashboard.kubeflow
+  name: {{ include "kubeflow.fullname" . }}-central-dashboard
+  labels:
+    app.kubernetes.io/name: {{ include "kubeflow.name" . }}
+    helm.sh/chart: {{ include "kubeflow.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/component: central-dashboard
+spec:
+  type: {{ .Values.centralDashboard.service.type }}
+  ports:
+    - port: {{ .Values.centralDashboard.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: {{ include "kubeflow.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: central-dashboard

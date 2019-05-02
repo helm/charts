@@ -1,0 +1,100 @@
+# Default values for kubeflow.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+nameOverride: ""
+fullnameOverride: ""
+
+centralDashboard:
+  replicaCount: 1
+
+  image:
+    repository: gcr.io/kubeflow-images-public/centraldashboard
+    tag: v0.5.0
+    pullPolicy: IfNotPresent
+
+  service:
+    type: ClusterIP
+    port: 80
+
+  resources: {}
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+jupyterWebApp:
+  replicaCount: 1
+
+  image:
+    repository: gcr.io/kubeflow-images-public/jupyter-web-app
+    tag: latest
+    pullPolicy: Always
+
+  service:
+    type: ClusterIP
+    port: 80
+
+  resources: {}
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+katibUi:
+  replicaCount: 1
+
+  image:
+    repository: gcr.io/kubeflow-images-public/katib/katib-ui
+    tag: v0.1.2-alpha-156-g4ab3dbd
+    pullPolicy: IfNotPresent
+
+  service:
+    type: ClusterIP
+    port: 80
+
+  resources: {}
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+mlPipeline:
+  replicaCount: 1
+
+  image:
+    repository: gcr.io/ml-pipeline/api-server
+    tag: 0.1.18
+    pullPolicy: IfNotPresent
+
+  service:
+    type: ClusterIP
+    httpPort: 8888
+    grpcPort: 8887
+
+  resources: {}
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+
+ambassador:
+  enabled: true
+
+argo:
+  enabled: true
+
+minio:
+  enabled: true
+
+mysql:
+  enabled: true

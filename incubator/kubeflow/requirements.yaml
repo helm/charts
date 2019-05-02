@@ -1,0 +1,13 @@
+dependencies:
+- name: ambassador
+  version: ^2.2.5
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  condition: ambassador.enabled
+- name: argo
+  version: ^0.3.1
+  repository: https://argoproj.github.io/argo-helm
+  condition: argo.enabled
+- name: mysql
+  version: ^0.19.0
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  condition: mysql.enabled

@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "kubeflow.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "kubeflow.name" . }}
+    helm.sh/chart: {{ include "kubeflow.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/component: ml-pipeline
+spec:
+  replicas: {{ .Values.mlPipeline.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "kubeflow.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: ml-pipeline
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "kubeflow.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: ml-pipeline
+    spec:
+      volumes:
+      - configMap:
+          name: {{ include "kubeflow.name" . }}-ml-pipeline-config
+        name: config-volume
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.mlPipeline.image.repository }}:{{ .Values.mlPipeline.image.tag }}"
+          imagePullPolicy: {{ .Values.mlPipeline.image.pullPolicy }}
+          ports:
+          - name: http
+            containerPort: 8888
+            protocol: TCP
+          - name: grpc
+            containerPort: 8887
+            protocol: TCP
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          resources:
+            {{- toYaml .Values.mlPipeline.resources | nindent 12 }}
+          env:
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+      {{- with .Values.mlPipeline.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.mlPipeline.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.mlPipeline.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
