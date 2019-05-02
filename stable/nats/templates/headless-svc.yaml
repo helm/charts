@@ -12,10 +12,10 @@ spec:
   clusterIP: None
   ports:
   - name: client
-    port: 4222
+    port: {{ .Values.client.service.port }}
     targetPort: client
   - name: cluster
-    port: 6222
+    port: {{ .Values.cluster.service.port }}
     targetPort: cluster
   selector:
     app: {{ template "nats.name" . }}
