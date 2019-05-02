@@ -92,7 +92,7 @@ spec:
             - name: dev
               mountPath: /dev
             - name: run
-              mountPath: /var/run/docker.sock
+              mountPath: /var/run
             - name: sys
               mountPath: /sys
             - name: log
