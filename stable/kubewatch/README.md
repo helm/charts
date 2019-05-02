@@ -70,6 +70,7 @@ The following table lists the configurable parameters of the kubewatch chart and
 | `webhook.enabled`                        | Enable Webhook notifications         | `false`                           |
 | `webhook.url`                            | Webhook URL                          | `""`                              |
 | `tolerations`                            | List of node taints to tolerate (requires Kubernetes >= 1.6)                                                                | `[]`                              |
+| `namespaceToWatch`                       | namespace to watch, leave it empty for watching all                                                                         | `""`                              |
 | `resourcesToWatch`                       | list of resources which kubewatch should watch and notify slack                                                             | `{pod: true, deployment: true}`   |
 | `resourcesToWatch.pod`                   | watch changes to [Pods](https://kubernetes.io/docs/concepts/workloads/pods/pod-overview/)                                   | `true`                            |
 | `resourcesToWatch.deployment`            | watch changes to [Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/)                       | `true`                            |
