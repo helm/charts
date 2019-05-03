@@ -10,5 +10,5 @@ metadata:
     chart: "{{ template "vault.chart" . }}"
 data:
   config.json: |
-    {{ .Values.vault.config | toJson }}
+    {{ tpl .Values.vault.config . | toJson }}
 {{ end }}
