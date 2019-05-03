@@ -168,6 +168,8 @@ spec:
           subPath: elasticsearch.keystore
           readOnly: true
 {{- end }}
+      # This sidecar will fix slow master re-election.
+      # https://github.com/helm/charts/issues/8785
       - name: elasticsearch-master-graceful-termination-handler
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
@@ -190,8 +192,8 @@ spec:
 
           cleanup () {
             while true ; do
-              local master="$(http "/_cat/master")"
-              if [[ $master == *"{{ template "elasticsearch.master.fullname" . }}"* && $master != *"${HOSTNAME}"* ]]; then
+              local master="$(http "/_cat/master?h=node")"
+              if [[ $master == "{{ template "elasticsearch.master.fullname" . }}"* && $master != "${HOSTNAME}" ]]; then
                 echo "This node is not master."
                 break
               fi
@@ -204,10 +206,12 @@ spec:
 
           trap cleanup SIGTERM
 
-          while true; do
-            sleep 60 &
-            wait $!
-          done
+          sleep infinity &
+          wait $!
+        {{- range $key, $value :=  .Values.cluster.env }}
+        - name: {{ $key }}
+          value: {{ $value | quote }}
+        {{- end }}
 {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
       {{- range $pullSecret := .Values.image.pullSecrets }}
