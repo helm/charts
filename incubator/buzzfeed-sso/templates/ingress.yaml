@@ -18,6 +18,7 @@ metadata:
 {{ toYaml . | indent 4 }}
 {{- end }}
 spec:
+{{- if .Values.auth.tls }}
   tls:
     - hosts:
         - {{ $authDomain }}
@@ -29,6 +30,7 @@ spec:
       {{- end }}
       secretName: {{ .secretName }}
   {{- end }}
+{{- end }}
   rules:
     # Upstreams that need SSO authentication
   {{- range .Values.ingress.hosts }}

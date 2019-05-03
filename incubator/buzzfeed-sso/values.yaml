@@ -24,8 +24,8 @@ auth:
     # cookieSecret: ''
   # # Or if you do not want to create the secret via helm
   # customSecret: my-sso-auth-secret
-  tls:
-    secretName: sso-auth-tls-secret
+  tls: {}
+    # secretName: sso-auth-tls-secret
 
 proxy:
   annotations: {}
