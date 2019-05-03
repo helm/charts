@@ -2,6 +2,7 @@
 
 emailDomain: "<your_email_domain>"  # Required. e.g "email.mydomain.foo"
 rootDomain: "<your_root_domain>"  # Required. e.g "mydomain.foo"
+cluster: dev
 
 auth:
   annotations: {}
@@ -30,7 +31,6 @@ auth:
 proxy:
   annotations: {}
   # providerUrlInternal: https://sso-auth.mydomain.com
-  cluster: dev
   replicaCount: 1
   resources:
     limits:

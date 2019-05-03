@@ -95,7 +95,7 @@ spec:
             - name: COOKIE_SECURE
               value: "true"
             - name: CLUSTER
-              value: dev
+              value: {{ .Values.cluster | quote }}
             # Provider variables
           {{- with .Values.provider.google }}
           {{- if .adminEmail }}
