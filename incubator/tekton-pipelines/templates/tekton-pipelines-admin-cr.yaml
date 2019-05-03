@@ -1,0 +1,115 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels: {{ include "labels" . | nindent 4 }} {{ cat "app:" .Chart.Name | nindent 4 }}
+  name: tekton-pipelines-admin
+rules:
+- apiGroups:
+  - ''
+  resources:
+  - pods
+  - namespaces
+  - secrets
+  - events
+  - serviceaccounts
+  - configmaps
+  - persistentvolumeclaims
+  verbs:
+  - get
+  - list
+  - create
+  - update
+  - delete
+  - patch
+  - watch
+- apiGroups:
+  - apps
+  resources:
+  - deployments
+  verbs:
+  - get
+  - list
+  - create
+  - update
+  - delete
+  - patch
+  - watch
+- apiGroups:
+  - apps
+  resources:
+  - deployments/finalizers
+  verbs:
+  - get
+  - list
+  - create
+  - update
+  - delete
+  - patch
+  - watch
+- apiGroups:
+  - admissionregistration.k8s.io
+  resources:
+  - mutatingwebhookconfigurations
+  verbs:
+  - get
+  - list
+  - create
+  - update
+  - delete
+  - patch
+  - watch
+- apiGroups:
+  - tekton.dev
+  resources:
+  - tasks
+  - clustertasks
+  - taskruns
+  - pipelines
+  - pipelineruns
+  - pipelineresources
+  verbs:
+  - get
+  - list
+  - create
+  - update
+  - delete
+  - patch
+  - watch
+- apiGroups:
+  - tekton.dev
+  resources:
+  - taskruns/finalizers
+  - pipelineruns/finalizers
+  verbs:
+  - get
+  - list
+  - create
+  - update
+  - delete
+  - patch
+  - watch
+- apiGroups:
+  - tekton.dev
+  resources:
+  - tasks/status
+  - clustertasks/status
+  - taskruns/status
+  - pipelines/status
+  - pipelineruns/status
+  - pipelineresources/status
+  verbs:
+  - get
+  - list
+  - create
+  - update
+  - delete
+  - patch
+  - watch
+- apiGroups:
+  - policy
+  resourceNames:
+  - tekton-pipelines
+  resources:
+  - podsecuritypolicies
+  verbs:
+  - use

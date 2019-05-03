@@ -1,0 +1,41 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  labels: {{ include "labels" . | nindent 4 }} {{ cat "app:" .Chart.Name | nindent 4 }}
+  name: tekton-pipelines-controller
+  namespace: tekton-pipelines
+spec:
+  replicas: {{ .Values.tektonPipelinesController.replicas }}
+  template:
+    metadata:
+      labels: {{ include "noVersionlabels" . | nindent 8 }} {{ "app: \"tekton-pipelines-controller\"" | nindent 8 }}
+    spec:
+      containers:
+      - args:
+        - -logtostderr
+        - -stderrthreshold
+        - INFO
+        - -kubeconfig-writer-image
+        - gcr.io/tekton-releases/github.com/tektoncd/pipeline/cmd/kubeconfigwriter@sha256:a5a2a193f01c2dd47da7306560de3eb52db7b88a587a1a53a34e450c8e12bb57
+        - -creds-image
+        - gcr.io/tekton-releases/github.com/tektoncd/pipeline/cmd/creds-init@sha256:a8d00fe67962f6bb1cf223b0d9988c41aee0bf459c03f1e75f171cdc31fdf525
+        - -git-image
+        - gcr.io/tekton-releases/github.com/tektoncd/pipeline/cmd/git-init@sha256:68636c92fabf75e9f960e2bd6fd29f3d0932e945a14e0bfb1ac89d0dd2d45d79
+        - -nop-image
+        - gcr.io/tekton-releases/github.com/tektoncd/pipeline/cmd/nop@sha256:7673de6ccea5385df2ef92ec1afd77b2654b2686888595d23d6f42ec4ec810ca
+        - -bash-noop-image
+        - gcr.io/tekton-releases/github.com/tektoncd/pipeline/cmd/bash@sha256:8c33726ee8a194f04cedb6cd612d16471ffb4b2c5c160e2927d0119ab98428b1
+        - -gsutil-image
+        - gcr.io/tekton-releases/github.com/tektoncd/pipeline/cmd/gsutil@sha256:7ee20ca5428358e766086a217b7d27dba56960dbcb4ce705dd0db3e551cd06fd
+        - -entrypoint-image
+        - gcr.io/tekton-releases/github.com/tektoncd/pipeline/cmd/entrypoint@sha256:d35d81ea85babd9c43b70eb0aa225c59b44d5b32624c40d6ae8aeb0a65def8fb
+        image: {{ .Values.tektonPipelinesController.image }}
+        name: tekton-pipelines-controller
+        volumeMounts:
+        - mountPath: /etc/config-logging
+          name: config-logging
+      serviceAccountName: tekton-pipelines-controller
+      volumes:
+      - configMap:
+          name: config-logging
+        name: config-logging
