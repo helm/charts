@@ -1,4 +1,4 @@
-{{- if .Values.logdna.key -}}
+{{- if (or .Values.logdna.key .Values.logdna.secret) -}}
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
@@ -27,7 +27,7 @@ spec:
           - name: LOGDNA_AGENT_KEY
             valueFrom:
               secretKeyRef:
-                name: {{ template "logdna.name" . }}
+                name: {{ if .Values.logdna.secret -}}{{ .Values.logdna.secret }}{{ else }}{{ template "logdna.name" . }}{{ end }}
                 key: logdna-agent-key
           - name: LOGDNA_PLATFORM
             value: k8s

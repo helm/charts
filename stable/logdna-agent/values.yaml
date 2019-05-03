@@ -6,8 +6,9 @@ image:
 logdna:
   ## Please follow directions from https://app.logdna.com/pages/add-source
 
-  ## An ingestion key is required for this chart to run
+  ## An ingestion key or secret is required for this chart to run
   # key:
+  # secret:
 
   ## Optional settings
   autoupdate: 0
