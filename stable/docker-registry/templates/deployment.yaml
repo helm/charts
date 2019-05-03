@@ -124,6 +124,10 @@ spec:
             - name: REGISTRY_STORAGE_S3_REGIONENDPOINT
               value: {{ .Values.s3.regionEndpoint }}
           {{- end }}
+          {{- if .Values.s3.rootDirectory }}
+            - name: REGISTRY_STORAGE_S3_ROOTDIRECTORY
+              value: {{ .Values.s3.rootDirectory }}
+          {{- end }}
             - name: REGISTRY_STORAGE_S3_BUCKET
               value: {{ required ".Values.s3.bucket is required" .Values.s3.bucket }}
           {{- if .Values.s3.encrypt }}

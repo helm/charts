@@ -87,6 +87,7 @@ secrets:
 #  bucket: my-bucket
 #  encrypt: false
 #  secure: true
+#  rootDirectory: /
 
 # Options for swift storage type:
 # swift:
