@@ -71,6 +71,13 @@ spec:
           value: "1"
         {{- end }}
         {{- if .Values.usePassword }}
+        {{- if and .Values.mongodbUsername .Values.mongodbDatabase }}
+        - name: MONGODB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ if .Values.existingSecret }}{{ .Values.existingSecret }}{{- else }}{{ template "mongodb.fullname" . }}{{- end }}
+              key: mongodb-password
+        {{- end }}
         - name: MONGODB_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
@@ -80,13 +87,6 @@ spec:
         {{- if .Values.mongodbUsername }}
         - name: MONGODB_USERNAME
           value: {{ .Values.mongodbUsername | quote }}
-        {{- end }}
-        {{- if and .Values.mongodbUsername .Values.mongodbDatabase }}
-        - name: MONGODB_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ if .Values.existingSecret }}{{ .Values.existingSecret }}{{- else }}{{ template "mongodb.fullname" . }}{{- end }}
-              key: mongodb-password
         {{- end }}
         - name: MONGODB_SYSTEM_LOG_VERBOSITY
           value: {{ .Values.mongodbSystemLogVerbosity | quote }}
