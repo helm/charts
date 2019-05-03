@@ -115,6 +115,9 @@ spec:
                   name: {{ $googleSecret }}
                   key: google-client-secret
           {{- end }}
+          {{- if .Values.auth.extraEnv }}
+{{ toYaml .Values.auth.extraEnv | indent 12 }}
+          {{- end }}
           readinessProbe:
             httpGet:
               path: /ping

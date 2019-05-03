@@ -7,6 +7,7 @@ cluster: dev
 auth:
   annotations: {}
   domain: "<your_auth_domain>"  # Required. e.g "sso-auth.mydomain.foo"
+  extraEnv: []
   replicaCount: 1
   resources:
     limits:
@@ -30,6 +31,7 @@ auth:
 
 proxy:
   annotations: {}
+  extraEnv: []
   # providerUrlInternal: https://sso-auth.mydomain.com
   replicaCount: 1
   resources:

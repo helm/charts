@@ -80,6 +80,9 @@ spec:
             - name: PROVIDER_URL_INTERNAL
               value: {{ .Values.proxy.providerUrlInternal | quote }}
           {{- end }}
+          {{- if .Values.auth.extraEnv }}
+{{ toYaml .Values.proxy.extraEnv | indent 12 }}
+          {{- end }}
           readinessProbe:
             httpGet:
               path: /ping
