@@ -1,0 +1,14 @@
+{{- if .Values.flsAccessConfig }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "jetbrains-fls.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "jetbrains-fls.name" . }}
+    helm.sh/chart: {{ include "jetbrains-fls.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+data:
+  access-config.json: |
+    {{- .Values.flsAccessConfig | nindent 4 }}
+{{- end }}

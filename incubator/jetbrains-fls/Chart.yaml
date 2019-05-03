@@ -1,0 +1,12 @@
+apiVersion: v1
+appVersion: "19488"
+description: Manage JetBrains products licenses within your company network
+name: jetbrains-fls
+version: 0.1.0
+icon: https://upload.wikimedia.org/wikipedia/commons/1/1a/JetBrains_Logo_2016.svg
+home: https://www.jetbrains.com/help/license_server
+sources:
+- https://github.com/crazy-max/docker-jetbrains-license-server
+maintainers:
+- name: hb3b
+engine: gotpl

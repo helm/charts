@@ -1,0 +1,133 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "jetbrains-fls.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "jetbrains-fls.name" . }}
+    helm.sh/chart: {{ include "jetbrains-fls.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "jetbrains-fls.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+{{- if .Values.persistence.enabled }}
+  volumeClaimTemplates:
+  - metadata:
+      name: registration-data
+      labels:
+        app.kubernetes.io/name: {{ include "jetbrains-fls.name" . }}
+        helm.sh/chart: {{ include "jetbrains-fls.chart" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+    spec:
+      accessModes:
+      - {{ .Values.persistence.accessMode | quote }}
+      resources:
+        requests:
+          storage: {{ .Values.persistence.size | quote }}
+{{- end }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "jetbrains-fls.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      volumes:
+        {{- if .Values.flsAccessConfig }}
+        - name: access-config
+          configMap:
+            name: {{ include "jetbrains-fls.fullname" . }}
+        {{- end }}
+        {{- if (not .Values.persistence.enabled) }}
+        - name: registration-data
+          emptyDir: {}
+        {{ end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8000
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            {{- if .Values.flsAccessConfig }}
+            - name: access-config
+              mountPath: /config
+            {{- end }}
+            - name: registration-data
+              mountPath: /data
+          env:
+          {{- if .Values.flsTimezone }}
+          - name: TZ
+            value: {{ .Values.flsTimezone }}
+          {{- end }}
+          {{- if .Values.flsVirtualHosts }}
+          - name: JLS_VIRTUAL_HOSTS
+            value: {{ include "helm-toolkit.utils.joinListWithComma" .Values.flsVirtualHosts }}
+          {{- end }}
+          {{- if .Values.flsContext }}
+          - name: JLS_CONTEXT
+            value: {{ .Values.flsContext }}
+          {{- end }}
+          {{- if .Values.flsStatsRecipients }}
+          - name: JLS_STATS_RECIPIENTS
+            value: {{ include "helm-toolkit.utils.joinListWithComma" .Values.flsStatsRecipients }}
+          {{- end }}
+          {{- if .Values.flsReportOutOfLicensePercentage }}
+          - name: JLS_REPORT_OUT_OF_LICENSE
+            value: "{{ .Values.flsReportOutOfLicensePercentage }}"
+          {{- end }}
+          {{- if .Values.flsSMTPServer }}
+          - name: JLS_SMTP_SERVER
+            value: {{ .Values.flsSMTPServer }}
+          {{- end }}
+          {{- if .Values.flsSMTPPort }}
+          - name: JLS_SMTP_PORT
+            value: "{{ .Values.flsSMTPPort }}"
+          {{- end }}
+          {{- if .Values.flsSMTPUsername }}
+          - name: JLS_SMTP_USERNAME
+            value: {{ .Values.flsSMTPUsername }}
+          {{- end }}
+          {{- if .Values.flsSMTPPassword }}
+          - name: JLS_SMTP_PASSWORD
+            value: {{ .Values.flsSMTPPassword }}
+          {{- end }}
+          {{- if .Values.flsStatsFrom }}
+          - name: JLS_STATS_FROM
+            value: {{ .Values.flsStatsFrom }}
+          {{- end }}
+          {{- if .Values.flsStatsToken }}
+          - name: JLS_STATS_TOKEN
+            value: {{ .Values.flsStatsToken }}
+          {{- end }}
+          {{- if .Values.flsAccessConfig }}
+          - name: JLS_ACCESS_CONFIG
+            value: /config/access-config.json
+          {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
