@@ -1,5 +1,5 @@
 name: datadog
-version: 1.27.2
+version: 1.28.0
 appVersion: 6.10.1
 description: DataDog Agent
 keywords:
