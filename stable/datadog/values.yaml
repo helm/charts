@@ -454,6 +454,11 @@ daemonset:
   #
   # priorityClassName:
 
+  ## @param podLabels - object - optional
+  ## Sets podLabels if defined.
+  #
+  # podLabels: {}
+
 deployment:
   ## @param enabled - boolean - required
   ## Apart from DaemonSet, deploy Datadog agent pods and related service for
