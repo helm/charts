@@ -43,3 +43,5 @@ Parameter | Description | Default
 `tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `affinity` | node/pod affinities (requires Kubernetes >=1.6) | `{}`
 `priorityClassName` | pod priorityClassName for pod. | ``
+`podAnnotations` | annotations to be added to pods | `{}`
+`updateStrategy` | can be either `RollingUpdate` or `OnDelete` | `RollingUpdate`
