@@ -16,7 +16,7 @@ This chart will do the following:
 * Create a [Headless Service](https://kubernetes.io/docs/concepts/services-networking/service/) to control the domain of the ZooKeeper ensemble.
 * Create a Service configured to connect to the available ZooKeeper instance on the configured client port.
 * Optionally apply a [Pod Anti-Affinity](https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#inter-pod-affinity-and-anti-affinity-beta-feature) to spread the ZooKeeper ensemble across nodes.
-* Optionally start JMX Exporter and Zookeeper Exporter containers inside Zookeeper pods.
+* Optionally start JMX Exporter and Zookeeper Exporter containers inside Zookeeper pods, with [Prometheus Operator](https://github.com/coreos/prometheus-operator) `ServiceMonitors` if desired.
 * Optionally create a job which creates Zookeeper chroots (e.g. `/kafka1`).
 
 ## Installing the Chart

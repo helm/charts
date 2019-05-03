@@ -18,6 +18,18 @@ spec:
     - name: {{ $key }}
 {{ toYaml $value | indent 6 }}
   {{- end }}
+  {{- if and .Values.exporters.jmx.enabled .Values.prometheus.operator.enabled }}
+    - name: jmxxp
+      protocol: TCP
+      port: {{ .Values.exporters.jmx.port }}
+      targetPort: jmxxp
+  {{- end }}
+  {{- if and .Values.exporters.zookeeper.enabled .Values.prometheus.operator.enabled }}
+    - name: zookeeperxp
+      protocol: TCP
+      port: {{ .Values.exporters.zookeeper.port }}
+      targetPort: zookeeperxp
+  {{- end }}
   selector:
     app: {{ template "zookeeper.name" . }}
     release: {{ .Release.Name }}

@@ -182,11 +182,14 @@ exporters:
       startDelaySeconds: 30
     env: {}
     resources: {}
+    #  limits:
+    #    cpu: 1
+    #    memory: 512Mi
+    #  requests:
+    #    cpu: 20m
+    #    memory: 256Mi
     path: /metrics
-    ports:
-      jmxxp:
-        containerPort: 9404
-        protocol: TCP
+    port: 9404
     livenessProbe:
       httpGet:
         path: /metrics
@@ -206,6 +209,12 @@ exporters:
       failureThreshold: 8
       successThreshold: 1
 
+    ## Interval at which Prometheus scrapes metrics, note: only used by Prometheus Operator
+    interval: 10s
+
+    ## Timeout at which Prometheus timeouts scrape run, note: only used by Prometheus Operator
+    scrapeTimeout: 10s
+
   zookeeper:
   ## refs:
   ## - https://github.com/carlpett/zookeeper_exporter
@@ -221,11 +230,14 @@ exporters:
       resetOnScrape: "true"
     env: {}
     resources: {}
+    #  limits:
+    #    cpu: 1
+    #    memory: 128Mi
+    #  requests:
+    #    cpu: 20m
+    #    memory: 16Mi
     path: /metrics
-    ports:
-      zookeeperxp:
-        containerPort: 9141
-        protocol: TCP
+    port: 9141
     livenessProbe:
       httpGet:
         path: /metrics
@@ -244,6 +256,27 @@ exporters:
       timeoutSeconds: 60
       failureThreshold: 8
       successThreshold: 1
+
+    ## Interval at which Prometheus scrapes metrics, note: only used by Prometheus Operator
+    interval: 10s
+
+    ## Timeout at which Prometheus timeouts scrape run, note: only used by Prometheus Operator
+    scrapeTimeout: 10s
+
+prometheus:
+  operator:
+    ## Are you using Prometheus Operator?
+    enabled: false
+
+    serviceMonitor:
+      # Namespace Prometheus is installed in
+      namespace: monitoring
+
+      ## Defaults to whats used if you follow CoreOS [Prometheus Install Instructions](https://github.com/coreos/prometheus-operator/tree/master/helm#tldr)
+      ## [Prometheus Selector Label](https://github.com/coreos/prometheus-operator/blob/master/helm/prometheus/templates/prometheus.yaml#L65)
+      ## [Kube Prometheus Selector Label](https://github.com/coreos/prometheus-operator/blob/master/helm/kube-prometheus/values.yaml#L298)
+      selector:
+        prometheus: kube-prometheus
 
 ## Use an alternate scheduler, e.g. "stork".
 ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/

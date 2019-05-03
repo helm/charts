@@ -54,7 +54,7 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
         {{- with .Values.command }}
           command: {{ range . }}
-             - {{ . | quote }}
+            - {{ . | quote }}
           {{- end }}
         {{- end }}
           ports:
@@ -104,17 +104,16 @@ spec:
           image: "{{ .Values.exporters.jmx.image.repository }}:{{ .Values.exporters.jmx.image.tag }}"
           imagePullPolicy: {{ .Values.exporters.jmx.image.pullPolicy }}
           ports:
-  {{- range $key, $port := .Values.exporters.jmx.ports }}
-            - name: {{ $key }}
-{{ toYaml $port | indent 14 }}
-  {{- end }}
+            - name: jmxxp
+              containerPort: {{ .Values.exporters.jmx.port }}
+              protocol: TCP
           livenessProbe:
 {{ toYaml .Values.exporters.jmx.livenessProbe | indent 12 }}
           readinessProbe:
 {{ toYaml .Values.exporters.jmx.readinessProbe | indent 12 }}
           env:
             - name: SERVICE_PORT
-              value: {{ .Values.exporters.jmx.ports.jmxxp.containerPort | quote }}
+              value: {{ .Values.exporters.jmx.port | quote }}
           {{- with .Values.exporters.jmx.env }}
             {{- range $key, $value := . }}
             - name: {{ $key | upper | replace "." "_" }}
@@ -134,16 +133,15 @@ spec:
           image: "{{ .Values.exporters.zookeeper.image.repository }}:{{ .Values.exporters.zookeeper.image.tag }}"
           imagePullPolicy: {{ .Values.exporters.zookeeper.image.pullPolicy }}
           args:
-            - -bind-addr=:{{ .Values.exporters.zookeeper.ports.zookeeperxp.containerPort }}
+            - -bind-addr=:{{ .Values.exporters.zookeeper.port }}
             - -metrics-path={{ .Values.exporters.zookeeper.path }}
             - -zookeeper=localhost:{{ .Values.ports.client.containerPort }}
             - -log-level={{ .Values.exporters.zookeeper.config.logLevel }}
             - -reset-on-scrape={{ .Values.exporters.zookeeper.config.resetOnScrape }}
           ports:
-  {{- range $key, $port := .Values.exporters.zookeeper.ports }}
-            - name: {{ $key }}
-{{ toYaml $port | indent 14 }}
-  {{- end }}
+            - name: zookeeperxp
+              containerPort: {{ .Values.exporters.zookeeper.port }}
+              protocol: TCP
           livenessProbe:
 {{ toYaml .Values.exporters.zookeeper.livenessProbe | indent 12 }}
           readinessProbe:
