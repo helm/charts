@@ -23,6 +23,7 @@ rules:
   - services
   - endpoints
   - pods
+  - pods/exec
   verbs: ["get", "list", "watch"]
 - apiGroups:
   - extensions
@@ -37,6 +38,11 @@ rules:
   - secrets
   - pods/portforward
   verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+- apiGroups: ["", "extensions"]
+  resources:
+  - deployments
+  - services
+  verbs: ["create", "get", "list", "watch", "update", "delete"]
 
 ---
 kind: ClusterRoleBinding
