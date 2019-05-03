@@ -45,3 +45,5 @@ Parameter | Description | Default
 `affinity` | node/pod affinities (requires Kubernetes >=1.6) | `{}`
 `priorityClassName` | pod priorityClassName for pod. | ``
 `hostNetwork` | controls whether the pod may use the node network namespace | `true`
+`podAnnotations` | annotations to be added to pods | `{}`
+`updateStrategy` | can be either `RollingUpdate` or `OnDelete` | `RollingUpdate`
