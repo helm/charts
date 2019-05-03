@@ -63,6 +63,10 @@ rules:
   verbs:
   - get
 {{- end }}
+- nonResourceURLs:
+  - "/metrics"
+  verbs:
+  - get
 - apiGroups:  # Kubelet connectivity
   - ""
   resources:
