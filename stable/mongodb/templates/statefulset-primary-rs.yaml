@@ -111,7 +111,7 @@ spec:
             value: {{ .Values.mongodbDatabase | quote }}
           {{- end }}
             {{- if .Values.usePassword }}
-            {{- if and .Values.mongodbUsername (or .Values.mongodbPassword .Values.existingSecret) }}
+            {{- if and .Values.mongodbUsername .Values.mongodbDatabase }}
           - name: MONGODB_PASSWORD
             valueFrom:
               secretKeyRef:
