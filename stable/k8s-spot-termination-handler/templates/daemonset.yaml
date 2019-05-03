@@ -10,6 +10,10 @@ metadata:
 spec:
   template:
     metadata:
+      {{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+      {{- end }}
       labels:
         app.kubernetes.io/name: {{ template "k8s-spot-termination-handler.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
@@ -65,3 +69,8 @@ spec:
     {{- if .Values.priorityClassName }} 
       priorityClassName: {{ .Values.priorityClassName }}
     {{- end }}
+  {{- if .Values.updateStrategy }}
+  updateStrategy:
+    type: {{ .Values.updateStrategy }}
+  {{- end }}
+
