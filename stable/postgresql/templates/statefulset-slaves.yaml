@@ -94,7 +94,7 @@ spec:
         {{- end }}
         {{- if .Values.persistence.mountPath }}
         - name: PGDATA
-          value: {{ .Values.persistence.mountPath | quote }}
+          value: {{ .Values.postgresqlDataDir | quote }}
         {{- end }}
         - name: POSTGRES_REPLICATION_MODE
           value: "slave"
