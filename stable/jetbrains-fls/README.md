@@ -19,7 +19,7 @@ This chart bootstraps a [Floating License Server](https://www.jetbrains.com/lice
 
 ## Configuration
 
-The following table lists the configurable parameters of the WordPress chart and their default values.
+The following table lists the configurable parameters of the `jetbrains-fls` chart and their default values.
 
 |            Parameter              |                Description                 |                         Default                         |
 |-----------------------------------|--------------------------------------------|---------------------------------------------------------|
