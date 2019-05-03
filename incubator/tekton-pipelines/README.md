@@ -23,7 +23,12 @@ In its default configuration, this chart will create the following Kubernetes re
 
 Please ensure that you have reviewed the [prerequisites](#prerequisites).
 
-1. Install the chart using helm cli:
+1. Install Tekton-Pipeline crds
+```bash
+$ kubectl apply -f https://raw.githubusercontent.com/helm/charts/c3af8e2fb45ada11c10aa231612710381e3b215b/incubator/tekton-pipelines/all-crds.yaml
+```
+
+2. Install the chart using helm cli:
 
 ```bash
 $ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
