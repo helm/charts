@@ -209,6 +209,7 @@ spec:
           sleep infinity &
           wait $!
         {{- range $key, $value :=  .Values.cluster.env }}
+        env:
         - name: {{ $key }}
           value: {{ $value | quote }}
         {{- end }}
