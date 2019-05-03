@@ -19,6 +19,7 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
 {{- end }}
     spec:
+      hostNetwork: {{ .Values.hostNetwork }}
       serviceAccountName: {{ template "kube-state-metrics.serviceAccountName" . }}
       {{- if .Values.securityContext.enabled }}
       securityContext:
@@ -114,4 +115,3 @@ spec:
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
 {{- end }}
-
