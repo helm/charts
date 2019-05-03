@@ -1,3 +1,5 @@
+{{- $config := .Values.config }}
+{{- $pp := dict "Tendermint" (dict "PersistentPeers" (include "burrow.seeds" .)) }}
 kind: ConfigMap
 apiVersion: v1
 metadata:
@@ -8,7 +10,5 @@ metadata:
     release: {{ $.Release.Name }}
   name: {{ template "burrow.fullname" . }}-config
 data:
-  burrow.toml: |-
-{{- $config := .Values.config }}
-{{ $pp := dict "Tendermint" (dict "PersistentPeers" (include "burrow.seeds" .)) }}
-{{ toToml (mergeOverwrite $config $pp) | indent 4 }}
+  burrow.json: |-
+{{ toJson (mergeOverwrite $config $pp) | indent 4 }}

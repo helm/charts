@@ -83,7 +83,7 @@ spec:
           args:
           - restore
           - --config
-          - "{{ $refDir }}/burrow.toml"
+          - "{{ $refDir }}/burrow.json"
           - --genesis
           - "{{ $refDir }}/genesis.json"
           - --silent
@@ -108,7 +108,7 @@ spec:
           args:
           - start
           - --config
-          - "{{ $refDir }}/burrow.toml"
+          - "{{ $refDir }}/burrow.json"
           - --genesis
           - "{{ $refDir }}/genesis.json"
           - --validator-address
