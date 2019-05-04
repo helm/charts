@@ -4,21 +4,27 @@ kind: StatefulSet
 metadata:
   name: {{ template "unifi.fullname" . }}
   labels:
-    app: {{ template "unifi.name" . }}
-    chart: {{ template "unifi.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ include "unifi.name" . }}
+    helm.sh/chart: {{ include "unifi.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ template "unifi.name" . }}
-      release: {{ .Release.Name }}
+      app.kubernetes.io/name: {{ include "unifi.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ template "unifi.name" . }}
-        release: {{ .Release.Name }}
+        app.kubernetes.io/name: {{ include "unifi.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+      {{- if .Values.podAnnotations }}
+      annotations:
+        {{- range $key, $value := .Values.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
+      {{- end }}
     spec:
       containers:
         - name: {{ .Chart.Name }}
@@ -37,6 +43,12 @@ spec:
             - name: stun
               containerPort: 3478
               protocol: UDP
+          {{- if not .Values.runAsRoot }}
+          securityContext:
+            capabilities:
+              add:
+                - SETFCAP
+          {{- end }}
           livenessProbe:
             httpGet:
               path: /status
@@ -54,6 +66,10 @@ spec:
               value: "{{ .Values.timezone }}"
             - name: RUNAS_UID0
               value: "{{ .Values.runAsRoot }}"
+            - name: UNIFI_UID
+              value: "{{ .Values.UID }}"
+            - name: UNIFI_GID
+              value: "{{ .Values.GID }}"
             {{- if .Values.mongodb.enabled }}
             - name: DB_URI
               value: "{{ .Values.mongodb.dbUri }}"
@@ -77,14 +93,6 @@ spec:
               subPath: init.d
           resources:
 {{ toYaml .Values.resources | indent 12 }}
-      volumes:
-        - name: unifi-data
-        {{- if .Values.persistence.enabled }}
-          persistentVolumeClaim:
-            claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "unifi.fullname" . }}{{- end }}
-        {{- else }}
-          emptyDir: {}
-        {{ end }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
@@ -98,3 +106,25 @@ spec:
 {{ toYaml . | indent 8 }}
     {{- end }}
 {{- end -}}
+{{- if .Values.persistence.enabled }}
+  volumeClaimTemplates:
+    - metadata:
+        name: unifi-data
+      spec:
+        accessModes:
+          - {{ .Values.persistence.accessMode | quote }}
+        resources:
+          requests:
+            storage: {{ .Values.persistence.size | quote }}
+      {{- if .Values.persistence.storageClass }}
+      {{- if (eq "-" .Values.persistence.storageClass) }}
+        storageClassName: ""
+      {{- else }}
+        storageClassName: "{{ .Values.persistence.storageClass }}"
+      {{- end }}
+      {{- end }}
+{{- else }}
+      volumes:
+        - name: datadir
+          emptyDir: {}
+{{- end }}
