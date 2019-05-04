@@ -70,6 +70,20 @@ concourse:
     ##
     secretRetryInterval:
 
+    ## Enable in-memory cache for secrets.
+    ##
+    secretCacheEnabled: false
+
+    ## If the cache is enabled, secret values will be cached for not longer
+    ## than this duration (it can be less, if underlying secret lease time
+    ## is smaller).
+    ##
+    secretCacheDuration:
+
+    ## If the cache is enabled, expired items will be removed on this internal.
+    ##
+    secretCachePurgeInterval:
+
     ## Minimum level of logs to see. Possible options: debug, info, error.
     ##
     logLevel:
@@ -332,14 +346,6 @@ concourse:
       ## Currently supported backends: token, approle, cert.
       ##
       authBackend: ""
-
-      ## Cache returned secrets for their lease duration in memory
-      ##
-      cache: false
-
-      ## If the cache is enabled, and this is set, override secrets lease duration with a maximum value
-      ##
-      maxLease:
 
       ## Path to a directory of PEMEncoded CA cert files to verify the vault server SSL cert.
       ##

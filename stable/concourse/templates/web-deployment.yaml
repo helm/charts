@@ -68,6 +68,18 @@ spec:
             - name: CONCOURSE_SECRET_RETRY_INTERVAL
               value: {{ .Values.concourse.web.secretRetryInterval | quote }}
             {{- end }}
+            {{- if .Values.concourse.web.secretCacheDuration }}
+            - name: CONCOURSE_SECRET_CACHE_DURATION
+              value: {{ .Values.concourse.web.secretCacheDuration | quote }}
+            {{- end }}
+            {{- if .Values.concourse.web.secretCacheEnabled }}
+            - name: CONCOURSE_SECRET_CACHE_ENABLED
+              value: {{ .Values.concourse.web.secretCacheEnabled | quote }}
+            {{- end }}
+            {{- if .Values.concourse.web.secretCachePurgeInterval }}
+            - name: CONCOURSE_SECRET_CACHE_PURGE_INTERVAL
+              value: {{ .Values.concourse.web.secretCachePurgeInterval | quote }}
+            {{- end }}
             {{- if .Values.concourse.web.awsSecretsManager.region }}
             - name: CONCOURSE_AWS_SECRETSMANAGER_REGION
               value: {{ .Values.concourse.web.awsSecretsManager.region | quote }}
@@ -388,10 +400,6 @@ spec:
             - name: CONCOURSE_VAULT_AUTH_BACKEND_MAX_TTL
               value: {{ .Values.concourse.web.vault.authBackendMaxTtl | quote }}
             {{- end }}
-            {{- if .Values.concourse.web.vault.cache }}
-            - name: CONCOURSE_VAULT_CACHE
-              value: {{ .Values.concourse.web.vault.cache | quote }}
-            {{- end }}
             {{- if .Values.concourse.web.vault.caPath }}
             - name: CONCOURSE_VAULT_CA_PATH
               value: {{ .Values.concourse.web.vault.caPath | quote }}
@@ -399,10 +407,6 @@ spec:
             {{- if .Values.concourse.web.vault.insecureSkipVerify }}
             - name: CONCOURSE_VAULT_INSECURE_SKIP_VERIFY
               value: {{ .Values.concourse.web.vault.insecureSkipVerify | quote }}
-            {{- end }}
-            {{- if .Values.concourse.web.vault.maxLease }}
-            - name: CONCOURSE_VAULT_MAX_LEASE
-              value: {{ .Values.concourse.web.vault.maxLease | quote }}
             {{- end }}
             {{- if .Values.concourse.web.vault.retryInitial }}
             - name: CONCOURSE_VAULT_RETRY_INITIAL
