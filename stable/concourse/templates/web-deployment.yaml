@@ -60,6 +60,42 @@ spec:
             - name: CONCOURSE_ENABLE_GLOBAL_RESOURCES
               value: {{ .Values.concourse.web.enableGlobalResources | quote }}
             {{- end }}
+            {{- if .Values.concourse.web.enableBuildAuditing }}
+            - name: CONCOURSE_ENABLE_BUILD_AUDITING
+              value: {{ .Values.concourse.web.enableBuildAuditing | quote }}
+            {{- end }}
+            {{- if .Values.concourse.web.enableContainerAuditing }}
+            - name: CONCOURSE_ENABLE_CONTAINER_AUDITING
+              value: {{ .Values.concourse.web.enableContainerAuditing | quote }}
+            {{- end }}
+            {{- if .Values.concourse.web.enableJobAuditing }}
+            - name: CONCOURSE_ENABLE_JOB_AUDITING
+              value: {{ .Values.concourse.web.enableJobAuditing | quote }}
+            {{- end }}
+            {{- if .Values.concourse.web.enablePipelineAuditing }}
+            - name: CONCOURSE_ENABLE_PIPELINE_AUDITING
+              value: {{ .Values.concourse.web.enablePipelineAuditing | quote }}
+            {{- end }}
+            {{- if .Values.concourse.web.enableResourceAuditing }}
+            - name: CONCOURSE_ENABLE_RESOURCE_AUDITING
+              value: {{ .Values.concourse.web.enableResourceAuditing | quote }}
+            {{- end }}
+            {{- if .Values.concourse.web.enableSystemAuditing }}
+            - name: CONCOURSE_ENABLE_SYSTEM_AUDITING
+              value: {{ .Values.concourse.web.enableSystemAuditing | quote }}
+            {{- end }}
+            {{- if .Values.concourse.web.enableTeamAuditing }}
+            - name: CONCOURSE_ENABLE_TEAM_AUDITING
+              value: {{ .Values.concourse.web.enableTeamAuditing | quote }}
+            {{- end }}
+            {{- if .Values.concourse.web.enableWorkerAuditing }}
+            - name: CONCOURSE_ENABLE_WORKER_AUDITING
+              value: {{ .Values.concourse.web.enableWorkerAuditing | quote }}
+            {{- end }}
+            {{- if .Values.concourse.web.enableVolumeAuditing }}
+            - name: CONCOURSE_ENABLE_VOLUME_AUDITING
+              value: {{ .Values.concourse.web.enableVolumeAuditing | quote }}
+            {{- end }}
             {{- if .Values.concourse.web.secretRetryAttempts }}
             - name: CONCOURSE_SECRET_RETRY_ATTEMPTS
               value: {{ .Values.concourse.web.secretRetryAttempts | quote }}
