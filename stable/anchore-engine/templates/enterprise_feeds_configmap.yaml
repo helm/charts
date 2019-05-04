@@ -18,7 +18,7 @@ data:
     # be altered for basic operation
     #
     service_dir: {{ .Values.anchoreGlobal.serviceDir }}
-    tmp_dir: {{ default "/tmp" .Values.anchoreGlobal.scratchVolume.mountPath }}
+    tmp_dir: {{ .Values.anchoreGlobal.scratchVolume.mountPath }}
     log_level: {{ .Values.anchoreGlobal.logLevel }}
     cleanup_images: {{ .Values.anchoreGlobal.cleanupImages }}
 
@@ -26,14 +26,14 @@ data:
     host_id: "${ANCHORE_POD_NAME}"
     internal_ssl_verify: {{ .Values.anchoreGlobal.internalServicesSsl.verifyCerts }}
     auto_restart_services: false
-    license_file: "/license.yaml"
+    license_file: "/home/anchore/license.yaml"
 
     metrics:
       enabled: {{ .Values.anchoreGlobal.enableMetrics }}
 
     credentials:
       database:
-        db_connect: "postgresql+pg8000://${ANCHORE_DB_USER}:${ANCHORE_DB_PASSWORD}@${ANCHORE_DB_HOST}/${ANCHORE_DB_NAME}"
+        db_connect: "postgresql://${ANCHORE_DB_USER}:${ANCHORE_DB_PASSWORD}@${ANCHORE_DB_HOST}/${ANCHORE_DB_NAME}"
         db_connect_args:
           timeout: {{ .Values.anchoreEnterpriseFeeds.dbConfig.timeout }}
           ssl: {{ .Values.anchoreEnterpriseFeeds.dbConfig.ssl }}
@@ -72,7 +72,7 @@ data:
             # rubygem data comes packaged as a PostgreSQL dump file. gem driver loads the pg dump and normalizes the data.
             # To enable gem driver comment the enabled property and uncomment the db_connect property.
             enabled: {{ default "false" .Values.anchoreEnterpriseFeeds.gemDriverEnabled }}
-            db_connect: {{ default "'postgresql+pg8000://${ANCHORE_DB_USER}:${ANCHORE_DB_PASSWORD}@${ANCHORE_DB_HOST}/gems'" .Values.anchoreEnterpriseFeeds.gemDbEndpoint }}
+            db_connect: {{ default "'postgresql://${ANCHORE_DB_USER}:${ANCHORE_DB_PASSWORD}@${ANCHORE_DB_HOST}/gems'" .Values.anchoreEnterpriseFeeds.gemDbEndpoint }}
           centos:
             enabled: {{ default "true" .Values.anchoreEnterpriseFeeds.centosDriverEnabled }}
           debian:

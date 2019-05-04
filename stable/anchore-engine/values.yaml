@@ -109,7 +109,7 @@ anchoreGlobal:
   internalServicesSsl:
     # specify whether cert is verfied against the local certifacte bundle (allow self-signed certs if set to false)
     verifyCerts: false
-    certDir: /certs
+    certDir: /home/anchore/certs
     certSecret: Null
     certSecretKeyName: tls.key
     certSecretCertName: tls.crt
@@ -479,10 +479,10 @@ anchoreEnterpriseReports:
     reports_data_refresh: 7200 # policy evaluations and vulnerabilities refreshed every 2 hours
     reports_metrics: 3600 # metrics generated every hour
 
+  # Kubernetes service config - annotations & serviceType configs must be set in anchoreApi
+  # Due to Reports sharing a service with the general API.
   service:
-    type: ClusterIP
     port: 8558
-    annotations: {}
 
   # resources:
   #  limits:

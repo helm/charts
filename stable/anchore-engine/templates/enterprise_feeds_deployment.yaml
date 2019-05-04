@@ -48,7 +48,7 @@ spec:
       - name: "{{ .Chart.Name }}-{{ $component }}"
         image: {{ .Values.anchoreEnterpriseGlobal.image }}
         imagePullPolicy: {{ .Values.anchoreEnterpriseGlobal.imagePullPolicy }}
-        command: ["/usr/local/bin/anchore-enterprise-manager"]
+        command: ["anchore-enterprise-manager"]
         args: ["service", "start", "feeds"]
         ports:
         - containerPort: {{ .Values.anchoreEnterpriseFeeds.service.port }}
@@ -88,7 +88,7 @@ spec:
         - name: {{ $component }}-scratch
           mountPath: {{ .Values.anchoreGlobal.scratchVolume.mountPath }}
         - name: anchore-license
-          mountPath: /license.yaml
+          mountPath: /home/anchore/license.yaml
           subPath: license.yaml
         livenessProbe:
           httpGet:

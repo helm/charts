@@ -65,10 +65,14 @@ spec:
         - name: ANCHORE_ENGINE_URI
           value: "http://{{ template "anchore-engine.api.fullname" . }}:{{ .Values.anchoreApi.service.port }}/v1"
         - name: ANCHORE_LICENSE_PATH
-          value: "/"
+          value: "/home/anchore/"
         {{- if .Values.anchoreEnterpriseRbac.enabled }}
         - name: ANCHORE_RBAC_URI
           value: "http://{{ template "anchore-engine.api.fullname" . }}:{{ .Values.anchoreEnterpriseRbac.service.apiPort }}/v1"
+        {{- end }}
+        {{- if .Values.anchoreEnterpriseReports.enabled }}
+        - name: ANCHORE_REPORTS_URI
+          value: "http://{{ template "anchore-engine.api.fullname" . }}:{{ .Values.anchoreEnterpriseReports.service.port}}/v1"
         {{- end }}
         - name: ANCHORE_ENABLE_SSL
           value: '{{ .Values.anchoreEnterpriseUi.enableSsl }}'
@@ -78,7 +82,7 @@ spec:
           value: '{{ .Values.anchoreEnterpriseUi.enableSharedLogin }}'
         {{- if and ( .Values.postgresql.externalEndpoint) (not ( .Values.postgresql.enabled)) }}
         - name: ANCHORE_APPDB_URI
-          value: "postgresql://{{ .Values.postgresql.postgresUser }}:{{ .Values.postgresql.postgresPassword }}@{{ .Values.postgresql.externalEndpoint }}:5432/{{ .Values.postgresql.postgresDatabase }}"
+          value: "postgresql://{{ .Values.postgresql.postgresUser }}:{{ .Values.postgresql.postgresPassword }}@{{ .Values.postgresql.externalEndpoint }}/{{ .Values.postgresql.postgresDatabase }}"
         {{- else }}
         - name: ANCHORE_APPDB_URI
           value: "postgresql://{{ .Values.postgresql.postgresUser }}:{{ .Values.postgresql.postgresPassword }}@{{ template "postgres.fullname" . }}:5432/{{ .Values.postgresql.postgresDatabase }}"
@@ -89,7 +93,7 @@ spec:
           name: enterprise-ui
         volumeMounts:
         - name: anchore-license
-          mountPath: /license.yaml
+          mountPath: /home/anchore/license.yaml
           subPath: license.yaml
         - name: anchore-ui-config
           mountPath: /config/config-ui.yaml
