@@ -40,7 +40,7 @@ The following tables lists the configurable parameters of the Unifi chart and th
 | `image.tag`                                  | Image tag. Possible values listed [here][docker].                                                                      | `5.9.29`                     |
 | `image.pullPolicy`                           | Image pull policy                                                                                                      | `IfNotPresent`               |
 | `strategyType`                               | Specifies the strategy used to replace old Pods by new ones                                                            | `Recreate`                   |
-| `controller`                                 | Controller used for deploying the Unifi pods. Possible values: daemonset or statefulset                                | `deployment`
+| `controller`                                 | Controller used for deploying the Unifi pods. Possible values: deployment or statefulset                               | `deployment`
 |
 | `guiService.type`                            | Kubernetes service type for the Unifi GUI                                                                              | `ClusterIP`                  |
 | `guiService.port`                            | Kubernetes port where the Unifi GUI is exposed                                                                         | `8443`                       |
