@@ -58,10 +58,10 @@ The command removes all the Kubernetes components associated with the chart and 
 CRDs created by this chart are not removed by default and should be manually cleaned up:
 
 ```console
-kubectl delete crd prometheuses.monitoring.coreos.com
-kubectl delete crd prometheusrules.monitoring.coreos.com
-kubectl delete crd servicemonitors.monitoring.coreos.com
-kubectl delete crd alertmanagers.monitoring.coreos.com
+sudo ubectl delete crd prometheuses.monitoring.coreos.com
+sudo kubectl delete crd prometheusrules.monitoring.coreos.com
+sudo kubectl delete crd servicemonitors.monitoring.coreos.com
+sudo kubectl delete crd alertmanagers.monitoring.coreos.com
 ```
 
 ## Work-Arounds for Known Issues
@@ -127,7 +127,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | Parameter | Description | Default |
 | ----- | ----------- | ------ |
 | `prometheusOperator.enabled` | Deploy Prometheus Operator. Only one of these should be deployed into the cluster | `true` |
-| `prometheusOperator.serviceAccount` | Create a serviceaccount for the operator | `true` |
+| `prometheusOperator.serviceAccount.create` | Create a serviceaccount for the operator | `true` |
 | `prometheusOperator.serviceAccount.name` | Operator serviceAccount name | `""` |
 | `prometheusOperator.logFormat` | Operator log output formatting | `"logfmt"` |
 | `prometheusOperator.logLevel` | Operator log level. Possible values: "all", "debug",	"info",	"warn",	"error", "none" | `"info"` |
