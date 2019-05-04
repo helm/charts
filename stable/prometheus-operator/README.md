@@ -58,10 +58,10 @@ The command removes all the Kubernetes components associated with the chart and 
 CRDs created by this chart are not removed by default and should be manually cleaned up:
 
 ```console
-sudo ubectl delete crd prometheuses.monitoring.coreos.com
-sudo kubectl delete crd prometheusrules.monitoring.coreos.com
-sudo kubectl delete crd servicemonitors.monitoring.coreos.com
-sudo kubectl delete crd alertmanagers.monitoring.coreos.com
+kubectl delete crd prometheuses.monitoring.coreos.com
+kubectl delete crd prometheusrules.monitoring.coreos.com
+kubectl delete crd servicemonitors.monitoring.coreos.com
+kubectl delete crd alertmanagers.monitoring.coreos.com
 ```
 
 ## Work-Arounds for Known Issues
