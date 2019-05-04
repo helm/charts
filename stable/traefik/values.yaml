@@ -1,6 +1,6 @@
 ## Default values for Traefik
 image: traefik
-imageTag: 1.7.9
+imageTag: 1.7.11
 
 testFramework:
   image: "dduportal/bats"
@@ -101,6 +101,7 @@ ssl:
   defaultIPList: []
     # - 1.2.3.4
   # cipherSuites: []
+  customSecretName: ""
   # https://docs.traefik.io/configuration/entrypoints/#specify-minimum-tls-version
   # tlsMinVersion: VersionTLS12
   # https://docs.traefik.io/configuration/entrypoints/#strict-sni-checking
@@ -310,6 +311,7 @@ dashboard:
   service: {}
     # annotations:
     #   key: value
+  ingressEnabled: true
   ingress: {}
     # annotations:
     #   key: value
