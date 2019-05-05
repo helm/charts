@@ -17,6 +17,7 @@ metadata:
 spec:
   endpoints:
   - port: metrics
+    honorLabels: true
     {{- with .Values.serviceMonitor.interval }}
     interval: {{ . }}
     {{- end }}
