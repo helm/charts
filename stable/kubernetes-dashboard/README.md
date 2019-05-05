@@ -59,6 +59,7 @@ The following table lists the configurable parameters of the kubernetes-dashboar
 | `enableInsecureLogin`              | Serve application over HTTP without TLS                                                                                      | `false`                                                                    |
 | `service.externalPort`              | Dashboard external port                                                                                                     | 443                                                                        |
 | `service.internalPort`              | Dashboard internal port                                                                                                     | 443                                                                        |
+| `service.loadBalancerSourceRanges`  | list of IP CIDRs allowed access to load balancer (if supported)                                                             | nil                                                                        |
 | `ingress.annotations`               | Specify ingress class                                                                                                       | `kubernetes.io/ingress.class: nginx`                                       |
 | `ingress.enabled`                   | Enable ingress controller resource                                                                                          | `false`                                                                    |
 | `ingress.paths`                     | Paths to match against incoming requests. Both `/` and `/*` are required to work on gce ingress.                            | `[/]`                                                                    |
@@ -72,6 +73,9 @@ The following table lists the configurable parameters of the kubernetes-dashboar
 | `serviceAccount.name`               | Service account to be used. If not set and serviceAccount.create is `true` a name is generated using the fullname template. |                                                                            |
 | `livenessProbe.initialDelaySeconds` | Number of seconds to wait before sending first probe                                                                        | 30                                                                         |
 | `livenessProbe.timeoutSeconds`      | Number of seconds to wait for probe response                                                                                | 30                                                                         |
+| `podDisruptionBudget.enabled`       | Create a PodDisruptionBudget                                                                                                | `false`                                                                    |
+| `podDisruptionBudget.minAvailable`  | Minimum available instances; ignored if there is no PodDisruptionBudget                                                     |                                                                            |
+| `podDisruptionBudget.maxUnavailable`| Maximum unavailable instances; ignored if there is no PodDisruptionBudget                                                   |                                                                            |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

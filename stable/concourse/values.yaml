@@ -19,7 +19,7 @@ image: concourse/concourse
 ##      of `concourse/concourse`.
 ## Ref: https://hub.docker.com/r/concourse/concourse/tags/
 ##
-imageTag: "5.0.1"
+imageTag: "5.1.0"
 
 ## Specific image digest to use in place of a tag.
 ## Ref: https://kubernetes.io/docs/concepts/configuration/overview/#container-images
@@ -99,13 +99,6 @@ concourse:
     ## Example: http://ci.concourse-ci.org
     ##
     externalUrl:
-
-    ## URL used to reach this ATC from other ATCs in the cluster.
-    ## By default, this corresponds to `$(POD_IP):$(CONCOURSE_BIND_PORT)`.
-    ##
-    ## Example: http://127.0.0.1:8080
-    ##
-    peerUrl:
 
     encryption:
       ## Enable encryption of pipeline configuration. Encryption keys can be set via secrets
@@ -188,6 +181,10 @@ concourse:
     ## Default maximum memory per task, 0 means unlimited.
     ##
     defaultTaskMemoryLimit:
+
+    ## Network address of this web node, reachable by other web nodes. Used for forwarded worker addresses. (default: $POD_IP)
+    ##
+    peerAddress:
 
     ## Configurations regarding how the web component is able to connect to a postgres
     ## instance.
@@ -317,6 +314,10 @@ concourse:
       ## Vault path under which to namespace credentials lookup.
       ##
       pathPrefix:
+
+      ## Path under which to lookup shared credentials.
+      ##
+      sharedPath:
 
       ## if the Vault server is using a self-signed certificate, set this to true,
       ## and provide a value for the cert in secrets (field `vault-ca-cert`).
@@ -825,6 +826,16 @@ concourse:
         ##
         skipSslValidation:
 
+        ## The user id key indicates which claim to use to map an external user id to a
+        ## Concourse user id.
+        ##
+        userIdKey: user_id
+
+        ## The user name key indicates which claim to use to map an external user name to a
+        ## Concourse user name.
+        ##
+        userNameKey: user_name
+
       ## Authentication (OIDC)
       oidc:
         enabled: false
@@ -853,6 +864,11 @@ concourse:
         ##
         skipSslValidation:
 
+        ## The user name key indicates which claim to use to map an external user name to a
+        ## Concourse user name.
+        ##
+        userNameKey: username
+
     tsa:
       ## Minimum level of logs to see. Possible values: debug, info, error.
       ##
@@ -873,10 +889,6 @@ concourse:
       ## Port on which to listen for TSA pprof server.
       ##
       debugBindPort: 2221
-
-      ## IP address of this TSA, reachable by the ATCs. Used for forwarded worker addresses.
-      ##
-      peerIp:
 
       ## Path to private key to use for the SSH server.
       ##
@@ -983,18 +995,26 @@ concourse:
     ##
     bindPort: 7777
 
-    ## IP used to reach this worker from the ATC nodes.
-    ##
-    peerIp:
-
     ## Minimum level of logs to see. Possible options: debug, info, error.
     ##
     logLevel:
 
+    ## Maximum number of containers which can be swept in parallel.
+    ##
+    containerSweeperMaxInFlight: 5
+
+    ## Maximum number of volumes which can be swept in parallel.
+    ##
+    volumeSweeperMaxInFlight: 5
+
     tsa:
-      ## TSA host to forward the worker through. Can be specified multiple times.
+      ## TSA host to forward the worker through.
       ##
       host:
+
+      ## TSA port to forward the worker through.
+      ##
+      port: 2222
 
       ## File containing a public key to expect from the TSA.
       ##
@@ -1075,15 +1095,16 @@ concourse:
       ##
       overlaysDir:
 
-      ## Interval on which to reap expired volumes.
-      ##
-      reapInterval:
-
 ## Configuration values for Concourse Web components.
 ## For more information regarding the characteristics of
 ## Concourse Web nodes, see https://concourse-ci.org/concourse-web.html.
 ##
 web:
+
+  ## Enable or disable the web component.
+  ## This allows the creation of worker-only releases by setting this to false.
+  ##
+  enabled: true
 
   ## Override the components name (defaults to web).
   ##
@@ -1312,6 +1333,12 @@ web:
 ## Concourse Workers, see https://concourse-ci.org/concourse-worker.html
 ##
 worker:
+
+  ## Enable or disable the worker component.
+  ## This can allow users to create web only releases by setting this to false
+  ##
+  enabled: true
+
   ## Override the components name (defaults to worker).
   ##
   nameOverride:
@@ -1518,6 +1545,7 @@ postgresql:
 
   ## Use the PostgreSQL chart dependency.
   ## Set to false if bringing your own PostgreSQL, and set secret value postgresql-uri.
+  ## Should be set to false if using the chart as a worker only deployment.
   ##
   enabled: true
 

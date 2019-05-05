@@ -27,9 +27,18 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
+  annotations:
+{{- if and (.Values.metrics.enabled) (.Values.metrics.annotations) }}
+{{ toYaml .Values.metrics.annotations | indent 4 }}
+{{- end }}
 spec:
   ports:
   - name: {{ template "fullname" . }}
     port: 3306
+  {{- if .Values.metrics.enabled }}
+  - name: metrics
+    port: 9104
+    targetPort: metrics
+  {{- end }}
   selector:
     app: {{ template "fullname" . }}

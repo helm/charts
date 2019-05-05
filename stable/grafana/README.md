@@ -38,7 +38,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `securityContext`                         | Deployment securityContext                    | `{"runAsUser": 472, "fsGroup": 472}`                    |
 | `priorityClassName`                       | Name of Priority Class to assign pods         | `nil`                                                   |
 | `image.repository`                        | Image repository                              | `grafana/grafana`                                       |
-| `image.tag`                               | Image tag. (`Must be >= 5.0.0`)               | `6.0.2`                                                 |
+| `image.tag`                               | Image tag. (`Must be >= 5.0.0`)               | `6.1.6`                                                 |
 | `image.pullPolicy`                        | Image pull policy                             | `IfNotPresent`                                          |
 | `service.type`                            | Kubernetes service type                       | `ClusterIP`                                             |
 | `service.port`                            | Kubernetes port where service is exposed      | `80`                                                    |
@@ -86,11 +86,14 @@ The command removes all the Kubernetes components associated with the chart and 
 | `ldap.config  `                           | Grafana's LDAP configuration                  | `""`                                                    |
 | `annotations`                             | Deployment annotations                        | `{}`                                                    |
 | `podAnnotations`                          | Pod annotations                               | `{}`                                                    |
-| `sidecar.image`              | Sidecar image | `kiwigrid/k8s-sidecar:0.0.13`       |
-| `sidecar.imagePullPolicy`              | Sidecar image pull policy | `IfNotPresent`       |
+| `sidecar.image`                           | Sidecar image                                 | `kiwigrid/k8s-sidecar:0.0.16`                           |
+| `sidecar.imagePullPolicy`                 | Sidecar image pull policy                     | `IfNotPresent`                                          |
 | `sidecar.resources`              | Sidecar resources | `{}`       |
 | `sidecar.dashboards.enabled`              | Enabled the cluster wide search for dashboards and adds/updates/deletes them in grafana | `false`       |
+| `sidecar.skipTlsVerify`                   | Set to true to skip tls verification for kube api calls | `nil`       |
 | `sidecar.dashboards.label`                | Label that config maps with dashboards should have to be added | `grafana_dashboard`                                |
+| `sidecar.dashboards.folder`                | Folder in the pod that should hold the collected dashboards (unless `sidecar.dashboards.defaultFolderName` is set). This path will be mounted. | `/tmp/dashboards`    |
+| `sidecar.dashboards.defaultFolderName`                | The default folder name, it will create a subfolder under the `sidecar.dashboards.folder` and put dashboards in there instead | `nil`                                |
 | `sidecar.dashboards.searchNamespace`      | If specified, the sidecar will search for dashboard config-maps inside this namespace. Otherwise the namespace in which the sidecar is running will be used. It's also possible to specify ALL to search in all namespaces | `nil`                                |
 | `sidecar.datasources.enabled`             | Enabled the cluster wide search for datasources and adds/updates/deletes them in grafana |`false`       |
 | `sidecar.datasources.label`               | Label that config maps with datasources should have to be added | `grafana_datasource`                               |
@@ -106,6 +109,9 @@ The command removes all the Kubernetes components associated with the chart and 
 | `rbac.pspEnabled`                         | Create PodSecurityPolicy (with `rbac.create`, grant roles permissions as well) | `true` |
 | `rbac.pspUseAppArmor`                     | Enforce AppArmor in created PodSecurityPolicy (requires `rbac.pspEnabled`)  | `true` |
 | `command`                     | Define command to be executed by grafana container at startup  | `nil` |
+| `testFramework.image`                     | `test-framework` image repository.             | `dduportal/bats`                                       |
+| `testFramework.tag`                       | `test-framework` image tag.                    | `0.4.0`                                                |
+
 
 ### Example of extraVolumeMounts
 

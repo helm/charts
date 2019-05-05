@@ -14,8 +14,15 @@ metadata:
 {{- end }}
 provisioner: {{ template "nfs-provisioner.provisionerName" . }}
 reclaimPolicy: {{ .Values.storageClass.reclaimPolicy }}
+{{ if .Values.storageClass.allowVolumeExpansion }}
+allowVolumeExpansion: {{ .Values.storageClass.allowVolumeExpansion }}
+{{ end }}
 {{ end -}}
 {{- with .Values.storageClass.parameters }}
 parameters:
+{{ toYaml . | indent 2 }}
+{{- end }}
+{{- with .Values.storageClass.mountOptions }}
+mountOptions:
 {{ toYaml . | indent 2 }}
 {{- end }}

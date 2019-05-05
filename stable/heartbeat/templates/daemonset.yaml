@@ -36,6 +36,18 @@ spec:
         - {{ .Values.plugins | join "," | quote }}
 {{- end }}
         env:
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        - name: NODE_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
 {{- range $key, $value := .Values.extraVars }}
         - name: {{ $key }}
           value: {{ $value }}
@@ -65,12 +77,19 @@ spec:
 {{- if .Values.extraVolumes }}
 {{ toYaml .Values.extraVolumes | indent 6 }}
 {{- end }}
+{{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName }}
+{{- end }}
       terminationGracePeriodSeconds: 60
+{{- if .Values.hostNetwork }}
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+{{- end }}
       serviceAccountName: {{ template "heartbeat.serviceAccountName" . }}
+{{- if .Values.tolerations }}
       tolerations:
-      - key: node-role.kubernetes.io/master
-        operator: Exists
-        effect: NoSchedule
+{{ toYaml .Values.tolerations | indent 8 }}
+{{- end }}
 {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}

@@ -14,6 +14,10 @@ spec:
     {{- end }}
     port: https
     scheme: https
+{{- if .Values.kubeApiServer.serviceMonitor.metricRelabelings }}
+    metricRelabelings:
+{{ toYaml .Values.kubeApiServer.serviceMonitor.metricRelabelings | indent 6 }}
+{{- end }}
 {{- if .Values.kubeApiServer.relabelings }}
     relabelings:
 {{ toYaml .Values.kubeApiServer.relabelings | indent 6 }}
