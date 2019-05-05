@@ -14,6 +14,8 @@ service:
   nodePort: 0
   loadBalancerIP: ""
 
+hostNetwork: false
+
 rbac:
   # If true, create & use RBAC resources
   create: true
@@ -27,6 +29,12 @@ serviceAccount:
   # Reference to one or more secrets to be used when pulling images
   # ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
   imagePullSecrets: []
+
+prometheus:
+  monitor:
+    enabled: false
+    additionalLabels: {}
+    namespace: ""
 
 ## Specify if a Pod Security Policy for kube-state-metrics must be created
 ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/

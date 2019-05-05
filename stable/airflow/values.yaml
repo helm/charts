@@ -81,7 +81,7 @@ airflow:
     repository: puckel/docker-airflow
     ##
     ## image tag
-    tag: 1.10.0-4
+    tag: 1.10.2
     ##
     ## Image pull policy
     ## values: Always or IfNotPresent
@@ -146,6 +146,13 @@ airflow:
   ## Examples:
   ##   variables: '{ "environment": "dev" }'
   variables: {}
+
+  ## Add airflow ppols
+  ## This should be a json string with your pools in it
+  ## Examples:
+  ##   pools: '{ "example": { "description": "This is an example of a pool", "slots": 2 } }'
+  pools: {}
+
   ##
   ## Annotations for the Scheduler, Worker and Web pods
   podAnnotations: {}
@@ -409,6 +416,8 @@ dags:
     ##
     ## branch name, tag or sha1 to reset to
     ref: master
+    ## pre-created secret with key, key.pub and known_hosts file for private repos
+    secret: {}
   initContainer:
     ## Fetch the source code when the pods starts
     enabled: false
@@ -417,7 +426,7 @@ dags:
       ## docker-airflow image
       repository: alpine/git
       ## image tag
-      tag: 1.0.4
+      tag: 1.0.7
       ## Image pull policy
       ## values: Always or IfNotPresent
       pullPolicy: IfNotPresent

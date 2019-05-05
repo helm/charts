@@ -1,0 +1,24 @@
+apiVersion: velero.io/v1
+kind: VolumeSnapshotLocation
+metadata:
+  name: default
+  labels:
+    app.kubernetes.io/name: {{ include "velero.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "velero.chart" . }}
+spec:
+{{- with .Values.configuration }}
+{{- with .volumeSnapshotLocation }}
+  provider: {{ .name }}
+{{ with .config }}
+  config:
+  {{- with .region }}
+    region: {{ . }}
+  {{- end }}
+  {{- with .apitimeout }}
+    apiTimeout: {{ . }}
+  {{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
