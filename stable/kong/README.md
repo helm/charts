@@ -51,7 +51,7 @@ and their default values.
 | Parameter                      | Description                                                                      | Default             |
 | ------------------------------ | -------------------------------------------------------------------------------- | ------------------- |
 | image.repository               | Kong image                                                                       | `kong`              |
-| image.tag                      | Kong image version                                                               | `1.0.2`             |
+| image.tag                      | Kong image version                                                               | `1.1`               |
 | image.pullPolicy               | Image pull policy                                                                | `IfNotPresent`      |
 | image.pullSecrets              | Image pull secrets                                                               | `null`              |
 | replicaCount                   | Kong instance count                                                              | `1`                 |
@@ -81,6 +81,7 @@ and their default values.
 | proxy.type                     | k8s service type. Options: NodePort, ClusterIP, LoadBalancer                     | `NodePort`          |
 | proxy.loadBalancerSourceRanges | Limit proxy access to CIDRs if set and service type is `LoadBalancer`            | `[]`                |
 | proxy.loadBalancerIP           | To reuse an existing ingress static IP for the admin service                     |                     |
+| proxy.externalIPs              | IPs for which nodes in the cluster will also accept traffic for the proxy        | `[]`                |
 | proxy.ingress.enabled          | Enable ingress resource creation (works with proxy.type=ClusterIP)               | `false`             |
 | proxy.ingress.tls              | Name of secret resource, containing TLS secret                                   |                     |
 | proxy.ingress.hosts            | List of ingress hosts.                                                           | `[]`                |
@@ -140,13 +141,30 @@ Postgres is enabled by default.
 | env.cassandra_keyspace            | Cassandra keyspace                                                     | `kong`                |
 | env.cassandra_repl_factor         | Replication factor for the Kong keyspace                               | `2`                   |
 
-For complete list of Kong configurations please check https://getkong.org/docs/1.0.x/configuration/.
+
+All `kong.env` parameters can also accept a mapping instead of a value to ensure the parameters can be set through configmaps and secrets.
+
+An example :
+
+```yaml
+kong:
+  env:
+     pg_user: kong
+     pg_password:
+       valueFrom:
+         secretKeyRef:
+            key: kong
+            name: postgres
+```
+ 
+
+For complete list of Kong configurations please check https://getkong.org/docs/latest/configuration/.
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
 $ helm install stable/kong --name my-release \
-  --set=image.tag=1.0.0,env.database=cassandra,cassandra.enabled=true
+  --set=image.tag=1.1,env.database=cassandra,cassandra.enabled=true
 ```
 
 Alternatively, a YAML file that specifies the values for the above parameters

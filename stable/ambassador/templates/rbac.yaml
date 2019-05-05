@@ -18,11 +18,16 @@ rules:
     - namespaces
     - services
     - secrets
+    - endpoints
     verbs: ["get", "list", "watch"]
-  - apiGroups: [""]
+  {{- if .Values.pro.enabled }}
+  - apiGroups: ["getambassador.io"]
     resources:
-    - configmaps
-    verbs: ["create", "update", "patch", "get", "list", "watch"]
+    - filters
+    - ratelimits
+    - filterpolicies
+    verbs: ["get", "list", "watch"]
+  {{- end}}
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
 {{- if .Values.rbac.namespaced }}

@@ -3,6 +3,7 @@
 #
 # The 'opa' key embeds an OPA configuration file. See
 # https://www.openpolicyagent.org/docs/configuration.html for more details.
+# If no default config wanted just set opa: false
 opa:
   services:
     controller:
@@ -11,6 +12,10 @@ opa:
     service: controller
     name: "helm-kubernetes-quickstart"
   default_decision: "/helm_kubernetes_quickstart/main"
+
+# Setup the webhook using cert-manager
+certManager:
+  enabled: false
 
 # To enforce mutating policies, change to MutatingWebhookConfiguration.
 admissionControllerKind: ValidatingWebhookConfiguration
@@ -27,6 +32,13 @@ admissionControllerRules:
     apiGroups: ["*"]
     apiVersions: ["*"]
     resources: ["*"]
+
+# Controls a PodDisruptionBudget for the OPA pod. Suggested use if having opa
+# always running for admission control is important
+podDisruptionBudget:
+  enabled: false
+  minAvailable: 1
+# maxUnavailable: 1
 
 # The helm Chart will automatically generate a CA and server certificate for
 # the OPA. If you want to supply your own certificates, set the field below to
@@ -51,8 +63,13 @@ authz:
 
 # Docker image and tag to deploy.
 image: openpolicyagent/opa
-imageTag: 0.10.5
+imageTag: 0.10.7
 imagePullPolicy: IfNotPresent
+
+# Port to which the opa pod will bind itself
+# NOTE IF you use a different port make sure it maches the ones in the readinessProbe
+# and livenessProbe
+port: 443
 
 mgmt:
   enabled: true
@@ -60,18 +77,27 @@ mgmt:
   imageTag: 0.8
   imagePullPolicy: IfNotPresent
   extraArgs: []
+  resources: {}
   configmapPolicies:
+# NOTE IF you use these, remember to update the RBAC rules below to allow
+#      permissions to get, list, watch, patch and update configmaps
     enabled: false
     namespaces: [opa, kube-federation-scheduling-policy]
     requireLabel: true
   replicate:
-# NOTE IF you use these, remember to update the RBAC rules above to allow
+# NOTE IF you use these, remember to update the RBAC rules below to allow
 #      permissions to replicate these things
     cluster: []
 #     - [group/]version/resource
     namespace: []
 #     - [group/]version/resource
     path: kubernetes
+
+# Log level for OPA ('debug', 'info', 'error') (app default=info)
+logLevel: info
+
+# Log format for OPA ('text', 'json') (app default=text)
+logFormat: text
 
 # Number of OPA replicas to deploy. OPA maintains an eventually consistent
 # cache of policies and data. If you want high availability you can deploy two
@@ -119,6 +145,7 @@ sar:
   image: lachlanevenson/k8s-kubectl
   imageTag: latest
   imagePullPolicy: IfNotPresent
+  resources: {}
 
 # To control the liveness and readiness probes change the fields below.
 readinessProbe:

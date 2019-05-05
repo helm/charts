@@ -65,7 +65,7 @@ spec:
           {{- end }}
 
           env:
-          {{- if eq .Values.cloudProvider "aws" }}
+          {{- if and (eq .Values.cloudProvider "aws") (ne .Values.awsRegion "") }}
             - name: AWS_REGION
               value: "{{ .Values.awsRegion }}"
           {{- else if eq .Values.cloudProvider "spotinst" }}
@@ -150,7 +150,7 @@ spec:
       volumes:
         - name: ssl-certs
           hostPath:
-            path: {{ .Values.sslCertPath }}
+            path: {{ .Values.sslCertHostPath }}
         {{- if eq .Values.cloudProvider "gce" }}
         - name: cloudconfig
           hostPath:

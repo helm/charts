@@ -93,10 +93,10 @@ The following table lists the configurable parameters of the Minio chart and the
 | Parameter                  | Description                         | Default                                                 |
 |----------------------------|-------------------------------------|---------------------------------------------------------|
 | `image.repository`         | Image repository                    | `minio/minio`                                           |
-| `image.tag`                | Minio image tag. Possible values listed [here](https://hub.docker.com/r/minio/minio/tags/).| `RELEASE.2019-02-12T21-58-47Z`|
+| `image.tag`                | Minio image tag. Possible values listed [here](https://hub.docker.com/r/minio/minio/tags/).| `RELEASE.2019-04-09T01-22-30Z`|
 | `image.pullPolicy`         | Image pull policy                   | `IfNotPresent`                                          |
 | `mcImage.repository`       | Client image repository             | `minio/mc`                                              |
-| `mcImage.tag`              | mc image tag. Possible values listed [here](https://hub.docker.com/r/minio/mc/tags/).| `RELEASE.2019-02-13T19-48-27Z`|
+| `mcImage.tag`              | mc image tag. Possible values listed [here](https://hub.docker.com/r/minio/mc/tags/).| `RELEASE.2019-04-03T17-59-57Z`|
 | `mcImage.pullPolicy`       | mc Image pull policy                | `IfNotPresent`                                          |
 | `ingress.enabled`          | Enables Ingress                     | `false`                                                 |
 | `ingress.annotations`      | Ingress annotations                 | `{}`                                                    |
@@ -148,6 +148,7 @@ The following table lists the configurable parameters of the Minio chart and the
 | `s3gateway.replicas`       | Number of s3 gateway instances to run in parallel | `4` |
 | `s3gateway.serviceEndpoint`| Endpoint to the S3 compatible service | `""` |
 | `azuregateway.enabled`     | Use minio as an [azure gateway](https://docs.minio.io/docs/minio-gateway-for-azure)| `false`  |
+| `azuregateway.replicas`    | Number of azure gateway instances to run in parallel | `4` |
 | `gcsgateway.enabled`       | Use minio as a [Google Cloud Storage gateway](https://docs.minio.io/docs/minio-gateway-for-gcs)| `false` |
 | `gcsgateway.gcsKeyJson`    | credential json file of service account key | `""` |
 | `gcsgateway.projectId`     | Google cloud project id             | `""` |

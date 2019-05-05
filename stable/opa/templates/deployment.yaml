@@ -20,6 +20,8 @@ spec:
         - name: initpolicy
           image: {{ .Values.mgmt.image }}:{{ .Values.mgmt.imageTag }}
           imagePullPolicy: {{ .Values.mgmt.imagePullPolicy }}
+          resources:
+{{ toYaml .Values.mgmt.resources | indent 12 }}
           command:
           - /bin/sh
           - -c
@@ -41,13 +43,19 @@ spec:
         - name: opa
           image: {{ .Values.image }}:{{ .Values.imageTag }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
           args:
             - "run"
             - "--server"
+{{- if .Values.opa }}
             - "--config-file=/config/config.yaml"
+{{- end }}
             - "--tls-cert-file=/certs/tls.crt"
             - "--tls-private-key-file=/certs/tls.key"
-            - "--addr=0.0.0.0:443"
+            - "--addr=0.0.0.0:{{ .Values.port }}"
+            - "--log-level={{ .Values.logLevel }}"
+            - "--log-format={{ .Values.logFormat }}"
 {{- if .Values.authz.enabled }}
             - "--authentication=token"
             - "--authorization=basic"
@@ -61,9 +69,11 @@ spec:
             - name: certs
               readOnly: true
               mountPath: /certs
+{{- if .Values.opa }}
             - name: config
               readOnly: true
               mountPath: /config
+{{- end }}
 {{- if .Values.authz.enabled }}
             - name: authz
               readOnly: true
@@ -73,6 +83,8 @@ spec:
         - name: mgmt
           image: {{ .Values.mgmt.image }}:{{ .Values.mgmt.imageTag }}
           imagePullPolicy: {{ .Values.mgmt.imagePullPolicy }}
+          resources:
+{{ toYaml .Values.mgmt.resources | indent 12 }}
           args:
 {{- if .Values.authz.enabled }}
             - --opa-auth-token-file=/authz/mgmt-token
@@ -84,11 +96,11 @@ spec:
             - --policies={{ .Values.mgmt.configmapPolicies.namespaces | join "," }}
             - --require-policy-label={{ .Values.mgmt.configmapPolicies.requireLabel }}
 {{- end }}
-{{- if gt (len .Values.mgmt.replicate.namespace) 0 }}
-            - --replicate={{ .Values.mgmt.replicate.namespace | join ","}}
+{{- range .Values.mgmt.replicate.namespace }}
+            - --replicate={{ . }}
 {{- end }}
-{{- if gt (len .Values.mgmt.replicate.cluster) 0 }}
-            - --replicate-cluster={{ .Values.mgmt.replicate.cluster | join ","}}
+{{- range .Values.mgmt.replicate.cluster }}
+            - --replicate-cluster={{ . }}
 {{- end }}
 {{- if .Values.authz.enabled }}
           volumeMounts:
@@ -101,6 +113,8 @@ spec:
         - name: sarproxy
           image: {{ .Values.sar.image }}:{{ .Values.sar.imageTag }}
           imagePullPolicy: {{ .Values.sar.imagePullPolicy }}
+          resources:
+{{ toYaml .Values.sar.resources | indent 12 }}
           command:
             - kubectl
             - proxy
@@ -115,9 +129,11 @@ spec:
         - name: certs
           secret:
             secretName: {{ template "opa.fullname" . }}-cert
+{{- if .Values.opa }}
         - name: config
           secret:
             secretName: {{ template "opa.fullname" . }}-config
+{{- end }}
 {{- if .Values.authz.enabled }}
         - name: authz
           emptyDir: {}
@@ -126,5 +142,3 @@ spec:
 {{ toYaml .Values.nodeSelector | indent 8 }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
-      resources:
-{{ toYaml .Values.resources | indent 8 }}

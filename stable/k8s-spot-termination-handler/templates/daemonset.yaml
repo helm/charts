@@ -32,6 +32,10 @@ spec:
             - name: DETACH_ASG
               value: {{ . | quote }}
             {{- end }}
+            {{- with .Values.gracePeriod }}
+            - name: GRACE_PERIOD
+              value: {{ . | quote }}
+            {{- end }}
             - name: POLL_INTERVAL
               value: {{ .Values.pollInterval | quote }}
             - name: CLUSTER
@@ -57,4 +61,7 @@ spec:
     {{- with .Values.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- if .Values.priorityClassName }} 
+      priorityClassName: {{ .Values.priorityClassName }}
     {{- end }}

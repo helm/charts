@@ -1,7 +1,7 @@
 apiVersion: v1
-version: 0.8.3
+version: 0.8.5
 name: openebs
-appVersion: 0.8.1
+appVersion: 0.8.2
 description: Containerized Storage for Containers
 icon: https://raw.githubusercontent.com/openebs/chitrakala/master/OpenEBS%20logo/logo-square.png
 home: http://www.openebs.io/
