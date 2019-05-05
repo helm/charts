@@ -54,11 +54,8 @@ image:
 tolerations: []
 
 extraArgs:
-  # log verbosity of k8s klog 0-5. 0 minimum, 4 debug, 5 trace
-  v: 1
-  # logs at or above this threshold go to stderr (default 2)
-  stderrthreshold: warning
-  # log to standard error instead of files
+  v: 4
+  stderrthreshold: info
   logtostderr: true
   # write-status-configmap: true
   # leader-elect: true
