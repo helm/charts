@@ -23,7 +23,7 @@ autoscalingGroupsnamePrefix: []
 
 # Required if cloudProvider=aws
 awsRegion: us-east-1
-awsAccessKeyId: ""
+awsAccessKeyID: ""
 awsSecretAccessKey: ""
 
 # Required if cloudProvider=azure

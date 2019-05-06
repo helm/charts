@@ -41,8 +41,7 @@ Auto-discovery finds ASGs tags as below and automatically manages them based on 
 2) verify the [IAM Permissions](#iam)
 3) set `autoDiscovery.clusterName=<YOUR CLUSTER NAME>`
 4) set `awsRegion=<YOUR AWS REGION>`
-5) set `awsAccessKeyId=<YOUR AWS KEY ID>` if you want to use iam user instead instance role
-6) set `awsSecretAccessKey=<YOUR AWS SECRET KEY>` if you want to use iam user instead instance role
+5) set `awsAccessKeyID=<YOUR AWS KEY ID>` and `awsSecretAccessKey=<YOUR AWS SECRET KEY>` if you want to [use AWS credentials directly instead of an instance role](https://github.com/kubernetes/autoscaler/blob/5ac706fdfa5601348f33d5b634e62de6655bb9bf/cluster-autoscaler/cloudprovider/aws/README.md#using-aws-credentials)
 
 ```console
 $ helm install stable/cluster-autoscaler --name my-release --set autoDiscovery.clusterName=<CLUSTER NAME>
@@ -124,8 +123,8 @@ Parameter | Description | Default
 `autoscalingGroups[].maxSize` | maximum autoscaling group size | None. Required unless `autoDiscovery.enabled=true`
 `autoscalingGroups[].minSize` | minimum autoscaling group size | None. Required unless `autoDiscovery.enabled=true`
 `awsRegion` | AWS region (required if `cloudProvider=aws`) | `us-east-1`
-`awsAccessKeyId` | AWS access key id (if AWS user keys used) | `""`
-`awsSecretAccessKey` | AWS access secret key (if AWS user keys used) | `""`
+`awsAccessKeyID` | AWS access key ID ([if AWS user keys used](https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/cloudprovider/aws/README.md#using-aws-credentials)) | `""`
+`awsSecretAccessKey` | AWS access secret key ([if AWS user keys used](https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/cloudprovider/aws/README.md#using-aws-credentials)) | `""`
 `autoscalingGroupsnamePrefix[].name` | GCE MIG name prefix (the full name is invalid) | None. Required for `cloudProvider=gce`
 `autoscalingGroupsnamePrefix[].maxSize` | maximum MIG size | None. Required for `cloudProvider=gce`
 `autoscalingGroupsnamePrefix[].minSize` | minimum MIG size |  None. Required for `cloudProvider=gce`

@@ -68,14 +68,14 @@ spec:
           {{- if and (eq .Values.cloudProvider "aws") (ne .Values.awsRegion "") }}
             - name: AWS_REGION
               value: "{{ .Values.awsRegion }}"
-            {{- if not ( empty .Values.awsAccessKeyId) }}
+            {{- if .Values.awsAccessKeyID }}
             - name: AWS_ACCESS_KEY_ID
               valueFrom:
                 secretKeyRef:
                   key: AwsAccessKeyId
                   name: {{ template "cluster-autoscaler.fullname" . }}
             {{- end }}
-            {{- if not ( empty .Values.awsSecretAccessKey) }}
+            {{- if .Values.awsSecretAccessKey }}
             - name: AWS_SECRET_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
