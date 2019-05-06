@@ -96,6 +96,10 @@ spec:
             - name: admin
               containerPort: 8877
           env:
+            - name: HOST_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
             {{- if .Values.prometheusExporter.enabled }}
             - name: STATSD_ENABLED
               value: "true"
@@ -166,7 +170,7 @@ spec:
             value: "{{ .Values.pro.ports.ratelimitDebug }}"
           - name: APP_LOG_LEVEL
             value: "{{ .Values.pro.logLevel  }}"
-          - name: AMBASSADOR_LICENSE_KEY 
+          - name: AMBASSADOR_LICENSE_KEY
           {{- if .Values.pro.licenseKey.secret }}
             valueFrom:
               secretKeyRef:
