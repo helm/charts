@@ -82,7 +82,7 @@ You can also add generic environment variables such as proxy or private pypi:
 ```yaml
 airflow:
   config:
-    AIRFLOW__CORE__EXPOSE_CONFIG: True
+    AIRFLOW__WEBSERVER__EXPOSE_CONFIG: True
     PIP_INDEX_URL: http://pypi.mycompany.com/
     PIP_TRUSTED_HOST: pypi.mycompany.com
     HTTP_PROXY: http://proxy.mycompany.com:1234
