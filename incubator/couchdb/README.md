@@ -124,6 +124,8 @@ A variety of other parameters are also configurable. See the comments in the
 | `persistentVolume.storageClass` | Default for the Kube cluster           |
 | `podManagementPolicy`           | Parallel                               |
 | `affinity`                      |                                        |
+| `livenessProbe`                 |                                        |
+| `readinessProbe`                |                                        |
 | `resources`                     |                                        |
 | `service.annotations`           |                                        |
 | `service.enabled`               | true                                   |
