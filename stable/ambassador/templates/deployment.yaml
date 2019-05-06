@@ -24,6 +24,9 @@ spec:
       labels:
         app.kubernetes.io/name: {{ include "ambassador.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
+      {{- if .Values.podLabels }}
+        {{- toYaml .Values.podLabels | nindent 8 }}
+      {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
       {{- if .Values.podAnnotations }}
@@ -53,6 +56,10 @@ spec:
               path: ambassador-config.yaml
         {{- end }}
       {{- with .Values.volumes }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.initContainers }}
+      initContainers:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       containers:
