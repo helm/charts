@@ -109,7 +109,7 @@ spec:
         - name: REDIS_REPLICATION_MODE
           value: slave
         - name: REDIS_MASTER_HOST
-          value: {{ template "redis.fullname" . }}-master-0.{{ template "redis.fullname" . }}-headless.{{ .Release.Namespace }}.svc.cluster.local
+          value: {{ template "redis.fullname" . }}-master-0.{{ template "redis.fullname" . }}-headless.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}
         - name: REDIS_PORT
           value: {{ .Values.redisPort | quote }}
         - name: REDIS_MASTER_PORT_NUMBER
