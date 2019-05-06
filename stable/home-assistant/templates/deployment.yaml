@@ -182,15 +182,17 @@ spec:
         - name: vscode
           image: "{{ .Values.vscode.image.repository }}:{{ .Values.vscode.image.tag }}"
           imagePullPolicy: {{ .Values.vscode.image.pullPolicy }}
-          workingDir: {{ .Values.vscode.basepath }}
+          workingDir: {{ .Values.vscode.hassConfig }}
           args:
             - --allow-http
             - --port={{ .Values.vscode.service.port }}
             {{- if not (.Values.vscode.password) }}
             - --no-auth
             {{- end }}
-            - --extensions-dir=/config/vscode
-            - --user-data-dir=/config/vscode
+            {{- if .Values.vscode.vscodePath }}
+            - --extensions-dir={{ .Values.vscode.vscodePath }}
+            - --user-data-dir={{ .Values.vscode.vscodePath }}
+            {{- end }}
           ports:
             - name: http
               containerPort: {{ .Values.vscode.service.port }}

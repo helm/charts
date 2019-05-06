@@ -180,8 +180,12 @@ vscode:
 
   ## VSCode password
   # password:
+
   ## path where the home assistant configuration is stored
-  basepath: /config
+  hassConfig: /config
+
+  ## path where the VS Code data should reside
+  vscodePath: /config/.vscode
 
   ## Additional hass-vscode container environment variable
   ## For instance to add a http_proxy
