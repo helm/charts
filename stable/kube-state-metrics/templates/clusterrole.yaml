@@ -22,13 +22,13 @@ rules:
   verbs: ["list", "watch"]
 {{ end -}}
 {{ if .Values.collectors.daemonsets }}
-- apiGroups: ["extensions"]
+- apiGroups: ["extensions", "apps"]
   resources:
   - daemonsets
   verbs: ["list", "watch"]
 {{ end -}}
 {{ if .Values.collectors.deployments }}
-- apiGroups: ["extensions"]
+- apiGroups: ["extensions", "apps"]
   resources:
   - deployments
   verbs: ["list", "watch"]
@@ -94,7 +94,7 @@ rules:
   verbs: ["list", "watch"]
 {{ end -}}
 {{ if .Values.collectors.replicasets }}
-- apiGroups: ["extensions"]
+- apiGroups: ["extensions", "apps"]
   resources:
   - replicasets
   verbs: ["list", "watch"]
