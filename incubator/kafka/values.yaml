@@ -26,6 +26,9 @@ resources: {}
   #   memory: 1024Mi
 kafkaHeapOptions: "-Xmx1G -Xms1G"
 
+## Optional Container Security context
+securityContext: {}
+
 ## The StatefulSet Update Strategy which Kafka will use when changes are applied.
 ## ref: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#update-strategies
 updateStrategy:
