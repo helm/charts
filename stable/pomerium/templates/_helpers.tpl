@@ -46,7 +46,6 @@ If release name contains chart name it will be used as a full name.
 {{- $name := default .Chart.Name .Values.nameOverride -}}
 {{- if contains $name .Release.Name -}}
 {{- printf "%s-proxy" .Release.Name | trunc 63 | trimSuffix "-" -}}
-{{- .Release.Name | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
 {{- printf "%s-%s-proxy" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
@@ -61,7 +60,6 @@ If release name contains chart name it will be used as a full name.
 {{- $name := default .Chart.Name .Values.nameOverride -}}
 {{- if contains $name .Release.Name -}}
 {{- printf "%s-authorize" .Release.Name | trunc 63 | trimSuffix "-" -}}
-{{- .Release.Name | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
 {{- printf "%s-%s-authorize" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
@@ -76,7 +74,6 @@ If release name contains chart name it will be used as a full name.
 {{- $name := default .Chart.Name .Values.nameOverride -}}
 {{- if contains $name .Release.Name -}}
 {{- printf "%s-authenticate" .Release.Name | trunc 63 | trimSuffix "-" -}}
-{{- .Release.Name | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
 {{- printf "%s-%s-authenticate" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
