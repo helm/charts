@@ -25,10 +25,10 @@ spec:
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: {{ .Release.Name }}
         heritage: {{ .Release.Service }}
-{{- if .Values.anchoreEnterpriseUi.annotations }}
+      {{- with .Values.anchoreEnterpriseUi.annotations }}
       annotations:
-{{ toYaml .Values.anchoreEnterpriseUi.annotations | indent 8 }}
-{{- end }}
+        {{ toYaml .Values.anchoreEnterpriseUi.annotations | nindent 8 | trim }}
+      {{- end }}
     spec:
       volumes:
       - name: anchore-license
@@ -45,10 +45,10 @@ spec:
         imagePullPolicy: {{ .Values.anchoreEnterpriseUi.imagePullPolicy }}
         env:
         {{- with .Values.anchoreGlobal.extraEnv }}
-        {{- toYaml . | nindent 8 }}
+        {{- toYaml . | nindent 8 | trim }}
         {{- end }}
         {{- with .Values.anchoreEnterpriseUi.extraEnv }}
-        {{- toYaml . | nindent 8 }}
+        {{- toYaml . | nindent 8 | trim }}
         {{- end }}
         {{- if and (index .Values "anchore-ui-redis" "externalEndpoint") (not (index .Values "anchore-ui-redis" "enabled")) }}
         - name: ANCHORE_REDIS_URI
@@ -113,19 +113,19 @@ spec:
           failureThreshold: 3
           successThreshold: 1
         resources:
-{{ toYaml .Values.anchoreEnterpriseUi.resources | indent 10 }}
-    {{- if .Values.anchoreEnterpriseUi.nodeSelector }}
+          {{ toYaml .Values.anchoreEnterpriseUi.resources | nindent 10 | trim }}
+      {{- with .Values.anchoreEnterpriseUi.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.anchoreEnterpriseUi.nodeSelector | indent 8 }}
-    {{- end }}
-    {{- with .Values.anchoreEnterpriseUi.affinity }}
+        {{ toYaml .Values.anchoreEnterpriseUi.nodeSelector | nindent 8 | trim }}
+      {{- end }}
+      {{- with .Values.anchoreEnterpriseUi.affinity }}
       affinity:
-{{ toYaml . | indent 8 }}
-    {{- end }}
-    {{- with .Values.anchoreEnterpriseUi.tolerations }}
+        {{ toYaml . | nindent 8 | trim }}
+      {{- end }}
+      {{- with .Values.anchoreEnterpriseUi.tolerations }}
       tolerations:
-{{ toYaml . | indent 8 }}
-    {{- end }}
+        {{ toYaml . | nindent 8 | trim }}
+     {{- end }}
 
 ---
 apiVersion: v1
@@ -138,9 +138,9 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-  {{- if .Values.anchoreEnterpriseUi.service.annotations }}
+  {{- with .Values.anchoreEnterpriseUi.service.annotations }}
   annotations:
-{{ toYaml .Values.anchoreEnterpriseUi.service.annotations | indent 4 }}
+    {{ toYaml . | nindent 4 | trim }}
   {{- end }}
 spec:
   sessionAffinity: {{ .Values.anchoreEnterpriseUi.service.sessionAffinity }}

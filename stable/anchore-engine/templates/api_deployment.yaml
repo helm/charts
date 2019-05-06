@@ -20,10 +20,10 @@ spec:
       labels:
         app: {{ template "anchore-engine.fullname" . }}
         component: {{ $component }}
-{{- if .Values.anchoreApi.annotations }}
+      {{- with .Values.anchoreApi.annotations }}
       annotations:
-{{ toYaml .Values.anchoreApi.annotations | indent 8 }}
-{{- end }}
+        {{ toYaml . | nindent 8 | trim }}
+      {{- end }}
     spec:
       volumes:
         - name: config-volume
@@ -66,10 +66,10 @@ spec:
             name: {{ template "anchore-engine.fullname" . }}
         env:
         {{- with .Values.anchoreGlobal.extraEnv }}
-        {{- toYaml . | nindent 8 }}
+        {{- toYaml . | nindent 8 | trim }}
         {{- end }}
         {{- with .Values.anchoreApi.extraEnv }}
-        {{- toYaml . | nindent 8 }}
+        {{- toYaml . | nindent 8 | trim }}
         {{- end }}
         - name: ANCHORE_POD_NAME
           valueFrom:
@@ -105,7 +105,7 @@ spec:
           failureThreshold: 3
           successThreshold: 1
         resources:
-{{ toYaml .Values.anchoreApi.resources | indent 10 }}
+          {{ toYaml .Values.anchoreApi.resources | nindent 10 | trim }}
 
       {{- if and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseRbac.enabled }}
       - name: {{ .Chart.Name }}-rbac-manager
@@ -120,10 +120,10 @@ spec:
             name: {{ template "anchore-engine.fullname" . }}
         env:
         {{- with .Values.anchoreGlobal.extraEnv }}
-        {{- toYaml . | nindent 10 }}
+        {{- toYaml . | nindent 10 | trim }}
         {{- end }}
         {{- with .Values.anchoreEnterpriseRbac.extraEnv }}
-        {{- toYaml . | nindent 10 }}
+        {{- toYaml . | nindent 10 | trim }}
         {{- end }}
         - name: ANCHORE_POD_NAME
           valueFrom:
@@ -162,7 +162,7 @@ spec:
           failureThreshold: 3
           successThreshold: 1
         resources:
-{{ toYaml .Values.anchoreEnterpriseRbac.managerResources | indent 10 }}
+          {{ toYaml .Values.anchoreEnterpriseRbac.managerResources | nindent 10 | trim }}
 
       - name: {{ .Chart.Name }}-rbac-authorizer
         image: {{ .Values.anchoreEnterpriseGlobal.image }}
@@ -176,10 +176,10 @@ spec:
             name: {{ template "anchore-engine.fullname" . }}
         env:
         {{- with .Values.anchoreGlobal.extraEnv }}
-        {{- toYaml . | nindent 10 }}
+        {{- toYaml . | nindent 10 | trim }}
         {{- end }}
         {{- with .Values.anchoreEnterpriseRbac.extraEnv }}
-        {{- toYaml . | nindent 10 }}
+        {{- toYaml . | nindent 10 | trim }}
         {{- end }}
         - name: ANCHORE_POD_NAME
           valueFrom:
@@ -222,7 +222,7 @@ spec:
           failureThreshold: 3
           successThreshold: 1
         resources:
-{{ toYaml .Values.anchoreEnterpriseRbac.authResources | indent 10 }}
+          {{ toYaml .Values.anchoreEnterpriseRbac.authResources | nindent 10 | trim }}
       {{- end }}
 
       {{- if and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseReports.enabled }}
@@ -280,20 +280,20 @@ spec:
           failureThreshold: 3
           successThreshold: 1
         resources:
-{{ toYaml .Values.anchoreEnterpriseReports.resources | indent 10 }}
-        {{- end }}
+          {{ toYaml .Values.anchoreEnterpriseReports.resources | nindent 10 | trim }}
+      {{- end }}
 
-      {{- if .Values.anchoreApi.nodeSelector }}
+      {{- with .Values.anchoreApi.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.anchoreApi.nodeSelector | indent 8 }}
+        {{ toYaml . | nindent 8 | trim }}
       {{- end }}
       {{- with .Values.anchoreApi.affinity }}
       affinity:
-{{ toYaml . | indent 8 }}
+        {{ toYaml . | nindent 8 | trim }}
       {{- end }}
       {{- with .Values.anchoreApi.tolerations }}
       tolerations:
-{{ toYaml . | indent 8 }}
+        {{ toYaml . | nindent 8 | trim }}
       {{- end }}
 
 ---
@@ -307,9 +307,9 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     component: {{ $component }}
-  {{- if .Values.anchoreApi.service.annotations }}
+  {{- with .Values.anchoreApi.service.annotations }}
   annotations:
-{{ toYaml .Values.anchoreApi.service.annotations | indent 4 }}
+    {{ toYaml . | nindent 4 | trim }}
   {{- end }}
 spec:
   type: {{ .Values.anchoreApi.service.type }}
@@ -318,18 +318,18 @@ spec:
       port: {{ .Values.anchoreApi.service.port }}
       targetPort: {{ .Values.anchoreApi.service.port }}
       protocol: TCP
-  {{- if and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseRbac.enabled }}
+    {{- if and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseRbac.enabled }}
     - name: anchore-rbac-manager
       port: {{ .Values.anchoreEnterpriseRbac.service.apiPort }}
       targetPort: {{ .Values.anchoreEnterpriseRbac.service.apiPort }}
       protocol: TCP
-  {{- end }}
-  {{- if and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseRbac.enabled }}
+    {{- end }}
+    {{- if and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseRbac.enabled }}
     - name: reports-api
       port: {{ .Values.anchoreEnterpriseReports.service.port }}
       targetPort: {{ .Values.anchoreEnterpriseReports.service.port }}
       protocol: TCP
-  {{- end }}
+    {{- end }}
   selector:
     app: {{ template "anchore-engine.fullname" . }}
     component: {{ $component }}

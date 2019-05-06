@@ -20,10 +20,10 @@ spec:
       labels:
         app: "{{ template "anchore-engine.fullname" . }}"
         component: {{ $component }}
-{{- if .Values.anchoreAnalyzer.annotations }}
+      {{- with .Values.anchoreAnalyzer.annotations }}
       annotations:
-{{ toYaml .Values.anchoreAnalyzer.annotations | indent 8 }}
-{{- end }}
+        {{ toYaml . | nindent 8 | trim }}
+      {{- end }}
     spec:
       containers:
       {{- if .Values.cloudsql.enabled  }}
@@ -45,10 +45,10 @@ spec:
             name: {{ template "anchore-engine.fullname" . }}
         env:
         {{- with .Values.anchoreGlobal.extraEnv }}
-        {{- toYaml . | nindent 8 }}
+        {{- toYaml . | nindent 8 | trim }}
         {{- end }}
         {{- with .Values.anchoreAnalyzer.extraEnv }}
-        {{- toYaml . | nindent 8 }}
+        {{- toYaml . | nindent 8 | trim }}
         {{- end }}
         - name: ANCHORE_POD_NAME
           valueFrom:
@@ -86,7 +86,7 @@ spec:
           failureThreshold: 3
           successThreshold: 1
         resources:
-{{ toYaml .Values.anchoreAnalyzer.resources | indent 10 }}
+          {{ toYaml .Values.anchoreAnalyzer.resources | nindent 10 | trim }}
       volumes:
         - name: config-volume
           configMap:
@@ -97,16 +97,16 @@ spec:
             secretName: {{ .Values.anchoreGlobal.internalServicesSsl.certSecret }}
         {{- end }}
         - name: {{ $component }}-scratch
-{{ toYaml .Values.anchoreGlobal.scratchVolume.details | indent 10 }}
-    {{- if .Values.anchoreAnalyzer.nodeSelector }}
+          {{ toYaml .Values.anchoreGlobal.scratchVolume.details | indent 10 | trim }}
+      {{- with .Values.anchoreAnalyzer.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.anchoreAnalyzer.nodeSelector | indent 8 }}
-    {{- end }}
-    {{- with .Values.anchoreAnalyzer.affinity }}
+        {{ toYaml . | nindent 8 | trim }}
+      {{- end }}
+      {{- with .Values.anchoreAnalyzer.affinity }}
       affinity:
-{{ toYaml . | indent 8 }}
-    {{- end }}
-    {{- with .Values.anchoreAnalyzer.tolerations }}
+        {{ toYaml . | nindent 8 | trim }}
+      {{- end }}
+      {{- with .Values.anchoreAnalyzer.tolerations }}
       tolerations:
-{{ toYaml . | indent 8 }}
-    {{- end }}
+        {{ toYaml . | nindent 8 | trim }}
+      {{- end }}

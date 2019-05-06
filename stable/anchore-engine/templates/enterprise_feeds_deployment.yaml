@@ -21,17 +21,17 @@ spec:
       labels:
         app: {{ template "anchore-engine.fullname" . }}
         component: {{ $component }}
-{{- if .Values.anchoreEnterpriseFeeds.annotations }}
+      {{- with .Values.anchoreEnterpriseFeeds.annotations }}
       annotations:
-{{ toYaml .Values.anchoreEnterpriseFeeds.annotations | indent 8 }}
-{{- end }}
+        {{ toYaml . | nindent 8 | trim }}
+      {{- end }}
     spec:
       volumes:
         - name: config-volume
           configMap:
             name: {{ template "anchore-engine.enterprise-feeds.fullname" . }}
         - name: {{ $component}}-scratch
-{{ toYaml .Values.anchoreGlobal.scratchVolume.details | indent 10 }}
+          {{ toYaml .Values.anchoreGlobal.scratchVolume.details | nindent 10 | trim }}
         - name: anchore-license
           secret:
             secretName: {{ .Values.anchoreEnterpriseGlobal.licenseSecretName }}
@@ -58,10 +58,10 @@ spec:
             name: {{ default (include "anchore-engine.fullname" .) .Values.anchoreGlobal.existingSecret }}
         env:
         {{- with .Values.anchoreGlobal.extraEnv }}
-        {{- toYaml . | nindent 8 }}
+        {{- toYaml . | nindent 8 | trim }}
         {{- end }}
         {{- with .Values.anchoreEnterpriseFeeds.extraEnv }}
-        {{- toYaml . | nindent 8 }}
+        {{- toYaml . | nindent 8 | trim }}
         {{- end }}
         {{- if and (index .Values "anchore-feeds-db" "externalEndpoint") (not (index .Values "anchore-feeds-db" "enabled")) }}
         - name: ANCHORE_DB_HOST
@@ -108,19 +108,19 @@ spec:
           failureThreshold: 3
           successThreshold: 1
         resources:
-{{ toYaml .Values.anchoreEnterpriseFeeds.resources | indent 10 }}
-    {{- if .Values.anchoreEnterpriseFeeds.nodeSelector }}
+          {{ toYaml .Values.anchoreEnterpriseFeeds.resources | nindent 10 | trim }}
+      {{- with .Values.anchoreEnterpriseFeeds.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.anchoreEnterpriseFeeds.nodeSelector | indent 8 }}
-    {{- end }}
-    {{- with .Values.anchoreEnterpriseFeeds.affinity }}
+        {{ toYaml .Values.anchoreEnterpriseFeeds.nodeSelector | nindent 8 | trim }}
+      {{- end }}
+      {{- with .Values.anchoreEnterpriseFeeds.affinity }}
       affinity:
-{{ toYaml . | indent 8 }}
-    {{- end }}
-    {{- with .Values.anchoreEnterpriseFeeds.tolerations }}
+        {{ toYaml . | nindent 8 | trim }}
+      {{- end }}
+      {{- with .Values.anchoreEnterpriseFeeds.tolerations }}
       tolerations:
-{{ toYaml . | indent 8 }}
-    {{- end }}
+        {{ toYaml . | nindent 8 | trim }}
+      {{- end }}
 
 ---
 apiVersion: v1
@@ -133,9 +133,9 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     component: {{ $component }}
-  {{- if .Values.anchoreEnterpriseFeeds.service.annotations }}
+  {{- with .Values.anchoreEnterpriseFeeds.service.annotations }}
   annotations:
-{{ toYaml .Values.anchoreEnterpriseFeeds.service.annotations | indent 4 }}
+    {{ toYaml . | nindent 4 | trim }}
   {{- end }}
 spec:
   type: {{ .Values.anchoreEnterpriseFeeds.service.type }}
