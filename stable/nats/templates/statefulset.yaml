@@ -92,7 +92,7 @@ spec:
         - gnatsd
         args:
         - -c
-        - /opt/bitnami/nats/gnatsd.conf
+        - /opt/nats/gnatsd.conf
         {{- if .Values.extraArgs }}
 {{ toYaml .Values.extraArgs | indent 8 }}
         {{- end }}
@@ -129,7 +129,7 @@ spec:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
           - name: config
-            mountPath: /opt/bitnami/nats/gnatsd.conf
+            mountPath: /opt/nats/gnatsd.conf
             subPath: gnatsd.conf
         {{- if .Values.sidecars }}
 {{ toYaml .Values.sidecars | indent 6 }}
