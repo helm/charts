@@ -19,8 +19,12 @@ spec:
         app.kubernetes.io/name: {{ include "honeydipper.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
-      {{- with .Values.daemon.spec }}
-      {{- toYaml . | nindent 6 }}
+      {{- with .Values.daemon.dnsConfig }}
+      dnsConfig:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.daemon.serviceAccountName }}
+      serviceAccountName: "{{ . }}"
       {{- end }}
       containers:
         {{- if .Values.drivers.redis.local }}

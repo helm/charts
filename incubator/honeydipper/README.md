@@ -24,7 +24,8 @@ The following options are supported . See [values.yaml](./values.yaml) for more 
 
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
-| daemon.spec | Additional pod spec settings for daemon deploy, can be anything other than `containers`, `nodeSelector`, `affinity`, `tolerations` or `volumes` | |
+| daemon.dnsConfig | dnsConfig specifies the DNS parameters of the pod. Parameters specified here will be merged to the generated DNS configuration based on DNSPolicy | |
+| daemon.serviceAccountName | name of the ServiceAccount to use to run this pod, More info: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/ | |
 | daemon.replicaCount | The number of replicas of daemons to start | 1 |
 | daemon.image.repository | The docker image for Honeydipper daemon | `honeydipper/honeydipper` |
 | daemon.image.tag | The version tag of the docker image to use | `latest` |

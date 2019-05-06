@@ -9,8 +9,11 @@ fullnameOverride: ""
 
 # daemon is used to specify the settings for the daemon
 daemon:
-  # spec is used to create the container spec in the manifest file
-  spec: {}
+  # dnsConfig specifies the DNS parameters of the pod. Parameters specified here will be merged to the generated DNS configuration based on DNSPolicy.
+  dnsConfig: {}
+
+  # serviceAccountName is the name of the ServiceAccount to use to run this pod. More info: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
+  serviceAccountName: ""
 
   # replicaCount specifies how many replica daemon should be running
   replicaCount: 1
