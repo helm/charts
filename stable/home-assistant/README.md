@@ -96,6 +96,28 @@ The following tables lists the configurable parameters of the Home Assistant cha
 | `configurator.service.externalIPs`      | External IPs for the configurator UI | `[]` |
 | `configurator.service.loadBalancerIP`   | Loadbalancer IP for the configurator UI | `` |
 | `configurator.service.loadBalancerSourceRanges`   | Loadbalancer client IP restriction range for the configurator UI | `[]` |
+| `vscode.enabled`                  | Enable the optional [VS Code Server Sidecar](https://github.com/cdr/code-server) | `false` |
+| `vscode.image.repository`         | Image repository | `codercom/code-server` |
+| `vscode.image.tag`                | Image tag | `1.939`|
+| `vscode.image.pullPolicy`         | Image pull policy | `IfNotPresent` |
+| `vscode.basepath`                 | Base path of the home assistant configuration files | `/config` |
+| `vscode.password`                 | If this is set, will require a password to access the VS Code Server UI | `` |
+| `vscode.extraEnv`                 | Extra ENV vars to pass to the configuration UI | `{}` |
+| `vscode.ingress.enabled`          | Enables Ingress for the VS Code UI | `false` |
+| `vscode.ingress.annotations`      | Ingress annotations for the VS Code UI | `{}` |
+| `vscode.ingress.hosts`            | Ingress accepted hostnames for the VS Code UI | `chart-example.local` |
+| `vscode.ingress.tls`              | Ingress TLS configuration for the VS Code UI | `[]` |
+| `vscode.resources`                | CPU/Memory resource requests/limits for the VS Code UI | `{}` |
+| `vscode.securityContext`          | Security context to be added to hass-vscode pods for the VS Code UI | `{}` |
+| `vscode.service.type`             | Kubernetes service type for the VS Code UI | `ClusterIP` |
+| `vscode.service.port`             | Kubernetes port where the vscode UI is exposed| `80` |
+| `vscode.service.nodePort`         | nodePort to listen on for the VS Code UI | `` |
+| `vscode.service.annotations`      | Service annotations for the VS Code UI | `{}` |
+| `vscode.service.labels`           | Service labels to use for the VS Code UI | `{}` |
+| `vscode.service.clusterIP`        | Cluster IP for the VS Code UI | `` |
+| `vscode.service.externalIPs`      | External IPs for the VS Code UI | `[]` |
+| `vscode.service.loadBalancerIP`   | Loadbalancer IP for the VS Code UI | `` |
+| `vscode.service.loadBalancerSourceRanges`   | Loadbalancer client IP restriction range for the VS Code UI | `[]` |
 | `resources`                | CPU/Memory resource requests/limits or the home-assistant GUI | `{}` |
 | `nodeSelector`             | Node labels for pod assignment or the home-assistant GUI | `{}` |
 | `tolerations`              | Toleration labels for pod assignment or the home-assistant GUI | `[]` |
@@ -121,7 +143,7 @@ Read through the [values.yaml](values.yaml) file. It has several commented out s
 
 Much of the home assistant configuration occurs inside the various files persisted to the `/config` directory.  This will require external access to the persistent storage location where the home assistant configuration data is stored.
 
-Because this may be a limitation, the [Home Assistant Configurator UI](https://github.com/danielperna84/hass-configurator) is added to the chart as an option to provide a webUI for editing the various configuration files.
+Because this may be a limitation, the [Home Assistant Configurator UI](https://github.com/danielperna84/hass-configurator) and/or the [VS Code Server](https://github.com/cdr/code-server) are added to the chart as an option to provide a webUI for editing the various configuration files.
 
 ## Git sync secret
 

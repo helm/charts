@@ -52,6 +52,14 @@ spec:
         {{- end }}
         {{- end }}
       {{- end }}
+      {{- if .Values.vscode.enabled }}
+      - name: init-vscode
+        image: appropriate/curl
+        command: ['sh', '-c', '[ -f /config/vscode/vscode-home-assistant-0.5.0-beta.4.vsix ] || mkdir -p /config/vscode && curl -s -L --retry 3 -o /config/vscode/vscode-home-assistant-0.5.0-beta.4.vsix "https://github.com/keesschollaart81/vscode-home-assistant/releases/download/v0.5.0-beta4/vscode-home-assistant-0.5.0-beta.4.vsix"']
+        volumeMounts:
+        - mountPath: /config
+          name: config
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -177,6 +185,48 @@ spec:
           {{- end }}
           resources:
 {{ toYaml .Values.configurator.resources | indent 12 }}
+        {{- end }}
+        {{- if .Values.vscode.enabled }}
+        - name: vscode
+          image: "{{ .Values.vscode.image.repository }}:{{ .Values.vscode.image.tag }}"
+          imagePullPolicy: {{ .Values.vscode.image.pullPolicy }}
+          workingDir: {{ .Values.vscode.basepath }}
+          args:
+            - --allow-http
+            - --port={{ .Values.vscode.service.port }}
+            # - --install-extension=/config/vscode/vscode-home-assistant-0.5.0-beta.4.vsix
+            {{- if not (.Values.vscode.password) }}
+            - --no-auth
+            {{- end }}
+            - --extensions-dir=/config/vscode
+            - --user-data-dir=/config/vscode
+          ports:
+            - name: http
+              containerPort: {{ .Values.vscode.service.port }}
+              protocol: TCP
+          env:
+            {{- if .Values.vscode.password }}
+            - name: PASSWORD
+              value: {{ .Values.vscode.password }}
+            {{- end }}
+            {{- range $key, $value := .Values.vscode.extraEnv }}
+            - name: {{ $key }}
+              value: {{ $value }}
+            {{- end }}
+          volumeMounts:
+          - mountPath: /config
+            name: config
+          {{- if .Values.usePodSecurityContext }}
+          securityContext:
+            runAsUser: {{ default 0 .Values.runAsUser }}
+          {{- if and (.Values.runAsUser) (.Values.fsGroup) }}
+          {{- if not (eq .Values.runAsUser 0.0) }}
+            fsGroup: {{ .Values.fsGroup }}
+          {{- end }}
+          {{- end }}
+          {{- end }}
+          resources:
+{{ toYaml .Values.vscode.resources | indent 12 }}
         {{- end }}
       volumes:
       - name: config
