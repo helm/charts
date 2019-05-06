@@ -8,10 +8,14 @@ metadata:
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
 spec:
   template:
-{{- if and (.Values.NetworkPolicy.Enabled) (not .Values.NetworkPolicy.AllowExternal) }}
     metadata:
+{{- if and (.Values.NetworkPolicy.Enabled) (not .Values.NetworkPolicy.AllowExternal) }}
       labels:
         {{.Release.Name}}-{{.Values.Component}}-client: "true"
+{{- end }}
+{{- if .Values.ExtraInitAnnotations }}
+      annotations:
+{{ toYaml .Values.ExtraInitAnnotations | indent 8 }}
 {{- end }}
     spec:
 {{- if .Values.Secure.Enabled }}
