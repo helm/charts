@@ -80,6 +80,7 @@ collectors:
   deployments: true
   endpoints: true
   horizontalpodautoscalers: true
+  ingresses: true
   jobs: true
   limitranges: true
   namespaces: true

@@ -50,6 +50,9 @@ spec:
 {{  if .Values.collectors.horizontalpodautoscalers  }}
         - --collectors=horizontalpodautoscalers
 {{  end  }}
+{{  if .Values.collectors.ingresses  }}
+        - --collectors=ingresses
+{{  end  }}
 {{  if .Values.collectors.jobs  }}
         - --collectors=jobs
 {{  end  }}

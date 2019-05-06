@@ -41,6 +41,7 @@ $ helm install stable/kube-state-metrics
 | `collectors.deployments`              | Enable the deployments collector.                       | true                                        |
 | `collectors.endpoints`                | Enable the endpoints collector.                         | true                                        |
 | `collectors.horizontalpodautoscalers` | Enable the horizontalpodautoscalers collector.          | true                                        |
+| `collectors.ingresses`                | Enable the ingresses collector.                         | true                                        |
 | `collectors.jobs`                     | Enable the jobs collector.                              | true                                        |
 | `collectors.limitranges`              | Enable the limitranges collector.                       | true                                        |
 | `collectors.namespaces`               | Enable the namespaces collector.                        | true                                        |
