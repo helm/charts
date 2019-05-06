@@ -83,3 +83,8 @@ ExtraEnvArgs: []
 # ExtraAnnotations:
 #   key: values
 ExtraAnnotations: {}
+# ExtraInitAnnotations is an object to provide additional annotations to the ClusterInit Pod
+# e.g.:
+# ExtraInitAnnotations:
+#   key: values
+ExtraInitAnnotations: {}

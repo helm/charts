@@ -109,6 +109,10 @@ sentinel:
     annotations: {}
     loadBalancerIP:
 
+## Specifies the Kubernetes Cluster's Domain Name.
+##
+clusterDomain: cluster.local
+
 networkPolicy:
   ## Specifies whether a NetworkPolicy should be created
   ##
