@@ -100,6 +100,10 @@ service:
   ##
   # nodePort:
 
+  ## Specify the externalIP value ClusterIP service type.
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#external-ips
+  # externalIPs: []
+
   ## Specify the loadBalancerIP value for LoadBalancer service types.
   ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer
   ##
