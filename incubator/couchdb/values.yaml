@@ -99,6 +99,13 @@ ingress:
     #   hosts:
     #     - chart-example.local
 
+## Configure liveness Probe
+## ref : https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
+livenessProbe: {}
+## Configure readiness Probe
+## ref : https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
+readinessProbe: {}
+
 ## Optional resource requests and limits for the CouchDB container
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 resources: {}
