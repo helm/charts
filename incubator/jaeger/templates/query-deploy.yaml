@@ -47,6 +47,10 @@ spec:
         image: {{ .Values.query.image }}:{{ .Values.tag }}
         imagePullPolicy: {{ .Values.query.pullPolicy }}
         env:
+          {{- range $key, $value := .Values.query.cmdlineParams }}
+          - name: {{ $key | replace "." "_" | replace "-" "_" | upper | quote }}
+            value: {{ $value }}
+          {{- end }}
           - name: SPAN_STORAGE_TYPE
             valueFrom:
               configMapKeyRef:
