@@ -1,5 +1,5 @@
 {{- define "container-trace-agent" -}}
-- name: {{ .Chart.Name }}-trace-agent
+- name: trace-agent
   image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
   imagePullPolicy: {{ .Values.image.pullPolicy }}
   command: ["trace-agent", "--config=/etc/datadog-agent/datadog.yaml"]
@@ -13,27 +13,19 @@
     name: traceport
     protocol: TCP
   env:
-    {{- include "containers-common" . | nindent 4 }}
+    {{- include "containers-common-env" . | nindent 4 }}
     - name: DD_APM_ENABLED
       value: {{ .Values.datadog.apmEnabled | quote }}
 {{- if .Values.daemonset.containers.traceAgent.env }}
 {{ toYaml .Values.daemonset.containers.traceAgent.env | indent 4 }}
 {{- end }}
   volumeMounts:
-    - name: cgroups
-      mountPath: /host/sys/fs/cgroup
-      readOnly: true
     - name: config
       mountPath: /etc/datadog-agent
-    - name: passwd
-      mountPath: /etc/passwd
-      readOnly: true
   livenessProbe:
     tcpSocket:
       port: 8126
     initialDelaySeconds: 15
     periodSeconds: 15
     timeoutSeconds: 5
-    successThreshold: 1
-    failureThreshold: 6
 {{- end -}}

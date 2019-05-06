@@ -1,12 +1,12 @@
 {{- define "container-process-agent" -}}
-- name: {{ .Chart.Name }}-process-agent
+- name: process-agent
   image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
   imagePullPolicy: {{ .Values.image.pullPolicy }}
   command: ["process-agent", "-config=/etc/datadog-agent/datadog.yaml"]
   resources:
 {{ toYaml .Values.daemonset.containers.processAgent.resources | indent 4 }}
   env:
-    {{- include "containers-common" . | nindent 4 }}
+    {{- include "containers-common-env" . | nindent 4 }}
     - name: DD_PROCESS_AGENT_ENABLED
       value: {{ .Values.datadog.processAgentEnabled | quote }}
 {{- if .Values.daemonset.containers.processAgent.env }}
@@ -18,6 +18,8 @@
       readOnly: true
     - name: config
       mountPath: /etc/datadog-agent
+    - name: passwd
+      mountPath: /etc/passwd
     - name: procdir
       mountPath: /host/proc
       readOnly: true

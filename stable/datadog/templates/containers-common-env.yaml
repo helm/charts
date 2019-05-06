@@ -1,4 +1,4 @@
-{{- define "containers-common" -}}
+{{- define "containers-common-env" -}}
 - name: DD_API_KEY
   valueFrom:
     secretKeyRef:
@@ -13,6 +13,10 @@
 {{- if .Values.datadog.hostname }}
 - name: DD_HOSTNAME
   value: {{ .Values.datadog.hostname | quote }}
+{{- end }}
+{{- if .Values.datadog.tags }}
+- name: DD_TAGS
+  value: {{ .Values.datadog.tags | quote }}
 {{- end }}
 - name: KUBERNETES
   value: "yes"

@@ -1,5 +1,5 @@
 {{- define "container-agent" -}}
-- name: {{ .Chart.Name }}-agent
+- name: agent
   image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
   imagePullPolicy: {{ .Values.image.pullPolicy }}
   command: ["agent", "start"]
@@ -13,7 +13,7 @@
     name: dogstatsdport
     protocol: UDP
   env:
-    {{- include "containers-common" . | nindent 4 }}
+    {{- include "containers-common-env" . | nindent 4 }}
     {{- if .Values.datadog.clusterName }}
     - name: DD_CLUSTER_NAME
       value: {{ .Values.datadog.clusterName | quote }}
@@ -37,14 +37,6 @@
     {{- if .Values.datadog.dogstatsdOriginDetection }}
     - name: DD_DOGSTATSD_ORIGIN_DETECTION
       value: {{ .Values.datadog.dogstatsdOriginDetection | quote }}
-    {{- end }}
-    {{- if .Values.datadog.tags }}
-    - name: DD_TAGS
-      value: {{ .Values.datadog.tags | quote }}
-    {{- end }}
-    {{- if .Values.datadog.hostname }}
-    - name: DD_HOSTNAME
-      value: {{ .Values.datadog.hostname | quote }}
     {{- end }}
     {{- if .Values.datadog.acInclude }}
     - name: DD_AC_INCLUDE
@@ -85,12 +77,6 @@
     {{- if .Values.datadog.podAnnotationsAsTags }}
     - name: DD_KUBERNETES_POD_ANNOTATIONS_AS_TAGS
       value: '{{ toJson .Values.datadog.podAnnotationsAsTags }}'
-    {{- end }}
-    {{- if semverCompare "^1.7-0" .Capabilities.KubeVersion.GitVersion }}
-    - name: DD_KUBERNETES_KUBELET_HOST
-      valueFrom:
-        fieldRef:
-          fieldPath: status.hostIP
     {{- end }}
     {{- if .Values.datadog.logsEnabled }}
     - name: DD_LOGS_ENABLED
