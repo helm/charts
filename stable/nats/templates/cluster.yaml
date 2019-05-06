@@ -1,5 +1,10 @@
+{{- if (eq "statefulset" .Values.serviceType) }}
 apiVersion: apps/v1beta2
 kind: StatefulSet
+{{- else }}
+apiVersion: apps/v1
+kind: Deployment
+{{- end }}
 metadata:
   name: {{ template "nats.fullname" . }}
   labels:
@@ -10,6 +15,7 @@ metadata:
 spec:
   serviceName: {{ template "nats.fullname" . }}-headless
   replicas: {{ .Values.replicaCount }}
+{{- if (eq "statefulset" .Values.serviceType) }}
   updateStrategy:
     type: {{ .Values.statefulset.updateStrategy }}
     {{- if (eq "Recreate" .Values.statefulset.updateStrategy) }}
@@ -20,6 +26,13 @@ spec:
       partition: {{ .Values.statefulset.rollingUpdatePartition }}
     {{- end }}
     {{- end }}
+{{- else }}
+  strategy:
+    rollingUpdate:
+      maxSurge: {{ .Values.deployment.maxSurge }}
+      maxUnavailable: {{ .Values.deployment.maxUnavailable }}
+    type: {{ .Values.deployment.updateType }}
+{{- end }}
   selector:
     matchLabels:
       app: "{{ template "nats.name" . }}"
