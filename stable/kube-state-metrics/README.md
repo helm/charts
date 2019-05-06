@@ -35,6 +35,7 @@ $ helm install stable/kube-state-metrics
 | `tolerations`                         | Tolerations for pod assignment	                      | []                                          |
 | `podAnnotations`                      | Annotations to be added to the pod                      | {}                                          |
 | `resources`                           | kube-state-metrics resource requests and limits         | {}                                          |
+| `collectors.certificatesigningrequests` | Enable the certificatesigningrequests collector.      | true                                        |
 | `collectors.configmaps`               | Enable the configmaps collector.                        | true                                        |
 | `collectors.cronjobs`                 | Enable the cronjobs collector.                          | true                                        |
 | `collectors.daemonsets`               | Enable the daemonsets collector.                        | true                                        |

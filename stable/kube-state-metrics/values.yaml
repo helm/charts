@@ -74,6 +74,7 @@ podAnnotations: {}
 # Available collectors for kube-state-metrics. By default all available
 # collectors are enabled.
 collectors:
+  certificatesigningrequests: true
   configmaps: true
   cronjobs: true
   daemonsets: true
