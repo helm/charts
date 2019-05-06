@@ -192,6 +192,10 @@ spec:
       component: "{{ .Release.Name }}-{{ .Values.Component }}"
   template:
     metadata:
+{{- if .Values.ExtraAnnotations }}
+      annotations:
+{{ toYaml .Values.ExtraAnnotations | indent 8 }}
+{{- end }}
       labels:
         heritage: {{ .Release.Service | quote }}
         release: {{ .Release.Name | quote }}
