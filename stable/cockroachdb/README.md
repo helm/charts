@@ -106,6 +106,7 @@ The following table lists the configurable parameters of the CockroachDB chart a
 | `ExtraSecretMounts`            | Additional secrets to mount at cluster members   | `[]`                                      |
 | `ExtraEnvArgs`                 | Allows to set extra ENV args                     | `[]`                                      |
 | `ExtraAnnotations`             | Allows to set extra Annotations                  | `[]`                                      |
+| `ExtraInitAnnotations`         | Allows to set extra Annotations to init pod      | `[]`                                      |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
