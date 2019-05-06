@@ -90,6 +90,7 @@ The following table lists the configurable parameters of the chart and its defau
 | `ingress.path`                  | Ingress path                                       | `/`                                              |
 | `ingress.hosts`                 | Ingress accepted hostnames                         | `["logstash.cluster.local"]`                     |
 | `ingress.tls`                   | Ingress TLS configuration                          | `[]`                                             |
+| `logstashJavaOpts`              | Java options for logstash like heap size           | `"-Xmx1g -Xms1g"`                                |
 | `resources`                     | Pod resource requests & limits                     | `{}`                                             |
 | `priorityClassName`             | priorityClassName                                  | `nil`                                            |
 | `nodeSelector`                  | Node selector                                      | `{}`                                             |
