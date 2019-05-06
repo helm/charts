@@ -109,16 +109,16 @@ spec:
           image: "{{ .Values.configurator.image.repository }}:{{ .Values.configurator.image.tag }}"
           imagePullPolicy: {{ .Values.configurator.image.pullPolicy }}
           ports:
-            - name: http
+            - name: configurator
               containerPort: {{ .Values.configurator.service.port }}
               protocol: TCP
           livenessProbe:
             tcpSocket:
-              port: http
+              port: configurator
             initialDelaySeconds: 30
           readinessProbe:
             tcpSocket:
-              port: http
+              port: configurator
             initialDelaySeconds: 15
           env:
             {{- if .Values.configurator.hassApiPassword }}
@@ -194,13 +194,24 @@ spec:
             - --user-data-dir={{ .Values.vscode.vscodePath }}
             {{- end }}
           ports:
-            - name: http
+            - name: vscode
               containerPort: {{ .Values.vscode.service.port }}
               protocol: TCP
+          livenessProbe:
+            tcpSocket:
+              port: vscode
+            initialDelaySeconds: 30
+          readinessProbe:
+            tcpSocket:
+              port: vscode
+            initialDelaySeconds: 15
           env:
             {{- if .Values.vscode.password }}
             - name: PASSWORD
-              value: {{ .Values.vscode.password }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "home-assistant.fullname" . }}-vscode
+                  key: password
             {{- end }}
             {{- range $key, $value := .Values.vscode.extraEnv }}
             - name: {{ $key }}

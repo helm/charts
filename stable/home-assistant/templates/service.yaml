@@ -45,7 +45,7 @@ spec:
       nodePort: {{.Values.service.nodePort}}
 {{ end }}
 {{- if .Values.configurator.enabled }}
-    - name: http
+    - name: configurator
       port: {{ .Values.configurator.service.port }}
       protocol: TCP
       targetPort: 3218
@@ -54,7 +54,7 @@ spec:
 {{ end }}
 {{- end }}
 {{- if .Values.vscode.enabled }}
-    - name: http
+    - name: vscode
       port: {{ .Values.vscode.service.port }}
       protocol: TCP
       targetPort: 80
