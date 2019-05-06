@@ -36,6 +36,8 @@ azureTenantID: ""
 azureVMType: "AKS"
 azureClusterName: ""
 azureNodeResourceGroup: ""
+# if using MSI, ensure subscription ID and resource group are set
+azureUseManagedIdentityExtension: false
 
 # Currently only `gce`, `aws`, `azure` & `spotinst` are supported
 cloudProvider: aws
