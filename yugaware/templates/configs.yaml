@@ -80,6 +80,7 @@ data:
       listen       80;
       server_name  localhost;
 
+      proxy_http_version 1.1;
       proxy_set_header X-Real-IP  $remote_addr;
       proxy_set_header X-Forwarded-For $remote_addr;
       proxy_set_header Host $host;
