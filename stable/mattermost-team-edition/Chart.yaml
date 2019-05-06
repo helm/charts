@@ -3,6 +3,7 @@ description: Mattermost Team Edition server.
 name: mattermost-team-edition
 version: 3.1.2
 appVersion: 5.9.0
+deprecated: true
 keywords:
 - mattermost
 - communication
