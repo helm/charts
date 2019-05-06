@@ -298,6 +298,10 @@ This way, the credentials will be available in all of the subcharts.
 
 ## Upgrade
 
+### 4.0.0
+
+This chart will use by default the Bitnami PostgreSQL container starting from version `10.7.0-r68`. This version moves the initialization logic from node.js to bash. This new version of the chart requires setting the `POSTGRES_PASSWORD` in the slaves as well, in order to properly configure the `pg_hba.conf` file. Users from previous versions of the chart are advised to upgrade immediately.
+
 ### 3.0.0
 
 This releases make it possible to specify different nodeSelector, affinity and tolerations for master and slave pods.
