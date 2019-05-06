@@ -168,6 +168,7 @@ Parameter | Description | Default
 `azureResourceGroup` | Azure resource group that the cluster is located | none
 `azureVMType: "AKS"` | Azure VM type | `AKS`
 `azureNodeResourceGroup` | azure resource group where the clusters Nodes are located, typically set as `MC_<cluster-resource-group-name>_<cluster-name>_<location>` | none
+`azureUseManagedIdentityExtension` | Whether to use Azure's managed identity extension for credentials | false
 
 Specify each parameter you'd like to override using a YAML file as described above in the [installation](#installing-the-chart) section or by using the `--set key=value[,key=value]` argument to `helm install`. For example, to change the region and [expander](https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/FAQ.md#what-are-expanders):
 
