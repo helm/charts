@@ -14,6 +14,9 @@ spec:
     metadata:
       labels:
         app: {{ template "datadog.fullname" . }}
+        {{- if .Values.daemonset.podLabels }}
+{{ toYaml .Values.daemonset.podLabels | indent 8 }}
+        {{- end }}
       name: {{ template "datadog.fullname" . }}
       annotations:
         checksum/autoconf-config: {{ tpl (toYaml .Values.datadog.autoconf) . | sha256sum }}
@@ -293,6 +296,6 @@ spec:
 {{ toYaml .Values.daemonset.nodeSelector | indent 8 }}
       {{- end }}
   updateStrategy:
-    type: {{ default "OnDelete" .Values.daemonset.updateStrategy | quote }}
+    type: {{ default "RollingUpdate" .Values.daemonset.updateStrategy | quote }}
 {{ end }}
 {{ end }}
