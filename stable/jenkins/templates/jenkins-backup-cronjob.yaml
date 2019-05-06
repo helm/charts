@@ -31,7 +31,7 @@ spec:
             - -n
             - {{ .Release.Namespace }}
             - -l
-            - release={{ .Release.Name }}
+            - app.kubernetes.io/instance={{ .Release.Name }}
             - --container
             - {{ template "jenkins.fullname" . }}
             - --path
