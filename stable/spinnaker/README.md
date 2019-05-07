@@ -163,3 +163,14 @@ halyard:
   annotations:
     iam.amazonaws.com/role: <role_arn>
 ```
+
+### Adding configuration to the gate
+
+There are times where additional configuration is required for the gate, one such occasion is
+for the addition of environment variables. To add this information, you can set the `additionalGateConfig`:
+
+```yaml
+additionalGateConfig:
+  env:
+    azureTenantId: 'abc...'
+```

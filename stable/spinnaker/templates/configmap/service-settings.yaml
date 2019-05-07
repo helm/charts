@@ -23,6 +23,9 @@ data:
       useExecHealthCheck: false
       serviceType: NodePort
     {{- end }}
+    {{- if .Values.additionalGateConfig }}
+    {{- toYaml .Values.additionalGateConfig | nindent 4 }}
+    {{- end }}
   deck.yml: |-
     env:
       API_HOST: http://spin-gate.{{ .Release.Namespace }}:8084
