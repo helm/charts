@@ -199,6 +199,6 @@ serviceAccount:
   spinnakerName:
 
 # Push additional yaml configuration into the gate.yml file
-#additionalGateConfig:
-#  env:
-#    azureTenantId: 'abc...'
+# additionalGateConfig:
+#   env:
+#     azureTenantId: 'abc...'
