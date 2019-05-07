@@ -74,8 +74,6 @@ initContainer:
 #    - /bin/bash
 #    - /scripts/start.sh
 
-
-
 ## Pod Security Context
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
 ##
