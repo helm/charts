@@ -27,8 +27,10 @@ stringData:
     {{- if .Values.anchoreEnterpriseReports.enabled }}
     reports_uri: "http://{{ template "anchore-engine.api.fullname" . }}:{{ .Values.anchoreEnterpriseReports.service.port}}/v1"
     {{- end }}
-    {{- if and ( .Values.postgresql.externalEndpoint) (not ( .Values.postgresql.enabled)) }}
+    {{- if and .Values.postgresql.externalEndpoint (not .Values.postgresql.enabled) }}
     appdb_uri: "postgresql://{{ .Values.postgresql.postgresUser }}:{{ .Values.postgresql.postgresPassword }}@{{ .Values.postgresql.externalEndpoint }}/{{ .Values.postgresql.postgresDatabase }}"
+    {{- else if and (index .Values "cloudsql" "enabled") (not (index .Values "postgresql" "enabled")) }}
+    appdb_uri: "postgresql://{{ .Values.postgresql.postgresUser }}:{{ .Values.postgresql.postgresPassword }}@localhost:5432/{{ .Values.postgresql.postgresDatabase }}"
     {{- else }}
     appdb_uri: "postgresql://{{ .Values.postgresql.postgresUser }}:{{ .Values.postgresql.postgresPassword }}@{{ template "postgres.fullname" . }}:5432/{{ .Values.postgresql.postgresDatabase }}"
     {{- end }}
@@ -36,4 +38,5 @@ stringData:
     enable_ssl: {{ .Values.anchoreEnterpriseUi.enableSsl }}
     enable_proxy: {{ .Values.anchoreEnterpriseUi.enableProxy }}
     allow_shared_login: {{ .Values.anchoreEnterpriseUi.enableSharedLogin }}
+    redis_flushdb: {{ .Values.anchoreEnterpriseUi.redisFlushdb }}
 {{- end -}}

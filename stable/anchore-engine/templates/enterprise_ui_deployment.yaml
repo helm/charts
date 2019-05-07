@@ -30,16 +30,16 @@ spec:
         {{ toYaml .Values.anchoreEnterpriseUi.annotations | nindent 8 | trim }}
       {{- end }}
     spec:
-      volumes:
-      - name: anchore-license
-        secret:
-          secretName: {{ .Values.anchoreEnterpriseGlobal.licenseSecretName }}
-      - name: anchore-ui-config
-        secret:
-          secretName: {{ template "anchore-engine.enterprise-ui.fullname" . }}
       imagePullSecrets:
       - name: {{ .Values.anchoreEnterpriseGlobal.imagePullSecretName }}
       containers:
+      {{- if .Values.cloudsql.enabled  }}
+      - name: cloudsql-proxy
+        image: {{ .Values.cloudsql.image.repository }}:{{ .Values.cloudsql.image.tag }}
+        imagePullPolicy: {{ .Values.cloudsql.image.pullPolicy }}
+        command: ["/cloud_sql_proxy"]
+        args: ["-instances={{ .Values.cloudsql.instance }}=tcp:5432"]
+      {{- end }}
       - name: "{{ .Chart.Name }}-{{ $component }}"
         image: {{ .Values.anchoreEnterpriseUi.image }}
         imagePullPolicy: {{ .Values.anchoreEnterpriseUi.imagePullPolicy }}
@@ -49,43 +49,6 @@ spec:
         {{- end }}
         {{- with .Values.anchoreEnterpriseUi.extraEnv }}
         {{- toYaml . | nindent 8 | trim }}
-        {{- end }}
-        {{- if and (index .Values "anchore-ui-redis" "externalEndpoint") (not (index .Values "anchore-ui-redis" "enabled")) }}
-        - name: ANCHORE_REDIS_URI
-          value: {{ index .Values "anchore-ui-redis" "externalEndpoint" | quote }}
-        {{- else }}
-        - name: REDIS_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ template "redis.fullname" . }}
-              key: redis-password
-        - name: ANCHORE_REDIS_URI
-          value: "redis://:$(REDIS_PASSWORD)@{{ template "redis.fullname" . }}-master:6379"
-        {{- end }}
-        - name: ANCHORE_ENGINE_URI
-          value: "http://{{ template "anchore-engine.api.fullname" . }}:{{ .Values.anchoreApi.service.port }}/v1"
-        - name: ANCHORE_LICENSE_PATH
-          value: "/home/anchore/"
-        {{- if .Values.anchoreEnterpriseRbac.enabled }}
-        - name: ANCHORE_RBAC_URI
-          value: "http://{{ template "anchore-engine.api.fullname" . }}:{{ .Values.anchoreEnterpriseRbac.service.apiPort }}/v1"
-        {{- end }}
-        {{- if .Values.anchoreEnterpriseReports.enabled }}
-        - name: ANCHORE_REPORTS_URI
-          value: "http://{{ template "anchore-engine.api.fullname" . }}:{{ .Values.anchoreEnterpriseReports.service.port}}/v1"
-        {{- end }}
-        - name: ANCHORE_ENABLE_SSL
-          value: '{{ .Values.anchoreEnterpriseUi.enableSsl }}'
-        - name: ANCHORE_ENABLE_PROXY
-          value: '{{ .Values.anchoreEnterpriseUi.enableProxy }}'
-        - name: ANCHORE_ALLOW_SHARED_LOGIN
-          value: '{{ .Values.anchoreEnterpriseUi.enableSharedLogin }}'
-        {{- if and ( .Values.postgresql.externalEndpoint) (not ( .Values.postgresql.enabled)) }}
-        - name: ANCHORE_APPDB_URI
-          value: "postgresql://{{ .Values.postgresql.postgresUser }}:{{ .Values.postgresql.postgresPassword }}@{{ .Values.postgresql.externalEndpoint }}/{{ .Values.postgresql.postgresDatabase }}"
-        {{- else }}
-        - name: ANCHORE_APPDB_URI
-          value: "postgresql://{{ .Values.postgresql.postgresUser }}:{{ .Values.postgresql.postgresPassword }}@{{ template "postgres.fullname" . }}:5432/{{ .Values.postgresql.postgresDatabase }}"
         {{- end }}
         ports:
         - containerPort: 3000
@@ -114,6 +77,13 @@ spec:
           successThreshold: 1
         resources:
           {{ toYaml .Values.anchoreEnterpriseUi.resources | nindent 10 | trim }}
+      volumes:
+      - name: anchore-license
+        secret:
+          secretName: {{ .Values.anchoreEnterpriseGlobal.licenseSecretName }}
+      - name: anchore-ui-config
+        secret:
+          secretName: {{ template "anchore-engine.enterprise-ui.fullname" . }}
       {{- with .Values.anchoreEnterpriseUi.nodeSelector }}
       nodeSelector:
         {{ toYaml .Values.anchoreEnterpriseUi.nodeSelector | nindent 8 | trim }}

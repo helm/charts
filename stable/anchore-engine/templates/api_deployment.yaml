@@ -25,23 +25,6 @@ spec:
         {{ toYaml . | nindent 8 | trim }}
       {{- end }}
     spec:
-      volumes:
-        - name: config-volume
-          configMap:
-            name: {{ template "anchore-engine.fullname" . }}
-        {{ if and .Values.anchoreEnterpriseGlobal.enabled (or .Values.anchoreEnterpriseRbac.enabled .Values.anchoreEnterpriseReports.enabled) }}
-        - name: anchore-license
-          secret:
-            secretName: {{ .Values.anchoreEnterpriseGlobal.licenseSecretName }}
-        - name: enterprise-config-volume
-          configMap:
-            name: {{ template "anchore-engine.enterprise.fullname" . }}
-        {{- end}}
-        {{- if .Values.anchoreGlobal.internalServicesSslEnabled }}
-        - name: certs
-          secret:
-            secretName: {{ .Values.anchoreGlobal.internalServicesSsl.certSecret }}
-        {{- end }}
       {{ if and .Values.anchoreEnterpriseGlobal.enabled (or .Values.anchoreEnterpriseRbac.enabled .Values.anchoreEnterpriseReports.enabled) }}
       imagePullSecrets:
       - name: {{ .Values.anchoreEnterpriseGlobal.imagePullSecretName }}
@@ -106,7 +89,6 @@ spec:
           successThreshold: 1
         resources:
           {{ toYaml .Values.anchoreApi.resources | nindent 10 | trim }}
-
       {{- if and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseRbac.enabled }}
       - name: {{ .Chart.Name }}-rbac-manager
         image: {{ .Values.anchoreEnterpriseGlobal.image }}
@@ -163,7 +145,6 @@ spec:
           successThreshold: 1
         resources:
           {{ toYaml .Values.anchoreEnterpriseRbac.managerResources | nindent 10 | trim }}
-
       - name: {{ .Chart.Name }}-rbac-authorizer
         image: {{ .Values.anchoreEnterpriseGlobal.image }}
         imagePullPolicy: {{ .Values.anchoreEnterpriseGlobal.imagePullPolicy }}
@@ -224,7 +205,6 @@ spec:
         resources:
           {{ toYaml .Values.anchoreEnterpriseRbac.authResources | nindent 10 | trim }}
       {{- end }}
-
       {{- if and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseReports.enabled }}
       - name: "{{ .Chart.Name }}-reports"
         image: {{ .Values.anchoreEnterpriseGlobal.image }}
@@ -282,7 +262,23 @@ spec:
         resources:
           {{ toYaml .Values.anchoreEnterpriseReports.resources | nindent 10 | trim }}
       {{- end }}
-
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ template "anchore-engine.fullname" . }}
+        {{ if and .Values.anchoreEnterpriseGlobal.enabled (or .Values.anchoreEnterpriseRbac.enabled .Values.anchoreEnterpriseReports.enabled) }}
+        - name: anchore-license
+          secret:
+            secretName: {{ .Values.anchoreEnterpriseGlobal.licenseSecretName }}
+        - name: enterprise-config-volume
+          configMap:
+            name: {{ template "anchore-engine.enterprise.fullname" . }}
+        {{- end}}
+        {{- if .Values.anchoreGlobal.internalServicesSslEnabled }}
+        - name: certs
+          secret:
+            secretName: {{ .Values.anchoreGlobal.internalServicesSsl.certSecret }}
+        {{- end }}
       {{- with .Values.anchoreApi.nodeSelector }}
       nodeSelector:
         {{ toYaml . | nindent 8 | trim }}
@@ -324,7 +320,7 @@ spec:
       targetPort: {{ .Values.anchoreEnterpriseRbac.service.apiPort }}
       protocol: TCP
     {{- end }}
-    {{- if and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseRbac.enabled }}
+    {{- if and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseReports.enabled }}
     - name: reports-api
       port: {{ .Values.anchoreEnterpriseReports.service.port }}
       targetPort: {{ .Values.anchoreEnterpriseReports.service.port }}

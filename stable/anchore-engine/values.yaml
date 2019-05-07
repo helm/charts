@@ -35,7 +35,7 @@ cloudsql:
 # To utilize a GCE/ALB ingress controller comment out the nginx annotations below, change ingress.class, edit path configurions as per the comments, & set API/UI services to use NodePort.
 ingress:
   enabled: false
-  # Uncomment the following paths for GCE/ALB ingress controller
+  # Use the following paths for GCE/ALB ingress controller
   # apiPath: /v1/*
   # uiPath: /*
   apiPath: /v1/
@@ -442,8 +442,9 @@ anchoreEnterpriseRbac:
   enabled: true
 
   # Set extra environment variables. These will be set on all rbac containers.
-  extraEnv: {}
-    # FOO: bar
+  extraEnv: []
+    # - name: foo
+    #   value: bar
 
   # Kubernetes service config - annotations & serviceType configs must be set in anchoreApi
   # Due to RBAC sharing a service with the general API.
@@ -509,6 +510,8 @@ anchoreEnterpriseReports:
 anchoreEnterpriseUi:
   # If enabled is set to false, set anchore-ui-redis.enabled to false to ensure that helm doesn't stand up a unneccessary redis instance.
   enabled: true
+  image: docker.io/anchore/enterprise-ui:v0.3.3
+  imagePullPolicy: IfNotPresent
 
   # Set extra environment variables. These will be set on all UI containers.
   extraEnv: []
@@ -526,9 +529,10 @@ anchoreEnterpriseUi:
   # sessions that are using the same set of credentials. Note that setting this property to `false` does not prevent a
   # single session from being viewed within multiple *tabs* inside the same browser.
   enableSharedLogin: true
-
-  image: docker.io/anchore/enterprise-ui:v0.4.0
-  imagePullPolicy: IfNotPresent
+  # The redisFlushdb` key specifies if the Redis datastore containing
+  # user session keys and data is emptied on application startup. If the datastore
+  # is flushed, any users with active sessions will be required to re-authenticate.
+  redisFlushdb: true
 
   # kubernetes service configuration for anchore UI
   service:
