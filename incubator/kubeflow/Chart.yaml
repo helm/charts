@@ -3,3 +3,6 @@ appVersion: "1.0"
 description: A Helm chart for Kubernetes
 name: kubeflow
 version: 0.1.0
+maintainers:
+- name: naseemkullah
+  email: naseemkullah@gmail.com
