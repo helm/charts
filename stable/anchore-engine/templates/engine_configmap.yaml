@@ -119,6 +119,12 @@ data:
           {{ toYaml .Values.anchoreAnalyzer.cycleTimers | nindent 10 | trim }}
         max_threads: {{ .Values.anchoreAnalyzer.concurrentTasksPerWorker }}
         analyzer_driver: 'nodocker'
+        {{- if gt .Values.anchoreAnalyzer.layerCacheMaxGigabytes 0.0 }}
+        layer_cache_enable: true
+        {{- else }}
+        layer_cache_enable: false
+        {{- end }}
+        layer_cache_max_gigabytes: {{ .Values.anchoreAnalyzer.layerCacheMaxGigabytes }}
         ssl_cert: "{{ .Values.anchoreGlobal.internalServicesSsl.certDir -}}/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretCertName }}"
         ssl_key: "{{ .Values.anchoreGlobal.internalServicesSsl.certDir -}}/{{ .Values.anchoreGlobal.internalServicesSsl.certSecretKeyName }}"
         ssl_enable: {{ .Values.anchoreGlobal.internalServicesSslEnabled }}
