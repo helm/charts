@@ -4,3 +4,13 @@ description: A Samba Helm chart for Kubernetes
 name: samba
 version: 0.1.2
 home: https://www.samba.org/
+icon: https://www.samba.org/samba/style/2010/grey/favicon.ico
+keywords:
+  - samba
+  - storage
+  - smb
+sources:
+  - https://git.samba.org/samba.git/
+maintainers:
+  - name: Martyn Ranyard
+    email: m@rtyn.berlin
