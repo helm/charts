@@ -3,7 +3,9 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: {{ include "zookeeper.fullname" . }}-jmx
+  {{- if .Values.prometheus.operator.serviceMonitor.namespace }}
   namespace: {{ .Values.prometheus.operator.serviceMonitor.namespace }}
+  {{- end }}
   labels:
 {{ toYaml .Values.prometheus.operator.serviceMonitor.selector | indent 4 }}
 spec:
@@ -24,7 +26,9 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: {{ include "zookeeper.fullname" . }}-zookeeper
+  {{- if .Values.prometheus.operator.serviceMonitor.namespace }}
   namespace: {{ .Values.prometheus.operator.serviceMonitor.namespace }}
+  {{- end }}
   labels:
 {{ toYaml .Values.prometheus.operator.serviceMonitor.selector | indent 4 }}
 spec:
