@@ -13,6 +13,22 @@ cronjob:
 pod:
   annotations: {}
 
+rbac:
+  # Specifies whether RBAC should be enabled
+  enabled: false
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+
+psp:
+  # Specifies whether a podsecuritypolicy should be created
+  create: false
+
 image:
   repository: quay.io/pires/docker-elasticsearch-curator
   tag: 5.5.4
