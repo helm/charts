@@ -151,7 +151,7 @@ configurator:
     loadBalancerSourceRanges: []
     # nodePort: 30000
 
-## Add support for Prometheus 
+## Add support for Prometheus
 # settings has to be enabled in configuration.yaml
 # https://www.home-assistant.io/components/prometheus/
 monitoring:
