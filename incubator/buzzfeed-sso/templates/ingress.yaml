@@ -18,11 +18,13 @@ metadata:
 {{ toYaml . | indent 4 }}
 {{- end }}
 spec:
-{{- if .Values.auth.tls }}
+{{- if or .Values.auth.tls .Values.ingress.tls }}
   tls:
+  {{- if .Values.auth.tls }}
     - hosts:
         - {{ $authDomain }}
       secretName: {{ .Values.auth.tls.secretName -}}
+  {{- end }}
   {{- range .Values.ingress.tls }}
     - hosts:
       {{- range .hosts }}
