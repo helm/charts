@@ -4,7 +4,7 @@ metadata:
   name: {{ include "kubeflow.fullname" . }}
   labels:
     app.kubernetes.io/part-of: {{ include "kubeflow.name" . }}
-    app.kubernetes.io/name: {{ include "kubeflow.name" . }}
+    app.kubernetes.io/name: ml-pipeline
     helm.sh/chart: {{ include "kubeflow.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
@@ -15,7 +15,7 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/part-of: {{ include "kubeflow.name" . }}
-      app.kubernetes.io/name: {{ include "kubeflow.name" . }}
+      app.kubernetes.io/name: ml-pipeline
       app.kubernetes.io/instance: {{ .Release.Name }}
       app.kubernetes.io/component: pipeline
 
@@ -23,15 +23,11 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/part-of: {{ include "kubeflow.name" . }}
-        app.kubernetes.io/name: {{ include "kubeflow.name" . }}
+        app.kubernetes.io/name: ml-pipeline
         app.kubernetes.io/instance: {{ .Release.Name }}
         app.kubernetes.io/component: pipeline
 
     spec:
-      volumes:
-      - configMap:
-          name: {{ include "kubeflow.name" . }}-ml-pipeline-config
-        name: config-volume
       containers:
         - name: ml-pipeline
           image: "{{ .Values.mlPipeline.image.repository }}:{{ .Values.mlPipeline.image.tag }}"

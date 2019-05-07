@@ -9,7 +9,6 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     app.kubernetes.io/component: pipeline
--viewer-controller
 spec:
   replicas: {{ .Values.mlPipelineViewerController.replicaCount }}
   selector:
@@ -18,7 +17,6 @@ spec:
       app.kubernetes.io/name: ml-pipeline-viewer-controller
       app.kubernetes.io/instance: {{ .Release.Name }}
       app.kubernetes.io/component: pipeline
--viewer-controller
   template:
     metadata:
       labels:
@@ -26,7 +24,6 @@ spec:
         app.kubernetes.io/name: ml-pipeline-viewer-controller
         app.kubernetes.io/instance: {{ .Release.Name }}
         app.kubernetes.io/component: pipeline
--viewer-controller
     spec:
       volumes:
       - configMap:

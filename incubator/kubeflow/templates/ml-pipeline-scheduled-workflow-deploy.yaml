@@ -4,34 +4,27 @@ metadata:
   name: {{ include "kubeflow.fullname" . }}-ml-pipeline-scheduled-workflow
   labels:
     app.kubernetes.io/part-of: {{ include "kubeflow.name" . }}
-    app.kubernetes.io/name: ml-pipeline-scheduled-workflow
+    app.kubernetes.io/name: ml-pipeline
     helm.sh/chart: {{ include "kubeflow.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
-    app.kubernetes.io/component: pipeline
--scheduled-workflow
+    app.kubernetes.io/component: scheduled-workflow
 spec:
   replicas: {{ .Values.mlPipelineScheduledWorkflow.replicaCount }}
   selector:
     matchLabels:
       app.kubernetes.io/part-of: {{ include "kubeflow.name" . }}
-      app.kubernetes.io/name: ml-pipeline-scheduled-workflow
+      app.kubernetes.io/name: ml-pipeline
       app.kubernetes.io/instance: {{ .Release.Name }}
-      app.kubernetes.io/component: pipeline
--scheduled-workflow
+      app.kubernetes.io/component: scheduled-workflow
   template:
     metadata:
       labels:
         app.kubernetes.io/part-of: {{ include "kubeflow.name" . }}
-        app.kubernetes.io/name: ml-pipeline-scheduled-workflow
+        app.kubernetes.io/name: ml-pipeline
         app.kubernetes.io/instance: {{ .Release.Name }}
-        app.kubernetes.io/component: pipeline
--scheduled-workflow
+        app.kubernetes.io/component: scheduled-workflow
     spec:
-      volumes:
-      - configMap:
-          name: {{ include "kubeflow.name" . }}-ml-pipeline-scheduled-workflow-config
-        name: config-volume
       containers:
         - name: ml-pipeline-scheduled-workflow
           image: "{{ .Values.mlPipelineScheduledWorkflow.image.repository }}:{{ .Values.mlPipelineScheduledWorkflow.image.tag }}"
