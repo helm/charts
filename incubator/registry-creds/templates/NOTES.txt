@@ -1,0 +1,6 @@
+registry-creds is now installed on your Kubernetes cluster
+
+If everything is ok, you should see one or more secrets (depending on the enabled types) created on every existing
+namespace (except for kube-system):
+
+kubectl get secret | egrep "(dpr|ecr|gcr)-secret"

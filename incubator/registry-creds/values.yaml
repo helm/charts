@@ -1,0 +1,71 @@
+replicaCount: 1
+
+image:
+  name: "upmcenterprises/registry-creds"
+  tag: "1.9"
+  pullPolicy: "IfNotPresent"
+
+nameOverride: ""
+fullnameOverride: ""
+
+dpr:
+  # dpr.enabled enables the injection of docker private registry credentials
+  enabled: false
+  # dpr.existingSecretName defines an existing secret (in kube-system namespace) containing the credentials
+  existingSecretName: ""
+  # dpr.user is the user for authenticating with docker private registry. Only applicable if dpr.existingSecretName is empty
+  user: ""
+  # dpr.server is the hostname/IP Address of the docker private registry. Only applicable if dpr.existingSecretName is empty
+  server: ""
+  # dpr.password is the password for authentication with the selected docker private registry. Only applicable if
+  # dpr.existingSecretName is empty
+  password: ""
+
+ecr:
+  # ecr.enabled enables the injection of elastic container registry credentials
+  enabled: false
+  # ecr.existingSecretName defines an existing secret (in kube-system namespace) containing the credentials
+  existingSecretName: ""
+  # ecr.awsAccessKeyId is the ID of the key used to access ECR. Only applicable if ecr.existingSecretName is empty
+  awsAccessKeyId: ""
+  # ecr.awsSecretAccessKey is the secret of the key used to access ECR. Only applicable if ecr.existingSecretName is empty
+  awsSecretAccessKey: ""
+  # ecr.awsAccount is a comma separated list of AWS Account IDs. Only applicable if ecr.existingSecretName is empty
+  awsAccount: ""
+  # ecr.awsRegion is the optional AWS region to override the default. Only applicable if ecr.existingSecretName is empty
+  awsRegion: ""
+  # ecr.awsAssumeRole is an optional role to be assumed by AWS and used to retrieve tokens. Only applicable if
+  # ecr.existingSecretName is empty
+  awsAssumeRole: ""
+
+gcr:
+  # gcr.enabled enables the injection of google container registry credentials
+  enabled: false
+  # ecr.existingSecretName defines an existing secret (in kube-system namespace) containing the credentials
+  existingSecretName: ""
+  # gcr.applicationDefaultCredentialsJson is the JSON representing google cloud credentials. Only applicable if
+  # gcr.existingSecretName is empty
+  applicationDefaultCredentialsJson: ""
+  # gcr.url is the URL for google container registry. Only applicable if gcr.existingSecretName is empty
+  url: "https://gcr.io"
+
+rbac:
+  # rbac.enabled enables the usage of RBAC for registry-creds
+  enabled: true
+  # rbac.existingServiceAccountName is the name of an existing service account to be used for RBAC permissions. If not
+  # defined a new service account will be created by the chart
+  existingServiceAccountName: ""
+
+resources:
+  limits:
+    memory: "100Mi"
+    cpu: "200m"
+  requests:
+    memory: "50Mi"
+    cpu: "40m"
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

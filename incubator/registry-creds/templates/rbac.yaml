@@ -1,0 +1,48 @@
+{{- if and .Values.rbac.enabled (not .Values.rbac.existingServiceAccountName) }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+    name: {{ template "registry-creds.name" . }}
+rules:
+    - apiGroups:
+          - ""
+      resources:
+          - namespaces
+      verbs:
+          - list
+          - watch
+    - apiGroups:
+          - ""
+      resources:
+          - secrets
+      verbs:
+          - create
+          - get
+          - update
+    - apiGroups:
+          - ""
+      resources:
+          - serviceaccounts
+      verbs:
+          - get
+          - update
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+    name: {{ template "registry-creds.name" . }}
+roleRef:
+    apiGroup: rbac.authorization.k8s.io
+    kind: ClusterRole
+    name: {{ template "registry-creds.name" . }}
+subjects:
+    - kind: ServiceAccount
+      name: {{ template "registry-creds.name" . }}
+      namespace: kube-system
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+    name: {{ template "registry-creds.name" . }}
+    namespace: kube-system
+{{- end }}

@@ -1,0 +1,10 @@
+apiVersion: v1
+appVersion: "1.9"
+description: A Helm chart for registry creds
+name: registry-creds
+version: 0.1.0
+sources:
+  - https://github.com/upmc-enterprises/registry-creds
+maintainers:
+  - name: kir4h
+    email: 1671935+kir4h@users.noreply.github.com
