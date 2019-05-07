@@ -1,0 +1,14 @@
+{{ if .Values.image.lacksK8sScript -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "samba4.fullname" . }}-packagescripts
+  labels:
+    app.kubernetes.io/name: {{ include "samba4.name" . }}
+    helm.sh/chart: {{ include "samba4.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+data:
+  k8s.sh: |-
+{{ tpl (.Files.Get "scripts/k8s.sh") . | indent 6 }}
+{{ end -}}

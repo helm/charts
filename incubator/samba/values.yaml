@@ -1,0 +1,70 @@
+# Default values for samba4.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  # note: lots more pulls of stanback/alpine-samba so understandable 
+  # if you want to use that.  Just remember it doesn't contain the script
+  # so set the flag to true also.  That said, it only has one tag, and isn't
+  # an automated build so you might be better with the below image.
+  repository: imartyn/samba4k8s
+  lacksK8sScript: false
+  #repository: stanback/alpine-samba
+  #lacksK8sScript: true
+  tag: stable
+  pullPolicy: IfNotPresent
+
+nameOverride: ""
+fullnameOverride: ""
+
+samba:
+  global:
+    workgroup: WORKGROUP
+  share: {}
+  users: []
+
+persistence:
+  enabled: false
+  type: pvc
+  pvc:
+    accessMode: readWriteOnce
+    size: 8Gi
+    storageClass: "-"
+  other:
+    emptyDir: {}
+
+privatePersistence:
+  enabled: false
+  pvc:
+    accessMode: readWriteOnce
+    size: 20Mi
+    storageClass: "-"
+  other:
+    emptyDir: {}
+
+livenessProbe:
+  enabled: true
+
+service:
+  type: ClusterIP
+  port: 445
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

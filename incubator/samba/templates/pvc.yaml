@@ -1,0 +1,43 @@
+{{- if and .Values.persistence.enabled ( eq .Values.persistence.type "pvc") -}}
+{{- if not .Values.persistence.pvc.existingClaim -}}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ include "samba4.fullname" . }}-data
+spec:
+  accessModes:
+    - {{ .Values.persistence.pvc.accessMode | default "ReadWriteOnce" | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.pvc.size | default "8Gi" | quote }}
+{{- if .Values.persistence.pvc.storageClass }}
+{{- if (eq "-" .Values.persistence.pvc.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.persistence.pvc.storageClass }}"
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+---
+{{- if .Values.privatePersistence.enabled }}
+{{-   if and (eq (.Values.privatePersistence.type | default .Values.persistence.type) "pvc") (not .Values.privatePersistence.pvc.existingClaim) }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ include "samba4.fullname" . }}-private
+spec:
+  accessModes:
+    - {{ .Values.privatePersistence.pvc.accessMode | default .Values.persistence.pvc.accessMode | default "ReadWriteOnce" | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.privatePersistence.pvc.size | default .Values.persistence.pvc.size | default "20Mi" | quote }}
+{{-     if .Values.privatePersistence.pvc.storageClass }}
+{{-       if (eq "-" (.Values.privatePersistence.pvc.storageClass | default .Values.persistence.pvc.storageClass)) }}
+  storageClassName: ""
+{{-       else }}
+  storageClassName: "{{ .Values.privatePersistence.pvc.storageClass | default .Values.persistence.pvc.storageClass }}"
+{{-       end }}
+{{-     end }}
+{{-   end }}
+{{- end }}

@@ -1,0 +1,160 @@
+{{ $smbconfchecksum := tpl (.Files.Get "conf/smb.conf") . | sha256sum -}}
+{{ $userschecksum := include "userstocreate" . | sha256sum -}}
+{{ $scriptchecksum := tpl (.Files.Get "scripts/k8s.sh") . | sha256sum -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "samba4.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "samba4.name" . }}
+    helm.sh/chart: {{ include "samba4.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  annotations:
+    checksum/smbconf: {{ $smbconfchecksum }}
+    checksum/users: {{ $userschecksum }}
+{{ if .Values.image.lacksK8sScript -}}
+    checksum/script: {{ $scriptchecksum }}
+{{- end }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "samba4.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "samba4.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+      annotations:
+        checksum/smbconf: {{ $smbconfchecksum }}
+        checksum/users: {{ $userschecksum }}
+{{- if .Values.image.lacksK8sScript }}
+        checksum/script: {{ $scriptchecksum }}
+{{- end }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          command:
+          - /bin/sh
+          - -c
+          - cd /scripts ; sh ./k8s.sh
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: cifs
+              containerPort: 445
+              protocol: TCP
+{{- if .Values.livenessProbe.enabled | default true }}
+          livenessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - {{ .Values.livenessProbe.command | default "echo | smbclient -L 127.0.0.1" | quote }}
+{{- end }}
+          readinessProbe:
+            tcpSocket:
+              port: cifs
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+{{- if .Values.image.lacksK8sScript }}
+          - mountPath: /configmaps/scripts
+            name: scripts
+{{- end }}
+          - mountPath: /secrets
+            name: users
+          - mountPath: /etc/samba/smb.conf
+            name: smbconf
+            subPath: smb.conf
+          - mountPath: /data
+            name: data
+          - mountPath: /privatepersist
+            name: private
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      volumes:
+{{ if .Values.image.lacksK8sScript -}}
+      - name: scripts
+        configMap:
+          name: {{ include "samba4.fullname" . }}-packagescripts
+          defaultMode: 0555
+          items:
+          - key: k8s.sh
+            path: k8s.sh
+{{- end }}
+      - name: smbconf
+        configMap:
+          name: {{ include "samba4.fullname" . }}-smbconf
+          defaultMode: 0644
+          items:
+          - key: smb.conf
+            path: smb.conf
+      - name: users
+        secret:
+          secretName: {{ include "samba4.fullname" . }}-users
+          defaultMode: 0600
+      - name: data
+{{ if .Values.persistence.enabled -}}
+{{ if eq .Values.persistence.type "pvc" }}
+        persistentVolumeClaim:
+          claimName: {{ if .Values.persistence.pvc.existingClaim }}{{ .Values.persistence.pvc.existingClaim }}{{- else }}{{ template "samba4.fullname" . }}-data{{- end }}
+{{ else if eq .Values.persistence.type "flexVolume" }}
+#{{ required "A valid flexVolume block is required when using flexVolume persistence!" .Values.persistence.flexVolume }}
+        flexVolume:
+{{ .Values.persistence.flexVolume | toYaml | indent 10 }}
+{{- else if eq .Values.persistence.type "hostPath" }}
+#{{ required "A valid hostPath.path is required when using hostPath persistence!" .Values.persistence.hostPath.path }}
+        hostPath:
+          path: {{ .Values.persistence.hostPath.path }}
+{{ if .Values.persistence.hostPath.type -}}
+          type: {{ .Values.persistence.hostPath.type }}
+{{ end -}}
+{{ else if eq .Values.persistence.type "other" -}}
+#{{ required "A valid other block is required when using flexVolume persistence!" .Values.persistence.other }}
+{{ .Values.persistence.other | toYaml | indent 8 }}
+{{ else -}}
+{{ fail "if persistence is enabled, persistence.type must be one of 'pvc','flexVolume','hostPath' or 'other'!" }}
+{{ end -}}
+{{ else }}
+        emptyDir: {}
+{{ end }}
+      - name: private
+{{ if .Values.privatePersistence.enabled -}}
+{{-     $p := .Values.persistence -}}
+{{-     $pp := .Values.privatePersistence -}}
+{{- if eq ($pp.type | default $p.type) "pvc" }}
+        persistentVolumeClaim:
+          claimName: {{ if $pp.pvc.existingClaim }}{{ $pp.pvc.existingClaim }}{{- else }}{{ template "samba4.fullname" . }}-private{{- end }}
+{{ else if eq ($pp.type | default $p.type) "flexVolume" }}
+#{{ required "A valid flexVolume block is required when using hostPath persistence!" $pp.flexVolume }}
+        flexVolume:
+{{ $pp.flexVolume | toYaml | indent 10 }}
+{{ else if eq ($pp.type | default $p.type) "hostPath" }}
+#{{ required "A valid flexVolume block is required when using flexVolume persistence!" .Values.privatePersistence.flexVolume }}
+        hostPath:
+          path: {{ if .Values.privatePersistence.hostPath.path }}{{ .Values.privatePersistence.hostPath.path }}{{ else }}{{ .Values.persistence.hostPath.path }}/.smbprivate/{{ end }}
+{{ if .Values.privatePersistence.hostPath.type -}}
+          type: {{ $pp.hostPath.type | $p.hostPath.type | default "Directory" | quote }}
+{{ end -}}
+{{ else if eq ($pp.type | default $p.type) "other" -}}
+#{{ required "A valid other block is required when using flexVolume persistence!" .Values.privatePersistence.other }}
+{{ $pp.other | toYaml | indent 8 }}
+{{ else -}}
+{{ fail "if privatePersistence is enabled, privatePersistence.type must be one of 'pvc','flexVolume','hostPath' or 'other'!" }}
+{{ end -}}
+{{ else }}
+        emptyDir: {}
+{{ end -}}

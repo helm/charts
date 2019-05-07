@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "samba4.fullname" . }}-test-connection"
+  labels:
+    app.kubernetes.io/name: {{ include "samba4.name" . }}
+    helm.sh/chart: {{ include "samba4.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+    - name: smbclient
+      image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+      command: ['smbclient']
+      args:  ['-L','{{ include "samba4.fullname" . }}']
+  restartPolicy: Never
