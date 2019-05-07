@@ -94,7 +94,7 @@ spec:
         {{- end }}
         {{- if .Values.persistence.mountPath }}
         - name: PGDATA
-          value: {{ .Values.persistence.mountPath | quote }}
+          value: {{ .Values.postgresqlDataDir | quote }}
         {{- end }}
         - name: POSTGRES_REPLICATION_MODE
           value: "slave"
@@ -126,9 +126,9 @@ spec:
             - sh
             - -c
            {{- if (include "postgresql.database" .) }}
-            - exec pg_isready -U {{ include "postgresql.username" . | quote }} -d {{ (include "postgresql.database" .) | quote }} -h localhost
+            - exec pg_isready -U {{ include "postgresql.username" . | quote }} -d {{ (include "postgresql.database" .) | quote }} -h 127.0.0.1
            {{- else }}
-            - exec pg_isready -U {{ include "postgresql.username" . | quote }} -h localhost
+            - exec pg_isready -U {{ include "postgresql.username" . | quote }} -h 127.0.0.1
            {{- end }}
           initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
@@ -143,9 +143,9 @@ spec:
             - sh
             - -c
            {{- if (include "postgresql.database" .) }}
-            - exec pg_isready -U {{ include "postgresql.username" . | quote }} -d {{ (include "postgresql.database" .) | quote }} -h localhost
+            - exec pg_isready -U {{ include "postgresql.username" . | quote }} -d {{ (include "postgresql.database" .) | quote }} -h 127.0.0.1
            {{- else }}
-            - exec pg_isready -U {{ include "postgresql.username" . | quote }} -h localhost
+            - exec pg_isready -U {{ include "postgresql.username" . | quote }} -h 127.0.0.1
            {{- end }}
           initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.readinessProbe.periodSeconds }}

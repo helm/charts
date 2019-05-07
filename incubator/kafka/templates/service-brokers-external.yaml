@@ -2,7 +2,7 @@
   {{- $fullName := include "kafka.fullname" . }}
   {{- $replicas := .Values.replicas | int }}
   {{- $servicePort := .Values.external.servicePort }}
-  {{- $externalTargetPort := .Values.headless.port }}
+  {{- $firstListenerPort := .Values.external.firstListenerPort }}
   {{- $dnsPrefix := printf "%s" .Release.Name }}
   {{- $root := . }}
   {{- range $i, $e := until $replicas }}
@@ -46,14 +46,14 @@ spec:
   ports:
     - name: external-broker
       {{- if and (eq $root.Values.external.type "LoadBalancer") (not $root.Values.external.distinct) }}
-      port: {{ $externalListenerPort }}
+      port: {{ $firstListenerPort }}
       {{- else }}
       port: {{ $servicePort }}
       {{- end }}
-      {{- if and (eq $root.Values.external.type "LoadBalancer") (not $root.Values.external.distinct) }}
-      targetPort: {{ $externalTargetPort  }}
-      {{- else if and (eq $root.Values.external.type "NodePort") (not $root.Values.external.distinct)  }}
-      targetPort: {{ $externalTargetPort  }}
+      {{- if and (eq $root.Values.external.type "LoadBalancer") ($root.Values.external.distinct) }}
+      targetPort: {{ $servicePort }}
+      {{- else if and (eq $root.Values.external.type "LoadBalancer") (not $root.Values.external.distinct) }}
+      targetPort: {{ $firstListenerPort }}
       {{- else }}
       targetPort: {{ $externalListenerPort }}
       {{- end }}
