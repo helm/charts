@@ -91,6 +91,11 @@ spec:
           - {{ . }}
           {{- end }}
         {{- end}}
+        securityContext:
+          runAsUser: {{ .Values.volumePermissions.securityContext.runAsUser }}
+        volumeMounts:
+        - name: data
+          mountPath: {{ .Values.persistence.mountPath }}
       {{- end }}
       containers:
       - name: {{ template "postgresql.fullname" . }}
