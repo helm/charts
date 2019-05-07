@@ -3,3 +3,4 @@ appVersion: "4.8"
 description: A Samba Helm chart for Kubernetes
 name: samba
 version: 0.1.2
+home: https://www.samba.org/
