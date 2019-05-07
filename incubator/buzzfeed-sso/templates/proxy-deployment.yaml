@@ -80,7 +80,7 @@ spec:
             - name: PROVIDER_URL_INTERNAL
               value: {{ .Values.proxy.providerUrlInternal | quote }}
           {{- end }}
-          {{- if .Values.auth.extraEnv }}
+          {{- if .Values.proxy.extraEnv }}
 {{ toYaml .Values.proxy.extraEnv | indent 12 }}
           {{- end }}
           readinessProbe:
