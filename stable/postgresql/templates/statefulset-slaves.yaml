@@ -92,6 +92,68 @@ spec:
         volumeMounts:
         - name: data
           mountPath: {{ .Values.persistence.mountPath }}
+        env:
+        {{- if .Values.image.debug}}
+        - name: BASH_DEBUG
+          value: "1"
+        - name: NAMI_DEBUG
+          value: "1"
+        {{- end }}
+        {{- if .Values.postgresqlInitdbArgs }}
+        - name: POSTGRES_INITDB_ARGS
+          value: {{ .Values.postgresqlInitdbArgs | quote }}
+        {{- end }}
+        {{- if .Values.postgresqlInitdbWalDir }}
+        - name: POSTGRES_INITDB_WALDIR
+          value: {{ .Values.postgresqlInitdbWalDir | quote }}
+        {{- end }}
+        {{- if .Values.persistence.mountPath }}
+        - name: PGDATA
+          value: {{ .Values.postgresqlDataDir | quote }}
+        {{- end }}
+        {{- if .Values.replication.enabled }}
+        - name: POSTGRES_REPLICATION_MODE
+          value: "master"
+        - name: POSTGRES_REPLICATION_USER
+          value: {{ include "postgresql.replication.username" . | quote }}
+        {{- if .Values.usePasswordFile }}
+        - name: POSTGRES_REPLICATION_PASSWORD_FILE
+          value: "/opt/bitnami/postgresql/secrets/postgresql-replication-password"
+        {{- else }}
+        - name: POSTGRES_REPLICATION_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "postgresql.secretName" . }}
+              key: postgresql-replication-password
+        {{- end }}
+        {{- if not (eq .Values.replication.synchronousCommit "off")}}
+        - name: POSTGRES_SYNCHRONOUS_COMMIT_MODE
+          value: {{ .Values.replication.synchronousCommit | quote }}
+        - name: POSTGRES_NUM_SYNCHRONOUS_REPLICAS
+          value: {{ .Values.replication.numSynchronousReplicas | quote }}
+        {{- end }}
+        - name: POSTGRES_CLUSTER_APP_NAME
+          value: {{ .Values.replication.applicationName }}
+        {{- end }}
+        - name: POSTGRES_USER
+          value: {{ include "postgresql.username" . | quote }}
+        {{- if .Values.usePasswordFile }}
+        - name: POSTGRES_PASSWORD_FILE
+          value: "/opt/bitnami/postgresql/secrets/postgresql-password"
+        {{- else }}
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "postgresql.secretName" . }}
+              key: postgresql-password
+        {{- end }}
+        {{- if (include "postgresql.database" .) }}
+        - name: POSTGRES_DB
+          value: {{ (include "postgresql.database" .) | quote }}
+        {{- end }}
+{{- if .Values.extraEnv }}
+{{ toYaml .Values.extraEnv | indent 8 }}
+{{- end }}
       {{- end }}
       containers:
       - name: {{ template "postgresql.fullname" . }}
