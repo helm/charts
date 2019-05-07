@@ -65,7 +65,7 @@ Parameter | Description | Default
 `auth.service.type` | type of auth service to create | `ClusterIP`
 `auth.service.port` | port for the http auth service | `80`
 `auth.secret` | secrets to be generated randomly with `openssl rand -base64 32 | head -c 32`. | REQUIRED if `auth.customSecret` is not set
-`auth.tls` | tls configuration for central sso auth ingress. | `{ secretName: "sso-auth-tls-secret" }`
+`auth.tls` | tls configuration for central sso auth ingress. | `{}`
 `auth.customSecret` | the secret key to reuse (avoids secret creation via helm) | REQUIRED if `auth.secret` is not set
 `proxy.annotations` | extra annotations for proxy pods | `{}`
 `proxy.providerUrlInternal` | url for split dns deployments |
@@ -84,7 +84,7 @@ Parameter | Description | Default
 `provider.google.secret` | the Google OAuth secrets | REQUIRED if `provider.google.customSecret` is not set
 `provider.google.customSecret` | the secret key to reuse instead of creating it via helm | REQUIRED if `provider.google.secret` is not set
 `image.repository` | container image repository | `buzzfeed/sso`
-`image.tag` | container image tag | `v1.0.0`
+`image.tag` | container image tag | `v1.2.0`
 `image.pullPolicy` | container image pull policy | `IfNotPresent`
 `ingress.annotations` | ingress load balancer annotations | `{}`
 `ingress.extraLabels` | extra ingress labels | `{}`

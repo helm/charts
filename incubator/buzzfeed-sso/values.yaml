@@ -68,7 +68,7 @@ provider:
 
 image:
   repository: buzzfeed/sso
-  tag: v1.1.0
+  tag: v1.2.0
   pullPolicy: IfNotPresent
 
 ingress:
