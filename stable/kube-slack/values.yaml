@@ -1,7 +1,7 @@
 ## Environment values for the deployment
 envVars:
   ## URL of your Incoming Webhook in Slack:
-  SLACK_URL: "https://hooks.slack.com/services/Txxxxxxxx/Bxxxxxxxx/XXXXXXXXXXXXXXXXXXXXXXXX"
+  SLACK_URL: "" # https://hooks.slack.com/services/Txxxxxxxx/Bxxxxxxxx/XXXXXXXXXXXXXXXXXXXXXXXX"
   ## Override channel to send
   SLACK_CHANNEL: ""
   ## URL of HTTP proxy used to connect to Slack
