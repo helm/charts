@@ -34,6 +34,10 @@ spec:
           - name: RELEASE 
             value: {{ .Values.sentry.release }}
           {{ end }}
+          {{ if .Values.sentry.logLevel }}
+          - name: LOG_LEVEL
+            value: {{ .Values.sentry.logLevel }}
+          {{ end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
     {{- if .Values.nodeSelector }}
