@@ -65,10 +65,11 @@ podLabels: {}
 ##
 # priorityClassName: ""
 
-## Select Kind of Deployment:
-## - statefulset
-## - deployment (default)
-serviceType: "statefulset"
+## nats-cluster running mode. Allowed values: statefulset (default) or deployment
+## ref:
+## - https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/
+## - https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+mode: "statefulset"
 
 ## Update strategy for statefulset, can be set to RollingUpdate or OnDelete by default.
 ## https://kubernetes.io/docs/tutorials/stateful-application/basic-stateful-set/#updating-statefulsets
@@ -82,8 +83,8 @@ statefulset:
 ## https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
 deployment:
   updateType: RollingUpdate
-  maxSurge: 25%
-  maxUnavailable: 25%
+  # maxSurge: 25%
+  # maxUnavailable: 25%
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
