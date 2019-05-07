@@ -14,7 +14,7 @@ envVars:
   ## How often to update in milliseconds
   TICK_RATE: 15000
   ## Repeat notification after this many milliseconds has passed after status returned to normal
-  FLOOD_EXPIRE: 60000
+  FLOOD_EXPIRE: "60000"
   ## Enable/disable metric alerting on cpu
   METRICS_CPU: true
   ## Enable/disable metric alerting on memory
