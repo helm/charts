@@ -156,6 +156,15 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `metrics.readinessProbe.successThreshold`     | Minimum consecutive successes for the probe to be considered successful after having failed                            | 1                                                           |
 | `extraEnv`                                    | Any extra environment variables you would like to pass on to the pod                                                   | `{}`                                                        |
 | `updateStrategy`                              | Update strategy policy                                                                                                 | `{type: "RollingUpdate"}`                                   |
+| `initContainer.masterEnabled`                 | Enable custom init container for primary pod                                                                           | `false`                                                     |
+| `initContainer.slaveEnabled`                  | Enable custom init container for slave pods                                                                            | `false`                                                     |
+| `initContainer.image.registry`                | PostgreSQL init container Image registry                                                                               | `docker.io`                                                 |
+| `initContainer.image.repository`              | PostgreSQL init container Image name                                                                                   | `busybox`                                                   |
+| `initContainer.image.tag`                     | PostgreSQL init container Image tag                                                                                    | `latest`                                                    |
+| `initContainer.image.pullPolicy`              | PostgreSQL init container Image pull policy                                                                            | `Always`                                                    |
+| `initContainer.image.command`                 | Command to start init container                                                                                        | `- /bin/bash`                                               |
+
+
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
