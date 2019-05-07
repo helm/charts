@@ -26,7 +26,7 @@ samba:
   users: []
 
 persistence:
-  enabled: false
+  enabled: true
   type: pvc
   pvc:
     accessMode: readWriteOnce
@@ -36,7 +36,8 @@ persistence:
     emptyDir: {}
 
 privatePersistence:
-  enabled: false
+  enabled: true
+  type: pvc
   pvc:
     accessMode: readWriteOnce
     size: 20Mi
