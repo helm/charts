@@ -1,0 +1,25 @@
+{{- if .Values.calico.loggingEnable -}}
+apiVersion: {{ .Values.calico.apiVersion }}
+kind: GlobalNetworkPolicy
+metadata:
+  name: {{ include "kube-iptables-tailer.fullname" . }}-logging
+  labels:
+    app.kubernetes.io/name: {{ include "kube-iptables-tailer.name" . }}
+    helm.sh/chart: {{ include "kube-iptables-tailer.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  types:
+  - Ingress
+  - Egress
+  ingress:
+  - action: Log
+    protocol: TCP
+  - action: Log
+    protocol: UDP
+  egress:
+  - action: Log
+    protocol: TCP
+  - action: Log
+    protocol: UDP
+{{- end -}}

@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ include "kube-iptables-tailer.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "kube-iptables-tailer.name" . }}
+    helm.sh/chart: {{ include "kube-iptables-tailer.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  updateStrategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "kube-iptables-tailer.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "kube-iptables-tailer.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      serviceAccountName: {{ template "kube-iptables-tailer.serviceAccountName" . }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - "/kube-iptables-tailer"
+            - "--log_dir=/my-service-logs" # change the output directory of service logs
+            - "--v=4" # enable V-leveled logging at this level
+          env: 
+            - name: "IPTABLES_LOG_PATH"
+              value: "{{ .Values.iptablesLogPath }}"
+            - name: "IPTABLES_LOG_PREFIX"
+              # log prefix defined in your iptables chains
+              value: "{{ .Values.iptablesLogPrefix }}"
+            - name: "KUBE_API_SERVER"
+              value: "{{ .Values.kubeApiServicer }}" 
+          volumeMounts: 
+            - name: "iptables-logs"
+              mountPath: "/var/log"
+              readOnly: true
+            - name: "service-logs"
+              mountPath: "/my-service-logs"
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+        - name: "iptables-logs"
+          hostPath: 
+            # absolute path of the directory containing iptables log file on your host
+            path: "/var/log"
+        - name: "service-logs"
+          emptyDir: {}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

@@ -1,0 +1,19 @@
+{{- if .Values.rbac.create -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ include "kube-iptables-tailer.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "kube-iptables-tailer.name" . }}
+    helm.sh/chart: {{ include "kube-iptables-tailer.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ include "kube-iptables-tailer.fullname" . }}
+subjects:
+- kind: ServiceAccount
+  name: {{ template "kube-iptables-tailer.serviceAccountName" . }}
+  namespace: {{ .Release.Namespace }}
+{{- end -}}
