@@ -3,7 +3,8 @@ kind: ConfigMap
 metadata:
   name: {{ include "kubeflow.fullname" . }}-jupyter-web-app-config
   labels:
-    app.kubernetes.io/name: {{ include "kubeflow.name" . }}
+    app.kubernetes.io/part-of: {{ include "kubeflow.name" . }}
+    app.kubernetes.io/name: jupyter-web-app
     helm.sh/chart: {{ include "kubeflow.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}

@@ -1,48 +1,41 @@
-apiVersion: apps/v1
+sapiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "kubeflow.fullname" . }}
+  name: {{ include "kubeflow.fullname" . }}-ml-pipeline-viewer-controller
   labels:
     app.kubernetes.io/part-of: {{ include "kubeflow.name" . }}
-    app.kubernetes.io/name: {{ include "kubeflow.name" . }}
+    app.kubernetes.io/name: ml-pipeline-viewer-controller
     helm.sh/chart: {{ include "kubeflow.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     app.kubernetes.io/component: pipeline
-
+-viewer-controller
 spec:
-  replicas: {{ .Values.mlPipeline.replicaCount }}
+  replicas: {{ .Values.mlPipelineViewerController.replicaCount }}
   selector:
     matchLabels:
       app.kubernetes.io/part-of: {{ include "kubeflow.name" . }}
-      app.kubernetes.io/name: {{ include "kubeflow.name" . }}
+      app.kubernetes.io/name: ml-pipeline-viewer-controller
       app.kubernetes.io/instance: {{ .Release.Name }}
       app.kubernetes.io/component: pipeline
-
+-viewer-controller
   template:
     metadata:
       labels:
         app.kubernetes.io/part-of: {{ include "kubeflow.name" . }}
-        app.kubernetes.io/name: {{ include "kubeflow.name" . }}
+        app.kubernetes.io/name: ml-pipeline-viewer-controller
         app.kubernetes.io/instance: {{ .Release.Name }}
         app.kubernetes.io/component: pipeline
-
+-viewer-controller
     spec:
       volumes:
       - configMap:
-          name: {{ include "kubeflow.name" . }}-ml-pipeline-config
+          name: {{ include "kubeflow.name" . }}-ml-pipeline-viewer-controller-config
         name: config-volume
       containers:
-        - name: ml-pipeline
-          image: "{{ .Values.mlPipeline.image.repository }}:{{ .Values.mlPipeline.image.tag }}"
-          imagePullPolicy: {{ .Values.mlPipeline.image.pullPolicy }}
-          ports:
-          - name: http
-            containerPort: 8888
-            protocol: TCP
-          - name: grpc
-            containerPort: 8887
-            protocol: TCP
+        - name: ml-pipeline-viewer-controller
+          image: "{{ .Values.mlPipelineViewerController.image.repository }}:{{ .Values.mlPipelineViewerController.image.tag }}"
+          imagePullPolicy: {{ .Values.mlPipelineViewerController.image.pullPolicy }}
           # livenessProbe:
           #   httpGet:
           #     path: /
@@ -52,22 +45,22 @@ spec:
           #     path: /
           #     port: http
           resources:
-            {{- toYaml .Values.mlPipeline.resources | nindent 12 }}
+            {{- toYaml .Values.mlPipelineViewerController.resources | nindent 12 }}
           env:
           - name: POD_NAMESPACE
             valueFrom:
               fieldRef:
                 apiVersion: v1
                 fieldPath: metadata.namespace
-      {{- with .Values.mlPipeline.nodeSelector }}
+      {{- with .Values.mlPipelineViewerController.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-    {{- with .Values.mlPipeline.affinity }}
+    {{- with .Values.mlPipelineViewerController.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
     {{- end }}
-    {{- with .Values.mlPipeline.tolerations }}
+    {{- with .Values.mlPipelineViewerController.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
     {{- end }}

@@ -9,16 +9,16 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     app.kubernetes.io/component: pipeline
-
+-persistence-agent
 spec:
-  replicas: {{ .Values.mlPipeline.replicaCount }}
+  replicas: {{ .Values.mlPipelinePersistenceAgent.replicaCount }}
   selector:
     matchLabels:
       app.kubernetes.io/part-of: {{ include "kubeflow.name" . }}
       app.kubernetes.io/name: {{ include "kubeflow.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
       app.kubernetes.io/component: pipeline
-
+-persistence-agent
   template:
     metadata:
       labels:
@@ -26,23 +26,16 @@ spec:
         app.kubernetes.io/name: {{ include "kubeflow.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
         app.kubernetes.io/component: pipeline
-
+-persistence-agent
     spec:
       volumes:
       - configMap:
-          name: {{ include "kubeflow.name" . }}-ml-pipeline-config
+          name: {{ include "kubeflow.name" . }}-ml-pipeline-persistence-agent-config
         name: config-volume
       containers:
-        - name: ml-pipeline
-          image: "{{ .Values.mlPipeline.image.repository }}:{{ .Values.mlPipeline.image.tag }}"
-          imagePullPolicy: {{ .Values.mlPipeline.image.pullPolicy }}
-          ports:
-          - name: http
-            containerPort: 8888
-            protocol: TCP
-          - name: grpc
-            containerPort: 8887
-            protocol: TCP
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.mlPipelinePersistenceAgent.image.repository }}:{{ .Values.mlPipelinePersistenceAgent.image.tag }}"
+          imagePullPolicy: {{ .Values.mlPipelinePersistenceAgent.image.pullPolicy }}
           # livenessProbe:
           #   httpGet:
           #     path: /
@@ -52,22 +45,22 @@ spec:
           #     path: /
           #     port: http
           resources:
-            {{- toYaml .Values.mlPipeline.resources | nindent 12 }}
+            {{- toYaml .Values.mlPipelinePersistenceAgent.resources | nindent 12 }}
           env:
           - name: POD_NAMESPACE
             valueFrom:
               fieldRef:
                 apiVersion: v1
                 fieldPath: metadata.namespace
-      {{- with .Values.mlPipeline.nodeSelector }}
+      {{- with .Values.mlPipelinePersistenceAgent.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-    {{- with .Values.mlPipeline.affinity }}
+    {{- with .Values.mlPipelinePersistenceAgent.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
     {{- end }}
-    {{- with .Values.mlPipeline.tolerations }}
+    {{- with .Values.mlPipelinePersistenceAgent.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
     {{- end }}

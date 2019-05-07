@@ -3,6 +3,7 @@ kind: Pod
 metadata:
   name: "{{ include "kubeflow.fullname" . }}-test-connection"
   labels:
+    app.kubernetes.io/part-of: {{ include "kubeflow.name" . }}
     app.kubernetes.io/name: {{ include "kubeflow.name" . }}
     helm.sh/chart: {{ include "kubeflow.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}

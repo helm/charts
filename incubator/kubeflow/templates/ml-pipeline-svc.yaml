@@ -3,11 +3,13 @@ kind: Service
 metadata:
   name: {{ include "kubeflow.fullname" . }}-ml-pipeline
   labels:
-    app.kubernetes.io/name: {{ include "kubeflow.name" . }}
+    app.kubernetes.io/part-of: {{ include "kubeflow.name" . }}
+    app.kubernetes.io/name: ml-pipeline
     helm.sh/chart: {{ include "kubeflow.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
-    app.kubernetes.io/component: ml-pipeline
+    app.kubernetes.io/component: pipeline
+
 spec:
   type: {{ .Values.mlPipeline.service.type }}
   ports:
@@ -20,6 +22,8 @@ spec:
     protocol: TCP
     name: grpc
   selector:
-    app.kubernetes.io/name: {{ include "kubeflow.name" . }}
+    app.kubernetes.io/part-of: {{ include "kubeflow.name" . }}
+    app.kubernetes.io/name: ml-pipeline
     app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/component: ml-pipeline
+    app.kubernetes.io/component: pipeline
+

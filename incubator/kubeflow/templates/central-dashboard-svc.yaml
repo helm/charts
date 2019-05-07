@@ -12,7 +12,8 @@ metadata:
       service: centraldashboard.kubeflow
   name: {{ include "kubeflow.fullname" . }}-central-dashboard
   labels:
-    app.kubernetes.io/name: {{ include "kubeflow.name" . }}
+    app.kubernetes.io/part-of: {{ include "kubeflow.name" . }}
+    app.kubernetes.io/name: central-dashboard
     helm.sh/chart: {{ include "kubeflow.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
@@ -25,6 +26,7 @@ spec:
       protocol: TCP
       name: http
   selector:
-    app.kubernetes.io/name: {{ include "kubeflow.name" . }}
+    app.kubernetes.io/part-of: {{ include "kubeflow.name" . }}
+    app.kubernetes.io/name: central-dashboard
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/component: central-dashboard

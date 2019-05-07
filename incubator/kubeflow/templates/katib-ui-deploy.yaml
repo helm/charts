@@ -1,29 +1,32 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "kubeflow.fullname" . }}
+  name: {{ include "kubeflow.fullname" . }}-katib-ui
   labels:
-    app.kubernetes.io/name: {{ include "kubeflow.name" . }}
+    app.kubernetes.io/part-of: {{ include "kubeflow.name" . }}
+    app.kubernetes.io/name: katib-ui
     helm.sh/chart: {{ include "kubeflow.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
-    app.kubernetes.io/component: katib-ui
+    app.kubernetes.io/component: vizier
 spec:
   replicas: {{ .Values.katibUi.replicaCount }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "kubeflow.name" . }}
+      app.kubernetes.io/part-of: {{ include "kubeflow.name" . }}
+      app.kubernetes.io/name: katib-ui
       app.kubernetes.io/instance: {{ .Release.Name }}
-      app.kubernetes.io/component: katib-ui
+      app.kubernetes.io/component: vizier
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: {{ include "kubeflow.name" . }}
+        app.kubernetes.io/part-of: {{ include "kubeflow.name" . }}
+        app.kubernetes.io/name: katib-ui
         app.kubernetes.io/instance: {{ .Release.Name }}
-        app.kubernetes.io/component: katib-ui
+        app.kubernetes.io/component: vizier
     spec:
       containers:
-        - name: {{ .Chart.Name }}
+        - name: katib-ui
           image: "{{ .Values.katibUi.image.repository }}:{{ .Values.katibUi.image.tag }}"
           imagePullPolicy: {{ .Values.katibUi.image.pullPolicy }}
           ports:
