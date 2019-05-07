@@ -12,5 +12,7 @@ keywords:
 maintainers:
 - email: matthieu.paret@lifen.fr
   name: mtparet
+- email: dali@lifen.fr
+  name: dadicool
 sources:
 - https://github.com/box/kube-iptables-tailer
