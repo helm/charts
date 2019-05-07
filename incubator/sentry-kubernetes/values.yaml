@@ -2,6 +2,7 @@
 
 sentry:
   dsn: <change-me>
+  logLevel: ~
 image:
   repository: getsentry/sentry-kubernetes
   tag: latest

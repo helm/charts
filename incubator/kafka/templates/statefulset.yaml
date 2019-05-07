@@ -16,6 +16,7 @@ spec:
   replicas: {{ default 3 .Values.replicas }}
   template:
     metadata:
+{{- if or .Values.podAnnotations (and .Values.prometheus.jmx.enabled (not .Values.prometheus.operator.enabled)) }}
       annotations:
 {{- if and .Values.prometheus.jmx.enabled  (not .Values.prometheus.operator.enabled) }}
         prometheus.io/scrape: "true"
@@ -23,6 +24,7 @@ spec:
 {{- end }}
 {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
+{{- end }}
 {{- end }}
       labels:
         app: {{ include "kafka.name" . }}
@@ -223,6 +225,10 @@ spec:
           {{- else }}
           name: {{ include "kafka.fullname" . }}-metrics
           {{- end }}
+      {{- end }}
+      {{- if .Values.securityContext }}
+      securityContext:
+{{ toYaml .Values.securityContext | indent 8 }}
       {{- end }}
       {{- range .Values.secrets }}
       - name: {{ include "kafka.fullname" $ }}-{{ .name }}
