@@ -38,6 +38,10 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `backend.forward.tls`              | Enable or disable TLS support | `off` |
 | `backend.forward.tls_verify`       | Force certificate validation  | `on` |
 | `backend.forward.tls_debug`        | Set TLS debug verbosity level. It accept the following values: 0-4 | `1` |
+| `backend.forward.tls_use_paths`    | Load the TLS certificates / keys with paths on container rather than directlyvim | `false` |
+| `backend.forward.tls_ca`           | TLS CA certificate for the forward endpoint (in PEM format) | `""` |
+| `backend.forward.tls_crt`          | TLS certificate for the forward endpoint (in PEM format) | `""` |
+| `backend.forward.tls_key`          | TLS key for the forward endpoint (in PEM format) | `""` |
 | **ElasticSearch Backend**  |
 | `backend.es.host`          | IP address or hostname of the target Elasticsearch instance | `elasticsearch` |
 | `backend.es.port`          | TCP port of the target Elasticsearch instance. | `9200` |

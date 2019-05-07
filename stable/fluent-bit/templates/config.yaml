@@ -83,6 +83,32 @@ data:
 {{- if .Values.backend.forward.shared_key }}
         Shared_Key    {{ .Values.backend.forward.shared_key }}
 {{- end }}
+{{- if eq .Values.backend.forward.tls "on" }}
+        tls {{ .Values.backend.forward.tls }}
+        tls.verify {{ .Values.backend.forward.tls_verify }}
+        tls.debug {{ .Values.backend.forward.tls_debug }}
+        {{- if .Values.backend.forward.tls_use_paths }}
+        {{- if .Values.backend.forward.tls_ca }}
+        tls.ca_file {{ .Values.backend.forward.tls_ca }}
+        {{- end }}
+        {{- if .Values.backend.forward.tls_crt }}
+        tls.crt_file {{ .Values.backend.forward.tls_crt }}
+        {{- end }}
+        {{- if .Values.backend.forward.tls_key }}
+        tls.key_file {{ .Values.backend.forward.tls_key }}
+        {{- end }}
+        {{- else }}
+        {{- if .Values.backend.forward.tls_ca }}
+        tls.ca_file /secure/forward-tls-ca.pem
+        {{- end }}
+        {{- if .Values.backend.forward.tls_crt }}
+        tls.crt_file /secure/forward-tls-crt.pem
+        {{- end }}
+        {{- if .Values.backend.forward.tls_key }}
+        tls.key_file /secure/forward-tls-key.pem
+        {{- end }}
+        {{- end }}
+{{- end }}
 {{ else if eq .Values.backend.type "es" }}
     [OUTPUT]
         Name  es

@@ -87,6 +87,23 @@ spec:
           subPath: parsers.conf
 {{- end }}
 {{- end }}
+{{- if eq .Values.backend.forward.tls_use_paths false }}
+{{- if .Values.backend.forward.tls_ca }}
+        - name: forward-tls-ca-secret
+          mountPath: /secure/forward-tls-ca.pem
+          subPath: forward-tls-ca.pem
+{{- end }}
+{{- if .Values.backend.forward.tls_crt }}
+        - name: forward-tls-crt-secret
+          mountPath: /secure/forward-tls-crt.pem
+          subPath: forward-tls-crt.pem
+{{- end }}
+{{- if .Values.backend.forward.tls_key }}
+        - name: forward-tls-key-secret
+          mountPath: /secure/forward-tls-key.pem
+          subPath: forward-tls-key.pem
+{{- end }}
+{{- end }}
 {{- if .Values.backend.es.tls_ca }}
         - name: es-tls-secret
           mountPath: /secure/es-tls-ca.crt
@@ -130,6 +147,23 @@ spec:
           path: /etc/machine-id
           type: File
     {{- end }}
+{{- if eq .Values.backend.forward.tls_use_paths false }}
+{{- if .Values.backend.forward.tls_ca }}
+      - name: forward-tls-ca-secret
+        secret:
+          secretName: "{{ template "fluent-bit.fullname" . }}-forward-tls-ca-secret"
+{{- end }}
+{{- if .Values.backend.forward.tls_crt }}
+      - name: forward-tls-crt-secret
+        secret:
+          secretName: "{{ template "fluent-bit.fullname" . }}-forward-tls-crt-secret"
+{{- end }}
+{{- if .Values.backend.forward.tls_key }}
+      - name: forward-tls-key-secret
+        secret:
+          secretName: "{{ template "fluent-bit.fullname" . }}-forward-tls-key-secret"
+{{- end }}
+{{- end }}
 {{- if .Values.backend.es.tls_ca }}
       - name: es-tls-secret
         secret:

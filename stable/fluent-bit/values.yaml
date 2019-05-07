@@ -38,6 +38,10 @@ backend:
     tls: "off"
     tls_verify: "on"
     tls_debug: 1
+    tls_use_paths: false
+    tls_ca: ""
+    tls_crt: ""
+    tls_key: ""
     shared_key:
   es:
     host: elasticsearch
