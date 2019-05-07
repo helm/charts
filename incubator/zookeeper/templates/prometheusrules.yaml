@@ -1,0 +1,20 @@
+{{ if .Values.prometheus.operator.prometheusRule.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: {{ include "zookeeper.fullname" . }}
+  {{- if .Values.prometheus.operator.prometheusRule.namespace }}
+  namespace: {{ .Values.prometheus.operator.prometheusRule.namespace }}
+  {{- end }}
+  labels:
+{{ toYaml .Values.prometheus.operator.prometheusRule.selector | indent 4 }}
+spec:
+  groups:
+  - name: {{ include "zookeeper.fullname" . }}
+    rules:
+{{- $zookeeperFullname := include "zookeeper.fullname" . }}
+{{- range $key, $value := .Values.prometheus.operator.prometheusRule.rules }}
+    - alert: {{ $zookeeperFullname }}-{{ $key }}
+{{ toYaml $value | indent 6 }}
+{{- end }}
+{{- end }}

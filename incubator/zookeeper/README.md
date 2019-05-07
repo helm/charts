@@ -18,7 +18,8 @@ This chart will do the following:
 * Optionally apply a [Pod Anti-Affinity](https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#inter-pod-affinity-and-anti-affinity-beta-feature) to spread the ZooKeeper ensemble across nodes.
 * Optionally start JMX Exporter and Zookeeper Exporter containers inside Zookeeper pods.
 * Optionally create a job which creates Zookeeper chroots (e.g. `/kafka1`).
-* Optionally create a Prometheus ServiceMonitor for each enabled exporter container
+* Optionally create a Prometheus Operator ServiceMonitor resource for each enabled exporter container.
+* Optionally create a Prometheus Operator PrometheusRules resource.
 
 ## Installing the Chart
 You can install the chart with the release name `zookeeper` as below.
