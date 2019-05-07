@@ -57,6 +57,25 @@ volumePermissions:
   securityContext:
     runAsUser: 0
 
+##
+## Init container can be separately added to Master and Slave stateful set by changing respectively
+## initContainer.masterEnabled and initContainer.slavesEnabled values
+##
+
+initContainer:
+  masterEnabled: false
+  slavesEnabled: false
+#  image:
+#    registry: docker.io
+#    repository: busybox
+#    tag: latest
+#    pullPolicy: Always
+#  command:
+#    - /bin/bash
+#    - /scripts/start.sh
+
+
+
 ## Pod Security Context
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
 ##
