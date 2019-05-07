@@ -171,6 +171,63 @@ spec:
         - name: postgresql-config
           mountPath: /bitnami/postgresql/conf
         {{- end }}
+{{- if .Values.metrics.slaveEnabled }}
+      - name: metrics
+        image: {{ template "postgresql.metrics.image" . }}
+        imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
+       {{- if .Values.metrics.securityContext.enabled }}
+        securityContext:
+          runAsUser: {{ .Values.metrics.securityContext.runAsUser }}
+      {{- end }}
+        env:
+        {{- $database := required "In order to enable metrics you need to specify a database (.Values.postgresqlDatabase or .Values.global.postgresql.postgresqlDatabase)" (include "postgresql.database" .) }}
+        - name: DATA_SOURCE_URI
+          value: {{ printf "127.0.0.1:%d/%s?sslmode=disable" (int (include "postgresql.port" .)) $database | quote }}
+        {{- if .Values.usePasswordFile }}
+        - name: DATA_SOURCE_PASS_FILE
+          value: "/opt/bitnami/postgresql/secrets/postgresql-password"
+        {{- else }}
+        - name: DATA_SOURCE_PASS
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "postgresql.secretName" . }}
+              key: postgresql-password
+        {{- end }}
+        - name: DATA_SOURCE_USER
+          value: {{ template "postgresql.username" . }}
+        {{- if .Values.livenessProbe.enabled }}
+        livenessProbe:
+          httpGet:
+            path: /
+            port: metrics
+          initialDelaySeconds: {{ .Values.metrics.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.metrics.livenessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.metrics.livenessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.metrics.livenessProbe.successThreshold }}
+          failureThreshold: {{ .Values.metrics.livenessProbe.failureThreshold }}
+        {{- end }}
+        {{- if .Values.readinessProbe.enabled }}
+        readinessProbe:
+          httpGet:
+            path: /
+            port: metrics
+          initialDelaySeconds: {{ .Values.metrics.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.metrics.readinessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.metrics.readinessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.metrics.readinessProbe.successThreshold }}
+          failureThreshold: {{ .Values.metrics.readinessProbe.failureThreshold }}
+        {{- end }}
+        volumeMounts:
+        {{- if .Values.usePasswordFile }}
+        - name: postgresql-password
+          mountPath: /opt/bitnami/postgresql/secrets/
+        {{- end }}
+        ports:
+        - name: metrics
+          containerPort: 9187
+        resources:
+{{ toYaml .Values.metrics.resources | indent 10 }}
+{{- end }}
       volumes:
       {{- if .Values.usePasswordFile }}
       - name: postgresql-password
