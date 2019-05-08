@@ -2,7 +2,7 @@ You have successfully provisioned {{ .Values.chain.nodes }} Burrow nodes!
 
 ** Please be patient while the chart is being deployed. **
 
-{{- if .Values.peer.ingress.enabled }}
+{{- if .Values.RPC.Peer.ingress.enabled }}
 
 As ingress is enabled, it may take some time to propagate DNS entries.
 
