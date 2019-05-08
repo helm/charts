@@ -10,10 +10,14 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 data:
-  acmeHosts: {{ .Values.acmeHosts | quote }}
   allowAnonymous: {{ .Values.allowAnonymous | quote }}
   corsAllowedOrigins: {{ .Values.corsAllowedOrigins | quote }}
   debug: {{ .Values.debug | quote }}
   demo: {{ .Values.demo | quote }}
   logFormat: {{ .Values.logFormat | quote }}
   publishAllowedOrigins: {{ .Values.publishAllowedOrigins | quote }}
+  heartbeatInterval: {{ .Values.heartbeatInterval | quote }}
+  historyCleanupFrequency: {{ .Values.historyCleanupFrequency | quote }}
+  historySize: {{ .Values.historySize | quote }}
+  readTimeout: {{ .Values.readTimeout | quote }}
+  writeTimeout: {{ .Values.writeTimeout | quote }}
