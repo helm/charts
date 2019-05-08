@@ -97,7 +97,6 @@ Also, we can't use a single if because lazy evaluation is not an option
 {{- end -}}
 {{- end -}}
 
-
 {{/*
 Return PostgreSQL password
 */}}
