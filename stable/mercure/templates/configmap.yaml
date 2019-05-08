@@ -18,5 +18,7 @@ data:
   logFormat: {{ .Values.logFormat | quote }}
   publishAllowedOrigins: {{ .Values.publishAllowedOrigins | quote }}
   heartbeatInterval: {{ .Values.heartbeatInterval | quote }}
+  historyCleanupFrequency: {{ .Values.historyCleanupFrequency | quote }}
+  historySize: {{ .Values.historySize | quote }}
   readTimeout: {{ .Values.readTimeout | quote }}
   writeTimeout: {{ .Values.writeTimeout | quote }}

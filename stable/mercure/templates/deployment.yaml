@@ -80,6 +80,16 @@ spec:
                 configMapKeyRef:
                   name: {{ include "mercure.fullname" . }}
                   key: heartbeatInterval
+            - name: HISTORY_CLEANUP_FREQUENCY
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "mercure.fullname" . }}
+                  key: historyCleanupFrequency
+            - name: HISTORY_SIZE
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "mercure.fullname" . }}
+                  key: historySize
             - name: READ_TIMEOUT
               valueFrom:
                 configMapKeyRef:

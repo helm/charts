@@ -13,6 +13,8 @@ publishAllowedOrigins: ""
 publisherJwtKey: ""
 subscriberJwtKey: ""
 heartbeatInterval: "0s"
+historyCleanupFrequency: 0.3
+historySize: 0
 readTimeout: "0s"
 writeTimeout: "0s"
 
