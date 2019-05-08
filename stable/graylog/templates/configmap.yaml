@@ -85,64 +85,17 @@ data:
         </Loggers>
     </Configuration>
   graylog.conf: |-
-    node_id_file = /usr/share/graylog/data/journal/node-id
-    root_username = {{ .Values.graylog.rootUsername }}
-    root_email = {{ .Values.graylog.rootEmail }}
-    root_timezone = {{ default "UTC" .Values.graylog.rootTimezone }}
-    plugin_dir = /usr/share/graylog/plugin
-    rest_listen_uri = http://0.0.0.0:9000/api/
-    #web_enable = true
-    web_listen_uri = http://0.0.0.0:9000/
   {{- if .Values.graylog.ingress.enabled }}
     web_endpoint_uri =  {{ template "graylog.url" .}}/api
   {{- end }}
     elasticsearch_hosts = {{ template "graylog.elasticsearch.hosts" . }}
-    elasticsearch_connect_timeout = 10s
-    elasticsearch_socket_timeout = 60s
-    #elasticsearch_idle_timeout = -1s
-    #elasticsearch_max_total_connections = 20
-    #elasticsearch_max_total_connections_per_route = 2
-    #elasticsearch_max_retries = 2
-    rotation_strategy = {{ default "time" .Values.graylog.elasticsearch.rotationStrategy }}
-    elasticsearch_max_docs_per_index = {{ default "20000000" .Values.graylog.elasticsearch.maxDocsPerIndex }}
-    elasticsearch_max_time_per_index = 1w
-    elasticsearch_max_number_of_indices = {{ default 24 .Values.graylog.elasticsearch.maxNumberOfIndices }}
-    retention_strategy = {{ default "delete" .Values.graylog.elasticsearch.retentionStrategy }}
-    elasticsearch_shards = {{ default 5 .Values.graylog.elasticsearch.shards }}
-    elasticsearch_replicas = {{ default 0 .Values.graylog.elasticsearch.replicas }}
-    elasticsearch_index_prefix = {{ default "graylog" .Values.graylog.elasticsearch.indexPrefix }}
-    output_batch_size = 500
-    output_flush_interval = 1
-    output_fault_count_threshold = 5
-    output_fault_penalty_seconds = 30
-    processbuffer_processors = 5
-    outputbuffer_processors = 3
-    processor_wait_strategy = blocking
-    ring_size = 65536
-    inputbuffer_ring_size = 65536
-    inputbuffer_processors = 2
-    inputbuffer_wait_strategy = blocking
-    message_journal_enabled = true
-    message_journal_dir = /usr/share/graylog/data/journal
-    lb_recognition_period_seconds = 3
-    # Use a replica set instead of a single host
     mongodb_uri = {{ template "graylog.mongodb.uri" . }}
-    mongodb_max_connections = {{ default 1000 .Values.graylog.mongodb.maxConnections }}
-    mongodb_threads_allowed_to_block_multiplier = 5
-    # Email transport
-    transport_email_enabled = {{ default false .Values.graylog.transportEmail.enabled }}
-    transport_email_hostname = {{ default .Values.graylog.transportEmail.hostname }}
-    transport_email_port = {{ default .Values.graylog.transportEmail.port }}
-    transport_email_use_auth = {{ default .Values.graylog.transportEmail.useAuth }}
-    transport_email_use_tls = {{ default .Values.graylog.transportEmail.useTls }}
-    transport_email_use_ssl = {{ default .Values.graylog.transportEmail.useSsl }}
-    transport_email_auth_username = {{ default .Values.graylog.transportEmail.authUsername }}
-    transport_email_auth_password = {{ default .Values.graylog.transportEmail.authPassword }}
-    transport_email_subject_prefix = {{ default .Values.graylog.transportEmail.subjectPrefix }}
-    transport_email_from_email = {{ default .Values.graylog.transportEmail.fromEmail }}
   {{- if .Values.graylog.ingress.enabled }}
     transport_email_web_interface_url = {{ template "graylog.url" .}}
   {{- end }}
-    content_packs_dir = /usr/share/graylog/data/contentpacks
-    content_packs_auto_load = grok-patterns.json
-    proxied_requests_thread_pool_size = 32
+
+    ################################################################
+    ## Further config included from .graylog.additionalGraylogConf
+    ################################################################
+
+    {{- .Values.graylog.additionalGraylogConf | nindent 4 }}

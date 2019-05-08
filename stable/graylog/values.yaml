@@ -176,24 +176,12 @@ graylog:
     ##
     enabled: false
 
-  ## Graylog root user name
-  ##
-  rootUsername: "admin"
-
   ## Graylog root password
   ## Defaults to a random 16-character alphanumeric string if not set
   ##
   # rootPassword: ""
 
-  ## Graylog root email
-  ##
-  rootEmail: ""
-
-  ## Graylog root timezone
-  ##
-  rootTimezone: "UTC"
-
-  elasticsearch:
+  elasticsearch: {}
     ## List of Elasticsearch hosts Graylog should connect to.
     ## Need to be specified as a comma-separated list of valid URIs for the http ports of your elasticsearch nodes.
     ## If one or more of your elasticsearch hosts require authentication, include the credentials in each node URI that
@@ -201,37 +189,10 @@ graylog:
     ##
     # hosts: http://elasticsearch-client.graylog.svc.cluster.local:9200
 
-    ## These configuration settings are only used on the first start of Graylog. After that,
-    ## index related settings can be changed in the Graylog web interface on the 'System / Indices' page.
-    ## Also see http://docs.graylog.org/en/2.3/pages/configuration/index_model.html#index-set-configuration.
-    rotationStrategy: time
-    maxNumberOfIndices: 24
-    retentionStrategy: delete
-    shards: 5
-    replicas: 1
-    indexPrefix: graylog
-
-  mongodb:
+  mongodb: {}
     ## MongoDB connection string
     ## See https://docs.mongodb.com/manual/reference/connection-string/ for details
     # uri: mongodb://user:pass@host1:27017,host2:27017,host3:27017/graylog?replicaSet=rs01
-
-    ## Increase this value according to the maximum connections your MongoDB server can handle from a single client
-    ## if you encounter MongoDB connection problems.
-    maxConnections: 1000
-
-  transportEmail:
-    ## If true, enable Email transport.
-    enabled: false
-    hostname: ""
-    port: 2587
-    useAuth: true
-    useTls: true
-    useSsl: true
-    authUsername: ""
-    authPassword: ""
-    subjectPrefix: "[graylog]"
-    fromEmail: ""
 
   ## Additional server files will be deployed to /etc/graylog/server
   ## For example, you can put server certificates or authorized clients certificates here
@@ -239,6 +200,86 @@ graylog:
   serverFiles: {}
     # graylog-server.key: |
     # graylog-server.cert: |
+
+  ## Some important values derived from release metadata, such as:
+  ##  * web_endpoint_uri
+  ##  * elasticsearch_hosts
+  ##  * mongodb_uri
+  ##  * transport_email_web_interface_url
+  ##
+  ## All other configuration can be included inline below.
+  additionalGraylogConf: |
+    ## root password defined by .graylog.rootPassword in values.yaml
+    root_username = admin
+    # root_email =
+
+    rest_listen_uri = http://0.0.0.0:9000/api/
+    #web_enable = true
+    web_listen_uri = http://0.0.0.0:9000/
+
+    root_timezone = UTC
+
+    node_id_file = /usr/share/graylog/data/journal/node-id
+    plugin_dir = /usr/share/graylog/plugin
+
+    retention_strategy = delete
+    rotation_strategy = time
+
+    elasticsearch_connect_timeout = 10s
+    elasticsearch_socket_timeout = 60s
+    #elasticsearch_idle_timeout = -1s
+    #elasticsearch_max_total_connections = 20
+    #elasticsearch_max_total_connections_per_route = 2
+    #elasticsearch_max_retries = 2
+    elasticsearch_max_docs_per_index = 20000000
+    elasticsearch_max_time_per_index = 1w
+    elasticsearch_max_number_of_indices = 24
+    elasticsearch_shards = 5
+    elasticsearch_replicas = 1
+    elasticsearch_index_prefix = graylog
+
+    output_batch_size = 500
+    output_flush_interval = 1
+    output_fault_count_threshold = 5
+    output_fault_penalty_seconds = 30
+
+    outputbuffer_processors = 3
+
+    processbuffer_processors = 5
+    processor_wait_strategy = blocking
+
+    ring_size = 65536
+
+    inputbuffer_ring_size = 65536
+    inputbuffer_processors = 2
+    inputbuffer_wait_strategy = blocking
+
+    message_journal_enabled = true
+    message_journal_dir = /usr/share/graylog/data/journal
+    lb_recognition_period_seconds = 3
+
+    ## Increase this value according to the maximum connections your MongoDB server can handle from a single client
+    ## if you encounter MongoDB connection problems.
+    mongodb_max_connections = 1000
+
+    mongodb_threads_allowed_to_block_multiplier = 5
+
+    # Email transport
+    transport_email_enabled = false
+    # transport_email_hostname =
+    transport_email_port = 2587
+    transport_email_use_auth = true
+    transport_email_use_tls = true
+    transport_email_use_ssl = false
+    # transport_email_auth_username =
+    # transport_email_auth_password =
+    transport_email_subject_prefix = [graylog]
+    # transport_email_from_email =
+
+    content_packs_dir = /usr/share/graylog/data/contentpacks
+    content_packs_auto_load = grok-patterns.json
+
+    proxied_requests_thread_pool_size = 32
 
 ## Specify Elasticsearch version from requirement dependencies. Ignore this seection if you install Elasticsearch manually.
 ## Note: Graylog 2.4 requires Elasticsearch version <= 5.6
