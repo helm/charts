@@ -49,6 +49,8 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `adminService.type`                | Ambassador's admin service type to be used                                      | `ClusterIP`                                         |
 | `ambassadorConfig`                 | Config thats mounted to `/ambassador/ambassador-config`                         | `""`                                                |
 | `daemonSet`                        | If `true`, Create a daemonSet. By default Deployment controller will be created | `false`                                             |
+| `hostNetwork`                        | If `true`, uses the host network, useful for on-premise setups                | `false`                                       |
+| `dnsPolicy`                        | Dns policy, when hostNetwork set to ClusterFirstWithHostNet                     | `ClusterFirst`                                       |
 | `env`                              | Any additional environment variables for ambassador pods                        | `{}`                                                |
 | `image.pullPolicy`                 | Ambassador image pull policy                                                    | `IfNotPresent`                                      |
 | `image.repository`                 | Ambassador image                                                                | `quay.io/datawire/ambassador`                       |
