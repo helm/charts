@@ -1,6 +1,6 @@
 name: dex
-version: 1.1.0
-appVersion: 2.14.0
+version: 1.2.0
+appVersion: 2.16.0
 description: CoreOS Dex
 keywords:
 - dex
