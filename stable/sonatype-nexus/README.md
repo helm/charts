@@ -100,6 +100,10 @@ The following table lists the configurable parameters of the Nexus chart and the
 | `nexusProxy.env.nexusDockerHost`            | Containers url to be used with docker | `nil`                                 |
 | `nexusProxy.env.enforceHttps`               | Allow only https access or not      | `false`                                 |
 | `nexusProxy.env.cloudIamAuthEnabled`        | Enable GCP IAM authentication in Nexus proxy  | `false`                       |
+| `nexusProxyRoute.enabled`     | Set to true to create route for additional service | `false` |
+| `nexusProxyRoute.labels`      | Labels to be added to proxy route            | `{}` |
+| `nexusProxyRoute.annotations` | Annotations to be added to proxy route       | `{}` |
+| `nexusProxyRoute.path`        | Host name of Route e.g jenkins.example.com   |  nil |
 | `persistence.enabled`                       | Create a volume for storage         | `true`                                  |
 | `persistence.accessMode`                    | ReadWriteOnce or ReadOnly           | `ReadWriteOnce`                         |
 | `persistence.storageClass`                  | Storage class of Nexus PVC          | `nil`                                   |
@@ -131,7 +135,8 @@ The following table lists the configurable parameters of the Nexus chart and the
 | `deployment.initContainers`                 | Init containers to run before main containers  | `nil`                        |
 | `deployment.postStart.command`              | Command to run after starting the nexus container  | `nil`                    |
 | `deployment.additionalContainers`           | Add additional Container         | `nil`                                      |
-| `deployment.additionalVolumes`              | Add additional Container         | `nil`                                      |
+| `deployment.additionalVolumes`              | Add additional Volumes           | `nil`                                      |
+| `deployment.additionalVolumeMounts`         | Add additional Volume mounts     | `nil`                                      |
 | `secret.enabled`                            | Enable secret                    | `false`                                    |
 | `secret.mountPath`                          | Path to mount the secret         | `/etc/secret-volume`                       |
 | `secret.readOnly`                           | Secret readonly state            | `true`                                     |
@@ -143,6 +148,12 @@ The following table lists the configurable parameters of the Nexus chart and the
 | `service.annotations`                       | Service annotations              | `nil`                                      |
 | `service.targetPort`                        | Service port                     | `nil`                                      |
 | `service.port`                              | Port for exposing service        | `nil`                                      |
+| `route.enabled`         | Set to true to create route for additional service | `false` |
+| `route.name`            | Name of route                                      | `docker` |
+| `route.portName`        | Target port name of service                        | `docker` |
+| `route.labels`          | Labels to be added to route                        | `{}` |
+| `route.annotations`     | Annotations to be added to route                   | `{}` |
+| `route.path`            | Host name of Route e.g jenkins.example.com         | nil |
 
 If `nexusProxy.env.cloudIamAuthEnabled` is set to `true` the following variables need to be configured
 

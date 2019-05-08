@@ -125,7 +125,8 @@ Parameter | Description | Default
 `autoscalingGroupsnamePrefix[].name` | GCE MIG name prefix (the full name is invalid) | None. Required for `cloudProvider=gce`
 `autoscalingGroupsnamePrefix[].maxSize` | maximum MIG size | None. Required for `cloudProvider=gce`
 `autoscalingGroupsnamePrefix[].minSize` | minimum MIG size |  None. Required for `cloudProvider=gce`
-`sslCertPath` | Path on the host where ssl ca cert exists | `/etc/ssl/certs/ca-certificates.crt`
+`sslCertPath` | Path on the pod where ssl ca cert exists | `/etc/ssl/certs/ca-certificates.crt`
+`sslCertHostPath` | Path on the host where ssl ca cert exists | `/etc/ssl/certs/ca-certificates.crt`
 `cloudProvider` | `aws` or `spotinst` are currently supported for AWS. `gce` for GCE. `azure` for Azure AKS | `aws`
 `image.repository` | Image | `k8s.gcr.io/cluster-autoscaler`
 `image.tag` | Image tag  | `v1.13.1`
@@ -167,6 +168,7 @@ Parameter | Description | Default
 `azureResourceGroup` | Azure resource group that the cluster is located | none
 `azureVMType: "AKS"` | Azure VM type | `AKS`
 `azureNodeResourceGroup` | azure resource group where the clusters Nodes are located, typically set as `MC_<cluster-resource-group-name>_<cluster-name>_<location>` | none
+`azureUseManagedIdentityExtension` | Whether to use Azure's managed identity extension for credentials | false
 
 Specify each parameter you'd like to override using a YAML file as described above in the [installation](#installing-the-chart) section or by using the `--set key=value[,key=value]` argument to `helm install`. For example, to change the region and [expander](https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/FAQ.md#what-are-expanders):
 

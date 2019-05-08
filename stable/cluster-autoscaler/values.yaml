@@ -36,11 +36,14 @@ azureTenantID: ""
 azureVMType: "AKS"
 azureClusterName: ""
 azureNodeResourceGroup: ""
+# if using MSI, ensure subscription ID and resource group are set
+azureUseManagedIdentityExtension: false
 
 # Currently only `gce`, `aws`, `azure` & `spotinst` are supported
 cloudProvider: aws
 
 sslCertPath: /etc/ssl/certs/ca-certificates.crt
+sslCertHostPath: /etc/ssl/certs/ca-certificates.crt
 
 # Configuration file for cloud provider
 cloudConfigPath: /etc/gce.conf

@@ -52,12 +52,18 @@ The following table lists the configurable parameters of the Burrow chart and it
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
 | `image.repository` | image repository | `"hyperledger/burrow"` |
-| `image.tag` | image tag | `"0.24.3"` |
+| `image.tag` | image tag | `"0.25.0"` |
 | `image.pullPolicy` | image pull policy | `"IfNotPresent"` |
 | `chain.nodes` | number of nodes for the blockchain network | `1` |
 | `chain.logLevel` | log level for the nodes (`debug`, `info`, `warn`) | `"info"` |
 | `chain.extraSeeds` | network seeds to dial in addition to the cluster booted by the chart; each entry in the array should be in the form `ip:port` (note: because P2P connects over tcp, the port is absolutely required) | `[]` |
 | `chain.testing` | toggle pre-generated keys & genesis for ci testing | `false` |
+| `contracts.enabled` | toggle post-install contract deployment | `false` |
+| `contracts.image` | contract deployer image | `""` |
+| `contracts.tag` | contract deployer tag | `""` |
+| `contracts.deploy` | command to run in post-install hook | `""` |
+| `chain.restore.enabled` | toggle chain restore mechanism | `false` |
+| `chain.restore.dumpURL` | accessible dump file from absolute url | `""` |
 | `validatorAddresses` | list of validators to deploy | `[]` |
 | `env` | environment variables to configure burrow | `{}` |
 | `extraArgs` | extra arguments to give to the build in `burrow start` command | `{}` |
