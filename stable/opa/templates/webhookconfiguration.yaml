@@ -14,8 +14,8 @@ metadata:
 webhooks:
   - name: webhook.openpolicyagent.org
     namespaceSelector:
-      matchLabels:
-        openpolicyagent.org/policy: rego
+      matchExpressions:
+        - {key: openpolicyagent.org/webhook, operator: NotIn, values: [ignore]}
     failurePolicy: {{ .Values.admissionControllerFailurePolicy }}
     rules:
 {{ toYaml .Values.admissionControllerRules | indent 6 }}
