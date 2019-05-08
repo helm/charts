@@ -123,6 +123,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `ssl.insecureSkipVerify`               | Whether to verify certs on SSL connections                                                                                   | `false`                                           |
 | `ssl.tlsMinVersion`                    | Minimum TLS version for https entrypoint                                                                                     | None                                              |
 | `ssl.cipherSuites`                     | Specify a non-empty list of TLS ciphers to override the default one | None |
+| `ssl.sniStrict`                        | Enable strict SNI checking, so that connections cannot be made if a matching certificate does not exist.                     | false                                             |
 | `ssl.generateTLS`                      | Generate self sign cert by Helm. If it's `true` the `defaultCert` and the `defaultKey` parameters will be ignored.           | false                                             |
 | `ssl.defaultCN`                        | Specify generated self sign cert CN                                                                                          | ""                                                |
 | `ssl.defaultSANList`                   | Specify generated self sign cert SAN list                                                                                    | `[]`                                              |
