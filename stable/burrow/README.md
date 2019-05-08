@@ -51,42 +51,50 @@ The following table lists the configurable parameters of the Burrow chart and it
 
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
-| `image.repository` | image repository | `"hyperledger/burrow"` |
-| `image.tag` | image tag | `"0.25.0"` |
-| `image.pullPolicy` | image pull policy | `"IfNotPresent"` |
+| `affinity` | node/pod affinities | `{}` |
 | `chain.nodes` | number of nodes for the blockchain network | `1` |
 | `chain.logLevel` | log level for the nodes (`debug`, `info`, `warn`) | `"info"` |
 | `chain.extraSeeds` | network seeds to dial in addition to the cluster booted by the chart; each entry in the array should be in the form `ip:port` (note: because P2P connects over tcp, the port is absolutely required) | `[]` |
+| `chain.restore.enabled` | toggle chain restore mechanism | `false` |
+| `chain.restore.dumpURL` | accessible dump file from absolute url | `""` |
 | `chain.testing` | toggle pre-generated keys & genesis for ci testing | `false` |
+| `config` | the [burrow configuration file](https://github.com/hyperledger/burrow/blob/develop/tests/chain/burrow.toml) | `{}` |
 | `contracts.enabled` | toggle post-install contract deployment | `false` |
 | `contracts.image` | contract deployer image | `""` |
 | `contracts.tag` | contract deployer tag | `""` |
 | `contracts.deploy` | command to run in post-install hook | `""` |
-| `chain.restore.enabled` | toggle chain restore mechanism | `false` |
-| `chain.restore.dumpURL` | accessible dump file from absolute url | `""` |
-| `validatorAddresses` | list of validators to deploy | `[]` |
 | `env` | environment variables to configure burrow | `{}` |
 | `extraArgs` | extra arguments to give to the build in `burrow start` command | `{}` |
+| `image.repository` | image repository | `"hyperledger/burrow"` |
+| `image.tag` | image tag | `"0.25.1"` |
+| `image.pullPolicy` | image pull policy | `"IfNotPresent"` |
+| `livenessProbe.enabled` | enable liveness checks | `true` |
+| `livenessProbe.path` | http endpoint | `"/status?block_seen_time_within=3m"` |
+| `livenessProbe.initialDelaySeconds` | start after | `240` |
+| `livenessProbe.timeoutSeconds` | retry after | `1` |
+| `livenessProbe.periodSeconds` | check every | `30` |
+| `nodeSelector` | node labels for pod assignment | `{}` |
 | `organization` | name of the organization running these nodes (used in the peer's moniker) | `""` |
 | `persistence.enabled` | enable pvc for the chain data | `true` |
 | `persistence.size` | size of the chain data pvc | `"80Gi"` |
 | `persistence.storageClass` | storage class for the chain data pvc | `"standard"` |
 | `persistence.accessMode` | access mode for the chain data pvc | `"ReadWriteOnce"` |
 | `persistence.persistentVolumeReclaimPolicy` | does not delete on node restart | `"Retain"` |
-| `peer.service.type` | service type | `"ClusterIP"` |
-| `peer.service.port` | peer port | `26656` |
-| `peer.ingress.enabled` | expose port | `false` |
-| `peer.ingress.hosts` | - | `[]` |
-| `rpcGRPC.enabled` | enable grpc service | `true` |
-| `rpcGRPC.service.port` | grpc port | `10997` |
+| `podAnnotations` | annotations to add to each pod | `{}` |
+| `podLabels` | labels to add to each pod | `{}` |
+| `readinessProbe.enabled` | enable readiness checks | `true` |
+| `readinessProbe.path` | http endpoint | `"/status"` |
+| `readinessProbe.initialDelaySeconds` | start after | `5` |
+| `resources.limits.cpu` | - | `"500m"` |
+| `resources.limits.memory` | - | `"1Gi"` |
+| `resources.requests.cpu` | - | `"100m"` |
+| `resources.requests.memory` | - | `"256Mi"` |
 | `rpcGRPC.service.type` | service type | `"ClusterIP"` |
 | `rpcGRPC.service.loadBalance` | enable load balancing across nodes | `true` |
 | `rpcGRPC.ingress.enabled` | expose port | `false` |
 | `rpcGRPC.ingress.hosts` | - | `[]` |
 | `rpcGRPC.ingress.annotations` | extra annotations | `` |
 | `rpcGRPC.ingress.tls` | - | `` |
-| `rpcInfo.enabled` | enable Info service | `true` |
-| `rpcInfo.service.port` | Info port | `26658` |
 | `rpcInfo.service.type` | service type | `"ClusterIP"` |
 | `rpcInfo.service.loadBalance` | enable load balancing across nodes | `true` |
 | `rpcInfo.ingress.enabled` | expose port | `false` |
@@ -95,29 +103,13 @@ The following table lists the configurable parameters of the Burrow chart and it
 | `rpcInfo.ingress.annotations` | extra annotations | `` |
 | `rpcInfo.ingress.hosts` | - | `[]` |
 | `rpcInfo.ingress.tls` | - | `` |
-| `rpcMetrics.enabled` | enable Info service | `true` |
-| `rpcMetrics.port` | Info port | `9102` |
-| `rpcMetrics.path` | http endpoint | `"/metrics"` |
-| `rpcMetrics.blockSampleSize` | number of previous blocks to utilize in calculating the histograms and summaries which are sent to prometheus | `100` |
-| `rpcProfiler.enabled` | enable Info service | `false` |
-| `rpcProfiler.port` | Info port | `6060` |
-| `resources.limits.cpu` | - | `"500m"` |
-| `resources.limits.memory` | - | `"1Gi"` |
-| `resources.requests.cpu` | - | `"100m"` |
-| `resources.requests.memory` | - | `"256Mi"` |
-| `livenessProbe.enabled` | enable liveness checks | `true` |
-| `livenessProbe.path` | http endpoint | `"/status?block_seen_time_within=3m"` |
-| `livenessProbe.initialDelaySeconds` | start after | `240` |
-| `livenessProbe.timeoutSeconds` | retry after | `1` |
-| `livenessProbe.periodSeconds` | check every | `30` |
-| `readinessProbe.enabled` | enable readiness checks | `true` |
-| `readinessProbe.path` | http endpoint | `"/status"` |
-| `readinessProbe.initialDelaySeconds` | start after | `5` |
-| `podAnnotations` | annotations to add to each pod | `{}` |
-| `podLabels` | labels to add to each pod | `{}` |
-| `affinity` | node/pod affinities | `{}` |
+| `rpcPeer.service.type` | service type | `"ClusterIP"` |
+| `rpcPeer.service.port` | peer port | `26656` |
+| `rpcPeer.ingress.enabled` | expose port | `false` |
+| `rpcPeer.ingress.hosts` | - | `[]` |
 | `tolerations` | list of node taints to tolerate | `[]` |
-| `nodeSelector` | node labels for pod assignment | `{}` |
+| `validatorAddresses` | list of validators to deploy | `[]` |
+
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

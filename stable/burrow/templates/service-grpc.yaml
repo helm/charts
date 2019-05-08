@@ -8,8 +8,8 @@ metadata:
     heritage: {{ .Release.Service }}
   name:  {{ template "burrow.fullname" . }}-grpc
 spec:
-  type: {{ .Values.rpcGRPC.service.type }}
-{{- if .Values.rpcGRPC.service.loadBalance }}
+  type: {{ .Values.RPC.GRPC.service.type }}
+{{- if .Values.RPC.GRPC.service.loadBalance }}
   sessionAffinity: ClientIP
   sessionAffinityConfig:
     clientIP:
@@ -17,12 +17,12 @@ spec:
 {{- end }}
   ports:
     - name: grpc
-      port: {{ .Values.rpcGRPC.service.port }}
+      port: {{ $.Values.config.RPC.GRPC.ListenPort }}
       targetPort: grpc
       protocol: TCP
   selector:
     app: {{ template "burrow.name" . }}
     release: {{ .Release.Name }}
-{{- if not .Values.rpcGRPC.service.loadBalance }}
-    nodeNumber: {{ .Values.rpcGRPC.service.node | quote }}
+{{- if not .Values.RPC.GRPC.service.loadBalance }}
+    nodeNumber: {{ .Values.RPC.GRPC.service.node | quote }}
 {{- end }}
