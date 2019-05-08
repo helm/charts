@@ -1,5 +1,5 @@
 name: sonatype-nexus
-version: 1.16.3
+version: 1.18.0
 appVersion: 3.15.2-01
 description: Sonatype Nexus is an open source repository manager
 keywords:

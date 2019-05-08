@@ -3,17 +3,17 @@ affinity: {}
 annotations: {}
 
 extraArgs:
-- -collect.collection=true
-- -collect.database=true
-- -collect.indexusage=true
-- -collect.topmetrics=true
+- --collect.collection
+- --collect.database
+- --collect.indexusage
+- --collect.topmetrics
 
 fullnameOverride: ""
 
 image:
   pullPolicy: IfNotPresent
-  repository: ssalaues/mongodb-exporter
-  tag: 0.6.1
+  repository: ssheehy/mongodb-exporter
+  tag: 0.7.0
 
 imagePullSecrets: []
 
@@ -23,13 +23,19 @@ livenessProbe:
     port: metrics
   initialDelaySeconds: 10
 
-# mongodb://metrics-user:password@mongodb:27017
+# [mongodb://][user:pass@]host1[:port1][,host2[:port2],...][/database][?options]
 mongodb:
   uri:
 
 nameOverride: ""
 
 nodeSelector: {}
+
+podAnnotations: {}
+#  prometheus.io/scrape: "true"
+#  prometheus.io/port: "metrics"
+
+port: "9216"
 
 priorityClassName: ""
 
@@ -57,19 +63,14 @@ securityContext:
   capabilities:
     drop: ["all"]
   readOnlyRootFilesystem: true
+  runAsGroup: 10000
   runAsNonRoot: true
   runAsUser: 10000
-
-service:
-  annotations: {}
-  #  prometheus.io/scrape: "true"
-  #  prometheus.io/port: "9216"
-  port: 9216
-  type: ClusterIP
 
 serviceMonitor:
   enabled: true
   interval: 30s
+  scrapeTimeout: 10s
   namespace:
   additionalLabels: {}
 

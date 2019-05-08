@@ -75,6 +75,8 @@ client:
   name: client
   replicas: 2
   serviceType: ClusterIP
+  ## If coupled with serviceType = "NodePort", this will set a specific nodePort to the client HTTP port
+  # httpNodePort: 30920
   loadBalancerIP: {}
   loadBalancerSourceRanges: {}
 ## (dict) If specified, apply these annotations to the client service

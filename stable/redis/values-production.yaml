@@ -29,10 +29,91 @@ image:
   # pullSecrets:
   #   - myRegistryKeySecretName
 
+## Redis pod Security Context
+securityContext:
+  enabled: true
+  fsGroup: 1001
+  runAsUser: 1001
+
 ## Cluster settings
 cluster:
   enabled: true
   slaveCount: 3
+
+## Use redis sentinel in the redis pod. This will disable the master and slave services and
+## create one redis service with ports to the sentinel and the redis instances
+sentinel:
+  enabled: false
+  ## Bitnami Redis Sentintel image version
+  ## ref: https://hub.docker.com/r/bitnami/redis-sentinel/tags/
+  ##
+  image:
+    registry: docker.io
+    repository: bitnami/redis-sentinel
+    ## Bitnami Redis image tag
+    ## ref: https://github.com/bitnami/bitnami-docker-redis-sentinel#supported-tags-and-respective-dockerfile-links
+    ##
+    tag: 4.0.14
+    ## Specify a imagePullPolicy
+    ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
+    ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+    ##
+    pullPolicy: Always
+    ## Optionally specify an array of imagePullSecrets.
+    ## Secrets must be manually created in the namespace.
+    ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+    ##
+    # pullSecrets:
+    #   - myRegistryKeySecretName
+  masterSet: mymaster
+  initialCheckTimeout: 5
+  quorum: 2
+  downAfterMilliseconds: 60000
+  failoverTimeout: 18000
+  parallelSyncs: 1
+  port: 26379
+  ## Configure extra options for Redis Sentinel liveness and readiness probes
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
+  ##
+  livenessProbe:
+    enabled: true
+    initialDelaySeconds: 5
+    periodSeconds: 5
+    timeoutSeconds: 5
+    successThreshold: 1
+    failureThreshold: 5
+  readinessProbe:
+    enabled: true
+    initialDelaySeconds: 5
+    periodSeconds: 5
+    timeoutSeconds: 1
+    successThreshold: 1
+    failureThreshold: 5
+  ## Redis Sentinel resource requests and limits
+  ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  # resources:
+  #   requests:
+  #     memory: 256Mi
+  #     cpu: 100m
+  ## Redis Sentinel Service properties
+  service:
+    ##  Redis Sentinel Service type
+    type: ClusterIP
+    sentinelPort: 26379
+    redisPort: 6379
+
+    ## Specify the nodePort value for the LoadBalancer and NodePort service types.
+    ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
+    ##
+    # sentinelNodePort:
+    # redisNodePort:
+
+    ## Provide any additional annotations which may be required. This can be used to
+    ## set the LoadBalancer service type to internal only.
+    ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer
+    ##
+    annotations: {}
+    loadBalancerIP:
 
 networkPolicy:
   ## Specifies whether a NetworkPolicy should be created
@@ -72,6 +153,7 @@ rbac:
     #      - gce.unprivileged
     rules: []
 
+
 ## Use password authentication
 usePassword: true
 ## Redis password (both master and slave)
@@ -92,12 +174,13 @@ persistence: {}
   ## If defined, PVC must be created manually before volume will be bound
   # existingClaim:
 
+# Redis port
+redisPort: 6379
+
 ##
 ## Redis Master parameters
 ##
 master:
-  ## Redis port
-  port: 6379
   ## Redis command arguments
   ##
   ## Can be used to specify command line arguments, for example:
@@ -142,15 +225,15 @@ master:
   ##
   livenessProbe:
     enabled: true
-    initialDelaySeconds: 30
-    periodSeconds: 10
+    initialDelaySeconds: 5
+    periodSeconds: 5
     timeoutSeconds: 5
     successThreshold: 1
     failureThreshold: 5
   readinessProbe:
     enabled: true
     initialDelaySeconds: 5
-    periodSeconds: 10
+    periodSeconds: 5
     timeoutSeconds: 1
     successThreshold: 1
     failureThreshold: 5
@@ -183,13 +266,6 @@ master:
     annotations: {}
     loadBalancerIP:
 
-  ## Redis Master Pod Security Context
-  ##
-  securityContext:
-    enabled: true
-    fsGroup: 1001
-    runAsUser: 1001
-
   ## Enable persistence using Persistent Volume Claims
   ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
   ##
@@ -197,7 +273,7 @@ master:
     enabled: true
     ## The path the volume will be mounted at, useful when using different
     ## Redis images.
-    path: /bitnami/redis/data
+    path: /data
     ## The subdirectory of the volume to mount to, useful in dev environments
     ## and one PV for multiple services.
     subPath: ""
@@ -224,6 +300,7 @@ master:
   ## Redis Master pod priorityClassName
   # priorityClassName: {}
 
+
 ##
 ## Redis Slave properties
 ## Note: service.type is a mandatory parameter
@@ -234,6 +311,8 @@ slave:
   service:
     ## Redis Slave Service type
     type: ClusterIP
+    ## Redis port
+    port: 6379
     ## Specify the nodePort value for the LoadBalancer and NodePort service types.
     ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
     ##
@@ -246,12 +325,18 @@ slave:
     annotations: {}
     loadBalancerIP:
 
-  ## Redis port
-  # port: 6379
+  ## Redis slave port
+  port: 6379
+
+  ## Can be used to specify command line arguments, for example:
+  ##
+  command: "/run.sh"
   ## Redis extra flags
-  # extraFlags: []
+  extraFlags: []
   ## List of Redis commands to disable
-  # disableCommands: []
+  disableCommands:
+  - FLUSHDB
+  - FLUSHALL
 
   ## Redis Slave pod/node affinity/anti-affinity
   ##
@@ -260,26 +345,57 @@ slave:
   ## Configure extra options for Redis Slave liveness and readiness probes
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
   ##
-  # livenessProbe:
-  #   enabled: true
-  #   initialDelaySeconds: 30
-  #   periodSeconds: 10
-  #   timeoutSeconds: 5
-  #   successThreshold: 1
-  #   failureThreshold: 5
-  # readinessProbe:
-  #   enabled: true
-  #   initialDelaySeconds: 5
-  #   periodSeconds: 10
-  #   timeoutSeconds: 10
-  #   successThreshold: 1
-  #   failureThreshold: 5
+  livenessProbe:
+    enabled: true
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 5
+    successThreshold: 1
+    failureThreshold: 5
+  readinessProbe:
+    enabled: true
+    initialDelaySeconds: 5
+    periodSeconds: 10
+    timeoutSeconds: 10
+    successThreshold: 1
+    failureThreshold: 5
 
   ## Redis slave Resource
   # resources:
   #   requests:
   #     memory: 256Mi
   #     cpu: 100m
+
+  ## Enable persistence using Persistent Volume Claims
+  ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+  ##
+  persistence:
+    enabled: true
+    ## The path the volume will be mounted at, useful when using different
+    ## Redis images.
+    path: /data
+    ## The subdirectory of the volume to mount to, useful in dev environments
+    ## and one PV for multiple services.
+    subPath: ""
+    ## redis data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    # storageClass: "-"
+    accessModes:
+    - ReadWriteOnce
+    size: 8Gi
+
+  ## Update strategy, can be set to RollingUpdate or onDelete by default.
+  ## https://kubernetes.io/docs/tutorials/stateful-application/basic-stateful-set/#updating-statefulsets
+  statefulset:
+    updateStrategy: RollingUpdate
+    ## Partition update strategy
+    ## https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#partitions
+    # rollingUpdatePartition:
 
   ## Redis slave selectors and tolerations for pod assignment
   # nodeSelector: {"beta.kubernetes.io/arch": "amd64"}
@@ -291,14 +407,8 @@ slave:
   # schedulerName:
 
   ## Redis slave pod Annotation and Labels
-  # podLabels: {}
-  # podAnnotations: {}
-
-  ## Redis slave pod Security Context
-  # securityContext:
-  #   enabled: true
-  #   fsGroup: 1001
-  #   runAsUser: 1001
+  podLabels: {}
+  podAnnotations: {}
 
   ## Redis slave pod priorityClassName
   # priorityClassName: {}
@@ -350,7 +460,8 @@ metrics:
   # Enable this if you're using https://github.com/coreos/prometheus-operator
   serviceMonitor:
     enabled: false
-    namespace: monitoring
+    ## Specify a namespace if needed
+    # namespace: monitoring
     # fallback to the prometheus default unless specified
     # interval: 10s
     ## Defaults to what's used if you follow CoreOS [Prometheus Install Instructions](https://github.com/helm/charts/tree/master/stable/prometheus-operator#tldr)
@@ -389,7 +500,10 @@ volumePermissions:
 ## ref: https://redis.io/topics/config
 ##
 configmap: |-
-  # maxmemory-policy volatile-lru
+  # Enable AOF https://redis.io/topics/persistence#append-only-file
+  appendonly yes
+  # Disable RDB persistence, AOF persistence already enabled.
+  save ""
 
 ## Sysctl InitContainer
 ## used to perform sysctl operation to modify Kernel settings (needed sometimes to avoid warnings)

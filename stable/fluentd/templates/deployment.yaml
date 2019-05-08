@@ -23,7 +23,10 @@ spec:
         app: {{ template "fluentd.name" . }}
         release: {{ .Release.Name }}
       annotations:
-{{ toYaml .Values.annotations | indent 8 }}
+        checksum/configmap: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{- if .Values.annotations }}
+        {{- toYaml .Values.annotations | nindent 8 }}
+        {{- end }}
     spec:
 {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
@@ -51,6 +54,9 @@ spec:
           {{- range $key, $value := .Values.env }}
           - name: {{ $key | quote }}
             value: {{ $value | quote }}
+          {{- end }}
+          {{- if .Values.extraEnvVars }}
+{{ toYaml .Values.extraEnvVars | indent 10 }}
           {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 12 }}

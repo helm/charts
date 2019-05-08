@@ -1,3 +1,4 @@
+{{- if .Values.worker.enabled -}}
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
@@ -12,3 +13,4 @@ spec:
   selector:
     matchLabels:
       app: {{ template "concourse.worker.fullname" . }}
+{{- end }}

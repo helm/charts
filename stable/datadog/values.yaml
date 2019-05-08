@@ -29,8 +29,8 @@ image:
   ## It is possible to specify docker registry credentials
   ## See https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
   #
-  #  pullSecrets:
-  #    - name: "<REG_SECRET>"
+  # pullSecrets:
+  #   - name: "<REG_SECRET>"
 
 nameOverride: ""
 fullnameOverride: ""
@@ -47,32 +47,32 @@ datadog:
   ## Use existing Secret which stores API key instead of creating a new one.
   ## If set, this parameter takes precedence over "apiKey".
   #
-  #  apiKeyExistingSecret: <DATADOG_API_KEY_SECRET>
+  # apiKeyExistingSecret: <DATADOG_API_KEY_SECRET>
 
   ## @param appKey - string - optional
   ## If you are using clusterAgent.metricsProvider.enabled = true, you must set
   ## a Datadog application key for read access to your metrics.
   #
-  #  appKey: <DATADOG_APP_KEY>
+  # appKey: <DATADOG_APP_KEY>
 
   ## @param appKeyExistingSecret - string - optional
   ## Use existing Secret which stores APP key instead of creating a new one
   ## If set, this parameter takes precedence over "appKey".
   #
-  #  appKeyExistingSecret: <DATADOG_APP_KEY_SECRET>
+  # appKeyExistingSecret: <DATADOG_APP_KEY_SECRET>
 
   ## @param securityContext - object - optional
   ## You can modify the security context used to run the containers by
   ## modifying the label type below:
   #
-  #  securityContext:
-  #    seLinuxOptions:
-  #      seLinuxLabel: "spc_t"
+  # securityContext:
+  #   seLinuxOptions:
+  #     seLinuxLabel: "spc_t"
 
   ## @param clusterName - string - optional
   ## Set a unique cluster name to allow scoping hosts and Cluster Checks easily
   #
-  #  clusterName: <CLUSTER_NAME>
+  # clusterName: <CLUSTER_NAME>
 
   ## @param name - string - required
   ## Daemonset/Deployment container name
@@ -84,14 +84,14 @@ datadog:
   ## The site of the Datadog intake to send Agent data to.
   ## Set to 'datadoghq.eu' to send data to the EU site.
   #
-  #  site: datadoghq.com
+  # site: datadoghq.com
 
   ## @param dd_url - string - optional - default: 'https://app.datadoghq.com'
   ## The host of the Datadog intake server to send Agent data to, only set this option
   ## if you need the Agent to send data to a custom URL.
   ## Overrides the site setting defined in "site".
   #
-  #  dd_url: https://app.datadoghq.com
+  # dd_url: https://app.datadoghq.com
 
   ## @param logLevel - string - required
   ## Set logging verbosity, valid log levels are:
@@ -102,26 +102,26 @@ datadog:
   ## @param podLabelsAsTags - list of key:value strings - optional
   ## Provide a mapping of Kubernetes Labels to Datadog Tags.
   #
-  #  podLabelsAsTags:
-  #    app: kube_app
-  #    release: helm_release
-  #    <KUBERNETES_LABEL>: <DATADOG_TAG_KEY>
+  # podLabelsAsTags:
+  #   app: kube_app
+  #   release: helm_release
+  #   <KUBERNETES_LABEL>: <DATADOG_TAG_KEY>
 
   ## @param podAnnotationsAsTags - list of key:value strings - optional
   ## Provide a mapping of Kubernetes Annotations to Datadog Tags
   #
-  #  podAnnotationsAsTags:
-  #    iam.amazonaws.com/role: kube_iamrole
-  #    <KUBERNETES_ANNOTATIONS>: <DATADOG_TAG_KEY>
+  # podAnnotationsAsTags:
+  #   iam.amazonaws.com/role: kube_iamrole
+  #   <KUBERNETES_ANNOTATIONS>: <DATADOG_TAG_KEY>
 
   ## @param tags  - list of key:value elements - optional
   ## List of tags to attach to every metric, event and service check collected by this Agent.
   ##
   ## Learn more about tagging: https://docs.datadoghq.com/tagging/
   #
-  #  tags:
-  #    - <KEY_1>:<VALUE_1>
-  #    - <KEY_2>:<VALUE_2>
+  # tags:
+  #   - <KEY_1>:<VALUE_1>
+  #   - <KEY_2>:<VALUE_2>
 
   ## @param useCriSocketVolume - boolean - required
   ## Enable container runtime socket volume mounting
@@ -132,84 +132,84 @@ datadog:
   ## Enable origin detection for container tagging
   ## https://docs.datadoghq.com/developers/dogstatsd/unix_socket/#using-origin-detection-for-container-tagging
   #
-  #  dogstatsdOriginDetection: true
+  # dogstatsdOriginDetection: true
 
   ## @param useDogStatsDSocketVolume - boolean - optional
   ## Enable dogstatsd over Unix Domain Socket
   ## ref: https://docs.datadoghq.com/developers/dogstatsd/unix_socket/
   #
-  #  useDogStatsDSocketVolume: true
+  # useDogStatsDSocketVolume: true
 
   ## @param nonLocalTraffic - boolean - optional - default: false
   ## Enable this to make each node accept non-local statsd traffic.
   ## ref: https://github.com/DataDog/docker-dd-agent#environment-variables
   #
-  #  nonLocalTraffic: false
+  # nonLocalTraffic: false
 
   ## @param collectEvents - boolean - optional - default: false
   ## Enables this to start event collection from the kubernetes API
   ## ref: https://docs.datadoghq.com/agent/kubernetes/event_collection/
   #
-  #  collectEvents: false
+  # collectEvents: false
 
   ## @param leaderElection - boolean - optional - default: false
   ## Enables leader election mechanism for event collection.
   #
-  #  leaderElection: false
+  # leaderElection: false
 
   ## @param leaderLeaseDuration - integer - optional - default: 60
   ## Set the lease time for leader election in second.
   #
-  #  leaderLeaseDuration: 60
+  # leaderLeaseDuration: 60
 
   ## @param logsEnabled - boolean - optional - default: false
   ## Enables this to activate Datadog Agent log collection.
   ## ref: https://docs.datadoghq.com/agent/basic_agent_usage/kubernetes/#log-collection-setup
   #
-  #  logsEnabled: false
+  # logsEnabled: false
 
   ## @param logsConfigContainerCollectAll - boolean - optional - default: false
   ## Enable this to allow log collection for all containers.
   ## ref: https://docs.datadoghq.com/agent/basic_agent_usage/kubernetes/#log-collection-setup
   #
-  #  logsConfigContainerCollectAll: false
+  # logsConfigContainerCollectAll: false
 
   ## @param apmEnabled - boolean - optional - default: false
   ## Enable this to enable APM and tracing, on port 8126
   ## ref: https://github.com/DataDog/docker-dd-agent#tracing-from-the-host
   #
-  #  apmEnabled: false
+  # apmEnabled: false
 
   ## @param processAgentEnabled - boolean - optional - default: false
   ## Enable this to activate live process monitoring.
   ## Note: /etc/passwd is automatically mounted to allow username resolution.
   ## ref: https://docs.datadoghq.com/graphing/infrastructure/process/#kubernetes-daemonset
   #
-  #  processAgentEnabled: false
+  # processAgentEnabled: false
 
   ## @param env - list of object - optional
   ## The dd-agent supports many environment variables
   ## ref: https://github.com/DataDog/datadog-agent/tree/master/Dockerfiles/agent#environment-variables
   #
-  #  env:
-  #    - name: <ENV_VAR_NAME>
-  #      value: <ENV_VAR_VALUE>
+  # env:
+  #   - name: <ENV_VAR_NAME>
+  #     value: <ENV_VAR_VALUE>
 
   ## @param volumes - list of objects - optional
   ## Specify additional volumes to mount in the dd-agent container
   #
-  #  volumes:
-  #    - hostPath:
-  #      path: <HOST_PATH>
-  #      name: <VOLUME_NAME>
+  # volumes:
+  #   - hostPath:
+  #     path: <HOST_PATH>
+  #     name: <VOLUME_NAME>
 
   ## @param volumeMounts - list of objects - optional
   ## Specify additional volumes to mount in the dd-agent container
   #
-  #  volumeMounts:
-  #    - name: <VOLUME_NAME>
-  #      mountPath: <CONTAINER_PATH>
-  #      readOnly: true
+  # volumeMounts:
+  #   - name: <VOLUME_NAME>
+  #     mountPath: <CONTAINER_PATH>
+  #     readOnly: true
 
   ## @param confd - list of objects - optional
   ## Provide additional check configurations (static and Autodiscovery)
@@ -217,41 +217,41 @@ datadog:
   ## ref: https://github.com/DataDog/datadog-agent/tree/master/Dockerfiles/agent#optional-volumes
   ## ref: https://docs.datadoghq.com/agent/autodiscovery/
   #
-  #  confd:
-  #    redisdb.yaml: |-
-  #      init_config:
-  #      instances:
-  #        - host: "name"
-  #          port: "6379"
-  #    kubernetes_state.yaml: |-
-  #      ad_identifiers:
-  #        - kube-state-metrics
-  #      init_config:
-  #      instances:
-  #        - kube_state_url: http://%%host%%:8080/metrics
+  # confd:
+  #   redisdb.yaml: |-
+  #     init_config:
+  #     instances:
+  #       - host: "name"
+  #         port: "6379"
+  #   kubernetes_state.yaml: |-
+  #     ad_identifiers:
+  #       - kube-state-metrics
+  #     init_config:
+  #     instances:
+  #       - kube_state_url: http://%%host%%:8080/metrics
 
   ## @param checksd - list of key:value strings - optional
   ## Provide additional custom checks as python code
   ## Each key becomes a file in /checks.d
   ## ref: https://github.com/DataDog/datadog-agent/tree/master/Dockerfiles/agent#optional-volumes
   #
-  #  checksd:
-  #    service.py: |-
+  # checksd:
+  #   service.py: |-
 
   ## @param criSocketPath - string - optional
   ## Path to the container runtime socket (if different from Docker)
   ## This is supported starting from agent 6.6.0
   #
-  #  criSocketPath: /var/run/containerd/containerd.sock
+  # criSocketPath: /var/run/containerd/containerd.sock
 
   ## @param livenessProbe - object - optional
   ## Override the agent's liveness probe logic from the default:
   ## In case of issues with the probe, you can disable it with the
   ## following values, to allow easier investigating:
   #
-  #  livenessProbe:
-  #    exec:
-  #      command: ["/bin/true"]
+  # livenessProbe:
+  #   exec:
+  #     command: ["/bin/true"]
 
   ## @param resources - object -required
   ## datadog-agent resource requests and limits
@@ -313,10 +313,10 @@ clusterAgent:
   ## Each key will become a file in /conf.d
   ## ref: https://docs.datadoghq.com/agent/autodiscovery/
   #
-  #  confd:
-  #    mysql.yaml: |-
-  #      cluster_check: true
-  #      instances:
+  # confd:
+  #   mysql.yaml: |-
+  #     cluster_check: true
+  #     instances:
   #       - server: '<EXTERNAL_IP>'
   #         port: 3306
   #         user: datadog
@@ -338,14 +338,14 @@ clusterAgent:
   ## In case of issues with the probe, you can disable it with the
   ## following values, to allow easier investigating:
   #
-  #  livenessProbe:
-  #    exec:
-  #      command: ["/bin/true"]
+  # livenessProbe:
+  #   exec:
+  #     command: ["/bin/true"]
 
   ## @param readinessProbe - object - optional
   ## Override the cluster-agent's readiness probe logic from the default:
   #
-  #  readinessProbe:
+  # readinessProbe:
 
 rbac:
 
@@ -402,7 +402,7 @@ daemonset:
   ## WARNING: Make sure that hosts using this are properly firewalled otherwise
   ## metrics and traces are accepted from any host able to connect to this host.
   #
-  #  useHostNetwork: true
+  # useHostNetwork: true
 
   ## @param useHostPort - boolean - optional
   ## Sets the hostPort to the same value of the container port. Needs to be used
@@ -412,47 +412,52 @@ daemonset:
   ## WARNING: Make sure that hosts using this are properly firewalled otherwise
   ## metrics and traces are accepted from any host able to connect to this host.
   #
-  #  useHostPort: true
+  # useHostPort: true
 
   ## @param useHostPID - boolean - optional
   ## Run the agent in the host's PID namespace. This is required for Dogstatsd origin
   ## detection to work. See https://docs.datadoghq.com/developers/dogstatsd/unix_socket/
   #
-  #  useHostPID: true
+  # useHostPID: true
 
   ## @param podAnnotations - list of key:value strings - optional
   ## Annotations to add to the DaemonSet's Pods
   #
-  #  podAnnotations:
-  #    <POD_ANNOTATION>: '[{"key": "<KEY>", "value": "<VALUE>"}]'
+  # podAnnotations:
+  #   <POD_ANNOTATION>: '[{"key": "<KEY>", "value": "<VALUE>"}]'
 
   ## @param tolerations - array - optional
   ## Allow the DaemonSet to schedule on tainted nodes (requires Kubernetes >= 1.6)
   #
-  #  tolerations: []
+  # tolerations: []
 
   ## @param nodeSelector - object - optional
   ## Allow the DaemonSet to schedule on selected nodes
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
   #
-  #  nodeSelector: {}
+  # nodeSelector: {}
 
   ## @param affinity - object - optional
   ## Allow the DaemonSet to schedule using affinity rules
   ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
   #
-  #  affinity: {}
+  # affinity: {}
 
   ## @param updateStrategy - string - optional
   ## Allow the DaemonSet to perform a rolling update on helm update
   ## ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/
   #
-  #  updateStrategy: RollingUpdate
+  # updateStrategy: RollingUpdate
 
   ## @param priorityClassName - string - optional
   ## Sets PriorityClassName if defined.
   #
-  #  priorityClassName:
+  # priorityClassName:
+
+  ## @param podLabels - object - optional
+  ## Sets podLabels if defined.
+  #
+  # podLabels: {}
 
 deployment:
   ## @param enabled - boolean - required
@@ -481,12 +486,12 @@ deployment:
   ## @param dogstatsdNodePort - integer - optional
   ## If you're using a NodePort-type service and need a fixed port, set this parameter.
   #
-  #  dogstatsdNodePort: 8125
+  # dogstatsdNodePort: 8125
 
   ## @param traceNodePort - integer - optional
   ## If you're using a NodePort-type service and need a fixed port, set this parameter.
   #
-  #  traceNodePort: 8126
+  # traceNodePort: 8126
 
   ## @param service - object - required
   ##
@@ -498,7 +503,7 @@ deployment:
   ## @param priorityClassName - string - optional
   ## Sets PriorityClassName if defined.
   #
-  #  priorityClassName:
+  # priorityClassName:
 
 clusterchecksDeployment:
 
@@ -507,6 +512,16 @@ clusterchecksDeployment:
   ## ref: https://docs.datadoghq.com/agent/autodiscovery/clusterchecks/
   #
   enabled: false
+
+  rbac:
+    ## @param dedicated - boolean - required
+    ## If true, use a dedicated RBAC resource for the cluster checks agent(s)
+    #
+    dedicated: false
+    ## @param serviceAccountName - string - required
+    ## Ignored if rbac.create is true
+    #
+    serviceAccountName: default
 
   ## @param replicas - integer - required
   ## If you want to deploy the cluckerchecks agent in HA, keep at least clusterchecksDeployment.replicas set to 2.
@@ -536,7 +551,7 @@ clusterchecksDeployment:
   ## Allow the ClusterChecks Deploument to schedule on selected nodes
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
   #
-  #  nodeSelector: {}
+  # nodeSelector: {}
 
   ## @param tolerations - array - required
   ## Tolerations for pod assignment
@@ -549,14 +564,14 @@ clusterchecksDeployment:
   ## In case of issues with the probe, you can disable it with the
   ## following values, to allow easier investigating:
   #
-  #  livenessProbe:
-  #    exec:
-  #      command: ["/bin/true"]
+  # livenessProbe:
+  #   exec:
+  #     command: ["/bin/true"]
 
   ## @param env - list of object - optional
   ## The dd-agent supports many environment variables
   ## ref: https://github.com/DataDog/datadog-agent/tree/master/Dockerfiles/agent#environment-variables
   #
-  #  env:
-  #    - name: <ENV_VAR_NAME>
-  #      value: <ENV_VAR_VALUE>
+  # env:
+  #   - name: <ENV_VAR_NAME>
+  #     value: <ENV_VAR_VALUE>

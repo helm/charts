@@ -5,13 +5,13 @@ metadata:
   annotations:
     "helm.sh/hook": test-success
 spec:
-  {{- if .Values.Master.NodeSelector }}
+  {{- if .Values.master.nodeSelector }}
   nodeSelector:
-{{ toYaml .Values.Master.NodeSelector | indent 4 }}
+{{ toYaml .Values.master.nodeSelector | indent 4 }}
   {{- end }}
-  {{- if .Values.Master.Tolerations }}
+  {{- if .Values.master.tolerations }}
   tolerations:
-{{ toYaml .Values.Master.Tolerations | indent 4 }}
+{{ toYaml .Values.master.tolerations | indent 4 }}
   {{- end }}
   initContainers:
     - name: "test-framework"
@@ -28,7 +28,7 @@ spec:
         name: tools
   containers:
     - name: {{ .Release.Name }}-ui-test
-      image: {{ .Values.Master.Image }}:{{ .Values.Master.ImageTag }}
+      image: {{ .Values.master.image }}:{{ .Values.master.imageTag }}
       command: ["/tools/bats/bats", "-t", "/tests/run.sh"]
       volumeMounts:
       - mountPath: /tests

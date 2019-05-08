@@ -62,6 +62,10 @@ service:
   ##
   # nameOverride:
 
+  # LoadBalancerSourcesRange is a list of allowed CIDR values, which are combined with ServicePort to
+  # set allowed inbound rules on the security group assigned to the master load balancer
+  # loadBalancerSourceRanges: []
+
   ## Kubernetes Dashboard Service annotations
   ##
   ## For GCE ingress, the following annotation is required:
@@ -155,3 +159,9 @@ livenessProbe:
   initialDelaySeconds: 30
   # Number of seconds to wait for probe response
   timeoutSeconds: 30
+
+podDisruptionBudget:
+  # https://kubernetes.io/docs/tasks/run-application/configure-pdb/
+  enabled: false
+  minAvailable:
+  maxUnavailable:
