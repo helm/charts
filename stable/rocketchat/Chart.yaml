@@ -22,4 +22,5 @@ maintainers:
 - name: geekgonecrazy
 - name: pierreozoux
 - name: verwilst
+- name: srueg
 engine: gotpl
