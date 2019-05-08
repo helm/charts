@@ -164,8 +164,6 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `initContainer.image.pullPolicy`              | PostgreSQL init container Image pull policy                                                                            | `Always`                                                    |
 | `initContainer.image.command`                 | Command to start init container                                                                                        | `- /bin/bash`                                               |
 
-
-
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
