@@ -177,7 +177,7 @@ configurationOverrides:
   #   EXTERNAL://kafka.cluster.local:$((31090 + ${KAFKA_BROKER_ID}))
   ## If external service type is LoadBalancer:
   # "advertised.listeners": |-
-  #   EXTERNAL://kafka-$((${KAFKA_BROKER_ID})).cluster.local:19092
+  #   EXTERNAL://${LOAD_BALANCER_IP}:31090
   ## Uncomment to define the EXTERNAL Listener protocol
   # "listener.security.protocol.map": |-
   #   PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
