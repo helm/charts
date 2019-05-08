@@ -2,7 +2,7 @@
 
 # Anchore engine has a dependency on Postgresql, configure here
 postgresql:
-  # To use an external DB, uncomment & set 'enabled: false'
+  # To use an external DB or Google CloudSQL in GKE, uncomment & set 'enabled: false'
   # externalEndpoint, postgresUser, postgresPassword & postgresDatabase are required values for external postgres
   # enabled: false
   postgresUser: anchoreengine
@@ -17,6 +17,18 @@ postgresql:
   # This should be commented out if using an external endpoint.
   persistence:
     size: 20Gi
+
+# Google CloudSQL support in GKE via gce-proxy
+cloudsql:
+  # To use CloudSQL in GKE set 'enable: true'
+  enabled: false
+  # set CloudSQL instance: 'project:zone:instancname'
+  instance: ""
+  image:
+    # set repo and image tag of gce-proxy
+    repository: gcr.io/cloudsql-docker/gce-proxy
+    tag: 1.12
+    pullPolicy: IfNotPresent
 
 # Create an ingress resource for all external anchore engine services (API & Enterprise UI).
 # By default this chart is setup to use the NGINX ingress controller which needs to be installed & configured on your cluster.
@@ -52,8 +64,12 @@ anchoreGlobal:
   imagePullPolicy: IfNotPresent
 
   # Set extra environment variables. These will be set on all containers.
-  extraEnv: {}
-    # FOO: bar
+  extraEnv: []
+    # - name: foo
+    #   value: bar
+
+  # Specifies an existing secret to be used for admin and db passwords
+  existingSecret: ""
 
   ###
   # Start of General Anchore Engine Configurations (populates /config/config.yaml)
@@ -113,8 +129,9 @@ anchoreAnalyzer:
   containerPort: 8084
 
   # Set extra environment variables. These will be set only on analyzer containers.
-  extraEnv: {}
-    # FOO: bar
+  extraEnv: []
+    # - name: foo
+    #   value: bar
 
   # The cycle timer is the interval between checks to the work queue for new jobs
   cycleTimers:
@@ -151,8 +168,9 @@ anchoreApi:
   replicaCount: 1
 
   # Set extra environment variables. These will be set on all api containers.
-  extraEnv: {}
-    # FOO: bar
+  extraEnv: []
+    # - name: foo
+    #   value: bar
 
   # kubernetes service configuration for anchore external API
   service:
@@ -177,8 +195,9 @@ anchoreCatalog:
   replicaCount: 1
 
   # Set extra environment variables. These will be set on all catalog containers.
-  extraEnv: {}
-    # FOO: bar
+  extraEnv: []
+    # - name: foo
+    #   value: bar
 
   # Intervals to run specific events on (seconds)
   cycleTimers:
@@ -278,8 +297,9 @@ anchorePolicyEngine:
   replicaCount: 1
 
   # Set extra environment variables. These will be set on all policy engine containers.
-  extraEnv: {}
-    # FOO: bar
+  extraEnv: []
+    # - name: foo
+    #   value: bar
 
   # Intervals to run specific events on (seconds)
   cycleTimers:
@@ -312,8 +332,9 @@ anchoreSimpleQueue:
   replicaCount: 1
 
   # Set extra environment variables. These will be set on all simplequeue containers.
-  extraEnv: {}
-    # FOO: bar
+  extraEnv: []
+    # - name: foo
+    #   value: bar
 
   # kubernetes service configuration for anchore simplequeue api
   service:
@@ -350,7 +371,7 @@ anchoreEnterpriseGlobal:
 # Configure the second postgres database instance for the enterprise feeds service.
 # Only utilized if anchoreEnterpriseFeeds.enabled: true
 anchore-feeds-db:
-  # To use an external DB, uncomment & set 'enabled: false'
+  # To use an external DB or Google CloudSQL, uncomment & set 'enabled: false'
   # externalEndpoint, postgresUser, postgresPassword & postgresDatabase are required values for external postgres
   # enabled: false
   postgresUser: anchoreengine
@@ -372,8 +393,9 @@ anchoreEnterpriseFeeds:
   enabled: true
 
   # Set extra environment variables. These will be set on all feeds containers.
-  extraEnv: {}
-    # FOO: bar
+  extraEnv: []
+    # - name: foo
+    #   value: bar
 
   # Time delay in seconds between consecutive driver runs for processing data
   cycleTimers:
@@ -419,8 +441,9 @@ anchoreEnterpriseRbac:
   enabled: true
 
   # Set extra environment variables. These will be set on all rbac containers.
-  extraEnv: {}
-    # FOO: bar
+  extraEnv: []
+    # - name: foo
+    #   value: bar
 
   # Kubernetes service config - annotations & serviceType configs must be set in anchoreApi
   # Due to RBAC sharing a service with the general API.
@@ -450,8 +473,9 @@ anchoreEnterpriseUi:
   enabled: true
 
   # Set extra environment variables. These will be set on all UI containers.
-  extraEnv: {}
-    # FOO: bar
+  extraEnv: []
+    # - name: foo
+    #   value: bar
 
   # Specifies whether to trust a reverse proxy when setting secure cookies (via the `X-Forwarded-Proto` header).
   enableProxy: false
