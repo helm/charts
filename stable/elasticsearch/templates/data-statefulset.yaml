@@ -211,6 +211,9 @@ spec:
   - metadata:
       name: {{ .Values.data.persistence.name }}
     spec:
+    {{- if .Values.data.persistence.volumeName }}
+      volumeName: "{{ .Values.data.persistence.volumeName }}"
+    {{- end }}
       accessModes:
         - {{ .Values.data.persistence.accessMode | quote }}
     {{- if .Values.data.persistence.storageClass }}
