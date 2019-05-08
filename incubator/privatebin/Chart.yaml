@@ -1,0 +1,8 @@
+apiVersion: v1
+appVersion: "1.2.1"
+description: A Helm chart for installing PrivateBin
+name: privatebin
+home: https://github.com/PrivateBin/PrivateBin
+version: 0.1.0
+maintainers:
+  - name: bdashrad

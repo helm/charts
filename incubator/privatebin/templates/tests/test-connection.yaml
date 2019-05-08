@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "privatebin.fullname" . }}-test-connection"
+  labels:
+    app.kubernetes.io/name: {{ include "privatebin.name" . }}
+    helm.sh/chart: {{ include "privatebin.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args:  ['{{ include "privatebin.fullname" . }}:{{ .Values.service.port }}']
+  restartPolicy: Never
