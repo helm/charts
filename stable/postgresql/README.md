@@ -303,6 +303,16 @@ helm install chart1 --set global.postgresql.postgresqlPassword=testtest --set gl
 
 This way, the credentials will be available in all of the subcharts.
 
+## Use custom init container
+
+It possible to initialize pod with init container. Common case is to move restoring of DB to this step of POD lifecycle - because is hard to estimate the necessary time needed for this process and adjust health checks settings for DB main container. 
+
+It's possible to enable this operation for standby and primary setting to `true` values respectively for `initContainer.masterEnabled` and `initContainer.slaveEnabled`. Specified be registry (global values also takes effect), image and tag container will be spun-up.
+
+Using `initContainer.image.command` (example is in `values.yaml`) the default Entrypoint/CMD for container values can be overwrite. 
+
+All environment variables from main DB container are also mounted in Init container so every differences in initialization process between standby and master can be easly covered in CMD script.
+
 ## Upgrade
 
 ### 3.0.0
