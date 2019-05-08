@@ -35,6 +35,8 @@ image:
 
 nameOverride: ""
 fullnameOverride: ""
+dnsPolicy: "ClusterFirst"
+hostNetwork: false
 
 service:
   type: LoadBalancer
