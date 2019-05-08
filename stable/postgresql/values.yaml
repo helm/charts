@@ -61,7 +61,6 @@ volumePermissions:
 ## Init container can be separately added to Master and Slave stateful set by changing respectively
 ## initContainer.masterEnabled and initContainer.slavesEnabled values
 ##
-
 initContainer:
   masterEnabled: false
   slavesEnabled: false
