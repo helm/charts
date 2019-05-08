@@ -17,7 +17,7 @@ spec:
   ingress:
     # Allow web access to the UI
     - ports:
-      - port: 8080
+      - port: {{ .Values.master.targetPort }}
     # Allow inbound connections from slave
     - from:
       - podSelector:
