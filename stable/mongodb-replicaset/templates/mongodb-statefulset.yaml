@@ -344,6 +344,9 @@ spec:
           {{ $key }}: {{ $value }}
         {{- end }}
       spec:
+      {{- if .Values.persistentVolume.volumeName }}
+        volumeName: "{{ .Values.persistentVolume.volumeName }}"
+      {{- end }}
         accessModes:
         {{- range .Values.persistentVolume.accessModes }}
           - {{ . | quote }}
