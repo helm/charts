@@ -226,9 +226,12 @@ The + lines are with the updated values.
 -  #   EXTERNAL://kafka.cluster.local:$((31090 + ${KAFKA_BROKER_ID}))
 +  "advertised.listeners": |-
 +    EXTERNAL://kafka.cluster.local:$((31090 + ${KAFKA_BROKER_ID}))
-   ## If external service type is LoadBalancer:
+   ## If external service type is LoadBalancer and distinct is true:
    # "advertised.listeners": |-
    #   EXTERNAL://kafka-$((${KAFKA_BROKER_ID})).cluster.local:19092
+   ## If external service type is LoadBalancer and distinct is false:
+   # "advertised.listeners": |-
+   #   EXTERNAL://EXTERNAL://${LOAD_BALANCER_IP}:31090
    ## Uncomment to define the EXTERNAL Listener protocol
 -  # "listener.security.protocol.map": |-
 -  #   PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
@@ -254,7 +257,7 @@ msg01 from external producer to topic test1
 
 The load balancer external service type differs from the node port type by routing to the `external.servicePort` specified in the service for each statefulset container (if `external.distinct` is set). If `external.distinct` is false, `external.servicePort` is unused and will be set to the sum of `external.firstListenerPort` and the replica number.  It is important to note that `external.firstListenerPort` does not have to be within the configured node port range for the cluster, however a node port will be allocated.
 
-#### Example values.yml and DNS setup for external service type LoadBalancer
+#### Example values.yml and DNS setup for external service type LoadBalancer with external.distinct: true
 The + lines are with the updated values.
 ```
  external:
@@ -282,7 +285,7 @@ The + lines are with the updated values.
 @@ -173,11 +173,11 @@ configurationOverrides:
    # "advertised.listeners": |-
    #   EXTERNAL://kafka.cluster.local:$((31090 + ${KAFKA_BROKER_ID}))
-   ## If external service type is LoadBalancer:
+   ## If external service type is LoadBalancer and distinct is true:
 -  # "advertised.listeners": |-
 -  #   EXTERNAL://kafka-$((${KAFKA_BROKER_ID})).cluster.local:19092
 +  "advertised.listeners": |-
@@ -323,6 +326,65 @@ $ kafkacat -b kafka-0.example.com:19092 -P -t gkeTest -p 0
 msg02 for topic gkeTest
 
 $ kafkacat -b kafka-0.example.com:19092 -C -t gkeTest -p 0
+msg02 for topic gkeTest
+```
+
+#### Example values.yml and DNS setup for external service type LoadBalancer with external.distinct: false
+The + lines are with the updated values.
+```
+ external:
+-  enabled: false
++  enabled: true
+   # type can be either NodePort or LoadBalancer
+-  type: NodePort
++  type: LoadBalancer
+   # annotations:
+   #  service.beta.kubernetes.io/openstack-internal-load-balancer: "true"
+   dns:
+@@ -138,10 +138,10 @@ external:
+   distinct: false
+   servicePort: 19092
+   firstListenerPort: 31090
+   domain: cluster.local
+   loadBalancerIP: [35.200.238.174,35.244.44.162,35.200.149.80]
+   init:
+     image: "lwolf/kubectl_deployer"
+@@ -173,11 +173,11 @@ configurationOverrides:
+   # "advertised.listeners": |-
+   #   EXTERNAL://kafka.cluster.local:$((31090 + ${KAFKA_BROKER_ID}))
+   ## If external service type is LoadBalancer and distinct is true:
+-  # "advertised.listeners": |-
+-  #   EXTERNAL://kafka-$((${KAFKA_BROKER_ID})).cluster.local:19092
++  "advertised.listeners": |-
++    EXTERNAL://${LOAD_BALANCER_IP}:31090
+   ## Uncomment to define the EXTERNAL Listener protocol
+-  # "listener.security.protocol.map": |-
+-  #   PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
++  "listener.security.protocol.map": |-
++    PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
+
+$ kubectl -n kafka get svc
+NAME                       TYPE           CLUSTER-IP      EXTERNAL-IP      PORT(S)                      AGE
+kafka                      ClusterIP      10.39.241.217   <none>           9092/TCP                     2m39s
+kafka-0-external           LoadBalancer   10.39.242.45    35.200.238.174   31090:30108/TCP              2m39s
+kafka-1-external           LoadBalancer   10.39.241.90    35.244.44.162    31090:30582/TCP              2m39s
+kafka-2-external           LoadBalancer   10.39.243.160   35.200.149.80    31090:30539/TCP              2m39s
+kafka-headless             ClusterIP      None            <none>           9092/TCP                     2m39s
+kafka-zookeeper            ClusterIP      10.39.249.70    <none>           2181/TCP                     2m39s
+kafka-zookeeper-headless   ClusterIP      None            <none>           2181/TCP,3888/TCP,2888/TCP   2m39s
+
+$ kafkacat -b 35.200.238.174:31090 -L
+Metadata for all topics (from broker 0: 35.200.238.174:31090/0):
+ 3 brokers:
+  broker 2 at 35.200.149.80:31090
+  broker 1 at 35.244.44.162:31090
+  broker 0 at 35.200.238.174:31090
+ 0 topics:
+
+$ kafkacat -b 35.200.238.174:31090 -P -t gkeTest -p 0
+msg02 for topic gkeTest
+
+$ kafkacat -b 35.200.238.174:31090 -C -t gkeTest -p 0
 msg02 for topic gkeTest
 ```
 
