@@ -2,11 +2,7 @@ apiVersion: v1
 description: Apache Kafka is publish-subscribe messaging rethought as a distributed
   commit log.
 name: kafka
-<<<<<<< HEAD
 version: 0.15.2
-=======
-version: 0.15.1
->>>>>>> 6ffce55c2540c4650c7625147a4163b438e0fa45
 appVersion: 5.0.1
 keywords:
 - kafka
