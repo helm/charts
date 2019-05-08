@@ -94,3 +94,14 @@ mlPipelineViewerController:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+
+notebookController:
+  replicaCount: 1
+  image:
+    repository: gcr.io/kubeflow-images-public/notebook-controller
+    tag: v20190401-v0.4.0-rc.1-308-g33618cc9-e3b0c4
+    pullPolicy: IfNotPresent
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
