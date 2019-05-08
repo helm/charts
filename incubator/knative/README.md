@@ -53,7 +53,7 @@ Please ensure that you have reviewed the [prerequisites](#prerequisites).
 
 1. Install Knative crds
 ```bash
-$ kubectl delete -f knative/all-crds.yaml
+$ kubectl install -f https://raw.githubusercontent.com/helm/charts/7030ef8a367f5e31f0a76a888bdd529b69f2f45c/incubator/knative/all-crds.yaml
 ```
 
 2. Install the chart using helm cli:
@@ -176,7 +176,7 @@ $ helm delete <my-release> --purge [--tls]
 
 To uninstall/delete the crds:
 ```bash
-$ kubectl delete -f knative/all-crds.yaml
+$ kubectl delete -f https://raw.githubusercontent.com/helm/charts/7030ef8a367f5e31f0a76a888bdd529b69f2f45c/incubator/knative/all-crds.yaml
 ```
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
