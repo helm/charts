@@ -31,6 +31,8 @@ spec:
       labels:
         app: {{ template "dex.name" . }}
         release: "{{ .Release.Name }}"
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
     spec:
       serviceAccountName: {{ template "dex.serviceAccountName" . }}
       nodeSelector:
