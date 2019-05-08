@@ -238,6 +238,9 @@ spec:
     - metadata:
         name: journal
       spec:
+      {{- if .Values.graylog.persistence.volumeName }}
+        volumeName: "{{ .Values.graylog.persistence.volumeName }}"
+      {{- end }}
         accessModes:
           - {{ .Values.graylog.persistence.accessMode | quote }}
       {{- if .Values.graylog.persistence.storageClass }}

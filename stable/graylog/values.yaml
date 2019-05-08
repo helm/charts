@@ -85,6 +85,11 @@ graylog:
     ##
     # storageClass: "ssd"
 
+    ## Use this to select a specific PersistentVolume that already exists or
+    ## will exist in the cluster. This is mostly preferred if you do not have
+    ## a storageClass solution to automatically provision PersistentVolumes.
+    # volumeName: "specific-pv-name"
+
   ## Additional plugins you need to install on Graylog.
   plugins: []
     # - name: graylog-plugin-slack-2.7.1.jar
