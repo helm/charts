@@ -96,6 +96,8 @@ spec:
           value: {{ .Values.allowOverrideNone | quote }}
         - name: WORDPRESS_BLOG_NAME
           value: {{ .Values.wordpressBlogName | quote }}
+        - name: WORDPRESS_SKIP_INSTALL
+          value: {{ .Values.wordpressSkipInstall | quote }}
         - name: WORDPRESS_TABLE_PREFIX
           value: {{ .Values.wordpressTablePrefix | quote }}
         {{- if .Values.smtpHost }}
