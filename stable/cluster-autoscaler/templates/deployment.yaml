@@ -98,6 +98,15 @@ spec:
                 secretKeyRef:
                   key: ResourceGroup
                   name: {{ template "cluster-autoscaler.fullname" . }}
+            - name: ARM_VM_TYPE
+              valueFrom:
+                secretKeyRef:
+                  key: VMType
+                  name: {{ template "cluster-autoscaler.fullname" . }}
+            {{- if .Values.azureUseManagedIdentityExtension }}
+            - name: ARM_USE_MANAGED_IDENTITY_EXTENSION
+              value: "true"
+            {{- else }}
             - name: ARM_TENANT_ID
               valueFrom:
                 secretKeyRef:
@@ -113,11 +122,6 @@ spec:
                 secretKeyRef:
                   key: ClientSecret
                   name: {{ template "cluster-autoscaler.fullname" . }}
-            - name: ARM_VM_TYPE
-              valueFrom:
-                secretKeyRef:
-                  key: VMType
-                  name: {{ template "cluster-autoscaler.fullname" . }}
             - name: AZURE_CLUSTER_NAME
               valueFrom:
                 secretKeyRef:
@@ -128,6 +132,7 @@ spec:
                 secretKeyRef:
                   key: NodeResourceGroup
                   name: {{ template "cluster-autoscaler.fullname" . }}
+            {{- end }}
           {{- end }}
           {{- range $key, $value := .Values.extraEnv }}
             - name: {{ $key }}
@@ -170,4 +175,4 @@ spec:
           hostPath:
             path: {{ .Values.cloudConfigPath }}
         {{- end }}
-{{- end}}
+{{- end }}
