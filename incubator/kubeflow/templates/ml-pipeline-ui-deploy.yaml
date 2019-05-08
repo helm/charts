@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "kubeflow.fullname" . }}
+  name: {{ include "kubeflow.fullname" . }}-ml-pipeline-ui
   labels:
     app.kubernetes.io/part-of: {{ include "kubeflow.name" . }}
     app.kubernetes.io/name: ml-pipeline
