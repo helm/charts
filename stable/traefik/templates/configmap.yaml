@@ -75,6 +75,9 @@ data:
           {{- if .Values.ssl.cipherSuites }}
           {{ template "traefik.ssl.cipherSuites" . }}
           {{- end }}
+          {{- if .Values.ssl.sniStrict }}
+          sniStrict = true
+          {{- end }}
           [[entryPoints.https.tls.certificates]]
           CertFile = "/ssl/tls.crt"
           KeyFile = "/ssl/tls.key"
