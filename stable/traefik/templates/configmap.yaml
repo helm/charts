@@ -183,10 +183,10 @@ data:
     {{- if .Values.kvprovider.etcd.password }}password = {{ .Values.kvprovider.etcd.password }}{{- end }}
       {{- if .Values.kvprovider.etcd.tls }}
       [etcd.tls]
-      {{- end }}
       {{ range $key, $value := .Values.kvprovider.etcd.tls }}
       {{ $key }} = {{ $value | quote }}
       {{ end }}
+      {{- end }}
     {{- end }}
     {{- if .Values.kvprovider.consul }}
     [consul]
@@ -197,10 +197,10 @@ data:
     {{- if .Values.kvprovider.consul.password }}password = {{ .Values.kvprovider.consul.password | quote  }}{{- end }}
       {{- if .Values.kvprovider.consul.tls }}
       [consul.tls]
-      {{- end }}
       {{ range $key, $value := .Values.kvprovider.consul.tls }}
       {{ $key }} = {{ $value | quote }}
       {{ end }}
+      {{- end }}
     {{- end }}
     {{- if .Values.kvprovider.boltdb }}
     [boltdb]
@@ -211,10 +211,10 @@ data:
     {{- if .Values.kvprovider.boltdb.password }}password = {{ .Values.kvprovider.boltdb.password }}{{- end }}
       {{- if .Values.kvprovider.boltdb.tls }}
       [boltdb.tls]
-      {{- end }}
       {{ range $key, $value := .Values.kvprovider.boltdb.tls }}
       {{ $key }} = {{ $value }}
       {{ end }}
+      {{- end }}
     {{- end }}
     {{- if .Values.kvprovider.zookeeper }}
     [zookeeper]
@@ -225,10 +225,10 @@ data:
     {{- if .Values.kvprovider.zookeeper.password }}password = {{ .Values.kvprovider.zookeeper.password }}{{- end }}
       {{- if .Values.kvprovider.zookeeper.tls }}
       [zookeeper.tls]
-      {{- end }}
       {{ range $key, $value := .Values.kvprovider.zookeeper.tls }}
       {{ $key }} = {{ $value }}
       {{ end }}
+      {{- end }}
     {{- end }}
     {{- if .Values.acme.enabled }}
     [acme]
