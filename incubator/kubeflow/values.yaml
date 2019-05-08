@@ -105,3 +105,14 @@ notebookController:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+
+pytorchOperator:
+  replicaCount: 1
+  image:
+    repository: gcr.io/kubeflow-images-public/pytorch-operator
+    tag: v0.5.0
+    pullPolicy: IfNotPresent
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
