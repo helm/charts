@@ -75,9 +75,17 @@ data:
           {{- if .Values.ssl.cipherSuites }}
           {{ template "traefik.ssl.cipherSuites" . }}
           {{- end }}
+          {{- if .Values.ssl.generateTLS }}
           [[entryPoints.https.tls.certificates]]
           CertFile = "/ssl/tls.crt"
           KeyFile = "/ssl/tls.key"
+          {{- else }}
+          {{- range $cert := .Values.ssl.defaultCerts }}
+          [[entryPoints.https.tls.certificates]]
+          CertFile = "/ssl/{{ $cert.name }}.crt"
+          KeyFile = "/ssl/{{ $cert.name }}.key"
+          {{- end }}
+          {{- end }}
       {{- end }}
         {{- if .Values.ssl.auth }}
         {{- if .Values.ssl.auth.basic }}
