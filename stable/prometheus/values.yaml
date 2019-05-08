@@ -242,6 +242,7 @@ alertmanager:
     # nodePort: 30000
     type: ClusterIP
 
+  custom: {}
 ## Monitors ConfigMap changes and POSTs to a URL
 ## Ref: https://github.com/jimmidyson/configmap-reload
 ##

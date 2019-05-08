@@ -93,6 +93,7 @@ The following table lists the configurable parameters of the Prometheus chart an
 Parameter | Description | Default
 --------- | ----------- | -------
 `alertmanager.enabled` | If true, create alertmanager | `true`
+`alertmanager.custom` | If defined and `alertmanager.enabled` is false, use custom alertmanager config | {}
 `alertmanager.name` | alertmanager container name | `alertmanager`
 `alertmanager.image.repository` | alertmanager container image repository | `prom/alertmanager`
 `alertmanager.image.tag` | alertmanager container image tag | `v0.15.3`
@@ -380,3 +381,37 @@ implements the Kubernetes NetworkPolicy spec, and set `networkPolicy.enabled` to
 
 If NetworkPolicy is enabled for Prometheus' scrape targets, you may also need
 to manually create a networkpolicy which allows it.
+
+### Custom Alertmanager Config
+If you want to use custom alermanager with setting `alertmanager.enabled=false`, you can use the defined custom alerting config without defining whole `serverFiles.prometheus.yml`.
+
+```console
+helm install --name my-release stable/prometheus --set alertmanager.enabled=false -f my-alertmanager.yaml
+```
+
+Example my-alertmanager.yaml:
+```yaml
+alertmanager:
+  custom:
+    alerting:
+      alertmanagers:
+      - kubernetes_sd_configs:
+          - role: pod
+        tls_config:
+          ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+        path_prefix: /
+        relabel_configs:
+        - source_labels: [__meta_kubernetes_namespace]
+          regex: default
+          action: keep
+        - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
+          regex: my-alermanager
+          action: keep
+        - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_component]
+          regex: my-component
+          action: keep
+        - source_labels: [__meta_kubernetes_pod_container_port_number]
+          regex: 9001
+          action: keep
+```

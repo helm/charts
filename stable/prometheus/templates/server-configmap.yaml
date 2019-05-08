@@ -22,7 +22,7 @@ data:
     alerting:
       alertmanagers:
       - kubernetes_sd_configs:
-          - role: pod
+        - role: pod
         tls_config:
           ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
         bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
@@ -42,6 +42,11 @@ data:
         - source_labels: [__meta_kubernetes_pod_container_port_number]
           regex:
           action: drop
+{{- end -}}
+{{- if not $root.Values.alertmanager.enabled }}
+{{- with $root.Values.alertmanager.custom }}
+{{ toYaml . | indent 4 }}
+{{- end -}}
 {{- end -}}
 {{- end -}}
 {{- end -}}
