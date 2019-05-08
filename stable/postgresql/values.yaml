@@ -299,7 +299,7 @@ readinessProbe:
 ##
 metrics:
   enabled: false
-  slaveEnalbed: false
+  slaveEnabled: false
   # resources: {}
   service:
     type: ClusterIP
