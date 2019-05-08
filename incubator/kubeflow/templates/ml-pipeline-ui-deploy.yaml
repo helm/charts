@@ -47,6 +47,10 @@ spec:
           resources:
             {{- toYaml .Values.mlPipeline.resources | nindent 12 }}
           env:
+          - name: MYSQL_SERVICE_HOST
+            value: {{ .Values.mysql.mysqlServiceHost }}
+          - name: MYSQL_SERVICE_PORT
+            value: {{ .Values.mysql.mysqlServicePort | quote }}
           - name: POD_NAMESPACE
             valueFrom:
               fieldRef:

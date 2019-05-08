@@ -105,3 +105,12 @@ notebookController:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+
+mysql:
+  enabled: true
+  mysqlRootPassword: "kubeflow"
+  mysqlUser: "kubeflow"
+  mysqlPassword: "kubeflow"
+  mysqlDatabase: ""
+  mysqlServiceHost: kubeflow-mysql
+  mysqlServicePort: 3306
