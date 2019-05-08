@@ -37,6 +37,9 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         args:
+{{- if .Values.deployment.args }}
+{{ toYaml .Values.deployment.args | indent 8 }}
+{{- else }}
         - "-e"
 {{- if .Values.plugins }}
         - "--plugin"
@@ -45,6 +48,7 @@ spec:
 {{- if .Values.deployment.debug }}
         - "-d"
         - "*"
+{{- end }}
 {{- end }}
         env:
         - name: POD_NAMESPACE
