@@ -102,7 +102,7 @@ postgresqlUsername: postgres
 ## PostgreSQL data dir
 ## ref: https://github.com/bitnami/bitnami-docker-postgresql/blob/master/README.md
 ##
-postgresqlDataDir: /bitnami/postgresql
+postgresqlDataDir: /bitnami/postgresql/data
 
 ## Specify extra initdb args
 ## ref: https://github.com/bitnami/bitnami-docker-postgresql/blob/master/README.md
