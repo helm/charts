@@ -77,6 +77,10 @@ spec:
           {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
+          {{- with .Values.volumeMounts }}
+          volumeMounts:
+{{ toYaml . | indent 12 }}
+          {{- end }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
@@ -87,6 +91,10 @@ spec:
     {{- end }}
     {{- with .Values.tolerations }}
       tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.volumes }}
+      volumes:
 {{ toYaml . | indent 8 }}
     {{- end }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ include "aws-alb-ingress-controller.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
