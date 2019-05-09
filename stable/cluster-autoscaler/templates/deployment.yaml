@@ -65,9 +65,23 @@ spec:
           {{- end }}
 
           env:
-          {{- if eq .Values.cloudProvider "aws" }}
+          {{- if and (eq .Values.cloudProvider "aws") (ne .Values.awsRegion "") }}
             - name: AWS_REGION
               value: "{{ .Values.awsRegion }}"
+            {{- if .Values.awsAccessKeyID }}
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  key: AwsAccessKeyId
+                  name: {{ template "cluster-autoscaler.fullname" . }}
+            {{- end }}
+            {{- if .Values.awsSecretAccessKey }}
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: AwsSecretAccessKey
+                  name: {{ template "cluster-autoscaler.fullname" . }}
+            {{- end }}
           {{- else if eq .Values.cloudProvider "spotinst" }}
             - name: SPOTINST_TOKEN
               value: "{{ .Values.spotinst.token }}"
@@ -84,6 +98,15 @@ spec:
                 secretKeyRef:
                   key: ResourceGroup
                   name: {{ template "cluster-autoscaler.fullname" . }}
+            - name: ARM_VM_TYPE
+              valueFrom:
+                secretKeyRef:
+                  key: VMType
+                  name: {{ template "cluster-autoscaler.fullname" . }}
+            {{- if .Values.azureUseManagedIdentityExtension }}
+            - name: ARM_USE_MANAGED_IDENTITY_EXTENSION
+              value: "true"
+            {{- else }}
             - name: ARM_TENANT_ID
               valueFrom:
                 secretKeyRef:
@@ -99,11 +122,6 @@ spec:
                 secretKeyRef:
                   key: ClientSecret
                   name: {{ template "cluster-autoscaler.fullname" . }}
-            - name: ARM_VM_TYPE
-              valueFrom:
-                secretKeyRef:
-                  key: VMType
-                  name: {{ template "cluster-autoscaler.fullname" . }}
             - name: AZURE_CLUSTER_NAME
               valueFrom:
                 secretKeyRef:
@@ -114,6 +132,7 @@ spec:
                 secretKeyRef:
                   key: NodeResourceGroup
                   name: {{ template "cluster-autoscaler.fullname" . }}
+            {{- end }}
           {{- end }}
           {{- range $key, $value := .Values.extraEnv }}
             - name: {{ $key }}
@@ -156,4 +175,4 @@ spec:
           hostPath:
             path: {{ .Values.cloudConfigPath }}
         {{- end }}
-{{- end}}
+{{- end }}
