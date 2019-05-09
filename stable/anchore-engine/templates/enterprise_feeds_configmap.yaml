@@ -11,6 +11,16 @@ metadata:
     heritage: {{ .Release.Service }}
     component: {{ $component }}
 data:
+  ANCHORE_DB_NAME: {{ index .Values "anchore-feeds-db" "postgresDatabase" | quote }}
+  ANCHORE_DB_USER: {{ index .Values "anchore-feeds-db" "postgresUser"  | quote }}
+  {{- if and (index .Values "anchore-feeds-db" "externalEndpoint") (not (index .Values "anchore-feeds-db" "enabled")) }}
+  ANCHORE_DB_HOST: {{ index .Values "anchore-feeds-db" "externalEndpoint" | quote }}
+  {{- else if and (index .Values "cloudsql" "enabled") (not (index .Values "anchore-feeds-db" "enabled")) }}
+  ANCHORE_DB_HOST: "localhost:5432"
+  {{- else }}
+  ANCHORE_DB_HOST: "{{ template "postgres.anchore-feeds-db.fullname" . }}:5432"
+  {{- end }}
+
   config.yaml: |
     # Anchore Enterprise Service Configuration File
 
@@ -18,7 +28,7 @@ data:
     # be altered for basic operation
     #
     service_dir: {{ .Values.anchoreGlobal.serviceDir }}
-    tmp_dir: {{ default "/scratch" .Values.anchoreAnalyzer.scratchVolume.mountPath }}
+    tmp_dir: {{ .Values.anchoreGlobal.scratchVolume.mountPath }}
     log_level: {{ .Values.anchoreGlobal.logLevel }}
     cleanup_images: {{ .Values.anchoreGlobal.cleanupImages }}
 
@@ -26,14 +36,14 @@ data:
     host_id: "${ANCHORE_POD_NAME}"
     internal_ssl_verify: {{ .Values.anchoreGlobal.internalServicesSsl.verifyCerts }}
     auto_restart_services: false
-    license_file: "/license.yaml"
+    license_file: "/home/anchore/license.yaml"
 
     metrics:
       enabled: {{ .Values.anchoreGlobal.enableMetrics }}
 
     credentials:
       database:
-        db_connect: "postgresql+pg8000://${ANCHORE_DB_USER}:${ANCHORE_DB_PASSWORD}@${ANCHORE_DB_HOST}/${ANCHORE_DB_NAME}"
+        db_connect: "postgresql://${ANCHORE_DB_USER}:${ANCHORE_DB_PASSWORD}@${ANCHORE_DB_HOST}/${ANCHORE_DB_NAME}"
         db_connect_args:
           timeout: {{ .Values.anchoreEnterpriseFeeds.dbConfig.timeout }}
           ssl: {{ .Values.anchoreEnterpriseFeeds.dbConfig.ssl }}
@@ -49,9 +59,9 @@ data:
         port: {{ .Values.anchoreEnterpriseFeeds.service.port }}
         # Time delay in seconds between consecutive driver runs for processing data
         cycle_timers:
-{{ toYaml .Values.anchoreEnterpriseFeeds.cycleTimers | indent 10 }}
+          {{ toYaml .Values.anchoreEnterpriseFeeds.cycleTimers | nindent 10 | trim }}
         # Staging space for holding normalized output from drivers.
-        local_workspace: {{ .Values.anchoreEnterpriseFeeds.scratchVolume.mountPath }}
+        local_workspace: {{ .Values.anchoreGlobal.scratchVolume.mountPath }}
         # Drivers process data from external sources and store normalized data in local_workspace. Processing large data sets
         # is a time consuming process for some drivers. To speed it up the container is shipped with pre-loaded data which is used
         # by default if local_workspace is empty.
@@ -72,7 +82,7 @@ data:
             # rubygem data comes packaged as a PostgreSQL dump file. gem driver loads the pg dump and normalizes the data.
             # To enable gem driver comment the enabled property and uncomment the db_connect property.
             enabled: {{ default "false" .Values.anchoreEnterpriseFeeds.gemDriverEnabled }}
-            db_connect: {{ default "'postgresql+pg8000://${ANCHORE_DB_USER}:${ANCHORE_DB_PASSWORD}@${ANCHORE_DB_HOST}/gems'" .Values.anchoreEnterpriseFeeds.gemDbEndpoint }}
+            db_connect: {{ default "'postgresql://${ANCHORE_DB_USER}:${ANCHORE_DB_PASSWORD}@${ANCHORE_DB_HOST}/gems'" .Values.anchoreEnterpriseFeeds.gemDbEndpoint }}
           centos:
             enabled: {{ default "true" .Values.anchoreEnterpriseFeeds.centosDriverEnabled }}
           debian:
