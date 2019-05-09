@@ -1,0 +1,17 @@
+{{- if .Values.prometheusRule.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: {{ template "airflow.fullname" . }}
+  labels:
+    app: {{ template "airflow.name" . }}
+    chart: {{ template "airflow.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+      {{- if .Values.prometheusRule.additionalLabels }}
+      {{ toYaml .Values.prometheusRule.additionalLabels | indent 4 }}
+    {{- end }}
+spec:
+  groups:
+{{ toYaml .Values.prometheusRule.groups | indent 4 }}
+{{- end }}
