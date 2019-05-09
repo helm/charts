@@ -3,6 +3,7 @@ appVersion: "1.9"
 description: A Helm chart for registry creds
 name: registry-creds
 version: 0.1.0
+home: https://hub.docker.com/r/upmcenterprises/registry-creds
 sources:
   - https://github.com/upmc-enterprises/registry-creds
 maintainers:
