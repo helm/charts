@@ -27,11 +27,10 @@ Master:
   HostNetworking: false
   # When enabling LDAP or another non-Jenkins identity source, the built-in admin account will no longer exist.
   # Since the AdminUser is used by configAutoReload, in order to use configAutoReload you must change the
-  # .Master.AdminUser to a valid username on your LDAP (or other) server.  This user does not need
-  # to have administrator rights in Jenkins (the default Overall:Read is sufficient) nor will it be granted any
-  # additional rights.  Failure to do this will cause the sidecar container to fail to authenticate via SSH and enter
-  # a restart loop.  Likewise if you disable the non-Jenkins identity store and instead use the Jenkins internal one,
-  # you should revert Master.AdminUser to your preferred admin user:
+  # .Master.AdminUser to a valid username on your LDAP (or other) server.   If you use the matrix-auth plugin, this user
+  # must also be granted Overall\Administer rights in Jenkins.  Failure to do this will cause the sidecar container to
+  # fail to authenticate via SSH and enter a restart loop.  Likewise if you disable the non-Jenkins identity store and
+  # instead use the Jenkins internal one, you should revert Master.AdminUser to your preferred admin user:
   AdminUser: admin
   # AdminPassword: <defaults to random>
   OwnSshKey: false
