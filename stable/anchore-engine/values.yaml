@@ -153,7 +153,6 @@ anchoreAnalyzer:
   # This chart sets up a scratch directory for all analyzer pods using the values found at anchoreGlobal.scratchVolume.
   # When setting anchoreAnalyzer.layerCacheMaxGigabytes, ensure the scratch volume has suffient storage space.
   # For more info see - https://docs.anchore.com/current/docs/engine/engine_installation/storage/layer_caching/
-  # 
   # Enable image layer caching by setting a cache size > 0GB.
   layerCacheMaxGigabytes: 0
 
@@ -482,11 +481,14 @@ anchoreEnterpriseReports:
   enableGraphql: true
   # Set enable_data_ingress to true for periodically syncing data from anchore engine into the reports service
   enableDataIngress: true
-  
+
   cycleTimers:
-    reports_data_load: 600 # images and tags synced every 10 minutes
-    reports_data_refresh: 7200 # policy evaluations and vulnerabilities refreshed every 2 hours
-    reports_metrics: 3600 # metrics generated every hour
+    # images and tags synced every 10 minutes
+    reports_data_load: 600
+    # policy evaluations and vulnerabilities refreshed every 2 hours
+    reports_data_refresh: 7200
+    # metrics generated every hour
+    reports_metrics: 3600
 
   # Kubernetes service config - annotations & serviceType configs must be set in anchoreApi
   # Due to Reports sharing a service with the general API.
