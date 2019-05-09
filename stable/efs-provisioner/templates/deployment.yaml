@@ -39,8 +39,6 @@ spec:
       labels:
         app: {{ template "efs-provisioner.name" . }}
         release: "{{ .Release.Name }}"
-      annotations:
-{{ toYaml .Values.annotations | indent 8 }}
     spec:
       serviceAccount: {{ template "efs-provisioner.serviceAccountName" . }}
       {{- if .Values.priorityClassName }}
