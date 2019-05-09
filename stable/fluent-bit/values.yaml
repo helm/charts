@@ -39,6 +39,7 @@ backend:
     tls_verify: "on"
     tls_debug: 1
     shared_key:
+    self_hostname:
   es:
     host: elasticsearch
     port: 9200
