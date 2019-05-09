@@ -1,44 +1,41 @@
-# Headless service for stable DNS entries of StatefulSet members.
-apiVersion: v1
-kind: Service
-metadata:
-  name: {{ template "fullname" . }}
-  labels:
-    app: {{ template "fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
-spec:
-  ports:
-  - name: {{ template "fullname" . }}
-    port: 3306
-  clusterIP: None
-  selector:
-    app: {{ template "fullname" . }}
----
 # Client service for connecting to any MySQL instance for reads.
-# For writes, you must instead connect to the master: mysql-0.mysql.
+{{- if .Values.service.type }}
+{{- $fullname := include "fullname" . }}
+{{- $rc_number := int .Values.mysqlha.replicaCount }}
+{{- $root := . }}
+{{ range $i := until $rc_number }}
+---
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "fullname" . }}-readonly
+  name: {{ template "fullname" $root }}-svc-{{ $i }}
   labels:
-    app: {{ template "fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app: {{ template "fullname" $root }}
+    chart: "{{ $root.Chart.Name }}-{{ $root.Chart.Version }}"
+    release: "{{ $root.Release.Name }}"
+    heritage: "{{ $root.Release.Service }}"
   annotations:
-{{- if and (.Values.metrics.enabled) (.Values.metrics.annotations) }}
-{{ toYaml .Values.metrics.annotations | indent 4 }}
+{{- if and ($root.Values.service.type) ($root.Values.service.annotations) }}
+{{ toYaml $root.Values.service.annotations | indent 4 }}
+{{- end }}
+{{- if and ($root.Values.metrics.enabled) ($root.Values.metrics.annotations) }}
+{{ toYaml $root.Values.metrics.annotations | indent 4 }}
 {{- end }}
 spec:
+  type: {{ $root.Values.service.type }}
   ports:
-  - name: {{ template "fullname" . }}
+  - name: mysql
     port: 3306
-  {{- if .Values.metrics.enabled }}
+    protocol: TCP
+    targetPort: mysql
+{{- if $root.Values.metrics.enabled }}
   - name: metrics
     port: 9104
+    protocol: TCP
     targetPort: metrics
-  {{- end }}
+{{- end }}
   selector:
-    app: {{ template "fullname" . }}
+    app: {{ template "fullname" $root }}
+    statefulset.kubernetes.io/pod-name: {{ template "fullname" $root }}-{{ $i }}
+{{- end }}
+{{- end }}

@@ -17,3 +17,20 @@ To connect to your database:
 2. Open a connection to one of the MySQL pods
 
     mysql -h {{ template "fullname" . }}-0.{{ template "fullname" . }} -p
+
+{{- if .Values.service.type }}
+{{- if contains "NodePort"  .Values.service.type }}
+3. Obtain the Nodeport:
+   
+    1. For master mysql nodePort
+
+       kubectl get svc --namespace {{ .Release.Namespace }} -l app={{ template "fullname" . }} -o jsonpath='{.items[1].spec.ports[0].nodePort }'; echo
+
+    {{- if .Values.metrics.enabled }}
+
+    2. For master metrics nodePort
+
+       kubectl get svc --namespace {{ .Release.Namespace }} -l app={{ template "fullname" . }} -o jsonpath='{.items[1].spec.ports[1].nodePort }'; echo
+    {{- end }}
+{{- end }}
+{{- end }}

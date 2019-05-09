@@ -61,6 +61,8 @@ The following table lists the configurable parameters of the MySQL chart and the
 | `metrics.livenessProbe.timeoutSeconds`       | When the probe times out                          | 5                                      |
 | `metrics.readinessProbe.initialDelaySeconds` | Delay before metrics readiness probe is initiated | 5                                      |
 | `metrics.readinessProbe.timeoutSeconds`      | When the probe times out                          | 1                                      |
+| `service.type`                               | Service type                                      | '{}'                                   |
+| `service.annotations`                        | Service annotations                               | '{}'                                   |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
