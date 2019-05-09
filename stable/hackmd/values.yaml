@@ -4,7 +4,7 @@
 
 replicaCount: 1
 
-deploymentStrategy: RollingUpdate 
+deploymentStrategy: RollingUpdate
 
 image:
   repository: hackmdio/hackmd
