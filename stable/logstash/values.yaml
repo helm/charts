@@ -249,6 +249,11 @@ files:
   #     "aliases": {}
   #   }
 
+## Custom binary files encoded as base64 string that can be referenced by plugins
+## Each base64 encoded string is decoded & mounted as a file under logstash home directory under
+## the files subdirectory.
+binaryFiles: {}
+
 ## NOTE: To achieve multiple pipelines with this chart, current best practice
 ## is to maintain one pipeline per chart release. In this way configuration is
 ## simplified and pipelines are more isolated from one another.
