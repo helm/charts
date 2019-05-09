@@ -101,7 +101,7 @@ ssl:
   defaultIPList: []
     # - 1.2.3.4
   # cipherSuites: []
-  customSecretName: ""
+  # customSecretName: ""
   # https://docs.traefik.io/configuration/entrypoints/#specify-minimum-tls-version
   # tlsMinVersion: VersionTLS12
   # https://docs.traefik.io/configuration/entrypoints/#strict-sni-checking
