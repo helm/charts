@@ -1,0 +1,6 @@
+
+To verify all genie pods are running use the below command.
+
+    kubectl get pods --all-namespaces | grep genie
+
+If you need help or have any question, join our Slack to chat to us – https://cni-genie.slack.com

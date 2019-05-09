@@ -1,0 +1,14 @@
+appVersion: v1
+description: A Helm chart for cni-genie
+name: cni-genie
+version: v3.0
+home: https://github.com/cni-genie/CNI-Genie
+sources:
+  - https://github.com/cni-genie/CNI-Genie
+maintainers:
+  - name: jundu
+    email: dujun5@huawei.com
+  - name: sushanthakumar
+    email: sushanthakumar@huawei.com
+  - name: zefengwang
+    email: wangzefeng@huawei.com

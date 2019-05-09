@@ -1,0 +1,73 @@
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: {{ template "cni-genie.plugin.fullname" . }}
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - pods
+    verbs:
+      - get
+      - update
+      - patch
+  - apiGroups:
+      - "alpha.network.k8s.io"
+    resources:
+      - logicalnetworks
+    verbs:
+      - get
+      - update
+      - patch
+  - apiGroups:
+      - "alpha.network.k8s.io"
+    resources:
+      - physicalnetworks
+    verbs:
+      - get
+      - update
+      - patch
+  - apiGroups:
+      - "k8s.cni.cncf.io"
+    resources:
+      - network-attachment-definitions
+    verbs:
+      - get
+      - update
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+    verbs:
+      - get
+  - apiGroups:
+      - "admissionregistration.k8s.io"
+    resources:
+      - validatingwebhookconfigurations
+    verbs:
+      - get
+      - update
+      - create
+      - delete
+
+---
+{{- if .Values.includePolicy }}
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: {{ template "cni-genie.policy.fullname" . }}
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - networkpolicies
+    verbs:
+      - get
+  - apiGroups:
+      - ""
+    resources:
+      - namespaces
+    verbs:
+      - get
+{{- end }}

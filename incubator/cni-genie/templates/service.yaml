@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "cni-genie.fullname" . }}
+  labels:
+    app: {{ template "cni-genie.name" . }}
+    chart: {{ template "cni-genie.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  ports:
+    - port: {{.Values.admissionControllerService.internalPort }}
+      targetPort: {{.Values.admissionControllerService.externalPort }}
+      protocol: TCP
+      name: http
+  selector:
+    app: {{ template "cni-genie.name" . }}
+    release: {{ .Release.Name }}
+
+
