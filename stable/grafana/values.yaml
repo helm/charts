@@ -29,16 +29,16 @@ image:
   tag: 6.1.6
   pullPolicy: IfNotPresent
 
-testFramework:
-  image: "dduportal/bats"
-  tag: "0.4.0"
-
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
   ##
   # pullSecrets:
   #   - myRegistrKeySecretName
+
+testFramework:
+  image: "dduportal/bats"
+  tag: "0.4.0"
 
 securityContext:
   runAsUser: 472
