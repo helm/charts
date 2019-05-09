@@ -26,6 +26,7 @@ The following configurations may be set. It is recommended to use values.yaml fo
 
 Parameter | Description | Default
 --------- | ----------- | -------
+`deploymentStrategy` | Deployment strategy. | `RollingUpdate`
 `replicaCount` | How many replicas to run. | 1
 `image.repository` | Name of the image to run, without the tag. | [hackmdio/hackmd](https://github.com/hackmdio/docker-hackmd)
 `image.tag` | The image tag to use. | 1.3.0-alpine
