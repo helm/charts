@@ -298,6 +298,16 @@ This way, the credentials will be available in all of the subcharts.
 
 ## Upgrade
 
+### 4.0.0
+
+This chart will use by default the Bitnami PostgreSQL container starting from version `10.7.0-r68`. This version moves the initialization logic from node.js to bash. This new version of the chart requires setting the `POSTGRES_PASSWORD` in the slaves as well, in order to properly configure the `pg_hba.conf` file. Users from previous versions of the chart are advised to upgrade immediately.
+
+IMPORTANT: If you do not want to upgrade the chart version then make sure you use the `10.7.0-r68` version of the container. Otherwise, you will get this error
+
+```
+The POSTGRESQL_PASSWORD environment variable is empty or not set. Set the environment variable ALLOW_EMPTY_PASSWORD=yes to allow the container to be started with blank passwords. This is recommended only for development
+```
+
 ### 3.0.0
 
 This releases make it possible to specify different nodeSelector, affinity and tolerations for master and slave pods.
