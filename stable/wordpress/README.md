@@ -71,7 +71,7 @@ The following table lists the configurable parameters of the WordPress chart and
 | `smtpUser`                       | SMTP user                                  | `nil`                                                   |
 | `smtpPassword`                   | SMTP password                              | `nil`                                                   |
 | `smtpUsername`                   | User name for SMTP emails                  | `nil`                                                   |
-| `smtpProtocol`                   | SMTP protocol [`tls`, `ssl`]               | `nil`                                                   |
+| `smtpProtocol`                   | SMTP protocol [`tls`, `ssl`, `none`]       | `nil`                                                   |
 | `replicaCount`                   | Number of WordPress Pods to run            | `1`                                                     |
 | `mariadb.enabled`                | Deploy MariaDB container(s)                | `true`                                                  |
 | `mariadb.rootUser.password`      | MariaDB admin password                     | `nil`                                                   |
