@@ -90,6 +90,7 @@ The following table lists the configurable parameters of the MySQL chart and the
 | `metrics.livenessProbe.timeoutSeconds`       | When the probe times out                                                                     | 5                                                    |
 | `metrics.readinessProbe.initialDelaySeconds` | Delay before metrics readiness probe is initiated                                            | 5                                                    |
 | `metrics.readinessProbe.timeoutSeconds`      | When the probe times out                                                                     | 1                                                    |
+| `metrics.flags`                              | Additional flags for the mysql exporter to use                                               | `[]`                                                 |
 | `resources`                                  | CPU/Memory resource requests/limits                                                          | Memory: `256Mi`, CPU: `100m`                         |
 | `configurationFiles`                         | List of mysql configuration files                                                            | `nil`                                                |
 | `securityContext.enabled`                    | Enable security context (mysql pod)                                                          | `false`                                              |

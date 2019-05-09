@@ -140,6 +140,7 @@ metrics:
   readinessProbe:
     initialDelaySeconds: 5
     timeoutSeconds: 1
+  flags: []
 
 ## Configure the service
 ## ref: http://kubernetes.io/docs/user-guide/services/
