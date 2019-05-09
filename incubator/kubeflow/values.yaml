@@ -84,6 +84,20 @@ mlPipelineScheduledWorkflow:
   tolerations: []
   affinity: {}
 
+mlPipelineUi:
+  replicaCount: 1
+  image:
+    repository: gcr.io/ml-pipeline/frontend:
+    tag: 0.1.18
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 80
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
 mlPipelineViewerController:
   replicaCount: 1
   image:

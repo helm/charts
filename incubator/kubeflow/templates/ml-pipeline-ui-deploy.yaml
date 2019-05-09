@@ -11,7 +11,7 @@ metadata:
     app.kubernetes.io/component: ui
 
 spec:
-  replicas: {{ .Values.mlPipeline.replicaCount }}
+  replicas: {{ .Values.mlPipelineUi.replicaCount }}
   selector:
     matchLabels:
       app.kubernetes.io/part-of: {{ include "kubeflow.name" . }}
@@ -30,8 +30,8 @@ spec:
     spec:
       containers:
         - name: ml-pipeline-ui
-          image: "{{ .Values.mlPipeline.image.repository }}:{{ .Values.mlPipeline.image.tag }}"
-          imagePullPolicy: {{ .Values.mlPipeline.image.pullPolicy }}
+          image: "{{ .Values.mlPipelineUi.image.repository }}:{{ .Values.mlPipelineUi.image.tag }}"
+          imagePullPolicy: {{ .Values.mlPipelineUi.image.pullPolicy }}
           ports:
           - name: http
             containerPort: 3000
@@ -45,22 +45,22 @@ spec:
           #     path: /
           #     port: http
           resources:
-            {{- toYaml .Values.mlPipeline.resources | nindent 12 }}
+            {{- toYaml .Values.mlPipelineUi.resources | nindent 12 }}
           env:
           - name: POD_NAMESPACE
             valueFrom:
               fieldRef:
                 apiVersion: v1
                 fieldPath: metadata.namespace
-      {{- with .Values.mlPipeline.nodeSelector }}
+      {{- with .Values.mlPipelineUi.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-    {{- with .Values.mlPipeline.affinity }}
+    {{- with .Values.mlPipelineUi.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
     {{- end }}
-    {{- with .Values.mlPipeline.tolerations }}
+    {{- with .Values.mlPipelineUi.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
     {{- end }}
