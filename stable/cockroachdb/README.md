@@ -69,7 +69,7 @@ The following table lists the configurable parameters of the CockroachDB chart a
 | ------------------------------ | ------------------------------------------------ | ----------------------------------------- |
 | `Name`                         | Chart name                                       | `cockroachdb`                             |
 | `Image`                        | Container image name                             | `cockroachdb/cockroach`                   |
-| `ImageTag`                     | Container image tag                              | `v2.1.5`                                  |
+| `ImageTag`                     | Container image tag                              | `v19.1.0`                                  |
 | `ImagePullPolicy`              | Container pull policy                            | `Always`                                  |
 | `Replicas`                     | k8s statefulset replicas                         | `3`                                       |
 | `MaxUnavailable`               | k8s PodDisruptionBudget parameter                | `1`                                       |
@@ -104,6 +104,9 @@ The following table lists the configurable parameters of the CockroachDB chart a
 | `Locality`                     | Locality attribute for this deployment           | `""`                                      |
 | `ExtraArgs`                    | Additional command-line arguments                | `[]`                                      |
 | `ExtraSecretMounts`            | Additional secrets to mount at cluster members   | `[]`                                      |
+| `ExtraEnvArgs`                 | Allows to set extra ENV args                     | `[]`                                      |
+| `ExtraAnnotations`             | Allows to set extra Annotations                  | `[]`                                      |
+| `ExtraInitAnnotations`         | Allows to set extra Annotations to init pod      | `[]`                                      |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 

@@ -48,10 +48,12 @@ spec:
           args:
             - "run"
             - "--server"
+{{- if .Values.opa }}
             - "--config-file=/config/config.yaml"
+{{- end }}
             - "--tls-cert-file=/certs/tls.crt"
             - "--tls-private-key-file=/certs/tls.key"
-            - "--addr=0.0.0.0:443"
+            - "--addr=0.0.0.0:{{ .Values.port }}"
             - "--log-level={{ .Values.logLevel }}"
             - "--log-format={{ .Values.logFormat }}"
 {{- if .Values.authz.enabled }}
@@ -67,9 +69,11 @@ spec:
             - name: certs
               readOnly: true
               mountPath: /certs
+{{- if .Values.opa }}
             - name: config
               readOnly: true
               mountPath: /config
+{{- end }}
 {{- if .Values.authz.enabled }}
             - name: authz
               readOnly: true
@@ -125,9 +129,11 @@ spec:
         - name: certs
           secret:
             secretName: {{ template "opa.fullname" . }}-cert
+{{- if .Values.opa }}
         - name: config
           secret:
             secretName: {{ template "opa.fullname" . }}-config
+{{- end }}
 {{- if .Values.authz.enabled }}
         - name: authz
           emptyDir: {}

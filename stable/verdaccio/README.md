@@ -55,7 +55,7 @@ and their default values.
 | `customConfigMap`                  | Use a custom ConfigMap                                          | `false`                                                  |
 | `image.pullPolicy`                 | Image pull policy                                               | `IfNotPresent`                                           |
 | `image.repository`                 | Verdaccio container image repository                            | `verdaccio/verdaccio`                                    |
-| `image.tag`                        | Verdaccio container image tag                                   | `3.10.0`                                                 |
+| `image.tag`                        | Verdaccio container image tag                                   | `3.11.6`                                                 |
 | `nodeSelector`                     | Node labels for pod assignment                                  | `{}`                                                     |
 | `persistence.accessMode`           | PVC Access Mode for Verdaccio volume                            | `ReadWriteOnce`                                          |
 | `persistence.enabled`              | Enable persistence using PVC                                    | `true`                                                   |

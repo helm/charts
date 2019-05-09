@@ -39,6 +39,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | **image.pullPolicy** | The image pull policy for the deployment | `IfNotPresent` |
 | **image.repository** | The repository to get the controller image from | `quay.io/bitnami/sealed-secrets-controller` |
 | **resources** | CPU/Memory resource requests/limits | `{}` |
+| **crd.create** | `true` if crd resources should be created | `true` |
 | **crd.keep** | `true` if the sealed secret CRD should be kept when the chart is deleted | `true` |
 
 - In the case that **serviceAccount.create** is `false` and **rbac.create** is `true` it is expected for a service account with the name **serviceAccount.name** to exist _in the same namespace as this chart_ before installation.

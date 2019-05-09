@@ -14,11 +14,12 @@ $ helm install stable/kube-state-metrics
 
 | Parameter                             | Description                                             | Default                                     |
 |---------------------------------------|---------------------------------------------------------|---------------------------------------------|
-| `image.repository`                    | The image repository to pull from                       | k8s.gcr.io/kube-state-metrics               |
-| `image.tag`                           | The image tag to pull from                              | `v1.5.0`                                    |
+| `image.repository`                    | The image repository to pull from                       | quay.io/coreos/kube-state-metrics           |
+| `image.tag`                           | The image tag to pull from                              | `v1.6.0`                                    |
 | `image.pullPolicy`                    | Image pull policy                                       | IfNotPresent                                |
 | `replicas`                            | Number of replicas                                      | 1                                           |
 | `service.port`                        | The port of the container                               | 8080                                        |
+| `hostNetwork`                         | Whether or not to use the host network                  | false                                       |
 | `prometheusScrape`                    | Whether or not enable prom scrape                       | true                                        |
 | `rbac.create`                         | If true, create & use RBAC resources                    | true                                        |
 | `serviceAccount.create`               | If true, and rbac true, create & use serviceAccount     | true                                        |
@@ -34,12 +35,14 @@ $ helm install stable/kube-state-metrics
 | `tolerations`                         | Tolerations for pod assignment	                      | []                                          |
 | `podAnnotations`                      | Annotations to be added to the pod                      | {}                                          |
 | `resources`                           | kube-state-metrics resource requests and limits         | {}                                          |
+| `collectors.certificatesigningrequests` | Enable the certificatesigningrequests collector.      | true                                        |
 | `collectors.configmaps`               | Enable the configmaps collector.                        | true                                        |
 | `collectors.cronjobs`                 | Enable the cronjobs collector.                          | true                                        |
 | `collectors.daemonsets`               | Enable the daemonsets collector.                        | true                                        |
 | `collectors.deployments`              | Enable the deployments collector.                       | true                                        |
 | `collectors.endpoints`                | Enable the endpoints collector.                         | true                                        |
 | `collectors.horizontalpodautoscalers` | Enable the horizontalpodautoscalers collector.          | true                                        |
+| `collectors.ingresses`                | Enable the ingresses collector.                         | true                                        |
 | `collectors.jobs`                     | Enable the jobs collector.                              | true                                        |
 | `collectors.limitranges`              | Enable the limitranges collector.                       | true                                        |
 | `collectors.namespaces`               | Enable the namespaces collector.                        | true                                        |
@@ -54,3 +57,6 @@ $ helm install stable/kube-state-metrics
 | `collectors.secrets`                  | Enable the secrets collector.                           | true                                        |
 | `collectors.services`                 | Enable the services collector.                          | true                                        |
 | `collectors.statefulsets`             | Enable the statefulsets collector.                      | true                                        |
+| `prometheus.monitor.enabled`          | Set this to `true` to create ServiceMonitor for Prometheus operator | `false` |
+| `prometheus.monitor.additionalLabels` | Additional labels that can be used so ServiceMonitor will be discovered by Prometheus | `{}` |
+| `prometheus.monitor.namespace`        | namespace where servicemonitor resource should be created | `the same namespace as kube-state-metrics` |

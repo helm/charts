@@ -1,5 +1,5 @@
 name: weave-scope
-version: 0.11.0
+version: 0.11.1
 appVersion: 1.10.1
 description: A Helm chart for the Weave Scope cluster visualizer.
 keywords:
