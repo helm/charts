@@ -23,6 +23,8 @@ autoscalingGroupsnamePrefix: []
 
 # Required if cloudProvider=aws
 awsRegion: us-east-1
+awsAccessKeyID: ""
+awsSecretAccessKey: ""
 
 # Required if cloudProvider=azure
 # clientID/ClientSecret with contributor permission to Cluster and Node ResourceGroup
