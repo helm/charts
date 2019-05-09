@@ -21,20 +21,11 @@ spec:
       labels:
         app: {{ template "anchore-engine.fullname" . }}
         component: {{ $component }}
-{{- if .Values.anchoreEnterpriseFeeds.annotations }}
+      {{- with .Values.anchoreEnterpriseFeeds.annotations }}
       annotations:
-{{ toYaml .Values.anchoreEnterpriseFeeds.annotations | indent 8 }}
-{{- end }}
+        {{ toYaml . | nindent 8 | trim }}
+      {{- end }}
     spec:
-      volumes:
-        - name: config-volume
-          configMap:
-            name: {{ template "anchore-engine.enterprise-feeds.fullname" . }}
-        - name: scratch-volume
-{{ toYaml .Values.anchoreEnterpriseFeeds.scratchVolume.details | indent 10 }}
-        - name: anchore-license
-          secret:
-            secretName: {{ .Values.anchoreEnterpriseGlobal.licenseSecretName }}
       imagePullSecrets:
       - name: {{ .Values.anchoreEnterpriseGlobal.imagePullSecretName }}
       containers:
@@ -48,7 +39,7 @@ spec:
       - name: "{{ .Chart.Name }}-{{ $component }}"
         image: {{ .Values.anchoreEnterpriseGlobal.image }}
         imagePullPolicy: {{ .Values.anchoreEnterpriseGlobal.imagePullPolicy }}
-        command: ["/usr/local/bin/anchore-enterprise-manager"]
+        command: ["anchore-enterprise-manager"]
         args: ["service", "start", "feeds"]
         ports:
         - containerPort: {{ .Values.anchoreEnterpriseFeeds.service.port }}
@@ -56,27 +47,15 @@ spec:
         envFrom:
         - secretRef:
             name: {{ default (include "anchore-engine.fullname" .) .Values.anchoreGlobal.existingSecret }}
+        - configMapRef:
+            name: {{ template "anchore-engine.enterprise-feeds.fullname" . }}
         env:
         {{- with .Values.anchoreGlobal.extraEnv }}
-        {{- toYaml . | nindent 8 }}
+        {{- toYaml . | nindent 8 | trim }}
         {{- end }}
         {{- with .Values.anchoreEnterpriseFeeds.extraEnv }}
-        {{- toYaml . | nindent 8 }}
+        {{- toYaml . | nindent 8 | trim }}
         {{- end }}
-        {{- if and (index .Values "anchore-feeds-db" "externalEndpoint") (not (index .Values "anchore-feeds-db" "enabled")) }}
-        - name: ANCHORE_DB_HOST
-          value: {{ index .Values "anchore-feeds-db" "externalEndpoint" | quote }}
-        {{- else if and (index .Values "cloudsql" "enabled") (not (index .Values "anchore-feeds-db" "enabled")) }}
-        - name: ANCHORE_DB_HOST
-          value: "localhost:5432"
-        {{- else }}
-        - name: ANCHORE_DB_HOST
-          value: "{{ template "postgres.anchore-feeds-db.fullname" . }}:5432"
-        {{- end }}
-        - name: ANCHORE_DB_NAME
-          value: {{ index .Values "anchore-feeds-db" "postgresDatabase" | quote }}
-        - name: ANCHORE_DB_USER
-          value: {{ index .Values "anchore-feeds-db" "postgresUser"  | quote }}
         - name: ANCHORE_POD_NAME
           valueFrom:
             fieldRef:
@@ -85,10 +64,10 @@ spec:
         - name: config-volume
           mountPath: /config/config.yaml
           subPath: config.yaml
-        - name: scratch-volume
-          mountPath: {{ .Values.anchoreEnterpriseFeeds.scratchVolume.mountPath }}
+        - name: {{ $component }}-scratch
+          mountPath: {{ .Values.anchoreGlobal.scratchVolume.mountPath }}
         - name: anchore-license
-          mountPath: /license.yaml
+          mountPath: /home/anchore/license.yaml
           subPath: license.yaml
         livenessProbe:
           httpGet:
@@ -108,19 +87,28 @@ spec:
           failureThreshold: 3
           successThreshold: 1
         resources:
-{{ toYaml .Values.anchoreEnterpriseFeeds.resources | indent 10 }}
-    {{- if .Values.anchoreEnterpriseFeeds.nodeSelector }}
+          {{ toYaml .Values.anchoreEnterpriseFeeds.resources | nindent 10 | trim }}
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ template "anchore-engine.enterprise-feeds.fullname" . }}
+        - name: {{ $component}}-scratch
+          {{ toYaml .Values.anchoreGlobal.scratchVolume.details | nindent 10 | trim }}
+        - name: anchore-license
+          secret:
+            secretName: {{ .Values.anchoreEnterpriseGlobal.licenseSecretName }}
+      {{- with .Values.anchoreEnterpriseFeeds.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.anchoreEnterpriseFeeds.nodeSelector | indent 8 }}
-    {{- end }}
-    {{- with .Values.anchoreEnterpriseFeeds.affinity }}
+        {{ toYaml .Values.anchoreEnterpriseFeeds.nodeSelector | nindent 8 | trim }}
+      {{- end }}
+      {{- with .Values.anchoreEnterpriseFeeds.affinity }}
       affinity:
-{{ toYaml . | indent 8 }}
-    {{- end }}
-    {{- with .Values.anchoreEnterpriseFeeds.tolerations }}
+        {{ toYaml . | nindent 8 | trim }}
+      {{- end }}
+      {{- with .Values.anchoreEnterpriseFeeds.tolerations }}
       tolerations:
-{{ toYaml . | indent 8 }}
-    {{- end }}
+        {{ toYaml . | nindent 8 | trim }}
+      {{- end }}
 
 ---
 apiVersion: v1
@@ -133,9 +121,9 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     component: {{ $component }}
-  {{- if .Values.anchoreEnterpriseFeeds.service.annotations }}
+  {{- with .Values.anchoreEnterpriseFeeds.service.annotations }}
   annotations:
-{{ toYaml .Values.anchoreEnterpriseFeeds.service.annotations | indent 4 }}
+    {{ toYaml . | nindent 4 | trim }}
   {{- end }}
 spec:
   type: {{ .Values.anchoreEnterpriseFeeds.service.type }}
