@@ -1,5 +1,5 @@
 image:
-  repository: quay.io/weaveworks/kured
+  repository: weaveworks/kured
   tag: 1.1.0
   pullPolicy: IfNotPresent
   pullSecrets: []

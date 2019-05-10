@@ -3,6 +3,26 @@
 This file documents all notable changes to Sysdig Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v1.4.5
+
+### Minor Changes
+
+* Enable `new_k8s` flag by default.  This allows kube state metrics to be
+  automatically detected, monitored, and displayed in Sysdig Monitor.
+
+## v1.4.4
+
+### Minor Changes
+
+* Use the latest image from Agent (0.89.5) by default.
+* Add `persistentvolumes` and `persistentvolumeclaims` to ClusterRole
+
+## v1.4.3
+
+### Minor Changes
+
+* Provide an empty value to `sysdig.accessKey` key.
+
 ## v1.4.2
 
 ### Minor Changes

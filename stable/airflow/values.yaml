@@ -81,7 +81,7 @@ airflow:
     repository: puckel/docker-airflow
     ##
     ## image tag
-    tag: 1.10.0-4
+    tag: 1.10.2
     ##
     ## Image pull policy
     ## values: Always or IfNotPresent
@@ -146,6 +146,13 @@ airflow:
   ## Examples:
   ##   variables: '{ "environment": "dev" }'
   variables: {}
+
+  ## Add airflow ppols
+  ## This should be a json string with your pools in it
+  ## Examples:
+  ##   pools: '{ "example": { "description": "This is an example of a pool", "slots": 2 } }'
+  pools: {}
+
   ##
   ## Annotations for the Scheduler, Worker and Web pods
   podAnnotations: {}
@@ -409,6 +416,8 @@ dags:
     ##
     ## branch name, tag or sha1 to reset to
     ref: master
+    ## pre-created secret with key, key.pub and known_hosts file for private repos
+    secret: {}
   initContainer:
     ## Fetch the source code when the pods starts
     enabled: false
@@ -417,7 +426,7 @@ dags:
       ## docker-airflow image
       repository: alpine/git
       ## image tag
-      tag: 1.0.4
+      tag: 1.0.7
       ## Image pull policy
       ## values: Always or IfNotPresent
       pullPolicy: IfNotPresent
@@ -540,3 +549,17 @@ serviceMonitor:
   ## [Kube Prometheus Selector Label](https://github.com/helm/charts/tree/master/stable/prometheus-operator#exporters)
   selector:
     prometheus: kube-prometheus
+
+# Enable this if you're using https://github.com/coreos/prometheus-operator
+prometheusRule:
+  enabled: false
+  ## Namespace in which the prometheus rule is created
+  # namespace: monitoring
+  ## Define individual alerting rules as required
+  ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#rulegroup
+  ##      https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/
+  groups: {}
+
+  ## Used to pass Labels that are used by the Prometheus installed in your cluster to select Prometheus Rules to work with
+  ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#prometheusspec
+  additionalLabels: {}

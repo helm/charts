@@ -56,6 +56,7 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `image.pullSecrets`                  | Specify docker-registry secret names as an array | `nil`                                                   |
 | `image.debug`                        | Specify if debug values should be set            | `false`                                                 |
 | `rbacEnabled`                        | Specify if rbac is enabled in your cluster       | `true`                                                  |
+| `podManagementPolicy`                | Pod management policy                            | `OrderedReady`                                          |
 | `rabbitmq.username`                  | RabbitMQ application username                    | `user`                                                  |
 | `rabbitmq.password`                  | RabbitMQ application password                    | _random 10 character long alphanumeric string_          |
 | `rabbitmq.existingPasswordSecret`    | Existing secret with RabbitMQ credentials        | nil                                                     |
@@ -67,6 +68,8 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `rabbitmq.clustering.k8s_domain`     | Customize internal k8s cluster domain            | `cluster.local`                                         |
 | `rabbitmq.logs`                      | Value for the RABBITMQ_LOGS environment variable | `-`                                                     |
 | `rabbitmq.ulimitNofiles`             | Max File Descriptor limit                        | `65536`                                                 |
+| `rabbitmq.maxAvailableSchedulers     | RabbitMQ maximum available scheduler threads     | `2`                                                     |
+| `rabbitmq.onlineSchedulers           | RabbitMQ online scheduler threads                | `1`                                                     |
 | `rabbitmq.configuration`             | Required cluster configuration                   | See values.yaml                                         |
 | `rabbitmq.extraConfiguration`        | Extra configuration to add to rabbitmq.conf      | See values.yaml                                         |
 | `service.type`                       | Kubernetes Service type                          | `ClusterIP`                                             |
@@ -77,6 +80,7 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `persistence.enabled`                | Use a PVC to persist data                        | `true`                                                  |
 | `service.annotations`                | service annotations as an array                  | []                                                      |
 | `persistence.storageClass`           | Storage class of backing PVC                     | `nil` (uses alpha storage class annotation)             |
+| `persistence.existingClaim`           | RabbitMQ data Persistent Volume existing claim name                     |  ""          |
 | `persistence.accessMode`             | Use volume as ReadOnly or ReadWrite              | `ReadWriteOnce`                                         |
 | `persistence.size`                   | Size of data volume                              | `8Gi`                                                   |
 | `persistence.path`                   | Mount path of the data volume                    | `/opt/bitnami/rabbitmq/var/lib/rabbitmq`                |

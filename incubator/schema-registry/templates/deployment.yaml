@@ -109,8 +109,6 @@ spec:
             value: {{ template "schema-registry.kafkaStore.bootstrapServers" . }}
           - name: SCHEMA_REGISTRY_KAFKASTORE_GROUP_ID
             value: {{ template "schema-registry.kafkaStore.groupId" . }}
-          - name: SCHEMA_REGISTRY_MASTER_ELIGIBILITY
-            value: "true"
           {{ range $configName, $configValue := .Values.configurationOverrides }}
           - name: SCHEMA_REGISTRY_{{ $configName | replace "." "_" | upper }}
             value: {{ $configValue | quote }}

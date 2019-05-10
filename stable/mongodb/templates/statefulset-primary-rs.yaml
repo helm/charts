@@ -111,7 +111,7 @@ spec:
             value: {{ .Values.mongodbDatabase | quote }}
           {{- end }}
             {{- if .Values.usePassword }}
-            {{- if and .Values.mongodbUsername (or .Values.mongodbPassword .Values.existingSecret) }}
+            {{- if and .Values.mongodbUsername .Values.mongodbDatabase }}
           - name: MONGODB_PASSWORD
             valueFrom:
               secretKeyRef:
@@ -210,7 +210,7 @@ spec:
               path: /metrics
               port: metrics
             initialDelaySeconds: {{ .Values.metrics.livenessProbe.initialDelaySeconds }}
-            periodSeconds: {{ .Values.metrics.readinessProbe.periodSeconds }}
+            periodSeconds: {{ .Values.metrics.livenessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.metrics.livenessProbe.timeoutSeconds }}
             failureThreshold: {{ .Values.metrics.livenessProbe.failureThreshold }}
             successThreshold: {{ .Values.metrics.livenessProbe.successThreshold }}

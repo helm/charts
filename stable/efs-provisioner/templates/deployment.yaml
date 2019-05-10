@@ -39,8 +39,6 @@ spec:
       labels:
         app: {{ template "efs-provisioner.name" . }}
         release: "{{ .Release.Name }}"
-      annotations:
-{{ toYaml .Values.annotations | indent 8 }}
     spec:
       serviceAccount: {{ template "efs-provisioner.serviceAccountName" . }}
       {{- if .Values.priorityClassName }}
@@ -57,6 +55,8 @@ spec:
           value: {{ .Values.efsProvisioner.awsRegion }}
         - name: PROVISIONER_NAME
           value: {{ .Values.efsProvisioner.provisionerName }}
+        resources:
+          {{- toYaml .Values.resources | nindent 12 }}
         volumeMounts:
         - name: pv-volume
           subPath: {{ (trimPrefix "/" .Values.efsProvisioner.path) }}
