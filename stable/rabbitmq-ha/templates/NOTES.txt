@@ -2,13 +2,16 @@
 
   Credentials:
 
-    Username      : {{ .Values.rabbitmqUsername -}}
+    Username            : {{ .Values.rabbitmqUsername }}
+    Management username : {{ .Values.managementUsername -}}
     {{ if .Values.existingSecret }}
-    Password      : $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "rabbitmq-ha.secretName" . }} -o jsonpath="{.data.rabbitmq-password}" | base64 --decode)
-    ErLang Cookie : $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "rabbitmq-ha.secretName" . }} -o jsonpath="{.data.rabbitmq-erlang-cookie}" | base64 --decode)
+    Password            : $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "rabbitmq-ha.secretName" . }} -o jsonpath="{.data.rabbitmq-password}" | base64 --decode)
+    Management password : $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "rabbitmq-ha.secretName" . }} -o jsonpath="{.data.rabbitmq-management-password}" | base64 --decode)
+    ErLang Cookie       : $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "rabbitmq-ha.secretName" . }} -o jsonpath="{.data.rabbitmq-erlang-cookie}" | base64 --decode)
     {{ else }}
-    Password      : $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "rabbitmq-ha.fullname" . }} -o jsonpath="{.data.rabbitmq-password}" | base64 --decode)
-    ErLang Cookie : $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "rabbitmq-ha.fullname" . }} -o jsonpath="{.data.rabbitmq-erlang-cookie}" | base64 --decode)
+    Password            : $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "rabbitmq-ha.fullname" . }} -o jsonpath="{.data.rabbitmq-password}" | base64 --decode)
+    Management Password : $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "rabbitmq-ha.fullname" . }} -o jsonpath="{.data.rabbitmq-management-password}" | base64 --decode)
+    ErLang Cookie       : $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "rabbitmq-ha.fullname" . }} -o jsonpath="{.data.rabbitmq-erlang-cookie}" | base64 --decode)
     {{ end }}
 
   RabbitMQ can be accessed within the cluster on port {{ .Values.rabbitmqNodePort }} at {{ template "rabbitmq-ha.fullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}
