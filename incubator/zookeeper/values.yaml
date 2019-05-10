@@ -291,21 +291,21 @@ prometheus:
         release: prometheus
 
       ## Some example rules. It might be an idea to limit these down to the current release e.g. max(zk_synced_followers{service="my-zookeeper-release"}) < 2
-      rules:
-        ZookeeperSyncedFollowers:
-          annotations:
-            message: The number of synced followers for the leader node in Zookeeper deployment {{ "{{" }} $labels.service {{ "}}" }} is less than 2. This usually means that some of the Zookeeper nodes aren't communicating properly. If it doesn't resolve itself you can try killing the pods (one by one).
-          expr: max(zk_synced_followers) by (service) < 2
-          for: 5m
-          labels:
-            severity: critical
-        ZookeeperOutstandingRequests:
-          annotations:
-            message: The number of outstanding requests for Zookeeper pod {{ "{{" }} $labels.pod {{ "}}" }} is greater than 10. This can indicate a performance issue with the Pod or cluster a whole.
-          expr: zk_outstanding_requests > 10
-          for: 5m
-          labels:
-            severity: critical
+      rules: {}
+      #  ZookeeperSyncedFollowers:
+      #    annotations:
+      #      message: The number of synced followers for the leader node in Zookeeper deployment {{ "{{" }} $labels.service {{ "}}" }} is less than 2. This usually means that some of the Zookeeper nodes aren't communicating properly. If it doesn't resolve itself you can try killing the pods (one by one).
+      #    expr: max(zk_synced_followers) by (service) < 2
+      #    for: 5m
+      #    labels:
+      #      severity: critical
+      #  ZookeeperOutstandingRequests:
+      #    annotations:
+      #      message: The number of outstanding requests for Zookeeper pod {{ "{{" }} $labels.pod {{ "}}" }} is greater than 10. This can indicate a performance issue with the Pod or cluster a whole.
+      #    expr: zk_outstanding_requests > 10
+      #    for: 5m
+      #    labels:
+      #      severity: critical
 
 ## Use an alternate scheduler, e.g. "stork".
 ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
