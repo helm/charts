@@ -11,6 +11,7 @@ metadata:
 {{ toYaml .Values.serviceAnnotations | indent 4 }}
 spec:
   clusterIP: None
+  type: {{ .Values.serviceType }}
   ports:
   - name: memcache
     port: 11211

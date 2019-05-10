@@ -61,6 +61,11 @@ tolerations: {}
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
 affinity: {}
 
+## Kubernetes service type configuration
+## ref: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
+##
+serviceType: ClusterIP
+
 metrics:
   ## Expose memcached metrics in Prometheus format
   enabled: false
