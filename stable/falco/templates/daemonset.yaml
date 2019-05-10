@@ -35,7 +35,7 @@ spec:
             - -K
             - /var/run/secrets/kubernetes.io/serviceaccount/token
             - -k
-            - https://kubernetes.default
+            - "https://$(KUBERNETES_SERVICE_HOST)"
             - -pk
         {{- if .Values.extraArgs }}
 {{ toYaml .Values.extraArgs | indent 12 }}
