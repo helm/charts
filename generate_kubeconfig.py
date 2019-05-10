@@ -39,7 +39,7 @@ if context is None:
 cluster_attrs = run_command(['config', 'get-contexts', context.strip(),
                              '--no-headers'], args['namespace'], as_json=False)
 
-cluster_name = cluster_attrs.strip().split()[3]
+cluster_name = cluster_attrs.strip().split()[2]
 endpoint = run_command(['config', 'view', '-o',
                         'jsonpath="{.clusters[?(@.name =="' +
                         cluster_name + '")].cluster.server}"'],
