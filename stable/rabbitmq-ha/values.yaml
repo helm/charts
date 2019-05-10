@@ -378,6 +378,7 @@ podAnnotations: {}
 ## Pod affinity
 ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 podAntiAffinity: soft
+podAntiAffinityTopologyKey: "kubernetes.io/hostname"
 
 ## Create default configMap
 ##
