@@ -154,7 +154,7 @@ service:
   type: ClusterIP
   port: 3306
   # nodePort: 32000
-  # loadBalancerIP: 
+  # loadBalancerIP:
 
 ssl:
   enabled: false
