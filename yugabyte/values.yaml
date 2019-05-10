@@ -62,6 +62,8 @@ enableLoadBalancer: True
 
 isMultiAz: False
 
+domainName: "cluster.local"
+
 serviceEndpoints:
   - name: "yb-master-ui"
     type: LoadBalancer
@@ -72,7 +74,6 @@ serviceEndpoints:
 Services:
   - name: "yb-masters"
     label: "yb-master"
-    domainName: "cluster.local"
     memory_limit_to_ram_ratio: 0.85
     ports:
       ui: "7000"
@@ -80,7 +81,6 @@ Services:
 
   - name: "yb-tservers"
     label: "yb-tserver"
-    domainName: "cluster.local"
     ports:
       ui: "9000"
       rpc-port: "7100"

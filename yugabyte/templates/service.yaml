@@ -21,9 +21,9 @@ data:
 {{- $rootCA := buildCustomCert $root.Values.tls.rootCA.cert $root.Values.tls.rootCA.key -}}
 {{- $replicas := (eq .name "yb-masters") | ternary $root.Values.replicas.master $root.Values.replicas.tserver -}}
 {{- range $index := until ( int ( $replicas ) ) }}
-{{- $node := printf "%s-%d.%s.%s.svc.%s" $service.label $index $service.name $root.Release.Namespace $service.domainName }}
+{{- $node := printf "%s-%d.%s.%s.svc.%s" $service.label $index $service.name $root.Release.Namespace $root.Values.domainName }}
 {{- $dns1 := printf "*.*.%s" $root.Release.Namespace }}
-{{- $dns2 := printf "%s.svc.%s" $dns1 $service.domainName }}
+{{- $dns2 := printf "%s.svc.%s" $dns1 $root.Values.domainName }}
 {{- $server := genSignedCert $node ( default nil ) (list $dns1 $dns2 ) 3650 $rootCA }}
   node.{{$node}}.crt: {{ $server.Cert | b64enc }}
   node.{{$node}}.key: {{ $server.Key | b64enc }}
@@ -212,8 +212,8 @@ spec:
         {{ if eq .name "yb-masters" }}
           - "/home/yugabyte/bin/yb-master"
           - "--fs_data_dirs={{ template "yugabyte.fs_data_dirs" $storageInfo }}"
-          - "--rpc_bind_addresses={{ template "yugabyte.server_address" . }}"
-          - "--server_broadcast_addresses={{ template "yugabyte.server_address" . }}:7100"
+          - "--rpc_bind_addresses={{ printf "$(HOSTNAME).%s.$(NAMESPACE).svc.%s" .name $root.Values.domainName }}"
+          - "--server_broadcast_addresses={{ printf "$(HOSTNAME).%s.$(NAMESPACE).svc.%s" .name $root.Values.domainName }}:7100"
           {{ if $root.Values.isMultiAz }}
           - "--master_addresses={{ $root.Values.masterAddresses}}"
           - "--replication_factor={{ $root.Values.replicas.totalMasters }}"
@@ -235,12 +235,12 @@ spec:
         {{ else }}
           - "/home/yugabyte/bin/yb-tserver"
           - "--fs_data_dirs={{ template "yugabyte.fs_data_dirs" $storageInfo }}"
-          - "--server_broadcast_addresses={{ template "yugabyte.server_address" . }}:9100"
-          - "--rpc_bind_addresses={{ template "yugabyte.server_address" . }}"
-          - "--cql_proxy_bind_address={{ template "yugabyte.server_address" . }}"
+          - "--server_broadcast_addresses={{ printf "$(HOSTNAME).%s.$(NAMESPACE).svc.%s" .name $root.Values.domainName }}:9100"
+          - "--rpc_bind_addresses={{ printf "$(HOSTNAME).%s.$(NAMESPACE).svc.%s" .name $root.Values.domainName }}"
+          - "--cql_proxy_bind_address={{ printf "$(HOSTNAME).%s.$(NAMESPACE).svc.%s" .name $root.Values.domainName }}"
           {{ if not $root.Values.disableYsql }}
           - "--start_pgsql_proxy"
-          - "--pgsql_proxy_bind_address={{ template "yugabyte.server_address" . }}:5433"
+          - "--pgsql_proxy_bind_address={{ printf "$(HOSTNAME).%s.$(NAMESPACE).svc.%s" .name $root.Values.domainName }}:5433"
           {{ end }}
           {{ if $root.Values.isMultiAz }}
           - "--tserver_master_addrs={{ $root.Values.masterAddresses}}"
