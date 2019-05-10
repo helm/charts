@@ -32,6 +32,8 @@ spec:
             privileged: true
           args:
             - /usr/bin/falco
+            - --cri
+            - /host/var/run/runtime.sock
             - -K
             - /var/run/secrets/kubernetes.io/serviceaccount/token
             - -k
@@ -58,8 +60,8 @@ spec:
               value: {{ .Values.proxy.noProxy }}
           {{- end }}
           volumeMounts:
-            - mountPath: /host/var/run/docker.sock
-              name: docker-socket
+            - mountPath: /host/var/run/runtime.sock
+              name: runtime-socket
             - mountPath: /host/dev
               name: dev-fs
             - mountPath: /host/proc
@@ -160,9 +162,9 @@ spec:
         - name: dshm
           emptyDir:
             medium: Memory
-        - name: docker-socket
+        - name: runtime-socket
           hostPath:
-            path: /var/run/docker.sock
+            path: {{ .Values.runtime.socket }}
         - name: dev-fs
           hostPath:
             path: /dev
