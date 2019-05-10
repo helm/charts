@@ -27,6 +27,8 @@ spec:
         - name: {{ template "kafka.fullname" . }}-config
           image: "{{ .Values.image }}:{{ .Values.imageTag }}"
           command: ["/usr/local/script/runtimeConfig.sh"]
+          resources: 
+{{ toYaml .Values.configJob.resources | indent 12 }}
           volumeMounts:
             - name: config-volume
               mountPath: "/usr/local/script"
