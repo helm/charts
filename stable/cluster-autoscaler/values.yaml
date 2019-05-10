@@ -114,6 +114,11 @@ resources: {}
 
 priorityClassName: ""
 
+# Defaults to "ClusterFirst". Valid values are
+# 'ClusterFirstWithHostNet', 'ClusterFirst', 'Default' or 'None'
+# autoscaler does not depend on cluster DNS, recommended to set this to "Default"
+# dnsPolicy: "Default"
+
 service:
   annotations: {}
   clusterIP: ""
