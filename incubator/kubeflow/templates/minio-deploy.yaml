@@ -1,0 +1,61 @@
+apiVersion: "apps/v1beta1"
+kind: "Deployment"
+metadata: 
+  name: {{ include "kubeflow.fullname" . }}-minio
+  labels: 
+    app.kubernetes.io/part-of: {{ include "kubeflow.name" . }}
+    app.kubernetes.io/name: minio
+    helm.sh/chart: {{ include "kubeflow.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/component: minio
+
+spec: 
+  replicas: {{ .Values.minio.replicas }}
+  selector: 
+    matchLabels: 
+      app.kubernetes.io/part-of: {{ include "kubeflow.name" . }}
+      app.kubernetes.io/name: minio
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: minio 
+
+  template: 
+    metadata: 
+      labels: 
+        app.kubernetes.io/part-of: {{ include "kubeflow.name" . }}
+        app.kubernetes.io/name: minio
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: minio  
+
+    spec: 
+      containers: 
+        - name: "minio"
+          image: "{{ .Values.minio.image.repository }}:{{ .Values.minio.image.tag }}"
+          imagePullPolicy: {{ .Values.minio.image.pullPolicy }}
+          ports: 
+            - containerPort: {{ .Values.minio.service.port }}
+              name: minio
+          args: 
+            - "server"
+            - "/data"
+          env: 
+            - name: "MINIO_ACCESS_KEY"
+              value: {{  .Values.minio.accessKey }}
+            - name: "MINIO_SECRET_KEY"
+              value: {{ .Values.minio.accessSecretKey }}
+          volumeMounts: 
+            - mountPath: "/data"
+              name: "data"
+              subPath: "minio"
+          resources:
+            requests:
+              cpu: {{ .Values.minio.requests.cpu }}
+              memory: {{ .Values.minio.requests.memory }}
+            limits:
+              cpu: {{ .Values.minio.limits.cpu }}
+              memory: {{ .Values.minio.limits.memory }}
+      volumes: 
+        - name: "data"
+          persistentVolumeClaim: 
+            claimName:  {{ .Values.minio.persistence.existingClaim | default "kubeflow-minio" }}
+

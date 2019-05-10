@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "kubeflow.fullname" . }}-api
+  name: {{ include "kubeflow.fullname" . }}-ml-pipeline
   labels:
     app.kubernetes.io/part-of: {{ include "kubeflow.name" . }}
     app.kubernetes.io/name: ml-pipeline
@@ -51,9 +51,13 @@ spec:
             {{- toYaml .Values.mlPipeline.resources | nindent 12 }}
           env:
           - name: MYSQL_SERVICE_HOST
-            value: {{ .Values.mysql.mysqlServiceHost }}
+            value: {{ .Values.db.mysqlServiceHost | quote }}
           - name: MYSQL_SERVICE_PORT
-            value: {{ .Values.mysql.mysqlServicePort | quote }}
+            value:  {{ .Values.db.service.port | quote }}
+          - name: MINIO_SERVICE_SERVICE_HOST
+            value: {{ .Values.minio.serviceHost }}
+          - name: MINIO_SERVICE_SERVICE_PORT
+            value: {{ .Values.minio.service.port | quote }}
           - name: POD_NAMESPACE
             valueFrom:
               fieldRef:

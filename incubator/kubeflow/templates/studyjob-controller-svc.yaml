@@ -1,23 +1,23 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "kubeflow.fullname" . }}-katib-ui
+  name: {{ include "kubeflow.fullname" . }}-studyjob-controller
   labels:
     app.kubernetes.io/part-of: {{ include "kubeflow.name" . }}
     app.kubernetes.io/name: katib
     helm.sh/chart: {{ include "kubeflow.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
-    app.kubernetes.io/component: ui
+    app.kubernetes.io/component: studyjob-controller
 spec:
-  type: {{ .Values.katibUi.service.type }}
+  type: {{ .Values.studyjobController.service.type }}
   ports:
-    - port: {{ .Values.katibUi.service.port }}
-      targetPort: http
+    - port: {{ .Values.studyjobController.service.port }}
+      targetPort: https
       protocol: TCP
-      name: http
+      name: https
   selector:
     app.kubernetes.io/part-of: {{ include "kubeflow.name" . }}
     app.kubernetes.io/name: katib
     app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/component: ui
+    app.kubernetes.io/component: studyjob-controller

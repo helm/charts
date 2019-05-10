@@ -25,10 +25,6 @@ spec:
         app.kubernetes.io/instance: {{ .Release.Name }}
         app.kubernetes.io/component: pipeline
     spec:
-      volumes:
-      - configMap:
-          name: {{ include "kubeflow.name" . }}-ml-pipeline-viewer-controller-config
-        name: config-volume
       containers:
         - name: ml-pipeline-viewer-controller
           image: "{{ .Values.mlPipelineViewerController.image.repository }}:{{ .Values.mlPipelineViewerController.image.tag }}"

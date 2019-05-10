@@ -27,7 +27,7 @@ spec:
     spec:
       volumes:
       - configMap:
-          name: {{ include "kubeflow.name" . }}-jupyter-web-app-config
+          name: {{ include "kubeflow.fullname" . }}-jupyter-web-app-config
         name: config-volume
       containers:
         - name: jupyter-web-app
