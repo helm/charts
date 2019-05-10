@@ -10,6 +10,9 @@ metadata:
     heritage: "{{ .Release.Service }}"
 spec:
   replicas: {{ .Values.web.replicas }}
+{{- if .Values.web.strategy }}
+{{ toYaml .Values.web.strategy | indent 2 }}
+{{- end }}
   template:
     metadata:
       labels:
