@@ -155,3 +155,8 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+## Security context
+securityContext:
+  enabled: false
+  runAsUser: 1001
