@@ -239,34 +239,30 @@ prometheus:
     selector: {}
 
   prometheusRule:
-    ## Add Prometheus Rules?
+    ## If true a PrometheusRules resource will be installed
     enabled: false
-
-    ## Namespace in which to install the PrometheusRule. Defaults to the same as everything else.
     # namespace: monitoring
 
-    ## Labels to add to the PrometheusRule so it is picked up by the operator.
-    ## If using the [Helm Chart](https://github.com/helm/charts/tree/master/stable/prometheus-operator) this is the name of the Helm release and 'app: prometheus-operator'
-    selector:
-      app: prometheus-operator
-      release: prometheus
+    ## The selector the Prometheus instance is searching for
+    ## [Default Prometheus Operator selector] (https://github.com/helm/charts/blob/f5a751f174263971fafd21eee4e35416d6612a3d/stable/prometheus-operator/templates/prometheus/prometheus.yaml#L102)
+    selector: {}
 
     ## Some example rules. It might be an idea to limit these down to the current release e.g. max(zk_synced_followers{service="my-zookeeper-release"}) < 2
-    rules:
-      ZookeeperSyncedFollowers:
-        annotations:
-          message: The number of synced followers for the leader node in Zookeeper deployment {{ "{{" }} $labels.service {{ "}}" }} is less than 2. This usually means that some of the Zookeeper nodes aren't communicating properly. If it doesn't resolve itself you can try killing the pods (one by one).
-        expr: max(zk_synced_followers) by (service) < 2
-        for: 5m
-        labels:
-          severity: critical
-      ZookeeperOutstandingRequests:
-        annotations:
-          message: The number of outstanding requests for Zookeeper pod {{ "{{" }} $labels.pod {{ "}}" }} is greater than 10. This can indicate a performance issue with the Pod or cluster a whole.
-        expr: zk_outstanding_requests > 10
-        for: 5m
-        labels:
-          severity: critical
+    rules: {}
+    #  ZookeeperSyncedFollowers:
+    #    annotations:
+    #      message: The number of synced followers for the leader node in Zookeeper deployment {{ "{{" }} $labels.service {{ "}}" }} is less than 2. This usually means that some of the Zookeeper nodes aren't communicating properly. If it doesn't resolve itself you can try killing the pods (one by one).
+    #    expr: max(zk_synced_followers) by (service) < 2
+    #    for: 5m
+    #    labels:
+    #      severity: critical
+    #  ZookeeperOutstandingRequests:
+    #    annotations:
+    #      message: The number of outstanding requests for Zookeeper pod {{ "{{" }} $labels.pod {{ "}}" }} is greater than 10. This can indicate a performance issue with the Pod or cluster a whole.
+    #    expr: zk_outstanding_requests > 10
+    #    for: 5m
+    #    labels:
+    #      severity: critical
 
 ## Use an alternate scheduler, e.g. "stork".
 ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
