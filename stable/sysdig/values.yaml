@@ -57,7 +57,8 @@ sysdig:
   # Required: You need your Sysdig Monitor access key before running agents.
   accessKey: ""
 
-  settings: {}
+  settings:
+    new_k8s: true
     ### Agent tags
     # tags: linux:ubuntu,dept:dev,local:nyc
     #### Sysdig Software related config ####
@@ -70,7 +71,6 @@ sysdig:
     # collector certificate validation
     # ssl_verify_certificate: true
     #######################################
-    # new_k8s: true
     # k8s_cluster_name: production
 
 secure:
