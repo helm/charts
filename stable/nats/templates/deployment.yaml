@@ -1,4 +1,4 @@
-{{- if eq .Values.mode "deployment" }}
+{{- if eq .Values.resourceType "deployment" }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:

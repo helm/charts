@@ -68,9 +68,9 @@ The following table lists the configurable parameters of the NATS chart and thei
 | `maxConnections`                     | Max. number of client connections                                                            | `nil`                                                         |
 | `maxControlLine`                     | Max. protocol control line                                                                   | `nil`                                                         |
 | `maxPayload`                         | Max. payload                                                                                 | `nil`                                                         |
-| `mode`                               | NATS cluster running mode                                                                    | `statefulset`                                                 |
 | `writeDeadline`                      | Duration the server can block on a socket write to a client                                  | `nil`                                                         |
 | `replicaCount`                       | Number of NATS nodes                                                                         | `1`                                                           |
+| `resourceType`                       | NATS cluster resource type under Kubernetes (Supported: StatefulSets, or Deployment)         | `statefulset`                                                 |
 | `securityContext.enabled`            | Enable security context                                                                      | `true`                                                        |
 | `securityContext.fsGroup`            | Group ID for the container                                                                   | `1001`                                                        |
 | `securityContext.runAsUser`          | User ID for the container                                                                    | `1001`                                                        |

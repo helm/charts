@@ -1,4 +1,4 @@
-{{- if eq .Values.mode "statefulset" }}
+{{- if or (eq .Values.resourceType "statefulset") (not (contains .Values.resourceType "deployment")) }}
 apiVersion: apps/v1beta2
 kind: StatefulSet
 metadata:
