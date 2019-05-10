@@ -210,7 +210,7 @@ spec:
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
-            - topologyKey: "kubernetes.io/hostname"
+            - topologyKey: "{{ .Values.podAntiAffinityTopologyKey }}"
               labelSelector:
                 matchLabels:
                   app: {{ template "rabbitmq-ha.name" . }}
@@ -221,7 +221,7 @@ spec:
           preferredDuringSchedulingIgnoredDuringExecution:
             - weight: 1
               podAffinityTerm:
-                topologyKey: kubernetes.io/hostname
+                topologyKey: "{{ .Values.podAntiAffinityTopologyKey }}"
                 labelSelector:
                   matchLabels:
                     app: {{ template "rabbitmq-ha.name" . }}
