@@ -27,7 +27,7 @@ spec:
     spec:
       volumes:
       - configMap:
-          name: {{ include "kubeflow.name" . }}-pytorch-operator-config
+          name: {{ include "kubeflow.fullname" . }}-pytorch-operator-config
         name: config-volume
       containers:
         - name: pytorch-operator

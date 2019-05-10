@@ -47,6 +47,20 @@ katibUi:
   tolerations: []
   affinity: {}
 
+studyjobController:
+  replicaCount: 1
+  image:
+    repository: gcr.io/kubeflow-images-public/katib/studyjob-controller
+    tag: v0.1.2-alpha-156-g4ab3dbd
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 443
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
 mlPipeline:
   replicaCount: 1
   image:
@@ -87,7 +101,7 @@ mlPipelineScheduledWorkflow:
 mlPipelineUi:
   replicaCount: 1
   image:
-    repository: gcr.io/ml-pipeline/frontend:
+    repository: gcr.io/ml-pipeline/frontend
     tag: 0.1.18
     pullPolicy: IfNotPresent
   service:
