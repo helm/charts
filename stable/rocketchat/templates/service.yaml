@@ -8,10 +8,10 @@ metadata:
 {{ toYaml . | indent 4 }}
 {{- end }}
   labels:
-    app: {{ template "rocketchat.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/name: {{ include "rocketchat.name" . }}
+    helm.sh/chart: {{ include "rocketchat.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- with $service.labels }}
 {{ toYaml . | indent 4 }}
 {{- end }}
@@ -26,5 +26,5 @@ spec:
     {{- end }}
     protocol: TCP
   selector:
-    app: {{ template "rocketchat.name" . }}
-    release: "{{ .Release.Name }}"
+    app.kubernetes.io/name: {{ include "rocketchat.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
