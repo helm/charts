@@ -1,4 +1,4 @@
-{{- if hasKey .Values.server.env "DRONE_PROVIDER" }}
+{{- if eq (include "drone.providerOK" .) "true" }}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -40,11 +40,33 @@ spec:
 {{- end }}
       serviceAccountName: {{ template "drone.serviceAccountName" . }}
       containers:
-      - name: {{ template "drone.fullname" . }}-server
+      - name: server
         image: "{{ .Values.images.server.repository }}:{{ .Values.images.server.tag }}"
         imagePullPolicy: {{ .Values.images.server.pullPolicy }}
         env:
-          - name: DRONE_SECRET
+        {{- if .Values.server.kubernetes.enabled }}
+          - name: DRONE_KUBERNETES_ENABLED
+            value: "true"
+          - name: DRONE_KUBERNETES_NAMESPACE
+            value: {{ default .Release.Namespace .Values.server.kubernetes.namespace }}
+          - name: DRONE_KUBERNETES_SERVICE_ACCOUNT
+            value: {{ template "drone.pipelineServiceAccount" . }}
+        {{- end }}
+          - name: DRONE_GIT_ALWAYS_AUTH
+            value: {{ .Values.server.alwaysAuth | quote }}
+          - name: DRONE_SERVER_HOST
+          {{- if hasKey .Values.server "host" }}
+            value: "{{ .Values.server.host }}"
+          {{- else }}
+            value: "{{ template "drone.fullname" . }}"
+          {{- end }}
+          - name: DRONE_SERVER_PROTO
+            value: {{ .Values.server.protocol }}
+          {{- if .Values.server.adminUser }}
+          - name: DRONE_USER_CREATE
+            value: username:{{ .Values.server.adminUser }},machine:false,admin:true
+          {{- end }}
+          - name: DRONE_RPC_SECRET
             valueFrom:
               secretKeyRef:
                 name: {{ template "drone.fullname" . }}
@@ -58,19 +80,17 @@ spec:
                 key: {{ . | quote }}
           {{- end }}
           {{- end }}
-          - name: DRONE_HOST
-          {{- if hasKey .Values.server "host" }}
-            value: "{{ .Values.server.host }}"
-          {{- else }}
-            value: "http://{{ template "drone.fullname" . }}"
-          {{- end }}
           {{- range $key, $value := .Values.server.env }}
           - name: {{ $key }}
             value: {{ $value | quote }}
           {{- end }}
+          {{ template "drone.providerEnvs" . }}
         ports:
         - name: http
-          containerPort: 8000
+          containerPort: 80
+          protocol: TCP
+        - name: https
+          containerPort: 443
           protocol: TCP
         - name: grpc
           containerPort: 9000

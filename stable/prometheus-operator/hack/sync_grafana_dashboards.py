@@ -26,17 +26,12 @@ def change_style(style, representer):
 # Source files list
 charts = [
     {
-        'source': 'https://raw.githubusercontent.com/coreos/prometheus-operator/master/contrib/kube-prometheus/manifests/grafana-dashboardDefinitions.yaml',
+        'source': 'https://raw.githubusercontent.com/coreos/kube-prometheus/master/manifests/grafana-dashboardDefinitions.yaml',
         'destination': '../templates/grafana/dashboards',
         'type': 'yaml',
     },
     {
         'source': 'https://raw.githubusercontent.com/etcd-io/etcd/master/Documentation/op-guide/grafana.json',
-        'destination': '../templates/grafana/dashboards',
-        'type': 'json',
-    },
-    {
-        'source': 'https://raw.githubusercontent.com/helm/charts/master/stable/prometheus-operator/dashboards/grafana-coredns-k8s.json',
         'destination': '../templates/grafana/dashboards',
         'type': 'json',
     },
@@ -50,6 +45,8 @@ condition_map = {
 
 # standard header
 header = '''# Generated from '%(name)s' from %(url)s
+# Do not change in-place! In order to change this file first read following link:
+# https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
 {{- if and .Values.grafana.enabled .Values.grafana.defaultDashboardsEnabled%(condition)s }}
 apiVersion: v1
 kind: ConfigMap
@@ -119,7 +116,11 @@ def main():
     # read the rules, create a new template file per group
     for chart in charts:
         print("Generating rules from %s" % chart['source'])
-        raw_text = requests.get(chart['source']).text
+        response = requests.get(chart['source'])
+        if response.status_code != 200:
+            print('Skipping the file, response code %s not equals 200' % response.status_code)
+            continue
+        raw_text = response.text
         if chart['type'] == 'yaml':
             yaml_text = yaml.load(raw_text)
             groups = yaml_text['items']

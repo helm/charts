@@ -10,7 +10,7 @@ $ kubectl get pods --selector=job-name={{ template "mysqldump.fullname" . }} --s
 
 To see the logs from the backup job run:
 
-$ kubectl logs `kc get pods --selector=job-name=test-mysqldump --output=jsonpath={.items..metadata.name}`
+$ kubectl logs `kubectl get pods --selector=job-name=test-mysqldump --output=jsonpath={.items..metadata.name}`
 
 mysqldump contents can be found in:
 {{- if .Values.persistentVolumeClaim }}
@@ -19,7 +19,7 @@ $ kubectl get persistentvolumeclaim {{ .Values.persistentVolumeClaim }}
 {{- if .Values.persistence.enabled }}
 $ kubectl get persistentvolumeclaim {{ template "mysqldump.fullname" . }}
 {{- else }}
-$ kubectl logs `kc get pods --selector=job-name=test-mysqldump --output=jsonpath={.items..metadata.name}`
+$ kubectl logs `kubectl get pods --selector=job-name=test-mysqldump --output=jsonpath={.items..metadata.name}`
 {{- end -}}
 {{- end }}
 
@@ -35,8 +35,8 @@ $ kubectl get jobs --selector=cronjob-name={{ template "mysqldump.fullname" . }}
 
 To see the logs from the most recent backup job run:
 
-$ kubectl logs $(kc get pods --selector \
-  job-name=$(kc get jobs --selector=cronjob-name={{ template "mysqldump.fullname" . }} \
+$ kubectl logs $(kubectl get pods --selector \
+  job-name=$(kubectl get jobs --selector=cronjob-name={{ template "mysqldump.fullname" . }} \
   --output=jsonpath='{.items[-1:].metadata.name}') \
   --output=jsonpath={.items..metadata.name})
 
@@ -47,7 +47,7 @@ $ kubectl get persistentvolumeclaim {{ .Values.persistentVolumeClaim }}
 {{- if .Values.persistence.enabled }}
 $ kubectl get persistentvolumeclaim {{ template "mysqldump.fullname" . }}
 {{- else }}
-$ kubectl logs `kc get pods --selector=job-name=test-mysqldump --output=jsonpath={.items..metadata.name}`
+$ kubectl logs `kubectl get pods --selector=job-name=test-mysqldump --output=jsonpath={.items..metadata.name}`
 {{- end -}}
 {{- end }}
 

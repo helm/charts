@@ -66,6 +66,7 @@ spec:
 {{ toYaml .Values.data.tolerations | indent 8 }}
 {{- end }}
       initContainers:
+{{- if .Values.sysctlInitContainer.enabled }}
       # see https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html
       # and https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-configuration-memory.html#mlockall
       - name: "sysctl"
@@ -76,6 +77,7 @@ spec:
         command: ["sysctl", "-w", "vm.max_map_count=262144"]
         securityContext:
           privileged: true
+{{- end }}
       - name: "chown"
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
@@ -102,6 +104,9 @@ spec:
           name: data
 {{- if .Values.extraInitContainers }}
 {{ tpl .Values.extraInitContainers . | indent 6 }}
+{{- end }}
+{{- if .Values.cluster.plugins }}
+{{ include "plugin-installer" . | indent 6 }}
 {{- end }}
       containers:
       - name: elasticsearch
@@ -132,16 +137,17 @@ spec:
         resources:
 {{ toYaml .Values.data.resources | indent 12 }}
         readinessProbe:
-          httpGet:
-            path: /_cluster/health?local=true
-            port: 9200
-          initialDelaySeconds: 5
+{{ toYaml .Values.data.readinessProbe | indent 10 }}
         volumeMounts:
         - mountPath: /usr/share/elasticsearch/data
           name: data
         - mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
           name: config
           subPath: elasticsearch.yml
+{{- if .Values.cluster.plugins }}
+        - mountPath: /usr/share/elasticsearch/plugins/
+          name: plugindir
+{{- end }}
 {{- if hasPrefix "2." .Values.appVersion }}
         - mountPath: /usr/share/elasticsearch/config/logging.yml
           name: config
@@ -184,6 +190,10 @@ spec:
       - name: config
         configMap:
           name: {{ template "elasticsearch.fullname" . }}
+{{- if .Values.cluster.plugins }}
+      - name: plugindir
+        emptyDir: {}
+{{- end }}
 {{- if .Values.cluster.keystoreSecret }}
       - name: keystore
         secret:
@@ -193,6 +203,7 @@ spec:
       - name: data
         emptyDir: {}
   {{- end }}
+  podManagementPolicy: {{ .Values.data.podManagementPolicy }}
   updateStrategy:
     type: {{ .Values.data.updateStrategy.type }}
   {{- if .Values.data.persistence.enabled }}

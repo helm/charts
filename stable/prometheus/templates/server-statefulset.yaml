@@ -80,9 +80,9 @@ spec:
           imagePullPolicy: "{{ .Values.server.image.pullPolicy }}"
           args:
           {{- if .Values.server.retention }}
-            - --storage.tsdb.retention={{ .Values.server.retention }}
+            - --storage.tsdb.retention.time={{ .Values.server.retention }}
           {{- end }}
-            - --config.file=/etc/config/prometheus.yml
+            - --config.file={{ .Values.server.configPath }}
             - --storage.tsdb.path={{ .Values.server.persistentVolume.mountPath }}
             - --web.console.libraries=/etc/prometheus/console_libraries
             - --web.console.templates=/etc/prometheus/consoles
@@ -95,6 +95,9 @@ spec:
           {{- end }}
           {{- if .Values.server.enableAdminApi }}
             - --web.enable-admin-api
+          {{- end }}
+          {{- if .Values.server.skipTSDBLock }}
+            - --storage.tsdb.no-lockfile
           {{- end }}
           ports:
             - containerPort: 9090
@@ -136,6 +139,12 @@ spec:
               subPath: {{ .subPath }}
               readOnly: {{ .readOnly }}
           {{- end }}
+          {{- if .Values.server.extraVolumeMounts }}
+          {{ toYaml .Values.server.extraVolumeMounts | nindent 12 }}
+          {{- end }}
+       {{- if .Values.server.sidecarContainers }}
+       {{- toYaml .Values.server.sidecarContainers | nindent 8 }}
+       {{- end }}
     {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
        {{ toYaml .Values.imagePullSecrets | indent 2 }}
@@ -186,6 +195,9 @@ spec:
           configMap:
             name: {{ .configMap }}
       {{- end }}
+{{- if .Values.server.extraVolumes }}
+{{ toYaml .Values.server.extraVolumes | indent 8}}
+{{- end }}
 {{- if .Values.server.persistentVolume.enabled }}
   volumeClaimTemplates:
     - metadata:

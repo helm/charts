@@ -56,8 +56,9 @@ spec:
           - containerPort: {{ .Values.metricsPort }}
         {{ end }}
         args:
-        - -v=2
+        - -v={{ .Values.logLevel }}
         - -namespace={{ .Values.sparkJobNamespace }}
+        - -ingress-url-format={{ .Values.ingressUrlFormat }}
         - -install-crds={{ .Values.installCrds }}
         - -controller-threads={{ .Values.controllerThreads }}
         - -resync-interval={{ .Values.resyncInterval }}
@@ -76,3 +77,7 @@ spec:
         - -webhook-svc-name={{ .Release.Name }}-webhook
         - -webhook-config-name={{ include "sparkoperator.fullname" . }}-webhook-config
         {{- end }}
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}

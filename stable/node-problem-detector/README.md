@@ -34,22 +34,25 @@ Custom System log monitor config files can be created, see [here](https://github
 
 The following table lists the configurable parameters for this chart and their default values.
 
-| Parameter                         | Description                                | Default                                                      |
-| ----------------------------------|--------------------------------------------|--------------------------------------------------------------|
-| `affinity`                        | Map of node/pod affinities                 | `{}`                                                         |
-| `annotations`                     | Optional daemonset annotations             | `{}`                                                         |
-| `fullnameOverride`                | Override the fullname of the chart         | `nil`                                                        |
-| `image.pullPolicy`                | Image pull policy                          | `IfNotPresent`                                               |
-| `image.repository`                | Image                                      | `k8s.gcr.io/node-problem-detector`                           |
-| `image.tag`                       | Image tag                                  | `v0.6.1`                                                     |
-| `nameOverride`                    | Override the name of the chart             | `nil`                                                        |
-| `rbac.create`                     | RBAC                                       | `true`                                                       |
-| `resources`                       | Pod resource requests and limits           | `{}`                                                         |
-| `settings.log_monitors`           | System log monitor config files            | `/config/kernel-monitor.json`, `/config/docker-monitor.json` |
-| `settings.custom_plugin_monitors` | Custom plugin monitor config files         | `[]`                                                         |
-| `serviceAccount.create`           | Whether a ServiceAccount should be created | `true`                                                       |
-| `serviceAccount.name`             | Name of the ServiceAccount to create       | Generated value from template                                |
-| `tolerations`                     | Optional daemonset tolerations             | `[]`                                                         |
+| Parameter                             | Description                                | Default                                                      |
+|---------------------------------------|--------------------------------------------|--------------------------------------------------------------|
+| `affinity`                            | Map of node/pod affinities                 | `{}`                                                         |
+| `annotations`                         | Optional daemonset annotations             | `{}`                                                         |
+| `fullnameOverride`                    | Override the fullname of the chart         | `nil`                                                        |
+| `image.pullPolicy`                    | Image pull policy                          | `IfNotPresent`                                               |
+| `image.repository`                    | Image                                      | `k8s.gcr.io/node-problem-detector`                           |
+| `image.tag`                           | Image tag                                  | `v0.6.1`                                                     |
+| `nameOverride`                        | Override the name of the chart             | `nil`                                                        |
+| `rbac.create`                         | RBAC                                       | `true`                                                       |
+| `hostNetwork`                         | Run pod on host network                    | `false`                                                      |
+| `priorityClassName`                   | Priority class name                        | `""`                                                      |
+| `resources`                           | Pod resource requests and limits           | `{}`                                                         |
+| `settings.custom_monitor_definitions` | User-specified custom monitor definitions  | `{}`                                                         |
+| `settings.log_monitors`               | System log monitor config files            | `/config/kernel-monitor.json`, `/config/docker-monitor.json` |
+| `settings.custom_plugin_monitors`     | Custom plugin monitor config files         | `[]`                                                         |
+| `serviceAccount.create`               | Whether a ServiceAccount should be created | `true`                                                       |
+| `serviceAccount.name`                 | Name of the ServiceAccount to create       | Generated value from template                                |
+| `tolerations`                         | Optional daemonset tolerations             | `[]`                                                         |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install` or provide a YAML file containing the values for the above parameters:
 

@@ -146,4 +146,20 @@ halyard:
     create: true
     data:
       metadata.xml: <xml><username>admin</username></xml>
+  additionalProfileConfigMaps:
+    create: true
+    data:
+      orca-local.yml: |-
+        tasks:
+          useManagedServiceAccounts: true
+```
+
+Any files added through `additionalConfigMaps` will be written to disk at `/opt/halyard/additionalConfigMaps`.
+
+### Set custom annotations for the halyard pod
+
+```yaml
+halyard:
+  annotations:
+    iam.amazonaws.com/role: <role_arn>
 ```

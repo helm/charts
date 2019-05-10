@@ -13,6 +13,10 @@ managementPassword: E9R3fjZm4ejFkVFE
 extraConfig: |
 #  queue_master_locator = min-masters
 
+## Place advanced.config file in /etc/rabbitmq/advanced.config
+## Ref: https://www.rabbitmq.com/configure.html#advanced-config-file
+advancedConfig: |
+
 ## Definitions specification within the secret, will always be mounted
 ## at /etc/definitions/defintions.json
 definitionsSource: definitions.json
@@ -264,7 +268,7 @@ replicaCount: 3
 
 image:
   repository: rabbitmq
-  tag: 3.7-alpine
+  tag: 3.7.12-alpine
   pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
@@ -294,6 +298,13 @@ service:
   loadBalancerSourceRanges: []
   type: ClusterIP
 
+  ## Customize nodePort number when the service type is NodePort
+  ### Ref: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
+  ###
+  epmdNodePort: null
+  amqpNodePort: null
+  managerNodePort: null
+
 podManagementPolicy: OrderedReady
 
 ## Statefulsets rolling update update strategy
@@ -316,19 +327,24 @@ updateStrategy: OnDelete
 ##
 resources: {}
   # limits:
-  #   cpu: 100mm
+  #   cpu: 100m
   #   memory: 1Gi
   # requests:
-  #   cpu: 100mm
+  #   cpu: 100m
   #   memory: 1Gi
 initContainer:
   resources: {}
   #   limits:
-  #     cpu: 100mm
+  #     cpu: 100m
   #     memory: 128Mi
   #   requests:
-  #     cpu: 100mm
+  #     cpu: 100m
   #     memory: 128Mi
+
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName:
 
 ## Data Persistency
 persistentVolume:
@@ -422,6 +438,15 @@ readinessProbe:
 # Specifies an existing secret to be used for RMQ password and Erlang Cookie
 existingSecret: ""
 
+
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+##
+securityContext:
+  fsGroup: 101
+  runAsGroup: 101
+  runAsNonRoot: true
+  runAsUser: 100
+
 prometheus:
   ## Configures Prometheus Exporter to expose and scrape stats.
   exporter:
@@ -477,3 +502,8 @@ prometheus:
 
 ## Kubernetes Cluster Domain
 clusterDomain: cluster.local
+
+## Pod Disruption Budget
+podDisruptionBudget: {}
+  # maxUnavailable: 1
+  # minAvailable: 1

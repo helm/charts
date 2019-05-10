@@ -12,9 +12,13 @@ spec:
   replicas: {{ .Values.replicaCount }}
   updateStrategy:
     type: {{ .Values.statefulset.updateStrategy }}
+    {{- if (eq "Recreate" .Values.statefulset.updateStrategy) }}
+    rollingUpdate: null
+    {{- else }}
     {{- if .Values.statefulset.rollingUpdatePartition }}
     rollingUpdate:
       partition: {{ .Values.statefulset.rollingUpdatePartition }}
+    {{- end }}
     {{- end }}
   selector:
     matchLabels:
@@ -39,14 +43,14 @@ spec:
 {{- end }}
 {{- end }}
     spec:
-      {{- if .Values.image.pullSecrets }}
-      imagePullSecrets:
-{{ toYaml .Values.image.pullSecrets | indent 8 }}
-      {{- end }}
+{{- include "nats.imagePullSecrets" . | indent 6 }}
       {{- if .Values.securityContext.enabled }}
       securityContext:
         fsGroup: {{ .Values.securityContext.fsGroup }}
         runAsUser: {{ .Values.securityContext.runAsUser }}
+      {{- end }}
+      {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName | quote }}
       {{- end }}
       {{- if .Values.nodeSelector }}
       nodeSelector:
@@ -88,7 +92,7 @@ spec:
         - gnatsd
         args:
         - -c
-        - /opt/bitnami/nats/gnatsd.conf
+        - /opt/nats/gnatsd.conf
         {{- if .Values.extraArgs }}
 {{ toYaml .Values.extraArgs | indent 8 }}
         {{- end }}
@@ -125,14 +129,14 @@ spec:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
           - name: config
-            mountPath: /opt/bitnami/nats/gnatsd.conf
+            mountPath: /opt/nats/gnatsd.conf
             subPath: gnatsd.conf
         {{- if .Values.sidecars }}
 {{ toYaml .Values.sidecars | indent 6 }}
         {{- end }}
 {{- if .Values.metrics.enabled }}
       - name: metrics
-        image: {{ template "metrics.image" . }}
+        image: {{ template "nats.metrics.image" . }}
         imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
         args:
 {{ toYaml .Values.metrics.args | indent 10 -}}

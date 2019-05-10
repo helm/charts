@@ -61,6 +61,11 @@ extraInitContainers: |
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
 nodeSelector: {}
 
+## Tolerations for pod assignment
+## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+##
+tolerations: []
+
 livenessProbe:
   initialDelaySeconds: 30
   periodSeconds: 10
@@ -89,6 +94,12 @@ persistence:
   accessMode: ReadWriteOnce
   size: 8Gi
   annotations: {}
+
+## Security context
+securityContext:
+  enabled: false
+  runAsUser: 999
+  fsGroup: 999
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -129,6 +140,7 @@ metrics:
   readinessProbe:
     initialDelaySeconds: 5
     timeoutSeconds: 1
+  flags: []
 
 ## Configure the service
 ## ref: http://kubernetes.io/docs/user-guide/services/
@@ -168,5 +180,15 @@ ssl:
 # To be added to the database server pod(s)
 podAnnotations: {}
 
+podLabels: {}
+
 ## Set pod priorityClassName
 # priorityClassName: {}
+
+
+## Init container resources defaults
+initContainer:
+  resources:
+    requests:
+      memory: 10Mi
+      cpu: 10m

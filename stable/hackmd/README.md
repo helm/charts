@@ -26,9 +26,10 @@ The following configurations may be set. It is recommended to use values.yaml fo
 
 Parameter | Description | Default
 --------- | ----------- | -------
+`deploymentStrategy` | Deployment strategy. | `RollingUpdate`
 `replicaCount` | How many replicas to run. | 1
 `image.repository` | Name of the image to run, without the tag. | [hackmdio/hackmd](https://github.com/hackmdio/docker-hackmd)
-`image.tag` | The image tag to use. | 1.2.1-alpine
+`image.tag` | The image tag to use. | 1.3.0-alpine
 `image.pullPolicy` | The kubernetes image pull policy. | IfNotPresent
 `service.name` | The kubernetes service name to use. | hackmd
 `service.type` | The kubernetes service type to use. | ClusterIP
@@ -45,6 +46,8 @@ Parameter | Description | Default
 `persistence.size` | Persistent Volume size | `2Gi`
 `persistence.storageClass` | Persistent Volume Storage Class |  `unset`
 `extraVars` | Hackmd's extra environment variables | `[]`
+`podAnnotations` | Pod annotations | `{}`
+`sessionSecret` | Hackmd's session secret | `""` (Randomly generated)
 `postgresql.install` | Enable PostgreSQL as a chart dependency | `true`
 `postgresql.imageTag` | The image tag for PostgreSQL | `9.6.2`
 `postgresql.postgresUser` | PostgreSQL User to create | `hackmd`

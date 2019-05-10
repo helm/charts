@@ -1,8 +1,8 @@
 halyard:
-  spinnakerVersion: 1.11.6
+  spinnakerVersion: 1.12.5
   image:
     repository: gcr.io/spinnaker-marketplace/halyard
-    tag: 1.13.1
+    tag: 1.16.0
   # Provide a config map with Hal commands that will be run the core config (storage)
   # The config map should contain a script in the config.sh key
   additionalScripts:
@@ -15,9 +15,34 @@ halyard:
   additionalSecrets:
     create: false
     data: {}
+    ## Uncomment if you want to use a pre-created secret rather than feeding data in via helm.
+    # name:
   additionalConfigMaps:
     create: false
     data: {}
+  additionalProfileConfigMaps:
+    create: false
+    data:
+    ## if you're running spinnaker behind a reverse proxy such as a GCE ingress
+    ## you may need the following profile settings for the gate profile.
+    ## see https://github.com/spinnaker/spinnaker/issues/1630
+    ## otherwise its harmless and will likely become default behavior in the future
+    ## According to the linked github issue.
+      gate-local.yml: |-
+        server:
+          tomcat:
+            protocolHeader: X-Forwarded-Proto
+            remoteIpHeader: X-Forwarded-For
+            internalProxies: .*
+            httpsServerPort: X-Forwarded-Port
+
+  ## Uncomment if you want to add extra commands to the init script
+  ## run by the init container before halyard is started.
+  # additionalInitScript: |-
+
+  ## Uncomment if you want to add annotations on halyard and install-using-hal pods
+  # annotations:
+  #   iam.amazonaws.com/role: <role_arn>
 
 # Define which registries and repositories you want available in your
 # Spinnaker pipeline definitions
@@ -101,8 +126,14 @@ spinnakerFeatureFlags:
 nodeSelector: {}
 
 # Redis password to use for the in-cluster redis service
-# Redis is not exposed publically
+# Enable redis to use in-cluster redis
 redis:
+  enabled: true
+  # External Redis option will be enabled if in-cluster redis is disabled
+  external:
+    host: "<EXTERNAL-REDIS-HOST-NAME>"
+    port: 6379
+    # password: ""
   password: password
   nodeSelector: {}
   cluster:

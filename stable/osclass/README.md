@@ -14,7 +14,7 @@ This chart bootstraps an [Osclass](https://github.com/bitnami/bitnami-docker-osc
 
 It also packages the [Bitnami MariaDB chart](https://github.com/kubernetes/charts/tree/master/stable/mariadb) which is required for bootstrapping a MariaDB deployment for the database requirements of the Osclass application.
 
-Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters.
+Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters. This chart has been tested to work with NGINX Ingress, cert-manager, fluentd and Prometheus on top of the [BKPR](https://kubeprod.io/).
 
 ## Prerequisites
 
@@ -50,6 +50,7 @@ The following table lists the configurable parameters of the Osclass chart and t
 |             Parameter              |               Description                |                   Default                               |
 |------------------------------------|------------------------------------------|-------------------------------------------------------- |
 | `global.imageRegistry`             | Global Docker image registry             | `nil`                                                   |
+| `global.imagePullSecrets`          | Global Docker registry secret names as an array | `[]` (does not add image pull secrets to deployed pods) |
 | `image.registry`                   | Osclass image registry                   | `docker.io`                                             |
 | `image.repository`                 | Osclass Image name                       | `bitnami/osclass`                                       |
 | `image.tag`                        | Osclass Image tag                        | `{VERSION}`                                             |
@@ -83,6 +84,17 @@ The following table lists the configurable parameters of the Osclass chart and t
 | `externalDatabase.user`            | Existing username in the external db     | `bn_osclass`                                            |
 | `externalDatabase.password`        | Password for the above username          | `nil`                                                   |
 | `externalDatabase.database`        | Name of the existing database            | `bitnami_osclass`                                       |
+| `ingress.enabled`                   | Enable ingress controller resource                            | `false`                                                  |
+| `ingress.annotations`               | Ingress annotations                                           | `[]`                                                     |
+| `ingress.certManager`               | Add annotations for cert-manager                              | `false`                                                  |
+| `ingress.hosts[0].name`             | Hostname to your osclass installation                           | `osclass.local`                                            |
+| `ingress.hosts[0].path`             | Path within the url structure                                 | `/`                                                      |
+| `ingress.hosts[0].tls`              | Utilize TLS backend in ingress                                | `false`                                                  |
+| `ingress.hosts[0].tlsHosts`         | Array of TLS hosts for ingress record (defaults to `ingress.hosts[0].name` if `nil`)                               | `nil`                                                  |
+| `ingress.hosts[0].tlsSecret`        | TLS Secret (certificates)                                     | `osclass.local-tls-secret`                                 |
+| `ingress.secrets[0].name`           | TLS Secret Name                                               | `nil`                                                    |
+| `ingress.secrets[0].certificate`    | TLS Secret Certificate                                        | `nil`                                                    |
+| `ingress.secrets[0].key`            | TLS Secret Key                                                | `nil`                                                    |
 | `mariadb.enabled`                  | Whether to use the MariaDB chart         | `true`                                                  |
 | `mariadb.db.name`          | Database name to create                  | `bitnami_osclass`                                       |
 | `mariadb.db.user`              | Database user to create                  | `bn_osclass`                                            |

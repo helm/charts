@@ -19,6 +19,24 @@ If you want to delete your Chart, use this command
 helm delete  --purge "cassandra"
 ```
 
+## Upgrading
+
+To upgrade your Cassandra release, simply run
+
+```bash
+helm upgrade "cassandra" incubator/cassandra
+```
+
+### 0.12.0
+
+This version fixes https://github.com/helm/charts/issues/7803 by removing mutable labels in `spec.VolumeClaimTemplate.metadata.labels` so that it is upgradable.
+
+Until this version, in order to upgrade, you have to delete the Cassandra StatefulSet before upgrading: 
+```bash
+$ kubectl delete statefulset --cascade=false my-cassandra-release
+```
+
+
 ## Persist data
 You need to create `StorageClass` before able to persist data in persistent volume.
 To create a `StorageClass` on Google Cloud, run the following
@@ -88,6 +106,7 @@ The following table lists the configurable parameters of the Cassandra chart and
 | `config.cluster_name`                | The name of the cluster.                        | `cassandra`                                                |
 | `config.cluster_size`                | The number of nodes in the cluster.             | `3`                                                        |
 | `config.seed_size`                   | The number of seed nodes used to bootstrap new clients joining the cluster.                            | `2` |
+| `config.seeds`                       | The comma-separated list of seed nodes.         | Automatically generated according to `.Release.Name` and `config.seed_size` |
 | `config.num_tokens`                  | Initdb Arguments                                | `256`                                                      |
 | `config.dc_name`                     | Initdb Arguments                                | `DC1`                                                      |
 | `config.rack_name`                   | Initdb Arguments                                | `RAC1`                                                     |
@@ -128,17 +147,19 @@ The following table lists the configurable parameters of the Cassandra chart and
 | `backup.enabled`                     | Enable backup on chart installation             | `false`                                                    |
 | `backup.schedule`                    | Keyspaces to backup, each with cron time        |                                                            |
 | `backup.annotations`                 | Backup pod annotations                          | iam.amazonaws.com/role: `cain`                             |
-| `backup.image.repo`                  | Backup image repository                         | `nuvo/cain`                                                |
-| `backup.image.tag`                   | Backup image tag                                | `0.4.1`                                                    |
+| `backup.image.repository`            | Backup image repository                         | `maorfr/cain`                                              |
+| `backup.image.tag`                   | Backup image tag                                | `0.6.0`                                                    |
 | `backup.extraArgs`                   | Additional arguments for cain                   | `[]`                                                       |
 | `backup.env`                         | Backup environment variables                    | AWS_REGION: `us-east-1`                                    |
 | `backup.resources`                   | Backup CPU/Memory resource requests/limits      | Memory: `1Gi`, CPU: `1`                                    |
 | `backup.destination`                 | Destination to store backup artifacts           | `s3://bucket/cassandra`                                    |
+| `backup.google.serviceAccountSecret` | Secret containing credentials if GCS is used as destination |                                                |
 | `exporter.enabled`                   | Enable Cassandra exporter                       | `false`                                                    |
 | `exporter.image.repo`                | Exporter image repository                       | `criteord/cassandra_exporter`                              |
 | `exporter.image.tag`                 | Exporter image tag                              | `2.0.2`                                                    |
 | `exporter.port`                      | Exporter port                                   | `5556`                                                     |
 | `exporter.jvmOpts`                   | Exporter additional JVM options                 |                                                            |
+| `exporter.resources`                 | Exporter CPU/Memory resource requests/limits    | `{}`                                                       |
 | `affinity`                           | Kubernetes node affinity                        | `{}`                                                       |
 | `tolerations`                        | Kubernetes node tolerations                     | `[]`                                                       |
 

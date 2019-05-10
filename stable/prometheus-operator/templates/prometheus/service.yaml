@@ -33,12 +33,15 @@ spec:
     nodePort: {{ .Values.prometheus.service.nodePort }}
     {{- end }}
     port: 9090
-    {{- if eq .Values.prometheus.service.type "NodePort" }}
-    nodePort: {{ .Values.prometheus.service.nodePort }}
-    {{- end }}
-    targetPort: web
+    targetPort: {{ .Values.prometheus.service.targetPort }}
+{{- if .Values.prometheus.service.additionalPorts }}
+{{ toYaml .Values.prometheus.service.additionalPorts | indent 2 }}
+{{- end }}
   selector:
     app: prometheus
     prometheus: {{ template "prometheus-operator.fullname" . }}-prometheus
+{{- if .Values.prometheus.service.sessionAffinity }}
+  sessionAffinity: {{ .Values.prometheus.service.sessionAffinity }}
+{{- end }}
   type: "{{ .Values.prometheus.service.type }}"
 {{- end }}

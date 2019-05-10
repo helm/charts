@@ -1,6 +1,6 @@
 name: dask
-version: 2.0.1
-appVersion: 1.0.0
+version: 2.2.0
+appVersion: 1.1.0
 description: Distributed computation in Python with task scheduling
 home: https://dask.pydata.org
 icon: https://avatars3.githubusercontent.com/u/17131925?v=3&s=200

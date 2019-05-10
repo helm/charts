@@ -27,8 +27,14 @@ spec:
       labels:
         app: {{ template "grafana.name" . }}
         release: {{ .Release.Name }}
-{{- with .Values.podAnnotations }}
       annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum/dashboards-json-config: {{ include (print $.Template.BasePath "/dashboards-json-configmap.yaml") . | sha256sum }}
+        checksum/sc-dashboard-provider-config: {{ include (print $.Template.BasePath "/configmap-dashboard-provider.yaml") . | sha256sum }}    
+{{- if not .Values.admin.existingSecret }}
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+{{- end }}
+{{- with .Values.podAnnotations }}
 {{ toYaml . | indent 8 }}
 {{- end }}
     spec:
@@ -43,16 +49,18 @@ spec:
 {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName }}
 {{- end }}
-{{- if ( or .Values.persistence.enabled .Values.dashboards ) }}
+{{- if ( or .Values.persistence.enabled .Values.dashboards .Values.sidecar.datasources.enabled .Values.extraInitContainers) }}
       initContainers:
 {{- end }}
-{{- if .Values.persistence.enabled }}
+{{- if ( and .Values.persistence.enabled .Values.initChownData.enabled ) }}
         - name: init-chown-data
-          image: "{{ .Values.chownDataImage.repository }}:{{ .Values.chownDataImage.tag }}"
-          imagePullPolicy: {{ .Values.chownDataImage.pullPolicy }}
+          image: "{{ .Values.initChownData.image.repository }}:{{ .Values.initChownData.image.tag }}"
+          imagePullPolicy: {{ .Values.initChownData.image.pullPolicy }}
           securityContext:
             runAsUser: 0
           command: ["chown", "-R", "{{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.runAsUser }}", "/var/lib/grafana"]
+          resources:
+{{ toYaml .Values.initChownData.resources | indent 12 }}
           volumeMounts:
             - name: storage
               mountPath: "/var/lib/grafana"
@@ -80,6 +88,34 @@ spec:
               readOnly: {{ .readOnly }}
           {{- end }}
 {{- end }}
+{{- if .Values.sidecar.datasources.enabled }}
+        - name: {{ template "grafana.name" . }}-sc-datasources
+          image: "{{ .Values.sidecar.image }}"
+          imagePullPolicy: {{ .Values.sidecar.imagePullPolicy }}
+          env:
+            - name: METHOD
+              value: LIST
+            - name: LABEL
+              value: "{{ .Values.sidecar.datasources.label }}"
+            - name: FOLDER
+              value: "/etc/grafana/provisioning/datasources"
+            {{- if .Values.sidecar.datasources.searchNamespace }}
+            - name: NAMESPACE
+              value: "{{ .Values.sidecar.datasources.searchNamespace }}"
+            {{- end }}
+            {{- if .Values.sidecar.skipTlsVerify }}
+            - name: SKIP_TLS_VERIFY
+              value: "{{ .Values.sidecar.skipTlsVerify }}"
+            {{- end }}
+          resources:
+{{ toYaml .Values.sidecar.resources | indent 12 }}
+          volumeMounts:
+            - name: sc-datasources-volume
+              mountPath: "/etc/grafana/provisioning/datasources"
+{{- end}}
+{{- if .Values.extraInitContainers }}
+{{ toYaml .Values.extraInitContainers | indent 8 }}
+{{- end }}
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
       {{- range .Values.image.pullSecrets }}
@@ -95,10 +131,14 @@ spec:
             - name: LABEL
               value: "{{ .Values.sidecar.dashboards.label }}"
             - name: FOLDER
-              value: "{{ .Values.sidecar.dashboards.folder }}"
+              value: "{{ .Values.sidecar.dashboards.folder }}{{- with .Values.sidecar.dashboards.defaultFolderName }}/{{ . }}{{- end }}"
             {{- if .Values.sidecar.dashboards.searchNamespace }}
             - name: NAMESPACE
               value: "{{ .Values.sidecar.dashboards.searchNamespace }}"
+            {{- end }}
+            {{- if .Values.sidecar.skipTlsVerify }}
+            - name: SKIP_TLS_VERIFY
+              value: "{{ .Values.sidecar.skipTlsVerify }}"
             {{- end }}
           resources:
 {{ toYaml .Values.sidecar.resources | indent 12 }}
@@ -106,28 +146,15 @@ spec:
             - name: sc-dashboard-volume
               mountPath: {{ .Values.sidecar.dashboards.folder | quote }}
 {{- end}}
-{{- if .Values.sidecar.datasources.enabled }}
-        - name: {{ template "grafana.name" . }}-sc-datasources
-          image: "{{ .Values.sidecar.image }}"
-          imagePullPolicy: {{ .Values.sidecar.imagePullPolicy }}
-          env:
-            - name: LABEL
-              value: "{{ .Values.sidecar.datasources.label }}"
-            - name: FOLDER
-              value: "/etc/grafana/provisioning/datasources"
-            {{- if .Values.sidecar.datasources.searchNamespace }}
-            - name: NAMESPACE
-              value: "{{ .Values.sidecar.datasources.searchNamespace }}"
-            {{- end }}
-          resources:
-{{ toYaml .Values.sidecar.resources | indent 12 }}
-          volumeMounts:
-            - name: sc-datasources-volume
-              mountPath: "/etc/grafana/provisioning/datasources"
-{{- end}}
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+        {{- if .Values.command }}
+          command:
+          {{- range .Values.command }}
+            - {{ . }}
+          {{- end }}
+        {{- end}}
           volumeMounts:
             - name: config
               mountPath: "/etc/grafana/grafana.ini"
@@ -150,7 +177,7 @@ spec:
 {{- if .Values.dashboards }}
   {{- range $provider, $dashboards := .Values.dashboards }}
     {{- range $key, $value := $dashboards }}
-      {{- if hasKey $value "json" }}
+      {{- if (or (hasKey $value "json") (hasKey $value "file")) }}
             - name: dashboards-{{ $provider }}
               mountPath: "/var/lib/grafana/dashboards/{{ $provider }}/{{ $key }}.json"
               subPath: "{{ $key }}.json"
@@ -168,6 +195,11 @@ spec:
             - name: config
               mountPath: "/etc/grafana/provisioning/datasources/datasources.yaml"
               subPath: datasources.yaml
+{{- end }}
+{{- if .Values.notifiers }}
+            - name: config
+              mountPath: "/etc/grafana/provisioning/notifiers/notifiers.yaml"
+              subPath: notifiers.yaml
 {{- end }}
 {{- if .Values.dashboardProviders }}
             - name: config
@@ -193,7 +225,12 @@ spec:
           {{- range .Values.extraVolumeMounts }}
             - name: {{ .name }}
               mountPath: {{ .mountPath }}
+              subPath: {{ .subPath | default "" }}
               readOnly: {{ .readOnly }}
+          {{- end }}
+          {{- range .Values.extraEmptyDirMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
           {{- end }}
           ports:
             - name: service
@@ -203,16 +240,20 @@ spec:
               containerPort: 3000
               protocol: TCP
           env:
+            {{- if not .Values.env.GF_SECURITY_ADMIN_USER }}
             - name: GF_SECURITY_ADMIN_USER
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.admin.existingSecret | default (include "grafana.fullname" .) }}
                   key: {{ .Values.admin.userKey | default "admin-user" }}
+            {{- end }}
+            {{- if not .Values.env.GF_SECURITY_ADMIN_PASSWORD }}
             - name: GF_SECURITY_ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.admin.existingSecret | default (include "grafana.fullname" .) }}
                   key: {{ .Values.admin.passwordKey | default "admin-password" }}
+            {{- end }}
             {{- if .Values.plugins }}
             - name: GF_INSTALL_PLUGINS
               valueFrom:
@@ -247,6 +288,9 @@ spec:
 {{ toYaml .Values.readinessProbe | indent 12 }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
+{{- if .Values.extraContainers }}
+{{ toYaml .Values.extraContainers | indent 8}}
+{{- end }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
@@ -323,4 +367,8 @@ spec:
         - name: {{ .name }}
           persistentVolumeClaim:
             claimName: {{ .existingClaim }}
+      {{- end }}
+      {{- range .Values.extraEmptyDirMounts }}
+        - name: {{ .name }}
+          emptyDir: {}
       {{- end }}

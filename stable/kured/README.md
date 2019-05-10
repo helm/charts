@@ -4,8 +4,8 @@ See https://github.com/weaveworks/kured
 
 | Config                  | Description                                                                 | Default                    |
 | ------                  | -----------                                                                 | -------                    |
-| `image.repository`      | Image repository                                                            | `quay.io/weaveworks/kured` |
-| `image.tag`             | Image tag                                                                   | `master-c42fff3`           |
+| `image.repository`      | Image repository                                                            | `weaveworks/kured` |
+| `image.tag`             | Image tag                                                                   | `1.1.0`                    |
 | `image.pullPolicy`      | Image pull policy                                                           | `IfNotPresent`             |
 | `image.pullSecrets`     | Image pull secrets                                                          | `[]`                       |
 | `extraArgs`             | Extra arguments to pass to `/usr/bin/kured`. See below.                     | `{}`                       |

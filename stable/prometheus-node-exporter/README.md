@@ -56,10 +56,15 @@ The following table lists the configurable parameters of the Node Exporter chart
 | `serviceAccount.name`             | Service account to be used. If not set and `serviceAccount.create` is `true`, a name is generated using the fullname template |                                         |     |
 | `serviceAccount.imagePullSecrets` | Specify image pull secrets                                                                                                    | `[]`                                    |     |
 | `securityContext`                 | SecurityContext                                                                                                               | `{"runAsNonRoot": true, "runAsUser": 65534}` |     |
+| `affinity`                        | A group of affinity scheduling rules for pod assignment                                                                       | `{}`                                    |     |
+| `nodeSelector`                    | Node labels for pod assignment                                                                                                | `{}`                                    |     |
 | `tolerations`                     | List of node taints to tolerate                                                                                               | `- effect: NoSchedule operator: Exists` |     |
 | `priorityClassName`               | Name of Priority Class to assign pods                                                                                         | `nil`                                   |     |
 | `endpoints`            | list of addresses that have node exporter deployed outside of the cluster                                                                | `[]`                                    |     |
-
+| `hostNetwork`                     | Whether to expose the service to the host network                                                                             | `true`                                  |     |
+| `prometheus.monitor.enabled` | Set this to `true` to create ServiceMonitor for Prometheus operator | `false` | |
+| `prometheus.monitor.additionalLabels` | Additional labels that can be used so ServiceMonitor will be discovered by Prometheus | `{}` | |
+| `prometheus.monitor.namespace` | namespace where servicemonitor resource should be created | `the same namespace as prometheus node exporter` | |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

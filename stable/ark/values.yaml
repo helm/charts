@@ -1,16 +1,28 @@
 image:
   repository: gcr.io/heptio-images/ark
-  tag: v0.9.1
+  tag: v0.10.2
   pullPolicy: IfNotPresent
 
-# Only kube2iam: change the AWS_ACCOUNT_ID and HEPTIO_ARK_ROLE_NAME
+# Only kube2iam/kiam: change the AWS_ACCOUNT_ID and HEPTIO_ARK_ROLE_NAME
 podAnnotations: {}
 #  iam.amazonaws.com/role: arn:aws:iam::<AWS_ACCOUNT_ID>:role/<HEPTIO_ARK_ROLE_NAME>
+#  prometheus.io/scrape: "true"
+#  prometheus.io/port: "8085"
+#  prometheus.io/path: "/metrics"
 
 rbac:
   create: true
 
 resources: {}
+
+# this is the k8s spec block for initContainers:
+initContainers: []
+  # - name:
+  #   image:
+  #   volumeMounts:
+  #     - name: plugins
+  #       mountPath: /target
+
 
 serviceAccount:
   server:
@@ -24,25 +36,30 @@ nodeSelector: {}
 ## Parameters for the ' default' Config resource
 ## See https://heptio.github.io/ark/v0.9.0/config-definition
 configuration:
-  persistentVolumeProvider: {}
+  provider:
+
+  volumeSnapshotLocation: {}
   #  name:
   #  config:
   #    region:
   #    apiTimeout:
 
-  backupStorageProvider:
+  backupStorageLocation:
     name:
     bucket:
+    # prefix:
     config: {}
     #  region:
     #  s3ForcePathStyle:
     #  s3Url:
     #  kmsKeyId:
+    #  resourceGroup:
+    #  storageAccount:
+    #  publicUrl:
 
   backupSyncPeriod: 60m
-  gcSyncPeriod: 60m
-  scheduleSyncPeriod: 1m
-  resourcePriorities: []
+  resticTimeout: 1h
+  restoreResourcePriorities: namespaces,persistentvolumes,persistentvolumeclaims,secrets,configmaps,serviceaccounts,limitranges,pods
   restoreOnlyMode: false
   # additional key/value pairs to be used as environment variables such as "AWS_CLUSTER_NAME: 'yourcluster.domain.tld'"
   extraEnvVars: {}
@@ -61,3 +78,18 @@ credentials:
   existingSecret:
   useSecret: true
   secretContents: {}
+
+deployRestic: false
+
+metrics:
+  enabled: false
+  scrapeInterval: 30s
+
+  # Pod annotations for Prometheus
+  podAnnotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "8085"
+
+  serviceMonitor:
+    enabled: false
+    additionalLabels: {}

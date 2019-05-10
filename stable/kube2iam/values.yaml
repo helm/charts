@@ -14,9 +14,21 @@ host:
   interface: docker0
   port: 8181
 
+prometheus:
+  # Port to expose the /metrics endpoint on. If unset, defaults to `host.port`
+  # metricsPort: 8181
+
+  serviceMonitor:
+    # Create prometheus-operator ServiceMonitor
+    enabled: false
+    # Interval at which the metrics endpoint is scraped
+    interval: 10s
+    # Alternative namespace to install the ServiceMonitor in
+    namespace: ""
+
 image:
   repository: jtblin/kube2iam
-  tag: 0.10.0
+  tag: 0.10.4
   pullPolicy: IfNotPresent
 
 # AWS Access keys to inject as environment variables
@@ -38,6 +50,8 @@ affinity: {}
 ## Annotations to be added to pods
 ##
 podAnnotations: {}
+
+priorityClassName: ""
 
 podLabels: {}
 

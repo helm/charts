@@ -16,7 +16,7 @@ auth:
   # key: keycontent
   # existingKeySecret:
   # existingAdminSecret:
-  # exisitingMetricsSecret:
+  # existingMetricsSecret:
 
 ## Optionally specify an array of imagePullSecrets.
 ## Secrets must be manually created in the namespace.
@@ -66,6 +66,7 @@ metrics:
 podAnnotations: {}
 
 securityContext:
+  enabled: true
   runAsUser: 999
   fsGroup: 999
   runAsNonRoot: true
