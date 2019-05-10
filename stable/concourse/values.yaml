@@ -1245,6 +1245,17 @@ web:
   ##
   tolerations: []
 
+  ## Strategy for web deployment updates.
+  ##
+  ## Example:
+  ##
+  ##   strategy:
+  ##     type: RollingUpdate
+  ##     rollingUpdate:
+  ##       maxSurge: 1
+  ##       maxUnavailable: 25%
+  strategy: {}
+
   ## Service configuration.
   ## Ref: https://kubernetes.io/docs/user-guide/services/
   ##
