@@ -3,12 +3,19 @@
 This file documents all notable changes to Sysdig Falco Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v0.7.4
+
+### Minor Changes
+
+* Use the KUBERNETES_SERVICE_HOST environment variable to connect to Kubernetes
+  API instead of using a fixed name
+
 ## v0.7.3
 
 ### Minor Changes
 
 * Remove the toJson pipeline when storing Google Credentials. It makes strange
- stuff with double quotes and does not allow to use base64 encoded credentials
+  stuff with double quotes and does not allow to use base64 encoded credentials
 
 ## v0.7.2
 
