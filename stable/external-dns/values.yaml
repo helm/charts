@@ -155,10 +155,14 @@ rbac:
   ##
   serviceAccountName: default
 
-securityContext: {}
-  # readOnlyRootFilesystem: true
+podSecurityContext: {}
+  # fsGroup: 65534
   # runAsNonRoot: true
   # runAsUser: 65534 # 65534 is nobody - revise aws.credentialsPath when changing uid
+
+securityContext: {}
+  # allowPrivilegeEscalation: false
+  # readOnlyRootFilesystem: true
   # capabilities:
   #   drop: ["ALL"]
 
