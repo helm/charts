@@ -2,6 +2,10 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ include "node-red.fullname" . }}
+  {{- if .Values.service.annotations }}
+  annotations:
+    {{- toYaml .Values.service.annotations | nindent 4 }}
+  {{- end }}
   labels:
     app.kubernetes.io/name: {{ include "node-red.name" . }}
     helm.sh/chart: {{ include "node-red.chart" . }}
