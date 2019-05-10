@@ -46,10 +46,17 @@ spec:
         - name: copy-rabbitmq-config
           image: {{ .Values.busyboxImage.repository}}:{{ .Values.busyboxImage.tag}}
           imagePullPolicy: {{ .Values.busyboxImage.pullPolicy }}
-          {{- if .Values.securityContext }}
-          command: ['sh', '-c', "cp /configmap/* /etc/rabbitmq; rm -f /var/lib/rabbitmq/.erlang.cookie; chown {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }} /var/lib/rabbitmq"]
+          command:
+          - 'sh'
+          - '-c'
+          - 'cp /configmap/* /etc/rabbitmq;'
+          {{- if .Values.rabbitmqErlangCookie }}
+          - "echo \"{{ .Values.rabbitmqErlangCookie }}\" > /var/lib/rabbitmq/.erlang.cookie;"
           {{- else }}
-          command: ['sh', '-c', 'cp /configmap/* /etc/rabbitmq; rm -f /var/lib/rabbitmq/.erlang.cookie']
+          - "rm -f /var/lib/rabbitmq/.erlang.cookie;"
+          {{- end }}
+          {{- if .Values.securityContext }}
+          - "chown -R {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }} /var/lib/rabbitmq;"
           {{- end }}
           resources:
 {{ toYaml .Values.initContainer.resources | indent 12 }}
