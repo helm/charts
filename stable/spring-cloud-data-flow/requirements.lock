@@ -5,8 +5,11 @@ dependencies:
 - name: rabbitmq
   repository: https://kubernetes-charts.storage.googleapis.com/
   version: 0.6.16
+- name: rabbitmq-ha
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  version: 1.27.1
 - name: kafka
   repository: https://kubernetes-charts-incubator.storage.googleapis.com/
   version: 0.13.11
-digest: sha256:647626620388f5f7fb3f652d53bc215f777e9ddb63fc5ebaeeb12344172f7c46
-generated: 2019-05-16T14:16:46.84520572+02:00
+digest: sha256:4e5fede66171e495a9783d7a876d18c7b6f4bcf12704b6120ec907dd4af04e9d
+generated: 2019-05-27T11:45:39.300300081+08:00

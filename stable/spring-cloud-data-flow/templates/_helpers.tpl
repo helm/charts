@@ -40,3 +40,83 @@ Create the name of the service account to use
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
+
+{{- define "scdf.database.driver" -}}
+  {{- if .Values.mysql.enabled -}}
+    {{- printf "org.mariadb.jdbc.Driver" -}}
+  {{- else -}}
+    {{- .Values.database.driver -}}
+  {{- end -}}
+{{- end -}}
+
+{{- define "scdf.database.host" -}}
+  {{- if .Values.mysql.enabled -}}
+    {{- printf "${%s_MYSQL_SERVICE_HOST}" (include "scdf.envrelease" . ) -}}
+  {{- else -}}
+    {{- .Values.database.host -}}
+  {{- end -}}
+{{- end -}}
+
+{{- define "scdf.database.port" -}}
+  {{- if .Values.mysql.enabled -}}
+    {{- printf "${%s_MYSQL_SERVICE_PORT}" (include "scdf.envrelease" . ) -}}
+  {{- else -}}
+    {{- .Values.database.port -}}
+  {{- end -}}
+{{- end -}}
+
+{{- define "scdf.database.user" -}}
+  {{- if .Values.mysql.enabled -}}
+    {{- printf "root" -}}
+  {{- else -}}
+    {{- .Values.database.user -}}
+  {{- end -}}
+{{- end -}}
+
+{{- define "scdf.database.password" -}}
+  {{- if .Values.mysql.enabled -}}
+    {{- printf "${mysql-root-password}" -}}
+  {{- else -}}
+    {{- printf "${database-password}" -}}
+  {{- end -}}
+{{- end -}}
+
+{{- define "scdf.database.dataflow" -}}
+  {{- if .Values.mysql.enabled -}}
+    {{- .Values.mysql.mysqlDatabase -}}
+  {{- else -}}
+    {{- .Values.database.dataflow -}}
+  {{- end -}}
+{{- end -}}
+
+{{- define "scdf.database.skipper" -}}
+  {{- if .Values.mysql.enabled -}}
+    {{- printf "skipper" -}}
+  {{- else -}}
+    {{- .Values.database.skipper -}}
+  {{- end -}}
+{{- end -}}
+
+{{- define "scdf.broker.rabbitmq.host" -}}
+  {{- if index .Values "rabbitmq-ha" "enabled" -}}
+    {{- printf "%s-rabbitmq-ha" .Release.Name | trunc 63 | trimSuffix "-" -}}
+  {{- else if .Values.rabbitmq.enabled -}}
+    {{- printf "${%s_RABBITMQ_SERVICE_HOST}" (include "scdf.envrelease" . ) -}}
+  {{- end -}}
+{{- end -}}
+
+{{- define "scdf.broker.rabbitmq.port" -}}
+  {{- if index .Values "rabbitmq-ha" "enabled" -}}
+    {{- index .Values "rabbitmq-ha" "rabbitmqNodePort" -}}
+  {{- else if .Values.rabbitmq.enabled -}}
+    {{- printf "${%s_RABBITMQ_SERVICE_PORT_AMQP}" (include "scdf.envrelease" . ) -}}
+  {{- end -}}
+{{- end -}}
+
+{{- define "scdf.broker.rabbitmq.user" -}}
+  {{- if index .Values "rabbitmq-ha" "enabled" -}}
+    {{ index .Values "rabbitmq-ha" "rabbitmqUsername" }}
+  {{- else if .Values.rabbitmq.enabled -}}
+    {{ .Values.rabbitmq.rabbitmqUsername }}
+  {{- end -}}
+{{- end -}}
