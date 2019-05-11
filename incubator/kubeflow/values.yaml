@@ -81,6 +81,20 @@ studyjobController:
   tolerations: []
   affinity: {}
 
+studyjobController:
+  replicaCount: 1
+  image:
+    repository: gcr.io/kubeflow-images-public/katib/studyjob-controller
+    tag: v0.1.2-alpha-156-g4ab3dbd
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 443
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
 mlPipeline:
   replicaCount: 1
   image:
@@ -152,6 +166,20 @@ mlPipelineUi:
   tolerations: []
   affinity: {}
 
+mlPipelineUi:
+  replicaCount: 1
+  image:
+    repository: gcr.io/ml-pipeline/frontend
+    tag: 0.1.18
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 80
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
 mlPipelineViewerController:
   replicaCount: 1
   image:
@@ -217,6 +245,7 @@ db:
   limits:
     cpu: 200m
     memory: 256Mi
+
 minio:
   serviceHost: kubeflow-minio
   replicas: 1
@@ -241,3 +270,4 @@ minio:
   limits:
     cpu: 200m
     memory: 256Mi
+
