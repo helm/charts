@@ -32,7 +32,6 @@ trackOffsets: false
 
 ## PriorityClassName
 ## Ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/#priorityclass
-## 
 priorityClassName: ""
 
 backend:
