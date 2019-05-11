@@ -1,0 +1,26 @@
+
+apiVersion: v1
+kind: Service
+metadata: 
+  name: {{ include "kubeflow.fullname" . }}-minio
+  labels:
+    app.kubernetes.io/part-of: {{ include "kubeflow.name" . }}
+    app.kubernetes.io/name: minio
+    helm.sh/chart: {{ include "kubeflow.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/component: minio
+
+spec: 
+  type: {{ .Values.minio.service.type }}
+  ports: 
+  - port: {{ .Values.minio.service.port }}
+    protocol: "TCP"
+    targetPort: {{ .Values.minio.service.port }}
+  selector: 
+    app.kubernetes.io/part-of: {{ include "kubeflow.name" . }}
+    app.kubernetes.io/name: minio
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: minio
+
+

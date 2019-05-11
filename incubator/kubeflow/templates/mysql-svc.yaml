@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "kubeflow.fullname" . }}-db
+  labels:
+    app.kubernetes.io/part-of: {{ include "kubeflow.name" . }}
+    app.kubernetes.io/name: db
+    helm.sh/chart: {{ include "kubeflow.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/component: db
+
+spec:
+  type: {{ .Values.db.service.type }}
+  ports:
+  - port: {{ .Values.db.service.port }}
+    targetPort: {{ .Values.db.service.port }}
+    protocol: TCP
+  selector:
+    app.kubernetes.io/part-of: {{ include "kubeflow.name" . }}
+    app.kubernetes.io/name: db
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: db

@@ -50,6 +50,14 @@ spec:
           resources:
             {{- toYaml .Values.mlPipeline.resources | nindent 12 }}
           env:
+          - name: MYSQL_SERVICE_HOST
+            value: {{ .Values.db.mysqlServiceHost | quote }}
+          - name: MYSQL_SERVICE_PORT
+            value:  {{ .Values.db.service.port | quote }}
+          - name: MINIO_SERVICE_SERVICE_HOST
+            value: {{ .Values.minio.serviceHost }}
+          - name: MINIO_SERVICE_SERVICE_PORT
+            value: {{ .Values.minio.service.port | quote }}
           - name: POD_NAMESPACE
             valueFrom:
               fieldRef:

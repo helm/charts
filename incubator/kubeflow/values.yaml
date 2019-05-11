@@ -14,7 +14,12 @@ centralDashboard:
   service:
     type: ClusterIP
     port: 80
-  resources: {}
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 200m
+    memory: 256Mi
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -28,7 +33,12 @@ jupyterWebApp:
   service:
     type: ClusterIP
     port: 80
-  resources: {}
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 200m
+    memory: 256Mi
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -42,7 +52,31 @@ katibUi:
   service:
     type: ClusterIP
     port: 80
-  resources: {}
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 200m
+    memory: 256Mi
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+studyjobController:
+  replicaCount: 1
+  image:
+    repository: gcr.io/kubeflow-images-public/katib/studyjob-controller
+    tag: v0.1.2-alpha-156-g4ab3dbd
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 443
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 200m
+    memory: 256Mi
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -71,7 +105,12 @@ mlPipeline:
     type: ClusterIP
     httpPort: 8888
     grpcPort: 8887
-  resources: {}
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 200m
+    memory: 256Mi
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -82,7 +121,12 @@ mlPipelinePersistenceAgent:
     repository: gcr.io/ml-pipeline/persistenceagent
     tag: 0.1.18
     pullPolicy: IfNotPresent
-  resources: {}
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 200m
+    memory: 256Mi
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -93,7 +137,31 @@ mlPipelineScheduledWorkflow:
     repository: gcr.io/ml-pipeline/scheduledworkflow
     tag: 0.1.18
     pullPolicy: IfNotPresent
-  resources: {}
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 200m
+    memory: 256Mi
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+mlPipelineUi:
+  replicaCount: 1
+  image:
+    repository: gcr.io/ml-pipeline/frontend
+    tag: 0.1.18
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 80
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 200m
+    memory: 256Mi
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -118,7 +186,12 @@ mlPipelineViewerController:
     repository: gcr.io/ml-pipeline/viewer-crd-controller
     tag: 0.1.18
     pullPolicy: IfNotPresent
-  resources: {}
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 200m
+    memory: 256Mi
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -129,7 +202,12 @@ notebookController:
     repository: gcr.io/kubeflow-images-public/notebook-controller
     tag: v20190401-v0.4.0-rc.1-308-g33618cc9-e3b0c4
     pullPolicy: IfNotPresent
-  resources: {}
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 200m
+    memory: 256Mi
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -140,7 +218,56 @@ pytorchOperator:
     repository: gcr.io/kubeflow-images-public/pytorch-operator
     tag: v0.5.0
     pullPolicy: IfNotPresent
-  resources: {}
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 200m
+    memory: 256Mi
   nodeSelector: {}
   tolerations: []
   affinity: {}
+
+db:
+  replicaCount: 1
+  image: 
+    repository: mysql
+    tag: 5.7.26
+    pullPolicy: IfNotPresent
+  dbName: mlpipeline
+  mysqlServiceHost: kubeflow-db
+  service:
+    type: ClusterIP
+    port: 3306
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 200m
+    memory: 256Mi
+
+minio:
+  serviceHost: kubeflow-minio
+  replicas: 1
+  service:
+    type: ClusterIP
+    port: 9000
+  accessKey: minio
+  accessSecretKey: minio123
+  persistence:
+    enabled: true
+    accessMode: ReadWriteOnce
+    size: 10Gi
+    storageClass: standard
+    # existingClaim: ""
+  image:
+    repository: minio/minio
+    tag: RELEASE.2019-05-02T19-07-09Z 
+    pullPolicy: IfNotPresent
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 200m
+    memory: 256Mi
+
