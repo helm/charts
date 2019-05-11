@@ -135,7 +135,7 @@ spec:
         {{- if .Values.configurationFiles }}
         {{- range $key, $val := .Values.configurationFiles }}
         - name: configurations
-          mountPath: /etc/mysql/conf.d/{{ $key }}
+          mountPath: {{ $.Values.configurationFilesPath }}{{ $key }}
           subPath: {{ $key }}
         {{- end -}}
         {{- end }}
