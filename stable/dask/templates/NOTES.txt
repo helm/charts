@@ -15,8 +15,8 @@ cluster. You can get these addresses by running the following:
 
   export DASK_SCHEDULER=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath='{.items[0].status.addresses[0].address}')
   export DASK_SCHEDULER_UI_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath='{.items[0].status.addresses[0].address}')
-  export DASK_SCHEDULER_PORT=$(kubectl get svc --namespace default {{ template "dask.fullname" . }}-scheduler -o jsonpath='{.spec.ports[?(@.name=="{{ template "dask.fullname" . }}-{{ .Values.scheduler.name }}")].nodePort}')
-  export DASK_SCHEDULER_UI_PORT=$(kubectl get svc --namespace default {{ template "dask.fullname" . }}-scheduler -o jsonpath='{.spec.ports[?(@.name=="{{ template "dask.fullname" . }}-{{ .Values.webUI.name }}")].nodePort}')
+  export DASK_SCHEDULER_PORT=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "dask.fullname" . }}-scheduler -o jsonpath='{.spec.ports[?(@.name=="{{ template "dask.fullname" . }}-{{ .Values.scheduler.name }}")].nodePort}')
+  export DASK_SCHEDULER_UI_PORT=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "dask.fullname" . }}-scheduler -o jsonpath='{.spec.ports[?(@.name=="{{ template "dask.fullname" . }}-{{ .Values.webUI.name }}")].nodePort}')
 
 {{- else if contains "LoadBalancer" .Values.scheduler.serviceType }}
 
@@ -40,7 +40,7 @@ cluster. You can get these addresses by running the following:
 {{- if contains "NodePort" .Values.jupyter.serviceType }}
 
   export JUPYTER_NOTEBOOK_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath='{.items[0].status.addresses[0].address}')
-  export JUPYTER_NOTEBOOK_PORT=$(kubectl get svc --namespace default {{ template "dask.fullname" . }}-jupyter -o jsonpath='{.spec.ports[0].nodePort}')
+  export JUPYTER_NOTEBOOK_PORT=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "dask.fullname" . }}-jupyter -o jsonpath='{.spec.ports[0].nodePort}')
 
 {{- else if contains "LoadBalancer" .Values.jupyter.serviceType }}
 
