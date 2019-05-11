@@ -1,7 +1,7 @@
 ## influxdb image version
 ## ref: https://hub.docker.com/r/library/influxdb/tags/
 image:
-  repo: "influxdb"
+  repository: "influxdb"
   tag: "1.7.3-alpine"
   pullPolicy: IfNotPresent
 
