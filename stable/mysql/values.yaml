@@ -109,6 +109,9 @@ resources:
     memory: 256Mi
     cpu: 100m
 
+# Custom mysql configuration files path
+configurationFilesPath: /etc/mysql/conf.d/
+
 # Custom mysql configuration files used to override default mysql settings
 configurationFiles: {}
 #  mysql.cnf: |-
@@ -151,6 +154,7 @@ service:
   type: ClusterIP
   port: 3306
   # nodePort: 32000
+  # loadBalancerIP:
 
 ssl:
   enabled: false
