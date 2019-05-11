@@ -230,7 +230,7 @@ pytorchOperator:
 
 db:
   replicaCount: 1
-  image: 
+  image:
     repository: mysql
     tag: 5.7.26
     pullPolicy: IfNotPresent
@@ -262,7 +262,7 @@ minio:
     # existingClaim: ""
   image:
     repository: minio/minio
-    tag: RELEASE.2019-05-02T19-07-09Z 
+    tag: RELEASE.2019-05-02T19-07-09Z
     pullPolicy: IfNotPresent
   requests:
     cpu: 100m

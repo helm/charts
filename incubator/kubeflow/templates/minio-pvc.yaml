@@ -10,7 +10,7 @@ metadata:
     helm.sh/chart: {{ include "kubeflow.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
-    app.kubernetes.io/component: minio
+    app.kubernetes.io/component: object-storage
 spec:
   accessModes:
     - {{ .Values.minio.persistence.accessMode | quote }}
@@ -21,4 +21,3 @@ spec:
   storageClassName: {{ .Values.minio.persistence.storageClass | quote }}
 {{- end }}
 {{- end }}
-

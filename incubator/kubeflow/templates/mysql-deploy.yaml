@@ -1,54 +1,54 @@
 apiVersion: "apps/v1"
 kind: "Deployment"
-metadata: 
-  name: {{ include "kubeflow.fullname" . }}-db
-  labels: 
+metadata:
+  name: {{ include "kubeflow.fullname" . }}-mysql
+  labels:
     app.kubernetes.io/part-of: {{ include "kubeflow.name" . }}
-    app.kubernetes.io/name: db
+    app.kubernetes.io/name: mysql
     helm.sh/chart: {{ include "kubeflow.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
-    app.kubernetes.io/component: db
-    
-spec: 
-  replicas: {{ .Values.db.replicaCount }}
+    app.kubernetes.io/component: mysql
+
+spec:
+  replicas: {{ .Values.mysql.replicaCount }}
   selector:
     matchLabels:
       app.kubernetes.io/part-of: {{ include "kubeflow.name" . }}
-      app.kubernetes.io/name: db
+      app.kubernetes.io/name: mysql
       app.kubernetes.io/instance: {{ .Release.Name }}
       app.kubernetes.io/component: db
 
-  template: 
-    metadata: 
-      labels: 
+  template:
+    metadata:
+      labels:
         app.kubernetes.io/part-of: {{ include "kubeflow.name" . }}
-        app.kubernetes.io/name: db
+        app.kubernetes.io/name: mysql
         app.kubernetes.io/instance: {{ .Release.Name }}
         app.kubernetes.io/component: db
 
-    spec: 
+    spec:
       initContainers:
         - name: "remove-lost-found"
           image: "busybox:latest"
           imagePullPolicy: "IfNotPresent"
           command:  ["rm", "-fr", "/var/lib/mysql/lost+found"]
-      containers: 
-        - name: "kubeflow-db"
-          image: "{{ .Values.db.image.repository }}:{{ .Values.db.image.tag }}"
-          imagePullPolicy: {{ .Values.db.image.pullPolicy }}
-          ports: 
+      containers:
+        - name: "kubeflow-mysql"
+          image: "{{ .Values.mysql.image.repository }}:{{ .Values.mysql.image.tag }}"
+          imagePullPolicy: {{ .Values.mysql.image.pullPolicy }}
+          ports:
             - containerPort: 3306
               name: "kubeflow-mysql"
-          env: 
+          env:
             - name: "MYSQL_ALLOW_EMPTY_PASSWORD"
               value: "true"
             - name: "MYSQL_DATABASE"
-              value: {{ .Values.db.dbName | quote }}
+              value: {{ .Values.mysql.dbName | quote }}
           resources:
             requests:
-              cpu: {{ .Values.db.requests.cpu }}
-              memory: {{ .Values.db.requests.memory }}
+              cpu: {{ .Values.mysql.requests.cpu }}
+              memory: {{ .Values.mysql.requests.memory }}
             limits:
-              cpu: {{ .Values.db.limits.cpu }}
-              memory: {{ .Values.db.limits.memory }}
+              cpu: {{ .Values.mysql.limits.cpu }}
+              memory: {{ .Values.mysql.limits.memory }}
