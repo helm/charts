@@ -222,7 +222,7 @@ $ kubectl delete statefulset my-release-mongodb-arbiter my-release-mongodb-prima
 ```
 
 ## Configure Ingress
-MongoDB can exposed externally using the [NGINX Ingress Controller](https://github.com/kubernetes/ingress-nginx). To do so, it's necessary to:
+MongoDB can be exposed externally using the [NGINX Ingress Controller](https://github.com/kubernetes/ingress-nginx). To do so, it's necessary to:
 
 - Install the MongoDB chart setting the parameter `ingress.enabled=true`.
 - Create a ConfigMap to map the external port to use and the internal service/port where to redirect the requests (see https://github.com/kubernetes/ingress-nginx/blob/master/docs/user-guide/exposing-tcp-udp-services.md for more information).
