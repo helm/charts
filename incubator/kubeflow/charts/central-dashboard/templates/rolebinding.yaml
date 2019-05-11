@@ -1,0 +1,17 @@
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ include "central-dashboard.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "central-dashboard.name" . }}
+    helm.sh/chart: {{ include "central-dashboard.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+subjects:
+- kind: ServiceAccount
+  name: {{ include "central-dashboard.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: Role
+  name: {{ include "central-dashboard.fullname" . }}
+  apiGroup: rbac.authorization.k8s.io

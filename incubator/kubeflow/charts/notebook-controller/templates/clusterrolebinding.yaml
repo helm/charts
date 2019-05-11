@@ -1,0 +1,15 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ include "notebook-controller.fullname" . }}
+  labels:
+{{ include "notebook-controller.labels" . | indent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ include "notebook-controller.fullname" . }}
+subjects:
+- kind: ServiceAccount
+  name: {{ include "notebook-controller.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+

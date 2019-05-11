@@ -1,0 +1,48 @@
+apiVersion: "rbac.authorization.k8s.io/v1"
+kind: "ClusterRole"
+metadata:
+  name: {{ include "katib.fullname" . }}-core
+  labels:
+    app.kubernetes.io/name: {{ include "katib.name" . }}
+    helm.sh/chart: {{ include "katib.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/component: core
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  - nodes
+  - nodes/*
+  - pods/log
+  - pods/status
+  - services
+  - persistentvolumes
+  - persistentvolumes/status
+  - persistentvolumeclaims
+  - persistentvolumeclaims/status
+  verbs:
+  - '*'
+- apiGroups:
+  - batch
+  resources:
+  - jobs
+  - jobs/status
+  verbs:
+  - '*'
+- apiGroups:
+  - extensions
+  resources:
+  - ingresses
+  - ingresses/status
+  - deployments
+  - deployments/status
+  verbs:
+  - '*'
+- apiGroups:
+  - ""
+  resources:
+  - services
+  verbs:
+  - '*'

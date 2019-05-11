@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "katib.fullname" . }}-suggestion-random
+  labels:
+    app.kubernetes.io/name: {{ include "katib.name" . }}
+    helm.sh/chart: {{ include "katib.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/component: suggestion-random
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "katib.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: suggestion-random
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "katib.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: suggestion-random
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}-suggestion-random
+          image: gcr.io/kubeflow-images-public/katib/suggestion-bayesianoptimization:{{ .Values.image.tag }}
+          ports:
+          - name: api
+            containerPort: 6789
+            protocol: TCP
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          resources:
+            {{- toYaml .Values.suggestionRandom.resources | nindent 12 }}
+      {{- with .Values.suggestionRandom.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.suggestionRandom.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.suggestionRandom.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

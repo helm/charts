@@ -1,0 +1,18 @@
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ include "katib.fullname" . }}-studyjob-controller
+  labels:
+    app.kubernetes.io/name: {{ include "katib.name" . }}
+    helm.sh/chart: {{ include "katib.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/component: studyjob-controller
+subjects:
+- kind: ServiceAccount
+  name: {{ include "katib.fullname" . }}-studyjob-controller
+  namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: ClusterRole
+  name: {{ include "katib.fullname" . }}-studyjob-controller
+  apiGroup: rbac.authorization.k8s.io

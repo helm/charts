@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ include "central-dashboard.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "central-dashboard.name" . }}
+    helm.sh/chart: {{ include "central-dashboard.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}

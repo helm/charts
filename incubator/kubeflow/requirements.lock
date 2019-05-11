@@ -1,0 +1,9 @@
+dependencies:
+- name: minio
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  version: 2.4.14
+- name: mysql
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  version: 1.1.1
+digest: sha256:7a7d91be02b13372750e267378763ad25bcb470fbab491cd59bccf44d98ef8b3
+generated: "2019-05-19T15:39:06.796644-04:00"

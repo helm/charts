@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "jupyter-web-app.fullname" . }}-test-connection"
+  labels:
+{{ include "jupyter-web-app.labels" . | indent 4 }}
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args:  ['{{ include "jupyter-web-app.fullname" . }}:{{ .Values.service.port }}']
+  restartPolicy: Never

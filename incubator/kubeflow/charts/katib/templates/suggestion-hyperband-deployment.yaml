@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "katib.fullname" . }}-suggestion-hyperband
+  labels:
+    app.kubernetes.io/name: {{ include "katib.name" . }}
+    helm.sh/chart: {{ include "katib.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/component: suggestion-hyperband
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "katib.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: suggestion-hyperband
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "katib.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: suggestion-hyperband
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}-suggestion-hyperband
+          image: gcr.io/kubeflow-images-public/katib/suggestion-bayesianoptimization:{{ .Values.image.tag }}
+          ports:
+          - name: api
+            containerPort: 6789
+            protocol: TCP
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          resources:
+            {{- toYaml .Values.suggestionHyperband.resources | nindent 12 }}
+      {{- with .Values.suggestionHyperband.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.suggestionHyperband.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.suggestionHyperband.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

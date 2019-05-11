@@ -1,0 +1,68 @@
+
+
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "katib.fullname" . }}-core
+  labels:
+    app.kubernetes.io/name: {{ include "katib.name" . }}
+    helm.sh/chart: {{ include "katib.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/component: core
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "katib.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: core
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "katib.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: core
+    spec:
+      serviceAccountName: {{ include "katib.fullname" . }}-core
+      containers:
+        - name: {{ .Chart.Name }}-core
+          image: gcr.io/kubeflow-images-public/katib/vizier-core:{{ .Values.image.tag }}
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-mysql
+                  key: mysql-root-password
+          ports:
+          - name: api
+            containerPort: 6789
+            protocol: TCP
+          command:
+          - ./vizier-manager
+          # livenessProbe:
+          #   exec:
+          #     command: ["/bin/grpc_health_probe", "-addr=:6789"]
+          #   initialDelaySeconds: 10
+          # readinessProbe:
+          #   exec:
+          #     command: ["/bin/grpc_health_probe", "-addr=:6789"]
+          #   initialDelaySeconds: 5
+          resources:
+            {{- toYaml .Values.core.resources | nindent 12 }}
+      {{- with .Values.core.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.core.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.core.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+
+

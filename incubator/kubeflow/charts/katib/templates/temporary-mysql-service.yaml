@@ -1,0 +1,21 @@
+#### THIS IS NEEDED UNTIL
+#### https://github.com/kubeflow/katib/issues/533
+#### IS FIXED
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ .Release.Name }}-mysql
+    helm.sh/chart: {{ include "katib.chart" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: katib-db
+spec:
+  ports:
+  - name: mysql
+    port: 3306
+    protocol: TCP
+    targetPort: mysql
+  selector:
+    app: {{ .Release.Name }}-mysql
+  type: ClusterIP

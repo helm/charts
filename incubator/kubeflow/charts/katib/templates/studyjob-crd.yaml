@@ -1,0 +1,28 @@
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: studyjobs.kubeflow.org
+  labels:
+    app.kubernetes.io/name: {{ include "katib.name" . }}
+    helm.sh/chart: {{ include "katib.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/component: studyjob-controller
+  annotations:
+    "helm.sh/hook": crd-install
+    "helm.sh/hook-delete-policy": before-hook-creation
+spec:
+  group: kubeflow.org
+  version: v1alpha1
+  scope: Namespaced
+  names:
+    kind: StudyJob
+    singular: studyjob
+    plural: studyjobs
+  additionalPrinterColumns:
+  - JSONPath: .status.condition
+    name: Condition
+    type: string
+  - JSONPath: .metadata.creationTimestamp
+    name: Age
+    type: date

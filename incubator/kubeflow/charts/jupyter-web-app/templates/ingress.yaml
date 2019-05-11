@@ -1,14 +1,11 @@
 {{- if .Values.ingress.enabled -}}
-{{- $fullName := include "katib.fullname" . -}}
+{{- $fullName := include "jupyter-web-app.fullname" . -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: {{ $fullName }}
   labels:
-    app.kubernetes.io/name: {{ include "katib.name" . }}
-    helm.sh/chart: {{ include "katib.chart" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{ include "jupyter-web-app.labels" . | indent 4 }}
   {{- with .Values.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
@@ -32,7 +29,7 @@ spec:
         {{- range .paths }}
           - path: {{ . }}
             backend:
-              serviceName: {{ $fullName }}-ui
+              serviceName: {{ $fullName }}
               servicePort: http
         {{- end }}
   {{- end }}

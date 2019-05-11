@@ -1,12 +1,12 @@
 {{- if .Values.ingress.enabled -}}
-{{- $fullName := include "katib.fullname" . -}}
+{{- $fullName := include "central-dashboard.fullname" . -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: {{ $fullName }}
   labels:
-    app.kubernetes.io/name: {{ include "katib.name" . }}
-    helm.sh/chart: {{ include "katib.chart" . }}
+    app.kubernetes.io/name: {{ include "central-dashboard.name" . }}
+    helm.sh/chart: {{ include "central-dashboard.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
   {{- with .Values.ingress.annotations }}
@@ -32,7 +32,7 @@ spec:
         {{- range .paths }}
           - path: {{ . }}
             backend:
-              serviceName: {{ $fullName }}-ui
+              serviceName: {{ $fullName }}
               servicePort: http
         {{- end }}
   {{- end }}
