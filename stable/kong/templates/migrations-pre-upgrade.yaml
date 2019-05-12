@@ -32,7 +32,7 @@ spec:
       {{- if .Values.postgresql.enabled }}
       initContainers:
       - name: wait-for-postgres
-        image: busybox
+        image: "{{ .Values.waitImage.repository }}:{{ .Values.waitImage.tag }}"
         env:
         - name: KONG_PG_HOST
           value: {{ template "kong.postgresql.fullname" . }}
