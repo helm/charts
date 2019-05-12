@@ -83,11 +83,13 @@ data:
 {{- if .Values.backend.forward.shared_key }}
         Shared_Key    {{ .Values.backend.forward.shared_key }}
 {{- end }}
+{{- if .Values.backend.forward.self_hostname}}
+        Self_Hostname {{ .Values.backend.forward.self_hostname }}
+{{- end }}
 {{if eq .Values.backend.forward.tls "on" }}
         tls {{ .Values.backend.forward.tls }}
         tls.verify {{ .Values.backend.forward.tls_verify }}
         tls.debug {{ .Values.backend.forward.tls_debug }}
-        Self_Hostname {{ .Values.backend.forward.self_hostname }}
 {{- end }}
 {{ else if eq .Values.backend.type "es" }}
     [OUTPUT]
