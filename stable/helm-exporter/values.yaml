@@ -5,7 +5,7 @@ image:
   tag: 0.4.0
   pullPolicy: Always
 
-#To override default tiller namespace name or to provide the multiple tiller namespaces like "kube-system,dev"
+# To override default tiller namespace name or to provide the multiple tiller namespaces like "kube-system,dev"
 tillerNamespaces: ""
 
 nameOverride: ""
