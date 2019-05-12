@@ -13,6 +13,7 @@ rules:
       - ""
     resources:
       - persistentvolumes
+      - services
     verbs:
       - list
       - watch
@@ -20,6 +21,7 @@ rules:
       - ""
     resources:
       - persistentvolumeclaims
+      - services
     verbs:
       - get
   - apiGroups:
