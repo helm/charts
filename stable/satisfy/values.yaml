@@ -7,7 +7,7 @@ image:
   # image.digest takes precedence:
   # i.e. if both image.tag and image.digest are present digest will be used
   # tag: v3.0.4
-  digest: sha256:69758ccd31117a594cd7268c79a32a531dfc2c725df554542dbbb6c5714d77fc
+  digest: sha256:fae78e3809e9d08990c7d7d6699a734f7e584c28ce49381a1a699e1694481ab8
   pullPolicy: Always
   pullSecrets: []
     # - secret1
