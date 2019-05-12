@@ -16,7 +16,6 @@ annotations: {}
 ## Here labels can be added to the kubernetes dashboard deployment
 ##
 labels: {}
-# kubernetes.io/cluster-service: "true"
 # kubernetes.io/name: "Kubernetes Dashboard"
 
 

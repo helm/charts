@@ -22,7 +22,7 @@ $ helm install stable/kube-state-metrics
 | `hostNetwork`                         | Whether or not to use the host network                  | false                                       |
 | `prometheusScrape`                    | Whether or not enable prom scrape                       | true                                        |
 | `rbac.create`                         | If true, create & use RBAC resources                    | true                                        |
-| `serviceAccount.create`               | If true, and rbac true, create & use serviceAccount     | true                                        |
+| `serviceAccount.create`               | If true, create & use serviceAccount                    | true                                        |
 | `serviceAccount.name`                 | If not set & create is true, use template fullname      |                                             |
 | `serviceAccount.imagePullSecrets`     | Specify image pull secrets field                        | `[]`                                        |
 | `podSecurityPolicy.enabled`           | If true, create & use PodSecurityPolicy resources       | false                                       |
@@ -32,7 +32,7 @@ $ helm install stable/kube-state-metrics
 | `securityContext.runAsUser`           | User ID for the container                               | `65534`                                     |
 | `priorityClassName`                   | Name of Priority Class to assign pods                   | `nil`                                       |
 | `nodeSelector`                        | Node labels for pod assignment                          | {}                                          |
-| `tolerations`                         | Tolerations for pod assignment	                      | []                                          |
+| `tolerations`                         | Tolerations for pod assignment	                        | []                                          |
 | `podAnnotations`                      | Annotations to be added to the pod                      | {}                                          |
 | `resources`                           | kube-state-metrics resource requests and limits         | {}                                          |
 | `collectors.certificatesigningrequests` | Enable the certificatesigningrequests collector.      | true                                        |

@@ -179,7 +179,12 @@ spec:
           persistentVolumeClaim:
             claimName: {{ if .Values.server.persistentVolume.existingClaim }}{{ .Values.server.persistentVolume.existingClaim }}{{- else }}{{ template "prometheus.server.fullname" . }}{{- end }}
         {{- else }}
-          emptyDir: {}
+          emptyDir:
+          {{- if .Values.server.emptyDir.sizeLimit }}
+            sizeLimit: {{ .Values.server.emptyDir.sizeLimit }}
+          {{- else }}
+            {}
+          {{- end -}}
         {{- end -}}
 {{- if .Values.server.extraVolumes }}
 {{ toYaml .Values.server.extraVolumes | indent 8}}

@@ -86,12 +86,8 @@ spec:
           runAsUser: {{ .Values.securityContext.runAsUser }}
         {{- end }}
         env:
-        {{- if .Values.image.debug}}
-        - name: BASH_DEBUG
-          value: "1"
-        - name: NAMI_DEBUG
-          value: "1"
-        {{- end }}
+        - name: BITNAMI_DEBUG
+          value: {{ ternary "true" "false" .Values.image.debug | quote }}
         {{- if .Values.persistence.mountPath }}
         - name: PGDATA
           value: {{ .Values.postgresqlDataDir | quote }}
@@ -166,8 +162,8 @@ spec:
         volumeMounts:
         {{- if .Values.usePasswordFile }}
         - name: postgresql-password
-          mountPath: /opt/bitnami/postgresql/secrets
-        {{ end }}
+          mountPath: /opt/bitnami/postgresql/secrets/
+        {{- end }}
         {{- if .Values.persistence.enabled }}
         - name: data
           mountPath: {{ .Values.persistence.mountPath }}
@@ -186,7 +182,7 @@ spec:
       - name: postgresql-password
         secret:
           secretName: {{ template "postgresql.secretName" . }}
-      {{ end }}
+      {{- end }}
       {{- if or (.Files.Glob "files/postgresql.conf") (.Files.Glob "files/pg_hba.conf") .Values.postgresqlConfiguration .Values.pgHbaConfiguration .Values.configurationConfigMap}}
       - name: postgresql-config
         configMap:
