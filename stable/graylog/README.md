@@ -65,7 +65,7 @@ For example:
 Set cluster size to 5
 
 ```bash
-helm install --namespace "graylog" -n "graylog" --set servers.replicas=5 stable/graylog
+helm install --namespace "graylog" -n "graylog" --set graylog.replicas=5 stable/graylog
 ```
 
 The command above will install 1 master and 4 coordinating.
