@@ -354,7 +354,7 @@ ingress:
 ## Storage configuration for DAGs
 persistence:
   ##
-  ## enable persistance storage
+  ## enable persistence storage
   enabled: false
   ##
   ## Existing claim to use
@@ -369,14 +369,14 @@ persistence:
   # storageClass: default
   accessMode: ReadWriteOnce
   ##
-  ## Persistant storage size request
+  ## Persistent storage size request
   size: 1Gi
 
 ##
 ## Storage configuration for logs
 logsPersistence:
   ##
-  ## enable persistance storage
+  ## enable persistence storage
   enabled: false
   ##
   ## Existing claim to use
@@ -394,7 +394,7 @@ logsPersistence:
   # storageClass: default
   accessMode: ReadWriteOnce
   ##
-  ## Persistant storage size request
+  ## Persistent storage size request
   size: 1Gi
 
 ##
@@ -493,11 +493,15 @@ postgresql:
     ## Enable PostgreSQL persistence using Persistent Volume Claims.
     enabled: true
     ##
-    ## Persistant class
+    ## Persistent class
     # storageClass: classname
     ##
-    ## Access mode:
-    accessMode: ReadWriteOnce
+    ## Access modes:
+    accessModes:
+      - ReadWriteOnce
+    ##
+    ## Persistent storage size request
+    size: 1Gi
 
 
 ## Configuration values for the Redis dependency.
@@ -524,17 +528,21 @@ redis:
       ## docker registry secret names (list)
       # pullSecrets: nil
     ##
-    ## Configure persistance
+    ## Configure persistence
     persistence:
       ##
       ## Use a PVC to persist data.
       enabled: false
       ##
-      ## Persistant class
+      ## Persistent class
       # storageClass: classname
       ##
-      ## Access mode:
-      accessMode: ReadWriteOnce
+      ## Access modes:
+      accessModes:
+        - ReadWriteOnce
+      ##
+      ## Persistent storage size request
+      size: 1Gi
   ##
   ## Disable cluster management by default.
   cluster:
