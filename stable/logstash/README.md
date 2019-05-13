@@ -98,6 +98,7 @@ The following table lists the configurable parameters of the chart and its defau
 | `affinity`                      | Affinity or Anti-Affinity                          | `{}`                                             |
 | `podAnnotations`                | Pod annotations                                    | `{}`                                             |
 | `podLabels`                     | Pod labels                                         | `{}`                                             |
+| `extraEnv`                      | Extra pod environment variables                    | `[]`                                             |
 | `livenessProbe`                 | Liveness probe settings for logstash container     | (see `values.yaml`)                              |
 | `readinessProbe`                | Readiness probe settings for logstash container    | (see `values.yaml`)                              |
 | `persistence.enabled`           | Enable persistence                                 | `true`                                           |
