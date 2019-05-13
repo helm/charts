@@ -80,6 +80,9 @@ spec:
             - name: {{ $key | upper | replace "." "_" }}
               value: {{ $value | quote }}
           {{- end }}
+          {{- if .Values.extraEnv }}
+{{ .Values.extraEnv | toYaml | indent 12 }}
+          {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           volumeMounts:

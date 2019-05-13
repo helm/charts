@@ -115,6 +115,8 @@ podLabels: {}
   # team: "developers"
   # service: "logstash"
 
+extraEnv: []
+
 livenessProbe:
   httpGet:
     path: /
