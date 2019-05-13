@@ -117,6 +117,8 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `resources`                        | Pod resource requests & limits                                 | `{}`                          |
 | `hostNetwork`                      | Use host's network                         | `false`                                           |
 | `dnsPolicy`                        | Specifies the dnsPolicy to use             | `ClusterFirst`                                    |
+| `priorityClassName`                | Specifies the priorityClassName to use     | `NULL`        
+|                   
 | `tolerations`                      | Optional daemonset tolerations             | `NULL`                                            |
 | `nodeSelector`                     | Node labels for fluent-bit pod assignment  | `NULL`                                            |
 | `affinity`                         | Expressions for affinity                   | `NULL`                                            |
