@@ -53,12 +53,12 @@ spec:
             containerPort: 8200
         livenessProbe:
           httpGet:
-            path: /healthcheck
+            path: /
             port: http
           initialDelaySeconds: 60
         readinessProbe:
           httpGet:
-            path: /healthcheck
+            path: /
             port: http
           initialDelaySeconds: 60
         securityContext:
