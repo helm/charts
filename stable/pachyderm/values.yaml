@@ -30,6 +30,7 @@ amazon:
  distribution: ""
  id: ""
  region: ""
+ roleArn: ""
  secret: ""
  token: ""
 
@@ -41,22 +42,31 @@ microsoft:
 
 ## Set default image settings, resource requests and number of replicas of pachd
 pachd:
+ exposeObjApi: false
  replicaCount: 1
  ## Size of pachd's in-memory cache for PFS files. Size is specified in bytes, with allowed SI suffixes (M, K, G, Mi, Ki, Gi, etc).
  pfsCache: 0G
  ## For available images please check: https://hub.docker.com/r/pachyderm/pachd/tags/
  image:
   repository: pachyderm/pachd
-  tag: 1.7.11
+  tag: 1.8.6
   pullPolicy: Always
  worker:
   repository: pachyderm/worker
-  tag: 1.7.11
+  tag: 1.8.6
  resources:
   ## For non-local deployments, 1 cpu and 2G of memory requests are recommended
   requests:
    cpu: 250m
    memory: 512M
+  # limits:
+  #  cpu: 250m
+  #  memory: 512M
+ service:
+  grpc:
+   annotations: {}
+   port: 30650
+   type: NodePort
 
 ## Set default image settings and persistence settings of etcd
 etcd:
@@ -85,3 +95,6 @@ etcd:
   requests:
    cpu: 250m
    memory: 256M
+  # limits:
+  #  cpu: 250m
+  #  memory: 512M
