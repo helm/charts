@@ -63,8 +63,6 @@ The following tables lists the configurable parameters of the Home Assistant cha
 | `git.secret`                   | Git secret to use for git-sync | `git-creds` | 
 | `git.syncPath`                 | Git sync path | `/config` |
 | `git.keyPath`                  | Git ssh key path | `/root/.ssh` |
-| `monitoring.enabled`                  | Enable prometheus monitoring | `false` |
-| `monitoring.serviceMonitor.enabled`                  | Enable service monitor for prometheus monitoring | `true` |
 | `extraEnv`          | Extra ENV vars to pass to the home-assistant container | `{}` |
 | `extraEnvSecrets`   | Extra env vars to pass to the home-assistant container from k8s secrets - see `values.yaml` for an example | `{}` |
 | `configurator.enabled`     | Enable the optional [configuration UI](https://github.com/danielperna84/hass-configurator) | `false` |
