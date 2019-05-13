@@ -19,6 +19,7 @@ The following table lists the configurable parameters of `pachd` and their defau
 | Parameter                     | Description                         | Default           |
 |-------------------------------|-------------------------------------|-------------------|
 | `rbac.create`                 | Enable RBAC                         | `true`            |
+| `pachd.exposeObjApi`          | Expose S3 API                       | `false`           |
 | `pachd.image.repository`      | Container image name                | `pachyderm/pachd` |
 | `pachd.pfsCache`              | File System cache size              | `0G`              |
 | `*.image.tag`                 | Container image tag                 | `<latest version>`|
@@ -134,7 +135,7 @@ To specify a pachyderm version run the following command:
 
 ```console
 $ helm install --namespace pachyderm --name my-release \
--set pachd.image.tag=1.7.11,pachd.worker.tag=1.7.11 \
+-set pachd.image.tag=1.8.6,pachd.worker.tag=1.8.6 \
 stable/pachyderm
 ```
 
