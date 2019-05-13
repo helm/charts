@@ -1,4 +1,4 @@
-{{- if .Values.runMigrations }}
+{{- if (and (.Values.runMigrations) (not (eq .Values.env.database "off"))) }}
 apiVersion: batch/v1
 kind: Job
 metadata:
