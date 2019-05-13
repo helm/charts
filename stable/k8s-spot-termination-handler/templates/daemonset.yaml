@@ -72,5 +72,8 @@ spec:
   {{- if .Values.updateStrategy }}
   updateStrategy:
     type: {{ .Values.updateStrategy }}
+    {{ if and .Values.updateStrategy (eq .Values.updateStrategy "RollingUpdate") }}
+    rollingUpdate:
+      maxUnavailable: {{ .Values.maxUnavailable | default "1" | quote }}
+    {{- end }}
   {{- end }}
-

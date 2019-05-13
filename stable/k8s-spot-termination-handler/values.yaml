@@ -69,3 +69,4 @@ podAnnotations: {}
 # you will have to manually cycle your pods every time you perform the update.
 # Default value for Kubernetes v1.5 and before was "OnDelete".
 updateStrategy: RollingUpdate
+maxUnavailable: 1
