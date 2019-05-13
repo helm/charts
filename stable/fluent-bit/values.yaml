@@ -30,6 +30,10 @@ metrics:
 # When enabled, fluent-bit will keep track of tailing offsets across pod restarts.
 trackOffsets: false
 
+## PriorityClassName
+## Ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/#priorityclass
+priorityClassName: ""
+
 backend:
   type: forward
   forward:
