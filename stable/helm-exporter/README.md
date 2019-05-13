@@ -42,8 +42,9 @@ Parameter | Description | Default
 --- | --- | ---
 `affinity` | affinity configuration for pod assignment | `{}`
 `image.repository` | Image | `sstarcher/helm-exporter`
-`image.tag` | Image tag | `0.3.1`
+`image.tag` | Image tag | `0.4.0`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
+`tillerNamespaces` | To override the default tiller namespace name or to provide the multiple tiller namespaces For example, "kube-system,dev" | ""
 `nodeSelector` | node labels for pod assignment | `{}`
 `resources` | pod resource requests & limits | `{}`
 `tolerations` | List of node taints to tolerate (requires Kubernetes 1.6+) | `[]`
