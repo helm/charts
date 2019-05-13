@@ -47,8 +47,6 @@ spec:
   {{- end }}
     protocol: TCP
   {{- end }}
-
-
   selector:
     app: {{ template "kong.name" . }}
     release: {{ .Release.Name }}

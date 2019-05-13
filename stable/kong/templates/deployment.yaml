@@ -26,15 +26,23 @@ spec:
         release: {{ .Release.Name }}
         component: app
     spec:
+      {{- if (and (.Values.ingressController) (eq .Values.env.database "off")) }}
+      serviceAccountName: {{ template "kong.serviceAccountName" . }}
+      {{ end }}
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
       {{- range .Values.image.pullSecrets }}
         - name: {{ . }}
       {{- end }}
       {{- end }}
+      {{- if not (eq .Values.env.database "off") }}
       initContainers:
       {{- include "kong.wait-for-db" . | nindent 6 }}
+      {{ end }}
       containers:
+      {{- if (and (.Values.ingressController) (eq .Values.env.database "off")) }}
+      {{- include "kong.controller-container" . | nindent 6 }}
+      {{ end }}
       - name: {{ template "kong.name" . }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
