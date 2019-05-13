@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "vmware-exporter.fullname" . }}
+  labels:
+    app: {{ template "vmware-exporter.name" . }}
+    chart: {{ template "vmware-exporter.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+{{- with .Values.service.annotations }} 
+  annotations: 
+{{ toYaml . | indent 4 }} 
+{{- end }} 
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.targetport }}
+      protocol: TCP
+      name: http
+  selector:
+    app: {{ template "vmware-exporter.name" . }}
+    release: {{ .Release.Name }}

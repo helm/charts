@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "vmware-exporter.fullname" . }}-config
+  labels:
+    app: {{ template "vmware-exporter.name" . }}
+    chart: {{ template "vmware-exporter.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  VSPHERE_USER: {{ .Values.vsphere.user | quote }}
+  VSPHERE_HOST: {{ .Values.vsphere.host | quote }}
+  VSPHERE_IGNORE_SSL: {{ .Values.vsphere.ignoressl | quote }}
+  VSPHERE_COLLECT_HOSTS: {{ .Values.vsphere.collectors.hosts | quote }}
+  VSPHERE_COLLECT_DATASTORES: {{ default "True" .Values.vsphere.collectors.datastores | quote }}
+  VSPHERE_COLLECT_VMS: {{ .Values.vsphere.collectors.vms | quote }}
+

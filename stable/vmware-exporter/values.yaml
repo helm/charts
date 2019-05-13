@@ -1,0 +1,81 @@
+---
+
+replicaCount: 1
+
+vsphere:
+  user: user
+  password: na
+  host: vcenter
+  ignoressl: true
+  collectors:
+    hosts: true
+    datastores: true
+    vms: true
+
+podAnnotations:
+  prometheus.io/scrape: "true"
+  prometheus.io/port: "9272"
+  prometheus.io/path: "/metrics"
+
+readinessProbe:
+  httpGet:
+    path: /metrics
+    port: 9272
+  timeoutSeconds: 30
+  initialDelaySeconds: 60
+  failureThreshold: 10
+  periodSeconds: 60
+
+livenessProbe:
+  httpGet:
+    path: /metrics
+    port: 9272
+  initialDelaySeconds: 60
+  periodSeconds: 60
+  timeoutSeconds: 30
+  failureThreshold: 10
+
+image:
+  repository: pryorda/vmware_exporter
+  tag: v0.7.4
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  ## Provide optional annotations to the service i.e. for external-dns
+  # annotations:
+  ##   external-dns.alpha.kubernetes.io/hostname: yourservicename.k8s.yourcompany.com
+  ##
+  port: 80
+  targetport: 9272
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  path: /
+  hosts:
+    - chart-example.local
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
