@@ -99,3 +99,55 @@ Create the ingress servicePort value string
   {{- include "kong.env" .  | nindent 2 }}
   command: [ "/bin/sh", "-c", "until kong start; do echo 'waiting for db'; sleep 1; done; kong stop" ]
 {{- end -}}
+
+{{- define "kong.controller-container" -}}
+- name: ingress-controller
+  args:
+  - /kong-ingress-controller
+  # Service from were we extract the IP address/es to use in Ingress status
+  - --publish-service={{ .Release.Namespace }}/{{ template "kong.fullname" . }}-proxy
+  # Set the ingress class
+  - --ingress-class={{ .Values.ingressController.ingressClass }}
+  - --election-id=kong-ingress-controller-leader-{{ .Values.ingressController.ingressClass }}
+  # the kong URL points to the kong admin api server
+  {{- if .Values.admin.useTLS }}
+  - --kong-url=https://localhost:{{ .Values.admin.containerPort }}
+  - --admin-tls-skip-verify # TODO make this configurable
+  {{- else }}
+  - --kong-url=http://localhost:{{ .Values.admin.containerPort }}
+  {{- end }}
+  env:
+  - name: POD_NAME
+    valueFrom:
+      fieldRef:
+        apiVersion: v1
+        fieldPath: metadata.name
+  - name: POD_NAMESPACE
+    valueFrom:
+      fieldRef:
+        apiVersion: v1
+        fieldPath: metadata.namespace
+  image: "{{ .Values.ingressController.image.repository }}:{{ .Values.ingressController.image.tag }}"
+  imagePullPolicy: {{ .Values.image.pullPolicy }}
+  livenessProbe:
+    failureThreshold: 3
+    httpGet:
+      path: /healthz
+      port: 10254
+      scheme: HTTP
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    successThreshold: 1
+    timeoutSeconds: 1
+  readinessProbe:
+    failureThreshold: 3
+    httpGet:
+      path: /healthz
+      port: 10254
+      scheme: HTTP
+    periodSeconds: 10
+    successThreshold: 1
+    timeoutSeconds: 1
+  resources:
+{{ toYaml .Values.ingressController.resources | indent 10 }}
+{{- end -}}
