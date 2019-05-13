@@ -1,4 +1,4 @@
-{{- if .Values.ingressController.enabled -}}
+{{- if (and (.Values.ingressController.enabled) (not (eq .Values.env.database "off"))) }}
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
@@ -74,55 +74,5 @@ spec:
 {{ toYaml .Values.livenessProbe | indent 10 }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
-      - name: ingress-controller
-        args:
-        - /kong-ingress-controller
-        # the default service is the kong proxy service
-        - --default-backend-service={{ .Release.Namespace }}/{{ template "kong.fullname" . }}-proxy
-        # Service from were we extract the IP address/es to use in Ingress status
-        - --publish-service={{ .Release.Namespace }}/{{ template "kong.fullname" . }}-proxy
-        # Set the ingress class
-        - --ingress-class={{ .Values.ingressController.ingressClass }}
-        - --election-id=kong-ingress-controller-leader-{{ .Values.ingressController.ingressClass }}
-        # the kong URL points to the kong admin api server
-        {{- if .Values.admin.useTLS }}
-        - --kong-url=https://localhost:{{ .Values.admin.containerPort }}
-        - --admin-tls-skip-verify # TODO make this configurable
-        {{- else }}
-        - --kong-url=http://localhost:{{ .Values.admin.containerPort }}
-        {{- end }}
-        env:
-        - name: POD_NAME
-          valueFrom:
-            fieldRef:
-              apiVersion: v1
-              fieldPath: metadata.name
-        - name: POD_NAMESPACE
-          valueFrom:
-            fieldRef:
-              apiVersion: v1
-              fieldPath: metadata.namespace
-        image: "{{ .Values.ingressController.image.repository }}:{{ .Values.ingressController.image.tag }}"
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
-        livenessProbe:
-          failureThreshold: 3
-          httpGet:
-            path: /healthz
-            port: 10254
-            scheme: HTTP
-          initialDelaySeconds: 30
-          periodSeconds: 10
-          successThreshold: 1
-          timeoutSeconds: 1
-        readinessProbe:
-          failureThreshold: 3
-          httpGet:
-            path: /healthz
-            port: 10254
-            scheme: HTTP
-          periodSeconds: 10
-          successThreshold: 1
-          timeoutSeconds: 1
-        resources:
-{{ toYaml .Values.ingressController.resources | indent 10 }}
+      {{- include "kong.controller-container" . | nindent 6 }}
 {{- end -}}
