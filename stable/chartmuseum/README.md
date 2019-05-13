@@ -586,8 +586,8 @@ This allows all API routes to be protected by HTTP basic auth, this is configure
 ```yaml
 env:
   secret:
-    BASIC_AUTH_USERNAME: curator
-    BASIC_AUTH_PASSWORD: mypassword 
+    BASIC_AUTH_USER: curator
+    BASIC_AUTH_PASS: mypassword
 ```
 
 Or by using values from an existing secret in the cluster that can be created using:
