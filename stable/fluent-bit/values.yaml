@@ -5,8 +5,12 @@ on_minikube: false
 image:
   fluent_bit:
     repository: fluent/fluent-bit
-    tag: 1.0.4
+    tag: 1.0.6
   pullPolicy: IfNotPresent
+
+testFramework:
+  image: "dduportal/bats"
+  tag: "0.4.0"
 
 nameOverride: ""
 fullnameOverride: ""
@@ -25,6 +29,10 @@ metrics:
 
 # When enabled, fluent-bit will keep track of tailing offsets across pod restarts.
 trackOffsets: false
+
+## PriorityClassName
+## Ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/#priorityclass
+priorityClassName: ""
 
 backend:
   type: forward

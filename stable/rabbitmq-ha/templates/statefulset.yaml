@@ -4,7 +4,7 @@ metadata:
   name: {{ template "rabbitmq-ha.fullname" . }}
   labels:
     app: {{ template "rabbitmq-ha.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    chart: {{ template "rabbitmq-ha.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 {{- if .Values.extraLabels }}
@@ -203,11 +203,14 @@ spec:
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
       {{- end }}
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+      {{- end }}
       {{- if eq .Values.podAntiAffinity "hard" }}
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
-            - topologyKey: "kubernetes.io/hostname"
+            - topologyKey: "{{ .Values.podAntiAffinityTopologyKey }}"
               labelSelector:
                 matchLabels:
                   app: {{ template "rabbitmq-ha.name" . }}
@@ -218,7 +221,7 @@ spec:
           preferredDuringSchedulingIgnoredDuringExecution:
             - weight: 1
               podAffinityTerm:
-                topologyKey: kubernetes.io/hostname
+                topologyKey: "{{ .Values.podAntiAffinityTopologyKey }}"
                 labelSelector:
                   matchLabels:
                     app: {{ template "rabbitmq-ha.name" . }}
