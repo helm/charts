@@ -48,7 +48,7 @@ spec:
           containerPort: 652
         env:
         - name: EXPOSE_OBJECT_API
-          value: {{ .Values.pachd.exposeObjApi }}
+          value: {{ .Values.pachd.exposeObjApi | quote }}
         - name: PACH_ROOT
           value: "/pach"
         - name: NUM_SHARDS
