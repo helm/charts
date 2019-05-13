@@ -65,7 +65,7 @@ pachd:
  service:
   grpc:
    annotations: {}
-   port: 650
+   port: 30650
    type: NodePort
 
 ## Set default image settings and persistence settings of etcd
