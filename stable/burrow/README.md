@@ -13,7 +13,7 @@ This chart bootstraps a burrow network on a [Kubernetes](http://kubernetes.io) c
 To deploy a new blockchain network, this chart requires that two objects be present in the same Kubernetes namespace: a configmap should house the genesis file and a secret should hold any validator keys. The provided script, `initialize.sh` automatically provisions a number of files using the [burrow](https://github.com/hyperledger/burrow) toolkit, so please first ensure that `burrow --version` matches the `image.tag` in the [configuration](#configuration). This sequence also requires that the [jq](https://stedolan.github.io/jq/) binary is installed. Two files will be generated, the first of note is `chain-info.yaml` which contains the two necessary Kubernetes specifications to be added to the cluster:
 
 ```bash
-curl -LO https://raw.githubusercontent.com/helm/charts/master/initialize.sh
+curl -LO https://raw.githubusercontent.com/helm/charts/master/stable/burrow/initialize.sh
 CHAIN_NODES=4 CHAIN_NAME="my-release" ./initialize.sh
 kubectl apply --filename chain-info.yaml
 ```
