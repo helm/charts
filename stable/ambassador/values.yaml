@@ -30,11 +30,13 @@ securityContext:
 
 image:
   repository: quay.io/datawire/ambassador
-  tag: 0.60.1
+  tag: 0.61.0
   pullPolicy: IfNotPresent
 
 nameOverride: ""
 fullnameOverride: ""
+dnsPolicy: "ClusterFirst"
+hostNetwork: false
 
 service:
   type: LoadBalancer
@@ -91,9 +93,14 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name:
 
+initContainers: []
+
 volumes: []
 
 volumeMounts: []
+
+podLabels:
+  {}
 
 podAnnotations:
   {}
@@ -136,3 +143,17 @@ prometheusExporter:
   #       cluster_name: "$1"
 
 ambassadorConfig: ""
+
+pro:
+  enabled: false
+  image:
+    repository: quay.io/datawire/ambassador_pro
+    tag: amb-sidecar-0.4.0
+  ports:
+    auth: 8500
+    ratelimit: 8501
+    ratelimitDebug: 8502
+  logLevel: info
+  licenseKey:
+    value:
+    secret: false
