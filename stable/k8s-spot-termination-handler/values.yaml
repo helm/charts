@@ -50,6 +50,9 @@ resources: {}
 # Add a priority class to the deamonset
 priorityClassName: ""
 
+# Wether to share the host network
+useHostNetwork: false
+
 nodeSelector: {}
   # "node-role.kubernetes.io/spot-worker": "true"
 

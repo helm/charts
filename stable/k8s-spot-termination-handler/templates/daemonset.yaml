@@ -62,6 +62,9 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
-    {{- if .Values.priorityClassName }} 
+    {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName }}
+    {{- end }}
+    {{- if .Values.useHostNetwork }}
+      hostNetwork: {{ .Values.useHostNetwork }}
     {{- end }}
