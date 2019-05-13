@@ -42,7 +42,7 @@ microsoft:
 
 ## Set default image settings, resource requests and number of replicas of pachd
 pachd:
- exposeObjApi: false
+ exposeObjApi: `false`
  replicaCount: 1
  ## Size of pachd's in-memory cache for PFS files. Size is specified in bytes, with allowed SI suffixes (M, K, G, Mi, Ki, Gi, etc).
  pfsCache: 0G
