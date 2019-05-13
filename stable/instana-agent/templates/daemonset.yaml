@@ -32,6 +32,8 @@ spec:
               value: {{ .Values.agent.leaderElectorPort | quote }}
             - name: INSTANA_ZONE
               value: {{ .Values.zone.name | quote }}
+            - name: INSTANA_KUBERNETES_CLUSTER_NAME
+              value: {{ .Values.kubernetes.clusterName | quote }}
             - name: INSTANA_AGENT_ENDPOINT
               value: {{ .Values.agent.endpointHost | quote }}
             - name: INSTANA_AGENT_ENDPOINT_PORT

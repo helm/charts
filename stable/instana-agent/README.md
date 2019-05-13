@@ -116,6 +116,7 @@ The following table lists the configurable parameters of the Instana chart and t
 | `rbac.create`                      | Whether RBAC resources should be created                                | `true`                                       |
 | `serviceAccount.create`            | Whether a ServiceAccount should be created                              | `true`                                       |
 | `serviceAccount.name`              | Name of the ServiceAccount to use                                       | `instana-agent`                              |
+| `kubernetes.clusterName`           | Display name of the monitored Kubernetes Cluster (overrides zone.name)  | `nil`                                        |
 
 ### Agent
 
