@@ -186,6 +186,10 @@ To deploy the ingress controller together with
 kong run the following command:
 
 ```bash
+# without a database
+helm install stable/kong --set ingressController.enabled=true \
+  --set postgresql.enabled=false --set env.database=off
+# with a database
 helm install stable/kong --set ingressController.enabled=true
 ```
 
