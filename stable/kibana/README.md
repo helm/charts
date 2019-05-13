@@ -141,6 +141,6 @@ $ helm install stable/kibana --name my-release -f values.yaml
 
 ## Upgrading
 
-### To 6.7.0
+### To 2.3.0
 
 The default value of `elasticsearch.url` (for kibana < 6.6) has been removed in favor of `elasticsearch.hosts` (for kibana >= 6.6).
