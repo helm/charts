@@ -4,7 +4,7 @@ metadata:
   name: {{ template "traefik.fullname" . }}
   labels:
     app: {{ template "traefik.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: {{ template "traefik.chart" . }}
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
 data:
