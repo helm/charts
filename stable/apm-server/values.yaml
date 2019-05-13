@@ -1,6 +1,6 @@
 image:
   repository: docker.elastic.co/apm/apm-server
-  tag: 6.6.2
+  tag: 7.0.0
   pullPolicy: IfNotPresent
 
 # DaemonSet or Deployment
