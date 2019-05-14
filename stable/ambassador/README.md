@@ -95,6 +95,10 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `pro.ports.ratelimitDebug`         | Debug port for Ambassador Pro ratelimit                                         | `8502`                                              |
 | `pro.licenseKey.value`             | License key for Ambassador Pro                                                  | ""                                                  |
 | `pro.licenseKey.secret`            | Stores the license key as a base64-encoded string in a Kubernetes secret        | `false`                                             |
+| `autoscaling.enabled`              | If true, creates Horizontal Pod Autoscaler        | `false`         |
+| `autoscaling.minReplica`           | If autoscaling enabled, this field sets minimum replica count        | `2`         |
+| `autoscaling.maxReplica`           | If autoscaling enabled, this field sets maximum replica count        | `5`         |
+| `autoscaling.metrics`              | If autoscaling enabled, configure hpa metrics                        |         |
 
 **NOTE:** Make sure the configured `service.http.targetPort` and `service.https.targetPort` ports match your [Ambassador Module's](https://www.getambassador.io/reference/modules/#the-ambassador-module) `service_port` and `redirect_cleartext_from` configurations.
 
