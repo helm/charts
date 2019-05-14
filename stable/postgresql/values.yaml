@@ -65,6 +65,12 @@ securityContext:
   fsGroup: 1001
   runAsUser: 1001
 
+## Pod Service Account
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
+serviceAccount:
+  enabled: false
+  # name: 
+
 replication:
   enabled: false
   user: repl_user
