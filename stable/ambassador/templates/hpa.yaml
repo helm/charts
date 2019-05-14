@@ -11,7 +11,7 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   scaleTargetRef:
-    apiVersion: apps/v1beta1
+    apiVersion: apps/v1
     kind: Deployment
     name: {{ include "ambassador.fullname" . }}
   minReplicas: {{ .Values.autoscaling.minReplicas }}
