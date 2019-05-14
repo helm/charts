@@ -73,7 +73,7 @@ spec:
           {{- if .Values.aws.zoneType }}
             - --aws-zone-type={{ .Values.aws.zoneType }}
           {{- end }}
-         {{- if .Values.aws.roleArn }}
+          {{- if .Values.aws.roleArn }}
             - --aws-assume-role={{ .Values.aws.roleArn }}
           {{- end }}
           {{- if .Values.google.project }}
