@@ -3,6 +3,12 @@
 This file documents all notable changes to Sysdig Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v1.4.6
+
+### Minor Changes
+
+* Dont allow to change the value of `new_k8s` flag.
+
 ## v1.4.5
 
 ### Minor Changes
