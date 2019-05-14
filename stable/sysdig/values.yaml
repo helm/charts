@@ -58,7 +58,6 @@ sysdig:
   accessKey: ""
 
   settings:
-    new_k8s: true
     ### Agent tags
     # tags: linux:ubuntu,dept:dev,local:nyc
     #### Sysdig Software related config ####
