@@ -32,6 +32,10 @@ spec:
             privileged: true
           args:
             - /usr/bin/falco
+            {{- if (and .Values.cri.enabled .Values.cri.socket) }}
+            - --cri
+            - /host/var/run/cri.sock
+            {{- end }}
             - -K
             - /var/run/secrets/kubernetes.io/serviceaccount/token
             - -k
@@ -58,8 +62,14 @@ spec:
               value: {{ .Values.proxy.noProxy }}
           {{- end }}
           volumeMounts:
+            {{- if (and .Values.docker.enabled .Values.docker.socket) }}
             - mountPath: /host/var/run/docker.sock
               name: docker-socket
+            {{- end}}
+            {{- if (and .Values.cri.enabled .Values.cri.socket) }}
+            - mountPath: /host/var/run/cri.sock
+              name: cri-socket
+            {{- end}}
             - mountPath: /host/dev
               name: dev-fs
             - mountPath: /host/proc
@@ -160,9 +170,16 @@ spec:
         - name: dshm
           emptyDir:
             medium: Memory
+        {{- if (and .Values.docker.enabled .Values.docker.socket) }}
         - name: docker-socket
           hostPath:
-            path: /var/run/docker.sock
+            path: {{ .Values.docker.socket }}
+        {{- end}}
+        {{- if (and .Values.cri.enabled .Values.cri.socket) }}
+        - name: cri-socket
+          hostPath:
+            path: {{ .Values.cri.socket }}
+        {{- end}}
         - name: dev-fs
           hostPath:
             path: /dev
