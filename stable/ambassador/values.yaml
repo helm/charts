@@ -5,6 +5,15 @@
 replicaCount: 3
 daemonSet: false
 
+# Enable autoscaling using HorizontalPodAutoscaler
+# daemonSet: true, autoscaling will be disabled
+autoscaling:
+  enabled: false
+  minReplicas: 2
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 60
+  targetMemoryUtilizationPercentage: 60
+
 # namespace:
   # name: default
 
