@@ -193,6 +193,12 @@ helm install stable/kong --set ingressController.enabled=true \
 helm install stable/kong --set ingressController.enabled=true
 ```
 
+If you like to use a static IP:
+
+```shell
+helm install stable/kong --set ingressController.enabled=true --set proxy.loadBalancerIP=[Your IP goes there] --set proxy.type=LoadBalancer --name kong --namespace kong
+```
+
 **Note**: Kong Ingress controller doesn't support custom SSL certificates
 on Admin port. We will be removing this limitation in the future.
 
