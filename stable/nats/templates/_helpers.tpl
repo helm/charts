@@ -120,7 +120,6 @@ imagePullSecrets:
 {{- end -}}
 {{- end -}}
 
-
 {{/*
 Compile all warnings into a single message, and call fail.
 */}}
