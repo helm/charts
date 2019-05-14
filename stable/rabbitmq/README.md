@@ -59,17 +59,17 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `podManagementPolicy`                | Pod management policy                            | `OrderedReady`                                          |
 | `rabbitmq.username`                  | RabbitMQ application username                    | `user`                                                  |
 | `rabbitmq.password`                  | RabbitMQ application password                    | _random 10 character long alphanumeric string_          |
-| `rabbitmq.existingPasswordSecret`    | Existing secret with RabbitMQ credentials        | nil                                                     |
+| `rabbitmq.existingPasswordSecret`    | Existing secret with RabbitMQ credentials        | `nil`                                                     |
 | `rabbitmq.erlangCookie`              | Erlang cookie                                    | _random 32 character long alphanumeric string_          |
-| `rabbitmq.existingErlangSecret`      | Existing secret with RabbitMQ Erlang cookie      | nil                                                     |
+| `rabbitmq.existingErlangSecret`      | Existing secret with RabbitMQ Erlang cookie      | `nil`                                                     |
 | `rabbitmq.plugins`                   | List of plugins to enable                        | `rabbitmq_management rabbitmq_peer_discovery_k8s`       |
 | `rabbitmq.extraPlugins`              | Extra plugings to enable                         | `nil`                                                   |
 | `rabbitmq.clustering.address_type`   | Switch clustering mode                           | `ip` or `hostname`                                      |
 | `rabbitmq.clustering.k8s_domain`     | Customize internal k8s cluster domain            | `cluster.local`                                         |
 | `rabbitmq.logs`                      | Value for the RABBITMQ_LOGS environment variable | `-`                                                     |
 | `rabbitmq.ulimitNofiles`             | Max File Descriptor limit                        | `65536`                                                 |
-| `rabbitmq.maxAvailableSchedulers     | RabbitMQ maximum available scheduler threads     | `2`                                                     |
-| `rabbitmq.onlineSchedulers           | RabbitMQ online scheduler threads                | `1`                                                     |
+| `rabbitmq.maxAvailableSchedulers`    | RabbitMQ maximum available scheduler threads     | `2`                                                     |
+| `rabbitmq.onlineSchedulers`          | RabbitMQ online scheduler threads                | `1`                                                     |
 | `rabbitmq.configuration`             | Required cluster configuration                   | See values.yaml                                         |
 | `rabbitmq.extraConfiguration`        | Extra configuration to add to rabbitmq.conf      | See values.yaml                                         |
 | `service.type`                       | Kubernetes Service type                          | `ClusterIP`                                             |
