@@ -37,8 +37,8 @@ zookeeper:
   # 'host1:port1','host2:port2','etc...'
   hosts:
 consul:
-  enable: true
-  deployChart: true
+  enable: false
+  deployChart: false
   # Leave blank to use vendored consul chart
   hosts:
 

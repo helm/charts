@@ -76,7 +76,7 @@ spec:
           value: {{(printf "'%s-consul'" .Release.Name | trunc 63)}}
         {{- else }}
         - name: PATRONI_CONSUL_HOST
-          value: {{ .Values.consul.hosts | quote }}
+          value: {{ .Values.consul.host | quote }}
         {{- end }}
         {{- end }}
         - name: SCOPE
