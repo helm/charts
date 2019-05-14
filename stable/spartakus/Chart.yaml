@@ -7,6 +7,6 @@ description: Collect information about Kubernetes clusters to help improve the p
 sources:
   - https://github.com/kubernetes-incubator/spartakus
 maintainers:
-  - name: Michael Goodness
+  - name: mgoodness
     email: mgoodness@gmail.com
 engine: gotpl
