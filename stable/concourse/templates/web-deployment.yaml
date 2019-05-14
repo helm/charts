@@ -256,6 +256,14 @@ spec:
             - name: CONCOURSE_MAX_BUILD_LOGS_TO_RETAIN
               value: {{ .Values.concourse.web.maxBuildLogsToRetain | quote }}
             {{- end }}
+            {{- if .Values.concourse.web.defaultDaysToRetainBuildLogs }}
+            - name: CONCOURSE_DEFAULT_DAYS_TO_RETAIN_BUILD_LOGS
+              value: {{ .Values.concourse.web.defaultDaysToRetainBuildLogs | quote }}
+            {{- end }}
+            {{- if .Values.concourse.web.maxDaysToRetainBuildLogs }}
+            - name: CONCOURSE_MAX_DAYS_TO_RETAIN_BUILD_LOGS
+              value: {{ .Values.concourse.web.maxDaysToRetainBuildLogs | quote }}
+            {{- end }}
             {{- if .Values.concourse.web.defaultTaskCpuLimit }}
             - name: CONCOURSE_DEFAULT_TASK_CPU_LIMIT
               value: {{ .Values.concourse.web.defaultTaskCpuLimit | quote }}

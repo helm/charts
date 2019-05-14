@@ -228,6 +228,14 @@ concourse:
     ##
     maxBuildLogsToRetain:
 
+    ## Default days to retain build logs. 0 means unlimited.
+    ##
+    defaultDaysToRetainBuildLogs:
+
+    ## Maximum days to retain build logs, 0 means not specified. Will override values configured in jobs.
+    ##
+    maxDaysToRetainBuildLogs:
+
     ## Default max number of cpu shares per task, 0 means unlimited.
     ##
     defaultTaskCpuLimit:
