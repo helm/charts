@@ -1,3 +1,4 @@
+apiVersion: v1
 name: cloudserver
 version: 1.0.1
 appVersion: 8.1.5
