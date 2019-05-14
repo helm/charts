@@ -98,8 +98,7 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `autoscaling.enabled`              | If true, creates Horizontal Pod Autoscaler        | `false`         |
 | `autoscaling.minReplica`           | If autoscaling enabled, this field sets minimum replica count        | `2`         |
 | `autoscaling.maxReplica`           | If autoscaling enabled, this field sets maximum replica count        | `5`         |
-| `autoscaling.targetCPUUtilizationPercentage`           | If autoscaling enabled, cpu utilization threshold value in `%`      | `60`         |
-| `autoscaling.targetMemoryUtilizationPercentage`        | If autoscaling enabled, memory utilization threshold value in `%`      | `60`         |
+| `autoscaling.metrics`              | If autoscaling enabled, configure hpa metrics                        |         |
 
 **NOTE:** Make sure the configured `service.http.targetPort` and `service.https.targetPort` ports match your [Ambassador Module's](https://www.getambassador.io/reference/modules/#the-ambassador-module) `service_port` and `redirect_cleartext_from` configurations.
 

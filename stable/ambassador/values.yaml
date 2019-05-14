@@ -11,8 +11,15 @@ autoscaling:
   enabled: false
   minReplicas: 2
   maxReplicas: 5
-  targetCPUUtilizationPercentage: 60
-  targetMemoryUtilizationPercentage: 60
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: 60
+    - type: Resource
+      resource:
+        name: memory
+        targetAverageUtilization: 60
 
 # namespace:
   # name: default
