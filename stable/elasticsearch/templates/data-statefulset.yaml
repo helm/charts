@@ -21,6 +21,9 @@ spec:
         component: "{{ .Values.data.name }}"
         release: {{ .Release.Name }}
         role: data
+        {{- if .Values.labels }}
+{{ toYaml .Values.labels | indent 8 }}
+        {{- end }}
         {{- if .Values.data.podAnnotations }}
       annotations:
 {{ toYaml .Values.data.podAnnotations | indent 8 }}

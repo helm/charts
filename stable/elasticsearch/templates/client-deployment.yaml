@@ -8,8 +8,7 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
     {{- if .Values.labels }}
-      labels:
-{{ toYaml .Values.labels | indent 8 }}
+{{ toYaml .Values.labels | indent 4 }}
     {{- end }}
   name: {{ template "elasticsearch.client.fullname" . }}
 spec:
