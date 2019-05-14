@@ -1,5 +1,5 @@
 name: sysdig
-version: 1.4.5
+version: 1.4.6
 appVersion: 0.89.5
 description: Sysdig Monitor and Secure agent
 keywords:
