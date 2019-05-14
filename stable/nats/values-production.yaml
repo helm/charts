@@ -65,7 +65,13 @@ podLabels: {}
 ##
 # priorityClassName: ""
 
-## Update strategy, can be set to RollingUpdate or OnDelete by default.
+## NATS cluster resource type under Kubernetes. Allowed values: statefulset (default) or deployment
+## ref:
+## - https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/
+## - https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+resourceType: "statefulset"
+
+## Update strategy for statefulset, can be set to RollingUpdate or OnDelete by default.
 ## https://kubernetes.io/docs/tutorials/stateful-application/basic-stateful-set/#updating-statefulsets
 statefulset:
   updateStrategy: OnDelete
@@ -73,6 +79,12 @@ statefulset:
   ## https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#partitions
   # rollingUpdatePartition:
 
+## Update strategy for deployment, can be set to RollingUpdate or OnDelete by default.
+## https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
+deployment:
+  updateType: RollingUpdate
+  # maxSurge: 25%
+  # maxUnavailable: 25%
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
