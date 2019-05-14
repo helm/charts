@@ -6,6 +6,14 @@ image:
   tag: 0.15.0
   pullPolicy: IfNotPresent
 
+docker:
+  enabled: true
+  socket: /var/run/docker.sock
+
+cri:
+  enabled: true
+  socket: /run/containerd/containerd.sock
+
 resources:
   # Although resources needed are subjective on the actual workload we provide
   # a sane defaults ones. If you have more questions or concerns, please refer
