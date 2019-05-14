@@ -1,17 +1,5 @@
 ** Please be patient while the chart is being deployed **
 
-{{- if and (not (eq .Values.resourceType "statefulset")) (not (eq .Values.resourceType "deployment")) }}
-
--------------------------------------------------------------------------------
- WARNING
-
-   "resourceType" currently only "statefulset", "deployment" are allowed
-   the type specified in values.yaml >> {{ .Values.resourceType }} << is not defined in white list
-   but it will still continuing deploy with default resource type "statefulset"
-
--------------------------------------------------------------------------------
-{{- end }}
-
 {{- if or (contains .Values.client.service.type "LoadBalancer") (contains .Values.client.service.type "nodePort") }}
 {{- if not .Values.auth.enabled }}
 {{ if and (not .Values.networkPolicy.enabled) (.Values.networkPolicy.allowExternal) }}
@@ -97,4 +85,7 @@ To access the Monitoring svc from outside the cluster, follow the steps below:
     kubectl port-forward --namespace {{ .Release.Namespace }} {{ template "nats.fullname" . }}-0 {{ .Values.metrics.port }}:{{ .Values.metrics.port }}
 
 4. Access NATS Prometheus metrics by opening the URL obtained in a browser.
+
 {{- end }}
+
+{{- include "nats.validateValues" . -}}
