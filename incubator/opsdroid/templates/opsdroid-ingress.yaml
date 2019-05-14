@@ -1,0 +1,30 @@
+{{- if .Values.opsdroid.ingress.enabled -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  labels:
+    app: {{ template "opsdroid.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "opsdroid.fullname" . }}
+  annotations:
+    {{- range $key, $value := .Values.opsdroid.ingress.annotations }}
+      {{ $key }}: {{ $value | quote }}
+    {{- end }}
+spec:
+  rules:
+    {{- range $host := .Values.opsdroid.ingress.hosts }}
+    - host: {{ $host }}
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: opsdroid
+              servicePort: {{ .Values.opsdroid.service.port }}
+    {{- end -}}
+  {{- if .Values.opsdroid.ingress.tls }}
+  tls:
+{{ toYaml .Values.opsdroid.ingress.tls | indent 4 }}
+  {{- end -}}
+{{- end -}}

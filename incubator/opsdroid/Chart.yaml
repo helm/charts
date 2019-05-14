@@ -1,0 +1,17 @@
+apiVersion: v1
+name: opsdroid
+version: 0.1.0
+appVersion: 0.15.0
+description: Opsdroid is a ChatOps bot framework written in Python
+keywords:
+- chatbot
+- chatops
+- botops
+- natural language
+- bot framework
+home: http://opsdroid.dev
+sources:
+- https://github.com/opsdroid/opsdroid
+maintainers:
+- name: jacobtomlinson
+  email: jacob@tomlinson.email

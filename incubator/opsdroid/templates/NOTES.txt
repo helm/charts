@@ -1,0 +1,14 @@
+Thank you for installing {{ .Chart.Name }}.
+
+Your release is named {{ .Release.Name }}.
+
+To learn more about the release, try:
+
+  $ helm status {{ .Release.Name }}
+  $ helm get {{ .Release.Name }}
+
+You can test the service with:
+
+  $ kubectl port-forward svc/opsdroid 8080:8080
+  $ curl localhost:8080/stats
+  {"version": "0+unknown", "messages": {"total_parsed": 0, "webhooks_called": 0, "total_response_time": 0, "total_responses": 0, "average_response_time": 0}, "modules": {"skills": 6, "connectors": 1, "databases": 0}}

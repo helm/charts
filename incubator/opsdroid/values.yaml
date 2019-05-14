@@ -1,0 +1,72 @@
+opsdroid:
+  image:
+    repository: opsdroid/opsdroid
+    tag: v0.15.4
+    imagePullPolicy: IfNotPresent
+
+  service:
+    port: 8080
+
+  resources:
+    # limits:
+    #  cpu: 1000m
+    #  memory: 1Gi
+    # requests:
+    #  cpu: 100m
+    #  memory: 256Mi
+
+  pvc:
+    enabled: false
+    # annotations: {}
+    # selector: {}
+    # accessModes:
+    #   - ReadWriteOnce
+    # storage: 5Gi
+    # storageClassName:
+
+  ingress:
+    enabled: false
+    # hosts:
+    #   - opsdroid.example.com
+    # annotations:
+    #   kubernetes.io/ingress.class: nginx
+    # tls:
+    #   - secretName: opsdroid-tls
+    #     hosts:
+    #       - opsdroid.example.com
+
+  environment: []
+
+  configuration:
+  # configuration: |
+  #   # opsdroid config
+
+rasanlu:
+  enabled: false
+
+  token: abc123
+
+  image:
+    repository: rasa/rasa_nlu
+    tag: 0.11.3-full
+    imagePullPolicy: IfNotPresent
+
+  service:
+    port: 5000
+
+  resources:
+    # limits:
+    #  cpu: 2000m
+    #  memory: 8Gi
+    # requests:
+    #  cpu: 1000m
+    #  memory: 4Gi
+
+  pvc:
+    enabled: false
+    # annotations: {}
+    # selector: {}
+    # accessModes:
+    #   - ReadWriteOnce
+    # storage: 5Gi
+    # storageClassName:

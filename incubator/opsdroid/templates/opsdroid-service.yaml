@@ -1,0 +1,10 @@
+kind: Service
+metadata:
+  name: opsdroid
+spec:
+  ports:
+    - port: {{ .Values.opsdroid.service.port }}
+      targetPort: {{ .Values.opsdroid.service.port }}
+      protocol: TCP
+  selector:
+    app: opsdroid

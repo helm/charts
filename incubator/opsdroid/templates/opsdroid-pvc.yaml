@@ -1,0 +1,27 @@
+{{- if .Values.opsdroid.pvc.enabled -}}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: opsdroid-data
+  {{ if .Values.opsdroid.pvc.annotations -}}
+  annotations:
+    {{- range $key, $value := .Values.opsdroid.pvc.annotations }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+  {{- end }}
+spec:
+  {{ if .Values.opsdroid.pvc.selector -}}
+  selector:
+{{ toYaml .Values.opsdroid.pvc.selector | indent 4 }}
+  {{- end }}
+  {{ if typeIs "string" .Values.opsdroid.pvc.storageClassName -}}
+  storageClassName: {{ .Values.opsdroid.pvc.storageClassName | quote }}
+  {{- end }}
+  accessModes:
+    {{- range $mode := .Values.opsdroid.pvc.accessModes }}
+    - {{ $mode }}
+    {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.opsdroid.pvc.storage | quote }}
+{{- end }}

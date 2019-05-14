@@ -1,0 +1,9 @@
+{{- if $.Values.opsdroid.configuration }}
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: opsdroid-config
+data:
+  configuration.yaml: |
+{{ .Values.opsdroid.configuration | indent 4 }}
+{{- end }}

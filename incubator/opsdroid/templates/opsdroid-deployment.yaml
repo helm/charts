@@ -1,0 +1,60 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: opsdroid-{{ .Release.Name }}
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: opsdroid
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/opsdroid-config.yaml") . | sha256sum }}
+    spec:
+      containers:
+        - image: {{ .Values.opsdroid.image.repository }}:{{ .Values.opsdroid.image.tag }}
+          imagePullPolicy: {{ .Values.opsdroid.image.imagePullPolicy }}
+          name: opsdroid
+          ports:
+            - containerPort: {{ .Values.opsdroid.service.port }}
+          volumeMounts:
+            {{- if $.Values.opsdroid.configuration }}
+            - name: config
+              mountPath: "/root/.config/opsdroid/configuration.yaml"
+              subPath: configuration.yaml
+              readOnly: false
+            {{- end }}
+            {{- if .Values.opsdroid.pvc.enabled -}}
+            - mountPath: /data
+              name: opsdroid-data
+              subPath: data
+            {{- end }}
+          livenessProbe:
+            httpGet:
+              path: /stats
+              port: {{ .Values.opsdroid.service.port }}
+            initialDelaySeconds: 120
+            periodSeconds: 10
+          env:
+            {{- range .Values.opsdroid.environment }}
+            - name: {{ .name }}
+              valueFrom:
+                secretKeyRef:
+                  name: opsdroid-config
+                  key: {{ .name }}
+            {{- end }}
+        {{- if $.Values.opsdroid.resources }}
+          resources:
+{{ toYaml $.Values.opsdroid.resources | indent 12 }}
+        {{- end }}
+      volumes:
+        {{- if $.Values.opsdroid.configuration }}
+        - name: config
+          configMap:
+            name: opsdroid-config
+        {{- end }}
+        {{- if .Values.opsdroid.pvc.enabled -}}
+        - name: opsdroid-data
+          persistentVolumeClaim:
+            claimName: opsdroid-data
+        {{- end }}

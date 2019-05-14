@@ -1,0 +1,29 @@
+{{- if .Values.rasanlu.enabled -}}
+{{- if .Values.rasanlu.pvc.enabled -}}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: rasanlu-data
+  {{ if .Values.rasanlu.pvc.annotations -}}
+  annotations:
+    {{- range $key, $value := .Values.rasanlu.pvc.annotations }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+  {{- end }}
+spec:
+  {{ if .Values.rasanlu.pvc.selector -}}
+  selector:
+{{ toYaml .Values.rasanlu.pvc.selector | indent 4 }}
+  {{- end }}
+  {{ if typeIs "string" .Values.rasanlu.pvc.storageClassName -}}
+  storageClassName: {{ .Values.rasanlu.pvc.storageClassName | quote }}
+  {{- end }}
+  accessModes:
+    {{- range $mode := .Values.rasanlu.pvc.accessModes }}
+    - {{ $mode }}
+    {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.rasanlu.pvc.storage | quote }}
+{{- end }}
+{{- end }}
