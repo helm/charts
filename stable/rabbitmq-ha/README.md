@@ -66,7 +66,7 @@ and their default values.
 | Parameter                                      | Description                                                                                                                                                                                           | Default                                                    |
 |------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------|
 | `existingConfigMap`                            | Use an existing ConfigMap                                                                                                                                                                             | `false`                                                    |
-| `existingSecret`                               | Use an existing secret for password & erlang cookie                                                                                                                                                   | `""`                                                       |
+| `existingSecret`                               | Use an existing secret for password, managementPassword & erlang cookie                                                                                                                                                   | `""`                                                       |
 | `extraPlugins`                                 | Additional plugins to add to the default configmap                                                                                                                                                    | `rabbitmq_shovel, rabbitmq_shovel_management, rabbitmq_federation, rabbitmq_federation_management,` |
 | `extraConfig`                                  | Additional configuration to add to default configmap                                                                                                                                                  | `{}`                                                         |
 | `advancedConfig`                               | Additional configuration in classic config format                                                                                                                                                   | `""`                                                           |
@@ -83,7 +83,7 @@ and their default values.
 | `image.repository`                             | RabbitMQ container image repository                                                                                                                                                                   | `rabbitmq`                                                 |
 | `image.tag`                                    | RabbitMQ container image tag                                                                                                                                                                          | `3.7.12-alpine`                                            |
 | `image.pullSecrets`                            | Specify docker-registry secret names as an array                                                                                                                                                      | `[]`                                                       |
-| `managementPassword`                           | Management user password. Should be changed from default                                                                                                                                              | `E9R3fjZm4ejFkVFE`                                         |
+| `managementPassword`                           | Management user password.                                                                                                                                                                             | _random 24 character long alphanumeric string_             |
 | `managementUsername`                           | Management user with minimal permissions used for health checks                                                                                                                                       | `management`                                               |
 | `nodeSelector`                                 | Node labels for pod assignment                                                                                                                                                                        | `{}`                                                       |
 | `persistentVolume.accessMode`                  | Persistent volume access modes                                                                                                                                                                        | `[ReadWriteOnce]`                                          |
@@ -128,7 +128,7 @@ and their default values.
 | `rabbitmqMemoryHighWatermark`                  | Memory high watermark                                                                                                                                                                                 | `256MB`                                                    |
 | `rabbitmqMemoryHighWatermarkType`              | Memory high watermark type. Either absolute or relative                                                                                                                                               | `absolute`                                                 |
 | `rabbitmqNodePort`                             | Node port                                                                                                                                                                                             | `5672`                                                     |
-| `rabbitmqPassword`                             | RabbitMQ application password                                                                                                                                                                         | _random 10 character long alphanumeric string_             |
+| `rabbitmqPassword`                             | RabbitMQ application password                                                                                                                                                                         | _random 24 character long alphanumeric string_             |
 | `rabbitmqSTOMPPlugin.config`                   | STOMP configuration                                                                                                                                                                                   | ``                                                         |
 | `rabbitmqSTOMPPlugin.enabled`                  | Enable STOMP plugin                                                                                                                                                                                   | `false`                                                    |
 | `rabbitmqUsername`                             | RabbitMQ application username                                                                                                                                                                         | `guest`                                                    |
@@ -174,12 +174,13 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 ```bash
 $ helm install --name my-release \
-  --set rabbitmqUsername=admin,rabbitmqPassword=secretpassword,rabbitmqErlangCookie=secretcookie \
+  --set rabbitmqUsername=admin,rabbitmqPassword=secretpassword,managementPassword=anothersecretpassword,rabbitmqErlangCookie=secretcookie \
     stable/rabbitmq-ha
 ```
 
 The above command sets the RabbitMQ admin username and password to `admin` and
-`secretpassword` respectively. Additionally the secure erlang cookie is set to
+`secretpassword` respectively. Additionally the management user password is set
+to `anothersecretpassword` and the secure erlang cookie is set to
 `secretcookie`.
 
 Alternatively, a YAML file that specifies the values for the parameters can be
@@ -243,6 +244,8 @@ the following keys:
 
 * `rabbitmq-user`
 * `rabbitmq-password`
+* `rabbitmq-management-user`
+* `rabbitmq-management-password`
 * `rabbitmq-erlang-cookie`
 * `definitions.json` (the name can be altered by setting the `definitionsSource`)
 
