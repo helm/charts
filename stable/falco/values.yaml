@@ -6,8 +6,13 @@ image:
   tag: 0.15.0
   pullPolicy: IfNotPresent
 
-runtime:
+docker:
+  enabled: true
   socket: /var/run/docker.sock
+
+cri:
+  enabled: true
+  socket: /run/containerd/containerd.sock
 
 resources:
   # Although resources needed are subjective on the actual workload we provide
