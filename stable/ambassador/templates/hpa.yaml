@@ -1,5 +1,4 @@
-{{- if not .Values.daemonSet }}
-{{- if .Values.autoscaling.enabled }}
+{{- if and .Values.autoscaling.enabled (not .Values.daemonSet) }}
 apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
 metadata:
@@ -26,5 +25,4 @@ spec:
       resource:
         name: memory
         targetAverageUtilization: {{ .Values.autoscaling.targetMemoryUtilizationPercentage }}
-{{- end }}
 {{- end }}
