@@ -1,6 +1,6 @@
 name: rocketchat
-version: 0.3.4
-appVersion: 0.74.2
+version: 1.0.0
+appVersion: 0.74.3
 description: Prepare to take off with the ultimate chat platform, experience the next
   level of team communications
 keywords:
@@ -22,4 +22,5 @@ maintainers:
 - name: geekgonecrazy
 - name: pierreozoux
 - name: verwilst
+- name: srueg
 engine: gotpl
