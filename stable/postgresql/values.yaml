@@ -69,7 +69,7 @@ securityContext:
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
 serviceAccount:
   enabled: false
-  # name: 
+  # name:
 
 replication:
   enabled: false
