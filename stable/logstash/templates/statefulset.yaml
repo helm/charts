@@ -46,6 +46,10 @@ spec:
       imagePullSecrets:
 {{ toYaml .Values.image.pullSecrets | indent 8 }}
       {{- end }}
+      initContainers:
+{{- if .Values.extraInitContainers }}
+{{ toYaml .Values.extraInitContainers | indent 8 }}
+{{- end }}
       containers:
 
         ## logstash
