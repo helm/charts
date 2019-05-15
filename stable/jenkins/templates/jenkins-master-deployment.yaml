@@ -206,20 +206,23 @@ spec:
             - containerPort: {{ $port.port }}
               name: {{ $port.name }}
 {{- end }}
-{{- if .Values.master.healthProbes }}
+{{- if .Values.master.healthProbes.enabled }}
           livenessProbe:
             httpGet:
               path: "{{ default "" .Values.master.jenkinsUriPrefix }}/login"
               port: http
-            initialDelaySeconds: {{ .Values.master.healthProbesLivenessTimeout }}
-            timeoutSeconds: 5
-            failureThreshold: {{ .Values.master.healthProbeLivenessFailureThreshold }}
+            initialDelaySeconds: {{ .Values.master.healthProbes.liveness.initialDelay }}
+            periodSeconds: {{ .Values.master.healthProbes.liveness.period }}
+            timeoutSeconds: {{ .Values.master.healthProbes.liveness.timeout }}
+            failureThreshold: {{ .Values.master.healthProbes.liveness.failureThreshold }}
           readinessProbe:
             httpGet:
               path: "{{ default "" .Values.master.jenkinsUriPrefix }}/login"
               port: http
-            initialDelaySeconds: {{ .Values.master.healthProbesReadinessTimeout }}
-            periodSeconds: {{ .Values.master.healthProbeReadinessPeriodSeconds }}
+            initialDelaySeconds: {{ .Values.master.healthProbes.readiness.initialDelay }}
+            periodSeconds: {{ .Values.master.healthProbes.readiness.period }}
+            timeoutSeconds: {{ .Values.master.healthProbes.readiness.timeout }}
+            failureThreshold: {{ .Values.master.healthProbes.readiness.failureThreshold }}
 {{- end }}
 
           resources:
