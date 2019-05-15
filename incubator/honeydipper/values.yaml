@@ -54,10 +54,14 @@ daemon:
 
   # env is a list of environment variables for the daemon container
   env:
-    REPO: https://github.com/honeydipper/honeydipper-config-essentials
+    - name: REPO
+      value: https://github.com/honeydipper/honeydipper-config-essentials
 
-  # volumes is a list of volumes to be mounted on the daemon container
-  volumes: {}
+  # extraVolumeMounts is a list of volumes to be mounted on the daemon container
+  extraVolumeMounts: []
+
+  # extraVolumes is a list of volumes to be mounted on the daemon container
+  extraVolumes: []
 
 # drivers containers the settings for the drivers
 drivers:
@@ -65,6 +69,11 @@ drivers:
   redis:
     # local means run a local redis side car container, only useful for testing
     local: true
+    image:
+      # when using local redis sidecar container specify the name of the image repository
+      repository: redis
+      # when using local redis sidecar container specify the tag of the image
+      tag: 5
   # webhook settings for the webhook driver
   webhook:
     # service specifies how the webhook driver service is exposed

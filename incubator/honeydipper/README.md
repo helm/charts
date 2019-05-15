@@ -35,8 +35,9 @@ The following options are supported . See [values.yaml](./values.yaml) for more 
 | daemon.nodeSelector | A map of node selectors for the pod, as defined in a pod sped | |
 | daemon.affinity | A map of affinity settings for the pod, as defined in a pod sped | |
 | daemon.tolerations | A list of toleration settings for the pod, as defined in a pod sped | |
-| daemon.volumes | A map of volumes for the pod, from volume name to its mount point and a `spec` defining the volume | |
-| daemon.env | A map of environment variables from name to its value, the value is either a string or a data structure used for `valueFrom` as defined in a pod spec | |
+| daemon.extraVolumes | A list of volumns to be added to the pod | |
+| daemon.extraVolumeMounts | A list of volumns to be mounted to main daemon container | |
+| daemon.env | A list of environment variables to be added to the main daemon container | |
 | drivers.webhook.service.type | The exposed service type for the webhook | `LoadBalancer` |
 | drivers.webhook.service.port | The exposed service port for the webhook, needs to match the driver configurations set in the configuration repo | 8080 |
 | drivers.webhook.service.nodePort | The exposed service node port for the webhook. If set to 0, Kubernetes will assign a random port. | 0 |
@@ -46,13 +47,15 @@ The following options are supported . See [values.yaml](./values.yaml) for more 
 | drivers.webhook.ingress.hosts | If using ingress controllers, specify a list of host names for the webhook | |
 | drivers.webhook.ingress.tls | If using ingress controllers, specify the secret that defines the key and certs | |
 | drivers.redis.local | Use redis sidecar container for eventbus, this is only useful for testing. In production, multiple replicas of daemon should share the redis server | true |
+| drivers.redis.image.repository | When using redis sidecar container for eventbus, this is used to specify the image repository | redis |
+| drivers.redis.image.tag | When using redis sidecar container for eventbus, this is used to specify the image tag | 5 |
 
 ### Specifying environment
 
 Using command line:
 
 ```helm
-helm --set daemon.env.REPO=git@github.com:example/example.git,daemon.env.BOOTSTRAP_PATH=/submodule,daemon.env.BRANCH=test_branch install --name test incubator/honeydipper
+helm -f values.yaml install --name test incubator/honeydipper
 ```
 
 In values file
@@ -60,13 +63,17 @@ In values file
 ```yaml
 daemon:
   env:
-    REPO: git@github.com:example/example.git
-    BOOTSTRAP_PATH: /submodule
-    BRANCH: test_branch
-    SECRET_VARIABLE:
-      secretRef:
-        name: my-secret
-        key: my-key
+    - name: REPO
+      value: git@github.com:example/example.git
+    - name: BOOTSTRAP_PATH
+      value: /submodule
+    - name: BRANCH
+      value: test_branch
+    - name: SECRET_VARIABLE
+      valueFrom:
+        secretRef:
+          name: my-secret
+          key: my-key
 ```
 
 ### Mounting volumes
@@ -75,13 +82,14 @@ Using values file
 
 ```yaml
 daemon:
-  volumes:
-    my-config:
+  extraVolumeMounts:
+    - name: my-config
       mountPath: /etc/myconfig/file
       subPath: file
-      spec:
-        configMap:
-          name: my-config
+  extraVolumes:
+    - name: my-config
+      configMap:
+        name: my-config
 ```
 
 ## Testing the Deployment

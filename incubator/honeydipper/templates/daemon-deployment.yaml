@@ -29,7 +29,7 @@ spec:
       containers:
         {{- if .Values.drivers.redis.local }}
         - name: {{ .Chart.Name }}-redis
-          image: "redis:5"
+          image: "{{ .Values.drivers.redis.image.repository }}:{{ .Values.drivers.redis.image.tag }}"
         {{- end }}
         - name: {{ .Chart.Name }}
           image: "{{ .Values.daemon.image.repository }}:{{ .Values.daemon.image.tag }}"
@@ -40,26 +40,15 @@ spec:
           {{- end }}
           {{- with .Values.daemon.env }}
           env:
-            {{- range $envName, $envValue := . }}
-            - name: {{ $envName }}
-              {{- if kindIs "string" $envValue }}
-              value: {{ $envValue }}
-              {{- else }}
-              valueFrom:
-                {{- toYaml $envValue | nindent 16 }}
-              {{- end }}
-            {{- end }}
+            {{- toYaml . | nindent 12 }}
           {{- end }}
           {{- with .Values.daemon.resources }}
           resources:
             {{- toYaml .Values.daemon.resources | nindent 12 }}
           {{- end }}
-          {{- with .Values.daemon.volumes }}
+          {{- with .Values.daemon.extraVolumeMounts }}
           volumeMounts:
-            {{- range $vName, $vMount := . }}
-            - name: {{ $vName }}
-              {{- omit $vMount "spec" | toYaml | nindent 14 }}
-            {{- end }}
+            {{- toYaml . | nindent 12 }}
           {{- end }}
           readinessProbe:
             tcpSocket:
@@ -83,10 +72,7 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.daemon.volumes }}
+      {{- with .Values.daemon.extraVolumes }}
       volumes:
-        {{- range $vName, $vMount := . }}
-        - name: {{ $vName }}
-          {{- index $vMount "spec" | toYaml | nindent 10 }}
-        {{- end }}
+        {{- toYaml . | nindent 8 }}
       {{- end }}
