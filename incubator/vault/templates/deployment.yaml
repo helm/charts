@@ -4,7 +4,7 @@ metadata:
   name: {{ template "vault.fullname" . }}
   labels:
     app: {{ template "vault.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    chart: {{ template "vault.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 {{- if .Values.labels }}
@@ -23,6 +23,9 @@ spec:
       labels:
         app: {{ template "vault.name" . }}
         release: {{ .Release.Name }}
+{{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | indent 8 }}
+{{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         {{- range $key, $value := .Values.podAnnotations }}
@@ -31,7 +34,7 @@ spec:
     spec:
       {{- if .Values.vault.extraInitContainers }}
       initContainers:
-{{ tpl .Values.vault.extraInitContainers . | indent 6 }}
+{{ tpl (toYaml .Values.vault.extraInitContainers) . | indent 6 }}
       {{- end }}
       containers:
       - name: {{ .Chart.Name }}
@@ -44,7 +47,7 @@ spec:
         {{- end }}
         {{- if .Values.lifecycle }}
         lifecycle:
-{{ tpl .Values.lifecycle . | indent 10 }}
+{{ tpl (toYaml .Values.lifecycle) . | indent 10 }}
         {{- end }}
         ports:
         - containerPort: {{ .Values.service.port }}
@@ -98,7 +101,7 @@ spec:
 {{ toYaml .Values.vault.extraVolumeMounts | indent 8 }}
         {{- end }}
 {{- if .Values.vault.extraContainers }}
-{{ toYaml .Values.vault.extraContainers | indent 6}}
+{{ tpl (toYaml .Values.vault.extraContainers) . | indent 6}}
 {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
@@ -126,11 +129,18 @@ spec:
               GOSSIP_KEY="-config-file /etc/consul/encrypt.json"
             fi
             {{- end }}
+            {{- if .Values.vault.config.storage.consul.token }}
+            echo "{\"acl\":{\"tokens\":{\"agent\":\"{{ .Values.vault.config.storage.consul.token }}\"}}}" > /etc/consul/agent-token.json
+            AGENT_TOKEN="-config-file /etc/consul/agent-token.json"
+            {{- end }}
 
             exec /bin/consul agent \
               $GOSSIP_KEY \
+              $AGENT_TOKEN \
               -join={{- .Values.consulAgent.join }} \
               -data-dir=/etc/consul
+        resources:
+{{ toYaml .Values.consulAgent.resources | indent 10 }}
       {{- end }}
       {{- if .Values.vaultExporter.enabled }}
       - name: {{ .Chart.Name }}-exporter
@@ -157,7 +167,7 @@ spec:
       {{- end }}
       {{- if .Values.affinity }}
       affinity:
-{{ tpl .Values.affinity . | indent 8 }}
+{{ tpl (toYaml .Values.affinity) . | indent 8 }}
       {{- end }}
       {{- if .Values.nodeSelector }}
       nodeSelector:

@@ -3,7 +3,6 @@ approvers:
   - prydonius
   - sameersbn
   - viglesiasce
-  - foxish
   - unguiculus
   - scottrigby
   - mattfarina
@@ -13,6 +12,7 @@ approvers:
   - jlegrone
   - maorfr
 emeritus:
+  - foxish
   - linki
   - mgoodness
   - seanknox

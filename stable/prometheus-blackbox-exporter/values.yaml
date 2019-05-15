@@ -9,6 +9,7 @@ nodeSelector: {}
 tolerations: []
 affinity: {}
 
+secretConfig: false
 config:
   modules:
     http_2xx:

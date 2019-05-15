@@ -31,7 +31,7 @@ spec:
             - -n
             - {{ .Release.Namespace }}
             - -l
-            - release={{ .Release.Name }}
+            - app.kubernetes.io/instance={{ .Release.Name }}
             - --container
             - {{ template "jenkins.fullname" . }}
             - --path
@@ -57,7 +57,7 @@ spec:
                 - key: "app.kubernetes.io/name"
                   operator: In
                   values:
-                  - '{{ template "jenkins.name" .}}'
+                  - "{{ template "jenkins.name" . }}"
                 - key: "app.kubernetes.io/instance"
                   operator: In
                   values:
