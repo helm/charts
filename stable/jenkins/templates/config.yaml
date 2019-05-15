@@ -221,15 +221,20 @@ data:
     cp /var/jenkins_config/config.xml /var/jenkins_home;
     cp /var/jenkins_config/jenkins.CLI.xml /var/jenkins_home;
     cp /var/jenkins_config/jenkins.model.JenkinsLocationConfiguration.xml /var/jenkins_home;
-  {{- else }}
+{{- if .Values.master.additionalConfig }}
+{{- range $key, $val := .Values.master.additionalConfig }}
+    cp /var/jenkins_config/{{- $key }} /var/jenkins_home;
+{{- end }}
+{{- end }}
+{{- else }}
     yes n | cp -i /var/jenkins_config/config.xml /var/jenkins_home;
     yes n | cp -i /var/jenkins_config/jenkins.CLI.xml /var/jenkins_home;
     yes n | cp -i /var/jenkins_config/jenkins.model.JenkinsLocationConfiguration.xml /var/jenkins_home;
-  {{- if .Values.master.additionalConfig }}
+{{- if .Values.master.additionalConfig }}
 {{- range $key, $val := .Values.master.additionalConfig }}
-    cp /var/jenkins_config/{{- $key }} /var/jenkins_home;
-  {{- end }}
-  {{- end }}
+    yes n | cp -i /var/jenkins_config/{{- $key }} /var/jenkins_home;
+{{- end }}
+{{- end }}
 {{- end }}
 {{- if .Values.master.overwritePlugins }}
     # remove all plugins from shared volume
