@@ -83,11 +83,11 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `postgresqlConfiguration`                     | Runtime Config Parameters                                                                                              | `nil`                                                       |
 | `postgresqlExtendedConf`                      | Extended Runtime Config Parameters (appended to main or default configuration)                                         | `nil`                                                       |
 | `pgHbaConfiguration`                          | Content of pg\_hba.conf                                                                                                | `nil (do not create pg_hba.conf)`                           |
-| `configurationConfigMap`                      | ConfigMap with the PostgreSQL configuration files (Note: Overrides `postgresqlConfiguration` and `pgHbaConfiguration`) | `nil`                                                       |
-| `extendedConfConfigMap`                       | ConfigMap with the extended PostgreSQL configuration files                                                             | `nil`                                                       |
-| `initdbScripts`                               | Dictionary of initdb scripts                                                                                                 | `nil`                                                       |
-| `initdbScriptsConfigMap`                      | ConfigMap with the initdb scripts (Note: Overrides `initdbScripts`)                                                    | `nil`                                                       |
-| `initdbScriptsSecret`                         | Secret with initdb scripts that contain sensitive information (Note: can be used with `initdbScriptsConfigMap` or `initdbScripts`) | `nil`                                           |
+| `configurationConfigMap`                      | ConfigMap with the PostgreSQL configuration files (Note: Overrides `postgresqlConfiguration` and `pgHbaConfiguration`). The value is evaluated as a template. | `nil`                                                       |
+| `extendedConfConfigMap`                       | ConfigMap with the extended PostgreSQL configuration files. The value is evaluated as a template.                      | `nil`                                                       |
+| `initdbScripts`                               | Dictionary of initdb scripts                                                                                           | `nil`                                                       |
+| `initdbScriptsConfigMap`                      | ConfigMap with the initdb scripts (Note: Overrides `initdbScripts`). The value is evaluated as a template.             | `nil`                                                       |
+| `initdbScriptsSecret`                         | Secret with initdb scripts that contain sensitive information (Note: can be used with `initdbScriptsConfigMap` or `initdbScripts`). The value is evaluated as a template. | `nil`                                           |
 | `service.type`                                | Kubernetes Service type                                                                                                | `ClusterIP`                                                 |
 | `service.port`                                | PostgreSQL port                                                                                                        | `5432`                                                      |
 | `service.nodePort`                            | Kubernetes Service nodePort                                                                                            | `nil`                                                       |
@@ -297,6 +297,16 @@ helm install chart1 --set global.postgresql.postgresqlPassword=testtest --set gl
 This way, the credentials will be available in all of the subcharts.
 
 ## Upgrade
+
+### 4.0.0
+
+This chart will use by default the Bitnami PostgreSQL container starting from version `10.7.0-r68`. This version moves the initialization logic from node.js to bash. This new version of the chart requires setting the `POSTGRES_PASSWORD` in the slaves as well, in order to properly configure the `pg_hba.conf` file. Users from previous versions of the chart are advised to upgrade immediately.
+
+IMPORTANT: If you do not want to upgrade the chart version then make sure you use the `10.7.0-r68` version of the container. Otherwise, you will get this error
+
+```
+The POSTGRESQL_PASSWORD environment variable is empty or not set. Set the environment variable ALLOW_EMPTY_PASSWORD=yes to allow the container to be started with blank passwords. This is recommended only for development
+```
 
 ### 3.0.0
 

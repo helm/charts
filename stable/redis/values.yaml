@@ -109,6 +109,10 @@ sentinel:
     annotations: {}
     loadBalancerIP:
 
+## Specifies the Kubernetes Cluster's Domain Name.
+##
+clusterDomain: cluster.local
+
 networkPolicy:
   ## Specifies whether a NetworkPolicy should be created
   ##
@@ -498,7 +502,10 @@ volumePermissions:
 ## ref: https://redis.io/topics/config
 ##
 configmap: |-
-  # maxmemory-policy volatile-lru
+  # Enable AOF https://redis.io/topics/persistence#append-only-file
+  appendonly yes
+  # Disable RDB persistence, AOF persistence already enabled.
+  save ""
 
 ## Sysctl InitContainer
 ## used to perform sysctl operation to modify Kernel settings (needed sometimes to avoid warnings)

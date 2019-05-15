@@ -1,4 +1,4 @@
-{{- if .Values.runMigrations }}
+{{- if (and (.Values.runMigrations) (not (eq .Values.env.database "off"))) }}
 # Why is this Job duplicated and not using only helm hooks?
 # See: https://github.com/helm/charts/pull/7362
 apiVersion: batch/v1
@@ -32,7 +32,7 @@ spec:
       {{- if .Values.postgresql.enabled }}
       initContainers:
       - name: wait-for-postgres
-        image: busybox
+        image: "{{ .Values.waitImage.repository }}:{{ .Values.waitImage.tag }}"
         env:
         - name: KONG_PG_HOST
           value: {{ template "kong.postgresql.fullname" . }}

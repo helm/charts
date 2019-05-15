@@ -151,6 +151,23 @@ configurator:
     loadBalancerSourceRanges: []
     # nodePort: 30000
 
+## Add support for Prometheus
+# settings has to be enabled in configuration.yaml
+# https://www.home-assistant.io/components/prometheus/
+monitoring:
+  enabled: false
+  serviceMonitor:
+    # When set true and if Prometheus Operator is installed then use a ServiceMonitor to configure scraping
+    enabled: true
+    # Set the namespace the ServiceMonitor should be deployed
+    # namespace: monitoring
+    # Set how frequently Prometheus should scrape
+    # interval: 30s
+    # Set path to beats-exporter telemtery-path
+    # telemetryPath: /metrics
+    # Set labels for the ServiceMonitor, use this to define your scrape label for Prometheus Operator
+    # labels:
+
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little

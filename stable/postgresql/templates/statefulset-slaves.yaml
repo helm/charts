@@ -86,12 +86,8 @@ spec:
           runAsUser: {{ .Values.securityContext.runAsUser }}
         {{- end }}
         env:
-        {{- if .Values.image.debug}}
-        - name: BASH_DEBUG
-          value: "1"
-        - name: NAMI_DEBUG
-          value: "1"
-        {{- end }}
+        - name: BITNAMI_DEBUG
+          value: {{ ternary "true" "false" .Values.image.debug | quote }}
         {{- if .Values.persistence.mountPath }}
         - name: PGDATA
           value: {{ .Values.postgresqlDataDir | quote }}
@@ -116,6 +112,16 @@ spec:
           value: {{ template "postgresql.fullname" . }}
         - name: POSTGRES_MASTER_PORT_NUMBER
           value: {{ include "postgresql.port" . | quote }}
+        {{- if .Values.usePasswordFile }}
+        - name: POSTGRES_PASSWORD_FILE
+          value: "/opt/bitnami/postgresql/secrets/postgresql-password"
+        {{- else }}
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "postgresql.secretName" . }}
+              key: postgresql-password
+        {{- end }}
         ports:
         - name: postgresql
           containerPort: {{ template "postgresql.port" . }}
@@ -156,8 +162,8 @@ spec:
         volumeMounts:
         {{- if .Values.usePasswordFile }}
         - name: postgresql-password
-          mountPath: /opt/bitnami/postgresql/secrets
-        {{ end }}
+          mountPath: /opt/bitnami/postgresql/secrets/
+        {{- end }}
         {{- if .Values.persistence.enabled }}
         - name: data
           mountPath: {{ .Values.persistence.mountPath }}
@@ -176,7 +182,7 @@ spec:
       - name: postgresql-password
         secret:
           secretName: {{ template "postgresql.secretName" . }}
-      {{ end }}
+      {{- end }}
       {{- if or (.Files.Glob "files/postgresql.conf") (.Files.Glob "files/pg_hba.conf") .Values.postgresqlConfiguration .Values.pgHbaConfiguration .Values.configurationConfigMap}}
       - name: postgresql-config
         configMap:

@@ -173,6 +173,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | `web.readinessProbe.httpGet.path` | Path to access on the HTTP server when performing the healthcheck | `/api/v1/info` |
 | `web.readinessProbe.httpGet.port` | Name or number of the port to access on the container | `atc` |
 | `web.replicas` | Number of Concourse Web replicas | `1` |
+| `web.strategy` | Strategy for updates to deployment. | `{}` |
 | `web.resources.requests.cpu` | Minimum amount of cpu resources requested | `100m` |
 | `web.resources.requests.memory` | Minimum amount of memory resources requested | `128Mi` |
 | `web.service.annotations` | Concourse Web Service annotations | `nil` |
