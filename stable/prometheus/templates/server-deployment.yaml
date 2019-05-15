@@ -27,10 +27,6 @@ spec:
       labels:
         {{- include "prometheus.server.labels" . | nindent 8 }}
     spec:
-{{- if .Values.server.affinity }}
-      affinity:
-{{ toYaml .Values.server.affinity | indent 8 }}
-{{- end }}
 {{- if .Values.server.priorityClassName }}
       priorityClassName: "{{ .Values.server.priorityClassName }}"
 {{- end }}
@@ -183,7 +179,12 @@ spec:
           persistentVolumeClaim:
             claimName: {{ if .Values.server.persistentVolume.existingClaim }}{{ .Values.server.persistentVolume.existingClaim }}{{- else }}{{ template "prometheus.server.fullname" . }}{{- end }}
         {{- else }}
-          emptyDir: {}
+          emptyDir:
+          {{- if .Values.server.emptyDir.sizeLimit }}
+            sizeLimit: {{ .Values.server.emptyDir.sizeLimit }}
+          {{- else }}
+            {}
+          {{- end -}}
         {{- end -}}
 {{- if .Values.server.extraVolumes }}
 {{ toYaml .Values.server.extraVolumes | indent 8}}

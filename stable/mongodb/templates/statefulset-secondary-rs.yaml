@@ -194,7 +194,7 @@ spec:
               path: /metrics
               port: metrics
             initialDelaySeconds: {{ .Values.metrics.livenessProbe.initialDelaySeconds }}
-            periodSeconds: {{ .Values.metrics.readinessProbe.periodSeconds }}
+            periodSeconds: {{ .Values.metrics.livenessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.metrics.livenessProbe.timeoutSeconds }}
             failureThreshold: {{ .Values.metrics.livenessProbe.failureThreshold }}
             successThreshold: {{ .Values.metrics.livenessProbe.successThreshold }}

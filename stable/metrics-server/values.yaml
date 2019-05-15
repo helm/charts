@@ -28,11 +28,13 @@ hostNetwork:
 
 image:
   repository: gcr.io/google_containers/metrics-server-amd64
-  tag: v0.3.1
+  tag: v0.3.2
   pullPolicy: IfNotPresent
 
-args:
-  - --logtostderr
+imagePullSecrets: []
+# - registrySecretName
+
+args: []
 # enable this if you have self-signed certificates, see: https://github.com/kubernetes-incubator/metrics-server
 #  - --kubelet-insecure-tls
 
@@ -60,3 +62,37 @@ extraVolumes: []
 #  - name: secrets
 #    secret:
 #      secretName: kube-apiserver
+
+livenessProbe:
+  httpGet:
+    path: /healthz
+    port: https
+    scheme: HTTPS
+  initialDelaySeconds: 20
+
+readinessProbe:
+  httpGet:
+    path: /healthz
+    port: https
+    scheme: HTTPS
+  initialDelaySeconds: 20
+
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop: ["all"]
+  readOnlyRootFilesystem: true
+  runAsGroup: 10001
+  runAsNonRoot: true
+  runAsUser: 10001
+
+service:
+  annotations: {}
+  port: 443
+  type: ClusterIP
+
+podDisruptionBudget:
+  # https://kubernetes.io/docs/tasks/run-application/configure-pdb/
+  enabled: false
+  minAvailable:
+  maxUnavailable:

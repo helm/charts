@@ -16,6 +16,7 @@ spec:
   replicas: {{ default 3 .Values.replicas }}
   template:
     metadata:
+{{- if or .Values.podAnnotations (and .Values.prometheus.jmx.enabled (not .Values.prometheus.operator.enabled)) }}
       annotations:
 {{- if and .Values.prometheus.jmx.enabled  (not .Values.prometheus.operator.enabled) }}
         prometheus.io/scrape: "true"
@@ -23,6 +24,7 @@ spec:
 {{- end }}
 {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
+{{- end }}
 {{- end }}
       labels:
         app: {{ include "kafka.name" . }}
@@ -131,10 +133,10 @@ spec:
         - name: JMX_PORT
           value: "{{ .Values.jmx.port }}"
         {{- end }}
-        - name: POD_NAME
+        - name: POD_IP
           valueFrom:
             fieldRef:
-              fieldPath: metadata.name
+              fieldPath: status.podIP
         - name: POD_NAME
           valueFrom:
             fieldRef:
@@ -186,6 +188,9 @@ spec:
         - |
           unset KAFKA_PORT && \
           export KAFKA_BROKER_ID=${POD_NAME##*-} && \
+          {{- if eq .Values.external.type "LoadBalancer" }}
+          export LOAD_BALANCER_IP=$(echo '{{ .Values.external.loadBalancerIP }}' | tr -d '[]' | cut -d ' ' -f "$(($KAFKA_BROKER_ID + 1))") && \
+          {{- end }}
           export KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://${POD_NAME}.{{ include "kafka.fullname" . }}-headless.${POD_NAMESPACE}:9092{{ if kindIs "string" $advertisedListenersOverride }}{{ printf ",%s" $advertisedListenersOverride }}{{ end }} && \
           exec /etc/confluent/docker/run
         volumeMounts:
@@ -220,6 +225,10 @@ spec:
           {{- else }}
           name: {{ include "kafka.fullname" . }}-metrics
           {{- end }}
+      {{- end }}
+      {{- if .Values.securityContext }}
+      securityContext:
+{{ toYaml .Values.securityContext | indent 8 }}
       {{- end }}
       {{- range .Values.secrets }}
       - name: {{ include "kafka.fullname" $ }}-{{ .name }}
