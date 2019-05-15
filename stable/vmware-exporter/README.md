@@ -32,8 +32,8 @@ The command removes all the Kubernetes components associated with the chart and 
 | Parameter                                 | Description                                   | Default                                                 |
 |-------------------------------------------|-----------------------------------------------|---------------------------------------------------------|
 | `replicas`                                | Number of nodes                               | `1`                                                     |
-| `livenessProbe`                           | Liveness Probe settings                       | `{ "httpGet": { "path": "/metrics", "port": 9272 } "initialDelaySeconds": 60, "timeoutSeconds": 30, "failureThreshold": 10 , "periodSeconds": 60}` |
-| `readinessProbe`                          | Rediness Probe settings                       | `{ "httpGet": { "path": "/metrics", "port": 9272 } "initialDelaySeconds": 60, "timeoutSeconds": 30, "failureThreshold": 10 , "periodSeconds": 60}` |
+| `livenessProbe`                           | Liveness Probe settings                       | `{ "httpGet": { "path": "/healthz", "port": 9272 } "initialDelaySeconds": 30, "failureThreshold": 10}` |
+| `readinessProbe`                          | Rediness Probe settings                       | `{ "httpGet": { "path": "/healthz", "port": 9272 }` |
 | `image.repository`                        | Image repository                              | `pryorda/vmware_exporter`                               |
 | `image.tag`                               | Image tag. (`Must be >= 0.7.4`)               | `v0.7.4`                                                |
 | `image.pullPolicy`                        | Image pull policy                             | `IfNotPresent`                                          |
