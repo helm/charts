@@ -1,3 +1,4 @@
+apiVersion: v1
 name: minecraft
 version: 1.0.1
 appVersion: 1.13.1
