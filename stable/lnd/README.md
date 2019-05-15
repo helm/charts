@@ -61,8 +61,8 @@ their default values.
 
 Parameter                  | Description                        | Default
 -----------------------    | ---------------------------------- | ----------------------------------------------------------
-`image.repository`         | Image source repository name       | `btcpayserver/lnd`
-`image.tag`                | `lnd` release tag.                 | `v0.6.0`
+`image.repository`         | Image source repository name       | `thesisrobot/lnd`
+`image.tag`                | `lnd` release tag.                 | `v0.6.1`
 `image.pullPolicy`         | Image pull policy                  | `IfNotPresent`
 `internalServices.rpcPort` | RPC Port                           | `10009`
 `externalServices.p2pPort` | P2P Port                           | `9735`

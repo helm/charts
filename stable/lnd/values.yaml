@@ -3,8 +3,8 @@
 # Declare variables to be passed into your templates.
 
 image:
-  repository: btcpayserver/lnd
-  tag: v0.6-beta
+  repository: thesisrobot/lnd
+  tag: v0.6.1-beta
   pullPolicy: IfNotPresent
 
 # Ports that are exposed to other pods in your cluster
