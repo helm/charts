@@ -86,6 +86,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.serviceAnnotations`       | Service annotations                  | `{}`                                      |
 | `master.serviceType`              | k8s service type                     | `LoadBalancer`                            |
 | `master.servicePort`              | k8s service port                     | `8080`                                    |
+| `master.targetPort`               | k8s target port                      | `8080`                                    |
 | `master.nodePort`                 | k8s node port                        | Not set                                   |
 | `master.healthProbes`             | Enable k8s liveness and readiness probes    | `true`                             |
 | `master.healthProbesLivenessTimeout`  | Set the timeout for the liveness probe  | `120`                              |

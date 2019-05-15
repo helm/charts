@@ -135,7 +135,7 @@ spec:
         {{- if .Values.configurationFiles }}
         {{- range $key, $val := .Values.configurationFiles }}
         - name: configurations
-          mountPath: /etc/mysql/conf.d/{{ $key }}
+          mountPath: {{ $.Values.configurationFilesPath }}{{ $key }}
           subPath: {{ $key }}
         {{- end -}}
         {{- end }}
@@ -155,7 +155,10 @@ spec:
         image: "{{ .Values.metrics.image }}:{{ .Values.metrics.imageTag }}"
         imagePullPolicy: {{ .Values.metrics.imagePullPolicy | quote }}
         {{- if .Values.mysqlAllowEmptyPassword }}
-        command: [ 'sh', '-c', 'DATA_SOURCE_NAME="root@(localhost:3306)/" /bin/mysqld_exporter' ]
+        command: 
+        - 'sh'
+        - '-c'
+        - 'DATA_SOURCE_NAME="root@(localhost:3306)/" /bin/mysqld_exporter'
         {{- else }}
         env:
         - name: MYSQL_ROOT_PASSWORD
@@ -163,7 +166,13 @@ spec:
             secretKeyRef:
               name: {{ template "mysql.secretName" . }}
               key: mysql-root-password
-        command: [ 'sh', '-c', 'DATA_SOURCE_NAME="root:$MYSQL_ROOT_PASSWORD@(localhost:3306)/" /bin/mysqld_exporter' ]
+        command:
+        - 'sh'
+        - '-c'
+        - 'DATA_SOURCE_NAME="root:$MYSQL_ROOT_PASSWORD@(localhost:3306)/" /bin/mysqld_exporter'
+        {{- end }}
+        {{- range $f := .Values.metrics.flags }}
+        - {{ $f | quote }}
         {{- end }}
         ports:
         - name: metrics
