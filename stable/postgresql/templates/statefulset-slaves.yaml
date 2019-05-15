@@ -68,12 +68,10 @@ spec:
           - -c
           - |
             set -e
-            for ref in $(find /bitnami -mindepth 1 -maxdepth 1 -not -name ".snapshot"); do
-              chown {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }} $ref
-            done
-            for ref in $(find /bitnami -mindepth 2 -maxdepth 2 -not -name ".snapshot"); do
-              chown -R {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }} $ref
-            done
+            find /bitnami -mindepth 1 -maxdepth 1 -not -name ".snapshot" \
+              -exec chown {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }} {} \;
+            find /bitnami -mindepth 2 -maxdepth 2 -not -name ".snapshot" \
+              -exec chown -R {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }} {} \;
             if [ -d {{ .Values.persistence.mountPath }}/data ]; then
               chmod  0700 {{ .Values.persistence.mountPath }}/data;
             fi
