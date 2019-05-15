@@ -1078,6 +1078,11 @@ concourse:
       ##
       workerPrivateKey:
 
+    ## API endpoint of an externally managed Garden server to use instead of
+    ## running the embedded Garden server.
+    ##
+    externalGardenUrl:
+
     garden:
       ## Path to the 'gdn' executable (or leave as 'gdn' to find it in $PATH)
       ##
