@@ -96,6 +96,29 @@ The following tables lists the configurable parameters of the Home Assistant cha
 | `configurator.service.externalIPs`      | External IPs for the configurator UI | `[]` |
 | `configurator.service.loadBalancerIP`   | Loadbalancer IP for the configurator UI | `` |
 | `configurator.service.loadBalancerSourceRanges`   | Loadbalancer client IP restriction range for the configurator UI | `[]` |
+| `vscode.enabled`                  | Enable the optional [VS Code Server Sidecar](https://github.com/cdr/code-server) | `false` |
+| `vscode.image.repository`         | Image repository | `codercom/code-server` |
+| `vscode.image.tag`                | Image tag | `1.939`|
+| `vscode.image.pullPolicy`         | Image pull policy | `IfNotPresent` |
+| `vscode.hassConfig`               | Base path of the home assistant configuration files | `/config` |
+| `vscode.vscodePath`               | Base path of the VS Code configuration files | `/config/.vscode` |
+| `vscode.password`                 | If this is set, will require a password to access the VS Code Server UI | `` |
+| `vscode.extraEnv`                 | Extra ENV vars to pass to the configuration UI | `{}` |
+| `vscode.ingress.enabled`          | Enables Ingress for the VS Code UI | `false` |
+| `vscode.ingress.annotations`      | Ingress annotations for the VS Code UI | `{}` |
+| `vscode.ingress.hosts`            | Ingress accepted hostnames for the VS Code UI | `chart-example.local` |
+| `vscode.ingress.tls`              | Ingress TLS configuration for the VS Code UI | `[]` |
+| `vscode.resources`                | CPU/Memory resource requests/limits for the VS Code UI | `{}` |
+| `vscode.securityContext`          | Security context to be added to hass-vscode pods for the VS Code UI | `{}` |
+| `vscode.service.type`             | Kubernetes service type for the VS Code UI | `ClusterIP` |
+| `vscode.service.port`             | Kubernetes port where the vscode UI is exposed| `80` |
+| `vscode.service.nodePort`         | nodePort to listen on for the VS Code UI | `` |
+| `vscode.service.annotations`      | Service annotations for the VS Code UI | `{}` |
+| `vscode.service.labels`           | Service labels to use for the VS Code UI | `{}` |
+| `vscode.service.clusterIP`        | Cluster IP for the VS Code UI | `` |
+| `vscode.service.externalIPs`      | External IPs for the VS Code UI | `[]` |
+| `vscode.service.loadBalancerIP`   | Loadbalancer IP for the VS Code UI | `` |
+| `vscode.service.loadBalancerSourceRanges`   | Loadbalancer client IP restriction range for the VS Code UI | `[]` |
 | `resources`                | CPU/Memory resource requests/limits or the home-assistant GUI | `{}` |
 | `nodeSelector`             | Node labels for pod assignment or the home-assistant GUI | `{}` |
 | `tolerations`              | Toleration labels for pod assignment or the home-assistant GUI | `[]` |
@@ -117,15 +140,21 @@ helm install --name my-release -f values.yaml stable/home-assistant
 
 Read through the [values.yaml](values.yaml) file. It has several commented out suggested values.
 
-## Regarding configuring home assistant
+## Configuring home assistant
 
-Much of the home assistant configuration occurs inside the various files persisted to the `/config` directory.  This will require external access to the persistent storage location where the home assistant configuration data is stored.
+Much of the home assistant configuration occurs inside the various files persisted to the `/config` directory.  This will require external access to the persistent storage location where the home assistant configuration data is stored.  Because this may be a limitation, there are two options built-in to this chart:
 
-Because this may be a limitation, the [Home Assistant Configurator UI](https://github.com/danielperna84/hass-configurator) is added to the chart as an option to provide a webUI for editing the various configuration files.
+### Configurator UI
+
+[Home Assistant Configurator UI](https://github.com/danielperna84/hass-configurator) is added as an optional sidecar container to Home Assistant with access to the home assistant configuration for easy in-browser editing and manipulation of Home Assistant.
+
+### VS Code Server
+
+[VS Code Server](https://github.com/cdr/code-server) is added as an optional sidecar container to Home Assistant with access to the home assistant configuration for easy in-browser editing and manipulation of Home Assistant.  If using this, it is possible to manually install the [Home Assistant Config Helper Extension](https://github.com/keesschollaart81/vscode-home-assistant) in order to have a deeper integration with Home Assistant within VS Code while editing the configuration files.
 
 ## Git sync secret
 
-In order to sync the home assistent from a git repo, you have to store a ssh key as a kubernetes git secret
+In order to sync the home assistant from a git repo, you have to store a ssh key as a kubernetes git secret
 ```console
 kubectl create secret generic git-creds --from-file=id_rsa=git/k8s_id_rsa --from-file=known_hosts=git/known_hosts --from-file=id_rsa.pub=git/k8s_id_rsa.pub
 ```
