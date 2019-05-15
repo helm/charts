@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "kube-state-metrics.fullname" . }}
@@ -8,6 +8,9 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "kube-state-metrics.name" . }}
   replicas: {{ .Values.replicas }}
   template:
     metadata:
