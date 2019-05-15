@@ -40,11 +40,7 @@ spec:
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         env:
         - name: ALLOW_EMPTY_PASSWORD
-        {{- if .Values.allowEmptyPassword }}
-          value: "yes"
-        {{- else }}
-          value: "no"
-        {{- end }}
+          value: {{ ternary "yes" "no" .Values.allowEmptyPassword | quote }}
         - name: MARIADB_HOST
         {{- if .Values.mariadb.enabled }}
           value: {{ template "mariadb.fullname" . }}
@@ -93,11 +89,11 @@ spec:
         - name: WORDPRESS_LAST_NAME
           value: {{ .Values.wordpressLastName | quote }}
         - name: WORDPRESS_HTACCESS_OVERRIDE_NONE
-          value: {{ .Values.allowOverrideNone | quote }}
+          value: {{ ternary "yes" "no" .Values.allowOverrideNone | quote }}
         - name: WORDPRESS_BLOG_NAME
           value: {{ .Values.wordpressBlogName | quote }}
         - name: WORDPRESS_SKIP_INSTALL
-          value: {{ .Values.wordpressSkipInstall | quote }}
+          value: {{ ternary "yes" "no" .Values.wordpressSkipInstall | quote }}
         - name: WORDPRESS_TABLE_PREFIX
           value: {{ .Values.wordpressTablePrefix | quote }}
         {{- if .Values.smtpHost }}
@@ -135,12 +131,10 @@ spec:
         livenessProbe:
           httpGet:
             path: /wp-login.php
-          {{- if not .Values.healthcheckHttps }}
-            port: http
-          {{- else }}
-            port: https
+            port: {{ ternary "https" "http" .Values.healthcheckHttps }}
+            {{- if .Values.healthcheckHttps }}
             scheme: HTTPS
-          {{- end }}
+            {{- end }}
           {{- if .Values.livenessProbeHeaders }}
             httpHeaders:
 {{ toYaml .Values.livenessProbeHeaders | indent 14 }}
@@ -149,12 +143,10 @@ spec:
         readinessProbe:
           httpGet:
             path: /wp-login.php
-          {{- if not .Values.healthcheckHttps }}
-            port: http
-          {{- else }}
-            port: https
+            port: {{ ternary "https" "http" .Values.healthcheckHttps }}
+            {{- if .Values.healthcheckHttps }}
             scheme: HTTPS
-          {{- end }}
+            {{- end }}
           {{- if .Values.readinessProbeHeaders }}
             httpHeaders:
 {{ toYaml .Values.readinessProbeHeaders | indent 14 }}
