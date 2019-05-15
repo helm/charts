@@ -11,6 +11,7 @@ metadata:
     {{- end }}
 spec:
   rules:
+  {{- if .Values.nexusProxy.env.nexusHttpHost }}
     - host: {{ .Values.nexusProxy.env.nexusHttpHost }}
       http:
         paths:
@@ -18,6 +19,8 @@ spec:
               serviceName: {{ template "nexus.fullname" . }}
               servicePort: {{ .Values.nexusProxy.port }}
             path: {{ .Values.ingress.path }}
+  {{- end }}
+  {{- if .Values.nexusProxy.env.nexusDockerHost }}
     - host: {{ .Values.nexusProxy.env.nexusDockerHost }}
       http:
         paths:
@@ -25,11 +28,16 @@ spec:
               serviceName: {{ template "nexus.fullname" . }}
               servicePort: {{ .Values.nexusProxy.port }}
             path: {{ .Values.ingress.path }}
+  {{- end }}
 {{- if .Values.ingress.tls.enabled }}
   tls:
     - hosts:
+      {{- if .Values.nexusProxy.env.nexusHttpHost }}
         - {{ .Values.nexusProxy.env.nexusHttpHost }}
+      {{- end }}
+      {{- if .Values.nexusProxy.env.nexusDockerHost }}
         - {{ .Values.nexusProxy.env.nexusDockerHost }}
+      {{- end }}
       {{- if .Values.ingress.tls.secretName }}
       secretName: {{ .Values.ingress.tls.secretName | quote }}
       {{- end }}

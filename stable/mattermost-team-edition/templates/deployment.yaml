@@ -79,7 +79,7 @@ spec:
       - name: mattermost-data
       {{ if .Values.persistence.data.enabled }}
         persistentVolumeClaim:
-          claimName: {{ .Values.persistence.existingClaim | default (include "mattermost-team-edition.fullname" .) }}
+          claimName: {{ .Values.persistence.data.existingClaim | default (include "mattermost-team-edition.fullname" .) }}
       {{ else }}
         emptyDir: {}
       {{ end }}

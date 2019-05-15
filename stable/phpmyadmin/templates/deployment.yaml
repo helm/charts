@@ -29,12 +29,7 @@ spec:
   {{- end }}
 {{- end }}
     spec:
-      {{- if .Values.image.pullSecrets }}
-      imagePullSecrets:
-      {{- range .Values.image.pullSecrets }}
-        - name: {{ . }}
-      {{- end}}
-      {{- end }}
+{{- include "phpmyadmin.imagePullSecrets" . | indent 6 }}
       hostAliases:
       - ip: "127.0.0.1"
         hostnames:
@@ -49,10 +44,10 @@ spec:
             {{- if .Values.db.chartName }}
             - name: DATABASE_HOST
               value: "{{ template "phpmyadmin.dbfullname" . }}"
-            {{- else if .Values.db.bundleTestDB }} 
+            {{- else if .Values.db.bundleTestDB }}
             - name: DATABASE_HOST
               value: "{{ template "mariadb.fullname" . }}"
-            {{- else }} 
+            {{- else }}
             - name: DATABASE_HOST
               value: "{{ .Values.db.host }}"
             {{- end }}
@@ -86,7 +81,7 @@ spec:
 {{ toYaml .Values.resources | indent 12 }}
 {{- if .Values.metrics.enabled }}
         - name: metrics
-          image: {{ template "metrics.image" . }}
+          image: {{ template "phpmyadmin.metrics.image" . }}
           imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
           command: [ '/bin/apache_exporter', '-scrape_uri', 'http://status.localhost:80/server-status/?auto']
           ports:

@@ -18,5 +18,5 @@ keywords:
 - spark
 - kubernetes job manager
 name: luigi
-version: 2.7.4
+version: 2.7.5
 appVersion: 2.7.2

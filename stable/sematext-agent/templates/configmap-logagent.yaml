@@ -13,5 +13,5 @@ data:
   {{ $key }}: {{ $val | quote }}
   {{- end }}
   {{- if .Values.customUrl }}
-  LOGS_RECEIVER_URL: {{ default "" .Values.customUrl.logsServer | quote }}
+  LOGS_RECEIVER_URL: {{ default "" .Values.customUrl.logsReceiverUrl | quote }}
   {{- end }}

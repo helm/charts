@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "scdf.fullname" . }}-server
+  labels:
+    app: {{ template "scdf.name" . }}
+    component: server
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+  application.yaml: |-
+    spring:
+      cloud:
+        dataflow:
+          task:
+            platform:
+              kubernetes:
+                accounts:
+                  {{ .Values.server.platformName }}:
+                    limits:
+                      memory: {{ .Values.deployer.resourceLimits.memory }}
+                      cpu: {{ .Values.deployer.resourceLimits.cpu }}
+      datasource:
+        url: 'jdbc:mysql://${{ printf "{" }}{{ template "scdf.envrelease" . }}_MYSQL_SERVICE_HOST}:${{ printf "{" }}{{ template "scdf.envrelease" . }}_MYSQL_SERVICE_PORT}/dataflow'
+        driverClassName: org.mariadb.jdbc.Driver
+        username: root
+        password: ${mysql-root-password}
+        testOnBorrow: true
+        validationQuery: "SELECT 1"

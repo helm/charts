@@ -107,10 +107,6 @@ spec:
       tolerations:
 {{ toYaml .Values.alertmanager.tolerations | indent 8 }}
     {{- end }}
-    {{- if .Values.alertmanager.affinity }}
-      affinity:
-{{ toYaml .Values.alertmanager.affinity | indent 8 }}
-    {{- end }}
       volumes:
         - name: config-volume
           configMap:

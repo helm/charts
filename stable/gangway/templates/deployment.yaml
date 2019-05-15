@@ -1,0 +1,96 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ include "gangway.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "gangway.name" . }}
+    helm.sh/chart: {{ include "gangway.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "gangway.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "gangway.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+      annotations:
+        check/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        check/values: {{ .Files.Get   "../values.yaml"   | sha256sum }}
+    spec:
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.image.pullSecrets | indent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+          - gangway
+          - -config
+          - /gangway/gangway.yaml
+          env:
+            - name: GANGWAY_SESSION_SECURITY_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: sessionkey
+                  name: {{ include "gangway.fullname" . }}-key
+          ports:
+            - name: http
+              containerPort: {{ .Values.gangway.port }}
+              protocol: TCP
+          volumeMounts:
+          - name: gangway
+            mountPath: /gangway/
+        {{- if and .Values.gangway.certData .Values.gangway.keyData }}
+          - name: gangway-tls
+            mountPath: /etc/gangway/tls
+            readOnly: true
+        {{ end }}
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: {{ .Values.gangway.httpPath }}
+              port: {{ .Values.gangway.port }}
+              scheme: HTTP
+            initialDelaySeconds: 20
+            periodSeconds: 60
+            successThreshold: 1
+            timeoutSeconds: 1
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: {{ .Values.gangway.httpPath }}
+              port: {{ .Values.gangway.port }}
+              scheme: HTTP
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+      volumes:
+        - name: gangway
+          configMap:
+            name: {{ include "gangway.fullname" . }}
+        {{- if and .Values.gangway.certData .Values.gangway.keyData }}
+        - name: gangway-tls
+          secret:
+            secretName: {{ include "gangway.fullname" . }}-tls
+        {{ end -}}

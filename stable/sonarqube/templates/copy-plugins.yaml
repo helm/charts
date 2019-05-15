@@ -13,6 +13,17 @@ data:
       {{- if .Values.plugins.deleteDefaultPlugins }}
       rm -f /opt/sonarqube/extensions/plugins/*.jar
       {{- end }}
+      for f in /opt/sonarqube/extensions/plugins/tmp/*.jar
+      do
+        file=${f##*/} && file=${file%-[0-9]*} 
+        for original in /opt/sonarqube/extensions/plugins/*.jar
+        do
+          originalfile=${original##*/} && originalfile=${originalfile%-[0-9]*} 
+          if [ "$originalfile" = "$file" ]; then
+            rm -f "$original"
+          fi
+        done
+      done
       cp /opt/sonarqube/extensions/plugins/tmp/*.jar /opt/sonarqube/extensions/plugins/
       /opt/sonarqube/bin/run.sh
     
