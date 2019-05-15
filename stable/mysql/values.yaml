@@ -144,6 +144,9 @@ metrics:
     initialDelaySeconds: 5
     timeoutSeconds: 1
   flags: []
+  serviceMonitor:
+    enabled: false
+    additionalLabels: {}
 
 ## Configure the service
 ## ref: http://kubernetes.io/docs/user-guide/services/
