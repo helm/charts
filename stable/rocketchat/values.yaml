@@ -2,8 +2,8 @@
 ## ref: https://hub.docker.com/r/rocketchat/rocket.chat/tags
 ##
 image:
-  repository: rocketchat/rocket.chat
-  tag: 0.74.3
+  repository: docker.io/library/rocket.chat
+  tag: 1.0.3
   pullPolicy: IfNotPresent
 
 ## Host for the application
@@ -28,6 +28,7 @@ extraEnv:  # |
 
 ## MongoDB URL if using an externally provisioned MongoDB
 externalMongodbUrl:  # mongodb://user:password@localhost:27017/rocketchat
+externalMongodbOplogUrl:  # mongodb://user:password@localhost:27017/local?replicaSet=rs0&authSource=admin
 
 ##
 ## MongoDB chart configuration
@@ -42,6 +43,11 @@ mongodb:
   mongodbUsername: rocketchat
   # mongodbPassword:
   mongodbDatabase: rocketchat
+
+  replicaSet:
+    enabled: true
+    # key:
+
   persistence:
     enabled: true
     ## mongodb data Persistent Volume Storage Class
