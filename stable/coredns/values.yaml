@@ -45,6 +45,9 @@ rbac:
 # isClusterService specifies whether chart should be deployed as cluster-service or normal k8s app.
 isClusterService: true
 
+# Optional priority class to be used for the coredns pods
+priorityClassName: ""
+
 servers:
 - zones:
   - zone: .

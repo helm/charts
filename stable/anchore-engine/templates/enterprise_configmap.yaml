@@ -1,5 +1,5 @@
-{{- if and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseRbac.enabled -}}
-{{- $component := "enterprise-rbac" -}}
+{{- if and .Values.anchoreEnterpriseGlobal.enabled (or .Values.anchoreEnterpriseRbac.enabled .Values.anchoreEnterpriseReports.enabled) -}}
+{{- $component := "enterprise" -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -18,7 +18,7 @@ data:
     # be altered for basic operation
     #
     service_dir: {{ .Values.anchoreGlobal.serviceDir }}
-    tmp_dir: {{ default "/scratch" .Values.anchoreAnalyzer.scratchVolume.mountPath }}
+    tmp_dir: {{ .Values.anchoreGlobal.scratchVolume.mountPath }}
     log_level: {{ .Values.anchoreGlobal.logLevel }}
     cleanup_images: {{ .Values.anchoreGlobal.cleanupImages }}
 
@@ -26,14 +26,14 @@ data:
     host_id: "${ANCHORE_POD_NAME}"
     internal_ssl_verify: {{ .Values.anchoreGlobal.internalServicesSsl.verifyCerts }}
     auto_restart_services: False
-    license_file: "/license.yaml"
+    license_file: /home/anchore/license.yaml
 
     metrics:
       enabled: {{ .Values.anchoreGlobal.enableMetrics }}
 
     credentials:
       database:
-        db_connect: "postgresql+pg8000://${ANCHORE_DB_USER}:${ANCHORE_DB_PASSWORD}@${ANCHORE_DB_HOST}/${ANCHORE_DB_NAME}"
+        db_connect: "postgresql://${ANCHORE_DB_USER}:${ANCHORE_DB_PASSWORD}@${ANCHORE_DB_HOST}/${ANCHORE_DB_NAME}"
         db_connect_args:
           timeout: {{ .Values.anchoreGlobal.dbConfig.timeout }}
           ssl: {{ .Values.anchoreGlobal.dbConfig.ssl }}
@@ -43,8 +43,8 @@ data:
     services:
       # This should never be exposed outside of linked containers/localhost. It is used only for internal service access
       rbac_authorizer:
-        enabled: True
-        require_auth: True
+        enabled: true
+        require_auth: true
         endpoint_hostname: localhost
         listen: 127.0.0.1
         port: {{ .Values.anchoreEnterpriseRbac.service.authPort }}
@@ -52,8 +52,8 @@ data:
         ssl_key: "{{ .Values.anchoreGlobal.internalServicesSsl.certDir -}}/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretKeyName }}"
         ssl_enable: {{ .Values.anchoreGlobal.internalServicesSslEnabled }}
       rbac_manager:
-        enabled: True
-        require_auth: True
+        enabled: true
+        require_auth: true
         endpoint_hostname: {{ template "anchore-engine.api.fullname" . }}
         listen: 0.0.0.0
         port: {{ .Values.anchoreEnterpriseRbac.service.apiPort }}
@@ -63,4 +63,19 @@ data:
         ssl_cert: "{{ .Values.anchoreGlobal.internalServicesSsl.certDir -}}/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretCertName }}"
         ssl_key: "{{ .Values.anchoreGlobal.internalServicesSsl.certDir -}}/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretKeyName }}"
         ssl_enable: {{ .Values.anchoreGlobal.internalServicesSslEnabled }}
+      reports:
+        enabled: true
+        require_auth: true
+        endpoint_hostname: {{ template "anchore-engine.enterprise-reports.fullname" . }}
+        listen: '0.0.0.0'
+        port: {{ .Values.anchoreEnterpriseReports.service.port }}
+        enable_graphiql: "{{ .Values.anchoreEnterpriseReports.enableGraphql }}"
+        enable_data_ingress: "{{ .Values.anchoreEnterpriseReports.enableDataIngress }}"
+        cycle_timers:
+          {{ toYaml .Values.anchoreEnterpriseReports.cycleTimers | nindent 10 | trim }}
+        {{- if .Values.anchoreEnterpriseRbac.enabled }}
+        authorization_handler: external
+        authorization_handler_config:
+          endpoint: "http://localhost:{{ .Values.anchoreEnterpriseRbac.service.authPort }}"
+        {{- end }}
 {{- end -}}

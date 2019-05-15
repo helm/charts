@@ -78,7 +78,7 @@ spec:
       {{- end }}
       initContainers:
 {{- if .Values.master.customInitContainers }}
-{{ toYaml .Values.master.customInitContainers | indent 8 }}
+{{ tpl (toYaml .Values.master.customInitContainers) . | indent 8 }}
 {{- end }}
         - name: "copy-default-config"
           image: "{{ .Values.master.image }}:{{ .Values.master.imageTag }}"
