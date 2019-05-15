@@ -57,6 +57,9 @@ spec:
       securityContext:
         fsGroup: {{ .Values.securityContext.fsGroup }}      
       {{- end }}
+      {{- if .Values.serviceAccount.enabled }}
+      serviceAccountName: {{ default (include "postgresql.fullname" . ) .Values.serviceAccount.name }}
+      {{- end }}
       {{- if and .Values.volumePermissions.enabled .Values.persistence.enabled }}
       initContainers:
       - name: init-chmod-data
@@ -90,12 +93,8 @@ spec:
           runAsUser: {{ .Values.securityContext.runAsUser }}
         {{- end }}
         env:
-        {{- if .Values.image.debug}}
-        - name: BASH_DEBUG
-          value: "1"
-        - name: NAMI_DEBUG
-          value: "1"
-        {{- end }}
+        - name: BITNAMI_DEBUG
+          value: {{ ternary "true" "false" .Values.image.debug | quote }}
         {{- if .Values.postgresqlInitdbArgs }}
         - name: POSTGRES_INITDB_ARGS
           value: {{ .Values.postgresqlInitdbArgs | quote }}
