@@ -168,6 +168,57 @@ monitoring:
     # Set labels for the ServiceMonitor, use this to define your scrape label for Prometheus Operator
     # labels:
 
+vscode:
+  enabled: false
+
+  ## code-server container image
+  ##
+  image:
+    repository: codercom/code-server
+    tag: 1.939
+    pullPolicy: IfNotPresent
+
+  ## VSCode password
+  # password:
+
+  ## path where the home assistant configuration is stored
+  hassConfig: /config
+
+  ## path where the VS Code data should reside
+  vscodePath: /config/.vscode
+
+  ## Additional hass-vscode container environment variable
+  ## For instance to add a http_proxy
+  ##
+  extraEnv: {}
+
+  ingress:
+    enabled: false
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    path: /
+    hosts:
+      - home-assistant.local
+    tls: []
+    #  - secretName: home-assistant-tls
+    #    hosts:
+    #      - home-assistant.local
+
+  service:
+    type: ClusterIP
+    port: 80
+    annotations: {}
+    labels: {}
+    clusterIP: ""
+    ## List of IP addresses at which the hass-vscode service is available
+    ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+    ##
+    externalIPs: []
+    loadBalancerIP: ""
+    loadBalancerSourceRanges: []
+    # nodePort: 30000
+
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
