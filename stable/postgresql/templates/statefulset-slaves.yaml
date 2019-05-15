@@ -67,7 +67,8 @@ spec:
           - sh
           - -c
           - |
-            chown -R {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }} /bitnami
+            find {{ .Values.persistence.mountPath }} -mindepth 1 -maxdepth 1 -not -name ".snapshot" | \
+              xargs chown -R {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }}
             if [ -d {{ .Values.persistence.mountPath }}/data ]; then
               chmod  0700 {{ .Values.persistence.mountPath }}/data;
             fi
