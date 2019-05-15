@@ -8,22 +8,7 @@ request as being ready. The operational testing is run on Kubernertes test
 infrastructure.
 
 ### Static Analysis
-
-Static analysis is performed on every pull request and is run by CircleCI. The
-configuration is stored in the [`.circleci/config.yml`](../.circleci/config.yml)
-file.
-
-The static analysis currently:
-
-* Performs `helm lint` on any changed charts to provide quick feedback
-
-### Operational Testing
-
-Operational testing allows deploying a Release for the changed Helm Chart to test it.
-
-#### Procedure
-
-Pull requests testing is run via the [Kubernetes Test Infrastructure](https://github.com/kubernetes/test-infra).
+hdgsfdsdfgewqdwia the [Kubernetes Test Infrastructure](https://github.com/kubernetes/test-infra).
 
 The configuration of the Pull Request trigger is [in the config.json](https://github.com/kubernetes/test-infra/blob/827797c54b48295045698465b437f463ca9276c2/jobs/config.json#L10285).
 
