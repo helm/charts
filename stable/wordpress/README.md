@@ -56,6 +56,7 @@ The following table lists the configurable parameters of the WordPress chart and
 | `image.tag`                      | WordPress image tag                        | `{VERSION}`                                             |
 | `image.pullPolicy`               | Image pull policy                          | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
 | `image.pullSecrets`              | Specify docker-registry secret names as an array | `[]` (does not add image pull secrets to deployed pods) |
+| `wordpressSkipInstall`           | Skip wizard installation                   | `false`                                                 |
 | `wordpressUsername`              | User of the application                    | `user`                                                  |
 | `wordpressPassword`              | Application password                       | _random 10 character long alphanumeric string_          |
 | `wordpressEmail`                 | Admin email                                | `user@example.com`                                      |
@@ -64,8 +65,8 @@ The following table lists the configurable parameters of the WordPress chart and
 | `wordpressBlogName`              | Blog name                                  | `User's Blog!`                                          |
 | `wordpressTablePrefix`           | Table prefix                               | `wp_`                                                   |
 | `allowEmptyPassword`             | Allow DB blank passwords                   | `true`                                                  |
-| `allowOverrideNone`              | Set Apache AllowOverride directive to None                   | `no`                                                  |
-| `customHTAccessCM`              | Configmap with custom wordpress-htaccess.conf directives                   | `nil`                                                  |
+| `allowOverrideNone`              | Set Apache AllowOverride directive to None | `false`                                                 |
+| `customHTAccessCM`               | Configmap with custom wordpress-htaccess.conf directives | `nil`                                     |
 | `smtpHost`                       | SMTP host                                  | `nil`                                                   |
 | `smtpPort`                       | SMTP port                                  | `nil`                                                   |
 | `smtpUser`                       | SMTP user                                  | `nil`                                                   |
@@ -90,7 +91,7 @@ The following table lists the configurable parameters of the WordPress chart and
 | `service.externalTrafficPolicy`  | Enable client source IP preservation       | `Cluster`                                               |
 | `service.nodePorts.http`         | Kubernetes http node port                  | `""`                                                    |
 | `service.nodePorts.https`        | Kubernetes https node port                 | `""`                                                    |
-| `service.extraPorts`            | Extra ports to expose in the service (normally used with the `sidecar` value)                        | `nil`                                                    |
+| `service.extraPorts`            | Extra ports to expose in the service (normally used with the `sidecar` value) | `nil`                 |
 | `healthcheckHttps`               | Use https for liveliness and readiness     | `false`                                                 |
 | `livenessProbeHeaders`           | Headers to use for livenessProbe           | `nil`                                                   |
 | `readinessProbeHeaders`          | Headers to use for readinessProbe          | `nil`                                                   |
@@ -120,8 +121,8 @@ The following table lists the configurable parameters of the WordPress chart and
 | `metrics.image.pullPolicy`       | Image pull policy                          | `IfNotPresent`                                          |
 | `metrics.image.pullSecrets`      | Specify docker-registry secret names as an array        | `[]` (does not add image pull secrets to deployed pods)        |
 | `metrics.podAnnotations`         | Additional annotations for Metrics exporter pod         | `{prometheus.io/scrape: "true", prometheus.io/port: "9117"}`   |
-| `metrics.resources`              | Exporter resource requests/limit           | {}                                                      |
-| `sidecars`                           | Attach additional containers to the pod                                                      | `nil`                                                         |
+| `metrics.resources`              | Exporter resource requests/limit           | `{}`                                                    |
+| `sidecars`                       | Attach additional containers to the pod    | `nil`                                                   |
 
 The above parameters map to the env variables defined in [bitnami/wordpress](http://github.com/bitnami/bitnami-docker-wordpress). For more information please refer to the [bitnami/wordpress](http://github.com/bitnami/bitnami-docker-wordpress) image documentation.
 
