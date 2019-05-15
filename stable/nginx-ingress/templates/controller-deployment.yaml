@@ -113,10 +113,10 @@ spec:
             failureThreshold: {{ .Values.controller.livenessProbe.failureThreshold }}
           ports:
             - name: http
-              containerPort: 80
+              containerPort: {{ .Values.controller.containerPort.http }}
               protocol: TCP
             - name: https
-              containerPort: 443
+              containerPort: {{ .Values.controller.containerPort.https }}
               protocol: TCP
           {{- if .Values.controller.stats.enabled }}
             - name: stats

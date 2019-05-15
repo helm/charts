@@ -50,6 +50,8 @@ Parameter | Description | Default
 `controller.image.tag` | controller container image tag | `0.24.1`
 `controller.image.pullPolicy` | controller container image pull policy | `IfNotPresent`
 `controller.image.runAsUser` | User ID of the controller process. Value depends on the Linux distribution used inside of the container image. By default uses debian one. | `33`
+`controller.containerPort.http` | The port that the controller container listens on for http connections. | `80`
+`controller.containerPort.https` | The port that the controller container listens on for https connections. | `443`
 `controller.config` | nginx ConfigMap entries | none
 `controller.hostNetwork` | If the nginx deployment / daemonset should run on the host's network namespace. Do not set this when `controller.service.externalIPs` is set and `kube-proxy` is used as there will be a port-conflict for port `80` | false
 `controller.defaultBackendService` | default 404 backend service; required only if `defaultBackend.enabled = false` | `""`
