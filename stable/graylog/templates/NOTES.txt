@@ -6,7 +6,7 @@ To connect to your Graylog server:
   http://{{ . }}
 {{- end }}
 {{- else if contains "NodePort" .Values.graylog.service.type }}
-  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "fullname" . }})
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "graylog.fullname" . }})
   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
   echo http://$NODE_IP:$NODE_PORT
 {{- else if contains "LoadBalancer" .Values.graylog.service.type }}
@@ -23,7 +23,7 @@ To connect to your Graylog server:
 2. The Graylog root users
 
   echo "User: {{ .Values.graylog.rootUsername }}"
-  echo "Password: $(kubectl get secret {{ template "graylog.fullname" . }} -o "jsonpath={.data['auth']}" | base64 -D)"
+  echo "Password: $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "graylog.fullname" . }} -o "jsonpath={.data['graylog-password-secret']}" | base64 --decode)"
 
 To send logs to graylog:
 
@@ -32,7 +32,7 @@ To send logs to graylog:
 1. TCP
 
 {{- if contains "NodePort" .Values.graylog.input.tcp.service.type }}
-  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "fullname" . }})
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "graylog.fullname" . }})
   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
   echo $NODE_IP:$NODE_PORT
 {{- else if contains "LoadBalancer" .Values.graylog.input.tcp.service.type }}

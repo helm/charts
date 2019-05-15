@@ -38,6 +38,9 @@ spec:
             - --excluded-times-of-day={{ .Values.excludedTimesOfDay }}
             - --excluded-days-of-year={{ .Values.excludedDaysOfYear }}
             - --timezone={{ .Values.timezone }}
+            {{- if .Values.logFormat }}
+            - --log-format={{ .Values.logFormat }}
+            {{- end }}
             {{- if .Values.debug }}
             - --debug
             {{- end }}

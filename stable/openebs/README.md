@@ -40,18 +40,18 @@ The following table lists the configurable parameters of the OpenEBS chart and t
 | `rbac.create`                           | Enable RBAC Resources                         | `true`                                    |
 | `image.pullPolicy`                      | Container pull policy                         | `IfNotPresent`                            |
 | `apiserver.image`                       | Image for API Server                          | `quay.io/openebs/m-apiserver`             |
-| `apiserver.imageTag`                    | Image Tag for API Server                      | `0.8.1`                                   |
+| `apiserver.imageTag`                    | Image Tag for API Server                      | `0.8.2`                                   |
 | `apiserver.replicas`                    | Number of API Server Replicas                 | `1`                                       |
 | `provisioner.image`                     | Image for Provisioner                         | `quay.io/openebs/openebs-k8s-provisioner` |
-| `provisioner.imageTag`                  | Image Tag for Provisioner                     | `0.8.1`                                   |
+| `provisioner.imageTag`                  | Image Tag for Provisioner                     | `0.8.2`                                   |
 | `provisioner.replicas`                  | Number of Provisioner Replicas                | `1`                                       |
 | `snapshotOperator.provisioner.image`    | Image for Snapshot Provisioner                | `quay.io/openebs/snapshot-provisioner`    |
-| `snapshotOperator.provisioner.imageTag` | Image Tag for Snapshot Provisioner            | `0.8.1`                                   |
+| `snapshotOperator.provisioner.imageTag` | Image Tag for Snapshot Provisioner            | `0.8.2`                                   |
 | `snapshotOperator.controller.image`     | Image for Snapshot Controller                 | `quay.io/openebs/snapshot-controller`     |
-| `snapshotOperator.controller.imageTag`  | Image Tag for Snapshot Controller             | `0.8.1`                                   |
+| `snapshotOperator.controller.imageTag`  | Image Tag for Snapshot Controller             | `0.8.2`                                   |
 | `snapshotOperator.replicas`             | Number of Snapshot Operator Replicas          | `1`                                       |
 | `ndm.image`                             | Image for Node Disk Manager                   | `quay.io/openebs/openebs/node-disk-manager-amd64` |
-| `ndm.imageTag`                          | Image Tag for Node Disk Manager               | `v0.3.1`                                  |
+| `ndm.imageTag`                          | Image Tag for Node Disk Manager               | `v0.3.5`                                  |
 | `ndm.sparse.enabled`                    | Create Sparse files and cStor Sparse Pool     | `true`                                    |
 | `ndm.sparse.path`                       | Directory where Sparse files are created      | `/var/openebs/sparse`                     |
 | `ndm.sparse.size`                       | Size of the sparse file in bytes              | `10737418240`                             |
@@ -59,18 +59,18 @@ The following table lists the configurable parameters of the OpenEBS chart and t
 | `ndm.filters.excludeVendors`            | Exclude devices with specified vendor         | `CLOUDBYT,OpenEBS`                        |
 | `ndm.filters.excludePaths`              | Exclude devices with specified path patterns  | `loop,fd0,sr0,/dev/ram,/dev/dm-,/dev/md`  |
 | `jiva.image`                            | Image for Jiva                                | `quay.io/openebs/jiva`                    |
-| `jiva.imageTag`                         | Image Tag for Jiva                            | `0.8.1`                                   |
+| `jiva.imageTag`                         | Image Tag for Jiva                            | `0.8.2`                                   |
 | `jiva.replicas`                         | Number of Jiva Replicas                       | `3`                                       |
 | `cstor.pool.image`                      | Image for cStor Pool                          | `quay.io/openebs/cstor-pool`              |
-| `cstor.pool.imageTag`                   | Image Tag for cStor Pool                      | `0.8.1`                                   |
+| `cstor.pool.imageTag`                   | Image Tag for cStor Pool                      | `0.8.2`                                   |
 | `cstor.poolMgmt.image`                  | Image for cStor Pool  Management              | `quay.io/openebs/cstor-pool-mgmt`         |
-| `cstor.poolMgmt.imageTag`               | Image Tag for cStor Pool Management           | `0.8.1`                                   |
+| `cstor.poolMgmt.imageTag`               | Image Tag for cStor Pool Management           | `0.8.2`                                   |
 | `cstor.target.image`                    | Image for cStor Target                        | `quay.io/openebs/cstor-istgt`             |
-| `cstor.target.imageTag`                 | Image Tag for cStor Target                    | `0.8.1`                                   |
+| `cstor.target.imageTag`                 | Image Tag for cStor Target                    | `0.8.2`                                   |
 | `cstor.volumeMgmt.image`                | Image for cStor Volume  Management            | `quay.io/openebs/cstor-volume-mgmt`       |
-| `cstor.volumeMgmt.imageTag`             | Image Tag for cStor Volume Management         | `0.8.1`                                   |
+| `cstor.volumeMgmt.imageTag`             | Image Tag for cStor Volume Management         | `0.8.2`                                   |
 | `policies.monitoring.image`             | Image for Prometheus Exporter                 | `quay.io/openebs/m-exporter`              |
-| `policies.monitoring.imageTag`          | Image Tag for Prometheus Exporter             | `0.8.1`                                   |
+| `policies.monitoring.imageTag`          | Image Tag for Prometheus Exporter             | `0.8.2`                                   |
 | `analytics.enabled`                     | Enable sending stats to Google Analytics      | `true`                                    |
 | `analytics.pingInterval`                | Duration(hours) between sending ping stat     | `24h`                                     |
 | `HealthCheck.initialDelaySeconds`       | Delay before liveness probe is initiated      | `30`                                      |                              | 30                                                          |
