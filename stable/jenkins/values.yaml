@@ -44,6 +44,11 @@ master:
   adminUser: "admin"
   # adminPassword: <defaults to random>
   # adminSshKey: <defaults to auto-generated>
+  # If you want to have an initial API Token for the admin user, please provide here a value such that
+  # the first two characters are the hash version, "11" currently and then 32 hex characters (0-9a-f)
+  # the full value will be the plain text value of the API Token that could be used to access REST Api of Jenkins
+  # It is strongly recommended to use this fixed token to generate a new one (purely random) and then revoke the other. 
+  # adminInitialApiToken: 110123456789abcdef0123456789abcdef 
   # If CasC auto-reload is enabled, an SSH (RSA) keypair is needed.  Can either provide your own, or leave unconfigured to allow a random key to be auto-generated.
   # If you supply your own, it is recommended that the values file that contains your key not be committed to source control in an unencrypted format
   rollingUpdate: {}

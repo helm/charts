@@ -75,6 +75,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.podLabels`                | Custom Pod labels                    | Not set                                   |
 | `master.adminUser`                | Admin username (and password) created as a secret if useSecurity is true | `admin` |
 | `master.adminPassword`            | Admin password (and user) created as a secret if useSecurity is true | Random value |
+| `master.adminInitialApiToken`     | Admin initial fixed API Token as a secret if useSecurity is true | None created |
 | `master.jenkinsAdminEmail`        | Email address for the administrator of the Jenkins instance | Not set            |
 | `master.resources`                | Resources allocation (Requests and Limits) | `{requests: {cpu: 50m, memory: 256Mi}, limits: {cpu: 2000m, memory: 4096Mi}}`|
 | `master.initContainerEnv`         | Environment variables for Init Container                                 | Not set |
