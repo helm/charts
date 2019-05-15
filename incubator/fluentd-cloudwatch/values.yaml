@@ -50,6 +50,11 @@ podSecurityContext: {}
 
 podAnnotations: {}
 
+# Pod priority
+# Sets PriorityClassName if defined.
+#
+# priorityClassName: "my-priority-class"
+
 awsRegion: us-east-1
 awsRole:
 awsAccessKeyId:
