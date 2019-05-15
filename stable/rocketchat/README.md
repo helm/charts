@@ -5,7 +5,7 @@
 ## TL;DR;
 
 ```console
-$ helm install stable/rocketchat --set mongodb.mongodbPassword=$(echo -n $(openssl rand -base64 32))
+$ helm install stable/rocketchat --set mongodb.mongodbPassword=$(echo -n $(openssl rand -base64 32)),mongodb.mongodbRootPassword=$(echo -n $(openssl rand -base64 32))
 ```
 
 ## Introduction
@@ -52,6 +52,7 @@ Parameter | Description | Default
 `smtp.port` | Port of the SMTP server | `587`
 `extraEnv` | Extra environment variables for Rocket.Chat. Used with `tpl` function, so this needs to be a string | `""`
 `externalMongodbUrl` | MongoDB URL if using an externally provisioned MongoDB | `""`
+`externalMongodbOplogUrl` | MongoDB OpLog URL if using an externally provisioned MongoDB. Required if `externalMongodbUrl` is set | `""`
 `mongodb.enabled` | Enable or disable MongoDB dependency. Refer to the [stable/mongodb docs](https://github.com/helm/charts/tree/master/stable/mongodb#configuration) for more information | `true`
 `persistence.enabled` | Enable persistence using a PVC. This is not necessary if you're using the default (and recommended) [GridFS](https://rocket.chat/docs/administrator-guides/file-upload/) file storage | `false`
 `persistence.storageClass` | Storage class of the PVC to use | `""`
@@ -91,6 +92,7 @@ Rocket.Chat uses a MongoDB instance to presist its data.
 By default, the [MongoDB](https://github.com/kubernetes/charts/tree/master/stable/mongodb) chart is deployed and configured as database.
 Please refer to this chart for additional MongoDB configuration options.
 Make sure to set at least the `mongodb.mongodbRootPassword`, `mongodb.mongodbUsername` and `mongodb.mongodbPassword` values.
+> **WARNING**: The root credentials are used to connect to the MongoDB OpLog
 
 #### Using an External Database
 
