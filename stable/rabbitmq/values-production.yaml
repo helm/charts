@@ -35,6 +35,19 @@ image:
 ## does your cluster have rbac enabled? assume yes by default
 rbacEnabled: true
 
+
+## RabbitMQ should be initialized one by one when building cluster for the first time.
+## Therefore, the default value of podManagementPolicy is 'OrderedReady'
+## Once the RabbitMQ participates in the cluster, it waits for a response from another
+## RabbitMQ in the same cluster at reboot, except the last RabbitMQ of the same cluster.
+## If the cluster exits gracefully, you do not need to change the podManagementPolicy
+## because the first RabbitMQ of the statefulset always will be last of the cluster.
+## However if the last RabbitMQ of the cluster is not the first RabbitMQ due to a failure,
+## you must change podManagementPolicy to 'Parallel'.
+## ref : https://www.rabbitmq.com/clustering.html#restarting
+##
+podManagementPolicy: OrderedReady
+
 ## section of specific values for rabbitmq
 rabbitmq:
   ## RabbitMQ application username

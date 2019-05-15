@@ -75,7 +75,7 @@ serviceAccountSecrets:
 
 image:
   repository: runatlantis/atlantis
-  tag: v0.6.0
+  tag: v0.7.1
   pullPolicy: IfNotPresent
 
 ## Optionally specify an array of imagePullSecrets.
@@ -85,14 +85,29 @@ image:
 # imagePullSecrets:
 # - myRegistryKeySecretName
 
-## enable using atlantis.yaml file
-allowRepoConfig: false
+## Use Server Side Repo Config,
+## ref: https://www.runatlantis.io/docs/server-side-repo-config.html
+## Example default configuration
+# repoConfig: |
+#  ---
+#  repos:
+#  - id: /.*/
+#    apply_requirements: []
+#    workflow: default
+#    allowed_overrides: []
+#    allow_custom_workflows: false
+#  workflows:
+#    default:
+#      plan:
+#        steps: [init, plan]
+#      apply:
+#        steps: [apply]
 
-# Require all pull requests be approved prior to apply.
-requireApproval: false
+# allowForkPRs enables atlantis to run on a fork Pull Requests
+allowForkPRs: false
 
-# Require all pull requests to meet repository mergeability requirements prior to apply.
-requireMergeable: false
+## defaultTFVersion set the default terraform version to be used in atlantis server
+# defaultTFVersion: v0.12.0
 
 # We only need to check every 60s since Atlantis is not a high-throughput service.
 livenessProbe:

@@ -25,6 +25,10 @@ service:
 stackdriver:
   # The Google Project ID to gather metrics for
   projectId: "FALSE"
+  # An existing secret which contains credentials.json
+  serviceAccountSecret: ""
+  # A service account key JSON file. Must be provided when no existing secret is used, in this case a new secret will be created holding this service account
+  serviceAccountKey: ""
   # Max number of retries that should be attempted on 503 errors from Stackdriver
   maxRetries: 0
   # How long should Stackdriver_exporter wait for a result from the Stackdriver API

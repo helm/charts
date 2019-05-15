@@ -16,7 +16,7 @@ auth:
   # key: keycontent
   # existingKeySecret:
   # existingAdminSecret:
-  # exisitingMetricsSecret:
+  # existingMetricsSecret:
 
 ## Optionally specify an array of imagePullSecrets.
 ## Secrets must be manually created in the namespace.

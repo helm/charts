@@ -1,0 +1,3 @@
+{{ if not (or .Values.web.enabled .Values.worker.enabled) }}
+{{- required "Must set either web.enabled or worker.enabled to create a concourse deployment" "" }}
+{{ end }}
