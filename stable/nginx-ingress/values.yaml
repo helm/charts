@@ -10,6 +10,11 @@ controller:
     # www-data -> uid 33
     runAsUser: 33
 
+  # Configures the ports the nginx-controller listens on
+  containerPort:
+    http: 80
+    https: 443
+
   config: {}
   # Will add custom header to Nginx https://github.com/kubernetes/ingress-nginx/tree/master/docs/examples/customization/custom-headers
   headers: {}
