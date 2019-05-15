@@ -1,5 +1,5 @@
 name: satisfy
-version: 0.1.1
+version: 0.1.2
 appVersion: "3.0.4"
 description: Composer repo hosting with Satisfy
 home: https://github.com/anapsix/docker-satisfy

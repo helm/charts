@@ -63,7 +63,10 @@ The following table lists the configurable parameters of the Goldpinger chart an
 | `nodeSelector`                       | Node labels for pod assignment              | `{}`                                                       |
 | `tolerations`                        | List of node taints to tolerate             | `[]`                                                       |
 | `affinity`                           | Map of node/pod affinities                  | `{}`                                                       |
-| `resources`                          | CPU/Memory resource requests/limits         | `{}`
+| `resources`                          | CPU/Memory resource requests/limits         | `{}`                                                       |
+| `podSecurityPolicy.enabled`          | Enable podSecuritypolicy                    | `false`                                                    |
+| `podSecurityPolicy.policyName`       | PodSecurityPolicy Name                      | `unrestricted-psp`                                         |
+
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console

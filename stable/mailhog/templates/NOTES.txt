@@ -1,3 +1,11 @@
+**********************************************************************
+This chart has been DEPRECATED and moved to its new home:
+
+* GitHub repo: https://github.com/codecentric/helm-charts
+* Charts repo: https://codecentric.github.io/helm-charts
+
+**********************************************************************
+
 Mailhog can be accessed via ports {{ .Values.service.port.http }} (HTTP) and {{ .Values.service.port.smtp }} (SMTP) on the following DNS name from within your cluster:
 {{ template "mailhog.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
 

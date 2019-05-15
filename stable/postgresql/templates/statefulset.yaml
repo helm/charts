@@ -90,12 +90,8 @@ spec:
           runAsUser: {{ .Values.securityContext.runAsUser }}
         {{- end }}
         env:
-        {{- if .Values.image.debug}}
-        - name: BASH_DEBUG
-          value: "1"
-        - name: NAMI_DEBUG
-          value: "1"
-        {{- end }}
+        - name: BITNAMI_DEBUG
+          value: {{ ternary "true" "false" .Values.image.debug | quote }}
         {{- if .Values.postgresqlInitdbArgs }}
         - name: POSTGRES_INITDB_ARGS
           value: {{ .Values.postgresqlInitdbArgs | quote }}

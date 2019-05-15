@@ -4,7 +4,7 @@ metadata:
   name: {{ template "vault.fullname" . }}
   labels:
     app: {{ template "vault.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    chart: {{ template "vault.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 {{- if .Values.labels }}
@@ -23,6 +23,9 @@ spec:
       labels:
         app: {{ template "vault.name" . }}
         release: {{ .Release.Name }}
+{{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | indent 8 }}
+{{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         {{- range $key, $value := .Values.podAnnotations }}
@@ -126,11 +129,18 @@ spec:
               GOSSIP_KEY="-config-file /etc/consul/encrypt.json"
             fi
             {{- end }}
+            {{- if .Values.vault.config.storage.consul.token }}
+            echo "{\"acl\":{\"tokens\":{\"agent\":\"{{ .Values.vault.config.storage.consul.token }}\"}}}" > /etc/consul/agent-token.json
+            AGENT_TOKEN="-config-file /etc/consul/agent-token.json"
+            {{- end }}
 
             exec /bin/consul agent \
               $GOSSIP_KEY \
+              $AGENT_TOKEN \
               -join={{- .Values.consulAgent.join }} \
               -data-dir=/etc/consul
+        resources:
+{{ toYaml .Values.consulAgent.resources | indent 10 }}
       {{- end }}
       {{- if .Values.vaultExporter.enabled }}
       - name: {{ .Chart.Name }}-exporter
