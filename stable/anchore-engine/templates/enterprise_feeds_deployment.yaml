@@ -56,6 +56,11 @@ spec:
         {{- with .Values.anchoreEnterpriseFeeds.extraEnv }}
         {{- toYaml . | nindent 8 | trim }}
         {{- end }}
+        - name: ANCHORE_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "anchore-engine.fullname" . }}
+              key: .feedsDbPassword
         - name: ANCHORE_POD_NAME
           valueFrom:
             fieldRef:
