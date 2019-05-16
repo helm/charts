@@ -1,0 +1,22 @@
+# CrateDB internal service
+# This is the service that each CrateDB node be able to discover and
+# communicate with the other nodes in the cluster.
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{  .Values.internalService.name }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ template "cratedb.name" . }}
+    chart: {{ include "cratedb.chart" . }}
+    release: {{ .Release.Name }}
+{{- if .Values.labels }}
+{{ toYaml .Values.labels | indent 4 }}
+{{- end }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: {{ .Values.internalService.port }}
+      name: {{ .Values.internalService.portName }}
+  selector:
+    app: {{ template "cratedb.name" . }}

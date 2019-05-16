@@ -1,0 +1,109 @@
+# Stateful set for the crateDB
+apiVersion: "apps/v1"
+kind: StatefulSet
+metadata:
+  namespace: {{ .Values.namespace }}
+  name: {{ template "cratedb.name" . }}
+  labels:
+    app: {{ template "cratedb.name" . }}
+{{- if .Values.labels }}
+{{ toYaml .Values.labels | indent 4 }}
+{{- end }}
+spec:
+  serviceName: {{ .Values.cratadbStatefulsetName }}
+  replicas: {{ .Values.clusterSize }}
+  selector:
+    matchLabels:
+      app: {{ template "cratedb.name" . }}
+  template:
+    metadata:
+      namespace: {{ .Values.namespace }}
+      labels:
+        app: {{ template "cratedb.name" . }}
+{{- if .Values.labels }}
+{{ toYaml .Values.labels | indent 8 }}
+{{- end }}
+    spec:
+{{- if not .Values.persistentVolume.enabled }}
+      volumes:
+        - name: {{ .Values.cratedbConfig.volumeMountName }}
+          emptyDir: {}
+{{- end }}
+{{- if .Values.affinity }}
+      affinity:
+{{ tpl .Values.affinity | indent 8 }}
+{{- end }}
+# This is to set the correct memory map
+      initContainers:
+        - name: init-sysctl
+          image: busybox
+          imagePullPolicy: IfNotPresent
+          command: ["sysctl", "-w", "vm.max_map_count=262144"]
+          securityContext:
+            privileged: true
+      containers:
+        - name: crate
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          # Pass in configuration to CrateDB via command-line options.
+          # Notice that we are configuring CrateDB unicast host discovery
+          # using the SRV records provided by Kubernetes.
+          command:
+            - /docker-entrypoint.sh
+            - -Ccluster.name=${CLUSTER_NAME}
+            - -Cdiscovery.zen.minimum_master_nodes={{ .Values.cratedbConfig.discovery.zen.minimumMasterNodes }}
+            - -Cdiscovery.zen.hosts_provider={{ .Values.cratedbConfig.discovery.zen.hostsProvider }}
+            - -Cdiscovery.srv.query=_crate-internal._tcp.{{ .Values.internalService.name }}.${NAMESPACE}.svc.cluster.local
+            - -Cgateway.recover_after_nodes={{ .Values.cratedbConfig.discovery.recoverAfterNodes }}
+            - -Cgateway.expected_nodes=${EXPECTED_NODES}
+            - -Cpath.data={{ .Values.cratedbConfig.dataPath }}
+{{- if .Values.resources }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+{{- end }}
+          ports:
+            # Port 4300 for inter-node communication.
+            - containerPort: {{ .Values.internalService.port }}
+              name: {{ .Values.internalService.portName }}
+              # Port 4200 for HTTP clients.
+            - containerPort: {{ .Values.externalService.webUiPort }}
+              name: {{ .Values.externalService.webPortName }}
+              # Port 5432 for PostgreSQL wire protocol clients.
+            - containerPort: {{ .Values.externalService.pgsqlWirePort }}
+              name: {{ .Values.externalService.pgsqlWirePortName }}
+          env:
+            # These variable are detected by CrateDB.
+            - name: CRATE_HEAP_SIZE
+              value: "{{ .Values.heapSize }}"
+            - name: EXPECTED_NODES
+              value: "{{ .Values.clusterSize }}"
+            - name: CLUSTER_NAME
+              value: {{ .Values.clusterName }}
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+{{- if .Values.persistentVolume.enabled }}
+          volumeMounts:
+          - mountPath: {{ .Values.cratedbConfig.dataPath }}
+            name: {{ .Values.cratedbConfig.volumeMountName }}
+  volumeClaimTemplates:
+    - metadata:
+        name: {{ .Values.cratedbConfig.volumeMountName }}
+      spec:
+          {{- if .Values.persistentVolume.storageClass }}
+          {{- if (eq "-" .Values.persistentVolume.storageClass) }}
+        storageClassName: ""
+          {{- else }}
+        storageClassName: {{ .Values.persistentVolume.storageClass }}
+          {{- end }}
+          {{- end }}
+        accessModes:
+            {{- range .Values.persistentVolume.accessModes }}
+          - {{ . | quote }}
+          {{- end }}
+        resources:
+          requests:
+            storage: {{ .Values.persistentVolume.size | quote }}
+{{- end -}}
+

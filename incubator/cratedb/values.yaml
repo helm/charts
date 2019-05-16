@@ -1,0 +1,91 @@
+# Default values for crateDB.
+
+# number of nodes in the crateDB cluster
+clusterSize: 3
+
+# crateDB cluster name
+clusterName: "cratedb-cluster"
+
+# namespace that you want to install crateDB
+# default installation is default namespace
+namespace: "monitoring"
+
+# statefulset name
+cratadbStatefulsetName: crate-set
+
+# heap size ( default value set to 256 megabytes, half of requested memory)
+heapSize: 256m
+
+# crateDB internal service
+internalService:
+  port: 4300
+  portName: crate-internal
+  name: crate-internal-service
+
+# crateDB external service
+externalService:
+  name: crate-external-service
+  # web ui
+  webUiPort: 4200
+  webPortName: crate-web
+  #PostgreSQL wire protocol port
+  pgsqlWirePort: 5432
+  pgsqlWirePortName: postgres
+
+# labels that you wanted to add
+labels: {}
+#  mytype: database
+#  anotherone: label1
+
+## The CouchDB image (This image uses the official crateDB image enterprise
+#  version that is free up to 3 nodes.)
+#  More information  https://crate.io/products/cratedb-editions/)
+image:
+  repository: crate
+  tag: 3.2.7
+  pullPolicy: IfNotPresent
+
+nameOverride: ""
+fullnameOverride: ""
+
+# resources requests/limits can be defined as your requirement
+resources: {}
+#  limits:
+#    memory: 1024Mi
+#    cpu: 2000m
+#  requests:
+#    memory: 512Mi
+#    cpu: 300m
+
+## The storage volume used by each Pod in the crateDB StatefulSet.
+persistentVolume:
+  enabled: false
+  accessModes:
+    - ReadWriteOnce
+  size: 5Gi
+  #storageClass: "-"
+
+## CrateDB configuration settings. These values passed as arguments of crateDB
+cratedbConfig:
+  dataPath: "/data"
+  volumeMountName: data
+  discovery:
+    recoverAfterNodes: 2
+    zen:
+      minimumMasterNodes: 2
+      hostsProvider: srv
+
+# pod affinity
+affinity: {}
+# You can put your own affinity. below example is to created the pods in
+# nodes of different availability zones
+
+#  podAntiAffinity:
+#    requiredDuringSchedulingIgnoredDuringExecution:
+#      - topologyKey: failure-domain.beta.kubernetes.io/zone
+#        labelSelector:
+#          matchExpressions:
+#            - key: app
+#              operator: In
+#              values:
+#                - <your-value-goes-here>

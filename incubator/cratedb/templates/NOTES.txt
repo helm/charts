@@ -1,0 +1,42 @@
+
+Check the status of crateDB using:
+
+  kubectl get pods --namespace {{ .Values.namespace }} -l "app={{ template "cratedb.name" . }}"
+
+While creation in progress you may see something like below
+
+  NAME      READY     STATUS            RESTARTS   AGE
+  crate-0   0/1       PodInitializing   0          36s
+
+
+After creating two pods you may see something like below
+
+  NAME        READY     STATUS            RESTARTS   AGE
+  cratedb-0   1/1       Running           0          10s
+  cratedb-1   1/1       Running           0          8s
+  cratedb-2   0/1       PodInitializing   0          4s
+
+
+Once all pods are ready you will see below result
+
+  NAME      READY     STATUS    RESTARTS   AGE
+  crate-0   1/1       Running   0          2m
+  crate-1   1/1       Running   0          1m
+  crate-2   1/1       Running   0          1m
+
+Check the web UI of cratedb with the help of external service created.
+Run the following command to see the services
+
+  kubectl get service --namespace {{ .Values.namespace }} -l "app={{ template "cratedb.name" . }}"
+
+As a result of above command you will get similar result below
+
+  NAME                     TYPE           CLUSTER-IP   EXTERNAL-IP   PORT(S)                         AGE
+  crate-external-service   LoadBalancer   10.x.x.41    <pending>     4200:31686/TCP,5432:32113/TCP   3m
+  crate-internal-service   ClusterIP      10.x.x.58    <none>        4300/TCP                        3m
+
+
+You can access the crateDB UI via the external service port(here in the example 31686) and node IP
+
+  Example: http://<node-ip>:31686/
+
