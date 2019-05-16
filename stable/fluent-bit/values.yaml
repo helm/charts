@@ -131,12 +131,22 @@ fullConfigMap: false
 ##
 existingConfigMap: ""
 
+
+# NOTE If you want to add extra sections, add them here, inbetween the includes,
+# wherever they need to go. Sections order matters.
+
 rawConfig: |-
   @INCLUDE fluent-bit-service.conf
   @INCLUDE fluent-bit-input.conf
   @INCLUDE fluent-bit-filter.conf
   @INCLUDE fluent-bit-output.conf
 
+
+# WARNING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# This is to add extra entries to an existing section, NOT for adding new sections
+# Do not submit bugs against indent being wrong. Add your new sections to rawConfig
+# instead.
+#
 extraEntries:
   input: |-
 #     # >=1 additional Key/Value entrie(s) for existing Input section
@@ -144,6 +154,8 @@ extraEntries:
 #     # >=1 additional Key/Value entrie(s) for existing Filter section
   output: |-
 #     # >=1 additional Key/Value entrie(s) for existing Ouput section
+# WARNING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 
 ## Extra ports to add to the daemonset ports section
 extraPorts: []
