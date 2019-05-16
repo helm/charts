@@ -1,0 +1,14 @@
+---
+apiVersion: "policy/v1beta1"
+kind: "PodDisruptionBudget"
+metadata:
+  name: "{{ include "solr.fullname" . }}"
+  labels:
+{{ include "solr.common.labels" . | indent 4 }}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: "{{ include "solr.name" . }}"
+      app.kubernetes.io/instance: "{{ .Release.Name }}"
+      app.kubernetes.io/component: "server"
+{{ toYaml .Values.podDisruptionBudget | indent 2 }}

@@ -24,12 +24,12 @@ spec:
       nodeNumber: {{ $nodeNumber | quote }}
   template:
     metadata:
-{{- if (or $.Values.podAnnotations $.Values.rpcMetrics.enabled) }}
+{{- if (or $.Values.podAnnotations $.Values.config.RPC.Metrics.Enabled) }}
       annotations:
-{{- if $.Values.rpcMetrics.enabled }}
+{{- if $.Values.config.RPC.Metrics.Enabled }}
         prometheus.io/scrape: "true"
-        prometheus.io/port: {{ $.Values.rpcMetrics.port | quote }}
-        prometheus.io/path: {{ $.Values.rpcMetrics.path }}
+        prometheus.io/port: {{ $.Values.config.RPC.Metrics.ListenPort | quote }}
+        prometheus.io/path: {{ $.Values.config.RPC.Metrics.path }}
 {{- end }}
 {{- if $.Values.podAnnotations }}
 {{ toYaml $.Values.podAnnotations | indent 8 }}
@@ -83,9 +83,10 @@ spec:
           args:
           - restore
           - --config
-          - "{{ $refDir }}/burrow.toml"
+          - "{{ $refDir }}/burrow.json"
           - --genesis
           - "{{ $refDir }}/genesis.json"
+          - --silent
           - dumpFile
           - --validator-address
           - {{ (index $.Values.validatorAddresses ( printf "Validator_%d" $nodeIndex )).Address | quote }}
@@ -107,16 +108,16 @@ spec:
           args:
           - start
           - --config
-          - "{{ $refDir }}/burrow.toml"
+          - "{{ $refDir }}/burrow.json"
           - --genesis
           - "{{ $refDir }}/genesis.json"
           - --validator-address
           - {{ (index $.Values.validatorAddresses ( printf "Validator_%d" $nodeIndex )).Address | quote }}
           - --validator-moniker
           - {{ printf "%s-validator-%s" $.Values.organization $nodeNumber | quote }}
-{{- if (and $.Values.peer.ingress.enabled (not (eq (len $.Values.peer.ingress.hosts) 0))) }}
+{{- if (and $.Values.RPC.Peer.ingress.enabled (not (eq (len $.Values.RPC.Peer.ingress.hosts) 0))) }}
           - --external-address
-          - "{{ $nodeNumber }}.{{ index $.Values.peer.ingress.hosts 0 }}:{{ $.Values.peer.service.port }}"
+          - "{{ $nodeNumber }}.{{ index $.Values.RPC.Peer.ingress.hosts 0 }}:{{ $.Values.config.Tendermint.ListenPort }}"
 {{- end }}
 {{- range $key, $value := $.Values.extraArgs }}
             - --{{ $key }}={{ $value }}
@@ -135,21 +136,21 @@ spec:
           ports:
             - name: peer
               protocol: TCP
-              containerPort: {{ $.Values.peer.service.port }}
-{{- if $.Values.rpcGRPC.enabled }}
+              containerPort: {{ $.Values.config.Tendermint.ListenPort }}
+{{- if $.Values.config.RPC.GRPC.Enabled }}
             - name: grpc
               protocol: TCP
-              containerPort: {{ $.Values.rpcGRPC.service.port }}
+              containerPort: {{ $.Values.config.RPC.GRPC.ListenPort }}
 {{- end }}
-{{- if $.Values.rpcInfo.enabled }}
+{{- if $.Values.config.RPC.Info.Enabled }}
             - name: info
               protocol: TCP
-              containerPort: {{ $.Values.rpcInfo.service.port }}
+              containerPort: {{ $.Values.config.RPC.Info.ListenPort }}
 {{- end }}
-{{- if $.Values.rpcMetrics.enabled }}
+{{- if $.Values.config.RPC.Metrics.Enabled }}
             - name: metrics
               protocol: TCP
-              containerPort: {{ $.Values.rpcMetrics.port }}
+              containerPort: {{ $.Values.config.RPC.Metrics.ListenPort }}
 {{- end }}
 {{- if not $.Values.chain.testing }}
 {{- if $.Values.livenessProbe.enabled }}
@@ -209,6 +210,8 @@ spec:
       nodeSelector:
 {{ toYaml $.Values.nodeSelector | indent 8 }}
 {{- end }}
+{{- if $.Values.tolerations }}
       tolerations:
 {{ toYaml $.Values.tolerations | indent 8 }}
+{{- end }}
 {{- end }}
