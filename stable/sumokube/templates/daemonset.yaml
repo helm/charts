@@ -37,17 +37,17 @@ spec:
         - name: SUMO_ACCESS_ID
           valueFrom:
             secretKeyRef:
-              name: "{{ template "fullname" . }}-secrets-{{.Release.Time.Seconds }}"
+              name: "{{ template "fullname" . }}-secrets-{{ randNumeric 10 }}"
               key: access-id
         - name: SUMO_ACCESS_KEY
           valueFrom:
             secretKeyRef:
-              name: "{{ template "fullname" . }}-secrets-{{.Release.Time.Seconds }}"
+              name: "{{ template "fullname" . }}-secrets-{{ randNumeric 10 }}"
               key: access-key
         - name: SUMO_COLLECTOR_NAME
           valueFrom:
             secretKeyRef:
-              name: "{{ template "fullname" . }}-secrets-{{.Release.Time.Seconds }}"
+              name: "{{ template "fullname" . }}-secrets-{{ randNumeric 10 }}"
               key: collector-name
         - name: SUMO_SOURCES_JSON
           value: "/etc/sumologic/sumo-sources.json"
@@ -60,7 +60,7 @@ spec:
           path: /var/lib/docker/containers
       - name: sumo-sources
         configMap:
-          name: "{{ template "fullname" . }}-config-{{.Release.Time.Seconds }}"
+          name: "{{ template "fullname" . }}-config-{{ randNumeric 10 }}"
       tolerations:
 {{ toYaml .Values.daemonset.tolerations | indent 8 }}
   updateStrategy:

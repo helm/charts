@@ -7,8 +7,6 @@ metadata:
     release: {{ .Release.Name | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     component: "{{ .Release.Name }}-{{ .Values.component }}"
-  annotations:
-    "helm.sh/created": {{ .Release.Time.Seconds | quote }}
 spec:
   ports:
   - port: {{ .Values.servicePort }}
@@ -27,8 +25,6 @@ metadata:
     release: {{ .Release.Name | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     component: "{{ .Release.Name }}-{{ .Values.component }}"
-  annotations:
-    "helm.sh/created": {{ .Release.Time.Seconds | quote }}
 spec:
   replicas: {{ default 1 .Values.replicas }}
   strategy:
