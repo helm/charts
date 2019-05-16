@@ -138,3 +138,9 @@ $ helm install stable/kibana --name my-release -f values.yaml
 ## Dasboard import
 
 -   A dashboard for dashboardImport.dashboards can be a JSON or a download url to a JSON file.
+
+## Upgrading
+
+### To 2.3.0
+
+The default value of `elasticsearch.url` (for kibana < 6.6) has been removed in favor of `elasticsearch.hosts` (for kibana >= 6.6).
