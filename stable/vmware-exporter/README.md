@@ -78,3 +78,72 @@ vsphere:
     vms: true
 ```
 
+## Sharding the exporter for different vcenter instances
+
+If different tenants are configured that have restricted visibility to specific folders, metrics can be sharded.
+This will allow a setup like:
+
+Prometheus customer(A) => VMWare exporter customer(A) => VCenter restricted access for customer(A)
+Prometheus customer(B) => VMWare exporter customer(B) => VCenter restricted access for customer(B)
+
+Some Grafana dashboard, connected to a datasource with mixed content will allow access to the whole underlying datasource with VIEWER privileges.
+
+- [Grafana datasource permissions security notes](https://grafana.com/docs/permissions/overview/#datasource-permissions)
+- [Prometheus reference about datasource security](https://prometheus.io/docs/operating/security/#authentication-authorization-and-encryption)
+
+To enable seperation in the K8S autodiscovery to the following:
+
+    podAnnotations:
+      yourcustomannotation/scrape: "true"
+      yourcustomannotation/port: "9272"
+      prometheus.io/scrape: null
+      prometheus.io/port: null
+      prometheus.io/path: null
+
+The scraping of Prometheus can be configured, adding additionalScrapeConfig parts or replacing prometheus.yml (most common for sharded data):
+
+Parametrize the stable/prometheus chart like in the following example, take care for **yourcustomannotation**:
+
+    serverFiles:
+      prometheus.yml:
+        rule_files:
+        - /etc/config/rules
+        - /etc/config/alerts
+        scrape_configs:
+        - job_name: prometheus
+          static_configs:
+          - targets:
+            - localhost:9090
+        - job_name: 'k8s-yourcustomannotation'
+          kubernetes_sd_configs:
+          - role: pod
+          relabel_configs:
+          - source_labels: [__meta_kubernetes_pod_annotation_yourcustomannotation_scrape]
+            separator: ;
+            regex: "true"
+            replacement: $1
+            action: keep
+          - source_labels: [__meta_kubernetes_pod_annotation_yourcustomannotation _path]
+            separator: ;
+            regex: (.+)
+            target_label: __metrics_path__
+            replacement: $1
+            action: replace
+          - source_labels: [__address__, __meta_kubernetes_pod_annotation_yourcustomannotation _port]
+            separator: ;
+            regex: ([^:]+)(?::\d+)?;(\d+)
+            target_label: __address__
+            replacement: $1:$2
+            action: replace
+    kubeStateMetrics:
+      enabled: false
+    nodeExporter:
+      enabled: false
+    pushgateway:
+      enabled: false
+    alertmanager:
+      enabled: false
+    alertmanagerFiles:
+      alertmanager.yml: ""
+
+
