@@ -1,1 +1,6 @@
 You have successfully installed Hoard!
+
+{{- if .Values.controller.enabled }}
+The shared-secrets controller is enabled, please follow the instructions here:
+    https://github.com/monax/shared-secrets
+{{- end }}

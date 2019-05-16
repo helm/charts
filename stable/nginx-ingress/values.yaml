@@ -5,10 +5,15 @@ controller:
   name: controller
   image:
     repository: quay.io/kubernetes-ingress-controller/nginx-ingress-controller
-    tag: "0.23.0"
+    tag: "0.24.1"
     pullPolicy: IfNotPresent
     # www-data -> uid 33
     runAsUser: 33
+
+  # Configures the ports the nginx-controller listens on
+  containerPort:
+    http: 80
+    https: 443
 
   config: {}
   # Will add custom header to Nginx https://github.com/kubernetes/ingress-nginx/tree/master/docs/examples/customization/custom-headers

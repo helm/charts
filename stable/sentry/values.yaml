@@ -31,6 +31,8 @@ web:
   ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
   ##
   # schedulerName:
+  # Optional extra labels for pod, i.e. redis-client: "true"
+  # podLabels: []
 
 
 # How many cron instances to run
@@ -47,6 +49,8 @@ cron:
   tolerations: []
   affinity: {}
   # schedulerName:
+  # Optional extra labels for pod, i.e. redis-client: "true"
+  # podLabels: []
 
 # How many worker instances to run
 worker:
@@ -62,6 +66,8 @@ worker:
   tolerations: []
   affinity: {}
   # schedulerName:
+  # Optional extra labels for pod, i.e. redis-client: "true"
+  # podLabels: []
 
 # Admin user to create
 user:

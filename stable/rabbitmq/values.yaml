@@ -35,6 +35,18 @@ image:
 ## does your cluster have rbac enabled? assume yes by default
 rbacEnabled: true
 
+## RabbitMQ should be initialized one by one when building cluster for the first time.
+## Therefore, the default value of podManagementPolicy is 'OrderedReady'
+## Once the RabbitMQ participates in the cluster, it waits for a response from another
+## RabbitMQ in the same cluster at reboot, except the last RabbitMQ of the same cluster.
+## If the cluster exits gracefully, you do not need to change the podManagementPolicy
+## because the first RabbitMQ of the statefulset always will be last of the cluster.
+## However if the last RabbitMQ of the cluster is not the first RabbitMQ due to a failure,
+## you must change podManagementPolicy to 'Parallel'.
+## ref : https://www.rabbitmq.com/clustering.html#restarting
+##
+podManagementPolicy: OrderedReady
+
 ## section of specific values for rabbitmq
 rabbitmq:
   ## RabbitMQ application username
@@ -69,6 +81,12 @@ rabbitmq:
   ## ref: https://www.rabbitmq.com/install-debian.html#kernel-resource-limits
   ##
   ulimitNofiles: '65536'
+
+  ## RabbitMQ maximum available scheduler threads and online scheduler threads
+  ## ref: https://hamidreza-s.github.io/erlang/scheduling/real-time/preemptive/migration/2016/02/09/erlang-scheduler-details.html#scheduler-threads
+  ##
+  maxAvailableSchedulers: 2
+  onlineSchedulers: 1
 
   ## Plugins to enable
   plugins: "rabbitmq_management rabbitmq_peer_discovery_k8s"
@@ -133,6 +151,11 @@ service:
   annotations:
     # service.beta.kubernetes.io/aws-load-balancer-internal: 0.0.0.0/0
 
+  ## Load Balancer sources
+  ## https://kubernetes.io/docs/tasks/access-application-cluster/configure-cloud-provider-firewall/#restrict-access-for-loadbalancer-service
+  ##
+  # loadBalancerSourceRanges:
+  # - 10.10.10.0/24
 
 # Additional pod labels to apply
 podLabels: {}
@@ -158,6 +181,9 @@ persistence:
   ##
   # storageClass: "-"
   accessMode: ReadWriteOnce
+
+  ## Existing PersistentVolumeClaims
+  # existingClaim: ""
 
   # If you change this value, you might have to adjust `rabbitmq.diskFreeLimit` as well.
   size: 8Gi

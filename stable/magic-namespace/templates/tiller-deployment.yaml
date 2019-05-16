@@ -53,7 +53,11 @@ spec:
             value: /etc/certs
           {{- end }}
           {{- if .Values.tiller.onlyListenOnLocalhost }}
-          command: ["/tiller"]
+          command:
+            - "/tiller"
+          {{- if .Values.tiller.storage }}
+            - --storage={{ .Values.tiller.storage }}
+          {{- end }}
           args: ["--listen=127.0.0.1:44134"]
           {{- else }}
           ports:
