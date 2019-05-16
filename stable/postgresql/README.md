@@ -328,8 +328,7 @@ INFO  ==> ** Starting PostgreSQL **
   [1] FATAL:  database files are incompatible with server
   [1] DETAIL:  The data directory was initialized by PostgreSQL version 10, which is not compatible with this version 11.3.
 ```
-
-In this case, you should follow one of the upgrading methods described in the [official documentation](https://www.postgresql.org/docs/current/upgrading.html).
+In this case, you should migrate the data from the old chart to the new one following an approach similar to that described in [this section](https://www.postgresql.org/docs/current/upgrading.html#UPGRADING-VIA-PGDUMPALL) from the official documentation. Basically, create a database dump in the old chart, move and restore it in the new one.
 
 ### 4.0.0
 
