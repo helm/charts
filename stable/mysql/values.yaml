@@ -109,6 +109,9 @@ resources:
     memory: 256Mi
     cpu: 100m
 
+# Custom mysql configuration files path
+configurationFilesPath: /etc/mysql/conf.d/
+
 # Custom mysql configuration files used to override default mysql settings
 configurationFiles: {}
 #  mysql.cnf: |-
@@ -141,6 +144,9 @@ metrics:
     initialDelaySeconds: 5
     timeoutSeconds: 1
   flags: []
+  serviceMonitor:
+    enabled: false
+    additionalLabels: {}
 
 ## Configure the service
 ## ref: http://kubernetes.io/docs/user-guide/services/
@@ -151,6 +157,7 @@ service:
   type: ClusterIP
   port: 3306
   # nodePort: 32000
+  # loadBalancerIP:
 
 ssl:
   enabled: false

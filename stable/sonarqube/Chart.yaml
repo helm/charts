@@ -1,6 +1,7 @@
+apiVersion: v1
 name: sonarqube
 description: Sonarqube is an open sourced code quality scanning tool
-version: 1.0.0
+version: 1.0.1
 appVersion: 7.7
 keywords:
   - coverage
