@@ -10,6 +10,12 @@ Render profiles for each service by merging predefined defaults with values pass
 */}}
 {{- $profiles := dict "gate-local.yml" "" -}}
 
+{{- /* Defaults: Disable S3 versioning on Front50 if Minio storage is used */}}
+{{- /* https://www.spinnaker.io/setup/install/storage/minio/#editing-your-storage-settings */}}
+{{- if .Values.minio.enabled -}}
+{{- $_ := set $profiles "front50-local.yml" (dict "spinnaker" (dict "s3" (dict "versioning" false))) -}}
+{{- end -}}
+
 {{- /* Defaults: Add special settings for gate if GCE or ALB ingress is used */}}
 {{- /* https://github.com/spinnaker/spinnaker/issues/1630#issuecomment-467359999 */}}
 {{- if index $.Values.ingress "annotations" -}}
