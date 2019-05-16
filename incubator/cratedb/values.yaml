@@ -28,7 +28,7 @@ externalService:
   # web ui
   webUiPort: 4200
   webPortName: crate-web
-  #PostgreSQL wire protocol port
+#  PostgreSQL wire protocol port
   pgsqlWirePort: 5432
   pgsqlWirePortName: postgres
 
@@ -63,7 +63,7 @@ persistentVolume:
   accessModes:
     - ReadWriteOnce
   size: 5Gi
-  #storageClass: "-"
+#  storageClass: "-"
 
 ## CrateDB configuration settings. These values passed as arguments of crateDB
 cratedbConfig:
