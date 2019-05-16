@@ -25,7 +25,7 @@ data:
     {{- end }}
   deck.yml: |-
     env:
-      API_HOST: http://spin-gate.{{ .Release.Namespace }}:8084
+      API_HOST: http://spin-gate:8084
     kubernetes:
     {{- if .Values.ingress.enabled }}
       useExecHealthCheck: false
