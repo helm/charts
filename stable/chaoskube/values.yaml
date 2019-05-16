@@ -84,7 +84,7 @@ affinity: {}
   #     - topologyKey: "kubernetes.io/hostname"
   #       labelSelector:
   #         matchLabels:
-  #           app: chaoskube
+  #           app.kubernetes.io/name: chaoskube
 
 podAnnotations: {}
   ## Annotations for the chaoskube pod.
