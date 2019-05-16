@@ -46,17 +46,21 @@ Parameter | Description | Default
 `output.sslVersion` | output ssl version | `TLSv1`
 `output.buffer_chunk_limit` | output buffer chunk limit | `2M`
 `output.buffer_queue_limit` | output buffer queue limit | `8`
-`service.type` | type of service | `ClusterIP`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
 `image.repository` | Image repository | `gcr.io/google-containers/fluentd-elasticsearch`
 `image.tag` | Image tag | `v2.4.0`
 `imagePullSecrets` | Specify image pull secrets | `nil` (does not add image pull secrets to deployed pods)
+`extraEnvVars` | Adds additional environment variables to the deployment (in yaml syntax) | `{}` See [values.yaml](values.yaml)
 `ingress.enabled` | enable ingress | `false`
+`ingress.labels` | list of labels for the ingress rule | See [values.yaml](values.yaml)
+`ingress.annotations` | list of annotations for the ingress rule | `kubernetes.io/ingress.class: nginx` See [values.yaml](values.yaml)
+`ingress.hosts` | host definition for ingress | See [values.yaml](values.yaml)
+`ingress.tls` | tls rules for ingress | See [values.yaml](values.yaml)
 `nodeSelector` | node labels for pod assignment | `{}`
 `replicaCount` | desired number of pods | `1` ???
 `resources` | pod resource requests & limits | `{}`
 `priorityClassName` | priorityClassName | `nil`
-`service.port` | port for the service | `80`
+`service.ports` | port definition for the service | See [values.yaml](values.yaml)
 `service.type` | type of service | `ClusterIP`
 `tolerations` | List of node taints to tolerate | `[]`
 `persistence.enabled` | Enable buffer persistence | `false`

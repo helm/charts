@@ -1,3 +1,10 @@
+**********************************************************************
+This chart has been DEPRECATED and moved to its new home:
+
+* GitHub repo: https://github.com/codecentric/helm-charts
+* Charts repo: https://codecentric.github.io/helm-charts
+
+**********************************************************************
 
 Keycloak can be accessed:
 

@@ -1,3 +1,4 @@
+{{- if .Values.worker.enabled -}}
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
@@ -169,8 +170,13 @@ spec:
             - name: CONCOURSE_LOG_LEVEL
               value: {{ .Values.concourse.worker.logLevel | quote }}
             {{- end }}
+            {{ if and .Values.worker.enabled (not .Values.web.enabled) }}
             - name: CONCOURSE_TSA_HOST
-              value: "{{ template "concourse.web.fullname" . }}:{{ .Values.concourse.web.tsa.bindPort}}"
+              value: "{{ required "concourse.worker.tsa.host must be set in case of worker only deployment" .Values.concourse.worker.tsa.host }}:{{ .Values.concourse.worker.tsa.port}}"
+            {{ else }}
+            - name: CONCOURSE_TSA_HOST
+              value: "{{ template "concourse.web.fullname" . }}:{{ .Values.concourse.worker.tsa.port}}"
+            {{ end }}
             - name: CONCOURSE_TSA_PUBLIC_KEY
               value: "{{ .Values.worker.keySecretsPath }}/host_key.pub"
             - name: CONCOURSE_TSA_WORKER_PRIVATE_KEY
@@ -231,13 +237,17 @@ spec:
             - name: CONCOURSE_BAGGAGECLAIM_OVERLAYS_DIR
               value: {{ .Values.concourse.worker.baggageclaim.overlaysDir | quote }}
             {{- end }}
-            {{- if .Values.concourse.worker.baggageclaim.reapInterval }}
-            - name: CONCOURSE_BAGGAGECLAIM_REAP_INTERVAL
-              value: {{ .Values.concourse.worker.baggageclaim.reapInterval | quote }}
-            {{- end }}
             {{- if .Values.concourse.worker.baggageclaim.disableUserNamespaces }}
             - name: CONCOURSE_BAGGAGECLAIM_DISABLE_USER_NAMESPACES
               value: {{ .Values.concourse.worker.baggageclaim.disableUserNamespaces | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.volumeSweeperMaxInFlight }}
+            - name: CONCOURSE_VOLUME_SWEEPER_MAX_IN_FLIGHT
+              value: {{ .Values.concourse.worker.volumeSweeperMaxInFlight | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.containerSweeperMaxInFlight }}
+            - name: CONCOURSE_CONTAINER_SWEEPER_MAX_IN_FLIGHT
+              value: {{ .Values.concourse.worker.containerSweeperMaxInFlight | quote }}
             {{- end }}
 {{- if .Values.worker.env }}
 {{ toYaml .Values.worker.env | indent 12 }}
@@ -295,7 +305,7 @@ spec:
             name: {{ template "concourse.worker.fullname" . }}
         - name: concourse-keys
           secret:
-            secretName: {{ template "concourse.concourse.fullname" . }}
+            secretName: {{ template "concourse.worker.fullname" . }}
             defaultMode: 0400
             items:
               - key: host-key-pub
@@ -337,3 +347,4 @@ spec:
   {{- if .Values.worker.podManagementPolicy }}
   podManagementPolicy: {{ .Values.worker.podManagementPolicy }}
   {{- end }}
+{{- end }}
