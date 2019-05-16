@@ -45,7 +45,7 @@ Parameter | Description | Default
 `serviceAccounts.localdata.create` | If true, create the cloudserver localdata service account | `true`
 `serviceAccounts.localdata.name` | name of the cloudserver localdata service account to use or create | `{{ cloudserver.localdata.fullname }}`
 `image.repository` | cloudserver image repository | `zenko/cloudserver`
-`image.tag` | cloudserver image tag | `8.1.1`
+`image.tag` | cloudserver image tag | `8.1.5`
 `image.pullPolicy` | cloudserver image pullPolicy | `IfNotPresent`
 `api.replicaCount` | number of api replicas | `1`
 `api.locationConstraints` | cloudserver location constraint configuration | `{}`

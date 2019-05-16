@@ -22,7 +22,7 @@ autoDiscoverAwsVpcID: false
 
 scope:
   ## If provided, the ALB ingress controller will only act on Ingress resources annotated with this class
-  ## Ref: https://github.com/kubernetes-sigs/aws-alb-ingress-controller/blob/master/docs/configuration.md#limiting-ingress-class
+  ## Ref: https://github.com/kubernetes-sigs/aws-alb-ingress-controller/blob/master/docs/guide/controller/config.md#limiting-ingress-class
   ingressClass: alb
 
   ## If true, the ALB ingress controller will only act on Ingress resources in a single namespace
@@ -30,7 +30,7 @@ scope:
   singleNamespace: false
 
   ## If scope.singleNamespace=true, the ALB ingress controller will only act on Ingress resources in this namespace
-  ## Ref: https://github.com/kubernetes-sigs/aws-alb-ingress-controller/blob/master/docs/configuration.md#limiting-namespaces
+  ## Ref: https://github.com/kubernetes-sigs/aws-alb-ingress-controller/blob/master/docs/guide/controller/config.md#limiting-namespaces
   ## Default: namespace of the ALB ingress controller
   watchNamespace: ""
 
@@ -71,7 +71,7 @@ rbac:
 
 image:
   repository: docker.io/amazon/aws-alb-ingress-controller
-  tag: "v1.0.1"
+  tag: "v1.1.2"
   pullPolicy: IfNotPresent
 
 replicaCount: 1

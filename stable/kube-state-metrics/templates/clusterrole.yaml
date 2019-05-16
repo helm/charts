@@ -9,6 +9,12 @@ metadata:
     release: {{ .Release.Name }}
   name: {{ template "kube-state-metrics.fullname" . }}
 rules:
+{{ if .Values.collectors.certificatesigningrequests }}
+- apiGroups: ["certificates.k8s.io"]
+  resources:
+  - certificatesigningrequests
+  verbs: ["list", "watch"]
+{{ end -}}
 {{ if .Values.collectors.configmaps }}
 - apiGroups: [""]
   resources:
@@ -22,13 +28,13 @@ rules:
   verbs: ["list", "watch"]
 {{ end -}}
 {{ if .Values.collectors.daemonsets }}
-- apiGroups: ["extensions"]
+- apiGroups: ["extensions", "apps"]
   resources:
   - daemonsets
   verbs: ["list", "watch"]
 {{ end -}}
 {{ if .Values.collectors.deployments }}
-- apiGroups: ["extensions"]
+- apiGroups: ["extensions", "apps"]
   resources:
   - deployments
   verbs: ["list", "watch"]
@@ -43,6 +49,12 @@ rules:
 - apiGroups: ["autoscaling"]
   resources:
   - horizontalpodautoscalers
+  verbs: ["list", "watch"]
+{{ end -}}
+{{ if .Values.collectors.ingresses }}
+- apiGroups: ["extensions"]
+  resources:
+  - ingresses
   verbs: ["list", "watch"]
 {{ end -}}
 {{ if .Values.collectors.jobs }}
@@ -94,7 +106,7 @@ rules:
   verbs: ["list", "watch"]
 {{ end -}}
 {{ if .Values.collectors.replicasets }}
-- apiGroups: ["extensions"]
+- apiGroups: ["extensions", "apps"]
   resources:
   - replicasets
   verbs: ["list", "watch"]

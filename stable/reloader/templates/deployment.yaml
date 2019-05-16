@@ -15,6 +15,7 @@ metadata:
 {{ toYaml .Values.reloader.matchLabels | indent 4 }}
 {{- end }}
   name: {{ template "reloader-name" . }}
+  namespace: {{ .Release.Namespace }}
 spec:
   replicas: 1
   revisionHistoryLimit: 2

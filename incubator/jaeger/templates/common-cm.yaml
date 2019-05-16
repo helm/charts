@@ -11,9 +11,11 @@ data:
   cassandra.contact-points: {{ template "cassandra.contact_points" . }}
   cassandra.datacenter.name: {{ .Values.cassandra.config.dc_name | quote }}
   cassandra.keyspace: {{ printf "%s_%s" "jaeger_v1" .Values.cassandra.config.dc_name | quote }}
+  cassandra.password: {{ .Values.storage.cassandra.password }}
   cassandra.port: {{ .Values.storage.cassandra.port | quote }}
   cassandra.schema.mode: {{ .Values.schema.mode | quote }}
   cassandra.servers: {{ template "cassandra.host" . }}
+  cassandra.username: {{ .Values.storage.cassandra.user }}
   collector.host-port: {{ template "jaeger.collector.host-port" . }}
   collector.http-port: {{ .Values.collector.service.httpPort | quote }}
   collector.port: {{ .Values.collector.service.tchannelPort | quote }}
@@ -41,11 +43,9 @@ data:
   # cassandra.archive.username:
   # cassandra.connections-per-host:
   # cassandra.max-retry-attempts:
-  # cassandra.password:
   # cassandra.proto-version:
   # cassandra.socket-keep-alive:
   # cassandra.timeout:
-  # cassandra.username:
   # collector.health-check-http-port:
   # collector.num-workers:
   # collector.queue-size:

@@ -25,7 +25,7 @@ def change_style(style, representer):
 # Source files list
 charts = [
     {
-        'source': 'https://raw.githubusercontent.com/coreos/prometheus-operator/master/contrib/kube-prometheus/manifests/prometheus-rules.yaml',
+        'source': 'https://raw.githubusercontent.com/coreos/kube-prometheus/master/manifests/prometheus-rules.yaml',
         'destination': '../templates/prometheus/rules'
     },
     {
@@ -63,6 +63,7 @@ alert_condition_map = {
     'PrometheusOperatorDown': '.Values.prometheusOperator.enabled',
     'NodeExporterDown': '.Values.nodeExporter.enabled',
     'CoreDNSDown': '.Values.kubeDns.enabled',
+    'AlertmanagerDown': '.Values.alertmanager.enabled',
 }
 
 replacement_map = {
