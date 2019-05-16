@@ -1,3 +1,4 @@
+apiVersion: v1
 name: kiam
 version: 2.2.5
 appVersion: 3.2
