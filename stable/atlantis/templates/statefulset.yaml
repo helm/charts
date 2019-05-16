@@ -51,6 +51,11 @@ spec:
         secret:
           secretName: {{ template "atlantis.fullname" . }}-aws
       {{- end }}
+      {{- if .Values.repoConfig }}
+      - name: repo-config
+        configMap:
+          name:  {{ template "atlantis.fullname" . }}-repo-config
+      {{- end }}
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
       {{- range .Values.imagePullSecrets }}
@@ -69,9 +74,6 @@ spec:
           {{- end}}
           args:
             - server
-          {{- if .Values.allowRepoConfig }}
-            - --allow-repo-config
-          {{- end }}
           ports:
           - name: atlantis
             containerPort: 4141
@@ -79,6 +81,14 @@ spec:
           {{- range $key, $value := .Values.environment }}
           - name: {{ $key }}
             value: {{ $value | quote }}
+          {{- end }}
+          {{- if .Values.allowForkPRs }}
+          - name: ATLANTIS_ALLOW_FORK_PRS
+            value: {{ .Values.allowForkPRS }}
+          {{- end }}
+          {{- if .Values.defaultTFVersion }}
+          - name: ATLANTIS_DEFAULT_TF_VERSION
+            value: {{ .Values.defaultTFVersion }}
           {{- end }}
           {{- if .Values.logLevel }}
           - name: ATLANTIS_LOG_LEVEL
@@ -96,6 +106,10 @@ spec:
             value: {{ toYaml .Values.orgWhitelist }}
           - name: ATLANTIS_PORT
             value: "4141"
+          {{- if .Values.repoConfig }}
+          - name: ATLANTIS_REPO_CONFIG
+            value: /etc/atlantis/repos.yaml
+          {{- end }}
           {{- if .Values.atlantisUrl }}
           - name: ATLANTIS_ATLANTIS_URL
             value: {{ .Values.atlantisUrl }}
@@ -157,14 +171,6 @@ spec:
                 key: bitbucket_secret
           {{- end }}
           {{- end }}
-          {{- if .Values.requireApproval }}
-          - name: ATLANTIS_REQUIRE_APPROVAL
-            value: "true"
-          {{- end }}
-          {{- if .Values.requireMergeable }}
-          - name: ATLANTIS_REQUIRE_MERGEABLE
-            value: "true"
-          {{- end }}
           {{- if .Values.livenessProbe.enabled }}
           livenessProbe:
             httpGet:
@@ -210,6 +216,11 @@ spec:
           {{- if .Values.tlsSecretName }}
           - name: tls
             mountPath: /etc/tls/
+          {{- end }}
+          {{- if .Values.repoConfig }}
+          - name: repo-config
+            mountPath: /etc/atlantis
+            readOnly: true
           {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
