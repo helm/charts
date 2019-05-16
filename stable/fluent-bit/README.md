@@ -95,6 +95,8 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `filter.kubeCAFile`                | Optional custom configmaps       | `/var/run/secrets/kubernetes.io/serviceaccount/ca.crt`    |
 | `filter.kubeTokenFile`             | Optional custom configmaps       | `/var/run/secrets/kubernetes.io/serviceaccount/token`     |
 | `filter.kubeTag`                   | Optional top-level tag for matching in filter         | `kube`                                 |
+| `filter.kubeTagPrefix`             | Optional tag prefix used by Tail   | `kube.var.log.containers.`                                |
+
 | `filter.mergeJSONLog`              | If the log field content is a JSON string map, append the map fields as part of the log structure         | `true`                                 |
 | `image.fluent_bit.repository`      | Image                                      | `fluent/fluent-bit`                               |
 | `image.fluent_bit.tag`             | Image tag                                  | `1.0.6`                                          |
@@ -117,8 +119,8 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `resources`                        | Pod resource requests & limits                                 | `{}`                          |
 | `hostNetwork`                      | Use host's network                         | `false`                                           |
 | `dnsPolicy`                        | Specifies the dnsPolicy to use             | `ClusterFirst`                                    |
-| `priorityClassName`                | Specifies the priorityClassName to use     | `NULL`        
-|                   
+| `priorityClassName`                | Specifies the priorityClassName to use     | `NULL`
+|
 | `tolerations`                      | Optional daemonset tolerations             | `NULL`                                            |
 | `nodeSelector`                     | Node labels for fluent-bit pod assignment  | `NULL`                                            |
 | `affinity`                         | Expressions for affinity                   | `NULL`                                            |
