@@ -8,6 +8,6 @@ home: https://crate.io
 sources:
   - https://github.com/crate/crate
 maintainers:
-  - name: Manoj Prasanna Handapangoda
+  - name: hmdmph
     email: hmdmph@yahoo.com
 icon: https://raw.githubusercontent.com/crate/crate/master/blackbox/docs/_static/crate-logo.png
