@@ -50,7 +50,7 @@ spec:
         - mountPath: /etc/ssl/certs/java/cacerts
           subPath: cacerts
           name: cacerts
-        {{- end -}}
+        {{- end }}
       volumes:
       {{- if .Values.kubeConfig.enabled }}
       - name: kube-config
@@ -71,7 +71,7 @@ spec:
           {{- if .Values.dockerRegistryAccountSecret }}
           secretName: {{ .Values.dockerRegistryAccountSecret }}
           {{- else }}
-          secretName: {{ template "spinnaker.fullname" .}}-registry
+          secretName: {{ template "spinnaker.fullname" . }}-registry
           {{- end }}
       {{- if and .Values.s3.enabled .Values.s3.accessKey .Values.s3.secretKey }}
       - name: s3-secrets
@@ -114,7 +114,7 @@ spec:
           items:
           - key: cacerts
             path: cacerts
-      {{- end -}}
+      {{- end }}
       containers:
       - name: halyard
         image: {{ .Values.halyard.image.repository }}:{{ .Values.halyard.image.tag }}
@@ -160,7 +160,7 @@ spec:
         - mountPath: /etc/ssl/certs/java/cacerts
           subPath: cacerts
           name: cacerts
-        {{- end -}}
+        {{- end }}
   volumeClaimTemplates:
   - metadata:
       name: halyard-home
