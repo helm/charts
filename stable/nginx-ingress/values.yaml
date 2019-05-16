@@ -285,6 +285,7 @@ controller:
       enabled: false
       additionalLabels: {}
       namespace: ""
+      # honorLabels: true
 
   lifecycle: {}
 
