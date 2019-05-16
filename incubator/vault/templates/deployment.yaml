@@ -34,7 +34,7 @@ spec:
     spec:
       {{- if .Values.vault.extraInitContainers }}
       initContainers:
-{{ tpl .Values.vault.extraInitContainers . | indent 6 }}
+{{ tpl (toYaml .Values.vault.extraInitContainers) . | indent 6 }}
       {{- end }}
       containers:
       - name: {{ .Chart.Name }}
@@ -47,7 +47,7 @@ spec:
         {{- end }}
         {{- if .Values.lifecycle }}
         lifecycle:
-{{ tpl .Values.lifecycle . | indent 10 }}
+{{ tpl (toYaml .Values.lifecycle) . | indent 10 }}
         {{- end }}
         ports:
         - containerPort: {{ .Values.service.port }}
@@ -101,7 +101,7 @@ spec:
 {{ toYaml .Values.vault.extraVolumeMounts | indent 8 }}
         {{- end }}
 {{- if .Values.vault.extraContainers }}
-{{ toYaml .Values.vault.extraContainers | indent 6}}
+{{ tpl (toYaml .Values.vault.extraContainers) . | indent 6}}
 {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
@@ -167,7 +167,7 @@ spec:
       {{- end }}
       {{- if .Values.affinity }}
       affinity:
-{{ tpl .Values.affinity . | indent 8 }}
+{{ tpl (toYaml .Values.affinity) . | indent 8 }}
       {{- end }}
       {{- if .Values.nodeSelector }}
       nodeSelector:

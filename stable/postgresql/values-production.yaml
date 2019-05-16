@@ -14,7 +14,7 @@ global:
 image:
   registry: docker.io
   repository: bitnami/postgresql
-  tag: 10.7.0
+  tag: 10.8.0
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -64,6 +64,13 @@ securityContext:
   enabled: true
   fsGroup: 1001
   runAsUser: 1001
+
+## Pod Service Account
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
+serviceAccount:
+  enabled: false
+  ## Name of an already existing service account. Setting this value disables the automatic service account creation.
+  # name:
 
 replication:
   enabled: true
