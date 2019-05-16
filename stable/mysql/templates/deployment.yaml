@@ -2,6 +2,7 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: {{ template "mysql.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "mysql.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
