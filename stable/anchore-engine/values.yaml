@@ -16,6 +16,7 @@ postgresql:
   # Configure size of the persitant volume used with helm managed chart.
   # This should be commented out if using an external endpoint.
   persistence:
+    resourcePolicy: nil
     size: 20Gi
 
 # Google CloudSQL support in GKE via gce-proxy
@@ -392,6 +393,7 @@ anchore-feeds-db:
   # Configure size of the persitant volume used with helm managed chart.
   # This should be commented out if using an external endpoint.
   persistence:
+    resourcePolicy: nil
     size: 20Gi
 
 # Configure & enable the Anchore Enterprise on-prem feeds service.
