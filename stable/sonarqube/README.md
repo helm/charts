@@ -47,6 +47,8 @@ The following table lists the configurable parameters of the Sonarqube chart and
 | `securityContext.fsGroup`                   | Group applied to mounted directories/files|  `999`                                     |
 | `ingress.enabled`                           | Flag for enabling ingress                 | false                                      |
 | `ingress.labels`                            | Ingress additional labels                 | `{}`                                       |
+| `ingress.hosts[0].name`                     | Hostname to your SonarQube installation   | `sonar.organization.com`                   |
+| `ingress.hosts[0].path`                     | Path within the URL structure             | /                                          |
 | `livenessProbe.sonarWebContext`             | SonarQube web context for livenessProbe   | /                                          |
 | `readinessProbe.sonarWebContext`            | SonarQube web context for readinessProbe  | /                                          |
 | `service.type`                              | Kubernetes service type                   | `LoadBalancer`                             |
@@ -86,6 +88,8 @@ The following table lists the configurable parameters of the Sonarqube chart and
 | `plugins.resources`                         | Plugin Pod resource requests & limits     | `{}`                                       |
 | `plugins.initContainerImage`                | Change init container image               | `[]`                                       |
 | `plugins.deleteDefaultPlugins`              | Remove default plugins and use plugins.install list | `[]`                             |
+| `podLabels`                                 | Map of labels to add to the pods          | `{}`                                       |
+
 
 You can also configure values for the PostgreSQL / MySQL database via the Postgresql [README.md](https://github.com/kubernetes/charts/blob/master/stable/postgresql/README.md) / MySQL [README.md](https://github.com/kubernetes/charts/blob/master/stable/mysql/README.md)
 
