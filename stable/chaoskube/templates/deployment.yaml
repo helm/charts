@@ -12,8 +12,8 @@ spec:
   replicas: {{ .Values.replicas }}
   selector:
     matchLabels:
-      app: {{ include "chaoskube.name" . }}
-      release: {{ .Release.Name }}
+      app.kubernetes.io/name: {{ include "chaoskube.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       labels:
