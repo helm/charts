@@ -20,7 +20,8 @@ halyard:
   additionalConfigMaps:
     create: false
     data: {}
-
+    ## Uncomment if you want to use a pre-created ConfigMap rather than feeding data in via helm.
+    # name:
   additionalProfileConfigMaps:
     data: {}
       ## if you're running spinnaker behind a reverse proxy such as a GCE ingress
