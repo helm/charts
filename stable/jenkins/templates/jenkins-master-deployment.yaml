@@ -211,26 +211,18 @@ spec:
             httpGet:
               path: "{{ default "" .Values.master.jenkinsUriPrefix }}/login"
               port: http
-            {{- if .Values.master.healthProbeLivenessInitialDelay }}
             initialDelaySeconds: {{ .Values.master.healthProbeLivenessInitialDelay }}
-            {{- end }}
-            {{- if .Values.master.healthProbeLivenessPeriodSeconds }}
             periodSeconds: {{ .Values.master.healthProbeLivenessPeriodSeconds }}
-            {{- end }}
             timeoutSeconds: {{ .Values.master.healthProbesLivenessTimeout }}
             failureThreshold: {{ .Values.master.healthProbeLivenessFailureThreshold }}
           readinessProbe:
             httpGet:
               path: "{{ default "" .Values.master.jenkinsUriPrefix }}/login"
               port: http
-            {{- if .Values.master.healthProbeReadinessInitialDelay }}
             initialDelaySeconds: {{ .Values.master.healthProbeReadinessInitialDelay }}
-            {{- end }}
             periodSeconds: {{ .Values.master.healthProbeReadinessPeriodSeconds }}
             timeoutSeconds: {{ .Values.master.healthProbesReadinessTimeout }}
-            {{- if .Values.master.healthProbeReadinessFailureThreshold }}
             failureThreshold: {{ .Values.master.healthProbeReadinessFailureThreshold }}
-            {{- end }}
 {{- end }}
 
           resources:
