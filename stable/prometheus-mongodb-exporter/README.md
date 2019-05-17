@@ -16,7 +16,7 @@ This command deploys the MongoDB Exporter with the default configuration. The [c
 ## Using the Chart
 
 To use the chart, ensure the `mongodb.uri` is populated with a valid [MongoDB URI](https://docs.mongodb.com/manual/reference/connection-string).
-If the MongoDB server requires authentication, credentials should be populated in the connection string as well. The MongoDB Exporter supports 
+If the MongoDB server requires authentication, credentials should be populated in the connection string as well. The MongoDB Exporter supports
 connecting to either a MongoDB replica set member, shard, or standalone instance.
 
 The chart comes with a ServiceMonitor for use with the [Prometheus Operator](https://github.com/helm/charts/tree/master/stable/prometheus-operator).
@@ -42,6 +42,7 @@ podAnnotations:
 | `image.tag` | MongoDB Exporter image tag | `0.7.0` |
 | `imagePullSecrets` | List of container registry secrets | `[]` |
 | `mongodb.uri` | The required [URI](https://docs.mongodb.com/manual/reference/connection-string) to connect to MongoDB | `` |
+| `secret.mongodbUri` | [URI](https://docs.mongodb.com/manual/reference/connection-string) to connect to MongoDB | `` |
 | `nameOverride` | Override the application name  | `` |
 | `nodeSelector` | Node labels for pod assignment | `{}` |
 | `podAnnotations` | Annotations to be added to all pods | `{}` |
