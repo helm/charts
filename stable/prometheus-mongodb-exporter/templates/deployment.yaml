@@ -25,16 +25,13 @@ spec:
     spec:
       containers:
       - name: mongodb-exporter
-        {{- if .Values.secret.mongodbUri }}
         env:
           - name: MONGODB_URI
             valueFrom:
               secretKeyRef:
                 name: {{ include "prometheus-mongodb-exporter.fullname" . }}
                 key: mongodb-uri
-        {{- end }}
         {{- if .Values.env }}
-        env:
         {{- range $key, $value := .Values.env }}
           - name: "{{ $key }}"
             value: "{{ $value }}"
@@ -43,9 +40,6 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         args:
-        {{- if (not .Values.secret.mongodbUri) }}
-        - --mongodb.uri={{ required "A MongoDB URI is required" .Values.mongodb.uri }}
-        {{- end }}
         - --web.listen-address={{ printf ":%s" .Values.port }}
         {{- toYaml .Values.extraArgs | nindent 8 }}
         ports:

@@ -27,9 +27,6 @@ livenessProbe:
 mongodb:
   uri:
 
-secret:
-  mongodbUri: ""
-
 nameOverride: ""
 
 nodeSelector: {}

@@ -42,7 +42,6 @@ podAnnotations:
 | `image.tag` | MongoDB Exporter image tag | `0.7.0` |
 | `imagePullSecrets` | List of container registry secrets | `[]` |
 | `mongodb.uri` | The required [URI](https://docs.mongodb.com/manual/reference/connection-string) to connect to MongoDB | `` |
-| `secret.mongodbUri` | [URI](https://docs.mongodb.com/manual/reference/connection-string) to connect to MongoDB | `` |
 | `nameOverride` | Override the application name  | `` |
 | `nodeSelector` | Node labels for pod assignment | `{}` |
 | `podAnnotations` | Annotations to be added to all pods | `{}` |
