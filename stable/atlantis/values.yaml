@@ -37,6 +37,8 @@ orgWhitelist: <replace-me>
 #   base_url: https://bitbucket.yourorganization.com
 # (The chart will perform the base64 encoding for you for values that are stored in secrets.)
 
+# If managing secrets outside the chart for the webhook, use this variable to reference the secret name
+# vcsSecretsName: 'mysecret'
 
 # When referencing Terraform modules in private repositories, it may be helpful
 # (necessary?) to use redirection in a .gitconfig like so:
