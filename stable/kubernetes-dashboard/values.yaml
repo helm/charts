@@ -55,7 +55,7 @@ affinity: {}
 service:
   type: ClusterIP
   externalPort: 443
-
+  # targetPort: 4181 To be used with a proxy extraContainer
   ## This allows an override of the heapster service name
   ## Default: {{ .Chart.Name }}
   ##
@@ -164,3 +164,20 @@ podDisruptionBudget:
   enabled: false
   minAvailable:
   maxUnavailable:
+
+## Enable an Specify container in extraContainers. This is meant to allow adding an authentication proxy to a dashboard pod
+extraContainers: |
+# - name: proxy
+#   image: quay.io/pusher/oauth2_proxy:latest
+#   args:
+#   - -provider=github
+#   - -client-id=
+#   - -client-secret=
+#   - -github-org=<ORG_NAME>
+#   - -email-domain=*
+#   - -cookie-secret=
+#   - -http-address=http://0.0.0.0:4181
+#   - -upstream-url=http://127.0.0.1:8443
+#   ports:
+#     - name: proxy-web
+#       containerPort: 4181

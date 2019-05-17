@@ -19,7 +19,10 @@ spec:
   type: {{ .Values.service.type }}
   ports:
   - port: {{ .Values.service.externalPort }}
-{{- if .Values.enableInsecureLogin }}
+{{- if hasKey .Values.service "targetPort" }}
+    targetPort: {{ .Values.service.targetPort }}
+    name: "TCP"
+{{- else if .Values.enableInsecureLogin }}
     targetPort: 9090
     name: "http"
 {{- else }}

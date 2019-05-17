@@ -85,6 +85,9 @@ spec:
         - name: {{ . }}
       {{- end }}
     {{- end }}
+{{- if .Values.extraContainers }}
+{{ toYaml .Values.extraContainers | indent 8}}
+{{- end }}    
     {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
