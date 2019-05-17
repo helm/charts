@@ -1,0 +1,18 @@
+{{- if .Values.metrics.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "chaoskube.fullname" . }}
+  labels:
+{{ include "labels.standard" . | indent 4 }}
+spec:
+  type: {{ .Values.metrics.service.type }}
+  ports:
+    - port: {{ .Values.metrics.service.port }}
+      targetPort: metrics
+      protocol: TCP
+      name: metrics
+  selector:
+    app.kubernetes.io/name: {{ include "chaoskube.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
