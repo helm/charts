@@ -60,7 +60,8 @@ spec:
             - -c
             - rm -rf /usr/share/graylog/data/journal/lost+found &&
               wget https://storage.googleapis.com/kubernetes-release/release/v1.11.4/bin/linux/amd64/kubectl -O /k8s/kubectl &&
-              chmod +x /k8s/kubectl
+              chmod +x /k8s/kubectl &&
+              chmod 777 /usr/share/graylog/data/journal
           securityContext:
             privileged: true
           volumeMounts:
