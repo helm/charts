@@ -9,4 +9,6 @@ sources:
 maintainers:
   - name: kremers
     email: info@martinkremers.de
+  - name: pryorda
+    email: daniel@pryorda.net
 engine: gotpl
