@@ -16,11 +16,9 @@ data:
     mkdir -p /tmp/spinnaker/.hal/default/service-settings
     cp /tmp/service-settings/* /tmp/spinnaker/.hal/default/service-settings/
 
-    {{- if .Values.halyard.additionalProfileConfigMaps.create }}
     rm -rf /tmp/spinnaker/.hal/default/profiles
     mkdir -p /tmp/spinnaker/.hal/default/profiles
     cp /tmp/additionalProfileConfigMaps/* /tmp/spinnaker/.hal/default/profiles/
-    {{- end }}
 
     {{- if hasKey .Values.halyard "additionalInitScript" }}
     # additionalInitScript
