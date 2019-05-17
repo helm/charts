@@ -20,21 +20,21 @@ halyard:
   additionalConfigMaps:
     create: false
     data: {}
+
   additionalProfileConfigMaps:
-    create: false
-    data:
-    ## if you're running spinnaker behind a reverse proxy such as a GCE ingress
-    ## you may need the following profile settings for the gate profile.
-    ## see https://github.com/spinnaker/spinnaker/issues/1630
-    ## otherwise its harmless and will likely become default behavior in the future
-    ## According to the linked github issue.
-      gate-local.yml: |-
-        server:
-          tomcat:
-            protocolHeader: X-Forwarded-Proto
-            remoteIpHeader: X-Forwarded-For
-            internalProxies: .*
-            httpsServerPort: X-Forwarded-Port
+    data: {}
+      ## if you're running spinnaker behind a reverse proxy such as a GCE ingress
+      ## you may need the following profile settings for the gate profile.
+      ## see https://github.com/spinnaker/spinnaker/issues/1630
+      ## otherwise its harmless and will likely become default behavior in the future
+      ## According to the linked github issue.
+      # gate-local.yml:
+      #   server:
+      #     tomcat:
+      #       protocolHeader: X-Forwarded-Proto
+      #       remoteIpHeader: X-Forwarded-For
+      #       internalProxies: .*
+      #       httpsServerPort: X-Forwarded-Port
 
   ## Uncomment if you want to add extra commands to the init script
   ## run by the init container before halyard is started.
