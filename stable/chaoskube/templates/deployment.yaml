@@ -46,7 +46,16 @@ spec:
             {{- end }}
             - --minimum-age={{ .Values.minimumAge }}
             - --grace-period={{ .Values.gracePeriod }}
-            - --metrics-address={{ .Values.metricsAddress }}
+          {{- if .Values.metrics.enabled }}
+            - --metrics-address=:{{ .Values.metrics.port }}
+          {{- else }}
+            - --metrics-address=
+          {{- end }}
+          {{- if .Values.metrics.enabled }}
+          ports:
+            - name: metrics
+              containerPort: {{ .Values.metrics.port }}
+          {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           securityContext:
