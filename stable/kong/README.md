@@ -186,7 +186,17 @@ To deploy the ingress controller together with
 kong run the following command:
 
 ```bash
+# without a database
+helm install stable/kong --set ingressController.enabled=true \
+  --set postgresql.enabled=false --set env.database=off
+# with a database
 helm install stable/kong --set ingressController.enabled=true
+```
+
+If you like to use a static IP:
+
+```shell
+helm install stable/kong --set ingressController.enabled=true --set proxy.loadBalancerIP=[Your IP goes there] --set proxy.type=LoadBalancer --name kong --namespace kong
 ```
 
 **Note**: Kong Ingress controller doesn't support custom SSL certificates
