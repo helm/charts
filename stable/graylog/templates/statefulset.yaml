@@ -58,9 +58,18 @@ spec:
           command:
             - /bin/sh
             - -c
-            - rm -rf /usr/share/graylog/data/journal/lost+found &&
-              wget https://storage.googleapis.com/kubernetes-release/release/v1.11.4/bin/linux/amd64/kubectl -O /k8s/kubectl &&
+            - |
+              rm -rf /usr/share/graylog/data/journal/lost+found
+            {{- if .Values.graylog.journal.deleteBeforeStart }}
+              rm -rf /usr/share/graylog/data/journal/graylog2-committed-read-offset
+              rm -rf /usr/share/graylog/data/journal/messagejournal-0
+              rm -rf /usr/share/graylog/data/journal/recovery-point-offset-checkpoint
+            {{- end }}
+              wget https://storage.googleapis.com/kubernetes-release/release/v1.14.0/bin/linux/amd64/kubectl -O /k8s/kubectl
               chmod +x /k8s/kubectl
+
+              GRAYLOG_HOME=/usr/share/graylog
+              chown -R 1100:1100 ${GRAYLOG_HOME}/data/
           securityContext:
             privileged: true
           volumeMounts:
@@ -73,63 +82,7 @@ spec:
           image: "{{ .Values.graylog.image.repository }}"
           imagePullPolicy: {{ .Values.graylog.image.pullPolicy | quote }}
           command:
-            - bash
-            - -c
-            - |
-                GRAYLOG_HOME=/usr/share/graylog
-                GRAYLOG_USER=graylog
-                GRAYLOG_GROUP=graylog
-                chown -R ${GRAYLOG_USER}:${GRAYLOG_GROUP} ${GRAYLOG_HOME}/data/
-                MASTER_NAME="{{ template "graylog.fullname" . }}-master.{{ .Release.Namespace }}.svc.cluster.local"
-                # Looking for Master IP
-                MASTER_IP=`/k8s/kubectl get pod -o jsonpath='{range .items[*]}{.metadata.name} {.status.podIP}{"\n"}{end}' -l graylog-role=master --field-selector=status.phase=Running|awk '{print $2}'`
-                echo "Current master is $MASTER_IP"
-                if [[ -z "$MASTER_IP" ]]; then
-                  echo "Launching $HOSTNAME as master"
-                  export GRAYLOG_IS_MASTER="true"
-                  /k8s/kubectl label --overwrite pod $HOSTNAME graylog-role="master"
-                else
-                  echo "Launching $HOSTNAME as coordinating"
-                  export GRAYLOG_IS_MASTER="false"
-                  /k8s/kubectl label --overwrite pod $HOSTNAME graylog-role="coordinating"
-                fi
-                # Download plugins
-              {{- if .Values.graylog.plugins }}
-                echo "Downloading Graylog Plugins..."
-              {{- range .Values.graylog.plugins }}
-                echo "Downloading {{ .url }} ..."
-                curl -s --location --retry 3 -o ${GRAYLOG_HOME}/plugin/{{ .name }} "{{ .url }}"
-              {{- end }}
-              {{- end }}
-              {{- if .Values.graylog.metrics.enabled }}
-                echo "Downloading https://github.com/graylog-labs/graylog-plugin-metrics-reporter/releases/download/2.4.0-beta.3/metrics-reporter-prometheus-2.4.0-beta.3.jar ..."
-                curl -s --location --retry 3 -o ${GRAYLOG_HOME}/plugin/metrics-reporter-prometheus-2.4.0-beta.3.jar "https://github.com/graylog-labs/graylog-plugin-metrics-reporter/releases/download/2.4.0-beta.3/metrics-reporter-prometheus-2.4.0-beta.3.jar"
-              {{- end }}
-                chown -R ${GRAYLOG_USER}:${GRAYLOG_GROUP} ${GRAYLOG_HOME}/plugin/
-              {{- if .Values.graylog.geoip.enabled }}
-                echo "Downloading Maxmind GeoLite2 ..."
-                curl -s --location --retry 3 -o /tmp/GeoLite2-City.tar.gz "https://geolite.maxmind.com/download/geoip/database/GeoLite2-City.tar.gz"
-                curlreturn=$?
-                if [[ $curlreturn -eq 0 ]]; then
-                  mkdir -p ${GRAYLOG_HOME}/geoip && cd ${GRAYLOG_HOME}/geoip && tar xvzf /tmp/GeoLite2-City.tar.gz --wildcards "*.mmdb" --strip-components=1 -C ${GRAYLOG_HOME}/geoip && chown -R graylog:graylog ${GRAYLOG_HOME}/geoip
-                fi
-              {{- end }}
-                # Start Graylog
-                echo "Starting graylog"
-                # Original docker-entrypoint.sh in Graylog Docker will error while executing since you can't chown readonly files in `config`
-                # exec /docker-entrypoint.sh graylog
-                echo "Graylog Home ${GRAYLOG_HOME}"
-                echo "Graylog User ${GRAYLOG_USER}"
-                echo "JVM Options ${GRAYLOG_SERVER_JAVA_OPTS}"
-                "${JAVA_HOME}/bin/java" \
-                  ${GRAYLOG_SERVER_JAVA_OPTS} \
-                  -jar \
-                  -Dlog4j.configurationFile=${GRAYLOG_HOME}/config/log4j2.xml \
-                  -Djava.library.path=${GRAYLOG_HOME}/lib/sigar/ \
-                  -Dgraylog2.installation_source=docker \
-                  ${GRAYLOG_HOME}/graylog.jar \
-                  server \
-                  -f ${GRAYLOG_HOME}/config/graylog.conf
+            - /entrypoint.sh
           env:
             - name: GRAYLOG_SERVER_JAVA_OPTS
               {{- $javaOpts := "-Djava.net.preferIPv4Stack=true -XX:NewRatio=1 -server -XX:+ResizeTLAB -XX:+UseConcMarkSweepGC -XX:+CMSConcurrentMTEnabled -XX:+CMSClassUnloadingEnabled -XX:+UseParNewGC -XX:-OmitStackTraceInFastThrow" }}
@@ -196,6 +149,9 @@ spec:
               mountPath: /usr/share/graylog/data/journal
             - name: config
               mountPath: /usr/share/graylog/config
+            - name: entrypoint
+              mountPath: /entrypoint.sh
+              subPath: entrypoint.sh
           {{- if .Values.graylog.serverFiles }}
             - name: files
               mountPath: /etc/graylog/server
@@ -223,6 +179,13 @@ spec:
               - key: log4j2.xml
                 path: log4j2.xml
                 mode: 292 # 0444
+        - name: entrypoint
+          configMap:
+            name: {{ template "graylog.fullname" . }}
+            items:
+              - key: entrypoint.sh
+                path: entrypoint.sh
+                mode: 365 # 0555
         {{- if .Values.graylog.serverFiles }}
         - name: files
           configMap:
