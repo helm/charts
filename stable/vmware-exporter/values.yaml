@@ -35,6 +35,7 @@ image:
   pullPolicy: IfNotPresent
 
 service:
+  enabled: false
   type: ClusterIP
   ## Provide optional annotations to the service i.e. for external-dns
   # annotations:

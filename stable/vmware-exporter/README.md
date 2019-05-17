@@ -37,6 +37,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `image.repository`                        | Image repository                              | `pryorda/vmware_exporter`                               |
 | `image.tag`                               | Image tag. (`Must be >= 0.7.4`)               | `v0.7.4`                                                |
 | `image.pullPolicy`                        | Image pull policy                             | `IfNotPresent`                                          |
+| `service.enabled`                         | Enable a service for vmware_exporter          | `false`                                                 |
 | `service.type`                            | Kubernetes service type                       | `ClusterIP`                                             |
 | `service.port`                            | Kubernetes port where service is exposed      | `80`                                                    |
 | `service.targetPort`                      | internal service is port                      | `9272`                                                  |
