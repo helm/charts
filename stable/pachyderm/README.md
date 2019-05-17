@@ -135,7 +135,7 @@ To specify a pachyderm version run the following command:
 
 ```console
 $ helm install --namespace pachyderm --name my-release \
--set pachd.image.tag=1.8.6,pachd.worker.tag=1.8.6 \
+--set pachd.image.tag=1.8.6,pachd.worker.tag=1.8.6 \
 stable/pachyderm
 ```
 
