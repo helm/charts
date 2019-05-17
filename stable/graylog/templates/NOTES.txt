@@ -6,18 +6,21 @@ To connect to your Graylog server:
   http://{{ . }}
 {{- end }}
 {{- else if contains "NodePort" .Values.graylog.service.type }}
+
   export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "graylog.fullname" . }})
   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
   echo http://$NODE_IP:$NODE_PORT
 {{- else if contains "LoadBalancer" .Values.graylog.service.type }}
+
      NOTE: It may take a few minutes for the LoadBalancer IP to be available.
            You can watch the status of by running 'kubectl get svc -w {{ template "graylog.fullname" . }}'
   export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "graylog.fullname" . }}-web -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
   echo http://$SERVICE_IP:{{ default 9000 .Values.graylog.service.port }}
 {{- else if contains "ClusterIP" .Values.graylog.service.type }}
-  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ template "graylog.name" . }},app.kubernetes.io/instance={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
-  echo "Visit http://127.0.0.1:9000 to use your application"
-  kubectl port-forward $POD_NAME 9000:9000
+
+  Graylog Web Interface uses JavaScript to get detail of each node. The client JavaScript cannot communicate to node when service type is `ClusterIP`. 
+  If you want to access Graylog Web Interface, you need to enable Ingress.
+    NOTE: Port Forward does not work with web interface.
 {{- end }}
 
 2. The Graylog root users
@@ -27,6 +30,8 @@ To connect to your Graylog server:
 
 To send logs to graylog:
 
+  NOTE: If `graylog.input` is empty, you cannot send logs from other services. Please make sure the value is not empty.
+        See https://github.com/helm/charts/tree/master/stable/graylog#input for detail
 
 {{- if .Values.graylog.input.tcp }}
 1. TCP
