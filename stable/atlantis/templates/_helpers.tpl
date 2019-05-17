@@ -59,3 +59,14 @@ Defines the internal kubernetes address to Atlantis
 {{- define "atlantis.url" -}}
 {{ template "atlantis.url.scheme" . }}://{{ template "atlantis.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
 {{- end -}}
+
+{{/*
+Generates secret-webhook name
+*/}}
+{{- define "atlantis.vcsSecretsName" -}}
+{{- if .Values.vcsSecretsName -}}
+    {{ .Values.vcsSecretsName }}
+{{- else -}}
+    {{ template "atlantis.fullname" . }}-webhook
+{{- end -}}
+{{- end -}}
