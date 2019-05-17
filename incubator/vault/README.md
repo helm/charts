@@ -71,6 +71,7 @@ The following table lists the configurable parameters of the Vault chart and the
 | `service.port`                    | The API port Vault is using              | `8200`                              |
 | `service.clusterExternalPort`     | External cluster port for the service    | `nil`                               |
 | `service.clusterPort`             | The cluster port Vault is using          | `8201`                              |
+| `service.externalTrafficPolicy`   | The service's `externalTrafficPolicy`    | `Cluster`                           |
 | `annotations`                     | Annotations for deployment               | `{}`                                |
 | `labels`                          | Extra labels for deployment              | `{}`                                |
 | `ingress.labels`                  | Labels for ingress                       | `{}`                                |
