@@ -49,8 +49,26 @@ minimumAge: 0s
 # grace period to give pods when terminating them (negative: pod decides)
 gracePeriod: -1s
 
-# Listening address for metrics handler
-metricsAddress: :8080
+metrics:
+  # Enable metrics handler
+  enabled: false
+
+  # Listening port for metrics handler
+  port: 8080
+
+  service:
+    # Metrics service type
+    type: ClusterIP
+
+    # Metrics service port
+    port: 8080
+
+  serviceMonitor:
+    # Set this to `true` to create ServiceMonitor for Prometheus operator
+    enabled: false
+
+    # Additional labels that can be used so ServiceMonitor will be discovered by Prometheus
+    additionalLabels: {}
 
 priorityClassName: ""
 
