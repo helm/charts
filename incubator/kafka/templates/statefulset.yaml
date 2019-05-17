@@ -29,6 +29,10 @@ spec:
       labels:
         app: {{ include "kafka.name" . }}
         release: {{ .Release.Name }}
+        {{- if .Values.podLabels }}
+        ## Custom pod labels
+{{ toYaml .Values.podLabels | indent 8 }}
+        {{- end }}
     spec:
 {{- if .Values.schedulerName }}
       schedulerName: "{{ .Values.schedulerName }}"
