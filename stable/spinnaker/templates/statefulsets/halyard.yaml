@@ -108,6 +108,10 @@ spec:
         ports:
         - containerPort: 8064
           name: daemon
+        {{- if .Values.halyard.resources }}
+        resources:
+{{ toYaml .Values.halyard.resources | indent 10 }}
+        {{- end }}
         volumeMounts:
         {{- if .Values.gcs.enabled }}
         - name: gcs-key
