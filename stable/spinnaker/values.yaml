@@ -45,6 +45,16 @@ halyard:
   # annotations:
   #   iam.amazonaws.com/role: <role_arn>
 
+  ## Uncomment the following resources definitions to control the cpu and memory
+  # resources allocated for the halyard pod
+  resources: {}
+    # requests:
+    #   memory: "1Gi"
+    #   cpu: "100m"
+    # limits:
+    #   memory: "2Gi"
+    #   cpu: "200m"
+
 # Define which registries and repositories you want available in your
 # Spinnaker pipeline definitions
 # For more info visit:
