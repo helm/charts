@@ -16,6 +16,7 @@ In order for Atlantis to start and run successfully:
     -  `bitbucket`
 
     Refer to [values.yaml](values.yaml) for detailed examples.
+    They can also be provided directly through a Kubernetes `Secret`, use the variable `vcsSecretsName` to reference it.
 
 1. Supply a value for `orgWhitelist`, e.g. `github.org/myorg/*`.
 
@@ -42,6 +43,7 @@ The following options are supported.  See [values.yaml](values.yaml) for more de
 | `gitlab.token`                              | Personal access token for the Atlantis GitLab user.                                                                                                                                                                                                                                                       | n/a     |
 | `gitlab.secret`                             | Webhook secret for the Atlantis GitLab integration. All repositories in GitLab that are to be integrated with Atlantis must share the same value.                                                                                                                                                         | n/a     |
 | `gitlab.hostname`                           | Hostname of your GitLab Enterprise installation.                                                                                                                                                                                                                                                          | n/a     |
+| `vcsSecretsName` | Name of a pre-existing Kubernetes `Secret` containing `token` and `secret` keys set to your VCS provider's API token and webhook secret, respectively. Use this instead of `github.token`/`github.secret`, etc. (optional) | n/a |
 | `podTemplate.annotations`                   | Additional annotations to use for the StatefulSet.                                                                                                                                                                                                                                                        | n/a     |
 | `logLevel`                                  | Level to use for logging. Either debug, info, warn, or error.                                                                                                                                                                                                                                             | n/a     |
 | `orgWhiteList`                              | Whitelist of repositories from which Atlantis will accept webhooks. **This value must be set for Atlantis to function correctly.** Accepts wildcard characters (`*`). Multiple values may be comma-separated.                                                                                             | none    |
