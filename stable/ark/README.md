@@ -1,5 +1,8 @@
 # Ark-server
 
+# THIS CHART HAS BEEN DEPRECATED. PLEASE MOVE TO THE STABLE/VELERO CHART.
+
+
 This helm chart installs Ark version v0.10.2
 https://github.com/heptio/ark/tree/v0.10.2
 
