@@ -88,6 +88,9 @@ efsProvisioner:
       gidMin: 40000
       gidMax: 50000
     reclaimPolicy: Delete
+    mountOptions: []
+      # - acregmin=3
+      # - acregmax=60
 
 ## Enable RBAC
 ## Leave serviceAccountName blank for the default name
@@ -108,6 +111,9 @@ nodeSelector: {}
 # Affinity for pod assignment
 # Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 affinity: {}
+
+# Tolerations for node tains
+tolerations: {}
 
 ## Configure resources
 ##

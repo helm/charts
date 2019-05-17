@@ -108,6 +108,9 @@ spec:
               name: {{ template "nexus.name" . }}-secret
               readOnly: {{ .Values.secret.readOnly }}
             {{- end }}
+            {{- if .Values.deployment.additionalVolumeMounts}}
+{{ toYaml .Values.deployment.additionalVolumeMounts | indent 12 }}
+            {{- end }}
           {{- if .Values.nexusProxy.enabled }}
         - name: nexus-proxy
           image: {{ .Values.nexusProxy.imageName }}:{{ .Values.nexusProxy.imageTag }}

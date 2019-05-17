@@ -51,7 +51,8 @@ data:
 
     sentinel_update() {
         echo "Updating sentinel config"
-        sed -i "1s/^/$(cat sentinel-id)\\n/" "$SENTINEL_CONF"
+        eval MY_SENTINEL_ID="\${SENTINEL_ID_$INDEX}"
+        sed -i "1s/^/sentinel myid $MY_SENTINEL_ID\\n/" "$SENTINEL_CONF"
         sed -i "2s/^/sentinel monitor $MASTER_GROUP $1 $REDIS_PORT $QUORUM \\n/" "$SENTINEL_CONF"
         echo "sentinel announce-ip $ANNOUNCE_IP" >> $SENTINEL_CONF
         echo "sentinel announce-port $SENTINEL_PORT" >> $SENTINEL_CONF
@@ -65,9 +66,6 @@ data:
     }
 
     copy_config() {
-        if [ -f "$SENTINEL_CONF" ]; then
-            grep "sentinel myid" "$SENTINEL_CONF" > sentinel-id || true
-        fi
         cp /readonly-config/redis.conf "$REDIS_CONF"
         cp /readonly-config/sentinel.conf "$SENTINEL_CONF"
     }
@@ -76,8 +74,9 @@ data:
         echo "Setting up defaults"
         if [ "$INDEX" = "0" ]; then
             echo "Setting this pod as the default master"
-            sed -i "s/^.*slaveof.*//" "$REDIS_CONF"
+            redis_update "$ANNOUNCE_IP"
             sentinel_update "$ANNOUNCE_IP"
+            sed -i "s/^.*slaveof.*//" "$REDIS_CONF"
         else
             DEFAULT_MASTER="$(getent hosts "$SERVICE-announce-0" | awk '{ print $1 }')"
             if [ -z "$DEFAULT_MASTER" ]; then
@@ -131,7 +130,8 @@ data:
 
     if [ "${AUTH:-}" ]; then
         echo "Setting auth values"
-        sed -i "s/replace-default-auth/$AUTH/" "$REDIS_CONF" "$SENTINEL_CONF"
+        ESCAPED_AUTH=$(echo "$AUTH" | sed -e 's/[\/&]/\\&/g');
+        sed -i "s/replace-default-auth/${ESCAPED_AUTH}/" "$REDIS_CONF" "$SENTINEL_CONF"
     fi
 
     echo "Ready..."

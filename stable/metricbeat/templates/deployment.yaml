@@ -1,4 +1,5 @@
 # Deploy singleton instance in the whole cluster for some unique data sources, like kube-state-metrics
+{{- if .Values.deployment.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -19,20 +20,26 @@ spec:
         app: {{ template "metricbeat.name" . }}
         release: {{ .Release.Name }}
       annotations:
-        checksum/modules: {{ toYaml .Values.deployment.modules | sha256sum }}
-        checksum/config: {{ toYaml .Values.deployment.config | sha256sum }}
+        checksum/config: {{ toYaml (default .Values.deployment.config .Values.deployment.overrideConfig) | sha256sum }}
+        checksum/modules: {{ toYaml (default .Values.deployment.modules .Values.deployment.overrideModules) | sha256sum }}
 {{- if .Values.deployment.podAnnotations }}
   {{- range $key, $value := .Values.deployment.podAnnotations }}
         {{ $key }}: {{ $value }}
   {{- end }}
 {{- end }}
     spec:
+{{- if .Values.deployment.priorityClassName }}
+      priorityClassName: {{ .Values.deployment.priorityClassName }}
+{{- end }}
       serviceAccountName: {{ template "metricbeat.serviceAccountName" . }}
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         args:
+{{- if .Values.deployment.args }}
+{{ toYaml .Values.deployment.args | indent 8 }}
+{{- else }}
         - "-e"
 {{- if .Values.plugins }}
         - "--plugin"
@@ -41,6 +48,7 @@ spec:
 {{- if .Values.deployment.debug }}
         - "-d"
         - "*"
+{{- end }}
 {{- end }}
         env:
         - name: POD_NAMESPACE
@@ -57,7 +65,11 @@ spec:
         securityContext:
           runAsUser: 0
         resources:
+{{- if .Values.deployment.resources }}
+{{ toYaml .Values.deployment.resources | indent 10 }}
+{{- else if .Values.resources }}
 {{ toYaml .Values.resources | indent 10 }}
+{{- end }}
         volumeMounts:
         - name: metricbeat-config
           mountPath: /usr/share/metricbeat/metricbeat.yml
@@ -86,4 +98,5 @@ spec:
           secretName: {{ template "metricbeat.fullname" . }}-deployment-modules
 {{- if .Values.extraVolumes }}
 {{ toYaml .Values.extraVolumes | indent 6 }}
+{{- end }}
 {{- end }}

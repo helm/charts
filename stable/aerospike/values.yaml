@@ -4,7 +4,7 @@ replicaCount: 1
 nodeSelector: {}
 image:
   repository: aerospike/aerospike-server
-  tag: 3.14.1.2
+  tag: 4.5.0.5
   pullPolicy: IfNotPresent
 
 # pass custom command. This is equivalent of Entrypoint in docker
@@ -40,6 +40,8 @@ service:
 meshService:
   annotations: {}
 
+tolerations: []
+
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
@@ -57,6 +59,7 @@ confFile: |-
   service {
       user root
       group root
+      paxos-protocol v5
       paxos-single-replica-limit 1
       pidfile /var/run/aerospike/asd.pid
       service-threads 4
@@ -64,36 +67,39 @@ confFile: |-
       transaction-threads-per-queue 4
       proto-fd-max 15000
   }
+
   logging {
       file /var/log/aerospike/aerospike.log {
-      context any info
+          context any info
       }
 
       console {
-      context any info
+          context any info
       }
   }
+
   network {
       service {
-      address any
-      port 3000
+          address any
+          port 3000
       }
-      heartbeat {
-      address any
-      interval 150
-      #REPLACE_THIS_LINE_WITH_MESH_CONFIG
-      mode mesh
-      port 3002
-      timeout 20
-      protocol v3
 
+      heartbeat {
+          address any
+          interval 150
+          #REPLACE_THIS_LINE_WITH_MESH_CONFIG
+          mode mesh
+          port 3002
+          timeout 20
+          protocol v3
       }
+
       fabric {
-      port 3001
+          port 3001
       }
 
       info {
-      port 3003
+          port 3003
       }
   }
 
@@ -102,7 +108,7 @@ confFile: |-
       memory-size 1G
       default-ttl 5d
       storage-engine device {
-      file /opt/aerospike/data/test.dat
-      filesize 4G
+          file /opt/aerospike/data/test.dat
+          filesize 4G
       }
   }

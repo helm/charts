@@ -19,6 +19,9 @@ data:
       - key: udev-probe
         name: udev probe
         state: true
+      - key: seachest-probe
+        name: seachest probe
+        state: true
       - key: smart-probe
         name: smart probe
         state: true

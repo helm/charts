@@ -14,7 +14,7 @@ This chart bootstraps a [Redmine](https://github.com/bitnami/bitnami-docker-redm
 
 It also packages the [Bitnami MariaDB chart](https://github.com/kubernetes/charts/tree/master/stable/mariadb) and the [PostgreSQL chart](https://github.com/kubernetes/charts/tree/master/stable/postgresql) which are required for bootstrapping a MariaDB/PostgreSQL deployment for the database requirements of the Redmine application.
 
-Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters.
+Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters. This chart has been tested to work with NGINX Ingress, cert-manager, fluentd and Prometheus on top of the [BKPR](https://kubeprod.io/).
 
 ## Prerequisites
 
@@ -58,6 +58,7 @@ The following table lists the configurable parameters of the Redmine chart and t
 |            Parameter                |              Description                   |                          Default                        |
 | ----------------------------------- | ------------------------------------------ | ------------------------------------------------------- |
 | `global.imageRegistry`              | Global Docker image registr  y             | `nil`                                                   |
+| `global.imagePullSecrets`           | Global Docker registry secret names as an array | `[]` (does not add image pull secrets to deployed pods) |
 | `image.registry`                    | Redmine image registry                     | `docker.io`                                             |
 | `image.repository`                  | Redmine image name                         | `bitnami/redmine`                                       |
 | `image.tag`                         | Redmine image tag                          | `{VERSION}`                                             |
@@ -73,16 +74,22 @@ The following table lists the configurable parameters of the Redmine chart and t
 | `smtpUser`                          | SMTP user                                  | `nil`                                                   |
 | `smtpPassword`                      | SMTP password                              | `nil`                                                   |
 | `smtpTls`                           | Use TLS encryption with SMTP               | `nil`                                                   |
-| `databaseType.postgresql`           | Select postgresql database                 | `false`                                                 |
-| `databaseType.mariadb`              | Select mariadb database                    | `true`                                                  |
+| `databaseType.postgresql`           | Select PostgreSQL as database              | `false`                                                 |
+| `databaseType.mariadb`              | Select MariaDB as database                 | `true`                                                  |
+| `mariadb.enabled`                   | Whether to deploy a MariaDB server to satisfy the applications database requirements     | `true`    |
 | `mariadb.rootUser.password`         | MariaDB admin password                     | `nil`                                                   |
+| `postgresql.enabled`                | Whether to deploy a PostgreSQL server to satisfy the applications database requirements  | `false`   |
 | `postgresql.postgresqlPassword`     | PostgreSQL admin password                  | `nil`                                                   |
-| `service.type`                    | Kubernetes Service type                    | `LoadBalancer`                                          |
-| `service.port`                    | Service HTTP port                  | `80`                                          |
-| `service.nodePorts.http`                 | Kubernetes http node port                  | `""`                                                    |
-| `service.externalTrafficPolicy`   | Enable client source IP preservation       | `Cluster`                                               |
-| `service.loadBalancerIP`   | LoadBalancer service IP address       | `""`                                               |
-| `service.loadBalancerSourceRanges`   | An array of load balancer sources          | `0.0.0.0/0`                                             |
+| `externalDatabase.host`             | Host of the external database              | `localhost`                                             |
+| `externalDatabase.user`             | External db admin user                     | `root`                                                  |
+| `externalDatabase.password`         | Password for the admin user                | `""`                                                    |
+| `externalDatabase.port`             | Database port number                       | `3306`                                                  |
+| `service.type`                      | Kubernetes Service type                    | `LoadBalancer`                                          |
+| `service.port`                      | Service HTTP port                          | `80`                                                    |
+| `service.nodePorts.http`            | Kubernetes http node port                  | `""`                                                    |
+| `service.externalTrafficPolicy`     | Enable client source IP preservation       | `Cluster`                                               |
+| `service.loadBalancerIP`            | LoadBalancer service IP address            | `""`                                                    |
+| `service.loadBalancerSourceRanges`  | An array of load balancer sources          | `0.0.0.0/0`                                             |
 | `ingress.enabled`                   | Enable or disable the ingress              | `false`                                                 |
 | `ingress.hosts[0].name`             | Hostname to your Redmine installation      | `redmine.local  `                                       |
 | `ingress.hosts[0].path`             | Path within the url structure              | `/`                                                     |
@@ -93,6 +100,10 @@ The following table lists the configurable parameters of the Redmine chart and t
 | `ingress.secrets[0].name`           | TLS Secret Name                            | `nil`                                                   |
 | `ingress.secrets[0].certificate`    | TLS Secret Certificate                     | `nil`                                                   |
 | `ingress.secrets[0].key`            | TLS Secret Key                             | `nil`                                                   |
+| `nodeSelector`                      | Node labels for pod assignment             | `{}`                                                    |
+| `tolerations`                       | List of node taints to tolerate            | `{}`                                                    |
+| `affinity`                          | Map of node/pod affinities                 | `{}`                                                    |
+| `podAnnotations`                    | Pod annotations                            | `{}`                                                    |
 | `persistence.enabled`               | Enable persistence using PVC               | `true`                                                  |
 | `persistence.existingClaim`         | The name of an existing PVC                | `nil`                                                   |
 | `persistence.storageClass`          | PVC Storage Class                          | `nil` (uses alpha storage class annotation)             |

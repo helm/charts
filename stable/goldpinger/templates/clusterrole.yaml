@@ -1,0 +1,15 @@
+{{- if .Values.rbac.create }}
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ template "goldpinger.fullname" . }}-clusterrole
+  labels:
+    app.kubernetes.io/name: {{ include "goldpinger.name" . }}
+    helm.sh/chart: {{ include "goldpinger.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+rules:
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["list"]
+{{- end }}

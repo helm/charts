@@ -14,7 +14,7 @@ This chart bootstraps a [TestLink](https://github.com/bitnami/bitnami-docker-tes
 
 It also packages the [Bitnami MariaDB chart](https://github.com/kubernetes/charts/tree/master/stable/mariadb) which is required for bootstrapping a MariaDB deployment for the database requirements of the TestLink application.
 
-Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters.
+Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters. This chart has been tested to work with NGINX Ingress, cert-manager, fluentd and Prometheus on top of the [BKPR](https://kubeprod.io/).
 
 ## Prerequisites
 
@@ -50,6 +50,7 @@ The following table lists the configurable parameters of the TestLink chart and 
 |              Parameter              |               Description               |                         Default                         |
 |-------------------------------------|-----------------------------------------|---------------------------------------------------------|
 | `global.imageRegistry`              | Global Docker image registry            | `nil`                                                   |
+| `global.imagePullSecrets`           | Global Docker registry secret names as an array | `[]` (does not add image pull secrets to deployed pods) |
 | `image.registry`                    | TestLink image registry                 | `docker.io`                                             |
 | `image.repository`                  | TestLink image name                     | `bitnami/testlink`                                      |
 | `image.tag`                         | TestLink image tag                      | `{VERSION}`                                             |
@@ -65,6 +66,17 @@ The following table lists the configurable parameters of the TestLink chart and 
 | `smtpPassword`                      | SMTP password                           | `nil`                                                   |
 | `smtpConnectionMode`                | SMTP connection mode [`ssl`, `tls`]     | `nil`                                                   |
 | `allowEmptyPassword`                | Allow DB blank passwords                | `yes`                                                   |
+| `ingress.enabled`                   | Enable ingress controller resource                            | `false`                                                  |
+| `ingress.annotations`               | Ingress annotations                                           | `[]`                                                     |
+| `ingress.certManager`               | Add annotations for cert-manager                              | `false`                                                  |
+| `ingress.hosts[0].name`             | Hostname to your testlink installation                           | `testlink.local`                                            |
+| `ingress.hosts[0].path`             | Path within the url structure                                 | `/`                                                      |
+| `ingress.hosts[0].tls`              | Utilize TLS backend in ingress                                | `false`                                                  |
+| `ingress.hosts[0].tlsHosts`         | Array of TLS hosts for ingress record (defaults to `ingress.hosts[0].name` if `nil`)                               | `nil`                                                  |
+| `ingress.hosts[0].tlsSecret`        | TLS Secret (certificates)                                     | `testlink.local-tls-secret`                                 |
+| `ingress.secrets[0].name`           | TLS Secret Name                                               | `nil`                                                    |
+| `ingress.secrets[0].certificate`    | TLS Secret Certificate                                        | `nil`                                                    |
+| `ingress.secrets[0].key`            | TLS Secret Key                                                | `nil`                                                    |
 | `externalDatabase.host`             | Host of the external database           | `nil`                                                   |
 | `externalDatabase.port`             | Port of the external database           | `3306`                                                  |
 | `externalDatabase.user`             | Existing username in the external db    | `bn_testlink`                                           |

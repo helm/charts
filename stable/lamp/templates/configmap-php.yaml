@@ -24,5 +24,8 @@ data:
     [www]
     listen = /var/run/php/php-fpm.sock
     listen.mode = 0666
+  {{- if .Values.php.fpm }}
+{{ .Values.php.fpm  | indent 4 }}
+  {{- end }}
   {{- end }}
 {{- end }}

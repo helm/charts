@@ -14,9 +14,15 @@ metadata:
     dashboard-provider: {{ $provider }}
 data:
 {{- range $key, $value := $dashboards }}
-{{- if hasKey $value "json" }}
+{{- if (or (hasKey $value "json") (hasKey $value "file")) }}
 {{ print $key | indent 2 }}.json:
-{{ toYaml ( $files.Get $value.json ) | indent 4}}
+{{- if hasKey $value "json" }}
+    |-
+{{ $value.json | indent 6 }}
+{{- end }}
+{{- if hasKey $value "file" }}
+{{ toYaml ( $files.Get $value.file ) | indent 4}}
+{{- end }}
 {{- end }}
 {{- end }}
 {{- end }}

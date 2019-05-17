@@ -12,15 +12,15 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     helm.sh/chart: {{ include "mattermost-team-edition.chart" . }}
   annotations:
-{{ if .Values.ingress.tls }}
+    {{- if .Values.ingress.tls }}
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     kubernetes.io/tls-acme: "true"
-{{ else }}
+    {{- else }}
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
-{{ end }}
-{{ with $ingress.annotations }}
-{{ toYaml . | indent 4 }}
-{{ end }}
+    {{- end }}
+    {{- with $ingress.annotations }}
+    {{- . | toYaml | nindent 4 }}
+    {{- end }}
 spec:
   rules:
   {{ range $host := $ingress.hosts }}
@@ -34,6 +34,6 @@ spec:
   {{ end }}
   {{ if $ingress.tls }}
   tls:
-{{ toYaml $ingress.tls | indent 4 }}
+    {{- $ingress.tls | toYaml | nindent 4 }}
   {{ end }}
 {{ end }}

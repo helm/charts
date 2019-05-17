@@ -61,6 +61,11 @@ The following table lists the configurable parameters of the Seq chart and their
 | `nodeSelector`             | Node labels for pod assignment      | `{}`                                                    |
 | `affinity`                 | Affinity settings for pod assignment | `{}`                                                   |
 | `tolerations`              | Toleration labels for pod assignment | `[]`                                                   |
+| `ingress.enabled`          | Enables Ingress                      | `false`                                                |
+| `ingress.annotations`      | Ingress annotations                  | `{}`                                                   |
+| `ingress.labels`           | Custom labels                        | `{}`                                                   |
+| `ingress.hosts`            | Ingress accepted hostnames           | `[]`                                                   |
+| `ingress.tls`              | Ingress TLS configuration            | `[]`                                                   |
 
 Some of the parameters above map to the env variables defined in the [Seq DockerHub image](https://hub.docker.com/r/datalust/seq/).
 

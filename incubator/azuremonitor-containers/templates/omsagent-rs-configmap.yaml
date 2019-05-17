@@ -5,54 +5,76 @@ data:
   kube.conf: |
     # Fluentd config file for OMS Docker - cluster components (kubeAPI)
 
-    #Kubernetes pod inventory
-    <source>
+     #Kubernetes pod inventory
+     <source>
       type kubepodinventory
       tag oms.containerinsights.KubePodInventory
       run_interval 60s
       log_level debug
-    </source>
+     </source>
 
-    #Kubernetes events
-    <source>
+     #Kubernetes events
+     <source>
       type kubeevents
-      tag oms.api.KubeEvents.CollectionTime
+      tag oms.containerinsights.KubeEvents
       run_interval 60s
       log_level debug
-    </source>
+      </source>
 
-    #Kubernetes logs
-    <source>
+     #Kubernetes logs
+     <source>
       type kubelogs
       tag oms.api.KubeLogs
       run_interval 60s
-    </source>
+     </source>
 
-    #Kubernetes services
-    <source>
+     #Kubernetes services
+     <source>
       type kubeservices
-      tag oms.api.KubeServices.CollectionTime
+      tag oms.containerinsights.KubeServices
       run_interval 60s
       log_level debug
-    </source>
+     </source>
 
-    #Kubernetes Nodes
-    <source>
+     #Kubernetes Nodes
+     <source>
       type kubenodeinventory
       tag oms.containerinsights.KubeNodeInventory
       run_interval 60s
       log_level debug
-    </source>
+     </source>
 
-    #Kubernetes perf
-    <source>
+     #Kubernetes perf
+     <source>
       type kubeperf
       tag oms.api.KubePerf
       run_interval 60s
       log_level debug
-    </source>
+     </source>
 
-    <match oms.containerinsights.KubePodInventory**>
+     #cadvisor perf- Windows nodes
+     <source>
+      type wincadvisorperf
+      tag oms.api.wincadvisorperf
+      run_interval 60s
+      log_level debug
+     </source>
+
+     <filter mdm.kubepodinventory** mdm.kubenodeinventory**>
+      type filter_inventory2mdm
+      custom_metrics_azure_regions eastus,southcentralus,westcentralus,westus2,southeastasia,northeurope,westEurope
+      log_level info
+     </filter>
+
+     # custom_metrics_mdm filter plugin for perf data from windows nodes
+     <filter mdm.cadvisorperf**>
+      type filter_cadvisor2mdm
+      custom_metrics_azure_regions eastus,southcentralus,westcentralus,westus2,southeastasia,northeurope,westEurope
+      metrics_to_collect cpuUsageNanoCores,memoryWorkingSetBytes
+      log_level info
+     </filter>
+
+     <match oms.containerinsights.KubePodInventory**>
       type out_oms
       log_level debug
       num_threads 5
@@ -65,23 +87,24 @@ data:
       retry_limit 10
       retry_wait 30s
       max_retry_wait 9m
-    </match>
+     </match>
 
-    <match oms.api.KubeEvents**>
-      type out_oms_api
+     <match oms.containerinsights.KubeEvents**>
+      type out_oms
       log_level debug
       num_threads 5
       buffer_chunk_limit 5m
       buffer_type file
-      buffer_path %STATE_DIR_WS%/out_oms_api_kubeevents*.buffer
+      buffer_path %STATE_DIR_WS%/out_oms_kubeevents*.buffer
       buffer_queue_limit 10
       buffer_queue_full_action drop_oldest_chunk
       flush_interval 20s
       retry_limit 10
       retry_wait 30s
-    </match>
+      max_retry_wait 9m
+     </match>
 
-    <match oms.api.KubeLogs**>
+     <match oms.api.KubeLogs**>
       type out_oms_api
       log_level debug
       buffer_chunk_limit 10m
@@ -91,10 +114,10 @@ data:
       flush_interval 20s
       retry_limit 10
       retry_wait 30s
-    </match>
+     </match>
 
-    <match oms.api.KubeServices**>	  
-      type out_oms_api
+     <match oms.containerinsights.KubeServices**>
+      type out_oms
       log_level debug
       num_threads 5
       buffer_chunk_limit 20m
@@ -106,9 +129,9 @@ data:
       retry_limit 10
       retry_wait 30s
       max_retry_wait 9m
-    </match>
+     </match>
 
-    <match oms.containerinsights.KubeNodeInventory**>
+     <match oms.containerinsights.KubeNodeInventory**>
       type out_oms
       log_level debug
       num_threads 5
@@ -121,9 +144,22 @@ data:
       retry_limit 10
       retry_wait 30s
       max_retry_wait 9m
-    </match>
+     </match>
 
-    <match oms.api.KubePerf**>	
+     <match oms.api.ContainerNodeInventory**>
+      type out_oms
+      log_level debug
+      buffer_chunk_limit 20m
+      buffer_type file
+      buffer_path %STATE_DIR_WS%/out_oms_containernodeinventory*.buffer
+      buffer_queue_limit 20
+      flush_interval 20s
+      retry_limit 10
+      retry_wait 15s
+      max_retry_wait 9m
+     </match>
+
+     <match oms.api.KubePerf**>	
       type out_oms
       log_level debug
       num_threads 5
@@ -136,7 +172,54 @@ data:
       retry_limit 10
       retry_wait 30s
       max_retry_wait 9m
-    </match>
+     </match>
+
+     <match mdm.kubepodinventory** mdm.kubenodeinventory** >
+      type out_mdm
+      log_level debug
+      num_threads 5
+      buffer_chunk_limit 20m
+      buffer_type file
+      buffer_path %STATE_DIR_WS%/out_mdm_*.buffer
+      buffer_queue_limit 20
+      buffer_queue_full_action drop_oldest_chunk
+      flush_interval 20s
+      retry_limit 10
+      retry_wait 30s
+      max_retry_wait 9m
+      retry_mdm_post_wait_minutes 60
+     </match>
+
+     <match oms.api.wincadvisorperf**>
+      type out_oms
+      log_level debug
+      num_threads 5
+      buffer_chunk_limit 20m
+      buffer_type file
+      buffer_path %STATE_DIR_WS%/out_oms_api_wincadvisorperf*.buffer
+      buffer_queue_limit 20
+      buffer_queue_full_action drop_oldest_chunk
+      flush_interval 20s
+      retry_limit 10
+      retry_wait 30s
+      max_retry_wait 9m
+     </match>
+
+     <match mdm.cadvisorperf**>
+      type out_mdm
+      log_level debug
+      num_threads 5
+      buffer_chunk_limit 20m
+      buffer_type file
+      buffer_path %STATE_DIR_WS%/out_mdm_cdvisorperf*.buffer
+      buffer_queue_limit 20
+      buffer_queue_full_action drop_oldest_chunk
+      flush_interval 20s
+      retry_limit 10
+      retry_wait 30s
+      max_retry_wait 9m
+      retry_mdm_post_wait_minutes 60
+     </match>
 metadata:
   name: omsagent-rs-config
   namespace: kube-system

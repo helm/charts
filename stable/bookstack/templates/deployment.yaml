@@ -89,14 +89,14 @@ spec:
           - name: uploads
             mountPath: /var/www/bookstack/public/uploads
           - name: storage
-            mountPath: /var/www/bookstack/public/storage
+            mountPath: /var/www/bookstack/storage/uploads
           resources:
 {{ toYaml .Values.resources | indent 12 }}
       volumes:
         - name: uploads
         {{- if .Values.persistence.uploads.enabled }}
           persistentVolumeClaim:
-            claimName: {{ .Values.persistence.storage.existingClaim | default (printf "%s-%s" (include "bookstack.fullname" .) "uploads") }}
+            claimName: {{ .Values.persistence.uploads.existingClaim | default (printf "%s-%s" (include "bookstack.fullname" .) "uploads") }}
         {{- else }}
           emptyDir: {}
         {{- end }}

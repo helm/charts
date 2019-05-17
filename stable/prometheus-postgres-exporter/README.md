@@ -48,7 +48,7 @@ The following table lists the configurable parameters of the postgres Exporter c
 | `service.name`                  | Name of the service port                   | `http`                                                     |
 | `service.labels`                | Labels to add to the service               | `{}`                                                       |
 | `resources`          |                                  |                    `{}`                                  |
-| `config.datasource`                 | Postgresql datasource configuration                      |                                     |
+| `config.datasource`                 | Postgresql datasource configuration                      |  see [values.yaml](values.yaml)              |
 | `config.queries`                | SQL queries that the exporter will run | [postgres exporter defaults](https://github.com/wrouesnel/postgres_exporter/blob/master/queries.yaml) |
 | `config.disableDefaultMetrics`  | Specifies whether to use only metrics from `queries.yaml`| `false` |
 | `rbac.create`                   | Specifies whether RBAC resources should be created.| `true` |

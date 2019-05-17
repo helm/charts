@@ -12,7 +12,7 @@ $ helm install stable/nats
 
 This chart bootstraps a [NATS](https://github.com/bitnami/bitnami-docker-nats) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
-Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters.
+Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters. This chart has been tested to work with NGINX Ingress, cert-manager, fluentd and Prometheus on top of the [BKPR](https://kubeprod.io/).
 
 ## Prerequisites
 
@@ -48,6 +48,7 @@ The following table lists the configurable parameters of the NATS chart and thei
 | Parameter                            | Description                                                                                  | Default                                                       |
 | ------------------------------------ | -------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
 | `global.imageRegistry`               | Global Docker image registry                                                                 | `nil`                                                         |
+| `global.imagePullSecrets`            | Global Docker registry secret names as an array                                              | `[]` (does not add image pull secrets to deployed pods)       |
 | `image.registry`                     | NATS image registry                                                                          | `docker.io`                                                   |
 | `image.repository`                   | NATS Image name                                                                              | `bitnami/nats`                                                |
 | `image.tag`                          | NATS Image tag                                                                               | `{VERSION}`                                                   |
@@ -69,12 +70,14 @@ The following table lists the configurable parameters of the NATS chart and thei
 | `maxPayload`                         | Max. payload                                                                                 | `nil`                                                         |
 | `writeDeadline`                      | Duration the server can block on a socket write to a client                                  | `nil`                                                         |
 | `replicaCount`                       | Number of NATS nodes                                                                         | `1`                                                           |
+| `resourceType`                       | NATS cluster resource type under Kubernetes (Supported: StatefulSets, or Deployment)         | `statefulset`                                                 |
 | `securityContext.enabled`            | Enable security context                                                                      | `true`                                                        |
 | `securityContext.fsGroup`            | Group ID for the container                                                                   | `1001`                                                        |
 | `securityContext.runAsUser`          | User ID for the container                                                                    | `1001`                                                        |
 | `statefulset.updateStrategy`         | Statefulsets Update strategy                                                                 | `OnDelete`                                                    |
 | `statefulset.rollingUpdatePartition` | Partition for Rolling Update strategy                                                        | `nil`                                                         |
 | `podLabels`                          | Additional labels to be added to pods                                                        | {}                                                            |
+| `priorityClassName`                  | Name of pod priority class                                                                   | `nil`                                                         |
 | `podAnnotations`                     | Annotations to be added to pods                                                              | {}                                                            |
 | `nodeSelector`                       | Node labels for pod assignment                                                               | `nil`                                                         |
 | `schedulerName`                      | Name of an alternate                                                                         | `nil`                                                         |

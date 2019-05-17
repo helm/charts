@@ -1,4 +1,4 @@
-{{- if eq .Values.storage.type "local" }}
+{{- if eq .Values.config.storage.storagetype "filesystem" }}
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1

@@ -1,0 +1,16 @@
+JMeter is now starting.
+
+
+To get get a shell session on the master you only need to run:
+
+$ export MASTER_NAME=$(kubectl get pods -l app.kubernetes.io/component=master -o jsonpath='{.items[*].metadata.name}')
+$ kubectl exec -it $MASTER_NAME -- /bin/bash
+
+
+To copy your test plans to the master pod:
+$ kubectl cp sample.jmx $MASTER_NAME:/jmeter
+
+
+To run your test in all servers you need first a list of all servers IPs (comma-separated) and then you can run your test:
+$ export SERVER_IPS=$(kubectl get pods -l app.kubernetes.io/component=server -o jsonpath='{.items[*].status.podIP}' | tr ' ' ',')
+$ kubectl exec -it $MASTER_NAME -- jmeter -n -t /jmeter/sample.jmx -R $SERVER_IPS

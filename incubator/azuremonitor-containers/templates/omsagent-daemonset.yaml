@@ -32,6 +32,8 @@ spec:
          value: {{ .Values.omsagent.env.clusterName | quote }}
        - name: DISABLE_KUBE_SYSTEM_LOG_COLLECTION
          value: {{ .Values.omsagent.env.doNotCollectKubeSystemLogs | quote }}
+       - name: CONTROLLER_TYPE
+         value: "DaemonSet"
        - name: NODE_IP
          valueFrom:
             fieldRef:
@@ -44,12 +46,17 @@ spec:
        - containerPort: 25224
          protocol: UDP
        volumeMounts:
-        - mountPath: /var/run/docker.sock
+        - mountPath: /hostfs
+          name: host-root
+          readOnly: true
+        - mountPath: /var/run/host
           name: docker-sock
         - mountPath: /var/log 
           name: host-log
         - mountPath: /var/lib/docker/containers 
           name: containerlog-path
+        - mountPath: /etc/kubernetes/host
+          name: azure-json-path
         - mountPath: /etc/omsagent-secret
           name: omsagent-secret
           readOnly: true
@@ -58,7 +65,7 @@ spec:
          command:
          - /bin/bash
          - -c
-         - ps -ef | grep omsagent | grep -v "grep"
+         - (ps -ef | grep omsagent | grep -v "grep") && (ps -ef | grep td-agent-bit | grep -v "grep")
         initialDelaySeconds: 60
         periodSeconds: 60
    nodeSelector:
@@ -70,9 +77,12 @@ spec:
       value: "true"
       effect: "NoSchedule"     
    volumes:
+    - name: host-root
+      hostPath:
+       path: /
     - name: docker-sock 
       hostPath:
-       path: /var/run/docker.sock
+       path: /var/run
     - name: container-hostname
       hostPath:
        path: /etc/hostname
@@ -82,6 +92,9 @@ spec:
     - name: containerlog-path
       hostPath:
        path: /var/lib/docker/containers
+    - name: azure-json-path
+      hostPath:
+       path: /etc/kubernetes
     - name: omsagent-secret
       secret:
        secretName: omsagent-secret

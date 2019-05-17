@@ -85,3 +85,5 @@ openvpn:
   # conf: |
   #  max-clients 100
   #  client-to-client
+
+nodeSelector: {}

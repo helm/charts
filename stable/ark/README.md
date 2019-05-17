@@ -1,7 +1,10 @@
 # Ark-server
 
-This helm chart installs Ark version v0.10.1
-https://github.com/heptio/ark/tree/v0.10.1
+# THIS CHART HAS BEEN DEPRECATED. PLEASE MOVE TO THE STABLE/VELERO CHART.
+
+
+This helm chart installs Ark version v0.10.2
+https://github.com/heptio/ark/tree/v0.10.2
 
 ## Upgrading to v0.10
 
@@ -16,7 +19,8 @@ kubectl scale -n heptio-ark deploy/ark --replicas 0
 ```
 
 3. Migrate file structure of your backup storage according to [guide](https://github.com/heptio/ark/blob/master/docs/storage-layout-reorg-v0.10.md)
-4. Upgrade your deployment
+4. Adjust your `values.yaml` to the new structure and naming
+5. Upgrade your deployment
 
 ```sh
 helm upgrade --force --namespace heptio-ark ark ./ark
@@ -59,25 +63,32 @@ Parameter | Description | Default
 `rbac.server.serviceAccount.create` | Whether a new service account name that the server will use should be created | `true`
 `rbac.server.serviceAccount.name` | Service account to be used for the server. If not set and `rbac.server.serviceAccount.create` is `true` a name is generated using the fullname template | ``
 `resources` | Resource requests and limits | `{}`
+`initContainers` | InitContainers and their specs to start with the deployment pod | `[]`
 `tolerations` | List of node taints to tolerate | `[]`
 `nodeSelector` | Node labels for pod assignment | `{}`
-`configuration.persistentVolumeProvider.name` | The name of the cloud provider the cluster is using for persistent volumes, if any | `{}`
-`configuration.persistentVolumeProvider.config.region` | The cloud provider region (AWS only) | ``
-`configuration.persistentVolumeProvider.config.apiTimeout` | The API timeout (Azure only) |
-`configuration.backupStorageProvider.name` | The name of the cloud provider that will be used to actually store the backups (`aws`, `azure`, `gcp`) | ``
-`configuration.backupStorageProvider.bucket` | The storage bucket where backups are to be uploaded | ``
-`configuration.backupStorageProvider.config.region` | The cloud provider region (AWS only) | ``
-`configuration.backupStorageProvider.config.s3ForcePathStyle` | Set to `true` for a local storage service like Minio | ``
-`configuration.backupStorageProvider.config.s3Url` | S3 url (primarily used for local storage services like Minio) | ``
-`configuration.backupStorageProvider.config.kmsKeyId` | KMS key for encryption (AWS only) | ``
+`configuration.backupStorageLocation.name` | The name of the cloud provider that will be used to actually store the backups (`aws`, `azure`, `gcp`) | ``
+`configuration.backupStorageLocation.bucket` | The storage bucket where backups are to be uploaded | ``
+`configuration.backupStorageLocation.config.region` | The cloud provider region (AWS only) | ``
+`configuration.backupStorageLocation.config.s3ForcePathStyle` | Set to `true` for a local storage service like Minio | ``
+`configuration.backupStorageLocation.config.s3Url` | S3 url (primarily used for local storage services like Minio) | ``
+`configuration.backupStorageLocation.config.kmsKeyId` | KMS key for encryption (AWS only) | ``
+`configuration.backupStorageLocation.prefix` | The directory inside a storage bucket where backups are to be uploaded | ``
 `configuration.backupSyncPeriod` | How frequently Ark queries the object storage to make sure that the appropriate Backup resources have been created for existing backup files | `60m`
 `configuration.extraEnvVars` | Key/values for extra environment variables such as AWS_CLUSTER_NAME, etc | `{}`
-`configuration.metricsAddress` | Address to expose metrics | `:8085`
+`configuration.provider` | The name of the cloud provider where you are deploying ark to (`aws`, `azure`, `gcp`) |
 `configuration.restoreResourcePriorities` | An ordered list that describes the order in which Kubernetes resource objects should be restored | `namespaces,persistentvolumes,persistentvolumeclaims,secrets,configmaps,serviceaccounts,limitranges,pods`
 `configuration.restoreOnlyMode` | When RestoreOnly mode is on, functionality for backups, schedules, and expired backup deletion is turned off. Restores are made from existing backup files in object storage | `false`
+`configuration.volumeSnapshotLocation.name` | The name of the cloud provider the cluster is using for persistent volumes, if any | `{}`
+`configuration.volumeSnapshotLocation.config.region` | The cloud provider region (AWS only) | ``
+`configuration.volumeSnapshotLocation.config.apiTimeout` | The API timeout (`azure` only) |
 `credentials.existingSecret` | If specified and `useSecret` is `true`, uses an existing secret with this name instead of creating one | ``
 `credentials.useSecret` | Whether a secret should be used. Set this to `false` when using `kube2iam` | `true`
 `credentials.secretContents` | Contents for the credentials secret | `{}`
+`deployRestic` | If `true`, enable restic deployment | `false`
+`metrics.enabled` | Set this to `true` to enable exporting Prometheus monitoring metrics | `false`
+`metrics.scrapeInterval` | Scrape interval for the Prometheus ServiceMonitor | `30s`
+`metrics.serviceMonitor.enabled` | Set this to `true` to create ServiceMonitor for Prometheus operator | `false`
+`metrics.serviceMonitor.additionalLabels` | Additional labels that can be used so ServiceMonitor will be discovered by Prometheus | `{}`
 `schedules` | A dict of schedules | `{}`
 
 

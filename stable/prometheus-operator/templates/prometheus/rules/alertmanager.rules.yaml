@@ -1,0 +1,50 @@
+# Generated from 'alertmanager.rules' group from https://raw.githubusercontent.com/coreos/kube-prometheus/master/manifests/prometheus-rules.yaml
+# Do not change in-place! In order to change this file first read following link:
+# https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
+{{- if and .Values.defaultRules.create .Values.defaultRules.rules.alertmanager }}
+{{- $operatorJob := printf "%s-%s" (include "prometheus-operator.fullname" .) "operator" }}
+{{- $alertmanagerJob := printf "%s-%s" (include "prometheus-operator.fullname" .) "alertmanager" }}
+{{- $namespace := .Release.Namespace }}
+apiVersion: {{ printf "%s/v1" (.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
+kind: PrometheusRule
+metadata:
+  name: {{ printf "%s-%s" (include "prometheus-operator.fullname" .) "alertmanager.rules" | trunc 63 | trimSuffix "-" }}
+  labels:
+    app: {{ template "prometheus-operator.name" . }}
+{{ include "prometheus-operator.labels" . | indent 4 }}
+{{- if .Values.defaultRules.labels }}
+{{ toYaml .Values.defaultRules.labels | indent 4 }}
+{{- end }}
+{{- if .Values.defaultRules.annotations }}
+  annotations:
+{{ toYaml .Values.defaultRules.annotations | indent 4 }}
+{{- end }}
+spec:
+  groups:
+  - name: alertmanager.rules
+    rules:
+    - alert: AlertmanagerConfigInconsistent
+      annotations:
+        message: The configuration of the instances of the Alertmanager cluster `{{`{{$labels.service}}`}}` are out of sync.
+      expr: count_values("config_hash", alertmanager_config_hash{job="{{ $alertmanagerJob }}",namespace="{{ $namespace }}"}) BY (service) / ON(service) GROUP_LEFT() label_replace(prometheus_operator_spec_replicas{job="{{ $operatorJob }}",namespace="{{ $namespace }}",controller="alertmanager"}, "service", "$1", "name", "(.*)") != 1
+      for: 5m
+      labels:
+        severity: critical
+    - alert: AlertmanagerFailedReload
+      annotations:
+        message: Reloading Alertmanager's configuration has failed for {{`{{ $labels.namespace }}`}}/{{`{{ $labels.pod}}`}}.
+      expr: alertmanager_config_last_reload_successful{job="{{ $alertmanagerJob }}",namespace="{{ $namespace }}"} == 0
+      for: 10m
+      labels:
+        severity: warning
+    - alert: AlertmanagerMembersInconsistent
+      annotations:
+        message: Alertmanager has not found all other members of the cluster.
+      expr: |-
+        alertmanager_cluster_members{job="{{ $alertmanagerJob }}",namespace="{{ $namespace }}"}
+          != on (service) GROUP_LEFT()
+        count by (service) (alertmanager_cluster_members{job="{{ $alertmanagerJob }}",namespace="{{ $namespace }}"})
+      for: 5m
+      labels:
+        severity: critical
+{{- end }}

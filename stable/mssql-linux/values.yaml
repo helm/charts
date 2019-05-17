@@ -22,8 +22,13 @@ service:
   type: ClusterIP
   port: 1433
   annotations: {}
+  labels: {}
 deployment:
   annotations: {}
+  labels: {}
+pod:
+  annotations: {}
+  labels: {}
 persistence:
   enabled: true
   # existingDataClaim:

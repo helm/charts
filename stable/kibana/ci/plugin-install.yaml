@@ -5,5 +5,5 @@ plugins:
   reset: false
   # Use <plugin_name,version,url> to add/upgrade plugin
   values:
-    - logtrail,0.1.30,https://github.com/sivasamyk/logtrail/releases/download/v0.1.30/logtrail-6.4.3-0.1.30.zip
+    - analyze-api-ui-plugin,6.7.0,https://github.com/johtani/analyze-api-ui-plugin/releases/download/6.7.0/analyze-api-ui-plugin-6.7.0.zip
     # - other_plugin

@@ -27,8 +27,8 @@ host. To configure Ghost with the URL of your service:
 
 2. Complete your Ghost deployment by running:
 
-  helm upgrade {{ .Release.Name }} stable/ghost\
-    --set service.type={{ .Values.service.type }},ghostHost=$APP_HOST,ghostPassword=$APP_PASSWORD,{{ if .Values.mariadb.mariadbRootPassword }},mariadb.mariadbRootPassword=$DATABASE_ROOT_PASSWORD{{ end }}mariadb.db.password=$APP_DATABASE_PASSWORD
+  helm upgrade {{ .Release.Name }} stable/{{ .Chart.Name }} \
+    --set service.type={{ .Values.service.type }},ghostHost=$APP_HOST,ghostPassword=$APP_PASSWORD,{{ if .Values.mariadb.mariadbRootPassword }},mariadb.mariadbRootPassword=$DATABASE_ROOT_PASSWORD{{ end }}mariadb.db.password=$APP_DATABASE_PASSWORD{{- if .Values.global }}{{- if .Values.global.imagePullSecrets }},global.imagePullSecrets={{ .Values.global.imagePullSecrets }}{{- end }}{{- end }}
 {{- else -}}
 1. Get the Ghost URL by running:
 

@@ -77,5 +77,10 @@ extraContainers: |
 
 extraVolumes: |
 
+## Custom metadata labels to be applied to statefulset and pods
+# podLabels:
+#   foo: "bar"
+#   bar: "foo"
+
 # To be added to the server pod(s)
 podAnnotations: {}

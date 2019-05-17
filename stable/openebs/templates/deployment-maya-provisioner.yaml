@@ -8,6 +8,7 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     component: provisioner
+    openebs.io/component-name: openebs-provisioner
 spec:
   replicas: {{ .Values.provisioner.replicas }}
   selector:
@@ -59,6 +60,13 @@ spec:
         #  value: "{{ .Values.provisioner.monitorVolumeKey }}"
         #- name: MAYA_PORTAL_URL
         #  value: "{{ .Values.provisioner.mayaPortalUrl }}"
+        livenessProbe:
+          exec:
+            command:
+            - pgrep
+            - ".*openebs"
+          initialDelaySeconds: {{ .Values.provisioner.healthCheck.initialDelaySeconds }}
+          periodSeconds: {{ .Values.provisioner.healthCheck.periodSeconds }}
 {{- if .Values.provisioner.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.provisioner.nodeSelector | indent 8 }}

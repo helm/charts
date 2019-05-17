@@ -14,7 +14,7 @@ This chart bootstraps a [phpBB](https://github.com/bitnami/bitnami-docker-phpbb)
 
 It also packages the [Bitnami MariaDB chart](https://github.com/kubernetes/charts/tree/master/stable/mariadb) which is required for bootstrapping a MariaDB deployment for the database requirements of the phpBB application.
 
-Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters.
+Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters. This chart has been tested to work with NGINX Ingress, cert-manager, fluentd and Prometheus on top of the [BKPR](https://kubeprod.io/).
 
 ## Prerequisites
 
@@ -50,6 +50,7 @@ The following table lists the configurable parameters of the phpBB chart and the
 |             Parameter             |              Description              |                         Default                         |
 |-----------------------------------|---------------------------------------|---------------------------------------------------------|
 | `global.imageRegistry`            | Global Docker image registry          | `nil`                                                   |
+| `global.imagePullSecrets`         | Global Docker registry secret names as an array | `[]` (does not add image pull secrets to deployed pods) |
 | `image.registry`                  | phpBB image registry                  | `docker.io`                                             |
 | `image.repository`                | phpBB image name                      | `bitnami/phpbb`                                         |
 | `image.tag`                       | phpBB image tag                       | `{VERSION}`                                             |
@@ -67,6 +68,17 @@ The following table lists the configurable parameters of the phpBB chart and the
 | `externalDatabase.user`           | Existing username in the external db  | `bn_phpbb`                                              |
 | `externalDatabase.password`       | Password for the above username       | `nil`                                                   |
 | `externalDatabase.database`       | Name of the existing database         | `bitnami_phpbb`                                         |
+| `ingress.enabled`                   | Enable ingress controller resource                            | `false`                                                  |
+| `ingress.annotations`               | Ingress annotations                                           | `[]`                                                     |
+| `ingress.certManager`               | Add annotations for cert-manager                              | `false`                                                  |
+| `ingress.hosts[0].name`             | Hostname to your phpbb installation                           | `phpbb.local`                                            |
+| `ingress.hosts[0].path`             | Path within the url structure                                 | `/`                                                      |
+| `ingress.hosts[0].tls`              | Utilize TLS backend in ingress                                | `false`                                                  |
+| `ingress.hosts[0].tlsHosts`         | Array of TLS hosts for ingress record (defaults to `ingress.hosts[0].name` if `nil`)                               | `nil`                                                  |
+| `ingress.hosts[0].tlsSecret`        | TLS Secret (certificates)                                     | `phpbb.local-tls-secret`                                 |
+| `ingress.secrets[0].name`           | TLS Secret Name                                               | `nil`                                                    |
+| `ingress.secrets[0].certificate`    | TLS Secret Certificate                                        | `nil`                                                    |
+| `ingress.secrets[0].key`            | TLS Secret Key                                                | `nil`                                                    |
 | `mariadb.enabled`                 | Use or not the MariaDB chart          | `true`                                                  |
 | `mariadb.rootUser.password`     | MariaDB admin password                | `nil`                                                   |
 | `mariadb.db.name`         | Database name to create               | `bitnami_phpbb`                                         |

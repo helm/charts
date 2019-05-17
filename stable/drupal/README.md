@@ -14,7 +14,7 @@ This chart bootstraps a [Drupal](https://github.com/bitnami/bitnami-docker-drupa
 
 It also packages the [Bitnami MariaDB chart](https://github.com/kubernetes/charts/tree/master/stable/mariadb) which is required for bootstrapping a MariaDB deployment as a database for the Drupal application.
 
-Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters.
+Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters. This chart has been tested to work with NGINX Ingress, cert-manager, fluentd and Prometheus on top of the [BKPR](https://kubeprod.io/).
 
 ## Prerequisites
 
@@ -50,6 +50,7 @@ The following table lists the configurable parameters of the Drupal chart and th
 | Parameter                         | Description                                | Default                                                   |
 | --------------------------------- | ------------------------------------------ | --------------------------------------------------------- |
 | `global.imageRegistry`            | Global Docker image registry               | `nil`                                                     |
+| `global.imagePullSecrets`         | Global Docker registry secret names as an array | `[]` (does not add image pull secrets to deployed pods) |
 | `image.registry`                  | Drupal image registry                      | `docker.io`                                               |
 | `image.repository`                | Drupal Image name                          | `bitnami/drupal`                                          |
 | `image.tag`                       | Drupal Image tag                           | `{VERSION}`                                               |

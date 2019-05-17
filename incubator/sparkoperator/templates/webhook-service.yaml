@@ -11,7 +11,7 @@ metadata:
 spec:
   ports:
   - port: 443
-    targetPort: 8080
+    targetPort: {{ .Values.webhookPort }}
     name: webhook
   selector:
     app.kubernetes.io/name: {{ include "sparkoperator.name" . }}

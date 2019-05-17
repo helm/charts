@@ -12,7 +12,7 @@ $ helm install stable/dokuwiki
 
 This chart bootstraps a [DokuWiki](https://github.com/bitnami/bitnami-docker-dokuwiki) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
-Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters.
+Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters. This chart has been tested to work with NGINX Ingress, cert-manager, fluentd and Prometheus on top of the [BKPR](https://kubeprod.io/).
 
 ## Prerequisites
 
@@ -48,6 +48,7 @@ The following table lists the configurable parameters of the DokuWiki chart and 
 |              Parameter               |               Description                                  |                   Default                     |
 |--------------------------------------|------------------------------------------------------------|-----------------------------------------------|
 | `global.imageRegistry`               | Global Docker image registry                               | `nil`                                         |
+| `global.imagePullSecrets`            | Global Docker registry secret names as an array            | `[]` (does not add image pull secrets to deployed pods) |
 | `image.registry`                     | DokuWiki image registry                                    | `docker.io`                                   |
 | `image.repository`                   | DokuWiki image name                                        | `bitnami/dokuwiki`                            |
 | `image.tag`                          | DokuWiki image tag                                         | `{VERSION}`                                   |
