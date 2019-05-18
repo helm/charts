@@ -5,7 +5,11 @@ metadata:
   namespace: {{ .Values.namespace }}
   name: {{ template "cratedb.name" . }}
   labels:
-    app: {{ template "cratedb.name" . }}
+    app.kubernetes.io/name: {{ template "cratedb.name" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "cratedb.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/version: {{ .Chart.Version }}
 {{- if .Values.labels }}
 {{ toYaml .Values.labels | indent 4 }}
 {{- end }}
@@ -14,12 +18,16 @@ spec:
   replicas: {{ .Values.clusterSize }}
   selector:
     matchLabels:
-      app: {{ template "cratedb.name" . }}
+      app.kubernetes.io/name: {{ template "cratedb.name" . }}
   template:
     metadata:
       namespace: {{ .Values.namespace }}
       labels:
-        app: {{ template "cratedb.name" . }}
+        app.kubernetes.io/name: {{ template "cratedb.name" . }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+        helm.sh/chart: {{ include "cratedb.chart" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/version: {{ .Chart.Version }}
 {{- if .Values.labels }}
 {{ toYaml .Values.labels | indent 8 }}
 {{- end }}

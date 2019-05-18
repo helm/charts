@@ -1,7 +1,7 @@
 
 Check the status of crateDB using:
 
-  kubectl get pods --namespace {{ .Values.namespace }} -l "app={{ template "cratedb.name" . }}"
+  kubectl get pods --namespace {{ .Values.namespace }} -l "app.kubernetes.io/name={{ template "cratedb.name" . }}"
 
 While creation in progress you may see something like below
 
@@ -27,7 +27,7 @@ Once all pods are ready you will see below result
 Check the web UI of cratedb with the help of external service created.
 Run the following command to see the services
 
-  kubectl get service --namespace {{ .Values.namespace }} -l "app={{ template "cratedb.name" . }}"
+  kubectl get service --namespace {{ .Values.namespace }} -l "app.kubernetes.io/name={{ template "cratedb.name" . }}"
 
 As a result of above command you will get similar result below
 

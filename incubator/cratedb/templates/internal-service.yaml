@@ -7,9 +7,11 @@ metadata:
   name: {{  .Values.internalService.name }}
   namespace: {{ .Values.namespace }}
   labels:
-    app: {{ template "cratedb.name" . }}
-    chart: {{ include "cratedb.chart" . }}
-    release: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ template "cratedb.name" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "cratedb.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/version: {{ .Chart.Version }}
 {{- if .Values.labels }}
 {{ toYaml .Values.labels | indent 4 }}
 {{- end }}
