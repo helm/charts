@@ -29,6 +29,12 @@ memcached:
   verbosity: v
   extendedOptions: modern
 
+  ## Additional command line arguments to pass to memcached
+  ## E.g. to specify a maximum value size
+  ## extraArgs:
+  ##   - -I 2m
+  extraArgs: []
+
 ## Define various attributes of the service
 serviceAnnotations: {}
 #  prometheus.io/scrape: "true"
