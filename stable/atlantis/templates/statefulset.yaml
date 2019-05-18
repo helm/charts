@@ -123,12 +123,12 @@ spec:
           - name: ATLANTIS_GH_TOKEN
             valueFrom:
               secretKeyRef:
-                name: {{ template "atlantis.fullname" . }}-webhook
+                name: {{ template "atlantis.vcsSecretsName" . }}
                 key: github_token
           - name: ATLANTIS_GH_WEBHOOK_SECRET
             valueFrom:
               secretKeyRef:
-                name: {{ template "atlantis.fullname" . }}-webhook
+                name: {{ template "atlantis.vcsSecretsName" . }}
                 key: github_secret
           {{- if .Values.github.hostname }}
           - name: ATLANTIS_GH_HOSTNAME
@@ -141,12 +141,12 @@ spec:
           - name: ATLANTIS_GITLAB_TOKEN
             valueFrom:
               secretKeyRef:
-                name: {{ template "atlantis.fullname" . }}-webhook
+                name: {{ template "atlantis.vcsSecretsName" . }}
                 key: gitlab_token
           - name: ATLANTIS_GITLAB_WEBHOOK_SECRET
             valueFrom:
               secretKeyRef:
-                name: {{ template "atlantis.fullname" . }}-webhook
+                name: {{ template "atlantis.vcsSecretsName" . }}
                 key: gitlab_secret
           {{- if .Values.gitlab.hostname }}
           - name: ATLANTIS_GITLAB_HOSTNAME
@@ -159,7 +159,7 @@ spec:
           - name: ATLANTIS_BITBUCKET_TOKEN
             valueFrom:
               secretKeyRef:
-                name: {{ template "atlantis.fullname" . }}-webhook
+                name: {{ template "atlantis.vcsSecretsName" . }}
                 key: bitbucket_token
           {{- if .Values.bitbucket.baseURL }}
           - name: ATLANTIS_BITBUCKET_BASE_URL
@@ -167,7 +167,7 @@ spec:
           - name: ATLANTIS_BITBUCKET_WEBHOOK_SECRET
             valueFrom:
               secretKeyRef:
-                name: {{ template "atlantis.fullname" . }}-webhook
+                name: {{ template "atlantis.vcsSecretsName" . }}
                 key: bitbucket_secret
           {{- end }}
           {{- end }}

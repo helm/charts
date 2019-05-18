@@ -6,7 +6,7 @@ rabbitmqUsername: guest
 
 ## RabbitMQ Management user used for health checks
 managementUsername: management
-managementPassword: E9R3fjZm4ejFkVFE
+# managementPassword:
 
 ## Place any additional key/value configuration to add to rabbitmq.conf
 ## Ref: https://www.rabbitmq.com/configure.html#config-items
@@ -436,7 +436,7 @@ readinessProbe:
   timeoutSeconds: 3
   periodSeconds: 5
 
-# Specifies an existing secret to be used for RMQ password and Erlang Cookie
+# Specifies an existing secret to be used for RMQ password, management user password and Erlang Cookie
 existingSecret: ""
 
 
