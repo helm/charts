@@ -1111,6 +1111,10 @@ prometheus:
     ##
     listenLocal: false
 
+    ## Enable access to prometheus web admin API
+    #
+    enableAdminAPI: false
+
     ## Image of Prometheus.
     ##
     image:
