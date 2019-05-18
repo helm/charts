@@ -112,7 +112,7 @@ spec:
         - mountPath: /etc/sentry
           name: config
           readOnly: true
-        - mountPath: {{ .Values.persistence.filestore_dir }}
+        - mountPath: /var/lib/sentry/files
           name: sentry-data
         livenessProbe:
           failureThreshold: 5

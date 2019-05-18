@@ -113,7 +113,7 @@ spec:
         - mountPath: /etc/sentry
           name: config
           readOnly: true
-        - mountPath: {{ .Values.persistence.filestore_dir }}
+        - mountPath: /var/lib/sentry/files
           name: sentry-data
         resources:
 {{ toYaml .Values.worker.resources | indent 12 }}

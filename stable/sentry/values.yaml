@@ -126,10 +126,6 @@ persistence:
   accessMode: ReadWriteOnce
   size: 10Gi
 
-  # Where to store sentry files
-  # https://docs.sentry.io/server/filestore/
-  filestore_dir: /var/lib/sentry/files
-
 ## Configure ingress resource that allow you to access the
 ## Sentry installation. Set up the URL
 ## ref: http://kubernetes.io/docs/user-guide/ingress/
