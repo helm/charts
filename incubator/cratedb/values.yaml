@@ -8,7 +8,7 @@ clusterName: "cratedb-cluster"
 
 # namespace that you want to install crateDB
 # default installation is default namespace
-namespace: "monitoring"
+namespace: "default"
 
 # statefulset name
 cratadbStatefulsetName: crate-set
