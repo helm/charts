@@ -1,0 +1,31 @@
+{{- if and .Values.persistentVolume.enabled (not .Values.persistentVolume.existingClaim) -}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ template "faktory.fullname" . }}
+  annotations:
+    "helm.sh/resource-policy": keep
+  {{- if .Values.persistentVolume.annotations }}
+{{ toYaml .Values.persistentVolume.annotations | indent 4 }}
+  {{- end }}
+  labels:
+    app.kubernetes.io/name: {{ include "faktory.name" . }}
+    helm.sh/chart: {{ include "faktory.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  accessModes:
+{{- range .Values.persistentVolume.accessModes }}
+    - {{ . | quote }}
+{{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.persistentVolume.size | quote }}
+{{-   if .Values.persistentVolume.storageClass }}
+{{-     if (eq "-" .Values.persistentVolume.storageClass) }}
+  storageClassName: ""
+{{-     else }}
+  storageClassName: "{{ .Values.persistentVolume.storageClass }}"
+{{-     end }}
+{{-   end }}
+{{- end }}

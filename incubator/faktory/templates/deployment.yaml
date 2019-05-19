@@ -1,0 +1,78 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ include "faktory.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "faktory.name" . }}
+    helm.sh/chart: {{ include "faktory.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "faktory.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "faktory.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - /faktory
+            - -b
+            - :7419
+            - -w
+            - :7420
+            - -e
+            - production
+          env:
+          - name: FAKTORY_PASSWORD
+            value: {{ .Values.password | quote }}
+          ports:
+            - name: commands
+              containerPort: 7419
+              protocol: TCP
+            - name: ui
+              containerPort: 7420
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /static
+              port: ui
+          readinessProbe:
+            httpGet:
+              path: /static
+              port: ui
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+          volumeMounts:
+          - name: data
+            mountPath: /var/lib/faktory
+      volumes:
+      - name: data
+      {{- if .Values.persistentVolume.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ if .Values.persistentVolume.existingClaim }}{{ .Values.persistentVolume.existingClaim }}{{- else }}{{ template "faktory.fullname" . }}{{- end }}
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
