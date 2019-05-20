@@ -16,6 +16,8 @@ spec:
       app.kubernetes.io/name: {{ template "graylog.name" . }}
       app.kubernetes.io/instance: "{{ .Release.Name }}"
       app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+  updateStrategy: 
+    type: {{ .Values.graylog.updateStrategy }}
   template:
     metadata:
       labels:
@@ -36,7 +38,6 @@ spec:
       {{- end }}
     spec:
       serviceAccountName: {{ template "graylog.serviceAccountName" . }}
-      updateStrategy: {{ .Values.graylog.updateStrategy }}
 {{- if .Values.graylog.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.graylog.nodeSelector | indent 8 }}
