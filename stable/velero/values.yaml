@@ -6,7 +6,7 @@
 # enabling restic). Required.
 image:
   repository: gcr.io/heptio-images/velero
-  tag: v0.11.0
+  tag: v1.0.0
   pullPolicy: IfNotPresent
 
 # Annotations to add to the Velero deployment's pod template. Optional.
@@ -62,7 +62,7 @@ configuration:
   provider:
 
   # Parameters for the `default` BackupStorageLocation. See
-  # https://heptio.github.io/velero/v0.11.0/api-types/backupstoragelocation.html
+  # https://velero.io/docs/v1.0.0/api-types/backupstoragelocation/
   backupStorageLocation:
     # Cloud provider where backups should be stored. Usually should
     # match `configuration.provider`. Required.
@@ -83,7 +83,7 @@ configuration:
     #  publicUrl:
 
   # Parameters for the `default` VolumeSnapshotLocation. See
-  # https://heptio.github.io/velero/v0.11.0/api-types/volumesnapshotlocation.html
+  # https://velero.io/docs/v1.0.0/api-types/volumesnapshotlocation/
   volumeSnapshotLocation:
     # Cloud provider where volume snapshots are being taken. Usually
     # should match `configuration.provider`. Required.,
