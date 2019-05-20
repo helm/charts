@@ -76,7 +76,7 @@ spec:
       {{- end }}
       {{- if .Values.slave.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.slave.nodeSelector | indent 8 }}
+        {{ toYaml .Values.slave.nodeSelector | nindent 8 }}
       {{- end -}}
       {{- with .Values.slave.tolerations }}
       tolerations:
