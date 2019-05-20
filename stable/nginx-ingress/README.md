@@ -77,6 +77,7 @@ Parameter | Description | Default
 `controller.nodeSelector` | node labels for pod assignment | `{}`
 `controller.podAnnotations` | annotations to be added to pods | `{}`
 `controller.podLabels` | labels to add to the pod container metadata | `{}`
+`controller.podSecurityContext` | Security context policies to add to the controller pod | `{}`
 `controller.replicaCount` | desired number of controller pods | `1`
 `controller.minAvailable` | minimum number of available controller pods for PodDisruptionBudget | `1`
 `controller.resources` | controller pod resource requests & limits | `{}`
