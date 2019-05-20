@@ -1,6 +1,6 @@
 {{- if or .Values.autoDiscovery.clusterName .Values.autoscalingGroups }}
 {{/* one of the above is required */}}
-apiVersion: extensions/v1beta1
+apiVersion: {{ .Values.deployment.apiVersion }}
 kind: Deployment
 metadata:
   labels:
@@ -11,6 +11,13 @@ metadata:
   name: {{ template "cluster-autoscaler.fullname" . }}
 spec:
   replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "cluster-autoscaler.name" . }}
+      release: {{ .Release.Name }}
+    {{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | indent 8 }}
+    {{- end }}
   template:
     metadata:
     {{- if .Values.podAnnotations }}
