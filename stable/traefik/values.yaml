@@ -440,3 +440,8 @@ tracing:
 #   forwarding:
 #     dialTimeout: 30s
 #     responseHeaderTimeout: 0s
+
+# forwardAuth:
+#   entryPoints: ["http", "https"]
+#   address: https://authserver.com/auth
+#   trustForwardHeader: true
