@@ -2,13 +2,9 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: {{ include "mysql.fullname" . }}
-  namespace: {{ .Release.Namespace }}
+  name: {{ include "chaoskube.fullname" . }}
   labels:
-    app: {{ template "mysql.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+{{ include "labels.standard" . | indent 4 }}
     {{- if .Values.metrics.serviceMonitor.additionalLabels }}
 {{ toYaml .Values.metrics.serviceMonitor.additionalLabels | indent 4 }}
     {{- end }}
@@ -21,6 +17,6 @@ spec:
       - {{ .Release.Namespace }}
   selector:
     matchLabels:
-      app: {{ include "mysql.fullname" . }}
-      release: {{ .Release.Name }}
+      app.kubernetes.io/name: {{ include "chaoskube.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
