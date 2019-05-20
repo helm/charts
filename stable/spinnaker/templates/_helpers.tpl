@@ -39,3 +39,16 @@ Create comma separated list of omitted namespaces in Kubernetes
 {{- define "omittedNameSpaces" -}}
 {{- join "," .Values.kubeConfig.omittedNameSpaces }}
 {{- end -}}
+
+{{/*
+Redis base URL for Spinnaker
+*/}}
+{{- define "spinnaker.redisBaseURL" -}}
+{{- if .Values.redis.enabled }}
+{{- printf "redis://:%s@%s-redis-master:6379" .Values.redis.password .Release.Name -}}
+{{- else if .Values.redis.external.password }}
+{{- printf "redis://:%s@%s:%s" .Values.redis.external.password .Values.redis.external.host (.Values.redis.external.port | toString) -}}
+{{- else }}
+{{- printf "redis://%s:%s" .Values.redis.external.host (.Values.redis.external.port | toString) -}}
+{{- end }}
+{{- end }}
