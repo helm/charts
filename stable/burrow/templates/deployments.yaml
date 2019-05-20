@@ -29,7 +29,7 @@ spec:
 {{- if $.Values.config.RPC.Metrics.Enabled }}
         prometheus.io/scrape: "true"
         prometheus.io/port: {{ $.Values.config.RPC.Metrics.ListenPort | quote }}
-        prometheus.io/path: {{ $.Values.config.RPC.Metrics.path }}
+        prometheus.io/path: {{ $.Values.config.RPC.Metrics.MetricsPath }}
 {{- end }}
 {{- if $.Values.podAnnotations }}
 {{ toYaml $.Values.podAnnotations | indent 8 }}
@@ -115,9 +115,9 @@ spec:
           - {{ (index $.Values.validatorAddresses ( printf "Validator_%d" $nodeIndex )).Address | quote }}
           - --validator-moniker
           - {{ printf "%s-validator-%s" $.Values.organization $nodeNumber | quote }}
-{{- if (and $.Values.RPC.Peer.ingress.enabled (not (eq (len $.Values.RPC.Peer.ingress.hosts) 0))) }}
+{{- if (and $.Values.peer.ingress.enabled (not (eq (len $.Values.peer.ingress.hosts) 0))) }}
           - --external-address
-          - "{{ $nodeNumber }}.{{ index $.Values.RPC.Peer.ingress.hosts 0 }}:{{ $.Values.config.Tendermint.ListenPort }}"
+          - "{{ $nodeNumber }}.{{ index $.Values.peer.ingress.hosts 0 }}:{{ $.Values.config.Tendermint.ListenPort }}"
 {{- end }}
 {{- range $key, $value := $.Values.extraArgs }}
             - --{{ $key }}={{ $value }}
