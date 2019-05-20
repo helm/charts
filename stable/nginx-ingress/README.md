@@ -206,8 +206,10 @@ You can add Prometheus annotations to the metrics service using `controller.metr
 Add an [ExternalDNS](https://github.com/kubernetes-incubator/external-dns) annotation to the LoadBalancer service:
 
 ```yaml
-annotations:
-  external-dns.alpha.kubernetes.io/hostname: kubernetes-example.com.
+controller:
+  service:
+    annotations:
+      external-dns.alpha.kubernetes.io/hostname: kubernetes-example.com.
 ```
 
 ## AWS L7 ELB with SSL Termination
