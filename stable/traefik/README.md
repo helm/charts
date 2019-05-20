@@ -235,6 +235,9 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `secretFiles`                          | Secret files to make available in the deployment. key=filename, value=file contents                                          | `{}`                                              |
 | `testFramework.image`                  | `test-framework` image repository.                                                                                           | `dduportal/bats`                                  |
 | `testFramework.tag`                    | `test-framework` image tag.                                                                                                  | `0.4.0`                                           |
+| `forwardAuth.entryPoints`              | Enable forward authentication for these entryPoints: "http", "https", "httpn"                                                |                                                   |
+| `forwardAuth.address`                  | URL for forward authentication                                                                                               |                                                   |
+| `forwardAuth.trustForwardHeader`       | Trust X-Forwarded-* headers                                                                                                  |                                                   |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 
