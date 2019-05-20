@@ -39,6 +39,10 @@ spec:
 {{- if .Values.controller.priorityClassName }}
       priorityClassName: "{{ .Values.controller.priorityClassName }}"
 {{- end }}
+      {{- if .Values.controller.podSecurityContext }}
+      securityContext:
+{{ toYaml .Values.controller.podSecurityContext | indent 8 }}
+      {{- end }}
       containers:
         - name: {{ template "nginx-ingress.name" . }}-{{ .Values.controller.name }}
           image: "{{ .Values.controller.image.repository }}:{{ .Values.controller.image.tag }}"
