@@ -1,6 +1,7 @@
+apiVersion: v1
 name: elasticsearch
 home: https://www.elastic.co/products/elasticsearch
-version: 1.26.1
+version: 1.26.2
 appVersion: 6.7.0
 description: Flexible and powerful open source, distributed real-time search and analytics
   engine.
