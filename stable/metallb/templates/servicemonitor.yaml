@@ -1,0 +1,53 @@
+{{- if .Values.prometheus.serviceMonitor.enabled }}
+kind: Service
+metadata:
+  name: {{ template "metallb.fullname" . }}-metrics
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: {{ template "metallb.chart" . }}
+    app: {{ template "metallb.name" . }}
+    jobLabel: {{ .Values.prometheus.serviceMonitor.jobLabel }}
+spec:
+  type: ClusterIP
+  selector:
+    app: {{ template "metallb.name" . }}
+    release: {{ .Release.Name | quote }}
+  ports:
+  - name: metrics
+    port: 7472
+    protocol: TCP
+    targetPort: 7472
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ template "metallb.fullname" . }}
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: {{ template "metallb.chart" . }}
+    app: {{ template "metallb.name" . }}
+spec:
+  jobLabel: jobLabel
+  selector:
+    matchLabels:
+      app: {{ template "metallb.name" . }}
+      release: {{ .Release.Name | quote }}
+  namespaceSelector:
+    matchNames:
+    - {{ .Release.Namespace }}
+  endpoints:
+  - port: metrics
+    {{- if .Values.prometheus.serviceMonitor.interval }}
+    interval: {{ .Values.prometheus.serviceMonitor.interval }}
+    {{- end }}
+{{- if .Values.prometheus.serviceMonitor.metricRelabelings }}
+    metricRelabelings:
+{{ toYaml .Values.prometheus.serviceMonitor.metricRelabelings | indent 4 }}
+{{- end }}
+{{- if .Values.prometheus.serviceMonitor.relabelings }}
+    relabelings:
+{{ toYaml .Values.prometheus.serviceMonitor.relabelings | indent 4 }}
+{{- end }}
+{{- end }}
