@@ -49,9 +49,10 @@ affinity: {}
 replicas: 1
 
 podAnnotations: {}
+#  The following annotations guarantee scheduling for critical add-on pods.
+#    See more at: https://kubernetes.io/docs/tasks/administer-cluster/guaranteed-scheduling-critical-addon-pods/
 #  scheduler.alpha.kubernetes.io/critical-pod: ''
-
-# priorityClassName: system-node-critical
+#  priorityClassName: system-node-critical
 
 extraVolumeMounts: []
 #  - name: secrets
@@ -88,6 +89,10 @@ securityContext:
 
 service:
   annotations: {}
+  labels: {}
+  #  Add these labels to have metrics-server show up in `kubectl cluster-info`
+  #  kubernetes.io/cluster-service: "true"
+  #  kubernetes.io/name: metrics-server
   port: 443
   type: ClusterIP
 
