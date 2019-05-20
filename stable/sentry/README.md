@@ -107,6 +107,7 @@ The following table lists the configurable parameters of the Sentry chart and th
 | `ingress.enabled`                    | Enable ingress controller resource          | `false`                                                    |
 | `ingress.annotations`                | Ingress annotations                         | `{}`                                                       |
 | `ingress.hostname`                   | URL to address your Sentry installation     | `sentry.local`                                             |
+| `ingress.path`                       | path to address your Sentry installation    | `/`                                                        |
 | `ingress.tls`                        | Ingress TLS configuration                   | `[]`                                                       |
 | `postgresql.enabled`                 | Deploy postgres server (see below)          | `true`                                                     |
 | `postgresql.postgresDatabase`        | Postgres database name                      | `sentry`                                                   |
