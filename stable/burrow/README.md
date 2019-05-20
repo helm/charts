@@ -59,6 +59,7 @@ The following table lists the configurable parameters of the Burrow chart and it
 | `chain.restore.dumpURL` | accessible dump file from absolute url | `""` |
 | `chain.testing` | toggle pre-generated keys & genesis for ci testing | `false` |
 | `config` | the [burrow configuration file](https://github.com/hyperledger/burrow/blob/develop/tests/chain/burrow.toml) | `{}` |
+| `config.Tendermint.ListenPort` | peer port | `26656` |
 | `contracts.enabled` | toggle post-install contract deployment | `false` |
 | `contracts.image` | contract deployer image | `""` |
 | `contracts.tag` | contract deployer tag | `""` |
@@ -89,24 +90,23 @@ The following table lists the configurable parameters of the Burrow chart and it
 | `resources.limits.memory` | - | `"1Gi"` |
 | `resources.requests.cpu` | - | `"100m"` |
 | `resources.requests.memory` | - | `"256Mi"` |
-| `rpcGRPC.service.type` | service type | `"ClusterIP"` |
-| `rpcGRPC.service.loadBalance` | enable load balancing across nodes | `true` |
-| `rpcGRPC.ingress.enabled` | expose port | `false` |
-| `rpcGRPC.ingress.hosts` | - | `[]` |
-| `rpcGRPC.ingress.annotations` | extra annotations | `` |
-| `rpcGRPC.ingress.tls` | - | `` |
-| `rpcInfo.service.type` | service type | `"ClusterIP"` |
-| `rpcInfo.service.loadBalance` | enable load balancing across nodes | `true` |
-| `rpcInfo.ingress.enabled` | expose port | `false` |
-| `rpcInfo.ingress.partial` | exposes the `/accounts` and `/blocks` paths externally | `false` |
-| `rpcInfo.ingress.pathLeader` | - | `"/"` |
-| `rpcInfo.ingress.annotations` | extra annotations | `` |
-| `rpcInfo.ingress.hosts` | - | `[]` |
-| `rpcInfo.ingress.tls` | - | `` |
-| `rpcPeer.service.type` | service type | `"ClusterIP"` |
-| `rpcPeer.service.port` | peer port | `26656` |
-| `rpcPeer.ingress.enabled` | expose port | `false` |
-| `rpcPeer.ingress.hosts` | - | `[]` |
+| `grpc.service.type` | service type | `"ClusterIP"` |
+| `grpc.service.loadBalance` | enable load balancing across nodes | `true` |
+| `grpc.ingress.enabled` | expose port | `false` |
+| `grpc.ingress.hosts` | - | `[]` |
+| `grpc.ingress.annotations` | extra annotations | `` |
+| `grpc.ingress.tls` | - | `` |
+| `info.service.type` | service type | `"ClusterIP"` |
+| `info.service.loadBalance` | enable load balancing across nodes | `true` |
+| `info.ingress.enabled` | expose port | `false` |
+| `info.ingress.partial` | exposes the `/accounts` and `/blocks` paths externally | `false` |
+| `info.ingress.pathLeader` | - | `"/"` |
+| `info.ingress.annotations` | extra annotations | `` |
+| `info.ingress.hosts` | - | `[]` |
+| `info.ingress.tls` | - | `` |
+| `peer.service.type` | service type | `"ClusterIP"` |
+| `peer.ingress.enabled` | expose port | `false` |
+| `peer.ingress.hosts` | - | `[]` |
 | `tolerations` | list of node taints to tolerate | `[]` |
 | `validatorAddresses` | list of validators to deploy | `[]` |
 
