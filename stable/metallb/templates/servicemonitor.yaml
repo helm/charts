@@ -1,4 +1,5 @@
 {{- if .Values.prometheus.serviceMonitor.enabled }}
+apiVersion: v1
 kind: Service
 metadata:
   name: {{ template "metallb.fullname" . }}-metrics
