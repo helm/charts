@@ -68,6 +68,17 @@ The following table lists the configurable parameters of the phpBB chart and the
 | `externalDatabase.user`           | Existing username in the external db  | `bn_phpbb`                                              |
 | `externalDatabase.password`       | Password for the above username       | `nil`                                                   |
 | `externalDatabase.database`       | Name of the existing database         | `bitnami_phpbb`                                         |
+| `ingress.enabled`                   | Enable ingress controller resource                            | `false`                                                  |
+| `ingress.annotations`               | Ingress annotations                                           | `[]`                                                     |
+| `ingress.certManager`               | Add annotations for cert-manager                              | `false`                                                  |
+| `ingress.hosts[0].name`             | Hostname to your phpbb installation                           | `phpbb.local`                                            |
+| `ingress.hosts[0].path`             | Path within the url structure                                 | `/`                                                      |
+| `ingress.hosts[0].tls`              | Utilize TLS backend in ingress                                | `false`                                                  |
+| `ingress.hosts[0].tlsHosts`         | Array of TLS hosts for ingress record (defaults to `ingress.hosts[0].name` if `nil`)                               | `nil`                                                  |
+| `ingress.hosts[0].tlsSecret`        | TLS Secret (certificates)                                     | `phpbb.local-tls-secret`                                 |
+| `ingress.secrets[0].name`           | TLS Secret Name                                               | `nil`                                                    |
+| `ingress.secrets[0].certificate`    | TLS Secret Certificate                                        | `nil`                                                    |
+| `ingress.secrets[0].key`            | TLS Secret Key                                                | `nil`                                                    |
 | `mariadb.enabled`                 | Use or not the MariaDB chart          | `true`                                                  |
 | `mariadb.rootUser.password`     | MariaDB admin password                | `nil`                                                   |
 | `mariadb.db.name`         | Database name to create               | `bitnami_phpbb`                                         |

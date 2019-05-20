@@ -48,6 +48,7 @@ $ helm install stable/chaoskube --set dryRun=false
 | `annotations`             | annotation selector to filter pods by               | "" (matches everything)          |
 | `namespaces`              | namespace selector to filter pods by                | "" (all namespaces)              |
 | `dryRun`                  | don't kill pods, only log what would have been done | true                             |
+| `logFormat`               | Options to choose log format(i.e. "text" or "json") | "text"                           |
 | `debug`                   | Enable debug logging mode, for detailed logs        | false                            |
 | `timezone`                | Set timezone for running actions (Optional)         | "" (UTC)                         |
 | `excludedWeekdays`        | Set Days of the Week to avoid actions (Optional)    | "" (Don't skip any weekdays)     |

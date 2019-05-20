@@ -44,11 +44,12 @@ The following table lists the configurable parameters of the kibana chart and th
 | `env`                                      | Environment variables to configure Kibana                              | `{}`                                  |
 | `files`                                    | Kibana configuration files                                             | None                                  |
 | `livenessProbe.enabled`                    | livenessProbe to be enabled?                                           | `false`                               |
+| `livenessProbe.path`                       | path for livenessProbe                                                 | `/status`                             |
 | `livenessProbe.initialDelaySeconds`        | number of seconds                                                      | 30                                    |
 | `livenessProbe.timeoutSeconds`             | number of seconds                                                      | 10                                    |
 | `image.pullPolicy`                         | Image pull policy                                                      | `IfNotPresent`                        |
 | `image.repository`                         | Image repository                                                       | `docker.elastic.co/kibana/kibana-oss` |
-| `image.tag`                                | Image tag                                                              | `6.6.0`                               |
+| `image.tag`                                | Image tag                                                              | `6.7.0`                               |
 | `image.pullSecrets`                        | Specify image pull secrets                                             | `nil`                                 |
 | `commandline.args`                         | add additional commandline args                                        | `nil`                                 |
 | `ingress.enabled`                          | Enables Ingress                                                        | `false`                               |
@@ -99,6 +100,7 @@ The following table lists the configurable parameters of the kibana chart and th
 | `persistentVolumeClaim.size`               | Size of the PVC                                                        | `5Gi`                                 |
 | `persistentVolumeClaim.storageClass`       | Storage class of the PVC                                               | None:                                 |
 | `readinessProbe.enabled`                   | readinessProbe to be enabled?                                          | `false`                               |
+| `readinessProbe.path`                      | path for readinessProbe                                                | `/status`                             |
 | `readinessProbe.initialDelaySeconds`       | number of seconds                                                      | 30                                    |
 | `readinessProbe.timeoutSeconds`            | number of seconds                                                      | 10                                    |
 | `readinessProbe.periodSeconds`             | number of seconds                                                      | 10                                    |
@@ -110,6 +112,9 @@ The following table lists the configurable parameters of the kibana chart and th
 | `extraConfigMapMounts`                     | Additional configmaps to be mounted                                    | `[]`                                  |
 | `deployment.annotations`                   | Annotations for deployment                                             | `{}`                                  |
 | `initContainers`                           | Init containers to add to the kibana deployment                        | `{}`                                  |
+| `testFramework.image`                      | `test-framework` image repository.                                     | `dduportal/bats`                      |
+| `testFramework.tag`                        | `test-framework` image tag.                                            | `0.4.0`                               |
+
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

@@ -14,6 +14,9 @@ spec:
     metadata:
       labels:
         app: {{ template "datadog.fullname" . }}
+        {{- if .Values.daemonset.podLabels }}
+{{ toYaml .Values.daemonset.podLabels | indent 8 }}
+        {{- end }}
       name: {{ template "datadog.fullname" . }}
       annotations:
         checksum/autoconf-config: {{ tpl (toYaml .Values.datadog.autoconf) . | sha256sum }}
@@ -176,7 +179,7 @@ spec:
           - name: DD_DOGSTATSD_SOCKET
             value: "/var/run/datadog/dsd.socket"
           {{- end }}
-          {{- if .Values.clusterAgent.clusterChecks.enabled }}
+          {{- if and .Values.clusterAgent.clusterChecks.enabled  (not .Values.clusterchecksDeployment.enabled) }}
           - name: DD_EXTRA_CONFIG_PROVIDERS
             value: "clusterchecks"
           {{- end }}
@@ -293,6 +296,6 @@ spec:
 {{ toYaml .Values.daemonset.nodeSelector | indent 8 }}
       {{- end }}
   updateStrategy:
-    type: {{ default "OnDelete" .Values.daemonset.updateStrategy | quote }}
+    type: {{ default "RollingUpdate" .Values.daemonset.updateStrategy | quote }}
 {{ end }}
 {{ end }}

@@ -1,7 +1,7 @@
 # Default values for elasticsearch.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-appVersion: "6.6.2"
+appVersion: "6.7.0"
 
 ## Define serviceAccount names for components. Defaults to component's fully qualified name.
 ##
@@ -33,11 +33,15 @@ podSecurityPolicy:
 
 image:
   repository: "docker.elastic.co/elasticsearch/elasticsearch-oss"
-  tag: "6.6.2"
+  tag: "6.7.0"
   pullPolicy: "IfNotPresent"
   # If specified, use these secrets to access the image
   # pullSecrets:
   #   - registry-secret
+
+testFramework:
+  image: "dduportal/bats"
+  tag: "0.4.0"
 
 initImage:
   repository: "busybox"
@@ -71,6 +75,8 @@ client:
   name: client
   replicas: 2
   serviceType: ClusterIP
+  ## If coupled with serviceType = "NodePort", this will set a specific nodePort to the client HTTP port
+  # httpNodePort: 30920
   loadBalancerIP: {}
   loadBalancerSourceRanges: {}
 ## (dict) If specified, apply these annotations to the client service
@@ -158,6 +164,7 @@ master:
   ## (dict) If specified, apply these annotations to each master Pod
   # podAnnotations:
   #   example: master-foo
+  podManagementPolicy: OrderedReady
   podDisruptionBudget:
     enabled: false
     minAvailable: 2  # Same as `cluster.env.MINIMUM_MASTER_NODES`
@@ -209,6 +216,7 @@ data:
     enabled: false
     # minAvailable: 1
     maxUnavailable: 1
+  podManagementPolicy: OrderedReady
   updateStrategy:
     type: OnDelete
   hooks:  # post-start and pre-stop hooks

@@ -19,9 +19,8 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
 {{- end }}
     spec:
-{{ if .Values.rbac.create }}
+      hostNetwork: {{ .Values.hostNetwork }}
       serviceAccountName: {{ template "kube-state-metrics.serviceAccountName" . }}
-{{ end }}
       {{- if .Values.securityContext.enabled }}
       securityContext:
         fsGroup: {{ .Values.securityContext.fsGroup }}
@@ -33,6 +32,9 @@ spec:
       containers:
       - name: {{ .Chart.Name }}
         args:
+{{  if .Values.collectors.certificatesigningrequests  }}
+        - --collectors=certificatesigningrequests
+{{  end  }}
 {{  if .Values.collectors.configmaps  }}
         - --collectors=configmaps
 {{  end  }}
@@ -50,6 +52,9 @@ spec:
 {{  end  }}
 {{  if .Values.collectors.horizontalpodautoscalers  }}
         - --collectors=horizontalpodautoscalers
+{{  end  }}
+{{  if .Values.collectors.ingresses  }}
+        - --collectors=ingresses
 {{  end  }}
 {{  if .Values.collectors.jobs  }}
         - --collectors=jobs
@@ -116,4 +121,3 @@ spec:
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
 {{- end }}
-

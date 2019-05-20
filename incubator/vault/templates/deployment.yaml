@@ -4,7 +4,7 @@ metadata:
   name: {{ template "vault.fullname" . }}
   labels:
     app: {{ template "vault.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    chart: {{ template "vault.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 {{- if .Values.labels }}
@@ -23,6 +23,9 @@ spec:
       labels:
         app: {{ template "vault.name" . }}
         release: {{ .Release.Name }}
+{{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | indent 8 }}
+{{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         {{- range $key, $value := .Values.podAnnotations }}
@@ -94,9 +97,8 @@ spec:
           mountPath: /vault/config/
         - name: vault-root
           mountPath: /root/
-        {{- range .Values.vault.customSecrets }}
-        - name: {{ .secretName | replace "." "-"}}
-          mountPath: {{ .mountPath }}
+        {{- if .Values.vault.extraVolumeMounts }}
+{{ toYaml .Values.vault.extraVolumeMounts | indent 8 }}
         {{- end }}
 {{- if .Values.vault.extraContainers }}
 {{ toYaml .Values.vault.extraContainers | indent 6}}
@@ -127,11 +129,41 @@ spec:
               GOSSIP_KEY="-config-file /etc/consul/encrypt.json"
             fi
             {{- end }}
+            {{- if .Values.vault.config.storage.consul.token }}
+            echo "{\"acl\":{\"tokens\":{\"agent\":\"{{ .Values.vault.config.storage.consul.token }}\"}}}" > /etc/consul/agent-token.json
+            AGENT_TOKEN="-config-file /etc/consul/agent-token.json"
+            {{- end }}
 
             exec /bin/consul agent \
               $GOSSIP_KEY \
+              $AGENT_TOKEN \
               -join={{- .Values.consulAgent.join }} \
               -data-dir=/etc/consul
+        resources:
+{{ toYaml .Values.consulAgent.resources | indent 10 }}
+      {{- end }}
+      {{- if .Values.vaultExporter.enabled }}
+      - name: {{ .Chart.Name }}-exporter
+        image: "{{ .Values.vaultExporter.repository }}:{{ .Values.vaultExporter.tag }}"
+        imagePullPolicy: {{ .Values.vaultExporter.pullPolicy }}
+        securityContext:
+          readOnlyRootFilesystem: true
+        env:
+          - name: VAULT_ADDR
+            {{- if .Values.vault.config.listener.tcp.tls_disable }}
+            value: "http://{{ .Values.vaultExporter.vaultAddress }}"
+            {{- else }}
+            value: "https://{{ .Values.vaultExporter.vaultAddress }}"
+            {{- end }}
+          {{- if .Values.vaultExporter.tlsCAFile }}
+          - name: VAULT_CACERT
+            value: {{ .Values.vaultExporter.tlsCAFile | quote }}
+          {{- end }}
+        {{- range .Values.vault.customSecrets }}
+        volumeMounts:
+        - name: {{ .secretName | replace "." "-"}}
+          mountPath: {{ .mountPath }}
+        {{- end }}
       {{- end }}
       {{- if .Values.affinity }}
       affinity:
@@ -151,11 +183,6 @@ spec:
             name: {{ if .Values.vault.existingConfigName }}{{ .Values.vault.existingConfigName }}{{- else }}"{{ template "vault.fullname" . }}-config"{{- end }}
         - name: vault-root
           emptyDir: {}
-        {{- range .Values.vault.customSecrets }}
-        - name: {{ .secretName | replace "." "-"}}
-          secret:
-            secretName: {{ .secretName }}
-        {{- end }}
 {{- if .Values.vault.extraVolumes }}
 {{ toYaml .Values.vault.extraVolumes | indent 8}}
 {{- end }}
