@@ -33,6 +33,13 @@ data:
       [entryPoints.http]
       address = ":80"
       compress = {{ .Values.gzip.enabled }}
+      {{- if .Values.forwardAuth }}
+      {{- if has "http" .Values.forwardAuth.entryPoints }}
+        [entryPoints.http.auth.forward]
+        address = {{ .Values.forwardAuth.address | quote }}
+        trustForwardHeader = {{ .Values.forwardAuth.trustForwardHeader }}
+      {{- end }}
+      {{- end }}
       {{- if .Values.whiteListSourceRange }}
       {{ template "traefik.whiteListSourceRange" . }}
       {{- end }}
@@ -59,6 +66,13 @@ data:
       {{- end }}
       address = ":443"
       compress = {{ .Values.gzip.enabled }}
+      {{- if .Values.forwardAuth }}
+      {{- if has "https" .Values.forwardAuth.entryPoints }}
+        [entryPoints.https.auth.forward]
+        address = {{ .Values.forwardAuth.address | quote }}
+        trustForwardHeader = {{ .Values.forwardAuth.trustForwardHeader }}
+      {{- end }}
+      {{- end }}
       {{- if .Values.proxyProtocol.enabled }}
         [entryPoints.https.proxyProtocol]
         {{ template "traefik.trustedips" . }}
@@ -99,6 +113,13 @@ data:
       {{- if .Values.proxyProtocol.enabled }}
         [entryPoints.httpn.proxyProtocol]
         {{ template "traefik.trustedips" . }}
+      {{- if .Values.forwardAuth }}
+      {{- if has "httpn" .Values.forwardAuth.entryPoints }}
+        [entryPoints.httpn.auth.forward]
+        address = {{ .Values.forwardAuth.address | quote }}
+        trustForwardHeader = {{ .Values.forwardAuth.trustForwardHeader }}
+      {{- end }}
+      {{- end }}
       {{- end }}
       {{- if .Values.forwardedHeaders.enabled }}
         [entryPoints.httpn.forwardedHeaders]
