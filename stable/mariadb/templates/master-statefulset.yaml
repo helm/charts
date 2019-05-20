@@ -162,6 +162,9 @@ spec:
         volumeMounts:
         - name: data
           mountPath: {{ .Values.master.persistence.mountPath }}
+          {{- if .Values.master.persistence.subPath }}
+          subPath: {{ .Values.master.persistence.subPath }}
+          {{- end }}
         {{- if or (.Files.Glob "files/docker-entrypoint-initdb.d/*.{sh,sql,sql.gz}") .Values.initdbScriptsConfigMap .Values.initdbScripts }}
         - name: custom-init-scripts
           mountPath: /docker-entrypoint-initdb.d
