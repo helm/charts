@@ -143,7 +143,9 @@ spec:
   - metadata:
       name: halyard-home
       labels:
-{{ include "spinnaker.standard-labels" . | indent 8 }}
+        app: {{ include "spinnaker.fullname" . | quote }}
+        heritage: {{ .Release.Service | quote }}
+        release: {{ .Release.Name | quote }}
     spec:
       accessModes: [ "ReadWriteOnce" ]
       resources:
