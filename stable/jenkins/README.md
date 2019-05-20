@@ -89,13 +89,13 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.targetPort`               | k8s target port                      | `8080`                                    |
 | `master.nodePort`                 | k8s node port                        | Not set                                   |
 | `master.healthProbes`             | Enable k8s liveness and readiness probes    | `true`                             |
-| `master.healthProbesLivenessTimeout`  | Set the timeout for the liveness probe  | `120`                              |
-| `master.healthProbesReadinessTimeout` | Set the timeout for the readiness probe | `60`                               |
-| `master.healthProbeLivenessPeriodSeconds` | Set how often (in seconds) to perform the liveness probe | `30`         |
-| `master.healthProbeReadinessPeriodSeconds` | Set how often (in seconds) to perform the readiness probe | `30`         |
+| `master.healthProbesLivenessTimeout`  | Set the timeout for the liveness probe  | `5`                              |
+| `master.healthProbesReadinessTimeout` | Set the timeout for the readiness probe | `5`                               |
+| `master.healthProbeLivenessPeriodSeconds` | Set how often (in seconds) to perform the liveness probe | `10`         |
+| `master.healthProbeReadinessPeriodSeconds` | Set how often (in seconds) to perform the readiness probe | `10`         |
 | `master.healthProbeLivenessFailureThreshold` | Set the failure threshold for the liveness probe | `5`               |
 | `master.healthProbeReadinessFailureThreshold` | Set the failure threshold for the readiness probe | `3`               |
-| `master.healthProbeLivenessInitialDelay` | Set the initial delay for the liveness probe | `120`               |
+| `master.healthProbeLivenessInitialDelay` | Set the initial delay for the liveness probe | `90`               |
 | `master.healthProbeReadinessInitialDelay` | Set the initial delay for the readiness probe | `60`               |
 | `master.slaveListenerPort`        | Listening port for agents            | `50000`                                   |
 | `master.slaveHostPort`            | Host port to listen for agents            | Not set                              |
