@@ -277,6 +277,8 @@ This is useful when running the Kubernetes executor to centralize logs across th
 Airflow UI, scheduler, and kubernetes worker pods, which allows for viewing worker log output
 in the airflow UI.
 
+It's also useful for persistent logs when the worker pods are deleted and recreated.
+
 This is controlled by the `logsPersistence.enabled` setting.
 
 Refer to the `Mount a Shared Persistent Volume` section above for details on using persistent volumes.
