@@ -8,5 +8,5 @@ ambassadorConfig: |
   config:
     service_port: 8080
 
-crd:
+crds:
   keep: false
