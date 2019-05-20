@@ -181,8 +181,12 @@ spec:
               value: "{{ .Values.worker.keySecretsPath }}/host_key.pub"
             - name: CONCOURSE_TSA_WORKER_PRIVATE_KEY
               value: "{{ .Values.worker.keySecretsPath }}/worker_key"
+            {{- if .Values.concourse.worker.externalGardenUrl }}
+            - name: CONCOURSE_EXTERNAL_GARDEN_URL
+              value: {{ .Values.concourse.worker.externalGardenUrl | quote }}
+            {{- end }}
             {{- if .Values.concourse.worker.garden.useHoudini }}
-              - name: CONCOURSE_GARDEN_USE_HOUDINI
+            - name: CONCOURSE_GARDEN_USE_HOUDINI
               value: {{ .Values.concourse.worker.garden.useHoudini | quote }}
             {{- end }}
             {{- if .Values.concourse.worker.garden.bin }}
