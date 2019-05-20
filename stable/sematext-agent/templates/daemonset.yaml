@@ -115,6 +115,12 @@ spec:
           volumeMounts:
             - name: docker-sock
               mountPath: /var/run/docker.sock
+            {{- if .Values.logagent.extraHostVolumeMounts }}
+            {{- range $_, $mount := .Values.logagent.extraHostVolumeMounts }}
+            - name: {{ $mount.name }}
+              mountPath: {{ $mount.mountPath }}
+            {{- end }}
+            {{- end }}
           resources:
 {{ toYaml .Values.logagent.resources | indent 12 }}
           {{- end }}
@@ -140,6 +146,13 @@ spec:
         - name: lib
           hostPath:
             path: /host/usr/lib
+        {{- if .Values.logagent.extraHostVolumeMounts }}
+        {{- range $_, $mount := .Values.logagent.extraHostVolumeMounts }}
+        - name: {{ $mount.name }}
+          hostPath:
+            path: {{ $mount.hostPath }}
+        {{- end }}
+        {{- end }}
         - name: autodisco-template
           configMap:
             name: {{ template "sematext-agent.fullname" . }}-agent-autodisco
