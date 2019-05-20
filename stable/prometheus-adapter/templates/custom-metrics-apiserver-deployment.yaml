@@ -38,7 +38,7 @@ spec:
 {{- end }}
         - --cert-dir=/tmp/cert
         - --logtostderr=true
-        - --prometheus-url={{ .Values.prometheus.url }}:{{ .Values.prometheus.port }}
+        - --prometheus-url={{ .Values.prometheus.url }}{{ if .Values.prometheus.port }}:{{ .Values.prometheus.port }}{{end}}
         - --metrics-relist-interval={{ .Values.metricsRelistInterval }}
         - --v={{ .Values.logLevel }}
         - --config=/etc/adapter/config.yaml
