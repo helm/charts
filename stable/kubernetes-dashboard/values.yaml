@@ -55,7 +55,10 @@ affinity: {}
 service:
   type: ClusterIP
   externalPort: 443
-  # targetPort: 4181 To be used with a proxy extraContainer
+
+  ## To be used with a proxy extraContainer. Using targetPort will disable nullify enableInsecureLogin
+  # targetPort: 4181
+
   ## This allows an override of the heapster service name
   ## Default: {{ .Chart.Name }}
   ##
