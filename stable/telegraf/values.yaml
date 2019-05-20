@@ -9,6 +9,8 @@ image:
   tag: "1.9-alpine"
   pullPolicy: IfNotPresent
 
+podAnnotations: {}
+
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 resources: {}

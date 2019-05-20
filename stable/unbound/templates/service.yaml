@@ -8,6 +8,10 @@ metadata:
     release: {{ .Release.Name  }}
     heritage: {{ .Release.Service }}
 spec:
+  {{- if .Values.externalIP }}
+  externalIPs:
+    - {{ .Values.externalIP }}
+  {{- end }}
   selector:
     app: {{ template "unbound.name" . }}
     release: {{ .Release.Name }}

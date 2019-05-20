@@ -9,6 +9,7 @@ metadata:
     heritage: "{{ .Release.Service }}"
 spec:
   serviceName: {{ template "rabbitmq.fullname" . }}-headless
+  podManagementPolicy: {{ .Values.podManagementPolicy }}
   replicas: {{ .Values.replicas }}
   updateStrategy:
     type: {{ .Values.updateStrategy.type }}
@@ -179,12 +180,20 @@ spec:
             value: ".$(K8S_SERVICE_NAME).$(MY_POD_NAMESPACE).svc.{{ .Values.rabbitmq.clustering.k8s_domain }}"
           {{- else }}
           - name: RABBITMQ_NODENAME
-            value: "rabbit@$(MY_POD_IP)"
+            {{- if .Values.rabbitmq.rabbitmqClusterNodeName }}
+            value: {{ .Values.rabbitmq.rabbitmqClusterNodeName | quote }}
+            {{- else }}
+            value: "rabbit@$(MY_POD_NAME)"
+            {{- end }}
           {{- end }}
           - name: RABBITMQ_LOGS
             value: {{ .Values.rabbitmq.logs | quote }}
           - name: RABBITMQ_ULIMIT_NOFILES
             value: {{ .Values.rabbitmq.ulimitNofiles | quote }}
+          {{- if and .Values.rabbitmq.maxAvailableSchedulers }}
+          - name: RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS
+            value: {{ printf "+S %s:%s" (toString .Values.rabbitmq.maxAvailableSchedulers) (toString .Values.rabbitmq.onlineSchedulers) -}}
+          {{- end }}
           - name: RABBITMQ_USE_LONGNAME
             value: "true"
           - name: RABBITMQ_ERL_COOKIE
@@ -260,6 +269,10 @@ spec:
       {{- if not .Values.persistence.enabled }}
         - name: data
           emptyDir: {}
+      {{- else if .Values.persistence.existingClaim }}
+        - name: data
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.existingClaim }}
   {{- else }}
   volumeClaimTemplates:
     - metadata:
