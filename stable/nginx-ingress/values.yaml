@@ -167,6 +167,7 @@ controller:
   service:
     annotations: {}
     labels: {}
+    omitClusterIP: false
     clusterIP: ""
 
     ## List of IP addresses at which the controller services are available
@@ -247,6 +248,7 @@ controller:
 
     service:
       annotations: {}
+      omitClusterIP: false
       clusterIP: ""
 
       ## List of IP addresses at which the stats service is available
@@ -269,6 +271,7 @@ controller:
       # prometheus.io/scrape: "true"
       # prometheus.io/port: "10254"
 
+      omitClusterIP: false
       clusterIP: ""
 
       ## List of IP addresses at which the stats-exporter service is available
@@ -351,6 +354,7 @@ defaultBackend:
 
   service:
     annotations: {}
+    omitClusterIP: false
     clusterIP: ""
 
     ## List of IP addresses at which the default backend service is available
