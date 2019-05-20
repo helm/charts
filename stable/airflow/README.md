@@ -82,7 +82,7 @@ You can also add generic environment variables such as proxy or private pypi:
 ```yaml
 airflow:
   config:
-    AIRFLOW__CORE__EXPOSE_CONFIG: True
+    AIRFLOW__WEBSERVER__EXPOSE_CONFIG: True
     PIP_INDEX_URL: http://pypi.mycompany.com/
     PIP_TRUSTED_HOST: pypi.mycompany.com
     HTTP_PROXY: http://proxy.mycompany.com:1234
@@ -381,6 +381,9 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `serviceMonitor.interval`                | Interval at which metrics should be scraped             | `30s`                     |
 | `serviceMonitor.path`                    | The path at which the metrics should be scraped         | `/admin/metrics`          |
 | `serviceMonitor.selector`                | label Selector for Prometheus to find ServiceMonitors   | `prometheus: kube-prometheus` |
+| `prometheusRule.enabled`                 | enable prometheus rule                                  | `false`                   |
+| `prometheusRule.groups`                  | define alerting rules                                   | `{}`                      |
+| `prometheusRule.additionalLabels`        | add additional labels to the prometheus rule            | `{}`                      |
 
 
 Full and up-to-date documentation can be found in the comments of the `values.yaml` file.
