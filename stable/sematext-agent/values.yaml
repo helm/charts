@@ -26,6 +26,10 @@ logagent:
     LOGSENE_BULK_SIZE: "1000"
     LOGSENE_LOG_INTERVAL: "10000"
   resources: {}
+  extraHostVolumeMounts: {}
+  #  - name: <mountName>
+  #    hostPath: <hostPath>
+  #    mountPath: <mountPath>
 
 rbac:
   # Specifies whether RBAC resources should be created
