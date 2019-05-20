@@ -245,3 +245,13 @@ controller:
     annotations:
       domainName: "kubernetes-example.com"
 ```
+
+## Helm error when upgrading: spec.clusterIP: Invalid value: ""
+
+If you are upgrading this chart from a version between 0.31.0 and 1.2.2 then you may get an error like this:
+
+```
+Error: UPGRADE FAILED: Service "?????-controller" is invalid: spec.clusterIP: Invalid value: "": field is immutable
+```
+
+Detail of how and why are in [this issue](https://github.com/helm/charts/pull/13646) but to resolve this you can set `xxxx.service.omitClusterIP` to `true` where `xxxx` is the service referenced in the error.
