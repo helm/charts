@@ -37,6 +37,20 @@ halyard:
       #       internalProxies: .*
       #       httpsServerPort: X-Forwarded-Port
 
+  ## Define custom settings for Spinnaker services. Read more for details:
+  ## https://www.spinnaker.io/reference/halyard/custom/#custom-service-settings
+  ## You can use it to add annotations for pods, override the image, etc.
+  additionalServiceSettings: {}
+    # deck.yml:
+    #   artifactId: gcr.io/spinnaker-marketplace/deck:2.9.0-20190412012808
+    #   kubernetes:
+    #     podAnnotations:
+    #       iam.amazonaws.com/role: <role_arn>
+    # clouddriver.yml:
+    #   kubernetes:
+    #     podAnnotations:
+    #       iam.amazonaws.com/role: <role_arn>
+
   ## Uncomment if you want to add extra commands to the init script
   ## run by the init container before halyard is started.
   # additionalInitScript: |-
