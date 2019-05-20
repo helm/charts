@@ -87,6 +87,7 @@ Parameter | Description | Default
 `controller.publishService.enabled` | if true, the controller will set the endpoint records on the ingress objects to reflect those on the service | `false`
 `controller.publishService.pathOverride` | override of the default publish-service name | `""`
 `controller.service.clusterIP` | internal controller cluster service IP | `""`
+`controller.service.omitClusterIP` | To omit the `clusterIP` from the controller service | `false`
 `controller.service.externalIPs` | controller service external IP addresses. Do not set this when `controller.hostNetwork` is set to `true` and `kube-proxy` is used as there will be a port-conflict for port `80` | `[]`
 `controller.service.externalTrafficPolicy` | If `controller.service.type` is `NodePort` or `LoadBalancer`, set this to `Local` to enable [source IP preservation](https://kubernetes.io/docs/tutorials/services/source-ip/#source-ip-for-services-with-typenodeport) | `"Cluster"`
 `controller.service.healthCheckNodePort` | If `controller.service.type` is `NodePort` or `LoadBalancer` and `controller.service.externalTrafficPolicy` is set to `Local`, set this to [the managed health-check port the kube-proxy will expose](https://kubernetes.io/docs/tutorials/services/source-ip/#source-ip-for-services-with-typenodeport). If blank, a random port in the `NodePort` range will be assigned | `""`
@@ -114,6 +115,7 @@ Parameter | Description | Default
 `controller.stats.enabled` | if `true`, enable "vts-status" page | `false`
 `controller.stats.service.annotations` | annotations for controller stats service | `{}`
 `controller.stats.service.clusterIP` | internal controller stats cluster service IP | `""`
+`controller.stats.service.omitClusterIP` | To omit the `clusterIP` from the stats service | `false`
 `controller.stats.service.externalIPs` | controller service stats external IP addresses | `[]`
 `controller.stats.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `controller.stats.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
@@ -121,6 +123,7 @@ Parameter | Description | Default
 `controller.metrics.enabled` | if `true`, enable Prometheus metrics (`controller.stats.enabled` must be `true` as well) | `false`
 `controller.metrics.service.annotations` | annotations for Prometheus metrics service | `{}`
 `controller.metrics.service.clusterIP` | cluster IP address to assign to service | `""`
+`controller.metrics.service.omitClusterIP` | To omit the `clusterIP` from the metrics service | `false`
 `controller.metrics.service.externalIPs` | Prometheus metrics service external IP addresses | `[]`
 `controller.metrics.service.labels` | labels for metrics service | `{}`
 `controller.metrics.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
@@ -153,6 +156,7 @@ Parameter | Description | Default
 `defaultBackend.priorityClassName` | default backend  priorityClassName | `nil`
 `defaultBackend.service.annotations` | annotations for default backend service | `{}`
 `defaultBackend.service.clusterIP` | internal default backend cluster service IP | `""`
+`defaultBackend.service.omitClusterIP` | To omit the `clusterIP` from the default backend service | `false`
 `defaultBackend.service.externalIPs` | default backend service external IP addresses | `[]`
 `defaultBackend.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `defaultBackend.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
@@ -241,3 +245,13 @@ controller:
     annotations:
       domainName: "kubernetes-example.com"
 ```
+
+## Helm error when upgrading: spec.clusterIP: Invalid value: ""
+
+If you are upgrading this chart from a version between 0.31.0 and 1.2.2 then you may get an error like this:
+
+```
+Error: UPGRADE FAILED: Service "?????-controller" is invalid: spec.clusterIP: Invalid value: "": field is immutable
+```
+
+Detail of how and why are in [this issue](https://github.com/helm/charts/pull/13646) but to resolve this you can set `xxxx.service.omitClusterIP` to `true` where `xxxx` is the service referenced in the error.
