@@ -1,5 +1,5 @@
 name: minecraft
-version: 0.3.2
+version: 0.3.3
 appVersion: 1.13.1
 home: https://minecraft.net/
 description: Minecraft server
@@ -12,3 +12,5 @@ sources:
 maintainers:
 - name: gtaylor
   email: gtaylor@gc-taylor.com
+- name: eyenx
+  email: eye@eyenx.ch
