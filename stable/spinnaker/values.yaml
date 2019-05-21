@@ -10,6 +10,7 @@ halyard:
     configMapName: my-halyard-config
     configMapKey: config.sh
     # If you'd rather do an inline script, set create to true and put the content in the data dict like you would a configmap
+    # The content will be passed through `tpl`, so value interpolation is supported.
     create: false
     data: {}
   additionalSecrets:
@@ -53,6 +54,7 @@ halyard:
 
   ## Uncomment if you want to add extra commands to the init script
   ## run by the init container before halyard is started.
+  ## The content will be passed through `tpl`, so value interpolation is supported.
   # additionalInitScript: |-
 
   ## Uncomment if you want to add annotations on halyard and install-using-hal pods
