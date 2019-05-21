@@ -17,4 +17,10 @@ sources:
 maintainers:
 - name: max-rocket-internet
   email: max.williams@deliveryhero.com
+- name: Random-Liu
+  email: lantaol@google.com
+- name: andyxning
+  email: andy.xning@gmail.com
+- name: wangzhen127
+  email: zhenw@google.com
 engine: gotpl
