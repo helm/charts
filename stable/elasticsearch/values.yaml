@@ -71,6 +71,12 @@ cluster:
     # - ingest-attachment
     # - mapper-size
 
+extraConfigMapMounts: []
+  # - name: logtrail-configs
+  #   configMap: kibana-logtrail
+  #   mountPath: /usr/share/kibana/plugins/logtrail/logtrail.json
+  #   subPath: logtrail.json
+
 client:
   name: client
   replicas: 2
@@ -114,6 +120,7 @@ client:
     enabled: false
     # user: NAME
     # password: PASSWORD
+    annotationsPrefix: nginx.ingress.kubernetes.io
     annotations: {}
       # kubernetes.io/ingress.class: nginx
       # kubernetes.io/tls-acme: "true"

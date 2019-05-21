@@ -152,6 +152,11 @@ spec:
         - mountPath: /usr/share/elasticsearch/plugins/
           name: plugindir
 {{- end }}
+{{- range .Values.extraConfigMapMounts }}
+        - name: {{ .name }}
+          mountPath: {{ .mountPath }}
+          subPath: {{ .subPath }}
+{{- end }}
 {{- if hasPrefix "2." .Values.appVersion }}
         - mountPath: /usr/share/elasticsearch/config/logging.yml
           name: config
@@ -181,6 +186,11 @@ spec:
 {{- if .Values.cluster.plugins }}
       - name: plugindir
         emptyDir: {}
+{{- end }}
+{{- range .Values.extraConfigMapMounts }}
+      - name: {{ .name }}
+        configMap:
+          name: {{ .configMap }}
 {{- end }}
 {{- if .Values.cluster.keystoreSecret }}
       - name: keystore
