@@ -19,6 +19,9 @@ spec:
   {{- with .apitimeout }}
     apiTimeout: {{ . }}
   {{- end }}
+  {{- with .resourceGroup }}
+    resourceGroup: {{ . }}
+  {{- end }}
 {{- end }}
 {{- end }}
 {{- end }}
