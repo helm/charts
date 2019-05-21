@@ -41,24 +41,24 @@ for Spinnaker. If you want to add arbitrary clusters need to do the following:
 
 1. Upload your kubeconfig to a secret with the key `config` in the cluster you are installing Spinnaker to.
 
-    ```shell
-    $ kubectl create secret generic --from-file=$HOME/.kube/config my-kubeconfig
-    ```
+```shell
+$ kubectl create secret generic --from-file=$HOME/.kube/config my-kubeconfig
+```
 
 1. Set the following values of the chart:
 
-    ```yaml
-    kubeConfig:
-      enabled: true
-      secretName: my-kubeconfig
-      secretKey: config
-      contexts:
-      # Names of contexts available in the uploaded kubeconfig
-      - my-context
-      # This is the context from the list above that you would like
-      # to deploy Spinnaker itself to.
-      deploymentContext: my-context
-    ```
+```yaml
+kubeConfig:
+  enabled: true
+  secretName: my-kubeconfig
+  secretKey: config
+  contexts:
+  # Names of contexts available in the uploaded kubeconfig
+  - my-context
+  # This is the context from the list above that you would like
+  # to deploy Spinnaker itself to.
+  deploymentContext: my-context
+```
 
 ## Specifying Docker Registries and Valid Images (Repositories)
 
@@ -134,14 +134,14 @@ If you would rather the chart make the config file for you, you can set `halyard
 halyard:
   additionalScripts:
     create: true
-    data: 
+    data:
       enable_oauth.sh: |-
         echo "Setting oauth2 security"
         $HAL_COMMAND config security authn oauth2 enable
   additionalSecrets:
     create: true
     data:
-      password.txt: aHVudGVyMgo=    
+      password.txt: aHVudGVyMgo=
   additionalConfigMaps:
     create: true
     data:
