@@ -163,7 +163,23 @@ mariadb:
 elasticsearch:
   ## Whether to deploy a elasticsearch server to use as magento's search engine
   ## To use an external server set this to false and configure the externalElasticsearch parameters
-  enabled: true
+  enabled: false
+
+  cluster:
+    env:
+      # IMPORTANT: https://www.elastic.co/guide/en/elasticsearch/reference/current/important-settings.html#minimum_master_nodes
+      # To prevent data loss, it is vital to configure the discovery.zen.minimum_master_nodes setting so that each master-eligible
+      # node knows the minimum number of master-eligible nodes that must be visible in order to form a cluster.
+      MINIMUM_MASTER_NODES: "2"
+
+  client:
+    replicas: 1
+
+  master:
+    replicas: 2
+
+  data:
+    replicas: 1
 
 ## Kubernetes configuration
 ## For minikube, set this to NodePort, elsewhere use LoadBalancer
