@@ -9,7 +9,7 @@ metadata:
     heritage: {{ .Release.Service }}
 data:
   copy_plugins.sh: |-
-      #! /bin/sh
+      #!/bin/bash
       {{- if .Values.plugins.deleteDefaultPlugins }}
       rm -f /opt/sonarqube/extensions/plugins/*.jar
       {{- end }}
