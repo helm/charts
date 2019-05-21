@@ -70,7 +70,18 @@ cluster:
   plugins: []
     # - ingest-attachment
     # - mapper-size
-
+  backup:
+    persistence:
+      ## Important: The persistent storage for backups needs to be available to all master and data nodes
+      ## A configuration for shared backup storage requires a `storageClass` that
+      ## supports the `ReadWriteMany` accessMode, such as NFS, AWS EFS or Azure File Storage.
+      enabled: false
+      accessMode: ReadWriteMany
+      size: "60Gi"
+      # storageClass: ""
+      name: backup-data
+      reclaimPolicy: Retain
+      
 client:
   name: client
   replicas: 2

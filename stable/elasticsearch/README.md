@@ -76,6 +76,12 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `cluster.bootstrapShellCommand`      | Post-init command to run in separate Job                            | `""`                                                |
 | `cluster.additionalJavaOpts`         | Cluster parameters to be added to `ES_JAVA_OPTS` environment variable | `""`                                              |
 | `cluster.plugins`                    | List of Elasticsearch plugins to install                            | `[]`                                                |
+| `cluster.backup.persistence.enabled`      | Backup enabled/disabled with persistent volume                 | `false`                                             |
+| `cluster.backup.persistence.name`         | Backup PVC name                                                | `backup-data`                                       |
+| `cluster.backup.persistence.size`         | Backup PVC volume size                                         | `60Gi`                                              |
+| `cluster.backup.persistence.storageClass` | Backup persistent volume class                                 | `nil`                                               |
+| `cluster.backup.persistence.accessMode`   | Backup persistent access mode                                  | `ReadWriteMany`                                     |
+| `cluster.backup.persistence.reclaimPolicy`| Backup persistent volume reclaim policy                        | `Retain`                                            |
 | `client.name`                        | Client component name                                               | `client`                                            |
 | `client.replicas`                    | Client node replicas (deployment)                                   | `2`                                                 |
 | `client.resources`                   | Client node resources requests & limits                             | `{} - cpu limit must be an integer`                 |

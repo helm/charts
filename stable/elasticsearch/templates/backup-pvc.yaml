@@ -1,0 +1,22 @@
+{{- if .Values.cluster.backup.persistence.enabled }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim  
+metadata:
+  name: {{ .Values.cluster.backup.persistence.name }}
+  labels:
+    app: {{ template "elasticsearch.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  annotations:
+    "helm.sh/resource-policy": keep
+spec:
+  resources:
+    requests:
+      storage: {{ .Values.cluster.backup.persistence.size }}
+  accessModes:
+    - {{ .Values.cluster.backup.persistence.accessMode }}
+  storageClassName: {{ .Values.cluster.backup.persistence.storageClass }}
+  persistentVolumeReclaimPolicy: {{ .Values.cluster.backup.persistence.reclaimPolicy }}
+{{- end }}

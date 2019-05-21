@@ -145,6 +145,10 @@ spec:
         volumeMounts:
         - mountPath: /usr/share/elasticsearch/data
           name: data
+{{- if .Values.cluster.backup.persistence.enabled }}
+        - mountPath: /usr/share/elasticsearch/backups
+          name: {{ .Values.cluster.backup.persistence.name }}
+{{- end }}
         - mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
           name: config
           subPath: elasticsearch.yml
@@ -187,14 +191,19 @@ spec:
         secret:
           secretName: {{ .Values.cluster.keystoreSecret }}
 {{- end }}
-  {{- if not .Values.master.persistence.enabled }}
+{{- if not .Values.master.persistence.enabled }}
       - name: data
         emptyDir: {}
-  {{- end }}
+{{- end }}
+{{- if .Values.cluster.backup.persistence.enabled }}
+      - name: {{ .Values.cluster.backup.persistence.name }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.cluster.backup.persistence.existingClaim | default .Values.cluster.backup.persistence.name }}
+{{- end }}
   podManagementPolicy: {{ .Values.master.podManagementPolicy }}
   updateStrategy:
     type: {{ .Values.master.updateStrategy.type }}
-  {{- if .Values.master.persistence.enabled }}
+{{- if .Values.master.persistence.enabled }}
   volumeClaimTemplates:
   - metadata:
       name: {{ .Values.master.persistence.name }}
@@ -211,4 +220,4 @@ spec:
       resources:
         requests:
           storage: "{{ .Values.master.persistence.size }}"
-  {{ end }}
+{{ end }}
