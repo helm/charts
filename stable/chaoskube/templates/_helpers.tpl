@@ -31,15 +31,9 @@ Create chart name and version as used by the chart label.
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
-{{- /*
-Credit: @technosophos
-https://github.com/technosophos/common-chart/
-labels.standard prints the standard Helm labels.
-The standard labels are frequently used in metadata.
-*/ -}}
 {{- define "labels.standard" -}}
-app: {{ include "chaoskube.name" . }}
-heritage: {{ .Release.Service | quote }}
-release: {{ .Release.Name | quote }}
-chart: {{ include "chaoskube.chart" . }}
+app.kubernetes.io/name: {{ include "chaoskube.name" . }}
+app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+app.kubernetes.io/instance: {{ .Release.Name | quote }}
+helm.sh/chart: {{ include "chaoskube.chart" . }}
 {{- end -}}
