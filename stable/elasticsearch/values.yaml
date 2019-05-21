@@ -81,7 +81,7 @@ cluster:
       # storageClass: ""
       name: backup-data
       reclaimPolicy: Retain
-      
+
 client:
   name: client
   replicas: 2
