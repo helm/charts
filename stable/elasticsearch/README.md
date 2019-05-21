@@ -76,6 +76,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `cluster.bootstrapShellCommand`      | Post-init command to run in separate Job                            | `""`                                                |
 | `cluster.additionalJavaOpts`         | Cluster parameters to be added to `ES_JAVA_OPTS` environment variable | `""`                                              |
 | `cluster.plugins`                    | List of Elasticsearch plugins to install                            | `[]`                                                |
+| `cluster.extraConfigMapMounts`       | Additional configmaps to be mounted                                 | `[]`                                                |
 | `client.name`                        | Client component name                                               | `client`                                            |
 | `client.replicas`                    | Client node replicas (deployment)                                   | `2`                                                 |
 | `client.resources`                   | Client node resources requests & limits                             | `{} - cpu limit must be an integer`                 |
@@ -96,6 +97,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `client.ingress.enabled`             | Enable Client Ingress                                               | `false`                                             |
 | `client.ingress.user`                | If this & password are set, enable basic-auth on ingress            | `nil`                                               |
 | `client.ingress.password`            | If this & user are set, enable basic-auth on ingress                | `nil`                                               |
+| `client.ingress.annotationsPrefix`   | Client Ingress annotations prefix for nginx  controller             | `"nginx.ingress.kubernetes.io"`                                                |
 | `client.ingress.annotations`         | Client Ingress annotations                                          | `{}`                                                |
 | `client.ingress.hosts`               | Client Ingress Hostnames                                            | `[]`                                                |
 | `client.ingress.tls`                 | Client Ingress TLS configuration                                    | `[]`                                                |
