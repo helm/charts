@@ -1,0 +1,20 @@
+{{ if  (.Values.networkPolicyEnable) and (.Values.schedulerDeploy) }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: forseti-scheduler-allow-egress
+spec:
+  podSelector:
+    matchLabels:
+      app: forseti-scheduler
+  policyTypes:
+  - Egress
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          app: forseti-server
+    ports:
+    - protocol: TCP
+      port: 50051
+{{ end }}

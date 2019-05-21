@@ -1,0 +1,13 @@
+{{ if (.Values.networkPolicyEnable) and (.Values.schedulerDeploy)  }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: forseti-scheduler-deny-ingress-egress
+spec:
+  podSelector:
+    matchLabels:
+      app: forseti-scheduler
+  policyTypes:
+  - Ingress
+  - Egress
+{{ end }}
