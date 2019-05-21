@@ -55,8 +55,12 @@ spec:
   podMetadata:
 {{ toYaml .Values.alertmanager.alertmanagerSpec.podMetadata | indent 4 }}
 {{- end }}
-{{- if eq .Values.alertmanager.alertmanagerSpec.podAntiAffinity "hard" }}
+{{- if or .Values.alertmanager.alertmanagerSpec.podAntiAffinity .Values.alertmanager.alertmanagerSpec.affinity }}
   affinity:
+{{- if .Values.alertmanager.alertmanagerSpec.affinity }}
+{{ toYaml .Values.alertmanager.alertmanagerSpec.affinity | indent 4 }}
+{{- end }}
+{{- if eq .Values.alertmanager.alertmanagerSpec.podAntiAffinity "hard" }}
     podAntiAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
       - topologyKey: {{ .Values.alertmanager.alertmanagerSpec.podAntiAffinityTopologyKey }}
@@ -65,7 +69,6 @@ spec:
             app: alertmanager
             alertmanager: {{ template "prometheus-operator.fullname" . }}-alertmanager
 {{- else if eq .Values.alertmanager.alertmanagerSpec.podAntiAffinity "soft" }}
-  affinity:
     podAntiAffinity:
       preferredDuringSchedulingIgnoredDuringExecution:
       - weight: 100
@@ -75,6 +78,7 @@ spec:
             matchLabels:
               app: alertmanager
               alertmanager: {{ template "prometheus-operator.fullname" . }}-alertmanager
+{{- end }}
 {{- end }}
 {{- if .Values.alertmanager.alertmanagerSpec.tolerations }}
   tolerations:

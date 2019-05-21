@@ -123,8 +123,12 @@ spec:
   query:
 {{ toYaml .Values.prometheus.prometheusSpec.query | indent 4}}
 {{- end }}
-{{- if eq .Values.prometheus.prometheusSpec.podAntiAffinity "hard" }}
+{{- if or .Values.prometheus.prometheusSpec.podAntiAffinity .Values.prometheus.prometheusSpec.affinity }}
   affinity:
+{{- if .Values.prometheus.prometheusSpec.affinity }}
+{{ toYaml .Values.prometheus.prometheusSpec.affinity | indent 4 }}
+{{- end }}
+{{- if eq .Values.prometheus.prometheusSpec.podAntiAffinity "hard" }}
     podAntiAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
       - topologyKey: {{ .Values.prometheus.prometheusSpec.podAntiAffinityTopologyKey }}
@@ -133,7 +137,6 @@ spec:
             app: prometheus
             prometheus: {{ template "prometheus-operator.fullname" . }}-prometheus
 {{- else if eq .Values.prometheus.prometheusSpec.podAntiAffinity "soft" }}
-  affinity:
     podAntiAffinity:
       preferredDuringSchedulingIgnoredDuringExecution:
       - weight: 100
@@ -143,6 +146,7 @@ spec:
             matchLabels:
               app: prometheus
               prometheus: {{ template "prometheus-operator.fullname" . }}-prometheus
+{{- end }}
 {{- end }}
 {{- if .Values.prometheus.prometheusSpec.tolerations }}
   tolerations:
