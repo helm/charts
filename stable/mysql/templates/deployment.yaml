@@ -2,6 +2,7 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: {{ template "mysql.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "mysql.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
@@ -135,7 +136,7 @@ spec:
         {{- if .Values.configurationFiles }}
         {{- range $key, $val := .Values.configurationFiles }}
         - name: configurations
-          mountPath: /etc/mysql/conf.d/{{ $key }}
+          mountPath: {{ $.Values.configurationFilesPath }}{{ $key }}
           subPath: {{ $key }}
         {{- end -}}
         {{- end }}
