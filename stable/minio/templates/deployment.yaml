@@ -11,9 +11,13 @@ metadata:
 spec:
   strategy:
     type: {{ .Values.DeploymentUpdate.type }}
+    {{- if eq .Values.DeploymentUpdate.type "RollingUpdate" }}
     rollingUpdate:
       maxSurge: {{ .Values.DeploymentUpdate.maxSurge }}
       maxUnavailable: {{ .Values.DeploymentUpdate.maxUnavailable }}
+    {{- else }}
+    rollingUpdate: null
+    {{- end}}
   {{- if .Values.nasgateway.enabled }}
   replicas: {{ .Values.nasgateway.replicas }}
   {{- end }}
