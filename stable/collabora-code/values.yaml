@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: collabora/code
-  tag: 4.0.0.2
+  tag: 4.0.3.1
   pullPolicy: IfNotPresent
 
 strategy: Recreate
@@ -53,3 +53,19 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+livenessProbe:
+  enabled: true
+  initialDelaySeconds: 30
+  timeoutSeconds: 2
+  periodSeconds: 10
+  successThreshold: 1
+  failureThreshold: 3
+
+readinessProbe:
+  enabled: true
+  initialDelaySeconds: 30
+  timeoutSeconds: 2
+  periodSeconds: 10
+  successThreshold: 1
+  failureThreshold: 3

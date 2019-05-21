@@ -58,6 +58,9 @@ spec:
           {{ if .Values.dryRun }}
             - --dry-run
           {{- end }}
+          {{ if .Values.aws.assumeRoleArn }}
+            - --aws-assume-role={{ .Values.aws.assumeRoleArn }}
+          {{- end }}
           {{- range $key, $value := .Values.extraArgs }}
             {{- if $value }}
             - --{{ $key }}={{ $value }}
@@ -104,7 +107,7 @@ spec:
             - --rfc2136-tsig-axfr
               {{- end }}
             {{- else }}
-            - --rfc2136-insecure=false
+            - --rfc2136-insecure
             {{- end }}
           {{- end }}
           volumeMounts:

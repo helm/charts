@@ -51,6 +51,8 @@ spec:
 {{- if .Values.exporter.enabled }}
       - name: cassandra-exporter
         image: "{{ .Values.exporter.image.repo }}:{{ .Values.exporter.image.tag }}"
+        resources:
+{{ toYaml .Values.exporter.resources | indent 10 }}
         env:
           - name: CASSANDRA_EXPORTER_CONFIG_listenPort
             value: {{ .Values.exporter.port | quote }}
@@ -181,9 +183,7 @@ spec:
       name: data
       labels:
         app: {{ template "cassandra.name" . }}
-        chart: {{ template "cassandra.chart" . }}
         release: {{ .Release.Name }}
-        heritage: {{ .Release.Service }}
     spec:
       accessModes:
         - {{ .Values.persistence.accessMode | quote }}
