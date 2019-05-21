@@ -5,7 +5,7 @@ name: chaoskube
 image: quay.io/linki/chaoskube
 
 # docker image tag
-imageTag: v0.13.0
+imageTag: v0.14.0
 
 # number of replicas to run
 replicas: 1
@@ -27,6 +27,12 @@ dryRun: true
 
 # Enable debug logging
 debug: false
+
+# regular expression pattern for pod names to include (all included by default)
+includedPodNames:
+
+# regular expression pattern for pod names to exclude (none excluded by default)
+excludedPodNames:
 
 # Set values for exempting specific week days from Chaoskube Actions
 excludedWeekdays:
