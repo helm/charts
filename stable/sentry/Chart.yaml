@@ -9,7 +9,7 @@ keywords:
 sources:
   - https://github.com/getsentry/sentry
 home: https://sentry.io/
-icon: https://sentry.io/_static/getsentry/images/branding/png/sentry-glyph-black.png
+icon: https://sentry-brand.storage.googleapis.com/sentry-glyph-black.png
 maintainers:
   - name: rothgar
     email: justin@linux.com
