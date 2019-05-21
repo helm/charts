@@ -39,6 +39,14 @@ service:
     ## Label example: show service URL in `kubectl cluster-info`
     # kubernetes.io/cluster-service: "true"
 
+ingress:
+  enabled: false
+  annotations: {}
+    # Annotation example: set nginx ingress type
+    # kubernetes.io/ingress.class: nginx-public
+  labels: {}
+  hosts:
+    - apm-server-ingress.example.com
 
 config:
   apm-server:
