@@ -71,7 +71,8 @@ spec:
         - name: udev
           mountPath: /run/udev
         - name: procmount
-          mountPath: /host/mounts
+          mountPath: /host/proc
+          readOnly: true
 {{- if .Values.ndm.sparse }}
 {{- if .Values.ndm.sparse.path }}
         - name: sparsepath
@@ -86,11 +87,12 @@ spec:
         hostPath:
           path: /run/udev
           type: Directory
-      # mount /proc/1/mounts (mount file of process 1 of host) inside container
-      # to read which partition is mounted on / path
+      # mount /proc (to access mount file of process 1 of host) inside container
+      # to read mount-point of disks and partitions
       - name: procmount
         hostPath:
-          path: /proc/1/mounts
+          path: /proc
+          type: Directory
 {{- if .Values.ndm.sparse }}
 {{- if .Values.ndm.sparse.path }}
       - name: sparsepath
