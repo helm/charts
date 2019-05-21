@@ -1,0 +1,63 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: {{ template "mongodb-replicaset.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "mongodb-replicaset.fullname" . }}-test
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  initContainers:
+    - name: test-framework
+      image: dduportal/bats:0.4.0
+      command:
+        - bash
+        - -c
+        - |
+          set -ex
+          # copy bats to tools dir
+          cp -R /usr/local/libexec/ /tools/bats/
+      volumeMounts:
+        - name: tools
+          mountPath: /tools
+  containers:
+    - name: mongo
+      image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+      command:
+        - /tools/bats/bats
+        - -t
+        - /tests/mongodb-up-test.sh
+      env:
+        - name: FULL_NAME
+          value: {{ template "mongodb-replicaset.fullname" . }}
+        - name: REPLICAS
+          value: "{{ .Values.replicas }}"
+      {{- if .Values.auth.enabled }}
+        - name: AUTH
+          value: "true"
+        - name: ADMIN_USER
+          valueFrom:
+            secretKeyRef:
+              name: "{{ template "mongodb-replicaset.adminSecret" . }}"
+              key: user
+        - name: ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: "{{ template "mongodb-replicaset.adminSecret" . }}"
+              key: password
+      {{- end }}
+      volumeMounts:
+        - name: tools
+          mountPath: /tools
+        - name: tests
+          mountPath: /tests
+  volumes:
+    - name: tools
+      emptyDir: {}
+    - name: tests
+      configMap:
+        name: {{ template "mongodb-replicaset.fullname" . }}-tests
+  restartPolicy: Never

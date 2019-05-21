@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "elastabot.fullname" . }}-config
+  labels:
+    app: {{ template "elastabot.name" . }}
+    chart: {{ template "elastabot.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+data:
+  elastabot.json: |-
+    {
+      "elasticsearch": {
+        "host": "{{ .Values.elasticsearch.host }}",
+        "port": {{ .Values.elasticsearch.port }},
+        "sslEnabled": {{ .Values.elasticsearch.sslEnabled }},
+        "sslStrictEnabled": {{ .Values.elasticsearch.sslStrictEnabled }},
+        "timeoutSeconds": {{ .Values.elasticsearch.timeoutSeconds }},
+        "urlPrefix":""
+      },
+      "elastalert": {
+        "index": "{{ .Values.elastalert.index }}",
+        "silenceMinutes": {{ .Values.elastalert.defaultSilenceMinutes }},
+        "recentMinutes": {{ .Values.elastalert.recentAlertMinutes }}
+      },
+      "smtp": {
+        "host": "{{ .Values.smtp.host }}",
+        "port": {{ .Values.smtp.port }},
+        "secure": {{ .Values.smtp.secure }},
+        "starttls": {{ .Values.smtp.starttls }},
+        "timeoutSeconds": {{ .Values.smtp.timeoutSeconds }},
+        "to": "{{ .Values.smtp.to }}",
+        "from": "{{ .Values.smtp.from }}",
+        "subjectPrefix": "{{ .Values.smtp.subjectPrefix }}",
+        "debug": {{ .Values.smtp.debug }}
+      },
+      "commandPrefix": "{{ .Values.commandPrefix }}",
+      "triageTarget": "{{ .Values.triageTarget }}",
+      "searchEnabled": "{{ .Values.searchEnabled }}"
+    }

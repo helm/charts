@@ -1,0 +1,13 @@
+apiVersion: v1
+description: Kanister-operator Helm chart for Kubernetes
+name: kanister-operator
+version: 0.3.0
+home: https://kanister.io/
+maintainers:
+  - email: ilya@kasten.io
+    name: depohmel
+  - email: tom@kasten.io
+    name: tdmanv
+icon: https://kasten.io/assets/img/kanister-logo.png
+appVersion: 0.10.0
+source: https://github.com/kanisterio/kanister

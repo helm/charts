@@ -1,0 +1,94 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "keel.fullname" . }}
+  labels:
+    app: {{ template "keel.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  annotations:
+    kubernetes.io/service-account.name: keel
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ template "keel.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: keel
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/bin/keel"]
+          env:
+{{- if .Values.polling.enabled }}
+            # Enable polling
+            - name: POLL
+              value: "1"
+{{- else }}
+            # Disable polling
+            - name: POLL
+              value: "0"
+{{- end }}
+{{- if .Values.helmProvider.enabled }}
+            # Enable/disable Helm provider
+            - name: HELM_PROVIDER
+              value: "1"
+{{- end }}
+{{- if .Values.gcr.enabled }}
+            # Enable GCR with pub/sub support
+            - name: PROJECT_ID
+              value: "{{ .Values.gcr.projectId }}"
+            - name: PUBSUB
+              value: "1"
+{{- end }}
+{{- if .Values.webhook.enabled }}
+            # Enable webhook endpoint
+            - name: WEBHOOK_ENDPOINT
+              value: "{{ .Values.webhook.endpoint }}"
+{{- end }}
+{{- if .Values.slack.enabled }}
+            - name: SLACK_TOKEN
+              value: "{{ .Values.slack.token }}"
+            - name: SLACK_CHANNELS
+              value: "{{ .Values.slack.channel }}"
+            - name: SLACK_BOT_NAME
+              value: "{{ .Values.slack.botName }}"
+            - name: SLACK_APPROVALS_CHANNEL
+              value: "{{ .Values.slack.approvalsChannel }}"
+{{- end }}
+          ports:
+            - containerPort: 9300
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 9300
+            initialDelaySeconds: 30
+            timeoutSeconds: 10
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+{{- if .Values.webhookRelay.enabled }}
+        - name: webhookrelayd
+          image: "{{ .Values.webhookRelay.image.repository }}:{{ .Values.webhookRelay.image.tag }}"
+          imagePullPolicy: {{ .Values.webhookRelay.image.pullPolicy }}
+          command: ["/webhookrelayd"]
+          env:
+            - name: KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "keel.fullname" . }}-webhookrelay
+                  key: key
+            - name: SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "keel.fullname" . }}-webhookrelay
+                  key: secret
+            - name: BUCKET
+              value: "{{ .Values.webhookRelay.bucket }}"
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+{{- end }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}

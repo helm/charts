@@ -1,0 +1,68 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: pachd-api-grpc
+  {{- if .Values.pachd.service.grpc.annotations }}
+  annotations:
+    {{ .Values.pachd.service.grpc.annotations | toYaml | indent 4 | trim  }}
+  {{- end }}
+  labels:
+    app: pachd
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+    suite: {{ template "fullname" . }}
+spec:
+  ports:
+    - name: api-grpc-port
+      port: {{ .Values.pachd.service.grpc.port }}
+      targetPort: 650
+      {{- if eq .Values.pachd.service.grpc.type "NodePort" }}
+      nodePort: {{ .Values.pachd.service.grpc.port }}
+      {{- end }}
+  selector:
+    app: pachd
+  type: {{ .Values.pachd.service.grpc.type | quote }}
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: pachd-trace
+  labels:
+    app: pachd
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+    suite: {{ template "fullname" . }}
+spec:
+  ports:
+    - name: trace-port
+      port: 651
+      targetPort: 651
+      nodePort: 30651
+  selector:
+    app: pachd
+  type: "NodePort"
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: pachd-api-http
+  labels:
+    app: pachd
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+    suite: {{ template "fullname" . }}
+spec:
+  ports:
+    - name: api-http-port
+      port: 652
+      targetPort: 652
+      nodePort: 30652
+  selector:
+    app: pachd
+  type: "NodePort"

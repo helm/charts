@@ -1,0 +1,71 @@
+{{- if or (.Values.sematext.spmToken) (.Values.sematext.logseneToken) }}
+{{- if .Capabilities.APIVersions.Has "apps/v1beta2" }}
+apiVersion: apps/v1beta2
+{{- else }}
+apiVersion: extensions/v1beta1
+{{- end }}
+kind: DaemonSet
+metadata:
+  name: {{ template "sematext.fullname" . }}
+  labels:
+    app: {{ template "sematext.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "sematext.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "sematext.name" . }}
+        release: {{ .Release.Name }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+    spec:
+      {{- if .Values.sematext.useHostNetwork }}
+      hostNetwork: {{ .Values.sematext.useHostNetwork }}
+      {{- end }}
+      dnsPolicy: "ClusterFirst"
+      restartPolicy: "Always"
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+        resources:
+{{ toYaml .Values.sematext.resources | indent 10 }}
+        env:
+        - name: SPM_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "sematext.fullname" . }}
+              key: spm-token
+        - name: LOGSENE_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "sematext.fullname" . }}
+              key: logsene-token
+        envFrom:
+          - configMapRef:
+              name: {{ template "sematext.fullname" . }}
+        volumeMounts:
+          - mountPath: /var/run/docker.sock
+            name: docker-sock
+          - mountPath: /etc/localtime
+            name: localtime
+            readOnly: true
+        securityContext:
+          privileged: true
+      volumes:
+        - name: docker-sock
+          hostPath:
+            path: /var/run/docker.sock
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+      nodeSelector:
+{{ toYaml .Values.sematext.nodeSelector | indent 8 }}
+      tolerations:
+{{ toYaml .Values.sematext.tolerations | indent 8 }}
+{{- end }}

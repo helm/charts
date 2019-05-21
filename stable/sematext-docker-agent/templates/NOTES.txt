@@ -1,0 +1,53 @@
+**This chart is DEPRECATED, use stable/sematext-agent instead!**
+
+{{- if and (not .Values.sematext.spmToken) (not .Values.sematext.logseneToken) -}}
+
+###############################################################################
+#           ERROR: Please provide spmToken and/or logseneToken!               #
+###############################################################################
+
+Depending on which region you want to use, create a monitoring and/or logs apps
+to get your tokens. Then, start the app with:
+
+helm install --name release_name \
+  --set sematext.spmToken=YOUR_SPM_TOKEN,sematext.region=US \
+  stable/sematext
+
+Or if you created both apps use:
+
+helm install --name release_name \
+  --set sematext.spmToken=YOUR_SPM_TOKEN,sematext.logseneToken=YOUR_LOGS_TOKEN,sematext.region=US \
+  stable/sematext
+
+Please check the README file for all available parameters.
+
+{{- else if not .Values.sematext.logseneToken -}}
+
+Missing logseneToken! You will only receive metrics and events.
+{{ if eq .Values.sematext.region "US" }}
+After a few minutes check your app at https://apps.sematext.com/ui/monitoring
+{{ else if eq .Values.sematext.region "EU" }}
+After a few minutes check your app at https://apps.eu.sematext.com/ui/monitoring
+{{ end }}
+
+{{- else if not .Values.sematext.spmToken -}}
+
+Missing spmToken! You will only receive logs.
+{{ if eq .Values.sematext.region "US" }}
+After a few minutes check your app at https://apps.sematext.com/ui/logs
+{{ else if eq .Values.sematext.region "EU" }}
+After a few minutes check your app at https://apps.eu.sematext.com/ui/logs
+{{ end }}
+
+{{- else -}}
+
+You are all set!
+{{ if eq .Values.sematext.region "US" }}
+After a few minutes check your metrics app at https://apps.sematext.com/ui/monitoring
+or logs at https://apps.sematext.com/ui/logs
+{{ else if eq .Values.sematext.region "EU" }}
+After a few minutes check your metrics app at https://apps.eu.sematext.com/ui/monitoring
+or logs at https://apps.eu.sematext.com/ui/logs
+{{ end }}
+
+{{- end -}}

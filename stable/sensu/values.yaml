@@ -1,0 +1,45 @@
+# Docker image name
+image: "sstarcher/sensu"
+# Docker image tag
+imageTag: "0.28"
+
+# Image pull policy for the container
+pullPolicy: "IfNotPresent"
+
+# How many sensu containers to spawn
+replicaCount: 1
+
+# How to publish the service http://kubernetes.io/docs/user-guide/services/#publishing-services---service-types
+serviceType: ClusterIP
+
+# Service port to expose Sensu on
+httpPort: 4567
+
+# If set to true, the service will be exposed via the Deis Router if setup https://github.com/deis/router
+deis:
+  routable: false
+  domains: sensu
+
+# CPU and Memory limit and request for Sensu Server
+server:
+  resources:
+    requests:
+      cpu: 100m
+      memory: 100Mi
+# CPU and Memory limit and request for Sensu Api
+api:
+  resources:
+    requests:
+      cpu: 50m
+      memory: 100Mi
+
+# Redis configuration
+REDIS_PORT: 6379
+REDIS_DB: 0
+REDIS_AUTO_RECONNECT: true
+REDIS_RECONNECT_ON_ERROR: true
+
+# Redis chart configuration
+redis:
+  persistence:
+    enabled: false

@@ -1,0 +1,69 @@
+{{- if gt (int .Values.server.workers) 0 }}
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "presto.worker" . }}
+  labels:
+    app: {{ template "presto.name" . }}
+    chart: {{ template "presto.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: worker
+spec:
+  replicas: {{ .Values.server.workers }}
+  selector:
+    matchLabels:
+      app: {{ template "presto.name" . }}
+      release: {{ .Release.Name }}
+      component: worker
+  template:
+    metadata:
+      labels:
+        app: {{ template "presto.name" . }}
+        release: {{ .Release.Name }}
+        component: worker
+    spec:
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ template "presto.worker" . }}
+      containers:
+        - name: {{ .Chart.Name }}-worker
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/bin/bash"]
+          args:
+            - {{ .Values.server.config.path }}/docker-presto.sh
+          volumeMounts:
+            - mountPath: {{ .Values.server.config.path }}
+              name: config-volume
+          livenessProbe:
+            exec:
+              command:
+                - /bin/bash
+                - {{ .Values.server.config.path }}/health_check.sh
+            initialDelaySeconds: 10
+            periodSeconds: 25
+          readinessProbe:
+            exec:
+              command:
+                - /bin/bash
+                - {{ .Values.server.config.path }}/health_check.sh
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+
+{{- end }}

@@ -1,0 +1,22 @@
+{{- if .Values.rbac.create }}
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ template "efs-provisioner.fullname" . }}
+  labels:
+    app: {{ template "efs-provisioner.name" . }}
+    env: {{ .Values.global.deployEnv }}
+    chart: {{ template "efs-provisioner.chartname" . }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+  annotations:
+{{ toYaml .Values.annotations | indent 4 }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ template "efs-provisioner.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: ClusterRole
+  name: {{ template "efs-provisioner.fullname" . }}
+  apiGroup: rbac.authorization.k8s.io
+{{- end }}

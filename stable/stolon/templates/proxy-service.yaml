@@ -1,0 +1,34 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "stolon.fullname" . }}-proxy
+  labels:
+    app: {{ template "stolon.name" . }}
+    chart: {{ template "stolon.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  annotations:
+{{- with .Values.proxy.service.annotations }}
+{{ toYaml . | indent 4 }}
+{{- end }}
+spec:
+{{- if (or (eq .Values.proxy.service.type "ClusterIP") (empty .Values.proxy.service.type)) }}
+  type: ClusterIP
+  {{- if .Values.proxy.service.clusterIP }}
+  clusterIP: {{ .Values.proxy.service.clusterIP }}
+  {{end}}
+{{- else if eq .Values.proxy.service.type "LoadBalancer" }}
+  type: {{ .Values.proxy.service.type }}
+  loadBalancerIP: {{ .Values.proxy.service.loadBalancerIP }}
+{{- else }}
+  type: {{ .Values.proxy.service.type }}
+{{- end }}
+  ports:
+  {{- range $key, $value := .Values.proxy.service.ports }}
+    - name: {{ $key }}
+{{ toYaml $value | indent 6 }}
+{{- end }}
+  selector:
+    app: {{ template "stolon.name" . }}
+    release: {{ .Release.Name }}
+    component: stolon-proxy

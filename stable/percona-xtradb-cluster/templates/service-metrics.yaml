@@ -1,0 +1,20 @@
+{{ if .Values.metricsExporter.enabled }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ template "percona-xtradb-cluster.fullname" . }}-metrics"
+  labels:
+    app: {{ template "percona-xtradb-cluster.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  clusterIP: None
+  ports:
+  - name: metrics
+    port: 9104
+  selector:
+    app: {{ template "percona-xtradb-cluster.fullname" . }}
+    release: "{{ .Release.Name }}"
+{{ end }}

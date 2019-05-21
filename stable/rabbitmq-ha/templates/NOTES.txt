@@ -1,0 +1,107 @@
+** Please be patient while the chart is being deployed **
+
+  Credentials:
+
+    Username            : {{ .Values.rabbitmqUsername }}
+    Password            : $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "rabbitmq-ha.secretName" . }} -o jsonpath="{.data.rabbitmq-password}" | base64 --decode)
+    Management username : {{ .Values.managementUsername }}
+    Management password : $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "rabbitmq-ha.secretName" . }} -o jsonpath="{.data.rabbitmq-management-password}" | base64 --decode)
+    ErLang Cookie       : $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "rabbitmq-ha.secretName" . }} -o jsonpath="{.data.rabbitmq-erlang-cookie}" | base64 --decode)
+
+  RabbitMQ can be accessed within the cluster on port {{ .Values.rabbitmqNodePort }} at {{ template "rabbitmq-ha.fullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}
+
+  To access the cluster externally execute the following commands:
+
+{{- if contains "NodePort" .Values.service.type }}
+
+    export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[?(@.type=='ExternalIP')].address}")
+    export NODE_PORT_AMQP=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath='{.spec.ports[?(@.name=="amqp")].nodePort}' services {{ template "rabbitmq-ha.fullname" . }})
+    {{- if .Values.rabbitmqAmqpsSupport.enabled }}
+    export NODE_PORT_AMQPS=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath='{.spec.ports[?(@.name=="amqps")].nodePort}' services {{ template "rabbitmq-ha.fullname" . }})
+    {{- end }}
+    export NODE_PORT_STATS=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath='{.spec.ports[?(@.name=="http")].nodePort}' services {{ template "rabbitmq-ha.fullname" . }})
+    {{- if .Values.prometheus.exporter.enabled }}
+    export NODE_PORT_RABBITMQ_EXPORTER=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath='{.spec.ports[?(@.name=="exporter")].nodePort}' services {{ template "rabbitmq-ha.fullname" . }})
+    {{- end }}  
+  To Access the RabbitMQ AMQP port:
+
+    amqp://$NODE_IP:$NODE_PORT_AMQP/
+
+{{- if .Values.rabbitmqAmqpsSupport.enabled }}
+  To Access the RabbitMQ AMQPS port:
+
+    amqps://$NODE_IP:$NODE_PORT_AMQPS/
+{{- end }}
+
+{{- if .Values.prometheus.exporter.enabled }}
+  To Access the RabbitMQ Exporter metrics port:
+    http://$NODE_IP:$NODE_PORT_RABBITMQ_EXPORTER/
+{{- end }} 
+
+  To Access the RabbitMQ Management interface:
+
+    http://$NODE_IP:$NODE_PORT_STATS/
+
+{{- else if contains "LoadBalancer" .Values.service.type }}
+
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+        Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "rabbitmq-ha.name" . }}'
+
+    export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "rabbitmq-ha.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+    {{- if .Values.rabbitmqAmqpsSupport.enabled }}
+    export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "rabbitmq-ha.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[1].ip}')
+    {{- end }}
+
+  To Access the RabbitMQ AMQP port:
+
+    amqp://$SERVICE_IP:{{ .Values.rabbitmqNodePort }}/
+
+{{- if .Values.rabbitmqAmqpsSupport.enabled }}
+  To Access the RabbitMQ AMQPS port:
+
+    amqps://$SERVICE_IP:{{ .Values.rabbitmqAmqpsSupport.amqpsNodePort }}/
+{{- end }}
+
+{{- if .Values.prometheus.exporter.enabled }}
+  To Access the RabbitMQ Exporter metrics port:
+    
+    http://$SERVICE_IP:{{ .Values.prometheus.exporter.port }}/
+{{- end }} 
+
+  To Access the RabbitMQ Management interface:
+
+    http://$SERVICE_IP:{{ .Values.rabbitmqManagerPort }}/
+
+{{- else if contains "ClusterIP"  .Values.service.type }}
+
+    export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "rabbitmq-ha.name" . }}" -o jsonpath="{.items[0].metadata.name}")
+    kubectl port-forward $POD_NAME --namespace {{ .Release.Namespace }} {{ .Values.rabbitmqNodePort }}:{{ .Values.rabbitmqNodePort }} {{ .Values.rabbitmqManagerPort }}:{{ .Values.rabbitmqManagerPort }}
+    {{- if .Values.rabbitmqAmqpsSupport.enabled }}
+    kubectl port-forward $POD_NAME --namespace {{ .Release.Namespace }} {{ .Values.rabbitmqAmqpsSupport.amqpsNodePort }}:{{ .Values.rabbitmqAmqpsSupport.amqpsNodePort }} 
+    {{- end }}
+    
+    {{- if .Values.prometheus.exporter.enabled }}
+    kubectl port-forward $POD_NAME --namespace {{ .Release.Namespace }} {{ .Values.prometheus.exporter.port }}:{{ .Values.prometheus.exporter.port }} 
+    {{- end }}
+
+  To Access the RabbitMQ AMQP port:
+
+    amqp://127.0.0.1:{{ .Values.rabbitmqNodePort }}/
+
+{{- if .Values.rabbitmqAmqpsSupport.enabled }}
+  To Access the RabbitMQ AMQPS port:
+
+    amqps://127.0.0.1:{{ .Values.rabbitmqAmqpsSupport.amqpsNodePort }}/
+{{- end }}
+
+{{- if .Values.prometheus.exporter.enabled }}
+  To Access the RabbitMQ Exporter metrics port:
+    
+    http://127.0.0.1:{{ .Values.prometheus.exporter.port }}/
+{{- end }} 
+
+  To Access the RabbitMQ Management interface:
+
+    URL : http://127.0.0.1:{{ .Values.rabbitmqManagerPort }}
+{{- end }}
+

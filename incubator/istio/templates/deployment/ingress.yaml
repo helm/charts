@@ -1,0 +1,74 @@
+{{- if and .Values.istio.install (not .Release.IsInstall) -}}
+{{- $serviceName := include "istio.name" . -}}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ $serviceName }}-{{ .Values.ingress.deployment.name }}
+  labels:
+{{ include "istio.labels.standard" . | indent 4 }}
+    component: {{ $serviceName }}-{{ .Values.ingress.deployment.name }}
+    istio: {{ $serviceName }}-{{ .Values.ingress.deployment.name }}
+spec:
+  replicas: {{ .Values.ingress.deployment.replicas }}
+  template:
+    metadata:
+      annotations:
+        {{- range $key, $value := .Values.ingress.annotations }}
+          {{ $key }}: {{ $value | quote }}
+        {{- end }}
+      labels:
+{{ include "istio.labels.standard" . | indent 8 }}
+        component: {{ $serviceName }}-{{ .Values.ingress.deployment.name }}
+        istio: {{ $serviceName }}-{{ .Values.ingress.deployment.name }}
+    spec:
+    {{- if .Values.ingress.deployment.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+      serviceAccountName: {{ $serviceName }}-{{ .Values.ingress.deployment.name }}-service-account
+      containers:
+      - name: istio-ingress
+        image: "{{ .Values.ingress.deployment.image }}:{{ .Values.istio.release }}"
+        args:
+        - proxy
+        - ingress
+        - -v
+        - "2"
+        - --discoveryAddress
+        - {{ $serviceName }}-{{ .Values.pilot.name }}:{{ .Values.pilot.service.externalHttpDiscovery }}
+        imagePullPolicy: {{ .Values.ingress.deployment.imagePullPolicy }}
+        ports:
+        - containerPort: {{ .Values.ingress.service.externalHttpPort }}
+        - containerPort: {{ .Values.ingress.service.externalHttpsPort }}
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+        resources:
+{{ toYaml .Values.ingress.deployment.resources | indent 10 }}
+{{ if .Values.auth.enabled }}
+        volumeMounts:
+        - name: istio-certs
+          mountPath: /etc/certs
+          readOnly: true
+        - name: ingress-certs
+          mountPath: /etc/istio/ingress-certs
+          readOnly: true
+      volumes:
+      - name: istio-certs
+        secret:
+          secretName: istio.default
+          optional: true
+      - name: ingress-certs
+        secret:
+          secretName: istio-ingress-certs
+          optional: true
+{{ end }}
+{{- end -}}

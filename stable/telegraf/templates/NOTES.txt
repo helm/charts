@@ -1,0 +1,14 @@
+To open a shell session in the container running Telegraf run the following:
+
+- kubectl exec -i -t --namespace {{ .Release.Namespace }} $(kubectl get pods --namespace {{ .Release.Namespace }} -l app.kubernetes.io/name={{ include "telegraf.fullname" . }} -o jsonpath='{.items[0].metadata.name}') /bin/sh
+
+To tail the logs for a Telegraf pod, run the following:
+
+- kubectl logs -f --namespace {{ .Release.Namespace }} $(kubectl get pods --namespace {{ .Release.Namespace }} -l app.kubernetes.io/name={{ include "telegraf.fullname" . }} -o jsonpath='{ .items[0].metadata.name }')
+
+{{- if eq .Values.service.type "LoadBalancer" }}
+
+To watch for the LoadBalancer IP run the following
+
+- kubectl get svc -w --namespace {{ .Release.Namespace }} -l app.kubernetes.io/name={{ include "telegraf.fullname" . }}
+{{- end }}

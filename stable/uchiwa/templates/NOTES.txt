@@ -1,0 +1,18 @@
+
+1. Get the Uchiwa URL to visit by running these commands in the same shell:
+{{- if contains "NodePort" .Values.serviceType }}
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "uchiwa.fullname" . }})
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo http://$NODE_IP:$NODE_PORT
+{{- else if contains "LoadBalancer" .Values.serviceType }}
+
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+        You can watch the status of by running 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "uchiwa.fullname" . }}'
+
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "uchiwa.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  echo http://$SERVICE_IP:{{ .Values.httpPort }}/login
+{{- else if contains "ClusterIP"  .Values.serviceType }}
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "uchiwa.fullname" . }}" -o jsonpath="{.items[0].metadata.name}")
+  echo http://127.0.0.1:{{ .Values.port }}
+  kubectl port-forward $POD_NAME {{ .Values.port }}:{{ .Values.port }}
+{{- end }}

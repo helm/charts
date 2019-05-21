@@ -1,0 +1,16 @@
+{{- if .Values.rbac.create -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels:
+{{ include "labels.standard" . | indent 4 }}
+  name: {{ printf "%s-%s" .Release.Name .Values.name }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ printf "%s-%s" .Release.Name .Values.name }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ printf "%s-%s" .Release.Name .Values.name }}
+    namespace: {{ .Release.Namespace }}
+{{- end -}}

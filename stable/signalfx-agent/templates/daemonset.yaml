@@ -1,0 +1,103 @@
+{{- if and .Values.clusterName .Values.signalFxAccessToken -}}
+apiVersion: apps/v1beta2
+kind: DaemonSet
+metadata:
+  name: {{ template "signalfx-agent.fullname" . }}
+  namespace: {{ template "signalfx-agent.namespace" . }}
+  labels:
+    app: {{ template "signalfx-agent.name" . }}
+    version: {{ .Values.agentVersion }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    chart: {{ template "signalfx-agent.chart" . }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "signalfx-agent.name" . }}
+      release: {{ .Release.Name }}
+  updateStrategy:
+    rollingUpdate:
+      maxUnavailable: {{ .Values.rollingUpdateMaxUnavailable | default 1 }}
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: {{ template "signalfx-agent.name" . }}
+        version: {{ .Values.agentVersion }}
+        release: {{ .Release.Name }}
+        {{ with .Values.extraPodLabels -}}
+        {{ toYaml . | indent 8 | trim }}
+        {{- end }}
+    spec:
+      # Use host network so we can access kubelet directly
+      hostNetwork: true
+      restartPolicy: Always
+      serviceAccountName: {{ template "signalfx-agent.serviceAccountName" . }}
+      {{ with .Values.image.pullSecret -}}
+      imagePullSecrets:
+      - name: {{ . }}
+      {{- end }}
+      tolerations:
+      {{ if .Values.runOnMaster -}}
+      - effect: NoSchedule
+        key: node.alpha.kubernetes.io/role
+        operator: Exists
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/master
+        operator: Exists
+      {{- end }}
+      {{ range .Values.tolerations -}}
+      - {{ toYaml . | indent 8 | trim }}
+      {{ end }}
+      containers:
+      - name: signalfx-agent
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Values.agentVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command:
+        - /bin/signalfx-agent
+        volumeMounts:
+        - mountPath: /etc/signalfx
+          name: config
+        - mountPath: /etc/machine-id
+          name: machine-id
+          readOnly: true
+        - mountPath: /hostfs
+          name: hostfs
+          readOnly: true
+        - mountPath: /var/run/docker.sock
+          name: docker
+          readOnly: true
+        env:
+        - name: SFX_ACCESS_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "signalfx-agent.fullname" . }}
+              key: access-token
+        - name: MY_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: MY_NODE_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: spec.nodeName
+        - name: MY_NAMESPACE
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+      volumes:
+      - name: config
+        configMap:
+          name: {{ template "signalfx-agent.fullname" . }}
+      - name: hostfs
+        hostPath:
+          path: /
+      - name: docker
+        hostPath:
+          path: /var/run/docker.sock
+      - name: machine-id
+        hostPath:
+          path: /etc/machine-id
+{{- end -}}

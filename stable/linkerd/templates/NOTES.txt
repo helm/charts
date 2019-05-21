@@ -1,0 +1,31 @@
+Add named ports to your services that have the name '{{ .Values.linkerd.portName }}'
+and linkerd will act as a proxy for them.
+
+For example:
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-http-service
+spec:
+  type: ClusterIP
+  ports:
+  - name: {{ .Values.linkerd.discoveryPortName }}
+    port: 8080
+  selector:
+    app: my-http-service
+
+1. Get the linkerd admin interface URL by running these commands:
+{{- if contains "NodePort" .Values.service.type }}
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "linkerd.fullname" . }})
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo http://$NODE_IP:$NODE_PORT/login
+{{- else if contains "LoadBalancer" .Values.service.type }}
+     NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+           You can watch the status of by running 'kubectl get svc --namespace= {{ .Release.Namespace }} -w {{ template "linkerd.fullname" . }}'
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "linkerd.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  echo http://$SERVICE_IP:9990
+{{- else if contains "ClusterIP"  .Values.service.type }}
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "linkerd.fullname" . }}" -o jsonpath="{.items[0].metadata.name}")
+  echo "Visit http://127.0.0.1:9990 to use your application"
+  kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME 9990:9990 4140:4140
+{{- end }}

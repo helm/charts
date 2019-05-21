@@ -1,0 +1,27 @@
+{{- if eq (printf "%s" .Values.stackdriver.projectId) "FALSE" }}
+######################################################################################
+####   ERROR: You did not set stackdriver.projectId in your `helm install' call. ####
+######################################################################################
+
+This deployment will be incomplete until you set an appropriate Google Cloud
+Project ID so we know where to gather metrics from.  You can do this by:
+
+    helm upgrade {{ .Release.Name }} \
+        --set stackdriver.projectId=project-id stable/stackdriver-exporter
+{{- end }}
+
+1. Get the application URL by running these commands:
+{{- if contains "NodePort" .Values.service.type }}
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "stackdriver-exporter.fullname" . }})
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo http://$NODE_IP:$NODE_PORT{{ .Values.web.path }}
+{{- else if contains "LoadBalancer" .Values.service.type }}
+     NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+           You can watch the status of by running 'kubectl get svc -w {{ template "stackdriver-exporter.fullname" . }}'
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "stackdriver-exporter.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  echo http://$SERVICE_IP:{{ .Values.service.httpPort }}{{ .Values.web.path }}
+{{- else if contains "ClusterIP"  .Values.service.type }}
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "stackdriver-exporter.fullname" . }}" -o jsonpath="{.items[0].metadata.name}")
+  echo "Visit http://127.0.0.1:{{ .Values.service.httpPort }}{{ .Values.web.path }} to use your application"
+  kubectl port-forward $POD_NAME {{ .Values.service.httpPort }}:{{ .Values.service.httpPort }} --namespace {{ .Release.Namespace }}
+{{- end }}

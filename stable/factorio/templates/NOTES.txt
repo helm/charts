@@ -1,0 +1,40 @@
+Get the IP address of your Factorio server by running these commands in the
+same shell:
+
+{{- if contains "NodePort" .Values.factorioServer.serviceType }}
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} \
+    -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "factorio.fullname" . }})
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} \
+    -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo "You'll need to expose this node through your security groups/firewall"
+  echo "for it to be world-accessible."
+  echo $NODE_IP:$NODE_PORT
+
+{{- else if contains "LoadBalancer" .Values.factorioServer.serviceType }}
+!! NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+
+!! NOTE: If you installed this on an AWS cluster, your game will be
+   un-reachable. AWS ELB does not support UDP. You'll need to use a NodePort
+   value for factorioServer.serviceType. See the README.md for more info.
+
+You can watch for EXTERNAL-IP to populate by running:
+  kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "factorio.fullname" . }}
+
+{{- else if contains "ClusterIP" .Values.factorioServer.serviceType }}
+  export POD_NAME=$(kubectl get pods \
+    --namespace {{ .Release.Namespace }} \
+    -l "component={{ template "factorio.fullname" . }}" \
+    -o jsonpath="{.items[0].metadata.name}")
+  kubectl port-forward $POD_NAME 34197:34197
+  echo "Point your Minecraft client at 127.0.0.1:34197"
+
+{{- end }}
+
+{{- if .Values.persistence.savedGames.enabled }}
+{{- else }}
+############################################################################
+###   WARNING: Persistence is disabled!!! You will lose your game state  ###
+###                when the Factorio pod is terminated.                  ###
+###     See values.yaml's Persistence.SavedGames.Enabled directive.      ###
+############################################################################
+{{- end }}

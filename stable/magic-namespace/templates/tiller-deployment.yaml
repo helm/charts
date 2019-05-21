@@ -1,0 +1,118 @@
+{{- if .Values.tiller.enabled }}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: tiller-deploy
+  {{- if hasKey .Values "namespace" }}
+  namespace: {{ .Values.namespace }}
+  {{- end }}
+  labels:
+    app: helm
+    name: tiller
+    chart: {{ template "magic-namespace.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.tiller.replicaCount }}
+  selector:
+    matchLabels:
+      app: helm
+      name: tiller
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: helm
+        name: tiller
+        chart: {{ template "magic-namespace.chart" . }}
+        release: {{ .Release.Name }}
+        heritage: {{ .Release.Service }}
+    spec:
+      serviceAccountName: tiller
+      containers:
+        - name: tiller
+          image: "{{ .Values.tiller.image.repository }}:{{ .Values.tiller.image.tag }}"
+          imagePullPolicy: {{ .Values.tiller.image.pullPolicy }}
+          env:
+          - name: TILLER_NAMESPACE
+            {{- if hasKey .Values "namespace" }}
+            value: {{ .Values.namespace }}
+            {{- else }}
+            value: {{ .Release.Namespace }}
+            {{- end }}
+          - name: TILLER_HISTORY_MAX
+            value: {{ quote .Values.tiller.maxHistory }}
+          {{- if .Values.tiller.tls.enabled }}
+          - name: TILLER_TLS_ENABLE
+            value: "1"
+          {{- if .Values.tiller.tls.verify }}
+          - name: TILLER_TLS_VERIFY
+            value: "1"
+          {{- end }}
+          - name: TILLER_TLS_CERTS
+            value: /etc/certs
+          {{- end }}
+          {{- if .Values.tiller.onlyListenOnLocalhost }}
+          command:
+            - "/tiller"
+          {{- if .Values.tiller.storage }}
+            - --storage={{ .Values.tiller.storage }}
+          {{- end }}
+          args: ["--listen=127.0.0.1:44134"]
+          {{- else }}
+          ports:
+          - containerPort: 44134
+            name: tiller
+            protocol: TCP
+          - containerPort: 44135
+            name: http
+            protocol: TCP
+          {{- end }}
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /liveness
+              port: 44135
+              scheme: HTTP
+            initialDelaySeconds: 1
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /readiness
+              port: 44135
+              scheme: HTTP
+            initialDelaySeconds: 1
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          volumeMounts:
+          {{- if .Values.tiller.tls.enabled }}
+          - mountPath: /etc/certs
+            name: tiller-certs
+            readOnly: true
+          {{- end }}
+          resources:
+{{ toYaml .Values.tiller.resources | indent 12 }}
+      volumes:
+      {{- if .Values.tiller.tls.enabled }}
+      - name: tiller-certs
+        secret:
+          defaultMode: 0644
+          secretName: {{ template "magic-namespace.tillerTlsSecret" . }}
+      {{- end }}
+    {{- with .Values.tiller.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tiller.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tiller.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+{{- end }}

@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: {{ template "kubewatch.name" . }}
+    chart: {{ template "kubewatch.chart" . }}
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+  name: {{ template "kubewatch.fullname" . }}-config
+data:
+  .kubewatch.yaml: |
+    handler:
+{{- if .Values.slack.enabled }}
+      slack:
+{{ toYaml .Values.slack | indent 8 }}
+{{- end }}
+{{- if .Values.hipchat.enabled }}
+      hipchat:
+{{ toYaml .Values.hipchat | indent 8 }}
+{{- end }}
+{{- if .Values.mattermost.enabled }}
+      mattermost:
+{{ toYaml .Values.mattermost | indent 8 }}
+{{- end }}
+{{- if .Values.flock.enabled }}
+      flock:
+{{ toYaml .Values.flock | indent 8 }}
+{{- end }}
+{{- if .Values.webhook.enabled }}
+      webhook:
+{{ toYaml .Values.webhook | indent 8 }}
+{{- end }}
+    resource:
+{{ toYaml .Values.resourcesToWatch | indent 6 }}
+    namespace: {{ .Values.namespaceToWatch | quote }}

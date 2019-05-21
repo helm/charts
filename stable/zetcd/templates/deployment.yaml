@@ -1,0 +1,64 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "zetcd.fullname" . }}
+  labels:
+    app: {{ template "zetcd.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "zetcd.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - "/usr/local/bin/zetcd"
+            - "-zkaddr"
+            - "0.0.0.0:{{ .Values.service.internalPort }}"
+{{- if .Values.etcd.operatorEnabled }}
+            - "-endpoints"
+            - "{{ index .Values "etcd-operator" "cluster" "name" }}-client:2379"
+{{- else }}
+            - "-endpoints" 
+            - "{{ .Values.etcd.endpoints }}"
+{{- end }}
+{{- if .Values.etcd.tls }}
+            - "-certfile"
+            - "/etc/zetcd/secrets/{{ .Values.etcd.tls.cert }}"
+            - "-cafile"
+            - "/etc/zetcd/secrets/{{ .Values.etcd.tls.ca }}"
+            - "-keyfile"
+            - "/etc/zetcd/secrets/{{ .Values.etcd.tls.key }}"
+          volumeMounts:
+            - name: tls
+              mountPath: /etc/zetcd/secrets
+              readOnly: true
+{{- end }}
+          ports:
+            - containerPort: {{ .Values.service.internalPort }}
+          livenessProbe:
+            tcpSocket:
+              port: {{ .Values.service.internalPort }}
+          readinessProbe:
+            tcpSocket:
+              port: {{ .Values.service.internalPort }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+{{- if .Values.etcd.tls }}
+      volumes:
+      - name: tls
+        secret:
+          secretName: {{ .Values.etcd.tls.existingSecret }}
+{{- end }}

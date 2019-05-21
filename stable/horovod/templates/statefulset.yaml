@@ -1,0 +1,115 @@
+apiVersion: apps/v1beta2
+kind: StatefulSet
+metadata:
+  name: {{ template "horovod.fullname" . }}
+  labels:
+    app: {{ template "horovod.name" . }}
+    chart: {{ template "horovod.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    role: worker
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "horovod.name" . }}
+      release: {{ .Release.Name }}
+      heritage: {{ .Release.Service }}
+      role: worker
+  serviceName: {{ template "horovod.fullname" . }}
+  podManagementPolicy: {{ .Values.worker.podManagementPolicy }}
+  replicas: {{.Values.worker.number}}
+  template:
+    metadata:
+      labels:
+        app: {{ template "horovod.name" . }}
+        chart: {{ template "horovod.chart" . }}
+        release: {{ .Release.Name }}
+        heritage: {{ .Release.Service }}
+        role: worker
+    spec:
+      selector:
+        matchLabels:
+          app: {{ template "horovod.name" . }}
+          release: {{ .Release.Name }}
+          role: worker
+      {{- if .Values.useHostNetwork }}
+      hostNetwork: {{ .Values.useHostNetwork }}
+      dnsPolicy: ClusterFirstWithHostNet
+      {{- end }}
+      {{- if .Values.useHostPID }}
+      hostPID: {{ .Values.useHostPID }}
+      {{- end }}
+      volumes:
+      - name: {{ template "horovod.fullname" . }}-cm
+        configMap:
+          name: {{ template "horovod.fullname" . }}
+          items:
+          - key: hostfile.config
+            path: hostfile
+            mode: 438
+          - key: ssh.readiness
+            path: check.sh
+            mode: 365
+          - key: worker.run
+            path: run.sh
+            mode: 365
+      {{- if .Values.ssh.useSecrets }}
+      - name: {{ template "horovod.fullname" . }}-secret
+        secret:
+          secretName: {{ template "horovod.fullname" . }}
+          defaultMode: 448
+          items:
+          - key: host-key
+            path: id_rsa
+          - key: host-key-pub
+            path: authorized_keys
+      {{- end }}
+{{- if .Values.volumes }}
+{{ toYaml .Values.volumes | indent  6 }}
+{{- end }}
+      containers:
+      - name: worker
+        image: "{{ .Values.worker.image.repository }}:{{ .Values.worker.image.tag }}"
+        imagePullPolicy: {{ .Values.worker.image.pullPolicy }}
+        env:
+        - name: SSHPORT
+          value: "{{ .Values.ssh.port }}"
+       {{- if .Values.ssh.useSecrets }}
+        - name: USESECRETS
+          value: "{{ .Values.ssh.useSecrets }}"
+       {{- end }}
+       {{- if .Values.master.env }}
+       {{- range $key, $value := .Values.master.env }}
+        - name: "{{ $key }}"
+          value: "{{ $value }}"
+       {{- end }}
+       {{- end }}
+{{- if .Values.worker.privileged }}
+        securityContext:
+          privileged: true
+{{- end }}
+        ports:
+        - containerPort: {{ .Values.ssh.port }}
+        volumeMounts:
+        - name: {{ template "horovod.fullname" . }}-cm
+          mountPath: /horovod/generated
+        {{- if .Values.ssh.useSecrets }}
+        - name: {{ template "horovod.fullname" . }}-secret
+          readOnly: true
+          mountPath: "/etc/secret-volume"
+        {{- end }}
+{{- if .Values.volumeMounts }}
+{{ toYaml .Values.volumeMounts | indent 8 }}
+{{- end }}
+        command:
+        - /horovod/generated/run.sh
+{{- if .Values.ssh.useSecrets }}
+        readinessProbe:
+          exec:
+            command:
+            - /horovod/generated/check.sh
+          initialDelaySeconds: 1
+          periodSeconds: 2
+{{- end }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}

@@ -1,0 +1,63 @@
+image:
+  repository: jhillyerd/inbucket
+  tag: release-2.0.0
+  pullPolicy: IfNotPresent
+
+service:
+  annotations: {}
+  clusterIP: ""
+  externalIPs: []
+  loadBalancerIP: ""
+  loadBalancerSourceRanges: []
+  type: ClusterIP
+  port:
+    http: 9000
+    smtp: 2500
+    pop3: 1100
+  nodePort:
+    http: ""
+    smtp: ""
+    pop3: ""
+
+extraEnv:
+  INBUCKET_LOGLEVEL: "info"
+  INBUCKET_MAILBOXNAMING: "local"
+  INBUCKET_SMTP_ADDR: "0.0.0.0:2500"
+  INBUCKET_SMTP_DOMAIN: "inbucket"
+  INBUCKET_SMTP_MAXRECIPIENTS: "200"
+  INBUCKET_SMTP_MAXMESSAGEBYTES: "10240000"
+  INBUCKET_SMTP_DEFAULTACCEPT: "true"
+  INBUCKET_SMTP_REJECTDOMAINS: ""
+  INBUCKET_SMTP_DEFAULTSTORE: "true"
+  INBUCKET_SMTP_DISCARDDOMAINS: ""
+  INBUCKET_SMTP_TIMEOUT: "300s"
+  INBUCKET_POP3_ADDR: "0.0.0.0:1100"
+  INBUCKET_POP3_DOMAIN: "inbucket"
+  INBUCKET_POP3_TIMEOUT: "600s"
+  INBUCKET_WEB_ADDR: "0.0.0.0:9000"
+  INBUCKET_WEB_UIDIR: "ui"
+  INBUCKET_WEB_GREETINGFILE: "ui/greeting.html"
+  INBUCKET_WEB_TEMPLATECACHE: "true"
+  INBUCKET_WEB_MAILBOXPROMPT: "@inbucket"
+  INBUCKET_WEB_COOKIEAUTHKEY: ""
+  INBUCKET_WEB_MONITORVISIBLE: "true"
+  INBUCKET_WEB_MONITORHISTORY: "30"
+  INBUCKET_STORAGE_TYPE: "memory"
+  INBUCKET_STORAGE_PARAMS: ""
+  INBUCKET_STORAGE_RETENTIONPERIOD: "24h"
+  INBUCKET_STORAGE_RETENTIONSLEEP: "50ms"
+  INBUCKET_STORAGE_MAILBOXMSGCAP: "500"
+
+ingress:
+  enabled: false
+  annotations: {}
+  path: /
+  hosts:
+    - inbucket.example.com
+  tls: []
+  #  - hosts:
+  #      - inbucket.example.com
+  #    secretName: tls-inbucket
+
+podAnnotations: {}
+resources: {}

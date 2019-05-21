@@ -1,0 +1,22 @@
+{{- if .Values.worker.enabled -}}
+{{- if .Values.rbac.create -}}
+apiVersion: rbac.authorization.k8s.io/{{ .Values.rbac.apiVersion }}
+kind: Role
+metadata:
+  name: {{ template "concourse.worker.fullname" . }}
+  labels:
+    app: {{ template "concourse.worker.fullname" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+rules:
+- apiGroups:
+  - extensions
+  resources:
+  - podsecuritypolicies
+  resourceNames:
+  - privileged
+  verbs:
+  - use
+{{- end -}}
+{{- end }}

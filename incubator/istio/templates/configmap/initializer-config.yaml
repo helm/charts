@@ -1,0 +1,21 @@
+{{- if and .Values.istio.install (not .Release.IsInstall) -}}
+{{- if not .Values.initializer.customConfigMap }}
+{{- $serviceName := include "istio.name" . -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $serviceName }}-inject
+data:
+  config: |-
+    policy: {{ .Values.initializer.policy | quote }}
+    namespaces: [""] # everything, aka v1.NamepsaceAll, aka cluster-wide
+    initializerName: "sidecar.initializer.istio.io"
+    params:
+      initImage: {{ .Values.initializer.deployment.initImage }}:{{ .Values.istio.release }}
+      proxyImage: {{ .Values.initializer.deployment.proxyImage }}:{{ .Values.istio.release }}
+      verbosity: 2
+      version: {{ .Values.istio.release }}
+      meshConfigMapName: {{ $serviceName }}
+      imagePullPolicy: {{ .Values.initializer.deployment.imagePullPolicy }}
+{{- end -}}
+{{- end -}}

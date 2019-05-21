@@ -1,0 +1,73 @@
+{{- $istioInstall := (and (not .Release.IsInstall) .Values.istio.install) -}}
+{{- $serviceName := include "istio.name" . -}}
+{{- if and .Release.IsInstall .Values.istio.install -}}
+Installing required CustomerResourceDefinitions before installing Istio services.
+
+To install Istio services run the following:
+helm upgrade {{ .Release.Name }} incubator/istio --reuse-values --set istio.install=true
+{{ end -}}
+
+{{- if and .Release.IsInstall (not .Values.istio.install) -}}
+Installing required CustomerResourceDefinitions before installing Istio services.
+
+To install Istio services run the following:
+helm upgrade {{ .Release.Name }} incubator/istio --reuse-values --set istio.install=true
+{{ end -}}
+
+{{- if $istioInstall -}}
+
+Verify all Pods are running
+
+  kubectl get pods --namespace {{ .Release.Namespace }}
+{{ if .Values.addons.grafana.enabled }}
+{{- if contains "LoadBalancer" .Values.addons.grafana.service.type }}
+Verifying the Grafana dashboard
+
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+        Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ $serviceName }}-grafana'
+
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ $serviceName }}-grafana -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  echo http://$SERVICE_IP/dashboard/db/istio-dashboard
+{{- else }}
+Verifying the Grafana dashboard
+
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "component={{ $serviceName }}-{{ .Values.addons.grafana.deployment.name }}" -o jsonpath="{.items[0].metadata.name}")
+  kubectl port-forward $POD_NAME {{ .Values.addons.grafana.service.externalPort }}:{{ .Values.addons.grafana.service.externalPort }} --namespace {{ .Release.Namespace }}
+  echo http://127.0.0.1:{{ .Values.addons.grafana.service.externalPort }}/dashboard/db/istio-dashboard
+{{- end }}
+{{- end }}
+{{ if .Values.addons.servicegraph.enabled }}
+{{- if contains "LoadBalancer" .Values.addons.servicegraph.service.type }}
+Verifying the ServiceGraph service
+
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+        Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ $serviceName }}-servicegraph'
+
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ $serviceName }}-servicegraph -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  echo http://$SERVICE_IP:{{ .Values.addons.servicegraph.service.externalPort }}/dotviz
+{{- else }}
+Verifying the ServiceGraph service
+
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "component={{ $serviceName }}-{{ .Values.addons.servicegraph.deployment.name }}" -o jsonpath="{.items[0].metadata.name}")
+  kubectl port-forward $POD_NAME {{ .Values.addons.servicegraph.service.externalPort }}:{{ .Values.addons.servicegraph.service.externalPort }} --namespace {{ .Release.Namespace }}
+  echo http://127.0.0.1:{{ .Values.addons.servicegraph.service.externalPort }}/dotviz
+{{- end }}
+{{- end }}
+
+Deploy your App!
+
+{{ if .Values.initializer.enabled }}
+  kubectl create -f <your-app-spec>.yaml
+{{- else }}
+  kubectl create -f <(istioctl kube-inject -i {{ .Release.Namespace }} -f <your-app-spec>.yaml)
+{{- end }}
+
+Or deploy the BookInfo App!
+
+  https://istio.io/docs/guides/bookinfo.html
+
+Using Istioctl
+
+  istioctl [command]
+
+{{- end -}}

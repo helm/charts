@@ -1,0 +1,63 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "hubot.fullname" . }}
+  labels:
+    app: {{ template "hubot.name" . }}
+    chart: {{ template "hubot.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "hubot.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "hubot.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      volumes:
+        - name: {{ template "hubot.fullname" . }}-scripts
+          configMap:
+            name: {{ template "hubot.fullname" . }}-scripts
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+          volumeMounts:
+            - name: {{ template "hubot.fullname" . }}-scripts
+              mountPath: {{ .Values.hubot.scriptsFolder }}
+          envFrom:
+            - secretRef:
+                name: {{ template "hubot.fullname" . }}
+            - configMapRef:
+                name: {{ template "hubot.fullname" . }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

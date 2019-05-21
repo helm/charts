@@ -1,0 +1,4 @@
+{{- if .Values.rbac }}
+{{- $roleText := .Files.Get "RBAC/rbac_role.yaml" -}}
+{{ tpl $roleText . }}
+{{- end }}

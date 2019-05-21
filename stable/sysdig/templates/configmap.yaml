@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "sysdig.fullname" . }}
+  labels:
+    app: {{ template "sysdig.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+  dragent.yaml: |
+    new_k8s: true
+{{- if .Values.secure.enabled }}
+    security:
+      enabled: true
+    commandlines_capture:
+      enabled: true
+    memdump:
+      enabled: true
+{{- end }}
+{{- if .Values.sysdig.settings }}
+{{ toYaml .Values.sysdig.settings | indent 4 }}
+{{- end }}

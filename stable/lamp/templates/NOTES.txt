@@ -1,0 +1,109 @@
+INIT:
+      Please wait for all init containers to finish before connecting to
+      the charts services. This might take a few minutes depending on their
+      tasks.
+{{- if .Values.ingress.enabled }}
+
+INGRESS:
+      Please make sure that you have an ingress controller instance {{ if .Values.ingress.ssl }}and a lego instance
+      {{- end -}} running
+      and that you have configured the A Records of {{ template "lamp.domain" . }} and its
+      subdomains to point to your ingress controllers ip address.
+{{- else }}{{ if contains "LoadBalancer" .Values.service.type }}
+
+LOADBALANCER:
+      Please wait until the service has been routed to an IP address.
+      You can watch the status of by running 'kubectl get svc -w {{ template "lamp.fullname" . }}'
+  {{- end }}
+{{- end }}
+{{- if .Values.init.manually.enabled }}
+
+MAN:
+      Connect to the init pod to prepare your web root and database
+
+      M.1. Connect to the init pod by executing
+              kubectl exec -it $(kubectl get pods -l app={{ template "lamp.fullname" . }} --output=jsonpath={.items..metadata.name}) -c init-manually /bin/bash
+      {{- if .Values.wordpress.enabled }}
+
+      M.2. Download your files and prepare your webroot at /var/www/html
+
+      M.3. Dowload your DB Backup and stash it in /var/www/mysql
+      {{- else }}
+
+      M.2. Download your files and prepare your webroot at /var/www/html, then
+           set correct permissions
+              chown -R 33:33 /var/www/html
+
+      M.3. Start the mysql daemon, import your backup and stop the daemon again
+              /entrypoint.sh mysqld &
+              mysql -uroot -p$MYSQL_ROOT_PASSWORD $MYSQL_DATABASE < yourbackup.sql
+              mysqladmin -uroot -p$MYSQL_ROOT_PASSWORD shutdown
+      {{- end }}
+
+      M.4. To stop the container and finish init phase, run
+              im-done
+{{- else }}{{ if .Values.wordpress.enabled }}
+
+WP:
+      Wordpress features are enabled. Please wait while the init containers finish.
+      You can watch the logs by running:
+
+        kubectl logs $(get pods -l app={{ template "lamp.fullname" . }} -c init-wp
+
+        or
+
+        kubectl logs $(get pods -l app={{ template "lamp.fullname" . }} -c init-wp-db
+  {{- end }}
+{{- end }}
+{{- if .Values.init.clone.release }}
+
+CLONE:
+      The chart has been started with reference to a clone chart. Please wait while
+      the persistent storage is copied. You can watch the logs by running:
+
+        kubectl logs $(get pods -l app={{ template "lamp.fullname" . }} -c init-clone
+
+        or
+
+        kubectl logs $(get pods -l app={{ template "lamp.fullname" . }} -c init-db-clone
+{{- end }}
+
+1. You can now connect to the following services:
+
+      {{- if not .Values.ingress.enabled }}
+      export CHARTIP=$(kubectl get svc {{ template "lamp.fullname" . }} --output=jsonpath={.status.loadBalancer.ingress..ip})
+      {{- end }}
+
+      Main Site:
+        {{- if .Values.ingress.enabled }}
+        http{{ if .Values.ingress.ssl }}s{{ end }}://{{ template "lamp.domain" . }}
+        {{- else }}
+        http://$CHARTIP
+        {{- end }}
+      {{- if .Values.phpmyadmin.enabled }}
+
+      PHPMyAdmin:
+      {{- if .Values.ingress.enabled }}
+        http{{ if .Values.ingress.ssl }}s{{ end }}://{{ .Values.phpmyadmin.subdomain }}.{{ template "lamp.domain" . }}
+      {{- else }}
+        http://$CHARTIP:{{ .Values.phpmyadmin.port }}
+      {{- end }}
+      {{- end }}
+      {{- if .Values.webdav.enabled }}
+
+      WebDAV:
+      {{- if .Values.ingress.enabled }}
+        http{{ if .Values.ingress.ssl }}s{{ end }}://{{ .Values.webdav.subdomain }}.{{ template "lamp.domain" . }}
+      {{- else }}
+        http://$CHARTIP:{{ .Values.webdav.port }}
+      {{- end }}
+      {{- end }}
+      {{- if .Values.sftp.enabled }}
+
+      SFTP:
+      {{- if .Values.ingress.enabled }}
+        sftp -P {{ .Values.sftp.nodePort }} {{ .Values.sftp.user }}@ip_of_kubernetes_node
+      {{- else }}
+        sftp -P {{ .Values.sftp.port }} {{ .Values.sftp.user }}@$CHARTIP
+      {{- end }}
+      {{- end }}

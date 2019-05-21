@@ -1,0 +1,36 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ template "openvpn.fullname" . }}
+  labels:
+    app: {{ template "openvpn.name" . }}
+    chart: {{ template "openvpn.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+{{- if .Values.service.annotations }}
+  annotations:
+{{ toYaml .Values.service.annotations | indent 4 }}
+{{- end }}
+spec:
+{{- if .Values.service.externalIPs }}
+  externalIPs:
+{{ toYaml .Values.service.externalIPs | indent 4 }}
+{{- end }}
+  ports:
+    - name: openvpn
+      port: {{ .Values.service.externalPort }}
+      targetPort: {{ .Values.service.internalPort }}
+      protocol: {{ .Values.openvpn.OVPN_PROTO | upper }}
+{{- if and (eq "NodePort" .Values.service.type) (hasKey .Values.service "nodePort") }}
+      nodePort: {{ .Values.service.nodePort }}
+{{- end }}
+  selector:
+    app: {{ template "openvpn.name" . }}
+    release: {{ .Release.Name }}
+  type: {{ .Values.service.type }}
+{{- if .Values.service.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.service.loadBalancerIP }}
+{{- end }}
+{{- if .Values.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges: {{ .Values.service.loadBalancerSourceRanges }}
+{{- end }}

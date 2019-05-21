@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "prometheus-rabbitmq-exporter.fullname" . }}
+  labels:
+    app: {{ template "prometheus-rabbitmq-exporter.name" . }}
+    chart: {{ template "prometheus-rabbitmq-exporter.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.externalPort }}
+      targetPort: publish
+      protocol: TCP
+      name: rabbitmq-exporter
+  selector:
+    app: {{ template "prometheus-rabbitmq-exporter.name" . }}
+    release: {{ .Release.Name }}

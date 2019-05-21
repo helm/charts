@@ -1,0 +1,99 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "scdf.fullname" . }}-skipper
+  labels:
+    app: {{ template "scdf.name" . }}
+    component: skipper
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "scdf.name" . }}
+      component: skipper
+      release: "{{ .Release.Name }}"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ template "scdf.name" . }}
+        component: skipper
+        release: "{{ .Release.Name }}"
+    spec:
+      containers:
+      - name: {{ template "scdf.fullname" . }}-skipper
+        image: {{ .Values.skipper.image }}:{{ .Values.skipper.version }}
+        imagePullPolicy: {{ .Values.skipper.imagePullPolicy }}
+        volumeMounts:
+          {{- if .Values.rabbitmq.enabled}}
+          - name: rabbitmq
+            mountPath: /etc/secrets/rabbitmq
+            readOnly: true
+          {{- end}}
+          - name: mysql
+            mountPath: /etc/secrets/mysql
+            readOnly: true
+        ports:
+        - containerPort: 7577
+          name: http
+        resources:
+{{ toYaml .Values.skipper.resources | indent 10 }}
+        livenessProbe:
+          httpGet:
+            path: /api/about
+            port: http
+          initialDelaySeconds: 90
+          periodSeconds: 15
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /api/about
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 15
+          timeoutSeconds: 5
+        env:
+        - name: KUBERNETES_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: "metadata.namespace"
+        - name: SERVER_PORT
+          value: '7577'
+        - name: SPRING_CLOUD_KUBERNETES_SECRETS_ENABLE_API
+          value: 'true'
+        - name: SPRING_CLOUD_KUBERNETES_SECRETS_PATHS
+          value: /etc/secrets
+        - name: SPRING_CLOUD_KUBERNETES_CONFIG_NAME
+          value: {{ template "scdf.fullname" . }}-skipper
+        {{- if .Values.rabbitmq.enabled}}
+        - name: RABBITMQ_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ printf "%s-%s" .Release.Name "rabbitmq" | trunc 63 | trimSuffix "-" }}
+              key: rabbitmq-password
+        {{- end}}
+      volumes:
+        {{- if .Values.rabbitmq.enabled}}
+        - name: rabbitmq
+          secret:
+            secretName: {{ printf "%s-%s" .Release.Name "rabbitmq" | trunc 63 | trimSuffix "-" }}
+        {{- end}}
+        - name: mysql
+          secret:
+            secretName: {{ printf "%s-%s" .Release.Name "mysql" | trunc 63 | trimSuffix "-" }}
+      initContainers:
+      - name: init-mysql-wait
+        image: busybox
+        command: ['sh', '-c', 'until nc -w3 -z {{ printf "%s-%s" .Release.Name "mysql" | trunc 63 | trimSuffix "-" }} 3306; do echo waiting for mysql; sleep 3; done;']
+      - name: init-mysql-database
+        image: mysql:5.7.14
+        env:
+        - name: MYSQL_PWD
+          valueFrom:
+            secretKeyRef:
+              name: {{ printf "%s-%s" .Release.Name "mysql" | trunc 63 | trimSuffix "-" }}
+              key: mysql-root-password
+        command: ['sh', '-c', 'mysql -h {{ printf "%s-%s" .Release.Name "mysql" | trunc 63 | trimSuffix "-" }} -u root -e "CREATE DATABASE IF NOT EXISTS skipper;"']
+      serviceAccountName: {{ template "scdf.serviceAccountName" . }}

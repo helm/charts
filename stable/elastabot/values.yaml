@@ -1,0 +1,74 @@
+# Docker image repository, tag/version and related settings
+image:
+  repository: jertel/elastabot
+  tag: 1.1.0
+  pullPolicy: IfNotPresent
+
+# Elasticsearch settings, required.
+elasticsearch:
+  host: ""
+  port: 9200
+
+  # Elasticsearch connection timeout, in seconds
+  timeoutSeconds: 10
+
+  # Set sslEnabled to True to use SSL/TLS to connect to Elasticsearch
+  sslEnabled: False
+
+  # Set sslStrictEnabled to True to validate SSL/TLS certificate authenticity
+  sslStrictEnabled: False
+
+# Elastalert settings. Elastalert chart information is available here:
+# https://github.com/kubernetes/charts/tree/master/stable/elastalert
+elastalert:
+  # Index prefix for elastalert
+  index: "elastalert"
+
+  # How far back in time to search for recently-fired alerts, in Elasticsearch
+  recentAlertMinutes: 4320
+
+  # Default silence duration
+  defaultSilenceMinutes: 240
+
+# Emails can be sent when a user acks or triages an issue.
+smtp:
+  host: ""
+  port: 25
+
+  # Set secure to True to use SSL/TLS to connect to the SMTP host
+  secure: False
+
+  # Set starttls to True to switch to TLS after connecting to the SMTP host (not needed when secure: True)
+  starttls: False
+
+  # SMTP host communication timeout
+  timeoutSeconds: 4
+
+  # Where triaged SMTP emails should be sent
+  to: ""
+
+  # Address that is sending the SMTP emails
+  from: ""
+
+  # Optional prefix to prepend to each email's subject
+  subjectPrefix: ""
+
+  # Set debug to True to troubleshoot SMTP connectivity problems
+  debug: False
+
+# Typically users will interact with this bot via an exclamation point, however
+# custom prefixes, such as "!prod " could be used if multiple bots will be listening to a
+# single channel, but interacting with different Elasticsearch clusters
+commandPrefix: "!"
+
+# Currently only smtp is supported for initiating a triage workflow.
+triageTarget: smtp
+
+# Allow all Slack users to search the Elasticsearch cluster for any data.
+# CAUTION: Disable this when this bot is exposed to a public Slack community and the cluster contains sensitive data.
+searchEnabled: true
+
+resources: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}

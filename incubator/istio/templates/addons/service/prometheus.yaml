@@ -1,0 +1,27 @@
+{{- if and .Values.istio.install (not .Release.IsInstall) -}}
+{{ if .Values.addons.prometheus.enabled }}
+{{- $serviceName := include "istio.name" . -}}
+apiVersion: v1
+kind: Service
+metadata:
+  # Grafana datasource config is hardcoded to prometheus:9090
+  # name: {{ $serviceName }}-prometheus
+  name: {{ .Values.addons.prometheus.deployment.name }}
+  labels:
+{{ include "istio.labels.standard" . | indent 4 }}
+  annotations:
+    {{- range $key, $value := .Values.addons.prometheus.service.annotations }}
+      {{ $key }}: {{ $value | quote }}
+    {{- end }}
+spec:
+  type: {{ .Values.addons.prometheus.service.type }}
+  ports:
+  - name: {{ .Values.addons.prometheus.deployment.name }}
+    protocol: TCP
+    port: {{ .Values.addons.prometheus.service.externalPort }}
+  selector:
+    app: {{ include "istio.name" . }}
+    component: {{ $serviceName }}-{{ .Values.addons.prometheus.deployment.name }}
+    release: {{ .Release.Name }}
+{{ end }}
+{{- end -}}

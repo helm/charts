@@ -1,0 +1,34 @@
+{{- if .Values.web.enabled -}}
+{{- if .Values.web.ingress.enabled -}}
+{{- $releaseName := .Release.Name -}}
+{{- $serviceName := default "web" .Values.web.nameOverride -}}
+{{- $servicePort := .Values.concourse.web.bindPort -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "concourse.web.fullname" . }}
+  labels:
+    app: {{ template "concourse.web.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+  annotations:
+    {{- range $key, $value := .Values.web.ingress.annotations }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+spec:
+  rules:
+    {{- range .Values.web.ingress.hosts }}
+    - host: {{ . }}
+      http:
+        paths:
+          - backend:
+              serviceName: {{ printf "%s-%s" $releaseName $serviceName | trunc 63 | trimSuffix "-" }}
+              servicePort: {{ $servicePort }}
+    {{- end -}}
+  {{- if .Values.web.ingress.tls }}
+  tls:
+{{ toYaml .Values.web.ingress.tls | indent 4 }}
+  {{- end -}}
+{{- end -}}
+{{- end -}}

@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "centrifugo.fullname" . }}-config
+  labels:
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    chart: {{ include "centrifugo.chart" . }}
+    app: {{ include "centrifugo.name" . }}
+data:
+  config.json: |-
+{{ toJson .Values.config| indent 4 }}

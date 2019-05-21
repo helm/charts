@@ -1,0 +1,31 @@
+{{- if and .Values.plugins.enabled .Values.persistentVolumeClaim.enabled -}}
+{{- if not .Values.persistentVolumeClaim.existingClaim -}}
+apiVersion: "v1"
+kind: "PersistentVolumeClaim"
+metadata:
+{{- if .Values.persistentVolumeClaim.annotations }}
+  annotations:
+{{ toYaml .Values.persistentVolumeClaim.annotations | indent 4 }}
+{{- end }}
+  labels:
+    app: {{ template "kibana.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: "{{ .Values.persistentVolumeClaim.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "kibana.fullname" . }}
+spec:
+  accessModes:
+{{ toYaml .Values.persistentVolumeClaim.accessModes | indent 4 }}
+{{- if .Values.persistentVolumeClaim.storageClass }}
+{{- if (eq "-" .Values.persistentVolumeClaim.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.persistentVolumeClaim.storageClass }}"
+{{- end }}
+{{- end }}
+  resources:
+    requests:
+      storage: "{{ .Values.persistentVolumeClaim.size }}"
+{{- end -}}
+{{- end -}}

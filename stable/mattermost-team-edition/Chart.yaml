@@ -1,0 +1,15 @@
+apiVersion: v1
+description: Mattermost Team Edition server.
+name: mattermost-team-edition
+version: 3.1.2
+appVersion: 5.9.0
+deprecated: true
+keywords:
+- mattermost
+- communication
+- team collaboration
+home: https://mattermost.com
+icon: http://www.mattermost.org/wp-content/uploads/2016/04/icon.png
+source:
+- https://github.com/mattermost/mattermost-server
+- https://github.com/mattermost/mattermost-helm

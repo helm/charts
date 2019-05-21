@@ -1,0 +1,23 @@
+dmarc2logstash:
+  image:
+    repository: jertel/dmarc2logstash
+    tag: 1.0.3
+    pullPolicy: IfNotPresent
+  deleteMessages: 1
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+filebeat:
+  image:
+    repository: docker.elastic.co/beats/filebeat
+    tag: 6.6.0
+    pullPolicy: IfNotPresent
+  logstash:
+    host: ""
+    port: 5000
+    sourceType: json-logs
+    index: dmarc
+    timeout: 15
+  resources: {}

@@ -1,0 +1,21 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "nginx-lego.fullname" . }}-default-backend
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+spec:
+  replicas: {{ .Values.default.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "nginx-lego.fullname" . }}-default-backend
+    spec:
+      containers:
+      - name: {{ template "nginx-lego.fullname" . }}-default-backend
+        image: "{{ .Values.default.image.repository }}:{{ .Values.default.image.tag }}"
+        imagePullPolicy: {{ .Values.default.image.pullPolicy | quote }}
+        ports:
+        - containerPort: 8080
+        resources:
+{{ toYaml .Values.default.resources | indent 10 }}

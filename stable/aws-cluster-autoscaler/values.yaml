@@ -1,0 +1,49 @@
+autoscalingGroups: []
+  # - name: asg1
+  #   maxSize: 1
+  #   minSize: 1
+
+awsRegion: us-east-1
+
+image:
+  repository: k8s.gcr.io/cluster-autoscaler
+  tag: v0.6.1
+  pullPolicy: IfNotPresent
+
+extraArgs: {}
+
+## Node labels for pod assignment
+## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+##
+nodeSelector: {}
+
+podAnnotations: {}
+replicaCount: 1
+
+resources: {}
+  # limits:
+  #   cpu: 100m
+  #   memory: 300Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 300Mi
+
+scaleDownDelay: 10m
+
+service:
+  annotations: {}
+  clusterIP: ""
+
+  ## List of IP addresses at which the service is available
+  ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+  ##
+  externalIPs: []
+
+  loadBalancerIP: ""
+  loadBalancerSourceRanges: []
+  servicePort: 8085
+  type: ClusterIP
+
+skipNodes:
+  withLocalStorage: false
+  withSystemPods: true

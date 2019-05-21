@@ -1,0 +1,61 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: etcd
+  labels:
+    app: {{ template "etcd.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+    suite: {{ template "fullname" . }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "etcd.fullname" . }}
+      suite: {{ template "fullname" . }}
+  template:
+    metadata:
+      name: etcd
+      labels:
+        app: {{ template "etcd.fullname" . }}
+        suite: {{ template "fullname" . }}
+    spec:
+      volumes:
+        - name: etcdvol
+        {{- if .Values.etcd.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ template "etcd.fullname" . }}-pvc
+        {{- else }}
+          hostPath:
+           path: "/var/pachyderm/etcd"
+        {{- end }}
+      containers:
+        - name: etcd
+          image: '{{ .Values.etcd.image.repository }}:{{ .Values.etcd.image.tag }}'
+          command:
+          - "/usr/local/bin/etcd"
+          - "--listen-client-urls=http://0.0.0.0:2379"
+          - "--advertise-client-urls=http://0.0.0.0:2379"
+          - "--data-dir=/var/data/etcd"
+          - "--auto-compaction-retention=1"
+          - "--max-txn-ops=5000"
+          ports:
+            - name: client-port
+              containerPort: 2379
+            - name: peer-port
+              containerPort: 2380
+          resources:
+           requests:
+            cpu: '{{ .Values.etcd.resources.requests.cpu }}'
+            memory: {{ .Values.etcd.resources.requests.memory }}
+          {{- if .Values.etcd.resources.limits }}
+           limits:
+            cpu: '{{ .Values.etcd.resources.limits.cpu }}'
+            memory: {{ .Values.etcd.resources.limits.memory }}
+          {{- end }}
+          volumeMounts:
+            - name: etcdvol
+              mountPath: "/var/data/etcd"
+          imagePullPolicy: {{ .Values.etcd.image.pullPolicy }}

@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "eg.fullname" . }}-proxy
+  annotations:
+    {{- range $key, $value := .Values.proxy.annotations }}
+      {{ $key }}: {{ $value | quote }}
+    {{- end }}
+  labels:
+    app: {{ template "eg.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  type: {{ .Values.proxy.type }}
+  {{- if and (eq .Values.proxy.type "LoadBalancer") .Values.proxy.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.proxy.loadBalancerIP }}
+  {{- end }}
+  ports:
+  - name: eg-proxy
+    port: {{ .Values.proxy.servicePort }}
+    targetPort: {{ .Values.proxy.containerPort }}
+  {{- if (and (eq .Values.proxy.type "NodePort") (not (empty .Values.proxy.nodePort))) }}
+    nodePort: {{ .Values.proxy.nodePort }}
+  {{- end }}
+    protocol: TCP
+  selector:
+    app: {{ template "eg.name" . }}
+    release: {{ .Release.Name }}

@@ -1,0 +1,42 @@
+{{- if .Values.server.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "kiam.fullname" . }}-server
+  labels:
+    app: {{ template "kiam.name" . }}
+    chart: {{ template "kiam.chart" . }}
+    component: "{{ .Values.server.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    {{- range $key, $value := .Values.server.serviceLabels }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+  {{- if or .Values.server.serviceAnnotations .Values.server.prometheus.scrape }}
+  annotations:
+    {{- range $key, $value := .Values.server.serviceAnnotations }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+    {{- if .Values.server.prometheus.scrape }}
+    prometheus.io/scrape: "true"
+    prometheus.io/port: {{ .Values.server.prometheus.port | quote }}
+    {{- end }}
+  {{- end }}
+spec:
+  clusterIP: None
+  selector:
+    app: {{ template "kiam.name" . }}
+    component: "{{ .Values.server.name }}"
+    release: {{ .Release.Name }}
+  ports:
+    {{- if .Values.server.prometheus.scrape }}
+    - name: metrics
+      port: {{ .Values.server.prometheus.port }}
+      targetPort: {{ .Values.server.prometheus.port }}
+      protocol: TCP
+    {{- end }}
+    - name: grpclb
+      port: {{ .Values.server.service.port }}
+      targetPort: {{ .Values.server.service.targetPort }}
+      protocol: TCP
+{{- end }}

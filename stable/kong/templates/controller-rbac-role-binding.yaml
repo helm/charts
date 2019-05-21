@@ -1,0 +1,20 @@
+{{- if and .Values.ingressController.rbac.create .Values.ingressController.enabled -}}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: RoleBinding
+metadata:
+  name:  {{ template "kong.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "kong.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ template "kong.fullname" . }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ template "kong.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace }}
+{{- end -}}

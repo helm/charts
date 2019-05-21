@@ -1,0 +1,98 @@
+{{ if .Values.filebeat.logstash.host }}
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "dmarc2logstash.fullname" . }}
+  labels:
+    app: {{ template "dmarc2logstash.name" . }}
+    chart: {{ template "dmarc2logstash.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "dmarc2logstash.name" . }}
+      release: {{ .Release.Name }}
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: {{ template "dmarc2logstash.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+{{ if .Values.extraSpec }}
+      {{- toYaml .Values.extraSpec | indent 6 }}
+{{ end }}
+      volumes:
+        - name: shared-log
+          emptyDir: {}
+        - name: filebeat-config
+          configMap:
+            name: {{ template "dmarc2logstash.fullname" . }}-config
+            items:
+            - key: filebeat.yml
+              path: filebeat.yml
+      containers:
+        - name: dmarc2logstash
+          image: "{{ .Values.dmarc2logstash.image.repository }}:{{ .Values.dmarc2logstash.image.tag }}"
+          imagePullPolicy: {{ .Values.dmarc2logstash.image.pullPolicy }}
+{{ if .Values.dmarc2logstash.extraContainer }}
+          {{- .Values.dmarc2logstash.extraContainer | indent 10 }}
+{{ end }}
+          env:
+{{ if .Values.dmarc2logstash.extraEnvs }}
+            {{- .Values.dmarc2logstash.extraEnvs | indent 12 }}
+{{ end }}
+            - name: JSON_OUTPUT_FILE
+              value: /opt/dmarc2logstash/output/dmarc.log
+            - name: POP3_SERVER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "dmarc2logstash.name" . }}-secrets
+                  key: pop3_server
+            - name: POP3_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "dmarc2logstash.name" . }}-secrets
+                  key: pop3_username
+            - name: POP3_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "dmarc2logstash.name" . }}-secrets
+                  key: pop3_password
+            - name: DELETE_MESSAGES
+              value: "{{ .Values.dmarc2logstash.deleteMessages }}"
+          volumeMounts:
+            - name: shared-log
+              mountPath: /opt/dmarc2logstash/output
+          resources:
+            {{- toYaml .Values.dmarc2logstash.resources | indent 12 }}
+    {{- with .Values.dmarc2logstash.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.dmarc2logstash.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.dmarc2logstash.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+        - name: filebeat
+          image: "{{ .Values.filebeat.image.repository }}:{{ .Values.filebeat.image.tag }}"
+          imagePullPolicy: {{ .Values.filebeat.image.pullPolicy }}
+{{ if .Values.filebeat.extraContainer }}
+          {{- .Values.filebeat.extraContainer | indent 10 }}
+{{ end }}
+          volumeMounts:
+            - name: filebeat-config
+              mountPath: /usr/share/filebeat/filebeat.yml
+              subPath: filebeat.yml
+            - name: shared-log
+              mountPath: /app/log/forward
+          resources:
+            {{- toYaml .Values.filebeat.resources | indent 12 }}
+{{ end }}

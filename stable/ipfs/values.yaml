@@ -1,0 +1,22 @@
+replicaCount: 1
+
+image: ipfs/go-ipfs:v0.4.9
+
+service:
+  type: ClusterIP
+
+resources: {}
+
+persistence:
+  enabled: true
+  ## ipfs data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  # storageClass: "-"
+  size: "8Gi"
+  accessModes:
+    - ReadWriteOnce

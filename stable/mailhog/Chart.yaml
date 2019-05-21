@@ -1,0 +1,18 @@
+apiVersion: v1
+description: DEPRECATED - An e-mail testing tool for developers
+name: mailhog
+appVersion: 1.0.0
+version: 2.3.1
+keywords:
+  - mailhog
+  - mail
+  - smtp
+  - email
+  - e-mail
+  - testing
+home: http://iankent.uk/project/mailhog/
+icon: https://raw.githubusercontent.com/mailhog/MailHog-UI/master/assets/images/hog.png
+sources:
+  - https://github.com/mailhog/MailHog
+# Chart moved to https://github.com/codecentric/helm-charts
+deprecated: true

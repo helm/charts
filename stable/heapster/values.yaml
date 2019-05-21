@@ -1,0 +1,149 @@
+## Default values for heapster.
+##
+replicaCount: 1
+image:
+  repository: k8s.gcr.io/heapster
+  tag: v1.5.2
+  pullPolicy: IfNotPresent
+## Here labels can be added to the heapster deployment
+# labels:
+#   kubernetes.io/cluster-service: "true"
+#   kubernetes.io/name: "Heapster"
+labels: {}
+
+## Here labels can be added to the heapster deployment
+# annotations:
+#   scheduler.alpha.kubernetes.io/critical-pod: ''
+annotations: {}
+
+## Here annotations can be added for the heapster Pod
+# podAnnotations:
+#   prometheus.io/scrape: "true"
+podAnnotations: {}
+
+## Node labels for pod assignment
+## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+##
+nodeSelector: {}
+
+## Tolerations for pod assignment
+## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+##
+tolerations: []
+
+## Affinity for pod assignment
+## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+affinity: {}
+
+service:
+  type: ClusterIP
+  externalPort: 8082
+  internalPort: 8082
+  ## This allows an override of the heapster service name
+  ## Default: {{ .Chart.Name }}
+  # nameOverride:
+
+  ## Here labels can be added to the heapster service
+  # labels:
+  #   kubernetes.io/cluster-service: "true"
+  #   kubernetes.io/name: "Heapster"
+  labels:
+
+  ## Here annotations can be added to the heapster service
+  # annotations:
+  #   prometheus.io/path: /metrics
+  #   prometheus.io/port: "8082"
+  #   prometheus.io/scrape: "true"
+  annotations: {}
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+## Heapster command and arguments
+## Default source=kubernetes.summary_api:''
+## ref: https://github.com/kubernetes/heapster/blob/master/docs/source-configuration.md
+##
+## By default sink not set
+## ref: https://github.com/kubernetes/heapster/blob/master/docs/sink-configuration.md
+##
+command:
+- "/heapster"
+- "--source=kubernetes.summary_api:''"
+
+## heapster env variables
+env: []
+
+## Resizer scales resources linearly with the number of nodes in the cluster
+## Resizer is enabled by default
+##
+resizer:
+  enabled: true
+  image:
+    repository: k8s.gcr.io/addon-resizer
+    tag: 1.7
+    pullPolicy: IfNotPresent
+  resources:
+    limits:
+      cpu: 50m
+      memory: 90Mi
+    requests:
+      cpu: 50m
+      memory: 90Mi
+
+  ## Flags used for /pod_nanny command
+  ## container and deployment flags already determined chart name
+  ## ref: https://github.com/kubernetes/contrib/blob/master/addon-resizer/README.md
+  ##
+  flags:
+  - "--cpu=150m"
+  - "--extra-cpu=10m"
+  - "--memory=200Mi"
+  - "--extra-memory=6Mi"
+  - "--threshold=5"
+  - "--poll-period=300000"
+
+## For RBAC support:
+rbac:
+  create: true
+
+  ## Ignored if rbac.create is true
+  ##
+  serviceAccountName: default
+
+## eventer can send the kubernetes event logs to a remote destination
+## it uses the same image as heapster but has its own resizer nanny pod
+## eventer is disabled by default
+## see https://github.com/kubernetes/heapster/blob/master/docs/overview.md for the flags you can use
+## you will probably want to change the --sink parameter
+eventer:
+  enabled: false
+  flags:
+  - "--source=kubernetes:https://kubernetes.default"
+  - "--sink=log"
+  resources: {}
+#    limits:
+#      cpu: 100m
+#      memory: 250Mi
+#    requests:
+#      cpu: 100m
+#      memory: 250Mi
+  resizer:
+    enabled: true
+    resources: {}
+#      limits:
+#        cpu: 50m
+#        memory: 90Mi
+#      requests:
+#        cpu: 50m
+#        memory: 90Mi
+    flags:
+    - "--cpu=150m"
+    - "--extra-cpu=10m"
+    - "--memory=200Mi"
+    - "--extra-memory=6Mi"
+    - "--threshold=5"
+    - "--poll-period=300000"

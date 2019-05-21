@@ -1,0 +1,11 @@
+---
+persistentVolumeClaim:
+  # set to true to use pvc
+  enabled: true
+  # set to true to use you own pvc
+  existingClaim: false
+  annotations: {}
+
+  accessModes:
+    - ReadWriteOnce
+  size: "5Gi"

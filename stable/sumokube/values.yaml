@@ -1,0 +1,34 @@
+# Default values for sumokube.
+image:
+  name: sumologic/collector
+  tag: latest
+  pullPolicy: IfNotPresent
+
+sumologic:
+  ## You'll need to set this to your Sumologic API access key and access ID
+  ## before the agent will run.
+  ## ref: https://help.sumologic.com/Manage/Security/Access_Keys
+  ##
+  # accessId:
+  # accessKey:
+
+  collectorName: "kubernetes-collector"
+
+  ## A full list of configurable JSON source options can be found at:
+  ## https://help.sumologic.com/Send_Data/Sources/03Use_JSON_to_Configure_Sources
+    # categoryName: "kubernetes"
+    # multilineProcessingEnabled:
+    # automaticDateParsing:
+    # forceTimeZone:
+    # pathExpression:
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 256m
+    memory: 256Mi
+
+daemonset:
+  tolerations: []

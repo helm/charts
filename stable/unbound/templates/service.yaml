@@ -1,0 +1,26 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ template "unbound.fullname" . }}
+  labels:
+    app: {{ template "unbound.name" . }}
+    chart: {{ template "unbound.chart" . }}
+    release: {{ .Release.Name  }}
+    heritage: {{ .Release.Service }}
+spec:
+  {{- if .Values.externalIP }}
+  externalIPs:
+    - {{ .Values.externalIP }}
+  {{- end }}
+  selector:
+    app: {{ template "unbound.name" . }}
+    release: {{ .Release.Name }}
+  ports:
+  - name: dns-udp
+    protocol: UDP
+    port: {{ .Values.unbound.serverPort }}
+    targetPort: dns-udp
+  - name: dns-tcp
+    protocol: TCP
+    port: {{ .Values.unbound.serverPort }}
+    targetPort: dns-tcp

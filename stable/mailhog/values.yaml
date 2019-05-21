@@ -1,0 +1,39 @@
+image:
+  repository: mailhog/mailhog
+  tag: v1.0.0
+  pullPolicy: IfNotPresent
+
+service:
+  annotations: {}
+  clusterIP: ""
+  externalIPs: []
+  loadBalancerIP: ""
+  loadBalancerSourceRanges: []
+  type: ClusterIP
+  port:
+    http: 8025
+    smtp: 1025
+  nodePort:
+    http: ""
+    smtp: ""
+
+ingress:
+  enabled: false
+  annotations: {}
+  path: /
+  hosts:
+    - mailhog.example.com
+  tls: []
+  #  - hosts:
+  #      - mailhog.example.com
+  #    secretName: tls-mailhog
+
+auth:
+  enabled: false
+  existingSecret: ""
+  fileName: auth.txt
+  fileContents: ""
+
+podAnnotations: {}
+resources: {}
+env: {}

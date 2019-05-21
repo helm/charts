@@ -1,0 +1,24 @@
+{{- if .Values.persistence.dataNode.enabled -}}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ include "hadoop.fullname" . }}-hdfs-dn
+  labels:
+    app: {{ include "hadoop.name" . }}
+    chart: {{ include "hadoop.chart" . }}
+    release: {{ .Release.Name }}
+    component: hdfs-dn
+spec:
+  accessModes:
+  - {{ .Values.persistence.dataNode.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.dataNode.size | quote }}
+{{- if .Values.persistence.dataNode.storageClass }}
+{{- if (eq "-" .Values.persistence.dataNode.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.persistence.dataNode.storageClass }}"
+{{- end }}
+{{- end }}
+{{- end -}}

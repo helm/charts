@@ -1,0 +1,93 @@
+{{- if .Values.rbac.create }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ template "k8s-spot-rescheduler.fullname" . }}
+  labels:
+    app: {{ template "k8s-spot-rescheduler.name" . }}
+    chart: {{ template "k8s-spot-rescheduler.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+rules:
+  # For leader election
+  - apiGroups:
+      - ""
+    resources:
+      - endpoints
+    verbs:
+      - get
+      - update
+      - create
+  - apiGroups:
+      - ""
+    resources:
+      - events
+    verbs:
+      - create
+      - patch
+
+  # For listing and watching items
+  - apiGroups:
+      - ""
+    resources:
+      - nodes
+      - pods
+      - replicasets
+      - replicationcontrollers
+      - services
+      - statefulsets
+      - poddisruptionbudgets
+      - persistentvolumes
+      - persistentvolumeclaims
+    verbs:
+      - list
+      - get
+      - watch
+  - apiGroups:
+    - apps
+    resources:
+      - statefulsets
+    verbs:
+      - list
+      - get
+      - watch
+  - apiGroups:
+    - extensions
+    resources:
+      - replicasets
+    verbs:
+      - list
+      - get
+      - watch
+  - apiGroups:
+    - policy
+    resources:
+      - poddisruptionbudgets
+    verbs:
+      - list
+      - get
+      - watch
+
+  # For rescheduling pods
+  - apiGroups:
+    - ""
+    resources:
+      - nodes
+    verbs:
+      - update
+  - apiGroups:
+    - ""
+    resources:
+      - pods/eviction
+    verbs:
+      - create
+
+  - apiGroups:
+      - storage.k8s.io
+    resources:
+      - storageclasses
+    verbs:
+      - list
+      - get
+      - watch
+{{- end }}

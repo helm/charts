@@ -1,0 +1,48 @@
+---
+{{- if .Values.rbac.create }}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  name: {{ template "fullname" . }}
+  creationTimestamp:
+  labels:
+    app: ''
+    suite: {{ template "fullname" . }}
+rules:
+- verbs:
+  - get
+  - list
+  - watch
+  apiGroups:
+  - ''
+  resources:
+  - nodes
+  - pods
+  - pods/log
+  - endpoints
+- verbs:
+  - get
+  - list
+  - watch
+  - create
+  - update
+  - delete
+  apiGroups:
+  - ''
+  resources:
+  - replicationcontrollers
+  - services
+- verbs:
+  - get
+  - list
+  - watch
+  - create
+  - update
+  - delete
+  apiGroups:
+  - ''
+  resources:
+  - secrets
+  resourceNames:
+  - pachyderm-storage-secret
+{{- end }}

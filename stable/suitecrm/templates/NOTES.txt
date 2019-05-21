@@ -1,0 +1,97 @@
+{{- if or .Values.mariadb.enabled .Values.externalDatabase.host -}}
+
+{{- if empty (include "host" .) -}}
+###############################################################################
+### ERROR: You did not provide an external host in your 'helm install' call ###
+###############################################################################
+
+This deployment will be incomplete until you configure SuiteCRM with a resolvable
+host. To configure SuiteCRM with the URL of your service:
+
+1. Get the SuiteCRM URL by running:
+
+  {{- if contains "NodePort" .Values.service.type }}
+
+  export APP_PORT=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "suitecrm.fullname" . }} -o jsonpath="{.spec.ports[0].nodePort}")
+  export APP_HOST=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+
+  {{- else if contains "LoadBalancer" .Values.service.type }}
+
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+        Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "suitecrm.fullname" . }}'
+
+  export APP_HOST=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "suitecrm.fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
+  export APP_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "suitecrm.fullname" . }} -o jsonpath="{.data.suitecrm-password}" | base64 --decode)
+  {{- if .Values.mariadb.mariadbRootPassword }}
+  export DATABASE_ROOT_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "suitecrm.mariadb.fullname" . }} -o jsonpath="{.data.mariadb-root-password}" | base64 --decode)
+  {{- end }}
+  {{- end }}
+  export APP_DATABASE_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "suitecrm.mariadb.fullname" . }} -o jsonpath="{.data.mariadb-password}" | base64 --decode)
+
+
+2. Complete your SuiteCRM deployment by running:
+
+{{- if .Values.mariadb.enabled }}
+
+  helm upgrade {{ .Release.Name }} stable/suitecrm \
+    --set suitecrmHost=$APP_HOST,suitecrmPassword=$APP_PASSWORD{{ if .Values.mariadb.mariadbRootPassword }},mariadb.mariadbRootPassword=$DATABASE_ROOT_PASSWORD{{ end }},mariadb.db.password=$APP_DATABASE_PASSWORD
+{{- else }}
+
+  ## PLEASE UPDATE THE EXTERNAL DATABASE CONNECTION PARAMETERS IN THE FOLLOWING COMMAND AS NEEDED ##
+
+  helm upgrade {{ .Release.Name }} stable/suitecrm \
+    --set suitecrmPassword=$APP_PASSWORD,suitecrmHost=$APP_HOST,service.type={{ .Values.service.type }},mariadb.enabled=false{{- if not (empty .Values.externalDatabase.host) }},externalDatabase.host={{ .Values.externalDatabase.host }}{{- end }}{{- if not (empty .Values.externalDatabase.user) }},externalDatabase.user={{ .Values.externalDatabase.user }}{{- end }}{{- if not (empty .Values.externalDatabase.password) }},externalDatabase.password={{ .Values.externalDatabase.password }}{{- end }}{{- if not (empty .Values.externalDatabase.database) }},externalDatabase.database={{ .Values.externalDatabase.database }}{{- end }}
+{{- end }}
+
+{{- else -}}
+1. Get the SuiteCRM URL by running:
+
+{{- if eq .Values.service.type "ClusterIP" }}
+
+  echo "SuiteCRM URL: http://127.0.0.1:8080/"
+  kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "suitecrm.fullname" . }} $POD_NAME 8080:{{ .Values.service.port }}
+
+{{- else }}
+
+{{- $port:=.Values.service.port | toString }}
+  echo "SuiteCRM URL: http://{{ include "host" . }}{{- if ne $port "80" }}:{{ .Values.service.port }}{{ end }}/"
+
+{{- end }}
+
+2. Get your SuiteCRM login credentials by running:
+
+  echo Username : {{ .Values.suitecrmUsername }}
+  echo Password : $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "suitecrm.fullname" . }} -o jsonpath="{.data.suitecrm-password}" | base64 --decode)
+{{- end }}
+
+{{- else -}}
+
+########################################################################################
+### ERROR: You did not provide an external database host in your 'helm install' call ###
+########################################################################################
+
+This deployment will be incomplete until you configure SuiteCRM with a resolvable database
+host. To configure SuiteCRM to use and external database host:
+
+
+1. Complete your SuiteCRM deployment by running:
+
+{{- if contains "NodePort" .Values.service.type }}
+  export APP_HOST=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+{{- else if contains "LoadBalancer" .Values.service.type }}
+
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+        Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "suitecrm.fullname" . }}'
+
+  export APP_HOST=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "suitecrm.fullname" . }} --template "{{ "{{ range (index .status.loadBalancer.ingress 0) }}{{ . }}{{ end }}" }}")
+{{- else }}
+
+  export APP_HOST=127.0.0.1
+{{- end }}
+  export APP_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "suitecrm.fullname" . }} -o jsonpath="{.data.suitecrm-password}" | base64 --decode)
+
+  ## PLEASE UPDATE THE EXTERNAL DATABASE CONNECTION PARAMETERS IN THE FOLLOWING COMMAND AS NEEDED ##
+
+  helm upgrade {{ .Release.Name }} stable/suitecrm \
+    --set suitecrmPassword=$APP_PASSWORD,suitecrmHost=$APP_HOST,service.type={{ .Values.service.type }},mariadb.enabled=false{{- if not (empty .Values.externalDatabase.user) }},externalDatabase.user={{ .Values.externalDatabase.user }}{{- end }}{{- if not (empty .Values.externalDatabase.password) }},externalDatabase.password={{ .Values.externalDatabase.password }}{{- end }}{{- if not (empty .Values.externalDatabase.database) }},externalDatabase.database={{ .Values.externalDatabase.database }}{{- end }},externalDatabase.host=YOUR_EXTERNAL_DATABASE_HOST
+{{- end }}

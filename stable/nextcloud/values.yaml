@@ -1,0 +1,160 @@
+## Official nextcloud image version
+## ref: https://hub.docker.com/r/library/nextcloud/tags/
+##
+image:
+  repository: nextcloud
+  tag: 15.0.2-apache
+  pullPolicy: IfNotPresent
+  # pullSecrets:
+  #   - myRegistrKeySecretName
+
+nameOverride: ""
+fullnameOverride: ""
+
+# Number of replicas to be deployed
+replicaCount: 1
+
+## Allowing use of ingress controllers
+## ref: https://kubernetes.io/docs/concepts/services-networking/ingress/
+##
+ingress:
+  enabled: false
+  annotations: {}
+  #  nginx.ingress.kubernetes.io/proxy-body-size: 4G
+  #  kubernetes.io/tls-acme: "true"
+  #  certmanager.k8s.io/cluster-issuer: letsencrypt-prod
+  #  nginx.ingress.kubernetes.io/server-snippet: |-
+  #    add_header Strict-Transport-Security "max-age=15768000; includeSubDomains; preload;";
+  #    add_header X-Robots-Tag none;
+  #    add_header X-Download-Options noopen;
+  #    add_header X-Permitted-Cross-Domain-Policies none;
+  #    add_header X-Content-Type-Options nosniff;
+  #    add_header X-XSS-Protection "1; mode=block";
+  #    add_header Referrer-Policy no-referrer;
+  #    rewrite ^/.well-known/webfinger /public.php?service=webfinger last;
+  #    rewrite ^/.well-known/host-meta /public.php?service=host-meta last;
+  #    rewrite ^/.well-known/host-meta.json /public.php?service=host-meta-json;
+  #    location = /.well-known/carddav {
+  #      return 301 $scheme://$host/remote.php/dav;
+  #    }
+  #    location = /.well-known/caldav {
+  #      return 301 $scheme://$host/remote.php/dav;
+  #    }
+  #    location = /robots.txt {
+  #      allow all;
+  #      log_not_found off;
+  #      access_log off;
+  #    }
+  #    location ~ \.(?:png|html|ttf|ico|jpg|jpeg)$ {
+  #      try_files $uri /index.php$request_uri;
+  #      # Optional: Don't log access to other assets
+  #      access_log off;
+  #    }
+  #    location / {
+  #      rewrite ^ /index.php$request_uri;
+  #    }
+  #    location ~ ^/(?:build|tests|config|lib|3rdparty|templates|data)/ {
+  #      deny all;
+  #    }
+  #    location ~ ^/(?:\.|autotest|occ|issue|indie|db_|console) {
+  #      deny all;
+  #    }
+  #  tls:
+  #    - secretName: nextcloud-tls
+  #      hosts:
+  #        - nextcloud.kube.home
+
+nextcloud:
+  host: nextcloud.kube.home
+  username: admin
+  password: changeme
+
+
+internalDatabase:
+  enabled: true
+  name: nextcloud
+
+
+##
+## External database configuration
+##
+externalDatabase:
+  enabled: false
+
+  ## Database host
+  host:
+
+  ## Database user
+  user: nextcloud
+
+  ## Database password
+  password:
+
+  ## Database name
+  database: nextcloud
+
+##
+## MariaDB chart configuration
+##
+mariadb:
+  ## Whether to deploy a mariadb server to satisfy the applications database requirements. To use an external database set this to false and configure the externalDatabase parameters
+  enabled: false
+
+  db:
+    name: nextcloud
+    user: nextcloud
+    password: changeme
+
+  ## Enable persistence using Persistent Volume Claims
+  ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+  ##
+  persistence:
+    enabled: false
+    accessMode: ReadWriteOnce
+    size: 8Gi
+
+service:
+  type: ClusterIP
+  port: 8080
+  loadBalancerIP: nil
+
+
+## Enable persistence using Persistent Volume Claims
+## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+##
+persistence:
+  enabled: false
+  ## nextcloud data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  # storageClass: "-"
+
+  ## A manually managed Persistent Volume and Claim
+  ## Requires persistence.enabled: true
+  ## If defined, PVC must be created manually before volume will be bound
+  # existingClaim:
+
+  accessMode: ReadWriteOnce
+  size: 8Gi
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

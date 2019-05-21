@@ -1,0 +1,24 @@
+{{- if .Values.persistence.enabled -}}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "testlink.fullname" . }}-testlink
+  labels:
+    app: "{{ template "testlink.fullname" . }}"
+    chart: "{{ template "testlink.chart" . }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Name | quote }}
+spec:
+  accessModes:
+    - {{ .Values.persistence.testlink.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.testlink.size | quote }}
+{{- if .Values.persistence.testlink.storageClass }}
+{{- if (eq "-" .Values.persistence.testlink.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.persistence.testlink.storageClass }}"
+{{- end }}
+{{- end }}
+{{- end -}}

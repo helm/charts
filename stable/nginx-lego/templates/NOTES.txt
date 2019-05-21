@@ -1,0 +1,37 @@
+################################################################################
+#### This chart has been deprecated as of version 0.2.1 and will not be updated.
+#### Please use the nginx-ingress and (optional) kube-lego charts instead.
+################################################################################
+
+This chart runs an nginx-ingress-controller  {{- if .Values.lego.enabled }}  and kube-lego  {{- end }}  adding the ability to use ingress resources to route in your cluster  {{- if .Values.lego.enabled -}}  as well as optionally generating SSL certs for you  {{- end -}}.
+
+EXAMPLE INGRESS YAML:
+
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  namespace: foo
+  annotations:
+    # Add to route through the nginx service
+    kubernetes.io/ingress.class: nginx
+{{- if .Values.lego.enabled }}
+    # Add to generate certificates for this ingress
+    kubernetes.io/tls-acme: "true"
+{{- end }}
+spec:
+  rules:
+  - host: www.example.com
+    http:
+      paths:
+      - backend:
+          serviceName: exampleService
+          servicePort: 80
+        path: /
+{{- if .Values.lego.enabled }}
+  tls:
+    # With this configuration kube-lego will generate a secret in namespace foo called `example-tls`
+    # for the URL `www.example.com`
+    - hosts:
+      - "www.example.com"
+      secretName: example-tls
+{{- end }}

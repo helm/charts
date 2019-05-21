@@ -1,0 +1,107 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ template "auditbeat.fullname" . }}
+  labels:
+    app: {{ template "auditbeat.name" . }}
+    chart: {{ template "auditbeat.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "auditbeat.name" . }}
+      release: {{ .Release.Name }}
+  minReadySeconds: 10
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: {{ template "auditbeat.name" . }}
+        release: {{ .Release.Name }}
+        {{-  range $key, $value := .Values.podLabels }}
+        {{ $key }}: {{ $value }}
+        {{- end }}
+      annotations:
+        checksum/secret: {{ toYaml .Values.config | sha256sum }}
+        {{-  range $key, $value := .Values.podAnnotations }}
+        {{ $key }}: {{ $value }}
+        {{- end }}
+    spec:
+      hostPID: true
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        args:
+        - "-e"
+{{- if .Values.plugins }}
+        - "--plugin"
+        - {{ .Values.plugins | join "," | quote }}
+{{- end }}
+{{- if .Values.extraArgs }}
+{{ toYaml .Values.extraArgs | indent 8 }}
+{{- end }}
+        env:
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+{{- range $key, $value := .Values.extraVars }}
+        - name: {{ $key }}
+          value: {{ $value }}
+{{- end }}
+        securityContext:
+          runAsUser: 0
+          # `hostPID: true`, along with the AUDIT_CONTROL and AUDIT_READ capabilities are required.
+          # Otherwise you'll see a startup error like:
+          #   2018-06-13T03:23:30.026ZERRORinstance/beat.go:667Exiting: 1 error: 1 error: failed to create audit client: failed to get audit status: operation not permitted
+          #   Exiting: 1 error: 1 error: failed to create audit client: failed to get audit status: operation not permitted
+          #
+          # See https://github.com/elastic/beats-docker/issues/25 for more info
+          capabilities:
+            add: ["AUDIT_CONTROL", "AUDIT_READ"]
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        volumeMounts:
+        - name: auditbeat-config
+          mountPath: /usr/share/auditbeat/auditbeat.yml
+          readOnly: true
+          subPath: auditbeat.yml
+        - name: data
+          mountPath: /usr/share/auditbeat/data
+{{- if .Values.extraVolumeMounts }}
+{{ toYaml .Values.extraVolumeMounts | indent 8 }}
+{{- end }}
+      volumes:
+      - name: auditbeat-config
+        secret:
+          secretName: {{ template "auditbeat.fullname" . }}
+      - name: data
+        hostPath:
+          path: /var/lib/auditbeat
+          type: DirectoryOrCreate
+{{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes | indent 6 }}
+{{- end }}
+      terminationGracePeriodSeconds: 60
+      serviceAccountName: {{ template "auditbeat.serviceAccountName" . }}
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+    {{- end }}
+    {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+    {{- end }}

@@ -1,0 +1,27 @@
+{{- if .Values.web.enabled -}}
+{{- if .Values.rbac.create -}}
+{{- if .Values.concourse.web.kubernetes.enabled -}}
+{{- range .Values.concourse.web.kubernetes.teams }}
+---
+apiVersion: rbac.authorization.k8s.io/{{ $.Values.rbac.apiVersion }}
+kind: RoleBinding
+metadata:
+  name: {{ template "concourse.web.fullname" $ }}-{{ . }}
+  namespace: {{ template "concourse.namespacePrefix" $ }}{{ . }}
+  labels:
+    app: {{ template "concourse.web.fullname" $ }}
+    chart: {{ $.Chart.Name }}-{{ $.Chart.Version }}
+    heritage: {{ $.Release.Service }}
+    release: {{ $.Release.Name }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ template "concourse.web.fullname" $ }}
+subjects:
+- kind: ServiceAccount
+  name: {{ template "concourse.web.fullname" $ }}
+  namespace: {{ $.Release.Namespace }}
+{{- end }}
+{{- end -}}
+{{- end -}}
+{{- end -}}

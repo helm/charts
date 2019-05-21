@@ -1,0 +1,15 @@
+apiVersion: v1
+data:
+  functions-namespace: {{ default "" .Values.config.functionsNamespace | quote }}
+  builder-image: "{{ .Values.config.builderImage }}:{{ .Values.controller.deployment.functionController.image.tag }}"
+  builder-image-secret: "{{ .Values.config.builderImagePullSecret }}"
+  deployment: "{{ .Values.config.deploymentTemplate }}"
+  enable-build-step: "{{ .Values.config.enableBuildStep }}"
+  function-registry-tls-verify: "{{ .Values.config.functionRegistryTLSVerify }}"
+  provision-image: "{{ .Values.config.provisionImage }}"
+  provision-image-secret: "{{ .Values.config.provisionImagePullSecret }}"
+  runtime-images: |-
+{{ .Values.config.runtimeImages | indent 4 }}
+kind: ConfigMap
+metadata:
+  name: kubeless-config

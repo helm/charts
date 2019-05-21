@@ -1,0 +1,20 @@
+{{- if eq (printf "%s" .Values.projectID) "MUST PROVIDE PROJECT ID" }}
+##############################################################################
+####   ERROR: You did not provide projectID in your 'helm install' call.  ####
+##############################################################################
+
+This deployment will be incomplete until provide a project ID:
+
+    helm upgrade {{ .Release.Name }} \
+        --set projectID=YOUR_PROJECT_ID stable/gcp-night-king
+
+{{- else -}}
+
+The Night King service is installed!
+
+The service is listening for Pub/Sub pre-emption messages
+{{ if .Values.subscriptionName }}on subscription {{ .Values.subscriptionName }}{{ else }}on the default subscription{{ end }} in GCP project {{ .Values.projectID }}.
+
+Make sure to set up your resurrectable preemptible GCE instances with a shutdown script
+(see https://github.com/itamaro/gcp-go-night-king#configure-shutdown-script).
+{{- end }}

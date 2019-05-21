@@ -1,0 +1,20 @@
+---
+{{- if .Values.etcd.persistence.enabled }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "etcd.fullname" . }}-pvc
+spec:
+  accessModes:
+    - {{ .Values.etcd.persistence.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.etcd.persistence.size | quote }}
+{{- if .Values.etcd.persistence.storageClass }}
+{{- if (eq "-" .Values.etcd.persistence.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.etcd.persistence.storageClass }}"
+{{- end }}
+{{- end }}
+{{- end }}

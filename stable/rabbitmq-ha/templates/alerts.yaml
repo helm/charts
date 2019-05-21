@@ -1,0 +1,104 @@
+{{ if and .Values.prometheus.exporter.enabled .Values.prometheus.operator.enabled .Values.prometheus.operator.alerts.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: {{ .Release.Name }}-rabbitmq-alerts
+  namespace: {{ .Values.prometheus.operator.serviceMonitor.namespace }}
+  labels:
+    app: {{ template "rabbitmq-ha.name" . }}
+    chart: {{ template "rabbitmq-ha.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+{{- if .Values.prometheus.operator.serviceMonitor.selector }}
+{{ toYaml .Values.prometheus.operator.serviceMonitor.selector | indent 4 }}
+{{- end }}
+{{- if .Values.prometheus.operator.alerts.selector }}
+{{ toYaml .Values.prometheus.operator.alerts.selector | indent 4 }}
+{{- end }}
+spec:
+  groups:
+  - name: {{ template "rabbitmq-ha.fullname" . }}.rules
+    rules:
+    - alert: RabbitMqClusterNodeDown
+      expr: rabbitmq_up{service="{{ template "rabbitmq-ha.fullname" . }}"} == 0
+      for: 5m
+      labels:
+        installed_by: {{ .Release.Name }}
+        severity: critical
+{{- if .Values.prometheus.operator.alerts.labels }}
+{{ toYaml .Values.prometheus.operator.alerts.labels | indent 10 }}
+{{- end }}
+      annotations:
+        description: RabbitMQ {{`{{ $labels.namespace }}`}}/{{`{{ $labels.pod}}`}} is down
+        summary: RabbitMQ Node Is Down
+    - alert: RabbitMqClusterNotAllNodesRunning
+      expr: sum(rabbitmq_up{service="{{ template "rabbitmq-ha.fullname" . }}"}) by (service) < {{ .Values.replicaCount }}
+      for: 5m
+      labels:
+        installed_by: {{ .Release.Name }}
+        severity: critical
+        team: devops
+      annotations:
+        description: Some RabbitMQ Cluster Nodes Are Down in Service {{`{{ $labels.namespace }}`}}/{{`{{ $labels.service}}`}}
+        summary: Some RabbitMQ Cluster Nodes Are Down in Service {{`{{ $labels.namespace }}`}}/{{`{{ $labels.service}}`}}
+    - alert: RabbitMqDiskSpaceAlarm
+      expr: rabbitmq_node_disk_free_alarm{service="{{ template "rabbitmq-ha.fullname" . }}"} == 1
+      for: 1m
+      labels:
+        installed_by: {{ .Release.Name }}
+        severity: critical
+{{- if .Values.prometheus.operator.alerts.labels }}
+{{ toYaml .Values.prometheus.operator.alerts.labels | indent 10 }}
+{{- end }}
+      annotations:
+        description: RabbitMQ {{`{{ $labels.namespace }}`}}/{{`{{ $labels.pod}}`}} Disk Space Alarm is going off.  Which means the node hit highwater mark and has cut off network connectivity, see RabbitMQ WebUI
+        summary: RabbitMQ is Out of Disk Space
+    - alert: RabbitMqMemoryAlarm
+      expr: rabbitmq_node_mem_alarm{service="{{ template "rabbitmq-ha.fullname" . }}"} == 1
+      for: 1m
+      labels:
+        installed_by: {{ .Release.Name }}
+        severity: critical
+{{- if .Values.prometheus.operator.alerts.labels }}
+{{ toYaml .Values.prometheus.operator.alerts.labels | indent 10 }}
+{{- end }}
+      annotations:
+        description: RabbitMQ {{`{{ $labels.namespace }}`}}/{{`{{ $labels.pod}}`}} High Memory Alarm is going off.  Which means the node hit highwater mark and has cut off network connectivity, see RabbitMQ WebUI
+        summary: RabbitMQ is Out of Memory
+    - alert: RabbitMqMemoryUsageHigh
+      expr: (rabbitmq_node_mem_used{service="{{ template "rabbitmq-ha.fullname" . }}"} / rabbitmq_node_mem_limit{service="{{ template "rabbitmq-ha.fullname" . }}"}) > .9
+      for: 1m
+      labels:
+        installed_by: {{ .Release.Name }}
+        severity: critical
+{{- if .Values.prometheus.operator.alerts.labels }}
+{{ toYaml .Values.prometheus.operator.alerts.labels | indent 10 }}
+{{- end }}
+      annotations:
+        description: RabbitMQ {{`{{ $labels.namespace }}`}}/{{`{{ $labels.pod}}`}} Memory Usage > 90%
+        summary: RabbitMQ Node > 90% Memory Usage
+    - alert: RabbitMqFileDescriptorsLow
+      expr: (rabbitmq_fd_used{service="{{ template "rabbitmq-ha.fullname" . }}"} / rabbitmq_fd_total{service="{{ template "rabbitmq-ha.fullname" . }}"}) > .9
+      for: 5m
+      labels:
+        installed_by: {{ .Release.Name }}
+        severity: critical
+{{- if .Values.prometheus.operator.alerts.labels }}
+{{ toYaml .Values.prometheus.operator.alerts.labels | indent 10 }}
+{{- end }}
+      annotations:
+        description: RabbitMQ {{`{{ $labels.namespace }}`}}/{{`{{ $labels.pod}}`}} File Descriptor Usage > 90%
+        summary: RabbitMQ Low File Descriptor Available
+    - alert: RabbitMqDiskSpaceLow
+      expr: predict_linear(rabbitmq_node_disk_free{service="{{ template "rabbitmq-ha.fullname" . }}"}[15m], 1 * 60 * 60) < rabbitmq_node_disk_free_limit{service="{{ template "rabbitmq-ha.fullname" . }}"}
+      for: 5m
+      labels:
+        installed_by: {{ .Release.Name }}
+        severity: critical
+{{- if .Values.prometheus.operator.alerts.labels }}
+{{ toYaml .Values.prometheus.operator.alerts.labels | indent 10 }}
+{{- end }}
+      annotations:
+        description: RabbitMQ {{`{{ $labels.namespace }}`}}/{{`{{ $labels.pod}}`}} will hit disk limit in the next hr based on last 15 mins trend.
+        summary: RabbitMQ is Low on Disk Space and will Run Out in the next hour
+{{ end }}

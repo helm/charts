@@ -1,0 +1,69 @@
+1. Get the GoCD server URL by running these commands:
+{{- if .Values.server.ingress.enabled }}
+    It may take a few minutes before the IP is available to access the GoCD server.
+         echo "GoCD server public IP: http{{ if $.Values.server.ingress.tls }}s{{ end }}://$(kubectl get ingress {{ template "gocd.fullname" . }}-server --namespace={{ .Release.Namespace }}  -o jsonpath='{.status.loadBalancer.ingress[0].ip}')"
+{{- range .Values.server.ingress.hosts }}
+    http{{ if $.Values.server.ingress.tls }}s{{ end }}://{{ . }}
+{{- end }}
+{{- else if contains "NodePort" .Values.server.service.type }}
+    export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "gocd.fullname" . }}-server)
+    export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+    echo http://$NODE_IP:$NODE_PORT
+{{- else if contains "LoadBalancer" .Values.server.service.type }}
+     NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+           You can watch the status of by running 'kubectl get svc -w {{ template "gocd.name" . }}-server'
+        export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "gocd.name" . }}-server -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+        echo http://$SERVICE_IP:{{ .Values.server.service.externalPort }}
+{{- else if contains "ClusterIP" .Values.server.service.type }}
+    export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "gocd.name" . }},release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
+    echo "Visit http://127.0.0.1:8080 to use your application"
+    kubectl port-forward $POD_NAME 8080:{{ .Values.server.service.httpPort }}
+{{- end }}
+
+2. Get the service account token to configure the elastic agent plugin by doing the following:
+{{- if .Values.rbac.create -}}
+    {{- if .Values.rbac.roleRef -}}
+    {{ else }}
+    A default role {{ template "gocd.fullname" . }} with cluster scoped privileges has been configured.
+    {{ end }}
+    The service account called {{ template "gocd.serviceAccountName" . }} in namespace {{ .Release.Namespace }} has been associated with the role. To check,
+        secret_name=$(kubectl get serviceaccount {{ template "gocd.serviceAccountName" . }} --namespace={{ .Release.Namespace }}  -o jsonpath="{.secrets[0].name}")
+        kubectl get secret $secret_name --namespace={{ .Release.Namespace }} -o jsonpath="{.data['token']}" | base64 --decode
+
+    To obtain the CA certificate, do
+        kubectl get secret $secret_name --namespace={{ .Release.Namespace }}  -o jsonpath="{.data['ca\.crt']}" | base64 --decode
+{{ else }}
+    Looks like RBAC was disabled during installation.
+    For configuring the plugin settings for the kubernetes elastic agent plugin, ensure that the service account `{{ template "gocd.serviceAccountName" . }}` present in the namespace `{{ .Release.Namespace }}` or any manually created service account has been granted the following privileges.
+    Privileges:
+      - nodes: list, get
+      - events: list, watch
+      - namespace: list, get
+      - pods, pods/log: *
+{{ end }}
+
+3. The GoCD server URL for configuring the Kubernetes elastic agent plugin settings:
+    echo "https://$(kubectl get service {{ template "gocd.fullname" . }}-server --namespace={{ .Release.Namespace }}  -o jsonpath='{.spec.clusterIP}'):8154/go"
+
+4. The cluster URL for configuring the Kubernetes elastic agent plugin settings can be obtained by:
+    kubectl cluster-info
+
+5. Persistence
+{{- if .Values.server.persistence.enabled -}}
+{{ if not .Values.server.persistence.storageClass }}
+    ################################################################################################
+    WARNING: The default storage class will be used. The reclaim policy for this is usually `Delete`.
+    You will lose all data at the time of pod termination!
+    ################################################################################################
+{{ end }}
+{{ else }}
+    ################################################################################################
+    WARNING: Persistence is disabled. You will lose all data at the time of pod termination!
+    ################################################################################################
+{{ end }}
+
+{{- if .Values.agent.env.agentAutoRegisterEnvironemnts -}}
+6. Deprecations
+   The property `agent.env.agentAutoRegisterEnvironemnts` is deprecated in favor of `agent.env.agentAutoRegisterEnvironments`.
+   Please note that the deprecated property will be removed in GoCD 19.3.0 (that is, when Chart.appVersion is 19.3.0). Users are encouraged to use the new property `agent.env.agentAutoRegisterEnvironments`.
+{{ end }}

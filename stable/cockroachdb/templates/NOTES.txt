@@ -1,0 +1,50 @@
+CockroachDB can be accessed via port {{ .Values.ExternalGrpcPort }} at the
+following DNS name from within your cluster:
+
+{{ .Release.Name }}-public.{{ .Release.Namespace }}.svc.cluster.local
+
+Because CockroachDB supports the PostgreSQL wire protocol, you can connect to
+the cluster using any available PostgreSQL client.
+
+{{- if not .Values.Secure.Enabled }}
+
+For example, you can open up a SQL shell to the cluster by running:
+
+    kubectl run -it --rm cockroach-client \
+        --image=cockroachdb/cockroach \
+        --restart=Never \{{- if and (.Values.NetworkPolicy.Enabled) (not .Values.NetworkPolicy.AllowExternal) }}
+        --labels="{{.Release.Name}}-{{.Values.Component}}-client=true" \{{- end }}
+        --command -- ./cockroach sql --insecure --host {{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}-public.{{ .Release.Namespace }}
+
+From there, you can interact with the SQL shell as you would any other SQL shell,
+confident that any data you write will be safe and available even if parts of
+your cluster fail.
+{{- else }}
+
+Note that because the cluster is running in secure mode, any client application
+that you attempt to connect will either need to have a valid client certificate
+or a valid username and password.
+{{- end }}
+
+{{- if and (.Values.NetworkPolicy.Enabled) (not .Values.NetworkPolicy.AllowExternal) }}
+
+Note: Since NetworkPolicy is enabled, only pods with label
+{{.Release.Name}}-{{.Values.Component}}-client=true"
+will be able to connect to this cockroachdb cluster.
+{{- end }}
+
+Finally, to open up the CockroachDB admin UI, you can port-forward from your
+local machine into one of the instances in the cluster:
+
+    kubectl port-forward {{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}-0 {{ .Values.InternalHttpPort }}
+
+{{- if not .Values.Secure.Enabled }}
+
+Then you can access the admin UI at http://localhost:{{ .Values.InternalHttpPort }}/ in your web browser.
+{{- else }}
+
+Then you can access the admin UI at https://localhost:{{ .Values.InternalHttpPort }}/ in your web browser.
+{{- end }}
+
+For more information on using CockroachDB, please see the project's docs at
+https://www.cockroachlabs.com/docs/

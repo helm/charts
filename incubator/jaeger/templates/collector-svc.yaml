@@ -1,0 +1,48 @@
+{{- if .Values.collector.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "jaeger.collector.name" . }}
+  labels:
+    app.kubernetes.io/name: {{ template "jaeger.name" . }}
+    helm.sh/chart: {{ include "jaeger.chart" . }}
+    app.kubernetes.io/component: collector
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+{{- if .Values.collector.service.annotations }}
+  annotations:
+{{ toYaml .Values.collector.service.annotations | indent 4 }}
+{{- end }}
+spec:
+  ports:
+  - name: jaeger-collector-tchannel
+    port: {{ .Values.collector.service.tchannelPort }}
+    protocol: TCP
+    {{- if eq .Values.collector.service.type "NodePort" }}
+    nodePort: {{ .Values.collector.service.tchannelPort }}
+    {{- else }}
+    targetPort: tchannel
+    {{- end }}
+  - name: jaeger-collector-http
+    port: {{ .Values.collector.service.httpPort }}
+    protocol: TCP
+    {{- if eq .Values.collector.service.type "NodePort" }}
+    nodePort: {{ .Values.collector.service.httpPort }}
+    {{- else }}
+    targetPort: http
+    {{- end }}
+  - name: jaeger-collector-zipkin
+    port: {{ .Values.collector.service.zipkinPort }}
+    protocol: TCP
+    {{- if eq .Values.collector.service.type "NodePort" }}
+    nodePort: {{ .Values.collector.service.zipkinPort }}
+    {{- else }}
+    targetPort: zipkin
+    {{- end }}
+  selector:
+    app.kubernetes.io/name: {{ template "jaeger.name" . }}
+    app.kubernetes.io/component: collector
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  type: {{ .Values.collector.service.type }}
+{{- template "loadBalancerSourceRanges" .Values.collector }}
+{{- end -}}

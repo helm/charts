@@ -1,0 +1,16 @@
+apiVersion: v1
+description: A micro application development and integration platform that enables
+  organizations to create and deliver secure micro applications that tie into existing
+  business systems and track changes to key business data.
+name: sapho
+version: 0.2.2
+home: http://www.sapho.com
+icon: https://www.sapho.com/wp-content/uploads/2016/04/sapho-logotype.svg
+sources:
+- https://bitbucket.org/sapho/ops-docker-tomcat/src
+- https://hub.docker.com/r/sapho/ops-docker-tomcat
+- https://github.com/kubernetes/charts/tree/master/stable/mysql
+maintainers:
+- name: Sapho
+  email: support@sapho.com
+engine: gotpl

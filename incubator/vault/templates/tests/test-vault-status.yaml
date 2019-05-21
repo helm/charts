@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ .Release.Name }}-vault-status-test"
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+  - name: {{ .Release.Name }}-vault-status-test
+    image: "{{ .Values.image.repository }}:{{ default .Chart.AppVersion .Values.image.tag }}"
+    env:
+      - name: VAULT_ADDR
+        value: http://{{ template "vault.fullname" . }}.{{ .Release.Namespace }}:8200
+    command: ["sh", "-c", "vault status"]
+  restartPolicy: Never

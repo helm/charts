@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "stellar-core.fullname" . }}-http
+  labels:
+    app: {{ template "stellar-core.name" . }}
+    chart: {{ template "stellar-core.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.httpService.type }}
+  ports:
+    - port: {{ .Values.httpService.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app: {{ template "stellar-core.name" . }}
+    release: {{ .Release.Name }}

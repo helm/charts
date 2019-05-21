@@ -1,0 +1,43 @@
+
+** Please be patient while the chart is being deployed **
+
+{{- if .Values.ingress.enabled }}
+
+1. Get the Odoo URL indicated on the Ingress Rule and associate it to your cluster external IP:
+
+   export CLUSTER_IP=$(minikube ip) # On Minikube. Use: `kubectl cluster-info` on others K8s clusters
+   export HOSTNAME=$(kubectl get ingress --namespace {{ .Release.Namespace }} {{ template "odoo.fullname" . }} -o jsonpath='{.spec.rules[0].host}')
+   echo "Odoo URL: http://$HOSTNAME/"
+   echo "$CLUSTER_IP  $HOSTNAME" | sudo tee -a /etc/hosts
+
+{{- else }}
+
+1. Get the Odoo URL by runningg:
+
+{{- if contains "NodePort" .Values.service.type }}
+
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "odoo.fullname" . }})
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo "Odoo URL: http://$NODE_IP:$NODE_PORT/"
+
+{{- else if contains "LoadBalancer" .Values.service.type }}
+
+** Please ensure an external IP is associated to the {{ template "odoo.fullname" . }} service before proceeding **
+** Watch the status using: kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "odoo.fullname" . }} **
+
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "odoo.fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
+
+{{- $port:=.Values.service.port | toString }}
+  echo "Odoo URL: http://$SERVICE_IP{{- if ne $port "80" }}:{{ .Values.service.port }}{{ end }}/"
+{{- else if contains "ClusterIP"  .Values.service.type }}
+
+  echo "Odoo URL: http://127.0.0.1:8080/"
+  kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "odoo.fullname" . }} 8080:{{ .Values.service.port }}
+
+{{- end }}
+{{- end }}
+
+2. Login with the following credentials
+
+  echo Email   : {{ .Values.odooEmail }}
+  echo Password: $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "odoo.fullname" . }} -o jsonpath="{.data.odoo-password}" | base64 --decode)

@@ -1,0 +1,24 @@
+**********************************************************************
+This chart has been DEPRECATED and moved to its new home:
+
+* GitHub repo: https://github.com/codecentric/helm-charts
+* Charts repo: https://codecentric.github.io/helm-charts
+
+**********************************************************************
+
+Mailhog can be accessed via ports {{ .Values.service.port.http }} (HTTP) and {{ .Values.service.port.smtp }} (SMTP) on the following DNS name from within your cluster:
+{{ template "mailhog.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+
+If you'd like to test your instance, forward the ports locally:
+
+Web UI:
+=======
+
+export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "mailhog.name" . }},release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
+kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME 8025
+
+SMTP Server:
+============
+
+export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "mailhog.name" . }},release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
+kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME 1025

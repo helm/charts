@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ template "goldfish.fullname" . }}"
+  labels:
+    app: "{{ template "goldfish.name" . }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+data:
+  config: |-
+{{ toJson .Values.config| indent 4 }}

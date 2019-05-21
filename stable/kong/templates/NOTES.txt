@@ -1,0 +1,81 @@
+1. Kong Admin can be accessed inside the cluster using:
+     DNS={{ template "kong.fullname" . }}-admin.{{ .Release.Namespace }}.svc.cluster.local
+     PORT={{ .Values.admin.servicePort }}
+
+To connect from outside the K8s cluster:
+   {{- if contains "LoadBalancer" .Values.admin.type }}
+     HOST=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "kong.fullname" . }}-admin -o jsonpath='{.status.loadBalancer.ingress.ip}')
+     PORT=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "kong.fullname" . }}-admin -o jsonpath='{.spec.ports[0].nodePort}')
+
+   {{- else if contains "NodePort" .Values.admin.type }}
+     HOST=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath='{.items[0].status.addresses[0].address}')
+     PORT=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "kong.fullname" . }}-admin -o jsonpath='{.spec.ports[0].nodePort}')
+
+   {{- else if .Values.admin.ingress.enabled  }}
+
+use one of the addresses listed below
+
+     {{- $path := .Values.admin.ingress.path -}}
+     {{- if .Values.admin.ingress.tls }}
+       {{- range .Values.admin.ingress.hosts }}
+         https://{{ . }}{{ $path }}
+       {{- end }}
+     {{- else }}
+       {{- range .Values.admin.ingress.hosts }}
+         http://{{ . }}{{ $path }}
+       {{- end }}
+     {{- end }}
+
+   {{- else if contains "ClusterIP" .Values.admin.type }}
+     HOST=127.0.0.1
+
+     # Execute the following commands to route the connection to Admin SSL port:
+     export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "release={{ .Release.Name }}, app={{ template "kong.name" . }}" -o jsonpath="{.items[0].metadata.name}")
+     kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME {{ .Values.admin.servicePort }}:{{ .Values.admin.servicePort }}
+   {{- end }}
+
+
+2. Kong Proxy can be accessed inside the cluster using:
+     DNS={{ template "kong.fullname" . }}-proxy.{{ .Release.Namespace }}.svc.cluster.local
+     {{- if .Values.proxy.tls.enabled -}}
+        PORT={{ .Values.proxy.tls.servicePort }}
+     {{- else -}}
+        PORT={{ .Values.proxy.http.servicePort }}
+     {{- end -}}
+
+
+To connect from outside the K8s cluster:
+   {{- if contains "LoadBalancer" .Values.proxy.type }}
+     HOST=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "kong.fullname" . }}-proxy -o jsonpath='{.status.loadBalancer.ingress.ip}')
+     PORT=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "kong.fullname" . }}-proxy -o jsonpath='{.spec.ports[0].nodePort}')
+
+   {{- else if contains "NodePort" .Values.proxy.type }}
+     HOST=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath='{.items[0].status.addresses[0].address}')
+     PORT=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "kong.fullname" . }}-proxy -o jsonpath='{.spec.ports[0].nodePort}')
+
+   {{- else if .Values.proxy.ingress.enabled  }}
+
+use one of the addresses listed below
+
+     {{- $path := .Values.proxy.ingress.path -}}
+     {{- if .Values.proxy.ingress.tls }}
+       {{- range .Values.proxy.ingress.hosts }}
+         https://{{ . }}{{ $path }}
+       {{- end }}
+     {{- else }}
+       {{- range .Values.proxy.ingress.hosts }}
+         http://{{ . }}{{ $path }}
+       {{- end }}
+     {{- end }}
+
+   {{- else if contains "ClusterIP" .Values.proxy.type }}
+     HOST=127.0.0.1
+
+     # Execute the following commands to route the connection to proxy SSL port:
+     export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "release={{ .Release.Name }}, app={{ template "kong.name" . }}" -o jsonpath="{.items[0].metadata.name}")
+     {{- if .Values.proxy.tls.enabled -}}
+        kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME {{ .Values.proxy.tls.servicePort }}:{{ .Values.proxy.tls.servicePort }}
+     {{- else -}}
+        kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME {{ .Values.proxy.http.servicePort }}:{{ .Values.proxy.http.servicePort }}
+     {{- end -}}
+   {{- end }}

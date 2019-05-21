@@ -1,0 +1,15 @@
+apiVersion: v1
+description: Prometheus Blackbox Exporter
+name: prometheus-blackbox-exporter
+version: 0.3.0
+appVersion: 0.14.0
+home: https://github.com/prometheus/blackbox_exporter
+sources:
+  - https://github.com/prometheus/blackbox_exporter
+keywords:
+  - prometheus
+  - blackbox
+  - monitoring
+maintainers:
+  - name: gianrubio
+    email: gianrubio@gmail.com

@@ -1,0 +1,12 @@
+apiVersion: v1
+# This chart is deprecated and moved to https://github.com/appscode/charts. For details deprecation,
+# including how to un-deprecate a chart see the PROCESSES.md file.
+deprecated: true
+description: DEPRECATED G2 by AppsCode - Gearman in Golang
+name: g2
+version: 0.3.3
+appVersion: 0.5.0
+home: https://github.com/appscode/g2
+icon: https://cdn.appscode.com/images/icon/g2.png
+sources:
+- https://github.com/appscode/g2

@@ -1,0 +1,12 @@
+apiVersion: v1
+description: A Helm chart for deploying Horovod
+name: horovod
+version: 1.0.0
+appVersion: 0.12.1
+sources:
+  - https://github.com/uber/horovod
+  - https://github.com/uber/horovod/blob/master/docs/docker.md
+home: https://eng.uber.com/horovod/
+maintainers:
+  - name: cheyang
+    email: cheyang@163.com

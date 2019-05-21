@@ -1,0 +1,16 @@
+{{- if .Values.worker.enabled -}}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ template "concourse.worker.fullname" . }}
+  labels:
+    app: {{ template "concourse.worker.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  minAvailable: {{ .Values.worker.minAvailable }}
+  selector:
+    matchLabels:
+      app: {{ template "concourse.worker.fullname" . }}
+{{- end }}

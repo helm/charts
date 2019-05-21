@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "selenium.hub.fullname" . }}
+  labels:
+    app: {{ template "selenium.hub.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+{{- if .Values.hub.serviceAnnotations }}
+  annotations:
+{{ toYaml .Values.hub.serviceAnnotations | indent 4 }}
+{{- end }}
+spec:
+  type: {{ .Values.hub.serviceType | quote }}
+  {{- if .Values.hub.serviceLoadBalancerIP }}
+  loadBalancerIP: {{ .Values.hub.serviceLoadBalancerIP | quote }}
+  {{- end }}
+{{- if .Values.hub.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+{{ toYaml .Values.hub.loadBalancerSourceRanges | indent 4 }}
+{{- end }}
+  sessionAffinity: {{ .Values.hub.serviceSessionAffinity | quote }}
+  ports:
+  - name: hub
+    port: {{ .Values.hub.servicePort }}
+    targetPort: {{ .Values.hub.port }}
+    {{- if and ( eq .Values.hub.serviceType "NodePort") .Values.hub.nodePort }}
+    nodePort: {{ .Values.hub.nodePort }}
+    {{- end }}
+  selector:
+    app: {{ template "selenium.hub.fullname" . }}

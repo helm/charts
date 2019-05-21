@@ -1,0 +1,24 @@
+{{- if and .Values.persistence.enabled .Values.volumeMounts.apache.mountPath -}}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "drupal.fullname" . }}-apache
+  labels:
+    app: {{ template "drupal.fullname" . }}
+    chart: {{ template "drupal.chart" . }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  accessModes:
+    - {{ .Values.persistence.apache.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.apache.size | quote }}
+{{- if .Values.persistence.apache.storageClass }}
+{{- if (eq "-" .Values.persistence.apache.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.persistence.apache.storageClass }}"
+{{- end }}
+{{- end }}
+{{- end -}}

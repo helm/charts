@@ -1,0 +1,40 @@
+{{- if .Values.agent.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "jaeger.agent.name" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "jaeger.name" . }}
+    helm.sh/chart: {{ include "jaeger.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/component: agent
+{{- if .Values.agent.service.annotations }}
+  annotations:
+{{ toYaml .Values.agent.service.annotations | indent 4 }}
+{{- end }}
+spec:
+  ports:
+  - name: agent-zipkin-thrift
+    port: {{ .Values.agent.service.zipkinThriftPort }}
+    protocol: UDP
+    targetPort: {{ .Values.agent.service.zipkinThriftPort }}
+  - name: agent-compact
+    port: {{ .Values.agent.service.compactPort }}
+    protocol: UDP
+    targetPort: {{ .Values.agent.service.compactPort }}
+  - name: agent-binary
+    port: {{ .Values.agent.service.binaryPort }}
+    protocol: UDP
+    targetPort: {{ .Values.agent.service.binaryPort }}
+  - name: agent-sampling
+    port: {{ .Values.agent.service.samplingPort }}
+    protocol: TCP
+    targetPort: {{ .Values.agent.service.samplingPort }}
+  type: {{ .Values.agent.service.type }}
+  selector:
+    app.kubernetes.io/name: {{ template "jaeger.name" . }}
+    app.kubernetes.io/component: agent
+    app.kubernetes.io/instance: {{ .Release.Name }}
+{{- template "loadBalancerSourceRanges" .Values.agent }}
+{{- end -}}

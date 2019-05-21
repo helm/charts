@@ -1,0 +1,58 @@
+# Default values for elasticsearch.
+# This is a YAML-formatted file.
+# Beware when changing values here. You should know what you are doing!
+# Access the values with {{ .Values.key.subkey }}
+
+# Common
+initContainerImage: "alpine:3.6"
+imagePullPolicy: IfNotPresent
+imagePullSecrets:
+
+replicaCount: 1
+image:
+  repository: "docker.bintray.io/elasticsearch/elasticsearch"
+  version: 6.1.1
+resources:
+  requests:
+    memory: "2Gi"
+    cpu: "200m"
+  limits:
+    memory: "3Gi"
+    cpu: "250m"
+
+env:
+  clusterName: "es-cluster"
+  networkHost: "0.0.0.0"
+  transportHost: "0.0.0.0"
+  xpackSecurityEnabled: false
+  esUrl: "http://localhost:9200"
+  esUsername: "elastic"
+  esPassword: "changeme"
+  maxMapCount: 262144
+
+persistence:
+  enabled: true
+  ## A manually managed Persistent Volume and Claim
+  ## Requires persistence.enabled: true
+  ## If defined, PVC must be created manually before volume will be bound
+  # existingClaim:
+
+  mountPath: "/usr/share/elasticsearch/data"
+  accessMode: ReadWriteOnce
+  size: 100Gi
+  ## artifactory data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  # storageClass: "-"
+
+service:
+  type: ClusterIP
+  annotations: {}
+externalHttpPort: 9200
+internalHttpPort: 9200
+externalTransportPort: 9300
+internalTransportPort: 9300

@@ -1,0 +1,36 @@
+{{- if .Values.ingress.enabled -}}
+{{- $serviceName := include "fluentd.fullname" . -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "fluentd.fullname" . }}
+  labels:
+    app: {{ template "fluentd.name" . }}
+    chart: {{ template "fluentd.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+{{- if .Values.ingress.labels }}
+{{ toYaml .Values.ingress.labels | indent 4 }}
+{{- end }}
+{{- if .Values.ingress.annotations }}
+  annotations:
+{{ tpl ( toYaml .Values.ingress.annotations | indent 4 ) . }}
+{{- end }}
+spec:
+  rules:
+    {{- range $host := .Values.ingress.hosts }}
+    - http:
+        paths:
+          - path: {{ $host.path | default "/" }}
+            backend:
+              serviceName: {{ $serviceName }}
+              servicePort: {{ $host.servicePort }}
+    {{- if (not (empty $host.name)) }}
+      host: {{ $host.name }}
+    {{- end -}}
+    {{- end -}}
+  {{- if .Values.ingress.tls }}
+  tls:
+{{ toYaml .Values.ingress.tls | indent 4 }}
+  {{- end -}}
+{{- end -}}

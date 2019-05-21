@@ -1,0 +1,12 @@
+apiVersion: v1
+deprecated: true
+description: Scales worker nodes within autoscaling groups.
+icon: https://github.com/kubernetes/kubernetes/blob/master/logo/logo.png
+name: aws-cluster-autoscaler
+version: 0.3.3
+sources:
+  - https://github.com/kubernetes/contrib/tree/master/cluster-autoscaler/cloudprovider/aws
+maintainers:
+  - name: Michael Goodness
+    email: mgoodness@gmail.com
+engine: gotpl

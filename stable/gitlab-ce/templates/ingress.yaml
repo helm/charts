@@ -1,0 +1,38 @@
+{{- if .Values.ingress.enabled }}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+{{- if .Values.ingress.annotations }}
+  annotations:
+{{ toYaml .Values.ingress.annotations | indent 4 }}
+{{- end }}
+  name: {{ template "gitlab-ce.fullname" . }}
+  labels:
+    app: {{ template "gitlab-ce.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  rules:
+  - host: {{ .Values.ingress.url | quote }}
+    {{- if (not (empty .Values.ingress.tls)) }}
+    https:
+      paths:
+      - path: /
+        backend:
+          serviceName: {{ template "gitlab-ce.fullname" . }}
+          servicePort: {{ .Values.httpsPort }}
+    {{- else }}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: {{ template "gitlab-ce.fullname" . }}
+          servicePort: {{ .Values.httpPort }}
+    {{- end }}
+
+{{- if .Values.ingress.tls }}
+  tls:
+{{ toYaml .Values.ingress.tls | indent 4 }}
+{{- end -}}
+{{- end }}

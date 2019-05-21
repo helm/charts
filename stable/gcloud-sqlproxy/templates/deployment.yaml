@@ -1,0 +1,62 @@
+{{- if ne (index .Values.cloudsql.instances 0).instance "instance" }}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "gcloud-sqlproxy.fullname" . }}
+  labels:
+    app: {{ template "gcloud-sqlproxy.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: {{ .Values.replicasCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "gcloud-sqlproxy.fullname" . }}
+    spec:
+      {{- if .Values.rbac.create }}
+      serviceAccountName: {{ template "gcloud-sqlproxy.fullname" . }}
+      {{- end }}
+      containers:
+      - name: sqlproxy
+        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+        imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        command:
+        - /cloud_sql_proxy
+        - --dir=/cloudsql
+        - -instances={{- range .Values.cloudsql.instances -}}
+                        {{ .project }}:{{ .region }}:{{ .instance }}=tcp:0.0.0.0:{{ .port }},
+                     {{- end }}
+        {{ if or .Values.serviceAccountKey .Values.existingSecret -}}
+        - -credential_file=/secrets/cloudsql/{{- if .Values.existingSecret -}} {{ .Values.existingSecretKey }} {{- else -}} credentials.json {{- end }}
+        {{ end -}}
+        ports:
+        {{- range .Values.cloudsql.instances }}
+        - name: {{ .instanceShortName | default (.instance | trunc 15) }}
+          containerPort: {{ .port }}
+        {{- end }}
+        volumeMounts:
+        {{ if or .Values.serviceAccountKey .Values.existingSecret -}}
+        - name: cloudsql-oauth-credentials
+          mountPath: /secrets/cloudsql
+        {{ end -}}
+        - name: cloudsql
+          mountPath: /cloudsql
+      volumes:
+      {{ if or .Values.serviceAccountKey .Values.existingSecret -}}
+      - name: cloudsql-oauth-credentials
+        secret:
+          secretName: {{ default (include "gcloud-sqlproxy.fullname" .) .Values.existingSecret }}
+      {{ end -}}
+      - name: cloudsql
+        emptyDir: {}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+{{- end }}

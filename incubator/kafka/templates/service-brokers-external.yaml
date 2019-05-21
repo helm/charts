@@ -1,0 +1,72 @@
+{{- if .Values.external.enabled }}
+  {{- $fullName := include "kafka.fullname" . }}
+  {{- $replicas := .Values.replicas | int }}
+  {{- $servicePort := .Values.external.servicePort }}
+  {{- $firstListenerPort := .Values.external.firstListenerPort }}
+  {{- $dnsPrefix := printf "%s" .Release.Name }}
+  {{- $root := . }}
+  {{- range $i, $e := until $replicas }}
+    {{- $externalListenerPort := add $root.Values.external.firstListenerPort $i }}
+    {{- $responsiblePod := printf "%s-%d" (printf "%s" $fullName) $i }}
+    {{- $distinctPrefix := printf "%s-%d" $dnsPrefix $i }}
+    {{- $loadBalancerIPLen := len $root.Values.external.loadBalancerIP }}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    {{- if $root.Values.external.distinct }}
+      {{- if $root.Values.external.dns.useInternal }}
+    dns.alpha.kubernetes.io/internal: "{{ $distinctPrefix }}.{{ $root.Values.external.domain }}"
+      {{- end }}
+      {{- if $root.Values.external.dns.useExternal }}
+    external-dns.alpha.kubernetes.io/hostname: "{{ $distinctPrefix }}.{{ $root.Values.external.domain }}"
+      {{- end }}
+    {{- else }}
+      {{- if $root.Values.external.dns.useInternal }}
+    dns.alpha.kubernetes.io/internal: "{{ $dnsPrefix }}.{{ $root.Values.external.domain }}"
+      {{- end }}
+      {{- if $root.Values.external.dns.useExternal }}
+    external-dns.alpha.kubernetes.io/hostname: "{{ $dnsPrefix }}.{{ $root.Values.external.domain }}"
+      {{- end }}
+    {{- end }}
+    {{- if $root.Values.external.annotations }}
+{{ toYaml $root.Values.external.annotations | indent 4 }}
+    {{- end }}
+  name: {{ $root.Release.Name }}-{{ $i }}-external
+  labels:
+    app: {{ include "kafka.name" $root }}
+    chart: {{ $root.Chart.Name }}-{{ $root.Chart.Version }}
+    release: {{ $root.Release.Name }}
+    heritage: {{ $root.Release.Service }}
+    pod: {{ $responsiblePod | quote }}
+spec:
+  type: {{ $root.Values.external.type }}
+  ports:
+    - name: external-broker
+      {{- if and (eq $root.Values.external.type "LoadBalancer") (not $root.Values.external.distinct) }}
+      port: {{ $firstListenerPort }}
+      {{- else }}
+      port: {{ $servicePort }}
+      {{- end }}
+      {{- if and (eq $root.Values.external.type "LoadBalancer") ($root.Values.external.distinct) }}
+      targetPort: {{ $servicePort }}
+      {{- else if and (eq $root.Values.external.type "LoadBalancer") (not $root.Values.external.distinct) }}
+      targetPort: {{ $firstListenerPort }}
+      {{- else }}
+      targetPort: {{ $externalListenerPort }}
+      {{- end }}
+      {{- if eq $root.Values.external.type "NodePort" }}
+      nodePort: {{ $externalListenerPort }}
+      {{- end }}
+      protocol: TCP
+  {{- if and (eq $root.Values.external.type "LoadBalancer") (eq $loadBalancerIPLen $replicas) }}
+  loadBalancerIP: {{ index $root.Values.external.loadBalancerIP $i }} 
+  {{- end }}
+  selector:
+    app: {{ include "kafka.name" $root }}
+    release: {{ $root.Release.Name }}
+    statefulset.kubernetes.io/pod-name: {{ $responsiblePod | quote }}
+  {{- end }}
+{{- end }}

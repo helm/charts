@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ template "rethinkdb.fullname" . }}-cluster"
+  labels:
+    app: "{{ template "rethinkdb.name" . }}-cluster"
+    chart: {{ template "rethinkdb.chart" . }}
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+  annotations:
+    service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
+  {{- if .Values.cluster.service.annotations }}
+{{ toYaml .Values.cluster.service.annotations | indent 4 }}
+  {{- end }}
+spec:
+  clusterIP: None
+  ports:
+    - port: {{ .Values.ports.cluster }}
+      targetPort: cluster
+  selector:
+    app: "{{ template "rethinkdb.name" . }}-cluster"
+    release: {{ .Release.Name | quote }}

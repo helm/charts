@@ -1,0 +1,8 @@
+Superset can be accessed via port {{ .Values.service.port }} on the following DNS name from within your cluster:
+{{ include "superset.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+
+Initially you can login with username/password: admin/admin.
+
+{{- if not .Values.persistence.enabled }}
+WARNING: Persistence is DISABLED !
+{{- end }}

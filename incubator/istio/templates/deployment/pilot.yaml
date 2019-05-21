@@ -1,0 +1,58 @@
+{{- if and .Values.istio.install (not .Release.IsInstall) -}}
+{{- $serviceName := include "istio.name" . -}}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ $serviceName }}-{{ .Values.pilot.name }}
+  labels:
+{{ include "istio.labels.standard" . | indent 4 }}
+    component: {{ $serviceName }}-{{ .Values.pilot.name }}
+    istio: {{ $serviceName }}-{{ .Values.pilot.name }}
+spec:
+  replicas: {{ .Values.pilot.deployment.replicas }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap/istio-config.yaml") . | sha256sum }}
+      {{- range $key, $value := .Values.pilot.deployment.annotations }}
+        {{ $key }}: {{ $value | quote }}
+      {{- end }}
+      labels:
+{{ include "istio.labels.standard" . | indent 8 }}
+        component: {{ $serviceName }}-{{ .Values.pilot.name }}
+        istio: {{ $serviceName }}-{{ .Values.pilot.name }}
+    spec:
+    {{- if .Values.pilot.deployment.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+      serviceAccountName: {{ $serviceName }}-{{ .Values.pilot.name }}-service-account
+      containers:
+      - name: {{ .Values.pilot.deployment.discovery.name }}
+        image: "{{ .Values.pilot.deployment.discovery.image }}:{{ .Values.istio.release }}"
+        imagePullPolicy: {{ .Values.pilot.deployment.discovery.imagePullPolicy }}
+        args: ["discovery", "-v", "2", "--admission-service", "istio-pilot-external"]
+        ports:
+        - containerPort: {{ .Values.pilot.service.externalHttpDiscovery }}
+        - containerPort: {{ .Values.pilot.service.externalAdmissionWebhookServer }}
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+        resources:
+{{ toYaml .Values.pilot.deployment.discovery.resources | indent 10 }}
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/istio/config
+      volumes:
+      - name: config-volume
+        configMap:
+          name: {{ $serviceName }}
+{{- end -}}

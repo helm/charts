@@ -1,0 +1,15 @@
+{{- if .Values.nginx.monitoring }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "nginx-lego.fullname" . }}-monitoring
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+spec:
+  type: ClusterIP
+  ports:
+  - port: 18080
+    name: vts-stats
+  selector:
+    app: {{ template "nginx-lego.fullname" . }}
+{{- end }}

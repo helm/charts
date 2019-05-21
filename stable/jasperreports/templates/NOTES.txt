@@ -1,0 +1,48 @@
+{{- if or .Values.mariadb.enabled .Values.externalDatabase.host -}}
+** Please be patient while the chart is being deployed **
+
+1. Get the JasperReports URL by running:
+
+{{- if contains "NodePort" .Values.service.type }}
+
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "jasperreports.fullname" . }})
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo "JasperReports URL: http://$NODE_IP:$NODE_PORT/"
+
+{{- else if contains "LoadBalancer" .Values.service.type }}
+
+** Please ensure an external IP is associated to the {{ template "jasperreports.fullname" . }} service before proceeding **
+** Watch the status using: kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "jasperreports.fullname" . }} **
+
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "jasperreports.fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
+
+{{- $port:=.Values.service.port | toString }}
+  echo "JasperReports URL: http://$SERVICE_IP{{- if ne $port "80" }}:{{ .Values.service.port }}{{ end }}/jasperserver/"
+
+{{- else if contains "ClusterIP"  .Values.service.type }}
+
+  echo "JasperReports URL: http://127.0.0.1:8080/jasperserver/"
+  kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "jasperreports.fullname" . }} 8080:{{ .Values.service.port }}
+
+{{- end }}
+
+2. Login with the following credentials
+
+  echo Username: {{ .Values.jasperreportsUsername }}
+  echo Password: $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "jasperreports.fullname" . }} -o jsonpath="{.data.jasperreports-password}" | base64 --decode)
+
+{{- else -}}
+
+########################################################################################
+### ERROR: You did not provide an external database host in your 'helm install' call ###
+########################################################################################
+
+This deployment will be incomplete until you configure JasperReports with a resolvable database
+host. To configure JasperReports to use and external database host:
+
+
+1. Complete your JasperReports deployment by running:
+
+  helm upgrade {{ .Release.Name }} --set service.type={{ .Values.service.type }},mariadb.enabled=false,externalDatabase.host=YOUR_EXTERNAL_DATABASE_HOST stable/jasperreports
+
+{{- end }}

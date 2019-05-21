@@ -1,0 +1,20 @@
+{{- if .Values.rbac.create -}}
+apiVersion: {{ template "kube-slack.rbac.apiVersion" . }}
+kind: ClusterRole
+metadata:
+  name: {{ template "kube-slack.fullname" . }}
+  labels:
+    app: {{ template "kube-slack.name" . }}
+    chart: {{ template "kube-slack.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - pods
+    verbs:
+      - get
+      - list
+      - watch
+{{- end -}}

@@ -1,0 +1,24 @@
+{{- if .Values.persistence.enabled -}}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "joomla.fullname" . }}-joomla
+  labels:
+    app: {{ template "joomla.fullname" . }}
+    chart: {{ template "joomla.chart" . }}
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+spec:
+  accessModes:
+    - {{ .Values.persistence.joomla.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.joomla.size | quote }}
+{{- if .Values.persistence.joomla.storageClass }}
+{{- if (eq "-" .Values.persistence.joomla.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: {{ .Values.persistence.joomla.storageClass | quote }}
+{{- end }}
+{{- end }}
+{{- end -}}

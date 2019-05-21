@@ -1,0 +1,98 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: {{ template "prometheus-node-exporter.fullname" . }}
+  labels: {{ include "prometheus-node-exporter.labels" . | indent 4 }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "prometheus-node-exporter.name" . }}
+      release: {{ .Release.Name }}
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels: {{ include "prometheus-node-exporter.labels" . | indent 8 }}
+    spec:
+{{- if and .Values.rbac.create .Values.serviceAccount.create }}
+      serviceAccountName: {{ template "prometheus-node-exporter.serviceAccountName" . }}
+{{- end }}
+{{- if .Values.securityContext }}
+      securityContext:
+{{ toYaml .Values.securityContext | indent 8 }}
+{{- end }}
+{{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName }}
+{{- end }}
+      containers:
+        - name: node-exporter
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args:
+            - --path.procfs=/host/proc
+            - --path.sysfs=/host/sys
+            - --web.listen-address=0.0.0.0:{{ .Values.service.port }}
+{{- if .Values.extraArgs }}
+{{ toYaml .Values.extraArgs | indent 12 }}
+{{- end }}
+          ports:
+            - name: metrics
+              containerPort: {{ .Values.service.targetPort }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.service.port }}
+          readinessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.service.port }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+          volumeMounts:
+            - name: proc
+              mountPath: /host/proc
+              readOnly:  true
+            - name: sys
+              mountPath: /host/sys
+              readOnly: true
+            {{- if .Values.extraHostVolumeMounts }}
+            {{- range $_, $mount := .Values.extraHostVolumeMounts }}
+            - name: {{ $mount.name }}
+              mountPath: {{ $mount.mountPath }}
+              readOnly: {{ $mount.readOnly }}
+            {{- if $mount.mountPropagation }}
+              mountPropagation: {{ $mount.mountPropagation }}
+            {{- end }}
+            {{- end }}
+            {{- end }}
+      hostNetwork: {{ .Values.hostNetwork }}
+      hostPID: true
+{{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+{{- end }}
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+      volumes:
+        - name: proc
+          hostPath:
+            path: /proc
+        - name: sys
+          hostPath:
+            path: /sys
+        {{- if .Values.extraHostVolumeMounts }}
+        {{- range $_, $mount := .Values.extraHostVolumeMounts }}
+        - name: {{ $mount.name }}
+          hostPath:
+            path: {{ $mount.hostPath }}
+        {{- end }}
+        {{- end }}

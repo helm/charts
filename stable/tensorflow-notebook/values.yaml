@@ -1,0 +1,25 @@
+# Default values for ack-tensorflow-dev.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+jupyter:
+  image:
+    repository: tensorflow/tensorflow
+    tag: 1.6.0-devel
+    pullPolicy: IfNotPresent
+  password: tensorflow
+  resources: {}
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  #  nvidia.com/gpu: 1
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+  #  nvidia.com/gpu: 1
+tensorboard:
+  image:
+    repository: tensorflow/tensorflow
+    tag: 1.6.0-devel
+    pullPolicy: IfNotPresent
+service:
+  type: LoadBalancer

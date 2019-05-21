@@ -1,0 +1,64 @@
+{{- if and .Values.istio.install (not .Release.IsInstall) -}}
+{{- $serviceName := include "istio.name" . -}}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ $serviceName }}-{{ .Values.egress.deployment.name }}
+  labels:
+{{ include "istio.labels.standard" . | indent 4 }}
+    component: {{ $serviceName }}-{{ .Values.egress.deployment.name }}
+    istio: {{ $serviceName }}-egress
+spec:
+  replicas: {{ .Values.egress.deployment.replicas }}
+  template:
+    metadata:
+      annotations:
+        {{- range $key, $value := .Values.egress.annotations }}
+          {{ $key }}: {{ $value | quote }}
+        {{- end }}
+      labels:
+{{ include "istio.labels.standard" . | indent 8 }}
+        component: {{ $serviceName }}-{{ .Values.egress.deployment.name }}
+        istio: {{ $serviceName }}-{{ .Values.egress.deployment.name }}
+    spec:
+    {{- if .Values.egress.deployment.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+      serviceAccountName: {{ $serviceName }}-{{ .Values.egress.deployment.name }}-service-account
+      containers:
+      - name: proxy
+        image: "{{ .Values.egress.deployment.image }}:{{ .Values.istio.release }}"
+        imagePullPolicy: {{ .Values.egress.deployment.imagePullPolicy }}
+        args:
+        - proxy
+        - egress
+        - -v
+        - "2"
+        - --discoveryAddress
+        - {{ $serviceName }}-{{ .Values.pilot.name }}:{{ .Values.pilot.service.externalHttpDiscovery }}
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+        resources:
+{{ toYaml .Values.egress.deployment.resources | indent 10 }}
+{{ if .Values.auth.enabled }}
+        volumeMounts:
+        - name: istio-certs
+          mountPath: /etc/certs
+          readOnly: true
+      volumes:
+      - name: istio-certs
+        secret:
+          secretName: istio.default
+          optional: true
+{{ end }}
+{{- end -}}

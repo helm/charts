@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "hazelcast-jet.fullname" . }}
+  labels:
+    app: {{ template "hazelcast-jet.name" . }}
+    chart: {{ template "hazelcast-jet.chart" . }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  type: {{ .Values.service.type }}
+  {{- if .Values.service.clusterIP }}
+  clusterIP: {{ .Values.service.clusterIP }}
+  {{- end }}
+  selector:
+    app: {{ template "hazelcast-jet.name" . }}
+    release: "{{ .Release.Name }}"
+  ports:
+  - protocol: TCP
+    port: {{ .Values.service.port }}
+    targetPort: hazelcast-jet
+    name: hzport

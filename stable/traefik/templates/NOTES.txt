@@ -1,0 +1,30 @@
+{{- if eq .Values.serviceType "LoadBalancer" }}
+1. Get Traefik's load balancer IP/hostname:
+
+     NOTE: It may take a few minutes for this to become available.
+
+     You can watch the status by running:
+
+         $ kubectl get svc {{ template "traefik.fullname" . }} --namespace {{ .Release.Namespace }} -w
+
+     Once 'EXTERNAL-IP' is no longer '<pending>':
+
+         $ kubectl describe svc {{ template "traefik.fullname" . }} --namespace {{ .Release.Namespace }} | grep Ingress | awk '{print $3}'
+
+2. Configure DNS records corresponding to Kubernetes ingress resources to point to the load balancer IP/hostname found in step 1
+{{- end }}
+{{- if eq .Values.serviceType "NodePort" }}
+{{- if (and (not (empty .Values.service.nodePorts.https)) (not (empty .Values.service.nodePorts.http)))}}
+1. Traefik is listening on the following ports on the host machine:
+
+     http - {{ .Values.service.nodePorts.http }}
+     https - {{ .Values.service.nodePorts.https }}
+{{- else }}
+1. Traefik has been started. You can find out the port numbers being used by traefik by running:
+
+          $ kubectl describe svc {{ template "traefik.fullname" . }} --namespace {{ .Release.Namespace }}
+
+{{- end }}
+
+2. Configure DNS records corresponding to Kubernetes ingress resources to point to the NODE_IP/NODE_HOST
+{{- end }}

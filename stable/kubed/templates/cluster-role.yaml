@@ -1,0 +1,72 @@
+{{ if .Values.rbac.create }}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  name: {{ template "kubed.fullname" . }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: "{{ template "kubed.name" . }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+rules:
+- apiGroups:
+  - voyager.appscode.com
+  resources: ["*"]
+  verbs: ["list", "watch"]
+- apiGroups:
+  - monitoring.appscode.com
+  resources: ["*"]
+  verbs: ["list", "watch"]
+- apiGroups:
+  - stash.appscode.com
+  resources: ["*"]
+  verbs: ["list", "watch"]
+- apiGroups:
+  - kubedb.com
+  resources: ["*"]
+  verbs: ["list", "watch"]
+- apiGroups:
+  - monitoring.coreos.com
+  resources: ["*"]
+  verbs: ["list", "watch"]
+- apiGroups:
+  - extensions
+  resources: ["*"]
+  verbs: ["list", "watch"]
+- apiGroups:
+  - apps
+  resources: ["*"]
+  verbs: ["list", "watch"]
+- apiGroups: [""]
+  resources: ["*"]
+  verbs: ["list", "watch"]
+- apiGroups: [""]
+  resources:
+  - configmaps
+  - secrets
+  verbs: ["get", "create", "update"]
+- apiGroups: ["autoscaling"]
+  resources: ["*"]
+  verbs: ["list", "watch"]
+- apiGroups: ["batch"]
+  resources: ["*"]
+  verbs: ["list", "watch"]
+- apiGroups: ["authorization.k8s.io"]
+  resources: ["*"]
+  verbs: ["list", "watch"]
+- apiGroups: ["rbac.authorization.k8s.io"]
+  resources: ["*"]
+  verbs: ["list", "watch"]
+- apiGroups: ["abac.authorization.k8s.io"]
+  resources: ["*"]
+  verbs: ["list", "watch"]
+- apiGroups: ["authentication.k8s.io"]
+  resources: ["*"]
+  verbs: ["list", "watch"]
+- apiGroups: ["storage.k8s.io"]
+  resources: ["*"]
+  verbs: ["list", "watch"]
+- apiGroups: ["certificates.k8s.io"]
+  resources: ["*"]
+  verbs: ["list", "watch"]
+{{ end }}

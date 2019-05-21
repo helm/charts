@@ -1,0 +1,35 @@
+Percona can be accessed via port 3306 on the following DNS name from within your cluster:
+{{ template "percona-xtradb-cluster.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+
+To get your root password run (this password can only be used from inside the container):
+
+    $ kubectl get secret --namespace {{ .Release.Namespace }} {{ template "percona-xtradb-cluster.fullname" . }} -o jsonpath="{.data.mysql-root-password}" | base64 --decode; echo
+
+To get your xtradb backup password run:
+
+    $ kubectl get secret --namespace {{ .Release.Namespace }} {{ template "percona-xtradb-cluster.fullname" . }} -o jsonpath="{.data.xtrabackup-password}" | base64 --decode; echo
+
+To check the size of the xtradb cluster:
+
+    $ kubectl exec --namespace {{ .Release.Namespace }} -ti {{ template "percona-xtradb-cluster.fullname" . }}-0 -c database -- mysql -e "SHOW GLOBAL STATUS LIKE 'wsrep_cluster_size'"
+
+To connect to your database:
+
+1. Run a command in the first pod in the StatefulSet:
+
+    $ kubectl exec --namespace {{ .Release.Namespace }} -ti {{ template "percona-xtradb-cluster.fullname" . }}-0 -c database -- mysql
+
+{{- if .Values.mysqlUser }}{{ if .Values.mysqlPassword }}{{ if .Values.mysqlDatabase }}
+
+2. Run a percona pod that you can use as a client:
+
+    $ kubectl run -i --tty --rm percona-client --image=percona:{{ .Values.image.tag }} --restart=Never -- mysql -h {{ template "percona-xtradb-cluster.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local -u{{ .Values.mysqlUser }} \
+      -p$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "percona-xtradb-cluster.fullname" . }} -o jsonpath="{.data.mysql-password}" | base64 --decode; echo) \
+     {{ .Values.mysqlDatabase }}
+{{ end }}{{ end }}{{ end }}
+
+{{- if .Values.logTail }}
+To view your Percona XtraDB Cluster logs run:
+
+  $ kubectl logs -f {{ template "percona-xtradb-cluster.fullname" . }}-0 logs
+{{ end }}

@@ -1,0 +1,19 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: etcd
+  labels:
+    app: {{ template "etcd.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+    suite: {{ template "fullname" . }}
+spec:
+  ports:
+    - name: client-port
+      port: 2379
+      targetPort: 0
+  selector:
+    app: {{ template "etcd.fullname" . }}
+  type: NodePort

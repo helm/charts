@@ -1,0 +1,11 @@
+THIS CHART HAS BEEN DEPRECATED. PLEASE MOVE TO THE STABLE/VELERO CHART.
+
+Check that the ark is up and running:
+
+Check that the secret has been created:
+
+Once ark server is up and running you need the client before you can use it
+1. wget https://github.com/heptio/ark/releases/download/{{ .Values.image.tag }}/ark-{{ .Values.image.tag }}-darwin-amd64.tar.gz
+2. tar -xvf ark-{{ .Values.image.tag }}-darwin-amd64.tar.gz -C ark-client
+
+More info on the official site: https://github.com/heptio/ark#install-client

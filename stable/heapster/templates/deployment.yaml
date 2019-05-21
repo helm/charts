@@ -1,0 +1,115 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "heapster.fullname" . }}
+  annotations:
+{{ toYaml .Values.annotations | indent 4 }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    {{- range $key, $value := .Values.labels }}
+    {{ $key }}: {{ $value }}
+    {{- end }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+      labels:
+        app: {{ template "heapster.fullname" . }}
+    spec:
+      serviceAccountName: {{ if .Values.rbac.create }}{{ template "heapster.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
+{{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+{{- end }}
+{{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 6 }}
+{{- end }}
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.service.internalPort }}
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: {{ .Values.service.internalPort }}
+          initialDelaySeconds: 180
+          timeoutSeconds: 5
+        resources:
+{{ toYaml .Values.resources | indent 12 }}
+      {{- if .Values.env }}
+        env:
+{{ toYaml .Values.env | indent 10 }}
+      {{- end }}
+        command:
+          {{- range .Values.command }}
+          - {{ . | quote }}
+          {{- end }}
+{{ if .Values.resizer.enabled }}
+      - name: {{ .Chart.Name }}-nanny
+        {{ with .Values.resizer }}
+        image: "{{ .image.repository }}:{{ .image.tag }}"
+        imagePullPolicy: {{ .image.pullPolicy }}
+        resources:
+{{ toYaml .resources | indent 12 }}
+        env:
+          - name: MY_POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: MY_POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+        {{- end }}
+        command:
+          - "/pod_nanny"
+          - "--deployment={{ template "heapster.fullname" . }}"
+          - "--container={{ .Chart.Name }}"
+          {{- range .Values.resizer.flags }}
+          - {{ . | quote }}
+          {{- end }}
+{{- end -}}
+{{ if .Values.eventer.enabled }}
+      - name: {{ .Chart.Name }}-eventer
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command:
+        - /eventer
+        {{- range .Values.eventer.flags }}
+        - {{ . | quote }}
+        {{- end }}
+        resources:
+{{ toYaml .Values.eventer.resources | indent 12 }}
+{{ if .Values.eventer.resizer.enabled }}
+      - name: {{ .Chart.Name }}-eventer-nanny
+        image: "{{ .Values.resizer.image.repository }}:{{ .Values.resizer.image.tag }}"
+        imagePullPolicy: {{ .Values.resizer.image.pullPolicy }}
+        resources:
+{{ toYaml .Values.eventer.resizer.resources | indent 12 }}
+        env:
+          - name: MY_POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: MY_POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+        command:
+          - /pod_nanny
+          - "--deployment={{ template "heapster.fullname" . }}"
+          - "--container={{ .Chart.Name }}-eventer"
+          {{- range .Values.eventer.resizer.flags }}
+          - {{ . | quote }}
+          {{- end }}
+{{- end -}}
+{{- end -}}

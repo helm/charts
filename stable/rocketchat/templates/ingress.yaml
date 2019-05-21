@@ -1,0 +1,35 @@
+{{- $ingress := .Values.ingress -}}
+{{- if $ingress.enabled -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "rocketchat.fullname" . }}
+{{- with $ingress.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
+  labels:
+    app.kubernetes.io/name: {{ include "rocketchat.name" . }}
+    helm.sh/chart: {{ include "rocketchat.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+{{- if $ingress.tls }}
+  tls:
+  {{- range $ingress.tls }}
+    - hosts:
+      {{- range .hosts }}
+        - {{ . }}
+      {{- end }}
+      secretName: {{ .secretName }}
+  {{- end }}
+{{- end }}
+  rules:
+  - host: {{ .Values.host }}
+    http:
+      paths:
+      - path: {{ $ingress.path }}
+        backend:
+          serviceName: {{ template "rocketchat.fullname" . }}
+          servicePort: http
+{{- end }}

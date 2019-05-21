@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ template "terracotta.fullname" . }}
+  labels:
+    app: {{ template "terracotta.name" . }}
+    chart: {{ template "terracotta.chart" . }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "terracotta.name" . }}
+      release: "{{ .Release.Name }}"
+  serviceName: {{ template "terracotta.fullname" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "terracotta.name" . }}
+        release: "{{ .Release.Name }}"
+    spec:
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
+      initContainers:
+      # be careful with busybox versions : https://github.com/docker-library/busybox/issues/48
+      - name: init-{{ template "terracotta.fullname" . }}
+        image: busybox:1.28
+        # check service name resolution works fine; if it can't resolve the service, a split brain could occur
+        command: ['sh', '-c', 'until nslookup {{ include "terracotta.fullname" . }}; do echo "waiting for {{ include "terracotta.fullname" . }} to resolve"; sleep 2; done;']
+      containers:
+      - name: {{ template "terracotta.fullname" . }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+        command: ["bin/start-tc-server.sh"]
+        args: ["-f", "/config/tc-config.xml", "-n", "$(POD_NAME)"]
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        ports:
+          - name: terracotta-port
+            containerPort: 9410
+          - name: sync-port
+            containerPort: 9430
+        volumeMounts:
+          - name: config-volume
+            mountPath: /config
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+      volumes:
+      - name: config-volume
+        configMap:
+          name: {{ template "terracotta.fullname" . }}-configuration

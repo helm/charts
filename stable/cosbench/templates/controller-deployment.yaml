@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "cosbench.controller.fullname" . }}
+  labels:
+    app: {{ template "cosbench.name" . }}
+    chart: {{ template "cosbench.chart" . }}
+    component: controller
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "cosbench.name" . }}
+      release: {{ .Release.Name }}
+      component: controller
+  template:
+    metadata:
+      labels:
+        app: {{ template "cosbench.name" . }}
+        release: {{ .Release.Name }}
+        component: controller
+    spec:
+      serviceAccountName: {{ template "cosbench.serviceAccountName.controller" . }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.controller.image.repository }}:{{ .Values.controller.image.tag }}"
+          imagePullPolicy: {{ .Values.controller.image.pullPolicy }}
+          ports:
+            - name: controller
+              containerPort: 19088
+              protocol: TCP
+          env:
+            - name: LOG_LEVEL
+              value: "{{ .Values.controller.logLevel }}"
+            - name: DRIVERS
+              value: "{{ template "cosbench.driversList" . }}"
+          args: ['java','-Dcosbench.tomcat.config=conf/controller-tomcat-server.xml','-server','-cp','main/*','org.eclipse.equinox.launcher.Main','-configuration','conf/.controller','-console','19089']

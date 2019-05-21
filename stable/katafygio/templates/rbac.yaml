@@ -1,0 +1,30 @@
+{{- if .Values.rbac.create }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ template "katafygio.fullname" . }}
+  labels:
+{{ include "katafygio.labels.standard" . | indent 4 }}
+rules:
+  - apiGroups: ["*"]
+    resources: ["*"]
+    verbs:
+      - get
+      - list
+      - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ template "katafygio.fullname" . }}
+  labels:
+{{ include "katafygio.labels.standard" . | indent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ template "katafygio.fullname" . }}
+subjects:
+- kind: ServiceAccount
+  name: {{ template "katafygio.serviceAccountName" . }}
+  namespace: {{ .Release.Namespace }}
+{{- end }}

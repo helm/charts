@@ -1,0 +1,72 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ template "mailhog.name" . }}
+    chart: {{ template "mailhog.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "mailhog.fullname" . }}
+spec:
+  template:
+    metadata:
+    {{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+    {{- end }}
+      labels:
+        app: {{ template "mailhog.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      securityContext:
+        runAsUser: 1000
+      containers:
+        - name: {{ template "mailhog.name" . }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+          env:
+            - name: MH_HOSTNAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          {{- if .Values.auth.enabled }}
+            - name: MH_AUTH_FILE
+              value: /authdir/{{ .Values.auth.fileName }}
+          {{- end }}
+          {{- range $key, $value := .Values.env }}
+            - name: "{{ $key }}"
+              value: "{{ $value }}"
+          {{- end }}
+          ports:
+            - name: http
+              containerPort: 8025
+              protocol: TCP
+            - name: smtp
+              containerPort: 1025
+              protocol: TCP
+          livenessProbe:
+            tcpSocket:
+              port: smtp
+            initialDelaySeconds: 10
+            timeoutSeconds: 1
+          readinessProbe:
+            tcpSocket:
+              port: smtp
+          {{- if .Values.auth.enabled }}
+          volumeMounts:
+            - name: authdir
+              mountPath: /authdir
+              readOnly: true
+          {{- end }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.auth.enabled }}
+      volumes:
+        - name: authdir
+          secret:
+            secretName: {{ template "mailhog.authFileSecret" . }}
+    {{- end }}

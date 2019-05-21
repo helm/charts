@@ -1,0 +1,60 @@
+
+##############################################################################
+This chart has been deprecated in favor of the official GitLab chart:
+http://docs.gitlab.com/ce/install/kubernetes/gitlab_omnibus.html
+##############################################################################
+
+{{- if default "" .Values.externalUrl }}
+
+1. Get your GitLab URL by running:
+
+{{- if contains "NodePort" .Values.serviceType }}
+
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo http://$NODE_IP/
+
+{{- else if contains "LoadBalancer" .Values.serviceType }}
+
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+        Watch the status with: 'kubectl get svc -w {{ template "gitlab-ee.fullname" . }}'
+
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "gitlab-ee.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  echo http://$SERVICE_IP/
+{{- else if contains "ClusterIP"  .Values.serviceType }}
+
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "gitlab-ee.fullname" . }}" -o jsonpath="{.items[0].metadata.name}")
+  echo http://127.0.0.1:8080/
+  kubectl port-forward $POD_NAME 8080:80
+{{- end }}
+
+{{- if default "" .Values.gitlabRootPassword }}
+
+2. Login as the root user:
+
+  Username: root
+  Password: {{ .Values.gitlabRootPassword }}
+{{ else }}
+
+2. Set your admin user's password on your first visit to your install. Then
+   login as:
+
+   Username: root
+   Password: <whatever value you entered>
+{{- end }}
+
+3. Point a DNS entry at your install to ensure that your specified
+   external URL is reachable:
+
+   {{ default "UNSPECIFIED" .Values.externalUrl }}
+
+{{- else -}}
+##############################################################################
+## WARNING: You did not specify an externalUrl in your 'helm install' call. ##
+##############################################################################
+
+This deployment will be incomplete until you provide the URL that your
+GitLab install will be reachable to your users under:
+
+    helm upgrade {{ .Release.Name }} \
+        --set externalUrl=http://your-domain.com stable/gitlab-ee
+{{- end -}}

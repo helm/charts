@@ -1,0 +1,92 @@
+# Default values for spark.
+# This is a YAML-formatted file.
+# Declare name/value pairs to be passed into your templates.
+# name: value
+
+Spark:
+  Path: "/opt/spark"
+
+Master:
+  Name: master
+  Image: "k8s.gcr.io/spark"
+  ImageTag: "1.5.1_v3"
+  Replicas: 1
+  Component: "spark-master"
+  Cpu: "100m"
+  Memory: "512Mi"
+  ServicePort: 7077
+  ContainerPort: 7077
+  # Set Master JVM memory. Default 1g
+  # DaemonMemory: 1g
+  ServiceType: LoadBalancer
+
+WebUi:
+  Name: webui
+  ServicePort: 8080
+  ContainerPort: 8080
+
+Worker:
+  Name: worker
+  Image: "k8s.gcr.io/spark"
+  ImageTag: "1.5.1_v3"
+  Replicas: 3
+  Component: "spark-worker"
+  Cpu: "100m"
+  Memory: "512Mi"
+  ContainerPort: 8081
+  # Set Worker JVM memory. Default 1g
+  # DaemonMemory: 1g
+  # Set how much total memory workers have to give executors
+  # ExecutorMemory: 1g
+  Autoscaling:
+    Enabled: false
+  ReplicasMax: 10
+  CpuTargetPercentage: 50
+
+Zeppelin:
+  Name: zeppelin
+  Image: "apache/zeppelin"
+  ImageTag: "0.7.3"
+  Replicas: 1
+  Component: "zeppelin"
+  Cpu: "100m"
+  ServicePort: 8080
+  ContainerPort: 8080
+  ServiceType: LoadBalancer
+  Ingress:
+    Enabled: false
+    Path: "/"
+    Tls: []
+  #    - Hosts:
+  #    SecretName: zeppelin
+  # Used to create an Ingress record.
+  # Hosts:
+  # - example.local
+  # Annotations:
+  #   kubernetes.io/ingress.class: nginx
+  #   kubernetes.io/tls-acme: "true"
+  # Tls:
+  #   Enabled: true
+  # Secrets must be manually created in the namespace.
+  #   SecretName: example-tls
+  #   Hosts:
+  #   - example.local
+  Persistence:
+    Config:
+      Enabled: false
+      ## etcd data Persistent Volume Storage Class
+      ## If defined, storageClassName: <storageClass>
+      ## If set to "-", storageClassName: "", which disables dynamic provisioning
+      ## If undefined (the default) or set to null, no storageClassName spec is
+      ## set, choosing the default provisioner. (gp2 on AWS, standard on
+      ## GKE, AWS & OpenStack)
+      StorageClass: "-"
+      ## Set default PVC size
+      Size: 10G
+      ## Set default PVC access mode: https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes
+      AccessMode: ReadWriteOnce
+    Notebook:
+      Enabled: false
+      StorageClass: "-"
+      Size: 10G
+      AccessMode: ReadWriteOnce

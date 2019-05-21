@@ -1,0 +1,14 @@
+apiVersion: v1
+description: A Helm chart for Kubernetes
+name: webpagetest-server
+version: 0.2.1
+appVersion: "2018-03-08"
+home: https://www.webpagetest.org/
+icon: https://www.webpagetest.org/images/logo_wpt.png
+sources:
+  - https://github.com/WPO-Foundation/webpagetest
+maintainers:
+  - name: timothyclarke
+    email: ghtimothy@timothy.fromnz.net
+  - name: pmeenan
+    email: pmeenan@webpagetest.org

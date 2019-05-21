@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
+metadata:
+  name: {{ template "etcd.fullname" . }}
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: {{ template "etcd.name" . }}
+spec:
+  ports:
+  - port: {{ .Values.peerPort }}
+    name: etcd-server
+  - port: {{ .Values.clientPort }}
+    name: etcd-client
+  clusterIP: None
+  selector:
+    app: {{ template "etcd.name" . }}
+    release: {{ .Release.Name | quote }}

@@ -1,0 +1,80 @@
+{{- if .Values.pushgateway.enabled -}}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    {{- include "prometheus.pushgateway.labels" . | nindent 4 }}
+  name: {{ template "prometheus.pushgateway.fullname" . }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "prometheus.pushgateway.matchLabels" . | nindent 6 }}
+  replicas: {{ .Values.pushgateway.replicaCount }}
+  template:
+    metadata:
+    {{- if .Values.pushgateway.podAnnotations }}
+      annotations:
+{{ toYaml .Values.pushgateway.podAnnotations | indent 8 }}
+    {{- end }}
+      labels:
+        {{- include "prometheus.pushgateway.labels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ template "prometheus.serviceAccountName.pushgateway" . }}
+{{- if .Values.pushgateway.priorityClassName }}
+      priorityClassName: "{{ .Values.pushgateway.priorityClassName }}"
+{{- end }}
+      containers:
+        - name: {{ template "prometheus.name" . }}-{{ .Values.pushgateway.name }}
+          image: "{{ .Values.pushgateway.image.repository }}:{{ .Values.pushgateway.image.tag }}"
+          imagePullPolicy: "{{ .Values.pushgateway.image.pullPolicy }}"
+          args:
+          {{- range $key, $value := .Values.pushgateway.extraArgs }}
+            - --{{ $key }}={{ $value }}
+          {{- end }}
+          ports:
+            - containerPort: 9091
+          readinessProbe:
+            httpGet:
+            {{- if (index .Values "pushgateway" "extraArgs" "web.route-prefix") }}
+              path: /{{ index .Values "pushgateway" "extraArgs" "web.route-prefix" }}/#/status
+            {{- else }}
+              path: /#/status
+            {{- end }}
+              port: 9091
+            initialDelaySeconds: 10
+            timeoutSeconds: 10
+          resources:
+{{ toYaml .Values.pushgateway.resources | indent 12 }}
+          {{- if .Values.pushgateway.persistentVolume.enabled }}
+          volumeMounts:
+            - name: storage-volume
+              mountPath: "{{ .Values.pushgateway.persistentVolume.mountPath }}"
+              subPath: "{{ .Values.pushgateway.persistentVolume.subPath }}"
+          {{- end }}  
+    {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+      {{ toYaml .Values.imagePullSecrets | indent 2 }}
+    {{- end }}
+    {{- if .Values.pushgateway.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.pushgateway.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.pushgateway.securityContext }}
+      securityContext:
+{{ toYaml .Values.pushgateway.securityContext | indent 8 }}
+    {{- end }}
+    {{- if .Values.pushgateway.tolerations }}
+      tolerations:
+{{ toYaml .Values.pushgateway.tolerations | indent 8 }}
+    {{- end }}
+    {{- if .Values.pushgateway.affinity }}
+      affinity:
+{{ toYaml .Values.pushgateway.affinity | indent 8 }}
+    {{- end }}
+      {{- if .Values.pushgateway.persistentVolume.enabled }}
+      volumes:
+        - name: storage-volume
+          persistentVolumeClaim:
+            claimName: {{ if .Values.pushgateway.persistentVolume.existingClaim }}{{ .Values.pushgateway.persistentVolume.existingClaim }}{{- else }}{{ template "prometheus.pushgateway.fullname" . }}{{- end }}
+      {{- end -}}
+{{- end }}

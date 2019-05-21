@@ -1,0 +1,53 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "kube-slack.fullname" . }}
+  labels:
+    app: {{ template "kube-slack.name" . }}
+    chart: {{ template "kube-slack.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "kube-slack.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+      labels:
+        app: {{ template "kube-slack.name" . }}
+        release: {{ .Release.Name }}
+      {{- if .Values.annotations }}
+      annotations:
+{{ toYaml .Values.annotations | indent 4 }}
+      {{- end }} 
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          envFrom:
+            - configMapRef:
+                name: {{ template "kube-slack.fullname" . }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- if .Values.rbac.create }}
+      serviceAccountName: {{ template "kube-slack.fullname" . }}
+    {{- else }}
+      serviceAccountName: "{{ .Values.rbac.serviceAccountName }}"
+    {{- end }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

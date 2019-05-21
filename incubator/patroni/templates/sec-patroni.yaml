@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ template "patroni.fullname" . }}
+  labels:
+    app: {{ template "patroni.fullname" . }}
+    chart: {{ template "patroni.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+type: Opaque
+data:
+  password-superuser: {{ .Values.credentials.superuser | b64enc }}
+  password-admin: {{ .Values.credentials.admin | b64enc }}
+  password-standby: {{ .Values.credentials.standby | b64enc }}

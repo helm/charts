@@ -1,0 +1,38 @@
+# Default values for schema-registry-ui.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: landoop/schema-registry-ui
+  tag: 0.9.5
+  pullPolicy: IfNotPresent
+
+service:
+  type: LoadBalancer
+  port: 80
+  annotations: {}
+  ## Limit load balancer source ips to list of CIDRs (where available)
+  # loadBalancerSourceRanges: []
+
+schemaRegistry:
+  url: "http://localhost"
+  port: 8081
+  proxy: false
+
+ingress:
+  enabled: false
+  annotations: {}
+  path: /
+  hosts:
+    - schema-registry-ui.local
+  tls: []
+
+resources: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

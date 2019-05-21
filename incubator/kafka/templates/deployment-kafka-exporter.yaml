@@ -1,0 +1,50 @@
+{{- if .Values.prometheus.kafka.enabled }}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "kafka.fullname" . }}-exporter
+  labels:
+    app: "{{ template "kafka.name" . }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "kafka.name" . }}-exporter
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      annotations:
+{{- if and .Values.prometheus.kafka.enabled  (not .Values.prometheus.operator.enabled) }}
+        prometheus.io/scrape: "true"
+        prometheus.io/port: {{ .Values.prometheus.kafka.port | quote }}
+{{- end }}
+      labels:
+        app: {{ template "kafka.name" . }}-exporter
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+      - image: "{{ .Values.prometheus.kafka.image }}:{{ .Values.prometheus.kafka.imageTag }}"
+        name: kafka-exporter
+        args:
+          - --kafka.server={{ template "kafka.fullname" . }}:9092
+          - --web.listen-address=:{{ .Values.prometheus.kafka.port }}
+        ports:
+          - containerPort: {{ .Values.prometheus.kafka.port }}
+        resources:
+{{ toYaml .Values.prometheus.kafka.resources | indent 10 }}
+{{- if .Values.prometheus.kafka.tolerations }}
+      tolerations:
+{{ toYaml .Values.prometheus.kafka.tolerations | indent 8 }}
+{{- end }}
+{{- if .Values.prometheus.kafka.affinity }}
+      affinity:
+{{ toYaml .Values.prometheus.kafka.affinity | indent 8 }}
+{{- end }}
+{{- if .Values.prometheus.kafka.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.prometheus.kafka.nodeSelector | indent 8 }}
+{{- end }}
+{{- end }}

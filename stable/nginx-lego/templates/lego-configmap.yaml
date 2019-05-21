@@ -1,0 +1,11 @@
+{{- if .Values.lego.enabled }}
+apiVersion: v1
+metadata:
+  name: {{ template "nginx-lego.fullname" . }}-lego
+data:
+  # modify this to specify your address
+  lego.email: {{ .Values.lego.configmap.email | quote }}
+  # configure letencrypt's production api
+  lego.url: {{ .Values.lego.configmap.url | quote }}
+kind: ConfigMap
+{{- end }}

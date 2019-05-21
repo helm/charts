@@ -1,0 +1,14 @@
+apiVersion: v1
+version: 3.1.0
+appVersion: 2.1.0
+description: Centrifugo is a real-time messaging server.
+name: centrifugo
+keywords:
+- centrifugo
+- websocket
+- golang
+home: https://github.com/centrifugal/centrifugo
+maintainers:
+- name: oleh-ozimok
+  email: ozimok.oleg@gmail.com
+icon: https://avatars3.githubusercontent.com/u/6236442

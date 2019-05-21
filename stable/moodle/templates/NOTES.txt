@@ -1,0 +1,61 @@
+
+{{- if or .Values.mariadb.enabled .Values.externalDatabase.host -}}
+** Please be patient while the chart is being deployed **
+{{- if and .Values.ingress.enabled (ne .Values.service.type "ClusterIP") }}
+** Notice : Usually with ingress the service.type should be set to ClusterIP, which is not the case to this deployment! **
+{{- end }}
+
+1. Access you Moodle instance with:
+
+{{- if .Values.ingress.enabled }}
+  {{ if .Values.ingress.tls }}
+    {{- range .Values.ingress.hosts }}
+    - https://{{ . }}
+    {{- end }}
+  {{- else }}
+    {{- range .Values.ingress.hosts }}
+    - http://{{ . }}
+    {{- end }}
+  {{- end }}
+{{- else if contains "NodePort" .Values.service.type }}
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "moodle.fullname" . }})
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo "Moodle URL: http://$NODE_IP:$NODE_PORT/"
+
+{{- else if contains "LoadBalancer" .Values.service.type }}
+
+** Please ensure an external IP is associated to the {{ template "moodle.fullname" . }} service before proceeding **
+** Watch the status using: kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "moodle.fullname" . }} **
+
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "moodle.fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
+
+{{- $port:=.Values.service.port | toString }}
+  echo "Moodle URL: http://$SERVICE_IP{{- if ne $port "80" }}:{{ .Values.service.port }}{{ end }}/"
+
+{{- else if contains "ClusterIP"  .Values.service.type }}
+
+  kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "moodle.fullname" . }} 8080:{{ .Values.service.port }}
+  echo "Moodle URL: http://127.0.0.1:8080/"
+
+{{- end }}
+
+2. Login with the following credentials
+
+  echo Username: {{ .Values.moodleUsername }}
+  echo Password: $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "moodle.fullname" . }} -o jsonpath="{.data.moodle-password}" | base64 --decode)
+
+{{- else -}}
+
+########################################################################################
+### ERROR: You did not provide an external database host in your 'helm install' call ###
+########################################################################################
+
+This deployment will be incomplete until you configure Moodle with a resolvable database
+host. To configure Moodle to use and external database host:
+
+
+1. Complete your Moodle deployment by running:
+
+  helm upgrade {{ .Release.Name }} --set service.type={{ .Values.service.type }},mariadb.enabled=false,externalDatabase.host=YOUR_EXTERNAL_DATABASE_HOST stable/moodle
+
+{{- end }}

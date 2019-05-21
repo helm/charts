@@ -1,0 +1,15 @@
+apiVersion: v1
+description: Istio Helm chart for Kubernetes
+name: istio
+deprecated: true
+# To avoid confusion the helm chart version stays in sync with the istio version - DO NOT UNSYNC -- ldemailly@google.com
+# https://github.com/kubernetes/charts/issues/1501
+version: 0.2.13-chart4
+appVersion: 0.2.12
+home: https://istio.io/
+icon: https://raw.githubusercontent.com/istio/istio.github.io/master/favicons/mstile-150x150.png
+sources:
+- https://github.com/istio/istio
+maintainers:
+- name: lachie83
+  email: lachlan.evenson@microsoft.com

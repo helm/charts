@@ -1,0 +1,74 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "zeppelin-fullname" . }}
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: "{{ .Release.Name }}-{{ .Values.Zeppelin.Component }}"
+spec:
+  ports:
+    - name: http
+      port: {{ .Values.Zeppelin.ServicePort }}
+      targetPort: {{ .Values.Zeppelin.ContainerPort }}
+  selector:
+    component: "{{ .Release.Name }}-{{ .Values.Zeppelin.Component }}"
+  type: {{ .Values.Zeppelin.ServiceType }}
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "zeppelin-fullname" . }}
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: "{{ .Release.Name }}-{{ .Values.Zeppelin.Component }}"
+spec:
+  replicas: {{ default 1 .Values.Zeppelin.Replicas }}
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      component: "{{ .Release.Name }}-{{ .Values.Zeppelin.Component }}"
+  template:
+    metadata:
+      labels:
+        heritage: {{ .Release.Service | quote }}
+        release: {{ .Release.Name | quote }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        component: "{{ .Release.Name }}-{{ .Values.Zeppelin.Component }}"
+    spec:
+      containers:
+        - name: {{ template "zeppelin-fullname" . }}
+          image: "{{ .Values.Zeppelin.Image }}:{{ .Values.Zeppelin.ImageTag }}"
+          ports:
+            - containerPort: {{ .Values.Zeppelin.ContainerPort }}
+              name: http
+          resources:
+            requests:
+              cpu: "{{ .Values.Zeppelin.Cpu }}"
+          env:
+            - name: SPARK_MASTER
+              value: "spark://{{ template "master-fullname" . }}:{{ .Values.Master.ServicePort }}"
+          volumeMounts:
+          {{- if .Values.Zeppelin.Persistence.Config.Enabled }}
+            - name: {{ template "master-fullname" . }}-config
+              mountPath: /zeppelin/conf
+          {{- end }}
+          {{- if .Values.Zeppelin.Persistence.Notebook.Enabled }}
+            - name: {{ template "master-fullname" . }}-notebook
+              mountPath: /zeppelin/notebook
+          {{- end }}
+      volumes:
+        {{- if .Values.Zeppelin.Persistence.Config.Enabled }}
+        - name: {{ template "master-fullname" . }}-config
+          persistentVolumeClaim:
+            claimName: {{ template "zeppelin-fullname" . }}-config
+        {{- end }}
+        {{- if .Values.Zeppelin.Persistence.Notebook.Enabled }}
+        - name: {{ template "master-fullname" . }}-notebook
+          persistentVolumeClaim:
+            claimName: {{ template "zeppelin-fullname" . }}-notebook
+        {{- end }}

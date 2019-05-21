@@ -1,0 +1,15 @@
+1. The node will take a while to sync with the network (~1h or more
+   is not unusual for the default config).
+
+2. Allow other nodes to connect to you
+
+   You can publish your external IP address and port as well as your
+   node's public key so other validators can include your node in
+   their quorum sets.
+
+{{- if contains "LoadBalancer" .Values.peerService.type }}
+   NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+         You can watch the status of by running 'kubectl get svc -w {{ template "stellar-core.fullname" . }}-peer'
+   export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "stellar-core.fullname" . }}-peer -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+   echo $SERVICE_IP:{{ .Values.peerService.port }}
+{{- end }}

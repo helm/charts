@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "kong.fullname" . }}-admin
+  annotations:
+    {{- range $key, $value := .Values.admin.annotations }}
+      {{ $key }}: {{ $value | quote }}
+    {{- end }}
+  labels:
+    app: {{ template "kong.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  type: {{ .Values.admin.type }}
+  {{- if eq .Values.admin.type "LoadBalancer" }}
+  {{- if .Values.admin.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.admin.loadBalancerIP }}
+  {{- end }}
+  {{- if .Values.admin.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+  {{- range $cidr := .Values.admin.loadBalancerSourceRanges }}
+  - {{ $cidr }}
+  {{- end }}
+  {{- end }}
+  {{- end }}
+  ports:
+  - name: kong-admin
+    port: {{ .Values.admin.servicePort }}
+    targetPort: {{ .Values.admin.containerPort }}
+  {{- if (and (eq .Values.admin.type "NodePort") (not (empty .Values.admin.nodePort))) }}
+    nodePort: {{ .Values.admin.nodePort }}
+  {{- end }}
+    protocol: TCP
+  selector:
+    app: {{ template "kong.name" . }}
+    release: {{ .Release.Name }}
+    component: app

@@ -1,0 +1,14 @@
+{{ if not .Values.vault.existingConfigName }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ template "vault.fullname" . }}-config"
+  labels:
+    app: "{{ template "vault.name" . }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+    chart: "{{ template "vault.chart" . }}"
+data:
+  config.json: |
+    {{ .Values.vault.config | toJson }}
+{{ end }}

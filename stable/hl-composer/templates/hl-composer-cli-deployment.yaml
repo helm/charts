@@ -1,0 +1,93 @@
+---
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ include "hl-composer.fullname" . }}-cli
+  labels:
+    name: {{ include "hl-composer.fullname" . }}-cli
+{{ include "labels.standard" . | indent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ include "hl-composer.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      name: {{ include "hl-composer.fullname" . }}-cli
+      labels:
+        name: {{ include "hl-composer.fullname" . }}-cli
+{{ include "labels.standard" . | indent 8 }}
+    spec:
+      volumes:
+        - name: persistent-volume
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.existingClaim | default (include "hl-composer.fullname" .) }}
+        {{- else }}
+          emptyDir: {}
+        {{- end }}
+        {{- if .Values.cli.secrets.blockchainNetwork }}
+        - name: blockchain-network
+          secret:
+            secretName: {{ .Values.cli.secrets.blockchainNetwork }}
+        {{- end }}
+        {{- if .Values.cli.secrets.adminCert }}
+        - name: admin-cert
+          secret:
+            secretName: {{ .Values.cli.secrets.adminCert }}
+        {{- end }}
+        {{- if .Values.cli.secrets.adminKey }}
+        - name: admin-key
+          secret:
+            secretName: {{ .Values.cli.secrets.adminKey }}
+        {{- end }}
+        {{- if .Values.cli.secrets.hlcConnection }}
+        - name: hlc-connection
+          configMap:
+            name: {{ .Values.cli.secrets.hlcConnection }}
+        {{- end }}
+      containers:
+        - name: cli
+          image: "{{ .Values.cli.image.repository }}:{{ .Values.cli.image.tag }}"
+          imagePullPolicy: {{ .Values.cli.image.pullPolicy }}
+        # TODO: Add liveness and readiness probes
+        # Run infinitely
+          command:
+            - sh
+            - -c
+            - |
+              tail -f /dev/null
+          volumeMounts:
+            - mountPath: /home/composer/.composer
+              name: persistent-volume
+            {{- if .Values.cli.secrets.blockchainNetwork }}
+            - mountPath: /hl_config/blockchain_network
+              name: blockchain-network
+            {{- end }}
+            {{- if .Values.cli.secrets.adminCert }}
+            - mountPath: /hl_config/admin/signcerts
+              name: admin-cert
+            {{- end }}
+            {{- if .Values.cli.secrets.adminKey }}
+            - mountPath: /hl_config/admin/keystore
+              name: admin-key
+            {{- end }}
+            {{- if .Values.cli.secrets.hlcConnection }}
+            - mountPath: /hl_config/hlc-connection
+              name: hlc-connection
+            {{- end }}
+          resources:
+{{ toYaml .Values.cli.resources | indent 12 }}
+    {{- with .Values.cli.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.cli.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.cli.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

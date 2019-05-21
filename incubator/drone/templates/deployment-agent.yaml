@@ -1,0 +1,92 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "drone.fullname" . }}-agent
+  labels:
+    app: {{ template "drone.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+    component: agent
+spec:
+  replicas: {{ .Values.agent.replicas }}
+  template:
+    metadata:
+      annotations:
+        checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
+{{- if .Values.agent.annotations }}
+{{ toYaml .Values.agent.annotations | indent 8 }}
+{{- end }}
+      labels:
+        app: {{ template "drone.name" . }}
+        release: "{{ .Release.Name }}"
+        component: agent
+    spec:
+{{- if .Values.agent.schedulerName }}
+      schedulerName: "{{ .Values.agent.schedulerName }}"
+{{- end }}
+{{- if .Values.agent.affinity }}
+      affinity:
+{{ toYaml .Values.agent.affinity | indent 8 }}
+{{- end }}
+      serviceAccountName: {{ template "drone.serviceAccountName" . }}
+      containers:
+      - name: {{ template "drone.fullname" . }}-agent
+        image: "{{ .Values.images.agent.repository }}:{{ .Values.images.agent.tag }}"
+        imagePullPolicy: {{ .Values.images.agent.pullPolicy }}
+        env:
+          - name: DRONE_SERVER
+            value: {{ template "drone.fullname" . }}:9000
+          - name: DRONE_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "drone.fullname" . }}
+                key: secret
+{{- if .Values.dind.enabled }}
+          - name: DOCKER_HOST
+            value: tcp://localhost:2375
+{{- end }}
+          {{- range $key, $value := .Values.agent.env }}
+          - name: {{ $key }}
+            value: {{ $value | quote }}
+          {{- end }}
+        resources:
+{{ toYaml .Values.agent.resources | indent 10 }}
+{{- if not .Values.dind.enabled }}
+        securityContext:
+          privileged: true
+        volumeMounts:
+          - mountPath: /var/run/docker.sock
+            name: docker-socket
+      volumes:
+        - name: docker-socket
+          hostPath:
+            path: /var/run/docker.sock
+{{- else }}
+      - name: {{ template "drone.fullname" . }}-dind
+        image: "{{ .Values.images.dind.repository }}:{{ .Values.images.dind.tag }}"
+        imagePullPolicy: {{ .Values.images.dind.pullPolicy }}
+{{- if .Values.dind.command }}
+        command: {{ .Values.dind.command }}
+{{ end }}
+{{- if .Values.dind.args }}
+        args: {{ .Values.dind.args }}
+{{ end }}
+        env:
+        - name: DOCKER_DRIVER
+          value: {{ .Values.dind.driver }}
+        {{ range $key, $value := .Values.dind.env }}
+        - name: {{ $key }}
+          value: {{ $value | quote }}
+        {{ end }}
+        securityContext:
+          privileged: true
+        resources:
+{{ toYaml .Values.dind.resources | indent 10 }}
+        volumeMounts:
+          - name: docker-graph-storage
+            mountPath: /var/lib/docker
+      volumes:
+      - name: docker-graph-storage
+        emptyDir: {}
+{{- end }}

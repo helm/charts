@@ -1,0 +1,24 @@
+---
+apiVersion: v1
+description: >
+  Pachyderm is a large-scale container-based workflow engine that offers complete version control for data and reproducible data processing
+name: pachyderm
+icon: https://avatars2.githubusercontent.com/u/10432478?s=200
+keywords:
+  - pachyderm
+  - workflows
+  - reproducibility
+  - distributed
+  - processing
+version: 0.2.1
+appVersion: 1.8.6
+home: "https://pachyderm.io"
+sources:
+  - "https://github.com/pachyderm/pachyderm"
+maintainers:
+  - name: jonandernovella
+    email: novella.uu@gmail.com
+  - name: dwhitena
+    email: whitenack.daniel@gmail.com
+  - name: jdoliner
+    email: jdoliner@pachyderm.io

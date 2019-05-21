@@ -1,0 +1,106 @@
+## Default values for magic-namespace
+
+# Uncomment and set to override the namespace that will be created.
+# namespace: default
+
+# Extra namespace attributes
+# namespaceAttributes:
+  # Labels to be added to the namespace definition
+  # labels: {}
+
+  # Annotations to be added to the namespace definition
+  # annotations: {}
+
+tiller:
+  enabled: true
+
+  replicaCount: 1
+
+  image:
+    repository: gcr.io/kubernetes-helm/tiller
+    tag: v2.8.1
+    pullPolicy: IfNotPresent
+
+  maxHistory: 0
+
+  ## Storage driver to use. One of 'configmap', 'memory', or 'secret'
+  storage: configmap
+
+  tls:
+    ## Enable TLS encryption between Helm and Tiller
+    enabled: false
+
+    ## Verify remote certificate
+    verify: true
+
+    ## A custom secret to mount instead of specifying Base64 Values below
+    secretName: ""
+
+    ## Specify a Base64 encoded CA
+    # ca: "Zm9vCg=="
+
+    ## Specify a Base64 encoded cert
+    # cert: "Zm9vCg=="
+
+    ## Specify a Base64 encoded private key
+    # key: "Zm9vCg=="
+
+  ## The following options specify the Role or ClusterRole to assign to the
+  ## tiller service account. The ClusterRole "admin" is usually pre-defined in
+  ## RBAC-enabled clusters and will allow administration of a namespace by
+  ## whatever users or ServiceAccounts are bound to it in that same namespace.
+  ## THERE IS SELDOM ANY REASON TO OVERRIDE THIS!!!
+  role:
+    ## Valid values are "Role" or "ClusterRole"
+    type: ClusterRole
+    name: admin
+
+  ## Security options. The default values close known attack vectors.
+  ## ALTER THESE AT YOUR OWN RISK!!!!
+
+  ## Note that these tight restrictions do NOT impede normal use of Helm. Helm
+  ## is always usable with any Tiller as long as the Helm user has permission to
+  ## tunnel into pods in that Tiller's namespace.
+  ## (Helm does this automatically.)
+
+  ## Specify whether to include a service of type ClusterIP for Tiller
+  includeService: false
+
+  ## Specify whether Tiller pods should listen to 0.0.0.0 or just localhost
+  onlyListenOnLocalhost: true
+
+  ## We usually recommend not to specify default resources and to leave this as a conscious
+  ## choice for the user. This also increases chances charts run on environments with little
+  ## resources, such as Minikube. If you do want to specify resources, uncomment the following
+  ## lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  resources: {}
+    # limits:
+    #  cpu: 100m
+    #  memory: 128Mi
+    # requests:
+    #  cpu: 100m
+    #  memory: 128Mi
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+## Optional additional ServiceAccounts
+serviceAccounts: []
+# - some-service-account
+# - another-service-account
+
+## Optional additional RoleBindings. It is a good idea to specify at least one
+## to grant administrative permissions to a user or group.
+# roleBindings:
+# - name: admin-group-admin
+#   role:
+#     ## Valid values are "Role" or "ClusterRole"
+#     kind: ClusterRole
+#     name: admin
+#   subject:
+#     ## Valid values are "User", "Group", or "ServiceAccount"
+#     kind: Group
+#     name: <group>

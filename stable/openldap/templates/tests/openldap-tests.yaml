@@ -1,0 +1,22 @@
+{{- if .Values.test.enabled -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "openldap.fullname" . }}-tests
+  labels:
+    app: {{ template "openldap.name" . }}
+    chart: {{ template "openldap.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+{{- if .Values.extraLabels }}
+{{ toYaml .Values.extraLabels | indent 4 }}
+{{- end }}
+data:
+  run.sh: |-
+    @test "Testing connecting to slapd server" {
+      # Ideally, this should be in the docker image, but there is not a generic image we can use
+      # with bats and ldap-utils installed. It is not worth for now to push an image for this.
+      apt-get update && apt-get install -y ldap-utils
+      ldapsearch -x -H ldap://{{ template "openldap.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.ldapPort }} -b "dc=example,dc=org" -D "cn=admin,dc=example,dc=org" -w $LDAP_ADMIN_PASSWORD
+    }
+{{- end -}}

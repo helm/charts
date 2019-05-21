@@ -1,0 +1,53 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "uchiwa.fullname" . }}
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "uchiwa.fullname" . }}
+        release: {{ .Release.Name | quote }}
+    spec:
+      containers:
+      - name: uchiwa
+        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+        imagePullPolicy: {{ .Values.pullPolicy }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        env:
+          - name: UCHIWA_BIND
+            value: {{ .Values.host | quote }}
+          - name: UCHIWA_SERVICE_PORT
+            value: {{ .Values.port | quote }}
+          - name: UCHIWA_REFRESH
+            value: {{ .Values.refresh | quote }}
+          - name: UCHIWA_LOG_LEVEL
+            value: {{ .Values.loglevel | quote }}
+          - name: SENSU_DC_NAME
+            value: "Sensu"
+          - name: SENSU_HOSTNAME
+            value: {{ template "sensu.fullname" . }}
+        livenessProbe:
+          httpGet:
+            path: /
+            port: {{ .Values.port }}
+        readinessProbe:
+          httpGet:
+            path: /
+            port: {{ .Values.port }}
+        ports:
+        - containerPort: {{ .Values.port }}
+        volumeMounts:
+          - mountPath: /etc/sensu/
+            name: uchiwa-config
+      volumes:
+        - configMap:
+            defaultMode: 420
+            name: {{ template "uchiwa.fullname" . }}
+          name: uchiwa-config

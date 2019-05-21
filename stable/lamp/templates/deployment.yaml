@@ -1,0 +1,722 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "lamp.fullname" . }}
+  labels:
+    app: {{ template "lamp.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "lamp.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      initContainers:
+      - name: "init-chown-mysql"
+        image: "busybox"
+        command: ["chown", "-R", "999:999", "/tmp/mysqld"]
+        volumeMounts:
+        - name: sockets
+          mountPath: /tmp/mysqld
+          subPath: mysqld
+        resources:
+        {{- if .Values.init.resources }}
+{{ toYaml .Values.init.resources | indent 12 }}
+        {{- else }}
+{{ toYaml .Values.resources | indent 12 }}
+        {{- end }}
+      {{- if and .Values.php.persistentSubpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
+      - name: "init-chown-data"
+        image: "busybox"
+        command: ["sh", "-c", "chown -R 33:33 /data/web"]
+        volumeMounts:
+        {{- range $subPath := .Values.php.persistentSubpaths }}
+        - name: httpd-data
+          mountPath: /data/web/{{ $subPath }}
+          subPath: {{ $subPath }}
+        {{- end }}
+        - name: httpd-data-nonpersistent
+          mountPath: /data/web
+          subPath: web
+        resources:
+        {{- if .Values.init.resources }}
+{{ toYaml .Values.init.resources | indent 12 }}
+        {{- else }}
+{{ toYaml .Values.resources | indent 12 }}
+        {{- end }}
+      {{- if .Values.php.copyRoot}}
+      - name: "copy-root"
+        image: "{{ .Values.php.repository }}:{{ .Values.php.tag }}"
+        imagePullPolicy: "Always"
+        command: ["/bin/sh", "-c", "cp -ua /var/www/html/* /data/web/ && cp -ua /var/www/html/.[^.]* /data/web/ && chown 33:33 -R /data/web/"]
+        volumeMounts:
+        {{- if and .Values.php.persistentSubpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
+        {{- range $subPath := .Values.php.persistentSubpaths }}
+        - name: httpd-data
+          mountPath: /data/web/{{ $subPath }}
+          subPath: {{ $subPath }}
+        {{- end }}
+        - name: httpd-data-nonpersistent
+        {{- else }}
+        - name: httpd-data
+        {{- end }}
+          mountPath: /data/web
+          subPath: web
+        resources:
+        {{- if .Values.init.resources }}
+{{ toYaml .Values.init.resources | indent 12 }}
+        {{- else }}
+{{ toYaml .Values.resources | indent 12 }}
+        {{- end }}
+      {{- end }}
+      {{- end }}
+      {{- if and .Values.php.fpmEnabled .Values.php.sockets }}
+      - name: "init-chown-php"
+        image: "busybox"
+        command: ["chown", "-R", "33:33", "/tmp/php"]
+        volumeMounts:
+        - name: sockets
+          mountPath: /tmp/php
+          subPath: php
+        resources:
+        {{- if .Values.init.resources }}
+{{ toYaml .Values.init.resources | indent 12 }}
+        {{- else }}
+{{ toYaml .Values.resources | indent 12 }}
+        {{- end }}
+      {{- end }}
+      {{- if .Values.init.clone.release }}
+      - name: "init-clone"
+        image: "lead4good/xtrabackup"
+        imagePullPolicy: "Always"
+        command: ["sh", "/init/init_clone.sh"]
+        volumeMounts:
+        - name: httpd-data
+          mountPath: /data
+        - name: clone-data
+          mountPath: /clone_data
+        - name: init
+          mountPath: /init
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.init.clone.release }}
+              key: mysql-root-password
+        - name: MYSQL_HOST
+          value: {{ .Values.init.clone.release }}
+        resources:
+        {{- if .Values.init.resources }}
+{{ toYaml .Values.init.resources | indent 12 }}
+        {{- else }}
+{{ toYaml .Values.resources | indent 12 }}
+        {{- end }}
+      - name: "init-db-clone"
+        image: "{{ .Values.mysql.repository }}:{{ .Values.mysql.tag }}"
+        imagePullPolicy: {{ .Values.mysql.pullPolicy }}
+        command: ["bash", "/init/init_db_clone.sh"]
+        volumeMounts:
+        {{- if and .Values.php.persistentSubpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
+        {{- range $subPath := .Values.php.persistentSubpaths }}
+        - name: httpd-data
+          mountPath: /var/www/html/{{ $subPath }}
+          subPath: {{ $subPath }}
+        {{- end }}
+        - name: httpd-data-nonpersistent
+        {{- else }}
+        - name: httpd-data
+        {{- end }}
+          mountPath: /var/www/html
+          subPath: web
+        - name: httpd-data
+          mountPath: /var/lib/mysql
+          subPath: db
+        - name: init
+          mountPath: /init
+        env:
+        - name: OLD_MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.init.clone.release }}
+              key: mysql-root-password
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "lamp.fullname" . }}
+              key: mysql-root-password
+        resources:
+        {{- if .Values.init.resources }}
+{{ toYaml .Values.init.resources | indent 12 }}
+        {{- else }}
+{{ toYaml .Values.resources | indent 12 }}
+        {{- end }}
+      {{- end }}
+      {{- if .Values.init.manually.enabled }}
+      - name: init-manually
+        image: "{{ .Values.init.manually.repository }}:{{ .Values.init.manually.tag }}"
+        imagePullPolicy: {{ .Values.init.manually.pullPolicy }}
+        command: ["bash", "-c", "if [ -z $(ls -A /var/www/html) ]; then echo -e \"touch /done\" > /bin/im-done && chmod +x /bin/im-done && while ! [ -e /done ]; do sleep 5; done; fi"]
+        volumeMounts:
+        {{- if or .Values.mysql.sockets .Values.php.ini }}
+          - name: configmap-php
+            mountPath: /etc/php5/cli/conf.d/additional.ini
+            subPath: additional.ini
+        {{- end }}
+        {{- if and .Values.php.persistentSubpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
+        {{- range $subPath := .Values.php.persistentSubpaths }}
+        - name: httpd-data
+          mountPath: /var/www/html/{{ $subPath }}
+          subPath: {{ $subPath }}
+        {{- end }}
+        - name: httpd-data-nonpersistent
+        {{- else }}
+        - name: httpd-data
+        {{- end }}
+          mountPath: /var/www/html
+          subPath: web
+        {{- if .Values.php.oldHTTPRoot }}
+        {{- if and .Values.php.persistentSubpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
+        {{- range $subPath := .Values.php.persistentSubpaths }}
+        - name: httpd-data
+          mountPath: {{ .Values.php.oldHTTPRoot }}/{{ $subPath }}
+          subPath: {{ $subPath }}
+        {{- end }}
+        - name: httpd-data-nonpersistent
+        {{- else }}
+        - name: httpd-data
+        {{- end }}
+          mountPath: {{ .Values.php.oldHTTPRoot }}
+          subPath: web
+        {{- end }}
+        - name: httpd-data
+          mountPath: /var/www/mysql
+          subPath: mysql
+        - name: httpd-data
+          mountPath: /var/lib/mysql
+          subPath: db
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "lamp.fullname" . }}
+              key: mysql-root-password
+        resources:
+        {{- if .Values.init.resources }}
+{{ toYaml .Values.init.resources | indent 12 }}
+        {{- else }}
+{{ toYaml .Values.resources | indent 12 }}
+        {{- end }}
+      {{- end }}
+      {{- if .Values.wordpress.enabled }}
+      {{- if not .Values.init.clone.release }}
+      - name: init-wp
+        image: lead4good/init-wp
+        imagePullPolicy: Always
+        command: ["bash", "-c", "chown -R www-data:www-data /var/www/ && su -s /bin/bash -c \"bash /init/init_wp.sh\" www-data"]
+        volumeMounts:
+        {{- if and .Values.php.persistentSubpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
+        {{- range $subPath := .Values.php.persistentSubpaths }}
+        - name: httpd-data
+          mountPath: /var/www/html/{{ $subPath }}
+          subPath: {{ $subPath }}
+        {{- end }}
+        - name: httpd-data-nonpersistent
+        {{- else }}
+        - name: httpd-data
+        {{- end }}
+          mountPath: /var/www/html
+          subPath: web
+        - name: httpd-data
+          mountPath: /var/www/mysql
+          subPath: mysql
+        - name: init
+          mountPath: /init
+        env:
+        {{- if .Values.wordpress.develop.delete_uploads }}
+        - name: DELETE_UPLOADS
+          value: "1"
+        {{- end }}
+        {{- if .Values.svn.enabled }}
+        - name: SVN_ENABLED
+          value: "1"
+        {{- end }}
+        {{- if .Values.mysql.sockets }}
+        - name: USE_MYSQL_SOCKETS
+          value: "1"
+        {{- end }}
+        {{- if and .Values.ingress.htpasswdString ( not .Values.ingress.enabled ) }}
+        - name: HTACCESS_AUTH
+          value: {{ .Values.htpasswdString }}
+        {{- end }}
+        {{- if .Values.svn.allowOverwrite }}
+        - name: ALLOW_OVERWRITE
+          value: "true"
+        {{- end }}
+        {{- if .Values.ingress.ssl }}
+        - name: SSL_ENABLED
+          value: "true"
+        {{- end }}
+        {{- if .Values.init.manually.enabled }}
+        - name: MANUAL_INIT
+          value: "true"
+        {{- end }}
+        {{- if .Values.wordpress.develop.enabled }}
+        - name: DEVELOPMENT
+          value: "true"
+        {{- end }}
+        - name: GDRIVE_FOLDER
+          {{- if .Values.wordpress.gdriveFolder }}
+          value: {{ .Values.wordpress.gdriveFolder }}
+          {{- else }}
+          value: {{ required "Please specify the domain of the wordpress backup at .Values.wordpress.domain" .Values.wordpress.domain }}
+          {{- end }}
+        - name: RTOKEN
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "lamp.fullname" . }}
+              key: gdrive-rtoken
+        - name: WEB_DOMAIN
+          value: {{ required "Please specify the domain of the wordpress backup at .Values.wordpress.domain" .Values.wordpress.domain }}
+        resources:
+        {{- if .Values.init.resources }}
+{{ toYaml .Values.init.resources | indent 12 }}
+        {{- else }}
+{{ toYaml .Values.resources | indent 12 }}
+        {{- end }}
+      {{- end }}
+      - name: init-wp-db
+        image: lead4good/init-wp
+        imagePullPolicy: Always
+        command: ["bash", "-c", "bash /init/init_wp_db.sh"]
+        volumeMounts:
+        {{- if or .Values.mysql.sockets .Values.php.ini }}
+        - name: configmap-php
+          mountPath: /etc/php5/cli/conf.d/additional.ini
+          subPath: "additional.ini"
+        {{- end }}
+        {{- if and .Values.php.persistentSubpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
+        {{- range $subPath := .Values.php.persistentSubpaths }}
+        - name: httpd-data
+          mountPath: /var/www/html/{{ $subPath }}
+          subPath: {{ $subPath }}
+        {{- end }}
+        - name: httpd-data-nonpersistent
+        {{- else }}
+        - name: httpd-data
+        {{- end }}
+          mountPath: /var/www/html
+          subPath: web
+        {{- if .Values.php.oldHTTPRoot }}
+        {{- if and .Values.php.persistentSubpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
+        {{- range $subPath := .Values.php.persistentSubpaths }}
+        - name: httpd-data
+          mountPath: {{ .Values.php.oldHTTPRoot }}/{{ $subPath }}
+          subPath: {{ $subPath }}
+        {{- end }}
+        - name: httpd-data-nonpersistent
+        {{- else }}
+        - name: httpd-data
+        {{- end }}
+          mountPath: {{ .Values.php.oldHTTPRoot }}
+          subPath: web
+        {{- end }}
+        - name: httpd-data
+          mountPath: /var/www/mysql
+          subPath: mysql
+        - name: httpd-data
+          mountPath: /var/lib/mysql
+          subPath: db
+        - name: init
+          mountPath: /init
+        env:
+        {{- if .Values.wordpress.develop.enabled }}
+        - name: WEB_TEST_DOMAIN
+          value: {{ template "lamp.domain" . }}
+        - name: WEB_DOMAIN
+          value: {{ required "Please specify the domain of the wordpress backup at .Values.wordpress.domain" .Values.wordpress.domain }}
+        {{- end }}
+        {{ if .Values.ingress.ssl }}
+        - name: SSL_ENABLED
+          value: "true"
+        {{- end }}
+        {{- if .Values.init.clone.release }}
+        - name: CLONE_INIT
+          value: "true"
+        {{- end }}
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "lamp.fullname" . }}
+              key: mysql-root-password
+        resources:
+        {{- if .Values.init.resources }}
+{{ toYaml .Values.init.resources | indent 12 }}
+        {{- else }}
+{{ toYaml .Values.resources | indent 12 }}
+        {{- end }}
+      {{- end }}
+      containers:
+      {{- if .Values.php.fpmEnabled }}
+      - name: "httpd"
+        image: "{{ .Values.httpd.repository }}:{{ .Values.httpd.tag }}"
+        imagePullPolicy: "Always"
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        {{- if and .Values.php.persistentSubpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
+        {{- range $subPath := .Values.php.persistentSubpaths }}
+        - name: httpd-data
+          mountPath: /var/www/html/{{ $subPath }}
+          subPath: {{ $subPath }}
+        {{- end }}
+        - name: httpd-data-nonpersistent
+        {{- else }}
+        - name: httpd-data
+        {{- end }}
+          mountPath: /var/www/html
+          subPath: web
+        {{- if .Values.php.sockets }}
+        - mountPath: /var/run/php
+          name: sockets
+          subPath: php
+        {{- end }}
+        - mountPath: /usr/local/apache2/conf/extra/httpd-vhosts.conf
+          name: httpd-config
+          subPath: httpd-vhosts{{ if .Values.php.sockets }}-socket{{ end }}.conf
+        - mountPath: /usr/local/apache2/conf/httpd.conf
+          name: httpd-config
+          subPath: httpd.conf
+        resources:
+        {{- if .Values.httpd.resources }}
+{{ toYaml .Values.httpd.resources | indent 12 }}
+        {{- else }}
+{{ toYaml .Values.resources | indent 12 }}
+        {{- end }}
+      - name: "php"
+        image: "{{ .Values.php.repository }}:{{ .Values.php.tag }}"
+        {{- if not .Values.php.sockets }}
+        ports:
+        - containerPort: 9000
+        {{- end }}
+      {{- else }}
+      - name: "httpdphp"
+        image: "{{ .Values.php.repository }}:{{ .Values.php.tag }}"
+        ports:
+        - containerPort: 80
+      {{- end }}
+        imagePullPolicy: {{ .Values.php.pullPolicy }}
+        {{- if .Values.php.envVars }}
+        env:
+{{ toYaml .Values.php.envVars | indent 8 }}
+        {{- end }}
+        volumeMounts:
+        {{- if and .Values.php.persistentSubpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
+        {{- range $subPath := .Values.php.persistentSubpaths }}
+        - name: httpd-data
+          mountPath: /var/www/html/{{ $subPath }}
+          subPath: {{ $subPath }}
+        {{- end }}
+        - name: httpd-data-nonpersistent
+        {{- else }}
+        - name: httpd-data
+        {{- end }}
+          mountPath: /var/www/html
+          subPath: web
+        - name: httpd-data
+          mountPath: /var/www/mysql
+          subPath: mysql
+        {{- if .Values.php.oldHTTPRoot }}
+        {{- if and .Values.php.persistentSubpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
+        {{- range $subPath := .Values.php.persistentSubpaths }}
+        - name: httpd-data
+          mountPath: {{ .Values.php.oldHTTPRoot }}/{{ $subPath }}
+          subPath: {{ $subPath }}
+        {{- end }}
+        - name: httpd-data-nonpersistent
+        {{- else }}
+        - name: httpd-data
+        {{- end }}
+          mountPath: {{ .Values.php.oldHTTPRoot }}
+          subPath: web
+        {{- end }}
+        {{- if and .Values.php.fpmEnabled .Values.php.sockets }}
+        - mountPath: /var/run/php
+          name: sockets
+          subPath: php
+        - mountPath: /usr/local/etc/php-fpm.d/zz-docker.conf
+          name: configmap-php
+          subPath: zz-docker.conf
+        {{- end }}
+        {{- if .Values.mysql.sockets }}
+        - mountPath: /var/run/mysqld
+          name: sockets
+          subPath: mysqld
+        {{- end }}
+        {{- if or .Values.php.ini .Values.mysql.sockets }}
+        - name: configmap-php
+          mountPath: /usr/local/etc/php/conf.d/additional.ini
+          subPath: additional.ini
+        {{- end }}
+        resources:
+        {{- if .Values.php.resources }}
+{{ toYaml .Values.php.resources | indent 12 }}
+        {{- else }}
+{{ toYaml .Values.resources | indent 12 }}
+        {{- end }}
+      {{- if .Values.mysql.rootPassword }}
+      - name: "mysql"
+        image: "{{ .Values.mysql.repository }}:{{ .Values.mysql.tag }}"
+        imagePullPolicy: {{ .Values.mysql.pullPolicy }}
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "lamp.fullname" . }}
+              key: mysql-root-password
+        {{- if and .Values.mysql.user .Values.mysql.password }}
+        - name: MYSQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "lamp.fullname" . }}
+              key: mysql-user
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "lamp.fullname" . }}
+              key: mysql-password
+        {{- if .Values.mysql.database }}
+        - name: MYSQL_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "lamp.fullname" . }}
+              key: mysql-database
+        {{- end }}
+        {{- end }}
+        volumeMounts:
+        - name: httpd-data
+          mountPath: /var/lib/mysql
+          subPath: db
+        {{- if .Values.mysql.sockets }}
+        - mountPath: /var/run/mysqld
+          name: sockets
+          subPath: mysqld
+        {{- end }}
+        resources:
+        {{- if .Values.mysql.resources }}
+{{ toYaml .Values.mysql.resources | indent 12 }}
+        {{- else }}
+{{ toYaml .Values.resources | indent 12 }}
+        {{- end }}
+      {{- end }}
+      {{ if .Values.sftp.enabled }}
+      - name: sftp
+        image: "{{ .Values.sftp.repository }}:{{ .Values.sftp.tag }}"
+        command: [/bin/bash, -c, "bash /entrypoint $SFTP_USER:$SFTP_PASSWORD:33:33"]
+        ports:
+        - containerPort: 22
+        env:
+        - name: SFTP_USER
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "lamp.fullname" . }}
+              key: sftp-user
+        - name: SFTP_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "lamp.fullname" . }}
+              key: sftp-password
+        volumeMounts:
+        {{- if and .Values.php.persistentSubpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
+        {{- range $subPath := .Values.php.persistentSubpaths }}
+        - name: httpd-data
+          mountPath: /home/{{ .Values.sftp.user }}/web/{{ $subPath }}
+          subPath: {{ $subPath }}
+        {{- end }}
+        - name: httpd-data-nonpersistent
+        {{- else }}
+        - name: httpd-data
+        {{- end }}
+          mountPath: /home/{{ .Values.sftp.user }}/web
+          subPath: web
+        resources:
+        {{- if .Values.sftp.resources }}
+{{ toYaml .Values.sftp.resources | indent 12 }}
+        {{- else }}
+{{ toYaml .Values.resources | indent 12 }}
+        {{- end }}
+      {{ end }}
+      {{ if .Values.webdav.enabled }}
+      - name: webdav
+        image: lead4good/webdav
+        command: [/bin/bash, -c, "sed -i s/80/8001/g /etc/nginx/sites-enabled/webdav-site.conf && /set_htpasswd.sh && nginx -g \"daemon off;\""]
+        env:
+        - name: WEBDAV_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "lamp.fullname" . }}
+              key: webdav-user
+        - name: WEBDAV_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "lamp.fullname" . }}
+              key: webdav-password
+        ports:
+        - containerPort: 8001
+        volumeMounts:
+        {{- if and .Values.php.persistentSubpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
+        {{- range $subPath := .Values.php.persistentSubpaths }}
+        - name: httpd-data
+          mountPath: /var/www/{{ $subPath }}
+          subPath: {{ $subPath }}
+        {{- end }}
+        - name: httpd-data-nonpersistent
+        {{- else }}
+        - name: httpd-data
+        {{- end }}
+          mountPath: /var/www
+          subPath: web
+        resources:
+        {{- if .Values.svn.resources }}
+{{ toYaml .Values.svn.resources | indent 12 }}
+        {{- else }}
+{{ toYaml .Values.resources | indent 12 }}
+        {{- end }}
+      {{ end }}
+      {{ if .Values.git.enabled }}
+      - name: git
+        image: openweb/git-sync
+        command: [/bin/bash, -c, "chown www-data:www-data /git/ && su -s /bin/bash -c '/go/bin/git-sync' www-data"]
+        env:
+        - name: GIT_SYNC_REPO
+          value: {{ required "Please specify the GIT repository at .Values.git.repoURL" .Values.git.repoURL }}
+        - name: GIT_SYNC_BRANCH
+          value: {{ .Values.git.branch }}
+        - name: GIT_SYNC_REV
+          value: {{ .Values.git.revision }}
+        - name: GIT_SYNC_WAIT
+          value: {{ .Values.git.wait }}
+        - name: GIT_SYNC_DEST
+          value: /git
+        volumeMounts:
+        {{- if and .Values.php.persistentSubpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
+        {{- range $subPath := .Values.php.persistentSubpaths }}
+        - name: httpd-data
+          mountPath: /git/{{ $subPath }}
+          subPath: {{ $subPath }}
+        {{- end }}
+        - name: httpd-data-nonpersistent
+        {{- else }}
+        - name: httpd-data
+        {{- end }}
+          mountPath: /git
+          subPath: web
+        resources:
+        {{- if .Values.git.resources }}
+{{ toYaml .Values.git.resources | indent 12 }}
+        {{- else }}
+{{ toYaml .Values.resources | indent 12 }}
+        {{- end }}
+      {{ end }}
+      {{ if .Values.svn.enabled }}
+      - name: svn
+        image: lead4good/svn-sync
+        command: [/bin/sh, -c, "chown xfs:xfs /svn/ && su -s /bin/sh -c '/bin/sh /entrypoint.sh /sync.sh' xfs"]
+        env:
+        - name: SYNC_USER
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "lamp.fullname" . }}
+              key: svn-user
+        - name: SYNC_PASS
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "lamp.fullname" . }}
+              key: svn-password
+        - name: SYNC_URL
+          value: {{required "Please specify the SVN repository at .Values.svn.repoURL" .Values.svn.repoURL }}
+        {{ if .Values.svn.allowOverwrite }}
+        - name: ALLOW_OVERWRITE
+          value: "true"
+        {{- end }}
+        volumeMounts:
+        {{- if and .Values.php.persistentSubpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
+        {{- range $subPath := .Values.php.persistentSubpaths }}
+        - name: httpd-data
+          mountPath: /svn/{{ $subPath }}
+          subPath: {{ $subPath }}
+        {{- end }}
+        - name: httpd-data-nonpersistent
+        {{- else }}
+        - name: httpd-data
+        {{- end }}
+          mountPath: /svn
+          subPath: web
+        resources:
+        {{- if .Values.svn.resources }}
+{{ toYaml .Values.svn.resources | indent 12 }}
+        {{- else }}
+{{ toYaml .Values.resources | indent 12 }}
+        {{- end }}
+      {{ end }}
+      {{ if .Values.phpmyadmin.enabled }}
+      - image: "{{ .Values.phpmyadmin.repository }}:{{ .Values.phpmyadmin.tag }}"
+        name: phpmyadmin
+        command: [sh, -c, sed -i 's/listen\ 80/listen {{ .Values.phpmyadmin.port }}/g' /etc/nginx.conf && /run.sh supervisord -n]
+        env:
+        - name: PMA_HOST
+          value: 127.0.0.1
+        ports:
+        - {containerPort: 8080}
+        resources:
+        {{- if .Values.phpmyadmin.resources }}
+{{ toYaml .Values.phpmyadmin.resources | indent 12 }}
+        {{- else }}
+{{ toYaml .Values.resources | indent 12 }}
+        {{- end }}
+      {{ end }}
+      volumes:
+      {{- if and .Values.php.persistentSubpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
+      - name: httpd-data-nonpersistent
+        emptyDir: {}
+      {{- end }}
+      - name: httpd-data
+      {{- if .Values.persistence.hostPath }}
+        hostPath:
+          path: {{ .Values.persistence.hostPath }}
+        {{- else }}{{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ template "lamp.fullname" . }}
+        {{- else }}
+        emptyDir: {}
+        {{- end }}
+      {{- end }}
+      {{- if or .Values.mysql.sockets .Values.php.sockets }}
+      - name: sockets
+        emptyDir: {}
+      {{- end }}
+      {{- if or .Values.mysql.sockets ( or ( and .Values.php.fpmEnabled .Values.php.sockets) .Values.php.ini ) }}
+      - configMap: {name: {{template "lamp.fullname" .}}-php }
+        name: configmap-php
+      {{- end }}
+      {{- if or .Values.init.clone.release .Values.wordpress.enabled }}
+      - configMap: {name: {{template "lamp.fullname" .}}-init }
+        name: init
+      {{- end }}
+      {{- if .Values.php.fpmEnabled }}
+      - configMap: {name: {{template "lamp.fullname" .}}-httpd }
+        name: httpd-config
+      {{- end }}
+      {{- if .Values.init.clone.release }}
+      - name: clone-data
+        {{- if .Values.init.clone.hostPath }}
+        hostPath:
+          path: {{ .Values.init.clone.hostPath }}
+        {{- else }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.init.clone.release }}
+        {{- end }}
+      {{- end }}

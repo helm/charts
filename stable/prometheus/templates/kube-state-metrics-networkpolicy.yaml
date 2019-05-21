@@ -1,0 +1,19 @@
+{{- if and .Values.kubeStateMetrics.enabled .Values.networkPolicy.enabled -}}
+apiVersion: {{ template "prometheus.networkPolicy.apiVersion" . }}
+kind: NetworkPolicy
+metadata:
+  name: {{ template "prometheus.kubeStateMetrics.fullname" . }}
+  labels:
+    {{- include "prometheus.kubeStateMetrics.labels" . | nindent 4 }}
+spec:
+  podSelector:
+    matchLabels:
+      {{- include "prometheus.kubeStateMetrics.matchLabels" . | nindent 6 }}
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          {{- include "prometheus.server.matchLabels" . | nindent 10 }}
+  - ports:
+    - port: 8080
+{{- end -}}

@@ -1,0 +1,204 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: {{ template "zookeeper.fullname" . }}
+  labels:
+    app: {{ template "zookeeper.name" . }}
+    chart: {{ template "zookeeper.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: server
+spec:
+  serviceName: {{ template "zookeeper.fullname" . }}-headless
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "zookeeper.name" . }}
+      release: {{ .Release.Name }}
+      component: server
+  updateStrategy:
+{{ toYaml .Values.updateStrategy | indent 4 }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "zookeeper.name" . }}
+        release: {{ .Release.Name }}
+        component: server
+      {{- if .Values.podLabels }}
+        ## Custom pod labels
+        {{- range $key, $value := .Values.podLabels }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
+      {{- end }}
+      annotations:
+      {{- if .Values.podAnnotations }}
+        ## Custom pod annotations
+        {{- range $key, $value := .Values.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
+      {{- end }}
+    spec:
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+{{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+{{- end }}
+      securityContext:
+{{ toYaml .Values.securityContext | indent 8 }}
+{{- if .Values.priorityClassName }}
+      priorityClassName: "{{ .Values.priorityClassName }}"
+{{- end }}
+      containers:
+
+        - name: zookeeper
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+        {{- with .Values.command }}
+          command: {{ range . }}
+             - {{ . | quote }}
+          {{- end }}
+        {{- end }}
+          ports:
+{{- range $key, $port := .Values.ports }}
+            - name: {{ $key }}
+{{ toYaml $port | indent 14 }}
+{{- end }}
+          livenessProbe:
+{{ toYaml .Values.livenessProbe | indent 12 }}
+          readinessProbe:
+{{ toYaml .Values.readinessProbe | indent 12 }}
+          env:
+            - name: ZK_REPLICAS
+              value: {{ .Values.replicaCount | quote }}
+          {{- range $key, $value := .Values.env }}
+            - name: {{ $key | upper | replace "." "_" }}
+              value: {{ $value | quote }}
+          {{- end }}
+          {{- range $secret := .Values.secrets }}
+            {{- range $key := $secret.keys }}
+            - name: {{ (print $secret.name "_" $key) | upper }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $secret.name }}
+                  key: {{ $key }}
+            {{- end }}
+          {{- end }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/zookeeper
+            {{- range $secret := .Values.secrets }}
+              {{- if $secret.mountPath }}
+                {{- range $key := $secret.keys }}
+            - name: {{ $.Release.Name }}-{{ $secret.name }}
+              mountPath: {{ $secret.mountPath }}/{{ $key }}
+              subPath: {{ $key }}
+              readOnly: true
+                {{- end }}
+              {{- end }}
+            {{- end }}
+
+
+{{- if .Values.exporters.jmx.enabled }}
+        - name: jmx-exporter
+          image: "{{ .Values.exporters.jmx.image.repository }}:{{ .Values.exporters.jmx.image.tag }}"
+          imagePullPolicy: {{ .Values.exporters.jmx.image.pullPolicy }}
+          ports:
+  {{- range $key, $port := .Values.exporters.jmx.ports }}
+            - name: {{ $key }}
+{{ toYaml $port | indent 14 }}
+  {{- end }}
+          livenessProbe:
+{{ toYaml .Values.exporters.jmx.livenessProbe | indent 12 }}
+          readinessProbe:
+{{ toYaml .Values.exporters.jmx.readinessProbe | indent 12 }}
+          env:
+            - name: SERVICE_PORT
+              value: {{ .Values.exporters.jmx.ports.jmxxp.containerPort | quote }}
+          {{- with .Values.exporters.jmx.env }}
+            {{- range $key, $value := . }}
+            - name: {{ $key | upper | replace "." "_" }}
+              value: {{ $value | quote }}
+            {{- end }}
+          {{- end }}
+          resources:
+{{ toYaml .Values.exporters.jmx.resources | indent 12 }}
+          volumeMounts:
+            - name: config-jmx-exporter
+              mountPath: /opt/jmx_exporter/config.yml
+              subPath: config.yml
+{{- end }}
+
+{{- if .Values.exporters.zookeeper.enabled }}
+        - name: zookeeper-exporter
+          image: "{{ .Values.exporters.zookeeper.image.repository }}:{{ .Values.exporters.zookeeper.image.tag }}"
+          imagePullPolicy: {{ .Values.exporters.zookeeper.image.pullPolicy }}
+          args:
+            - -bind-addr=:{{ .Values.exporters.zookeeper.ports.zookeeperxp.containerPort }}
+            - -metrics-path={{ .Values.exporters.zookeeper.path }}
+            - -zookeeper=localhost:{{ .Values.ports.client.containerPort }}
+            - -log-level={{ .Values.exporters.zookeeper.config.logLevel }}
+            - -reset-on-scrape={{ .Values.exporters.zookeeper.config.resetOnScrape }}
+          ports:
+  {{- range $key, $port := .Values.exporters.zookeeper.ports }}
+            - name: {{ $key }}
+{{ toYaml $port | indent 14 }}
+  {{- end }}
+          livenessProbe:
+{{ toYaml .Values.exporters.zookeeper.livenessProbe | indent 12 }}
+          readinessProbe:
+{{ toYaml .Values.exporters.zookeeper.readinessProbe | indent 12 }}
+          env:
+          {{- range $key, $value := .Values.exporters.zookeeper.env }}
+            - name: {{ $key | upper | replace "." "_" }}
+              value: {{ $value | quote }}
+          {{- end }}
+          resources:
+{{ toYaml .Values.exporters.zookeeper.resources | indent 12 }}
+{{- end }}
+
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+      volumes:
+        {{- range .Values.secrets }}
+        - name: {{ $.Release.Name }}-{{ .name }}
+          secret:
+            secretName: {{ .name }}
+        {{- end }}
+        {{- if .Values.exporters.jmx.enabled }}
+        - name: config-jmx-exporter
+          configMap:
+            name: {{ .Release.Name }}-jmx-exporter
+        {{- end }}
+        {{- if not .Values.persistence.enabled }}
+        - name: data
+          emptyDir: {}
+        {{- end }}
+  {{- if .Values.persistence.enabled }}
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes:
+          - {{ .Values.persistence.accessMode | quote }}
+        resources:
+          requests:
+            storage: {{ .Values.persistence.size | quote }}
+      {{- if .Values.persistence.storageClass }}
+        {{- if (eq "-" .Values.persistence.storageClass) }}
+        storageClassName: ""
+        {{- else }}
+        storageClassName: "{{ .Values.persistence.storageClass }}"
+        {{- end }}
+      {{- end }}
+  {{- end }}

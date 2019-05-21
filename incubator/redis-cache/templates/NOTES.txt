@@ -1,0 +1,2 @@
+1. To Find which replica is the master 
+  kubectl exec -i -t {{ template "redis-cache.fullname" . }}-0 -c redis -- redis-cli -h {{ template "redis-cache.fullname" . }}-0.{{ template "redis-cache.fullname" . }}.{{ .Release.Namespace }} -p 6379 info replication

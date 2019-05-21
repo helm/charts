@@ -1,0 +1,14 @@
+apiVersion: v1
+appVersion: 1.0.1
+description: OpenIBAN is a self-hosted, free and open-source IBAN validation API.
+name: openiban
+version: 1.0.0
+keywords:
+- iban
+- golang
+home: https://openiban.com
+sources:
+- https://github.com/fourcube/goiban-service
+maintainers:
+- name: verwilst
+  email: bart@verwilst.be

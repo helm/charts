@@ -1,0 +1,21 @@
+name: hackmd
+apiVersion: v1
+version: "1.2.1"
+appVersion: "1.3.0-alpine"
+description: Realtime collaborative markdown notes on all platforms.
+icon: https://hackmd.io/favicon.png
+keywords:
+- hackmd
+- cms
+- markdown
+- http
+- web
+- application
+home: https://hackmd.io
+sources:
+- https://github.com/hackmdio/hackmd
+- https://github.com/hackmdio/docker-hackmd
+maintainers:
+- name: yuanying
+  email: yuanying@fraction.jp
+engine: gotpl

@@ -1,0 +1,19 @@
+apiVersion: v1
+name: uchiwa
+version: 1.0.0
+appVersion: 0.22
+description: Dashboard for the Sensu monitoring framework
+keywords:
+- uchiwa
+- sensu
+- monitoring
+home: https://uchiwa.io/
+sources:
+- https://github.com/kubernetes/charts
+- https://github.com/sstarcher/docker-uchiwa
+- https://github.com/sensu/uchiwa
+maintainers:
+- name: sstarcher
+  email: shane.starcher@gmail.com
+icon: https://uchiwa.io/img/favicon.png
+engine: gotpl

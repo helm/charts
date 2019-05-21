@@ -1,0 +1,43 @@
+# Default values for bitcoind.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+terminationGracePeriodSeconds: 30
+image:
+  repository: arilot/docker-bitcoind
+  tag: 0.17.1
+  pullPolicy: IfNotPresent
+
+service:
+  rpcPort: 8332
+  p2pPort: 8333
+  testnetPort: 18332
+  testnetP2pPort: 18333
+
+persistence:
+  enabled: true
+  ## database data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  # storageClass: "-"
+  accessMode: ReadWriteOnce
+  size: 300Gi
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources: {}
+#  requests:
+#    memory: 512Mi
+#    cpu: 300m
+
+# Custom bitcoind configuration file used to override default bitcoind settings
+configurationFile:
+  bitcoin.conf: |-
+    server=1
+    printtoconsole=1
+    rpcuser=rpcuser
+    rpcpassword=rpcpassword

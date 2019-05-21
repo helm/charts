@@ -1,0 +1,169 @@
+# Default values for Percona XtraDB Cluster
+
+## percona image and version
+## ref: https://hub.docker.com/r/percona/percona-xtradb-cluster/tags/
+image:
+  repository: "percona/percona-xtradb-cluster"
+  tag: "5.7.19"
+  pullPolicy: IfNotPresent
+
+# Desired number of members of xtradb cluster
+replicas: 3
+
+## Specify password for root user
+##
+# mysqlRootPassword: not-a-secure-password
+
+## Specify password for xtradb backup user
+##
+# xtraBackupPassword: replicate-my-data
+
+## Uncomment to create a database user
+##
+# mysqlUser: test
+# mysqlPassword: test
+
+## Allow unauthenticated access, uncomment to enable
+##
+# mysqlAllowEmptyPassword: true
+
+## Uncomment to Create a database
+##
+# mysqlDatabase: test
+
+## Configure pxc_strict_mode
+## ref: https://www.percona.com/doc/percona-xtradb-cluster/LATEST/features/pxc-strict-mode.html
+## pxc_strict_mode: ENFORCING
+
+## hosts to allow root user access from
+# set to "127.0.0.1" to deny remote root.
+allowRootFrom: "%"
+
+## Persist data to a persistent volume
+persistence:
+  enabled: false
+  ## percona data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  # storageClass: "-"
+  accessMode: ReadWriteOnce
+  size: 8Gi
+
+## Node labels for pod assignment
+## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+##
+nodeSelector: {}
+
+## Pod annotations
+## Ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+##
+podAnnotations: {}
+
+## Tolerations labels for pod assignment
+## Allow the scheduling on tainted nodes (requires Kubernetes >= 1.6)
+## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+##
+tolerations: []
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+# resources:
+#  requests:
+#    memory: 256Mi
+#    cpu: 100m
+
+configFiles:
+  node.cnf: |+
+    [mysqld]
+    datadir=/var/lib/mysql
+    default_storage_engine=InnoDB
+    binlog_format=ROW
+    innodb_flush_log_at_trx_commit  = 0
+    innodb_flush_method             = O_DIRECT
+    innodb_file_per_table           = 1
+    innodb_autoinc_lock_mode=2
+    bind_address = 0.0.0.0
+    wsrep_slave_threads=2
+    wsrep_cluster_address=gcomm://
+    wsrep_provider=/usr/lib/galera3/libgalera_smm.so
+    wsrep_cluster_name=galera
+    wsrep_sst_method=xtrabackup-v2
+
+## When set to true will create sidecar for `prom/mysqld-exporter`
+## metrics exporting
+metricsExporter:
+  enabled: false
+  commandOverrides: []
+  argsOverrides: []
+
+prometheus:
+  ## Are you using [Prometheus Operator](https://coreos.com/operators/prometheus/docs/latest/user-guides/getting-started.html)?
+  operator:
+    ## Setting to true will create Prometheus-Operator specific resources like ServiceMonitors
+    enabled: false
+
+    ## Configures alerts for Prometheus to pick up
+    prometheusRule:
+      enabled: true
+
+      ## Labels to add to alerts
+      labels: {}
+
+      ## Namespace which Prometheus is installed in
+      # namespace: monitoring
+
+      ## Label Selector for Prometheus to find alert rules
+      # selector:
+      #   prometheus: kube-prometheus
+
+    ## Configures targets for Prometheus to pick up
+    serviceMonitor:
+      ## Interval at which Prometheus will scrape metrics exporter
+      interval: 10s
+
+      ## Namespace which Prometheus is installed in
+      # namespace: monitoring
+
+      ## Label Selector for Prometheus to find ServiceMonitors
+      # selector:
+      #   prometheus: kube-prometheus
+
+## When set to true will create sidecar to tail mysql log
+logTail: true
+
+ssl:
+  enabled: false
+  secret: mysql-ssl-certs
+  certificates:
+#  - name: mysql-ssl-certs
+#    ca: |-
+#      -----BEGIN CERTIFICATE-----
+#      ...
+#      -----END CERTIFICATE-----
+#    cert: |-
+#      -----BEGIN CERTIFICATE-----
+#      ...
+#      -----END CERTIFICATE-----
+#    key: |-
+#      -----BEGIN RSA PRIVATE KEY-----
+#      ...
+#      -----END RSA PRIVATE KEY-----
+
+## Configure PodDisruptionBudget
+## ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
+#
+podDisruptionBudget:
+  enabled: false
+  # minAvailable: 1
+  maxUnavailable: 1
+
+## Set the percona kubernetes service headless (no load-balancing)
+## ref: https://kubernetes.io/docs/concepts/services-networking/service/#headless-services
+service:
+  percona:
+    headless: false

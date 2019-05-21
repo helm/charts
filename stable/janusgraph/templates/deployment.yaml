@@ -1,0 +1,50 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "janusgraph.fullname" . }}
+  labels:
+    app: {{ template "janusgraph.name" . }}
+    chart: {{ template "janusgraph.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "janusgraph.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "janusgraph.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: 8182
+              protocol: TCP
+          volumeMounts:
+            - name: janusgraph-config
+              mountPath: /janusgraph-config
+            - name: local-db
+              mountPath: {{ .Values.persistence.path }}
+          livenessProbe:
+            exec:
+              command:
+                - /tmp/healthcheck.py
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+      volumes:
+        - name: janusgraph-config
+          configMap:
+            name: {{ .Values.configMapOverrideName | default ( printf "%s-config" .Release.Name ) }}
+        - name: local-db
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.existingClaim | default (include "janusgraph.fullname" .) }}
+        {{- else }}
+          emptyDir: {}
+        {{- end -}}

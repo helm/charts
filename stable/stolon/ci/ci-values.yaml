@@ -1,0 +1,5 @@
+## password for the superuser
+superuserPassword: "superuserPassword"
+
+## password for the replication user
+replicationPassword: "replicationPassword"

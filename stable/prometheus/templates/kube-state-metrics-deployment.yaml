@@ -1,0 +1,68 @@
+{{- if .Values.kubeStateMetrics.enabled -}}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+{{- if .Values.kubeStateMetrics.deploymentAnnotations }}
+  annotations:
+{{ toYaml .Values.kubeStateMetrics.deploymentAnnotations | indent 4 }}
+{{- end }}
+  labels:
+    {{- include "prometheus.kubeStateMetrics.labels" . | nindent 4 }}
+  name: {{ template "prometheus.kubeStateMetrics.fullname" . }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "prometheus.kubeStateMetrics.matchLabels" . | nindent 6 }}
+  replicas: {{ .Values.kubeStateMetrics.replicaCount }}
+  template:
+    metadata:
+    {{- if .Values.kubeStateMetrics.podAnnotations }}
+      annotations:
+{{ toYaml .Values.kubeStateMetrics.podAnnotations | indent 8 }}
+    {{- end }}
+      labels:
+        {{- include "prometheus.kubeStateMetrics.labels" . | nindent 8 }}
+{{- if .Values.kubeStateMetrics.pod.labels }}
+{{ toYaml .Values.kubeStateMetrics.pod.labels | indent 8 }}
+{{- end }}
+    spec:
+      serviceAccountName: {{ template "prometheus.serviceAccountName.kubeStateMetrics" . }}
+{{- if .Values.kubeStateMetrics.priorityClassName }}
+      priorityClassName: "{{ .Values.kubeStateMetrics.priorityClassName }}"
+{{- end }}
+      containers:
+        - name: {{ template "prometheus.name" . }}-{{ .Values.kubeStateMetrics.name }}
+          image: "{{ .Values.kubeStateMetrics.image.repository }}:{{ .Values.kubeStateMetrics.image.tag }}"
+          imagePullPolicy: "{{ .Values.kubeStateMetrics.image.pullPolicy }}"
+        {{- if .Values.kubeStateMetrics.args }}
+          args:
+          {{- range $key, $value := .Values.kubeStateMetrics.args }}
+            - --{{ $key }}={{ $value }}
+          {{- end }}
+        {{- end }}
+          ports:
+            - name: metrics
+              containerPort: 8080
+          resources:
+{{ toYaml .Values.kubeStateMetrics.resources | indent 12 }}
+    {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+      {{ toYaml .Values.imagePullSecrets | indent 2 }}
+    {{- end }}
+    {{- if .Values.kubeStateMetrics.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.kubeStateMetrics.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.kubeStateMetrics.securityContext }}
+      securityContext:
+{{ toYaml .Values.kubeStateMetrics.securityContext | indent 8 }}
+    {{- end }}
+    {{- if .Values.kubeStateMetrics.tolerations }}
+      tolerations:
+{{ toYaml .Values.kubeStateMetrics.tolerations | indent 8 }}
+    {{- end }}
+    {{- if .Values.kubeStateMetrics.affinity }}
+      affinity:
+{{ toYaml .Values.kubeStateMetrics.affinity | indent 8 }}
+    {{- end }}
+{{- end }}

@@ -1,0 +1,43 @@
+{{- if .Values.kvprovider.storeAcme }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "storeconfig-job-{{ .Release.Revision }}"
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-delete-policy": "hook-succeeded,before-hook-creation"
+  labels:
+    chart: {{ template "traefik.chart" . }}
+    app: {{ template "traefik.name" . }}
+spec:
+  template:
+    metadata:
+      name: "storeconfig-job-{{ .Release.Revision }}"
+      labels:
+        app: {{ template "traefik.name" . }}
+        chart: {{ template "traefik.chart" . }}
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: storeconfig-job
+          image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+          args:
+          - storeconfig
+          - --configfile=/config/traefik.toml
+          volumeMounts:
+          - mountPath: /config
+            name: config
+          - mountPath: /acme
+            name: acme
+      volumes:
+      - name: config
+        configMap:
+          name: {{ template "traefik.fullname" . }}
+      - name: acme
+      {{- if .Values.acme.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.acme.persistence.existingClaim | default (printf "%s-acme" (include "traefik.fullname" .)) }}
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+{{- end }}

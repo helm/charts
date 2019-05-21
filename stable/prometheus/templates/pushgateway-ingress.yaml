@@ -1,0 +1,31 @@
+{{- if and .Values.pushgateway.enabled .Values.pushgateway.ingress.enabled -}}
+{{- $releaseName := .Release.Name -}}
+{{- $serviceName := include "prometheus.pushgateway.fullname" . }}
+{{- $servicePort := .Values.pushgateway.service.servicePort -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+{{- if .Values.pushgateway.ingress.annotations }}
+  annotations:
+{{ toYaml .Values.pushgateway.ingress.annotations | indent 4}}
+{{- end }}
+  labels:
+    {{- include "prometheus.pushgateway.labels" . | nindent 4 }}
+  name: {{ template "prometheus.pushgateway.fullname" . }}
+spec:
+  rules:
+  {{- range .Values.pushgateway.ingress.hosts }}
+    {{- $url := splitList "/" . }}
+    - host: {{ first $url }}
+      http:
+        paths:
+          - path: /{{ rest $url | join "/" }}
+            backend:
+              serviceName: {{ $serviceName }}
+              servicePort: {{ $servicePort }}
+  {{- end -}}
+{{- if .Values.pushgateway.ingress.tls }}
+  tls:
+{{ toYaml .Values.pushgateway.ingress.tls | indent 4 }}
+  {{- end -}}
+{{- end -}}

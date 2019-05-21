@@ -1,0 +1,111 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  labels:
+    app: {{ template "gogs.fullname" . }}-config
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: {{ default "gogs" .Values.service.nameOverride }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "gogs.gogs.fullname" . }}-config
+data:
+  app.ini: |-
+    APP_NAME = {{ .Values.service.gogs.appName }}
+    RUN_MODE = {{ .Values.service.gogs.runMode }}
+
+    [repository.upload]
+    ENABLED = {{ .Values.service.gogs.repositoryUploadEnabled }}
+    ALLOWED_TYPES = {{ .Values.service.gogs.repositoryUploadAllowedTypes }}
+    MAX_FILE_SIZE = {{ .Values.service.gogs.repositoryUploadMaxFileSize }}
+    MAX_FILES = {{ .Values.service.gogs.repositoryUploadMaxFiles }}
+
+    [server]
+    PROTOCOL = http
+    DOMAIN = {{ .Values.service.gogs.serverDomain }}
+    ROOT_URL = {{ .Values.service.gogs.serverRootUrl }}
+    LANDING_PAGE = {{ .Values.service.gogs.serverLandingPage }}
+    SSH_DOMAIN = {{ default .Values.service.gogs.serverDomain .Values.service.sshDomain }}
+    SSH_PORT = {{ .Values.service.sshPort }}
+    SSH_LISTEN_PORT = {{ .Values.service.sshPort }}
+
+    [service]
+    ENABLE_CAPTCHA = {{ .Values.service.gogs.serviceEnableCaptcha }}
+    ACTIVE_CODE_LIVE_MINUTES = 180
+    RESET_PASSWD_CODE_LIVE_MINUTES = 180
+    REGISTER_EMAIL_CONFIRM = {{ .Values.service.gogs.serviceRegisterEmailConfirm }}
+    DISABLE_REGISTRATION = {{ .Values.service.gogs.serviceDisableRegistration }}
+    REQUIRE_SIGNIN_VIEW = {{ .Values.service.gogs.serviceRequireSignInView }}
+    ENABLE_NOTIFY_MAIL = {{ .Values.service.gogs.serviceEnableNotifyMail }}
+    ENABLE_REVERSE_PROXY_AUTHENTICATION = false
+    ENABLE_REVERSE_PROXY_AUTO_REGISTRATION = false
+
+    [mailer]
+    ENABLED = {{ .Values.service.gogs.mailerEnabled }}
+    HOST = {{ .Values.service.gogs.mailerHost }}
+    DISABLE_HELO = false
+    HELO_HOSTNAME =
+    SKIP_VERIFY = {{ .Values.service.gogs.mailerSkipVerify }}
+    SUBJECT_PREFIX = {{ .Values.service.gogs.mailerSubjectPrefix }}
+    FROM = {{ .Values.service.gogs.mailerFrom }}
+    USER = {{ .Values.service.gogs.mailerUser }}
+    PASSWD = {{ .Values.service.gogs.mailerPasswd }}
+    USE_PLAIN_TEXT = text/plain
+
+    [database]
+    DB_TYPE = {{ .Values.service.gogs.databaseType | quote }}
+    HOST = {{ template "gogs.database.host" . }}
+    NAME = {{ template "gogs.database.name" . }}
+    USER = {{ template "gogs.database.user" . }}
+    PASSWD = {{ template "gogs.database.password" . }}
+    SSL_MODE = {{ template "gogs.database.ssl_mode" . }}
+
+    [security]
+    INSTALL_LOCK = {{ .Values.service.gogs.installLock }}
+    SECRET_KEY = {{ default "" .Values.service.gogs.securitySecretKey | b64enc | quote }}
+
+    [ui]
+    EXPLORE_PAGING_NUM = {{ .Values.service.gogs.uiExplorePagingNum }}
+    ISSUE_PAGING_NUM = {{ .Values.service.gogs.uiIssuePagingNum }}
+    FEED_MAX_COMMIT_NUM = {{ .Values.service.gogs.uiFeedMaxCommitNum }}
+
+    [cache]
+    ADAPTER = {{ .Values.service.gogs.cacheAdapter }}
+    INTERVAL = {{ .Values.service.gogs.cacheInterval }}
+    HOST = {{ .Values.service.gogs.cacheHost }}
+
+    [webhook]
+    QUEUE_LENGTH = {{ .Values.service.gogs.webhookQueueLength }}
+    DELIVER_TIMEOUT = {{ .Values.service.gogs.webhookDeliverTimeout }}
+    SKIP_TLS_VERIFY = {{ .Values.service.gogs.webhookSkipTlsVerify }}
+    PAGING_NUM = {{ .Values.service.gogs.webhookPagingNum }}
+
+    [log]
+    MODE = {{ .Values.service.gogs.logMode }}
+    LEVEL = {{ .Values.service.gogs.logLevel }}
+
+    [cron]
+    ENABLED = {{ .Values.service.gogs.cronEnabled }}
+    RUN_AT_START = {{ .Values.service.gogs.cronRunAtStart }}
+
+    [cron.update_mirrors]
+    SCHEDULE = {{ .Values.service.gogs.cronUpdateMirrorsSchedule }}
+
+    [cron.repo_health_check]
+    SCHEDULE = {{ .Values.service.gogs.cronRepoHealthCheckSchedule }}
+    TIMEOUT = {{ .Values.service.gogs.cronRepoHealthCheckTimeout }}
+    ARGS = {{ .Values.service.gogs.cronRepoHealthCheckArgs }}
+
+    [cron.check_repo_stats]
+    RUN_AT_START = {{ .Values.service.gogs.cronCheckRepoStatsRunAtStart }}
+    SCHEDULE = {{ .Values.service.gogs.cronCheckRepoStatsSchedule }}
+
+    [cron.repo_archive_cleanup]
+    RUN_AT_START = {{ .Values.service.gogs.cronRepoArchiveCleanupRunAtStart }}
+    SCHEDULE = {{ .Values.service.gogs.cronRepoArchiveCleanupSchedule }}
+    OLDER_THAN = {{ .Values.service.gogs.cronRepoArchiveCleanupOlderThan }}
+
+    [other]
+    SHOW_FOOTER_BRANDING = {{ .Values.service.gogs.otherShowFooterBranding }}
+    SHOW_FOOTER_VERSION = {{ .Values.service.gogs.otherShowFooterVersion }}
+    SHOW_FOOTER_TEMPLATE_LOAD_TIME = {{ .Values.service.gogs.otherShowFooterTemplateLoadTime }}
+

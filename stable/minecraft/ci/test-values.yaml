@@ -1,0 +1,3 @@
+# This must be overridden, since we can't accept this for the user.
+minecraftServer.eula: "TRUE"
+# fix in place and rebased

@@ -1,0 +1,79 @@
+{{- if eq (include "drone.providerOK" .) "true" }}
+*********************************************************************************
+***        PLEASE BE PATIENT: drone may take a few minutes to install         ***
+*********************************************************************************
+
+{{- if .Values.ingress.enabled }}
+From outside the cluster, the server URL(s) are:
+{{- range .Values.ingress.hosts }}
+     {{ $.Values.server.protocol }}://{{ . }}
+{{- end }}
+
+{{- else if contains "NodePort" .Values.service.type }}
+
+Get the Drone URL by running:
+  export NODE_PORT=$(kubectl get -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "drone.fullname" . }})
+  export NODE_IP=$(kubectl get nodes -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo http://$NODE_IP:$NODE_PORT/
+
+{{- else if contains "LoadBalancer" .Values.service.type }}
+
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+        Watch the status with: 'kubectl get svc -w {{ template "drone.fullname" . }}'
+
+Get the Drone URL by running:
+  export SERVICE_IP=$(kubectl get svc {{ template "drone.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  echo http://$SERVICE_IP/
+{{- else if contains "ClusterIP" .Values.service.type }}
+
+Get the Drone URL by running:
+  export POD_NAME=$(kubectl get pods -n {{ .Release.Namespace }} -l "component=server,app={{ template "drone.name" . }},release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
+  echo http://127.0.0.1:8000/
+  kubectl -n {{ .Release.Namespace }} port-forward $POD_NAME 8000:80
+{{- end }}
+{{- else -}}
+##############################################################################
+####        ERROR: You did not set a valid version control provider       ####
+##############################################################################
+
+This deployment will be incomplete until you configure a valid version
+control provider:
+
+    kubectl create secret generic drone-server-secrets \
+      --namespace={{ .Release.Namespace }} \
+      --from-literal=clientSecret="github-oauth2-client-secret"
+
+    helm upgrade {{ .Release.Name }} \
+      --reuse-values \
+      --set 'sourceControl.provider=github' \
+      --set 'sourceControl.github.clientID=github-oauth2-client-id' \
+      --set 'sourceControl.secret=drone-server-secrets' \
+      stable/drone
+
+Currently supported providers:
+
+    - GitHub
+    - GitLab
+    - Gitea
+    - Gogs
+    - Bitbucket Cloud
+    - Bitbucket Server (Stash)
+
+See the values.yaml file to see what values are required for each provider.
+
+If you are having trouble with the configuration of a provider please visit
+the official documentation:
+
+    http://docs.drone.io/installation/
+{{- end }}
+
+{{ if not .Values.server.kubernetes.enabled }}
+##############################################################################
+####  WARNING: running drone in kubernetes with legacy pipeline execution ####
+##############################################################################
+
+By setting `server.kubernetes.enabled=false` you've disabled kubernetes
+pipelines and are instead using the legacy agent method which utilizes
+either docker-in-docker or host mounting in the docker socket. This is
+not recommended due to the additional security concerns.
+{{- end }}

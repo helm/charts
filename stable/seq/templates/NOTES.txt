@@ -1,0 +1,2 @@
+Seq can be accessed via port 5341 on the following DNS name from within your cluster:
+{{ template "seq.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local

@@ -1,0 +1,15 @@
+{{- if .Values.rbac.create -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+{{ include "labels.standard" . | indent 4 }}
+  name: {{ printf "%s-%s" .Release.Name .Values.name }}
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["list", "delete"]
+  - apiGroups: [""]
+    resources: ["events"]
+    verbs: ["create"]
+{{- end -}}

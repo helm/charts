@@ -1,0 +1,27 @@
+# Default values for tensorflow-inception.
+# This is a YAML-formatted file.
+# Declare name/value pairs to be passed into your templates.
+# name: value
+
+serviceType: LoadBalancer
+servicePort: 9090
+containerPort: 9090
+component: "tensorflow-inception"
+replicas: 1
+image:
+  repository: "quay.io/thomasjungblut/tfs-inception"
+  tag: "tfs-1.8.0-cpu"
+  pullPolicy: "IfNotPresent"
+
+env:
+  ldLibraryPath: "/usr/lib/x86_64-linux-gnu/"
+
+resources: {}
+#  limits:
+#    nvidia.com/gpu: 1
+#    cpu: 100m
+#    memory: 256Mi
+#  requests:
+#    nvidia.com/gpu: 1
+#    cpu: 100m
+#    memory: 256Mi

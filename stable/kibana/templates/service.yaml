@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ template "kibana.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  {{- range $key, $value := .Values.service.labels }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
+  name: {{ template "kibana.fullname" . }}
+  {{- with .Values.service.annotations }}
+  annotations:
+    {{- range $key, $value := . }}
+      {{ $key }}: {{ $value | quote }}
+    {{- end }}
+  {{- end }}
+spec:
+  {{- if .Values.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+    {{- range $cidr := .Values.service.loadBalancerSourceRanges }}
+    - {{ $cidr }}
+    {{- end }}
+  {{- end }}
+  type: {{ .Values.service.type }}
+  {{- if and (eq .Values.service.type "ClusterIP") .Values.service.clusterIP }}
+  clusterIP: {{ .Values.service.clusterIP }}
+  {{- end }}
+  ports:
+    - port: {{ .Values.service.externalPort }}
+{{- if not .Values.authProxyEnabled }}
+      targetPort: {{ .Values.service.internalPort }}
+{{- else }}
+      targetPort: {{ .Values.service.authProxyPort }}
+{{- end }}
+      protocol: TCP
+{{ if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nodePort))) }}
+      nodePort: {{ .Values.service.nodePort }}
+{{ end }}
+{{- if .Values.service.portName }}
+      name: {{ .Values.service.portName }}
+{{- end }}
+{{- if .Values.service.externalIPs }}
+  externalIPs:
+{{ toYaml .Values.service.externalIPs | indent 4 }}
+{{- end }}
+  selector:
+    app: {{ template "kibana.name" . }}
+    release: {{ .Release.Name }}
+{{- range $key, $value := .Values.service.selector }}
+    {{ $key }}: {{ $value | quote }}
+{{- end }}
+{{- if .Values.service.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.service.loadBalancerIP }}
+{{- end }}

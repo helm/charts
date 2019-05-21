@@ -1,0 +1,11 @@
+name: dask-distributed
+# The dask-distributed chart is deprecated and no longer maintained.
+# For details on deprecation, including how to un-deprecate a chart,
+# see the PROCESSES.md file.
+deprecated: true
+version: 2.0.2
+description: "DEPRECATED: Distributed computation in Python"
+home: https://github.com/dask/distributed
+icon: https://avatars3.githubusercontent.com/u/17131925?v=3&s=200
+sources:
+- https://github.com/dask/distributed

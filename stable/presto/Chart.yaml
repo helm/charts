@@ -1,0 +1,12 @@
+apiVersion: v1
+appVersion: 0.196
+description: Distributed SQL query engine for running interactive analytic queries
+name: presto
+version: 0.1.1
+home: https://prestodb.io
+icon: https://prestodb.io/static/presto.png
+sources:
+  - https://github.com/facebook/presto
+maintainers:
+  - name: bivas
+    email: eliran.bivas@gmail.com

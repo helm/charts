@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "searchlight.fullname" . }}
+  labels:
+    app: "{{ template "searchlight.name" . }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  ports:
+  - name: ui
+    port: 80
+    targetPort: ui
+  - name: icinga
+    port: 5665
+    targetPort: icinga
+  - name: api
+    port: 8080
+    targetPort: api
+  - name: web
+    port: 56790
+    targetPort: web
+  selector:
+    app: "{{ template "searchlight.name" . }}"
+    release: "{{ .Release.Name }}"

@@ -1,0 +1,17 @@
+apiVersion: v1
+description: DEPRECATED Agent for Buildkite
+name: buildkite
+version: 0.2.4
+appVersion: 3.0
+icon: https://github.com/buildkite/media/blob/master/marks/Buildkite%20-%20Mark%20-%20colour.png
+keywords:
+- kubernetes deployment
+- helm release
+- continuous deployment
+- continuous integration
+home: https://buildkite.com
+sources:
+- https://github.com/buildkite/agent
+## Deprecated following https://github.com/helm/charts/blob/master/PROCESSES.md#deprecating-a-chart
+## Chart is now maintained in https://github.com/buildkite/charts
+deprecated: true

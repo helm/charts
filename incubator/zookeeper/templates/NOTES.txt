@@ -1,0 +1,7 @@
+Thank you for installing ZooKeeper on your Kubernetes cluster. More information
+about ZooKeeper can be found at https://zookeeper.apache.org/doc/current/
+
+Your connection string should look like:
+  {{ template "zookeeper.fullname" . }}-0.{{ template "zookeeper.fullname" . }}-headless:{{ .Values.service.ports.client.port }},{{ template "zookeeper.fullname" . }}-1.{{ template "zookeeper.fullname" . }}-headless:{{ .Values.service.ports.client.port }},...
+
+You can also use the client service {{ template "zookeeper.fullname" . }}:{{ .Values.service.ports.client.port }} to connect to an available ZooKeeper server.

@@ -1,0 +1,22 @@
+{{- if .Values.uiService.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ template "consul.fullname" . }}-ui"
+{{- with .Values.uiService.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: {{ template "consul.chart" . }}
+    component: "{{ .Release.Name }}-{{ .Values.Component }}"
+spec:
+  ports:
+  - name: http
+    port: {{ .Values.HttpPort }}
+  selector:
+    component: "{{ .Release.Name }}-{{ .Values.Component }}"
+  type: "{{ .Values.uiService.type }}"
+{{- end }}

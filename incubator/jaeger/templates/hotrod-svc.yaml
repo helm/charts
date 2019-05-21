@@ -1,0 +1,28 @@
+{{- if .Values.hotrod.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "jaeger.fullname" . }}-hotrod
+  labels:
+    app.kubernetes.io/name: {{ template "jaeger.name" . }}
+    helm.sh/chart: {{ include "jaeger.chart" . }}
+    app.kubernetes.io/component: hotrod
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- if .Values.hotrod.service.annotations }}
+  annotations:
+{{ toYaml .Values.hotrod.service.annotations | indent 4 }}
+{{- end }}
+spec:
+  type: {{ .Values.hotrod.service.type }}
+  ports:
+    - name: {{ .Values.hotrod.service.name }}
+      port: {{ .Values.hotrod.service.externalPort }}
+      protocol: TCP
+      targetPort: {{ .Values.hotrod.service.internalPort }}
+  selector:
+    app.kubernetes.io/name: {{ template "jaeger.name" . }}
+    app.kubernetes.io/component: hotrod
+    app.kubernetes.io/instance: {{ .Release.Name }}
+{{- template "loadBalancerSourceRanges" .Values.hotrod }}
+{{- end -}}

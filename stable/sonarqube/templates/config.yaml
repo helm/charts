@@ -1,0 +1,21 @@
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "sonarqube.fullname" . }}-config
+  labels:
+    app: {{ template "sonarqube.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  {{- if and .Values.sonarSecretKey (not .Values.sonarProperties) }}
+  sonar.properties: sonar.secretKeyPath=/opt/sonarqube/secret/sonar-secret.txt    
+  {{- end }}
+  {{- if .Values.sonarProperties }}
+  sonar.properties:
+{{ toYaml .Values.sonarProperties | indent 4 }}
+  {{- end }}
+    {{- if and .Values.sonarSecretKey .Values.sonarProperties }}
+      sonar.secretKeyPath=/opt/sonarqube/secret/sonar-secret.txt
+    {{- end }}

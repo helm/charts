@@ -1,0 +1,82 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: "{{ template "redis-cache.fullname" . }}"
+  labels:
+     app: {{ template "redis-cache.name" . }}
+     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+     release: "{{ .Release.Name }}"
+     heritage: "{{ .Release.Service }}"
+spec:
+  serviceName: "{{ template "redis-cache.fullname" . }}"
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "redis-cache.name" . }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: "{{ .Release.Name }}"
+        heritage: "{{ .Release.Service }}"
+    spec:
+      terminationGracePeriodSeconds: 60 
+      affinity:
+        podAntiAffinity:
+        {{- if eq .Values.antiAffinity "hard" }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - topologyKey: "kubernetes.io/hostname"
+            labelSelector:
+              matchLabels:
+                app:  {{ template "redis-cache.name" . }}
+                release: {{ .Release.Name | quote }}
+         {{- else if eq .Values.antiAffinity "soft" }}
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 5
+            podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app: {{  template "redis-cache.name" . }}
+                  release: {{ .Release.Name | quote }}
+              topologyKey: "kubernetes.io/hostname"
+         {{- end }}
+      initContainers :
+      - name: sentinel-micro 
+        image: {{ .Values.microSentinel.image.repository }}:{{ .Values.microSentinel.image.tag }}
+        imagePullPolicy: {{ .Values.microSentinel.image.pullPolicy }}
+        args: ["-service",{{ template "redis-cache.fullname" . }}]
+        resources:
+{{ toYaml .Values.microSentinel.resources | indent 12 }}
+        env:
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: "v1"
+                fieldPath: metadata.namespace
+        volumeMounts:
+        - name: config
+          mountPath: /config
+      containers:
+      - name: redis
+        image: {{ .Values.redis.image.repository }}:{{ .Values.redis.image.tag }}
+        imagePullPolicy: {{ .Values.redis.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.service.port }}
+          name: {{ .Values.service.name }}
+        resources:
+{{ toYaml .Values.redis.resources | indent 12 }}
+      - name: make-slave
+        image: {{ .Values.makeSlave.image.repository }}:{{ .Values.makeSlave.image.tag }}
+        imagePullPolicy: {{ .Values.makeSlave.image.pullPolicy }}
+        resources:
+{{ toYaml .Values.makeSlave.resources | indent 12 }}
+        env:
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: "v1"
+                fieldPath: metadata.namespace
+        volumeMounts:
+        - name: config
+          mountPath: /config
+      volumes:
+      - name: config
+        emptyDir: {}

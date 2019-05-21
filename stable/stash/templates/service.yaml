@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "stash.fullname" . }}
+  labels:
+    app: "{{ template "stash.name" . }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  ports:
+  # Port used to expose admission webhook apiserver
+  - name: admission
+    port: 443
+    targetPort: 8443
+  # Port used to expose Prometheus pushgateway
+  - name: pushgateway
+    port: 56789
+    protocol: TCP
+    targetPort: 56789
+  # Port used to expose Prometheus metrics for the operator
+  - name: ops
+    port: 56790
+    protocol: TCP
+    targetPort: 56790
+  selector:
+    app: "{{ template "stash.name" . }}"
+    release: "{{ .Release.Name }}"

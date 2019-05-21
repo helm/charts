@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "voyager.fullname" . }}
+  labels:
+    app: "{{ template "voyager.name" . }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  ports:
+  # Port used to expose admission webhook apiserver
+  - name: admission
+    port: 443
+    targetPort: 8443
+  # Port used to expose Prometheus metrics for the operator
+  - name: ops
+    port: 56790
+    targetPort: 56790
+  # Port used to respond to Let's Encrypt HTTP challenges
+  - name: acme
+    port: 56791
+    targetPort: 56791
+  selector:
+    app: "{{ template "voyager.name" . }}"
+    release: "{{ .Release.Name }}"

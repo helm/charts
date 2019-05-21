@@ -1,0 +1,12 @@
+apiVersion: v1
+description: Web-based notebook that enables data-driven, interactive data analytics and collaborative documents with SQL, Scala and more.
+name: zeppelin
+version: 1.1.0
+appVersion: 0.7.2
+home: https://zeppelin.apache.org/
+sources:
+- https://github.com/apache/zeppelin
+icon: https://zeppelin.apache.org/assets/themes/zeppelin/img/zeppelin_classic_logo.png
+maintainers:
+- name: danisla
+  email: disla@google.com

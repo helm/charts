@@ -1,0 +1,22 @@
+apiVersion: v1
+description: Luigi is a Python module that helps you build complex pipelines of batch jobs. It handles dependency resolution, workflow management, visualization etc. It also comes with Hadoop support built in.
+home: https://luigi.readthedocs.io/en/stable/
+maintainers:
+- name: sammerry
+  email: sam.merry@gmail.com
+sources:
+- https://github.com/spotify/luigi/
+- https://github.com/sammerry/luigi-docker-image/
+icon: https://raw.githubusercontent.com/spotify/luigi/master/doc/luigi.png
+keywords:
+- luigi
+- scheduler
+- dependency graph
+- web
+- task management
+- hadoop
+- spark
+- kubernetes job manager
+name: luigi
+version: 2.7.5
+appVersion: 2.7.2

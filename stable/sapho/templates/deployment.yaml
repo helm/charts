@@ -1,0 +1,51 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "sapho.fullname" . }}
+  labels:
+    app: {{ template "sapho.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "sapho.fullname" . }}
+    spec:
+      containers:
+      - name: {{ template "sapho.fullname" . }}
+        image: "{{ .Values.image }}"
+        imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+        env:
+        - name: SAPHO_VERSION
+          value: {{ .Values.saphoVersion }}
+        - name: SAPHO_DB_HOSTNAME
+          value: {{ template "sapho.mysql.fullname" . }}
+        - name: SAPHO_DB_PORT
+          value: {{ .Values.saphoDBport | quote }}
+        - name: SAPHO_DB_TYPE
+          value: {{ .Values.saphoDBtype }}
+        - name: SAPHO_DB_USERNAME
+          value: {{ .Values.saphoDBuser }}
+        - name: SAPHO_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "sapho.mysql.fullname" . }}
+              key: mysql-root-password
+        ports:
+        - name: http
+          containerPort: 8080
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: 180
+          timeoutSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: 30
+          timeoutSeconds: 5
+        resources:
+{{ toYaml .Values.resources | indent 12 }}

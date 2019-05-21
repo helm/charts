@@ -1,0 +1,22 @@
+{{- if .Values.rbac.create -}}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app: {{ template "haproxy-ingress.name" . }}
+    chart: {{ template "haproxy-ingress.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  name: {{ template "haproxy-ingress.fullname" . }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ template "haproxy-ingress.fullname" . }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ template "haproxy-ingress.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace }}
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    name: {{ template "haproxy-ingress.fullname" . }}
+{{- end -}}

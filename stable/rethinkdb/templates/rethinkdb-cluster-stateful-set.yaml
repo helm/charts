@@ -1,0 +1,103 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: "{{ template "rethinkdb.fullname" . }}-cluster"
+  labels:
+    app: "{{ template "rethinkdb.name" . }}-cluster"
+    chart: {{ template "rethinkdb.chart" . }}
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+spec:
+  serviceName: "{{ template "rethinkdb.fullname" . }}-cluster"
+  replicas: {{ .Values.cluster.replicas }}
+  template:
+    metadata:
+      name: "{{ template "rethinkdb.fullname" . }}-cluster"
+      labels:
+        app: "{{ template "rethinkdb.name" . }}-cluster"
+        heritage: {{ .Release.Service | quote }}
+        release: {{ .Release.Name | quote }}
+        chart: {{ template "rethinkdb.chart" . }}
+      annotations:
+      {{- if .Values.cluster.podAnnotations }}
+{{ toYaml .Values.cluster.podAnnotations | indent 8 }}
+      {{- end }}
+    spec:
+      serviceAccountName: {{ template "rethinkdb.serviceAccountName" . }}
+      containers:
+        - name: {{ template "rethinkdb.name" . }}-cluster
+          image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
+          imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+          ports:
+            - name: cluster
+              containerPort: {{ .Values.ports.cluster }}
+          args:
+            - "--directory"
+            - "/data/db"
+            - "--bind"
+            - "all"
+            - "--no-http-admin"
+            - "--cache-size"
+            - {{ .Values.cluster.rethinkCacheSize | quote }}
+          volumeMounts:
+            - name: "datadir"
+              mountPath: "/data"
+          env:
+            - name: RETHINK_CLUSTER_SERVICE
+              value: "{{ template "rethinkdb.fullname" . }}-cluster"
+            - name: RETHINKDB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "rethinkdb.fullname" . }}
+                  key: rethinkdb-password
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: status.podIP
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          livenessProbe:
+{{ toYaml .Values.cluster.livenessProbe | indent 12 }}          
+          readinessProbe:
+{{ toYaml .Values.cluster.readinessProbe | indent 12 }}
+            exec:
+              command:
+                - /rethinkdb-probe
+            failureThreshold: 3
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+          resources:
+{{ toYaml .Values.cluster.resources | indent 12 }}
+{{- if .Values.cluster.persistentVolume.enabled }}
+  volumeClaimTemplates:
+  - metadata:
+      name: datadir
+      annotations:
+      {{- if .Values.cluster.storageClass.enabled }}
+        volume.beta.kubernetes.io/storage-class: {{ template "rethinkdb.fullname" . }}
+      {{- end }}
+      {{- range $key, $value := .Values.cluster.persistentVolume.annotations }}
+        {{ $key }}: {{ $value }}
+      {{- end }}
+    spec:
+      accessModes:
+      {{- range .Values.cluster.persistentVolume.accessModes }}
+        - {{ . | quote }}
+      {{- end }}
+      resources:
+        requests:
+          storage: {{ .Values.cluster.persistentVolume.size | quote }}
+{{- else }}
+      volumes:
+        - name: datadir
+          emptyDir: {}
+{{- end }}

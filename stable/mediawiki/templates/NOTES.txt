@@ -1,0 +1,61 @@
+{{- if or .Values.mariadb.enabled .Values.externalDatabase.host -}}
+
+** Please be patient while the chart is being deployed **
+
+{{- if .Values.ingress.enabled }}
+
+1. Get the Mediawiki URL indicated on the Ingress Rule and associate it to your cluster external IP:
+
+   export CLUSTER_IP=$(minikube ip) # On Minikube. Use: `kubectl cluster-info` on others K8s clusters
+   export HOSTNAME=$(kubectl get ingress --namespace {{ .Release.Namespace }} {{ template "mediawiki.fullname" . }} -o jsonpath='{.spec.rules[0].host}')
+   echo "Mediawiki URL: http://$HOSTNAME/"
+   echo "$CLUSTER_IP  $HOSTNAME" | sudo tee -a /etc/hosts
+
+{{- else }}
+
+1. Get the MediaWiki URL by running:
+
+{{- if contains "NodePort" .Values.service.type }}
+
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "mediawiki.fullname" . }})
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo "Mediawiki URL: http://$NODE_IP:$NODE_PORT/"
+
+{{- else if contains "LoadBalancer" .Values.service.type }}
+
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+        Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "mediawiki.fullname" . }}'
+
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "mediawiki.fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
+
+{{- $port:=.Values.service.port | toString }}
+  echo "Mediawiki URL: http://$SERVICE_IP{{- if ne $port "80" }}:{{ .Values.service.port }}{{ end }}/"
+
+{{- else if contains "ClusterIP"  .Values.service.type }}
+
+  echo "Mediawiki URL: http://127.0.0.1:8080/"
+  kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "mediawiki.fullname" . }} 8080:{{ .Values.service.port }}
+
+{{- end }}
+{{- end }}
+
+2. Get your MediaWiki login credentials by running:
+
+    echo Username: {{ .Values.mediawikiUser }}
+    echo Password: $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "mediawiki.fullname" . }} -o jsonpath="{.data.mediawiki-password}" | base64 --decode)
+
+{{- else -}}
+
+########################################################################################
+### ERROR: You did not provide an external database host in your 'helm install' call ###
+########################################################################################
+
+This deployment will be incomplete until you configure MediaWiki with a resolvable database
+host. To configure MediaWiki to use and external database host:
+
+
+1. Complete your MediaWiki deployment by running:
+
+  helm upgrade {{ .Release.Name }} --set service.type={{ .Values.service.type }},mariadb.enabled=false,externalDatabase.host=YOUR_EXTERNAL_DATABASE_HOST stable/mediawiki
+
+{{- end}}

@@ -1,0 +1,33 @@
+1. Get RethinkDB Driver Details
+{{- if contains "NodePort" .Values.proxy.service.type }}
+  echo Host: $(kubectl get no --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo Port: $(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "rethinkdb.fullname" . }}-proxy -o jsonpath='{.spec.ports[0].nodePort}')
+{{- else if contains "LoadBalancer" .Values.proxy.service.type }}
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+        Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "rethinkdb.fullname" . }}-proxy'
+
+  echo Host: $(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "rethinkdb.fullname" . }}-proxy -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  echo Port: $(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "rethinkdb.fullname" . }}-proxy -o jsonpath='{.spec.ports[0].port}')
+
+  NOTE: If you are using Minikube, the above will provide a blank Host and the wrong Port.
+      The following command will open up a browser with the correct Host and Port.
+
+  minikube service {{ template "rethinkdb.fullname" . }}-proxy
+{{- else if contains "ClusterIP"  .Values.proxy.service.type }}
+  NOTE: You will need to run a Kubernetes Port-Forward to connect to the ClusterIP Service
+
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "rethinkdb.name" . }}-proxy" -o jsonpath="{.items[0].metadata.name}")
+  kubectl port-forward $POD_NAME 28015:{{ .Values.ports.driver }}
+
+  Host: 127.0.0.1
+  Port: 28015
+{{- end }}
+
+  echo Username: admin
+  echo Password: $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "rethinkdb.fullname" . }} -o jsonpath="{.data.rethinkdb-password}" | base64 --decode)
+
+2. Open RethinkDB Admin Console
+
+  NOTE: The RethinkDB Admin Console is not exposed externally, you will need to start a 'kubectl proxy' before you can access it.
+
+  URL: http://localhost:8001/api/v1/namespaces/{{ .Release.Namespace }}/services/{{ template "rethinkdb.fullname" . }}-admin/proxy

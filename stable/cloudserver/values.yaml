@@ -1,0 +1,175 @@
+# ------------------------------------------------------------------------------
+# Cloudserver:
+# ------------------------------------------------------------------------------
+
+## Define serviceAccount names to create or use. Defaults to component's fully
+## qualified name.
+##
+serviceAccounts:
+  api:
+    create: true
+    name: ""
+  localdata:
+    create: true
+    name: ""
+
+## Cloudserver image configuration
+##
+image:
+  repository: zenko/cloudserver
+  tag: 8.1.5
+  pullPolicy: IfNotPresent
+
+## Configuration for the cloudserver api component
+##
+api:
+  replicaCount: 1
+
+  ## Configure cloudserver 'location constraints' (cloud backends)
+  ##
+  locationConstraints:
+    us-east-1:
+      type: file
+      objectId: us-east-1
+      legacyAwsBehavior: true
+      details: {}
+
+  ## Specify cloudserver credentials
+  ##
+  credentials:
+    accessKey: my-access-key
+    secretKey: my-secret-key
+
+  ## Specify log level (info, debug or trace)
+  ##
+  logLevel: info
+
+  ## Specify additional environmental variables for the Deployment
+  ##
+  env: {}
+
+  ## Set the following values appropriately when deploying behind a proxy
+  ##
+  proxy:
+    ## HTTP proxy endpoint
+    ##
+    http: ""
+
+    ## HTTPS proxy endpoint
+    https: ""
+
+    ## If true, add a CA certificate to the trusted certs. Helm will look
+    ## for a file named 'ca.crt' at the root path of this chart
+    caCert: false
+
+    ## Specify any exceptions to proxification
+    ##
+    no_proxy: ""
+
+  service:
+    type: ClusterIP
+    port: 80
+    annotations: {}
+      # prometheus.io/scrape: "true"
+      # prometheus.io/port: "8000"
+      # prometheus.io/path: "/_/monitoring/metrics"
+
+  ## Comma-separated string of allowed virtual hosts for external access.
+  ## This should match the ingress hosts
+  ##
+  endpoint: cloudserver.local
+
+  ingress:
+    enabled: false
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    path: /
+    # This must match 'endpoint', unless your client supports different
+    # hostnames.
+    hosts: []
+      # - cloudserver.local
+    tls: []
+    #  - secretName: cloudserver-example-tls
+    #    hosts:
+    #      - cloudserver-example.local
+
+  resources: {}
+  #  limits:
+  #    cpu: 100m
+  #    memory: 128Mi
+  #  requests:
+  #    cpu: 100m
+  #    memory: 128Mi
+
+  ## Node labels for pod assignment
+  ## ref: https://kubernetes.io/docs/user-guide/node-selection/
+  ##
+  nodeSelector: {}
+
+  ## Tolerations for pod assignment
+  ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  ##
+  tolerations: []
+
+  ## Affinity for pod assignment
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  ##
+  affinity: {}
+
+  ## Configure an horizontal pod autoscaler
+  ##
+  autoscaling:
+    enabled: false
+    config:
+      minReplicas: 1
+      maxReplicas: 16
+      ## Note: when setting this, a `resources.request.cpu` is required. You
+      ## likely want to set it to `1` or some lower value.
+      ##
+      targetCPUUtilizationPercentage: 80
+
+## Configuration for the cloudserver localdata component
+##
+localdata:
+  replicaCount: 1
+
+  persistentVolume:
+    enabled: true
+    accessModes:
+      - ReadWriteOnce
+    annotations: {}
+    existingClaim: ""
+    size: 1Gi
+
+  resources: {}
+  #  limits:
+  #    cpu: 100m
+  #    memory: 128Mi
+  #  requests:
+  #    cpu: 100m
+  #    memory: 128Mi
+
+# ------------------------------------------------------------------------------
+# MongoDB:
+# ------------------------------------------------------------------------------
+
+mongodb-replicaset:
+  enabled: true
+  replicas: 1
+  replicaSetName: rs0
+  securityContext:
+    runAsUser: 1000
+    fsGroup: 1000
+    runAsNonRoot: true
+
+# ------------------------------------------------------------------------------
+# Redis:
+# ------------------------------------------------------------------------------
+
+redis-ha:
+  enabled: true
+  replicas: 1
+  redis:
+    masterGroupName: cloudserver
+  affinity: []

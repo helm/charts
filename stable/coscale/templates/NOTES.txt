@@ -1,0 +1,26 @@
+{{- if and (and .Values.coscale.appId .Values.coscale.accessToken) .Values.coscale.templateId -}}
+CoScale agents are spinning up on each node in your cluster. After a few
+seconds, you should see your hosts and hosts appearing in the CoScale UI:
+
+    https://app.coscale.com/
+
+No further action should be required.
+
+{{- else -}}
+#################################################################################################
+####   ERROR: You did not set a coscale.appId or coscale.accessToken or coscale.templateId   ####
+#################################################################################################
+
+This deployment will be incomplete until you get your CoScale Agent Key.
+Sing up for a free CoScale trial at https://www.coscale.com/free-trial
+
+Once registered you can get your Agent Key at:
+
+    https://app.coscale.com/
+
+Then run:
+
+    helm upgrade {{ .Release.Name }} \
+        --set coscale.appId=YOUR-APP-ID,coscale.accessToken=YOUR-ACCESS-TOKEN,coscale.templateId=YOUR-TEMPLATE-ID \
+        stable/coscale
+{{- end }}

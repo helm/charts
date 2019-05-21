@@ -1,0 +1,148 @@
+{{- if .Values.server.enabled -}}
+apiVersion: apps/v1beta2
+kind: DaemonSet
+metadata:
+  labels:
+    app: {{ template "kiam.name" . }}
+    chart: {{ template "kiam.chart" . }}
+    component: "{{ .Values.server.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "kiam.fullname" . }}-server
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "kiam.name" . }}
+      component: "{{ .Values.server.name }}"
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      {{- if .Values.server.podAnnotations }}
+      annotations:
+{{ toYaml .Values.server.podAnnotations | indent 8 }}
+      {{- end }}
+      labels:
+        app: {{ template "kiam.name" . }}
+        component: "{{ .Values.server.name }}"
+        release: {{ .Release.Name }}
+      {{- if .Values.server.podLabels }}
+{{ toYaml .Values.server.podLabels | indent 8 }}
+      {{- end }}
+    spec:
+      serviceAccountName: {{ template "kiam.serviceAccountName.server" . }}
+      hostNetwork: {{ .Values.server.useHostNetwork }}
+    {{- if .Values.server.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.server.nodeSelector | indent 8 }}
+    {{- end }}
+      tolerations:
+{{ toYaml .Values.server.tolerations | indent 8 }}
+      {{- if .Values.server.affinity }}
+      affinity:
+{{ toYaml .Values.server.affinity | indent 10 }}
+      {{- end }}
+      volumes:
+        - name: tls
+          secret:
+            {{- if .Values.server.tlsSecret }}
+            secretName: {{ .Values.server.tlsSecret }}
+            {{else}}
+            secretName: {{ template "kiam.fullname" . }}-server
+            {{- end }}
+      {{- range .Values.server.extraHostPathMounts }}
+        - name: {{ .name }}
+          hostPath:
+            path: {{ .hostPath }}
+      {{- end }}
+      {{- if .Values.server.priorityClassName }}
+      priorityClassName: {{ .Values.server.priorityClassName | quote }}
+      {{- end }}
+      containers:
+        - name: {{ template "kiam.name" . }}-{{ .Values.server.name }}
+          image: "{{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}"
+          imagePullPolicy: {{ .Values.server.image.pullPolicy }}
+          command:
+            - /kiam
+            - server
+          args:
+            {{- if .Values.server.log.jsonOutput }}
+            - --json-log
+            {{- end }}
+            - --level={{ .Values.server.log.level }}
+            - --bind=0.0.0.0:{{ .Values.server.service.targetPort }}
+            - --cert=/etc/kiam/tls/{{ .Values.server.tlsCerts.certFileName }}
+            - --key=/etc/kiam/tls/{{ .Values.server.tlsCerts.keyFileName }}
+            - --ca=/etc/kiam/tls/{{ .Values.server.tlsCerts.caFileName }}
+            {{- if .Values.server.roleBaseArn }}
+            - --role-base-arn={{ .Values.server.roleBaseArn }}
+            {{- else }}
+            - --role-base-arn-autodetect
+            {{- end }}
+            {{- if .Values.server.assumeRoleArn }}
+            - --assume-role-arn={{ .Values.server.assumeRoleArn }}
+            {{- end }}
+            - --session-duration={{ .Values.server.sessionDuration }}
+            - --sync={{ .Values.server.cache.syncInterval }}
+            {{- if .Values.server.prometheus.scrape }}
+            - --prometheus-listen-addr=0.0.0.0:{{ .Values.server.prometheus.port }}
+            - --prometheus-sync-interval={{ .Values.server.prometheus.syncInterval }}
+            {{- end }}
+          {{- range $key, $value := .Values.server.extraArgs }}
+            {{- if $value }}
+            - --{{ $key }}={{ $value }}
+            {{- else }}
+            - --{{ $key }}
+            {{- end }}
+          {{- end }}
+        {{- if .Values.server.extraEnv }}
+          env:
+          {{- range $name, $value := .Values.server.extraEnv }}
+            - name: {{ $name }}
+              value: {{ quote $value }}
+          {{- end }}
+        {{- end }}
+          volumeMounts:
+            - mountPath: /etc/kiam/tls
+              name: tls
+          {{- range .Values.server.extraHostPathMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              readOnly: {{ .readOnly }}
+          {{- end }}
+          livenessProbe:
+            exec:
+              command:
+                - /kiam
+                - health
+                - --cert=/etc/kiam/tls/{{ .Values.server.tlsCerts.certFileName }}
+                - --key=/etc/kiam/tls/{{ .Values.server.tlsCerts.keyFileName }}
+                - --ca=/etc/kiam/tls/{{ .Values.server.tlsCerts.caFileName }}
+                - --server-address={{ .Values.server.probes.serverAddress }}:{{ .Values.server.service.targetPort }}
+                - --server-address-refresh=2s
+                - --timeout=5s
+                - --gateway-timeout-creation={{ .Values.server.gatewayTimeoutCreation }}
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 10
+          readinessProbe:
+            exec:
+              command:
+                - /kiam
+                - health
+                - --cert=/etc/kiam/tls/{{ .Values.server.tlsCerts.certFileName }}
+                - --key=/etc/kiam/tls/{{ .Values.server.tlsCerts.keyFileName }}
+                - --ca=/etc/kiam/tls/{{ .Values.server.tlsCerts.caFileName }}
+                - --server-address={{ .Values.server.probes.serverAddress }}:{{ .Values.server.service.targetPort }}
+                - --server-address-refresh=2s
+                - --timeout=5s
+                - --gateway-timeout-creation={{ .Values.server.gatewayTimeoutCreation }}
+            initialDelaySeconds: 3
+            periodSeconds: 10
+            timeoutSeconds: 10
+        {{- if .Values.server.resources }}
+          resources:
+{{ toYaml .Values.server.resources | indent 12 }}
+        {{- end }}
+  updateStrategy:
+    type: {{ .Values.server.updateStrategy }}
+{{- end }}

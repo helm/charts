@@ -1,0 +1,20 @@
+image:
+  repository: rookout/agent
+  tag: 0.2.3
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+
+listenAll: True
+tags: ''
+
+rookout:
+  token: ''
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+replicaCount: 1

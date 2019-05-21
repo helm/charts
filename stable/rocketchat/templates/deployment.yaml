@@ -1,0 +1,91 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "rocketchat.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "rocketchat.name" . }}
+    helm.sh/chart: {{ include "rocketchat.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "rocketchat.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "rocketchat.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+      annotations:
+        checksum/secret: {{ include (print .Template.BasePath "/secret.yaml") . | sha256sum }}
+    spec:
+      {{- if .Values.securityContext.enabled }}
+      securityContext:
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+      {{- end }}
+      containers:
+      - name: rocketchat
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+        - name: DEPLOY_PLATFORM
+          value: helm-chart
+        - name: INSTANCE_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: MONGO_URL
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "rocketchat.fullname" . }}
+              key: mongo-uri
+        - name: MONGO_OPLOG_URL
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "rocketchat.fullname" . }}
+              key: mongo-oplog-uri
+        {{- if .Values.host }}
+        - name: ROOT_URL
+          value: https://{{ .Values.host }}
+        {{- end }}
+        {{- if .Values.smtp.enabled }}
+        - name: MAIL_URL
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "rocketchat.fullname" . }}
+              key: mail-url
+        {{- end }}
+{{- with .Values.extraEnv }}
+{{ tpl . $ | indent 8 }}
+{{- end }}
+        ports:
+        - name: http
+          containerPort: 3000
+        livenessProbe:
+          httpGet:
+            path: /api/info
+            port: http
+          initialDelaySeconds: 60
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /api/info
+            port: http
+          initialDelaySeconds: 10
+          timeoutSeconds: 5
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        volumeMounts:
+        - name: rocket-data
+          mountPath: /app/uploads
+      volumes:
+      - name: rocket-data
+      {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ template "rocketchat.fullname" . }}
+      {{- else }}
+        emptyDir: {}
+      {{- end }}

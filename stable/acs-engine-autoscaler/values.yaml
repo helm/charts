@@ -1,0 +1,61 @@
+# Default values for acs-engine-autoscaler.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+replicaCount: 1
+## Image for kubernetes-acs-engine-autoscaler
+## Will update the image and tag later
+image:
+  repository: wbuchwalter/kubernetes-acs-engine-autoscaler
+  tag: 2.1.1
+  pullPolicy: IfNotPresent
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+## Node labels for pod assignment
+## ref: https://kubernetes.io/docs/user-guide/node-selection/
+nodeSelector: {}
+
+## Pod Annotations
+podAnnotations: {}
+
+## Deployment Annotations
+deploymentAnnotations: {}
+
+## Tolerations for pod assignment
+## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+tolerations: []
+
+## Affinity for pod assignment
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+affinity: {}
+
+acsenginecluster:
+  resourcegroup:
+  azurespappid:
+  azurespsecret:
+  azuresptenantid:
+  kubeconfigprivatekey:
+  clientprivatekey:
+  caprivatekey:
+  ## Optional parameter for deployment name if not using default
+  # acsdeployment:
+  ## Optional parameter for sleep time between scaling loops (default: 60)
+  # sleeptime:
+  ## Optional parameter for pools to ignore scaling on
+  # ignorepools:
+  ## Optional parameter denominating number of nodes to spare in a pool after scaling
+  # spareagents:
+  ## Optional parameter denominating the maximum duration (in seconds) an agent can stay idle before being deleted
+  # idlethreshold:
+  ## Optional parameter denominating the number of extra agents to create when scaling out
+  # overprovision:

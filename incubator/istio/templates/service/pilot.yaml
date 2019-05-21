@@ -1,0 +1,22 @@
+{{- if and .Values.istio.install (not .Release.IsInstall) -}}
+{{- $serviceName := include "istio.name" . -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $serviceName }}-{{ .Values.pilot.name }}
+  labels:
+{{ include "istio.labels.standard" . | indent 4 }}
+    istio: {{ $serviceName }}-{{ .Values.pilot.name }}
+spec:
+  type: {{ .Values.pilot.service.type }}
+  ports:
+  - port: {{ .Values.pilot.service.externalHttpDiscovery }}
+    name: http-discovery
+  - port: {{ .Values.pilot.service.externalAdmissionWebhookServer }}
+    name: http-admission-webhook
+  selector:
+    app: {{ include "istio.name" . }}
+    component: {{ $serviceName }}-{{ .Values.pilot.name }}
+    release: {{ .Release.Name }}
+    istio: {{ $serviceName }}-{{ .Values.pilot.name }}
+{{- end -}}

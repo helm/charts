@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "cosbench.driver.fullname" . }}
+  labels:
+    app: {{ template "cosbench.name" . }}
+    chart: {{ template "cosbench.chart" . }}
+    component: driver
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  clusterIP: None
+  ports:
+    - name: driver
+      port: {{ .Values.driver.service.port }}
+      targetPort: driver
+      protocol: TCP
+  selector:
+    app: {{ template "cosbench.name" . }}
+    component: driver
+    release: {{ .Release.Name }}

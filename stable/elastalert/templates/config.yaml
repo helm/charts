@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "elastalert.fullname" . }}-config
+  labels:
+    app: {{ template "elastalert.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  elastalert_config: |-
+    ---
+    rules_folder: /opt/rules
+    scan_subdirectories: false
+    run_every:
+      minutes: {{ .Values.runIntervalMins }}
+{{- if .Values.realertIntervalMins }}
+    realert:
+      minutes: {{ .Values.realertIntervalMins }}
+{{- end }}
+    buffer_time:
+      minutes: {{ .Values.bufferTimeMins }}
+    es_host: {{ .Values.elasticsearch.host }}
+    es_port: {{ .Values.elasticsearch.port }}
+{{- if .Values.elasticsearch.username }}
+    es_username: {{ .Values.elasticsearch.username }}
+{{- end }}
+{{- if .Values.elasticsearch.password }}
+    es_password: {{ .Values.elasticsearch.password }}
+{{- end }}
+    writeback_index: {{ .Values.writebackIndex }}
+    use_ssl: {{ .Values.elasticsearch.useSsl }}
+    verify_certs: {{ .Values.elasticsearch.verifyCerts }}
+{{- if .Values.elasticsearch.clientCert }}
+    client_cert: {{ .Values.elasticsearch.clientCert }}
+{{- end }}
+{{- if .Values.elasticsearch.clientKey }}
+    client_key: {{ .Values.elasticsearch.clientKey }}
+{{- end }}
+{{- if .Values.elasticsearch.caCerts }}
+    ca_certs: {{ .Values.elasticsearch.caCerts }}
+{{- end }}
+    alert_time_limit:
+      minutes: {{ .Values.alertRetryLimitMins }}
+{{- if .Values.extraConfigOptions }}
+{{ toYaml .Values.extraConfigOptions | indent 4 }}
+{{- end }}

@@ -1,0 +1,52 @@
+{{- if ne (printf "%s" .Values.projectID) "MUST PROVIDE PROJECT ID" }}
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "gcp-night-king.fullname" . }}
+  labels:
+    app: {{ template "gcp-night-king.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "gcp-night-king.name" . }}
+        release: {{ .Release.Name }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum | quote }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - /usr/bin/nightking
+            - "-project"
+            - $(PROJECT_ID)
+{{- if .Values.subscriptionName }}
+            - "-subscription-name"
+            - $(SUBSCRIPTION_NAME)
+{{- end }}
+          env:
+            - name: "PROJECT_ID"
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "gcp-night-king.fullname" . }}-config
+                  key: project.id
+{{- if .Values.subscriptionName }}
+            - name: "SUBSCRIPTION_NAME"
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "gcp-night-king.fullname" . }}-config
+                  key: subscription.name
+{{- end }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
+{{- end }}

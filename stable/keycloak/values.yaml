@@ -1,0 +1,263 @@
+init:
+  image:
+    repository: alpine
+    tag: 3.8
+    pullPolicy: IfNotPresent
+
+clusterDomain: cluster.local
+
+keycloak:
+  replicas: 1
+
+  image:
+    repository: jboss/keycloak
+    tag: 5.0.0
+    pullPolicy: IfNotPresent
+
+    ## Optionally specify an array of imagePullSecrets.
+    ## Secrets must be manually created in the namespace.
+    ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+    ##
+    pullSecrets: []
+    # - myRegistrKeySecretName
+
+  hostAliases: []
+  #  - ip: "1.2.3.4"
+  #    hostnames:
+  #      - "my.host.com"
+
+  securityContext:
+    runAsUser: 1000
+    fsGroup: 1000
+    runAsNonRoot: true
+
+  ## The path keycloak will be served from. To serve keycloak from the root path, use two quotes (e.g. "").
+  basepath: auth
+
+  ## Additional init containers, e. g. for providing custom themes
+  extraInitContainers: |
+
+  ## Additional sidecar containers, e. g. for a database proxy, such as Google's cloudsql-proxy
+  extraContainers: |
+
+  ## Custom script that is run before Keycloak is started.
+  preStartScript:
+
+  ## lifecycleHooks defines the container lifecycle hooks
+  lifecycleHooks: |
+    # postStart:
+    #   exec:
+    #     command: ["/bin/sh", "-c", "ls"]
+
+  ## Additional arguments to start command e.g. -Dkeycloak.import= to load a realm
+  extraArgs: ""
+
+  ## Username for the initial Keycloak admin user
+  username: keycloak
+
+  ## Password for the initial Keycloak admin user. Applicable only if existingSecret is not set.
+  ## If not set, a random 10 characters password will be used
+  password: ""
+
+  # Specifies an existing secret to be used for the admin password
+  existingSecret: ""
+
+  # The key in the existing secret that stores the password
+  existingSecretKey: password
+
+  ## Allows the specification of additional environment variables for Keycloak
+  extraEnv: |
+    # - name: KEYCLOAK_LOGLEVEL
+    #   value: DEBUG
+    # - name: WILDFLY_LOGLEVEL
+    #   value: DEBUG
+    # - name: CACHE_OWNERS
+    #   value: "2"
+    # - name: DB_QUERY_TIMEOUT
+    #   value: "60"
+    # - name: DB_VALIDATE_ON_MATCH
+    #   value: true
+    # - name: DB_USE_CAST_FAIL
+    #   value: false
+
+  affinity: |
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchLabels:
+              app:  {{ template "keycloak.name" . }}
+              release: "{{ .Release.Name }}"
+            matchExpressions:
+              - key: role
+                operator: NotIn
+                values:
+                  - test
+          topologyKey: kubernetes.io/hostname
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          podAffinityTerm:
+            labelSelector:
+              matchLabels:
+                app:  {{ template "keycloak.name" . }}
+                release: "{{ .Release.Name }}"
+              matchExpressions:
+                - key: role
+                  operator: NotIn
+                  values:
+                    - test
+            topologyKey: failure-domain.beta.kubernetes.io/zone
+
+  nodeSelector: {}
+  priorityClassName: ""
+  tolerations: []
+
+  ## Additional pod labels
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+  podLabels: {}
+
+  ## Extra Annotations to be added to pod
+  podAnnotations: {}
+
+  livenessProbe:
+    initialDelaySeconds: 120
+    timeoutSeconds: 5
+  readinessProbe:
+    initialDelaySeconds: 30
+    timeoutSeconds: 1
+
+  resources: {}
+    # limits:
+    #   cpu: "100m"
+    #   memory: "1024Mi"
+    # requests:
+    #   cpu: "100m"
+    #   memory: "1024Mi"
+
+  ## WildFly CLI configurations. They all end up in the file 'keycloak.cli' configured in the configmap which is
+  ## executed on server startup.
+  cli:
+    nodeIdentifier: |
+      {{ .Files.Get "scripts/node-identifier.cli" }}
+
+    logging: |
+      {{ .Files.Get "scripts/logging.cli" }}
+
+    reverseProxy: |
+      {{ .Files.Get "scripts/reverse-proxy.cli" }}
+
+    ha: |
+      {{ .Files.Get "scripts/ha.cli" }}
+
+    datasource: |
+      {{ .Files.Get "scripts/datasource.cli" }}
+
+    # Custom CLI script
+    custom: |
+
+  ## Add additional volumes and mounts, e. g. for custom themes
+  extraVolumes: |
+  extraVolumeMounts: |
+
+  ## Add additional ports, eg. for custom admin console
+  extraPorts: |
+
+  podDisruptionBudget: {}
+    # maxUnavailable: 1
+    # minAvailable: 1
+
+  service:
+    annotations: {}
+    # service.beta.kubernetes.io/aws-load-balancer-internal: "0.0.0.0/0"
+
+    labels: {}
+    # key: value
+
+    ## ServiceType
+    ## ref: https://kubernetes.io/docs/user-guide/services/#publishing-services---service-types
+    type: ClusterIP
+
+    ## Optional static port assignment for service type NodePort.
+    # nodePort: 30000
+
+    port: 80
+
+    # Optional: jGroups port for high availability clustering
+    jgroupsPort: 7600
+
+  ## Ingress configuration.
+  ## ref: https://kubernetes.io/docs/user-guide/ingress/
+  ingress:
+    enabled: false
+    path: /
+
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+      # ingress.kubernetes.io/affinity: cookie
+
+    ## List of hosts for the ingress
+    hosts:
+      - keycloak.example.com
+
+    ## TLS configuration
+    tls: []
+    # - hosts:
+    #     - keycloak.example.com
+    #   secretName: tls-keycloak
+
+  ## Persistence configuration
+  persistence:
+    # If true, the Postgres chart is deployed
+    deployPostgres: false
+
+    # The database vendor. Can be either "postgres", "mysql", "mariadb", or "h2"
+    dbVendor: h2
+
+    ## The following values only apply if "deployPostgres" is set to "false"
+
+    # Specifies an existing secret to be used for the database password
+    existingSecret: ""
+
+    # The key in the existing secret that stores the password
+    existingSecretKey: password
+
+    dbName: keycloak
+    dbHost: mykeycloak
+    dbPort: 5432
+    dbUser: keycloak
+
+    # Only used if no existing secret is specified. In this case a new secret is created
+    dbPassword: ""
+
+postgresql:
+  ### PostgreSQL User to create.
+  ##
+  postgresUser: keycloak
+
+  ## PostgreSQL Password for the new user.
+  ## If not set, a random 10 characters password will be used.
+  ##
+  postgresPassword: ""
+
+  ## PostgreSQL Database to create.
+  ##
+  postgresDatabase: keycloak
+
+  ## Persistent Volume Storage configuration.
+  ## ref: https://kubernetes.io/docs/user-guide/persistent-volumes
+  ##
+  persistence:
+    ## Enable PostgreSQL persistence using Persistent Volume Claims.
+    ##
+    enabled: false
+
+test:
+  enabled: true
+  image:
+    repository: unguiculus/docker-python3-phantomjs-selenium
+    tag: v1
+    pullPolicy: IfNotPresent
+  securityContext:
+    runAsUser: 1000
+    fsGroup: 1000
+    runAsNonRoot: true

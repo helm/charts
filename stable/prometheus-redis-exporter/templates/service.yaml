@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "prometheus-redis-exporter.fullname" . }}
+  labels:
+    app: {{ template "prometheus-redis-exporter.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  annotations:
+{{ toYaml .Values.service.annotations | indent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - name: redis-exporter
+      port: {{ .Values.service.port }}
+      targetPort: exporter-port
+      protocol: TCP
+  selector:
+    app: {{ template "prometheus-redis-exporter.name" . }}
+    release: {{ .Release.Name }}

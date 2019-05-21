@@ -1,0 +1,85 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "voyager.fullname" . }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: "{{ template "voyager.name" . }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: "{{ template "voyager.name" . }}"
+      release: "{{ .Release.Name }}"
+  template:
+    metadata:
+      labels:
+        app: "{{ template "voyager.name" . }}"
+        release: "{{ .Release.Name }}"
+{{- if and .Values.criticalAddon (eq .Release.Namespace "kube-system") }}
+      annotations:
+        scheduler.alpha.kubernetes.io/critical-pod: ''
+{{- end }}
+    spec:
+      serviceAccountName: {{ template "voyager.serviceAccountName" . }}
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | indent 6 }}
+      {{- end }}
+      containers:
+      - name: voyager
+        image: {{ .Values.dockerRegistry }}/voyager:{{ .Values.imageTags.voyager }}
+        imagePullPolicy: {{ .Values.imagePullPolicy  }}
+        args:
+        - run
+        - --cloud-provider={{ .Values.cloudProvider }}
+        - --cloud-config={{ .Values.cloudConfig }}
+        - --v={{ .Values.logLevel }}
+        - --rbac={{ .Values.rbac.create }}
+        - --ingress-class={{ .Values.ingressClass }}
+        - --operator-service={{ template "voyager.fullname" . }}
+        - --docker-registry={{ .Values.dockerRegistry }}
+        - --haproxy-image-tag={{ .Values.imageTags.haproxy }}
+        - --exporter-image-tag={{ .Values.imageTags.voyager }}
+        - --secure-port=8443
+        - --audit-log-path=-
+        - --tls-cert-file=/var/serving-cert/tls.crt
+        - --tls-private-key-file=/var/serving-cert/tls.key
+        ports:
+        - containerPort: 8443
+        - containerPort: 56790
+        - containerPort: 56791
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 8443
+            scheme: HTTPS
+        volumeMounts:
+        - mountPath: /var/serving-cert
+          name: serving-cert
+{{- if .Values.persistence.enabled }}
+        - mountPath: {{ dir .Values.cloudConfig | quote }}
+          name: cloudconfig
+          readOnly: true
+{{- end }}
+      volumes:
+      - name: serving-cert
+        secret:
+          defaultMode: 420
+          secretName: {{ template "voyager.fullname" . }}-apiserver-cert
+{{- if .Values.persistence.enabled }}
+      - hostPath:
+          path: {{ .Values.persistence.hostPath | quote }}
+        name: cloudconfig
+{{- end -}}
+{{- if and .Values.criticalAddon (eq .Release.Namespace "kube-system") }}
+      tolerations:
+      - key: CriticalAddonsOnly
+        operator: Exists
+{{- end -}}
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end -}}

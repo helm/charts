@@ -1,0 +1,35 @@
+kind: StorageClass
+apiVersion: storage.k8s.io/v1beta1
+metadata:
+  name: {{ .Values.efsProvisioner.storageClass.name }}
+  labels:
+    app: {{ template "efs-provisioner.name" . }}
+    env: {{ .Values.global.deployEnv }}
+    chart: {{ template "efs-provisioner.chartname" . }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+  annotations:
+{{- if .Values.efsProvisioner.storageClass.isDefault }}
+    storageclass.kubernetes.io/is-default-class: "true"
+{{- end }}
+{{- if .Values.annotations }}
+{{ toYaml .Values.annotations | indent 4 }}
+{{- end }}
+provisioner: {{ .Values.efsProvisioner.provisionerName }}
+parameters:
+{{- if .Values.efsProvisioner.storageClass.gidAllocate.enabled }}
+{{- with .Values.efsProvisioner.storageClass.gidAllocate }}
+  gidAllocate: "true"
+  gidMin: "{{ .gidMin }}"
+  gidMax: "{{ .gidMax }}"
+{{- end }}
+{{- else }}
+  gidAllocate: "false"
+{{- end }}
+reclaimPolicy: {{ .Values.efsProvisioner.storageClass.reclaimPolicy }}
+{{- if .Values.efsProvisioner.storageClass.mountOptions }}
+mountOptions:
+  {{- range .Values.efsProvisioner.storageClass.mountOptions }}
+  - {{ . }}
+  {{- end }}
+{{- end }}

@@ -1,0 +1,95 @@
+Selenium Hub can be accessed via port {{ .Values.hub.port }} on the following
+DNS name from within your cluster:
+
+- http://{{ template "selenium.hub.fullname" . }}.{{ .Release.Namespace }}:{{ .Values.hub.port }}
+
+You can easily connect to the remote instance from your browser. Forward the
+webserver port to localhost:4444
+
+- kubectl port-forward --namespace {{ .Release.Namespace }} \
+  $(kubectl get pods --namespace {{ .Release.Namespace }} \
+    -l app={{ template "selenium.hub.fullname" . }} \
+    -o jsonpath='{ .items[0].metadata.name }') 4444
+
+You can also connect to the container running Selenium Hub. To open a shell
+session in the pod run the following:
+
+- kubectl exec -i -t --namespace {{ .Release.Namespace }} \
+  $(kubectl get pods --namespace {{ .Release.Namespace }} \
+    -l app={{ template "selenium.hub.fullname" . }} \
+    -o jsonpath='{.items[0].metadata.name}') /bin/sh
+
+To tail the logs for the Selenium Hub pod run the following:
+
+- kubectl logs -f --namespace {{ .Release.Namespace }} \
+    $(kubectl get pods --namespace {{ .Release.Namespace }} \
+      -l app={{ template "selenium.hub.fullname" . }} \
+      -o jsonpath='{ .items[0].metadata.name }')
+
+{{- if eq .Values.hub.serviceType "LoadBalancer" }}
+
+To watch for the LoadBalancer IP run the following
+
+- kubectl get svc -w --namespace {{ .Release.Namespace }} \
+    -l app={{ template "selenium.hub.fullname" . }}
+{{- end }}
+
+{{- if and (not .Values.chrome.enabled) (not .Values.chromeDebug.enabled) (not .Values.firefox.enabled) (not .Values.firefoxDebug.enabled) }}
+WARNING: No nodes enabled, no browsers available via hub
+
+- Enable Chrome
+  helm upgrade --set chrome.enabled=true {{ .Release.Name }} stable/selenium
+
+- Enable Chrome Debug
+  helm upgrade --set chromeDebug.enabled=true {{ .Release.Name }} stable/selenium
+
+- Enable Firefox
+  helm upgrade --set firefox.enabled=true {{ .Release.Name }} stable/selenium
+
+- Enable Firefox Debug
+  helm upgrade --set firefoxDebug.enabled=true {{ .Release.Name }} stable/selenium
+
+{{- else -}}
+
+To scale the number of selenium nodes
+
+{{- if eq true .Values.chrome.enabled }}
+- Chrome
+  helm upgrade --set chrome.replicas=N {{ .Release.Name }} stable/selenium
+{{ end }}
+
+{{- if eq true .Values.chromeDebug.enabled }}
+- Chrome Debug
+  helm upgrade --set chromeDebug.replicas=N {{ .Release.Name }} stable/selenium
+
+- Chrome VNC
+  kubectl port-forward --namespace {{ .Release.Namespace }} \
+  $(kubectl get pods --namespace {{ .Release.Namespace }} \
+    -l app={{ template "selenium.chromeDebug.fullname" . }} \
+    -o jsonpath='{ .items[0].metadata.name }') 5900
+
+  Install VNC Client and open a session at localhost:5900. Username is not
+  required, password is "secret".
+{{ end }}
+
+{{- if eq true .Values.firefox.enabled }}
+- Firefox
+  helm upgrade --set firefox.replicas=N {{ .Release.Name }} stable/selenium
+{{ end }}
+
+{{ if eq true .Values.firefoxDebug.enabled }}
+- Firefox Debug
+  helm upgrade --set firefoxDebug.replicas=N {{ .Release.Name }} stable/selenium
+- Firefox VNC
+  kubectl port-forward --namespace {{ .Release.Namespace }} \
+  $(kubectl get pods --namespace {{ .Release.Namespace }} \
+    -l app={{ template "selenium.firefoxDebug.fullname" . }} \
+    -o jsonpath='{ .items[0].metadata.name }') 5900
+
+  Install VNC Client and open a session at localhost:5900. Username is not
+  required, password is "secret".
+{{ end -}}
+
+{{ end }}
+
+If you find your hub is OOMKilled, try adding -XX:+UseSerialGC to hub.javaOpts.

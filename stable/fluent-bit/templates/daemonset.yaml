@@ -1,0 +1,157 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: {{ template "fluent-bit.fullname" . }}
+  labels:
+    app: {{ template "fluent-bit.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: {{ template "fluent-bit.name" . }}
+        release: {{ .Release.Name }}
+{{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | indent 8 }}
+{{- end }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
+{{- if .Values.podAnnotations }}
+{{ toYaml .Values.podAnnotations | indent 8 }}
+{{- end }}
+    spec:
+{{- if .Values.priorityClassName }}
+      priorityClassName: "{{ .Values.priorityClassName }}"
+{{- end }}
+{{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.image.pullSecrets | indent 8 }}
+{{- end }}
+      hostNetwork: {{ .Values.hostNetwork }}
+      dnsPolicy: {{ .Values.dnsPolicy }}
+      serviceAccountName: {{ template "fluent-bit.serviceAccountName" . }}
+      containers:
+      - name: fluent-bit
+        image: "{{ .Values.image.fluent_bit.repository }}:{{ .Values.image.fluent_bit.tag }}"
+        imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+        env:
+{{ toYaml .Values.env | indent 10 }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+{{- if or .Values.metrics.enabled .Values.extraPorts }}
+        ports:
+{{- if .Values.metrics.enabled }}
+        - name: metrics
+          containerPort: 2020
+          protocol: TCP
+{{- end -}}
+{{- if .Values.extraPorts }}
+{{ toYaml .Values.extraPorts | indent 8 }}
+{{- end }}
+{{- end }}
+        volumeMounts:
+        - name: varlog
+          mountPath: /var/log
+        - name: varlibdockercontainers
+          mountPath: /var/lib/docker/containers
+          readOnly: true
+      {{- if .Values.input.systemd.enabled }}
+        - name: etcmachineid
+          mountPath: /etc/machine-id
+          readOnly: true
+      {{- end }}
+{{- if .Values.fullConfigMap }}
+        - name: config
+          mountPath: /fluent-bit/etc
+{{- else }}
+        - name: config
+          mountPath: /fluent-bit/etc/fluent-bit.conf
+          subPath: fluent-bit.conf
+        - name: config
+          mountPath: /fluent-bit/etc/fluent-bit-service.conf
+          subPath: fluent-bit-service.conf
+        - name: config
+          mountPath: /fluent-bit/etc/fluent-bit-input.conf
+          subPath: fluent-bit-input.conf
+        - name: config
+          mountPath: /fluent-bit/etc/fluent-bit-filter.conf
+          subPath: fluent-bit-filter.conf
+        - name: config
+          mountPath: /fluent-bit/etc/fluent-bit-output.conf
+          subPath: fluent-bit-output.conf
+
+{{- if .Values.parsers.enabled }}
+        - name: config
+          mountPath: /fluent-bit/etc/parsers_custom.conf
+          subPath: parsers.conf
+{{- end }}
+{{- end }}
+{{- if .Values.backend.es.tls_ca }}
+        - name: es-tls-secret
+          mountPath: /secure/es-tls-ca.crt
+          subPath: es-tls-ca.crt
+{{- end }}
+{{- if .Values.trackOffsets }}
+        - name: tail-db
+          mountPath: /tail-db
+{{- end }}
+{{- if .Values.extraVolumeMounts }}
+{{ toYaml .Values.extraVolumeMounts | indent 8 }}
+{{- end }}
+{{ if .Values.on_minikube }}
+        - name: mnt
+          mountPath: /mnt
+          readOnly: true
+{{ end }}
+      terminationGracePeriodSeconds: 10
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+      {{ if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+      {{- end }}
+    {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+    {{- end }}
+      volumes:
+      - name: varlog
+        hostPath:
+          path: /var/log
+      - name: varlibdockercontainers
+        hostPath:
+          path: /var/lib/docker/containers
+    {{- if .Values.input.systemd.enabled }}
+      - name: etcmachineid
+        hostPath:
+          path: /etc/machine-id
+          type: File
+    {{- end }}
+{{- if .Values.backend.es.tls_ca }}
+      - name: es-tls-secret
+        secret:
+          secretName: "{{ template "fluent-bit.fullname" . }}-es-tls-secret"
+{{- end }}
+{{- if .Values.trackOffsets }}
+      - name: tail-db
+        hostPath:
+          path: {{ .Values.taildb.directory }}
+          type: DirectoryOrCreate
+{{- end }}
+      - name: config
+        configMap:
+          name: {{ if .Values.existingConfigMap }}{{ .Values.existingConfigMap }}{{- else }}{{ template "fluent-bit.fullname" . }}-config{{- end }}
+{{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes | indent 6 }}
+{{- end }}
+{{ if .Values.on_minikube }}
+      - name: mnt
+        hostPath:
+          path: /mnt
+{{ end }}

@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "cerebro.fullname" . }}
+  labels:
+    app: {{ template "cerebro.name" . }}
+    chart: {{ template "cerebro.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  application.conf: |-
+    {{- if .Values.config.secret }}
+    secret = {{ .Values.config.secret | quote }}
+    {{- else }}
+    secret = {{ randAlphaNum 64 | quote }}
+    {{- end }}
+
+    basePath = {{ .Values.config.basePath | quote }}
+
+    pidfile.path = /dev/null
+
+    rest.history.size = {{ .Values.config.restHistorySize }}
+
+    data.path = "/var/db/cerebro/cerebro.db"
+
+    es = {
+      gzip = true
+    }
+
+    auth = {
+    }
+
+    hosts = [
+      {{- range $index, $element := .Values.config.hosts }}
+      {{ if $index }},{{ end }}
+      {
+        host = {{ $element.host | quote }}
+        name = {{ $element.name | quote }}
+      }
+      {{- end }}
+    ]

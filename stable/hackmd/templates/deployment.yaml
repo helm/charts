@@ -1,0 +1,95 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "hackmd.fullname" . }}
+  labels:
+    app: {{ template "hackmd.name" . }}
+    chart: {{ template "hackmd.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "hackmd.name" . }}
+      release: {{ .Release.Name }}
+  strategy:
+    type: {{ .Values.deploymentStrategy }}
+  {{- if ne .Values.deploymentStrategy "RollingUpdate" }}
+    rollingUpdate: null
+  {{- end }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "hackmd.name" . }}
+        release: {{ .Release.Name }}
+{{- with .Values.podAnnotations }}
+      annotations:
+{{ toYaml . | indent 8 }}
+{{- end }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 3000
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /status
+              port: 3000
+            initialDelaySeconds: 120
+          readinessProbe:
+            httpGet:
+              path: /status
+              port: 3000
+            initialDelaySeconds: 30
+          env:
+            - name: CMD_DB_PASSWORD
+              {{- if .Values.postgresql.install }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "hackmd.postgresql.fullname" . }}
+                  key: postgres-password
+              {{- else }}
+              value: {{ .Values.postgresql.postgresPassword }}
+              {{- end }}
+            - name: CMD_SESSION_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "hackmd.fullname" . }}
+                  key: sessionSecret
+            - name: CMD_DB_URL
+              value: postgres://{{ .Values.postgresql.postgresUser }}:$(CMD_DB_PASSWORD)@{{ template "hackmd.database.host" . }}:5432/{{ .Values.postgresql.postgresDatabase }}
+            - name: HMD_DB_URL
+              value: postgres://{{ .Values.postgresql.postgresUser }}:$(CMD_DB_PASSWORD)@{{ template "hackmd.database.host" . }}:5432/{{ .Values.postgresql.postgresDatabase }}
+            {{- if .Values.extraVars }}
+{{ toYaml .Values.extraVars | indent 12 }}
+            {{- end }}
+          volumeMounts:
+            - name: data
+              mountPath: "/hackmd/public/uploads"
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+      volumes:
+        - name: data
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "hackmd.fullname" . }}{{- end }}
+        {{- else }}
+          emptyDir: {}
+        {{- end }}

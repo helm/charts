@@ -1,0 +1,39 @@
+{{- if .Values.server.enabled }}
+{{- if .Values.server.ingress.enabled -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "gocd.fullname" . }}-server
+  labels:
+    app: {{ template "gocd.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+    component: server
+  annotations:
+    {{- range $key, $value := .Values.server.ingress.annotations }}
+      {{ $key }}: {{ $value | quote }}
+    {{- end }}
+spec:
+  {{- if .Values.server.ingress.hosts }}
+  {{ $dot := .}}
+  rules:
+    {{- range $host := .Values.server.ingress.hosts }}
+    - host: {{ $host }}
+      http:
+        paths:
+        - backend:
+            serviceName: {{ template "gocd.fullname" $dot }}-server
+            servicePort: {{ $dot.Values.server.service.httpPort }}
+    {{- end }}
+  {{- else }}
+  backend:
+    serviceName: {{ template "gocd.fullname" . }}-server
+    servicePort: {{ .Values.server.service.httpPort }}
+  {{- end -}}
+  {{- if .Values.server.ingress.tls }}
+  tls:
+{{ toYaml .Values.server.ingress.tls | indent 4 }}
+  {{- end -}}
+{{- end -}}
+{{- end -}}

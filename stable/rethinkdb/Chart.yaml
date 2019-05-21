@@ -1,0 +1,16 @@
+apiVersion: v1
+name: rethinkdb
+description: The open-source database for the realtime web
+version: 1.0.0
+appVersion: 0.1.0
+keywords:
+- rethinkdb
+- database
+- nosql
+home: https://www.rethinkdb.com
+sources:
+- https://hub.docker.com/r/codylundquist/helm-rethinkdb-cluster/
+icon: http://i.imgur.com/bZ75N6r.jpg
+maintainers:
+- name: meenie
+  email: cody.lundquist@gmail.com

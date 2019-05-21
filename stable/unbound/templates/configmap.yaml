@@ -1,0 +1,69 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "unbound.fullname" . }}
+  labels:
+    app: {{ template "unbound.name" . }}
+    chart: {{ template "unbound.chart" . }}
+    release: {{ .Release.Name  }}
+    heritage: {{ .Release.Service }}
+data:
+  unbound.conf: |-
+    server:
+        chroot: ""
+        num-threads: {{ .Values.unbound.numThreads }}
+        directory: "/etc/unbound"
+        port: {{ .Values.unbound.serverPort }}
+        so-reuseport: yes
+        do-daemonize: no
+        logfile: ""
+        use-syslog: no
+        auto-trust-anchor-file: "/var/lib/unbound/root.key"
+        verbosity: {{ .Values.unbound.verbosity }}
+        statistics-interval: {{ .Values.unbound.statsInterval }}
+        statistics-cumulative: {{ .Values.unbound.statsCumulative }}
+
+        interface: 127.0.0.1
+        interface: 0.0.0.0
+
+        access-control: 127.0.0.1/32 allow
+
+        {{- range .Values.allowedIpRanges }}
+        access-control: {{ . }} allow
+        {{- end }}
+
+        {{- range .Values.localRecords }}
+        local-data: "{{ .name }} A {{ .ip }}"
+        local-data-ptr: "{{ .ip }} {{ .name }}"
+        {{- end }}
+
+        local-data: "health.check.unbound A 127.0.0.1"
+        local-data-ptr: "127.0.0.1 health.check.unbound"
+
+    {{- range .Values.localZones }}
+        local-zone: "{{ .name }}" {{ .localType }}
+    {{- end }}
+
+    {{- range .Values.forwardZones }}
+
+    forward-zone:
+        name: {{ .name }}
+        {{- range .forwardHosts }}
+        forward-host: {{ . }}
+        {{- end }}
+        {{- range .forwardIps }}
+        forward-addr: {{ . }}
+        {{- end }}
+    {{- end }}
+
+    {{- range .Values.stubZones }}
+
+    stub-zone:
+        name: {{ .name }}
+        {{- range .stubHosts }}
+        stub-host: {{ . }}
+        {{- end }}
+        {{- range .stubIps }}
+        stub-addr: {{ . }}
+        {{- end }}
+    {{- end }}

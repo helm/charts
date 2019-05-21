@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ template "consul.fullname" . }}"
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: {{ template "consul.chart" . }}
+    component: "{{ .Release.Name }}-{{ .Values.Component }}"
+  annotations:
+    service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
+spec:
+  ports:
+  - name: http
+    port: {{ .Values.HttpPort }}
+  - name: rpc
+    port: {{ .Values.RpcPort }}
+  - name: serflan-tcp
+    protocol: "TCP"
+    port: {{ .Values.SerflanPort }}
+  - name: serflan-udp
+    protocol: "UDP"
+    port: {{ .Values.SerflanUdpPort }}
+  - name: serfwan-tcp
+    protocol: "TCP"
+    port: {{ .Values.SerfwanPort }}
+  - name: serfwan-udp
+    protocol: "UDP"
+    port: {{ .Values.SerfwanUdpPort }}
+  - name: server
+    port: {{.Values.ServerPort}}
+  - name: consuldns-tcp
+    port: {{.Values.ConsulDnsPort}}
+  - name: consuldns-udp
+    protocol: "UDP"
+    port: {{.Values.ConsulDnsPort}}
+  clusterIP: None
+  selector:
+    component: "{{ .Release.Name }}-{{ .Values.Component }}"

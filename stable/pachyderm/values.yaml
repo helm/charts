@@ -1,0 +1,100 @@
+---
+rbac:
+ # Specifies whether RBAC resources should be created
+ create: true
+
+## Set default credentials for object store
+credentials: "local"
+
+## S3 endpoint (i.e: Minio server) credentials
+s3:
+ accessKey: ""
+ secretKey: ""
+ bucketName: ""
+ ## The endpoint should be something like: <mydomain>.<subdomain>:<port>
+ endpoint: ""
+ ## For 'true' set the value to 1
+ secure: "0"
+ ## For 'S3v2' signature, set the value to 1. For 'S3v4', set this value to 0
+ signature: "1"
+
+## Google Cloud credentials
+google:
+ bucketName: ""
+ credentials: ""
+
+## Amazon Web Services credentials
+amazon:
+ bucketName: ""
+ ## The distribution parameter is often an empty string
+ distribution: ""
+ id: ""
+ region: ""
+ roleArn: ""
+ secret: ""
+ token: ""
+
+## Microsoft Azure credentials
+microsoft:
+ container: ""
+ id: ""
+ secret: ""
+
+## Set default image settings, resource requests and number of replicas of pachd
+pachd:
+ exposeObjApi: false
+ replicaCount: 1
+ ## Size of pachd's in-memory cache for PFS files. Size is specified in bytes, with allowed SI suffixes (M, K, G, Mi, Ki, Gi, etc).
+ pfsCache: 0G
+ ## For available images please check: https://hub.docker.com/r/pachyderm/pachd/tags/
+ image:
+  repository: pachyderm/pachd
+  tag: 1.8.6
+  pullPolicy: Always
+ worker:
+  repository: pachyderm/worker
+  tag: 1.8.6
+ resources:
+  ## For non-local deployments, 1 cpu and 2G of memory requests are recommended
+  requests:
+   cpu: 250m
+   memory: 512M
+  # limits:
+  #  cpu: 250m
+  #  memory: 512M
+ service:
+  grpc:
+   annotations: {}
+   port: 30650
+   type: NodePort
+
+## Set default image settings and persistence settings of etcd
+etcd:
+ ## For available images please check: https://hub.docker.com/r/pachyderm/etcd/tags or: https://quay.io/repository/coreos/etcd?tag=latest&tab=tags
+ image:
+  repository: quay.io/coreos/etcd
+  tag: v3.3.5
+  pullPolicy: IfNotPresent
+  ## Enable persistence using Persistent Volume Claims
+  ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+ persistence:
+  enabled: false
+  ## etcd data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ## set, choosing the default provisioner. (gp2 on AWS, standard on
+  ## GKE, AWS & OpenStack)
+  # storageClass: "-"
+  ## Set default PVC size
+  size: 20G
+  ## Set default PVC access mode: https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes
+  accessMode: ReadWriteOnce
+ resources:
+  ## For non-local deployments, 1 cpu and 2G of memory requests are recommended
+  requests:
+   cpu: 250m
+   memory: 256M
+  # limits:
+  #  cpu: 250m
+  #  memory: 512M

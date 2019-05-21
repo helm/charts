@@ -1,0 +1,24 @@
+{{ .Chart.Name }} installed!
+
+Get the Locust URL to visit by running these commands in the same shell:
+
+{{- if contains "NodePort" .Values.service.type }}
+  export NODE_PORT=$(kubectl get svc -n {{ .Release.Namespace }} {{ template "locust.master-svc" . }} -o jsonpath='{.spec.ports[?(@.name=="{{ .Values.service.name }}")].nodePort}')
+  export NODE_IP=$(kubectl get no -o jsonpath="{.items[0].status.addresses[0].address}")
+  export LOCUST_URL=http://$NODE_IP:$NODE_PORT/
+
+{{- else if contains "LoadBalancer" .Values.service.type }}
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+        You can watch the status by running 'kubectl get svc -n {{ .Release.Namespace }} -w {{ template "locust.master-svc" . }}'
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "locust.master-svc" . }} --template "{{ "{{ range (index .status.loadBalancer.ingress 0) }}{{ . }}{{ end }}" }}")
+  export LOCUST_URL=http://$SERVICE_IP:{{ .Values.service.externalPort }}/
+
+{{- else if contains "ClusterIP"  .Values.service.type }}
+  export POD_NAME=$(kubectl get po --namespace {{ .Release.Namespace }} -l "app={{ template "locust.fullname" . }},component=master" -o jsonpath="{.items[0].metadata.name}")
+  export LOCUST_URL=http://127.0.0.1:{{ .Values.service.externalPort }}
+  kubectl port-forward $POD_NAME {{ .Values.service.externalPort  }}:{{ .Values.service.externalPort }} &
+
+{{- end }}
+
+For more information on Distributed load testing on Kubernetes using Locust, visit:
+https://cloud.google.com/solutions/distributed-load-testing-using-kubernetes

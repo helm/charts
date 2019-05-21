@@ -1,0 +1,24 @@
+{{- if .Values.persistence.enabled -}}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "opencart.fullname" . }}-opencart
+  labels:
+    app: {{ template "opencart.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  accessModes:
+    - {{ .Values.persistence.opencart.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.opencart.size | quote }}
+{{- if .Values.persistence.opencart.storageClass }}
+{{- if (eq "-" .Values.persistence.opencart.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.persistence.opencart.storageClass }}"
+{{- end }}
+{{- end }}
+{{- end -}}

@@ -1,0 +1,23 @@
+{{- if .Values.worker.enabled -}}
+## A Headless Service is required when using a StatefulSet
+## ref: https://kubernetes.io/docs/tutorials/stateful-application/basic-stateful-set/
+##
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "concourse.worker.fullname" . }}
+  labels:
+    app: {{ template "concourse.worker.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ## We do NOT expose any port as workers will forward connections with the ATC through a TSA reverse-tunnel
+  ## ref: https://concourse-ci.org/architecture.html#architecture-worker
+  ##
+  ports: []
+  selector:
+    app: {{ template "concourse.worker.fullname" . }}
+{{- end }}

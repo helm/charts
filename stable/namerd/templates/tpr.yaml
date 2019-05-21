@@ -1,0 +1,7 @@
+metadata:
+  name: d-tab.l5d.io
+apiVersion: extensions/v1beta1
+kind: ThirdPartyResource
+description: stores dtabs used by Buoyant's `namerd` service
+versions:
+  - name: v1alpha1 # Do not change this value as it hardcoded in Namerd and doesn't work with other value.

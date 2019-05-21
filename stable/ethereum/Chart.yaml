@@ -1,0 +1,15 @@
+apiVersion: v1
+name: ethereum
+version: 1.0.0
+appVersion: v1.7.3
+description: private Ethereum network Helm chart for Kubernetes
+keywords:
+- ethereum
+- blockchain
+home: https://www.ethereum.org/
+sources:
+- https://github.com/ethereum/go-ethereum
+maintainers:
+- name: jpoon
+  email: kubernetes@jasonpoon.ca
+icon: https://www.ethereum.org/images/logos/ETHEREUM-LOGO_PORTRAIT_Black_small.png

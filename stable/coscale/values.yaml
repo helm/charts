@@ -1,0 +1,24 @@
+# Default values for CoScale Helm package.
+
+image:
+  repository: "coscale/coscale-agent"
+  tag: 3.16.0
+  pullPolicy: "IfNotPresent"
+
+coscale:
+  # Required: You need a CoScale AppId before running agents.
+  appId: ""
+
+  # Required: You need a CoScale AccessToken before running agents.
+  accessToken: ""
+
+  # Required: You need a CoScale TemplateId before running agents.
+  templateId: ""
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 256m
+    memory: 512Mi

@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "gitlab-ce.fullname" . }}
+  labels:
+    app: {{ template "gitlab-ce.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+  ## This is used by GitLab Omnibus as the primary means of configuration.
+  ## ref: https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-config-template/gitlab.rb.template
+  ##
+  gitlab_omnibus_config: |
+    external_url ENV['EXTERNAL_URL'];
+    root_pass = ENV['GITLAB_ROOT_PASSWORD'];
+    gitlab_rails['initial_root_password'] = root_pass unless root_pass.to_s == '';
+    postgresql['enable'] = false;
+    gitlab_rails['db_host'] = ENV['DB_HOST'];
+    gitlab_rails['db_password'] = ENV['DB_PASSWORD'];
+    gitlab_rails['db_username'] = ENV['DB_USER'];
+    gitlab_rails['db_database'] = ENV['DB_DATABASE'];
+    redis['enable'] = false;
+    gitlab_rails['redis_host'] = ENV['REDIS_HOST'];
+    gitlab_rails['redis_password'] = ENV['REDIS_PASSWORD'];
+    unicorn['worker_processes'] = 2;
+    manage_accounts['enable'] = true;
+    manage_storage_directories['manage_etc'] = false;
+    gitlab_shell['auth_file'] = '/gitlab-data/ssh/authorized_keys';
+    git_data_dir '/gitlab-data/git-data';
+    gitlab_rails['shared_path'] = '/gitlab-data/shared';
+    gitlab_rails['uploads_directory'] = '/gitlab-data/uploads';
+    gitlab_ci['builds_directory'] = '/gitlab-data/builds';

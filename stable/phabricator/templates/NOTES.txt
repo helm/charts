@@ -1,0 +1,50 @@
+{{- if empty (include "phabricator.host" .) -}}
+###############################################################################
+### ERROR: You did not provide an external host in your 'helm install' call ###
+###############################################################################
+
+This deployment will be incomplete until you configure Phabricator with a resolvable
+host. To configure Phabricator with the URL of your service:
+
+1. Get the Phabricator URL by running:
+
+  {{- if contains "NodePort" .Values.service.type }}
+
+  export APP_PORT=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "phabricator.fullname" . }} -o jsonpath="{.spec.ports[0].nodePort}")
+  export APP_HOST=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+
+  {{- else if contains "LoadBalancer" .Values.service.type }}
+
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+        Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "phabricator.fullname" . }}'
+
+  export APP_HOST=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "phabricator.fullname" . }} --template "{{ "{{ range (index .status.loadBalancer.ingress 0) }}{{ . }}{{ end }}" }}")
+  export APP_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "phabricator.fullname" . }} -o jsonpath="{.data.phabricator-password}" | base64 --decode)
+  export DATABASE_ROOT_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "phabricator.mariadb.fullname" . }} -o jsonpath="{.data.mariadb-root-password}" | base64 --decode)
+  {{- end }}
+
+2. Complete your Phabricator deployment by running:
+
+  helm upgrade {{ .Release.Name }} stable/phabricator \
+    --set phabricatorHost=$APP_HOST,phabricatorPassword=$APP_PASSWORD,mariadb.rootUser.password=$DATABASE_ROOT_PASSWORD
+
+{{- else -}}
+1. Get the Phabricator URL by running:
+
+{{- if eq .Values.service.type "ClusterIP" }}
+
+  echo "Phabricator URL: http://127.0.0.1:8080/"
+  kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "phabricator.fullname" . }} 8080:{{ .Values.service.port }}
+
+{{- else }}
+
+{{- $port:=.Values.service.port | toString }}
+  echo "Phabricator URL: http://{{ include "phabricator.host" . }}{{- if ne $port "80" }}:{{ .Values.service.port }}{{ end }}/"
+
+{{- end }}
+
+2. Get your Phabricator login credentials by running:
+
+  echo Username: {{ .Values.phabricatorUsername }}
+  echo Password: $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "phabricator.fullname" . }} -o jsonpath="{.data.phabricator-password}" | base64 --decode)
+{{- end }}

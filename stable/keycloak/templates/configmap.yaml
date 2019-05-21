@@ -1,0 +1,60 @@
+{{- $highAvailability := gt (int .Values.keycloak.replicas) 1 -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "keycloak.fullname" . }}
+  labels:
+    app: {{ template "keycloak.name" . }}
+    chart: {{ template "keycloak.chart" . }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+  keycloak.sh: |
+    #!/usr/bin/env bash
+
+    set -eu
+
+    /opt/jboss/keycloak/bin/jboss-cli.sh --file=/scripts/keycloak.cli
+
+  {{- with .Values.keycloak.preStartScript }}
+    echo 'Running custom pre-start script...'
+{{ . | indent 4 }}
+  {{- end }}
+
+    exec /opt/jboss/tools/docker-entrypoint.sh -b 0.0.0.0 {{ .Values.keycloak.extraArgs }}{{- if $highAvailability }} -c standalone-ha.xml{{ else }} -c standalone.xml{{ end }}
+    exit "$?"
+
+  keycloak.cli: |
+    embed-server {{- if $highAvailability }} --server-config=standalone-ha.xml{{ end }} --std-out=echo
+    batch
+
+{{- if ne .Values.keycloak.basepath "auth" }}
+    # Changes the base path to be /keycloak.basepath instead of /auth
+    /subsystem=keycloak-server:write-attribute(name=web-context,value={{ if eq .Values.keycloak.basepath "" }}ROOT{{ else }}{{ .Values.keycloak.basepath }}{{ end }})
+    {{- if eq .Values.keycloak.basepath "" }}
+    /subsystem=undertow/server=default-server/host=default-host:write-attribute(name=default-web-module,value=keycloak-server.war)
+    {{- end }}
+{{ end }}
+
+{{- with .Values.keycloak.cli }}
+
+{{ tpl .nodeIdentifier $ | indent 4 }}
+
+{{ tpl .logging $ | indent 4 }}
+
+{{ tpl .reverseProxy $ | indent 4 }}
+
+{{ tpl .datasource $ | indent 4 }}
+
+{{- if $highAvailability }}
+{{ tpl .ha $ | indent 4 }}
+{{- end }}
+
+{{- with .custom }}
+{{ tpl . $ | indent 4 }}
+{{- end }}
+
+{{- end }}
+
+    run-batch
+    stop-embedded-server

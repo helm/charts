@@ -1,0 +1,19 @@
+{{- if .Values.rbac.create -}}
+apiVersion: {{ template "rbac.apiVersion" . }}
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app: {{ template "fluent-bit.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "fluent-bit.fullname" . }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ template "fluent-bit.fullname" . }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ template "fluent-bit.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace }}
+{{- end -}}

@@ -1,0 +1,26 @@
+{{- if .Values.kafkaTrigger.enabled }}
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    kubeless: kafka-trigger-controller
+  name: kafka-trigger-controller
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    matchLabels:
+      kubeless: kafka-trigger-controller
+  template:
+    metadata:
+      labels:
+        kubeless: kafka-trigger-controller
+    spec:
+      containers:
+      - image: "{{ .Values.kafkaTrigger.deployment.image.repository }}:{{ .Values.kafkaTrigger.deployment.image.tag }}"
+        imagePullPolicy: {{ .Values.kafkaTrigger.deployment.image.pullPolicy }}
+        name: kafka-trigger-controller
+        env:
+        - name: KAFKA_BROKERS
+          value: {{ .Values.kafkaTrigger.env.kafkaBrokers }}
+      serviceAccountName: controller-acct
+{{- end }}

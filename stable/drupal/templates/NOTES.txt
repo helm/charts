@@ -1,0 +1,44 @@
+
+*******************************************************************
+*** PLEASE BE PATIENT: Drupal may take a few minutes to install ***
+*******************************************************************
+
+1. Get the Drupal URL:
+
+{{- if .Values.ingress.hostname }}
+
+  You should be able to access your new Drupal installation through
+
+  http://{{- .Values.ingress.hostname }}/
+
+{{- else if contains "LoadBalancer" .Values.service.type }}
+
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+        Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "drupal.fullname" . }}'
+
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "drupal.fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
+
+{{- $port:=.Values.service.port | toString }}
+  echo "Drupal URL: http://$SERVICE_IP{{- if ne $port "80" }}:{{ .Values.service.port }}{{ end }}/"
+
+{{- else if contains "ClusterIP"  .Values.service.type }}
+
+  echo "Drupal URL: http://127.0.0.1:8080/"
+  kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "drupal.fullname" . }} 8080:{{ .Values.service.port }}
+
+{{- end }}
+
+{{- if contains "NodePort" .Values.service.type }}
+
+  Or running:
+
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "drupal.fullname" . }})
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo "Drupal URL: http://$NODE_IP:$NODE_PORT/"
+
+{{- end }}
+
+2. Login with the following credentials
+
+  echo Username: {{ .Values.drupalUsername }}
+  echo Password: $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "drupal.fullname" . }} -o jsonpath="{.data.drupal-password}" | base64 --decode)
