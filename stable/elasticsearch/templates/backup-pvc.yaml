@@ -1,4 +1,4 @@
-{{- if .Values.cluster.backup.persistence.enabled }}
+{{- if and .Values.cluster.backup.persistence.enabled (not .Values.cluster.backup.persistence.existingClaim) -}}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim  

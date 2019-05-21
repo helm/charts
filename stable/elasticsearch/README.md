@@ -82,6 +82,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `cluster.backup.persistence.storageClass` | Backup persistent volume class                                 | `nil`                                               |
 | `cluster.backup.persistence.accessMode`   | Backup persistent access mode                                  | `ReadWriteMany`                                     |
 | `cluster.backup.persistence.reclaimPolicy`| Backup persistent volume reclaim policy                        | `Retain`                                            |
+| `cluster.backup.persistence.existingClaim`| Backup uses persistent volume                                  | `nil`                                               |
 | `client.name`                        | Client component name                                               | `client`                                            |
 | `client.replicas`                    | Client node replicas (deployment)                                   | `2`                                                 |
 | `client.resources`                   | Client node resources requests & limits                             | `{} - cpu limit must be an integer`                 |
