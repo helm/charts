@@ -1,8 +1,8 @@
-{{- if .Values.prometheus.serviceMonitor.enabled }}
+{{- if .Values.prometheus.prometheusRule.enabled }}
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
-  name: {{ template "metallb.fullname" . }}.rules
+  name: {{ template "metallb.fullname" . }}
   labels:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
@@ -10,7 +10,7 @@ metadata:
     app: {{ template "metallb.name" . }}
 spec:
   groups:
-  - name: {{ template "metallb.fullname" . }}
+  - name: {{ template "metallb.fullname" . }}.rules
     rules:
     - alert: MetalLBStaleConfig
       annotations:

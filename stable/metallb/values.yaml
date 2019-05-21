@@ -55,7 +55,7 @@ prometheus:
   # can be left at false.
   scrapeAnnotations: false
 
-  # Prometheus Operator service monitoring
+  # Prometheus Operator service monitors
   serviceMonitor:
 
     # enable support for Prometheus Operator
@@ -81,6 +81,12 @@ prometheus:
     #   target_label: nodename
     #   replacement: $1
     #   action: replace
+
+  # Prometheus Operator alertmanager alerts
+  prometheusRule:
+
+    # enable alertmanager alerts
+    enabled: false
 
 
 serviceAccounts:
