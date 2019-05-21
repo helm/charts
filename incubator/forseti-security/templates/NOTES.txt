@@ -1,0 +1,72 @@
+{{- if (not .Values.cloudsqlConnection) and (not .Values.cloudsqlPrivateIp) }}
+
+It looks like you are missing information for the Forseti CloudSQL 
+instance.  Please provide the following:
+    
+   cloudsqlConnection - A CloudSQL connection string in the form 
+                        of \"project:location:cloud-sql-instance-name\"
+{{- end -}}
+
+{{- if not .Values.orchestratorKeyContents }}
+
+It looks like you are missing IAM Service Account Key for the 
+Forseti Client. This can be created by executing the following:
+
+    1. Follow the instructions for creating and downloading a key at 
+       https://cloud.google.com/iam/docs/creating-managing-service-account-keys#iam-service-account-keys-create-gcloud.
+
+    2. Run Helm upgrade or install feeding in the base64 encoded contents of the key file:
+
+        --set-string orchestratorKeyContents="$(cat forseti-client.json | base64 - -w 0)" 
+
+{{- end -}}
+{{- if not .Values.serverBucket }}
+
+It looks like you are missing the name of the GCS bucket holding the 
+server configuration.  Please provide the following:
+
+    serverBucket - The bucket containing the server configurations.
+
+{{- end -}}
+{{- if not .Values.serverKeyContents }}
+
+It looks like you are missing IAM Service Account Key for the 
+Forseti Server. This can be created by executing the following:
+
+    1. Follow the instructions for creating and downloading a key at 
+       https://cloud.google.com/iam/docs/creating-managing-service-account-keys#iam-service-account-keys-create-gcloud.
+
+    2. Run Helm upgrade or install feeding in the base64 encoded contents of the key file:
+
+        --set-string serverKeyContents="$(cat forseti-server.json | base64 - -w 0)"
+
+{{- end -}}
+
+{{- if not .Values.serverConfigContents }}
+
+It looks like you are missing the contents of the Forseti server configuration file, usually 
+found in <PATH>/forseti_conf_server.yaml.
+
+    1. If the server configuration file is local to the machine executing Helm add 
+       the following parameter to your helm command:
+
+        --set-string serverConfigContents="$(cat <PATH>/forseti_conf_server.yaml | base64 -)" 
+
+    2. If the server configuration is in a GCS bucket, then use the following (assumes
+       gsutil is present on host executing helm):
+
+       --set-string serverConfigContents="$(gsutil cat gs://<BUCKET_NAME>/<CONFIGS_FOLDER>/forseti_conf_server.yaml | base64 -)"
+    
+    Run Helm upgrade or install feeding in the base64 encoded contents of the key file:
+
+        
+
+{{- end -}}
+
+
+Thank you for installing {{ .Chart.Name }}.
+
+Your release is named {{ .Release.Name }}.
+
+Please visit https://forsetisecurity.org for information on configuring Forseti.
+
