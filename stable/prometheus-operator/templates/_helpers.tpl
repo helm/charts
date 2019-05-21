@@ -56,7 +56,7 @@ heritage: {{ .Release.Service | quote }}
 
 {{/* Create the name of prometheus-operator service account to use */}}
 {{- define "prometheus-operator.operator.serviceAccountName" -}}
-{{- if and .Values.global.rbac.create .Values.prometheusOperator.serviceAccount.create -}}
+{{- if .Values.prometheusOperator.serviceAccount.create -}}
     {{ default (include "prometheus-operator.operator.fullname" .) .Values.prometheusOperator.serviceAccount.name }}
 {{- else -}}
     {{ default "default" .Values.prometheusOperator.serviceAccount.name }}
@@ -65,7 +65,7 @@ heritage: {{ .Release.Service | quote }}
 
 {{/* Create the name of prometheus service account to use */}}
 {{- define "prometheus-operator.prometheus.serviceAccountName" -}}
-{{- if and .Values.global.rbac.create .Values.prometheus.serviceAccount.create -}}
+{{- if .Values.prometheus.serviceAccount.create -}}
     {{ default (include "prometheus-operator.prometheus.fullname" .) .Values.prometheus.serviceAccount.name }}
 {{- else -}}
     {{ default "default" .Values.prometheus.serviceAccount.name }}
@@ -74,7 +74,7 @@ heritage: {{ .Release.Service | quote }}
 
 {{/* Create the name of alertmanager service account to use */}}
 {{- define "prometheus-operator.alertmanager.serviceAccountName" -}}
-{{- if and .Values.global.rbac.create .Values.alertmanager.serviceAccount.create -}}
+{{- if .Values.alertmanager.serviceAccount.create -}}
     {{ default (include "prometheus-operator.alertmanager.fullname" .) .Values.alertmanager.serviceAccount.name }}
 {{- else -}}
     {{ default "default" .Values.alertmanager.serviceAccount.name }}
