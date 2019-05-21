@@ -158,6 +158,8 @@ The following table lists the configurable parameters of the Minio chart and the
 | `nasgateway.enabled`       | Use minio as a [NAS gateway](https://docs.minio.io/docs/minio-gateway-for-nas)             | `false` |
 | `nasgateway.replicas`      | Number of NAS gateway instances to be run in parallel on a PV            | `4` |
 | `environment`              | Set Minio server relevant environment variables in `values.yaml` file. Minio containers will be passed these variables when they start. | `MINIO_BROWSER: "on"` |
+| `metrics.serviceMonitor.enabled`          | Set this to `true` to create ServiceMonitor for Prometheus operator                   | `false` |
+| `metrics.serviceMonitor.additionalLabels` | Additional labels that can be used so ServiceMonitor will be discovered by Prometheus | `{}`    |
 
 Some of the parameters above map to the env variables defined in the [Minio DockerHub image](https://hub.docker.com/r/minio/minio/).
 
