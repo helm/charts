@@ -72,6 +72,12 @@ spec:
               exec:
                 command: ["/bin/sh", "-c", "cp /etc/secret-gitconfig/gitconfig /home/atlantis/.gitconfig && chown atlantis /home/atlantis/.gitconfig"]
           {{- end}}
+          {{- if .Values.command }}
+          command:
+          {{- range .Values.command }}
+          - {{ . }}
+          {{- end }}
+          {{- end }}
           args:
             - server
           ports:
