@@ -90,7 +90,11 @@ The following table lists the configurable parameters of the Magento chart and t
 | `mariadb.db.name`                    | Database name to create                                                              | `bitnami_magento`                                            |
 | `mariadb.db.user`                    | Database user to create                                                              | `bn_magento`                                                 |
 | `mariadb.db.password`                | Password for the database                                                            | _random 10 character long alphanumeric string_               |
-| `elasticsearch.enabled`              | Whether to use the Elasticsearch chart as search engine for magento                  | `true`                                                       |
+| `elasticsearch.enabled`              | Use the Elasticsearch chart as search engine                                         | `false`                                                      |
+| `elasticsearch.cluster.env`          | Cluster environment variables                                                        | `{MINIMUM_MASTER_NODES: "2"}`                                |
+| `elasticsearch.client.replicas`      | Client node replicas (deployment)                                                    | `1`                                                          |
+| `elasticsearch.master.replicas`      | Master node replicas (deployment)                                                    | `2`                                                          |
+| `elasticsearch.data.replicas`        | Data node replicas (statefulset)                                                     | `1`                                                          |
 | `service.type`                       | Kubernetes Service type                                                              | `LoadBalancer`                                               |
 | `service.port`                       | Service HTTP port                                                                    | `80`                                                         |
 | `service.httpsPort`                  | Service HTTPS port                                                                   | `443`                                                        |
@@ -130,6 +134,11 @@ The following table lists the configurable parameters of the Magento chart and t
 | `metrics.resources`                  | Exporter resource requests/limit                                                     | {}                                                           |
 
 The above parameters map to the env variables defined in [bitnami/magento](http://github.com/bitnami/bitnami-docker-magento). For more information please refer to the [bitnami/magento](http://github.com/bitnami/bitnami-docker-magento) image documentation.
+
+> **Note:**\
+>
+> Setting `elasticsearch.enabled` to true will launch four more nodes by default. Use it with caution.
+
 
 > **Note**:
 >
@@ -173,7 +182,7 @@ The [Bitnami Magento](https://github.com/bitnami/bitnami-docker-magento) image s
 
 ### To 5.0.0
 
-Manual intervention is needed in order to configure Elasticsearch 6 as Magento search engine after upgrading to 5.0.0.
+Manual intervention is needed if configuring Elasticsearch 6 as Magento search engine is desired.
 
 [Follow the Magento documentation](https://devdocs.magento.com/guides/v2.3/config-guide/elasticsearch/configure-magento.html) in order to configure Elasticsearch, setting **Search Engine** to **Elasticsearch 6.0+**. If using the Elasticsearch server included in this chart, `hostname` and `port` can be obtained with the following commands:
 
