@@ -88,7 +88,7 @@ externalDatabase:
   ## Database host
   host:
 
-  ## Database host
+  ## Database port
   port: 3306
 
   ## Database user
@@ -99,6 +99,16 @@ externalDatabase:
 
   ## Database name
   database: bitnami_magento
+
+##
+## External elasticsearch configuration
+##
+externalElasticsearch:
+  ## Elasticsearch host
+  host:
+
+  ## Elasticsearch port
+  port:
 
 ##
 ## MariaDB chart configuration
@@ -144,6 +154,16 @@ mariadb:
       # storageClass: "-"
       accessMode: ReadWriteOnce
       size: 8Gi
+
+##
+## Elasticsearch chart configuration
+##
+## https://github.com/helm/charts/blob/master/stable/elasticsearch/values.yaml
+##
+elasticsearch:
+  ## Whether to deploy a elasticsearch server to use as magento's search engine
+  ## To use an external server set this to false and configure the externalElasticsearch parameters
+  enabled: true
 
 ## Kubernetes configuration
 ## For minikube, set this to NodePort, elsewhere use LoadBalancer
