@@ -1,3 +1,4 @@
+apiVersion: v1
 name: locust
 description: A modern load testing framework
 version: 1.0.1

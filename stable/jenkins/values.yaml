@@ -77,6 +77,7 @@ master:
   # runAsUser: <defaults to 0>
   # fsGroup: <will be omitted in deployment if runAsUser is 0>
   servicePort: 8080
+  targetPort: 8080
   # For minikube, set this to NodePort, elsewhere use LoadBalancer
   # Use ClusterIP if your setup includes ingress controller
   serviceType: LoadBalancer
@@ -96,10 +97,14 @@ master:
   # Enable Kubernetes Liveness and Readiness Probes
   # ~ 2 minutes to allow Jenkins to restart when upgrading plugins. Set ReadinessTimeout to be shorter than LivenessTimeout.
   healthProbes: true
-  healthProbesLivenessTimeout: 90
-  healthProbesReadinessTimeout: 60
+  healthProbesLivenessTimeout: 5
+  healthProbesReadinessTimeout: 5
+  healthProbeLivenessPeriodSeconds: 10
   healthProbeReadinessPeriodSeconds: 10
-  healthProbeLivenessFailureThreshold: 12
+  healthProbeLivenessFailureThreshold: 5
+  healthProbeReadinessFailureThreshold: 3
+  healthProbeLivenessInitialDelay: 90
+  healthProbeReadinessInitialDelay: 60
   slaveListenerPort: 50000
   slaveHostPort:
   disabledAgentProtocols:
