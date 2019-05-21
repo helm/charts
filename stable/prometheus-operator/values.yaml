@@ -223,7 +223,6 @@ alertmanager:
     ##
     useExistingSecret: false
 
-
     ## Secrets is a list of Secrets in the same namespace as the Alertmanager object, which shall be mounted into the
     ## Alertmanager Pods. The Secrets are mounted into /etc/alertmanager/secrets/.
     ##
@@ -297,6 +296,20 @@ alertmanager:
     ## This can be changed to, for example, failure-domain.beta.kubernetes.io/zone
     ##
     podAntiAffinityTopologyKey: kubernetes.io/hostname
+
+    ## Assign custom affinity rules to the alertmanager instance
+    ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+    ##
+    affinity: {}
+    # nodeAffinity:
+    #   requiredDuringSchedulingIgnoredDuringExecution:
+    #     nodeSelectorTerms:
+    #     - matchExpressions:
+    #       - key: kubernetes.io/e2e-az-name
+    #         operator: In
+    #         values:
+    #         - e2e-az1
+    #         - e2e-az2
 
     ## If specified, the pod's tolerations.
     ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
@@ -934,18 +947,19 @@ prometheusOperator:
   #   value: "value"
   #   effect: "NoSchedule"
 
-  ## Assign the prometheus operator to run on specific nodes
+  ## Assign custom affinity rules to the prometheus operator
   ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
   ##
   affinity: {}
-  # requiredDuringSchedulingIgnoredDuringExecution:
-  #   nodeSelectorTerms:
-  #   - matchExpressions:
-  #     - key: kubernetes.io/e2e-az-name
-  #       operator: In
-  #       values:
-  #       - e2e-az1
-  #       - e2e-az2
+  # nodeAffinity:
+  #   requiredDuringSchedulingIgnoredDuringExecution:
+  #     nodeSelectorTerms:
+  #     - matchExpressions:
+  #       - key: kubernetes.io/e2e-az-name
+  #         operator: In
+  #         values:
+  #         - e2e-az1
+  #         - e2e-az2
 
   securityContext:
     runAsNonRoot: true
@@ -1261,6 +1275,20 @@ prometheus:
     ## This can be changed to, for example, failure-domain.beta.kubernetes.io/zone
     ##
     podAntiAffinityTopologyKey: kubernetes.io/hostname
+
+    ## Assign custom affinity rules to the prometheus instance
+    ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+    ##
+    affinity: {}
+    # nodeAffinity:
+    #   requiredDuringSchedulingIgnoredDuringExecution:
+    #     nodeSelectorTerms:
+    #     - matchExpressions:
+    #       - key: kubernetes.io/e2e-az-name
+    #         operator: In
+    #         values:
+    #         - e2e-az1
+    #         - e2e-az2
 
     ## The remote_read spec configuration for Prometheus.
     ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#remotereadspec
