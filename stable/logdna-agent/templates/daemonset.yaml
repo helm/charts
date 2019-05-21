@@ -1,4 +1,4 @@
-{{- if .Values.logdna.key -}}
+{{- if (or .Values.logdna.key .Values.logdna.secrets) -}}
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
@@ -18,16 +18,16 @@ spec:
       containers:
       - name: {{ template "logdna.name" . }}
         image: "{{.Values.image.name}}:{{.Values.image.tag}}"
-{{- if eq .Values.logdna.autoupdate "1" }}
-        imagePullPolicy: "always"
-{{- else }}
+{{- if eq .Values.logdna.autoupdate "0" }}
         imagePullPolicy: "{{.Values.image.pullPolicy}}"
+{{- else }}
+        imagePullPolicy: "always"
 {{- end }}
         env:
           - name: LOGDNA_AGENT_KEY
             valueFrom:
               secretKeyRef:
-                name: {{ template "logdna.name" . }}
+                name: {{ if .Values.logdna.secrets -}}{{ .Values.logdna.secrets }}{{ else }}{{ template "logdna.name" . }}{{ end }}
                 key: logdna-agent-key
           - name: LOGDNA_PLATFORM
             value: k8s

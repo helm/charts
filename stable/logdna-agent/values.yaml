@@ -6,11 +6,12 @@ image:
 logdna:
   ## Please follow directions from https://app.logdna.com/pages/add-source
 
-  ## An ingestion key is required for this chart to run
-  # key:
+  ## An ingestion key or custom secrets template is required to run this chart
+  ## key: ""
+  ## secrets: ""
 
   ## Optional settings
-  autoupdate: 0
+  autoupdate: "0"
   # tags:
 
   name: logdna-agent

@@ -1,7 +1,11 @@
-{{- if not .Values.logdna.key -}}
-#############################################################
-###  ERROR: Please specify an ingestion key `logdna.key`  ###
-#############################################################
+{{- if not (or .Values.logdna.key .Values.logdna.secrets) -}}
+############################################################################
+###  ERROR:                                                              ###
+###    Please, Specify:                                                  ###
+###      - either LogDNA Ingestion Key `logdna.key`                      ###
+###      - or Custom Template `logdna.secrets` Having `logdna-agent-key` ###
+###                                                                      ###
+############################################################################
 
 
 Please follow directions from https://app.logdna.com/pages/add-source

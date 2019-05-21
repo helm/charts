@@ -49,9 +49,10 @@ The following tables lists the configurable parameters of the LogDNA Agent chart
 
 Parameter | Description | Default
 --- | --- | ---
-`logdna.key` | LogDNA Ingestion Key (Required) | None
+`logdna.key` | LogDNA Ingestion Key (Required if no `secrets` provided) | None
+`logdna.secrets` | Custom Template Having `logdna-agent-key` (Required if no `key` provided) | None
 `logdna.tags` | Optional tags such as `production` | None
-`logdna.autoupdate` | Optionally turn on autoupdate by setting to 1 (auto sets image.pullPolicy to always) | `0`
+`logdna.autoupdate` | Optionally turn on autoupdate by setting to `"1"` (auto sets image.pullPolicy to always) | `"0"`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
 `image.tag` | Image tag | `latest`
 `resources.limits.memory` | Memory resource limits | 500Mi                                      |
