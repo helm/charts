@@ -13,11 +13,19 @@ data:
     {
         "config": {
             "chainId": {{ .Values.geth.genesis.networkId }},
-            "homesteadBlock": 0,
-            "eip150Block": 0,
-            "eip155Block": 0,
-            "eip158Block": 0
+            "homesteadBlock": 1,
+            "eip150Block": 2,
+            "eip150Hash": "0x0000000000000000000000000000000000000000000000000000000000000000",
+            "eip155Block": 3,
+            "eip158Block": 3,
+            "byzantiumBlock": 4,
+            "constantinopleBlock": 5,
+            "clique": {
+              "period": 10,
+              "epoch": 30000
+            }
         },
+        "extraData": "0x0000000000000000000000000000000000000000000000000000000000000000{{ .Values.geth.account.address }}0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
         "difficulty":  {{ .Values.geth.genesis.difficulty | quote }},
         "gasLimit": {{ .Values.geth.genesis.gasLimit | quote }},
         "alloc": {
