@@ -2,6 +2,8 @@
 
 [Rocket.Chat](https://rocket.chat/) is free, unlimited and open source. Replace email, HipChat & Slack with the ultimate team chat software solution.
 
+> **WARNING**: Upgrading to chart version 1.1.0 (Rocket.Chat 1.0.3) might require extra steps to retain the MongoDB data. See [Upgrading to 1.1.0](###-To-1.1.0) for more details.
+
 ## TL;DR;
 
 ```console
@@ -91,7 +93,7 @@ To run Rocket.Chat with multiple replicas, you need a MongoDB replicaset. Additi
 Rocket.Chat uses a MongoDB instance to presist its data.
 By default, the [MongoDB](https://github.com/kubernetes/charts/tree/master/stable/mongodb) chart is deployed and configured as database.
 Please refer to this chart for additional MongoDB configuration options.
-Make sure to set at least the `mongodb.mongodbRootPassword`, `mongodb.mongodbUsername` and `mongodb.mongodbPassword` values.
+Make sure to set at least the `mongodb.mongodbRootPassword`, `mongodb.mongodbUsername` and `mongodb.mongodbPassword` values. Enabling MongoDB ReplicaSet is required for Rocket.Chat version 1.x.
 > **WARNING**: The root credentials are used to connect to the MongoDB OpLog
 
 #### Using an External Database
@@ -106,6 +108,10 @@ extraEnv: |
     value: '{"ssl": "true"}'
 ```
 ## Upgrading
+
+### To 1.1.0
+
+Rocket.Chat version 1.x requires a MongoDB ReplicaSet to be configured. When using the dependent `stable/mongodb` chart (`mongodb.enabled=true`), enabling ReplicaSet will drop the PVC and create new ones. Make sure to backup your current MongoDB and restore it after the upgrade.
 
 ### To 1.0.0
 
