@@ -141,6 +141,8 @@ spec:
               sleep 60 &&
               mkdir -p /usr/local/airflow/.local/bin &&
               export PATH=/usr/local/airflow/.local/bin:$PATH &&
+              echo 'installing requirements...' &&
+              /usr/local/scripts/install-requirements.sh &&
               echo 'executing worker...' &&
               airflow worker
           {{- end }}

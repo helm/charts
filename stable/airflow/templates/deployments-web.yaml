@@ -134,6 +134,8 @@ spec:
               sleep {{ .Values.web.initialStartupDelay }} &&
               mkdir -p /usr/local/airflow/.local/bin &&
               export PATH=/usr/local/airflow/.local/bin:$PATH &&
+              echo 'installing requirements...' &&
+              /usr/local/scripts/install-requirements.sh &&
               echo 'executing webserver...' &&
               airflow webserver
           {{- end }}

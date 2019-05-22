@@ -155,6 +155,8 @@ spec:
               sleep 10 &&
               mkdir -p /usr/local/airflow/.local/bin &&
               export PATH=/usr/local/airflow/.local/bin:$PATH &&
+              echo 'installing requirements...' &&
+              /usr/local/scripts/install-requirements.sh &&
               echo "executing initdb" &&
               airflow initdb &&
             {{- if .Values.airflow.connections }}
