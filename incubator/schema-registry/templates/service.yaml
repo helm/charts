@@ -7,6 +7,9 @@ metadata:
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
+{{- if .Values.service.labels }}
+{{ toYaml .Values.service.labels | indent 4 }}
+{{- end }}
 spec:
   ports:
     - name: schema-registry
