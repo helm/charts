@@ -58,6 +58,9 @@ spec:
           {{ if .Values.dryRun }}
             - --dry-run
           {{- end }}
+          {{ if .Values.aws.assumeRoleArn }}
+            - --aws-assume-role={{ .Values.aws.assumeRoleArn }}
+          {{- end }}
           {{- range $key, $value := .Values.extraArgs }}
             {{- if $value }}
             - --{{ $key }}={{ $value }}

@@ -1,6 +1,6 @@
 {{- if or .Values.autoDiscovery.clusterName .Values.autoscalingGroups }}
 {{/* one of the above is required */}}
-apiVersion: extensions/v1beta1
+apiVersion: {{ .Values.deployment.apiVersion }}
 kind: Deployment
 metadata:
   labels:
@@ -11,6 +11,13 @@ metadata:
   name: {{ template "cluster-autoscaler.fullname" . }}
 spec:
   replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "cluster-autoscaler.name" . }}
+      release: {{ .Release.Name }}
+    {{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | indent 8 }}
+    {{- end }}
   template:
     metadata:
     {{- if .Values.podAnnotations }}
@@ -26,6 +33,9 @@ spec:
     spec:
       {{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"
+      {{- end }}
+      {{- if .Values.dnsPolicy }}
+      dnsPolicy: "{{ .Values.dnsPolicy }}"
       {{- end }}
       containers:
         - name: {{ template "cluster-autoscaler.name" . }}
@@ -68,6 +78,20 @@ spec:
           {{- if and (eq .Values.cloudProvider "aws") (ne .Values.awsRegion "") }}
             - name: AWS_REGION
               value: "{{ .Values.awsRegion }}"
+            {{- if .Values.awsAccessKeyID }}
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  key: AwsAccessKeyId
+                  name: {{ template "cluster-autoscaler.fullname" . }}
+            {{- end }}
+            {{- if .Values.awsSecretAccessKey }}
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: AwsSecretAccessKey
+                  name: {{ template "cluster-autoscaler.fullname" . }}
+            {{- end }}
           {{- else if eq .Values.cloudProvider "spotinst" }}
             - name: SPOTINST_TOKEN
               value: "{{ .Values.spotinst.token }}"

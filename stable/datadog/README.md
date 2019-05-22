@@ -85,7 +85,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 As a best practice, a YAML file that specifies the values for the chart parameters should be provided to configure the chart:
 
-1.  **Copy the default [`datadog-values.yaml`](/values.yaml) value file.**
+1.  **Copy the default [`datadog-values.yaml`](values.yaml) value file.**
 2.  Set the `apiKey` parameter with your [Datadog API key](https://app.datadoghq.com/account/settings#api).
 3.  Upgrade the Datadog Helm chart with the new `datadog-values.yaml` file:
 
@@ -97,7 +97,7 @@ See the [All configuration options](#all-configuration-options) section to disco
 
 ### Enabling Log Collection
 
-Update your [datadog-values.yaml](/values.yaml) file with the following log collection configuration:
+Update your [datadog-values.yaml](values.yaml) file with the following log collection configuration:
 
 ```
 datadog:
@@ -114,7 +114,7 @@ helm upgrade -f datadog-values.yaml <RELEASE_NAME> stable/datadog --recreate-pod
 
 ### Enabling Process Collection
 
-Update your [datadog-values.yaml](/values.yaml) file with the process collection configuration:
+Update your [datadog-values.yaml](values.yaml) file with the process collection configuration:
 
 ```
 datadog:
@@ -138,7 +138,7 @@ Alternatively set the `datadog.leaderElection`, `datadog.collectEvents` and `rba
 
 The Datadog [entrypoint](https://github.com/DataDog/datadog-agent/blob/master/Dockerfiles/agent/entrypoint/89-copy-customfiles.sh) copies files with a `.yaml` extension found in `/conf.d` and files with `.py` extension in `/check.d` to `/etc/datadog-agent/conf.d` and `/etc/datadog-agent/checks.d` respectively.
 
-The keys for `datadog.confd` and `datadog.checksd` should mirror the content found in their respective ConfigMaps. Update your [datadog-values.yaml](/values.yaml) file with the check configurations:
+The keys for `datadog.confd` and `datadog.checksd` should mirror the content found in their respective ConfigMaps. Update your [datadog-values.yaml](values.yaml) file with the check configurations:
 
 ```yaml
 datadog:
@@ -175,7 +175,7 @@ For more details, please refer to [the documentation](https://docs.datadoghq.com
 
 ### Kubernetes Labels and Annotations
 
-To map Kubernetes pod labels and annotations to Datadog tags, provide a dictionary with kubernetes labels/annotations as keys and Datadog tags key as values in your [datadog-values.yaml](/values.yaml) file:
+To map Kubernetes pod labels and annotations to Datadog tags, provide a dictionary with kubernetes labels/annotations as keys and Datadog tags key as values in your [datadog-values.yaml](values.yaml) file:
 
 ```yaml
 podAnnotationsAsTags:
