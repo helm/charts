@@ -163,7 +163,7 @@ mariadb:
 elasticsearch:
   ## Whether to deploy a elasticsearch server to use as magento's search engine
   ## To use an external server set this to false and configure the externalElasticsearch parameters
-  enabled: false
+  enabled: true
 
 ## Kubernetes configuration
 ## For minikube, set this to NodePort, elsewhere use LoadBalancer
@@ -303,7 +303,7 @@ ingress:
 ## Prometheus Exporter / Metrics
 ##
 metrics:
-  enabled: false
+  enabled: true
   image:
     registry: docker.io
     repository: lusotycoon/apache-exporter
