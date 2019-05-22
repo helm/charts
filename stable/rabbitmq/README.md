@@ -126,6 +126,12 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `volumePermissions.image.tag`              | Init container volume-permissions image tag                                                                    | `latest`                                             |
 | `volumePermissions.image.pullPolicy`       | Init container volume-permissions image pull policy                                                            | `IfNotPresent`                                       |
 | `volumePermissions.resources`                  | Init container resource requests/limit                 | `nil`                                                   |
+| `forceLoad.enabled`         | Enable init container that creates force_load file in the root of the Mnesia directory to force load cluster shut down unexpectedly in an unknown order. (Equivalent of 'rabbitmqctl force_boot' command. Use it only if you prefer availability over integrity.)                                                               | `false`                                          |
+| `forceLoad.image.registry`         | Init container force-load image registry                                                               | `docker.io`                                          |
+| `forceLoad.image.repository`       | Init container force-load image name                                                                   | `bitnami/minideb`                                    |
+| `forceLoad.image.tag`              | Init container force-load image tag                                                                    | `latest`                                             |
+| `forceLoad.image.pullPolicy`       | Init container force-load image pull policy                                                            | `IfNotPresent`                                       |
+| `forceLoad.resources`                  | Init container resource requests/limit                 | `nil`                                                   |
 
 The above parameters map to the env variables defined in [bitnami/rabbitmq](http://github.com/bitnami/bitnami-docker-rabbitmq). For more information please refer to the [bitnami/rabbitmq](http://github.com/bitnami/bitnami-docker-rabbitmq) image documentation.
 

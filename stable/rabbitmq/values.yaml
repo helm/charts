@@ -310,3 +310,23 @@ volumePermissions:
     # pullSecrets:
     #   - myRegistryKeySecretName
   resources: {}
+
+## forceLoad: creates force_load file in the root of the Mnesia directory to force load cluster
+## shut down unexpectedly in an unknown order. Equivalent of 'rabbitmqctl force_boot' command.
+## ref: https://www.rabbitmq.com/rabbitmqctl.8.html#force_boot
+## ref: https://readme.fr/rabbitmq-split-brain/
+##
+forceLoad:
+  enabled: false
+  image:
+    registry: docker.io
+    repository: bitnami/minideb
+    tag: latest
+    pullPolicy: IfNotPresent
+    ## Optionally specify an array of imagePullSecrets.
+    ## Secrets must be manually created in the namespace.
+    ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+    ##
+    # pullSecrets:
+    #   - myRegistryKeySecretName
+  resources: {}

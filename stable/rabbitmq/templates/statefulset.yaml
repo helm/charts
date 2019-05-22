@@ -54,8 +54,9 @@ spec:
 {{ toYaml .Values.tolerations | indent 8 }}
       {{- end }}
       terminationGracePeriodSeconds: 10
-      {{- if and .Values.volumePermissions.enabled .Values.persistence.enabled .Values.securityContext.enabled }}
+      {{- if and .Values.persistence.enabled (or (and .Values.volumePermissions.enabled .Values.securityContext.enabled) .Values.forceLoad.enabled) }}
       initContainers:
+      {{- if and .Values.volumePermissions.enabled .Values.securityContext.enabled }}
       - name: volume-permissions
         image: "{{ template "rabbitmq.volumePermissions.image" . }}"
         imagePullPolicy: {{ default "" .Values.volumePermissions.image.pullPolicy | quote }}
@@ -67,6 +68,45 @@ spec:
         volumeMounts:
         - name: data
           mountPath: "{{ .Values.persistence.path }}"
+      {{- end }}
+      {{- if and .Values.forceLoad.enabled }}
+      - name: force-load
+        image: "{{ template "rabbitmq.forceLoad.image" . }}"
+        imagePullPolicy: {{ default "" .Values.forceLoad.image.pullPolicy | quote }}
+        command: ["/bin/sh", "-c", 'if [ -d "{{ .Values.persistence.path }}/mnesia/${RABBITMQ_NODENAME}" ]; then touch "{{ .Values.persistence.path }}/mnesia/${RABBITMQ_NODENAME}/force_load"; fi']
+        {{- if .Values.securityContext.enabled }}
+        securityContext:
+          fsGroup: {{ .Values.securityContext.fsGroup }}
+          runAsUser: {{ .Values.securityContext.runAsUser }}
+        {{- end }}
+        resources:
+{{ toYaml .Values.forceLoad.resources | indent 10 }}
+        volumeMounts:
+        - name: data
+          mountPath: "{{ .Values.persistence.path }}"
+        env:
+          - name: MY_POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: MY_POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: K8S_SERVICE_NAME
+            value: "{{ template "rabbitmq.fullname" . }}-headless"
+          {{- if (eq "hostname" .Values.rabbitmq.clustering.address_type) }}
+          - name: RABBITMQ_NODENAME
+            value: "rabbit@$(MY_POD_NAME).$(K8S_SERVICE_NAME).$(MY_POD_NAMESPACE).svc.{{ .Values.rabbitmq.clustering.k8s_domain }}"
+          {{- else }}
+          - name: RABBITMQ_NODENAME
+            {{- if .Values.rabbitmq.rabbitmqClusterNodeName }}
+            value: {{ .Values.rabbitmq.rabbitmqClusterNodeName | quote }}
+            {{- else }}
+            value: "rabbit@$(MY_POD_NAME)"
+            {{- end }}
+          {{- end }}
+      {{- end }}
       {{- end }}
       containers:
       - name: rabbitmq
