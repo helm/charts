@@ -13,4 +13,10 @@ sources:
 maintainers:
   - name: omkensey
     email: github@orion-com.com
+  - name: dholbach
+    email: daniel@weave.works
+  - name: fbarl
+    email: filip@weave.works
+  - name: bboreham
+    email: bryan@weave.works
 icon: https://avatars1.githubusercontent.com/u/9976052?s=64
