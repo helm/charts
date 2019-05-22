@@ -13,4 +13,6 @@ keywords:
 maintainers:
 - name: linki
   email: linki+kubernetes.io@posteo.de
+- name: alexvicegrab
+  email: a.vicente.grab@gmail.com
 engine: gotpl
