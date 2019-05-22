@@ -37,6 +37,11 @@ resources: {}
 ## The port on which the SchemaRegistry will be available and serving requests
 servicePort: 8081
 
+## Provides schema registry service settings
+service:
+  ## Any additional labels to add to the service
+  labels: {}
+
 ## If `Kafka.Enabled` is `false`, kafkaStore.overrideBootstrapServers must be provided for Master Election.
 ## You can list load balanced service endpoint, or list of all brokers (which is hard in K8s).  e.g.:
 ## overrideBootstrapServers: "PLAINTEXT://dozing-prawn-kafka-headless:9092"
