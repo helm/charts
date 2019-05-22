@@ -49,7 +49,7 @@ Note that most of this documentation is repeated in `values.yaml`; if you're in 
 |----------:|:------------|:--------|
 | **image.*** | the parameters of the image pulls for this release | |
 | **image.repository** | the image that will be used for this release (required) | `weaveworks/scope` |
-| **image.tag** | the version of Weave Scope desired for this release (required) | `1.10.1`
+| **image.tag** | the version of Weave Scope desired for this release (required) | `1.11.0`
 | **image.pullPolicy** | the imagePullPolicy for the container (required): IfNotPresent, Always, or Never | `IfNotPresent`
 | **service.*** | the configuration of the service used to access the frontend | |
 | **service.name** | the short name desired for the frontend service (optional, but if not specified by the user a value will be calculated) -- this is a global so we can access its value easily from the agent subchart | `weave-scope-app` |
