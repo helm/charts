@@ -28,9 +28,11 @@ spec:
         release: "{{ .Release.Name }}"
         component: "job"
     spec:
+      {{- if .Values.certs.securityContext.enabled }}
       securityContext:
-        runAsUser: 65534
-        fsGroup: 65534
+        runAsUser: {{ .Values.certs.securityContext.runAsUser }}
+        fsGroup: {{ .Values.certs.securityContext.fsGroup }}
+      {{- end }}
       serviceAccountName: {{ template "dex.serviceAccountName" . }}
       restartPolicy: OnFailure
       containers:
