@@ -99,3 +99,13 @@ tolerations: []
   #    effect: NoSchedule
 
 affinity: {}
+
+volumeMounts: []
+  # - name: aws-iam-credentials
+  #   mountPath: /meta/aws-iam
+  #   readOnly: true
+
+volumes: []
+  # - name: aws-iam-credentials
+  #   secret:
+  #     secretName: alb-ingress-controller-role
