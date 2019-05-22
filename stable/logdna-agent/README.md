@@ -15,17 +15,33 @@ This chart deploys LogDNA collector agents to all nodes in your cluster. Logs wi
 ## Prerequisites
 
 - Kubernetes 1.2+
+- A LogDNA Ingestion Key
+
+### Creating a Secret
+
+The logdna-agent chart requires that you store your ingestion key inside a kubernetes secret using the key name logdna-agent-key. We suggest that you name the secret with the name of your release followed by logdna-agent, separated with a dash. For example if you plan to create a deployment with release name my-release then use this command (replaceing the X's with your ingestion key and substituting namespace_name with the namespace you want to use):
+
+```
+kubectl create secret generic my-release-logdna-agent \
+  --from-literal='logdna-agent-key=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX' \
+  --namespace namespace_name
+```
+When installing the chart you must refer to the name of the secret you have created. In our previous example that name is `my-release-logdna-agent`.
 
 ## Installing the Chart
 
-To install the chart with the release name `my-release`, please follow directions from https://app.logdna.com/pages/add-source to obtain your LogDNA Ingestion Key:
+### Obtain LogDNA Ingestion Key from LogDNA server instance
+Please follow directions from [LogDNA Instructions Page](https://app.logdna.com/pages/add-source) to obtain your LogDNA Ingestion Key.
+
+### Install
+To install the chart with the release name `my-release`:
 
 ```bash
 $ helm install --name my-release \
     --set logdna.key=LOGDNA_INGESTION_KEY,logdna.autoupdate=1 stable/logdna-agent
 ```
 
-You should see logs in https://app.logdna.com in a few seconds.
+You should see logs in [LogDNA Console](https://app.logdna.com) in a few seconds.
 
 ### Tags support:
 ```bash
@@ -70,5 +86,10 @@ Alternatively, a YAML file that specifies the values for the above parameters ca
 ```bash
 $ helm install --name my-release -f values.yaml stable/logdna-agent
 ```
+
+## Support
+
+### Connecting to LogDNA server instance
+If you configure your agent to connect to LogDNA directly, you may contact LogDNA support through the [LogDNA web console](https://app.logdna.com/) if you experience issues connecting to LogDNA directly.
 
 > **Tip**: You can use the default [values.yaml](values.yaml)

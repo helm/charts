@@ -1,0 +1,101 @@
+image:
+  __metadata:
+    label: Image
+    description: Docker Image Configuration Values
+  name:
+    __metadata:
+      label: Image Name
+      description: Docker Image Name
+      type: string
+      required: true
+  tag:
+    __metadata:
+      label: Image Tag
+      description: Docker Image Tag
+      type: string
+      required: true
+  pullPolicy:
+    __metadata:
+      label: Image Pull Policy
+      description: Docker Image Pull Policy
+      type: string
+      required: true
+
+
+logdna:
+  __metadata:
+    label: LogDNA
+    description: logdna configuration values
+  key:
+    __metadata:
+      label: Ingestion Key
+      description: LogDNA Ingestion Key
+      type: string
+      required: true
+
+  ## In the Absence of key
+  secrets:
+    __metadata:
+      label: Custom Secrets
+      description: Custom Secrets Template containing LogDNA Ingestion Key
+      type: string
+      required: false
+
+  ## Optional settings
+  autoupdate:
+    __metadata:
+      label: Auto Update
+      description: Whether the Agent Auto Updates or Not
+      type: string
+      required: false
+  tags:
+    __metadata:
+      label: Tags
+      description: Comma-Separated List of Tags
+      type: string
+      required: false
+
+  apihost: 
+    __metadata:
+      label: LogDNA API Host
+      description: LogDNA API Hostname
+      type: string
+      required: false
+      
+  loghost:
+    __metadata:
+      label: LogDNA Logs Host
+      description: LogDNA Ingestion Hostname
+      type: string
+      required: false
+      
+resources:
+  __metadata:
+    label: Resources
+    description: kubernetes resource configuration values
+  requests:
+    cpu:
+      __metadata:
+        label: CPU
+        description: Kubernetes Resource Request CPU
+        type: string
+        required: true
+
+  limits:
+    memory:
+      __metadata:
+        label: Memory
+        description: Kubernetes Resource Memory Limit
+        type: string
+        required: true
+
+daemonset:
+  __metadata:
+    label: Daemonset
+    description: K8S DaemonSet Configuration Values
+  tolerations:
+    __metadata:
+      label: Tolerations
+      type: string
+      description: List of Tolerations
+      required: false

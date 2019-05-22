@@ -1,11 +1,12 @@
 {{- if (or .Values.logdna.key .Values.logdna.secrets) -}}
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: {{ template "logdna.name" . }}
   labels:
     app: {{ template "logdna.name" . }}
     chart: {{ template "logdna.chart" . }}
+    helm.sh/chart: {{ template "logdna.chart" . }}
     release: {{ .Release.Name }}
 spec:
   template:
@@ -13,6 +14,7 @@ spec:
       labels:
         app: {{ template "logdna.name" . }}
         chart: {{ template "logdna.chart" . }}
+        helm.sh/chart: {{ template "logdna.chart" . }}
         release: {{ .Release.Name }}
     spec:
       containers:
@@ -38,6 +40,14 @@ spec:
 {{- if .Values.logdna.autoupdate }}
           - name: LOGDNA_AUTOUPDATE
             value: {{ .Values.logdna.autoupdate }}
+{{- end }}
+{{- if .Values.logdna.apihost }}
+          - name: LDAPIHOST
+            value: {{ .Values.logdna.apihost }}
+{{- end }}
+{{- if .Values.logdna.loghost }}
+          - name: LDLOGHOST
+            value: {{ .Values.logdna.loghost }}
 {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 12 }}
@@ -75,6 +85,20 @@ spec:
       - name: logdnahostname
         hostPath:
           path: /etc/hostname
+      livenessProbe:
+        exec:
+          command:
+            - /usr/bin/logdna-agent
+            - --version
+        initialDelaySeconds: 30
+        periodSeconds: 30
+      readinessProbe:
+        exec:
+          command:
+            - /usr/bin/logdna-agent
+            - --version
+        initialDelaySeconds: 30
+        periodSeconds: 30
       tolerations:
 {{ toYaml .Values.daemonset.tolerations | indent 8 }}
 {{ end }}
