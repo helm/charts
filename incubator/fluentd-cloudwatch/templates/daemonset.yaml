@@ -71,6 +71,9 @@ spec:
           readOnly: true
         - name: config
           mountPath: /fluentd/etc
+{{- if .Values.priorityClassName }}
+      priorityClassName: "{{ .Values.priorityClassName }}"
+{{- end }}
       terminationGracePeriodSeconds: 30
       volumes:
       - name: varlog
