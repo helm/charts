@@ -28,12 +28,19 @@ spec:
         release: "{{ .Release.Name }}"
         component: "job"
     spec:
+      securityContext:
+        runAsUser: 65534
+        fsGroup: 65534
       serviceAccountName: {{ template "dex.serviceAccountName" . }}
       restartPolicy: OnFailure
       containers:
       - name: main
         image: "{{ .Values.certs.image }}:{{ .Values.certs.imageTag }}"
         imagePullPolicy: {{ .Values.certs.imagePullPolicy }}
+        env:
+        - name: HOME
+          value: /tmp
+        workingDir: /tmp
         command:
         - /bin/bash
         - -exc
