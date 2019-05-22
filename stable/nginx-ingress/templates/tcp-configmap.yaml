@@ -10,5 +10,5 @@ metadata:
     release: {{ .Release.Name }}
   name: {{ template "nginx-ingress.fullname" . }}-tcp
 data:
-{{ toYaml .Values.tcp | indent 2 }}
+{{ tpl (toYaml .Values.tcp) . | indent 2 }}
 {{- end }}
