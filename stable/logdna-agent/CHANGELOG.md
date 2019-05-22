@@ -6,6 +6,8 @@ This file documents all notable changes to `LogDNA Agent Helm Chart`. The releas
 
 * Fix `autoupdate` Type Mismatch
 * Support for Custom `Secrets` Template
+* Support for Custom `LogDNA API Hostname`
+* Support for Custom `LogDNA Ingestion Hostname`
 
 ## v1.0.0
 
