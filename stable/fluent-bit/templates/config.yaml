@@ -166,6 +166,11 @@ data:
 {{- if .timeFormat }}
         Time_Format {{ .timeFormat }}
 {{- end }}
+{{- if .types }}
+{{- range .types }}
+        Types {{ .name }}:{{ .type | default "string" }}
+{{ end }}
+{{- end }}
 {{ end }}
 {{- end }}
 {{- if .Values.parsers.json }}
