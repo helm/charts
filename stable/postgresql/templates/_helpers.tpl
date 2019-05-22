@@ -220,7 +220,7 @@ Get the configuration ConfigMap name.
 */}}
 {{- define "postgresql.configurationCM" -}}
 {{- if .Values.configurationConfigMap -}}
-{{- printf "%s" .Values.configurationConfigMap -}}
+{{- printf "%s" (tpl .Values.configurationConfigMap $) -}}
 {{- else -}}
 {{- printf "%s-configuration" (include "postgresql.fullname" .) -}}
 {{- end -}}
@@ -231,7 +231,7 @@ Get the extended configuration ConfigMap name.
 */}}
 {{- define "postgresql.extendedConfigurationCM" -}}
 {{- if .Values.extendedConfConfigMap -}}
-{{- printf "%s" .Values.extendedConfConfigMap -}}
+{{- printf "%s" (tpl .Values.extendedConfConfigMap $) -}}
 {{- else -}}
 {{- printf "%s-extended-configuration" (include "postgresql.fullname" .) -}}
 {{- end -}}
@@ -242,7 +242,7 @@ Get the initialization scripts ConfigMap name.
 */}}
 {{- define "postgresql.initdbScriptsCM" -}}
 {{- if .Values.initdbScriptsConfigMap -}}
-{{- printf "%s" .Values.initdbScriptsConfigMap -}}
+{{- printf "%s" (tpl .Values.initdbScriptsConfigMap $) -}}
 {{- else -}}
 {{- printf "%s-init-scripts" (include "postgresql.fullname" .) -}}
 {{- end -}}
@@ -252,7 +252,7 @@ Get the initialization scripts ConfigMap name.
 Get the initialization scripts Secret name.
 */}}
 {{- define "postgresql.initdbScriptsSecret" -}}
-{{- printf "%s" .Values.initdbScriptsSecret -}}
+{{- printf "%s" (tpl .Values.initdbScriptsSecret $) -}}
 {{- end -}}
 
 {{/*

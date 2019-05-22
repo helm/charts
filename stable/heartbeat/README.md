@@ -10,7 +10,7 @@ By default this chart only ships a single output to a file on the local system. 
 
 ## Prerequisites
 
--   Kubernetes 1.9+
+- Kubernetes 1.9+
 
 ## Installing the Chart
 
@@ -45,14 +45,18 @@ The following table lists the configurable parameters of the heartbeat chart and
 | `image.pullPolicy`                  | Image pull policy                                                                                                                                                                                     | `IfNotPresent`                      |
 | `rbac.create`                       | If true, create & use RBAC resources                                                                                                                                                                  | `true`                              |
 | `rbac.serviceAccount`               | existing ServiceAccount to use (ignored if rbac.create=true)                                                                                                                                          | `default`                           |
-| `config`                            | The content of the configuration file consumed by heartbeat. See the [heartbeat documentation](https://www.elastic.co/guide/en/beats/heartbeat/current/heartbeat-reference-yml.html) for full details |                                     |
+| `config`                            | The content of the configuration file consumed by heartbeat. See the [heartbeat documentation](https://www.elastic.co/guide/en/beats/heartbeat/current/heartbeat-reference-yml.html) for full details |                               |
 | `plugins`                           | List of beat plugins                                                                                                                                                                                  |                                     |
+| `hostNetwork`                       | If true, use hostNetwork                                                                                                                                                                              | `false`                             |
 | `extraVars`                         | A map of additional environment variables                                                                                                                                                             |                                     |
 | `extraVolumes`, `extraVolumeMounts` | Additional volumes and mounts, for example to provide other configuration files                                                                                                                       |                                     |
 | `resources.requests.cpu`            | CPU resource requests                                                                                                                                                                                 |                                     |
 | `resources.limits.cpu`              | CPU resource limits                                                                                                                                                                                   |                                     |
 | `resources.requests.memory`         | Memory resource requests                                                                                                                                                                              |                                     |
 | `resources.limits.memory`           | Memory resource limits                                                                                                                                                                                |                                     |
+| `priorityClassName`                 | Priority class name                                                                                                                                                                                   |                                     |
+| `nodeSelector`                      | Node Selector                                                                                                                                                                                         |                                     |
+| `tolerations`                       | Pod's tolerations                                                                                                                                                                                     |                                     |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

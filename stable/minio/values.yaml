@@ -6,7 +6,7 @@ clusterDomain: cluster.local
 ##
 image:
   repository: minio/minio
-  tag: RELEASE.2019-03-13T21-59-47Z
+  tag: RELEASE.2019-04-09T01-22-30Z
   pullPolicy: IfNotPresent
 
 ## Set default image, imageTag, and imagePullPolicy for the `mc` (the minio
@@ -14,7 +14,7 @@ image:
 ##
 mcImage:
   repository: minio/mc
-  tag: RELEASE.2019-03-13T21-05-06Z
+  tag: RELEASE.2019-04-03T17-59-57Z
   pullPolicy: IfNotPresent
 
 ## minio server mode, i.e. standalone or distributed.
@@ -78,6 +78,7 @@ persistence:
   ## Storage class of PV to bind. By default it looks for standard storage class.
   ## If the PV uses a different storage class, specify that here.
   # storageClass: standard
+  # VolumeName: ""
   accessMode: ReadWriteOnce
   size: 10Gi
 
