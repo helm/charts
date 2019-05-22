@@ -133,8 +133,7 @@ The above parameters map to the env variables defined in [bitnami/magento](http:
 
 > **Note**:
 >
-> Setting `elasticsearch.enabled` to true will launch seven more nodes by default. Use it with caution.
-
+> Setting `elasticsearch.enabled` to true will launch seven more pods by default. Use it with caution.
 
 > **Note**:
 >
