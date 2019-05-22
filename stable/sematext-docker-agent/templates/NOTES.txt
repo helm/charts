@@ -1,3 +1,5 @@
+**This chart is DEPRECATED, use stable/sematext-agent instead!**
+
 {{- if and (not .Values.sematext.spmToken) (not .Values.sematext.logseneToken) -}}
 
 ###############################################################################

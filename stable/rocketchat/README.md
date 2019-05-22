@@ -2,10 +2,12 @@
 
 [Rocket.Chat](https://rocket.chat/) is free, unlimited and open source. Replace email, HipChat & Slack with the ultimate team chat software solution.
 
+> **WARNING**: Upgrading to chart version 1.1.0 (Rocket.Chat 1.0.3) might require extra steps to retain the MongoDB data. See [Upgrading to 1.1.0](###-To-1.1.0) for more details.
+
 ## TL;DR;
 
 ```console
-$ helm install stable/rocketchat --set mongodb.mongodbPassword=$(echo -n $(openssl rand -base64 32))
+$ helm install stable/rocketchat --set mongodb.mongodbPassword=$(echo -n $(openssl rand -base64 32)),mongodb.mongodbRootPassword=$(echo -n $(openssl rand -base64 32))
 ```
 
 ## Introduction
@@ -41,7 +43,7 @@ The following table lists the configurable parameters of the Rocket.Chat chart a
 Parameter | Description | Default
 --- | --- | ---
 `image.repository` | Image repository | `rocketchat/rocket.chat`
-`image.tag` | Image tag | `0.74.2`
+`image.tag` | Image tag | `1.0.3`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
 `host` | Hostname for Rocket.Chat. Also used for ingress (if enabled) | `""`
 `replicaCount` | Number of replicas to run | `1`
@@ -52,6 +54,7 @@ Parameter | Description | Default
 `smtp.port` | Port of the SMTP server | `587`
 `extraEnv` | Extra environment variables for Rocket.Chat. Used with `tpl` function, so this needs to be a string | `""`
 `externalMongodbUrl` | MongoDB URL if using an externally provisioned MongoDB | `""`
+`externalMongodbOplogUrl` | MongoDB OpLog URL if using an externally provisioned MongoDB. Required if `externalMongodbUrl` is set | `""`
 `mongodb.enabled` | Enable or disable MongoDB dependency. Refer to the [stable/mongodb docs](https://github.com/helm/charts/tree/master/stable/mongodb#configuration) for more information | `true`
 `persistence.enabled` | Enable persistence using a PVC. This is not necessary if you're using the default (and recommended) [GridFS](https://rocket.chat/docs/administrator-guides/file-upload/) file storage | `false`
 `persistence.storageClass` | Storage class of the PVC to use | `""`
@@ -90,7 +93,8 @@ To run Rocket.Chat with multiple replicas, you need a MongoDB replicaset. Additi
 Rocket.Chat uses a MongoDB instance to presist its data.
 By default, the [MongoDB](https://github.com/kubernetes/charts/tree/master/stable/mongodb) chart is deployed and configured as database.
 Please refer to this chart for additional MongoDB configuration options.
-Make sure to set at least the `mongodb.mongodbRootPassword`, `mongodb.mongodbUsername` and `mongodb.mongodbPassword` values.
+Make sure to set at least the `mongodb.mongodbRootPassword`, `mongodb.mongodbUsername` and `mongodb.mongodbPassword` values. Enabling MongoDB ReplicaSet is required for Rocket.Chat version 1.x.
+> **WARNING**: The root credentials are used to connect to the MongoDB OpLog
 
 #### Using an External Database
 
@@ -104,6 +108,10 @@ extraEnv: |
     value: '{"ssl": "true"}'
 ```
 ## Upgrading
+
+### To 1.1.0
+
+Rocket.Chat version 1.x requires a MongoDB ReplicaSet to be configured. When using the dependent `stable/mongodb` chart (`mongodb.enabled=true`), enabling ReplicaSet will drop the PVC and create new ones. Make sure to backup your current MongoDB and restore it after the upgrade.
 
 ### To 1.0.0
 
