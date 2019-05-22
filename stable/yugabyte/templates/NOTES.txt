@@ -1,0 +1,22 @@
+1. Get YugaByte DB Pods by running this command:
+  kubectl --namespace {{ .Release.Namespace }} get pods
+
+2. Get list of YugaByte services that are running:
+  kubectl --namespace {{ .Release.Namespace }} get services
+
+3. Get information about the load balancer services:
+  kubectl get svc --namespace {{ .Release.Namespace }}
+
+4. Connect to one of the tablet server:
+  kubectl exec --namespace {{ .Release.Namespace }} -it yb-tserver-0 bash
+
+5. Run CQL shell from inside of a tablet server:
+  kubectl exec --namespace {{ .Release.Namespace }} -it yb-tserver-0 bin/cqlsh yb-tserver-0
+
+6. Cleanup YugaByte Pods
+  helm delete {{ .Release.Name }} --purge
+  NOTE: You need to manually delete the persistent volume
+  {{- $root := . -}}
+  {{- range .Values.Services }}
+  kubectl delete pvc --namespace {{ $root.Release.Namespace }} -l app={{.label}}
+  {{- end }}

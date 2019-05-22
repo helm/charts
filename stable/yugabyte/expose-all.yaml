@@ -1,0 +1,24 @@
+serviceEndpoints:
+  - name: "yb-master-ui"
+    type: LoadBalancer
+    app: "yb-master"
+    ports:
+      ui: "7000"
+
+  - name: "yql-service"
+    type: LoadBalancer
+    app: "yb-tserver"
+    ports:
+      yql-port: "9042"
+
+  - name: "yedis-service"
+    type: LoadBalancer
+    app: "yb-tserver"
+    ports:
+      yedis-port: "6379"
+
+  - name: "ysql-service"
+    type: LoadBalancer
+    app: "yb-tserver"
+    ports:
+      ysql-port: "5433"
