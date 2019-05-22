@@ -71,6 +71,7 @@ The following table lists the configurable parameters of the Fluentd Cloudwatch 
 | `updateStrategy`             | Define daemonset update strategy                                          | `OnDelete`                            |
 | `nodeSelector`               | Node labels for pod assignment                                            | `{}`                                  |
 | `affinity`                   | Node affinity for pod assignment                                          | `{}`                                  |
+| `priorityClassName`          | Set priority class for daemon set                                         | `nil`                                 |
 
 If using fluentd-kubernetes-daemonset v0.12.43-cloudwatch, the container runs as user fluentd. To be able to write pos files to the host system, you'll need to run fluentd as root. Add the following extraVars value to run as root.
 
