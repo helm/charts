@@ -31,6 +31,10 @@ podSecurityPolicy:
     # seccomp.security.alpha.kubernetes.io/defaultProfileName: 'docker/default'
     # apparmor.security.beta.kubernetes.io/defaultProfileName: 'runtime/default'
 
+securityContext:
+  enabled: false
+  runAsUser: 1000
+
 image:
   repository: "docker.elastic.co/elasticsearch/elasticsearch-oss"
   tag: "6.7.0"
