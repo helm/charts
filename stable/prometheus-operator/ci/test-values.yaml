@@ -1439,6 +1439,10 @@ prometheus:
     ##
     # jobLabel: ""
 
+    ## labels to transfer from the kubernetes service to the target
+    ##
+    # targetLabels: ""
+
     ## Label selector for services to which this ServiceMonitor applies
     ##
     # selector: {}
