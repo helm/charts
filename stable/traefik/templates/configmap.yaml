@@ -137,6 +137,12 @@ data:
         {{- end }}
         {{- end }}
       {{- end }}
+    {{- if .Values.ping.enabled }}
+    [ping]
+      {{- if .Values.ping.entrypoint }}
+      entryPoint = "{{ .Values.ping.entrypoint }}"
+      {{- end }}
+    {{- end }}
     [kubernetes]
     {{- if .Values.kubernetes}}
       {{- if .Values.kubernetes.endpoint }}

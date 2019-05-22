@@ -413,6 +413,11 @@ tracing:
   #   debug: false
   #   globalTag: ""
 
+## /ping healthcheck URL
+ping:
+  enabled: false
+#  entrypoint: traefik
+
 ## Create HorizontalPodAutoscaler object.
 ##
 # autoscaling:
