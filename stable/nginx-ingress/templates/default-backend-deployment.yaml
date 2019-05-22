@@ -3,15 +3,20 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    app: {{ template "nginx-ingress.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.defaultBackend.name }}"
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ template "nginx-ingress.name" . }}
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: {{ template "nginx-ingress.defaultBackend.fullname" . }}
   name: {{ template "nginx-ingress.defaultBackend.fullname" . }}
 spec:
   replicas: {{ .Values.defaultBackend.replicaCount }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ template "nginx-ingress.name" . }}
+      app.kubernetes.io/component: {{ template "nginx-ingress.defaultBackend.fullname" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
     {{- if .Values.defaultBackend.podAnnotations }}
@@ -21,9 +26,9 @@ spec:
       {{- end }}
     {{- end }}
       labels:
-        app: {{ template "nginx-ingress.name" . }}
-        component: "{{ .Values.defaultBackend.name }}"
-        release: {{ .Release.Name }}
+        app.kubernetes.io/name: {{ template "nginx-ingress.name" . }}
+        app.kubernetes.io/component: {{ template "nginx-ingress.defaultBackend.fullname" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
         {{- if .Values.defaultBackend.podLabels }}
 {{ toYaml .Values.defaultBackend.podLabels | indent 8 }}
         {{- end }}

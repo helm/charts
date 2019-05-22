@@ -4,10 +4,10 @@ kind: PodSecurityPolicy
 metadata:
   name: {{ template "nginx-ingress.fullname" . }} 
   labels:
-    app: {{ template "nginx-ingress.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ template "nginx-ingress.name" . }}
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
 spec:
   allowedCapabilities:
     - NET_BIND_SERVICE

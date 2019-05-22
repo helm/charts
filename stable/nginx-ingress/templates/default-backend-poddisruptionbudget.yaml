@@ -3,17 +3,17 @@ apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
   labels:
-    app: {{ template "nginx-ingress.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.defaultBackend.name }}"
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ template "nginx-ingress.name" . }}
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: {{ template "nginx-ingress.defaultBackend.fullname" . }}
   name: {{ template "nginx-ingress.defaultBackend.fullname" . }}
 spec:
   selector:
     matchLabels:
-      app: {{ template "nginx-ingress.name" . }}
-      release: {{ .Release.Name }}
-      component: "{{ .Values.defaultBackend.name }}"
+      app.kubernetes.io/name: {{ template "nginx-ingress.name" . }}
+      app.kubernetes.io/component: {{ template "nginx-ingress.defaultBackend.fullname" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   minAvailable: {{ .Values.defaultBackend.minAvailable }}
 {{- end }}

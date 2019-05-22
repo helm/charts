@@ -12,11 +12,11 @@ metadata:
 {{- if .Values.controller.metrics.service.labels }}
 {{ toYaml .Values.controller.metrics.service.labels | indent 4 }}
 {{- end }}
-    app: {{ template "nginx-ingress.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.controller.name }}"
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ template "nginx-ingress.name" . }}
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: {{ template "nginx-ingress.controller.fullname" . }}
   name: {{ template "nginx-ingress.controller.fullname" . }}-metrics
 spec:
 {{- if not .Values.controller.metrics.service.omitClusterIP }}
@@ -38,8 +38,11 @@ spec:
       port: {{ .Values.controller.metrics.service.servicePort }}
       targetPort: metrics
   selector:
-    app: {{ template "nginx-ingress.name" . }}
-    component: "{{ .Values.controller.name }}"
-    release: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ template "nginx-ingress.name" . }}
+    app.kubernetes.io/component: {{ template "nginx-ingress.controller.fullname" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    {{- if .Values.controller.podLabels }}
+{{ toYaml .Values.controller.podLabels | indent 4 }}
+    {{- end }}
   type: "{{ .Values.controller.metrics.service.type }}"
 {{- end }}

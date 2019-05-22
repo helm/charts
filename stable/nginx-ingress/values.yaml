@@ -248,7 +248,6 @@ controller:
   #   image: busybox
   #   command: ['sh', '-c', 'until nslookup myservice; do echo waiting for myservice; sleep 2; done;']
 
-
   stats:
     enabled: false
 

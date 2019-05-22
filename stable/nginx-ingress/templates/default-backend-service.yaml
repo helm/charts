@@ -9,11 +9,11 @@ metadata:
   {{- end }}
 {{- end }}
   labels:
-    app: {{ template "nginx-ingress.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.defaultBackend.name }}"
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ template "nginx-ingress.name" . }}
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: {{ template "nginx-ingress.defaultBackend.fullname" . }}
   name: {{ template "nginx-ingress.defaultBackend.fullname" . }}
 spec:
 {{- if not .Values.defaultBackend.service.omitClusterIP }}
@@ -36,8 +36,8 @@ spec:
       protocol: TCP
       targetPort: http
   selector:
-    app: {{ template "nginx-ingress.name" . }}
-    component: "{{ .Values.defaultBackend.name }}"
-    release: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ template "nginx-ingress.name" . }}
+    app.kubernetes.io/component: {{ template "nginx-ingress.defaultBackend.fullname" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
   type: "{{ .Values.defaultBackend.service.type }}"
 {{- end }}
