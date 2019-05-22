@@ -26,7 +26,7 @@ chart and deletes the release.
 `image.pullPolicy`              | Image pull policy                      | `Always`
 `image.repository`              | Image repository                       | `docker.io/anapsix/satisfy`
 `image.tag`                     | Image tag                              | `v3.0.4`
-`image.digest`                  | Image digest                           | `sha256:b590aced3074cdb1e09b4e9432fd69afccfa807e50a3ad8168960572128f4fbd`
+`image.digest`                  | Image digest                           | `sha256:fae78e3809e9d08990c7d7d6699a734f7e584c28ce49381a1a699e1694481ab8`
 `image.pullSecrets`             | Specify image pull secrets             | `[]`
 `service.type`                  | Type of service                        | `ClusterIP`
 `service.port`                  | Service port                           | `80`

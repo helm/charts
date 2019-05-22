@@ -28,6 +28,16 @@ serviceAccount:
 rbac:
   create: true
 
+sysctlImage:
+  enabled: false
+  command: []
+  registry: docker.io
+  repository: bitnami/minideb
+  tag: latest
+  pullPolicy: Always
+  mountHostSys: false
+
+
 ## Redis specific configuration options
 redis:
   port: 6379
@@ -136,8 +146,11 @@ podDisruptionBudget: {}
 auth: false
 # redisPassword:
 
-## Use existing secret containing "auth" key (ignores redisPassword)
+## Use existing secret containing key `authKey` (ignores redisPassword)
 # existingSecret:
+
+## Defines the key holding the redis password in existing secret.
+authKey: auth
 
 persistentVolume:
   enabled: true
