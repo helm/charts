@@ -21,4 +21,6 @@ spec:
     - port: {{ .Values.internalService.port }}
       name: {{ .Values.internalService.portName }}
   selector:
-    app: {{ template "cratedb.name" . }}
+    app.kubernetes.io/name: {{ template "cratedb.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+

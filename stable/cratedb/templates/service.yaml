@@ -19,6 +19,7 @@ spec:
   type: LoadBalancer
   selector:
     app.kubernetes.io/name: {{ template "cratedb.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
   ports:
   - port: {{ .Values.externalService.webUiPort }}
     name: {{ .Values.externalService.webPortName }}
