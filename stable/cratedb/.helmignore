@@ -15,6 +15,7 @@
 *.bak
 *.tmp
 *~
+OWNERS
 # Various IDEs
 .project
 .idea/
