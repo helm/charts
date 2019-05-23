@@ -23,6 +23,7 @@ spec:
         app: {{ template "openebs.name" . }}
         release: {{ .Release.Name }}
         component: snapshot-operator
+        openebs.io/version: {{ .Values.release.version }}
     spec:
       serviceAccountName: {{ template "openebs.serviceAccountName" . }}
       containers:
