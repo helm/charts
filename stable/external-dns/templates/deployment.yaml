@@ -24,8 +24,7 @@ spec:
       priorityClassName: "{{ .Values.priorityClassName }}"
       {{- end }}
       {{- if .Values.podSecurityContext }}
-      securityContext:
-{{ toYaml .Values.podSecurityContext | indent 8 }}
+      securityContext: {{ toYaml .Values.podSecurityContext | nindent 8 }}
       {{- end }}
       containers:
         - name: {{ template "external-dns.name" . }}
