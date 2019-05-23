@@ -1,12 +1,12 @@
 dependencies:
 - name: mysql
   repository: https://kubernetes-charts.storage.googleapis.com/
-  version: 0.3.4
+  version: 1.1.0
 - name: rabbitmq
   repository: https://kubernetes-charts.storage.googleapis.com/
   version: 0.6.16
 - name: kafka
   repository: https://kubernetes-charts-incubator.storage.googleapis.com/
   version: 0.13.11
-digest: sha256:f637f0a710a29e8c4d052faf43224cf5818cdcfcd6130ea0c931d8a6311ca42e
-generated: 2019-03-08T14:41:35.841588-05:00
+digest: sha256:647626620388f5f7fb3f652d53bc215f777e9ddb63fc5ebaeeb12344172f7c46
+generated: 2019-05-16T14:16:46.84520572+02:00
