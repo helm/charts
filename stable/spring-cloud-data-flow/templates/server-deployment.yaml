@@ -78,6 +78,7 @@ spec:
             secretName: {{ printf "%s-%s" .Release.Name "mysql" | trunc 63 | trimSuffix "-" }}
       initContainers:
       - name: init-mysql-wait
-        image: busybox
+        image: {{ .Values.mysql.busybox.image }}:{{ .Values.mysql.busybox.tag }}
+        imagePullPolicy: {{ .Values.mysql.imagePullPolicy }}
         command: ['sh', '-c', 'until nc -w3 -z {{ printf "%s-%s" .Release.Name "mysql" | trunc 63 | trimSuffix "-" }} 3306; do echo waiting for mysql; sleep 3; done;']
       serviceAccountName: {{ template "scdf.serviceAccountName" . }}
