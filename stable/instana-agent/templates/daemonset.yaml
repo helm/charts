@@ -92,10 +92,12 @@ spec:
             - name: dev
               mountPath: /dev
             - name: run
+              mountPath: /run
+            - name: var-run
               mountPath: /var/run
             - name: sys
               mountPath: /sys
-            - name: log
+            - name: var-log
               mountPath: /var/log
             - name: machine-id
               mountPath: /etc/machine-id
@@ -147,11 +149,14 @@ spec:
             path: /dev
         - name: run
           hostPath:
+            path: /run
+        - name: var-run
+          hostPath:
             path: /var/run
         - name: sys
           hostPath:
             path: /sys
-        - name: log
+        - name: var-log
           hostPath:
             path: /var/log
         - name: machine-id
