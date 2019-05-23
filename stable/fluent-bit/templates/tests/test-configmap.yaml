@@ -13,13 +13,18 @@ data:
     {{- if eq .Values.backend.forward.tls "on"}}
     fluent-gem install fluent-plugin-secure-forward
     {{- end }}
-    @test "Test Access" {
+    @test "Test fluentd" {
       fluentd -c /tests/fluentd.conf --dry-run
     }
     {{- else if eq .Values.backend.type "es"}}
     @test "Test Elasticssearch Indices" {
       url="http://{{ .Values.backend.es.host }}:{{ .Values.backend.es.port }}/_cat/indices?format=json"
-      result=$(curl url | jq -cr '.[] | select((.index | contains("kubernetes_cluster")) and (.health != "green"))')
+      body=$(curl $url)
+
+      result=$(echo $body | jq -cr '.[] | select(.index | contains("{{ .Values.backend.es.index }}"))')
+      [ "$result" != "" ]
+
+      result=$(echo $body | jq -cr '.[] | select((.index | contains("{{ .Values.backend.es.index }}")) and (.health != "green"))')
       [ "$result" == "" ]
     }
     {{- end }}
