@@ -272,7 +272,9 @@ spec:
       {{- else if .Values.persistence.existingClaim }}
         - name: data
           persistentVolumeClaim:
-            claimName: {{ .Values.persistence.existingClaim }}
+          {{- with .Values.persistence.existingClaim }}
+            claimName: {{ tpl . $ }}
+          {{- end }}
   {{- else }}
   volumeClaimTemplates:
     - metadata:
