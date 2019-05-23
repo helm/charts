@@ -32,7 +32,7 @@ spec:
       image: "dwdraju/alpine-curl-jq"
       {{- end }}
       command: ["/tools/bats/bats", "-t", "/tests/run.sh"]
-      {{- if eq .Values.backend.forward.tls "on"}}
+      {{- if and (eq .Values.backend.forward.tls "on") (eq .Values.backend.type "forward") }}
       securityContext:
         # run as root to install fluent gems
         runAsUser: 0
