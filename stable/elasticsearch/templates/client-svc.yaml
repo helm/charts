@@ -31,6 +31,9 @@ spec:
     component: "{{ .Values.client.name }}"
     release: {{ .Release.Name }}
   type: {{ .Values.client.serviceType }}
+{{- if .Values.client.clusterIP }}
+  clusterIP: "{{ .Values.client.clusterIP }}"
+{{- end }}
 {{- if .Values.client.loadBalancerIP }}
   loadBalancerIP: "{{ .Values.client.loadBalancerIP }}"
 {{- end }}

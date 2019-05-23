@@ -86,7 +86,8 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `client.tolerations`                 | Client tolerations                                                  | `[]`                                                |
 | `client.serviceAnnotations`          | Client Service annotations                                          | `{}`                                                |
 | `client.serviceType`                 | Client service type                                                 | `ClusterIP`                                         |
-| `client.httpNodePort`                | Client service HTTP NodePort port number. Has no effect if client.serviceType is not `NodePort`.   | `nil`                                         |
+| `client.clusterIP`                   | Client ClusterIP setting. Allows for headless or specific IP         | `None`                                              |
+| `client.httpNodePort`                | Client service HTTP NodePort port number. Has no effect if client.serviceType is not `NodePort`.   | `nil`                |
 | `client.loadBalancerIP`              | Client loadBalancerIP                                               | `{}`                                                |
 | `client.loadBalancerSourceRanges`    | Client loadBalancerSourceRanges                                     | `{}`                                                |
 | `client.antiAffinity`                | Client anti-affinity policy                                         | `soft`                                              |
@@ -144,7 +145,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `data.nodeAffinity`                  | Data node affinity policy                                           | `{}`                                                |
 | `data.podManagementPolicy`           | Data pod creation strategy                                          | `OrderedReady`                                      |
 | `data.updateStrategy`                | Data node update strategy policy                                    | `{type: "onDelete"}`                                |
-| `sysctlInitContainer.enabled`        | If true, the sysctl init container is enabled (does not stop extraInitContainers from running) | `true`                                              |
+| `sysctlInitContainer.enabled`        | If true, the sysctl init container is enabled (does not stop extraInitContainers from running) | `true`                   |
 | `extraInitContainers`                | Additional init container passed through the tpl                    | ``                                                  |
 | `podSecurityPolicy.annotations`      | Specify pod annotations in the pod security policy                  | `{}`                                              |
 | `podSecurityPolicy.enabled`          | Specify if a pod security policy must be created                    | `false`                                             |
