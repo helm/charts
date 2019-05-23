@@ -1,0 +1,10 @@
+apiVersion: v1
+appVersion: 1.2.8.0-b1
+version: 1.2.8
+home: https://www.yugabyte.com
+description: YugaWare is YugaByte Database's Orchestration and Management console.
+name: yugaware
+icon: https://avatars0.githubusercontent.com/u/17074854?s=200&v=4
+maintainers:
+- name: Ram Sri
+  email: ram@yugabyte.com
