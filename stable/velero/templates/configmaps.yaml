@@ -1,0 +1,6 @@
+{{- range .Values.configMaps }}
+---
+apiVersion: v1
+kind: ConfigMap
+{{ toYaml . }}
+{{- end }}
