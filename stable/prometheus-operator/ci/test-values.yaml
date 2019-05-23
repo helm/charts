@@ -216,7 +216,7 @@ alertmanager:
     ##
     image:
       repository: quay.io/prometheus/alertmanager
-      tag: v0.16.2
+      tag: v0.17.0
 
     ## If true then the user will be responsible to provide a secret with alertmanager configuration
     ## So when true the config part will be ignored (including templateFiles) and the one in the secret will be used
@@ -1125,6 +1125,12 @@ prometheus:
     ##
     listenLocal: false
 
+    ## EnableAdminAPI enables Prometheus the administrative HTTP API which includes functionality such as deleting time series.
+    ## This is disabled by default.
+    ## ref: https://prometheus.io/docs/prometheus/latest/querying/api/#tsdb-admin-apis
+    ##
+    enableAdminAPI: false
+
     ## Image of Prometheus.
     ##
     image:
@@ -1432,6 +1438,10 @@ prometheus:
     ## If no label is specified, the service name is used.
     ##
     # jobLabel: ""
+
+    ## labels to transfer from the kubernetes service to the target
+    ##
+    # targetLabels: ""
 
     ## Label selector for services to which this ServiceMonitor applies
     ##
