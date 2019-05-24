@@ -21,7 +21,7 @@ data:
             "byzantiumBlock": 4,
             "constantinopleBlock": 5,
             "clique": {
-              "period": 10,
+              "period": {{ .Values.geth.genesis.blockTime }},
               "epoch": 30000
             }
         },

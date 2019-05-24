@@ -37,9 +37,10 @@ geth:
     replicaCount: 3
   genesis:
     # geth genesis block
-    difficulty: '0x1'
-    gasLimit: '0x8000000'
     networkId: 98052
+    difficulty: '0x1'
+    blockTime: 15
+    gasLimit: '0x8000000'
   account:
     # You will need to configure an Ethereum account before this
     # network will run. The Ethereum account will be used to seed

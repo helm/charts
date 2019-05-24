@@ -134,6 +134,7 @@ The following table lists the configurable parameters of the vault chart and the
 | `geth.miner.account.secret` | geth account secret                                                | `my-secret-account-password`           |
 | `geth.genesis.networkId`    | Ethereum network id                                                | `98052`                                |
 | `geth.genesis.difficulty`   | Ethereum network difficulty                                        | `0x1`                                  |
+| `geth.genesis.blockTime`    | Ethereum network block time                                        | `15`                                   |
 | `geth.genesis.gasLimit`     | Ethereum network gas limit                                         | `0x8000000`                            |
 | `geth.account.address`      | Geth Account to be initially funded and deposited with mined Ether |                                        |
 | `geth.account.privateKey`   | Geth Private Key                                                   |                                        |
@@ -143,6 +144,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 ```console
 $ helm install stable/ethereum --name ethereum --set geth.genesis.networkid=98052
+...
 ```
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
