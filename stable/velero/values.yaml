@@ -93,6 +93,9 @@ configuration:
     config: {}
   #    region:
   #    apitimeout:
+  #    resourceGroup:
+  #    snapshotLocation:
+  #    project:
 
   # These are server-level settings passed as CLI flags to the `velero server` command. Velero
   # uses default values if they're not passed in, so they only need to be explicitly specified
