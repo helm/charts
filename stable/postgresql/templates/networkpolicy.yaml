@@ -16,7 +16,7 @@ spec:
   ingress:
     # Allow inbound connections
     - ports:
-      - port: 5432
+      - port: {{ template "postgresql.port" . }}
     {{- if not .Values.networkPolicy.allowExternal }}
       from:
       - podSelector:
