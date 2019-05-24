@@ -1,7 +1,7 @@
 apiVersion: v1
 name: weave-scope
-version: 1.0.0
-appVersion: 1.10.1
+version: 1.1.0
+appVersion: 1.11.0
 description: A Helm chart for the Weave Scope cluster visualizer.
 keywords:
   - containers
@@ -13,4 +13,10 @@ sources:
 maintainers:
   - name: omkensey
     email: github@orion-com.com
+  - name: dholbach
+    email: daniel@weave.works
+  - name: fbarl
+    email: filip@weave.works
+  - name: bboreham
+    email: bryan@weave.works
 icon: https://avatars1.githubusercontent.com/u/9976052?s=64
