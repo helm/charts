@@ -53,7 +53,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 ```bash
 $ helm install --name my-release \
-  --set storage.size="20Gi" \
+  --set persistence.size="20Gi" \
     stable/ipfs
 ```
 
