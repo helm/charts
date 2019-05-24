@@ -105,7 +105,7 @@ This chart deploys a **private [proof-of-authority](https://medium.com/coinmonks
 To uninstall/delete the `my-release` deployment:
 
 ```console
-$ helm delete my-release
+$ helm delete my-release --purge
 release "my-release" deleted
 ```
 
@@ -118,7 +118,7 @@ The following table lists the configurable parameters of the vault chart and the
 | Parameter                   | Description                                                        | Default                                |
 | --------------------------- | ------------------------------------------------------------------ | -------------------------------------- |
 | `imagePullPolicy`           | Container pull policy                                              | `IfNotPresent`                         |
-| `nodeSelector`              | Node labels for pod assignmen                                      |                                        |
+| `nodeSelector`              | Node labels for pod assignment                                     |                                        |
 | `bootnode.image.repository` | bootnode container image to use                                    | `ethereum/client-go`                   |
 | `bootnode.image.tag`        | bootnode container image tag to deploy                             | `alltools-v1.8.27`                     |
 | `ethstats.image.repository` | ethstats container image to use                                    | `ethereumex/eth-stats-dashboard`       |
