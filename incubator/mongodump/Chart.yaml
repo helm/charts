@@ -7,7 +7,8 @@ keywords:
 - mongo
 - mongodump
 - backup
+home: https://mongodb.org
+icon: https://bitnami.com/assets/stacks/mongodb/img/mongodb-stack-220x234.png
 maintainers:
-- name: 风亦憔悴
+- name: Wang Xiang
   email: wangxiang5050@aliyum.com
-
