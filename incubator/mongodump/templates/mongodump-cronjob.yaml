@@ -1,0 +1,55 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: {{ template "mongodump.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "mongodump.name" . }}
+    helm.sh/chart: {{ include "mongodump.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: {{ .Values.failedJobsHistoryLimit }}
+  jobTemplate:
+    metadata:
+      labels:
+        app: {{ template "mongodump.name" . }}
+        chart: {{ template "mongodump.chart" . }}
+        cronjob-name: {{ template "mongodump.fullname" . }}
+        release: "{{ .Release.Name }}"
+        heritage: "{{ .Release.Service }}"
+    spec:
+      backoffLimit: 1
+      template:
+        spec:
+          containers:
+          - command:
+            - /bin/bash
+            - /mnt/script/startup.sh
+            envFrom:
+            - configMapRef:
+                name: {{ template "mongodump.fullname" . }}-config
+            image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+            imagePullPolicy: {{ .Values.image.pullPolicy }}
+            name: mongodump
+{{- if .Values.resources }}
+            resources:
+{{ toYaml .Values.resources | indent 12 }}
+{{- end}}
+            volumeMounts:
+            - mountPath: /mnt/script
+              name: mongodump-script
+            - mountPath: /mnt/backup
+              name: backups
+          dnsPolicy: ClusterFirst
+          restartPolicy: OnFailure
+          terminationGracePeriodSeconds: 30
+          volumes:
+          - name: backups
+            persistentVolumeClaim:
+              claimName: {{ template "mongodump.fullname" . }}
+          - configMap:
+              name: {{ template "mongodump.fullname" . }}-script
+            name: mongodump-script
+  schedule: "{{ .Values.schedule }}"
+  successfulJobsHistoryLimit: {{ .Values.successfulJobsHistoryLimit }}

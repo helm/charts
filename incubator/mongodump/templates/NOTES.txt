@@ -1,0 +1,5 @@
+Running mongodump on crontab schedule "{{ .Values.schedule }}"
+
+For cronjob status run:
+
+$ kubectl get cronjob {{ template "mongodump.fullname" . }} -n {{ .Release.Namespace }} -o wide

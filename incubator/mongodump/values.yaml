@@ -1,0 +1,54 @@
+# Default values for mongodump.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+image:
+  repository: mongo
+  tag: "4.1.11"
+  pullPolicy: IfNotPresent
+
+mongodb:
+## Without a host set, this chart will not do anything as it is expected
+## to be used only when there's an existing database to backup.
+  host: 127.0.0.1
+  port: 27017
+## clean backup over 3 days
+  keepdays: 3
+
+##  a cronjob schedule like `0 0 * * *` to get a cronjob.
+schedule: "0 3 * * *"
+
+# cronjob history
+successfulJobsHistoryLimit: 5
+failedJobsHistoryLimit: 5
+
+#  - gsutil cp "${BACKUP_DIR}/${TIMESTAMP}_${MYSQL_DB}.sql.gz" gs://mybucket/latest.sql.gz
+#  - echo "latest sql dump updated"
+
+## set persistentVolumeClaim to use a PVC that already exists.
+## if set will override any settings under `persistence` otherwise
+## if not set and `persistence.enabled` set to true, will create a PVC.
+# persistentVolumeClaim: <existing-PVC>
+
+persistence:
+  size: 8Gi
+  accessMode: ReadWriteOnce
+  reclaimPolicy: delete
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  # storageClass: "-"
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi

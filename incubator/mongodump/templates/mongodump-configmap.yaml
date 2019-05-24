@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "mongodump.fullname" . }}-script
+  labels:
+    app.kubernetes.io/name: {{ include "mongodump.name" . }}
+    helm.sh/chart: {{ include "mongodump.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+data:
+  startup.sh: |-
+    #!/bin/bash
+    #
+    # mongodb backup script
+
+    TIMESTAMP="$(date +%Y%m%d%H%M%S)"
+    mongodump -h ${MONGO_DB_HOST}:${MONGO_DB_PORT} -o /mnt/backup/mongo_backup_${TIMESTAMP}
+    tar cvf  /mnt/backup/mongo_backup_${TIMESTAMP}.tar /mnt/backup/mongo_backup_${TIMESTAMP}
+    rm -rf /mnt/backup/mongo_backup_${TIMESTAMP}
+    gzip /mnt/backup/mongo_backup_${TIMESTAMP}.tar
+    #rm /mnt/backup/mongo_backup_${TIMESTAMP}.tar
+    find /mnt/backup/ -mtime +${KEEP_DAYS} -regex "^/mnt/backup/mongo_backup_.[0-9]*\.tar\.gz$"  -type f -exec ls -l {} \;
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "mongodump.fullname" . }}-config
+  labels:
+    app.kubernetes.io/name: {{ include "mongodump.name" . }}
+    helm.sh/chart: {{ include "mongodump.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+data:
+  KEEP_DAYS: {{ .Values.mongodb.keepdays  | quote }}
+  MONGO_DB_HOST: {{ .Values.mongodb.host  | quote }}
+  MONGO_DB_PORT: {{ .Values.mongodb.port  | quote }}
