@@ -29,7 +29,7 @@ spec:
         command: ["/bin/sh"]
         args:
         - "-c"
-        - "geth --bootnodes=`cat /root/.ethereum/bootnodes` --mine --unlock=${MINING_ACCOUNT} --password=/root/.ethereum/account/accountSecret  --miner.etherbase=0 --networkid=${NETWORK_ID} --ethstats=${HOSTNAME}:${ETHSTATS_SECRET}@${ETHSTATS_SVC} --verbosity=5"
+        - "geth --bootnodes=`cat /root/.ethereum/bootnodes` --mine --unlock=${MINING_ACCOUNT} --password=/root/.ethereum/account/accountSecret --networkid=${NETWORK_ID} --ethstats=${HOSTNAME}:${ETHSTATS_SECRET}@${ETHSTATS_SVC} --verbosity=5"
         env:
         - name: ETHSTATS_SVC
           value: {{ template "ethereum.fullname" . }}-ethstats.{{ .Release.Namespace }}
