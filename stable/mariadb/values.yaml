@@ -169,6 +169,8 @@ master:
     enabled: true
     # Enable persistence using an existing PVC
     # existingClaim:
+    # Subdirectory of the volume to mount
+    # subPath:
     mountPath: /bitnami/mariadb
     ## Persistent Volume Storage Class
     ## If defined, storageClassName: <storageClass>
