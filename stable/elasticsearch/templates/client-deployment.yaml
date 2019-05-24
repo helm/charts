@@ -121,6 +121,10 @@ spec:
           initialDelaySeconds: 90
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+        {{- if .Values.securityContext.enabled }}
+        securityContext:
+          runAsUser: {{ .Values.securityContext.runAsUser }}
+        {{- end }}
         ports:
         - containerPort: 9200
           name: http

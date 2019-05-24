@@ -1,6 +1,6 @@
 image:
   repository: docker.elastic.co/beats/heartbeat
-  tag: 6.6.0
+  tag: 6.7.0
   pullPolicy: IfNotPresent
 
 config:
@@ -32,6 +32,8 @@ config:
 plugins: []
   # - kinesis.so
 
+hostNetwork: false
+
 # A map of additional environment variables
 extraVars: {}
   # test1: "test2"
@@ -57,6 +59,12 @@ resources: {}
   # requests:
   #  cpu: 100m
   #  memory: 100Mi
+
+priorityClassName: ""
+
+nodeSelector: {}
+
+tolerations: []
 
 rbac:
   # Specifies whether RBAC resources should be created

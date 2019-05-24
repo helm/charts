@@ -19,12 +19,7 @@ spec:
         chart: {{ template "odoo.chart" . }}
         release: {{ .Release.Name | quote }}
     spec:
-      {{- if .Values.image.pullSecrets }}
-      imagePullSecrets:
-      {{- range .Values.image.pullSecrets }}
-        - name: {{ . }}
-      {{- end}}
-      {{- end }}
+{{- include "odoo.imagePullSecrets" . | indent 6 }}
       containers:
       - name: {{ template "odoo.fullname" . }}
         image: {{ template "odoo.image" . }}
@@ -103,7 +98,7 @@ spec:
       - name: odoo-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "odoo.fullname" . }}
+          claimName: {{ .Values.persistence.existingClaim | default (include "odoo.fullname" .) }}
       {{- else }}
         emptyDir: {}
       {{- end }}

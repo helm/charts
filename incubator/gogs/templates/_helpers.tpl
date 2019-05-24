@@ -75,3 +75,14 @@ Determine database name based on use of postgresql dependency.
 {{- .Values.service.gogs.databaseName | quote -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Determine database SSL mode based on use of postgresql dependency.
+*/}}
+{{- define "gogs.database.ssl_mode" -}}
+{{- if .Values.postgresql.install -}}
+{{- .Values.postgresql.postgresSSLMode | quote -}}
+{{- else -}}
+{{- .Values.service.gogs.databaseSSLMode | quote -}}
+{{- end -}}
+{{- end -}}

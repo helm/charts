@@ -3,7 +3,7 @@ affinity: {}
 
 image:
   repository: directxman12/k8s-prometheus-adapter-amd64
-  tag: v0.4.1
+  tag: v0.5.0
   pullPolicy: IfNotPresent
 
 logLevel: 4
@@ -49,8 +49,16 @@ rules:
 #     as: "my_custom_metric"
 #   metricsQuery: sum(<<.Series>>{<<.LabelMatchers>>}) by (<<.GroupBy>>)
   # Mounts a configMap with pre-generated rules for use. Overrides the
-  # default and custom entries
+  # default, custom and external entries
   existing:
+  external: []
+# - seriesQuery: '{__name__=~"^some_metric_count$"}'
+#   resources:
+#     template: <<.Resource>>
+#   name:
+#     matches: ""
+#     as: "my_custom_metric"
+#   metricsQuery: sum(<<.Series>>{<<.LabelMatchers>>}) by (<<.GroupBy>>)
 
 service:
   annotations: {}

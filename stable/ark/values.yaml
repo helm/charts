@@ -1,6 +1,6 @@
 image:
   repository: gcr.io/heptio-images/ark
-  tag: v0.10.1
+  tag: v0.10.2
   pullPolicy: IfNotPresent
 
 # Only kube2iam/kiam: change the AWS_ACCOUNT_ID and HEPTIO_ARK_ROLE_NAME
@@ -14,6 +14,15 @@ rbac:
   create: true
 
 resources: {}
+
+# this is the k8s spec block for initContainers:
+initContainers: []
+  # - name:
+  #   image:
+  #   volumeMounts:
+  #     - name: plugins
+  #       mountPath: /target
+
 
 serviceAccount:
   server:
@@ -38,14 +47,15 @@ configuration:
   backupStorageLocation:
     name:
     bucket:
+    # prefix:
     config: {}
     #  region:
-    #  prefix:
     #  s3ForcePathStyle:
     #  s3Url:
     #  kmsKeyId:
     #  resourceGroup:
     #  storageAccount:
+    #  publicUrl:
 
   backupSyncPeriod: 60m
   resticTimeout: 1h

@@ -20,7 +20,6 @@ Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment
 - PV provisioner support in the underlying infrastructure
 
 ## Installing the Chart
-
 To install the chart with the release name `my-release`:
 
 ```console
@@ -48,6 +47,13 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | Parameter                                     | Description                                                                                                            | Default                                                     |
 | --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
 | `global.imageRegistry`                        | Global Docker Image registry                                                                                           | `nil`                                                       |
+| `global.postgresql.postgresqlDatabase`        | PostgreSQL database (overrides `postgresqlDatabase`)                                                                   | `nil`                                                       |
+| `global.postgresql.postgresqlUsername`        | PostgreSQL username (overrides `postgresqlUsername`)                                                                   | `nil`                                                       |
+| `global.postgresql.existingSecret`            | Name of existing secret to use for PostgreSQL passwords (overrides `existingSecret`)                                   | `nil`                                                       |
+| `global.postgresql.postgresqlPassword`        | Name of existing secret to use for PostgreSQL passwords (overrides `postgresqlPassword`)                               | `nil`                                                       |
+| `global.postgresql.servicePort`               | PostgreSQL port (overrides `service.port`)                                                                             | `nil`                                                       |
+| `global.postgresql.replicationPassword`       | Replication user password (overrides `replication.password`)                                                           | `nil`                                                       |
+| `global.imagePullSecrets`                     | Global Docker registry secret names as an array                                                                        | `[]` (does not add image pull secrets to deployed pods)     |
 | `image.registry`                              | PostgreSQL Image registry                                                                                              | `docker.io`                                                 |
 | `image.repository`                            | PostgreSQL Image name                                                                                                  | `bitnami/postgresql`                                        |
 | `image.tag`                                   | PostgreSQL Image tag                                                                                                   | `{VERSION}`                                                 |
@@ -77,21 +83,23 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `postgresqlConfiguration`                     | Runtime Config Parameters                                                                                              | `nil`                                                       |
 | `postgresqlExtendedConf`                      | Extended Runtime Config Parameters (appended to main or default configuration)                                         | `nil`                                                       |
 | `pgHbaConfiguration`                          | Content of pg\_hba.conf                                                                                                | `nil (do not create pg_hba.conf)`                           |
-| `configurationConfigMap`                      | ConfigMap with the PostgreSQL configuration files (Note: Overrides `postgresqlConfiguration` and `pgHbaConfiguration`) | `nil`                                                       |
-| `extendedConfConfigMap`                       | ConfigMap with the extended PostgreSQL configuration files                                                             | `nil`                                                       |
-| `initdbScripts`                               | List of initdb scripts                                                                                                 | `nil`                                                       |
-| `initdbScriptsConfigMap`                      | ConfigMap with the initdb scripts (Note: Overrides `initdbScripts`)                                                    | `nil`                                                       |
-| `initdbScriptsSecret`                      | Secret with initdb scripts that contain sensitive information (Note: can be used with `initdbScriptsConfigMap` or `initdbScripts`)                                                    | `nil`                                                       |
+| `configurationConfigMap`                      | ConfigMap with the PostgreSQL configuration files (Note: Overrides `postgresqlConfiguration` and `pgHbaConfiguration`). The value is evaluated as a template. | `nil`                                                       |
+| `extendedConfConfigMap`                       | ConfigMap with the extended PostgreSQL configuration files. The value is evaluated as a template.                      | `nil`                                                       |
+| `initdbScripts`                               | Dictionary of initdb scripts                                                                                           | `nil`                                                       |
+| `initdbScriptsConfigMap`                      | ConfigMap with the initdb scripts (Note: Overrides `initdbScripts`). The value is evaluated as a template.             | `nil`                                                       |
+| `initdbScriptsSecret`                         | Secret with initdb scripts that contain sensitive information (Note: can be used with `initdbScriptsConfigMap` or `initdbScripts`). The value is evaluated as a template. | `nil`                                           |
 | `service.type`                                | Kubernetes Service type                                                                                                | `ClusterIP`                                                 |
 | `service.port`                                | PostgreSQL port                                                                                                        | `5432`                                                      |
 | `service.nodePort`                            | Kubernetes Service nodePort                                                                                            | `nil`                                                       |
 | `service.annotations`                         | Annotations for PostgreSQL service                                                                                     | {}                                                          |
 | `service.loadBalancerIP`                      | loadBalancerIP if service type is `LoadBalancer`                                                                       | `nil`                                                       |
+| `service.loadBalancerSourceRanges`            | Address that are allowed when svc is LoadBalancer                                                                      | []                                                          |
 | `persistence.enabled`                         | Enable persistence using PVC                                                                                           | `true`                                                      |
-| `persistence.existingClaim`                   | Provide an existing `PersistentVolumeClaim`                                                                            | `nil`                                                       |
+| `persistence.existingClaim`                   | Provide an existing `PersistentVolumeClaim`, the value is evaluated as a template.                                     | `nil`                                                       |
 | `persistence.mountPath`                       | Path to mount the volume at                                                                                            | `/bitnami/postgresql`                                       |
+| `persistence.subPath`                         | Subdirectory of the volume to mount at                                                                                 | `""`                                                        |
 | `persistence.storageClass`                    | PVC Storage Class for PostgreSQL volume                                                                                | `nil`                                                       |
-| `persistence.accessMode`                      | PVC Access Mode for PostgreSQL volume                                                                                  | `ReadWriteOnce`                                             |
+| `persistence.accessModes`                     | PVC Access Mode for PostgreSQL volume                                                                                  | `[ReadWriteOnce]`                                           |
 | `persistence.size`                            | PVC Storage Request for PostgreSQL volume                                                                              | `8Gi`                                                       |
 | `persistence.annotations`                     | Annotations for the PVC                                                                                                | `{}`                                                        |
 | `master.nodeSelector`                         | Node labels for pod assignment (postgresql master)                                                                     | `{}`                                                        |
@@ -109,6 +117,8 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `securityContext.enabled`                     | Enable security context                                                                                                | `true`                                                      |
 | `securityContext.fsGroup`                     | Group ID for the container                                                                                             | `1001`                                                      |
 | `securityContext.runAsUser`                   | User ID for the container                                                                                              | `1001`                                                      |
+| `serviceAccount.enabled`                      | Enable service account (Note: Service Account will only be automatically created if `serviceAccount.name` is not set)  | `false`                                                     |
+| `serviceAcccount.name`                        | Name of existing service account                                                                                       | `nil`                                                       |
 | `livenessProbe.enabled`                       | Would you like a livessProbed to be enabled                                                                            | `true`                                                      |
 | `networkPolicy.enabled`                       | Enable NetworkPolicy                                                                                                   | `false`                                                     |
 | `networkPolicy.allowExternal`                 | Don't require client label for connections                                                                             | `true`                                                      |
@@ -126,15 +136,28 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `metrics.enabled`                             | Start a prometheus exporter                                                                                            | `false`                                                     |
 | `metrics.service.type`                        | Kubernetes Service type                                                                                                | `ClusterIP`                                                 |
 | `service.clusterIP`                           | Static clusterIP or None for headless services                                                                         | `nil`                                                       |
-| `metrics.service.annotations`                 | Additional annotations for metrics exporter pod                                                                        | `{}`                                                        |
+| `metrics.service.annotations`                 | Additional annotations for metrics exporter pod                                                                        | `{ prometheus.io/scrape: "true", prometheus.io/port: "9187"}` |
 | `metrics.service.loadBalancerIP`              | loadBalancerIP if redis metrics service type is `LoadBalancer`                                                         | `nil`                                                       |
 | `metrics.image.registry`                      | PostgreSQL Image registry                                                                                              | `docker.io`                                                 |
 | `metrics.image.repository`                    | PostgreSQL Image name                                                                                                  | `wrouesnel/postgres_exporter`                               |
 | `metrics.image.tag`                           | PostgreSQL Image tag                                                                                                   | `v0.4.7`                                                    |
 | `metrics.image.pullPolicy`                    | PostgreSQL Image pull policy                                                                                           | `IfNotPresent`                                              |
 | `metrics.image.pullSecrets`                   | Specify Image pull secrets                                                                                             | `nil` (does not add image pull secrets to deployed pods)    |
+| `metrics.securityContext.enabled`             | Enable security context for metrics                                                                                    | `false`                                                     |
+| `metrics.securityContext.runAsUser`           | User ID for the container for metrics                                                                                  | `1001`                                                      |
+| `metrics.livenessProbe.initialDelaySeconds`   | Delay before liveness probe is initiated                                                                               | 30                                                          |
+| `metrics.livenessProbe.periodSeconds`         | How often to perform the probe                                                                                         | 10                                                          |
+| `metrics.livenessProbe.timeoutSeconds`        | When the probe times out                                                                                               | 5                                                           |
+| `metrics.livenessProbe.failureThreshold`      | Minimum consecutive failures for the probe to be considered failed after having succeeded.                             | 6                                                           |
+| `metrics.livenessProbe.successThreshold`      | Minimum consecutive successes for the probe to be considered successful after having failed                            | 1                                                           |
+| `metrics.readinessProbe.enabled`              | would you like a readinessProbe to be enabled                                                                          | `true`                                                      |
+| `metrics.readinessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated                                                                               | 5                                                           |
+| `metrics.readinessProbe.periodSeconds`        | How often to perform the probe                                                                                         | 10                                                          |
+| `metrics.readinessProbe.timeoutSeconds`       | When the probe times out                                                                                               | 5                                                           |
+| `metrics.readinessProbe.failureThreshold`     | Minimum consecutive failures for the probe to be considered failed after having succeeded.                             | 6                                                           |
+| `metrics.readinessProbe.successThreshold`     | Minimum consecutive successes for the probe to be considered successful after having failed                            | 1                                                           |
 | `extraEnv`                                    | Any extra environment variables you would like to pass on to the pod                                                   | `{}`                                                        |
-| `updateStrategy`                              | Update strategy policy                                                                                                 | `{type: "onDelete"}`                                        |
+| `updateStrategy`                              | Update strategy policy                                                                                                 | `{type: "RollingUpdate"}`                                   |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
@@ -239,7 +262,83 @@ helm install --name postgres \
 - The Docker Official PostgreSQL image does not support replication. If you pass any replication environment variable, this would be ignored. The only environment variables supported by the Docker Official image are POSTGRES_USER, POSTGRES_DB, POSTGRES_PASSWORD, POSTGRES_INITDB_ARGS, POSTGRES_INITDB_WALDIR and PGDATA. All the remaining environment variables are specific to the Bitnami PostgreSQL image.
 - The Bitnami PostgreSQL image is non-root by default. This requires that you run the pod with `securityContext` and updates the permissions of the volume with an `initContainer`. A key benefit of this configuration is that the pod follows security best practices and is prepared to run on Kubernetes distributions with hard security constraints like OpenShift.
 
+## Use of global variables
+
+In more complex scenarios, we may have the following tree of dependencies
+
+```
+                     +--------------+
+                     |              |
+        +------------+   Chart 1    +-----------+
+        |            |              |           |
+        |            --------+------+           |
+        |                    |                  |
+        |                    |                  |
+        |                    |                  |
+        |                    |                  |
+        v                    v                  v
++-------+------+    +--------+------+  +--------+------+
+|              |    |               |  |               |
+|  PostgreSQL  |    |  Sub-chart 1  |  |  Sub-chart 2  |
+|              |    |               |  |               |
++--------------+    +---------------+  +---------------+
+```
+
+The three charts below depend on the parent chart Chart 1. However, subcharts 1 and 2 may need to connect to PostgreSQL as well. In order to do so, subcharts 1 and 2 need to know the PostgreSQL credentials, so one option for deploying could be:
+
+```
+helm install chart1 --set postgresql.postgresqlPassword=testtest --set subchart1.postgresql.postgresqlPassword=testtest --set subchart2.postgresql.postgresqlPassword=testtest --set postgresql.postgresqlDatabase=db1 --set subchart1.postgresql.postgresqlDatabase=db1 --set subchart1.postgresql.postgresqlDatabase=db1
+```
+
+If the number of dependent sub-charts increases, executing `helm install` can become increasingly difficult. An alternative would be to set the credentials using global variables as follows:
+
+```
+helm install chart1 --set global.postgresql.postgresqlPassword=testtest --set global.postgresql.postgresqlDatabase=db1
+```
+
+This way, the credentials will be available in all of the subcharts.
+
 ## Upgrade
+
+## 5.0.0
+
+In this version, the **chart is using PostgreSQL 11 instead of PostgreSQL 10**. You can find the main difference and notable changes in the following links: [https://www.postgresql.org/about/news/1894/](https://www.postgresql.org/about/news/1894/) and [https://www.postgresql.org/about/featurematrix/](https://www.postgresql.org/about/featurematrix/).
+
+For major releases of PostgreSQL, the internal data storage format is subject to change, thus complicating upgrades, you can see some errors like the following one in the logs:
+
+```bash
+Welcome to the Bitnami postgresql container
+Subscribe to project updates by watching https://github.com/bitnami/bitnami-docker-postgresql
+Submit issues and feature requests at https://github.com/bitnami/bitnami-docker-postgresql/issues
+Send us your feedback at containers@bitnami.com
+
+INFO  ==> ** Starting PostgreSQL setup **
+NFO  ==> Validating settings in POSTGRESQL_* env vars..
+INFO  ==> Initializing PostgreSQL database...
+INFO  ==> postgresql.conf file not detected. Generating it...
+INFO  ==> pg_hba.conf file not detected. Generating it...
+INFO  ==> Deploying PostgreSQL with persisted data...
+INFO  ==> Configuring replication parameters
+INFO  ==> Loading custom scripts...
+INFO  ==> Enabling remote connections
+INFO  ==> Stopping PostgreSQL...
+INFO  ==> ** PostgreSQL setup finished! **
+
+INFO  ==> ** Starting PostgreSQL **
+  [1] FATAL:  database files are incompatible with server
+  [1] DETAIL:  The data directory was initialized by PostgreSQL version 10, which is not compatible with this version 11.3.
+```
+In this case, you should migrate the data from the old chart to the new one following an approach similar to that described in [this section](https://www.postgresql.org/docs/current/upgrading.html#UPGRADING-VIA-PGDUMPALL) from the official documentation. Basically, create a database dump in the old chart, move and restore it in the new one.
+
+### 4.0.0
+
+This chart will use by default the Bitnami PostgreSQL container starting from version `10.7.0-r68`. This version moves the initialization logic from node.js to bash. This new version of the chart requires setting the `POSTGRES_PASSWORD` in the slaves as well, in order to properly configure the `pg_hba.conf` file. Users from previous versions of the chart are advised to upgrade immediately.
+
+IMPORTANT: If you do not want to upgrade the chart version then make sure you use the `10.7.0-r68` version of the container. Otherwise, you will get this error
+
+```
+The POSTGRESQL_PASSWORD environment variable is empty or not set. Set the environment variable ALLOW_EMPTY_PASSWORD=yes to allow the container to be started with blank passwords. This is recommended only for development
+```
 
 ### 3.0.0
 

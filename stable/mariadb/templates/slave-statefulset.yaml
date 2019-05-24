@@ -18,7 +18,10 @@ spec:
   serviceName: "{{ template "slave.fullname" . }}"
   replicas: {{ .Values.slave.replicas }}
   updateStrategy:
-    type: RollingUpdate
+    type: {{ .Values.slave.updateStrategy.type }}
+    {{- if (eq "Recreate" .Values.slave.updateStrategy.type) }}
+    rollingUpdate: null
+    {{- end }}
   template:
     metadata:
       {{- if .Values.slave.annotations }}
@@ -71,16 +74,15 @@ spec:
 {{ toYaml . | indent 8 }}
       {{- end }}
       {{- end }}
+      {{- if .Values.slave.nodeSelector }}
+      nodeSelector:
+        {{ toYaml .Values.slave.nodeSelector | nindent 8 }}
+      {{- end -}}
       {{- with .Values.slave.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
       {{- end }}
-      {{- if .Values.image.pullSecrets }}
-      imagePullSecrets:
-      {{- range .Values.image.pullSecrets }}
-        - name: {{ . }}
-      {{- end}}
-      {{- end }}
+{{- include "mariadb.imagePullSecrets" . | indent 6 }}
       {{- if .Values.master.extraInitContainers }}
       initContainers:
 {{ tpl .Values.master.extraInitContainers . | indent 6}}
@@ -157,7 +159,7 @@ spec:
 {{- end }}
 {{- if .Values.metrics.enabled }}
       - name: metrics
-        image: {{ template "metrics.image" . }}
+        image: {{ template "mariadb.metrics.image" . }}
         imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
         env:
         - name: MARIADB_MASTER_ROOT_PASSWORD

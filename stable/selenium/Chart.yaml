@@ -1,6 +1,7 @@
+apiVersion: v1
 name: selenium
-version: 1.0.2
-appVersion: 3.14.0
+version: 1.0.8
+appVersion: 3.141.59
 description: Chart for selenium grid
 keywords:
 - qa
@@ -13,4 +14,6 @@ maintainers:
   email: techops@adaptly.com
 - name: diemol
   email: diemol@gmail.com
+- name: ekirmayer
+  email: ekirmayer@hotmail.com
 engine: gotpl

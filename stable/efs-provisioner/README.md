@@ -76,6 +76,8 @@ annotations: {}
 ## https://github.com/kubernetes-incubator/external-storage/tree/master/aws/efs#deployment
 ##
 efsProvisioner:
+  # If specified, use this DNS or IP to connect the EFS
+  #dnsName: "my-custom-efs-dns.com"
   efsFileSystemId: fs-12345678
   awsRegion: us-east-2
   path: /example-pv
@@ -111,6 +113,9 @@ nodeSelector: {}
 # Affinity for pod assignment
 # Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 affinity: {}
+
+# Tolerations for node tains
+tolerations: {}
 
 ## Configure resources
 ##

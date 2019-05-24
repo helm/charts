@@ -13,11 +13,7 @@ metadata:
 {{- end }}
 spec:
 {{- if (or (eq .Values.service.type "ClusterIP" "") (empty .Values.service.type)) }}
-  {{- if eq .Values.mode "distributed" }}
-  clusterIP: None
-  {{- else }}
   type: ClusterIP
-  {{- end }}
   {{- if not (empty .Values.service.clusterIP) }}
   clusterIP: {{ .Values.service.clusterIP }}
   {{end}}
@@ -29,11 +25,12 @@ spec:
 {{- end }}
   ports:
     - name: service
-      port: 9000
-      targetPort: {{ .Values.service.port }}
+      port: {{ .Values.service.port }}
       protocol: TCP
 {{- if (and (eq .Values.service.type "NodePort") ( .Values.service.nodePort)) }}
       nodePort: {{ .Values.service.nodePort }}
+{{- else }}
+      targetPort: 9000
 {{- end}}
 {{- if .Values.service.externalIPs }}
   externalIPs:

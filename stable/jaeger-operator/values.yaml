@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 image:
   repository: jaegertracing/jaeger-operator
-  tag: 1.10.0
+  tag: 1.11.0
   pullPolicy: IfNotPresent
 
 rbac:

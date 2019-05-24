@@ -113,6 +113,12 @@ securityContext:
   fsGroup: 1000
   runAsUser: 1000
 
+## Useful, if you want to use an alternate image.
+command:
+  - /bin/bash
+  - -xec
+  - zkGenConfig.sh && exec zkServer.sh start-foreground
+
 ## Useful if using any custom authorizer.
 ## Pass any secrets to the kafka pods. Each secret will be passed as an
 ## environment variable by default. The secret can also be mounted to a
