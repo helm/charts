@@ -10,5 +10,5 @@ maintainers:
 name: kong
 sources:
 - https://github.com/Kong/kong
-version: 0.11.1
+version: 0.11.2
 appVersion: 1.1
