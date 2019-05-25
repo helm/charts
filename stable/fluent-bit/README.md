@@ -98,13 +98,13 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `filter.kubeTagPrefix`             | Optional tag prefix used by Tail   | `kube.var.log.containers.`                                |
 | `filter.mergeJSONLog`              | If the log field content is a JSON string map, append the map fields as part of the log structure         | `true`                                 |
 | `image.fluent_bit.repository`      | Image                                      | `fluent/fluent-bit`                               |
-| `image.fluent_bit.tag`             | Image tag                                  | `1.0.6`                                          |
-| `image.pullPolicy`                 | Image pull policy                          | `IfNotPresent`                                          |
-| `nameOverride`                     | Override name of app                   | `nil`                                        |
-| `fullnameOverride`                 | Override full name of app              | `nil`                                        |
+| `image.fluent_bit.tag`             | Image tag                                  | `1.1.1`                                           |
+| `image.pullPolicy`                 | Image pull policy                          | `IfNotPresent`                                    |
+| `nameOverride`                     | Override name of app                       | `nil`                                             |
+| `fullnameOverride`                 | Override full name of app                  | `nil`                                             |
 | `image.pullSecrets`                | Specify image pull secrets                 | `nil`                                             |
 | `input.tail.memBufLimit`           | Specify Mem_Buf_Limit in tail input        | `5MB`                                             |
-| `input.tail.parser`                | Specify Parser in tail input.        | `docker`                                             |
+| `input.tail.parser`                | Specify Parser in tail input.              | `docker`                                          |
 | `input.tail.path`                  | Specify log file(s) through the use of common wildcards.        | `/var/log/containers/*.log`                                             |
 | `input.systemd.enabled`            | [Enable systemd input](https://docs.fluentbit.io/manual/input/systemd)                   | `false`                                       |
 | `input.systemd.filters.systemdUnit` | Please see https://docs.fluentbit.io/manual/input/systemd | `[docker.service, kubelet.service`, `node-problem-detector.service]`                                       |

@@ -5,8 +5,8 @@ on_minikube: false
 image:
   fluent_bit:
     repository: fluent/fluent-bit
-    tag: 1.1.0
-  pullPolicy: Always
+    tag: 1.1.1
+  pullPolicy: IfNotPresent
 
 testFramework:
   image: "dduportal/bats"
