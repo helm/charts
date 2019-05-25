@@ -24,6 +24,12 @@ spec:
       volumeMounts:
       - mountPath: /tools
         name: tools
+  {{- if .Values.image.pullSecrets }}
+  imagePullSecrets:
+  {{- range .Values.image.pullSecrets }}
+    - name: {{ . }}
+  {{- end}}
+  {{- end }}
   containers:
     - name: {{ .Release.Name }}-test
       image: "{{ .Values.testFramework.image}}:{{ .Values.testFramework.tag }}"
