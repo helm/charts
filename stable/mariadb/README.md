@@ -81,10 +81,12 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `master.annotations[].value`              | value for the the annotation list item              |  `nil`                                                            |
 | `master.affinity`                         | Master affinity (in addition to master.antiAffinity when set)  | `{}`                                                   |
 | `master.antiAffinity`                     | Master pod anti-affinity policy                     | `soft`                                                            |
+| `master.nodeSelector`                     | Master node labels for pod assignment               | `{}`                                                              |
 | `master.tolerations`                      | List of node taints to tolerate (master)            | `[]`                                                              |
 | `master.updateStrategy`                   | Master statefulset update strategy policy           | `RollingUpdate`                                                   |
 | `master.persistence.enabled`              | Enable persistence using PVC                        | `true`                                                            |
 | `master.persistence.existingClaim`        | Provide an existing `PersistentVolumeClaim`         | `nil`                                                             |
+| `master.persistence.subPath`              | Subdirectory of the volume to mount                 | `nil`                                                             |
 | `master.persistence.mountPath`            | Path to mount the volume at                         | `/bitnami/mariadb`                                                |
 | `master.persistence.annotations`          | Persistent Volume Claim annotations                 | `{}`                                                              |
 | `master.persistence.storageClass`         | Persistent Volume Storage Class                     | ``                                                                |
@@ -113,6 +115,7 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `slave.annotations[].value`               | value for the the annotation list item              | `nil`                                                             |
 | `slave.affinity`                          | Slave affinity (in addition to slave.antiAffinity when set) | `{}`                                                      |
 | `slave.antiAffinity`                      | Slave pod anti-affinity policy                      | `soft`                                                            |
+| `slave.nodeSelector`                      | Slave node labels for pod assignment                | `{}`                                                              |
 | `slave.tolerations`                       | List of node taints to tolerate for (slave)         | `[]`                                                              |
 | `slave.updateStrategy`                    | Slave statefulset update strategy policy            | `RollingUpdate`                                                   |
 | `slave.persistence.enabled`               | Enable persistence using a `PersistentVolumeClaim`  | `true`                                                            |
@@ -204,6 +207,13 @@ $ helm upgrade my-release stable/mariadb --set rootUser.password=[ROOT_PASSWORD]
 ```
 
 | Note: you need to substitute the placeholder _[ROOT_PASSWORD]_ with the value obtained in the installation notes.
+
+### To 6.0.0
+
+MariaDB version was updated from 10.1 to 10.3, there are no changes in the chart itself. According to the official documentation, upgrading from 10.1 should be painless. However, there are some things that have changed which could affect an upgrade:
+
+- [Incompatible changes upgrading from MariaDB 10.1 to MariaDB 10.2](https://mariadb.com/kb/en/library/upgrading-from-mariadb-101-to-mariadb-102//#incompatible-changes-between-101-and-102)
+- [Incompatible changes upgrading from MariaDB 10.2 to MariaDB 10.3](https://mariadb.com/kb/en/library/upgrading-from-mariadb-102-to-mariadb-103/#incompatible-changes-between-102-and-103)
 
 ### To 5.0.0
 
