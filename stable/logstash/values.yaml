@@ -117,6 +117,14 @@ podLabels: {}
 
 extraEnv: []
 
+extraInitContainers: []
+  # - name: echo
+  #   image: busybox
+  #   imagePullPolicy: Always
+  #   args:
+  #     - echo
+  #     - hello
+
 livenessProbe:
   httpGet:
     path: /
