@@ -12,8 +12,8 @@ spec:
   replicas: {{ .Values.replicas }}
   selector:
     matchLabels:
-      app: {{ include "chaoskube.name" . }}
-      release: {{ .Release.Name }}
+      app.kubernetes.io/name: {{ include "chaoskube.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       labels:
@@ -34,6 +34,12 @@ spec:
             {{- if not .Values.dryRun }}
             - --no-dry-run
             {{- end }}
+            {{- if .Values.includedPodNames }}
+            - --included-pod-names={{ .Values.includedPodNames }}
+            {{- end }}
+            {{- if .Values.excludedPodNames }}
+            - --excluded-pod-names={{ .Values.excludedPodNames }}
+            {{- end }}
             - --excluded-weekdays={{ .Values.excludedWeekdays }}
             - --excluded-times-of-day={{ .Values.excludedTimesOfDay }}
             - --excluded-days-of-year={{ .Values.excludedDaysOfYear }}
@@ -46,7 +52,16 @@ spec:
             {{- end }}
             - --minimum-age={{ .Values.minimumAge }}
             - --grace-period={{ .Values.gracePeriod }}
-            - --metrics-address={{ .Values.metricsAddress }}
+          {{- if .Values.metrics.enabled }}
+            - --metrics-address=:{{ .Values.metrics.port }}
+          {{- else }}
+            - --metrics-address=
+          {{- end }}
+          {{- if .Values.metrics.enabled }}
+          ports:
+            - name: metrics
+              containerPort: {{ .Values.metrics.port }}
+          {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           securityContext:

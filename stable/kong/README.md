@@ -82,6 +82,7 @@ and their default values.
 | proxy.loadBalancerSourceRanges | Limit proxy access to CIDRs if set and service type is `LoadBalancer`            | `[]`                |
 | proxy.loadBalancerIP           | To reuse an existing ingress static IP for the admin service                     |                     |
 | proxy.externalIPs              | IPs for which nodes in the cluster will also accept traffic for the proxy        | `[]`                |
+| proxy.externalTrafficPolicy    | k8s service's externalTrafficPolicy. Options: Cluster, Local                     |                     |
 | proxy.ingress.enabled          | Enable ingress resource creation (works with proxy.type=ClusterIP)               | `false`             |
 | proxy.ingress.tls              | Name of secret resource, containing TLS secret                                   |                     |
 | proxy.ingress.hosts            | List of ingress hosts.                                                           | `[]`                |
@@ -191,6 +192,12 @@ helm install stable/kong --set ingressController.enabled=true \
   --set postgresql.enabled=false --set env.database=off
 # with a database
 helm install stable/kong --set ingressController.enabled=true
+```
+
+If you like to use a static IP:
+
+```shell
+helm install stable/kong --set ingressController.enabled=true --set proxy.loadBalancerIP=[Your IP goes there] --set proxy.type=LoadBalancer --name kong --namespace kong
 ```
 
 **Note**: Kong Ingress controller doesn't support custom SSL certificates
