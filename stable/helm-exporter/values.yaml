@@ -2,8 +2,11 @@ replicaCount: 1
 
 image:
   repository: sstarcher/helm-exporter
-  tag: 0.3.1
+  tag: 0.4.0
   pullPolicy: Always
+
+# To override default tiller namespace name or to provide the multiple tiller namespaces like "kube-system,dev"
+tillerNamespaces: ""
 
 nameOverride: ""
 fullnameOverride: ""
