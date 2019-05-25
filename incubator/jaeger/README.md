@@ -217,7 +217,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `storage.elasticsearch.user`             | Provisioned elasticsearch user      |  elastic                               |
 | `storage.elasticsearch.nodesWanOnly`     | Only access specified es host       |  false                                 |
 | `storage.type`                           | Storage type (ES or Cassandra)      |  cassandra                             |
-| `tag`                                    | Image tag/version                   |  1.11.0                                 |
+| `tag`                                    | Image tag/version                   |  1.12.0                                 |
 
 For more information about some of the tunable parameters that Cassandra provides, please visit the helm chart for [cassandra](https://github.com/kubernetes/charts/tree/master/incubator/cassandra) and the official [website](http://cassandra.apache.org/) at apache.org.
 
