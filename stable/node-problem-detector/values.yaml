@@ -38,7 +38,7 @@ hostpath:
 
 image:
   repository: k8s.gcr.io/node-problem-detector
-  tag: v0.6.1
+  tag: v0.6.3
   pullPolicy: IfNotPresent
 
 nameOverride: ""
