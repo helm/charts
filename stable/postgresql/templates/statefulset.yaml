@@ -96,6 +96,8 @@ spec:
         env:
         - name: BITNAMI_DEBUG
           value: {{ ternary "true" "false" .Values.image.debug | quote }}
+        - name: POSTGRESQL_PORT_NUMBER
+          value: "{{ template "postgresql.port" . }}"
         {{- if .Values.postgresqlInitdbArgs }}
         - name: POSTGRES_INITDB_ARGS
           value: {{ .Values.postgresqlInitdbArgs | quote }}
@@ -161,9 +163,9 @@ spec:
             - sh
             - -c
            {{- if (include "postgresql.database" .) }}
-            - exec pg_isready -U {{ include "postgresql.username" . | quote }} -d {{ (include "postgresql.database" .) | quote }} -h 127.0.0.1
+            - exec pg_isready -U {{ include "postgresql.username" . | quote }} -d {{ (include "postgresql.database" .) | quote }} -h 127.0.0.1 -p {{ template "postgresql.port" . }}
            {{- else }}
-            - exec pg_isready -U {{ include "postgresql.username" . | quote }} -h 127.0.0.1
+            - exec pg_isready -U {{ include "postgresql.username" . | quote }} -h 127.0.0.1 -p {{ template "postgresql.port" . }}
            {{- end }}
           initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
@@ -178,9 +180,9 @@ spec:
             - sh
             - -c
            {{- if (include "postgresql.database" .) }}
-            - exec pg_isready -U {{ include "postgresql.username" . | quote }} -d {{ (include "postgresql.database" .) | quote }} -h 127.0.0.1
+            - exec pg_isready -U {{ include "postgresql.username" . | quote }} -d {{ (include "postgresql.database" .) | quote }} -h 127.0.0.1 -p {{ template "postgresql.port" . }}
            {{- else }}
-            - exec pg_isready -U {{ include "postgresql.username" . | quote }} -h 127.0.0.1
+            - exec pg_isready -U {{ include "postgresql.username" . | quote }} -h 127.0.0.1 -p {{ template "postgresql.port" . }}
            {{- end }}
           initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.readinessProbe.periodSeconds }}

@@ -77,6 +77,7 @@ Parameter | Description | Default
 `controller.nodeSelector` | node labels for pod assignment | `{}`
 `controller.podAnnotations` | annotations to be added to pods | `{}`
 `controller.podLabels` | labels to add to the pod container metadata | `{}`
+`controller.podSecurityContext` | Security context policies to add to the controller pod | `{}`
 `controller.replicaCount` | desired number of controller pods | `1`
 `controller.minAvailable` | minimum number of available controller pods for PodDisruptionBudget | `1`
 `controller.resources` | controller pod resource requests & limits | `{}`
@@ -87,6 +88,7 @@ Parameter | Description | Default
 `controller.publishService.enabled` | if true, the controller will set the endpoint records on the ingress objects to reflect those on the service | `false`
 `controller.publishService.pathOverride` | override of the default publish-service name | `""`
 `controller.service.clusterIP` | internal controller cluster service IP | `""`
+`controller.service.omitClusterIP` | To omit the `clusterIP` from the controller service | `false`
 `controller.service.externalIPs` | controller service external IP addresses. Do not set this when `controller.hostNetwork` is set to `true` and `kube-proxy` is used as there will be a port-conflict for port `80` | `[]`
 `controller.service.externalTrafficPolicy` | If `controller.service.type` is `NodePort` or `LoadBalancer`, set this to `Local` to enable [source IP preservation](https://kubernetes.io/docs/tutorials/services/source-ip/#source-ip-for-services-with-typenodeport) | `"Cluster"`
 `controller.service.healthCheckNodePort` | If `controller.service.type` is `NodePort` or `LoadBalancer` and `controller.service.externalTrafficPolicy` is set to `Local`, set this to [the managed health-check port the kube-proxy will expose](https://kubernetes.io/docs/tutorials/services/source-ip/#source-ip-for-services-with-typenodeport). If blank, a random port in the `NodePort` range will be assigned | `""`
@@ -114,6 +116,7 @@ Parameter | Description | Default
 `controller.stats.enabled` | if `true`, enable "vts-status" page | `false`
 `controller.stats.service.annotations` | annotations for controller stats service | `{}`
 `controller.stats.service.clusterIP` | internal controller stats cluster service IP | `""`
+`controller.stats.service.omitClusterIP` | To omit the `clusterIP` from the stats service | `false`
 `controller.stats.service.externalIPs` | controller service stats external IP addresses | `[]`
 `controller.stats.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `controller.stats.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
@@ -121,6 +124,7 @@ Parameter | Description | Default
 `controller.metrics.enabled` | if `true`, enable Prometheus metrics (`controller.stats.enabled` must be `true` as well) | `false`
 `controller.metrics.service.annotations` | annotations for Prometheus metrics service | `{}`
 `controller.metrics.service.clusterIP` | cluster IP address to assign to service | `""`
+`controller.metrics.service.omitClusterIP` | To omit the `clusterIP` from the metrics service | `false`
 `controller.metrics.service.externalIPs` | Prometheus metrics service external IP addresses | `[]`
 `controller.metrics.service.labels` | labels for metrics service | `{}`
 `controller.metrics.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
@@ -137,8 +141,8 @@ Parameter | Description | Default
 `controller.updateStrategy` | allows setting of RollingUpdate strategy | `{}`
 `defaultBackend.enabled` | If false, controller.defaultBackendService must be provided | `true`
 `defaultBackend.name` | name of the default backend component | `default-backend`
-`defaultBackend.image.repository` | default backend container image repository | `k8s.gcr.io/defaultbackend`
-`defaultBackend.image.tag` | default backend container image tag | `1.4`
+`defaultBackend.image.repository` | default backend container image repository | `k8s.gcr.io/defaultbackend-amd64`
+`defaultBackend.image.tag` | default backend container image tag | `1.5`
 `defaultBackend.image.pullPolicy` | default backend container image pull policy | `IfNotPresent`
 `defaultBackend.extraArgs` | Additional default backend container arguments | `{}`
 `defaultBackend.port` | Http port number | `8080`
@@ -153,6 +157,7 @@ Parameter | Description | Default
 `defaultBackend.priorityClassName` | default backend  priorityClassName | `nil`
 `defaultBackend.service.annotations` | annotations for default backend service | `{}`
 `defaultBackend.service.clusterIP` | internal default backend cluster service IP | `""`
+`defaultBackend.service.omitClusterIP` | To omit the `clusterIP` from the default backend service | `false`
 `defaultBackend.service.externalIPs` | default backend service external IP addresses | `[]`
 `defaultBackend.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `defaultBackend.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
@@ -163,8 +168,8 @@ Parameter | Description | Default
 `serviceAccount.create` | if `true`, create a service account | ``
 `serviceAccount.name` | The name of the service account to use. If not set and `create` is `true`, a name is generated using the fullname template. | ``
 `revisionHistoryLimit` | The number of old history to retain to allow rollback. | `10`
-`tcp` | TCP service key:value pairs | `{}`
-`udp` | UDP service key:value pairs | `{}`
+`tcp` | TCP service key:value pairs. The value is evaluated as a template. | `{}`
+`udp` | UDP service key:value pairs The value is evaluated as a template. | `{}`
 
 ```console
 $ helm install stable/nginx-ingress --name my-release \
@@ -206,8 +211,10 @@ You can add Prometheus annotations to the metrics service using `controller.metr
 Add an [ExternalDNS](https://github.com/kubernetes-incubator/external-dns) annotation to the LoadBalancer service:
 
 ```yaml
-annotations:
-  external-dns.alpha.kubernetes.io/hostname: kubernetes-example.com.
+controller:
+  service:
+    annotations:
+      external-dns.alpha.kubernetes.io/hostname: kubernetes-example.com.
 ```
 
 ## AWS L7 ELB with SSL Termination
@@ -239,3 +246,13 @@ controller:
     annotations:
       domainName: "kubernetes-example.com"
 ```
+
+## Helm error when upgrading: spec.clusterIP: Invalid value: ""
+
+If you are upgrading this chart from a version between 0.31.0 and 1.2.2 then you may get an error like this:
+
+```
+Error: UPGRADE FAILED: Service "?????-controller" is invalid: spec.clusterIP: Invalid value: "": field is immutable
+```
+
+Detail of how and why are in [this issue](https://github.com/helm/charts/pull/13646) but to resolve this you can set `xxxx.service.omitClusterIP` to `true` where `xxxx` is the service referenced in the error.

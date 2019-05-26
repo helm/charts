@@ -3,6 +3,7 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: {{ template "rabbitmq-ha.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "rabbitmq-ha.name" . }}
     chart: {{ template "rabbitmq-ha.chart" . }}
