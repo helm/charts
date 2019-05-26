@@ -74,146 +74,147 @@ extraVars: []
 updateStrategy:
   type: OnDelete
 
-fluentdConfig: |
-  <match fluent.**>
-    type null
-  </match>
+data:
+  fluent.conf: |
+    <match fluent.**>
+      type null
+    </match>
 
-  <source>
-    type tail
-    enable_stat_watcher false
-    path /var/log/containers/*.log
-    pos_file /var/log/fluentd-containers.log.pos
-    time_format %Y-%m-%dT%H:%M:%S.%NZ
-    tag kubernetes.*
-    format json
-    read_from_head true
-  </source>
+    <source>
+      type tail
+      enable_stat_watcher false
+      path /var/log/containers/*.log
+      pos_file /var/log/fluentd-containers.log.pos
+      time_format %Y-%m-%dT%H:%M:%S.%NZ
+      tag kubernetes.*
+      format json
+      read_from_head true
+    </source>
 
-  <source>
-    type tail
-    enable_stat_watcher false
-    format /^(?<time>[^ ]* [^ ,]*)[^\[]*\[[^\]]*\]\[(?<severity>[^ \]]*) *\] (?<message>.*)$/
-    time_format %Y-%m-%d %H:%M:%S
-    path /var/log/salt/minion
-    pos_file /var/log/fluentd-salt.pos
-    tag salt
-  </source>
+    <source>
+      type tail
+      enable_stat_watcher false
+      format /^(?<time>[^ ]* [^ ,]*)[^\[]*\[[^\]]*\]\[(?<severity>[^ \]]*) *\] (?<message>.*)$/
+      time_format %Y-%m-%d %H:%M:%S
+      path /var/log/salt/minion
+      pos_file /var/log/fluentd-salt.pos
+      tag salt
+    </source>
 
-  <source>
-    type tail
-    enable_stat_watcher false
-    format syslog
-    path /var/log/startupscript.log
-    pos_file /var/log/fluentd-startupscript.log.pos
-    tag startupscript
-  </source>
+    <source>
+      type tail
+      enable_stat_watcher false
+      format syslog
+      path /var/log/startupscript.log
+      pos_file /var/log/fluentd-startupscript.log.pos
+      tag startupscript
+    </source>
 
-  <source>
-    type tail
-    enable_stat_watcher false
-    format /^time="(?<time>[^)]*)" level=(?<severity>[^ ]*) msg="(?<message>[^"]*)"( err="(?<error>[^"]*)")?( statusCode=($<status_code>\d+))?/
-    path /var/log/docker.log
-    pos_file /var/log/fluentd-docker.log.pos
-    tag docker
-  </source>
+    <source>
+      type tail
+      enable_stat_watcher false
+      format /^time="(?<time>[^)]*)" level=(?<severity>[^ ]*) msg="(?<message>[^"]*)"( err="(?<error>[^"]*)")?( statusCode=($<status_code>\d+))?/
+      path /var/log/docker.log
+      pos_file /var/log/fluentd-docker.log.pos
+      tag docker
+    </source>
 
-  <source>
-    type tail
-    enable_stat_watcher false
-    format none
-    path /var/log/etcd.log
-    pos_file /var/log/fluentd-etcd.log.pos
-    tag etcd
-  </source>
+    <source>
+      type tail
+      enable_stat_watcher false
+      format none
+      path /var/log/etcd.log
+      pos_file /var/log/fluentd-etcd.log.pos
+      tag etcd
+    </source>
 
-  <source>
-    type tail
-    enable_stat_watcher false
-    format kubernetes
-    multiline_flush_interval 5s
-    path /var/log/kubelet.log
-    pos_file /var/log/fluentd-kubelet.log.pos
-    tag kubelet
-  </source>
+    <source>
+      type tail
+      enable_stat_watcher false
+      format kubernetes
+      multiline_flush_interval 5s
+      path /var/log/kubelet.log
+      pos_file /var/log/fluentd-kubelet.log.pos
+      tag kubelet
+    </source>
 
-  <source>
-    type tail
-    enable_stat_watcher false
-    format kubernetes
-    multiline_flush_interval 5s
-    path /var/log/kube-proxy.log
-    pos_file /var/log/fluentd-kube-proxy.log.pos
-    tag kube-proxy
-  </source>
+    <source>
+      type tail
+      enable_stat_watcher false
+      format kubernetes
+      multiline_flush_interval 5s
+      path /var/log/kube-proxy.log
+      pos_file /var/log/fluentd-kube-proxy.log.pos
+      tag kube-proxy
+    </source>
 
-  <source>
-    type tail
-    enable_stat_watcher false
-    format kubernetes
-    multiline_flush_interval 5s
-    path /var/log/kube-apiserver.log
-    pos_file /var/log/fluentd-kube-apiserver.log.pos
-    tag kube-apiserver
-  </source>
+    <source>
+      type tail
+      enable_stat_watcher false
+      format kubernetes
+      multiline_flush_interval 5s
+      path /var/log/kube-apiserver.log
+      pos_file /var/log/fluentd-kube-apiserver.log.pos
+      tag kube-apiserver
+    </source>
 
-  <source>
-    type tail
-    enable_stat_watcher false
-    format kubernetes
-    multiline_flush_interval 5s
-    path /var/log/kube-controller-manager.log
-    pos_file /var/log/fluentd-kube-controller-manager.log.pos
-    tag kube-controller-manager
-  </source>
+    <source>
+      type tail
+      enable_stat_watcher false
+      format kubernetes
+      multiline_flush_interval 5s
+      path /var/log/kube-controller-manager.log
+      pos_file /var/log/fluentd-kube-controller-manager.log.pos
+      tag kube-controller-manager
+    </source>
 
-  <source>
-    type tail
-    enable_stat_watcher false
-    format kubernetes
-    multiline_flush_interval 5s
-    path /var/log/kube-scheduler.log
-    pos_file /var/log/fluentd-kube-scheduler.log.pos
-    tag kube-scheduler
-  </source>
+    <source>
+      type tail
+      enable_stat_watcher false
+      format kubernetes
+      multiline_flush_interval 5s
+      path /var/log/kube-scheduler.log
+      pos_file /var/log/fluentd-kube-scheduler.log.pos
+      tag kube-scheduler
+    </source>
 
-  <source>
-    type tail
-    enable_stat_watcher false
-    format kubernetes
-    multiline_flush_interval 5s
-    path /var/log/rescheduler.log
-    pos_file /var/log/fluentd-rescheduler.log.pos
-    tag rescheduler
-  </source>
+    <source>
+      type tail
+      enable_stat_watcher false
+      format kubernetes
+      multiline_flush_interval 5s
+      path /var/log/rescheduler.log
+      pos_file /var/log/fluentd-rescheduler.log.pos
+      tag rescheduler
+    </source>
 
-  <source>
-    type tail
-    enable_stat_watcher false
-    format kubernetes
-    multiline_flush_interval 5s
-    path /var/log/glbc.log
-    pos_file /var/log/fluentd-glbc.log.pos
-    tag glbc
-  </source>
+    <source>
+      type tail
+      enable_stat_watcher false
+      format kubernetes
+      multiline_flush_interval 5s
+      path /var/log/glbc.log
+      pos_file /var/log/fluentd-glbc.log.pos
+      tag glbc
+    </source>
 
-  <source>
-    type tail
-    enable_stat_watcher false
-    format kubernetes
-    multiline_flush_interval 5s
-    path /var/log/cluster-autoscaler.log
-    pos_file /var/log/fluentd-cluster-autoscaler.log.pos
-    tag cluster-autoscaler
-  </source>
+    <source>
+      type tail
+      enable_stat_watcher false
+      format kubernetes
+      multiline_flush_interval 5s
+      path /var/log/cluster-autoscaler.log
+      pos_file /var/log/fluentd-cluster-autoscaler.log.pos
+      tag cluster-autoscaler
+    </source>
 
-  <filter kubernetes.**>
-    type kubernetes_metadata
-  </filter>
+    <filter kubernetes.**>
+      type kubernetes_metadata
+    </filter>
 
-  <match **>
-    type cloudwatch_logs
-    log_group_name "#{ENV['LOG_GROUP_NAME']}"
-    auto_create_stream true
-    use_tag_as_stream true
-  </match>
+    <match **>
+      type cloudwatch_logs
+      log_group_name "#{ENV['LOG_GROUP_NAME']}"
+      auto_create_stream true
+      use_tag_as_stream true
+    </match>
