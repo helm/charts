@@ -267,7 +267,7 @@ controller:
       servicePort: 18080
       type: ClusterIP
 
-  
+
   metrics:
     enabled: false
 
