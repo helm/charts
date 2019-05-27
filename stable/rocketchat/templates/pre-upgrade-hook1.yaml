@@ -1,0 +1,35 @@
+{{- if .Values.mongodb.persistence.enabled }}
+{{- if and .Values.mongodb.replicaSet (.Values.mongodb.replicaSet.enabled) }}
+{{ fail "Already upgraded" }}
+{{- else }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: "mongoutil-mongodump"
+  labels:
+    app: {{ template "rocketchat.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+  annotations:
+    "helm.sh/hook": pre-upgrade
+    "helm.sh/hook-weight": "-1"
+    "helm.sh/hook-delete-policy": keep
+    "helm.sh/resource-policy": keep
+spec:
+  accessModes:
+  {{- range .Values.mongodb.persistence.accessModes }}
+    - {{ . | quote }}
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.mongodb.persistence.size | quote }}
+{{- if .Values.mongodb.persistence.storageClass }}
+{{- if (eq "-" .Values.mongodb.persistence.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.mongodb.persistence.storageClass }}"
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
