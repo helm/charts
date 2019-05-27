@@ -14,7 +14,7 @@ data:
     #!/bin/bash
     set -e
     {{- range $cluster := .Values.clusters }}
-    {{ printf "curl http://%s:%d/clusters -X POST -f " (include "kafka-manager.fullname" $) (int64 $.Values.service.port) -}}
+    {{ printf "curl http://%s:%v/clusters -X POST -f " (include "kafka-manager.fullname" $) $.Values.service.port -}}
     {{- printf "-d name=%v " (default "default" $cluster.name) -}}
     {{- printf "-d zkHosts=%v " (default (include "kafka-manager.zkHosts" $) $cluster.zkHosts) -}}
     {{- printf "-d kafkaVersion=%v " (default "1.0.0" $cluster.kafkaVersion) -}}
