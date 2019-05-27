@@ -317,3 +317,10 @@ volumePermissions:
     # pullSecrets:
     #   - myRegistryKeySecretName
   resources: {}
+
+## forceBoot: executes 'rabbitmqctl force_boot' to force boot cluster shut down unexpectedly in an
+## unknown order.
+## ref: https://www.rabbitmq.com/rabbitmqctl.8.html#force_boot
+##
+forceBoot:
+  enabled: false
