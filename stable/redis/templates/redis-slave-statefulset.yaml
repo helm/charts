@@ -91,9 +91,9 @@ spec:
             cp /opt/bitnami/redis/mounted-etc/redis.conf /opt/bitnami/redis/etc/redis.conf
           fi          
           ARGS=("--port" "${REDIS_PORT}")
+          ARGS+=("--slaveof" "${REDIS_MASTER_HOST}" "${REDIS_MASTER_PORT_NUMBER}")
           {{- if .Values.usePassword }}
           ARGS+=("--requirepass" "${REDIS_PASSWORD}")
-          ARGS+=("--slaveof" "${REDIS_MASTER_HOST}" "${REDIS_MASTER_PORT_NUMBER}")
           ARGS+=("--masterauth" "${REDIS_MASTER_PASSWORD}")
           {{- else }}
           ARGS+=("--protected-mode" "no")
