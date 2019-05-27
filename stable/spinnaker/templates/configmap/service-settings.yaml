@@ -26,7 +26,7 @@ Render settings for each service by merging predefined defaults with values pass
 
 {{/* Defaults: deck service */}}
 {{- $deckDefaults := dict -}}
-{{- $_ := set $deckDefaults "API_HOST" "http://spin-gate:8084" -}}
+{{- $_ := set $deckDefaults "env" (dict "API_HOST" "http://spin-gate:8084") -}}
 {{- if .Values.ingress.enabled -}}
 {{- $_ := set $deckDefaults "kubernetes" (dict "useExecHealthCheck" false "serviceType" "NodePort") -}}
 {{- end -}}
