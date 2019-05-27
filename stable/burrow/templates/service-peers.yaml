@@ -1,4 +1,4 @@
-{{- $peerIngress := and .Values.RPC.Peer.ingress.enabled (not (eq (len .Values.RPC.Peer.ingress.hosts) 0)) -}}
+{{- $peerIngress := and .Values.peer.ingress.enabled (not (eq (len .Values.peer.ingress.hosts) 0)) -}}
 {{ range (until (.Values.chain.nodes | int)) }}
 {{- $nodeNumber := printf "%03d" . }}
 ---
@@ -7,7 +7,7 @@ apiVersion: v1
 metadata:
 {{- if $peerIngress }}
   annotations:
-    external-dns.alpha.kubernetes.io/hostname: "{{ $nodeNumber }}.{{ index $.Values.RPC.Peer.ingress.hosts 0 }}"
+    external-dns.alpha.kubernetes.io/hostname: "{{ $nodeNumber }}.{{ index $.Values.peer.ingress.hosts 0 }}"
     external-dns.alpha.kubernetes.io/ttl: "120"
 {{- end }}
   labels:
@@ -22,7 +22,7 @@ spec:
   type: LoadBalancer
   externalTrafficPolicy: Local
 {{- else }}
-  type: {{ $.Values.RPC.Peer.service.type }}
+  type: {{ $.Values.peer.service.type }}
 {{- end }}
   ports:
     - name: peer
