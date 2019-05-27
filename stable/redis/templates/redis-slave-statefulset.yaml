@@ -338,7 +338,10 @@ spec:
         emptyDir: {}
       - name: redis-tmp-conf
         emptyDir: {}
-  {{- if and .Values.slave.persistence.enabled }}
+  {{- if not .Values.slave.persistence.enabled }}
+      - name: redis-data
+        emptyDir: {}
+  {{- else }}
   volumeClaimTemplates:
     - metadata:
         name: redis-data
