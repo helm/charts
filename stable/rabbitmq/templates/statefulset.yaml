@@ -102,6 +102,9 @@ spec:
             test "\${EXPECTED}" = "\${ACTUAL}"
             EOF
             chmod a+x /opt/bitnami/rabbitmq/sbin/rabbitmq-api-check
+            {{- if and .Values.persistence.enabled .Values.forceBoot.enabled }}
+            rabbitmqctl force_boot
+            {{- end }}
             exec rabbitmq-server
         {{- if .Values.resources }}
         resources:
