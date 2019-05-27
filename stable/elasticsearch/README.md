@@ -129,7 +129,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `data.resources`                     | Data node resources requests & limits                               | `{} - cpu limit must be an integer`                 |
 | `data.priorityClassName`             | Data priorityClass                                                  | `nil`                                               |
 | `data.heapSize`                      | Data node heap size                                                 | `1536m`                                             |
-| `data.hooks.drain.enabled            | Data nodes: Enable drain pre-stop and post-start hook               | `true`                                              |
+| `data.hooks.drain.enabled`           | Data nodes: Enable drain pre-stop and post-start hook               | `true`                                              |
 | `data.persistence.enabled`           | Data persistent enabled/disabled                                    | `true`                                              |
 | `data.persistence.name`              | Data statefulset PVC template name                                  | `data`                                              |
 | `data.persistence.size`              | Data persistent volume size                                         | `30Gi`                                              |
@@ -147,9 +147,11 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `sysctlInitContainer.enabled`        | If true, the sysctl init container is enabled (does not stop chownInitContainer or extraInitContainers from running) | `true`                                              |
 | `chownInitContainer.enabled`        | If true, the chown init container is enabled (does not stop sysctlInitContainer or extraInitContainers from running) | `true`                                              |
 | `extraInitContainers`                | Additional init container passed through the tpl                    | ``                                                  |
-| `podSecurityPolicy.annotations`      | Specify pod annotations in the pod security policy                  | `{}`                                                |
+| `podSecurityPolicy.annotations`      | Specify pod annotations in the pod security policy                  | `{}`                                              |
 | `podSecurityPolicy.enabled`          | Specify if a pod security policy must be created                    | `false`                                             |
-| `serviceAccounts.client.create`      | If true, create the client service account                          | `true`                                              |
+| `securityContext.enabled`      | If true, add securityContext to client, master and data pods                          | `false`                                 |
+| `securityContext.runAsUser`      | user ID to run containerized process                          | `1000`                                                        |
+| `serviceAccounts.client.create`      | If true, create the client service account                          | `true`                                        |
 | `serviceAccounts.client.name`        | Name of the client service account to use or create                 | `{{ elasticsearch.client.fullname }}`               |
 | `serviceAccounts.master.create`      | If true, create the master service account                          | `true`                                              |
 | `serviceAccounts.master.name`        | Name of the master service account to use or create                 | `{{ elasticsearch.master.fullname }}`               |

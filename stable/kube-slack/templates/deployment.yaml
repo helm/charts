@@ -20,6 +20,10 @@ spec:
       labels:
         app: {{ template "kube-slack.name" . }}
         release: {{ .Release.Name }}
+      {{- if .Values.annotations }}
+      annotations:
+{{ toYaml .Values.annotations | indent 4 }}
+      {{- end }} 
     spec:
       containers:
         - name: {{ .Chart.Name }}

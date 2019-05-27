@@ -18,7 +18,9 @@ metadata:
     release: {{ .Release.Name }}
   name: {{ template "nginx-ingress.controller.fullname" . }}
 spec:
+{{- if not .Values.controller.service.omitClusterIP }}
   clusterIP: "{{ .Values.controller.service.clusterIP }}"
+{{- end }}
 {{- if .Values.controller.service.externalIPs }}
   externalIPs:
 {{ toYaml .Values.controller.service.externalIPs | indent 4 }}
@@ -37,12 +39,13 @@ spec:
   healthCheckNodePort: {{ .Values.controller.service.healthCheckNodePort }}
 {{- end }}
   ports:
+    {{- $setNodePorts := (or (eq .Values.controller.service.type "NodePort") (eq .Values.controller.service.type "LoadBalancer")) }}
     {{- if .Values.controller.service.enableHttp }}
     - name: http
       port: 80
       protocol: TCP
       targetPort: {{ .Values.controller.service.targetPorts.http }}
-      {{- if (and (eq .Values.controller.service.type "NodePort") (not (empty .Values.controller.service.nodePorts.http))) }}
+      {{- if (and $setNodePorts (not (empty .Values.controller.service.nodePorts.http))) }}
       nodePort: {{ .Values.controller.service.nodePorts.http }}
       {{- end }}
     {{- end }}
@@ -51,7 +54,7 @@ spec:
       port: 443
       protocol: TCP
       targetPort: {{ .Values.controller.service.targetPorts.https }}
-      {{- if (and (eq .Values.controller.service.type "NodePort") (not (empty .Values.controller.service.nodePorts.https))) }}
+      {{- if (and $setNodePorts (not (empty .Values.controller.service.nodePorts.https))) }}
       nodePort: {{ .Values.controller.service.nodePorts.https }}
       {{- end }}
     {{- end }}

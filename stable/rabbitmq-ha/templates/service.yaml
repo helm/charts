@@ -12,6 +12,7 @@ metadata:
     prometheus.io/port: {{ .Values.prometheus.exporter.port | quote }}
 {{- end }}
   name: {{ template "rabbitmq-ha.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "rabbitmq-ha.name" . }}
     chart: {{ template "rabbitmq-ha.chart" . }}
