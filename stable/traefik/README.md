@@ -204,6 +204,11 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `metrics.prometheus.enabled`           | Whether to enable the `/metrics` endpoint for metric collection by Prometheus.                                               | `false`                                           |
 | `metrics.prometheus.restrictAccess`    | Whether to limit access to the metrics port (8080) to the dashboard service. When `false`, it is accessible on the main Traefik service as well. | `false`                       |
 | `metrics.prometheus.buckets`           | A list of response times (in seconds) - for each list element, Traefik will report all response times less than the element. | `[0.1,0.3,1.2,5]`                                 |
+| `metrics.prometheus.serviceMonitor.enabled` | Set this to `true` to create ServiceMonitor for Prometheus operator
+                     | `false`                                           |
+| `metrics.prometheus.serviceMonitor.additionalLabels` | Additional labels that can be used so ServiceMonitor will be discovered by Prometheus                          | `{}`                                              |
+| `metrics.prometheus.serviceMonitor.namespace` | namespace where servicemonitor resource should be created
+                     | `the same namespace as traefik`                   |
 | `metrics.datadog.enabled`              | Whether to enable pushing metrics to Datadog.                                                                                | `false`                                           |
 | `metrics.datadog.address`              | Datadog host in the format <hostname>:<port>                                                                                 | `localhost:8125`                                  |
 | `metrics.datadog.pushInterval`         | How often to push metrics to Datadog.                                                                                        | `10s`                                             |
