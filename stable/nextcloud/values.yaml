@@ -3,7 +3,7 @@
 ##
 image:
   repository: nextcloud
-  tag: 15.0.2-apache
+  tag: 16.0.1-apache
   pullPolicy: IfNotPresent
   # pullSecrets:
   #   - myRegistrKeySecretName
@@ -24,13 +24,9 @@ ingress:
   #  kubernetes.io/tls-acme: "true"
   #  certmanager.k8s.io/cluster-issuer: letsencrypt-prod
   #  nginx.ingress.kubernetes.io/server-snippet: |-
-  #    add_header Strict-Transport-Security "max-age=15768000; includeSubDomains; preload;";
-  #    add_header X-Robots-Tag none;
-  #    add_header X-Download-Options noopen;
-  #    add_header X-Permitted-Cross-Domain-Policies none;
-  #    add_header X-Content-Type-Options nosniff;
-  #    add_header X-XSS-Protection "1; mode=block";
-  #    add_header Referrer-Policy no-referrer;
+  #    server_tokens off;
+  #    proxy_hide_header X-Powered-By;
+
   #    rewrite ^/.well-known/webfinger /public.php?service=webfinger last;
   #    rewrite ^/.well-known/host-meta /public.php?service=host-meta last;
   #    rewrite ^/.well-known/host-meta.json /public.php?service=host-meta-json;
@@ -50,13 +46,10 @@ ingress:
   #      # Optional: Don't log access to other assets
   #      access_log off;
   #    }
-  #    location / {
-  #      rewrite ^ /index.php$request_uri;
-  #    }
   #    location ~ ^/(?:build|tests|config|lib|3rdparty|templates|data)/ {
   #      deny all;
   #    }
-  #    location ~ ^/(?:\.|autotest|occ|issue|indie|db_|console) {
+  #    location ~ ^/(?:autotest|occ|issue|indie|db_|console) {
   #      deny all;
   #    }
   #  tls:
@@ -68,7 +61,20 @@ nextcloud:
   host: nextcloud.kube.home
   username: admin
   password: changeme
-
+  update: 0
+  datadir: /var/www/html/data
+  tableprefix:
+  mail:
+    enabled: false
+    fromaddress: "user"
+    domain: "domain.com"
+    smtp:
+      host: "domain.com"
+      secure: "ssl"
+      port: "465"
+      authtype: LOGIN
+      name: "user"
+      password: "pass"
 
 internalDatabase:
   enabled: true
@@ -152,6 +158,21 @@ resources: {}
   # requests:
   #  cpu: 100m
   #  memory: 128Mi
+
+livenessProbe:
+  enabled: true
+  initialDelaySeconds: 30
+  periodSeconds: 15
+  timeoutSeconds: 5
+  failureThreshold: 3
+  successThreshold: 1
+readinessProbe:
+  enabled: true
+  initialDelaySeconds: 30
+  periodSeconds: 15
+  timeoutSeconds: 5
+  failureThreshold: 3
+  successThreshold: 1
 
 nodeSelector: {}
 
