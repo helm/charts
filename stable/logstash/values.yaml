@@ -115,6 +115,16 @@ podLabels: {}
   # team: "developers"
   # service: "logstash"
 
+extraEnv: []
+
+extraInitContainers: []
+  # - name: echo
+  #   image: busybox
+  #   imagePullPolicy: Always
+  #   args:
+  #     - echo
+  #     - hello
+
 livenessProbe:
   httpGet:
     path: /

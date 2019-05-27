@@ -56,9 +56,11 @@ The following tables lists the configurable parameters of the alb-ingress-contro
 | `image.repository`        | controller container image repository                                                                          | `894847497797.dkr.ecr.us-west-2.amazonaws.com/aws-alb-ingress-controller` |
 | `image.tag`               | controller container image tag                                                                                 | `v1.0.1`                                                                  |
 | `image.pullPolicy`        | controller container image pull policy                                                                         | `IfNotPresent`                                                            |
-| `enableReadinessProbe`    | enable readinessProbe on controller pod                                                                        |`false`                                                                    |
+| `enableReadinessProbe`    | enable readinessProbe on controller pod                                                                      | `false`                                                                    |
 | `enableLivenessProbe`     | enable livenessProbe on controller pod                                                                         | `false`                                                                   |
 | `extraEnv`                | map of environment variables to be injected into the controller pod                                            | `{}`                                                                      |
+| `volumesMounts`           | volumeMounts into the controller pod                                                                           | `[]`                                                                      |
+| `volumes`                 | volumes the controller pod                                                                                     | `[]`                                                                      |
 | `nodeSelector`            | node labels for controller pod assignment                                                                      | `{}`                                                                      |
 | `tolerations`             | controller pod toleration for taints                                                                           | `{}`                                                                      |
 | `podAnnotations`          | annotations to be added to controller pod                                                                      | `{}`                                                                      |
@@ -71,7 +73,7 @@ The following tables lists the configurable parameters of the alb-ingress-contro
 | `scope.watchNamespace`    | If scope.singleNamespace=true, the ALB ingress controller will only act on Ingress resources in this namespace | `""` (namespace of the ALB ingress controller)                            |
 
 ```bash
-helm install incubator/aws-alb-ingress-controller --set clusterName=MyClusterName --set autoDiscoverAwsRegion=true --set autoDiscoverAwsVpcID=true --name my-release --namespace kube-system 
+helm install incubator/aws-alb-ingress-controller --set clusterName=MyClusterName --set autoDiscoverAwsRegion=true --set autoDiscoverAwsVpcID=true --name my-release --namespace kube-system
 ```
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
