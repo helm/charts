@@ -81,6 +81,7 @@ rabbitmq:
   ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
   ## ref: https://www.rabbitmq.com/install-debian.html#kernel-resource-limits
   ##
+  setUlimitNofiles: true
   ulimitNofiles: '65536'
 
   ## RabbitMQ maximum available scheduler threads and online scheduler threads
