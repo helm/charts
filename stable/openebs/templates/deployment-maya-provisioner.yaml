@@ -21,6 +21,7 @@ spec:
         app: {{ template "openebs.name" . }}
         release: {{ .Release.Name }}
         component: provisioner
+        openebs.io/version: {{ .Values.release.version }}
     spec:
       serviceAccountName: {{ template "openebs.serviceAccountName" . }}
       containers:
@@ -47,7 +48,7 @@ spec:
             fieldRef:
               fieldPath: spec.nodeName
         # OPENEBS_MAYA_SERVICE_NAME provides the maya-apiserver K8s service name,
-        # that provisioner should forward the volume creaet/delete requests.
+        # that provisioner should forward the volume create/delete requests.
         # If not present, "maya-apiserver-service" will be used for lookup.
         # This is supported for openebs provisioner version 0.5.3-RC1 onwards
         - name: OPENEBS_MAYA_SERVICE_NAME

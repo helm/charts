@@ -81,10 +81,12 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `master.annotations[].value`              | value for the the annotation list item              |  `nil`                                                            |
 | `master.affinity`                         | Master affinity (in addition to master.antiAffinity when set)  | `{}`                                                   |
 | `master.antiAffinity`                     | Master pod anti-affinity policy                     | `soft`                                                            |
+| `master.nodeSelector`                     | Master node labels for pod assignment               | `{}`                                                              |
 | `master.tolerations`                      | List of node taints to tolerate (master)            | `[]`                                                              |
 | `master.updateStrategy`                   | Master statefulset update strategy policy           | `RollingUpdate`                                                   |
 | `master.persistence.enabled`              | Enable persistence using PVC                        | `true`                                                            |
 | `master.persistence.existingClaim`        | Provide an existing `PersistentVolumeClaim`         | `nil`                                                             |
+| `master.persistence.subPath`              | Subdirectory of the volume to mount                 | `nil`                                                             |
 | `master.persistence.mountPath`            | Path to mount the volume at                         | `/bitnami/mariadb`                                                |
 | `master.persistence.annotations`          | Persistent Volume Claim annotations                 | `{}`                                                              |
 | `master.persistence.storageClass`         | Persistent Volume Storage Class                     | ``                                                                |
@@ -113,6 +115,7 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `slave.annotations[].value`               | value for the the annotation list item              | `nil`                                                             |
 | `slave.affinity`                          | Slave affinity (in addition to slave.antiAffinity when set) | `{}`                                                      |
 | `slave.antiAffinity`                      | Slave pod anti-affinity policy                      | `soft`                                                            |
+| `slave.nodeSelector`                      | Slave node labels for pod assignment                | `{}`                                                              |
 | `slave.tolerations`                       | List of node taints to tolerate for (slave)         | `[]`                                                              |
 | `slave.updateStrategy`                    | Slave statefulset update strategy policy            | `RollingUpdate`                                                   |
 | `slave.persistence.enabled`               | Enable persistence using a `PersistentVolumeClaim`  | `true`                                                            |
