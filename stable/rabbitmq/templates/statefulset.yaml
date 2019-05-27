@@ -86,7 +86,9 @@ spec:
             #copy the mounted configuration to both places
             cp  /opt/bitnami/rabbitmq/conf/* /opt/bitnami/rabbitmq/etc/rabbitmq
             # Apply resources limits
+            {{- if .Values.rabbitmq.setUlimitNofiles }}
             ulimit -n "${RABBITMQ_ULIMIT_NOFILES}"
+            {{- end }}
             #replace the default password that is generated
             sed -i "s/CHANGEME/$RABBITMQ_PASSWORD/g" /opt/bitnami/rabbitmq/etc/rabbitmq/rabbitmq.conf
             #api check for probes
