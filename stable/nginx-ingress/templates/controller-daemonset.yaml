@@ -144,11 +144,17 @@ spec:
             - name: "{{ $key }}-tcp"
               containerPort: {{ $key }}
               protocol: TCP
+              {{- if .Values.controller.daemonset.useHostPort }}
+              hostPort: {{ $key }}
+              {{- end }}
           {{- end }}
           {{- range $key, $value := .Values.udp }}
             - name: "{{ $key }}-udp"
               containerPort: {{ $key }}
               protocol: UDP
+              {{- if .Values.controller.daemonset.useHostPort }}
+              hostPort: {{ $key }}
+              {{- end }}
           {{- end }}
           readinessProbe:
             httpGet:
