@@ -132,7 +132,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.secretsFilesSecret`       | Kubernetes secret that contains 'secrets' files | Not set                        |
 | `master.jobs`                     | Jenkins XML job configs              | Not set                                   |
 | `master.overwriteJobs`            | Replace jobs w/ ConfigMap on boot    | `false`                                   |
-| `master.installPlugins`           | List of Jenkins plugins to install   | `kubernetes:1.14.0 workflow-aggregator:2.6 credentials-binding:1.17 git:3.9.1 workflow-job:2.31` |
+| `master.installPlugins`           | List of Jenkins plugins to install. If you don't want to install plugins set it to `[]` | `kubernetes:1.14.0 workflow-aggregator:2.6 credentials-binding:1.17 git:3.9.1 workflow-job:2.31` |
 | `master.overwritePlugins`         | Overwrite installed plugins on start.| `false`                                   |
 | `master.enableRawHtmlMarkupFormatter` | Enable HTML parsing using (see below) | false                                |
 | `master.scriptApproval`           | List of groovy functions to approve  | Not set                                   |
