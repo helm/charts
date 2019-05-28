@@ -267,8 +267,7 @@ controller:
       servicePort: 18080
       type: ClusterIP
 
-  ## If controller.stats.enabled = true and controller.metrics.enabled = true, Prometheus metrics will be exported
-  ##
+
   metrics:
     enabled: false
 
@@ -314,8 +313,8 @@ defaultBackend:
 
   name: default-backend
   image:
-    repository: k8s.gcr.io/defaultbackend
-    tag: "1.4"
+    repository: k8s.gcr.io/defaultbackend-amd64
+    tag: "1.5"
     pullPolicy: IfNotPresent
 
   extraArgs: {}

@@ -258,13 +258,13 @@ datadog:
   ## Make sure to keep requests and limits equal to keep the pods in the Guaranteed QoS class
   ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
   #
-  resources:
-    requests:
-      cpu: 200m
-      memory: 256Mi
-    limits:
-      cpu: 200m
-      memory: 256Mi
+  resources: {}
+#    requests:
+#      cpu: 200m
+#      memory: 256Mi
+#    limits:
+#      cpu: 200m
+#      memory: 256Mi
 
 ## @param clusterAgent - object - required
 ## This is the Datadog Cluster Agent implementation that handles cluster-wide
@@ -325,13 +325,13 @@ clusterAgent:
   ## @param resources - object -required
   ## Datadog cluster-agent resource requests and limits.
   #
-  resources:
-    requests:
-      cpu: 200m
-      memory: 256Mi
-    limits:
-      cpu: 200m
-      memory: 256Mi
+  resources: {}
+#    requests:
+#      cpu: 200m
+#      memory: 256Mi
+#    limits:
+#      cpu: 200m
+#      memory: 256Mi
 
   ## @param livenessProbe - object - optional
   ## Override the agent's liveness probe logic from the default:
@@ -532,13 +532,13 @@ clusterchecksDeployment:
   ## @param resources - object -required
   ## Datadog clusterchecks-agent resource requests and limits.
   #
-  resources:
-    requests:
-      cpu: 200m
-      memory: 500Mi
-    limits:
-      cpu: 200m
-      memory: 500Mi
+  resources: {}
+#    requests:
+#      cpu: 200m
+#      memory: 500Mi
+#    limits:
+#      cpu: 200m
+#      memory: 500Mi
 
   ## @param affinity - object - optional
   ## Allow the ClusterChecks Deployment to schedule using affinity rules.
