@@ -46,10 +46,10 @@ spec:
         secret:
           secretName: {{ template "atlantis.fullname" . }}-gitconfig
       {{- end }}
-      {{- if .Values.aws }}
+      {{- if or .Values.aws .Values.awsSecretName}}
       - name: aws-volume
         secret:
-          secretName: {{ template "atlantis.fullname" . }}-aws
+          secretName: {{ template "atlantis.awsSecretName" . }}
       {{- end }}
       {{- if .Values.repoConfig }}
       - name: repo-config
@@ -214,7 +214,7 @@ spec:
             readOnly: true
             mountPath: /etc/secret-gitconfig
           {{- end }}
-          {{- if .Values.aws}}
+          {{- if or .Values.aws .Values.awsSecretName}}
           - name: aws-volume
             readOnly: true
             mountPath: /home/atlantis/.aws
