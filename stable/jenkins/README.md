@@ -89,10 +89,14 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.targetPort`               | k8s target port                      | `8080`                                    |
 | `master.nodePort`                 | k8s node port                        | Not set                                   |
 | `master.healthProbes`             | Enable k8s liveness and readiness probes    | `true`                             |
-| `master.healthProbesLivenessTimeout`  | Set the timeout for the liveness probe  | `120`                              |
-| `master.healthProbesReadinessTimeout` | Set the timeout for the readiness probe | `60`                               |
-| `master.healthProbeReadinessPeriodSeconds` | Set how often (in seconds) to perform the liveness probe | `10`         |
-| `master.healthProbeLivenessFailureThreshold` | Set the failure threshold for the liveness probe | `12`               |
+| `master.healthProbesLivenessTimeout`  | Set the timeout for the liveness probe  | `5`                              |
+| `master.healthProbesReadinessTimeout` | Set the timeout for the readiness probe | `5`                               |
+| `master.healthProbeLivenessPeriodSeconds` | Set how often (in seconds) to perform the liveness probe | `10`         |
+| `master.healthProbeReadinessPeriodSeconds` | Set how often (in seconds) to perform the readiness probe | `10`         |
+| `master.healthProbeLivenessFailureThreshold` | Set the failure threshold for the liveness probe | `5`               |
+| `master.healthProbeReadinessFailureThreshold` | Set the failure threshold for the readiness probe | `3`               |
+| `master.healthProbeLivenessInitialDelay` | Set the initial delay for the liveness probe | `90`               |
+| `master.healthProbeReadinessInitialDelay` | Set the initial delay for the readiness probe | `60`               |
 | `master.slaveListenerPort`        | Listening port for agents            | `50000`                                   |
 | `master.slaveHostPort`            | Host port to listen for agents            | Not set                              |
 | `master.slaveKubernetesNamespace` | Namespace in which the Kubernetes agents should be launched  | Not set           |
@@ -141,6 +145,12 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.jenkinsUriPrefix`         | Root Uri Jenkins will be served on   | Not set                                   |
 | `master.customInitContainers`     | Custom init-container specification in raw-yaml format | Not set                 |
 | `master.lifecycle`                | Lifecycle specification for master-container | Not set                           |
+| `master.prometheus.enabled`       | Enables prometheus service monitor | `false`                                     |
+| `master.prometheus.serviceMonitorAdditionalLabels` | Additional labels to add to the service monitor object | `{}`                       |
+| `master.prometheus.scrapeInterval` | How often prometheus should scrape metrics | `60s`                              |
+| `master.prometheus.scrapeEndpoint` | The endpoint prometheus should get metrics from | `/prometheus`                 |
+| `master.prometheus.alertingrules` | Array of prometheus alerting rules | `[]`                                        |
+| `master.prometheus.alertingRulesAdditionalLabels` | Additional labels to add to the prometheus rule object     | `{}`                                   |
 | `master.priorityClassName`        | The name of a `priorityClass` to apply to the master pod | Not set               |
 | `networkPolicy.enabled`           | Enable creation of NetworkPolicy resources. | `false`                            |
 | `networkPolicy.apiVersion`        | NetworkPolicy ApiVersion             | `networking.k8s.io/v1`                    |
