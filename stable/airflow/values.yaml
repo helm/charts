@@ -59,7 +59,9 @@ airflow:
   ## fernetKey: ABCDABCDABCDABCDABCDABCDABCDABCDABCDABCD
   fernetKey: ""
   service:
+    annotations: {}
     type: ClusterIP
+    externalPort: 8080
   ##
   ## The executor to use.
   ##
@@ -194,6 +196,10 @@ flower:
     # requests:
     #   cpu: "100m"
     #   memory: "128Mi"
+  service:
+    annotations: {}
+    type: ClusterIP
+    externalPort: 5555
 
 web:
   resources: {}
