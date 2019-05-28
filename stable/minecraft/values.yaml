@@ -16,6 +16,20 @@ securityContext:
   fsGroup: 2000
 # Most of these map to environment variables. See Minecraft for details:
 # https://hub.docker.com/r/itzg/minecraft-server/
+livenessProbe:
+  command:
+    - mcstatus
+    - localhost:25565
+    - status
+  initialDelaySeconds: 30
+  periodSeconds: 5
+readinessProbe:
+  command:
+    - mcstatus
+    - localhost:25565
+    - status
+  initialDelaySeconds: 30
+  periodSeconds: 5
 minecraftServer:
   # This must be overridden, since we can't accept this for the user.
   eula: "FALSE"
