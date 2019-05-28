@@ -57,3 +57,10 @@ To Access the RabbitMQ Management interface:
     echo "URL : http://127.0.0.1:{{ .Values.service.managerPort }}/"
 
 {{- end }}
+
+{{- if and (contains "bitnami/" .Values.image.repository) (not (.Values.image.tag | regexFind "-r\\d+$")) }}
+
+WARNING: Rolling tag detected ({{ .Values.image.repository }}:{{ .Values.image.tag }}), please note that it is strongly recommended to avoid using rolling tags in a production environment.
++info https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/
+
+{{- end }}
