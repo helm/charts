@@ -25,10 +25,12 @@ If release name contains chart name it will be used as a full name.
 {{- end -}}
 
 {{- define "jenkins.kubernetes-version" -}}
-  {{- range .Values.master.installPlugins -}}
-    {{ if hasPrefix "kubernetes:" . }}
-      {{- $split := splitList ":" . }}
-      {{- printf "%s" (index $split 1 ) -}}
+  {{- if .Values.master.installPlugins -}}
+    {{- range .Values.master.installPlugins -}}
+      {{ if hasPrefix "kubernetes:" . }}
+        {{- $split := splitList ":" . }}
+        {{- printf "%s" (index $split 1 ) -}}
+      {{- end -}}
     {{- end -}}
   {{- end -}}
 {{- end -}}
