@@ -53,7 +53,7 @@ The following table lists the configurable parameters of the Drupal chart and th
 | `global.imagePullSecrets`         | Global Docker registry secret names as an array | `[]` (does not add image pull secrets to deployed pods) |
 | `image.registry`                  | Drupal image registry                      | `docker.io`                                               |
 | `image.repository`                | Drupal Image name                          | `bitnami/drupal`                                          |
-| `image.tag`                       | Drupal Image tag                           | `{VERSION}`                                               |
+| `image.tag`                       | Drupal Image tag                           | `{TAG_NAME}`                                              |
 | `image.pullPolicy`                | Drupal image pull policy                   | `Always` if `imageTag` is `latest`, else `IfNotPresent`   |
 | `image.pullSecrets`               | Specify docker-registry secret names as an array | `[]` (does not add image pull secrets to deployed pods)  |
 | `drupalProfile`                   | Drupal installation profile                | `standard`                                                |
