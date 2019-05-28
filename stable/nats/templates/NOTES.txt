@@ -89,3 +89,10 @@ To access the Monitoring svc from outside the cluster, follow the steps below:
 {{- end }}
 
 {{- include "nats.validateValues" . -}}
+
+{{- if and (contains "bitnami/" .Values.image.repository) (not (.Values.image.tag | regexFind "-r\\d+$")) }}
+
+WARNING: Rolling tag detected ({{ .Values.image.repository }}:{{ .Values.image.tag }}), please note that it is strongly recommended to avoid using rolling tags in a production environment.
++info https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/
+
+{{- end }}
