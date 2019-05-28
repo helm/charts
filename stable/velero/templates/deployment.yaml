@@ -79,7 +79,7 @@ spec:
             - name: scratch
               mountPath: /scratch
         {{- end }}
-          {{- if and .Values.credentials.useSecret (or (eq $provider "aws") (eq $provider "gcp") .Values.configuration.extraEnvVars) }}
+          {{- if (or (and .Values.credentials.useSecret (or (eq $provider "aws") (eq $provider "gcp"))) .Values.configuration.extraEnvVars) }}
           env:
           {{- end }}
           {{- if and .Values.credentials.useSecret (or (eq $provider "aws") (eq $provider "gcp")) }}
