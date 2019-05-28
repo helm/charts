@@ -3,14 +3,17 @@ approvers:
   - prydonius
   - sameersbn
   - viglesiasce
-  - foxish
   - unguiculus
   - scottrigby
   - mattfarina
   - davidkarlsen
   - paulczar
   - cpanato
+  - jlegrone
+  - maorfr
 emeritus:
+  - foxish
   - linki
   - mgoodness
   - seanknox
+  

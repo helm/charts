@@ -77,6 +77,10 @@ spec:
 {{- end }}
 {{- end }}
 {{- end }}
+{{- if .Values.bearerAuth.secret.enabled }}
+        -  name: AUTH_CERT_PATH
+           value: /var/keys/public-key.pem
+{{ end }}
         args:
         - --port=8080
 {{- if eq .Values.env.open.STORAGE "local" }}
@@ -95,20 +99,23 @@ spec:
             path: {{ .Values.env.open.CONTEXT_PATH }}/health
             port: http
 {{ toYaml .Values.probes.readiness | indent 10 }}
-{{- if eq .Values.env.open.STORAGE "local" }}
         volumeMounts:
+{{- if eq .Values.env.open.STORAGE "local" }}
         - mountPath: /storage
           name: storage-volume
 {{- end }}
 {{- if  .Values.gcp.secret.enabled }}
-        volumeMounts:
         - mountPath: /etc/secrets/google
           name: {{ include "chartmuseum.fullname" . }}-gcp
 {{- end }}
 {{- if  .Values.oracle.secret.enabled }}
-        volumeMounts:
         - mountPath: /home/chartmuseum/.oci
           name: {{ include "chartmuseum.fullname" . }}-oracle
+{{- end }}
+{{- if .Values.bearerAuth.secret.enabled }}
+        - name: public-key
+          mountPath: /var/keys
+          readOnly: true
 {{- end }}
       {{- with .Values.resources }}
         resources:
@@ -168,3 +175,8 @@ spec:
           - key: {{ .Values.oracle.secret.key_file }}
             path: oci.key
       {{ end }}
+{{- if .Values.bearerAuth.secret.enabled }}
+      - name: public-key
+        secret:
+          secretName: {{ .Values.bearerAuth.secret.publicKeySecret }}
+{{- end }}

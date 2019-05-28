@@ -1,6 +1,6 @@
 image:
   repository: gcr.io/heptio-images/ark
-  tag: v0.10.1
+  tag: v0.10.2
   pullPolicy: IfNotPresent
 
 # Only kube2iam/kiam: change the AWS_ACCOUNT_ID and HEPTIO_ARK_ROLE_NAME
@@ -47,9 +47,9 @@ configuration:
   backupStorageLocation:
     name:
     bucket:
+    # prefix:
     config: {}
     #  region:
-    #  prefix:
     #  s3ForcePathStyle:
     #  s3Url:
     #  kmsKeyId:

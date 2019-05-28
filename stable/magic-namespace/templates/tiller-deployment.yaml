@@ -30,7 +30,7 @@ spec:
     spec:
       serviceAccountName: tiller
       containers:
-        - name: {{ .Chart.Name }}
+        - name: tiller
           image: "{{ .Values.tiller.image.repository }}:{{ .Values.tiller.image.tag }}"
           imagePullPolicy: {{ .Values.tiller.image.pullPolicy }}
           env:
@@ -53,7 +53,11 @@ spec:
             value: /etc/certs
           {{- end }}
           {{- if .Values.tiller.onlyListenOnLocalhost }}
-          command: ["/tiller"]
+          command:
+            - "/tiller"
+          {{- if .Values.tiller.storage }}
+            - --storage={{ .Values.tiller.storage }}
+          {{- end }}
           args: ["--listen=127.0.0.1:44134"]
           {{- else }}
           ports:
@@ -96,7 +100,7 @@ spec:
       {{- if .Values.tiller.tls.enabled }}
       - name: tiller-certs
         secret:
-          defaultMode: 420
+          defaultMode: 0644
           secretName: {{ template "magic-namespace.tillerTlsSecret" . }}
       {{- end }}
     {{- with .Values.tiller.nodeSelector }}

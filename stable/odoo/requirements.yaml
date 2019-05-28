@@ -1,4 +1,4 @@
 dependencies:
 - name: postgresql
-  version: 3.x.x
+  version: 4.x.x
   repository: https://kubernetes-charts.storage.googleapis.com/

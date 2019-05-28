@@ -13,6 +13,11 @@ spec:
     matchLabels:
       app: {{ template "hackmd.name" . }}
       release: {{ .Release.Name }}
+  strategy:
+    type: {{ .Values.deploymentStrategy }}
+  {{- if ne .Values.deploymentStrategy "RollingUpdate" }}
+    rollingUpdate: null
+  {{- end }}
   template:
     metadata:
       labels:
