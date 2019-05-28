@@ -2,55 +2,52 @@
 ## ref: https://hub.docker.com/r/rocketchat/rocket.chat/tags
 ##
 image:
-  repository: rocketchat/rocket.chat
-  tag: 0.74.2
+  repository: docker.io/library/rocket.chat
+  tag: 1.0.3
   pullPolicy: IfNotPresent
 
 ## Host for the application
 ##
 # host:
 
-# Main RocketChat configuration:
-config:
-  SMTP_Host:
-  SMTP_Port:
-  SMTP_Username:
-  SMTP_Password:
-  From_Email:
-  Jitsi_Enabled: false
-  Jitsi_Domain: meet.jit.si
-  Jitsi_URL_Room_Prefix: RocketChat
-  Jitsi_Open_New_Window: false
-  Jitsi_Enable_Channels: false
-  Jitsi_Chrome_Extension:
-  WebRTC_Enable_Channel: false
-  WebRTC_Enable_Private: false
-  WebRTC_Enable_Direct: false
+replicaCount: 1
+
+smtp:
+  enabled: false
+  username:
+  password:
+  host:
+  port: 587
+
+# Extra env vars for Rocket.Chat:
+extraEnv:  # |
+  # - name: MONGO_OPTIONS
+  #   value: '{"ssl": "true"}'
+  # - name: MONGO_OPLOG_URL
+  #   value: mongodb://oploguser:password@rocket-1:27017/local&replicaSet=rs0
 
 ## MongoDB URL if using an externally provisioned MongoDB
-mongodbURL: ~
+externalMongodbUrl:  # mongodb://user:password@localhost:27017/rocketchat
+externalMongodbOplogUrl:  # mongodb://user:password@localhost:27017/local?replicaSet=rs0&authSource=admin
 
 ##
 ## MongoDB chart configuration
+### ref https://github.com/helm/charts/tree/master/stable/mongodb#configuration
 ##
 mongodb:
   ## Enable or disable MongoDB dependency completely.
   enabled: true
 
-  ## MongoDB admin password
-  ### ref: https://github.com/bitnami/bitnami-docker-mongodb/blob/master/README.md#setting-the-root-password-on-first-run
-  ###
-  ## mongodbRootPassword:
-  #
-  ## MongoDB custom user and database
-  ## ref: https://github.com/bitnami/bitnami-docker-mongodb/blob/master/README.md#creating-a-user-and-database-on-first-run
-  ##
-  # mongodbUsername:
+  # mongodbRootPassword:
+
+  mongodbUsername: rocketchat
   # mongodbPassword:
-  # mongodbDatabase:
-  ## Enable persistence using Persistent Volume Claims
-  ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
-  ##
+  mongodbDatabase: rocketchat
+
+  replicaSet:
+    enabled: true
+    # key:
+
   persistence:
     enabled: true
     ## mongodb data Persistent Volume Storage Class
@@ -68,7 +65,7 @@ mongodb:
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ##
 persistence:
-  enabled: true
+  enabled: false
   ## rocketchat data Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
   ## If set to "-", storageClassName: "", which disables dynamic provisioning
@@ -106,12 +103,26 @@ serviceAccount:
 ###
 ingress:
   enabled: false
-  annotations:
-    kubernetes.io/ingress.class: "nginx"
+  annotations: {}
+    # kubernetes.io/ingress.class: "nginx"
+  path: /
   tls:
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
 
 service:
+  annotations: {}
+  # service.beta.kubernetes.io/aws-load-balancer-internal: "0.0.0.0/0"
+
+  labels: {}
+  # key: value
+
+  ## ServiceType
+  ## ref: https://kubernetes.io/docs/user-guide/services/#publishing-services---service-types
   type: ClusterIP
+
+  ## Optional static port assignment for service type NodePort.
+  # nodePort: 30000
+
+  port: 80

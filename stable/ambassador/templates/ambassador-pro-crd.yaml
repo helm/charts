@@ -1,0 +1,58 @@
+{{- if .Values.pro.enabled -}}
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: filterpolicies.getambassador.io
+spec:
+  group: getambassador.io
+  version: v1beta2
+  versions:
+  - name: v1beta2
+    served: true
+    storage: true
+  scope: Namespaced
+  names:
+    plural: filterpolicies
+    singular: filterpolicy
+    kind: FilterPolicy
+    shortNames:
+    - fp
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: filters.getambassador.io
+spec:
+  group: getambassador.io
+  version: v1beta2
+  versions:
+  - name: v1beta2
+    served: true
+    storage: true
+  scope: Namespaced
+  names:
+    plural: filters
+    singular: filter
+    kind: Filter
+    shortNames:
+    - fil
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: ratelimits.getambassador.io
+spec:
+  group: getambassador.io
+  version: v1beta1
+  versions:
+    - name: v1beta1
+      served: true
+      storage: true
+  scope: Namespaced
+  names:
+    plural: ratelimits
+    singular: ratelimit
+    kind: RateLimit
+    shortNames:
+    - rl
+{{- end -}}
