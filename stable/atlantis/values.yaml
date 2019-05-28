@@ -64,6 +64,8 @@ orgWhitelist: <replace-me>
 #     [profile a_role_to_assume]
 #     role_arn = arn:aws:iam::123456789:role/service-role/roleToAssume
 #     source_profile = default
+# To reference an already existing Secret object with AWS credentials
+# awsSecretName: 'mysecretwithawscreds'
 
 ## To be used for mounting credential files (when using google provider).
 serviceAccountSecrets:
