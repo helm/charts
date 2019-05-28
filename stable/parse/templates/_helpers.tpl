@@ -138,8 +138,8 @@ imagePullSecrets:
 WARNING: Rolling tag detected ({{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}), please note that it is strongly recommended to avoid using rolling tags in a production environment.
 +info https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/
 {{- end }}
-{{- if and (contains "bitnami/" .Values.sentinel.dashboard.image.repository) (not (.Values.sentinel.dashboard.image.tag | regexFind "-r\\d+$")) }}
-WARNING: Rolling tag detected ({{ .Values.sentinel.dashboard.image.repository }}:{{ .Values.sentinel.dashboard.image.tag }}), please note that it is strongly recommended to avoid using rolling tags in a production environment.
+{{- if and (contains "bitnami/" .Values.dashboard.image.repository) (not (.Values.dashboard.image.tag | regexFind "-r\\d+$")) }}
+WARNING: Rolling tag detected ({{ .Values.dashboard.image.repository }}:{{ .Values.dashboard.image.tag }}), please note that it is strongly recommended to avoid using rolling tags in a production environment.
 +info https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/
 {{- end }}
 {{- end -}}
