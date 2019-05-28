@@ -51,7 +51,7 @@ The following table lists the configurable parameters of the DokuWiki chart and 
 | `global.imagePullSecrets`            | Global Docker registry secret names as an array            | `[]` (does not add image pull secrets to deployed pods) |
 | `image.registry`                     | DokuWiki image registry                                    | `docker.io`                                   |
 | `image.repository`                   | DokuWiki image name                                        | `bitnami/dokuwiki`                            |
-| `image.tag`                          | DokuWiki image tag                                         | `{VERSION}`                                   |
+| `image.tag`                          | DokuWiki image tag                                         | `{TAG_NAME}`                                  |
 | `image.pullPolicy`                   | Image pull policy                                          | `Always`                                      |
 | `image.pullSecrets`                  | Specify docker-registry secret names as an array           | `[]` (does not add image pull secrets to deployed pods) |
 | `dokuwikiUsername`                   | User of the application                                    | `user`                                        |
@@ -109,7 +109,6 @@ The following table lists the configurable parameters of the DokuWiki chart and 
 | `metrics.podAnnotations`             | Additional annotations for Metrics exporter pod            | `{prometheus.io/scrape: "true", prometheus.io/port: "9117"}` |
 | `metrics.resources`                  | Exporter resource requests/limit                           | {}                                            |
 
-
 The above parameters map to the env variables defined in [bitnami/dokuwiki](http://github.com/bitnami/bitnami-docker-dokuwiki). For more information please refer to the [bitnami/dokuwiki](http://github.com/bitnami/bitnami-docker-dokuwiki) image documentation.
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
@@ -129,6 +128,12 @@ $ helm install --name my-release -f values.yaml stable/dokuwiki
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+### [Rolling VS Immutable tags](https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/)
+
+It is strongly recommended to use immutable tags in a production environment. This ensures your deployment does not change automatically if the same tag is updated with a different image.
+
+Bitnami will release a new chart updating its containers if a new version of the main container, significant changes, or critical vulnerabilities exist.
 
 ## Persistence
 
