@@ -6,6 +6,7 @@ rbac:
 serviceAccount:
   create: true
   name:
+  nameTest:
 
 replicas: 1
 
