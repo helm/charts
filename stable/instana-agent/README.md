@@ -21,6 +21,8 @@ To configure the installation you can either specify the options on the command 
 * agent.key
 * zone.name or cluster.name
 
+For most users, setting the `zone.name` is sufficient. However, if you would like to be able group your hosts based on the availability zone rather than cluster name, then you can specify the cluster name using the `cluster.name` instead of the `zone.name` setting. If you omit the `zone.name` the host zone will be automatically determined by the availability zone information on the host.
+
 If you're in the EU, you'll probably also want to set the regional equivalent values for:
 
 * agent.endpointHost
@@ -89,35 +91,35 @@ $ helm del --purge instana-agent
 
 The following table lists the configurable parameters of the Instana chart and their default values.
 
-|             Parameter              |            Description                                                  |                    Default                           |
-|------------------------------------|-------------------------------------------------------------------------|------------------------------------------------------|
-| `agent.key`                        | Your Instana Agent key                                                  | `nil` You must provide your own key                  |
-| `zone.name`                        | Zone name that detected technologies will be assigned to                | `nil` You must provide `zone.name` or `cluster.name` |
-| `cluster.name`                     | Display name of the monitored cluster                                   | Value of `zone.name`                                 |
-| `agent.image.name`                 | The image name to pull                                                  | `instana/agent`                                      |
-| `agent.image.tag`                  | The image tag to pull                                                   | `1.0.17`                                             |
-| `agent.image.pullPolicy`           | Image pull policy                                                       | `IfNotPresent`                                       |
-| `agent.leaderElectorPort`          | Instana leader elector sidecar port                                     | `42655`                                              |
-| `agent.endpointHost`               | Instana agent backend endpoint host                                     | `saas-us-west-2.instana.io`                          |
-| `agent.endpointPort`               | Instana agent backend endpoint port                                     | `443`                                                |
-| `agent.downloadKey`                | Your Instana Download key                                               | `nil` You must provide your own download key         |
-| `agent.mode`                       | Agent mode (Supported values are APM, INFRASTRUCTURE, AWS)              | `APM`                                                |
-| `agent.pod.annotations`            | Additional annotations to apply to the pod                              | `{}`                                                 |
-| `agent.pod.tolerations`            | Tolerations for pod assignment                                          | `[]`                                                 |
-| `agent.pod.proxyHost`              | Hostname/address of a proxy                                             | `nil`                                                |
-| `agent.pod.proxyPort`              | Port of a proxy                                                         | `nil`                                                |
-| `agent.pod.proxyProtocol`          | Proxy protocol (Supported proxy types are "http", "socks4", "socks5")   | `nil`                                                |
-| `agent.pod.proxyUser`              | Username of the proxy auth                                              | `nil`                                                |
-| `agent.pod.proxyPassword`          | Password of the proxy auth                                              | `nil`                                                |
-| `agent.pod.proxyUseDNS`            | Boolean if proxy also does DNS                                          | `nil`                                                |
-| `agent.listenAddress`              | List of addresses to listen on, or "*" for all interfaces               | `nil`                                                |
-| `agent.pod.requests.memory`        | Container memory requests in MiB                                        | `512`                                                |
-| `agent.pod.requests.cpu`           | Container cpu requests in cpu cores                                     | `0.5`                                                |
-| `agent.pod.limits.memory`          | Container memory limits in MiB                                          | `512`                                                |
-| `agent.pod.limits.cpu`             | Container cpu limits in cpu cores                                       | `1.5`                                                |
-| `rbac.create`                      | Whether RBAC resources should be created                                | `true`                                               |
-| `serviceAccount.create`            | Whether a ServiceAccount should be created                              | `true`                                               |
-| `serviceAccount.name`              | Name of the ServiceAccount to use                                       | `instana-agent`                                      |
+|             Parameter              |            Description                                                  |                    Default                                                                                  |
+|------------------------------------|-------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------|
+| `agent.key`                        | Your Instana Agent key                                                  | `nil` You must provide your own key                                                                         |
+| `zone.name`                        | Zone that detected technologies will be assigned to                     | `nil` You must provide either `zone.name` or `cluster.name`, see [above](#installing-the-chart) for details |
+| `cluster.name`                     | Display name of the monitored cluster                                   | Value of `zone.name`                                                                                        |
+| `agent.image.name`                 | The image name to pull                                                  | `instana/agent`                                                                                             |
+| `agent.image.tag`                  | The image tag to pull                                                   | `1.0.17`                                                                                                    |
+| `agent.image.pullPolicy`           | Image pull policy                                                       | `IfNotPresent`                                                                                              |
+| `agent.leaderElectorPort`          | Instana leader elector sidecar port                                     | `42655`                                                                                                     |
+| `agent.endpointHost`               | Instana agent backend endpoint host                                     | `saas-us-west-2.instana.io`                                                                                 |
+| `agent.endpointPort`               | Instana agent backend endpoint port                                     | `443`                                                                                                       |
+| `agent.downloadKey`                | Your Instana Download key                                               | `nil` You must provide your own download key                                                                |
+| `agent.mode`                       | Agent mode (Supported values are APM, INFRASTRUCTURE, AWS)              | `APM`                                                                                                       |
+| `agent.pod.annotations`            | Additional annotations to apply to the pod                              | `{}`                                                                                                        |
+| `agent.pod.tolerations`            | Tolerations for pod assignment                                          | `[]`                                                                                                        |
+| `agent.pod.proxyHost`              | Hostname/address of a proxy                                             | `nil`                                                                                                       |
+| `agent.pod.proxyPort`              | Port of a proxy                                                         | `nil`                                                                                                       |
+| `agent.pod.proxyProtocol`          | Proxy protocol (Supported proxy types are "http", "socks4", "socks5")   | `nil`                                                                                                       |
+| `agent.pod.proxyUser`              | Username of the proxy auth                                              | `nil`                                                                                                       |
+| `agent.pod.proxyPassword`          | Password of the proxy auth                                              | `nil`                                                                                                       |
+| `agent.pod.proxyUseDNS`            | Boolean if proxy also does DNS                                          | `nil`                                                                                                       |
+| `agent.listenAddress`              | List of addresses to listen on, or "*" for all interfaces               | `nil`                                                                                                       |
+| `agent.pod.requests.memory`        | Container memory requests in MiB                                        | `512`                                                                                                       |
+| `agent.pod.requests.cpu`           | Container cpu requests in cpu cores                                     | `0.5`                                                                                                       |
+| `agent.pod.limits.memory`          | Container memory limits in MiB                                          | `512`                                                                                                       |
+| `agent.pod.limits.cpu`             | Container cpu limits in cpu cores                                       | `1.5`                                                                                                       |
+| `rbac.create`                      | Whether RBAC resources should be created                                | `true`                                                                                                      |
+| `serviceAccount.create`            | Whether a ServiceAccount should be created                              | `true`                                                                                                      |
+| `serviceAccount.name`              | Name of the ServiceAccount to use                                       | `instana-agent`                                                                                             |
 
 ### Agent
 
