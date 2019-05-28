@@ -134,11 +134,11 @@ spec:
               {{- if .Values.controller.daemonset.useHostPort }}
               hostPort: {{ .Values.controller.daemonset.hostPorts.stats }}
               {{- end }}
-            {{- if .Values.controller.metrics.enabled }}
+          {{- end }}
+          {{- if .Values.controller.metrics.enabled }}
             - name: metrics
               containerPort: 10254
               protocol: TCP
-            {{- end }}
           {{- end }}
           {{- range $key, $value := .Values.tcp }}
             - name: "{{ $key }}-tcp"
