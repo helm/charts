@@ -60,8 +60,8 @@ The following table lists the configurable parameters of the Sonarqube chart and
 | `persistence.existingClaim`                 | Do not create a new PVC but use this one  | None                                       |
 | `persistence.storageClass`                  | Storage class to be used                  | "-"                                        |
 | `persistence.accessMode`                    | Volumes access mode to be set             | `ReadWriteOnce`                            |
-| `persistence.size`                          | Size of the volume                        | None                                     |
-| `sonarProperties`                           | Custom `sonar.properties` file            | None                                       |
+| `persistence.size`                          | Size of the volume                        | None                                       |
+| `sonarProperties`                           | Custom `sonar.properties` file            | `{}`                                       |
 | `sonarSecretKey`                            | Name of existing secret used for settings encryption | None                            |
 | `database.type`                             | Set to "mysql" to use mysql database       | `postgresql`|
 | `postgresql.enabled`                        | Set to `false` to use external server / mysql database     | `true`                                     |
