@@ -123,7 +123,7 @@ The following table lists the configurable parameters of the Redis chart and the
 | `global.imagePullSecrets`                     | Global Docker registry secret names as an array                                                                                                     | `[]` (does not add image pull secrets to deployed pods) |
 | `image.registry`                              | Redis Image registry                                                                                                                                | `docker.io`                                             |
 | `image.repository`                            | Redis Image name                                                                                                                                    | `bitnami/redis`                                         |
-| `image.tag`                                   | Redis Image tag                                                                                                                                     | `{VERSION}`                                             |
+| `image.tag`                                   | Redis Image tag                                                                                                                                     | `{TAG_NAME}`                                            |
 | `image.pullPolicy`                            | Image pull policy                                                                                                                                   | `Always`                                                |
 | `image.pullSecrets`                           | Specify docker-registry secret names as an array                                                                                                    | `nil`                                                   |
 | `cluster.enabled`                             | Use master-slave topology                                                                                                                           | `true`                                                  |
@@ -270,7 +270,7 @@ The following table lists the configurable parameters of the Redis chart and the
 | `sentinel.resources`                          | Redis sentinel CPU/Memory resource requests/limits                                                                                                  | `{}`                                                    |
 | `sentinel.image.registry`                     | Redis Sentinel Image registry                                                                                                                       | `docker.io`                                             |
 | `sentinel.image.repository`                   | Redis Sentinel Image name                                                                                                                           | `bitnami/redis-sentinel`                                |
-| `sentinel.image.tag`                          | Redis Sentinel Image tag                                                                                                                            | `{VERSION}`                                             |
+| `sentinel.image.tag`                          | Redis Sentinel Image tag                                                                                                                            | `{TAG_NAME}`                                            |
 | `sentinel.image.pullPolicy`                   | Image pull policy                                                                                                                                   | `Always`                                                |
 | `sentinel.image.pullSecrets`                  | Specify docker-registry secret names as an array                                                                                                    | `nil`                                                   |
 | `sysctlImage.enabled`                         | Enable an init container to modify Kernel settings                                                                                                  | `false`                                                 |
@@ -301,6 +301,12 @@ $ helm install --name my-release -f values.yaml stable/redis
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
 > **Note for minikube users**: Current versions of minikube (v0.24.1 at the time of writing) provision `hostPath` persistent volumes that are only writable by root. Using chart defaults cause pod failure for the Redis pod as it attempts to write to the `/bitnami` directory. Consider installing Redis with `--set persistence.enabled=false`. See minikube issue [1990](https://github.com/kubernetes/minikube/issues/1990) for more information.
+
+### [Rolling VS Immutable tags](https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/)
+
+It is strongly recommended to use immutable tags in a production environment. This ensures your deployment does not change automatically if the same tag is updated with a different image.
+
+Bitnami will release a new chart updating its containers if a new version of the main container, significant changes, or critical vulnerabilities exist.
 
 ## NetworkPolicy
 
