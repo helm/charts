@@ -37,8 +37,8 @@ The following table lists the configurable parameters of the Spark chart and the
 | Parameter               | Description                        | Default                                                    |
 | ----------------------- | ---------------------------------- | ---------------------------------------------------------- |
 | `Master.Name`           | Spark master name                  | `spark-master`                                             |
-| `Master.Image`          | Container image name               | `dbanda/spark2.4`                                 |
-| `Master.ImageTag`       | Container image tag                | `v3`                                                      |
+| `Master.Image`          | Container image name               | `mcr.microsoft.com/mmlspark/spark2.4`                      |
+| `Master.ImageTag`       | Container image tag                | `v4`                                                      |
 | `Master.Replicas`       | k8s deployment replicas            | `1`                                                        |
 | `Master.Component`      | k8s selector key                   | `spark-master`                                             |
 | `Master.Cpu`            | container requested cpu            | `100m`                                                     |
@@ -61,8 +61,8 @@ The following table lists the configurable parameters of the Spark chart and the
 | Parameter                    | Description                          | Default                                                    |
 | -----------------------      | ------------------------------------ | ---------------------------------------------------------- |
 | `Worker.Name`                | Spark worker name                    | `spark-worker`                                             |
-| `Worker.Image`               | Container image name                 | `dbanda/spark2.4`                                 |
-| `Worker.ImageTag`            | Container image tag                  | `v3`                                                      |
+| `Worker.Image`               | Container image name                 | `mcr.microsoft.com/mmlspark/spark2.4`                      |
+| `Worker.ImageTag`            | Container image tag                  | `v4 `                                                      |
 | `Worker.Replicas`            | k8s hpa and deployment replicas      | `3`                                                        |
 | `Worker.ReplicasMax`         | k8s hpa max replicas                 | `10`                                                       |
 | `Worker.Component`           | k8s selector key                     | `spark-worker`                                             |
@@ -81,7 +81,7 @@ The following table lists the configurable parameters of the Spark chart and the
 |--------------------------------|----------------------------------|----------------------------------------------------------|
 | `Zeppelin.Name`                | Zeppelin name                    | `zeppelin-controller`                                    |
 | `Zeppelin.Enabled`             | if `true` enable Zeppelin        | `true`                                                   |
-| `Zeppelin.Image`               | Container image name             | `dbanda/zeppelin`                                        |
+| `Zeppelin.Image`               | Container image name             | `mcr.microsoft.com/mmlspark/zeppelin`                    |
 | `Zeppelin.ImageTag`            | Container image tag              | `v4`                                                     |
 | `Zeppelin.Replicas`            | k8s deployment replicas          | `1`                                                      |
 | `Zeppelin.Component`           | k8s selector key                 | `zeppelin`                                               |
@@ -100,7 +100,7 @@ The following table lists the configurable parameters of the Spark chart and the
 |--------------------------------|----------------------------------|----------------------------------------------------------|
 | `Livy.Name`                    | Livy name                        | `livy-controller`                                        |
 | `Livy.Enabled`                 | if `true` enable Zeppelin        | `true`                                                   |
-| `Livy.Image`                   | Container image name             | `dbanda/livy`                                            |
+| `Livy.Image`                   | Container image name             | `mcr.microsoft.com/mmlspark/livy`                        |
 | `Livy.ImageTag`                | Container image tag              | `v4`                                                     |
 | `Livy.Replicas`                | k8s deployment replicas          | `1`                                                      |
 | `Livy.ReplicasMax`             | k8s max number of replicas       | `3`                                                      |
