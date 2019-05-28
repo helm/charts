@@ -145,6 +145,11 @@ master:
   ##
   antiAffinity: soft
 
+  ## Node labels for pod assignment
+  ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+  ##
+  nodeSelector: {}
+
   ## Tolerations for pod assignment
   ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
   ##
@@ -164,6 +169,8 @@ master:
     enabled: true
     # Enable persistence using an existing PVC
     # existingClaim:
+    # Subdirectory of the volume to mount
+    # subPath:
     mountPath: /bitnami/mariadb
     ## Persistent Volume Storage Class
     ## If defined, storageClassName: <storageClass>
@@ -265,6 +272,11 @@ slave:
   ## if you wish to set it through slave.affinity.podAntiAffinity instead.
   ##
   antiAffinity: soft
+
+  ## Node labels for pod assignment
+  ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+  ##
+  nodeSelector: {}
 
   ## Tolerations for pod assignment
   ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
