@@ -83,3 +83,5 @@ service:
   echo Password: $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "parse.fullname" . }} -o jsonpath="{.data.parse-dashboard-password}" | base64 --decode)
 {{- end }}
 {{- end }}
+
+{{ include "parse.checkRollingTags" . }}
