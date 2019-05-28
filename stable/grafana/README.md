@@ -107,6 +107,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `admin.passwordKey`                       | The key in the existing admin secret containing the password. | `"admin-password"`                      |
 | `serviceAccount.create`                   | Create service account | `true` |
 | `serviceAccount.name`                     | Service account name to use, when empty will be set to created account if `serviceAccount.create` is set else to `default` | `` |
+| `serviceAccount.nameTest`                 | Service account name to use for test, when empty will be set to created account if `serviceAccount.create` is set else to `default` | `` |
 | `rbac.create`                             | Create and use RBAC resources | `true` |
 | `rbac.namespaced`                         | Creates Role and Rolebinding instead of the default ClusterRole and ClusteRoleBindings for the grafana instance  | `false` |
 | `rbac.pspEnabled`                         | Create PodSecurityPolicy (with `rbac.create`, grant roles permissions as well) | `true` |
