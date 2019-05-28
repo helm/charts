@@ -163,3 +163,12 @@ halyard:
   annotations:
     iam.amazonaws.com/role: <role_arn>
 ```
+
+### Set environment variables on the halyard pod
+
+```yaml
+halyard:
+  env:
+    - name: DEFAULT_JVM_OPTS
+      value: -Dhttp.proxyHost=proxy.example.com
+```
