@@ -131,3 +131,15 @@ imagePullSecrets:
 {{- end }}
 {{- end -}}
 {{- end -}}
+
+{{/* Check if there are rolling tags in the images */}}
+{{- define "parse.checkRollingTags" -}}
+{{- if and (contains "bitnami/" .Values.server.image.repository) (not (.Values.server.image.tag | regexFind "-r\\d+$")) }}
+WARNING: Rolling tag detected ({{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}), please note that it is strongly recommended to avoid using rolling tags in a production environment.
++info https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/
+{{- end }}
+{{- if and (contains "bitnami/" .Values.dashboard.image.repository) (not (.Values.dashboard.image.tag | regexFind "-r\\d+$")) }}
+WARNING: Rolling tag detected ({{ .Values.dashboard.image.repository }}:{{ .Values.dashboard.image.tag }}), please note that it is strongly recommended to avoid using rolling tags in a production environment.
++info https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/
+{{- end }}
+{{- end -}}

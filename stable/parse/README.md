@@ -56,7 +56,7 @@ The following table lists the configurable parameters of the Parse chart and the
 | `service.nodePorts.http`              | Kubernetes http node port                | `""`                                                    |
 | `server.image.registry`               | Parse image registry                     | `docker.io`                                             |
 | `server.image.repository`             | Parse image name                         | `bitnami/parse`                                         |
-| `server.image.tag`                    | Parse image tag                          | `{VERSION}`                                             |
+| `server.image.tag`                    | Parse image tag                          | `{TAG_NAME}`                                            |
 | `server.image.pullPolicy`             | Image pull policy                        | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
 | `server.image.pullSecrets`            | Specify docker-registry secret names as an array               | `[]` (does not add image pull secrets to deployed pods) |
 | `server.securityContext.enabled`      | Enable security context for Parse Server | `true`                                                  |
@@ -70,7 +70,7 @@ The following table lists the configurable parameters of the Parse chart and the
 | `dashboard.enabled`                   | Enable parse dashboard                   | `true`                                                  |
 | `dashboard.image.registry`            | Dashboard image registry                 | `docker.io`                                             |
 | `dashboard.image.repository`          | Dashboard image name                     | `bitnami/parse-dashboard`                               |
-| `dashboard.image.tag`                 | Dashboard image tag                      | `{VERSION}`                                             |
+| `dashboard.image.tag`                 | Dashboard image tag                      | `{TAG_NAME}`                                            |
 | `dashboard.image.pullPolicy`          | Image pull policy                        | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
 | `dashboard.securityContext.enabled`   | Enable security context for Dashboard    | `true`                                                  |
 | `dashboard.securityContext.fsGroup`   | Group ID for Dashboard container         | `1001`                                                  |
@@ -140,6 +140,12 @@ $ helm install --name my-release -f values.yaml stable/parse
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+### [Rolling VS Immutable tags](https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/)
+
+It is strongly recommended to use immutable tags in a production environment. This ensures your deployment does not change automatically if the same tag is updated with a different image.
+
+Bitnami will release a new chart updating its containers if a new version of the main container, significant changes, or critical vulnerabilities exist.
 
 ## Persistence
 
