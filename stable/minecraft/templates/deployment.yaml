@@ -25,20 +25,16 @@ spec:
 {{ toYaml .Values.resources | indent 10 }}
         readinessProbe:
           exec:
-            command:
-              - mcstatus
-              - localhost:25565
-              - status
-          initialDelaySeconds: 30
-          periodSeconds: 5
+            command: 
+{{ toYaml .Values.readinessProbe.command | indent 14 }}
+          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
         livenessProbe:
           exec:
             command:
-              - mcstatus
-              - localhost:25565
-              - status
-          initialDelaySeconds: 30
-          periodSeconds: 15
+{{ toYaml .Values.livenessProbe.command | indent 14 }}
+          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
         env:
         - name: EULA
           value: {{ .Values.minecraftServer.eula | quote }}
