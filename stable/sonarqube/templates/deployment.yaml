@@ -75,7 +75,7 @@ spec:
             - containerPort: {{ .Values.service.internalPort }}
           {{- if .Values.plugins.install }}
           command:
-            - /usr/local/copy_plugins.sh
+            - /tmp/scripts/copy_plugins.sh
           {{- end }}
           env:
             {{- range $key, $value := .Values.extraEnv }}
@@ -147,7 +147,7 @@ spec:
             - mountPath: /tmp
               name: tmp-dir
             - name: copy-plugins
-              mountPath: /usr/local/
+              mountPath: /tmp/scripts
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- if .Values.nodeSelector }}
