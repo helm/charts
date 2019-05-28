@@ -67,7 +67,11 @@ Parameter | Description | Default
 `es.ssl.client.key` | Private key for client auth when connecting to Elasticsearch |
 `web.path` | path under which to expose metrics | `/metrics`
 `serviceMonitor.enabled` | If true, a ServiceMonitor CRD is created for a prometheus operator | `false`
+`serviceMonitor.namespace` | If set, the ServiceMonitor will be installed in a different namespace  | `""`
 `serviceMonitor.labels` | Labels for prometheus operator | `{}`
+`serviceMonitor.interval` | Interval at which metrics should be scraped | `10s`
+`serviceMonitor.scrapeTimeout` | Timeout after which the scrape is ended | `10s`
+`serviceMonitor.scheme` | Scheme to use for scraping | `http`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

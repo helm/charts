@@ -18,6 +18,7 @@ spec:
   endpoints:
   - port: metrics
     interval: {{ .Values.serviceMonitor.interval }}
+    scrapeTimeout: {{ .Values.serviceMonitor.scrapeTimeout }}
   namespaceSelector:
     matchNames:
     - {{ .Release.Namespace }}

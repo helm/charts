@@ -1,4 +1,15 @@
-# Keycloak
+# DEPRECATED - Keycloak
+
+**This chart has been deprecated and moved to its new home:**
+
+- **GitHub repo:** https://github.com/codecentric/helm-charts
+- **Charts repo:** https://codecentric.github.io/helm-charts
+
+```bash
+helm repo add codecentric https://codecentric.github.io/helm-charts
+```
+
+---
 
 [Keycloak](http://www.keycloak.org/) is an open source identity and access management for modern applications and services.
 
@@ -71,6 +82,7 @@ Parameter | Description | Default
 `keycloak.hostAliases` | Mapping between IP and hostnames that will be injected as entries in the pod's hosts files | `[]`
 `keycloak.securityContext` | Security context for the pod | `{runAsUser: 1000, fsGroup: 1000, runAsNonRoot: true}`
 `keycloak.preStartScript` | Custom script to run before Keycloak starts up | ``
+`keycloak.lifecycleHooks` | Container lifecycle hooks. Passed through the `tpl` function and thus to be configured a string | ``
 `keycloak.extraArgs` | Additional arguments to the start command | ``
 `keycloak.livenessProbe.initialDelaySeconds` | Liveness Probe `initialDelaySeconds` | `120`
 `keycloak.livenessProbe.timeoutSeconds` | Liveness Probe `timeoutSeconds` | `5`
