@@ -70,3 +70,14 @@ Generates secret-webhook name
     {{ template "atlantis.fullname" . }}-webhook
 {{- end -}}
 {{- end -}}
+
+{{/*
+Generates AWS Secret name
+*/}}
+{{- define "atlantis.awsSecretName" -}}
+{{- if .Values.awsSecretName -}}
+    {{ .Values.awsSecretName }}
+{{- else -}}
+    {{ template "atlantis.fullname" . }}-aws
+{{- end -}}
+{{- end -}}
