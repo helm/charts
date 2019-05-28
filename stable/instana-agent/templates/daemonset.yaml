@@ -1,5 +1,5 @@
 {{- if .Values.agent.key -}}
-{{- if .Values.zone.name -}}
+{{- if or .Values.zone.name .Values.cluster.name -}}
 apiVersion: apps/v1beta2
 kind: DaemonSet
 metadata:
@@ -32,6 +32,8 @@ spec:
               value: {{ .Values.agent.leaderElectorPort | quote }}
             - name: INSTANA_ZONE
               value: {{ .Values.zone.name | quote }}
+            - name: INSTANA_KUBERNETES_CLUSTER_NAME
+              value: {{ .Values.cluster.name | quote }}
             - name: INSTANA_AGENT_ENDPOINT
               value: {{ .Values.agent.endpointHost | quote }}
             - name: INSTANA_AGENT_ENDPOINT_PORT

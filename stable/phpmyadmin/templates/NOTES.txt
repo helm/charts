@@ -4,7 +4,7 @@
   You should be able to access your new phpMyAdmin installation through
   http{{ if $.Values.ingress.tls }}s{{ end }}://{{ if $.Values.ingress.host }}{{.Values.ingress.host}}{{else}}your-cluster-ip{{end}}{{ $.Values.ingress.path }}
   {{if not $.Values.ingress.host}}
-  
+
   Find out your cluster ip address by running:
   $ kubectl cluster-info
 
@@ -15,10 +15,10 @@
   echo "phpMyAdmin URL: http://$NODE_IP:$NODE_PORT"
 
 {{- else if contains "LoadBalancer" .Values.service.type }}
-  
+
   NOTE: It may take a few minutes for the LoadBalancer IP to be available.
          You can watch the status of by running 'kubectl get svc -w {{ template "phpmyadmin.fullname" . }}'
-  
+
   export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "phpmyadmin.fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
   echo "phpMyAdmin URL: http://$SERVICE_IP:{{ .Values.service.port }}"
 
@@ -34,7 +34,7 @@
 
 phpMyAdmin has been configured to connect to a database in {{ if .Values.db.chartName}}{{template "phpmyadmin.dbfullname" .}}{{ else }}{{.Values.db.host}}{{end}}
 {{if .Values.db.port}}with port {{.Values.db.port}} {{end }}
-Please login using a database username and password. 
+Please login using a database username and password.
 {{ else if .Values.db.bundleTestDB }}
 For testing purposes, phpMyAdmin has been configured to point to a test MariaDB
 instance. Please login using the following credentials:
@@ -46,9 +46,15 @@ instance. Please login using the following credentials:
 phpMyAdmin has not been configure to point to a specific database. Please provide the db host,
 username and password at log in or upgrade the release with a specific database:
 
-$ helm upgrade {{.Release.Name}} stable/phpmyadmin --set db.host=mydb 
+$ helm upgrade {{.Release.Name}} stable/phpmyadmin --set db.host=mydb
 
 {{end}}
 
-** Please be patient while the chart is being deployed **
+{{- if and (contains "bitnami/" .Values.image.repository) (not (.Values.image.tag | regexFind "-r\\d+$")) }}
 
+WARNING: Rolling tag detected ({{ .Values.image.repository }}:{{ .Values.image.tag }}), please note that it is strongly recommended to avoid using rolling tags in a production environment.
++info https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/
+
+{{- end }}
+
+** Please be patient while the chart is being deployed **
