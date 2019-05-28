@@ -47,7 +47,7 @@ spec:
           - {name: DD_EXTRA_CONFIG_PROVIDERS, value: "clusterchecks"}
           # Remove unused features
           - {name: DD_APM_ENABLED, value: "false"}
-          - {name: DD_PROCESS_AGENT_ENABLED, value: "false"}
+          - {name: DD_PROCESS_AGENT_ENABLED, value: "disabled"}
           - {name: DD_LOGS_ENABLED, value: "false"}
           # Safely run alongside the daemonset
           - {name: DD_ENABLE_METADATA_COLLECTION, value: "false"}

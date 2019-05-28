@@ -180,12 +180,12 @@ datadog:
   #
   # apmEnabled: false
 
-  ## @param processAgentEnabled - boolean - optional - default: false
-  ## Enable this to activate live process monitoring.
+  ## @param processAgentEnabled - string - optional - default: disabled
+  ## Enable this (to true) to activate live process monitoring.
   ## Note: /etc/passwd is automatically mounted to allow username resolution.
   ## ref: https://docs.datadoghq.com/graphing/infrastructure/process/#kubernetes-daemonset
   #
-  # processAgentEnabled: false
+  # processAgentEnabled: disabled
 
   ## @param env - list of object - optional
   ## The dd-agent supports many environment variables
