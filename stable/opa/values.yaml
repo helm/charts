@@ -160,8 +160,8 @@ livenessProbe:
     path: /
     scheme: HTTPS
     port: 443
-    initialDelaySeconds: 3
-    periodSeconds: 5
+  initialDelaySeconds: 3
+  periodSeconds: 5
 
 # Set a priorityClass using priorityClassName
 # priorityClassName:
