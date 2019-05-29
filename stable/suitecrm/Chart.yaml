@@ -1,6 +1,6 @@
 apiVersion: v1
 name: suitecrm
-version: 5.3.4
+version: 5.3.5
 appVersion: 7.11.4
 description: SuiteCRM is a completely open source enterprise-grade Customer Relationship Management (CRM) application. SuiteCRM is a software fork of the popular customer relationship management (CRM) system SugarCRM.
 keywords:
