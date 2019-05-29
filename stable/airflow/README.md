@@ -278,6 +278,8 @@ You can also persist logs using a `PersistentVolume` using `logsPersistence.enab
 To use an existing volume, pass the name to `logsPersistence.existingClaim`.
 Otherwise, a new volume will be created.
 
+Note that it is also possible to persist logs by mounting a `PersistentVolume` to the log directory (`/usr/local/airflow/logs` by default) using `airflow.extraVolumes` and `airflow.extraVolumeMounts`. 
+
 Refer to the `Mount a Shared Persistent Volume` section above for details on using persistent volumes.
 
 ## Service monitor
