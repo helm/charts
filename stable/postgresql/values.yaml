@@ -60,7 +60,7 @@ volumePermissions:
 ## Use an alternate scheduler, e.g. "stork".
 ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
 ##
-#schedulerName: "default-scheduler"
+# schedulerName: "default-scheduler"
 
 ## Pod Security Context
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
