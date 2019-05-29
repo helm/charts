@@ -271,13 +271,14 @@ Example of procedure:
 
 ## Logs
 
-You can store Airflow logs on an external volume and mount this volume inside Airflow pods.
+By default (`logsPersistence.enabled: false`) logs from the web server, scheduler, and Celery workers are written to within the Docker container's filesystem.
+Therefore, any restart of the pod will wipe the logs.
+For production purposes, you will likely want to persist the logs externally (e.g. S3), which you have to set up yourself through configuration.
+You can also persist logs using a `PersistentVolume` using `logsPersistence.enabled: true`.
+To use an existing volume, pass the name to `logsPersistence.existingClaim`.
+Otherwise, a new volume will be created.
 
-This is useful when running the Kubernetes executor to centralize logs across the
-Airflow UI, scheduler, and kubernetes worker pods, which allows for viewing worker log output
-in the airflow UI.
-
-This is controlled by the `logsPersistence.enabled` setting.
+Note that it is also possible to persist logs by mounting a `PersistentVolume` to the log directory (`/usr/local/airflow/logs` by default) using `airflow.extraVolumes` and `airflow.extraVolumeMounts`. 
 
 Refer to the `Mount a Shared Persistent Volume` section above for details on using persistent volumes.
 
@@ -295,7 +296,9 @@ The following table lists the configurable parameters of the Airflow chart and t
 | Parameter                                | Description                                             | Default                   |
 |------------------------------------------|---------------------------------------------------------|---------------------------|
 | `airflow.fernetKey`                      | Ferney key (see `values.yaml` for example)              | (auto generated)          |
-| `airflow.service.type`                   | services type                                           | `ClusterIP`               |
+| `airflow.service.type`                   | service type for Airflow UI                             | `ClusterIP`               |
+| `airflow.service.annotations`            | (optional) service annotations for Airflow UI           | `{}`                      |
+| `airflow.service.externalPort`           | (optional) external port for Airflow UI                 | `8080`                    |
 | `airflow.executor`                       | the executor to run                                     | `Celery`                  |
 | `airflow.initRetryLoop`                  | max number of retries during container init             |                           |
 | `airflow.image.repository`               | Airflow docker image                                    | `puckel/docker-airflow`   |
@@ -313,6 +316,9 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `airflow.extraVolumeMounts`              | additional volumeMounts to the main container in scheduler, worker & web pods | `[]`|
 | `airflow.extraVolumes`                   | additional volumes for the scheduler, worker & web pods | `[]`                      |
 | `flower.resources`                       | custom resource configuration for flower pod            | `{}`                      |
+| `flower.service.type`                    | service type for Flower UI                              | `ClusterIP`               |
+| `flower.service.annotations`             | (optional) service annotations for Flower UI            | `{}`                      |
+| `flower.service.externalPort`            | (optional) external port for Flower UI                  | `5555`                    |
 | `web.resources`                          | custom resource configuration for web pod               | `{}`                      |
 | `web.initialStartupDelay`                | amount of time webserver pod should sleep before initializing webserver             | `60`  |
 | `web.initialDelaySeconds`                | initial delay on livenessprobe before checking if webserver is available    | `360` |
@@ -392,3 +398,5 @@ Full and up-to-date documentation can be found in the comments of the `values.ya
 ### To 2.0.0
 The parameter `workers.pod.annotations` has been renamed to `workers.podAnnotations`.  If using a
 custom values file, rename this parameter.
+### To 2.8.3+
+The parameter `airflow.service.type` no longer applies to the Flower service, but the default of `ClusterIP` has been maintained.  If using a custom values file and have changed the service type, also specify `flower.service.type`.
