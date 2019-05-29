@@ -8,6 +8,7 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  serviceName: {{ template "hazelcast.fullname" . }}
   replicas: {{ .Values.cluster.memberCount }}
   selector:
     matchLabels:
