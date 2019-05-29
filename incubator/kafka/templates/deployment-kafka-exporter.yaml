@@ -29,7 +29,7 @@ spec:
       - image: "{{ .Values.prometheus.kafka.image }}:{{ .Values.prometheus.kafka.imageTag }}"
         name: kafka-exporter
         args:
-          - --kafka.server={{ template "kafka.fullname" . }}:9092
+          - --kafka.server={{ template "kafka.fullname" . }}:{{ .Values.headless.port }}
           - --web.listen-address=:{{ .Values.prometheus.kafka.port }}
         ports:
           - containerPort: {{ .Values.prometheus.kafka.port }}

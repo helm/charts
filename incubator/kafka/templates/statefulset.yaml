@@ -113,7 +113,7 @@ spec:
           successThreshold: {{ .Values.readinessProbe.successThreshold }}
           failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
         ports:
-        - containerPort: 9092
+        - containerPort: {{ .Values.headless.port }}
           name: kafka
         {{- if .Values.external.enabled }}
           {{- $replicas := .Values.replicas | int }}
@@ -195,7 +195,7 @@ spec:
           {{- if eq .Values.external.type "LoadBalancer" }}
           export LOAD_BALANCER_IP=$(echo '{{ .Values.external.loadBalancerIP }}' | tr -d '[]' | cut -d ' ' -f "$(($KAFKA_BROKER_ID + 1))") && \
           {{- end }}
-          export KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://${POD_NAME}.{{ include "kafka.fullname" . }}-headless.${POD_NAMESPACE}:9092{{ if kindIs "string" $advertisedListenersOverride }}{{ printf ",%s" $advertisedListenersOverride }}{{ end }} && \
+          export KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://${POD_NAME}.{{ include "kafka.fullname" . }}-headless.${POD_NAMESPACE}:{{ .Values.headless.port }}{{ if kindIs "string" $advertisedListenersOverride }}{{ printf ",%s" $advertisedListenersOverride }}{{ end }} && \
           exec /etc/confluent/docker/run
         volumeMounts:
         - name: datadir

@@ -19,7 +19,7 @@ data:
       echo "Waiting for Zookeeper..."
       sleep 20
     done
-    until nc -z {{ template "kafka.fullname" . }} 9092 || (( retries++ >= 6 ))
+    until nc -z {{ template "kafka.fullname" . }} {{ .Values.headless.port }} || (( retries++ >= 6 ))
     do
       echo "Waiting for Kafka..."
       sleep 20

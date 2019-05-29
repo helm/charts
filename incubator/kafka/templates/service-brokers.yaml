@@ -10,7 +10,7 @@ metadata:
 spec:
   ports:
   - name: broker
-    port: 9092
+    port: {{ .Values.headless.port }}
     targetPort: kafka
 {{- if and .Values.prometheus.jmx.enabled .Values.prometheus.operator.enabled }}
   - name: jmx-exporter
