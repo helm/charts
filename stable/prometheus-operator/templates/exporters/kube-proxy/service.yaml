@@ -1,0 +1,21 @@
+{{- if .Values.kubeProxy.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "prometheus-operator.fullname" . }}-kube-proxy
+  labels:
+    app: {{ template "prometheus-operator.name" . }}-kube-proxy
+    jobLabel: kube-proxy
+{{ include "prometheus-operator.labels" . | indent 4 }}
+  namespace: kube-system
+spec:
+  clusterIP: None
+  ports:
+    - name: http-metrics
+      port: {{ .Values.kubeProxy.service.port }}
+      protocol: TCP
+      targetPort: {{ .Values.kubeProxy.service.targetPort }}
+  selector:
+  {{ include "prometheus-operator.rangeskipempty" .Values.kubeProxy.service.selector | indent 4 }}
+  type: ClusterIP
+{{- end -}}
