@@ -2,6 +2,7 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
+  namespace: {{ .Release.Namespace }}
   name: {{ template "sonarqube.fullname" . }}
   labels:
     app: {{ template "sonarqube.name" . }}

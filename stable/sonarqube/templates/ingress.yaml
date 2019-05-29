@@ -4,6 +4,7 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
+  namespace: {{ .Release.Namespace }}
   name: {{ template "sonarqube.fullname" . }}
   labels:
     app: {{ template "sonarqube.name" . }}

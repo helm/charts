@@ -1,6 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
+  namespace: {{ .Release.Namespace }}
   name: {{ template "sonarqube.fullname" . }}
   labels:
     app: {{ template "sonarqube.name" . }}
