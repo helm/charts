@@ -126,12 +126,10 @@ serviceAccount:
 
 # Default security-context to run unprivileged
 securityContext:
-  fsGroup: 65534
   runAsUser: 65534
   runAsNonRoot: true
   readOnlyRootFilesystem: true
   allowPrivilegeEscalation: false
-  defaultAllowPrivilegeEscalation: false
 
 # Allows to enable a Prometheus to scrape pods, implemented for Hazelcast version >= 3.12 (or 'latest')
 metrics:
