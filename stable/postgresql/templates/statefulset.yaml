@@ -219,6 +219,9 @@ spec:
         - name: postgresql-config
           mountPath: /bitnami/postgresql/conf
         {{- end }}
+        {{- if .Values.master.extraVolumeMounts }}
+        {{- toYaml .Values.master.extraVolumeMounts | nindent 8 }}
+        {{- end }}
 {{- if .Values.metrics.enabled }}
       - name: metrics
         image: {{ template "postgresql.metrics.image" . }}
@@ -301,6 +304,9 @@ spec:
       - name: custom-init-scripts-secret
         secret:
           secretName: {{ template "postgresql.initdbScriptsSecret" . }}
+      {{- end }}
+      {{- if .Values.master.extraVolumes }}
+      {{- toYaml .Values.master.extraVolumes | nindent 6}}
       {{- end }}
 {{- if and .Values.persistence.enabled .Values.persistence.existingClaim }}
       - name: data
