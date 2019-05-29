@@ -2,6 +2,7 @@
 apiVersion: apps/v1beta2
 kind: StatefulSet
 metadata:
+  namespace: {{ .Release.Namespace }}
   name: "{{ template "postgresql.fullname" . }}-slave"
   labels:
     app: {{ template "postgresql.name" . }}
@@ -18,6 +19,7 @@ spec:
       role: slave
   template:
     metadata:
+      namespace: {{ .Release.Namespace }}
       name: {{ template "postgresql.fullname" . }}
       labels:
         app: {{ template "postgresql.name" . }}

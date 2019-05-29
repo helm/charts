@@ -1,6 +1,7 @@
 apiVersion: apps/v1beta2
 kind: StatefulSet
 metadata:
+  namespace: {{ .Release.Namespace }}
   name: {{ template "postgresql.master.fullname" . }}
   labels:
     app: {{ template "postgresql.name" . }}
@@ -22,6 +23,7 @@ spec:
       role: master
   template:
     metadata:
+      namespace: {{ .Release.Namespace }}
       name: {{ template "postgresql.fullname" . }}
       labels:
         app: {{ template "postgresql.name" . }}
