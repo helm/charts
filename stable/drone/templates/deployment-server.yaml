@@ -105,7 +105,7 @@ spec:
           - name: data
             mountPath: /var/lib/drone
 {{- with .Values.server.extraContainers }}
-{{ tpl . $ | indent 6 }}
+{{ tpl . $ | indent 10 }}
 {{- end }}
       volumes:
       - name: data
