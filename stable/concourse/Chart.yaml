@@ -17,6 +17,6 @@ maintainers:
   email: cscosta@pivotal.io
 - name: william-tran
   email: will@autonomic.ai
-- name: YoussB
+- name: youssb
   email: byoussef@pivotal.io
 engine: gotpl
