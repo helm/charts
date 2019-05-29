@@ -34,7 +34,7 @@ geth:
       rpcapi: 'eth,net,web3'
   miner:
     # miner nodes
-    replicaCount: 3
+    replicaCount: 1
   genesis:
     # geth genesis block
     networkId: 98052

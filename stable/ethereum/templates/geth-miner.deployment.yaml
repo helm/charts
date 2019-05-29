@@ -75,7 +75,7 @@ spec:
         command: ["/bin/sh"]
         args:
         - "-c"
-        - "geth account import --password /root/.ethereum/account/accountSecret /root/.ethereum/account/accountPrivateKey"
+        - "geth account import --password /root/.ethereum/account/accountSecret /root/.ethereum/account/accountPrivateKey || true"
         volumeMounts:
         - name: data
           mountPath: /root/.ethereum

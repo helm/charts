@@ -22,8 +22,6 @@ NAME                                             READY  STATUS             RESTA
 snug-skunk-ethereum-bootnode-f684879d4-hwks7     0/2    Init:0/1           0         1s
 snug-skunk-ethereum-ethstats-5997bd6fcb-m2rml    0/1    ContainerCreating  0         1s
 snug-skunk-ethereum-geth-miner-85d8fcdfdf-hpzmq  0/1    Init:0/3           0         1s
-snug-skunk-ethereum-geth-miner-85d8fcdfdf-rj5w2  0/1    Init:0/3           0         1s
-snug-skunk-ethereum-geth-miner-85d8fcdfdf-xtlbm  0/1    Init:0/3           0         1s
 snug-skunk-ethereum-geth-tx-5cb9c85ccf-t8w8m     0/1    Init:0/3           0         1s
 snug-skunk-ethereum-geth-tx-5cb9c85ccf-twrwv     0/1    Init:0/3           0         1s
 
@@ -130,7 +128,7 @@ The following table lists the configurable parameters of the vault chart and the
 | `geth.tx.replicaCount`      | geth transaction nodes replica count                               | `2`                                    |
 | `geth.tx.service.type`      | k8s service type for geth transaction nodes                        | `ClusterIP`                            |
 | `geth.tx.args.rpcapi`       | APIs offered over the HTTP-RPC interface                           | `eth,net,web3`                         |
-| `geth.miner.replicaCount`   | geth miner nodes replica count                                     | `3`                                    |
+| `geth.miner.replicaCount`   | geth miner nodes replica count                                     | `1`                                    |
 | `geth.miner.account.secret` | geth account secret                                                | `my-secret-account-password`           |
 | `geth.genesis.networkId`    | Ethereum network id                                                | `98052`                                |
 | `geth.genesis.difficulty`   | Ethereum network difficulty                                        | `0x1`                                  |
