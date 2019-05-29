@@ -15,6 +15,8 @@ The default installation is intended to suit monitoring a kubernetes cluster the
   - kube-controller-manager
   - etcd
   - kube-dns/coredns
+  - kube-proxy
+
 With the installation, the chart also includes dashboards and alerts.
 
 The same chart can be used to run multiple prometheus instances in the same cluster if required. To achieve this, the other components need to be disabled - it is necessary to run only one instance of prometheus-operator and a pair of alertmanager pods for an HA configuration.
@@ -403,6 +405,14 @@ For a full list of configurable values please refer to the [Grafana chart](https
 | `kubeScheduler.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
 | `kubeScheduler.serviceMonitor.metricRelabelings` | The `metric_relabel_configs` for scraping the Kubernetes scheduler. | `` |
 | `kubeScheduler.serviceMonitor.relabelings` | The `relabel_configs` for scraping the Kubernetes scheduler. | `` |
+| `kubeProxy.enabled` | Deploy a `service` and `serviceMonitor` to scrape the Kubernetes proxy | `true` |
+| `kubeProxy.service.port` | Kubernetes proxy port for the service runs on | `10249` |
+| `kubeProxy.service.targetPort` | Kubernetes proxy targetPort for the service runs on | `10249` |
+| `kubeProxy.service.selector` | Kubernetes proxy service selector | `{"k8s-app" : "kube-proxy" }` |
+| `kubeProxy.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
+| `kubeProxy.serviceMonitor.https` | Kubernetes proxy service scrape over https | `false` |
+| `kubeProxy.serviceMonitor.metricRelabelings` | The `metric_relabel_configs` for scraping the Kubernetes proxy. | `` |
+| `kubeProxy.serviceMonitor.relabelings` | The `relabel_configs` for scraping the Kubernetes proxy. | `` |
 | `kubeStateMetrics.enabled` | Deploy the `kube-state-metrics` chart and configure a servicemonitor to scrape | `true` |
 | `kubeStateMetrics.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
 | `kubeStateMetrics.serviceMonitor.metricRelabelings` | Metric relablings for the `kube-state-metrics` ServiceMonitor | `[]` |
@@ -520,3 +530,31 @@ status:
 ```
 
 The PVC will take ownership of the PV and when you create a release using a persistent volume claim template it will use the existing PVCs as they match the naming convention used by the chart. For other cloud providers similar approaches can be used.
+
+### KubeProxy
+
+The metrics bind address of kube-proxy is default to `127.0.0.1:10249` that prometheus instances **cannot** access to. You should expose metrics by changing `metricsBindAddress` field value to `0.0.0.0:10249` in ConfigMap `kube-system/kube-proxy` if you want to collect them. For example:
+
+```
+kubectl -n kube-system edit cm kube-proxy
+```
+
+```
+apiVersion: v1
+data:
+  config.conf: |-
+    apiVersion: kubeproxy.config.k8s.io/v1alpha1
+    kind: KubeProxyConfiguration
+    # ...
+    # metricsBindAddress: 127.0.0.1:10249
+    metricsBindAddress: 0.0.0.0:10249
+    # ...
+  kubeconfig.conf: |-
+    # ...
+kind: ConfigMap
+metadata:
+  labels:
+    app: kube-proxy
+  name: kube-proxy
+  namespace: kube-system
+```
