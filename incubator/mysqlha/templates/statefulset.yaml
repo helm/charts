@@ -15,6 +15,9 @@ spec:
       labels:
         app: {{ template "fullname" . }}
     spec:
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+      {{- end }}
       initContainers:
       - name: clone-mysql
         image: {{ .Values.xtraBackupImage }}
