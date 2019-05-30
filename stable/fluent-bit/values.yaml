@@ -1,4 +1,4 @@
-# Minikube stores its logs in a separate directory.
+  # Minikube stores its logs in a separate directory.
 # enable if started in minikube.
 on_minikube: false
 
@@ -19,6 +19,8 @@ fullnameOverride: ""
 metrics:
   enabled: false
   service:
+    # labels:
+    #   key: value
     annotations: {}
     # In order for Prometheus to consume metrics automatically use the following annotations:
     # prometheus.io/path: "/api/v1/metrics/prometheus"
