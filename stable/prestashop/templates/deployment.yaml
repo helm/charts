@@ -157,9 +157,6 @@ spec:
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
-        - mountPath: /bitnami/apache
-          name: prestashop-data
-          subPath: apache
         - mountPath: /bitnami/prestashop
           name: prestashop-data
           subPath: prestashop
