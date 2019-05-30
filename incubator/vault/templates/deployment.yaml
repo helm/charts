@@ -183,6 +183,7 @@ spec:
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
       {{- end }}
+      serviceAccountName: {{ template "vault.serviceAccountName" . }}
       volumes:
         - name: vault-config
           configMap:
