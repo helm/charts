@@ -241,6 +241,8 @@ PVC are shared properly between your pods:
 
 To share a PV with multiple Pods, the PV needs to have accessMode 'ReadOnlyMany' or 'ReadWriteMany'.
 
+Since you're unlikely to be using init-container with this configuration, you'll need to mount a file to /requirements.txt to get additional Python modules for your DAGs to be installed on container start. Use the extraConfigMapMounts configuration option for this.
+
 ### Use init-container
 
 If you enable set `dags.init_container.enabled=true`, the pods will try upon startup to fetch the
@@ -281,6 +283,17 @@ Otherwise, a new volume will be created.
 Note that it is also possible to persist logs by mounting a `PersistentVolume` to the log directory (`/usr/local/airflow/logs` by default) using `airflow.extraVolumes` and `airflow.extraVolumeMounts`. 
 
 Refer to the `Mount a Shared Persistent Volume` section above for details on using persistent volumes.
+
+## Using one volume for both logs and DAGs
+
+You may want to store DAGs and logs on the same volume and configure Airflow to use subdirectories for them. One reason is that mounting the same volume multiple times with different subPaths can cause problems in Kubernetes, e.g. one of the mounts gets stuck during container initialisation.
+
+Here's an approach that achieves this:
+
+- Configure the `extraVolume` and `extraVolumeMount` arrays to put the (e.g. AWS EFS) volume at /usr/local/airflow/efs
+- Configure `persistence.enabled` and `logsPersistence.enabled` to be false
+- Configure `dags.path` to be /usr/local/airflow/efs/dags
+- Configure `logs.path` to be /usr/local/airflow/efs/logs
 
 ## Service monitor
 
@@ -348,11 +361,13 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `ingress.flower.tls.secretName`          | name of the secret containing the TLS certificate & key | ``                        |
 | `persistence.enabled`                    | enable persistence storage for DAGs                     | `false`                   |
 | `persistence.existingClaim`              | if using an existing claim, specify the name here       | `nil`                     |
+| `persistence.subPath`                    | (optional) relative path on the volume to use for DAGs  | (undefined)               |
 | `persistence.storageClass`               | Persistent Volume Storage Class                         | (undefined)               |
 | `persistence.accessMode`                 | PVC access mode                                         | `ReadWriteOnce`           |
 | `persistence.size`                       | Persistant storage size request                         | `1Gi`                     |
 | `logsPersistence.enabled`                | enable persistent storage for logs                      | `false`                   |
 | `logsPersistence.existingClaim`          | if using an existing claim, specify the name here       | `nil`                     |
+| `logsPersistence.subPath`                | (optional) relative path on the volume to use for logs  | (undefined)               |
 | `logsPersistence.storageClass`           | Persistent Volume Storage Class                         | (undefined)               |
 | `logsPersistence.accessMode`             | PVC access mode                                         | `ReadWriteOnce`           |
 | `logsPersistence.size`                   | Persistant storage size request                         | `1Gi`                     |

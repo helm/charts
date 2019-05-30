@@ -365,6 +365,8 @@ persistence:
   ##
   ## Existing claim to use
   # existingClaim: nil
+  ## Existing claim's subPath to use, e.g. "dags" (optional)
+  # subPath: ""
   ##
   ## Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
@@ -387,6 +389,8 @@ logsPersistence:
   ##
   ## Existing claim to use
   # existingClaim: nil
+  ## Existing claim's subPath to use, e.g. "logs" (optional)
+  # subPath: ""
   ##
   ## Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
