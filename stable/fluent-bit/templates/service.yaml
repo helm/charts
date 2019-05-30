@@ -12,6 +12,11 @@ metadata:
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
+  {{- if .Values.metrics.service }}
+  {{- range $key, $value := .Values.metrics.service.labels }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
+  {{- end }}
 spec:
   type: {{ .Values.metrics.service.type}}
   sessionAffinity: None
