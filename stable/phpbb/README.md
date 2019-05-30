@@ -93,9 +93,6 @@ The following table lists the configurable parameters of the phpBB chart and the
 | `service.nodePorts.https`                 | Kubernetes https node port                  | `""`                                                    |
 | `service.loadBalancerIP`                 | LoadBalancer service IP                  | `""`                                                    |
 | `persistence.enabled`             | Enable persistence using PVC          | `true`                                                  |
-| `persistence.apache.storageClass` | PVC Storage Class for Apache volume   | `nil` (uses alpha storage class annotation)             |
-| `persistence.apache.accessMode`   | PVC Access Mode for Apache volume     | `ReadWriteOnce`                                         |
-| `persistence.apache.size`         | PVC Storage Request for Apache volume | `1Gi`                                                   |
 | `persistence.phpbb.storageClass`  | PVC Storage Class for phpBB volume    | `nil` (uses alpha storage class annotation)             |
 | `persistence.phpbb.accessMode`    | PVC Access Mode for phpBB volume      | `ReadWriteOnce`                                         |
 | `persistence.phpbb.size`          | PVC Storage Request for phpBB volume  | `8Gi`                                                   |
@@ -138,7 +135,7 @@ Bitnami will release a new chart updating its containers if a new version of the
 
 ## Persistence
 
-The [Bitnami phpBB](https://github.com/bitnami/bitnami-docker-phpbb) image stores the phpBB data and configurations at the `/bitnami/phpbb` and `/bitnami/apache` paths of the container.
+The [Bitnami phpBB](https://github.com/bitnami/bitnami-docker-phpbb) image stores the phpBB data and configurations at the `/bitnami/phpbb` path of the container.
 
 Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
 See the [Configuration](#configuration) section to configure the PVC or to disable persistence.
