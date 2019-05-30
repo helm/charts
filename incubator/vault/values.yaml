@@ -239,3 +239,7 @@ vault:
       #   bucket: ""
       #   # Use a custom secret to mount this file.
       #   credentials_file: ""
+
+rbac:
+   ## Enable RBAC
+  enabled: false
