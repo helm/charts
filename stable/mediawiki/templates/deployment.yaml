@@ -140,9 +140,6 @@ spec:
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
-        - mountPath: /bitnami/apache
-          name: mediawiki-data
-          subPath: apache
         - mountPath: /bitnami/mediawiki
           name: mediawiki-data
           subPath: mediawiki
