@@ -124,8 +124,6 @@ spec:
         volumeMounts:
         - name: opencart-data
           mountPath: /bitnami/opencart
-        - name: apache-data
-          mountPath: /bitnami/apache
 {{- if .Values.metrics.enabled }}
       - name: metrics
         image: {{ template "opencart.metrics.image" . }}
@@ -154,13 +152,6 @@ spec:
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
           claimName: {{ template "opencart.fullname" . }}-opencart
-      {{- else }}
-        emptyDir: {}
-      {{- end }}
-      - name: apache-data
-      {{- if .Values.persistence.enabled }}
-        persistentVolumeClaim:
-          claimName: {{ template "opencart.fullname" . }}-apache
       {{- else }}
         emptyDir: {}
       {{- end }}
