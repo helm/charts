@@ -29,6 +29,8 @@ data:
   AIRFLOW__CELERY__WORKER_CONCURRENCY: "{{ .Values.workers.celery.instances }}"
   AIRFLOW__CORE__DAGS_FOLDER: "{{ .Values.dags.path }}"
   AIRFLOW__CORE__BASE_LOG_FOLDER: "{{ .Values.logs.path }}"
+  AIRFLOW__CORE__DAG_PROCESSOR_MANAGER_LOG_LOCATION: "{{ printf "%s/%s" .Values.logs.path "dag_processor_manager/dag_processor_manager.log" }}"
+  AIRFLOW__SCHEDULER__CHILD_PROCESS_LOG_DIRECTORY: "{{ printf "%s/%s" .Values.logs.path "scheduler" }}"
   AIRFLOW__WEBSERVER__BASE_URL: "http://localhost:8080{{ .Values.ingress.web.path }}"
   # Disabling XCom pickling for forward compatibility
   AIRFLOW__CODE__ENABLE_XCOM_PICKLING: "false"
