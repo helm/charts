@@ -2,6 +2,7 @@ apiVersion: apps/v1beta2
 kind: StatefulSet
 metadata:
   name: {{ template "stolon.fullname" . }}-keeper
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "stolon.name" . }}
     chart: {{ template "stolon.chart" . }}

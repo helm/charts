@@ -2,6 +2,7 @@ apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
   name: {{ template "stolon.fullname" . }}-sentinel
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "stolon.name" . }}
     chart: {{ template "stolon.chart" . }}
