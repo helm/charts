@@ -77,9 +77,6 @@ The following table lists the configurable parameters of the DokuWiki chart and 
 | `ingress.secrets[0].certificate`     | TLS Secret Certificate                                     | `nil`                                         |
 | `ingress.secrets[0].key`             | TLS Secret Key                                             | `nil`                                         |
 | `persistence.enabled`                | Enable persistence using PVC                               | `true`                                        |
-| `persistence.apache.storageClass`    | PVC Storage Class for apache volume                        | `nil` (uses alpha storage class annotation)   |
-| `persistence.apache.accessMode`      | PVC Access Mode for apache volume                          | `ReadWriteOnce`                               |
-| `persistence.apache.size`            | PVC Storage Request for apache volume                      | `1Gi`                                         |
 | `persistence.dokuwiki.storageClass`  | PVC Storage Class for DokuWiki volume                      | `nil` (uses alpha storage class annotation)   |
 | `persistence.dokuwiki.accessMode`    | PVC Access Mode for DokuWiki volume                        | `ReadWriteOnce`                               |
 | `persistence.dokuwiki.size`          | PVC Storage Request for DokuWiki volume                    | `8Gi`                                         |
@@ -137,7 +134,7 @@ Bitnami will release a new chart updating its containers if a new version of the
 
 ## Persistence
 
-The [Bitnami DokuWiki](https://github.com/bitnami/bitnami-docker-dokuwiki) image stores the DokuWiki data and configurations at the `/bitnami/dokuwiki` and `/bitnami/apache` paths of the container.
+The [Bitnami DokuWiki](https://github.com/bitnami/bitnami-docker-dokuwiki) image stores the DokuWiki data and configurations at the `/bitnami/dokuwiki` path of the container.
 
 Persistent Volume Claims are used to keep the data across deployments. There is a [known issue](https://github.com/kubernetes/kubernetes/issues/39178) in Kubernetes Clusters with EBS in different availability zones. Ensure your cluster is configured properly to create Volumes in the same availability zone where the nodes are running. Kuberentes 1.12 solved this issue with the [Volume Binding Mode](https://kubernetes.io/docs/concepts/storage/storage-classes/#volume-binding-mode).
 
