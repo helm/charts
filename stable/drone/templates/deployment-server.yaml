@@ -102,12 +102,25 @@ spec:
         resources:
 {{ toYaml .Values.server.resources | indent 10 }}
         volumeMounts:
-          - name: data
-            mountPath: /var/lib/drone
+        {{ if eq .Values.sourceControl.provider "bitbucketServer" -}}
+        - name: bitbucket-private-key
+          mountPath: /etc/bitbucket
+          readOnly: true
+        {{ end }}
+        - name: data
+          mountPath: /var/lib/drone
 {{- with .Values.server.extraContainers }}
 {{ tpl . $ | indent 6 }}
 {{- end }}
       volumes:
+      {{ if eq .Values.sourceControl.provider "bitbucketServer" -}}
+      - name: bitbucket-private-key
+        secret:
+          secretName: {{ template "drone.sourceControlSecret" . }}
+          items:
+            - key: {{ .Values.sourceControl.bitbucketServer.privateKey }}
+              path: key.pem
+      {{ end -}}
       - name: data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
