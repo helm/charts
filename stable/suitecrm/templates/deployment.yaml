@@ -126,9 +126,6 @@ spec:
         - name: suitecrm-data
           mountPath: /bitnami/suitecrm
           subPath: suitecrm
-        - name: suitecrm-data
-          mountPath: /bitnami/apache
-          subPath: apache
 {{- if .Values.metrics.enabled }}
       - name: metrics
         image: {{ template "suitecrm.metrics.image" . }}
