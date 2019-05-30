@@ -13,7 +13,9 @@ metadata:
   {{- end }}
 spec:
   type: ClusterIP
+  {{- if not .Values.ingress.enabled }}
   clusterIP: None
+  {{- end }}
   ports:
     - port: 9571
       targetPort: http
