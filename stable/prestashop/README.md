@@ -101,7 +101,7 @@ The following table lists the configurable parameters of the PrestaShop chart an
 | `sessionAffinity`                     | Configures the session affinity                                                              | `None`                                                       |
 | `persistence.enabled`                 | Enable persistence using PVC                                                                 | `true`                                                       |
 | `persistence.storageClass`            | PVC Storage Class for PrestaShop volume                                                      | `nil` (uses alpha storage class annotation)                  |
-| `persistence.existingClaim`           | An Existing PVC name for Apache volume                                                       | `nil` (uses alpha storage class annotation)                  |
+| `persistence.existingClaim`           | An Existing PVC name for PrestaShop volume                                                   | `nil` (uses alpha storage class annotation)                  |
 | `persistence.accessMode`              | PVC Access Mode for PrestaShop volume                                                        | `ReadWriteOnce`                                              |
 | `persistence.size`                    | PVC Storage Request for PrestaShop volume                                                    | `8Gi`                                                        |
 | `resources`                           | CPU/Memory resource requests/limits                                                          | Memory: `512Mi`, CPU: `300m`                                 |
@@ -167,7 +167,7 @@ Bitnami will release a new chart updating its containers if a new version of the
 
 ## Persistence
 
-The [Bitnami PrestaShop](https://github.com/bitnami/bitnami-docker-prestashop) image stores the PrestaShop data and configurations at the `/bitnami/prestashop` and `/bitnami/apache` paths of the container.
+The [Bitnami PrestaShop](https://github.com/bitnami/bitnami-docker-prestashop) image stores the PrestaShop data and configurations at the `/bitnami/prestashop` path of the container.
 
 Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
 See the [Configuration](#configuration) section to configure the PVC or to disable persistence.
