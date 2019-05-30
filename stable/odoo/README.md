@@ -69,6 +69,11 @@ The following table lists the configurable parameters of the Odoo chart and thei
 | `service.loadBalancer`                | Kubernetes LoadBalancerIP to request                        | `nil`                                          |
 | `service.externalTrafficPolicy`       | Enable client source IP preservation                        | `Cluster`                                      |
 | `service.nodePort`                    | Kubernetes http node port                                   | `""`                                           |
+| `externalDatabase.host`          | Host of the external database              | `localhost`                                             |
+| `externalDatabase.user`          | Existing username in the external db       | `postgres`                                          |
+| `externalDatabase.password`      | Password for the above username            | `nil`                                                   |
+| `externalDatabase.database`      | Name of the existing database              | `bitnami_odoo`                                     |
+| `externalDatabase.port`          | Database port number                       | `5432`                                                  |
 | `ingress.enabled`                     | Enable ingress controller resource                          | `false`                                        |
 | `ingress.hosts[0].name`               | Hostname to your Odoo installation                          | `odoo.local`                                   |
 | `ingress.hosts[0].path`               | Path within the url structure                               | `/`                                            |
@@ -85,6 +90,7 @@ The following table lists the configurable parameters of the Odoo chart and thei
 | `persistence.storageClass`            | PVC Storage Class                                           | `nil` (uses alpha storage class annotation)    |
 | `persistence.accessMode`              | PVC Access Mode                                             | `ReadWriteOnce`                                |
 | `persistence.size`                    | PVC Storage Request                                         | `8Gi`                                          |
+| `postgresql.enabled`                | Deploy PostgreSQL container(s)                | `true`                                                  |
 | `postgresql.postgresqlPassword`       | PostgreSQL password                                         | `nil`                                          |
 | `postgresql.persistence.enabled`      | Enable PostgreSQL persistence using PVC                     | `true`                                         |
 | `postgresql.persistence.storageClass` | PVC Storage Class for PostgreSQL volume                     | `nil` (uses alpha storage class annotation)    |
@@ -129,6 +135,17 @@ The [Bitnami Odoo](https://github.com/bitnami/bitnami-docker-odoo) image stores 
 
 Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
 See the [Configuration](#configuration) section to configure the PVC or to disable persistence.
+
+## Using an external database
+
+Sometimes you may want to have Odoo connect to an external database rather than installing one inside your cluster, e.g. to use a managed database service, or use run a single database server for all your applications. To do this, the chart allows you to specify credentials for an external database under the [`externalDatabase` parameter](#configuration). You should also disable the PostgreSQL installation with the `postgresql.enabled` option. For example:
+
+```console
+$ helm install stable/odoo \
+    --set postgresql.enabled=false,externalDatabase.host=myexternalhost,externalDatabase.user=myuser,externalDatabase.password=mypassword,externalDatabase.port=3306
+```
+
+Note also if you disable PostgreSQL per above you MUST supply values for the `externalDatabase` connection.
 
 ## Upgrading
 
