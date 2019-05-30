@@ -1,0 +1,91 @@
+apiVersion: apps/v1beta2
+kind: StatefulSet
+metadata:
+  name: {{ include "kafka-pubsub-emulator.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "kafka-pubsub-emulator.name" . }}
+    helm.sh/chart: {{ include "kafka-pubsub-emulator.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "kafka-pubsub-emulator.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "kafka-pubsub-emulator.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      initContainers:
+        - name: config-init
+          image: busybox
+          command:
+            - sh
+            - '-c'
+            - |
+              set -xe
+
+              DESTINATION=/run/pubsub/pubsub.json
+              mkdir -p $(dirname ${DESTINATION})
+
+              if [ ! -f ${DESTINATION} ] ; then
+              cat << 'EOF' > ${DESTINATION}
+{{ toPrettyJson .Values.pubsub | indent 14 }}
+              EOF
+              fi
+
+              cat ${DESTINATION}
+          volumeMounts:
+            - name: persistent-config-volume
+              mountPath: /run/pubsub
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args: ["-c", "/etc/config/config.json", "-p", "/run/pubsub/pubsub.json"]
+          volumeMounts:
+            - name: persistent-config-volume
+              mountPath: /run/pubsub
+            - name: config-volume
+              mountPath: /etc/config
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          {{- with .Values.livenessProbe }}
+          livenessProbe:
+{{ toYaml . | indent 12 }}
+          {{- end}}
+          {{- with .Values.readinessProbe }}
+          readinessProbe:
+{{ toYaml . | indent 12 }}
+          {{- end}}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ include "kafka-pubsub-emulator.fullname" . }}
+  volumeClaimTemplates:
+    - metadata:
+        name: persistent-config-volume
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 1Gi

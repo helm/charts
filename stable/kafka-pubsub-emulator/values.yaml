@@ -1,0 +1,92 @@
+# Default values for kafka-pubsub-emulator.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: us.gcr.io/kafka-pubsub-emulator/kafka-pubsub-emulator
+  tag: 0.1.0
+  pullPolicy: IfNotPresent
+
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  type: LoadBalancer
+  port: 80
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  path: /
+  hosts:
+    - emulator.local
+  tls: []
+  #  - secretName: emulator-tls
+  #    hosts:
+  #      - emulator.local
+
+livenessProbe:
+  tcpSocket:
+    port: http
+  initialDelaySeconds: 5
+
+readinessProbe:
+  tcpSocket:
+    port: http
+  initialDelaySeconds: 5
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+#
+# Kafka Pub/Sub Emulator Server configuration
+#
+server:
+  port: 8080
+  kafka:
+    bootstrapServers: []
+    producerExecutors: 4
+    producerProperties:
+      linger.ms: 200
+      batch.size: 10000
+      buffer.memory: 32000000
+    consumerProperties:
+      max.poll.records: 1000
+    consumersPerSubscription: 4
+
+#
+# Kafka Pub/Sub Emulator Project layout configuration
+#
+# NOTE: this configuration is written to a pubsub.json file in the persistentvolume when the
+# emulator pod is started. If an existing configuration file is present in the persistentvolume
+# it will *not* be overwritten. This is done in order to not lose the changed written at runtime
+# by the emulator.
+#
+pubsub:
+  projects:
+    - name: default
+      topics:
+        - name: topic1
+          kafkaTopic: topic1
+          subscriptions:
+            - name: subscription-topic1
+              ackDeadlineSeconds: 10
