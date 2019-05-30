@@ -200,6 +200,7 @@ ingressController:
     timeoutSeconds: 5
 
   installCRDs: true
+  cleanUpCRDs: false
 
   rbac:
     # Specifies whether RBAC resources should be created
@@ -213,3 +214,13 @@ ingressController:
     name:
 
   ingressClass: kong
+
+  metrics:
+    # Enables Kong Prometheus plugin as KongPlugin object
+    enabled: false
+    serviceMonitor:
+      # Specifies whether ServiceMonitor for Prometheus operator should be created
+      create: false
+      # interval: 10s
+      # Specifies namespace, where ServiceMonitor should be installed
+      # namespace: monitoring

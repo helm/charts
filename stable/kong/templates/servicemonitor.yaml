@@ -1,0 +1,33 @@
+{{- if and ( .Capabilities.APIVersions.Has "monitoring.coreos.com/v1" ) .Values.ingressController.enabled .Values.ingressController.metrics.serviceMonitor.create }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ template "kong.fullname" . }}
+  {{- if .Values.ingressController.metrics.serviceMonitor.namespace }}
+  namespace: {{ .Values.ingressController.metrics.serviceMonitor.namespace }}
+  {{- end }}
+  labels:
+    app: {{ template "kong.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  endpoints:
+  - port: kong-admin
+    {{- if .Values.ingressController.metrics.serviceMonitor.interval }}
+    interval: {{ .Values.ingressController.metrics.serviceMonitor.interval }}
+    {{- end }}
+    {{- if .Values.admin.useTLS }}
+    scheme: https
+    tlsConfig:
+      insecureSkipVerify: true
+    {{- end }}
+  jobLabel: {{ .Release.Name }}
+  namespaceSelector:
+    matchNames:
+    - {{ .Release.Namespace }}
+  selector:
+    matchLabels:
+      app: {{ template "kong.name" . }}
+      release: {{ .Release.Name }}
+{{- end }}

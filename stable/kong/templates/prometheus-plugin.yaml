@@ -1,0 +1,13 @@
+{{- if and .Values.ingressController.enabled .Values.ingressController.metrics.enabled }}
+apiVersion: configuration.konghq.com/v1
+kind: KongPlugin
+metadata:
+  name: prometheus
+  labels:
+    app: {{ template "kong.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+    global: "true"
+plugin: prometheus
+{{- end }}

@@ -1,3 +1,4 @@
 # CI test for Ingress controller basic installation
 ingressController:
   enabled: true
+  cleanUpCRDs: true

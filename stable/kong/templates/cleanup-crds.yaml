@@ -1,0 +1,40 @@
+{{- if .Values.ingressController.cleanUpCRDs }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "kong.fullname" . }}-cleanup-crds
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    "helm.sh/hook": pre-delete
+    "helm.sh/hook-weight": "3"
+    "helm.sh/hook-delete-policy": hook-succeeded
+  labels:
+    app: {{ template "kong.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  template:
+    metadata:
+      name: kong-cleanup-crds
+    spec:
+      serviceAccountName: {{ include "kong.serviceAccountName" . }}
+      containers:
+        - name: kubectl
+          image: docker.io/bitnami/kubectl:1.14.1
+          imagePullPolicy: IfNotPresent
+          command:
+            - /bin/sh
+            - -c
+            - >
+              kubectl delete kongconsumers --all;
+              kubectl delete kongcredentials --all;
+              kubectl delete kongingresses --all;
+              kubectl delete kongplugins --all;
+              sleep 10;
+              kubectl delete crd kongconsumers.configuration.konghq.com;
+              kubectl delete crd kongcredentials.configuration.konghq.com;
+              kubectl delete crd kongingresses.configuration.konghq.com;
+              kubectl delete crd kongplugins.configuration.konghq.com;
+      restartPolicy: OnFailure
+{{- end }}

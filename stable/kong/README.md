@@ -105,12 +105,12 @@ the value provided by you as opposed to constructing a listen variable
 from fields like `proxy.http.containerPort` and `proxy.http.enabled`. This allows
 you to be more prescriptive when defining listen directives.
 
-**Note:** Overriding `env.proxy_listen` and `env.admin_listen` will potentially cause 
-`admin.containerPort`, `proxy.http.containerPort` and `proxy.tls.containerPort` to become out of sync, 
+**Note:** Overriding `env.proxy_listen` and `env.admin_listen` will potentially cause
+`admin.containerPort`, `proxy.http.containerPort` and `proxy.tls.containerPort` to become out of sync,
 and therefore must be updated accordingly.
 
-I.E. updatating to `env.proxy_listen: 0.0.0.0:4444, 0.0.0.0:4443 ssl` will need 
-`proxy.http.containerPort: 4444` and `proxy.tls.containerPort: 4443` to be set in order 
+I.E. updatating to `env.proxy_listen: 0.0.0.0:4444, 0.0.0.0:4443 ssl` will need
+`proxy.http.containerPort: 4444` and `proxy.tls.containerPort: 4443` to be set in order
 for the service definition to work properly.
 
 ### Kong-specific parameters
@@ -157,7 +157,7 @@ kong:
             key: kong
             name: postgres
 ```
- 
+
 
 For complete list of Kong configurations please check https://getkong.org/docs/latest/configuration/.
 
@@ -218,12 +218,39 @@ You can can learn about kong ingress custom resource definitions here:
 
 - [https://github.com/Kong/kubernetes-ingress-controller/blob/master/docs/custom-resources.md]()
 
-| Parameter        | Description                                 | Default                                                                      |
-| ---------------  | -----------------------------------------   | ---------------------------------------------------------------------------- |
-| enabled          | Deploy the ingress controller, rbac and crd | false                                                                        |
-| replicaCount     | Number of desired ingress controllers       | 1                                                                            |
-| image.repository | Docker image with the ingress controller    | kong-docker-kubernetes-ingress-controller.bintray.io/kong-ingress-controller |
-| image.tag        | Version of the ingress controller           | 0.2.0                                                                        |
-| readinessProbe   | Kong ingress controllers readiness probe    |                                                                              |
-| livenessProbe    | Kong ingress controllers liveness probe     |                                                                              |
-| ingressClass     | The ingress-class value for controller      | nginx
+#### Expose metrics in Prometheus format
+
+Kong can expose metrics in Prometheus format if prometheus plugin is enabled.
+Presence of Kong Ingress Controller allows you to enable this plugin, using
+KongPlugin custom resource during the chart installation:
+
+```bash
+helm install stable/kong --set ingressController.enabled=true \
+  --set ingressController.metrics.enabled=true --name kong --namespace kong
+```
+
+Optionaly you can install a ServiceMonitor for Prometheus Operator:
+
+```bash
+helm install stable/kong --set ingressController.enabled=true \
+  --set ingressController.metrics.enabled=true \
+  --set ingressController.metrics.serviceMonitor.create=true \
+  --name kong --namespace kong
+```
+
+
+| Parameter                        | Description                                                                            | Default                                                                      |
+| ---------------                  | ------------------------------------------                                             | ---------------------------------------------------------------------------- |
+| enabled                          | Deploy the ingress controller, rbac and crd                                            | false                                                                        |
+| replicaCount                     | Number of desired ingress controllers                                                  | 1                                                                            |
+| image.repository                 | Docker image with the ingress controller                                               | kong-docker-kubernetes-ingress-controller.bintray.io/kong-ingress-controller |
+| image.tag                        | Version of the ingress controller                                                      | 0.4.0                                                                        |
+| readinessProbe                   | Kong ingress controllers readiness probe                                               |                                                                              |
+| livenessProbe                    | Kong ingress controllers liveness probe                                                |                                                                              |
+| ingressClass                     | The ingress-class value for controller                                                 | kong                                                                         |
+| installCRDs                      | Install Kong ingress controllers custom resource definitions                           | true                                                                         |
+| cleanUpCRDs                      | Delete CRDs with the release (useful for CI scenarios)                                 | false                                                                        |
+| metrics.enabled                  | Enable Kong Prometheus plugin as KongPlugin (requires ingressController to be enabled) | false                                                                        |
+| metrics.serviceMonitor.create    | Create ServiceMonitor for Prometheus Operator                                          | false                                                                        |
+| metrics.serviceMonitor.interval  | Scrapping interval                                                                     | 10s                                                                          |
+| metrics.serviceMonitor.namespace | Where to create ServiceMonitor                                                         |                                                                              |
