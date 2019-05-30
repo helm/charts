@@ -7,8 +7,14 @@ keywords:
 - monitoring
 - alerting
 - metric
+- ICP
+- Commercial
+- Operations
+- amd64
 home: https://www.datadoghq.com
 icon: https://datadog-live.imgix.net/img/dd_logo_70x75.png
+tillerVersion: ">=2.9.1"
+kubeVersion: ">=1.11.1"
 sources:
 - https://app.datadoghq.com/account/settings#agent/kubernetes
 - https://github.com/DataDog/datadog-agent

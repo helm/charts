@@ -1,6 +1,6 @@
 {{- if .Values.daemonset.enabled }}
 {{- if (or (.Values.datadog.apiKeyExistingSecret) (.Values.datadog.apiKey)) }}
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: {{ template "datadog.fullname" . }}
@@ -10,10 +10,18 @@ metadata:
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
 spec:
+  selector:
+    matchLabels:
+      app: "{{ template "datadog.fullname" . }}"
+      release: {{ .Release.Name | quote }}
+      heritage: {{ .Release.Service | quote }}
   template:
     metadata:
       labels:
         app: {{ template "datadog.fullname" . }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+        release: {{ .Release.Name | quote }}
+        heritage: {{ .Release.Service | quote }}
         {{- if .Values.daemonset.podLabels }}
 {{ toYaml .Values.daemonset.podLabels | indent 8 }}
         {{- end }}
@@ -22,6 +30,9 @@ spec:
         checksum/autoconf-config: {{ tpl (toYaml .Values.datadog.autoconf) . | sha256sum }}
         checksum/confd-config: {{ tpl (toYaml .Values.datadog.confd) . | sha256sum }}
         checksum/checksd-config: {{ tpl (toYaml .Values.datadog.checksd) . | sha256sum }}
+        productID: {{ template "datadog.fullname" . }}
+        productName: {{ template "datadog.fullname" . }}
+        productVersion: "1.30.5"
       {{- if .Values.daemonset.podAnnotations }}
 {{ toYaml .Values.daemonset.podAnnotations | indent 8 }}
       {{- end }}
