@@ -61,6 +61,7 @@ The following table lists the configurable parameters of the apm-server chart an
 | `ingress.annotations`               | Kubernetes ingress annotations           | None                                |
 | `ingress.labels`                    | Kubernetes service labels                | None                                |
 | `ingress.hosts`                     | List of ingress accepted hostnames       | apm-server-ingress.example.com      |
+| `ingress.tls`                       | Ingress TLS configuration	             | `[]`                                |
 | `rbac.create`                       | If true, create & use RBAC resources | `true`                                  |
 | `rbac.serviceAccount`               | existing ServiceAccount to use (ignored if rbac.create=true) | `default`       |
 | `config`                            | The content of the configuration file consumed by apm-server. See the [apm-server documentation](https://www.elastic.co/guide/en/beats/apm-server/current/apm-server-reference-yml.html) for full details | |
