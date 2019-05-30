@@ -72,6 +72,7 @@ serviceMonitor:
   interval: 30s
   scrapeTimeout: 10s
   namespace:
-  additionalLabels: {}
+  additionalLabels:
+    release: "prometheus-operator"
 
 tolerations: []
