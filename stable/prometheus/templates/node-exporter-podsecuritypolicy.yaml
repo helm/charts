@@ -4,6 +4,7 @@ apiVersion: extensions/v1beta1
 kind: PodSecurityPolicy
 metadata:
   name: {{ template "prometheus.nodeExporter.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "prometheus.nodeExporter.labels" . | nindent 4 }}
   annotations:

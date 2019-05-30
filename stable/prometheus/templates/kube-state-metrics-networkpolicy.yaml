@@ -3,6 +3,7 @@ apiVersion: {{ template "prometheus.networkPolicy.apiVersion" . }}
 kind: NetworkPolicy
 metadata:
   name: {{ template "prometheus.kubeStateMetrics.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "prometheus.kubeStateMetrics.labels" . | nindent 4 }}
 spec:

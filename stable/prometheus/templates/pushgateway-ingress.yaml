@@ -12,6 +12,7 @@ metadata:
   labels:
     {{- include "prometheus.pushgateway.labels" . | nindent 4 }}
   name: {{ template "prometheus.pushgateway.fullname" . }}
+  namespace: {{ .Release.Namespace }}
 spec:
   rules:
   {{- range .Values.pushgateway.ingress.hosts }}

@@ -5,6 +5,7 @@ metadata:
   labels:
     {{- include "prometheus.alertmanager.labels" . | nindent 4 }}
   name: {{ template "prometheus.alertmanager.fullname" . }}
+  namespace: {{ .Release.Namespace }}
 spec:
   selector:
     matchLabels:

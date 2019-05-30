@@ -15,6 +15,7 @@ metadata:
     {{ $key }}: {{ $value }}
 {{- end }}
   name: {{ template "prometheus.server.fullname" . }}
+  namespace: {{ .Release.Namespace }}
 spec:
   rules:
   {{- range .Values.server.ingress.hosts }}
