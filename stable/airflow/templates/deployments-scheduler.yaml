@@ -95,6 +95,7 @@ spec:
           {{- if .Values.persistence.enabled }}
             - name: dags-data
               mountPath: {{ .Values.dags.path }}
+              subPath: {{ .Values.persistence.subPath | default "" }}
           {{- else if .Values.dags.initContainer.enabled }}
             - name: dags-data
               mountPath: {{ .Values.dags.path }}
@@ -102,6 +103,7 @@ spec:
           {{- if .Values.logsPersistence.enabled }}
             - name: logs-data
               mountPath: {{ .Values.logs.path }}
+              subPath: {{ .Values.logsPersistence.subPath | default "" }}
           {{- end }}
           {{- if .Values.airflow.connections }}
             - name: connections

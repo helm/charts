@@ -28,6 +28,7 @@ data:
   AIRFLOW__CELERY__FLOWER_URL_PREFIX: "{{ .Values.ingress.flower.path }}"
   AIRFLOW__CELERY__WORKER_CONCURRENCY: "{{ .Values.workers.celery.instances }}"
   AIRFLOW__CORE__DAGS_FOLDER: "{{ .Values.dags.path }}"
+  AIRFLOW__CORE__BASE_LOG_FOLDER: "{{ .Values.logs.path }}"
   AIRFLOW__WEBSERVER__BASE_URL: "http://localhost:8080{{ .Values.ingress.web.path }}"
   # Disabling XCom pickling for forward compatibility
   AIRFLOW__CODE__ENABLE_XCOM_PICKLING: "false"
