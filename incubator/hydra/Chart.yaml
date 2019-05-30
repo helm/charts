@@ -1,7 +1,7 @@
 appVersion: v1.0.0
 description: A security-first open source OAuth2 and OpenID Connect server for existing and new enterprise infrastructures.
 name: hydra
-version: 0.1.0
+version: 0.1.2
 keywords:
 - hydra
 - authentication

@@ -19,7 +19,11 @@ spec:
   selector:
     app.kubernetes.io/name: {{ include "hydra.name" . }}
   ports:
-    - name: service
-      port: {{ .Values.service.port }}
-      targetPort: 4444
+    - name: public
+      port: {{ .Values.service.publicPort }}
+      targetPort: {{ .Values.service.publicPort }}
+      protocol: TCP
+    - name: admin
+      port: {{ .Values.service.adminPort }}
+      targetPort: {{ .Values.service.adminPort }}
       protocol: TCP

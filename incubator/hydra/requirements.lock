@@ -2,5 +2,8 @@ dependencies:
 - name: postgresql
   repository: https://kubernetes-charts.storage.googleapis.com/
   version: 0.6.0
-digest: sha256:9a4552be015a72bbf3eb8c4e7ec4ac700d37ee06bd7ba3b7161d2cf4241f3d8e
-generated: 2019-04-05T11:26:58.667115696+01:00
+- name: cockroachdb
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  version: 2.1.8
+digest: sha256:6b623f8f4fd194eafcda9018bfec07d5495749cc3c1b2ad08fdf9170c98bce30
+generated: 2019-05-30T14:36:11.655517712+01:00

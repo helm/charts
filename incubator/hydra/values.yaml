@@ -1,6 +1,6 @@
 image: oryd/hydra
 imageTag: v1.0.0
-imagePullPolicy: IfNotPresent
+imagePullPolicy: Always
 
 # More options here: https://www.ory.sh/docs/hydra/configuration
 config:
@@ -21,11 +21,11 @@ config:
       # The issuer is used for identification in all OAuth2 tokens. Should be the public url of the server.
       issuer: https://localhost:4444/
       public: https://localhost:4444/
-    login: https://my-login.app/login
-    # The URL of the consent endpoint.
-    consent: https://my-consent.app/consent
-    error: https://my-error.app/error
-    post_logout_redirect: https://my-example.app/logout-successful
+    login: https://my-app/login
+    consent: https://my-app/consent
+    error: https://my-app/error
+    logout: https://my-app/logout
+    post_logout_redirect: https://my-app/logout-successful
 
   oauth2:
     ttl:
@@ -55,26 +55,22 @@ environment:
   inline: {}
   secrets: []
 
-# Configuration values for the postgresql dependency.
-# ref: https://github.com/kubernetes/charts/blob/master/stable/postgresql/README.md
 postgresql:
   enabled: false
-
   imageTag: "9.6"
-  cpu: "250m"
-  memory: "256Mi"
-
   postgresUser: "hydra"
-  # DO NOT USE IN PRODUCTION
   postgresPassword: "hydra"
   postgresDatabase: "hydra"
-
   persistence:
     size: "10Gi"
 
+cockroachdb:
+  enabled: false
+
 service:
   type: ClusterIP
-  port: 4444
+  publicPort: 4444
+  adminPort: 4445
   annotations: {}
 
 ingress:

@@ -43,8 +43,10 @@ spec:
         - all
         - --config=/hydra/config.yaml
         ports:
-        - name: service
-          containerPort: 4444
+        - name: public
+          containerPort: {{ .Values.service.publicPort }}
+        - name: admin
+          containerPort: {{ .Values.service.adminPort }}
         env:
 {{ include "database" . | indent 8 }}
 {{ include "settings" . | indent 8 }}
@@ -54,7 +56,7 @@ spec:
         livenessProbe:
           httpGet:
             path: /health/alive
-            port: 4444
+            port: {{ .Values.service.publicPort }}
           initialDelaySeconds: 3
           periodSeconds: 3
         resources:

@@ -3,3 +3,7 @@ dependencies:
   version: 0.6.0
   repository: https://kubernetes-charts.storage.googleapis.com/
   condition: postgresql.enabled
+- name: cockroachdb
+  version: 2.1.8
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  condition: cockroachdb.enabled
