@@ -51,6 +51,9 @@ spec:
             value: {{ default .Release.Namespace .Values.server.kubernetes.namespace }}
           - name: DRONE_KUBERNETES_SERVICE_ACCOUNT
             value: {{ template "drone.pipelineServiceAccount" . }}
+        {{- else }}
+          - name: DRONE_AGENTS_ENABLED
+            value: "true"
         {{- end }}
           - name: DRONE_GIT_ALWAYS_AUTH
             value: {{ .Values.server.alwaysAuth | quote }}
@@ -110,7 +113,7 @@ spec:
         - name: data
           mountPath: /var/lib/drone
 {{- with .Values.server.extraContainers }}
-{{ tpl . $ | indent 6 }}
+{{ tpl . $ | indent 10 }}
 {{- end }}
       volumes:
       {{ if eq .Values.sourceControl.provider "bitbucketServer" -}}
