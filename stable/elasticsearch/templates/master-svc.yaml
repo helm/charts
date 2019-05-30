@@ -8,6 +8,7 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
   name: {{ template "elasticsearch.fullname" . }}-discovery
+  namespace: {{ .Release.Namespace }}
 spec:
   clusterIP: None
   ports:

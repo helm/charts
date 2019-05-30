@@ -8,6 +8,7 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
   name: {{ template "elasticsearch.client.fullname" . }}
+  namespace: {{ .Release.Namespace }}
 {{- if .Values.client.serviceAnnotations }}
   annotations:
 {{ toYaml .Values.client.serviceAnnotations | indent 4 }}

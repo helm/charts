@@ -3,6 +3,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: {{ template "elasticsearch.fullname" . }}-bootstrap
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "elasticsearch.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}

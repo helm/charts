@@ -8,6 +8,7 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
   name: {{ template "elasticsearch.client.fullname" . }}
+  namespace: {{ .Release.Namespace }}
 spec:
   replicas: {{ .Values.client.replicas }}
   template:

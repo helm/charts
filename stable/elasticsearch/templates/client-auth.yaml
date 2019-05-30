@@ -4,6 +4,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: '{{ include "elasticsearch.client.fullname" . }}-auth'
+  namespace: {{ .Release.Namespace }}
 type: Opaque
 data:
   auth: {{ printf "%s:{PLAIN}%s\n" .Values.client.ingress.user .Values.client.ingress.password | b64enc | quote }}

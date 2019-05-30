@@ -9,6 +9,7 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
   name: {{ template "elasticsearch.data.fullname" . }}
+  namespace: {{ .Release.Namespace }}
 spec:
 {{- if .Values.data.podDisruptionBudget.minAvailable }}
   minAvailable: {{ .Values.data.podDisruptionBudget.minAvailable }}
