@@ -102,6 +102,7 @@ The following table lists the configurable parameters of the drone charts and th
 | `agent.schedulerName`       | Drone **agent** alternate scheduler name                                                      | `nil`                       |
 | `agent.affinity`            | Drone **agent** scheduling preferences                                                        | `{}`                        |
 | `agent.nodeSelector`        | Drone **agent** node labels for pod assignment                                                | `{}`                        |
+| `agent.tolerations`         | Drone **agent** node taints to tolerate                                                       | `[]`                        |
 | `agent.livenessProbe` | Not currently used. | `{}` |
 | `agent.readinessProbe` | Not currently used  | `{}` |
 | `dind.enabled`              | Enable or disable **DinD**                                                                    | `true`                      |
