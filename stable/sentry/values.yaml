@@ -177,3 +177,43 @@ redis:
 config:
   configYml: ""
   sentryConfPy: ""
+
+## Prometheus Exporter / Metrics
+##
+metrics:
+  enabled: false
+  
+  ## Metrics exporter resource requests and limits
+  ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  # resources:
+  #   limits:
+  #     cpu: 100m
+  #     memory: 100Mi
+  #   requests:
+  #     cpu: 100m
+  #     memory: 100Mi
+
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  # schedulerName:
+  # Optional extra labels for pod, i.e. redis-client: "true"
+  # podLabels: []
+  service:
+    type: ClusterIP
+    labels:
+      monitor: me
+  
+  image:
+    repository: prom/statsd-exporter
+    tag: v0.10.5
+    pullPolicy: IfNotPresent
+  
+  ## Service Monitor from https://github.com/coreos/prometheus-operator
+  serviceMonitor:
+    enabled: false
+    ## Specify a namespace if needed
+    # namespace: monitoring
+    ## Selector defaults to what's used if you use the [Prometheus Operator chart](https://github.com/helm/charts/tree/master/stable/prometheus-operator)
+    selector:
+      release: prometheus-operator
