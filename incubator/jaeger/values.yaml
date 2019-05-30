@@ -6,7 +6,7 @@ provisionDataStore:
   cassandra: true
   elasticsearch: false
 
-tag: 1.11.0
+tag: 1.12.0
 
 nameOverride: ""
 fullnameOverride: ""
@@ -157,6 +157,8 @@ collector:
 
 query:
   enabled: true
+  agentSidecar:
+    enabled: true
   annotations: {}
   image: jaegertracing/jaeger-query
   pullPolicy: IfNotPresent
