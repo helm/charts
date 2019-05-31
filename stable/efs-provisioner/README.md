@@ -60,7 +60,7 @@ replicaCount: 1
 revisionHistoryLimit: 10
 image:
   repository: quay.io/external_storage/efs-provisioner
-  tag: latest
+  tag: v2.2.0-k8s1.12
   pullPolicy: IfNotPresent
 
 busyboxImage:
