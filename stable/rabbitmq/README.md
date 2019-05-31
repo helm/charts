@@ -80,6 +80,7 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `service.managerPort`                | RabbitMQ Manager port                            | `15672`                                                 |
 | `persistence.enabled`                | Use a PVC to persist data                        | `true`                                                  |
 | `service.annotations`                | service annotations as an array                  | []                                                      |
+| `schedulerName`                      | Name of the k8s service (other than default)     | `nil`                                                   |
 | `persistence.storageClass`           | Storage class of backing PVC                     | `nil` (uses alpha storage class annotation)             |
 | `persistence.existingClaim`          | RabbitMQ data Persistent Volume existing claim name, evaluated as a template |  ""          |
 | `persistence.accessMode`             | Use volume as ReadOnly or ReadWrite              | `ReadWriteOnce`                                         |
