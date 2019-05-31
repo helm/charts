@@ -228,12 +228,12 @@ datadog:
   ## ref: https://docs.datadoghq.com/agent/autodiscovery/
   #
   confd:
-    redisdb.yaml: # |-
+  #   redisdb.yaml: |-
   #     init_config:
   #     instances:
   #       - host: "name"
   #         port: "6379"
-    kubernetes_state.yaml: # |-
+  #   kubernetes_state.yaml: |-
   #     ad_identifiers:
   #       - kube-state-metrics
   #     init_config:
@@ -295,11 +295,6 @@ clusterAgent:
     tag: 1.2.0
     pullPolicy: IfNotPresent
     pullSecrets:
-
-  ## @param confd - list of objects - optional
-  ## Provide additional check configurations (static and Autodiscovery)
-  ## Each key becomes a file in /conf.d
-  confd:
 
   ## @param env - list of object - optional
   ## The cluster-agent supports many environment variables
@@ -363,7 +358,7 @@ clusterAgent:
   ## Each key will become a file in /conf.d
   ## ref: https://docs.datadoghq.com/agent/autodiscovery/
   #
-  # confd:
+  confd:
   #   mysql.yaml: |-
   #     cluster_check: true
   #     instances:
