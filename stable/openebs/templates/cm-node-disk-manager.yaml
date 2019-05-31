@@ -38,6 +38,6 @@ data:
       - key: path-filter
         name: path filter
         state: true
-        include: ""
+        include: "{{ .Values.ndm.filters.includePaths }}"
         exclude: "{{ .Values.ndm.filters.excludePaths }}"
 ---
