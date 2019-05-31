@@ -24,5 +24,6 @@ spec:
     name: statsd
   selector:
     app: {{ template "fullname" . }}
+    release: {{ .Release.Name }}
     role: metrics
 {{- end }} 

@@ -182,10 +182,27 @@ config:
 ##
 metrics:
   enabled: false
+  
+  ## Configure extra options for liveness and readiness probes
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
+  livenessProbe:
+    enabled: true
+    initialDelaySeconds: 30
+    periodSeconds: 5
+    timeoutSeconds: 2
+    failureThreshold: 3
+    successThreshold: 1
+  readinessProbe:
+    enabled: true
+    initialDelaySeconds: 30
+    periodSeconds: 5
+    timeoutSeconds: 2
+    failureThreshold: 3
+    successThreshold: 1
 
   ## Metrics exporter resource requests and limits
   ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
-  # resources:
+  resources: {}
   #   limits:
   #     cpu: 100m
   #     memory: 100Mi
@@ -201,14 +218,13 @@ metrics:
   # podLabels: []
   service:
     type: ClusterIP
-    labels:
-      monitor: me
+    labels: {}
 
   image:
     repository: prom/statsd-exporter
     tag: v0.10.5
     pullPolicy: IfNotPresent
-  
+
   # Enable this if you're using https://github.com/coreos/prometheus-operator
   serviceMonitor:
     enabled: false
