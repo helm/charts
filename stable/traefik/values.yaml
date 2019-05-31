@@ -30,7 +30,7 @@ resources: {}
 debug:
   enabled: false
 
-logLevel: error
+logLevel: info
 
 deploymentStrategy: {}
   # rollingUpdate:
