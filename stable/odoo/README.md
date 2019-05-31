@@ -144,7 +144,7 @@ See the [Configuration](#configuration) section to configure the PVC or to disab
 
 ## Using an external database
 
-Sometimes you may want to have Odoo connect to an external database rather than installing one inside your cluster, e.g. to use a managed database service, or use run a single database server for all your applications. To do this, the chart allows you to specify credentials for an external database under the [`externalDatabase` parameter](#configuration). You should also disable the PostgreSQL installation with the `postgresql.enabled` option. For example:
+Sometimes you may want to have Odoo connect to an external database rather than installing one inside your cluster, e.g. to use a managed database service, or use a single database server for all your applications. To do this, the chart allows you to specify credentials for an external database under the [`externalDatabase` parameter](#configuration). You should also disable the PostgreSQL installation with the `postgresql.enabled` option. For example:
 
 ```console
 $ helm install stable/odoo \
