@@ -306,6 +306,9 @@ metrics:
       prometheus.io/scrape: "true"
       prometheus.io/port: "9187"
     loadBalancerIP:
+  serviceMonitor:
+    enabled: false
+    additionalLabels: {}
   image:
     registry: docker.io
     repository: wrouesnel/postgres_exporter
