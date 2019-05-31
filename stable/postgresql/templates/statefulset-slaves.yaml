@@ -33,6 +33,9 @@ spec:
 {{ toYaml . | indent 8 }}
 {{- end }}
     spec:
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+      {{- end }}
 {{- include "postgresql.imagePullSecrets" . | indent 6 }}
       {{- if .Values.slave.nodeSelector }}
       nodeSelector:
