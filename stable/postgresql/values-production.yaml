@@ -247,6 +247,12 @@ master:
   tolerations: []
   podLabels: {}
   podAnnotations: {}
+  ## Additional PostgreSQL Master Volume mounts
+  ##
+  extraVolumeMounts: []
+  ## Additional PostgreSQL Master Volumes
+  ##
+  extraVolumes: []
 
 ##
 ## PostgreSQL Slave parameters
@@ -261,6 +267,12 @@ slave:
   tolerations: []
   podLabels: {}
   podAnnotations: {}
+  ## Additional PostgreSQL Slave Volume mounts
+  ##
+  extraVolumeMounts: []
+  ## Additional PostgreSQL Slave Volumes
+  ##
+  extraVolumes: []
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
