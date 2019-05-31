@@ -21,6 +21,9 @@ spec:
 {{ toYaml . | indent 8 }}
 {{- end }}
     spec:
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+      {{- end }}
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
 {{ toYaml .Values.imagePullSecrets | indent 8 }}
@@ -156,7 +159,7 @@ spec:
         image: "{{ .Values.metrics.image }}:{{ .Values.metrics.imageTag }}"
         imagePullPolicy: {{ .Values.metrics.imagePullPolicy | quote }}
         {{- if .Values.mysqlAllowEmptyPassword }}
-        command: 
+        command:
         - 'sh'
         - '-c'
         - 'DATA_SOURCE_NAME="root@(localhost:3306)/" /bin/mysqld_exporter'
