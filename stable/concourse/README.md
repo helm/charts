@@ -255,13 +255,14 @@ cd concourse-secrets
 # - web key pair,
 # - worker key pair, and
 # - the session signing token.
-#
-ssh-keygen -t rsa -f host-key  -N ''
+# Generate these keys using the concourse binary to ensure they are compatible
+
+concourse generate-key -t ssh -f ./host-key
 mv host-key.pub host-key-pub
-ssh-keygen -t rsa -f worker-key  -N ''
+concourse generate-key -t ssh -f ./worker-key
 mv worker-key.pub worker-key-pub
-ssh-keygen -t rsa -f session-signing-key  -N ''
-rm session-signing-key.pub
+concourse generate-key -t rsa -f ./session-signing-key
+
 printf "%s:%s" "concourse" "$(openssl rand -base64 24)" > local-users
 ```
 
