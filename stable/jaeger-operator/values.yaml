@@ -9,6 +9,7 @@ image:
 rbac:
   # Specifies whether RBAC resources should be created
   create: true
+  pspEnabled: false
 
 serviceAccount:
   # Specifies whether a ServiceAccount should be created
@@ -30,3 +31,5 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+securityContext: {}
