@@ -76,4 +76,11 @@ rules:
   - '*'
   verbs:
   - '*'
+{{- if .Values.rbac.pspEnabled }}
+- apiGroups: ['policy']
+  resources: ['podsecuritypolicies']
+  verbs:     ['use']
+  resourceNames:
+  - {{ include "jaeger-operator.fullname" . }}-operator-psp
+{{- end }}
 {{- end }}
