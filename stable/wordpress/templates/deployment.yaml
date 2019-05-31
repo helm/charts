@@ -29,6 +29,9 @@ spec:
 {{- end }}
 {{- end }}
     spec:
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+      {{- end }}
 {{- include "wordpress.imagePullSecrets" . | indent 6 }}
       hostAliases:
       - ip: "127.0.0.1"
