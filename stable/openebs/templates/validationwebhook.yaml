@@ -42,13 +42,6 @@ metadata:
     chart: {{ template "openebs.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-  # Helm hook annotations in order to ensure that the certs
-  # will only be generated on chart install. This will
-  # prevent overriding the certs anytime we upgrade the chart’s
-  # released instance.
-  annotations:
-    "helm.sh/hook": "pre-install"
-    "helm.sh/hook-delete-policy": "before-hook-creation"
 type: Opaque
 data:
 {{- if .Values.webhook.generateTLS }}

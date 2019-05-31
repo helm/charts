@@ -8,7 +8,6 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     component: ndm
-    openebs.io/component-name: ndm
 spec:
   updateStrategy:
     type: "RollingUpdate"
@@ -23,6 +22,8 @@ spec:
         app: {{ template "openebs.name" . }}
         release: {{ .Release.Name }}
         component: ndm
+        openebs.io/component-name: ndm
+        name: openebs-ndm
         openebs.io/version: {{ .Values.release.version }}
     spec:
       serviceAccountName: {{ template "openebs.serviceAccountName" . }}

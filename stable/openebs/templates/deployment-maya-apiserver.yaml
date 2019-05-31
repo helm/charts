@@ -9,7 +9,6 @@ metadata:
     heritage: {{ .Release.Service }}
     component: apiserver
     name: maya-apiserver
-    openebs.io/component-name: maya-apiserver
 spec:
   replicas: {{ .Values.apiserver.replicas }}
   selector:
@@ -23,6 +22,7 @@ spec:
         release: {{ .Release.Name }}
         component: apiserver
         name: maya-apiserver
+        openebs.io/component-name: maya-apiserver
         openebs.io/version: {{ .Values.release.version }}
     spec:
       serviceAccountName: {{ template "openebs.serviceAccountName" . }}
