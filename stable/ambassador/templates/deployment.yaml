@@ -80,6 +80,8 @@ spec:
             - name: stats-exporter-mapping-config
               mountPath: /statsd-exporter/
               readOnly: true
+          resources:
+            {{- toYaml .Values.prometheusExporter.resources | nindent 12 }}
         {{- end }}
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
