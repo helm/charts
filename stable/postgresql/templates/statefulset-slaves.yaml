@@ -186,6 +186,9 @@ spec:
         - name: postgresql-config
           mountPath: /bitnami/postgresql/conf
         {{- end }}
+        {{- if .Values.slave.extraVolumeMounts }}
+        {{- toYaml .Values.slave.extraVolumeMounts | nindent 8 }}
+        {{- end }}
       volumes:
       {{- if .Values.usePasswordFile }}
       - name: postgresql-password
@@ -205,6 +208,9 @@ spec:
       {{- if not .Values.persistence.enabled }}
       - name: data
         emptyDir: {}
+      {{- end }}
+      {{- if .Values.slave.extraVolumes }}
+      {{- toYaml .Values.slave.extraVolumes | nindent 6}}
       {{- end }}
   updateStrategy:
     type: {{ .Values.updateStrategy.type }}
