@@ -48,11 +48,13 @@ The following table lists the configurable parameters of the jaeger-operator cha
 | `image.pullPolicy`      | Controller container image pull policy                                                                      | `IfNotPresent`                  |
 | `rbac.create`           | All required roles and rolebindings will be created                                                         | `true`                          |
 | `serviceAccount.create` | Service account to use                                                                                      | `true`                          |
+| `rbac.pspEnabled`       | Pod security policy for pod will be created and included in rbac role                                       | `false`                         |
 | `serviceAccount.name`   | Service account name to use. If not set and create is true, a name is generated using the fullname template | ``                              |
 | `resources`             | K8s pod resorces                                                                                            | `None`                          |
 | `nodeSelector`          | Node labels for pod assignment                                                                              | `{}`                            |
 | `tolerations`           | Toleration labels for pod assignment                                                                        | `[]`                            |
 | `affinity`              | Affinity settings for pod assignment                                                                        | `{}`                            |
+| `securityContext`       | Security context for pod                                                                                    | `{}`                            |
 
 Specify each parameter you'd like to override using a YAML file as described above in the [installation](#installing-the-chart) section.
 
