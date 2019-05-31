@@ -153,8 +153,6 @@ spec:
         volumeMounts:
         - name: magento-data
           mountPath: /bitnami/magento
-        - name: apache-data
-          mountPath: /bitnami/apache
 {{- if .Values.metrics.enabled }}
       - name: metrics
         image: {{ template "magento.metrics.image" . }}
@@ -183,13 +181,6 @@ spec:
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
           claimName: {{ template "magento.fullname" . }}-magento
-      {{- else }}
-        emptyDir: {}
-      {{- end }}
-      - name: apache-data
-      {{- if .Values.persistence.enabled }}
-        persistentVolumeClaim:
-          claimName: {{ template "magento.fullname" . }}-apache
       {{- else }}
         emptyDir: {}
       {{- end }}
