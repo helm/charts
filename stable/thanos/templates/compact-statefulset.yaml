@@ -41,6 +41,9 @@ spec:
         - name: thanos-compact
           image: {{ print .image.repository ":" .image.tag | quote }}
           imagePullPolicy: {{ .image.pullPolicy | quote }}
+          ports:
+              - containerPort: 10902
+                protocol: TCP
           args:
             - compact
             {{- if .persistence.enabled }}

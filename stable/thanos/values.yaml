@@ -23,6 +23,8 @@ sidecarLayer:
 
 queryLayer:
   enabled: true
+  secret:
+    google: ''
   component: query
   labels:
     env: test
@@ -35,6 +37,7 @@ queryLayer:
     - '--cluster.disable'
 # Make a sidecar svc deployed with the same chart a target for this queryLayer. Implies --store= parameter.
   pointToLocalSidecars: true
+  pointToLocalStore: true
 # Expose Thanos query-layer query API
   queryApiService:
     enabled: true
@@ -62,7 +65,7 @@ queryLayer:
   image:
     pullPolicy: IfNotPresent
     repository: improbable/thanos
-    tag: v0.3.2
+    tag: v0.4.0
   nodeSelector:
   podAnnotations:
   priorityClassName:
@@ -154,9 +157,9 @@ compactLayer:
     - '-w'
     - '--log.level=debug'
     - '--objstore.config-file=/etc/thanos-compact/bucket.yaml'
-    - '--retention.resolution-raw=2y'
-    - '--retention.resolution-5m=182d'
-    - '--retention.resolution-1h=1y'
+    - '--retention.resolution-raw=60d'
+    - '--retention.resolution-5m=1y'
+    - '--retention.resolution-1h=3y'
 ## If you don't want to use PVC - use extaEmptyDirMounts and uncomment this with new value
 ##    - --data-dir=
   extraEmptyDirMounts:
@@ -176,7 +179,7 @@ compactLayer:
   image:
     pullPolicy: IfNotPresent
     repository: improbable/thanos
-    tag: v0.3.2
+    tag: v0.4.0
   nodeSelector:
   podAnnotations:
   priorityClassName:
@@ -202,11 +205,6 @@ ruleLayer:
   labels:
     env: test
   rules: ''
-##
-#    groups:
-#    - name: alerting_rules
-#      rules:
-#      - ...
   binaryArgs:
     - '--log.level=debug'
     - '--cluster.disable'
@@ -246,7 +244,7 @@ ruleLayer:
   image:
     pullPolicy: IfNotPresent
     repository: improbable/thanos
-    tag: v0.3.2
+    tag: v0.4.0
   nodeSelector:
   podAnnotations:
   priorityClassName:

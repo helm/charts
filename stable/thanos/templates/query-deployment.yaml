@@ -43,6 +43,11 @@ spec:
             - '--store=dns+{{ print (include "thanos.fullname" $) "-" $.Values.ruleLayer.component "-" $element_index }}.{{ print (include "thanos.fullname" $) "-store-" $.Values.ruleLayer.component  }}:{{ $.Values.ruleLayer.storeApiService.servicePort }}'
             {{- end }}
             {{- end }}
+          env:
+          {{- if .secret.google }}
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: /etc/secret/google
+          {{- end }}
           ports:
             - name: http
               containerPort: 10902

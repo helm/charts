@@ -129,8 +129,8 @@ Parameter | Description | Default
 `queryLayer.name` | Part of the name for some components, helps to make keep them unique | `query-layer`
 `queryLayer.nodeSelector` | Snippet (dictionary) of `key: value` pairs for `.spec.template.spec.nodeSelector` | `{}`
 `queryLayer.podAnnotations` | Snippet (dictionary) of `key: value` pairs for `.spec.template.metadata.annotations` | `{}`
-`queryLayer.pointToLocalRulers` | Make rulers deployed with the same chart a target for this queryLayer. Implies `--store=` parameter. | `true`
 `queryLayer.pointToLocalSidecars` | Make a query svc deployed with the same chart a target for this queryLayer. Implies `--store=` parameter. | `true`
+`queryLayer.pointToLocalRulers` | Make rulers deployed with the same chart a target for this queryLayer. Implies `--store=` parameter. | `true`
 `queryLayer.priorityClassName` | Query `priorityClassName` | `""`
 `queryLayer.queryApiService.annotations` | Snippet (dict) of annotations for `metadata.annotations` of a Service | `{prometheus.io/scrape: 'false'}`
 `queryLayer.queryApiService.clusterIP` | `ClusterIP` of a Query API `service` of a query | `None` (headless)
@@ -181,6 +181,7 @@ Parameter | Description | Default
 `ruleLayer.RuleUiServicre.servicePort` | `servicePort` of a Store API `service` of a Ruler | `"10902"`
 `ruleLayer.RuleUiServicre.type` | `type` of a Store API `service` of a Ruler | `"LoadBalancer"`
 `ruleLayer.rules` | Array of groups with alerting/recording rules | `{env: "test", app: "thanos", component: "Rulre"}`
+`ruleLayer.alerting` | Array of groups with alerting Rulesr | `{env: "test", app: "thanos", component: "Rulre"}`
 `ruleLayer.binaryArgs` | List of args that have to be passed to the `thanos Rulre` command | check out in `values.yaml`
 `ruleLayer.name` | Used for labels and label selectors | `rule`
 `ruleLayer.configMap.data` | Snippet (dictionary) of `key: value` pairs to fill the `configMap` with | check out `values.yaml`
