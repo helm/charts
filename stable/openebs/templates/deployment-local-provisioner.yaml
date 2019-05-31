@@ -8,7 +8,6 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     component: localpv-provisioner
-    openebs.io/component-name: openebs-localpv-provisioner
 spec:
   replicas: {{ .Values.provisioner.replicas }}
   selector:
@@ -21,7 +20,9 @@ spec:
         app: {{ template "openebs.name" . }}
         release: {{ .Release.Name }}
         component: localpv-provisioner
+        name: openebs-localpv-provisioner
         openebs.io/version: {{ .Values.release.version }}
+        openebs.io/component-name: openebs-localpv-provisioner
     spec:
       serviceAccountName: {{ template "openebs.serviceAccountName" . }}
       containers:
