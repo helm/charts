@@ -35,6 +35,11 @@ securityContext:
   enabled: false
   runAsUser: 1000
 
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName: "default-scheduler"
+
 image:
   repository: "docker.elastic.co/elasticsearch/elasticsearch-oss"
   tag: "6.7.0"
