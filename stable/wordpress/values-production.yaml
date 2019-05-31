@@ -76,6 +76,11 @@ allowOverrideNone: true
 # ConfigMap with custom wordpress-htaccess.conf file (requires allowOverrideNone to true)
 customHTAccessCM:
 
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName:
+
 ## SMTP mail delivery configuration
 ## ref: https://github.com/bitnami/bitnami-docker-wordpress/#smtp-configuration
 ##
