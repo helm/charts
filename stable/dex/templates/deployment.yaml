@@ -37,6 +37,10 @@ spec:
       serviceAccountName: {{ template "dex.serviceAccountName" . }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 10 }}
+{{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+{{- end }}
 {{- if .Values.affinity }}
       affinity:
 {{ tpl .Values.affinity | indent 8 }}

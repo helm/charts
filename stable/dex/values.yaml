@@ -11,6 +11,14 @@ inMiniKube: false
 
 nodeSelector: {}
 
+tolerations: []
+  # - key: CriticalAddonsOnly
+  #   operator: Exists
+  # - key: foo
+  #   operator: Equal
+  #   value: bar
+  #   effect: NoSchedule
+
 replicas: 1
 
 # resources:
