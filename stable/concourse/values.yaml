@@ -1888,8 +1888,8 @@ secrets:
   ## vault authentication parameters
   ## Parameter to pass when logging in via the backend
   ## Required for "approle" authenication method
-  ## e.g. "role_id=x,secret_id=x"
-  ## Ref: https://concourse-ci.org/creds.html#vault-auth-param=NAME=VALUE
+  ## e.g. "role_id:x,secret_id:x"
+  ## Ref: https://concourse-ci.org/vault-credential-manager.html#vault-approle-auth
   ##
   vaultAuthParam:
 
