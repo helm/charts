@@ -26,33 +26,16 @@ spec:
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         env:
         - name: POSTGRESQL_HOST
-        {{- if .Values.postgresql.enabled }}
-          value: {{ template "odoo.postgresql.fullname" . }}
-        {{- else }}
-          value: {{ .Values.externalDatabase.host | quote }}
-        {{- end }}
+          value: {{ ternary (include "odoo.postgresql.fullname" .) .Values.externalDatabase.host .Values.postgresql.enabled | quote }}
         - name: POSTGRESQL_USER
-        {{- if .Values.postgresql.enabled }}
-          value: "postgres"
-        {{- else }}
-          value: {{ .Values.externalDatabase.user | quote }}
-        {{- end }}
+          value: {{ ternary "postgres" .Values.externalDatabase.user .Values.postgresql.enabled | quote }}
         - name: POSTGRESQL_PORT_NUMBER
-        {{- if .Values.postgresql.enabled }}
-          value: "5432"
-        {{- else }}
-          value: {{ .Values.externalDatabase.port | quote }}
-        {{- end }}
+          value: {{ ternary "5432" .Values.externalDatabase.port .Values.postgresql.enabled | quote }}
         - name: POSTGRESQL_PASSWORD
           valueFrom:
             secretKeyRef:
-            {{- if .Values.postgresql.enabled }}
-              name: {{ template "odoo.postgresql.fullname" . }}
-              key: postgresql-password
-            {{- else }}
-              name: {{ printf "%s-%s" .Release.Name "externaldb" }}
-              key: db-password
-            {{- end }}
+              name: {{ ternary (include "odoo.postgresql.fullname" .) (printf "%s-%s" .Release.Name "externaldb") .Values.postgresql.enabled | quote }}
+              key: {{ ternary "postgresql-password" "db-password" .Values.postgresql.enabled | quote }}
         - name: ODOO_EMAIL
           value: {{ .Values.odooEmail | quote }}
         - name: ODOO_PASSWORD
