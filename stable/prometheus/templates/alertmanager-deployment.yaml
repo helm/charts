@@ -66,6 +66,8 @@ spec:
           resources:
 {{ toYaml .Values.alertmanager.resources | indent 12 }}
           volumeMounts:
+            - name: template-config
+              mountPath: /etc/config/template
             - name: config-volume
               mountPath: /etc/config
             - name: storage-volume
@@ -105,6 +107,9 @@ spec:
 {{ toYaml .Values.alertmanager.affinity | indent 8 }}
     {{- end }}
       volumes:
+        - name: template-config
+          configMap:
+            name: template
         - name: config-volume
           {{- if empty .Values.alertmanager.configFromSecret }}
           configMap:

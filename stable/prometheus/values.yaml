@@ -947,6 +947,9 @@ alertmanagerFiles:
       group_interval: 5m
       receiver: default-receiver
       repeat_interval: 3h
+    
+    templates:
+    - '/etc/config/template/email.cloud.tpml'
 
 ## Prometheus server ConfigMap entries
 ##
