@@ -52,7 +52,11 @@ $ helm install --name my-release -f values.yaml stable/locust
 
 You're probably developing your own Locust scripts that you want to run in this distributed setup.
 To get those scripts into this deployment you can fork the chart and put them into the `tasks` folder. From there
-they will be converted to a configmap and mounted for use in Locust.
+they will be converted to a configmap and mounted for use in Locust. Installing a local chart:
+
+```bash
+$ helm install --name my-release -f values.yaml ./
+```
 
 Another solution, if you don't want to fork the Chart, is to put your Locust scripts in a configmap and provide the name
 as a config parameter in `values.yaml`. You can read more on the use of configmaps as volumes in pods [here](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/).
