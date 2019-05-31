@@ -19,7 +19,7 @@ image: concourse/concourse
 ##      of `concourse/concourse`.
 ## Ref: https://hub.docker.com/r/concourse/concourse/tags/
 ##
-imageTag: "5.1.0"
+imageTag: "5.2.0"
 
 ## Specific image digest to use in place of a tag.
 ## Ref: https://kubernetes.io/docs/concepts/configuration/overview/#container-images
@@ -52,10 +52,50 @@ concourse:
   ## through the `concourse web` command.
   ##
   web:
+    ## A name for this Concourse cluster, to be displayed on the dashboard page.
+    ##
+    clusterName:
+
     ## Enable equivalent resources across pipelines and teams to share a single version history.
     ## Ref: https://concourse-ci.org/global-resources.html
     ##
     enableGlobalResources: true
+
+    ## Enable auditing for all api requests connected to builds.
+    ##
+    enableBuildAuditing: false
+
+    ## Enable auditing for all api requests connected to containers.
+    ##
+    enableContainerAuditing: false
+
+    ## Enable auditing for all api requests connected to jobs.
+    ##
+    enableJobAuditing: false
+
+    ## Enable auditing for all api requests connected to pipelines.
+    ##
+    enablePipelineAuditing: false
+
+    ## Enable auditing for all api requests connected to resources.
+    ##
+    enableResourceAuditing: false
+
+    ## Enable auditing for all api requests connected to system transactions.
+    ##
+    enableSystemAuditing: false
+
+    ## Enable auditing for all api requests connected to teams.
+    ##
+    enableTeamAuditing: false
+
+    ## Enable auditing for all api requests connected to workers.
+    ##
+    enableWorkerAuditing: false
+
+    ## Enable auditing for all api requests connected to volumes.
+    ##
+    enableVolumeAuditing: false
 
     ## The number of attempts secret will be retried to be fetched,
     ## in case a retryable error happens.
@@ -65,6 +105,20 @@ concourse:
     ## The interval between secret retry retieval attempts.
     ##
     secretRetryInterval:
+
+    ## Enable in-memory cache for secrets.
+    ##
+    secretCacheEnabled: false
+
+    ## If the cache is enabled, secret values will be cached for not longer
+    ## than this duration (it can be less, if underlying secret lease time
+    ## is smaller).
+    ##
+    secretCacheDuration:
+
+    ## If the cache is enabled, expired items will be removed on this internal.
+    ##
+    secretCachePurgeInterval:
 
     ## Minimum level of logs to see. Possible options: debug, info, error.
     ##
@@ -173,6 +227,14 @@ concourse:
     ## Maximum build logs to retain, 0 means not specified. Will override values configured in jobs.
     ##
     maxBuildLogsToRetain:
+
+    ## Default days to retain build logs. 0 means unlimited.
+    ##
+    defaultDaysToRetainBuildLogs:
+
+    ## Maximum days to retain build logs, 0 means not specified. Will override values configured in jobs.
+    ##
+    maxDaysToRetainBuildLogs:
 
     ## Default max number of cpu shares per task, 0 means unlimited.
     ##
@@ -328,14 +390,6 @@ concourse:
       ## Currently supported backends: token, approle, cert.
       ##
       authBackend: ""
-
-      ## Cache returned secrets for their lease duration in memory
-      ##
-      cache: false
-
-      ## If the cache is enabled, and this is set, override secrets lease duration with a maximum value
-      ##
-      maxLease:
 
       ## Path to a directory of PEMEncoded CA cert files to verify the vault server SSL cert.
       ##
@@ -1023,6 +1077,11 @@ concourse:
       ## File containing the private key to use when authenticating to the TSA.
       ##
       workerPrivateKey:
+
+    ## API endpoint of an externally managed Garden server to use instead of
+    ## running the embedded Garden server.
+    ##
+    externalGardenUrl:
 
     garden:
       ## Path to the 'gdn' executable (or leave as 'gdn' to find it in $PATH)
@@ -1829,8 +1888,8 @@ secrets:
   ## vault authentication parameters
   ## Parameter to pass when logging in via the backend
   ## Required for "approle" authenication method
-  ## e.g. "role_id=x,secret_id=x"
-  ## Ref: https://concourse-ci.org/creds.html#vault-auth-param=NAME=VALUE
+  ## e.g. "role_id:x,secret_id:x"
+  ## Ref: https://concourse-ci.org/vault-credential-manager.html#vault-approle-auth
   ##
   vaultAuthParam:
 

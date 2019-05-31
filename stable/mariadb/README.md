@@ -53,7 +53,7 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `global.imagePullSecrets`                 | Global Docker registry secret names as an array     | `[]` (does not add image pull secrets to deployed pods)           |
 | `image.registry`                          | MariaDB image registry                              | `docker.io`                                                       |
 | `image.repository`                        | MariaDB Image name                                  | `bitnami/mariadb`                                                 |
-| `image.tag`                               | MariaDB Image tag                                   | `{VERSION}`                                                       |
+| `image.tag`                               | MariaDB Image tag                                   | `{TAG_NAME}`                                                      |
 | `image.pullPolicy`                        | MariaDB image pull policy                           | `Always` if `imageTag` is `latest`, else `IfNotPresent`           |
 | `image.pullSecrets`                       | Specify docker-registry secret names as an array    | `[]` (does not add image pull secrets to deployed pods)           |
 | `image.debug`                             | Specify if debug logs should be enabled             | `false`                                                           |
@@ -81,10 +81,12 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `master.annotations[].value`              | value for the the annotation list item              |  `nil`                                                            |
 | `master.affinity`                         | Master affinity (in addition to master.antiAffinity when set)  | `{}`                                                   |
 | `master.antiAffinity`                     | Master pod anti-affinity policy                     | `soft`                                                            |
+| `master.nodeSelector`                     | Master node labels for pod assignment               | `{}`                                                              |
 | `master.tolerations`                      | List of node taints to tolerate (master)            | `[]`                                                              |
 | `master.updateStrategy`                   | Master statefulset update strategy policy           | `RollingUpdate`                                                   |
 | `master.persistence.enabled`              | Enable persistence using PVC                        | `true`                                                            |
 | `master.persistence.existingClaim`        | Provide an existing `PersistentVolumeClaim`         | `nil`                                                             |
+| `master.persistence.subPath`              | Subdirectory of the volume to mount                 | `nil`                                                             |
 | `master.persistence.mountPath`            | Path to mount the volume at                         | `/bitnami/mariadb`                                                |
 | `master.persistence.annotations`          | Persistent Volume Claim annotations                 | `{}`                                                              |
 | `master.persistence.storageClass`         | Persistent Volume Storage Class                     | ``                                                                |
@@ -113,6 +115,7 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `slave.annotations[].value`               | value for the the annotation list item              | `nil`                                                             |
 | `slave.affinity`                          | Slave affinity (in addition to slave.antiAffinity when set) | `{}`                                                      |
 | `slave.antiAffinity`                      | Slave pod anti-affinity policy                      | `soft`                                                            |
+| `slave.nodeSelector`                      | Slave node labels for pod assignment                | `{}`                                                              |
 | `slave.tolerations`                       | List of node taints to tolerate for (slave)         | `[]`                                                              |
 | `slave.updateStrategy`                    | Slave statefulset update strategy policy            | `RollingUpdate`                                                   |
 | `slave.persistence.enabled`               | Enable persistence using a `PersistentVolumeClaim`  | `true`                                                            |
@@ -164,6 +167,12 @@ $ helm install --name my-release -f values.yaml stable/mariadb
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+### [Rolling VS Immutable tags](https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/)
+
+It is strongly recommended to use immutable tags in a production environment. This ensures your deployment does not change automatically if the same tag is updated with a different image.
+
+Bitnami will release a new chart updating its containers if a new version of the main container, significant changes, or critical vulnerabilities exist.
 
 ## Initialize a fresh instance
 

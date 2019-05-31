@@ -13,7 +13,7 @@
 image:
   registry: docker.io
   repository: bitnami/rabbitmq
-  tag: 3.7.14
+  tag: 3.7.15-debian-9-r8
 
   ## set to true if you would like to see extra information on logs
   ## it turns BASH and NAMI debugging in minideb
@@ -31,6 +31,11 @@ image:
   ##
   # pullSecrets:
   #   - myRegistryKeySecretName
+
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName:
 
 ## does your cluster have rbac enabled? assume yes by default
 rbacEnabled: true
@@ -81,6 +86,7 @@ rabbitmq:
   ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
   ## ref: https://www.rabbitmq.com/install-debian.html#kernel-resource-limits
   ##
+  setUlimitNofiles: true
   ulimitNofiles: '65536'
 
   ## RabbitMQ maximum available scheduler threads and online scheduler threads
@@ -184,6 +190,8 @@ persistence:
   accessMode: ReadWriteOnce
 
   ## Existing PersistentVolumeClaims
+  ## The value is evaluated as a template
+  ## So, for example, the name can depend on .Release or .Chart
   # existingClaim: ""
 
   # If you change this value, you might have to adjust `rabbitmq.diskFreeLimit` as well.
@@ -314,3 +322,10 @@ volumePermissions:
     # pullSecrets:
     #   - myRegistryKeySecretName
   resources: {}
+
+## forceBoot: executes 'rabbitmqctl force_boot' to force boot cluster shut down unexpectedly in an
+## unknown order.
+## ref: https://www.rabbitmq.com/rabbitmqctl.8.html#force_boot
+##
+forceBoot:
+  enabled: false
