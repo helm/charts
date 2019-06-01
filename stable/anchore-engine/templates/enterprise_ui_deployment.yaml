@@ -38,7 +38,15 @@ spec:
         image: {{ .Values.cloudsql.image.repository }}:{{ .Values.cloudsql.image.tag }}
         imagePullPolicy: {{ .Values.cloudsql.image.pullPolicy }}
         command: ["/cloud_sql_proxy"]
-        args: ["-instances={{ .Values.cloudsql.instance }}=tcp:5432"]
+        args:
+        - "-instances={{ .Values.cloudsql.instance }}=tcp:5432"
+        {{- if .Values.cloudsql.useExistingServiceAcc }}
+        - "-credential_file=/var/{{ .Values.cloudsql.serviceAccSecretName }}/{{ .Values.cloudsql.serviceAccJsonName }}"
+        volumeMounts:
+        - mountPath: /var/{{ .Values.cloudsql.serviceAccSecretName }}
+          name: {{ .Values.cloudsql.serviceAccSecretName }}
+          readOnly: true
+        {{- end }}
       {{- end }}
       - name: "{{ .Chart.Name }}-{{ $component }}"
         image: {{ .Values.anchoreEnterpriseUi.image }}
@@ -84,6 +92,11 @@ spec:
       - name: anchore-ui-config
         secret:
           secretName: {{ template "anchore-engine.enterprise-ui.fullname" . }}
+      {{- if .Values.cloudsql.useExistingServiceAcc }}
+      - name: {{ .Values.cloudsql.serviceAccSecretName }}
+        secret:
+          secretName: {{ .Values.cloudsql.serviceAccSecretName }}
+      {{- end }}
       {{- with .Values.anchoreEnterpriseUi.nodeSelector }}
       nodeSelector:
         {{ toYaml .Values.anchoreEnterpriseUi.nodeSelector | nindent 8 | trim }}
