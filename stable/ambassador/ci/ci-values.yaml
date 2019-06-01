@@ -6,7 +6,6 @@ prometheusExporter:
   enabled: true
 
 env:
-  AMBASSADOR_SINGLE_NAMESPACE: true
   AMBASSADOR_NO_KUBEWATCH: no_kubewatch
 
 volumes:
@@ -24,6 +23,9 @@ ambassadorConfig: |
   name: ambassador
   config:
     service_port: 8080
+
+scope:
+  singleNamespace: true
 
 crds:
   create: false

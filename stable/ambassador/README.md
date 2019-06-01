@@ -38,6 +38,10 @@ $ helm delete --purge my-release
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
+## Changelog
+
+Notable chart changes are listed in the [CHANGELOG](https://github.com/helm/charts/blob/master/stable/ambassador/CHANGELOG.md)
+
 ## Configuration
 
 The following tables lists the configurable parameters of the Ambassador chart and their default values.
@@ -66,7 +70,7 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `prometheusExporter.pullPolicy`    | Image pull policy                                                               | `IfNotPresent`                    |
 | `prometheusExporter.repository`    | Prometheus exporter image                                                       | `prom/statsd-exporter`            |
 | `prometheusExporter.tag`           | Prometheus exporter image                                                       | `v0.8.1`                          |
-| `prometheusExporter.resources`  | CPU/memory resource requests/limits                                                       | `{}`                          |
+| `prometheusExporter.resources`     | CPU/memory resource requests/limits                                             | `{}`                              |
 | `rbac.create`                      | If `true`, create and use RBAC resources                                        | `true`                            |
 | `rbac.namespaced`                  | If `true`, permissions are namespace-scoped rather than cluster-scoped          | `false`                           |
 | `replicaCount`                     | Number of Ambassador replicas                                                   | `3`                               |
