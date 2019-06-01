@@ -25,6 +25,11 @@ livenessProbe:
   timeoutSeconds: 30
   failureThreshold: 10
 
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName: "default-scheduler"
+
 image:
   repository: grafana/grafana
   tag: 6.2.0
