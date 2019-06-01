@@ -309,6 +309,10 @@ anchoreGlobal:
   cloudsql:
     enabled: true
     instance: "project:zone:cloudsqlinstancename"
+    # Optional existing service account secret to use.
+    useExistingServiceAcc: true
+    serviceAccSecretName: my_service_acc
+    serviceAccJsonName: for_cloudsql.json
     image:
       repository: gcr.io/cloudsql-docker/gce-proxy
       tag: 1.12
