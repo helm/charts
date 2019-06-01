@@ -1,4 +1,5 @@
 {{- if .Values.rbac.create -}}
+{{- if .Values.rules.external }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
@@ -17,4 +18,5 @@ rules:
   - list
   - get
   - watch
+{{- end -}}
 {{- end -}}
