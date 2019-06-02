@@ -1,4 +1,5 @@
-{{- if and .Values.ssl.enabled .Values.ssl.mtls.enabled }}
+{{- if and .Values.ssl.enabled .Values.ssl.mtls }}
+{{- if .Values.ssl.mtls.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -12,5 +13,6 @@ type: Opaque
 data:
 {{- range $idx, $caCert := .Values.ssl.mtls.clientCaCerts }}
   clientCaCert-{{ $idx }}.crt: {{ $caCert | quote }}
+{{- end }}
 {{- end }}
 {{- end }}

@@ -113,13 +113,17 @@ spec:
         volumeMounts:
         - mountPath: /config
           name: config
-        {{- if and .Values.ssl.enabled (not .Values.ssl.upstream) }}
+        {{- if .Values.ssl.enabled }}
+        {{- if not .Values.ssl.upstream }}
         - mountPath: /ssl
           name: ssl
         {{- end }}
-        {{- if and .Values.ssl.enabled .Values.ssl.mtls.enabled }}
+        {{- if .Values.ssl.mtls }}
+        {{- if .Values.ssl.mtls.enabled }}
         - mountPath: /mtls
           name: mtls
+        {{- end }}
+        {{- end }}
         {{- end }}
         {{- if .Values.acme.enabled }}
         - mountPath: /acme
@@ -167,15 +171,19 @@ spec:
       - name: config
         configMap:
           name: {{ template "traefik.fullname" . }}
-      {{- if and .Values.ssl.enabled (not .Values.ssl.upstream) }}
+      {{- if .Values.ssl.enabled }}
+      {{- if not .Values.ssl.upstream }}
       - name: ssl
         secret:
           secretName: {{ template "traefik.fullname" . }}-default-cert
       {{- end }}
-      {{- if and .Values.ssl.enabled .Values.ssl.mtls.enabled }}
+      {{- if .Values.ssl.mtls }}
+      {{- if .Values.ssl.mtls.enabled }}
       - name: mtls
         configMap:
           name: {{ template "traefik.fullname" . }}-client-ca-certs
+      {{- end }}
+      {{- end }}
       {{- end }}
       {{- if .Values.acme.enabled }}
       - name: acme
