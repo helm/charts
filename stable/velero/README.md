@@ -91,6 +91,7 @@ Parameter | Description | Default
 `metrics.serviceMonitor.enabled` | Set this to `true` to create ServiceMonitor for Prometheus operator | `false`
 `metrics.serviceMonitor.additionalLabels` | Additional labels that can be used so ServiceMonitor will be discovered by Prometheus | `{}`
 `schedules` | A dict of schedules | `{}`
+`restic.podVolumePath` | Location of pod volumes on the host | `/var/lib/kubelet/pods`
 
 
 ## How to
