@@ -53,7 +53,7 @@ The following table lists the configurable parameters of the OpenCart chart and 
 | `global.imagePullSecrets`           | Global Docker registry secret names as an array | `[]` (does not add image pull secrets to deployed pods) |
 | `image.registry`                    | OpenCart image registry                   | `docker.io`                                              |
 | `image.repository`                  | OpenCart Image name                       | `bitnami/opencart`                                       |
-| `image.tag`                         | OpenCart Image tag                        | `{VERSION}`                                              |
+| `image.tag`                         | OpenCart Image tag                        | `{TAG_NAME}`                                             |
 | `image.pullPolicy`                  | Image pull policy                         | `Always` if `imageTag` is `latest`, else `IfNotPresent`  |
 | `image.pullSecrets`                 | Specify docker-registry secret names as an array | `[]` (does not add image pull secrets to deployed pods) |
 | `opencartHost`                      | OpenCart host to create application URLs  | `nil`                                                    |
@@ -96,9 +96,6 @@ The following table lists the configurable parameters of the OpenCart chart and 
 | `mariadb.rootUser.password`         | MariaDB admin password                    | `nil`                                                    |
 | `serviceType`                       | Kubernetes Service type                   | `LoadBalancer`                                           |
 | `persistence.enabled`               | Enable persistence using PVC              | `true`                                                   |
-| `persistence.apache.storageClass`   | PVC Storage Class for Apache volume       | `nil` (uses alpha storage class annotation)              |
-| `persistence.apache.accessMode`     | PVC Access Mode for Apache volume         | `ReadWriteOnce`                                          |
-| `persistence.apache.size`           | PVC Storage Request for Apache volume     | `1Gi`                                                    |
 | `persistence.opencart.storageClass` | PVC Storage Class for OpenCart volume     | `nil` (uses alpha storage class annotation)              |
 | `persistence.opencart.accessMode`   | PVC Access Mode for OpenCart volume       | `ReadWriteOnce`                                          |
 | `persistence.opencart.size`         | PVC Storage Request for OpenCart volume   | `8Gi`                                                    |
@@ -147,9 +144,15 @@ $ helm install --name my-release -f values.yaml stable/opencart
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
+### [Rolling VS Immutable tags](https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/)
+
+It is strongly recommended to use immutable tags in a production environment. This ensures your deployment does not change automatically if the same tag is updated with a different image.
+
+Bitnami will release a new chart updating its containers if a new version of the main container, significant changes, or critical vulnerabilities exist.
+
 ## Persistence
 
-The [Bitnami OpenCart](https://github.com/bitnami/bitnami-docker-opencart) image stores the OpenCart data and configurations at the `/bitnami/opencart` and `/bitnami/apache` paths of the container.
+The [Bitnami OpenCart](https://github.com/bitnami/bitnami-docker-opencart) image stores the OpenCart data and configurations at the `/bitnami/opencart` path of the container.
 
 Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
 See the [Configuration](#configuration) section to configure the PVC or to disable persistence.
