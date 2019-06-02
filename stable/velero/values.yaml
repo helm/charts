@@ -152,6 +152,9 @@ credentials:
 # Whether to deploy the restic daemonset.
 deployRestic: false
 
+restic:
+  podVolumePath: /var/lib/kubelet/pods
+
 # Backup schedules to create.
 # Eg:
 # schedules:
