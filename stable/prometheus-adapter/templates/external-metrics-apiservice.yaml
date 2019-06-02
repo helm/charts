@@ -1,3 +1,4 @@
+{{- if .Values.rules.external }}
 apiVersion: apiregistration.k8s.io/v1beta1
 kind: APIService
 metadata:
@@ -19,3 +20,4 @@ spec:
   insecureSkipTLSVerify: {{ if .Values.tls.enable }}false{{ else }}true{{ end }}
   groupPriorityMinimum: 100
   versionPriority: 100
+{{- end -}}
