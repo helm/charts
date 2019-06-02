@@ -39,7 +39,7 @@ spec:
         {{- end }}
         - name: host-pods
           hostPath:
-            path: /var/lib/kubelet/pods
+            path: {{ .Values.restic.podVolumePath }}
         - name: scratch
           emptyDir: {}
       containers:
