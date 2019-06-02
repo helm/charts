@@ -40,11 +40,14 @@
 - macro: open_read
   condition: (evt.type=open or evt.type=openat) and evt.is_open_read=true and fd.typechar='f' and fd.num>=0
 
+- macro: open_directory
+  condition: (evt.type=open or evt.type=openat) and evt.is_open_read=true and fd.typechar='d' and fd.num>=0
+
 - macro: never_true
   condition: (evt.num=0)
 
 - macro: always_true
-  condition: (evt.num=>0)
+  condition: (evt.num>=0)
 
 # In some cases, such as dropped system call events, information about
 # the process name may be missing. For some rules that really depend
@@ -92,7 +95,14 @@
   condition: ((fd.directory=/ or fd.name startswith /root) and fd.name contains "/")
 
 - list: shell_binaries
-  items: [bash, csh, ksh, sh, tcsh, zsh, dash]
+  items: [ash, bash, csh, ksh, sh, tcsh, zsh, dash]
+
+- list: ssh_binaries
+  items: [
+    sshd, sftp-server, ssh-agent,
+    ssh, scp, sftp,
+    ssh-keygen, ssh-keysign, ssh-keyscan, ssh-add
+    ]
 
 - list: shell_mgmt_binaries
   items: [add-shell, remove-shell]
@@ -127,7 +137,7 @@
     shadowconfig, grpck, pwunconv, grpconv, pwck,
     groupmod, vipw, pwconv, useradd, newusers, cppw, chpasswd, usermod,
     groupadd, groupdel, grpunconv, chgpasswd, userdel, chage, chsh,
-    gpasswd, chfn, expiry, passwd, vigr, cpgr
+    gpasswd, chfn, expiry, passwd, vigr, cpgr, adduser, addgroup, deluser, delgroup
     ]
 
 # repoquery -l shadow-utils | grep bin | xargs ls -ld | grep -v '^d' |
@@ -143,10 +153,10 @@
   items: [setup-backend, dragent, sdchecks]
 
 - list: docker_binaries
-  items: [docker, dockerd, exe, docker-compose, docker-entrypoi, docker-runc-cur, docker-current]
+  items: [docker, dockerd, exe, docker-compose, docker-entrypoi, docker-runc-cur, docker-current, dockerd-current]
 
 - list: k8s_binaries
-  items: [hyperkube, skydns, kube2sky, exechealthz, weave-net, loopback, bridge]
+  items: [hyperkube, skydns, kube2sky, exechealthz, weave-net, loopback, bridge, openshift-sdn]
 
 - list: lxd_binaries
   items: [lxd, lxcfs]
@@ -172,6 +182,13 @@
 - list: gitlab_binaries
   items: [gitlab-shell, gitlab-mon, gitlab-runner-b, git]
 
+- list: interpreted_binaries
+  items: [lua, node, perl, perl5, perl6, php, python, python2, python3, ruby, tcl]
+
+- macro: interpreted_procs
+  condition: >
+    (proc.name in (interpreted_binaries))
+
 - macro: server_procs
   condition: proc.name in (http_server_binaries, db_server_binaries, docker_binaries, sshd)
 
@@ -182,8 +199,11 @@
           repoquery, rpmkeys, rpmq, yum-cron, yum-config-mana, yum-debug-dump,
           abrt-action-sav, rpmdb_stat, microdnf, rhn_check, yumdb]
 
+- list: openscap_rpm_binaries
+  items: [probe_rpminfo, probe_rpmverify, probe_rpmverifyfile, probe_rpmverifypackage]
+
 - macro: rpm_procs
-  condition: proc.name in (rpm_binaries) or proc.name in (salt-minion)
+  condition: (proc.name in (rpm_binaries, openscap_rpm_binaries) or proc.name in (salt-minion))
 
 - list: deb_binaries
   items: [dpkg, dpkg-preconfigu, dpkg-reconfigur, dpkg-divert, apt, apt-get, aptitude,
@@ -262,7 +282,7 @@
     ]
 
 - list: sensitive_file_names
-  items: [/etc/shadow, /etc/sudoers, /etc/pam.conf]
+  items: [/etc/shadow, /etc/sudoers, /etc/pam.conf, /etc/security/pwquality.conf]
 
 - macro: sensitive_files
   condition: >
@@ -324,7 +344,138 @@
   condition: (inbound_outbound) and ssh_port and not allowed_ssh_hosts
   output: Disallowed SSH Connection (command=%proc.cmdline connection=%fd.name user=%user.name)
   priority: NOTICE
+  tags: [network, mitre_remote_service]
+
+# These rules and supporting macros are more of an example for how to
+# use the fd.*ip and fd.*ip.name fields to match connection
+# information against ips, netmasks, and complete domain names.
+#
+# To use this rule, you should modify consider_all_outbound_conns and
+# populate allowed_{source,destination}_{ipaddrs,networks,domains} with the
+# values that make sense for your environment.
+- macro: consider_all_outbound_conns
+  condition: (never_true)
+
+# Note that this can be either individual IPs or netmasks
+- list: allowed_outbound_destination_ipaddrs
+  items: ['"127.0.0.1"', '"8.8.8.8"']
+
+- list: allowed_outbound_destination_networks
+  items: ['"127.0.0.1/8"']
+
+- list: allowed_outbound_destination_domains
+  items: [google.com, www.yahoo.com]
+
+- rule: Unexpected outbound connection destination
+  desc: Detect any outbound connection to a destination outside of an allowed set of ips, networks, or domain names
+  condition: >
+    consider_all_outbound_conns and outbound and not
+    ((fd.sip in (allowed_outbound_destination_ipaddrs)) or
+     (fd.snet in (allowed_outbound_destination_networks)) or
+     (fd.sip.name in (allowed_outbound_destination_domains)))
+  output: Disallowed outbound connection destination (command=%proc.cmdline connection=%fd.name user=%user.name)
+  priority: NOTICE
   tags: [network]
+
+- macro: consider_all_inbound_conns
+  condition: (never_true)
+
+- list: allowed_inbound_source_ipaddrs
+  items: ['"127.0.0.1"']
+
+- list: allowed_inbound_source_networks
+  items: ['"127.0.0.1/8"', '"10.0.0.0/8"']
+
+- list: allowed_inbound_source_domains
+  items: [google.com]
+
+- rule: Unexpected inbound connection source
+  desc: Detect any inbound connection from a source outside of an allowed set of ips, networks, or domain names
+  condition: >
+    consider_all_inbound_conns and inbound and not
+    ((fd.cip in (allowed_inbound_source_ipaddrs)) or
+     (fd.cnet in (allowed_inbound_source_networks)) or
+     (fd.cip.name in (allowed_inbound_source_domains)))
+  output: Disallowed inbound connection source (command=%proc.cmdline connection=%fd.name user=%user.name)
+  priority: NOTICE
+  tags: [network]
+
+- list: bash_config_filenames
+  items: [.bashrc, .bash_profile, .bash_history, .bash_login, .bash_logout, .inputrc, .profile]
+
+- list: bash_config_files
+  items: [/etc/profile, /etc/bashrc]
+
+# Covers both csh and tcsh
+- list: csh_config_filenames
+  items: [.cshrc, .login, .logout, .history, .tcshrc, .cshdirs]
+
+- list: csh_config_files
+  items: [/etc/csh.cshrc, /etc/csh.login]
+
+- list: zsh_config_filenames
+  items: [.zshenv, .zprofile, .zshrc, .zlogin, .zlogout]
+
+- list: shell_config_filenames
+  items: [bash_config_filenames, csh_config_filenames, zsh_config_filenames]
+
+- list: shell_config_files
+  items: [bash_config_files, csh_config_files]
+
+- list: shell_config_directories
+  items: [/etc/zsh]
+
+- rule: Modify Shell Configuration File
+  desc: Detect attempt to modify shell configuration files
+  condition: >
+    open_write and
+    (fd.filename in (shell_config_filenames) or
+     fd.name in (shell_config_files) or
+     fd.directory in (shell_config_directories)) and
+    not proc.name in (shell_binaries)
+  output: >
+    a shell configuration file has been modified (user=%user.name command=%proc.cmdline file=%fd.name)
+  priority:
+    WARNING
+  tag: [file, mitre_persistence]
+
+# This rule is not enabled by default, as there are many legitimate
+# readers of shell config files. If you want to enable it, modify the
+# following macro.
+
+- macro: consider_shell_config_reads
+  condition: (never_true)
+
+- rule: Read Shell Configuration File
+  desc: Detect attempts to read shell configuration files by non-shell programs
+  condition: >
+    open_read and
+    consider_shell_config_reads and
+    (fd.filename in (shell_config_filenames) or
+     fd.name in (shell_config_files) or
+     fd.directory in (shell_config_directories)) and
+    (not proc.name in (shell_binaries))
+  output: >
+    a shell configuration file was read by a non-shell program (user=%user.name command=%proc.cmdline file=%fd.name)
+  priority:
+    WARNING
+  tag: [file, mitre_discovery]
+
+- macro: consider_all_cron_jobs
+  condition: (never_true)
+
+- rule: Schedule Cron Jobs
+  desc: Detect cron jobs scheduled
+  condition: >
+    consider_all_cron_jobs and
+    ((open_write and fd.name startswith /etc/cron) or
+     (spawned_process and proc.name = "crontab"))
+  output: >
+    Cron jobs were scheduled to run (user=%user.name command=%proc.cmdline
+    file=%fd.name container_id=%container.id container_name=%container.name image=%container.image.repository:%container.image.tag)
+  priority:
+    NOTICE
+  tag: [file, mitre_persistence]
 
 # Use this to test whether the event occurred within a container.
 
@@ -335,7 +486,13 @@
 # based on the context and whether or not -pk/-pm/-pc was specified on
 # the command line.
 - macro: container
-  condition: container.id != host
+  condition: (container.id != host)
+
+- macro: container_started
+  condition: >
+    ((evt.type = container or
+     (evt.type=execve and evt.dir=< and proc.vpid=1)) and
+     container.image.repository != incomplete)
 
 - macro: interactive
   condition: >
@@ -616,6 +773,9 @@
 - macro: liveupdate_writing_conf
   condition: (proc.cmdline startswith "java LiveUpdate" and fd.name in (/etc/liveupdate.conf, /etc/Product.Catalog.JavaLiveUpdate))
 
+- macro: rancher_agent
+  condition: (proc.name = agent and container.image.repository = rancher/agent)
+
 - macro: sosreport_writing_files
   condition: >
     (proc.name=urlgrabber-ext- and proc.aname[3]=sosreport and
@@ -704,7 +864,32 @@
   condition: (proc.name=chef-client and fd.name startswith /root/.chef)
 
 - macro: kubectl_writing_state
-  condition: (proc.name=kubectl and fd.name startswith /root/.kube)
+  condition: (proc.name in (kubectl,oc) and fd.name startswith /root/.kube)
+
+- macro: java_running_cassandra
+  condition: (proc.name=java and proc.cmdline contains "cassandra.jar")
+
+- macro: cassandra_writing_state
+  condition: (java_running_cassandra and fd.directory=/root/.cassandra)
+
+- list: repository_files
+  items: [sources.list]
+
+- list: repository_directories
+  items: [/etc/apt/sources.list.d, /etc/yum.repos.d]
+
+- macro: access_repositories
+  condition: (fd.filename in (repository_files) or fd.directory in (repository_directories))
+
+- rule: Update Package Repository
+  desc: Detect package repositories get updated
+  condition: >
+    open_write and access_repositories and not package_mgmt_procs
+  output: >
+    Repository files get updated (user=%user.name command=%proc.cmdline file=%fd.name)
+  priority:
+    NOTICE
+  tags: [filesystem, mitre_persistence]
 
 - rule: Write below binary dir
   desc: an attempt to write to any file below a set of binary directories
@@ -718,7 +903,7 @@
     File below a known binary directory opened for writing (user=%user.name
     command=%proc.cmdline file=%fd.name parent=%proc.pname pcmdline=%proc.pcmdline gparent=%proc.aname[2])
   priority: ERROR
-  tags: [filesystem]
+  tags: [filesystem, mitre_persistence]
 
 # If you'd like to generally monitor a wider set of directories on top
 # of the ones covered by the rule Write below binary dir, you can use
@@ -751,6 +936,15 @@
      or user_ssh_directory)
     and not mkinitramfs_writing_boot
 
+# Add conditions to this macro (probably in a separate file,
+# overwriting this macro) to allow for specific combinations of
+# programs writing below monitored directories.
+#
+# Its default value is an expression that always is false, which
+# becomes true when the "not ..." in the rule is applied.
+- macro: user_known_write_monitored_dir_conditions
+  condition: (never_true)
+
 - rule: Write below monitored dir
   desc: an attempt to write to any file below a set of binary directories
   condition: >
@@ -762,14 +956,34 @@
     and not python_running_ms_oms
     and not google_accounts_daemon_writing_ssh
     and not cloud_init_writing_ssh
+    and not user_known_write_monitored_dir_conditions
   output: >
     File below a monitored directory opened for writing (user=%user.name
     command=%proc.cmdline file=%fd.name parent=%proc.pname pcmdline=%proc.pcmdline gparent=%proc.aname[2])
   priority: ERROR
-  tags: [filesystem]
+  tags: [filesystem, mitre_persistence]
+
+# This rule is disabled by default as many system management tools
+# like ansible, etc can read these files/paths. Enable it using this macro.
+
+- macro: consider_ssh_reads
+  condition: (never_true)
+
+- rule: Read ssh information
+  desc: Any attempt to read files below ssh directories by non-ssh programs
+  condition: >
+    (consider_ssh_reads and
+     (open_read or open_directory) and
+     (user_ssh_directory or fd.name startswith /root/.ssh) and
+     (not proc.name in (ssh_binaries)))
+  output: >
+    ssh-related file/directory read by non-ssh program (user=%user.name
+    command=%proc.cmdline file=%fd.name parent=%proc.pname pcmdline=%proc.pcmdline)
+  priority: ERROR
+  tags: [filesystem, mitre_discovery]
 
 - list: safe_etc_dirs
-  items: [/etc/cassandra, /etc/ssl/certs/java, /etc/logstash, /etc/nginx/conf.d, /etc/container_environment, /etc/hrmconfig]
+  items: [/etc/cassandra, /etc/ssl/certs/java, /etc/logstash, /etc/nginx/conf.d, /etc/container_environment, /etc/hrmconfig, /etc/fluent/configs.d]
 
 - macro: fluentd_writing_conf_files
   condition: (proc.name=start-fluentd and fd.name in (/etc/fluent/fluent.conf, /etc/td-agent/td-agent.conf))
@@ -807,6 +1021,20 @@
                proc.cmdline startswith "entrypoint.sh /entrypoint.sh datadog start" or
                proc.cmdline startswith "agent.py /opt/datadog-agent")
               and fd.name startswith "/etc/dd-agent")
+
+- macro: rancher_writing_conf
+  condition: (container.image.repository in (rancher_images)
+              and proc.name in (lib-controller,rancher-dns,healthcheck,rancher-metadat)
+              and (fd.name startswith "/etc/haproxy" or
+                   fd.name startswith "/etc/rancher-dns")
+             )
+
+- macro: jboss_in_container_writing_passwd
+  condition: >
+    ((proc.cmdline="run-java.sh /opt/jboss/container/java/run/run-java.sh"
+      or proc.cmdline="run-java.sh /opt/run-java/run-java.sh")
+     and container
+     and fd.name=/etc/passwd)
 
 - macro: curl_writing_pki_db
   condition: (proc.name=curl and fd.directory=/etc/pki/nssdb)
@@ -866,10 +1094,10 @@
     (proc.name = calico-node and fd.name startswith /etc/calico)
 
 - macro: prometheus_conf_writing_conf
-  condition: (proc.name=prometheus-conf and fd.directory=/etc/prometheus/config_out)
+  condition: (proc.name=prometheus-conf and fd.name startswith /etc/prometheus/config_out)
 
 - macro: openshift_writing_conf
-  condition: (proc.name=oc and fd.name=/etc/origin/node/node.kubeconfig)
+  condition: (proc.name=oc and fd.name startswith /etc/origin/node)
 
 # Add conditions to this macro (probably in a separate file,
 # overwriting this macro) to allow for specific combinations of
@@ -900,7 +1128,7 @@
                           gen_resolvconf., update-ca-certi, certbot, runsv,
                           qualys-cloud-ag, locales.postins, nomachine_binaries,
                           adclient, certutil, crlutil, pam-auth-update, parallels_insta,
-                          openshift-launc, update-rc.d)
+                          openshift-launc, update-rc.d, puppet)
     and not proc.pname in (sysdigcloud_binaries, mail_config_binaries, hddtemp.postins, sshkit_script_binaries, locales.postins, deb_binaries, dhcp_binaries)
     and not fd.name pmatch (safe_etc_dirs)
     and not fd.name in (/etc/container_environment.sh, /etc/container_environment.json, /etc/motd, /etc/motd.svc)
@@ -976,13 +1204,15 @@
     and not calico_writing_conf
     and not prometheus_conf_writing_conf
     and not openshift_writing_conf
+    and not rancher_writing_conf
+    and not jboss_in_container_writing_passwd
 
 - rule: Write below etc
   desc: an attempt to write to any file below /etc
   condition: write_etc_common
   output: "File below /etc opened for writing (user=%user.name command=%proc.cmdline parent=%proc.pname pcmdline=%proc.pcmdline file=%fd.name program=%proc.name gparent=%proc.aname[2] ggparent=%proc.aname[3] gggparent=%proc.aname[4])"
   priority: ERROR
-  tags: [filesystem]
+  tags: [filesystem, mitre_persistence]
 
 - list: known_root_files
   items: [/root/.monit.state, /root/.auth_tokens, /root/.bash_history, /root/.ash_history, /root/.aws/credentials,
@@ -1029,6 +1259,16 @@
               or fd.name startswith /root/jvm
               or fd.name startswith /root/.node-gyp)
 
+# Add conditions to this macro (probably in a separate file,
+# overwriting this macro) to allow for specific combinations of
+# programs writing below specific directories below
+# / or /root.
+#
+# In this file, it just takes one of the condition in the base macro
+# and repeats it.
+- macro: user_known_write_root_conditions
+  condition: fd.name=/root/.bash_history
+
 - rule: Write below root
   desc: an attempt to write to any file directly below / or /root
   condition: >
@@ -1044,10 +1284,12 @@
     and not maven_writing_groovy
     and not chef_writing_conf
     and not kubectl_writing_state
+    and not cassandra_writing_state
     and not known_root_conditions
+    and not user_known_write_root_conditions
   output: "File below / or /root opened for writing (user=%user.name command=%proc.cmdline parent=%proc.pname file=%fd.name program=%proc.name)"
   priority: ERROR
-  tags: [filesystem]
+  tags: [filesystem, mitre_persistence]
 
 - macro: cmp_cp_by_passwd
   condition: proc.name in (cmp, cp) and proc.pname in (passwd, run-parts)
@@ -1062,7 +1304,7 @@
     Sensitive file opened for reading by trusted program after startup (user=%user.name
     command=%proc.cmdline parent=%proc.pname file=%fd.name parent=%proc.pname gparent=%proc.aname[2])
   priority: WARNING
-  tags: [filesystem]
+  tags: [filesystem, mitre_credential_access]
 
 - list: read_sensitive_file_binaries
   items: [
@@ -1111,15 +1353,20 @@
     Sensitive file opened for reading by non-trusted program (user=%user.name program=%proc.name
     command=%proc.cmdline file=%fd.name parent=%proc.pname gparent=%proc.aname[2] ggparent=%proc.aname[3] gggparent=%proc.aname[4])
   priority: WARNING
-  tags: [filesystem]
+  tags: [filesystem, mitre_credential_access, mitre_discovery]
 
 # Only let rpm-related programs write to the rpm database
 - rule: Write below rpm database
   desc: an attempt to write to the rpm database by any non-rpm related program
-  condition: fd.name startswith /var/lib/rpm and open_write and not rpm_procs and not ansible_running_python and not python_running_chef
+  condition: >
+    fd.name startswith /var/lib/rpm and open_write
+    and not rpm_procs
+    and not ansible_running_python
+    and not python_running_chef
+    and not exe_running_docker_save
   output: "Rpm database opened for writing by a non-rpm program (command=%proc.cmdline file=%fd.name parent=%proc.pname pcmdline=%proc.pcmdline)"
   priority: ERROR
-  tags: [filesystem, software_mgmt]
+  tags: [filesystem, software_mgmt, mitre_persistence]
 
 - macro: postgres_running_wal_e
   condition: (proc.pname=postgres and proc.cmdline startswith "sh -c envdir /etc/wal-e.d/env /usr/local/bin/wal-e")
@@ -1154,7 +1401,7 @@
     Database-related program spawned process other than itself (user=%user.name
     program=%proc.cmdline parent=%proc.pname)
   priority: NOTICE
-  tags: [process, database]
+  tags: [process, database, mitre_execution]
 
 - rule: Modify binary dirs
   desc: an attempt to modify any file below a set of binary directories.
@@ -1163,7 +1410,7 @@
     File below known binary directory renamed/removed (user=%user.name command=%proc.cmdline
     pcmdline=%proc.pcmdline operation=%evt.type file=%fd.name %evt.args)
   priority: ERROR
-  tags: [filesystem]
+  tags: [filesystem, mitre_persistence]
 
 - rule: Mkdir binary dirs
   desc: an attempt to create a directory below a set of binary directories.
@@ -1172,7 +1419,7 @@
     Directory below known binary directory created (user=%user.name
     command=%proc.cmdline directory=%evt.arg.path)
   priority: ERROR
-  tags: [filesystem]
+  tags: [filesystem, mitre_persistence]
 
 # This list allows for easy additions to the set of commands allowed
 # to change thread namespace without having to copy and override the
@@ -1186,13 +1433,15 @@
     as a part of creating a container) by calling setns.
   condition: >
     evt.type = setns
-    and not proc.name in (docker_binaries, k8s_binaries, lxd_binaries, sysdigcloud_binaries, sysdig, nsenter, calico)
+    and not proc.name in (docker_binaries, k8s_binaries, lxd_binaries, sysdigcloud_binaries,
+                          sysdig, nsenter, calico, oci-umount)
     and not proc.name in (user_known_change_thread_namespace_binaries)
     and not proc.name startswith "runc:"
     and not proc.pname in (sysdigcloud_binaries)
     and not python_running_sdchecks
     and not java_running_sdjagent
     and not kubelet_running_loopback
+    and not rancher_agent
   output: >
     Namespace change (setns) by unexpected program (user=%user.name command=%proc.cmdline
     parent=%proc.pname %container.info)
@@ -1343,7 +1592,7 @@
     cmdline=%proc.cmdline pcmdline=%proc.pcmdline gparent=%proc.aname[2] ggparent=%proc.aname[3]
     aname[4]=%proc.aname[4] aname[5]=%proc.aname[5] aname[6]=%proc.aname[6] aname[7]=%proc.aname[7])
   priority: DEBUG
-  tags: [shell]
+  tags: [shell, mitre_execution]
 
 - macro: allowed_openshift_registry_root
   condition: >
@@ -1385,6 +1634,12 @@
               container.image.repository startswith istio/proxy_ or
               container.image.repository startswith quay.io/sysdig)
 
+- list: rancher_images
+  items: [
+    rancher/network-manager, rancher/dns, rancher/agent,
+    rancher/lb-service-haproxy, rancher/metadata, rancher/healthcheck
+  ]
+
 # Add conditions to this macro (probably in a separate file,
 # overwriting this macro) to specify additional containers that are
 # trusted and therefore allowed to run privileged.
@@ -1406,13 +1661,13 @@
 - rule: Launch Privileged Container
   desc: Detect the initial process started in a privileged container. Exceptions are made for known trusted images.
   condition: >
-    evt.type=execve and proc.vpid=1 and container
+    container_started and container
     and container.privileged=true
     and not trusted_containers
     and not user_trusted_containers
   output: Privileged container started (user=%user.name command=%proc.cmdline %container.info image=%container.image.repository:%container.image.tag)
   priority: INFO
-  tags: [container, cis]
+  tags: [container, cis, mitre_privilege_escalation, mitre_lateral_movement]
 
 # For now, only considering a full mount of /etc as
 # sensitive. Ideally, this would also consider all subdirectories
@@ -1446,34 +1701,33 @@
     Detect the initial process started by a container that has a mount from a sensitive host directory
     (i.e. /proc). Exceptions are made for known trusted images.
   condition: >
-    evt.type=execve and proc.vpid=1 and container
+    container_started and container
     and sensitive_mount
     and not trusted_containers
     and not user_sensitive_mount_containers
   output: Container with sensitive mount started (user=%user.name command=%proc.cmdline %container.info image=%container.image.repository:%container.image.tag mounts=%container.mounts)
   priority: INFO
-  tags: [container, cis]
+  tags: [container, cis, mitre_lateral_movement]
 
 # In a local/user rules file, you could override this macro to
 # explicitly enumerate the container images that you want to run in
 # your environment. In this main falco rules file, there isn't any way
 # to know all the containers that can run, so any container is
-# alllowed, by using a filter that is guaranteed to evaluate to true
-# (the same proc.vpid=1 that's in the Launch Disallowed Container
-# rule). In the overridden macro, the condition would look something
-# like (container.image.repository = vendor/container-1 or
+# allowed, by using a filter that is guaranteed to evaluate to true.
+# In the overridden macro, the condition would look something like
+# (container.image.repository = vendor/container-1 or
 # container.image.repository = vendor/container-2 or ...)
 
 - macro: allowed_containers
-  condition: (proc.vpid=1)
+  condition: (container.id exists)
 
 - rule: Launch Disallowed Container
   desc: >
     Detect the initial process started by a container that is not in a list of allowed containers.
-  condition: evt.type=execve and proc.vpid=1 and container and not allowed_containers
+  condition: container_started and container and not allowed_containers
   output: Container started and not in allowed list (user=%user.name command=%proc.cmdline %container.info image=%container.image.repository:%container.image.tag)
   priority: WARNING
-  tags: [container]
+  tags: [container, mitre_lateral_movement]
 
 # Anything run interactively by root
 # - condition: evt.type != switch and user.name = root and proc.name != sshd and interactive
@@ -1485,7 +1739,7 @@
   condition: spawned_process and system_users and interactive
   output: "System user ran an interactive command (user=%user.name command=%proc.cmdline)"
   priority: INFO
-  tags: [users]
+  tags: [users, mitre_remote_access_tools]
 
 - rule: Terminal shell in container
   desc: A shell was used as the entrypoint/exec point into a container with an attached terminal.
@@ -1497,7 +1751,7 @@
     A shell was spawned in a container with an attached terminal (user=%user.name %container.info
     shell=%proc.name parent=%proc.pname cmdline=%proc.cmdline terminal=%proc.tty)
   priority: NOTICE
-  tags: [container, shell]
+  tags: [container, shell, mitre_execution]
 
 # For some container types (mesos), there isn't a container image to
 # work with, and the container name is autogenerated, so there isn't
@@ -1563,7 +1817,7 @@
 - rule: System procs network activity
   desc: any network activity performed by system binaries that are not expected to send or receive any network traffic
   condition: >
-    (fd.sockfamily = ip and system_procs)
+    (fd.sockfamily = ip and (system_procs or proc.name in (shell_binaries)))
     and (inbound_outbound)
     and not proc.name in (systemd, hostid, id)
     and not login_doing_dns_lookup
@@ -1571,7 +1825,67 @@
     Known system binary sent/received network traffic
     (user=%user.name command=%proc.cmdline connection=%fd.name)
   priority: NOTICE
-  tags: [network]
+  tags: [network, mitre_exfiltration]
+
+# When filled in, this should look something like:
+# (proc.env contains "HTTP_PROXY=http://my.http.proxy.com ")
+# The trailing space is intentional so avoid matching on prefixes of
+# the actual proxy.
+- macro: allowed_ssh_proxy_env
+  condition: (always_true)
+
+- list: http_proxy_binaries
+  items: [curl, wget]
+
+- macro: http_proxy_procs
+  condition: (proc.name in (http_proxy_binaries))
+
+- rule: Program run with disallowed http proxy env
+  desc: An attempt to run a program with a disallowed HTTP_PROXY environment variable
+  condition: >
+    spawned_process and
+    http_proxy_procs and
+    not allowed_ssh_proxy_env and
+    proc.env icontains HTTP_PROXY
+  output: >
+    Program run with disallowed HTTP_PROXY environment variable
+    (user=%user.name command=%proc.cmdline env=%proc.env parent=%proc.pname)
+  priority: NOTICE
+  tags: [host, users]
+
+# In some environments, any attempt by a interpreted program (perl,
+# python, ruby, etc) to listen for incoming connections or perform
+# outgoing connections might be suspicious. These rules are not
+# enabled by default, but you can modify the following macros to
+# enable them.
+
+- macro: consider_interpreted_inbound
+  condition: (never_true)
+
+- macro: consider_interpreted_outbound
+  condition: (never_true)
+
+- rule: Interpreted procs inbound network activity
+  desc: Any inbound network activity performed by any interpreted program (perl, python, ruby, etc.)
+  condition: >
+    (inbound and consider_interpreted_inbound
+     and interpreted_procs)
+  output: >
+    Interpreted program received/listened for network traffic
+    (user=%user.name command=%proc.cmdline connection=%fd.name)
+  priority: NOTICE
+  tags: [network, mitre_exfiltration]
+
+- rule: Interpreted procs outbound network activity
+  desc: Any outbound network activity performed by any interpreted program (perl, python, ruby, etc.)
+  condition: >
+    (outbound and consider_interpreted_outbound
+     and interpreted_procs)
+  output: >
+    Interpreted program performed outgoing network connection
+    (user=%user.name command=%proc.cmdline connection=%fd.name)
+  priority: NOTICE
+  tags: [network, mitre_exfiltration]
 
 - list: openvpn_udp_ports
   items: [1194, 1197, 1198, 8080, 9201]
@@ -1612,7 +1926,7 @@
     Unexpected UDP Traffic Seen
     (user=%user.name command=%proc.cmdline connection=%fd.name proto=%fd.l4proto evt=%evt.type %evt.args)
   priority: NOTICE
-  tags: [network]
+  tags: [network, mitre_exfiltration]
 
 # With the current restriction on system calls handled by falco
 # (e.g. excluding read/write/sendto/recvfrom/etc, this rule won't
@@ -1643,6 +1957,15 @@
 - macro: known_user_in_container
   condition: (container and user.name != "N/A")
 
+# Add conditions to this macro (probably in a separate file,
+# overwriting this macro) to allow for specific combinations of
+# programs changing users by calling setuid.
+#
+# In this file, it just takes one of the condition in the base macro
+# and repeats it.
+- macro: user_known_non_sudo_setuid_conditions
+  condition: user.name=root
+
 # sshd, mail programs attempt to setuid to root even when running as non-root. Excluding here to avoid meaningless FPs
 - rule: Non sudo setuid
   desc: >
@@ -1651,16 +1974,18 @@
   condition: >
     evt.type=setuid and evt.dir=>
     and (known_user_in_container or not container)
-    and not user.name=root and not somebody_becoming_themself
+    and not user.name=root
+    and not somebody_becoming_themself
     and not proc.name in (known_setuid_binaries, userexec_binaries, mail_binaries, docker_binaries,
                           nomachine_binaries)
     and not java_running_sdjagent
     and not nrpe_becoming_nagios
+    and not user_known_non_sudo_setuid_conditions
   output: >
     Unexpected setuid call by non-sudo, non-root program (user=%user.name cur_uid=%user.uid parent=%proc.pname
     command=%proc.cmdline uid=%evt.arg.uid)
   priority: NOTICE
-  tags: [users]
+  tags: [users, mitre_privilege_escalation]
 
 - rule: User mgmt binaries
   desc: >
@@ -1684,7 +2009,7 @@
     User management binary command run outside of container
     (user=%user.name command=%proc.cmdline parent=%proc.pname gparent=%proc.aname[2] ggparent=%proc.aname[3] gggparent=%proc.aname[4])
   priority: NOTICE
-  tags: [host, users]
+  tags: [host, users, mitre_persistence]
 
 - list: allowed_dev_files
   items: [
@@ -1704,7 +2029,7 @@
     and not fd.name startswith /dev/tty
   output: "File created below /dev by untrusted program (user=%user.name command=%proc.cmdline file=%fd.name)"
   priority: ERROR
-  tags: [filesystem]
+  tags: [filesystem, mitre_persistence]
 
 
 # In a local/user rules file, you could override this macro to
@@ -1726,7 +2051,7 @@
   condition: outbound and fd.sip="169.254.169.254" and container and not ec2_metadata_containers
   output: Outbound connection to EC2 instance metadata service (command=%proc.cmdline connection=%fd.name %container.info image=%container.image.repository:%container.image.tag)
   priority: NOTICE
-  tags: [network, aws, container]
+  tags: [network, aws, container, mitre_discovery]
 
 # In a local/user rules file, you should override this macro with the
 # IP address of your k8s api server. The IP 1.2.3.4 is a placeholder
@@ -1749,7 +2074,7 @@
   condition: outbound and k8s_api_server and container and not k8s_containers
   output: Unexpected connection to K8s API Server from container (command=%proc.cmdline %container.info image=%container.image.repository:%container.image.tag connection=%fd.name)
   priority: NOTICE
-  tags: [network, k8s, container]
+  tags: [network, k8s, container, mitre_discovery]
 
 # In a local/user rules file, list the container images that are
 # allowed to contact NodePort services from within a container. This
@@ -1765,10 +2090,10 @@
   condition: (inbound_outbound) and fd.sport >= 30000 and fd.sport <= 32767 and container and not nodeport_containers
   output: Unexpected K8s NodePort Connection (command=%proc.cmdline connection=%fd.name)
   priority: NOTICE
-  tags: [network, k8s, container]
+  tags: [network, k8s, container, mitre_port_knocking]
 
 - list: network_tool_binaries
-  items: [nc, ncat, nmap]
+  items: [nc, ncat, nmap, dig, tcpdump, tshark, ngrep]
 
 - macro: network_tool_procs
   condition: proc.name in (network_tool_binaries)
@@ -1782,7 +2107,7 @@
     Package management process launched in container (user=%user.name
     command=%proc.cmdline container_id=%container.id container_name=%container.name image=%container.image.repository:%container.image.tag)
   priority: ERROR
-  tags: [process]
+  tags: [process, mitre_persistence]
 
 - rule: Netcat Remote Code Execution in Container
   desc: Netcat Program runs inside container that allows remote code execution
@@ -1795,17 +2120,154 @@
     Netcat runs inside container that allows remote code execution (user=%user.name
     command=%proc.cmdline container_id=%container.id container_name=%container.name image=%container.image.repository:%container.image.tag)
   priority: WARNING
-  tags: [network, process]
+  tags: [network, process, mitre_execution]
 
 - rule: Lauch Suspicious Network Tool in Container
   desc: Detect network tools launched inside container
   condition: >
     spawned_process and container and network_tool_procs
   output: >
-    Network tool launched in container (user=%user.name
-    command=%proc.cmdline container_id=%container.id container_name=%container.name image=%container.image.repository:%container.image.tag)
+    Network tool launched in container (user=%user.name command=%proc.cmdline parent_process=%proc.pname
+    container_id=%container.id container_name=%container.name image=%container.image.repository:%container.image.tag)
   priority: NOTICE
-  tags: [network, process]
+  tags: [network, process, mitre_discovery, mitre_exfiltration]
+
+# This rule is not enabled by default, as there are legitimate use
+# cases for these tools on hosts. If you want to enable it, modify the
+# following macro.
+- macro: consider_network_tools_on_host
+  condition: (never_true)
+
+- rule: Launch Suspicious Network Tool on Host
+  desc: Detect network tools launched on the host
+  condition: >
+    spawned_process and
+    not container and
+    consider_network_tools_on_host and
+    network_tool_procs
+  output: >
+    Network tool launched on host (user=%user.name command=%proc.cmdline parent_process=%proc.pname)
+  priority: NOTICE
+  tags: [network, process, mitre_discovery, mitre_exfiltration]
+
+- list: grep_binaries
+  items: [grep, egre, fgrep]
+
+- macro: grep_commands
+  condition: (proc.name in (grep_binaries))
+
+# a less restrictive search for things that might be passwords/ssh/user etc.
+- macro: grep_more
+  condition: (never_true)
+
+- macro: private_key_or_password
+  condition: >
+    (proc.args icontains "BEGIN PRIVATE" or
+     proc.args icontains "BEGIN RSA PRIVATE" or
+     proc.args icontains "BEGIN DSA PRIVATE" or
+     proc.args icontains "BEGIN EC PRIVATE" or
+     (grep_more and
+      (proc.args icontains " pass " or
+       proc.args icontains " ssh " or
+       proc.args icontains " user "))
+    )
+
+- rule: Search Private Keys or Passwords
+  desc: >
+    Detect grep private keys or passwords activity.
+  condition: >
+    (spawned_process and
+     ((grep_commands and private_key_or_password) or
+      (proc.name = "find" and (proc.args contains "id_rsa" or proc.args contains "id_dsa")))
+    )
+  output: >
+    Grep private keys or passwords activities found
+    (user=%user.name command=%proc.cmdline container_id=%container.id container_name=%container.name
+    image=%container.image.repository:%container.image.tag)
+  priority:
+    WARNING
+  tags: [process, mitre_credential_access]
+
+- list: log_directories
+  items: [/var/log, /dev/log]
+
+- list: log_files
+  items: [syslog, auth.log, secure, kern.log, cron, user.log, dpkg.log, last.log, yum.log, access_log, mysql.log, mysqld.log]
+
+- macro: access_log_files
+  condition: (fd.directory in (log_directories) or fd.filename in (log_files))
+
+- rule: Clear Log Activities
+  desc: Detect clearing of critical log files
+  condition: >
+    open_write and access_log_files and evt.arg.flags contains "O_TRUNC"
+  output: >
+    Log files were tampered (user=%user.name command=%proc.cmdline file=%fd.name)
+  priority:
+    WARNING
+  tags: [file, mitre_defense_evasion]
+
+- list: data_remove_commands
+  items: [shred, mkfs, mke2fs]
+
+- macro: clear_data_procs
+  condition: (proc.name in (data_remove_commands))
+
+- rule: Remove Bulk Data from Disk
+  desc: Detect process running to clear bulk data from disk
+  condition: spawned_process and clear_data_procs
+  output: >
+    Bulk data has been removed from disk (user=%user.name command=%proc.cmdline file=%fd.name)
+  priority:
+    WARNING
+  tags: [process, mitre_persistence]
+
+- rule: Delete Bash History
+  desc: Detect bash history deletion
+  condition: >
+    ((spawned_process and proc.name in (shred, rm, mv) and proc.args contains "bash_history") or
+     (open_write and fd.name contains "bash_history" and evt.arg.flags contains "O_TRUNC"))
+  output: >
+    Bash history has been deleted (user=%user.name command=%proc.cmdline file=%fd.name %container.info)
+  priority:
+    WARNING
+  tag: [process, mitre_defense_evation]
+
+- macro: consider_all_chmods
+  condition: (never_true)
+
+- rule: Set Setuid or Setgid bit
+  desc: >
+    When the setuid or setgid bits are set for an application,
+    this means that the application will run with the privileges of the owning user or group respectively.
+    Detect setuid or setgid bits set via chmod
+  condition: consider_all_chmods and spawned_process and proc.name = "chmod" and (proc.args contains "+s" or proc.args contains "4777")
+  output: >
+    Setuid or setgid bit is set via chmod (user=%user.name command=%proc.cmdline
+    container_id=%container.id container_name=%container.name image=%container.image.repository:%container.image.tag)
+  priority:
+    NOTICE
+  tag: [process, mitre_persistence]
+
+- list: exclude_hidden_directories
+  items: [/root/.cassandra]
+
+# To use this rule, you should modify consider_hidden_file_creation.
+- macro: consider_hidden_file_creation
+  condition: (never_true)
+
+- rule: Create Hidden Files or Directories
+  desc: Detect hidden files or directories created
+  condition: >
+    ((mkdir and consider_hidden_file_creation and evt.arg.path contains "/.") or
+     (open_write and consider_hidden_file_creation and evt.arg.flags contains "O_CREAT" and
+      fd.name contains "/." and not fd.name pmatch (exclude_hidden_directories)))
+  output: >
+    Hidden file or directory created (user=%user.name command=%proc.cmdline
+    file=%fd.name container_id=%container.id container_name=%container.name image=%container.image.repository:%container.image.tag)
+  priority:
+    NOTICE
+  tag: [file, mitre_persistence]
 
 # Application rules have moved to application_rules.yaml. Please look
 # there if you want to enable them by adding to

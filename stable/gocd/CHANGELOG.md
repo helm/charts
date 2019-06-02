@@ -1,3 +1,10 @@
+### 1.10.0
+* [554019b](https://github.com/kubernetes/charts/commit/554019b):
+- Bump up GoCD Version to 19.4.0
+### 1.9.1
+
+- Add support for Deployment and Pod annotations.
+
 ### 1.9.0
 
 - Bump up k8s elastic agent plugin to latest.

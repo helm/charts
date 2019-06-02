@@ -29,8 +29,9 @@ Parameter | Description | Default
 `priorityClassName` | Pod priority class | `""`
 `readinessProbe` | Container readiness probe | See values.yaml
 `service.annotations` | Annotations to add to the service | `{}`
+`service.labels` | Labels to be added to the metrics-server service | `{}`
 `service.port` | Service port to expose | `443`
 `service.type` | Type of service to create | `ClusterIP`
 `podDisruptionBudget.enabled` | Create a PodDisruptionBudget | `false`
-`podDisruptionBudget.minAvailable` | Minimum available instances; ignored if there is no PodDisruptionBudget | `1`
-`podDisruptionBudget.maxUnavailable` | Maximum unavailable instances; ignored if there is no PodDisruptionBudget | `1`
+`podDisruptionBudget.minAvailable` | Minimum available instances; ignored if there is no PodDisruptionBudget |
+`podDisruptionBudget.maxUnavailable` | Maximum unavailable instances; ignored if there is no PodDisruptionBudget |
