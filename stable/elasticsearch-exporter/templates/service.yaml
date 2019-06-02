@@ -19,7 +19,7 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - name: port
+    - name: {{ .Values.service.metricsPort.name }}
       port: {{ .Values.service.httpPort }}
       protocol: TCP
   selector:

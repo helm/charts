@@ -30,6 +30,8 @@ podAnnotations: {}
 service:
   type: ClusterIP
   httpPort: 9108
+  metricsPort:
+    name: http
   annotations: {}
   labels: {}
 
