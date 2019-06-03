@@ -88,9 +88,6 @@ The following table lists the configurable parameters of the Drupal chart and th
 | `service.nodePorts.http`          | Kubernetes http node port                  | `""`                                                      |
 | `service.nodePorts.https`         | Kubernetes https node port                 | `""`                                                      |
 | `persistence.enabled`             | Enable persistence using PVC               | `true`                                                    |
-| `persistence.apache.storageClass` | PVC Storage Class for Apache volume        | `nil` (uses alpha storage class annotation)               |
-| `persistence.apache.accessMode`   | PVC Access Mode for Apache volume          | `ReadWriteOnce`                                           |
-| `persistence.apache.size`         | PVC Storage Request for Apache volume      | `1Gi`                                                     |
 | `persistence.drupal.storageClass` | PVC Storage Class for Drupal volume        | `nil` (uses alpha storage class annotation)               |
 | `persistence.drupal.accessMode`   | PVC Access Mode for Drupal volume          | `ReadWriteOnce`                                           |
 | `persistence.drupal.existingClaim`| An Existing PVC name                       | `nil`                                                     |
@@ -98,7 +95,6 @@ The following table lists the configurable parameters of the Drupal chart and th
 | `persistence.drupal.size`         | PVC Storage Request for Drupal volume      | `8Gi`                                                     |
 | `resources`                       | CPU/Memory resource requests/limits        | Memory: `512Mi`, CPU: `300m`                              |
 | `volumeMounts.drupal.mountPath`   | Drupal data volume mount path              | `/bitnami/drupal`                                         |
-| `volumeMounts.apache.mountPath`   | Apache data volume mount path              | `/bitnami/apache`                                         |
 | `podAnnotations`                  | Pod annotations                            | `{}`                                                      |
 | `metrics.enabled`                 | Start a side-car prometheus exporter       | `false`                                                   |
 | `metrics.image.registry`          | Apache exporter image registry             | `docker.io`                                               |
@@ -153,9 +149,7 @@ helm install --name my-release -f values.yaml stable/drupal
 
 ## Persistence
 
-The configured image must store Drupal data and Apache configurations in separate paths of the container.
-
-The [Bitnami Drupal](https://github.com/bitnami/bitnami-docker-drupal) image stores the Drupal data and Apache configurations at the `/bitnami/drupal` and `/bitnami/apache` paths of the container. If you wish to override the `image` value, and your image stores this data and configurations in different paths, you may specify these paths with `volumeMounts.drupal.mountPath` and `volumeMounts.apache.mountPath`.
+The [Bitnami Drupal](https://github.com/bitnami/bitnami-docker-drupal) image stores the Drupal data at the `/bitnami/drupal` path of the container. If you wish to override the `image` value, and your image stores this data in different path, you may specify these paths with `volumeMounts.drupal.mountPath`.
 
 Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
 See the [Configuration](#configuration) section to configure the PVC or to disable persistence.
