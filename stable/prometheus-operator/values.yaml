@@ -544,6 +544,13 @@ kubeControllerManager:
       component: kube-controller-manager
 
   serviceMonitor:
+
+    ## Custom label selector for the kube-controller-manager Service Monitor.
+    ## If left empty, uses app and release labels
+    selector: 
+      matchLabels:
+      #  k8s-app: kube-controller-manager
+    
     ## Scrape interval. If not set, the Prometheus default scrape interval is used.
     ##
     interval: ""

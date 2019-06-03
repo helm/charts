@@ -9,9 +9,14 @@ metadata:
 spec:
   jobLabel: jobLabel
   selector:
+{{- if .Values.kubeControllerManager.serviceMonitor.selector.matchLabels }}  
+    matchLabels:
+{{ toYaml .Values.kubeControllerManager.serviceMonitor.selector.matchLabels | indent 6 }}
+{{- else }}
     matchLabels:
       app: {{ template "prometheus-operator.name" . }}-kube-controller-manager
       release: {{ .Release.Name | quote }}
+{{- end }}
   namespaceSelector:
     matchNames:
       - "kube-system"
