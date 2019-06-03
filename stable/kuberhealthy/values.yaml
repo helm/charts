@@ -21,22 +21,10 @@ resources:
     cpu: 400m
     memory: 200Mi
 
-tolerations:
-  # change to true to tolerate and deploy to masters
-  master: false
+tolerations: {}
 
-deployment:
-  replicas: 2
-  maxSurge: 0
-  maxUnavailable: 1
-  imagePullPolicy: IfNotPresent
-  podAnnotations: {}
-  command:
-  - /app/kuberhealthy
-  # use this to override location of the test-image, see: https://github.com/Comcast/kuberhealthy/blob/master/docs/FLAGS.md
-  # args:
-  # - -dsPauseContainerImageOverride
-  # - your-repo/google_containers/pause:0.8.0
+replicaCount: 2
+
 securityContext:
   runAsNonRoot: true
   runAsUser: 999
