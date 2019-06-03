@@ -326,6 +326,9 @@ metrics:
   serviceMonitor:
     enabled: false
     additionalLabels: {}
+    # namespace: monitoring
+    # interval: 30s
+    # scrapeTimeout: 10s
   image:
     registry: docker.io
     repository: wrouesnel/postgres_exporter
