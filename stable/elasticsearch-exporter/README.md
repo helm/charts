@@ -56,7 +56,9 @@ Parameter | Description | Default
 `podAnnotations` | Pod annotations | `{}` |
 `service.type` | type of service to create | `ClusterIP`
 `service.httpPort` | port for the http service | `9108`
+`service.metricsPort.name` | name for the http service | `http`
 `service.annotations` | Annotations on the http service | `{}`
+`service.labels` | Additional labels for the service definition | `{}`
 `es.uri` | address of the Elasticsearch node to connect to | `localhost:9200`
 `es.all` | if `true`, query stats for all nodes in the cluster, rather than just the node we connect to | `true`
 `es.indices` | if true, query stats for all indices in the cluster | `true`

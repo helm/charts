@@ -7,6 +7,11 @@ metadata:
     app: {{ template "elasticsearch-exporter.name" . }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
+    {{- if .Values.service.labels }}
+    {{- range $key, $value := .Values.service.labels }}
+      {{ $key }}: {{ $value | quote }}
+    {{- end }}
+    {{- end }}
 {{- if .Values.service.annotations }}
   annotations:
 {{ toYaml .Values.service.annotations | indent 4 }}
@@ -14,7 +19,7 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - name: http
+    - name: {{ .Values.service.metricsPort.name }}
       port: {{ .Values.service.httpPort }}
       protocol: TCP
   selector:
