@@ -12,6 +12,10 @@ spec:
     matchLabels:
       app: "{{ template "wordpress.fullname" . }}"
       release: {{ .Release.Name | quote }}
+  strategy:
+{{- if .Values.wordpressUpdateStrategy }}
+{{ toYaml .Values.wordpressUpdateStrategy | indent 4 }}
+{{- end }}
   replicas: {{ .Values.replicaCount }}
   template:
     metadata:
