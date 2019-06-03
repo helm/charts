@@ -178,8 +178,7 @@ airflow:
   #   emptyDir: {}
 
 scheduler:
-  resources:
-    scheduler: {}
+  resources: {}
     # limits:
     #   cpu: "1000m"
     #   memory: "1Gi"
