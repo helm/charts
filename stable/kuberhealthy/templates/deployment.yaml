@@ -12,9 +12,7 @@ spec:
   selector:
     matchLabels:
       app: {{ template "kuberhealthy.name" . }}
-      chart: {{ .Chart.Name }}
       release: {{ .Release.Name }}
-      heritage: {{ .Release.Service }}
   template:
     metadata:
       labels:
