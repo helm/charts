@@ -296,7 +296,7 @@ inputs:
     }
 
 filters:
-  # main: |-
+  main: |-
   #   filter {
   #   }
 
