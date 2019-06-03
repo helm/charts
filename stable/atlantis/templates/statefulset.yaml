@@ -7,6 +7,9 @@ metadata:
     chart: {{ template "atlantis.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+{{- if .Values.statefulSet.labels }}
+{{ toYaml .Values.statefulSet.labels | indent 4 }}
+{{- end }}
   {{- with .Values.statefulSet.annotations }}
   annotations:
 {{ toYaml . | indent 4 }}
@@ -22,6 +25,9 @@ spec:
       labels:
         app: {{ template "atlantis.name" . }}
         release: {{ .Release.Name }}
+{{- if .Values.podTemplate.labels }}
+{{ toYaml .Values.podTemplate.labels | indent 8 }}
+{{- end }}
       {{- with .Values.podTemplate.annotations }}
       annotations:
 {{ toYaml . | indent 8 }}
