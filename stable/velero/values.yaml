@@ -154,6 +154,7 @@ deployRestic: false
 
 restic:
   podVolumePath: /var/lib/kubelet/pods
+  privileged: false
 
 # Backup schedules to create.
 # Eg:
