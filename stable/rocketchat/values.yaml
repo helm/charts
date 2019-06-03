@@ -19,6 +19,9 @@ smtp:
   host:
   port: 587
 
+backupDatabase: false
+restoreDatabase: false
+
 # Extra env vars for Rocket.Chat:
 extraEnv:  # |
   # - name: MONGO_OPTIONS

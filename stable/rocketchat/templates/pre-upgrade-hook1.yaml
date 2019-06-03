@@ -1,11 +1,8 @@
-{{- if .Values.mongodb.persistence.enabled }}
-{{- if and .Values.mongodb.replicaSet (.Values.mongodb.replicaSet.enabled) }}
-{{ fail "Already upgraded" }}
-{{- else }}
+{{- if .Values.backupDatabase }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: "mongoutil-mongodump"
+  name: "rocketchat-mongodump"
   labels:
     app: {{ template "rocketchat.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
@@ -29,7 +26,6 @@ spec:
   storageClassName: ""
 {{- else }}
   storageClassName: "{{ .Values.mongodb.persistence.storageClass }}"
-{{- end }}
 {{- end }}
 {{- end }}
 {{- end }}

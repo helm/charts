@@ -1,3 +1,4 @@
+{{- if .Values.restoreDatabase }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -13,14 +14,14 @@ spec:
       containers:
       - name: mongoutil-mongorestore
         image: bitnami/mongodb
-        command: ["mongorestore", "--host", "{{ .Release.Name }}-mongodb"  , "--username", "{{ .Values.mongodb.mongodbUsername }}", "--password", "{{ .Values.mongodb.mongodbPassword }}", "--db", "{{ .Values.mongodb.mongodbDatabase }}" , "--archive=/dump/rocketchat-db-bkup.gz", "--gzip"]
+        command: ["mongorestore", "--drop", "--host", "{{ .Release.Name }}-mongodb"  , "--username", "{{ .Values.mongodb.mongodbUsername }}", "--password", "{{ .Values.mongodb.mongodbPassword }}", "--db", "{{ .Values.mongodb.mongodbDatabase }}" , "--archive=/dump/rocketchat-db-bkup.gz", "--gzip"]
         volumeMounts:
         - mountPath: "/dump"
           name: mongodump
       volumes:
       - name: mongodump
         persistentVolumeClaim:
-          claimName: mongoutil-mongodump
+          claimName: rocketchat-mongodump
       restartPolicy: Never
-  backoffLimit: 4        
-
+  backoffLimit: 7 
+{{- end }}

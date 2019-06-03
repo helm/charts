@@ -1,3 +1,4 @@
+{{- if .Values.backupDatabase }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -20,6 +21,7 @@ spec:
       volumes:
       - name: mongodump
         persistentVolumeClaim:
-          claimName: mongoutil-mongodump
+          claimName: rocketchat-mongodump
       restartPolicy: Never
   backoffLimit: 4
+{{- end }}
