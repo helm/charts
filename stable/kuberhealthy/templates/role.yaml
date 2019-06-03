@@ -1,7 +1,12 @@
 apiVersion: {{ template "rbac.apiVersion" . }}
 kind: Role
 metadata:
-  name: {{ template "kuberhealthy.name" . }}
+  name: {{ template "kuberhealthy.fullname" . }}
+  labels:
+    app: {{ template "kuberhealthy.name" . }}
+    chart: {{ template "kuberhealthy.chart" .  }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
 rules:
   - apiGroups:
     - apps

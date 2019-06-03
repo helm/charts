@@ -3,8 +3,10 @@ kind: Service
 metadata:
   labels:
     app: {{ template "kuberhealthy.name" . }}
+    chart: {{ .Chart.Name }}
     release: {{ .Release.Name }}
-  name: {{ template "kuberhealthy.name" . }}
+    heritage: {{ .Release.Service }}
+  name: {{ template "kuberhealthy.fullname" . }}
   {{- if .Values.service.annotations }}
   annotations:
   {{- range $key, $value := .Values.service.annotations }}
@@ -16,6 +18,7 @@ spec:
   ports:
   - port: {{ .Values.service.externalPort }}
     name: http
+    protocol: TCP
     targetPort: http
   selector:
     app: {{ template "kuberhealthy.name" . }}
