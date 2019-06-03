@@ -39,7 +39,20 @@ spec:
         image: "{{ .Values.image.fluent_bit.repository }}:{{ .Values.image.fluent_bit.tag }}"
         imagePullPolicy: "{{ .Values.image.pullPolicy }}"
         env:
+{{- if .Values.backend.es.http_passwd_secret.name }}
+{{ with .Values.backend.es.http_passwd_secret }}
+          - name: HTTP_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ .name }}
+                key: {{ .key }}
+{{ end }}
+{{- if .Values.env }}
 {{ toYaml .Values.env | indent 10 }}
+{{ end }}
+{{- else }}
+{{ toYaml .Values.env | indent 10 }}
+{{ end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
 {{- if or .Values.metrics.enabled .Values.extraPorts }}

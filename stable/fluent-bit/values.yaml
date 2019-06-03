@@ -58,6 +58,12 @@ backend:
     http_user:
     # Password for user defined in HTTP_User
     http_passwd:
+    # Password secret for user defined in HTTP_User
+    http_passwd_secret:
+      # Secret name
+      name:
+      # Secret key for the password
+      key:
     # Optional TLS encryption to ElasticSearch instance
     tls: "off"
     tls_verify: "on"

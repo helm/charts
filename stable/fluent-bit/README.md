@@ -48,6 +48,9 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `backend.es.replace_dots`     | Enable/Disable Replace_Dots option. | `On` |
 | `backend.es.http_user`        | Optional username credential for Elastic X-Pack access. | `` |
 | `backend.es.http_passwd:`     | Password for user defined in HTTP_User. | `` |
+| `backend.es.http_passwd_secret:`  | Secret for the elastic search user password. | `NULL`
+| `backend.es.http_passwd_secret.name:` | Secret name | ``
+| `backend.es.http_passwd_secret.key:` | Secret key for the password | ``
 | `backend.es.tls`              | Enable or disable TLS support | `off` |
 | `backend.es.tls_verify`       | Force certificate validation  | `on` |
 | `backend.es.tls_ca`           | TLS CA certificate for the Elastic instance (in PEM format). Specify if tls: on. | `` |
