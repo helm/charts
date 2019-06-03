@@ -73,7 +73,9 @@ spec:
 {{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"
 {{- end }}
-      serviceAccountName: {{ if .Values.rbac.create }}{{ printf "%s-%s" .Release.Name .Values.name }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+{{- if .Values.rbac.create }}
+      serviceAccountName: "{{ .Values.rbac.serviceAccountName }}"
+{{- end }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

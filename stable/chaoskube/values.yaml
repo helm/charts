@@ -81,8 +81,6 @@ priorityClassName: ""
 # create service account with permission to list and kill pods
 rbac:
   create: false
-
-  # only used when create is false
   serviceAccountName: default
 
 resources: {}

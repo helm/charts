@@ -56,7 +56,7 @@ $ helm install stable/chaoskube --set dryRun=false
 | `excludedDaysOfYear`                      | Set Days of the Year to avoid actions (Optional)                                      | "" (Don't skip any days)         |
 | `priorityClassName`                       | priorityClassName                                                                     | `nil`                            |
 | `rbac.create`                             | create rbac service account and roles                                                 | false                            |
-| `rbac.serviceAccountName`                 | name of serviceAccount to use when create is false                                    | default                          |
+| `rbac.serviceAccountName`                 | name of serviceAccount to use                                                         | default                          |
 | `resources`                               | CPU/Memory resource requests/limits                                                   | `{}`                             |
 | `nodeSelector`                            | Node labels for pod assignment                                                        | `{}`                             |
 | `tolerations`                             | Toleration labels for pod assignment                                                  | `[]`                             |

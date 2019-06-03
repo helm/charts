@@ -4,13 +4,13 @@ kind: ClusterRoleBinding
 metadata:
   labels:
 {{ include "labels.standard" . | indent 4 }}
-  name: {{ printf "%s-%s" .Release.Name .Values.name }}
+  name: {{ template "chaoskube.fullname" . }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: {{ printf "%s-%s" .Release.Name .Values.name }}
+  name: {{ template "chaoskube.fullname" . }}
 subjects:
   - kind: ServiceAccount
-    name: {{ printf "%s-%s" .Release.Name .Values.name }}
+    name: "{{ .Values.rbac.serviceAccountName }}"
     namespace: {{ .Release.Namespace }}
 {{- end -}}

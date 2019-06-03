@@ -4,7 +4,7 @@ kind: ClusterRole
 metadata:
   labels:
 {{ include "labels.standard" . | indent 4 }}
-  name: {{ printf "%s-%s" .Release.Name .Values.name }}
+  name: {{ template "chaoskube.fullname" . }}
 rules:
   - apiGroups: [""]
     resources: ["pods"]
