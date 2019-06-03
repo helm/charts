@@ -5,7 +5,7 @@ on_minikube: false
 image:
   fluent_bit:
     repository: fluent/fluent-bit
-    tag: 1.1.0
+    tag: 1.1.2
   pullPolicy: Always
 
 testFramework:
