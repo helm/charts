@@ -3,6 +3,9 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: {{ template "minio.fullname" . }}
+  {{- if .Values.metrics.serviceMonitor.namespace }}
+  namespace: {{ .Values.metrics.serviceMonitor.namespace }}
+  {{- end }}
   labels:
     app: {{ template "minio.name" . }}
     chart: {{ template "minio.chart" . }}
@@ -15,7 +18,12 @@ spec:
   endpoints:
     - port: service
       path: /minio/prometheus/metrics
-      interval: 30s
+      {{- if .Values.metrics.serviceMonitor.interval }}
+      interval: {{ .Values.metrics.serviceMonitor.interval }}
+      {{- end }}
+      {{- if .Values.metrics.serviceMonitor.scrapeTimeout }}
+      scrapeTimeout: {{ .Values.metrics.serviceMonitor.scrapeTimeout }}
+      {{- end }}
   namespaceSelector:
     matchNames:
       - {{ .Release.Namespace }}
