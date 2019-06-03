@@ -2,17 +2,17 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: "pre-upgrade-hook2"
+  name: "pre-upgrade-backup"
   annotations:
     "helm.sh/hook": pre-upgrade
     "helm.sh/hook-delete-policy": hook-succeeded
 spec:
   template:
     metadata:
-      name: "pre-upgrade-hook2"
+      name: "pre-upgrade-backup"
     spec:
       containers:
-      - name: mongoutil-mongodump 
+      - name: mongodump 
         image: bitnami/mongodb
         command: ["mongodump", "--host", "{{ .Release.Name }}-mongodb"  , "--username", "{{ .Values.mongodb.mongodbUsername }}", "--password", "{{ .Values.mongodb.mongodbPassword }}", "--db", "{{ .Values.mongodb.mongodbDatabase }}" , "--archive=/dump/rocketchat-db-bkup.gz", "--gzip"]
         volumeMounts:

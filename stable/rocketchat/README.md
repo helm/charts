@@ -42,6 +42,7 @@ The following table lists the configurable parameters of the Rocket.Chat chart a
 
 Parameter | Description | Default
 --- | --- | ---
+`backupDatabase` | Backup the database during chart upgrade.  This adds safety to prevent data from being lost.  Set to false if you don't want this. | `true`
 `image.repository` | Image repository | `rocketchat/rocket.chat`
 `image.tag` | Image tag | `1.0.3`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
@@ -109,7 +110,7 @@ extraEnv: |
 ```
 ## Upgrading
 
-Rocket.Chat version 1.x requires a MongoDB ReplicaSet to be configured. When using the dependent `stable/mongodb` chart (`mongodb.enabled=true`), enabling ReplicaSet will drop the PVC and create new ones. After upgrade there will be a backup of your current MongoDB in a volume called rocketchat-mongodump, you can restore it after the upgrade and optionally restore it during upgrade.
+Rocket.Chat version 1.x requires a MongoDB ReplicaSet to be configured. When using the dependent `stable/mongodb` chart (`mongodb.enabled=true`), enabling ReplicaSet will drop the PVC and create new ones. After upgrade there will be a backup of your current MongoDB in a volume called rocketchat-mongodump, you can restore it after the upgrade.
 
 Backwards compatibility is not guaranteed unless you modify the labels used on the chart's deployments.
 Use the workaround below to upgrade from versions previous to 1.0.0. The following example assumes that the release name is rocketchat:
@@ -123,18 +124,17 @@ $ helm upgrade \
 --set mongodb.mongodbRootPassword=<password previously configured> \
 --set mongodb.mongodbPassword=<password previously configured> \
 --set backupDatabase=true \
---set restoreDatabase=true \
 --set <other values previously configured on installation> \ 
 stable/rocketchat
 ```
 
-After upgrade, if you find any error, you can restore the rocketchat db using this pod with the backup volume mounted and run the following command from inside the pod:
+You will then need to create a pod mounting the backup volume to restore to the replicaset.  It can be created with:
 
 ```
 apiVersion: v1
 kind: Pod
 metadata:
-  name: test-restore
+  name: mongo-restore
 spec:
   containers:
   - name: for-restore
@@ -148,9 +148,11 @@ spec:
       claimName: rocketchat-mongodump
 ```
 
+Then with `kubectl exec -it mongo-restore bash` you can execute this:
+
 ```console
 $ mongorestore --drop --host rocketchat-mongodb --username <mongodb.mongodbUsername> --password <mongodb.mongodbPassword> --db <mongodb.mongodbDatabase> --archive=/dump/rocketchat-db-bkup.gz --gzip
 ```
 
-In the last command `host` is the name of the rocketchat mongodb service. You may want to delete the extra replicaset for rocketchat from before the upgrade.
+In the last command `host` is the name of the rocketchat mongodb service.
 

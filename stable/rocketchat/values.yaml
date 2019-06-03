@@ -19,8 +19,7 @@ smtp:
   host:
   port: 587
 
-backupDatabase: false
-restoreDatabase: false
+backupDatabase: true
 
 # Extra env vars for Rocket.Chat:
 extraEnv:  # |
