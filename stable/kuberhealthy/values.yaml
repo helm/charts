@@ -21,6 +21,8 @@ resources:
     cpu: 400m
     memory: 200Mi
 
+podAnnotations: {}
+
 tolerations: {}
 
 replicaCount: 2
