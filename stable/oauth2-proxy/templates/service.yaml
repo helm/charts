@@ -7,9 +7,14 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
   name: {{ template "oauth2-proxy.fullname" . }}
-{{- if .Values.service.annotations }}
+{{- if or .Values.service.annotations .Values.isOpenshift }}
   annotations:
+{{- end }}
+{{- if  .Values.service.annotations }}
 {{ toYaml .Values.service.annotations | indent 4 }}
+{{- end }}
+{{- if .Values.isOpenshift }}
+    service.alpha.openshift.io/serving-cert-secret-name: {{ template "oauth2-proxy.fullname" . }}-tls
 {{- end }}
 spec:
 {{- if (or (eq .Values.service.type "ClusterIP") (empty .Values.service.type)) }}

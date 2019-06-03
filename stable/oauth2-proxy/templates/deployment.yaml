@@ -30,6 +30,9 @@ spec:
 {{ toYaml .Values.podLabels | indent 8 }}
       {{- end }}
     spec:
+    {{- if .Values.isOpenshift }}
+      serviceAccountName: {{ template "oauth2-proxy.fullname" . }}
+    {{- end }}
     {{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"
     {{- end }}
@@ -39,6 +42,10 @@ spec:
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         args:
           - --http-address=0.0.0.0:4180
+          - --openshift-service-account={{ template "oauth2-proxy.fullname" . }}
+        {{- if .Values.htpasswd.enabled }}
+          - --htpasswd-file=/htpasswd/htpasswd
+        {{- end}}
         {{- range $key, $value := .Values.extraArgs }}
           {{- if $value }}
           - --{{ $key }}={{ $value }}
@@ -62,6 +69,7 @@ spec:
           - --google-service-account-json=/google/service-account.json
         {{- end }}
         {{- end }}
+        {{- if not .Values.isOpenshift }}
         env:
         - name: OAUTH2_PROXY_CLIENT_ID
           valueFrom:
@@ -78,6 +86,7 @@ spec:
             secretKeyRef:
               name:  {{ template "oauth2-proxy.secretName" . }}
               key: cookie-secret
+        {{- end }}
         ports:
           - containerPort: 4180
             name: http
@@ -103,6 +112,14 @@ spec:
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
+{{- if .Values.isOpenshift }}
+        - mountPath: /etc/tls/private
+          name: {{ template "oauth2-proxy.fullname" . }}-tls
+{{- end}}
+{{- if .Values.htpasswd.enabled }}
+        - name: htpasswd
+          mountPath: /htpasswd
+{{- end }}
 {{- with .Values.config.google }}
 {{- if and .adminEmail (or .serviceAccountJson .existingSecret) }}
         - name: google-secret
@@ -120,6 +137,16 @@ spec:
           readOnly: true
 {{- end }}
       volumes:
+{{ if .Values.isOpenshift }}
+      - name: {{ template "oauth2-proxy.fullname" . }}-tls
+        secret:
+          secretName: {{ template "oauth2-proxy.fullname" . }}-tls
+{{- end}}
+{{- if .Values.htpasswd.enabled }}
+      - name: htpasswd
+        secret:
+          secretName: {{ template "oauth2-proxy.fullname" . }}-htpasswd
+{{- end }}
 {{- with .Values.config.google }}
 {{- if and .adminEmail (or .serviceAccountJson .existingSecret) }}
       - name: google-secret

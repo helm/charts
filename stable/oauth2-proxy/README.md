@@ -22,6 +22,16 @@ $ helm install stable/oauth2-proxy --name my-release
 
 The command deploys oauth2-proxy on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
 
+## Installing on openshift
+
+To install the chart on openshift, you will have to use a different image than
+the vanilla one: openshift/oauth-proxy .
+Sources available here : https://github.com/openshift/oauth-proxy
+
+You will also have to set the isOpenshift value to true.
+
+The installation procedure is then the same as kubernetes.
+
 ## Uninstalling the Chart
 
 To uninstall/delete the `my-release` deployment:
@@ -38,6 +48,7 @@ The following table lists the configurable parameters of the oauth2-proxy chart 
 
 Parameter | Description | Default
 --- | --- | ---
+`isOpenshift`| Is this going to be deployed on openshift ? | `false`
 `affinity` | node/pod affinities | None
 `authenticatedEmailsFile.enabled` | Enables authorize individual email addresses | `false`
 `authenticatedEmailsFile.template` | Name of the configmap that is handled outside of that chart | `""`

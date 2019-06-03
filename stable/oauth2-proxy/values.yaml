@@ -1,4 +1,10 @@
+htpasswd:
+  enabled: false
+  # Content of the htpasswd file, as described here :
+  # https://github.com/pusher/oauth2_proxy/blob/master/contrib/oauth2_proxy.cfg.example#L58
+  # htpasswd: ""
 # Oauth client configuration specifics
+isOpenshift: false
 config:
   # OAuth client ID
   clientID: "XXXXXXX"

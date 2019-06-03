@@ -32,6 +32,14 @@ Create chart name and version as used by the chart label.
 {{- end -}}
 
 {{/*
+Create client-id for openshift
+*/}}
+{{- define "oauth2-proxy.openshift.clientId" -}}
+{{- printf "%s" (include "oauth2-proxy.fullname" .) | b64enc | quote -}}
+{{- end -}}
+
+
+{{/*
 Get the secret name.
 */}}
 {{- define "oauth2-proxy.secretName" -}}
