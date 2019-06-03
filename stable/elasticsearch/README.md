@@ -68,6 +68,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `initImage.repository`               | Init container image name                                           | `busybox`                                           |
 | `initImage.tag`                      | Init container image tag                                            | `latest`                                            |
 | `initImage.pullPolicy`               | Init container pull policy                                          | `Always`                                            |
+| `schedulerName`                      | Name of the k8s scheduler (other than default)                      | `nil`                                               |
 | `cluster.name`                       | Cluster name                                                        | `elasticsearch`                                     |
 | `cluster.xpackEnable`                | Writes the X-Pack configuration options to the configuration file   | `false`                                             |
 | `cluster.config`                     | Additional cluster config appended                                  | `{}`                                                |
@@ -146,9 +147,11 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `data.updateStrategy`                | Data node update strategy policy                                    | `{type: "onDelete"}`                                |
 | `sysctlInitContainer.enabled`        | If true, the sysctl init container is enabled (does not stop extraInitContainers from running) | `true`                                              |
 | `extraInitContainers`                | Additional init container passed through the tpl                    | ``                                                  |
-| `podSecurityPolicy.annotations`      | Specify pod annotations in the pod security policy                  | `{}`                                                |
+| `podSecurityPolicy.annotations`      | Specify pod annotations in the pod security policy                  | `{}`                                              |
 | `podSecurityPolicy.enabled`          | Specify if a pod security policy must be created                    | `false`                                             |
-| `serviceAccounts.client.create`      | If true, create the client service account                          | `true`                                              |
+| `securityContext.enabled`      | If true, add securityContext to client, master and data pods                          | `false`                                 |
+| `securityContext.runAsUser`      | user ID to run containerized process                          | `1000`                                                        |
+| `serviceAccounts.client.create`      | If true, create the client service account                          | `true`                                        |
 | `serviceAccounts.client.name`        | Name of the client service account to use or create                 | `{{ elasticsearch.client.fullname }}`               |
 | `serviceAccounts.master.create`      | If true, create the master service account                          | `true`                                              |
 | `serviceAccounts.master.name`        | Name of the master service account to use or create                 | `{{ elasticsearch.master.fullname }}`               |
