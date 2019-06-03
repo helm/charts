@@ -94,6 +94,7 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `securityContext.enabled`                          | Enable security context                                                                      | `true`                                                  |
 | `securityContext.fsGroup`                          | Group ID for the container                                                                   | `1001`                                                  |
 | `securityContext.runAsUser`                        | User ID for the container                                                                    | `1001`                                                  |
+| `schedulerName`                                    | Name of the k8s scheduler (other than default)                                               | `nil`                                                   |
 | `persistence.enabled`                              | Use a PVC to persist data                                                                    | `true`                                                  |
 | `persistence.mountPath`                            | Path to mount the volume at                                                                  | `/bitnami/mongodb`                                      |
 | `persistence.subPath`                              | Subdirectory of the volume to mount at                                                       | `""`                                                    |
