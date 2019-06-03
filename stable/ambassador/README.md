@@ -66,6 +66,7 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `prometheusExporter.pullPolicy`    | Image pull policy                                                               | `IfNotPresent`                    |
 | `prometheusExporter.repository`    | Prometheus exporter image                                                       | `prom/statsd-exporter`            |
 | `prometheusExporter.tag`           | Prometheus exporter image                                                       | `v0.8.1`                          |
+| `prometheusExporter.resources`  | CPU/memory resource requests/limits                                                       | `{}`                          |
 | `rbac.create`                      | If `true`, create and use RBAC resources                                        | `true`                            |
 | `rbac.namespaced`                  | If `true`, permissions are namespace-scoped rather than cluster-scoped          | `false`                           |
 | `replicaCount`                     | Number of Ambassador replicas                                                   | `3`                               |

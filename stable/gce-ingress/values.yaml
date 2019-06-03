@@ -31,6 +31,9 @@ serviceAccount:
 #   key.json: < base64 encoded JSON service account key>
 secret: ~
 
+## If the google auth file is saved in a different secret key you can specify it here
+# secretKey: key.json
+
 # gce config, replace values to match your environment
 config:
   projectID:
