@@ -89,6 +89,8 @@ spec:
             - name: AWS_SHARED_CREDENTIALS_FILE
               value: /credentials/cloud
             {{- end }}
+          securityContext:
+            privileged: {{ .Values.restic.privileged }}
           {{- with .Values.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
