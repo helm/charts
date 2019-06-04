@@ -28,6 +28,27 @@ data:
     }
 
     auth = {
+      # either basic or ldap
+      type: ${?AUTH_TYPE}
+      settings {
+        # LDAP
+        url = ${?LDAP_URL}
+        base-dn = ${?LDAP_BASE_DN}
+        method = ${?LDAP_METHOD}
+        user-template = ${?LDAP_USER_TEMPLATE}
+        bind-dn = ${?LDAP_BIND_DN}
+        bind-pw = ${?LDAP_BIND_PWD}
+        group-search {
+          base-dn = ${?LDAP_GROUP_BASE_DN}
+          user-attr = ${?LDAP_USER_ATTR}
+          user-attr-template = ${?LDAP_USER_ATTR_TEMPLATE}
+          group = ${?LDAP_GROUP}
+        }
+
+        # Basic auth
+        username = ${?BASIC_AUTH_USER}
+        password = ${?BASIC_AUTH_PWD}
+      }
     }
 
     hosts = [
