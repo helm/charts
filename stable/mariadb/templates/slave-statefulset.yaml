@@ -36,6 +36,9 @@ spec:
         release: "{{ .Release.Name }}"
         chart: "{{ template "mariadb.chart" . }}"
     spec:
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+      {{- end }}
       serviceAccountName: "{{ template "mariadb.serviceAccountName" . }}"
       {{- if .Values.securityContext.enabled }}
       securityContext:
