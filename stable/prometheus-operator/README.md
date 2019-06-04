@@ -347,6 +347,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `kubeControllermanager.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
 | `kubeControllermanager.serviceMonitor.metricRelabelings` | The `metric_relabel_configs` for scraping the scheduler. | `` |
 | `kubeControllermanager.serviceMonitor.relabelings` | The `relabel_configs` for scraping the scheduler. | `` |
+| `kubeControllermanager.servicemonitor.selector` | The service selector | `{"matchLabels":{"k8s-app": "kube-controller-manager"}}` |
 | `coreDns.enabled` | Deploy coreDns scraping components. Use either this or kubeDns | true |
 | `coreDns.service.port` | CoreDns port | `9153` |
 | `coreDns.service.targetPort` | CoreDns targetPort | `9153` |
