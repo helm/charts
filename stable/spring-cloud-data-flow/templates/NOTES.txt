@@ -13,8 +13,8 @@
   echo "Visit http://127.0.0.1:8080 to use your application"
   kubectl port-forward $POD_NAME 8080:{{ .Values.server.service.externalPort }}
 {{- end }}
-{{ if and .Values.rabbitmq.enabled .Values.kafka.enabled -}}
-WARNING: both RabbitMQ and Kafka are enabled and will be installed as
-part of this chart, but only RabbitMQ is being used. Only one middleware
-should be enabled at a given time. See the README.md for more details.
+{{ if gt ((index .Values "rabbitmq-ha" "enabled") | add .Values.rabbitmq.enabled | add .Values.kafka.enabled) 1 -}}
+WARNING: More than one messaging layer is enabled and installed as
+part of this chart, but only one is being used. Please ensure that only
+one middleware is enabled at a given time. See the README.md for more details.
 {{ end -}}
