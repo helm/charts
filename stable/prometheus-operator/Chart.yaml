@@ -6,6 +6,7 @@ maintainers:
   - name: gianrubio
     email: gianrubio@gmail.com
   - name: anothertobi
+  - name: vsliouniaev
 name: prometheus-operator
 sources:
   - https://github.com/coreos/prometheus-operator
