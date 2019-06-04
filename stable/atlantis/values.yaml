@@ -139,9 +139,11 @@ podTemplate:
   annotations: {}
     # kube2iam example:
     # iam.amazonaws.com/role: role-arn
+  labels: {}
 
 statefulSet:
   annotations: {}
+  labels: {}
 
 ingress:
   enabled: true
@@ -154,6 +156,7 @@ ingress:
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
+  labels: {}
 
 resources:
   requests:
@@ -170,6 +173,7 @@ replicaCount: 1
 
 ## test container details
 test:
+  enabled: true
   image: lachlanevenson/k8s-kubectl
   imageTag: v1.4.8-bash
 
