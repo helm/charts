@@ -60,6 +60,9 @@ spec:
           {{ if .Values.aws.assumeRoleArn }}
             - --aws-assume-role={{ .Values.aws.assumeRoleArn }}
           {{- end }}
+          {{ if .Values.aws.batchChangeSize }}
+            - --aws-batch-change-size={{ .Values.aws.batchChangeSize }}
+          {{- end }}
           {{- range $key, $value := .Values.extraArgs }}
             {{- if $value }}
             - --{{ $key }}={{ $value }}
