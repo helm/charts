@@ -1,0 +1,44 @@
+{{- if .Values.ingress.enabled -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ include "pomerium.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "pomerium.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "pomerium.chart" . }}
+{{- with .Values.ingress.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
+spec:
+  tls:
+    - secretName: {{ default .Values.ingress.secretName .Values.ingress.secret.name}}
+      hosts:
+        - '*.{{ .Values.config.rootDomain }}'
+        - {{ default (printf "authorize.%s" .Values.config.rootDomain ) .Values.proxy.authorizeServiceUrl }}
+        - {{ default (printf "authenticate.%s" .Values.config.rootDomain ) .Values.proxy.authenticateServiceUrl }}
+  rules:
+    - host: {{ default (printf "authorize.%s" .Values.config.rootDomain ) .Values.proxy.authorizeServiceUrl }}
+      http:
+        paths:
+          - paths:
+            backend:
+              serviceName: {{ include "pomerium.authorize.fullname" .}}
+              servicePort: https
+    - host: {{ default (printf "authenticate.%s" .Values.config.rootDomain ) .Values.proxy.authenticateServiceUrl }}
+      http:
+        paths:
+          - paths:
+            backend:
+              serviceName: {{ include "pomerium.authenticate.fullname" .}}
+              servicePort: https
+    - host: '*.{{ .Values.config.rootDomain }}'
+      http:
+        paths:
+          - paths:
+            backend:
+              serviceName: {{ include "pomerium.proxy.fullname" .}}
+              servicePort: https
+{{- end }}
