@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: {{ include "mercure.fullname" . }}
   annotations:
-    helm.sh/hook: "pre-install"
+    helm.sh/hook: "pre-install,pre-upgrade"
   labels:
     app.kubernetes.io/name: {{ include "mercure.name" . }}
     helm.sh/chart: {{ include "mercure.chart" . }}
