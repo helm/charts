@@ -43,6 +43,23 @@ kubectl -n "$NAMESPACE" exec -it "$POD_NAME" /etc/openvpn/setup/newClientCert.sh
 kubectl -n "$NAMESPACE" exec -it "$POD_NAME" cat "/etc/openvpn/certs/pki/$KEY_NAME.ovpn" > "$KEY_NAME.ovpn"
 ```
 
+In order to revoke certificates in later steps: 
+```bash
+#!/bin/bash
+
+if [ $# -ne 3 ]
+then
+  echo "Usage: $0 <CLIENT_KEY_NAME> <NAMESPACE> <HELM_RELEASE>"
+  exit
+fi
+
+KEY_NAME=$1
+NAMESPACE=$2
+HELM_RELEASE=$3
+POD_NAME=$(kubectl get pods -n "$NAMESPACE" -l "app=openvpn,release=$HELM_RELEASE" -o jsonpath='{.items[0].metadata.name}')
+kubectl -n "$NAMESPACE" exec -it "$POD_NAME" /etc/openvpn/setup/revokeClientCert.sh $KEY_NAME
+```
+
 The entire list of helper scripts can be found on [templates/config-openvpn.yaml](templates/config-openvpn.yaml)
 
 Be sure to change `KEY_NAME` if generating additional keys.  Import the .ovpn file into your favorite openvpn tool like tunnelblick and verify connectivity.
