@@ -119,6 +119,13 @@ The following tables lists the configurable parameters of the Home Assistant cha
 | `vscode.service.externalIPs`      | External IPs for the VS Code UI | `[]` |
 | `vscode.service.loadBalancerIP`   | Loadbalancer IP for the VS Code UI | `` |
 | `vscode.service.loadBalancerSourceRanges`   | Loadbalancer client IP restriction range for the VS Code UI | `[]` |
+| `monitoring.enabled`              | Monitoring integration | `false` |
+| `monitoring.serviceMonitor.enabled`  | Monitoring serviceMonitor CRD | `false` |
+| `monitoring.serviceMonitor.namespace`| Monitoring serviceMonitor namespace | `` |
+| `monitoring.serviceMonitor.interval` | Monitoring serviceMonitor interval | `30s` |
+| `monitoring.serviceMonitor.telemetryPath`   | Monitoring serviceMonitor telemetryPath | `/api/prometheus` |
+| `monitoring.serviceMonitor.labels`   | Monitoring serviceMonitor namespace | `{}` |
+| `monitoring.serviceMonitor.bearerTokenFile`   | Monitoring serviceMonitor bearerTokenFile used for authentication | `` |
 | `resources`                | CPU/Memory resource requests/limits or the home-assistant GUI | `{}` |
 | `nodeSelector`             | Node labels for pod assignment or the home-assistant GUI | `{}` |
 | `tolerations`              | Toleration labels for pod assignment or the home-assistant GUI | `[]` |
