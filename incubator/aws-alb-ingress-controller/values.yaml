@@ -109,3 +109,5 @@ volumes: []
   # - name: aws-iam-credentials
   #   secret:
   #     secretName: alb-ingress-controller-role
+
+priorityClassName: ""
