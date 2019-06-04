@@ -15,6 +15,7 @@ See https://github.com/weaveworks/kured
 | `updateStrategy`        | Daemonset update strategy                                                   | `OnDelete`                 |
 | `tolerations`           | Tolerations to apply to the daemonset (eg to allow running on master)       | `[{"key": "node-role.kubernetes.io/master", "effect": "NoSchedule"}]`|
 | `nodeSelector`          | Node Selector for the daemonset (ie, restrict which nodes kured runs on)    | `{}`                       |
+| `priorityClassName`     | Priority Class to be used by the pods                                       | `""`                       |
 | `podAnnotations`        | Annotations to apply to pods (eg to add Prometheus annotations)             | `{}`                       |
 
 See https://github.com/weaveworks/kured#configuration for values for `extraArgs`. Note that
