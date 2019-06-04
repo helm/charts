@@ -1,0 +1,132 @@
+{{- $configName := default (include "pomerium.fullname" .) .Values.config.existingConfig }}
+{{- $secretName := default (include "pomerium.fullname" .) .Values.config.existingSecret }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: {{ template "pomerium.authorize.name" . }}
+    helm.sh/chart: {{ template "pomerium.chart" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: authorize
+  name: {{ template "pomerium.authorize.fullname" . }}
+{{- if .Values.annotations }}
+  annotations:
+{{ toYaml .Values.annotations | indent 4 }}
+{{- end }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ template "pomerium.authorize.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+{{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+{{- end }}
+      labels:
+        app.kubernetes.io/name: {{ template "pomerium.authorize.name" . }}
+        helm.sh/chart: {{ template "pomerium.chart" . }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+{{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | indent 8 }}
+{{- end }}
+    spec:
+{{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName }}
+{{- end }}
+      containers:
+      - name: {{ .Chart.Name }}
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        args:
+{{- range $key, $value := .Values.extraArgs }}
+{{- if $value }}
+          - --{{ $key }}={{ $value }}
+{{- else }}
+          - --{{ $key }}
+{{- end }}
+{{- end }}
+        env:
+        - name: SERVICES
+          value: authorize
+        - name: SHARED_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: {{ $secretName }}
+              key: shared-secret
+{{- if or .Values.config.existingConfig .Values.config.policyFile}}
+        - name: POLICY_FILE
+          value: /etc/pomerium/policy.yaml
+{{- end }}
+{{- if .Values.config.policy}}
+        - name: POLICY
+          value: {{ .Values.config.policy }}
+{{- end }}
+        - name: CERTIFICATE
+          valueFrom:
+            secretKeyRef:
+              name: {{ $secretName }}
+              key: authorize-cert
+        - name: CERTIFICATE_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ $secretName }}
+              key: authorize-key
+        - name: CERTIFICATE_AUTHORITY
+          valueFrom:
+            secretKeyRef:
+              name: {{ $secretName }}
+              key: ca-cert
+{{- range $name, $value := .Values.extraEnv }}
+        - name: {{ $name }}
+          value: {{ quote $value }}
+{{- end }}
+        ports:
+          - containerPort: 443
+            name: https
+            protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /ping
+            port: https
+            scheme: HTTPS
+        readinessProbe:
+          httpGet:
+            path: /ping
+            port: https
+            scheme: HTTPS
+{{- if or .Values.config.existingConfig .Values.config.policyFile}}
+        volumeMounts:
+        - mountPath: /etc/pomerium/
+          name: policy
+      volumes:
+      - name: policy
+        configMap:
+          name: {{ $configName }}
+{{- end }}
+      resources:
+{{ toYaml .Values.resources | indent 10 }}
+{{- if .Values.extraVolumes }}
+      volumes:
+{{- toYaml .Values.extraVolumes | indent 8 }}
+{{- end }}
+{{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | indent 8 }}
+{{- end }}
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
+{{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+{{- end }}
+{{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+{{- end }}
