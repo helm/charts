@@ -27,8 +27,8 @@ spec:
         image: {{ .Values.server.image }}:{{ .Values.server.version }}
         imagePullPolicy: {{ .Values.server.imagePullPolicy }}
         volumeMounts:
-          - name: mysql
-            mountPath: /etc/secrets/mysql
+          - name: database
+            mountPath: /etc/secrets/database
             readOnly: true
         ports:
         - containerPort: 8080
@@ -73,12 +73,16 @@ spec:
         - name: SPRING_APPLICATION_JSON
           value: "{ \"maven\": { \"local-repository\": null, \"remote-repositories\": { \"repo1\": { \"url\": \"https://repo.spring.io/libs-snapshot\"} } } }"
       volumes:
-        - name: mysql
+        - name: database
           secret:
+            {{- if .Values.mysql.enabled }}
             secretName: {{ printf "%s-%s" .Release.Name "mysql" | trunc 63 | trimSuffix "-" }}
+            {{- else }}
+            secretName: {{ printf "%s-%s" .Release.Name "database" | trunc 63 | trimSuffix "-" }}
+            {{- end }}
       initContainers:
-      - name: init-mysql-wait
-        image: {{ .Values.mysql.busybox.image }}:{{ .Values.mysql.busybox.tag }}
-        imagePullPolicy: {{ .Values.mysql.imagePullPolicy }}
-        command: ['sh', '-c', 'until nc -w3 -z {{ printf "%s-%s" .Release.Name "mysql" | trunc 63 | trimSuffix "-" }} 3306; do echo waiting for mysql; sleep 3; done;']
+      - name: init-db-wait
+        image: {{ .Values.initContainers.dbWait.image }}:{{ .Values.initContainers.dbWait.tag }}
+        imagePullPolicy: {{ .Values.initContainers.dbWait.imagePullPolicy }}
+        command: ['sh', '-c', 'until nc -w3 -z {{ template "scdf.database.host" . }} {{ template "scdf.database.port" . }}; do echo waiting for database; sleep 3; done;']
       serviceAccountName: {{ template "scdf.serviceAccountName" . }}
