@@ -67,7 +67,7 @@ Parameter | Description | Default
 `persistence.accessMode` | Access mode for buffer persistence | `ReadWriteOnce`
 `persistence.size` | Volume size for buffer persistence | `10Gi`
 `metrics.enabled`                         | Set this to `true` to enable Prometheus metrics HTTP endpoint                         | `false`
-`metrics.service.port``                   | Prometheus metrics HTTP endpoint port                                                 | `24231`
+`metrics.service.port`                    | Prometheus metrics HTTP endpoint port                                                 | `24231`
 `metrics.serviceMonitor.enabled`          | Set this to `true` to create ServiceMonitor for Prometheus operator                   | `false`
 `metrics.serviceMonitor.additionalLabels` | Additional labels that can be used so ServiceMonitor will be discovered by Prometheus | `{}`
 `metrics.serviceMonitor.namespace`        | Optional namespace in which to create ServiceMonitor                                  | `nil`
