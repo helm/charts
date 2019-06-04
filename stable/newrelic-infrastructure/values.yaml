@@ -16,16 +16,15 @@ verboseLog: false
 
 image:
   repository: newrelic/infrastructure-k8s
-  tag: 1.8.0
+  tag: 1.9.0
   pullPolicy: IfNotPresent
 
 resources:
   limits:
-    cpu: 100m
-    memory: 128Mi
+    memory: 150M
   requests:
     cpu: 100m
-    memory: 128Mi
+    memory: 30M
 
 rbac:
   # Specifies whether RBAC resources should be created
