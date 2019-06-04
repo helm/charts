@@ -60,7 +60,7 @@ replicaCount: 1
 revisionHistoryLimit: 10
 image:
   repository: quay.io/external_storage/efs-provisioner
-  tag: latest
+  tag: v2.2.0-k8s1.12
   pullPolicy: IfNotPresent
 
 busyboxImage:
@@ -76,6 +76,8 @@ annotations: {}
 ## https://github.com/kubernetes-incubator/external-storage/tree/master/aws/efs#deployment
 ##
 efsProvisioner:
+  # If specified, use this DNS or IP to connect the EFS
+  #dnsName: "my-custom-efs-dns.com"
   efsFileSystemId: fs-12345678
   awsRegion: us-east-2
   path: /example-pv

@@ -63,10 +63,21 @@ Defines the internal kubernetes address to Atlantis
 {{/*
 Generates secret-webhook name
 */}}
-{{- define "atlantis.vcsSecretsName" -}}
-{{- if .Values.vcsSecretsName -}}
-    {{ .Values.vcsSecretsName }}
+{{- define "atlantis.vcsSecretName" -}}
+{{- if .Values.vcsSecretName -}}
+    {{ .Values.vcsSecretName }}
 {{- else -}}
     {{ template "atlantis.fullname" . }}-webhook
+{{- end -}}
+{{- end -}}
+
+{{/*
+Generates AWS Secret name
+*/}}
+{{- define "atlantis.awsSecretName" -}}
+{{- if .Values.awsSecretName -}}
+    {{ .Values.awsSecretName }}
+{{- else -}}
+    {{ template "atlantis.fullname" . }}-aws
 {{- end -}}
 {{- end -}}
