@@ -10,6 +10,7 @@ metadata:
 spec:
   serviceName: {{ template "logstash.fullname" . }}
   replicas: {{ .Values.replicaCount }}
+  podManagementPolicy: {{ .Values.podManagementPolicy }}
   selector:
     matchLabels:
       app: {{ template "logstash.name" . }}
