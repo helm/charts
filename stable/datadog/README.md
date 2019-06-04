@@ -85,7 +85,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 As a best practice, a YAML file that specifies the values for the chart parameters should be provided to configure the chart:
 
-1.  **Copy the default [`datadog-values.yaml`](/values.yaml) value file.**
+1.  **Copy the default [`datadog-values.yaml`](values.yaml) value file.**
 2.  Set the `apiKey` parameter with your [Datadog API key](https://app.datadoghq.com/account/settings#api).
 3.  Upgrade the Datadog Helm chart with the new `datadog-values.yaml` file:
 
@@ -97,7 +97,7 @@ See the [All configuration options](#all-configuration-options) section to disco
 
 ### Enabling Log Collection
 
-Update your [datadog-values.yaml](/values.yaml) file with the following log collection configuration:
+Update your [datadog-values.yaml](values.yaml) file with the following log collection configuration:
 
 ```
 datadog:
@@ -114,7 +114,7 @@ helm upgrade -f datadog-values.yaml <RELEASE_NAME> stable/datadog --recreate-pod
 
 ### Enabling Process Collection
 
-Update your [datadog-values.yaml](/values.yaml) file with the process collection configuration:
+Update your [datadog-values.yaml](values.yaml) file with the process collection configuration:
 
 ```
 datadog:
@@ -138,7 +138,7 @@ Alternatively set the `datadog.leaderElection`, `datadog.collectEvents` and `rba
 
 The Datadog [entrypoint](https://github.com/DataDog/datadog-agent/blob/master/Dockerfiles/agent/entrypoint/89-copy-customfiles.sh) copies files with a `.yaml` extension found in `/conf.d` and files with `.py` extension in `/check.d` to `/etc/datadog-agent/conf.d` and `/etc/datadog-agent/checks.d` respectively.
 
-The keys for `datadog.confd` and `datadog.checksd` should mirror the content found in their respective ConfigMaps. Update your [datadog-values.yaml](/values.yaml) file with the check configurations:
+The keys for `datadog.confd` and `datadog.checksd` should mirror the content found in their respective ConfigMaps. Update your [datadog-values.yaml](values.yaml) file with the check configurations:
 
 ```yaml
 datadog:
@@ -175,7 +175,7 @@ For more details, please refer to [the documentation](https://docs.datadoghq.com
 
 ### Kubernetes Labels and Annotations
 
-To map Kubernetes pod labels and annotations to Datadog tags, provide a dictionary with kubernetes labels/annotations as keys and Datadog tags key as values in your [datadog-values.yaml](/values.yaml) file:
+To map Kubernetes pod labels and annotations to Datadog tags, provide a dictionary with kubernetes labels/annotations as keys and Datadog tags key as values in your [datadog-values.yaml](values.yaml) file:
 
 ```yaml
 podAnnotationsAsTags:
@@ -219,13 +219,14 @@ helm install --name <RELEASE_NAME> \
 | `datadog.appKey`                         | Datadog APP key required to use metricsProvider                                           | `Nil` You must provide your own key         |
 | `datadog.appKeyExistingSecret`           | If set, use the secret with a provided name instead of creating a new one                 | `nil`                                       |
 | `image.repository`                       | The image repository to pull from                                                         | `datadog/agent`                             |
-| `image.tag`                              | The image tag to pull                                                                     | `6.10.1`                                     |
+| `image.tag`                              | The image tag to pull                                                                     | `6.10.1`                                    |
 | `image.pullPolicy`                       | Image pull policy                                                                         | `IfNotPresent`                              |
 | `image.pullSecrets`                      | Image pull secrets                                                                        | `nil`                                       |
 | `nameOverride`                           | Override name of app                                                                      | `nil`                                       |
 | `fullnameOverride`                       | Override full name of app                                                                 | `nil`                                       |
 | `rbac.create`                            | If true, create & use RBAC resources                                                      | `true`                                      |
 | `rbac.serviceAccount`                    | existing ServiceAccount to use (ignored if rbac.create=true)                              | `default`                                   |
+| `daemonset.podLabels`                    | labels to add to each pod                                                                 | `nil`                                       |
 | `datadog.name`                           | Container name if Daemonset or Deployment                                                 | `datadog`                                   |
 | `datadog.site`                           | Site ('datadoghq.com' or 'datadoghq.eu')                                                  | `nil`                                       |
 | `datadog.dd_url`                         | Datadog intake server                                                                     | `nil`                                       |
@@ -281,8 +282,8 @@ helm install --name <RELEASE_NAME> \
 | `clusterAgent.image.pullPolicy`          | Image pull policy                                                                         | `IfNotPresent`                              |
 | `clusterAgent.image.pullSecrets`         | Image pull secrets                                                                        | `nil`                                       |
 | `clusterAgent.metricsProvider.enabled`   | Enable Datadog metrics as a source for HPA scaling                                        | `false`                                     |
-| `clusterAgent.clusterChecks.enabled`   | Enable Cluster Checks on both the Cluster Agent and the Agent daemonset |  `false`                  |
-| `clusterAgent.confd`                     | Additional check configurations (static and Autodiscovery) | `nil`             |
+| `clusterAgent.clusterChecks.enabled`     | Enable Cluster Checks on both the Cluster Agent and the Agent daemonset                   | `false`                                     |
+| `clusterAgent.confd`                     | Additional check configurations (static and Autodiscovery)                                | `nil`                                       |
 | `clusterAgent.resources.requests.cpu`    | CPU resource requests                                                                     | `200m`                                      |
 | `clusterAgent.resources.limits.cpu`      | CPU resource limits                                                                       | `200m`                                      |
 | `clusterAgent.resources.requests.memory` | Memory resource requests                                                                  | `256Mi`                                     |
@@ -290,3 +291,14 @@ helm install --name <RELEASE_NAME> \
 | `clusterAgent.tolerations`               | List of node taints to tolerate                                                           | `[]`                                        |
 | `clusterAgent.livenessProbe`             | Overrides the default liveness probe                                                      | http port 443 if external metrics enabled   |
 | `clusterAgent.readinessProbe`            | Overrides the default readiness probe                                                     | http port 443 if external metrics enabled   |
+| `clusterchecksDeployment.enabled`        | Enable Datadog agent deployment dedicated for running Cluster Checks. It allows having different resources (Request/Limit) for Cluster Checks agent pods.  | `false` |
+| `clusterchecksDeployment.env`                            | Additional Datadog environment variables for Cluster Checks Deployment                        | `nil`                                       |
+| `clusterchecksDeployment.resources.requests.cpu`         | CPU resource requests                                                                         | `200m`                                      |
+| `clusterchecksDeployment.resources.limits.cpu`           | CPU resource limits                                                                           | `200m`                                      |
+| `clusterchecksDeployment.resources.requests.memory`      | Memory resource requests                                                                      | `256Mi`                                     |
+| `clusterchecksDeployment.resources.limits.memory`        | Memory resource limits                                                                        | `256Mi`                                     |
+| `clusterchecksDeployment.nodeSelector`                   | Node selectors                                                                                | `nil`                                       |
+| `clusterchecksDeployment.affinity`                       | Node affinities                                                                               | avoid running pods on the same node         |
+| `clusterchecksDeployment.livenessProbe`                  | Overrides the default liveness probe                                                          | http port 5555                              |
+| `clusterchecksDeployment.rbac.dedicated`                  | If true, use dedicated RBAC resources for clusterchecks agent's pods                          | `false`                                     |
+| `clusterchecksDeployment.rbac.serviceAccount`            | existing ServiceAccount to use (ignored if rbac.create=true) for clusterchecks                | `default`                                   |

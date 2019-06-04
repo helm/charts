@@ -36,6 +36,9 @@ spec:
         release: "{{ .Release.Name }}"
         chart: "{{ template "mariadb.chart" . }}"
     spec:
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+      {{- end }}
       serviceAccountName: "{{ template "mariadb.serviceAccountName" . }}"
       {{- if .Values.securityContext.enabled }}
       securityContext:
@@ -74,6 +77,10 @@ spec:
 {{ toYaml . | indent 8 }}
       {{- end }}
       {{- end }}
+      {{- if .Values.slave.nodeSelector }}
+      nodeSelector:
+        {{ toYaml .Values.slave.nodeSelector | nindent 8 }}
+      {{- end -}}
       {{- with .Values.slave.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}

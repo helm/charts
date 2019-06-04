@@ -51,7 +51,7 @@ The following table lists the configurable parameters of the DokuWiki chart and 
 | `global.imagePullSecrets`            | Global Docker registry secret names as an array            | `[]` (does not add image pull secrets to deployed pods) |
 | `image.registry`                     | DokuWiki image registry                                    | `docker.io`                                   |
 | `image.repository`                   | DokuWiki image name                                        | `bitnami/dokuwiki`                            |
-| `image.tag`                          | DokuWiki image tag                                         | `{VERSION}`                                   |
+| `image.tag`                          | DokuWiki image tag                                         | `{TAG_NAME}`                                  |
 | `image.pullPolicy`                   | Image pull policy                                          | `Always`                                      |
 | `image.pullSecrets`                  | Specify docker-registry secret names as an array           | `[]` (does not add image pull secrets to deployed pods) |
 | `dokuwikiUsername`                   | User of the application                                    | `user`                                        |
@@ -77,9 +77,6 @@ The following table lists the configurable parameters of the DokuWiki chart and 
 | `ingress.secrets[0].certificate`     | TLS Secret Certificate                                     | `nil`                                         |
 | `ingress.secrets[0].key`             | TLS Secret Key                                             | `nil`                                         |
 | `persistence.enabled`                | Enable persistence using PVC                               | `true`                                        |
-| `persistence.apache.storageClass`    | PVC Storage Class for apache volume                        | `nil` (uses alpha storage class annotation)   |
-| `persistence.apache.accessMode`      | PVC Access Mode for apache volume                          | `ReadWriteOnce`                               |
-| `persistence.apache.size`            | PVC Storage Request for apache volume                      | `1Gi`                                         |
 | `persistence.dokuwiki.storageClass`  | PVC Storage Class for DokuWiki volume                      | `nil` (uses alpha storage class annotation)   |
 | `persistence.dokuwiki.accessMode`    | PVC Access Mode for DokuWiki volume                        | `ReadWriteOnce`                               |
 | `persistence.dokuwiki.size`          | PVC Storage Request for DokuWiki volume                    | `8Gi`                                         |
@@ -109,7 +106,6 @@ The following table lists the configurable parameters of the DokuWiki chart and 
 | `metrics.podAnnotations`             | Additional annotations for Metrics exporter pod            | `{prometheus.io/scrape: "true", prometheus.io/port: "9117"}` |
 | `metrics.resources`                  | Exporter resource requests/limit                           | {}                                            |
 
-
 The above parameters map to the env variables defined in [bitnami/dokuwiki](http://github.com/bitnami/bitnami-docker-dokuwiki). For more information please refer to the [bitnami/dokuwiki](http://github.com/bitnami/bitnami-docker-dokuwiki) image documentation.
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
@@ -130,9 +126,15 @@ $ helm install --name my-release -f values.yaml stable/dokuwiki
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
+### [Rolling VS Immutable tags](https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/)
+
+It is strongly recommended to use immutable tags in a production environment. This ensures your deployment does not change automatically if the same tag is updated with a different image.
+
+Bitnami will release a new chart updating its containers if a new version of the main container, significant changes, or critical vulnerabilities exist.
+
 ## Persistence
 
-The [Bitnami DokuWiki](https://github.com/bitnami/bitnami-docker-dokuwiki) image stores the DokuWiki data and configurations at the `/bitnami/dokuwiki` and `/bitnami/apache` paths of the container.
+The [Bitnami DokuWiki](https://github.com/bitnami/bitnami-docker-dokuwiki) image stores the DokuWiki data and configurations at the `/bitnami/dokuwiki` path of the container.
 
 Persistent Volume Claims are used to keep the data across deployments. There is a [known issue](https://github.com/kubernetes/kubernetes/issues/39178) in Kubernetes Clusters with EBS in different availability zones. Ensure your cluster is configured properly to create Volumes in the same availability zone where the nodes are running. Kuberentes 1.12 solved this issue with the [Volume Binding Mode](https://kubernetes.io/docs/concepts/storage/storage-classes/#volume-binding-mode).
 

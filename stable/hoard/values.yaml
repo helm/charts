@@ -30,6 +30,10 @@ config:
       privateid: ""
       file: "keyring"
 
+controller:
+  enabled: true
+  keep: true
+
 secrets:
   creds: "cloud-credentials"
   keyring: "private-keyring"

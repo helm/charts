@@ -1,3 +1,4 @@
+{{- if or (eq .Values.resourceType "statefulset") (not (contains .Values.resourceType "deployment")) }}
 apiVersion: apps/v1beta2
 kind: StatefulSet
 metadata:
@@ -49,6 +50,9 @@ spec:
         fsGroup: {{ .Values.securityContext.fsGroup }}
         runAsUser: {{ .Values.securityContext.runAsUser }}
       {{- end }}
+      {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName | quote }}
+      {{- end }}
       {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
@@ -90,6 +94,10 @@ spec:
         args:
         - -c
         - /opt/bitnami/nats/gnatsd.conf
+        # to ensure nats could run with non-root user, we put the configuration
+        # file under `/opt/bitnami/nats/gnatsd.conf`, please check the link below
+        # for the implementation inside Dockerfile:
+        # - https://github.com/bitnami/bitnami-docker-nats/blob/master/1/debian-9/Dockerfile#L12
         {{- if .Values.extraArgs }}
 {{ toYaml .Values.extraArgs | indent 8 }}
         {{- end }}
@@ -160,3 +168,4 @@ spec:
       - name: config
         configMap:
           name: {{ template "nats.fullname" . }}
+{{- end }}

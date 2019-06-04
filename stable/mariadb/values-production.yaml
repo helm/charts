@@ -7,13 +7,18 @@
 #   imagePullSecrets:
 #     - myRegistryKeySecretName
 
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName:
+
 ## Bitnami MariaDB image
 ## ref: https://hub.docker.com/r/bitnami/mariadb/tags/
 ##
 image:
   registry: docker.io
   repository: bitnami/mariadb
-  tag: 10.1.38
+  tag: 10.3.15-debian-9-r14
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -116,7 +121,7 @@ replication:
   forcePassword: true
 
 ## initdb scripts
-## Specify dictionnary of scripts to be run at first boot
+## Specify dictionary of scripts to be run at first boot
 ## Alternatively, you can put your scripts under the files/docker-entrypoint-initdb.d directory
 ##
 # initdbScripts:
@@ -145,6 +150,11 @@ master:
   ##
   antiAffinity: soft
 
+  ## Node labels for pod assignment
+  ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+  ##
+  nodeSelector: {}
+
   ## Tolerations for pod assignment
   ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
   ##
@@ -164,6 +174,8 @@ master:
     enabled: true
     # Enable persistence using an existing PVC
     # existingClaim:
+    # Subdirectory of the volume to mount
+    # subPath:
     mountPath: /bitnami/mariadb
     ## Persistent Volume Storage Class
     ## If defined, storageClassName: <storageClass>
@@ -266,6 +278,11 @@ slave:
   ## if you wish to set it through slave.affinity.podAntiAffinity instead.
   ##
   antiAffinity: soft
+
+  ## Node labels for pod assignment
+  ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+  ##
+  nodeSelector: {}
 
   ## Tolerations for pod assignment
   ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
@@ -370,3 +387,17 @@ metrics:
   annotations:
     prometheus.io/scrape: "true"
     prometheus.io/port: "9104"
+
+  # Enable this if you're using https://github.com/coreos/prometheus-operator
+  serviceMonitor:
+    enabled: false
+    ## Specify a namespace if needed
+    # namespace: monitoring
+    # fallback to the prometheus default unless specified
+    # interval: 10s
+    # scrapeTimeout: 10s
+    ## Defaults to what's used if you follow CoreOS [Prometheus Install Instructions](https://github.com/helm/charts/tree/master/stable/prometheus-operator#tldr)
+    ## [Prometheus Selector Label](https://github.com/helm/charts/tree/master/stable/prometheus-operator#prometheus-operator-1)
+    ## [Kube Prometheus Selector Label](https://github.com/helm/charts/tree/master/stable/prometheus-operator#exporters)
+    selector:
+      prometheus: kube-prometheus

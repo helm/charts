@@ -49,6 +49,20 @@ spec:
 {{- if .Values.priorityClassName }}
           priorityClassName: "{{ .Values.priorityClassName }}"
 {{- end }}
+{{- if .Values.image.pullSecret }}
+          imagePullSecrets:
+            - name: {{ .Values.image.pullSecret }}
+{{- end }}
+{{- if .Values.extraInitContainers }}
+          initContainers:
+{{- range $key, $value := .Values.extraInitContainers }}
+          - name: "{{ $key }}"
+{{ toYaml $value | indent 12 }}
+{{- end }}
+{{- end }}
+        {{- if .Values.rbac.enabled }}
+          serviceAccountName: {{ template "elasticsearch-curator.serviceAccountName" .}}
+        {{- end }}
           containers:
             - name: {{ .Chart.Name }}
               image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -75,6 +89,15 @@ spec:
                 value: {{ $value | quote}}
 {{- end }}
 {{- end }}
+{{- if .Values.envFromSecrets }}
+{{- range $key,$value := .Values.envFromSecrets }}
+              - name: {{ $key | upper | quote}}
+                valueFrom:
+                  secretKeyRef:
+                    name: {{ $value.from.secret | quote}}
+                    key: {{ $value.from.key | quote}}
+{{- end }}
+{{- end }}
               resources:
 {{ toYaml .Values.resources | indent 16 }}
     {{- with .Values.nodeSelector }}
@@ -87,5 +110,9 @@ spec:
     {{- end }}
     {{- with .Values.tolerations }}
           tolerations:
+{{ toYaml . | indent 12 }}
+    {{- end }}
+    {{- with .Values.securityContext }}
+          securityContext:
 {{ toYaml . | indent 12 }}
     {{- end }}
