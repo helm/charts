@@ -9,6 +9,7 @@ metadata:
     heritage: {{ .Release.Service }}
   annotations:
     "helm.sh/hook": test-success
+    "helm.sh/hook-delete-policy": "before-hook-creation,hook-succeeded"
 spec:
   containers:
   - name: wget
@@ -18,4 +19,3 @@ spec:
     - -c
     - 'wget -qO- https://{{ include "metrics-server.fullname" . }}:{{ .Values.service.port }}/version | grep -F {{ .Values.image.tag }}'
   restartPolicy: Never
-
