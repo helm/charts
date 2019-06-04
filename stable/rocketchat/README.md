@@ -110,6 +110,8 @@ extraEnv: |
 ```
 ## Upgrading
 
+### To 1.x
+
 Rocket.Chat version 1.x requires a MongoDB ReplicaSet to be configured. When using the dependent `stable/mongodb` chart (`mongodb.enabled=true`), enabling ReplicaSet will drop the PVC and create new ones. After upgrade there will be a backup of your current MongoDB in a volume called rocketchat-mongodump, you can restore it after the upgrade.
 
 Backwards compatibility is not guaranteed unless you modify the labels used on the chart's deployments.
