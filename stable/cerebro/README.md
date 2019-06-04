@@ -6,6 +6,7 @@ Cerebro is an open source (MIT License) elasticsearch web admin tool built using
 
 This chart deploys Cerebro to your cluster via a Deployment and Service.
 Optionally you can also enable ingress.
+Optionally you can use cerebro provided auth by uploading a Secret with the needed env vars (don't forget to set `AUTH_TYPE`).
 
 # Prerequisites
 
