@@ -18,6 +18,9 @@ spec:
     type: RollingUpdate
     rollingUpdate:
       maxUnavailable: 1
+  {{- if .Values.minReadySeconds }}
+  minReadySeconds: {{ .Values.minReadySeconds }}
+  {{- end }}
   template:
     metadata:
       labels:
@@ -35,6 +38,9 @@ spec:
       {{- if .Values.vault.extraInitContainers }}
       initContainers:
 {{ tpl (toYaml .Values.vault.extraInitContainers) . | indent 6 }}
+      {{- end }}
+      {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName }}
       {{- end }}
       containers:
       - name: {{ .Chart.Name }}
