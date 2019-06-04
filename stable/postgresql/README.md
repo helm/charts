@@ -56,7 +56,7 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `global.imagePullSecrets`                     | Global Docker registry secret names as an array                                                                        | `[]` (does not add image pull secrets to deployed pods)     |
 | `image.registry`                              | PostgreSQL Image registry                                                                                              | `docker.io`                                                 |
 | `image.repository`                            | PostgreSQL Image name                                                                                                  | `bitnami/postgresql`                                        |
-| `image.tag`                                   | PostgreSQL Image tag                                                                                                   | `{VERSION}`                                                 |
+| `image.tag`                                   | PostgreSQL Image tag                                                                                                   | `{TAG_NAME}`                                                |
 | `image.pullPolicy`                            | PostgreSQL Image pull policy                                                                                           | `Always`                                                    |
 | `image.pullSecrets`                           | Specify Image pull secrets                                                                                             | `nil` (does not add image pull secrets to deployed pods)    |
 | `image.debug`                                 | Specify if debug values should be set                                                                                  | `false`                                                     |
@@ -94,6 +94,7 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `service.annotations`                         | Annotations for PostgreSQL service                                                                                     | {}                                                          |
 | `service.loadBalancerIP`                      | loadBalancerIP if service type is `LoadBalancer`                                                                       | `nil`                                                       |
 | `service.loadBalancerSourceRanges`            | Address that are allowed when svc is LoadBalancer                                                                      | []                                                          |
+| `schedulerName`                               | Name of the k8s scheduler (other than default)                                                                         | `nil`                                                       |
 | `persistence.enabled`                         | Enable persistence using PVC                                                                                           | `true`                                                      |
 | `persistence.existingClaim`                   | Provide an existing `PersistentVolumeClaim`, the value is evaluated as a template.                                     | `nil`                                                       |
 | `persistence.mountPath`                       | Path to mount the volume at                                                                                            | `/bitnami/postgresql`                                       |
@@ -107,11 +108,15 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `master.tolerations`                          | Toleration labels for pod assignment (postgresql master)                                                               | `[]`                                                        |
 | `master.podAnnotations`                       | Map of annotations to add to the pods (postgresql master)                                                              | `{}`                                                        |
 | `master.podLabels`                            | Map of labels to add to the pods (postgresql master)                                                                   | `{}`                                                        |
+| `master.extraVolumeMounts`                    | Additional volume mounts to add to the pods (postgresql master)                                                        |  `[]`                                                       |
+| `master.extraVolume`                          | Additional volumes to add to the pods (postgresql master)                                                              |  `[]`                                                       |
 | `slave.nodeSelector`                          | Node labels for pod assignment (postgresql slave)                                                                      | `{}`                                                        |
 | `slave.affinity`                              | Affinity labels for pod assignment (postgresql slave)                                                                  | `{}`                                                        |
 | `slave.tolerations`                           | Toleration labels for pod assignment (postgresql slave)                                                                | `[]`                                                        |
 | `slave.podAnnotations`                        | Map of annotations to add to the pods (postgresql slave)                                                               | `{}`                                                        |
 | `slave.podLabels`                             | Map of labels to add to the pods (postgresql slave)                                                                    | `{}`                                                        |
+| `slave.extraVolumeMounts`                     | Additional volume mounts to add to the pods (postgresql slave)                                                         |  `[]`                                                       |
+| `slave.extraVolume`                           | Additional volumes to add to the pods (postgresql slave)                                                               |  `[]`                                                       |
 | `terminationGracePeriodSeconds`               | Seconds the pod needs to terminate gracefully                                                                          | `nil`                                                       |
 | `resources`                                   | CPU/Memory resource requests/limits                                                                                    | Memory: `256Mi`, CPU: `250m`                                |
 | `securityContext.enabled`                     | Enable security context                                                                                                | `true`                                                      |
@@ -176,6 +181,12 @@ $ helm install --name my-release -f values.yaml stable/postgresql
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+### [Rolling VS Immutable tags](https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/)
+
+It is strongly recommended to use immutable tags in a production environment. This ensures your deployment does not change automatically if the same tag is updated with a different image.
+
+Bitnami will release a new chart updating its containers if a new version of the main container, significant changes, or critical vulnerabilities exist.
 
 ### postgresql.conf / pg_hba.conf files as configMap
 

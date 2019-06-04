@@ -51,6 +51,9 @@ spec:
             value: {{ default .Release.Namespace .Values.server.kubernetes.namespace }}
           - name: DRONE_KUBERNETES_SERVICE_ACCOUNT
             value: {{ template "drone.pipelineServiceAccount" . }}
+        {{- else }}
+          - name: DRONE_AGENTS_ENABLED
+            value: "true"
         {{- end }}
           - name: DRONE_GIT_ALWAYS_AUTH
             value: {{ .Values.server.alwaysAuth | quote }}
@@ -102,12 +105,25 @@ spec:
         resources:
 {{ toYaml .Values.server.resources | indent 10 }}
         volumeMounts:
-          - name: data
-            mountPath: /var/lib/drone
+        {{ if eq .Values.sourceControl.provider "bitbucketServer" -}}
+        - name: bitbucket-private-key
+          mountPath: /etc/bitbucket
+          readOnly: true
+        {{ end }}
+        - name: data
+          mountPath: /var/lib/drone
 {{- with .Values.server.extraContainers }}
-{{ tpl . $ | indent 6 }}
+{{ tpl . $ | indent 10 }}
 {{- end }}
       volumes:
+      {{ if eq .Values.sourceControl.provider "bitbucketServer" -}}
+      - name: bitbucket-private-key
+        secret:
+          secretName: {{ template "drone.sourceControlSecret" . }}
+          items:
+            - key: {{ .Values.sourceControl.bitbucketServer.privateKey }}
+              path: key.pem
+      {{ end -}}
       - name: data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
