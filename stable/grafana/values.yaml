@@ -6,6 +6,7 @@ rbac:
 serviceAccount:
   create: true
   name:
+  nameTest:
 
 replicas: 1
 
@@ -23,6 +24,11 @@ livenessProbe:
   initialDelaySeconds: 60
   timeoutSeconds: 30
   failureThreshold: 10
+
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName: "default-scheduler"
 
 image:
   repository: grafana/grafana
