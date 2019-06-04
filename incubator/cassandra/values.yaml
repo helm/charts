@@ -13,6 +13,11 @@ image:
 service:
   type: ClusterIP
 
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName:
+
 ## Persist data to a persistent volume
 persistence:
   enabled: true
@@ -43,9 +48,10 @@ resources: {}
 ## Change cassandra configuration parameters below:
 ## ref: http://docs.datastax.com/en/cassandra/3.0/cassandra/configuration/configCassandra_yaml.html
 ## Recommended max heap size is 1/2 of system memory
-## Recommeneed heap new size is 1/4 of max heap size
+## Recommended heap new size is 1/4 of max heap size
 ## ref: http://docs.datastax.com/en/cassandra/3.0/cassandra/operations/opsTuneJVM.html
 config:
+  cluster_domain: cluster.local
   cluster_name: cassandra
   cluster_size: 3
   seed_size: 2
@@ -65,6 +71,15 @@ config:
     thrift: 9160
     # If a JVM Agent is in place
     # agent: 61621
+
+## Cassandra config files overrides
+configOverrides: {}
+
+## Cassandra docker command overrides
+commandOverrides: []
+
+## Cassandra docker args overrides
+argsOverrides: []
 
 ## Custom env variables.
 ## ref: https://hub.docker.com/_/cassandra/
@@ -123,6 +138,10 @@ securityContext:
 ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 affinity: {}
 
+## Node tolerations for pod assignment
+## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+tolerations: []
+
 rbac:
   # Specifies whether RBAC resources should be created
   create: true
@@ -133,6 +152,10 @@ serviceAccount:
   # The name of the ServiceAccount to use.
   # If not set and create is true, a name is generated using the fullname template
   # name:
+
+# Use host network for Cassandra pods
+# You must pass seed list into config.seeds property if set to true
+hostNetwork: false
 
 ## Backup cronjob configuration
 ## Ref: https://github.com/maorfr/cain
@@ -148,13 +171,17 @@ backup:
     cron: "30 7 * * *"
 
   annotations:
-    # Example for authorization using kube2iam
+    # Example for authorization to AWS S3 using kube2iam
     # Can also be done using environment variables
     iam.amazonaws.com/role: cain
 
   image:
-    repos: maorfr/cain
-    tag: 0.1.0
+    repository: maorfr/cain
+    tag: 0.6.0
+
+  # Additional arguments for cain
+  # Ref: https://github.com/maorfr/cain#usage
+  extraArgs: []
 
   # Add additional environment variables
   env:
@@ -170,9 +197,13 @@ backup:
       memory: 1Gi
       cpu: 1
 
+  # Name of the secret containing the credentials of the service account used by GOOGLE_APPLICATION_CREDENTIALS, as a credentials.json file
+  # google:
+    # serviceAccountSecret:
+
   # Destination to store the backup artifacts
-  # Currently only s3 is supported
-  # Additional support can added.
+  # Supported cloud storage services: AWS S3, Minio S3, Azure Blob Storage, Google Cloud Storage
+  # Additional support can added. Visit this repository for details
   # Ref: https://github.com/maorfr/skbn
   destination: s3://bucket/cassandra
 
@@ -185,3 +216,10 @@ exporter:
     tag: 2.0.2
   port: 5556
   jvmOpts: ""
+  resources: {}
+    # limits:
+    #   cpu: 1
+    #   memory: 1Gi
+    # requests:
+    #   cpu: 1
+    #   memory: 1Gi

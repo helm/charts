@@ -41,11 +41,14 @@ The following table lists the configurable parameters of the postgres Exporter c
 | `image`                         | Image                                      | `wrouesnel/postgres_exporter`                      |
 | `imageTag`                      | Image tag                                  | `v0.4.6`                                      |
 | `imagePullPolicy`               | Image pull policy                          | `IfNotPresent` |
+| `service.annotations`           | annotations for the service                | `{}`           |
 | `service.type`      | Service type |  `ClusterIP` |
 | `service.port`                      | The service port                               | `80`                                     |
 | `service.targetPort`                      | The target port of the container                               | `9187`                                        |
+| `service.name`                  | Name of the service port                   | `http`                                                     |
+| `service.labels`                | Labels to add to the service               | `{}`                                                       |
 | `resources`          |                                  |                    `{}`                                  |
-| `config.datasource`                 | Postgresql datasource configuration                      |                                     |
+| `config.datasource`                 | Postgresql datasource configuration                      |  see [values.yaml](values.yaml)              |
 | `config.queries`                | SQL queries that the exporter will run | [postgres exporter defaults](https://github.com/wrouesnel/postgres_exporter/blob/master/queries.yaml) |
 | `config.disableDefaultMetrics`  | Specifies whether to use only metrics from `queries.yaml`| `false` |
 | `rbac.create`                   | Specifies whether RBAC resources should be created.| `true` |
@@ -56,6 +59,7 @@ The following table lists the configurable parameters of the postgres Exporter c
 | `nodeSelector`                    | node labels for pod assignment | `{}`  |
 | `affinity`                       |     node/pod affinities | `{}` |
 | `annotations`                    | Deployment annotations | `{}` |
+| `podLabels`                      | Additional labels to add to each pod      | `{}` |
 | `extraContainers`                | Additional sidecar containers | `""` |
 | `extraVolumes`                   | Additional volumes for use in extraContainers | `""` |
 

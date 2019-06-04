@@ -7,21 +7,25 @@ spec:
   selector:
     matchLabels:
       app: {{ template "prometheus-node-exporter.name" . }}
-      release: {{ .Release.Name }}  
+      release: {{ .Release.Name }}
   updateStrategy:
     type: RollingUpdate
     rollingUpdate:
-      maxUnavailable: 1      
+      maxUnavailable: 1
   template:
     metadata:
       labels: {{ include "prometheus-node-exporter.labels" . | indent 8 }}
     spec:
 {{- if and .Values.rbac.create .Values.serviceAccount.create }}
       serviceAccountName: {{ template "prometheus-node-exporter.serviceAccountName" . }}
-{{- end }}      
+{{- end }}
+{{- if .Values.securityContext }}
       securityContext:
-        runAsNonRoot: true
-        runAsUser: 65534
+{{ toYaml .Values.securityContext | indent 8 }}
+{{- end }}
+{{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName }}
+{{- end }}
       containers:
         - name: node-exporter
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -59,10 +63,21 @@ spec:
             - name: {{ $mount.name }}
               mountPath: {{ $mount.mountPath }}
               readOnly: {{ $mount.readOnly }}
+            {{- if $mount.mountPropagation }}
+              mountPropagation: {{ $mount.mountPropagation }}
             {{- end }}
             {{- end }}
-      hostNetwork: true
+            {{- end }}
+      hostNetwork: {{ .Values.hostNetwork }}
       hostPID: true
+{{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+{{- end }}
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
     {{- with .Values.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}

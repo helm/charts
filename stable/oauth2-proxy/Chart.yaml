@@ -1,12 +1,9 @@
 name: oauth2-proxy
-version: 0.6.0
-# This chart is deprecated and no longer maintained as it's upstream has been abandoned.
-# For details deprecation, including how to un-deprecate a chart see the PROCESSES.md file.
-deprecated: true
+version: 0.12.2
 apiVersion: v1
-appVersion: 2.2
+appVersion: 3.1.0
 home: http://www.videntity.com/
-description: DEPRECATED A reverse proxy that provides authentication with Google, Github or other providers
+description: A reverse proxy that provides authentication with Google, Github or other providers
 keywords:
 - kubernetes
 - oauth
@@ -14,6 +11,9 @@ keywords:
 - authentication
 - google
 - github
+maintainers:
+  - name: miouge1
+    email: maxime@root314.com
 sources:
-- https://github.com/bitly/oauth2_proxy
+- https://github.com/pusher/oauth2_proxy
 engine: gotpl

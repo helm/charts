@@ -6,7 +6,10 @@ provisionDataStore:
   cassandra: true
   elasticsearch: false
 
-tag: 1.4.1
+tag: 1.12.0
+
+nameOverride: ""
+fullnameOverride: ""
 
 storage:
   # allowed values (cassandra, elasticsearch)
@@ -27,7 +30,7 @@ storage:
 # Begin: Override values on the Cassandra subchart to customize for Jaeger
 cassandra:
   image:
-    tag: 3.11
+    tag: 3.11.3
   persistence:
     # To enable persistence, please see the documentation for the Cassandra chart
     enabled: false
@@ -65,7 +68,7 @@ schema:
 # Begin: Override values on the Elasticsearch subchart to customize for Jaeger
 elasticsearch:
   image:
-    tag: "5.4"
+    tag: "6.6"
   cluster:
     name: "tracing"
   data:
@@ -154,12 +157,15 @@ collector:
 
 query:
   enabled: true
+  agentSidecar:
+    enabled: true
   annotations: {}
   image: jaegertracing/jaeger-query
   pullPolicy: IfNotPresent
   dnsPolicy: ClusterFirst
   cmdlineParams: {}
   healthCheckPort: 16687
+  basePath: /
   replicaCount: 1
   service:
     annotations: {}

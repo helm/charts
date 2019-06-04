@@ -5,14 +5,33 @@ metadata:
   labels:
 {{ include "labels.standard" . | indent 4 }}
 data:
-  # TODO: Enable multiple types of database, not only PostgreSQL
-  DB_TYPE: postgres
-  DB_USERNAME: postgres
-  DB_DATABASE: {{ .Values.db.database | quote }}
-  {{- if .Values.db.chart }}
-  DB_HOST: {{ .Values.db.chart }}.{{ .Release.Namespace }}.svc.cluster.local
-  {{- else }}
-  DB_HOST: localhost
+  DB_SSL: {{ .Values.db.ssl | quote }}
+  {{- if .Values.postgresql.enabled }}
+  # PostgreSQL Database
+  DB_TYPE: "postgres"
+  DB_HOST: {{ template "postgresql.fullname" . }}
+  DB_PORT: {{ .Values.postgresql.service.port | quote }}
+  DB_USERNAME: {{ .Values.postgresql.postgresqlUsername | quote }}
+  DB_DATABASE: {{ .Values.postgresql.postgresqlDatabase  | quote }}
   {{- end }}
-  DB_PORT: "5432"
-  DB_SSL: disable
+  {{- if .Values.mysql.enabled }}
+  # MySQL Database
+  DB_TYPE: "mysql"
+  DB_HOST: {{ template "mysql.fullname" . }}
+  DB_PORT: "3306"
+  DB_USERNAME: {{ .Values.mysql.mysqlUser | quote }}
+  DB_DATABASE: {{ .Values.mysql.mysqlDatabase  | quote }}
+  {{- end }}
+  {{- if .Values.externalDatabase.type }}
+  # External Database
+  DB_TYPE: {{ .Values.externalDatabase.type | quote }}
+  DB_HOST: {{ .Values.externalDatabase.host | quote }}
+  {{- if eq .Values.externalDatabase.type "mysql" }}
+  DB_PORT: {{ .Values.externalDatabase.port | default "3306" | quote }}
+  {{- end }}
+  {{- if eq .Values.externalDatabase.type "postgres" }}
+  DB_PORT: {{ .Values.externalDatabase.port | default "5432" | quote }}
+  {{- end }}
+  DB_USERNAME: {{ .Values.externalDatabase.username | quote }}
+  DB_DATABASE: {{ .Values.externalDatabase.database  | quote }}
+  {{- end }}

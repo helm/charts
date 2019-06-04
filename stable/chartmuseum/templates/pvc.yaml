@@ -6,6 +6,9 @@ metadata:
   labels:
     app: {{ include "chartmuseum.fullname" . }}
     release: {{ .Release.Name | quote }}
+{{- if .Values.persistence.labels }}
+{{ toYaml .Values.persistence.labels | indent 4 }}
+{{- end }}
 spec:
   accessModes:
     - {{ .Values.persistence.accessMode | quote }}
@@ -18,5 +21,7 @@ spec:
 {{- else }}
   storageClassName: "{{ .Values.persistence.storageClass }}"
 {{- end }}
+{{- else if and .Values.persistence.volumeName (.Values.persistence.pv.enabled) }}
+  volumeName: "{{ .Values.persistence.volumeName }}"
 {{- end }}
 {{- end }}

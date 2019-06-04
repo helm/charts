@@ -1,12 +1,12 @@
 image:
   repository: sorintlab/stolon
-  tag: v0.11.0-pg10
+  tag: v0.13.0-pg10
   pullPolicy: IfNotPresent
 
 # used by create-cluster-job when store.backend is etcd
 etcdImage:
   repository: k8s.gcr.io/etcd-amd64
-  tag: 2.2.5
+  tag: 2.3.7
   pullPolicy: IfNotPresent
 
 debug: false
@@ -32,14 +32,22 @@ serviceAccount:
   # The name of the ServiceAccount to use. If not set and create is true, a name is generated using the fullname template
   name:
 
-superuserUsername: "stolon"
+superuserSecret:
+  name: ""
+  usernameKey: pg_su_username
+  passwordKey: pg_su_password
 
-## password for the superuser (REQUIRED)
+replicationSecret:
+  name: ""
+  usernameKey: pg_repl_username
+  passwordKey: pg_repl_password
+
+superuserUsername: "stolon"
+## password for the superuser (REQUIRED if superuserSecret is not set)
 superuserPassword:
 
 replicationUsername: "repluser"
-
-## password for the replication user (REQUIRED)
+## password for the replication user (REQUIRED if replicationSecret is not set)
 replicationPassword:
 
 ## backend could be one of the following: consul, etcdv2, etcdv3 or kubernetes
@@ -49,6 +57,7 @@ store:
   kubeResourceKind: configmap
 
 pgParameters: {}
+  # maxConnections: 1000
 
 ports:
   stolon:
@@ -58,6 +67,11 @@ ports:
 
 job:
   autoCreateCluster: true
+  autoUpdateClusterSpec: true
+
+clusterSpec: {}
+  # sleepInterval: 1s
+  # maxStandbys: 5
 
 keeper:
   replicaCount: 2
@@ -75,6 +89,14 @@ keeper:
   nodeSelector: {}
   affinity: {}
   tolerations: []
+  volumes: []
+  volumeMounts: []
+  hooks:
+    failKeeper:
+      enabled: false
+  podDisruptionBudget:
+    # minAvailable: 1
+    # maxUnavailable: 1
 
 proxy:
   replicaCount: 2
@@ -93,6 +115,9 @@ proxy:
   nodeSelector: {}
   affinity: {}
   tolerations: []
+  podDisruptionBudget:
+    # minAvailable: 1
+    # maxUnavailable: 1
 
 sentinel:
   replicaCount: 2
@@ -102,3 +127,6 @@ sentinel:
   nodeSelector: {}
   affinity: {}
   tolerations: []
+  podDisruptionBudget:
+    # minAvailable: 1
+    # maxUnavailable: 1

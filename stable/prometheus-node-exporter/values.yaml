@@ -3,15 +3,22 @@
 # Declare variables to be passed into your templates.
 image:
   repository: quay.io/prometheus/node-exporter
-  tag: v0.16.0
+  tag: v0.18.0
   pullPolicy: IfNotPresent
 
 service:
   type: ClusterIP
   port: 9100
   targetPort: 9100
+  nodePort:
   annotations:
     prometheus.io/scrape: "true"
+
+prometheus:
+  monitor:
+    enabled: false
+    additionalLabels: {}
+    namespace: ""
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -33,6 +40,10 @@ serviceAccount:
   name:
   imagePullSecrets: []
 
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 65534
+
 rbac:
   ## If true, create & use RBAC resources
   ##
@@ -45,9 +56,33 @@ rbac:
 # their addresses here
 endpoints: []
 
+# Expose the service to the host network
+hostNetwork: true
+
+## Assign a group of affinity scheduling rules
+##
+affinity: {}
+#   nodeAffinity:
+#     requiredDuringSchedulingIgnoredDuringExecution:
+#       nodeSelectorTerms:
+#         - matchFields:
+#             - key: metadata.name
+#               operator: In
+#               values:
+#                 - target-host-name
+
+## Assign a nodeSelector if operating a hybrid cluster
+##
+nodeSelector: {}
+#   beta.kubernetes.io/arch: amd64
+#   beta.kubernetes.io/os: linux
+
 tolerations:
   - effect: NoSchedule
     operator: Exists
+
+## Assign a PriorityClassName to pods if set
+# priorityClassName: ""
 
 ## Additional container arguments
 ##
@@ -61,3 +96,4 @@ extraHostVolumeMounts: {}
 #    hostPath: <hostPath>
 #    mountPath: <mountPath>
 #    readOnly: true|false
+#    mountPropagation: None|HostToContainer|Bidirectional

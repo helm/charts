@@ -1,32 +1,32 @@
 To use Anchore Engine you need the URL, username, and password to access the API.
 
-Anchore Engine can be accessed via port {{ .Values.service.ports.api }} on the following DNS name from within the cluster:
-{{ template "fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+Anchore Engine can be accessed via port {{ .Values.anchoreApi.service.port }} on the following DNS name from within the cluster:
+{{ template "anchore-engine.api.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
 
 Here are the steps to configure the anchore-cli (`pip install anchorecli`). Use these same values for direct API access as well.
 
 To configure your anchore-cli run:
 
     ANCHORE_CLI_USER=admin
-    ANCHORE_CLI_PASS=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.adminPassword}" | base64 --decode; echo)
+    ANCHORE_CLI_PASS=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "anchore-engine.fullname" . }} -o jsonpath="{.data.ANCHORE_ADMIN_PASSWORD}" | base64 --decode; echo)
 {{ if .Values.ingress.enabled }}
-   ANCHORE_CLI_URL=http://$(kubectl get ingress --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
+   ANCHORE_CLI_URL=http://$(kubectl get ingress --namespace {{ .Release.Namespace }} {{ template "anchore-engine.fullname" . }} -o jsonpath="{.status.loadBalancer.ingress[0].ip}")/v1/
 {{ else }}
 Using the service endpoint from within the cluster you can use:
-    ANCHORE_CLI_URL=http://{{ template "fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.ports.api}}/v1/
+    ANCHORE_CLI_URL=http://{{ template "anchore-engine.api.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.anchoreApi.service.port}}/v1/
 {{ end }}
 
 To verify the service is up and running, you can run container for the Anchore Engine CLI:
 
-    kubectl run -i --tty anchore-cli --restart=Always --image anchore/engine-cli --env ANCHORE_CLI_USER=admin --env ANCHORE_CLI_PASS=${ANCHORE_CLI_PASS} --env ANCHORE_CLI_URL=http://{{ template "fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.ports.api}}/v1/
+    kubectl run -i --tty anchore-cli --restart=Always --image anchore/engine-cli --env ANCHORE_CLI_USER=admin --env ANCHORE_CLI_PASS=${ANCHORE_CLI_PASS} --env ANCHORE_CLI_URL=http://{{ template "anchore-engine.api.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.anchoreApi.service.port}}/v1/
 
 from within the container you can use 'anchore-cli' commands.
 
 * NOTE: On first startup of anchore-engine, it performs a CVE data sync which may take several minutes to complete. During this time the system status will report 'partially_down' and any images added for analysis will stay in the 'not_analyzed' state.
 Once the sync is complete, any queued images will be analyzed and the system status will change to 'all_up'.
 
-Initial setup time can be >60sec for postgresql setup and readiness checks to pass for the services as indicated by pod state. You can check with:
-    kubectl get pods -l app={{ template "fullname" .}},component=core
+Initial setup time can be >120sec for postgresql setup and readiness checks to pass for the services as indicated by pod state. You can check with:
+    kubectl get pods -l app={{ template "anchore-engine.fullname" .}},component=api
 
 
 A quick primer on using the Anchore Engine CLI follows. For more info see: https://github.com/anchore/anchore-engine/wiki/Getting-Started
@@ -59,5 +59,3 @@ List OS packages found in the image with:
 
 List files found in the image with:
     anchore-cli image content <imageref> files
-
-

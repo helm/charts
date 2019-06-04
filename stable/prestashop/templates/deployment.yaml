@@ -4,28 +4,36 @@ kind: Deployment
 metadata:
   name: {{ template "prestashop.fullname" . }}
   labels:
-    app: {{ template "prestashop.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app: "{{ template "prestashop.name" . }}"
+    chart: "{{ template "prestashop.chart" . }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
 spec:
   selector:
     matchLabels:
-      app: {{ template "prestashop.fullname" . }}
+      app: {{ template "prestashop.name" . }}
       release: "{{ .Release.Name }}"
   template:
     metadata:
       labels:
-        app: {{ template "prestashop.fullname" . }}
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-        release: "{{ .Release.Name }}"
+        app: "{{ template "prestashop.name" . }}"
+        chart: "{{ template "prestashop.chart" . }}"
+        release: {{ .Release.Name | quote }}
+{{- if or .Values.podAnnotations .Values.metrics.enabled }}
+      annotations:
+  {{- if .Values.podAnnotations }}
+{{ toYaml .Values.podAnnotations | indent 8 }}
+  {{- end }}
+  {{- if .Values.metrics.podAnnotations }}
+{{ toYaml .Values.metrics.podAnnotations | indent 8 }}
+  {{- end }}
+{{- end }}
     spec:
-      {{- if .Values.image.pullSecrets }}
-      imagePullSecrets:
-      {{- range .Values.image.pullSecrets }}
-        - name: {{ . }}
-      {{- end}}
-      {{- end }}
+{{- include "prestashop.imagePullSecrets" . | indent 6 }}
+      hostAliases:
+      - ip: "127.0.0.1"
+        hostnames:
+        - "status.localhost"
       containers:
       - name: {{ template "prestashop.fullname" . }}
         image: {{ template "prestashop.image" . }}
@@ -33,8 +41,18 @@ spec:
         env:
         - name: ALLOW_EMPTY_PASSWORD
           value: {{ .Values.allowEmptyPassword | quote }}
+        {{- if .Values.prestashopCookieCheckIP }}
         - name: PRESTASHOP_COOKIE_CHECK_IP
           value: {{ .Values.prestashopCookieCheckIP | quote }}
+        {{- end }}
+        {{- if .Values.prestashopCountry }}
+        - name: PRESTASHOP_COUNTRY
+          value: {{ .Values.prestashopCountry | quote }}
+        {{- end }}
+        {{- if .Values.prestashopLanguage }}
+        - name: PRESTASHOP_LANGUAGE
+          value: {{ .Values.prestashopLanguage | quote }}
+        {{- end }}
         {{- if .Values.mariadb.enabled }}
         - name: MARIADB_HOST
           value: {{ template "prestashop.mariadb.fullname" . }}
@@ -64,8 +82,9 @@ spec:
               name: {{ printf "%s-%s" .Release.Name "externaldb" }}
               key: db-password
         {{- end }}
+{{- $port:=.Values.service.port | toString }}
         - name: PRESTASHOP_HOST
-          value: {{ include "prestashop.host" . | quote }}
+          value: "{{ include "prestashop.host" . }}{{- if ne $port "80" }}:{{ .Values.service.port }}{{ end }}"
         - name: PRESTASHOP_USERNAME
           value: {{ .Values.prestashopUsername | quote }}
         - name: PRESTASHOP_PASSWORD
@@ -79,19 +98,29 @@ spec:
           value: {{ .Values.prestashopFirstName | quote }}
         - name: PRESTASHOP_LAST_NAME
           value: {{ .Values.prestashopLastName | quote }}
+        {{- if .Values.smtpHost }}
         - name: SMTP_HOST
           value: {{ .Values.smtpHost | quote }}
+        {{- end }}
+        {{- if .Values.smtpPort }}
         - name: SMTP_PORT
           value: {{ .Values.smtpPort | quote }}
+        {{- end }}
+        {{- if .Values.smtpUser }}
         - name: SMTP_USER
           value: {{ .Values.smtpUser | quote }}
+        {{- end }}
+        {{- if .Values.smtpPassword }}
         - name: SMTP_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "prestashop.fullname" . }}
               key: smtp-password
+        {{- end }}
+        {{- if .Values.smtpProtocol }}
         - name: SMTP_PROTOCOL
           value: {{ .Values.smtpProtocol | quote }}
+        {{- end }}
         ports:
         - name: http
           containerPort: 80
@@ -128,12 +157,32 @@ spec:
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
-        - mountPath: /bitnami/apache
-          name: prestashop-data
-          subPath: apache
         - mountPath: /bitnami/prestashop
           name: prestashop-data
           subPath: prestashop
+{{- if .Values.metrics.enabled }}
+      - name: metrics
+        image: {{ template "prestashop.metrics.image" . }}
+        imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
+        command: [ '/bin/apache_exporter', '-scrape_uri', 'http://status.localhost:80/server-status/?auto']
+        ports:
+        - name: metrics
+          containerPort: 9117
+        livenessProbe:
+          httpGet:
+            path: /metrics
+            port: metrics
+          initialDelaySeconds: 15
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /metrics
+            port: metrics
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+        resources:
+{{ toYaml .Values.metrics.resources | indent 12 }}
+{{- end }}
       volumes:
       - name: prestashop-data
       {{- if .Values.persistence.enabled }}

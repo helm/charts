@@ -8,12 +8,12 @@ host. To configure Phabricator with the URL of your service:
 
 1. Get the Phabricator URL by running:
 
-  {{- if contains "NodePort" .Values.serviceType }}
+  {{- if contains "NodePort" .Values.service.type }}
 
   export APP_PORT=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "phabricator.fullname" . }} -o jsonpath="{.spec.ports[0].nodePort}")
   export APP_HOST=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
 
-  {{- else if contains "LoadBalancer" .Values.serviceType }}
+  {{- else if contains "LoadBalancer" .Values.service.type }}
 
   NOTE: It may take a few minutes for the LoadBalancer IP to be available.
         Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "phabricator.fullname" . }}'
@@ -31,14 +31,15 @@ host. To configure Phabricator with the URL of your service:
 {{- else -}}
 1. Get the Phabricator URL by running:
 
-{{- if eq .Values.serviceType "ClusterIP" }}
+{{- if eq .Values.service.type "ClusterIP" }}
 
   echo "Phabricator URL: http://127.0.0.1:8080/"
-  kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "phabricator.fullname" . }} 8080:80
+  kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "phabricator.fullname" . }} 8080:{{ .Values.service.port }}
 
 {{- else }}
 
-  echo "Phabricator URL: http://{{ include "phabricator.host" . }}/"
+{{- $port:=.Values.service.port | toString }}
+  echo "Phabricator URL: http://{{ include "phabricator.host" . }}{{- if ne $port "80" }}:{{ .Values.service.port }}{{ end }}/"
 
 {{- end }}
 
@@ -46,4 +47,11 @@ host. To configure Phabricator with the URL of your service:
 
   echo Username: {{ .Values.phabricatorUsername }}
   echo Password: $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "phabricator.fullname" . }} -o jsonpath="{.data.phabricator-password}" | base64 --decode)
+{{- end }}
+
+{{- if and (contains "bitnami/" .Values.image.repository) (not (.Values.image.tag | toString | regexFind "-r\\d+$|sha256:")) }}
+
+WARNING: Rolling tag detected ({{ .Values.image.repository }}:{{ .Values.image.tag }}), please note that it is strongly recommended to avoid using rolling tags in a production environment.
++info https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/
+
 {{- end }}

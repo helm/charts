@@ -1,0 +1,273 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ template "redis-ha.fullname" . }}-server
+  labels:
+{{ include "labels.standard" . | indent 4 }}
+spec:
+  selector:
+    matchLabels:
+      release: {{ .Release.Name }}
+      app: {{ template "redis-ha.name" . }}
+  serviceName: {{ template "redis-ha.fullname" . }}
+  replicas: {{ .Values.replicas }}
+  podManagementPolicy: OrderedReady
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        checksum/init-config: {{ include (print $.Template.BasePath "/redis-ha-configmap.yaml") . | sha256sum }}
+        checksum/probe-config: {{ include (print $.Template.BasePath "/redis-ha-healthchecks.yaml") . | sha256sum }}
+      {{- if .Values.podAnnotations }}
+{{ toYaml .Values.podAnnotations | indent 8 }}
+      {{- end }}
+      {{- if .Values.exporter.enabled }}
+        prometheus.io/port: "{{ .Values.exporter.port }}"
+        prometheus.io/scrape: "true"
+        prometheus.io/path: {{ .Values.exporter.scrapePath }}
+      {{- end }}
+      labels:
+        release: {{ .Release.Name }}
+        app: {{ template "redis-ha.name" . }}
+        {{- range $key, $value := .Values.labels }}
+        {{ $key }}: {{ $value }}
+        {{- end }}
+    spec:
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+      {{- end }}
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ tpl . $ | indent 8 }}
+    {{- end }}
+      securityContext:
+{{ toYaml .Values.securityContext | indent 8 }}
+      serviceAccountName: {{ template "redis-ha.serviceAccountName" . }}
+      initContainers:
+      {{- if .Values.sysctlImage.enabled }}
+      - name: init-sysctl
+        image: {{ template "redis.sysctl.image" . }}
+        {{- if .Values.sysctlImage.mountHostSys }}
+        volumeMounts:
+        - name: host-sys
+          mountPath: /host-sys
+        {{- end }}
+        command:
+{{ toYaml .Values.sysctlImage.command | indent 10 }}
+        securityContext:
+          runAsNonRoot: false
+          privileged: true
+          runAsUser: 0
+      {{- end }}
+{{- if and .Values.hostPath.path .Values.hostPath.chown }}
+      - name: hostpath-chown
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        securityContext:
+          runAsNonRoot: false
+          runAsUser: 0
+        command:
+        - chown
+        - "{{ .Values.securityContext.runAsUser }}"
+        - /data
+        volumeMounts:
+        - name: data
+          mountPath: /data
+{{- end }}
+      - name: config-init
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        resources:
+{{ toYaml .Values.init.resources | indent 10 }}
+        command:
+        - sh
+        args:
+        - /readonly-config/init.sh
+        env:
+{{- $replicas := int .Values.replicas -}}
+{{- range $i := until $replicas }}
+        - name: SENTINEL_ID_{{ $i }}
+          value: {{ printf "%s\n%s\nindex: %d" (include "redis-ha.name" $) ($.Release.Name) $i | sha1sum }}
+{{ end -}}
+{{- if .Values.auth }}
+        - name: AUTH
+          valueFrom:
+            secretKeyRef:
+            {{- if .Values.existingSecret }}
+              name: {{ .Values.existingSecret }}
+            {{- else }}
+              name: {{ template "redis-ha.fullname" . }}
+            {{- end }}
+              key: {{ .Values.authKey }}
+{{- end }}
+        volumeMounts:
+        - name: config
+          mountPath: /readonly-config
+          readOnly: true
+        - name: data
+          mountPath: /data
+      containers:
+      - name: redis
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command:
+        - redis-server
+        args:
+        - /data/conf/redis.conf
+{{- if .Values.auth }}
+        env:
+        - name: AUTH
+          valueFrom:
+            secretKeyRef:
+            {{- if .Values.existingSecret }}
+              name: {{ .Values.existingSecret }}
+            {{- else }}
+              name: {{ template "redis-ha.fullname" . }}
+            {{- end }}
+              key: {{ .Values.authKey }}
+{{- end }}
+        livenessProbe:
+          exec:
+            command: [ "sh", "/probes/readiness.sh", "{{ .Values.redis.port }}"]
+          initialDelaySeconds: 15
+          periodSeconds: 5
+        readinessProbe:
+          exec:
+            command: ["sh", "/probes/readiness.sh", "{{ .Values.redis.port }}"]
+          initialDelaySeconds: 15
+          periodSeconds: 5
+        resources:
+{{ toYaml .Values.redis.resources | indent 10 }}
+        ports:
+        - name: redis
+          containerPort: {{ .Values.redis.port }}
+        volumeMounts:
+        - mountPath: /data
+          name: data
+        - mountPath: /probes
+          name: probes
+      - name: sentinel
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command:
+          - redis-sentinel
+        args:
+          - /data/conf/sentinel.conf
+{{- if .Values.auth }}
+        env:
+        - name: AUTH
+          valueFrom:
+            secretKeyRef:
+            {{- if .Values.existingSecret }}
+              name: {{ .Values.existingSecret }}
+            {{- else }}
+              name: {{ template "redis-ha.fullname" . }}
+            {{- end }}
+              key: {{ .Values.authKey }}
+{{- end }}
+        livenessProbe:
+          exec:
+            command: [ "sh", "/probes/readiness.sh", "{{ .Values.sentinel.port }}"]
+          initialDelaySeconds: 15
+          periodSeconds: 5
+        readinessProbe:
+          exec:
+            command: ["sh", "/probes/readiness.sh", "{{ .Values.sentinel.port }}"]
+          initialDelaySeconds: 15
+          periodSeconds: 5
+        resources:
+{{ toYaml .Values.sentinel.resources | indent 10 }}
+        ports:
+          - name: sentinel
+            containerPort: {{ .Values.sentinel.port }}
+        volumeMounts:
+        - mountPath: /data
+          name: data
+        - mountPath: /probes
+          name: probes
+{{- if .Values.exporter.enabled }}
+      - name: redis-exporter
+        image: "{{ .Values.exporter.image }}:{{ .Values.exporter.tag }}"
+        imagePullPolicy: {{ .Values.exporter.pullPolicy }}
+        args:
+        {{- range $key, $value := .Values.extraArgs }}
+          - --{{ $key }}={{ $value }}
+        {{- end }}
+        env:
+          - name: REDIS_ADDR
+            value: redis://localhost:6379
+        {{- if .Values.auth }}
+          - name: REDIS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+              {{- if .Values.existingSecret }}
+                name: {{ .Values.existingSecret }}
+              {{- else }}
+                name: {{ template "redis-ha.fullname" . }}
+              {{- end }}
+                key: {{ .Values.authKey }}
+        {{- end }}
+        livenessProbe:
+          httpGet:
+            path: {{ .Values.exporter.scrapePath }}
+            port: {{ .Values.exporter.port }}
+          initialDelaySeconds: 15
+          timeoutSeconds: 1
+          periodSeconds: 15
+        resources:
+{{ toYaml .Values.exporter.resources | indent 10 }}
+        ports:
+          - name: exporter-port
+            containerPort: {{ .Values.exporter.port }}
+{{- end }}
+      volumes:
+      - name: config
+        configMap:
+          name: {{ template "redis-ha.fullname" . }}-configmap
+      - name: probes
+        configMap:
+          name: {{ template "redis-ha.fullname" . }}-probes
+      {{- if .Values.sysctlImage.mountHostSys }}
+      - name: host-sys
+        hostPath:
+          path: /sys
+      {{- end }}
+{{- if .Values.persistentVolume.enabled }}
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+      annotations:
+      {{- range $key, $value := .Values.persistentVolume.annotations }}
+        {{ $key }}: {{ $value }}
+      {{- end }}
+    spec:
+      accessModes:
+      {{- range .Values.persistentVolume.accessModes }}
+        - {{ . | quote }}
+      {{- end }}
+      resources:
+        requests:
+          storage: {{ .Values.persistentVolume.size | quote }}
+    {{- if .Values.persistentVolume.storageClass }}
+    {{- if (eq "-" .Values.persistentVolume.storageClass) }}
+      storageClassName: ""
+    {{- else }}
+      storageClassName: "{{ .Values.persistentVolume.storageClass }}"
+    {{- end }}
+    {{- end }}
+{{- else if .Values.hostPath.path }}
+      - name: data
+        hostPath:
+          path: {{ tpl .Values.hostPath.path .}}
+{{- else }}
+      - name: data
+        emptyDir: {}
+{{- end }}

@@ -7,11 +7,7 @@ metadata:
 {{ toYaml .Values.alertmanager.service.annotations | indent 4 }}
 {{- end }}
   labels:
-    app: {{ template "prometheus.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.alertmanager.name }}"
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    {{- include "prometheus.alertmanager.labels" . | nindent 4 }}
 {{- if .Values.alertmanager.service.labels }}
 {{ toYaml .Values.alertmanager.service.labels | indent 4 }}
 {{- end }}
@@ -48,8 +44,6 @@ spec:
       targetPort: 6783
 {{- end }}
   selector:
-    app: {{ template "prometheus.name" . }}
-    component: "{{ .Values.alertmanager.name }}"
-    release: {{ .Release.Name }}
+    {{- include "prometheus.alertmanager.matchLabels" . | nindent 4 }}
   type: "{{ .Values.alertmanager.service.type }}"
 {{- end }}

@@ -7,9 +7,9 @@
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: {{ template "cassandra.fullname" $ }}-backup-{{ $schedule.keyspace }}
+  name: {{ template "cassandra.fullname" $ }}-backup-{{ $schedule.keyspace | replace "_" "-" }}
   labels:
-    app: {{ template "cassandra.name" $ }}
+    app: {{ template "cassandra.name" $ }}-cain
     chart: {{ template "cassandra.chart" $ }}
     release: "{{ $release.Name }}"
     heritage: "{{ $release.Service }}"
@@ -25,31 +25,47 @@ spec:
             {{ toYaml $backup.annotations }}
         spec:
           restartPolicy: OnFailure
-          serviceAccountName: {{ template "cassandra.fullname" $ }}-backup
+          serviceAccountName: {{ template "cassandra.serviceAccountName" $ }}
           containers:
           - name: cassandra-backup
-            image: "{{ $backup.image.repos }}:{{ $backup.image.tag }}"
+            image: "{{ $backup.image.repository }}:{{ $backup.image.tag }}"
             command: ["cain"]
             args:
             - backup
             - --namespace
             - {{ $release.Namespace }}
             - --selector
-            - release={{ $release.Name }}
+            - release={{ $release.Name }},app={{ template "cassandra.name" $ }}
             - --keyspace
             - {{ $schedule.keyspace }}
             - --dst
             - {{ $backup.destination }}
-            - --parallel
-            - "0"
-          {{- with $backup.env }}
+            {{- with $backup.extraArgs }}
+{{ toYaml . | indent 12 }}
+            {{- end }}
             env:
+{{- if $backup.google.serviceAccountSecret }}
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: "/etc/secrets/google/credentials.json"
+{{- end }}
+          {{- with $backup.env }}
 {{ toYaml . | indent 12 }}
           {{- end }}
           {{- with $backup.resources }}
             resources:
 {{ toYaml . | indent 14 }}
           {{- end }}
+{{- if $backup.google.serviceAccountSecret }}
+            volumeMounts:
+            - name: google-service-account
+              mountPath: /etc/secrets/google/
+{{- end }}
+{{- if $backup.google.serviceAccountSecret }}
+          volumes:
+          - name: google-service-account
+            secret:
+              secretName: {{ $backup.google.serviceAccountSecret | quote }}
+{{- end }}
         affinity:
           podAffinity:
             preferredDuringSchedulingIgnoredDuringExecution:

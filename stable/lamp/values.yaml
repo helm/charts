@@ -11,10 +11,10 @@ init:
   manually:
     ## init.manually.enabled Enables container for manual initialization
     enabled: false
-    ## init.manually.repository Containers repository
-    repository: lead4good/init-wp
-    ## init.manually.tag Repository tag
-    tag: latest
+    ## init.manually.repository Container image
+    repository: "lead4good/init-wp"
+    ## init.manually.tag Container image tag
+    tag: "latest"
     ## init.manually.pullPolicy Image pull policy
     pullPolicy: Always
 
@@ -22,14 +22,11 @@ init:
   resources: false
 
 php:
-  ## php.version default php repository version, you can specify a different version like 5 or 7.0
-  version: "7"
+  ## php.repository default php image
+  repository: "php"
 
-  ## php.repository If not empty, repository is chosen over default php repo
-  # repository: php
-
-  ## php.tag Repository tag
-  # tag: fpm
+  ## php.tag default php image tag
+  tag: "7-fpm-alpine"
 
   ## php.pullPolicy Image pull policy
   pullPolicy: Always
@@ -49,6 +46,10 @@ php:
   ## php.ini additional PHP config values, see examples on how to use
   # ini: |
   #   short_open_tag=On
+
+  ## php-fpm.conf: additional PHP FPM config values
+  # fpm: |
+  #   pm.max_children = 120
 
   ## php.copyRoot if true, copies the containers web root `/var/www/html` into
   copyRoot: false
@@ -72,6 +73,12 @@ php:
   #    memory: 1Mi
 
 httpd:
+  ## httpd.repository default httpd image
+  repository: "httpd"
+
+  ## httpd.tag default httpd image tag
+  tag: "2.4-alpine"
+
   ## httpd.resources HTTPD container resource requests/limits
   resources: false
   #  requests:
@@ -92,14 +99,14 @@ mysql:
   ## mysql.database MySQL user database
   # database: database
 
-  ## mysql.repository MySQL repository - choose one of the official images
+  ## mysql.repository MySQL image - choose one of the official images
   ##     [mysql](https://hub.docker.com/_/mysql/)
   ##     [mariadb](https://hub.docker.com/_/mariadb/)
   ##     [percona](https://hub.docker.com/_/percona/)
-  repository: mysql
+  repository: "mysql"
 
-  ## mysql.tag Repository tag
-  tag: 5.7
+  ## mysql.tag MySQL image tag
+  tag: "5.7"
 
   ## mysql.imagePullPolicy Image pull policy
   imagePullPolicy: Always
@@ -114,6 +121,12 @@ mysql:
   #    memory: 1Mi
 
 sftp:
+  ## sftp.repository default sftp image
+  repository: "atmoz/sftp"
+
+  ## sftp.tag default sftp image tag
+  tag: "alpine"
+
   ## sftp.enabled Enables sftp service
   enabled: false
 
@@ -203,6 +216,12 @@ svn:
   #    memory: 1Mi
 
 phpmyadmin:
+  ## phpmyadmin.repository default phpmyadmin image
+  repository: "phpmyadmin"
+
+  ## phpmyadmin.tag default phpmyadmin image tag
+  tag: "phpmyadmin"
+
   ## phpmyadmin.enabled Enables phpmyadmin service
   enabled: false
 

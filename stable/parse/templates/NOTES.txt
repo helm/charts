@@ -9,23 +9,24 @@ Parse Server
 
 1. Get your Parse Server URL:
 
-{{- if contains "NodePort" .Values.serviceType }}
+{{- if contains "NodePort" .Values.service.type }}
 
   export NODE_PORT=$(kubectl get svc --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" {{ template "parse.fullname" . }})
   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
   export SERVICE_IP=$NODE_IP:$NODE_PORT
 
-{{- else if contains "LoadBalancer" .Values.serviceType }}
+{{- else if contains "LoadBalancer" .Values.service.type }}
 
   NOTE: It may take a few minutes for the LoadBalancer IP to be available.
         Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "parse.fullname" . }}'
 
   export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "parse.fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}"):{{ .Values.server.port }}
 
-{{- else if contains "ClusterIP"  .Values.serviceType }}
+{{- else if contains "ClusterIP"  .Values.service.type }}
 
-  kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "parse.fullname" . }} {{ .Values.server.port }}:{{ .Values.server.port }}
-  export SERVICE_IP=127.0.0.1:{{ .Values.server.port }}
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l app={{ template "parse.name" . }},component=server -o jsonpath="{.items[0].metadata.name}")
+  kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME 1337:1337 &
+  export SERVICE_IP=127.0.0.1:1337
 
 {{- end }}
 
@@ -58,16 +59,17 @@ service:
 
 2. Complete your Parse Dashboard deployment by running:
 
-  helm upgrade {{ .Release.Name }} \
-    --set server.host=$APP_HOST,server.port={{ .Values.server.port }},server.masterKey=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "parse.fullname" . }} -o jsonpath="{.data.master-key}" | base64 --decode),dashboard.username={{ .Values.dashboard.username }},dashboard.password=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "parse.fullname" . }} -o jsonpath="{.data.parse-dashboard-password}" | base64 --decode) stable/parse
+  helm upgrade {{ .Release.Name }} stable/{{ .Chart.Name }} \
+    --set server.host=$APP_HOST,server.port={{ .Values.server.port }},server.masterKey=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "parse.fullname" . }} -o jsonpath="{.data.master-key}" | base64 --decode),dashboard.username={{ .Values.dashboard.username }},dashboard.password=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "parse.fullname" . }} -o jsonpath="{.data.parse-dashboard-password}" | base64 --decode){{- if .Values.global }}{{- if .Values.global.imagePullSecrets }},global.imagePullSecrets={{ .Values.global.imagePullSecrets }}{{- end }}{{- end }}
 
 {{ else }}
 1. Get the Parse Dashboard URL by running:
 
-{{- if eq .Values.serviceType "ClusterIP" }}
+{{- if eq .Values.service.type "ClusterIP" }}
 
   echo "Parse Dashboard URL: http://127.0.0.1:4040/"
-  kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "parse.fullname" . }} 4040:4040
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l app={{ template "parse.name" . }},component=dashboard -o jsonpath="{.items[0].metadata.name}")
+  kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME 4040:4040 &
 
 {{- else }}
 
@@ -81,3 +83,5 @@ service:
   echo Password: $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "parse.fullname" . }} -o jsonpath="{.data.parse-dashboard-password}" | base64 --decode)
 {{- end }}
 {{- end }}
+
+{{ include "parse.checkRollingTags" . }}

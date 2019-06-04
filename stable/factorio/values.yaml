@@ -1,7 +1,7 @@
 # Factorio image version
 # ref: https://quay.io/repository/games_on_k8s/factorio?tab=tags
 image: quay.io/games_on_k8s/factorio
-imageTag: "0.14.22"
+imageTag: 0.15.39
 
 # Configure resource requests and limits
 # ref: http://kubernetes.io/docs/user-guide/compute-resources/

@@ -1,28 +1,47 @@
+{{- if and (not .Values.databaseType.mariadb) (not .Values.databaseType.postgresql) }}
+################################################################################
+### ERROR: You did not indicate MariaDB nor PostgreSQL as the database       ###
+###        server to use.                                                    ###
+################################################################################
+
+You have 4 alternatives:
+
+  a) Use MariaDB as database creating a new MariaDB server: set `databaseType.mariadb=true` and `mariadb.enabled=true`
+  b) Use MariaDB as database using a external MariaDB server: set `databaseType.mariadb=true` and `mariadb.enabled=false`
+  c) Use PostgreSQL as database creating a new PostgreSQL server: set `databaseType.postgresql=true` and `postgresql.enabled=true`
+  d) Use PostgreSQL as database using a external PostgreSQL server: `databaseType.postgresql=true` and `postgresql.enabled=false`
+
+{{- else }}
+
 1. Get the Redmine URL:
 
-{{- if contains "NodePort" .Values.serviceType }}
+{{- if contains "NodePort" .Values.service.type }}
 
   export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "redmine.fullname" . }})
   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
   echo "Redmine URL: http://$NODE_IP:$NODE_PORT/"
 
-{{- else if contains "LoadBalancer" .Values.serviceType }}
+{{- else if contains "LoadBalancer" .Values.service.type }}
 
   NOTE: It may take a few minutes for the LoadBalancer IP to be available.
         Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "redmine.fullname" . }}'
 
 
   export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "redmine.fullname" . }} --template "{{ "{{ range (index .status.loadBalancer.ingress 0) }}{{ . }}{{ end }}" }}")
-  echo "Redmine URL: http://$SERVICE_IP/"
+
+{{- $port:=.Values.service.port | toString }}
+  echo "Redmine URL: http://$SERVICE_IP{{- if ne $port "80" }}:{{ .Values.service.port }}{{ end }}/"
 
 {{- else if .Values.ingress.enabled }}
 
-  echo "Redmine URL: http://{{ .Values.ingress.hostname }}/"
+  {{- range .Values.ingress.hosts }}
+    echo "Redmine URL: http://{{ .name }}/"
+  {{- end }}
 
-{{- else if contains "ClusterIP" .Values.serviceType }}
+{{- else if contains "ClusterIP" .Values.service.type }}
 
-  echo "Redmine URL: http://127.0.0.1:3000/"
-  kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "redmine.fullname" . }} 3000:3000
+  echo "Redmine URL: http://127.0.0.1:{{ .Values.service.port }}/"
+  kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "redmine.fullname" . }} 3000:{{ .Values.service.port }}
 
 {{- end }}
 
@@ -30,3 +49,11 @@
 
   echo Username: {{ .Values.redmineUsername }}
   echo Password: $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "redmine.fullname" . }} -o jsonpath="{.data.redmine-password}" | base64 --decode)
+{{- end }}
+
+{{- if and (contains "bitnami/" .Values.image.repository) (not (.Values.image.tag | toString | regexFind "-r\\d+$|sha256:")) }}
+
+WARNING: Rolling tag detected ({{ .Values.image.repository }}:{{ .Values.image.tag }}), please note that it is strongly recommended to avoid using rolling tags in a production environment.
++info https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/
+
+{{- end }}

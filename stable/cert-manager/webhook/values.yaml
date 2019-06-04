@@ -1,4 +1,20 @@
+global:
+  ## Reference to one or more secrets to be used when pulling images
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  ##
+  imagePullSecrets: []
+  # - name: "image-pull-secret"
+
+  # Optional priority class to be used for the cert-manager pods
+  priorityClassName: ""
+
 replicaCount: 1
+
+strategy: {}
+  # type: RollingUpdate
+  # rollingUpdate:
+  #   maxSurge: 0
+  #   maxUnavailable: 1
 
 podAnnotations: {}
 
@@ -12,5 +28,10 @@ resources: {}
 
 image:
   repository: quay.io/jetstack/cert-manager-webhook
-  tag: v0.5.0
+  tag: v0.6.2
+  pullPolicy: IfNotPresent
+
+caSyncImage:
+  repository: quay.io/munnerz/apiextensions-ca-helper
+  tag: v0.1.0
   pullPolicy: IfNotPresent

@@ -1,22 +1,36 @@
-{{- if .Values.Master.HostName }}
-apiVersion: {{ .Values.Master.Ingress.ApiVersion }}
+{{- if .Values.master.ingress.enabled }}
+apiVersion: {{ .Values.master.ingress.apiVersion }}
 kind: Ingress
 metadata:
-{{- if .Values.Master.Ingress.Annotations }}
+  labels:
+    "app.kubernetes.io/name": '{{ template "jenkins.name" .}}'
+    "helm.sh/chart": "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    "app.kubernetes.io/managed-by": "{{ .Release.Service }}"
+    "app.kubernetes.io/instance": "{{ .Release.Name }}"
+    "app.kubernetes.io/component": "{{ .Values.master.componentName }}"
+{{- if .Values.master.ingress.labels }}
+{{ toYaml .Values.master.ingress.labels | indent 4 }}
+{{- end }}
+{{- if .Values.master.ingress.annotations }}
   annotations:
-{{ toYaml .Values.Master.Ingress.Annotations | indent 4 }}
+{{ toYaml .Values.master.ingress.annotations | indent 4 }}
 {{- end }}
   name: {{ template "jenkins.fullname" . }}
 spec:
   rules:
-  - host: {{ .Values.Master.HostName | quote }}
-    http:
+  - http:
       paths:
       - backend:
           serviceName: {{ template "jenkins.fullname" . }}
-          servicePort: {{ .Values.Master.ServicePort }}
-{{- if .Values.Master.Ingress.TLS }}
+          servicePort: {{ .Values.master.servicePort }}
+{{- if .Values.master.ingress.path }}
+        path: {{ .Values.master.ingress.path }}
+{{- end -}}
+{{- if .Values.master.ingress.hostName }}
+    host: {{ .Values.master.ingress.hostName | quote }}
+{{- end }}
+{{- if .Values.master.ingress.tls }}
   tls:
-{{ toYaml .Values.Master.Ingress.TLS | indent 4 }}
+{{ toYaml .Values.master.ingress.tls | indent 4 }}
 {{- end -}}
 {{- end }}

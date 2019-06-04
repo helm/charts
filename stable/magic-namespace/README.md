@@ -50,7 +50,7 @@ accounts and role bindings for use within the namespace. _Typically, it would
 be a good idea to define at least one role binding that grants a user or group
 administrative privileges in the namespace._ Absent this, the namespace's own
 Tiller will function, but no user (other than the cluster operator) will be
-capable of interacting with it via Helm. 
+capable of interacting with it via Helm.
 
 ## Prerequisites
 
@@ -104,13 +104,13 @@ $ helm install stable/magic-namespace \
 
 ## Uninstalling the Chart
 
-Deleting a release of a Magic Namespace will _not_ delete the namespace, 
+Deleting a release of a Magic Namespace will _not_ delete the namespace,
 unless you have used the optional ```namespace``` setting. It will
 only delete the Tiller, service accounts, role bindings, etc. from that
 namespace. This is actually desirable behavior, as anything the team has
 deployed within that namespace is likely to be unaffected, though further
 deployments to and management of that namespace will not be possible by anyone
-other than the cluster operator. 
+other than the cluster operator.
 
 If you have used the ```namespace``` setting, deleting the release will cleanup
 all releases deployed with the tiller in the Magic Namespace, along with the
@@ -140,6 +140,13 @@ reference the default `values.yaml` to understand further options.
 | `tiller.role.type` | Identify the name of the `Role` or `ClusterRole` that will be referenced in the role binding for Tiller's service account. There is seldom any reason to override this. | `admin` |
 | `tiller.includeService` | This deploys a service resource for Tiller. This is not generally needed. Please understand the security implications of this before overriding the default. | `false` |
 | `tiller.onlyListenOnLocalhost` | This prevents Tiller from binding to `0.0.0.0`. This is generally advisable to close known Tiller-based attack vectors. Please understand the security implications of this before overriding the default. | `true` |
+| `tiller.storage` | The storage driver for Tiller to use. One of `configmap`, `memory`, or `secret` | `configmap` |
+| `tiller.tls.enabled` | Whether to enable TLS encryption between Helm and Tiller. Specify either `tiller.tls.secretName` to mount an existing secret, or `tiller.tls.ca`, `tiller.tls.cert` and `tiller.tls.key` to create a secret from Base64 provided values | `false` |
+| `tiller.tls.verify` | Whether to verify a remote Tiller certificate. | `true` |
+| `tiller.tls.secretName` | Mount an existing TLS secret into the Tiller container. The secret must include data keys: `ca.crt`, `tls.crt` and `tls.key` | `nil` |
+| `tiller.tls.ca` | Base64 encoded string to mount ca.crt into the Tiller container. This value requires `tiller.tls.cert` and `tiller.tls.key` to also be set. | `nil` |
+| `tiller.tls.cert` | Base64 encoded string to mount tls.cert into the Tiller container. This value requires `tiller.tls.ca and `tiller.tls.key` to also be set. | `nil` |
+| `tiller.tls.key` | Base64 encoded string to mount tls.key into the Tiller container. This value requires `tiller.tls.ca` and `tiller.tls.cert` to also be set. | `nil` |
 | `serviceAccounts` | An optional array of names of additional service account to create | `nil` |
 | `roleBindings` | An optional array of objects that define role bindings | `nil` |
 | `roleBindings[n].role.kind` | Identify the kind of role (`Role` or `ClusterRole`) to be used in the role binding | |
@@ -147,3 +154,5 @@ reference the default `values.yaml` to understand further options.
 | `roleBindings[n].subject.kind` | Identify the kind of subject (`User`, `Group`, or `ServiceAccount` ) to be used in the role binding | |
 | `roleBindings[n].subject.name` | Identify the name of the subject to be used in the role binding | |
 | `namespace` | Specify a namespace to be created and used, overriding the one on the command line | |
+| `namespaceAttributes.annotations` | Specify annotations to be attached to the namespace | |
+| `namespaceAttributes.lables` | Specify labels to be attached to the namespace | |

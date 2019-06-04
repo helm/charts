@@ -1,0 +1,125 @@
+{{- $component := "analyzer" -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ template "anchore-engine.analyzer.fullname" . }}"
+  labels:
+    app: "{{ template "anchore-engine.fullname" . }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+    component: {{ $component }}
+spec:
+  selector:
+    matchLabels:
+      app: "{{ template "anchore-engine.fullname" . }}"
+      component: {{ $component }}
+  replicas: {{ .Values.anchoreAnalyzer.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: "{{ template "anchore-engine.fullname" . }}"
+        component: {{ $component }}
+      {{- with .Values.anchoreAnalyzer.annotations }}
+      annotations:
+        {{ toYaml . | nindent 8 | trim }}
+      {{- end }}
+    spec:
+      containers:
+      {{- if .Values.cloudsql.enabled  }}
+      - name: cloudsql-proxy
+        image: {{ .Values.cloudsql.image.repository }}:{{ .Values.cloudsql.image.tag }}
+        imagePullPolicy: {{ .Values.cloudsql.image.pullPolicy }}
+        command: ["/cloud_sql_proxy"]
+        args:
+        - "-instances={{ .Values.cloudsql.instance }}=tcp:5432"
+        {{- if .Values.cloudsql.useExistingServiceAcc }}
+        - "-credential_file=/var/{{ .Values.cloudsql.serviceAccSecretName }}/{{ .Values.cloudsql.serviceAccJsonName }}"
+        volumeMounts:
+        - mountPath: /var/{{ .Values.cloudsql.serviceAccSecretName }}
+          name: {{ .Values.cloudsql.serviceAccSecretName }}
+          readOnly: true
+        {{- end }}
+      {{- end }}
+      - name: {{ .Chart.Name }}-{{ $component }}
+        image: {{ .Values.anchoreGlobal.image }}
+        imagePullPolicy: {{ .Values.anchoreGlobal.imagePullPolicy }}
+        command: ["anchore-manager"]
+        args: ["service", "start", "analyzer"]
+        envFrom:
+        - secretRef:
+            name: {{ default (include "anchore-engine.fullname" .) .Values.anchoreGlobal.existingSecret }}
+        - configMapRef:
+            name: {{ template "anchore-engine.fullname" . }}
+        env:
+        {{- with .Values.anchoreGlobal.extraEnv }}
+        {{- toYaml . | nindent 8 | trim }}
+        {{- end }}
+        {{- with .Values.anchoreAnalyzer.extraEnv }}
+        {{- toYaml . | nindent 8 | trim }}
+        {{- end }}
+        - name: ANCHORE_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        ports:
+        - name: analyzer-api
+          containerPort: {{ .Values.anchoreAnalyzer.containerPort }}
+        volumeMounts:
+        - name: config-volume
+          mountPath: /config/config.yaml
+          subPath: config.yaml
+        {{- if .Values.anchoreGlobal.internalServicesSslEnabled }}
+        - name: certs
+          mountPath: {{ .Values.anchoreGlobal.internalServicesSsl.certDir }}
+          readOnly: true
+        {{- end }}
+        - name: {{ $component }}-scratch
+          mountPath: {{ .Values.anchoreGlobal.scratchVolume.mountPath }}
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: analyzer-api
+          initialDelaySeconds: 120
+          timeoutSeconds: 10
+          periodSeconds: 10
+          failureThreshold: 6
+          successThreshold: 1
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: analyzer-api
+          timeoutSeconds: 10
+          periodSeconds: 10
+          failureThreshold: 3
+          successThreshold: 1
+        resources:
+          {{ toYaml .Values.anchoreAnalyzer.resources | nindent 10 | trim }}
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ template "anchore-engine.fullname" .}}
+        {{- if .Values.anchoreGlobal.internalServicesSslEnabled }}
+        - name: certs
+          secret:
+            secretName: {{ .Values.anchoreGlobal.internalServicesSsl.certSecret }}
+        {{- end }}
+        - name: {{ $component }}-scratch
+          {{ toYaml .Values.anchoreGlobal.scratchVolume.details | indent 10 | trim }}
+        {{- if .Values.cloudsql.useExistingServiceAcc }}
+        - name: {{ .Values.cloudsql.serviceAccSecretName }}
+          secret:
+            secretName: {{ .Values.cloudsql.serviceAccSecretName }}
+        {{- end }}
+      {{- with .Values.anchoreAnalyzer.nodeSelector }}
+      nodeSelector:
+        {{ toYaml . | nindent 8 | trim }}
+      {{- end }}
+      {{- with .Values.anchoreAnalyzer.affinity }}
+      affinity:
+        {{ toYaml . | nindent 8 | trim }}
+      {{- end }}
+      {{- with .Values.anchoreAnalyzer.tolerations }}
+      tolerations:
+        {{ toYaml . | nindent 8 | trim }}
+      {{- end }}

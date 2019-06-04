@@ -10,10 +10,11 @@ updateStrategy:
   #   maxUnavailable: 0
 
 podAnnotations: {}
+podLabels: {}
 
 image:
   repository: registry
-  tag: 2.6.2
+  tag: 2.7.1
   pullPolicy: IfNotPresent
 # imagePullSecrets:
     # - name: docker
@@ -34,6 +35,7 @@ ingress:
   annotations:
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
+  labels: {}
   tls:
     # Secrets must be manually created in the namespace.
     # - secretName: chart-example-tls
@@ -81,6 +83,7 @@ secrets:
 # Options for s3 storage type:
 # s3:
 #  region: us-east-1
+#  regionEndpoint: s3.us-east-1.amazonaws.com
 #  bucket: my-bucket
 #  encrypt: false
 #  secure: true

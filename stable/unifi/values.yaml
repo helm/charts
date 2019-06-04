@@ -2,12 +2,41 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-replicaCount: 1
+# upgrade strategy type (e.g. Recreate or RollingUpdate)
+strategyType: Recreate
 
 image:
   repository: jacobalberty/unifi
-  tag: 5.8.30
+  tag: 5.10.19
   pullPolicy: IfNotPresent
+
+# If enabled, the controller, discovery, GUI, and STUN services will not be
+# created.
+# Instead, one service will be created with the port and nodePort settings from
+# controllerService, discoveryService, guiService, and stunService.
+# This is useful if, for example, the ClusterIP network is routable and being
+# accessed directly by access points, and the APs don't have a way to discern
+# different services on different IPs.
+unifiedService:
+  enabled: false
+  type: ClusterIP
+  ## Specify the nodePort value for the LoadBalancer and NodePort service types.
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
+  ##
+  # nodePort:
+  ## Provide any additional annotations which may be required. This can be used to
+  ## set the LoadBalancer service type to internal only.
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer
+  ##
+  annotations: {}
+  labels: {}
+  ## Use loadBalancerIP to request a specific static IP,
+  ## otherwise leave blank
+  ##
+  loadBalancerIP:
+  # loadBalancerSourceRanges: []
+  ## Set the externalTrafficPolicy in the Service to either Cluster or Local
+  # externalTrafficPolicy: Cluster
 
 guiService:
   type: ClusterIP
@@ -109,6 +138,8 @@ ingress:
 timezone: UTC
 
 runAsRoot: false
+UID: 999
+GID: 999
 
   # define an external mongoDB instead of using the built-in mongodb
 mongodb:
@@ -151,3 +182,5 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+podAnnotations: {}

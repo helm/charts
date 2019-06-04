@@ -17,7 +17,7 @@ These include content that would normally be in secrets.
 This chart deploys the [kuberos](https://github.com/negz/kuberos) code
 snippet generator for clusters using both
 * OIDC - OpenID Connect, an authentication layer on top of OAuth 2.0
-* RBAC - Role Based Access Controlls (in your k8s cluster)
+* RBAC - Role Based Access Controls (in your k8s cluster)
 
 It provides a quick and easy way for an authenticated user to generate
 and download config for kubectl.
@@ -55,6 +55,10 @@ These ones will be site specific and may contain sensitive information
 |   `tls`                     | List of SSL certs to use                  | Empty list                                            |
 |     `secretName`            | Name of the secret to use                 | Not Set                                               |
 |     `hosts`                 | List of FQDN's the above secret is associated with| Not Set                                       |
+| `service`                   | A standard service block                  | See below                                             |
+|   `type`                    | Service type                              | `ClusterIP`                                           |
+|   `port`                    | Service port                              | `80`                                                  |
+|   `annotations`             | Service annotations                       | `{}`                                                  |
 
 
 ### Other Config params can be left alone

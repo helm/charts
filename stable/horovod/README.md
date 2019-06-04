@@ -8,7 +8,7 @@ This chart bootstraps Horovod which is a Distributed TensorFlow Framework on a K
 
 ## Prerequisites
 
-- Kubernetes cluster v1.8+ 
+- Kubernetes cluster v1.8+
 
 ## Build Docker Image
 
@@ -121,6 +121,21 @@ $ helm delete mnist
 
 The command removes all the Kubernetes components associated with the chart and
 deletes the release.
+
+## Upgrading an existing Release to a new major version
+A major chart version change (like v1.2.3 -> v2.0.0) indicates that there is an
+incompatible breaking change needing manual actions.
+
+### 1.0.0
+This version removes the `chart` label from the `spec.selector.matchLabels`
+which is immutable since `StatefulSet apps/v1beta2`. It has been inadvertently
+added, causing any subsequent upgrade to fail. See https://github.com/helm/charts/issues/7726.
+
+In order to upgrade, delete the Horovod StatefulSet before upgrading, supposing your Release is named `my-release`:
+
+```bash
+$ kubectl delete statefulsets.apps --cascade=false my-release
+```
 
 ## Configuration
 

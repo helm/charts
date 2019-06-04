@@ -48,7 +48,7 @@ The following table lists the configurable parameters of the Kapacitor chart and
 | Parameter               | Description                           | Default                                                    |
 | ----------------------- | ----------------------------------    | ---------------------------------------------------------- |
 | `image.repository` | Kapacitor image | `kapacitor` |
-| `image.tag` | Kapacitor image version | `1.5.1-alpine` |
+| `image.tag` | Kapacitor image version | `1.5.2-alpine` |
 | `image.pullPolicy` | Kapacitor image pull policy |  `IfNotPresent` |
 | `service.type` | Kapacitor web service type  | `ClusterIP` |
 | `persistence.enabled` | Enable Kapacitor persistence using Persistent Volume Claims | `false` |

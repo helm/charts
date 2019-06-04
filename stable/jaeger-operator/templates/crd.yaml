@@ -1,18 +1,23 @@
 apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
 metadata:
-  name: jaegers.io.jaegertracing
+  name: jaegers.jaegertracing.io
+{{- if semverCompare ">=2.10-0" .Capabilities.TillerVersion.SemVer }}
+  annotations:
+    "helm.sh/hook": crd-install
+    "helm.sh/hook-delete-policy": "before-hook-creation"
+{{- end }}
   labels:
     app.kubernetes.io/name: {{ include "jaeger-operator.name" . }}
-    helm.sh/chart: {{ include "jaeger-operator.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "jaeger-operator.chart" . }}
 spec:
-  group: io.jaegertracing
+  group: jaegertracing.io
   names:
     kind: Jaeger
     listKind: JaegerList
     plural: jaegers
     singular: jaeger
   scope: Namespaced
-  version: v1alpha1
+  version: v1

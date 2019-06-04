@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "openebs.fullname" . }}-apiserver
@@ -8,14 +8,22 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     component: apiserver
+    name: maya-apiserver
 spec:
   replicas: {{ .Values.apiserver.replicas }}
+  selector:
+    matchLabels:
+      app: {{ template "openebs.name" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
       labels:
         app: {{ template "openebs.name" . }}
         release: {{ .Release.Name }}
         component: apiserver
+        name: maya-apiserver
+        openebs.io/component-name: maya-apiserver
+        openebs.io/version: {{ .Values.release.version }}
     spec:
       serviceAccountName: {{ template "openebs.serviceAccountName" . }}
       containers:
@@ -35,18 +43,64 @@ spec:
         # This is supported for maya api server version 0.5.2 onwards
         #- name: OPENEBS_IO_K8S_MASTER
         #  value: "http://172.28.128.3:8080"
+        # OPENEBS_IO_INSTALL_DEFAULT_CSTOR_SPARSE_POOL decides whether default cstor sparse pool should be
+        # configured as a part of openebs installation.
+        # If "true" a default cstor sparse pool will be configured, if "false" it will not be configured.
+        - name: OPENEBS_IO_INSTALL_DEFAULT_CSTOR_SPARSE_POOL
+          value: "{{ .Values.apiserver.sparse.enabled }}"
+        - name: OPENEBS_IO_CSTOR_POOL_SPARSE_DIR
+          value: "{{ .Values.ndm.sparse.path }}"
+        # OPENEBS_NAMESPACE provides the namespace of this deployment as an
+        # environment variable
+        - name: OPENEBS_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        # OPENEBS_SERVICE_ACCOUNT provides the service account of this pod as
+        # environment variable
+        - name: OPENEBS_SERVICE_ACCOUNT
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.serviceAccountName
+        # OPENEBS_MAYA_POD_NAME provides the name of this pod as
+        # environment variable
+        - name: OPENEBS_MAYA_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
         - name: OPENEBS_IO_JIVA_CONTROLLER_IMAGE
           value: "{{ .Values.jiva.image }}:{{ .Values.jiva.imageTag }}"
         - name: OPENEBS_IO_JIVA_REPLICA_IMAGE
           value: "{{ .Values.jiva.image }}:{{ .Values.jiva.imageTag }}"
-        - name: OPENEBS_IO_VOLUME_MONITOR_IMAGE
-          value: "{{ .Values.policies.monitoring.image }}:{{ .Values.policies.monitoring.imageTag }}"
         - name: OPENEBS_IO_JIVA_REPLICA_COUNT
           value: "{{ .Values.jiva.replicas }}"
-{{- if .Values.jiva.replicaNodeSelector.enabled }}
-        - name: DEFAULT_REPLICA_NODE_SELECTOR
-          value: "{{ .Values.jiva.replicaNodeSelector.value }}"
-{{- end }}
+        - name: OPENEBS_IO_CSTOR_TARGET_IMAGE
+          value: "{{ .Values.cstor.target.image }}:{{ .Values.cstor.target.imageTag }}"
+        - name: OPENEBS_IO_CSTOR_POOL_IMAGE
+          value: "{{ .Values.cstor.pool.image }}:{{ .Values.cstor.pool.imageTag }}"
+        - name: OPENEBS_IO_CSTOR_POOL_MGMT_IMAGE
+          value: "{{ .Values.cstor.poolMgmt.image }}:{{ .Values.cstor.poolMgmt.imageTag }}"
+        - name: OPENEBS_IO_CSTOR_VOLUME_MGMT_IMAGE
+          value: "{{ .Values.cstor.volumeMgmt.image }}:{{ .Values.cstor.volumeMgmt.imageTag }}"
+        - name: OPENEBS_IO_VOLUME_MONITOR_IMAGE
+          value: "{{ .Values.policies.monitoring.image }}:{{ .Values.policies.monitoring.imageTag }}"
+        - name: OPENEBS_IO_CSTOR_POOL_EXPORTER_IMAGE
+          value: "{{ .Values.policies.monitoring.image }}:{{ .Values.policies.monitoring.imageTag }}"
+        # OPENEBS_IO_ENABLE_ANALYTICS if set to true sends anonymous usage
+        # events to Google Analytics
+        - name: OPENEBS_IO_ENABLE_ANALYTICS
+          value: "{{ .Values.analytics.enabled }}"
+        # OPENEBS_IO_ANALYTICS_PING_INTERVAL can be used to specify the duration (in hours)
+        # for periodic ping events sent to Google Analytics. Default is 24 hours.
+        - name: OPENEBS_IO_ANALYTICS_PING_INTERVAL
+          value: "{{ .Values.analytics.pingInterval }}"
+        livenessProbe:
+          exec:
+            command:
+            - /usr/local/bin/mayactl
+            - version
+          initialDelaySeconds: {{ .Values.apiserver.healthCheck.initialDelaySeconds }}
+          periodSeconds: {{ .Values.apiserver.healthCheck.periodSeconds }}
 {{- if .Values.apiserver.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.apiserver.nodeSelector | indent 8 }}

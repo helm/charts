@@ -8,9 +8,9 @@ metadata:
   name: {{ template "traefik.fullname" . }}
   labels:
     app: {{ template "traefik.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    chart: {{ template "traefik.chart" . }}
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
 spec:
   replicas: {{ default 1 .Values.replicas }}
   selector:
@@ -33,10 +33,17 @@ spec:
       {{- end }}
       labels:
         app: {{ template "traefik.name" . }}
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-        release: "{{ .Release.Name }}"
-        heritage: "{{ .Release.Service }}"
+        chart: {{ template "traefik.chart" . }}
+        release: {{ .Release.Name | quote }}
+        heritage: {{ .Release.Service | quote }}
+        {{- if .Values.deployment.podLabels }}
+{{ toYaml .Values.deployment.podLabels | indent 8 }}
+        {{- end }}
     spec:
+      {{- if .Values.securityContext }}
+      securityContext:
+{{ toYaml .Values.securityContext | indent 8 }}
+      {{- end }}
       {{- if .Values.rbac.enabled }}
       serviceAccountName: {{ template "traefik.fullname" . }}
       {{- else }}
@@ -51,16 +58,23 @@ spec:
       affinity:
 {{ toYaml .Values.affinity | indent 8 }}
       {{- end }}
+      {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName | quote }}
+      {{- end }}
       containers:
       - image: {{ .Values.image }}:{{ .Values.imageTag }}
         name: {{ template "traefik.fullname" . }}
         resources:
+        {{- if or .Values.cpuRequest .Values.memoryRequest .Values.cpuLimit .Values.memoryLimit }}
           requests:
-            cpu: "{{ .Values.cpuRequest }}"
-            memory: "{{ .Values.memoryRequest }}"
+            cpu: {{ .Values.cpuRequest | quote }}
+            memory: {{ .Values.memoryRequest | quote }}
           limits:
-            cpu: "{{ .Values.cpuLimit }}"
-            memory: "{{ .Values.memoryLimit }}"
+            cpu: {{ .Values.cpuLimit | quote }}
+            memory: {{ .Values.memoryLimit | quote }}
+        {{- else }}
+{{ toYaml .Values.resources | indent 10 }}
+        {{- end }}
         readinessProbe:
           tcpSocket:
             port: 80
@@ -77,14 +91,23 @@ spec:
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 2
-        {{- if and .Values.acme.enabled (eq .Values.acme.challengeType "dns-01") .Values.acme.dnsProvider.name }}
+        {{- if or (and .Values.acme.enabled (eq .Values.acme.challengeType "dns-01") .Values.acme.dnsProvider.name) .Values.env }}
         env:
-        {{- range $k, $_ := (index .Values.acme.dnsProvider .Values.acme.dnsProvider.name) }}
+        {{- range $k, $v := (index .Values.acme.dnsProvider .Values.acme.dnsProvider.name) }}
+          {{- if or $v $.Values.acme.dnsProvider.existingSecretName }}
           - name: {{ $k }}
             valueFrom:
               secretKeyRef:
+              {{- if $.Values.acme.dnsProvider.existingSecretName }}
+                name: {{ $.Values.acme.dnsProvider.existingSecretName }}
+              {{- else }}
                 name: {{ template "traefik.fullname" $ }}-dnsprovider-config
+              {{- end }}
                 key: {{ $k }}
+          {{- end }}
+        {{- end }}
+        {{- if .Values.env }}
+{{ toYaml .Values.env | indent 10 }}
         {{- end }}
         {{- end }}
         volumeMounts:
@@ -98,11 +121,19 @@ spec:
         - mountPath: /acme
           name: acme
         {{- end }}
+        {{- if .Values.configFiles }}
+        - mountPath: /configs
+          name: {{ template "traefik.fullname" $ }}-configs
+        {{ end }}
+        {{- if .Values.secretFiles }}
+        - mountPath: /secrets
+          name: {{ template "traefik.fullname" $ }}-secrets
+        {{- end }}
         ports:
         - name: http
           containerPort: 80
           {{- if .Values.deployment.hostPort.httpEnabled }}
-          hostPort: 80
+          hostPort: {{ default 80 .Values.deployment.hostPort.httpPort }}
           {{- end }}
           protocol: TCP
         - name: httpn
@@ -111,19 +142,23 @@ spec:
         - name: https
           containerPort: 443
           {{- if .Values.deployment.hostPort.httpsEnabled }}
-          hostPort: 443
+          hostPort: {{ default 443 .Values.deployment.hostPort.httpsPort }}
           {{- end }}
           protocol: TCP
         {{- if .Values.dashboard.enabled }}
         - name: dash
           containerPort: 8080
           {{- if .Values.deployment.hostPort.dashboardEnabled }}
-          hostPort: 8080
+          hostPort: {{ default 8080 .Values.deployment.hostPort.dashboardPort }}
           {{- end }}
           protocol: TCP
         {{- end }}
         args:
         - --configfile=/config/traefik.toml
+        {{- range .Values.startupArguments }}
+        - {{ . }}
+        {{- end }}
+
       volumes:
       - name: config
         configMap:
@@ -141,6 +176,16 @@ spec:
       {{- else }}
         emptyDir: {}
       {{- end }}
+      {{- end }}
+      {{- if .Values.configFiles }}
+      - name: {{ template "traefik.fullname" $ }}-configs
+        configMap:
+          name: {{ template "traefik.fullname" $ }}-configs
+      {{ end }}
+      {{- if .Values.secretFiles }}
+      - name: {{ template "traefik.fullname" $ }}-secrets
+        secret:
+          secretName: {{ template "traefik.fullname" $ }}-secrets
       {{- end }}
       {{- if and (.Values.tolerations) (semverCompare "^1.6-0" .Capabilities.KubeVersion.GitVersion) }}
       tolerations:

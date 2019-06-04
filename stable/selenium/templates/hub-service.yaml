@@ -23,7 +23,10 @@ spec:
   sessionAffinity: {{ .Values.hub.serviceSessionAffinity | quote }}
   ports:
   - name: hub
-    port: {{ .Values.hub.port }}
+    port: {{ .Values.hub.servicePort }}
     targetPort: {{ .Values.hub.port }}
+    {{- if and ( eq .Values.hub.serviceType "NodePort") .Values.hub.nodePort }}
+    nodePort: {{ .Values.hub.nodePort }}
+    {{- end }}
   selector:
     app: {{ template "selenium.hub.fullname" . }}

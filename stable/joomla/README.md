@@ -14,7 +14,7 @@ This chart bootstraps a [Joomla!](https://github.com/bitnami/bitnami-docker-joom
 
 It also packages the [Bitnami MariaDB chart](https://github.com/kubernetes/charts/tree/master/stable/mariadb) which bootstraps a MariaDB deployment required by the Joomla! application.
 
-Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters.
+Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters. This chart has been tested to work with NGINX Ingress, cert-manager, fluentd and Prometheus on top of the [BKPR](https://kubeprod.io/).
 
 ## Prerequisites
 
@@ -50,11 +50,12 @@ The following table lists the configurable parameters of the Joomla! chart and t
 | Parameter                            | Description                                                 | Default                                        |
 | ------------------------------------ | ----------------------------------------------------------- | ---------------------------------------------- |
 | `global.imageRegistry`               | Global Docker image registry                                | `nil`                                          |
+| `global.imagePullSecrets`            | Global Docker registry secret names as an array             | `[]` (does not add image pull secrets to deployed pods) |
 | `image.registry`                     | Joomla! image registry                                      | `docker.io`                                    |
 | `image.repository`                   | Joomla! Image name                                          | `bitnami/joomla`                               |
-| `image.tag`                          | Joomla! Image tag                                           | `{VERSION}`                                    |
+| `image.tag`                          | Joomla! Image tag                                           | `{TAG_NAME}`                                   |
 | `image.pullPolicy`                   | Image pull policy                                           | `Always`                                       |
-| `image.pullSecrets`                  | Specify image pull secrets                                  | `nil`                                          |
+| `image.pullSecrets`                  | Specify docker-registry secret names as an array            | `[]` (does not add image pull secrets to deployed pods) |
 | `joomlaUsername`                     | User of the application                                     | `user`                                         |
 | `joomlaPassword`                     | Application password                                        | _random 10 character long alphanumeric string_ |
 | `joomlaEmail`                        | Admin email                                                 | `user@example.com`                             |
@@ -77,6 +78,8 @@ The following table lists the configurable parameters of the Joomla! chart and t
 | `mariadb.db.password`                | Password for the database                                   | `nil`                                          |
 | `mariadb.root.password`              | MariaDB admin password                                      | `nil`                                          |
 | `service.type`                       | Kubernetes Service type                                     | `LoadBalancer`                                 |
+| `service.port`                       | Service HTTP port                                           | `80`                                           |
+| `service.httpsPort`                  | Service HTTPS port                                          | `443`                                          |
 | `service.loadBalancer`               | Kubernetes LoadBalancerIP to request                        | `nil`                                          |
 | `service.externalTrafficPolicy`      | Enable client source IP preservation                        | `Cluster`                                      |
 | `service.nodePorts.http`             | Kubernetes http node port                                   | `""`                                           |
@@ -92,9 +95,6 @@ The following table lists the configurable parameters of the Joomla! chart and t
 | `ingress.secrets[0].certificate`     | TLS Secret Certificate                                      | `nil`                                          |
 | `ingress.secrets[0].key`             | TLS Secret Key                                              | `nil`                                          |
 | `persistence.enabled`                | Enable persistence using PVC                                | `true`                                         |
-| `persistence.apache.storageClass`    | PVC Storage Class for Apache volume                         | `nil` (uses alpha storage annotation)          |
-| `persistence.apache.accessMode`      | PVC Access Mode for Apache volume                           | `ReadWriteOnce`                                |
-| `persistence.apache.size`            | PVC Storage Request for Apache volume                       | `1Gi`                                          |
 | `persistence.joomla.storageClass`    | PVC Storage Class for Joomla! volume                        | `nil` (uses alpha storage annotation)          |
 | `persistence.joomla.accessMode`      | PVC Access Mode for Joomla! volume                          | `ReadWriteOnce`                                |
 | `persistence.joomla.size`            | PVC Storage Request for Joomla! volume                      | `8Gi`                                          |
@@ -114,6 +114,15 @@ The following table lists the configurable parameters of the Joomla! chart and t
 | `nodeSelector`                       | Node labels for pod assignment                              | `{}`                                           |
 | `tolerations`                        | List of node taints to tolerate                             | `[]`                                           |
 | `affinity`                           | Map of node/pod affinities                                  | `{}`                                           |
+| `podAnnotations`                     | Pod annotations                                             | `{}`                                           |
+| `metrics.enabled`                    | Start a side-car prometheus exporter                        | `false`                                        |
+| `metrics.image.registry`             | Apache exporter image registry                              | `docker.io`                                    |
+| `metrics.image.repository`           | Apache exporter image name                                  | `lusotycoon/apache-exporter`                   |
+| `metrics.image.tag`                  | Apache exporter image tag                                   | `v0.5.0`                                       |
+| `metrics.image.pullPolicy`           | Image pull policy                                           | `IfNotPresent`                                 |
+| `metrics.image.pullSecrets`          | Specify docker-registry secret names as an array            | `[]` (does not add image pull secrets to deployed    |
+| `metrics.podAnnotations`             | Additional annotations for Metrics exporter pod             | `{prometheus.io/scrape: "true", prometheus.io/port: "9117"}` |
+| `metrics.resources`                  | Exporter resource requests/limit                            | {}                                              |
 
 The above parameters map to the env variables defined in [bitnami/joomla](http://github.com/bitnami/bitnami-docker-joomla). For more information please refer to the [bitnami/joomla](http://github.com/bitnami/bitnami-docker-joomla) image documentation.
 
@@ -135,9 +144,15 @@ $ helm install --name my-release -f values.yaml stable/joomla
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
+### [Rolling VS Immutable tags](https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/)
+
+It is strongly recommended to use immutable tags in a production environment. This ensures your deployment does not change automatically if the same tag is updated with a different image.
+
+Bitnami will release a new chart updating its containers if a new version of the main container, significant changes, or critical vulnerabilities exist.
+
 ## Persistence
 
-The [Bitnami Joomla!](https://github.com/bitnami/bitnami-docker-joomla) image stores the Joomla! data and configurations at the `/bitnami/joomla` and `/bitnami/apache` paths of the container.
+The [Bitnami Joomla!](https://github.com/bitnami/bitnami-docker-joomla) image stores the Joomla! data and configurations at the `/bitnami/joomla` path of the container.
 
 Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
 See the [Configuration](#configuration) section to configure the PVC or to disable persistence.

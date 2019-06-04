@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: hyperledger/fabric-couchdb
-  tag: 0.4.9
+  tag: 0.4.10
   pullPolicy: IfNotPresent
 
 service:

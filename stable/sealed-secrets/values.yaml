@@ -1,0 +1,28 @@
+image:
+  repository: quay.io/bitnami/sealed-secrets-controller
+  tag: v0.7.0
+  pullPolicy: IfNotPresent
+
+resources: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+serviceAccount:
+  # serviceAccount.create: Whether to create a service account or not
+  create: true
+  # serviceAccount.name: The name of the service account to create or use
+  name: ""
+
+rbac:
+  # rbac.create: `true` if rbac resources should be created
+  create: true
+
+# secretName: The name of the TLS secret containing the key used to encrypt secrets
+secretName: "sealed-secrets-key"
+
+crd:
+  # crd.create: `true` if the crd resources should be created
+  create: true
+  # crd.keep: `true` if the sealed secret CRD should be kept when the chart is deleted
+  keep: true

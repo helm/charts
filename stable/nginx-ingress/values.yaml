@@ -5,8 +5,15 @@ controller:
   name: controller
   image:
     repository: quay.io/kubernetes-ingress-controller/nginx-ingress-controller
-    tag: "0.20.0"
+    tag: "0.24.1"
     pullPolicy: IfNotPresent
+    # www-data -> uid 33
+    runAsUser: 33
+
+  # Configures the ports the nginx-controller listens on
+  containerPort:
+    http: 80
+    https: 443
 
   config: {}
   # Will add custom header to Nginx https://github.com/kubernetes/ingress-nginx/tree/master/docs/examples/customization/custom-headers
@@ -29,6 +36,8 @@ controller:
     hostPorts:
       http: 80
       https: 443
+      ## healthz endpoint
+      stats: 18080
 
   ## Required only if defaultBackend.enabled = false
   ## Must be <namespace>/<service_name>
@@ -46,6 +55,12 @@ controller:
   # labels to add to the pod container metadata
   podLabels: {}
   #  key: value
+
+  ## Security Context policies for controller pods
+  ## See https://kubernetes.io/docs/tasks/administer-cluster/sysctl-cluster/ for
+  ## notes on enabling and using sysctls
+  ##
+  podSecurityContext: {}
 
   ## Allows customization of the external service
   ## the ingress will be bound to via DNS
@@ -158,6 +173,7 @@ controller:
   service:
     annotations: {}
     labels: {}
+    omitClusterIP: false
     clusterIP: ""
 
     ## List of IP addresses at which the controller services are available
@@ -238,6 +254,7 @@ controller:
 
     service:
       annotations: {}
+      omitClusterIP: false
       clusterIP: ""
 
       ## List of IP addresses at which the stats service is available
@@ -250,8 +267,7 @@ controller:
       servicePort: 18080
       type: ClusterIP
 
-  ## If controller.stats.enabled = true and controller.metrics.enabled = true, Prometheus metrics will be exported
-  ##
+
   metrics:
     enabled: false
 
@@ -260,6 +276,7 @@ controller:
       # prometheus.io/scrape: "true"
       # prometheus.io/port: "10254"
 
+      omitClusterIP: false
       clusterIP: ""
 
       ## List of IP addresses at which the stats-exporter service is available
@@ -271,6 +288,12 @@ controller:
       loadBalancerSourceRanges: []
       servicePort: 9913
       type: ClusterIP
+
+    serviceMonitor:
+      enabled: false
+      additionalLabels: {}
+      namespace: ""
+      # honorLabels: true
 
   lifecycle: {}
 
@@ -290,8 +313,8 @@ defaultBackend:
 
   name: default-backend
   image:
-    repository: k8s.gcr.io/defaultbackend
-    tag: "1.4"
+    repository: k8s.gcr.io/defaultbackend-amd64
+    tag: "1.5"
     pullPolicy: IfNotPresent
 
   extraArgs: {}
@@ -336,6 +359,7 @@ defaultBackend:
 
   service:
     annotations: {}
+    omitClusterIP: false
     clusterIP: ""
 
     ## List of IP addresses at which the default backend service is available

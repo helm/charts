@@ -67,6 +67,23 @@ $ helm delete my-release
 The command removes all the Kubernetes components associated with the chart and
 deletes the release.
 
+## Upgrading an existing Release to a new major version
+
+A major chart version change (like v0.2.3 -> v1.0.0) indicates that there is an
+incompatible breaking change needing manual actions.
+
+### 1.0.0
+
+This version removes the `chart` and `heritage` labels from the
+`volumeClaimTemplates` which is immutable and prevents chart from being upgraded
+(see https://github.com/helm/charts/issues/7803 for details).
+
+In order to upgrade, delete the CouchDB StatefulSet before upgrading:
+
+```bash
+$ kubectl delete statefulsets --cascade=false my-release-couchdb
+```
+
 ## Configuration
 
 The following table lists the most commonly configured parameters of the
@@ -91,11 +108,14 @@ A variety of other parameters are also configurable. See the comments in the
 | `adminPassword`                 | auto-generated                         |
 | `cookieAuthSecret`              | auto-generated                         |
 | `helperImage.repository`        | kocolosk/couchdb-statefulset-assembler |
-| `helperImage.tag`               | 0.1.0                                  |
+| `helperImage.tag`               | 1.2.0                                  |
 | `helperImage.pullPolicy`        | IfNotPresent                           |
 | `image.repository`              | couchdb                                |
-| `image.tag`                     | 2.2.0                                  |
+| `image.tag`                     | 2.3.0                                  |
 | `image.pullPolicy`              | IfNotPresent                           |
+| `initImage.repository`          | busybox                                |
+| `initImage.tag`                 | latest                                 |
+| `initImage.pullPolicy`          | Always                                 |
 | `ingress.enabled`               | false                                  |
 | `ingress.hosts`                 | chart-example.local                    |
 | `ingress.annotations`           |                                        |
@@ -105,6 +125,7 @@ A variety of other parameters are also configurable. See the comments in the
 | `podManagementPolicy`           | Parallel                               |
 | `affinity`                      |                                        |
 | `resources`                     |                                        |
+| `service.annotations`           |                                        |
 | `service.enabled`               | true                                   |
 | `service.type`                  | ClusterIP                              |
 | `service.externalPort`          | 5984                                   |

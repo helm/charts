@@ -1,21 +1,30 @@
 # Default values for Sysdig Monitor and Secure Helm package.
 
 image:
+  registry: docker.io
   repository: sysdig/agent
-  tag: latest
-  pullPolicy: Always
+  tag: 0.90.2
+  # Specify a imagePullPolicy
+  # Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
+  # ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+  pullPolicy: IfNotPresent
+  # Optionally specify an array of imagePullSecrets.
+  # Secrets must be manually created in the namespace.
+  # ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  #
+  # pullSecrets:
+  #   - name: myRegistrKeySecretName
 
-resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 30m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 20m
-  #   memory: 128Mi
+resources:
+  # Although resources needed are subjective on the actual workload we provide
+  # a sane defaults ones. If you have more questions or concerns, please refer
+  # to Sysdig Support for more info about it
+  requests:
+    cpu: 100m
+    memory: 512Mi
+  limits:
+    cpu: 200m
+    memory: 1024Mi
 
 rbac:
   # true here enables creation of rbac resources
@@ -27,16 +36,28 @@ serviceAccount:
   # Use this value as serviceAccountName
   name:
 
-daemonset: {}
-  # Allow the DaemonSet to perform a rolling update on helm update
+daemonset:
+  # Perform rolling updates by default in the DaemonSet agent
   # ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/
-  # updateStrategy: RollingUpdate
+  updateStrategy:
+    # You can also customize maxUnavailable, maxSurge or minReadySeconds if you
+    # need it
+    type: RollingUpdate
+
+ebpf:
+  # Enable eBPF support for Sysdig Agent
+  enabled: false
+
+  settings:
+    # Needed to correctly detect the kernel version for the eBPF program
+    # Set to false if not running on Google COS
+    mountEtcVolume: true
 
 sysdig:
-    # Required: You need your Sysdig Monitor access key before running agents.
-    # accessKey: ""
+  # Required: You need your Sysdig Monitor access key before running agents.
+  accessKey: ""
 
-  settings: {}
+  settings:
     ### Agent tags
     # tags: linux:ubuntu,dept:dev,local:nyc
     #### Sysdig Software related config ####
@@ -49,7 +70,6 @@ sysdig:
     # collector certificate validation
     # ssl_verify_certificate: true
     #######################################
-    # new_k8s: true
     # k8s_cluster_name: production
 
 secure:

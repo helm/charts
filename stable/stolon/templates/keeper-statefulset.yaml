@@ -56,22 +56,44 @@ spec:
             - name: STKEEPER_CLUSTER_NAME
               value: {{ template "stolon.fullname" . }}
             - name: STKEEPER_STORE_BACKEND
-              value: {{ .Values.store.backend | quote}}
+              value: {{ .Values.store.backend | quote }}
             {{- if eq .Values.store.backend "kubernetes" }}
             - name: STKEEPER_KUBE_RESOURCE_KIND
-              value: {{ .Values.store.kubeResourceKind  | quote}}
+              value: {{ .Values.store.kubeResourceKind  | quote }}
             {{- else }}
             - name: STKEEPER_STORE_ENDPOINTS
-              value: {{ .Values.store.endpoints | quote}}
+              value: {{ .Values.store.endpoints | quote }}
             {{- end }}
             - name: STKEEPER_PG_REPL_USERNAME
+{{ if not (empty .Values.replicationSecret.name) }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.replicationSecret.name }}
+                  key: {{ .Values.replicationSecret.usernameKey }}
+{{ else }}
               value: {{ .Values.replicationUsername | quote}}
+{{ end }}
             - name: STKEEPER_PG_REPL_PASSWORDFILE
+{{ if not (empty .Values.replicationSecret.name) }}
+              value: /etc/secrets/stolon-{{ .Values.replicationSecret.name }}/{{ .Values.replicationSecret.passwordKey }}
+{{ else }}
               value: "/etc/secrets/stolon/pg_repl_password"
+{{ end }}
             - name: STKEEPER_PG_SU_USERNAME
-              value: {{ .Values.superuserUsername | quote}}
+{{ if not (empty .Values.superuserSecret.name) }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.superuserSecret.name }}
+                  key: {{ .Values.superuserSecret.usernameKey }}
+{{ else }}
+              value: {{ .Values.superuserUsername | quote }}
+{{ end }}
             - name: STKEEPER_PG_SU_PASSWORDFILE
+{{ if not (empty .Values.superuserSecret.name) }}
+              value: /etc/secrets/stolon-{{ .Values.superuserSecret.name }}/{{ .Values.superuserSecret.passwordKey }}
+{{ else }}
               value: "/etc/secrets/stolon/pg_su_password"
+{{ end }}
             - name: STKEEPER_METRICS_LISTEN_ADDRESS
               value: "0.0.0.0:8080"
             - name: STKEEPER_DEBUG
@@ -86,8 +108,31 @@ spec:
           volumeMounts:
           - name: data
             mountPath: /stolon-data
+{{ if or (empty .Values.superuserSecret.name) (empty .Values.replicationSecret.name) }}
           - name: stolon-secrets
             mountPath: /etc/secrets/stolon
+{{ end }}
+{{ if not (empty .Values.superuserSecret.name) }}
+          - name: stolon-secret-{{ .Values.superuserSecret.name }}
+            mountPath: /etc/secrets/stolon-{{ .Values.superuserSecret.name }}
+{{ end }}
+{{ if and (not (empty .Values.replicationSecret.name)) (not (eq .Values.superuserSecret.name .Values.replicationSecret.name)) }}
+          - name: stolon-secret-{{ .Values.replicationSecret.name }}
+            mountPath: /etc/secrets/stolon-{{ .Values.replicationSecret.name }}
+{{ end }}
+{{- range $key, $value := .Values.keeper.volumeMounts }}
+          - name: {{ $key }}
+{{ toYaml $value | indent 12 }}
+{{- end }}
+{{- if .Values.keeper.hooks.failKeeper.enabled }}
+          - name: config
+            mountPath: /pre-stop-hook.sh
+            subPath: pre-stop-hook.sh
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/bin/bash", "-e", "/pre-stop-hook.sh"]
+{{ end }}
 {{- with .Values.keeper.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
@@ -101,9 +146,28 @@ spec:
 {{ toYaml . | indent 8 }}
 {{- end }}
       volumes:
+        - name: config
+          configMap:
+            name: {{ template "stolon.fullname" . }}
+{{ if or (empty .Values.superuserSecret.name) (empty .Values.replicationSecret.name) }}
         - name: stolon-secrets
           secret:
             secretName: {{ template "stolon.fullname" . }}
+{{ end }}
+{{ if not (empty .Values.superuserSecret.name) }}
+        - name: stolon-secret-{{ .Values.superuserSecret.name }}
+          secret:
+            secretName: {{ .Values.superuserSecret.name }}
+{{ end }}
+{{ if and (not (empty .Values.replicationSecret.name)) (not (eq .Values.superuserSecret.name .Values.replicationSecret.name)) }}
+        - name: stolon-secret-{{ .Values.replicationSecret.name }}
+          secret:
+            secretName: {{ .Values.replicationSecret.name }}
+{{ end }}
+{{- range $key, $value := .Values.keeper.volumes }}
+        - name: {{ $key }}
+{{ toYaml $value | indent 10 }}
+{{- end }}
 {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
     - metadata:

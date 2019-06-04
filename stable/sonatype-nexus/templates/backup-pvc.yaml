@@ -1,3 +1,4 @@
+{{- if not .Values.statefulset.enabled }}
 {{- if and .Values.nexusBackup.enabled (and .Values.nexusBackup.persistence.enabled (not .Values.nexusBackup.persistence.existingClaim)) }}
 kind: PersistentVolumeClaim
 apiVersion: v1
@@ -23,4 +24,4 @@ spec:
 {{- end }}
 {{- end }}
 {{- end }}
-
+{{- end }}

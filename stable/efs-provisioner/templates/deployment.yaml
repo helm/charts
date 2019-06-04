@@ -1,3 +1,14 @@
+{{- if or (ne .Values.efsProvisioner.efsFileSystemId "fs-12345678") (.Values.efsProvisioner.dnsName) }}
+{{/*
+The `efsFileSystemId` value must be set.
+
+The above `if` condition also prevents the helm integration tests from failing.
+Given that the helm test infrastructure does not have access to valid
+AWS EFS resources, a deployment that references the example `fs-12345678`
+creates pods that will never enter a clean, running state.
+
+Omitting the deployment hacks around this limitation.
+*/}}
 kind: Deployment
 apiVersion: apps/v1beta2
 metadata:
@@ -8,6 +19,8 @@ metadata:
     chart: {{ template "efs-provisioner.chartname" . }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
+  annotations:
+{{ toYaml .Values.annotations | indent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -19,11 +32,18 @@ spec:
     type: Recreate
   template:
     metadata:
+    {{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8}}
+    {{- end }}
       labels:
         app: {{ template "efs-provisioner.name" . }}
         release: "{{ .Release.Name }}"
     spec:
       serviceAccount: {{ template "efs-provisioner.serviceAccountName" . }}
+      {{- if .Values.priorityClassName }}
+      priorityClassName: "{{ .Values.priorityClassName }}"
+      {{- end }}
       containers:
       - name: {{ template "efs-provisioner.fullname" . }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -35,6 +55,12 @@ spec:
           value: {{ .Values.efsProvisioner.awsRegion }}
         - name: PROVISIONER_NAME
           value: {{ .Values.efsProvisioner.provisionerName }}
+        {{- if .Values.efsProvisioner.dnsName }}
+        - name: DNS_NAME
+          value: {{ .Values.efsProvisioner.dnsName }}
+        {{- end }}
+        resources:
+          {{- toYaml .Values.resources | nindent 12 }}
         volumeMounts:
         - name: pv-volume
           subPath: {{ (trimPrefix "/" .Values.efsProvisioner.path) }}
@@ -52,5 +78,22 @@ spec:
       volumes:
       - name: pv-volume
         nfs:
+          {{- if .Values.efsProvisioner.dnsName }}
+          server: {{ .Values.efsProvisioner.dnsName }}
+          {{- else }}
           server: {{ .Values.efsProvisioner.efsFileSystemId }}.efs.{{ .Values.efsProvisioner.awsRegion }}.amazonaws.com
+          {{- end }}
           path: /
+{{- end }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+    {{- end }}
+    {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations| indent 8 }}
+    {{- end }}

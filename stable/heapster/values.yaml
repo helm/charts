@@ -26,6 +26,15 @@ podAnnotations: {}
 ##
 nodeSelector: {}
 
+## Tolerations for pod assignment
+## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+##
+tolerations: []
+
+## Affinity for pod assignment
+## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+affinity: {}
+
 service:
   type: ClusterIP
   externalPort: 8082

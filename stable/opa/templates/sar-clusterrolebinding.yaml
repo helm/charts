@@ -1,0 +1,20 @@
+{{- if (and .Values.rbac.create .Values.sar.enabled) -}}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app: {{ template "opa.name" . }}
+    chart: {{ template "opa.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    component: sar
+  name: {{ template "opa.sarfullname" . }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ template "opa.sarfullname" . }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ template "opa.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace }}
+{{- end -}}

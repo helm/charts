@@ -4,7 +4,7 @@
 
 image:
   repository: datalust/seq
-  tag: 5.0.832-pre
+  tag: 5
   pullPolicy: IfNotPresent
 
 # By passing the value Y in the ACCEPT_EULA environment variable,
@@ -12,6 +12,13 @@ image:
 # Seq End User License Agreement applicable to the Seq Docker image
 # that you intend to use.
 acceptEULA: "Y"
+
+# Set this URL if you enable ingress and/or AAD authentication.
+# Without this URL set to include HTTPS, SEQ will try to set a login redirect
+# URL with HTTP instead of HTTPS and AAD's registration requires HTTPS.
+# The result is that you'll get an error during login:
+#   AADSTS50011: The reply url specified in the request does not match the reply urls configured for the application
+# baseURI: https://my.public.url/
 
 service:
   type: ClusterIP
@@ -66,3 +73,17 @@ persistence:
   # storageClass: "-"
   accessMode: ReadWriteOnce
   size: 8Gi
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  labels: {}
+  path: /
+  hosts:
+    - chart-example.local
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local

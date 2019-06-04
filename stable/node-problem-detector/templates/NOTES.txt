@@ -1,0 +1,3 @@
+To verify that the node-problem-detector pods have started, run:
+
+  kubectl --namespace={{ .Release.Namespace }} get pods -l "app.kubernetes.io/name={{ template "node-problem-detector.name" . }},app.kubernetes.io/instance={{ .Release.Name }}"

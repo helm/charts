@@ -1,4 +1,15 @@
-# Graphite
+# DEPRECATED - Graphite
+
+This chart is depreacated as its maintained in the following repo now:
+
+https://github.com/kiwigrid/helm-charts/tree/master/charts/graphite
+
+You can add the repo via:
+* helm add repo kiwigrid https://kiwigrid.github.io
+
+
+
+
 
 [Graphite](https://graphiteapp.org/) is a monitoring tool.
 
@@ -37,7 +48,7 @@ The following table lists the configurable parameters of the Graphite chart and 
 |             Parameter          |            Description                       |                  Default               |
 |--------------------------------|----------------------------------------------|----------------------------------------|
 | `image.repository`             | Docker image repo                            | `graphiteapp/graphite-statsd`          |
-| `image.tag`                    | Docker image                                 | `1.1.4-3`                                |
+| `image.tag`                    | Docker image                                 | `1.1.5-3`                                |
 | `image.pullPolicy`             | Docker image pull policy                     | `IfNotPresent`                         |
 | `service.type`                 | Service type                                 | `ClusterIP`                            |
 | `service.port`                 | Service port of Graphite UI                  | `8080`                                 |

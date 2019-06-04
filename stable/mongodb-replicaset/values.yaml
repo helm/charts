@@ -16,12 +16,25 @@ auth:
   # key: keycontent
   # existingKeySecret:
   # existingAdminSecret:
-  # exisitingMetricsSecret:
+  # existingMetricsSecret:
+
+## Optionally specify an array of imagePullSecrets.
+## Secrets must be manually created in the namespace.
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+##
+imagePullSecrets: []
+#   - myRegistrKeySecretName
 
 # Specs for the Docker image for the init container that establishes the replica set
 installImage:
-  repository: k8s.gcr.io/mongodb-install
-  tag: 0.6
+  repository: unguiculus/mongodb-install
+  tag: 0.7
+  pullPolicy: IfNotPresent
+
+# Specs for the Docker image for the copyConfig init container
+copyConfigImage:
+  repository: busybox
+  tag: 1.29.3
   pullPolicy: IfNotPresent
 
 # Specs for the MongoDB image
@@ -53,9 +66,14 @@ metrics:
 podAnnotations: {}
 
 securityContext:
+  enabled: true
   runAsUser: 999
   fsGroup: 999
   runAsNonRoot: true
+
+init:
+  resources: {}
+  timeout: 900
 
 resources: {}
 # limits:
@@ -75,6 +93,8 @@ tolerations: []
 
 extraLabels: {}
 
+# priorityClassName: ""
+
 persistentVolume:
   enabled: true
   ## mongodb-replicaset data Persistent Volume Storage Class
@@ -93,6 +113,8 @@ persistentVolume:
 # Annotations to be added to the service
 serviceAnnotations: {}
 
+terminationGracePeriodSeconds: 30
+
 tls:
   # Enable or disable MongoDB TLS support
   enabled: false
@@ -105,7 +127,7 @@ tls:
   # cakey:
 
 # Entries for the MongoDB config file
-configmap:
+configmap: {}
 
 # Javascript code to execute on each replica at initContainer time
 # This is the recommended way to create indexes on replicasets.

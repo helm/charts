@@ -1,7 +1,7 @@
 apiVersion: v1
 name: falco
-version: 0.5.1
-appVersion: 0.11.1
+version: 0.7.6
+appVersion: 0.15.0
 description: Sysdig Falco
 keywords:
   - monitoring
@@ -10,10 +10,10 @@ keywords:
   - metric
   - troubleshooting
   - run-time
-home: https://www.sysdig.com/opensource/falco/
-icon: https://sysdig.com/wp-content/uploads/2016/08/falco_blog_480.jpg
+home: https://falco.org
+icon: https://falco.org/images/logos/falco-logo.png
 sources:
-  - https://github.com/draios/falco
+  - https://github.com/falcosecurity/falco
 maintainers:
   - name: nestorsalceda
     email: nestor.salceda@sysdig.com

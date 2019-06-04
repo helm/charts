@@ -1,0 +1,17 @@
+{{- if .Values.prometheus.monitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ template "prometheus-node-exporter.fullname" . }}
+  labels: {{ include "prometheus-node-exporter.labels" . | indent 4 }}
+  {{- if .Values.prometheus.monitor.additionalLabels }}
+{{ toYaml .Values.prometheus.monitor.additionalLabels | indent 4 }}
+  {{- end }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "prometheus-node-exporter.name" . }}
+      release: {{ .Release.Name }}
+  endpoints:
+    - port: metrics
+{{- end }}

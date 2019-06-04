@@ -52,7 +52,7 @@ The command removes all the Kubernetes components associated with the chart and 
 |       Parameter          |                    Description                    |             Default             |
 | ------------------------ | ------------------------------------------------- | ------------------------------- |
 | `image.repository`       | docker image                                      | jertel/elastalert-docker        |
-| `image.tag`              | docker image tag                                  | 0.1.35                          |
+| `image.tag`              | docker image tag                                  | 0.1.39                          |
 | `image.pullPolicy`       | image pull policy                                 | IfNotPresent                    |
 | `command`                | command override for container                    | `NULL`                          |
 | `args`                   | args override for container                       | `NULL`                          |
@@ -68,6 +68,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `elasticsearch.caCerts` | path to a CA cert bundle to use to verify SSL connections | /certs/ca.pem          |
 | `elasticsearch.certsVolumes` | certs volumes, required to mount ssl certificates when elasticsearch has tls enabled | `NULL` |
 | `elasticsearch.certsVolumeMounts` | mount certs volumes, required to mount ssl certificates when elasticsearch has tls enabled | `NULL` |
+| `extraConfigOptions` | Additional options to propagate to all rules, cannot be `alert`, `type`, `name` or `index` | `{}` |
 | `resources`              | Container resource requests and limits            | {}                              |
 | `rules`                  | Rule and alert configuration for Elastalert       | {} example shown in values.yaml |
 | `runIntervalMins`        | Default interval between alert checks, in minutes | 1                               |

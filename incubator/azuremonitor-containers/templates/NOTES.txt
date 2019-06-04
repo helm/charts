@@ -35,6 +35,6 @@ This deployment will not complete. To proceed, run
 
 {{ .Release.Name }} deployment is complete. 
 Data should start flowing to the Log Analytics workspace shortly. 
-Proceed to https://aka.ms/coinprod if you would like to view this data.
+Proceed to https://aka.ms/azmon-containers if you would like to view this data.
 
 {{- end }}

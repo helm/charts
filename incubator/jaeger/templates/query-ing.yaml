@@ -5,12 +5,11 @@ kind: Ingress
 metadata:
   name: {{ template "jaeger.query.name" . }}
   labels:
-    app: {{ template "jaeger.name" . }}
-    jaeger-infra: query-ingress
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    component: query
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ template "jaeger.name" . }}
+    helm.sh/chart: {{ include "jaeger.chart" . }}
+    app.kubernetes.io/component: query
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
   {{- if .Values.query.ingress.annotations }}
   annotations:
 {{ toYaml .Values.query.ingress.annotations | indent 4 }}

@@ -41,8 +41,13 @@ The following table lists the configurable parameters of the cerebro chart and t
 |-------------------------------------|-------------------------------------|-------------------------------------------|
 | `replicaCount`                      | Number of replicas                  | `1`                                       |
 | `image.repository`                  | The image to run                    | `lmenezes/cerebro`                        |
-| `image.tag`                         | The image tag to pull               | `0.8.1`                                   |
+| `image.tag`                         | The image tag to pull               | `0.8.3`                                   |
 | `image.pullPolicy`                  | Image pull policy                   | `IfNotPresent`                            |
+| `image.pullSecrets`                 | Specify image pull secrets          | `nil` (does not add image pull secrets to deployed pods) |
+| `init.image.repository`             | The image to run                    | `docker.io/busybox`                       |
+| `init.image.tag`                    | The image tag to pull               | `musl`                                    |
+| `init.image.pullPolicy`             | Image pull policy                   | `IfNotPresent`                            |
+| `deployment.annotations`            | Annotations for deployment          | `{}`                                      |
 | `service.type`                      | Type of Service                     | `ClusterIP`                               |
 | `service.port`                      | Port for kubernetes service         | `80`                                      |
 | `service.annotations`               | Annotations to add to the service   | `{}`                                      |
@@ -52,6 +57,7 @@ The following table lists the configurable parameters of the cerebro chart and t
 | `resources.requests.memory`         | Memory resource requests            |                                           |
 | `resources.limits.memory`           | Memory resource limits              |                                           |
 | `ingress`                           | Settings for ingress                | `{}`                                      |
+| `ingress.labels`                    | Labels to add to the ingress        | `{}`                                      |
 | `nodeSelector`                      | Settings for nodeselector           | `{}`                                      |
 | `tolerations`                       | Settings for toleration             | `{}`                                      |
 | `affinity`                          | Settings for affinity               | `{}`                                      |

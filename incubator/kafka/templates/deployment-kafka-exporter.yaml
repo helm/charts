@@ -35,4 +35,16 @@ spec:
           - containerPort: {{ .Values.prometheus.kafka.port }}
         resources:
 {{ toYaml .Values.prometheus.kafka.resources | indent 10 }}
+{{- if .Values.prometheus.kafka.tolerations }}
+      tolerations:
+{{ toYaml .Values.prometheus.kafka.tolerations | indent 8 }}
+{{- end }}
+{{- if .Values.prometheus.kafka.affinity }}
+      affinity:
+{{ toYaml .Values.prometheus.kafka.affinity | indent 8 }}
+{{- end }}
+{{- if .Values.prometheus.kafka.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.prometheus.kafka.nodeSelector | indent 8 }}
+{{- end }}
 {{- end }}

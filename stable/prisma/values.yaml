@@ -2,6 +2,16 @@
 # Prisma:
 # ------------------------------------------------------------------------------
 
+## Service account configuration
+## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
+##
+serviceAccount:
+  create: true
+  ## Define serviceAccount name. Defaults to fully qualified name or "default"
+  ## when create is false
+  ##
+  name: ""
+
 image:
   ## Prisma image repository
   ##
@@ -9,7 +19,7 @@ image:
 
   ## Prisma image version
   ##
-  tag: 1.15-heroku
+  tag: 1.29.1-heroku
 
   ## Specify an imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images

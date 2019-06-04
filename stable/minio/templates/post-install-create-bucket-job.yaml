@@ -1,4 +1,4 @@
-{{- if .Values.defaultBucket.enabled }}
+{{- if or .Values.defaultBucket.enabled .Values.buckets }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -30,7 +30,15 @@ spec:
             - configMap:
                 name: {{ template "minio.fullname" . }}
             - secret:
-                name: {{ template "minio.fullname" . }}
+                name: {{ if .Values.existingSecret }}{{ .Values.existingSecret }}{{ else }}{{ template "minio.fullname" . }}{{ end }}
+        {{- if .Values.tls.enabled }}
+        - name: cert-secret-volume-mc
+          secret:
+            secretName: {{ .Values.tls.certSecret }}
+            items:
+            - key: {{ .Values.tls.publicCrt }}
+              path: CAs/public.crt
+        {{ end }}
       containers:
       - name: minio-mc
         image: "{{ .Values.mcImage.repository }}:{{ .Values.mcImage.tag }}"
@@ -44,4 +52,8 @@ spec:
         volumeMounts:
           - name: minio-configuration
             mountPath: /config
+          {{- if .Values.tls.enabled }}
+          - name: cert-secret-volume-mc
+            mountPath: {{ .Values.configPathmc }}certs
+          {{ end }}
 {{- end }}

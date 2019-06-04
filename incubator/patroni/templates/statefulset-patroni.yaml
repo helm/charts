@@ -3,7 +3,7 @@ kind: StatefulSet
 metadata:
   name: {{ template "patroni.fullname" . }}
   labels:
-    app: {{ template "patroni.name" . }}
+    app: {{ template "patroni.fullname" . }}
     chart: {{ template "patroni.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
@@ -12,13 +12,13 @@ spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ template "patroni.name" . }}
+      app: {{ template "patroni.fullname" . }}
       release: {{ .Release.Name }}
   template:
     metadata:
       name: {{ template "patroni.fullname" . }}
       labels:
-        app: {{ template "patroni.name" . }}
+        app: {{ template "patroni.fullname" . }}
         release: {{ .Release.Name }}
     spec:
       serviceAccountName: {{ template "patroni.serviceAccountName" . }}
@@ -42,6 +42,18 @@ spec:
             secretKeyRef:
               name: {{ template "patroni.fullname" . }}
               key: password-standby
+        {{- if .Values.kubernetes.dcs.enable }}
+        - name: DCS_ENABLE_KUBERNETES_API
+          value: "true"
+        - name: KUBERNETES_LABELS
+          value: {{ (printf "{ \"app\": \"%s\", \"release\": \"%s\" }" (include "patroni.fullname" .) .Release.Name) | quote }}
+        - name: KUBERNETES_SCOPE_LABEL
+          value: "app"
+        {{- end }}
+        {{- if .Values.kubernetes.configmaps.enable }}
+        - name: KUBERNETES_USE_CONFIGMAPS
+          value: "true"
+        {{- end }}
         {{- if .Values.etcd.enable }}
         {{- if .Values.etcd.deployChart }}
         - name: ETCD_DISCOVERY_DOMAIN
@@ -142,6 +154,11 @@ spec:
           secretName: {{ .Values.walE.kubernetesSecret }}
       {{- end }}
       {{- end }}
+      {{- if not .Values.persistentVolume.enabled }}
+      - name: storage-volume
+        emptyDir: {}
+      {{- end }}
+  {{- if .Values.persistentVolume.enabled }}
   volumeClaimTemplates:
     - metadata:
         name: storage-volume
@@ -150,8 +167,7 @@ spec:
 {{ toYaml .Values.persistentVolume.annotations | indent 8 }}
         {{- end }}
         labels:
-          app: {{ template "patroni.name" . }}
-          chart: {{ template "patroni.chart" . }}
+          app: {{ template "patroni.fullname" . }}
           release: {{ .Release.Name }}
           heritage: {{ .Release.Service }}
       spec:
@@ -167,3 +183,4 @@ spec:
         storageClassName: "{{ .Values.persistentVolume.storageClass }}"
       {{- end }}
       {{- end }}
+  {{- end }}

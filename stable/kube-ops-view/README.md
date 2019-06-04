@@ -18,6 +18,12 @@ The command deploys Kubernetes Operational View on the Kubernetes cluster in the
 $ kubectl proxy
 ```
 
+## Using with Redis
+
+```console
+$ helm install --set redis.enabled=true --name=my-release stable/kube-ops-view
+```
+
 Assuming you used `my-release` for installation, you can now access the UI in your browser by opening http://localhost:8001/api/v1/proxy/namespaces/default/services/my-release-kube-ops-view/
 
 ## Uninstalling the Chart

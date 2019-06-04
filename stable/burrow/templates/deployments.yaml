@@ -1,148 +1,217 @@
-{{ range (until (.Values.chain.numberOfNodes | int)) }}
+{{ range (until (.Values.chain.nodes | int)) }}
+{{- $nodeIndex := . }}
 {{- $nodeNumber := printf "%03d" . }}
 {{- $workDir := printf "/work" }}
-{{- $dataDir := printf "/data" }}
 {{- $refDir := printf "/ref" }}
+{{- $keysDir := printf "/keys" }}
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
     app: {{ template "burrow.name" $ }}
-    chart: "{{ $.Chart.Name }}-{{ $.Chart.Version }}"
+    chart: {{ template "burrow.chart" $ }}
     heritage: {{ $.Release.Service }}
     release: {{ $.Release.Name }}
+    nodeNumber: {{ $nodeNumber | quote }}
   name: {{ template "burrow.fullname" $ }}-{{ $nodeNumber }}
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "burrow.name" $ }}
+      release: {{ $.Release.Name }}
+      nodeNumber: {{ $nodeNumber | quote }}
   template:
     metadata:
-    {{- if $.Values.podAnnotations }}
+{{- if (or $.Values.podAnnotations $.Values.config.RPC.Metrics.Enabled) }}
       annotations:
+{{- if $.Values.config.RPC.Metrics.Enabled }}
+        prometheus.io/scrape: "true"
+        prometheus.io/port: {{ $.Values.config.RPC.Metrics.ListenPort | quote }}
+        prometheus.io/path: {{ $.Values.config.RPC.Metrics.MetricsPath }}
+{{- end }}
+{{- if $.Values.podAnnotations }}
 {{ toYaml $.Values.podAnnotations | indent 8 }}
-    {{- end }}
+{{- end }}
+{{- end }}
       labels:
         app: {{ template "burrow.name" $ }}
         release: {{ $.Release.Name }}
         nodeNumber: {{ $nodeNumber | quote }}
-      {{- if $.Values.podLabels }}
+{{- if $.Values.podLabels }}
 {{ toYaml $.Values.podLabels | indent 8 }}
-      {{- end }}
+{{- end }}
     spec:
       initContainers:
-        - name: init-node
+        - name: init-keys
           image: busybox
           imagePullPolicy: IfNotPresent
+          workingDir: {{ $keysDir }}/data
+          volumeMounts:
+            - mountPath: {{ $workDir }}
+              name: work-dir
+            - mountPath: {{ $keysDir }}/data
+              name: keys-dir
           command:
             - 'sh'
             - '-xc'
-            - 'echo Initializing...; sleep {{ mul 5 . }}; echo Ready to go!'
-        - name: init-dir
-          image: busybox
-          imagePullPolicy: IfNotPresent
+            - |-
+              mkdir -p {{ $workDir }}/.burrow/config && \
+              cp nodekey-Validator_{{ . }} {{ $workDir }}/.burrow/config/node_key.json && \
+              chmod 600 {{ $workDir }}/.burrow/config/node_key.json
+{{- if $.Values.chain.restore.enabled }}
+        - name: retrieve
+          image: appropriate/curl
+          imagePullPolicy: {{ $.Values.image.pullPolicy }}
+          workingDir: {{ $workDir }}
+          command:
+          - curl
+          args:
+          - -o
+          - dumpFile
+          - {{ $.Values.chain.restore.dumpURL }}
+          volumeMounts:
+            - mountPath: {{ $workDir }}
+              name: work-dir
+        - name: restore
+          image: "{{ $.Values.image.repository }}:{{ $.Values.image.tag }}"
+          imagePullPolicy: {{ $.Values.image.pullPolicy }}
+          workingDir: {{ $workDir }}
+          command:
+          - burrow
+          args:
+          - restore
+          - --config
+          - "{{ $refDir }}/burrow.json"
+          - --genesis
+          - "{{ $refDir }}/genesis.json"
+          - --silent
+          - dumpFile
+          - --validator-address
+          - {{ (index $.Values.validatorAddresses ( printf "Validator_%d" $nodeIndex )).Address | quote }}
+          - --validator-moniker
+          - {{ printf "%s-validator-%s" $.Values.organization $nodeNumber | quote }}
           volumeMounts:
             - mountPath: {{ $workDir }}
               name: work-dir
             - mountPath: {{ $refDir }}
               name: ref-dir
-          command:
-            - 'sh'
-            - '-xc'
-            - 'cp {{ $refDir }}/config.toml {{ $workDir }}/; cp {{ $refDir }}/genesis.json {{ $workDir }}/; cp {{ $refDir }}/priv_validator.json {{ $workDir }}/'
+{{- end }}
       containers:
-        - name: node-{{ $nodeNumber }}
+        - name: node
           image: "{{ $.Values.image.repository }}:{{ $.Values.image.tag }}"
           imagePullPolicy: {{ $.Values.image.pullPolicy }}
+          workingDir: {{ $workDir }}
+          command:
+          - burrow
           args:
-          {{- range $key, $value := $.Values.extraArgs }}
+          - start
+          - --config
+          - "{{ $refDir }}/burrow.json"
+          - --genesis
+          - "{{ $refDir }}/genesis.json"
+          - --validator-address
+          - {{ (index $.Values.validatorAddresses ( printf "Validator_%d" $nodeIndex )).Address | quote }}
+          - --validator-moniker
+          - {{ printf "%s-validator-%s" $.Values.organization $nodeNumber | quote }}
+{{- if (and $.Values.peer.ingress.enabled (not (eq (len $.Values.peer.ingress.hosts) 0))) }}
+          - --external-address
+          - "{{ $nodeNumber }}.{{ index $.Values.peer.ingress.hosts 0 }}:{{ $.Values.config.Tendermint.ListenPort }}"
+{{- end }}
+{{- range $key, $value := $.Values.extraArgs }}
             - --{{ $key }}={{ $value }}
-          {{- end }}
+{{- end }}
           env:
-            - name: BURROW_WORKDIR
-              value: {{ $workDir }}
-            - name: BURROW_DATADIR
-              value: {{ $dataDir }}
-          {{- range $key, $value := $.Values.env }}
-            - name: "{{ $key }}"
-              value: "{{ $value }}"
-          {{- end }}
+{{- include "settings" $ | indent 10 }}
           volumeMounts:
+            - mountPath: {{ $refDir }}
+              name: ref-dir
+            - mountPath: {{ $keysDir }}/data
+              name: keys-dir
+            - mountPath: {{ $keysDir }}/names
+              name: keys-dir-names
             - mountPath: {{ $workDir }}
               name: work-dir
-            - mountPath: {{ $dataDir }}
-              name: data-dir
           ports:
             - name: peer
               protocol: TCP
-              containerPort: {{ $.Values.service.peer.port }}
-            - name: rpc
+              containerPort: {{ $.Values.config.Tendermint.ListenPort }}
+{{- if $.Values.config.RPC.GRPC.Enabled }}
+            - name: grpc
               protocol: TCP
-              containerPort: {{ $.Values.service.rpc.port }}
-            - name: api
+              containerPort: {{ $.Values.config.RPC.GRPC.ListenPort }}
+{{- end }}
+{{- if $.Values.config.RPC.Info.Enabled }}
+            - name: info
               protocol: TCP
-              containerPort: {{ $.Values.service.api.port }}
+              containerPort: {{ $.Values.config.RPC.Info.ListenPort }}
+{{- end }}
+{{- if $.Values.config.RPC.Metrics.Enabled }}
+            - name: metrics
+              protocol: TCP
+              containerPort: {{ $.Values.config.RPC.Metrics.ListenPort }}
+{{- end }}
+{{- if not $.Values.chain.testing }}
+{{- if $.Values.livenessProbe.enabled }}
           livenessProbe:
             httpGet:
-              path: /status
-              port: rpc
+              path: {{ $.Values.livenessProbe.path }}
+              port: info
               scheme: HTTP
-            initialDelaySeconds: 20
-            timeoutSeconds: 1
-            periodSeconds: 30
+            initialDelaySeconds: {{ $.Values.livenessProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ $.Values.livenessProbe.timeoutSeconds }}
+            periodSeconds: {{ $.Values.livenessProbe.periodSeconds }}
+{{- end }}
+{{- if $.Values.readinessProbe.enabled }}
           readinessProbe:
             httpGet:
-              path: /status
-              port: rpc
+              path: {{ $.Values.readinessProbe.path }}
+              port: info
               scheme: HTTP
-            initialDelaySeconds: 1
-        {{- if $.Values.resources }}
+            initialDelaySeconds: {{ $.Values.readinessProbe.initialDelaySeconds }}
+{{- end }}
+{{- end }}
+{{- if $.Values.resources }}
           resources:
 {{ toYaml $.Values.resources | indent 12 }}
-        {{- end }}
+{{- end }}
+      restartPolicy: Always
       volumes:
         - name: ref-dir
           projected:
             sources:
               - configMap:
-                  name: {{ template "burrow.fullname" $ }}-config-{{ $nodeNumber }}
-                  items:
-                    - key: config.toml
-                      path: config.toml
-              - secret:
+                  name: {{ template "burrow.fullname" $ }}-config
+              - configMap:
                   name: {{ template "burrow.fullname" $ }}-genesis
-                  items:
-                    - key: genesis.json
-                      path: genesis.json
+        - name: keys-dir
+          projected:
+            sources:
               - secret:
                   name: {{ template "burrow.fullname" $ }}-keys
-                  items:
-                    - key: key-{{ $nodeNumber }}
-                      path: priv_validator.json
+        - name: keys-dir-names
+          emptyDir: {}
         - name: work-dir
-        {{- if $.Values.persistence.enabled }}
+{{- if $.Values.persistence.enabled }}
           persistentVolumeClaim:
-            claimName: {{ template "burrow.fullname" $ }}-work
-        {{- else }}
+            claimName: {{ template "burrow.fullname" $ }}-{{ $nodeNumber }}
+{{- else }}
           emptyDir: {}
-        {{- end }}
-        - name: data-dir
-        {{- if $.Values.persistence.enabled }}
-          persistentVolumeClaim:
-            claimName: {{ template "burrow.fullname" $ }}-data
-        {{- else }}
-          emptyDir: {}
-        {{- end }}
+{{- end }}
       securityContext:
         fsGroup: 101
         runAsUser: 1000
-    {{- if $.Values.affinity }}
+{{- if $.Values.affinity }}
       affinity:
 {{ toYaml $.Values.affinity | indent 8 }}
-    {{- end }}
-    {{- if $.Values.nodeSelector }}
+{{- end }}
+{{- if $.Values.nodeSelector }}
       nodeSelector:
 {{ toYaml $.Values.nodeSelector | indent 8 }}
-    {{- end }}
+{{- end }}
+{{- if $.Values.tolerations }}
       tolerations:
 {{ toYaml $.Values.tolerations | indent 8 }}
+{{- end }}
 {{- end }}

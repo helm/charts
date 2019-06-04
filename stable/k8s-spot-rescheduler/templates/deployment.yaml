@@ -18,6 +18,10 @@ spec:
       labels:
         app: {{ template "k8s-spot-rescheduler.name" . }}
         release: {{ .Release.Name }}
+{{- with .Values.podAnnotations }}
+      annotations:
+{{ toYaml . | indent 8 }}
+{{- end }}
     spec:
       serviceAccountName: {{ template "k8s-spot-rescheduler.serviceAccountName" . }}
       containers:
@@ -35,6 +39,10 @@ spec:
             containerPort: 9235
           resources:
 {{ toYaml .Values.resources | indent 12 }}
+    {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+    {{- end }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
       tolerations:

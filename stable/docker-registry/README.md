@@ -29,10 +29,11 @@ their default values.
 |:----------------------------|:-------------------------------------------------------------------------------------------|:----------------|
 | `image.pullPolicy`          | Container pull policy                                                                      | `IfNotPresent`  |
 | `image.repository`          | Container image to use                                                                     | `registry`      |
-| `image.tag`                 | Container image tag to deploy                                                              | `2.6.2`         |
+| `image.tag`                 | Container image tag to deploy                                                              | `2.7.1`         |
 | `imagePullSecrets`          | Specify image pull secrets                                                                 | `nil` (does not add image pull secrets to deployed pods) |
 | `persistence.accessMode`    | Access mode to use for PVC                                                                 | `ReadWriteOnce` |
 | `persistence.enabled`       | Whether to use a PVC for the Docker storage                                                | `false`         |
+| `persistence.deleteEnabled` | Enable the deletion of image blobs and manifests by digest                                 | `nil`           |
 | `persistence.size`          | Amount of space to claim for PVC                                                           | `10Gi`          |
 | `persistence.storageClass`  | Storage Class to use for PVC                                                               | `-`             |
 | `persistence.existingClaim` | Name of an existing PVC to use for config                                                  | `nil`           |
@@ -43,6 +44,7 @@ their default values.
 | `replicaCount`              | k8s replicas                                                                               | `1`             |
 | `updateStrategy`            | update strategy for deployment                                                             | `{}`            |
 | `podAnnotations`            | Annotations for pod                                                                        | `{}`            |
+| `podLabels`                 | Labels for pod       | `{}`            |
 | `resources.limits.cpu`      | Container requested CPU                                                                    | `nil`           |
 | `resources.limits.memory`   | Container requested memory                                                                 | `nil`           |
 | `priorityClassName      `   | priorityClassName                                                                          | `""`            |
@@ -56,6 +58,7 @@ their default values.
 | `haSharedSecret`            | Shared secret for Registry                                                                 | `nil`           |
 | `configData`                | Configuration hash for docker                                                              | `nil`           |
 | `s3.region`                 | S3 region                                                                                  | `nil`           |
+| `s3.regionEndpoint`         | S3 region endpoint                                                                         | `nil`           |
 | `s3.bucket`                 | S3 bucket name                                                                             | `nil`           |
 | `s3.encrypt`                | Store images in encrypted format                                                           | `nil`           |
 | `s3.secure`                 | Use HTTPS                                                                                  | `nil`           |
@@ -63,6 +66,12 @@ their default values.
 | `swift.container`           | Swift container                                                                            | `nil`           |
 | `nodeSelector`              | node labels for pod assignment                                                             | `{}`            |
 | `tolerations`               | pod tolerations                                                                            | `[]`            |
+| `ingress.enabled`           | If true, Ingress will be created                                                           | `false`         |
+| `ingress.annotations`       | Ingress annotations                                                                        | `{}`            |
+| `ingress.labels`            | Ingress labels                                                                             | `{}`            |
+| `ingress.path`              | Ingress service path                                                                       | `/`             |
+| `ingress.hosts`             | Ingress hostnames                                                                          | `[]`            |
+| `ingress.tls`               | Ingress TLS configuration (YAML)                                                           | `[]`            |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to
 `helm install`.

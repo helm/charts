@@ -1,0 +1,24 @@
+{{- if .Values.historical.podDisruptionBudget.enabled }}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  labels:
+    app: {{ template "druid.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: {{ .Values.historical.name }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "druid.historical.fullname" . }}
+spec:
+{{- if .Values.historical.podDisruptionBudget.minAvailable }}
+  minAvailable: {{ .Values.historical.podDisruptionBudget.minAvailable }}
+{{- end }}
+{{- if .Values.historical.podDisruptionBudget.maxUnavailable }}
+  maxUnavailable: {{ .Values.historical.podDisruptionBudget.maxUnavailable }}
+{{- end }}
+  selector:
+    matchLabels:
+      app: {{ template "druid.name" . }}
+      component: {{ .Values.historical.name }}
+      release: {{ .Release.Name }}
+{{- end }}

@@ -2,23 +2,68 @@
 prometheusScrape: true
 image:
   repository: quay.io/coreos/kube-state-metrics
-  tag: v1.4.0
+  tag: v1.6.0
   pullPolicy: IfNotPresent
+
+replicas: 1
+
 service:
   port: 8080
   # Default to clusterIP for backward compatibility
   type: ClusterIP
   nodePort: 0
   loadBalancerIP: ""
+
+hostNetwork: false
+
 rbac:
   # If true, create & use RBAC resources
-  create: false
-  # Ignored if rbac.create is true
-  serviceAccountName: default
+  create: true
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created, require rbac true
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+  # Reference to one or more secrets to be used when pulling images
+  # ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  imagePullSecrets: []
+
+prometheus:
+  monitor:
+    enabled: false
+    additionalLabels: {}
+    namespace: ""
+
+## Specify if a Pod Security Policy for kube-state-metrics must be created
+## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/
+##
+podSecurityPolicy:
+  enabled: false
+  annotations: {}
+    ## Specify pod annotations
+    ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#apparmor
+    ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#seccomp
+    ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#sysctl
+    ##
+    # seccomp.security.alpha.kubernetes.io/allowedProfileNames: '*'
+    # seccomp.security.alpha.kubernetes.io/defaultProfileName: 'docker/default'
+    # apparmor.security.beta.kubernetes.io/defaultProfileName: 'runtime/default'
+
+
+securityContext:
+  enabled: true
+  runAsUser: 65534
+  fsGroup: 65534
 
 ## Node labels for pod assignment
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
 nodeSelector: {}
+
+## Affinity settings for pod assignment
+## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+affinity: {}
 
 ## Tolerations for pod assignment
 ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
@@ -27,24 +72,32 @@ tolerations: []
 # Annotations to be added to the pod
 podAnnotations: {}
 
+## Assign a PriorityClassName to pods if set
+# priorityClassName: ""
+
 # Available collectors for kube-state-metrics. By default all available
 # collectors are enabled.
 collectors:
+  certificatesigningrequests: true
+  configmaps: true
   cronjobs: true
   daemonsets: true
   deployments: true
   endpoints: true
   horizontalpodautoscalers: true
+  ingresses: true
   jobs: true
   limitranges: true
   namespaces: true
   nodes: true
   persistentvolumeclaims: true
   persistentvolumes: true
+  poddisruptionbudgets: true
   pods: true
   replicasets: true
   replicationcontrollers: true
   resourcequotas: true
+  secrets: true
   services: true
   statefulsets: true
 

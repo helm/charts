@@ -1,0 +1,23 @@
+{{- if .Values.kubeControllerManager.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "prometheus-operator.fullname" . }}-kube-controller-manager
+  labels:
+    app: {{ template "prometheus-operator.name" . }}-kube-controller-manager
+    jobLabel: kube-controller-manager
+{{ include "prometheus-operator.labels" . | indent 4 }}
+  namespace: kube-system
+spec:
+  clusterIP: None
+  ports:
+    - name: http-metrics
+      port: {{ .Values.kubeControllerManager.service.port }}
+      protocol: TCP
+      targetPort: {{ .Values.kubeControllerManager.service.targetPort }}
+{{- if .Values.kubeControllerManager.endpoints }}{{- else }}
+  selector:
+{{ include "prometheus-operator.rangeskipempty" .Values.kubeControllerManager.service.selector | indent 4 }}
+{{- end }}
+  type: ClusterIP
+{{- end }}

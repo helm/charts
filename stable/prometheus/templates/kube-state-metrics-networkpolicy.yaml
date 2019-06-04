@@ -1,26 +1,19 @@
-{{- if .Values.networkPolicy.enabled }}
+{{- if and .Values.kubeStateMetrics.enabled .Values.networkPolicy.enabled -}}
 apiVersion: {{ template "prometheus.networkPolicy.apiVersion" . }}
 kind: NetworkPolicy
 metadata:
   name: {{ template "prometheus.kubeStateMetrics.fullname" . }}
   labels:
-    app: {{ template "prometheus.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.kubeStateMetrics.name }}"
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    {{- include "prometheus.kubeStateMetrics.labels" . | nindent 4 }}
 spec:
   podSelector:
     matchLabels:
-      app: {{ template "prometheus.name" . }}
-      component: "{{ .Values.kubeStateMetrics.name }}"
-      release: {{ .Release.Name }}
+      {{- include "prometheus.kubeStateMetrics.matchLabels" . | nindent 6 }}
   ingress:
   - from:
     - podSelector:
         matchLabels:
-          release: {{ .Release.Name }}
-          component: "{{ .Values.server.name }}"
+          {{- include "prometheus.server.matchLabels" . | nindent 10 }}
   - ports:
     - port: 8080
-{{- end }}
+{{- end -}}

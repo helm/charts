@@ -4,9 +4,9 @@ metadata:
   name: {{ template "traefik.fullname" . }}
   labels:
     app: {{ template "traefik.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    chart: {{ template "traefik.chart" . }}
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
   {{- if .Values.service }}
   {{- range $key, $value := .Values.service.labels }}
     {{ $key }}: {{ $value | quote }}
@@ -54,7 +54,7 @@ spec:
     {{- if not .Values.ssl.enabled }}
     targetPort: httpn
     {{- end }}
-  {{- if .Values.metrics.prometheus.enabled }}
+  {{- if (and (.Values.metrics.prometheus.enabled) (not (.Values.metrics.prometheus.restrictAccess)))}}
   - port: 8080
     name: metrics
     targetPort: dash

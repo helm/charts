@@ -11,7 +11,7 @@ metadata:
 data:
   influxdb.conf: |+
     reporting-disabled = {{ .Values.config.reporting_disabled | default false }}
-    bind-address = ":{{ .Values.config.bind_address }}"
+    bind-address = ":{{ .Values.config.rpc.bind_address }}"
 
     [meta]
       dir = "{{ .Values.config.storage_directory }}/meta"
@@ -154,4 +154,7 @@ data:
       enabled = {{ .Values.config.continuous_queries.enabled }}
       run-interval = "{{ .Values.config.continuous_queries.run_interval }}"
 
-
+    [logging]
+      format =  "{{ .Values.config.logging.format }}"
+      level =  "{{ .Values.config.logging.level }}"
+      supress-logo = {{ .Values.config.logging.supress_logo }}

@@ -1,21 +1,31 @@
 # Default values for falco.
 
 image:
-  repository: sysdig/falco
-  tag: latest
-  pullPolicy: Always
+  registry: docker.io
+  repository: falcosecurity/falco
+  tag: 0.15.0
+  pullPolicy: IfNotPresent
 
-resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 30m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 20m
-  #   memory: 128Mi
+docker:
+  enabled: true
+  socket: /var/run/docker.sock
+
+cri:
+  enabled: true
+  socket: /run/containerd/containerd.sock
+
+resources:
+  # Although resources needed are subjective on the actual workload we provide
+  # a sane defaults ones. If you have more questions or concerns, please refer
+  # to Sysdig Support for more info about it
+  requests:
+    cpu: 100m
+    memory: 512Mi
+  limits:
+    cpu: 200m
+    memory: 1024Mi
+
+extraArgs: []
 
 rbac:
   # Create and use rbac resources
@@ -31,12 +41,13 @@ fakeEventGenerator:
   enabled: false
   replicas: 1
 
-daemonset: {}
-  # Allow the DaemonSet to perform a rolling update on helm update
+daemonset:
+  # Perform rolling updates by default in the DaemonSet agent
   # ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/
-  # If you do want to specify resources, uncomment the following lines, adjust
-  # them as necessary, and remove the curly braces after 'resources:'.
-  # updateStrategy: RollingUpdate
+  updateStrategy:
+    # You can also customize maxUnavailable, maxSurge or minReadySeconds if you
+    # need it
+    type: RollingUpdate
 
 # If is behind a proxy you can set the proxy server
 proxy:
@@ -130,11 +141,11 @@ falco:
 
   # Possible additional things you might want to do with program output:
   #   - send to a slack webhook:
-  #         program: "jq '{text: .output}' | curl -d @- -X POST https://hooks.slack.com/services/XXX"
+  #     program: "\"jq '{text: .output}' | curl -d @- -X POST https://hooks.slack.com/services/XXX\""
   #   - logging (alternate method than syslog):
-  #         program: logger -t falco-test
+  #     program: logger -t falco-test
   #   - send over a network connection:
-  #         program: nc host.example.com 80
+  #     program: nc host.example.com 80
 
   # If keep_alive is set to true, the program will be started once and
   # continuously written to, with each output message on its own
@@ -196,6 +207,22 @@ integrations:
     aws_access_key_id: ""
     aws_secret_access_key: ""
     aws_default_region: ""
+
+
+  # If GCloud Pub/Sub integration is enabled, falco will be configured to use this
+  # integration as file_output and sets the following values:
+  # * json_output: true
+  # * json_include_output_property: true
+  # * file_output:
+  #     enabled: true
+  #     keep_alive: true
+  #     filename: /var/run/falco/nats
+  pubsubOutput:
+    enabled: false
+    topic: ""
+    credentialsData: ""
+    projectID: ""
+
 
 # Allow falco to run on Kubernetes 1.6 masters.
 tolerations:

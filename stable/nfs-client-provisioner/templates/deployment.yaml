@@ -17,11 +17,23 @@ spec:
       release: {{ .Release.Name }}
   template:
     metadata:
+      annotations:
+      {{- if and (.Values.tolerations) (semverCompare "<1.6-0" .Capabilities.KubeVersion.GitVersion) }}
+        scheduler.alpha.kubernetes.io/tolerations: '{{ toJson .Values.tolerations }}'
+      {{- end }}
       labels:
         app: {{ template "nfs-client-provisioner.name" . }}
         release: {{ .Release.Name }}
     spec:
       serviceAccountName: {{ template "nfs-client-provisioner.serviceAccountName" . }}
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -36,13 +48,23 @@ spec:
               value: {{ .Values.nfs.server }}
             - name: NFS_PATH
               value: {{ .Values.nfs.path }}
+          {{- with .Values.resources }}
+          resources:
+{{ toYaml . | indent 12 }}
+          {{- end }}
       volumes:
+        - name: nfs-client-root
 {{- if .Values.buildMode }}
-        - name: nfs-client-root
           emptyDir: {}
+{{- else if .Values.nfs.mountOptions }}
+          persistentVolumeClaim:
+            claimName: pvc-{{ template "nfs-client-provisioner.fullname" . }}
 {{- else }}
-        - name: nfs-client-root
           nfs:
             server: {{ .Values.nfs.server }}
             path: {{ .Values.nfs.path }}
 {{- end }}
+      {{- if and (.Values.tolerations) (semverCompare "^1.6-0" .Capabilities.KubeVersion.GitVersion) }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 6 }}
+      {{- end }}

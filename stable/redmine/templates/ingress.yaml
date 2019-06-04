@@ -3,7 +3,7 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: "{{- printf "%s-%s" .name $.Release.Name | trunc 63 | trimSuffix "-" -}}"
+  name: "{{- printf "%s-%s" .name $.Release.Name | trunc 63 | trimSuffix "-" | replace "." "-" -}}"
   labels:
     app: {{ template "redmine.fullname" $ }}
     chart: {{ template "redmine.chart" $ }}
@@ -27,10 +27,9 @@ spec:
           servicePort: 80
 {{- if .tls }}
   tls:
-  - hosts:
-    - {{ .name }}
-      secretName: {{ .tlsSecret }}
-{{ toYaml .Values.ingress.tls | indent 4 }}
+    - secretName: {{ .tlsSecret }}
+      hosts:
+        - {{ .name }}
 {{- end }}
 ---
 {{- end }}

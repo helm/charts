@@ -4,9 +4,9 @@ metadata:
   name: {{ include "jaeger-operator.fullname" . }}
   labels:
     app.kubernetes.io/name: {{ include "jaeger-operator.name" . }}
-    helm.sh/chart: {{ include "jaeger-operator.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "jaeger-operator.chart" . }}
 spec:
   replicas: 1
   selector:
@@ -19,16 +19,22 @@ spec:
       labels:
         app.kubernetes.io/name: {{ include "jaeger-operator.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+        helm.sh/chart: {{ include "jaeger-operator.chart" . }}
     spec:
       {{- if .Values.serviceAccount.create }}
       serviceAccountName: {{ include "jaeger-operator.serviceAccountName" . }}
+      {{- end }}
+      {{- with .Values.securityContext }}
+      securityContext:
+{{ toYaml . | indent 8 }}
       {{- end }}
       containers:
         - name: {{ include "jaeger-operator.fullname" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-          - containerPort: 60000
+          - containerPort: 8383
             name: metrics
           args: ["start"]
           env:
@@ -36,6 +42,10 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
             - name: OPERATOR_NAME
               value: {{ include "jaeger-operator.fullname" . | quote }}
           resources:

@@ -16,10 +16,11 @@
 
 set -e pipefail
 
+port=27017
 replica_set="$REPLICA_SET"
 script_name=${0##*/}
 SECONDS=0
-timeout=300
+timeout="${TIMEOUT:-900}"
 
 if [[ "$AUTH" == "true" ]]; then
     admin_user="$ADMIN_USER"
@@ -43,15 +44,14 @@ retry_until() {
     local host="${1}"
     local command="${2}"
     local expected="${3}"
-    local creds="${admin_creds[@]}"
+    local creds=("${admin_creds[@]}")
 
     # Don't need credentials for admin user creation and pings that run on localhost
     if [[ "${host}" =~ ^localhost ]]; then
-        creds=
+        creds=()
     fi
 
-    until [[ $(mongo admin --host "${host}" ${creds} "${ssl_args[@]}" --quiet --eval "${command}") == "${expected}" ]]; do
-        log "Retrying ${command}"
+    until [[ $(mongo admin --host "${host}" "${creds[@]}" "${ssl_args[@]}" --quiet --eval "${command}") == "${expected}" ]]; do
         sleep 1
 
         if (! ps "${pid}" &>/dev/null); then
@@ -62,6 +62,8 @@ retry_until() {
             log "Timed out after ${timeout}s attempting to bootstrap mongod"
             exit 1
         fi
+
+        log "Retrying ${command} on ${host}"
     done
 }
 
@@ -137,7 +139,7 @@ EOL
 
     # Generate the certs
     openssl genrsa -out mongo.key 2048
-    openssl req -new -key mongo.key -out mongo.csr -subj "/CN=$my_hostname" -config openssl.cnf
+    openssl req -new -key mongo.key -out mongo.csr -subj "/OU=MongoDB/CN=$my_hostname" -config openssl.cnf
     openssl x509 -req -in mongo.csr \
         -CA "$ca_crt" -CAkey "$ca_key" -CAcreateserial \
         -out mongo.crt -days 3650 -extensions v3_req -extfile openssl.cnf
@@ -151,7 +153,7 @@ init_mongod_standalone
 
 log "Peers: ${peers[*]}"
 log "Starting a MongoDB replica"
-mongod --config /data/configdb/mongod.conf --dbpath=/data/db --replSet="$replica_set" --port=27017 "${auth_args[@]}" --bind_ip=0.0.0.0 2>&1 | tee -a /work-dir/log.txt 1>&2 &
+mongod --config /data/configdb/mongod.conf --dbpath=/data/db --replSet="$replica_set" --port="${port}" "${auth_args[@]}" --bind_ip=0.0.0.0 2>&1 | tee -a /work-dir/log.txt 1>&2 &
 pid=$!
 trap shutdown_mongo EXIT
 
@@ -174,10 +176,12 @@ done
 if [[ "${primary}" = "${service_name}" ]]; then
     log "This replica is already PRIMARY"
 elif [[ -n "${primary}" ]]; then
-    log "Adding myself (${service_name}) to replica set..."
-    if (mongo admin --host "${primary}" "${admin_creds[@]}" "${ssl_args[@]}" --eval "rs.add('${service_name}')" | grep 'Quorum check failed'); then
-        log 'Quorum check failed, unable to join replicaset. Exiting prematurely.'
-        exit 1
+    if [[ $(mongo admin --host "${primary}" "${admin_creds[@]}" "${ssl_args[@]}" --quiet --eval "rs.conf().members.findIndex(m => m.host == '${service_name}:${port}')") == "-1" ]]; then
+      log "Adding myself (${service_name}) to replica set..."
+      if (mongo admin --host "${primary}" "${admin_creds[@]}" "${ssl_args[@]}" --eval "rs.add('${service_name}')" | grep 'Quorum check failed'); then
+          log 'Quorum check failed, unable to join replicaset. Exiting prematurely.'
+          exit 1
+      fi
     fi
 
     sleep 3
