@@ -20,6 +20,10 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
+            {{- with .Values.verbose }}
+            - name: VERBOSE
+              value: {{ . | quote }}
+            {{- end }}
             {{- if not .Values.enableLogspout }}
             - name: LOGSPOUT
               value: "ignore"
