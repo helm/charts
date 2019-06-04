@@ -13,6 +13,11 @@ image:
 service:
   type: ClusterIP
 
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName:
+
 ## Persist data to a persistent volume
 persistence:
   enabled: true
