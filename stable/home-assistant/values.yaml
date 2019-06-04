@@ -164,9 +164,11 @@ monitoring:
     # Set how frequently Prometheus should scrape
     # interval: 30s
     # Set path to beats-exporter telemtery-path
-    # telemetryPath: /metrics
+    # telemetryPath: /api/prometheus
     # Set labels for the ServiceMonitor, use this to define your scrape label for Prometheus Operator
     # labels:
+    # Set bearerTokenFile, this file should be loaded in the Prometheus Operator using the prometheusSpec.secrets config
+    # bearerTokenFile: /etc/prometheus/secrets/prometheus-hass-token/hass-token.txt
 
 vscode:
   enabled: false
