@@ -75,6 +75,8 @@ The following table lists the configurable parameters of the Vault chart and the
 | `labels`                          | Extra labels for deployment              | `{}`                                |
 | `ingress.labels`                  | Labels for ingress                       | `{}`                                |
 | `podAnnotations`                  | Annotations for pods                     | `{}`                                |
+| `priorityClassName`               | Priority class name for pods             | `""`                                |
+| `minReadySeconds`                 | Minimum number of seconds that newly created replicas must be ready without any containers crashing | `0`                                |
 | `podLabels`                       | Extra labels for pods                    | `{}`                                |
 | `serviceAccount.create`           | Specifies whether a ServiceAccount should be created | `false`                 |
 | `consulAgent.join`                | If set, start start a consul agent       | `nil`                               |
