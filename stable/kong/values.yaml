@@ -229,7 +229,7 @@ enterprise:
     # The key value must be a secret configuration, following the example at https://docs.konghq.com/enterprise/0.35-x/kong-manager/authentication/sessions/
     session_conf_secret: you-must-create-an-rbac-session-conf-secret
     # Set to the appropriate plugin config JSON if not using basic-auth
-    #admin_gui_auth_conf: ''
+    # admin_gui_auth_conf: ''
   smtp:
     enabled: false
     portal_emails_from: none@example.com
@@ -239,13 +239,13 @@ enterprise:
     smtp_admin_emails: none@example.com
     smtp_host: smtp.example.com
     smtp_port: 587
-    smtp_starttls: on
+    smtp_starttls: true
     auth:
       # If your SMTP server does not require authentication, this section can
       # be left as-is. If smtp_username is set to anything other than an empty
       # string, you must create a Secret with an smtp_password key containing
       # your SMTP password and specify its name here.
-      smtp_username: '' # e.g. postmaster@example.com
+      smtp_username: ''  # e.g. postmaster@example.com
       smtp_password_secret: you-must-create-an-smtp-password
 
 # Set runMigrations to run Kong migrations
