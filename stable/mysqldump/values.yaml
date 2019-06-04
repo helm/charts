@@ -10,7 +10,7 @@ image:
 mysql:
 ## Without a host set, this chart will not do anything as it is expected
 ## to be used only when there's an existing database to backup.
-  host:
+  host: ""
   username: root
   password:
   port: 3306
@@ -57,7 +57,6 @@ persistence:
   enabled: true
   size: 8Gi
   accessMode: ReadWriteOnce
-  reclaimPolicy: delete
   subPath:
   ## If defined, storageClassName: <storageClass>
   ## If set to "-", storageClassName: "", which disables dynamic provisioning
