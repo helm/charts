@@ -8,7 +8,6 @@ metadata:
     chart: {{ template "kured.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-
 spec:
   updateStrategy:
     type: {{ .Values.updateStrategy }}
@@ -38,6 +37,9 @@ spec:
       {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName }}
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}
