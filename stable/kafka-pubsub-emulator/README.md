@@ -22,7 +22,7 @@ This chart will create:
 ### Installation
 
 ```shell
-helm install --name emulator stable/kafka-pubsub-emulator<Paste>
+helm install --name emulator stable/kafka-pubsub-emulator
 ```
 
 ### Configuration
