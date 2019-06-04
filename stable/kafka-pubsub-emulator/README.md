@@ -17,7 +17,9 @@ This chart will create:
 
 3. A [ConfigMap](https://kubernetes.io/docs/tutorials/configuration/) that holds the Server configuration for the Pub/Sub Emulator for Kafka that will be mounted by the Pods in the StatefulSet above
 
-4. A [PersistentVolume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) that holds the projects layout (topics and subscriptions) configuration used by the Pub/Sub Emulator for Kafka. 
+4. A [PersistentVolume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) that holds the projects layout (topics and subscriptions) configuration used by the Pub/Sub Emulator for Kafka
+
+4. A [Kafka](https://github.com/helm/charts/tree/master/incubator/kafka) cluster (optional, enabled by default)
 
 ### Installation
 
@@ -26,17 +28,6 @@ helm install --name emulator stable/kafka-pubsub-emulator
 ```
 
 ### Configuration
-
-You can provide the configuration of the Pub/Sub Emulator for Kafka using the `emulatorConfig` key in `values.yaml`. Refer to the [Configuration Options](https://github.com/GoogleCloudPlatform/kafka-pubsub-emulator#configuration-options) section in the original repository for details.
-
-You will need to specify at least your Kafka Bootstrap Servers, for example:
-
-```shell
-helm install --name emulator \
-    --set server.kafka.bootstrapServers[0]='kafka1:9092' \
-    --set server.kafka.bootstrapServers[1]='kafka2:9092' \
-    --set server.kafka.bootstrapServers[2]='kafka3:9092' \
-```
 
 |Parameter|Description|Default|
 | - | - | - |
@@ -50,11 +41,19 @@ helm install --name emulator \
 | `ingress.path` | Path within the url structure | `/`
 | `ingress.tls ` | TLS configuration | `[]`
 | `livenessProbe.tcpSocket.port`| Liveness probe target port | `8080`
-| `livenessProbe.initialDelaySeconds`| Liveness probe initial delay | `5`
+| `kafka.enabled`| Define wether to install a Kafka cluster as part of the
+release | `true`
 | `readinessProbe.tcpSocket.port`| readiness probe target port | `8080`
 | `readinessProbe.initialDelaySeconds`| readiness probe initial delay | `5`
 | `server.port` | Port for the Emulator to listen on | `8080`
-| `server.kafka.bootstrapServers` | Kafka bootstrap servers | `[]`
+| `server.kafka.bootstrapServers` | Kafka bootstrap servers, if empty and
+`kafka.enabled` is true it will be generated based on release name | `""`
+| `server.kafka.consumerProperties.maxPollRecords` | `max.poll.records` value for each consumer | `1000`
+| `server.kafka.consumersPerSubscription` | Number of consumers per subscription | `4`
+| `server.kafka.producerExecutors` | Number of Kafka producer executors | `4`
+| `server.kafka.producerProperties.lingerMs` | `linger.ms` value for each producer | `200`
+| `server.kafka.producerProperties.batchSize` | `batch.size` value for each producer | `1000`
+| `server.kafka.producerProperties.bufferMemory` | `buffer.memory` value for each producer | `32000000`
 | `pubsub.projects` | Initial PubSub projects configuration | [Default PubSub Configuration](#markdown-header-default-pubsub-configuration)
 
 #### Default PubSub Configuration

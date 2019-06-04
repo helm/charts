@@ -9,5 +9,20 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 data:
-  config.json: |
-{{ toPrettyJson .Values.server | indent 4 }}
+  config.json: |-
+    {
+      "port": {{ .Values.server.port }},
+      "kafka": {
+        "bootstrapServers": {{ template "kafka-pubsub-emulator.bootstrapServers" . }},
+        "producerExecutors": {{ .Values.server.kafka.producerExecutors }},
+        "producerProperties": {
+          "linger.ms": {{ .Values.server.kafka.producerProperties.lingerMs }},
+          "batch.size": {{ .Values.server.kafka.producerProperties.batchSize }},
+          "buffer.memory": {{ .Values.server.kafka.producerProperties.bufferMemory }}
+        },
+        "consumerProperties": {
+          "max.poll.records": {{ .Values.server.kafka.consumerProperties.maxPollRecords }}
+        },
+        "consumersPerSubscription": {{ .Values.server.kafka.consumersPerSubscription }}
+      }
+    }

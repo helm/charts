@@ -9,6 +9,7 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.replicaCount }}
+  serviceName: {{ include "kafka-pubsub-emulator.fullname" . }}
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "kafka-pubsub-emulator.name" . }}

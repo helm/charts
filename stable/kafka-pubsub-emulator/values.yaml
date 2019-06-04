@@ -58,19 +58,30 @@ tolerations: []
 affinity: {}
 
 #
+# Kafka Cluster
+#
+kafka:
+  # Define whether a kafka cluster should be installed as part of this release
+  enabled: true
+
+#
 # Kafka Pub/Sub Emulator Server configuration
 #
 server:
   port: 8080
   kafka:
-    bootstrapServers: []
+    # if empty and kafka.enabled is true then bootstrapServers will be
+    # generated based on the release name
+    bootstrapServers:
     producerExecutors: 4
     producerProperties:
-      linger.ms: 200
-      batch.size: 10000
-      buffer.memory: 32000000
+      lingerMs: 200
+      batchSize: 10000
+      # note: we're passing large numbers as string because of:
+      # https://github.com/helm/helm/issues/1707
+      bufferMemory: "32000000"
     consumerProperties:
-      max.poll.records: 1000
+      maxPollRecords: 1000
     consumersPerSubscription: 4
 
 #
