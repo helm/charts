@@ -37,6 +37,17 @@ service:
       protocol: TCP
       containerPort: 24220
 
+metrics:
+  enabled: false
+  service:
+    port: 24231
+  serviceMonitor:
+    enabled: false
+    additionalLabels: {}
+    # namespace: monitoring
+    # interval: 30s
+    # scrapeTimeout: 10s
+
 annotations: {}
 #  prometheus.io/scrape: "true"
 #  prometheus.io/port: "24231"
