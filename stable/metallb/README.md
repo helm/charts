@@ -87,6 +87,8 @@ By default, this chart does not install a configuration for MetalLB, and simply
 warns you that you must follow [the configuration instructions on MetalLB's
 website][metallb-config] to create an appropriate ConfigMap.
 
+**Please note:** By default, this chart expects a ConfigMap named 'metallb-config' within the same namespace as the chart is deployed. _This is different than the MetalLB documentation_, which asks you to create a ConfigMap in the `metallb-system` namespace, with the name of 'config'.
+
 If you have a more complex configuration and want Helm to manage it for you, you
 can provide it in the `config` parameter. The configuration format is
 [documented on MetalLB's website][metallb-config].
