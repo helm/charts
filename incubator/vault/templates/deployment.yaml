@@ -62,8 +62,8 @@ spec:
               {{- if .Values.vault.liveness.aliveIfSealed -}}sealedcode=204&{{- end }}
             port: {{ .Values.service.port }}
             scheme: {{ if .Values.vault.config.listener.tcp.tls_disable -}}HTTP{{- else -}}HTTPS{{- end }}
-            initialDelaySeconds: {{ .Values.vault.liveness.initialDelaySeconds }}
-            periodSeconds: {{ .Values.vault.liveness.periodSeconds }}
+          initialDelaySeconds: {{ .Values.vault.liveness.initialDelaySeconds }}
+          periodSeconds: {{ .Values.vault.liveness.periodSeconds }}
         readinessProbe:
           # Ready depends on preference
           httpGet:
@@ -73,8 +73,8 @@ spec:
               {{- if .Values.vault.readiness.readyIfUninitialized -}}uninitcode=204&{{- end }}
             port: {{ .Values.service.port }}
             scheme: {{ if .Values.vault.config.listener.tcp.tls_disable -}}HTTP{{- else -}}HTTPS{{- end }}
-            initialDelaySeconds: {{ .Values.vault.readiness.initialDelaySeconds }}
-            periodSeconds: {{ .Values.vault.readiness.periodSeconds }}
+          initialDelaySeconds: {{ .Values.vault.readiness.initialDelaySeconds }}
+          periodSeconds: {{ .Values.vault.readiness.periodSeconds }}
         securityContext:
           readOnlyRootFilesystem: true
           capabilities:
