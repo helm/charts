@@ -9,6 +9,7 @@ metadata:
     release: "{{ .Release.Name }}"
   annotations:
     "helm.sh/hook": test-success
+    "helm.sh/hook-delete-policy": "before-hook-creation,hook-succeeded"
 spec:
   serviceAccountName: {{ template "grafana.serviceAccountNameTest" . }}
   initContainers:
