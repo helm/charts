@@ -92,7 +92,7 @@ Parameter | Description | Default
 `metrics.serviceMonitor.additionalLabels` | Additional labels that can be used so ServiceMonitor will be discovered by Prometheus | `{}`
 `schedules` | A dict of schedules | `{}`
 `restic.podVolumePath` | Location of pod volumes on the host | `/var/lib/kubelet/pods`
-
+`restic.privileged` | Whether restic should run as a privileged pod. Only necessary in special cases (SELinux) | `false`
 
 ## How to
 ```
