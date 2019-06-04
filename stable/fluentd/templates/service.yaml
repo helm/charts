@@ -19,6 +19,12 @@ spec:
   {{ if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nodePort))) }}
       nodePort: {{ .Values.service.nodePort }}
   {{ end }}
+  {{- if .Values.metrics.enabled }}
+    - name: metrics
+      port: {{ .Values.metrics.service.port }}
+      targetPort: metrics
+      protocol: TCP
+  {{- end }}
   selector:
     app: {{ template "fluentd.name" . }}
     release: {{ .Release.Name }}
