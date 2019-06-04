@@ -54,6 +54,11 @@ spec:
               mountPath: /var/db/cerebro
             - name: config
               mountPath: /etc/cerebro
+          {{- if .Values.envFromSecretRef }}
+          envFrom:
+            - secretRef:
+                name: "{{ .Values.envFromSecretRef }}"
+          {{- end }}
           livenessProbe:
             httpGet:
               path: /
