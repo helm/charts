@@ -139,10 +139,11 @@ extraVolumeMounts: []
   #   readOnly: true
 extraSecrets: []
   # - name: ca-cert
-  #   data: |-
-  #     -----BEGIN CERTIFICATE-----
-  #     ...
-  #     -----END CERTIFICATE-----
+  #   data:
+  #     ca.pem: |-
+  #       -----BEGIN CERTIFICATE-----
+  #       ...
+  #       -----END CERTIFICATE-----
   # - name: userdata
   #   data:
   #     id: userid
