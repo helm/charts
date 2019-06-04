@@ -28,6 +28,7 @@ aws:
   # Filter for zones of this type (optional, options: public, private)
   zoneType: ""
   assumeRoleArn: ""
+  batchChangeSize: ""
 
 azure:
 # If you don't specify a secret to load azure.json from, you will get the host's /etc/kubernetes/azure.json
