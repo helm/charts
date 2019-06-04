@@ -66,6 +66,11 @@ spec:
             containerPort: {{ $port.containerPort }}
             protocol: {{ $port.protocol }}
 {{- end }}
+{{- if .Values.metrics.enabled }}
+          - name: metrics
+            containerPort: {{ .Values.metrics.service.port }}
+            protocol: TCP
+{{- end }}
           - name: http-input
             containerPort: 9880
             protocol: TCP
