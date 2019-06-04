@@ -12,3 +12,18 @@ data:
   {{ $key }}: |-
 {{ $value | indent 4 }}
 {{- end }}
+{{- if .Values.metrics.enabled }}
+  metrics.conf: |
+    <source>
+      @type prometheus
+      port {{ .Values.metrics.service.port }}
+    </source>
+
+    <source>
+      @type prometheus_monitor
+    </source>
+
+    <source>
+      @type prometheus_output_monitor
+    </source>
+{{- end }}

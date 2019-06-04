@@ -7,7 +7,7 @@ strategyType: Recreate
 
 image:
   repository: nodered/node-red-docker
-  tag: 0.19.6-v8
+  tag: 0.20.5-slim-v8
   pullPolicy: IfNotPresent
 
 nameOverride: ""
