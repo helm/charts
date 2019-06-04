@@ -16,7 +16,11 @@ spec:
       http:
         paths:
           - backend:
+            {{- if .Values.nexusProxy.svcName }}
+              serviceName: {{ .Values.nexusProxy.svcName }}
+            {{- else }}
               serviceName: {{ template "nexus.fullname" . }}
+            {{- end }}
               servicePort: {{ .Values.nexusProxy.port }}
             path: {{ .Values.ingress.path }}
   {{- end }}
@@ -25,7 +29,11 @@ spec:
       http:
         paths:
           - backend:
+            {{- if .Values.nexusProxy.svcName }}
+              serviceName: {{ .Values.nexusProxy.svcName }}
+            {{- else }}
               serviceName: {{ template "nexus.fullname" . }}
+            {{- end }}
               servicePort: {{ .Values.nexusProxy.port }}
             path: {{ .Values.ingress.path }}
   {{- end }}
