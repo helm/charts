@@ -125,6 +125,8 @@ extraInitContainers: []
   #     - echo
   #     - hello
 
+podManagementPolicy: OrderedReady
+ # can be OrderReady or Parallel
 livenessProbe:
   httpGet:
     path: /
