@@ -8,7 +8,7 @@ Pipelines consist of [Spring Boot](http://projects.spring.io/spring-boot/) apps,
 This chart will provision a fully functional and fully featured Spring Cloud Data Flow installation
 that can deploy and manage data processing pipelines in the cluster that it is deployed to.
 
-MySQL is used as the data store for Spring Cloud Data Flow state and either RabbitMQ or Kafka is used as the messaging layer for streaming apps to communicate with one another.
+Either the default MySQL deployment or an external database can be used as the data store for Spring Cloud Data Flow state and either RabbitMQ or Kafka can be used as the messaging layer for streaming apps to communicate with one another.
 
 For more information on Spring Cloud Data Flow and its capabilities, see it's [documentation](http://docs.spring.io/spring-cloud-dataflow/docs/current/reference/htmlsingle/).
 
@@ -30,7 +30,26 @@ If you are using a cluster that does not have a load balancer (like Minikube) th
 $ helm install --name my-release --set server.service.type=NodePort stable/spring-cloud-data-flow
 ```
 
-RabbitMQ is the default messaging layer, Kafka can be enabled instead by using the following `set` flags to the `helm` command, for example:
+### Data Store
+
+By default, MySQL is deployed with this chart. However, if you wish to use an external database, please use the following `set` flags to the `helm` command to disable MySQL deployment, for example:
+
+`--set mysql.enabled=false`
+
+In addition, you are required to set all fields listed in [External Database Configuration](#external-database-configuration).
+
+### Messaging Layer
+
+There are three messaging layers available in this chart:
+- RabbitMQ (default)
+- RabbitMQ HA
+- Kafka
+
+To change the messaging layer to a highly available (HA) version of RabbitMQ, use the following `set` flags to the `helm` command, for example:
+
+`--set rabbitmq-ha.enabled=true,rabbitmq.enabled=false`
+
+Alternatively, to change the messaging layer to Kafka, use the following `set` flags to the `helm` command, for example:
 
 `--set kafka.enabled=true,rabbitmq.enabled=false`
 
@@ -90,6 +109,13 @@ The following tables list the configurable parameters and their default values.
 | rabbitmq.enabled           | Enable RabbitMQ as the middleware to use | true
 | rabbitmq.rabbitmqUsername  | RabbitMQ user name                       | user
 
+### RabbitMQ HA Configuration
+
+| Parameter                     | Description                                 | Default                   |
+| ----------------------------- | ------------------------------------------- | ------------------------- |
+| rabbitmq-ha.enabled           | Enable RabbitMQ HA as the middleware to use | false
+| rabbitmq-ha.rabbitmqUsername  | RabbitMQ user name                          | user
+
 ### Kafka Configuration
 
 | Parameter                    | Description                               | Default                                     |
@@ -101,6 +127,19 @@ The following tables list the configurable parameters and their default values.
 
 ### MySQL Configuration
 
-| Parameter                  | Description           | Default                   |
-| -------------------------- | --------------------- | ------------------------- |
-| mysql.mysqlDatabase        | MySQL database name   | dataflow
+| Parameter                  | Description                  | Default                   |
+| -------------------------- | ---------------------------- | ------------------------- |
+| mysql.enabled              | Enable deployment of MySQL   | true
+| mysql.mysqlDatabase        | MySQL database name          | dataflow
+
+### External Database Configuration
+
+| Parameter           | Description                    | Default                   |
+| ------------------- | ------------------------------ | ------------------------- |
+| database.driver     | Database driver                | nil
+| database.host       | Database host                  | nil
+| database.port       | Database port                  | nil
+| database.user       | Database user                  | scdf
+| database.password   | Database password              | nil
+| database.dataflow   | Database name for SCDF server  | dataflow
+| database.skipper    | Database name for SCDF skipper | skipper

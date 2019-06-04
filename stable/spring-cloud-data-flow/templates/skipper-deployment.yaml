@@ -27,13 +27,13 @@ spec:
         image: {{ .Values.skipper.image }}:{{ .Values.skipper.version }}
         imagePullPolicy: {{ .Values.skipper.imagePullPolicy }}
         volumeMounts:
-          {{- if .Values.rabbitmq.enabled}}
+          {{- if or .Values.rabbitmq.enabled (index .Values "rabbitmq-ha" "enabled") }}
           - name: rabbitmq
             mountPath: /etc/secrets/rabbitmq
             readOnly: true
           {{- end}}
-          - name: mysql
-            mountPath: /etc/secrets/mysql
+          - name: database
+            mountPath: /etc/secrets/database
             readOnly: true
         ports:
         - containerPort: 7577
@@ -67,27 +67,40 @@ spec:
           value: /etc/secrets
         - name: SPRING_CLOUD_KUBERNETES_CONFIG_NAME
           value: {{ template "scdf.fullname" . }}-skipper
-        {{- if .Values.rabbitmq.enabled}}
+        {{- if or .Values.rabbitmq.enabled (index .Values "rabbitmq-ha" "enabled") }}
         - name: RABBITMQ_PASSWORD
           valueFrom:
             secretKeyRef:
+              {{- if index .Values "rabbitmq-ha" "enabled" }}
+              name: {{ printf "%s-%s" .Release.Name "rabbitmq-ha" | trunc 63 | trimSuffix "-" }}
+              {{- else }}
               name: {{ printf "%s-%s" .Release.Name "rabbitmq" | trunc 63 | trimSuffix "-" }}
+              {{- end }}
               key: rabbitmq-password
-        {{- end}}
+        {{- end }}
       volumes:
-        {{- if .Values.rabbitmq.enabled}}
+        {{- if or .Values.rabbitmq.enabled (index .Values "rabbitmq-ha" "enabled") }}
         - name: rabbitmq
           secret:
+            {{- if index .Values "rabbitmq-ha" "enabled" }}
+            secretName: {{ printf "%s-%s" .Release.Name "rabbitmq-ha" | trunc 63 | trimSuffix "-" }}
+            {{- else }}
             secretName: {{ printf "%s-%s" .Release.Name "rabbitmq" | trunc 63 | trimSuffix "-" }}
-        {{- end}}
-        - name: mysql
+            {{- end }}
+        {{- end }}
+        - name: database
           secret:
+            {{- if .Values.mysql.enabled }}
             secretName: {{ printf "%s-%s" .Release.Name "mysql" | trunc 63 | trimSuffix "-" }}
+            {{- else }}
+            secretName: {{ printf "%s-%s" .Release.Name "database" | trunc 63 | trimSuffix "-" }}
+            {{- end }}
       initContainers:
-      - name: init-mysql-wait
-        image: {{ .Values.mysql.busybox.image }}:{{ .Values.mysql.busybox.tag }}
-        imagePullPolicy: {{ .Values.mysql.imagePullPolicy }}
-        command: ['sh', '-c', 'until nc -w3 -z {{ printf "%s-%s" .Release.Name "mysql" | trunc 63 | trimSuffix "-" }} 3306; do echo waiting for mysql; sleep 3; done;']
+      - name: init-db-wait
+        image: {{ .Values.initContainers.dbWait.image }}:{{ .Values.initContainers.dbWait.tag }}
+        imagePullPolicy: {{ .Values.initContainers.dbWait.imagePullPolicy }}
+        command: ['sh', '-c', 'until nc -w3 -z {{ template "scdf.database.host" . }} {{ template "scdf.database.port" . }}; do echo waiting for database; sleep 3; done;']
+      {{- if .Values.mysql.enabled }}
       - name: init-mysql-database
         image: {{ .Values.mysql.image }}:{{ .Values.mysql.imageTag }}
         imagePullPolicy: {{ .Values.mysql.imagePullPolicy }}
@@ -97,5 +110,9 @@ spec:
             secretKeyRef:
               name: {{ printf "%s-%s" .Release.Name "mysql" | trunc 63 | trimSuffix "-" }}
               key: mysql-root-password
-        command: ['sh', '-c', 'mysql -h {{ printf "%s-%s" .Release.Name "mysql" | trunc 63 | trimSuffix "-" }} -u root -e "CREATE DATABASE IF NOT EXISTS skipper;"']
+        command: 
+        - 'sh'
+        - '-c'
+        - 'mysql -h {{ template "scdf.database.host" . }} -P {{ template "scdf.database.port" . }} -u root -e "CREATE DATABASE IF NOT EXISTS {{ template "scdf.database.skipper" . }};"'
+      {{- end }}
       serviceAccountName: {{ template "scdf.serviceAccountName" . }}
