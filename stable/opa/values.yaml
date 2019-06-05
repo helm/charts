@@ -24,6 +24,11 @@ admissionControllerKind: ValidatingWebhookConfiguration
 # recommend leaving the failure policy as Ignore.
 admissionControllerFailurePolicy: Ignore
 
+# Adds a namespace selector to the admission controller webhook
+admissionControllerNamespaceSelector:
+  matchExpressions:
+    - {key: openpolicyagent.org/webhook, operator: NotIn, values: [ignore]}
+
 # To restrict the kinds of operations and resources that are subject to OPA
 # policy checks, see the settings below. By default, all resources and
 # operations are subject to OPA policy checks.
