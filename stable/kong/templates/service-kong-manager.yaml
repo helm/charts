@@ -1,0 +1,57 @@
+{{- if .Values.enterprise.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "kong.fullname" . }}-manager
+  annotations:
+    {{- range $key, $value := .Values.manager.annotations }}
+      {{ $key }}: {{ $value | quote }}
+    {{- end }}
+  labels:
+    app: {{ template "kong.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  type: {{ .Values.manager.type }}
+  {{- if eq .Values.manager.type "LoadBalancer" }}
+  {{- if .Values.manager.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.manager.loadBalancerIP }}
+  {{- end }}
+  {{- if .Values.manager.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+  {{- range $cidr := .Values.manager.loadBalancerSourceRanges }}
+  - {{ $cidr }}
+  {{- end }}
+  {{- end }}
+  {{- end }}
+  externalIPs:
+  {{- range $ip := .Values.manager.externalIPs }}
+  - {{ $ip }}
+  {{- end }}
+  ports:
+  {{- if .Values.manager.http.enabled }}
+  - name: kong-manager
+    port: {{ .Values.manager.http.servicePort }}
+    targetPort: {{ .Values.manager.http.containerPort }}
+  {{- if (and (eq .Values.manager.type "NodePort") (not (empty .Values.manager.http.nodePort))) }}
+    nodePort: {{ .Values.manager.http.nodePort }}
+  {{- end }}
+    protocol: TCP
+  {{- end }}
+  {{- if or .Values.manager.tls.enabled }}
+  - name: kong-manager-tls
+    port: {{ .Values.manager.tls.servicePort }}
+    targetPort: {{ .Values.manager.tls.containerPort }}
+  {{- if (and (eq .Values.manager.type "NodePort") (not (empty .Values.manager.tls.nodePort))) }}
+    nodePort: {{ .Values.manager.tls.nodePort }}
+  {{- end }}
+    protocol: TCP
+  {{- end }}
+
+
+  selector:
+    app: {{ template "kong.name" . }}
+    release: {{ .Release.Name }}
+    component: app
+{{- end -}}
