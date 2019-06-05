@@ -20,7 +20,7 @@
 {{- else if contains "ClusterIP" .Values.service.type }}
   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ include "kafka-pubsub-emulator.name" . }},app.kubernetes.io/instance={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
   export PUBSUB_EMULATOR_HOST=127.0.0.1:8080
-  kubectl port-forward $POD_NAME 8080:80
+  kubectl port-forward $POD_NAME -- 8080:{{ .Values.server.port }}
 
 2. Google Pub/Sub Client libraries will automatically use the address in
 the PUBSUB_EMULATOR_HOST environment variable.
