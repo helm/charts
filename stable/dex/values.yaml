@@ -4,12 +4,20 @@
 # name: value
 
 image: quay.io/dexidp/dex
-imageTag: "v2.11.0"
+imageTag: "v2.16.0"
 imagePullPolicy: "IfNotPresent"
 
 inMiniKube: false
 
 nodeSelector: {}
+
+tolerations: []
+  # - key: CriticalAddonsOnly
+  #   operator: Exists
+  # - key: foo
+  #   operator: Equal
+  #   value: bar
+  #   effect: NoSchedule
 
 replicas: 1
 
@@ -32,6 +40,7 @@ ports:
 
 service:
   type: ClusterIP
+  port: 8080
   annotations: {}
 
 ingress:
@@ -51,6 +60,10 @@ extraVolumes: []
 extraVolumeMounts: []
 
 certs:
+  securityContext:
+    enabled: true
+    runAsUser: 65534
+    fsGroup: 65534
   image: gcr.io/google_containers/kubernetes-dashboard-init-amd64
   imageTag: "v1.0.0"
   imagePullPolicy: "IfNotPresent"
@@ -88,6 +101,20 @@ serviceAccount:
   # The name of the ServiceAccount to use.
   # If not set and create is true, a name is generated using the fullname template
   name:
+
+affinity: {}
+  # podAntiAffinity:
+  #   preferredDuringSchedulingIgnoredDuringExecution:
+  #   - weight: 5
+  #     podAffinityTerm:
+  #       topologyKey: "kubernetes.io/hostname"
+  #       labelSelector:
+  #         matchLabels:
+  #           app: {{ template "dex.name" . }}
+  #           release: "{{ .Release.Name }}"
+
+podDisruptionBudget: {}
+  # maxUnavailable: 1
 
 config:
   issuer: http://dex.io:8080

@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "prometheus-rabbitmq-exporter.fullname" . }}
@@ -40,20 +40,42 @@ spec:
               value: "{{ .Values.rabbitmq.capabilities }}"
             - name: INCLUDE_QUEUES
               value: "{{ .Values.rabbitmq.include_queues }}"
+            - name: INCLUDE_VHOST
+              value: "{{ .Values.rabbitmq.include_vhost }}"
             - name: SKIP_QUEUES
               value: "{{ .Values.rabbitmq.skip_queues }}"
+            - name: SKIPVERIFY
+              value: "{{ .Values.rabbitmq.skip_verify }}"
+            - name: SKIP_VHOST
+              value: "{{ .Values.rabbitmq.skip_vhost }}"
+            - name: RABBIT_EXPORTERS
+              value: "{{ .Values.rabbitmq.exporters }}"
+            - name: OUTPUT_FORMAT
+              value: "{{ .Values.rabbitmq.output_format }}"
+            - name: RABBIT_TIMEOUT
+              value: "{{ .Values.rabbitmq.timeout }}"
+            - name: MAX_QUEUES
+              value: "{{ .Values.rabbitmq.max_queues }}"
           ports:
             - containerPort: {{ .Values.service.internalPort }}
+              name: publish
           livenessProbe:
             httpGet:
               path: /
-              port: {{ .Values.service.internalPort }}
+              port: publish
           readinessProbe:
             httpGet:
               path: /
-              port: {{ .Values.service.internalPort }}
+              port: publish
           resources:
 {{ toYaml .Values.resources | indent 12 }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["all"]
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 10002
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

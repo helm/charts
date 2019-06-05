@@ -1,34 +1,34 @@
 Inbucket can be accessed via ports {{ .Values.service.port.http }} (HTTP) and {{ .Values.service.port.smtp }} (SMTP) on the following DNS name from within your cluster:
-{{ template "inbucket.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+{{ include "inbucket.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
 
 If you'd like to test your instance, forward the ports locally:
 
 Web UI:
 =======
 
-export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "inbucket.name" . }},release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
+export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ include "inbucket.name" . }},release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
 kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME {{ .Values.service.port.http }}
 
 or
 
-kubectl port-forward --namespace {{ .Release.Namespace }} service/{{ template "inbucket.fullname" . }} {{ .Values.service.port.http }}
+kubectl port-forward --namespace {{ .Release.Namespace }} service/{{ include "inbucket.fullname" . }} {{ .Values.service.port.http }}
 
 SMTP Server:
 ============
 
-export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "inbucket.name" . }},release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
+export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ include "inbucket.name" . }},release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
 kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME {{ .Values.service.port.smtp }}
 
 or
 
-kubectl port-forward --namespace {{ .Release.Namespace }} service/{{ template "inbucket.fullname" . }} {{ .Values.service.port.smtp }}
+kubectl port-forward --namespace {{ .Release.Namespace }} service/{{ include "inbucket.fullname" . }} {{ .Values.service.port.smtp }}
 
 POP3 Server:
 ============
 
-export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "inbucket.name" . }},release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
+export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ include "inbucket.name" . }},release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
 kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME {{ .Values.service.port.pop3 }}
 
 or
 
-kubectl port-forward --namespace {{ .Release.Namespace }} service/{{ template "inbucket.fullname" . }} {{ .Values.service.port.pop3 }}
+kubectl port-forward --namespace {{ .Release.Namespace }} service/{{ include "inbucket.fullname" . }} {{ .Values.service.port.pop3 }}

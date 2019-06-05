@@ -1,0 +1,15 @@
+{{- if .Values.clusterAgent.confd }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "datadog.fullname" . }}-cluster-agent-confd
+  labels:
+    app: "{{ template "datadog.fullname" . }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+  annotations:
+    checksum/confd-config: {{ tpl (toYaml .Values.clusterAgent.confd) . | sha256sum }}
+data:
+{{ tpl (toYaml .Values.clusterAgent.confd) . | indent 2 }}
+{{- end -}}

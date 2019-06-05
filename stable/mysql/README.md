@@ -46,8 +46,13 @@ The following table lists the configurable parameters of the MySQL chart and the
 
 | Parameter                                    | Description                                                                                  | Default                                              |
 | -------------------------------------------- | -------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| `initContainer.resources`                    | initContainer resource requests/limits                                                       | Memory: `10Mi`, CPU: `10m`                           |
 | `image`                                      | `mysql` image repository.                                                                    | `mysql`                                              |
 | `imageTag`                                   | `mysql` image tag.                                                                           | `5.7.14`                                             |
+| `busybox.image`                              | `busybox` image repository.                                                                  | `busybox`                                            |
+| `busybox.tag`                                | `busybox` image tag.                                                                         | `1.29.3`                                             |
+| `testFramework.image`                        | `test-framework` image repository.                                                           | `dduportal/bats`                                     |
+| `testFramework.tag`                          | `test-framework` image tag.                                                                  | `0.4.0`                                              |
 | `imagePullPolicy`                            | Image pull policy                                                                            | `IfNotPresent`                                       |
 | `existingSecret`                             | Use Existing secret for Password details                                                     | `nil`                                                |
 | `extraVolumes`                               | Additional volumes as a string to be passed to the `tpl` function                            |                                                      |
@@ -67,14 +72,16 @@ The following table lists the configurable parameters of the MySQL chart and the
 | `readinessProbe.timeoutSeconds`              | When the probe times out                                                                     | 1                                                    |
 | `readinessProbe.successThreshold`            | Minimum consecutive successes for the probe to be considered successful after having failed. | 1                                                    |
 | `readinessProbe.failureThreshold`            | Minimum consecutive failures for the probe to be considered failed after having succeeded.   | 3                                                    |
+| `schedulerName`                              | Name of the k8s scheduler (other than default)                                               | `nil`                                                |
 | `persistence.enabled`                        | Create a volume to store data                                                                | true                                                 |
 | `persistence.size`                           | Size of persistent volume claim                                                              | 8Gi RW                                               |
-| `persistence.storageClass`                   | Type of persistent volume claim                                                              | nil  (uses alpha storage class annotation)           |
+| `persistence.storageClass`                   | Type of persistent volume claim                                                              | nil                                                  |
 | `persistence.accessMode`                     | ReadWriteOnce or ReadOnly                                                                    | ReadWriteOnce                                        |
 | `persistence.existingClaim`                  | Name of existing persistent volume                                                           | `nil`                                                |
 | `persistence.subPath`                        | Subdirectory of the volume to mount                                                          | `nil`                                                |
-| `persistence.annotations`                    | Persistent Volume annotations                             				      | {}						     |
+| `persistence.annotations`                    | Persistent Volume annotations                                                                | {}                                                   |
 | `nodeSelector`                               | Node labels for pod assignment                                                               | {}                                                   |
+| `tolerations`                                | Pod taint tolerations for deployment                                                         | {}                                                   |
 | `metrics.enabled`                            | Start a side-car prometheus exporter                                                         | `false`                                              |
 | `metrics.image`                              | Exporter image                                                                               | `prom/mysqld-exporter`                               |
 | `metrics.imageTag`                           | Exporter image                                                                               | `v0.10.0`                                            |
@@ -84,8 +91,17 @@ The following table lists the configurable parameters of the MySQL chart and the
 | `metrics.livenessProbe.timeoutSeconds`       | When the probe times out                                                                     | 5                                                    |
 | `metrics.readinessProbe.initialDelaySeconds` | Delay before metrics readiness probe is initiated                                            | 5                                                    |
 | `metrics.readinessProbe.timeoutSeconds`      | When the probe times out                                                                     | 1                                                    |
+| `metrics.flags`                              | Additional flags for the mysql exporter to use                                               | `[]`                                                 |
+| `metrics.serviceMonitor.enabled`             | Set this to `true` to create ServiceMonitor for Prometheus operator                          | `false`                                              |
+| `metrics.serviceMonitor.additionalLabels`    | Additional labels that can be used so ServiceMonitor will be discovered by Prometheus        | `{}`                                                 |
 | `resources`                                  | CPU/Memory resource requests/limits                                                          | Memory: `256Mi`, CPU: `100m`                         |
 | `configurationFiles`                         | List of mysql configuration files                                                            | `nil`                                                |
+| `configurationFilesPath`                     | Path of mysql configuration files                                                            | `/etc/mysql/conf.d/`                                 |
+| `securityContext.enabled`                    | Enable security context (mysql pod)                                                          | `false`                                              |
+| `securityContext.fsGroup`                    | Group ID for the container (mysql pod)                                                       | 999                                                  |
+| `securityContext.runAsUser`                  | User ID for the container (mysql pod)                                                        | 999                                                  |
+| `service.annotations`                        | Kubernetes annotations for mysql                                                             | {}                                                   |
+| `service.loadBalancerIP`                     | LoadBalancer service IP                                                                      | `""`                                                 |
 | `ssl.enabled`                                | Setup and use SSL for MySQL connections                                                      | `false`                                              |
 | `ssl.secret`                                 | Name of the secret containing the SSL certificates                                           | mysql-ssl-certs                                      |
 | `ssl.certificates[0].name`                   | Name of the secret containing the SSL certificates                                           | `nil`                                                |
@@ -96,6 +112,8 @@ The following table lists the configurable parameters of the MySQL chart and the
 | `initializationFiles`                        | List of SQL files which are run after the container started                                  | `nil`                                                |
 | `timezone`                                   | Container and mysqld timezone (TZ env)                                                       | `nil` (UTC depending on image)                       |
 | `podAnnotations`                             | Map of annotations to add to the pods                                                        | `{}`                                                 |
+| `podLabels`                                  | Map of labels to add to the pods                                                             | `{}`                                                 |
+| `priorityClassName`                          | Set pod priorityClassName                                                                    | `{}`                                                 |
 
 Some of the parameters above map to the env variables defined in the [MySQL DockerHub image](https://hub.docker.com/_/mysql/).
 
@@ -125,6 +143,8 @@ By default a PersistentVolumeClaim is created and mounted into that directory. I
 you can change the values.yaml to disable persistence and use an emptyDir instead.
 
 > *"An emptyDir volume is first created when a Pod is assigned to a Node, and exists as long as that Pod is running on that node. When a Pod is removed from a node for any reason, the data in the emptyDir is deleted forever."*
+
+**Notice**: You may need to increase the value of `livenessProbe.initialDelaySeconds` when enabling persistence by using PersistentVolumeClaim from PersistentVolume with varying properties. Since its IO performance has impact on the database initialization performance. The default limit for database initialization is `60` seconds (`livenessProbe.initialDelaySeconds` + `livenessProbe.periodSeconds` * `livenessProbe.failureThreshold`). Once such initialization process takes more time than this limit, kubelet will restart the database container, which will interrupt database initialization then causing persisent data in an unusable state.
 
 ## Custom MySQL configuration files
 

@@ -2,7 +2,7 @@
 ##
 image:
   repository: "docker.io/chronograf"
-  tag: "1.3-alpine"
+  tag: "1.7.7-alpine"
   pullPolicy: "Always"
 
 ## Specify a service type
@@ -80,3 +80,10 @@ oauth:
     client_secret: CHANGE_ME
     # This is a comma separated list of Heroku organizations (OPTIONAL)
     he_orgs: ""
+
+## Extra environment variables that will be passed onto deployment pods
+env: {}
+
+## The name of a secret in the same kubernetes namespace which contain values to be added to the environment
+## This can be useful for auth tokens, etc
+envFromSecret: ""

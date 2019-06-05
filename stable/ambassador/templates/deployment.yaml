@@ -1,0 +1,201 @@
+apiVersion: apps/v1
+{{- if .Values.daemonSet }}
+kind: DaemonSet
+{{- else }}
+kind: Deployment
+{{- end }}
+metadata:
+  name: {{ include "ambassador.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "ambassador.name" . }}
+    helm.sh/chart: {{ include "ambassador.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+{{- if not .Values.daemonSet }}
+  replicas: {{ .Values.replicaCount }}
+{{- end }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "ambassador.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "ambassador.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+      {{- if .Values.podLabels }}
+        {{- toYaml .Values.podLabels | nindent 8 }}
+      {{- end }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
+      {{- if .Values.podAnnotations }}
+        {{- toYaml .Values.podAnnotations | nindent 8 }}
+      {{- end }}
+    spec:
+      {{- with .Values.securityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "ambassador.serviceAccountName" . }}
+      volumes:
+        {{- if .Values.prometheusExporter.enabled }}
+        - name: stats-exporter-mapping-config
+          configMap:
+            name: {{ include "ambassador.fullname" . }}-exporter-config
+            items:
+            - key: exporterConfiguration
+              path: mapping-config.yaml
+        {{- end }}
+        {{- if .Values.ambassadorConfig }}
+        - name: ambassador-config
+          configMap:
+            name: {{ include "ambassador.fullname" . }}-file-config
+            items:
+            - key: ambassadorConfig
+              path: ambassador-config.yaml
+        {{- end }}
+      {{- with .Values.volumes }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.initContainers }}
+      initContainers:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        {{- if .Values.prometheusExporter.enabled }}
+        - name: prometheus-exporter
+          image: "{{ .Values.prometheusExporter.repository }}:{{ .Values.prometheusExporter.tag }}"
+          imagePullPolicy: {{ .Values.prometheusExporter.pullPolicy }}
+          ports:
+            - name: metrics
+              containerPort: 9102
+            - name: listener
+              containerPort: 8125
+          args:
+            - --statsd.listen-udp=:8125
+            - --web.listen-address=:9102
+            - --statsd.mapping-config=/statsd-exporter/mapping-config.yaml
+          volumeMounts:
+            - name: stats-exporter-mapping-config
+              mountPath: /statsd-exporter/
+              readOnly: true
+          resources:
+            {{- toYaml .Values.prometheusExporter.resources | nindent 12 }}
+        {{- end }}
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            {{- if .Values.service.http.enabled }}
+            - name: http
+              containerPort: {{ .Values.service.http.targetPort }}
+            {{- end }}
+            {{- if .Values.service.https.enabled }}
+            - name: https
+              containerPort: {{ .Values.service.https.targetPort }}
+            {{- end }}
+            - name: admin
+              containerPort: 8877
+          env:
+            - name: HOST_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            {{- if .Values.prometheusExporter.enabled }}
+            - name: STATSD_ENABLED
+              value: "true"
+            - name: STATSD_HOST
+              value: "localhost"
+            {{- end }}
+            {{- if .Values.scope.singleNamespace }}
+            - name: AMBASSADOR_SINGLE_NAMESPACE
+              value: "YES"
+            {{- end }}
+            - name: AMBASSADOR_NAMESPACE
+              {{- if .Values.namespace }}
+              value: {{ .Values.namespace.name | quote }}
+              {{ else }}
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+              {{- end -}}
+            {{- if .Values.env }}
+            {{- range $key,$value := .Values.env }}
+            - name: {{ $key | upper | quote}}
+              value: {{ $value | quote}}
+            {{- end }}
+            {{- end }}
+          livenessProbe:
+            httpGet:
+              path: /ambassador/v0/check_alive
+              port: admin
+            initialDelaySeconds: 30
+            periodSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: /ambassador/v0/check_ready
+              port: admin
+            initialDelaySeconds: 30
+            periodSeconds: 3
+          volumeMounts:
+          {{- if .Values.ambassadorConfig }}
+            - name: ambassador-config
+              mountPath: /ambassador/ambassador-config/ambassador-config.yaml
+              subPath: ambassador-config.yaml
+          {{- end }}
+          {{- with .Values.volumeMounts }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+        {{- if .Values.pro.enabled }}
+        - name: ambassador-pro
+          image: "{{ .Values.pro.image.repository }}:{{ .Values.pro.image.tag }}"
+          ports:
+          - name: grpc-auth
+            containerPort: {{ .Values.pro.ports.auth }}
+          - name: grpc-ratelimit
+            containerPort: {{ .Values.pro.ports.ratelimit }}
+          - name: http-debug
+            containerPort: {{ .Values.pro.ports.ratelimitDebug }}
+          env:
+          - name: REDIS_SOCKET_TYPE
+            value: tcp
+          - name: REDIS_URL
+            value: ambassador-pro-redis:6379
+          - name: APRO_AUTH_PORT
+            value: "{{ .Values.pro.ports.auth }}"
+          - name: GRPC_PORT
+            value: "{{ .Values.pro.ports.ratelimit }}"
+          - name: DEBUG_PORT
+            value: "{{ .Values.pro.ports.ratelimitDebug }}"
+          - name: APP_LOG_LEVEL
+            value: "{{ .Values.pro.logLevel  }}"
+          - name: AMBASSADOR_LICENSE_KEY
+          {{- if .Values.pro.licenseKey.secret }}
+            valueFrom:
+              secretKeyRef:
+                name: ambassador-pro-license-key
+                key: key
+          {{ else }}
+            value: {{ .Values.pro.licenseKey.value }}
+          {{- end }}
+        {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      imagePullSecrets:
+        {{- toYaml .Values.imagePullSecrets | nindent 8 }}
+      dnsPolicy: {{ .Values.dnsPolicy }}
+      hostNetwork: {{ .Values.hostNetwork }}
+

@@ -1,26 +1,56 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "home-assistant.fullname" . }}
   labels:
-    app: {{ template "home-assistant.name" . }}
-    chart: {{ template "home-assistant.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ include "home-assistant.name" . }}
+    helm.sh/chart: {{ include "home-assistant.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: 1
+  strategy:
+    type: {{ .Values.strategyType }}
   selector:
     matchLabels:
-      app: {{ template "home-assistant.name" . }}
-      release: {{ .Release.Name }}
+      app.kubernetes.io/name: {{ include "home-assistant.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ template "home-assistant.name" . }}
-        release: {{ .Release.Name }}
+        app.kubernetes.io/name: {{ include "home-assistant.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
+      {{- with .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range . }}
+        - name: {{ . }}
+      {{- end }}
+      {{- end }}
       {{- if .Values.hostNetwork }}
-      hostNetwork: {{ .Values.hostNetwork }} 
+      hostNetwork: {{ .Values.hostNetwork }}
+      dnsPolicy: ClusterFirstWithHostNet
+      {{- end }}
+      initContainers:
+      {{- if .Values.git.enabled }}
+      - name: git-sync
+        image: "{{ .Values.git.image.repository }}:{{ .Values.git.image.tag }}"
+        imagePullPolicy: {{ .Values.git.image.pullPolicy }}
+        command: ['sh', '-c', '[ "$(ls {{ .Values.git.syncPath }})" ] || git clone {{ .Values.git.repo }} {{ .Values.git.syncPath }}']
+        volumeMounts:
+        - mountPath: /config
+          name: config
+        - mountPath: {{ .Values.git.keyPath }}
+          name: git-secret
+        {{- if .Values.usePodSecurityContext }}
+        securityContext:
+          runAsUser: {{ default 0 .Values.runAsUser }}
+        {{- if and (.Values.runAsUser) (.Values.fsGroup) }}
+        {{- if not (eq .Values.runAsUser 0.0) }}
+          fsGroup: {{ .Values.fsGroup }}
+        {{- end }}
+        {{- end }}
+        {{- end }}
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}
@@ -49,9 +79,29 @@ spec:
             - name: {{ $key }}
               value: {{ $value }}
             {{- end }}
+            {{- range $name, $opts := .Values.extraEnvSecrets }}
+            - name: {{ $name }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $opts.secret }}
+                  key: {{ $opts.key }}
+            {{- end }}
           volumeMounts:
           - mountPath: /config
             name: config
+          {{- if .Values.git.enabled }}
+          - mountPath: {{ .Values.git.keyPath }}
+            name: git-secret
+          {{- end }}
+          {{- if .Values.usePodSecurityContext }}
+          securityContext:
+            runAsUser: {{ default 0 .Values.runAsUser }}
+          {{- if and (.Values.runAsUser) (.Values.fsGroup) }}
+          {{- if not (eq .Values.runAsUser 0.0) }}
+            fsGroup: {{ .Values.fsGroup }}
+          {{- end }}
+          {{- end }}
+          {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
         {{- if .Values.configurator.enabled }}
@@ -59,17 +109,9 @@ spec:
           image: "{{ .Values.configurator.image.repository }}:{{ .Values.configurator.image.tag }}"
           imagePullPolicy: {{ .Values.configurator.image.pullPolicy }}
           ports:
-            - name: http
+            - name: configurator
               containerPort: {{ .Values.configurator.service.port }}
               protocol: TCP
-          livenessProbe:
-            tcpSocket:
-              port: http
-              initialDelaySeconds: 30
-          readinessProbe:
-            tcpSocket:
-              port: http
-              initialDelaySeconds: 15
           env:
             {{- if .Values.configurator.hassApiPassword }}
             - name: HC_HASS_API_PASSWORD
@@ -95,7 +137,7 @@ spec:
               value: "{{ .Values.configurator.hassApiUrl }}"
             {{- else }}
             - name: HC_HASS_API
-              value: "http://{{ template "home-assistant.fullname" . }}:{{ .Values.service.port }}/api/"
+              value: "http://127.0.0.1:8123/api/"
             {{- end }}
             {{- if .Values.configurator.basepath }}
             - name: HC_BASEPATH
@@ -112,8 +154,67 @@ spec:
           volumeMounts:
           - mountPath: /config
             name: config
+          {{- if .Values.git.enabled }}
+          - mountPath: {{ .Values.git.keyPath }}
+            name: git-secret
+          {{- end }}
+          {{- if .Values.usePodSecurityContext }}
+          securityContext:
+            runAsUser: {{ default 0 .Values.runAsUser }}
+          {{- if and (.Values.runAsUser) (.Values.fsGroup) }}
+          {{- if not (eq .Values.runAsUser 0.0) }}
+            fsGroup: {{ .Values.fsGroup }}
+          {{- end }}
+          {{- end }}
+          {{- end }}
           resources:
 {{ toYaml .Values.configurator.resources | indent 12 }}
+        {{- end }}
+        {{- if .Values.vscode.enabled }}
+        - name: vscode
+          image: "{{ .Values.vscode.image.repository }}:{{ .Values.vscode.image.tag }}"
+          imagePullPolicy: {{ .Values.vscode.image.pullPolicy }}
+          workingDir: {{ .Values.vscode.hassConfig }}
+          args:
+            - --allow-http
+            - --port={{ .Values.vscode.service.port }}
+            {{- if not (.Values.vscode.password) }}
+            - --no-auth
+            {{- end }}
+            {{- if .Values.vscode.vscodePath }}
+            - --extensions-dir={{ .Values.vscode.vscodePath }}
+            - --user-data-dir={{ .Values.vscode.vscodePath }}
+            {{- end }}
+          ports:
+            - name: vscode
+              containerPort: {{ .Values.vscode.service.port }}
+              protocol: TCP
+          env:
+            {{- if .Values.vscode.password }}
+            - name: PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "home-assistant.fullname" . }}-vscode
+                  key: password
+            {{- end }}
+            {{- range $key, $value := .Values.vscode.extraEnv }}
+            - name: {{ $key }}
+              value: {{ $value }}
+            {{- end }}
+          volumeMounts:
+          - mountPath: /config
+            name: config
+          {{- if .Values.usePodSecurityContext }}
+          securityContext:
+            runAsUser: {{ default 0 .Values.runAsUser }}
+          {{- if and (.Values.runAsUser) (.Values.fsGroup) }}
+          {{- if not (eq .Values.runAsUser 0.0) }}
+            fsGroup: {{ .Values.fsGroup }}
+          {{- end }}
+          {{- end }}
+          {{- end }}
+          resources:
+{{ toYaml .Values.vscode.resources | indent 12 }}
         {{- end }}
       volumes:
       - name: config
@@ -122,6 +223,12 @@ spec:
           claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "home-assistant.fullname" . }}{{- end }}
       {{- else }}
         emptyDir: {}
+      {{ end }}
+      {{- if .Values.git.enabled }}
+      - name: git-secret
+        secret:
+          defaultMode: 256
+          secretName: {{ .Values.git.secret }}
       {{ end }}
     {{- with .Values.nodeSelector }}
       nodeSelector:

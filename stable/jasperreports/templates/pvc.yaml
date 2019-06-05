@@ -4,10 +4,10 @@ apiVersion: v1
 metadata:
   name: {{ template "jasperreports.fullname" . }}
   labels:
-    app: {{ template "jasperreports.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app: "{{ template "jasperreports.fullname" . }}"
+    chart: "{{ template "jasperreports.chart" . }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
 spec:
   accessModes:
     - {{ .Values.persistence.accessMode | quote }}

@@ -1,6 +1,0 @@
-mysql:
-  enabled: false
-
-php:
-  repository: lead4good/grav
-  tag: fpm-alpine

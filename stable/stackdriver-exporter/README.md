@@ -56,23 +56,35 @@ deletes the release.
 The following table lists the configurable parameters of the
 Stackdriver-Exporter chart and their default values.
 
-Parameter                           | Description                          | Default
------------------------------------ | ------------------------------------ | --------------------------------
-`replicaCount`                      | Desired number of pods               | `1`
-`restartPolicy`                     | Container restart policy             | `Always`
-`image.repository`                  | Container image repository           | `justwatch/stackdriver_exporter`
-`image.tag`                         | Container image tag                  | `1.0.2`
-`image.pullPolicy`                  | Container image pull policy          | `IfNotPresent`
-`resources`                         | Resource requests & limits           | `{}`
-`service.type`                      | Type of service to create            | `ClusterIP`
-`service.httpPort`                  | Port for the http service            | `9255`
-`stackdriver.projectId`             | GCP Project ID                       | ``
-`stackdriver.metrics.typePrefixes`  | Comma separated Metric Type prefixes | ``
-`stackdriver.metrics.interval`      | Metrics interval to request from GCP | `5m`
-`stackdriver.metrics.offset`        | Offset (into the past) to request    | `0s`
-`web.listenAddress`                 | Port to listen on                    | `9255`
-`web.path`                          | Path under which to expose metrics   | `/metrics`
-`annoations`                        | Deployment annotations               | `{}`
+Parameter                           | Description                                                                     | Default
+----------------------------------- | ------------------------------------------------------------------------------- | --------------------------------
+`replicaCount`                      | Desired number of pods                                                          | `1`
+`restartPolicy`                     | Container restart policy                                                        | `Always`
+`image.repository`                  | Container image repository                                                      | `frodenas/stackdriver-exporter`
+`image.tag`                         | Container image tag                                                             | `v0.6.0`
+`image.pullPolicy`                  | Container image pull policy                                                     | `IfNotPresent`
+`resources`                         | Resource requests & limits                                                      | `{}`
+`service.type`                      | Type of service to create                                                       | `ClusterIP`
+`service.httpPort`                  | Port for the http service                                                       | `9255`
+`stackdriver.projectId`             | GCP Project ID                                                                  | ``
+`stackdriver.serviceAccountSecret`  | Optionally specify an existing secret which contains credentials.json if necessary. | `""`
+`stackdriver.serviceAccountKey`     | Optionally specify the service account key JSON file. Must be provided when no existing secret is used, in this case a new secret will be created holding this service account | `""`
+`stackdriver.maxRetries`            | Max number of retries that should be attempted on errors from Stackdriver       | `0`
+`stackdriver.httpTimeout`           | How long should Stackdriver_exporter wait for a result from the Stackdriver API | `10s`
+`stackdriver.maxBackoff`            | Max time between each request in an exponential backoff scenario                | `5s`
+`stackdriver.backoffJitter`         | The amount of jitter to introduce in an exponential backoff scenario            | `1s`
+`stackdriver.retryStatuses`         | The HTTP statuses that should trigger a retry                                   | `503`
+`stackdriver.metrics.typePrefixes`  | Comma separated Metric Type prefixes                                            | `compute.googleapis.com/instance/cpu`
+`stackdriver.metrics.interval`      | Metrics interval to request from GCP                                            | `5m`
+`stackdriver.metrics.offset`        | Offset (into the past) to request                                               | `0s`
+`web.listenAddress`                 | Port to listen on                                                               | `9255`
+`web.path`                          | Path under which to expose metrics                                              | `/metrics`
+`annotations`                       | Deployment annotations                                                          | `{}`
+`affinity`                          | Pod affinity                                                                    | `{}`
+`nodeSelector`                      | Node labels for pod assignment												  | `{}`
+`tolerations`                       | Node taints to tolerate (requires Kubernetes >=1.6) 							  | `[]`
+
+
 
 Specify each parameter using the `--set key=value[,key=value]` argument to
 `helm install`. For example,

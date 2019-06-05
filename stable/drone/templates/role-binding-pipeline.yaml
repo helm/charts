@@ -1,0 +1,19 @@
+{{- if and .Values.rbac.create .Values.server.kubernetes.enabled -}}
+apiVersion: rbac.authorization.k8s.io/{{ required "A valid .Values.rbac.apiVersion entry required!" .Values.rbac.apiVersion }}
+kind: ClusterRoleBinding
+metadata:
+  name: {{ template "drone.fullname" . }}-pipeline
+  labels:
+    app: {{ template "drone.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+subjects:
+  - kind: ServiceAccount
+    name: {{ template "drone.pipelineServiceAccount" . }}
+    namespace: {{ default .Release.Namespace .Values.server.kubernetes.namespace }}
+roleRef:
+  kind: ClusterRole
+  name: {{ template "drone.fullname" . }}-pipeline
+  apiGroup: rbac.authorization.k8s.io
+{{- end -}}

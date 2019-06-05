@@ -14,3 +14,18 @@ spark:
   driverMemory: 1g
   executorMemory: 1g
   numExecutors: 2
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+    # nginx.ingress.kubernetes.io/auth-secret: zeppelin-tls-secret
+  path: /
+  hosts:
+    - zeppelin.local
+  tls: []
+    # - secretName: zeppelin-tls-secret
+    #   hosts: zeppelin.local
+
+nodeSelector: {}

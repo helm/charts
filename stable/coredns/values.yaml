@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: coredns/coredns
-  tag: "1.2.0"
+  tag: "1.5.0"
   pullPolicy: IfNotPresent
 
 resources:
@@ -21,18 +21,32 @@ serviceType: "ClusterIP"
 
 service:
 # clusterIP: ""
+# loadBalancerIP: ""
+# externalTrafficPolicy: ""
   annotations:
     prometheus.io/scrape: "true"
     prometheus.io/port: "9153"
 
+serviceAccount:
+  create: false
+  # The name of the ServiceAccount to use
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
 rbac:
   # If true, create & use RBAC resources
-  create: false
-  # Ignored if rbac.create is true
-  serviceAccountName: default
+  create: true
+  # If true, create and use PodSecurityPolicy
+  pspEnable: false
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  # name:
 
 # isClusterService specifies whether chart should be deployed as cluster-service or normal k8s app.
 isClusterService: true
+
+# Optional priority class to be used for the coredns pods
+priorityClassName: ""
 
 servers:
 - zones:
@@ -49,13 +63,17 @@ servers:
     parameters: round_robin
   - name: prometheus
     parameters: 0.0.0.0:9153
-  - name: proxy
+  - name: forward
     parameters: . /etc/resolv.conf
 
 # Complete example with all the options:
 # - zones:                 # the `zones` block can be left out entirely, defaults to "."
 #   - zone: hello.world.   # optional, defaults to "."
 #     scheme: tls://       # optional, defaults to "" (which equals "dns://" in CoreDNS)
+#   - zone: foo.bar.
+#     scheme: dns://
+#     use_tcp: true        # set this parameter to optionally expose the port on tcp as well as udp for the DNS protocol
+#                          # Note that this will not work if you are also exposing tls or grpc on the same server
 #   port: 12345            # optional, defaults to "" (which equals 53 in CoreDNS)
 #   plugins:               # the plugins to use for this server block
 #   - name: kubernetes     # name of plugin, if used multiple times ensure that the plugin supports it!

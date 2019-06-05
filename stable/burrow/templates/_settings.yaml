@@ -1,0 +1,13 @@
+{{- define "settings" -}}
+{{- range $.Values.environment.secrets }}
+- name: {{ .name }}
+  valueFrom:
+    secretKeyRef:
+      name: {{ .location }}
+      key: {{ .key }}
+{{- end }}
+{{- range $key, $val := $.Values.environment.inline }}
+- name: {{ $key }}
+  value: {{ $val | quote }}
+{{- end }}
+{{- end -}}

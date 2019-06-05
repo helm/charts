@@ -1,0 +1,9 @@
+dependencies:
+- name: zookeeper
+  repository: https://kubernetes-charts-incubator.storage.googleapis.com/
+  version: 1.2.0
+- name: mysql
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  version: 0.10.2
+digest: sha256:28aa139b80203f125af6c7b5c9881d0c7de98c3a420ab1a5d18daf76c819b850
+generated: 2018-11-13T14:34:00.5675116+01:00

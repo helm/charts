@@ -10,9 +10,7 @@ Commands should be run from the root folder of the repository.
 
 Due to presence of dependencies, please run inside the chart dir:
 
-```
-helm dependency update
-```
+    helm dependency update
 
 ### Install
 

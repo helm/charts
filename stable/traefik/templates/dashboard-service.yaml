@@ -5,7 +5,7 @@ metadata:
   name: {{ template "traefik.fullname" . }}-dashboard
   labels:
     app: {{ template "traefik.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: {{ template "traefik.chart" . }}
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
   annotations:
@@ -15,10 +15,12 @@ metadata:
   {{- end }}
   {{- end }}
 spec:
+  type: {{ .Values.dashboard.serviceType | default ("ClusterIP") }}
   selector:
     app: {{ template "traefik.name" . }}
     release: {{ .Release.Name }}
   ports:
-  - port: 80
+  - name: dashboard-http
+    port: 80
     targetPort: 8080
 {{- end }}

@@ -1,0 +1,141 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: {{ template "druid.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: {{ .Values.middleManager.name }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "druid.middleManager.fullname" . }}
+spec:
+  serviceName: {{ template "druid.middleManager.fullname" . }}
+  replicas: {{ .Values.middleManager.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "druid.name" . }}
+      release: {{ .Release.Name }}
+      component: {{ .Values.middleManager.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "druid.name" . }}
+        component: {{ .Values.middleManager.name }}
+        release: {{ .Release.Name }}
+        {{- if .Values.middleManager.podAnnotations }}
+      annotations:
+{{ toYaml .Values.middleManager.podAnnotations | indent 8 }}
+        {{- end }}
+    spec:
+      {{- if or .Values.middleManager.antiAffinity .Values.middleManager.nodeAffinity }}
+      affinity:
+      {{- end }}
+      {{- if eq .Values.middleManager.antiAffinity "hard" }}
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - topologyKey: "kubernetes.io/hostname"
+              labelSelector:
+                matchLabels:
+                  app: "{{ template "druid.name" . }}"
+                  release: "{{ .Release.Name }}"
+                  component: "{{ .Values.middleManager.name }}"
+      {{- else if eq .Values.middleManager.antiAffinity "soft" }}
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            podAffinityTerm:
+              topologyKey: kubernetes.io/hostname
+              labelSelector:
+                matchLabels:
+                  app: "{{ template "druid.name" . }}"
+                  release: "{{ .Release.Name }}"
+                  component: "{{ .Values.middleManager.name }}"
+      {{- end }}
+      {{- with .Values.middleManager.nodeAffinity }}
+        nodeAffinity:
+{{ toYaml . | indent 10 }}
+      {{- end }}
+{{- if .Values.middleManager.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.middleManager.nodeSelector | indent 8 }}
+{{- end }}
+{{- if .Values.middleManager.tolerations }}
+      tolerations:
+{{ toYaml .Values.middleManager.tolerations | indent 8 }}
+{{- end }}
+      containers:
+      - name: druid
+        args: [ "middleManager" ]
+        env:
+        {{- if .Values.zookeeper.enabled }}
+        - name: ZOOKEEPER_HOST
+          value: {{ .Release.Name }}-zookeeper-headless:2181
+        {{- else }}
+        - name: ZOOKEEPER_HOST
+          value: {{ .Values.zkHosts }}
+        {{- end }}
+        {{- if .Values.mysql.enabled }}
+        - name: DB_HOST
+          value: {{ .Release.Name }}-mysql
+        - name: DB_TYPE
+          value: mysql
+        - name: DB_USERNAME
+          value: {{ .Values.mysql.mysqlUser }}
+        - name: DB_PASSWORD
+          value: {{ .Values.mysql.mysqlPassword }}
+        - name: DB_DBNAME
+          value: {{ .Values.mysql.mysqlDatabase }}
+        - name: DB_PORT
+          value: "3306"
+        {{- end }}
+        - name: JAVA_OPTS
+          value: {{ .Values.middleManager.javaOpts }}
+        {{- range $key, $value := .Values.env }}
+        - name: {{ $key }}
+          value: {{ $value | quote }}
+        {{- end }}
+        resources:
+{{ toYaml .Values.middleManager.resources | indent 12 }}
+        livenessProbe:
+          initialDelaySeconds: 60
+          httpGet:
+            path: /status/health
+            port: {{ .Values.middleManager.port }}
+        readinessProbe:
+          initialDelaySeconds: 60
+          httpGet:
+            path: /status/health
+            port: {{ .Values.middleManager.port }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+        ports:
+        - containerPort: {{ .Values.middleManager.port }}
+          name: http
+        volumeMounts:
+        - mountPath: /var/druid/
+          name: data
+  {{- if not .Values.middleManager.persistence.enabled }}
+      volumes:
+      - name: data
+        emptyDir: {}
+  {{- end }}
+  updateStrategy:
+    type: {{ .Values.middleManager.updateStrategy.type }}
+  {{- if .Values.middleManager.persistence.enabled }}
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes:
+        - {{ .Values.middleManager.persistence.accessMode | quote }}
+    {{- if .Values.middleManager.persistence.storageClass }}
+    {{- if (eq "-" .Values.middleManager.persistence.storageClass) }}
+      storageClassName: ""
+    {{- else }}
+      storageClassName: "{{ .Values.middleManager.persistence.storageClass }}"
+    {{- end }}
+    {{- end }}
+      resources:
+        requests:
+          storage: "{{ .Values.middleManager.persistence.size }}"
+  {{ end }}

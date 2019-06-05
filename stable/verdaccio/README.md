@@ -55,10 +55,11 @@ and their default values.
 | `customConfigMap`                  | Use a custom ConfigMap                                          | `false`                                                  |
 | `image.pullPolicy`                 | Image pull policy                                               | `IfNotPresent`                                           |
 | `image.repository`                 | Verdaccio container image repository                            | `verdaccio/verdaccio`                                    |
-| `image.tag`                        | Verdaccio container image tag                                   | `3.8.1`                                                    |
+| `image.tag`                        | Verdaccio container image tag                                   | `3.11.6`                                                 |
 | `nodeSelector`                     | Node labels for pod assignment                                  | `{}`                                                     |
 | `persistence.accessMode`           | PVC Access Mode for Verdaccio volume                            | `ReadWriteOnce`                                          |
 | `persistence.enabled`              | Enable persistence using PVC                                    | `true`                                                   |
+| `persistence.existingClaim`        | Use existing PVC                                                | `nil`                                                    |
 | `persistence.mounts`               | Additional mounts                                               | `nil`                                                    |
 | `persistence.size`                 | PVC Storage Request for Verdaccio volume                        | `8Gi`                                                    |
 | `persistence.storageClass`         | PVC Storage Class for Verdaccio volume                          | `nil`                                                    |
@@ -73,6 +74,7 @@ and their default values.
 | `service.loadBalancerIP`           | IP address to assign to load balancer (if supported)            | `""`                                                     |
 | `service.loadBalancerSourceRanges` | List of IP CIDRs allowed access to load balancer (if supported) | `[]`                                                     |
 | `service.port`                     | Service port to expose                                          | `4873`                                                   |
+| `service.nodePort`                 | Service port to expose                                          | none                                                     |
 | `service.type`                     | Type of service to create                                       | `ClusterIP`                                              |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,

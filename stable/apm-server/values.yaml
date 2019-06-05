@@ -1,12 +1,72 @@
 image:
   repository: docker.elastic.co/apm/apm-server
-  tag: 6.2.4
+  tag: 7.0.0
   pullPolicy: IfNotPresent
 
+# DaemonSet or Deployment
+kind: DaemonSet
+
+# Number of replicas when kind is Deployment
+replicaCount: 1
+
+# Create HorizontalPodAutoscaler object when kind is Deployment
+autoscaling:
+  enabled: false
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      targetAverageUtilization: 60
+  - type: Resource
+    resource:
+      name: memory
+      targetAverageUtilization: 60
+
+# The update strategy to apply to the Deployment or DaemonSet
+updateStrategy: {}
+  # rollingUpdate:
+  #   maxUnavailable: 1
+  # type: RollingUpdate
+
+service:
+  enabled: false
+  type: ClusterIP
+  port: 8200
+  # portName: apm-server-svc
+  # clusterIP: None
+  ## External IP addresses of service
+  ## Default: nil
+  # externalIPs:
+  # - 192.168.0.1
+  #
+  ## LoadBalancer IP if service.type is LoadBalancer
+  ## Default: nil
+  # loadBalancerIP: 10.2.2.2
+  ## Limit load balancer source ips to list of CIDRs (where available)
+  # loadBalancerSourceRanges: []
+
+  annotations: {}
+    # Annotation example: setup ssl with aws cert when service.type is LoadBalancer
+    # service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-1:EXAMPLE_CERT
+  labels: {}
+    ## Label example: show service URL in `kubectl cluster-info`
+    # kubernetes.io/cluster-service: "true"
+
+ingress:
+  enabled: false
+  annotations: {}
+    # Annotation example: set nginx ingress type
+    # kubernetes.io/ingress.class: nginx-public
+  labels: {}
+  hosts:
+    - apm-server-ingress.example.com
+
 config:
-  apm-server: {}
+  apm-server:
     ### Defines the host and port the server is listening on
-    # host: "localhost:8200"
+    host: "0.0.0.0:8200"
 
     ## Maximum permitted size in bytes of an unzipped request accepted by the server to be processed.
     # max_unzipped_size: 52428800
@@ -54,11 +114,13 @@ config:
   # When a key contains a period, use this format for setting values on the command line:
   # --set config."output\.file".enabled=false
   output.file:
+    # enabled: false
     path: "/usr/share/apm-server/data"
     filename: apm-server
     rotate_every_kb: 10000
     number_of_files: 5
 
+  ## Set output.file.enabled to false to enable elasticsearch
   # output.elasticsearch:
   #  hosts: ["elasticsearch:9200"]
   #  protocol: "https"
@@ -109,6 +171,10 @@ resources: {}
 ## Node labels for pod assignment
 ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
 nodeSelector: {}
+
+# Tolerations for pod assignment
+# Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+tolerations: []
 
 ## Affinity configuration for pod assignment
 ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/

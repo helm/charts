@@ -1,8 +1,8 @@
 halyard:
-  spinnakerVersion: 1.9.1
+  spinnakerVersion: 1.12.5
   image:
     repository: gcr.io/spinnaker-marketplace/halyard
-    tag: 1.9.1
+    tag: 1.16.0
   # Provide a config map with Hal commands that will be run the core config (storage)
   # The config map should contain a script in the config.sh key
   additionalScripts:
@@ -10,14 +10,71 @@ halyard:
     configMapName: my-halyard-config
     configMapKey: config.sh
     # If you'd rather do an inline script, set create to true and put the content in the data dict like you would a configmap
+    # The content will be passed through `tpl`, so value interpolation is supported.
     create: false
     data: {}
   additionalSecrets:
     create: false
     data: {}
+    ## Uncomment if you want to use a pre-created secret rather than feeding data in via helm.
+    # name:
   additionalConfigMaps:
     create: false
     data: {}
+    ## Uncomment if you want to use a pre-created ConfigMap rather than feeding data in via helm.
+    # name:
+  additionalProfileConfigMaps:
+    data: {}
+      ## if you're running spinnaker behind a reverse proxy such as a GCE ingress
+      ## you may need the following profile settings for the gate profile.
+      ## see https://github.com/spinnaker/spinnaker/issues/1630
+      ## otherwise its harmless and will likely become default behavior in the future
+      ## According to the linked github issue.
+      # gate-local.yml:
+      #   server:
+      #     tomcat:
+      #       protocolHeader: X-Forwarded-Proto
+      #       remoteIpHeader: X-Forwarded-For
+      #       internalProxies: .*
+      #       httpsServerPort: X-Forwarded-Port
+
+  ## Define custom settings for Spinnaker services. Read more for details:
+  ## https://www.spinnaker.io/reference/halyard/custom/#custom-service-settings
+  ## You can use it to add annotations for pods, override the image, etc.
+  additionalServiceSettings: {}
+    # deck.yml:
+    #   artifactId: gcr.io/spinnaker-marketplace/deck:2.9.0-20190412012808
+    #   kubernetes:
+    #     podAnnotations:
+    #       iam.amazonaws.com/role: <role_arn>
+    # clouddriver.yml:
+    #   kubernetes:
+    #     podAnnotations:
+    #       iam.amazonaws.com/role: <role_arn>
+
+  ## Uncomment if you want to add extra commands to the init script
+  ## run by the init container before halyard is started.
+  ## The content will be passed through `tpl`, so value interpolation is supported.
+  # additionalInitScript: |-
+
+  ## Uncomment if you want to add annotations on halyard and install-using-hal pods
+  # annotations:
+  #   iam.amazonaws.com/role: <role_arn>
+
+  ## Uncomment the following resources definitions to control the cpu and memory
+  # resources allocated for the halyard pod
+  resources: {}
+    # requests:
+    #   memory: "1Gi"
+    #   cpu: "100m"
+    # limits:
+    #   memory: "2Gi"
+    #   cpu: "200m"
+
+  ## Uncomment if you want to set environment variables on the Halyard pod.
+  # env:
+  #   - name: DEFAULT_JVM_OPTS
+  #     value: -Dhttp.proxyHost=proxy.example.com
 
 # Define which registries and repositories you want available in your
 # Spinnaker pipeline definitions
@@ -57,6 +114,9 @@ kubeConfig:
   contexts:
   - default
   deploymentContext: default
+  omittedNameSpaces:
+  - kube-system
+  - kube-public
 
 # Change this if youd like to expose Spinnaker outside the cluster
 ingress:
@@ -98,8 +158,14 @@ spinnakerFeatureFlags:
 nodeSelector: {}
 
 # Redis password to use for the in-cluster redis service
-# Redis is not exposed publically
+# Enable redis to use in-cluster redis
 redis:
+  enabled: true
+  # External Redis option will be enabled if in-cluster redis is disabled
+  external:
+    host: "<EXTERNAL-REDIS-HOST-NAME>"
+    port: 6379
+    # password: ""
   password: password
   nodeSelector: {}
   cluster:
@@ -128,7 +194,12 @@ gcs:
   enabled: false
   project: my-project-name
   bucket: "<GCS-BUCKET-NAME>"
+  ## if jsonKey is set, will create a secret containing it
   jsonKey: '<INSERT CLOUD STORAGE JSON HERE>'
+  ## override the name of the secret to use for jsonKey, if `jsonKey`
+  ## is empty, it will not create a secret assuming you are creating one
+  ## external to the chart. the key for that secret should be `key.json`.
+  secretName:
 
 # AWS Simple Storage Service
 s3:

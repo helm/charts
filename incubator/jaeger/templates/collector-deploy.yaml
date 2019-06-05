@@ -1,21 +1,25 @@
 {{- if .Values.collector.enabled -}}
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "jaeger.collector.name" . }}
   labels:
-    app: {{ template "jaeger.name" . }}
-    jaeger-infra: collector-deployment
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    component: collector
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ template "jaeger.name" . }}
+    helm.sh/chart: {{ include "jaeger.chart" . }}
+    app.kubernetes.io/component: collector
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
 {{- if .Values.collector.annotations }}
   annotations:
 {{ toYaml .Values.collector.annotations | indent 4 }}
 {{- end }}
 spec:
   replicas: {{ .Values.collector.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ template "jaeger.name" . }}
+      app.kubernetes.io/component: collector
+      app.kubernetes.io/instance: {{ .Release.Name }}
   strategy:
     type: Recreate
   template:
@@ -25,10 +29,9 @@ spec:
 {{ toYaml .Values.collector.podAnnotations | indent 8 }}
 {{- end }}
       labels:
-        app: {{ template "jaeger.name" . }}
-        component: collector
-        release: {{ .Release.Name }}
-        jaeger-infra: collector-pod
+        app.kubernetes.io/name: {{ template "jaeger.name" . }}
+        app.kubernetes.io/component: collector
+        app.kubernetes.io/instance: {{ .Release.Name }}
 {{- if .Values.collector.podLabels }}
 {{ toYaml .Values.collector.podLabels | indent 8 }}
 {{- end }}
@@ -44,6 +47,10 @@ spec:
         image: {{ .Values.collector.image }}:{{ .Values.tag }}
         imagePullPolicy: {{ .Values.collector.pullPolicy }}
         env:
+          {{- range $key, $value := .Values.collector.cmdlineParams }}
+          - name: {{ $key | replace "." "_" | replace "-" "_" | upper | quote }}
+            value: {{ $value }}
+          {{- end }}
           - name: SPAN_STORAGE_TYPE
             valueFrom:
               configMapKeyRef:
@@ -65,6 +72,16 @@ spec:
               configMapKeyRef:
                 name: {{ template "jaeger.fullname" . }}
                 key: cassandra.keyspace
+          - name: CASSANDRA_USERNAME
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "jaeger.fullname" . }}
+                key: cassandra.username
+          - name: CASSANDRA_PASSWORD
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "jaeger.fullname" . }}
+                key: cassandra.password
           {{- end }}
           {{- if eq .Values.storage.type "elasticsearch" }}
           - name: ES_PASSWORD

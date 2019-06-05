@@ -20,12 +20,6 @@ spec:
       name: http
   selector:
     app: {{ include "gce-ingress.name" . }}
+    component: backend
     release: {{ .Release.Name }}
 
-  name: default-http-backend
-  namespace: kube-system
-  labels:
-    k8s-app: glbc
-    kubernetes.io/cluster-service: "true"
-    addonmanager.kubernetes.io/mode: Reconcile
-    kubernetes.io/name: "GLBCDefaultBackend"

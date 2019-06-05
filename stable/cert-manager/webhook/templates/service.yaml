@@ -13,7 +13,7 @@ spec:
   ports:
   - name: https
     port: 443
-    targetPort: 443
+    targetPort: 6443
   selector:
     app: {{ include "webhook.name" . }}
     release: {{ .Release.Name }}

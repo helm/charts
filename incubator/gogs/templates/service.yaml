@@ -13,9 +13,15 @@ spec:
   ports:
   - port: {{ .Values.service.httpPort | int }}
     targetPort: 3000
+{{- if (and (eq .Values.serviceType "NodePort") (not (empty .Values.service.httpNodePort))) }}
+    nodePort: {{ .Values.service.httpNodePort | int }}
+{{- end }}
     name: {{ default "gogs" .Values.service.nameOverride }}-http
   - port: {{ .Values.service.sshPort | int }}
     targetPort: 22
+{{- if (and (eq .Values.serviceType "NodePort") (not (empty .Values.service.sshNodePort))) }}
+    nodePort: {{ .Values.service.sshNodePort | int }}
+{{- end }}
     name: {{ default "gogs" .Values.service.nameOverride }}-ssh
   selector:
     app: {{ template "gogs.fullname" . }}

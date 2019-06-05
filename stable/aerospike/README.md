@@ -2,9 +2,9 @@
 
 This is an implementation of Aerospike StatefulSet found here:
 
- * https://github.com/aerospike/aerospike-kubernetes
+* <https://github.com/aerospike/aerospike-kubernetes>
 
-## Pre Requisites:
+## Pre Requisites
 
 * Kubernetes 1.7+ with beta APIs enabled and support for statefulsets
 
@@ -14,11 +14,11 @@ This is an implementation of Aerospike StatefulSet found here:
 
 ## StatefulSet Details
 
-* https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/
+* <https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/>
 
 ## StatefulSet Caveats
 
-* https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#limitations
+* <https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#limitations>
 
 ## Chart Details
 
@@ -30,9 +30,9 @@ This chart will do the following:
 
 To install the chart with the release name `my-aerospike` using a dedicated namespace(recommended):
 
-```
-$ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
-$ helm install --name my-aerospike --namespace aerospike stable/aerospike
+```sh
+helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
+helm install --name my-aerospike --namespace aerospike stable/aerospike
 ```
 
 The chart can be customized using the following configurable parameters:
@@ -40,28 +40,29 @@ The chart can be customized using the following configurable parameters:
 | Parameter                       | Description                                                     | Default                      |
 | ------------------------------- | ----------------------------------------------------------------| -----------------------------|
 | `image.repository`              | Aerospike Container image name                                  | `aerospike/aerospike-server` |
-| `image.tag`                     | Aerospike Container image tag                                   | `3.14.1.2`                   |
+| `image.tag`                     | Aerospike Container image tag                                   | `4.5.0.5`                    |
 | `image.pullPolicy`              | Aerospike Container pull policy                                 | `Always`                     |
 | `replicaCount`                  | Aerospike Brokers                                               | `1`                          |
 | `command`                       | Custom command (Docker Entrypoint)                              | `[]`                         |
 | `args`                          | Custom args (Docker Cmd)                                        | `[]`                         |
-| `persistentVolume`              | config of persistent volumes for storage-engine                 | `{}`                         |
-| `confFile`                      | config filename. This file should be included in the chart path | `aerospike.conf`             |
-| `resources`                     | resource requests and limits                                    | `{}`                         |
+| `tolerations`                   | List of node taints to tolerate                                 | `[]`                         |
+| `persistentVolume`              | Config of persistent volumes for storage-engine                 | `{}`                         |
+| `confFile`                      | Config filename. This file should be included in the chart path | `aerospike.conf`             |
+| `resources`                     | Resource requests and limits                                    | `{}`                         |
 | `nodeSelector`                  | Labels for pod assignment                                       | `{}`                         |
-| `terminationGracePeriodSeconds` | wit time before forcefully terminating container                | `30`                         |
+| `terminationGracePeriodSeconds` | Wait time before forcefully terminating container               | `30`                         |
 
 Specify parameters using `--set key=value[,key=value]` argument to `helm install`
 
 Alternatively a YAML file that specifies the values for the parameters can be provided like this:
 
-```bash
-$ helm install --name my-aerospike -f values.yaml stable/aerospike
+```sh
+helm install --name my-aerospike -f values.yaml stable/aerospike
 ```
 
 ### Conf files for Aerospike
 
-There is one conf file added to each Aerospike release. This conf file can be replaced with a custom file and updating the `confFile` value. 
+There is one conf file added to each Aerospike release. This conf file can be replaced with a custom file and updating the `confFile` value.
 
 If you modify the `aerospike.conf` (and you use more than 1 replica), you want to add the `#REPLACE_THIS_LINE_WITH_MESH_CONFIG` comment to the config file (see the default conf file). This will update your mesh to connect each replica.
 

@@ -22,6 +22,11 @@ spec:
       labels:
         app: {{ template "fluentd.name" . }}
         release: {{ .Release.Name }}
+      annotations:
+        checksum/configmap: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{- if .Values.annotations }}
+        {{- toYaml .Values.annotations | nindent 8 }}
+        {{- end }}
     spec:
 {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
@@ -38,6 +43,10 @@ spec:
             value: {{ .Values.output.host | quote }}
           - name: OUTPUT_PORT
             value: {{ .Values.output.port | quote }}
+          - name: OUTPUT_SCHEME
+            value: {{ .Values.output.scheme | quote }}
+          - name: OUTPUT_SSL_VERSION
+            value: {{ .Values.output.sslVersion | quote }}
           - name: OUTPUT_BUFFER_CHUNK_LIMIT
             value: {{ .Values.output.buffer_chunk_limit | quote }}
           - name: OUTPUT_BUFFER_QUEUE_LIMIT
@@ -46,6 +55,9 @@ spec:
           - name: {{ $key | quote }}
             value: {{ $value | quote }}
           {{- end }}
+          {{- if .Values.extraEnvVars }}
+{{ toYaml .Values.extraEnvVars | indent 10 }}
+          {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 12 }}
         ports:
@@ -53,6 +65,11 @@ spec:
           - name: {{ $port.name }}
             containerPort: {{ $port.containerPort }}
             protocol: {{ $port.protocol }}
+{{- end }}
+{{- if .Values.metrics.enabled }}
+          - name: metrics
+            containerPort: {{ .Values.metrics.service.port }}
+            protocol: TCP
 {{- end }}
           - name: http-input
             containerPort: 9880

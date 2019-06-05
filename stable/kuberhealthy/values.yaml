@@ -1,0 +1,56 @@
+# Default values for kuberhealthy.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+prometheus:
+  enabled: false
+  name: "prometheus"
+  enableScraping: true
+  serviceMonitor: false
+  enableAlerting: true
+
+image:
+  repository: quay.io/comcast/kuberhealthy
+  tag: v1.0.2
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 80Mi
+  limits:
+    cpu: 400m
+    memory: 200Mi
+
+tolerations:
+  # change to true to tolerate and deploy to masters
+  master: false
+
+deployment:
+  replicas: 2
+  maxSurge: 0
+  maxUnavailable: 1
+  imagePullPolicy: IfNotPresent
+  podAnnotations: {}
+  command:
+  - /app/kuberhealthy
+  # use this to override location of the test-image, see: https://github.com/Comcast/kuberhealthy/blob/master/docs/FLAGS.md
+  # args:
+  # - -dsPauseContainerImageOverride
+  # - your-repo/google_containers/pause:0.8.0
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 999
+  fsGroup: 999
+  allowPrivilegeEscalation: false
+
+# Please remember that changing the service type to LoadBalancer
+# will expose Kuberhealthy to the internet, which could cause
+# error messages shown by Kuberhealthy to be exposed to the
+# public internet.  It is recommended to create the service
+# with ClusterIP, then to manually edit the service in order to
+# securely expose the port in an appropriate way for your
+# specific environment.
+service:
+  externalPort: 80
+  type: ClusterIP
+  annotations: {}

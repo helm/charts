@@ -23,9 +23,9 @@ spec:
   {{- if .Values.service.loadBalancerIP }}
   loadBalancerIP: {{ .Values.service.loadBalancerIP }}
   {{- end }}
-  {{- if .Values.service.loadBalancerSourceRanges }}
+  {{- with .Values.service.loadBalancerSourceRanges }}
   loadBalancerSourceRanges:
-  {{ toYaml .Values.service.loadBalancerSourceRanges | indent 4 }}
+    {{- toYaml . | nindent 4 }}
   {{- end }}
   ports:
   {{- if .Values.config.http.enabled }}
@@ -58,10 +58,10 @@ spec:
     port: {{ .Values.config.opentsdb.bind_address }}
     targetPort: {{ .Values.config.opentsdb.bind_address }}
   {{- end }}
-  {{- if .Values.exposeRpcService }}
+  {{- if .Values.config.rpc.enabled }}
   - name: rpc
-    port: {{ .Values.config.bind_address }}
-    targetPort: {{ .Values.config.bind_address }}
+    port: {{ .Values.config.rpc.bind_address }}
+    targetPort: {{ .Values.config.rpc.bind_address }}
   {{- end }}
   selector:
     app: {{ template "influxdb.fullname" . }}

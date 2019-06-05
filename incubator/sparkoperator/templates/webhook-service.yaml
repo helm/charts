@@ -2,7 +2,7 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: {{ include "sparkoperator.fullname" . }}-webhook
+  name: {{ .Release.Name }}-webhook
   labels:
     app.kubernetes.io/name: {{ include "sparkoperator.name" . }}
     helm.sh/chart: {{ include "sparkoperator.chart" . }}
@@ -11,7 +11,7 @@ metadata:
 spec:
   ports:
   - port: 443
-    targetPort: 8080
+    targetPort: {{ .Values.webhookPort }}
     name: webhook
   selector:
     app.kubernetes.io/name: {{ include "sparkoperator.name" . }}

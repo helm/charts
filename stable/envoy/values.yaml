@@ -14,8 +14,8 @@ strategy: |
 
 image:
   repository: envoyproxy/envoy-alpine
-  tag: 952c5e1db91b6bcc1c11a0c8316d6b11bbcc3657
-  ## ^ ref: https://github.com/envoyproxy/envoy/commit/952c5e1db91b6bcc1c11a0c8316d6b11bbcc3657
+  tag: d920944aed67425f91fc203774aebce9609e5d9a
+  ## ^ ref: https://github.com/envoyproxy/envoy/commit/d920944aed67425f91fc203774aebce9609e5d9a
   pullPolicy: IfNotPresent
 
 command:
@@ -183,3 +183,95 @@ files:
               port_value: 443
         tls_context:
           sni: www.google.com
+
+## Uncomment this section to use helm values to dynamically generate enovy.yaml
+# templates:
+#   envoy.yaml: |-
+#     ## refs:
+#     ## - https://www.envoyproxy.io/docs/envoy/latest/start/start#quick-start-to-run-simple-example
+#     ## - https://raw.githubusercontent.com/envoyproxy/envoy/master/configs/google_com_proxy.v2.yaml
+#     admin:
+#       access_log_path: /dev/stdout
+#       address:
+#         socket_address:
+#           address: 0.0.0.0
+#           port_value: {{ .Values.ports.admin.containerPort }}
+
+#     static_resources:
+#       listeners:
+#       - name: listener_0
+#         address:
+#           socket_address:
+#             address: 0.0.0.0
+#             port_value: {{ .Values.ports.n0.containerPort }}
+#         filter_chains:
+#         - filters:
+#           - name: envoy.http_connection_manager
+#             config:
+#               access_log:
+#               - name: envoy.file_access_log
+#                 config:
+#                   path: /dev/stdout
+#               stat_prefix: ingress_http
+#               route_config:
+#                 name: local_route
+#                 virtual_hosts:
+#                 - name: local_service
+#                   domains: ["*"]
+#                   routes:
+#                   - match:
+#                       prefix: "/"
+#                     route:
+#                       host_rewrite: www.google.com
+#                       cluster: service_google
+#               http_filters:
+#               - name: envoy.router
+#       clusters:
+#       - name: service_google
+#         connect_timeout: 0.25s
+#         type: LOGICAL_DNS
+#         dns_lookup_family: V4_ONLY
+#         lb_policy: ROUND_ROBIN
+#         hosts:
+#           - socket_address:
+#               address: google.com
+#               port_value: 443
+#         tls_context:
+#           sni: www.google.com
+
+## ServiceMonitor consumed by prometheus-operator
+serviceMonitor:
+  ## If the operator is installed in your cluster, set to true to create a Service Monitor Entry
+  enabled: false
+  interval: "15s"
+  ## Namespace in which the service monitor is created
+  # namespace: monitoring
+  # Added to the ServiceMonitor object so that prometheus-operator is able to discover it
+  ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#prometheusspec
+  additionalLabels: {}
+
+## PrometheusRule consumed by prometheus-operator
+prometheusRule:
+  enabled: false
+  ## Namespace in which the prometheus rule is created
+  # namespace: monitoring
+  ## Define individual alerting rules as required
+  ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#rulegroup
+  ##      https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/
+  groups:
+    upstream-rules:
+      enabled: true
+      rules:
+        high4xxRate:
+          enabled: true
+          alert: High4xxRate
+          expr: sum(rate(envoy_cluster_upstream_rq_xx{response_code_class="4"}[1m])) / sum(rate(envoy_cluster_upstream_rq_xx[1m])) * 100 > 1
+          for: 1m
+          labels:
+            severity: page
+          annotations:
+            summary: "4xx response rate above 1%"
+            description: "The 4xx error response rate for envoy cluster {{ $labels.envoy_cluster_name }} reported a service replication success rate of {{ $value }}% for more than 1 minute."
+  ## Added to the PrometheusRule object so that prometheus-operator is able to discover it
+  ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#prometheusspec
+  additionalLabels: {}

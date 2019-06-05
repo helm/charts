@@ -8,9 +8,9 @@ metadata:
   labels:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    app: {{ template "centrifugo.name" . }}
-  name: {{ template "centrifugo.fullname" . }}
+    chart: {{ include "centrifugo.chart" . }}
+    app: {{ include "centrifugo.name" . }}
+  name: {{ include "centrifugo.fullname" . }}
 spec:
   type: "{{ .Values.service.type }}"
   clusterIP: "{{ .Values.service.clusterIP }}"
@@ -34,5 +34,5 @@ spec:
       nodePort: {{ .Values.service.nodePort }}
       {{- end }}
   selector:
-    app: {{ template "centrifugo.name" . }}
+    app: {{ include "centrifugo.name" . }}
     release: {{ .Release.Name }}

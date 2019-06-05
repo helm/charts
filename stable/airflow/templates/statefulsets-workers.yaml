@@ -1,0 +1,204 @@
+{{- if .Values.workers.enabled -}}
+## Workers are not in deployment, but in StatefulSet, to allow each worker expose a mini-server
+## that only serve logs, that will be used by the web server.
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ template "airflow.fullname" . }}-worker
+  labels:
+    app: {{ template "airflow.name" . }}
+    component: worker
+    chart: {{ template "airflow.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  serviceName: "{{ template "airflow.fullname" . }}-worker"
+  updateStrategy:
+    ## Kill the workers as soon as possible, the scheduler will restart the failed job later
+    type: RollingUpdate
+  ## Use experimental burst mode for faster StatefulSet scaling
+  ##   https://github.com/kubernetes/kubernetes/commit/c2c5051adf096ffd48bf1dcf5b11cb47e464ecdd
+  podManagementPolicy: Parallel
+  replicas: {{ .Values.workers.replicas }}
+  selector:
+    matchLabels:
+      app: {{ template "airflow.name" . }}
+      component: worker
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      annotations:
+        checksum/config-env: {{ include (print $.Template.BasePath "/configmap-env.yaml") . | sha256sum }}
+        checksum/config-git-clone: {{ include (print $.Template.BasePath "/configmap-git-clone.yaml") . | sha256sum }}
+        checksum/config-scripts: {{ include (print $.Template.BasePath "/configmap-scripts.yaml") . | sha256sum }}
+        checksum/secret-env: {{ include (print $.Template.BasePath "/secret-env.yaml") . | sha256sum }}
+{{- if .Values.airflow.podAnnotations }}
+{{ toYaml .Values.airflow.podAnnotations | indent 8 }}
+{{- end }}
+{{- if .Values.workers.podAnnotations }}
+{{ toYaml .Values.workers.podAnnotations | indent 8 }}
+{{- end }}
+      labels:
+        app: {{ template "airflow.name" . }}
+        component: worker
+        release: {{ .Release.Name }}
+    spec:
+      {{- if .Values.airflow.image.pullSecret }}
+      imagePullSecrets:
+        - name: {{ .Values.airflow.image.pullSecret }}
+      {{- end }}
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      serviceAccountName: {{ template "airflow.serviceAccountName" . }}
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      {{- end }}
+
+      {{- if .Values.dags.initContainer.enabled }}
+      initContainers:
+        - name: git-clone
+          image: {{ .Values.dags.initContainer.image.repository }}:{{ .Values.dags.initContainer.image.tag }} # Any image with git will do
+          imagePullPolicy: {{ .Values.dags.initContainer.image.pullPolicy }}
+          command:
+          - /usr/local/git/git-clone.sh
+          args:
+          - "{{ .Values.dags.git.url }}"
+          - "{{ .Values.dags.git.ref }}"
+          - "/dags"
+          volumeMounts:
+          - name: git-clone
+            mountPath: /usr/local/git
+          - name: dags-data
+            mountPath: /dags
+          {{- if .Values.dags.git.secret }}
+          - name: git-clone-secret
+            mountPath: /keys
+          {{- end }}
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}-worker
+          imagePullPolicy: {{ .Values.airflow.image.pullPolicy }}
+          image: "{{ .Values.airflow.image.repository }}:{{ .Values.airflow.image.tag }}"
+          envFrom:
+            - configMapRef:
+                name: "{{ template "airflow.fullname" . }}-env"
+          env:
+          {{- include "airflow.mapenvsecrets" . | indent 10 }}
+          volumeMounts:
+            - name: scripts
+              mountPath: /usr/local/scripts
+          {{- $secretsDir := .Values.workers.secretsDir -}}
+          {{- range .Values.workers.secrets }}
+            - name: {{ . }}-volume
+              readOnly: true
+              mountPath: {{ $secretsDir }}/{{ . }}
+              subPath: {{ . }}
+          {{- end }}
+          {{- if .Values.persistence.enabled }}
+            - name: dags-data
+              mountPath: {{ .Values.dags.path }}
+              subPath: {{ .Values.persistence.subPath | default "" }}
+          {{- else if .Values.dags.initContainer.enabled }}
+            - name: dags-data
+              mountPath: {{ .Values.dags.path }}
+          {{- end }}
+          {{- if .Values.logsPersistence.enabled }}
+            - name: logs-data
+              mountPath: {{ .Values.logs.path }}
+              subPath: {{ .Values.logsPersistence.subPath | default "" }}
+          {{- end }}
+          {{- range .Values.airflow.extraConfigmapMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              readOnly: {{ .readOnly }}
+              {{ if .subPath }}
+              subPath: {{ .subPath }}
+              {{ end }}
+          {{- end }}
+{{- if .Values.airflow.extraVolumeMounts }}
+{{ toYaml .Values.airflow.extraVolumeMounts | indent 12 }}
+{{- end }}
+          args:
+            - "bash"
+            - "-c"
+          {{- if and ( .Values.dags.initContainer.enabled ) ( .Values.dags.initContainer.installRequirements ) }}
+            - >
+              echo 'waiting 60s...' &&
+              sleep 60 &&
+              echo 'installing requirements...' &&
+              mkdir -p /usr/local/airflow/.local/bin &&
+              export PATH=/usr/local/airflow/.local/bin:$PATH &&
+              /usr/local/scripts/install-requirements.sh &&
+              echo 'executing worker...' &&
+              airflow worker
+          {{- else }}
+            - >
+              echo 'waiting 60s...' &&
+              sleep 60 &&
+              mkdir -p /usr/local/airflow/.local/bin &&
+              export PATH=/usr/local/airflow/.local/bin:$PATH &&
+              echo 'executing worker...' &&
+              airflow worker
+          {{- end }}
+          ports:
+            - name: wlog
+              containerPort: 8793
+              protocol: TCP
+          resources:
+{{ toYaml .Values.workers.resources | indent 12 }}
+{{- if .Values.airflow.extraContainers }}
+{{ toYaml .Values.airflow.extraContainers | indent 8 }}
+{{- end }}
+      volumes:
+        - name: scripts
+          configMap:
+            name: {{ template "airflow.fullname" . }}-scripts
+            defaultMode: 0755
+        {{- range .Values.workers.secrets }}
+        - name: {{ . }}-volume
+          secret:
+            secretName: {{ . }}
+        {{- end }}
+        - name: dags-data
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.existingClaim | default (include "airflow.fullname" .) }}
+        {{- else }}
+          emptyDir: {}
+        {{- end }}
+        {{- if .Values.logsPersistence.enabled }}
+        - name: logs-data
+          persistentVolumeClaim:
+            claimName: {{ .Values.logsPersistence.existingClaim | default (printf "%s-logs" (include "airflow.fullname" . | trunc 58 )) }}
+        {{- end }}
+        {{- if .Values.dags.initContainer.enabled }}
+        - name: git-clone
+          configMap:
+            name: {{ template "airflow.fullname" . }}-git-clone
+            defaultMode: 0755
+        {{- if .Values.dags.git.secret }}
+        - name: git-clone-secret
+          secret:
+            secretName: {{ .Values.dags.git.secret }}
+            defaultMode: 0700
+        {{- end }}
+        {{- end }}
+        {{- range .Values.airflow.extraConfigmapMounts }}
+        - name: {{ .name }}
+          configMap:
+            name: {{ .configMap }}
+        {{- end }}
+{{- if .Values.airflow.extraVolumes }}
+{{ toYaml .Values.airflow.extraVolumes | indent 8 }}
+{{- end }}
+{{- end }}

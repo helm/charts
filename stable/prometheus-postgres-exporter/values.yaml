@@ -6,13 +6,16 @@ replicaCount: 1
 
 image:
   repository: wrouesnel/postgres_exporter
-  tag: v0.4.6
+  tag: v0.4.7
   pullPolicy: IfNotPresent
 
 service:
   type: ClusterIP
   port: 80
   targetPort: 9187
+  name: http
+  labels: {}
+  annotations: {}
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -41,8 +44,15 @@ serviceAccount:
 config:
   datasource:
     host:
-    user:
-    password:
+    user: postgres
+    # Only one of password and passwordSecret can be specified
+    password: somepassword
+    # Specify passwordSecret if DB password is stored in secret.
+    passwordSecret: {}
+    # Secret name
+    #  name:
+    # Password key inside secret
+    #  key:
     port: "5432"
     database: ''
     sslmode: disable
@@ -130,6 +140,40 @@ config:
             usage: "COUNTER"
             description: "Number of times this table has been analyzed by the autovacuum daemon"
 
+    pg_statio_user_tables:
+      query: "SELECT schemaname, relname, heap_blks_read, heap_blks_hit, idx_blks_read, idx_blks_hit, toast_blks_read, toast_blks_hit, tidx_blks_read, tidx_blks_hit FROM pg_statio_user_tables"
+      metrics:
+        - schemaname:
+            usage: "LABEL"
+            description: "Name of the schema that this table is in"
+        - relname:
+            usage: "LABEL"
+            description: "Name of this table"
+        - heap_blks_read:
+            usage: "COUNTER"
+            description: "Number of disk blocks read from this table"
+        - heap_blks_hit:
+            usage: "COUNTER"
+            description: "Number of buffer hits in this table"
+        - idx_blks_read:
+            usage: "COUNTER"
+            description: "Number of disk blocks read from all indexes on this table"
+        - idx_blks_hit:
+            usage: "COUNTER"
+            description: "Number of buffer hits in all indexes on this table"
+        - toast_blks_read:
+            usage: "COUNTER"
+            description: "Number of disk blocks read from this table's TOAST table (if any)"
+        - toast_blks_hit:
+            usage: "COUNTER"
+            description: "Number of buffer hits in this table's TOAST table (if any)"
+        - tidx_blks_read:
+            usage: "COUNTER"
+            description: "Number of disk blocks read from this table's TOAST table indexes (if any)"
+        - tidx_blks_hit:
+            usage: "COUNTER"
+            description: "Number of buffer hits in this table's TOAST table indexes (if any)"
+
     pg_database:
       query: " SELECT pg_database.datname, pg_database_size(pg_database.datname) as size FROM pg_database"
       metrics:
@@ -147,6 +191,8 @@ tolerations: []
 affinity: {}
 
 annotations: {}
+
+podLabels: {}
 
 # Additional sidecar containers, e. g. for a database proxy, such as Google's cloudsql-proxy
 extraContainers: |

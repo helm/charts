@@ -109,8 +109,6 @@ spec:
             value: {{ template "schema-registry.kafkaStore.bootstrapServers" . }}
           - name: SCHEMA_REGISTRY_KAFKASTORE_GROUP_ID
             value: {{ template "schema-registry.kafkaStore.groupId" . }}
-          - name: SCHEMA_REGISTRY_MASTER_ELIGIBILITY
-            value: "true"
           {{ range $configName, $configValue := .Values.configurationOverrides }}
           - name: SCHEMA_REGISTRY_{{ $configName | replace "." "_" | upper }}
             value: {{ $configValue | quote }}
@@ -125,6 +123,19 @@ spec:
           {{- if .Values.jmx.enabled }}
           - name: JMX_PORT
             value: "{{ .Values.jmx.port }}"
+          {{- end }}
+          {{- if .Values.secrets }}
+            {{- range $secret := .Values.secrets }}
+              {{- if not $secret.mountPath }}
+                {{- range $key := $secret.keys }}
+          - name: {{ (print $secret.name "_" $key) | upper | replace "." "_" | replace "-" "_"}}
+            valueFrom:
+              secretKeyRef:
+                name: {{ $secret.name }}
+                key: {{ $key }}
+                {{- end }}
+              {{- end }}
+            {{- end }}
           {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}

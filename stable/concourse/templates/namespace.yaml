@@ -1,4 +1,5 @@
-{{- if .Values.concourse.web.kubernetes.enabled -}}
+{{- if .Values.web.enabled -}}
+{{- if and .Values.concourse.web.kubernetes.enabled .Values.concourse.web.kubernetes.createTeamNamespaces -}}
 {{- range .Values.concourse.web.kubernetes.teams }}
 ---
 apiVersion: v1
@@ -10,9 +11,10 @@ metadata:
 {{- end }}
   name: {{ template "concourse.namespacePrefix" $ }}{{ . }}
   labels:
-    app: {{ template "concourse.concourse.fullname" $ }}
+    app: {{ template "concourse.web.fullname" $ }}
     chart: "{{ $.Chart.Name }}-{{ $.Chart.Version }}"
     release: "{{ $.Release.Name }}"
     heritage: "{{ $.Release.Service }}"
+{{- end }}
 {{- end }}
 {{- end -}}

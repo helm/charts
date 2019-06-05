@@ -5,7 +5,7 @@ metadata:
   name: {{ template "slave.fullname" . }}
   labels:
     app: "{{ template "mariadb.name" . }}"
-    chart: {{ template "mariadb.chart" . }}
+    chart: "{{ template "mariadb.chart" . }}"
     component: "slave"
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
@@ -14,11 +14,14 @@ spec:
     matchLabels:
       release: "{{ .Release.Name }}"
       component: "slave"
-      app: {{ template "mariadb.name" . }}
+      app: "{{ template "mariadb.name" . }}"
   serviceName: "{{ template "slave.fullname" . }}"
   replicas: {{ .Values.slave.replicas }}
   updateStrategy:
-    type: RollingUpdate
+    type: {{ .Values.slave.updateStrategy.type }}
+    {{- if (eq "Recreate" .Values.slave.updateStrategy.type) }}
+    rollingUpdate: null
+    {{- end }}
   template:
     metadata:
       {{- if .Values.slave.annotations }}
@@ -31,8 +34,12 @@ spec:
         app: "{{ template "mariadb.name" . }}"
         component: "slave"
         release: "{{ .Release.Name }}"
-        chart: {{ template "mariadb.chart" . }}
+        chart: "{{ template "mariadb.chart" . }}"
     spec:
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+      {{- end }}
+      serviceAccountName: "{{ template "mariadb.serviceAccountName" . }}"
       {{- if .Values.securityContext.enabled }}
       securityContext:
         fsGroup: {{ .Values.securityContext.fsGroup }}
@@ -70,40 +77,55 @@ spec:
 {{ toYaml . | indent 8 }}
       {{- end }}
       {{- end }}
+      {{- if .Values.slave.nodeSelector }}
+      nodeSelector:
+        {{ toYaml .Values.slave.nodeSelector | nindent 8 }}
+      {{- end -}}
       {{- with .Values.slave.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
       {{- end }}
-      {{- if .Values.image.pullSecrets }}
-      imagePullSecrets:
-      {{- range .Values.image.pullSecrets }}
-        - name: {{ . }}
-      {{- end}}
+{{- include "mariadb.imagePullSecrets" . | indent 6 }}
+      {{- if .Values.master.extraInitContainers }}
+      initContainers:
+{{ tpl .Values.master.extraInitContainers . | indent 6}}
       {{- end }}
       containers:
       - name: "mariadb"
         image: {{ template "mariadb.image" . }}
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         env:
+        {{- if .Values.image.debug}}
+        - name: BITNAMI_DEBUG
+          value: "true"
+        {{- end }}
         - name: MARIADB_REPLICATION_MODE
           value: "slave"
         - name: MARIADB_MASTER_HOST
           value: {{ template "mariadb.fullname" . }}
         - name: MARIADB_MASTER_PORT_NUMBER
-          value: "3306"
+          value: "{{ .Values.service.port }}"
         - name: MARIADB_MASTER_ROOT_USER
           value: "root"
         - name: MARIADB_MASTER_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
+            {{- if .Values.existingSecret }}
+              name: {{ .Values.existingSecret }}
+            {{- else }}
               name: {{ template "mariadb.fullname" . }}
+            {{- end }}
               key: mariadb-root-password
         - name: MARIADB_REPLICATION_USER
           value: "{{ .Values.replication.user }}"
         - name: MARIADB_REPLICATION_PASSWORD
           valueFrom:
             secretKeyRef:
+            {{- if .Values.existingSecret }}
+              name: {{ .Values.existingSecret }}
+            {{- else }}
               name: {{ template "mariadb.fullname" . }}
+            {{- end }}
               key: mariadb-replication-password
         ports:
         - name: mysql
@@ -140,13 +162,17 @@ spec:
 {{- end }}
 {{- if .Values.metrics.enabled }}
       - name: metrics
-        image: {{ template "metrics.image" . }}
+        image: {{ template "mariadb.metrics.image" . }}
         imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
         env:
         - name: MARIADB_MASTER_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
+            {{- if .Values.existingSecret }}
+              name: {{ .Values.existingSecret }}
+            {{- else }}
               name: {{ template "mariadb.fullname" . }}
+            {{- end }}
               key: mariadb-root-password
         command: [ 'sh', '-c', 'DATA_SOURCE_NAME="root:$MARIADB_MASTER_ROOT_PASSWORD@(localhost:3306)/" /bin/mysqld_exporter' ]
         ports:

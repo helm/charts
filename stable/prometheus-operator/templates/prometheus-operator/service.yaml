@@ -11,7 +11,22 @@ metadata:
 {{ toYaml .Values.prometheusOperator.service.annotations | indent 4 }}
 {{- end }}
 spec:
-  clusterIP: None
+{{- if .Values.prometheusOperator.service.clusterIP }}
+  clusterIP: {{ .Values.prometheusOperator.service.clusterIP }}
+{{- end }}
+{{- if .Values.prometheusOperator.service.externalIPs }}
+  externalIPs:
+{{ toYaml .Values.prometheusOperator.service.externalIPs | indent 4 }}
+{{- end }}
+{{- if .Values.prometheusOperator.service.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.prometheusOperator.service.loadBalancerIP }}
+{{- end }}
+{{- if .Values.prometheusOperator.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+  {{- range $cidr := .Values.prometheusOperator.service.loadBalancerSourceRanges }}
+    - {{ $cidr }}
+  {{- end }}
+{{- end }}
   ports:
   - name: http
     {{- if eq .Values.prometheusOperator.service.type "NodePort" }}

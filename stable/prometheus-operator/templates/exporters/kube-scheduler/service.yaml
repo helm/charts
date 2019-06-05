@@ -15,7 +15,9 @@ spec:
       port: {{ .Values.kubeScheduler.service.port}}
       protocol: TCP
       targetPort: {{ .Values.kubeScheduler.service.targetPort}}
+{{- if .Values.kubeScheduler.endpoints }}{{- else }}
   selector:
   {{ include "prometheus-operator.rangeskipempty" .Values.kubeScheduler.service.selector | indent 4 }}
+{{- end }}
   type: ClusterIP
 {{- end -}}
