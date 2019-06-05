@@ -19,6 +19,9 @@ controller:
     tag: "v0.7.1"
     pullPolicy: IfNotPresent
 
+  imagePullSecrets: []
+  # - name: secret-name
+
   ## Additional command line arguments to pass to haproxy-ingress-controller
   ## E.g. to specify the default SSL certificate you can use
   ## extraArgs:
