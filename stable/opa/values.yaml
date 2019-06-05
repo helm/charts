@@ -24,6 +24,9 @@ admissionControllerKind: ValidatingWebhookConfiguration
 # recommend leaving the failure policy as Ignore.
 admissionControllerFailurePolicy: Ignore
 
+# SideEffectClass for the webhook, setting to None enables dry-run
+admissionControllerSideEffect: Unknown
+
 # To restrict the kinds of operations and resources that are subject to OPA
 # policy checks, see the settings below. By default, all resources and
 # operations are subject to OPA policy checks.
