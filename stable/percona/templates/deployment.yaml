@@ -13,6 +13,9 @@ spec:
       labels:
         app: {{ template "percona.fullname" . }}
     spec:
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+      {{- end }}
       initContainers:
       - name: "remove-lost-found"
         image: "busybox:1.25.0"

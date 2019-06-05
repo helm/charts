@@ -32,6 +32,11 @@ image:
   # pullSecrets:
   #   - myRegistryKeySecretName
 
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName:
+
 ## does your cluster have rbac enabled? assume yes by default
 rbacEnabled: true
 

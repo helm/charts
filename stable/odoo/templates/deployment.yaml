@@ -26,14 +26,16 @@ spec:
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         env:
         - name: POSTGRESQL_HOST
-          value: {{ template "odoo.postgresql.fullname" . }}
+          value: {{ ternary (include "odoo.postgresql.fullname" .) .Values.externalDatabase.host .Values.postgresql.enabled | quote }}
+        - name: POSTGRESQL_USER
+          value: {{ ternary "postgres" .Values.externalDatabase.user .Values.postgresql.enabled | quote }}
         - name: POSTGRESQL_PORT_NUMBER
-          value: "5432"
+          value: {{ ternary "5432" .Values.externalDatabase.port .Values.postgresql.enabled | quote }}
         - name: POSTGRESQL_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "odoo.postgresql.fullname" . }}
-              key: postgresql-password
+              name: {{ ternary (include "odoo.postgresql.fullname" .) (printf "%s-%s" .Release.Name "externaldb") .Values.postgresql.enabled | quote }}
+              key: {{ ternary "postgresql-password" "db-password" .Values.postgresql.enabled | quote }}
         - name: ODOO_EMAIL
           value: {{ .Values.odooEmail | quote }}
         - name: ODOO_PASSWORD
