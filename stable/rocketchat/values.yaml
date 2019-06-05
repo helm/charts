@@ -11,6 +11,7 @@ image:
 # host:
 
 replicaCount: 1
+minAvailable: 1
 
 smtp:
   enabled: false
@@ -25,6 +26,32 @@ extraEnv:  # |
   #   value: '{"ssl": "true"}'
   # - name: MONGO_OPLOG_URL
   #   value: mongodb://oploguser:password@rocket-1:27017/local&replicaSet=rs0
+
+## Pod anti-affinity can prevent the scheduler from placing RocketChat replicas on the same node.
+## The default value "soft" means that the scheduler should *prefer* to not schedule two replica pods onto the same node but no guarantee is provided.
+## The value "hard" means that the scheduler is *required* to not schedule two replica pods onto the same node.
+## The value "" will disable pod anti-affinity so that no anti-affinity rules will be configured.
+##
+podAntiAffinity: ""
+
+## If anti-affinity is enabled sets the topologyKey to use for anti-affinity.
+## This can be changed to, for example, failure-domain.beta.kubernetes.io/zone
+##
+podAntiAffinityTopologyKey: kubernetes.io/hostname
+
+## Assign custom affinity rules to the RocketChat instance
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+##
+affinity: {}
+# nodeAffinity:
+#   requiredDuringSchedulingIgnoredDuringExecution:
+#     nodeSelectorTerms:
+#     - matchExpressions:
+#       - key: kubernetes.io/e2e-az-name
+#         operator: In
+#         values:
+#         - e2e-az1
+#         - e2e-az2
 
 ## MongoDB URL if using an externally provisioned MongoDB
 externalMongodbUrl:  # mongodb://user:password@localhost:27017/rocketchat
