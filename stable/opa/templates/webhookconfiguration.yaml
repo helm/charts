@@ -30,6 +30,7 @@ webhooks:
       service:
         name: {{ template "opa.fullname" . }}
         namespace: {{ .Release.Namespace }}
+    sideEffects: {{ .Values.admissionControllerSideEffect }}
 
 {{ if .Values.certManager.enabled }}
 ---
