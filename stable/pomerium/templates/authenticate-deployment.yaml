@@ -1,0 +1,142 @@
+{{- $secretName := default (include "pomerium.fullname" .) .Values.config.existingSecret }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: {{ template "pomerium.authenticate.name" . }}
+    helm.sh/chart: {{ template "pomerium.chart" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: authenticate
+  name: {{ template "pomerium.authenticate.fullname" . }}
+{{- if .Values.annotations }}
+  annotations:
+{{ toYaml .Values.annotations | indent 4 }}
+{{- end }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ template "pomerium.authenticate.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+{{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+{{- end }}
+      labels:
+        app.kubernetes.io/name: {{ template "pomerium.authenticate.name" . }}
+        helm.sh/chart: {{ template "pomerium.chart" . }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+{{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | indent 8 }}
+{{- end }}
+    spec:
+{{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName }}
+{{- end }}
+      containers:
+      - name: {{ .Chart.Name }}
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        args:
+{{- range $key, $value := .Values.extraArgs }}
+{{- if $value }}
+          - --{{ $key }}={{ $value }}
+{{- else }}
+          - --{{ $key }}
+{{- end }}
+{{- end }}
+        env:
+        - name: SERVICES
+          value: authenticate
+        - name: COOKIE_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: {{ $secretName }}
+              key: cookie-secret
+        - name: SHARED_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: {{ $secretName }}
+              key: shared-secret
+        - name: REDIRECT_URL
+          value: {{ default (printf "https://%s.%s/oauth2/callback" (include "pomerium.authenticate.fullname" .)  .Values.config.rootDomain ) .Values.authenticate.redirectUrl }}
+        - name: PROXY_ROOT_DOMAIN
+          value: {{ .Values.config.rootDomain }}
+        - name: IDP_PROVIDER
+          value: {{ .Values.authenticate.idp.provider }}
+        - name: IDP_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name:  {{ $secretName }}
+              key: idp-client-id
+        - name: IDP_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name:  {{ $secretName }}
+              key: idp-client-secret
+        - name: IDP_PROVIDER_URL
+          value: {{ .Values.authenticate.idp.url }}
+        - name: IDP_SERVICE_ACCOUNT
+          valueFrom:
+            secretKeyRef:
+              name:  {{ $secretName }}
+              key: idp-service-account
+        - name: CERTIFICATE
+          valueFrom:
+            secretKeyRef:
+              name:  {{ $secretName }}
+              key:  authenticate-cert
+        - name: CERTIFICATE_KEY
+          valueFrom:
+            secretKeyRef:
+              name:  {{ $secretName }}
+              key:  authenticate-key
+        - name: CERTIFICATE_AUTHORITY
+          valueFrom:
+            secretKeyRef:
+              name:  {{ $secretName }}
+              key:  ca-cert
+{{- range $name, $value := .Values.extraEnv }}
+        - name: {{ $name }}
+          value: {{ quote $value }}
+{{- end }}
+        ports:
+          - containerPort: 443
+            name: https
+            protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /ping
+            port: https
+            scheme: HTTPS
+        readinessProbe:
+          httpGet:
+            path: /ping
+            port: https
+            scheme: HTTPS
+      resources:
+{{ toYaml .Values.resources | indent 10 }}
+{{- if .Values.extraVolumes }}
+      volumes:
+{{- toYaml .Values.extraVolumes | indent 8 }}
+{{- end }}
+{{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | indent 8 }}
+{{- end }}
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
+{{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+{{- end }}
+{{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+{{- end }}
