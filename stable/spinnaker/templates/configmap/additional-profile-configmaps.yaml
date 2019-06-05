@@ -8,7 +8,7 @@ metadata:
 Render profiles for each service by merging predefined defaults with values passed by
 .Values.halyard.additionalProfileConfigMaps.data
 */}}
-{{- $profiles := dict "gate-local.yml" "" -}}
+{{- $profiles := dict "gate-local.yml" dict -}}
 
 {{- /* Defaults: Disable S3 versioning on Front50 if Minio storage is used */}}
 {{- /* https://www.spinnaker.io/setup/install/storage/minio/#editing-your-storage-settings */}}

@@ -23,6 +23,18 @@ spec:
         imagePullPolicy: Always
         resources:
 {{ toYaml .Values.resources | indent 10 }}
+        readinessProbe:
+          exec:
+            command: 
+{{ toYaml .Values.readinessProbe.command | indent 14 }}
+          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+        livenessProbe:
+          exec:
+            command:
+{{ toYaml .Values.livenessProbe.command | indent 14 }}
+          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
         env:
         - name: EULA
           value: {{ .Values.minecraftServer.eula | quote }}
