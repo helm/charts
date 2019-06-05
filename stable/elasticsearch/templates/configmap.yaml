@@ -14,9 +14,7 @@ data:
 
     node.data: ${NODE_DATA:true}
     node.master: ${NODE_MASTER:true}
-{{- if hasPrefix "5." .Values.appVersion }}
-    node.ingest: ${NODE_INGEST:true}
-{{- else if hasPrefix "6." .Values.appVersion }}
+{{- if or (hasPrefix "5." .Values.appVersion) (hasPrefix "6." .Values.appVersion) (hasPrefix "7." .Values.appVersion) }}
     node.ingest: ${NODE_INGEST:true}
 {{- end }}
     node.name: ${HOSTNAME}
@@ -76,6 +74,28 @@ data:
     xpack.security.enabled: ${XPACK_SECURITY_ENABLED:false}
     xpack.watcher.enabled: ${XPACK_WATCHER_ENABLED:false}
 {{- end }}
+
+{{- else if hasPrefix "7." .Values.appVersion }}
+    # see https://github.com/kubernetes/kubernetes/issues/3595
+    bootstrap.memory_lock: ${BOOTSTRAP_MEMORY_LOCK:false}
+
+    discovery.seed_hosts: ${DISCOVERY_SERVICE:}
+    
+    cluster.initial_master_nodes:
+    {{- range $i, $e := until (int .Values.master.replicas) }}
+      - {{ template "elasticsearch.master.fullname" $ }}-{{ $i }}
+    {{- end }}
+
+{{- if .Values.cluster.xpackEnable }}
+    # see https://www.elastic.co/guide/en/x-pack/current/xpack-settings.html
+    # After 6.3 xpack systems changed and are enabled by default and different configs manage them this enables monitoring
+    xpack.monitoring.collection.enabled: ${XPACK_MONITORING_ENABLED:false}
+    xpack.ml.enabled: ${XPACK_ML_ENABLED:false}
+    xpack.monitoring.enabled: ${XPACK_MONITORING_ENABLED:false}
+    xpack.security.enabled: ${XPACK_SECURITY_ENABLED:false}
+    xpack.watcher.enabled: ${XPACK_WATCHER_ENABLED:false}
+{{- end }}
+
 {{- end }}
 
     # see https://github.com/elastic/elasticsearch-definitive-guide/pull/679
@@ -128,6 +148,50 @@ data:
     rootLogger.appenderRef.console.ref = console
     logger.searchguard.name = com.floragunn
     logger.searchguard.level = info
+{{- else if hasPrefix "7." .Values.appVersion }}
+  log4j2.properties: |-
+    status = error
+    # log action execution errors for easier debugging
+    logger.action.name = org.elasticsearch.action
+    logger.action.level = debug
+    
+    appender.rolling.type = Console
+    appender.rolling.name = rolling
+    appender.rolling.layout.type = ESJsonLayout
+    appender.rolling.layout.type_name = server
+    
+    rootLogger.level = info
+    rootLogger.appenderRef.rolling.ref = rolling
+    
+    appender.deprecation_rolling.type = Console
+    appender.deprecation_rolling.name = deprecation_rolling
+    appender.deprecation_rolling.layout.type = ESJsonLayout
+    appender.deprecation_rolling.layout.type_name = deprecation
+    
+    logger.deprecation.name = org.elasticsearch.deprecation
+    logger.deprecation.level = warn
+    logger.deprecation.appenderRef.deprecation_rolling.ref = deprecation_rolling
+    logger.deprecation.additivity = false
+    
+    appender.index_search_slowlog_rolling.type = Console
+    appender.index_search_slowlog_rolling.name = index_search_slowlog_rolling
+    appender.index_search_slowlog_rolling.layout.type = ESJsonLayout
+    appender.index_search_slowlog_rolling.layout.type_name = index_search_slowlog
+    
+    logger.index_search_slowlog_rolling.name = index.search.slowlog
+    logger.index_search_slowlog_rolling.level = trace
+    logger.index_search_slowlog_rolling.appenderRef.index_search_slowlog_rolling.ref = index_search_slowlog_rolling
+    logger.index_search_slowlog_rolling.additivity = false
+    
+    appender.index_indexing_slowlog_rolling.type = Console
+    appender.index_indexing_slowlog_rolling.name = index_indexing_slowlog_rolling
+    appender.index_indexing_slowlog_rolling.layout.type = ESJsonLayout
+    appender.index_indexing_slowlog_rolling.layout.type_name = index_indexing_slowlog
+    
+    logger.index_indexing_slowlog.name = index.indexing.slowlog.index
+    logger.index_indexing_slowlog.level = trace
+    logger.index_indexing_slowlog.appenderRef.index_indexing_slowlog_rolling.ref = index_indexing_slowlog_rolling
+    logger.index_indexing_slowlog.additivity = false
 {{- end }}
 {{- if .Values.data.hooks.drain.enabled }}
   pre-stop-hook.sh: |-

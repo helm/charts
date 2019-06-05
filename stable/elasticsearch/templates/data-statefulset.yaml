@@ -160,7 +160,7 @@ spec:
           name: config
           subPath: logging.yml
 {{- end }}
-{{- if hasPrefix "5." .Values.appVersion }}
+{{- if or (hasPrefix "5." .Values.appVersion) (hasPrefix "6." .Values.appVersion) (hasPrefix "7." .Values.appVersion) }}
         - mountPath: /usr/share/elasticsearch/config/log4j2.properties
           name: config
           subPath: log4j2.properties
