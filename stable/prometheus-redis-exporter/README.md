@@ -57,6 +57,12 @@ The following table lists the configurable parameters and their default values.
 | `rbac.pspEnabled`       | Specifies whether a PodSecurityPolicy should be created.| `true` |
 | `serviceAccount.create` | Specifies whether a service account should be created.| `true` |
 | `serviceAccount.name`   | Name of the service account.|        |
+| `serviceMonitor.enabled`       | Use servicemonitor from prometheus operator            | `false`                    |
+| `serviceMonitor.namespace`     | Namespace this servicemonitor is installed in          |                            |
+| `serviceMonitor.interval`      | How frequently Prometheus should scrape                |                            |
+| `serviceMonitor.telemetryPath` | Path to redis-exporter telemtery-path                  |                            |
+| `serviceMonitor.labels`        | Labels for the servicemonitor passed to Prometheus Operator      |  `{}`            |
+| `serviceMonitor.timeout`       | Timeout after which the scrape is ended                |                            |
 
 For more information please refer to the [redis_exporter](https://github.com/oliver006/redis_exporter) documentation.
 
