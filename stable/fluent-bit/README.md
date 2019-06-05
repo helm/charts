@@ -124,6 +124,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `affinity`                         | Expressions for affinity                   | `NULL`                                            |
 | `metrics.enabled`                  | Specifies whether a service for metrics should be exposed | `false`                            |
 | `metrics.service.annotations`      | Optional metrics service annotations       | `NULL`                                            |
+| `metrics.service.labels`           | Additional labels for the fluent-bit metrics service definition, specified as a map.                                                    | None                                              |
 | `metrics.service.port`             | Port on where metrics should be exposed    | `2020`                                            |
 | `metrics.service.type`             | Service type for metrics                   | `ClusterIP`                                       |
 | `trackOffsets`                     | Specify whether to track the file offsets for tailing docker logs. This allows fluent-bit to pick up where it left after pod restarts but requires access to a `hostPath` | `false` |

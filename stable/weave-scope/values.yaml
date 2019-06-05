@@ -4,7 +4,7 @@ global:
   # global.image: the image that will be used for this release
   image:
     repository: weaveworks/scope
-    tag: 1.10.1
+    tag: 1.11.1
     # global.image.pullPolicy: must be Always, IfNotPresent, or Never
     pullPolicy: "IfNotPresent"
   # global.service.*: the configuration of the service used to access the frontend

@@ -10,6 +10,7 @@ metadata:
 spec:
   serviceName: {{ template "logstash.fullname" . }}
   replicas: {{ .Values.replicaCount }}
+  podManagementPolicy: {{ .Values.podManagementPolicy }}
   selector:
     matchLabels:
       app: {{ template "logstash.name" . }}
@@ -46,6 +47,10 @@ spec:
       imagePullSecrets:
 {{ toYaml .Values.image.pullSecrets | indent 8 }}
       {{- end }}
+      initContainers:
+{{- if .Values.extraInitContainers }}
+{{ toYaml .Values.extraInitContainers | indent 8 }}
+{{- end }}
       containers:
 
         ## logstash
