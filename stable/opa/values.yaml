@@ -24,6 +24,11 @@ admissionControllerKind: ValidatingWebhookConfiguration
 # recommend leaving the failure policy as Ignore.
 admissionControllerFailurePolicy: Ignore
 
+# Adds a namespace selector to the admission controller webhook
+admissionControllerNamespaceSelector:
+  matchExpressions:
+    - {key: openpolicyagent.org/webhook, operator: NotIn, values: [ignore]}
+
 # SideEffectClass for the webhook, setting to None enables dry-run
 admissionControllerSideEffect: Unknown
 
