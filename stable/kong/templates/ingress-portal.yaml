@@ -1,33 +1,35 @@
-{{- if .Values.proxy.ingress.enabled -}}
+{{- if .Values.enterprise.enabled }}
+{{- if .Values.portal.ingress.enabled -}}
 {{- $serviceName := include "kong.fullname" . -}}
-{{- $servicePort := include "kong.ingress.servicePort" .Values.proxy -}}
-{{- $path := .Values.proxy.ingress.path -}}
+{{- $servicePort := include "kong.ingress.servicePort" .Values.portal -}}
+{{- $path := .Values.portal.ingress.path -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: {{ template "kong.fullname" . }}-proxy
+  name: {{ template "kong.fullname" . }}-portal
   labels:
     app: {{ template "kong.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
   annotations:
-    {{- range $key, $value := .Values.proxy.ingress.annotations }}
+    {{- range $key, $value := .Values.portal.ingress.annotations }}
       {{ $key }}: {{ $value | quote }}
     {{- end }}
 spec:
   rules:
-    {{- range $host := .Values.proxy.ingress.hosts }}
+    {{- range $host := .Values.portal.ingress.hosts }}
     - host: {{ $host }}
       http:
         paths:
           - path: {{ $path }}
             backend:
-              serviceName: {{ $serviceName }}-proxy
+              serviceName: {{ $serviceName }}-portal
               servicePort: {{ $servicePort }}
     {{- end -}}
-  {{- if .Values.proxy.ingress.tls }}
+  {{- if .Values.portal.ingress.tls }}
   tls:
-{{ toYaml .Values.proxy.ingress.tls | indent 4 }}
+{{ toYaml .Values.portal.ingress.tls | indent 4 }}
   {{- end -}}
+{{- end -}}
 {{- end -}}
