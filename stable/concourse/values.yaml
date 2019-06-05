@@ -419,6 +419,23 @@ concourse:
       ##
       retryInitial:
 
+    ## Configuration for using Credhub as a credential manager.
+    ## Ref: https://concourse-ci.org/credhub-credential-manager.html
+    ##
+    credhub:
+      ## Enable the use of credhub as the credential manager.
+      ##
+      enabled: false
+
+      ## CredHub server address used to access secrets
+      ##
+      url:
+
+      ## CredHub Path under which to namespace credential lookup (default: /concourse)
+      ##
+      pathPrefix:
+
+
     ## Don't actually do any automatic scheduling or checking.
     ##
     noop: false

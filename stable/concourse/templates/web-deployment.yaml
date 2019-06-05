@@ -465,6 +465,15 @@ spec:
               value: {{ .Values.concourse.web.vault.serverName | quote }}
             {{- end }}
             {{- end }}
+
+        {{- if .Values.concourse.web.credhub.enabled }}
+            {{- if .Values.concourse.web.credhub.url }}
+            - name: CONCOURSE_CREDHUB_URL
+              value: {{ .Values.concourse.web.credhub.url | quote }}
+            {{- end }}
+        {{- end }}
+
+
             {{- if .Values.concourse.web.noop }}
             - name: CONCOURSE_NOOP
               value: {{ .Values.concourse.web.noop | quote }}
