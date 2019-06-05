@@ -17,7 +17,7 @@ This chart bootstraps a prometheus [NATS exporter](https://github.com/nats-io/pr
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release incubator/prometheus-nats-exporter
+$ helm install --name my-release stable/prometheus-nats-exporter
 ```
 
 The command deploys NATS exporter on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -38,12 +38,12 @@ The following table lists the configurable parameters of the postgres Exporter c
 
 | Parameter                       | Description                                | Default                                                    |
 | ------------------------------- | ------------------------------------------ | ---------------------------------------------------------- |
-| `image`                         | Image                                      | `appcelerator/prometheus-nats-exporter`                    |
-| `imageTag`                      | Image tag                                  | `0.17.0`                                                   |
+| `image`                         | Image                                      | `synadia/prometheus-nats-exporter`                         |
+| `imageTag`                      | Image tag                                  | `0.3.0`                                                    |
 | `imagePullPolicy`               | Image pull policy                          | `IfNotPresent`                                             |
 | `service.type`                  | Service type                               | `ClusterIP`                                                |
 | `service.port`                  | The service port                           | `80`                                                       |
-| `service.targetPort`            | The target port of the container           | `8222`                                                     |
+| `service.targetPort`            | The target port of the container           | `7777`                                                     |
 | `resources`                     |                                            | `{}`                                                       |
 | `config.nats.service`           | NATS monitoring [service name](https://github.com/helm/charts/blob/master/stable/nats/templates/monitoring-svc.yaml)| `nats-nats-monitoring`|
 | `config.nats.namespace`         | Namespace in which NATS deployed           | `default`                                                  |
@@ -60,7 +60,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 ```console
 $ helm install --name my-release \
   --set config.nats.service=nats-production-nats-monitoring  \
-    incubator/prometheus-nats-exporter
+    stable/prometheus-nats-exporter
 ```
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,

@@ -29,6 +29,11 @@ spec:
             - "-port"
             - "{{ .Values.service.targetPort }}"
             - "-varz"
+            - "-channelz"
+            - "-connz"
+            - "-routez"
+            - "-serverz"
+            - "-subz"
             - "http://{{ .Values.config.nats.service }}.{{ .Values.config.nats.namespace }}.svc.cluster.local:{{ .Values.config.nats.port }}"
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
