@@ -31,6 +31,13 @@ config:
     service: nats-nats-monitoring
     namespace: default
     port: 8222
+  metrics:
+    varz: true
+    channelz: true
+    connz: true
+    routez: true
+    serverz: true
+    subz: true
 
 nodeSelector: {}
 
