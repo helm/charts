@@ -1,0 +1,39 @@
+{{- if and .Values.admissionWebhooks.create .Values.admissionWebhooks.patch.create }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name:  {{ template "prometheus-operator.fullname" . }}-admission-patch
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+  labels:
+    app: {{ template "prometheus-operator.name" $ }}-admission-patch
+{{- include "prometheus-operator.labels" $ | indent 4 }}
+spec:
+  ttlSecondsAfterFinished: 0
+  template:
+    metadata:
+      name:  {{ template "prometheus-operator.fullname" . }}-admission-patch
+      labels:
+        app: {{ template "prometheus-operator.name" $ }}-admission-patch
+{{- include "prometheus-operator.labels" $ | indent 8 }}
+    spec:
+      {{- if .Values.admissionWebhooks.patch.priorityClassName }}
+      priorityClassName: {{ .Values.admissionWebhooks.patch.priorityClassName }}
+      {{- end }}
+      containers:
+        - name: patch
+          image: {{ .Values.admissionWebhooks.patch.image.repository }}:{{ .Values.admissionWebhooks.patch.image.tag }}
+          imagePullPolicy: {{ .Values.admissionWebhooks.patch.pullPolicy }}
+          args:
+            - patch
+            - --webhook-name={{ template "prometheus-operator.fullname" . }}-admission
+            - --namespace={{ .Release.Namespace }}
+            - --secret-name={{ template "prometheus-operator.fullname" . }}-admission
+            - --patch-failure-policy=Fail
+      restartPolicy: OnFailure
+      serviceAccountName: {{ template "prometheus-operator.fullname" . }}-admission
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 2000
+{{- end }}
