@@ -8,8 +8,7 @@ spec:
   template:
     metadata:
     {{- if .Values.podAnnotations }}
-      annotations:
-{{ toYaml .Values.podAnnotations | indent 8}}
+      annotations: {{ toYaml .Values.podAnnotations | nindent 8}}
     {{- end }}
       labels: {{ include "external-dns.labels" . | indent 8 }}
     spec:
@@ -57,6 +56,12 @@ spec:
           {{- end }}
           {{ if .Values.dryRun }}
             - --dry-run
+          {{- end }}
+          {{ if .Values.aws.assumeRoleArn }}
+            - --aws-assume-role={{ .Values.aws.assumeRoleArn }}
+          {{- end }}
+          {{ if .Values.aws.batchChangeSize }}
+            - --aws-batch-change-size={{ .Values.aws.batchChangeSize }}
           {{- end }}
           {{- range $key, $value := .Values.extraArgs }}
             {{- if $value }}
@@ -208,12 +213,10 @@ spec:
           ports:
             - containerPort: 7979
         {{- if .Values.securityContext }}
-          securityContext:
-{{ toYaml .Values.securityContext | indent 12 }}
+          securityContext: {{ toYaml .Values.securityContext | nindent 12 }}
         {{- end }}
         {{- if .Values.resources }}
-          resources:
-{{ toYaml .Values.resources | indent 12 }}
+          resources: {{ toYaml .Values.resources | nindent 12 }}
         {{- end }}
       volumes:
       {{- if .Values.google.serviceAccountSecret }}
@@ -250,15 +253,12 @@ spec:
             path: {{ .Values.designate.customCA.filename }}
       {{- end }}
     {{- if .Values.nodeSelector }}
-      nodeSelector:
-{{ toYaml .Values.nodeSelector | indent 8 }}
+      nodeSelector: {{ toYaml .Values.nodeSelector | nindent 8 }}
     {{- end }}
     {{- if .Values.tolerations }}
-      tolerations:
-{{ toYaml .Values.tolerations | indent 8 }}
+      tolerations: {{ toYaml .Values.tolerations | nindent 8 }}
     {{- end }}
 {{- if .Values.affinity }}
-      affinity:
-{{ toYaml .Values.affinity | indent 8 }}
+      affinity: {{ toYaml .Values.affinity | nindent 8 }}
     {{- end }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "external-dns.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}

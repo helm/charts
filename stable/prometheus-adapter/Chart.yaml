@@ -1,10 +1,12 @@
+apiVersion: v1
 name: prometheus-adapter
-version: v0.5.0
+version: 1.0.3
 appVersion: v0.5.0
 description: A Helm chart for k8s prometheus adapter
 home: https://github.com/DirectXMan12/k8s-prometheus-adapter
 keywords:
   - hpa
+  - metrics
   - prometheus
   - adapter
 sources:
@@ -13,3 +15,4 @@ sources:
 maintainers:
   - name: mattiasgees
     email: mattias.gees@jetstack.io
+  - name: steven-sheehy

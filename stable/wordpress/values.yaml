@@ -13,7 +13,7 @@
 image:
   registry: docker.io
   repository: bitnami/wordpress
-  tag: 5.2.0
+  tag: 5.2.1-debian-9-r9
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -65,17 +65,25 @@ wordpressTablePrefix: wp_
 ## Skip wizard installation (only if you use an external database that already contains WordPress data)
 ## ref: https://github.com/bitnami/bitnami-docker-wordpress#connect-wordpress-docker-container-to-an-existing-database
 ##
-wordpressSkipInstall: "no"
+wordpressSkipInstall: false
 
 ## Set to `false` to allow the container to be started with blank passwords
 ## ref: https://github.com/bitnami/bitnami-docker-wordpress#environment-variables
+##
 allowEmptyPassword: true
 
 ## Set Apache allowOverride to None
-allowOverrideNone: "no"
+## ref: https://github.com/bitnami/bitnami-docker-wordpress#environment-variables
+##
+allowOverrideNone: false
 
 # ConfigMap with custom wordpress-htaccess.conf file (requires allowOverrideNone to true)
 customHTAccessCM:
+
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName:
 
 ## SMTP mail delivery configuration
 ## ref: https://github.com/bitnami/bitnami-docker-wordpress/#smtp-configuration

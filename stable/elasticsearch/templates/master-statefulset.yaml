@@ -23,6 +23,9 @@ spec:
 {{ toYaml .Values.master.podAnnotations | indent 8 }}
         {{- end }}
     spec:
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+      {{- end }}
       serviceAccountName: {{ template "elasticsearch.serviceAccountName.master" . }}
 {{- if .Values.master.priorityClassName }}
       priorityClassName: "{{ .Values.master.priorityClassName }}"
@@ -135,6 +138,10 @@ spec:
 {{ toYaml .Values.master.readinessProbe | indent 10 }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+        {{- if .Values.securityContext.enabled }}
+        securityContext:
+          runAsUser: {{ .Values.securityContext.runAsUser }}
+        {{- end }}
         ports:
         - containerPort: 9300
           name: transport

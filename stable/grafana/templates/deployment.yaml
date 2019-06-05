@@ -2,6 +2,7 @@ apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
   name: {{ template "grafana.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "grafana.name" . }}
     chart: {{ template "grafana.chart" . }}
@@ -30,7 +31,7 @@ spec:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         checksum/dashboards-json-config: {{ include (print $.Template.BasePath "/dashboards-json-configmap.yaml") . | sha256sum }}
-        checksum/sc-dashboard-provider-config: {{ include (print $.Template.BasePath "/configmap-dashboard-provider.yaml") . | sha256sum }}    
+        checksum/sc-dashboard-provider-config: {{ include (print $.Template.BasePath "/configmap-dashboard-provider.yaml") . | sha256sum }}
 {{- if not .Values.admin.existingSecret }}
         checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
 {{- end }}
@@ -38,6 +39,9 @@ spec:
 {{ toYaml . | indent 8 }}
 {{- end }}
     spec:
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+      {{- end }}
       serviceAccountName: {{ template "grafana.serviceAccountName" . }}
 {{- if .Values.schedulerName }}
       schedulerName: "{{ .Values.schedulerName }}"
@@ -209,9 +213,11 @@ spec:
 {{- if .Values.sidecar.dashboards.enabled }}
             - name: sc-dashboard-volume
               mountPath: {{ .Values.sidecar.dashboards.folder | quote }}
+{{- if not .Values.dashboardProviders }}
             - name: sc-dashboard-provider
               mountPath: "/etc/grafana/provisioning/dashboards/sc-dashboardproviders.yaml"
               subPath: provider.yaml
+{{- end}}
 {{- end}}
 {{- if .Values.sidecar.datasources.enabled }}
             - name: sc-datasources-volume
@@ -349,9 +355,11 @@ spec:
       {{- if .Values.sidecar.dashboards.enabled }}
         - name: sc-dashboard-volume
           emptyDir: {}
+      {{- if not .Values.dashboardProviders }}
         - name: sc-dashboard-provider
           configMap:
             name: {{ template "grafana.fullname" . }}-config-dashboards
+      {{- end -}}
       {{- end }}
       {{- if .Values.sidecar.datasources.enabled }}
         - name: sc-datasources-volume

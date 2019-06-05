@@ -109,17 +109,9 @@ spec:
           image: "{{ .Values.configurator.image.repository }}:{{ .Values.configurator.image.tag }}"
           imagePullPolicy: {{ .Values.configurator.image.pullPolicy }}
           ports:
-            - name: http
+            - name: configurator
               containerPort: {{ .Values.configurator.service.port }}
               protocol: TCP
-          livenessProbe:
-            tcpSocket:
-              port: http
-            initialDelaySeconds: 30
-          readinessProbe:
-            tcpSocket:
-              port: http
-            initialDelaySeconds: 15
           env:
             {{- if .Values.configurator.hassApiPassword }}
             - name: HC_HASS_API_PASSWORD
@@ -177,6 +169,52 @@ spec:
           {{- end }}
           resources:
 {{ toYaml .Values.configurator.resources | indent 12 }}
+        {{- end }}
+        {{- if .Values.vscode.enabled }}
+        - name: vscode
+          image: "{{ .Values.vscode.image.repository }}:{{ .Values.vscode.image.tag }}"
+          imagePullPolicy: {{ .Values.vscode.image.pullPolicy }}
+          workingDir: {{ .Values.vscode.hassConfig }}
+          args:
+            - --allow-http
+            - --port={{ .Values.vscode.service.port }}
+            {{- if not (.Values.vscode.password) }}
+            - --no-auth
+            {{- end }}
+            {{- if .Values.vscode.vscodePath }}
+            - --extensions-dir={{ .Values.vscode.vscodePath }}
+            - --user-data-dir={{ .Values.vscode.vscodePath }}
+            {{- end }}
+          ports:
+            - name: vscode
+              containerPort: {{ .Values.vscode.service.port }}
+              protocol: TCP
+          env:
+            {{- if .Values.vscode.password }}
+            - name: PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "home-assistant.fullname" . }}-vscode
+                  key: password
+            {{- end }}
+            {{- range $key, $value := .Values.vscode.extraEnv }}
+            - name: {{ $key }}
+              value: {{ $value }}
+            {{- end }}
+          volumeMounts:
+          - mountPath: /config
+            name: config
+          {{- if .Values.usePodSecurityContext }}
+          securityContext:
+            runAsUser: {{ default 0 .Values.runAsUser }}
+          {{- if and (.Values.runAsUser) (.Values.fsGroup) }}
+          {{- if not (eq .Values.runAsUser 0.0) }}
+            fsGroup: {{ .Values.fsGroup }}
+          {{- end }}
+          {{- end }}
+          {{- end }}
+          resources:
+{{ toYaml .Values.vscode.resources | indent 12 }}
         {{- end }}
       volumes:
       - name: config

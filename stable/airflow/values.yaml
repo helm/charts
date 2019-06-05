@@ -59,7 +59,9 @@ airflow:
   ## fernetKey: ABCDABCDABCDABCDABCDABCDABCDABCDABCDABCD
   fernetKey: ""
   service:
+    annotations: {}
     type: ClusterIP
+    externalPort: 8080
   ##
   ## The executor to use.
   ##
@@ -176,8 +178,7 @@ airflow:
   #   emptyDir: {}
 
 scheduler:
-  resources:
-    scheduler: {}
+  resources: {}
     # limits:
     #   cpu: "1000m"
     #   memory: "1Gi"
@@ -194,6 +195,10 @@ flower:
     # requests:
     #   cpu: "100m"
     #   memory: "128Mi"
+  service:
+    annotations: {}
+    type: ClusterIP
+    externalPort: 5555
 
 web:
   resources: {}
@@ -359,6 +364,8 @@ persistence:
   ##
   ## Existing claim to use
   # existingClaim: nil
+  ## Existing claim's subPath to use, e.g. "dags" (optional)
+  # subPath: ""
   ##
   ## Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
@@ -381,6 +388,8 @@ logsPersistence:
   ##
   ## Existing claim to use
   # existingClaim: nil
+  ## Existing claim's subPath to use, e.g. "logs" (optional)
+  # subPath: ""
   ##
   ## Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
@@ -549,3 +558,17 @@ serviceMonitor:
   ## [Kube Prometheus Selector Label](https://github.com/helm/charts/tree/master/stable/prometheus-operator#exporters)
   selector:
     prometheus: kube-prometheus
+
+# Enable this if you're using https://github.com/coreos/prometheus-operator
+prometheusRule:
+  enabled: false
+  ## Namespace in which the prometheus rule is created
+  # namespace: monitoring
+  ## Define individual alerting rules as required
+  ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#rulegroup
+  ##      https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/
+  groups: {}
+
+  ## Used to pass Labels that are used by the Prometheus installed in your cluster to select Prometheus Rules to work with
+  ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#prometheusspec
+  additionalLabels: {}

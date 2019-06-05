@@ -7,6 +7,9 @@ metadata:
     chart: {{ template "atlantis.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+{{- if .Values.statefulSet.labels }}
+{{ toYaml .Values.statefulSet.labels | indent 4 }}
+{{- end }}
   {{- with .Values.statefulSet.annotations }}
   annotations:
 {{ toYaml . | indent 4 }}
@@ -22,6 +25,9 @@ spec:
       labels:
         app: {{ template "atlantis.name" . }}
         release: {{ .Release.Name }}
+{{- if .Values.podTemplate.labels }}
+{{ toYaml .Values.podTemplate.labels | indent 8 }}
+{{- end }}
       {{- with .Values.podTemplate.annotations }}
       annotations:
 {{ toYaml . | indent 8 }}
@@ -46,10 +52,10 @@ spec:
         secret:
           secretName: {{ template "atlantis.fullname" . }}-gitconfig
       {{- end }}
-      {{- if .Values.aws }}
+      {{- if or .Values.aws .Values.awsSecretName}}
       - name: aws-volume
         secret:
-          secretName: {{ template "atlantis.fullname" . }}-aws
+          secretName: {{ template "atlantis.awsSecretName" . }}
       {{- end }}
       {{- if .Values.repoConfig }}
       - name: repo-config
@@ -72,6 +78,12 @@ spec:
               exec:
                 command: ["/bin/sh", "-c", "cp /etc/secret-gitconfig/gitconfig /home/atlantis/.gitconfig && chown atlantis /home/atlantis/.gitconfig"]
           {{- end}}
+          {{- if .Values.command }}
+          command:
+          {{- range .Values.command }}
+          - {{ . }}
+          {{- end }}
+          {{- end }}
           args:
             - server
           ports:
@@ -84,7 +96,7 @@ spec:
           {{- end }}
           {{- if .Values.allowForkPRs }}
           - name: ATLANTIS_ALLOW_FORK_PRS
-            value: {{ .Values.allowForkPRS }}
+            value: {{ .Values.allowForkPRs | quote }}
           {{- end }}
           {{- if .Values.defaultTFVersion }}
           - name: ATLANTIS_DEFAULT_TF_VERSION
@@ -123,12 +135,12 @@ spec:
           - name: ATLANTIS_GH_TOKEN
             valueFrom:
               secretKeyRef:
-                name: {{ template "atlantis.fullname" . }}-webhook
+                name: {{ template "atlantis.vcsSecretName" . }}
                 key: github_token
           - name: ATLANTIS_GH_WEBHOOK_SECRET
             valueFrom:
               secretKeyRef:
-                name: {{ template "atlantis.fullname" . }}-webhook
+                name: {{ template "atlantis.vcsSecretName" . }}
                 key: github_secret
           {{- if .Values.github.hostname }}
           - name: ATLANTIS_GH_HOSTNAME
@@ -141,12 +153,12 @@ spec:
           - name: ATLANTIS_GITLAB_TOKEN
             valueFrom:
               secretKeyRef:
-                name: {{ template "atlantis.fullname" . }}-webhook
+                name: {{ template "atlantis.vcsSecretName" . }}
                 key: gitlab_token
           - name: ATLANTIS_GITLAB_WEBHOOK_SECRET
             valueFrom:
               secretKeyRef:
-                name: {{ template "atlantis.fullname" . }}-webhook
+                name: {{ template "atlantis.vcsSecretName" . }}
                 key: gitlab_secret
           {{- if .Values.gitlab.hostname }}
           - name: ATLANTIS_GITLAB_HOSTNAME
@@ -159,7 +171,7 @@ spec:
           - name: ATLANTIS_BITBUCKET_TOKEN
             valueFrom:
               secretKeyRef:
-                name: {{ template "atlantis.fullname" . }}-webhook
+                name: {{ template "atlantis.vcsSecretName" . }}
                 key: bitbucket_token
           {{- if .Values.bitbucket.baseURL }}
           - name: ATLANTIS_BITBUCKET_BASE_URL
@@ -167,7 +179,7 @@ spec:
           - name: ATLANTIS_BITBUCKET_WEBHOOK_SECRET
             valueFrom:
               secretKeyRef:
-                name: {{ template "atlantis.fullname" . }}-webhook
+                name: {{ template "atlantis.vcsSecretName" . }}
                 key: bitbucket_secret
           {{- end }}
           {{- end }}
@@ -208,7 +220,7 @@ spec:
             readOnly: true
             mountPath: /etc/secret-gitconfig
           {{- end }}
-          {{- if .Values.aws}}
+          {{- if or .Values.aws .Values.awsSecretName}}
           - name: aws-volume
             readOnly: true
             mountPath: /home/atlantis/.aws
