@@ -155,7 +155,7 @@ spec:
             command:
             - sh
             - -c
-            {{- include "postgresql.readinessProbeCommand" . | indent 8 }}
+            {{- include "postgresql.readinessProbeCommand" . | nindent 12 }}
           initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
           timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}

@@ -300,17 +300,13 @@ imagePullSecrets:
 Get the readiness probe command
 */}}
 {{- define "postgresql.readinessProbeCommand" -}}
+- |
+{{- if (include "postgresql.database" .) }}
+  pg_isready -U {{ include "postgresql.username" . | quote }} -d {{ (include "postgresql.database" .) | quote }} -h 127.0.0.1 -p {{ template "postgresql.port" . }}
+{{- else }}
+  pg_isready -U {{ include "postgresql.username" . | quote }} -h 127.0.0.1 -p {{ template "postgresql.port" . }}
+{{- end }}
 {{- if contains "bitnami/" .Values.image.repository }}
-  {{- if (include "postgresql.database" .) }}
-    - pg_isready -U {{ include "postgresql.username" . | quote }} -d {{ (include "postgresql.database" .) | quote }} -h 127.0.0.1 -p {{ template "postgresql.port" . }} && [ -f /opt/bitnami/postgresql/tmp/.initialized ]
-  {{- else }}
-    - pg_isready -U {{ include "postgresql.username" . | quote }} -h 127.0.0.1 -p {{ template "postgresql.port" . }} && [ -f /opt/bitnami/postgresql/tmp/.initialized ]
-  {{- end }}
-{{- else -}}
-  {{- if (include "postgresql.database" .) }}
-    - pg_isready -U {{ include "postgresql.username" . | quote }} -d {{ (include "postgresql.database" .) | quote }} -h 127.0.0.1 -p {{ template "postgresql.port" . }}
-  {{- else }}
-    - pg_isready -U {{ include "postgresql.username" . | quote }} -h 127.0.0.1 -p {{ template "postgresql.port" . }}
-  {{- end }}
+  [ -f /opt/bitnami/postgresql/tmp/.initialized ]
 {{- end -}}
 {{- end -}}
