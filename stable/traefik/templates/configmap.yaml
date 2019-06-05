@@ -13,7 +13,7 @@ data:
     {{- if .Values.debug.enabled }}
     debug = true
     {{- else }}
-    logLevel = "INFO"
+    logLevel = {{ .Values.logLevel | default "info" | quote }}
     {{- end }}
     {{- if .Values.sendAnonymousUsage }}
     sendAnonymousUsage = true
