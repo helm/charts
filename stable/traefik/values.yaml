@@ -30,6 +30,8 @@ resources: {}
 debug:
   enabled: false
 
+# logLevel: error
+
 deploymentStrategy: {}
   # rollingUpdate:
   #   maxSurge: 1
