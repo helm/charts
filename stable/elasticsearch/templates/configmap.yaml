@@ -82,8 +82,8 @@ data:
     discovery.seed_hosts: ${DISCOVERY_SERVICE:}
     
     cluster.initial_master_nodes:
-    {{- range $i, $e := until (int .Values.master.replicas) }}
-      - {{ template "elasticsearch.master.fullname" $ }}-{{ $i }}
+    {{- range $i := until (int .Values.master.replicas) }}
+    - {{ template "elasticsearch.master.fullname" $ }}-{{ $i }}
     {{- end }}
 
 {{- if .Values.cluster.xpackEnable }}
