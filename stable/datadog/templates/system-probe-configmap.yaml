@@ -14,7 +14,7 @@ data:
     system_probe_config:
       enabled: {{ $.Values.config.system_probe.enabled }}
       debug_port:  {{ $.Values.config.system_probe.debug_port }}
-      sysprobe_socket: {{ $.Values.config.system_probe.socket }}
+      sysprobe_socket: {{ $.Values.config.system_probe.sysprobe_socket }}
       enable_conntrack : {{ $.Values.config.system_probe.enable_conntrack }}
       disable_ipv6: {{ $.Values.config.system_probe.disable_ipv6 }}
       bpf_debug: {{ $.Values.config.system_probe.bpf_debug }}

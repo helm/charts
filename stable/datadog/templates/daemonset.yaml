@@ -51,7 +51,7 @@ spec:
       {{- if $.Values.config.system_probe.enabled }}
       initContainers:
       - name: seccomp-setup
-        image: "{{ $.Values.global.docker.registry }}/{{ $.Values.image.name }}:{{ $.Values.image.tag }}"
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         command:
         - cp
         - /etc/config/system-probe-seccomp.json
@@ -72,8 +72,8 @@ spec:
       containers:
       {{- if $.Values.config.system_probe.enabled }}
       - name: system-probe
-        image: "{{ $.Values.global.docker.registry }}/{{ $.Values.image.name }}:{{ $.Values.image.tag }}"
-        imagePullPolicy: {{ $.Values.global.docker.pullPolicy }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
         securityContext:
           capabilities:
             add: ["SYS_ADMIN", "SYS_RESOURCE", "SYS_PTRACE", "NET_ADMIN"]
@@ -81,10 +81,10 @@ spec:
           - /opt/datadog-agent/embedded/bin/system-probe
           - -config=/etc/datadog-agent/system-probe.yaml
         volumeMounts:
-        - {name: sysprobe-config, mountPath: /etc/datadog-agent}
+        - {name: sysprobe-config, mountPath: /etc/datadog-agent, readOnly: false}
         - {name: debugfs, mountPath: /sys/kernel/debug}
         - {name: sysprobe-var-run, mountPath: /sysprobe/var/run}
-        - {name: proc, mountPath: /host/proc, readOnly: true}
+        - {name: procdir, mountPath: /host/proc, readOnly: true}
         env:
         {{ include "datadog.bypass_env" . | nindent 8 | trim }}
         - name: DD_LOG_LEVEL
@@ -288,6 +288,7 @@ spec:
             readOnly: true
           - name: sysprobe-config
             mountPath: /etc/datadog-agent
+            readOnly: false
           {{- end }}
 {{- if .Values.datadog.volumeMounts }}
 {{ toYaml .Values.datadog.volumeMounts | indent 10 }}
