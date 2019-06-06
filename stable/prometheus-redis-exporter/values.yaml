@@ -1,3 +1,5 @@
+# helm upgrade --install prometheus-redis-exporter-dev . -f .values.yaml --namespace dev --debug --dry-run
+#Doku auch unter: https://github.com/oliver006/redis_exporter
 rbac:
   # Specifies whether RBAC resources should be created
   create: true
@@ -17,12 +19,9 @@ image:
   pullPolicy: IfNotPresent
 extraArgs: {}
 # Additional Environment variables
-env: {}
-  # - name: REDIS_PASSWORD
-  #   valueFrom:
-  #     secretKeyRef:
-  #       key: redis-password
-  #       name: redis-config-0.0.2
+#env: 
+#  - name: REDIS_EXPORTER_SCRIPT
+#    value: /scripts/lua.txt
 service:
   type: ClusterIP
   port: 9121
@@ -36,3 +35,8 @@ annotations: {}
 #  prometheus.io/path: /metrics
 #  prometheus.io/port: "9121"
 #  prometheus.io/scrape: "true"
+
+# Used to mount a LUA-Script via config map and use it for metrics-collection
+# script:
+#   configmap: prometheus-redis-exporter-script
+#   keyname: script
