@@ -8,6 +8,9 @@ If you are currently using an earlier version of this Chart you will need to red
 If you are upgrading to Elasticsearch 6 from the 5.5 version used in this chart before, please note that your cluster needs to do a full cluster restart.
 The simplest way to do that is to delete the installation (keep the PVs) and install this chart again with the new version.
 If you want to avoid doing that upgrade to Elasticsearch 5.6 first before moving on to Elasticsearch 6.0.
+If you are upgrading to Elasticsearch 7 from the versions previous to 6.8 version, please note that your cluster needs to do a full cluster restart.
+The simplest way to do that is to delete the installation (keep the PVs) and install this chart again with the new version.
+If you want to avoid doing that upgrade to Elasticsearch 6.8 first before moving on to Elasticsearch 7.1.
 
 ## Prerequisites Details
 
