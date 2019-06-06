@@ -61,3 +61,4 @@ zookeeper:
   enabled: true
   service:
     name: zookeeper
+  stormName: storm
