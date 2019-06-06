@@ -286,6 +286,10 @@ ingress:
       ## Example for Traefik:
       # traefik.frontend.rule.type: PathPrefix
       # kubernetes.io/ingress.class: traefik
+    ##
+    ## Configure the web liveness path.
+    ## Defaults to the templated value `{{ ingress.web.path }}/health`
+    livenessPath:
     tls:
       ## Set to "true" to enable TLS termination at the ingress
       enabled: false
