@@ -106,7 +106,7 @@ spec:
             EOF
             chmod a+x /opt/bitnami/rabbitmq/sbin/rabbitmq-api-check
             {{- if and .Values.persistence.enabled .Values.forceBoot.enabled }}
-            rabbitmqctl force_boot
+            if [ -d "{{ .Values.persistence.path }}/mnesia/${RABBITMQ_NODENAME}" ]; then rabbitmqctl force_boot; fi
             {{- end }}
             exec rabbitmq-server
         {{- if .Values.resources }}
