@@ -92,42 +92,10 @@ data:
 {{- end }}
 {{- if hasPrefix "2." .Values.appVersion }}
   logging.yml: |-
-    # you can override this using by setting a system property, for example -Des.logger.level=DEBUG
-    es.logger.level: INFO
-    rootLogger: ${es.logger.level}, console
-    logger:
-      # log action execution errors for easier debugging
-      action: DEBUG
-      # reduce the logging for aws, too much is logged under the default INFO
-      com.amazonaws: WARN
-    appender:
-      console:
-        type: console
-        layout:
-          type: consolePattern
-          conversionPattern: "[%d{ISO8601}][%-5p][%-25c] %m%n"
-{{- else if hasPrefix "5." .Values.appVersion }}
+{{ toYaml .Values.cluster.loggingYml | indent 4 }}
+{{- else }}
   log4j2.properties: |-
-    status = error
-    appender.console.type = Console
-    appender.console.name = console
-    appender.console.layout.type = PatternLayout
-    appender.console.layout.pattern = [%d{ISO8601}][%-5p][%-25c{1.}] %marker%m%n
-    rootLogger.level = info
-    rootLogger.appenderRef.console.ref = console
-    logger.searchguard.name = com.floragunn
-    logger.searchguard.level = info
-{{- else if hasPrefix "6." .Values.appVersion }}
-  log4j2.properties: |-
-    status = error
-    appender.console.type = Console
-    appender.console.name = console
-    appender.console.layout.type = PatternLayout
-    appender.console.layout.pattern = [%d{ISO8601}][%-5p][%-25c{1.}] %marker%m%n
-    rootLogger.level = info
-    rootLogger.appenderRef.console.ref = console
-    logger.searchguard.name = com.floragunn
-    logger.searchguard.level = info
+{{ tpl .Values.cluster.log4j2Properties . | indent 4 }}
 {{- end }}
 {{- if .Values.data.hooks.drain.enabled }}
   pre-stop-hook.sh: |-
