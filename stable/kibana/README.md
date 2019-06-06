@@ -41,8 +41,8 @@ The following table lists the configurable parameters of the kibana chart and th
 | Parameter                                  | Description                                                            | Default                               |
 | ------------------------------------------ | ---------------------------------------------------------------------- | ------------------------------------- |
 | `affinity`                                 | node/pod affinities                                                    | None                                  |
-| `env`                                      | Environment variables to configure Kibana                              | `{}`                                  |
-| `files`                                    | Kibana configuration files                                             | None                                  |
+| `env`                                      | Environment variables to configure Kibana to be passed to the `tpl` function   | `{}`                                  |
+| `files`                                    | Kibana configuration files to be passed to the `tpl` function          | None                                  |
 | `livenessProbe.enabled`                    | livenessProbe to be enabled?                                           | `false`                               |
 | `livenessProbe.path`                       | path for livenessProbe                                                 | `/status`                             |
 | `livenessProbe.initialDelaySeconds`        | number of seconds                                                      | 30                                    |
