@@ -44,14 +44,14 @@ spec:
             httpGet:
               path: {{ .Values.livenessProbe.path }}
               port: http
-              initialDelaySeconds: {{ .Values.livenessProbe.delay }}
-              periodSeconds: {{ .Values.livenessProbe.period }}
+            initialDelaySeconds: {{ .Values.livenessProbe.delay }}
+            periodSeconds: {{ .Values.livenessProbe.period }}
           readinessProbe:
             httpGet:
               path: {{ .Values.livenessProbe.path }}
               port: http
-              initialDelaySeconds: {{ .Values.livenessProbe.delay }}
-              periodSeconds: {{ .Values.livenessProbe.period }}
+            initialDelaySeconds: {{ .Values.livenessProbe.delay }}
+            periodSeconds: {{ .Values.livenessProbe.period }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           {{- if .Values.configMap.enabled }}
