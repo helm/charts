@@ -126,6 +126,11 @@ spec:
             - mountPath: /opt/sonarqube/secret/
               name: secret
             {{- end }}
+            {{- if .Values.customCerts.enabled }}
+            - mountPath: /etc/ssl/certs/java/cacerts
+              subPath: cacerts
+              name: cacerts
+            {{- end }}
             - mountPath: /opt/sonarqube/data
               name: sonarqube
               subPath: data
@@ -178,6 +183,14 @@ spec:
           items:
           - key: sonar-secret.txt
             path: sonar-secret.txt
+      {{- end }}
+      {{- if .Values.customCerts.enabled }}
+      - name: cacerts
+        secret:
+          secretName: {{ .Values.customCerts.secretName }}
+          items:
+          - key: cacerts
+            path: cacerts
       {{- end }}
       - name: install-plugins
         configMap:
