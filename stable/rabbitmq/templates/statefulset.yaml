@@ -159,12 +159,8 @@ spec:
           successThreshold: {{ .Values.readinessProbe.successThreshold }}
         {{- end }}
         env:
-        {{- if .Values.image.debug}}
-          - name: BASH_DEBUG
-            value: "1"
-          - name: NAMI_DEBUG
-            value: "1"
-        {{- end }}
+          - name: BITNAMI_DEBUG
+            value: {{ ternary "true" "false" .Values.image.debug | quote }}
           - name: MY_POD_IP
             valueFrom:
               fieldRef:
