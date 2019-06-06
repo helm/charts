@@ -59,6 +59,7 @@ The following table lists the configurable parameters and their default values.
 | `serviceAccount.create` | Specifies whether a service account should be created.| `true` |
 | `serviceAccount.name`   | Name of the service account.|        |
 | `script.configmap`     | Let you run a custom lua script from a configmap. The corresponding environment variable `REDIS_EXPORTER_SCRIPT` will be set automatically ||
+| `script.keyname`       | Name of the key inside configmap which contains your script ||
 
 For more information please refer to the [redis_exporter](https://github.com/oliver006/redis_exporter) documentation.
 
