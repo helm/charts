@@ -73,19 +73,33 @@ helm status casskop
 
 ```
 
-## Cleaning
+## Uninstaling the Charts
 
-### Uninstalling the Chart
+If you want to delete the operator from your Kubernetes cluster, the operator deployment 
+should be deleted.
 
-To uninstall/delete the casskop release:
+```
+$ helm delete casskop
+```
+The command removes all the Kubernetes components associated with the chart and deletes the helm release.
 
-```bash
-$ helm delete chart
+> The CRD created by the chart are not removed by default and should be manually cleaned up (if required)
+
+Manually delete the CRD:
+```
+kubectl delete crd cassandraclusters.dfy.orange.com
 ```
 
-The command removes all the Kubernetes components associated with the chart and deletes the release.
+> **!!!!!!!!WARNING!!!!!!!!**
+>
+> If you delete the CRD then **!!!!!!WAAAARRRRNNIIIIINNG!!!!!!**
+>
+> It will delete **ALL** Clusters that has been created using this CRD!!!
+>
+> Please never delete a CRD without very very good care
 
-However, Helm always keeps records of what releases happened. Need to see the deleted releases? `helm list --deleted`
+
+Helm always keeps records of what releases happened. Need to see the deleted releases? `helm list --deleted`
 shows those, and `helm list --all` shows all of the releases (deleted and currently deployed, as well as releases that
 failed):
 
@@ -100,4 +114,26 @@ Note that because releases are preserved in this way, you can rollback a deleted
 To purge a release
 ```console
 $ helm delete --purge casskop
+```
+
+
+## Troubleshooting
+
+### Install of the CRD
+
+By default, the chart will install via a helm hook the Casskop CRD, but this installation is global for the whole
+cluster, and you may deploy a chart with an existing CRD already deployed.
+
+In that case you can get an error like :
+
+
+```
+$ helm install --name casskop incubator/cassandra-operator
+Error: customresourcedefinitions.apiextensions.k8s.io "cassandraclusters.db.orange.com" already exists
+```
+
+In this case there si a parameter to say to not uses the hook to install the CRD :
+
+```
+$ helm install --name casskop incubator/cassandra-operator --no-hooks
 ```

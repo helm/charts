@@ -5,8 +5,8 @@ image:
   tag: 0.3.1-master
   pullPolicy: Always
   imagePullSecrets:
-    enable<d: false
-#    name:
+    enabled: false
+    # name:
 
 ## Prometheus-operator resource limits & requests
 ## Ref: https://kubernetes.io/docs/user-guide/compute-resources/
@@ -26,8 +26,7 @@ rbacEnable: true
 ## if true deploy service for metrics access
 metricService: false
 
-## Define if we need to Create the CassandraCluster CRD
-createCustomResource: true
+createCustomResource: false
 
 debug:
   enabled: false
