@@ -62,6 +62,7 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `service.port`                            | MySQL service port                                  | `3306`                                                            |
 | `serviceAccount.create`                   | Specifies whether a ServiceAccount should be created | `false`                                                          |
 | `serviceAccount.name`                     | The name of the ServiceAccount to create            | Generated using the mariadb.fullname template                     |
+| `schedulerName`                           | Name of the k8s scheduler (other than default)      | `nil`                                                             |
 | `rbac.create`                             | Create and use RBAC resources                       | `false`                                                           |
 | `securityContext.enabled`                 | Enable security context                             | `true`                                                            |
 | `securityContext.fsGroup`                 | Group ID for the container                          | `1001`                                                            |
@@ -147,6 +148,10 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `metrics.image.tag`                       | Exporter image tag                                  | `v0.10.0`                                                         |
 | `metrics.image.pullPolicy`                | Exporter image pull policy                          | `IfNotPresent`                                                    |
 | `metrics.resources`                       | Exporter resource requests/limit                    | `nil`                                                             |
+| `metrics.serviceMonitor.enabled`          | if `true`, creates a Prometheus Operator ServiceMonitor (also requires `metrics.enabled` to be `true`)                    | `false`                                                             |
+| `metrics.serviceMonitor.namespace`        | Optional namespace which Prometheus is running in   | `nil`                                                             |
+| `metrics.serviceMonitor.interval`         | How frequently to scrape metrics (use by default, falling back to Prometheus' default)  | `nil`                                                             |
+| `metrics.serviceMonitor.selector`         | Default to kube-prometheus install (CoreOS recommended), but should be set according to Prometheus install                    | `{ prometheus: kube-prometheus }`                                                             |
 
 The above parameters map to the env variables defined in [bitnami/mariadb](http://github.com/bitnami/bitnami-docker-mariadb). For more information please refer to the [bitnami/mariadb](http://github.com/bitnami/bitnami-docker-mariadb) image documentation.
 

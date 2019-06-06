@@ -106,6 +106,9 @@ service:
   # externalIPs:
   # - 192.168.0.1
 
+  ## Load Balancer allow-list
+  # loadBalancerSourceRanges: []
+
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ##
