@@ -155,6 +155,8 @@ vault:
   # https://www.vaultproject.io/intro/getting-started/dev-server.html for more
   # information.
   dev: true
+  # Set if using Vault enterprise
+  enterprise: false
   # Configure additional environment variables for the Vault containers
   extraEnv: []
   #   - name: VAULT_API_ADDR
@@ -194,11 +196,15 @@ vault:
   #   secret:
   #     secretName: some-secret
   liveness:
+    # DR requires Vault enterprise
+    drEnabled: false
     aliveIfUninitialized: true
     aliveIfSealed: true
     initialDelaySeconds: 30
     periodSeconds: 10
   readiness:
+    # DR requires Vault enterprise
+    drEnabled: false
     readyIfSealed: false
     readyIfStandby: true
     readyIfUninitialized: true

@@ -53,6 +53,7 @@ The following table lists the configurable parameters of the Vault chart and the
 | `image.repository`                | Container image to use                   | `vault`                             |
 | `image.tag`                       | Container image tag to deploy            | `.Chart.appVersion`                            |
 | `vault.dev`                       | Use Vault in dev mode                    | true (set to false in production)   |
+| `vault.enterprise`                | Enables health checks for Vault Enterprise endpoints | false (set to true if using vault enterprise) |
 | `vault.extraEnv`                  | Extra env vars for Vault pods            | `{}`                                |
 | `vault.extraContainers`           | Sidecar containers to add to the vault pod | `{}`                              |
 | `vault.extraInitContainers`       | Init containers to be added to the vault pod | `{}`                            |
@@ -165,3 +166,12 @@ vault:
       mountPath: /vault/tls
       readOnly: true
 ```
+
+## Vault Enterprise
+Vault Enterprise comes with additional features that aren't available in open source vault. Disaster recovery replication, performance standby and performance replication. Enterprise vault servers have different health statuses when compared to their open source counterparts. Refer to the [vault documentation](https://www.vaultproject.io/api/system/health.html) for all health statuses.
+
+### Requirements
+In order to use the enterprise features of this chart, an image with the Vault Enterprise binary is required. Be sure that the binary version matches the version of the base Vault image.
+
+### Vault Disaster Recovery Replication
+Vault DR replication requires that the primary and DR cluster have connectivity to each other. It is also important to note that replication happens via port 8201.
