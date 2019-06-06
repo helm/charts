@@ -131,6 +131,8 @@ The following table lists the configurable parameters of the Cassandra chart and
 | `podManagementPolicy`                | podManagementPolicy of the StatefulSet          | `OrderedReady`                                             |
 | `podDisruptionBudget`                | Pod distruption budget                          | `{}`                                                       |
 | `podAnnotations`                     | pod annotations for the StatefulSet             | `{}`                                                       |
+| `podLabels`                       | pod labels for the StatefulSet                     | `{}`                                                       |
+| `matchLabels`                     | matchLabels for the StatefulSet                    | `{}`                                                       |
 | `updateStrategy.type`                | UpdateStrategy of the StatefulSet               | `OnDelete`                                                 |
 | `livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated        | `90`                                                       |
 | `livenessProbe.periodSeconds`        | How often to perform the probe                  | `30`                                                       |

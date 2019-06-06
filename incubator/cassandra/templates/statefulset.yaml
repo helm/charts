@@ -12,6 +12,9 @@ spec:
     matchLabels:
       app: {{ template "cassandra.name" . }}
       release: {{ .Release.Name }}
+{{- if .Values.matchLabels }}
+{{ toYaml .Values.podLabels | indent 6 }}
+{{- end }}
   serviceName: {{ template "cassandra.fullname" . }}
   replicas: {{ .Values.config.cluster_size }}
   podManagementPolicy: {{ .Values.podManagementPolicy }}
