@@ -34,6 +34,10 @@ spec:
       nodeSelector:
 {{ toYaml .Values.agent.nodeSelector | indent 8 }}
 {{- end }}
+{{- with .Values.agent.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 6 }}
+{{- end }}
       serviceAccountName: {{ template "drone.serviceAccountName" . }}
       containers:
       - name: agent
@@ -45,7 +49,7 @@ spec:
           protocol: TCP
         env:
           - name: DRONE_RPC_SERVER
-            value: {{ template "drone.fullname" . }}-grpc:9000
+            value: http://{{ template "drone.fullname" . }}
           - name: DRONE_RPC_SECRET
             valueFrom:
               secretKeyRef:
