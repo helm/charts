@@ -27,7 +27,12 @@ spec:
     app: {{ template "sonarqube.name" . }}
     release: {{ .Release.Name }}
   {{- if eq .Values.service.type "LoadBalancer"}}
-  loadBalancerSourceRanges: {{.Values.service.loadBalancerSourceRanges}}
+  {{- if .Values.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+  {{- range .Values.service.loadBalancerSourceRanges }}
+  - {{ . }}
+  {{- end }}
+  {{- end -}}
   {{- if .Values.service.loadBalancerIP}}
   loadBalancerIP: {{.Values.service.loadBalancerIP}}
   {{- end }}
