@@ -49,7 +49,7 @@ rules:
 #     as: "my_custom_metric"
 #   metricsQuery: sum(<<.Series>>{<<.LabelMatchers>>}) by (<<.GroupBy>>)
   # Mounts a configMap with pre-generated rules for use. Overrides the
-  # default, custom and external entries
+  # default, custom, external and resource entries
   existing:
   external: []
 # - seriesQuery: '{__name__=~"^some_metric_count$"}'
@@ -57,8 +57,34 @@ rules:
 #     template: <<.Resource>>
 #   name:
 #     matches: ""
-#     as: "my_custom_metric"
+#     as: "my_external_metric"
 #   metricsQuery: sum(<<.Series>>{<<.LabelMatchers>>}) by (<<.GroupBy>>)
+  resource: {}
+#   cpu:
+#     containerQuery: sum(rate(container_cpu_usage_seconds_total{<<.LabelMatchers>>}[3m])) by (<<.GroupBy>>)
+#     nodeQuery: sum(rate(container_cpu_usage_seconds_total{<<.LabelMatchers>>, id='/'}[3m])) by (<<.GroupBy>>)
+#     resources:
+#       overrides:
+#         instance:
+#           resource: node
+#         namespace:
+#           resource: namespace
+#         pod_name:
+#           resource: pod
+#     containerLabel: container_name
+#   memory:
+#     containerQuery: sum(container_memory_working_set_bytes{<<.LabelMatchers>>}) by (<<.GroupBy>>)
+#     nodeQuery: sum(container_memory_working_set_bytes{<<.LabelMatchers>>,id='/'}) by (<<.GroupBy>>)
+#     resources:
+#       overrides:
+#         instance:
+#           resource: node
+#         namespace:
+#           resource: namespace
+#         pod_name:
+#           resource: pod
+#     containerLabel: container_name
+#   window: 3m
 
 service:
   annotations: {}
