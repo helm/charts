@@ -67,6 +67,17 @@ wordpressTablePrefix: wp_
 ##
 wordpressSkipInstall: false
 
+## Set up update strategy for wordpress installation. Set to Recreate if you use persistent volume that cannot be mounted by more than one pods to makesure the pods is destroyed first.
+## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
+## Example:
+## updateStrategy:
+##  type: RollingUpdate
+##  rollingUpdate:
+##    maxSurge: 25%
+##    maxUnavailable: 25%
+updateStrategy:
+  type: RollingUpdate
+
 ## Set to `false` to allow the container to be started with blank passwords
 ## ref: https://github.com/bitnami/bitnami-docker-wordpress#environment-variables
 ##
