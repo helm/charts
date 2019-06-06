@@ -380,4 +380,13 @@ data:
     if 'BITBUCKET_CONSUMER_KEY' in os.environ:
         BITBUCKET_CONSUMER_KEY = env('BITBUCKET_CONSUMER_KEY')
         BITBUCKET_CONSUMER_SECRET = env('BITBUCKET_CONSUMER_SECRET')
+
+{{- if .Values.metrics.enabled }}
+    SENTRY_METRICS_BACKEND = 'sentry.metrics.statsd.StatsdMetricsBackend'
+    SENTRY_METRICS_OPTIONS = {
+        'host': '{{ template "fullname" . }}-metrics',
+        'port': 9125,
+    }
+{{- end }} 
+
 {{ .Values.config.sentryConfPy | indent 4 }}
