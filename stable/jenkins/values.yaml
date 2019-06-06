@@ -360,6 +360,9 @@ agent:
   # - type: Secret
   #   secretName: mysecret
   #   mountPath: /var/myapp/mysecret
+  # - type: EmptyDir
+  #   mountPath: "/var/lib/containers"
+  #   memory: false
   nodeSelector: {}
   # Key Value selectors. Ex:
   # jenkins-agent: v1

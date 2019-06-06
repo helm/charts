@@ -10,8 +10,6 @@ sources:
 maintainers:
   - name: domcar
     email: d-caruso@hotmail.it
-  - name: unguiculus
-    email: unguiculus@gmail.com
   - name: hectorj2f
     email: hfernandez@mesosphere.com
 tillerVersion: ">=2.10.0"
