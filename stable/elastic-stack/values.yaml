@@ -7,12 +7,12 @@ elasticsearch:
 kibana:
   enabled: true
   env:
-    ELASTICSEARCH_URL: http://http.default.svc.cluster.local:9200
+    ELASTICSEARCH_HOSTS: http://{{ .Release.Name }}-elasticsearch-client.default.svc.cluster.local:9200
 
 logstash:
   enabled: true
-  # elasticsearch:
-  #   host: elastic-stack-elasticsearch-client
+  elasticsearch:
+    host: "{{ .Release.Name }}-elasticsearch-client"
 
 filebeat:
   enabled: false
