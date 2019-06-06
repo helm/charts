@@ -208,6 +208,10 @@ $ helm install --set persistence.existingClaim=PVC_NAME rabbitmq
 
 ## Upgrading
 
+### To 6.0.0
+
+This new version updates the RabbitMQ image to a [new version based on bash instead of node.js](https://github.com/bitnami/bitnami-docker-rabbitmq#3715-r18-3715-ol-7-r19). However, since this Chart overwrites the container's command, the changes to the container shouldn't affect the Chart. To upgrade, it may be needed to enable the `fastBoot` option, as it is already the case from upgrading from 5.X to 5.Y.  
+
 ### To 5.0.0
 
 This major release changes the clustering method from `ip` to `hostname`.
