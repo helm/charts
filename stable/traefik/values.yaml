@@ -14,7 +14,8 @@ whiteListSourceRange: []
 externalTrafficPolicy: Cluster
 replicas: 1
 # startupArguments:
-#   - "--pitrusk   - "--ping.entrypoint=http"
+#   - "--ping"
+#   - "--ping.entrypoint=http"
 
 podDisruptionBudget: {}
   # maxUnavailable: 1
@@ -116,7 +117,7 @@ ssl:
   # mtls:
   #   enabled: true
   #   optional: false
-  #   clientCaCerts: ["wef"]
+  #   clientCaCerts: []
   #   # When mTLS is enabled, the set of CA certificates used to validate client TLS certificates.
   #   # https://docs.traefik.io/configuration/entrypoints/#tls-mutual-authentication
   #   # CA certificates should be in PEM format.
