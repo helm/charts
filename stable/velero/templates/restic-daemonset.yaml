@@ -91,7 +91,7 @@ spec:
             {{- end }}
           securityContext:
             privileged: {{ .Values.restic.privileged }}
-          {{- with .Values.resources }}
+          {{- with .Values.restic.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
