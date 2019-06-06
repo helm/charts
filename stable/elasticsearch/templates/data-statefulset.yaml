@@ -18,10 +18,15 @@ spec:
         component: "{{ .Values.data.name }}"
         release: {{ .Release.Name }}
         role: data
-        {{- if .Values.data.podAnnotations }}
+{{- if or .Values.data.podAnnotations (eq .Values.data.updateStrategy.type "RollingUpdate") }}
       annotations:
+      {{- if .Values.data.podAnnotations }}
 {{ toYaml .Values.data.podAnnotations | indent 8 }}
-        {{- end }}
+      {{- end }}
+      {{- if eq .Values.data.updateStrategy.type "RollingUpdate" }}
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+      {{- end }}
+{{- end }}
     spec:
       {{- if .Values.schedulerName }}
       schedulerName: "{{ .Values.schedulerName }}"
