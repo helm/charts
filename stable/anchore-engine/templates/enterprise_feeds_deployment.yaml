@@ -10,6 +10,9 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+  {{- if .Values.anchoreEnterpriseFeeds.labels }}
+  {{ toYaml .Values.anchoreEnterpriseFeeds.labels | indent 4 }}
+  {{- end }}
 spec:
   selector:
     matchLabels:
@@ -139,6 +142,9 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     component: {{ $component }}
+  {{- if .Values.anchoreEnterpriseFeeds.service.labels }}
+  {{ toYaml .Values.anchoreEnterpriseFeeds.service.labels | indent 4 }}
+  {{- end }}
   {{- with .Values.anchoreEnterpriseFeeds.service.annotations }}
   annotations:
     {{ toYaml . | nindent 4 | trim }}

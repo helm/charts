@@ -9,6 +9,9 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+  {{- if .Values.anchoreApi.labels }}
+  {{ toYaml .Values.anchoreApi.labels | indent 4 }}
+  {{- end }}
 spec:
   selector:
     matchLabels:
@@ -316,6 +319,9 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     component: {{ $component }}
+  {{- if .Values.anchoreApi.service.labels }}
+  {{ toYaml .Values.anchoreApi.service.labels | indent 4 }}
+  {{- end }}
   {{- with .Values.anchoreApi.service.annotations }}
   annotations:
     {{ toYaml . | nindent 4 | trim }}

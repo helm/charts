@@ -9,6 +9,9 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     component: {{ $component }}
+  {{- if .Values.anchoreAnalyzer.labels }}
+  {{ toYaml .Values.anchoreAnalyzer.labels | indent 4 }}
+  {{- end }}
 spec:
   selector:
     matchLabels:

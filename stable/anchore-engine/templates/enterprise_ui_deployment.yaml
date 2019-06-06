@@ -11,6 +11,9 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+  {{- if .Values.anchoreEnterpriseUi.labels }}
+  {{ toYaml .Values.anchoreEnterpriseUi.labels | indent 4 }}
+  {{- end }}
 spec:
   selector:
     matchLabels:
@@ -121,6 +124,9 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+  {{- if .Values.anchoreEnterpriseUi.service.labels }}
+  {{ toYaml .Values.anchoreEnterpriseUi.service.labels | indent 4 }}
+  {{- end }}
   {{- with .Values.anchoreEnterpriseUi.service.annotations }}
   annotations:
     {{ toYaml . | nindent 4 | trim }}

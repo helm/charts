@@ -9,6 +9,9 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     component: {{ $component }}
+  {{- if .Values.anchoreCatalog.labels }}
+  {{ toYaml .Values.anchoreCatalog.labels | indent 4 }}
+  {{- end }}
 spec:
   selector:
     matchLabels:
@@ -131,6 +134,9 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     component: {{ $component }}
+  {{- if .Values.anchoreCatalog.service.labels }}
+  {{ toYaml .Values.anchoreApi.service.labels | indent 4 }}
+  {{- end }}
   {{- with .Values.anchoreCatalog.service.annotations }}
   annotations:
     {{ toYaml .Values.anchoreCatalog.service.annotations | nindent 4 | trim }}
