@@ -1,14 +1,17 @@
-appVersion: v3.14.1.2
+apiVersion: v1
+appVersion: v4.5.0.5
 description: A Helm chart for Aerospike in Kubernetes
 name: aerospike
 keywords:
   - aerospike
   - big-data
 home: http://aerospike.com
-version: 0.2.1
+version: 0.2.8
 icon: https://s3-us-west-1.amazonaws.com/aerospike-fd/wp-content/uploads/2016/06/Aerospike_square_logo.png
 sources:
 - https://github.com/aerospike/aerospike-server
 maintainers:
 - name: kavehmz
   email: kavehmz@gmail.com
+- name: okgolove
+  email: okgolove@markeloff.net

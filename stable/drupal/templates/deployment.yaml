@@ -108,13 +108,9 @@ spec:
         volumeMounts:
         - name: drupal-data
           mountPath: {{ .Values.volumeMounts.drupal.mountPath }}
-        {{- if .Values.volumeMounts.apache.mountPath }}
-        - name: apache-data
-          mountPath: {{ .Values.volumeMounts.apache.mountPath }}
-        {{- end }}
 {{- if .Values.metrics.enabled }}
       - name: metrics
-        image: {{ template "metrics.image" . }}
+        image: {{ template "drupal.metrics.image" . }}
         imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
         command: [ '/bin/apache_exporter', '-scrape_uri', 'http://status.localhost:80/server-status/?auto']
         ports:
@@ -142,13 +138,4 @@ spec:
           claimName: {{ .Values.persistence.drupal.existingClaim | default (printf "%s-drupal" (include "drupal.fullname" .)) }}
       {{- else }}
         emptyDir: {}
-      {{- end }}
-      {{- if .Values.volumeMounts.apache.mountPath }}
-      - name: apache-data
-      {{- if .Values.persistence.enabled }}
-        persistentVolumeClaim:
-          claimName: {{ template "drupal.fullname" . }}-apache
-      {{- else }}
-        emptyDir: {}
-      {{- end }}
       {{- end }}

@@ -7,7 +7,7 @@
 # atlantisUrl: http://10.0.0.0
 
 # Replace this with your own repo whitelist:
-orgWhitelist: github.com/yourorg/*
+orgWhitelist: <replace-me>
 # logLevel: "debug"
 
 # If using GitHub, specify like the following:
@@ -37,10 +37,12 @@ orgWhitelist: github.com/yourorg/*
 #   base_url: https://bitbucket.yourorganization.com
 # (The chart will perform the base64 encoding for you for values that are stored in secrets.)
 
+# If managing secrets outside the chart for the webhook, use this variable to reference the secret name
+# vcsSecretName: 'mysecret'
 
 # When referencing Terraform modules in private repositories, it may be helpful
 # (necessary?) to use redirection in a .gitconfig like so:
-# gitconfig:
+# gitconfig: |
   # [url "https://YOUR_GH_TOKEN@github.com"]
   #   insteadOf = https://github.com
   # [url "https://YOUR_GH_TOKEN@github.com"]
@@ -62,6 +64,8 @@ orgWhitelist: github.com/yourorg/*
 #     [profile a_role_to_assume]
 #     role_arn = arn:aws:iam::123456789:role/service-role/roleToAssume
 #     source_profile = default
+# To reference an already existing Secret object with AWS credentials
+# awsSecretName: 'mysecretwithawscreds'
 
 ## To be used for mounting credential files (when using google provider).
 serviceAccountSecrets:
@@ -75,17 +79,39 @@ serviceAccountSecrets:
 
 image:
   repository: runatlantis/atlantis
-  tag: v0.4.13
+  tag: v0.7.1
   pullPolicy: IfNotPresent
 
-## enable using atlantis.yaml file
-allowRepoConfig: false
+## Optionally specify an array of imagePullSecrets.
+## Secrets must be manually created in the namespace.
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+##
+# imagePullSecrets:
+# - myRegistryKeySecretName
 
-# Require all pull requests be approved prior to apply.
-requireApproval: false
+## Use Server Side Repo Config,
+## ref: https://www.runatlantis.io/docs/server-side-repo-config.html
+## Example default configuration
+# repoConfig: |
+#  ---
+#  repos:
+#  - id: /.*/
+#    apply_requirements: []
+#    workflow: default
+#    allowed_overrides: []
+#    allow_custom_workflows: false
+#  workflows:
+#    default:
+#      plan:
+#        steps: [init, plan]
+#      apply:
+#        steps: [apply]
 
-# Require all pull requests to meet repository mergeability requirements prior to apply.
-requireMergeable: false
+# allowForkPRs enables atlantis to run on a fork Pull Requests
+allowForkPRs: false
+
+## defaultTFVersion set the default terraform version to be used in atlantis server
+# defaultTFVersion: v0.12.0
 
 # We only need to check every 60s since Atlantis is not a high-throughput service.
 livenessProbe:
@@ -113,9 +139,11 @@ podTemplate:
   annotations: {}
     # kube2iam example:
     # iam.amazonaws.com/role: role-arn
+  labels: {}
 
 statefulSet:
   annotations: {}
+  labels: {}
 
 ingress:
   enabled: true
@@ -128,6 +156,7 @@ ingress:
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
+  labels: {}
 
 resources:
   requests:
@@ -138,12 +167,13 @@ resources:
     cpu: 100m
 
 # Disk space for Atlantis to check out repositories
-atlantis_data_storage: 5Gi
+dataStorage: 5Gi
 
 replicaCount: 1
 
 ## test container details
 test:
+  enabled: true
   image: lachlanevenson/k8s-kubectl
   imageTag: v1.4.8-bash
 

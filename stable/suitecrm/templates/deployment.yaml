@@ -5,7 +5,7 @@ metadata:
   name: {{ template "suitecrm.fullname" . }}
   labels:
     app: {{ template "suitecrm.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: "{{ template "suitecrm.chart" . }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
@@ -126,12 +126,9 @@ spec:
         - name: suitecrm-data
           mountPath: /bitnami/suitecrm
           subPath: suitecrm
-        - name: suitecrm-data
-          mountPath: /bitnami/apache
-          subPath: apache
 {{- if .Values.metrics.enabled }}
       - name: metrics
-        image: {{ template "metrics.image" . }}
+        image: {{ template "suitecrm.metrics.image" . }}
         imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
         command: [ '/bin/apache_exporter', '-scrape_uri', 'http://status.localhost:80/server-status/?auto']
         ports:

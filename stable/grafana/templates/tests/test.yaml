@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ template "grafana.fullname" . }}-test
+  labels:
+    app: {{ template "grafana.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  serviceAccountName: {{ template "grafana.serviceAccountNameTest" . }}
+  initContainers:
+    - name: test-framework
+      image: "{{ .Values.testFramework.image}}:{{ .Values.testFramework.tag }}"
+      command:
+      - "bash"
+      - "-c"
+      - |
+        set -ex
+        # copy bats to tools dir
+        cp -R /usr/local/libexec/ /tools/bats/
+      volumeMounts:
+      - mountPath: /tools
+        name: tools
+  {{- if .Values.image.pullSecrets }}
+  imagePullSecrets:
+  {{- range .Values.image.pullSecrets }}
+    - name: {{ . }}
+  {{- end}}
+  {{- end }}
+  containers:
+    - name: {{ .Release.Name }}-test
+      image: "{{ .Values.testFramework.image}}:{{ .Values.testFramework.tag }}"
+      command: ["/tools/bats/bats", "-t", "/tests/run.sh"]
+      volumeMounts:
+        - mountPath: /tests
+          name: tests
+          readOnly: true
+        - mountPath: /tools
+          name: tools
+  volumes:
+  - name: tests
+    configMap:
+      name: {{ template "grafana.fullname" . }}-test
+  - name: tools
+    emptyDir: {}
+  restartPolicy: Never

@@ -17,6 +17,10 @@ spec:
     metadata:
       labels:
         name: restic
+      {{- with .Values.podAnnotations }}
+      annotations:
+{{ toYaml . | indent 8 }}
+      {{- end }}
     spec:
       {{- if .Values.serviceAccount.server.create }}
       serviceAccountName: {{ template "ark.serverServiceAccount" . }}
@@ -81,4 +85,8 @@ spec:
             - name: AWS_SHARED_CREDENTIALS_FILE
               value: /credentials/cloud
             {{- end }}
+          {{- with .Values.resources }}
+          resources:
+{{ toYaml . | indent 12 }}
+          {{- end }}
 {{- end }}

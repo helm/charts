@@ -26,12 +26,8 @@ spec:
           serviceName: "{{ template "wordpress.fullname" $ }}"
           servicePort: http
   {{- end }}
+  {{- if .Values.ingress.tls }}
   tls:
-  {{- range .Values.ingress.hosts }}
-  {{- if .tls }}
-  - hosts:
-    - {{ .name }}
-    secretName: {{ .tlsSecret }}
-  {{- end }}
+{{ toYaml .Values.ingress.tls | indent 4 }}
   {{- end }}
 {{- end }}

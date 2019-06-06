@@ -1,6 +1,6 @@
 image:
-  repository: quay.io/weaveworks/kured
-  tag: 1.1.0
+  repository: weaveworks/kured
+  tag: 1.2.0
   pullPolicy: IfNotPresent
   pullSecrets: []
 
@@ -18,6 +18,8 @@ updateStrategy: OnDelete
 tolerations:
   - key: node-role.kubernetes.io/master
     effect: NoSchedule
+
+priorityClassName: ""
 
 nodeSelector: {}
 

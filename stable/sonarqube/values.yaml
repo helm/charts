@@ -4,7 +4,7 @@
 replicaCount: 1
 image:
   repository: sonarqube
-  tag: 7.6-community
+  tag: 7.7-community
   # If using a private repository, the name of the imagePullSecret to use
   # pullSecret: my-repo-secret
 
@@ -28,7 +28,11 @@ ingress:
   enabled: false
   # Used to create an Ingress record.
   hosts:
-    - sonar.organization.com
+    - name: sonar.organization.com
+      # default paths for "/" and "/*" will be added
+      path: /
+      # If a different path is defined, that path and {path}/* will be added to the ingress resource
+      # path: /sonarqube
   annotations: {}
   # kubernetes.io/ingress.class: nginx
   # kubernetes.io/tls-acme: "true"
@@ -68,14 +72,22 @@ readinessProbe:
   initialDelaySeconds: 60
   periodSeconds: 30
   failureThreshold: 6
+  # If an ingress *path* other than the root (/) is defined, it should be reflected here
+  # A trailing "/" must be included
   sonarWebContext: /
+  # sonarWebContext: /sonarqube/
 livenessProbe:
   initialDelaySeconds: 60
   periodSeconds: 30
+  # If an ingress *path* other than the root (/) is defined, it should be reflected here
+  # A trailing "/" must be included
   sonarWebContext: /
+  # sonarWebContext: /sonarqube/
 
 # Set extra env variables. Like proxy settings.
 extraEnv: {}
+  # If an ingress *path* is defined, it should be reflected here
+  # sonar.web.context: /sonarqube
 
 resources: {}
 # We usually recommend not to specify default resources and to leave this as a conscious
@@ -131,6 +143,11 @@ plugins:
 # The 'sonar.secretKeyPath' property will be set automatically.
 # sonarSecretKey: "settings-encryption-secret"
 
+customCerts:
+  ## Enable to override the default cacerts with your own one
+  enabled: false
+  secretName: my-cacerts
+
 ## Configuration value to select database type
 ## Option to use "postgresql" or "mysql" database type, by default "postgresql" is chosen
 ## Set the "enable" field to true of the database type you select (if you want to use internal database) and false of the one you don't select
@@ -176,3 +193,8 @@ mysql:
   # Specify the TCP port that mySQL should use
   service:
     port: 3306
+#
+# Additional labels to add to the pods:
+# podLabels:
+#   key: value
+podLabels: {}

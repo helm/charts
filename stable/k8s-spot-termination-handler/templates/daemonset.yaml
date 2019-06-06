@@ -20,6 +20,10 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
+            {{- with .Values.verbose }}
+            - name: VERBOSE
+              value: {{ . | quote }}
+            {{- end }}
             {{- if not .Values.enableLogspout }}
             - name: LOGSPOUT
               value: "ignore"
@@ -30,6 +34,10 @@ spec:
             {{- end }}
             {{- with .Values.detachAsg }}
             - name: DETACH_ASG
+              value: {{ . | quote }}
+            {{- end }}
+            {{- with .Values.gracePeriod }}
+            - name: GRACE_PERIOD
               value: {{ . | quote }}
             {{- end }}
             - name: POLL_INTERVAL
@@ -57,4 +65,7 @@ spec:
     {{- with .Values.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- if .Values.priorityClassName }} 
+      priorityClassName: {{ .Values.priorityClassName }}
     {{- end }}

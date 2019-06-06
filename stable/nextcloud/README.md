@@ -58,6 +58,17 @@ The following table lists the configurable parameters of the nextcloud chart and
 | `nextcloud.host`                     | nextcloud host to create application URLs  | `nextcloud.kube.home`                                                   |
 | `nextcloud.username`                 | User of the application                   | `admin`                                                  |
 | `nextcloud.password`                 | Application password                      | `changeme`                                    |
+| `nextcloud.update`                  | trigger nextcloud update if custom command is used         | `0`                                    |
+| `nextcloud.datadir`                 | nextcloud data dir location               | `/var/www/html/data`                                    |
+| `nextcloud.tableprefix`             | nextcloud db table prefix                 | `''`                                                    |
+| `nextcloud.smtp.host`               | SMTP hostname                             | `nil`                                                   |
+| `nextcloud.smtp.secure`             | SMTP connection `ssl` or empty            | `''`                                                    |
+| `nextcloud.smtp.port`               | Optional SMTP port                        | `nil`                                                   |
+| `nextcloud.smtp.authtype`           | SMTP authentication method                | `LOGIN`                                                 |
+| `nextcloud.smtp.name`               | SMTP username                             | `''`                                                    |
+| `nextcloud.smtp.password`           | SMTP password                             | `''`                                                    |
+| `nextcloud.mail.fromaddress`        | nextcloud mail send from field            | `nil`                                                   |
+| `nextcloud.mail.domain`             | nextcloud mail domain                     | `nil`                                                   |
 | `internalDatabase.enabled`         | Whether to use internal sqlite database    | `true`                                      |
 | `internalDatabase.database`         | Name of the existing database             | `nextcloud`                                      |
 | `externalDatabase.enabled`          | Whether to use external database          | `false`                                                   |
@@ -72,7 +83,7 @@ The following table lists the configurable parameters of the nextcloud chart and
 | `mariadb.rootUser.password`       | MariaDB admin password                    | `nil`                                                   |
 | `service.type`                      | Kubernetes Service type                   | `ClusterIp`                                          |
 | `service.loadBalancerIP`            | LoadBalancerIp for service type LoadBalancer                   | `nil`                                          |
-| `persistence.enabled`     | Enable persistence using PVC              | `true`                                                  |
+| `persistence.enabled`     | Enable persistence using PVC              | `false`                                                  |
 | `persistence.storageClass` | PVC Storage Class for nextcloud volume     | `nil` (uses alpha storage class annotation)             |
 | `persistence.existingClaim`| An Existing PVC name for nextcloud volume  | `nil` (uses alpha storage class annotation)             |
 | `persistence.accessMode`   | PVC Access Mode for nextcloud volume       | `ReadWriteOnce`                                         |
@@ -116,4 +127,4 @@ $ helm install --name my-release -f values.yaml stable/nextcloud
 The [Nextcloud](https://hub.docker.com/_/nextcloud/) image stores the nextcloud data and configurations at the `/var/www/html` paths of the container.
 
 Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
-See the [Configuration](#configuration) section to configure the PVC or to disable persistence.
+See the [Configuration](#configuration) section to enable persistence and configuration of the PVC.
