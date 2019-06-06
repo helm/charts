@@ -20,6 +20,70 @@ This command deploys the prometheus adapter with the default configuration. The 
 
 To use the chart, ensure the `prometheus.url` and `prometheus.port` are configured with the correct Prometheus service endpoint. Additionally, the chart comes with a set of default rules out of the box but they may pull in too many metrics or not map them correctly for your needs. Therefore, it is recommended to populate `rules.custom` with a list of rules (see the [config document](https://github.com/DirectXMan12/k8s-prometheus-adapter/blob/master/docs/config.md) for the proper format). Finally, to configure your Horizontal Pod Autoscaler to use the custom metric, see the custom metrics section of the [HPA walkthrough](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/#autoscaling-on-multiple-metrics-and-custom-metrics).
 
+The Prometheus Adapter can serve three different [metrics APIs](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/#support-for-metrics-apis):
+
+* `/apis/custom.metrics.k8s.io/v1beta1`  
+Can be enabled using values file as such:
+```
+rules:
+  custom:
+  - seriesQuery: '{__name__=~"^some_metric_count$"}'
+    resources:
+      template: <<.Resource>>
+    name:
+      matches: ""
+      as: "my_custom_metric"
+    metricsQuery: sum(<<.Series>>{<<.LabelMatchers>>}) by (<<.GroupBy>>)
+```
+
+* `/apis/external.metrics.k8s.io/v1beta1`  
+Can be enabled using values file as such:
+```
+rules:
+  external:
+  - seriesQuery: '{__name__=~"^some_metric_count$"}'
+    resources:
+      template: <<.Resource>>
+    name:
+      matches: ""
+      as: "my_external_metric"
+    metricsQuery: sum(<<.Series>>{<<.LabelMatchers>>}) by (<<.GroupBy>>)
+```
+
+* `/apis/metrics.k8s.io/v1beta1`  
+Can be enabled using values file as such, using the configuration below will allow you to use pod CPU and Memory utilization for [Horizontal Pod Autoscalers](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/), as well as the `kubectl top` command:
+```
+rules:
+  resource:
+    cpu:
+      containerQuery: sum(rate(container_cpu_usage_seconds_total{<<.LabelMatchers>>}[3m])) by (<<.GroupBy>>)
+      nodeQuery: sum(rate(container_cpu_usage_seconds_total{<<.LabelMatchers>>, id='/'}[3m])) by (<<.GroupBy>>)
+      resources:
+        overrides:
+          instance:
+            resource: node
+          namespace:
+            resource: namespace
+          pod_name:
+            resource: pod
+      containerLabel: container_name
+    memory:
+      containerQuery: sum(container_memory_working_set_bytes{<<.LabelMatchers>>}) by (<<.GroupBy>>)
+      nodeQuery: sum(container_memory_working_set_bytes{<<.LabelMatchers>>,id='/'}) by (<<.GroupBy>>)
+      resources:
+        overrides:
+          instance:
+            resource: node
+          namespace:
+            resource: namespace
+          pod_name:
+            resource: pod
+      containerLabel: container_name
+    window: 3m
+```
+
+**NOTE:** setting a value for `resource:` will also deploy the `v1beta1.metrics.k8s.io` `APIService`, providing the same functionality as the [metrics-server](https://github.com/helm/charts/tree/master/stable/metrics-server), and as such it is not possible to deploy both in the same cluster.  
+
 ## Uninstalling the Chart
 
 To uninstall/delete the `my-release` deployment:
@@ -52,6 +116,7 @@ The following table lists the configurable parameters of the Prometheus Adapter 
 | `rules.custom`                  | A list of custom configmap rules                                                | `[]`                                        |
 | `rules.existing`                | The name of an existing configMap with rules. Overrides default, custom and external. | ``                                    |
 | `rules.external`                | A list of custom rules for external metrics API                                 | `[]`                                        |
+| `rules.resource`                | `resourceRules` to set in configmap rules                                       | `{}`                                        |
 | `service.annotations`           | Annotations to add to the service                                               | `{}`                                        |
 | `service.port`                  | Service port to expose                                                          | `443`                                       |
 | `service.type`                  | Type of service to create                                                       | `ClusterIP`                                 |
