@@ -59,7 +59,9 @@ airflow:
   ## fernetKey: ABCDABCDABCDABCDABCDABCDABCDABCDABCDABCD
   fernetKey: ""
   service:
+    annotations: {}
     type: ClusterIP
+    externalPort: 8080
   ##
   ## The executor to use.
   ##
@@ -176,8 +178,7 @@ airflow:
   #   emptyDir: {}
 
 scheduler:
-  resources:
-    scheduler: {}
+  resources: {}
     # limits:
     #   cpu: "1000m"
     #   memory: "1Gi"
@@ -194,6 +195,10 @@ flower:
     # requests:
     #   cpu: "100m"
     #   memory: "128Mi"
+  service:
+    annotations: {}
+    type: ClusterIP
+    externalPort: 5555
 
 web:
   resources: {}
@@ -359,6 +364,8 @@ persistence:
   ##
   ## Existing claim to use
   # existingClaim: nil
+  ## Existing claim's subPath to use, e.g. "dags" (optional)
+  # subPath: ""
   ##
   ## Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
@@ -381,6 +388,8 @@ logsPersistence:
   ##
   ## Existing claim to use
   # existingClaim: nil
+  ## Existing claim's subPath to use, e.g. "logs" (optional)
+  # subPath: ""
   ##
   ## Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>

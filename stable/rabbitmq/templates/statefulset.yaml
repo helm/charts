@@ -34,6 +34,9 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
       {{- end }}
     spec:
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+      {{- end }}
 {{- include "rabbitmq.imagePullSecrets" . | indent 6 }}
       {{- if .Values.rbacEnabled}}
       serviceAccountName: {{ template "rabbitmq.fullname" . }}
@@ -86,7 +89,9 @@ spec:
             #copy the mounted configuration to both places
             cp  /opt/bitnami/rabbitmq/conf/* /opt/bitnami/rabbitmq/etc/rabbitmq
             # Apply resources limits
+            {{- if .Values.rabbitmq.setUlimitNofiles }}
             ulimit -n "${RABBITMQ_ULIMIT_NOFILES}"
+            {{- end }}
             #replace the default password that is generated
             sed -i "s/CHANGEME/$RABBITMQ_PASSWORD/g" /opt/bitnami/rabbitmq/etc/rabbitmq/rabbitmq.conf
             #api check for probes
@@ -100,6 +105,9 @@ spec:
             test "\${EXPECTED}" = "\${ACTUAL}"
             EOF
             chmod a+x /opt/bitnami/rabbitmq/sbin/rabbitmq-api-check
+            {{- if and .Values.persistence.enabled .Values.forceBoot.enabled }}
+            rabbitmqctl force_boot
+            {{- end }}
             exec rabbitmq-server
         {{- if .Values.resources }}
         resources:
@@ -272,7 +280,9 @@ spec:
       {{- else if .Values.persistence.existingClaim }}
         - name: data
           persistentVolumeClaim:
-            claimName: {{ .Values.persistence.existingClaim }}
+          {{- with .Values.persistence.existingClaim }}
+            claimName: {{ tpl . $ }}
+          {{- end }}
   {{- else }}
   volumeClaimTemplates:
     - metadata:

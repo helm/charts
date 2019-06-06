@@ -13,9 +13,10 @@ metadata:
 {{ include "opa.labels.standard" . | indent 4 }}
 webhooks:
   - name: webhook.openpolicyagent.org
+{{- with .Values.admissionControllerNamespaceSelector }}
     namespaceSelector:
-      matchExpressions:
-        - {key: openpolicyagent.org/webhook, operator: NotIn, values: [ignore]}
+{{ toYaml . | indent 6 }}
+{{ end }}
     failurePolicy: {{ .Values.admissionControllerFailurePolicy }}
     rules:
 {{ toYaml .Values.admissionControllerRules | indent 6 }}
@@ -30,6 +31,7 @@ webhooks:
       service:
         name: {{ template "opa.fullname" . }}
         namespace: {{ .Release.Namespace }}
+    sideEffects: {{ .Values.admissionControllerSideEffect }}
 
 {{ if .Values.certManager.enabled }}
 ---

@@ -95,8 +95,6 @@ spec:
         volumeMounts:
         - name: dokuwiki-data
           mountPath: /bitnami/dokuwiki
-        - name: apache-data
-          mountPath: /bitnami/apache
 {{- if .Values.metrics.enabled }}
       - name: metrics
         image: {{ template "dokuwiki.metrics.image" . }}
@@ -125,13 +123,6 @@ spec:
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
           claimName: {{ template "dokuwiki.fullname" . }}-dokuwiki
-      {{- else }}
-        emptyDir: {}
-      {{- end }}
-      - name: apache-data
-      {{- if .Values.persistence.enabled }}
-        persistentVolumeClaim:
-          claimName: {{ template "dokuwiki.fullname" . }}-apache
       {{- else }}
         emptyDir: {}
       {{- end }}

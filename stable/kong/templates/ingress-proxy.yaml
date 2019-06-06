@@ -1,6 +1,6 @@
 {{- if .Values.proxy.ingress.enabled -}}
 {{- $serviceName := include "kong.fullname" . -}}
-{{- $servicePort := include "kong.ingress.servicePort" . -}}
+{{- $servicePort := include "kong.ingress.servicePort" .Values.proxy -}}
 {{- $path := .Values.proxy.ingress.path -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
