@@ -193,6 +193,11 @@ spec:
         - name: metrics
           image: {{ template "mongodb.metrics.image" . }}
           imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
+          {{- if .Values.securityContext.enabled }}
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: {{ .Values.securityContext.runAsUser }}
+          {{- end }}
           env:
           {{- if .Values.usePassword }}
           - name: MONGODB_ROOT_PASSWORD
