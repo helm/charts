@@ -61,8 +61,8 @@ rules:
 #   metricsQuery: sum(<<.Series>>{<<.LabelMatchers>>}) by (<<.GroupBy>>)
   resource: {}
 #   cpu:
-#     containerQuery: sum(rate(container_cpu_usage_seconds_total{<<.LabelMatchers>>}[1m])) by (<<.GroupBy>>)
-#     nodeQuery: sum(rate(container_cpu_usage_seconds_total{<<.LabelMatchers>>, id='/'}[1m])) by (<<.GroupBy>>)
+#     containerQuery: sum(rate(container_cpu_usage_seconds_total{<<.LabelMatchers>>}[3m])) by (<<.GroupBy>>)
+#     nodeQuery: sum(rate(container_cpu_usage_seconds_total{<<.LabelMatchers>>, id='/'}[3m])) by (<<.GroupBy>>)
 #     resources:
 #       overrides:
 #         instance:
@@ -84,7 +84,7 @@ rules:
 #         pod_name:
 #           resource: pod
 #     containerLabel: container_name
-#   window: 1m
+#   window: 3m
 
 service:
   annotations: {}

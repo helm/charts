@@ -56,8 +56,8 @@ Can be enabled using values file as such, using the configuration below will all
 rules:
   resource:
     cpu:
-      containerQuery: sum(rate(container_cpu_usage_seconds_total{<<.LabelMatchers>>}[1m])) by (<<.GroupBy>>)
-      nodeQuery: sum(rate(container_cpu_usage_seconds_total{<<.LabelMatchers>>, id='/'}[1m])) by (<<.GroupBy>>)
+      containerQuery: sum(rate(container_cpu_usage_seconds_total{<<.LabelMatchers>>}[3m])) by (<<.GroupBy>>)
+      nodeQuery: sum(rate(container_cpu_usage_seconds_total{<<.LabelMatchers>>, id='/'}[3m])) by (<<.GroupBy>>)
       resources:
         overrides:
           instance:
@@ -79,7 +79,7 @@ rules:
           pod_name:
             resource: pod
       containerLabel: container_name
-    window: 1m
+    window: 3m
 ```
 
 **NOTE:** setting a value for `resource:` will also deploy the `v1beta1.metrics.k8s.io` `APIService`, providing the same functionality as the [metrics-server](https://github.com/helm/charts/tree/master/stable/metrics-server), and as such it is not possible to deploy both in the same cluster.  
