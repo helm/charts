@@ -1,5 +1,3 @@
-# helm upgrade --install prometheus-redis-exporter-dev . -f .values.yaml --namespace dev --debug --dry-run
-#Doku auch unter: https://github.com/oliver006/redis_exporter
 rbac:
   # Specifies whether RBAC resources should be created
   create: true
