@@ -135,7 +135,7 @@ metadata:
     heritage: {{ .Release.Service }}
     component: {{ $component }}
   {{- if .Values.anchoreCatalog.service.labels }}
-  {{ toYaml .Values.anchoreApi.service.labels | indent 4 }}
+  {{ toYaml .Values.anchoreCatalog.service.labels | indent 4 }}
   {{- end }}
   {{- with .Values.anchoreCatalog.service.annotations }}
   annotations:
