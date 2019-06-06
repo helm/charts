@@ -113,6 +113,7 @@ Create custom cipherSuites block
           ]
 {{- end -}}
 
+{{/*
 Create the block for RootCAs.
 */}}
 {{- define "traefik.rootCAs" -}}
@@ -124,6 +125,7 @@ Create the block for RootCAs.
          ]
 {{- end -}}
 
+{{/*
 Create the block for mTLS ClientCAs.
 */}}
 {{- define "traefik.ssl.mtls.clientCAs" -}}
