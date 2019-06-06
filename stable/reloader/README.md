@@ -79,7 +79,7 @@ Update the `values.yaml` and set the following properties
 | deployment.annotations          | Annotations for deployment                                                | `{}`                        | `{}`                        |
 | deployment.labels          | Labels for deployment                                                | `provider`                        | `provider`                        |
 | deployment.image.name          | Image name for reloader                                                | `stakater/reloader`                        | `stakater/reloader`                        |
-| deployment.image.tag          | Image tag for reloader                                                | `v0.0.25`                        | `v0.0.25`                        |
+| deployment.image.tag          | Image tag for reloader                                                | `v0.0.29`                        | `v0.0.29`                        |
 | deployment.image.pullPolicy          | Image pull policy for reloader                                                | `IfNotPresent`                        | `IfNotPresent`                        |
 | deployment.env.open          | Additional key value pair as environment variables                                                | `STORAGE: local`                        | ``                        |
 | deployment.env.secret          | Additional Key value pair as environment variables. It gets the values based on keys from default reloader secret if any                                               | `BASIC_AUTH_USER: test`                        | ``                        |
