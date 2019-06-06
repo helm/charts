@@ -57,7 +57,6 @@ The following table lists the configurable parameters of the WordPress chart and
 | `image.pullPolicy`               | Image pull policy                                                             | `Always` if `imageTag` is `latest`, else `IfNotPresent`      |
 | `image.pullSecrets`              | Specify docker-registry secret names as an array                              | `[]` (does not add image pull secrets to deployed pods)      |
 | `wordpressSkipInstall`           | Skip wizard installation                                                      | `false`                                                      |
-| `wordpressUpdateStrategy`        | Set up wordpress update strategy                                              | `Rolling Update`                                             |
 | `wordpressUsername`              | User of the application                                                       | `user`                                                       |
 | `wordpressPassword`              | Application password                                                          | _random 10 character long alphanumeric string_               |
 | `wordpressEmail`                 | Admin email                                                                   | `user@example.com`                                           |
@@ -125,6 +124,7 @@ The following table lists the configurable parameters of the WordPress chart and
 | `metrics.podAnnotations`         | Additional annotations for Metrics exporter pod                               | `{prometheus.io/scrape: "true", prometheus.io/port: "9117"}` |
 | `metrics.resources`              | Exporter resource requests/limit                                              | `{}`                                                         |
 | `sidecars`                       | Attach additional containers to the pod                                       | `nil`                                                        |
+| `updateStrategy`                 | Set up update strategy                                                        | `RollingUpdate`                                              |
 
 The above parameters map to the env variables defined in [bitnami/wordpress](http://github.com/bitnami/bitnami-docker-wordpress). For more information please refer to the [bitnami/wordpress](http://github.com/bitnami/bitnami-docker-wordpress) image documentation.
 
