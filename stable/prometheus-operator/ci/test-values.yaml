@@ -223,7 +223,6 @@ alertmanager:
     ##
     useExistingSecret: false
 
-
     ## Secrets is a list of Secrets in the same namespace as the Alertmanager object, which shall be mounted into the
     ## Alertmanager Pods. The Secrets are mounted into /etc/alertmanager/secrets/.
     ##
@@ -1038,10 +1037,7 @@ prometheus:
   ## Configuration for Prometheus service
   ##
   service:
-    annotations: 
-      cloud.google.com/load-balancer-type: "Internal"
-      external-dns.alpha.kubernetes.io/hostname: "prometheus-vault8.macpaw.io."
-
+    annotations: {}
     labels: {}
     clusterIP: ""
 
@@ -1065,7 +1061,7 @@ prometheus:
     loadBalancerSourceRanges: []
     ## Service type
     ##
-    type: LoadBalancer
+    type: ClusterIP
 
     sessionAffinity: ""
 
