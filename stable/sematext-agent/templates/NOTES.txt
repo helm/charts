@@ -1,7 +1,7 @@
 {{- if and (not .Values.containerToken) (not .Values.logsToken) -}}
 
 ###############################################################################
-#           ERROR: Please provide containerToken and/or logsToken!         #
+#           ERROR: Please provide containerToken and/or logsToken!            #
 ###############################################################################
 
 Depending on which region you want to use, create a container and/or logs apps
