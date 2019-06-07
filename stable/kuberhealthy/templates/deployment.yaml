@@ -1,0 +1,97 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "kuberhealthy.name" . }}
+  labels:
+    app: {{ template "kuberhealthy.name" . }}
+    chart: {{ .Chart.Name }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.deployment.replicas }}
+  selector:
+    matchLabels:
+      app: {{ template "kuberhealthy.name" . }}
+      release: {{ .Release.Name }}
+  strategy:
+    rollingUpdate:
+      maxSurge: {{ .Values.deployment.maxSurge }}
+      maxUnavailable: {{ .Values.deployment.maxUnavailable }}
+    type: RollingUpdate
+  template:
+    metadata:
+      {{- if .Values.deployment.podAnnotations }}
+      annotations:
+      {{- range $key, $value := .Values.deployment.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+      {{- end }}
+      {{- end }}
+      {{- if .Values.prometheus.enabled -}}
+      {{- if .Values.prometheus.enableScraping -}}
+      {{- if not .Values.deployment.podAnnotations }}
+      annotations:
+      {{- end}}
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/metrics"
+        prometheus.io/port: "8080"
+      {{- end }}
+      {{- end }}
+      labels:
+        app: {{ template "kuberhealthy.name" . }}
+        chart: {{ .Chart.Name }}
+        release: {{ .Release.Name }}
+        heritage: {{ .Release.Service }}
+    spec:
+      serviceAccountName: kuberhealthy
+      automountServiceAccountToken: true
+      containers:
+      - image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        command: {{ .Values.deployment.command }}
+        {{- if .Values.deployment.args }}
+        args:
+{{ toYaml .Values.deployment.args | nindent 8 }}
+        {{- end }}
+        ports:
+        - containerPort: 8080
+          name: http
+        securityContext:
+        {{- toYaml .Values.securityContext | nindent 10 -}}
+        imagePullPolicy: {{ .Values.deployment.imagePullPolicy }}
+        livenessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 2
+          periodSeconds: 4
+          successThreshold: 1
+          tcpSocket:
+            port: 8080
+          timeoutSeconds: 1
+        name:  {{ template "kuberhealthy.name" . }}
+        env:
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+        readinessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 2
+          periodSeconds: 4
+          successThreshold: 1
+          tcpSocket:
+            port: 8080
+          timeoutSeconds: 1
+        resources:
+          requests:
+            cpu: {{ .Values.resources.requests.cpu }}
+            memory: {{ .Values.resources.requests.memory }}
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 310
+{{- if .Values.tolerations.master }}
+      tolerations:
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/master
+        operator: Exists
+{{- end -}}

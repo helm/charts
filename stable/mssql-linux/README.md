@@ -93,13 +93,21 @@ The configuration parameters in this section control the resources requested and
 | image.repository | The docker hub repo for SQL Server                                                             | `microsoft/mssql-server-linux`   |
 | image.tag        | The tag for the image                                                                          | `2017-CU5`                       |
 | image.pullPolicy | The pull policy for the deployment                                                             | `IfNotPresent`                   |
+| image.pullSecrets   | Specify an image pull secret if needed  | `Commented Out`  |
 | nodeSelector     | Node labels for pod assignment                                                                 | `{}`                             |
+| service.headless   | Allows you to setup a headless service  | `false`  |
 | service.type     | Service Type                                                                                   | `ClusterIP`                      |
 | service.port     | Service Port                                                                                   | `1433`                           |
 | service.annotations | Kubernetes service annotations                                                              | `{}`                             |
+| service.labels   | Kubernetes service labels                                                                      | `{}`                             |
+| deployment.annotations | Kubernetes deployment annotations                                                        | `{}`                             |
+| deployment.labels | Kubernetes deployment labels                                                                  | `{}`                             |
+| pod.annotations   | Kubernetes pod annotations                                                                    | `{}`                             |
+| pod.labels        | Kubernetes pod labels                                                                         | `{}`                             |
 | collation        | Default collation for SQL Server                                                               | `SQL_Latin1_General_CP1_CI_AS`   |
 | lcid             | Default languages for SQL Server                                                               | `1033`                           |
 | hadr             | Enable Availability Group                                                                      | `0`                              |
+| schedulerName    | Name of the k8s scheduler (other than default)                                                 | `nil`                            |
 | persistence.enabled | Persist the Data and Log files for SQL Server                                               | `false`                          |
 | persistence.existingDataClaim | Identify an existing Claim to be used for the Data Directory                      | `Commented Out`                  |
 | persistence.existingTransactionLogClaim  | Identify an existing Claim to be used for the Log Directory            | `Commented Out`                  |
@@ -219,6 +227,7 @@ To change the language of the MSSQL installation, change the `lcid` key in the `
 1>select substring(convert(varchar(30),serverproperty('Collation')),1,30), substring(convert(varchar(20),serverproperty('lcid')),1,20);
 2>go
 ```
+
 ## Master database files
 
 As part of this chart the `master` database is configured to be installed based in the `/mssql-data/master`.

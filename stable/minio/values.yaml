@@ -1,8 +1,12 @@
+## set kubernetes cluster domain where minio is running
+##
+clusterDomain: cluster.local
+
 ## Set default image, imageTag, and imagePullPolicy. mode is used to indicate the
 ##
 image:
   repository: minio/minio
-  tag: RELEASE.2018-09-12T18-49-56Z
+  tag: RELEASE.2019-05-14T23-57-45Z
   pullPolicy: IfNotPresent
 
 ## Set default image, imageTag, and imagePullPolicy for the `mc` (the minio
@@ -10,13 +14,23 @@ image:
 ##
 mcImage:
   repository: minio/mc
-  tag: RELEASE.2018-09-10T23-39-12Z
+  tag: RELEASE.2019-05-01T23-27-44Z
   pullPolicy: IfNotPresent
 
 ## minio server mode, i.e. standalone or distributed.
 ## Distributed Minio ref: https://docs.minio.io/docs/distributed-minio-quickstart-guide
 ##
 mode: standalone
+
+## Update strategy for Deployments
+DeploymentUpdate:
+  type: RollingUpdate
+  maxUnavailable: 0
+  maxSurge: 100%
+
+## Update strategy for StatefulSets
+StatefulSetUpdate:
+  updateStrategy: RollingUpdate
 
 ## Pod priority settings
 ## ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
@@ -31,8 +45,17 @@ existingSecret: ""
 accessKey: "AKIAIOSFODNN7EXAMPLE"
 secretKey: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
 configPath: "/root/.minio/"
+configPathmc: "/root/.mc/"
 mountPath: "/export"
 replicas: 4
+
+## TLS Settings for Minio
+tls:
+  enabled: false
+  ## Create a secret with private.key and public.crt files and pass that here. Ref: https://github.com/minio/minio/tree/master/docs/tls/kubernetes#2-create-kubernetes-secret
+  certSecret: ""
+  publicCrt: public.crt
+  privateKey: private.key
 
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
@@ -55,6 +78,7 @@ persistence:
   ## Storage class of PV to bind. By default it looks for standard storage class.
   ## If the PV uses a different storage class, specify that here.
   # storageClass: standard
+  # VolumeName: ""
   accessMode: ReadWriteOnce
   size: 10Gi
 
@@ -72,7 +96,7 @@ service:
   type: ClusterIP
   clusterIP: ~
   port: 9000
-  # nodePort: 31311
+  nodePort: 31311
   # externalIPs:
   #   - externalIp1
   annotations: {}
@@ -80,11 +104,19 @@ service:
     # prometheus.io/path:   '/minio/prometheus/metrics'
     # prometheus.io/port:   '9000'
 
+## Configure Ingress based on the documentation here: https://kubernetes.io/docs/concepts/services-networking/ingress/
+##
+
 ingress:
   enabled: false
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
+    # kubernetes.io/ingress.allow-http: "false"
+    # kubernetes.io/ingress.global-static-ip-name: ""
+    # nginx.ingress.kubernetes.io/secure-backends: "true"
+    # nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    # nginx.ingress.kubernetes.io/whitelist-source-range: 0.0.0.0/0
   path: /
   hosts:
     - chart-example.local
@@ -99,6 +131,9 @@ ingress:
 nodeSelector: {}
 tolerations: []
 affinity: {}
+
+# Additational pod annotations
+podAnnotations: {}
 
 ## Liveness and Readiness probe values.
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
@@ -134,20 +169,46 @@ defaultBucket:
   ## Purge if bucket exists already
   purge: false
 
+## Create multiple buckets after minio install
+## Enabling `defaultBucket` will take priority over this list
+##
+buckets: []
+  # - name: bucket1
+  #   policy: none
+  #   purge: false
+  # - name: bucket2
+  #   policy: none
+  #   purge: false
+
+s3gateway:
+  enabled: false
+  replicas: 4
+  serviceEndpoint: ""
+
 ## Use minio as an azure blob gateway, you should disable data persistence so no volume claim are created.
 ## https://docs.minio.io/docs/minio-gateway-for-azure
 azuregateway:
   enabled: false
+  # Number of parallel instances
+  replicas: 4
 
 ## Use minio as GCS (Google Cloud Storage) gateway, you should disable data persistence so no volume claim are created.
 ## https://docs.minio.io/docs/minio-gateway-for-gcs
 
 gcsgateway:
   enabled: false
+  # Number of parallel instances
+  replicas: 4
   # credential json file of service account key
   gcsKeyJson: ""
   # Google cloud project-id
   projectId: ""
+
+ossgateway:
+  enabled: false
+  # Number of parallel instances
+  replicas: 4
+  endpointURL: ""
 
 ## Use minio on NAS backend
 ## https://docs.minio.io/docs/minio-gateway-for-nas
@@ -160,96 +221,31 @@ nasgateway:
   # a label like "pv: <value>", use value here.
   pv: ~
 
-## https://docs.minio.io/docs/minio-bucket-notification-guide
-## https://github.com/minio/minio/blob/master/docs/config
-minioConfig:
-  region: "us-east-1"
-  browser: "on"
-  domain: ""
-  worm: "off"
-  storageClass:
-    standardStorageClass: ""
-    reducedRedundancyStorageClass: ""
-  cache:
-    drives: []
-    expiry: 90
-    maxuse: 80
-    exclude: []
-  aqmp:
-    enable: false
-    url: ""
-    exchange: ""
-    routingKey: ""
-    exchangeType: ""
-    deliveryMode: 0
-    mandatory: false
-    immediate: false
-    durable: false
-    internal: false
-    noWait: false
-    autoDeleted: false
-  nats:
-    enable: false
-    address: ""
-    subject: ""
-    username: ""
-    password: ""
-    token: ""
-    secure: false
-    pingInterval: 0
-    enableStreaming: false
-    clusterID: ""
-    clientID: ""
-    async: false
-    maxPubAcksInflight: 0
-  elasticsearch:
-    enable: false
-    format: "namespace"
-    url: ""
-    index: ""
-  redis:
-    enable: false
-    format: "namespace"
-    address: ""
-    password: ""
-    key: ""
-  postgresql:
-    enable: false
-    format: "namespace"
-    connectionString: ""
-    table: ""
-    host: ""
-    port: ""
-    user: ""
-    password: ""
-    database: ""
-  kafka:
-    enable: false
-    brokers: "null"
-    topic: ""
-  webhook:
-    enable: false
-    endpoint: ""
-  mysql:
-    enable: false
-    format: "namespace"
-    dsnString: ""
-    table: ""
-    host: ""
-    port: ""
-    user: ""
-    password: ""
-    database: ""
-  mqtt:
-    enable: false
-    broker: ""
-    topic: ""
-    qos: 0
-    clientId: ""
-    username: ""
-    password: ""
-    reconnectInterval: 0
-    keepAliveInterval: 0
+## Use this field to add environment variables relevant to Minio server. These fields will be passed on to Minio container(s)
+## when Chart is deployed
+environment:
+  ## To disable Minio Browser, set this value to off
+  MINIO_BROWSER: "on"
+  ## To enable virtual-host-style requests, set this value to Minio host domain name.
+  # MINIO_DOMAIN: ""
+  ## Minio Cache settings, refer: https://docs.minio.io/docs/minio-disk-cache-guide.html
+  # MINIO_CACHE_DRIVES: ""
+  # MINIO_CACHE_EXCLUDE: ""
+  # MINIO_CACHE_EXPIRY: ""
+  # MINIO_CACHE_MAXUSE: ""
+  ## Minio WORM setting, refer: https://docs.minio.io/docs/minio-server-configuration-guide.html
+  # MINIO_WORM: ""
+  ## Minio KMS settings, refer: https://docs.minio.io/docs/minio-kms-quickstart-guide.html
+  # MINIO_SSE_VAULT_ENDPOINT: ""
+  # MINIO_SSE_VAULT_APPROLE_ID: ""
+  # MINIO_SSE_VAULT_APPROLE_SECRET: ""
+  # MINIO_SSE_VAULT_KEY_NAME: ""
+  ## Minio Federation settings, refer: https://docs.minio.io/docs/minio-federation-quickstart-guide.html
+  # MINIO_ETCD_ENDPOINTS: ""
+  # MINIO_PUBLIC_IPS: ""
+  # MINIO_DOMAIN: ""
+  ## Add other environment variables relevant to Minio server here. These values will be added to the container(s) as this Chart is deployed
+
 networkPolicy:
   enabled: false
   allowExternal: true

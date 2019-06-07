@@ -1,0 +1,193 @@
+## -------------------------- ##
+# Values to override for your instance.
+## -------------------------- ##
+
+## An option to override the atlantis url,
+##   if not using an ingress, set it to the external IP.
+# atlantisUrl: http://10.0.0.0
+
+# Replace this with your own repo whitelist:
+orgWhitelist: <replace-me>
+# logLevel: "debug"
+
+# If using GitHub, specify like the following:
+# github:
+#   user: foo
+#   token: bar
+#   secret: baz
+# GitHub Enterprise only:
+#   hostname: github.your.org
+# (The chart will perform the base64 encoding for you for values that are stored in secrets.)
+
+# If using GitLab, specify like the following:
+# gitlab:
+#   user: foo
+#   token: bar
+#   secret: baz
+# GitLab Enterprise only:
+#   hostname: gitlab.your.org
+# (The chart will perform the base64 encoding for you for values that are stored in secrets.)
+
+# If using Bitbucket, specify like the following:
+# bitbucket:
+#   user: foo
+#   token: bar
+# Bitbucket Server only:
+#   secret: baz
+#   base_url: https://bitbucket.yourorganization.com
+# (The chart will perform the base64 encoding for you for values that are stored in secrets.)
+
+# If managing secrets outside the chart for the webhook, use this variable to reference the secret name
+# vcsSecretName: 'mysecret'
+
+# When referencing Terraform modules in private repositories, it may be helpful
+# (necessary?) to use redirection in a .gitconfig like so:
+# gitconfig: |
+  # [url "https://YOUR_GH_TOKEN@github.com"]
+  #   insteadOf = https://github.com
+  # [url "https://YOUR_GH_TOKEN@github.com"]
+  #   insteadOf = ssh://git@github.com
+  # [url "https://oauth2:YOUR_GITLAB_TOKEN@gitlab.com"]
+  #   insteadOf = https://gitlab.com
+  # [url "https://oauth2:YOUR_GITLAB_TOKEN@gitlab.com"]
+  #   insteadOf = ssh://git@gitlab.com
+# Source: https://stackoverflow.com/questions/42148841/github-clone-with-oauth-access-token
+
+# To specify AWS credentials to be mapped to ~/.aws:
+# aws:
+#   credentials: |
+#     [default]
+#     aws_access_key_id=YOUR_ACCESS_KEY_ID
+#     aws_secret_access_key=YOUR_SECRET_ACCESS_KEY
+#     region=us-east-1
+#   config: |
+#     [profile a_role_to_assume]
+#     role_arn = arn:aws:iam::123456789:role/service-role/roleToAssume
+#     source_profile = default
+# To reference an already existing Secret object with AWS credentials
+# awsSecretName: 'mysecretwithawscreds'
+
+## To be used for mounting credential files (when using google provider).
+serviceAccountSecrets:
+  # credentials: <json file as base64 encoded string>
+  # credentials-staging: <json file as base64 encoded string>
+
+
+## -------------------------- ##
+# Default values for atlantis (override as needed).
+## -------------------------- ##
+
+image:
+  repository: runatlantis/atlantis
+  tag: v0.7.1
+  pullPolicy: IfNotPresent
+
+## Optionally specify an array of imagePullSecrets.
+## Secrets must be manually created in the namespace.
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+##
+# imagePullSecrets:
+# - myRegistryKeySecretName
+
+## Use Server Side Repo Config,
+## ref: https://www.runatlantis.io/docs/server-side-repo-config.html
+## Example default configuration
+# repoConfig: |
+#  ---
+#  repos:
+#  - id: /.*/
+#    apply_requirements: []
+#    workflow: default
+#    allowed_overrides: []
+#    allow_custom_workflows: false
+#  workflows:
+#    default:
+#      plan:
+#        steps: [init, plan]
+#      apply:
+#        steps: [apply]
+
+# allowForkPRs enables atlantis to run on a fork Pull Requests
+allowForkPRs: false
+
+## defaultTFVersion set the default terraform version to be used in atlantis server
+# defaultTFVersion: v0.12.0
+
+# We only need to check every 60s since Atlantis is not a high-throughput service.
+livenessProbe:
+  enabled: true
+  periodSeconds: 60
+  initialDelaySeconds: 5
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 5
+  scheme: HTTP
+readinessProbe:
+  enabled: true
+  periodSeconds: 60
+  initialDelaySeconds: 5
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 5
+  scheme: HTTP
+
+service:
+  type: NodePort
+  port: 80
+
+podTemplate:
+  annotations: {}
+    # kube2iam example:
+    # iam.amazonaws.com/role: role-arn
+  labels: {}
+
+statefulSet:
+  annotations: {}
+  labels: {}
+
+ingress:
+  enabled: true
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  path: /
+  host: chart-example.local
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+  labels: {}
+
+resources:
+  requests:
+    memory: 1Gi
+    cpu: 100m
+  limits:
+    memory: 1Gi
+    cpu: 100m
+
+# Disk space for Atlantis to check out repositories
+dataStorage: 5Gi
+
+replicaCount: 1
+
+## test container details
+test:
+  enabled: true
+  image: lachlanevenson/k8s-kubectl
+  imageTag: v1.4.8-bash
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+# tlsSecretName: tls

@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "kube-slack.fullname" . }}
+  labels:
+    app: {{ template "kube-slack.name" . }}
+    chart: {{ template "kube-slack.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+{{ toYaml .Values.envVars | indent 2 }}

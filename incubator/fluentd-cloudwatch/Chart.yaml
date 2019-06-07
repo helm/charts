@@ -1,6 +1,7 @@
+apiVersion: v1
 name: fluentd-cloudwatch
-version: 0.5.2
-appVersion: v0.12.43-cloudwatch
+version: 0.10.0
+appVersion: v1.3.3-debian-cloudwatch-1.0
 description: A Fluentd CloudWatch Helm chart for Kubernetes.
 home: https://www.fluentd.org/
 icon: https://raw.githubusercontent.com/fluent/fluentd-docs/master/public/logo/Fluentd_square.png

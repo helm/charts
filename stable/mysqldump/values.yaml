@@ -3,42 +3,61 @@
 # Declare variables to be passed into your templates.
 
 image:
-  repository: mysql
-  tag: "5.7.21"
+  repository: monotek/gcloud-mysql
+  tag: "8"
   pullPolicy: IfNotPresent
 
 mysql:
 ## Without a host set, this chart will not do anything as it is expected
 ## to be used only when there's an existing database to backup.
-  host:
+  host: ""
   username: root
   password:
   port: 3306
+  # db for single db backup
+  db: dbname
+
+# use --all-databases
+allDatabases:
+  enabled: true
+  # creates single backup file with all databases
+  singleBackupFile: false
+
+# options to pass to mysqldump
+options: "--opt --single-transaction"
+
+# save sql backup to a directory named like the database or "alldatabases"
+saveToDirectory: false
 
 ## set to `now` to get a one time job, or a cronjob schedule like `0 0 * * *`
 ## to get a cronjob.
-schedule: "0/5 * * * *"
-# schedule: now
+schedule: "0 3 * * *"
 
-## options to pass to mysqldump
-options: "--opt --skip-lock-tables --skip-add-locks --all-databases"
-
-## enable some debug options
+# enable some debug options
 debug: false
 
-## cronjob history
+# cronjob history
 successfulJobsHistoryLimit: 5
 failedJobsHistoryLimit: 5
 
+# additional steps for mysqldump shell script
+# will be inserted after all backup and upload jobs completed successfully.
+# Use "${BACKUP_DIR}/${TIMESTAMP}_${MYSQL_DB}.sql.gz" as dump file name.
+# see examples
+additionalSteps: []
+#  - gsutil cp "${BACKUP_DIR}/${TIMESTAMP}_${MYSQL_DB}.sql.gz" gs://mybucket/latest.sql.gz
+#  - echo "latest sql dump updated"
+
 ## set persistentVolumeClaim to use a PVC that already exists.
-## if set will override any settings under `resistence` otherwise
-## if not set and `persistence` set to true, will create a PVC.
+## if set will override any settings under `persistence` otherwise
+## if not set and `persistence.enabled` set to true, will create a PVC.
 # persistentVolumeClaim: <existing-PVC>
 
 persistence:
   enabled: true
   size: 8Gi
   accessMode: ReadWriteOnce
+  subPath:
   ## If defined, storageClassName: <storageClass>
   ## If set to "-", storageClassName: "", which disables dynamic provisioning
   ## If undefined (the default) or set to null, no storageClassName spec is
@@ -46,3 +65,50 @@ persistence:
   ##   GKE, AWS & OpenStack)
   ##
   # storageClass: "-"
+
+# delete backups older than 10 days
+housekeeping:
+  enabled: true
+  keepDays: 10
+
+# upload backup
+upload:
+  googlestoragebucket:
+    enabled: false
+    # bucketname with gs:// prefix
+    bucketname: gs://mybucket/test
+    # jsonKeyfile of you serviceaccount as string
+    jsonKeyfile: ""
+    # secretFileName specifies the keyfile name inside the secret
+    secretFileName: keyfile.json
+    # existingSecret can be enabled to use an existing secret
+    # existingSecret: mysecret
+    # serviceAccountName to set a specific service account name
+    # serviceAccountName
+    # usingGCPController to enable autogeneration and injection of the service account
+    usingGCPController: false
+  ssh:
+    enabled: false
+    user: backup
+    host: yourdomain.com
+    dir: /backup
+    # id_rsa private key as string
+    privatekey: ""
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

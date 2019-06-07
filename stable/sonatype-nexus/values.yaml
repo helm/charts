@@ -1,3 +1,5 @@
+statefulset:
+  enabled: false
 replicaCount: 1
 # By default deploymentStrategy is set to rollingUpdate with maxSurge of 25% and maxUnavailable of 25% . you can change type to `Recreate` or can uncomment `rollingUpdate` specification and adjust them to your usage.
 deploymentStrategy: {}
@@ -8,7 +10,7 @@ deploymentStrategy: {}
 
 nexus:
   imageName: quay.io/travelaudience/docker-nexus
-  imageTag: 3.13.0_alpine_3.8.1
+  imageTag: 3.15.2
   imagePullPolicy: IfNotPresent
   env:
     - name: install4jAddVmParams
@@ -30,7 +32,9 @@ nexus:
   # The ports should only be changed if the nexus image uses a different port
   dockerPort: 5003
   nexusPort: 8081
-  serviceType: NodePort
+  service:
+    type: NodePort
+    # clusterIP: None
   # annotations: {}
   # labels: {}
   # securityContext:
@@ -55,11 +59,19 @@ nexus:
   #   - "example.com"
   #   - "www.example.com"
 
+route:
+  enabled: false
+  name: docker
+  portName: docker
+  labels:
+  annotations:
+  # path: /docker
+
 nexusProxy:
   enabled: true
   # svcName: proxy-svc
   imageName: quay.io/travelaudience/docker-nexus-proxy
-  imageTag: 2.3.0
+  imageTag: 2.4.0_8u191
   imagePullPolicy: IfNotPresent
   port: 8080
   targetPort: 8080
@@ -74,6 +86,7 @@ nexusProxy:
   #   clientSecret: ""
   #   organizationId: ""
   #   redirectUrl: ""
+  #   requiredMembershipVerification: "true"
   # secrets:
   #   keystore: ""
   #   password: ""
@@ -84,6 +97,13 @@ nexusProxy:
     # limits:
       # cpu: 200m
       # memory: 512Mi
+
+nexusProxyRoute:
+  enabled: false
+  labels:
+  annotations:
+  # path: /nexus
+
 persistence:
   enabled: true
   accessMode: ReadWriteOnce
@@ -105,7 +125,7 @@ persistence:
 nexusBackup:
   enabled: false
   imageName: quay.io/travelaudience/docker-nexus-backup
-  imageTag: 1.3.0
+  imageTag: 1.4.0
   imagePullPolicy: IfNotPresent
   env:
     targetBucket:
@@ -162,6 +182,7 @@ deployment:
     command:    # '["/bin/sh", "-c", "ls"]'
   additionalContainers:
   additionalVolumes:
+  additionalVolumeMounts:
 
 # # To use an additional secret, set enable to true and add data
 secret:

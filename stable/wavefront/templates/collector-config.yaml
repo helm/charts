@@ -1,0 +1,14 @@
+{{- if and .Values.collector.discovery.enabled .Values.collector.discovery.config }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/name : {{ template "wavefront.fullname" . }}
+    helm.sh/chart: {{ template "wavefront.chart" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    app.kubernetes.io.instance: {{ .Release.Name | quote }}
+    app.kubernetes.io/component: collector    
+  name: {{ template "wavefront.collector.fullname" . }}-config
+data:
+{{ tpl (toYaml .Values.collector.discovery.config) . | indent 2 }}
+{{- end }}

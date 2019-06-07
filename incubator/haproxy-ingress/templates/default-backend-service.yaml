@@ -1,15 +1,41 @@
+{{- if .Values.defaultBackend.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.defaultBackend.service.name }}
+{{- if .Values.defaultBackend.service.annotations }}
+  annotations:
+{{ toYaml .Values.defaultBackend.service.annotations | indent 4 }}
+{{- end }}
   labels:
     app: {{ template "haproxy-ingress.name" . }}
     chart: {{ template "haproxy-ingress.chart" . }}
+    component: "{{ .Values.defaultBackend.name }}"
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+  name: {{ template "haproxy-ingress.defaultBackend.fullname" . }}
 spec:
+{{- if .Values.defaultBackend.service.clusterIP }}
+  clusterIP: "{{ .Values.defaultBackend.service.clusterIP }}"
+{{- end }}
+{{- if .Values.defaultBackend.service.externalIPs }}
+  externalIPs:
+{{ toYaml .Values.defaultBackend.service.externalIPs | indent 4 }}
+{{- end }}
+{{- if .Values.defaultBackend.service.loadBalancerIP }}
+  loadBalancerIP: "{{ .Values.defaultBackend.service.loadBalancerIP }}"
+{{- end }}
+{{- if .Values.defaultBackend.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+{{ toYaml .Values.defaultBackend.service.loadBalancerSourceRanges | indent 4 }}
+{{- end }}
   ports:
-    - port: 8080
+    - name: http
+      port: {{ .Values.defaultBackend.service.servicePort }}
+      protocol: TCP
+      targetPort: http
   selector:
     app: {{ template "haproxy-ingress.name" . }}
+    component: "{{ .Values.defaultBackend.name }}"
     release: {{ .Release.Name }}
+  type: "{{ .Values.defaultBackend.service.type }}"
+{{- end }}

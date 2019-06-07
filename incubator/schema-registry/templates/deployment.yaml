@@ -43,7 +43,7 @@ spec:
             value: {{ .Values.sasl.scram.clientUser }}
           - name: SCRAM_CLIENT_PASSWORD
             {{- if (hasKey .Values.sasl.scram "useExistingSecret") }}
-            valueFrom: 
+            valueFrom:
 {{ toYaml .Values.sasl.scram.useExistingSecret.clientPassword | indent 14 -}}
             {{- else }}
             valueFrom:
@@ -63,6 +63,14 @@ spec:
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           ports:
             - containerPort: {{ .Values.servicePort }}
+            {{- if .Values.external.enabled }}
+            - containerPort: {{ .Values.external.servicePort }}
+              name: external
+            {{- end }}
+            {{- if .Values.jmx.enabled }}
+            - containerPort: {{ .Values.jmx.port }}
+              name: jmx
+            {{- end }}
           livenessProbe:
             httpGet:
               path: /
@@ -101,8 +109,6 @@ spec:
             value: {{ template "schema-registry.kafkaStore.bootstrapServers" . }}
           - name: SCHEMA_REGISTRY_KAFKASTORE_GROUP_ID
             value: {{ template "schema-registry.kafkaStore.groupId" . }}
-          - name: SCHEMA_REGISTRY_MASTER_ELIGIBILITY
-            value: "true"
           {{ range $configName, $configValue := .Values.configurationOverrides }}
           - name: SCHEMA_REGISTRY_{{ $configName | replace "." "_" | upper }}
             value: {{ $configValue | quote }}
@@ -114,12 +120,36 @@ spec:
           - name: SCHEMA_REGISTRY_OPTS
             value: "{{ .Values.schemaRegistryOpts }}"
           {{- end }}
+          {{- if .Values.jmx.enabled }}
+          - name: JMX_PORT
+            value: "{{ .Values.jmx.port }}"
+          {{- end }}
+          {{- if .Values.secrets }}
+            {{- range $secret := .Values.secrets }}
+              {{- if not $secret.mountPath }}
+                {{- range $key := $secret.keys }}
+          - name: {{ (print $secret.name "_" $key) | upper | replace "." "_" | replace "-" "_"}}
+            valueFrom:
+              secretKeyRef:
+                name: {{ $secret.name }}
+                key: {{ $key }}
+                {{- end }}
+              {{- end }}
+            {{- end }}
+          {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           volumeMounts:
           {{- if .Values.sasl.scram.enabled }}
           - name: jaasconfig
             mountPath: {{ .Values.sasl.configPath | quote }}
+          {{- end }}
+          {{- range $secret := .Values.secrets }}
+            {{- if $secret.mountPath }}
+          - name: {{ include "schema-registry.fullname" $ }}-{{ $secret.name }}
+            mountPath: {{ $secret.mountPath }}
+            readOnly: true
+            {{- end }}
           {{- end }}
       volumes:
       {{- if .Values.sasl.scram.enabled }}
@@ -129,4 +159,8 @@ spec:
         configMap:
           name: {{ template "schema-registry.fullname" . }}
       {{- end }}
-          
+      {{- range .Values.secrets }}
+      - name: {{ include "schema-registry.fullname" $ }}-{{ .name }}
+        secret:
+          secretName: {{ .name }}
+      {{- end }}

@@ -106,13 +106,23 @@ spec:
                 etcdctl member list | grep http://${HOSTNAME}.${SET_NAME}:2380 | cut -d':' -f1 | cut -d'[' -f1
             }
 
+            # we should wait for other pods to be up before trying to join
+            # otherwise we got "no such host" errors when trying to resolve other members
+            for i in $(seq 0 $((${INITIAL_CLUSTER_SIZE} - 1))); do
+                while true; do
+                    echo "Waiting for ${SET_NAME}-${i}.${SET_NAME} to come up"
+                    ping -W 1 -c 1 ${SET_NAME}-${i}.${SET_NAME} > /dev/null && break
+                    sleep 1s
+                done
+            done
+
             # re-joining after failure?
             if [ -e /var/run/etcd/default.etcd ]; then
                 echo "Re-joining etcd member"
                 member_id=$(cat /var/run/etcd/member_id)
 
                 # re-join member
-                ETCDCTL_ENDPOINT=$(eps) etcdctl member update ${member_id} http://${HOSTNAME}.${SET_NAME}:2380
+                ETCDCTL_ENDPOINT=$(eps) etcdctl member update ${member_id} http://${HOSTNAME}.${SET_NAME}:2380 | true
                 exec etcd --name ${HOSTNAME} \
                     --listen-peer-urls http://0.0.0.0:2380 \
                     --listen-client-urls http://0.0.0.0:2379\
@@ -160,14 +170,6 @@ spec:
                     --initial-cluster-state ${ETCD_INITIAL_CLUSTER_STATE}
             fi
 
-            for i in $(seq 0 $((${INITIAL_CLUSTER_SIZE} - 1))); do
-                while true; do
-                    echo "Waiting for ${SET_NAME}-${i}.${SET_NAME} to come up"
-                    ping -W 1 -c 1 ${SET_NAME}-${i}.${SET_NAME} > /dev/null && break
-                    sleep 1s
-                done
-            done
-
             PEERS=""
             for i in $(seq 0 $((${INITIAL_CLUSTER_SIZE} - 1))); do
                 PEERS="${PEERS}${PEERS:+,}${SET_NAME}-${i}=http://${SET_NAME}-${i}.${SET_NAME}:2380"
@@ -206,5 +208,10 @@ spec:
   {{- else }}
       volumes:
       - name: datadir
+      {{- if .Values.memoryMode }}
+        emptyDir:
+          medium: Memory
+      {{- else }}
         emptyDir: {}
+      {{- end }}
   {{- end }}

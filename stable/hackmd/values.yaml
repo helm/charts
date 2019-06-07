@@ -4,9 +4,11 @@
 
 replicaCount: 1
 
+deploymentStrategy: RollingUpdate
+
 image:
   repository: hackmdio/hackmd
-  tag: 1.0.1-ce-alpine
+  tag: 1.3.0-alpine
   pullPolicy: IfNotPresent
 
 service:
@@ -63,6 +65,8 @@ persistence:
   ##   GKE, AWS & OpenStack)
   ##
   # storageClass: "-"
+
+podAnnotations: {}
 
 extraVars: []
 

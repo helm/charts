@@ -1,10 +1,6 @@
 # oauth2-proxy
 
-**N.B., this chart is deprecated and is no longer maintained as it's upstream [has been abandoned](https://github.com/bitly/oauth2_proxy/issues/628#issuecomment-417121636).**
-
-[oauth2-proxy](https://github.com/bitly/oauth2_proxy) is a reverse proxy and static file server that provides authentication using Providers (Google, GitHub, and others) to validate accounts by email, domain or group.
-
-**Note - at this time, there is a known incompatibility between `oauth2-proxy` version 2.2 (which is its latest release) and `nginx-ingress` versions >= 0.9beta12. To utilize this chart at this time please use nginx-ingress version 0.9beta11**
+[oauth2-proxy](https://github.com/pusher/oauth2_proxy) is a reverse proxy and static file server that provides authentication using Providers (Google, GitHub, and others) to validate accounts by email, domain or group.
 
 ## TL;DR;
 
@@ -44,26 +40,42 @@ Parameter | Description | Default
 --- | --- | ---
 `affinity` | node/pod affinities | None
 `authenticatedEmailsFile.enabled` | Enables authorize individual email addresses | `false`
-`authenticatedEmailsFile.template` | Name of the configmap what is handled outside of that chart | `""`
-`authenticatedEmailsFile.restricted_access | (email addresses)[https://github.com/bitly/oauth2_proxy#email-authentication] list config | `""`
+`authenticatedEmailsFile.template` | Name of the configmap that is handled outside of that chart | `""`
+`authenticatedEmailsFile.restricted_access` | [email addresses](https://github.com/pusher/oauth2_proxy#email-authentication) list config | `""`
 `config.clientID` | oauth client ID | `""`
 `config.clientSecret` | oauth client secret | `""`
-`config.cookieSecret` | server specific cookie for the secret; create a new one with `python -c 'import os,base64; print base64.b64encode(os.urandom(16))'` | `""`
-`config.configFile` | custom [oauth2_proxy.cfg](https://github.com/bitly/oauth2_proxy/blob/master/contrib/oauth2_proxy.cfg.example) contents for settings not overridable via environment nor command line | `""`
+`config.cookieSecret` | server specific cookie for the secret; create a new one with `openssl rand -base64 32 | head -c 32 | base64` | `""`
+`config.existingSecret` | existing Kubernetes secret to use for OAuth2 credentials. See [secret template](https://github.com/helm/charts/blob/master/stable/oauth2-proxy/templates/secret.yaml) for the required values | `nil`
+`config.configFile` | custom [oauth2_proxy.cfg](https://github.com/pusher/oauth2_proxy/blob/master/contrib/oauth2_proxy.cfg.example) contents for settings not overridable via environment nor command line | `""`
+`config.existingConfig` | existing Kubernetes configmap to use for the configuration file. See [config template](https://github.com/helm/charts/blob/master/stable/oauth2-proxy/templates/configmap.yaml) for the required values | `nil`
+`config.google.adminEmail` | user impersonated by the google service account | `""`
+`config.google.serviceAccountJson` | google service account json contents | `""`
+`config.google.existingConfig` | existing Kubernetes configmap to use for the service account file. See [google secret template](https://github.com/helm/charts/blob/master/stable/oauth2-proxy/templates/google-secret.yaml) for the required values | `nil`
 `extraArgs` | key:value list of extra arguments to give the binary | `{}`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
-`image.repository` | Image repository | `a5huynh/oauth2_proxy`
-`image.tag` | Image tag | `2.2`
+`image.repository` | Image repository | `quay.io/pusher/oauth2_proxy`
+`image.tag` | Image tag | `v3.1.0`
 `imagePullSecrets` | Specify image pull secrets | `nil` (does not add image pull secrets to deployed pods)
 `ingress.enabled` | enable ingress | `false`
+`livenessProbe.enabled`  | enable Kubernetes livenessProbe. Disable to use oauth2-proxy with Istio mTLS. See [Istio FAQ](https://istio.io/help/faq/security/#k8s-health-checks) | `true`
+`livenessProbe.initialDelaySeconds` | number of seconds | 0
+`livenessProbe.timeoutSeconds` | number of seconds | 1
 `nodeSelector` | node labels for pod assignment | `{}`
 `podAnnotations` | annotations to add to each pod | `{}`
 `podLabels` | additional labesl to add to each pod | `{}`
+`priorityClassName` | priorityClassName | `nil`
+`readinessProbe.enabled` | enable Kubernetes readinessProbe. Disable to use oauth2-proxy with Istio mTLS. See [Istio FAQ](https://istio.io/help/faq/security/#k8s-health-checks) | `true`
+`readinessProbe.initialDelaySeconds` | number of seconds | 0
+`readinessProbe.timeoutSeconds` | number of seconds | 1
+`readinessProbe.periodSeconds` | number of seconds | 10
+`readinessProbe.successThreshold` | number of successes | 1
 `replicaCount` | desired number of pods | `1`
 `resources` | pod resource requests & limits | `{}`
-`priorityClassName` | priorityClassName | `nil` 
 `service.port` | port for the service | `80`
 `service.type` | type of service | `ClusterIP`
+`service.clusterIP` | cluster ip address | `nil`
+`service.loadBalancerIP` | ip of load balancer | `nil`
+`service.loadBalancerSourceRanges` | allowed source ranges in load balancer | `nil`
 `tolerations` | List of node taints to tolerate | `[]`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,

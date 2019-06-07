@@ -39,6 +39,10 @@ spec:
 {{- if .Values.controller.priorityClassName }}
       priorityClassName: "{{ .Values.controller.priorityClassName }}"
 {{- end }}
+      {{- if .Values.controller.podSecurityContext }}
+      securityContext:
+{{ toYaml .Values.controller.podSecurityContext | indent 8 }}
+      {{- end }}
       containers:
         - name: {{ template "nginx-ingress.name" . }}-{{ .Values.controller.name }}
           image: "{{ .Values.controller.image.repository }}:{{ .Values.controller.image.tag }}"
@@ -87,8 +91,7 @@ spec:
                 - ALL
                 add:
                 - NET_BIND_SERVICE
-            # www-data -> 33
-            runAsUser: 33
+            runAsUser: {{ .Values.controller.image.runAsUser }}
           {{- end }}
           env:
             - name: POD_NAME
@@ -114,20 +117,20 @@ spec:
             failureThreshold: {{ .Values.controller.livenessProbe.failureThreshold }}
           ports:
             - name: http
-              containerPort: 80
+              containerPort: {{ .Values.controller.containerPort.http }}
               protocol: TCP
             - name: https
-              containerPort: 443
+              containerPort: {{ .Values.controller.containerPort.https }}
               protocol: TCP
           {{- if .Values.controller.stats.enabled }}
             - name: stats
               containerPort: 18080
               protocol: TCP
-            {{- if .Values.controller.metrics.enabled }}
+          {{- end }}
+          {{- if .Values.controller.metrics.enabled }}
             - name: metrics
               containerPort: 10254
               protocol: TCP
-            {{- end }}
           {{- end }}
           {{- range $key, $value := .Values.tcp }}
             - name: "{{ $key }}-tcp"

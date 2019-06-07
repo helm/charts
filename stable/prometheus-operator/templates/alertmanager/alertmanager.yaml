@@ -1,5 +1,5 @@
 {{- if .Values.alertmanager.enabled }}
-apiVersion: monitoring.coreos.com/v1
+apiVersion: {{ printf "%s/v1" (.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
 kind: Alertmanager
 metadata:
   name: {{ template "prometheus-operator.fullname" . }}-alertmanager
@@ -14,9 +14,6 @@ spec:
   replicas: {{ .Values.alertmanager.alertmanagerSpec.replicas }}
   listenLocal: {{ .Values.alertmanager.alertmanagerSpec.listenLocal }}
   serviceAccountName: {{ template "prometheus-operator.alertmanager.serviceAccountName" . }}
-{{- if .Values.alertmanager.alertmanagerSpec.externalUrl }}
-  externalUrl: "{{ .Values.alertmanager.alertmanagerSpec.externalUrl }}"
-{{- end }}
 {{- if .Values.alertmanager.alertmanagerSpec.externalUrl }}
   externalUrl: "{{ .Values.alertmanager.alertmanagerSpec.externalUrl }}"
 {{- else if .Values.alertmanager.ingress.enabled }}
@@ -35,9 +32,16 @@ spec:
   secrets:
 {{ toYaml .Values.alertmanager.alertmanagerSpec.secrets | indent 4 }}
 {{- end }}
+{{- if .Values.alertmanager.alertmanagerSpec.configMaps }}
+  configMaps:
+{{ toYaml .Values.alertmanager.alertmanagerSpec.configMaps | indent 4 }}
+{{- end }}
 {{- if .Values.alertmanager.alertmanagerSpec.resources }}
   resources:
 {{ toYaml .Values.alertmanager.alertmanagerSpec.resources | indent 4 }}
+{{- end }}
+{{- if .Values.alertmanager.alertmanagerSpec.routePrefix }}
+  routePrefix: "{{ .Values.alertmanager.alertmanagerSpec.routePrefix }}"
 {{- end }}
 {{- if .Values.alertmanager.alertmanagerSpec.securityContext }}
   securityContext:
@@ -47,34 +51,34 @@ spec:
   storage:
 {{ toYaml .Values.alertmanager.alertmanagerSpec.storage | indent 4 }}
 {{- end }}
-{{- if .Values.alertmanager.alertmanagerSpec.securityContext }}
-  securityContext:
-{{ toYaml .Values.alertmanager.alertmanagerSpec.securityContext | indent 4 }}
-{{- end }}
 {{- if .Values.alertmanager.alertmanagerSpec.podMetadata }}
   podMetadata:
 {{ toYaml .Values.alertmanager.alertmanagerSpec.podMetadata | indent 4 }}
 {{- end }}
-{{- if eq .Values.alertmanager.alertmanagerSpec.podAntiAffinity "hard" }}
+{{- if or .Values.alertmanager.alertmanagerSpec.podAntiAffinity .Values.alertmanager.alertmanagerSpec.affinity }}
   affinity:
+{{- if .Values.alertmanager.alertmanagerSpec.affinity }}
+{{ toYaml .Values.alertmanager.alertmanagerSpec.affinity | indent 4 }}
+{{- end }}
+{{- if eq .Values.alertmanager.alertmanagerSpec.podAntiAffinity "hard" }}
     podAntiAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
-      - topologyKey: kubernetes.io/hostname
+      - topologyKey: {{ .Values.alertmanager.alertmanagerSpec.podAntiAffinityTopologyKey }}
         labelSelector:
           matchLabels:
             app: alertmanager
             alertmanager: {{ template "prometheus-operator.fullname" . }}-alertmanager
 {{- else if eq .Values.alertmanager.alertmanagerSpec.podAntiAffinity "soft" }}
-  affinity:
     podAntiAffinity:
       preferredDuringSchedulingIgnoredDuringExecution:
       - weight: 100
         podAffinityTerm:
-          topologyKey: kubernetes.io/hostname
+          topologyKey: {{ .Values.alertmanager.alertmanagerSpec.podAntiAffinityTopologyKey }}
           labelSelector:
             matchLabels:
               app: alertmanager
               alertmanager: {{ template "prometheus-operator.fullname" . }}-alertmanager
+{{- end }}
 {{- end }}
 {{- if .Values.alertmanager.alertmanagerSpec.tolerations }}
   tolerations:

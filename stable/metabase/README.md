@@ -46,7 +46,7 @@ The following table lists the configurable parameters of the Metabase chart and 
 |------------------------|------------------------------------------------------------|-------------------|
 | replicaCount           | desired number of controller pods                          | 1                 |
 | image.repository       | controller container image repository                      | metabase/metabase |
-| image.tag              | controller container image tag                             | v0.30.1           |
+| image.tag              | controller container image tag                             | v0.31.2           |
 | image.pullPolicy       | controller container image pull policy                     | IfNotPresent      |
 | listen.host            | Listening on a specific network host                       | 0.0.0.0           |
 | listen.port            | Listening on a specific network port                       | 3000              |
@@ -66,7 +66,7 @@ The following table lists the configurable parameters of the Metabase chart and 
 | password.length        | Minimum length required for Metabase account's password    | 6                 |
 | timeZone               | Service time zone                                          | UTC               |
 | emojiLogging           | Get a funny emoji in service log                           | true              |
-| javaToolOptions        | JVM options                                                | null              |
+| javaOpts               | JVM options                                                | null              |
 | pluginsDirectory       | A directory with Metabase plugins                          | null              |
 | service.type           | ClusterIP, NodePort, or LoadBalancer                       | ClusterIP         |
 | service.externalPort   | Service external port                                      | 80                |
@@ -74,9 +74,11 @@ The following table lists the configurable parameters of the Metabase chart and 
 | service.annotations    | Service annotations                                        | {}                |
 | ingress.enabled        | Enable ingress controller resource                         | false             |
 | ingress.hosts          | Ingress resource hostnames                                 | null              |
+| ingress.path           | Ingress path                                               | /                 |
 | ingress.labels         | Ingress labels configuration                               | null              |
 | ingress.annotations    | Ingress annotations configuration                          | null              |
 | ingress.tls            | Ingress TLS configuration                                  | null              |
+| log4jProperties        | Custom `log4j.properties` file                             | null              |
 | resources              | Server resource requests and limits                        | {}                |
 
 The above parameters map to the env variables defined in [metabase](http://github.com/metabase/metabase). For more information please refer to the [metabase documentations](http://www.metabase.com/docs/v0.24.2/).

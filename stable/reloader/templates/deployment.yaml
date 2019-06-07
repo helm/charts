@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+{{- if .Values.reloader.deployment.annotations }}
+  annotations:
+{{ toYaml .Values.reloader.deployment.annotations | indent 4 }}
+{{- end }}
+  labels:
+{{ include "reloader-labels.chart" . | indent 4 }}
+{{ include "reloader-labels.selector" . | indent 4 }}
+{{- if .Values.reloader.deployment.labels }}
+{{ toYaml .Values.reloader.deployment.labels | indent 4 }}
+{{- end }}
+{{- if .Values.reloader.matchLabels }}
+{{ toYaml .Values.reloader.matchLabels | indent 4 }}
+{{- end }}
+  name: {{ template "reloader-name" . }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+{{ include "reloader-labels.selector" . | indent 6 }}
+{{- if .Values.reloader.matchLabels }}
+{{ toYaml .Values.reloader.matchLabels | indent 6 }}
+{{- end }}
+  template:
+    metadata:
+      labels:
+{{ include "reloader-labels.selector" . | indent 8 }}
+{{ include "reloader-labels.chart" . | indent 8 }}
+{{- if .Values.reloader.deployment.labels }}
+{{ toYaml .Values.reloader.deployment.labels | indent 8 }}
+{{- end }}
+{{- if .Values.reloader.matchLabels }}
+{{ toYaml .Values.reloader.matchLabels | indent 8 }}
+{{- end }}
+    spec:
+      containers:
+      - env:
+      {{- range $name, $value := .Values.reloader.deployment.env.open }}
+      {{- if not (empty $value) }}
+        - name: {{ $name | quote }}
+          value: {{ $value | quote }}
+      {{- end }}
+      {{- end }}
+      {{- $secret_name := include "reloader-fullname" . }}
+      {{- range $name, $value := .Values.reloader.deployment.env.secret }}
+      {{- if not ( empty $value) }}
+        - name: {{ $name | quote }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ $secret_name }}
+              key: {{ $name | quote }}
+      {{- end }}
+      {{- end }}
+      {{- range $name, $value := .Values.reloader.deployment.env.field }}
+      {{- if not ( empty $value) }}
+        - name: {{ $name | quote }}
+          valueFrom:
+            fieldRef:
+              fieldPath: {{ $value | quote}}
+      {{- end }}
+      {{- end }}
+      {{- if eq .Values.reloader.watchGlobally false }}
+        - name: KUBERNETES_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+      {{- end }}
+        image: "{{ .Values.reloader.deployment.image.name }}:{{ .Values.reloader.deployment.image.tag }}"
+        imagePullPolicy: {{ .Values.reloader.deployment.image.pullPolicy }}
+        name: {{ template "reloader-name" . }}
+      serviceAccountName: {{ template "serviceAccountName" . }}

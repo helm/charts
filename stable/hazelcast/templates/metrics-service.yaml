@@ -1,0 +1,23 @@
+{{- if .Values.metrics.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "hazelcast.fullname" . }}-metrics
+  labels:
+    app: {{ template "hazelcast.name" . }}
+    chart: {{ template "hazelcast.chart" . }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+  annotations:
+{{ toYaml .Values.metrics.service.annotations | indent 4 }}
+spec:
+  type: {{ .Values.metrics.service.type }}
+  selector:
+    app: {{ template "hazelcast.name" . }}
+    release: "{{ .Release.Name }}"
+  ports:
+  - protocol: TCP
+    port: {{ .Values.metrics.service.port }}
+    targetPort: metrics
+    name: metrics
+{{- end }}

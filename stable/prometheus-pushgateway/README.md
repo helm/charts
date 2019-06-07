@@ -10,7 +10,9 @@ $ helm install stable/prometheus-pushgateway
 
 ## Introduction
 
-This chart bootstraps a prometheus [pusgateway](http://github.com/prometheus/pushgateway) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
+This chart bootstraps a prometheus [pushgateway](http://github.com/prometheus/pushgateway) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
+
+An optional prometheus `ServiceMonitor` can be enabled, should you wish to use this gateway with a [Prometheus Operator](https://github.com/coreos/prometheus-operator).
 
 ## Installing the Chart
 
@@ -36,27 +38,36 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following table lists the configurable parameters of the pushgateway chart and their default values.
 
-|        Parameter        |                                                          Description                                                          |      Default       |
-| ----------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ------------------ |
-| `affinity`              | Affinity settings for pod assignment                                                                                          | `{}`               |
-| `extraArgs`             | Optional flags for pushgateway                                                                                                | `[]`               |
-| `image.repository`      | Image repository                                                                                                              | `prom/pushgateway` |
-| `image.tag`             | Image tag                                                                                                                     | `v0.4.0`           |
-| `image.pullPolicy`      | Image pull policy                                                                                                             | `IfNotPresent`     |
-| `ingress.enabled`       | Enables Ingress for pushgateway                                                                                               | `false`            |
-| `ingress.annotations`   | Ingress annotations                                                                                                           | `{}`               |
-| `ingress.hosts`         | Ingress accepted hostnames                                                                                                    | `nil`              |
-| `ingress.tls`           | Ingress TLS configuration                                                                                                     | `[]`               |
-| `resources`             | CPU/Memory resource requests/limits                                                                                           | `{}`               |
-| `replicaCount`          | Number of replicas                                                                                                            | `1`                |
-| `service.type`          | Service type                                                                                                                  | `ClusterIP`        |
-| `service.port`          | The service port                                                                                                              | `9091`             |
-| `service.targetPort`    | The target port of the container                                                                                              | `9091`             |
-| `serviceAccount.create` | Specifies whether a service account should be created.                                                                        | `true`             |
-| `serviceAccount.name`   | Service account to be used. If not set and `serviceAccount.create` is `true`, a name is generated using the fullname template |                    |
-| `tolerations`           | List of node taints to tolerate                                                                                               | `{}`               |
-| `nodeSelector`          | Node labels for pod assignment                                                                                                | `{}`               |
-| `podAnnotations`        | Annotations for pod                                                                                                           | `{}`               |
+|        Parameter            |                                                          Description                                                          |      Default                      |
+| --------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | --------------------------------- |
+| `affinity`                  | Affinity settings for pod assignment                                                                                          | `{}`                              |
+| `extraArgs`                 | Optional flags for pushgateway                                                                                                | `[]`                              |
+| `extraVars`                 | Optional environment variables for pushgateway                                                                                | `[]`                              |
+| `image.repository`          | Image repository                                                                                                              | `prom/pushgateway`                |
+| `image.tag`                 | Image tag                                                                                                                     | `v0.8.0`                          |
+| `image.pullPolicy`          | Image pull policy                                                                                                             | `IfNotPresent`                    |
+| `ingress.enabled`           | Enables Ingress for pushgateway                                                                                               | `false`                           |
+| `ingress.annotations`       | Ingress annotations                                                                                                           | `{}`                              |
+| `ingress.hosts`             | Ingress accepted hostnames                                                                                                    | `nil`                             |
+| `ingress.tls`               | Ingress TLS configuration                                                                                                     | `[]`                              |
+| `resources`                 | CPU/Memory resource requests/limits                                                                                           | `{}`                              |
+| `replicaCount`              | Number of replicas                                                                                                            | `1`                               |
+| `service.type`              | Service type                                                                                                                  | `ClusterIP`                       |
+| `service.port`              | The service port                                                                                                              | `9091`                            |
+| `service.targetPort`        | The target port of the container                                                                                              | `9091`                            |
+| `serviceLabels`             | Labels for service                                                                                                            | `{}`                              |
+| `serviceAccount.create`     | Specifies whether a service account should be created.                                                                        | `true`                            |
+| `serviceAccount.name`       | Service account to be used. If not set and `serviceAccount.create` is `true`, a name is generated using the fullname template |                                   |
+| `tolerations`               | List of node taints to tolerate                                                                                               | `{}`                              |
+| `nodeSelector`              | Node labels for pod assignment                                                                                                | `{}`                              |
+| `podAnnotations`            | Annotations for pod                                                                                                           | `{}`                              |
+| `podLabels`                 | Labels for pod                                                                                                                | `{}`                              |
+| `serviceAccountLabels`      | Labels for service account                                                                                                    | `{}`                              |
+| `serviceMonitor.enabled`    | if `true`, creates a Prometheus Operator ServiceMonitor (also requires `metrics.enabled` to be `true`)                        | `false`                           |
+| `serviceMonitor.namespace`  | Namespace which Prometheus is running in                                                                                      | `monitoring`                      |
+| `serviceMonitor.interval`   | How frequently to scrape metrics (use by default, falling back to Prometheus' default)                                        |  `nil`                            |
+| `serviceMonitor.selector`   | Default to kube-prometheus install (CoreOS recommended), but should be set according to Prometheus install                    | `{ prometheus: kube-prometheus }` |
+| `serviceMonitor.honorLabels`| if `true`, label conflicts are resolved by keeping label values from the scraped data                                         | `true`                            |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

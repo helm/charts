@@ -11,10 +11,29 @@ image:
   repository: microsoft/mssql-server-linux
   tag: 2017-CU5
   pullPolicy: IfNotPresent
+  ## It is possible to specify docker registry credentials
+  ## See https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
+  # pullSecrets:
+  #    - name: regsecret
+
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName: "default-scheduler"
+
 service:
+  # If headless is set to TRUE then the service type is ignored
+  headless: false
   type: ClusterIP
   port: 1433
   annotations: {}
+  labels: {}
+deployment:
+  annotations: {}
+  labels: {}
+pod:
+  annotations: {}
+  labels: {}
 persistence:
   enabled: true
   # existingDataClaim:
@@ -36,10 +55,10 @@ livenessprobe:
 readinessprobe:
   initialDelaySeconds: 5
   periodSeconds: 10
-resources: {}
-  # limits:
+resources:
+  limits:
   #  cpu: 100m
-  #  memory: 2Gi
+    memory: 2Gi
   # requests:
   #  cpu: 100m
   #  memory: 2Gi

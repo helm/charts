@@ -16,13 +16,27 @@ securityContext:
   fsGroup: 2000
 # Most of these map to environment variables. See Minecraft for details:
 # https://hub.docker.com/r/itzg/minecraft-server/
+livenessProbe:
+  command:
+    - mcstatus
+    - localhost:25565
+    - status
+  initialDelaySeconds: 30
+  periodSeconds: 5
+readinessProbe:
+  command:
+    - mcstatus
+    - localhost:25565
+    - status
+  initialDelaySeconds: 30
+  periodSeconds: 5
 minecraftServer:
   # This must be overridden, since we can't accept this for the user.
   eula: "FALSE"
   # One of: LATEST, SNAPSHOT, or a specific version (ie: "1.7.9").
   version: "1.13.1"
   # This can be one of empty string, "FORGE", "SPIGOT", "BUKKIT", "PAPER", "FTB", "SPONGEVANILLA"; empty string will produce a vanilla server
-  type:
+  type: ""
   # If type is set to FORGE, this sets the version; this is ignored if forgeInstallerUrl is set
   forgeVersion:
   # If type is set to SPONGEVANILLA, this sets the version

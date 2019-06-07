@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "uchiwa.fullname" . }}
+  labels:
+    app: {{ template "uchiwa.name" . }}
+    chart: {{ template "uchiwa.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+
+data:
+  uchiwa.json : |-
+{{- if .Values.config }}
+{{ .Values.config | indent 6 }}
+{{- else }}
+    {
+      "sensu": [
+      {
+        "name": "Sensu",
+        "host": "{{ .Release.Name }}-sensu",
+        "port": {{ .Values.sensu.httpPort }}
+      }
+      ],
+      "uchiwa": {
+        "host": "0.0.0.0",
+        "port": {{ .Values.port }},
+        "refresh": 10,
+        "loglevel": "info"
+      }
+    }
+{{- end }}
+

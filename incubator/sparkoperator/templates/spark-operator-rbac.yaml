@@ -1,13 +1,22 @@
-apiVersion: rbac.authorization.k8s.io/v1beta1
+{{- if .Values.rbac.create }}
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: sparkoperator
+  name: {{ include "sparkoperator.fullname" . }}-cr
+  labels:
+    app.kubernetes.io/name: {{ include "sparkoperator.name" . }}
+    helm.sh/chart: {{ include "sparkoperator.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 rules:
 - apiGroups: [""]
   resources: ["pods"]
   verbs: ["*"]
 - apiGroups: [""]
   resources: ["services", "configmaps", "secrets"]
+  verbs: ["create", "get", "delete", "update"]
+- apiGroups: ["extensions"]
+  resources: ["ingresses"]
   verbs: ["create", "get", "delete"]
 - apiGroups: [""]
   resources: ["nodes"]
@@ -25,15 +34,21 @@ rules:
   resources: ["sparkapplications", "scheduledsparkapplications"]
   verbs: ["*"]
 ---
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: sparkoperator
+  name: {{ include "sparkoperator.fullname" . }}-crb
+  labels:
+    app.kubernetes.io/name: {{ include "sparkoperator.name" . }}
+    helm.sh/chart: {{ include "sparkoperator.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 subjects:
   - kind: ServiceAccount
-    name: sparkoperator
-    namespace: {{ .Values.operatorNamespace }}
+    name: {{ include "sparkoperator.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace }}
 roleRef:
   kind: ClusterRole
-  name: sparkoperator
+  name: {{ include "sparkoperator.fullname" . }}-cr
   apiGroup: rbac.authorization.k8s.io
+{{- end }}

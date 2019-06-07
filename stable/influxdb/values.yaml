@@ -2,7 +2,7 @@
 ## ref: https://hub.docker.com/r/library/influxdb/tags/
 image:
   repo: "influxdb"
-  tag: "1.6-alpine"
+  tag: "1.7.3-alpine"
   pullPolicy: IfNotPresent
 
 ## Specify a service type
@@ -105,6 +105,20 @@ ingress:
 ##
 nodeSelector: {}
 
+## Affinity for pod assignment
+## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+##
+affinity: {}
+
+## Tolerations for pod assignment
+## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+##
+tolerations: []
+# - key: "key"
+#   operator: "Equal|Exists"
+#   value: "value"
+#   effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
+
 ## The InfluxDB image uses several environment variables to automatically
 ## configure certain parts of the server.
 ## Ref: https://hub.docker.com/_/influxdb/
@@ -117,8 +131,10 @@ env:
 ## ref: https://docs.influxdata.com/influxdb/v1.1/administration/config/
 config:
   reporting_disabled: false
-  bind_address: 8088
   storage_directory: /var/lib/influxdb
+  rpc:
+    enabled: true
+    bind_address: 8088
   meta:
     retention_autocreate: true
     logging_enabled: true
@@ -231,3 +247,18 @@ config:
     log_enabled: true
     enabled: true
     run_interval: 1s
+  logging:
+    format: auto
+    level: info
+    supress_logo: false
+
+# Allow executing custom init scripts
+#
+# If the container finds any files with the extensions .sh or .iql inside of the
+# /docker-entrypoint-initdb.d folder, it will execute them. The order they are
+# executed in is determined by the shell. This is usually alphabetical order.
+initScripts:
+  enabled: false
+  scripts:
+    init.iql: |+
+      CREATE DATABASE "telegraf" WITH DURATION 30d REPLICATION 1 NAME "rp_30d"

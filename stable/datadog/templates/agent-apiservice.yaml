@@ -10,12 +10,11 @@ metadata:
     release: {{ .Release.Name | quote }}
 spec:
   service:
-    name: {{ template "datadog.clusterAgent.fullname" . }}-metrics-api
+    name: {{ template "datadog.fullname" . }}-cluster-agent-metrics-api
     namespace: {{ .Release.Namespace }}
   version: v1beta1
   insecureSkipTLSVerify: true
   group: external.metrics.k8s.io
   groupPriorityMinimum: 100
   versionPriority: 100
-  priority: 100
 {{- end -}}

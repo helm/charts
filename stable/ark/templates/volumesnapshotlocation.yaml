@@ -1,0 +1,27 @@
+{{- $root := . }}
+{{- with .Values.configuration }}
+{{- with .volumeSnapshotLocation }}
+apiVersion: ark.heptio.com/v1
+kind: VolumeSnapshotLocation
+metadata:
+  name: default
+  labels:
+    chart: {{ template "ark.chart" $root }}
+    heritage: {{ $root.Release.Service }}
+    release: {{ $root.Release.Name }}
+    app: {{ template "ark.name" $root }}
+spec:
+  provider: {{ .name  }}
+  objectStorage:
+    bucket: {{ .bucket  }}
+{{ with .config }}
+  config:
+  {{- with .region }}
+    region: {{ . }}
+  {{- end }}
+  {{- with .apitimeout }}
+    apiTimeout: {{ . }}
+  {{- end }}
+{{- end }}
+{{- end }}
+{{- end }}

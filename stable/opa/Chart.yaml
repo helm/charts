@@ -1,0 +1,16 @@
+apiVersion: v1
+appVersion: 0.10.2
+description: Open source, general-purpose policy engine. Enforce fine-grained invariants over arbitrary Kubernetes resources.
+name: opa
+keywords:
+- opa
+- admission control
+- policy
+version: 1.5.0
+home: https://www.openpolicyagent.org
+icon: https://raw.githubusercontent.com/open-policy-agent/opa/master/logo/logo.png
+sources:
+- https://github.com/open-policy-agent/opa
+maintainers:
+- name: tsandall
+  email: torinsandall@gmail.com

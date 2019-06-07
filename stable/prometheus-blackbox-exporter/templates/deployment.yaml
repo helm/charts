@@ -30,6 +30,15 @@ spec:
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
     {{- end }}
+    {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+    {{- end }}
+    {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 6 }}
+    {{- end }}
+
       restartPolicy: {{ .Values.restartPolicy }}
       containers:
         - name: blackbox-exporter
@@ -79,6 +88,10 @@ spec:
               readOnly: true
       volumes:
         - name: config
+{{- if .Values.secretConfig }}
+          secret:
+            secretName: {{ template "prometheus-blackbox-exporter.fullname" . }}
+{{- else }}
           configMap:
             name: {{ template "prometheus-blackbox-exporter.fullname" . }}
-
+{{- end }}

@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "distributed-jmeter.fullname" . }}-server 
+  labels:
+    app.kubernetes.io/name: {{ include "distributed-jmeter.name" . }}
+    helm.sh/chart: {{ include "distributed-jmeter.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/component: server
+spec:
+  clusterIP: None
+  ports:
+    - port: 50000
+      protocol: TCP
+      name: tcp-50000
+    - port: 1099
+      protocol: TCP
+      name: tcp-1099
+  selector:
+    app.kubernetes.io/name: {{ include "distributed-jmeter.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: server

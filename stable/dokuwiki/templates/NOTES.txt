@@ -26,12 +26,14 @@
 ** Watch the status using: kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "dokuwiki.fullname" . }} **
 
   export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "dokuwiki.fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
-  echo "URL: http://$SERVICE_IP/"
+
+{{- $port:=.Values.service.port | toString }}
+  echo "URL: http://$SERVICE_IP{{- if ne $port "80" }}:{{ .Values.service.port }}{{ end }}/"
 
 {{- else if contains "ClusterIP"  .Values.service.type }}
 
   echo "URL: http://127.0.0.1:8080/"
-  kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "dokuwiki.fullname" . }} 8080:80
+  kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "dokuwiki.fullname" . }} 8080:{{ .Values.service.port }}
 
 {{- end }}
 {{- end }}
@@ -40,3 +42,10 @@
 
   echo Username: {{ .Values.dokuwikiUsername }}
   echo Password: $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "dokuwiki.fullname" . }} -o jsonpath="{.data.dokuwiki-password}" | base64 --decode)
+
+{{- if and (contains "bitnami/" .Values.image.repository) (not (.Values.image.tag | toString | regexFind "-r\\d+$|sha256:")) }}
+
+WARNING: Rolling tag detected ({{ .Values.image.repository }}:{{ .Values.image.tag }}), please note that it is strongly recommended to avoid using rolling tags in a production environment.
++info https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/
+
+{{- end }}

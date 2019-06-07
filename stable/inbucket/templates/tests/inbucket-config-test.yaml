@@ -2,14 +2,14 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "inbucket.name" . }}-tests
+  name: {{ include "inbucket.name" . }}-tests
   labels:
-    chart: {{ template "inbucket.chart" . }}
-    app: {{ template "inbucket.name" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ include "inbucket.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "inbucket.chart" . }}
 data:
   run.sh: |-
     @test "Testing Inbucket is accessible" {
-      curl --retry 48 --retry-delay 10 {{ template "inbucket.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port.http }}
+      curl --retry 48 --retry-delay 10 {{ include "inbucket.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port.http }}
     }

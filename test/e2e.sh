@@ -18,7 +18,7 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-readonly IMAGE_TAG=v2.0.5
+readonly IMAGE_TAG=v3.3.2
 readonly IMAGE_REPOSITORY="gcr.io/kubernetes-charts-ci/test-image"
 readonly REPO_ROOT="${REPO_ROOT:-$(git rev-parse --show-toplevel)}"
 
@@ -37,8 +37,9 @@ main() {
     git fetch k8s master
 
     local config_container_id
-    config_container_id=$(docker run -ti -d -v "$GOOGLE_APPLICATION_CREDENTIALS:/service-account.json" -v "$REPO_ROOT:/workdir" \
-        -e "BUILD_ID=$JOB_TYPE-$PULL_INFO-$BUILD_ID" \
+    config_container_id=$(docker run -ti -d -v "$GOOGLE_APPLICATION_CREDENTIALS:/service-account.json" \
+        -v "$REPO_ROOT:/workdir" --workdir=/workdir \
+        -e "CT_BUILD_ID=$JOB_TYPE-$PULL_INFO-$BUILD_ID" \
         "$IMAGE_REPOSITORY:$IMAGE_TAG" cat)
 
     # shellcheck disable=SC2064
@@ -47,7 +48,7 @@ main() {
     docker exec "$config_container_id" gcloud auth activate-service-account --key-file /service-account.json
     docker exec "$config_container_id" gcloud container clusters get-credentials jenkins --project kubernetes-charts-ci --zone us-west1-a
     docker exec "$config_container_id" kubectl cluster-info
-    docker exec "$config_container_id" chart_test.sh --config /workdir/test/.testenv
+    docker exec "$config_container_id" ct lint-and-install --config test/ct.yaml
 
     echo "Done Testing!"
 }

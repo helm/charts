@@ -18,7 +18,7 @@ Check pod status, replacing `$HELM_RELEASE` with the name of your release, via:
 
 ```bash
 POD_NAME=$(kubectl get pods -l "app=openvpn,release=$HELM_RELEASE" -o jsonpath='{.items[0].metadata.name}') \
-&& kubectl log "$POD_NAME" --follow
+&& kubectl logs "$POD_NAME" --follow
 ```
 
 When all components of the openvpn chart have started use the following script to generate a client key:
@@ -73,6 +73,7 @@ Parameter | Description | Default
 `persistence.storageClass`     | Storage class of backing PVC                                         | `nil`
 `persistence.accessMode`       | Use volume as ReadOnly or ReadWrite                                  | `ReadWriteOnce`
 `persistence.size`             | Size of data volume                                                  | `2M`
+`podAnnotations`               | Key-value pairs to add as pod annotations                            | `{}`
 `openvpn.OVPN_NETWORK`         | Network allocated for openvpn clients                                | `10.240.0.0`
 `openvpn.OVPN_SUBNET`          | Network subnet allocated for openvpn                                 | `255.255.0.0`
 `openvpn.OVPN_PROTO`           | Protocol used by openvpn tcp or udp                                  | `tcp`
@@ -83,6 +84,7 @@ Parameter | Description | Default
 `openvpn.dhcpOptionDomain`     | Push a `dhcp-option DOMAIN` config                                   | `true`
 `openvpn.conf`                 | Arbitrary lines appended to the end of the server configuration file | `nil`
 `openvpn.redirectGateway`      | Redirect all client traffic through VPN                              | `true`
+`nodeSelector`                 | Node labels for pod assignment                                       | `{}`
 
 This chart has been engineered to use kube-dns and route all network traffic to kubernetes pods and services,
 to disable this behaviour set `openvpn.OVPN_K8S_POD_NETWORK` and `openvpn.OVPN_K8S_POD_SUBNET` to `null`.
@@ -93,6 +95,21 @@ If openvpn.OVPN_K8S_SVC_NETWORK and openvpn.OVPN_K8S_SVC_SUBNET are defined, an 
 
 ### Certificates
 
-New certificates are generated with each deployment.
+New certificates are generated with each deployment, if *keystoreSecret* is not defined.
 If persistence is enabled certificate data will be persisted across pod restarts.
 Otherwise new client certs will be needed after each deployment or pod restart.
+
+Certificates can be passed in secret, which name is specified in *openvpn.keystoreSecret* value.
+Create secret as follows:
+
+```bash
+kubectl create secret generic openvpn-keystore-secret --from-file=./server.key --from-file=./ca.crt --from-file=./server.crt --from-file=./dh.pem
+```
+
+You can deploy temporary openvpn chart, create secret from generated certificates, and then re-deploy openvpn, providing the secret.
+Certificates can be found in openvpn pod in the following files:
+
+ `/etc/openvpn/certs/pki/private/server.key`
+ `/etc/openvpn/certs/pki/ca.crt`
+ `/etc/openvpn/certs/pki/issued/server.crt`
+ `/etc/openvpn/certs/pki/dh.pem`

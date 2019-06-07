@@ -1,16 +1,14 @@
 {{- if .Values.spark.enabled -}}
-{{- if or (.Capabilities.APIVersions.Has "batch/v1beta1") (.Capabilities.APIVersions.Has "batch/v2alpha1") -}}
-apiVersion: {{ template "cronjob.apiVersion" $ }}
+apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: {{ template "jaeger.fullname" . }}-spark
   labels:
-    app: {{ template "jaeger.name" . }}
-    jaeger-infra: spark-cronjob
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    component: spark
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ template "jaeger.name" . }}
+    helm.sh/chart: {{ include "jaeger.chart" . }}
+    app.kubernetes.io/component: spark
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
 {{- if .Values.spark.annotations }}
   annotations:
 {{ toYaml .Values.spark.annotations | indent 4 }}
@@ -24,10 +22,9 @@ spec:
       template:
         metadata:
           labels:
-            app: {{ template "jaeger.name" . }}
-            component: spark
-            release: {{ .Release.Name }}
-            jaeger-infra: spark-instance
+            app.kubernetes.io/name: {{ template "jaeger.name" . }}
+            app.kubernetes.io/component: spark
+            app.kubernetes.io/instance: {{ .Release.Name }}
             {{- if .Values.spark.podLabels }}
 {{ toYaml .Values.spark.podLabels | indent 12 }}
             {{- end }}
@@ -85,5 +82,4 @@ spec:
             resources:
 {{ toYaml .Values.spark.resources | indent 14 }}
           restartPolicy: OnFailure
-{{- end -}}
 {{- end -}}

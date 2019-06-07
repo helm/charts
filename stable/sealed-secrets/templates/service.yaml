@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "sealed-secrets.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ template "sealed-secrets.name" . }}
+    helm.sh/chart: {{ template "sealed-secrets.chart" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+spec:
+  ports:
+    - port: 8080
+  selector:
+    app.kubernetes.io/name: {{ template "sealed-secrets.name" . }}

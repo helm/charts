@@ -1,7 +1,7 @@
 ## Details about the image to be pulled.
 image:
   name: registry.opensource.zalan.do/teapot/external-dns
-  tag: v0.5.7
+  tag: v0.5.14
   pullSecrets: []
   pullPolicy: IfNotPresent
 
@@ -14,17 +14,21 @@ sources:
 # Allow external-dns to publish DNS records for ClusterIP services (optional)
 publishInternalServices: false
 
-## The DNS provider where the DNS records will be created (options: aws, google, inmemory, azure )
+## The DNS provider where the DNS records will be created (options: aws, google, inmemory, azure, rfc2136 )
 provider: aws
 
 # AWS Access keys to inject as environment variables
 aws:
   secretKey: ""
   accessKey: ""
+  # pre external-dns 0.5.9 home dir should be `/root/.aws`
+  credentialsPath: "/.aws"
   roleArn: ""
   region: "us-east-1"
   # Filter for zones of this type (optional, options: public, private)
   zoneType: ""
+  assumeRoleArn: ""
+  batchChangeSize: ""
 
 azure:
 # If you don't specify a secret to load azure.json from, you will get the host's /etc/kubernetes/azure.json
@@ -34,10 +38,53 @@ azure:
 cloudflare:
   apiKey: ""
   email: ""
+  proxied: true
+
+# Configuration for OpenStack Designate provider
+designate:
+  # A custom CA (optional)
+  customCA:
+    # Turn custom CA on or off
+    enabled: false
+    # The content of the custom CA file
+    content: ""
+    # Location to mount custom CA
+    directory: "/config/designate"
+    # Filename of the custom CA
+    filename: "designate-ca.pem"
+
+# DigitalOcean API token to inject as environment variable
+digitalocean:
+  apiToken: ""
+
 # When using the Google provider, specify the Google project (required when provider=google)
 google:
   project: ""
   serviceAccountSecret: ""
+  serviceAccountKey: ""
+
+# Infoblox keys to inject
+infoblox:
+  # Required keys:
+  wapiUsername: ""
+  wapiPassword: ""
+  gridHost: ""
+  # Optional keys:
+  domainFilter: ""
+  noSslVerify: false
+  wapiPort: ""
+  wapiVersion: ""
+  wapiConnectionPoolSize: ""
+  wapiHttpTimeout: ""
+
+rfc2136:
+  host: ""
+  port: 53
+  zone: ""
+  tsigSecret: ""
+  tsigSecretAlg: hmac-sha256
+  tsigKeyname: externaldns-key
+  tsigAxfr: true
 
 ## Limit possible target zones by domain suffixes (optional)
 domainFilters: []
@@ -45,12 +92,17 @@ domainFilters: []
 zoneIdFilters: []
 # Filter sources managed by external-dns via annotation using label selector semantics (default: all sources)
 annotationFilter: ""
+## Adjust the interval for DNS updates
+interval: "1m"
 
 # Registry to use for ownership (txt or noop)
 registry: "txt"
 
 # When using the TXT registry, a name that identifies this instance of ExternalDNS
 txtOwnerId: ""
+
+# When enabled, prints DNS record changes rather than actually performing them
+dryRun: false
 
 ## Node labels for pod assignment
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
@@ -74,7 +126,17 @@ logLevel: info
 
 extraArgs: {}
 
-extraEnv: {}
+# Extra environment variables which will be saved in a release-specific secret
+# or retrieved via valueFrom.
+# extraEnv:
+# - name: SECRET_TO_SAVE
+#   value: secret_value
+# - name: AWS_ACCESS_KEY_ID
+#   valueFrom:
+#     secretKeyRef:
+#       name: existing-secret
+#       key: access-key-id
+extraEnv: []
 
 ## CPU and Memory limit and request for external-dns
 resources: {}
@@ -94,6 +156,13 @@ rbac:
   ## Ignored if rbac.create is true
   ##
   serviceAccountName: default
+
+securityContext: {}
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 65534 # 65534 is nobody - revise aws.credentialsPath when changing uid
+  # capabilities:
+  #   drop: ["ALL"]
 
 service:
   annotations: {}

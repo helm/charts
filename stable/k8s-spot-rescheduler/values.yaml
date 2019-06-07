@@ -3,6 +3,11 @@
 # Declare variables to be passed into your templates.
 replicaCount: 1
 
+podAnnotations: {}
+
+podDisruptionBudget: {}
+  # maxUnavailable: 1
+
 image:
   repository: quay.io/pusher/k8s-spot-rescheduler
   tag: v0.2.0
@@ -34,6 +39,10 @@ resources: {}
   #  cpu: 100m
   #  memory: 128Mi
 
+# Affinity for pod assignment
+# Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+affinity: {}
+
 tolerations: []
 
 # Node labels for pod assignment
@@ -50,3 +59,8 @@ serviceAccount:
   # The name of the ServiceAccount to use.
   # If not set and create is true, a name is generated using the fullname template
   name:
+
+# Leverage a PriorityClass to ensure your pods survive resource shortages
+# ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
+# PriorityClass: system-cluster-critical
+priorityClassName: ""

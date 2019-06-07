@@ -3,6 +3,14 @@
 # Uncomment and set to override the namespace that will be created.
 # namespace: default
 
+# Extra namespace attributes
+# namespaceAttributes:
+  # Labels to be added to the namespace definition
+  # labels: {}
+
+  # Annotations to be added to the namespace definition
+  # annotations: {}
+
 tiller:
   enabled: true
 
@@ -14,6 +22,28 @@ tiller:
     pullPolicy: IfNotPresent
 
   maxHistory: 0
+
+  ## Storage driver to use. One of 'configmap', 'memory', or 'secret'
+  storage: configmap
+
+  tls:
+    ## Enable TLS encryption between Helm and Tiller
+    enabled: false
+
+    ## Verify remote certificate
+    verify: true
+
+    ## A custom secret to mount instead of specifying Base64 Values below
+    secretName: ""
+
+    ## Specify a Base64 encoded CA
+    # ca: "Zm9vCg=="
+
+    ## Specify a Base64 encoded cert
+    # cert: "Zm9vCg=="
+
+    ## Specify a Base64 encoded private key
+    # key: "Zm9vCg=="
 
   ## The following options specify the Role or ClusterRole to assign to the
   ## tiller service account. The ClusterRole "admin" is usually pre-defined in
@@ -58,9 +88,9 @@ tiller:
   affinity: {}
 
 ## Optional additional ServiceAccounts
-serviceAccounts:
-- some-service-account
-- another-service-account
+serviceAccounts: []
+# - some-service-account
+# - another-service-account
 
 ## Optional additional RoleBindings. It is a good idea to specify at least one
 ## to grant administrative permissions to a user or group.

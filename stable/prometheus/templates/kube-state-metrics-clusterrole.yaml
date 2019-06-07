@@ -1,13 +1,9 @@
-{{- if .Values.rbac.create }}
+{{- if and .Values.kubeStateMetrics.enabled .Values.rbac.create -}}
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
 metadata:
   labels:
-    app: {{ template "prometheus.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.kubeStateMetrics.name }}"
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    {{- include "prometheus.kubeStateMetrics.labels" . | nindent 4 }}
   name: {{ template "prometheus.kubeStateMetrics.fullname" . }}
 rules:
   - apiGroups:
@@ -34,6 +30,7 @@ rules:
     resources:
       - daemonsets
       - deployments
+      - ingresses
       - replicasets
     verbs:
       - list
@@ -41,6 +38,8 @@ rules:
   - apiGroups:
       - apps
     resources:
+      - daemonsets
+      - deployments
       - statefulsets
     verbs:
       - get
@@ -58,6 +57,20 @@ rules:
       - autoscaling
     resources:
       - horizontalpodautoscalers
+    verbs:
+      - list
+      - watch
+  - apiGroups:
+      - policy
+    resources:
+      - poddisruptionbudgets
+    verbs:
+      - list
+      - watch
+  - apiGroups:
+      - certificates.k8s.io
+    resources:
+      - certificatesigningrequests
     verbs:
       - list
       - watch

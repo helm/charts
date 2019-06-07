@@ -2,20 +2,20 @@
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: {{ template "fluentd-elasticsearch.fullname" . }}
+  name: {{ include "fluentd-elasticsearch.fullname" . }}
   labels:
-    app: {{ template "fluentd-elasticsearch.name" . }}
+    app.kubernetes.io/name: {{ include "fluentd-elasticsearch.name" . }}
+    helm.sh/chart: {{ include "fluentd-elasticsearch.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
     kubernetes.io/cluster-service: "true"
     addonmanager.kubernetes.io/mode: Reconcile
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
 subjects:
 - kind: ServiceAccount
-  name: {{ template "fluentd-elasticsearch.fullname" . }}
+  name: {{ template "fluentd-elasticsearch.serviceAccountName" . }}
   namespace: {{ .Release.Namespace }}
 roleRef:
   kind: ClusterRole
-  name: {{ template "fluentd-elasticsearch.fullname" . }}
+  name: {{ include "fluentd-elasticsearch.fullname" . }}
   apiGroup: rbac.authorization.k8s.io
 {{- end -}}

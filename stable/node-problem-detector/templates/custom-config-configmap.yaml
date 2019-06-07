@@ -1,0 +1,11 @@
+apiVersion: v1
+data:
+{{ .Values.settings.custom_monitor_definitions | toYaml | indent 2 }}
+kind: ConfigMap
+metadata:
+  name: {{ include "node-problem-detector.customConfig" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "node-problem-detector.name" . }}
+    helm.sh/chart: {{ include "node-problem-detector.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}

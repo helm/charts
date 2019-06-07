@@ -14,7 +14,7 @@ This chart bootstraps a [MediaWiki](https://github.com/bitnami/bitnami-docker-me
 
 It also packages the [Bitnami MariaDB chart](https://github.com/kubernetes/charts/tree/master/stable/mariadb) which is required for bootstrapping a MariaDB deployment for the database requirements of the MediaWiki application.
 
-Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters.
+Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters. This chart has been tested to work with NGINX Ingress, cert-manager, fluentd and Prometheus on top of the [BKPR](https://kubeprod.io/).
 
 ## Prerequisites
 
@@ -50,11 +50,12 @@ The following table lists the configurable parameters of the MediaWiki chart and
 |              Parameter               |               Description                                   |                         Default                         |
 |--------------------------------------|-------------------------------------------------------------|---------------------------------------------------------|
 | `global.imageRegistry`               | Global Docker image registry                                | `nil`                                                   |
+| `global.imagePullSecrets`            | Global Docker registry secret names as an array             | `[]` (does not add image pull secrets to deployed pods) |
 | `image.registry`                     | MediaWiki image registry                                    | `docker.io`                                             |
 | `image.repository`                   | MediaWiki Image name                                        | `bitnami/mediawiki`                                     |
-| `image.tag`                          | MediaWiki Image tag                                         | `{VERSION}`                                             |
+| `image.tag`                          | MediaWiki Image tag                                         | `{TAG_NAME}`                                            |
 | `image.pullPolicy`                   | Image pull policy                                           | `Always`                                                |
-| `image.pullSecrets`                  | Specify image pull secrets                                  | `nil`                                                   |
+| `image.pullSecrets`                  | Specify docker-registry secret names as an array            | `[]` (does not add image pull secrets to deployed pods) |
 | `mediawikiUser`                      | User of the application                                     | `user`                                                  |
 | `mediawikiPassword`                  | Application password                                        | _random 10 character long alphanumeric string_          |
 | `mediawikiEmail`                     | Admin email                                                 | `user@example.com`                                      |
@@ -76,7 +77,9 @@ The following table lists the configurable parameters of the MediaWiki chart and
 | `mariadb.db.password`                | Password for the database                                   | _random 10 character long alphanumeric string_          |
 | `service.type`                       | Kubernetes Service type                                     | `LoadBalancer`                                          |
 | `service.loadBalancer`               | Kubernetes LoadBalancerIP to request                        | `nil`                                                   |
-| `service.externalTrafficPolicy`      | Enable client source IP preservation                        | `Cluster`                                                 |
+| `service.port`                       | Service HTTP port                                           | `80`                                                    |
+| `service.httpsPort`                  | Service HTTPS port                                          | `443`                                                   |
+| `service.externalTrafficPolicy`      | Enable client source IP preservation                        | `Cluster`                                               |
 | `service.nodePorts.http`             | Kubernetes http node port                                   | `""`                                                    |
 | `service.nodePorts.https`            | Kubernetes https node port                                  | `""`                                                    |
 | `ingress.enabled`                    | Enable ingress controller resource                          | `false`                                                 |
@@ -107,6 +110,15 @@ The following table lists the configurable parameters of the MediaWiki chart and
 | `readinessProbe.timeoutSeconds`      | When the probe times out (ingest nodes pod)                 | 5                                                       |
 | `readinessProbe.failureThreshold`    | Minimum consecutive failures to be considered failed        | 6                                                       |
 | `readinessProbe.successThreshold`    | Minimum consecutive successes to be considered successful   | 1                                                       |
+| `podAnnotations`                     | Pod annotations                                             | `{}`                                                    |
+| `metrics.enabled`                    | Start a side-car prometheus exporter                        | `false`                                                 |
+| `metrics.image.registry`             | Apache exporter image registry                              | `docker.io`                                             |
+| `metrics.image.repository`           | Apache exporter image name                                  | `lusotycoon/apache-exporter`                            |
+| `metrics.image.tag`                  | Apache exporter image tag                                   | `v0.5.0`                                                |
+| `metrics.image.pullPolicy`           | Image pull policy                                           | `IfNotPresent`                                          |
+| `metrics.image.pullSecrets`          | Specify docker-registry secret names as an array            | `[]` (does not add image pull secrets to deployed pods) |
+| `metrics.podAnnotations`             | Additional annotations for Metrics exporter pod             | `{prometheus.io/scrape: "true", prometheus.io/port: "9117"}` |
+| `metrics.resources`                  | Exporter resource requests/limit                            | {}                                                      |
 
 The above parameters map to the env variables defined in [bitnami/mediawiki](http://github.com/bitnami/bitnami-docker-mediawiki). For more information please refer to the [bitnami/mediawiki](http://github.com/bitnami/bitnami-docker-mediawiki) image documentation.
 
@@ -128,9 +140,15 @@ $ helm install --name my-release -f values.yaml stable/mediawiki
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
+### [Rolling VS Immutable tags](https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/)
+
+It is strongly recommended to use immutable tags in a production environment. This ensures your deployment does not change automatically if the same tag is updated with a different image.
+
+Bitnami will release a new chart updating its containers if a new version of the main container, significant changes, or critical vulnerabilities exist.
+
 ## Persistence
 
-The [Bitnami MediaWiki](https://github.com/bitnami/bitnami-docker-mediawiki) image stores the MediaWiki data and configurations at the `/bitnami/mediawiki` and `/bitnami/apache` paths of the container.
+The [Bitnami MediaWiki](https://github.com/bitnami/bitnami-docker-mediawiki) image stores the MediaWiki data and configurations at the `/bitnami/mediawiki` path of the container.
 
 Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
 See the [Configuration](#configuration) section to configure the PVC or to disable persistence.

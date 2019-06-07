@@ -1,0 +1,109 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "collabora-code.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "collabora-code.name" . }}
+    helm.sh/chart: {{ include "collabora-code.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: {{ .Values.strategy }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "collabora-code.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "collabora-code.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: DONT_GEN_SSL_CERT
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "collabora-code.fullname" . }}
+                  key: DONT_GEN_SSL_CERT
+            - name: dictionaries
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "collabora-code.fullname" . }}
+                  key: dictionaries
+            - name: domain
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "collabora-code.fullname" . }}
+                  key: domain
+            - name: extra_params
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "collabora-code.fullname" . }}
+                  key: extra_params
+            - name: server_name
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "collabora-code.fullname" . }}
+                  key: server_name
+            - name: username
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "collabora-code.fullname" . }}
+                  key: username
+            - name: password
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "collabora-code.fullname" . }}
+                  key: password
+          {{- if .Values.livenessProbe.enabled }}
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: http
+              scheme: HTTP
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.livenessProbe.successThreshold }}
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+          {{- end }}
+          {{- if .Values.readinessProbe.enabled }}
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: http
+              scheme: HTTP
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.readinessProbe.successThreshold }}
+            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+          {{- end }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          securityContext:
+            {{- toYaml .Values.securitycontext | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

@@ -1,6 +1,7 @@
+apiVersion: v1
 name: dex
-version: 0.5.0
-appVersion: 2.11.0
+version: 1.4.0
+appVersion: 2.16.0
 description: CoreOS Dex
 keywords:
 - dex

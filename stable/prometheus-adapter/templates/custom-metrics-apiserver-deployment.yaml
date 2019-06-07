@@ -24,12 +24,6 @@ spec:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/custom-metrics-configmap.yaml") . | sha256sum }}
     spec:
-      securityContext:
-        allowPrivilegeEscalation: false
-        capabilities:
-          drop: ["all"]
-        runAsNonRoot: true
-        runAsUser: 10001
       serviceAccountName: {{ template "k8s-prometheus-adapter.serviceAccountName" . }}
       containers:
       - name: {{ .Chart.Name }}
@@ -41,11 +35,10 @@ spec:
 {{- if .Values.tls.enable }}
         - --tls-cert-file=/var/run/serving-cert/tls.crt
         - --tls-private-key-file=/var/run/serving-cert/tls.key
-{{- else }}
-        - --cert-dir=/tmp/cert
 {{- end }}
+        - --cert-dir=/tmp/cert
         - --logtostderr=true
-        - --prometheus-url={{ .Values.prometheus.url }}:{{ .Values.prometheus.port }}
+        - --prometheus-url={{ .Values.prometheus.url }}{{ if .Values.prometheus.port }}:{{ .Values.prometheus.port }}{{end}}
         - --metrics-relist-interval={{ .Values.metricsRelistInterval }}
         - --v={{ .Values.logLevel }}
         - --config=/etc/adapter/config.yaml
@@ -68,10 +61,19 @@ spec:
         resources:
 {{ toYaml .Values.resources | indent 10 }}
 {{- end }}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ["all"]
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 10001
         volumeMounts:
         - mountPath: /etc/adapter/
           name: config
           readOnly: true
+        - mountPath: /tmp
+          name: tmp
 {{- if .Values.tls.enable }}
         - mountPath: /var/run/serving-cert
           name: volume-serving-cert
@@ -89,10 +91,22 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
+{{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+{{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+{{- end }}
+{{- end }}
       volumes:
       - name: config
         configMap:
+          {{- if .Values.rules.existing }}
+          name: {{ .Values.rules.existing }}
+          {{- else }}
           name: {{ template "k8s-prometheus-adapter.fullname" . }}
+          {{- end }}
+      - name: tmp
+        emptyDir: {}
 {{- if .Values.tls.enable }}
       - name: volume-serving-cert
         secret:

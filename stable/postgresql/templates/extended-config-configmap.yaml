@@ -1,0 +1,21 @@
+{{- if and (or (.Files.Glob "files/conf.d/*.conf") .Values.postgresqlExtendedConf) (not .Values.extendedConfConfigMap)}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "postgresql.fullname" . }}-extended-configuration
+  labels:
+    app: {{ template "postgresql.name" . }}
+    chart: {{ template "postgresql.chart" . }}
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+data:
+{{- with .Files.Glob "files/conf.d/*.conf" }}
+{{ .AsConfig | indent 2 }}
+{{- end }}
+{{ with .Values.postgresqlExtendedConf }}
+  override.conf: |
+{{- range $key, $value := . }}
+    {{ $key | snakecase }}={{ $value }}
+{{- end }}
+{{- end }}
+{{- end }}

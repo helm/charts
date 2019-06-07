@@ -1,0 +1,17 @@
+apiVersion: v1
+appVersion: "v0.7.1"
+description: A Helm chart for Atlantis https://www.runatlantis.io
+name: atlantis
+version: 3.5.3
+keywords:
+- terraform
+home: https://www.runatlantis.io
+icon: https://www.runatlantis.io/hero.png
+sources:
+- https://github.com/runatlantis/atlantis
+maintainers:
+- name: jkodroff
+- name: callmeradical
+- name: jeff-knurek
+- name: lkysow
+- name: anubhavmishra

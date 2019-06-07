@@ -5,7 +5,7 @@
 
 Name: "cockroachdb"
 Image: "cockroachdb/cockroach"
-ImageTag: "v2.0.6"
+ImageTag: "v19.1.1"
 ImagePullPolicy: "Always"
 Replicas: 3
 MaxUnavailable: 1
@@ -29,7 +29,7 @@ Resources: {}
   # requests:
   #   cpu: "100m"
   #   memory: "512Mi"
-Storage: "1Gi"
+Storage: "100Gi"
 ## Persistent Volume Storage Class for database data
 ## If defined, storageClassName: <StorageClass>
 ## If set to "-", storageClassName: "", which disables dynamic provisioning
@@ -55,7 +55,7 @@ Tolerations: {}
 Secure:
   Enabled: false
   RequestCertsImage: "cockroachdb/cockroach-k8s-request-cert"
-  RequestCertsImageTag: "0.3"
+  RequestCertsImageTag: "0.4"
   ServiceAccount:
     # Specifies whether a service account should be created.
     Create: true
@@ -68,3 +68,23 @@ Secure:
 JoinExisting: []
 # Set a locality (e.g. "region=us-central1,datacenter=us-centra1-a") if you're doing multi-cluster so data is distributed properly
 Locality: ""
+# Additional command-line arguments you want to pass to the `cockroach start` commands
+ExtraArgs: []
+# ExtraSecretMounts is a list of names from secrets in the same namespace as the cockroachdb cluster, which shall be mounted into /etc/cockroach/secrets/ for every cluster member.
+ExtraSecretMounts: []
+# ExtraEnvArgs is a list of name,value tuples providing extra ENV variables.
+# e.g.:
+# ExtraEnvArgs:
+# - name: COCKROACH_ENGINE_MAX_SYNC_DURATION
+#   value: "24h"
+ExtraEnvArgs: []
+# ExtraAnnotations is an object to provide additional annotations to the Statefulset
+# e.g.:
+# ExtraAnnotations:
+#   key: values
+ExtraAnnotations: {}
+# ExtraInitAnnotations is an object to provide additional annotations to the ClusterInit Pod
+# e.g.:
+# ExtraInitAnnotations:
+#   key: values
+ExtraInitAnnotations: {}

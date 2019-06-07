@@ -30,7 +30,10 @@ podAnnotations: {}
 service:
   type: ClusterIP
   httpPort: 9108
+  metricsPort:
+    name: http
   annotations: {}
+  labels: {}
 
 es:
   ## Address (host and port) of the Elasticsearch node we should connect to.
@@ -78,3 +81,14 @@ web:
   ## Path under which to expose metrics.
   ##
   path: /metrics
+
+serviceMonitor:
+  ## If true, a ServiceMonitor CRD is created for a prometheus operator
+  ## https://github.com/coreos/prometheus-operator
+  ##
+  enabled: false
+  #  namespace: monitoring
+  labels: {}
+  interval: 10s
+  scrapeTimeout: 10s
+  scheme: http

@@ -7,7 +7,7 @@
 ## schema-registry repository
 image: "confluentinc/cp-schema-registry"
 ## The container tag to use
-imageTag: 4.1.1
+imageTag: 5.0.1
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 imagePullPolicy: "IfNotPresent"
@@ -18,6 +18,8 @@ replicaCount: 1
 ## Schema Registry Settings Overrides
 ## Configuration Options can be found here: https://docs.confluent.io/current/schema-registry/docs/config.html
 configurationOverrides: {}
+  ## The default master.eligiblity is true
+  # master.eligibility: false
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -34,6 +36,11 @@ resources: {}
 
 ## The port on which the SchemaRegistry will be available and serving requests
 servicePort: 8081
+
+## Provides schema registry service settings
+service:
+  ## Any additional labels to add to the service
+  labels: {}
 
 ## If `Kafka.Enabled` is `false`, kafkaStore.overrideBootstrapServers must be provided for Master Election.
 ## You can list load balanced service endpoint, or list of all brokers (which is hard in K8s).  e.g.:
@@ -64,7 +71,7 @@ sasl:
     enabled: false
     init:
       image: "confluentinc/cp-schema-registry"
-      imageTag: "4.0.0"
+      imageTag: "5.0.1"
       imagePullPolicy: "IfNotPresent"
     clientUser: "kafka-client"
     zookeeperClientUser: "zookeeper-client"
@@ -114,3 +121,32 @@ ingress:
   tls:
     enabled: false
     secretName: schema-registry-tls
+
+## External Nodeport/LoadBalancer for Cloud Providers
+external:
+  enabled: false
+  type: LoadBalancer
+  servicePort: 443
+  loadBalancerIP: ""
+  nodePort: ""
+
+## Provide JMX Port
+jmx:
+  enabled: true
+  port: 5555
+
+## Pass any secrets to the pods. The secrets will be mounted to a specfic path
+## OR presented as Environment Variables. Environment variable names are
+## generated as: `<secretName>_<secretKey>` (All upper case)
+## note: Keystore/Truststore are binary and should always be presented as files.
+secrets: []
+# - name: schema-registry-jks
+#   keys:
+#     - ksr-server.truststore.jks
+#     - ksr-server.keystore.jks
+#   mountPath: /secrets
+# - name: schema-registry-jks-pw
+#   keys:
+#     - ssl_truststore_password
+#     - ssl_keystore_password
+#     - ssl_key_password

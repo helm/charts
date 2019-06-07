@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "kube-state-metrics.fullname" . }}
@@ -8,7 +8,10 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
-  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "kube-state-metrics.name" . }}
+  replicas: {{ .Values.replicas }}
   template:
     metadata:
       labels:
@@ -19,10 +22,25 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
 {{- end }}
     spec:
-      serviceAccountName: {{ if .Values.rbac.create }}{{ template "kube-state-metrics.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+      hostNetwork: {{ .Values.hostNetwork }}
+      serviceAccountName: {{ template "kube-state-metrics.serviceAccountName" . }}
+      {{- if .Values.securityContext.enabled }}
+      securityContext:
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+      {{- end }}
+    {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName }}
+    {{- end }}
       containers:
       - name: {{ .Chart.Name }}
         args:
+{{  if .Values.collectors.certificatesigningrequests  }}
+        - --collectors=certificatesigningrequests
+{{  end  }}
+{{  if .Values.collectors.configmaps  }}
+        - --collectors=configmaps
+{{  end  }}
 {{  if .Values.collectors.cronjobs  }}
         - --collectors=cronjobs
 {{  end  }}
@@ -37,6 +55,9 @@ spec:
 {{  end  }}
 {{  if .Values.collectors.horizontalpodautoscalers  }}
         - --collectors=horizontalpodautoscalers
+{{  end  }}
+{{  if .Values.collectors.ingresses  }}
+        - --collectors=ingresses
 {{  end  }}
 {{  if .Values.collectors.jobs  }}
         - --collectors=jobs
@@ -56,6 +77,9 @@ spec:
 {{  if .Values.collectors.persistentvolumes  }}
         - --collectors=persistentvolumes
 {{  end  }}
+{{  if .Values.collectors.poddisruptionbudgets  }}
+        - --collectors=poddisruptionbudgets
+{{  end  }}
 {{  if .Values.collectors.pods  }}
         - --collectors=pods
 {{  end  }}
@@ -67,6 +91,9 @@ spec:
 {{  end  }}
 {{  if .Values.collectors.resourcequotas  }}
         - --collectors=resourcequotas
+{{  end  }}
+{{  if .Values.collectors.secrets  }}
+        - --collectors=secrets
 {{  end  }}
 {{  if .Values.collectors.services  }}
         - --collectors=services
@@ -89,6 +116,10 @@ spec:
           timeoutSeconds: 5
         resources:
 {{ toYaml .Values.resources | indent 12 }}
+{{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+{{- end }}
 {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
@@ -97,4 +128,3 @@ spec:
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
 {{- end }}
-

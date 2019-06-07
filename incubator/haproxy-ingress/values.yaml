@@ -1,6 +1,8 @@
 # Enable RBAC
 rbac:
   create: true
+  security:
+    enable: false
 
 # Create ServiceAccount
 serviceAccount:
@@ -10,52 +12,348 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name:
 
-# Default 404 backend
-defaultBackend:
-  name: ingress-default-backend
-  image:
-    repository: gcr.io/google_containers/defaultbackend
-    tag: "1.0"
-    pullPolicy: IfNotPresent
-  resources:
-    cpu: 10m
-    memory: 20Mi
-
-  service:
-    name: ingress-default-backend
-
 controller:
   name: controller
   image:
     repository: quay.io/jcmoraisjr/haproxy-ingress
-    tag: "v0.5-beta.3"
+    tag: "v0.7.1"
     pullPolicy: IfNotPresent
 
-  defaultSslCertificate:
-    secret:
-      # If not set, release namespace is used
-      namespace:
-      # Required
-      name:
+  ## Additional command line arguments to pass to haproxy-ingress-controller
+  ## E.g. to specify the default SSL certificate you can use
+  ## extraArgs:
+  ##   default-ssl-certificate: "<namespace>/<secret_name>"
+  ##   reload-strategy: "reusesocket"
+  extraArgs: {}
+
+  ## Additional environment variables to set
+  extraEnvs: []
+  # extraEnvs:
+  #   - name: FOO
+  #     valueFrom:
+  #       secretKeyRef:
+  #         key: FOO
+  #         name: secret-resource
+
+  ## Additional containers that can initialize the pod.
+  initContainers: []
+
+  # custom haproxy template
+  template: ""
+
+  ## Required only if defaultBackend.enabled = false
+  ## Must be <namespace>/<service_name>
+  ##
+  defaultBackendService: ""
+
+  ## Name of the ingress class to route through this controller
+  ##
+  ingressClass: haproxy
+
+  healthzPort: 10253
+
+  ## Liveness and readiness probe values
+  ## Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes
+  ##
+  livenessProbe:
+    path: /healthz
+    port: 10253
+    failureThreshold: 3
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    successThreshold: 1
+    timeoutSeconds: 1
+  readinessProbe:
+    path: /healthz
+    port: 10253
+    failureThreshold: 3
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    successThreshold: 1
+    timeoutSeconds: 1
+
+  ## Annotations to be added to controller pods
+  ##
+  podAnnotations: {}
+
+  ## Labels to be added to the controller pods
+  ##
+  podLabels: {}
+
+  ## Affinity to be added to controller pods
+  ##
+  podAffinity: {}
+
+  ## Priority Class to be used
+  ##
+  priorityClassName: ""
+
+  ## Security context settings to be added to the controller pods
+  ##
+  securityContext: {}
+  #  sysctls:
+  #  - name: net.ipv4.ip_local_port_range
+  #    value: "1024 65535"
 
   # ConfigMap to configure haproxy ingress
   config: {}
+
+  # Required for use with CNI based kubernetes installations (such as ones set up by kubeadm),
+  # since CNI and hostport don't mix yet. Can be deprecated once https://github.com/kubernetes/kubernetes/issues/23920
+  # is merged
+  hostNetwork: false
+
+  # Optionally change this to ClusterFirstWithHostNet in case you have 'hostNetwork: true'.
+  # By default, while using host network, name resolution uses the host's DNS. If you wish nginx-controller
+  # to keep resolving names inside the k8s network, use ClusterFirstWithHostNet.
+  dnsPolicy: ClusterFirst
+
+  ## DaemonSet or Deployment
+  ##
+  kind: Deployment
+
+  # TCP service key:value pairs
+  # <port>: <namespace>/<servicename>:<portnumber>[:[<in-proxy>][:<out-proxy>]]
+  # https://github.com/jcmoraisjr/haproxy-ingress/tree/v0.6#tcp-services-configmap
+  tcp: {}
+  #  8080: "default/example-tcp-svc:9000"
+
+  # optionally disable static ports, including the default 80 and 443
+  enableStaticPorts: true
+
+  ## Use host ports 80 and 443
+  daemonset:
+    useHostPort: false
+
+    hostPorts:
+      http: 80
+      https: 443
+      # List of ports from controller.tcp map
+      tcp: []
+
+  # The update strategy to apply to the Deployment or DaemonSet
+  ##
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+
+  # minReadySeconds to avoid killing pods before we are ready
+  ##
+  minReadySeconds: 0
+
+  # Deployment
+  replicaCount: 1
+
+  # PodDisruptionBudget
+  minAvailable: 1
+
+  resources: {}
+  #  limits:
+  #    cpu: 100m
+  #    memory: 64Mi
+  #  requests:
+  #    cpu: 100m
+  #    memory: 64Mi
+
+  autoscaling:
+    enabled: false
+  #  minReplicas: 1
+  #  maxReplicas: 11
+  #  targetCPUUtilizationPercentage: 50
+  #  targetMemoryUtilizationPercentage: 50
+    customMetrics: []
+
+  ## Node tolerations for server scheduling to nodes with taints
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+  ##
+  tolerations: []
+  #  - key: "key"
+  #    operator: "Equal|Exists"
+  #    value: "value"
+  #    effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
+
+  affinity: {}
+
+  ## Node labels for controller pod assignment
+  ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+  ##
+  nodeSelector: {}
 
   service:
     annotations: {}
     labels: {}
     clusterIP: ""
 
-    targetPorts:
-      http: 80
-      https: 443
+    ## List of IP addresses at which the controller services are available
+    ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+    ##
+    externalIPs: []
+
+    loadBalancerIP: ""
+    loadBalancerSourceRanges: []
+
+    httpPorts:
+      - port: 80
+      # nodePort:
+    httpsPorts:
+      - port: 443
+      # nodePort:
+
+    ## Set external traffic policy to: "Local" to preserve source IP on
+    ## providers supporting it
+    ## Ref: https://kubernetes.io/docs/tutorials/services/source-ip/#source-ip-for-services-with-typeloadbalancer
+    externalTrafficPolicy: ""
+
+    healthCheckNodePort: 0
 
     type: LoadBalancer
 
-    # type: NodePort
-    # nodePorts:
-    #   http: 32080
-    #   https: 32443
-    nodePorts:
-      http: ""
-      https: ""
+  stats:
+    enabled: false
+    port: 1936
+
+    service:
+      annotations: {}
+      clusterIP: ""
+
+      ## List of IP addresses at which the stats service is available
+      ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+      ##
+      externalIPs: []
+
+      loadBalancerIP: ""
+      loadBalancerSourceRanges: []
+      servicePort: 1936
+      type: ClusterIP
+
+  ## If controller.stats.enabled = true and controller.metrics.enabled = true, Prometheus metrics will be exported
+  ##
+  metrics:
+    enabled: false
+
+    # prometheus exporter for haproxy
+    # https://github.com/prometheus/haproxy_exporter
+    # (scrapes the stats port and exports metrics to prometheus)
+    image:
+      repository: quay.io/prometheus/haproxy-exporter
+      tag: "v0.10.0"
+      pullPolicy: IfNotPresent
+
+    ## Additional command line arguments to pass to haproxy_exporter
+    ## E.g. to specify the client timeout you can use
+    ## extraArgs:
+    ##   haproxy.timeout: 15s
+    extraArgs: {}
+
+    resources: {}
+    #  limits:
+    #    cpu: 500m
+    #    memory: 600Mi
+    #  requests:
+    #    cpu: 200m
+    #    memory: 400Mi
+
+    service:
+      annotations: {}
+      # prometheus.io/scrape: "true"
+      # prometheus.io/port: "10254"
+
+      clusterIP: ""
+
+      ## List of IP addresses at which the stats-exporter service is available
+      ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+      ##
+      externalIPs: []
+
+      loadBalancerIP: ""
+      loadBalancerSourceRanges: []
+      servicePort: 9101
+      type: ClusterIP
+
+  ## access-logs side-car container for collecting haproxy logs
+  ## Enabling this will configure haproxy to emit logs to syslog localhost:514 UDP port.
+  ## The access-logs container starts a syslog process that listens on UDP 514 and outputs to stdout.
+  logs:
+    enabled: false
+
+    # syslog for haproxy
+    # https://github.com/whereisaaron/kube-syslog-sidecar
+    # (listens on UDP port 514 and outputs to stdout)
+    image:
+      repository: whereisaaron/kube-syslog-sidecar
+      tag: latest
+      pullPolicy: IfNotPresent
+
+    resources: {}
+    #  limits:
+    #    cpu: 200m
+    #    memory: 128Mi
+    #  requests:
+    #    cpu: 100m
+    #    memory: 32Mi
+
+# Default 404 backend
+defaultBackend:
+  ## If false, controller.defaultBackendService must be provided
+  ##
+  enabled: true
+
+  name: default-backend
+  image:
+    repository: gcr.io/google_containers/defaultbackend
+    tag: "1.0"
+    pullPolicy: IfNotPresent
+
+  ## Node tolerations for server scheduling to nodes with taints
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+  ##
+  tolerations: []
+  #  - key: "key"
+  #    operator: "Equal|Exists"
+  #    value: "value"
+  #    effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
+
+  affinity: {}
+
+  ## Node labels for default backend pod assignment
+  ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+  ##
+  nodeSelector: {}
+
+  ## Annotations to be added to default backend pods
+  ##
+  podAnnotations: {}
+
+  # labels to add to the pod container metadata
+  podLabels: {}
+  #  key: value
+
+  # Deployment
+  replicaCount: 1
+
+  # PodDisruptionBudget
+  minAvailable: 1
+
+  resources:
+    limits:
+      cpu: 10m
+      memory: 20Mi
+  # requests:
+  #   cpu: 10m
+  #   memory: 20Mi
+
+  service:
+    name: ingress-default-backend
+    annotations: {}
+    clusterIP: ""
+
+    ## List of IP addresses at which the default backend service is available
+    ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+    ##
+    externalIPs: []
+
+    loadBalancerIP: ""
+    loadBalancerSourceRanges: []
+    servicePort: 8080
+    type: ClusterIP

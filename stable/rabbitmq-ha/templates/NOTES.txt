@@ -2,16 +2,13 @@
 
   Credentials:
 
-    Username      : {{ .Values.rabbitmqUsername -}}
-    {{ if .Values.existingSecret }}
-    Password      : $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "rabbitmq-ha.secretName" . }} -o jsonpath="{.data.rabbitmq-password}" | base64 --decode)
-    ErLang Cookie : $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "rabbitmq-ha.secretName" . }} -o jsonpath="{.data.rabbitmq-erlang-cookie}" | base64 --decode)
-    {{ else }}
-    Password      : $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "rabbitmq-ha.fullname" . }} -o jsonpath="{.data.rabbitmq-password}" | base64 --decode)
-    ErLang Cookie : $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "rabbitmq-ha.fullname" . }} -o jsonpath="{.data.rabbitmq-erlang-cookie}" | base64 --decode)
-    {{ end }}
+    Username            : {{ .Values.rabbitmqUsername }}
+    Password            : $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "rabbitmq-ha.secretName" . }} -o jsonpath="{.data.rabbitmq-password}" | base64 --decode)
+    Management username : {{ .Values.managementUsername }}
+    Management password : $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "rabbitmq-ha.secretName" . }} -o jsonpath="{.data.rabbitmq-management-password}" | base64 --decode)
+    ErLang Cookie       : $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "rabbitmq-ha.secretName" . }} -o jsonpath="{.data.rabbitmq-erlang-cookie}" | base64 --decode)
 
-  RabbitMQ can be accessed within the cluster on port {{ .Values.rabbitmqNodePort }} at {{ template "rabbitmq-ha.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+  RabbitMQ can be accessed within the cluster on port {{ .Values.rabbitmqNodePort }} at {{ template "rabbitmq-ha.fullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}
 
   To access the cluster externally execute the following commands:
 

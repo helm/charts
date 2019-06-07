@@ -1,15 +1,56 @@
 # Default values for elasticsearch.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-appVersion: "6.4.2"
+appVersion: "6.7.0"
+
+## Define serviceAccount names for components. Defaults to component's fully qualified name.
+##
+serviceAccounts:
+  client:
+    create: true
+    name:
+  master:
+    create: true
+    name:
+  data:
+    create: true
+    name:
+
+## Specify if a Pod Security Policy for node-exporter must be created
+## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/
+##
+podSecurityPolicy:
+  enabled: false
+  annotations: {}
+    ## Specify pod annotations
+    ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#apparmor
+    ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#seccomp
+    ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#sysctl
+    ##
+    # seccomp.security.alpha.kubernetes.io/allowedProfileNames: '*'
+    # seccomp.security.alpha.kubernetes.io/defaultProfileName: 'docker/default'
+    # apparmor.security.beta.kubernetes.io/defaultProfileName: 'runtime/default'
+
+securityContext:
+  enabled: false
+  runAsUser: 1000
+
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName: "default-scheduler"
 
 image:
   repository: "docker.elastic.co/elasticsearch/elasticsearch-oss"
-  tag: "6.4.2"
+  tag: "6.7.0"
   pullPolicy: "IfNotPresent"
   # If specified, use these secrets to access the image
   # pullSecrets:
   #   - registry-secret
+
+testFramework:
+  image: "dduportal/bats"
+  tag: "0.4.0"
 
 initImage:
   repository: "busybox"
@@ -27,26 +68,69 @@ cluster:
   config: {}
   # Custom parameters, as string, to be added to ES_JAVA_OPTS environment variable
   additionalJavaOpts: ""
+  # Command to run at the end of deployment
+  bootstrapShellCommand: ""
   env:
     # IMPORTANT: https://www.elastic.co/guide/en/elasticsearch/reference/current/important-settings.html#minimum_master_nodes
     # To prevent data loss, it is vital to configure the discovery.zen.minimum_master_nodes setting so that each master-eligible
     # node knows the minimum number of master-eligible nodes that must be visible in order to form a cluster.
     MINIMUM_MASTER_NODES: "2"
+  # List of plugins to install via dedicated init container
+  plugins: []
+    # - ingest-attachment
+    # - mapper-size
+
+  loggingYml:
+    # you can override this using by setting a system property, for example -Des.logger.level=DEBUG
+    es.logger.level: INFO
+    rootLogger: ${es.logger.level}, console
+    logger:
+      # log action execution errors for easier debugging
+      action: DEBUG
+      # reduce the logging for aws, too much is logged under the default INFO
+      com.amazonaws: WARN
+    appender:
+      console:
+        type: console
+        layout:
+          type: consolePattern
+          conversionPattern: "[%d{ISO8601}][%-5p][%-25c] %m%n"
+
+  log4j2Properties: |
+    status = error
+    appender.console.type = Console
+    appender.console.name = console
+    appender.console.layout.type = PatternLayout
+    appender.console.layout.pattern = [%d{ISO8601}][%-5p][%-25c{1.}] %marker%m%n
+    rootLogger.level = info
+    rootLogger.appenderRef.console.ref = console
+    logger.searchguard.name = com.floragunn
+    logger.searchguard.level = info
 
 client:
   name: client
   replicas: 2
   serviceType: ClusterIP
+  ## If coupled with serviceType = "NodePort", this will set a specific nodePort to the client HTTP port
+  # httpNodePort: 30920
   loadBalancerIP: {}
   loadBalancerSourceRanges: {}
 ## (dict) If specified, apply these annotations to the client service
 #  serviceAnnotations:
 #    example: client-svc-foo
   heapSize: "512m"
+  # additionalJavaOpts: "-XX:MaxRAM=512m"
   antiAffinity: "soft"
   nodeAffinity: {}
   nodeSelector: {}
   tolerations: []
+  initResources: {}
+    # limits:
+    #   cpu: "25m"
+    #   # memory: "128Mi"
+    # requests:
+    #   cpu: "25m"
+    #   memory: "128Mi"
   resources:
     limits:
       cpu: "1"
@@ -62,22 +146,49 @@ client:
     enabled: false
     minAvailable: 1
     # maxUnavailable: 1
+  ingress:
+    enabled: false
+    # user: NAME
+    # password: PASSWORD
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    path: /
+    hosts:
+      - chart-example.local
+    tls: []
+    #  - secretName: chart-example-tls
+    #    hosts:
+    #      - chart-example.local
 
 master:
   name: master
   exposeHttp: false
   replicas: 3
   heapSize: "512m"
+  # additionalJavaOpts: "-XX:MaxRAM=512m"
   persistence:
     enabled: true
     accessMode: ReadWriteOnce
     name: data
     size: "4Gi"
     # storageClass: "ssd"
+  readinessProbe:
+    httpGet:
+      path: /_cluster/health?local=true
+      port: 9200
+    initialDelaySeconds: 5
   antiAffinity: "soft"
   nodeAffinity: {}
   nodeSelector: {}
   tolerations: []
+  initResources: {}
+    # limits:
+    #   cpu: "25m"
+    #   # memory: "128Mi"
+    # requests:
+    #   cpu: "25m"
+    #   memory: "128Mi"
   resources:
     limits:
       cpu: "1"
@@ -89,6 +200,7 @@ master:
   ## (dict) If specified, apply these annotations to each master Pod
   # podAnnotations:
   #   example: master-foo
+  podManagementPolicy: OrderedReady
   podDisruptionBudget:
     enabled: false
     minAvailable: 2  # Same as `cluster.env.MINIMUM_MASTER_NODES`
@@ -101,17 +213,30 @@ data:
   exposeHttp: false
   replicas: 2
   heapSize: "1536m"
+  # additionalJavaOpts: "-XX:MaxRAM=1536m"
   persistence:
     enabled: true
     accessMode: ReadWriteOnce
     name: data
     size: "30Gi"
     # storageClass: "ssd"
+  readinessProbe:
+    httpGet:
+      path: /_cluster/health?local=true
+      port: 9200
+    initialDelaySeconds: 5
   terminationGracePeriodSeconds: 3600
   antiAffinity: "soft"
   nodeAffinity: {}
   nodeSelector: {}
   tolerations: []
+  initResources: {}
+    # limits:
+    #   cpu: "25m"
+    #   # memory: "128Mi"
+    # requests:
+    #   cpu: "25m"
+    #   memory: "128Mi"
   resources:
     limits:
       cpu: "1"
@@ -127,8 +252,17 @@ data:
     enabled: false
     # minAvailable: 1
     maxUnavailable: 1
+  podManagementPolicy: OrderedReady
   updateStrategy:
     type: OnDelete
+  hooks:  # post-start and pre-stop hooks
+    drain:  # drain the node before stopping it and re-integrate it into the cluster after start
+      enabled: true
 
+## Sysctl init container to setup vm.max_map_count
+# see https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html
+# and https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-configuration-memory.html#mlockall
+sysctlInitContainer:
+  enabled: true
 ## Additional init containers
 extraInitContainers: |

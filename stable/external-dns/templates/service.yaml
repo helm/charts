@@ -30,6 +30,7 @@ spec:
     - port: {{ .Values.service.servicePort }}
       protocol: TCP
       targetPort: 7979
+      name: http
   selector:
     app: {{ template "external-dns.name" . }}
     release: {{ .Release.Name }}

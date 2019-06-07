@@ -46,9 +46,10 @@ The following table lists the configurable parameters of the Seq chart and their
 |           Parameter           |                Description                        |           Default            |
 |-------------------------------|-------------------------------------------------- |------------------------------|
 | `image.repository`         | Image repository                    | `datalust/seq`                                          |
-| `image.tag`                | Seq image tag. Possible values listed [here](https://hub.docker.com/r/datalust/seq/tags/).| `5.0.832-pre`|
+| `image.tag`                | Seq image tag. Possible values listed [here](https://hub.docker.com/r/datalust/seq/tags/).| `5`|
 | `image.pullPolicy`         | Image pull policy                   | `IfNotPresent`                                          |
-| `acceptEULA`               | Accept EULA                         | `Y`                                                 |
+| `acceptEULA`               | Accept EULA                         | `Y`                                                     |
+| `baseURI`                  | Base URL for ingress/AAD (see values.yaml)|                                                   |
 | `service.type`             | Kubernetes service type             | `ClusterIP`                                             |
 | `service.port`             | Kubernetes port where service is exposed| `5341`                                              |
 | `persistence.enabled`      | Use persistent volume to store data | `true`                                                  |
@@ -61,6 +62,11 @@ The following table lists the configurable parameters of the Seq chart and their
 | `nodeSelector`             | Node labels for pod assignment      | `{}`                                                    |
 | `affinity`                 | Affinity settings for pod assignment | `{}`                                                   |
 | `tolerations`              | Toleration labels for pod assignment | `[]`                                                   |
+| `ingress.enabled`          | Enables Ingress                      | `false`                                                |
+| `ingress.annotations`      | Ingress annotations                  | `{}`                                                   |
+| `ingress.labels`           | Custom labels                        | `{}`                                                   |
+| `ingress.hosts`            | Ingress accepted hostnames           | `[]`                                                   |
+| `ingress.tls`              | Ingress TLS configuration            | `[]`                                                   |
 
 Some of the parameters above map to the env variables defined in the [Seq DockerHub image](https://hub.docker.com/r/datalust/seq/).
 

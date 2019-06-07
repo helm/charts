@@ -30,24 +30,22 @@ spec:
 {{ toYaml .Values.metrics.podAnnotations | indent 8 }}
       {{- end }}
     spec:
-      {{- if .Values.metrics.image.pullSecrets }}
-      imagePullSecrets:
-        {{- range .Values.metrics.image.pullSecrets }}
-        - name: {{ . }}
-        {{- end}}
-      {{- end}}
+{{- include "redis.imagePullSecrets" . | indent 6 }}
       {{- if .Values.metrics.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.metrics.nodeSelector | indent 8 }}
       {{- end }}
       serviceAccountName: "{{ template "redis.serviceAccountName" . }}"
+      {{- if .Values.metrics.priorityClassName }}
+      priorityClassName: "{{ .Values.metrics.priorityClassName }}"
+      {{- end }}
       {{- if .Values.metrics.tolerations }}
       tolerations:
 {{ toYaml .Values.metrics.tolerations | indent 8 }}
       {{- end }}
       containers:
       - name: metrics
-        image: {{ template "metrics.image" . }}
+        image: {{ template "redis.metrics.image" . }}
         imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
         args:
         {{- range $key, $value := .Values.metrics.extraArgs }}
@@ -56,26 +54,38 @@ spec:
         env:
         - name: REDIS_ADDR
         {{- if .Values.cluster.enabled }}
-          value: {{ printf "%s-master:%d,%s-slave:%d" ( include "redis.fullname" . ) ( int .Values.master.port ) ( include "redis.fullname" . ) ( .Values.slave.port | default .Values.master.port | int ) | quote }}
+          value: {{ printf "%s-master:%d,%s-slave:%d" ( include "redis.fullname" . ) ( int .Values.redisPort ) ( include "redis.fullname" . ) ( int .Values.redisPort ) | quote }}
         {{- else }}
-          value: {{ printf "%s-master:%d" (include "redis.fullname" . ) (int .Values.master.port) | quote }}
+          value: {{ printf "%s-master:%d" (include "redis.fullname" . ) (int .Values.redisPort) | quote }}
         {{- end }}
         - name: REDIS_ALIAS
           value: {{ template "redis.fullname" . }}
         {{- if .Values.usePassword }}
+        {{- if .Values.usePasswordFile }}
+        - name: REDIS_PASSWORD_FILE
+          value: "/secrets/redis-password"
+        {{- else }}
         - name: REDIS_PASSWORD
           valueFrom:
             secretKeyRef:
-              {{- if .Values.existingSecret }}
-              name: {{ .Values.existingSecret }}
-              {{- else }}
-              name: {{ template "redis.fullname" . }}
-              {{- end }}
+              name: {{ template "redis.secretName" . }}
               key: redis-password
+        {{- end }}
+        {{- end }}
+        volumeMounts:
+        {{- if .Values.usePasswordFile }}
+        - name: redis-password
+          mountPath: /secrets/
         {{- end }}
         ports:
         - name: metrics
           containerPort: 9121
         resources:
 {{ toYaml .Values.metrics.resources | indent 10 }}
+      volumes:
+      {{- if .Values.usePasswordFile }}
+        - name: redis-password
+          secret:
+            secretName: {{ template "redis.secretName" . }}
+      {{- end }}
 {{- end }}
