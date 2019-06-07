@@ -1,0 +1,20 @@
+{{- if .Values.metricService }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "cassandra-operator.name" . }}-metrics
+  labels:
+    component: app
+    labels:
+      app: {{ template "cassandra-operator.name" . }}-metrics
+      chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+      heritage: {{ .Release.Service }}
+      release: {{ .Release.Name }}
+spec:
+  selector:
+    app: {{ template "cassandra-operator.name" . }}
+  ports:
+  - name: metrics
+    port: 9710
+    protocol: TCP
+{{- end }}
