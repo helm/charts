@@ -218,7 +218,7 @@ spec:
           - name: pointerdir
             mountPath: /opt/datadog-agent/run
           {{- end }}
-          {{- if (and (.Values.datadog.logsEnabled) (.Values.datadog.logsConfigContainerCollectAll)) }}
+          {{- if .Values.datadog.logsEnabled }}
           - name: logpodpath
             mountPath: /var/log/pods
             readOnly: true
@@ -284,7 +284,7 @@ spec:
             path: {{ default "/var/lib/datadog-agent/logs" .Values.datadog.logsPointerHostPath | quote }}
           name: pointerdir
         {{- end }}
-        {{- if (and (.Values.datadog.logsEnabled) (.Values.datadog.logsConfigContainerCollectAll)) }}
+        {{- if .Values.datadog.logsEnabled }}
         - hostPath:
             path: /var/log/pods
           name: logpodpath
