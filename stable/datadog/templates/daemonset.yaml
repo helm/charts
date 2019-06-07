@@ -87,7 +87,7 @@ spec:
         - {name: sysprobe-var-run, mountPath: /sysprobe/var/run}
         - {name: procdir, mountPath: /host/proc, readOnly: true}
         env:
-        {{ include "datadog.bypass_env" . | indent 10 | trim }}
+          {{ include "datadog.bypass_env" . | nindent 10 | trim }}
           - name: DD_LOG_LEVEL
             value: "debug"
           - name: DD_LOGS_STDOUT
