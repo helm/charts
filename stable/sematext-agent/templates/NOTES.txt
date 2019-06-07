@@ -1,7 +1,7 @@
-{{- if and (not .Values.containerToken) (not .Values.logseneToken) -}}
+{{- if and (not .Values.containerToken) (not .Values.logsToken) -}}
 
 ###############################################################################
-#           ERROR: Please provide containerToken and/or logseneToken!         #
+#           ERROR: Please provide containerToken and/or logsToken!            #
 ###############################################################################
 
 Depending on which region you want to use, create a container and/or logs apps
@@ -14,14 +14,14 @@ helm install --name release_name \
 Or if you created both apps use:
 
 helm install --name release_name \
-  --set containerToken=YOUR_CONTAINER_TOKEN,logseneToken=YOUR_LOGS_TOKEN \
+  --set containerToken=YOUR_CONTAINER_TOKEN,logsToken=YOUR_LOGS_TOKEN \
   stable/sematext-agent
 
 Please check the README file for all available parameters.
 
-{{- else if not .Values.logseneToken -}}
+{{- else if not .Values.logsToken -}}
 
-Missing logseneToken! You will only receive metrics and events.
+Missing logsToken! You will only receive metrics and events.
 {{ if eq .Values.region "US" }}
 After a few minutes check your app at https://apps.sematext.com/ui/monitoring
 {{ else if eq .Values.region "EU" }}
