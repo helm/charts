@@ -112,86 +112,10 @@ data:
 {{- end }}
 {{- if hasPrefix "2." .Values.appVersion }}
   logging.yml: |-
-    # you can override this using by setting a system property, for example -Des.logger.level=DEBUG
-    es.logger.level: INFO
-    rootLogger: ${es.logger.level}, console
-    logger:
-      # log action execution errors for easier debugging
-      action: DEBUG
-      # reduce the logging for aws, too much is logged under the default INFO
-      com.amazonaws: WARN
-    appender:
-      console:
-        type: console
-        layout:
-          type: consolePattern
-          conversionPattern: "[%d{ISO8601}][%-5p][%-25c] %m%n"
-{{- else if hasPrefix "5." .Values.appVersion }}
+{{ toYaml .Values.cluster.loggingYml | indent 4 }}
+{{- else }}
   log4j2.properties: |-
-    status = error
-    appender.console.type = Console
-    appender.console.name = console
-    appender.console.layout.type = PatternLayout
-    appender.console.layout.pattern = [%d{ISO8601}][%-5p][%-25c{1.}] %marker%m%n
-    rootLogger.level = info
-    rootLogger.appenderRef.console.ref = console
-    logger.searchguard.name = com.floragunn
-    logger.searchguard.level = info
-{{- else if hasPrefix "6." .Values.appVersion }}
-  log4j2.properties: |-
-    status = error
-    appender.console.type = Console
-    appender.console.name = console
-    appender.console.layout.type = PatternLayout
-    appender.console.layout.pattern = [%d{ISO8601}][%-5p][%-25c{1.}] %marker%m%n
-    rootLogger.level = info
-    rootLogger.appenderRef.console.ref = console
-    logger.searchguard.name = com.floragunn
-    logger.searchguard.level = info
-{{- else if hasPrefix "7." .Values.appVersion }}
-  log4j2.properties: |-
-    status = error
-    # log action execution errors for easier debugging
-    logger.action.name = org.elasticsearch.action
-    logger.action.level = debug
-    
-    appender.rolling.type = Console
-    appender.rolling.name = rolling
-    appender.rolling.layout.type = ESJsonLayout
-    appender.rolling.layout.type_name = server
-    
-    rootLogger.level = info
-    rootLogger.appenderRef.rolling.ref = rolling
-    
-    appender.deprecation_rolling.type = Console
-    appender.deprecation_rolling.name = deprecation_rolling
-    appender.deprecation_rolling.layout.type = ESJsonLayout
-    appender.deprecation_rolling.layout.type_name = deprecation
-    
-    logger.deprecation.name = org.elasticsearch.deprecation
-    logger.deprecation.level = warn
-    logger.deprecation.appenderRef.deprecation_rolling.ref = deprecation_rolling
-    logger.deprecation.additivity = false
-    
-    appender.index_search_slowlog_rolling.type = Console
-    appender.index_search_slowlog_rolling.name = index_search_slowlog_rolling
-    appender.index_search_slowlog_rolling.layout.type = ESJsonLayout
-    appender.index_search_slowlog_rolling.layout.type_name = index_search_slowlog
-    
-    logger.index_search_slowlog_rolling.name = index.search.slowlog
-    logger.index_search_slowlog_rolling.level = trace
-    logger.index_search_slowlog_rolling.appenderRef.index_search_slowlog_rolling.ref = index_search_slowlog_rolling
-    logger.index_search_slowlog_rolling.additivity = false
-    
-    appender.index_indexing_slowlog_rolling.type = Console
-    appender.index_indexing_slowlog_rolling.name = index_indexing_slowlog_rolling
-    appender.index_indexing_slowlog_rolling.layout.type = ESJsonLayout
-    appender.index_indexing_slowlog_rolling.layout.type_name = index_indexing_slowlog
-    
-    logger.index_indexing_slowlog.name = index.indexing.slowlog.index
-    logger.index_indexing_slowlog.level = trace
-    logger.index_indexing_slowlog.appenderRef.index_indexing_slowlog_rolling.ref = index_indexing_slowlog_rolling
-    logger.index_indexing_slowlog.additivity = false
+{{ tpl .Values.cluster.log4j2Properties . | indent 4 }}
 {{- end }}
 {{- if .Values.data.hooks.drain.enabled }}
   pre-stop-hook.sh: |-
