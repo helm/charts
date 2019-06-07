@@ -25,6 +25,10 @@ cloudsql:
   enabled: false
   # set CloudSQL instance: 'project:zone:instancname'
   instance: ""
+  # Optional existing service account secret to use.
+  # useExistingServiceAcc: false
+  # serviceAccSecretName: service_acc
+  # serviceAccJsonName: for_cloudsql.json
   image:
     # set repo and image tag of gce-proxy
     repository: gcr.io/cloudsql-docker/gce-proxy

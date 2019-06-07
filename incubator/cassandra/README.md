@@ -121,6 +121,7 @@ The following table lists the configurable parameters of the Cassandra chart and
 | `commandOverrides`                   | Overrides default docker command                | `[]`                                                       |
 | `argsOverrides`                      | Overrides default docker args                   | `[]`                                                       |
 | `env`                                | Custom env variables                            | `{}`                                                       |
+| `schedulerName`                      | Name of k8s scheduler (other than the default)  | `nil`                                                      |
 | `persistence.enabled`                | Use a PVC to persist data                       | `true`                                                     |
 | `persistence.storageClass`           | Storage class of backing PVC                    | `nil` (uses alpha storage class annotation)                |
 | `persistence.accessMode`             | Use volume as ReadOnly or ReadWrite             | `ReadWriteOnce`                                            |

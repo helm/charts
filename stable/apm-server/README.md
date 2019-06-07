@@ -74,6 +74,7 @@ The following table lists the configurable parameters of the apm-server chart an
 | `nodeSelector`                      | Node labels for pod assignment     | `{}`                                      |
 | `tolerations`                       | List of node taints to tolerate    | `[]`                                      |
 | `affinity`                          | Node/Pod affinities                | None                                      |
+| `autoscaling` | HorizontalPodAutoscaler for the deployment | `{}` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

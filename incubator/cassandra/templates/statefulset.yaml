@@ -30,6 +30,9 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
 {{- end }}
     spec:
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+      {{- end }}
       hostNetwork: {{ .Values.hostNetwork }}
 {{- if .Values.selector }}
 {{ toYaml .Values.selector | indent 6 }}
