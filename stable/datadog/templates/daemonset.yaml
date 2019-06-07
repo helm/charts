@@ -79,9 +79,7 @@ spec:
             add: ["SYS_ADMIN", "SYS_RESOURCE", "SYS_PTRACE", "NET_ADMIN"]
         command:
           - /opt/datadog-agent/embedded/bin/system-probe
-          - -config=/etc/datadog-agent/system-probe.yaml
         volumeMounts:
-        - {name: sysprobe-config, mountPath: /etc/datadog-agent, readOnly: false}
         - {name: debugfs, mountPath: /sys/kernel/debug}
         - {name: sysprobe-var-run, mountPath: /sysprobe/var/run}
         - {name: procdir, mountPath: /host/proc, readOnly: true}
@@ -286,9 +284,6 @@ spec:
           - name: sysprobe-var-run
             mountPath: /sysprobe/var/run
             readOnly: true
-          - name: sysprobe-config
-            mountPath: /etc/datadog-agent
-            readOnly: false
           {{- end }}
 {{- if .Values.datadog.volumeMounts }}
 {{ toYaml .Values.datadog.volumeMounts | indent 10 }}
@@ -358,7 +353,6 @@ spec:
         {{- end }}
         {{- if $.Values.config.system_probe.enabled }}
         - {name: datadog-agent-security, configMap: {name: datadog-agent-security}}
-        - {name: sysprobe-config, configMap: {name: system-probe-config}}
         - {name: seccomp-root, hostPath: {path: /var/lib/kubelet/seccomp}}
         - {name: debugfs, hostPath: {path: /sys/kernel/debug}}
         - {name: sysprobe-var-run, emptyDir: {}}
