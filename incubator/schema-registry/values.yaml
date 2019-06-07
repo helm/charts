@@ -135,6 +135,24 @@ jmx:
   enabled: true
   port: 5555
 
+## Prometheus Exporter Configuration
+## ref: https://prometheus.io/docs/instrumenting/exporters/
+prometheus:
+  ## JMX Exporter Configuration
+  ## ref: https://github.com/prometheus/jmx_exporter
+  jmx:
+    enabled: true
+    image: solsson/kafka-prometheus-jmx-exporter@sha256
+    imageTag: 6f82e2b0464f50da8104acd7363fb9b995001ddff77d248379f8788e78946143
+    port: 5556
+    resources: {}
+      # limits:
+      #  cpu: 100m
+      #  memory: 128Mi
+      # requests:
+      #  cpu: 100m
+      #  memory: 128Mi
+
 ## Pass any secrets to the pods. The secrets will be mounted to a specfic path
 ## OR presented as Environment Variables. Environment variable names are
 ## generated as: `<secretName>_<secretKey>` (All upper case)
