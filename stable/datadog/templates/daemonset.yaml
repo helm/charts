@@ -234,7 +234,7 @@ spec:
             value: "clusterchecks"
           {{- end }}
           {{- if .Values.datadog.system_probe.enabled }}
-          - name: DD_SYSTEM_PROBE_CONFIG_ENABLED
+          - name: DD_SYSTEM_PROBE_ENABLED
             value: {{ .Values.datadog.system_probe.enabled | quote }}
           {{- end }}
 {{- if .Values.datadog.env }}
