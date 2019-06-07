@@ -21,6 +21,9 @@ configurationOverrides: {}
   ## The default master.eligiblity is true
   # master.eligibility: false
 
+## Custom pod annotations
+podAnnotations: {}
+
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ## Confluent has production deployment guidelines here:
