@@ -46,8 +46,8 @@ serviceAccount:
 infraToken: null
 # determines the token for the container app (container metrics are delivered here)
 containerToken: null
-# logsene token to send logs
-logseneToken: null
+# logs token to send logs
+logsToken: null
 
 # for private images
 # imagePullSecrets:
