@@ -7,9 +7,9 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-  {{- if .Values.anchoreGlobal.configMap.labels }}
-  {{ toYaml .Values.anchoreGlobal.configMap.labels | indent 4 }}
-  {{- end }}
+    {{- with .Values.anchoreGlobal.configMap.labels }}
+    {{ toYaml . | nindent 4 | trim}}
+    {{- end }}
 data:
   ANCHORE_DB_NAME: {{ index .Values "postgresql" "postgresDatabase" | quote }}
   ANCHORE_DB_USER: {{ index .Values "postgresql" "postgresUser" | quote }}

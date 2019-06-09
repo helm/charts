@@ -9,9 +9,9 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     component: {{ $component }}
-  {{- if .Values.anchorePolicyEngine.labels }}
-  {{ toYaml .Values.anchorePolicyEngine.labels | indent 4 }}
-  {{- end }}
+    {{- with .Values.anchorePolicyEngine.labels }}
+    {{ toYaml . | nindent 4 | trim }}
+    {{- end }}
 spec:
   selector:
     matchLabels:
@@ -23,6 +23,9 @@ spec:
       labels:
         app: {{ template "anchore-engine.fullname" . }}
         component: {{ $component }}
+        {{- with .Values.anchorePolicyEngine.labels }}
+        {{ toYaml . | nindent 8 | trim }}
+        {{- end }}
       {{- with .Values.anchorePolicyEngine.annotations }}
       annotations:
         {{ toYaml . | nindent 8 | trim }}
@@ -134,9 +137,9 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     component: {{ $component }}
-  {{- if .Values.anchorePolicyEngine.service.labels }}
-  {{ toYaml .Values.anchorePolicyEngine.service.labels | indent 4 }}
-  {{- end }}
+    {{- with .Values.anchorePolicyEngine.service.labels }}
+    {{ toYaml . | nindent 4 | trim }}
+    {{- end }}
   {{- with .Values.anchorePolicyEngine.service.annotations }}
   annotations:
     {{ toYaml . | nindent 4 | trim }}

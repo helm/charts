@@ -11,9 +11,9 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-  {{- if .Values.anchoreEnterpriseUi.labels }}
-  {{ toYaml .Values.anchoreEnterpriseUi.labels | indent 4 }}
-  {{- end }}
+    {{- with .Values.anchoreEnterpriseUi.labels }}
+    {{ toYaml . | nindent 4 | trim }}
+    {{- end }}
 spec:
   selector:
     matchLabels:
@@ -28,6 +28,9 @@ spec:
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: {{ .Release.Name }}
         heritage: {{ .Release.Service }}
+        {{- with .Values.anchoreEnterpriseUi.labels }}
+        {{ toYaml . | nindent 8 | trim }}
+        {{- end }}
       {{- with .Values.anchoreEnterpriseUi.annotations }}
       annotations:
         {{ toYaml .Values.anchoreEnterpriseUi.annotations | nindent 8 | trim }}
@@ -124,9 +127,9 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-  {{- if .Values.anchoreEnterpriseUi.service.labels }}
-  {{ toYaml .Values.anchoreEnterpriseUi.service.labels | indent 4 }}
-  {{- end }}
+    {{- with .Values.anchoreEnterpriseUi.service.labels }}
+    {{ toYaml . | nindent 4 | trim }}
+    {{- end }}
   {{- with .Values.anchoreEnterpriseUi.service.annotations }}
   annotations:
     {{ toYaml . | nindent 4 | trim }}

@@ -10,9 +10,9 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-  {{- if .Values.anchoreEnterpriseFeeds.labels }}
-  {{ toYaml .Values.anchoreEnterpriseFeeds.labels | indent 4 }}
-  {{- end }}
+    {{- with .Values.anchoreEnterpriseFeeds.labels }}
+    {{ toYaml . | nindent 4 | trim }}
+    {{- end }}
 spec:
   selector:
     matchLabels:
@@ -24,6 +24,9 @@ spec:
       labels:
         app: {{ template "anchore-engine.fullname" . }}
         component: {{ $component }}
+        {{- with .Values.anchoreEnterpriseFeeds.labels }}
+        {{ toYaml . | nindent 8 | trim }}
+        {{- end }}
       {{- with .Values.anchoreEnterpriseFeeds.annotations }}
       annotations:
         {{ toYaml . | nindent 8 | trim }}
@@ -142,9 +145,9 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     component: {{ $component }}
-  {{- if .Values.anchoreEnterpriseFeeds.service.labels }}
-  {{ toYaml .Values.anchoreEnterpriseFeeds.service.labels | indent 4 }}
-  {{- end }}
+    {{- with .Values.anchoreEnterpriseFeeds.service.labels }}
+    {{ toYaml . | nindent 4 | trim }}
+    {{- end }}
   {{- with .Values.anchoreEnterpriseFeeds.service.annotations }}
   annotations:
     {{ toYaml . | nindent 4 | trim }}

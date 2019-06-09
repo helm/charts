@@ -10,9 +10,9 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     component: {{ $component }}
-  {{- if .Values.anchoreGlobal.configMap.labels }}
-  {{ toYaml .Values.anchoreGlobal.configMap.labels | indent 4 }}
-  {{- end }}
+    {{- with .Values.anchoreGlobal.configMap.labels }}
+    {{ toYaml . | nindent 4 | trim }}
+    {{- end }}
 data:
   config.yaml: |
     # Anchore Enterprise Service Configuration File
