@@ -11,6 +11,7 @@ image:
 # Set security context for sonarqube pod
 securityContext:
   fsGroup: 999
+  runAsUser: 999
 
 service:
   name: sonarqube
