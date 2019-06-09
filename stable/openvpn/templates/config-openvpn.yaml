@@ -25,6 +25,9 @@ data:
       ./easyrsa gen-crl
       cp ${EASY_RSA_LOC}/pki/crl.pem ${EASY_RSA_LOC}/crl.pem # Note: the pki/ directory is inaccessible after openvpn drops privileges, so we cp crl.pem to ${EASY_RSA_LOC} to allow CRL updates without a restart
       chmod 644 ${EASY_RSA_LOC}/crl.pem
+      {{- if .Values.openvpn.taKey }}
+      openvpn --genkey --secret ${EASY_RSA_LOC}/pki/ta.key
+      {{- end }}
     fi
 
 
@@ -39,6 +42,9 @@ data:
       nobind
       dev tun
       remote ${MY_IP_ADDR} {{ .Values.service.externalPort }} {{ .Values.openvpn.OVPN_PROTO }}
+      {{- if .Values.openvpn.cipher }}
+      cipher {{ .Values.openvpn.cipher }}
+      {{- end }}
       {{- if .Values.openvpn.redirectGateway }}
       redirect-gateway def1
       {{- end }}
@@ -51,6 +57,12 @@ data:
       <ca>
       `cat ${EASY_RSA_LOC}/pki/ca.crt`
       </ca>
+      {{- if .Values.openvpn.taKey }}
+      <tls-auth>
+      `cat ${EASY_RSA_LOC}/pki/ta.key`
+      </tls-auth>
+      key-direction 1
+      {{- end }}
       EOF
       cat pki/$1.ovpn
 
@@ -134,7 +146,13 @@ data:
       ca /etc/openvpn/certs/pki/ca.crt
       cert /etc/openvpn/certs/pki/issued/server.crt
       dh /etc/openvpn/certs/pki/dh.pem
+{{ if .Values.openvpn.taKey }}
+      tls-auth /etc/openvpn/certs/pki/ta.key 0
+{{ end }}
 
+{{ if .Values.openvpn.cipher }}
+      cipher {{ .Values.openvpn.cipher }}
+{{ end }}
       key-direction 0
       keepalive 10 60
       persist-key

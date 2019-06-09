@@ -81,6 +81,10 @@ openvpn:
   dhcpOptionDomain: true
   # Redirect all client traffic through VPN
   redirectGateway: true
+  # Use/generate a ta.key (https://openvpn.net/community-resources/hardening-openvpn-security/)
+  taKey: false
+  # Override default cipher
+  # cipher: AES-256-CBC
   # Arbitrary lines appended to the end of the server configuration file
   # conf: |
   #  max-clients 100
