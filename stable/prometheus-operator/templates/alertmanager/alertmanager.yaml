@@ -96,6 +96,12 @@ spec:
   priorityClassName: {{.Values.alertmanager.alertmanagerSpec.priorityClassName }}
 {{- end }}
 {{- if .Values.alertmanager.alertmanagerSpec.additionalPeers }}
+{{- /* Support for string based input workaround due to a bug with templating. See: https://github.com/helm/charts/issues/13266 */}}
+{{ if kindIs "string" .Values.alertmanager.alertmanagerSpec.additionalPeers -}}
   additionalPeers: {{.Values.alertmanager.alertmanagerSpec.additionalPeers }}
+{{ else -}}
+  additionalPeers:
+{{.Values.alertmanager.alertmanagerSpec.additionalPeers | toYaml | indent 2 }}
+{{ end }}
 {{- end }}
 {{- end }}
