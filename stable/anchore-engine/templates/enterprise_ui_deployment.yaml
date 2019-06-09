@@ -33,7 +33,7 @@ spec:
         {{- end }}
       {{- with .Values.anchoreEnterpriseUi.annotations }}
       annotations:
-        {{ toYaml .Values.anchoreEnterpriseUi.annotations | nindent 8 | trim }}
+        {{ toYaml . | nindent 8 | trim }}
       {{- end }}
     spec:
       imagePullSecrets:
