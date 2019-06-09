@@ -14,8 +14,7 @@ To install the Graylog Chart with all dependencies
 ```bash
 kubectl create namespace graylog
 
-helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
-helm install --namespace "graylog" -n "graylog" incubator/graylog
+helm install --namespace "graylog" -n "graylog" stable/graylog
 ```
 
 ## Manually Install Dependencies
@@ -39,12 +38,11 @@ Note: There are many alternative Elasticsearch available on GitHub. If you found
 To install the Graylog Chart into your Kubernetes cluster (This Chart requires persistent volume by default, you may need to create a storage class before install chart.
 
 ```bash
-helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
-helm install --namespace "graylog" -n "graylog" incubator/graylog \
+helm install --namespace "graylog" -n "graylog" stable/graylog \
   --set tags.install-mongodb=false\
   --set tags.install-elasticsearch=false\
   --set graylog.mongodb.uri=mongodb://mongodb-mongodb-replicaset-0.mongodb-mongodb-replicaset.graylog.svc.cluster.local:27017/graylog?replicaSet=rs0 \
-  --set elasticsearch.hosts=http://elasticsearch-client.graylog.svc.cluster.local:9200
+  --set graylog.elasticsearch.hosts=http://elasticsearch-client.graylog.svc.cluster.local:9200
 ```
 
 After installation succeeds, you can get a status of Chart
@@ -65,20 +63,33 @@ For example:
 Set cluster size to 5
 
 ```bash
-helm install --namespace "graylog" -n "graylog" --set servers.replicas=5 stable/graylog
+helm install --namespace "graylog" -n "graylog" --set graylog.replicas=5 stable/graylog
 ```
 
 The command above will install 1 master and 4 coordinating.
 
 ## Install Chart with specific node pool
 Sometime you may need to deploy your graylog to specific node pool to allocate resources.
-For example, you have 6 vms in node pools and you want to deploy graylog to node which labeled as `cloud.google.com/gke-nodepool: graylog-pool`
 
+### Using node selector
+For example, you have 6 vms in node pools and you want to deploy graylog to node which labeled as `cloud.google.com/gke-nodepool: graylog-pool`
 Set the following values in `values.yaml`
 
 ```yaml
-servers:
+graylog:
    nodeSelector: { cloud.google.com/gke-nodepool: graylog-pool }
+```
+
+### Using tolerations
+For example, you have 6 vms in node pools and 3 nodes are tainted with `NO_SCHEDULE graylog=true`
+Set the following values in `values.yaml`
+
+```yaml
+graylog:
+  tolerations: 
+    - key: graylog
+      value: "true"
+      operator: "Equal"
 ```
 
 ## Configuration
@@ -100,7 +111,7 @@ The following table lists the configurable parameters of the Cassandra chart and
 | `graylog.service.type`                  | Kubernetes Service type                                                                                                                               | `ClusterIP`                           |
 | `graylog.service.port`                  | Graylog Service port                                                                                                                                  | `9000`                                |
 | `graylog.service.master.port`           | Graylog Master Service port                                                                                                                           | `9000`                                |
-| `graylog.service.master.anotations`     | Graylog Master Service annotations                                                                                                                    | `{}`                                  |
+| `graylog.service.master.annotations`    | Graylog Master Service annotations                                                                                                                    | `{}`                                  |
 | `graylog.podAnnotations`                | Kubernetes Pod annotations                                                                                                                            | `{}`                                  |
 | `graylog.terminationGracePeriodSeconds` | Pod termination grace period                                                                                                                          | `120`                                 |
 | `graylog.updateStrategy`                | Update Strategy of the StatefulSet                                                                                                                    | `OnDelete`                            |
@@ -124,7 +135,9 @@ The following table lists the configurable parameters of the Cassandra chart and
 | `graylog.elasticsearch.hosts`           | Graylog Elasticsearch host name. You need to specific where data will be stored.                                                                      | ``                                    |
 | `graylog.mongodb.uri`                   | Graylog MongoDB connection string. You need to specific where data will be stored.                                                                    | ``                                    |
 | `graylog.transportEmail.enabled`        | If true, enable transport email settings on Graylog                                                                                                   | `false`                               |
+| `graylog.config`                        | Add additional server configuration to `graylog.conf` file.                                                                                           | ``                                    |
 | `graylog.serverFiles`                   | Add additional server files on /etc/graylog/server. This is useful for enable TLS on input                                                            | `{}`                                  |
+| `graylog.journal.deleteBeforeStart`     | Delete all journal files before start Graylog                                                                                                         | `false`                               |
 | `rbac.create`                           | If true, create & use RBAC resources                                                                                                                  | `true`                                |
 | `rbac.serviceAccount.create`            | If true, create the Graylog service account                                                                                                           | `true`                                |
 | `rbac.serviceAccount.name`              | Name of the server service account to use or create                                                                                                   | `{{ graylog.fullname }}`              |
@@ -216,3 +229,11 @@ graylog-0                   1/1       Running     0          1d        master
 graylog-1                   1/1       Running     0          1d        coordinating
 graylog-2                   1/1       Running     0          1m        coordinating
 ```
+## Trouble shooting
+
+If you are encounter "Unprocessed Messages" or Journal files corrupted, you may need to delete all journal files before staring Graylog.
+You can do this automatically by setting `graylog.journal.deleteBeforeStart` to `true`
+
+The chart will delete all journal files before starting Graylog.
+
+Note: All uncommitted logs will be permanently DELETED when this value is true

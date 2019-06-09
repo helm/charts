@@ -49,7 +49,7 @@ Note that most of this documentation is repeated in `values.yaml`; if you're in 
 |----------:|:------------|:--------|
 | **image.*** | the parameters of the image pulls for this release | |
 | **image.repository** | the image that will be used for this release (required) | `weaveworks/scope` |
-| **image.tag** | the version of Weave Scope desired for this release (required) | `1.10.1`
+| **image.tag** | the version of Weave Scope desired for this release (required) | `1.11.1`
 | **image.pullPolicy** | the imagePullPolicy for the container (required): IfNotPresent, Always, or Never | `IfNotPresent`
 | **service.*** | the configuration of the service used to access the frontend | |
 | **service.name** | the short name desired for the frontend service (optional, but if not specified by the user a value will be calculated) -- this is a global so we can access its value easily from the agent subchart | `weave-scope-app` |
@@ -81,7 +81,8 @@ The **agent** section controls how the Weave Scope node agent pods are installed
 | **scopeFrontendAddr** | the host:port of a Scope frontend to send data to -- this is only needed in cases where the frontend is deployed separately from the agent (e.g. an install outside the cluster or a pre-existing install inside it) | |
 | **probeToken** | the token used to connect to Weave Cloud -- this is not needed for connecting to non-cloud Scope frontends | |
 | **rbac.*** | controls RBAC resource creation/use | |
-| **rbac.create** | whether RBAC resources should be created (required) -- this **must** be set to false if RBAC is not enabled in the cluster; it *may* be set to false in an RBAC-enabled cluster to allow for external management of RBAC | true |
+| **rbac.create** | whether RBAC resources should be created (required) -- this **must** be set to false if RBAC is not enabled in the cluster; it *may* be set to false in an RBAC-enabled cluster to allow for external management of RBAC | `true` |
+| **readOnly** | disables all controls (e.g. start/stop, terminal, logs, etc.) | `false` |
 | **serviceAccount.create** | whether a new service account name that the agent will use should be created. | `true` |
 | **serviceAccount.name** | service account to be used.  If not set and serviceAccount.create is `true` a name is generated using the fullname template. |  |
 | **resources.*** | controls requests/limits for the agent (these values are all optional) | |

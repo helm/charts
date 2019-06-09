@@ -1,4 +1,3 @@
-{{- if include "nextcloud.host" . -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -79,30 +78,90 @@ spec:
               key: nextcloud-password
         - name: NEXTCLOUD_TRUSTED_DOMAINS
           value: {{ .Values.nextcloud.host }}
+        {{- if ne (int .Values.nextcloud.update) 0 }}
+        - name: NEXTCLOUD_UPDATE
+          value: {{ .Values.nextcloud.update | quote }}
+        {{- end }}
+        - name: NEXTCLOUD_DATA_DIR
+          value: {{ .Values.nextcloud.datadir | quote }}
+        {{- if .Values.nextcloud.tableprefix }}
+        - name: NEXTCLOUD_TABLE_PREFIX
+          value: {{ .Values.nextcloud.tableprefix | quote }}
+        {{- end }}
+        {{- if .Values.nextcloud.mail.enabled }}
+        - name: SMTP_HOST
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "nextcloud.fullname" . }}
+              key: smtp-host
+        - name: SMTP_SECURE
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "nextcloud.fullname" . }}
+              key: smtp-secure
+        - name: SMTP_PORT
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "nextcloud.fullname" . }}
+              key: smtp-port
+        - name: SMTP_AUTHTYPE
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "nextcloud.fullname" . }}
+              key: smtp-authtype
+        - name: SMTP_NAME
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "nextcloud.fullname" . }}
+              key: smtp-username
+        - name: SMTP_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "nextcloud.fullname" . }}
+              key: smtp-password
+        - name: MAIL_FROM_ADDRESS
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "nextcloud.fullname" . }}
+              key: mail-from
+        - name: MAIL_DOMAIN
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "nextcloud.fullname" . }}
+              key: mail-domain
+        {{- end }}
         ports:
         - name: http
           containerPort: 80
           protocol: TCP
+        {{- if .Values.livenessProbe.enabled }}
         livenessProbe:
           httpGet:
             path: /status.php
             port: http
             httpHeaders:
             - name: Host
-              value: {{ include "nextcloud.host" . | quote }}
-          initialDelaySeconds: 30
-          timeoutSeconds: 5
-          failureThreshold: 6
+              value: {{ .Values.nextcloud.host | quote }}
+          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.livenessProbe.successThreshold }}
+          failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+        {{- end }}
+        {{- if .Values.readinessProbe.enabled }}
         readinessProbe:
           httpGet:
             path: /status.php
             port: http
             httpHeaders:
             - name: Host
-              value: {{ include "nextcloud.host" . | quote }}
-          initialDelaySeconds: 30
-          timeoutSeconds: 3
-          periodSeconds: 5
+              value: {{ .Values.nextcloud.host | quote }}
+          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.readinessProbe.successThreshold }}
+          failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+        {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
@@ -110,7 +169,7 @@ spec:
           mountPath: /var/www/html/
           subPath: root
         - name: nextcloud-data
-          mountPath: /var/www/html/data
+          mountPath: {{ .Values.nextcloud.datadir }}
           subPath: data
         - name: nextcloud-data
           mountPath: /var/www/html/config
@@ -141,4 +200,3 @@ spec:
       {{- else }}
         emptyDir: {}
       {{- end }}
-{{- end -}}

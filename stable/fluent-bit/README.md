@@ -95,9 +95,10 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `filter.kubeCAFile`                | Optional custom configmaps       | `/var/run/secrets/kubernetes.io/serviceaccount/ca.crt`    |
 | `filter.kubeTokenFile`             | Optional custom configmaps       | `/var/run/secrets/kubernetes.io/serviceaccount/token`     |
 | `filter.kubeTag`                   | Optional top-level tag for matching in filter         | `kube`                                 |
+| `filter.kubeTagPrefix`             | Optional tag prefix used by Tail   | `kube.var.log.containers.`                                |
 | `filter.mergeJSONLog`              | If the log field content is a JSON string map, append the map fields as part of the log structure         | `true`                                 |
 | `image.fluent_bit.repository`      | Image                                      | `fluent/fluent-bit`                               |
-| `image.fluent_bit.tag`             | Image tag                                  | `1.0.5`                                          |
+| `image.fluent_bit.tag`             | Image tag                                  | `1.0.6`                                          |
 | `image.pullPolicy`                 | Image pull policy                          | `IfNotPresent`                                          |
 | `nameOverride`                     | Override name of app                   | `nil`                                        |
 | `fullnameOverride`                 | Override full name of app              | `nil`                                        |
@@ -117,14 +118,19 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `resources`                        | Pod resource requests & limits                                 | `{}`                          |
 | `hostNetwork`                      | Use host's network                         | `false`                                           |
 | `dnsPolicy`                        | Specifies the dnsPolicy to use             | `ClusterFirst`                                    |
+| `priorityClassName`                | Specifies the priorityClassName to use     | `NULL`                                            |
 | `tolerations`                      | Optional daemonset tolerations             | `NULL`                                            |
 | `nodeSelector`                     | Node labels for fluent-bit pod assignment  | `NULL`                                            |
 | `affinity`                         | Expressions for affinity                   | `NULL`                                            |
 | `metrics.enabled`                  | Specifies whether a service for metrics should be exposed | `false`                            |
 | `metrics.service.annotations`      | Optional metrics service annotations       | `NULL`                                            |
+| `metrics.service.labels`           | Additional labels for the fluent-bit metrics service definition, specified as a map.                                                    | None                                              |
 | `metrics.service.port`             | Port on where metrics should be exposed    | `2020`                                            |
 | `metrics.service.type`             | Service type for metrics                   | `ClusterIP`                                       |
 | `trackOffsets`                     | Specify whether to track the file offsets for tailing docker logs. This allows fluent-bit to pick up where it left after pod restarts but requires access to a `hostPath` | `false` |
+| `testFramework.image`              | `test-framework` image repository.         | `dduportal/bats`                                  |
+| `testFramework.tag`                | `test-framework` image tag.                | `0.4.0`                                           |
+
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 

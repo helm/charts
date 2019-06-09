@@ -32,6 +32,9 @@ webhook:
   enabled: false
   # url: ""
 
+# namespace to watch, leave it empty for watching all.
+namespaceToWatch: ""
+
 # Resources to watch
 resourcesToWatch:
   deployment: true

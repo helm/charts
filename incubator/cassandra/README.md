@@ -19,6 +19,24 @@ If you want to delete your Chart, use this command
 helm delete  --purge "cassandra"
 ```
 
+## Upgrading
+
+To upgrade your Cassandra release, simply run
+
+```bash
+helm upgrade "cassandra" incubator/cassandra
+```
+
+### 0.12.0
+
+This version fixes https://github.com/helm/charts/issues/7803 by removing mutable labels in `spec.VolumeClaimTemplate.metadata.labels` so that it is upgradable.
+
+Until this version, in order to upgrade, you have to delete the Cassandra StatefulSet before upgrading:
+```bash
+$ kubectl delete statefulset --cascade=false my-cassandra-release
+```
+
+
 ## Persist data
 You need to create `StorageClass` before able to persist data in persistent volume.
 To create a `StorageClass` on Google Cloud, run the following
@@ -103,6 +121,7 @@ The following table lists the configurable parameters of the Cassandra chart and
 | `commandOverrides`                   | Overrides default docker command                | `[]`                                                       |
 | `argsOverrides`                      | Overrides default docker args                   | `[]`                                                       |
 | `env`                                | Custom env variables                            | `{}`                                                       |
+| `schedulerName`                      | Name of k8s scheduler (other than the default)  | `nil`                                                      |
 | `persistence.enabled`                | Use a PVC to persist data                       | `true`                                                     |
 | `persistence.storageClass`           | Storage class of backing PVC                    | `nil` (uses alpha storage class annotation)                |
 | `persistence.accessMode`             | Use volume as ReadOnly or ReadWrite             | `ReadWriteOnce`                                            |
@@ -141,6 +160,7 @@ The following table lists the configurable parameters of the Cassandra chart and
 | `exporter.image.tag`                 | Exporter image tag                              | `2.0.2`                                                    |
 | `exporter.port`                      | Exporter port                                   | `5556`                                                     |
 | `exporter.jvmOpts`                   | Exporter additional JVM options                 |                                                            |
+| `exporter.resources`                 | Exporter CPU/Memory resource requests/limits    | `{}`                                                       |
 | `affinity`                           | Kubernetes node affinity                        | `{}`                                                       |
 | `tolerations`                        | Kubernetes node tolerations                     | `[]`                                                       |
 

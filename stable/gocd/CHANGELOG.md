@@ -1,3 +1,21 @@
+### 1.10.0
+* [554019b](https://github.com/kubernetes/charts/commit/554019b):
+- Bump up GoCD Version to 19.4.0
+### 1.9.1
+
+- Add support for Deployment and Pod annotations.
+
+### 1.9.0
+
+- Bump up k8s elastic agent plugin to latest.
+- Bump up GoCD Version to 19.3.0
+
+### 1.8.1
+
+* [0f99647](https://github.com/helm/charts/commit/0f99647):
+
+- Update docker registry artifact plugin to latest stable release.
+
 ### 1.8.0
 
 * [8ec8c89](https://github.com/helm/charts/commit/8ec8c89):

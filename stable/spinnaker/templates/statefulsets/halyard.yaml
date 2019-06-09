@@ -42,10 +42,8 @@ spec:
           mountPath: /tmp/service-settings
         - name: halyard-home
           mountPath: /tmp/spinnaker
-        {{- if .Values.halyard.additionalProfileConfigMaps.create }}
         - name: additional-profile-config-maps
           mountPath: /tmp/additionalProfileConfigMaps
-        {{- end }}
         - name: halyard-initscript
           mountPath: /tmp/initscript
       volumes:
@@ -84,16 +82,18 @@ spec:
           secretName: {{ .Values.halyard.additionalSecrets.name }}
         {{- end }}
       {{- end }}
-      {{- if .Values.halyard.additionalConfigMaps.create }}
+      {{- if or .Values.halyard.additionalConfigMaps.create (hasKey .Values.halyard.additionalConfigMaps "name") }}
       - name: additional-config-maps
         configMap:
+        {{- if .Values.halyard.additionalConfigMaps.create }}
           name: {{ template "spinnaker.fullname" . }}-additional-config-maps
+        {{- else if .Values.halyard.additionalConfigMaps.name }}
+          name: {{ .Values.halyard.additionalConfigMaps.name }}
+        {{- end }}
       {{- end }}
-      {{- if .Values.halyard.additionalProfileConfigMaps.create }}
       - name: additional-profile-config-maps
         configMap:
           name: {{ template "spinnaker.fullname" . }}-additional-profile-config-maps
-      {{- end }}
       - name: halyard-config
         emptyDir: {}
       - name: service-settings
@@ -108,6 +108,10 @@ spec:
         ports:
         - containerPort: 8064
           name: daemon
+        {{- if .Values.halyard.resources }}
+        resources:
+{{ toYaml .Values.halyard.resources | indent 10 }}
+        {{- end }}
         volumeMounts:
         {{- if .Values.gcs.enabled }}
         - name: gcs-key
@@ -125,7 +129,7 @@ spec:
         - name: additional-secrets
           mountPath: /opt/halyard/additionalSecrets
         {{- end }}
-        {{- if .Values.halyard.additionalConfigMaps.create }}
+        {{- if or .Values.halyard.additionalConfigMaps.create (hasKey .Values.halyard.additionalConfigMaps "name") }}
         - name: additional-config-maps
           mountPath: /opt/halyard/additionalConfigMaps
         {{- end }}
@@ -135,6 +139,10 @@ spec:
           mountPath: /opt/halyard/config
         - name: reg-secrets
           mountPath: /opt/registry/passwords
+        {{- if .Values.halyard.env }}
+        env:
+{{ toYaml .Values.halyard.env | indent 8 }}
+        {{- end }}
   volumeClaimTemplates:
   - metadata:
       name: halyard-home

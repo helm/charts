@@ -43,15 +43,27 @@ keycloak:
   ## Custom script that is run before Keycloak is started.
   preStartScript:
 
+  ## lifecycleHooks defines the container lifecycle hooks
+  lifecycleHooks: |
+    # postStart:
+    #   exec:
+    #     command: ["/bin/sh", "-c", "ls"]
+
   ## Additional arguments to start command e.g. -Dkeycloak.import= to load a realm
   extraArgs: ""
 
   ## Username for the initial Keycloak admin user
   username: keycloak
 
-  ## Password for the initial Keycloak admin user
+  ## Password for the initial Keycloak admin user. Applicable only if existingSecret is not set.
   ## If not set, a random 10 characters password will be used
   password: ""
+
+  # Specifies an existing secret to be used for the admin password
+  existingSecret: ""
+
+  # The key in the existing secret that stores the password
+  existingSecretKey: password
 
   ## Allows the specification of additional environment variables for Keycloak
   extraEnv: |

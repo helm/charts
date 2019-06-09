@@ -19,7 +19,7 @@ image: concourse/concourse
 ##      of `concourse/concourse`.
 ## Ref: https://hub.docker.com/r/concourse/concourse/tags/
 ##
-imageTag: "5.0.1"
+imageTag: "5.2.0"
 
 ## Specific image digest to use in place of a tag.
 ## Ref: https://kubernetes.io/docs/concepts/configuration/overview/#container-images
@@ -52,10 +52,50 @@ concourse:
   ## through the `concourse web` command.
   ##
   web:
+    ## A name for this Concourse cluster, to be displayed on the dashboard page.
+    ##
+    clusterName:
+
     ## Enable equivalent resources across pipelines and teams to share a single version history.
     ## Ref: https://concourse-ci.org/global-resources.html
     ##
     enableGlobalResources: true
+
+    ## Enable auditing for all api requests connected to builds.
+    ##
+    enableBuildAuditing: false
+
+    ## Enable auditing for all api requests connected to containers.
+    ##
+    enableContainerAuditing: false
+
+    ## Enable auditing for all api requests connected to jobs.
+    ##
+    enableJobAuditing: false
+
+    ## Enable auditing for all api requests connected to pipelines.
+    ##
+    enablePipelineAuditing: false
+
+    ## Enable auditing for all api requests connected to resources.
+    ##
+    enableResourceAuditing: false
+
+    ## Enable auditing for all api requests connected to system transactions.
+    ##
+    enableSystemAuditing: false
+
+    ## Enable auditing for all api requests connected to teams.
+    ##
+    enableTeamAuditing: false
+
+    ## Enable auditing for all api requests connected to workers.
+    ##
+    enableWorkerAuditing: false
+
+    ## Enable auditing for all api requests connected to volumes.
+    ##
+    enableVolumeAuditing: false
 
     ## The number of attempts secret will be retried to be fetched,
     ## in case a retryable error happens.
@@ -65,6 +105,20 @@ concourse:
     ## The interval between secret retry retieval attempts.
     ##
     secretRetryInterval:
+
+    ## Enable in-memory cache for secrets.
+    ##
+    secretCacheEnabled: false
+
+    ## If the cache is enabled, secret values will be cached for not longer
+    ## than this duration (it can be less, if underlying secret lease time
+    ## is smaller).
+    ##
+    secretCacheDuration:
+
+    ## If the cache is enabled, expired items will be removed on this internal.
+    ##
+    secretCachePurgeInterval:
 
     ## Minimum level of logs to see. Possible options: debug, info, error.
     ##
@@ -99,13 +153,6 @@ concourse:
     ## Example: http://ci.concourse-ci.org
     ##
     externalUrl:
-
-    ## URL used to reach this ATC from other ATCs in the cluster.
-    ## By default, this corresponds to `$(POD_IP):$(CONCOURSE_BIND_PORT)`.
-    ##
-    ## Example: http://127.0.0.1:8080
-    ##
-    peerUrl:
 
     encryption:
       ## Enable encryption of pipeline configuration. Encryption keys can be set via secrets
@@ -181,6 +228,14 @@ concourse:
     ##
     maxBuildLogsToRetain:
 
+    ## Default days to retain build logs. 0 means unlimited.
+    ##
+    defaultDaysToRetainBuildLogs:
+
+    ## Maximum days to retain build logs, 0 means not specified. Will override values configured in jobs.
+    ##
+    maxDaysToRetainBuildLogs:
+
     ## Default max number of cpu shares per task, 0 means unlimited.
     ##
     defaultTaskCpuLimit:
@@ -188,6 +243,10 @@ concourse:
     ## Default maximum memory per task, 0 means unlimited.
     ##
     defaultTaskMemoryLimit:
+
+    ## Network address of this web node, reachable by other web nodes. Used for forwarded worker addresses. (default: $POD_IP)
+    ##
+    peerAddress:
 
     ## Configurations regarding how the web component is able to connect to a postgres
     ## instance.
@@ -261,6 +320,12 @@ concourse:
       ##
       region:
 
+      ## Configure authentication using an access key and secret key. If disabled, IAM role auth is assumed.
+      ## Session Token can also be enabled, if required.
+      keyAuth:
+        enabled: true
+        useSessionToken: false
+
       ## pipeline-specific template for Secrets Manager parameters, defaults to: /concourse/{team}/{pipeline}/{secret}
       ##
       pipelineSecretTemplate:
@@ -280,6 +345,12 @@ concourse:
       ## AWS region to use when reading from SSM
       ##
       region:
+
+      ## Configure authentication using an access key and secret key. If disabled, IAM role auth is assumed.
+      ## Session Token can also be enabled, if required.
+      keyAuth:
+        enabled: true
+        useSessionToken: false
 
       ## pipeline-specific template for SSM parameters, defaults to: /concourse/{team}/{pipeline}/{secret}
       ##
@@ -306,6 +377,10 @@ concourse:
       ##
       pathPrefix:
 
+      ## Path under which to lookup shared credentials.
+      ##
+      sharedPath:
+
       ## if the Vault server is using a self-signed certificate, set this to true,
       ## and provide a value for the cert in secrets (field `vault-ca-cert`).
       ##
@@ -315,14 +390,6 @@ concourse:
       ## Currently supported backends: token, approle, cert.
       ##
       authBackend: ""
-
-      ## Cache returned secrets for their lease duration in memory
-      ##
-      cache: false
-
-      ## If the cache is enabled, and this is set, override secrets lease duration with a maximum value
-      ##
-      maxLease:
 
       ## Path to a directory of PEMEncoded CA cert files to verify the vault server SSL cert.
       ##
@@ -813,6 +880,16 @@ concourse:
         ##
         skipSslValidation:
 
+        ## The user id key indicates which claim to use to map an external user id to a
+        ## Concourse user id.
+        ##
+        userIdKey: user_id
+
+        ## The user name key indicates which claim to use to map an external user name to a
+        ## Concourse user name.
+        ##
+        userNameKey: user_name
+
       ## Authentication (OIDC)
       oidc:
         enabled: false
@@ -841,6 +918,11 @@ concourse:
         ##
         skipSslValidation:
 
+        ## The user name key indicates which claim to use to map an external user name to a
+        ## Concourse user name.
+        ##
+        userNameKey: username
+
     tsa:
       ## Minimum level of logs to see. Possible values: debug, info, error.
       ##
@@ -861,10 +943,6 @@ concourse:
       ## Port on which to listen for TSA pprof server.
       ##
       debugBindPort: 2221
-
-      ## IP address of this TSA, reachable by the ATCs. Used for forwarded worker addresses.
-      ##
-      peerIp:
 
       ## Path to private key to use for the SSH server.
       ##
@@ -971,18 +1049,26 @@ concourse:
     ##
     bindPort: 7777
 
-    ## IP used to reach this worker from the ATC nodes.
-    ##
-    peerIp:
-
     ## Minimum level of logs to see. Possible options: debug, info, error.
     ##
     logLevel:
 
+    ## Maximum number of containers which can be swept in parallel.
+    ##
+    containerSweeperMaxInFlight: 5
+
+    ## Maximum number of volumes which can be swept in parallel.
+    ##
+    volumeSweeperMaxInFlight: 5
+
     tsa:
-      ## TSA host to forward the worker through. Can be specified multiple times.
+      ## TSA host to forward the worker through.
       ##
       host:
+
+      ## TSA port to forward the worker through.
+      ##
+      port: 2222
 
       ## File containing a public key to expect from the TSA.
       ##
@@ -991,6 +1077,11 @@ concourse:
       ## File containing the private key to use when authenticating to the TSA.
       ##
       workerPrivateKey:
+
+    ## API endpoint of an externally managed Garden server to use instead of
+    ## running the embedded Garden server.
+    ##
+    externalGardenUrl:
 
     garden:
       ## Path to the 'gdn' executable (or leave as 'gdn' to find it in $PATH)
@@ -1063,15 +1154,16 @@ concourse:
       ##
       overlaysDir:
 
-      ## Interval on which to reap expired volumes.
-      ##
-      reapInterval:
-
 ## Configuration values for Concourse Web components.
 ## For more information regarding the characteristics of
 ## Concourse Web nodes, see https://concourse-ci.org/concourse-web.html.
 ##
 web:
+
+  ## Enable or disable the web component.
+  ## This allows the creation of worker-only releases by setting this to false.
+  ##
+  enabled: true
 
   ## Override the components name (defaults to web).
   ##
@@ -1212,6 +1304,17 @@ web:
   ##
   tolerations: []
 
+  ## Strategy for web deployment updates.
+  ##
+  ## Example:
+  ##
+  ##   strategy:
+  ##     type: RollingUpdate
+  ##     rollingUpdate:
+  ##       maxSurge: 1
+  ##       maxUnavailable: 25%
+  strategy: {}
+
   ## Service configuration.
   ## Ref: https://kubernetes.io/docs/user-guide/services/
   ##
@@ -1300,6 +1403,12 @@ web:
 ## Concourse Workers, see https://concourse-ci.org/concourse-worker.html
 ##
 worker:
+
+  ## Enable or disable the worker component.
+  ## This can allow users to create web only releases by setting this to false
+  ##
+  enabled: true
+
   ## Override the components name (defaults to worker).
   ##
   nameOverride:
@@ -1506,6 +1615,7 @@ postgresql:
 
   ## Use the PostgreSQL chart dependency.
   ## Set to false if bringing your own PostgreSQL, and set secret value postgresql-uri.
+  ## Should be set to false if using the chart as a worker only deployment.
   ##
   enabled: true
 
@@ -1778,8 +1888,8 @@ secrets:
   ## vault authentication parameters
   ## Parameter to pass when logging in via the backend
   ## Required for "approle" authenication method
-  ## e.g. "role_id=x,secret_id=x"
-  ## Ref: https://concourse-ci.org/creds.html#vault-auth-param=NAME=VALUE
+  ## e.g. "role_id:x,secret_id:x"
+  ## Ref: https://concourse-ci.org/vault-credential-manager.html#vault-approle-auth
   ##
   vaultAuthParam:
 

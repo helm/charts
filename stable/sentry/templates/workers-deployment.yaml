@@ -19,6 +19,9 @@ spec:
         app: {{ template "fullname" . }}
         release: "{{ .Release.Name }}"
         role: worker
+        {{- if .Values.worker.podLabels }}
+{{ toYaml .Values.worker.podLabels | indent 8 }}
+        {{- end }}
     spec:
       {{- if .Values.worker.affinity }}
       affinity:

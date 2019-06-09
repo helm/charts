@@ -1,0 +1,37 @@
+{{- if .Values.sentinel.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "redis.fullname" . }}
+  labels:
+    app: {{ template "redis.name" . }}
+    chart: {{ template "redis.chart" . }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+{{- if .Values.master.service.annotations }}
+  annotations:
+{{ toYaml .Values.master.service.annotations | indent 4 }}
+{{- end }}
+spec:
+  type: {{ .Values.master.service.type }}
+  {{ if eq .Values.master.service.type "LoadBalancer" -}} {{ if .Values.master.service.loadBalancerIP -}}
+  loadBalancerIP: {{ .Values.master.service.loadBalancerIP }}
+  {{ end -}}
+  {{- end -}}
+  ports:
+  - name: redis
+    port: {{ .Values.sentinel.service.redisPort }}
+    targetPort: redis
+    {{- if .Values.sentinel.service.redisNodePort }}
+    nodePort: {{ .Values.sentinel.service.redisNodePort }}
+    {{- end }}
+  - name: redis-sentinel
+    port: {{ .Values.sentinel.service.sentinelPort }}
+    targetPort: redis-sentinel
+    {{- if .Values.sentinel.service.sentinelNodePort }}
+    nodePort: {{ .Values.sentinel.service.sentinelNodePort }}
+    {{- end }}
+  selector:
+    app: {{ template "redis.name" . }}
+    release: "{{ .Release.Name }}"
+{{- end }}

@@ -21,6 +21,5 @@ spec:
   resources:
     requests:
       storage: {{ .Values.persistence.size }}
-  persistentVolumeReclaimPolicy: {{ .Values.persistence.reclaimPolicy }}
 {{- end -}}
 {{- end -}}
