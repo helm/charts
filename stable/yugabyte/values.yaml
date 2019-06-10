@@ -56,7 +56,7 @@ gflags:
 PodManagementPolicy: Parallel
 
 # Flag to use to disable YugaByte SQL support on tservers.
-# disableYsql: true
+disableYsql: true
 
 enableLoadBalancer: True
 
