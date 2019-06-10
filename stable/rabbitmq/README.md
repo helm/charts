@@ -231,14 +231,6 @@ Any load definitions specified will be available within in the container at `/ap
 
 > Loading a definition will take precedence over any configuration done through [Helm values](#configuration).
 
-## Production configuration
-
-A standard configuration is provided by default that will run on most development environments. To operate this chart in a production environment, we recommend you use the alternative file values-production.yaml provided in this repository.
-
-```bash
-$ helm install --name my-release -f values-production.yaml stable/rabbitmq
-```
-
 ## Persistence
 
 The [Bitnami RabbitMQ](https://github.com/bitnami/bitnami-docker-rabbitmq) image stores the RabbitMQ data and configurations at the `/opt/bitnami/rabbitmq/var/lib/rabbitmq/` path of the container.
