@@ -61,13 +61,6 @@ spec:
           mountPath: /etc/config
         - name: seccomp-root
           mountPath: /host/var/lib/kubelet/seccomp
-        resources:
-          requests:
-            cpu: "0m"
-            memory: "50Mi"
-          limits:
-            cpu: "50m"
-            memory: "50Mi"
       {{- end }}
       containers:
       {{- if $.Values.datadog.system_probe.enabled }}
