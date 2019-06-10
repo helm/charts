@@ -21,6 +21,10 @@ spec:
       labels:
         app: {{ template "etcd-operator.fullname" . }}
         release: {{ .Release.Name }}
+      {{- if .Values.etcdOperator.podAnnotations }}
+      annotations:
+{{ toYaml .Values.etcdOperator.podAnnotations | indent 8}}
+      {{- end }}
     spec:
       serviceAccountName: {{ template "etcd-operator.serviceAccountName" . }}
       containers:
@@ -41,6 +45,9 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
+        ports:
+        - containerPort: 8080
+          name: http
         resources:
           limits:
             cpu: {{ .Values.etcdOperator.resources.cpu }}
