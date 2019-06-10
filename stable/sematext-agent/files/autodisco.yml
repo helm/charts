@@ -75,7 +75,7 @@ couchbase:
     - 8094
     - 11210
   labels:
-    COUCHBASE_HOSTPORT: "{{ .IP }}:8093"
+    COUCHBASE_HOST_PORT: "{{ .IP }}:8093"
     COUCHBASE_QUERY_HOSTPORT: "{{ .IP }}:8093"
     COUCHBASE_BASICAUTH_USERNAME:
     COUCHBASE_BASICAUTH_PASSWORD:
@@ -101,7 +101,7 @@ flink:
     - 6121
     - 6122
   lables:
-    FLINK_HOSTPORT: "{{ .IP }}:8081"
+    FLINK_HOST_PORT: "{{ .IP }}:8081"
 
 haproxy:
   process: haproxy
@@ -142,7 +142,7 @@ nats:
     - 8222
     - 6222
   labels:
-    NATS_SERVER_HOSTPORT: "{{ .IP }}:8222"
+    NATS_SERVER_HOST_PORT: "{{ .IP }}:8222"
 
 nginx:
   process: nginx
@@ -163,8 +163,8 @@ postgresql:
   ports:
     - 5432
   labels:
-    POSTGRESQL_DB_HOST_PORT: 5432
-    POSTGRESQL_DB_DATABASE: pg_stat_user_tables
+    POSTGRESQL_HOST_PORT: 5432
+    POSTGRESQL_DB_NAME: pg_stat_user_tables
     POSTGRESQL_DB_USER:
     POSTGRESQL_DB_PASSWORD:
 
@@ -176,7 +176,7 @@ rabbitmq:
     - 5671
     - 15672
   labels:
-    RABBITMQ_API_URL: "http://{{ .IP }}:15672"
+    RABBITMQ_HOST_PORT: "http://{{ .IP }}:15672"
     RABBITMQ_BASICAUTH_USERNAME:
     RABBITMQ_BASICAUTH_PASSWORD:
 
