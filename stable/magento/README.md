@@ -2,6 +2,16 @@
 
 [Magento](https://magento.org/) is a feature-rich flexible e-commerce solution. It includes transaction options, multi-store functionality, loyalty programs, product categorization and shopper filtering, promotion rules, and more.
 
+## This Helm chart is deprecated
+
+The Bitnami maintained Magento Helm chart is now located at [bitnami/charts](https://github.com/bitnami/charts/), as it now requires Elasticsearch.
+
+In order to ensure that Bitnami maintained charts follow a series of conventions and meet our requirements, all the dependencies must be maintained by Bitnami.
+
+This requirement conflicts with one of the technical requirements of Helm:
+
+> All Chart dependencies should also be submitted independently
+
 ## TL;DR;
 
 ```console
