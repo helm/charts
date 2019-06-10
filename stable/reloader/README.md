@@ -88,7 +88,7 @@ Update the `values.yaml` and set the following properties
 | rbac.labels          | Additional labels for rbac                                               | `{}`                        | `{}`                        |
 | serviceAccount.create          | Option to create serviceAccount                                               | `true`                        | `true`                        |
 | serviceAccount.name          | Name of serviceAccount                                               | `reloader`                        | `reloader`                        |
-
+| custom_annotations          | Optional flags to pass to the Reloader entrypoint           | `{}`          | `{}`          |
 ## Deploying to Kubernetes
 
 You can deploy Reloader by following methods:
