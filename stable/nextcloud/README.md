@@ -45,50 +45,62 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following table lists the configurable parameters of the nextcloud chart and their default values.
 
-|              Parameter              |                Description                |                   Default                               |
-|-------------------------------------|-------------------------------------------|-------------------------------------------------------- |
-| `image.repository`                  | nextcloud Image name                       | `nextcloud`                                      |
-| `image.tag`                         | nextcloud Image tag                        | `{VERSION}`                                             |
-| `image.pullPolicy`                  | Image pull policy                         | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
-| `image.pullSecrets`                 | Specify image pull secrets                | `nil`                                                   |
-| `ingress.enabled`                   | Enable use of ingress controllers         | `false`                                                 |
-| `ingress.servicePort`               | Ingress' backend servicePort              | `http`                                                  |
-| `ingress.annotations`               | An array of service annotations           | `nil`                                                   |
-| `ingress.tls`                       | Ingress TLS configuration                 | `[]`                                                    |
-| `nextcloud.host`                     | nextcloud host to create application URLs  | `nextcloud.kube.home`                                                   |
-| `nextcloud.username`                 | User of the application                   | `admin`                                                  |
-| `nextcloud.password`                 | Application password                      | `changeme`                                    |
-| `nextcloud.update`                  | trigger nextcloud update if custom command is used         | `0`                                    |
-| `nextcloud.datadir`                 | nextcloud data dir location               | `/var/www/html/data`                                    |
-| `nextcloud.tableprefix`             | nextcloud db table prefix                 | `''`                                                    |
-| `nextcloud.smtp.host`               | SMTP hostname                             | `nil`                                                   |
-| `nextcloud.smtp.secure`             | SMTP connection `ssl` or empty            | `''`                                                    |
-| `nextcloud.smtp.port`               | Optional SMTP port                        | `nil`                                                   |
-| `nextcloud.smtp.authtype`           | SMTP authentication method                | `LOGIN`                                                 |
-| `nextcloud.smtp.name`               | SMTP username                             | `''`                                                    |
-| `nextcloud.smtp.password`           | SMTP password                             | `''`                                                    |
-| `nextcloud.mail.fromaddress`        | nextcloud mail send from field            | `nil`                                                   |
-| `nextcloud.mail.domain`             | nextcloud mail domain                     | `nil`                                                   |
-| `internalDatabase.enabled`         | Whether to use internal sqlite database    | `true`                                      |
-| `internalDatabase.database`         | Name of the existing database             | `nextcloud`                                      |
-| `externalDatabase.enabled`          | Whether to use external database          | `false`                                                   |
-| `externalDatabase.host`             | Host of the external database             | `nil`                                                   |
-| `externalDatabase.database`         | Name of the existing database             | `nextcloud`                                      |
-| `externalDatabase.user`             | Existing username in the external db      | `nextcloud`                                           |
-| `externalDatabase.password`         | Password for the above username           | `nil`                                                   |
-| `mariadb.enabled`                   | Whether to use the MariaDB chart          | `false`                                                  |
-| `mariadb.db.name`           | Database name to create                   | `nextcloud`                                      |
-| `mariadb.db.password`           | Password for the database                 | `changeme`                                                   |
-| `mariadb.db.user`               | Database user to create                   | `nextcloud`                                           |
-| `mariadb.rootUser.password`       | MariaDB admin password                    | `nil`                                                   |
-| `service.type`                      | Kubernetes Service type                   | `ClusterIp`                                          |
-| `service.loadBalancerIP`            | LoadBalancerIp for service type LoadBalancer                   | `nil`                                          |
-| `persistence.enabled`     | Enable persistence using PVC              | `false`                                                  |
-| `persistence.storageClass` | PVC Storage Class for nextcloud volume     | `nil` (uses alpha storage class annotation)             |
-| `persistence.existingClaim`| An Existing PVC name for nextcloud volume  | `nil` (uses alpha storage class annotation)             |
-| `persistence.accessMode`   | PVC Access Mode for nextcloud volume       | `ReadWriteOnce`                                         |
-| `persistence.size`         | PVC Storage Request for nextcloud volume   | `8Gi`                                                   |
-| `resources`                         | CPU/Memory resource requests/limits       | `{}`                 |
+|              Parameter              |                   Description                 |                         Default                         |
+|-------------------------------------|-----------------------------------------------|-------------------------------------------------------- |
+| `image.repository`                  | nextcloud Image name                          | `nextcloud`                                             |
+| `image.tag`                         | nextcloud Image tag                           | `{VERSION}`                                             |
+| `image.pullPolicy`                  | Image pull policy                             | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
+| `image.pullSecrets`                 | Specify image pull secrets                    | `nil`                                                   |
+| `ingress.enabled`                   | Enable use of ingress controllers             | `false`                                                 |
+| `ingress.servicePort`               | Ingress' backend servicePort                  | `http`                                                  |
+| `ingress.annotations`               | An array of service annotations               | `nil`                                                   |
+| `ingress.tls`                       | Ingress TLS configuration                     | `[]`                                                    |
+| `nextcloud.host`                    | nextcloud host to create application URLs     | `nextcloud.kube.home`                                   |
+| `nextcloud.username`                | User of the application                       | `admin`                                                 |
+| `nextcloud.password`                | Application password                          | `changeme`                                              |
+| `nextcloud.update`                  | Trigger update if custom command is used      | `0`                                                     |
+| `nextcloud.datadir`                 | nextcloud data dir location                   | `/var/www/html/data`                                    |
+| `nextcloud.tableprefix`             | nextcloud db table prefix                     | `''`                                                    |
+| `nextcloud.smtp.host`               | SMTP hostname                                 | `nil`                                                   |
+| `nextcloud.smtp.secure`             | SMTP connection `ssl` or empty                | `''`                                                    |
+| `nextcloud.smtp.port`               | Optional SMTP port                            | `nil`                                                   |
+| `nextcloud.smtp.authtype`           | SMTP authentication method                    | `LOGIN`                                                 |
+| `nextcloud.smtp.name`               | SMTP username                                 | `''`                                                    |
+| `nextcloud.smtp.password`           | SMTP password                                 | `''`                                                    |
+| `nextcloud.mail.fromaddress`        | nextcloud mail send from field                | `nil`                                                   |
+| `nextcloud.mail.domain`             | nextcloud mail domain                         | `nil`                                                   |
+| `internalDatabase.enabled`          | Whether to use internal sqlite database       | `true`                                                  |
+| `internalDatabase.database`         | Name of the existing database                 | `nextcloud`                                             |
+| `externalDatabase.enabled`          | Whether to use external database              | `false`                                                 |
+| `externalDatabase.host`             | Host of the external database                 | `nil`                                                   |
+| `externalDatabase.database`         | Name of the existing database                 | `nextcloud`                                             |
+| `externalDatabase.user`             | Existing username in the external db          | `nextcloud`                                             |
+| `externalDatabase.password`         | Password for the above username               | `nil`                                                   |
+| `mariadb.enabled`                   | Whether to use the MariaDB chart              | `false`                                                 |
+| `mariadb.db.name`                   | Database name to create                       | `nextcloud`                                             |
+| `mariadb.db.password`               | Password for the database                     | `changeme`                                              |
+| `mariadb.db.user`                   | Database user to create                       | `nextcloud`                                             |
+| `mariadb.rootUser.password`         | MariaDB admin password                        | `nil`                                                   |
+| `service.type`                      | Kubernetes Service type                       | `ClusterIp`                                             |
+| `service.loadBalancerIP`            | LoadBalancerIp for service type LoadBalancer  | `nil`                                                   |
+| `persistence.enabled`               | Enable persistence using PVC                  | `false`                                                 |
+| `persistence.storageClass`          | PVC Storage Class for nextcloud volume        | `nil` (uses alpha storage class annotation)             |
+| `persistence.existingClaim`         | An Existing PVC name for nextcloud volume     | `nil` (uses alpha storage class annotation)             |
+| `persistence.accessMode`            | PVC Access Mode for nextcloud volume          | `ReadWriteOnce`                                         |
+| `persistence.size`                  | PVC Storage Request for nextcloud volume      | `8Gi`                                                   |
+| `resources`                         | CPU/Memory resource requests/limits           | `{}`                                                    |
+| `livenessProbe.enabled`             | Turn on and off liveness probe                | `true`                                                  |
+| `livenessProbe.initialDelaySeconds` | Delay before liveness probe is initiated      | `30`                                                    |
+| `livenessProbe.periodSeconds`       | How often to perform the probe                | `15`                                                    |
+| `livenessProbe.timeoutSeconds`      | When the probe times out                      | `5`                                                     |
+| `livenessProbe.failureThreshold`    | Minimum consecutive failures for the probe    | `3`                                                     |
+| `livenessProbe.successThreshold`    | Minimum consecutive successes for the probe   | `1`                                                     |
+| `readinessProbe.enabled`            | Turn on and off readiness probe               | `true`                                                  |
+| `readinessProbe.initialDelaySeconds`| Delay before readiness probe is initiated     | `30`                                                    |
+| `readinessProbe.periodSeconds`      | How often to perform the probe                | `15`                                                    |
+| `readinessProbe.timeoutSeconds`     | When the probe times out                      | `5`                                                     |
+| `readinessProbe.failureThreshold`   | Minimum consecutive failures for the probe    | `3`                                                     |
+| `readinessProbe.successThreshold`   | Minimum consecutive successes for the probe   | `1`                                                     |
 
 > **Note**:
 >
