@@ -3,7 +3,7 @@
 ##
 image:
   repository: docker.io/library/rocket.chat
-  tag: 1.0.3
+  tag: 1.1.1
   pullPolicy: IfNotPresent
 
 ## Host for the application
