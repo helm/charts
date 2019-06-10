@@ -282,10 +282,10 @@ systemProbe:
   ## Set this to true to enable system-probe agent
   #
   enabled: false
-  ## @param debugPort - integer - optional
+  ## @param debugPort - integer - required
   ## Specify the port to expose pprof and expvar for system-probe agent
   #
-  # debugPort: 7654
+  debugPort: 0
 
   ## @param enableConntrack - boolean - required
   ## Enable the system-probe agent to connect to the netlink/conntrack subsystem to add NAT information to connection data

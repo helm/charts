@@ -128,6 +128,22 @@ then upgrade your Datadog Helm chart:
 helm upgrade -f datadog-values.yaml <RELEASE_NAME> stable/datadog --recreate-pods
 ```
 
+### Enabling System Probe Collection
+
+Update your [datadog-values.yaml](values.yaml) file with the system-probe collection configuration:
+
+```
+systemProbe:
+  (...)
+  enabled: true
+```
+
+then upgrade your Datadog Helm chart:
+
+```bash
+helm upgrade -f datadog-values.yaml <RELEASE_NAME> stable/datadog --recreate-pods
+```
+
 ### Kubernetes event collection
 
 Use the [Datadog Cluster Agent](#enabling-the-datadog-cluster-agent) to collect Kubernetes events. Please read [the official documentation](https://docs.datadoghq.com/agent/kubernetes/event_collection/) for more context.
@@ -300,5 +316,13 @@ helm install --name <RELEASE_NAME> \
 | `clusterchecksDeployment.nodeSelector`                   | Node selectors                                                                                | `nil`                                       |
 | `clusterchecksDeployment.affinity`                       | Node affinities                                                                               | avoid running pods on the same node         |
 | `clusterchecksDeployment.livenessProbe`                  | Overrides the default liveness probe                                                          | http port 5555                              |
-| `clusterchecksDeployment.rbac.dedicated`                  | If true, use dedicated RBAC resources for clusterchecks agent's pods                          | `false`                                     |
+| `clusterchecksDeployment.rbac.dedicated`                 | If true, use dedicated RBAC resources for clusterchecks agent's pods                          | `false`                                     |
 | `clusterchecksDeployment.rbac.serviceAccount`            | existing ServiceAccount to use (ignored if rbac.create=true) for clusterchecks                | `default`                                   |
+| `systemProbe.enabled`                  | If true, enable system probe collection                                                                    | `false`|
+| `systemProbe.debugPort`                | The port to expose pprof and expvar for system-probe agent                                                 | `0`    |
+| `systemProbe.enableConntrack`          | If true, system-probe connects to the netlink/conntrack subsystem to add NAT information to connection data| `false`|
+| `systemProbe.bpfDebug`                 | If true, system-probe writes debug logs to /sys/kernel/debug/tracing/trace_pipe                            | `false`|
+| `systemProbe.resources.requests.cpu`   | CPU resource requests                                                                                      | `200m` |
+| `systemProbe.resources.limits.cpu`     | CPU resource limits                                                                                        | `200m` |
+| `systemProbe.resources.requests.memory`| Memory resource requests                                                                                   | `256Mi`|
+| `systemProbe.resources.limits.memory`  | Memory resource limits                                                                                     | `256Mi`|
