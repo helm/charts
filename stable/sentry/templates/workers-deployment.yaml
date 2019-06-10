@@ -11,8 +11,11 @@ spec:
   replicas: {{ .Values.worker.replicacount }}
   template:
     metadata:
-      {{- if .Values.worker.podAnnotations }}
       annotations:
+        metrics-enabled: {{ .Values.metrics.enabled | quote }}
+        checksum/configYml: {{ .Values.config.configYml | sha256sum }}
+        checksum/sentryConfPy: {{ .Values.config.sentryConfPy | sha256sum }}
+      {{- if .Values.worker.podAnnotations }}
 {{ toYaml .Values.worker.podAnnotations | indent 8 }}
       {{- end }}
       labels:
