@@ -4,7 +4,7 @@
 Component: "yugabytedb"
 Image:
   repository: "yugabytedb/yugabyte"
-  tag: 1.2.8.0-b1 
+  tag: 1.2.10.0-b13
   pullPolicy: IfNotPresent
 
 storage:
@@ -56,7 +56,7 @@ gflags:
 PodManagementPolicy: Parallel
 
 # Flag to use to disable YugaByte SQL support on tservers.
-# disableYsql: true
+disableYsql: True
 
 enableLoadBalancer: True
 
