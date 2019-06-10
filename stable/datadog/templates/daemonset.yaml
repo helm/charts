@@ -78,9 +78,8 @@ spec:
           capabilities:
             add: ["SYS_ADMIN", "SYS_RESOURCE", "SYS_PTRACE", "NET_ADMIN"]
         command:
-          - bash
-          - -c
-          - mkdir -p /etc/datadog-agent && cp /etc/config/system-probe.yaml /etc/datadog-agent/system-probe.yaml && /opt/datadog-agent/embedded/bin/system-probe
+          - /opt/datadog-agent/embedded/bin/system-probe
+          - --config=/etc/config/system-probe.yaml
         volumeMounts:
         - {name: debugfs, mountPath: /sys/kernel/debug}
         - {name: sysprobe-config, mountPath: /etc/config}
