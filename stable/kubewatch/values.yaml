@@ -49,7 +49,7 @@ resourcesToWatch:
 image:
   registry: "docker.io"
   repository: "bitnami/kubewatch"
-  tag: "0.0.4"
+  tag: "0.0.4-debian-9-r269"
   pullPolicy: "Always"
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
