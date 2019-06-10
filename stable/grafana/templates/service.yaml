@@ -2,6 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ template "grafana.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "grafana.name" . }}
     chart: {{ template "grafana.chart" . }}
@@ -31,9 +32,6 @@ spec:
   {{- end -}}
 {{- else }}
   type: {{ .Values.service.type }}
-{{- end }}
-{{- if .Values.service.externalTrafficPolicy }}
-  externalTrafficPolicy: {{ .Values.service.externalTrafficPolicy }}
 {{- end }}
 {{- if .Values.service.externalIPs }}
   externalIPs:
