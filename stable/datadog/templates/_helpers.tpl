@@ -58,14 +58,3 @@ Return the appropriate apiVersion for RBAC APIs.
 "rbac.authorization.k8s.io/v1beta1"
 {{- end -}}
 {{- end -}}
-
-## we need to unset environment variables coming from the
-## datadog image because we configure everything to use tags
-{{- define "datadog.bypass_env" -}}
-- {name: DD_KUBERNETES_KUBELET_HOST, valueFrom: {fieldRef: {fieldPath: status.hostIP}}}
-- {name: DD_DOGSTATSD_NON_LOCAL_TRAFFIC, value: }
-- {name: DD_APM_NON_LOCAL_TRAFFIC, value: }
-- {name: DD_APM_ENABLED, value: }
-- {name: DD_LOGS_ENABLED, value: }
-- {name: DD_JMX_USE_CGROUP_MEMORY_LIMIT, value: }
-{{- end -}}

@@ -79,7 +79,6 @@ spec:
         - {name: sysprobe-socket-dir, mountPath: /opt/datadog-agent/run}
         - {name: procdir, mountPath: /host/proc, readOnly: true}
         env:
-          {{ include "datadog.bypass_env" . | nindent 10 | trim }}
           - name: DD_LOG_LEVEL
             value: "debug"
           - name: DD_LOGS_STDOUT
