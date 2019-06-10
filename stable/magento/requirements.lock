@@ -4,6 +4,6 @@ dependencies:
   version: 5.11.3
 - name: elasticsearch
   repository: https://kubernetes-charts.storage.googleapis.com/
-  version: 1.26.2
+  version: 1.28.2
 digest: sha256:b8276d2d458462fb87b222b5a45fa01461f11140acce57ccd1878b80c9eb7991
-generated: 2019-05-20T16:42:21.321514+02:00
+generated: 2019-06-10T02:56:23.906858402Z
