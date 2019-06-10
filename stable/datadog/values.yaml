@@ -261,30 +261,6 @@ datadog:
   #   exec:
   #     command: ["/bin/true"]
 
-  ## @param system_probe - object - required
-  ## Enable system_probe agent and provide custom configs
-  #
-  system_probe:
-    ## @param enabled - boolean - required
-    ## Set this to true to enable system-probe agent
-    #
-    enabled: false
-    ## @param debug_port - integer - optional
-    ## Specify the port to expose pprof and expvar for system-probe agent
-    #
-    # debug_port: 7654
-
-    ## @param enable_conntrack - boolean - required
-    ## Enable the system-probe agent to connect to the netlink/conntrack subsystem to add NAT information to connection data
-    ## Ref: http://conntrack-tools.netfilter.org/
-    #
-    enable_conntrack: true
-
-    ## @param bpf_debug - boolean - optional
-    ## Enable logging for kernel debug
-    #
-    # bpf_debug: false
-
   ## @param resources - object -required
   ## datadog-agent resource requests and limits
   ## Make sure to keep requests and limits equal to keep the pods in the Guaranteed QoS class
@@ -297,6 +273,36 @@ datadog:
 #    limits:
 #      cpu: 200m
 #      memory: 256Mi
+
+## @param systemProbe - object - required
+## Enable systemProbe agent and provide custom configs
+#
+systemProbe:
+  ## @param enabled - boolean - required
+  ## Set this to true to enable system-probe agent
+  #
+  enabled: false
+  ## @param debugPort - integer - optional
+  ## Specify the port to expose pprof and expvar for system-probe agent
+  #
+  # debugPort: 7654
+
+  ## @param enableConntrack - boolean - required
+  ## Enable the system-probe agent to connect to the netlink/conntrack subsystem to add NAT information to connection data
+  ## Ref: http://conntrack-tools.netfilter.org/
+  #
+  enableConntrack: true
+
+  ## @param bpfDebug - boolean - optional
+  ## Enable logging for kernel debug
+  #
+  # bpfDebug: false
+
+  ## @param resources - object -required
+  ## system-probe agent resource requests and limits
+  #
+  resources: {}
+
 
 ## @param clusterAgent - object - required
 ## This is the Datadog Cluster Agent implementation that handles cluster-wide
