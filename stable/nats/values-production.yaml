@@ -13,7 +13,7 @@
 image:
   registry: docker.io
   repository: bitnami/nats
-  tag: 1.4.1-debian-9-r85
+  tag: 1.4.1-debian-9-r99
   pullPolicy: Always
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
