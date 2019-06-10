@@ -320,7 +320,7 @@ helm install --name <RELEASE_NAME> \
 | `clusterchecksDeployment.rbac.serviceAccount`            | existing ServiceAccount to use (ignored if rbac.create=true) for clusterchecks                | `default`                                   |
 | `systemProbe.enabled`                  | If true, enable system probe collection                                                                    | `false`|
 | `systemProbe.debugPort`                | The port to expose pprof and expvar for system-probe agent                                                 | `0`    |
-| `systemProbe.enableConntrack`          | If true, system-probe connects to the netlink/conntrack subsystem to add NAT information to connection data| `false`|
+| `systemProbe.enableConntrack`          | If true, system-probe connects to the netlink/conntrack subsystem to add NAT information to connection data. Ref: http://conntrack-tools.netfilter.org/| `true`|
 | `systemProbe.bpfDebug`                 | If true, system-probe writes debug logs to /sys/kernel/debug/tracing/trace_pipe                            | `false`|
 | `systemProbe.resources.requests.cpu`   | CPU resource requests                                                                                      | `200m` |
 | `systemProbe.resources.limits.cpu`     | CPU resource limits                                                                                        | `200m` |

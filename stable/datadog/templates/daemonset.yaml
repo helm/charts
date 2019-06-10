@@ -22,7 +22,7 @@ spec:
         checksum/autoconf-config: {{ tpl (toYaml .Values.datadog.autoconf) . | sha256sum }}
         checksum/confd-config: {{ tpl (toYaml .Values.datadog.confd) . | sha256sum }}
         checksum/checksd-config: {{ tpl (toYaml .Values.datadog.checksd) . | sha256sum }}
-        {{- if $.Values.systemProbe.enabled }}
+        {{- if .Values.systemProbe.enabled }}
         container.apparmor.security.beta.kubernetes.io/system-probe: unconfined
         container.seccomp.security.alpha.kubernetes.io/system-probe: localhost/system-probe
         {{- end }}
@@ -48,7 +48,7 @@ spec:
       {{- if .Values.daemonset.priorityClassName }}
       priorityClassName: {{ .Values.daemonset.priorityClassName }}
       {{- end }}
-      {{- if $.Values.systemProbe.enabled }}
+      {{- if .Values.systemProbe.enabled }}
       initContainers:
       - name: seccomp-setup
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -63,7 +63,7 @@ spec:
           mountPath: /host/var/lib/kubelet/seccomp
       {{- end }}
       containers:
-      {{- if $.Values.systemProbe.enabled }}
+      {{- if .Values.systemProbe.enabled }}
       - name: system-probe
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
@@ -278,7 +278,7 @@ spec:
             mountPath: /etc/passwd
             readOnly: true
           {{- end }}
-          {{- if $.Values.systemProbe.enabled }}
+          {{- if .Values.systemProbe.enabled }}
           - name: sysprobe-socket-dir
             mountPath: /opt/datadog-agent/run
             readOnly: true
@@ -349,7 +349,7 @@ spec:
             path: /etc/passwd
           name: passwd
         {{- end }}
-        {{- if $.Values.systemProbe.enabled }}
+        {{- if .Values.systemProbe.enabled }}
         - {name: datadog-agent-security, configMap: {name: datadog-agent-security}}
         - {name: sysprobe-config, configMap: {name: system-probe-config}}
         - {name: seccomp-root, hostPath: {path: /var/lib/kubelet/seccomp}}
