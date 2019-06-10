@@ -59,6 +59,7 @@ and their default values.
 | `nodeSelector`                     | Node labels for pod assignment                                  | `{}`                                                     |
 | `persistence.accessMode`           | PVC Access Mode for Verdaccio volume                            | `ReadWriteOnce`                                          |
 | `persistence.enabled`              | Enable persistence using PVC                                    | `true`                                                   |
+| `persistence.existingClaim`        | Use existing PVC                                                | `nil`                                                    |
 | `persistence.mounts`               | Additional mounts                                               | `nil`                                                    |
 | `persistence.size`                 | PVC Storage Request for Verdaccio volume                        | `8Gi`                                                    |
 | `persistence.storageClass`         | PVC Storage Class for Verdaccio volume                          | `nil`                                                    |

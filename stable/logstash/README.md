@@ -99,6 +99,8 @@ The following table lists the configurable parameters of the chart and its defau
 | `podAnnotations`                | Pod annotations                                    | `{}`                                             |
 | `podLabels`                     | Pod labels                                         | `{}`                                             |
 | `extraEnv`                      | Extra pod environment variables                    | `[]`                                             |
+| `extraInitContainers`           | Add additional initContainers                      | `[]`                                             |
+| `podManagementPolicy`          | podManagementPolicy of the StatefulSet              | `OrderedReady`                                   |
 | `livenessProbe`                 | Liveness probe settings for logstash container     | (see `values.yaml`)                              |
 | `readinessProbe`                | Readiness probe settings for logstash container    | (see `values.yaml`)                              |
 | `persistence.enabled`           | Enable persistence                                 | `true`                                           |

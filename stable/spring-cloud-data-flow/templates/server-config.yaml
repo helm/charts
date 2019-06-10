@@ -22,9 +22,9 @@ data:
                       memory: {{ .Values.deployer.resourceLimits.memory }}
                       cpu: {{ .Values.deployer.resourceLimits.cpu }}
       datasource:
-        url: 'jdbc:mysql://${{ printf "{" }}{{ template "scdf.envrelease" . }}_MYSQL_SERVICE_HOST}:${{ printf "{" }}{{ template "scdf.envrelease" . }}_MYSQL_SERVICE_PORT}/dataflow'
-        driverClassName: org.mariadb.jdbc.Driver
-        username: root
-        password: ${mysql-root-password}
+        url: 'jdbc:mysql://{{ template "scdf.database.host" . }}:{{ template "scdf.database.port" . }}/{{ template "scdf.database.dataflow" . }}'
+        driverClassName: {{ template "scdf.database.driver" . }}
+        username: {{ template "scdf.database.user" . }}
+        password: {{ template "scdf.database.password" . }}
         testOnBorrow: true
         validationQuery: "SELECT 1"

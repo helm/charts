@@ -41,7 +41,7 @@ The following table lists the configurable parameters of the karma chart and the
 |-------------------------------------|----------------------------------------|-------------------------------------------|
 | `replicaCount`                      | Number of replicas                     | `1`                                       |
 | `image.repository`                  | The image to run                       | `lmierzwa/karma`                          |
-| `image.tag`                         | The image tag to pull                  | `v0.34`                                   |
+| `image.tag`                         | The image tag to pull                  | `v0.38`                                   |
 | `image.pullPolicy`                  | Image pull policy                      | `IfNotPresent`                            |
 | `nameOverride`                      | Override name of app                   | ``                                        |
 | `fullnameOverride`                  | Override full name of app              | ``                                        |
