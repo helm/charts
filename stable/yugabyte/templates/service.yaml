@@ -221,6 +221,9 @@ spec:
           - "--master_addresses={{ template "yugabyte.master_addresses" $root }}"
           - "--replication_factor={{ $root.Values.replicas.master }}"
           {{ end }}
+          {{ if not $root.Values.disableYsql }}
+          - "--master_auto_run_initdb=true"
+          {{ end }}
           - "--metric_node_name=$(HOSTNAME)"
           - "--memory_limit_hard_bytes={{ template "yugabyte.memory_hard_limit" $root.Values.resource.master }}"
           - "--stderrthreshold=0"
