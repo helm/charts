@@ -14,7 +14,7 @@ data:
     system_probe_config:
       enabled: {{ $.Values.datadog.system_probe.enabled }}
       debug_port:  {{ $.Values.datadog.system_probe.debug_port }}
-      sysprobe_socket: {{ $.Values.datadog.system_probe.sysprobe_socket }}/sysprobe.sock
+      sysprobe_socket: /opt/datadog-agent/run/sysprobe.sock
       enable_conntrack : {{ $.Values.datadog.system_probe.enable_conntrack }}
       disable_ipv6: {{ $.Values.datadog.system_probe.disable_ipv6 }}
       bpf_debug: {{ $.Values.datadog.system_probe.bpf_debug }}

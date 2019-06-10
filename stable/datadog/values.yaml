@@ -274,11 +274,6 @@ datadog:
     #
     # debug_port: 7654
 
-    ## @param sysprobe_socket - string - required
-    ## Set the unix socket directory for system-probe data to be read by process-agent
-    #
-    sysprobe_socket: /opt/datadog-agent/run
-
     ## @param enable_conntrack - boolean - required
     ## Enable the system-probe agent to connect to the netlink/conntrack subsystem to add NAT information to connection data
     ## Ref: http://conntrack-tools.netfilter.org/
