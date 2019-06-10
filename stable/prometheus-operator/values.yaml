@@ -178,6 +178,10 @@ alertmanager:
     ##
     type: ClusterIP
 
+    ## Feature to preserve the client source IP
+    ## Ref: https://kubernetes.io/docs/concepts/services-networking/service/
+    externalTrafficPolicy: Cluster
+
   ## If true, create a serviceMonitor for alertmanager
   ##
   serviceMonitor:
@@ -809,6 +813,10 @@ prometheusOperator:
     ##
     externalIPs: []
 
+    ## Feature to preserve the client source IP
+    ## Ref: https://kubernetes.io/docs/concepts/services-networking/service/
+    externalTrafficPolicy: Cluster
+
   ## Deploy CRDs used by Prometheus Operator.
   ##
   createCustomResource: true
@@ -971,6 +979,10 @@ prometheus:
     type: ClusterIP
 
     sessionAffinity: ""
+
+    ## Feature to preserve the client source IP
+    ## Ref: https://kubernetes.io/docs/concepts/services-networking/service/
+    externalTrafficPolicy: Cluster
 
   rbac:
     ## Create role bindings in the specified namespaces, to allow Prometheus monitoring
