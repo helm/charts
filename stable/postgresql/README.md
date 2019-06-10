@@ -66,7 +66,7 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `volumePermissions.image.pullPolicy`          | Init container volume-permissions image pull policy                                                                    | `Always`                                                    |
 | `volumePermissions.securityContext.runAsUser` | User ID for the init container                                                                                         | `0`                                                         |
 | `usePasswordFile`                             | Have the secrets mounted as a file instead of env vars                                                                 | `false`                                                     |
-| `replication.enabled`                         | Would you like to enable replication                                                                                   | `false`                                                     |
+| `replication.enabled`                         | Enable replication                                                                                                     | `false`                                                     |
 | `replication.user`                            | Replication user                                                                                                       | `repl_user`                                                 |
 | `replication.password`                        | Replication user password                                                                                              | `repl_password`                                             |
 | `replication.slaveReplicas`                   | Number of slaves replicas                                                                                              | `1`                                                         |
@@ -195,7 +195,7 @@ This chart includes a `values-production.yaml` file where you can find some para
 $ helm install --name my-release -f ./values-production.yaml stable/postgresql
 ```
 
-- Would you like to enable replication:
+- Enable replication:
 ```diff
 - replication.enabled: false
 + replication.enabled: true
