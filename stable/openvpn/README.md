@@ -43,6 +43,23 @@ kubectl -n "$NAMESPACE" exec -it "$POD_NAME" /etc/openvpn/setup/newClientCert.sh
 kubectl -n "$NAMESPACE" exec -it "$POD_NAME" cat "/etc/openvpn/certs/pki/$KEY_NAME.ovpn" > "$KEY_NAME.ovpn"
 ```
 
+In order to revoke certificates in later steps: 
+```bash
+#!/bin/bash
+
+if [ $# -ne 3 ]
+then
+  echo "Usage: $0 <CLIENT_KEY_NAME> <NAMESPACE> <HELM_RELEASE>"
+  exit
+fi
+
+KEY_NAME=$1
+NAMESPACE=$2
+HELM_RELEASE=$3
+POD_NAME=$(kubectl get pods -n "$NAMESPACE" -l "app=openvpn,release=$HELM_RELEASE" -o jsonpath='{.items[0].metadata.name}')
+kubectl -n "$NAMESPACE" exec -it "$POD_NAME" /etc/openvpn/setup/revokeClientCert.sh $KEY_NAME
+```
+
 The entire list of helper scripts can be found on [templates/config-openvpn.yaml](templates/config-openvpn.yaml)
 
 Be sure to change `KEY_NAME` if generating additional keys.  Import the .ovpn file into your favorite openvpn tool like tunnelblick and verify connectivity.
@@ -84,6 +101,8 @@ Parameter | Description | Default
 `openvpn.dhcpOptionDomain`     | Push a `dhcp-option DOMAIN` config                                   | `true`
 `openvpn.conf`                 | Arbitrary lines appended to the end of the server configuration file | `nil`
 `openvpn.redirectGateway`      | Redirect all client traffic through VPN                              | `true`
+`openvpn.taKey`                | Use/generate a ta.key file for hardening security                    | `false`
+`openvpn.cipher`               | Override the default cipher                                          | `nil` (OpenVPN default)
 `nodeSelector`                 | Node labels for pod assignment                                       | `{}`
 
 This chart has been engineered to use kube-dns and route all network traffic to kubernetes pods and services,
@@ -103,7 +122,7 @@ Certificates can be passed in secret, which name is specified in *openvpn.keysto
 Create secret as follows:
 
 ```bash
-kubectl create secret generic openvpn-keystore-secret --from-file=./server.key --from-file=./ca.crt --from-file=./server.crt --from-file=./dh.pem
+kubectl create secret generic openvpn-keystore-secret --from-file=./server.key --from-file=./ca.crt --from-file=./server.crt --from-file=./dh.pem [--from-file=./ta.key]
 ```
 
 You can deploy temporary openvpn chart, create secret from generated certificates, and then re-deploy openvpn, providing the secret.
@@ -113,3 +132,7 @@ Certificates can be found in openvpn pod in the following files:
  `/etc/openvpn/certs/pki/ca.crt`
  `/etc/openvpn/certs/pki/issued/server.crt`
  `/etc/openvpn/certs/pki/dh.pem`
+
+And optionally (see openvpn.taKey setting):
+
+ `/etc/openvpn/certs/pki/ta.key`

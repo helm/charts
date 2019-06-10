@@ -361,9 +361,7 @@ The custom resources are:
 - KongPlugin
 - KongIngress
 
-You can can learn about kong ingress custom resource definitions here:
-
-- [https://github.com/Kong/kubernetes-ingress-controller/blob/master/docs/custom-resources.md]()
+You can can learn about kong ingress custom resource definitions [here](https://github.com/Kong/kubernetes-ingress-controller/blob/master/docs/custom-resources.md).
 
 | Parameter        | Description                                 | Default                                                                      |
 | ---------------  | -----------------------------------------   | ---------------------------------------------------------------------------- |
