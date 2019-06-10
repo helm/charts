@@ -8,6 +8,7 @@ metadata:
     service: {{ $.Chart.Name }}
     chart_version: {{ $.Chart.Version }}
     chart_name: {{ $.Chart.Name }}
+    heritage: {{ .Release.Service | quote }}
 data:
   system-probe.yaml: |
     log_to_console: true
@@ -30,6 +31,7 @@ metadata:
     service: {{ $.Chart.Name }}
     chart_version: {{ $.Chart.Version }}
     chart_name: {{ $.Chart.Name }}
+    heritage: {{ .Release.Service | quote }}
 data:
   system-probe-seccomp.json: |
     {
