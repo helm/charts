@@ -54,7 +54,7 @@ The following table lists the configurable parameters and their default values.
 | `service.port`         | service external port                               | `9121`                    |
 | `service.annotations`  | Custom annotations for service                      | `{}`                      |
 | `service.labels`       | Additional custom labels for the service            | `{}`                      |
-| `redisAddress`         | address of one or more redis nodes, comma separated | `redis://myredis:6379`    |
+| `redisAddress`         | A list of addresses of one or more redis nodes      | `redis://myredis:6379`    |
 | `annotations`          | pod annotations for easier discovery                | {}                        |
 | `rbac.create`           | Specifies whether RBAC resources should be created.| `true` |
 | `rbac.pspEnabled`       | Specifies whether a PodSecurityPolicy should be created.| `true` |
