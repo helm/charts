@@ -184,30 +184,39 @@ $ kubectl create secret generic redshift-user --from-file=redshift-user=~/secret
 ```
 Where `redshift-user.txt` contains the user secret as a single text string.
 
-### Use precreated secret for airflow secrets or environment variables
+### Use pre-created secret for airflow secrets or environment variables
 
-You can use a precreated secret for the connection credentials, or general environment variables. To do
-so specify in values.yaml `existingAirflowSecret`, where the value is the name of the secret which has
-postgresUser, postgresPassword, and redisPassword etc. is defined. If not specified, it will fall back to using
-`secrets.yaml` to store the connection credentials by default.
+You can use a pre-created secrets for the database connection credentials and general environment variables.
+These environment variables will be mounted in the web, scheduler, and worker pods.
+Simply define the secrets in `airflow.existingEnvSecrets` using the same format as in a pod's `.spec.containers.env` definition.
+If `airflow.existingEnvSecrets` is not specified, default database connection credentials will be generated in a Kubernetes secret.
+(See `templates/secret-env.yaml` for details.)
+Note that at a minimum, you will likely need to define `POSTGRES_USER`, `POSTGRES_PASSWORD`, and `REDIS_PASSWORD` unless you are using a different Docker image.
 
-Map each specific secret to specific environment variables in your values.yaml. Where envVar is the airflow environment
-variable to populate and secretKey is the key that contains your secret value in your kubernetes secret:
+Here is a simple example showing the minimum database connection credentials along with an LDAP password.
+Of course, for this example to work, both `postgresSecret` and `ldap` Kubernetes secrets need to already exist in the proper namespace; be sure to create those before running Helm.
 ```yaml
-existingAirflowSecret: my-airflow-secrets
-airflow:
-    secretsMapping:
-      - envVar: AIRFLOW__LDAP__BIND_PASSWORD
-        secretKey: ldapBindPassword
-
-      - envVar: POSTGRES_USER
-        secretKey: airflowPostgresUser
-
-      - envVar: POSTGRES_PASSWORD
-        secretKey: airflowPostgresPassword
-
-      - envVar: REDIS_PASSWORD
-        secretKey: airflowRedisPassword
+existingEnvSecrets:
+- name: POSTGRES_USER
+  valueFrom:
+    secretKeyRef:
+      name: postgresSecret
+      key: username
+- name: POSTGRES_PASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: postgresSecret
+      key: password
+- name: REDIS_PASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: redisSecret
+      key: password
+- name: AIRFLOW__LDAP__BIND_PASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: ldap
+      key: password
 ```
 
 ### Local binaries

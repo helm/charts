@@ -70,39 +70,21 @@ Create a random string if the supplied key does not exist
 {{- end -}}
 
 {{/*
-Create the name for the airflow secret.
-*/}}
-{{- define "airflow.secret" -}}
-    {{- if .Values.existingAirflowSecret -}}
-        {{- .Values.existingAirflowSecret -}}
-    {{- else -}}
-        {{ template "airflow.fullname" . }}
-    {{- end -}}
-{{- end -}}
-
-{{/*
 Map environment vars to secrets
 */}}
 {{- define "airflow.mapenvsecrets" -}}
-    {{- $secretName := printf "%s-env" (include "airflow.fullname" .) }}
-    {{- $mapping := .Values.airflow.defaultSecretsMapping }}
-    {{- if .Values.existingAirflowSecret }}
-      {{- $secretName := .Values.existingAirflowSecret }}
-      {{- if .Values.airflow.secretsMapping }}
-        {{- $mapping := .Values.airflow.secretsMapping }}
-      {{- end }}
-    {{- end }}
-    {{- range $val := $mapping }}
-      {{- if $val }}
+    {{- if .Values.airflow.existingEnvSecrets }}
+{{ toYaml .Values.airflow.existingEnvSecrets | indent 2 }}
+    {{- else }}
+        {{- $secretName := printf "%s-env" (include "airflow.fullname" .) }}
+        {{- range $val := .Values.airflow.defaultSecretsMapping }}
+            {{- if $val }}
   - name: {{ $val.envVar }}
     valueFrom:
       secretKeyRef:
-        {{- if $val.secretName }}
-        name: {{ $val.secretName }}
-        {{- else }}
         name: {{ $secretName }}
-        {{- end }}
         key: {{ $val.secretKey }}
-      {{- end }}
+            {{- end }}
+        {{- end }}
     {{- end }}
 {{- end }}
