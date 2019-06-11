@@ -1,3 +1,4 @@
+{{- if ( .Values.metrics.serviceMonitor )  }}
 {{- if and ( .Values.metrics.serviceMonitor.enabled ) ( .Values.metrics.prometheus.enabled ) }}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
@@ -24,5 +25,6 @@ spec:
   selector:
     matchLabels:
       app: {{ template "traefik.name" . }}
-      release: {{ .Release.Name | quote }}      
+      release: {{ .Release.Name | quote }}
+{{- end }}
 {{- end }}
