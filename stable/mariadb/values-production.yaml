@@ -246,7 +246,7 @@ master:
     failureThreshold: 3
   readinessProbe:
     enabled: true
-    initialDelaySeconds: 15
+    initialDelaySeconds: 30
     ##
     ## Default Kubernetes values
     periodSeconds: 10
@@ -261,7 +261,6 @@ master:
 
 slave:
   replicas: 2
-
 
   ## Mariadb Slave additional pod annotations
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
@@ -357,7 +356,7 @@ slave:
     failureThreshold: 3
   readinessProbe:
     enabled: true
-    initialDelaySeconds: 15
+    initialDelaySeconds: 45
     ##
     ## Default Kubernetes values
     periodSeconds: 10
