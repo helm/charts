@@ -12,6 +12,8 @@ metricsRelistInterval: 1m
 
 nodeSelector: {}
 
+priorityClassName: ""
+
 # Url to access prometheus
 prometheus:
   url: http://prometheus.default.svc
