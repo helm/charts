@@ -14,6 +14,10 @@ image:
   registry: docker.io
   repository: bitnami/wordpress
   tag: 5.2.1-debian-9-r21
+  ## Specify a imagePullPolicy
+  ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
+  ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+  ##
   pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
@@ -80,7 +84,7 @@ updateStrategy:
 allowEmptyPassword: true
 
 ## Set Apache allowOverride to None
-
+## ref: https://github.com/bitnami/bitnami-docker-wordpress#environment-variables
 ##
 allowOverrideNone: true
 
@@ -192,7 +196,6 @@ service:
 
 ## Allow health checks to be pointed at the https port
 healthcheckHttps: false
-
 
 ## Configure extra options for liveness and readiness probes
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
@@ -314,6 +317,10 @@ tolerations: []
 ##
 affinity: {}
 
+## Pod annotations
+## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+##
+podAnnotations: {}
 ## Prometheus Exporter / Metrics
 ##
 metrics:
@@ -329,7 +336,7 @@ metrics:
     ##
     # pullSecrets:
     #   - myRegistryKeySecretName
-     ## Metrics exporter pod Annotation and Labels
+  ## Metrics exporter pod Annotation and Labels
   podAnnotations:
     prometheus.io/scrape: "true"
     prometheus.io/port: "9117"
