@@ -191,6 +191,7 @@ spec:
         - name: config
           configMap:
             name: {{ template "zookeeper.fullname" . }}
+            defaultMode: 0555
         {{- range .Values.secrets }}
         - name: {{ $.Release.Name }}-{{ .name }}
           secret:

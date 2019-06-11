@@ -22,13 +22,13 @@ data:
       #!/bin/bash
 
       set -a
-      ROOT=$(echo /zook*)
+      ROOT=$(echo /apache-zookeeper-*)
 
       ZK_USER=${ZK_USER:-"zookeeper"}
       ZK_LOG_LEVEL=${ZK_LOG_LEVEL:-"INFO"}
       ZK_DATA_DIR=${ZK_DATA_DIR:-"/data"}
       ZK_DATA_LOG_DIR=${ZK_DATA_LOG_DIR:-"/data/log"}
-      ZK_CONF_DIR=${ZK_CONF_DIR:-"$ROOT/conf"}
+      ZK_CONF_DIR=${ZK_CONF_DIR:-"/conf"}
       ZK_CLIENT_PORT=${ZK_CLIENT_PORT:-2181}
       ZK_SERVER_PORT=${ZK_SERVER_PORT:-2888}
       ZK_ELECTION_PORT=${ZK_ELECTION_PORT:-3888}

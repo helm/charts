@@ -17,7 +17,7 @@ updateStrategy:
 ## - https://github.com/kubernetes/contrib/blob/master/statefulsets/zookeeper/Makefile#L1
 image:
   repository: zookeeper     # Container image repository for zookeeper container.
-  tag: 3.4.13               # Container image tag for zookeeper container.
+  tag: 3.5.5                # Container image tag for zookeeper container.
   pullPolicy: IfNotPresent  # Image pull criteria for zookeeper container.
 
 service:

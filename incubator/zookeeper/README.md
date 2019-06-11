@@ -6,7 +6,7 @@ This helm chart provides an implementation of the ZooKeeper [StatefulSet](http:/
 * Kubernetes 1.6+
 * PersistentVolume support on the underlying infrastructure
 * A dynamic provisioner for the PersistentVolumes
-* A familiarity with [Apache ZooKeeper 3.5.x](https://zookeeper.apache.org/doc/r3.5.4-beta/)
+* A familiarity with [Apache ZooKeeper 3.5.x](https://zookeeper.apache.org/doc/r3.5.5/)
 
 ## Chart Components
 This chart will do the following:
@@ -81,8 +81,7 @@ The image used for this chart is based on Alpine 3.9.0.
 The Java Virtual Machine used for this chart is the OpenJDK JVM 8u192 JRE (headless).
 
 ## ZooKeeper Details
-The chart defaults to ZooKeeper 3.4.13 (latest released version). However, this cannot be
-safely scaled, for that please use ZooKeeper version 3.5.4 or later..
+The chart defaults to ZooKeeper 3.5 (latest released version).
 
 ## Failover
 You can test failover by killing the leader. Insert a key:
@@ -132,9 +131,7 @@ bar
 ```
 
 ## Scaling
-ZooKeeper can not be safely scaled in versions prior to 3.5.x. This chart currently defaults to 3.4.13 but has been tested with 3.5.4 (beta).
-
-While ZooKeeper 3.5.x does allow for dynamic ensemble reconfiguration (including scaling membership), the current status of the release is still alpha, and 3.5.x is therefore not recommended for production use.
+ZooKeeper can not be safely scaled in versions prior to 3.5.x
 
 ## Limitations
 * Only supports storage options that have backends for persistent volume claims.
