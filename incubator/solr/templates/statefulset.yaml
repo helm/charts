@@ -149,6 +149,9 @@ spec:
               value: "{{ include "solr.zookeeper-name" . }}:2181"
             - name: "SOLR_LOG_LEVEL"
               value: "{{ .Values.logLevel }}"
+{{- if .Values.extraEnvVars }}
+{{ toYaml .Values.extraEnvVars | indent 12 }}
+{{- end }}
 {{ if .Values.tls.enabled }}
             - name: "SOLR_SSL_ENABLED"
               value: "true"
