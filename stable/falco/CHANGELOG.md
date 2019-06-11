@@ -5,6 +5,13 @@ numbering uses [semantic versioning](http://semver.org).
 
 ## v0.7.6
 
+### Minor Changes
+
+* Upgrade to Falco 0.15.1
+* Upgrade rules to Falco 0.15.1
+
+## v0.7.6
+
 ### Major Changes
 
 * Allow to enable/disable usage of the docker socket
