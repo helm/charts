@@ -40,7 +40,6 @@ image:
 ## does your cluster have rbac enabled? assume yes by default
 rbacEnabled: true
 
-
 ## RabbitMQ should be initialized one by one when building cluster for the first time.
 ## Therefore, the default value of podManagementPolicy is 'OrderedReady'
 ## Once the RabbitMQ participates in the cluster, it waits for a response from another
@@ -314,7 +313,7 @@ volumePermissions:
     registry: docker.io
     repository: bitnami/minideb
     tag: latest
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
     ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
