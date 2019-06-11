@@ -101,7 +101,7 @@ The following table lists the configurable parameters of the SchemaRegistry char
 | `jmx.port` | set JMX port | `5555` |
 | `prometheus.jmx.enabled` | Enable Prometheus JMX Exporter | `false` |
 | `prometheus.jmx.image` | Set Prometheus JMX Exporter image | `solsson/kafka-prometheus-jmx-exporter@sha256` |
-| `prometheus.jmx.` | Set Prometheus JMX Exporter image tag | `6f82e2b0464f50da8104acd7363fb9b995001ddff77d248379f8788e78946143` |
-| `prometheus.jmx.` | Set Prometheus JMX Exporter port | `5556` |
-| `prometheus.jmx.` | Set Prometheus JMX Exporter resource requests & limits | `{}` |
+| `prometheus.jmx.imageTag` | Set Prometheus JMX Exporter image tag | `6f82e2b0464f50da8104acd7363fb9b995001ddff77d248379f8788e78946143` |
+| `prometheus.jmx.port` | Set Prometheus JMX Exporter port | `5556` |
+| `prometheus.jmx.resources` | Set Prometheus JMX Exporter resource requests & limits | `{}` |
 | `secrets` | Pass any secrets to the pods.The secret will be mounted to a specific path if required | `[]` |
