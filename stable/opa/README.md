@@ -61,6 +61,7 @@ Reference](https://www.openpolicyagent.org/docs/configuration.html).
 | `admissionControllerKind` | Type of admission controller to install. | `ValidatingWebhookConfiguration` |
 | `admissionControllerFailurePolicy` | Fail-open (`Ignore`) or fail-closed (`Fail`)? | `Ignore` |
 | `admissionControllerRules` | Types of operations resources to check. | `*` |
+| `admissionControllerNamespaceSelector` | Namespace selector for the admission controller | See [values.yaml](values.yaml) |
 | `generateAdmissionControllerCerts` | Auto-generate TLS certificates for admission controller. | `true` |
 | `admissionControllerCA` | Manually set admission controller certificate CA. | Unset |
 | `admissionControllerCert` | Manually set admission controller certificate. | Unset |

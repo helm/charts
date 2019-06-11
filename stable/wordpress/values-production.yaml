@@ -13,7 +13,11 @@
 image:
   registry: docker.io
   repository: bitnami/wordpress
-  tag: 5.2.1-debian-9-r9
+  tag: 5.2.1-debian-9-r21
+  ## Specify a imagePullPolicy
+  ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
+  ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+  ##
   pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
@@ -63,13 +67,24 @@ wordpressTablePrefix: wp_
 ##
 wordpressSkipInstall: false
 
+## Set up update strategy for wordpress installation. Set to Recreate if you use persistent volume that cannot be mounted by more than one pods to makesure the pods is destroyed first.
+## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
+## Example:
+## updateStrategy:
+##  type: RollingUpdate
+##  rollingUpdate:
+##    maxSurge: 25%
+##    maxUnavailable: 25%
+updateStrategy:
+  type: RollingUpdate
+
 ## Set to `false` to allow the container to be started with blank passwords
 ## ref: https://github.com/bitnami/bitnami-docker-wordpress#environment-variables
 ##
 allowEmptyPassword: true
 
 ## Set Apache allowOverride to None
-
+## ref: https://github.com/bitnami/bitnami-docker-wordpress#environment-variables
 ##
 allowOverrideNone: true
 
@@ -182,7 +197,6 @@ service:
 ## Allow health checks to be pointed at the https port
 healthcheckHttps: false
 
-
 ## Configure extra options for liveness and readiness probes
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
 livenessProbe:
@@ -236,10 +250,10 @@ ingress:
 
   ## The tls configuration for the ingress
   ## see: https://kubernetes.io/docs/concepts/services-networking/ingress/#tls
-  tls:
-  - hosts:
-      - wordpress.local
-    secretName: wordpress.local-tls
+  ## tls:
+  ## - hosts:
+  ##     - wordpress.local
+  ##   secretName: wordpress.local-tls
 
   secrets:
   ## If you're providing your own certificates, please use this to add the certificates as secrets
@@ -303,6 +317,10 @@ tolerations: []
 ##
 affinity: {}
 
+## Pod annotations
+## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+##
+podAnnotations: {}
 ## Prometheus Exporter / Metrics
 ##
 metrics:
@@ -318,7 +336,7 @@ metrics:
     ##
     # pullSecrets:
     #   - myRegistryKeySecretName
-     ## Metrics exporter pod Annotation and Labels
+  ## Metrics exporter pod Annotation and Labels
   podAnnotations:
     prometheus.io/scrape: "true"
     prometheus.io/port: "9117"

@@ -143,6 +143,11 @@ plugins:
 # The 'sonar.secretKeyPath' property will be set automatically.
 # sonarSecretKey: "settings-encryption-secret"
 
+customCerts:
+  ## Enable to override the default cacerts with your own one
+  enabled: false
+  secretName: my-cacerts
+
 ## Configuration value to select database type
 ## Option to use "postgresql" or "mysql" database type, by default "postgresql" is chosen
 ## Set the "enable" field to true of the database type you select (if you want to use internal database) and false of the one you don't select
