@@ -56,7 +56,11 @@ Parameter | Description | Default
 `image.repository` | Image repository | `quay.io/pusher/oauth2_proxy`
 `image.tag` | Image tag | `v3.1.0`
 `imagePullSecrets` | Specify image pull secrets | `nil` (does not add image pull secrets to deployed pods)
-`ingress.enabled` | enable ingress | `false`
+`ingress.enabled` | Enable Ingress | `false`
+`ingress.path` | Ingress accepted path | `/`
+`ingress.annotations` | Ingress annotations | `nil`
+`ingress.hosts` | Ingress accepted hostnames | `nil`
+`ingress.tls` | Ingress TLS configuration | `nil`
 `livenessProbe.enabled`  | enable Kubernetes livenessProbe. Disable to use oauth2-proxy with Istio mTLS. See [Istio FAQ](https://istio.io/help/faq/security/#k8s-health-checks) | `true`
 `livenessProbe.initialDelaySeconds` | number of seconds | 0
 `livenessProbe.timeoutSeconds` | number of seconds | 1
