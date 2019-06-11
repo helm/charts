@@ -1,0 +1,146 @@
+# ConfigMaps that will be updated by the configuration job: 
+# 1. Step CA config directory.
+# 2. Step CA certs direcotry.
+# 3. Step CA secrets directory.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "step-certificates.fullname" . }}-config
+  namespace: {{.Release.Namespace}}
+  labels:
+{{ include "step-certificates.labels" . | indent 4 }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "step-certificates.fullname" . }}-certs
+  namespace: {{.Release.Namespace}}
+  labels:
+{{ include "step-certificates.labels" . | indent 4 }}
+---
+apiVersion: v1
+data:
+  intermediate_ca_key: ""
+  root_ca_key: ""
+kind: ConfigMap
+metadata:
+  name: {{ include "step-certificates.fullname" . }}-secrets
+  namespace: {{.Release.Namespace}}
+  labels:
+{{ include "step-certificates.labels" . | indent 4 }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "step-certificates.fullname" . }}-bootstrap
+  namespace: {{.Release.Namespace}}
+  labels:
+{{ include "step-certificates.labels" . | indent 4 }}
+data:
+  bootstrap.sh: |-
+    #!/bin/sh
+    STEPPATH=/home/step
+    echo -e "\e[1mWelcome to Step Certificates configuration.\e[0m\n"
+
+    function permission_error () {
+      echo -e "\033[0;31mPERMISSION ERROR:\033[0m $1\n"
+      exit 1
+    }
+
+    function kbreplace() {
+      kubectl $@ -o yaml --dry-run | kubectl replace -f -
+    }
+
+    echo -e "\e[1mConfiguring kubctl with service account...\e[0m"
+    # Use the service account context
+    kubectl config set-cluster cfc --server=https://kubernetes.default --certificate-authority=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    kubectl config set-credentials bootstrap --token=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
+    kubectl config set-context cfc --cluster=cfc --user=bootstrap
+    kubectl config use-context cfc
+
+    echo -e "\n\e[1mChecking cluster permissions...\e[0m"
+    echo -n "Checking for permission to create configmaps in {{.Release.Namespace}} namespace: "
+    kubectl auth can-i create configmaps --namespace {{.Release.Namespace}}
+    if [ $? -ne 0 ]; then
+      permission_error "create configmaps"
+    fi
+
+    echo -n "Checking for permission to create secrets in {{.Release.Namespace}} namespace: "
+    kubectl auth can-i create secrets --namespace {{.Release.Namespace}}
+    if [ $? -ne 0 ]; then
+      permission_error "create secrets"
+    fi
+{{ if .Values.autocert.enabled }}
+    echo -n "Checking for permission to create mutatingwebhookconfiguration in {{.Release.Namespace}} namespace: "
+    kubectl auth can-i create mutatingwebhookconfiguration --namespace {{.Release.Namespace}}
+    if [ $? -ne 0 ]; then
+      permission_error "create mutatingwebhookconfiguration"
+    fi
+{{- end }}
+
+    # Setting this here on purpose, after the above section which explicitly checks
+    # for and handles exit errors.
+    set -e
+
+    echo -e "\n\e[1mInitializating the CA...\e[0m"
+
+    # CA password
+{{- if .Values.ca.password }}
+    CA_PASSWORD={{ quote .Values.ca.password }}
+{{- else }}
+    CA_PASSWORD=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 32 ; echo '')
+{{- end }}
+    # Provisioner password
+{{- if .Values.ca.provisioner.password }}
+    CA_PROVISIONER_PASSWORD={{ quote .Values.ca.provisioner.password }}
+{{- else }}
+    CA_PROVISIONER_PASSWORD=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 32 ; echo '')
+{{- end }}
+
+    TMP_CA_PASSWORD=$(mktemp /tmp/autocert.XXXXXX)
+    TMP_CA_PROVISIONER_PASSWORD=$(mktemp /tmp/autocert.XXXXXX)
+
+    echo $CA_PASSWORD > $TMP_CA_PASSWORD
+    echo $CA_PROVISIONER_PASSWORD > $TMP_CA_PROVISIONER_PASSWORD
+
+    step ca init \
+      --name "{{.Values.ca.name}}" \
+      --dns "{{include "step-certificates.dns" .}}" \
+      --address "{{.Values.ca.address}}" \
+      --provisioner "{{.Values.ca.provisioner.name}}" \
+      --with-ca-url "{{include "step-certificates.url" .}}" \
+      --password-file "$TMP_CA_PASSWORD" \
+      --provisioner-password-file "$TMP_CA_PROVISIONER_PASSWORD" {{ if not .Values.ca.db.enabled }}--no-db{{ end }}
+
+    rm -f $TMP_CA_PASSWORD $TMP_CA_PROVISIONER_PASSWORD
+
+    echo -e "\n\e[1mCreating configmaps and secrets in {{.Release.Namespace}} namespace ...\e[0m"
+
+    # Replace secrets created on helm install
+    # It allows to properly remove them on helm delete
+    kbreplace -n {{.Release.Namespace}} create configmap {{ include "step-certificates.fullname" . }}-config --from-file $(step path)/config
+    kbreplace -n {{.Release.Namespace}} create configmap {{ include "step-certificates.fullname" . }}-certs --from-file $(step path)/certs
+    kbreplace -n {{.Release.Namespace}} create configmap {{ include "step-certificates.fullname" . }}-secrets --from-file $(step path)/secrets
+
+    kbreplace -n {{.Release.Namespace}} create secret generic {{ include "step-certificates.fullname" . }}-ca-password --from-literal "password=${CA_PASSWORD}"
+    kbreplace -n {{.Release.Namespace}} create secret generic {{ include "step-certificates.fullname" . }}-provisioner-password --from-literal "password=${CA_PROVISIONER_PASSWORD}"
+
+    # Label all configmaps and secrets
+    kubectl -n {{.Release.Namespace}} label configmap {{ include "step-certificates.fullname" . }}-config {{ include "step-certificates.labels" . | replace ": " "=" | replace "\n" " " }}
+    kubectl -n {{.Release.Namespace}} label configmap {{ include "step-certificates.fullname" . }}-certs {{ include "step-certificates.labels" . | replace ": " "=" | replace "\n" " " }}
+    kubectl -n {{.Release.Namespace}} label configmap {{ include "step-certificates.fullname" . }}-secrets {{ include "step-certificates.labels" . | replace ": " "=" | replace "\n" " " }}
+    kubectl -n {{.Release.Namespace}} label secret {{ include "step-certificates.fullname" . }}-ca-password {{ include "step-certificates.labels" . | replace ": " "=" | replace "\n" " " }}
+    kubectl -n {{.Release.Namespace}} label secret {{ include "step-certificates.fullname" . }}-provisioner-password {{ include "step-certificates.labels" . | replace ": " "=" | replace "\n" " " }}
+
+    # Patch webhook if autocert is enabled
+{{ if .Values.autocert.enabled }}
+    CA_BUNDLE=$(cat $(step path)/certs/root_ca.crt | base64 | tr -d '\n')
+    kubectl patch mutatingwebhookconfigurations {{ .Release.Name }}-autocert-webhook-config \
+      --type json -p="[{\"op\":\"replace\",\"path\":\"/webhooks/0/clientConfig/caBundle\",\"value\":\"$CA_BUNDLE\"}]"
+{{- end }}
+
+    echo -e "\n\e[1mStep Certificates installed!\e[0m"
+    echo
+    echo "CA URL: {{include "step-certificates.url" .}}"
+    echo "CA Fingerprint: $(step certificate fingerprint $(step path)/certs/root_ca.crt)"
+    echo

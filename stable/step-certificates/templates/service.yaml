@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "step-certificates.fullname" . }}
+  labels:
+{{ include "step-certificates.labels" . | indent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.targetPort }}
+      protocol: TCP
+      name: https
+  selector:
+    app.kubernetes.io/name: {{ include "step-certificates.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}

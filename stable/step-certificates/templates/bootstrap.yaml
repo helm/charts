@@ -1,0 +1,39 @@
+{{- if .Release.IsInstall -}}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ include "step-certificates.fullname" . }}-config
+  namespace: {{.Release.Namespace}}
+  labels:
+{{ include "step-certificates.labels" . | indent 4 }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{{.Release.Name}}"
+  labels:
+{{ include "step-certificates.labels" . | indent 4 }}
+spec:
+  template:
+    metadata:
+      name: "{{.Release.Name}}"
+      labels:
+        app.kubernetes.io/name: {{ include "step-certificates.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      serviceAccountName: {{ include "step-certificates.fullname" . }}-config
+      restartPolicy: Never
+      volumes:
+      - name: bootstrap
+        configMap:
+          name: {{ include "step-certificates.fullname" . }}-bootstrap
+      containers:
+      - name: config
+        image: "{{ .Values.bootstrapImage.repository }}:{{ .Values.bootstrapImage.tag }}"
+        imagePullPolicy: {{ .Values.bootstrapImage.pullPolicy }}
+        command: ["/bin/sh", "/home/step/bootstrap/bootstrap.sh"]
+        volumeMounts:
+          - name: bootstrap
+            mountPath: /home/step/bootstrap
+            readOnly: true
+{{- end -}}

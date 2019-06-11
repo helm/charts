@@ -1,0 +1,23 @@
+apiVersion: v1
+name: step-certificates
+version: 0.1.0     # chart version
+appVersion: 0.10.0 # step-certificates version
+description: An online certificate authority and related tools for secure automated certificate management, so you can use TLS everywhere.
+keywords:
+ - ca
+ - tls
+ - pki
+ - step
+ - step-ca
+ - smallstep
+ - certificate
+ - certificates
+ - authority
+home: https://smallstep.com
+icon: https://smallstep.com/images/logo.png
+sources:
+  - https://github.com/smallstep/certificates
+maintainers:
+  - name: Mariano Cano
+    email: mariano@smallstep.com 
+engine: gotpl

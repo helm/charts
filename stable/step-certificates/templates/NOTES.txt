@@ -1,0 +1,13 @@
+
+Thanks for installing Step CA.
+
+1. Get the PKI and Provisioner secrets running these commands:
+   kubectl get -n {{ .Release.Namespace }} -o jsonpath='{.data.password}' secret/{{ include "step-certificates.fullname" . }}-ca-password | base64 --decode
+   kubectl get -n {{ .Release.Namespace }} -o jsonpath='{.data.password}' secret/{{ include "step-certificates.fullname" . }}-provisioner-password | base64 --decode
+{{ if .Release.IsInstall }}
+2. Get the CA URL and the root certificate fingerprint running this command:
+   kubectl -n {{ .Release.Namespace }} logs job.batch/{{ .Release.Name }}
+
+3. Delete the configuration job running this command:
+   kubectl -n {{ .Release.Namespace }} delete job.batch/{{ .Release.Name }}
+{{ end -}}
