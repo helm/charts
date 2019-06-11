@@ -331,7 +331,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `airflow.webReplicas`                    | how many replicas for web server                        | `1`                       |
 | `airflow.config`                         | custom airflow configuration env variables              | `{}`                      |
 | `airflow.podDisruptionBudget`            | control pod disruption budget                           | `{'maxUnavailable': 1}`   |
-| `airflow.secretsMapping`                 | override any environment variable with a secret         |                           |
+| `airflow.existingEnvSecrets`             | specify existing secrets to mount as environment variables | `{}` |
 | `airflow.extraConfigmapMounts`           | Additional configMap volume mounts on the airflow pods. | `[]`                      |
 | `airflow.podAnnotations`                 | annotations for scheduler, worker and web pods          | `{}`                      |
 | `airflow.extraContainers`                | additional containers to run in the scheduler, worker & web pods | `[]`             |
@@ -352,7 +352,6 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `workers.podAnnotations`                 | annotations for the worker pods                         | `{}`                      |
 | `workers.secretsDir`                     | directory in which to mount secrets on worker nodes     | /var/airflow/secrets      |
 | `workers.secrets`                        | secrets to mount as volumes on worker nodes             | []                        |
-| `existingAirflowSecret`                  | secret to use for postgres and redis connection         |                           |
 | `nodeSelector`                           | Node labels for pod assignment                          | `{}`                      |
 | `affinity`                               | Affinity labels for pod assignment                      | `{}`                      |
 | `tolerations`                            | Toleration labels for pod assignment                    | `[]`                      |
