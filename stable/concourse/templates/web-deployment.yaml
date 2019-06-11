@@ -965,6 +965,14 @@ spec:
             - name: CONCOURSE_TSA_HEARTBEAT_INTERVAL
               value: {{ .Values.concourse.web.tsa.heartbeatInterval | quote }}
             {{- end }}
+            {{- if .Values.concourse.web.letsEncrypt.enabled }}
+            - name: CONCOURSE_ENABLE_LETS_ENCRYPT
+              value: {{ .Values.concourse.web.letsEncrypt.enabled | quote }}
+            {{- end }}
+            {{- if .Values.concourse.web.letsEncrypt.acmeURL }}
+            - name: CONCOURSE_LETS_ENCRYPT_ACME_URL
+              value: {{ .Values.concourse.web.letsEncrypt.acmeURL | quote }}
+            {{- end }}
 {{- if .Values.web.env }}
 {{ toYaml .Values.web.env | indent 12 }}
 {{- end }}
