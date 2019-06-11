@@ -79,6 +79,8 @@ spec:
             path: "pki/issued/server.crt"
           - key: "dh.pem"
             path: "pki/dh.pem"
+          - key: "crl.pem"
+            path: "crl.pem"
           {{- if .Values.openvpn.taKey }}
           - key: "ta.key"
             path: "pki/ta.key"

@@ -122,7 +122,7 @@ Certificates can be passed in secret, which name is specified in *openvpn.keysto
 Create secret as follows:
 
 ```bash
-kubectl create secret generic openvpn-keystore-secret --from-file=./server.key --from-file=./ca.crt --from-file=./server.crt --from-file=./dh.pem [--from-file=./ta.key]
+kubectl create secret generic openvpn-keystore-secret --from-file=./server.key --from-file=./ca.crt --from-file=./server.crt --from-file=./dh.pem --from-file=./crl.pem [--from-file=./ta.key]
 ```
 
 You can deploy temporary openvpn chart, create secret from generated certificates, and then re-deploy openvpn, providing the secret.
@@ -132,7 +132,10 @@ Certificates can be found in openvpn pod in the following files:
  `/etc/openvpn/certs/pki/ca.crt`
  `/etc/openvpn/certs/pki/issued/server.crt`
  `/etc/openvpn/certs/pki/dh.pem`
+ `/etc/openvpn/certs/pki/crl.pem`
 
 And optionally (see openvpn.taKey setting):
 
  `/etc/openvpn/certs/pki/ta.key`
+
+Note: using mounted secret makes creation of new client certificates impossible inside openvpn pod, since easyrca needs to write in certs directory, which is read-only.
