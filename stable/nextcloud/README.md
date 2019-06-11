@@ -61,14 +61,15 @@ The following table lists the configurable parameters of the nextcloud chart and
 | `nextcloud.update`                  | Trigger update if custom command is used      | `0`                                                     |
 | `nextcloud.datadir`                 | nextcloud data dir location                   | `/var/www/html/data`                                    |
 | `nextcloud.tableprefix`             | nextcloud db table prefix                     | `''`                                                    |
-| `nextcloud.smtp.host`               | SMTP hostname                                 | `nil`                                                   |
-| `nextcloud.smtp.secure`             | SMTP connection `ssl` or empty                | `''`                                                    |
-| `nextcloud.smtp.port`               | Optional SMTP port                            | `nil`                                                   |
-| `nextcloud.smtp.authtype`           | SMTP authentication method                    | `LOGIN`                                                 |
-| `nextcloud.smtp.name`               | SMTP username                                 | `''`                                                    |
-| `nextcloud.smtp.password`           | SMTP password                                 | `''`                                                    |
-| `nextcloud.mail.fromaddress`        | nextcloud mail send from field                | `nil`                                                   |
+| `nextcloud.mail.enabled`            | Whether to enable/disable email settings      | `false`                                                 |
+| `nextcloud.mail.fromAddress`        | nextcloud mail send from field                | `nil`                                                   |
 | `nextcloud.mail.domain`             | nextcloud mail domain                         | `nil`                                                   |
+| `nextcloud.mail.smtp.host`          | SMTP hostname                                 | `nil`                                                   |
+| `nextcloud.mail.smtp.secure`        | SMTP connection `ssl` or empty                | `''`                                                    |
+| `nextcloud.mail.smtp.port`          | Optional SMTP port                            | `nil`                                                   |
+| `nextcloud.mail.smtp.authtype`      | SMTP authentication method                    | `LOGIN`                                                 |
+| `nextcloud.mail.smtp.name`          | SMTP username                                 | `''`                                                    |
+| `nextcloud.mail.smtp.password`      | SMTP password                                 | `''`                                                    |
 | `internalDatabase.enabled`          | Whether to use internal sqlite database       | `true`                                                  |
 | `internalDatabase.database`         | Name of the existing database                 | `nextcloud`                                             |
 | `externalDatabase.enabled`          | Whether to use external database              | `false`                                                 |
