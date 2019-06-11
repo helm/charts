@@ -23,7 +23,11 @@ spec:
   ports:
     - name: http
       port: {{ .Values.service.port }}
+      {{- if (and (eq .Values.service.type "ClusterIP"))}}
+      targetPort: 2368
+      {{- else }}
       targetPort: http
+      {{- end }}
       {{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nodePorts.http)))}}
       nodePort: {{ .Values.service.nodePorts.http }}
       {{- end }}
