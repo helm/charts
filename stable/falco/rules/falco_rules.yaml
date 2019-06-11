@@ -69,6 +69,9 @@
 - macro: spawned_process
   condition: evt.type = execve and evt.dir=<
 
+- macro: create_symlink
+  condition: evt.type in (symlink, symlinkat) and evt.dir=<
+
 # File categories
 - macro: bin_dir
   condition: fd.directory in (/bin, /sbin, /usr/bin, /usr/sbin)
@@ -283,6 +286,9 @@
 
 - list: sensitive_file_names
   items: [/etc/shadow, /etc/sudoers, /etc/pam.conf, /etc/security/pwquality.conf]
+
+- list: sensitive_directory_names
+  items: [/, /etc, /etc/, /root, /root/]
 
 - macro: sensitive_files
   condition: >
@@ -522,7 +528,7 @@
 # compatiblity with some widely used rules files.
 # Begin Deprecated
 - macro: parent_ansible_running_python
-  condition: (proc.pname in (python, pypy) and proc.pcmdline contains ansible)
+  condition: (proc.pname in (python, pypy, python3) and proc.pcmdline contains ansible)
 
 - macro: parent_bro_running_python
   condition: (proc.pname=python and proc.cmdline contains /usr/share/broctl)
@@ -604,7 +610,7 @@
 ## End Deprecated
 
 - macro: ansible_running_python
-  condition: (proc.name in (python, pypy) and proc.cmdline contains ansible)
+  condition: (proc.name in (python, pypy, python3) and proc.cmdline contains ansible)
 
 - macro: python_running_chef
   condition: (proc.name=python and (proc.cmdline contains yum-dump.py or proc.cmdline="python /usr/bin/chef-monitor.py"))
@@ -643,7 +649,8 @@
 - macro: run_by_google_accounts_daemon
   condition: >
     (proc.aname[1] startswith google_accounts or
-     proc.aname[2] startswith google_accounts)
+     proc.aname[2] startswith google_accounts or
+     proc.aname[3] startswith google_accounts)
 
 # Chef is similar.
 - macro: run_by_chef
@@ -774,7 +781,10 @@
   condition: (proc.cmdline startswith "java LiveUpdate" and fd.name in (/etc/liveupdate.conf, /etc/Product.Catalog.JavaLiveUpdate))
 
 - macro: rancher_agent
-  condition: (proc.name = agent and container.image.repository = rancher/agent)
+  condition: (proc.name=agent and container.image.repository contains "rancher/agent")
+
+- macro: rancher_network_manager
+  condition: (proc.name=rancher-bridge and container.image.repository contains "rancher/network-manager")
 
 - macro: sosreport_writing_files
   condition: >
@@ -808,7 +818,7 @@
   condition: (veritas_progs and (fd.name startswith /etc/vx or fd.name startswith /etc/opt/VRTS or fd.name startswith /etc/vom))
 
 - macro: nginx_writing_conf
-  condition: (proc.name in (nginx,nginx-ingress-c) and fd.name startswith /etc/nginx)
+  condition: (proc.name in (nginx,nginx-ingress-c,nginx-ingress) and (fd.name startswith /etc/nginx or fd.name startswith /etc/ingress-controller))
 
 - macro: nginx_writing_certs
   condition: >
@@ -871,6 +881,16 @@
 
 - macro: cassandra_writing_state
   condition: (java_running_cassandra and fd.directory=/root/.cassandra)
+
+# Istio
+- macro: galley_writing_state
+  condition: (proc.name=galley and fd.name in (known_istio_files))
+
+- list: known_istio_files
+  items: [/healthready, /healthliveness]
+
+- macro: calico_writing_state
+  condition: (proc.name=kube-controller and fd.name startswith /status.json and k8s.pod.name startswith calico)
 
 - list: repository_files
   items: [sources.list]
@@ -1023,11 +1043,21 @@
               and fd.name startswith "/etc/dd-agent")
 
 - macro: rancher_writing_conf
-  condition: (container.image.repository in (rancher_images)
-              and proc.name in (lib-controller,rancher-dns,healthcheck,rancher-metadat)
-              and (fd.name startswith "/etc/haproxy" or
-                   fd.name startswith "/etc/rancher-dns")
-             )
+  condition: ((proc.name in (healthcheck, lb-controller, rancher-dns)) and
+              (container.image.repository contains "rancher/healthcheck" or
+               container.image.repository contains "rancher/lb-service-haproxy" or
+               container.image.repository contains "rancher/dns") and
+              (fd.name startswith "/etc/haproxy" or fd.name startswith "/etc/rancher-dns"))
+
+- macro: rancher_writing_root
+  condition: (proc.name=rancher-metadat and
+              (container.image.repository contains "rancher/metadata" or container.image.repository contains "rancher/lb-service-haproxy") and
+              fd.name startswith "/answers.json")
+
+- macro: checkpoint_writing_state
+  condition: (proc.name=checkpoint and
+              container.image.repository contains "coreos/pod-checkpointer" and
+              fd.name startswith "/etc/kubernetes")
 
 - macro: jboss_in_container_writing_passwd
   condition: >
@@ -1098,6 +1128,12 @@
 
 - macro: openshift_writing_conf
   condition: (proc.name=oc and fd.name startswith /etc/origin/node)
+
+- macro: keepalived_writing_conf
+  condition: (proc.name=keepalived and fd.name=/etc/keepalived/keepalived.conf)
+
+- macro: etcd_manager_updating_dns
+  condition: (container and proc.name=etcd-manager and fd.name=/etc/hosts)
 
 # Add conditions to this macro (probably in a separate file,
 # overwriting this macro) to allow for specific combinations of
@@ -1204,8 +1240,11 @@
     and not calico_writing_conf
     and not prometheus_conf_writing_conf
     and not openshift_writing_conf
+    and not keepalived_writing_conf
     and not rancher_writing_conf
+    and not checkpoint_writing_state
     and not jboss_in_container_writing_passwd
+    and not etcd_manager_updating_dns
 
 - rule: Write below etc
   desc: an attempt to write to any file below /etc
@@ -1285,6 +1324,9 @@
     and not chef_writing_conf
     and not kubectl_writing_state
     and not cassandra_writing_state
+    and not galley_writing_state
+    and not calico_writing_state
+    and not rancher_writing_root
     and not known_root_conditions
     and not user_known_write_root_conditions
   output: "File below / or /root opened for writing (user=%user.name command=%proc.cmdline parent=%proc.pname file=%fd.name program=%proc.name)"
@@ -1343,6 +1385,7 @@
     and not proc.cmdline contains /usr/bin/mandb
     and not run_by_qualys
     and not run_by_chef
+    and not run_by_google_accounts_daemon
     and not user_read_sensitive_file_conditions
     and not perl_running_plesk
     and not perl_running_updmap
@@ -1436,12 +1479,14 @@
     and not proc.name in (docker_binaries, k8s_binaries, lxd_binaries, sysdigcloud_binaries,
                           sysdig, nsenter, calico, oci-umount)
     and not proc.name in (user_known_change_thread_namespace_binaries)
-    and not proc.name startswith "runc:"
+    and not proc.name startswith "runc"
+    and not proc.cmdline startswith "containerd"
     and not proc.pname in (sysdigcloud_binaries)
     and not python_running_sdchecks
     and not java_running_sdjagent
     and not kubelet_running_loopback
     and not rancher_agent
+    and not rancher_network_manager
   output: >
     Namespace change (setns) by unexpected program (user=%user.name command=%proc.cmdline
     parent=%proc.pname %container.info)
@@ -1978,6 +2023,7 @@
     and not somebody_becoming_themself
     and not proc.name in (known_setuid_binaries, userexec_binaries, mail_binaries, docker_binaries,
                           nomachine_binaries)
+    and not proc.name startswith "runc:"
     and not java_running_sdjagent
     and not nrpe_becoming_nagios
     and not user_known_non_sudo_setuid_conditions
@@ -2096,7 +2142,7 @@
   items: [nc, ncat, nmap, dig, tcpdump, tshark, ngrep]
 
 - macro: network_tool_procs
-  condition: proc.name in (network_tool_binaries)
+  condition: (proc.name in (network_tool_binaries))
 
 # Container is supposed to be immutable. Package management should be done in building the image.
 - rule: Launch Package Management Process in Container
@@ -2114,7 +2160,8 @@
   condition: >
     spawned_process and container and
     ((proc.name = "nc" and (proc.args contains "-e" or proc.args contains "-c")) or
-     (proc.name = "ncat" and (proc.args contains "--sh-exec" or proc.args contains "--exec"))
+     (proc.name = "ncat" and (proc.args contains "--sh-exec" or proc.args contains "--exec" or proc.args contains "-e " 
+                              or proc.args contains "-c " or proc.args contains "--lua-exec"))
     )
   output: >
     Netcat runs inside container that allows remote code execution (user=%user.name
@@ -2122,7 +2169,7 @@
   priority: WARNING
   tags: [network, process, mitre_execution]
 
-- rule: Lauch Suspicious Network Tool in Container
+- rule: Launch Suspicious Network Tool in Container
   desc: Detect network tools launched inside container
   condition: >
     spawned_process and container and network_tool_procs
@@ -2151,7 +2198,7 @@
   tags: [network, process, mitre_discovery, mitre_exfiltration]
 
 - list: grep_binaries
-  items: [grep, egre, fgrep]
+  items: [grep, egrep, fgrep]
 
 - macro: grep_commands
   condition: (proc.name in (grep_binaries))
@@ -2269,6 +2316,32 @@
     NOTICE
   tag: [file, mitre_persistence]
 
+- list: remote_file_copy_binaries
+  items: [rsync, scp, sftp, dcp]
+
+- macro: remote_file_copy_procs
+  condition: (proc.name in (remote_File_copy_binaries))
+
+- rule: Launch Remote File Copy Tools in Container
+  desc: Detect remote file copy tools launched in container
+  condition: >
+    spawned_process and container and remote_file_copy_procs
+  output: >
+    Remote file copy tool launched in container (user=%user.name command=%proc.cmdline parent_process=%proc.pname
+    container_id=%container.id container_name=%container.name image=%container.image.repository:%container.image.tag)
+  priority: NOTICE
+  tags: [network, process, mitre_lateral_movement, mitre_exfiltration]
+
+
+- rule: Create Symlink Over Sensitive Files
+  desc: Detect symlink created over sensitive files
+  condition: >
+    create_symlink and
+    (evt.arg.target in (sensitive_file_names) or evt.arg.target in (sensitive_directory_names))
+  output: >
+    Symlinks created over senstivie files (user=%user.name command=%proc.cmdline target=%evt.arg.target linkpath=%evt.arg.linkpath parent_process=%proc.pname)
+  priority: NOTICE
+  tags: [file, mitre_exfiltration]
 # Application rules have moved to application_rules.yaml. Please look
 # there if you want to enable them by adding to
 # falco_rules.local.yaml.
