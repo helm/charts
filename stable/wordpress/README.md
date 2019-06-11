@@ -163,7 +163,7 @@ $ helm install --name my-release -f ./values-production.yaml stable/wordpress
 - Number of WordPress Pods to run
 ```diff
 - replicaCount: 1
-+  replicaCount: 3
++ replicaCount: 3
 ```
 
 - Kubernetes Service type:
