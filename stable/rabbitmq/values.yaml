@@ -125,7 +125,7 @@ rabbitmq:
     loopback_users.guest = false
 
   ## Configuration file content: extra configuration
-  ## Use this instead of  `configuration` to add more configuration
+  ## Use this instead of `configuration` to add more configuration
   extraConfiguration: |-
     #disk_free_limit.absolute = 50MB
     #management.load_definitions = /app/load_definition.json
@@ -288,7 +288,6 @@ metrics:
     ##
     # pullSecrets:
     #   - myRegistryKeySecretName
-
   ## environment variables to configure rabbitmq_exporter
   ## ref: https://github.com/kbudde/rabbitmq_exporter#configuration
   env: {}
@@ -310,7 +309,7 @@ volumePermissions:
     registry: docker.io
     repository: bitnami/minideb
     tag: latest
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
     ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
