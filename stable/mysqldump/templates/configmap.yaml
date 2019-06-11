@@ -36,7 +36,7 @@ data:
     TIMESTAMP="$(date +%Y%m%d%H%M%S)"
 
     echo "test mysql connection"
-    if [ -z "$(mysql -h ${MYSQL_HOST} -u ${MYSQL_USERNAME}{{ if .Values.mysql.password }} -p${MYSQL_PASSWORD}{{ end }} -B -N -e 'SHOW DATABASES;')" ]; then
+    if [ -z "$(mysql -h ${MYSQL_HOST} -P ${MYSQL_PORT} -u ${MYSQL_USERNAME}{{ if .Values.mysql.password }} -p${MYSQL_PASSWORD}{{ end }} -B -N -e 'SHOW DATABASES;')" ]; then
       echo "mysql connection failed! exiting..."
       exit 1
     fi
