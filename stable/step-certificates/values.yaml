@@ -35,7 +35,7 @@ ca:
   address: :9000
   # dns is the comma separated dns names to use. Leave it empty to use the format:
   # {include "step-certificates.fullname" .}.{ .Release.Namespace}.svc.cluster.local,127.0.0.1
-  dns: 
+  dns:
   # url is the http url where step-certificates will listen at. Leave it empty to use the format
   # https://{{ include "step-certificates.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
   url:
