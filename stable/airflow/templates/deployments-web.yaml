@@ -141,7 +141,11 @@ spec:
           {{- end }}
           livenessProbe:
             httpGet:
+              {{- if .Values.ingress.web.livenessPath }}
+              path: "{{ .Values.ingress.web.livenessPath }}"
+              {{- else }}
               path: "{{ .Values.ingress.web.path }}/health"
+              {{- end }}
               port: web
             ## Keep 6 minutes the delay to allow clean wait of postgres and redis containers
             initialDelaySeconds: {{ .Values.web.initialDelaySeconds }}

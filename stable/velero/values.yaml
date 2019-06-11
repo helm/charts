@@ -155,6 +155,8 @@ deployRestic: false
 restic:
   podVolumePath: /var/lib/kubelet/pods
   privileged: false
+  # Resource requests/limits to specify for the Restic daemonset deployment. Optional.
+  resources: {}
 
 # Backup schedules to create.
 # Eg:
