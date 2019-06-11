@@ -372,9 +372,9 @@ metrics:
     ## it to the dashboard service only
     restrictAccess: false
     # buckets: [0.1,0.3,1.2,5]
-  serviceMonitor:
+  # serviceMonitor:
     # When set true and if Prometheus Operator is installed then use a ServiceMonitor to configure scraping
-    enabled: false
+    # enabled: false
     # Set the namespace the ServiceMonitor should be deployed
     # namespace: monitoring
     # Set how frequently Prometheus should scrape
