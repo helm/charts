@@ -1,0 +1,13 @@
+
+
+TO verify all deployments are running use the below command
+
+    kubectl get deployment --all-namespaces | grep {release_name}
+
+We should get similar output like given below, where three deployments for controller, admission, scheduler should be running.
+
+
+NAME                       READY  UP-TO-DATE  AVAILABLE  AGE
+{release_name}-admission    1/1    1           1          4s
+{release_name}-controllers  1/1    1           1          4s
+{release_name}-scheduler    1/1    1           1          4s

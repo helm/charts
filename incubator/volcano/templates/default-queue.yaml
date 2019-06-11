@@ -1,0 +1,6 @@
+apiVersion: scheduling.incubator.k8s.io/v1alpha1
+kind: Queue
+metadata:
+  name: default
+spec:
+  weight: 1

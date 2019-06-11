@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ .Values.basic.admission_app_name }}
+  name: {{ .Release.Name }}-admission-service
+  namespace: {{ .Release.Namespace }}
+spec:
+  ports:
+    - port: 443
+      protocol: TCP
+      targetPort: 443
+  selector:
+    app: {{ .Values.basic.admission_app_name }}
+  sessionAffinity: None
+
+---

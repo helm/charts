@@ -1,0 +1,32 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: {{ .Release.Name }}-controllers
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Values.basic.controller_app_name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.basic.controller_app_name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.basic.controller_app_name }}
+    spec:
+      serviceAccount: {{ .Release.Name }}-controllers
+      {{ if .Values.basic.image_pull_secret }}
+      imagePullSecrets:
+          - name: {{ .Values.basic.image_pull_secret }}
+      {{ end }}
+      containers:
+        - name: {{ .Release.Name }}-controllers
+          image: {{.Values.basic.controller_image_name}}:{{.Values.basic.image_tag_version}}
+          args:
+            - --alsologtostderr
+            - -v=4
+            - 2>&1
+          imagePullPolicy: {{.Values.basic.image_pull_policy}}
+
+---

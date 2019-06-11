@@ -1,0 +1,26 @@
+apiVersion: admissionregistration.k8s.io/v1beta1
+kind: MutatingWebhookConfiguration
+metadata:
+  name: {{ .Release.Name }}-mutate-job
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade,post-delete
+webhooks:
+  - clientConfig:
+      service:
+        name: {{ .Release.Name }}-admission-service
+        namespace: {{ .Release.Namespace }}
+        path: /mutating-jobs
+    failurePolicy: Ignore
+    name: mutatejob.volcano.sh
+    namespaceSelector: {}
+    rules:
+      - apiGroups:
+          - "batch.volcano.sh"
+        apiVersions:
+          - "v1alpha1"
+        operations:
+          - CREATE
+        resources:
+          - jobs
+
+---

@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-scheduler-configmap
+data:
+  {{- (.Files.Glob "config/*").AsConfig | nindent 2 }}
+---

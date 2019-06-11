@@ -1,0 +1,36 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: {{ .Release.Name }}-scheduler
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Values.basic.scheduler_app_name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.basic.scheduler_app_name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.basic.scheduler_app_name }}
+    spec:
+      serviceAccount: {{ .Release.Name }}-scheduler
+      containers:
+          - name: {{ .Release.Name }}-scheduler
+            image: {{.Values.basic.scheduler_image_name}}:{{.Values.basic.image_tag_version}}
+            args:
+              - --alsologtostderr
+              - --scheduler-conf=/volcano.scheduler/{{.Values.basic.scheduler_config_file}}
+              - -v=3
+              - 2>&1
+            imagePullPolicy: {{.Values.basic.image_pull_policy}}
+            volumeMounts:
+              - name: scheduler-config
+                mountPath: /volcano.scheduler
+      volumes:
+        - name: scheduler-config
+          configMap:
+            name: {{ .Release.Name }}-scheduler-configmap
+
+---

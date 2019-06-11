@@ -1,0 +1,16 @@
+# Default values for volcano.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+basic:
+  image_tag_version: "latest"
+  controller_image_name: "volcanosh/vk-controllers"
+  scheduler_image_name: "volcanosh/vk-kube-batch"
+  admission_image_name: "volcanosh/vk-admission"
+  admission_secret_name: "volcano-admission-secret"
+  scheduler_config_file: "kube-batch.conf"
+  image_pull_secret: ""
+  image_pull_policy: "IfNotPresent"
+  admission_app_name: "volcano-admission"
+  controller_app_name: "volcano-controller"
+  scheduler_app_name: "volcano-scheduler"

@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ .Values.basic.admission_app_name }}
+  name: {{ .Release.Name }}-admission
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.basic.admission_app_name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.basic.admission_app_name }}
+    spec:
+      serviceAccount: {{ .Release.Name }}-admission
+      {{ if .Values.basic.image_pull_secret }}
+      imagePullSecrets:
+          - name: {{ .Values.basic.image_pull_secret }}
+      {{ end }}
+      containers:
+        - args:
+            - --tls-cert-file=/admission.local.config/certificates/tls.crt
+            - --tls-private-key-file=/admission.local.config/certificates/tls.key
+            - --ca-cert-file=/admission.local.config/certificates/ca.crt
+            - --mutate-webhook-config-name={{ .Release.Name }}-mutate-job
+            - --validate-webhook-config-name={{ .Release.Name }}-validate-job
+            - --alsologtostderr
+            - --port=443
+            - -v=4
+            - 2>&1
+          image: {{.Values.basic.admission_image_name}}:{{.Values.basic.image_tag_version}}
+          imagePullPolicy: {{.Values.basic.image_pull_policy}}
+          name: admission
+          volumeMounts:
+            - mountPath: /admission.local.config/certificates
+              name: admission-certs
+              readOnly: true
+      volumes:
+        - name: admission-certs
+          secret:
+            defaultMode: 420
+            secretName: {{.Values.basic.admission_secret_name}}
+
+---

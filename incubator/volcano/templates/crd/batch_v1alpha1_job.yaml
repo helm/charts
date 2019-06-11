@@ -1,0 +1,187 @@
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: jobs.batch.volcano.sh
+  annotations:
+    "helm.sh/hook": crd-install
+spec:
+  group: batch.volcano.sh
+  names:
+    kind: Job
+    plural: jobs
+    shortNames:
+      - vkjob
+      - vj
+  scope: Namespaced
+  validation:
+    openAPIV3Schema:
+      properties:
+        apiVersion:
+          description: 'APIVersion defines the versioned schema of this representation
+            of an object. Servers should convert recognized schemas to the latest
+            internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#resources'
+          type: string
+        kind:
+          description: 'Kind is a string value representing the REST resource this
+            object represents. Servers may infer this from the endpoint the client
+            submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#types-kinds'
+          type: string
+        metadata:
+          type: object
+        spec:
+          description: Specification of the desired behavior of a cron job, including
+            the minAvailable
+          properties:
+            volumes:
+              description: The volumes for Job
+              items:
+                properties:
+                  volumeClaim:
+                    description: VolumeClaim defines the PVC used by the VolumeMount.
+                    type: object
+                  mountPath:
+                    description: Path within the container at which the volume should be mounted.
+                      Must not contain ':'.
+                    type: string
+                  volumeClaimName:
+                    description: The name of the volume claim.
+                type: object
+                required:
+                  - mountPath
+              type: array
+            minAvailable:
+              description: The minimal available pods to run for this Job
+              format: int32
+              type: integer
+            policies:
+              description: Specifies the default lifecycle of tasks
+              items:
+                properties:
+                  action:
+                    description: The action that will be taken to the PodGroup according
+                      to Event. One of "Restart", "None". Default to None.
+                    type: string
+                  event:
+                    description: The Event recorded by scheduler; the controller takes
+                      actions according to this Event.
+                    type: string
+                  timeout:
+                    description: Timeout is the grace period for controller to take
+                      actions. Default to nil (take action immediately).
+                    type: object
+                type: object
+              type: array
+            schedulerName:
+              description: SchedulerName is the default value of `tasks.template.spec.schedulerName`.
+              type: string
+            plugins:
+              description: Enabled task plugins when creating job.
+              type: object
+              additionalProperties:
+                type: array
+            tasks:
+              description: Tasks specifies the task specification of Job
+              items:
+                properties:
+                  name:
+                    description: Name specifies the name of tasks
+                    type: string
+                  policies:
+                    description: Specifies the lifecycle of task
+                    items:
+                      properties:
+                        action:
+                          description: The action that will be taken to the PodGroup
+                            according to Event. One of "Restart", "None". Default
+                            to None.
+                          type: string
+                        event:
+                          description: The Event recorded by scheduler; the controller
+                            takes actions according to this Event.
+                          type: string
+                        timeout:
+                          description: Timeout is the grace period for controller
+                            to take actions. Default to nil (take action immediately).
+                          type: object
+                      type: object
+                    type: array
+                  replicas:
+                    description: Replicas specifies the replicas of this TaskSpec
+                      in Job
+                    format: int32
+                    type: integer
+                  template:
+                    description: Specifies the pod that will be created for this TaskSpec
+                      when executing a Job
+                    type: object
+                type: object
+              type: array
+            queue:
+              description: The name of the queue on which job should been created
+              type: string
+            maxRetry:
+              description: The limit for retrying submiting job, default is 3
+              format: int32
+              type: integer
+          type: object
+        status:
+          description: Current status of Job
+          properties:
+            Succeeded:
+              description: The number of pods which reached phase Succeeded.
+              format: int32
+              type: integer
+            failed:
+              description: The number of pods which reached phase Failed.
+              format: int32
+              type: integer
+            minAvailable:
+              description: The minimal available pods to run for this Job
+              format: int32
+              type: integer
+            pending:
+              description: The number of pending pods.
+              format: int32
+              type: integer
+            running:
+              description: The number of running pods.
+              format: int32
+              type: integer
+            version:
+              description: Job's current version
+              format: int32
+              type: integer
+            retryCount:
+              description: The number that volcano retried to submit the job.
+              format: int32
+              type: integer
+            ControlledResources:
+              description: All of the resources that are controlled by this job.
+              type: object
+              additionalProperties:
+                type: string
+            state:
+              description: Current state of Job.
+              properties:
+                message:
+                  description: Human-readable message indicating details about last
+                    transition.
+                  type: string
+                phase:
+                  description: The phase of Job
+                  type: string
+                reason:
+                  description: Unique, one-word, CamelCase reason for the condition's
+                    last transition.
+                  type: string
+              type: object
+          type: object
+  version: v1alpha1
+  subresources:
+    status: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []

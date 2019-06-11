@@ -1,0 +1,21 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Release.Name }}-admission-init
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Values.basic.admission_app_name }}-init
+spec:
+  backoffLimit: 3
+  template:
+    spec:
+      serviceAccountName: {{ .Release.Name }}-admission
+      restartPolicy: Never
+      containers:
+        - name: main
+          image: {{.Values.basic.admission_image_name}}:{{.Values.basic.image_tag_version}}
+          imagePullPolicy: IfNotPresent
+          command: ["./gen-admission-secret.sh", "--service", "{{ .Release.Name }}-admission-service", "--namespace",
+                    "{{ .Release.Namespace }}", "--secret", "{{.Values.basic.admission_secret_name}}"]
+
+---
