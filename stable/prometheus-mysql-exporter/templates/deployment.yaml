@@ -43,7 +43,7 @@ spec:
 {{- else if and (typeIs "bool" $element) (not $element) }}
 {{ printf "--no-collect.%s" $index | quote | indent 12 }},
 {{- else }}
-{{ printf "--collect.%s" $index | quote | indent 12 }}, {{ $element | quote }}
+{{ printf "--collect.%s" $index | quote | indent 12 }}, {{ $element | quote }},
 {{- end }}
 {{- end }}
           ]
