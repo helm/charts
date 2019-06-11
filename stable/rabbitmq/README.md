@@ -52,16 +52,16 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `image.registry`                     | Rabbitmq Image registry                          | `docker.io`                                             |
 | `image.repository`                   | Rabbitmq Image name                              | `bitnami/rabbitmq`                                      |
 | `image.tag`                          | Rabbitmq Image tag                               | `{TAG_NAME}`                                            |
-| `image.pullPolicy`                   | Image pull policy                                | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
+| `image.pullPolicy`                   | Image pull policy                                | `IfNotPresent`                                          |
 | `image.pullSecrets`                  | Specify docker-registry secret names as an array | `nil`                                                   |
 | `image.debug`                        | Specify if debug values should be set            | `false`                                                 |
 | `rbacEnabled`                        | Specify if rbac is enabled in your cluster       | `true`                                                  |
 | `podManagementPolicy`                | Pod management policy                            | `OrderedReady`                                          |
 | `rabbitmq.username`                  | RabbitMQ application username                    | `user`                                                  |
 | `rabbitmq.password`                  | RabbitMQ application password                    | _random 10 character long alphanumeric string_          |
-| `rabbitmq.existingPasswordSecret`    | Existing secret with RabbitMQ credentials        | `nil`                                                     |
+| `rabbitmq.existingPasswordSecret`    | Existing secret with RabbitMQ credentials        | `nil`                                                   |
 | `rabbitmq.erlangCookie`              | Erlang cookie                                    | _random 32 character long alphanumeric string_          |
-| `rabbitmq.existingErlangSecret`      | Existing secret with RabbitMQ Erlang cookie      | `nil`                                                     |
+| `rabbitmq.existingErlangSecret`      | Existing secret with RabbitMQ Erlang cookie      | `nil`                                                   |
 | `rabbitmq.plugins`                   | List of plugins to enable                        | `rabbitmq_management rabbitmq_peer_discovery_k8s`       |
 | `rabbitmq.extraPlugins`              | Extra plugings to enable                         | `nil`                                                   |
 | `rabbitmq.clustering.address_type`   | Switch clustering mode                           | `ip` or `hostname`                                      |
@@ -90,6 +90,7 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `securityContext.fsGroup`            | Group ID for the container                       | `1001`                                                  |
 | `securityContext.runAsUser`          | User ID for the container                        | `1001`                                                  |
 | `resources`                          | resource needs and limits to apply to the pod    | {}                                                      |
+| `replicas`                           | Replica count                                    | `1`                                                     |
 | `priorityClassName`                  | Pod priority class name                          | ``                                                      |
 | `nodeSelector`                       | Node labels for pod assignment                   | {}                                                      |
 | `affinity`                           | Affinity settings for pod assignment             | {}                                                      |
@@ -126,7 +127,7 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `volumePermissions.image.registry`         | Init container volume-permissions image registry                                                               | `docker.io`                                          |
 | `volumePermissions.image.repository`       | Init container volume-permissions image name                                                                   | `bitnami/minideb`                                    |
 | `volumePermissions.image.tag`              | Init container volume-permissions image tag                                                                    | `latest`                                             |
-| `volumePermissions.image.pullPolicy`       | Init container volume-permissions image pull policy                                                            | `IfNotPresent`                                       |
+| `volumePermissions.image.pullPolicy`       | Init container volume-permissions image pull policy                                                            | `Always`                                             |
 | `volumePermissions.resources`                  | Init container resource requests/limit                 | `nil`                                                   |
 | `forceBoot.enabled`         | Executes 'rabbitmqctl force_boot' to force boot cluster shut down unexpectedly in an unknown order. Use it only if you prefer availability over integrity.                                                               | `false`                                          |
 
@@ -149,6 +150,54 @@ $ helm install --name my-release -f values.yaml stable/rabbitmq
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+### Production configuration
+
+This chart includes a `values-production.yaml` file where you can find some parameters oriented to production configuration in comparison to the regular `values.yaml`.
+
+```console
+$ helm install --name my-release -f ./values-production.yaml stable/rabbitmq
+```
+
+- Resource needs and limits to apply to the pod:
+```diff
+- resources: {}
++ resources:
++   requests:
++     memory: 256Mi
++     cpu: 100m
+```
+
+- Replica count:
+```diff
+- replicas: 1
++ replicas: 3
+```
+
+- Node labels for pod assignment:
+```diff
+- nodeSelector: {}
++ nodeSelector:
++   beta.kubernetes.io/arch: amd64
+```
+
+- Enable ingress with TLS:
+```diff
+- ingress.tls: false
++ ingress.tls: true
+```
+
+- Start a side-car prometheus exporter:
+```diff
+- metrics.enabled: false
++ metrics.enabled: true
+```
+
+- Enable init container that changes volume permissions in the data directory:
+```diff
+- volumePermissions.enabled: false
++ volumePermissions.enabled: true
+```
 
 ### [Rolling VS Immutable tags](https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/)
 
@@ -181,14 +230,6 @@ Then, specify the `management.load_definitions` property as an `extraConfigurati
 Any load definitions specified will be available within in the container at `/app`.
 
 > Loading a definition will take precedence over any configuration done through [Helm values](#configuration).
-
-## Production configuration
-
-A standard configuration is provided by default that will run on most development environments. To operate this chart in a production environment, we recommend you use the alternative file values-production.yaml provided in this repository.
-
-```bash
-$ helm install --name my-release -f values-production.yaml stable/rabbitmq
-```
 
 ## Persistence
 
