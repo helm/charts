@@ -52,10 +52,10 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `image.registry`                                   | MongoDB image registry                                                                       | `docker.io`                                             |
 | `image.repository`                                 | MongoDB Image name                                                                           | `bitnami/mongodb`                                       |
 | `image.tag`                                        | MongoDB Image tag                                                                            | `{TAG_NAME}`                                            |
-| `image.pullPolicy`                                 | Image pull policy                                                                            | `Always`                                                |
+| `image.pullPolicy`                                 | Image pull policy                                                                            | `IfNotPresent`                                          |
 | `image.pullSecrets`                                | Specify docker-registry secret names as an array                                             | `[]` (does not add image pull secrets to deployed pods) |
 | `image.debug`                                      | Specify if debug logs should be enabled                                                      | `false`                                                 |
-| `clusterDomain`                                      | Default Kubernetes cluster domain                                                               | `cluster.local`                                                  |
+| `clusterDomain`                                    | Default Kubernetes cluster domain                                                            | `cluster.local`                                         |
 | `usePassword`                                      | Enable password authentication                                                               | `true`                                                  |
 | `existingSecret`                                   | Existing secret with MongoDB credentials                                                     | `nil`                                                   |
 | `mongodbRootPassword`                              | MongoDB admin password                                                                       | `random alphanumeric string (10)`                       |
@@ -103,7 +103,7 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `persistence.size`                                 | Size of data volume                                                                          | `8Gi`                                                   |
 | `persistence.annotations`                          | Persistent Volume annotations                                                                | `{}`                                                    |
 | `persistence.existingClaim`                        | Name of an existing PVC to use (avoids creating one if this is given)                        | `nil`                                                   |
-| `extraInitContainers`                              | Additional init containers as a string to be passed to the `tpl` function                    | `{}`                                                    |                                                   |
+| `extraInitContainers`                              | Additional init containers as a string to be passed to the `tpl` function                    | `{}`                                                    |
 | `livenessProbe.enabled`                            | Enable/disable the Liveness probe                                                            | `true`                                                  |
 | `livenessProbe.initialDelaySeconds`                | Delay before liveness probe is initiated                                                     | `30`                                                    |
 | `livenessProbe.periodSeconds`                      | How often to perform the probe                                                               | `10`                                                    |
@@ -128,11 +128,11 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `metrics.image.registry`                           | MongoDB exporter image registry                                                              | `docker.io`                                             |
 | `metrics.image.repository`                         | MongoDB exporter image name                                                                  | `forekshub/percona-mongodb-exporter`                    |
 | `metrics.image.tag`                                | MongoDB exporter image tag                                                                   | `latest`                                                |
-| `metrics.image.pullPolicy`                         | Image pull policy                                                                            | `IfNotPresent`                                          |
+| `metrics.image.pullPolicy`                         | Image pull policy                                                                            | `Always`                                                |
 | `metrics.image.pullSecrets`                        | Specify docker-registry secret names as an array                                             | `[]` (does not add image pull secrets to deployed pods) |
-| `metrics.podAnnotations.prometheus.io/scrape`                   | Additional annotations for Metrics exporter pod                                 | `true`                                                  |
-| `metrics.podAnnotations.prometheus.io/port`                     | Additional annotations for Metrics exporter pod                                 | `"9216"`                                                |
-| `metrics.extraArgs`               | String with extra arguments for the MongoDB Exporter                                                          | ``                                                      |
+| `metrics.podAnnotations.prometheus.io/scrape`      | Additional annotations for Metrics exporter pod                                              | `true`                                                  |
+| `metrics.podAnnotations.prometheus.io/port`        | Additional annotations for Metrics exporter pod                                              | `"9216"`                                                |
+| `metrics.extraArgs`                                | String with extra arguments for the MongoDB Exporter                                         | ``                                                      |
 | `metrics.resources`                                | Exporter resource requests/limit                                                             | `{}`                                                    |
 | `metrics.serviceMonitor.enabled`                   | Create ServiceMonitor Resource for scraping metrics using PrometheusOperator                 | `false`                                                 |
 | `metrics.serviceMonitor.additionalLabels`          | Used to pass Labels that are required by the Installed Prometheus Operator                   | `{}`                                                    |
@@ -149,8 +149,8 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `metrics.readinessProbe.initialDelaySeconds`       | Initial Delay for Readiness Check of Prometheus metrics exporter                             | `5`                                                     |
 | `metrics.readinessProbe.periodSeconds`             | How often to perform Readiness Check of Prometheus metrics exporter                          | `5`                                                     |
 | `metrics.readinessProbe.timeoutSeconds`            | Timeout for Readiness Check of Prometheus metrics exporter                                   | `1`                                                     |
-| `metrics.readinessProbe.failureThreshold`           | Failure Threshold for Readiness Check of Prometheus metrics exporter                        | `3`                                                     |
-| `metrics.readinessProbe.successThreshold`           | Success Threshold for Readiness Check of Prometheus metrics exporter                        | `1`                                                     |
+| `metrics.readinessProbe.failureThreshold`          | Failure Threshold for Readiness Check of Prometheus metrics exporter                         | `3`                                                     |
+| `metrics.readinessProbe.successThreshold`          | Success Threshold for Readiness Check of Prometheus metrics exporter                         | `1`                                                     |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
@@ -171,6 +171,44 @@ $ helm install --name my-release -f values.yaml stable/mongodb
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
+### Production configuration
+
+This chart includes a `values-production.yaml` file where you can find some parameters oriented to production configuration in comparison to the regular `values.yaml`.
+
+```console
+$ helm install --name my-release -f ./values-production.yaml stable/mongodb
+```
+
+- Switch to enable/disable replica set configuration:
+```diff
+- replicaSet.enabled: false
++ replicaSet.enabled: true
+```
+
+- Start a side-car prometheus exporter:
+```diff
+- metrics.enabled: false
++ metrics.enabled: true
+```
+
+- Enable/disable the Liveness Check of Prometheus metrics exporter:
+```diff
+- metrics.livenessProbe.enabled: false
++ metrics.livenessProbe.enabled: true
+```
+
+- Enable/disable the Readiness Check of Prometheus metrics exporter:
+```diff
+- metrics.readinessProbe.enabled: false
++ metrics.readinessProbe.enabled: true
+```
+
+To horizontally scale this chart, run the following command to scale the number of secondary nodes in your MongoDB replica set.
+
+```console
+$ kubectl scale statefulset my-release-mongodb-secondary --replicas=3
+```
+
 ### [Rolling VS Immutable tags](https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/)
 
 It is strongly recommended to use immutable tags in a production environment. This ensures your deployment does not change automatically if the same tag is updated with a different image.
@@ -183,21 +221,6 @@ You can start the MongoDB chart in replica set mode with the following command:
 
 ```bash
 $ helm install --name my-release stable/mongodb --set replicaSet.enabled=true
-```
-
-## Production settings and horizontal scaling
-
-The [values-production.yaml](values-production.yaml) file consists a configuration to deploy a scalable and high-available MongoDB deployment for production environments. We recommend that you base your production configuration on this template and adjust the parameters appropriately.
-
-```console
-$ curl -O https://raw.githubusercontent.com/kubernetes/charts/master/stable/mongodb/values-production.yaml
-$ helm install --name my-release -f ./values-production.yaml stable/mongodb
-```
-
-To horizontally scale this chart, run the following command to scale the number of secondary nodes in your MongoDB replica set.
-
-```console
-$ kubectl scale statefulset my-release-mongodb-secondary --replicas=3
 ```
 
 Some characteristics of this chart are:
