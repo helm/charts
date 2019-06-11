@@ -19,7 +19,7 @@ image:
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   ##
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -126,7 +126,6 @@ postgresqlDataDir: /bitnami/postgresql/data
 ##
 # postgresqlInitdbWalDir:
 
-
 ## PostgreSQL configuration
 ## Specify runtime configuration parameters as a dict, using camelCase, e.g.
 ## {"sharedBuffers": "500MB"}
@@ -166,7 +165,7 @@ postgresqlDataDir: /bitnami/postgresql/data
 #   my_init_script.sh: |
 #      #!/bin/sh
 #      echo "Do something."
-#
+
 ## ConfigMap with scripts to be run at first boot
 ## NOTE: This will override initdbScripts
 # initdbScriptsConfigMap:
