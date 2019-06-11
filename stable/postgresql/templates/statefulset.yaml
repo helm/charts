@@ -153,7 +153,7 @@ spec:
           value: {{ (include "postgresql.database" .) | quote }}
         {{- end }}
 {{- if .Values.extraEnv }}
-{{ toYaml .Values.extraEnv | indent 8 }}
+{{ tpl (toYaml .Values.extraEnv) $ | indent 8 }}
 {{- end }}
         ports:
         - name: postgresql
