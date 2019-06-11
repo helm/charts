@@ -303,7 +303,7 @@ Given you have:
         endpoint: "traefik-etcd-cluster-client:2379"
         useAPIV3: false
         watch: true
-        prefix: traefik
+        prefix: /traefik
   ```
 
 Then you are good to migrate your old certs into the kvprovider and run traefik in HA/Cluster-Mode.
