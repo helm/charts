@@ -964,6 +964,15 @@ concourse:
       ##
       heartbeatInterval:
 
+    letsEncrypt:
+      ## Automatically configure TLS certificates via Let's Encrypt/ACME.
+      ##
+      enabled: false
+
+      ## URL of the ACME CA directory endpoint.
+      ##
+      acmeURL:
+
   worker:
     ## Signal to send to the worker container when shutting down.
     ## Possible values:
