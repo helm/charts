@@ -1,3 +1,7 @@
+***********************************************************************************
+* NOTE: This chart has been DEPRECATED. Please use stable/spring-cloud-data-flow. *
+***********************************************************************************
+
 1. Get the application URL by running these commands:
 {{- if contains "NodePort" .Values.server.service.type }}
   export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "scdf.fullname" . }}-server)

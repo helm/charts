@@ -11,22 +11,24 @@
 
   http://{{- .Values.ingress.hostname }}/
 
-{{- else if contains "LoadBalancer" .Values.serviceType }}
+{{- else if contains "LoadBalancer" .Values.service.type }}
 
   NOTE: It may take a few minutes for the LoadBalancer IP to be available.
         Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "drupal.fullname" . }}'
 
   export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "drupal.fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
-  echo "Drupal URL: http://$SERVICE_IP/"
 
-{{- else if contains "ClusterIP"  .Values.serviceType }}
+{{- $port:=.Values.service.port | toString }}
+  echo "Drupal URL: http://$SERVICE_IP{{- if ne $port "80" }}:{{ .Values.service.port }}{{ end }}/"
+
+{{- else if contains "ClusterIP"  .Values.service.type }}
 
   echo "Drupal URL: http://127.0.0.1:8080/"
-  kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "drupal.fullname" . }} 8080:80
+  kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "drupal.fullname" . }} 8080:{{ .Values.service.port }}
 
 {{- end }}
 
-{{- if contains "NodePort" .Values.serviceType }}
+{{- if contains "NodePort" .Values.service.type }}
 
   Or running:
 
@@ -40,3 +42,10 @@
 
   echo Username: {{ .Values.drupalUsername }}
   echo Password: $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "drupal.fullname" . }} -o jsonpath="{.data.drupal-password}" | base64 --decode)
+
+{{- if and (contains "bitnami/" .Values.image.repository) (not (.Values.image.tag | toString | regexFind "-r\\d+$|sha256:")) }}
+
+WARNING: Rolling tag detected ({{ .Values.image.repository }}:{{ .Values.image.tag }}), please note that it is strongly recommended to avoid using rolling tags in a production environment.
++info https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/
+
+{{- end }}

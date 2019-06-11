@@ -9,6 +9,12 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 rules:
+{{- if .Values.rbac.pspEnabled }}
+- apiGroups:      ['extensions']
+  resources:      ['podsecuritypolicies']
+  verbs:          ['use']
+  resourceNames:  [{{ template "metricbeat.fullname" . }}]
+{{- end }}
 - apiGroups: [""]
   resources:
   - nodes
@@ -25,4 +31,11 @@ rules:
   - statefulsets
   - deployments
   verbs: ["get", "list", "watch"]
+- apiGroups: [""]
+  resources:
+  - nodes/stats
+  - nodes/metrics
+  verbs: ["get"]
+- nonResourceURLs: ["/metrics"]
+  verbs: ["get"]
 {{- end -}}

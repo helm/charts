@@ -10,21 +10,27 @@ metadata:
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+{{- if .Values.ingress.labels }}
+{{ .Values.ingress.labels | toYaml | trimSuffix "\n"| indent 4 -}}
+{{- end}}
+{{- if .Values.ingress.annotations}}
   annotations:
     {{- range $key, $value := .Values.ingress.annotations }}
-      {{ $key }}: {{ $value | quote }}
+    {{ $key }}: {{ $value | quote }}
     {{- end }}
+{{- end }}
 spec:
   rules:
-    {{- range $host := .Values.ingress.hosts }}
-    - host: {{ $host }}
+    {{- range .Values.ingress.hosts }}
+    {{- $path := default "/" .path }}
+    - host: {{ .name }}
       http:
         paths:
-          - path: /
+          - path: {{ $path }}
             backend:
               serviceName: {{ $serviceName }}
               servicePort: {{ $servicePort }}
-          - path: /*
+          - path: {{ printf "%s/*" (trimSuffix "/" $path) }}
             backend:
               serviceName: {{ $serviceName }}
               servicePort: {{ $servicePort }}

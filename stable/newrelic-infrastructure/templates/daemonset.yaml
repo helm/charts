@@ -57,6 +57,8 @@ spec:
                 fieldRef:
                   apiVersion: "v1"
                   fieldPath: "spec.nodeName"
+            - name: "NRIA_CUSTOM_ATTRIBUTES"
+              value: {{ .Values.customAttribues }}
             - name: "NRIA_PASSTHROUGH_ENVIRONMENT"
               value: "KUBERNETES_SERVICE_HOST,KUBERNETES_SERVICE_PORT,CLUSTER_NAME,CADVISOR_PORT,NRK8S_NODE_NAME,KUBE_STATE_METRICS_URL,TIMEOUT"
             {{- if .Values.verboseLog }}

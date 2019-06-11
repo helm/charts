@@ -1,0 +1,24 @@
+{{- if and (or (.Files.Glob "files/docker-entrypoint-initdb.d/*.{sh,sql,sql.gz}") .Values.initdbScripts) (not .Values.initdbScriptsConfigMap) }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "postgresql.fullname" . }}-init-scripts
+  labels:
+    app: {{ template "postgresql.name" . }}
+    chart: {{ template "postgresql.chart" . }}
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+{{- with .Files.Glob "files/docker-entrypoint-initdb.d/*.sql.gz" }}
+binaryData:
+{{- range $path, $bytes := . }}
+  {{ base $path }}: {{ $.Files.Get $path | b64enc | quote }}
+{{- end }}
+{{- end }}
+data:
+{{- with .Files.Glob "files/docker-entrypoint-initdb.d/*.{sh,sql}" }}
+{{ .AsConfig | indent 2 }}
+{{- end }}
+{{- with .Values.initdbScripts }}
+{{ toYaml . | indent 2 }}
+{{- end }}
+{{- end }}

@@ -6,7 +6,7 @@
 
 ## Introduction
 
-This chart adds the Sumo Logic Collector to all nodes in your cluster as a
+This chart adds the [Sumo Logic FluentD Plugin](https://github.com/SumoLogic/fluentd-kubernetes-sumologic) to all nodes in your cluster as a
 DaemonSet. The image supports fluentd `file` and `systemd` log sources.
 
 After you have installed the chart, each pod, deployment, etc. can be optionally
@@ -61,8 +61,10 @@ The following table lists the configurable parameters of the sumologic-fluentd c
 |-----------|-------------|---------|
 | `podAnnotations` | Annotations to add to the DaemonSet's Pods | `{}` |
 | `tolerations` | List of node taints to tolerate (requires Kubernetes >= 1.6) | `[]` |
+| `extraEnv` | List of additional env vars to append to pods | `[]` |
 | `updateStrategy` | `OnDelete` or `RollingUpdate` (requires Kubernetes >= 1.6) | `OnDelete` |
-| `sumologic.collectorUrl` | An HTTP collector in SumoLogic that the container can send logs to via HTTP | `Nil` You must provide your own |
+| `sumologic.collectorUrl` | An HTTP collector in SumoLogic that the container can send logs to via HTTP | `Nil` You must provide your own value |
+| `sumologic.collectorUrlExistingSecret` | If set, use the secret with the name provided instead of creating a new one | `Nil` You must reference an existing secret |
 | `sumologic.fluentdSource` | The fluentd input source, `file` or `systemd` | `file` |
 | `sumologic.fluentdUserConfigDir` | A directory of user-defined fluentd configuration files, which must be in the `*.conf` directory in the container | `/fluentd/conf.d/user` |
 | `sumologic.flushInterval` | How frequently to push logs to sumo, in seconds | `5` |
@@ -90,11 +92,13 @@ The following table lists the configurable parameters of the sumologic-fluentd c
 | `sumologic.auditLogPath` | Define the path to the [Kubernetes Audit Log](https://kubernetes.io/docs/tasks/debug-application-cluster/audit/) | `/mnt/log/kube-apiserver-audit.log` |
 | `sumologic.timeKey` | The field name for json formatted sources that should be used as the time. See [time_key](https://docs.fluentd.org/v0.12/articles/formatter_json#time_key-(string,-optional,-defaults-to-%E2%80%9Ctime%E2%80%9D)). | `time`
 | `sumologic.addTimeStamp` | Option to control adding timestamp to logs. | `true`
+| `sumologic.addTime` | Option to control adding time to logs. | `true`
+| `sumologic.addStream` | Option to control adding stream to logs. | `true`
 | `sumologic.containerLogsPath` | Specify the path in_tail should watch for container logs. | `/mnt/log/containers/*.log`
 | `sumologic.proxyUri` | Add the uri of the proxy environment if present. | `Nil`
 | `sumologic.enableStatWatcher` | Option to control the enabling of [stat_watcher](https://docs.fluentd.org/v1.0/articles/in_tail#enable_stat_watcher). | `true`
 | `image.name` | The image repository and name to pull from | `sumologic/fluentd-kubernetes-sumologic` |
-| `image.tag` | The image tag to pull | `v1.16` |
+| `image.tag` | The image tag to pull | `v2.3.0` |
 | `image.pullPolicy` | Image pull policy | `IfNotPresent` |
 | `persistence.enabled` | Boolean value, used to turn on or off fluentd position file persistence, on nodes (requires Kubernetes >= 1.8) | `false` |
 | `persistence.hostPath` | The path, on each node, to a directory for fluentd pos files. You must create the directory on each node first or set `persistence.createPath` (requires Kubernetes >= 1.8) | `/var/run/fluentd-pos` |
@@ -105,6 +109,7 @@ The following table lists the configurable parameters of the sumologic-fluentd c
 | `resources.limits.memory` | Memory resource limits | 256Mi |
 | `rbac.create` | Is Role Based Authentication enabled in the cluster | `false` |
 | `rbac.serviceAccountName` | RBAC service account name | {{ fullname }} |
+| `daemonset.priorityClassName` | Priority Class to use for the daemonset | `Nil` |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
@@ -169,12 +174,12 @@ $ helm install --name my-release stable/sumologic-fluentd --set rbac.create=true
 
 ### Excluding and Including data
 
-You have several options controlling the filtering of data that gets sent to Sumo Logic.  
+You have several options controlling the filtering of data that gets sent to Sumo Logic.
 
 #### Excluding data using environment variables
 
 There are several environment variables that can exclude data.  The following table show which  environment variables affect which Fluentd sources.
-                                                                
+
 | Environment Variable | Containers | Docker | Kubernetes | Systemd |
 |----------------------|------------|--------|------------|---------|
 | `EXCLUDE_CONTAINER_REGEX` | ✔ | ✘ | ✘ | ✘ |

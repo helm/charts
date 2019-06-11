@@ -1,6 +1,6 @@
 {{- if or .Values.autoDiscovery.clusterName .Values.autoscalingGroups }}
 {{/* one of the above is required */}}
-apiVersion: extensions/v1beta1
+apiVersion: {{ .Values.deployment.apiVersion }}
 kind: Deployment
 metadata:
   labels:
@@ -11,6 +11,13 @@ metadata:
   name: {{ template "cluster-autoscaler.fullname" . }}
 spec:
   replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "cluster-autoscaler.name" . }}
+      release: {{ .Release.Name }}
+    {{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | indent 6 }}
+    {{- end }}
   template:
     metadata:
     {{- if .Values.podAnnotations }}
@@ -26,6 +33,9 @@ spec:
     spec:
       {{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"
+      {{- end }}
+      {{- if .Values.dnsPolicy }}
+      dnsPolicy: "{{ .Values.dnsPolicy }}"
       {{- end }}
       containers:
         - name: {{ template "cluster-autoscaler.name" . }}
@@ -65,14 +75,74 @@ spec:
           {{- end }}
 
           env:
-          {{- if eq .Values.cloudProvider "aws" }}
+          {{- if and (eq .Values.cloudProvider "aws") (ne .Values.awsRegion "") }}
             - name: AWS_REGION
               value: "{{ .Values.awsRegion }}"
+            {{- if .Values.awsAccessKeyID }}
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  key: AwsAccessKeyId
+                  name: {{ template "cluster-autoscaler.fullname" . }}
+            {{- end }}
+            {{- if .Values.awsSecretAccessKey }}
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: AwsSecretAccessKey
+                  name: {{ template "cluster-autoscaler.fullname" . }}
+            {{- end }}
           {{- else if eq .Values.cloudProvider "spotinst" }}
             - name: SPOTINST_TOKEN
               value: "{{ .Values.spotinst.token }}"
             - name: SPOTINST_ACCOUNT
               value: "{{ .Values.spotinst.account }}"
+          {{- else if eq .Values.cloudProvider "azure" }}
+            - name: ARM_SUBSCRIPTION_ID
+              valueFrom:
+                secretKeyRef:
+                  key: SubscriptionID
+                  name: {{ template "cluster-autoscaler.fullname" . }}
+            - name: ARM_RESOURCE_GROUP
+              valueFrom:
+                secretKeyRef:
+                  key: ResourceGroup
+                  name: {{ template "cluster-autoscaler.fullname" . }}
+            - name: ARM_VM_TYPE
+              valueFrom:
+                secretKeyRef:
+                  key: VMType
+                  name: {{ template "cluster-autoscaler.fullname" . }}
+            {{- if .Values.azureUseManagedIdentityExtension }}
+            - name: ARM_USE_MANAGED_IDENTITY_EXTENSION
+              value: "true"
+            {{- else }}
+            - name: ARM_TENANT_ID
+              valueFrom:
+                secretKeyRef:
+                  key: TenantID
+                  name: {{ template "cluster-autoscaler.fullname" . }}
+            - name: ARM_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  key: ClientID
+                  name: {{ template "cluster-autoscaler.fullname" . }}
+            - name: ARM_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: ClientSecret
+                  name: {{ template "cluster-autoscaler.fullname" . }}
+            - name: AZURE_CLUSTER_NAME
+              valueFrom:
+                secretKeyRef:
+                  key: ClusterName
+                  name: {{ template "cluster-autoscaler.fullname" . }}
+            - name: AZURE_NODE_RESOURCE_GROUP
+              valueFrom:
+                secretKeyRef:
+                  key: NodeResourceGroup
+                  name: {{ template "cluster-autoscaler.fullname" . }}
+            {{- end }}
           {{- end }}
           {{- range $key, $value := .Values.extraEnv }}
             - name: {{ $key }}
@@ -109,10 +179,10 @@ spec:
       volumes:
         - name: ssl-certs
           hostPath:
-            path: {{ .Values.sslCertPath }}
+            path: {{ .Values.sslCertHostPath }}
         {{- if eq .Values.cloudProvider "gce" }}
         - name: cloudconfig
           hostPath:
             path: {{ .Values.cloudConfigPath }}
         {{- end }}
-{{- end}}
+{{- end }}

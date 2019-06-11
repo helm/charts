@@ -29,7 +29,8 @@ Learn more about deploying a production ready consensus framework based on Apach
 
 - Kubernetes 1.9+
 - PV provisioner support in the underlying infrastructure.
-- Two K8S secrets containing:
+- K8S secrets containing:
+    - the crypto-materials (e.g. signcert, key, cacert, and optionally intermediatecert, CA credentials)
     - the genesis block for the Orderer
     - the certificate of the Orderer Organisation Admin
 - A running [Kafka Chart](https://github.com/kubernetes/charts/tree/master/incubator/kafka) if you are using the `kafka` consensus mechanism.
@@ -49,12 +50,10 @@ The command deploys the Hyperledger Fabric Orderer on the Kubernetes cluster in 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 
 ```bash
-$ helm install stable/hlf-ord --name ord1 --set caUsername=ord1,caPassword=secretpassword
+$ helm install stable/hlf-ord --name ord1 --set ord.mspID=MyMSP
 ```
 
-The above command specifies (but does not register/enroll) an Orderer username of `ord1` with password `secretpassword`.
-
-Alternatively, a YAML file can be provided while installing the chart. This file specifies values to override those provided in the defualt values.yaml. For example,
+Alternatively, a YAML file can be provided while installing the chart. This file specifies values to override those provided in the default values.yaml. For example,
 
 ```bash
 $ helm install stable/hlf-ord --name ord1 -f my-values.yaml
@@ -62,11 +61,10 @@ $ helm install stable/hlf-ord --name ord1 -f my-values.yaml
 
 ## Updating the chart
 
-When updating the chart, make sure you provide the `caPassword`, otherwise `helm update` will generate a new random (and invalid) password.
+To update the chart run:
 
 ```bash
-$ export CA_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} ord1-hlf-ord -o jsonpath="{.data.CA_PASSWORD}" | base64 --decode; echo)
-$ helm upgrade ord1 stable/hlf-ord --set caPassword=$CA_PASSWORD
+$ helm upgrade ord1 stable/hlf-ord -f my-values.yaml
 ```
 
 ## Uninstalling the Chart
@@ -90,19 +88,29 @@ The following table lists the configurable parameters of the Hyperledger Fabric 
 | `image.pullPolicy`                 | Image pull policy                                | `IfNotPresent`                                             |
 | `service.port`                     | TCP port                                         | `7050`                                                     |
 | `service.type`                     | K8S service type exposing ports, e.g. `ClusterIP`| `ClusterIP`                                                |
+| `ingress.enabled`                  | If true, Ingress will be created                 | `false`                                                    |
+| `ingress.annotations`              | Ingress annotations                              | `{}`                                                       |
+| `ingress.path`                     | Ingress path                                     | `/`                                                        |
+| `ingress.hosts`                    | Ingress hostnames                                | `[]`                                                       |
+| `ingress.tls`                      | Ingress TLS configuration                        | `[]`                                                       |
 | `persistence.accessMode`           | Use volume as ReadOnly or ReadWrite              | `ReadWriteOnce`                                            |
 | `persistence.annotations`          | Persistent Volume annotations                    | `{}`                                                       |
 | `persistence.size`                 | Size of data volume (adjust for production!)     | `1Gi`                                                      |
 | `persistence.storageClass`         | Storage class of backing PVC                     | `default`                                                  |
-| `caAddress`                        | Address of CA to register/enroll with            | `hlf-ca.local`                                             |
-| `caUsername`                       | Username for registering/enrolling with CA       | `ord1`                                                     |
-| `caPassword`                       | Password for registering/enrolling with CA       | Random 24 alphanumeric characters                          |
-| `ord.hlfToolsVersion`              | Version of Hyperledger Fabric tools used         | `1.1.0`                                                    |
 | `ord.type`                         | Type of Orderer (`solo` or `kafka`)              | `solo`                                                     |
 | `ord.mspID`                        | ID of MSP the Orderer belongs to                 | `OrdererMSP`                                               |
-| `secrets.genesis`                  | Secret containing Genesis Block for orderer      | `hlf--genesis`                                             |
-| `secrets.adminCert`                | Secret containing Orderer Org admin certificate  | `hlf--ord-admincert`                                       |
-| `secrets.caServerTls`              | Secret containing CA Server TLS certificate      | `ca--tls`                                                  |
+| `ord.tls.server.enabled`           | Do we enable server-side TLS?                    | `false`                                                    |
+| `ord.tls.client.enabled`           | Do we enable client-side TLS?                    | `false`                                                    |
+| `secrets.ord.cred`                 | Credentials: 'CA_USERNAME' and 'CA_PASSWORD'     | ``                                                         |
+| `secrets.ord.cert`                 | Certificate: as 'cert.pem'                       | ``                                                         |
+| `secrets.ord.key`                  | Private key: as 'key.pem'                        | ``                                                         |
+| `secrets.ord.caCert`               | CA Cert: as 'cacert.pem'                         | ``                                                         |
+| `secrets.ord.intCaCert`            | Int. CA Cert: as 'intermediatecacert.pem'        | ``                                                         |
+| `secrets.ord.tls`                  | TLS secret: as 'tls.crt' and 'tls.key'           | ``                                                         |
+| `secrets.ord.tlsRootCert`          | TLS root CA certificate: as 'cert.pem'           | ``                                                         |
+| `secrets.ord.tlsClientRootCert`    | TLS client root CA certificate: as 'cert.pem'    | ``                                                         |
+| `secrets.genesis`                  | Secret containing Genesis Block for orderer      | ``                                                         |
+| `secrets.adminCert`                | Secret containing Orderer Org admin certificate  | ``                                                         |
 | `resources`                        | CPU/Memory resource requests/limits              | `{}`                                                       |
 | `nodeSelector`                     | Node labels for pod assignment                   | `{}`                                                       |
 | `tolerations`                      | Toleration labels for pod assignment             | `[]`                                                       |
@@ -113,6 +121,16 @@ The following table lists the configurable parameters of the Hyperledger Fabric 
 The volume stores the Fabric Orderer data and configurations at the `/var/hyperledger` path of the container.
 
 The chart mounts a [Persistent Volume](http://kubernetes.io/docs/user-guide/persistent-volumes/) at this location. The volume is created using dynamic volume provisioning through a PersistentVolumeClaim managed by the chart.
+
+## Upgrading from version 1.1.x
+
+Previous versions of this chart performed enrollment with the Fabric CA directly from the pod. This prevented the possibility of using development cryptographic material (certificates and keys) from Cryptogen or the usage of other CA mechanisms.
+
+Instead, crypto-material and CA credentials are stored separately as secrets.
+
+If you used the former type of chart, you will need to obtain the relevant credentials and cryptographic material from the running pod, and save it externally to a set of secrets, whose names you will need to feed into the chart, under the `secrets.ord` section.
+
+An example upgrade procedure is described in `UPGRADE_1-1-x.md`
 
 ## Feedback and feature requests
 

@@ -5,31 +5,34 @@ metadata:
   labels:
     app: {{ template "postgresql.name" . }}
     chart: {{ template "postgresql.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
-{{- if .Values.metrics.enabled }}
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+{{- with .Values.service.annotations }}
   annotations:
-    prometheus.io/scrape: "true"
-    prometheus.io/port: "9187"
+{{ toYaml . | indent 4 }}
 {{- end }}
 spec:
   type: {{ .Values.service.type }}
-  ports:
-  {{- if .Values.metrics.enabled }}
-  - name: metrics
-    port: 9187
-    targetPort: metrics
+  {{- if and .Values.service.loadBalancerIP (eq .Values.service.type "LoadBalancer") }}
+  loadBalancerIP: {{ .Values.service.loadBalancerIP }}
   {{- end }}
-  - name: postgresql
-    port: {{ .Values.service.port }}
-    targetPort: postgresql
-  {{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nodePort))) }}
-    nodePort: {{ .Values.service.nodePort }}
-  {{- end }}
-{{- if .Values.service.externalIPs }}
-  externalIPs:
-{{ toYaml .Values.service.externalIPs | indent 4 }}
+  {{- if and (eq .Values.service.type "LoadBalancer") .Values.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+  {{ with .Values.service.loadBalancerSourceRanges }}
+{{ toYaml . | indent 4 }}
 {{- end }}
+  {{- end }}
+  {{- if and (eq .Values.service.type "ClusterIP") .Values.service.clusterIP }}
+  clusterIP: {{ .Values.service.clusterIP }}
+  {{- end }}
+  ports:
+  - name: postgresql
+    port: {{ template "postgresql.port" . }}
+    targetPort: postgresql
+    {{- if .Values.service.nodePort }}
+    nodePort: {{ .Values.service.nodePort }}
+    {{- end }}
   selector:
     app: {{ template "postgresql.name" . }}
-    release: {{ .Release.Name }}
+    release: {{ .Release.Name | quote }}
+    role: master

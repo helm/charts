@@ -1,0 +1,101 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "aws-alb-ingress-controller.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "aws-alb-ingress-controller.name" . }}
+    helm.sh/chart: {{ include "aws-alb-ingress-controller.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "aws-alb-ingress-controller.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "aws-alb-ingress-controller.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+      {{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | indent 8}}
+      {{- end }}
+    {{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8}}
+    {{- end }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args:
+            - --cluster-name={{ required "specify clusterName via --set clusterName=YourClusterName" .Values.clusterName }}
+          {{- if .Values.scope.ingressClass }}
+            - --ingress-class={{ .Values.scope.ingressClass }}
+          {{- end }}
+          {{- if .Values.scope.singleNamespace }}
+            - --watch-namespace={{ default .Release.Namespace .Values.scope.watchNamespace }}
+          {{- end }}
+          {{ if not .Values.autoDiscoverAwsRegion }}
+            - --aws-region={{ .Values.awsRegion }}
+          {{- end }}
+          {{- if not .Values.autoDiscoverAwsVpcID }}
+            - --aws-vpc-id={{ .Values.awsVpcID }}
+          {{- end }}
+          {{- range $key, $value := .Values.extraArgs }}
+            - --{{ $key }}={{ $value }}
+          {{- end }}
+          env:
+          {{- range $key, $value := .Values.extraEnv }}
+            - name: {{ $key }}
+              value: "{{ $value }}"
+          {{- end }}
+          ports:
+            - name: health
+              containerPort: 10254
+              protocol: TCP
+          {{- if .Values.enableReadinessProbe }}
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: health
+              scheme: HTTP
+            initialDelaySeconds: {{ .Values.readinessProbeInitialDelay }}
+            periodSeconds: {{ .Values.readinessProbeInterval }}
+            timeoutSeconds: {{ .Values.readinessProbeTimeout }}
+          {{- end }}
+          {{- if .Values.enableLivenessProbe }}
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: health
+              scheme: HTTP
+            initialDelaySeconds: {{ add .Values.livenessProbeInitialDelay .Values.readinessProbeInitialDelay }}
+            periodSeconds: 60
+          {{- end }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+          {{- with .Values.volumeMounts }}
+          volumeMounts:
+{{ toYaml . | indent 12 }}
+          {{- end }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.volumes }}
+      volumes:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+      serviceAccountName: {{ if .Values.rbac.create }}{{ include "aws-alb-ingress-controller.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+      terminationGracePeriodSeconds: 60

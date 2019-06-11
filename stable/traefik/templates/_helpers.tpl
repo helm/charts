@@ -27,6 +27,13 @@ If release name contains chart name it will be used as a full name.
 {{- end -}}
 
 {{/*
+Create chart name and version as used by the chart label.
+*/}}
+{{- define "traefik.chart" -}}
+{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{/*
 Create the block for the ProxyProtocol's Trusted IPs.
 */}}
 {{- define "traefik.trustedips" -}}
@@ -83,10 +90,22 @@ Create the block for acme.domains.
 {{- end -}}
 
 {{/*
+Create the block for acme.resolvers.
+*/}}
+{{- define "traefik.acme.dnsResolvers" -}}
+         resolvers = [
+	   {{- range $idx, $ips := .Values.acme.resolvers }}
+	     {{- if $idx }},{{ end }}
+	     {{- $ips | quote }}
+	   {{- end -}}
+         ]
+{{- end -}}
+
+{{/*
 Create custom cipherSuites block
 */}}
 {{- define "traefik.ssl.cipherSuites" -}}
-          chipherSuites = [
+          cipherSuites = [
           {{- range $idx, $cipher := .Values.ssl.cipherSuites }}
             {{- if $idx }},{{ end }}
             {{ $cipher | quote }}

@@ -14,7 +14,15 @@ spec:
   - host: {{ .Values.ingressGate.host | quote }}
     http:
       paths:
+      {{- if index $.Values.ingress "annotations" }}
+      {{- if eq (index $.Values.ingress.annotations "kubernetes.io/ingress.class" | default "") "gce" "alb" }}
+      - path: /*
+      {{- else }}{{/* Has annotations but ingress class is not "gce" nor "alb" */}}
       - path: /
+      {{- end }}
+      {{- else}}{{/* Has no annotations */}}
+      - path: /
+      {{- end }}
         backend:
           serviceName: spin-gate
           servicePort: 8084

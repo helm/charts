@@ -1,28 +1,50 @@
-# Minikube stores its logs in a separate directory.
+  # Minikube stores its logs in a separate directory.
 # enable if started in minikube.
 on_minikube: false
 
 image:
   fluent_bit:
     repository: fluent/fluent-bit
-    tag: 0.14.4
+    tag: 1.1.2
   pullPolicy: Always
+
+testFramework:
+  image: "dduportal/bats"
+  tag: "0.4.0"
+
+nameOverride: ""
+fullnameOverride: ""
 
 # When enabled, exposes json and prometheus metrics on {{ .Release.Name }}-metrics service
 metrics:
   enabled: false
   service:
+    # labels:
+    #   key: value
+    annotations: {}
+    # In order for Prometheus to consume metrics automatically use the following annotations:
+    # prometheus.io/path: "/api/v1/metrics/prometheus"
+    # prometheus.io/port: "2020"
+    # prometheus.io/scrape: "true"
     port: 2020
     type: ClusterIP
 
 # When enabled, fluent-bit will keep track of tailing offsets across pod restarts.
 trackOffsets: false
 
+## PriorityClassName
+## Ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/#priorityclass
+priorityClassName: ""
+
 backend:
   type: forward
   forward:
     host: fluentd
     port: 24284
+    tls: "off"
+    tls_verify: "on"
+    tls_debug: 1
+    shared_key:
   es:
     host: elasticsearch
     port: 9200
@@ -30,6 +52,7 @@ backend:
     index: kubernetes_cluster
     type: flb_type
     logstash_prefix: kubernetes_cluster
+    replace_dots: "On"
     time_key: "@timestamp"
     # Optional username credential for Elastic X-Pack access
     http_user:
@@ -40,7 +63,7 @@ backend:
     tls_verify: "on"
     # TLS certificate for the Elastic (in PEM format). Use if tls=on and tls_verify=on.
     tls_ca: ""
-    # TLS debugging levels = 1-5
+    # TLS debugging levels = 1-4
     tls_debug: 1
   splunk:
     host: 127.0.0.1
@@ -49,6 +72,7 @@ backend:
     send_raw: "on"
     tls: "on"
     tls_verify: "off"
+    tls_debug: 1
     message_key: "kubernetes"
 
   ##
@@ -58,6 +82,11 @@ backend:
     host: 127.0.0.1
     port: 80
     uri: "/"
+    http_user:
+    http_passwd:
+    tls: "off"
+    tls_verify: "on"
+    tls_debug: 1
     ## Specify the data format to be used in the HTTP request body
     ## Can be either 'msgpack' or 'json'
     format: msgpack
@@ -68,6 +97,20 @@ parsers:
   ## Regex required fields are name and regex. JSON required field
   ## is name.
   regex: []
+  ##  json parser config can be defined by providing an extraEntries field.
+  ##  The following entry:
+  ## json:
+  ##   - extraEntries: |
+  ##       Decode_Field_As  escaped log do_next
+  ##       Decode_Field_As  json log
+  ##
+  ##  translates into
+  ##
+  ##   Command       |  Decoder  | Field | Optional Action   |
+  ##   ==============|===========|=======|===================|
+  ##   Decode_Field_As  escaped   log  do_next
+  ##   Decode_Field_As  json log
+  ##
   json: []
 
 env: []
@@ -75,11 +118,49 @@ env: []
 ## Annotations to add to the DaemonSet's Pods
 podAnnotations: {}
 
+## By default there different 'files' provides in the config
+## (fluent-bit.conf, custom_parsers.conf). This defeats
+## changing a configmap (since it uses subPath). If this
+## variable is set, the user is assumed to have provided,
+## in 'existingConfigMap' the entire config (etc/*) of fluent-bit,
+## parsers and system config. In this case, no subPath is
+## used
+fullConfigMap: false
+
 ## ConfigMap override where fullname is {{.Release.Name}}-{{.Values.existingConfigMap}}
 ## Defining existingConfigMap will cause templates/config.yaml
 ## to NOT generate a ConfigMap resource
 ##
 existingConfigMap: ""
+
+
+# NOTE If you want to add extra sections, add them here, inbetween the includes,
+# wherever they need to go. Sections order matters.
+
+rawConfig: |-
+  @INCLUDE fluent-bit-service.conf
+  @INCLUDE fluent-bit-input.conf
+  @INCLUDE fluent-bit-filter.conf
+  @INCLUDE fluent-bit-output.conf
+
+
+# WARNING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# This is to add extra entries to an existing section, NOT for adding new sections
+# Do not submit bugs against indent being wrong. Add your new sections to rawConfig
+# instead.
+#
+extraEntries:
+  input: |-
+#     # >=1 additional Key/Value entrie(s) for existing Input section
+  filter: |-
+#     # >=1 additional Key/Value entrie(s) for existing Filter section
+  output: |-
+#     # >=1 additional Key/Value entrie(s) for existing Ouput section
+# WARNING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+## Extra ports to add to the daemonset ports section
+extraPorts: []
 
 ## Extra volumes containing additional files required for fluent-bit to work
 ## (eg. CA certificates)
@@ -92,12 +173,20 @@ extraVolumes: []
 ##
 extraVolumeMounts: []
 
-resources:
-  limits:
-    memory: 100Mi
-  requests:
-    cpu: 100m
-    memory: 100Mi
+resources: {}
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 10m
+  #   memory: 8Mi
+
+# When enabled, pods will bind to the node's network namespace.
+hostNetwork: false
+
+# Which DNS policy to use for the pod.
+# Consider switching to 'ClusterFirstWithHostNet' when 'hostNetwork' is enabled.
+dnsPolicy: ClusterFirst
 
 ## Node tolerations for fluent-bit scheduling to nodes with taints
 ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
@@ -112,28 +201,54 @@ tolerations: []
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
 ##
 nodeSelector: {}
+affinity: {}
+
+service:
+  flush: 1
+  logLevel: info
+
+input:
+  tail:
+    memBufLimit: 5MB
+    parser: docker
+    path: /var/log/containers/*.log
+  systemd:
+    enabled: false
+    filters:
+      systemdUnit:
+        - docker.service
+        - kubelet.service
+        - node-problem-detector.service
+    maxEntries: 1000
+    readFromTail: true
+    tag: host.*
 
 filter:
   kubeURL: https://kubernetes.default.svc:443
   kubeCAFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
   kubeTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
   kubeTag: kube
+  kubeTagPrefix: kube.var.log.containers.
+
 # If true, check to see if the log field content is a JSON string map, if so,
 # it append the map fields as part of the log structure.
-#  mergeJSONLog: true
+  mergeJSONLog: true
 
 # If true, enable the use of monitoring for a pod annotation of
 # fluentbit.io/parser: parser_name. parser_name must be the name
 # of a parser contained within parsers.conf
-#  enableParser: true
+  enableParser: true
 
 # If true, enable the use of monitoring for a pod annotation of
 # fluentbit.io/exclude: true. If present, discard logs from that pod.
-#  enableExclude: true
+  enableExclude: true
 
 rbac:
   # Specifies whether RBAC resources should be created
   create: true
+
+taildb:
+  directory: /var/lib/fluent-bit
 
 serviceAccount:
   # Specifies whether a ServiceAccount should be created

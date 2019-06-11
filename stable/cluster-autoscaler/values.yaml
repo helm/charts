@@ -23,18 +23,36 @@ autoscalingGroupsnamePrefix: []
 
 # Required if cloudProvider=aws
 awsRegion: us-east-1
+awsAccessKeyID: ""
+awsSecretAccessKey: ""
 
-# Currently only `gce`, `aws` & `spotinst` are supported
+# Required if cloudProvider=azure
+# clientID/ClientSecret with contributor permission to Cluster and Node ResourceGroup
+azureClientID: ""
+azureClientSecret: ""
+# Cluster resource Group
+azureResourceGroup: ""
+azureSubscriptionID: ""
+azureTenantID: ""
+# if using AKS azureVMType should be set to "AKS"
+azureVMType: "AKS"
+azureClusterName: ""
+azureNodeResourceGroup: ""
+# if using MSI, ensure subscription ID and resource group are set
+azureUseManagedIdentityExtension: false
+
+# Currently only `gce`, `aws`, `azure` & `spotinst` are supported
 cloudProvider: aws
 
 sslCertPath: /etc/ssl/certs/ca-certificates.crt
+sslCertHostPath: /etc/ssl/certs/ca-certificates.crt
 
 # Configuration file for cloud provider
 cloudConfigPath: /etc/gce.conf
 
 image:
   repository: k8s.gcr.io/cluster-autoscaler
-  tag: v1.2.2
+  tag: v1.13.1
   pullPolicy: IfNotPresent
 
 tolerations: []
@@ -75,6 +93,9 @@ podAnnotations: {}
 podLabels: {}
 replicaCount: 1
 
+deployment:
+  apiVersion: "extensions/v1beta1"
+
 rbac:
   ## If true, create & use RBAC resources
   ##
@@ -95,6 +116,11 @@ resources: {}
   #   memory: 300Mi
 
 priorityClassName: ""
+
+# Defaults to "ClusterFirst". Valid values are
+# 'ClusterFirstWithHostNet', 'ClusterFirst', 'Default' or 'None'
+# autoscaler does not depend on cluster DNS, recommended to set this to "Default"
+# dnsPolicy: "Default"
 
 service:
   annotations: {}
@@ -118,3 +144,15 @@ spotinst:
     repository: spotinst/kubernetes-cluster-autoscaler
     tag: 0.6.0
     pullPolicy: IfNotPresent
+
+## Are you using Prometheus Operator?
+serviceMonitor:
+  enabled: false
+  interval: "10s"
+   # Namespace Prometheus is installed in
+  namespace: monitoring
+   ## Defaults to whats used if you follow CoreOS [Prometheus Install Instructions](https://github.com/helm/charts/tree/master/stable/prometheus-operator#tldr)
+   ## [Prometheus Selector Label](https://github.com/helm/charts/tree/master/stable/prometheus-operator#prometheus-operator-1)
+   ## [Kube Prometheus Selector Label](https://github.com/helm/charts/tree/master/stable/prometheus-operator#exporters)
+  selector:
+    prometheus: kube-prometheus

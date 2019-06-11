@@ -10,7 +10,7 @@ terminationGracePeriodSeconds: 30
 
 image:
   repository: docker.elastic.co/logstash/logstash-oss
-  tag: 6.4.2
+  tag: 6.7.0
   pullPolicy: IfNotPresent
   ## Add secrets manually via kubectl on kubernetes cluster and reference here
   #  pullSecrets:
@@ -19,6 +19,9 @@ image:
 service:
   type: ClusterIP
   # clusterIP: None
+  # nodePort:
+  # Set this to local, to preserve client source ip.  Default stripes out the source ip
+  # externalTrafficPolicy: Local
   annotations: {}
     ## AWS example for use with LoadBalancer service type.
     # external-dns.alpha.kubernetes.io/hostname: logstash.cluster.local
@@ -69,6 +72,9 @@ ingress:
   #    hosts:
   #      - logstash.cluster.local
 
+# set java options like heap size
+logstashJavaOpts: "-Xmx1g -Xms1g"
+
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
@@ -81,9 +87,15 @@ resources: {}
   #  cpu: 100m
   #  memory: 128Mi
 
+priorityClassName: ""
+
 nodeSelector: {}
 
 tolerations: []
+
+securityContext:
+  fsGroup: 1000
+  runAsUser: 1000
 
 affinity: {}
   # podAntiAffinity:
@@ -103,6 +115,18 @@ podLabels: {}
   # team: "developers"
   # service: "logstash"
 
+extraEnv: []
+
+extraInitContainers: []
+  # - name: echo
+  #   image: busybox
+  #   imagePullPolicy: Always
+  #   args:
+  #     - echo
+  #     - hello
+
+podManagementPolicy: OrderedReady
+ # can be OrderReady or Parallel
 livenessProbe:
   httpGet:
     path: /
@@ -141,6 +165,8 @@ volumeMounts:
     mountPath: /usr/share/logstash/data
   - name: patterns
     mountPath: /usr/share/logstash/patterns
+  - name: files
+    mountPath: /usr/share/logstash/files
   - name: pipeline
     mountPath: /usr/share/logstash/pipeline
 
@@ -207,6 +233,38 @@ config:
 patterns:
   # main: |-
   #   TESTING {"foo":.*}$
+
+## Custom files that can be referenced by plugins.
+## Each YAML heredoc will become located in the logstash home directory under
+## the files subdirectory.
+files:
+  # logstash-template.json: |-
+  #   {
+  #     "order": 0,
+  #     "version": 1,
+  #     "index_patterns": [
+  #       "logstash-*"
+  #     ],
+  #     "settings": {
+  #       "index": {
+  #         "refresh_interval": "5s"
+  #       }
+  #     },
+  #     "mappings": {
+  #       "doc": {
+  #         "_meta": {
+  #           "version": "1.0.0"
+  #         },
+  #         "enabled": false
+  #       }
+  #     },
+  #     "aliases": {}
+  #   }
+
+## Custom binary files encoded as base64 string that can be referenced by plugins
+## Each base64 encoded string is decoded & mounted as a file under logstash home directory under
+## the files subdirectory.
+binaryFiles: {}
 
 ## NOTE: To achieve multiple pipelines with this chart, current best practice
 ## is to maintain one pipeline per chart release. In this way configuration is

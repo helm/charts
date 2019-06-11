@@ -2,8 +2,8 @@ apiVersion: v1
 description: A Helm chart to collect Kubernetes logs with metricbeat
 icon: https://www.elastic.co/assets/blt47799dcdcf08438d/logo-elastic-beats-lt.svg
 name: metricbeat
-version: 0.3.1
-appVersion: 6.4.2
+version: 1.6.4
+appVersion: 6.7.0
 home: https://www.elastic.co/products/beats/metricbeat
 sources:
 - https://www.elastic.co/guide/en/beats/metricbeat/current/index.html

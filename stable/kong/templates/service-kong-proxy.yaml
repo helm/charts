@@ -13,17 +13,45 @@ metadata:
     heritage: "{{ .Release.Service }}"
 spec:
   type: {{ .Values.proxy.type }}
-  {{- if and (eq .Values.proxy.type "LoadBalancer") .Values.proxy.loadBalancerIP }}
+  {{- if eq .Values.proxy.type "LoadBalancer" }}
+  {{- if .Values.proxy.loadBalancerIP }}
   loadBalancerIP: {{ .Values.proxy.loadBalancerIP }}
   {{- end }}
+  {{- if .Values.proxy.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+  {{- range $cidr := .Values.proxy.loadBalancerSourceRanges }}
+  - {{ $cidr }}
+  {{- end }}
+  {{- end }}
+  {{- end }}
+  externalIPs:
+  {{- range $ip := .Values.proxy.externalIPs }}
+  - {{ $ip }}
+  {{- end }}
   ports:
+  {{- if .Values.proxy.http.enabled }}
   - name: kong-proxy
-    port: {{ .Values.proxy.servicePort }}
-    targetPort: {{ .Values.proxy.containerPort }}
-  {{- if (and (eq .Values.proxy.type "NodePort") (not (empty .Values.proxy.nodePort))) }}
-    nodePort: {{ .Values.proxy.nodePort }}
+    port: {{ .Values.proxy.http.servicePort }}
+    targetPort: {{ .Values.proxy.http.containerPort }}
+  {{- if (and (eq .Values.proxy.type "NodePort") (not (empty .Values.proxy.http.nodePort))) }}
+    nodePort: {{ .Values.proxy.http.nodePort }}
   {{- end }}
     protocol: TCP
+  {{- end }}
+  {{- if or .Values.proxy.tls.enabled }}
+  - name: kong-proxy-tls
+    port: {{ .Values.proxy.tls.servicePort }}
+    targetPort: {{ .Values.proxy.tls.containerPort }}
+  {{- if (and (eq .Values.proxy.type "NodePort") (not (empty .Values.proxy.tls.nodePort))) }}
+    nodePort: {{ .Values.proxy.tls.nodePort }}
+  {{- end }}
+    protocol: TCP
+  {{- end }}
+  {{- if .Values.proxy.externalTrafficPolicy }}
+  externalTrafficPolicy: {{ .Values.proxy.externalTrafficPolicy }}
+  {{- end }}
+
   selector:
     app: {{ template "kong.name" . }}
     release: {{ .Release.Name }}
+    component: app

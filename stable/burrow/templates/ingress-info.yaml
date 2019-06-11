@@ -1,0 +1,43 @@
+{{- if .Values.info.ingress.enabled -}}
+{{- $serviceName := printf "%s-info" (include "burrow.fullname" .) -}}
+{{- $servicePort := $.Values.config.info.ListenPort -}}
+{{- $pathLeader := .Values.info.ingress.pathLeader -}}
+{{- $partialIngress := .Values.info.ingress.partial -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  labels:
+    app: {{ template "burrow.name" . }}
+    chart: {{ template "burrow.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "burrow.fullname" . }}-info
+  annotations:
+{{ toYaml .Values.info.ingress.annotations | indent 4 }}
+spec:
+  rules:
+{{- range $host := .Values.info.ingress.hosts }}
+    - host: {{ $host }}
+      http:
+        paths:
+{{- if $partialIngress }}
+          - path: {{ $pathLeader }}/account
+            backend:
+              serviceName: {{ $serviceName }}
+              servicePort: {{ $servicePort }}
+          - path: {{ $pathLeader }}/block
+            backend:
+              serviceName: {{ $serviceName }}
+              servicePort: {{ $servicePort }}
+{{- else }}
+          - path: {{ $pathLeader }}
+            backend:
+              serviceName: {{ $serviceName }}
+              servicePort: {{ $servicePort }}
+{{- end -}}
+{{- end -}}
+{{- if .Values.info.ingress.tls }}
+  tls:
+{{ toYaml .Values.info.ingress.tls | indent 4 }}
+{{- end -}}
+{{- end -}}

@@ -44,11 +44,12 @@ The following table lists the configurable parameters of the Centrifugo chart an
 
 | Parameter                  | Description                           | Default                                                   |
 | -------------------------- | ------------------------------------- | --------------------------------------------------------- |
-| `image`                    | Cetrifugo image                       | `centrifugo/centrifugo:{VERSION}`                         |
-| `imagePullPolicy`          | Image pull policy                     | `IfNotPresent`                                            |
-| `resources`                | CPU/Memory resource requests/limits   | `{}`                              |
+| `image.repository`         | Cetrifugo image repository            | `centrifugo/centrifugo`                                   |
+| `image.tag`                | Cetrifugo image tag                   | `v2.1.0`                                                  |
+| `image.pullPolicy`         | Image pull policy                     | `IfNotPresent`                                            |
+| `resources`                | CPU/Memory resource requests/limits   | `{}`                                                      |
 | `config`                   | Centrifugo config                     | `default`                                                 |
-| `args`                     | Centrifugo args                       | `--web=true`                                              |
+| `args`                     | Centrifugo args                       | `--config=centrifugo/config.json --admin --health`        |
 
 For more information please refer to the [documentation](https://fzambia.gitbooks.io/centrifugal/content/index.html).
 

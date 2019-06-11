@@ -1,3 +1,4 @@
+{{- $highAvailability := gt (int .Values.keycloak.replicas) 1 -}}
 apiVersion: v1
 kind: Service
 metadata:
@@ -15,6 +16,12 @@ spec:
       port: {{ .Values.keycloak.service.port }}
       targetPort: http
       protocol: TCP
+  {{- if $highAvailability }}
+    - name: jgroups
+      port: {{ .Values.keycloak.service.jgroupsPort }}
+      targetPort: jgroups
+      protocol: TCP
+  {{- end }}
   selector:
     app: {{ template "keycloak.name" . }}
     release: "{{ .Release.Name }}"

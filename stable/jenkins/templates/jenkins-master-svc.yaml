@@ -3,32 +3,36 @@ kind: Service
 metadata:
   name: {{template "jenkins.fullname" . }}
   labels:
-    app: {{ template "jenkins.fullname" . }}
-    heritage: {{.Release.Service | quote }}
-    release: {{.Release.Name | quote }}
-    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-    component: "{{.Release.Name}}-{{.Values.Master.Component}}"
-{{- if .Values.Master.ServiceAnnotations }}
+    "app.kubernetes.io/name": '{{ template "jenkins.name" .}}'
+    "helm.sh/chart": "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    "app.kubernetes.io/managed-by": "{{ .Release.Service }}"
+    "app.kubernetes.io/instance": "{{ .Release.Name }}"
+    "app.kubernetes.io/component": "{{ .Values.master.componentName }}"
+    {{- if .Values.master.serviceLabels }}
+{{ toYaml .Values.master.serviceLabels | indent 4 }}
+    {{- end }}
+{{- if .Values.master.serviceAnnotations }}
   annotations:
-{{ toYaml .Values.Master.ServiceAnnotations | indent 4 }}
+{{ toYaml .Values.master.serviceAnnotations | indent 4 }}
 {{- end }}
 spec:
   ports:
-    - port: {{.Values.Master.ServicePort}}
+    - port: {{.Values.master.servicePort}}
       name: http
-      targetPort: 8080
-      {{if (and (eq .Values.Master.ServiceType "NodePort") (not (empty .Values.Master.NodePort)))}}
-      nodePort: {{.Values.Master.NodePort}}
+      targetPort: {{ .Values.master.targetPort }}
+      {{if (and (eq .Values.master.serviceType "NodePort") (not (empty .Values.master.nodePort)))}}
+      nodePort: {{.Values.master.nodePort}}
       {{end}}
   selector:
-    component: "{{.Release.Name}}-{{.Values.Master.Component}}"
-  type: {{.Values.Master.ServiceType}}
-  {{if eq .Values.Master.ServiceType "LoadBalancer"}}
-{{- if .Values.Master.LoadBalancerSourceRanges }}
+    "app.kubernetes.io/component": "{{ .Values.master.componentName }}"
+    "app.kubernetes.io/instance": "{{ .Release.Name }}"
+  type: {{.Values.master.serviceType}}
+  {{if eq .Values.master.serviceType "LoadBalancer"}}
+{{- if .Values.master.loadBalancerSourceRanges }}
   loadBalancerSourceRanges:
-{{ toYaml .Values.Master.LoadBalancerSourceRanges | indent 4 }}
+{{ toYaml .Values.master.loadBalancerSourceRanges | indent 4 }}
 {{- end }}
-  {{if .Values.Master.LoadBalancerIP}}
-  loadBalancerIP: {{.Values.Master.LoadBalancerIP}}
+  {{if .Values.master.loadBalancerIP}}
+  loadBalancerIP: {{.Values.master.loadBalancerIP}}
   {{end}}
   {{end}}

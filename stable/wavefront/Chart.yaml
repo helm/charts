@@ -1,0 +1,21 @@
+apiVersion: v1
+name: wavefront
+description: Wavefront Kubernetes collector
+appVersion: 0.9.7
+version: 1.0.0
+keywords:
+- metric
+- monitoring
+- observability
+- alerting
+home: https://www.wavefront.com
+sources:
+- https://github.com/wavefrontHQ/wavefront-kubernetes-collector
+- https://github.com/wavefrontHQ/java/tree/master/proxy
+maintainers:
+- name: vikramraman
+  email: rvikram@vmware.com
+- name: puckpuck
+  email: pierre@wavefront.com
+- name: krisclarkdev
+  email: clarkk@vmware.com

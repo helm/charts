@@ -1,0 +1,33 @@
+{{- if .Values.psp.create -}}
+
+apiVersion: extensions/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: {{ template "metallb.fullname" . }}-speaker
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: {{ template "metallb.chart" . }}
+    app: {{ template "metallb.name" . }}
+spec:
+  hostNetwork: true
+  hostPorts:
+  - min: 7472
+    max: 7472
+  privileged: true
+  allowPrivilegeEscalation: false
+  allowedCapabilities:
+  - 'NET_ADMIN'
+  - 'NET_RAW'
+  - 'SYS_ADMIN'
+  volumes:
+  - '*'
+  fsGroup:
+    rule: RunAsAny
+  runAsUser:
+    rule: RunAsAny
+  seLinux:
+    rule: RunAsAny
+  supplementalGroups:
+    rule: RunAsAny
+{{- end -}}

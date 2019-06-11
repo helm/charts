@@ -1,4 +1,5 @@
 {{- if eq .Values.controller.kind "DaemonSet" }}
+{{- $useHostPort := .Values.controller.daemonset.useHostPort -}}
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
@@ -16,10 +17,11 @@ spec:
   minReadySeconds: {{ .Values.controller.minReadySeconds }}
   template:
     metadata:
+      {{- if .Values.controller.podAnnotations }}
       annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/controller-configmap.yaml") . | sha256sum }}
       {{- range $key, $value := .Values.controller.podAnnotations }}
         {{ $key }}: {{ $value | quote }}
+      {{- end }}
       {{- end }}
       labels:
         app: {{ template "nginx-ingress.name" . }}
@@ -37,6 +39,10 @@ spec:
 {{- if .Values.controller.priorityClassName }}
       priorityClassName: "{{ .Values.controller.priorityClassName }}"
 {{- end }}
+      {{- if .Values.controller.podSecurityContext }}
+      securityContext:
+{{ toYaml .Values.controller.podSecurityContext | indent 8 }}
+      {{- end }}
       containers:
         - name: {{ template "nginx-ingress.name" . }}-{{ .Values.controller.name }}
           image: "{{ .Values.controller.image.repository }}:{{ .Values.controller.image.tag }}"
@@ -85,8 +91,7 @@ spec:
                 - ALL
                 add:
                 - NET_BIND_SERVICE
-            # www-data -> 33
-            runAsUser: 33
+            runAsUser: {{ .Values.controller.image.runAsUser }}
           {{- end }}
           env:
             - name: POD_NAME
@@ -112,13 +117,13 @@ spec:
             failureThreshold: {{ .Values.controller.livenessProbe.failureThreshold }}
           ports:
             - name: http
-              containerPort: 80
+              containerPort: {{ .Values.controller.containerPort.http }}
               protocol: TCP
               {{- if .Values.controller.daemonset.useHostPort }}
               hostPort: {{ .Values.controller.daemonset.hostPorts.http }}
               {{- end }}
             - name: https
-              containerPort: 443
+              containerPort: {{ .Values.controller.containerPort.https }}
               protocol: TCP
               {{- if .Values.controller.daemonset.useHostPort }}
               hostPort: {{ .Values.controller.daemonset.hostPorts.https }}
@@ -127,21 +132,30 @@ spec:
             - name: stats
               containerPort: 18080
               protocol: TCP
-            {{- if .Values.controller.metrics.enabled }}
+              {{- if .Values.controller.daemonset.useHostPort }}
+              hostPort: {{ .Values.controller.daemonset.hostPorts.stats }}
+              {{- end }}
+          {{- end }}
+          {{- if .Values.controller.metrics.enabled }}
             - name: metrics
               containerPort: 10254
               protocol: TCP
-            {{- end }}
           {{- end }}
           {{- range $key, $value := .Values.tcp }}
             - name: "{{ $key }}-tcp"
               containerPort: {{ $key }}
               protocol: TCP
+              {{- if $useHostPort }}
+              hostPort: {{ $key }}
+              {{- end }}
           {{- end }}
           {{- range $key, $value := .Values.udp }}
             - name: "{{ $key }}-udp"
               containerPort: {{ $key }}
               protocol: UDP
+              {{- if $useHostPort }}
+              hostPort: {{ $key }}
+              {{- end }}
           {{- end }}
           readinessProbe:
             httpGet:
@@ -162,7 +176,7 @@ spec:
               readOnly: true
 {{- end }}
 {{- if .Values.controller.extraVolumeMounts }}
-{{ toYaml .Values.controller.extraVolumeMounts | indent 10}}
+{{ toYaml .Values.controller.extraVolumeMounts | indent 12}}
 {{- end }}
           resources:
 {{ toYaml .Values.controller.resources | indent 12 }}
@@ -200,6 +214,6 @@ spec:
               path: nginx.tmpl
 {{- end }}
 {{- if .Values.controller.extraVolumes }}
-{{ toYaml .Values.controller.extraVolumes | indent 6}}
+{{ toYaml .Values.controller.extraVolumes | indent 8}}
 {{- end }}
 {{- end }}

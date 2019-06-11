@@ -1,0 +1,25 @@
+{{ if .Values.nfs.mountOptions -}}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-{{ template "nfs-client-provisioner.fullname" . }}
+  labels: 
+    nfs-client-provisioner: {{ template "nfs-client-provisioner.fullname" . }}
+spec:
+  capacity:
+    storage: 10Mi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: {{ .Values.storageClass.reclaimPolicy }}
+  storageClassName: ""
+  {{- if .Values.nfs.mountOptions }}
+  mountOptions:
+    {{- range .Values.nfs.mountOptions }}
+    - {{ . }}
+    {{- end }}
+  {{- end }}
+  nfs:
+    server: {{ .Values.nfs.server }}
+    path: {{ .Values.nfs.path }}
+{{ end -}}

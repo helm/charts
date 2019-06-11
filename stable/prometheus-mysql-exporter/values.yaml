@@ -33,10 +33,49 @@ tolerations: []
 
 affinity: {}
 
+podLabels: {}
+
 annotations:
   prometheus.io/scrape: "true"
   prometheus.io/path: "/metrics"
-  prometheus.io/port: 9104
+  prometheus.io/port: "9104"
+
+collectors: {}
+  # auto_increment.columns: false
+  # binlog_size: false
+  # engine_innodb_status: false
+  # engine_tokudb_status: false
+  # global_status: true
+  # global_variables: true
+  # info_schema.clientstats: false
+  # info_schema.innodb_metrics: false
+  # info_schema.innodb_tablespaces: false
+  # info_schema.innodb_cmp: false
+  # info_schema.innodb_cmpmem: false
+  # info_schema.processlist: false
+  # info_schema.processlist.min_time: 0
+  # info_schema.query_response_time: false
+  # info_schema.tables: true
+  # info_schema.tables.databases: '*'
+  # info_schema.tablestats: false
+  # info_schema.schemastats: false
+  # info_schema.userstats: false
+  # perf_schema.eventsstatements: false
+  # perf_schema.eventsstatements.digest_text_limit: 120
+  # perf_schema.eventsstatements.limit: false
+  # perf_schema.eventsstatements.timelimit: 86400
+  # perf_schema.eventswaits: false
+  # perf_schema.file_events: false
+  # perf_schema.file_instances: false
+  # perf_schema.indexiowaits: false
+  # perf_schema.tableiowaits: false
+  # perf_schema.tablelocks: false
+  # perf_schema.replication_group_member_stats: false
+  # slave_status: true
+  # slave_hosts: false
+  # heartbeat: false
+  # heartbeat.database: heartbeat
+  # heartbeat.table: heartbeat
 
 # mysql connection params which build the DATA_SOURCE_NAME env var of the docker container
 mysql:

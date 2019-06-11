@@ -1,7 +1,7 @@
 apiVersion: v1
-description: Toolkit for building data processing pipelines.
+description: DEPRECATED Toolkit for building data processing pipelines.
 name: spring-cloud-data-flow
-version: 0.2.6
+version: 0.2.7
 appVersion: 1.6.2.RELEASE
 home: http://cloud.spring.io/spring-cloud-dataflow/
 sources:
@@ -10,8 +10,5 @@ sources:
 - https://github.com/spring-cloud/spring-cloud-skipper
 - https://github.com/spring-cloud/spring-cloud-dataflow-metrics-collector
 icon: https://raw.githubusercontent.com/spring-cloud/spring-cloud-dataflow/master/spring-cloud-dataflow-docs/src/main/docbook/images/logo.png
-maintainers:
-- name: trisberg
-  email: trisberg@pivotal.io
-- name: chrisjs
-  email: cschaefer@pivotal.io
+# The chart has been moved to stable.
+deprecated: true

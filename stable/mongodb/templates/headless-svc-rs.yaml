@@ -9,8 +9,7 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 {{- if .Values.service.annotations }}
-  annotations:
-{{ toYaml .Values.service.annotations | indent 4 }}
+  annotations: {{ toYaml .Values.service.annotations | nindent 4 }}
 {{- end }}
 spec:
   type: ClusterIP

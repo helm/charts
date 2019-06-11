@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: "{{ template "inbucket.name" . }}-test-{{ randAlphaNum 5 | lower }}"
+  name: "{{ include "inbucket.name" . }}-test-{{ randAlphaNum 5 | lower }}"
   labels:
-    chart: {{ template "inbucket.chart" . }}
-    app: {{ template "inbucket.name" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ include "inbucket.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "inbucket.chart" . }}
   annotations:
     "helm.sh/hook": test-success
 spec:
@@ -36,7 +36,7 @@ spec:
   volumes:
   - name: tests
     configMap:
-      name: {{ template "inbucket.name" . }}-tests
+      name: {{ include "inbucket.name" . }}-tests
   - name: tools
     emptyDir: {}
   restartPolicy: Never

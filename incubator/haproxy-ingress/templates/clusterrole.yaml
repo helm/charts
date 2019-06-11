@@ -1,7 +1,12 @@
-{{- if or .Values.rbac.create -}}
+{{- if .Values.rbac.create -}}
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
 metadata:
+  labels:
+    app: {{ template "haproxy-ingress.name" . }}
+    chart: {{ template "haproxy-ingress.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
   name: {{ template "haproxy-ingress.fullname" . }}
 rules:
   - apiGroups:
@@ -30,7 +35,7 @@ rules:
       - list
       - watch
   - apiGroups:
-      - "extensions"
+      - extensions
     resources:
       - ingresses
     verbs:
@@ -45,7 +50,7 @@ rules:
       - create
       - patch
   - apiGroups:
-      - "extensions"
+      - extensions
     resources:
       - ingresses/status
     verbs:

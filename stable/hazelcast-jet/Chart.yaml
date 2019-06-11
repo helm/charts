@@ -1,0 +1,23 @@
+apiVersion: v1
+name: hazelcast-jet
+version: 1.1.1
+appVersion: "3.0"
+description: Hazelcast Jet is an application embeddable, distributed computing engine built on top of Hazelcast In-Memory Data Grid (IMDG). With Hazelcast IMDG providing storage functionality, Hazelcast Jet performs parallel execution to enable data-intensive applications to operate in near real-time.
+keywords:
+- hazelcast
+- jet
+- streaming
+home: http://jet.hazelcast.org/
+icon: http://hazelcast.com/images/logos/Hazelcast-Jet-Logo-Orange_Dark_Icon_200px.png
+sources:
+- https://github.com/hazelcast/hazelcast-jet
+maintainers:
+- name: emin
+  email: emin@hazelcast.com
+- name: leszko
+  email: rafal@hazelcast.com
+- name: googlielmo
+  email: guglielmo@hazelcast.com
+- name: mesutcelik
+  email: mesut@hazelcast.com
+engine: gotpl

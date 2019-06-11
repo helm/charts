@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ template "metrics-server.fullname" . }}-test
+  labels:
+    app: {{ template "metrics-server.name" . }}
+    chart: {{ template "metrics-server.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+  - name: wget
+    image: busybox
+    command: ['/bin/sh']
+    args:
+    - -c
+    - 'wget -qO- https://{{ include "metrics-server.fullname" . }}:{{ .Values.service.port }}/version | grep -F {{ .Values.image.tag }}'
+  restartPolicy: Never
+

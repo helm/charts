@@ -7,21 +7,21 @@ metadata:
     chart: "{{ template "nats.chart" . }}"
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
-  {{- if .Values.clientService.annotations }}
+  {{- if .Values.client.service.annotations }}
   annotations:
-{{ toYaml .Values.clientService.annotations | indent 4 }}
+{{ toYaml .Values.client.service.annotations | indent 4 }}
   {{- end }}
 spec:
-  type: {{ .Values.clientService.type }}
-  {{- if and (eq .Values.clientService.type "LoadBalancer") .Values.clientService.loadBalancerIP -}}
-  loadBalancerIP: {{ .Values.clientService.loadBalancerIP }}
+  type: {{ .Values.client.service.type }}
+  {{- if and (eq .Values.client.service.type "LoadBalancer") .Values.client.service.loadBalancerIP -}}
+  loadBalancerIP: {{ .Values.client.service.loadBalancerIP }}
   {{- end }}
   ports:
-    - port: {{ .Values.clientService.port }}
+    - port: {{ .Values.client.service.port }}
       targetPort: client
       name: client
-      {{- if and (eq .Values.clientService.type "NodePort") (not (empty .Values.clientService.nodePort)) }}
-      nodePort: {{ .Values.clientService.nodePort  }}
+      {{- if and (eq .Values.client.service.type "NodePort") (not (empty .Values.client.service.nodePort)) }}
+      nodePort: {{ .Values.client.service.nodePort  }}
       {{- end }}
   selector:
     app: "{{ template "nats.name" . }}"

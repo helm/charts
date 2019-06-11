@@ -1,0 +1,67 @@
+agent:
+  image:
+    repository: sematext/agent
+    tag: latest
+    pullPolicy: Always
+  service:
+    port: 80
+    type: ClusterIP
+  config:
+    JOURNAL_DIR: /opt/spm/st-agent
+    PIPELINE_CONSOLE_OUTPUT: false
+    PIPELINE_NULL_OUTPUT: false
+    API_SERVER_HOST: 0.0.0.0
+    LOGGING_WRITE_EVENTS: false
+    LOGGING_REQUEST_TRACKING: false
+    AUTODISCO_TEMPLATES_PATH: /etc/agent/autodisco.yml
+    LOGGING_LEVEL: warn
+  resources: {}
+
+logagent:
+  image:
+    repository: sematext/logagent
+    tag: latest
+    pullPolicy: Always
+  config:
+    LOGSENE_BULK_SIZE: "1000"
+    LOGSENE_LOG_INTERVAL: "10000"
+  resources: {}
+  extraHostVolumeMounts: {}
+  #  - name: <mountName>
+  #    hostPath: <hostPath>
+  #    mountPath: <mountPath>
+
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+# represents the infra token where most metrics, packages, processes, etc. are shipped
+infraToken: null
+# determines the token for the container app (container metrics are delivered here)
+containerToken: null
+# logs token to send logs
+logsToken: null
+
+# for private images
+# imagePullSecrets:
+
+region: US
+
+# support for custom URLs
+customUrl: {}
+  # serverBaseUrl: https://metrics-receiver.apps.test.sematext.com
+  # eventsRecieverUrl: https://event-receiver.apps.test.sematext.com
+  # logsReceiverUrl: https://logs-token-receiver.apps.test.sematext.com
+
+tolerations: []
+
+# Node labels for pod assignment
+# Ref: https://kubernetes.io/docs/user-guide/node-selection/
+nodeSelector: {}

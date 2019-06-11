@@ -1,15 +1,11 @@
-{{- if .Values.rbac.create }}
+{{- if and .Values.nodeExporter.enabled .Values.rbac.create }}
 {{- if .Values.nodeExporter.podSecurityPolicy.enabled }}
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: Role
 metadata:
   name: {{ template "prometheus.nodeExporter.fullname" . }}
   labels:
-    app: {{ template "prometheus.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.nodeExporter.name }}"
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    {{- include "prometheus.nodeExporter.labels" . | nindent 4 }}
   namespace: {{ .Release.Namespace }}
 rules:
 - apiGroups: ['extensions']

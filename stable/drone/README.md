@@ -1,11 +1,13 @@
 # Drone.io
 
-[Drone](http://readme.drone.io/) is a Continuous Integration platform built on container technology.
+[Drone](http://readme.drone.io/) v1 is a Continuous Integration platform built on container technology with native Kubernetes support.
+
+> It is not recommended to upgrade from earlier (0.8.x) versions of Drone due to the large amount of breaking changes both in the product and in the helm charts.
 
 ## TL;DR;
 
 ```console
-$ helm install stable/drone
+helm install stable/drone
 ```
 
 ## Installing the Chart
@@ -13,7 +15,26 @@ $ helm install stable/drone
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release stable/drone
+helm install --name my-release stable/drone
+```
+
+> note: The chart will not install the drone server until you have configured a source control option. If this is the case it will print out notes on how to configure it in place using `helm upgrade`.
+
+An example (secrets redacted) working install of the chart using github as the source control provider:
+
+```console
+helm install --name drone --namespace drone stable/drone
+
+kubectl create secret generic drone-server-secrets \
+      --namespace=cicd-drone \
+      --from-literal=clientSecret="XXXXXXXXXXXXXXXXXXXXXXXX"
+
+helm upgrade drone \
+  --reuse-values --set 'service.type=LoadBalancer' \
+  --set 'service.loadBalancerIP=2.1.60.3' --set 'sourceControl.provider=github' \
+  --set 'sourceControl.github.clientID=XXXXXXXX' \
+  --set 'sourceControl.secret=drone-server-secrets' --set 'server.host=drone.example.com' \
+  stable/drone
 ```
 
 ## Uninstalling the Chart
@@ -21,7 +42,7 @@ $ helm install --name my-release stable/drone
 To uninstall/delete the `my-release` deployment:
 
 ```console
-$ helm delete my-release
+helm delete --purge my-release
 ```
 
 The command removes nearly all the Kubernetes components associated with the
@@ -34,7 +55,7 @@ The following table lists the configurable parameters of the drone charts and th
 | Parameter                   | Description                                                                                   | Default                     |
 |-----------------------------|-----------------------------------------------------------------------------------------------|-----------------------------|
 | `images.server.repository`  | Drone **server** image                                                                        | `docker.io/drone/drone`     |
-| `images.server.tag`         | Drone **server** image tag                                                                    | `0.8.6`                     |
+| `images.server.tag`         | Drone **server** image tag                                                                    | `0.8.9`                     |
 | `images.server.pullPolicy`  | Drone **server** image pull policy                                                            | `IfNotPresent`              |
 | `images.agent.repository`   | Drone **agent** image                                                                         | `docker.io/drone/agent`     |
 | `images.agent.tag`          | Drone **agent** image tag                                                                     | `0.8.6`                     |
@@ -42,6 +63,7 @@ The following table lists the configurable parameters of the drone charts and th
 | `images.dind.repository`    | Docker **dind** image                                                                         | `docker.io/library/docker`  |
 | `images.dind.tag`           | Docker **dind** image tag                                                                     | `18.06.1-ce-dind`           |
 | `images.dind.pullPolicy`    | Docker **dind** image pull policy                                                             | `IfNotPresent`              |
+| `service.annotations`       | Service annotations                                                                           | `{}`                        |
 | `service.httpPort`          | Drone's Web GUI HTTP port                                                                     | `80`                        |
 | `service.nodePort`          | If `service.type` is `NodePort` and this is non-empty, sets the http node port of the service | `32015`                     |
 | `service.type`              | Service type (ClusterIP, NodePort or LoadBalancer)                                            | `ClusterIP`                 |
@@ -49,9 +71,23 @@ The following table lists the configurable parameters of the drone charts and th
 | `ingress.annotations`       | Ingress annotations                                                                           | `{}`                        |
 | `ingress.hosts`             | Ingress accepted hostnames                                                                    | `nil`                       |
 | `ingress.tls`               | Ingress TLS configuration                                                                     | `[]`                        |
-| `server.host`               | Drone **server** scheme and hostname                                                          | `(internal hostname)`       |
+| `sourceControl.provider`               | name of source control provider [github,gitlab,gitea,gogs,bitbucketCloud,bitbucketServer]              | ``       |
+| `sourceControl.secret`               | name of secret containing source control keys and passwords              | ``       |
+| `sourceControl.github`               | values to configure github    | see values.yaml       |
+| `sourceControl.gitlab`               | values to configure gitlab    | see values.yaml       |
+| `sourceControl.gitea`               | values to configure gitea    | see values.yaml       |
+| `sourceControl.gogs`               | values to configure gogs    | see values.yaml       |
+| `sourceControl.bitbucketCloud`               | values to configure bitbucket cloud    | see values.yaml       |
+| `sourceControl.bitbucketServer`               | values to configure bitbucket server (stash)    | see values.yaml       |
+| `server.host`               | Drone **server** hostname (should match callback url in oauth config)              | `(internal hostname)`       |
+| `server.protocol`               | Drone **server** scheme/protocol [http,https]                                                         | `http`       |
 | `server.env`                | Drone **server** environment variables                                                        | `(default values)`          |
 | `server.envSecrets`         | Drone **server** secret environment variables                                                 | `(default values)`          |
+| `server.adminUser`         | Initial user to create and set as admin                                                 | ``          |
+| `server.alwaysAuth`         | whether to authenticate when cloning public repositories                                                 | `false`          |
+| `server.kubernetes.enabled`         | whether to use kubernetes to run pipelines (if `false` will run agents instead)                                            | `true`          |
+| `server.kubernetes.namespace`         | namespace in which to run pipelines, defaults to release namespace.                                            | ``          |
+| `server.kubernetes.pipelineServiceAccount`         | if rbac is enabled, what should name of pipeline service account be?                                            | ``          |
 | `server.annotations`        | Drone **server** annotations                                                                  | `{}`                        |
 | `server.resources`          | Drone **server** pod resource requests & limits                                               | `{}`                        |
 | `server.schedulerName`      | Drone **server** alternate scheduler name                                                     | `nil`                       |
@@ -66,16 +102,9 @@ The following table lists the configurable parameters of the drone charts and th
 | `agent.schedulerName`       | Drone **agent** alternate scheduler name                                                      | `nil`                       |
 | `agent.affinity`            | Drone **agent** scheduling preferences                                                        | `{}`                        |
 | `agent.nodeSelector`        | Drone **agent** node labels for pod assignment                                                | `{}`                        |
-| `agent.livenessProbe.initialDelaySeconds` | Delay before liveness probe is initiated                                        | 0                           |
-| `agent.livenessProbe.periodSeconds` | How often to perform the probe                                                        | 10                          |
-| `agent.livenessProbe.timeoutSeconds` | When the probe times out                                                             | 1                           |
-| `agent.livenessProbe.successThreshold` | Minimum consecutive successes for the probe to be considered successful after having failed. | 1                 |
-| `agent.livenessProbe.failureThreshold` | Minimum consecutive failures for the probe to be considered failed after having succeeded. | 3                   |
-| `agent.readinessProbe.initialDelaySeconds` | Delay before readiness probe is initiated                                     | 0                            |
-| `agent.readinessProbe.periodSeconds` | How often to perform the probe                                                      | 10                           |
-| `agent.readinessProbe.timeoutSeconds` | When the probe times out                                                           | 1                            |
-| `agent.readinessProbe.successThreshold` | Minimum consecutive successes for the probe to be considered successful after having failed. | 1                |
-| `agent.readinessProbe.failureThreshold` | Minimum consecutive failures for the probe to be considered failed after having succeeded. | 3                  |
+| `agent.tolerations`         | Drone **agent** node taints to tolerate                                                       | `[]`                        |
+| `agent.livenessProbe` | Not currently used. | `{}` |
+| `agent.readinessProbe` | Not currently used  | `{}` |
 | `dind.enabled`              | Enable or disable **DinD**                                                                    | `true`                      |
 | `dind.driver`               | **DinD** storage driver                                                                       | `overlay2`                  |
 | `dind.resources`            | **DinD** pod resource requests & limits                                                       | `{}`                        |

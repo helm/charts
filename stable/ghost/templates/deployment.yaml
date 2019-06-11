@@ -4,22 +4,22 @@ kind: Deployment
 metadata:
   name: {{ template "ghost.fullname" . }}
   labels:
-    app: {{ template "ghost.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app: "{{ template "ghost.fullname" . }}"
+    chart: "{{ template "ghost.chart" . }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
 spec:
   selector:
     matchLabels:
-      app: {{ template "ghost.fullname" . }}
-      release: "{{ .Release.Name }}"
+      app: "{{ template "ghost.fullname" . }}"
+      release: {{ .Release.Name | quote }}
   replicas: 1
   template:
     metadata:
       labels:
-        app: {{ template "ghost.fullname" . }}
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-        release: "{{ .Release.Name }}"
+        app: "{{ template "ghost.fullname" . }}"
+        chart: "{{ template "ghost.chart" . }}"
+        release: {{ .Release.Name | quote }}
     spec:
       {{- if .Values.securityContext.enabled }}
       securityContext:
@@ -28,19 +28,14 @@ spec:
       {{- else }}
       initContainers:
       - name: volume-permissions
-        image: "{{ .Values.volumePermissions.image.name }}:{{ .Values.volumePermissions.image.tag }}"
-        imagePullPolicy: {{ .Values.volumePermissions.image.pullPolicy | quote }}
+        image: {{ template "ghost.volumePermissions.image" . }}
+        imagePullPolicy: "{{ .Values.volumePermissions.image.pullPolicy }}"
         command: ['sh', '-c', 'chmod -R g+rwX {{ .Values.persistence.path }}']
         volumeMounts:
         - mountPath: {{ .Values.persistence.path }}
           name: ghost-data
       {{- end }}
-      {{- if .Values.image.pullSecrets }}
-      imagePullSecrets:
-      {{- range .Values.image.pullSecrets }}
-        - name: {{ . }}
-      {{- end}}
-      {{- end }}
+{{- include "ghost.imagePullSecrets" . | indent 6 }}
       containers:
       - name: {{ template "ghost.fullname" . }}
         image: {{ template "ghost.image" . }}
@@ -87,8 +82,14 @@ spec:
         {{- end }}
         - name: GHOST_HOST
           value: {{ include "ghost.host" . | quote }}
+        - name: GHOST_PROTOCOL
+          value: {{  .Values.ghostProtocol | quote }}
         - name: GHOST_PORT_NUMBER
+        {{- if .Values.ghostPort }}
           value: {{ .Values.ghostPort | quote }}
+        {{- else }}
+          value: {{ .Values.service.port | quote }}
+        {{- end }}
         - name: GHOST_USERNAME
           value: {{ .Values.ghostUsername | quote }}
         - name: GHOST_PASSWORD
@@ -100,19 +101,33 @@ spec:
           value: {{ .Values.ghostEmail | quote }}
         - name: BLOG_TITLE
           value: {{ .Values.ghostBlogTitle | quote }}
+        {{- if .Values.smtpHost }}
         - name: SMTP_HOST
           value: {{ .Values.smtpHost | quote }}
+        {{- end }}
+        {{- if .Values.smtpPort }}
         - name: SMTP_PORT
           value: {{ .Values.smtpPort | quote }}
+        {{- end }}
+        {{- if .Values.smtpUser }}
         - name: SMTP_USER
           value: {{ .Values.smtpUser | quote }}
+        {{- end }}
+        {{- if .Values.smtpPassword }}
         - name: SMTP_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "ghost.fullname" . }}
               key: smtp-password
+        {{- end }}
+        {{- if .Values.smtpFromAddress }}
+        - name: SMTP_FROM_ADDRESS
+          value: {{ .Values.smtpFromAddress | quote }}
+        {{- end }}
+        {{- if .Values.smtpService }}
         - name: SMTP_SERVICE
           value: {{ .Values.smtpService | quote }}
+        {{- end }}
         ports:
         - name: http
           containerPort: 2368
@@ -123,6 +138,10 @@ spec:
             httpHeaders:
             - name: Host
               value: {{ include "ghost.host" . | quote }}
+            {{- if eq .Values.ghostProtocol "https" }}
+            - name: X-Forwarded-Proto
+              value: https
+            {{- end }}
           initialDelaySeconds: 120
           timeoutSeconds: 5
           failureThreshold: 6
@@ -133,6 +152,10 @@ spec:
             httpHeaders:
             - name: Host
               value: {{ include "ghost.host" . | quote }}
+            {{- if eq .Values.ghostProtocol "https" }}
+            - name: X-Forwarded-Proto
+              value: https
+            {{- end }}
           initialDelaySeconds: 30
           timeoutSeconds: 3
           periodSeconds: 5

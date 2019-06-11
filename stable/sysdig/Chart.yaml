@@ -1,6 +1,7 @@
+apiVersion: v1
 name: sysdig
-version: 1.1.0
-appVersion: 0.81.0
+version: 1.4.9
+appVersion: 0.90.2
 description: Sysdig Monitor and Secure agent
 keywords:
   - monitoring
@@ -10,7 +11,7 @@ keywords:
   - troubleshooting
   - run-time
 home: https://www.sysdig.com/
-icon: https://app.sysdigcloud.com/images/changelogs/sysdig_monitor.png
+icon: https://478h5m1yrfsa3bbe262u7muv-wpengine.netdna-ssl.com/wp-content/uploads/2019/02/Shovel_600px.png
 sources:
   - https://app.sysdigcloud.com/#/settings/user
   - https://github.com/draios/sysdig

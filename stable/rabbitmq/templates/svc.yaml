@@ -7,27 +7,38 @@ metadata:
     chart: {{ template "rabbitmq.chart" .  }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
-{{- if .Values.metrics.enabled }}
+{{- if or .Values.service.annotations .Values.metrics.enabled }}
   annotations:
+{{- end }}
+{{- if .Values.service.annotations }}
+{{ toYaml .Values.service.annotations | indent 4 }}
+{{- end }}
+{{- if .Values.metrics.enabled }}
 {{ toYaml .Values.metrics.annotations | indent 4 }}
 {{- end }}
 spec:
-  type: {{ .Values.serviceType }}
+  type: {{ .Values.service.type }}
+{{- if and (eq .Values.service.type "LoadBalancer") .Values.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+  {{ with .Values.service.loadBalancerSourceRanges }}
+{{ toYaml . | indent 4 }}
+{{- end }}
+{{- end }}
   ports:
   - name: epmd
     port: 4369
     targetPort: epmd
   - name: amqp
-    port: {{ .Values.rabbitmq.amqpPort }}
+    port: {{ .Values.service.port }}
     targetPort: amqp
-    {{- if (and (eq .Values.serviceType "NodePort") (not (empty .Values.rabbitmq.nodePort))) }}
-    nodePort: {{ .Values.rabbitmq.nodePort }}
+    {{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nodePort))) }}
+    nodePort: {{ .Values.service.nodePort }}
     {{- end }}
   - name: dist
-    port: {{ .Values.rabbitmq.distPort }}
+    port: {{ .Values.service.distPort }}
     targetPort: dist
   - name: stats
-    port: {{ .Values.rabbitmq.managerPort }}
+    port: {{ .Values.service.managerPort }}
     targetPort: stats
 {{- if .Values.metrics.enabled }}
   - name: metrics

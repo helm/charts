@@ -1,7 +1,7 @@
 ## Memcached image and tag
 ## ref: https://hub.docker.com/r/library/memcached/tags/
 ##
-image: memcached:1.5.6-alpine
+image: memcached:1.5.12-alpine
 
 ## Specify a imagePullPolicy
 ## 'Always' if imageTag is 'latest', else set to 'IfNotPresent'
@@ -29,9 +29,18 @@ memcached:
   verbosity: v
   extendedOptions: modern
 
+  ## Additional command line arguments to pass to memcached
+  ## E.g. to specify a maximum value size
+  ## extraArgs:
+  ##   - -I 2m
+  extraArgs: []
+
 ## Define various attributes of the service
 serviceAnnotations: {}
 #  prometheus.io/scrape: "true"
+
+## StatefulSet or Deployment
+kind: StatefulSet
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -41,7 +50,16 @@ resources:
     memory: 64Mi
     cpu: 50m
 
+## Key:value pair for assigning pod to specific sets of nodes
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
 nodeSelector: {}
+
+## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+tolerations: {}
+
+## Advanced scheduling controls
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+affinity: {}
 
 metrics:
   ## Expose memcached metrics in Prometheus format
@@ -64,3 +82,11 @@ metrics:
 extraContainers: |
 
 extraVolumes: |
+
+## Custom metadata labels to be applied to statefulset and pods
+# podLabels:
+#   foo: "bar"
+#   bar: "foo"
+
+# To be added to the server pod(s)
+podAnnotations: {}

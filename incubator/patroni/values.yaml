@@ -4,7 +4,7 @@ image:
   # Image was built from
   # https://github.com/zalando/spilo/tree/master/postgres-appliance
   repository: registry.opensource.zalan.do/acid/spilo-10
-  tag: 1.4-p7
+  tag: 1.4-p16
   pullPolicy: IfNotPresent
 
 # Credentials used by Patroni
@@ -17,9 +17,14 @@ credentials:
 
 # Distribution Configuration stores
 # Please note that only one of the following stores should be enabled.
+kubernetes:
+  dcs:
+    enable: true
+  configmaps:
+    enable: false
 etcd:
-  enable: true
-  deployChart: true
+  enable: false
+  deployChart: false
   # If not deploying etcd chart, fill-in value for etcd service
   # <service>.<namespace>.svc.cluster.local
   host:
@@ -52,6 +57,7 @@ walE:
   backupThresholdPercentage: 30
 
 persistentVolume:
+  enabled: true
   size: 1G
   ## database data Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
@@ -60,7 +66,7 @@ persistentVolume:
   ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
   ##   GKE, AWS & OpenStack)
   ##
-  storageClass: "-"
+  # storageClass: "-"
   subPath: ""
   mountPath: "/home/postgres/pgdata"
   annotations: {}

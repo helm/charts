@@ -26,6 +26,10 @@ service:
   # annotations:
   #   external-dns.alpha.kubernetes.io/hostname: vpn.example.com
   annotations: {}
+## Here annotations can be added to the openvpn pod
+# podAnnotations:
+#   backup.ark.heptio.com/backup-volumes: certs
+podAnnotations: {}
 
 resources:
   limits:
@@ -77,7 +81,13 @@ openvpn:
   dhcpOptionDomain: true
   # Redirect all client traffic through VPN
   redirectGateway: true
+  # Use/generate a ta.key (https://openvpn.net/community-resources/hardening-openvpn-security/)
+  taKey: false
+  # Override default cipher
+  # cipher: AES-256-CBC
   # Arbitrary lines appended to the end of the server configuration file
   # conf: |
   #  max-clients 100
   #  client-to-client
+
+nodeSelector: {}

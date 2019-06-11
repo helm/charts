@@ -18,6 +18,10 @@ spec:
       labels:
         app.kubernetes.io/name: {{ include "karma.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
+      {{- if .Values.configMap.enabled }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+      {{- end }}
     spec:
       serviceAccountName: {{ template "karma.serviceAccountName" . }}
       containers:
@@ -29,19 +33,32 @@ spec:
               containerPort: 8080
               protocol: TCP
           env:
+          {{- if .Values.configMap.enabled }}
+          - name: CONFIG_FILE
+            value: /etc/karma/karma.conf
+          {{- end }}
           {{- with .Values.env }}
 {{ toYaml . | indent 10 }}
           {{- end }}
           livenessProbe:
             httpGet:
-              path: /
+              path: {{ .Values.livenessProbe.path }}
               port: http
+            initialDelaySeconds: {{ .Values.livenessProbe.delay }}
+            periodSeconds: {{ .Values.livenessProbe.period }}
           readinessProbe:
             httpGet:
-              path: /
+              path: {{ .Values.livenessProbe.path }}
               port: http
+            initialDelaySeconds: {{ .Values.livenessProbe.delay }}
+            periodSeconds: {{ .Values.livenessProbe.period }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
+          {{- if .Values.configMap.enabled }}
+          volumeMounts:
+            - name: karma-config
+              mountPath: /etc/karma
+          {{- end }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
@@ -54,3 +71,9 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
+      {{- if .Values.configMap.enabled }}
+      volumes:
+      - name: karma-config
+        configMap:
+          name: {{ .Release.Name }}-config
+      {{- end }}

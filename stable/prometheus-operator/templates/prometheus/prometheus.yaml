@@ -1,0 +1,196 @@
+{{- if .Values.prometheus.enabled }}
+apiVersion: {{ printf "%s/v1" (.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
+kind: Prometheus
+metadata:
+  name: {{ template "prometheus-operator.fullname" . }}-prometheus
+  labels:
+    app: {{ template "prometheus-operator.name" . }}-prometheus
+{{ include "prometheus-operator.labels" . | indent 4 }}
+spec:
+  alerting:
+    alertmanagers:
+{{- if .Values.prometheus.prometheusSpec.alertingEndpoints }}
+{{ toYaml .Values.prometheus.prometheusSpec.alertingEndpoints | indent 6 }}
+{{- else }}
+      - namespace: {{ .Release.Namespace }}
+        name: {{ template "prometheus-operator.fullname" . }}-alertmanager
+        port: web
+        {{- if .Values.alertmanager.alertmanagerSpec.routePrefix }}
+        pathPrefix: "{{ .Values.alertmanager.alertmanagerSpec.routePrefix }}"
+        {{- end }}
+{{- end }}
+{{- if .Values.prometheus.prometheusSpec.image }}
+  baseImage: {{ .Values.prometheus.prometheusSpec.image.repository }}
+  version: {{ .Values.prometheus.prometheusSpec.image.tag }}
+{{- end }}
+{{- if .Values.prometheus.prometheusSpec.externalLabels }}
+  externalLabels:
+{{ toYaml .Values.prometheus.prometheusSpec.externalLabels | indent 4}}
+{{- end }}
+{{- if .Values.prometheus.prometheusSpec.prometheusExternalLabelNameClear }}
+  prometheusExternalLabelName: ""
+{{- else if .Values.prometheus.prometheusSpec.prometheusExternalLabelName }}
+  prometheusExternalLabelName: "{{ .Values.prometheus.prometheusSpec.prometheusExternalLabelName }}"  
+{{- end }}
+{{- if .Values.prometheus.prometheusSpec.replicaExternalLabelNameClear }}
+  replicaExternalLabelName: ""
+{{- else if .Values.prometheus.prometheusSpec.replicaExternalLabelName }}
+  replicaExternalLabelName: "{{ .Values.prometheus.prometheusSpec.replicaExternalLabelName }}"
+{{- end }}
+{{- if .Values.prometheus.prometheusSpec.externalUrl }}
+  externalUrl: "{{ .Values.prometheus.prometheusSpec.externalUrl }}"
+{{- else if .Values.prometheus.ingress.enabled }}
+  externalUrl: "http://{{ index .Values.prometheus.ingress.hosts 0 }}{{ .Values.prometheus.prometheusSpec.routePrefix }}"
+{{- else }}
+  externalUrl: http://{{ template "prometheus-operator.fullname" . }}-prometheus.{{ .Release.Namespace }}:9090
+{{- end }}
+{{- if .Values.prometheus.prometheusSpec.nodeSelector }}
+  nodeSelector:
+{{ toYaml .Values.prometheus.prometheusSpec.nodeSelector | indent 4 }}
+{{- end }}
+  paused: {{ .Values.prometheus.prometheusSpec.paused }}
+  replicas: {{ .Values.prometheus.prometheusSpec.replicas }}
+  logLevel:  {{ .Values.prometheus.prometheusSpec.logLevel }}
+  logFormat:  {{ .Values.prometheus.prometheusSpec.logFormat }}
+  listenLocal: {{ .Values.prometheus.prometheusSpec.listenLocal }}
+  enableAdminAPI: {{ .Values.prometheus.prometheusSpec.enableAdminAPI }}
+{{- if .Values.prometheus.prometheusSpec.scrapeInterval }}
+  scrapeInterval: {{ .Values.prometheus.prometheusSpec.scrapeInterval }}
+{{- end }}
+{{- if .Values.prometheus.prometheusSpec.evaluationInterval }}
+  evaluationInterval: {{ .Values.prometheus.prometheusSpec.evaluationInterval }}
+{{- end }}
+{{- if .Values.prometheus.prometheusSpec.resources }}
+  resources:
+{{ toYaml .Values.prometheus.prometheusSpec.resources | indent 4 }}
+{{- end }}
+  retention: {{ .Values.prometheus.prometheusSpec.retention | quote  }}
+{{- if .Values.prometheus.prometheusSpec.routePrefix }}
+  routePrefix: {{ .Values.prometheus.prometheusSpec.routePrefix | quote  }}
+{{- end }}
+{{- if .Values.prometheus.prometheusSpec.secrets }}
+  secrets:
+{{ toYaml .Values.prometheus.prometheusSpec.secrets | indent 4 }}
+{{- end }}
+{{- if .Values.prometheus.prometheusSpec.configMaps }}
+  configMaps:
+{{ toYaml .Values.prometheus.prometheusSpec.configMaps | indent 4 }}
+{{- end }}
+  serviceAccountName: {{ template "prometheus-operator.prometheus.serviceAccountName" . }}
+{{- if .Values.prometheus.prometheusSpec.serviceMonitorSelector }}
+  serviceMonitorSelector:
+{{ toYaml .Values.prometheus.prometheusSpec.serviceMonitorSelector | indent 4 }}
+{{ else if .Values.prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues  }}
+  serviceMonitorSelector:
+    matchLabels:
+      release: {{ .Release.Name | quote }}
+{{ else }}
+  serviceMonitorSelector: {}
+{{- end }}
+{{- if .Values.prometheus.prometheusSpec.serviceMonitorNamespaceSelector }}
+  serviceMonitorNamespaceSelector:
+{{ toYaml .Values.prometheus.prometheusSpec.serviceMonitorNamespaceSelector | indent 4 }}
+{{ else }}
+  serviceMonitorNamespaceSelector: {}
+{{- end }}
+{{- if .Values.prometheus.prometheusSpec.remoteRead }}
+  remoteRead:
+{{ toYaml .Values.prometheus.prometheusSpec.remoteRead | indent 4 }}
+{{- end }}
+{{- if .Values.prometheus.prometheusSpec.remoteWrite }}
+  remoteWrite:
+{{ toYaml .Values.prometheus.prometheusSpec.remoteWrite | indent 4 }}
+{{- end }}
+{{- if .Values.prometheus.prometheusSpec.securityContext }}
+  securityContext:
+{{ toYaml .Values.prometheus.prometheusSpec.securityContext | indent 4 }}
+{{- end }}
+{{- if .Values.prometheus.prometheusSpec.ruleNamespaceSelector }}
+  ruleNamespaceSelector:
+{{ toYaml .Values.prometheus.prometheusSpec.ruleNamespaceSelector | indent 4 }}
+{{ else }}
+  ruleNamespaceSelector: {}
+{{- end }}
+{{- if .Values.prometheus.prometheusSpec.ruleSelector }}
+  ruleSelector:
+{{ toYaml .Values.prometheus.prometheusSpec.ruleSelector | indent 4}}
+{{- else if .Values.prometheus.prometheusSpec.ruleSelectorNilUsesHelmValues }}
+  ruleSelector:
+    matchLabels:
+      app: {{ template "prometheus-operator.name" . }}
+      release: {{ .Release.Name | quote }}
+{{ else }}
+  ruleSelector: {}
+{{- end }}
+{{- if .Values.prometheus.prometheusSpec.storageSpec }}
+  storage:
+{{ toYaml .Values.prometheus.prometheusSpec.storageSpec | indent 4 }}
+{{- end }}
+{{- if .Values.prometheus.prometheusSpec.podMetadata }}
+  podMetadata:
+{{ toYaml .Values.prometheus.prometheusSpec.podMetadata | indent 4 }}
+{{- end }}
+{{- if .Values.prometheus.prometheusSpec.query }}
+  query:
+{{ toYaml .Values.prometheus.prometheusSpec.query | indent 4}}
+{{- end }}
+{{- if or .Values.prometheus.prometheusSpec.podAntiAffinity .Values.prometheus.prometheusSpec.affinity }}
+  affinity:
+{{- if .Values.prometheus.prometheusSpec.affinity }}
+{{ toYaml .Values.prometheus.prometheusSpec.affinity | indent 4 }}
+{{- end }}
+{{- if eq .Values.prometheus.prometheusSpec.podAntiAffinity "hard" }}
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - topologyKey: {{ .Values.prometheus.prometheusSpec.podAntiAffinityTopologyKey }}
+        labelSelector:
+          matchLabels:
+            app: prometheus
+            prometheus: {{ template "prometheus-operator.fullname" . }}-prometheus
+{{- else if eq .Values.prometheus.prometheusSpec.podAntiAffinity "soft" }}
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          topologyKey: {{ .Values.prometheus.prometheusSpec.podAntiAffinityTopologyKey }}
+          labelSelector:
+            matchLabels:
+              app: prometheus
+              prometheus: {{ template "prometheus-operator.fullname" . }}-prometheus
+{{- end }}
+{{- end }}
+{{- if .Values.prometheus.prometheusSpec.tolerations }}
+  tolerations:
+{{ toYaml .Values.prometheus.prometheusSpec.tolerations | indent 4 }}
+{{- end }}
+{{- if .Values.global.imagePullSecrets }}
+  imagePullSecrets:
+{{ toYaml .Values.global.imagePullSecrets | indent 4 }}
+{{- end }}
+{{- if or .Values.prometheus.prometheusSpec.additionalScrapeConfigs .Values.prometheus.prometheusSpec.additionalScrapeConfigsExternal }}
+  additionalScrapeConfigs:
+    name: {{ template "prometheus-operator.fullname" . }}-prometheus-scrape-confg
+    key: additional-scrape-configs.yaml
+{{- end }}
+{{- if .Values.prometheus.prometheusSpec.additionalAlertManagerConfigs }}
+  additionalAlertManagerConfigs:
+    name: {{ template "prometheus-operator.fullname" . }}-prometheus-am-confg
+    key: additional-alertmanager-configs.yaml
+{{- end }}
+{{- if .Values.prometheus.prometheusSpec.additionalAlertRelabelConfigs }}
+  additionalAlertRelabelConfigs:
+    name: {{ template "prometheus-operator.fullname" . }}-prometheus-am-relabel-confg
+    key: additional-alert-relabel-configs.yaml
+{{- end }}
+{{- if .Values.prometheus.prometheusSpec.containers }}
+  containers:
+{{ toYaml .Values.prometheus.prometheusSpec.containers | indent 4 }}
+{{- end }}
+{{- if .Values.prometheus.prometheusSpec.priorityClassName }}
+  priorityClassName: {{ .Values.prometheus.prometheusSpec.priorityClassName }}
+{{- end }}
+{{- if .Values.prometheus.prometheusSpec.thanos }}
+  thanos:
+{{ toYaml .Values.prometheus.prometheusSpec.thanos | indent 4 }}
+{{- end }}
+{{- end }}

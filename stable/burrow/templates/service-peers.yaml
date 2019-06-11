@@ -1,21 +1,32 @@
-{{ range (until (.Values.chain.numberOfNodes | int)) }}
+{{- $peerIngress := and .Values.peer.ingress.enabled (not (eq (len .Values.peer.ingress.hosts) 0)) -}}
+{{ range (until (.Values.chain.nodes | int)) }}
 {{- $nodeNumber := printf "%03d" . }}
 ---
 kind: Service
 apiVersion: v1
 metadata:
+{{- if $peerIngress }}
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: "{{ $nodeNumber }}.{{ index $.Values.peer.ingress.hosts 0 }}"
+    external-dns.alpha.kubernetes.io/ttl: "120"
+{{- end }}
   labels:
     app: {{ template "burrow.name" $ }}
-    chart: {{ $.Chart.Name }}-{{ $.Chart.Version | replace "+" "_" }}
+    chart: {{ template "burrow.chart" $ }}
     release: {{ $.Release.Name }}
     heritage: {{ $.Release.Service }}
     nodeNumber: {{ $nodeNumber | quote }}
   name: {{ template "burrow.fullname" $ }}-peer-{{ $nodeNumber }}
 spec:
-  type: {{ $.Values.service.peer.type }}
+{{- if $peerIngress }}
+  type: LoadBalancer
+  externalTrafficPolicy: Local
+{{- else }}
+  type: {{ $.Values.peer.service.type }}
+{{- end }}
   ports:
     - name: peer
-      port: {{ $.Values.service.peer.port }}
+      port: {{ $.Values.config.Tendermint.ListenPort }}
       targetPort: peer
       protocol: TCP
   selector:

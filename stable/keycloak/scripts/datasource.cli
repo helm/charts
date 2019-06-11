@@ -1,0 +1,8 @@
+# Configure datasource to use explicit query timeout in seconds
+/subsystem=datasources/data-source=KeycloakDS/:write-attribute(name=query-timeout,value=${env.DB_QUERY_TIMEOUT:300})
+
+# Configure datasource to connection before use
+/subsystem=datasources/data-source=KeycloakDS/:write-attribute(name=validate-on-match,value=${env.DB_VALIDATE_ON_MATCH:true})
+
+# Configure datasource to try all other connections before failing
+/subsystem=datasources/data-source=KeycloakDS/:write-attribute(name=use-fast-fail,value=${env.DB_USE_CAST_FAIL:false})

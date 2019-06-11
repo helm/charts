@@ -4,7 +4,7 @@ global:
   # global.image: the image that will be used for this release
   image:
     repository: weaveworks/scope
-    tag: "1.6.5"
+    tag: 1.11.1
     # global.image.pullPolicy: must be Always, IfNotPresent, or Never
     pullPolicy: "IfNotPresent"
   # global.service.*: the configuration of the service used to access the frontend
@@ -54,6 +54,8 @@ weave-scope-agent:
     # weave-scope-agent.rbac.create *must* be set to false if RBAC is not enabled in the cluster
     # weave-scope-agent.rbac.create *may* be set to false in an RBAC-enabled cluster to allow for external management of RBAC
     create: true
+  # Enabling readOnly adds --probe.no-controls to args list.
+  readOnly: false
   serviceAccount:
     # Specifies whether a ServiceAccount should be created
     create: true

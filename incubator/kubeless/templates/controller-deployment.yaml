@@ -18,9 +18,19 @@ spec:
         release: {{ .Release.Name }}
     spec:
       containers:
-      - name: controller
-        image: "{{ .Values.controller.deployment.image.repository }}:{{ .Values.controller.deployment.image.tag }}"
-        imagePullPolicy: {{ .Values.controller.deployment.image.pullPolicy }}
+      - name: kubeless-function-controller
+        image: "{{ .Values.controller.deployment.functionController.image.repository }}:{{ .Values.controller.deployment.functionController.image.tag }}"
+        imagePullPolicy: {{ .Values.controller.deployment.functionController.image.pullPolicy }}
+        resources:
+{{ toYaml .Values.controller.resources | indent 10 }}
+      - name: http-trigger-controller
+        image: "{{ .Values.controller.deployment.httpTriggerController.image.repository }}:{{ .Values.controller.deployment.httpTriggerController.image.tag }}"
+        imagePullPolicy: {{ .Values.controller.deployment.httpTriggerController.image.pullPolicy }}
+        resources:
+{{ toYaml .Values.controller.resources | indent 10 }}
+      - name: cronjob-trigger-controller
+        image: "{{ .Values.controller.deployment.cronJobTriggerController.image.repository }}:{{ .Values.controller.deployment.cronJobTriggerController.image.tag }}"
+        imagePullPolicy: {{ .Values.controller.deployment.cronJobTriggerController.image.pullPolicy }}
         resources:
 {{ toYaml .Values.controller.resources | indent 10 }}
 {{- if .Values.rbac.create }}

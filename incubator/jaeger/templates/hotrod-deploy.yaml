@@ -1,35 +1,44 @@
 {{- if .Values.hotrod.enabled -}}
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "jaeger.fullname" . }}-hotrod
   labels:
-    app: {{ template "jaeger.name" . }}
+    app.kubernetes.io/name: {{ template "jaeger.name" . }}
     jaeger-infra: hotrod-deployment
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    component: hotrod
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    helm.sh/chart: {{ include "jaeger.chart" . }}
+    app.kubernetes.io/component: hotrod
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.hotrod.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ template "jaeger.name" . }}
+      app.kubernetes.io/component: hotrod
+      app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ template "jaeger.name" . }}
-        component: hotrod
-        release: {{ .Release.Name }}
-        jaeger-infra: hotrod-instance
+        app.kubernetes.io/name: {{ template "jaeger.name" . }}
+        app.kubernetes.io/component: hotrod
+        app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       containers:
         - name: {{ template "jaeger.fullname" . }}-hotrod
           image: {{ .Values.hotrod.image.repository }}:{{ .Values.hotrod.image.tag }}
           imagePullPolicy: {{ .Values.hotrod.image.pullPolicy }}
           env:
-            - name: JAEGER_AGENT_HOST_PORT
+            - name: JAEGER_AGENT_HOST
               valueFrom:
                 configMapKeyRef:
                   name: {{ template "jaeger.fullname" . }}
-                  key: hotrod.agent-host-port
+                  key: hotrod.agent-host
+            - name: JAEGER_AGENT_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "jaeger.fullname" . }}
+                  key: hotrod.agent-port
           ports:
             - containerPort: {{ .Values.hotrod.service.internalPort }}
           livenessProbe:

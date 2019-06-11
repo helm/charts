@@ -3,10 +3,7 @@ kind: Service
 metadata:
   name: {{ template "prometheus-pushgateway.fullname" . }}
   labels:
-    app: {{ template "prometheus-pushgateway.name" . }}
-    chart: {{ template "prometheus-pushgateway.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+{{ template "prometheus-pushgateway.defaultLabels" merge (dict "extraLabels" .Values.serviceLabels) .  }}
 spec:
   type: {{ .Values.service.type }}
   ports:

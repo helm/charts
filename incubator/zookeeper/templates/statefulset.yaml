@@ -52,10 +52,11 @@ spec:
         - name: zookeeper
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command:
-            - /bin/bash
-            - -xec
-            - zkGenConfig.sh && exec zkServer.sh start-foreground
+        {{- with .Values.command }}
+          command: {{ range . }}
+             - {{ . | quote }}
+          {{- end }}
+        {{- end }}
           ports:
 {{- range $key, $port := .Values.ports }}
             - name: {{ $key }}
@@ -74,11 +75,11 @@ spec:
           {{- end }}
           {{- range $secret := .Values.secrets }}
             {{- range $key := $secret.keys }}
-          - name: {{ (print $secret.name "_" $key) | upper }}
-            valueFrom:
-              secretKeyRef:
-                name: {{ $secret.name }}
-                key: {{ $key }}
+            - name: {{ (print $secret.name "_" $key) | upper }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $secret.name }}
+                  key: {{ $key }}
             {{- end }}
           {{- end }}
           resources:

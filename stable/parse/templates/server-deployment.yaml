@@ -4,7 +4,7 @@ metadata:
   name: {{ template "parse.fullname" . }}-server
   labels:
     app: {{ template "parse.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: {{ template "parse.chart" . }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
     component: "server"
@@ -23,12 +23,12 @@ spec:
         release: "{{ .Release.Name }}"
         component: "server"
     spec:
-      {{- if .Values.server.image.pullSecrets }}
-      imagePullSecrets:
-      {{- range .Values.server.image.pullSecrets }}
-        - name: {{ . }}
-      {{- end}}
+      {{- if .Values.server.securityContext.enabled }}
+      securityContext:
+        fsGroup: {{ .Values.server.securityContext.fsGroup }}
+        runAsUser: {{ .Values.server.securityContext.runAsUser }}
       {{- end }}
+{{- include "parse.imagePullSecrets" . | indent 6 }}
       containers:
       - name: {{ template "parse.fullname" . }}
         image: {{ template "parse.server.image" . }}

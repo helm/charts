@@ -1,0 +1,11 @@
+name: nfs
+version: 0.1.0
+appVersion: 0.1.0
+description: A Helm chart for NFS server
+sources:
+- https://github.com/kubernetes/examples/tree/master/staging/volumes/nfs
+keywords:
+- nfs
+maintainers:
+- name: yuchaoran2011
+  email: yuchaoran2011@gmail.com

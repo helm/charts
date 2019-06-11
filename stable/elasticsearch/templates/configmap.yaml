@@ -1,3 +1,4 @@
+{{ $minorAppVersion := regexFind "[0-9]*.[0-9]*" .Values.appVersion | float64 -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -41,10 +42,19 @@ data:
 
 {{- if .Values.cluster.xpackEnable }}
     # see https://www.elastic.co/guide/en/x-pack/current/xpack-settings.html
+  {{- if or ( gt $minorAppVersion 5.4 ) ( eq $minorAppVersion 5.4 ) }}
     xpack.ml.enabled: ${XPACK_ML_ENABLED:false}
+  {{- end }}
     xpack.monitoring.enabled: ${XPACK_MONITORING_ENABLED:false}
     xpack.security.enabled: ${XPACK_SECURITY_ENABLED:false}
     xpack.watcher.enabled: ${XPACK_WATCHER_ENABLED:false}
+{{- else }}
+  {{- if or ( gt $minorAppVersion 5.4 ) ( eq $minorAppVersion 5.4 ) }}
+    xpack.ml.enabled: false
+  {{- end }}
+    xpack.monitoring.enabled: false
+    xpack.security.enabled: false
+    xpack.watcher.enabled: false
 {{- end }}
 {{- else if hasPrefix "6." .Values.appVersion }}
     # see https://github.com/kubernetes/kubernetes/issues/3595
@@ -55,7 +65,7 @@ data:
         ping.unicast.hosts: ${DISCOVERY_SERVICE:}
         minimum_master_nodes: ${MINIMUM_MASTER_NODES:2}
 
-{{- if (.Values.cluster.xpackEnable) and .Values.appVersion gt 6.3  }}
+{{- if and ( .Values.cluster.xpackEnable ) ( gt $minorAppVersion 6.3 )  }}
     # see https://www.elastic.co/guide/en/x-pack/current/xpack-settings.html
     # After 6.3 xpack systems changed and are enabled by default and different configs manage them this enables monitoring
     xpack.monitoring.collection.enabled: ${XPACK_MONITORING_ENABLED:false}
@@ -80,45 +90,14 @@ data:
 {{- with .Values.cluster.config }}
 {{ toYaml . | indent 4 }}
 {{- end }}
-{{- if hasPrefix "2." .Values.image.tag }}
+{{- if hasPrefix "2." .Values.appVersion }}
   logging.yml: |-
-    # you can override this using by setting a system property, for example -Des.logger.level=DEBUG
-    es.logger.level: INFO
-    rootLogger: ${es.logger.level}, console
-    logger:
-      # log action execution errors for easier debugging
-      action: DEBUG
-      # reduce the logging for aws, too much is logged under the default INFO
-      com.amazonaws: WARN
-    appender:
-      console:
-        type: console
-        layout:
-          type: consolePattern
-          conversionPattern: "[%d{ISO8601}][%-5p][%-25c] %m%n"
-{{- else if hasPrefix "5." .Values.image.tag }}
+{{ toYaml .Values.cluster.loggingYml | indent 4 }}
+{{- else }}
   log4j2.properties: |-
-    status = error
-    appender.console.type = Console
-    appender.console.name = console
-    appender.console.layout.type = PatternLayout
-    appender.console.layout.pattern = [%d{ISO8601}][%-5p][%-25c{1.}] %marker%m%n
-    rootLogger.level = info
-    rootLogger.appenderRef.console.ref = console
-    logger.searchguard.name = com.floragunn
-    logger.searchguard.level = info
-{{- else if hasPrefix "6." .Values.image.tag }}
-  log4j2.properties: |-
-    status = error
-    appender.console.type = Console
-    appender.console.name = console
-    appender.console.layout.type = PatternLayout
-    appender.console.layout.pattern = [%d{ISO8601}][%-5p][%-25c{1.}] %marker%m%n
-    rootLogger.level = info
-    rootLogger.appenderRef.console.ref = console
-    logger.searchguard.name = com.floragunn
-    logger.searchguard.level = info
+{{ tpl .Values.cluster.log4j2Properties . | indent 4 }}
 {{- end }}
+{{- if .Values.data.hooks.drain.enabled }}
   pre-stop-hook.sh: |-
     #!/bin/bash
     exec &> >(tee -a "/var/log/elasticsearch-hooks.log")
@@ -155,3 +134,4 @@ data:
       }"
     fi
     echo "Node ${NODE_NAME} is ready to be used"
+{{- end }}

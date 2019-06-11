@@ -4,12 +4,44 @@ kind: Role
 metadata:
   name: {{ template "patroni.fullname" . }}
   labels:
-    app: {{ template "patroni.name" . }}
+    app: {{ template "patroni.fullname" . }}
     chart: {{ template "patroni.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 rules:
-  - apiGroups: [""]
-    resources: ["endpoints", "pods"]
-    verbs: ["patch"]
+- apiGroups: [""]
+  resources: ["configmaps"]
+  verbs:
+  - create
+  - get
+  - list
+  - patch
+  - update
+  - watch
+  # delete is required only for 'patronictl remove'
+  - delete
+- apiGroups: [""]
+  resources: ["services"]
+  verbs:
+  - create
+- apiGroups: [""]
+  resources: ["endpoints"]
+  verbs:
+  - create
+  - get
+  - patch
+  - update
+  # the following three privileges are necessary only when using endpoints
+  - list
+  - watch
+  # delete is required only for for 'patronictl remove'
+  - delete
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs:
+  - get
+  - list
+  - patch
+  - update
+  - watch
 {{- end }}

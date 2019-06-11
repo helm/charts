@@ -1,21 +1,25 @@
 {{- if .Values.query.enabled -}}
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "jaeger.query.name" . }}
   labels:
-    app: {{ template "jaeger.name" . }}
-    jaeger-infra: query-deployment
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    component: query
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ template "jaeger.name" . }}
+    helm.sh/chart: {{ include "jaeger.chart" . }}
+    app.kubernetes.io/component: query
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
 {{- if .Values.query.annotations }}
   annotations:
 {{ toYaml .Values.query.annotations | indent 4 }}
 {{- end }}
 spec:
   replicas: {{ .Values.query.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ template "jaeger.name" . }}
+      app.kubernetes.io/component: query
+      app.kubernetes.io/instance: {{ .Release.Name }}
   strategy:
     type: Recreate
   template:
@@ -25,10 +29,9 @@ spec:
 {{ toYaml .Values.query.podAnnotations | indent 8 }}
 {{- end }}
       labels:
-        app: {{ template "jaeger.name" . }}
-        component: query
-        release: {{ .Release.Name }}
-        jaeger-infra: query-pod
+        app.kubernetes.io/name: {{ template "jaeger.name" . }}
+        app.kubernetes.io/component: query
+        app.kubernetes.io/instance: {{ .Release.Name }}
 {{- if .Values.query.podLabels }}
 {{ toYaml .Values.query.podLabels | indent 8 }}
 {{- end }}
@@ -44,6 +47,10 @@ spec:
         image: {{ .Values.query.image }}:{{ .Values.tag }}
         imagePullPolicy: {{ .Values.query.pullPolicy }}
         env:
+          {{- range $key, $value := .Values.query.cmdlineParams }}
+          - name: {{ $key | replace "." "_" | replace "-" "_" | upper | quote }}
+            value: {{ $value }}
+          {{- end }}
           - name: SPAN_STORAGE_TYPE
             valueFrom:
               configMapKeyRef:
@@ -65,6 +72,16 @@ spec:
               configMapKeyRef:
                 name: {{ template "jaeger.fullname" . }}
                 key: cassandra.keyspace
+          - name: CASSANDRA_USERNAME
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "jaeger.fullname" . }}
+                key: cassandra.username
+          - name: CASSANDRA_PASSWORD
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "jaeger.fullname" . }}
+                key: cassandra.password
           {{- end }}
           {{- if eq .Values.storage.type "elasticsearch" }}
           - name: ES_PASSWORD
@@ -93,6 +110,11 @@ spec:
               configMapKeyRef:
                 name: {{ template "jaeger.fullname" . }}
                 key: query.health-check-http-port
+          - name: QUERY_BASE_PATH
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "jaeger.fullname" . }}
+                key: query.base-path
         ports:
         - containerPort: {{ .Values.query.service.targetPort }}
           protocol: TCP
@@ -102,6 +124,26 @@ spec:
           httpGet:
             path: /
             port: {{ .Values.query.healthCheckPort }}
+{{- if .Values.query.agentSidecar.enabled }}
+      - name: {{ template "jaeger.agent.name" . }}-sidecar
+        image: {{ .Values.agent.image }}:{{ .Values.tag }}
+        imagePullPolicy: {{ .Values.agent.pullPolicy }}
+        env:
+        - name: COLLECTOR_HOST_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: {{ template "jaeger.fullname" . }}
+              key: collector.host-port
+        ports:
+        - containerPort: {{ .Values.agent.service.zipkinThriftPort }}
+          protocol: UDP
+        - containerPort: {{ .Values.agent.service.compactPort }}
+          protocol: UDP
+        - containerPort: {{ .Values.agent.service.binaryPort }}
+          protocol: UDP
+        - containerPort: {{ .Values.agent.service.samplingPort }}
+          protocol: TCP
+{{- end }}
       dnsPolicy: {{ .Values.query.dnsPolicy }}
       restartPolicy: Always
 {{- end -}}

@@ -13,6 +13,7 @@ spec:
     metadata:
       labels:
         app: {{ template "influxdb.fullname" . }}
+        release: "{{ .Release.Name }}"
     spec:
       containers:
       - name: {{ template "influxdb.fullname" . }}
@@ -64,6 +65,10 @@ spec:
           mountPath: {{ .Values.config.storage_directory }}
         - name: config
           mountPath: /etc/influxdb
+        {{- if .Values.initScripts.enabled }}
+        - name: init
+          mountPath: /docker-entrypoint-initdb.d
+        {{- end }}
       volumes:
       - name: data
       {{- if .Values.persistence.enabled }}
@@ -80,6 +85,11 @@ spec:
       - name: config
         configMap:
           name: {{ template "influxdb.fullname" . }}
+      {{- if .Values.initScripts.enabled }}
+      - name: init
+        configMap:
+          name: {{ template "influxdb.fullname" . }}-init
+      {{- end }}
     {{- if .Values.schedulerName }}
       schedulerName: "{{ .Values.schedulerName }}"
     {{- end }}
@@ -87,3 +97,11 @@ spec:
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
       {{- end -}}
+      {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      {{- end }}

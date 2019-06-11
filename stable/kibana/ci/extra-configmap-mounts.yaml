@@ -1,0 +1,6 @@
+---
+extraConfigMapMounts:
+  - name: logtrail-configs
+    configMap: kibana-logtrail
+    mountPath: /usr/share/kibana/plugins/logtrail/logtrail.json
+    subPath: logtrail.json

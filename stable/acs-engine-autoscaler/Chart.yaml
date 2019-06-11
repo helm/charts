@@ -1,14 +1,12 @@
 apiVersion: v1
-description: Scales worker nodes within agent pools
+deprecated: true
+# acs-engine-autoscaler is deprecated. If you wish to use the autoscaler in acs-engine, refer to
+# https://github.com/kubernetes/autoscaler instead.
+description: DEPRECATED Scales worker nodes within agent pools
 icon: https://github.com/kubernetes/kubernetes/blob/master/logo/logo.png
 name: acs-engine-autoscaler
-version: 2.2.0
+version: 2.2.2
 appVersion: 2.1.1
 home: https://github.com/wbuchwalter/Kubernetes-acs-engine-autoscaler
 sources:
 - https://github.com/wbuchwalter/Kubernetes-acs-engine-autoscaler
-maintainers:
-- name: ritazh
-  email: ritazh@microsoft.com
-- name: wbuchwalter
-  email: wibuch@microsoft.com

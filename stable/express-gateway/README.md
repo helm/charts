@@ -49,7 +49,7 @@ and their default values.
 | Parameter            | Description                                                                                            | Default                          |
 |----------------------|--------------------------------------------------------------------------------------------------------|----------------------------------|
 | image.repository     | Express Gateway image                                                                                  | `expressgateway/express-gateway` |
-| image.tag            | Express Gateway image version                                                                          | `1.12.1`                         |
+| image.tag            | Express Gateway image version                                                                          | `v1.16.2`               |
 | image.pullPolicy     | Image pull policy                                                                                      | `IfNotPresent`                   |
 | replicaCount         | Express Gateway instance count                                                                         | `1`                              |
 | admin.servicePort    | TCP port on which the Express Gateway admin service is exposed                                         | `9876`                           |
@@ -75,7 +75,7 @@ and their default values.
 
 ### Express Gateway configuration parameters
 
-Express Gateway is configured through the [Admin API interface][admin-api]. Its complete configuraton is stored in a config map.
+Express Gateway is configured through the [Admin API interface][admin-api]. Its complete configuration is stored in a config map.
 However there are some parameters that need to beset up before the container can start.
 
 ```yml

@@ -24,6 +24,9 @@ spec:
         release: {{ .Release.Name }}
       annotations:
         checksum/config: {{ include (print .Template.BasePath "/config-openvpn.yaml") . | sha256sum }}
+        {{- if .Values.podAnnotations }}
+{{ toYaml .Values.podAnnotations | indent 8 }}
+        {{- end }}
     spec:
       containers:
       - name: {{ .Chart.Name }}
@@ -76,6 +79,14 @@ spec:
             path: "pki/issued/server.crt"
           - key: "dh.pem"
             path: "pki/dh.pem"
+          {{- if .Values.openvpn.taKey }}
+          - key: "ta.key"
+            path: "pki/ta.key"
+          {{- end }}
         {{- else }}
         emptyDir: {}
         {{- end -}}
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+        {{ toYaml .Values.nodeSelector }}
+      {{- end }}

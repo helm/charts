@@ -16,20 +16,20 @@ verboseLog: false
 
 image:
   repository: newrelic/infrastructure-k8s
-  tag: 1.2.0
+  tag: 1.9.0
   pullPolicy: IfNotPresent
 
 resources:
   limits:
-    cpu: 100m
-    memory: 128Mi
+    memory: 150M
   requests:
     cpu: 100m
-    memory: 128Mi
+    memory: 30M
 
 rbac:
   # Specifies whether RBAC resources should be created
   create: true
+  pspEnabled: false
 
 serviceAccount:
   # Specifies whether a ServiceAccount should be created
@@ -89,3 +89,6 @@ nodeSelector: {}
 tolerations: []
 
 updateStrategy: RollingUpdate
+
+# Custom attributes to be passed to the New Relic agent
+customAttribues: "'{\"clusterName\":\"$(CLUSTER_NAME)\"}'"

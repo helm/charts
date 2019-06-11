@@ -1,0 +1,46 @@
+# Generated from 'general.rules' group from https://raw.githubusercontent.com/coreos/kube-prometheus/master/manifests/prometheus-rules.yaml
+# Do not change in-place! In order to change this file first read following link:
+# https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
+{{- if and .Values.defaultRules.create .Values.defaultRules.rules.general }}
+apiVersion: {{ printf "%s/v1" (.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
+kind: PrometheusRule
+metadata:
+  name: {{ printf "%s-%s" (include "prometheus-operator.fullname" .) "general.rules" | trunc 63 | trimSuffix "-" }}
+  labels:
+    app: {{ template "prometheus-operator.name" . }}
+{{ include "prometheus-operator.labels" . | indent 4 }}
+{{- if .Values.defaultRules.labels }}
+{{ toYaml .Values.defaultRules.labels | indent 4 }}
+{{- end }}
+{{- if .Values.defaultRules.annotations }}
+  annotations:
+{{ toYaml .Values.defaultRules.annotations | indent 4 }}
+{{- end }}
+spec:
+  groups:
+  - name: general.rules
+    rules:
+    - alert: TargetDown
+      annotations:
+        message: '{{`{{ $value }}`}}% of the {{`{{ $labels.job }}`}} targets are down.'
+      expr: 100 * (count(up == 0) BY (job) / count(up) BY (job)) > 10
+      for: 10m
+      labels:
+        severity: warning
+    - alert: Watchdog
+      annotations:
+        message: 'This is an alert meant to ensure that the entire alerting pipeline is functional.
+
+          This alert is always firing, therefore it should always be firing in Alertmanager
+
+          and always fire against a receiver. There are integrations with various notification
+
+          mechanisms that send a notification when this alert is not firing. For example the
+
+          "DeadMansSnitch" integration in PagerDuty.
+
+          '
+      expr: vector(1)
+      labels:
+        severity: none
+{{- end }}

@@ -30,7 +30,7 @@ spec:
     spec:
       serviceAccountName: tiller
       containers:
-        - name: {{ .Chart.Name }}
+        - name: tiller
           image: "{{ .Values.tiller.image.repository }}:{{ .Values.tiller.image.tag }}"
           imagePullPolicy: {{ .Values.tiller.image.pullPolicy }}
           env:
@@ -42,8 +42,22 @@ spec:
             {{- end }}
           - name: TILLER_HISTORY_MAX
             value: {{ quote .Values.tiller.maxHistory }}
+          {{- if .Values.tiller.tls.enabled }}
+          - name: TILLER_TLS_ENABLE
+            value: "1"
+          {{- if .Values.tiller.tls.verify }}
+          - name: TILLER_TLS_VERIFY
+            value: "1"
+          {{- end }}
+          - name: TILLER_TLS_CERTS
+            value: /etc/certs
+          {{- end }}
           {{- if .Values.tiller.onlyListenOnLocalhost }}
-          command: ["/tiller"]
+          command:
+            - "/tiller"
+          {{- if .Values.tiller.storage }}
+            - --storage={{ .Values.tiller.storage }}
+          {{- end }}
           args: ["--listen=127.0.0.1:44134"]
           {{- else }}
           ports:
@@ -74,8 +88,21 @@ spec:
             periodSeconds: 10
             successThreshold: 1
             timeoutSeconds: 1
+          volumeMounts:
+          {{- if .Values.tiller.tls.enabled }}
+          - mountPath: /etc/certs
+            name: tiller-certs
+            readOnly: true
+          {{- end }}
           resources:
 {{ toYaml .Values.tiller.resources | indent 12 }}
+      volumes:
+      {{- if .Values.tiller.tls.enabled }}
+      - name: tiller-certs
+        secret:
+          defaultMode: 0644
+          secretName: {{ template "magic-namespace.tillerTlsSecret" . }}
+      {{- end }}
     {{- with .Values.tiller.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

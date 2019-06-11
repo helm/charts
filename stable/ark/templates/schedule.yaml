@@ -1,0 +1,19 @@
+{{- $root := . }}
+{{- range $scheduleName, $schedule := .Values.schedules }}
+apiVersion: ark.heptio.com/v1
+kind: Schedule
+metadata:
+  name: {{ template "ark.fullname" $root }}-{{ $scheduleName }}
+  labels:
+    chart: {{ template "ark.chart" $root }}
+    heritage: {{ $root.Release.Service }}
+    release: {{ $root.Release.Name }}
+    app: {{ template "ark.name" $root }}
+spec:
+  schedule: {{ $schedule.schedule | quote }}
+{{- with $schedule.template }}
+  template:
+{{ toYaml . | indent 8 }}
+{{- end }}
+---
+{{- end }}

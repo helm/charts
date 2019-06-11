@@ -5,8 +5,24 @@ image:
   repository: lmenezes/cerebro
   # Note: when updating the version, ensure `config` and the ConfigMap are kept
   # in sync with the default configuration of the upstream image
-  tag: 0.8.1
+  tag: 0.8.3
   pullPolicy: IfNotPresent
+
+init:
+  image:
+    repository: docker.io/busybox
+    tag: musl
+    pullPolicy: IfNotPresent
+
+    ## Optionally specify an array of imagePullSecrets.
+    ## Secrets must be manually created in the namespace.
+    ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+    ##
+    # pullSecrets:
+    #   - myRegistrKeySecretName
+
+deployment:
+  annotations: {}
 
 service:
   type: ClusterIP
@@ -19,6 +35,7 @@ ingress:
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
+  labels: {}
   path: /
   hosts:
     - chart-example.local

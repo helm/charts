@@ -4,7 +4,7 @@ kind: RoleBinding
 metadata:
   name: {{ template "patroni.fullname" . }}
   labels:
-    app: {{ template "patroni.name" . }}
+    app: {{ template "patroni.fullname" . }}
     chart: {{ template "patroni.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}

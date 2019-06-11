@@ -11,14 +11,20 @@ spec:
   replicas: {{ .Values.cron.replicacount }}
   template:
     metadata:
-      {{- if .Values.cron.podAnnotations }}
       annotations:
+        metrics-enabled: {{ .Values.metrics.enabled | quote }}
+        checksum/configYml: {{ .Values.config.configYml | sha256sum }}
+        checksum/sentryConfPy: {{ .Values.config.sentryConfPy | sha256sum }}
+      {{- if .Values.cron.podAnnotations }}
 {{ toYaml .Values.cron.podAnnotations | indent 8 }}
       {{- end }}
       labels:
         app: {{ template "fullname" . }}
         release: "{{ .Release.Name }}"
         role: cron
+        {{- if .Values.cron.podLabels }}
+{{ toYaml .Values.cron.podLabels | indent 8 }}
+        {{- end }}
     spec:
       {{- if .Values.cron.affinity }}
       affinity:
@@ -53,35 +59,37 @@ spec:
               name: {{ template "fullname" . }}
               key: sentry-secret
         - name: SENTRY_DB_USER
-          value: {{ default "sentry" .Values.postgresUser | quote }}
+          value: {{ default "sentry" .Values.postgresql.postgresUser | quote }}
         - name: SENTRY_DB_NAME
-          value: {{ default "sentry" .Values.postgresDatabase | quote }}
+          value: {{ default "sentry" .Values.postgresql.postgresDatabase | quote }}
         - name: SENTRY_DB_PASSWORD
           valueFrom:
             secretKeyRef:
             {{- if .Values.postgresql.existingSecret }}
               name: {{ .Values.postgresql.existingSecret }}
             {{- else }}
-              name: {{ template "postgresql.fullname" . }}
+              name: {{ template "postgresql.secret" . }}
             {{- end }}
               key: postgres-password
         - name: SENTRY_POSTGRES_HOST
-          value: {{ template "postgresql.fullname" . }}
+          value: {{ template "postgresql.host" . }}
         - name: SENTRY_POSTGRES_PORT
-          value: "5432"
+          value: {{ template "postgresql.port" . }}
+        {{- if or (.Values.redis.enabled) (.Values.redis.password) }}
         - name: SENTRY_REDIS_PASSWORD
           valueFrom:
             secretKeyRef:
             {{- if .Values.redis.existingSecret }}
               name: {{ .Values.redis.existingSecret }}
             {{- else }}
-              name: {{ template "redis.fullname" . }}
+              name: {{ template "redis.secret" . }}
             {{- end }}
               key: redis-password
+        {{- end }}
         - name: SENTRY_REDIS_HOST
-          value: {{ template "redis.fullname" . }}-master
+          value: {{ template "redis.host" . }}
         - name: SENTRY_REDIS_PORT
-          value: "6379"
+          value: {{ template "redis.port" . }}
         - name: SENTRY_EMAIL_HOST
           value: {{ default "" .Values.email.host | quote }}
         - name: SENTRY_EMAIL_PORT
@@ -91,7 +99,11 @@ spec:
         - name: SENTRY_EMAIL_PASSWORD
           valueFrom:
             secretKeyRef:
+            {{- if .Values.email.existingSecret }}
+              name: {{ .Values.email.existingSecret }}
+            {{- else }}
               name: {{ template "fullname" . }}
+            {{- end }}
               key: smtp-password
         - name: SENTRY_EMAIL_USE_TLS
           value: {{ .Values.email.use_tls | quote }}

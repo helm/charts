@@ -1,8 +1,8 @@
 apiVersion: v1
-description: Kong is open-source API Gateway and Microservices Management Layer,
-  delivering high performance and reliability.
+description: The Cloud-Native Ingress and
+  Service Mesh for APIs and Microservices
 engine: gotpl
-home: https://getkong.org/
+home: https://KongHQ.com/
 icon: https://s3.amazonaws.com/downloads.kong/universe/assets/icon-kong-inc-large.png
 maintainers:
 - name: shashiranjan84
@@ -10,5 +10,5 @@ maintainers:
 name: kong
 sources:
 - https://github.com/Kong/kong
-version: 0.4.1
-appVersion: 0.14.1
+version: 0.12.1
+appVersion: 1.1

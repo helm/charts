@@ -1,6 +1,35 @@
-operatorImageName: lightbend/sparkoperator
-operatorVersion: 2.3.1
-operatorNamespace: spark-operator
+operatorImageName: gcr.io/spark-operator/spark-operator
+operatorVersion: v2.4.0-v1beta1-0.8.2
+imagePullPolicy: IfNotPresent
 
-enableWebhook: true
+rbac:
+  create: true
+
+serviceAccounts:
+  spark:
+    create: true
+    name:
+  sparkoperator:
+    create: true
+    name:
+
+sparkJobNamespace: ""
+
+enableWebhook: false
 enableMetrics: true
+
+controllerThreads: 10
+ingressUrlFormat: ""
+installCrds: true
+metricsPort: 10254
+metricsEndpoint: "/metrics"
+metricsPrefix: ""
+resyncInterval: 30
+webhookPort: 8080
+
+## Node labels for pod assignment
+## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+##
+nodeSelector: {}
+
+logLevel: 2

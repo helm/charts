@@ -9,6 +9,8 @@ metadata:
     chart: {{ template "efs-provisioner.chartname" . }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
+  annotations:
+{{ toYaml .Values.annotations | indent 4 }}
 rules:
   - apiGroups: [""]
     resources: ["persistentvolumes"]
@@ -22,4 +24,7 @@ rules:
   - apiGroups: [""]
     resources: ["events"]
     verbs: ["list", "watch", "create", "update", "patch"]
+  - apiGroups: [""]
+    resources: ["endpoints"]
+    verbs: ["get", "list", "watch", "create", "update", "patch"]
 {{- end }}

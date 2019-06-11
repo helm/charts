@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "prometheus-mysql-exporter.fullname" . }}
@@ -18,6 +18,9 @@ spec:
       labels:
         app: {{ template "prometheus-mysql-exporter.name" . }}
         release: {{ .Release.Name }}
+{{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | trim | indent 8 }}
+{{- end }}
       annotations:
       {{- if .Values.cloudsqlproxy.enabled }}
         checksum/config: {{ include (print .Template.BasePath "/secret.yaml") . | sha256sum }}
@@ -32,6 +35,19 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+{{- with .Values.collectors }}
+          args: [
+{{- range $index, $element := . }}
+{{- if and (typeIs "bool" $element) $element }}
+{{ printf "--collect.%s" $index | quote | indent 12 }},
+{{- else if and (typeIs "bool" $element) (not $element) }}
+{{ printf "--no-collect.%s" $index | quote | indent 12 }},
+{{- else }}
+{{ printf "--collect.%s" $index | quote | indent 12 }}, {{ $element | quote }}
+{{- end }}
+{{- end }}
+          ]
+{{- end }}
           env:
             - name: DATA_SOURCE_NAME
               value: "{{ .Values.mysql.user }}:{{ .Values.mysql.pass }}@{{ if .Values.mysql.protocol }}{{ .Values.mysql.protocol }}{{ end }}({{ .Values.mysql.host }}:{{ .Values.mysql.port }})/{{ if .Values.mysql.db }}{{ .Values.mysql.db }}{{ end }}{{ if .Values.mysql.param }}?{{ .Values.mysql.param }}{{ end }}"
