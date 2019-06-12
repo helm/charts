@@ -54,7 +54,7 @@ The following table lists the configurable parameters of the ownCloud chart and 
 | `image.registry`                    | ownCloud image registry                    | `docker.io`                                             |
 | `image.repository`                  | ownCloud Image name                        | `bitnami/owncloud`                                      |
 | `image.tag`                         | ownCloud Image tag                         | `{TAG_NAME}`                                            |
-| `image.pullPolicy`                  | Image pull policy                          | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
+| `image.pullPolicy`                  | Image pull policy                          | `IfNotPresent`                                          |
 | `image.pullSecrets`                 | Specify docker-registry secret names as an array | `[]` (does not add image pull secrets to deployed pods) |
 | `ingress.enabled`                   | Enable ingress controller resource         | `false`                                                 |
 | `ingress.hosts[0].name`             | Hostname to your ownCloud installation     | `owncloud.local`                                        |
