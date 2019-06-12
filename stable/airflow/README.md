@@ -184,39 +184,50 @@ $ kubectl create secret generic redshift-user --from-file=redshift-user=~/secret
 ```
 Where `redshift-user.txt` contains the user secret as a single text string.
 
-### Use pre-created secret for airflow secrets or environment variables
+### Database connection credentials
 
-You can use a pre-created secrets for the database connection credentials and general environment variables.
-These environment variables will be mounted in the web, scheduler, and worker pods.
-Simply define the secrets in `airflow.existingEnvSecrets` using the same format as in a pod's `.spec.containers.env` definition.
-If `airflow.existingEnvSecrets` is not specified, default database connection credentials will be generated in a Kubernetes secret.
-(See `templates/secret-env.yaml` for details.)
-Note that at a minimum, you will likely need to define `POSTGRES_USER`, `POSTGRES_PASSWORD`, and `REDIS_PASSWORD` unless you are using a different Docker image.
+In this chart, postgres is used as the database backing Airflow.
+Additionally, if you're using the `CeleryExecutor` then redis is used.
+By default, insecure username/password combinations are used.
 
-Here is a simple example showing the minimum database connection credentials along with an LDAP password.
-Of course, for this example to work, both `postgresSecret` and `ldap` Kubernetes secrets need to already exist in the proper namespace; be sure to create those before running Helm.
+For a real production deployment, it's a good idea to create secure credentials before installing the Helm chart.
+For example, from the command line, run:
+```bash
+kubectl create secret generic airflow-postgres --from-literal=postgres-password=$(openssl rand -base64 13)
+kubectl create secret generic airflow-redis --from-literal=redis-password=$(openssl rand -base64 13)
+```
+Next, you can use those secrets with the helm chart:
 ```yaml
-existingEnvSecrets:
-- name: POSTGRES_USER
-  valueFrom:
-    secretKeyRef:
-      name: postgresSecret
-      key: username
-- name: POSTGRES_PASSWORD
-  valueFrom:
-    secretKeyRef:
-      name: postgresSecret
-      key: password
-- name: REDIS_PASSWORD
-  valueFrom:
-    secretKeyRef:
-      name: redisSecret
-      key: password
-- name: AIRFLOW__LDAP__BIND_PASSWORD
-  valueFrom:
-    secretKeyRef:
-      name: ldap
-      key: password
+# values.yaml
+
+postgres:
+  existingSecret: airflow-postgres
+
+redis:
+  existingSecret: airflow-redis
+```
+This approach has the additional advantage of keeping secrets outside of the Helm upgrade process.
+
+### Additional environment variables
+
+It is also possible to specify additional environment variables using the same format as in a pod's `.spec.containers.env` definition.
+These environment variables will be mounted in the web, scheduler, and worker pods.
+You can use this feature to pass additional secret environment variables to Airflow. 
+
+Here is a simple example showing how to pass in a Fernet key and LDAP password.
+Of course, for this example to work, both the `airflow` and `ldap` Kubernetes secrets must already exist in the proper namespace; be sure to create those before running Helm.
+```yaml
+extraEnv:
+  - name: AIRFLOW__CORE__FERNET_KEY
+    valueFrom:
+      secretKeyRef:
+        name: airflow
+        key: fernet-key
+  - name: AIRFLOW__LDAP__BIND_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: ldap
+        key: password
 ```
 
 ### Local binaries
@@ -331,7 +342,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `airflow.webReplicas`                    | how many replicas for web server                        | `1`                       |
 | `airflow.config`                         | custom airflow configuration env variables              | `{}`                      |
 | `airflow.podDisruptionBudget`            | control pod disruption budget                           | `{'maxUnavailable': 1}`   |
-| `airflow.existingEnvSecrets`             | specify existing secrets to mount as environment variables | `{}` |
+| `airflow.extraEnv`                       | specify additional environment variables to mount       | `{}`                      |
 | `airflow.extraConfigmapMounts`           | Additional configMap volume mounts on the airflow pods. | `[]`                      |
 | `airflow.podAnnotations`                 | annotations for scheduler, worker and web pods          | `{}`                      |
 | `airflow.extraContainers`                | additional containers to run in the scheduler, worker & web pods | `[]`             |

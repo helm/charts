@@ -17,41 +17,14 @@ airflow:
   #   subPath: file.yaml
 
 
-  ## Used only when existingEnvSecrets is null, in which case
-  ## a secret will be created with a default name and the following mapping.
-  ## Note that these environment variables are needed by the puckel docker
-  ## image. If you use a different image, it may require different environment
-  ## variables.
-  defaultSecretsMapping:
-    - envVar: POSTGRES_USER
-      secretKey: postgresUser
-    - envVar: POSTGRES_PASSWORD
-      secretKey: postgresPassword
-    - envVar: REDIS_PASSWORD
-      secretKey: redisPassword
-
-
   ##
-  ## If defined, no new secrets will be created. Instead, these secrets will
-  ## be mounted as environment variables into the web, scheduler, and worker
-  ## pods. At a minimum, you should define POSTGRES_USER, POSTGRES_PASSWORD,
-  ## and REDIS_PASSWORD.
-  existingEnvSecrets:
-  #  - name: POSTGRES_USER
+  ## Extra environment variables to mount in the web, scheduler, and worker pods:
+  extraEnv:
+  #  - name: AIRFLOW__CORE__FERNET_KEY
   #    valueFrom:
   #      secretKeyRef:
-  #        name: postgresSecret
-  #        key: username
-  #  - name: POSTGRES_PASSWORD
-  #    valueFrom:
-  #      secretKeyRef:
-  #        name: postgresSecret
-  #        key: password
-  #  - name: REDIS_PASSWORD
-  #    valueFrom:
-  #      secretKeyRef:
-  #        name: redisSecret
-  #        key: password
+  #        name: airflow
+  #        key: fernet_key
   #  - name: AIRFLOW__LDAP__BIND_PASSWORD
   #    valueFrom:
   #      secretKeyRef:
@@ -484,6 +457,12 @@ postgresql:
   ## Use the PostgreSQL chart dependency.
   ## Set to false if bringing your own PostgreSQL.
   enabled: true
+
+  ##
+  ## The name of an existing secret that contains the postgres password.
+  ## Note that the secret must have a key called postgres-password.
+  existingSecret:
+
   ##
   ## If you are bringing your own PostgreSQL, you should set postgresHost and
   ## also probably service.port, postgresUser, postgresPassword, and postgresDatabase
@@ -523,6 +502,12 @@ redis:
   ## Use the redis chart dependency.
   ## Set to false if bringing your own redis.
   enabled: true
+
+  ##
+  ## The name of an existing secret that contains the redis password.
+  ## Note that the secret must have a key called redis-password.
+  existingSecret:
+
   ##
   ## If you are bringing your own redis, you can set the host in redisHost.
   ## redisHost:
