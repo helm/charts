@@ -1,6 +1,6 @@
 image:
   repository: tools4k8s/k8s-event-logger
-  tag: "1.2"
+  tag: "1.3"
   pullPolicy: IfNotPresent
 
 resources:

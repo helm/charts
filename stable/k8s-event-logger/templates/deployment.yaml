@@ -28,6 +28,9 @@ spec:
         - name: app
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          securityContext:
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
           env:
 {{- range $key, $value := .Values.env }}
           - name: {{ $key }}
