@@ -76,8 +76,10 @@ spec:
           - |
             mkdir -p {{ .Values.persistence.mountPath }}/data
             chmod 700 {{ .Values.persistence.mountPath }}/data
-            find {{ .Values.persistence.mountPath }} -mindepth 1 -maxdepth 1 -not -name ".snapshot" | \
-              xargs chown -R {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }}
+            if [ "{{ .Values.volumePermissions.securityContext.runAsUser }}" = "0" ] ; then
+              find {{ .Values.persistence.mountPath }} -mindepth 1 -maxdepth 1 -not -name ".snapshot" | \
+                xargs chown -R {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }}
+            fi
         securityContext:
           runAsUser: {{ .Values.volumePermissions.securityContext.runAsUser }}
         volumeMounts:
