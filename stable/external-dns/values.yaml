@@ -86,6 +86,12 @@ rfc2136:
   tsigKeyname: externaldns-key
   tsigAxfr: true
 
+# PowerDNS keys to inject
+pdns:
+  apiUrl: ""
+  apiPort: "8081"
+  apiKey: ""
+
 ## Limit possible target zones by domain suffixes (optional)
 domainFilters: []
 ## Limit possible target zones by zone id (optional)

@@ -112,6 +112,10 @@ spec:
             - --rfc2136-insecure
             {{- end }}
           {{- end }}
+          {{- if eq .Values.provider "pdns" }}
+            - --pdns-server={{ required "pdns.apiUrl must be supplied for provider 'pdns'" .Values.pdns.apiUrl }}:{{ .Values.pdns.apiPort }}
+            - --pdns-api-key=$(PDNS_API_KEY)
+          {{- end }}
           volumeMounts:
           {{- if or .Values.google.serviceAccountSecret .Values.google.serviceAccountKey }}
           - name: google-service-account
@@ -193,6 +197,13 @@ spec:
         {{- if and (eq .Values.provider "designate") .Values.designate.customCA.enabled }}
           - name: OPENSTACK_CA_FILE
             value: {{ .Values.designate.customCA.directory }}/{{ .Values.designate.customCA.filename }}
+        {{- end }}
+        {{- if .Values.pdns.apiKey }}
+          - name: PDNS_API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "external-dns.fullname" . }}
+                key: pdns_api_key
         {{- end }}
         {{- $root := . -}}
         {{- range .Values.extraEnv }}
