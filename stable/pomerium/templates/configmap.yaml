@@ -9,5 +9,18 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     app.kubernetes.io/instance: {{ .Release.Name }}
 data:
-  policy.yaml: {{toYaml .Values.config.policyFile | indent 4}}
+  config.yaml: |
+{{- if and .Values.config.existingPolicy .Values.config.extraOpts }}
+{{ fail "Cannot use config.extraOpts with config.existingPolicy" }}
+{{- end }}
+{{- if and .Values.config.existingPolicy .Values.config.policy }}
+{{ fail "Cannot use config.policy with config.existingPolicy" }}
+{{- end }}
+{{- if .Values.config.extraOpts }}
+{{ toYaml .Values.config.extraOpts | indent 4 -}}
+{{- end -}}
+{{- if .Values.config.policy }}
+    policy: 
+{{ toYaml .Values.config.policy | indent 6 }}
+{{- end -}}
 {{- end }}
