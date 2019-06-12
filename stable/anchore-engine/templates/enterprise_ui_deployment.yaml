@@ -11,6 +11,12 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+    {{- with .Values.anchoreEnterpriseUi.labels }}
+    {{ toYaml . | nindent 4 | trim }}
+    {{- end }}
+    {{- with .Values.anchoreGlobal.labels }}
+    {{ toYaml . | nindent 4 | trim }}
+    {{- end }}
 spec:
   selector:
     matchLabels:
@@ -25,9 +31,15 @@ spec:
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: {{ .Release.Name }}
         heritage: {{ .Release.Service }}
+        {{- with .Values.anchoreEnterpriseUi.labels }}
+        {{ toYaml . | nindent 8 | trim }}
+        {{- end }}
+        {{- with .Values.anchoreGlobal.labels }}
+        {{ toYaml . | nindent 8 | trim }}
+        {{- end }}
       {{- with .Values.anchoreEnterpriseUi.annotations }}
       annotations:
-        {{ toYaml .Values.anchoreEnterpriseUi.annotations | nindent 8 | trim }}
+        {{ toYaml . | nindent 8 | trim }}
       {{- end }}
     spec:
       imagePullSecrets:
@@ -121,6 +133,12 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+    {{- with .Values.anchoreEnterpriseUi.service.labels }}
+    {{ toYaml . | nindent 4 | trim }}
+    {{- end }}
+    {{- with .Values.anchoreGlobal.labels }}
+    {{ toYaml . | nindent 4 | trim }}
+    {{- end }}
   {{- with .Values.anchoreEnterpriseUi.service.annotations }}
   annotations:
     {{ toYaml . | nindent 4 | trim }}
