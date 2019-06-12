@@ -137,6 +137,7 @@ The following tables list the configurable parameters and their default values.
 | Parameter           | Description                    | Default                   |
 | ------------------- | ------------------------------ | ------------------------- |
 | database.driver     | Database driver                | nil
+| database.scheme     | Database scheme                | nil
 | database.host       | Database host                  | nil
 | database.port       | Database port                  | nil
 | database.user       | Database user                  | scdf
