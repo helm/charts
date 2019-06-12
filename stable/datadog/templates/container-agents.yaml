@@ -171,6 +171,14 @@
     {{- if .Values.datadog.logsEnabled }}
     - name: pointerdir
       mountPath: /opt/datadog-agent/run
+    - name: logpodpath
+      mountPath: /var/log/pods
+      readOnly: true
+    {{- if .Values.datadog.containerLogsPath }}
+    - name: logcontainerpath
+      mountPath: {{ .Values.datadog.containerLogsPath | quote }}
+      readOnly: true
+    {{- end }}
     {{- end }}
     {{- if .Values.datadog.processAgentEnabled }}
     - name: passwd

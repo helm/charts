@@ -98,8 +98,6 @@ spec:
         - hostPath:
             path: {{ default "/var/lib/datadog-agent/logs" .Values.datadog.logsPointerHostPath | quote }}
           name: pointerdir
-        {{- end }}
-        {{- if .Values.datadog.logsEnabled }}
         - hostPath:
             path: /var/log/pods
           name: logpodpath
