@@ -16,6 +16,8 @@
     {{- include "containers-common-env" . | nindent 4 }}
     - name: DD_APM_ENABLED
       value: {{ .Values.datadog.apmEnabled | quote }}
+    - name: DD_LOG_LEVEL
+      value: {{ .Values.daemonset.containers.traceAgent.logLevel | default .Values.datadog.logLevel | quote }}
 {{- if .Values.daemonset.containers.traceAgent.env }}
 {{ toYaml .Values.daemonset.containers.traceAgent.env | indent 4 }}
 {{- end }}

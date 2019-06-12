@@ -9,6 +9,8 @@
     {{- include "containers-common-env" . | nindent 4 }}
     - name: DD_PROCESS_AGENT_ENABLED
       value: {{ .Values.datadog.processAgentEnabled | quote }}
+    - name: DD_LOG_LEVEL
+      value: {{ .Values.daemonset.containers.processAgent.logLevel | default .Values.datadog.logLevel | quote }}
 {{- if .Values.daemonset.containers.processAgent.env }}
 {{ toYaml .Values.daemonset.containers.processAgent.env | indent 4 }}
 {{- end }}

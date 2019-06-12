@@ -415,11 +415,42 @@ daemonset:
     #
     # init:
 
+    agent:
+      ## @param env - list - required
+      ## Additionnal environment variables for the agent container.
+      #
+      # env:
+
+      ## @param logLevel - string - optional
+      ## Set logging verbosity, valid log levels are:
+      ## trace, debug, info, warn, error, critical, and off.
+      ## If not set, fall back to the value of datadog.logLevel.
+      #
+      # logLevel: INFO
+
+      ## @param resources - object - required
+      ## Resource requests and limits for the agent container.
+      #
+      resources:
+        requests:
+          cpu: 200m
+          memory: 256Mi
+        limits:
+          cpu: 200m
+          memory: 256Mi
+
     processAgent:
       ## @param env - list - required
       ## Additionnal environment variables for the process-agent container.
       #
       # env:
+
+      ## @param logLevel - string - optional
+      ## Set logging verbosity, valid log levels are:
+      ## trace, debug, info, warn, error, critical, and off.
+      ## If not set, fall back to the value of datadog.logLevel.
+      #
+      # logLevel: INFO
 
       ## @param resources - object - required
       ## Resource requests and limits for the process-agent container.
@@ -437,6 +468,13 @@ daemonset:
       ## Additionnal environment variables for the trace-agent container.
       #
       # env:
+
+      ## @param logLevel - string - optional
+      ## Set logging verbosity, valid log levels are:
+      ## trace, debug, info, warn, error, critical, and off.
+      ## If not set, fall back to the value of datadog.logLevel.
+      #
+      # logLevel: INFO
 
       ## @param resources - object - required
       ## Resource requests and limits for the trace-agent container.

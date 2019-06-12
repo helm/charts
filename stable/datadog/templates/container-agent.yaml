@@ -4,7 +4,7 @@
   imagePullPolicy: {{ .Values.image.pullPolicy }}
   command: ["agent", "start"]
   resources:
-{{ toYaml .Values.datadog.resources | indent 4 }}
+{{ toYaml .Values.daemonset.containers.agent.resources | indent 4 }}
   ports:
   - containerPort: 8125
     {{- if .Values.daemonset.useHostPort }}
@@ -28,7 +28,7 @@
     {{- end }}
     {{- if .Values.datadog.logLevel }}
     - name: DD_LOG_LEVEL
-      value: {{ .Values.datadog.logLevel | quote }}
+      value: {{ .Values.daemonset.containers.agent.logLevel | default .Values.datadog.logLevel | quote }}
     {{- end }}
     {{- if .Values.datadog.nonLocalTraffic }}
     - name: DD_DOGSTATSD_NON_LOCAL_TRAFFIC
@@ -102,8 +102,8 @@
     - name: DD_EXTRA_CONFIG_PROVIDERS
       value: "clusterchecks"
     {{- end }}
-{{- if .Values.datadog.env }}
-{{ toYaml .Values.datadog.env | indent 4 }}
+{{- if .Values.daemonset.containers.agent.env }}
+{{ toYaml .Values.daemonset.containers.agent.env | indent 4 }}
 {{- end }}
   volumeMounts:
     - name: config
