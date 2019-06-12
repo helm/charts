@@ -1,0 +1,13 @@
+{{- if .Values.hue.database.create -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: hue-postgres
+spec:
+  ports:
+  - name: pgql
+    port: 5432
+  type: NodePort
+  selector:
+    app: hue-postgres
+{{- end -}}

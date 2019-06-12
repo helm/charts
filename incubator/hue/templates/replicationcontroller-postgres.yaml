@@ -1,0 +1,33 @@
+{{- if .Values.hue.database.create -}}
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: hue-postgres
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: hue-postgres
+    spec:
+      containers:
+        - name: hue-postgres
+          image: postgres:9.5
+          env:
+            - name: POSTGRES_USER
+              value: hue
+            - name: POSTGRES_PASSWORD
+              value: hue
+            - name: POSTGRES_DB
+              value: hue
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: pg-data
+      volumes:
+        - name: pg-data
+          emptyDir: {}
+{{- end -}}

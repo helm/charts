@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hue-config
+data:
+  hue-ini: |
+    [desktop]
+
+    [[database]]
+    engine={{ .Values.hue.database.engine }}
+    host={{ .Values.hue.database.host }}
+    port={{ .Values.hue.database.port }}
+    user={{ .Values.hue.database.user }}
+    password={{ .Values.hue.database.password }}
+    name={{ .Values.hue.database.name }}
+
+    [aws]
+    [[aws_accounts]]
+    [[[default]]]
+    access_key_id={{ .Values.aws.awsAccessKeyId }}
+    secret_access_key={{ .Values.aws.awsSecretAccessKey }}
+    region={{ .Values.aws.awsRegion }}
+
+    [notebook]
+    [[interpreters]]
+    {{ .Values.hue.interpreters | indent 4 }}

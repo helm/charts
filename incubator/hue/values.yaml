@@ -1,0 +1,30 @@
+image:
+  registry: "gethue"
+  tag: "latest"
+  pullPolicy: "IfNotPresent"
+hue:
+  replicas: 1
+  database:
+    create: true
+    engine: "postgresql_psycopg2"
+    host: "hue-postgres"
+    port: 5432
+    user: "hue"
+    password: "hue"
+    name: "hue"
+  interpreters: |
+    [[[postgresql]]]
+      name = postgresql
+      interface=sqlalchemy
+      options='{"url": "postgresql://hue:hue@hue-postgres:5432/hue"}'
+  ini: |
+    [desktop]
+    app_blacklist=filebrowser,search,hbase,security,jobbrowser,oozie
+
+    [hadoop]
+balancer:
+  enabled: true
+aws:
+  accessKeyId: ""
+  secretAccessKey: ""
+  region: "us-east-1"

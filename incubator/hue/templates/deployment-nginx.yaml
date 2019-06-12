@@ -1,0 +1,83 @@
+{{- if .Values.balancer.enable -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+data:
+  hue: |
+    server {
+        server_name hue;
+        charset utf-8;
+
+        listen 80;
+
+        # Or if running hue on https://
+        ## listen 8001 ssl;
+        ## ssl_certificate /path/to/ssl/cert;
+        ## ssl_certificate_key /path/to/ssl/key;
+
+        location / {
+            proxy_pass http://hue;
+
+            # Or if the upstream Hue instances are running behind https://
+            ## proxy_pass https://hue;
+        }
+
+        location /static/ {
+            alias /usr/share/nginx/html/hue/static/;
+
+            expires 30d;
+            add_header Cache-Control public;
+        }
+    }
+
+    upstream hue {
+        ip_hash;
+
+        # List all the Hue instances here for high availability.
+        server hue:8888 max_fails=3;
+        #server HUE_HOST2:8888 max_fails=3;
+    }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: {{ .Values.registry }}/nginx:{{ .Values.tag }}
+        ports:
+        - containerPort: 80
+        volumeMounts:
+          - name: nginx-config
+            mountPath: /etc/nginx/sites-available/hue
+            subPath: hue
+      volumes:
+        - name: nginx-config
+          configMap:
+            name: nginx-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hue-balancer
+spec:
+  type: NodePort
+  # type: LoadBalancer
+  selector:
+    app: nginx
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+{{- end -}}

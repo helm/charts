@@ -1,0 +1,23 @@
+Congratulations, you've launched the Hue SQL Editor for Data Warehouses!
+
+To check the status of your installation run:
+
+  helm list {{ .Release.Name }}
+
+
+You should be able to execute queries by typing:
+
+  kubectl port-forward svc/hue 8888:8888 --address 0.0.0.0 &
+
+Then opening-up:
+
+  http://localhost:8888
+
+Or directly running below to get the URL:
+
+  export WEB_HOST=$(kubectl get node -o jsonpath="{.items[0].metadata.name}")
+  export WEB_PORT=$(kubectl get service hue -o jsonpath="{.spec.ports[*].nodePort}" --namespace {{ .Release.Namespace }})
+
+  echo http://$WEB_HOST:$WEB_PORT
+
+Happy Querying!

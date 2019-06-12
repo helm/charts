@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hue-config-extra
+data:
+  hue-ini: |
+    {{ .Values.hue.ini | indent 4 | trim }}
