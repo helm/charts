@@ -54,7 +54,7 @@ The following table lists the configurable parameters of the Phabricator chart a
 | `image.registry`                       | Phabricator image registry                   | `docker.io`                                              |
 | `image.repository`                     | Phabricator image name                       | `bitnami/phabricator`                                    |
 | `image.tag`                            | Phabricator image tag                        | `{TAG_NAME}`                                             |
-| `image.pullPolicy`                     | Image pull policy                            | `Always` if `imageTag` is `latest`, else `IfNotPresent`  |
+| `image.pullPolicy`                     | Image pull policy                            | `IfNotPresent`                                           |
 | `image.pullSecrets`                    | Specify docker-registry secret names as an array                   | `[]` (does not add image pull secrets to deployed pods)                                                    |
 | `phabricatorHost`                      | Phabricator host to create application URLs  | `nil`                                                    |
 | `phabricatorAlternateFileDomain`       | Phabricator alternate domain to upload files | `nil`                                                    |
