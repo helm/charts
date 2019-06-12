@@ -72,4 +72,19 @@ spec:
         image: "{{ .Values.reloader.deployment.image.name }}:{{ .Values.reloader.deployment.image.tag }}"
         imagePullPolicy: {{ .Values.reloader.deployment.image.pullPolicy }}
         name: {{ template "reloader-name" . }}
+      {{- if .Values.reloader.custom_annotations }}
+        args:
+          {{- if .Values.reloader.custom_annotations.configmap }}
+          - "--configmap-annotation"
+          - "{{ .Values.reloader.custom_annotations.configmap }}"
+          {{- end }}
+          {{- if .Values.reloader.custom_annotations.secret }}
+          - "--secret-annotation"
+          - "{{ .Values.reloader.custom_annotations.secret }}"
+          {{- end }}
+          {{- if .Values.reloader.custom_annotations.auto }}
+          - "--auto-annotation"
+          - "{{ .Values.reloader.custom_annotations.auto }}"
+          {{- end }}
+        {{- end }}
       serviceAccountName: {{ template "serviceAccountName" . }}

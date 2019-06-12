@@ -8,7 +8,7 @@ reloader:
       group: com.stakater.platform
     image:
       name: stakater/reloader
-      tag: "v0.0.25"
+      tag: "v0.0.29"
       pullPolicy: IfNotPresent
     # Support for extra environment variables.
     env:
@@ -18,7 +18,6 @@ reloader:
       secret:
       # field supports Key value pair as environment variables. It gets the values from other fields of pod.
       field:
-
   rbac:
     enabled: true
     labels: {}
@@ -30,3 +29,9 @@ reloader:
     # The name of the ServiceAccount to use.
     # If not set and create is true, a name is generated using the fullname template
     name: reloader
+  # Optional flags to pass to the Reloader entrypoint
+  # Example:
+  #   custom_annotations:
+  #     configmap: "my.company.com/configmap"
+  #     secret: "my.company.com/secret"
+  custom_annotations: {}
