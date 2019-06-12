@@ -22,7 +22,7 @@ data:
                       memory: {{ .Values.deployer.resourceLimits.memory }}
                       cpu: {{ .Values.deployer.resourceLimits.cpu }}
       datasource:
-        url: 'jdbc:mysql://{{ template "scdf.database.host" . }}:{{ template "scdf.database.port" . }}/{{ template "scdf.database.dataflow" . }}'
+        url: 'jdbc:{{ template "scdf.database.scheme" . }}://{{ template "scdf.database.host" . }}:{{ template "scdf.database.port" . }}/{{ template "scdf.database.dataflow" . }}'
         driverClassName: {{ template "scdf.database.driver" . }}
         username: {{ template "scdf.database.user" . }}
         password: {{ template "scdf.database.password" . }}
