@@ -54,7 +54,7 @@ The following table lists the configurable parameters of the Moodle chart and th
 | `image.registry`                      | Moodle image registry                                                                        | `docker.io`                                   |
 | `image.repository`                    | Moodle Image name                                                                            | `bitnami/moodle`                              |
 | `image.tag`                           | Moodle Image tag                                                                             | `{TAG_NAME}`                                  |
-| `image.pullPolicy`                    | Image pull policy                                                                            | `Always` if `imageTag` is `latest`, else `IfNotPresent`|
+| `image.pullPolicy`                    | Image pull policy                                                                            | `IfNotPresent`                                |
 | `image.pullSecrets`                   | Specify docker-registry secret names as an array                                             | `[]` (does not add image pull secrets to deployed pods) |
 | `moodleUsername`                      | User of the application                                                                      | `user`                                         |
 | `moodlePassword`                      | Application password                                                                         | _random 10 character alphanumeric string_      |
