@@ -32,9 +32,11 @@ spec:
       priorityClassName: "{{ .Values.priorityClassName }}"
 {{- end }}
       restartPolicy: {{ .Values.restartPolicy }}
+      {{- if .Values.securityContext.enabled }}
       securityContext:
         runAsNonRoot: true
-        runAsUser: 1000
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
