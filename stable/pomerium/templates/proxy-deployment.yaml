@@ -12,6 +12,7 @@ metadata:
   name: {{ template "pomerium.proxy.fullname" . }}
 {{- if .Values.annotations }}
   annotations:
+    checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
 {{ toYaml .Values.annotations | indent 4 }}
 {{- end }}
 spec:
@@ -22,8 +23,9 @@ spec:
       app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
-{{- if .Values.podAnnotations }}
       annotations:
+        config/checksum: {{ print .Values.config.extraOpts | sha256sum }}
+{{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
 {{- end }}
       labels:
@@ -43,6 +45,9 @@ spec:
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         args:
+{{- if or .Values.config.existingConfig .Values.config.policy }}
+          - --config=/etc/pomerium/config.yaml
+{{- end }}
 {{- range $key, $value := .Values.extraArgs }}
 {{- if $value }}
           - --{{ $key }}={{ $value }}
@@ -66,19 +71,9 @@ spec:
         - name: AUTHENTICATE_SERVICE_URL
           value: {{ default (printf "https://authenticate.%s" .Values.config.rootDomain ) .Values.proxy.authenticateServiceUrl }}
         - name: AUTHORIZE_SERVICE_URL
-          value: {{ default (printf "https://authorize.%s" .Values.config.rootDomain ) .Values.proxy.authorizeServiceUrl }}
+          value: {{ default (printf "https://%s.%s.svc.cluster.local" (include "pomerium.authorize.fullname" .) .Release.Namespace ) .Values.proxy.authorizeInternalUrl}}
         - name: AUTHENTICATE_INTERNAL_URL
-          value: {{ default (printf "%s.%s.svc.cluster.local" (include "pomerium.authenticate.fullname" .) .Release.Namespace ) .Values.proxy.authenticateInternalUrl}}
-        - name: AUTHORIZE_INTERNAL_URL
-          value: {{ default (printf "%s.%s.svc.cluster.local" (include "pomerium.authorize.fullname" .) .Release.Namespace ) .Values.proxy.authorizeInternalUrl}}
-{{- if or .Values.config.existingConfig .Values.config.policyFile}}
-        - name: POLICY_FILE
-          value: /etc/pomerium/policy.yaml
-{{- end }}
-{{- if .Values.config.policy}}
-        - name: POLICY
-          value: {{ .Values.config.policy }}
-{{- end }}
+          value: {{ default (printf "https://%s.%s.svc.cluster.local" (include "pomerium.authenticate.fullname" .) .Release.Namespace ) .Values.proxy.authenticateInternalUrl}}
         - name: CERTIFICATE
           valueFrom:
             secretKeyRef:
@@ -112,17 +107,15 @@ spec:
             path: /ping
             port: https
             scheme: HTTPS
-{{- if or .Values.config.existingConfig .Values.config.policyFile}}
+{{- if or .Values.config.existingConfig .Values.config.policy }}
         volumeMounts:
         - mountPath: /etc/pomerium/
-          name: policy
+          name: config
       volumes:
-      - name: policy
+      - name: config
         configMap:
           name: {{ $configName }}
 {{- end }}
-      resources:
-{{ toYaml .Values.resources | indent 10 }}
 {{- if .Values.extraVolumes }}
       volumes:
 {{- toYaml .Values.extraVolumes | indent 8 }}

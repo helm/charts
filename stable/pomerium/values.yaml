@@ -1,35 +1,18 @@
 # For detailed explanation of each of the configuration settings see
-# https://www.pomerium.io/docs/config-reference.htmls
+# https://www.pomerium.io/reference/
 
 # settings that are shared by all services
 config:
   # routes under this wildcard domain are handled by pomerium
-  rootDomain: corp.pomerium.io
+  rootDomain: corp.beyondperimeter.com
   # existingSecret:
   # existingConfig:
   sharedSecret: ""
   cookieSecret: ""
   generateTLS: true
-  policyFile: |-
-    - from: httpbin.corp.pomerium.io
-      to: http://httpbin
-      allowed_domains:
-      - pomerium.io
-    - from: external-httpbin.corp.pomerium.io
-      to: httpbin.org
-      allowed_domains:
-      - gmail.com
-    - from: weirdlyssl.corp.pomerium.io
-      to: http://neverssl.com
-      allowed_users:
-      - bdd@pomerium.io
-      allowed_groups:
-      - admins
-      - developers
-    - from: hello.corp.pomerium.io
-      to: http://hello:8080
-      allowed_groups:
-      - admins
+  extraOpts: {}
+  existingPolicy: ""
+  policy: {}
 
 authenticate:
   # fullnameOverride: authenticate
@@ -76,9 +59,9 @@ service:
   externalPort: 443
   annotations:
     {}
-    # ===  GKE load balancer tweaks
+    # ===  GKE load balancer tweaks; default on until I can figure out
+    # how the hell to escape this string from the helm CLI
     # cloud.google.com/app-protocols: '{"https":"HTTPS"}'
-    # kubernetes.io/ingress.allow-http: "false"
   labels: {}
 
 ingress:
@@ -94,8 +77,8 @@ ingress:
     # kubernetes.io/ingress.class: nginx
     # nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
     # nginx.ingress.kubernetes.io/proxy-buffer-size: "16k"
-    # ===  GKE load balancer tweaks ==
-    # cloud.google.com/app-protocols: '{"https":"HTTPS"}'
+    # ===  GKE load balancer tweaks; default on until I can figure out
+    # how the hell to escape this string from the helm CLI
     # kubernetes.io/ingress.allow-http: "false"
 resources:
   {}
@@ -132,5 +115,5 @@ extraVolumes: {}
 
 image:
   repository: "pomerium/pomerium"
-  tag: "v0.0.3"
+  tag: "v0.0.5"
   pullPolicy: "IfNotPresent"
