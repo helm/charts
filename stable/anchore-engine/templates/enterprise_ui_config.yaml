@@ -15,6 +15,9 @@ metadata:
     {{- with .Values.anchoreGlobal.secret.labels }}
     {{ toYaml . | nindent 4 | trim }}
     {{- end }}
+    {{- with .Values.anchoreGlobal.labels }}
+    {{ toYaml . | nindent 4 | trim }}
+    {{- end }}
 type: Opaque
 stringData:
   config-ui.yaml: |

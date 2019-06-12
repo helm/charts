@@ -13,6 +13,9 @@ metadata:
     {{- with .Values.anchoreGlobal.configMap.labels }}
     {{ toYaml . | nindent 4 | trim }}
     {{- end }}
+    {{- with .Values.anchoreGlobal.labels }}
+    {{ toYaml . | nindent 4 | trim }}
+    {{- end }}
 data:
   config.yaml: |
     # Anchore Enterprise Service Configuration File

@@ -12,6 +12,9 @@ metadata:
     {{- with .Values.anchoreSimpleQueue.labels }}
     {{ toYaml . | nindent 4 | trim }}
     {{- end }}
+    {{- with .Values.anchoreGlobal.labels }}
+    {{ toYaml . | nindent 4 | trim }}
+    {{- end }}
 spec:
   selector:
     matchLabels:
@@ -24,6 +27,9 @@ spec:
         app: {{ template "anchore-engine.fullname" . }}
         component: {{ $component }}
         {{- with .Values.anchoreSimpleQueue.labels }}
+        {{ toYaml . | nindent 8 | trim }}
+        {{- end }}
+        {{- with .Values.anchoreGlobal.labels }}
         {{ toYaml . | nindent 8 | trim }}
         {{- end }}
       {{- with .Values.anchoreSimpleQueue.annotations }}
@@ -138,6 +144,9 @@ metadata:
     heritage: {{ .Release.Service }}
     component: {{ $component }}
     {{- with .Values.anchoreSimpleQueue.service.labels }}
+    {{ toYaml . | nindent 4 | trim }}
+    {{- end }}
+    {{- with .Values.anchoreGlobal.labels }}
     {{ toYaml . | nindent 4 | trim }}
     {{- end }}
   {{- with .Values.anchoreSimpleQueue.service.annotations }}

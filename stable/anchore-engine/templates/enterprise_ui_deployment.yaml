@@ -14,6 +14,9 @@ metadata:
     {{- with .Values.anchoreEnterpriseUi.labels }}
     {{ toYaml . | nindent 4 | trim }}
     {{- end }}
+    {{- with .Values.anchoreGlobal.labels }}
+    {{ toYaml . | nindent 4 | trim }}
+    {{- end }}
 spec:
   selector:
     matchLabels:
@@ -29,6 +32,9 @@ spec:
         release: {{ .Release.Name }}
         heritage: {{ .Release.Service }}
         {{- with .Values.anchoreEnterpriseUi.labels }}
+        {{ toYaml . | nindent 8 | trim }}
+        {{- end }}
+        {{- with .Values.anchoreGlobal.labels }}
         {{ toYaml . | nindent 8 | trim }}
         {{- end }}
       {{- with .Values.anchoreEnterpriseUi.annotations }}
@@ -128,6 +134,9 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     {{- with .Values.anchoreEnterpriseUi.service.labels }}
+    {{ toYaml . | nindent 4 | trim }}
+    {{- end }}
+    {{- with .Values.anchoreGlobal.labels }}
     {{ toYaml . | nindent 4 | trim }}
     {{- end }}
   {{- with .Values.anchoreEnterpriseUi.service.annotations }}

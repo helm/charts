@@ -69,11 +69,8 @@ anchoreGlobal:
   image: docker.io/anchore/anchore-engine:v0.4.0
   imagePullPolicy: IfNotPresent
 
-  # Add additionnal labels to configMap and/or secret
-  configMap:
-    labels: {}
-  secret:
-    labels: {}
+  # Add additionnal labels to all kubernetes resources
+  labels: {}
 
   # Set extra environment variables. These will be set on all containers.
   extraEnv: []
