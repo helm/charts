@@ -54,7 +54,7 @@ The following table lists the configurable parameters of the MediaWiki chart and
 | `image.registry`                     | MediaWiki image registry                                    | `docker.io`                                             |
 | `image.repository`                   | MediaWiki Image name                                        | `bitnami/mediawiki`                                     |
 | `image.tag`                          | MediaWiki Image tag                                         | `{TAG_NAME}`                                            |
-| `image.pullPolicy`                   | Image pull policy                                           | `Always`                                                |
+| `image.pullPolicy`                   | Image pull policy                                           | `IfNotPresent`                                          |
 | `image.pullSecrets`                  | Specify docker-registry secret names as an array            | `[]` (does not add image pull secrets to deployed pods) |
 | `mediawikiUser`                      | User of the application                                     | `user`                                                  |
 | `mediawikiPassword`                  | Application password                                        | _random 10 character long alphanumeric string_          |
