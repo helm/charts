@@ -1,3 +1,4 @@
+{{- $configName := default (include "pomerium.fullname" .) .Values.config.existingConfig }}
 {{- $secretName := default (include "pomerium.fullname" .) .Values.config.existingSecret }}
 apiVersion: apps/v1
 kind: Deployment
@@ -21,8 +22,9 @@ spec:
       app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
-{{- if .Values.podAnnotations }}
       annotations:
+        config/checksum: {{ print .Values.config.extraOpts | sha256sum }}
+{{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
 {{- end }}
       labels:
@@ -42,6 +44,9 @@ spec:
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         args:
+{{- if or .Values.config.existingConfig .Values.config.policy }}
+          - --config=/etc/pomerium/config.yaml
+{{- end }}
 {{- range $key, $value := .Values.extraArgs }}
 {{- if $value }}
           - --{{ $key }}={{ $value }}
@@ -52,6 +57,8 @@ spec:
         env:
         - name: SERVICES
           value: authenticate
+        - name: AUTHENTICATE_SERVICE_URL
+          value: {{ default (printf "https://authenticate.%s" .Values.config.rootDomain ) .Values.proxy.authenticateServiceUrl }}
         - name: COOKIE_SECRET
           valueFrom:
             secretKeyRef:
@@ -62,10 +69,6 @@ spec:
             secretKeyRef:
               name: {{ $secretName }}
               key: shared-secret
-        - name: REDIRECT_URL
-          value: {{ default (printf "https://%s.%s/oauth2/callback" (include "pomerium.authenticate.fullname" .)  .Values.config.rootDomain ) .Values.authenticate.redirectUrl }}
-        - name: PROXY_ROOT_DOMAIN
-          value: {{ .Values.config.rootDomain }}
         - name: IDP_PROVIDER
           value: {{ .Values.authenticate.idp.provider }}
         - name: IDP_CLIENT_ID
@@ -80,11 +83,13 @@ spec:
               key: idp-client-secret
         - name: IDP_PROVIDER_URL
           value: {{ .Values.authenticate.idp.url }}
+{{- if .Values.authenticate.idp.serviceAccount }}
         - name: IDP_SERVICE_ACCOUNT
           valueFrom:
             secretKeyRef:
               name:  {{ $secretName }}
               key: idp-service-account
+{{- end }}
         - name: CERTIFICATE
           valueFrom:
             secretKeyRef:
@@ -118,8 +123,15 @@ spec:
             path: /ping
             port: https
             scheme: HTTPS
-      resources:
-{{ toYaml .Values.resources | indent 10 }}
+{{- if or .Values.config.existingConfig .Values.config.policy }}
+        volumeMounts:
+        - mountPath: /etc/pomerium/
+          name: config
+      volumes:
+      - name: config
+        configMap:
+          name: {{ $configName }}
+{{- end }}
 {{- if .Values.extraVolumes }}
       volumes:
 {{- toYaml .Values.extraVolumes | indent 8 }}
