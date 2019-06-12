@@ -9,6 +9,12 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+    {{- with .Values.anchoreApi.labels }}
+    {{ toYaml . | nindent 4 | trim }}
+    {{- end }}
+    {{- with .Values.anchoreGlobal.labels }}
+    {{ toYaml . | nindent 4 | trim }}
+    {{- end }}
 spec:
   selector:
     matchLabels:
@@ -20,6 +26,12 @@ spec:
       labels:
         app: {{ template "anchore-engine.fullname" . }}
         component: {{ $component }}
+        {{- with .Values.anchoreApi.labels }}
+        {{ toYaml . | nindent 8 | trim }}
+        {{- end }}
+        {{- with .Values.anchoreGlobal.labels }}
+        {{ toYaml . | nindent 8 | trim }}
+        {{- end }}
       {{- with .Values.anchoreApi.annotations }}
       annotations:
         {{ toYaml . | nindent 8 | trim }}
@@ -316,6 +328,12 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     component: {{ $component }}
+    {{- with .Values.anchoreApi.service.labels }}
+    {{ toYaml . | nindent 4 | trim }}
+    {{- end }}
+    {{- with .Values.anchoreGlobal.labels }}
+    {{ toYaml . | nindent 4 | trim }}
+    {{- end }}
   {{- with .Values.anchoreApi.service.annotations }}
   annotations:
     {{ toYaml . | nindent 4 | trim }}

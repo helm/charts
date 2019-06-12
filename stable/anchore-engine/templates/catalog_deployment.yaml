@@ -9,6 +9,12 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     component: {{ $component }}
+    {{- with .Values.anchoreCatalog.labels }}
+    {{ toYaml . | nindent 4 | trim }}
+    {{- end }}
+    {{- with .Values.anchoreGlobal.labels }}
+    {{ toYaml . | nindent 4 | trim }}
+    {{- end }}
 spec:
   selector:
     matchLabels:
@@ -20,6 +26,12 @@ spec:
       labels:
         app: {{ template "anchore-engine.fullname" . }}
         component: {{ $component }}
+        {{- with .Values.anchoreCatalog.labels }}
+        {{ toYaml . | nindent 8 | trim }}
+        {{- end }}
+        {{- with .Values.anchoreGlobal.labels }}
+        {{ toYaml . | nindent 8 | trim }}
+        {{- end }}
       {{- with .Values.anchoreCatalog.annotations }}
       annotations:
         {{ toYaml . | nindent 8 | trim }}
@@ -131,6 +143,12 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     component: {{ $component }}
+    {{- with .Values.anchoreCatalog.service.labels }}
+    {{ toYaml . | nindent 4 | trim }}
+    {{- end }}
+    {{- with .Values.anchoreGlobal.labels }}
+    {{ toYaml . | nindent 4 | trim }}
+    {{- end }}
   {{- with .Values.anchoreCatalog.service.annotations }}
   annotations:
     {{ toYaml .Values.anchoreCatalog.service.annotations | nindent 4 | trim }}
