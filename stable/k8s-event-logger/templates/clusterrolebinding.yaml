@@ -1,0 +1,17 @@
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ include "k8s-event-logger.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "k8s-event-logger.name" . }}
+    helm.sh/chart: {{ include "k8s-event-logger.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ include "k8s-event-logger.fullname" . }}
+subjects:
+- namespace: {{ .Release.Namespace }}
+  kind: ServiceAccount
+  name: {{ include "k8s-event-logger.fullname" . }}

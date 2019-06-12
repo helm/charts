@@ -1,0 +1,3 @@
+To verify that the k8s-event-logger pod has started, run:
+
+  kubectl --namespace={{ .Release.Namespace }} get pods -l "app.kubernetes.io/name={{ template "k8s-event-logger.name" . }},app.kubernetes.io/instance={{ .Release.Name }}"

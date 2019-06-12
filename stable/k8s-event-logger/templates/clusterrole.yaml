@@ -1,0 +1,13 @@
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: {{ include "k8s-event-logger.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "k8s-event-logger.name" . }}
+    helm.sh/chart: {{ include "k8s-event-logger.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+rules:
+- apiGroups: [""]
+  resources: ["events"]
+  verbs: ["get", "list", "watch"]
