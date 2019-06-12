@@ -81,6 +81,7 @@ mysql:
 ## you must specify the following database details
 database:
   driver:
+  scheme:
   host:
   port:
   user: scdf
