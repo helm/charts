@@ -44,9 +44,9 @@ subjects:
 
 ---
 
+{{- if .Values.master.sidecars.configAutoReload.enabled }}
 # The sidecar container which is responsible for reloading configuration changes
 # needs permissions to watch ConfigMaps
-{{- if .Values.master.sidecars.configAutoReload.enabled }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
