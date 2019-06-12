@@ -119,7 +119,7 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `metrics.image.tag`                  | Exporter image tag                               | `v0.29.0`                                               |
 | `metrics.image.pullPolicy`           | Exporter image pull policy                       | `IfNotPresent`                                          |
 | `metrics.serviceMonitor.enabled`     | Create ServiceMonitor Resource for scraping metrics using PrometheusOperator   | `false`                   |
-| `metrics.serviceMonitor.namespace`   | Namespace where servicemonitor resource should be created         | `the same namespace as nginx ingress`  |
+| `metrics.serviceMonitor.namespace`   | Namespace where servicemonitor resource should be created                      | `nil`                     |
 | `metrics.serviceMonitor.interval`    | Specify the interval at which metrics should be scraped                        | `30s`                     |
 | `metrics.serviceMonitor.scrapeTimeout`| Specify the timeout after which the scrape is ended                           | `nil`                     |
 | `metrics.serviceMonitor.relabellings`| Specify Metric Relabellings to add to the scrape endpoint                      | `nil`                     |
