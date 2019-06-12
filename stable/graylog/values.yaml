@@ -264,6 +264,9 @@ graylog:
     # graylog-server.key: |
     # graylog-server.cert: |
 
+  ## Specify a Bash script to run as Kubernetes Job (running on Alpine with curl and bash packages already installed).
+  ## Useful for calling the API to pre-configure some aspect of Graylog, as in the example.
+  ##
   provisioner:
     enabled: false
     # script: |
