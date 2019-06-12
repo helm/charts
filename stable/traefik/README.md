@@ -116,6 +116,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `forwardedHeaders.enabled`             | Enable support specify trusted clients for forwarded headers.                                                                | `false`                                           |
 | `forwardedHeaders.trustedIPs`          | List of IPs (CIDR ranges) to be authorized to trust the client forwarded headers (X-Forwarded-*).                            | `[]`                                              |
 | `debug.enabled`                        | Turn on/off Traefik's debug mode. Enabling it will override the logLevel to `DEBUG` and provide `/debug/vars` endpoint that allows Go runtime stats to be inspected, such as number of Goroutines and memory stats | `false`                                   |
+| `logLevel`                             | Accepted values, in order of severity: "debug", "info", "warn", "error", "fatal", "panic". Messages at and above the selected level will be logged. | `info` |
 | `ssl.enabled`                          | Whether to enable HTTPS                                                                                                      | `false`                                           |
 | `ssl.enforced`                         | Whether to redirect HTTP requests to HTTPS                                                                                   | `false`                                           |
 | `ssl.permanentRedirect`                | When ssl.enforced is set, use a permanent (301) redirect instead of a temporary redirect (302)                               | `false`                                           |
@@ -123,6 +124,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `ssl.insecureSkipVerify`               | Whether to verify certs on SSL connections                                                                                   | `false`                                           |
 | `ssl.tlsMinVersion`                    | Minimum TLS version for https entrypoint                                                                                     | None                                              |
 | `ssl.cipherSuites`                     | Specify a non-empty list of TLS ciphers to override the default one | None |
+| `ssl.sniStrict`                        | Enable strict SNI checking, so that connections cannot be made if a matching certificate does not exist.                     | false                                             |
 | `ssl.generateTLS`                      | Generate self sign cert by Helm. If it's `true` the `defaultCert` and the `defaultKey` parameters will be ignored.           | false                                             |
 | `ssl.defaultCN`                        | Specify generated self sign cert CN                                                                                          | ""                                                |
 | `ssl.defaultSANList`                   | Specify generated self sign cert SAN list                                                                                    | `[]`                                              |
@@ -134,6 +136,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `acme.challengeType`                   | Type of ACME challenge to perform domain validation. `tls-sni-01` (deprecated), `tls-alpn-01` (recommended), `http-01` or `dns-01` | `tls-sni-01`                                |
 | `acme.delayBeforeCheck`         | By default, the provider will verify the TXT DNS challenge record before letting ACME verify. If delayBeforeCheck is greater than zero, this check is delayed for the configured duration in seconds. Useful when Traefik cannot resolve external DNS queries. | `0` |
 | `acme.dnsProvider.name`                | Which DNS provider to use. See [here](https://github.com/xenolf/lego/tree/master/providers/dns) for the list of possible values. | `nil`                                         |
+| `acme.dnsProvider.existingSecretName`  | Don't create a secret for DNS provider configuration environment variables, but use the specified one instead. Secret should contain the required environment variables. Useful to avoid storing secrets in helm | `""`                   |
 | `acme.dnsProvider.$name`               | The configuration environment variables (encoded as a secret) needed for the DNS provider to do DNS challenge. Example configuration: [AWS Route 53](#example-aws-route-53), [Google Cloud DNS](#example-gcloud). | `{}` |
 | `acme.email`                           | Email address to be used in certificates obtained from Let's Encrypt                                                         | `admin@example.com`                               |
 | `acme.onHostRule`                      | Whether to generate a certificate for each frontend with Host rule                                                           | `true`                                            |
@@ -234,6 +237,9 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `secretFiles`                          | Secret files to make available in the deployment. key=filename, value=file contents                                          | `{}`                                              |
 | `testFramework.image`                  | `test-framework` image repository.                                                                                           | `dduportal/bats`                                  |
 | `testFramework.tag`                    | `test-framework` image tag.                                                                                                  | `0.4.0`                                           |
+| `forwardAuth.entryPoints`              | Enable forward authentication for these entryPoints: "http", "https", "httpn"                                                |                                                   |
+| `forwardAuth.address`                  | URL for forward authentication                                                                                               |                                                   |
+| `forwardAuth.trustForwardHeader`       | Trust X-Forwarded-* headers                                                                                                  |                                                   |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 

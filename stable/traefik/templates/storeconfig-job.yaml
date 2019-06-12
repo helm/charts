@@ -5,8 +5,9 @@ metadata:
   name: "{{ template "traefik.fullname" . }}-storeconfig-job-{{ .Release.Revision }}"
   annotations:
     "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-delete-policy": "hook-succeeded,before-hook-creation"
   labels:
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: {{ template "traefik.chart" . }}
     app: {{ template "traefik.name" . }}
 spec:
   template:
@@ -14,7 +15,7 @@ spec:
       name: "{{ template "traefik.fullname" . }}-storeconfig-job-{{ .Release.Revision }}"
       labels:
         app: {{ template "traefik.name" . }}
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        chart: {{ template "traefik.chart" . }}
     spec:
       restartPolicy: Never
       containers:

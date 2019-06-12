@@ -1,8 +1,8 @@
 apiVersion: v1
-appVersion: "4.0.0.2"
+appVersion: "4.0.3.1"
 description: A Helm chart for Collabora Office - CODE-Edition
 name: collabora-code
-version: 1.0.0
+version: 1.0.2
 icon: https://avatars0.githubusercontent.com/u/22418908?s=200&v=4
 sources:
 - https://github.com/CollaboraOnline/Docker-CODE

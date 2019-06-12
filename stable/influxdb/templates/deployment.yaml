@@ -65,6 +65,10 @@ spec:
           mountPath: {{ .Values.config.storage_directory }}
         - name: config
           mountPath: /etc/influxdb
+        {{- if .Values.initScripts.enabled }}
+        - name: init
+          mountPath: /docker-entrypoint-initdb.d
+        {{- end }}
       volumes:
       - name: data
       {{- if .Values.persistence.enabled }}
@@ -81,6 +85,11 @@ spec:
       - name: config
         configMap:
           name: {{ template "influxdb.fullname" . }}
+      {{- if .Values.initScripts.enabled }}
+      - name: init
+        configMap:
+          name: {{ template "influxdb.fullname" . }}-init
+      {{- end }}
     {{- if .Values.schedulerName }}
       schedulerName: "{{ .Values.schedulerName }}"
     {{- end }}

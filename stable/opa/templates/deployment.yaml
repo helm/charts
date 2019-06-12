@@ -15,6 +15,9 @@ spec:
         app: {{ template "opa.fullname" . }}
       name: {{ template "opa.fullname" . }}
     spec:
+{{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName }}
+{{- end }}
 {{- if .Values.authz.enabled }}
       initContainers:
         - name: initpolicy
@@ -53,7 +56,7 @@ spec:
 {{- end }}
             - "--tls-cert-file=/certs/tls.crt"
             - "--tls-private-key-file=/certs/tls.key"
-            - "--addr=0.0.0.0:443"
+            - "--addr=0.0.0.0:{{ .Values.port }}"
             - "--log-level={{ .Values.logLevel }}"
             - "--log-format={{ .Values.logFormat }}"
 {{- if .Values.authz.enabled }}

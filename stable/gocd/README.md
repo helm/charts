@@ -70,6 +70,8 @@ The following tables list the configurable parameters of the GoCD chart and thei
 | Parameter                                  | Description                                                                                                   | Default             |
 | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------- | ------------------- |
 | `server.enabled`                           | Enable GoCD Server. Supported values are `true`, `false`. When enabled, the GoCD server deployment is done on helm install.  | `true`              |
+| `server.annotations.deployment`            | GoCD server Deployment annotations.                                                                           | `{}`                |
+| `server.annotations.pod       `            | GoCD server Pod annotations.                                                                                  | `{}`                |
 | `server.shouldPreconfigure`                | Preconfigure GoCD Server to have a default elastic agent profile and Kubernetes elastic agent plugin settings. Supported values are `true`, `false`.  | `true`              |
 | `server.preconfigureCommand`               | Preconfigure GOCD Server with a custom command (shell,python, etc ...). Supported value is a list.            | `["/bin/bash", "/preconfigure_server.sh"]`|
 | `server.preStop`                           | Perform cleanup and backup before stopping the gocd server. Supported value is a list.                        | `nil`               |
@@ -162,6 +164,8 @@ $ kubectl create secret generic gocd-server-ssh \
 
 | Parameter                                 | Description                                                                                                                                                                      | Default                      |
 | ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- |
+| `agent.annotations.deployment`            | GoCD Agent Deployment annotations.                                                                                                                                               | `{}`                         |
+| `agent.annotations.pod       `            | GoCD Agent Pod annotations.                                                                                                                                                      | `{}`                         |
 | `agent.replicaCount`                      | GoCD Agent replicas Count. By default, no agents are provided.                                                                                                                   | `0`                          |
 | `agent.preStop        `                   | Perform cleanup and backup before stopping the gocd server. Supported value is a list.                                                                                           | `nil`                        |
 | `agent.terminationGracePeriodSeconds`     | Optional duration in seconds the gocd agent pods need to terminate gracefully.                                                                                                   | `nil`                        |

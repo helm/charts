@@ -23,10 +23,6 @@ spec:
       labels:
         {{- include "prometheus.alertmanager.labels" . | nindent 8 }}
     spec:
-{{- if .Values.alertmanager.affinity }}
-      affinity:
-{{ toYaml .Values.alertmanager.affinity | indent 8 }}
-{{- end }}
 {{- if .Values.alertmanager.schedulerName }}
       schedulerName: "{{ .Values.alertmanager.schedulerName }}"
 {{- end }}

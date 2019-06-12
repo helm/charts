@@ -26,4 +26,12 @@ spec:
     interval: {{ .Values.kubeDns.serviceMonitor.interval }}
     {{- end }}
     bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+{{- if .Values.kubeDns.serviceMonitor.metricRelabelings }}
+    metricRelabelings:
+{{ toYaml .Values.kubeDns.serviceMonitor.metricRelabelings | indent 4 }}
+{{- end }}
+{{- if .Values.kubeDns.serviceMonitor.relabelings }}
+    relabelings:
+{{ toYaml .Values.kubeDns.serviceMonitor.relabelings | indent 4 }}
+{{- end }}
 {{- end }}

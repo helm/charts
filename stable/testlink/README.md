@@ -53,7 +53,7 @@ The following table lists the configurable parameters of the TestLink chart and 
 | `global.imagePullSecrets`           | Global Docker registry secret names as an array | `[]` (does not add image pull secrets to deployed pods) |
 | `image.registry`                    | TestLink image registry                 | `docker.io`                                             |
 | `image.repository`                  | TestLink image name                     | `bitnami/testlink`                                      |
-| `image.tag`                         | TestLink image tag                      | `{VERSION}`                                             |
+| `image.tag`                         | TestLink image tag                      | `{TAG_NAME}`                                            |
 | `image.pullPolicy`                  | Image pull policy                       | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
 | `image.pullSecrets`                 | Specify docker-registry secret names as an array  | `[]` (does not add image pull secrets to deployed pods) |
 | `testlinkUsername`                  | Admin username                          | `user`                                                  |
@@ -95,9 +95,6 @@ The following table lists the configurable parameters of the TestLink chart and 
 | `service.externalTrafficPolicy`   | Enable client source IP preservation       | `Cluster`                                               |
 | `service.loadBalancerIP`   | LoadBalancer service IP address       | `""`                                               |
 | `persistence.enabled`               | Enable persistence using PVC            | `true`                                                  |
-| `persistence.apache.storageClass`   | PVC Storage Class for Apache volume     | `nil` (uses alpha storage class annotation)             |
-| `persistence.apache.accessMode`     | PVC Access Mode for Apache volume       | `ReadWriteOnce`                                         |
-| `persistence.apache.size`           | PVC Storage Request for Apache volume   | `1Gi`                                                   |
 | `persistence.testlink.storageClass` | PVC Storage Class for TestLink volume   | `nil` (uses alpha storage class annotation)             |
 | `persistence.testlink.accessMode`   | PVC Access Mode for TestLink volume     | `ReadWriteOnce`                                         |
 | `persistence.testlink.size`         | PVC Storage Request for TestLink volume | `8Gi`                                                   |
@@ -132,9 +129,15 @@ $ helm install --name my-release -f values.yaml stable/testlink
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
+### [Rolling VS Immutable tags](https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/)
+
+It is strongly recommended to use immutable tags in a production environment. This ensures your deployment does not change automatically if the same tag is updated with a different image.
+
+Bitnami will release a new chart updating its containers if a new version of the main container, significant changes, or critical vulnerabilities exist.
+
 ## Persistence
 
-The [Bitnami TestLink](https://github.com/bitnami/bitnami-docker-testlink) image stores the TestLink data and configurations at the `/bitnami/testlink` and `/bitnami/apache` paths of the container.
+The [Bitnami TestLink](https://github.com/bitnami/bitnami-docker-testlink) image stores the TestLink data and configurations at the `/bitnami/testlink` path of the container.
 
 Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
 See the [Configuration](#configuration) section to configure the PVC or to disable persistence.

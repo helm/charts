@@ -26,5 +26,5 @@
 
 4. Next steps in configuration
 
-   Please follow the link below for nexus configuration, usage, backups and DR info:
-   https://github.com/travelaudience/core-nexus-kubernetes/tree/create-helm-chart/helm/nexus#after-installing-the-chart
+   Please follow the link below to the README for nexus configuration, usage, backups and DR info:
+   https://github.com/helm/charts/tree/master/stable/sonatype-nexus#after-installing-the-chart
