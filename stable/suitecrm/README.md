@@ -54,7 +54,7 @@ The following table lists the configurable parameters of the SuiteCRM chart and 
 | `image.registry`                    | SuiteCRM image registry                         | `docker.io`                                             |
 | `image.repository`                  | SuiteCRM image name                             | `bitnami/suitecrm`                                      |
 | `image.tag`                         | SuiteCRM image tag                              | `{TAG_NAME}`                                            |
-| `image.pullPolicy`                  | Image pull policy                               | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
+| `image.pullPolicy`                  | Image pull policy                               | `IfNotPresent`                                          |
 | `image.pullSecrets`                 | Specify docker-registry secret names as an array| `[]` (does not add image pull secrets to deployed pods)|
 | `suitecrmHost`                      | SuiteCRM host to create application URLs        | `nil`                                                   |
 | `suitecrmUsername`                  | User of the application                         | `user`                                                  |
