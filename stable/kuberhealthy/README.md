@@ -45,6 +45,17 @@ resources:
   limits:
     cpu: 400m
     memory: 200Mi
+# Disable certain kuberhealthy checks by setting enabled to false
+componentStatusCheck:
+  enabled: true
+daemonSetCheck:
+  enabled: true
+dnsStatusCheck:
+  enabled: true
+podRestartsCheck:
+  enabled: true
+podStatusCheck:
+  enabled: true
 tolerations:
   # change to true to tolerate and deploy to masters annotated with node-role.kubernetes.io/master
   master: true
@@ -68,6 +79,40 @@ securityContext: # default container security context
   allowPrivilegeEscalation: false
 ```
 
+The following table lists the configurable parameters of the kuberhealthy chart and their default values.
+
+| Config                        | Description                                                                 | Default                    |
+| ------                        | -----------                                                                 | -------                    |
+| `image.repository`            | Image repository                                                            | `quay.io/comcast/kuberhealthy` |
+| `image.tag`                   | Image tag                                                                   | `v1.0.2`                   |
+| `prometheus.enabled`          | Do we deploy a ServiceMonitor spec?                                         | `true`                     |
+| `prometheus.name`             | The name of the Prometheus deployment in your environment.                  | `prometheus`               |
+| `prometheus.enableScraping`   | Add the Prometheus scrape annotation to Kuberhealthy pods                   | `true`                     |
+| `prometheus.serviceMonitor`   | Use a ServiceMonitor configuration, for if using Prometheus Operator        | `false`                    |
+| `prometheus.enableAlerting`   | Enable default Kuberhealthy alerts configuration                            | `true`                     |
+| `app.name`                    | What to name the kuberhealthy deployment                                    | `kuberhealthy`             |
+| `resources.requests.cpu`      | Resource requests cpu                                                       | `100m`                     |
+| `resources.requests.memory`   | Resource requests memory                                                    | `80Mi`                     |
+| `resources.limits.cpu`        | Resource limits cpu                                                         | `400m`                     |
+| `resources.limits.memory`     | Resource limits memeory                                                     | `200Mi`                    |
+| `tolerations.master`          | Change to true to tolerate and deploy to masters annotated with node-role.kubernetes.io/master  | `true` |
+| `deployment.replicas`         | Any number of replicas are supported, but only act in a failover capacity   | `2`                        |
+| `deployment.maxSurge`         | Deployment max surge                                                        | `0`                        |
+| `deployment.maxUnavailable`   | Deployment max unavailable                                                  | `1`                        |
+| `deployment.imagePullPolicy`  | Deployment image pull policy                                                | `IfNotPresent`             |
+| `deployment.namespace`        | Deployment namespace                                                        | `kuberhealthy`             |
+| `deployment.podAnnotations`   | Annotations to be added to pods created by the deployment                   | `{}`                       |
+| `deployment.command`          | Node Selector for the daemonset (ie, restrict which nodes kured runs on)    | `/app/kuberhealthy`        |
+| `deployment.args`             | Use this to override location of the test-image, see: https://github.com/Comcast/kuberhealthy/blob/master/docs/FLAGS.md  | `-dsPauseContainerImageOverride, your-repo/google_containers/pause:0.8.0` |
+| `securityContext.runAsNonRoot`| Default container security context: Run as non root?                        | `true`                     |
+| `securityContext.runAsUser`   | Default container security context: Run as user                             | `999`                      |
+| `securityContext.fsGroup`     | Default container security context: fs group                                | `999`                      |
+| `securityContext.allowPrivilegeEscalation`  | Default container security context: Allow privilege escalation  | `false`                  |
+| `componentStatusCheck.enabled`  | Enable component status check                                             | `true`                     |
+| `daemonSetCheck.enabled`      | Enable daemon set check                                                     | `true`                     |
+| `dnsStatusCheck.enabled`      | Enable DNS status check                                                     | `true`                     |
+| `podRestartsCheck.enabled`    | Enable pod restarts check                                                   | `true`                     |
+| `podStatusCheck.enabled`      | Enable pod status check                                                     | `true`                     |
 
 For more details, see the [Kuberhealthy web site](https://comcast.github.io/kuberhealthy/).
 
