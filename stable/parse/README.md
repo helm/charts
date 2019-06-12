@@ -57,7 +57,7 @@ The following table lists the configurable parameters of the Parse chart and the
 | `server.image.registry`               | Parse image registry                     | `docker.io`                                             |
 | `server.image.repository`             | Parse image name                         | `bitnami/parse`                                         |
 | `server.image.tag`                    | Parse image tag                          | `{TAG_NAME}`                                            |
-| `server.image.pullPolicy`             | Image pull policy                        | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
+| `server.image.pullPolicy`             | Image pull policy                        | `IfNotPresent`                                          |
 | `server.image.pullSecrets`            | Specify docker-registry secret names as an array               | `[]` (does not add image pull secrets to deployed pods) |
 | `server.securityContext.enabled`      | Enable security context for Parse Server | `true`                                                  |
 | `server.securityContext.fsGroup`      | Group ID for Parse Server container      | `1001`                                                  |
@@ -71,7 +71,7 @@ The following table lists the configurable parameters of the Parse chart and the
 | `dashboard.image.registry`            | Dashboard image registry                 | `docker.io`                                             |
 | `dashboard.image.repository`          | Dashboard image name                     | `bitnami/parse-dashboard`                               |
 | `dashboard.image.tag`                 | Dashboard image tag                      | `{TAG_NAME}`                                            |
-| `dashboard.image.pullPolicy`          | Image pull policy                        | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
+| `dashboard.image.pullPolicy`          | Image pull policy                        | `IfNotPresent`                                          |
 | `dashboard.securityContext.enabled`   | Enable security context for Dashboard    | `true`                                                  |
 | `dashboard.securityContext.fsGroup`   | Group ID for Dashboard container         | `1001`                                                  |
 | `dashboard.securityContext.runAsUser` | User ID for Dashboard container          | `1001`                                                  |
