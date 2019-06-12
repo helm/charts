@@ -8,22 +8,29 @@
 helm install --name my-release stable/pomerium
 ```
 
-> Note: Pomerium depends on being configured with a third party identity providers to function properly. If you run pomerium without specifiying default values, you will need to change those configuration variables following setup.
+> Note: Pomerium depends on being configured with a third party identity providers to function properly. If you run pomerium without specifying default values, you will need to change those configuration variables following setup.
 
 ## Install the chart
 
 An example of a minimal, but complete installation of pomerium with identity provider settings, random secrets, certificates, and external URLs is as follows:
 
 ```sh
-helm install --name my-release \
-    --set config.rootDomain="corp.example.com" \
-    --set ingress.tls.certificate=$(base64 -i "*.corp.example.com.cer") \
-    --set ingress.tls.key=$(base64 -i "*.corp.example.com.key") \
-    --set config.policy=$(base64 -i "policy.yaml") \
-    --set authenticate.idp.provider="google" \
-    --set authenticate.idp.clientID="REPLACE_ME" \
-    --set authenticate.idp.clientSecret="REPLACE_ME"
-    stable/pomerium
+kubectl create configmap config --from-file="config.yaml"="$HOME/pomerium/docs/docs/examples/config/config.example.yaml"
+
+helm install $HOME/pomerium-helm \
+	--set service.type="NodePort" \
+	--set config.rootDomain="corp.beyondperimeter.com" \
+	--set config.existingConfig="config" \
+	--set config.sharedSecret=$(head -c32 /dev/urandom | base64) \
+	--set config.cookieSecret=$(head -c32 /dev/urandom | base64) \
+	--set ingress.secret.name="pomerium-tls" \
+	--set ingress.secret.cert=$(base64 -i "$HOME/.acme.sh/*.corp.beyondperimeter.com_ecc/fullchain.cer") \
+	--set ingress.secret.key=$(base64 -i "$HOME/.acme.sh/*.corp.beyondperimeter.com_ecc/*.corp.beyondperimeter.com.key") \
+	--set authenticate.idp.provider="google" \
+	--set authenticate.idp.clientID="REPLACE_ME" \
+	--set authenticate.idp.clientSecret="REPLACE_ME" \
+	stable/pomerium
+
 ```
 
 ## Uninstalling the Chart
