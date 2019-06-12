@@ -96,6 +96,7 @@ spec:
           {{- if .Values.persistence.enabled }}
             - name: dags-data
               mountPath: {{ .Values.dags.path }}
+              subPath: {{ .Values.persistence.subPath | default "" }}
           {{- else if .Values.dags.initContainer.enabled }}
             - name: dags-data
               mountPath: {{ .Values.dags.path }}
@@ -103,6 +104,7 @@ spec:
           {{- if .Values.logsPersistence.enabled }}
             - name: logs-data
               mountPath: {{ .Values.logs.path }}
+              subPath: {{ .Values.logsPersistence.subPath | default "" }}
           {{- end }}
           {{- range .Values.airflow.extraConfigmapMounts }}
             - name: {{ .name }}
@@ -139,7 +141,11 @@ spec:
           {{- end }}
           livenessProbe:
             httpGet:
+              {{- if .Values.ingress.web.livenessPath }}
+              path: "{{ .Values.ingress.web.livenessPath }}"
+              {{- else }}
               path: "{{ .Values.ingress.web.path }}/health"
+              {{- end }}
               port: web
             ## Keep 6 minutes the delay to allow clean wait of postgres and redis containers
             initialDelaySeconds: {{ .Values.web.initialDelaySeconds }}

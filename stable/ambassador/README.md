@@ -56,7 +56,7 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `env`                              | Any additional environment variables for ambassador pods                        | `{}`                              |
 | `image.pullPolicy`                 | Ambassador image pull policy                                                    | `IfNotPresent`                    |
 | `image.repository`                 | Ambassador image                                                                | `quay.io/datawire/ambassador`     |
-| `image.tag`                        | Ambassador image tag                                                            | `0.70.1`                          |
+| `image.tag`                        | Ambassador image tag                                                            | `0.71.0`                          |
 | `imagePullSecrets`                 | Image pull secrets                                                              | `[]`                              |
 | `namespace.name`                   | Set the `AMBASSADOR_NAMESPACE` environment variable                             | `metadata.namespace`              |
 | `scope.singleNamespace`            | Set the `AMBASSADOR_SINGLE_NAMESPACE` environment variable                      | `false`                           |
@@ -66,6 +66,7 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `prometheusExporter.pullPolicy`    | Image pull policy                                                               | `IfNotPresent`                    |
 | `prometheusExporter.repository`    | Prometheus exporter image                                                       | `prom/statsd-exporter`            |
 | `prometheusExporter.tag`           | Prometheus exporter image                                                       | `v0.8.1`                          |
+| `prometheusExporter.resources`  | CPU/memory resource requests/limits                                                       | `{}`                          |
 | `rbac.create`                      | If `true`, create and use RBAC resources                                        | `true`                            |
 | `rbac.namespaced`                  | If `true`, permissions are namespace-scoped rather than cluster-scoped          | `false`                           |
 | `replicaCount`                     | Number of Ambassador replicas                                                   | `3`                               |

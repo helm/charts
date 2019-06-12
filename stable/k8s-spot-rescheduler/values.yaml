@@ -3,6 +3,8 @@
 # Declare variables to be passed into your templates.
 replicaCount: 1
 
+podAnnotations: {}
+
 podDisruptionBudget: {}
   # maxUnavailable: 1
 
@@ -57,3 +59,8 @@ serviceAccount:
   # The name of the ServiceAccount to use.
   # If not set and create is true, a name is generated using the fullname template
   name:
+
+# Leverage a PriorityClass to ensure your pods survive resource shortages
+# ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
+# PriorityClass: system-cluster-critical
+priorityClassName: ""

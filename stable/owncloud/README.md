@@ -54,7 +54,7 @@ The following table lists the configurable parameters of the ownCloud chart and 
 | `image.registry`                    | ownCloud image registry                    | `docker.io`                                             |
 | `image.repository`                  | ownCloud Image name                        | `bitnami/owncloud`                                      |
 | `image.tag`                         | ownCloud Image tag                         | `{TAG_NAME}`                                            |
-| `image.pullPolicy`                  | Image pull policy                          | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
+| `image.pullPolicy`                  | Image pull policy                          | `IfNotPresent`                                          |
 | `image.pullSecrets`                 | Specify docker-registry secret names as an array | `[]` (does not add image pull secrets to deployed pods) |
 | `ingress.enabled`                   | Enable ingress controller resource         | `false`                                                 |
 | `ingress.hosts[0].name`             | Hostname to your ownCloud installation     | `owncloud.local`                                        |
@@ -86,10 +86,6 @@ The following table lists the configurable parameters of the ownCloud chart and 
 | `mariadb.rootUser.password`         | MariaDB admin password                     | `nil`                                                   |
 | `serviceType`                       | Kubernetes Service type                    | `LoadBalancer`                                          |
 | `persistence.enabled`               | Enable persistence using PVC               | `true`                                                  |
-| `persistence.apache.storageClass`   | PVC Storage Class for Apache volume        | `nil` (uses alpha storage class annotation)             |
-| `persistence.apache.existingClaim`  | An Existing PVC name for Apache volume     | `nil` (uses alpha storage class annotation)             |
-| `persistence.apache.accessMode`     | PVC Access Mode for Apache volume          | `ReadWriteOnce`                                         |
-| `persistence.apache.size`           | PVC Storage Request for Apache volume      | `1Gi`                                                   |
 | `persistence.owncloud.storageClass` | PVC Storage Class for ownCloud volume      | `nil` (uses alpha storage class annotation)             |
 | `persistence.owncloud.existingClaim`| An Existing PVC name for ownCloud volume   | `nil` (uses alpha storage class annotation)             |
 | `persistence.owncloud.accessMode`   | PVC Access Mode for ownCloud volume        | `ReadWriteOnce`                                         |
@@ -147,7 +143,7 @@ Bitnami will release a new chart updating its containers if a new version of the
 
 ## Persistence
 
-The [Bitnami ownCloud](https://github.com/bitnami/bitnami-docker-owncloud) image stores the ownCloud data and configurations at the `/bitnami/owncloud` and `/bitnami/apache` paths of the container.
+The [Bitnami ownCloud](https://github.com/bitnami/bitnami-docker-owncloud) image stores the ownCloud data and configurations at the `/bitnami/owncloud` path of the container.
 
 Persistent Volume Claims are used to keep the data across deployments. There is a [known issue](https://github.com/kubernetes/kubernetes/issues/39178) in Kubernetes Clusters with EBS in different availability zones. Ensure your cluster is configured properly to create Volumes in the same availability zone where the nodes are running. Kuberentes 1.12 solved this issue with the [Volume Binding Mode](https://kubernetes.io/docs/concepts/storage/storage-classes/#volume-binding-mode).
 

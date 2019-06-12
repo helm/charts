@@ -54,7 +54,7 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `image.registry`                          | MariaDB image registry                              | `docker.io`                                                       |
 | `image.repository`                        | MariaDB Image name                                  | `bitnami/mariadb`                                                 |
 | `image.tag`                               | MariaDB Image tag                                   | `{TAG_NAME}`                                                      |
-| `image.pullPolicy`                        | MariaDB image pull policy                           | `Always` if `imageTag` is `latest`, else `IfNotPresent`           |
+| `image.pullPolicy`                        | MariaDB image pull policy                           | `IfNotPresent`                                                    |
 | `image.pullSecrets`                       | Specify docker-registry secret names as an array    | `[]` (does not add image pull secrets to deployed pods)           |
 | `image.debug`                             | Specify if debug logs should be enabled             | `false`                                                           |
 | `service.type`                            | Kubernetes service type                             | `ClusterIP`                                                       |
@@ -62,6 +62,7 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `service.port`                            | MySQL service port                                  | `3306`                                                            |
 | `serviceAccount.create`                   | Specifies whether a ServiceAccount should be created | `false`                                                          |
 | `serviceAccount.name`                     | The name of the ServiceAccount to create            | Generated using the mariadb.fullname template                     |
+| `schedulerName`                           | Name of the k8s scheduler (other than default)      | `nil`                                                             |
 | `rbac.create`                             | Create and use RBAC resources                       | `false`                                                           |
 | `securityContext.enabled`                 | Enable security context                             | `true`                                                            |
 | `securityContext.fsGroup`                 | Group ID for the container                          | `1001`                                                            |
@@ -71,11 +72,13 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `rootUser.forcePassword`                  | Force users to specify a password                   | `false`                                                           |
 | `db.user`                                 | Username of new user to create                      | `nil`                                                             |
 | `db.password`                             | Password for the new user. Ignored if existing secret is provided.    | _random 10 character alphanumeric string if `db.user` is defined_ |
+| `db.forcePassword`                        | Force users to specify a password                   | `false`                                                           |
 | `db.name`                                 | Name for new database to create                     | `my_database`                                                     |
 | `replication.enabled`                     | MariaDB replication enabled                         | `true`                                                            |
 | `replication.user`                        |MariaDB replication user                             | `replicator`                                                      |
 | `replication.password`                    | MariaDB replication user password. Ignored if existing secret is provided. | _random 10 character alphanumeric string_  |
-| `initdbScripts`                           | Dictionary of initdb scripts                              | `nil`                                                             |
+| `replication.forcePassword`               | Force users to specify a password                   | `false`                                                           |
+| `initdbScripts`                           | Dictionary of initdb scripts                        | `nil`                                                             |
 | `initdbScriptsConfigMap`                  | ConfigMap with the initdb scripts (Note: Overrides `initdbScripts`) | `nil`                                             |
 | `master.annotations[].key`                | key for the the annotation list item                |  `nil`                                                            |
 | `master.annotations[].value`              | value for the the annotation list item              |  `nil`                                                            |
@@ -147,6 +150,10 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `metrics.image.tag`                       | Exporter image tag                                  | `v0.10.0`                                                         |
 | `metrics.image.pullPolicy`                | Exporter image pull policy                          | `IfNotPresent`                                                    |
 | `metrics.resources`                       | Exporter resource requests/limit                    | `nil`                                                             |
+| `metrics.serviceMonitor.enabled`          | if `true`, creates a Prometheus Operator ServiceMonitor (also requires `metrics.enabled` to be `true`)                    | `false`                                                             |
+| `metrics.serviceMonitor.namespace`        | Optional namespace which Prometheus is running in   | `nil`                                                             |
+| `metrics.serviceMonitor.interval`         | How frequently to scrape metrics (use by default, falling back to Prometheus' default)  | `nil`                                                             |
+| `metrics.serviceMonitor.selector`         | Default to kube-prometheus install (CoreOS recommended), but should be set according to Prometheus install                    | `{ prometheus: kube-prometheus }`                                                             |
 
 The above parameters map to the env variables defined in [bitnami/mariadb](http://github.com/bitnami/bitnami-docker-mariadb). For more information please refer to the [bitnami/mariadb](http://github.com/bitnami/bitnami-docker-mariadb) image documentation.
 
@@ -167,6 +174,36 @@ $ helm install --name my-release -f values.yaml stable/mariadb
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+### Production configuration
+
+This chart includes a `values-production.yaml` file where you can find some parameters oriented to production configuration in comparison to the regular `values.yaml`.
+
+```console
+$ helm install --name my-release -f ./values-production.yaml stable/mariadb
+```
+
+- Force users to specify a password:
+```diff
+- rootUser.forcePassword: false
++ rootUser.forcePassword: true
+- db.forcePassword: false
++ db.forcePassword: true
+- replication.forcePassword: false
++ replication.forcePassword: true
+```
+
+- Desired number of slave replicas:
+```diff
+- slave.replicas: 1
++ slave.replicas: 2
+```
+
+- Start a side-car prometheus exporter:
+```diff
+- metrics.enabled: false
++ metrics.enabled: true
+```
 
 ### [Rolling VS Immutable tags](https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/)
 
