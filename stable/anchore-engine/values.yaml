@@ -40,6 +40,7 @@ cloudsql:
 # To utilize a GCE/ALB ingress controller comment out the nginx annotations below, change ingress.class, edit path configurions as per the comments, & set API/UI services to use NodePort.
 ingress:
   enabled: false
+  labels: {}
   # Use the following paths for GCE/ALB ingress controller
   # apiPath: /v1/*
   # uiPath: /*
@@ -67,6 +68,9 @@ anchoreGlobal:
   # Image used for all anchore engine deployments (excluding enterprise components).
   image: docker.io/anchore/anchore-engine:v0.4.0
   imagePullPolicy: IfNotPresent
+
+  # Add additionnal labels to all kubernetes resources
+  labels: {}
 
   # Set extra environment variables. These will be set on all containers.
   extraEnv: []
@@ -169,6 +173,7 @@ anchoreAnalyzer:
   #    cpu: 100m
   #    memory: 3Gi
 
+  labels: {}
   annotations: {}
   nodeSelector: {}
   tolerations: []
@@ -189,6 +194,7 @@ anchoreApi:
     type: ClusterIP
     port: 8228
     annotations: {}
+    label: {}
 
   # resources:
   #  limits:
@@ -198,6 +204,7 @@ anchoreApi:
   #    cpu: 100m
   #    memory: 4Gi
 
+  labels: {}
   annotations: {}
   nodeSelector: {}
   tolerations: []
@@ -290,6 +297,7 @@ anchoreCatalog:
     type: ClusterIP
     port: 8082
     annotations: {}
+    labels: {}
 
   # resources:
   #  limits:
@@ -299,6 +307,7 @@ anchoreCatalog:
   #    cpu: 100m
   #    memory: 3Gi
 
+  labels: {}
   annotations: {}
   nodeSelector: {}
   tolerations: []
@@ -325,6 +334,7 @@ anchorePolicyEngine:
     type: ClusterIP
     port: 8087
     annotations: {}
+    labels: {}
 
   # resources:
   #  limits:
@@ -334,6 +344,7 @@ anchorePolicyEngine:
   #    cpu: 100m
   #    memory: 3Gi
 
+  labels: {}
   annotations: {}
   nodeSelector: {}
   tolerations: []
@@ -353,6 +364,7 @@ anchoreSimpleQueue:
     type: ClusterIP
     port: 8083
     annotations: {}
+    labels: {}
 
   # resources:
   #  limits:
@@ -362,6 +374,7 @@ anchoreSimpleQueue:
   #    cpu: 100m
   #    memory: 2Gi
 
+  labels: {}
   annotations: {}
   nodeSelector: {}
   tolerations: []
@@ -427,6 +440,7 @@ anchoreEnterpriseFeeds:
     type: ClusterIP
     port: 8448
     annotations: {}
+    labels: {}
 
   # resources:
   #  limits:
@@ -436,6 +450,7 @@ anchoreEnterpriseFeeds:
   #    cpu: 100m
   #    memory: 3Gi
 
+  labels: {}
   annotations: {}
   nodeSelector: {}
   tolerations: []
@@ -509,6 +524,7 @@ anchoreEnterpriseReports:
   #    cpu: 100m
   #    memory: 3Gi
 
+  labels: {}
   annotations: {}
   nodeSelector: {}
   tolerations: []
@@ -547,6 +563,7 @@ anchoreEnterpriseUi:
     type: ClusterIP
     port: 80
     annotations: {}
+    labels: {}
     sessionAffinity: ClientIP
 
   # resources:
@@ -557,6 +574,7 @@ anchoreEnterpriseUi:
   #    cpu: 100m
   #    memory: 3Gi
 
+  labels: {}
   annotations: {}
   nodeSelector: {}
   tolerations: []
