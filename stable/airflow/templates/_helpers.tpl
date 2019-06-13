@@ -92,6 +92,9 @@ Create a random string if the supplied key does not exist
 {{/*
 Create a set of environment variables to be mounted in web, scheduler, and woker pods.
 For the database passwords, we actually use the secretes created by the postgres and redis sub-charts.
+Note that the environment variables themselves are determined by the puckel/docker-airflow image.
+See script/entrypoint.sh in that repo for more info.
+The key names for postgres and redis are fixed, which is consistent with the subcharts.
 */}}
 {{- define "airflow.mapenvsecrets" }}
   - name: POSTGRES_USER
