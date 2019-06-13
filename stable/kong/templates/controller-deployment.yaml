@@ -43,6 +43,24 @@ spec:
         env:
         - name: KONG_PROXY_LISTEN
           value: 'off'
+        {{- if .Values.enterprise.enabled }}
+        {{- if .Values.enterprise.rbac.enabled }}
+        # TODO: uncomment this once we have a means of securely providing the
+        # controller its token using a secret.
+        #- name: KONG_ENFORCE_RBAC
+        #  value: "on"
+        {{- end }}
+        # the controller admin API should not receive requests to create admins or developers
+        # never enable SMTP on it as such
+        {{- if .Values.enterprise.smtp.enabled }}
+        - name: KONG_SMTP_MOCK
+          value: "on"
+        {{- else }}
+        - name: KONG_SMTP_MOCK
+          value: "on"
+        {{- end }}
+        {{- include "kong.license" . | nindent 8 }}
+        {{- end }}
         {{- include "kong.env" .  | indent 8 }}
         {{- if .Values.admin.useTLS }}
         - name: KONG_ADMIN_LISTEN

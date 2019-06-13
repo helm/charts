@@ -7,8 +7,8 @@ metadata:
     chart: {{ template "metrics-server.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-    {{- with .Values.service.labels }}
-    {{ toYaml . | indent 4}}
+    {{- with .Values.service.labels -}}
+    {{ toYaml . | nindent 4 }}
     {{- end }}
   annotations:
     {{- toYaml .Values.service.annotations | nindent 4 }}
