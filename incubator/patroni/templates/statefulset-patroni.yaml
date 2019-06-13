@@ -141,8 +141,10 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
+    {{- with .Values.affinity }}
       affinity:
-{{ tpl .Values.affinity . | indent 8 }}
+{{ toYaml . | indent 8 }}
+    {{- end }}
       volumes:
       - name: patroni-config
         secret:
