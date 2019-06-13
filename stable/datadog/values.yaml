@@ -431,13 +431,13 @@ daemonset:
       ## @param resources - object - required
       ## Resource requests and limits for the agent container.
       #
-      resources:
-        requests:
-          cpu: 200m
-          memory: 256Mi
-        limits:
-          cpu: 200m
-          memory: 256Mi
+      resources: {}
+      #  requests:
+      #    cpu: 200m
+      #    memory: 256Mi
+      #  limits:
+      #    cpu: 200m
+      #    memory: 256Mi
 
     processAgent:
       ## @param env - list - required
@@ -455,13 +455,13 @@ daemonset:
       ## @param resources - object - required
       ## Resource requests and limits for the process-agent container.
       #
-      resources:
-        requests:
-          cpu: 100m
-          memory: 200Mi
-        limits:
-          cpu: 100m
-          memory: 200Mi
+      resources: {}
+      #  requests:
+      #    cpu: 100m
+      #    memory: 200Mi
+      #  limits:
+      #    cpu: 100m
+      #    memory: 200Mi
 
     traceAgent:
       ## @param env - list - required
@@ -479,13 +479,13 @@ daemonset:
       ## @param resources - object - required
       ## Resource requests and limits for the trace-agent container.
       #
-      resources:
-        requests:
-          cpu: 100m
-          memory: 200Mi
-        limits:
-          cpu: 100m
-          memory: 200Mi
+      resources: {}
+      #  requests:
+      #    cpu: 100m
+      #    memory: 200Mi
+      #  limits:
+      #    cpu: 100m
+      #    memory: 200Mi
 
   ## @param useHostNetwork - boolean - optional
   ## Bind ports on the hostNetwork. Useful for CNI networking where hostPort might
