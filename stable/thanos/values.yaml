@@ -256,10 +256,6 @@ ruleLayer:
   terminationGracePeriodSeconds: 15
   tolerations:
   storeApiService:
-    selector:
-      app: prometheus
-      component: server
-    enabled: false
     annotations:
       prometheus.io/scrape: 'false'
     clusterIP: None
@@ -269,3 +265,4 @@ ruleLayer:
     nodePort:
     servicePort: 10901
     type: ClusterIP
+    enabled: true
