@@ -10,7 +10,7 @@
 
 # For FQDN resolving of the master service. Change this value to match your existing configuration.
 # ref: https://github.com/kubernetes/dns/blob/master/docs/specification.md
-# clusterZone: "cluster.local"
+clusterZone: "cluster.local"
 
 master:
   # Used for label app.kubernetes.io/component
