@@ -266,7 +266,6 @@ helm install --name <RELEASE_NAME> \
 | `daemonset.useHostPID`.                  | If true, use the host's PID namespace                                                     | `nil`                                       |
 | `daemonset.useHostPort`                  | If true, use the same ports for both host and container                                   | `nil`                                       |
 | `daemonset.useDedicatedContainers`       | If true, each Datadog agent will run in a separate container                              | `nil`                                       |
-| `daemonset.containers.init`              | Additional list of containers that will run during pod initialization                     | `nil`                                       |
 | `daemonset.containers.agent.env`                          | Additional list of environment variables to use in the agent container                 | `nil`                                         |
 | `daemonset.containers.agent.logLevel`                     | Agent log verbosity                                                                    | `INFO`                                        |
 | `daemonset.containers.agent.resources.limits.cpu`         | CPU resource limits for the agent container                                            | `200m`                                        |

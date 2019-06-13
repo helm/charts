@@ -409,11 +409,6 @@ daemonset:
   # useDedicatedContainers: false
 
   containers:
-    ## @param init - list - optional
-    ## Additional containers to be executed during pod initialization. These
-    ## will run sequentially after Datadog initContainers.
-    #
-    # init:
 
     agent:
       ## @param env - list - required
