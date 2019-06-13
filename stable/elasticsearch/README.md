@@ -6,7 +6,8 @@ Elasticsearch does not communicate with the Kubernetes API, hence no need for RB
 ## **Pre-deprecation notice**
 As mentioned in #10543 we are planning on deprecating this chart in favour of the official [Elastic Helm Chart](https://github.com/elastic/helm-charts/tree/master/elasticsearch).
 We have made steps towards that goal by producing a [migration guide](https://github.com/elastic/helm-charts/blob/master/elasticsearch/examples/migration/README.md) to help people switch the management of their clusters over to the new Charts.
-During that process we want to make sure that Chart will do what people are using this chart to do.
+The Elastic Helm Chart supports version 7 of Elasticsearch and it was decided it would be easier for people to upgrade after migrating to the Elastic Helm Chart because it's upgrade process works better.
+During deprecation process we want to make sure that Chart will do what people are using this chart to do.
 Please look at the Elastic Helm Charts and if you see anything missing from please [open an issue](https://github.com/elastic/helm-charts/issues/new/choose) to let us know what you need.
 The Elastic Chart repo is also in [Helm Hub](https://hub.helm.sh).
 
