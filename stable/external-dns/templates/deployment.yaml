@@ -152,6 +152,11 @@ spec:
         - --rfc2136-insecure
           {{- end }}
         {{- end }}
+        # PowerDNS arguments
+        {{- if eq .Values.provider "pdns" }}
+        - --pdns-server={{ .Values.pdns.apiUrl }}:{{ .Values.pdns.apiPort }}
+        - --pdns-api-key=$(PDNS_API_KEY)
+        {{- end }}
         # Extra arguments
         {{- range $key, $value := .Values.extraArgs }}
           {{- if $value }}
@@ -235,6 +240,14 @@ spec:
         {{- if and (eq .Values.provider "designate") .Values.designate.customCA.enabled }}
         - name: OPENSTACK_CA_FILE
           value: {{ .Values.designate.customCA.mountPath }}/{{ .Values.designate.customCA.filename }}
+        {{- end }}
+        # PowerDNS environment variables
+        {{- if and (eq .Values.provider "pdns") .Values.pdns.apiKey }}
+        - name: PDNS_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "external-dns.fullname" . }}
+              key: pdns_api_key
         {{- end }}
         # Extra environment variables
         {{- $root := . -}}
