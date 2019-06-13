@@ -465,6 +465,32 @@ spec:
               value: {{ .Values.concourse.web.vault.serverName | quote }}
             {{- end }}
             {{- end }}
+            {{- if .Values.concourse.web.credhub.enabled }}
+            {{- if .Values.concourse.web.credhub.useCaCert }}
+            - name: CONCOURSE_CREDHUB_CA_CERT
+              value: "{{ .Values.web.credhubSecretsPath }}/ca.cert"
+            {{- end }}
+            - name: CONCOURSE_CREDHUB_URL
+              value: {{ .Values.concourse.web.credhub.url | quote }}
+            {{- if.Values.concourse.web.credhub.pathPrefix }}
+            - name: CONCOURSE_CREDHUB_PATH_PREFIX
+              value: {{ .Values.concourse.web.credhub.pathPrefix | quote }}
+            {{- end }}
+            {{- if .Values.concourse.web.credhub.insecureSkipVerify }}
+            - name: CONCOURSE_CREDHUB_INSECURE_SKIP_VERIFY
+              value: {{ .Values.concourse.web.credhub.insecureSkipVerify | quote }}
+            {{- end }}
+            - name: CONCOURSE_CREDHUB_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.web.fullname" . }}
+                  key: credhub-client-id
+            - name: CONCOURSE_CREDHUB_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.web.fullname" . }}
+                  key: credhub-client-secret
+            {{- end }}
             {{- if .Values.concourse.web.noop }}
             - name: CONCOURSE_NOOP
               value: {{ .Values.concourse.web.noop | quote }}
@@ -1031,6 +1057,11 @@ spec:
               mountPath: {{ .Values.web.vaultSecretsPath | quote }}
               readOnly: true
             {{- end }}
+            {{- if .Values.concourse.web.credhub.enabled }}
+            - name: credhub-keys
+              mountPath: {{ .Values.web.credhubSecretsPath | quote }}
+              readOnly: true
+            {{- end }}
             {{- if not (eq .Values.concourse.web.postgres.sslmode "disable") }}
             - name: postgresql-keys
               mountPath: {{ .Values.web.postgresqlSecretsPath | quote }}
@@ -1100,6 +1131,17 @@ spec:
                 path: client.cert
               - key: vault-client-key
                 path: client.key
+            {{- end }}
+        {{- end }}
+        {{- if .Values.concourse.web.credhub.enabled }}
+        - name: credhub-keys
+          secret:
+            secretName: {{ template "concourse.web.fullname" . }}
+            defaultMode: 0400
+            items:
+            {{- if .Values.concourse.web.credhub.useCaCert }}
+              - key: credhub-ca-cert
+                path: ca.cert
             {{- end }}
         {{- end }}
         {{- if not (eq .Values.concourse.web.postgres.sslmode "disable") }}

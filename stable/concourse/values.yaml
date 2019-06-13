@@ -419,6 +419,31 @@ concourse:
       ##
       retryInitial:
 
+    ## Configuration for using Credhub as a credential manager.
+    ## Ref: https://concourse-ci.org/credhub-credential-manager.html
+    ##
+    credhub:
+      ## Enable the use of Credhub as a credential manager.
+      ##
+      enabled: false
+
+      ## CredHub server address used to access secrets
+      ## Example: https://credhub.example.com
+      ##
+      url:
+
+      ## Path under which to namespace credential lookup. (default: /concourse)
+      ##
+      pathPrefix:
+
+      ## Enables using a CA Certificate
+      ##
+      useCaCert: false
+
+      ## Enables insecure SSL verification.
+      ##
+      insecureSkipVerify: false
+
     ## Don't actually do any automatic scheduling or checking.
     ##
     noop: false
@@ -1240,6 +1265,7 @@ web:
   teamSecretsPath: "/team-authorized-keys"
   authSecretsPath: "/concourse-auth"
   vaultSecretsPath: "/concourse-vault"
+  credhubSecretsPath: "/concourse-credhub"
   postgresqlSecretsPath: "/concourse-postgresql"
   syslogSecretsPath: "/concourse-syslog"
   tlsSecretsPath: "/concourse-web-tls"
@@ -1843,6 +1869,20 @@ secrets:
   awsSecretsmanagerAccessKey:
   awsSecretsmanagerSecretKey:
   awsSecretsmanagerSessionToken:
+
+  ## Secrets for using CredHub as a credential manager.
+  ##
+  ## Value of PEM-encoded CA cert file to use to verify the CredHub server SSL cert.
+  ##
+  credhubCaCert:
+
+  ## Client ID for CredHub authorization.
+  ##
+  credhubClientId:
+
+  ## Client secret for CredHub authorization.
+  ##
+  credhubClientSecret:
 
   ## Secrets for CF OAuth
   ##
