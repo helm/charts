@@ -67,6 +67,10 @@ spec:
               containerPort: 10902
           resources: {{- .resources | default dict | toYaml | trim | nindent 12 }}
           volumeMounts:
+          {{- if .persistence.enabled }}
+            - mountPath: {{ .persistence.mountPath }}
+              name: persistent-data
+          {{- end }}
           {{- range .extraEmptyDirMounts }}
             - name: {{ .name }}
               mountPath: {{ .mountPath }}

@@ -34,7 +34,6 @@ queryLayer:
     - '--query.max-concurrent=40'
     - '--query.replica-label=prometheus_replica'
     - '--query.auto-downsampling'
-    - '--cluster.disable'
 # Make a sidecar svc deployed with the same chart a target for this queryLayer. Implies --store= parameter.
   pointToLocalSidecars: true
   pointToLocalStore: true
@@ -65,7 +64,7 @@ queryLayer:
   image:
     pullPolicy: IfNotPresent
     repository: improbable/thanos
-    tag: v0.4.0
+    tag: v0.5.0
   nodeSelector:
   podAnnotations:
   priorityClassName:
@@ -94,7 +93,6 @@ storeLayer:
     env: test
   binaryArgs:
     - '--log.level=debug'
-    - '--cluster.disable'
     - '--http-address=0.0.0.0:10902'
     - '--objstore.config-file=/etc/thanos-store/bucket.yaml'
 ## If you don't want to use PVC - use extraEmptyDirMounts and uncomment this with new value
@@ -116,7 +114,7 @@ storeLayer:
   image:
     pullPolicy: IfNotPresent
     repository: improbable/thanos
-    tag: v0.3.2
+    tag: v0.5.0
   nodeSelector:
   podAnnotations:
   priorityClassName:
@@ -179,7 +177,7 @@ compactLayer:
   image:
     pullPolicy: IfNotPresent
     repository: improbable/thanos
-    tag: v0.4.0
+    tag: v0.5.0
   nodeSelector:
   podAnnotations:
   priorityClassName:
@@ -207,7 +205,6 @@ ruleLayer:
   rules: ''
   binaryArgs:
     - '--log.level=debug'
-    - '--cluster.disable'
     - '--data-dir=/thanos-rule-data/'
     - '--eval-interval=10s'
     - '--objstore.config-file=/etc/thanos-rule/bucket.yaml'
@@ -244,7 +241,7 @@ ruleLayer:
   image:
     pullPolicy: IfNotPresent
     repository: improbable/thanos
-    tag: v0.4.0
+    tag: v0.5.0
   nodeSelector:
   podAnnotations:
   priorityClassName:
@@ -258,3 +255,17 @@ ruleLayer:
   updateStrategy:
   terminationGracePeriodSeconds: 15
   tolerations:
+  storeApiService:
+    selector:
+      app: prometheus
+      component: server
+    enabled: false
+    annotations:
+      prometheus.io/scrape: 'false'
+    clusterIP: None
+    externalIPs:
+    loadBalancerIP:
+    loadBalancerSourceRanges:
+    nodePort:
+    servicePort: 10901
+    type: ClusterIP
