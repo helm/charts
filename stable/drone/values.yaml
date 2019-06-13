@@ -192,6 +192,11 @@ server:
   ##
   nodeSelector: {}
 
+  ## Node taints to tolerate
+  ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  ##
+  tolerations: []
+
   ## additional siecar containers, e. g. for a database proxy, such as Google's cloudsql-proxy.
   ## ex: https://github.com/kubernetes/charts/tree/master/stable/keycloak
   ##
@@ -247,6 +252,11 @@ agent:
   ## ref: https://kubernetes.io/docs/user-guide/node-selection
   ##
   nodeSelector: {}
+
+  ## Node taints to tolerate
+  ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  ##
+  tolerations: []
 
 dind:
   ## Enable or disable DinD
