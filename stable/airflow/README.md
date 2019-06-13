@@ -351,6 +351,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `ingress.web.host`                       | hostname for the webserver ui                           | ""                        |
 | `ingress.web.path`                       | path of the werbserver ui (read `values.yaml`)          | ``                        |
 | `ingress.web.annotations`                | annotations for the web ui ingress                      | `{}`                      |
+| `ingress.web.livenessPath`               | path to the web liveness probe                          | `{{ ingress.web.path }}/health` |
 | `ingress.web.tls.enabled`                | enables TLS termination at the ingress                  | `false`                   |
 | `ingress.web.tls.secretName`             | name of the secret containing the TLS certificate & key | ``                        |
 | `ingress.flower.host`                    | hostname for the flower ui                              | ""                        |
