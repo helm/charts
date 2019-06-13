@@ -15,7 +15,7 @@ data:
   POSTGRES_PORT: "{{ .Values.postgresql.service.port }}"
   POSTGRES_DB: "{{ .Values.postgresql.postgresDatabase }}"
   ## Redis DB configuration
-  REDIS_HOST: "{{ template "airflow.redis.fullname" . }}"
+  REDIS_HOST: "{{ template "airflow.redis.host" . }}"
   REDIS_PORT: "{{ .Values.redis.master.port }}"
   ## Flower PORT
   FLOWER_PORT: "5555"

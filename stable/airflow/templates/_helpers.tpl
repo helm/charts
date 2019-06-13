@@ -45,11 +45,31 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- end -}}
 {{- end -}}
 
+
+{{/*
+Create a default fully qualified app name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+If release name contains chart name it will be used as a full name.
+NOTE: This is copied from the redis sub-chart and modified slightly:
+*/}}
+{{- define "airflow.redis.fullname" -}}
+{{- if .Values.redis.fullnameOverride -}}
+  {{- .Values.redis.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+  {{- $name := default "redis" .Values.redis.nameOverride -}}
+  {{- if contains $name .Release.Name -}}
+    {{- .Release.Name | trunc 63 | trimSuffix "-" -}}
+  {{- else -}}
+    {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+  {{- end -}}
+{{- end -}}
+{{- end -}}
+
 {{/*
 Create a default fully qualified redis cluster name or use the `redisHost` value if defined
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
-{{- define "airflow.redis.fullname" -}}
+{{- define "airflow.redis.host" -}}
 {{- if .Values.redis.redisHost }}
     {{- .Values.redis.redisHost -}}
 {{- else }}
@@ -70,39 +90,26 @@ Create a random string if the supplied key does not exist
 {{- end -}}
 
 {{/*
-Create the name for the airflow secret.
+Create a set of environment variables to be mounted in web, scheduler, and woker pods.
+For the database passwords, we actually use the secretes created by the postgres and redis sub-charts.
+Note that the environment variables themselves are determined by the puckel/docker-airflow image.
+See script/entrypoint.sh in that repo for more info.
+The key names for postgres and redis are fixed, which is consistent with the subcharts.
 */}}
-{{- define "airflow.secret" -}}
-    {{- if .Values.existingAirflowSecret -}}
-        {{- .Values.existingAirflowSecret -}}
-    {{- else -}}
-        {{ template "airflow.fullname" . }}
-    {{- end -}}
-{{- end -}}
-
-{{/*
-Map environment vars to secrets
-*/}}
-{{- define "airflow.mapenvsecrets" -}}
-    {{- $secretName := printf "%s-env" (include "airflow.fullname" .) }}
-    {{- $mapping := .Values.airflow.defaultSecretsMapping }}
-    {{- if .Values.existingAirflowSecret }}
-      {{- $secretName := .Values.existingAirflowSecret }}
-      {{- if .Values.airflow.secretsMapping }}
-        {{- $mapping := .Values.airflow.secretsMapping }}
-      {{- end }}
-    {{- end }}
-    {{- range $val := $mapping }}
-      {{- if $val }}
-  - name: {{ $val.envVar }}
+{{- define "airflow.mapenvsecrets" }}
+  - name: POSTGRES_USER
+    value: {{ default "postgres" .Values.postgresql.postgresUser | quote }}
+  - name: POSTGRES_PASSWORD
     valueFrom:
       secretKeyRef:
-        {{- if $val.secretName }}
-        name: {{ $val.secretName }}
-        {{- else }}
-        name: {{ $secretName }}
-        {{- end }}
-        key: {{ $val.secretKey }}
-      {{- end }}
-    {{- end }}
+        name: {{ default (include "airflow.postgresql.fullname" .) .Values.postgresql.existingSecret }}
+        key: postgres-password
+  - name: REDIS_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: {{ default (include "airflow.redis.fullname" .) .Values.redis.existingSecret }}
+        key: redis-password
+  {{- if .Values.airflow.extraEnv }}
+{{ toYaml .Values.airflow.extraEnv | indent 2 }}
+  {{- end }}
 {{- end }}
