@@ -31,7 +31,7 @@ graylog:
   ##
   image:
     # repository: "graylog/graylog:2.5.1-3"
-    repository: "graylog/graylog:3.0.1-1"
+    repository: "graylog/graylog:3.0.2-2"
     pullPolicy: "IfNotPresent"
 
   ## Number of Graylog instance
@@ -96,6 +96,8 @@ graylog:
     #   url: https://github.com/omise/graylog-plugin-function-check-diff/releases/download/1.0.0/graylog-plugin-function-check-diff-1.0.0.jar
     # - name: graylog-plugin-custom-alert-condition-1.0.0.jar
     #   url: https://github.com/omise/graylog-plugin-custom-alert-condition/releases/download/v1.0.0/graylog-plugin-custom-alert-condition-1.0.0.jar
+    # - name: graylog-plugin-auth-sso-3.0.0.jar
+    #   url: https://github.com/Graylog2/graylog-plugin-auth-sso/releases/download/3.0.0/graylog-plugin-auth-sso-3.0.0.jar
 
   ## A service for Graylog web interface
   ##
@@ -261,6 +263,26 @@ graylog:
   serverFiles: {}
     # graylog-server.key: |
     # graylog-server.cert: |
+
+  ## Specify a Bash script to run as Kubernetes Job (running on Alpine with curl and bash packages already installed).
+  ## Useful for calling the API to pre-configure some aspect of Graylog, as in the example.
+  ##
+  provisioner:
+    enabled: false
+    # script: |
+    #  json='{
+    #    "username_header": "X-Auth-Request-User",
+    #    "fullname_header": "X-Auth-Request-User",
+    #    "email_header": "X-Auth-Request-Email",
+    #    "default_group": "Admin",
+    #    "auto_create_user": true,
+    #    "require_trusted_proxies": true,
+    #    "trusted_proxies": "0.0.0.0/0",
+    #    "default_email_domain": "mydomain.com",
+    #    "sync_roles": false,
+    #    "roles_header": "Roles"
+    #  }'
+    #  curl -v -u "admin:$GRAYLOG_PASSWORD_SECRET" -X PUT --header 'Content-Type: application/json' --header 'X-Requested-By: localhost' --data-binary "${json}" http://graylog-master:9000/api/plugins/org.graylog.plugins.auth.sso/config
 
 ## Specify Elasticsearch version from requirement dependencies. Ignore this seection if you install Elasticsearch manually.
 ## Note: Graylog 2.4 requires Elasticsearch version <= 5.6
