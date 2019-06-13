@@ -107,6 +107,14 @@ image:
 #      apply:
 #        steps: [apply]
 
+## Use Server Side Config,
+## ref: https://www.runatlantis.io/docs/server-configuration.html#config-file
+## Example configuration
+# atlantisConfig: |
+#  ---
+#  loglevel: debug
+#  port: 9001
+
 # allowForkPRs enables atlantis to run on a fork Pull Requests
 allowForkPRs: false
 

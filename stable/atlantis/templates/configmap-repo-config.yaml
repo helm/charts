@@ -1,14 +1,20 @@
-{{- if .Values.repoConfig -}}
+{{- if or .Values.repoConfig .Values.atlantisConfig -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "atlantis.fullname" . }}-repo-config
+  name: {{ template "atlantis.fullname" . }}-config
   labels:
     app: {{ template "atlantis.name" . }}
     chart: {{ template "atlantis.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 data:
+  {{ with .Values.repoConfig }}
   repos.yaml: |
-{{ .Values.repoConfig | indent 4 }}
+    {{- . | nindent 4 }}
+  {{- end }}
+  {{ with .Values.atlantisConfig }}
+  config.yaml: |
+    {{- . | nindent 4 }}
+  {{- end }}
 {{- end -}}

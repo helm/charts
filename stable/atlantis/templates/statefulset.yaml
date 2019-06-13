@@ -59,10 +59,10 @@ spec:
         secret:
           secretName: {{ template "atlantis.awsSecretName" . }}
       {{- end }}
-      {{- if .Values.repoConfig }}
-      - name: repo-config
+      {{- if or .Values.repoConfig .Values.atlantisConfig}}
+      - name: config
         configMap:
-          name:  {{ template "atlantis.fullname" . }}-repo-config
+          name:  {{ template "atlantis.fullname" . }}-config
       {{- end }}
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -127,6 +127,10 @@ spec:
           {{- if .Values.repoConfig }}
           - name: ATLANTIS_REPO_CONFIG
             value: /etc/atlantis/repos.yaml
+          {{- end }}
+          {{- if .Values.atlantisConfig }}
+          - name: ATLANTIS_CONFIG
+            value: /etc/atlantis/config.yaml
           {{- end }}
           {{- if .Values.atlantisUrl }}
           - name: ATLANTIS_ATLANTIS_URL
@@ -235,8 +239,8 @@ spec:
           - name: tls
             mountPath: /etc/tls/
           {{- end }}
-          {{- if .Values.repoConfig }}
-          - name: repo-config
+          {{- if or .Values.repoConfig .Values.atlantisConfig }}
+          - name: config
             mountPath: /etc/atlantis
             readOnly: true
           {{- end }}
