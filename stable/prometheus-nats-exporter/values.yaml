@@ -5,14 +5,14 @@
 replicaCount: 1
 
 image:
-  repository: appcelerator/prometheus-nats-exporter
-  tag: 0.17.0
+  repository: synadia/prometheus-nats-exporter
+  tag: 0.3.0
   pullPolicy: IfNotPresent
 
 service:
   type: ClusterIP
   port: 80
-  targetPort: 8222
+  targetPort: 7777
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -31,6 +31,13 @@ config:
     service: nats-nats-monitoring
     namespace: default
     port: 8222
+  metrics:
+    varz: true
+    channelz: true
+    connz: true
+    routez: true
+    serverz: true
+    subz: true
 
 nodeSelector: {}
 

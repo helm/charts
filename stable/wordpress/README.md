@@ -54,7 +54,7 @@ The following table lists the configurable parameters of the WordPress chart and
 | `image.registry`                 | WordPress image registry                                                      | `docker.io`                                                  |
 | `image.repository`               | WordPress image name                                                          | `bitnami/wordpress`                                          |
 | `image.tag`                      | WordPress image tag                                                           | `{TAG_NAME}`                                                 |
-| `image.pullPolicy`               | Image pull policy                                                             | `Always` if `imageTag` is `latest`, else `IfNotPresent`      |
+| `image.pullPolicy`               | Image pull policy                                                             | `IfNotPresent`                                               |
 | `image.pullSecrets`              | Specify docker-registry secret names as an array                              | `[]` (does not add image pull secrets to deployed pods)      |
 | `wordpressSkipInstall`           | Skip wizard installation                                                      | `false`                                                      |
 | `wordpressUsername`              | User of the application                                                       | `user`                                                       |
@@ -146,20 +146,53 @@ $ helm install --name my-release -f values.yaml stable/wordpress
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
-### [Rolling VS Immutable tags](https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/)
+### Production configuration
 
-It is strongly recommended to use immutable tags in a production environment. This ensures your deployment does not change automatically if the same tag is updated with a different image.
-
-Bitnami will release a new chart updating its containers if a new version of the main container, significant changes, or critical vulnerabilities exist.
-
-## Production and horizontal scaling
-
-The following repo contains the recommended production settings for wordpress capture in an alternative [values file](values-production.yaml). Please read carefully the comments in the values-production.yaml file to set up your environment appropriately.
-
-To horizontally scale this chart, first download the [values-production.yaml](values-production.yaml) file to your local folder, then:
+This chart includes a `values-production.yaml` file where you can find some parameters oriented to production configuration in comparison to the regular `values.yaml`.
 
 ```console
 $ helm install --name my-release -f ./values-production.yaml stable/wordpress
+```
+
+- Set Apache AllowOverride directive to None:
+```diff
+- allowOverrideNone: false
++ allowOverrideNone: true
+```
+
+- Number of WordPress Pods to run
+```diff
+- replicaCount: 1
++ replicaCount: 3
+```
+
+- Kubernetes Service type:
+```diff
+- service.type: LoadBalancer
++ service.type: ClusterIP
+```
+
+- Enable client source IP preservation:
+```diff
+- service.externalTrafficPolicy: Cluster
++ service.externalTrafficPolicy: Local
+```
+
+- PVC Access Mode:
+```diff
+- persistence.accessMode: ReadWriteOnce
++ ##
++ ## To use the /admin portal and to ensure you can scale wordpress you need to provide a
++ ## ReadWriteMany PVC, if you dont have a provisioner for this type of storage
++ ## We recommend that you install the nfs provisioner and map it to a RWO volume
++ ## helm install stable/nfs-server-provisioner --set persistence.enabled=true,persistence.size=10Gi
++ persistence.accessMode: ReadWriteMany
+```
+
+- Start a side-car prometheus exporter:
+```diff
+- metrics.enabled: false
++ metrics.enabled: true
 ```
 
 Note that [values-production.yaml](values-production.yaml) includes a replicaCount of 3, so there will be 3 WordPress pods. As a result, to use the /admin portal and to ensure you can scale wordpress you need to provide a ReadWriteMany PVC, if you don't have a provisioner for this type of storage, we recommend that you install the nfs provisioner and map it to a RWO volume.
@@ -168,6 +201,12 @@ Note that [values-production.yaml](values-production.yaml) includes a replicaCou
 $ helm install stable/nfs-server-provisioner --set persistence.enabled=true,persistence.size=10Gi
 $ helm install --name my-release -f values-production.yaml --set persistence.storageClass=nfs stable/wordpress --set mariadb.master.persistence.storageClass=nfs
 ```
+
+### [Rolling VS Immutable tags](https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/)
+
+It is strongly recommended to use immutable tags in a production environment. This ensures your deployment does not change automatically if the same tag is updated with a different image.
+
+Bitnami will release a new chart updating its containers if a new version of the main container, significant changes, or critical vulnerabilities exist.
 
 ## Sidecars
 

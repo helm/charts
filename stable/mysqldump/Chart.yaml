@@ -2,7 +2,7 @@ apiVersion: v1
 appVersion: 2.4.1
 description: A Helm chart to help backup MySQL databases using mysqldump
 name: mysqldump
-version: 2.4.1
+version: 2.4.2
 keywords:
 - mysql
 - mysqldump

@@ -120,8 +120,8 @@ spec:
       priorityClassName: {{ .Values.daemonset.priorityClassName }}
 {{- end }}
       serviceAccountName: {{ template "metricbeat.serviceAccountName" . }}
-      hostNetwork: true
-      dnsPolicy: ClusterFirstWithHostNet
+      hostNetwork: {{ .Values.daemonset.hostNetwork }}
+      dnsPolicy: {{ .Values.daemonset.dnsPolicy }}
 {{- if .Values.daemonset.tolerations }}
       tolerations:
 {{ toYaml .Values.daemonset.tolerations | indent 6 }}

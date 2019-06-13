@@ -54,7 +54,7 @@ The following table lists the configurable parameters of the Osclass chart and t
 | `image.registry`                   | Osclass image registry                   | `docker.io`                                             |
 | `image.repository`                 | Osclass Image name                       | `bitnami/osclass`                                       |
 | `image.tag`                        | Osclass Image tag                        | `{TAG_NAME}`                                            |
-| `image.pullPolicy`                 | Image pull policy                        | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
+| `image.pullPolicy`                 | Image pull policy                        | `IfNotPresent`                                          |
 | `image.pullSecrets`                | Specify docker-registry secret names as an array               | `[]` (does not add image pull secrets to deployed pods) |
 | `osclassHost`                      | Osclass host to create application URLs  | `nil`                                                   |
 | `osclassLoadBalancerIP`            | `loadBalancerIP` for the Osclass Service | `nil`                                                   |
