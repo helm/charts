@@ -57,6 +57,22 @@ spec:
         {{- else }}
           value: {{ .Values.externalDatabase.port | quote }}
         {{- end }}
+        - name: ELASTICSEARCH_HOST
+        {{- if .Values.elasticsearch.enabled }}
+          value: {{ template "magento.elasticsearch.fullname" . }}
+        {{- else if .Values.externalElasticsearch.host }}
+          value: {{ .Values.externalElasticsearch.host | quote }}
+        {{- else }}
+          value: ""
+        {{- end }}
+        - name: ELASTICSEARCH_PORT_NUMBER
+        {{- if .Values.elasticsearch.enabled }}
+          value: "9200"
+        {{- else if .Values.externalElasticsearch.port }}
+          value: {{ .Values.externalElasticsearch.port | quote }}
+        {{- else }}
+          value: ""
+        {{- end }}
         - name: MAGENTO_DATABASE_NAME
         {{- if .Values.mariadb.enabled }}
           value: {{ .Values.mariadb.db.name | quote }}
@@ -137,8 +153,6 @@ spec:
         volumeMounts:
         - name: magento-data
           mountPath: /bitnami/magento
-        - name: apache-data
-          mountPath: /bitnami/apache
 {{- if .Values.metrics.enabled }}
       - name: metrics
         image: {{ template "magento.metrics.image" . }}
@@ -167,13 +181,6 @@ spec:
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
           claimName: {{ template "magento.fullname" . }}-magento
-      {{- else }}
-        emptyDir: {}
-      {{- end }}
-      - name: apache-data
-      {{- if .Values.persistence.enabled }}
-        persistentVolumeClaim:
-          claimName: {{ template "magento.fullname" . }}-apache
       {{- else }}
         emptyDir: {}
       {{- end }}

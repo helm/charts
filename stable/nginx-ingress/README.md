@@ -113,7 +113,7 @@ Parameter | Description | Default
 `controller.readinessProbe.successThreshold` | Minimum consecutive successes for the probe to be considered successful after having failed. | 1
 `controller.readinessProbe.failureThreshold` | Minimum consecutive failures for the probe to be considered failed after having succeeded. | 3
 `controller.readinessProbe.port` | The port number that the readiness probe will listen on. | 10254
-`controller.stats.enabled` | if `true`, enable "vts-status" page | `false`
+`controller.stats.enabled` | if `true`, enable status page | `false`
 `controller.stats.service.annotations` | annotations for controller stats service | `{}`
 `controller.stats.service.clusterIP` | internal controller stats cluster service IP | `""`
 `controller.stats.service.omitClusterIP` | To omit the `clusterIP` from the stats service | `false`
@@ -121,7 +121,7 @@ Parameter | Description | Default
 `controller.stats.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `controller.stats.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `controller.stats.service.type` | type of controller stats service to create | `ClusterIP`
-`controller.metrics.enabled` | if `true`, enable Prometheus metrics (`controller.stats.enabled` must be `true` as well) | `false`
+`controller.metrics.enabled` | if `true`, enable Prometheus metrics | `false`
 `controller.metrics.service.annotations` | annotations for Prometheus metrics service | `{}`
 `controller.metrics.service.clusterIP` | cluster IP address to assign to service | `""`
 `controller.metrics.service.omitClusterIP` | To omit the `clusterIP` from the metrics service | `false`
@@ -141,8 +141,8 @@ Parameter | Description | Default
 `controller.updateStrategy` | allows setting of RollingUpdate strategy | `{}`
 `defaultBackend.enabled` | If false, controller.defaultBackendService must be provided | `true`
 `defaultBackend.name` | name of the default backend component | `default-backend`
-`defaultBackend.image.repository` | default backend container image repository | `k8s.gcr.io/defaultbackend`
-`defaultBackend.image.tag` | default backend container image tag | `1.4`
+`defaultBackend.image.repository` | default backend container image repository | `k8s.gcr.io/defaultbackend-amd64`
+`defaultBackend.image.tag` | default backend container image tag | `1.5`
 `defaultBackend.image.pullPolicy` | default backend container image pull policy | `IfNotPresent`
 `defaultBackend.extraArgs` | Additional default backend container arguments | `{}`
 `defaultBackend.port` | Http port number | `8080`
@@ -168,8 +168,8 @@ Parameter | Description | Default
 `serviceAccount.create` | if `true`, create a service account | ``
 `serviceAccount.name` | The name of the service account to use. If not set and `create` is `true`, a name is generated using the fullname template. | ``
 `revisionHistoryLimit` | The number of old history to retain to allow rollback. | `10`
-`tcp` | TCP service key:value pairs | `{}`
-`udp` | UDP service key:value pairs | `{}`
+`tcp` | TCP service key:value pairs. The value is evaluated as a template. | `{}`
+`udp` | UDP service key:value pairs The value is evaluated as a template. | `{}`
 
 ```console
 $ helm install stable/nginx-ingress --name my-release \
@@ -196,11 +196,10 @@ else it would make it impossible to evacuate a node. See [gh issue #7127](https:
 
 ## Prometheus Metrics
 
-The Nginx ingress controller can export Prometheus metrics. In order for this to work, the VTS dashboard must be enabled as well.
+The Nginx ingress controller can export Prometheus metrics.
 
 ```console
 $ helm install stable/nginx-ingress --name my-release \
-    --set controller.stats.enabled=true \
     --set controller.metrics.enabled=true
 ```
 
