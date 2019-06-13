@@ -40,6 +40,7 @@ Parameter | Description | Default
 `detachAsg` | if `true`, the spot termination handler will detect (standard) AutoScaling Group, and initiate detach when termination notice is detected. | `false`
 `gracePeriod` | Grace period for node draining | `120`
 `resources` | pod resource requests & limits | `{}`
+`securityContext` | pod securityContext | `{}`
 `nodeSelector` | node labels for pod assignment | `{}`
 `tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `affinity` | node/pod affinities (requires Kubernetes >=1.6) | `{}`

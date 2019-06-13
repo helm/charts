@@ -14,7 +14,7 @@ serviceAccount:
 
 image:
   repository: kubeaws/kube-spot-termination-notice-handler
-  tag: 1.13.0-1
+  tag: 1.13.7-1
   pullPolicy: IfNotPresent
 
 # Poll the metadata every pollInterval seconds for termination events:
@@ -74,3 +74,7 @@ podAnnotations: {}
 # Default value for Kubernetes v1.5 and before was "OnDelete".
 updateStrategy: RollingUpdate
 maxUnavailable: 1
+
+securityContext: {}
+  # runAsUser: 1000
+  # runAsGroup: 1000
