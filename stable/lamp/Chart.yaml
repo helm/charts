@@ -6,3 +6,5 @@ appVersion: 7
 home: https://github.com/lead4good/helm-lamp-stack
 maintainers:
   - name: lead4good
+  - name: koolamusic
+    email: me@andrewmiracle.com
