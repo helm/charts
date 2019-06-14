@@ -1,4 +1,4 @@
-{{- $root := . -}} # Workaround to get .Values inside a range function
+{{- $root := . -}}
   {{- range $index, $output := .Values.backend.outputs }}
     {{- if or (eq $root.Values.backend.type "forward") (and (eq $root.Values.backend.type "es") (eq .tls "off")) }}
 apiVersion: v1
@@ -32,9 +32,9 @@ spec:
       image: "fluent/fluentd:v1.4-debian-1"
       {{- else }}
       image: "dwdraju/alpine-curl-jq"
-          {{- end }}
+      {{- end }}
       command: ["/tools/bats/bats", "-t", "/tests/run.sh"]
-      {{- if eq .tls "on" }}
+      {{- if and (eq .tls "on") (eq $root.Values.backend.type "forward") }}
       securityContext:
         # run as root to install fluent gems
         runAsUser: 0

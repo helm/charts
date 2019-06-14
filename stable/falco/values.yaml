@@ -3,7 +3,7 @@
 image:
   registry: docker.io
   repository: falcosecurity/falco
-  tag: 0.15.0
+  tag: 0.15.1
   pullPolicy: IfNotPresent
 
 docker:

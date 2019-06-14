@@ -30,7 +30,10 @@ podAnnotations: {}
 service:
   type: ClusterIP
   httpPort: 9108
+  metricsPort:
+    name: http
   annotations: {}
+  labels: {}
 
 es:
   ## Address (host and port) of the Elasticsearch node we should connect to.
