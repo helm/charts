@@ -1,0 +1,10 @@
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+    - weight: 200
+      podAffinityTerm:
+        topologyKey: "kubernetes.io/hostname"
+        labelSelector:
+          matchLabels:
+            app:  {{ template "patroni.name" . }}
+            release: {{ .Release.Name | quote }}
