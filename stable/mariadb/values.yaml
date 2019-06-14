@@ -7,13 +7,18 @@
 #   imagePullSecrets:
 #     - myRegistryKeySecretName
 
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName:
+
 ## Bitnami MariaDB image
 ## ref: https://hub.docker.com/r/bitnami/mariadb/tags/
 ##
 image:
   registry: docker.io
   repository: bitnami/mariadb
-  tag: 10.3.15-debian-9-r14
+  tag: 10.3.15-debian-9-r31
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images

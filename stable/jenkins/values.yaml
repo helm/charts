@@ -8,6 +8,10 @@
 # nameOverride:
 # fullnameOverride:
 
+# For FQDN resolving of the master service. Change this value to match your existing configuration.
+# ref: https://github.com/kubernetes/dns/blob/master/docs/specification.md
+clusterZone: "cluster.local"
+
 master:
   # Used for label app.kubernetes.io/component
   componentName: "jenkins-master"
@@ -151,11 +155,11 @@ master:
 
   # List of plugins to be install during Jenkins master start
   installPlugins:
-    - kubernetes:1.14.0
-    - workflow-job:2.31
+    - kubernetes:1.16.0
+    - workflow-job:2.32
     - workflow-aggregator:2.6
-    - credentials-binding:1.17
-    - git:3.9.1
+    - credentials-binding:1.19
+    - git:3.10.0
 
   # Enable to always override the installed plugins with the values of 'master.installPlugins' on upgrade or redeployment.
   # overwritePlugins: true
@@ -360,6 +364,9 @@ agent:
   # - type: Secret
   #   secretName: mysecret
   #   mountPath: /var/myapp/mysecret
+  # - type: EmptyDir
+  #   mountPath: "/var/lib/containers"
+  #   memory: false
   nodeSelector: {}
   # Key Value selectors. Ex:
   # jenkins-agent: v1

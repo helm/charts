@@ -43,7 +43,7 @@ spec:
           command: ["/bin/sso-proxy"]
           ports:
             - name: http
-              containerPort: 8080
+              containerPort: 4180
               protocol: TCP
           env:
             - name: CLIENT_ID
