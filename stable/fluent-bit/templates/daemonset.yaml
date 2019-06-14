@@ -59,11 +59,13 @@ spec:
         - name: varlibdockercontainers
           mountPath: /var/lib/docker/containers
           readOnly: true
-      {{- if .Values.input.systemd.enabled }}
+{{- range $index, $input := .Values.inputs }}
+    {{- if eq .Name "systemd" }}
         - name: etcmachineid
           mountPath: /etc/machine-id
           readOnly: true
-      {{- end }}
+  {{- end }}
+{{- end }}
 {{- if .Values.fullConfigMap }}
         - name: config
           mountPath: /fluent-bit/etc
@@ -90,11 +92,18 @@ spec:
           subPath: parsers.conf
 {{- end }}
 {{- end }}
-{{- if .Values.backend.es.tls_ca }}
+
+{{- $root := . -}}
+{{- range $index, $output := .Values.backend.outputs }}
+ {{- if and (eq .Name "es") (eq .tls "On") ((index $root.Values.backend.outputs $index).tls_ca) }}
+  {{- if (.tls_verify) and (eq .tls_verify "On") }}
         - name: es-tls-secret
           mountPath: /secure/es-tls-ca.crt
           subPath: es-tls-ca.crt
+    {{- end }}
+  {{- end }}
 {{- end }}
+
 {{- if .Values.trackOffsets }}
         - name: tail-db
           mountPath: /tail-db
@@ -127,16 +136,20 @@ spec:
       - name: varlibdockercontainers
         hostPath:
           path: /var/lib/docker/containers
-    {{- if .Values.input.systemd.enabled }}
+{{- range $index, $input := .Values.inputs }}
+  {{- if eq .Name "systemd"}}
       - name: etcmachineid
         hostPath:
           path: /etc/machine-id
           type: File
-    {{- end }}
-{{- if .Values.backend.es.tls_ca }}
+  {{- end }}
+{{- end }}
+{{- range $index, $output := .Values.backend.outputs }}
+  {{- if and (eq .Name "es") (eq .tls "on") ((.tls_verify) and (eq .tls_verify "On")) (.tls_ca) }}
       - name: es-tls-secret
         secret:
           secretName: "{{ template "fluent-bit.fullname" . }}-es-tls-secret"
+  {{- end }}
 {{- end }}
 {{- if .Values.trackOffsets }}
       - name: tail-db

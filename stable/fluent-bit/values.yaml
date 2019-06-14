@@ -34,83 +34,6 @@ trackOffsets: false
 ## Ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/#priorityclass
 priorityClassName: ""
 
-backend:
-  type: forward
-  forward:
-    host: fluentd
-    port: 24284
-    tls: "off"
-    tls_verify: "on"
-    tls_debug: 1
-    shared_key:
-  es:
-    host: elasticsearch
-    port: 9200
-    # Elastic Index Name
-    index: kubernetes_cluster
-    type: flb_type
-    logstash_prefix: kubernetes_cluster
-    replace_dots: "On"
-    time_key: "@timestamp"
-    # Optional username credential for Elastic X-Pack access
-    http_user:
-    # Password for user defined in HTTP_User
-    http_passwd:
-    # Optional TLS encryption to ElasticSearch instance
-    tls: "off"
-    tls_verify: "on"
-    # TLS certificate for the Elastic (in PEM format). Use if tls=on and tls_verify=on.
-    tls_ca: ""
-    # TLS debugging levels = 1-4
-    tls_debug: 1
-  splunk:
-    host: 127.0.0.1
-    port: 8088
-    token: ""
-    send_raw: "on"
-    tls: "on"
-    tls_verify: "off"
-    tls_debug: 1
-    message_key: "kubernetes"
-
-  ##
-  ## Ref: http://fluentbit.io/documentation/current/output/http.html
-  ##
-  http:
-    host: 127.0.0.1
-    port: 80
-    uri: "/"
-    http_user:
-    http_passwd:
-    tls: "off"
-    tls_verify: "on"
-    tls_debug: 1
-    ## Specify the data format to be used in the HTTP request body
-    ## Can be either 'msgpack' or 'json'
-    format: msgpack
-
-parsers:
-  enabled: false
-  ## List the respective parsers in key: value format per entry
-  ## Regex required fields are name and regex. JSON required field
-  ## is name.
-  regex: []
-  ##  json parser config can be defined by providing an extraEntries field.
-  ##  The following entry:
-  ## json:
-  ##   - extraEntries: |
-  ##       Decode_Field_As  escaped log do_next
-  ##       Decode_Field_As  json log
-  ##
-  ##  translates into
-  ##
-  ##   Command       |  Decoder  | Field | Optional Action   |
-  ##   ==============|===========|=======|===================|
-  ##   Decode_Field_As  escaped   log  do_next
-  ##   Decode_Field_As  json log
-  ##
-  json: []
-
 env: []
 
 ## Annotations to add to the DaemonSet's Pods
@@ -140,21 +63,6 @@ rawConfig: |-
   @INCLUDE fluent-bit-input.conf
   @INCLUDE fluent-bit-filter.conf
   @INCLUDE fluent-bit-output.conf
-
-
-# WARNING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-# This is to add extra entries to an existing section, NOT for adding new sections
-# Do not submit bugs against indent being wrong. Add your new sections to rawConfig
-# instead.
-#
-extraEntries:
-  input: |-
-#     # >=1 additional Key/Value entrie(s) for existing Input section
-  filter: |-
-#     # >=1 additional Key/Value entrie(s) for existing Filter section
-  output: |-
-#     # >=1 additional Key/Value entrie(s) for existing Ouput section
-# WARNING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
 ## Extra ports to add to the daemonset ports section
@@ -205,41 +113,98 @@ service:
   flush: 1
   logLevel: info
 
-input:
-  tail:
-    memBufLimit: 5MB
-    parser: docker
-    path: /var/log/containers/*.log
-  systemd:
-    enabled: false
-    filters:
-      systemdUnit:
-        - docker.service
-        - kubelet.service
-        - node-problem-detector.service
-    maxEntries: 1000
-    readFromTail: true
-    tag: host.*
+inputs:
+  - Name: "tail"
+    Mem_Buf_Limit: 5MB
+    Parser: docker
+    Path: /var/log/containers/*.log
+    Tag: kube
+#  - Name: "systemd"
+#    Systemd_Filter:
+#      systemdUnit:
+#        - docker.service
+#        - kubelet.service
+#        - node-problem-detector.service
+#    maxEntries: 1000
+#    readFromTail: true
+#    tag: host.*
 
-filter:
-  kubeURL: https://kubernetes.default.svc:443
-  kubeCAFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-  kubeTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
-  kubeTag: kube
-  kubeTagPrefix: kube.var.log.containers.
+filters:
+  - Name: "kubernetes"
+    Kube_URL: https://kubernetes.default.svc:443
+    Kube_CA_File: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    Kube_Token_File: /var/run/secrets/kubernetes.io/serviceaccount/token
+    Match: kube
+    Kube_Tag_Prefix: kube.var.log.containers.
+    # If true, check to see if the log field content is a JSON string map, if so,
+    # it append the map fields as part of the log structure.
+    Merge_Log: "On"
+    # If true, enable the use of monitoring for a pod annotation of
+    # fluentbit.io/parser: parser_name. parser_name must be the name
+    # of a parser contained within parsers.conf
+    K8S-Logging.Parser: "On"
+    # If true, enable the use of monitoring for a pod annotation of
+    # fluentbit.io/exclude: true. If present, discard logs from that pod.
+    K8S-Logging.Exclude: "True"
 
-# If true, check to see if the log field content is a JSON string map, if so,
-# it append the map fields as part of the log structure.
-  mergeJSONLog: true
+backend:
+  type: "forward"
+  outputs:
+    - Name: "forward"
+      Match: "*"
+      Host: fluentd
+      Port: 24284
+      tls: "Off"
+      tls_verify: "On"
+      tls_debug: 1
+    - Name: "es"
+      Match: "*"
+      Host: elasticsearch
+      Port: 9200
+      # Elastic Index Name
+      Index: kubernetes_cluster
+      Type: flb_type
+      Logstash_Prefix: kubernetes_cluster
+      replace_dots: "On"
+      Time_Key: "@timestamp"
+      # Optional TLS encryption to ElasticSearch instance
+      tls: "Off"
+      tls_verify: "Off"
+      # TLS debugging levels = 1-4
+      tls_debug: 1
+    - Name: "splunk"
+      Match: "*"
+      Host: 127.0.0.1
+      Port: 8088
+      Splunk_Send_Raw: "on"
+      tls: "On"
+      tls_verify: "Off"
+      tls_debug: 1
+      Message_Key: "kubernetes"
+    - Name: "http"
+      Match: "*"
+      Host: 127.0.0.1
+      Port: 80
+      URI: "/"
+      tls: "Off"
+      tls_verify: "On"
+      tls_debug: 1
+      ## Specify the data format to be used in the HTTP request body
+      ## Can be either 'msgpack' or 'json'
+      Format: msgpack
 
-# If true, enable the use of monitoring for a pod annotation of
-# fluentbit.io/parser: parser_name. parser_name must be the name
-# of a parser contained within parsers.conf
-  enableParser: true
-
-# If true, enable the use of monitoring for a pod annotation of
-# fluentbit.io/exclude: true. If present, discard logs from that pod.
-  enableExclude: true
+parsers:
+  ## To disable the default parsers set this to false
+  enableDefaults: false
+  ## Add your custom parsers here.
+  custom: []
+  ## Example of custom parser config:
+  ## custom:
+  ##  - Name: json
+  ##    Format: json
+  ##    Time_Key: time
+  ##    Time_Format: "%Y-%m-%dT%H:%M:%S.%L"
+  ##    Decode_Field_As: "escaped log"
 
 rbac:
   # Specifies whether RBAC resources should be created

@@ -1,19 +1,21 @@
-{{- if or (eq .Values.backend.type "forward") (and (eq .Values.backend.type "es") (eq .Values.backend.es.tls "off")) }}
+{{- $root := . -}} # Workaround to get .Values inside a range function
+  {{- range $index, $output := .Values.backend.outputs }}
+    {{- if or (eq $root.Values.backend.type "forward") (and (eq $root.Values.backend.type "es") (eq .tls "off")) }}
 apiVersion: v1
 kind: Pod
 metadata:
-  name: {{ template "fluent-bit.fullname" . }}-test
+  name: {{ template "fluent-bit.fullname" $ }}-test
   labels:
-    app: {{ template "fluent-bit.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    heritage: "{{ .Release.Service }}"
-    release: "{{ .Release.Name }}"
+    app: {{ template "fluent-bit.fullname" $ }}
+    chart: "{{ $root.Chart.Name }}-{{ $root.Chart.Version }}"
+    heritage: "{{ $root.Release.Service }}"
+    release: "{{ $root.Release.Name }}"
   annotations:
     "helm.sh/hook": test-success
 spec:
   initContainers:
     - name: test-framework
-      image: "{{ .Values.testFramework.image}}:{{ .Values.testFramework.tag }}"
+      image: "{{ $root.Values.testFramework.image}}:{{ $root.Values.testFramework.tag }}"
       command:
       - "bash"
       - "-c"
@@ -25,14 +27,14 @@ spec:
       - mountPath: /tools
         name: tools
   containers:
-    - name: {{ .Release.Name }}-test
-      {{- if eq .Values.backend.type "forward"}}
+    - name: {{ $.Release.Name }}-test
+      {{- if eq .Name "forward" }}
       image: "fluent/fluentd:v1.4-debian-1"
       {{- else }}
       image: "dwdraju/alpine-curl-jq"
-      {{- end }}
+          {{- end }}
       command: ["/tools/bats/bats", "-t", "/tests/run.sh"]
-      {{- if eq .Values.backend.forward.tls "on"}}
+      {{- if eq .tls "on" }}
       securityContext:
         # run as root to install fluent gems
         runAsUser: 0
@@ -46,8 +48,9 @@ spec:
   volumes:
   - name: tests
     configMap:
-      name: {{ template "fluent-bit.fullname" . }}-test
+      name: {{ template "fluent-bit.fullname" $ }}-test
   - name: tools
     emptyDir: {}
   restartPolicy: Never
+  {{- end }}
 {{- end }}
