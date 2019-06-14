@@ -44,7 +44,7 @@ weave-scope-frontend:
       # kubernetes.io/ingress.class: nginx
       # kubernetes.io/tls-acme: "true"
     # weave-scope-frontend path(s) must be provided if Ingress is enabled
-    paths: /
+    paths: []
     # weave-scope-frontend hostname(s) must be provided if Ingress is enabled
     hosts:
       - weave-scope.example.test

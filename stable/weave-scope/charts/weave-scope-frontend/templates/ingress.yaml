@@ -1,5 +1,5 @@
 {{- if .Values.ingress.enabled -}}
-{{- $fullName := include "weave-scope-frontend.fullname" . -}}
+{{- $fullName := .Values.global.service.name | default (include "toplevel.fullname" .) -}}
 {{- $ingressPaths := .Values.ingress.paths -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
