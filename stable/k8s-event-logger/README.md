@@ -15,7 +15,7 @@ The problem is that these events are simply API objects in Kubernetes and are on
 
 ## Prerequisites
 
-- Kubernetes 1.8+
+- Kubernetes 1.8+ with RBAC enabled
 
 ## Installing the Chart
 
