@@ -32,45 +32,49 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | **Backend Selection**      |
 | `backend.type`             | Set the backend to which Fluent-Bit should flush the information it gathers | `forward` |
 | **Forward Backend**        |
-| `backend.forward.host`     | Target host where Fluent-Bit or Fluentd are listening for Forward messages | `fluentd` |
-| `backend.forward.port`     | TCP Port of the target service | `24284` |
-| `backend.forward.shared_key`       | A key string known by the remote Fluentd used for authorization. | `` |
-| `backend.forward.tls`              | Enable or disable TLS support | `off` |
-| `backend.forward.tls_verify`       | Force certificate validation  | `on` |
-| `backend.forward.tls_debug`        | Set TLS debug verbosity level. It accept the following values: 0-4 | `1` |
+| `backend.[].Name`          | Name of output type | `forward` |
+| `backend.[].Host`     | Target host where Fluent-Bit or Fluentd are listening for Forward messages | `fluentd` |
+| `backend.[].Port`     | TCP Port of the target service | `24284` |
+| `backend.[].Shared_Key`       | A key string known by the remote Fluentd used for authorization. | `` |
+| `backend.[].tls`              | Enable or disable TLS support | `off` |
+| `backend.[].tls_verify`       | Force certificate validation  | `on` |
+| `backend.[].tls_debug`        | Set TLS debug verbosity level. It accept the following values: 0-4 | `1` |
 | **ElasticSearch Backend**  |
-| `backend.es.host`          | IP address or hostname of the target Elasticsearch instance | `elasticsearch` |
-| `backend.es.port`          | TCP port of the target Elasticsearch instance. | `9200` |
-| `backend.es.index`         | Elastic Index name | `kubernetes_cluster` |
-| `backend.es.type`          | Elastic Type name | `flb_type` |
-| `backend.es.time_key`          | Elastic Time Key | `@timestamp` |
-| `backend.es.logstash_prefix`  | Index Prefix. If Logstash_Prefix is equals to 'mydata' your index will become 'mydata-YYYY.MM.DD'. | `kubernetes_cluster` |
-| `backend.es.replace_dots`     | Enable/Disable Replace_Dots option. | `On` |
-| `backend.es.http_user`        | Optional username credential for Elastic X-Pack access. | `` |
-| `backend.es.http_passwd:`     | Password for user defined in HTTP_User. | `` |
-| `backend.es.tls`              | Enable or disable TLS support | `off` |
-| `backend.es.tls_verify`       | Force certificate validation  | `on` |
-| `backend.es.tls_ca`           | TLS CA certificate for the Elastic instance (in PEM format). Specify if tls: on. | `` |
-| `backend.es.tls_debug`        | Set TLS debug verbosity level. It accept the following values: 0-4 | `1` |
+| `backend.[].Name`          | Name of output type | `es` |
+| `backend.[].Host`          | IP address or hostname of the target Elasticsearch instance | `elasticsearch` |
+| `backend.[].Port`          | TCP port of the target Elasticsearch instance. | `9200` |
+| `backend.[].Index`         | Elastic Index name | `kubernetes_cluster` |
+| `backend.[].Type`          | Elastic Type name | `flb_type` |
+| `backend.[].Time_Tey`          | Elastic Time Key | `@timestamp` |
+| `backend.[].Logstash_Prefix`  | Index Prefix. If Logstash_Prefix is equals to 'mydata' your index will become 'mydata-YYYY.MM.DD'. | `kubernetes_cluster` |
+| `backend.[].Replace_Dots`     | Enable/Disable Replace_Dots option. | `On` |
+| `backend.[].HTTP_User`        | Optional username credential for Elastic X-Pack access. | `` |
+| `backend.[].HTTP_Passwd:`     | Password for user defined in HTTP_User. | `` |
+| `backend.[].tls`              | Enable or disable TLS support | `off` |
+| `backend.[].tls_verify`       | Force certificate validation  | `on` |
+| `backend.[].tls_ca`           | TLS CA certificate for the Elastic instance (in PEM format). Specify if tls: on. | `` |
+| `backend.[].tls_debug`        | Set TLS debug verbosity level. It accept the following values: 0-4 | `1` |
 | **HTTP Backend**              |
-| `backend.http.host`           | IP address or hostname of the target HTTP Server | `127.0.0.1` |
-| `backend.http.port`           | TCP port of the target HTTP Server | `80` |
-| `backend.http.uri`            | Specify an optional HTTP URI for the target web server, e.g: /something | `"/"`
-| `backend.http.http_user`        | Optional username credential for Basic Authentication. | `` |
-| `backend.http.http_passwd:`     | Password for user defined in HTTP_User. | `` |
-| `backend.http.format`         | Specify the data format to be used in the HTTP request body, by default it uses msgpack, optionally it can be set to json.  | `msgpack` |
-| `backend.http.tls`              | Enable or disable TLS support | `off` |
-| `backend.http.tls_verify`       | Force certificate validation  | `on` |
-| `backend.http.tls_debug`        | Set TLS debug verbosity level. It accept the following values: 0-4 | `1` |
+| `backend.[].Name`           | Name of output type | `http` |
+| `backend.[].Host`           | IP address or hostname of the target HTTP Server | `127.0.0.1` |
+| `backend.[].Port`           | TCP port of the target HTTP Server | `80` |
+| `backend.[].URI`            | Specify an optional HTTP URI for the target web server, e.g: /something | `"/"`
+| `backend.[].HTTP_User`        | Optional username credential for Basic Authentication. | `` |
+| `backend.[].HTTP_Passwd:`     | Password for user defined in HTTP_User. | `` |
+| `backend.[].Format`         | Specify the data format to be used in the HTTP request body, by default it uses msgpack, optionally it can be set to json.  | `msgpack` |
+| `backend.[].tls`              | Enable or disable TLS support | `off` |
+| `backend.[].tls_verify`       | Force certificate validation  | `on` |
+| `backend.[].tls_debug`        | Set TLS debug verbosity level. It accept the following values: 0-4 | `1` |
 | **Splunk Backend**              |
-| `backend.splunk.host`           | IP address or hostname of the target Splunk Server | `127.0.0.1` |
-| `backend.splunk.port`           | TCP port of the target Splunk Server | `8088` |
-| `backend.splunk.token`            | Specify the Authentication Token for the HTTP Event Collector interface. | `` |
-| `backend.splunk.send_raw`         | If enabled, record keys and values are set in the main map. | `off` |
-| `backend.splunk.tls`           | Enable or disable TLS support | `on` |
-| `backend.splunk.tls_verify`           | Force TLS certificate validation | `off` |
-| `backend.splunk.tls_debug`        | Set TLS debug verbosity level. It accept the following values: 0-4 | `1` |
-| `backend.splunk.message_key`           | Tag applied to all incoming logs | `kubernetes` |
+| `backend.[].Name`           | Name of output type | `splunk` |
+| `backend.[].Host`           | IP address or hostname of the target Splunk Server | `127.0.0.1` |
+| `backend.[].Port`           | TCP port of the target Splunk Server | `8088` |
+| `backend.[].Splunk_Token`            | Specify the Authentication Token for the HTTP Event Collector interface. | `` |
+| `backend.[].Splunk_Send_Raw`         | If enabled, record keys and values are set in the main map. | `off` |
+| `backend.[].tls`           | Enable or disable TLS support | `on` |
+| `backend.[].tls_verify`           | Force TLS certificate validation | `off` |
+| `backend.[].tls_debug`        | Set TLS debug verbosity level. It accept the following values: 0-4 | `1` |
+| `backend.[].Message_Key`           | Tag applied to all incoming logs | `kubernetes` |
 | **Parsers**                   |
 | `parsers.enabled`                  | Enable custom parsers | `false` |
 | `parsers.regex`                    | List of regex parsers | `NULL` |
@@ -81,9 +85,6 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `podLabels`                        | Optional pod labels                       | `NULL`                |
 | `fullConfigMap`                    | User has provided entire config (parsers + system)  | `false`      |
 | `existingConfigMap`                | ConfigMap override                         | ``                    |
-| `extraEntries.input`               |    Extra entries for existing [INPUT] section                     | ``                    |
-| `extraEntries.filter`              |    Extra entries for existing [FILTER] section                     | ``                    |
-| `extraEntries.output`              |   Extra entries for existing [OUPUT] section                     | ``                    |
 | `extraPorts`                       | List of extra ports                        |                       |
 | `extraVolumeMounts`                | Mount an extra volume, required to mount ssl certificates when elasticsearch has tls enabled |          |
 | `extraVolume`                      | Extra volume                               |                                                |
@@ -103,14 +104,19 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `nameOverride`                     | Override name of app                   | `nil`                                        |
 | `fullnameOverride`                 | Override full name of app              | `nil`                                        |
 | `image.pullSecrets`                | Specify image pull secrets                 | `nil`                                             |
-| `input.tail.memBufLimit`           | Specify Mem_Buf_Limit in tail input        | `5MB`                                             |
-| `input.tail.parser`                | Specify Parser in tail input.        | `docker`                                             |
-| `input.tail.path`                  | Specify log file(s) through the use of common wildcards.        | `/var/log/containers/*.log`                                             |
-| `input.systemd.enabled`            | [Enable systemd input](https://docs.fluentbit.io/manual/input/systemd)                   | `false`                                       |
-| `input.systemd.filters.systemdUnit` | Please see https://docs.fluentbit.io/manual/input/systemd | `[docker.service, kubelet.service`, `node-problem-detector.service]`                                       |
-| `input.systemd.maxEntries`         | Please see https://docs.fluentbit.io/manual/input/systemd | `1000`                             |
-| `input.systemd.readFromTail`       | Please see https://docs.fluentbit.io/manual/input/systemd | `true`                             |
-| `input.systemd.tag`                | Please see https://docs.fluentbit.io/manual/input/systemd | `host.*`                           |
+| **Tail input**
+| `input.[].Name`                    | Specify Name of input type                 | `tail`                                             |
+| `input.[].Mem_Buf_Limit`           | Specify Mem_Buf_Limit in tail input        | `5MB`                                             |
+| `input.[].Parser`                 | Specify Parser in tail input.        | `docker`                                             |
+| `input.[].Path`                   | Specify log file(s) through the use of common wildcards.        | `/var/log/containers/*.log`                                             |
+| **Systemd input**
+| `input.[].Name`                | Specify Name of input type                   | `false`                                       |
+| `input.[].Enabled`                | [Enable systemd input](https://docs.fluentbit.io/manual/input/systemd)                   | `false`                                       |
+| `input.[].Filters.[].systemdUnit` | Please see https://docs.fluentbit.io/manual/input/systemd | `[docker.service, kubelet.service`, `node-problem-detector.service]`                                       |
+| `input.[].Max_Entries`            | Please see https://docs.fluentbit.io/manual/input/systemd | `1000`                             |
+| `input.[].Read_From_Tail`         | Please see https://docs.fluentbit.io/manual/input/systemd | `true`                             |
+| `input.[].Tag`                    | Please see https://docs.fluentbit.io/manual/input/systemd | `host.*`                           |
+| **Misc**
 | `rbac.create`                      | Specifies whether RBAC resources should be created.   | `true`                                 |
 | `serviceAccount.create`            | Specifies whether a ServiceAccount should be created. | `true`                                 |
 | `serviceAccount.name`              | The name of the ServiceAccount to use.     | `NULL`                                            |
@@ -153,3 +159,19 @@ For entire sections, please use the `rawConfig` value, inserting blocks of text 
 ### From < 1.8.0 to >= 1.8.0
 
 Version `1.8.0` introduces the use of release name as full name if it contains the chart name(fluent-bit in this case). E.g. with a release name of `fluent-bit`, this renames the DaemonSet from `fluent-bit-fluent-bit` to `fluent-bit`. The suggested approach is to delete the release and reinstall it.
+
+### From < 1.8.0 to >= 3.x
+Values extraEntries.input, extraEntries.filter and extraEntries.output have been removed. Please add the extra input, outputs and parsers as an element of a collection. 
+
+Example: 
+
+backend:
+  type: "forward"
+  outputs:
+    - Name: "forward"
+      Match: "*"
+      Host: fluentd
+      Port: 24284
+      tls: "Off"
+      tls_verify: "On"
+      tls_debug: 1
