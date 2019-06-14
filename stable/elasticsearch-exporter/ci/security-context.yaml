@@ -1,0 +1,5 @@
+---
+# Set default security context for kubernetes
+
+securityContext:
+  disable: true
