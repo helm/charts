@@ -63,7 +63,7 @@ The following table lists the configurable parameters of the Sonarqube chart and
 | `persistence.size`                          | Size of the volume                        | None                                     |
 | `sonarProperties`                           | Custom `sonar.properties` file            | None                                       |
 | `customCerts.enabled`                       | Use `customCerts.secretName`              | false                                      |
-| `customCerts.secretName`                    | Name of the secret which conatins your `cacerts` | false                                      |
+| `customCerts.secretName`                    | Name of the secret which contains your `cacerts` | false                                      |
 | `sonarSecretKey`                            | Name of existing secret used for settings encryption | None                            |
 | `database.type`                             | Set to "mysql" to use mysql database       | `postgresql`|
 | `postgresql.enabled`                        | Set to `false` to use external server / mysql database     | `true`                                     |
