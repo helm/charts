@@ -57,6 +57,10 @@ spec:
               value: {{ .Values.emailDomain | quote }}
             - name: HOST
               value: {{ $authDomain }}
+            {{- if .Values.whitelistedEmails }}
+            - name: SSO_EMAIL_ADDRESSES
+              value: {{ .Values.whitelistedEmails }}
+            {{- end }}
             - name: REDIRECT_URL
               value: https://{{ $authDomain }}
             - name: PROXY_ROOT_DOMAIN
