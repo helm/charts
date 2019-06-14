@@ -243,7 +243,7 @@ spec:
           - "--cql_proxy_bind_address={{ printf "$(HOSTNAME).%s.$(NAMESPACE).svc.%s" .name $root.Values.domainName }}"
           {{ if not $root.Values.disableYsql }}
           - "--start_pgsql_proxy"
-          - "--pgsql_proxy_bind_address={{ printf "$(HOSTNAME).%s.$(NAMESPACE).svc.%s" .name $root.Values.domainName }}:5433"
+          - "--pgsql_proxy_bind_address={{ printf "$(POD_IP)" }}:5433"
           {{ end }}
           {{ if $root.Values.isMultiAz }}
           - "--tserver_master_addrs={{ $root.Values.masterAddresses}}"
