@@ -9,6 +9,7 @@ metadata:
   labels:
     {{- include "prometheus.server.labels" . | nindent 4 }}
   name: {{ template "prometheus.server.fullname" . }}
+    {{ toYaml .Values.server.statefulSet.labels | indent 4 }}
 spec:
   serviceName: {{ template "prometheus.server.fullname" . }}-headless
   selector:
