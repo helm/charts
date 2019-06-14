@@ -53,6 +53,7 @@ Parameter | Description | Default
 `namespace` | namespace to use | `default`
 `emailDomain` | the sso email domain for authentication | REQUIRED
 `rootDomain` | the parent domain used for protecting your backends | REQUIRED
+`whitelistedEmails` | comma-seperated list of emails which should be whitelisted | OPTIONAL
 `cluster` | the cluster name for SSO | `dev`
 `auth.annotations` | extra annotations for auth pods | `{}`
 `auth.domain` | the auth domain used for OAuth callbacks | REQUIRED
