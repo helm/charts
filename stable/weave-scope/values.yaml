@@ -4,7 +4,7 @@ global:
   # global.image: the image that will be used for this release
   image:
     repository: weaveworks/scope
-    tag: 1.11.1
+    tag: 1.11.2
     # global.image.pullPolicy: must be Always, IfNotPresent, or Never
     pullPolicy: "IfNotPresent"
   # global.service.*: the configuration of the service used to access the frontend
@@ -36,6 +36,24 @@ weave-scope-frontend:
         # cpu: ""
         # weave-scope-frontend.resources.limits.memory: memory limit in MiB (Mi)
         # memory: ""
+  # weave-scope-frontend Ingress
+  ingress:
+    # If true, weave-scope-frontend ingress will be created
+    enabled: false
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    # weave-scope-frontend path(s) must be provided if Ingress is enabled
+    paths: []
+    # weave-scope-frontend hostname(s) must be provided if Ingress is enabled
+    hosts:
+      - weave-scope.example.test
+    # Ingress TLS secret
+    # Must be created manually in the namespace
+    tls: []
+    #  - secretName: weave-scope-example-tls
+    #    hosts:
+    #      - weave-scope.example.test
 
 # weave-scope-agent.* controls how the Weave Scope node agent pods are installed
 weave-scope-agent:
