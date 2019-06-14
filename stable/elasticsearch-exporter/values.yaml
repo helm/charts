@@ -11,6 +11,14 @@ image:
   tag: 1.0.2
   pullPolicy: IfNotPresent
 
+## Set enabled to false if you don't want securityContext
+## in your Deployment.
+## The below values are the default for kubernetes.
+## Openshift won't deploy with runAsUser: 1000 without additional permissions.
+securityContext:
+  enabled: true  # Should be set to false when running on OpenShift
+  runAsUser: 1000
+
 resources: {}
   # requests:
   #   cpu: 100m
@@ -55,6 +63,12 @@ es:
   ## Timeout for trying to get stats from Elasticsearch. (ex: 20s)
   ##
   timeout: 30s
+
+  ## Skip SSL verification when connecting to Elasticsearch
+  ## (only available if image.tag >= 1.0.4rc1)
+  ##
+  sslSkipVerify: false
+
 
   ssl:
     ## If true, a secure connection to ES cluster is used (requires SSL certs below)
