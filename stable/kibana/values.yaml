@@ -234,8 +234,8 @@ initContainers: {}
 
 
 elasticsearch:
-  image:
-    repository: "docker.elastic.co/elasticsearch/elasticsearch-oss"
-    tag: "7.1.1"
+  # image:
+  #   repository: "docker.elastic.co/elasticsearch/elasticsearch-oss"
+  #   tag: "7.1.1"
   cluster:
     name: kibana
