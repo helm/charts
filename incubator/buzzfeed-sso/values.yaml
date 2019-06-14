@@ -2,10 +2,12 @@
 
 emailDomain: "<your_email_domain>"  # Required. e.g "email.mydomain.foo"
 rootDomain: "<your_root_domain>"  # Required. e.g "mydomain.foo"
+cluster: dev
 
 auth:
   annotations: {}
   domain: "<your_auth_domain>"  # Required. e.g "sso-auth.mydomain.foo"
+  extraEnv: []
   replicaCount: 1
   resources:
     limits:
@@ -24,13 +26,13 @@ auth:
     # cookieSecret: ''
   # # Or if you do not want to create the secret via helm
   # customSecret: my-sso-auth-secret
-  tls:
-    secretName: sso-auth-tls-secret
+  tls: {}
+    # secretName: sso-auth-tls-secret
 
 proxy:
   annotations: {}
+  extraEnv: []
   # providerUrlInternal: https://sso-auth.mydomain.com
-  cluster: dev
   replicaCount: 1
   resources:
     limits:
@@ -66,7 +68,7 @@ provider:
 
 image:
   repository: buzzfeed/sso
-  tag: v1.1.0
+  tag: v1.2.0
   pullPolicy: IfNotPresent
 
 ingress:
@@ -74,6 +76,7 @@ ingress:
     # kubernetes.io/ingress.class: nginx
     # certmanager.k8s.io/cluster-issuer: my-letsencrypt-issuer
     # ingress.kubernetes.io/ssl-redirect: "true"
+  extraLabels: {}
   hosts: []
   #  - domain: mybackend.mydomain.foo
   #    path: /
