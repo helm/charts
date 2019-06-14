@@ -29,7 +29,7 @@ spec:
   containers:
     - name: {{ $.Release.Name }}-test
       {{- if eq .Name "forward" }}
-      image: "fluent/fluentd:v1.4-debian-1"
+      image: "fluent/fluentd:v1.5-debian-1"
       {{- else }}
       image: "dwdraju/alpine-curl-jq"
       {{- end }}
