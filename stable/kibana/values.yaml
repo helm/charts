@@ -239,4 +239,3 @@ elasticsearch:
     tag: "7.1.1"
   cluster:
     name: kibana
-  
