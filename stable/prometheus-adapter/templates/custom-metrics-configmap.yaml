@@ -82,4 +82,12 @@ data:
 {{- if .Values.rules.custom }}
 {{ toYaml .Values.rules.custom | indent 4 }}
 {{- end -}}
+{{- if .Values.rules.external }}
+    externalRules:
+{{ toYaml .Values.rules.external | indent 4 }}
+{{- end -}}
+{{- if .Values.rules.resource }}
+    resourceRules:
+{{ toYaml .Values.rules.resource | indent 6 }}
+{{- end -}}
 {{- end -}}

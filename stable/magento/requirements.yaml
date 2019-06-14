@@ -3,3 +3,7 @@ dependencies:
   version: 5.x.x
   repository: https://kubernetes-charts.storage.googleapis.com/
   condition: mariadb.enabled
+- name: elasticsearch
+  version: 1.x.x
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  condition: elasticsearch.enabled

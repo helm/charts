@@ -56,6 +56,10 @@ spec:
       affinity:
 {{ toYaml .Values.affinity | indent 8 }}
       {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+      {{- end }}
       volumes:
       - name: config-volume
         configMap:
@@ -68,5 +72,5 @@ spec:
   - metadata:
       name: {{ $pv.name | quote }}
     spec:
-      {{ toYaml $pv.template | indent 6 }}
+{{ toYaml $pv.template | indent 6 }}
   {{- end }}

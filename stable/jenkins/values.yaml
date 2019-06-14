@@ -8,6 +8,10 @@
 # nameOverride:
 # fullnameOverride:
 
+# For FQDN resolving of the master service. Change this value to match your existing configuration.
+# ref: https://github.com/kubernetes/dns/blob/master/docs/specification.md
+clusterZone: "cluster.local"
+
 master:
   # Used for label app.kubernetes.io/component
   componentName: "jenkins-master"
@@ -77,6 +81,7 @@ master:
   # runAsUser: <defaults to 0>
   # fsGroup: <will be omitted in deployment if runAsUser is 0>
   servicePort: 8080
+  targetPort: 8080
   # For minikube, set this to NodePort, elsewhere use LoadBalancer
   # Use ClusterIP if your setup includes ingress controller
   serviceType: LoadBalancer
@@ -92,15 +97,18 @@ master:
   # Put labels on Jenkins master pod
   podLabels: {}
   # Used to create Ingress record (should used with ServiceType: ClusterIP)
-  # hostName: jenkins.cluster.local
   # nodePort: <to set explicitly, choose port between 30000-32767
   # Enable Kubernetes Liveness and Readiness Probes
   # ~ 2 minutes to allow Jenkins to restart when upgrading plugins. Set ReadinessTimeout to be shorter than LivenessTimeout.
   healthProbes: true
-  healthProbesLivenessTimeout: 90
-  healthProbesReadinessTimeout: 60
+  healthProbesLivenessTimeout: 5
+  healthProbesReadinessTimeout: 5
+  healthProbeLivenessPeriodSeconds: 10
   healthProbeReadinessPeriodSeconds: 10
-  healthProbeLivenessFailureThreshold: 12
+  healthProbeLivenessFailureThreshold: 5
+  healthProbeReadinessFailureThreshold: 3
+  healthProbeLivenessInitialDelay: 90
+  healthProbeReadinessInitialDelay: 60
   slaveListenerPort: 50000
   slaveHostPort:
   disabledAgentProtocols:
@@ -147,11 +155,11 @@ master:
 
   # List of plugins to be install during Jenkins master start
   installPlugins:
-    - kubernetes:1.14.0
-    - workflow-job:2.31
+    - kubernetes:1.16.0
+    - workflow-job:2.32
     - workflow-aggregator:2.6
-    - credentials-binding:1.17
-    - git:3.9.1
+    - credentials-binding:1.19
+    - git:3.10.0
 
   # Enable to always override the installed plugins with the values of 'master.installPlugins' on upgrade or redeployment.
   # overwritePlugins: true
@@ -195,10 +203,10 @@ master:
 
   # Optionally specify additional init-containers
   customInitContainers: []
-  #   - name: CustomInit
-  #     image: "alpine:3.7"
-  #     imagePullPolicy: Always
-  #     command: [ "uname", "-a" ]
+  # - name: custom-init
+  #   image: "alpine:3.7"
+  #   imagePullPolicy: Always
+  #   command: [ "uname", "-a" ]
 
   sidecars:
     configAutoReload:
@@ -280,7 +288,8 @@ master:
     # kubernetes.io/tls-acme: "true"
     # Set this path to jenkinsUriPrefix above or use annotations to rewrite path
     # path: "/jenkins"
-    # hostName: jenkins.example.com
+    # configures the hostname e.g. jenkins.example.com
+    hostName:
     tls:
     # - secretName: jenkins.cluster.local
     #   hosts:
@@ -304,6 +313,23 @@ master:
   # - ip: 10.0.50.50
   #   hostnames:
   #     - other.local
+
+  # Expose Prometheus metrics
+  prometheus:
+    # If enabled, add the prometheus plugin to the list of plugins to install
+    # https://plugins.jenkins.io/prometheus
+    enabled: false
+    # Additional labels to add to the ServiceMonitor object
+    serviceMonitorAdditionalLabels: {}
+    scrapeInterval: 60s
+    # This is the default endpoint used by the prometheus plugin
+    scrapeEndpoint: /prometheus
+    # Additional labels to add to the PrometheusRule object
+    alertingRulesAdditionalLabels: {}
+    # An array of prometheus alerting rules
+    # See here: https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/
+    # The `groups` root object is added by default, simply add the rule entries
+    alertingrules: []
 
 agent:
   enabled: true
@@ -338,6 +364,9 @@ agent:
   # - type: Secret
   #   secretName: mysecret
   #   mountPath: /var/myapp/mysecret
+  # - type: EmptyDir
+  #   mountPath: "/var/lib/containers"
+  #   memory: false
   nodeSelector: {}
   # Key Value selectors. Ex:
   # jenkins-agent: v1
@@ -356,6 +385,18 @@ agent:
   # Allows the Pod to remain active for reuse until the configured number of
   # minutes has passed since the last step was executed on it.
   idleMinutes: 0
+  # Raw yaml template for the Pod. For example this allows usage of toleration for agent pods.
+  # https://github.com/jenkinsci/kubernetes-plugin#using-yaml-to-define-pod-templates
+  # https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  yamlTemplate:
+  # yamlTemplate: |-
+  #   apiVersion: v1
+  #   kind: Pod
+  #   spec:
+  #     tolerations:
+  #     - key: "key"
+  #       operator: "Equal"
+  #       value: "value"
 
 persistence:
   enabled: true

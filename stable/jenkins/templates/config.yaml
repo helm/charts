@@ -92,7 +92,7 @@ data:
                   <envVars>
                     <org.csanchez.jenkins.plugins.kubernetes.ContainerEnvVar>
                       <key>JENKINS_URL</key>
-                      <value>http://{{ template "jenkins.fullname" . }}.{{.Release.Namespace}}.svc.cluster.local:{{.Values.master.servicePort}}{{ default "" .Values.master.jenkinsUriPrefix }}</value>
+                      <value>http://{{ template "jenkins.fullname" . }}.{{.Release.Namespace}}.svc.{{.Values.clusterZone}}:{{.Values.master.servicePort}}{{ default "" .Values.master.jenkinsUriPrefix }}</value>
                     </org.csanchez.jenkins.plugins.kubernetes.ContainerEnvVar>
                   </envVars>
                 </org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
@@ -116,6 +116,9 @@ data:
               <imagePullSecrets/>
 {{- end }}
               <nodeProperties/>
+{{- if .Values.agent.yamlTemplate }}
+              <yaml>{{ tpl .Values.agent.yamlTemplate . | html | indent 4 | trim }}</yaml>
+{{- end }}
               <podRetention class="org.csanchez.jenkins.plugins.kubernetes.pod.retention.Default"/>
             </org.csanchez.jenkins.plugins.kubernetes.PodTemplate>
 {{- end -}}
@@ -218,13 +221,18 @@ data:
     cp /var/jenkins_config/config.xml /var/jenkins_home;
     cp /var/jenkins_config/jenkins.CLI.xml /var/jenkins_home;
     cp /var/jenkins_config/jenkins.model.JenkinsLocationConfiguration.xml /var/jenkins_home;
-  {{- else }}
+  {{- if .Values.master.additionalConfig }}
+  {{- range $key, $val := .Values.master.additionalConfig }}
+    cp /var/jenkins_config/{{- $key }} /var/jenkins_home;
+  {{- end }}
+  {{- end }}
+{{- else }}
     yes n | cp -i /var/jenkins_config/config.xml /var/jenkins_home;
     yes n | cp -i /var/jenkins_config/jenkins.CLI.xml /var/jenkins_home;
     yes n | cp -i /var/jenkins_config/jenkins.model.JenkinsLocationConfiguration.xml /var/jenkins_home;
   {{- if .Values.master.additionalConfig }}
-{{- range $key, $val := .Values.master.additionalConfig }}
-    cp /var/jenkins_config/{{- $key }} /var/jenkins_home;
+  {{- range $key, $val := .Values.master.additionalConfig }}
+    yes n | cp -i /var/jenkins_config/{{- $key }} /var/jenkins_home;
   {{- end }}
   {{- end }}
 {{- end }}

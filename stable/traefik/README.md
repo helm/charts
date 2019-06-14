@@ -116,6 +116,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `forwardedHeaders.enabled`             | Enable support specify trusted clients for forwarded headers.                                                                | `false`                                           |
 | `forwardedHeaders.trustedIPs`          | List of IPs (CIDR ranges) to be authorized to trust the client forwarded headers (X-Forwarded-*).                            | `[]`                                              |
 | `debug.enabled`                        | Turn on/off Traefik's debug mode. Enabling it will override the logLevel to `DEBUG` and provide `/debug/vars` endpoint that allows Go runtime stats to be inspected, such as number of Goroutines and memory stats | `false`                                   |
+| `logLevel`                             | Accepted values, in order of severity: "debug", "info", "warn", "error", "fatal", "panic". Messages at and above the selected level will be logged. | `info` |
 | `ssl.enabled`                          | Whether to enable HTTPS                                                                                                      | `false`                                           |
 | `ssl.enforced`                         | Whether to redirect HTTP requests to HTTPS                                                                                   | `false`                                           |
 | `ssl.permanentRedirect`                | When ssl.enforced is set, use a permanent (301) redirect instead of a temporary redirect (302)                               | `false`                                           |
@@ -123,6 +124,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `ssl.insecureSkipVerify`               | Whether to verify certs on SSL connections                                                                                   | `false`                                           |
 | `ssl.tlsMinVersion`                    | Minimum TLS version for https entrypoint                                                                                     | None                                              |
 | `ssl.cipherSuites`                     | Specify a non-empty list of TLS ciphers to override the default one | None |
+| `ssl.sniStrict`                        | Enable strict SNI checking, so that connections cannot be made if a matching certificate does not exist.                     | false                                             |
 | `ssl.generateTLS`                      | Generate self sign cert by Helm. If it's `true` the `defaultCert` and the `defaultKey` parameters will be ignored.           | false                                             |
 | `ssl.defaultCN`                        | Specify generated self sign cert CN                                                                                          | ""                                                |
 | `ssl.defaultSANList`                   | Specify generated self sign cert SAN list                                                                                    | `[]`                                              |
@@ -234,6 +236,9 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `secretFiles`                          | Secret files to make available in the deployment. key=filename, value=file contents                                          | `{}`                                              |
 | `testFramework.image`                  | `test-framework` image repository.                                                                                           | `dduportal/bats`                                  |
 | `testFramework.tag`                    | `test-framework` image tag.                                                                                                  | `0.4.0`                                           |
+| `forwardAuth.entryPoints`              | Enable forward authentication for these entryPoints: "http", "https", "httpn"                                                |                                                   |
+| `forwardAuth.address`                  | URL for forward authentication                                                                                               |                                                   |
+| `forwardAuth.trustForwardHeader`       | Trust X-Forwarded-* headers                                                                                                  |                                                   |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 

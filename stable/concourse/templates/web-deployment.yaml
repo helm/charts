@@ -10,6 +10,9 @@ metadata:
     heritage: "{{ .Release.Service }}"
 spec:
   replicas: {{ .Values.web.replicas }}
+{{- if .Values.web.strategy }}
+{{ toYaml .Values.web.strategy | indent 2 }}
+{{- end }}
   template:
     metadata:
       labels:
@@ -49,9 +52,49 @@ spec:
           args:
             - web
           env:
+            {{- if .Values.concourse.web.clusterName }}
+            - name: CONCOURSE_CLUSTER_NAME
+              value: {{ .Values.concourse.web.clusterName | quote }}
+            {{- end }}
             {{- if .Values.concourse.web.enableGlobalResources }}
             - name: CONCOURSE_ENABLE_GLOBAL_RESOURCES
               value: {{ .Values.concourse.web.enableGlobalResources | quote }}
+            {{- end }}
+            {{- if .Values.concourse.web.enableBuildAuditing }}
+            - name: CONCOURSE_ENABLE_BUILD_AUDITING
+              value: {{ .Values.concourse.web.enableBuildAuditing | quote }}
+            {{- end }}
+            {{- if .Values.concourse.web.enableContainerAuditing }}
+            - name: CONCOURSE_ENABLE_CONTAINER_AUDITING
+              value: {{ .Values.concourse.web.enableContainerAuditing | quote }}
+            {{- end }}
+            {{- if .Values.concourse.web.enableJobAuditing }}
+            - name: CONCOURSE_ENABLE_JOB_AUDITING
+              value: {{ .Values.concourse.web.enableJobAuditing | quote }}
+            {{- end }}
+            {{- if .Values.concourse.web.enablePipelineAuditing }}
+            - name: CONCOURSE_ENABLE_PIPELINE_AUDITING
+              value: {{ .Values.concourse.web.enablePipelineAuditing | quote }}
+            {{- end }}
+            {{- if .Values.concourse.web.enableResourceAuditing }}
+            - name: CONCOURSE_ENABLE_RESOURCE_AUDITING
+              value: {{ .Values.concourse.web.enableResourceAuditing | quote }}
+            {{- end }}
+            {{- if .Values.concourse.web.enableSystemAuditing }}
+            - name: CONCOURSE_ENABLE_SYSTEM_AUDITING
+              value: {{ .Values.concourse.web.enableSystemAuditing | quote }}
+            {{- end }}
+            {{- if .Values.concourse.web.enableTeamAuditing }}
+            - name: CONCOURSE_ENABLE_TEAM_AUDITING
+              value: {{ .Values.concourse.web.enableTeamAuditing | quote }}
+            {{- end }}
+            {{- if .Values.concourse.web.enableWorkerAuditing }}
+            - name: CONCOURSE_ENABLE_WORKER_AUDITING
+              value: {{ .Values.concourse.web.enableWorkerAuditing | quote }}
+            {{- end }}
+            {{- if .Values.concourse.web.enableVolumeAuditing }}
+            - name: CONCOURSE_ENABLE_VOLUME_AUDITING
+              value: {{ .Values.concourse.web.enableVolumeAuditing | quote }}
             {{- end }}
             {{- if .Values.concourse.web.secretRetryAttempts }}
             - name: CONCOURSE_SECRET_RETRY_ATTEMPTS
@@ -60,6 +103,18 @@ spec:
             {{- if .Values.concourse.web.secretRetryInterval }}
             - name: CONCOURSE_SECRET_RETRY_INTERVAL
               value: {{ .Values.concourse.web.secretRetryInterval | quote }}
+            {{- end }}
+            {{- if .Values.concourse.web.secretCacheDuration }}
+            - name: CONCOURSE_SECRET_CACHE_DURATION
+              value: {{ .Values.concourse.web.secretCacheDuration | quote }}
+            {{- end }}
+            {{- if .Values.concourse.web.secretCacheEnabled }}
+            - name: CONCOURSE_SECRET_CACHE_ENABLED
+              value: {{ .Values.concourse.web.secretCacheEnabled | quote }}
+            {{- end }}
+            {{- if .Values.concourse.web.secretCachePurgeInterval }}
+            - name: CONCOURSE_SECRET_CACHE_PURGE_INTERVAL
+              value: {{ .Values.concourse.web.secretCachePurgeInterval | quote }}
             {{- end }}
             {{- if .Values.concourse.web.awsSecretsManager.region }}
             - name: CONCOURSE_AWS_SECRETSMANAGER_REGION
@@ -200,6 +255,14 @@ spec:
             {{- if .Values.concourse.web.maxBuildLogsToRetain }}
             - name: CONCOURSE_MAX_BUILD_LOGS_TO_RETAIN
               value: {{ .Values.concourse.web.maxBuildLogsToRetain | quote }}
+            {{- end }}
+            {{- if .Values.concourse.web.defaultDaysToRetainBuildLogs }}
+            - name: CONCOURSE_DEFAULT_DAYS_TO_RETAIN_BUILD_LOGS
+              value: {{ .Values.concourse.web.defaultDaysToRetainBuildLogs | quote }}
+            {{- end }}
+            {{- if .Values.concourse.web.maxDaysToRetainBuildLogs }}
+            - name: CONCOURSE_MAX_DAYS_TO_RETAIN_BUILD_LOGS
+              value: {{ .Values.concourse.web.maxDaysToRetainBuildLogs | quote }}
             {{- end }}
             {{- if .Values.concourse.web.defaultTaskCpuLimit }}
             - name: CONCOURSE_DEFAULT_TASK_CPU_LIMIT
@@ -381,10 +444,6 @@ spec:
             - name: CONCOURSE_VAULT_AUTH_BACKEND_MAX_TTL
               value: {{ .Values.concourse.web.vault.authBackendMaxTtl | quote }}
             {{- end }}
-            {{- if .Values.concourse.web.vault.cache }}
-            - name: CONCOURSE_VAULT_CACHE
-              value: {{ .Values.concourse.web.vault.cache | quote }}
-            {{- end }}
             {{- if .Values.concourse.web.vault.caPath }}
             - name: CONCOURSE_VAULT_CA_PATH
               value: {{ .Values.concourse.web.vault.caPath | quote }}
@@ -392,10 +451,6 @@ spec:
             {{- if .Values.concourse.web.vault.insecureSkipVerify }}
             - name: CONCOURSE_VAULT_INSECURE_SKIP_VERIFY
               value: {{ .Values.concourse.web.vault.insecureSkipVerify | quote }}
-            {{- end }}
-            {{- if .Values.concourse.web.vault.maxLease }}
-            - name: CONCOURSE_VAULT_MAX_LEASE
-              value: {{ .Values.concourse.web.vault.maxLease | quote }}
             {{- end }}
             {{- if .Values.concourse.web.vault.retryInitial }}
             - name: CONCOURSE_VAULT_RETRY_INITIAL
@@ -409,6 +464,32 @@ spec:
             - name: CONCOURSE_VAULT_SERVER_NAME
               value: {{ .Values.concourse.web.vault.serverName | quote }}
             {{- end }}
+            {{- end }}
+            {{- if .Values.concourse.web.credhub.enabled }}
+            {{- if .Values.concourse.web.credhub.useCaCert }}
+            - name: CONCOURSE_CREDHUB_CA_CERT
+              value: "{{ .Values.web.credhubSecretsPath }}/ca.cert"
+            {{- end }}
+            - name: CONCOURSE_CREDHUB_URL
+              value: {{ .Values.concourse.web.credhub.url | quote }}
+            {{- if.Values.concourse.web.credhub.pathPrefix }}
+            - name: CONCOURSE_CREDHUB_PATH_PREFIX
+              value: {{ .Values.concourse.web.credhub.pathPrefix | quote }}
+            {{- end }}
+            {{- if .Values.concourse.web.credhub.insecureSkipVerify }}
+            - name: CONCOURSE_CREDHUB_INSECURE_SKIP_VERIFY
+              value: {{ .Values.concourse.web.credhub.insecureSkipVerify | quote }}
+            {{- end }}
+            - name: CONCOURSE_CREDHUB_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.web.fullname" . }}
+                  key: credhub-client-id
+            - name: CONCOURSE_CREDHUB_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.web.fullname" . }}
+                  key: credhub-client-secret
             {{- end }}
             {{- if .Values.concourse.web.noop }}
             - name: CONCOURSE_NOOP
@@ -910,6 +991,14 @@ spec:
             - name: CONCOURSE_TSA_HEARTBEAT_INTERVAL
               value: {{ .Values.concourse.web.tsa.heartbeatInterval | quote }}
             {{- end }}
+            {{- if .Values.concourse.web.letsEncrypt.enabled }}
+            - name: CONCOURSE_ENABLE_LETS_ENCRYPT
+              value: {{ .Values.concourse.web.letsEncrypt.enabled | quote }}
+            {{- end }}
+            {{- if .Values.concourse.web.letsEncrypt.acmeURL }}
+            - name: CONCOURSE_LETS_ENCRYPT_ACME_URL
+              value: {{ .Values.concourse.web.letsEncrypt.acmeURL | quote }}
+            {{- end }}
 {{- if .Values.web.env }}
 {{ toYaml .Values.web.env | indent 12 }}
 {{- end }}
@@ -966,6 +1055,11 @@ spec:
             {{- if .Values.concourse.web.vault.enabled }}
             - name: vault-keys
               mountPath: {{ .Values.web.vaultSecretsPath | quote }}
+              readOnly: true
+            {{- end }}
+            {{- if .Values.concourse.web.credhub.enabled }}
+            - name: credhub-keys
+              mountPath: {{ .Values.web.credhubSecretsPath | quote }}
               readOnly: true
             {{- end }}
             {{- if not (eq .Values.concourse.web.postgres.sslmode "disable") }}
@@ -1037,6 +1131,17 @@ spec:
                 path: client.cert
               - key: vault-client-key
                 path: client.key
+            {{- end }}
+        {{- end }}
+        {{- if .Values.concourse.web.credhub.enabled }}
+        - name: credhub-keys
+          secret:
+            secretName: {{ template "concourse.web.fullname" . }}
+            defaultMode: 0400
+            items:
+            {{- if .Values.concourse.web.credhub.useCaCert }}
+              - key: credhub-ca-cert
+                path: ca.cert
             {{- end }}
         {{- end }}
         {{- if not (eq .Values.concourse.web.postgres.sslmode "disable") }}

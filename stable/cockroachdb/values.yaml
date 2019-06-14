@@ -5,7 +5,7 @@
 
 Name: "cockroachdb"
 Image: "cockroachdb/cockroach"
-ImageTag: "v2.1.6"
+ImageTag: "v19.1.1"
 ImagePullPolicy: "Always"
 Replicas: 3
 MaxUnavailable: 1
@@ -78,3 +78,13 @@ ExtraSecretMounts: []
 # - name: COCKROACH_ENGINE_MAX_SYNC_DURATION
 #   value: "24h"
 ExtraEnvArgs: []
+# ExtraAnnotations is an object to provide additional annotations to the Statefulset
+# e.g.:
+# ExtraAnnotations:
+#   key: values
+ExtraAnnotations: {}
+# ExtraInitAnnotations is an object to provide additional annotations to the ClusterInit Pod
+# e.g.:
+# ExtraInitAnnotations:
+#   key: values
+ExtraInitAnnotations: {}

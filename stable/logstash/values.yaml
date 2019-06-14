@@ -72,6 +72,9 @@ ingress:
   #    hosts:
   #      - logstash.cluster.local
 
+# set java options like heap size
+logstashJavaOpts: "-Xmx1g -Xms1g"
+
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
@@ -112,6 +115,18 @@ podLabels: {}
   # team: "developers"
   # service: "logstash"
 
+extraEnv: []
+
+extraInitContainers: []
+  # - name: echo
+  #   image: busybox
+  #   imagePullPolicy: Always
+  #   args:
+  #     - echo
+  #     - hello
+
+podManagementPolicy: OrderedReady
+ # can be OrderReady or Parallel
 livenessProbe:
   httpGet:
     path: /
@@ -245,6 +260,11 @@ files:
   #     },
   #     "aliases": {}
   #   }
+
+## Custom binary files encoded as base64 string that can be referenced by plugins
+## Each base64 encoded string is decoded & mounted as a file under logstash home directory under
+## the files subdirectory.
+binaryFiles: {}
 
 ## NOTE: To achieve multiple pipelines with this chart, current best practice
 ## is to maintain one pipeline per chart release. In this way configuration is

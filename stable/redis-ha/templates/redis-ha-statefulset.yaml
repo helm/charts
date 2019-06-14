@@ -34,6 +34,9 @@ spec:
         {{ $key }}: {{ $value }}
         {{- end }}
     spec:
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+      {{- end }}
       {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
@@ -103,7 +106,7 @@ spec:
             {{- else }}
               name: {{ template "redis-ha.fullname" . }}
             {{- end }}
-              key: auth
+              key: {{ .Values.authKey }}
 {{- end }}
         volumeMounts:
         - name: config
@@ -129,7 +132,7 @@ spec:
             {{- else }}
               name: {{ template "redis-ha.fullname" . }}
             {{- end }}
-              key: auth
+              key: {{ .Values.authKey }}
 {{- end }}
         livenessProbe:
           exec:
@@ -168,7 +171,7 @@ spec:
             {{- else }}
               name: {{ template "redis-ha.fullname" . }}
             {{- end }}
-              key: auth
+              key: {{ .Values.authKey }}
 {{- end }}
         livenessProbe:
           exec:
@@ -210,7 +213,7 @@ spec:
               {{- else }}
                 name: {{ template "redis-ha.fullname" . }}
               {{- end }}
-                key: auth
+                key: {{ .Values.authKey }}
         {{- end }}
         livenessProbe:
           httpGet:
@@ -236,7 +239,7 @@ spec:
       - name: host-sys
         hostPath:
           path: /sys
-      {{- end }}          
+      {{- end }}
 {{- if .Values.persistentVolume.enabled }}
   volumeClaimTemplates:
   - metadata:
