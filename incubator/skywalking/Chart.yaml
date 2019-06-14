@@ -1,0 +1,12 @@
+apiVersion: v1
+name: skywalking
+home: https://www.elastic.co/products/elasticsearch
+version: 0.1.0
+appVersion: 6.1.0
+description: Apache SkyWalking APM System
+icon: https://github.com/apache/skywalking-website/blob/master/docs/.vuepress/public/assets/logo.svg
+sources:
+- https://github.com/apache/skywalking-kubernetes
+maintainers:
+- name: hanahmily
+  email: hanahmily@gmail.com
