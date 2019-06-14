@@ -29,7 +29,7 @@ envVars:
 ## Configuration for the deployment:
 image:
   repository: willwill/kube-slack
-  tag: v4.1.1
+  tag: v4.2.0
   pullPolicy: IfNotPresent
 
 resources: {}
