@@ -49,7 +49,7 @@ The following table lists the configurable parameters of the kibana chart and th
 | `livenessProbe.timeoutSeconds`             | number of seconds                                                      | 10                                    |
 | `image.pullPolicy`                         | Image pull policy                                                      | `IfNotPresent`                        |
 | `image.repository`                         | Image repository                                                       | `docker.elastic.co/kibana/kibana-oss` |
-| `image.tag`                                | Image tag                                                              | `6.7.0`                               |
+| `image.tag`                                | Image tag                                                              | `7.1.1`                               |
 | `image.pullSecrets`                        | Specify image pull secrets                                             | `nil`                                 |
 | `commandline.args`                         | add additional commandline args                                        | `nil`                                 |
 | `ingress.enabled`                          | Enables Ingress                                                        | `false`                               |
@@ -112,9 +112,9 @@ The following table lists the configurable parameters of the kibana chart and th
 | `extraConfigMapMounts`                     | Additional configmaps to be mounted                                    | `[]`                                  |
 | `deployment.annotations`                   | Annotations for deployment                                             | `{}`                                  |
 | `initContainers`                           | Init containers to add to the kibana deployment                        | `{}`                                  |
-| `testFramework.image`                      | `test-framework` image repository.                                     | `dduportal/bats`                      |
-| `testFramework.tag`                        | `test-framework` image tag.                                            | `0.4.0`                               |
-
+| `testFramework.image`                      | test-framework image repository.                                       | `dduportal/bats`                      |
+| `testFramework.tag`                        | test-framework image tag.                                              | `0.4.0`                               |
+| `elasticsearchDependency`                  | use Elasticsearch dependency                                           | `true`                                |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
@@ -144,3 +144,8 @@ $ helm install stable/kibana --name my-release -f values.yaml
 ### To 2.3.0
 
 The default value of `elasticsearch.url` (for kibana < 6.6) has been removed in favor of `elasticsearch.hosts` (for kibana >= 6.6).
+
+### To 4.0.x
+
+From now on Kibana chart will bring Elasticsearch dependency by default. This is needed to get the test running.
+If you don't need Elasticsearch as dependency set elasticsearchDependency to false.

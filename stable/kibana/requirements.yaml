@@ -1,0 +1,5 @@
+dependencies:
+  - name: elasticsearch
+    repository: https://kubernetes-charts.storage.googleapis.com/
+    version: 1.28.5
+    condition: elasticsearchDependency

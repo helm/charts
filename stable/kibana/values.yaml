@@ -1,6 +1,11 @@
+# This is true to get the e2e tests running as Kibana depends on Elasticsearch
+# If you already have an Elasticsearch cluster running set to false and modify
+# elasticsearch.host accordingly
+elasticsearchDependency: true
+
 image:
   repository: "docker.elastic.co/kibana/kibana-oss"
-  tag: "6.7.0"
+  tag: "7.1.1"
   pullPolicy: "IfNotPresent"
 
 testFramework:
@@ -26,7 +31,7 @@ files:
     server.name: kibana
     server.host: "0"
     ## For kibana < 6.6, use elasticsearch.url instead
-    elasticsearch.hosts: http://elasticsearch:9200
+    elasticsearch.hosts: http://kibana-elasticsearch-client:9200
 
     ## Custom config properties below
     ## Ref: https://www.elastic.co/guide/en/kibana/current/settings.html
@@ -226,3 +231,46 @@ initContainers: {}
   #           sleep 5
   #         fi
   #       done
+
+
+elasticsearch:
+  image:
+    repository: "docker.elastic.co/elasticsearch/elasticsearch-oss"
+    tag: "7.1.1"
+  cluster:
+    name: kibana
+    xpackEnable: false
+    # See README for proper configuration
+    env:
+      EXPECTED_MASTER_NODES: "1"
+      MINIMUM_MASTER_NODES: "1"
+      RECOVER_AFTER_MASTER_NODES: "1"
+      XPACK_MONITORING_ENABLED: false
+  client:
+    replicas: 1
+    # resources:
+    #   requests:
+    #     cpu: "25m"
+    #     memory: "512Mi"
+    #   limits:
+    #     cpu: "300m"
+    #     memory: "1024Mi"
+  data:
+    terminationGracePeriodSeconds: 60
+    replicas: 1
+    # resources:
+    #   requests:
+    #     cpu: "175m"
+    #     memory: "1536Mi"
+    #   limits:
+    #     cpu: "350m"
+    #     memory: "2048Mi"
+  master:
+    replicas: 1
+    # resources:
+    #   requests:
+    #     cpu: "25m"
+    #     memory: "512Mi"
+    #   limits:
+    #     cpu: "300m"
+    #     memory: "1024Mi"
