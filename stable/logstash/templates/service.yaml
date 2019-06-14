@@ -24,8 +24,16 @@ spec:
   selector:
     app: {{ template "logstash.name" . }}
     release: {{ .Release.Name }}
+{{- if eq .Values.service.type  "LoadBalancer" }}
 {{- if .Values.service.loadBalancerIP }}
   loadBalancerIP: {{ .Values.service.loadBalancerIP }}
+{{- end }}
+{{- if .Values.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+{{- range $cidr := .Values.service.loadBalancerSourceRanges }}
+  - {{ $cidr }}
+{{- end }}
+{{- end }}
 {{- end }}
 {{- if .Values.service.clusterIP }}
   clusterIP: {{ .Values.service.clusterIP }}
