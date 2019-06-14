@@ -17,40 +17,20 @@ airflow:
   #   subPath: file.yaml
 
 
-  ## When existingAirflowSecret is defined, secretsMapping can be
-  ## overridden. When no secretName is given then the value of
-  ## existingAirflowSecret is assumed.
-  ## secretsMapping:
-  ## - envVar: AIRFLOW__LDAP__BIND_PASSWORD
-  ##   secretName: ldap
-  ##   secretKey: ldapBindPassword
-  ## - envVar: AIRFLOW__ATLAS__PASSWORD
-  ##   secretKey: atlasPassword
-  ## - envVar: AIRFLOW__SMTP__PASSWORD
-  ##   secretKey: smtpPassword
-  ## - envVar: AIRFLOW__KUBERNETES__GIT_PASSWORD
-  ##   secretKey: kubernetesGitPassword
-  ## - envVar: POSTGRES_USER
-  ##   secretName: postgres
-  ##   secretKey: postgresUser
-  ## - envVar: POSTGRES_PASSWORD
-  ##   secretName: postgres
-  ##   secretKey: postgresPassword
-  ## - envVar: REDIS_PASSWORD
-  ##   secretName: redis
-  ##   secretKey: redisPassword
-  secretsMapping:
+  ##
+  ## Extra environment variables to mount in the web, scheduler, and worker pods:
+  extraEnv:
+  #  - name: AIRFLOW__CORE__FERNET_KEY
+  #    valueFrom:
+  #      secretKeyRef:
+  #        name: airflow
+  #        key: fernet_key
+  #  - name: AIRFLOW__LDAP__BIND_PASSWORD
+  #    valueFrom:
+  #      secretKeyRef:
+  #        name: ldap
+  #        key: password
 
-
-  ## Used only when existingAirflowSecret is null, in which case
-  ## a secret will be created with a default name and the following mapping.
-  defaultSecretsMapping:
-  - envVar: POSTGRES_USER
-    secretKey: postgresUser
-  - envVar: POSTGRES_PASSWORD
-    secretKey: postgresPassword
-  - envVar: REDIS_PASSWORD
-    secretKey: redisPassword
 
   ##
   ## You will need to define your fernet key:
@@ -286,6 +266,10 @@ ingress:
       ## Example for Traefik:
       # traefik.frontend.rule.type: PathPrefix
       # kubernetes.io/ingress.class: traefik
+    ##
+    ## Configure the web liveness path.
+    ## Defaults to the templated value `{{ ingress.web.path }}/health`
+    livenessPath:
     tls:
       ## Set to "true" to enable TLS termination at the ingress
       enabled: false
@@ -464,10 +448,6 @@ serviceAccount:
   ## If not set and create is true, a name is generated using the fullname template
   name:
 
-##
-## Define existing secret for postgresql and redis
-## If not specified, creates secret with postgres and redis values
-existingAirflowSecret: ""
 
 ##
 ## Configuration values for the postgresql dependency.
@@ -477,6 +457,12 @@ postgresql:
   ## Use the PostgreSQL chart dependency.
   ## Set to false if bringing your own PostgreSQL.
   enabled: true
+
+  ##
+  ## The name of an existing secret that contains the postgres password.
+  ## Note that the secret must have a key called postgres-password.
+  existingSecret:
+
   ##
   ## If you are bringing your own PostgreSQL, you should set postgresHost and
   ## also probably service.port, postgresUser, postgresPassword, and postgresDatabase
@@ -516,6 +502,12 @@ redis:
   ## Use the redis chart dependency.
   ## Set to false if bringing your own redis.
   enabled: true
+
+  ##
+  ## The name of an existing secret that contains the redis password.
+  ## Note that the secret must have a key called redis-password.
+  existingSecret:
+
   ##
   ## If you are bringing your own redis, you can set the host in redisHost.
   ## redisHost:

@@ -1,4 +1,4 @@
-{{- if or (.Values.infraToken) (.Values.logseneToken) (.Values.containerToken) }}
+{{- if or (.Values.infraToken) (.Values.logsToken) (.Values.containerToken) }}
 {{- if .Capabilities.APIVersions.Has "apps/v1" }}
 apiVersion: apps/v1
 {{- else }}
@@ -99,7 +99,7 @@ spec:
           resources:
 {{ toYaml .Values.agent.resources | indent 12 }}
         {{- end }}
-        {{- if .Values.logseneToken }}
+        {{- if .Values.logsToken }}
         - name: logagent
           image: "{{ .Values.logagent.image.repository }}:{{ .Values.logagent.image.tag }}"
           imagePullPolicy: {{ .Values.logagent.image.pullPolicy }}
