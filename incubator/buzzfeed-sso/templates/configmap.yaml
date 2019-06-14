@@ -8,7 +8,7 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 data:
-{{- with .Values.upstreams }}
   upstream_configs.yml: |-
+{{- with .Values.upstreams }}
 {{ toYaml . | indent 4 }}
 {{- end }}
