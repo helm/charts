@@ -141,23 +141,13 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
-    {{- if (kindIs "invalid" .Values.affinity) }}
+    {{- if .Values.affinity }}
       affinity:
-        podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 100
-            podAffinityTerm:
-              topologyKey: "kubernetes.io/hostname"
-              labelSelector:
-                matchLabels:
-                  app:  {{ template "patroni.name" . }}
-                  release: {{ .Release.Name | quote }}
-    {{- else }}
-    {{- with .Values.affinity }}
+{{ .Values.affinity | toYaml | indent 8 }}
+    {{- else if .Values.affinityTemplate }}
       affinity:
-{{ toYaml . | indent 8 }}
+{{ tpl .Values.affinityTemplate . | indent 8 }}
     {{- end }}
-    {{- end}}
       volumes:
       - name: patroni-config
         secret:

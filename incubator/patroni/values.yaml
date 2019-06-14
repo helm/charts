@@ -90,8 +90,17 @@ nodeSelector: {}
 tolerations: []
 
 # https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
-# the default value of null will result in a soft host anti-affinity being used.
-affinity:
+affinityTemplate: |
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+    - weight: 100
+      podAffinityTerm:
+        topologyKey: "kubernetes.io/hostname"
+        labelSelector:
+          matchLabels:
+            app:  {{ template "patroni.name" . }}
+            release: {{ .Release.Name | quote }}
+affinity: {}
 
 rbac:
   # Specifies whether RBAC resources should be created
