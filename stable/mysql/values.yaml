@@ -95,6 +95,11 @@ persistence:
   size: 8Gi
   annotations: {}
 
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName:
+
 ## Security context
 securityContext:
   enabled: false

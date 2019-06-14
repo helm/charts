@@ -112,14 +112,6 @@ spec:
             - name: configurator
               containerPort: {{ .Values.configurator.service.port }}
               protocol: TCP
-          livenessProbe:
-            tcpSocket:
-              port: configurator
-            initialDelaySeconds: 30
-          readinessProbe:
-            tcpSocket:
-              port: configurator
-            initialDelaySeconds: 15
           env:
             {{- if .Values.configurator.hassApiPassword }}
             - name: HC_HASS_API_PASSWORD
@@ -197,14 +189,6 @@ spec:
             - name: vscode
               containerPort: {{ .Values.vscode.service.port }}
               protocol: TCP
-          livenessProbe:
-            tcpSocket:
-              port: vscode
-            initialDelaySeconds: 30
-          readinessProbe:
-            tcpSocket:
-              port: vscode
-            initialDelaySeconds: 15
           env:
             {{- if .Values.vscode.password }}
             - name: PASSWORD
