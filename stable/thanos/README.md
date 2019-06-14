@@ -184,7 +184,7 @@ Parameter | Description | Default
 `ruleLayer.persistence.accessModes` | accessMode for PVC tempalte | `['ReadWriteOnce']`
 `ruleLayer.persistence.enabled` | Enables and disables persistance for rule Layer | `true`
 `ruleLayer.persistence.mountPath` | MountPath for persistance volume | `/thanos-rule-persistent-data/`
-`ruleLayer.persistence.storageClass` | Storageclass for PVC template | `standard`
+`ruleLayer.persistence.storageClassName` | Storageclass for PVC template | `standard`
 `ruleLayer.persistence.size` | size for PVC template | `50Gi`
 `ruleLayer.alerting` | Array of groups with alerting Rulesr | `{env: "test", app: "thanos", component: "Rulre"}`
 `ruleLayer.binaryArgs` | List of args that have to be passed to the `thanos Rulre` command | check out in `values.yaml`
