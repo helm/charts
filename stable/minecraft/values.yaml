@@ -105,6 +105,8 @@ minecraftServer:
   worldSaveName: world
   # If set, this URL will be downloaded at startup and used as a starting point
   downloadWorldUrl:
+  # force re-download of server file
+  forceReDownload: false
   # If set, the modpack at this URL will be downloaded at startup
   downloadModpackUrl:
   # If true, old versions of downloaded mods will be replaced with new ones from downloadModpackUrl
@@ -125,6 +127,10 @@ minecraftServer:
     # If you enable this, your server will be "published" to Gamespy
     enabled: false
     port: 25565
+
+## Additional minecraft container environment variables
+##
+extraEnv: {}
 
 persistence:
   ## minecraft data Persistent Volume Storage Class
