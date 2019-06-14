@@ -61,6 +61,10 @@ spec:
             - name: no_proxy
               value: {{ .Values.proxy.noProxy }}
           {{- end }}
+          {{- if .Values.timezone }}
+            - name: TZ
+              value: {{ .Values.timezone }}
+          {{- end }}
           volumeMounts:
             {{- if (and .Values.docker.enabled .Values.docker.socket) }}
             - mountPath: /host/var/run/docker.sock
