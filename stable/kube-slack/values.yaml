@@ -4,6 +4,8 @@ envVars:
   ## e.g. https://hooks.slack.com/services/Txxxxxxxx/Bxxxxxxxx/XXXXXXXXXXXXXXXXXXXXXXXX
   SLACK_URL: ""
   ## Override channel to send
+  SLACK_USERNAME: ""
+  ## Override username to send
   SLACK_CHANNEL: ""
   ## URL of HTTP proxy used to connect to Slack
   SLACK_PROXY: ""
