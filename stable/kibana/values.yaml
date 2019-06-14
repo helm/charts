@@ -239,38 +239,4 @@ elasticsearch:
     tag: "7.1.1"
   cluster:
     name: kibana
-    xpackEnable: false
-    # See README for proper configuration
-    env:
-      EXPECTED_MASTER_NODES: "1"
-      MINIMUM_MASTER_NODES: "1"
-      RECOVER_AFTER_MASTER_NODES: "1"
-      XPACK_MONITORING_ENABLED: false
-  client:
-    replicas: 1
-    # resources:
-    #   requests:
-    #     cpu: "25m"
-    #     memory: "512Mi"
-    #   limits:
-    #     cpu: "300m"
-    #     memory: "1024Mi"
-  data:
-    terminationGracePeriodSeconds: 60
-    replicas: 1
-    # resources:
-    #   requests:
-    #     cpu: "175m"
-    #     memory: "1536Mi"
-    #   limits:
-    #     cpu: "350m"
-    #     memory: "2048Mi"
-  master:
-    replicas: 1
-    # resources:
-    #   requests:
-    #     cpu: "25m"
-    #     memory: "512Mi"
-    #   limits:
-    #     cpu: "300m"
-    #     memory: "1024Mi"
+  
