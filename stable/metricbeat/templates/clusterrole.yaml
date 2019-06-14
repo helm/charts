@@ -9,6 +9,12 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 rules:
+{{- if .Values.rbac.pspEnabled }}
+- apiGroups:      ['extensions']
+  resources:      ['podsecuritypolicies']
+  verbs:          ['use']
+  resourceNames:  [{{ template "metricbeat.fullname" . }}]
+{{- end }}
 - apiGroups: [""]
   resources:
   - nodes

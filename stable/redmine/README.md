@@ -61,8 +61,8 @@ The following table lists the configurable parameters of the Redmine chart and t
 | `global.imagePullSecrets`           | Global Docker registry secret names as an array | `[]` (does not add image pull secrets to deployed pods) |
 | `image.registry`                    | Redmine image registry                     | `docker.io`                                             |
 | `image.repository`                  | Redmine image name                         | `bitnami/redmine`                                       |
-| `image.tag`                         | Redmine image tag                          | `{VERSION}`                                             |
-| `image.pullPolicy`                  | Image pull policy                          | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
+| `image.tag`                         | Redmine image tag                          | `{TAG_NAME}`                                            |
+| `image.pullPolicy`                  | Image pull policy                          | `IfNotPresent`                                          |
 | `image.pullSecrets`                 | Specify docker-registry secret names as an array                 | `[]` (does not add image pull secrets to deployed pods)   |
 | `redmineUsername`                   | User of the application                    | `user`                                                  |
 | `redminePassword`                   | Application password                       | _random 10 character long alphanumeric string_          |
@@ -100,6 +100,10 @@ The following table lists the configurable parameters of the Redmine chart and t
 | `ingress.secrets[0].name`           | TLS Secret Name                            | `nil`                                                   |
 | `ingress.secrets[0].certificate`    | TLS Secret Certificate                     | `nil`                                                   |
 | `ingress.secrets[0].key`            | TLS Secret Key                             | `nil`                                                   |
+| `nodeSelector`                      | Node labels for pod assignment             | `{}`                                                    |
+| `tolerations`                       | List of node taints to tolerate            | `{}`                                                    |
+| `affinity`                          | Map of node/pod affinities                 | `{}`                                                    |
+| `podAnnotations`                    | Pod annotations                            | `{}`                                                    |
 | `persistence.enabled`               | Enable persistence using PVC               | `true`                                                  |
 | `persistence.existingClaim`         | The name of an existing PVC                | `nil`                                                   |
 | `persistence.storageClass`          | PVC Storage Class                          | `nil` (uses alpha storage class annotation)             |
@@ -130,6 +134,12 @@ $ helm install --name my-release -f values.yaml stable/redmine
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+### [Rolling VS Immutable tags](https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/)
+
+It is strongly recommended to use immutable tags in a production environment. This ensures your deployment does not change automatically if the same tag is updated with a different image.
+
+Bitnami will release a new chart updating its containers if a new version of the main container, significant changes, or critical vulnerabilities exist.
 
 ## Replicas
 

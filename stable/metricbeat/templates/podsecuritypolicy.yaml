@@ -1,0 +1,31 @@
+{{- if .Values.rbac.pspEnabled }}
+apiVersion: extensions/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: {{ template "metricbeat.fullname" . }}
+  labels:
+    app: {{ template "metricbeat.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  privileged: false
+  defaultAddCapabilities:
+    - CHOWN
+  volumes:
+    - 'configMap'
+    - 'emptyDir'
+    - 'secret'
+  allowPrivilegeEscalation: false
+  hostNetwork: false
+  hostIPC: false
+  hostPID: false
+  runAsUser:
+    rule: 'RunAsAny'
+  seLinux:
+    rule: 'RunAsAny'
+  supplementalGroups:
+    rule: 'RunAsAny'
+  fsGroup:
+    rule: 'RunAsAny'
+{{- end }}

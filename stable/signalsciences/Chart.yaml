@@ -1,7 +1,8 @@
+apiVersion: v1
 name: signalsciences
 home: https://signalsciences.com
 icon: https://dashboard.signalsciences.net/static/images/logo-icon-color.svg
-version: 0.0.1
+version: 1.0.0
 appVersion: 3.12.1
 description: SignalSciences is a web application firewall. This chart is the installable agent.
 keywords:
@@ -13,3 +14,6 @@ keywords:
 - waf
 sources:
 - https://github.com/marccampbell/docker-sigsci
+maintainers:
+- name: cpanato
+  email: ctadeu@gmail.com

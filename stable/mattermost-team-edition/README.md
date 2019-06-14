@@ -1,4 +1,13 @@
-# Mattermost Team Edition
+# DEPRECATED - Mattermost Team Edition
+
+**This chart has been deprecated and moved to its new home:**
+
+- **GitHub repo:** https://github.com/mattermost/mattermost-helm
+- **Charts repo:** https://helm.mattermost.com
+
+```bash
+$ helm repo add mattermost https://helm.mattermost.com
+```
 
 [Mattermost](https://mattermost.com/) is a hybrid cloud enterprise messaging workspace that brings your messaging and tools together to get more done, faster.
 

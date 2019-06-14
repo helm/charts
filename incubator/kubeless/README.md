@@ -56,10 +56,11 @@ The following table lists the configurable parameters of the Kubeless chart and 
 | Parameter                                                         | Description                                | Default                                   |
 | ----------------------------------------------------------------- | ------------------------------------------ | ----------------------------------------- |
 | `rbac.create`                                                     | Create RBAC backed ServiceAccount          | `false`                                   |
+| `config.functionsNamespace`                                       | Functions namespace                        | ""                                        |
 | `config.builderImage`                                             | Function builder image                     | `kubeless/function-image-builder`         |
 | `config.builderImagePullSecret`                                   | Secret to pull builder image               | ""                                        |
-| `config.builderImage`                                             | Provision image                            | `kubeless/unzip`                          |
-| `config.builderImagePullSecret`                                   | Secret to pull provision image             | ""                                        |
+| `config.provisionImage`                                           | Provision image                            | `kubeless/unzip`                          |
+| `config.provisionImagePullSecret`                                 | Secret to pull provision image             | ""                                        |
 | `config.deploymentTemplate`                                       | Deployment template for functions          | `{}`                                      |
 | `config.enableBuildStep`                                          | Enable builder functionality               | `false`                                   |
 | `config.functionRegistryTLSVerify`                                | Enable TLS verification for image registry | `{}`                                      |

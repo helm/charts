@@ -20,8 +20,24 @@ spec:
         app: {{ template "redmine.fullname" . }}
         chart: {{ template "redmine.chart" . }}
         release: "{{ .Release.Name }}"
+      {{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+      {{- end }}
     spec:
 {{- include "redmine.imagePullSecrets" . | indent 6 }}
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      {{- end }}
       containers:
       - name: {{ template "redmine.fullname" . }}
         image: {{ template "redmine.image" . }}

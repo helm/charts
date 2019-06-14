@@ -21,6 +21,15 @@ serviceAccount:
 server:
   # server.enabled is the toggle to run GoCD Server. Change to false for Agent Only Deployment.
   enabled: true
+
+
+  # server.annotations is the annotations for the GoCD Server Deployment and Pod spec.
+  annotations:
+    deployment:
+      # iam.amazonaws.com/role: arn:aws:iam::xxx:role/my-custom-role
+    pod:
+      # iam.amazonaws.com/role: arn:aws:iam::xxx:role/my-custom-role
+
   # server.shouldPreconfigure is used to invoke a script to pre configure the elastic agent profile and the plugin settings in the GoCD server.
   # Note: If this value is set to true, then, the serviceAccount.name is configured for the GoCD server pod. The service account token is mounted as a secret and is used in the lifecycle hook.
   # Note: An attempt to preconfigure the GoCD server is made. There are cases where the pre-configuration can fail and the GoCD server starts with an empty config.
@@ -93,9 +102,9 @@ server:
     #  server.env.extraEnvVars is the list of environment variables passed to GoCD Server
     extraEnvVars:
       - name: GOCD_PLUGIN_INSTALL_kubernetes-elastic-agents
-        value: https://github.com/gocd/kubernetes-elastic-agents/releases/download/2.1.0-135/kubernetes-elastic-agent-2.1.0-135.jar
+        value: https://github.com/gocd/kubernetes-elastic-agents/releases/download/v3.0.0-156/kubernetes-elastic-agent-3.0.0-156.jar
       - name: GOCD_PLUGIN_INSTALL_docker-registry-artifact-plugin
-        value: https://github.com/gocd/docker-registry-artifact-plugin/releases/download/1.0.0-25/docker-registry-artifact-plugin-1.0.0-25.jar
+        value: https://github.com/gocd/docker-registry-artifact-plugin/releases/download/v1.0.1-92/docker-registry-artifact-plugin-1.0.1-92.jar
   service:
     # server.service.type is the GoCD Server service type
     type: "NodePort"
@@ -204,6 +213,13 @@ agent:
     # if reuseTopLevelServiceAccount is false, this field specifies the name of an existing service account to be associated with gocd agents
     # If field is empty, the service account "default" will be used.
     name:
+
+  # agent.annotations is the annotations for the GoCD Agent Deployment and Pod Spec
+  annotations:
+    deployment:
+      # iam.amazonaws.com/role: arn:aws:iam::xxx:role/my-custom-role
+    pod:
+      # iam.amazonaws.com/role: arn:aws:iam::xxx:role/my-custom-role
 
   # agent.replicaCount is the GoCD Agent replicas Count. Specify the number of GoCD agents to run
   replicaCount: 0

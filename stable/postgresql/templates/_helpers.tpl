@@ -220,7 +220,7 @@ Get the configuration ConfigMap name.
 */}}
 {{- define "postgresql.configurationCM" -}}
 {{- if .Values.configurationConfigMap -}}
-{{- printf "%s" .Values.configurationConfigMap -}}
+{{- printf "%s" (tpl .Values.configurationConfigMap $) -}}
 {{- else -}}
 {{- printf "%s-configuration" (include "postgresql.fullname" .) -}}
 {{- end -}}
@@ -231,7 +231,7 @@ Get the extended configuration ConfigMap name.
 */}}
 {{- define "postgresql.extendedConfigurationCM" -}}
 {{- if .Values.extendedConfConfigMap -}}
-{{- printf "%s" .Values.extendedConfConfigMap -}}
+{{- printf "%s" (tpl .Values.extendedConfConfigMap $) -}}
 {{- else -}}
 {{- printf "%s-extended-configuration" (include "postgresql.fullname" .) -}}
 {{- end -}}
@@ -242,7 +242,7 @@ Get the initialization scripts ConfigMap name.
 */}}
 {{- define "postgresql.initdbScriptsCM" -}}
 {{- if .Values.initdbScriptsConfigMap -}}
-{{- printf "%s" .Values.initdbScriptsConfigMap -}}
+{{- printf "%s" (tpl .Values.initdbScriptsConfigMap $) -}}
 {{- else -}}
 {{- printf "%s-init-scripts" (include "postgresql.fullname" .) -}}
 {{- end -}}
@@ -252,7 +252,7 @@ Get the initialization scripts ConfigMap name.
 Get the initialization scripts Secret name.
 */}}
 {{- define "postgresql.initdbScriptsSecret" -}}
-{{- printf "%s" .Values.initdbScriptsSecret -}}
+{{- printf "%s" (tpl .Values.initdbScriptsSecret $) -}}
 {{- end -}}
 
 {{/*
@@ -293,5 +293,20 @@ imagePullSecrets:
 {{- range .Values.volumePermissions.image.pullSecrets }}
   - name: {{ . }}
 {{- end }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Get the readiness probe command
+*/}}
+{{- define "postgresql.readinessProbeCommand" -}}
+- |
+{{- if (include "postgresql.database" .) }}
+  pg_isready -U {{ include "postgresql.username" . | quote }} -d {{ (include "postgresql.database" .) | quote }} -h 127.0.0.1 -p {{ template "postgresql.port" . }}
+{{- else }}
+  pg_isready -U {{ include "postgresql.username" . | quote }} -h 127.0.0.1 -p {{ template "postgresql.port" . }}
+{{- end }}
+{{- if contains "bitnami/" .Values.image.repository }}
+  [ -f /opt/bitnami/postgresql/tmp/.initialized ]
 {{- end -}}
 {{- end -}}

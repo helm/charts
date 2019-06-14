@@ -5,6 +5,22 @@
 replicaCount: 3
 daemonSet: false
 
+# Enable autoscaling using HorizontalPodAutoscaler
+# daemonSet: true, autoscaling will be disabled
+autoscaling:
+  enabled: false
+  minReplicas: 2
+  maxReplicas: 5
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: 60
+    - type: Resource
+      resource:
+        name: memory
+        targetAverageUtilization: 60
+
 # namespace:
   # name: default
 
@@ -20,8 +36,6 @@ env:
   # AMBASSADOR_DRAIN_TIME: 5
   # sets the number of seconds that Ambassador will wait for the old Envoy to clean up and exit on a restart
   # AMBASSADOR_SHUTDOWN_TIME: 10
-  # tells Ambassador to only use resources in the namespace set by namespace.name
-  # AMBASSADOR_SINGLE_NAMESPACE: true
   # labels Ambassador with an ID to allow for configuring multiple Ambassadors in a cluster
   # AMBASSADOR_ID: default
 
@@ -32,11 +46,13 @@ securityContext:
 
 image:
   repository: quay.io/datawire/ambassador
-  tag: 0.52.0
+  tag: 0.72.0
   pullPolicy: IfNotPresent
 
 nameOverride: ""
 fullnameOverride: ""
+dnsPolicy: "ClusterFirst"
+hostNetwork: false
 
 service:
   type: LoadBalancer
@@ -82,6 +98,10 @@ rbac:
   create: true
   namespaced: false
 
+scope:
+  # tells Ambassador to only use resources in the namespace or namespace set by namespace.name
+  singleNamespace: false
+
 serviceAccount:
   # Specifies whether a service account should be created
   create: true
@@ -89,9 +109,14 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name:
 
+initContainers: []
+
 volumes: []
 
 volumeMounts: []
+
+podLabels:
+  {}
 
 podAnnotations:
   {}
@@ -121,6 +146,15 @@ prometheusExporter:
   repository: prom/statsd-exporter
   tag: v0.8.1
   pullPolicy: IfNotPresent
+  resources: {}
+  # If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  #   limits:
+  #     cpu: 100m
+  #     memory: 256Mi
+  #   requests:
+  #     cpu: 50m
+  #     memory: 128Mi
   # You can configure the statsd exporter to modify the behavior of mappings and other features.
   # See documentation: https://github.com/prometheus/statsd_exporter/tree/v0.8.1#metric-mapping-and-configuration
   # Uncomment the following line if you wish to specify a custom configuration:
@@ -134,3 +168,21 @@ prometheusExporter:
   #       cluster_name: "$1"
 
 ambassadorConfig: ""
+
+pro:
+  enabled: false
+  image:
+    repository: quay.io/datawire/ambassador_pro
+    tag: amb-sidecar-0.4.0
+  ports:
+    auth: 8500
+    ratelimit: 8501
+    ratelimitDebug: 8502
+  logLevel: info
+  licenseKey:
+    value:
+    secret: false
+
+crds:
+  create: true
+  keep: true
