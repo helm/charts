@@ -85,7 +85,7 @@ storeLayer:
   persistence:
     enabled: true
     size: 50Gi
-    storageClass: ''
+    storageClassName: ''
     mountPath: /thanos-store-persistent-data/
     accessModes:
     - ReadWriteOnce
@@ -145,7 +145,7 @@ compactLayer:
   persistence:
     enabled: true
     size: 50Gi
-    storageClass: ''
+    storageClassName: ''
     mountPath: /thanos-compact-persistent-data/
     accessModes:
     - ReadWriteOnce
@@ -196,7 +196,7 @@ ruleLayer:
   persistence:
     enabled: true
     size: 50Gi
-    storageClass: ''
+    storageClassName: ''
     mountPath: /thanos-rule-persistent-data/
     accessModes:
     - ReadWriteOnce

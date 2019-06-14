@@ -12,7 +12,7 @@ spec:
   - metadata:
       name: persistent-data
       labels: {{- include "thanos.store.matchLabels" $ | nindent 8 }}
-    storageClass: {{ .persistence.storageClass | quote }}
+    storageClassName: {{ .persistence.storageClassName | quote }}
     spec:
       accessModes:
       {{- range .persistence.accessModes }}
