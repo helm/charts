@@ -10,15 +10,21 @@ metadata:
     chart: {{ template "buzzfeed-sso.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+{{- range $key, $value := .Values.ingress.extraLabels }}
+    {{ $key }}: {{ $value }}
+{{- end }}
 {{- with .Values.ingress.annotations }}
   annotations:
 {{ toYaml . | indent 4 }}
 {{- end }}
 spec:
+{{- if or .Values.auth.tls .Values.ingress.tls }}
   tls:
+  {{- if .Values.auth.tls }}
     - hosts:
         - {{ $authDomain }}
       secretName: {{ .Values.auth.tls.secretName -}}
+  {{- end }}
   {{- range .Values.ingress.tls }}
     - hosts:
       {{- range .hosts }}
@@ -26,6 +32,7 @@ spec:
       {{- end }}
       secretName: {{ .secretName }}
   {{- end }}
+{{- end }}
   rules:
     # Upstreams that need SSO authentication
   {{- range .Values.ingress.hosts }}

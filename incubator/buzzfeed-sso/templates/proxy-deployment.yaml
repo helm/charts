@@ -75,10 +75,13 @@ spec:
             - name: COOKIE_SECURE
               value: "true"
             - name: CLUSTER
-              value: {{ .Values.proxy.cluster | quote }}
+              value: {{ .Values.cluster | quote }}
           {{- if .Values.proxy.providerUrlInternal }}
             - name: PROVIDER_URL_INTERNAL
               value: {{ .Values.proxy.providerUrlInternal | quote }}
+          {{- end }}
+          {{- if .Values.proxy.extraEnv }}
+{{ toYaml .Values.proxy.extraEnv | indent 12 }}
           {{- end }}
           readinessProbe:
             httpGet:
