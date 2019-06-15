@@ -13,7 +13,7 @@ spec:
   - from:
     - podSelector:
         matchLabels:
-          app: forseti-scheduler
+          app: forseti-orchestrator
 {{ range $cidr := .Values.netowrkPolicyIngressCidr }}
     - ipBlock:
         cidr: {{ $cidr }}

@@ -1,4 +1,4 @@
-{{ if .Values.schedulerDeploy }}
+{{ if .Values.orchestratorDeploy }}
 # Copyright 2019 The Forseti Security Authors. All rights reserved.
 #
 # Licensed under the Apache License, Versisn 2.0 (the "License");
@@ -16,10 +16,10 @@
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: forseti-scheduler
+  name: forseti-orchestrator
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
-    app: forseti-scheduler
+    app: forseti-orchestrator
 spec:
   schedule: "{{ .Values.serverSchedule }}"
   jobTemplate:
@@ -27,12 +27,12 @@ spec:
       template:
         metadata:
           labels:
-            app: forseti-scheduler
+            app: forseti-orchestrator
             chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
         spec:
           containers:
-          - name: forseti-scheduler
-            image: "{{ .Values.schedulerImage }}"
+          - name: forseti-orchestrator
+            image: "{{ .Values.orchestratorImage }}"
             imagePullPolicy: Always
             args:
             - --run_client
@@ -48,7 +48,7 @@ spec:
           volumes:
           - name: google-cloud-key
             secret:
-              secretName: scheduler-credentials
+              secretName: orchestrator-credentials
             terminationMessagePath: /dev/termination-log
             terminationMessagePolicy: File
           restartPolicy: Never

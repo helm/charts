@@ -1,12 +1,12 @@
-{{ if  (.Values.networkPolicyEnable) and (.Values.schedulerDeploy) }}
+{{ if  (.Values.networkPolicyEnable) and (.Values.orchestratorDeploy) }}
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: forseti-scheduler-allow-egress
+  name: forseti-orchestrator-allow-egress
 spec:
   podSelector:
     matchLabels:
-      app: forseti-scheduler
+      app: forseti-orchestrator
   policyTypes:
   - Egress
   egress:

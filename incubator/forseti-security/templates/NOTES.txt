@@ -7,7 +7,7 @@ instance.  Please provide the following:
                         of \"project:location:cloud-sql-instance-name\"
 {{- end -}}
 
-{{- if not .Values.schedulerKeyContents }}
+{{- if not .Values.orchestratorKeyContents }}
 
 It looks like you are missing IAM Service Account Key for the 
 Forseti Client. This can be created by executing the following:
@@ -17,7 +17,7 @@ Forseti Client. This can be created by executing the following:
 
     2. Run Helm upgrade or install feeding in the base64 encoded contents of the key file:
 
-        --set-string schedulerKeyContents="$(cat forseti-client.json | base64 - -w 0)" 
+        --set-string orchestratorKeyContents="$(cat forseti-client.json | base64 - -w 0)" 
 
 {{- end -}}
 {{- if not .Values.serverBucket }}

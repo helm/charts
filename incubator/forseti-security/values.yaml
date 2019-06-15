@@ -18,12 +18,12 @@ cloudsqlConnection: ""
 # Not implemented in Forseti
 cloudsqlPrivateIp: ""
 
-# The container image used by the Forseti Scheduler
-schedulerImage: "gcr.io/forseti-security-containers/forseti:latest"
+# The container image used by the Forseti Orchestrator
+orchestratorImage: "gcr.io/forseti-security-containers/forseti:latest"
 
-schedulerDeploy: true
+orchestratorDeploy: true
 
-schedulerKeyContents: ""
+orchestratorKeyContents: ""
 
 # The container image used by the server
 serverImage: "gcr.io/forseti-security-containers/forseti:latest"
