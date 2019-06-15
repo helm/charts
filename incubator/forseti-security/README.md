@@ -29,6 +29,7 @@ helm install --name forseti  \
              incubator/forseti-security
 ```
 Note that certain values are required.  See the [configuration](#configuration) for details.
+
 ### Upgrading
 
 The forseti-security Helm chart can be easily upgraded via the ```helm upgrade``` command.  For example:
@@ -66,11 +67,11 @@ See the [All configuration options](#all-configuration-options) section to disco
 
 Optionally, the forseti-security helm chart can be deployed with a [Kubernetes Pod NetworkPolicy](https://kubernetes.io/docs/concepts/services-networking/network-policies/).  NetworkPolicies provide controls over how pods communicate with one another.  In GKE, [network policy enforcement](https://cloud.google.com/kubernetes-engine/docs/how-to/network-policy#using_network_policy_enforcement) must be enabled for Pod NetworkPolicies to take effect.
 
-In this implementation, the NetworkPolicy allows forseti-orchestrator to communicate the forseti-server and only the forseti-server.  It also for the forseti-server to receive traffic from the forseti-orchestrator and only the forseti-orchestrator.  However, if client CLI access to the server from outside the Kubernetes cluster, then the **netowrkPolicyIngressCidr** can be defined.  Each item in this list is a CIDR range to nicelist.
+In this implementation, the NetworkPolicy allows forseti-orchestrator to communicate the forseti-server and only the forseti-server.  It also for the forseti-server to receive traffic from the forseti-orchestrator and only the forseti-orchestrator.  However, if client CLI access to the server from outside the Kubernetes cluster, then the **networkPolicyIngressCidr** can be defined.  Each item in this list is a CIDR range to nicelist.
 
 ![Forseti Pod NetworkPolicy](images/forseti_network_policy.png)
 
-## All configuration options
+## All Configuration Options
 
 The following table lists the configurable parameters of the Forseti Security chart and their default values. Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
