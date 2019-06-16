@@ -48,7 +48,7 @@ spec:
     - host: {{ $authDomain }}
       http:
         paths:
-          - path: /
+          - path: /*
             backend:
               serviceName: {{ $fullName }}-auth
               servicePort: http
