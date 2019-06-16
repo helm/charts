@@ -22,7 +22,7 @@ spec:
     path: {{ .Values.master.ingress.path }}{{ .Values.master.prometheus.scrapeEndpoint }}
     {{ else -}}
     path: {{ .Values.master.prometheus.scrapeEndpoint }}
-    {{ end-}}
+    {{ end -}}
   jobLabel: {{ template "jenkins.fullname" . }}
   namespaceSelector:
     matchNames:
