@@ -321,6 +321,9 @@ master:
     enabled: false
     # Additional labels to add to the ServiceMonitor object
     serviceMonitorAdditionalLabels: {}
+    # This is the default namespace where prometheus will pick up the ServiceMonitor.
+    # If prometheus was configured to scan additional namespaces, change it to match the setup.
+    # serviceMonitorNameSpace: monitoring
     scrapeInterval: 60s
     # This is the default endpoint used by the prometheus plugin
     scrapeEndpoint: /prometheus
