@@ -92,7 +92,7 @@ cloudsqlproxy:
   enabled: false
   image:
     repo: "gcr.io/cloudsql-docker/gce-proxy"
-    tag: "1.11"
+    tag: "1.14"
     pullPolicy: "IfNotPresent"
   instanceConnectionName: "project:us-central1:dbname"
   port: "3306"
