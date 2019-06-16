@@ -1,14 +1,35 @@
 ## Environment values for the deployment
 envVars:
-  ## URL of your Incoming Webhook in Slack:
+  ## URL of your Incoming Webhook in Slack
+  ## e.g. https://hooks.slack.com/services/Txxxxxxxx/Bxxxxxxxx/XXXXXXXXXXXXXXXXXXXXXXXX
   SLACK_URL: ""
+  ## Override channel to send
+  SLACK_USERNAME: ""
+  ## Override username to send
+  SLACK_CHANNEL: ""
+  ## URL of HTTP proxy used to connect to Slack
+  SLACK_PROXY: ""
   ## Time to wait after pod becomes not ready before notifying
   NOT_READY_MIN_TIME: "60000"  # in ms
+  ## Set to false to disable alert on pod recovery
+  RECOVERY_ALERT: "true"
+  ## How often to update in milliseconds
+  TICK_RATE: "15000"
+  ## Repeat notification after this many milliseconds has passed after status returned to normal
+  FLOOD_EXPIRE: "60000"
+  ## Enable/disable metric alerting on cpu
+  METRICS_CPU: "true"
+  ## Enable/disable metric alerting on memory
+  METRICS_MEMORY: "true"
+  ## Set percentage threshold on metric alerts
+  METRICS_PERCENT: "80"
+  ##  If no metrics limit defined, alert if the pod utilization is more than the resource request amount
+  METRICS_REQUESTS: "false"
 
 ## Configuration for the deployment:
 image:
   repository: willwill/kube-slack
-  tag: v3.6.0
+  tag: v4.2.0
   pullPolicy: IfNotPresent
 
 resources: {}
@@ -35,3 +56,7 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+annotations: {}
+  # Specify which annotations must be added to kube-slack pods
+  # fluentbit.io/exclude: true

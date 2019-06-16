@@ -6,6 +6,7 @@ rbac:
 serviceAccount:
   create: true
   name:
+  nameTest:
 
 replicas: 1
 
@@ -24,14 +25,15 @@ livenessProbe:
   timeoutSeconds: 30
   failureThreshold: 10
 
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName: "default-scheduler"
+
 image:
   repository: grafana/grafana
-  tag: 6.1.4
+  tag: 6.2.2
   pullPolicy: IfNotPresent
-
-testFramework:
-  image: "dduportal/bats"
-  tag: "0.4.0"
 
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
@@ -39,6 +41,10 @@ testFramework:
   ##
   # pullSecrets:
   #   - myRegistrKeySecretName
+
+testFramework:
+  image: "dduportal/bats"
+  tag: "0.4.0"
 
 securityContext:
   runAsUser: 472

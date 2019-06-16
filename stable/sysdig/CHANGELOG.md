@@ -3,6 +3,39 @@
 This file documents all notable changes to Sysdig Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+
+## v1.4.9
+
+### Minor Changes
+
+* Use the latest image from Agent (0.90.2) by default.
+
+## v1.4.8
+
+### Minor Changes
+
+* Add a volume with the os release information.
+* Use the latest image from Agent (0.90.1) by default.
+
+## v1.4.7
+
+### Minor Changes
+
+* Add apiVersion to Chart.yaml.
+
+## v1.4.6
+
+### Minor Changes
+
+* Dont allow to change the value of `new_k8s` flag.
+
+## v1.4.5
+
+### Minor Changes
+
+* Enable `new_k8s` flag by default.  This allows kube state metrics to be
+  automatically detected, monitored, and displayed in Sysdig Monitor.
+
 ## v1.4.4
 
 ### Minor Changes

@@ -4,15 +4,13 @@ kind: ServiceMonitor
 metadata:
   name: {{ template "kube-state-metrics.fullname" . }}
   labels:
-    name: {{ template "kube-state-metrics.fullname" . }}
-    labels:
-      app: {{ template "kube-state-metrics.name" . }}
-      chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-      release: "{{ .Release.Name }}"
-      heritage: "{{ .Release.Service }}"
-      {{- if .Values.prometheus.monitor.additionalLabels }}
+    app: {{ template "kube-state-metrics.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+    {{- if .Values.prometheus.monitor.additionalLabels }}
 {{ toYaml .Values.prometheus.monitor.additionalLabels | indent 4 }}
-      {{- end }}
+    {{- end }}
 spec:
   selector:
     matchLabels:

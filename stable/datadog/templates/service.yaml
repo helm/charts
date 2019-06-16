@@ -10,7 +10,7 @@ metadata:
     heritage: {{ .Release.Service | quote }}
   {{- if .Values.deployment.service.annotations }}
   annotations:
-  {{ toYaml .Values.deployment.service.annotations | indent 4 }}
+{{ toYaml .Values.deployment.service.annotations | indent 4 }}
   {{- end }}
 spec:
   type: {{ .Values.deployment.service.type }}
