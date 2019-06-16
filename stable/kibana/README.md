@@ -141,7 +141,7 @@ $ helm install stable/kibana --name my-release -f values.yaml
 
 ## Upgrading
 
-### To 3.1.0
+### To 3.0.1
 
 Elasticsearch url/hosts now only managed via ENV_VAR by default. There is no longer a default value within `.Values.files.kibana.yml`.
 
