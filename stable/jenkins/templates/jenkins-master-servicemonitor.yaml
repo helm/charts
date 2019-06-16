@@ -18,7 +18,11 @@ spec:
   endpoints:
   - interval: {{ .Values.master.prometheus.scrapeInterval }}
     port: http
+    {{- if .Values.master.ingress.path }}
+    path: {{ .Values.master.ingress.path }}{{ .Values.master.prometheus.scrapeEndpoint }}
+    {{ else -}}
     path: {{ .Values.master.prometheus.scrapeEndpoint }}
+    {{ end-}}
   jobLabel: {{ template "jenkins.fullname" . }}
   namespaceSelector:
     matchNames:
