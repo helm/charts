@@ -52,6 +52,9 @@ tolerations: []
 
 affinity: {}
 
+# Reference to a Secret object with environment variables
+# envFromSecretRef: 'my-secret-ref'
+
 config:
   basePath: '/'
   restHistorySize: 50
