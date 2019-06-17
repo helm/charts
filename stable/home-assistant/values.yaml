@@ -95,6 +95,10 @@ git:
   syncPath: /config
   keyPath: /root/.ssh
 
+zwave:
+  enabled: false
+  device: ttyACM0
+
 configurator:
   enabled: false
 
