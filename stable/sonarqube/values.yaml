@@ -131,12 +131,12 @@ plugins:
   # We allow the plugins init container to have a separate resources declaration because
   # the initContainer does not take as much resources.
 
-# A custom sonar.properties file can be provided using a multiline YAML string.
+# A custom sonar.properties file can be provided via dictionary.
 # For example:
-# sonarProperties: |
-#   sonar.forceAuthentication=true
-#   sonar.security.realm=LDAP
-#   ldap.url=ldaps://organization.com
+# sonarProperties:
+#   sonar.forceAuthentication: true
+#   sonar.security.realm: LDAP
+#   ldap.url: ldaps://organization.com
 
 # Kubernetes secret that contains the encryption key for the sonarqube instance.
 # The secret must contain the key 'sonar-secret.txt'.
