@@ -10,7 +10,10 @@ serviceAccount:
 
 replicas: 1
 
-deploymentStrategy: RollingUpdate
+## See `kubectl explain deployment.spec.strategy` for more
+deploymentStrategy:
+  type: RollingUpdate
+  rollingUpdate: null
 
 readinessProbe:
   httpGet:
