@@ -1,3 +1,4 @@
+# clusterName: 
 image:
   repository: sorintlab/stolon
   tag: v0.13.0-pg10

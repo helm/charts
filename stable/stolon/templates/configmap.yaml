@@ -19,7 +19,7 @@ data:
 
     echo "keeper [${STKEEPER_UID}] is failing"
     stolonctl \
-      --cluster-name={{ template "stolon.fullname" . }} \
+      --cluster-name={{ template "stolon.clusterName" . }} \
       --store-backend={{ .Values.store.backend }} \
       {{- if eq .Values.store.backend "kubernetes" }}
       --kube-resource-kind={{ .Values.store.kubeResourceKind }} \
