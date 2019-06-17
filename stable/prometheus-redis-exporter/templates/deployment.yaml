@@ -41,7 +41,7 @@ spec:
               containerPort: 9121
           env:
             - name: REDIS_ADDR
-              value: {{ .Values.redisAddress }}
+              value: {{ join "," .Values.redisAddress }}
 {{- if .Values.script }}
             - name: REDIS_EXPORTER_SCRIPT
               value: /script/script.lua

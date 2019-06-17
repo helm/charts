@@ -1,0 +1,21 @@
+config:
+  policy:
+    - from: httpbin.corp.pomerium.io
+      to: http://httpbin
+      allowed_domains:
+      - pomerium.io
+    - from: external-httpbin.corp.pomerium.io
+      to: httpbin.org
+      allowed_domains:
+      - gmail.com
+    - from: weirdlyssl.corp.pomerium.io
+      to: http://neverssl.com
+      allowed_users:
+      - bdd@pomerium.io
+      allowed_groups:
+      - admins
+      - developers
+    - from: hello.corp.pomerium.io
+      to: http://hello:8080
+      allowed_groups:
+      - admins

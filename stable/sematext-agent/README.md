@@ -17,7 +17,7 @@ To install the chart run the following command:
 
 ```bash
 $ helm install --name release_name \
-    --set containerToken=YOUR_CONTAINER_TOKEN,logseneToken=YOUR_LOGS_TOKEN stable/sematext-agent
+    --set containerToken=YOUR_CONTAINER_TOKEN,logsToken=YOUR_LOGS_TOKEN stable/sematext-agent
 ```
 
 After a few minutes, you should see logs, metrics, and events reported in Sematext web UI.
@@ -41,7 +41,7 @@ The following table lists the configuration parameters of the `sematext-agent` c
 |             Parameter            |            Description            |                  Default                  |
 |----------------------------------|-----------------------------------|-------------------------------------------|
 | `containerToken`                 | Sematext Container token          | `Nil` Provide your Container token        |
-| `logseneToken`                   | Sematext Logsene token            | `Nil` Provide your Logsene token          |
+| `logsToken`                      | Sematext Logs token               | `Nil` Provide your Logs token          |
 | `region`                         | Sematext region                   | `US` Sematext US or EU region             |
 | `agent.image.repository`         | The image repository              | `sematext/agent`                          |
 | `agent.image.tag`                | The image tag                     | `latest`                                  |
@@ -55,7 +55,7 @@ The following table lists the configuration parameters of the `sematext-agent` c
 | `logagent.resources`             | Logagent resources                | `{}`                                      |
 | `logagent.extraHostVolumeMounts` | Extra mounts                      | `{}`                                      |
 | `customUrl.serverBaseUrl`        | Custom Base URL                   | `Nil`                                     |
-| `customUrl.logsReceiverUrl`      | Custom Logsene receiver URL       | `Nil`                                     |
+| `customUrl.logsReceiverUrl`      | Custom Logs receiver URL          | `Nil`                                     |
 | `customUrl.eventsRecieverUrl`    | Custom Event receiver URL         | `Nil`                                     |
 | `serviceAccount.create`          | Create a service account          | `true`                                    |
 | `serviceAccount.name`            | Service account name              | `Nil` Defaults to chart name              |
