@@ -57,7 +57,7 @@ The following table lists the configurable parameters of the Vault chart and the
 | `vault.extraContainers`           | Sidecar containers to add to the vault pod | `{}`                              |
 | `vault.extraInitContainers`       | Init containers to be added to the vault pod | `{}`                            |
 | `vault.extraVolumes`              | Additional volumes to the controller pod | `{}`                                |
-| `vault.customSecrets`             | Custom secrets available to Vault        | `[]`                                |
+| `vault.extraVolumeMounts`         | Extra volumes to mount to the controller pod | `{}`                                |
 | `vault.existingConfigName`        | Location of existing Vault configuration | nil                                 |
 | `vault.config`                    | Vault configuration                      | No default backend                  |
 | `replicaCount`                    | k8s replicas                             | `3`                                 |
@@ -75,12 +75,17 @@ The following table lists the configurable parameters of the Vault chart and the
 | `labels`                          | Extra labels for deployment              | `{}`                                |
 | `ingress.labels`                  | Labels for ingress                       | `{}`                                |
 | `podAnnotations`                  | Annotations for pods                     | `{}`                                |
+| `priorityClassName`               | Priority class name for pods             | `""`                                |
+| `minReadySeconds`                 | Minimum number of seconds that newly created replicas must be ready without any containers crashing | `0`                                |
+| `podLabels`                       | Extra labels for pods                    | `{}`                                |
+| `serviceAccount.create`           | Specifies whether a ServiceAccount should be created | `false`                 |
 | `consulAgent.join`                | If set, start start a consul agent       | `nil`                               |
 | `consulAgent.repository`          | Container image for consul agent         | `consul`                            |
 | `consulAgent.tag`                 | Container image tag for consul agent     | `1.4.0`                             |
 | `consulAgent.pullPolicy`          | Container pull policy for consul agent   | `IfNotPresent`                      |
 | `consulAgent.gossipKeySecretName` | k8s secret containing gossip key         | `nil` (see values.yaml for details) |
 | `consulAgent.HttpPort`            | HTTP port for consul agent API           | `8500`                              |
+| `consulAgent.resources`           | Container resources for consul agent     | `nil`                               |
 | `vaultExporter.enabled`           | Enable or disable vault exporter         | `false`                             |
 | `vaultExporter.repository`        | Container image for vault exporter       | `grapeshot/vault_exporter`          |
 | `vaultExporter.tag`               | Container image tag for vault exporter   | `v0.1.2`                            |
@@ -132,4 +137,30 @@ port-forward`:
 $ kubectl port-forward vault-pod 8200
 $ export VAULT_ADDR=http://127.0.0.1:8200
 $ vault status
+```
+
+## Migrating Custom Secrets
+
+Previous versions of this chart had a configuration option `vault.customSecrets`.
+Custom secrets should now be expressed with `vault.extraVolumeMounts`. For example:
+
+```yaml
+vault:
+  customSecrets:
+    - secretName: vault-tls
+      mountPath: /vault/tls
+```
+
+Would be expressed as:
+
+```yaml
+vault:
+  extraVolumes:
+    - name: vault-tls
+      secret:
+        secretName: vault-tls
+  extraVolumeMounts:
+    - name: vault-tls
+      mountPath: /vault/tls
+      readOnly: true
 ```

@@ -2,7 +2,7 @@
 replicaCount: 1
 image:
   repository: hjacobs/kube-ops-view
-  tag: 0.9
+  tag: 0.11
   pullPolicy: IfNotPresent
 service:
   # annotations:
@@ -39,6 +39,7 @@ rbac:
 ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
 podLabels: {}
 affinity: {}
+tolerations: []
 
 # Add securityContext
 securityContext: {}

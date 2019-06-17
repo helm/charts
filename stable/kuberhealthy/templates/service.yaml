@@ -5,6 +5,12 @@ metadata:
     app: {{ template "kuberhealthy.name" . }}
     release: {{ .Release.Name }}
   name: {{ template "kuberhealthy.name" . }}
+  {{- if .Values.service.annotations }}
+  annotations:
+  {{- range $key, $value := .Values.service.annotations }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
+  {{- end }}
 spec:
   type: {{ .Values.service.type }}
   ports:

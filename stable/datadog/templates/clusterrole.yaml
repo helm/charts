@@ -63,12 +63,22 @@ rules:
   verbs:
   - get
 {{- end }}
+- nonResourceURLs:
+  - "/metrics"
+  verbs:
+  - get
 - apiGroups:  # Kubelet connectivity
   - ""
   resources:
   - nodes/metrics
   - nodes/spec
   - nodes/proxy
+  verbs:
+  - get
+- apiGroups:  # leader election check
+  - ""
+  resources:
+  - endpoints
   verbs:
   - get
 {{- end -}}
