@@ -95,6 +95,11 @@ spec:
         - name: couchdb-statefulset-assembler
           image: "{{ .Values.helperImage.repository }}:{{ .Values.helperImage.tag }}"
           imagePullPolicy: {{ .Values.helperImage.pullPolicy }}
+{{- if .Values.enableSearch }}
+        - name: clouseau
+          image: "{{ .Values.searchImage.repository }}:{{ .Values.searchImage.tag }}"
+          imagePullPolicy: {{ .Values.searchImage.pullPolicy }}
+{{- end }}
 {{- if not .Values.allowAdminParty }}
           env:
             - name: COUCHDB_USER
