@@ -1,0 +1,83 @@
+[
+  {
+    "id": "jwt-rule",
+    "upstream": {
+      "url": "https://httpbin.org/anything"
+    },
+    "match": {
+      "url": "http://<[^/]+>/authenticator/noop/authorizer/allow/mutator/noop",
+      "methods": [
+        "GET",
+        "POST",
+        "PUT",
+        "DELETE",
+        "PATCH"
+      ]
+    },
+    "authenticators": [
+      {
+        "handler": "noop"
+      }
+    ],
+    "authorizer": {
+      "handler": "allow"
+    },
+    "mutator": {
+      "handler": "noop"
+    }
+  },
+  {
+    "id": "jwt-rule",
+    "upstream": {
+      "url": "https://httpbin.org/anything"
+    },
+    "match": {
+      "url": "http://<[^/]+>/authenticator/anonymous/authorizer/allow/mutator/header",
+      "methods": [
+        "GET",
+        "POST",
+        "PUT",
+        "DELETE",
+        "PATCH"
+      ]
+    },
+    "authenticators": [
+      {
+        "handler": "anonymous"
+      }
+    ],
+    "authorizer": {
+      "handler": "allow"
+    },
+    "mutator": {
+      "handler": "header"
+    }
+  },
+  {
+    "id": "jwt-rule",
+    "upstream": {
+      "url": "https://httpbin.org/anything"
+    },
+    "match": {
+      "url": "http://<[^/]+>/authenticator/anonymous/authorizer/allow/mutator/id_token",
+      "methods": [
+        "GET",
+        "POST",
+        "PUT",
+        "DELETE",
+        "PATCH"
+      ]
+    },
+    "authenticators": [
+      {
+        "handler": "anonymous"
+      }
+    ],
+    "authorizer": {
+      "handler": "allow"
+    },
+    "mutator": {
+      "handler": "id_token"
+    }
+  }
+]

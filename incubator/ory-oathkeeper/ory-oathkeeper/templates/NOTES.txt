@@ -1,0 +1,63 @@
+The ORY Oathkeeper HTTP Reverse Proxy is available via:
+{{- if .Values.ingress.proxy.enabled }}
+{{- range $host := .Values.ingress.proxy.hosts }}
+  {{- range .paths }}
+  http{{ if $.Values.ingress.proxy.tls }}s{{ end }}://{{ $host.host }}{{ . }}
+  {{- end }}
+{{- end }}
+{{- else if contains "NodePort" .Values.service.proxy.type }}
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "ory-oathkeeper.fullname" . }})
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo http://$NODE_IP:$NODE_PORT
+  curl -X GET http://$NODE_IP:$NODE_PORT/authenticator/noop/authorizer/allow/mutator/noop
+  curl -X GET http://$NODE_IP:$NODE_PORT/authenticator/anonymous/authorizer/allow/mutator/header
+  curl -X GET http://$NODE_IP:$NODE_PORT/authenticator/anonymous/authorizer/allow/mutator/id_token
+{{- else if contains "LoadBalancer" .Values.service.proxy.type }}
+     NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+           You can watch the status of by running 'kubectl get --namespace {{ .Release.Namespace }} svc -w {{ include "ory-oathkeeper.fullname" . }}'
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "ory-oathkeeper.fullname" . }}-proxy -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  echo http://$SERVICE_IP:{{ .Values.service.proxy.port }}
+  curl -X GET http://$SERVICE_IP:{{ .Values.service.proxy.port }}/authenticator/noop/authorizer/allow/mutator/noop
+  curl -X GET http://$SERVICE_IP:{{ .Values.service.proxy.port }}/authenticator/anonymous/authorizer/allow/mutator/header
+  curl -X GET http://$SERVICE_IP:{{ .Values.service.proxy.port }}/authenticator/anonymous/authorizer/allow/mutator/id_token
+{{- else if contains "ClusterIP" .Values.service.proxy.type }}
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ include "ory-oathkeeper.name" . }},app.kubernetes.io/instance={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
+  echo "Visit http://127.0.0.1:{{ .Values.service.proxy.port }} to use your application"
+  kubectl port-forward $POD_NAME {{ .Values.service.proxy.port }}:{{ .Values.oathkeeper.config.serve.proxy.port }}
+  {{- if .Values.demo }}
+  curl -X GET http://127.0.0.1:{{ .Values.service.proxy.port }}/authenticator/noop/authorizer/allow/mutator/noop
+  curl -X GET http://127.0.0.1:{{ .Values.service.proxy.port }}/authenticator/anonymous/authorizer/allow/mutator/header
+  curl -X GET http://127.0.0.1:{{ .Values.service.proxy.port }}/authenticator/anonymous/authorizer/allow/mutator/id_token
+  {{- else }}
+  # The following request will probably fail with a 404. If you have rules configured, append them to the path:
+  curl -X GET http://127.0.0.1:{{ .Values.service.proxy.port }}/
+  {{- end }}
+{{- end }}
+
+The ORY Oathkeeper HTTP API is available via:
+{{- if .Values.ingress.api.enabled }}
+{{- range $host := .Values.ingress.api.hosts }}
+  {{- range .paths }}
+  http{{ if $.Values.ingress.api.tls }}s{{ end }}://{{ $host.host }}{{ . }}
+  {{- end }}
+{{- end }}
+{{- else if contains "NodePort" .Values.service.api.type }}
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "ory-oathkeeper.fullname" . }})
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo http://$NODE_IP:$NODE_PORT
+  curl -X GET http://$NODE_IP:$NODE_PORT/health/alive
+  curl -X GET http://$NODE_IP:$NODE_PORT/rules
+{{- else if contains "LoadBalancer" .Values.service.api.type }}
+     NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+           You can watch the status of by running 'kubectl get --namespace {{ .Release.Namespace }} svc -w {{ include "ory-oathkeeper.fullname" . }}'
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "ory-oathkeeper.fullname" . }}-api -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  echo http://$SERVICE_IP:{{ .Values.service.api.port }}
+  curl -X GET http://$SERVICE_IP:{{ .Values.service.api.port }}/health/alive
+  curl -X GET http://$SERVICE_IP:{{ .Values.service.api.port }}/rules
+{{- else if contains "ClusterIP" .Values.service.api.type }}
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ include "ory-oathkeeper.name" . }},app.kubernetes.io/instance={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
+  echo "Visit http://127.0.0.1:{{ .Values.service.api.port }} to use your application"
+  kubectl port-forward $POD_NAME {{ .Values.service.api.port }}:{{ .Values.oathkeeper.config.serve.api.port }}
+  curl -X GET http://127.0.0.1:{{ .Values.service.api.port }}/health/alive
+  curl -X GET http://127.0.0.1:{{ .Values.service.api.port }}/rules
+{{- end }}

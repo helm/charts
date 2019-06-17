@@ -1,0 +1,59 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "ory-oathkeeper.fullname" . }}
+  labels:
+{{ include "ory-oathkeeper.labels" . | indent 4 }}
+data:
+{{- if .Values.oathkeeper.accessRules}}
+  "access-rules.json": |
+    {{- .Values.oathkeeper.accessRules | nindent 4 }}
+{{- end}}
+  "config.yaml": |
+{{- if .Values.demo }}
+    access_rules:
+      repositories:
+      - "https://raw.githubusercontent.com/ory/k8s/feat-oathkeeper-helm/helm/ory-oathkeeper/demo/access-rules.json"
+
+    authenticators:
+      anonymous:
+        enabled: true
+      jwt:
+        enabled: true
+        jwks_urls:
+          - "https://raw.githubusercontent.com/ory/k8s/feat-oathkeeper-helm/helm/ory-oathkeeper/demo/authenticator.jwt.jwks.json"
+      noop:
+        enabled: true
+      unauthorized:
+        enabled: true
+
+    authorizers:
+      allow:
+        enabled: true
+      deny:
+        enabled: true
+
+    mutators:
+      cookie:
+        enabled: true
+      header:
+        enabled: true
+      id_token:
+        enabled: true
+        issuer_url: http://{{ include "ory-oathkeeper.fullname" . }}/
+        jwks_url: https://raw.githubusercontent.com/ory/k8s/feat-oathkeeper-helm/helm/ory-oathkeeper/demo/mutator.id_token.jwks.json
+      noop:
+        enabled: true
+
+    serve:
+      proxy:
+        cors:
+          enabled: true
+      api:
+        cors:
+          enabled: true
+{{- else -}}
+{{- with .Values.oathkeeper.config -}}
+  {{- toYaml . | nindent 4 }}
+{{- end -}}
+{{- end -}}

@@ -1,0 +1,18 @@
+{{- if .Values.service.proxy.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "ory-oathkeeper.fullname" . }}-proxy
+  labels:
+{{ include "ory-oathkeeper.labels" . | indent 4 }}
+spec:
+  type: {{ .Values.service.proxy.type }}
+  ports:
+    - port: {{ .Values.service.proxy.port }}
+      targetPort: http-proxy
+      protocol: TCP
+      name: http-proxy
+  selector:
+    app.kubernetes.io/name: {{ include "ory-oathkeeper.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}

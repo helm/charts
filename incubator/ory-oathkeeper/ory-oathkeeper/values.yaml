@@ -1,0 +1,113 @@
+# Number of ORY Oathkeeper members
+replicaCount: 1
+
+image:
+  # ORY Oathkeeper image
+  repository: oryd/oathkeeper
+  # ORY Oathkeeper version
+  tag: v0.16.0-beta.4
+  # Image pull policy
+  pullPolicy: IfNotPresent
+
+# Image pull secrets
+imagePullSecrets: []
+# Chart name override
+nameOverride: ""
+# Full chart name override
+fullnameOverride: ""
+
+# If enabled, a demo deployment with exemplary access rules
+# and JSON Web Key Secrets will be generated.
+demo: false
+
+# Configures the Kubernetes service
+service:
+  # Configures the Kubernetes service for the proxy port.
+  proxy:
+    # En-/disable the service
+    enabled: true
+    # The service type
+    type: ClusterIP
+    # The service port
+    port: 4455
+  # Configures the Kubernetes service for the api port.
+  api:
+    # En-/disable the service
+    enabled: true
+    # The service type
+    type: ClusterIP
+    # The service port
+    port: 4456
+
+# Configure ingress
+ingress:
+  # Configure ingress for the proxy port.
+  proxy:
+    # En-/Disable the proxy ingress.
+    enabled: false
+    annotations: {}
+#     kubernetes.io/ingress.class: nginx
+#     kubernetes.io/tls-acme: "true"
+#    hosts:
+#      - host: proxy.ory-oathkeeper.local
+#        paths: ["/"]
+#    tls: []
+#        hosts:
+#          - proxy.ory-oathkeeper.local
+#      - secretName: oathkeeper-proxy-example-tls
+
+  api:
+    # En-/Disable the api ingress.
+    enabled: false
+
+    annotations: {}
+#      If you do want to specify annotations, uncomment the following
+#      lines, adjust them as necessary, and remove the curly braces after 'annotations:'.
+#      kubernetes.io/ingress.class: nginx
+#      kubernetes.io/tls-acme: "true"
+#    hosts:
+#      - host: api.ory-oathkeeper.local
+#        paths: ["/"]
+#    tls: []
+#      hosts:
+#        - api.ory-oathkeeper.local
+#      - secretName: oathkeeper-api-example-tls
+
+# Configure ORY Oathkeeper itself
+oathkeeper:
+  # The ORY Oathkeeper configuration. For a full list of available settings, check:
+  #   https://github.com/ory/oathkeeper/blob/master/docs/config.yaml
+  config:
+    serve:
+      proxy:
+        port: 4455
+      api:
+        port: 4456
+#  If set, uses the given JSON Web Key Set as the signing key for the ID Token Mutator.
+#  mutatorIdTokenJWKs: {}
+#  If set, uses the given access rules.
+#  accessRules: {}
+
+resources: {}
+#  We usually recommend not to specify default resources and to leave this as a conscious
+#  choice for the user. This also increases chances charts run on environments with little
+#  resources, such as Minikube. If you do want to specify resources, uncomment the following
+#  lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+#  limits:
+#    cpu: 100m
+#    memory: 128Mi
+#  requests:
+#    cpu: 100m
+#  memory: 128Mi
+
+# Node labels for pod assignment.
+nodeSelector: {}
+# If you do want to specify node labels, uncomment the following
+# lines, adjust them as necessary, and remove the curly braces after 'annotations:'.
+#   foo: bar
+
+# Configure node tolerations.
+tolerations: []
+
+# Configure node affinity
+affinity: {}

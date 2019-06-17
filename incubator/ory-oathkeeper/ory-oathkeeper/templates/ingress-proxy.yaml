@@ -1,0 +1,36 @@
+{{- if .Values.ingress.proxy.enabled -}}
+{{- $fullName := include "ory-oathkeeper.fullname" . -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ $fullName }}
+  labels:
+{{ include "ory-oathkeeper.labels" . | indent 4 }}
+  {{- with .Values.ingress.proxy.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+{{- if .Values.ingress.proxy.tls }}
+  tls:
+  {{- range .Values.ingress.proxy.tls }}
+    - hosts:
+      {{- range .hosts }}
+        - {{ . | quote }}
+      {{- end }}
+      secretName: {{ .secretName }}
+  {{- end }}
+{{- end }}
+  rules:
+  {{- range .Values.ingress.proxy.hosts }}
+    - host: {{ .host | quote }}
+      http:
+        paths:
+        {{- range .paths }}
+          - path: {{ . }}
+            backend:
+              serviceName: {{ $fullName }}
+              servicePort: http-api
+        {{- end }}
+  {{- end }}
+{{- end }}

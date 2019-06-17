@@ -1,0 +1,29 @@
+oathkeeper:
+  config:
+    serve:
+      proxy:
+        port: 3455
+      api:
+        port: 3456
+
+    access_rules:
+      repositories:
+        - "https://raw.githubusercontent.com/ory/k8s/feat-oathkeeper-helm/helm/ory-oathkeeper/demo/access-rules.json"
+
+    authenticators:
+      anonymous:
+        enabled: true
+      noop:
+        enabled: true
+
+    authorizers:
+      allow:
+        enabled: true
+
+    mutators:
+      header:
+        enabled: true
+      id_token:
+        enabled: true
+        issuer_url: http://{{ include "ory-oathkeeper.fullname" . }}/
+        jwks_url: https://raw.githubusercontent.com/ory/k8s/feat-oathkeeper-helm/helm/ory-oathkeeper/demo/mutator.id_token.jwks.json

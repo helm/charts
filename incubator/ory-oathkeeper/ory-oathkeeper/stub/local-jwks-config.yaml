@@ -1,0 +1,24 @@
+oathkeeper:
+  config:
+    access_rules:
+      repositories:
+        - "https://i-purposedly-do-not-exist/.json"
+
+    authenticators:
+      anonymous:
+        enabled: true
+      noop:
+        enabled: true
+
+    authorizers:
+      allow:
+        enabled: true
+
+    mutators:
+      header:
+        enabled: true
+      id_token:
+        enabled: true
+        issuer_url: http://foo/bar/
+      noop:
+        enabled: true

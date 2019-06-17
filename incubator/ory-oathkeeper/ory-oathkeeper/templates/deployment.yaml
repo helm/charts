@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ory-oathkeeper.fullname" . }}
+  labels:
+{{ include "ory-oathkeeper.labels" . | indent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "ory-oathkeeper.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "ory-oathkeeper.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      volumes:
+        - name: {{ include "ory-oathkeeper.name" . }}-config-volume
+          configMap:
+            name: {{ include "ory-oathkeeper.fullname" . }}
+        - name: {{ include "ory-oathkeeper.name" . }}-secrets-volume
+          secret:
+            secretName: {{ include "ory-oathkeeper.fullname" . }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: [ "oathkeeper", "serve", "--config", "/etc/config/config.yaml" ]
+          env:
+            {{- if .Values.oathkeeper.mutatorIdTokenJWKs }}
+            - name: MUTATORS_ID_TOKEN_JWKS_URL
+              value: "file:///etc/secrets/mutator.id_token.jwks.json"
+            {{- end }}
+            {{- if .Values.oathkeeper.accessRules }}
+            - name: ACCESS_RULES_REPOSITORIES
+              value: "file:///etc/config/access-rules.json"
+            {{- end }}
+          volumeMounts:
+            - name: {{ include "ory-oathkeeper.name" . }}-config-volume
+              mountPath: /etc/config
+              readOnly: true
+            - name: {{ include "ory-oathkeeper.name" . }}-secrets-volume
+              mountPath: /etc/secrets
+              readOnly: true
+          ports:
+            - name: http-api
+              containerPort: {{ .Values.oathkeeper.config.serve.api.port }}
+              protocol: TCP
+            - name: http-proxy
+              containerPort: {{ .Values.oathkeeper.config.serve.proxy.port }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /health/alive
+              port: http-api
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: http-api
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

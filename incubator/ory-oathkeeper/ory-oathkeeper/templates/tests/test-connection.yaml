@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "ory-oathkeeper.fullname" . }}-test-connection"
+  labels:
+{{ include "ory-oathkeeper.labels" . | indent 4 }}
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+    - name: liveliness-probe
+      image: busybox
+      command: ['wget']
+      args:  ['http://{{ include "ory-oathkeeper.fullname" . }}-api:{{ .Values.service.api.port }}/health/alive']
+    - name: readyness-probe
+      image: busybox
+      command: ['wget']
+      args:  ['http://{{ include "ory-oathkeeper.fullname" . }}-api:{{ .Values.service.api.port }}/health/ready']
+  restartPolicy: Never
