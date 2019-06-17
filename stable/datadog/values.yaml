@@ -402,6 +402,86 @@ daemonset:
   #
   enabled: true
 
+  ## @param useDedicatedContainers - boolean - optional
+  ## Deploy each datadog agent process in a separate container. Allow fine-grained
+  ## control over allocated resources and better isolation.
+  #
+  # useDedicatedContainers: false
+
+  containers:
+
+    agent:
+      ## @param env - list - required
+      ## Additionnal environment variables for the agent container.
+      #
+      # env:
+
+      ## @param logLevel - string - optional
+      ## Set logging verbosity, valid log levels are:
+      ## trace, debug, info, warn, error, critical, and off.
+      ## If not set, fall back to the value of datadog.logLevel.
+      #
+      # logLevel: INFO
+
+      ## @param resources - object - required
+      ## Resource requests and limits for the agent container.
+      #
+      resources: {}
+      #  requests:
+      #    cpu: 200m
+      #    memory: 256Mi
+      #  limits:
+      #    cpu: 200m
+      #    memory: 256Mi
+
+    processAgent:
+      ## @param env - list - required
+      ## Additionnal environment variables for the process-agent container.
+      #
+      # env:
+
+      ## @param logLevel - string - optional
+      ## Set logging verbosity, valid log levels are:
+      ## trace, debug, info, warn, error, critical, and off.
+      ## If not set, fall back to the value of datadog.logLevel.
+      #
+      # logLevel: INFO
+
+      ## @param resources - object - required
+      ## Resource requests and limits for the process-agent container.
+      #
+      resources: {}
+      #  requests:
+      #    cpu: 100m
+      #    memory: 200Mi
+      #  limits:
+      #    cpu: 100m
+      #    memory: 200Mi
+
+    traceAgent:
+      ## @param env - list - required
+      ## Additionnal environment variables for the trace-agent container.
+      #
+      # env:
+
+      ## @param logLevel - string - optional
+      ## Set logging verbosity, valid log levels are:
+      ## trace, debug, info, warn, error, critical, and off.
+      ## If not set, fall back to the value of datadog.logLevel.
+      #
+      # logLevel: INFO
+
+      ## @param resources - object - required
+      ## Resource requests and limits for the trace-agent container.
+      #
+      resources: {}
+      #  requests:
+      #    cpu: 100m
+      #    memory: 200Mi
+      #  limits:
+      #    cpu: 100m
+      #    memory: 200Mi
+
   ## @param useHostNetwork - boolean - optional
   ## Bind ports on the hostNetwork. Useful for CNI networking where hostPort might
   ## not be supported. The ports need to be available on all hosts. It Can be
