@@ -11,6 +11,12 @@ spec:
       annotations: {{ toYaml .Values.podAnnotations | nindent 8}}
     {{- end }}
       labels: {{ include "external-dns.labels" . | indent 8 }}
+    {{- if or (and .Values.aws.secretKey .Values.aws.accessKey) .Values.cloudflare.apiKey .Values.digitalocean.apiToken (and .Values.infoblox.wapiUsername .Values.infoblox.wapiPassword) .Values.rfc2136.tsigSecret .Values.extraEnv .Values.google.serviceAccountKey }}
+      checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+    {{- end }}
+    {{- if and (eq .Values.provider "designate") .Values.designate.customCA.enabled }}
+      checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+    {{- end }}
     spec:
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
