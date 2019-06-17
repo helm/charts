@@ -5,7 +5,7 @@
 
 Name: "cockroachdb"
 Image: "cockroachdb/cockroach"
-ImageTag: "v19.1.1"
+ImageTag: "v19.1.2"
 ImagePullPolicy: "Always"
 Replicas: 3
 MaxUnavailable: 1
