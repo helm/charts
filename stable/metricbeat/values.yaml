@@ -14,6 +14,8 @@ daemonset:
     effect: NoSchedule
   nodeSelector: {}
   resources: {}
+  hostNetwork: true
+  dnsPolicy: ClusterFirstWithHostNet
   config:
     metricbeat.config:
       modules:

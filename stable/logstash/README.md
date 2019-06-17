@@ -81,6 +81,7 @@ The following table lists the configurable parameters of the chart and its defau
 | `service.annotations`           | Service annotations                                | `{}`                                             |
 | `service.ports`                 | Ports exposed by service                           | beats                                            |
 | `service.loadBalancerIP`        | The load balancer IP for the service               | unset                                            |
+| `service.loadBalancerSourceRanges` | CIDR ranges to allow access to load balancer       | unset                                            |
 | `service.clusterIP`             | The cluster IP for the service                     | unset                                            |
 | `service.nodePort`              | The nodePort for the service                       | unset                                            |
 | `service.externalTrafficPolicy` | Set externalTrafficPolicy                          | unset                                            |

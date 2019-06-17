@@ -12,6 +12,9 @@ javaMem: "-Xms2g -Xmx3g"
 # Set the limits and requests on solr pod resources
 resources: {}
 
+# Extra environment variables - allows yaml definitions
+extraEnvVars: []
+
 # Sets the termination Grace period for the solr pods
 # This can take a while for shards to elect new leaders
 terminationGracePeriodSeconds: 180

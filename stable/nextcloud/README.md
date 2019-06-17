@@ -61,14 +61,15 @@ The following table lists the configurable parameters of the nextcloud chart and
 | `nextcloud.update`                  | Trigger update if custom command is used      | `0`                                                     |
 | `nextcloud.datadir`                 | nextcloud data dir location                   | `/var/www/html/data`                                    |
 | `nextcloud.tableprefix`             | nextcloud db table prefix                     | `''`                                                    |
-| `nextcloud.smtp.host`               | SMTP hostname                                 | `nil`                                                   |
-| `nextcloud.smtp.secure`             | SMTP connection `ssl` or empty                | `''`                                                    |
-| `nextcloud.smtp.port`               | Optional SMTP port                            | `nil`                                                   |
-| `nextcloud.smtp.authtype`           | SMTP authentication method                    | `LOGIN`                                                 |
-| `nextcloud.smtp.name`               | SMTP username                                 | `''`                                                    |
-| `nextcloud.smtp.password`           | SMTP password                                 | `''`                                                    |
-| `nextcloud.mail.fromaddress`        | nextcloud mail send from field                | `nil`                                                   |
+| `nextcloud.mail.enabled`            | Whether to enable/disable email settings      | `false`                                                 |
+| `nextcloud.mail.fromAddress`        | nextcloud mail send from field                | `nil`                                                   |
 | `nextcloud.mail.domain`             | nextcloud mail domain                         | `nil`                                                   |
+| `nextcloud.mail.smtp.host`          | SMTP hostname                                 | `nil`                                                   |
+| `nextcloud.mail.smtp.secure`        | SMTP connection `ssl` or empty                | `''`                                                    |
+| `nextcloud.mail.smtp.port`          | Optional SMTP port                            | `nil`                                                   |
+| `nextcloud.mail.smtp.authtype`      | SMTP authentication method                    | `LOGIN`                                                 |
+| `nextcloud.mail.smtp.name`          | SMTP username                                 | `''`                                                    |
+| `nextcloud.mail.smtp.password`      | SMTP password                                 | `''`                                                    |
 | `internalDatabase.enabled`          | Whether to use internal sqlite database       | `true`                                                  |
 | `internalDatabase.database`         | Name of the existing database                 | `nextcloud`                                             |
 | `externalDatabase.enabled`          | Whether to use external database              | `false`                                                 |
@@ -81,6 +82,11 @@ The following table lists the configurable parameters of the nextcloud chart and
 | `mariadb.db.password`               | Password for the database                     | `changeme`                                              |
 | `mariadb.db.user`                   | Database user to create                       | `nextcloud`                                             |
 | `mariadb.rootUser.password`         | MariaDB admin password                        | `nil`                                                   |
+| `cronjob.enabled`                   | Whether to enable/disable cronjob             | `false`                                                 |
+| `cronjob.schedule`                  | Schedule for the CronJob                      | `*/15 * * * *`                                          |
+| `cronjob.annotations`               | Annotations to add to the cronjob             | {}                                                      |
+| `cronjob.failedJobsHistoryLimit`    | Specify the number of failed Jobs to keep     | `5`                                                     |
+| `cronjob.successfulJobsHistoryLimit`| Specify the number of completed Jobs to keep  | `2`                                                     |
 | `service.type`                      | Kubernetes Service type                       | `ClusterIp`                                             |
 | `service.loadBalancerIP`            | LoadBalancerIp for service type LoadBalancer  | `nil`                                                   |
 | `persistence.enabled`               | Enable persistence using PVC                  | `false`                                                 |
@@ -140,3 +146,12 @@ The [Nextcloud](https://hub.docker.com/_/nextcloud/) image stores the nextcloud 
 
 Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
 See the [Configuration](#configuration) section to enable persistence and configuration of the PVC.
+
+## Cronjob
+
+This chart can utilize Kubernetes `CronJob` resource to execute [background tasks](https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/background_jobs_configuration.html).
+
+To use this functionality, set `cronjob.enabled` parameter to `true` and switch background mode to Webcron in your nextcloud settings page.
+See the [Configuration](#configuration) section for further configuration of the cronjob resource.
+
+> **Note**: For the cronjobs to work correctly, ingress must be also enabled (set `ingress.enabled` to `true`) and `nextcloud.host` has to be publicly resolvable.
