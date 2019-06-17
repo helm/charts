@@ -90,14 +90,16 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `extraVolume`                      | Extra volume                               |                                                |
 | `service.flush`                    | Interval to flush output (seconds)        | `1`                   |
 | `service.logLevel`                 | Diagnostic level (error/warning/info/debug/trace)        | `info`                   |
-| `filter.enableExclude`             | Enable the use of monitoring for a pod annotation of `fluentbit.io/exclude: true`. If present, discard logs from that pod.         | `true`                                 |
-| `filter.enableParser`              | Enable the use of monitoring for a pod annotation of `fluentbit.io/parser: parser_name`. parser_name must be the name of a parser contained within parsers.conf         | `true`                                 |
-| `filter.kubeURL`                   | Optional custom configmaps                 | `https://kubernetes.default.svc:443`            |
-| `filter.kubeCAFile`                | Optional custom configmaps       | `/var/run/secrets/kubernetes.io/serviceaccount/ca.crt`    |
-| `filter.kubeTokenFile`             | Optional custom configmaps       | `/var/run/secrets/kubernetes.io/serviceaccount/token`     |
-| `filter.kubeTag`                   | Optional top-level tag for matching in filter         | `kube`                                 |
-| `filter.kubeTagPrefix`             | Optional tag prefix used by Tail   | `kube.var.log.containers.`                                |
-| `filter.mergeJSONLog`              | If the log field content is a JSON string map, append the map fields as part of the log structure         | `true`                                 |
+| **Filters**
+| `filter.[].Name`                      | Specify name of filter type         | `kubernetes`                                 |
+| `filter.[].K8S-Logging.Exclude`       | Enable the use of monitoring for a pod annotation of `fluentbit.io/exclude: true`. If present, discard logs from that pod.         | `true`                                 |
+| `filter.[].K8S-Logging.Parser`              | Enable the use of monitoring for a pod annotation of `fluentbit.io/parser: parser_name`. parser_name must be the name of a parser contained within parsers.conf         | `true`                                 |
+| `filter.[].Kube_URL`                   | Optional custom configmaps                 | `https://kubernetes.default.svc:443`            |
+| `filter.[].Kube_CA_File`                | Optional custom configmaps       | `/var/run/secrets/kubernetes.io/serviceaccount/ca.crt`    |
+| `filter.[].Kube_Token_File`             | Optional custom configmaps       | `/var/run/secrets/kubernetes.io/serviceaccount/token`     |
+| `filter.[].Kube_Tag`                   | Optional top-level tag for matching in filter         | `kube`                                 |
+| `filter.[].Kube_Tag_Prefix`             | Optional tag prefix used by Tail   | `kube.var.log.containers.`                                |
+| `filter.[].Merge_Log`              | If the log field content is a JSON string map, append the map fields as part of the log structure         | `true`                                 |
 | `image.fluent_bit.repository`      | Image                                      | `fluent/fluent-bit`                               |
 | `image.fluent_bit.tag`             | Image tag                                  | `1.0.6`                                          |
 | `image.pullPolicy`                 | Image pull policy                          | `IfNotPresent`                                          |
@@ -165,6 +167,7 @@ Values extraEntries.input, extraEntries.filter and extraEntries.output have been
 
 Example: 
 
+```
 backend:
   type: "forward"
   outputs:
@@ -175,3 +178,4 @@ backend:
       tls: "Off"
       tls_verify: "On"
       tls_debug: 1
+```
