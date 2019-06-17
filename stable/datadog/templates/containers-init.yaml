@@ -1,0 +1,41 @@
+{{- define "containers-init" -}}
+- name: init-volume
+  image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+  command: ["bash", "-c"]
+  args:
+    - cp -r /etc/datadog-agent /opt
+  volumeMounts:
+    - name: config
+      mountPath: /opt/datadog-agent
+- name: init-config
+  image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+  command: ["bash", "-c"]
+  args:
+    - for script in $(find /etc/cont-init.d/ -type f -name '*.sh') ; do bash $script ; done
+  volumeMounts:
+    - name: config
+      mountPath: /etc/datadog-agent
+    {{- if (or (.Values.datadog.confd) (.Values.datadog.autoconf)) }}
+    - name: confd
+      mountPath: /conf.d
+      readOnly: true
+    {{- end }}
+    {{- if .Values.datadog.checksd }}
+    - name: checksd
+      mountPath: /checks.d
+      readOnly: true
+    {{- end }}
+    - name: procdir
+      mountPath: /host/proc
+      readOnly: true
+    {{- if .Values.datadog.useCriSocketVolume }}
+    - name: runtimesocket
+      mountPath: {{ default "/var/run/docker.sock" .Values.datadog.criSocketPath | quote }}
+      readOnly: true
+    {{- end }}
+  env:
+  {{- include "containers-common-env" . | nindent 4 }}
+  {{- if .Values.datadog.env }}
+  {{ toYaml .Values.datadog.env | indent 4 }}
+  {{- end }}
+{{- end -}}
