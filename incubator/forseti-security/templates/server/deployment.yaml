@@ -50,6 +50,11 @@ spec:
         - name: forseti-server-config-volume
           mountPath: /forseti-security
           readOnly: true
+        env:
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: /var/secrets/google/key.json
+        - name: FORSETI_HOME
+          value: /forseti-security
 {{ if not .Values.cloudSqlPrivateIp }}
       - name: cloudsql-proxy
         image: gcr.io/cloudsql-docker/gce-proxy:latest
@@ -61,11 +66,6 @@ spec:
         - name: google-cloud-key
           mountPath: /var/secrets/google
           readOnly: true
-        env:
-        - name: GOOGLE_APPLICATION_CREDENTIALS
-          value: /var/secrets/google/key.json
-        - name: FORSETI_HOME
-          value: /forseti-security
 {{end}}
       securityContext:
         runAsUser: 1000
