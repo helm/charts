@@ -98,6 +98,10 @@ spec:
         - name: BITNAMI_DEBUG
           value: "true"
         {{- end }}
+        {{- if .Values.master.extraFlags }}
+        - name: MARIADB_EXTRA_FLAGS
+          value: "{{ .Values.master.extraFlags }}"
+        {{- end }}
         - name: MARIADB_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
