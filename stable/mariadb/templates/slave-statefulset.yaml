@@ -99,6 +99,8 @@ spec:
         - name: BITNAMI_DEBUG
           value: "true"
         {{- end }}
+        - name: MARIADB_EXTRA_FLAGS
+          value: "{{ .Values.slave.extraFlags }}"
         - name: MARIADB_REPLICATION_MODE
           value: "slave"
         - name: MARIADB_MASTER_HOST
