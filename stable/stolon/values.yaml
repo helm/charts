@@ -1,3 +1,4 @@
+# clusterName:
 image:
   repository: sorintlab/stolon
   tag: v0.13.0-pg10
@@ -74,6 +75,7 @@ clusterSpec: {}
   # maxStandbys: 5
 
 keeper:
+  uid_prefix: "keeper"
   replicaCount: 2
   annotations: {}
   resources: {}
