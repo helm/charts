@@ -15,7 +15,7 @@ data:
 
     NODE_NAME=${HOSTNAME}
     IFS='-' read -ra ADDR <<< "$(hostname)"
-    STKEEPER_UID="keeper${ADDR[-1]}"
+    STKEEPER_UID="{{ .Values.keeper.uid_prefix }}${ADDR[-1]}"
 
     echo "keeper [${STKEEPER_UID}] is failing"
     stolonctl \
