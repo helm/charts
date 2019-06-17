@@ -323,8 +323,10 @@ data:
   {{- if not (contains "configuration-as-code" (quote .Values.master.installPlugins)) }}
     configuration-as-code:{{ .Values.master.JCasC.pluginVersion }}
   {{- end }}
-  {{- if not (contains "configuration-as-code-support" (quote .Values.master.installPlugins)) }}
+  {{- if semverCompare "<=1.19" (printf "%v" .Values.master.JCasC.pluginVersion) }}
+    {{- if not (contains "configuration-as-code-support" (quote .Values.master.installPlugins)) }}
     configuration-as-code-support:{{ .Values.master.JCasC.supportPluginVersion }}
+    {{- end }}
   {{- end }}
 {{- end }}
 {{- end }}
