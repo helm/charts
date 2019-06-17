@@ -56,7 +56,7 @@ The following table lists the configurable parameters of the mongodb chart and t
 | `resources`                         | Pod resource requests and limits                                          | `{}`                                                |
 | `persistentVolume.enabled`          | If `true`, persistent volume claims are created                           | `true`                                              |
 | `persistentVolume.storageClass`     | Persistent volume storage class                                           | ``                                                  |
-| `persistentVolume.accessMode`       | Persistent volume access modes                                            | `[ReadWriteOnce]`                                   |
+| `persistentVolume.accessModes`      | Persistent volume access modes                                            | `[ReadWriteOnce]`                                   |
 | `persistentVolume.size`             | Persistent volume size                                                    | `10Gi`                                              |
 | `persistentVolume.annotations`      | Persistent volume annotations                                             | `{}`                                                |
 | `terminationGracePeriodSeconds`     | Duration in seconds the pod needs to terminate gracefully                 | `30`                                                |
