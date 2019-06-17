@@ -12,7 +12,6 @@ spec:
   - metadata:
       name: persistent-data
       labels: {{- include "thanos.rule.matchLabels" $ | nindent 8 }}
-    storageClassName: {{ .persistence.storageClassName | quote }}
     spec:
       accessModes:
       {{- range .persistence.accessModes }}
@@ -21,6 +20,7 @@ spec:
       resources:
         requests:
           storage: {{ .persistence.size | trim | quote }}
+      storageClassName: {{ .persistence.storageClassName | quote }}
   {{- end }}
   serviceName: {{ print (include "thanos.fullname" $) "-store-" .component  | quote }}
   selector:
