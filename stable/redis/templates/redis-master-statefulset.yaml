@@ -81,6 +81,7 @@ spec:
           ARGS=("--port" "${REDIS_PORT}")
           {{- if .Values.usePassword }}
           ARGS+=("--requirepass" "${REDIS_PASSWORD}")
+          ARGS+=("--masterauth" "${REDIS_PASSWORD}")
           {{- else }}
           ARGS+=("--protected-mode" "no")
           {{- end }}
