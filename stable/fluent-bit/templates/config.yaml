@@ -111,7 +111,11 @@ data:
 {{- end }}
 {{- if .Values.backend.es.http_user }}
         HTTP_User {{ .Values.backend.es.http_user }}
+{{- if .Values.backend.es.http_passwd }}
         HTTP_Passwd {{ .Values.backend.es.http_passwd }}
+{{- else }}
+        HTTP_Passwd ${HTTP_PASSWORD}
+{{- end }}
 {{- end }}
 {{if eq .Values.backend.es.tls "on" }}
         tls {{ .Values.backend.es.tls }}
