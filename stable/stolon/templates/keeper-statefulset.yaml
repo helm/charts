@@ -172,6 +172,11 @@ spec:
   volumeClaimTemplates:
     - metadata:
         name: data
+        labels:
+          app: {{ template "stolon.name" . }}
+          chart: {{ template "stolon.chart" . }}
+          release: {{ .Release.Name }}
+          heritage: {{ .Release.Service }}
       spec:
         accessModes:
   {{- range .Values.persistence.accessModes }}

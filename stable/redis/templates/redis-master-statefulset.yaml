@@ -323,6 +323,7 @@ spec:
         name: redis-data
         labels:
           app: "{{ template "redis.name" . }}"
+          chart: {{ template "redis.chart" . }}
           component: "master"
           release: {{ .Release.Name | quote }}
           heritage: {{ .Release.Service | quote }}

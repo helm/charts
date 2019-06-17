@@ -257,6 +257,11 @@ spec:
   volumeClaimTemplates:
     - metadata:
         name: datadir
+        labels:
+          app: {{ template "mongodb.name" . }}
+          chart: {{ template "mongodb.chart" . }}
+          heritage: {{ .Release.Service }}
+          release: {{ .Release.Name }}
         annotations:
         {{- range $key, $value := .Values.persistence.annotations }}
           {{ $key }}: "{{ $value }}"
