@@ -2,11 +2,12 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: local-storage-provisioner-pv-binding
+  name: {{ include "local-volume-provisioner.fullname" . }}-pv-binding
   labels:
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
-    chart: {{ replace "+" "_" .Chart.Version | printf "%s-%s" .Chart.Name }}
+    app.kubernetes.io/name: {{ include "local-volume-provisioner.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "local-volume-provisioner.chart" . }}
 subjects:
 - kind: ServiceAccount
   name: {{ .Values.daemonset.serviceAccount }}
@@ -19,11 +20,12 @@ roleRef:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: local-storage-provisioner-node-clusterrole
+  name: {{ include "local-volume-provisioner.fullname" . }}-node-clusterrole
   labels:
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
-    chart: {{ replace "+" "_" .Chart.Version | printf "%s-%s" .Chart.Name }}
+    app.kubernetes.io/name: {{ include "local-volume-provisioner.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "local-volume-provisioner.chart" . }}
 rules:
 - apiGroups: [""]
   resources: ["nodes"]
@@ -32,30 +34,32 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: local-storage-provisioner-node-binding
+  name: {{ include "local-volume-provisioner.fullname" . }}-node-binding
   labels:
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
-    chart: {{ replace "+" "_" .Chart.Version | printf "%s-%s" .Chart.Name }}
+    app.kubernetes.io/name: {{ include "local-volume-provisioner.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "local-volume-provisioner.chart" . }}
 subjects:
 - kind: ServiceAccount
   name: {{ .Values.daemonset.serviceAccount }}
   namespace: {{ .Values.common.namespace }}
 roleRef:
   kind: ClusterRole
-  name: local-storage-provisioner-node-clusterrole
+  name: {{ include "local-volume-provisioner.fullname" . }}-node-clusterrole
   apiGroup: rbac.authorization.k8s.io
 {{- if .Values.common.useJobForCleaning }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: local-storage-provisioner-jobs-role
   namespace: {{ .Values.common.namespace }}
+  name: {{ include "local-volume-provisioner.fullname" . }}-jobs-role
   labels:
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
-    chart: {{ replace "+" "_" .Chart.Version | printf "%s-%s" .Chart.Name }}
+    app.kubernetes.io/name: {{ include "local-volume-provisioner.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "local-volume-provisioner.chart" . }}
 rules:
 - apiGroups:
     - 'batch'
@@ -67,19 +71,20 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: local-storage-provisioner-jobs-rolebinding
   namespace: {{ .Values.common.namespace }}
+  name: {{ include "local-volume-provisioner.fullname" . }}-jobs-rolebinding
   labels:
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
-    chart: {{ replace "+" "_" .Chart.Version | printf "%s-%s" .Chart.Name }}
+    app.kubernetes.io/name: {{ include "local-volume-provisioner.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "local-volume-provisioner.chart" . }}
 subjects:
 - kind: ServiceAccount
   name: {{ .Values.daemonset.serviceAccount }}
   namespace: {{ .Values.common.namespace }}
 roleRef:
   kind: Role
-  name: local-storage-provisioner-jobs-role
+  name: {{ include "local-volume-provisioner.fullname" . }}-jobs-role
   apiGroup: rbac.authorization.k8s.io
 {{- end }}
 {{- if .Values.common.podSecurityPolicy }}
@@ -87,38 +92,40 @@ roleRef:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: local-storage-provisioner-psp-role
   namespace: {{ .Values.common.namespace }}
+  name: {{ include "local-volume-provisioner.fullname" . }}-psp-role
   labels:
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
-    chart: {{ replace "+" "_" .Chart.Version | printf "%s-%s" .Chart.Name }}
+    app.kubernetes.io/name: {{ include "local-volume-provisioner.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "local-volume-provisioner.chart" . }}
 rules:
 - apiGroups:
     - policy
   resources:
     - podsecuritypolicies
   resourceNames:
-    - local-storage-provisioner-pod-security-policy
+    - {{ include "local-volume-provisioner.fullname" . }}-psp
   verbs:
     - use
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: local-storage-provisioner-psp-rolebinding
   namespace: {{ .Values.common.namespace }}
+  name: {{ include "local-volume-provisioner.fullname" . }}-psp-rolebinding
   labels:
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
-    chart: {{ replace "+" "_" .Chart.Version | printf "%s-%s" .Chart.Name }}
+    app.kubernetes.io/name: {{ include "local-volume-provisioner.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "local-volume-provisioner.chart" . }}
 subjects:
 - kind: ServiceAccount
   name: {{ .Values.daemonset.serviceAccount }}
   namespace: {{ .Values.common.namespace }}
 roleRef:
   kind: Role
-  name: local-storage-provisioner-psp-role
+  name: {{ include "local-volume-provisioner.fullname" . }}-psp-role
   apiGroup: rbac.authorization.k8s.io
 {{- end }}
 {{- end }}
