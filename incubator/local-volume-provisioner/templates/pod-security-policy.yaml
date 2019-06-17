@@ -1,0 +1,35 @@
+{{- if .Values.common.podSecurityPolicy -}}
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: local-storage-provisioner-pod-security-policy
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: {{ replace "+" "_" .Chart.Version | printf "%s-%s" .Chart.Name }}
+spec:
+  allowPrivilegeEscalation: true
+  allowedHostPaths:
+  - pathPrefix: /dev
+  {{- range $classConfig := .Values.classes }}
+  - pathPrefix: {{ $classConfig.hostDir }}
+  {{- end }}
+  fsGroup:
+    rule: RunAsAny
+  privileged: true
+  requiredDropCapabilities:
+  - ALL
+  runAsUser:
+    ranges:
+    - max: 65535
+      min: 1
+    rule: MustRunAs
+  seLinux:
+    rule: RunAsAny
+  supplementalGroups:
+    rule: RunAsAny
+  volumes:
+  - configMap
+  - secret
+  - hostPath
+{{- end }}

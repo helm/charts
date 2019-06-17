@@ -1,0 +1,15 @@
+apiVersion: v1
+name: local-volume-provisioner
+version: 2.3.2
+appVersion: 2.3.2
+description: local volume provisioner chart
+home: https://github.com/kubernetes-sigs/sig-storage-local-static-provisioner
+maintainers:
+- name: msau42
+  email: msau@google.com
+- name: cofyc
+  email: fuyecheng@pingcap.com
+keywords:
+  - storage
+  - local
+engine: gotpl

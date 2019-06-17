@@ -1,0 +1,152 @@
+#
+# Common options.
+#
+common:
+  #
+  # Defines whether to generate service account and role bindings.
+  #
+  rbac: true
+  #
+  # Defines the namespace where provisioner runs
+  #
+  namespace: default
+  #
+  # Defines whether to create provisioner namespace
+  #
+  createNamespace: false
+  # Beta PV.NodeAffinity field is used by default. If running against pre-1.10
+  # k8s version, the `useAlphaAPI` flag must be enabled in the configMap.
+  #
+  useAlphaAPI: false
+  #
+  # Provisioner clean volumes in process by default. If set to true, provisioner
+  # will use Jobs to clean.
+  #
+  useJobForCleaning: false
+  #
+  # Provisioner name contains Node.UID by default. If set to true, the provisioner
+  # name will only use Node.Name.
+  #
+  useNodeNameOnly: false
+  #
+  # Resync period in reflectors will be random between minResyncPeriod and
+  # 2*minResyncPeriod. Default: 5m0s.
+  #
+  # minResyncPeriod: 5m0s
+  #
+  # Defines the name of configmap used by Provisioner
+  #
+  configMapName: "local-provisioner-config"
+  #
+  # Enables or disables Pod Security Policy creation and binding
+  #
+  podSecurityPolicy: false
+#
+# Configure storage classes.
+#
+classes:
+  # Defines name of storage classe.
+- name: fast-disks
+  # Path on the host where local volumes of this storage class are mounted
+  # under.
+  hostDir: /mnt/fast-disks
+  # Optionally specify mount path of local volumes. By default, we use same
+  # path as hostDir in container.
+  # mountDir: /mnt/fast-disks
+  # The volume mode of created PersistentVolume object. Default to Filesystem
+  # if not specified.
+  volumeMode: Filesystem
+  # Filesystem type to mount.
+  # It applies only when the source path is a block device,
+  # and desire volume mode is Filesystem.
+  # Must be a filesystem type supported by the host operating system.
+  fsType: ext4
+  blockCleanerCommand:
+  #  Do a quick reset of the block device during its cleanup.
+  #  - "/scripts/quick_reset.sh"
+  #  or use dd to zero out block dev in two iterations by uncommenting these lines
+  #  - "/scripts/dd_zero.sh"
+  #  - "2"
+  # or run shred utility for 2 iteration.s
+    - "/scripts/shred.sh"
+    - "2"
+  # or blkdiscard utility by uncommenting the line below.
+  #  - "/scripts/blkdiscard.sh"
+  # Uncomment to create storage class object with default configuration.
+  # storageClass: true
+  # Uncomment to create storage class object and configure it.
+  # storageClass:
+    # reclaimPolicy: Delete # Available reclaim policies: Delete/Retain, defaults: Delete.
+#
+# Configure DaemonSet for provisioner.
+#
+daemonset:
+  #
+  # Defines the name of a Provisioner
+  #
+  name: "local-volume-provisioner"
+  #
+  # Defines Provisioner's image name including container registry.
+  #
+  image: quay.io/external_storage/local-volume-provisioner:v2.3.2
+  #
+  # Defines Image download policy, see kubernetes documentation for available values.
+  #
+  # imagePullPolicy: Always
+  #
+  # Defines a name of the service account which Provisioner will use to communicate with API server.
+  #
+  serviceAccount: local-storage-admin
+  #
+  # Defines a name of the Pod Priority Class to use with the Provisioner DaemonSet
+  #
+  # Note that if you want to make it critical, specify "system-cluster-critical"
+  # or "system-node-critical" and deploy in kube-system namespace.
+  # Ref: https://k8s.io/docs/tasks/administer-cluster/guaranteed-scheduling-critical-addon-pods/#marking-pod-as-critical
+  #
+  # priorityClassName: system-node-critical
+  #
+  # If configured, nodeSelector will add a nodeSelector field to the DaemonSet PodSpec.
+  #
+  # NodeSelector constraint for local-volume-provisioner scheduling to nodes.
+  # Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+  nodeSelector: {}
+  #
+  # If configured KubeConfigEnv will (optionally) specify the location of kubeconfig file on the node.
+  #  kubeConfigEnv: KUBECONFIG
+  #
+  # List of node labels to be copied to the PVs created by the provisioner in a format:
+  #
+  #  nodeLabels:
+  #    - failure-domain.beta.kubernetes.io/zone
+  #    - failure-domain.beta.kubernetes.io/region
+  #
+  # If configured, tolerations will add a toleration field to the DaemonSet PodSpec.
+  #
+  # Node tolerations for local-volume-provisioner scheduling to nodes with taints.
+  # Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  tolerations: []
+  #
+  # If configured, resources will set the requests/limits field to the Daemonset PodSpec.
+  # Ref: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
+  resources: {}
+#
+# Configure Prometheus monitoring
+#
+prometheus:
+  operator:
+    ## Are you using Prometheus Operator?
+    enabled: false
+
+    serviceMonitor:
+      ## Interval at which Prometheus scrapes the provisioner
+      interval: 10s
+
+      # Namespace Prometheus is installed in
+      namespace: monitoring
+
+      ## Defaults to whats used if you follow CoreOS [Prometheus Install Instructions](https://github.com/coreos/prometheus-operator/tree/master/helm#tldr)
+      ## [Prometheus Selector Label](https://github.com/coreos/prometheus-operator/blob/master/helm/prometheus/templates/prometheus.yaml#L65)
+      ## [Kube Prometheus Selector Label](https://github.com/coreos/prometheus-operator/blob/master/helm/kube-prometheus/values.yaml#L298)
+      selector:
+        prometheus: kube-prometheus

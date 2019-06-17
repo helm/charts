@@ -1,0 +1,209 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.common.configMapName }}
+  namespace: {{ .Values.common.namespace }}
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: {{ replace "+" "_" .Chart.Version | printf "%s-%s" .Chart.Name }}
+data:
+{{- if .Values.daemonset.nodeLabels }}
+  nodeLabelsForPV: |
+   {{- range $label := .Values.daemonset.nodeLabels }}
+    - {{$label}}
+   {{- end }}
+{{- end }}
+{{- if .Values.common.useAlphaAPI }}
+  useAlphaAPI: "true"
+{{- end }}
+{{- if .Values.common.useJobForCleaning }}
+  useJobForCleaning: "yes"
+{{- end}}
+{{- if .Values.common.useNodeNameOnly }}
+  useNodeNameOnly: "true"
+{{- end }}
+{{- if .Values.common.minResyncPeriod }}
+  minResyncPeriod: {{ .Values.common.minResyncPeriod | quote }}
+{{- end}}
+  storageClassMap: |
+    {{- range $classConfig := .Values.classes }}
+    {{ $classConfig.name }}:
+       hostDir: {{ $classConfig.hostDir }}
+       mountDir: {{ if $classConfig.mountDir }} {{- $classConfig.mountDir -}} {{ else }} {{- $classConfig.hostDir -}} {{ end }}
+       {{- if $classConfig.blockCleanerCommand }}
+       blockCleanerCommand:
+       {{- range $val := $classConfig.blockCleanerCommand }}
+         - "{{ $val -}}"{{- end}}
+       {{- end }}
+       {{- if $classConfig.volumeMode }}
+       volumeMode: {{ $classConfig.volumeMode }}
+       {{- end }}
+       {{- if $classConfig.fsType }}
+       fsType: {{ $classConfig.fsType }}
+       {{- end }}
+    {{- end }}
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ .Values.daemonset.name }}
+  namespace: {{ .Values.common.namespace }}
+  labels:
+    app: local-volume-provisioner
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: {{ replace "+" "_" .Chart.Version | printf "%s-%s" .Chart.Name }}
+spec:
+  selector:
+    matchLabels:
+      app: local-volume-provisioner
+  template:
+    metadata:
+      labels:
+        app: local-volume-provisioner
+    spec:
+      serviceAccountName: {{.Values.daemonset.serviceAccount}}
+{{- if .Values.daemonset.priorityClassName }}
+{{- if eq .Values.common.namespace "kube-system" }}
+      priorityClassName: {{.Values.daemonset.priorityClassName}}
+{{- else }}
+      {{- $systemCriticalClasses := list "system-cluster-critical" "system-node-critical" }}
+      {{- if not (has .Values.daemonset.priorityClassName $systemCriticalClasses) }}
+      priorityClassName: {{.Values.daemonset.priorityClassName}}
+      {{- end }}
+{{- end }}
+{{- end }}
+{{- if .Values.daemonset.nodeSelector }}
+      nodeSelector:
+{{ .Values.daemonset.nodeSelector | toYaml | trim | indent 8 }}
+{{- end }}
+{{- if .Values.daemonset.tolerations }}
+      tolerations:
+{{ .Values.daemonset.tolerations | toYaml | trim | indent 8 }}
+{{- end }}
+      containers:
+        - image: "{{ .Values.daemonset.image }}"
+          {{- if .Values.daemonset.imagePullPolicy }}
+          imagePullPolicy: {{ .Values.daemonset.imagePullPolicy | quote }}
+          {{- end }}
+          name: provisioner
+          securityContext:
+            privileged: true
+{{- if .Values.daemonset.resources }}
+          resources:
+{{ .Values.daemonset.resources | toYaml | trim | indent 12 }}
+{{- end }}
+          env:
+          - name: MY_NODE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+          - name: MY_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: JOB_CONTAINER_IMAGE
+            value: "{{ .Values.daemonset.image }}"
+          {{- if .Values.daemonset.kubeConfigEnv }}
+            - name: KUBECONFIG
+              value: {{.Values.daemonset.kubeConfigEnv}}
+          {{- end }}
+          {{- if .Values.prometheus.operator.enabled }}
+          ports:
+          - containerPort: 8080
+            name: http
+          {{- end }}
+          volumeMounts:
+            - mountPath: /etc/provisioner/config
+              name: provisioner-config
+              readOnly: true
+            - mountPath: /dev
+              name: provisioner-dev
+            {{- range $classConfig := .Values.classes }}
+            - mountPath: {{ if $classConfig.mountDir }} {{- $classConfig.mountDir -}} {{ else }} {{- $classConfig.hostDir -}} {{ end }}
+              name: {{ $classConfig.name }}
+              mountPropagation: "HostToContainer"
+            {{- end }}
+      volumes:
+        - name: provisioner-config
+          configMap:
+            name: {{ .Values.common.configMapName }}
+        - name: provisioner-dev
+          hostPath:
+            path: /dev
+        {{- range $classConfig := .Values.classes }}
+        - name: {{ $classConfig.name }}
+          hostPath:
+            path: {{ $classConfig.hostDir }}
+        {{- end }}
+{{- $release := .Release }}
+{{- $chart := .Chart }}
+{{- range $val := .Values.classes }}
+{{- if $val.storageClass }}
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: {{ $val.name }}
+  labels:
+    heritage: {{ $release.Service | quote }}
+    release: {{ $release.Name | quote }}
+    chart: {{ replace "+" "_" $chart.Version | printf "%s-%s" $chart.Name }}
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer
+{{- if kindIs "map" $val.storageClass }}
+reclaimPolicy: {{ $val.storageClass.reclaimPolicy | default "Delete" }}
+{{- else }}
+reclaimPolicy: Delete
+{{- end }}
+{{- end }}
+{{- end }}
+{{- if .Values.prometheus.operator.enabled }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.daemonset.name }}
+  namespace: {{ .Values.common.namespace }}
+  labels:
+    app: local-volume-provisioner
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: {{ replace "+" "_" .Chart.Version | printf "%s-%s" .Chart.Name }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: 8080
+      name: http
+  selector:
+    app: local-volume-provisioner
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ .Values.daemonset.name }}
+  namespace: {{ .Values.prometheus.operator.serviceMonitor.namespace }}
+  labels:
+    app: local-volume-provisioner
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: {{ replace "+" "_" .Chart.Version | printf "%s-%s" .Chart.Name }}
+    {{- if .Values.prometheus.operator.serviceMonitor.selector }}
+    {{ toYaml .Values.prometheus.operator.serviceMonitor.selector }}
+    {{- end -}}
+spec:
+  jobLabel: app
+  selector:
+    matchLabels:
+      app: local-volume-provisioner
+      release: {{ .Release.Name | quote }}
+  namespaceSelector:
+    matchNames:
+      - {{ .Values.common.namespace }}
+  endpoints:
+    - port: http
+      interval: {{ .Values.prometheus.operator.serviceMonitor.interval }}
+      scheme: http
+{{- end }}
