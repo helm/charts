@@ -6,6 +6,7 @@ Cerebro is an open source (MIT License) elasticsearch web admin tool built using
 
 This chart deploys Cerebro to your cluster via a Deployment and Service.
 Optionally you can also enable ingress.
+Optionally you can use cerebro provided auth by uploading a Secret with the needed env vars (don't forget to set `AUTH_TYPE`).
 
 # Prerequisites
 
@@ -61,6 +62,7 @@ The following table lists the configurable parameters of the cerebro chart and t
 | `nodeSelector`                      | Settings for nodeselector           | `{}`                                      |
 | `tolerations`                       | Settings for toleration             | `{}`                                      |
 | `affinity`                          | Settings for affinity               | `{}`                                      |
+| `envFromSecretRef`                  | Reference to Secret with env vars   |                                           |
 | `config.basePath`                   | Application base path               | `/`                                       |
 | `config.restHistorySize`            | Rest request history size per user  | `50`                                      |
 | `config.hosts`                      | A list of known hosts               | `[]`                                      |
