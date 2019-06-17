@@ -43,8 +43,8 @@ Create chart name and version as used by the chart label.
 
 {{- define "stolon.clusterName" -}}
 {{- if .Values.clusterName -}}
-  {{- .Values.clusterName | trunc 63 | trimSuffix "-"" -}}
+    {{- .Values.clusterName | trunc 63 | trimSuffix "-"" -}}
 {{- else -}}
-  {{- template "stolon.fullname" . -}}
+    {{- template "stolon.fullname" . -}}
 {{- end -}}
 {{- end -}}
