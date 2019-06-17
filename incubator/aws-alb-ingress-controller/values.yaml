@@ -109,3 +109,8 @@ volumes: []
   # - name: aws-iam-credentials
   #   secret:
   #     secretName: alb-ingress-controller-role
+
+# Leverage a PriorityClass to ensure your pods survive resource shortages
+# ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
+# PriorityClass: system-cluster-critical
+priorityClassName: ""
