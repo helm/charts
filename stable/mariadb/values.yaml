@@ -141,11 +141,9 @@ master:
   #     value: value1
 
   ## MariaDB additional command line flags
-  ##
   ## Can be used to specify command line flags, for example:
   ##
   ## extraFlags: "--max-connect-errors=1000 --max_connections=155"
-  extraFlags: ""
 
   ## Affinity for pod assignment
   ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
@@ -276,11 +274,9 @@ slave:
   #     value: value1
 
   ## MariaDB additional command line flags
-  ##
   ## Can be used to specify command line flags, for example:
   ##
   ## extraFlags: "--max-connect-errors=1000 --max_connections=155"
-  extraFlags: ""
 
   ## Affinity for pod assignment
   ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
