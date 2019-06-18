@@ -137,6 +137,10 @@
     - name: DD_EXTRA_CONFIG_PROVIDERS
       value: "clusterchecks"
     {{- end }}
+    {{- if .Values.systemProbe.enabled }}
+    - name: DD_SYSTEM_PROBE_ENABLED
+      value: {{ .Values.systemProbe.enabled | quote }}
+    {{- end }}
 {{- if .Values.datadog.env }}
 {{ toYaml .Values.datadog.env | indent 4 }}
 {{- end }}
@@ -183,6 +187,11 @@
     {{- if .Values.datadog.processAgentEnabled }}
     - name: passwd
       mountPath: /etc/passwd
+      readOnly: true
+    {{- end }}
+    {{- if .Values.systemProbe.enabled }}
+    - name: sysprobe-socket-dir
+      mountPath: /opt/datadog-agent/run
       readOnly: true
     {{- end }}
 {{- if .Values.datadog.volumeMounts }}

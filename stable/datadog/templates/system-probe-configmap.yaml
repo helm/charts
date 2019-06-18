@@ -1,3 +1,4 @@
+{{- if .Values.systemProbe.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -11,14 +12,12 @@ metadata:
     heritage: {{ .Release.Service | quote }}
 data:
   system-probe.yaml: |
-    log_to_console: true
     system_probe_config:
       enabled: {{ $.Values.systemProbe.enabled }}
       debug_port:  {{ $.Values.systemProbe.debugPort }}
       sysprobe_socket: /opt/datadog-agent/run/sysprobe.sock
       enable_conntrack : {{ $.Values.systemProbe.enableConntrack }}
       bpf_debug: {{ $.Values.systemProbe.bpfDebug }}
-
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -357,3 +356,4 @@ data:
         }
       ]
     }
+{{- end }}

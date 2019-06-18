@@ -298,12 +298,6 @@ systemProbe:
   #
   # bpfDebug: false
 
-  ## @param resources - object -required
-  ## system-probe agent resource requests and limits
-  #
-  resources: {}
-
-
 ## @param clusterAgent - object - required
 ## This is the Datadog Cluster Agent implementation that handles cluster-wide
 ## metrics more cleanly, separates concerns for better rbac, and implements
@@ -503,6 +497,30 @@ daemonset:
 
       ## @param resources - object - required
       ## Resource requests and limits for the trace-agent container.
+      #
+      resources: {}
+      #  requests:
+      #    cpu: 100m
+      #    memory: 200Mi
+      #  limits:
+      #    cpu: 100m
+      #    memory: 200Mi
+
+    systemProbe:
+      ## @param env - list - required
+      ## Additionnal environment variables for the system-probe container.
+      #
+      # env:
+
+      ## @param logLevel - string - optional
+      ## Set logging verbosity, valid log levels are:
+      ## trace, debug, info, warn, error, critical, and off.
+      ## If not set, fall back to the value of datadog.logLevel.
+      #
+      # logLevel: INFO
+
+      ## @param resources - object - required
+      ## Resource requests and limits for the system-probe container.
       #
       resources: {}
       #  requests:
