@@ -13,6 +13,6 @@ Get the application URL by running the following commands. Note that the UI woul
 {{- else if contains "ClusterIP" .Values.service.type }}
   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/instance={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
     Note: If on OpenShift, change to the chart namespace before running the command below.'
-  kubectl port-forward $POD_NAME 8080:80
+  kubectl port-forward $POD_NAME 8080:18080
     Now visit http://127.0.0.1:8080 to use your application.'
 {{- end }}
