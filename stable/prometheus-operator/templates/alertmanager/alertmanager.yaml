@@ -26,6 +26,7 @@ spec:
 {{ toYaml .Values.alertmanager.alertmanagerSpec.nodeSelector | indent 4 }}
 {{- end }}
   paused: {{ .Values.alertmanager.alertmanagerSpec.paused }}
+  logFormat: {{ .Values.alertmanager.alertmanagerSpec.logFormat | quote  }}
   logLevel:  {{ .Values.alertmanager.alertmanagerSpec.logLevel | quote  }}
   retention: {{ .Values.alertmanager.alertmanagerSpec.retention | quote  }}
 {{- if .Values.alertmanager.alertmanagerSpec.secrets }}

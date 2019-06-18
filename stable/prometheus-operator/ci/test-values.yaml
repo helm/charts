@@ -116,7 +116,7 @@ alertmanager:
   ##
   templateFiles: {}
   #
-  # An example template:
+  ## An example template:
   #   template_1.tmpl: |-
   #       {{ define "cluster" }}{{ .ExternalURL | reReplaceAll ".*alertmanager\\.(.*)" "$1" }}{{ end }}
   #
@@ -232,6 +232,10 @@ alertmanager:
     ## The ConfigMaps are mounted into /etc/alertmanager/configmaps/.
     ##
     configMaps: []
+
+    ## Define Log Format
+    # Use logfmt (default) or json-formatted logging
+    # logFormat: logfmt
 
     ## Log level for Alertmanager to be configured with.
     ##
