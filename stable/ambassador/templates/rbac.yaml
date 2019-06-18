@@ -15,7 +15,9 @@ metadata:
 rules:
   - apiGroups: [""]
     resources:
+    {{- if not .Values.rbac.namespaced }}
     - namespaces
+    {{- end }}
     - services
     - secrets
     - endpoints

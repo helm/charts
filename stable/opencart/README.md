@@ -54,7 +54,7 @@ The following table lists the configurable parameters of the OpenCart chart and 
 | `image.registry`                    | OpenCart image registry                   | `docker.io`                                              |
 | `image.repository`                  | OpenCart Image name                       | `bitnami/opencart`                                       |
 | `image.tag`                         | OpenCart Image tag                        | `{TAG_NAME}`                                             |
-| `image.pullPolicy`                  | Image pull policy                         | `Always` if `imageTag` is `latest`, else `IfNotPresent`  |
+| `image.pullPolicy`                  | Image pull policy                         | `IfNotPresent`                                           |
 | `image.pullSecrets`                 | Specify docker-registry secret names as an array | `[]` (does not add image pull secrets to deployed pods) |
 | `opencartHost`                      | OpenCart host to create application URLs  | `nil`                                                    |
 | `service.type`                      | Kubernetes Service type                   | `LoadBalancer`                                           |
