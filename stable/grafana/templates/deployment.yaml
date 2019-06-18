@@ -18,11 +18,10 @@ spec:
     matchLabels:
       app: {{ template "grafana.name" . }}
       release: {{ .Release.Name }}
+{{- with .Values.deploymentStrategy }}
   strategy:
-    type: {{ .Values.deploymentStrategy }}
-  {{- if ne .Values.deploymentStrategy "RollingUpdate" }}
-    rollingUpdate: null
-  {{- end }}
+{{ toYaml . | trim | indent 4 }}
+{{- end }}
   template:
     metadata:
       labels:

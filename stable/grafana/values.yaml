@@ -10,7 +10,11 @@ serviceAccount:
 
 replicas: 1
 
-deploymentStrategy: RollingUpdate
+## See `kubectl explain deployment.spec.strategy` for more
+## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
+deploymentStrategy:
+  type: RollingUpdate
+  rollingUpdate: null
 
 readinessProbe:
   httpGet:
