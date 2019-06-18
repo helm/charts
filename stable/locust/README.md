@@ -36,9 +36,13 @@ helm install -n locust-nymph --set master.config.target-host=http://site.example
 | `service.annotations`        | KV containing custom annotations        | `{}`                                                  |
 | `service.extraLabels`        | KV containing extra labels              | `{}`                                                  |
 | `master.config.target-host`  | locust target host                      | `http://site.example.com`                             |
+| `master.nodeSelector`        | k8s nodeselector                        | `{}`                                                  |
+| `master.tolerations`         | k8s tolerance                           | `{}`                                                  |
 | `worker.config.locust-script`| locust script to run                    | `/locust-tasks/tasks.py`                              |
 | `worker.config.configmapName`| configmap to mount locust scripts from  | `empty, configmap is created from tasks folder in Chart` |
 | `worker.replicaCount`        | Number of workers to run                | `2`                                                   |
+| `worker.nodeSelector`        | k8s nodeselector                        | `{}`                                                  |
+| `worker.tolerations`         | k8s tolerance                           | `{}`                                                  |
 
 Specify parameters using `--set key=value[,key=value]` argument to `helm install`
 
