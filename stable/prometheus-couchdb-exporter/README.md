@@ -59,6 +59,8 @@ The following table lists the configurable parameters and their default values.
 | `affinity`             | affinity settings for proxy pod assignments         | {}                                      |
 | `couchdb.uri`          | address of the couchdb                              | `http://couchdb.default.svc:5984`       |
 | `couchdb.databases`    | comma separated databases to monitor                | `_all_dbs`                              |
+| `couchdb.username`     | username for couchdb                                |                                         |
+| `couchdb.password`     | password for couchdb                                |                                         |
 
 
 For more information please refer to the [couchdb-prometheus-exporter]https://github.com/gesellix/couchdb-prometheus-exporter) documentation.
