@@ -55,6 +55,9 @@ proxy:
   httpsProxy:
   noProxy:
 
+# Set daemonset timezone
+timezone:
+
 ebpf:
   # Enable eBPF support for Falco
   enabled: false
