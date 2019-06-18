@@ -136,7 +136,7 @@
     {{- end }}
     {{- end }}
 {{- if .Values.datadog.volumeMounts }}
-{{ toYaml .Values.datadog.volumeMounts | indent 10 }}
+{{ toYaml .Values.datadog.volumeMounts | indent 4 }}
 {{- end }}
 {{- if .Values.datadog.livenessProbe }}
   livenessProbe:
