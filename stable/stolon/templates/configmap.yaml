@@ -15,11 +15,11 @@ data:
 
     NODE_NAME=${HOSTNAME}
     IFS='-' read -ra ADDR <<< "$(hostname)"
-    STKEEPER_UID="keeper${ADDR[-1]}"
+    STKEEPER_UID="{{ .Values.keeper.uid_prefix }}${ADDR[-1]}"
 
     echo "keeper [${STKEEPER_UID}] is failing"
     stolonctl \
-      --cluster-name={{ template "stolon.fullname" . }} \
+      --cluster-name={{ template "stolon.clusterName" . }} \
       --store-backend={{ .Values.store.backend }} \
       {{- if eq .Values.store.backend "kubernetes" }}
       --kube-resource-kind={{ .Values.store.kubeResourceKind }} \

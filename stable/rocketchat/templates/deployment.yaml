@@ -89,3 +89,27 @@ spec:
       {{- else }}
         emptyDir: {}
       {{- end }}
+{{- if or .Values.podAntiAffinity .Values.affinity }}
+      affinity:
+{{- if .Values.affinity }}
+{{ toYaml .Values.affinity | indent 4 }}
+{{- end }}
+{{- if eq .Values.podAntiAffinity "hard" }}
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - topologyKey: {{ .Values.podAntiAffinityTopologyKey }}
+            labelSelector:
+              matchLabels:
+                app.kubernetes.io/name: {{ include "rocketchat.name" . }}
+{{- else if eq .Values.podAntiAffinity "soft" }}
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              topologyKey: {{ .Values.podAntiAffinityTopologyKey }}
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: {{ include "rocketchat.name" . }}
+                  app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+{{- end }}

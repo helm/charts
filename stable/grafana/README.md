@@ -32,13 +32,13 @@ The command removes all the Kubernetes components associated with the chart and 
 | Parameter                                 | Description                                   | Default                                                 |
 |-------------------------------------------|-----------------------------------------------|---------------------------------------------------------|
 | `replicas`                                | Number of nodes                               | `1`                                                     |
-| `deploymentStrategy`                      | Deployment strategy                           | `RollingUpdate`                                         |
+| `deploymentStrategy`                      | Deployment strategy                           | `{ "type": "RollingUpdate", "rollingUpdate": null }`                                         |
 | `livenessProbe`                           | Liveness Probe settings                       | `{ "httpGet": { "path": "/api/health", "port": 3000 } "initialDelaySeconds": 60, "timeoutSeconds": 30, "failureThreshold": 10 }` |
 | `readinessProbe`                          | Rediness Probe settings                       | `{ "httpGet": { "path": "/api/health", "port": 3000 } }`|
 | `securityContext`                         | Deployment securityContext                    | `{"runAsUser": 472, "fsGroup": 472}`                    |
 | `priorityClassName`                       | Name of Priority Class to assign pods         | `nil`                                                   |
 | `image.repository`                        | Image repository                              | `grafana/grafana`                                       |
-| `image.tag`                               | Image tag. (`Must be >= 5.0.0`)               | `6.2.0`                                                 |
+| `image.tag`                               | Image tag. (`Must be >= 5.0.0`)               | `6.2.3`                                                 |
 | `image.pullPolicy`                        | Image pull policy                             | `IfNotPresent`                                          |
 | `image.pullSecrets`                       | Image pull secrets                            | `{}`                                                    |
 | `service.type`                            | Kubernetes service type                       | `ClusterIP`                                             |
@@ -58,6 +58,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `affinity`                                | Affinity settings for pod assignment          | `{}`                                                    |
 | `extraInitContainers`                     | Init containers to add to the grafana pod     | `{}` |
 | `extraContainers`                         | Sidecar containers to add to the grafana pod  | `{}` |
+| `schedulerName`                           | Name of the k8s scheduler (other than default) | `nil`                                                  |
 | `persistence.enabled`                     | Use persistent volume to store data           | `false`                                                 |
 | `persistence.size`                        | Size of persistent volume claim               | `10Gi`                                                  |
 | `persistence.existingClaim`               | Use an existing PVC to persist data           | `nil`                                                   |

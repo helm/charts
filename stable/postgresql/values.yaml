@@ -14,12 +14,12 @@ global:
 image:
   registry: docker.io
   repository: bitnami/postgresql
-  tag: 11.3.0-debian-9-r17
+  tag: 11.3.0-debian-9-r38
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   ##
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -56,6 +56,11 @@ volumePermissions:
   ## Init container Security Context
   securityContext:
     runAsUser: 0
+
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName:
 
 ## Pod Security Context
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
@@ -121,7 +126,6 @@ postgresqlDataDir: /bitnami/postgresql/data
 ##
 # postgresqlInitdbWalDir:
 
-
 ## PostgreSQL configuration
 ## Specify runtime configuration parameters as a dict, using camelCase, e.g.
 ## {"sharedBuffers": "500MB"}
@@ -161,7 +165,7 @@ postgresqlDataDir: /bitnami/postgresql/data
 #   my_init_script.sh: |
 #      #!/bin/sh
 #      echo "Do something."
-#
+
 ## ConfigMap with scripts to be run at first boot
 ## NOTE: This will override initdbScripts
 # initdbScriptsConfigMap:
@@ -249,6 +253,12 @@ master:
   tolerations: []
   podLabels: {}
   podAnnotations: {}
+  ## Additional PostgreSQL Master Volume mounts
+  ##
+  extraVolumeMounts: []
+  ## Additional PostgreSQL Master Volumes
+  ##
+  extraVolumes: []
 
 ##
 ## PostgreSQL Slave parameters
@@ -263,6 +273,12 @@ slave:
   tolerations: []
   podLabels: {}
   podAnnotations: {}
+  ## Additional PostgreSQL Slave Volume mounts
+  ##
+  extraVolumeMounts: []
+  ## Additional PostgreSQL Slave Volumes
+  ##
+  extraVolumes: []
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -313,6 +329,12 @@ metrics:
       prometheus.io/scrape: "true"
       prometheus.io/port: "9187"
     loadBalancerIP:
+  serviceMonitor:
+    enabled: false
+    additionalLabels: {}
+    # namespace: monitoring
+    # interval: 30s
+    # scrapeTimeout: 10s
   image:
     registry: docker.io
     repository: wrouesnel/postgres_exporter
