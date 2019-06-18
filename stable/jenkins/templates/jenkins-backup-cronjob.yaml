@@ -49,20 +49,22 @@ spec:
             resources:
 {{ toYaml . | indent 14 }}
           {{- end }}
-        affinity:
-          podAffinity:
-            preferredDuringSchedulingIgnoredDuringExecution:
-            - labelSelector:
-                matchExpressions:
-                - key: "app.kubernetes.io/name"
-                  operator: In
-                  values:
-                  - "{{ template "jenkins.name" . }}"
-                - key: "app.kubernetes.io/instance"
-                  operator: In
-                  values:
-                  - "{{ .Release.Name }}"
-              topologyKey: "kubernetes.io/hostname"
+          affinity:
+            podAffinity:
+              preferredDuringSchedulingIgnoredDuringExecution:
+              - weight: 100
+                podAffinityTerm:
+                  topologyKey: "kubernetes.io/hostname"
+                  labelSelector:
+                    matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                      - {{ template "jenkins.fullname" . }}
+                    - key: release
+                      operator: In
+                      values:
+                      - {{ .Release.Name }}
       {{- with .Values.tolerations }}
         tolerations:
 {{ toYaml . | indent 10 }}
