@@ -80,6 +80,7 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `replicaSet.key`                                   | Key used for authentication in the replica set                                               | `random alphanumeric string (10)`                       |
 | `replicaSet.replicas.secondary`                    | Number of secondary nodes in the replica set                                                 | `1`                                                     |
 | `replicaSet.replicas.arbiter`                      | Number of arbiter nodes in the replica set                                                   | `1`                                                     |
+| `replicaSet.pdb.enabled`                           | Switch to enable/disable Pod Disruption Budget                                               | `true`                                                  |
 | `replicaSet.pdb.minAvailable.primary`              | PDB (min available) for the MongoDB Primary nodes                                            | `1`                                                     |
 | `replicaSet.pdb.minAvailable.secondary`            | PDB (min available) for the MongoDB Secondary nodes                                          | `1`                                                     |
 | `replicaSet.pdb.minAvailable.arbiter`              | PDB (min available) for the MongoDB Arbiter nodes                                            | `1`                                                     |
