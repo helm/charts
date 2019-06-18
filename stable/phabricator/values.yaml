@@ -93,6 +93,8 @@ mariadb:
   ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
   ##
   master:
+    ## Disable local_infile for MariaDB: https://secure.phabricator.com/T13238
+    extraFlags: "--local-infile=0"
     persistence:
       enabled: true
       ## mariadb data Persistent Volume Storage Class
