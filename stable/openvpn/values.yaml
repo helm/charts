@@ -76,11 +76,13 @@ openvpn:
   # keystoreSecret:
   # secret with openvpn certificates. If specified, certificates are taken from the secret
   # create secret with such command:
-  #    kubectl create secret generic openvpn-keystore-secret --from-file=./server.key --from-file=./ca.crt --from-file=./server.crt --from-file=./dh.pem
+  #    kubectl create secret generic openvpn-keystore-secret --from-file=./server.key --from-file=./ca.crt --from-file=./server.crt --from-file=./dh.pem [--from-file=./crl.pem]  [--from-file=./ta.key]
   # Push a `dhcp-option DOMAIN` config
   dhcpOptionDomain: true
   # Redirect all client traffic through VPN
   redirectGateway: true
+  # Use/generate certificate revocation list
+  useCrl: false
   # Use/generate a ta.key (https://openvpn.net/community-resources/hardening-openvpn-security/)
   taKey: false
   # Override default cipher
