@@ -1,0 +1,9 @@
+common:
+  useNodeNameOnly: true
+classes:
+- name: local-scsi
+  hostDir: "/mnt/disks/by-uuid/google-local-ssds-scsi-fs"
+  storageClass: true
+- name: local-nvme
+  hostDir: "/mnt/disks/by-uuid/google-local-ssds-nvme-fs"
+  storageClass: true

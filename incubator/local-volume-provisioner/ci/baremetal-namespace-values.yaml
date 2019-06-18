@@ -1,0 +1,10 @@
+common:
+  namespace: local-provisioner
+  createNamespace: true
+classes:
+- name: local-storage
+  hostDir: /mnt/disks
+  blockCleanerCommand:
+  - "/scripts/quick_reset.sh"
+  volumeMode: Block
+  storageClass: true
