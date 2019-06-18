@@ -3,14 +3,14 @@ kind: Service
 metadata:
   name: {{ template "cni-genie.fullname" . }}
   labels:
-    app: {{ template "cni-genie.name" . }}
-    chart: {{ template "cni-genie.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ template "cni-genie.name" . }}
+    helm.sh/chart: {{ template "cni-genie.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   ports:
-    - port: {{.Values.admissionControllerService.internalPort }}
-      targetPort: {{.Values.admissionControllerService.externalPort }}
+    - port: {{.Values.admissionController.admissionControllerService.internalPort }}
+      targetPort: {{.Values.admissionController.admissionControllerService.externalPort }}
       protocol: TCP
       name: http
   selector:

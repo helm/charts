@@ -5,16 +5,6 @@
 # In case network policy controller is not needed, set 'includePolicy' flag to false
 includePolicy: true
 
-image:
-  pullPolicy: IfNotPresent
-
-  # Paths for fetching genie images
-  pluginImagePath: quay.io/huawei-cni-genie/genie-plugin:latest
-
-  admissionControllerImagePath: quay.io/huawei-cni-genie/genie-admission-controller:latest
-
-  policyControllerImagePath: quay.io/huawei-cni-genie/genie-policy-controller:latest
-
 confPath:
   # Path for genie bin file
   cniBinDirPath: /opt/cni/bin
@@ -25,10 +15,6 @@ confPath:
   # Kubeconfig file for CNIGenie CNI plugin
   kubeconfigPath: /etc/cni/net.d/genie-kubeconfig
 
-admissionControllerService:
-  externalPort: 8000
-  internalPort: 443
-
 # Port at which admission controller listens
 admissionControllerContainerPort: 8000
 
@@ -38,7 +24,7 @@ genieLogLevel: info
 # Labels for genie plugin and policy features
 geniePluginLabel: genie
 geniePolicyLabel: genie-policy
-
+genieadmissioncontrollerLabel: genie-admission-controller
 # serviceAccountNames for genie plugin and policy
 geniePluginServiceAccountName: genie-plugin
 geniePolicyServiceAccountName: genie-policy
@@ -57,6 +43,25 @@ ServiceAccounts:
 # Names for genie plugin and policy
 plugin:
   name: genie-plugin
+  image:
+    pullpolicy: IfNotPresent
+    tag: v3.0
+    repository: cnigenie/genie-plugin
 
 policy:
   name: genie-policy
+  image:
+    pullpolicy: IfNotPresent
+    tag: v3.0
+    repository: cnigenie/genie-policy-controller
+
+admissionController:
+  # Port at which admission controller listens
+  admissionControllerContainerPort: 8000
+  admissionControllerService:
+    externalPort: 8000
+    internalPort: 443
+  image:
+    pullpolicy: IfNotPresent
+    tag: v3.0
+    repository: cnigenie/genie-admission-controller

@@ -1,6 +1,6 @@
 ---
 kind: ClusterRole
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: {{ template "cni-genie.plugin.fullname" . }}
 rules:
@@ -54,7 +54,7 @@ rules:
 ---
 {{- if .Values.includePolicy }}
 kind: ClusterRole
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: {{ template "cni-genie.policy.fullname" . }}
 rules:

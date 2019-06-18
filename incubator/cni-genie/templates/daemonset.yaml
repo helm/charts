@@ -1,19 +1,19 @@
 # Install CNI-Genie plugin on each slave node.
 kind: DaemonSet
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 metadata:
   name: {{ template "cni-genie.plugin.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    k8s-app: {{.Values.geniePluginLabel }}
+    app.kubernetes.io/name: {{.Values.geniePluginLabel }}
 spec:
   selector:
     matchLabels:
-      k8s-app: {{.Values.geniePluginLabel }}
+      app.kubernetes.io/name: {{.Values.geniePluginLabel }}
   template:
     metadata:
       labels:
-        k8s-app: {{.Values.geniePluginLabel }}
+        app.kubernetes.io/name: {{.Values.geniePluginLabel }}
       annotations:
         scheduler.alpha.kubernetes.io/critical-pod: ''
     spec:
@@ -25,8 +25,8 @@ spec:
         # Installs required 00-genie.conf and genie binary
         # on slave node.
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.pluginImagePath }}"
-          imagePullPolicy: {{.Values.image.pullPolicy }}
+          image: "{{ .Values.plugin.image.repository }}:{{ .Values.plugin.image.tag }}"
+          imagePullPolicy: {{.Values.plugin.image.pullPolicy }}
           command: ["/launch.sh"]
           env:
             - name: {{ .Chart.Name }}
@@ -60,16 +60,19 @@ spec:
 ---
 # Genie network admission controller daemonset configuration
 # Genie network admission controller pods will run only in master nodes
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: {{ template "cni-genie.fullname" . }}
   namespace: {{ .Release.Namespace }}
 spec:
+  selector:
+    matchLabels:
+      kubernetes.io/role: {{.Values.genieadmissioncontrollerLabel }}
   template:
     metadata:
       labels:
-        role: genie-network-admission-controller
+        kubernetes.io/role: {{.Values.genieadmissioncontrollerLabel }}
       annotations:
         scheduler.alpha.kubernetes.io/critical-pod: ''
     spec:
@@ -87,27 +90,27 @@ spec:
       serviceAccountName: {{ template "cni-genie.serviceAccountName.plugin" . }}
       containers:
         - name: {{ template "cni-genie.fullname" . }}
-          image: "{{ .Values.image.admissionControllerImagePath }}"
-          imagePullPolicy: {{.Values.image.pullPolicy }}
+          image: "{{ .Values.admissionController.image.repository }}:{{ .Values.admissionController.image.tag }}"
+          imagePullPolicy: {{.Values.admissionController.image.pullPolicy }}
           ports:
-            - containerPort: {{.Values.admissionControllerContainerPort }}
+            - containerPort: {{.Values.admissionController.admissionControllerContainerPort }}
 ---
 # Daemonset configuration for geine network policy
 kind: DaemonSet
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 metadata:
   name: {{ template "cni-genie.policy.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    k8s-app: {{.Values.geniePolicyLabel }}
+    app.kubernetes.io/name: {{.Values.geniePolicyLabel }}
 spec:
   selector:
     matchLabels:
-      k8s-app: {{.Values.geniePolicyLabel }}
+      app.kubernetes.io/name: {{.Values.geniePolicyLabel }}
   template:
     metadata:
       labels:
-        k8s-app: {{.Values.geniePolicyLabel }}
+        app.kubernetes.io/name: {{.Values.geniePolicyLabel }}
       annotations:
         scheduler.alpha.kubernetes.io/critical-pod: ''
         scheduler.alpha.kubernetes.io/tolerations: |
@@ -133,8 +136,8 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: spec.nodeName
-          image: "{{ .Values.image.policyControllerImagePath }}"
-          imagePullPolicy: {{.Values.image.pullPolicy }}
+          image: "{{ .Values.policy.image.repository }}:{{ .Values.policy.image.tag }}"
+          imagePullPolicy: {{.Values.policy.image.pullPolicy }}
           command:
           - /genie-policy
           args:

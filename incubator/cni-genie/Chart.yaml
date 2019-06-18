@@ -6,9 +6,7 @@ home: https://github.com/cni-genie/CNI-Genie
 sources:
   - https://github.com/cni-genie/CNI-Genie
 maintainers:
-  - name: jundu
-    email: dujun5@huawei.com
   - name: sushanthakumar
-    email: sushanthakumar@huawei.com
+    email: bsushanthshetty@gmail.com
   - name: zefengwang
-    email: wangzefeng@huawei.com
+    email: kevinwzf0126@gmail.com
