@@ -137,6 +137,8 @@ data:
         {{- end }}
         {{- end }}
       {{- end }}
+    [ping]
+    entryPoint = "http"
     [kubernetes]
     {{- if .Values.kubernetes}}
       {{- if .Values.kubernetes.endpoint }}
