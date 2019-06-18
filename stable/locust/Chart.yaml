@@ -1,11 +1,14 @@
+apiVersion: v1
 name: locust
 description: A modern load testing framework
-version: 0.3.0
-appVersion: 0.7.5
+version: 1.0.0
+appVersion: 0.9.0
 maintainers:
   - name: so0k
     email: vincent.drl@gmail.com
+  - name: haugene
+    email: kristian.haugene@greenbird.com
 home: http://locust.io
 icon: https://pbs.twimg.com/profile_images/1867636195/locust-logo-orignal.png
 sources:
-  - https://github.com/honestbee/distributed-load-testing
+  - https://github.com/greenbird/locust

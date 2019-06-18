@@ -28,4 +28,7 @@ rules:
     resources: ["podsecuritypolicies"]
     resourceNames: ["nfs-provisioner"]
     verbs: ["use"]
+  - apiGroups: [""]
+    resources: ["endpoints"]
+    verbs: ["get", "list", "watch", "create", "delete", "update", "patch"]
 {{- end -}}

@@ -8,10 +8,15 @@ spec:
   template:
     metadata:
     {{- if .Values.podAnnotations }}
-      annotations:
-{{ toYaml .Values.podAnnotations | indent 8}}
+      annotations: {{ toYaml .Values.podAnnotations | nindent 8}}
     {{- end }}
       labels: {{ include "external-dns.labels" . | indent 8 }}
+    {{- if or (and .Values.aws.secretKey .Values.aws.accessKey) .Values.cloudflare.apiKey .Values.digitalocean.apiToken (and .Values.infoblox.wapiUsername .Values.infoblox.wapiPassword) .Values.rfc2136.tsigSecret .Values.extraEnv .Values.google.serviceAccountKey }}
+      checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+    {{- end }}
+    {{- if and (eq .Values.provider "designate") .Values.designate.customCA.enabled }}
+      checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+    {{- end }}
     spec:
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
@@ -57,6 +62,12 @@ spec:
           {{- end }}
           {{ if .Values.dryRun }}
             - --dry-run
+          {{- end }}
+          {{ if .Values.aws.assumeRoleArn }}
+            - --aws-assume-role={{ .Values.aws.assumeRoleArn }}
+          {{- end }}
+          {{ if .Values.aws.batchChangeSize }}
+            - --aws-batch-change-size={{ .Values.aws.batchChangeSize }}
           {{- end }}
           {{- range $key, $value := .Values.extraArgs }}
             {{- if $value }}
@@ -104,7 +115,7 @@ spec:
             - --rfc2136-tsig-axfr
               {{- end }}
             {{- else }}
-            - --rfc2136-insecure=false
+            - --rfc2136-insecure
             {{- end }}
           {{- end }}
           volumeMounts:
@@ -208,12 +219,10 @@ spec:
           ports:
             - containerPort: 7979
         {{- if .Values.securityContext }}
-          securityContext:
-{{ toYaml .Values.securityContext | indent 12 }}
+          securityContext: {{ toYaml .Values.securityContext | nindent 12 }}
         {{- end }}
         {{- if .Values.resources }}
-          resources:
-{{ toYaml .Values.resources | indent 12 }}
+          resources: {{ toYaml .Values.resources | nindent 12 }}
         {{- end }}
       volumes:
       {{- if .Values.google.serviceAccountSecret }}
@@ -250,15 +259,12 @@ spec:
             path: {{ .Values.designate.customCA.filename }}
       {{- end }}
     {{- if .Values.nodeSelector }}
-      nodeSelector:
-{{ toYaml .Values.nodeSelector | indent 8 }}
+      nodeSelector: {{ toYaml .Values.nodeSelector | nindent 8 }}
     {{- end }}
     {{- if .Values.tolerations }}
-      tolerations:
-{{ toYaml .Values.tolerations | indent 8 }}
+      tolerations: {{ toYaml .Values.tolerations | nindent 8 }}
     {{- end }}
 {{- if .Values.affinity }}
-      affinity:
-{{ toYaml .Values.affinity | indent 8 }}
+      affinity: {{ toYaml .Values.affinity | nindent 8 }}
     {{- end }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "external-dns.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}

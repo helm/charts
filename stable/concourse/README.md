@@ -83,7 +83,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | `imageDigest` | Specific image digest to use in place of a tag. | `nil` |
 | `imagePullPolicy` | Concourse image pull policy | `IfNotPresent` |
 | `imagePullSecrets` | Array of imagePullSecrets in the namespace for pulling images | `[]` |
-| `imageTag` | Concourse image version | `5.0.0` |
+| `imageTag` | Concourse image version | `5.3.0` |
 | `image` | Concourse image | `concourse/concourse` |
 | `nameOverride` | Provide a name in place of `concourse` for `app:` labels | `nil` |
 | `persistence.enabled` | Enable Concourse persistence using Persistent Volume Claims | `true` |
@@ -114,6 +114,9 @@ The following table lists the configurable parameters of the Concourse chart and
 | `secrets.cfClientId` | Client ID for cf auth provider | `nil` |
 | `secrets.cfClientSecret` | Client secret for cf auth provider | `nil` |
 | `secrets.create` | Create the secret resource from the following values. *See [Secrets](#secrets)* | `true` |
+| `secrets.credhubCaCert` | Value of PEM-encoded CA cert file to use to verify the CredHub server SSL cert. | `nil` |
+| `secrets.credhubClientId` | Client ID for CredHub authorization. | `nil` |
+| `secrets.credhubClientSecret` | Client secret for CredHub authorization. | `nil` |
 | `secrets.encryptionKey` | current encryption key | `nil` |
 | `secrets.githubCaCert` | CA certificate for Enterprise Github OAuth | `nil` |
 | `secrets.githubClientId` | Application client ID for GitHub OAuth | `nil` |
@@ -154,6 +157,8 @@ The following table lists the configurable parameters of the Concourse chart and
 | `web.additionalVolumes` | Volumes to be added to the web pods | `nil` |
 | `web.annotations`| Concourse Web deployment annotations | `nil` |
 | `web.authSecretsPath` | Specify the mount directory of the web auth secrets | `/concourse-auth` |
+| `web.credhubSecretsPath` | Specify the mount directory of the web credhub secrets | `/concourse-credhub` |
+| `web.enabled` | Enable or disable the web component | `true` |
 | `web.env` | Configure additional environment variables for the web containers | `[]` |
 | `web.ingress.annotations` | Concourse Web Ingress annotations | `{}` |
 | `web.ingress.enabled` | Enable Concourse Web Ingress | `false` |
@@ -172,6 +177,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | `web.readinessProbe.httpGet.path` | Path to access on the HTTP server when performing the healthcheck | `/api/v1/info` |
 | `web.readinessProbe.httpGet.port` | Name or number of the port to access on the container | `atc` |
 | `web.replicas` | Number of Concourse Web replicas | `1` |
+| `web.strategy` | Strategy for updates to deployment. | `{}` |
 | `web.resources.requests.cpu` | Minimum amount of cpu resources requested | `100m` |
 | `web.resources.requests.memory` | Minimum amount of memory resources requested | `128Mi` |
 | `web.service.annotations` | Concourse Web Service annotations | `nil` |
@@ -193,6 +199,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | `worker.annotations` | Annotations to be added to the worker pods | `{}` |
 | `worker.cleanUpWorkDirOnStart` | Removes any previous state created in `concourse.worker.workDir` | `true` |
 | `worker.emptyDirSize` | When persistance is disabled this value will be used to limit the emptyDir volume size | `nil` |
+| `worker.enabled` | Enable or disable the worker component. You should set postgres.enabled=false in order not to get an unnecessary Postgres chart deployed | `true` |
 | `worker.env` | Configure additional environment variables for the worker container(s) | `[]` |
 | `worker.hardAntiAffinity` | Should the workers be forced (as opposed to preferred) to be on different nodes? | `false` |
 | `worker.keySecretsPath` | Specify the mount directory of the worker keys secrets | `/concourse-keys` |
@@ -262,7 +269,13 @@ rm session-signing-key.pub
 printf "%s:%s" "concourse" "$(openssl rand -base64 24)" > local-users
 ```
 
-You'll also need to create/copy secret values for optional features. See [templates/secrets.yaml](templates/secrets.yaml) for possible values.
+All the worker-specific secrets, namely, `workerKey`, `workerKeyPub`, `hostKeyPub` are to be added to a separate Kubernetes secrets object with the name [release name]-worker.
+
+All other secrets are to be added to a secrets object with the name `[release name]-web`.
+
+For the time being, the secret `workerKeyPub` is to be added to both the worker and the web secret objects, until investigated within issue #13019.
+
+You'll also need to create/copy secret values for optional features. See [templates/web-secrets.yaml](templates/web-secrets.yaml) and [templates/web-secrets.yaml](templates/web-secrets.yaml)  for possible values.
 
 In the example below, we are not using the [PostgreSQL](#postgresql) chart dependency, and so we must set `postgresql-user` and `postgresql-password` secrets.
 
@@ -455,9 +468,44 @@ concourse:
       # pathPrefix:
 ```
 
+#### Credhub
+
+To use Credhub, set `concourse.web.kubernetes.enabled` to false, and consider the following values:
+
+```yaml
+## Configuration for using Credhub as a credential manager.
+## Ref: https://concourse-ci.org/credhub-credential-manager.html
+##
+concourse:
+  web:
+    credhub:
+      ## Enable the use of Credhub as a credential manager.
+      ##
+      enabled: true
+
+      ## CredHub server address used to access secrets
+      ## Example: https://credhub.example.com
+      ##
+      url:
+
+      ## Path under which to namespace credential lookup. (default: /concourse)
+      ##
+      pathPrefix:
+
+      ## Enables using a CA Certificate
+      ##
+      useCaCert: false
+
+      ## Enables insecure SSL verification.
+      ##
+      insecureSkipVerify: false
+```
+
 #### AWS Systems Manager Parameter Store (SSM)
 
 To use SSM, set `concourse.web.kubernetes.enabled` to false, and set `concourse.web.awsSsm.enabled` to true.
+
+Authentication can be configured to use an access key and secret key as well as a session token. This is done by setting `concourse.web.awsSsm.keyAuth.enabled` to `true`. Alternatively, if it set to `false`, AWS IAM role based authentication (instance or pod credentials) is assumed. To use a session token, `concourse.web.awsSsm.useSessionToken` should be set to `true`. The secret values can be managed using the values specified in this helm chart or separately. For more details, see https://concourse-ci.org/creds.html#ssm.
 
 For a given Concourse *team*, a pipeline looks for secrets in SSM using either `/concourse/{team}/{secret}` or `/concourse/{team}/{pipeline}/{secret}`; the patterns can be overridden using the `concourse.web.awsSsm.teamSecretTemplate` and `concourse.web.awsSsm.pipelineSecretTemplate` settings.
 
@@ -488,6 +536,8 @@ Where `<kms-key-arn>` is the ARN of the KMS key used to encrypt the secrets in P
 #### AWS Secrets Manager
 
 To use Secrets Manager, set `concourse.web.kubernetes.enabled` to false, and set `concourse.web.awsSecretsManager.enabled` to true.
+
+Authentication can be configured to use an access key and secret key as well as a session token. This is done by setting `concourse.web.awsSecretsManager.keyAuth.enabled` to `true`. Alternatively, if it set to `false`, AWS IAM role based authentication (instance or pod credentials) is assumed. To use a session token, `concourse.web.awsSecretsManger.useSessionToken` should be set to `true`. The secret values can be managed using the values specified in this helm chart or separately. For more details, see https://concourse-ci.org/creds.html#asm.
 
 For a given Concourse *team*, a pipeline looks for secrets in Secrets Manager using either `/concourse/{team}/{secret}` or `/concourse/{team}/{pipeline}/{secret}`; the patterns can be overridden using the `concourse.web.awsSecretsManager.teamSecretTemplate` and `concourse.web.awsSecretsManager.pipelineSecretTemplate` settings.
 

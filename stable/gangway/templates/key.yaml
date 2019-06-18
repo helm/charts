@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ include "gangway.fullname" . }}-key
+  labels:
+    app.kubernetes.io/name: {{ include "gangway.name" . }}
+    helm.sh/chart: {{ include "gangway.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+type: Opaque
+data:
+  sessionkey: {{ ( default ( randAlphaNum 32 ) .Values.gangway.sessionKey ) | b64enc | quote }}

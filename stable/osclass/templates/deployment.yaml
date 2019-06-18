@@ -131,8 +131,6 @@ spec:
         volumeMounts:
         - name: osclass-data
           mountPath: /bitnami/osclass
-        - name: apache-data
-          mountPath: /bitnami/apache
 {{- if .Values.metrics.enabled }}
       - name: metrics
         image: {{ template "osclass.metrics.image" . }}
@@ -161,13 +159,6 @@ spec:
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
           claimName: {{ template "osclass.fullname" . }}-osclass
-      {{- else }}
-        emptyDir: {}
-      {{- end }}
-      - name: apache-data
-      {{- if .Values.persistence.enabled }}
-        persistentVolumeClaim:
-          claimName: {{ template "osclass.fullname" . }}-apache
       {{- else }}
         emptyDir: {}
       {{- end }}

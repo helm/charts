@@ -92,12 +92,16 @@ spec:
 {{ toYaml .Values.hub.extraEnvs | indent 12 }}
             {{- end }}
           resources:
-{{ toYaml .Values.hub.resources | indent 12 }}
+{{ toYaml .Values.hub.resources | trim | indent 12 -}}
+{{- if or .Values.global.imagePullSecrets .Values.hub.imagePullSecrets }}
+      imagePullSecrets: 
+      - name: {{ .Values.hub.imagePullSecrets | default .Values.global.imagePullSecrets | quote }}
+{{- end }}
       nodeSelector:
 {{- if .Values.hub.nodeSelector }}
-{{ toYaml .Values.hub.nodeSelector | indent 8  }}
+{{ toYaml .Values.hub.nodeSelector | trim | indent 8  }}
 {{- else if .Values.global.nodeSelector }}
-{{ toYaml .Values.global.nodeSelector | indent 8  }}
+{{ toYaml .Values.global.nodeSelector | trim | indent 8  }}
 {{- end }}
       affinity:
 {{- if .Values.hub.affinity }}

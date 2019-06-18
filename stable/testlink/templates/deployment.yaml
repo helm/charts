@@ -130,8 +130,6 @@ spec:
         volumeMounts:
         - name: testlink-data
           mountPath: /bitnami/testlink
-        - name: apache-data
-          mountPath: /bitnami/apache
 {{- if .Values.metrics.enabled }}
       - name: metrics
         image: {{ template "testlink.metrics.image" . }}
@@ -160,13 +158,6 @@ spec:
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
           claimName: {{ template "testlink.fullname" . }}-testlink
-      {{- else }}
-        emptyDir: {}
-      {{- end }}
-      - name: apache-data
-      {{- if .Values.persistence.enabled }}
-        persistentVolumeClaim:
-          claimName: {{ template "testlink.fullname" . }}-apache
       {{- else }}
         emptyDir: {}
       {{- end }}

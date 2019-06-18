@@ -16,7 +16,9 @@ metadata:
     release: {{ .Release.Name }}
   name: {{ template "nginx-ingress.defaultBackend.fullname" . }}
 spec:
+{{- if not .Values.defaultBackend.service.omitClusterIP }}
   clusterIP: "{{ .Values.defaultBackend.service.clusterIP }}"
+{{- end }}
 {{- if .Values.defaultBackend.service.externalIPs }}
   externalIPs:
 {{ toYaml .Values.defaultBackend.service.externalIPs | indent 4 }}

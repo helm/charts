@@ -17,12 +17,11 @@ image:
   ## Bitnami MongoDB image tag
   ## ref: https://hub.docker.com/r/bitnami/mongodb/tags/
   ##
-  tag: 4.0.6
-
+  tag: 4.0.10-debian-9-r13
   ## Specify a imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   ##
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -100,6 +99,10 @@ service:
   ##
   # nodePort:
 
+  ## Specify the externalIP value ClusterIP service type.
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#external-ips
+  # externalIPs: []
+
   ## Specify the loadBalancerIP value for LoadBalancer service types.
   ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer
   ##
@@ -139,6 +142,11 @@ podAnnotations: {}
 
 # Additional pod labels to apply
 podLabels: {}
+
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName:
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -180,7 +188,18 @@ persistence:
   ## A manually managed Persistent Volume and Claim
   ## Requires persistence.enabled: true
   ## If defined, PVC must be created manually before volume will be bound
+  ##
   # existingClaim:
+
+  ## The path the volume will be mounted at, useful when using different
+  ## MongoDB images.
+  ##
+  mountPath: /bitnami/mongodb
+
+  ## The subdirectory of the volume to mount to, useful in dev environments
+  ## and one PV for multiple services.
+  ##
+  subPath: ""
 
   ## mongodb data Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
@@ -194,6 +213,19 @@ persistence:
     - ReadWriteOnce
   size: 8Gi
   annotations: {}
+
+# Expose mongodb via ingress. This is possible if using nginx-ingress
+# https://kubernetes.github.io/ingress-nginx/user-guide/exposing-tcp-udp-services/
+ingress:
+  enabled: false
+  annotations: {}
+  labels: {}
+  paths:
+    - /
+  hosts: []
+  tls:
+    - secretName: secret-tls
+      hosts: []
 
 ## Configure the options for init containers to be run before the main app containers
 ## are started. All init containers are run sequentially and must exit without errors
@@ -270,7 +302,7 @@ metrics:
     registry: docker.io
     repository: forekshub/percona-mongodb-exporter
     tag: latest
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
     ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -294,11 +326,15 @@ metrics:
     initialDelaySeconds: 15
     periodSeconds: 5
     timeoutSeconds: 5
+    failureThreshold: 3
+    successThreshold: 1
   readinessProbe:
     enabled: false
     initialDelaySeconds: 5
     periodSeconds: 5
     timeoutSeconds: 1
+    failureThreshold: 3
+    successThreshold: 1
 
   ## Metrics exporter pod Annotation
   podAnnotations:

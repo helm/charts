@@ -9,6 +9,10 @@ metadata:
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
     component: server
+  annotations:
+  {{- range $key, $value := .Values.server.annotations.deployment }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
 spec:
   replicas: 1
   strategy:
@@ -24,6 +28,10 @@ spec:
         app: {{ template "gocd.name" . }}
         release: {{ .Release.Name | quote }}
         component: server
+      annotations:
+      {{- range $key, $value := .Values.server.annotations.pod }}
+        {{ $key }}: {{ $value | quote }}
+      {{- end }}
     spec:
       serviceAccountName: {{ template "gocd.serviceAccountName" . }}
       {{- if or .Values.server.shouldPreconfigure (or .Values.server.persistence.enabled (or .Values.server.security.ssh.enabled .Values.server.persistence.extraVolumes)) }}
@@ -111,15 +119,26 @@ spec:
               readOnly: true
               mountPath: /home/go/.ssh
           {{- end }}
-          {{- if .Values.server.shouldPreconfigure }}
+          {{- if or .Values.server.shouldPreconfigure .Values.server.preStop }}
           lifecycle:
+            {{- if .Values.server.shouldPreconfigure}}
             postStart:
               exec:
                 command:
-{{ toYaml .Values.server.preconfigureCommand | indent 18 }}                
+{{ toYaml .Values.server.preconfigureCommand | indent 18 }}
+            {{- end }}
+            {{- if .Values.server.preStop}}
+            preStop:
+              exec:
+                command:
+{{ toYaml .Values.server.preStop | indent 18 }}
+            {{- end }}
           {{- end }}
           resources:
 {{ toYaml .Values.server.resources | indent 12 }}
+      {{- if .Values.server.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ .Values.server.terminationGracePeriodSeconds }}
+      {{- end }}
       restartPolicy: {{ .Values.server.restartPolicy }}
     {{- if .Values.server.nodeSelector }}
       nodeSelector:

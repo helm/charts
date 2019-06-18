@@ -1,0 +1,80 @@
+{{- if .Values.logdna.key -}}
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: {{ template "logdna.name" . }}
+  labels:
+    app: {{ template "logdna.name" . }}
+    chart: {{ template "logdna.chart" . }}
+    release: {{ .Release.Name }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ template "logdna.name" . }}
+        chart: {{ template "logdna.chart" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: {{ template "logdna.name" . }}
+        image: "{{.Values.image.name}}:{{.Values.image.tag}}"
+{{- if eq .Values.logdna.autoupdate "1" }}
+        imagePullPolicy: "always"
+{{- else }}
+        imagePullPolicy: "{{.Values.image.pullPolicy}}"
+{{- end }}
+        env:
+          - name: LOGDNA_AGENT_KEY
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "logdna.name" . }}
+                key: logdna-agent-key
+          - name: LOGDNA_PLATFORM
+            value: k8s
+{{- if .Values.logdna.tags }}
+          - name: LOGDNA_TAGS
+            value: {{ .Values.logdna.tags }}
+{{- end }}
+{{- if .Values.logdna.autoupdate }}
+          - name: LOGDNA_AUTOUPDATE
+            value: {{ .Values.logdna.autoupdate }}
+{{- end }}
+        resources:
+{{ toYaml .Values.resources | indent 12 }}
+        volumeMounts:
+        - name: varlog
+          mountPath: /var/log
+        - name: varlibdockercontainers
+          mountPath: /var/lib/docker/containers
+          readOnly: true
+        - name: mnt
+          mountPath: /mnt
+          readOnly: true
+        - name: docker
+          mountPath: /var/run/docker.sock
+        - name: osrelease
+          mountPath: /etc/os-release
+        - name: logdnahostname
+          mountPath: /etc/logdna-hostname
+      volumes:
+      - name: varlog
+        hostPath:
+          path: /var/log
+      - name: varlibdockercontainers
+        hostPath:
+          path: /var/lib/docker/containers
+      - name: mnt
+        hostPath:
+          path: /mnt
+      - name: docker
+        hostPath:
+          path: /var/run/docker.sock
+      - name: osrelease
+        hostPath:
+          path: /etc/os-release
+      - name: logdnahostname
+        hostPath:
+          path: /etc/hostname
+      tolerations:
+{{ toYaml .Values.daemonset.tolerations | indent 8 }}
+{{ end }}
