@@ -30,16 +30,3 @@ Create chart name and version as used by the chart label.
 {{- define "local-volume-provisioner.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
-
-{{/*
-local-volume-provisioner.resource will create a resource template that can be
-merged with each item in `.Values.resources`.
-*/}}
-{{- define "local-volume-provisioner.resource" -}}
-metadata:
-  labels:
-    app: {{ template "local-volume-provisioner.name" . }}
-    chart: {{ template "local-volume-provisioner.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
-{{- end }}

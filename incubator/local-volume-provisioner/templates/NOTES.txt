@@ -1,0 +1,1 @@
+Follow our [user guide](https://github.com/kubernetes-sigs/sig-storage-local-static-provisioner#user-guide) to get started with local volume static provisioning.

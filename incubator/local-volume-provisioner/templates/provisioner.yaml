@@ -154,10 +154,10 @@ kind: StorageClass
 metadata:
   name: {{ $val.name }}
   labels:
-    app.kubernetes.io/name: {{ include "local-volume-provisioner.name" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
-    helm.sh/chart: {{ include "local-volume-provisioner.chart" . }}
+    app.kubernetes.io/name: {{ include "local-volume-provisioner.name" $ }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+    app.kubernetes.io/managed-by: {{ $.Release.Service }}
+    helm.sh/chart: {{ include "local-volume-provisioner.chart" $ }}
 provisioner: kubernetes.io/no-provisioner
 volumeBindingMode: WaitForFirstConsumer
 {{- if kindIs "map" $val.storageClass }}
