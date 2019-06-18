@@ -26,8 +26,8 @@ spec:
     metadata:
       {{- if .Values.slave.annotations }}
       annotations:
-        {{- range .Values.slave.annotations }}
-        {{ .key }}: '{{ .value }}'
+        {{- range $key, $value := .Values.slave.annotations }}
+        {{ $key }}: '{{ $value }}'
         {{- end }}
       {{- end }}
       labels:
