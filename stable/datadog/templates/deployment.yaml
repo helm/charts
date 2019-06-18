@@ -94,7 +94,7 @@ spec:
           {{- end }}
           {{- if .Values.datadog.useDogStatsDSocketVolume }}
           - name: DD_DOGSTATSD_SOCKET
-            value: "/var/run/datadog/dsd.socket"
+            value: {{ default "/var/run/datadog/dsd.socket" .Values.datadog.dogStatsDSocketPath | quote }}
           {{- end }}
 {{- if .Values.datadog.env }}
 {{ toYaml .Values.datadog.env | indent 10 }}
