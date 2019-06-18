@@ -15,6 +15,22 @@ data:
     if [ -e "$SERVER_CERT" ]
     then
       echo "found existing certs - reusing"
+      {{- if .Values.openvpn.useCrl }}
+      if [ ! -e ${EASY_RSA_LOC}/pki/crl.pem ]
+      then
+        echo "generating missed crl file"
+        ./easyrsa gen-crl
+        cp ${EASY_RSA_LOC}/pki/crl.pem ${EASY_RSA_LOC}/crl.pem
+        chmod 644 ${EASY_RSA_LOC}/crl.pem
+      fi
+      {{- end }}
+      {{- if .Values.openvpn.taKey }}
+        if [ ! -e ${EASY_RSA_LOC}/pki/ta.key ]
+        then
+          echo "generating missed ta.key"
+          openvpn --genkey --secret ${EASY_RSA_LOC}/pki/ta.key
+        fi
+      {{- end }}
     else
       cp -R /usr/share/easy-rsa/* $EASY_RSA_LOC
       cd $EASY_RSA_LOC
@@ -22,9 +38,11 @@ data:
       echo "ca\n" | ./easyrsa build-ca nopass
       ./easyrsa build-server-full server nopass
       ./easyrsa gen-dh
+      {{- if .Values.openvpn.useCrl }}
       ./easyrsa gen-crl
       cp ${EASY_RSA_LOC}/pki/crl.pem ${EASY_RSA_LOC}/crl.pem # Note: the pki/ directory is inaccessible after openvpn drops privileges, so we cp crl.pem to ${EASY_RSA_LOC} to allow CRL updates without a restart
       chmod 644 ${EASY_RSA_LOC}/crl.pem
+      {{- end }}
       {{- if .Values.openvpn.taKey }}
       openvpn --genkey --secret ${EASY_RSA_LOC}/pki/ta.key
       {{- end }}
@@ -141,7 +159,9 @@ data:
   openvpn.conf: |-
       server {{ .Values.openvpn.OVPN_NETWORK }} {{ .Values.openvpn.OVPN_SUBNET }}
       verb 3
+{{ if .Values.openvpn.useCrl }}
       crl-verify /etc/openvpn/certs/crl.pem
+{{ end }}
       key /etc/openvpn/certs/pki/private/server.key
       ca /etc/openvpn/certs/pki/ca.crt
       cert /etc/openvpn/certs/pki/issued/server.crt
