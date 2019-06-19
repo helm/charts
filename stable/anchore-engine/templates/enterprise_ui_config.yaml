@@ -10,17 +10,20 @@ metadata:
     app: {{ include "anchore-engine.fullname" . | quote }}
     component: {{ $component }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    {{- with .Values.anchoreGlobal.labels }}
+    {{ toYaml . | nindent 4 | trim }}
+    {{- end }}
 type: Opaque
 stringData:
   config-ui.yaml: |
     engine_uri: "http://{{ template "anchore-engine.api.fullname" . }}:{{ .Values.anchoreApi.service.port }}/v1"
     {{- if and (index .Values "anchore-ui-redis" "externalEndpoint") (not (index .Values "anchore-ui-redis" "enabled")) }}
-    redis_uri: "{{ index .Values "anchore-ui-redis" "externalEndpoint" }}"
+    redis_uri: {{ index .Values "anchore-ui-redis" "externalEndpoint" }}
     {{- else }}
     redis_uri: "redis://:{{ index .Values "anchore-ui-redis" "password" }}@{{ template "redis.fullname" . }}-master:6379"
-    {{- end }}    
+    {{- end }}
     {{- if .Values.anchoreEnterpriseRbac.enabled }}
     rbac_uri: "http://{{ template "anchore-engine.api.fullname" . }}:{{ .Values.anchoreEnterpriseRbac.service.apiPort }}/v1"
     {{- end }}

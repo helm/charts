@@ -7,13 +7,18 @@
 #   imagePullSecrets:
 #     - myRegistryKeySecretName
 
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName:
+
 ## Bitnami MariaDB image
 ## ref: https://hub.docker.com/r/bitnami/mariadb/tags/
 ##
 image:
   registry: docker.io
   repository: bitnami/mariadb
-  tag: 10.3.15-debian-9-r14
+  tag: 10.3.16-debian-9-r0
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -134,6 +139,11 @@ master:
   # annotations:
   #   - key: key1
   #     value: value1
+
+  ## MariaDB additional command line flags
+  ## Can be used to specify command line flags, for example:
+  ##
+  ## extraFlags: "--max-connect-errors=1000 --max_connections=155"
 
   ## Affinity for pod assignment
   ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
@@ -262,6 +272,11 @@ slave:
   # annotations:
   #   - key: key1
   #     value: value1
+
+  ## MariaDB additional command line flags
+  ## Can be used to specify command line flags, for example:
+  ##
+  ## extraFlags: "--max-connect-errors=1000 --max_connections=155"
 
   ## Affinity for pod assignment
   ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
