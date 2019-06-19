@@ -134,8 +134,10 @@ spec:
               mkdir -p /usr/local/airflow/.local/bin &&
               export PATH=/usr/local/airflow/.local/bin:$PATH &&
               /usr/local/scripts/install-requirements.sh &&
+              {{- if .Values.airflow.initdb }}
               echo "executing initdb" &&
               airflow initdb &&
+              {{- end }}
             {{- if .Values.airflow.connections }}
               echo "adding connections" &&
               /usr/local/connections/add-connections.sh &&
@@ -156,8 +158,10 @@ spec:
               sleep 10 &&
               mkdir -p /usr/local/airflow/.local/bin &&
               export PATH=/usr/local/airflow/.local/bin:$PATH &&
+              {{- if .Values.airflow.initdb }}
               echo "executing initdb" &&
               airflow initdb &&
+              {{- end }}
             {{- if .Values.airflow.connections }}
               echo "adding connections" &&
               /usr/local/connections/add-connections.sh &&
