@@ -34,8 +34,8 @@
       readOnly: true
     {{- end }}
   env:
-  {{- include "containers-common-env" . | nindent 4 }}
-  {{- if .Values.datadog.env }}
-  {{ toYaml .Values.datadog.env | indent 4 }}
-  {{- end }}
+    {{- include "containers-common-env" . | nindent 4 }}
+    {{- if .Values.datadog.env }}
+      {{ toYaml .Values.datadog.env | nindent 4 }}
+    {{- end }}
 {{- end -}}

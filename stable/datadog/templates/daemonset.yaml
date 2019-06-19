@@ -54,7 +54,7 @@ spec:
           {{- include "container-process-agent" . | nindent 8 }}
         {{- end }}
       initContainers:
-      {{ include "containers-init" . | nindent 8 }}
+        {{ include "containers-init" . | nindent 8 }}
       {{- else }}
         {{- include "container-agents" . | nindent 8 }}
       {{- end}}
