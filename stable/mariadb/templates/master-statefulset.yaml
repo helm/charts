@@ -25,8 +25,8 @@ spec:
     metadata:
       {{- if .Values.master.annotations }}
       annotations:
-        {{- range .Values.master.annotations }}
-        {{ .key }}: '{{ .value }}'
+        {{- range $key, $value := .Values.master.annotations }}
+        {{ $key }}: '{{ $value }}'
         {{- end }}
       {{- end }}
       labels:
@@ -35,6 +35,9 @@ spec:
         release: "{{ .Release.Name }}"
         chart: "{{ template "mariadb.chart" . }}"
     spec:
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+      {{- end }}
       serviceAccountName: "{{ template "mariadb.serviceAccountName" . }}"
       {{- if .Values.securityContext.enabled }}
       securityContext:
@@ -94,6 +97,10 @@ spec:
         {{- if .Values.image.debug}}
         - name: BITNAMI_DEBUG
           value: "true"
+        {{- end }}
+        {{- if .Values.master.extraFlags }}
+        - name: MARIADB_EXTRA_FLAGS
+          value: "{{ .Values.master.extraFlags }}"
         {{- end }}
         - name: MARIADB_ROOT_PASSWORD
           valueFrom:
@@ -162,6 +169,9 @@ spec:
         volumeMounts:
         - name: data
           mountPath: {{ .Values.master.persistence.mountPath }}
+          {{- if .Values.master.persistence.subPath }}
+          subPath: {{ .Values.master.persistence.subPath }}
+          {{- end }}
         {{- if or (.Files.Glob "files/docker-entrypoint-initdb.d/*.{sh,sql,sql.gz}") .Values.initdbScriptsConfigMap .Values.initdbScripts }}
         - name: custom-init-scripts
           mountPath: /docker-entrypoint-initdb.d

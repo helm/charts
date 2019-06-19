@@ -14,7 +14,7 @@ controller:
   containerPort:
     http: 80
     https: 443
-
+  # Will add custom configuration options to Nginx https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/
   config: {}
   # Will add custom header to Nginx https://github.com/kubernetes/ingress-nginx/tree/master/docs/examples/customization/custom-headers
   headers: {}
@@ -267,8 +267,7 @@ controller:
       servicePort: 18080
       type: ClusterIP
 
-  ## If controller.stats.enabled = true and controller.metrics.enabled = true, Prometheus metrics will be exported
-  ##
+
   metrics:
     enabled: false
 

@@ -53,8 +53,11 @@ Parameter | Description | Default
 `namespace` | namespace to use | `default`
 `emailDomain` | the sso email domain for authentication | REQUIRED
 `rootDomain` | the parent domain used for protecting your backends | REQUIRED
+`whitelistedEmails` | comma-seperated list of emails which should be whitelisted | OPTIONAL
+`cluster` | the cluster name for SSO | `dev`
 `auth.annotations` | extra annotations for auth pods | `{}`
 `auth.domain` | the auth domain used for OAuth callbacks | REQUIRED
+`auth.extraEnv` | extra auth env vars | `[]`
 `auth.replicaCount` | desired number of auth pods | `1`
 `auth.resources` | resource limits and requests for auth pods | `{ limits: { memory: "256Mi", cpu: "200m" }}`
 `auth.nodeSelector` | node selector logic for auth pods | `{}`
@@ -63,11 +66,11 @@ Parameter | Description | Default
 `auth.service.type` | type of auth service to create | `ClusterIP`
 `auth.service.port` | port for the http auth service | `80`
 `auth.secret` | secrets to be generated randomly with `openssl rand -base64 32 | head -c 32`. | REQUIRED if `auth.customSecret` is not set
-`auth.tls` | tls configuration for central sso auth ingress. | `{ secretName: "sso-auth-tls-secret" }`
+`auth.tls` | tls configuration for central sso auth ingress. | `{}`
 `auth.customSecret` | the secret key to reuse (avoids secret creation via helm) | REQUIRED if `auth.secret` is not set
 `proxy.annotations` | extra annotations for proxy pods | `{}`
 `proxy.providerUrlInternal` | url for split dns deployments |
-`proxy.cluster` | the cluster name for SSO | `dev`
+`proxy.extraEnv` | extra proxy env vars | `[]`
 `proxy.replicaCount` | desired number of proxy pods | `1`
 `proxy.resources` | resource limits and requests for proxy pods | `{ limits: { memory: "256Mi", cpu: "200m" }}`
 `proxy.nodeSelector` | node selector logic for proxy pods | `{}`
@@ -82,9 +85,10 @@ Parameter | Description | Default
 `provider.google.secret` | the Google OAuth secrets | REQUIRED if `provider.google.customSecret` is not set
 `provider.google.customSecret` | the secret key to reuse instead of creating it via helm | REQUIRED if `provider.google.secret` is not set
 `image.repository` | container image repository | `buzzfeed/sso`
-`image.tag` | container image tag | `v1.0.0`
+`image.tag` | container image tag | `v1.2.0`
 `image.pullPolicy` | container image pull policy | `IfNotPresent`
 `ingress.annotations` | ingress load balancer annotations | `{}`
+`ingress.extraLabels` | extra ingress labels | `{}`
 `ingress.hosts` | proxied hosts | `[]`
 `ingress.tls` | tls certificates for the proxied hosts | `[]`
 `upstreams` | configuration of services that use sso | `[]`
