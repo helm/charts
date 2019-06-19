@@ -27,6 +27,9 @@ spec:
 {{- if .Values.customLdifFiles}}
         checksum/configmap-customldif: {{ include (print $.Template.BasePath "/configmap-customldif.yaml") . | sha256sum }}
 {{- end }}
+{{- if .Values.podAnnotations}}
+{{ toYaml .Values.podAnnotations | indent 8}}
+{{- end }}
       labels:
         app: {{ template "openldap.name" . }}
         release: {{ .Release.Name }}

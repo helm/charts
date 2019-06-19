@@ -34,7 +34,8 @@ tls:
     secret: ""  # The name of a generic secret to use for custom CA certificate (ca.crt)
 ## Add additional labels to all resources
 extraLabels: {}
-
+## Add additional annotations to pods
+podAnnotations: {}
 service:
   annotations: {}
   clusterIP: ""
