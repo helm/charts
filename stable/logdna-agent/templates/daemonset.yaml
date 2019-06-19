@@ -37,7 +37,7 @@ spec:
 {{- end }}
 {{- if .Values.logdna.autoupdate }}
           - name: LOGDNA_AUTOUPDATE
-            value: {{ .Values.logdna.autoupdate }}
+            value: "{{ .Values.logdna.autoupdate }}"
 {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 12 }}
