@@ -73,6 +73,7 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `rabbitmq.onlineSchedulers`          | RabbitMQ online scheduler threads                | `1`                                                     |
 | `rabbitmq.configuration`             | Required cluster configuration                   | See values.yaml                                         |
 | `rabbitmq.extraConfiguration`        | Extra configuration to add to rabbitmq.conf      | See values.yaml                                         |
+| `rabbitmq.advancedConfiguration`     | Extra configuration (in classic format) to add to advanced.config    | See values.yaml                                         |
 | `service.type`                       | Kubernetes Service type                          | `ClusterIP`                                             |
 | `service.port`                       | Amqp port                                        | `5672`                                                  |
 | `service.distPort`                   | Erlang distribution server port                  | `25672`                                                 |

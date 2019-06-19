@@ -111,7 +111,7 @@ rabbitmq:
     secretName: load-definition
 
   ## Configuration file content: required cluster configuration
-  ## Do not override unless you know what you are doing. To add more configuration, use `extraConfiguration` instead
+  ## Do not override unless you know what you are doing. To add more configuration, use `extraConfiguration` of `advancedConfiguration` instead
   configuration: |-
     ## Clustering
     cluster_formation.peer_discovery_backend  = rabbit_peer_discovery_k8s
@@ -129,6 +129,10 @@ rabbitmq:
   extraConfiguration: |-
     #disk_free_limit.absolute = 50MB
     #management.load_definitions = /app/load_definition.json
+    
+  ## Configuration file content: advanced configuration
+  ## Use this as additional configuraton in classic config format (Erlang term configuration format) 
+  advancedConfiguration: |-
 
 ## Kubernetes service type
 service:
