@@ -59,7 +59,7 @@ spec:
 {{ toYaml .Values.clusterchecksDeployment.env | indent 10 }}
 {{- end }}
         resources:
-{{ toYaml .Values.clusterchecksDeployment.resources | indent 12 }}
+{{ toYaml .Values.clusterchecksDeployment.resources | indent 10 }}
         volumeMounts:
           - {name: s6-run, mountPath: /var/run/s6}
           - {name: remove-corechecks, mountPath: /etc/datadog-agent/conf.d}
