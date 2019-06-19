@@ -11,6 +11,14 @@ inMiniKube: false
 
 nodeSelector: {}
 
+tolerations: []
+  # - key: CriticalAddonsOnly
+  #   operator: Exists
+  # - key: foo
+  #   operator: Equal
+  #   value: bar
+  #   effect: NoSchedule
+
 replicas: 1
 
 # resources:
@@ -52,6 +60,10 @@ extraVolumes: []
 extraVolumeMounts: []
 
 certs:
+  securityContext:
+    enabled: true
+    runAsUser: 65534
+    fsGroup: 65534
   image: gcr.io/google_containers/kubernetes-dashboard-init-amd64
   imageTag: "v1.0.0"
   imagePullPolicy: "IfNotPresent"

@@ -81,6 +81,7 @@ The following table lists the configurable parameters of the chart and its defau
 | `service.annotations`           | Service annotations                                | `{}`                                             |
 | `service.ports`                 | Ports exposed by service                           | beats                                            |
 | `service.loadBalancerIP`        | The load balancer IP for the service               | unset                                            |
+| `service.loadBalancerSourceRanges` | CIDR ranges to allow access to load balancer       | unset                                            |
 | `service.clusterIP`             | The cluster IP for the service                     | unset                                            |
 | `service.nodePort`              | The nodePort for the service                       | unset                                            |
 | `service.externalTrafficPolicy` | Set externalTrafficPolicy                          | unset                                            |
@@ -99,6 +100,8 @@ The following table lists the configurable parameters of the chart and its defau
 | `podAnnotations`                | Pod annotations                                    | `{}`                                             |
 | `podLabels`                     | Pod labels                                         | `{}`                                             |
 | `extraEnv`                      | Extra pod environment variables                    | `[]`                                             |
+| `extraInitContainers`           | Add additional initContainers                      | `[]`                                             |
+| `podManagementPolicy`          | podManagementPolicy of the StatefulSet              | `OrderedReady`                                   |
 | `livenessProbe`                 | Liveness probe settings for logstash container     | (see `values.yaml`)                              |
 | `readinessProbe`                | Readiness probe settings for logstash container    | (see `values.yaml`)                              |
 | `persistence.enabled`           | Enable persistence                                 | `true`                                           |

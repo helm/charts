@@ -21,6 +21,9 @@ configurationOverrides: {}
   ## The default master.eligiblity is true
   # master.eligibility: false
 
+## Custom pod annotations
+podAnnotations: {}
+
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ## Confluent has production deployment guidelines here:
@@ -36,6 +39,11 @@ resources: {}
 
 ## The port on which the SchemaRegistry will be available and serving requests
 servicePort: 8081
+
+## Provides schema registry service settings
+service:
+  ## Any additional labels to add to the service
+  labels: {}
 
 ## If `Kafka.Enabled` is `false`, kafkaStore.overrideBootstrapServers must be provided for Master Election.
 ## You can list load balanced service endpoint, or list of all brokers (which is hard in K8s).  e.g.:
@@ -129,6 +137,24 @@ external:
 jmx:
   enabled: true
   port: 5555
+
+## Prometheus Exporter Configuration
+## ref: https://prometheus.io/docs/instrumenting/exporters/
+prometheus:
+  ## JMX Exporter Configuration
+  ## ref: https://github.com/prometheus/jmx_exporter
+  jmx:
+    enabled: false
+    image: solsson/kafka-prometheus-jmx-exporter@sha256
+    imageTag: 6f82e2b0464f50da8104acd7363fb9b995001ddff77d248379f8788e78946143
+    port: 5556
+    resources: {}
+      # limits:
+      #  cpu: 100m
+      #  memory: 128Mi
+      # requests:
+      #  cpu: 100m
+      #  memory: 128Mi
 
 ## Pass any secrets to the pods. The secrets will be mounted to a specfic path
 ## OR presented as Environment Variables. Environment variable names are
