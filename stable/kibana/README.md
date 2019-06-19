@@ -42,6 +42,9 @@ The following table lists the configurable parameters of the kibana chart and th
 | ------------------------------------------ | ---------------------------------------------------------------------- | ------------------------------------- |
 | `affinity`                                 | node/pod affinities                                                    | None                                  |
 | `env`                                      | Environment variables to configure Kibana                              | `{}`                                  |
+| `envFromSecrets`                           | Environment variables from secrets to the cronjob container            | {}                                    |
+| `envFromSecrets.*.from.secret`             | - `secretKeyRef.name` used for environment variable                    |                                       |
+| `envFromSecrets.*.from.key`                | - `secretKeyRef.key` used for environment variable                     |                                       |
 | `files`                                    | Kibana configuration files                                             | None                                  |
 | `livenessProbe.enabled`                    | livenessProbe to be enabled?                                           | `false`                               |
 | `livenessProbe.path`                       | path for livenessProbe                                                 | `/status`                             |
