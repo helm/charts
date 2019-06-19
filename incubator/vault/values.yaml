@@ -242,4 +242,4 @@ vault:
 
 rbac:
    ## Enable RBAC
-  enabled: false
+  create: true
