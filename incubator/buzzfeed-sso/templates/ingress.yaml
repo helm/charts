@@ -48,7 +48,7 @@ spec:
     - host: {{ $authDomain }}
       http:
         paths:
-          - path: /
+          - path: {{ .Values.auth.ingressPath }}
             backend:
               serviceName: {{ $fullName }}-auth
               servicePort: http

@@ -27,6 +27,10 @@ auth:
     # cookieSecret: ''
   # # Or if you do not want to create the secret via helm
   # customSecret: my-sso-auth-secret
+  # Auth application ingress path.
+  # For GKE and AWS ALB ingresses use "/*"
+  # For Nginx ingress use "/"
+  ingressPath: /
   tls: {}
     # secretName: sso-auth-tls-secret
 
