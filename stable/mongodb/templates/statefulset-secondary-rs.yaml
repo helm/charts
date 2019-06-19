@@ -17,6 +17,11 @@ spec:
   podManagementPolicy: "Parallel"
   serviceName: {{ template "mongodb.fullname" . }}-headless
   replicas: {{ .Values.replicaSet.replicas.secondary }}
+  updateStrategy:
+    type: {{ .Values.updateStrategy.type }}
+    {{- if (eq "Recreate" .Values.updateStrategy.type) }}
+    rollingUpdate: null
+    {{- end }}
   template:
     metadata:
       labels:
@@ -37,6 +42,9 @@ spec:
 {{- end }}
       {{- end }}
     spec:
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+      {{- end }}
       {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName }}
       {{- end }}
@@ -56,11 +64,10 @@ spec:
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
       {{- end }}
-      {{- if .Values.image.pullSecrets }}
-      imagePullSecrets:
-      {{- range .Values.image.pullSecrets }}
-        - name: {{ . }}
-      {{- end}}
+{{- include "mongodb.imagePullSecrets" . | indent 6 }}
+      {{- if .Values.extraInitContainers }}
+      initContainers:
+{{ tpl .Values.extraInitContainers . | indent 6}}
       {{- end }}
       containers:
         - name: {{ template "mongodb.name" . }}-secondary
@@ -157,7 +164,8 @@ spec:
           {{- end }}
           volumeMounts:
             - name: datadir
-              mountPath: /bitnami/mongodb
+              mountPath: {{ .Values.persistence.mountPath }}
+              subPath: {{ .Values.persistence.subPath }}
             {{- if .Values.configmap }}
             - name: config
               mountPath: /opt/bitnami/mongodb/conf/mongodb.conf
@@ -167,8 +175,13 @@ spec:
 {{ toYaml .Values.resources | indent 12 }}
 {{- if .Values.metrics.enabled }}
         - name: metrics
-          image: {{ template "metrics.image" . }}
+          image: {{ template "mongodb.metrics.image" . }}
           imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
+          {{- if .Values.securityContext.enabled }}
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: {{ .Values.securityContext.runAsUser }}
+          {{- end }}
           env:
           {{- if .Values.usePassword }}
           - name: MONGODB_ROOT_PASSWORD
@@ -189,8 +202,10 @@ spec:
               path: /metrics
               port: metrics
             initialDelaySeconds: {{ .Values.metrics.livenessProbe.initialDelaySeconds }}
-            periodSeconds: {{ .Values.metrics.readinessProbe.periodSeconds }}
+            periodSeconds: {{ .Values.metrics.livenessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.metrics.livenessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.metrics.livenessProbe.failureThreshold }}
+            successThreshold: {{ .Values.metrics.livenessProbe.successThreshold }}
           {{- end }}
           {{- if .Values.metrics.readinessProbe.enabled }}
           readinessProbe:
@@ -200,6 +215,8 @@ spec:
             initialDelaySeconds: {{ .Values.metrics.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.metrics.readinessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.metrics.readinessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.metrics.readinessProbe.failureThreshold }}
+            successThreshold: {{ .Values.metrics.readinessProbe.successThreshold }}
           {{- end }}
           resources:
 {{ toYaml .Values.metrics.resources | indent 12 }}
@@ -216,7 +233,7 @@ spec:
         name: datadir
         annotations:
         {{- range $key, $value := .Values.persistence.annotations }}
-          {{ $key }}: {{ $value }}
+          {{ $key }}: "{{ $value }}"
         {{- end }}
       spec:
         accessModes:

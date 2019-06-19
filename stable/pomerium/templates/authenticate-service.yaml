@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "pomerium.authenticate.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ template "pomerium.authenticate.name" . }}
+    helm.sh/chart: {{ template "pomerium.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/component: authenticate
+{{- if .Values.service.labels }}
+{{ toYaml .Values.service.labels | indent 4 }}
+{{- end }}
+{{- if .Values.service.annotations }}
+  annotations:
+{{ toYaml .Values.service.annotations | indent 4 }}
+{{- end }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.externalPort }}
+      targetPort: https
+      protocol: TCP
+      name: https
+
+{{- if hasKey .Values.service "nodePort" }}
+    nodePort: {{ .Values.service.nodePort }}
+{{- end }}
+  selector:
+    app.kubernetes.io/name: {{ template "pomerium.authenticate.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}

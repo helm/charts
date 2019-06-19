@@ -17,6 +17,10 @@ spec:
     metadata:
       labels:
         name: restic
+      {{- with .Values.podAnnotations }}
+      annotations:
+{{ toYaml . | indent 8 }}
+      {{- end }}
     spec:
       {{- if .Values.serviceAccount.server.create }}
       serviceAccountName: {{ template "ark.serverServiceAccount" . }}
@@ -36,7 +40,8 @@ spec:
           emptyDir: {}
       containers:
         - name: ark
-          image: gcr.io/heptio-images/ark:latest
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           command:
             - /ark
           args:
@@ -80,4 +85,8 @@ spec:
             - name: AWS_SHARED_CREDENTIALS_FILE
               value: /credentials/cloud
             {{- end }}
+          {{- with .Values.resources }}
+          resources:
+{{ toYaml . | indent 12 }}
+          {{- end }}
 {{- end }}

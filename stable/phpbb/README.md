@@ -50,10 +50,11 @@ The following table lists the configurable parameters of the phpBB chart and the
 |             Parameter             |              Description              |                         Default                         |
 |-----------------------------------|---------------------------------------|---------------------------------------------------------|
 | `global.imageRegistry`            | Global Docker image registry          | `nil`                                                   |
+| `global.imagePullSecrets`         | Global Docker registry secret names as an array | `[]` (does not add image pull secrets to deployed pods) |
 | `image.registry`                  | phpBB image registry                  | `docker.io`                                             |
 | `image.repository`                | phpBB image name                      | `bitnami/phpbb`                                         |
-| `image.tag`                       | phpBB image tag                       | `{VERSION}`                                             |
-| `image.pullPolicy`                | Image pull policy                     | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
+| `image.tag`                       | phpBB image tag                       | `{TAG_NAME}`                                            |
+| `image.pullPolicy`                | Image pull policy                     | `IfNotPresent`                                          |
 | `image.pullSecrets`               | Specify docker-registry secret names as an array            | `[]` (does not add image pull secrets to deployed pods)                                                   |
 | `phpbbUser`                       | User of the application               | `user`                                                  |
 | `phpbbPassword`                   | Application password                  | _random 10 character long alphanumeric string_          |
@@ -67,6 +68,17 @@ The following table lists the configurable parameters of the phpBB chart and the
 | `externalDatabase.user`           | Existing username in the external db  | `bn_phpbb`                                              |
 | `externalDatabase.password`       | Password for the above username       | `nil`                                                   |
 | `externalDatabase.database`       | Name of the existing database         | `bitnami_phpbb`                                         |
+| `ingress.enabled`                   | Enable ingress controller resource                            | `false`                                                  |
+| `ingress.annotations`               | Ingress annotations                                           | `[]`                                                     |
+| `ingress.certManager`               | Add annotations for cert-manager                              | `false`                                                  |
+| `ingress.hosts[0].name`             | Hostname to your phpbb installation                           | `phpbb.local`                                            |
+| `ingress.hosts[0].path`             | Path within the url structure                                 | `/`                                                      |
+| `ingress.hosts[0].tls`              | Utilize TLS backend in ingress                                | `false`                                                  |
+| `ingress.hosts[0].tlsHosts`         | Array of TLS hosts for ingress record (defaults to `ingress.hosts[0].name` if `nil`)                               | `nil`                                                  |
+| `ingress.hosts[0].tlsSecret`        | TLS Secret (certificates)                                     | `phpbb.local-tls-secret`                                 |
+| `ingress.secrets[0].name`           | TLS Secret Name                                               | `nil`                                                    |
+| `ingress.secrets[0].certificate`    | TLS Secret Certificate                                        | `nil`                                                    |
+| `ingress.secrets[0].key`            | TLS Secret Key                                                | `nil`                                                    |
 | `mariadb.enabled`                 | Use or not the MariaDB chart          | `true`                                                  |
 | `mariadb.rootUser.password`     | MariaDB admin password                | `nil`                                                   |
 | `mariadb.db.name`         | Database name to create               | `bitnami_phpbb`                                         |
@@ -81,9 +93,6 @@ The following table lists the configurable parameters of the phpBB chart and the
 | `service.nodePorts.https`                 | Kubernetes https node port                  | `""`                                                    |
 | `service.loadBalancerIP`                 | LoadBalancer service IP                  | `""`                                                    |
 | `persistence.enabled`             | Enable persistence using PVC          | `true`                                                  |
-| `persistence.apache.storageClass` | PVC Storage Class for Apache volume   | `nil` (uses alpha storage class annotation)             |
-| `persistence.apache.accessMode`   | PVC Access Mode for Apache volume     | `ReadWriteOnce`                                         |
-| `persistence.apache.size`         | PVC Storage Request for Apache volume | `1Gi`                                                   |
 | `persistence.phpbb.storageClass`  | PVC Storage Class for phpBB volume    | `nil` (uses alpha storage class annotation)             |
 | `persistence.phpbb.accessMode`    | PVC Access Mode for phpBB volume      | `ReadWriteOnce`                                         |
 | `persistence.phpbb.size`          | PVC Storage Request for phpBB volume  | `8Gi`                                                   |
@@ -118,9 +127,15 @@ $ helm install --name my-release -f values.yaml stable/phpbb
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
+### [Rolling VS Immutable tags](https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/)
+
+It is strongly recommended to use immutable tags in a production environment. This ensures your deployment does not change automatically if the same tag is updated with a different image.
+
+Bitnami will release a new chart updating its containers if a new version of the main container, significant changes, or critical vulnerabilities exist.
+
 ## Persistence
 
-The [Bitnami phpBB](https://github.com/bitnami/bitnami-docker-phpbb) image stores the phpBB data and configurations at the `/bitnami/phpbb` and `/bitnami/apache` paths of the container.
+The [Bitnami phpBB](https://github.com/bitnami/bitnami-docker-phpbb) image stores the phpBB data and configurations at the `/bitnami/phpbb` path of the container.
 
 Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
 See the [Configuration](#configuration) section to configure the PVC or to disable persistence.

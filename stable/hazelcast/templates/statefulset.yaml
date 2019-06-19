@@ -8,6 +8,7 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  serviceName: {{ template "hazelcast.fullname" . }}
   replicas: {{ .Values.cluster.memberCount }}
   selector:
     matchLabels:
@@ -45,6 +46,10 @@ spec:
         ports:
         - name: hazelcast
           containerPort: 5701
+        {{- if .Values.metrics.enabled }}
+        - name: metrics
+          containerPort: {{ .Values.metrics.service.port }}
+        {{- end }}
         {{- if .Values.livenessProbe.enabled }}
         livenessProbe:
           httpGet:
@@ -71,8 +76,12 @@ spec:
         - name: hazelcast-storage
           mountPath: /data/hazelcast
         env:
+        {{- if .Values.metrics.enabled }}
+        - name: PROMETHEUS_PORT
+          value: "{{ .Values.metrics.service.port }}"
+        {{- end }}
         - name: JAVA_OPTS
-          value: "-Dhazelcast.rest.enabled={{ .Values.hazelcast.rest }} -Dhazelcast.config=/data/hazelcast/hazelcast.xml -DserviceName={{ template "hazelcast.fullname" . }} -Dnamespace={{ .Release.Namespace }} {{ if .Values.gracefulShutdown.enabled }}-Dhazelcast.shutdownhook.policy=GRACEFUL -Dhazelcast.shutdownhook.enabled=true -Dhazelcast.graceful.shutdown.max.wait={{ .Values.gracefulShutdown.maxWaitSeconds }} {{ end }}{{ .Values.hazelcast.javaOpts }}"
+          value: "-Dhazelcast.rest.enabled={{ .Values.hazelcast.rest }} -Dhazelcast.config=/data/hazelcast/hazelcast.xml -DserviceName={{ template "hazelcast.fullname" . }} -Dnamespace={{ .Release.Namespace }} {{ if .Values.gracefulShutdown.enabled }}-Dhazelcast.shutdownhook.policy=GRACEFUL -Dhazelcast.shutdownhook.enabled=true -Dhazelcast.graceful.shutdown.max.wait={{ .Values.gracefulShutdown.maxWaitSeconds }} {{ end }} {{ if .Values.metrics.enabled }}-Dhazelcast.jmx=true{{ end }} {{ .Values.hazelcast.javaOpts }}"
       serviceAccountName: {{ template "hazelcast.serviceAccountName" . }}
       volumes:
       - name: hazelcast-storage

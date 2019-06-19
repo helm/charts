@@ -10,7 +10,7 @@ By default this chart only ships a single output to a file on the local system. 
 
 ## Prerequisites
 
-- Kubernetes 1.9+
+-   Kubernetes 1.9+
 
 ## Installing the Chart
 
@@ -38,21 +38,21 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following table lists the configurable parameters of the auditbeat chart and their default values.
 
-|             Parameter               |            Description             |                    Default                |
-|-------------------------------------|------------------------------------|-------------------------------------------|
-| `image.repository`                  | The image repository to pull from  | `docker.elastic.co/beats/auditbeat`       |
-| `image.tag`                         | The image tag to pull              | `6.5.4`                                   |
-| `image.pullPolicy`                  | Image pull policy                  | `IfNotPresent`                            |
-| `rbac.create`                       | If true, create & use RBAC resources | `true`                                  |
-| `rbac.serviceAccount`               | existing ServiceAccount to use (ignored if rbac.create=true) | `default`       |
-| `config`                            | The content of the configuration file consumed by auditbeat. See the [auditbeat documentation](https://www.elastic.co/guide/en/beats/auditbeat/current/auditbeat-reference-yml.html) for full details |
-| `plugins`                           | List of beat plugins                                                           |
-| `extraVars`                         | A map of additional environment variables |                                    |
-| `extraVolumes`, `extraVolumeMounts` | Additional volumes and mounts, for example to provide other configuration files | |
-| `resources.requests.cpu`            | CPU resource requests              |                                           |
-| `resources.limits.cpu`              | CPU resource limits                |                                           |
-| `resources.requests.memory`         | Memory resource requests           |                                           |
-| `resources.limits.memory`           | Memory resource limits             |                                           |
+| Parameter                           | Description                                                                                                                                                                                           | Default                             |
+| ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
+| `image.repository`                  | The image repository to pull from                                                                                                                                                                     | `docker.elastic.co/beats/auditbeat` |
+| `image.tag`                         | The image tag to pull                                                                                                                                                                                 | `6.7.0`                             |
+| `image.pullPolicy`                  | Image pull policy                                                                                                                                                                                     | `IfNotPresent`                      |
+| `rbac.create`                       | If true, create & use RBAC resources                                                                                                                                                                  | `true`                              |
+| `rbac.serviceAccount`               | existing ServiceAccount to use (ignored if rbac.create=true)                                                                                                                                          | `default`                           |
+| `config`                            | The content of the configuration file consumed by auditbeat. See the [auditbeat documentation](https://www.elastic.co/guide/en/beats/auditbeat/current/auditbeat-reference-yml.html) for full details |                                     |
+| `plugins`                           | List of beat plugins                                                                                                                                                                                  |                                     |
+| `extraVars`                         | A map of additional environment variables                                                                                                                                                             |                                     |
+| `extraVolumes`, `extraVolumeMounts` | Additional volumes and mounts, for example to provide other configuration files                                                                                                                       |                                     |
+| `resources.requests.cpu`            | CPU resource requests                                                                                                                                                                                 |                                     |
+| `resources.limits.cpu`              | CPU resource limits                                                                                                                                                                                   |                                     |
+| `resources.requests.memory`         | Memory resource requests                                                                                                                                                                              |                                     |
+| `resources.limits.memory`           | Memory resource limits                                                                                                                                                                                |                                     |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

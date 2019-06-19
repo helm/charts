@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: {{ template "influxdb.fullname" . }}
-        image: "{{ .Values.image.repo }}:{{ .Values.image.tag }}"
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
@@ -65,6 +65,10 @@ spec:
           mountPath: {{ .Values.config.storage_directory }}
         - name: config
           mountPath: /etc/influxdb
+        {{- if .Values.initScripts.enabled }}
+        - name: init
+          mountPath: /docker-entrypoint-initdb.d
+        {{- end }}
       volumes:
       - name: data
       {{- if .Values.persistence.enabled }}
@@ -81,6 +85,11 @@ spec:
       - name: config
         configMap:
           name: {{ template "influxdb.fullname" . }}
+      {{- if .Values.initScripts.enabled }}
+      - name: init
+        configMap:
+          name: {{ template "influxdb.fullname" . }}-init
+      {{- end }}
     {{- if .Values.schedulerName }}
       schedulerName: "{{ .Values.schedulerName }}"
     {{- end }}

@@ -4,6 +4,9 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: {{ template "elasticsearch-exporter.fullname" . }}
+  {{- if .Values.serviceMonitor.namespace }}
+  namespace: {{ .Values.serviceMonitor.namespace }}
+  {{- end }}
   labels:
     chart: {{ template "elasticsearch-exporter.chart" . }}
     app: {{ template "elasticsearch-exporter.name" . }}
@@ -14,11 +17,14 @@ metadata:
     {{- end }}
 spec:
   endpoints:
-  - interval: 10s
+  - interval: {{ .Values.serviceMonitor.interval }}
+    {{- if .Values.serviceMonitor.scrapeTimeout }}
+    scrapeTimeout: {{ .Values.serviceMonitor.scrapeTimeout }}
+    {{- end }}
     honorLabels: true
-    port: "{{ .Values.service.httpPort }}"
+    port: {{ .Values.service.metricsPort.name }}
     path: {{ .Values.web.path }}
-    scheme: http
+    scheme: {{ .Values.serviceMonitor.scheme }}
   jobLabel: "{{ .Release.Name }}"
   selector:
     matchLabels:

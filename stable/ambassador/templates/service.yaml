@@ -19,7 +19,6 @@ spec:
   {{- if .Values.service.externalTrafficPolicy }}
   externalTrafficPolicy: "{{ .Values.service.externalTrafficPolicy }}"
   {{- end }}
-  type: {{ .Values.service.type }}
   ports:
     {{- if .Values.service.http.enabled }}
     - port: {{ .Values.service.http.port }}

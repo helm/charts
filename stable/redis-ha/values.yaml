@@ -28,6 +28,20 @@ serviceAccount:
 rbac:
   create: true
 
+sysctlImage:
+  enabled: false
+  command: []
+  registry: docker.io
+  repository: bitnami/minideb
+  tag: latest
+  pullPolicy: Always
+  mountHostSys: false
+
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName:
+
 ## Redis specific configuration options
 redis:
   port: 6379
@@ -115,7 +129,7 @@ affinity: |
 exporter:
   enabled: false
   image: oliver006/redis_exporter
-  tag: v0.28.0
+  tag: v0.31.0
   pullPolicy: IfNotPresent
 
   # prometheus port & scrape path
@@ -136,8 +150,11 @@ podDisruptionBudget: {}
 auth: false
 # redisPassword:
 
-## Use existing secret containing "auth" key (ignores redisPassword)
+## Use existing secret containing key `authKey` (ignores redisPassword)
 # existingSecret:
+
+## Defines the key holding the redis password in existing secret.
+authKey: auth
 
 persistentVolume:
   enabled: true

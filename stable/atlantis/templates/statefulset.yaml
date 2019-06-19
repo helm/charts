@@ -7,6 +7,9 @@ metadata:
     chart: {{ template "atlantis.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+{{- if .Values.statefulSet.labels }}
+{{ toYaml .Values.statefulSet.labels | indent 4 }}
+{{- end }}
   {{- with .Values.statefulSet.annotations }}
   annotations:
 {{ toYaml . | indent 4 }}
@@ -22,6 +25,9 @@ spec:
       labels:
         app: {{ template "atlantis.name" . }}
         release: {{ .Release.Name }}
+{{- if .Values.podTemplate.labels }}
+{{ toYaml .Values.podTemplate.labels | indent 8 }}
+{{- end }}
       {{- with .Values.podTemplate.annotations }}
       annotations:
 {{ toYaml . | indent 8 }}
@@ -46,10 +52,21 @@ spec:
         secret:
           secretName: {{ template "atlantis.fullname" . }}-gitconfig
       {{- end }}
-      {{- if .Values.aws }}
+      {{- if or .Values.aws .Values.awsSecretName}}
       - name: aws-volume
         secret:
-          secretName: {{ template "atlantis.fullname" . }}-aws
+          secretName: {{ template "atlantis.awsSecretName" . }}
+      {{- end }}
+      {{- if .Values.repoConfig }}
+      - name: repo-config
+        configMap:
+          name:  {{ template "atlantis.fullname" . }}-repo-config
+      {{- end }}
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.imagePullSecrets }}
+      - name: {{ . }}
+      {{- end }}
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}
@@ -61,11 +78,14 @@ spec:
               exec:
                 command: ["/bin/sh", "-c", "cp /etc/secret-gitconfig/gitconfig /home/atlantis/.gitconfig && chown atlantis /home/atlantis/.gitconfig"]
           {{- end}}
+          {{- if .Values.command }}
+          command:
+          {{- range .Values.command }}
+          - {{ . }}
+          {{- end }}
+          {{- end }}
           args:
             - server
-          {{- if .Values.allowRepoConfig }}
-            - --allow-repo-config
-          {{- end }}
           ports:
           - name: atlantis
             containerPort: 4141
@@ -73,6 +93,14 @@ spec:
           {{- range $key, $value := .Values.environment }}
           - name: {{ $key }}
             value: {{ $value | quote }}
+          {{- end }}
+          {{- if .Values.allowForkPRs }}
+          - name: ATLANTIS_ALLOW_FORK_PRS
+            value: {{ .Values.allowForkPRs | quote }}
+          {{- end }}
+          {{- if .Values.defaultTFVersion }}
+          - name: ATLANTIS_DEFAULT_TF_VERSION
+            value: {{ .Values.defaultTFVersion }}
           {{- end }}
           {{- if .Values.logLevel }}
           - name: ATLANTIS_LOG_LEVEL
@@ -90,6 +118,10 @@ spec:
             value: {{ toYaml .Values.orgWhitelist }}
           - name: ATLANTIS_PORT
             value: "4141"
+          {{- if .Values.repoConfig }}
+          - name: ATLANTIS_REPO_CONFIG
+            value: /etc/atlantis/repos.yaml
+          {{- end }}
           {{- if .Values.atlantisUrl }}
           - name: ATLANTIS_ATLANTIS_URL
             value: {{ .Values.atlantisUrl }}
@@ -103,12 +135,12 @@ spec:
           - name: ATLANTIS_GH_TOKEN
             valueFrom:
               secretKeyRef:
-                name: {{ template "atlantis.fullname" . }}-webhook
+                name: {{ template "atlantis.vcsSecretName" . }}
                 key: github_token
           - name: ATLANTIS_GH_WEBHOOK_SECRET
             valueFrom:
               secretKeyRef:
-                name: {{ template "atlantis.fullname" . }}-webhook
+                name: {{ template "atlantis.vcsSecretName" . }}
                 key: github_secret
           {{- if .Values.github.hostname }}
           - name: ATLANTIS_GH_HOSTNAME
@@ -121,12 +153,12 @@ spec:
           - name: ATLANTIS_GITLAB_TOKEN
             valueFrom:
               secretKeyRef:
-                name: {{ template "atlantis.fullname" . }}-webhook
+                name: {{ template "atlantis.vcsSecretName" . }}
                 key: gitlab_token
           - name: ATLANTIS_GITLAB_WEBHOOK_SECRET
             valueFrom:
               secretKeyRef:
-                name: {{ template "atlantis.fullname" . }}-webhook
+                name: {{ template "atlantis.vcsSecretName" . }}
                 key: gitlab_secret
           {{- if .Values.gitlab.hostname }}
           - name: ATLANTIS_GITLAB_HOSTNAME
@@ -139,25 +171,17 @@ spec:
           - name: ATLANTIS_BITBUCKET_TOKEN
             valueFrom:
               secretKeyRef:
-                name: {{ template "atlantis.fullname" . }}-webhook
+                name: {{ template "atlantis.vcsSecretName" . }}
                 key: bitbucket_token
-          {{- if .Values.bitbucket.base_url }}
+          {{- if .Values.bitbucket.baseURL }}
           - name: ATLANTIS_BITBUCKET_BASE_URL
-            value: {{ .Values.bitbucket.base_url }}
+            value: {{ .Values.bitbucket.baseURL }}
           - name: ATLANTIS_BITBUCKET_WEBHOOK_SECRET
             valueFrom:
               secretKeyRef:
-                name: {{ template "atlantis.fullname" . }}-webhook
+                name: {{ template "atlantis.vcsSecretName" . }}
                 key: bitbucket_secret
           {{- end }}
-          {{- end }}
-          {{- if .Values.requireApproval }}
-          - name: ATLANTIS_REQUIRE_APPROVAL
-            value: "true"
-          {{- end }}
-          {{- if .Values.requireMergeable }}
-          - name: ATLANTIS_REQUIRE_MERGEABLE
-            value: "true"
           {{- end }}
           {{- if .Values.livenessProbe.enabled }}
           livenessProbe:
@@ -193,17 +217,22 @@ spec:
           {{- end }}
           {{- if .Values.gitconfig}}
           - name: gitconfig-volume
-            readonly: true
+            readOnly: true
             mountPath: /etc/secret-gitconfig
           {{- end }}
-          {{- if .Values.aws}}
+          {{- if or .Values.aws .Values.awsSecretName}}
           - name: aws-volume
-            readonly: true
+            readOnly: true
             mountPath: /home/atlantis/.aws
           {{- end }}
           {{- if .Values.tlsSecretName }}
           - name: tls
             mountPath: /etc/tls/
+          {{- end }}
+          {{- if .Values.repoConfig }}
+          - name: repo-config
+            mountPath: /etc/atlantis
+            readOnly: true
           {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
@@ -224,8 +253,11 @@ spec:
       name: atlantis-data
     spec:
       accessModes: ["ReadWriteOnce"] # Volume should not be shared by multiple nodes.
+      {{- if .Values.storageClassName }}
+      storageClassName: {{ .Values.storageClassName }} # Storage class of the volume
+      {{- end }}
       resources:
         requests:
           # The biggest thing Atlantis stores is the Git repo when it checks it out.
           # It deletes the repo after the pull request is merged.
-          storage: {{ .Values.atlantis_data_storage }}
+          storage: {{ .Values.dataStorage }}

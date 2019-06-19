@@ -15,7 +15,7 @@ spec:
   objectStorage:
     bucket: {{ .bucket  }}
     {{- with .prefix }}
-      prefix: {{ . }}
+    prefix: {{ . }}
     {{- end }}
 {{- with .config }}
   config:
@@ -36,6 +36,11 @@ spec:
   {{- end }}
   {{- with .storageAccount }}
     storageAccount: {{ . }}
+  {{- end }}
+  {{- if .publicUrl }}
+  {{- with .publicUrl }}
+    publicUrl: {{ . }}
+  {{- end }}
   {{- end }}
 {{- end }}
 {{- end }}

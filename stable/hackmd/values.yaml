@@ -4,9 +4,11 @@
 
 replicaCount: 1
 
+deploymentStrategy: RollingUpdate
+
 image:
   repository: hackmdio/hackmd
-  tag: 1.2.1-alpine
+  tag: 1.3.0-alpine
   pullPolicy: IfNotPresent
 
 service:

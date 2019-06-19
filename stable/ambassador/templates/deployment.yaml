@@ -24,6 +24,9 @@ spec:
       labels:
         app.kubernetes.io/name: {{ include "ambassador.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
+      {{- if .Values.podLabels }}
+        {{- toYaml .Values.podLabels | nindent 8 }}
+      {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
       {{- if .Values.podAnnotations }}
@@ -55,6 +58,10 @@ spec:
       {{- with .Values.volumes }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- with .Values.initContainers }}
+      initContainers:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         {{- if .Values.prometheusExporter.enabled }}
         - name: prometheus-exporter
@@ -73,6 +80,8 @@ spec:
             - name: stats-exporter-mapping-config
               mountPath: /statsd-exporter/
               readOnly: true
+          resources:
+            {{- toYaml .Values.prometheusExporter.resources | nindent 12 }}
         {{- end }}
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -89,16 +98,22 @@ spec:
             - name: admin
               containerPort: 8877
           env:
+            - name: HOST_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
             {{- if .Values.prometheusExporter.enabled }}
             - name: STATSD_ENABLED
               value: "true"
             - name: STATSD_HOST
               value: "localhost"
             {{- end }}
-            - name: AMBASSADOR_ID
-              value: {{ .Values.ambassador.id | quote }}
+            {{- if .Values.scope.singleNamespace }}
+            - name: AMBASSADOR_SINGLE_NAMESPACE
+              value: "YES"
+            {{- end }}
             - name: AMBASSADOR_NAMESPACE
-              {{- if .Values.namespace.name }}
+              {{- if .Values.namespace }}
               value: {{ .Values.namespace.name | quote }}
               {{ else }}
               valueFrom:
@@ -134,6 +149,39 @@ spec:
           {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+        {{- if .Values.pro.enabled }}
+        - name: ambassador-pro
+          image: "{{ .Values.pro.image.repository }}:{{ .Values.pro.image.tag }}"
+          ports:
+          - name: grpc-auth
+            containerPort: {{ .Values.pro.ports.auth }}
+          - name: grpc-ratelimit
+            containerPort: {{ .Values.pro.ports.ratelimit }}
+          - name: http-debug
+            containerPort: {{ .Values.pro.ports.ratelimitDebug }}
+          env:
+          - name: REDIS_SOCKET_TYPE
+            value: tcp
+          - name: REDIS_URL
+            value: ambassador-pro-redis:6379
+          - name: APRO_AUTH_PORT
+            value: "{{ .Values.pro.ports.auth }}"
+          - name: GRPC_PORT
+            value: "{{ .Values.pro.ports.ratelimit }}"
+          - name: DEBUG_PORT
+            value: "{{ .Values.pro.ports.ratelimitDebug }}"
+          - name: APP_LOG_LEVEL
+            value: "{{ .Values.pro.logLevel  }}"
+          - name: AMBASSADOR_LICENSE_KEY
+          {{- if .Values.pro.licenseKey.secret }}
+            valueFrom:
+              secretKeyRef:
+                name: ambassador-pro-license-key
+                key: key
+          {{ else }}
+            value: {{ .Values.pro.licenseKey.value }}
+          {{- end }}
+        {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -148,3 +196,6 @@ spec:
     {{- end }}
       imagePullSecrets:
         {{- toYaml .Values.imagePullSecrets | nindent 8 }}
+      dnsPolicy: {{ .Values.dnsPolicy }}
+      hostNetwork: {{ .Values.hostNetwork }}
+

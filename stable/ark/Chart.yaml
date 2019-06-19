@@ -1,15 +1,14 @@
 apiVersion: v1
-appVersion: 0.10.1
-description: A Helm chart for ark
+appVersion: 0.10.2
+## This Ark chart is deprecated because Ark has been renamed to Velero as of Velero version 0.11.0.
+## This chart is no longer maintained. Use the stable/velero chart for future work.
+## Please see the Helm deprecation policy in the PROCESSES.md file.
+deprecated: true
+description: DEPRECATED A Helm chart for ark
 name: ark
-version: 4.0.0
+version: 4.2.2
 home: https://github.com/heptio/ark
 icon: https://cdn-images-1.medium.com/max/1600/1*-9mb3AKnKdcL_QD3CMnthQ.png
 sources:
 - https://github.com/heptio/ark
-maintainers:
-  - name: domcar
-    email: d-caruso@hotmail.it
-  - name: unguiculus
-    email: unguiculus@gmail.com
 tillerVersion: ">=2.10.0"

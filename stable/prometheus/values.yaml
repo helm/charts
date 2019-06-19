@@ -315,7 +315,7 @@ kubeStateMetrics:
   ##
   image:
     repository: quay.io/coreos/kube-state-metrics
-    tag: v1.5.0
+    tag: v1.6.0
     pullPolicy: IfNotPresent
 
   ## kube-state-metrics priorityClassName
@@ -404,7 +404,7 @@ nodeExporter:
   ##
   image:
     repository: prom/node-exporter
-    tag: v0.17.0
+    tag: v0.18.0
     pullPolicy: IfNotPresent
 
   ## Specify if a Pod Security Policy for node-exporter must be created
@@ -518,7 +518,7 @@ server:
   ##
   image:
     repository: prom/prometheus
-    tag: v2.7.2
+    tag: v2.9.2
     pullPolicy: IfNotPresent
 
   ## prometheus server priorityClassName
@@ -715,6 +715,9 @@ server:
     ## Useful if the volume's root directory is not empty
     ##
     subPath: ""
+
+  emptyDir:
+    sizeLimit: ""
 
   ## Annotations to be added to Prometheus server pods
   ##
