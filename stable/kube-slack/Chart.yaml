@@ -1,6 +1,6 @@
 name: kube-slack
-version: 0.4.1
-appVersion: v3.6.0
+version: 1.1.0
+appVersion: v4.2.0
 apiVersion: v1
 description: Chart for kube-slack, a monitoring service for Kubernetes
 keywords:

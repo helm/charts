@@ -75,6 +75,9 @@ The following table lists the configurable parameters of the Vault chart and the
 | `labels`                          | Extra labels for deployment              | `{}`                                |
 | `ingress.labels`                  | Labels for ingress                       | `{}`                                |
 | `podAnnotations`                  | Annotations for pods                     | `{}`                                |
+| `priorityClassName`               | Priority class name for pods             | `""`                                |
+| `minReadySeconds`                 | Minimum number of seconds that newly created replicas must be ready without any containers crashing | `0`                                |
+| `podLabels`                       | Extra labels for pods                    | `{}`                                |
 | `serviceAccount.create`           | Specifies whether a ServiceAccount should be created | `false`                 |
 | `consulAgent.join`                | If set, start start a consul agent       | `nil`                               |
 | `consulAgent.repository`          | Container image for consul agent         | `consul`                            |
@@ -82,6 +85,7 @@ The following table lists the configurable parameters of the Vault chart and the
 | `consulAgent.pullPolicy`          | Container pull policy for consul agent   | `IfNotPresent`                      |
 | `consulAgent.gossipKeySecretName` | k8s secret containing gossip key         | `nil` (see values.yaml for details) |
 | `consulAgent.HttpPort`            | HTTP port for consul agent API           | `8500`                              |
+| `consulAgent.resources`           | Container resources for consul agent     | `nil`                               |
 | `vaultExporter.enabled`           | Enable or disable vault exporter         | `false`                             |
 | `vaultExporter.repository`        | Container image for vault exporter       | `grapeshot/vault_exporter`          |
 | `vaultExporter.tag`               | Container image tag for vault exporter   | `v0.1.2`                            |

@@ -3,7 +3,52 @@
 This file documents all notable changes to Sysdig Falco Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v0.7.6
+
+### Minor Changes
+
+* Upgrade to Falco 0.15.1
+* Upgrade rules to Falco 0.15.1
+
+## v0.7.6
+
+### Major Changes
+
+* Allow to enable/disable usage of the docker socket
+* Configurable docker socket path
+* CRI support, configurable CRI socket
+* Allow to enable/disable usage of the CRI socket
+
+## v0.7.5
+
+### Minor Changes
+
+* Upgrade to Falco 0.15.0
+* Upgrade rules to Falco 0.15.0
+
+## v0.7.4
+
+### Minor Changes
+
+* Use the KUBERNETES_SERVICE_HOST environment variable to connect to Kubernetes
+  API instead of using a fixed name
+
+## v0.7.3
+
+### Minor Changes
+
+* Remove the toJson pipeline when storing Google Credentials. It makes strange
+  stuff with double quotes and does not allow to use base64 encoded credentials
+
+## v0.7.2
+
+### Minor Changes
+
+* Fix typos in README.md
+
 ## v0.7.1
+
+### Minor Changes
 
 * Add Google Pub/Sub Output integration
 

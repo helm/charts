@@ -6,10 +6,15 @@ rbac:
 serviceAccount:
   create: true
   name:
+  nameTest:
 
 replicas: 1
 
-deploymentStrategy: RollingUpdate
+## See `kubectl explain deployment.spec.strategy` for more
+## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
+deploymentStrategy:
+  type: RollingUpdate
+  rollingUpdate: null
 
 readinessProbe:
   httpGet:
@@ -24,14 +29,15 @@ livenessProbe:
   timeoutSeconds: 30
   failureThreshold: 10
 
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName: "default-scheduler"
+
 image:
   repository: grafana/grafana
-  tag: 6.1.4
+  tag: 6.2.4
   pullPolicy: IfNotPresent
-
-testFramework:
-  image: "dduportal/bats"
-  tag: "0.4.0"
 
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
@@ -39,6 +45,10 @@ testFramework:
   ##
   # pullSecrets:
   #   - myRegistrKeySecretName
+
+testFramework:
+  image: "dduportal/bats"
+  tag: "0.4.0"
 
 securityContext:
   runAsUser: 472
@@ -384,8 +394,10 @@ sidecar:
     enabled: false
     # label that the configmaps with dashboards are marked with
     label: grafana_dashboard
-    # folder in the pod that should hold the collected dashboards
+    # folder in the pod that should hold the collected dashboards (unless `defaultFolderName` is set)
     folder: /tmp/dashboards
+    # The default folder name, it will create a subfolder under the `folder` and put dashboards in there instead
+    defaultFolderName: null
     # If specified, the sidecar will search for dashboard config-maps inside this namespace.
     # Otherwise the namespace in which the sidecar is running will be used.
     # It's also possible to specify ALL to search in all namespaces

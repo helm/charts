@@ -47,7 +47,7 @@ control provider:
       --reuse-values \
       --set 'sourceControl.provider=github' \
       --set 'sourceControl.github.clientID=github-oauth2-client-id' \
-      --set 'souceControl.secret=drone-server-secrets' \
+      --set 'sourceControl.secret=drone-server-secrets' \
       stable/drone
 
 Currently supported providers:

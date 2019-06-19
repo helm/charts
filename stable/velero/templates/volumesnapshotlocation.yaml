@@ -10,9 +10,7 @@ metadata:
 spec:
 {{- with .Values.configuration }}
 {{- with .volumeSnapshotLocation }}
-  provider: {{ .name  }}
-  objectStorage:
-    bucket: {{ .bucket  }}
+  provider: {{ .name }}
 {{ with .config }}
   config:
   {{- with .region }}
@@ -21,6 +19,15 @@ spec:
   {{- with .apitimeout }}
     apiTimeout: {{ . }}
   {{- end }}
+  {{- with .resourceGroup }}
+    resourceGroup: {{ . }}
+  {{- end }}
+  {{- with .snapshotLocation }}
+    snapshotLocation: {{ . }}
+  {{- end}}
+  {{- with .project }}
+    project: {{ . }}
+  {{- end}}
 {{- end }}
 {{- end }}
 {{- end }}

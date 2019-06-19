@@ -56,7 +56,7 @@ spec:
           command:
             - "/tiller"
           {{- if .Values.tiller.storage }}
-            - --storage={{ .Values.tiller.storage | quote }}
+            - --storage={{ .Values.tiller.storage }}
           {{- end }}
           args: ["--listen=127.0.0.1:44134"]
           {{- else }}
@@ -100,7 +100,7 @@ spec:
       {{- if .Values.tiller.tls.enabled }}
       - name: tiller-certs
         secret:
-          defaultMode: 420
+          defaultMode: 0644
           secretName: {{ template "magic-namespace.tillerTlsSecret" . }}
       {{- end }}
     {{- with .Values.tiller.nodeSelector }}

@@ -47,7 +47,9 @@ spec:
   {{- end }}
     protocol: TCP
   {{- end }}
-
+  {{- if .Values.proxy.externalTrafficPolicy }}
+  externalTrafficPolicy: {{ .Values.proxy.externalTrafficPolicy }}
+  {{- end }}
 
   selector:
     app: {{ template "kong.name" . }}
