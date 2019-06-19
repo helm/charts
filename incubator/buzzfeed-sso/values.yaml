@@ -27,6 +27,7 @@ auth:
     # cookieSecret: ''
   # # Or if you do not want to create the secret via helm
   # customSecret: my-sso-auth-secret
+  ingressPath: /
   tls: {}
     # secretName: sso-auth-tls-secret
 
