@@ -37,13 +37,13 @@ data:
 
     # Some system overides
     {{- if .Values.maxConnections }}
-    max_connections: {{ .Values.maxConnections }}
+    max_connections: {{ int .Values.maxConnections }}
     {{- end }}
     {{- if .Values.maxControlLine }}
-    max_control_line: {{ .Values.maxControlLine }}
+    max_control_line: {{ int .Values.maxControlLine }}
     {{- end }}
     {{- if .Values.maxPayload }}    
-    max_payload: {{ .Values.maxPayload }}
+    max_payload: {{ int .Values.maxPayload }}
     {{- end }}
     {{- if .Values.writeDeadline }}
     write_deadline: {{ .Values.writeDeadline | quote }}
