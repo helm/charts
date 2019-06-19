@@ -15,11 +15,13 @@ rules:
     resources:     ["daemonsets"]
     resourceNames: ["{{ template "kured.fullname" . }}"]
     verbs:         ["update"]
+  - apiGroups:     ["apps"]
+    resources:     ["daemonsets"]
+    resourceNames: ["{{ template "kured.fullname" . }}"]
+    verbs:         ["update"]
 {{- if .Values.podSecurityPolicy.create }}
   - apiGroups:     ["extensions"]
     resources:     ["podsecuritypolicies"]
     resourceNames: ["{{ template "kured.fullname" . }}"]
     verbs:         ["use"]
 {{- end }}
-
-{{- end -}}
