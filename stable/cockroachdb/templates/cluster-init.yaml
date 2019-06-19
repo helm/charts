@@ -48,6 +48,8 @@ spec:
       - name: cluster-init
         image: "{{ .Values.Image }}:{{ .Values.ImageTag }}"
         imagePullPolicy: "{{ .Values.ImagePullPolicy }}"
+        resources:
+{{ toYaml .Values.InitPodResources | indent 10 }}
 {{- if .Values.Secure.Enabled }}
         volumeMounts:
         - name: client-certs
