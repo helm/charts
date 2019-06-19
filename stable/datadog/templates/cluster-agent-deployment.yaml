@@ -42,7 +42,7 @@ spec:
         image: "{{ .Values.clusterAgent.image.repository }}:{{ .Values.clusterAgent.image.tag }}"
         imagePullPolicy: {{ .Values.clusterAgent.image.pullPolicy }}
         resources:
-{{ toYaml .Values.clusterAgent.resources | indent 12 }}
+{{ toYaml .Values.clusterAgent.resources | indent 10 }}
         ports:
         - containerPort: 5005
           name: agentport
