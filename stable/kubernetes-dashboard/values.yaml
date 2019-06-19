@@ -93,6 +93,9 @@ ingress:
 
   ## Kubernetes Dashboard Ingress annotations
   ##
+  ## Add custom labels
+  # labels:
+  #   key: value
   # annotations:
   #   kubernetes.io/ingress.class: nginx
   #   kubernetes.io/tls-acme: 'true'
