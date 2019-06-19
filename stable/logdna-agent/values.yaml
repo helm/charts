@@ -10,7 +10,7 @@ logdna:
   # key:
 
   ## Optional settings
-  autoupdate: 0
+  autoupdate: "0"
   # tags:
 
   name: logdna-agent
