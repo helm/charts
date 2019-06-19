@@ -142,11 +142,11 @@ spec:
         {{- end }}
 {{- if .Values.envFromSecrets }}
         {{- range $key,$value := .Values.envFromSecrets }}
-              - name: {{ $key | upper | quote}}
-                valueFrom:
-                  secretKeyRef:
-                    name: {{ $value.from.secret | quote}}
-                    key: {{ $value.from.key | quote}}
+        - name: {{ $key | upper | quote}}
+          valueFrom:
+            secretKeyRef:
+              name: {{ $value.from.secret | quote}}
+              key: {{ $value.from.key | quote}}
         {{- end }}
 {{- end }}
 {{- if (not .Values.authProxyEnabled) }}
