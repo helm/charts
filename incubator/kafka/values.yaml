@@ -62,6 +62,10 @@ logSubPath: "logs"
 ##
 # schedulerName:
 
+## Use an alternate serviceAccount
+## Useful when using images in custom repositories
+# serviceAccountName:
+
 ## Pod scheduling preferences (by default keep pods within a release on separate nodes).
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 ## By default we don't set affinity
@@ -153,6 +157,12 @@ external:
 
 # Annotation to be added to Kafka pods
 podAnnotations: {}
+
+# Labels to be added to Kafka pods
+podLabels: {}
+  # service: broker
+  # team: developers
+
 
 ## Configuration Overrides. Specify any Kafka settings you would like set on the StatefulSet
 ## here in map format, as defined in the official docs.

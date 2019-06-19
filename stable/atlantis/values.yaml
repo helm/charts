@@ -37,6 +37,8 @@ orgWhitelist: <replace-me>
 #   base_url: https://bitbucket.yourorganization.com
 # (The chart will perform the base64 encoding for you for values that are stored in secrets.)
 
+# If managing secrets outside the chart for the webhook, use this variable to reference the secret name
+# vcsSecretName: 'mysecret'
 
 # When referencing Terraform modules in private repositories, it may be helpful
 # (necessary?) to use redirection in a .gitconfig like so:
@@ -62,6 +64,8 @@ orgWhitelist: <replace-me>
 #     [profile a_role_to_assume]
 #     role_arn = arn:aws:iam::123456789:role/service-role/roleToAssume
 #     source_profile = default
+# To reference an already existing Secret object with AWS credentials
+# awsSecretName: 'mysecretwithawscreds'
 
 ## To be used for mounting credential files (when using google provider).
 serviceAccountSecrets:
@@ -135,9 +139,11 @@ podTemplate:
   annotations: {}
     # kube2iam example:
     # iam.amazonaws.com/role: role-arn
+  labels: {}
 
 statefulSet:
   annotations: {}
+  labels: {}
 
 ingress:
   enabled: true
@@ -150,6 +156,7 @@ ingress:
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
+  labels: {}
 
 resources:
   requests:
@@ -166,6 +173,7 @@ replicaCount: 1
 
 ## test container details
 test:
+  enabled: true
   image: lachlanevenson/k8s-kubectl
   imageTag: v1.4.8-bash
 

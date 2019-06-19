@@ -18,6 +18,9 @@ spec:
     type: RollingUpdate
     rollingUpdate:
       maxUnavailable: 1
+  {{- if .Values.minReadySeconds }}
+  minReadySeconds: {{ .Values.minReadySeconds }}
+  {{- end }}
   template:
     metadata:
       labels:
@@ -34,7 +37,10 @@ spec:
     spec:
       {{- if .Values.vault.extraInitContainers }}
       initContainers:
-{{ tpl .Values.vault.extraInitContainers . | indent 6 }}
+{{ tpl (toYaml .Values.vault.extraInitContainers) . | indent 6 }}
+      {{- end }}
+      {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName }}
       {{- end }}
       containers:
       - name: {{ .Chart.Name }}
@@ -47,7 +53,7 @@ spec:
         {{- end }}
         {{- if .Values.lifecycle }}
         lifecycle:
-{{ tpl .Values.lifecycle . | indent 10 }}
+{{ tpl (toYaml .Values.lifecycle) . | indent 10 }}
         {{- end }}
         ports:
         - containerPort: {{ .Values.service.port }}
@@ -62,8 +68,8 @@ spec:
               {{- if .Values.vault.liveness.aliveIfSealed -}}sealedcode=204&{{- end }}
             port: {{ .Values.service.port }}
             scheme: {{ if .Values.vault.config.listener.tcp.tls_disable -}}HTTP{{- else -}}HTTPS{{- end }}
-            initialDelaySeconds: {{ .Values.vault.liveness.initialDelaySeconds }}
-            periodSeconds: {{ .Values.vault.liveness.periodSeconds }}
+          initialDelaySeconds: {{ .Values.vault.liveness.initialDelaySeconds }}
+          periodSeconds: {{ .Values.vault.liveness.periodSeconds }}
         readinessProbe:
           # Ready depends on preference
           httpGet:
@@ -73,8 +79,8 @@ spec:
               {{- if .Values.vault.readiness.readyIfUninitialized -}}uninitcode=204&{{- end }}
             port: {{ .Values.service.port }}
             scheme: {{ if .Values.vault.config.listener.tcp.tls_disable -}}HTTP{{- else -}}HTTPS{{- end }}
-            initialDelaySeconds: {{ .Values.vault.readiness.initialDelaySeconds }}
-            periodSeconds: {{ .Values.vault.readiness.periodSeconds }}
+          initialDelaySeconds: {{ .Values.vault.readiness.initialDelaySeconds }}
+          periodSeconds: {{ .Values.vault.readiness.periodSeconds }}
         securityContext:
           readOnlyRootFilesystem: true
           capabilities:
@@ -101,7 +107,7 @@ spec:
 {{ toYaml .Values.vault.extraVolumeMounts | indent 8 }}
         {{- end }}
 {{- if .Values.vault.extraContainers }}
-{{ toYaml .Values.vault.extraContainers | indent 6}}
+{{ tpl (toYaml .Values.vault.extraContainers) . | indent 6}}
 {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
@@ -167,7 +173,7 @@ spec:
       {{- end }}
       {{- if .Values.affinity }}
       affinity:
-{{ tpl .Values.affinity . | indent 8 }}
+{{ tpl (toYaml .Values.affinity) . | indent 8 }}
       {{- end }}
       {{- if .Values.nodeSelector }}
       nodeSelector:

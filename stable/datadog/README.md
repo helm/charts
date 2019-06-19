@@ -85,7 +85,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 As a best practice, a YAML file that specifies the values for the chart parameters should be provided to configure the chart:
 
-1.  **Copy the default [`datadog-values.yaml`](/values.yaml) value file.**
+1.  **Copy the default [`datadog-values.yaml`](values.yaml) value file.**
 2.  Set the `apiKey` parameter with your [Datadog API key](https://app.datadoghq.com/account/settings#api).
 3.  Upgrade the Datadog Helm chart with the new `datadog-values.yaml` file:
 
@@ -97,7 +97,7 @@ See the [All configuration options](#all-configuration-options) section to disco
 
 ### Enabling Log Collection
 
-Update your [datadog-values.yaml](/values.yaml) file with the following log collection configuration:
+Update your [datadog-values.yaml](values.yaml) file with the following log collection configuration:
 
 ```
 datadog:
@@ -114,7 +114,7 @@ helm upgrade -f datadog-values.yaml <RELEASE_NAME> stable/datadog --recreate-pod
 
 ### Enabling Process Collection
 
-Update your [datadog-values.yaml](/values.yaml) file with the process collection configuration:
+Update your [datadog-values.yaml](values.yaml) file with the process collection configuration:
 
 ```
 datadog:
@@ -138,7 +138,7 @@ Alternatively set the `datadog.leaderElection`, `datadog.collectEvents` and `rba
 
 The Datadog [entrypoint](https://github.com/DataDog/datadog-agent/blob/master/Dockerfiles/agent/entrypoint/89-copy-customfiles.sh) copies files with a `.yaml` extension found in `/conf.d` and files with `.py` extension in `/check.d` to `/etc/datadog-agent/conf.d` and `/etc/datadog-agent/checks.d` respectively.
 
-The keys for `datadog.confd` and `datadog.checksd` should mirror the content found in their respective ConfigMaps. Update your [datadog-values.yaml](/values.yaml) file with the check configurations:
+The keys for `datadog.confd` and `datadog.checksd` should mirror the content found in their respective ConfigMaps. Update your [datadog-values.yaml](values.yaml) file with the check configurations:
 
 ```yaml
 datadog:
@@ -175,7 +175,7 @@ For more details, please refer to [the documentation](https://docs.datadoghq.com
 
 ### Kubernetes Labels and Annotations
 
-To map Kubernetes pod labels and annotations to Datadog tags, provide a dictionary with kubernetes labels/annotations as keys and Datadog tags key as values in your [datadog-values.yaml](/values.yaml) file:
+To map Kubernetes pod labels and annotations to Datadog tags, provide a dictionary with kubernetes labels/annotations as keys and Datadog tags key as values in your [datadog-values.yaml](values.yaml) file:
 
 ```yaml
 podAnnotationsAsTags:
@@ -231,6 +231,7 @@ helm install --name <RELEASE_NAME> \
 | `datadog.site`                           | Site ('datadoghq.com' or 'datadoghq.eu')                                                  | `nil`                                       |
 | `datadog.dd_url`                         | Datadog intake server                                                                     | `nil`                                       |
 | `datadog.env`                            | Additional Datadog environment variables                                                  | `nil`                                       |
+| `datadog.logLevel`                       | Agent log verbosity (possible values: trace, debug, info, warn, error, critical, and off) | `INFO`                                      |
 | `datadog.logsEnabled`                    | Enable log collection                                                                     | `nil`                                       |
 | `datadog.logsConfigContainerCollectAll`  | Collect logs from all containers                                                          | `nil`                                       |
 | `datadog.logsPointerHostPath`            | Host path to store the log tailing state in                                               | `/var/lib/datadog-agent/logs`               |
@@ -264,6 +265,25 @@ helm install --name <RELEASE_NAME> \
 | `daemonset.useHostNetwork`               | If true, use the host's network                                                           | `nil`                                       |
 | `daemonset.useHostPID`.                  | If true, use the host's PID namespace                                                     | `nil`                                       |
 | `daemonset.useHostPort`                  | If true, use the same ports for both host and container                                   | `nil`                                       |
+| `daemonset.useDedicatedContainers`       | If true, each Datadog agent will run in a separate container                              | `nil`                                       |
+| `daemonset.containers.agent.env`                          | Additional list of environment variables to use in the agent container                 | `nil`                                         |
+| `daemonset.containers.agent.logLevel`                     | Agent log verbosity                                                                    | `INFO`                                        |
+| `daemonset.containers.agent.resources.limits.cpu`         | CPU resource limits for the agent container                                            | `200m`                                        |
+| `daemonset.containers.agent.resources.requests.cpu`       | CPU resource requests for the agent container                                          | `200m`                                        |
+| `daemonset.containers.agent.resources.limits.memory`      | Memory resource limits for the agent container                                         | `256Mi`                                       |
+| `daemonset.containers.agent.resources.requests.memory`    | Memory resource requests for the agent container                                       | `256Mi`                                       |
+| `daemonset.containers.processAgent.env`                          | Additional list of environment variables to use in the process-agent container         | `nil`                                         |
+| `daemonset.containers.processAgent.logLevel`                     | Process agent log verbosity                                                            | `INFO`                                        |
+| `daemonset.containers.processAgent.resources.limits.cpu`         | CPU resource limits for the process-agent container                                    | `100m`                                        |
+| `daemonset.containers.processAgent.resources.requests.cpu`       | CPU resource requests for the process-agent container                                  | `100m`                                        |
+| `daemonset.containers.processAgent.resources.limits.memory`      | Memory resource limits for the process-agent container                                 | `200Mi`                                       |
+| `daemonset.containers.processAgent.resources.requests.memory`    | Memory resource requests for the process-agent container                               | `200Mi`                                       |
+| `daemonset.containers.traceAgent.env`                            | Additional list of environment variables to use in the trace-agent container           | `nil`                                         |
+| `daemonset.containers.traceAgent.logLevel`                       | Trace agent log verbosity                                                              | `INFO`                                        |
+| `daemonset.containers.traceAgent.resources.limits.cpu`           | CPU resource limits for the trace-agent container                                      | `100m`                                        |
+| `daemonset.containers.traceAgent.resources.requests.cpu`         | CPU resource requests for the trace-agent container                                    | `100m`                                        |
+| `daemonset.containers.traceAgent.resources.limits.memory`        | Memory resource limits for the trace-agent container                                   | `200Mi`                                       |
+| `daemonset.containers.traceAgent.resources.requests.memory`      | Memory resource requests for the trace-agent container                                 | `200Mi`                                       |
 | `daemonset.priorityClassName`            | Which Priority Class to associate with the daemonset                                      | `nil`                                       |
 | `datadog.leaderElection`                 | Enable the leader Election feature                                                        | `false`                                     |
 | `datadog.leaderLeaseDuration`            | The duration for which a leader stays elected.                                            | 60 sec, 15 if Cluster Checks enabled        |
