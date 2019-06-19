@@ -60,14 +60,17 @@ spec:
           {{- end }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if .Values.command }}
+          command: {{ toYaml .Values.command | nindent 12 -}}
+          {{- end }}
           ports:
-            - name: {{ .Values.service.portName }}
+            - name: container-port
               containerPort: 9106
               protocol: TCP
           livenessProbe:
             httpGet:
               path: /-/healthy
-              port: {{ .Values.service.portName }}
+              port: container-port
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds}}
             periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
@@ -76,7 +79,7 @@ spec:
           readinessProbe:
             httpGet:
               path: /-/ready
-              port: {{ .Values.service.portName }}
+              port: container-port
             initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds}}
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}

@@ -10,6 +10,7 @@ metadata:
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
 spec:
+  backoffLimit: {{ .Values.configJob.backoffLimit }}
   template:
     metadata:
       labels:

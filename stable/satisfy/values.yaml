@@ -1,0 +1,76 @@
+# Default values for Satisfy.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+image:
+  repository: docker.io/anapsix/satisfy
+  # image.digest takes precedence:
+  # i.e. if both image.tag and image.digest are present digest will be used
+  # tag: v3.0.4
+  digest: sha256:fae78e3809e9d08990c7d7d6699a734f7e584c28ce49381a1a699e1694481ab8
+  pullPolicy: Always
+  pullSecrets: []
+    # - secret1
+    # - secret2
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+    # certmanager.k8s.io/cluster-issuer: self-signed
+    # ingress.kubernetes.io/force-ssl-redirect: "true"
+  labels: []
+    # traffic-type: external
+  hosts: []
+    # - composer.local
+  tls: []
+   # - secretName: composer-cert
+   #   hosts:
+   #     - composer.local
+
+terminationGracePeriodSeconds: 15
+
+livenessProbe:
+  enabled: true
+
+readinessProbe:
+  enabled: true
+
+resources: {}
+  # If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 64Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 64Mi
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+persistence:
+  enabled: true
+  accessMode: ReadWriteOnce
+  size: 8Gi
+  storageClass: ~  # set your PV storage class here
+  ## A manually managed Persistent Volume and Claim
+  ## Requires persistence.enabled: true
+  ## If defined, PVC must be created manually before volume will be bound
+  # existingClaim:
+
+
+## Application settings
+## For more details see Satis documentaion
+## https://getcomposer.org/doc/articles/handling-private-packages-with-satis.md#setup
+satisfy:
+  repoName: myrepo
+  homepage: http://composer.local  # set it to FQDN of your ingress
+  sshPrivateKey: ~  # set it via CLI
+                    # for example: `--set satisfy.sshPrivateKey="$(<~/.ssh/id_rsa)"`

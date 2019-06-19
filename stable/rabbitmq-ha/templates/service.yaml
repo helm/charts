@@ -12,16 +12,19 @@ metadata:
     prometheus.io/port: {{ .Values.prometheus.exporter.port | quote }}
 {{- end }}
   name: {{ template "rabbitmq-ha.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "rabbitmq-ha.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    chart: {{ template "rabbitmq-ha.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 {{- if .Values.extraLabels }}
 {{ toYaml .Values.extraLabels | indent 4 }}
 {{- end }}
 spec:
+{{- if ne .Values.service.type "NodePort" }}
   clusterIP: "{{ .Values.service.clusterIP }}"
+{{- end }}
 {{- if .Values.service.externalIPs }}
   externalIPs:
 {{ toYaml .Values.service.externalIPs | indent 4 }}
@@ -37,14 +40,17 @@ spec:
     - name: http
       protocol: TCP
       port: {{ .Values.rabbitmqManagerPort }}
+      nodePort: {{ .Values.service.managerNodePort }}
       targetPort: http
     - name: amqp
       protocol: TCP
       port: {{ .Values.rabbitmqNodePort }}
+      nodePort: {{ .Values.service.amqpNodePort }}
       targetPort: amqp
     - name: epmd
       protocol: TCP
       port: {{ .Values.rabbitmqEpmdPort }}
+      nodePort: {{ .Values.service.epmdNodePort }}
       targetPort: epmd
     {{- if .Values.rabbitmqSTOMPPlugin.enabled }}
     - name: stomp-tcp

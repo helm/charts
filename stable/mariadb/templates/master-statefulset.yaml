@@ -4,7 +4,7 @@ metadata:
   name: {{ template "master.fullname" . }}
   labels:
     app: "{{ template "mariadb.name" . }}"
-    chart: {{ template "mariadb.chart" . }}
+    chart: "{{ template "mariadb.chart" . }}"
     component: "master"
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
@@ -13,25 +13,31 @@ spec:
     matchLabels:
       release: "{{ .Release.Name }}"
       component: "master"
-      app: {{ template "mariadb.name" . }}
+      app: "{{ template "mariadb.name" . }}"
   serviceName: "{{ template "master.fullname" . }}"
   replicas: 1
   updateStrategy:
-    type: RollingUpdate
+    type: {{ .Values.master.updateStrategy.type }}
+    {{- if (eq "Recreate" .Values.master.updateStrategy.type) }}
+    rollingUpdate: null
+    {{- end }}
   template:
     metadata:
       {{- if .Values.master.annotations }}
       annotations:
-        {{- range .Values.master.annotations }}
-        {{ .key }}: '{{ .value }}'
+        {{- range $key, $value := .Values.master.annotations }}
+        {{ $key }}: '{{ $value }}'
         {{- end }}
       {{- end }}
       labels:
         app: "{{ template "mariadb.name" . }}"
         component: "master"
         release: "{{ .Release.Name }}"
-        chart: {{ template "mariadb.chart" . }}
+        chart: "{{ template "mariadb.chart" . }}"
     spec:
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+      {{- end }}
       serviceAccountName: "{{ template "mariadb.serviceAccountName" . }}"
       {{- if .Values.securityContext.enabled }}
       securityContext:
@@ -70,16 +76,15 @@ spec:
 {{ toYaml . | indent 8 }}
       {{- end }}
       {{- end }}
+      {{- if .Values.master.nodeSelector }}
+      nodeSelector:
+        {{ toYaml .Values.master.nodeSelector | nindent 8 }}
+      {{- end -}}
       {{- with .Values.master.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
       {{- end }}
-      {{- if .Values.image.pullSecrets }}
-      imagePullSecrets:
-      {{- range .Values.image.pullSecrets }}
-        - name: {{ . }}
-      {{- end}}
-      {{- end }}
+{{- include "mariadb.imagePullSecrets" . | indent 6 }}
       {{- if .Values.master.extraInitContainers }}
       initContainers:
 {{ tpl .Values.master.extraInitContainers . | indent 6}}
@@ -92,6 +97,10 @@ spec:
         {{- if .Values.image.debug}}
         - name: BITNAMI_DEBUG
           value: "true"
+        {{- end }}
+        {{- if .Values.master.extraFlags }}
+        - name: MARIADB_EXTRA_FLAGS
+          value: "{{ .Values.master.extraFlags }}"
         {{- end }}
         - name: MARIADB_ROOT_PASSWORD
           valueFrom:
@@ -160,6 +169,9 @@ spec:
         volumeMounts:
         - name: data
           mountPath: {{ .Values.master.persistence.mountPath }}
+          {{- if .Values.master.persistence.subPath }}
+          subPath: {{ .Values.master.persistence.subPath }}
+          {{- end }}
         {{- if or (.Files.Glob "files/docker-entrypoint-initdb.d/*.{sh,sql,sql.gz}") .Values.initdbScriptsConfigMap .Values.initdbScripts }}
         - name: custom-init-scripts
           mountPath: /docker-entrypoint-initdb.d
@@ -171,7 +183,7 @@ spec:
        {{- end }}
 {{- if .Values.metrics.enabled }}
       - name: metrics
-        image: {{ template "metrics.image" . }}
+        image: {{ template "mariadb.metrics.image" . }}
         imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
         env:
         - name: MARIADB_ROOT_PASSWORD

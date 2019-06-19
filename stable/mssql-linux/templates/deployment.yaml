@@ -7,6 +7,9 @@ metadata:
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+{{- if .Values.deployment.labels }}
+{{ toYaml .Values.deployment.labels | indent 4 }}
+{{- end }}
 {{- if .Values.deployment.annotations }}
   annotations:
 {{ toYaml .Values.deployment.annotations | indent 4 }}
@@ -22,7 +25,17 @@ spec:
       labels:
         app: {{ template "mssql.name" . }}
         release: {{ .Release.Name }}
+{{- if .Values.pod.labels }}
+{{ toYaml .Values.pod.labels | indent 8 }}
+{{- end }}
+{{- if .Values.pod.annotations }}
+      annotations:
+{{ toYaml .Values.pod.annotations | indent 8 }}
+{{- end }}
     spec:
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

@@ -49,11 +49,14 @@ The following table lists the configurable parameters of the mongodb chart and t
 | `image.tag`                         | MongoDB image tag                                                         | `3.6`                                               |
 | `image.pullPolicy`                  | MongoDB image pull policy                                                 | `IfNotPresent`                                      |
 | `podAnnotations`                    | Annotations to be added to MongoDB pods                                   | `{}`                                                |
-| `securityContext`                   | Security context for the pod                                              | `{runAsUser: 999, fsGroup: 999, runAsNonRoot: true}`|
+| `securityContext.enabled`           | Enable security context                                                   | `true`                                              |
+| `securityContext.fsGroup`           | Group ID for the container                                                | `999`                                               |
+| `securityContext.runAsUser`         | User ID for the container                                                 | `999`                                               |
+| `securityContext.runAsNonRoot`      |                                                                           | `true`                                              |
 | `resources`                         | Pod resource requests and limits                                          | `{}`                                                |
 | `persistentVolume.enabled`          | If `true`, persistent volume claims are created                           | `true`                                              |
 | `persistentVolume.storageClass`     | Persistent volume storage class                                           | ``                                                  |
-| `persistentVolume.accessMode`       | Persistent volume access modes                                            | `[ReadWriteOnce]`                                   |
+| `persistentVolume.accessModes`      | Persistent volume access modes                                            | `[ReadWriteOnce]`                                   |
 | `persistentVolume.size`             | Persistent volume size                                                    | `10Gi`                                              |
 | `persistentVolume.annotations`      | Persistent volume annotations                                             | `{}`                                                |
 | `terminationGracePeriodSeconds`     | Duration in seconds the pod needs to terminate gracefully                 | `30`                                                |
@@ -79,6 +82,7 @@ The following table lists the configurable parameters of the mongodb chart and t
 | `auth.adminPassword`                | MongoDB admin password                                                    | ``                                                  |
 | `auth.metricsUser`                  | MongoDB clusterMonitor user                                               | ``                                                  |
 | `auth.metricsPassword`              | MongoDB clusterMonitor password                                           | ``                                                  |
+| `auth.existingMetricsSecret`        | If set, and existing secret with this name is used for the metrics user   | ``                                                  |
 | `auth.existingAdminSecret`          | If set, and existing secret with this name is used for the admin user     | ``                                                  |
 | `serviceAnnotations`                | Annotations to be added to the service                                    | `{}`                                                |
 | `configmap`                         | Content of the MongoDB config file                                        | ``                                                  |

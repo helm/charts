@@ -1,0 +1,12 @@
+image:
+  repository: gcr.io/heptio-images/authenticator
+  tag: v0.1.0
+  pullPolicy: IfNotPresent
+
+config: {}
+
+resources: {}
+
+hostPathConfig:
+  output: /srv/kubernetes/aws-iam-authenticator/
+  state: /srv/kubernetes/aws-iam-authenticator/

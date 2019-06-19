@@ -37,6 +37,7 @@ rabbitmq:
   include_queues: ".*"
   include_vhost: ".*"
   skip_queues: "^$"
+  skip_verify: "false"
   skip_vhost: "^$"
   exporters: "exchange,node,overview,queue"
   output_format: "TTY"
@@ -47,3 +48,10 @@ annotations: {}
 #  prometheus.io/scrape: "true"
 #  prometheus.io/path: "/metrics"
 #  prometheus.io/port: 9419
+
+prometheus:
+  monitor:
+    enabled: false
+    additionalLabels: {}
+    interval: 15s
+    namespace: []

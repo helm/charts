@@ -79,3 +79,30 @@ Create the name of the service account to use for the master component
     {{ default "default" .Values.serviceAccounts.master.name }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+plugin installer template
+*/}}
+{{- define "plugin-installer" -}}
+- name: es-plugin-install
+  image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+  imagePullPolicy: {{ .Values.image.pullPolicy }}
+  securityContext:
+    capabilities:
+      add:
+        - IPC_LOCK
+        - SYS_RESOURCE
+  command:
+    - "sh"
+    - "-c"
+    - |
+      {{- range .Values.cluster.plugins }}
+      /usr/share/elasticsearch/bin/elasticsearch-plugin install -b {{ . }}
+      {{- end }}
+  volumeMounts:
+  - mountPath: /usr/share/elasticsearch/plugins/
+    name: plugindir
+  - mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
+    name: config
+    subPath: elasticsearch.yml
+{{- end -}}

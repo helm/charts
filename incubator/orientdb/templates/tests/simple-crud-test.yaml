@@ -1,0 +1,24 @@
+{{- if .Values.testing.enabled }}
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ template "orientdb.fullname" .}}-simple-crud-test
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+  - name: {{ template "orientdb.fullname" .}}-simple-crud-test
+    image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
+    env:
+      - name: ORIENT_HOST
+        value: {{ template "orientdb.fullname" . }}-svc
+      - name: ORIENT_PORT
+        value: "2480"
+      - name: ORIENTDB_ROOT_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: {{ template "orientdb.fullname" .}}-secret
+            key: root-password
+    command: ["sh", "-c", "wget --spider http://${ORIENT_HOST}:${ORIENT_PORT}" ]
+  restartPolicy: Never
+{{- end }}

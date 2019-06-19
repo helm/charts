@@ -30,5 +30,12 @@ Parameter | Description | Default
 --- | --- | ---
 `files.envoy\.yaml` | content of a full envoy configuration file as documented in https://www.envoyproxy.io/docs/envoy/latest/configuration/configuration | See [values.yaml](values.yaml)
 `templates.envoy\.yaml` | golang template of a full configuration file. Use the `{{ .Values.foo.bar }}` syntax to embed chart values | See [values.yaml](values.yaml)
+`serviceMonitor.enabled` | if `true`, creates a Prometheus Operator ServiceMonitor | `false`
+`serviceMonitor.interval` | Interval that Prometheus scrapes Envoy metrics | `15s`
+`serviceMonitor.namespace` | Namespace which the operated Prometheus is running in | ``
+`serviceMonitor.additionalLabels` | Labels used by Prometheus Operator to discover your Service Monitor. Set according to your Prometheus setup | `{}`
+| `prometheusRule.enabled` | If `true`, creates a Prometheus Operator PrometheusRule | `false``
+| `prometheusRule.groups` | Prometheus alerting rules | `{}`
+| `prometheusRule.additionalLabels` | Labels used by Prometheus Operator to discover your Prometheus Rule | `{}`
 
 All other user-configurable settings, default values and some commentary about them can be found in [values.yaml](values.yaml).

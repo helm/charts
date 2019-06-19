@@ -37,6 +37,7 @@ The following table lists the configurable parameters for this chart and their d
 | -----------------------------------|---------------------------------------------------|-------------------|
 | `priorityClassOverprovision.name`  | Name of the overprovision priorityClass           | `overprovision`   |
 | `priorityClassOverprovision.value` | Priority value of the overprovision priorityClass | `-1`              |
+| `priorityClassDefault.enabled`     | If true, enable default priorityClass             | `true`            |
 | `priorityClassDefault.name`        | Name of the default priorityClass                 | `default`         |
 | `priorityClassDefault.value`       | Priority value of the default priorityClass       | `0`               |
 | `replicaCount`                     | Number of replicas                                | `1`               |

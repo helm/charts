@@ -1,20 +1,24 @@
 {{- if .Values.agent.enabled -}}
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: {{ template "jaeger.agent.name" . }}
   labels:
-    app: {{ template "jaeger.name" . }}
-    jaeger-infra: agent-daemonset
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    component: agent
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ include "jaeger.name" . }}
+    helm.sh/chart: {{ include "jaeger.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/component: agent
 {{- if .Values.agent.annotations }}
   annotations:
 {{ toYaml .Values.agent.annotations | indent 4 }}
 {{- end }}
 spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "jaeger.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: agent
   template:
     metadata:
 {{- if .Values.agent.podAnnotations }}
@@ -22,10 +26,9 @@ spec:
 {{ toYaml .Values.agent.podAnnotations | indent 8 }}
 {{- end }}
       labels:
-        app: {{ template "jaeger.name" . }}
-        component: agent
-        release: {{ .Release.Name }}
-        jaeger-infra: agent-instance
+        app.kubernetes.io/name: {{ include "jaeger.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: agent
 {{- if .Values.agent.podLabels }}
 {{ toYaml .Values.agent.podLabels | indent 8 }}
 {{- end }}

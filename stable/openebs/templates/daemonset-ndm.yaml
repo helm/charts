@@ -9,6 +9,8 @@ metadata:
     heritage: {{ .Release.Service }}
     component: ndm
 spec:
+  updateStrategy:
+    type: "RollingUpdate"
   selector:
     matchLabels:
       app: {{ template "openebs.name" . }}
@@ -20,6 +22,9 @@ spec:
         app: {{ template "openebs.name" . }}
         release: {{ .Release.Name }}
         component: ndm
+        openebs.io/component-name: ndm
+        name: openebs-ndm
+        openebs.io/version: {{ .Values.release.version }}
     spec:
       serviceAccountName: {{ template "openebs.serviceAccountName" . }}
       hostNetwork: true
@@ -27,9 +32,6 @@ spec:
       - name: {{ template "openebs.name" . }}-ndm
         image: "{{ .Values.ndm.image }}:{{ .Values.ndm.imageTag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        command:
-        - /usr/sbin/ndm
-        - start
         securityContext:
           privileged: true
         env:
@@ -56,6 +58,13 @@ spec:
           value: "{{ .Values.ndm.sparse.count }}"
 {{- end }}
 {{- end }}
+        livenessProbe:
+          exec:
+            command:
+            - pgrep
+            - ".*ndm"
+          initialDelaySeconds: {{ .Values.ndm.healthCheck.initialDelaySeconds }}
+          periodSeconds: {{ .Values.ndm.healthCheck.periodSeconds }}
         volumeMounts:
         - name: config
           mountPath: /host/node-disk-manager.config
@@ -64,7 +73,8 @@ spec:
         - name: udev
           mountPath: /run/udev
         - name: procmount
-          mountPath: /host/mounts
+          mountPath: /host/proc
+          readOnly: true
 {{- if .Values.ndm.sparse }}
 {{- if .Values.ndm.sparse.path }}
         - name: sparsepath
@@ -79,11 +89,12 @@ spec:
         hostPath:
           path: /run/udev
           type: Directory
-      # mount /proc/1/mounts (mount file of process 1 of host) inside container
-      # to read which partition is mounted on / path
+      # mount /proc (to access mount file of process 1 of host) inside container
+      # to read mount-point of disks and partitions
       - name: procmount
         hostPath:
-          path: /proc/1/mounts
+          path: /proc
+          type: Directory
 {{- if .Values.ndm.sparse }}
 {{- if .Values.ndm.sparse.path }}
       - name: sparsepath

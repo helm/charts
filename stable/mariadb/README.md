@@ -14,7 +14,7 @@ $ helm install stable/mariadb
 
 This chart bootstraps a [MariaDB](https://github.com/bitnami/bitnami-docker-mariadb) replication cluster deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
-Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters.
+Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters. This chart has been tested to work with NGINX Ingress, cert-manager, fluentd and Prometheus on top of the [BKPR](https://kubeprod.io/).
 
 ## Prerequisites
 
@@ -50,10 +50,11 @@ The following table lists the configurable parameters of the MariaDB chart and t
 |             Parameter                     |                     Description                     |                              Default                              |
 |-------------------------------------------|-----------------------------------------------------|-------------------------------------------------------------------|
 | `global.imageRegistry`                    | Global Docker image registry                        | `nil`                                                             |
+| `global.imagePullSecrets`                 | Global Docker registry secret names as an array     | `[]` (does not add image pull secrets to deployed pods)           |
 | `image.registry`                          | MariaDB image registry                              | `docker.io`                                                       |
 | `image.repository`                        | MariaDB Image name                                  | `bitnami/mariadb`                                                 |
-| `image.tag`                               | MariaDB Image tag                                   | `{VERSION}`                                                       |
-| `image.pullPolicy`                        | MariaDB image pull policy                           | `Always` if `imageTag` is `latest`, else `IfNotPresent`           |
+| `image.tag`                               | MariaDB Image tag                                   | `{TAG_NAME}`                                                      |
+| `image.pullPolicy`                        | MariaDB image pull policy                           | `IfNotPresent`                                                    |
 | `image.pullSecrets`                       | Specify docker-registry secret names as an array    | `[]` (does not add image pull secrets to deployed pods)           |
 | `image.debug`                             | Specify if debug logs should be enabled             | `false`                                                           |
 | `service.type`                            | Kubernetes service type                             | `ClusterIP`                                                       |
@@ -61,6 +62,8 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `service.port`                            | MySQL service port                                  | `3306`                                                            |
 | `serviceAccount.create`                   | Specifies whether a ServiceAccount should be created | `false`                                                          |
 | `serviceAccount.name`                     | The name of the ServiceAccount to create            | Generated using the mariadb.fullname template                     |
+| `schedulerName`                           | Name of the k8s scheduler (other than default)      | `nil`                                                             |
+| `rbac.create`                             | Create and use RBAC resources                       | `false`                                                           |
 | `securityContext.enabled`                 | Enable security context                             | `true`                                                            |
 | `securityContext.fsGroup`                 | Group ID for the container                          | `1001`                                                            |
 | `securityContext.runAsUser`               | User ID for the container                           | `1001`                                                            |
@@ -69,19 +72,25 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `rootUser.forcePassword`                  | Force users to specify a password                   | `false`                                                           |
 | `db.user`                                 | Username of new user to create                      | `nil`                                                             |
 | `db.password`                             | Password for the new user. Ignored if existing secret is provided.    | _random 10 character alphanumeric string if `db.user` is defined_ |
+| `db.forcePassword`                        | Force users to specify a password                   | `false`                                                           |
 | `db.name`                                 | Name for new database to create                     | `my_database`                                                     |
 | `replication.enabled`                     | MariaDB replication enabled                         | `true`                                                            |
 | `replication.user`                        |MariaDB replication user                             | `replicator`                                                      |
 | `replication.password`                    | MariaDB replication user password. Ignored if existing secret is provided. | _random 10 character alphanumeric string_  |
-| `initdbScripts`                           | List of initdb scripts                              | `nil`                                                             |
+| `replication.forcePassword`               | Force users to specify a password                   | `false`                                                           |
+| `initdbScripts`                           | Dictionary of initdb scripts                        | `nil`                                                             |
 | `initdbScriptsConfigMap`                  | ConfigMap with the initdb scripts (Note: Overrides `initdbScripts`) | `nil`                                             |
 | `master.annotations[].key`                | key for the the annotation list item                |  `nil`                                                            |
 | `master.annotations[].value`              | value for the the annotation list item              |  `nil`                                                            |
+| `master.extraFlags`                       | MariaDB master additional command line flags        |  `nil`                                                            |
 | `master.affinity`                         | Master affinity (in addition to master.antiAffinity when set)  | `{}`                                                   |
 | `master.antiAffinity`                     | Master pod anti-affinity policy                     | `soft`                                                            |
+| `master.nodeSelector`                     | Master node labels for pod assignment               | `{}`                                                              |
 | `master.tolerations`                      | List of node taints to tolerate (master)            | `[]`                                                              |
+| `master.updateStrategy`                   | Master statefulset update strategy policy           | `RollingUpdate`                                                   |
 | `master.persistence.enabled`              | Enable persistence using PVC                        | `true`                                                            |
 | `master.persistence.existingClaim`        | Provide an existing `PersistentVolumeClaim`         | `nil`                                                             |
+| `master.persistence.subPath`              | Subdirectory of the volume to mount                 | `nil`                                                             |
 | `master.persistence.mountPath`            | Path to mount the volume at                         | `/bitnami/mariadb`                                                |
 | `master.persistence.annotations`          | Persistent Volume Claim annotations                 | `{}`                                                              |
 | `master.persistence.storageClass`         | Persistent Volume Storage Class                     | ``                                                                |
@@ -102,12 +111,18 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `master.readinessProbe.timeoutSeconds`    | When the probe times out (master)                   | `1`                                                               |
 | `master.readinessProbe.successThreshold`  | Minimum consecutive successes for the probe (master)| `1`                                                               |
 | `master.readinessProbe.failureThreshold`  | Minimum consecutive failures for the probe (master) | `3`                                                               |
+| `master.podDisruptionBudget.enabled`      | If true, create a pod disruption budget for master pods. | `false`                                                      |
+| `master.podDisruptionBudget.minAvailable` | Minimum number / percentage of pods that should remain scheduled | `1`                                                  |
+| `master.podDisruptionBudget.maxUnavailable`| Maximum number / percentage of pods that may be made unavailable | `nil`                                               |
 | `slave.replicas`                          | Desired number of slave replicas                    | `1`                                                               |
 | `slave.annotations[].key`                 | key for the the annotation list item                | `nil`                                                             |
 | `slave.annotations[].value`               | value for the the annotation list item              | `nil`                                                             |
+| `slave.extraFlags`                        | MariaDB slave additional command line flags         | `nil`                                                             |
 | `slave.affinity`                          | Slave affinity (in addition to slave.antiAffinity when set) | `{}`                                                      |
 | `slave.antiAffinity`                      | Slave pod anti-affinity policy                      | `soft`                                                            |
+| `slave.nodeSelector`                      | Slave node labels for pod assignment                | `{}`                                                              |
 | `slave.tolerations`                       | List of node taints to tolerate for (slave)         | `[]`                                                              |
+| `slave.updateStrategy`                    | Slave statefulset update strategy policy            | `RollingUpdate`                                                   |
 | `slave.persistence.enabled`               | Enable persistence using a `PersistentVolumeClaim`  | `true`                                                            |
 | `slave.persistence.annotations`           | Persistent Volume Claim annotations                 | `{}`                                                              |
 | `slave.persistence.storageClass`          | Persistent Volume Storage Class                     | ``                                                                |
@@ -128,12 +143,19 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `slave.readinessProbe.timeoutSeconds`     | When the probe times out (slave)                    | `1`                                                               |
 | `slave.readinessProbe.successThreshold`   | Minimum consecutive successes for the probe (slave) | `1`                                                               |
 | `slave.readinessProbe.failureThreshold`   | Minimum consecutive failures for the probe (slave)  | `3`                                                               |
+| `slave.podDisruptionBudget.enabled`       | If true, create a pod disruption budget for slave pods. | `false`                                                       |
+| `slave.podDisruptionBudget.minAvailable`  | Minimum number / percentage of pods that should remain scheduled | `1`                                                  |
+| `slave.podDisruptionBudget.maxUnavailable`| Maximum number / percentage of pods that may be made unavailable | `nil`                                                |
 | `metrics.enabled`                         | Start a side-car prometheus exporter                | `false`                                                           |
 | `metrics.image.registry`                  | Exporter image registry                             | `docker.io`                                                       |
 | `metrics.image.repository`                | Exporter image name                                 | `prom/mysqld-exporter`                                            |
 | `metrics.image.tag`                       | Exporter image tag                                  | `v0.10.0`                                                         |
 | `metrics.image.pullPolicy`                | Exporter image pull policy                          | `IfNotPresent`                                                    |
 | `metrics.resources`                       | Exporter resource requests/limit                    | `nil`                                                             |
+| `metrics.serviceMonitor.enabled`          | if `true`, creates a Prometheus Operator ServiceMonitor (also requires `metrics.enabled` to be `true`)                    | `false`                                                             |
+| `metrics.serviceMonitor.namespace`        | Optional namespace which Prometheus is running in   | `nil`                                                             |
+| `metrics.serviceMonitor.interval`         | How frequently to scrape metrics (use by default, falling back to Prometheus' default)  | `nil`                                                             |
+| `metrics.serviceMonitor.selector`         | Default to kube-prometheus install (CoreOS recommended), but should be set according to Prometheus install                    | `{ prometheus: kube-prometheus }`                                                             |
 
 The above parameters map to the env variables defined in [bitnami/mariadb](http://github.com/bitnami/bitnami-docker-mariadb). For more information please refer to the [bitnami/mariadb](http://github.com/bitnami/bitnami-docker-mariadb) image documentation.
 
@@ -141,7 +163,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 ```bash
 $ helm install --name my-release \
-  --set root.password=secretpassword,user.database=app_database \
+  --set rootUser.password=secretpassword,db.user=app_database \
     stable/mariadb
 ```
 
@@ -154,6 +176,42 @@ $ helm install --name my-release -f values.yaml stable/mariadb
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+### Production configuration
+
+This chart includes a `values-production.yaml` file where you can find some parameters oriented to production configuration in comparison to the regular `values.yaml`.
+
+```console
+$ helm install --name my-release -f ./values-production.yaml stable/mariadb
+```
+
+- Force users to specify a password:
+```diff
+- rootUser.forcePassword: false
++ rootUser.forcePassword: true
+- db.forcePassword: false
++ db.forcePassword: true
+- replication.forcePassword: false
++ replication.forcePassword: true
+```
+
+- Desired number of slave replicas:
+```diff
+- slave.replicas: 1
++ slave.replicas: 2
+```
+
+- Start a side-car prometheus exporter:
+```diff
+- metrics.enabled: false
++ metrics.enabled: true
+```
+
+### [Rolling VS Immutable tags](https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/)
+
+It is strongly recommended to use immutable tags in a production environment. This ensures your deployment does not change automatically if the same tag is updated with a different image.
+
+Bitnami will release a new chart updating its containers if a new version of the main container, significant changes, or critical vulnerabilities exist.
 
 ## Initialize a fresh instance
 
@@ -194,6 +252,13 @@ $ helm upgrade my-release stable/mariadb --set rootUser.password=[ROOT_PASSWORD]
 ```
 
 | Note: you need to substitute the placeholder _[ROOT_PASSWORD]_ with the value obtained in the installation notes.
+
+### To 6.0.0
+
+MariaDB version was updated from 10.1 to 10.3, there are no changes in the chart itself. According to the official documentation, upgrading from 10.1 should be painless. However, there are some things that have changed which could affect an upgrade:
+
+- [Incompatible changes upgrading from MariaDB 10.1 to MariaDB 10.2](https://mariadb.com/kb/en/library/upgrading-from-mariadb-101-to-mariadb-102//#incompatible-changes-between-101-and-102)
+- [Incompatible changes upgrading from MariaDB 10.2 to MariaDB 10.3](https://mariadb.com/kb/en/library/upgrading-from-mariadb-102-to-mariadb-103/#incompatible-changes-between-102-and-103)
 
 ### To 5.0.0
 

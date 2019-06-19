@@ -11,7 +11,7 @@ replicaCount: 1
 
 image:
   repository: gogs/gogs
-  tag: 0.11.79
+  tag: 0.11.86
   pullPolicy: IfNotPresent
 
 service:
@@ -105,6 +105,34 @@ service:
     ##
     serviceEnableNotifyMail: false
 
+    ## Enable this to send mail with SMTP server.
+    ##
+    mailerEnabled: false
+
+    ## SMTP server host.
+    ##
+    mailerHost:
+
+    ## SMTP server user.
+    ##
+    mailerUser:
+
+    ## SMTP server password.
+    ##
+    mailerPasswd:
+
+    ## Mail from address. Format RFC 5322, email@example.com, or "Name" <email@example.com>
+    ##
+    mailerFrom:
+
+    ## Prefix prepended mail subject.
+    ##
+    mailerSubjectPrefix:
+
+    ## Do not verify the self-signed certificates.
+    ##
+    mailerSkipVerify: false
+
     ## Either "memory", "redis", or "memcache", default is "memory"
     ##
     cacheAdapter: memory
@@ -152,6 +180,10 @@ service:
     ## Database password.  Unused unless `postgresql.install` is false.
     ##
     databaseName:
+
+    ## Database SSL Mode for Postgres.  Unused unless `postgresql.install` is false.
+    ##
+    databaseSSLMode: disable
 
     ## Hook task queue length, increase if webhook shooting starts hanging
     ##
@@ -294,6 +326,10 @@ persistence:
   ##
   enabled: true
 
+  ## If defined, PVC must be created manually before volume will be bound
+  ##
+  # existingClaim: "-"
+
   ## gogs data Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
   ## If set to "-", storageClassName: "", which disables dynamic provisioning
@@ -333,6 +369,10 @@ postgresql:
   ##
   postgresDatabase: gogs
 
+  ## PostgreSQL SSL Mode
+  ##
+  postgresSSLMode: disable
+
   ## Persistent Volume Storage configuration.
   ## ref: https://kubernetes.io/docs/user-guide/persistent-volumes
   ##
@@ -340,5 +380,11 @@ postgresql:
     ## Enable PostgreSQL persistence using Persistent Volume Claims.
     ##
     enabled: true
+
 ## Security context
 securityContext: {}
+
+## Node, affinity and tolerations labels for pod assignment
+nodeSelector: {}
+affinity: {}
+tolerations: []
