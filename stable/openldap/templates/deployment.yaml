@@ -41,6 +41,7 @@ spec:
       - name: {{ .Chart.Name }}-init-ldif
         image: busybox
         command: ['sh', '-c', 'cp /customldif/* /ldifworkingdir']
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
         volumeMounts:
         - name: customldif
           mountPath: /customldif
@@ -51,6 +52,7 @@ spec:
       - name: {{ .Chart.Name }}-init-tls
         image: busybox
         command: ['sh', '-c', 'cp /tls/* /certs']
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
         volumeMounts:
           - name: tls
             mountPath: /tls
