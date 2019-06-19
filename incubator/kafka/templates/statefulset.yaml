@@ -9,6 +9,10 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
+  selector:
+    matchLabels:
+      app: {{ include "kafka.name" . }}
+      release: {{ .Release.Name }}
   serviceName: {{ include "kafka.fullname" . }}-headless
   podManagementPolicy: {{ .Values.podManagementPolicy }}
   updateStrategy:
