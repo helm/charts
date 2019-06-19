@@ -3,7 +3,7 @@
 image:
   registry: docker.io
   repository: falcosecurity/falco
-  tag: 0.15.1
+  tag: 0.15.3
   pullPolicy: IfNotPresent
 
 docker:
@@ -54,6 +54,9 @@ proxy:
   httpProxy:
   httpsProxy:
   noProxy:
+
+# Set daemonset timezone
+timezone:
 
 ebpf:
   # Enable eBPF support for Falco
