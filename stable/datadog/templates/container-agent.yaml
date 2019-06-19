@@ -140,7 +140,7 @@
 {{- end }}
 {{- if .Values.datadog.livenessProbe }}
   livenessProbe:
-{{ toYaml .Values.datadog.livenessProbe | indent 10 }}
+{{ toYaml .Values.datadog.livenessProbe | indent 4 }}
 {{- else }}
   livenessProbe:
     httpGet:

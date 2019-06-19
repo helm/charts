@@ -38,4 +38,4 @@
   {{- if .Values.datadog.env }}
   {{ toYaml .Values.datadog.env | indent 4 }}
   {{- end }}
-{{- end -}}
+  {{- end -}}
