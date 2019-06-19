@@ -100,6 +100,9 @@ The following table lists the configurable parameters of the chart and its defau
 | `podAnnotations`                | Pod annotations                                    | `{}`                                             |
 | `podLabels`                     | Pod labels                                         | `{}`                                             |
 | `extraEnv`                      | Extra pod environment variables                    | `[]`                                             |
+| `extraEnvSecrets`               | Environment variables from secrets to the cronjob container | {}                                      |
+| `extraEnvSecrets.*.from.secret` | - `secretKeyRef.name` used for environment variable         |                                         |
+| `extraEnvSecrets.*.from.key`    | - `secretKeyRef.key` used for environment variable          |                                         |
 | `extraInitContainers`           | Add additional initContainers                      | `[]`                                             |
 | `podManagementPolicy`           | podManagementPolicy of the StatefulSet             | `OrderedReady`                                   |
 | `livenessProbe`                 | Liveness probe settings for logstash container     | (see `values.yaml`)                              |

@@ -92,6 +92,15 @@ spec:
           {{- if .Values.extraEnv }}
 {{ .Values.extraEnv | toYaml | indent 12 }}
           {{- end }}
+          {{- if .Values.extraEnvSecrets }}
+          {{- range $key,$value := .Values.extraEnvSecrets }}
+            - name: {{ $key | upper | quote}}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $value.from.secret | quote}}
+                  key: {{ $value.from.key | quote}}
+          {{- end }}
+          {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           volumeMounts:
