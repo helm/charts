@@ -82,6 +82,10 @@ serviceAccount:
   #  team: alpha-team
   #
 
+# Pod scheduling proirity
+# Ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
+# priorityClassName: high-priority
+
 # Node labels for pod assignment
 # Ref: https://kubernetes.io/docs/user-guide/node-selection/
 nodeSelector: {}
