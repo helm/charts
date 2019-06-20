@@ -32,13 +32,11 @@ spec:
               containerPort: 8080
               protocol: TCP
           livenessProbe:
-            httpGet:
-              path: /health
-              port: http
+            tcpSocket:
+              port: 8080
           readinessProbe:
-            httpGet:
-              path: /health
-              port: http
+            tcpSocket:
+              port: 8080
           volumeMounts:
             - name: {{ template "hubot.fullname" . }}-scripts
               mountPath: {{ .Values.hubot.scriptsFolder }}
