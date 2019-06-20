@@ -19,14 +19,14 @@ cloudsqlConnection: ""
 cloudsqlPrivateIp: ""
 
 # The container image used by the Forseti Orchestrator
-orchestratorImage: "gcr.io/forseti-security-containers/forseti:latest"
+orchestratorImage: "gcr.io/forseti-containers/forseti:latest"
 
 orchestratorDeploy: true
 
 orchestratorKeyContents: ""
 
 # The container image used by the server
-serverImage: "gcr.io/forseti-security-containers/forseti:latest"
+serverImage: "gcr.io/forseti-containers/forseti:latest"
 # The bucket containing the client configurations
 serverBucket: ""
 
