@@ -450,6 +450,9 @@ securityContext:
   runAsNonRoot: true
   runAsUser: 100
 
+## Sets environment variables for the rabbitmq container
+env: {}
+
 prometheus:
   ## Configures Prometheus Exporter to expose and scrape stats.
   exporter:
