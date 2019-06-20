@@ -23,7 +23,7 @@ daemon:
     # repository is the image repository for the daemon container
     repository: honeydipper/honeydipper
     # tag is the version of the docker image to use
-    tag: "0.1.9"
+    tag: "0.1.10"
     # pullPolicy specify when to refresh the image
     pullPolicy: IfNotPresent
 

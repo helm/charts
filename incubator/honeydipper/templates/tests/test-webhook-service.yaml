@@ -12,5 +12,5 @@ spec:
       - "sh"
       - "-c"
       - |
-        wget -nv http://{{ include "honeydipper.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.drivers.webhook.service.port }}/health
+        wget -nv http://{{ include "honeydipper.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.drivers.webhook.service.port }}/hz/alive
   restartPolicy: Never
