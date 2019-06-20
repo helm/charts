@@ -117,7 +117,7 @@ spec:
         - name: data
           mountPath: /var/lib/drone
 {{- with .Values.server.extraContainers }}
-{{ tpl . $ | indent 10 }}
+{{ tpl . $ | indent 6 }}
 {{- end }}
       volumes:
       {{ if eq .Values.sourceControl.provider "bitbucketServer" -}}
