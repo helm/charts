@@ -155,7 +155,8 @@ The following table lists the configurable parameters of the Concourse chart and
 | `web.additionalAffinities` | Additional affinities to apply to web pods. E.g: node affinity | `{}` |
 | `web.additionalVolumeMounts` | VolumeMounts to be added to the web pods | `nil` |
 | `web.additionalVolumes` | Volumes to be added to the web pods | `nil` |
-| `web.annotations`| Concourse Web deployment annotations | `nil` |
+| `web.labels`| Additional labels to be added to the web pods | `{}` |
+| `web.annotations`| Annotations to be added to the web pods | `{}` |
 | `web.authSecretsPath` | Specify the mount directory of the web auth secrets | `/concourse-auth` |
 | `web.credhubSecretsPath` | Specify the mount directory of the web credhub secrets | `/concourse-credhub` |
 | `web.enabled` | Enable or disable the web component | `true` |
@@ -196,6 +197,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | `worker.additionalAffinities` | Additional affinities to apply to worker pods. E.g: node affinity | `{}` |
 | `worker.additionalVolumeMounts` | VolumeMounts to be added to the worker pods | `nil` |
 | `worker.additionalVolumes` | Volumes to be added to the worker pods | `nil` |
+| `web.labels`| Additional labels to be added to the worker pods | `{}` |
 | `worker.annotations` | Annotations to be added to the worker pods | `{}` |
 | `worker.cleanUpWorkDirOnStart` | Removes any previous state created in `concourse.worker.workDir` | `true` |
 | `worker.emptyDirSize` | When persistance is disabled this value will be used to limit the emptyDir volume size | `nil` |
