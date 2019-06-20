@@ -61,6 +61,7 @@ CRDs created by this chart are not removed by default and should be manually cle
 kubectl delete crd prometheuses.monitoring.coreos.com
 kubectl delete crd prometheusrules.monitoring.coreos.com
 kubectl delete crd servicemonitors.monitoring.coreos.com
+kubectl delete crd podmonitors.monitoring.coreos.com
 kubectl delete crd alertmanagers.monitoring.coreos.com
 ```
 
@@ -75,6 +76,7 @@ kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/ma
 kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/master/example/prometheus-operator-crd/prometheus.crd.yaml
 kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/master/example/prometheus-operator-crd/prometheusrule.crd.yaml
 kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/master/example/prometheus-operator-crd/servicemonitor.crd.yaml
+kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/master/example/prometheus-operator-crd/podmonitor.crd.yaml
 ```
 
 2. Wait for CRDs to be created, which should only take a few seconds
