@@ -65,6 +65,11 @@ spec:
 {{- end }}
         securityContext:
           runAsUser: 0
+{{- if .Values.daemonset.capabilities }}
+          capabilities:
+            add:
+{{ toYaml .Values.daemonset.capabilities | indent 12 }}
+{{- end }}
         resources:
 {{- if .Values.daemonset.resources }}
 {{ toYaml .Values.daemonset.resources | indent 10 }}
