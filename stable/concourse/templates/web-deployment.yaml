@@ -18,6 +18,9 @@ spec:
       labels:
         app: {{ template "concourse.web.fullname" . }}
         release: "{{ .Release.Name }}"
+        {{- with .Values.web.labels }}
+{{ toYaml . | trim | indent 8 }}
+        {{- end }}
       {{- if .Values.web.annotations }}
       annotations:
 {{ toYaml .Values.web.annotations | indent 8 }}

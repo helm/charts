@@ -1312,6 +1312,16 @@ web:
   ##
   additionalAffinities:
 
+  ## Additional Labels to be added to the web pods.
+  ##
+  ## Example:
+  ##   key1: "value1"
+  ##   key2: "value2"
+  ##
+  ## Ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+  ##
+  labels: {}
+
   ## Annotations for the web nodes.
   ##
   ## Example:
@@ -1519,6 +1529,16 @@ worker:
   ##     mountPath: /baggageclaim
   ##
   additionalVolumeMounts: []
+
+  ## Additional Labels to be added to the worker pods.
+  ##
+  ## Example:
+  ##   key1: "value1"
+  ##   key2: "value2"
+  ##
+  ## Ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+  ##
+  labels: {}
 
   ## Annotations to be added to the worker pods.
   ##
