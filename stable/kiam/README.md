@@ -103,7 +103,7 @@ Parameter | Description | Default
 `agent.extraHostPathMounts` | Additional agent container hostPath mounts | `[]`
 `agent.gatewayTimeoutCreation` | Agent's timeout when creating the kiam gateway | `50ms`
 `agent.host.ip` | IP address of host | `$(HOST_IP)`
-`agent.host.iptables` | Add iptables rule | `false`
+`agent.host.iptables` | Add iptables rule (requires `NET_ADMIN` capability) | `false`
 `agent.host.interface` | Agent's host interface for proxying AWS metadata | `cali+`
 `agent.host.port` | Agent's listening port | `8181`
 `agent.log.jsonOutput` | Whether or not to output agent log in JSON format | `true`

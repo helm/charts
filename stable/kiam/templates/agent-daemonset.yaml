@@ -111,6 +111,12 @@ spec:
             - name: {{ $name }}
               value: {{ quote $value }}
           {{- end }}
+          {{- if .Values.agent.host.iptables }}
+          securityContext:
+            capabilities:
+              add:
+              - NET_ADMIN
+          {{- end }}
           volumeMounts:
             - mountPath: /etc/kiam/tls
               name: tls
