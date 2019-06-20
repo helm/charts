@@ -214,5 +214,5 @@ pro:
     secret: false
 
 crds:
-  create: false
+  create: true
   keep: true
