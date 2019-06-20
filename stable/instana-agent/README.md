@@ -120,7 +120,27 @@ The following table lists the configurable parameters of the Instana chart and t
 | `rbac.create`                      | Whether RBAC resources should be created                                | `true`                                                                                                      |
 | `serviceAccount.create`            | Whether a ServiceAccount should be created                              | `true`                                                                                                      |
 | `serviceAccount.name`              | Name of the ServiceAccount to use                                       | `instana-agent`                                                                                             |
+| `configMap.configuration_yaml`     | Custom content for the configuration.yaml file                          | `# Sample configuration`                                                                                    |
 
 ### Agent
 
 There is a [config map](templates/configmap.yaml) which you can edit to configure the agent. This configuration will be used for all instana agents on all nodes.
+
+The value of configMap.configuration_yaml will be fed as a string. Your formatting must be correct as it will not be checked until after deployment.
+See the [docker configuration.yaml](https://github.com/instana/instana-agent-docker/blob/master/configuration.yaml) or contact the instana team for a more complete list of options.
+A sample is
+```
+configMap:
+  configuration_yaml: |
+    # Set tags
+    com.instana.plugin.host:
+      tags:
+        - Environment=Production
+    # Filter Secrets
+    com.instana.secrets:
+      matcher: 'contains-ignore-case' # 'contains-ignore-case', 'contains', 'regex'
+      list:
+        - 'key'
+        - 'password'
+        - 'secret'
+```

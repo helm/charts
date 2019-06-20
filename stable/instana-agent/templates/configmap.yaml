@@ -6,6 +6,9 @@ metadata:
     {{- include "instana-agent.commonLabels" . | nindent 4 }}
 data:
   configuration.yaml: |
+{{- if .Values.configMap.configuration_yaml -}}
+{{ .Values.configMap.configuration_yaml | nindent 4 }}
+{{- end }}
     # Manual a-priori configuration. Configuration will be only used when the sensor
     # is actually installed by the agent.
     # The commented out example values represent example configuration and are not
