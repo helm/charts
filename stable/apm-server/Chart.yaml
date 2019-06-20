@@ -2,7 +2,7 @@ apiVersion: v1
 description: The server receives data from the Elastic APM agents and stores the data into a datastore like Elasticsearch
 icon: https://www.elastic.co/assets/blt47799dcdcf08438d/logo-elastic-beats-lt.svg
 name: apm-server
-version: 2.1.0
+version: 2.1.3
 appVersion: 7.0.0
 home: https://www.elastic.co/solutions/apm
 sources:
@@ -10,3 +10,5 @@ sources:
 maintainers:
 - name: mumoshu
   email: ykuoka@gmail.com
+- name: at-k
+  email: atushi.k@gmail.com

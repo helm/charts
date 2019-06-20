@@ -1,8 +1,8 @@
-{{- if .Values.RPC.Info.ingress.enabled -}}
+{{- if .Values.info.ingress.enabled -}}
 {{- $serviceName := printf "%s-info" (include "burrow.fullname" .) -}}
-{{- $servicePort := $.Values.config.RPC.Info.ListenPort -}}
-{{- $pathLeader := .Values.RPC.Info.ingress.pathLeader -}}
-{{- $partialIngress := .Values.RPC.Info.ingress.partial -}}
+{{- $servicePort := $.Values.config.info.ListenPort -}}
+{{- $pathLeader := .Values.info.ingress.pathLeader -}}
+{{- $partialIngress := .Values.info.ingress.partial -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -13,10 +13,10 @@ metadata:
     release: {{ .Release.Name }}
   name: {{ template "burrow.fullname" . }}-info
   annotations:
-{{ toYaml .Values.RPC.Info.ingress.annotations | indent 4 }}
+{{ toYaml .Values.info.ingress.annotations | indent 4 }}
 spec:
   rules:
-{{- range $host := .Values.RPC.Info.ingress.hosts }}
+{{- range $host := .Values.info.ingress.hosts }}
     - host: {{ $host }}
       http:
         paths:
@@ -36,8 +36,8 @@ spec:
               servicePort: {{ $servicePort }}
 {{- end -}}
 {{- end -}}
-{{- if .Values.RPC.Info.ingress.tls }}
+{{- if .Values.info.ingress.tls }}
   tls:
-{{ toYaml .Values.RPC.Info.ingress.tls | indent 4 }}
+{{ toYaml .Values.info.ingress.tls | indent 4 }}
 {{- end -}}
 {{- end -}}

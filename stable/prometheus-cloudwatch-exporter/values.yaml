@@ -9,6 +9,20 @@ image:
   tag: cloudwatch_exporter-0.5.0
   pullPolicy: IfNotPresent
 
+# Example proxy configuration:
+# command:
+#   - 'java'
+#   - '-Dhttp.proxyHost=proxy.example.com'
+#   - '-Dhttp.proxyPort=3128'
+#   - '-Dhttps.proxyHost=proxy.example.com'
+#   - '-Dhttps.proxyPort=3128'
+#   - '-jar'
+#   - '/cloudwatch_exporter.jar'
+#   - '9106'
+#   - '/config/config.yml'
+
+command: []
+
 service:
   type: ClusterIP
   port: 9106

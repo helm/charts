@@ -92,7 +92,7 @@ data:
                   <envVars>
                     <org.csanchez.jenkins.plugins.kubernetes.ContainerEnvVar>
                       <key>JENKINS_URL</key>
-                      <value>http://{{ template "jenkins.fullname" . }}.{{.Release.Namespace}}.svc.cluster.local:{{.Values.master.servicePort}}{{ default "" .Values.master.jenkinsUriPrefix }}</value>
+                      <value>http://{{ template "jenkins.fullname" . }}.{{.Release.Namespace}}.svc.{{.Values.clusterZone}}:{{.Values.master.servicePort}}{{ default "" .Values.master.jenkinsUriPrefix }}</value>
                     </org.csanchez.jenkins.plugins.kubernetes.ContainerEnvVar>
                   </envVars>
                 </org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
@@ -221,13 +221,18 @@ data:
     cp /var/jenkins_config/config.xml /var/jenkins_home;
     cp /var/jenkins_config/jenkins.CLI.xml /var/jenkins_home;
     cp /var/jenkins_config/jenkins.model.JenkinsLocationConfiguration.xml /var/jenkins_home;
-  {{- else }}
+  {{- if .Values.master.additionalConfig }}
+  {{- range $key, $val := .Values.master.additionalConfig }}
+    cp /var/jenkins_config/{{- $key }} /var/jenkins_home;
+  {{- end }}
+  {{- end }}
+{{- else }}
     yes n | cp -i /var/jenkins_config/config.xml /var/jenkins_home;
     yes n | cp -i /var/jenkins_config/jenkins.CLI.xml /var/jenkins_home;
     yes n | cp -i /var/jenkins_config/jenkins.model.JenkinsLocationConfiguration.xml /var/jenkins_home;
   {{- if .Values.master.additionalConfig }}
-{{- range $key, $val := .Values.master.additionalConfig }}
-    cp /var/jenkins_config/{{- $key }} /var/jenkins_home;
+  {{- range $key, $val := .Values.master.additionalConfig }}
+    yes n | cp -i /var/jenkins_config/{{- $key }} /var/jenkins_home;
   {{- end }}
   {{- end }}
 {{- end }}
@@ -318,8 +323,10 @@ data:
   {{- if not (contains "configuration-as-code" (quote .Values.master.installPlugins)) }}
     configuration-as-code:{{ .Values.master.JCasC.pluginVersion }}
   {{- end }}
-  {{- if not (contains "configuration-as-code-support" (quote .Values.master.installPlugins)) }}
+  {{- if semverCompare "<=1.19" (printf "%v" .Values.master.JCasC.pluginVersion) }}
+    {{- if not (contains "configuration-as-code-support" (quote .Values.master.installPlugins)) }}
     configuration-as-code-support:{{ .Values.master.JCasC.supportPluginVersion }}
+    {{- end }}
   {{- end }}
 {{- end }}
 {{- end }}

@@ -42,6 +42,9 @@ The following table lists the configurable parameters of the kibana chart and th
 | ------------------------------------------ | ---------------------------------------------------------------------- | ------------------------------------- |
 | `affinity`                                 | node/pod affinities                                                    | None                                  |
 | `env`                                      | Environment variables to configure Kibana                              | `{}`                                  |
+| `envFromSecrets`                           | Environment variables from secrets to the cronjob container            | {}                                    |
+| `envFromSecrets.*.from.secret`             | - `secretKeyRef.name` used for environment variable                    |                                       |
+| `envFromSecrets.*.from.key`                | - `secretKeyRef.key` used for environment variable                     |                                       |
 | `files`                                    | Kibana configuration files                                             | None                                  |
 | `livenessProbe.enabled`                    | livenessProbe to be enabled?                                           | `false`                               |
 | `livenessProbe.path`                       | path for livenessProbe                                                 | `/status`                             |
@@ -138,3 +141,9 @@ $ helm install stable/kibana --name my-release -f values.yaml
 ## Dasboard import
 
 -   A dashboard for dashboardImport.dashboards can be a JSON or a download url to a JSON file.
+
+## Upgrading
+
+### To 2.3.0
+
+The default value of `elasticsearch.url` (for kibana < 6.6) has been removed in favor of `elasticsearch.hosts` (for kibana >= 6.6).

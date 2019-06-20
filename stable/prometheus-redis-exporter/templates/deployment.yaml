@@ -22,6 +22,12 @@ spec:
         release: {{ .Release.Name }}
     spec:
       serviceAccountName: {{ template "prometheus-redis-exporter.serviceAccountName" . }}
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end}}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -35,7 +41,7 @@ spec:
               containerPort: 9121
           env:
             - name: REDIS_ADDR
-              value: {{ .Values.redisAddress }}
+              value: {{ join "," .Values.redisAddress }}
 {{- if .Values.env }}
 {{ toYaml .Values.env | indent 12 }}
 {{- end }}
