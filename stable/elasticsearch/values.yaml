@@ -264,5 +264,8 @@ data:
 # and https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-configuration-memory.html#mlockall
 sysctlInitContainer:
   enabled: true
+## Chown init container to change ownership of data and logs directories to elasticsearch user
+chownInitContainer:
+  enabled: true
 ## Additional init containers
 extraInitContainers: |
