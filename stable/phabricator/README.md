@@ -54,7 +54,7 @@ The following table lists the configurable parameters of the Phabricator chart a
 | `image.registry`                       | Phabricator image registry                   | `docker.io`                                              |
 | `image.repository`                     | Phabricator image name                       | `bitnami/phabricator`                                    |
 | `image.tag`                            | Phabricator image tag                        | `{TAG_NAME}`                                             |
-| `image.pullPolicy`                     | Image pull policy                            | `Always` if `imageTag` is `latest`, else `IfNotPresent`  |
+| `image.pullPolicy`                     | Image pull policy                            | `IfNotPresent`                                           |
 | `image.pullSecrets`                    | Specify docker-registry secret names as an array                   | `[]` (does not add image pull secrets to deployed pods)                                                    |
 | `phabricatorHost`                      | Phabricator host to create application URLs  | `nil`                                                    |
 | `phabricatorAlternateFileDomain`       | Phabricator alternate domain to upload files | `nil`                                                    |
@@ -77,9 +77,6 @@ The following table lists the configurable parameters of the Phabricator chart a
 | `service.nodePorts.http`                 | Kubernetes http node port                  | `""`                                                    |
 | `service.nodePorts.https`                 | Kubernetes https node port                  | `""`                                                    |
 | `persistence.enabled`                  | Enable persistence using PVC                 | `true`                                                   |
-| `persistence.apache.storageClass`      | PVC Storage Class for Apache volume          | `nil` (uses alpha storage class annotation)              |
-| `persistence.apache.accessMode`        | PVC Access Mode for Apache volume            | `ReadWriteOnce`                                          |
-| `persistence.apache.size`              | PVC Storage Request for Apache volume        | `1Gi`                                                    |
 | `persistence.phabricator.storageClass` | PVC Storage Class for Phabricator volume     | `nil` (uses alpha storage class annotation)              |
 | `persistence.phabricator.accessMode`   | PVC Access Mode for Phabricator volume       | `ReadWriteOnce`                                          |
 | `persistence.phabricator.size`         | PVC Storage Request for Phabricator volume   | `8Gi`                                                    |
@@ -149,7 +146,7 @@ Bitnami will release a new chart updating its containers if a new version of the
 
 ## Persistence
 
-The [Bitnami Phabricator](https://github.com/bitnami/bitnami-docker-phabricator) image stores the Phabricator data and configurations at the `/bitnami/phabricator` and `/bitnami/apache` paths of the container.
+The [Bitnami Phabricator](https://github.com/bitnami/bitnami-docker-phabricator) image stores the Phabricator data and configurations at the `/bitnami/phabricator` path of the container.
 
 Persistent Volume Claims are used to keep the data across deployments. There is a [known issue](https://github.com/kubernetes/kubernetes/issues/39178) in Kubernetes Clusters with EBS in different availability zones. Ensure your cluster is configured properly to create Volumes in the same availability zone where the nodes are running. Kuberentes 1.12 solved this issue with the [Volume Binding Mode](https://kubernetes.io/docs/concepts/storage/storage-classes/#volume-binding-mode).
 

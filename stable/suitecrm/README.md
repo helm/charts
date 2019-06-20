@@ -54,7 +54,7 @@ The following table lists the configurable parameters of the SuiteCRM chart and 
 | `image.registry`                    | SuiteCRM image registry                         | `docker.io`                                             |
 | `image.repository`                  | SuiteCRM image name                             | `bitnami/suitecrm`                                      |
 | `image.tag`                         | SuiteCRM image tag                              | `{TAG_NAME}`                                            |
-| `image.pullPolicy`                  | Image pull policy                               | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
+| `image.pullPolicy`                  | Image pull policy                               | `IfNotPresent`                                          |
 | `image.pullSecrets`                 | Specify docker-registry secret names as an array| `[]` (does not add image pull secrets to deployed pods)|
 | `suitecrmHost`                      | SuiteCRM host to create application URLs        | `nil`                                                   |
 | `suitecrmUsername`                  | User of the application                         | `user`                                                  |
@@ -154,7 +154,7 @@ Bitnami will release a new chart updating its containers if a new version of the
 
 ## Persistence
 
-The [Bitnami SuiteCRM](https://github.com/bitnami/bitnami-docker-suitecrm) image stores the SuiteCRM data and configurations at the `/bitnami/suitecrm` and `/bitnami/apache` paths of the container.
+The [Bitnami SuiteCRM](https://github.com/bitnami/bitnami-docker-suitecrm) image stores the SuiteCRM data and configurations at the `/bitnami/suitecrm` path of the container.
 
 Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
 See the [Configuration](#configuration) section to configure the PVC or to disable persistence.

@@ -16,8 +16,9 @@ spec:
         app: {{ template "elasticsearch.name" . }}
         component: "{{ .Values.client.name }}"
         release: {{ .Release.Name }}
-        {{- if .Values.client.podAnnotations }}
       annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{- if .Values.client.podAnnotations }}
 {{ toYaml .Values.client.podAnnotations | indent 8 }}
         {{- end }}
     spec:

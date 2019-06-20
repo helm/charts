@@ -17,12 +17,11 @@ image:
   ## Bitnami MongoDB image tag
   ## ref: https://hub.docker.com/r/bitnami/mongodb/tags/
   ##
-  tag: 4.0.10-debian-9-r0
-
+  tag: 4.0.10-debian-9-r13
   ## Specify a imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   ##
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -130,19 +129,30 @@ replicaSet:
   replicas:
     secondary: 1
     arbiter: 1
+
   ## Pod Disruption Budget
   ## ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
   pdb:
+    enabled: true
     minAvailable:
       primary: 1
       secondary: 1
       arbiter: 1
+    # maxUnavailable:
+      # primary: 1
+      # secondary: 1
+      # arbiter: 1
 
 # Annotations to be added to MongoDB pods
 podAnnotations: {}
 
 # Additional pod labels to apply
 podLabels: {}
+
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName:
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -298,7 +308,7 @@ metrics:
     registry: docker.io
     repository: forekshub/percona-mongodb-exporter
     tag: latest
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
     ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/

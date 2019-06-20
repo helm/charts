@@ -7,7 +7,7 @@ Learn more: https://github.com/mind-doc/hubot
 ## TL;DR;
 
 ```bash
-$ helm install stable/hubot
+helm install stable/hubot
 ```
 
 ## Introduction
@@ -24,18 +24,21 @@ cluster using the [Helm](https://helm.sh) package manager.
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release stable/hubot
+helm install --name my-release stable/hubot
 ```
 
-The command deploys Hubot on the Kubernetes cluster using the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
+The command deploys Hubot on the Kubernetes cluster using the default configuration.
+The [configuration](#configuration) section lists the parameters that can be
+configured during installation.
 
 ## Uninstalling the Chart
 
 To uninstall/delete the `my-release` deployment:
 
 ```bash
-$ helm delete --purge my-release
+helm delete --purge my-release
 ```
+
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
 ## Configuration
@@ -65,8 +68,8 @@ Parameter | Description | Default
 `hubot.scripts` | custom hubot scripts | `{ health.coffee: <script content> }`
 `hubot.slackToken` | slack hubot integration token | `''`
 
-
-Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
+Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
+For example:
 
 ```bash
 $ helm install --name my-release \
@@ -74,7 +77,8 @@ $ helm install --name my-release \
     stable/hubot
 ```
 
-Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
+Alternatively, a YAML file that specifies the values for the parameters can be
+provided while installing the chart. For example,
 
 ```bash
 # example for staging
@@ -87,11 +91,13 @@ $ helm install --name my-release -f values.yaml stable/hubot
 
 #### Config
 
-With the `hubot.config` parameter you can provide a hash that will be used as environment variables by hubot. These environment variables will be picked by hubot's scripts.
+With the `hubot.config` parameter you can provide a hash that will be used as
+environment variables by hubot. These environment variables will be picked by
+hubot's scripts.
 
 For instance:
 
-```
+```yaml
 hubot:
   config:
     HUBOT_STANDUP_PREPEND: '@channel'
@@ -99,22 +105,13 @@ hubot:
 
 #### Scripts
 
-In addition, you can add your own scripts, which will be created in the scripts folder, with `.js` or `.coffee` format. See [Hubot Scripting](https://hubot.github.com/docs/scripting/).
+In addition, you can add your own scripts, which will be created in the scripts
+folder, with `.js` or `.coffee` format.
+See [Hubot Scripting](https://hubot.github.com/docs/scripting/).
 
-By default, this chart adds a health endpoint so Kubernetes can probe the pod.
+For example:
 
-```
-hubot:
-  scripts:
-    health.coffee: |
-      # Description
-      #   A hubot script that exposes a health endpoint
-      module.exports = (robot) ->
-        robot.router.get '/health', (req, res) -> res.status(200).end()
-```
-
-You can follow the same format for creating your own hubot scripts
-```
+```yaml
 hubot:
   scripts:
     hithere.coffee: |

@@ -17,9 +17,10 @@ This chart will deploy the New Relic Infrastructure agent as a Daemonset.
 | `rbac.pspEnabled`         | Enable pod security policy support                           | `false`                    |
 | `image.name`              | The container to pull.                                       | `newrelic/infrastructure`  |
 | `image.pullPolicy`        | The pull policy.                                             | `IfNotPresent`             |
-| `image.tag`               | The version of the container to pull.                        | `1.8.0`            |
+| `image.tag`               | The version of the container to pull.                        | `1.9.0`            |
 | `resources`               | Any resources you wish to assign to the pod.                 | See Resources below        |
 | `verboseLog`              | Should the agent log verbosely. (Boolean)                    | `false`                    |
+| `priorityClassName`       | Scheduling priority of the pod                               | `nil`                      |
 | `nodeSelector`            | Node label to use for scheduling                             | `nil`                      |
 | `tolerations`             | List of node taints to tolerate (requires Kubernetes >= 1.6) | `nil`                      |
 | `updateStrategy`          | Strategy for DaemonSet updates (requires Kubernetes >= 1.6)  | `RollingUpdate`            |
@@ -38,11 +39,10 @@ The default set of resources assigned to the pods is shown below:
 
     resources:
       limits:
-        cpu: 100m
-        memory: 128Mi
+        memory: 150M
       requests:
         cpu: 100m
-        memory: 128Mi
+        memory: 30M
 
 # Config file
 

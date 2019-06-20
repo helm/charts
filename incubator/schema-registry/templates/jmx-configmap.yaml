@@ -1,0 +1,24 @@
+{{- if and .Values.prometheus.jmx.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "schema-registry.fullname" . }}-jmx-configmap
+  labels:
+    app: {{ template "schema-registry.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  jmx-schema-registry-prometheus.yml: |+
+    jmxUrl: service:jmx:rmi:///jndi/rmi://localhost:{{ .Values.jmx.port }}/jmxrmi
+    lowercaseOutputName: true
+    lowercaseOutputLabelNames: true
+    ssl: false
+    rules:
+    - pattern : 'kafka.schema.registry<type=jetty-metrics>([^:]+):'
+      name: "kafka_schema_registry_jetty_metrics_$1"
+    - pattern : 'kafka.schema.registry<type=master-slave-role>([^:]+):'
+      name: "kafka_schema_registry_master_slave_role"
+    - pattern : 'kafka.schema.registry<type=jersey-metrics>([^:]+):'
+      name: "kafka_schema_registry_jersey_metrics_$1"
+{{- end }}

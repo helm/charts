@@ -14,12 +14,12 @@ global:
 image:
   registry: docker.io
   repository: bitnami/postgresql
-  tag: 11.3.0-debian-9-r17
+  tag: 11.3.0-debian-9-r38
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   ##
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -56,6 +56,11 @@ volumePermissions:
   ## Init container Security Context
   securityContext:
     runAsUser: 0
+
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName:
 
 ## Pod Security Context
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
@@ -95,6 +100,12 @@ postgresqlUsername: postgres
 ##
 # postgresqlPassword:
 
+## PostgreSQL password using existing secret
+## existingSecret: secret
+
+## Mount PostgreSQL secret as a file instead of passing environment variable
+# usePasswordFile: false
+
 ## Create a database
 ## ref: https://github.com/bitnami/bitnami-docker-postgresql/blob/master/README.md#creating-a-database-on-first-run
 ##
@@ -114,12 +125,6 @@ postgresqlDataDir: /bitnami/postgresql/data
 ## ref: https://github.com/bitnami/bitnami-docker-postgresql/blob/master/README.md
 ##
 # postgresqlInitdbWalDir:
-
-## PostgreSQL password using existing secret
-## existingSecret: secret
-
-## Mount PostgreSQL secret as a file instead of passing environment variable
-# usePasswordFile: false
 
 ## PostgreSQL configuration
 ## Specify runtime configuration parameters as a dict, using camelCase, e.g.
@@ -169,10 +174,16 @@ postgresqlDataDir: /bitnami/postgresql/data
 ## NOTE: This can work along initdbScripts or initdbScriptsConfigMap
 # initdbScriptsSecret:
 
+## Optional duration in seconds the pod needs to terminate gracefully.
+## ref: https://kubernetes.io/docs/concepts/workloads/pods/pod/#termination-of-pods
+##
+# terminationGracePeriodSeconds: 30
+
 ## PostgreSQL service configuration
 service:
   ## PosgresSQL service type
   type: ClusterIP
+  # clusterIP: None
   port: 5432
 
   ## Specify the nodePort value for the LoadBalancer and NodePort service types.
@@ -242,6 +253,12 @@ master:
   tolerations: []
   podLabels: {}
   podAnnotations: {}
+  ## Additional PostgreSQL Master Volume mounts
+  ##
+  extraVolumeMounts: []
+  ## Additional PostgreSQL Master Volumes
+  ##
+  extraVolumes: []
 
 ##
 ## PostgreSQL Slave parameters
@@ -256,6 +273,12 @@ slave:
   tolerations: []
   podLabels: {}
   podAnnotations: {}
+  ## Additional PostgreSQL Slave Volume mounts
+  ##
+  extraVolumeMounts: []
+  ## Additional PostgreSQL Slave Volumes
+  ##
+  extraVolumes: []
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -306,6 +329,12 @@ metrics:
       prometheus.io/scrape: "true"
       prometheus.io/port: "9187"
     loadBalancerIP:
+  serviceMonitor:
+    enabled: false
+    additionalLabels: {}
+    # namespace: monitoring
+    # interval: 30s
+    # scrapeTimeout: 10s
   image:
     registry: docker.io
     repository: wrouesnel/postgres_exporter
@@ -323,7 +352,6 @@ metrics:
   securityContext:
     enabled: false
     runAsUser: 1001
-
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
   ## Configure extra options for liveness and readiness probes
   livenessProbe:
