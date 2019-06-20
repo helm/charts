@@ -30,7 +30,6 @@ spec:
         checksum/config-scripts: {{ include (print $.Template.BasePath "/configmap-scripts.yaml") . | sha256sum }}
         checksum/config-variables-pools: {{ include (print $.Template.BasePath "/configmap-variables-pools.yaml") . | sha256sum }}
         checksum/secret-connections: {{ include (print $.Template.BasePath "/secret-connections.yaml") . | sha256sum }}
-        checksum/secret-env: {{ include (print $.Template.BasePath "/secret-env.yaml") . | sha256sum }}
 {{- if .Values.airflow.podAnnotations }}
 {{ toYaml .Values.airflow.podAnnotations | indent 8 }}
 {{- end }}
@@ -135,8 +134,10 @@ spec:
               mkdir -p /usr/local/airflow/.local/bin &&
               export PATH=/usr/local/airflow/.local/bin:$PATH &&
               /usr/local/scripts/install-requirements.sh &&
+              {{- if .Values.airflow.initdb }}
               echo "executing initdb" &&
               airflow initdb &&
+              {{- end }}
             {{- if .Values.airflow.connections }}
               echo "adding connections" &&
               /usr/local/connections/add-connections.sh &&
@@ -157,8 +158,10 @@ spec:
               sleep 10 &&
               mkdir -p /usr/local/airflow/.local/bin &&
               export PATH=/usr/local/airflow/.local/bin:$PATH &&
+              {{- if .Values.airflow.initdb }}
               echo "executing initdb" &&
               airflow initdb &&
+              {{- end }}
             {{- if .Values.airflow.connections }}
               echo "adding connections" &&
               /usr/local/connections/add-connections.sh &&

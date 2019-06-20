@@ -82,6 +82,11 @@ The following table lists the configurable parameters of the nextcloud chart and
 | `mariadb.db.password`               | Password for the database                     | `changeme`                                              |
 | `mariadb.db.user`                   | Database user to create                       | `nextcloud`                                             |
 | `mariadb.rootUser.password`         | MariaDB admin password                        | `nil`                                                   |
+| `cronjob.enabled`                   | Whether to enable/disable cronjob             | `false`                                                 |
+| `cronjob.schedule`                  | Schedule for the CronJob                      | `*/15 * * * *`                                          |
+| `cronjob.annotations`               | Annotations to add to the cronjob             | {}                                                      |
+| `cronjob.failedJobsHistoryLimit`    | Specify the number of failed Jobs to keep     | `5`                                                     |
+| `cronjob.successfulJobsHistoryLimit`| Specify the number of completed Jobs to keep  | `2`                                                     |
 | `service.type`                      | Kubernetes Service type                       | `ClusterIp`                                             |
 | `service.loadBalancerIP`            | LoadBalancerIp for service type LoadBalancer  | `nil`                                                   |
 | `persistence.enabled`               | Enable persistence using PVC                  | `false`                                                 |
@@ -141,3 +146,12 @@ The [Nextcloud](https://hub.docker.com/_/nextcloud/) image stores the nextcloud 
 
 Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
 See the [Configuration](#configuration) section to enable persistence and configuration of the PVC.
+
+## Cronjob
+
+This chart can utilize Kubernetes `CronJob` resource to execute [background tasks](https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/background_jobs_configuration.html).
+
+To use this functionality, set `cronjob.enabled` parameter to `true` and switch background mode to Webcron in your nextcloud settings page.
+See the [Configuration](#configuration) section for further configuration of the cronjob resource.
+
+> **Note**: For the cronjobs to work correctly, ingress must be also enabled (set `ingress.enabled` to `true`) and `nextcloud.host` has to be publicly resolvable.

@@ -83,7 +83,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | `imageDigest` | Specific image digest to use in place of a tag. | `nil` |
 | `imagePullPolicy` | Concourse image pull policy | `IfNotPresent` |
 | `imagePullSecrets` | Array of imagePullSecrets in the namespace for pulling images | `[]` |
-| `imageTag` | Concourse image version | `5.0.0` |
+| `imageTag` | Concourse image version | `5.3.0` |
 | `image` | Concourse image | `concourse/concourse` |
 | `nameOverride` | Provide a name in place of `concourse` for `app:` labels | `nil` |
 | `persistence.enabled` | Enable Concourse persistence using Persistent Volume Claims | `true` |
@@ -114,6 +114,9 @@ The following table lists the configurable parameters of the Concourse chart and
 | `secrets.cfClientId` | Client ID for cf auth provider | `nil` |
 | `secrets.cfClientSecret` | Client secret for cf auth provider | `nil` |
 | `secrets.create` | Create the secret resource from the following values. *See [Secrets](#secrets)* | `true` |
+| `secrets.credhubCaCert` | Value of PEM-encoded CA cert file to use to verify the CredHub server SSL cert. | `nil` |
+| `secrets.credhubClientId` | Client ID for CredHub authorization. | `nil` |
+| `secrets.credhubClientSecret` | Client secret for CredHub authorization. | `nil` |
 | `secrets.encryptionKey` | current encryption key | `nil` |
 | `secrets.githubCaCert` | CA certificate for Enterprise Github OAuth | `nil` |
 | `secrets.githubClientId` | Application client ID for GitHub OAuth | `nil` |
@@ -152,8 +155,10 @@ The following table lists the configurable parameters of the Concourse chart and
 | `web.additionalAffinities` | Additional affinities to apply to web pods. E.g: node affinity | `{}` |
 | `web.additionalVolumeMounts` | VolumeMounts to be added to the web pods | `nil` |
 | `web.additionalVolumes` | Volumes to be added to the web pods | `nil` |
-| `web.annotations`| Concourse Web deployment annotations | `nil` |
+| `web.labels`| Additional labels to be added to the web pods | `{}` |
+| `web.annotations`| Annotations to be added to the web pods | `{}` |
 | `web.authSecretsPath` | Specify the mount directory of the web auth secrets | `/concourse-auth` |
+| `web.credhubSecretsPath` | Specify the mount directory of the web credhub secrets | `/concourse-credhub` |
 | `web.enabled` | Enable or disable the web component | `true` |
 | `web.env` | Configure additional environment variables for the web containers | `[]` |
 | `web.ingress.annotations` | Concourse Web Ingress annotations | `{}` |
@@ -192,6 +197,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | `worker.additionalAffinities` | Additional affinities to apply to worker pods. E.g: node affinity | `{}` |
 | `worker.additionalVolumeMounts` | VolumeMounts to be added to the worker pods | `nil` |
 | `worker.additionalVolumes` | Volumes to be added to the worker pods | `nil` |
+| `web.labels`| Additional labels to be added to the worker pods | `{}` |
 | `worker.annotations` | Annotations to be added to the worker pods | `{}` |
 | `worker.cleanUpWorkDirOnStart` | Removes any previous state created in `concourse.worker.workDir` | `true` |
 | `worker.emptyDirSize` | When persistance is disabled this value will be used to limit the emptyDir volume size | `nil` |
@@ -462,6 +468,39 @@ concourse:
       ## vault path under which to namespace credential lookup, defaults to /concourse.
       ##
       # pathPrefix:
+```
+
+#### Credhub
+
+To use Credhub, set `concourse.web.kubernetes.enabled` to false, and consider the following values:
+
+```yaml
+## Configuration for using Credhub as a credential manager.
+## Ref: https://concourse-ci.org/credhub-credential-manager.html
+##
+concourse:
+  web:
+    credhub:
+      ## Enable the use of Credhub as a credential manager.
+      ##
+      enabled: true
+
+      ## CredHub server address used to access secrets
+      ## Example: https://credhub.example.com
+      ##
+      url:
+
+      ## Path under which to namespace credential lookup. (default: /concourse)
+      ##
+      pathPrefix:
+
+      ## Enables using a CA Certificate
+      ##
+      useCaCert: false
+
+      ## Enables insecure SSL verification.
+      ##
+      insecureSkipVerify: false
 ```
 
 #### AWS Systems Manager Parameter Store (SSM)
