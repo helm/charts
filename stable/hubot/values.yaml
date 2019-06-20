@@ -49,11 +49,6 @@ hubot:
 
   scriptsFolder: /minddocbot/scripts
 
-  scripts:
-    health.coffee: |
-      # Description
-      #   A hubot script that exposes a health endpoint
-      module.exports = (robot) ->
-        robot.router.get '/health', (req, res) -> res.status(200).end()
+  scripts: {}
 
   slackToken: ''
