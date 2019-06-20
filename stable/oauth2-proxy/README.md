@@ -54,7 +54,7 @@ Parameter | Description | Default
 `extraArgs` | key:value list of extra arguments to give the binary | `{}`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
 `image.repository` | Image repository | `quay.io/pusher/oauth2_proxy`
-`image.tag` | Image tag | `v3.1.0`
+`image.tag` | Image tag | `v3.2.0`
 `imagePullSecrets` | Specify image pull secrets | `nil` (does not add image pull secrets to deployed pods)
 `ingress.enabled` | Enable Ingress | `false`
 `ingress.path` | Ingress accepted path | `/`
