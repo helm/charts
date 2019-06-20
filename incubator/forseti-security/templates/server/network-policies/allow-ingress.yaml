@@ -1,0 +1,24 @@
+{{ if .Values.networkPolicyEnable }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: forseti-server-allow-ingress
+spec:
+  podSelector:
+    matchLabels:
+      app: forseti-server
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: forseti-orchestrator
+{{ range $cidr := .Values.netowrkPolicyIngressCidr }}
+    - ipBlock:
+        cidr: {{ $cidr }}
+{{ end }}
+    ports:
+    - protocol: TCP
+      port: 50051
+{{ end }}

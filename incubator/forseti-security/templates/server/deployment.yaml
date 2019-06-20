@@ -1,0 +1,78 @@
+# Copyright 2019 The Forseti Security Authors. All rights reserved.
+#
+# Licensed under the Apache License, Versisn 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: forseti-server
+spec:
+  selector:
+    matchLabels:
+      app: forseti-server
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: forseti-server
+        chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    spec:
+      containers:
+      - name: forseti-server
+        image: "{{ .Values.serverImage }}"
+        imagePullPolicy: Always
+        ports:
+          - containerPort: 50051
+        args:
+        - --run_server
+        - --services
+        - 'explain inventory model scanner server notifier'
+        - --log_level
+        -  {{ .Values.serverLogLevel | default "info" }}
+{{ if .Values.cloudSqlPrivateIp }}
+        - "--sql_host"
+        - {{ .Values.cloudsqlPrivateIp }}
+{{ end }}      
+        volumeMounts:
+        - name: google-cloud-key
+          mountPath: /var/secrets/google
+          readOnly: true
+        - name: forseti-server-config-volume
+          mountPath: /forseti-security
+          readOnly: true
+        env:
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: /var/secrets/google/key.json
+        - name: FORSETI_HOME
+          value: /forseti-security
+{{ if not .Values.cloudSqlPrivateIp }}
+      - name: cloudsql-proxy
+        image: gcr.io/cloudsql-docker/gce-proxy:latest
+        command: ["/cloud_sql_proxy", "-instances={{ .Values.cloudsqlConnection }}=tcp:3306", "-credential_file=/var/secrets/google/key.json"]
+        securityContext:
+          runAsUser: 2 
+          allowPrivilegeEscalation: false
+        volumeMounts:
+        - name: google-cloud-key
+          mountPath: /var/secrets/google
+          readOnly: true
+{{end}}
+      securityContext:
+        runAsUser: 1000
+      volumes:
+      - name: google-cloud-key
+        secret:
+          secretName: server-credentials
+      - name: forseti-server-config-volume
+        configMap:
+          name: forseti-server-conf
