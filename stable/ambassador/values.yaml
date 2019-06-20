@@ -72,19 +72,49 @@ service:
     # nodePort: 30443
 
   annotations:
-    getambassador.io/config: |
-      ---
-      apiVersion: ambassador/v1
-      kind: Module
-      name: ambassador
-      config:
-        service_port: 8080
-  #       diagnostics:
-  #         enabled: false
+  #  Uncomment out fields you want to use.
+  #  See https://www.getambassador.io/reference/core/ambassador  and 
+  #  https://www.getambassador.io/reference/core/tls for more info 
+  #  getambassador.io/config: |
+  #    ---
+  #    apiVersion: ambassador/v1
+  #    kind: TLSContext
+  #    name: ambassador
+  #    secret: ambassador-certs
+  #    hosts: ["*"]
+  #    ---
+  #    apiVersion: ambassador/v1
+  #    kind: Module
+  #    name: ambassador
+  #    config:
+  #      admin_port: 8001
+  #      diag_port: 8877
+  #      diagnostics:
+  #        enabled: true
+  #      enable_grpc_http11_bridge: false
+  #      enable_grpc_web: false
+  #      enable_http10: false
+  #      enable_ipv4: true
+  #      enable_ipv6: false
+  #      liveness_probe:
+  #        enabled: true
+  #      lua_scripts:
+  #      readiness_probe:
+  #        enabled: true
+  #      server_name: envoy
+  #      service_port: 8080
+  #      use_proxy_proto: false
+  #      use_remote_address: true
+  #      xff_num_trusted_hops: 0
+  #      x_forwarded_proto_redirect: false
+  #      load_balancer:
+  #        policy: round_robin
+  #      circuit_breakers:
+  #        max_connections: 2048
+  #      retry_policy:
+  #        retry_on: "5xx"
+  #      cors:
 
-  # externalTrafficPolicy:
-  # loadBalancerSourceRanges:
-  #   - YOUR_IP_RANGE
 
 adminService:
   create: true
@@ -184,5 +214,5 @@ pro:
     secret: false
 
 crds:
-  create: true
+  create: false
   keep: true
