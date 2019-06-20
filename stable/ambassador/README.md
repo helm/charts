@@ -73,7 +73,7 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `resources`                        | CPU/memory resource requests/limits                                             | `{}`                              |
 | `securityContext`                  | Set security context for pod                                                    | `{ "runAsUser": "8888" }`         |
 | `initContainers`                   | Containers used to initialize context for pods                                  | `[]`                              |
-| `service.annotations`              | Annotations to apply to Ambassador service                                      | See "Annotations" below           |
+| `service.annotations`              | Annotations to apply to Ambassador service                                      | `""`                              |
 | `service.externalTrafficPolicy`    | Sets the external traffic policy for the service                                | `""`                              |
 | `service.http.enabled`             | if port 80 should be opened for service                                         | `true`                            |
 | `service.http.nodePort`            | If explicit NodePort is required                                                | None                              |
@@ -107,17 +107,7 @@ The following tables lists the configurable parameters of the Ambassador chart a
 
 ### Annotations
 
-The default annotation applied to the Ambassador service is
-
-```
-getambassador.io/config: |
-  ---
-  apiVersion: ambassador/v1
-  kind: Module
-  name: ambassador
-  config:
-    service_port: 8080
-```
+Ambassador configuration is done through annotations on Kubernetes services or Custom Resource Definitions (CRDs). The `service.annotations` section of the values file contains commented out examples of [Ambassador Module](https://www.getambassador.io/reference/core/ambassador) and a global [TLSContext](https://www.getambassador.io/reference/core/tls) configurations which are typically created in the Ambassador service.
 
 If you intend to use `service.annotations`, remember to include the `getambassador.io/config` annotation key as above,
 and remember that you'll have to escape newlines. For example, the annotation above could be defined as
