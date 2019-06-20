@@ -864,9 +864,6 @@ prometheusOperator:
   ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#multi-port-services
   ##
     additionalPorts: []
-    #  - name: thanos-cluster
-    #    port: 10900
-    #    nodePort: 30111
 
   ## Loadbalancer IP
   ## Only use if service.type is "loadbalancer"
@@ -991,7 +988,7 @@ prometheusOperator:
   ##
   image:
     repository: quay.io/coreos/prometheus-operator
-    tag: v0.30.1
+    tag: v0.31.0
     pullPolicy: IfNotPresent
 
   ## Configmap-reload image to use for reloading configmaps
@@ -1004,7 +1001,7 @@ prometheusOperator:
   ##
   prometheusConfigReloaderImage:
     repository: quay.io/coreos/prometheus-config-reloader
-    tag: v0.30.1
+    tag: v0.31.0
 
   ## Set the prometheus config reloader side-car CPU limit. If unset, uses the prometheus-operator project default
   ##
@@ -1150,7 +1147,7 @@ prometheus:
     ##
     image:
       repository: quay.io/prometheus/prometheus
-      tag: v2.9.1
+      tag: v2.10.0
 
     ## Tolerations for use with node taints
     ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
