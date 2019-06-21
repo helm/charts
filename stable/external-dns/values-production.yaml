@@ -185,10 +185,6 @@ txtOwnerId: ""
 ## Prefix to create a TXT record with a name following the pattern prefix.<CNAME record>
 ##
 # txtPrefix: ""
-## Load balancer service to be used; ie: custom-istio-namespace/custom-istio-ingressgateway.
-## Omit to use the default (istio-system/istio-ingressgateway)
-##
-istioIngressGateways: []
 
 ## Extra Arguments to passed to external-dns
 ##
@@ -199,7 +195,7 @@ extraEnv: {}
 
 ## Replica count
 ##
-replicas: 1
+replicas: 3
 
 ## Affinity for pod assignment (this value is evaluated as a template)
 ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
@@ -226,7 +222,6 @@ priorityClassName: ""
 ## Installs the DNSEndpoint CRD
 ##
 crd:
-  create: false  
   apiversion: ""
   kind: ""
 
@@ -320,6 +315,6 @@ readinessProbe:
 ## Prometheus Exporter / Metrics
 ##
 metrics:
-  enabled: false
+  enabled: true
   ## Metrics exporter pod Annotation and Labels
   ##
