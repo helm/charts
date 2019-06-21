@@ -68,10 +68,10 @@ orgWhitelist: <replace-me>
 # awsSecretName: 'mysecretwithawscreds'
 
 ## To be used for mounting credential files (when using google provider).
-serviceAccountSecrets:
-  # credentials: <json file as base64 encoded string>
-  # credentials-staging: <json file as base64 encoded string>
-
+# serviceAccountSecrets:
+#   credentials: <json file as base64 encoded string>
+#   credentials-staging: <json file as base64 encoded string>
+# gcpSecretName: 'mysecretwithgcpcreds'
 
 ## -------------------------- ##
 # Default values for atlantis (override as needed).

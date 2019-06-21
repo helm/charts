@@ -47,6 +47,11 @@ spec:
         secret:
           secretName: {{ $name }}
       {{- end }}
+      {{- if .Values.gcpSecretName }}
+      - name: gcp-volume
+        secret:
+          secretName: {{ .Values.gcpSecretName }}
+      {{- end }}
       {{- if .Values.gitconfig }}
       - name: gitconfig-volume
         secret:
@@ -183,6 +188,10 @@ spec:
                 key: bitbucket_secret
           {{- end }}
           {{- end }}
+          {{- if .Values.gcpSecretName }}
+          - name: GOOGLE_APPLICATION_CREDENTIALS
+            value: "/etc/gcp/key.json"
+          {{- end }}
           {{- if .Values.livenessProbe.enabled }}
           livenessProbe:
             httpGet:
@@ -214,6 +223,11 @@ spec:
           - name: {{ $name }}-volume
             readOnly: true
             mountPath: /etc/{{ $name }}
+          {{- end }}
+          {{- if .Values.gcpSecretName }}
+          - name: gcp-volume
+            readOnly: true
+            mountPath: /etc/gcp/key.json
           {{- end }}
           {{- if .Values.gitconfig}}
           - name: gitconfig-volume
