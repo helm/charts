@@ -9,16 +9,19 @@ nodeSelector: {}
 tolerations: []
 affinity: {}
 
+# Set existingConfigSecret to load your config from an existing secret
+existingConfigSecret: ~
+# Set secretConfig to store the below config as a Secret
 secretConfig: false
-config:
-  modules:
-    http_2xx:
-      prober: http
-      timeout: 5s
-      http:
-        valid_http_versions: ["HTTP/1.1", "HTTP/2"]
-        no_follow_redirects: false
-        preferred_ip_protocol: "ip4"
+config: {}
+  # modules:
+  #   http_2xx:
+  #     prober: http
+  #     timeout: 5s
+  #     http:
+  #       valid_http_versions: ["HTTP/1.1", "HTTP/2"]
+  #       no_follow_redirects: false
+  #       preferred_ip_protocol: "ip4"
 
 resources: {}
   # limits:
