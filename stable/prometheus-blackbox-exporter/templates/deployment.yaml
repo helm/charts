@@ -88,10 +88,15 @@ spec:
               readOnly: true
       volumes:
         - name: config
-{{- if .Values.secretConfig }}
+{{- if not .Values.existingConfigSecret }}
+  {{- if .Values.secretConfig }}
           secret:
             secretName: {{ template "prometheus-blackbox-exporter.fullname" . }}
-{{- else }}
+  {{- else }}
           configMap:
             name: {{ template "prometheus-blackbox-exporter.fullname" . }}
+  {{- end }}
+{{- else }}
+          secret:
+            secretName: {{ .Values.existingConfigSecret }}
 {{- end }}
