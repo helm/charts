@@ -33,7 +33,7 @@ data:
      dir "/tmp"
      bind 0.0.0.0
      port {{ .Values.sentinel.port }}
-     sentinel monitor {{ .Values.sentinel.masterSet }} {{ template "redis.fullname" . }}-master-0.{{ template "redis.fullname" . }}-headless.{{ .Release.Namespace }}.svc.cluster.local {{ .Values.redisPort }} {{ .Values.sentinel.quorum }}
+     sentinel monitor {{ .Values.sentinel.masterSet }} {{ template "redis.fullname" . }}-master-0.{{ template "redis.fullname" . }}-headless.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }} {{ .Values.redisPort }} {{ .Values.sentinel.quorum }}
      sentinel down-after-milliseconds {{ .Values.sentinel.masterSet }} {{ .Values.sentinel.downAfterMilliseconds }}
      sentinel failover-timeout {{ .Values.sentinel.masterSet }} {{ .Values.sentinel.failoverTimeout }}
      sentinel parallel-syncs {{ .Values.sentinel.masterSet }} {{ .Values.sentinel.parallelSyncs }}
