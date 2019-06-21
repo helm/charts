@@ -43,7 +43,7 @@ kubectl -n "$NAMESPACE" exec -it "$POD_NAME" /etc/openvpn/setup/newClientCert.sh
 kubectl -n "$NAMESPACE" exec -it "$POD_NAME" cat "/etc/openvpn/certs/pki/$KEY_NAME.ovpn" > "$KEY_NAME.ovpn"
 ```
 
-In order to revoke certificates in later steps: 
+In order to revoke certificates in later steps:
 ```bash
 #!/bin/bash
 
@@ -105,6 +105,7 @@ Parameter | Description | Default
 `openvpn.taKey`                | Use/generate a ta.key file for hardening security                    | `false`
 `openvpn.cipher`               | Override the default cipher                                          | `nil` (OpenVPN default)
 `nodeSelector`                 | Node labels for pod assignment                                       | `{}`
+`ipForwardInitContainer`       | Add privileged init container to enable IPv4 forwarding              | `false`
 
 This chart has been engineered to use kube-dns and route all network traffic to kubernetes pods and services,
 to disable this behaviour set `openvpn.OVPN_K8S_POD_NETWORK` and `openvpn.OVPN_K8S_POD_SUBNET` to `null`.

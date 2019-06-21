@@ -31,6 +31,9 @@ service:
 #   backup.ark.heptio.com/backup-volumes: certs
 podAnnotations: {}
 
+# Add privileged init container to enable IPv4 forwarding
+ipForwardInitContainer: false
+
 resources:
   limits:
     cpu: 300m
