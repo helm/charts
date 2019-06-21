@@ -205,6 +205,10 @@ exporters:
       timeoutSeconds: 60
       failureThreshold: 8
       successThreshold: 1
+    serviceMonitor:
+      interval: 30s
+      scrapeTimeout: 30s
+      scheme: http
 
   zookeeper:
   ## refs:
@@ -244,6 +248,21 @@ exporters:
       timeoutSeconds: 60
       failureThreshold: 8
       successThreshold: 1
+    serviceMonitor:
+      interval: 30s
+      scrapeTimeout: 30s
+      scheme: http
+
+## ServiceMonitor configuration in case you are using Prometheus Operator
+prometheus:
+  serviceMonitor:
+    ## If true a ServiceMonitor for each enabled exporter will be installed
+    enabled: false
+    ## The namespace where the ServiceMonitor(s) will be installed
+    # namespace: monitoring
+    ## The selector the Prometheus instance is searching for
+    ## [Default Prometheus Operator selector] (https://github.com/helm/charts/blob/f5a751f174263971fafd21eee4e35416d6612a3d/stable/prometheus-operator/templates/prometheus/prometheus.yaml#L74)
+    selector: {}
 
 ## Use an alternate scheduler, e.g. "stork".
 ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
