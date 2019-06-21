@@ -140,6 +140,7 @@ reference the default `values.yaml` to understand further options.
 | `tiller.role.type` | Identify the name of the `Role` or `ClusterRole` that will be referenced in the role binding for Tiller's service account. There is seldom any reason to override this. | `admin` |
 | `tiller.includeService` | This deploys a service resource for Tiller. This is not generally needed. Please understand the security implications of this before overriding the default. | `false` |
 | `tiller.onlyListenOnLocalhost` | This prevents Tiller from binding to `0.0.0.0`. This is generally advisable to close known Tiller-based attack vectors. Please understand the security implications of this before overriding the default. | `true` |
+| `tiller.storage` | The storage driver for Tiller to use. One of `configmap`, `memory`, or `secret` | `configmap` |
 | `tiller.tls.enabled` | Whether to enable TLS encryption between Helm and Tiller. Specify either `tiller.tls.secretName` to mount an existing secret, or `tiller.tls.ca`, `tiller.tls.cert` and `tiller.tls.key` to create a secret from Base64 provided values | `false` |
 | `tiller.tls.verify` | Whether to verify a remote Tiller certificate. | `true` |
 | `tiller.tls.secretName` | Mount an existing TLS secret into the Tiller container. The secret must include data keys: `ca.crt`, `tls.crt` and `tls.key` | `nil` |

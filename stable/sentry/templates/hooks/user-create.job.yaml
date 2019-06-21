@@ -12,6 +12,7 @@ metadata:
     # This is what defines this resource as a hook. Without this line, the
     # job is considered part of the release.
     "helm.sh/hook": post-install
+    "helm.sh/hook-delete-policy": "hook-succeeded,before-hook-creation"
     "helm.sh/hook-weight": "5"
 spec:
   template:
@@ -20,6 +21,9 @@ spec:
       labels:
         app: {{ template "fullname" . }}
         release: "{{ .Release.Name }}"
+        {{- if .Values.worker.podLabels }}
+{{ toYaml .Values.worker.podLabels | indent 8 }}
+        {{- end }}
     spec:
       restartPolicy: Never
       {{- if .Values.image.imagePullSecrets }}

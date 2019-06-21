@@ -6,8 +6,10 @@ replicaCount: 1
 
 image:
   repo: "telegraf"
-  tag: "1.9-alpine"
+  tag: "1.10-alpine"
   pullPolicy: IfNotPresent
+
+podAnnotations: {}
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/

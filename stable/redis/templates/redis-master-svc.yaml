@@ -1,3 +1,4 @@
+{{- if not .Values.sentinel.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -28,3 +29,4 @@ spec:
     app: {{ template "redis.name" . }}
     release: "{{ .Release.Name }}"
     role: master
+{{- end }}

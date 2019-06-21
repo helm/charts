@@ -1,6 +1,6 @@
-{{- if .Values.rpcGRPC.ingress.enabled -}}
+{{- if .Values.grpc.ingress.enabled -}}
 {{- $serviceName := printf "%s-grpc" (include "burrow.fullname" .) -}}
-{{- $servicePort := .Values.rpcGRPC.service.port -}}
+{{- $servicePort := .Values.config.RPC.GRPC.ListenPort -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -11,12 +11,12 @@ metadata:
     release: {{ .Release.Name }}
   name: {{ template "burrow.fullname" . }}-grpc
   annotations:
-    {{- range $key, $value := .Values.rpcGRPC.ingress.annotations }}
+    {{- range $key, $value := .Values.grpc.ingress.annotations }}
       {{ $key }}: {{ $value | quote }}
     {{- end }}
 spec:
   rules:
-    {{- range $host := .Values.rpcGRPC.ingress.hosts }}
+    {{- range $host := .Values.grpc.ingress.hosts }}
     - host: {{ $host }}
       http:
         paths:
@@ -25,8 +25,8 @@ spec:
               serviceName: {{ $serviceName }}
               servicePort: {{ $servicePort }}
     {{- end -}}
-  {{- if .Values.rpcGRPC.ingress.tls }}
+  {{- if .Values.grpc.ingress.tls }}
   tls:
-{{ toYaml .Values.rpcGRPC.ingress.tls | indent 4 }}
+{{ toYaml .Values.grpc.ingress.tls | indent 4 }}
   {{- end -}}
 {{- end -}}

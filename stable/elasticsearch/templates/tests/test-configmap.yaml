@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "elasticsearch.fullname" . }}-test
+  labels:
+    app: {{ template "elasticsearch.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+data:
+  run.sh: |-
+    @test "Test Access and Health" {
+      curl -D - http://{{ template "elasticsearch.client.fullname" . }}:9200
+      curl -D - http://{{ template "elasticsearch.client.fullname" . }}:9200/_cluster/health?wait_for_status=green
+    }

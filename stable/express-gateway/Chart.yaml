@@ -9,5 +9,5 @@ maintainers:
 name: express-gateway
 sources:
 - https://github.com/expressgateway/express-gateway
-version: 1.2.0
-appVersion: 1.15.0
+version: 1.5.0
+appVersion: 1.16.2

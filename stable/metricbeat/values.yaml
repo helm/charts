@@ -7,12 +7,15 @@ image:
 daemonset:
   enabled: true
   podAnnotations: []
+  priorityClassName: ""
   tolerations:
   - key: node-role.kubernetes.io/master
     operator: Exists
     effect: NoSchedule
   nodeSelector: {}
   resources: {}
+  hostNetwork: true
+  dnsPolicy: ClusterFirstWithHostNet
   config:
     metricbeat.config:
       modules:
@@ -80,6 +83,7 @@ daemonset:
 deployment:
   enabled: true
   podAnnotations: []
+  priorityClassName: ""
   tolerations: []
   nodeSelector: {}
   resources: {}
@@ -135,6 +139,17 @@ extraVolumeMounts: []
   # - name: varlog
   #   mountPath: /host/var/log
   #   readOnly: true
+extraSecrets: []
+  # - name: ca-cert
+  #   data:
+  #     ca.pem: |-
+  #       -----BEGIN CERTIFICATE-----
+  #       ...
+  #       -----END CERTIFICATE-----
+  # - name: userdata
+  #   data:
+  #     id: userid
+  #     pw: userpassword
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

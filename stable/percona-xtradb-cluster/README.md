@@ -82,6 +82,14 @@ The following table lists the configurable parameters of the Percona chart and t
 | `metricsExporter.enabled` | if set to true runs a [mysql metrics exporter](https://github.com/prometheus/mysqld_exporter) container in the pod | false |
 | `metricsExporter.commandOverrides` | Overrides default docker command for metrics exporter | `[]` |
 | `metricsExporter.argsOverrides`   | Overrides default docker args for metrics exporter     | `[]` |
+| `prometheus.operator.enabled`                  | Setting to true will create Prometheus-Operator specific resources | `false` |
+| `prometheus.operator.prometheusRule.enabled`   | Create default alerting rules                                      | `true`  |
+| `prometheus.operator.prometheusRule.labels`    | Labels to add to alerts                                            | `{}`    |
+| `prometheus.operator.prometheusRule.namespace` | Namespace which Prometheus is installed in                         | `nil`   |
+| `prometheus.operator.prometheusRule.selector`  | Label Selector for Prometheus to find ServiceMonitors              | `nil`   |
+| `prometheus.operator.serviceMonitor.interval`  | Interval at which Prometheus will scrape metrics exporter          | `10s`   |
+| `prometheus.operator.serviceMonitor.namespace` | Namespace which Prometheus is installed in                         | `nil`   |
+| `prometheus.operator.serviceMonitor.selector`  | Label Selector for Prometheus to find ServiceMonitors              | `nil`   |
 | `podDisruptionBudget` | Pod disruption budget | `{enabled: false, maxUnavailable: 1}` |
 | `service.percona.headless` | if set to true makes the percona service [headless](https://kubernetes.io/docs/concepts/services-networking/service/#headless-services) | false |
 

@@ -31,9 +31,11 @@ spec:
         app: {{ template "openldap.name" . }}
         release: {{ .Release.Name }}
     spec:
-      {{- if .Values.customLdifFiles }}
+      {{- if or .Values.customLdifFiles .Values.tls.enabled }}
       initContainers:
-      - name: {{ .Chart.Name }}-init
+      {{- end }}
+      {{- if .Values.customLdifFiles }}
+      - name: {{ .Chart.Name }}-init-ldif
         image: busybox
         command: ['sh', '-c', 'cp /customldif/* /ldifworkingdir']
         volumeMounts:
@@ -41,6 +43,26 @@ spec:
           mountPath: /customldif
         - name: ldifworkingdir
           mountPath: /ldifworkingdir
+      {{- end }}
+      {{- if .Values.tls.enabled }}
+      - name: {{ .Chart.Name }}-init-tls
+        image: busybox
+        command: ['sh', '-c', 'cp /tls/* /certs']
+        volumeMounts:
+          - name: tls
+            mountPath: /tls
+          - name: certs
+            mountPath: /certs
+      {{- if .Values.tls.CA.enabled }}
+      - name: {{ .Chart.Name }}-init-catls
+        image: busybox
+        command: ['sh', '-c', 'cp /catls/ca.crt /certs']
+        volumeMounts:
+          - name: catls
+            mountPath: /catls
+          - name: certs
+            mountPath: /certs
+      {{- end }}
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}
@@ -70,6 +92,21 @@ spec:
             - name: ldifworkingdir
               mountPath: /container/service/slapd/assets/config/bootstrap/ldif/custom
             {{- end }}
+            {{- if .Values.tls.enabled }}
+            - name: certs
+              mountPath: /container/service/slapd/assets/certs
+            {{- end }}
+          env:
+          {{- if .Values.tls.enabled }}
+            - name: LDAP_TLS_CRT_FILENAME
+              value: tls.crt
+            - name: LDAP_TLS_KEY_FILENAME
+              value: tls.key
+          {{- if .Values.tls.CA.enabled }}
+            - name: LDAP_TLS_CA_CRT_FILENAME
+              value: ca.crt
+          {{- end }}
+          {{- end }}
           livenessProbe:
             tcpSocket:
               port: ldap-port
@@ -104,6 +141,19 @@ spec:
         - name: ldifworkingdir
           emptyDir: {}
         {{- end }}
+        {{- if .Values.tls.enabled }}
+        - name: tls
+          secret:
+            secretName: {{ .Values.tls.secret }}
+        {{- if .Values.tls.CA.enabled }}
+        - name: catls
+          secret:
+            secretName: {{ .Values.tls.CA.secret }}
+        {{- end }}
+        {{- end }}
+        - name: certs
+          emptyDir:
+            medium: Memory
         - name: data
         {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:

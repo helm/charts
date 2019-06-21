@@ -4,10 +4,11 @@ kind: CronJob
 metadata:
   name: {{ template "jenkins.fullname" . }}-backup
   labels:
-    app: {{ template "jenkins.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    "app.kubernetes.io/name": '{{ template "jenkins.name" .}}'
+    "helm.sh/chart": "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    "app.kubernetes.io/managed-by": "{{ .Release.Service }}"
+    "app.kubernetes.io/instance": "{{ .Release.Name }}"
+    "app.kubernetes.io/component": "{{ .Values.backup.componentName }}"
 spec:
   schedule: {{ .Values.backup.schedule | quote }}
   concurrencyPolicy: Forbid
@@ -30,7 +31,7 @@ spec:
             - -n
             - {{ .Release.Namespace }}
             - -l
-            - release={{ .Release.Name }}
+            - app.kubernetes.io/instance={{ .Release.Name }}
             - --container
             - {{ template "jenkins.fullname" . }}
             - --path
@@ -48,20 +49,22 @@ spec:
             resources:
 {{ toYaml . | indent 14 }}
           {{- end }}
-        affinity:
-          podAffinity:
-            preferredDuringSchedulingIgnoredDuringExecution:
-            - labelSelector:
-                matchExpressions:
-                - key: app
-                  operator: In
-                  values:
-                  - {{ template "jenkins.fullname" . }}
-                - key: release
-                  operator: In
-                  values:
-                  - {{ .Release.Name }}
-              topologyKey: "kubernetes.io/hostname"
+          affinity:
+            podAffinity:
+              preferredDuringSchedulingIgnoredDuringExecution:
+              - weight: 100
+                podAffinityTerm:
+                  topologyKey: "kubernetes.io/hostname"
+                  labelSelector:
+                    matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                      - {{ template "jenkins.fullname" . }}
+                    - key: release
+                      operator: In
+                      values:
+                      - {{ .Release.Name }}
       {{- with .Values.tolerations }}
         tolerations:
 {{ toYaml . | indent 10 }}

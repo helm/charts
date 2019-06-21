@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ include "goldpinger.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "goldpinger.name" . }}
+    helm.sh/chart: {{ include "goldpinger.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "goldpinger.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "goldpinger.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    {{- with .Values.podAnnotations }}
+      annotations:
+    {{ toYaml . | nindent 8 }}
+    {{- end }}
+    spec:
+      serviceAccountName: {{ template "goldpinger.serviceAccountName" . }}
+      imagePullSecrets:
+        - name: {{ .Values.image.pullSecrets }}
+      containers:
+      - name: goldpinger-daemon
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+          - name: HOSTNAME
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+          - name: HOST
+            value: "0.0.0.0"
+          - name: PORT
+            value: "{{ .Values.goldpinger.port }}"
+          - name: LABEL_SELECTOR
+            value: "app.kubernetes.io/name={{ include "goldpinger.name" . }}"
+        ports:
+        - name: http
+          containerPort: {{ .Values.goldpinger.port }}
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+        readinessProbe:
+          httpGet:
+            path: /
+            port: http
+        resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

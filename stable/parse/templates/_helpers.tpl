@@ -7,6 +7,13 @@ Expand the name of the chart.
 {{- end -}}
 
 {{/*
+Create chart name and version as used by the chart label.
+*/}}
+{{- define "parse.chart" -}}
+{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{/*
 Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
@@ -123,4 +130,16 @@ imagePullSecrets:
   - name: {{ . }}
 {{- end }}
 {{- end -}}
+{{- end -}}
+
+{{/* Check if there are rolling tags in the images */}}
+{{- define "parse.checkRollingTags" -}}
+{{- if and (contains "bitnami/" .Values.server.image.repository) (not (.Values.server.image.tag | toString | regexFind "-r\\d+$|sha256:")) }}
+WARNING: Rolling tag detected ({{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}), please note that it is strongly recommended to avoid using rolling tags in a production environment.
++info https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/
+{{- end }}
+{{- if and (contains "bitnami/" .Values.dashboard.image.repository) (not (.Values.dashboard.image.tag | toString | regexFind "-r\\d+$|sha256:")) }}
+WARNING: Rolling tag detected ({{ .Values.dashboard.image.repository }}:{{ .Values.dashboard.image.tag }}), please note that it is strongly recommended to avoid using rolling tags in a production environment.
++info https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/
+{{- end }}
 {{- end -}}

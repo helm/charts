@@ -5,7 +5,7 @@ metadata:
   name: {{ template "parse.fullname" . }}
   labels:
     app: {{ template "parse.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: {{ template "parse.chart" . }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:

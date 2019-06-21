@@ -21,4 +21,8 @@ spec:
     metricRelabelings:
 {{ toYaml .Values.nodeExporter.serviceMonitor.metricRelabelings | indent 4 }}
 {{- end }}
+{{- if .Values.nodeExporter.serviceMonitor.relabelings }}
+    relabelings:
+{{ toYaml .Values.nodeExporter.serviceMonitor.relabelings | indent 4 }}
+{{- end }}
 {{- end }}

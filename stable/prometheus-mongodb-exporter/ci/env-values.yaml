@@ -1,0 +1,10 @@
+---
+# Test adding environment variables
+
+mongodb:
+  uri: mongodb://localhost:9216
+serviceMonitor:
+  enabled: false
+env:
+  TEST_ENV: test
+  MONGODB_URI: mongodb://hostfromenv:9216
