@@ -155,6 +155,7 @@ Parameter | Description | Default
 `defaultBackend.minAvailable` | minimum number of available default backend pods for PodDisruptionBudget | `1`
 `defaultBackend.resources` | default backend pod resource requests & limits | `{}`
 `defaultBackend.priorityClassName` | default backend  priorityClassName | `nil`
+`defaultBackend.podSecurityContext` | Security context policies to add to the default backend | `{ runAsUser: 65534 }`
 `defaultBackend.service.annotations` | annotations for default backend service | `{}`
 `defaultBackend.service.clusterIP` | internal default backend cluster service IP | `""`
 `defaultBackend.service.omitClusterIP` | To omit the `clusterIP` from the default backend service | `false`
