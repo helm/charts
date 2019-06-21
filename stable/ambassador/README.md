@@ -62,6 +62,7 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `scope.singleNamespace`            | Set the `AMBASSADOR_SINGLE_NAMESPACE` environment variable                      | `false`                           |
 | `podAnnotations`                   | Additional annotations for ambassador pods                                      | `{}`                              |
 | `podLabels`                        | Additional labels for ambassador pods                                           |                                   |
+| `priorityClassName`                | The name of the priorityClass for the ambassador Daemonset/Deployment           | `""`                              |
 | `prometheusExporter.enabled`       | Prometheus exporter side-car enabled                                            | `false`                           |
 | `prometheusExporter.pullPolicy`    | Image pull policy                                                               | `IfNotPresent`                    |
 | `prometheusExporter.repository`    | Prometheus exporter image                                                       | `prom/statsd-exporter`            |
