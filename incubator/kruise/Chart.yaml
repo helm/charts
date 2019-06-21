@@ -1,0 +1,22 @@
+apiVersion: v1
+name: kruise
+description: Helm chart for all kruise-manager components
+version: 0.1.0
+appVersion: 0.1.0
+keywords:
+  - kubernetes
+  - kruise
+  - workload
+  - statefulset
+  - sidecar
+  - job
+  - deployment
+home: https://openkruise.io
+sources:
+  - https://github.com/openkruise/kruise
+maintainers:
+  - name: FillZpp
+    email: fillzpp.pub@gmail.com
+  - name: jian-he
+    email: jianhe788@gmail.com
+engine: gotpl

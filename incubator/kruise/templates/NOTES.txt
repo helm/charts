@@ -1,0 +1,13 @@
+1. To verify that Kruise has started, run:
+
+  kubectl --namespace=kruise-system get pods -l control-plane=controller-manager
+
+Wait for all of the active pods turning into Running, and then one of them should become Ready.
+
+2. List all CRDs installed by Kruise:
+
+  kubectl get crd | grep kruise.io
+
+3. You can read the docs for further information.
+
+  https://github.com/openkruise/kruise/tree/master/docs

@@ -1,0 +1,94 @@
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  creationTimestamp: null
+  labels:
+    controller-tools.k8s.io: "1.0"
+  name: sidecarsets.apps.kruise.io
+spec:
+  additionalPrinterColumns:
+  - JSONPath: .status.matchedPods
+    description: The number of pods matched.
+    name: MATCHED
+    type: integer
+  - JSONPath: .status.updatedPods
+    description: The number of pods matched and updated.
+    name: UPDATED
+    type: integer
+  - JSONPath: .status.readyPods
+    description: The number of pods matched and ready.
+    name: READY
+    type: integer
+  - JSONPath: .metadata.creationTimestamp
+    description: CreationTimestamp is a timestamp representing the server time when
+      this object was created. It is not guaranteed to be set in happens-before order
+      across separate operations. Clients may not set this value. It is represented
+      in RFC3339 form and is in UTC.
+    name: AGE
+    type: date
+  group: apps.kruise.io
+  names:
+    kind: SidecarSet
+    plural: sidecarsets
+  scope: Cluster
+  subresources:
+    status: {}
+  validation:
+    openAPIV3Schema:
+      properties:
+        apiVersion:
+          description: 'APIVersion defines the versioned schema of this representation
+            of an object. Servers should convert recognized schemas to the latest
+            internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#resources'
+          type: string
+        kind:
+          description: 'Kind is a string value representing the REST resource this
+            object represents. Servers may infer this from the endpoint the client
+            submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#types-kinds'
+          type: string
+        metadata:
+          type: object
+        spec:
+          properties:
+            containers:
+              description: 'containers contains two pieces of information: 1. normal
+                container info that should be injected into pod 2. custom fields to
+                control insert behavior(currently empty)'
+              items:
+                type: object
+              type: array
+            selector:
+              description: selector is a label query over pods that should be injected
+              type: object
+          type: object
+        status:
+          properties:
+            matchedPods:
+              description: matchedPods is the number of Pods whose labels are matched
+                with this SidecarSet's selector
+              format: int32
+              type: integer
+            observedGeneration:
+              description: observedGeneration is the most recent generation observed
+                for this SidecarSet. It corresponds to the SidecarSet's generation,
+                which is updated on mutation by the API Server.
+              format: int64
+              type: integer
+            readyPods:
+              description: readyPods is the number of matched Pods that have a ready
+                condition
+              format: int32
+              type: integer
+            updatedPods:
+              description: updatedPods is the number of matched Pods that are injected
+                with the latest SidecarSet's containers
+              format: int32
+              type: integer
+          type: object
+  version: v1alpha1
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []

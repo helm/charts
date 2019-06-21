@@ -1,0 +1,180 @@
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  creationTimestamp: null
+  labels:
+    controller-tools.k8s.io: "1.0"
+  name: broadcastjobs.apps.kruise.io
+spec:
+  additionalPrinterColumns:
+  - JSONPath: .status.desired
+    description: The desired number of pods. This is typically equal to the number
+      of nodes satisfied to run pods.
+    name: Desired
+    type: integer
+  - JSONPath: .status.active
+    description: The number of actively running pods.
+    name: Active
+    type: integer
+  - JSONPath: .status.succeeded
+    description: The number of pods which reached phase Succeeded.
+    name: Succeeded
+    type: integer
+  - JSONPath: .status.failed
+    description: The number of pods which reached phase Failed.
+    name: Failed
+    type: integer
+  - JSONPath: .metadata.creationTimestamp
+    description: CreationTimestamp is a timestamp representing the server time when
+      this object was created. It is not guaranteed to be set in happens-before order
+      across separate operations. Clients may not set this value. It is represented
+      in RFC3339 form and is in UTC.
+    name: AGE
+    type: date
+  group: apps.kruise.io
+  names:
+    kind: BroadcastJob
+    plural: broadcastjobs
+    shortNames:
+    - bj
+  scope: Namespaced
+  subresources:
+    status: {}
+  validation:
+    openAPIV3Schema:
+      properties:
+        apiVersion:
+          description: 'APIVersion defines the versioned schema of this representation
+            of an object. Servers should convert recognized schemas to the latest
+            internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#resources'
+          type: string
+        kind:
+          description: 'Kind is a string value representing the REST resource this
+            object represents. Servers may infer this from the endpoint the client
+            submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#types-kinds'
+          type: string
+        metadata:
+          type: object
+        spec:
+          properties:
+            completionPolicy:
+              description: CompletionPolicy indicates the completion policy of the
+                job. Default is Always CompletionPolicyType
+              properties:
+                activeDeadlineSeconds:
+                  description: Specifies the duration in seconds relative to the startTime
+                    that the job may be active before the system tries to terminate
+                    it; value must be positive integer. Only works for Always type
+                  format: int64
+                  type: integer
+                backoffLimit:
+                  description: Specifies the number of retries before marking this
+                    job failed. Not setting value means no limit. Only works for Always
+                    type
+                  format: int32
+                  type: integer
+                ttlSecondsAfterFinished:
+                  description: ttlSecondsAfterFinished limits the lifetime of a Job
+                    that has finished execution (either Complete or Failed). If this
+                    field is set, ttlSecondsAfterFinished after the Job finishes,
+                    it is eligible to be automatically deleted. When the Job is being
+                    deleted, its lifecycle guarantees (e.g. finalizers) will be honored.
+                    If this field is unset, the Job won't be automatically deleted.
+                    If this field is set to zero, the Job becomes eligible to be deleted
+                    immediately after it finishes. This field is alpha-level and is
+                    only honored by servers that enable the TTLAfterFinished feature.
+                    Only works for Always type
+                  format: int32
+                  type: integer
+                type:
+                  description: Type indicates the type of the CompletionPolicy Default
+                    is Always
+                  type: string
+              type: object
+            parallelism:
+              description: Specifies the maximum desired number of pods the job should
+                run at any given time. The actual number of pods running in steady
+                state will be less than this number when the work left to do is less
+                than max parallelism. Not setting this value means no limit.
+              format: int32
+              type: integer
+            template:
+              description: Describes the pod that will be created when executing a
+                job.
+              type: object
+          required:
+          - template
+          - completionPolicy
+          type: object
+        status:
+          properties:
+            active:
+              description: The number of actively running pods.
+              format: int32
+              type: integer
+            completionTime:
+              description: Represents time when the job was completed. It is not guaranteed
+                to be set in happens-before order across separate operations. It is
+                represented in RFC3339 form and is in UTC.
+              format: date-time
+              type: string
+            conditions:
+              description: The latest available observations of an object's current
+                state. +patchMergeKey=type +patchStrategy=merge
+              items:
+                properties:
+                  lastProbeTime:
+                    description: Last time the condition was checked.
+                    format: date-time
+                    type: string
+                  lastTransitionTime:
+                    description: Last time the condition transit from one status to
+                      another.
+                    format: date-time
+                    type: string
+                  message:
+                    description: Human readable message indicating details about last
+                      transition.
+                    type: string
+                  reason:
+                    description: (brief) reason for the condition's last transition.
+                    type: string
+                  status:
+                    description: Status of the condition, one of True, False, Unknown.
+                    type: string
+                  type:
+                    description: Type of job condition, Complete or Failed.
+                    type: string
+                required:
+                - type
+                - status
+                type: object
+              type: array
+            desired:
+              description: The desired number of pods, this is typically equal to
+                the number of nodes satisfied to run pods.
+              format: int32
+              type: integer
+            failed:
+              description: The number of pods which reached phase Failed.
+              format: int32
+              type: integer
+            startTime:
+              description: Represents time when the job was acknowledged by the job
+                controller. It is not guaranteed to be set in happens-before order
+                across separate operations. It is represented in RFC3339 form and
+                is in UTC.
+              format: date-time
+              type: string
+            succeeded:
+              description: The number of pods which reached phase Succeeded.
+              format: int32
+              type: integer
+          type: object
+  version: v1alpha1
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []

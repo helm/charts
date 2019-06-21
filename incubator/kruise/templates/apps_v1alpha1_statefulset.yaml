@@ -1,0 +1,218 @@
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  creationTimestamp: null
+  labels:
+    controller-tools.k8s.io: "1.0"
+  name: statefulsets.apps.kruise.io
+spec:
+  additionalPrinterColumns:
+  - JSONPath: .spec.replicas
+    description: The desired number of pods.
+    name: DESIRED
+    type: integer
+  - JSONPath: .status.replicas
+    description: The number of currently all pods.
+    name: CURRENT
+    type: integer
+  - JSONPath: .status.updatedReplicas
+    description: The number of pods updated.
+    name: UPDATED
+    type: integer
+  - JSONPath: .status.readyReplicas
+    description: The number of pods ready.
+    name: READY
+    type: integer
+  - JSONPath: .metadata.creationTimestamp
+    description: CreationTimestamp is a timestamp representing the server time when
+      this object was created. It is not guaranteed to be set in happens-before order
+      across separate operations. Clients may not set this value. It is represented
+      in RFC3339 form and is in UTC.
+    name: AGE
+    type: date
+  group: apps.kruise.io
+  names:
+    kind: StatefulSet
+    plural: statefulsets
+    shortNames:
+    - sts
+  scope: Namespaced
+  subresources:
+    scale:
+      labelSelectorPath: .status.labelSelector
+      specReplicasPath: .spec.replicas
+      statusReplicasPath: .status.replicas
+    status: {}
+  validation:
+    openAPIV3Schema:
+      properties:
+        apiVersion:
+          description: 'APIVersion defines the versioned schema of this representation
+            of an object. Servers should convert recognized schemas to the latest
+            internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#resources'
+          type: string
+        kind:
+          description: 'Kind is a string value representing the REST resource this
+            object represents. Servers may infer this from the endpoint the client
+            submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#types-kinds'
+          type: string
+        metadata:
+          type: object
+        spec:
+          properties:
+            podManagementPolicy:
+              description: podManagementPolicy controls how pods are created during
+                initial scale up, when replacing pods on nodes, or when scaling down.
+                The default policy is `OrderedReady`, where pods are created in increasing
+                order (pod-0, then pod-1, etc) and the controller will wait until
+                each pod is ready before continuing. When scaling down, the pods are
+                removed in the opposite order. The alternative policy is `Parallel`
+                which will create pods in parallel to match the desired scale without
+                waiting, and on scale down will delete all pods at once.
+              type: string
+            replicas:
+              description: 'replicas is the desired number of replicas of the given
+                Template. These are replicas in the sense that they are instantiations
+                of the same Template, but individual replicas also have a consistent
+                identity. If unspecified, defaults to 1. TODO: Consider a rename of
+                this field.'
+              format: int32
+              type: integer
+            revisionHistoryLimit:
+              description: revisionHistoryLimit is the maximum number of revisions
+                that will be maintained in the StatefulSet's revision history. The
+                revision history consists of all revisions not represented by a currently
+                applied StatefulSetSpec version. The default value is 10.
+              format: int32
+              type: integer
+            selector:
+              description: 'selector is a label query over pods that should match
+                the replica count. It must match the pod template''s labels. More
+                info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors'
+              type: object
+            serviceName:
+              description: 'serviceName is the name of the service that governs this
+                StatefulSet. This service must exist before the StatefulSet, and is
+                responsible for the network identity of the set. Pods get DNS/hostnames
+                that follow the pattern: pod-specific-string.serviceName.default.svc.cluster.local
+                where "pod-specific-string" is managed by the StatefulSet controller.'
+              type: string
+            template:
+              description: template is the object that describes the pod that will
+                be created if insufficient replicas are detected. Each pod stamped
+                out by the StatefulSet will fulfill this Template, but have a unique
+                identity from the rest of the StatefulSet.
+              type: object
+            updateStrategy:
+              description: updateStrategy indicates the StatefulSetUpdateStrategy
+                that will be employed to update Pods in the StatefulSet when a revision
+                is made to Template.
+              properties:
+                rollingUpdate:
+                  description: RollingUpdate is used to communicate parameters when
+                    Type is RollingUpdateStatefulSetStrategyType.
+                  properties:
+                    maxUnavailable:
+                      description: 'The maximum number of pods that can be unavailable
+                        during the update. Value can be an absolute number (ex: 5)
+                        or a percentage of desired pods (ex: 10%). Absolute number
+                        is calculated from percentage by rounding down. Also, maxUnavailable
+                        can just be allowed to work with Parallel podManagementPolicy.
+                        Defaults to 1.'
+                      oneOf:
+                      - type: string
+                      - type: integer
+                    partition:
+                      description: Partition indicates the ordinal at which the StatefulSet
+                        should be partitioned. Default value is 0.
+                      format: int32
+                      type: integer
+                    podUpdatePolicy:
+                      description: PodUpdatePolicy indicates how pods should be updated
+                        Default value is "ReCreate"
+                      type: string
+                  type: object
+                type:
+                  description: Type indicates the type of the StatefulSetUpdateStrategy.
+                    Default is RollingUpdate.
+                  type: string
+              type: object
+            volumeClaimTemplates:
+              description: 'volumeClaimTemplates is a list of claims that pods are
+                allowed to reference. The StatefulSet controller is responsible for
+                mapping network identities to claims in a way that maintains the identity
+                of a pod. Every claim in this list must have at least one matching
+                (by name) volumeMount in one container in the template. A claim in
+                this list takes precedence over any volumes in the template, with
+                the same name. TODO: Define the behavior if a claim already exists
+                with the same name.'
+              items:
+                type: object
+              type: array
+          required:
+          - selector
+          - template
+          - serviceName
+          type: object
+        status:
+          properties:
+            collisionCount:
+              description: collisionCount is the count of hash collisions for the
+                StatefulSet. The StatefulSet controller uses this field as a collision
+                avoidance mechanism when it needs to create the name for the newest
+                ControllerRevision.
+              format: int32
+              type: integer
+            conditions:
+              description: Represents the latest available observations of a statefulset's
+                current state. +patchMergeKey=type +patchStrategy=merge
+              items:
+                type: object
+              type: array
+            currentReplicas:
+              description: currentReplicas is the number of Pods created by the StatefulSet
+                controller from the StatefulSet version indicated by currentRevision.
+              format: int32
+              type: integer
+            currentRevision:
+              description: currentRevision, if not empty, indicates the version of
+                the StatefulSet used to generate Pods in the sequence [0,currentReplicas).
+              type: string
+            observedGeneration:
+              description: observedGeneration is the most recent generation observed
+                for this StatefulSet. It corresponds to the StatefulSet's generation,
+                which is updated on mutation by the API Server.
+              format: int64
+              type: integer
+            readyReplicas:
+              description: readyReplicas is the number of Pods created by the StatefulSet
+                controller that have a Ready Condition.
+              format: int32
+              type: integer
+            replicas:
+              description: replicas is the number of Pods created by the StatefulSet
+                controller.
+              format: int32
+              type: integer
+            updateRevision:
+              description: updateRevision, if not empty, indicates the version of
+                the StatefulSet used to generate Pods in the sequence [replicas-updatedReplicas,replicas)
+              type: string
+            updatedReplicas:
+              description: updatedReplicas is the number of Pods created by the StatefulSet
+                controller from the StatefulSet version indicated by updateRevision.
+              format: int32
+              type: integer
+          required:
+          - replicas
+          - readyReplicas
+          - currentReplicas
+          - updatedReplicas
+          type: object
+  version: v1alpha1
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []

@@ -1,0 +1,115 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    control-plane: controller-manager
+    controller-tools.k8s.io: "1.0"
+  name: kruise-system
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    control-plane: controller-manager
+    controller-tools.k8s.io: "1.0"
+  name: kruise-controller-manager-service
+  namespace: kruise-system
+spec:
+  ports:
+    - port: 443
+  selector:
+    control-plane: controller-manager
+    controller-tools.k8s.io: "1.0"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    control-plane: controller-manager
+    controller-tools.k8s.io: "1.0"
+  name: kruise-controller-manager
+  namespace: kruise-system
+spec:
+  replicas: {{ .Values.replicaCount }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  selector:
+    matchLabels:
+      control-plane: controller-manager
+      controller-tools.k8s.io: "1.0"
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: {{ .Values.replicaCount }}
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+      labels:
+        control-plane: controller-manager
+        controller-tools.k8s.io: "1.0"
+    spec:
+      containers:
+        - command:
+            - /manager
+          args:
+            - "--metrics-addr={{ .Values.manager.metrics.addr }}:{{ .Values.manager.metrics.port }}"
+            - "--logtostderr=true"
+            - "--v={{ .Values.manager.log.level }}"
+          env:
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: SECRET_NAME
+              value: kruise-webhook-server-secret
+          image: "{{ .Values.manager.image.repository }}:{{ .Values.manager.image.tag }}"
+          imagePullPolicy: Always
+          name: manager
+          ports:
+            - containerPort: {{ .Values.manager.metrics.port }}
+              name: metrics
+              protocol: TCP
+            - containerPort: 9876
+              name: webhook-server
+              protocol: TCP
+          readinessProbe:
+            tcpSocket:
+              port: 9876
+          resources:
+            {{- toYaml .Values.manager.resources | nindent 12 }}
+          volumeMounts:
+            - mountPath: /tmp/cert
+              name: cert
+              readOnly: true
+      terminationGracePeriodSeconds: 10
+
+{{- if .Values.spec.nodeAffinity }}
+      affinity:
+{{- end }}
+{{- with .Values.spec.nodeAffinity }}
+        nodeAffinity:
+{{ toYaml . | indent 10 }}
+{{- end }}
+
+{{- if .Values.spec.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.spec.nodeSelector | indent 8 }}
+{{- end }}
+
+{{- if .Values.spec.tolerations }}
+      tolerations:
+{{ toYaml .Values.spec.tolerations | indent 8 }}
+{{- end }}
+
+      volumes:
+        - name: cert
+          secret:
+            defaultMode: 420
+            secretName: kruise-webhook-server-secret
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: kruise-webhook-server-secret
+  namespace: kruise-system
