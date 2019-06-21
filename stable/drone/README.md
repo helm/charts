@@ -71,6 +71,7 @@ The following table lists the configurable parameters of the drone charts and th
 | `ingress.annotations`       | Ingress annotations                                                                           | `{}`                        |
 | `ingress.hosts`             | Ingress accepted hostnames                                                                    | `nil`                       |
 | `ingress.tls`               | Ingress TLS configuration                                                                     | `[]`                        |
+| `ingress.path`              | Ingress path mapping                                                                          | ``                       |
 | `sourceControl.provider`               | name of source control provider [github,gitlab,gitea,gogs,bitbucketCloud,bitbucketServer]              | ``       |
 | `sourceControl.secret`               | name of secret containing source control keys and passwords              | ``       |
 | `sourceControl.github`               | values to configure github    | see values.yaml       |

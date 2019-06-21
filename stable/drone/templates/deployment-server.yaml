@@ -67,6 +67,8 @@ spec:
           {{- else }}
             value: "{{ template "drone.fullname" . }}"
           {{- end }}
+          - name: DRONE_RPC_HOST
+            value: {{ template "drone.fullname" . }}.{{ .Release.Namespace }}
           - name: DRONE_SERVER_PROTO
             value: {{ .Values.server.protocol }}
           {{- if .Values.server.adminUser }}
