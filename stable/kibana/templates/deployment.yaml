@@ -36,7 +36,7 @@ spec:
       initContainers:
 {{- if .Values.initContainers }}
 {{- range $key, $value := .Values.initContainers }}
-      - name: "{{ $key }}"
+      - name: {{ $key | quote }}
 {{ toYaml $value | indent 8 }}
 {{- end }}
 {{- end }}
@@ -53,8 +53,8 @@ spec:
 {{- end }}
         env:
         {{- range $key, $value := .Values.env }}
-        - name: "{{ $key }}"
-          value: "{{ $value }}"
+        - name: {{ $key | quote }}
+          value: {{ tpl $value | quote }}"
         {{- end }}
         volumeMounts:
         - name: {{ template "kibana.fullname" . }}-dashboards
@@ -108,8 +108,8 @@ spec:
             done
         env:
         {{- range $key, $value := .Values.env }}
-        - name: "{{ $key }}"
-          value: "{{ $value }}"
+        - name: {{ $key | quote }}
+          value: {{ tpl $value | quote }}"
         {{- end }}
         volumeMounts:
         - name: plugins
@@ -137,8 +137,8 @@ spec:
         {{- end }}
         env:
         {{- range $key, $value := .Values.env }}
-        - name: "{{ $key }}"
-          value: "{{ $value }}"
+        - name: {{ $key | quote }}
+          value: {{ tpl $value | quote }}"
         {{- end }}
 {{- if .Values.envFromSecrets }}
         {{- range $key,$value := .Values.envFromSecrets }}
