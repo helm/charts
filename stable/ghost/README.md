@@ -54,7 +54,7 @@ The following table lists the configurable parameters of the Ghost chart and the
 | `image.registry`                    | Ghost image registry                                          | `docker.io`                                              |
 | `image.repository`                  | Ghost Image name                                              | `bitnami/ghost`                                          |
 | `image.tag`                         | Ghost Image tag                                               | `{TAG_NAME}`                                             |
-| `image.pullPolicy`                  | Image pull policy                                             | `Always` if `imageTag` is `latest`, else `IfNotPresent`  |
+| `image.pullPolicy`                  | Image pull policy                                             | `IfNotPresent`                                           |
 | `image.pullSecrets`                 | Specify docker-registry secret names as an array              | `[]` (does not add image pull secrets to deployed pods)  |
 | `volumePermissions.image.registry`  | Init container volume-permissions image registry              | `docker.io`                                              |
 | `volumePermissions.image.repository`| Init container volume-permissions image name                  | `bitnami/minideb`                                        |

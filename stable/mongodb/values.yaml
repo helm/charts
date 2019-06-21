@@ -129,13 +129,19 @@ replicaSet:
   replicas:
     secondary: 1
     arbiter: 1
+
   ## Pod Disruption Budget
   ## ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
   pdb:
+    enabled: true
     minAvailable:
       primary: 1
       secondary: 1
       arbiter: 1
+    # maxUnavailable:
+      # primary: 1
+      # secondary: 1
+      # arbiter: 1
 
 # Annotations to be added to MongoDB pods
 podAnnotations: {}
