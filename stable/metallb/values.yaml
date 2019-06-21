@@ -17,7 +17,7 @@ existingConfigMap: metallb-config
 #
 # Refer to https://metallb.universe.tf/configuration/ for
 # available options.
-configInline:
+configInline: {}
     # Example ARP Configuration
     # address-pools:
     # - name: default
