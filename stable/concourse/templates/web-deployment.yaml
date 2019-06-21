@@ -279,14 +279,14 @@ spec:
             - name: CONCOURSE_POSTGRES_HOST
               value: {{ template "concourse.postgresql.fullname" . }}
             - name: CONCOURSE_POSTGRES_USER
-              value: {{ .Values.postgresql.postgresUser | quote }}
+              value: {{ .Values.postgresql.postgresqlUsername | quote }}
             - name: CONCOURSE_POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ template "concourse.postgresql.fullname" . }}
-                  key: postgres-password
+                  key: postgresql-password
             - name: CONCOURSE_POSTGRES_DATABASE
-              value: {{ .Values.postgresql.postgresDatabase | quote }}
+              value: {{ .Values.postgresql.postgresqlDatabase | quote }}
             {{- else }}
             {{- if .Values.concourse.web.postgres.host }}
             - name: CONCOURSE_POSTGRES_HOST

@@ -1669,25 +1669,30 @@ persistence:
 postgresql:
 
   ## Use the PostgreSQL chart dependency.
-  ## Set to false if bringing your own PostgreSQL, and set secret value postgresql-uri.
+  ##
+  ## Set to false if bringing your own PostgreSQL, and set the corresponding `secrets`
+  ## fields that correspond to the PostgreSQL variables that `concourse web` should use
+  ## to connect to.
+  ##
   ## Should be set to false if using the chart as a worker only deployment.
   ##
   enabled: true
 
   ### PostgreSQL User to create.
   ##
-  postgresUser: concourse
+  postgresqlUsername: concourse
 
   ## PostgreSQL Password for the new user.
   ## If not set, a random 10 characters password will be used.
   ##
-  postgresPassword: concourse
+  postgresqlPassword: concourse
 
   ## PostgreSQL Database to create.
   ##
-  postgresDatabase: concourse
+  postgresqlDatabase: concourse
 
-  ## Persistent Volume Storage configuration.
+  ## Persistent Volume Storage configuration for PostgreSQL.
+  ##
   ## Ref: https://kubernetes.io/docs/user-guide/persistent-volumes
   ##
   persistence:
@@ -1695,7 +1700,8 @@ postgresql:
     ##
     enabled: true
 
-    ## Concourse data Persistent Volume Storage Class.
+    ## Persistent Volume Storage Class to be used by PersistentVolumes created
+    ## for PostgreSQL.
     ##
     ## If defined, storageClassName: <storageClass>
     ## If set to "-", storageClassName: "", which disables dynamic provisioning
@@ -1707,7 +1713,8 @@ postgresql:
 
     ## Persistent Volume Access Mode.
     ##
-    accessMode: ReadWriteOnce
+    accessModes:
+      - ReadWriteOnce
 
     ## Persistent Volume Storage Size.
     ##

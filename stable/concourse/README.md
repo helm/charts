@@ -91,13 +91,13 @@ The following table lists the configurable parameters of the Concourse chart and
 | `persistence.worker.size` | Concourse Worker Persistent Volume Storage Size | `20Gi` |
 | `persistence.worker.storageClass` | Concourse Worker Persistent Volume Storage Class | `generic` |
 | `postgresql.enabled` | Enable PostgreSQL as a chart dependency | `true` |
-| `postgresql.persistence.accessMode` | Persistent Volume Access Mode | `ReadWriteOnce` |
+| `postgresql.persistence.accessModes` | Persistent Volume Access Mode | `["ReadWriteOnce"]` |
 | `postgresql.persistence.enabled` | Enable PostgreSQL persistence using Persistent Volume Claims | `true` |
 | `postgresql.persistence.size` | Persistent Volume Storage Size | `8Gi` |
 | `postgresql.persistence.storageClass` | Concourse data Persistent Volume Storage Class | `nil` |
-| `postgresql.postgresDatabase` | PostgreSQL Database to create | `concourse` |
-| `postgresql.postgresPassword` | PostgreSQL Password for the new user | `concourse` |
-| `postgresql.postgresUser` | PostgreSQL User to create | `concourse` |
+| `postgresql.postgresqlDatabase` | PostgreSQL Database to create | `concourse` |
+| `postgresql.postgresqlPassword` | PostgreSQL Password for the new user | `concourse` |
+| `postgresql.postgresqlUsername` | PostgreSQL User to create | `concourse` |
 | `rbac.apiVersion` | RBAC version | `v1beta1` |
 | `rbac.create` | Enables creation of RBAC resources | `true` |
 | `rbac.webServiceAccountName` | Name of the service account to use for web pods if `rbac.create` is `false` | `default` |
@@ -387,9 +387,9 @@ web:
 
 ### PostgreSQL
 
-By default, this chart uses a PostgreSQL database deployed as a chart dependency, with default values for username, password, and database name. These can be modified by setting the `postgresql.*` values.
+By default, this chart uses a PostgreSQL database deployed as a chart dependency (see the [PostgreSQL chart](https://github.com/helm/charts/blob/master/stable/postgresql/README.md)), with default values for username, password, and database name. These can be modified by setting the `postgresql.*` values.
 
-You can also bring your own PostgreSQL. To do so, set `postgresql.enabled` to false, and then configure Concourse's `postgres` values (`concourse.web.postgres.*`).
+You can also bring your own PostgreSQL. To do so, set `postgresql.enabled` to `false`, and then configure Concourse's `postgres` values (`concourse.web.postgres.*`).
 
 Note that some values get set in the form of secrets, like `postgresql-user`, `postgresql-password`, and others (see [templates/secrets.yaml](templates/secrets.yaml) for possible values and the [secrets section](#secrets) on this README for guidance on how to set those secrets).
 
