@@ -1,3 +1,5 @@
+{{- $config := .Values.config }}
+{{- $pp := dict "Tendermint" (dict "PersistentPeers" (include "burrow.seeds" .)) }}
 kind: ConfigMap
 apiVersion: v1
 metadata:
@@ -8,34 +10,5 @@ metadata:
     release: {{ $.Release.Name }}
   name: {{ template "burrow.fullname" . }}-config
 data:
-  burrow.toml: |-
-    BurrowDir = ".burrow"
-    [Tendermint]
-      Seeds = ""
-      SeedMode = false
-      PersistentPeers = "{{ template "burrow.seeds" . }}"
-      ListenAddress = "tcp://0.0.0.0:{{ .Values.peer.service.port }}"
-      ExternalAddress = ""
-      Moniker = ""
-    [Execution]
-    [Keys]
-      GRPCServiceEnabled = true
-      AllowBadFilePermissions = true
-      RemoteAddress = ""
-      KeysDirectory = "/keys"
-    [RPC]
-      [RPC.Info]
-        Enabled = {{ .Values.rpcInfo.enabled }}
-        ListenAddress = "tcp://0.0.0.0:{{ .Values.rpcInfo.service.port }}"
-      [RPC.Profiler]
-        Enabled = {{ .Values.rpcProfiler.enabled }}
-        ListenAddress = "tcp://0.0.0.0:{{ .Values.rpcProfiler.port }}"
-      [RPC.GRPC]
-        Enabled = {{ .Values.rpcGRPC.enabled }}
-        ListenAddress = "tcp://0.0.0.0:{{ .Values.rpcGRPC.service.port }}"
-      [RPC.Metrics]
-        Enabled = {{ .Values.rpcMetrics.enabled }}
-        ListenAddress = "tcp://0.0.0.0:{{ .Values.rpcMetrics.port }}"
-        MetricsPath = {{ .Values.rpcMetrics.path | quote }}
-        BlockSampleSize = {{ .Values.rpcMetrics.blockSampleSize }}
-{{ toToml .Values.config | indent 4 }}
+  burrow.json: |-
+{{ toJson (mergeOverwrite $config $pp) | indent 4 }}

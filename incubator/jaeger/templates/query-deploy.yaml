@@ -124,6 +124,26 @@ spec:
           httpGet:
             path: /
             port: {{ .Values.query.healthCheckPort }}
+{{- if .Values.query.agentSidecar.enabled }}
+      - name: {{ template "jaeger.agent.name" . }}-sidecar
+        image: {{ .Values.agent.image }}:{{ .Values.tag }}
+        imagePullPolicy: {{ .Values.agent.pullPolicy }}
+        env:
+        - name: COLLECTOR_HOST_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: {{ template "jaeger.fullname" . }}
+              key: collector.host-port
+        ports:
+        - containerPort: {{ .Values.agent.service.zipkinThriftPort }}
+          protocol: UDP
+        - containerPort: {{ .Values.agent.service.compactPort }}
+          protocol: UDP
+        - containerPort: {{ .Values.agent.service.binaryPort }}
+          protocol: UDP
+        - containerPort: {{ .Values.agent.service.samplingPort }}
+          protocol: TCP
+{{- end }}
       dnsPolicy: {{ .Values.query.dnsPolicy }}
       restartPolicy: Always
 {{- end -}}

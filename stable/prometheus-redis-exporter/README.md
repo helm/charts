@@ -46,17 +46,26 @@ The following table lists the configurable parameters and their default values.
 | `image.repository`     | prometheus-redis-exporter image repository          | `oliver006/redis_exporter`|
 | `image.tag`            | prometheus-redis-exporter image tag                 | `v0.28.0`                 |
 | `image.pullPolicy`     | image pull policy                                   | `IfNotPresent`            |
+| `image.pullSecrets`    | image pull secrets                                  | {}                        |
 | `extraArgs`            | extra arguments for the binary; possible values [here](https://github.com/oliver006/redis_exporter#flags)| {}
 | `env`                  | additional environment variables in YAML format. Can be used to pass credentials as env variables (via secret) as per the image readme [here](https://github.com/oliver006/redis_exporter#environment-variables) | {} |
 | `resources`            | cpu/memory resource requests/limits                 | {}                        |
 | `service.type`         | desired service type                                | `ClusterIP`               |
 | `service.port`         | service external port                               | `9121`                    |
-| `redisAddress`         | address of one or more redis nodes, comma separated | `redis://myredis:6379`    |
+| `service.annotations`  | Custom annotations for service                      | `{}`                      |
+| `service.labels`       | Additional custom labels for the service            | `{}`                      |
+| `redisAddress`         | A list of addresses of one or more redis nodes      | `redis://myredis:6379`    |
 | `annotations`          | pod annotations for easier discovery                | {}                        |
 | `rbac.create`           | Specifies whether RBAC resources should be created.| `true` |
 | `rbac.pspEnabled`       | Specifies whether a PodSecurityPolicy should be created.| `true` |
 | `serviceAccount.create` | Specifies whether a service account should be created.| `true` |
 | `serviceAccount.name`   | Name of the service account.|        |
+| `serviceMonitor.enabled`       | Use servicemonitor from prometheus operator            | `false`                    |
+| `serviceMonitor.namespace`     | Namespace this servicemonitor is installed in          |                            |
+| `serviceMonitor.interval`      | How frequently Prometheus should scrape                |                            |
+| `serviceMonitor.telemetryPath` | Path to redis-exporter telemtery-path                  |                            |
+| `serviceMonitor.labels`        | Labels for the servicemonitor passed to Prometheus Operator      |  `{}`            |
+| `serviceMonitor.timeout`       | Timeout after which the scrape is ended                |                            |
 
 For more information please refer to the [redis_exporter](https://github.com/oliver006/redis_exporter) documentation.
 
