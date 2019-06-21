@@ -83,7 +83,7 @@ Create environment variables for database configuration.
   valueFrom:
     secretKeyRef:
       name: {{ template "keycloak.postgresql.fullname" . }}
-      key: postgres-password
+      key: postgresql-password
 {{- else }}
 - name: DB_VENDOR
   value: {{ .Values.keycloak.persistence.dbVendor | quote }}
