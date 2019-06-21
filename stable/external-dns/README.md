@@ -5,7 +5,7 @@
 ## TL;DR;
 
 ```console
-$ helm install bitnami/external-dns
+$ helm install stable/external-dns
 ```
 
 ## Introduction
@@ -139,7 +139,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 ```console
 $ helm install --name my-release \
-  --set provider=aws bitnami/external-dns
+  --set provider=aws stable/external-dns
 ```
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
@@ -155,7 +155,7 @@ $ helm install --name my-release -f values.yaml stable/external-dns
 This chart includes a `values-production.yaml` file where you can find some parameters oriented to production configuration in comparison to the regular `values.yaml`.
 
 ```console
-$ helm install --name my-release -f ./values-production.yaml bitnami/external-dns
+$ helm install --name my-release -f ./values-production.yaml stable/external-dns
 ```
 
 - Desired number of ExternalDNS replicas:
