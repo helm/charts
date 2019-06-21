@@ -28,7 +28,7 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
         {{- end }}
     spec:
-{{- if .Values.ipForwardInitContainer -}}
+{{- if .Values.ipForwardInitContainer }}
       initContainers:
         - args:
             - -c
