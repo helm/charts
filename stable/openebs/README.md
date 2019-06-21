@@ -65,6 +65,7 @@ The following table lists the configurable parameters of the OpenEBS chart and t
 | `ndm.sparse.count`                      | Number of sparse files to be created          | `1`                                       |
 | `ndm.filters.excludeVendors`            | Exclude devices with specified vendor         | `CLOUDBYT,OpenEBS`                        |
 | `ndm.filters.excludePaths`              | Exclude devices with specified path patterns  | `loop,fd0,sr0,/dev/ram,/dev/dm-,/dev/md`  |
+| `ndm.filters.includePaths`              | Include devices with specified path patterns  | `""`                                      |
 | `jiva.image`                            | Image for Jiva                                | `quay.io/openebs/jiva`                    |
 | `jiva.imageTag`                         | Image Tag for Jiva                            | `0.9.0`                                   |
 | `jiva.replicas`                         | Number of Jiva Replicas                       | `3`                                       |

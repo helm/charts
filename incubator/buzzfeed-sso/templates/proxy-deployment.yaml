@@ -43,7 +43,7 @@ spec:
           command: ["/bin/sso-proxy"]
           ports:
             - name: http
-              containerPort: 8080
+              containerPort: 4180
               protocol: TCP
           env:
             - name: CLIENT_ID
@@ -63,6 +63,10 @@ spec:
                   key: proxy-cookie-secret
             - name: EMAIL_DOMAIN
               value: {{ .Values.emailDomain | quote }}
+            {{- if .Values.whitelistedEmails }}
+            - name: EMAIL_ADDRESSES
+              value: {{ .Values.whitelistedEmails }}
+            {{- end }}
             - name: UPSTREAM_CONFIGS
               value: /sso/upstream_configs.yml
             - name: PROVIDER_URL
@@ -75,10 +79,13 @@ spec:
             - name: COOKIE_SECURE
               value: "true"
             - name: CLUSTER
-              value: {{ .Values.proxy.cluster | quote }}
+              value: {{ .Values.cluster | quote }}
           {{- if .Values.proxy.providerUrlInternal }}
             - name: PROVIDER_URL_INTERNAL
               value: {{ .Values.proxy.providerUrlInternal | quote }}
+          {{- end }}
+          {{- if .Values.proxy.extraEnv }}
+{{ toYaml .Values.proxy.extraEnv | indent 12 }}
           {{- end }}
           readinessProbe:
             httpGet:

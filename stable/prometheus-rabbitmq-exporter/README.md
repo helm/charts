@@ -65,6 +65,10 @@ The following table lists the configurable parameters and their default values.
 | `rabbitmq.timeout`       | timeout in seconds for retrieving data from management plugin          | `30`                      |
 | `rabbitmq.max_queues`    | max number of queues before we drop metrics (disabled if set to 0)     | `0`                       |
 | `annotations`            | pod annotations for easier discovery                                   | {}                        |
+| `prometheus.monitor.enabled` | Set this to `true` to create ServiceMonitor for Prometheus operator | `false` | 
+| `prometheus.monitor.additionalLabels` | Additional labels that can be used so ServiceMonitor will be discovered by Prometheus | {} | 
+| `prometheus.monitor.interval` | Interval at which Prometheus Operator scrapes exporter | `15s` | 
+| `prometheus.monitor.namespace` | 	Selector to select which namespaces the Endpoints objects are discovered from. | [] | 
 
 For more information please refer to the [rabbitmq_exporter](https://github.com/kbudde/rabbitmq_exporter) documentation.
 

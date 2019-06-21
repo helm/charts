@@ -28,6 +28,16 @@ To install the chart with the release name `my-release`:
 $ helm install --name my-release stable/kong
 ```
 
+If using Kong Enterprise, several additional steps are necessary before
+installing the chart. At minimum, you must:
+* Create a [license secret](#license).
+* Set `enterprise.enabled: true` in values.yaml.
+* Update values.yaml to use a Kong Enterprise image. If needed, follow the
+instructions in values.yaml to add a registry pull secret.
+
+Reading through [the full list of Enterprise considerations](#kong-enterprise-specific-parameters)
+is recommended.
+
 > **Tip**: List all releases using `helm list`
 
 ## Uninstalling the Chart
@@ -177,6 +187,143 @@ $ helm install stable/kong --name my-release -f values.yaml
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
+### Kong Enterprise-specific parameters
+
+Kong Enterprise requires some additional configuration not needed when using
+Kong OSS. Some of the more important configuration is grouped in sections
+under the `.enterprise` key in values.yaml, though most enterprise-specific
+configuration can be placed under the `.env` key.
+
+To use Kong Enterprise, change your image to a Kong Enterprise image and set
+`.enterprise.enabled: true` in values.yaml to render Enterprise sections of the
+templates. Review the sections below for other settings you should consider
+configuring before installing the chart.
+
+#### Service location hints
+
+Kong Enterprise add two GUIs, Kong Manager and the Kong Developer Portal, that
+must know where other Kong services (namely the admin and files APIs) can be
+accessed in order to function properly. Kong's default behavior for attempting
+to locate these absent configuration is unlikely to work in common Kubernetes
+environments. Because of this, you should set each of `admin_gui_url`,
+`admin_api_uri`, `proxy_url`, `portal_api_url`, `portal_gui_host`, and
+`portal_gui_protocol` under the `.env` key in values.yaml to locations where
+each of their respective services can be accessed to ensure that Kong services
+can locate one another and properly set CORS headers. See the [Property Reference documentation](https://docs.konghq.com/enterprise/0.35-x/property-reference/)
+for more details on these settings.
+
+#### License
+
+All Kong Enterprise deployments require a license. If you do not have a copy
+of yours, please contact Kong Support. Once you have it, you will need to
+store it in a Secret. Save your secret in a file named `license` (no extension)
+and then create and inspect your secret:
+
+```
+$ kubectl create secret generic kong-enterprise-license --from-file=./license
+$ kubectl get secret kong-enterprise-license -o yaml
+apiVersion: v1
+data:
+  license: eyJsaWNlbnNlIjp7InNpZ25hdHVyZSI6IkhFWSBJIFNFRSBZT1UgUEVFS0lORyBJTlNJREUgTVkgQkFTRTY0IEVYQU1QTEUiLCJwYXlsb2FkIjp7ImN1c3RvbWVyIjoiV0VMTCBUT08gQkFEIiwibGljZW5zZV9jcmVhdGlvbl9kYXRlIjoiMjAxOC0wNi0wNSIsInByb2R1Y3Rfc3Vic2NyaXB0aW9uIjoiVEhFUkVTIE5PVEhJTkcgSEVSRSIsImFkbWluX3NlYXRzIjoiNSIsInN1cHBvcnRfcGxhbiI6IkZha2UiLCJsaWNlbnNlX2V4cGlyYXRpb25fZGF0ZSI6IjIwMjAtMjAtMjAiLCJsaWNlbnNlX2tleSI6IlRTT0kgWkhJViJ9LCJ2ZXJzaW9uIjoxfX0K
+kind: Secret
+metadata:
+  creationTimestamp: "2019-05-17T21:45:16Z"
+  name: kong-enterprise-license
+  namespace: default
+  resourceVersion: "48695485"
+  selfLink: /api/v1/namespaces/default/secrets/kong-enterprise-license
+  uid: 0f2e8903-78ed-11e9-b1a6-42010a8a02ec
+type: Opaque
+```
+Set the secret name in values.yaml, in the `.enterprise.license_secret` key.
+
+#### RBAC
+
+Note that you can create a default RBAC superuser when initially setting up an
+environment, by setting the `KONG_PASSWORD` environment variable on the initial
+migration Job's Pod. This will create a `kong_admin` admin whose token and
+basic-auth password match the value of `KONG_PASSWORD`
+
+Using RBAC within Kubernetes environments requires providing Kubernetes an RBAC
+user for its readiness and liveness checks. We recommend creating a user that
+has permission to read `/status` and nothing else. For example, with RBAC still
+disabled:
+
+```
+$ curl -sX POST http://admin.kong.example/rbac/users --data name=statuschecker --data user_token=REPLACE_WITH_SOME_TOKEN
+{"user_token_ident":"45239","user_token":"$2b$09$cL.xbvRQCzE35A0osl8VTej7u0BgJOIgpTVjxpwZ1U8.jNdMwyQRW","id":"fe8824dc-09a7-4b68-b5e6-541e4b9b4ced","name":"statuschecker","enabled":true,"comment":null,"created_at":1558131229}
+
+$ curl -sX POST http://admin.kong.example/rbac/roles --data name=read-status
+{"comment":null,"created_at":1558131353,"id":"e32507a5-e636-40b2-88c0-090042db7d79","name":"read-status","is_default":false}
+
+$ curl -sX POST http://admin.kong.example/rbac/roles/read-status/endpoints --data endpoint="/status" --data actions=read
+{"endpoint":"\/status","created_at":1558131423,"workspace":"default","actions":["read"],"negative":false,"role":{"id":"e32507a5-e636-40b2-88c0-090042db7d79"}}
+
+$ curl -sX POST http://admin.kong.example/rbac/users/statuschecker/roles --data roles=read-status
+{"roles":[{"created_at":1558131353,"id":"e32507a5-e636-40b2-88c0-090042db7d79","name":"read-status"}],"user":{"user_token_ident":"45239","user_token":"$2b$09$cL.xbvRQCzE35A0osl8VTej7u0BgJOIgpTVjxpwZ1U8.jNdMwyQRW","id":"fe8824dc-09a7-4b68-b5e6-541e4b9b4ced","name":"statuschecker","comment":null,"enabled":true,"created_at":1558131229}}
+```
+Probes will then need to include that user's token, e.g. for the readinessProbe:
+
+```
+readinessProbe:
+  httpGet:
+    path: "/status"
+    port: admin
+    scheme: HTTP
+    httpHeaders:
+      - name: Kong-Admin-Token
+        value: REPLACE_WITH_SOME_TOKEN
+    ...
+```
+
+Note that RBAC is **NOT** currently enabled on the admin API container for the
+controller Pod when the ingress controller is enabled. This admin API container
+is not exposed outside the Pod, so only the controller can interact with it. We
+intend to add RBAC to this container in the future after updating the controller
+to add support for storing its RBAC token in a Secret, as currently it would
+need to be stored in plaintext. RBAC is still enforced on the admin API of the
+main deployment when using the ingress controller, as that admin API *is*
+accessible outside the Pod.
+
+#### Sessions
+
+Login sessions for Kong Manager and the Developer Portal make use of [the Kong
+Sessions plugin](https://docs.konghq.com/enterprise/0.35-x/kong-manager/authentication/sessions/).
+Their configuration must be stored in Secrets, as it contains an HMAC key.
+If using either RBAC or the Portal, create a Secret with `admin_gui_session_conf`
+and `portal_session_conf` keys.
+
+```
+$ cat admin_gui_session_conf
+{"cookie_name":"admin_session","cookie_samesite":"off","secret":"admin-secret-CHANGEME","cookie_secure":true,"storage":"kong"}
+$ cat portal_session_conf
+{"cookie_name":"portal_session","cookie_samesite":"off","secret":"portal-secret-CHANGEME","cookie_secure":true,"storage":"kong"}
+$ kubectl create secret generic kong-session-config --from-file=admin_gui_session_conf --from-file=portal_session_conf
+secret/kong-session-config created
+```
+The exact plugin settings may vary in your environment. The `secret` should
+always be changed for both configurations.
+
+After creating your secret, set its name in values.yaml, in the
+`.enterprise.rbac.session_conf_secret` and
+`.enterprise.rbac.session_conf_secret` keys.
+
+#### Email/SMTP
+
+Email is used to send invitations for [Kong Admins](https://docs.konghq.com/enterprise/enterprise/0.35-x/kong-manager/networking/email/)
+and [Developers](https://docs.konghq.com/enterprise/enterprise/0.35-x/developer-portal/configuration/smtp/).
+
+Email invitations rely on setting a number of SMTP settings at once. For
+convenience, these are grouped under the `.enterprise.smtp` key in values.yaml.
+Setting `.enterprise.smtp.disabled: true` will set `KONG_SMTP_MOCK=on` and
+allow Admin/Developer invites to proceed without sending email. Note, however,
+that these have limited functionality without sending email.
+
+If your SMTP server requires authentication, you should the `username` and
+`smtp_password_secret` keys under `.enterprise.smtp.auth`.
+`smtp_password_secret` must be a Secret containing an `smtp_password` key whose
+value is your SMTP password.
+
 ### Kong Ingress Controller
 
 Kong Ingress Controller's primary purpose is to satisfy Ingress resources
@@ -214,9 +361,7 @@ The custom resources are:
 - KongPlugin
 - KongIngress
 
-You can can learn about kong ingress custom resource definitions here:
-
-- [https://github.com/Kong/kubernetes-ingress-controller/blob/master/docs/custom-resources.md]()
+You can can learn about kong ingress custom resource definitions [here](https://github.com/Kong/kubernetes-ingress-controller/blob/master/docs/custom-resources.md).
 
 | Parameter        | Description                                 | Default                                                                      |
 | ---------------  | -----------------------------------------   | ---------------------------------------------------------------------------- |

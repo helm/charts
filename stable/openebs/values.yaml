@@ -80,6 +80,7 @@ ndm:
     count: "1"
   filters:
     excludeVendors: "CLOUDBYT,OpenEBS"
+    includePaths: ""
     excludePaths: "loop,fd0,sr0,/dev/ram,/dev/dm-,/dev/md"
   nodeSelector: {}
   healthCheck:
