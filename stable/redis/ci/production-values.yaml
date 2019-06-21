@@ -38,7 +38,7 @@ securityContext:
 ## Cluster settings
 cluster:
   enabled: true
-  slaveCount: 3
+  slaveCount: 4
 
 ## Use redis sentinel in the redis pod. This will disable the master and slave services and
 ## create one redis service with ports to the sentinel and the redis instances
@@ -67,7 +67,7 @@ sentinel:
     #   - myRegistryKeySecretName
   masterSet: mymaster
   initialCheckTimeout: 5
-  quorum: 2
+  quorum: 3
   downAfterMilliseconds: 60000
   failoverTimeout: 18000
   parallelSyncs: 1

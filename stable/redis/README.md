@@ -313,7 +313,7 @@ $ helm install --name my-release -f ./values-production.yaml stable/redis
 - Number of slaves:
 ```diff
 - cluster.slaveCount: 2
-+ cluster.slaveCount: 3
++ cluster.slaveCount: 4
 ```
 
 - Enable NetworkPolicy:
@@ -356,8 +356,8 @@ By default, the chart mounts a [Persistent Volume](http://kubernetes.io/docs/use
 ### Existing PersistentVolumeClaim
 
 1. Create the PersistentVolume
-1. Create the PersistentVolumeClaim
-1. Install the chart
+2. Create the PersistentVolumeClaim
+3. Install the chart
 
 ```bash
 $ helm install --set persistence.existingClaim=PVC_NAME stable/redis
