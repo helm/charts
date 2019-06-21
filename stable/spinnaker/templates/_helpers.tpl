@@ -18,10 +18,13 @@ We truncate at 24 chars because some Kubernetes name fields are limited to this 
 {{/*
 Common labels for metadata.
 */}}
-{{- define "spinnaker.standard-labels" -}}
+{{- define "spinnaker.standard-labels-base" -}}
 app: {{ include "spinnaker.fullname" . | quote }}
 heritage: {{ .Release.Service | quote }}
 release: {{ .Release.Name | quote }}
+{{- end -}}
+{{- define "spinnaker.standard-labels" -}}
+{{ include "spinnaker.standard-labels-base" . }}
 chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
 {{- end -}}
 
