@@ -18,11 +18,11 @@ image:
 extraArgs: {}
 # Additional Environment variables
 env: {}
-  # - name: REDIS_PASSWORD
-  #   valueFrom:
-  #     secretKeyRef:
-  #       key: redis-password
-  #       name: redis-config-0.0.2
+# - name: REDIS_PASSWORD
+#   valueFrom:
+#     secretKeyRef:
+#       key: redis-password
+#       name: redis-config-0.0.2
 service:
   type: ClusterIP
   port: 9121
@@ -52,3 +52,8 @@ serviceMonitor:
   # labels:
   # Set timeout for scrape
   # timeout: 10s
+
+# Used to mount a LUA-Script via config map and use it for metrics-collection
+# script:
+#   configmap: prometheus-redis-exporter-script
+#   keyname: script
