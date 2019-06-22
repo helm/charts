@@ -9,9 +9,9 @@ keywords:
 - fluent
 - fluentd
 sources:
-- http://fluentbit.io
-icon: http://fluentbit.io/assets/img/logo1-default.png
-home: http://fluentbit.io
+- https://fluentbit.io
+icon: https://fluentbit.io/assets/img/logo1-default.png
+home: https://fluentbit.io
 maintainers:
 - name: kfox1111
   email: Kevin.Fox@pnnl.gov
