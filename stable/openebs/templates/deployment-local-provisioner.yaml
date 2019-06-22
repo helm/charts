@@ -8,6 +8,7 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     component: localpv-provisioner
+    openebs.io/component-name: openebs-localpv-provisioner
 spec:
   replicas: {{ .Values.provisioner.replicas }}
   selector:
@@ -21,8 +22,8 @@ spec:
         release: {{ .Release.Name }}
         component: localpv-provisioner
         name: openebs-localpv-provisioner
-        openebs.io/version: {{ .Values.release.version }}
         openebs.io/component-name: openebs-localpv-provisioner
+        openebs.io/version: {{ .Values.release.version }}
     spec:
       serviceAccountName: {{ template "openebs.serviceAccountName" . }}
       containers:
@@ -50,8 +51,14 @@ spec:
               fieldPath: spec.nodeName
         # OPENEBS_IO_BASE_PATH is the environment variable that provides the
         # default base path on the node where host-path PVs will be provisioned.
+        - name: OPENEBS_IO_ENABLE_ANALYTICS
+          value: "{{ .Values.analytics.enabled }}"
         - name: OPENEBS_IO_BASE_PATH
           value: "{{ .Values.localprovisioner.basePath }}"
+        - name: OPENEBS_IO_HELPER_IMAGE
+          value: "{{ .Values.localprovisioner.helperImage }}:{{ .Values.localprovisioner.helperImageTag }}"
+        - name: OPENEBS_IO_INSTALLER_TYPE
+          value: "charts-helm"
         livenessProbe:
           exec:
             command:
