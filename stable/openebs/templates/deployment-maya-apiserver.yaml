@@ -9,6 +9,7 @@ metadata:
     heritage: {{ .Release.Service }}
     component: apiserver
     name: maya-apiserver
+    openebs.io/component-name: maya-apiserver
 spec:
   replicas: {{ .Values.apiserver.replicas }}
   selector:
@@ -94,6 +95,8 @@ spec:
         # for periodic ping events sent to Google Analytics. Default is 24 hours.
         - name: OPENEBS_IO_ANALYTICS_PING_INTERVAL
           value: "{{ .Values.analytics.pingInterval }}"
+        - name: OPENEBS_IO_INSTALLER_TYPE
+          value: "charts-helm"
         livenessProbe:
           exec:
             command:
