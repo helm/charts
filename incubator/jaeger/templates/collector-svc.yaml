@@ -15,6 +15,14 @@ metadata:
 {{- end }}
 spec:
   ports:
+  - name: jaeger-collector-grpc
+    port: {{ .Values.collector.service.grpcPort }}
+    protocol: TCP
+    {{- if eq .Values.collector.service.type "NodePort" }}
+    nodePort: {{ .Values.collector.service.grpcPort }}
+    {{- else }}
+    targetPort: grpc
+    {{- end }}
   - name: jaeger-collector-tchannel
     port: {{ .Values.collector.service.tchannelPort }}
     protocol: TCP

@@ -100,22 +100,10 @@ spec:
                 name: {{ include "jaeger.fullname" . }}
                 key: es.username
           {{- end }}
-          - name: COLLECTOR_PORT
-            valueFrom:
-              configMapKeyRef:
-                name: {{ include "jaeger.fullname" . }}
-                key: collector.port
-          - name: COLLECTOR_HTTP_PORT
-            valueFrom:
-              configMapKeyRef:
-                name: {{ include "jaeger.fullname" . }}
-                key: collector.http-port
-          - name: COLLECTOR_ZIPKIN_HTTP_PORT
-            valueFrom:
-              configMapKeyRef:
-                name: {{ include "jaeger.fullname" . }}
-                key: collector.zipkin.http-port
         ports:
+        - containerPort: {{ .Values.collector.service.grpcPort }}
+          name: grpc
+          protocol: TCP
         - containerPort: {{ .Values.collector.service.tchannelPort }}
           name: tchannel
           protocol: TCP
