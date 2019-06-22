@@ -66,6 +66,8 @@ The following table lists the configurable parameters and their default values.
 | `serviceMonitor.telemetryPath` | Path to redis-exporter telemtery-path                  |                            |
 | `serviceMonitor.labels`        | Labels for the servicemonitor passed to Prometheus Operator      |  `{}`            |
 | `serviceMonitor.timeout`       | Timeout after which the scrape is ended                |                            |
+| `script.configmap`     | Let you run a custom lua script from a configmap. The corresponding environment variable `REDIS_EXPORTER_SCRIPT` will be set automatically ||
+| `script.keyname`       | Name of the key inside configmap which contains your script ||
 
 For more information please refer to the [redis_exporter](https://github.com/oliver006/redis_exporter) documentation.
 
@@ -82,3 +84,35 @@ Alternatively, a YAML file that specifies the values for the parameters can be p
 ```bash
 $ helm install --name my-release -f values.yaml stable/prometheus-redis-exporter
 ```
+### Using a custom LUA-Script
+First, you need to deploy the script with a configmap. This is an example script from mentioned in the [redis_exporter-image repository](https://github.com/oliver006/redis_exporter/blob/master/contrib/sample_collect_script.lua)
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-redis-exporter-script
+data:
+  script: |-
+    -- Example collect script for -script option
+    -- This returns a Lua table with alternating keys and values.
+    -- Both keys and values must be strings, similar to a HGETALL result.
+    -- More info about Redis Lua scripting: https://redis.io/commands/eval
+
+    local result = {}
+
+    -- Add all keys and values from some hash in db 5
+    redis.call("SELECT", 5)
+    local r = redis.call("HGETALL", "some-hash-with-stats")
+    if r ~= nil then
+        for _,v in ipairs(r) do
+            table.insert(result, v) -- alternating keys and values
+        end
+    end
+
+    -- Set foo to 42
+    table.insert(result, "foo")
+    table.insert(result, "42") -- note the string, use tostring() if needed
+
+    return result
+```
+If you want to use this script for collecting metrics, you could do this by just set `script.configmap` to the name of the configmap (e.g. `prometheus-redis-exporter-script`) and `script.keyname` to the configmap-key holding the script (eg. `script`). The required variables inside the container will be set automatically.
