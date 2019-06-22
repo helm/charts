@@ -23,3 +23,5 @@ resources:
 
 daemonset:
   tolerations: []
+
+priorityClassName: ""

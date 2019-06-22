@@ -54,6 +54,7 @@ Parameter | Description | Default
 `logdna.autoupdate` | Optionally turn on autoupdate by setting to 1 (auto sets image.pullPolicy to always) | `0`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
 `image.tag` | Image tag | `latest`
+`priorityClassName` | (Optional) Set a PriorityClass on the Daemonset | `""`
 `resources.limits.memory` | Memory resource limits | 500Mi                                      |
 `tolerations` | List of node taints to tolerate | `[]`
 
