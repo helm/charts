@@ -51,7 +51,7 @@ spec:
         - name: COLLECTOR_HOST_PORT
           valueFrom:
             configMapKeyRef:
-              name: {{ template "jaeger.fullname" . }}
+              name: {{ include "jaeger.fullname" . }}
               key: collector.host-port
         {{- range $key, $value := .Values.agent.cmdlineParams }}
         - name: {{ $key | replace "." "_" | replace "-" "_" | upper | quote }}
