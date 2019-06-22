@@ -1,0 +1,41 @@
+{{- if and .Values.server.enabled .Values.psp.create}}
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: {{ template "kiam.fullname" . }}-server
+spec:
+  # Prevents running in privileged mode
+  privileged: false
+  # Required to prevent escalations to root.
+  allowPrivilegeEscalation: false
+  volumes:
+    - 'secret'
+{{- if .Values.server.extraHostPathMounts }}
+    - 'hostPath'
+  {{- range .Values.server.extraHostPathMounts }}
+  allowedHostPaths:
+  - pathPrefix: {{ .hostPath }}
+    readOnly: {{ .readOnly }}
+  {{- end }}
+{{- end }}
+  hostNetwork: {{ .Values.server.useHostNetwork }}
+  hostIPC: false
+  hostPID: false
+  runAsUser:
+    rule: 'RunAsAny'
+  seLinux:
+    rule: 'RunAsAny'
+  supplementalGroups:
+    rule: 'MustRunAs'
+    ranges:
+      # Forbid adding the root group.
+      - min: 1
+        max: 65535
+  fsGroup:
+    rule: 'MustRunAs'
+    ranges:
+      # Forbid adding the root group.
+      - min: 1
+        max: 65535
+  readOnlyRootFilesystem: false
+{{- end }}
