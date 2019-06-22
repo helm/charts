@@ -15,6 +15,9 @@ spec:
         chart: {{ template "logdna.chart" . }}
         release: {{ .Release.Name }}
     spec:
+      {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName | quote }}
+      {{- end }}
       containers:
       - name: {{ template "logdna.name" . }}
         image: "{{.Values.image.name}}:{{.Values.image.tag}}"
