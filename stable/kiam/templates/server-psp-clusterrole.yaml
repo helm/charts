@@ -1,0 +1,25 @@
+{{- if and .Values.server.enabled .Values.psp.create}}
+{{- if .Values.rbac.create -}}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  labels:
+    app: {{ template "kiam.name" . }}
+    chart: {{ template "kiam.chart" . }}
+    component: "{{ .Values.server.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  annotations:
+    k8s-addon: podsecuritypolicy.addons.k8s.io
+  name: {{ template "kiam.fullname" . }}-server-psp-use
+rules:
+- apiGroups:
+  - policy
+  resources:
+  - podsecuritypolicies
+  resourceNames:
+  - {{ template "kiam.fullname" . }}-server
+  verbs:
+  - use
+{{- end -}}
+{{- end }}
