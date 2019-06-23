@@ -48,11 +48,11 @@ spec:
         image: {{ .Values.agent.image }}:{{ .Values.tag }}
         imagePullPolicy: {{ .Values.agent.pullPolicy }}
         env:
-        - name: COLLECTOR_HOST_PORT
+        - name: REPORTER_GRPC_HOST_PORT
           valueFrom:
             configMapKeyRef:
-              name: {{ template "jaeger.fullname" . }}
-              key: collector.host-port
+              name: {{ include "jaeger.fullname" . }}
+              key: reporter.grpc.host-port
         {{- range $key, $value := .Values.agent.cmdlineParams }}
         - name: {{ $key | replace "." "_" | replace "-" "_" | upper | quote }}
           value: {{ $value }}
