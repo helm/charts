@@ -1,6 +1,6 @@
 ## Default values for Traefik
 image: traefik
-imageTag: 1.7.9
+imageTag: 1.7.12
 
 testFramework:
   image: "dduportal/bats"

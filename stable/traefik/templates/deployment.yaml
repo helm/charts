@@ -76,7 +76,8 @@ spec:
 {{ toYaml .Values.resources | indent 10 }}
         {{- end }}
         readinessProbe:
-          tcpSocket:
+          httpGet:
+            path: /ping
             port: 80
           failureThreshold: 1
           initialDelaySeconds: 10
@@ -84,7 +85,8 @@ spec:
           successThreshold: 1
           timeoutSeconds: 2
         livenessProbe:
-          tcpSocket:
+          httpGet:
+            path: /ping
             port: 80
           failureThreshold: 3
           initialDelaySeconds: 10

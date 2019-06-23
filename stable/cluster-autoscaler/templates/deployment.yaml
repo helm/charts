@@ -16,7 +16,7 @@ spec:
       app: {{ template "cluster-autoscaler.name" . }}
       release: {{ .Release.Name }}
     {{- if .Values.podLabels }}
-{{ toYaml .Values.podLabels | indent 8 }}
+{{ toYaml .Values.podLabels | indent 6 }}
     {{- end }}
   template:
     metadata:
