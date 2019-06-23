@@ -3,9 +3,9 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ template "jaeger.fullname" . }}-cassandra-schema
+  name: {{ include "jaeger.fullname" . }}-cassandra-schema
   labels:
-    app.kubernetes.io/name: {{ template "jaeger.name" . }}
+    app.kubernetes.io/name: {{ include "jaeger.name" . }}
     helm.sh/chart: {{ include "jaeger.chart" . }}
     app.kubernetes.io/component: cassandra-schema
     app.kubernetes.io/managed-by: {{ .Release.Service }}
@@ -18,36 +18,36 @@ spec:
   activeDeadlineSeconds: 120
   template:
     metadata:
-      name: {{ template "jaeger.fullname" . }}-cassandra-schema
+      name: {{ include "jaeger.fullname" . }}-cassandra-schema
 {{- if .Values.schema.podLabels }}
       labels:
 {{ toYaml .Values.schema.podLabels | indent 8 }}
 {{- end }}
     spec:
       containers:
-      - name: {{ template "jaeger.fullname" . }}-cassandra-schema
+      - name: {{ include "jaeger.fullname" . }}-cassandra-schema
         image: {{ .Values.schema.image }}:{{ .Values.tag }}
         imagePullPolicy: {{ .Values.schema.pullPolicy }}
         env:
         - name: CQLSH_HOST
           valueFrom:
             configMapKeyRef:
-              name: {{ template "jaeger.fullname" . }}
+              name: {{ include "jaeger.fullname" . }}
               key: cassandra.servers
         - name: MODE
           valueFrom:
             configMapKeyRef:
-              name: {{ template "jaeger.fullname" . }}
+              name: {{ include "jaeger.fullname" . }}
               key: cassandra.schema.mode
         - name: DATACENTER
           valueFrom:
             configMapKeyRef:
-              name: {{ template "jaeger.fullname" . }}
+              name: {{ include "jaeger.fullname" . }}
               key: cassandra.datacenter.name
         - name: CASSANDRA_PORT
           valueFrom:
             configMapKeyRef:
-              name: {{ template "jaeger.fullname" . }}
+              name: {{ include "jaeger.fullname" . }}
               key: cassandra.port
         resources:
 {{ toYaml .Values.schema.resources | indent 10 }}

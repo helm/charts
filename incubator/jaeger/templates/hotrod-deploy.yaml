@@ -2,9 +2,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "jaeger.fullname" . }}-hotrod
+  name: {{ include "jaeger.fullname" . }}-hotrod
   labels:
-    app.kubernetes.io/name: {{ template "jaeger.name" . }}
+    app.kubernetes.io/name: {{ include "jaeger.name" . }}
     jaeger-infra: hotrod-deployment
     helm.sh/chart: {{ include "jaeger.chart" . }}
     app.kubernetes.io/component: hotrod
@@ -14,30 +14,30 @@ spec:
   replicas: {{ .Values.hotrod.replicaCount }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ template "jaeger.name" . }}
+      app.kubernetes.io/name: {{ include "jaeger.name" . }}
       app.kubernetes.io/component: hotrod
       app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: {{ template "jaeger.name" . }}
+        app.kubernetes.io/name: {{ include "jaeger.name" . }}
         app.kubernetes.io/component: hotrod
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       containers:
-        - name: {{ template "jaeger.fullname" . }}-hotrod
+        - name: {{ include "jaeger.fullname" . }}-hotrod
           image: {{ .Values.hotrod.image.repository }}:{{ .Values.hotrod.image.tag }}
           imagePullPolicy: {{ .Values.hotrod.image.pullPolicy }}
           env:
             - name: JAEGER_AGENT_HOST
               valueFrom:
                 configMapKeyRef:
-                  name: {{ template "jaeger.fullname" . }}
+                  name: {{ include "jaeger.fullname" . }}
                   key: hotrod.agent-host
             - name: JAEGER_AGENT_PORT
               valueFrom:
                 configMapKeyRef:
-                  name: {{ template "jaeger.fullname" . }}
+                  name: {{ include "jaeger.fullname" . }}
                   key: hotrod.agent-port
           ports:
             - containerPort: {{ .Values.hotrod.service.internalPort }}

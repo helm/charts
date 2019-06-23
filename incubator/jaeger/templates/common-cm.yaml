@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "jaeger.fullname" . }}
+  name: {{ include "jaeger.fullname" . }}
   labels:
-    app.kubernetes.io/name: {{ template "jaeger.name" . }}
+    app.kubernetes.io/name: {{ include "jaeger.name" . }}
     helm.sh/chart: {{ include "jaeger.chart" . }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     app.kubernetes.io/instance: {{ .Release.Name }}
@@ -16,9 +16,9 @@ data:
   cassandra.schema.mode: {{ .Values.schema.mode | quote }}
   cassandra.servers: {{ template "cassandra.host" . }}
   cassandra.username: {{ .Values.storage.cassandra.user }}
-  collector.host-port: {{ template "jaeger.collector.host-port" . }}
+  reporter.tchannel.host-port: {{ include "jaeger.collector.name" . }}:{{ .Values.collector.service.tchannelPort }}
+  reporter.grpc.host-port: {{ include "jaeger.collector.name" . }}:{{ .Values.collector.service.grpcPort }}
   collector.http-port: {{ .Values.collector.service.httpPort | quote }}
-  collector.port: {{ .Values.collector.service.tchannelPort | quote }}
   collector.zipkin.http-port: {{ .Values.collector.service.zipkinPort | quote }}
   es.password: {{ .Values.storage.elasticsearch.password }}
   es.server-urls: {{ template "elasticsearch.client.url" . }}
