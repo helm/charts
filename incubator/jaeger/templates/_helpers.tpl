@@ -116,14 +116,6 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- end -}}
 {{- end -}}
 
-{{- define "jaeger.collector.host-port" -}}
-{{- if .Values.agent.collector.host }}
-{{- printf "%s:%s" .Values.agent.collector.host (default .Values.collector.service.tchannelPort .Values.agent.collector.port | toString) }}
-{{- else }}
-{{- printf "%s:%s" (include "jaeger.collector.name" .) (default .Values.collector.service.tchannelPort .Values.agent.collector.port | toString) }}
-{{- end -}}
-{{- end -}}
-
 {{- define "jaeger.hotrod.tracing.host" -}}
 {{- default (include "jaeger.agent.name" .) .Values.hotrod.tracing.host -}}
 {{- end -}}

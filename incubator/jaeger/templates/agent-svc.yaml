@@ -33,7 +33,7 @@ spec:
     targetPort: {{ .Values.agent.service.samplingPort }}
   type: {{ .Values.agent.service.type }}
   selector:
-    app.kubernetes.io/name: {{ template "jaeger.name" . }}
+    app.kubernetes.io/name: {{ include "jaeger.name" . }}
     app.kubernetes.io/component: agent
     app.kubernetes.io/instance: {{ .Release.Name }}
 {{- template "loadBalancerSourceRanges" .Values.agent }}

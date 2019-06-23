@@ -4,7 +4,7 @@ kind: Service
 metadata:
   name: {{ template "jaeger.collector.name" . }}
   labels:
-    app.kubernetes.io/name: {{ template "jaeger.name" . }}
+    app.kubernetes.io/name: {{ include "jaeger.name" . }}
     helm.sh/chart: {{ include "jaeger.chart" . }}
     app.kubernetes.io/component: collector
     app.kubernetes.io/managed-by: {{ .Release.Service }}
@@ -15,6 +15,14 @@ metadata:
 {{- end }}
 spec:
   ports:
+  - name: jaeger-collector-grpc
+    port: {{ .Values.collector.service.grpcPort }}
+    protocol: TCP
+    {{- if eq .Values.collector.service.type "NodePort" }}
+    nodePort: {{ .Values.collector.service.grpcPort }}
+    {{- else }}
+    targetPort: grpc
+    {{- end }}
   - name: jaeger-collector-tchannel
     port: {{ .Values.collector.service.tchannelPort }}
     protocol: TCP
@@ -40,7 +48,7 @@ spec:
     targetPort: zipkin
     {{- end }}
   selector:
-    app.kubernetes.io/name: {{ template "jaeger.name" . }}
+    app.kubernetes.io/name: {{ include "jaeger.name" . }}
     app.kubernetes.io/component: collector
     app.kubernetes.io/instance: {{ .Release.Name }}
   type: {{ .Values.collector.service.type }}

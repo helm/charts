@@ -239,24 +239,6 @@ Jaeger itself is a stateful application that by default uses Cassandra to store 
 
 Override any required configuration options in the Cassandra chart that is required and then enable persistence by setting the following option: `--set cassandra.persistence.enabled=true`
 
-### Image tags
-
-Jaeger offers a multitude of [tags](https://hub.docker.com/u/jaegertracing/) for the various components used in this chart.
-
 ### Pending enhancements
-- [x] Use ConfigMap for configurable parameters
-- [x] Add the Hotrod example app
-- [x] Allow only some of the components to be installed
-- [x] Add support for the spark dependencies job (as a [k8s cronjob](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/))
-- [x] Use `provisionDataStore` key in the values.yaml file instead of `tags` to configure data store provisioning.
-- [x] Refactor chart to remove unnecessary quotes
-- [x] Remove the command overrides of the docker images and use [environment variables configuration](http://jaeger.readthedocs.io/en/latest/deployment/#configuration) instead
-- [x] Fix hard-coded replica count
-- [x] Collector service works both as `NodePort` and `ClusterIP` service types
 - [ ] Sidecar deployment support
 
-## Upgrading
-
-### From < 0.9.0 to >= 0.9.0
-
-Version `0.9.0` introduces recommended labels. The approch to upgrading is to delete and reinstall the release.
