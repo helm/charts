@@ -125,7 +125,7 @@ spec:
         configMap:
           name: {{ template "fullname" . }}
       - name: sentry-data
-      {{- if .Values.persistence.enabled }}
+      {{- if and (.Values.persistence.enabled) (.Values.persistence.persistentWorkers) }}
         persistentVolumeClaim:
           claimName: {{ .Values.persistence.existingClaim | default (include "fullname" .) }}
       {{- else }}
