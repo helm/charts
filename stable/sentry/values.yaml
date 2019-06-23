@@ -114,6 +114,10 @@ service:
 ##
 persistence:
   enabled: true
+  ## The name of an existing pvc for persistence of database data
+  ## If undefined (the default) or set to null, a new pvc will be created
+  # existingClaim: sentry-data
+
   ## database data Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
   ## If set to "-", storageClassName: "", which disables dynamic provisioning
