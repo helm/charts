@@ -114,6 +114,10 @@ service:
 ##
 persistence:
   enabled: true
+  ## The name of an existing pvc for persistence of database data
+  ## If undefined (the default) or set to null, a new pvc will be created
+  # existingClaim: sentry-data
+
   ## database data Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
   ## If set to "-", storageClassName: "", which disables dynamic provisioning
@@ -128,6 +132,16 @@ persistence:
   # Where to store sentry files
   # https://docs.sentry.io/server/filestore/
   filestore_dir: /var/lib/sentry/files
+
+  ## Whether to mount the persistent volume to the Sentry worker and
+  ## cron deployments. This setting needs to be enabled for some advanced
+  ## Sentry features, such as private source maps. If you disable this
+  ## setting, the Sentry workers will not have access to artifacts you upload
+  ## through the web deployment.
+  ## Please note that you may need to change your accessMode to ReadWriteMany
+  ## if you plan on having the web, worker and cron deployments run on
+  ## different nodes.
+  persistentWorkers: false
 
 ## Configure ingress resource that allow you to access the
 ## Sentry installation. Set up the URL
