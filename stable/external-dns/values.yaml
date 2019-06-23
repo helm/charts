@@ -10,6 +10,7 @@ image:
 sources:
   - service
   - ingress
+  - crd
 
 # Allow external-dns to publish DNS records for ClusterIP services (optional)
 publishInternalServices: false
@@ -179,3 +180,8 @@ service:
   type: ClusterIP
 
 priorityClassName: ""
+
+## Installs the DNSEndpoint CRD
+crd:
+  apiversion: ""
+  kind: ""
