@@ -25,6 +25,9 @@ spec:
 {{ toYaml .Values.worker.podLabels | indent 8 }}
         {{- end }}
     spec:
+      {{- with .Values.hooks.affinity }}
+{{ toYaml . | indent 8 }}
+      {{- end }}
       restartPolicy: Never
       {{- if .Values.image.imagePullSecrets }}
       imagePullSecrets:
