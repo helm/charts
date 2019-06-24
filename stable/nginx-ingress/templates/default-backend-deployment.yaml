@@ -51,6 +51,8 @@ spec:
             - --{{ $key }}
             {{- end }}
           {{- end }}
+          securityContext:
+            runAsUser: {{ .Values.defaultBackend.image.runAsUser }}
           livenessProbe:
             httpGet:
               path: /healthz
