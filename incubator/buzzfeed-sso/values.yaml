@@ -2,6 +2,7 @@
 
 emailDomain: "<your_email_domain>"  # Required. e.g "email.mydomain.foo"
 rootDomain: "<your_root_domain>"  # Required. e.g "mydomain.foo"
+# whitelistedEmails: "<whitelisted_addresses>" # Optional. e.g. "userA.nameA@mydomain.foo,userB.nameB@mydomain.foo"
 cluster: dev
 
 auth:
@@ -26,6 +27,10 @@ auth:
     # cookieSecret: ''
   # # Or if you do not want to create the secret via helm
   # customSecret: my-sso-auth-secret
+  # Auth application ingress path.
+  # For GKE and AWS ALB ingresses use "/*"
+  # For Nginx ingress use "/"
+  ingressPath: /
   tls: {}
     # secretName: sso-auth-tls-secret
 

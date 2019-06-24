@@ -63,6 +63,10 @@ spec:
                   key: proxy-cookie-secret
             - name: EMAIL_DOMAIN
               value: {{ .Values.emailDomain | quote }}
+            {{- if .Values.whitelistedEmails }}
+            - name: EMAIL_ADDRESSES
+              value: {{ .Values.whitelistedEmails }}
+            {{- end }}
             - name: UPSTREAM_CONFIGS
               value: /sso/upstream_configs.yml
             - name: PROVIDER_URL

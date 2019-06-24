@@ -2,9 +2,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "jaeger.fullname" . }}-hotrod
+  name: {{ include "jaeger.fullname" . }}-hotrod
   labels:
-    app.kubernetes.io/name: {{ template "jaeger.name" . }}
+    app.kubernetes.io/name: {{ include "jaeger.name" . }}
     helm.sh/chart: {{ include "jaeger.chart" . }}
     app.kubernetes.io/component: hotrod
     app.kubernetes.io/instance: {{ .Release.Name }}
@@ -21,7 +21,7 @@ spec:
       protocol: TCP
       targetPort: {{ .Values.hotrod.service.internalPort }}
   selector:
-    app.kubernetes.io/name: {{ template "jaeger.name" . }}
+    app.kubernetes.io/name: {{ include "jaeger.name" . }}
     app.kubernetes.io/component: hotrod
     app.kubernetes.io/instance: {{ .Release.Name }}
 {{- template "loadBalancerSourceRanges" .Values.hotrod }}

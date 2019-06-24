@@ -348,6 +348,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `airflow.extraContainers`                | additional containers to run in the scheduler, worker & web pods | `[]`             |
 | `airflow.extraVolumeMounts`              | additional volumeMounts to the main container in scheduler, worker & web pods | `[]`|
 | `airflow.extraVolumes`                   | additional volumes for the scheduler, worker & web pods | `[]`                      |
+| `airflow.initdb`                         | run `airflow initdb` when starting the scheduler        | `true`                    |
 | `flower.resources`                       | custom resource configuration for flower pod            | `{}`                      |
 | `flower.service.type`                    | service type for Flower UI                              | `ClusterIP`               |
 | `flower.service.annotations`             | (optional) service annotations for Flower UI            | `{}`                      |

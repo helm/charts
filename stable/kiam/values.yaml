@@ -262,6 +262,10 @@ rbac:
   # Specifies whether RBAC resources should be created
   create: true
 
+psp:
+  # Specifies whether PodSecurityPolicies should be created
+  create: false
+
 serviceAccounts:
   agent:
     create: true
