@@ -58,7 +58,7 @@ halyard:
   # additionalInitScript: |-
 
   ## Uncomment if you want to add annotations on halyard and install-using-hal pods
-  # annotations
+  # annotations:
   #   iam.amazonaws.com/role: <role_arn>
 
   ## Uncomment the following resources definitions to control the cpu and memory
