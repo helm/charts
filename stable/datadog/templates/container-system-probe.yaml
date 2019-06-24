@@ -13,7 +13,7 @@
 {{ toYaml .Values.daemonset.containers.systemProbe.env | indent 4 }}
 {{- end }}
   resources:
-    {{ toYaml .Values.daemonset.containers.systemProbe.resources | indent 4 }}
+{{ toYaml .Values.daemonset.containers.systemProbe.resources | indent 4 }}
   volumeMounts:
     - name: debugfs
       mountPath: /sys/kernel/debug
