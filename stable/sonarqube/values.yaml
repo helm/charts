@@ -43,7 +43,7 @@ ingress:
   # labels:
   #  traffic-type: external
   #  traffic-type: internal
-  tls: {}
+  tls: []
   # Secrets must be manually created in the namespace.
   # - secretName: chart-example-tls
   #   hosts:
