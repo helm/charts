@@ -118,7 +118,7 @@ uiIngress:
   annotations: {}
   labels: {}
   hosts: []
-  tls: {}
+  tls: []
 
 ## Useful when ACLs are enabled
 acl:
