@@ -22,6 +22,15 @@ spec:
 {{ toYaml .Values.securityContext | indent 8 }}
       {{- if .Values.plugins.install }}
       initContainers:
+        - name: init-sysctl
+          image: busybox:1.31
+          command:
+          - sysctl
+          - -w
+          - vm.max_map_count=262144
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            privileged: true
         - name: install-plugins
           image: {{ default "joosthofman/wget:1.0" .Values.plugins.initContainerImage }}
           env:
