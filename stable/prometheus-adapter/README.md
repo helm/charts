@@ -22,8 +22,10 @@ To use the chart, ensure the `prometheus.url` and `prometheus.port` are configur
 
 The Prometheus Adapter can serve three different [metrics APIs](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/#support-for-metrics-apis):
 
-* `/apis/custom.metrics.k8s.io/v1beta1`  
-Can be enabled using values file as such:
+### Custom Metrics
+
+Enabling this option will cause custom metrics to be served at `/apis/custom.metrics.k8s.io/v1beta1`. Enabled by default when `rules.default` is true, but can be customized by populating `rules.custom`:
+
 ```
 rules:
   custom:
@@ -36,8 +38,10 @@ rules:
     metricsQuery: sum(<<.Series>>{<<.LabelMatchers>>}) by (<<.GroupBy>>)
 ```
 
-* `/apis/external.metrics.k8s.io/v1beta1`  
-Can be enabled using values file as such:
+### External Metrics
+
+Enabling this option will cause external metrics to be served at `/apis/external.metrics.k8s.io/v1beta1`. Can be enabled by populating `rules.external`:
+
 ```
 rules:
   external:
@@ -50,8 +54,10 @@ rules:
     metricsQuery: sum(<<.Series>>{<<.LabelMatchers>>}) by (<<.GroupBy>>)
 ```
 
-* `/apis/metrics.k8s.io/v1beta1`  
-Can be enabled using values file as such, using the configuration below will allow you to use pod CPU and Memory utilization for [Horizontal Pod Autoscalers](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/), as well as the `kubectl top` command:
+### Resource Metrics
+
+Enabling this option will cause resource metrics to be served at `/apis/metrics.k8s.io/v1beta1`. Resource metrics will allow pod CPU and Memory metrics to be used in [Horizontal Pod Autoscalers](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/) as well as the `kubectl top` command. Can be enabled by populating `rules.resource`:
+
 ```
 rules:
   resource:
@@ -82,7 +88,7 @@ rules:
     window: 3m
 ```
 
-**NOTE:** setting a value for `resource:` will also deploy the `v1beta1.metrics.k8s.io` `APIService`, providing the same functionality as the [metrics-server](https://github.com/helm/charts/tree/master/stable/metrics-server), and as such it is not possible to deploy both in the same cluster.  
+**NOTE:** Setting a value for `rules.resource` will also deploy the resource metrics API service, providing the same functionality as [metrics-server](https://github.com/helm/charts/tree/master/stable/metrics-server). As such it is not possible to deploy them both in the same cluster.
 
 ## Uninstalling the Chart
 
@@ -108,6 +114,7 @@ The following table lists the configurable parameters of the Prometheus Adapter 
 | `logLevel`                      | Log level                                                                       | `4`                                         |
 | `metricsRelistInterval`         | Interval at which to re-list the set of all available metrics from Prometheus   | `1m`                                        |
 | `nodeSelector`                  | Node labels for pod assignment                                                  | `{}`                                        |
+| `priorityClassName`             | Pod priority                                                                    | ``                                          |
 | `prometheus.url`                | Url of where we can find the Prometheus service                                 | `http://prometheus.default.svc`             |
 | `prometheus.port`               | Port of where we can find the Prometheus service, zero to omit this option      | `9090`                                      |
 | `rbac.create`                   | If true, create & use RBAC resources                                            | `true`                                      |

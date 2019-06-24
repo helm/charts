@@ -35,6 +35,10 @@ spec:
         securityContext:
           privileged: true
         env:
+        - name: NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
         # pass hostname as env variable using downward API to the NDM container
         - name: NODE_NAME
           valueFrom:

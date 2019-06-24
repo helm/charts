@@ -89,26 +89,18 @@ spec:
           value: {{ .Values.nextcloud.tableprefix | quote }}
         {{- end }}
         {{- if .Values.nextcloud.mail.enabled }}
+        - name: MAIL_FROM_ADDRESS
+          value: {{ .Values.nextcloud.mail.fromAddress | quote }}
+        - name: MAIL_DOMAIN
+          value: {{ .Values.nextcloud.mail.domain | quote }}
         - name: SMTP_HOST
-          valueFrom:
-            secretKeyRef:
-              name: {{ template "nextcloud.fullname" . }}
-              key: smtp-host
+          value: {{ .Values.nextcloud.mail.smtp.host | quote }}
         - name: SMTP_SECURE
-          valueFrom:
-            secretKeyRef:
-              name: {{ template "nextcloud.fullname" . }}
-              key: smtp-secure
+          value: {{ .Values.nextcloud.mail.smtp.secure | quote }}
         - name: SMTP_PORT
-          valueFrom:
-            secretKeyRef:
-              name: {{ template "nextcloud.fullname" . }}
-              key: smtp-port
+          value: {{ .Values.nextcloud.mail.smtp.port | quote }}
         - name: SMTP_AUTHTYPE
-          valueFrom:
-            secretKeyRef:
-              name: {{ template "nextcloud.fullname" . }}
-              key: smtp-authtype
+          value: {{ .Values.nextcloud.mail.smtp.authtype | quote }}
         - name: SMTP_NAME
           valueFrom:
             secretKeyRef:
@@ -119,16 +111,6 @@ spec:
             secretKeyRef:
               name: {{ template "nextcloud.fullname" . }}
               key: smtp-password
-        - name: MAIL_FROM_ADDRESS
-          valueFrom:
-            secretKeyRef:
-              name: {{ template "nextcloud.fullname" . }}
-              key: mail-from
-        - name: MAIL_DOMAIN
-          valueFrom:
-            secretKeyRef:
-              name: {{ template "nextcloud.fullname" . }}
-              key: mail-domain
         {{- end }}
         ports:
         - name: http

@@ -56,12 +56,13 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `env`                              | Any additional environment variables for ambassador pods                        | `{}`                              |
 | `image.pullPolicy`                 | Ambassador image pull policy                                                    | `IfNotPresent`                    |
 | `image.repository`                 | Ambassador image                                                                | `quay.io/datawire/ambassador`     |
-| `image.tag`                        | Ambassador image tag                                                            | `0.70.1`                          |
+| `image.tag`                        | Ambassador image tag                                                            | `0.72.0`                          |
 | `imagePullSecrets`                 | Image pull secrets                                                              | `[]`                              |
 | `namespace.name`                   | Set the `AMBASSADOR_NAMESPACE` environment variable                             | `metadata.namespace`              |
 | `scope.singleNamespace`            | Set the `AMBASSADOR_SINGLE_NAMESPACE` environment variable                      | `false`                           |
 | `podAnnotations`                   | Additional annotations for ambassador pods                                      | `{}`                              |
 | `podLabels`                        | Additional labels for ambassador pods                                           |                                   |
+| `priorityClassName`                | The name of the priorityClass for the ambassador Daemonset/Deployment           | `""`                              |
 | `prometheusExporter.enabled`       | Prometheus exporter side-car enabled                                            | `false`                           |
 | `prometheusExporter.pullPolicy`    | Image pull policy                                                               | `IfNotPresent`                    |
 | `prometheusExporter.repository`    | Prometheus exporter image                                                       | `prom/statsd-exporter`            |
