@@ -342,7 +342,3 @@ helm install --name <RELEASE_NAME> \
 | `systemProbe.debugPort`                | The port to expose pprof and expvar for system-probe agent                                                 | `0`    |
 | `systemProbe.enableConntrack`          | If true, system-probe connects to the netlink/conntrack subsystem to add NAT information to connection data. Ref: http://conntrack-tools.netfilter.org/| `true`|
 | `systemProbe.bpfDebug`                 | If true, system-probe writes debug logs to /sys/kernel/debug/tracing/trace_pipe                            | `false`|
-| `systemProbe.resources.requests.cpu`   | CPU resource requests                                                                                      | `200m` |
-| `systemProbe.resources.limits.cpu`     | CPU resource limits                                                                                        | `200m` |
-| `systemProbe.resources.requests.memory`| Memory resource requests                                                                                   | `256Mi`|
-| `systemProbe.resources.limits.memory`  | Memory resource limits                                                                                     | `256Mi`|
