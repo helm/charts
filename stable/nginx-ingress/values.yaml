@@ -316,6 +316,8 @@ defaultBackend:
     repository: k8s.gcr.io/defaultbackend-amd64
     tag: "1.5"
     pullPolicy: IfNotPresent
+    # nobody user -> uid 65534
+    runAsUser: 65534
 
   extraArgs: {}
 
@@ -331,6 +333,12 @@ defaultBackend:
   #    effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
 
   affinity: {}
+
+  ## Security Context policies for controller pods
+  ## See https://kubernetes.io/docs/tasks/administer-cluster/sysctl-cluster/ for
+  ## notes on enabling and using sysctls
+  ##
+  podSecurityContext: {}
 
   # labels to add to the pod container metadata
   podLabels: {}
