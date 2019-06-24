@@ -16,3 +16,7 @@ data:
     default_pass=CHANGEME
 {{ .Values.rabbitmq.configuration | indent 4 }}
 {{ .Values.rabbitmq.extraConfiguration | indent 4 }}
+{{ if .Values.rabbitmq.advancedConfiguration}}
+  advanced.config: |-
+{{ .Values.rabbitmq.advancedConfiguration | indent 4 }}
+{{ end }}   
