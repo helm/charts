@@ -33,6 +33,7 @@ The following table lists the configurable parameters of the external-dns chart 
 | `aws.region`                       | `AWS_DEFAULT_REGION` to set in the environment (optional).                                                                 | `us-east-1`                                        |
 | `aws.roleArn`                      | If assume role credentials are used then is the role_arn (arn:aws:iam::....). Leave empty if not used.                     | `""`                                               |
 | `aws.zoneType`                     | Filter for zones of this type (optional, options: public, private).                                                        | `""`                                               |
+| `aws.batchChangeSize`                     | When using the AWS provider, set the maximum number of changes that will be applied in each batch                   | `1000`                                             | 
 | `azure.secretName`                 | Set the secret created for the SP for azure, should contain an azure.json file                                             | `""`                                               |
 | `cloudflare.apiKey`                | `CF_API_KEY` to set in the environment (optional).                                                                         | `""`                                               |
 | `cloudflare.email`                 | `CF_API_EMAIL` to set in the environment (optional).                                                                       | `""`                                               |
@@ -95,6 +96,8 @@ The following table lists the configurable parameters of the external-dns chart 
 | `txtOwnerId`                       | When using the TXT registry, a name that identifies this instance of ExternalDNS (optional)                                | `"default"`                                        |
 | `txtPrefix`                        | When using the TXT registry, a prefix for ownership records that avoids collision with CNAME entries (optional)            | `""`                                               |
 | `zoneIdFilters`                    | Limit possible target zones by zone id (optional)                                                                          | `[]`                                               |
+| `crd.apiversion`                   | Sets the api version for the crd to watch                                                                                               | `"`   
+| `crd.kind`                   | Sets the kind for the crd to watch                                                                                               | `"`   
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.

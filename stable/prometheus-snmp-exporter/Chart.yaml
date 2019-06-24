@@ -1,7 +1,7 @@
 apiVersion: v1
 description: Prometheus SNMP Exporter
 name: prometheus-snmp-exporter
-version: 0.0.2
+version: 0.0.3
 appVersion: 0.14.0
 home: https://github.com/prometheus/snmp_exporter
 sources:
