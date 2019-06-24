@@ -112,6 +112,12 @@ spec:
               name: {{ template "nextcloud.fullname" . }}
               key: smtp-password
         {{- end }}
+        {{- if .Values.redis.enabled }}
+        - name: REDIS_HOST
+          value: {{ template "nextcloud.redis.fullname" . }}-master
+        - name: REDIS_HOST_PORT
+          value: {{ .Values.redis.redisPort | quote }}
+        {{- end }}
         ports:
         - name: http
           containerPort: 80
