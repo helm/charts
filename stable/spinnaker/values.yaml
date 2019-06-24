@@ -71,6 +71,11 @@ halyard:
     #   memory: "2Gi"
     #   cpu: "200m"
 
+  ## Uncomment if you want to set environment variables on the Halyard pod.
+  # env:
+  #   - name: DEFAULT_JVM_OPTS
+  #     value: -Dhttp.proxyHost=proxy.example.com
+
 # Define which registries and repositories you want available in your
 # Spinnaker pipeline definitions
 # For more info visit:
