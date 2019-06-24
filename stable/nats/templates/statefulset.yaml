@@ -1,3 +1,4 @@
+{{- if or (eq .Values.resourceType "statefulset") (not (contains .Values.resourceType "deployment")) }}
 apiVersion: apps/v1beta2
 kind: StatefulSet
 metadata:
@@ -92,7 +93,11 @@ spec:
         - gnatsd
         args:
         - -c
-        - /opt/nats/gnatsd.conf
+        - /opt/bitnami/nats/gnatsd.conf
+        # to ensure nats could run with non-root user, we put the configuration
+        # file under `/opt/bitnami/nats/gnatsd.conf`, please check the link below
+        # for the implementation inside Dockerfile:
+        # - https://github.com/bitnami/bitnami-docker-nats/blob/master/1/debian-9/Dockerfile#L12
         {{- if .Values.extraArgs }}
 {{ toYaml .Values.extraArgs | indent 8 }}
         {{- end }}
@@ -129,7 +134,7 @@ spec:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
           - name: config
-            mountPath: /opt/nats/gnatsd.conf
+            mountPath: /opt/bitnami/nats/gnatsd.conf
             subPath: gnatsd.conf
         {{- if .Values.sidecars }}
 {{ toYaml .Values.sidecars | indent 6 }}
@@ -163,3 +168,4 @@ spec:
       - name: config
         configMap:
           name: {{ template "nats.fullname" . }}
+{{- end }}

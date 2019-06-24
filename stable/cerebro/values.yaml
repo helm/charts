@@ -35,6 +35,7 @@ ingress:
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
+  labels: {}
   path: /
   hosts:
     - chart-example.local
@@ -50,6 +51,9 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+# Reference to a Secret object with environment variables
+# envFromSecretRef: 'my-secret-ref'
 
 config:
   basePath: '/'

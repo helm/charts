@@ -4,7 +4,7 @@ images:
   ##
   server:
     repository: "docker.io/drone/drone"
-    tag: 1.0.0-rc.5
+    tag: 1.1.0
     pullPolicy: IfNotPresent
 
   ## The official drone (agent) image, change tag to use a different version.
@@ -12,7 +12,7 @@ images:
   ##
   agent:
     repository: "docker.io/drone/agent"
-    tag: 1.0.0-rc.5
+    tag: 1.1.0
     pullPolicy: IfNotPresent
 
   ## The official docker (dind) image, change tag to use a different version.
@@ -192,6 +192,11 @@ server:
   ##
   nodeSelector: {}
 
+  ## Node taints to tolerate
+  ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  ##
+  tolerations: []
+
   ## additional siecar containers, e. g. for a database proxy, such as Google's cloudsql-proxy.
   ## ex: https://github.com/kubernetes/charts/tree/master/stable/keycloak
   ##
@@ -247,6 +252,11 @@ agent:
   ## ref: https://kubernetes.io/docs/user-guide/node-selection
   ##
   nodeSelector: {}
+
+  ## Node taints to tolerate
+  ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  ##
+  tolerations: []
 
 dind:
   ## Enable or disable DinD

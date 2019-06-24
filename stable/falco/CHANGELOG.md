@@ -3,6 +3,42 @@
 This file documents all notable changes to Sysdig Falco Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v0.7.9
+
+### Minor Changes
+
+* Upgrade to Falco 0.15.3
+* Upgrade rules to Falco 0.15.3
+
+## v0.7.8
+
+### Minor Changes
+
+* Add TZ parameter for time correlation in Falco logs
+
+## v0.7.7
+
+### Minor Changes
+
+* Upgrade to Falco 0.15.1
+* Upgrade rules to Falco 0.15.1
+
+## v0.7.6
+
+### Major Changes
+
+* Allow to enable/disable usage of the docker socket
+* Configurable docker socket path
+* CRI support, configurable CRI socket
+* Allow to enable/disable usage of the CRI socket
+
+## v0.7.5
+
+### Minor Changes
+
+* Upgrade to Falco 0.15.0
+* Upgrade rules to Falco 0.15.0
+
 ## v0.7.4
 
 ### Minor Changes

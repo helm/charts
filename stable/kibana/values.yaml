@@ -11,10 +11,10 @@ commandline:
   args: []
 
 env: {}
-  # All Kibana configuration options are adjustable via env vars.
-  # To adjust a config option to an env var uppercase + replace `.` with `_`
-  # Ref: https://www.elastic.co/guide/en/kibana/current/settings.html
-  #
+  ## All Kibana configuration options are adjustable via env vars.
+  ## To adjust a config option to an env var uppercase + replace `.` with `_`
+  ## Ref: https://www.elastic.co/guide/en/kibana/current/settings.html
+  ## For kibana < 6.6, use ELASTICSEARCH_URL instead
   # ELASTICSEARCH_HOSTS: http://elasticsearch-client:9200
   # SERVER_PORT: 5601
   # LOGGING_VERBOSE: "true"
@@ -25,6 +25,7 @@ files:
     ## Default Kibana configuration from kibana-docker.
     server.name: kibana
     server.host: "0"
+    ## For kibana < 6.6, use elasticsearch.url instead
     elasticsearch.hosts: http://elasticsearch:9200
 
     ## Custom config properties below

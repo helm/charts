@@ -2,6 +2,7 @@ apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
   name: {{ template "rabbitmq-ha.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "rabbitmq-ha.name" . }}
     chart: {{ template "rabbitmq-ha.chart" . }}
@@ -101,14 +102,12 @@ spec:
               protocol: TCP
               containerPort: 5671
             {{- end }}
-          {{- $managementCredentials := printf "%s:%s" .Values.managementUsername .Values.managementPassword | b64enc }}
-          {{- $managementHeader := printf "Authorization: Basic %s" $managementCredentials }}
           livenessProbe:
             exec:
               command:
               - /bin/sh
               - -c
-              - 'wget -O - -q --header "{{ $managementHeader }}" http://localhost:15672/api/healthchecks/node | grep -qF "{\"status\":\"ok\"}"'
+              - 'wget -O - -q --header "Authorization: Basic `echo -n \"$RABBIT_MANAGEMENT_USER:$RABBIT_MANAGEMENT_PASSWORD\" | base64`" http://localhost:15672/api/healthchecks/node | grep -qF "{\"status\":\"ok\"}"'
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
@@ -118,7 +117,7 @@ spec:
               command:
               - /bin/sh
               - -c
-              - 'wget -O - -q --header "{{ $managementHeader }}" http://localhost:15672/api/healthchecks/node | grep -qF "{\"status\":\"ok\"}"'
+              - 'wget -O - -q --header "Authorization: Basic `echo -n \"$RABBIT_MANAGEMENT_USER:$RABBIT_MANAGEMENT_PASSWORD\" | base64`" http://localhost:15672/api/healthchecks/node | grep -qF "{\"status\":\"ok\"}"'
             initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
             timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
@@ -142,6 +141,16 @@ spec:
                 secretKeyRef:
                   name: {{ template "rabbitmq-ha.secretName" . }}
                   key: rabbitmq-erlang-cookie
+            - name: RABBIT_MANAGEMENT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "rabbitmq-ha.secretName" . }}
+                  key: rabbitmq-management-username
+            - name: RABBIT_MANAGEMENT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "rabbitmq-ha.secretName" . }}
+                  key: rabbitmq-management-password
             {{- if .Values.rabbitmqHipeCompile }}
             - name: RABBITMQ_HIPE_COMPILE
               value: {{ .Values.rabbitmqHipeCompile | quote }}

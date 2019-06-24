@@ -30,6 +30,7 @@ Parameter | Description | Default
 `image.tag` | container image tag | `1.13.0-1`
 `image.pullPolicy` | container image pull policy | `IfNotPresent`
 `pollInterval` | the interval in seconds between attempts to poll EC2 metadata API for termination events | `"5"`
+`verbose` | Enable verbose | _not defined_
 `slackUrl` | Slack webhook URL to send messages when a termination notice is received | _not defined_
 `clusterName` | if `slackUrl` is set - use this cluster name in Slack messages | _not defined_
 `enableLogspout` | if `true`, enable the Logspout log capturing. Logspout should be deployed separately | `false`
