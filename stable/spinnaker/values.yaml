@@ -58,7 +58,7 @@ halyard:
   # additionalInitScript: |-
 
   ## Uncomment if you want to add annotations on halyard and install-using-hal pods
-  # annotations:
+  # annotations
   #   iam.amazonaws.com/role: <role_arn>
 
   ## Uncomment the following resources definitions to control the cpu and memory
@@ -179,7 +179,7 @@ redis:
 # Minio is not exposed publically
 minio:
   enabled: true
-  imageTag: RELEASE.2018-06-09T02-18-09Z
+  imageTag: RELEASE.2019-02-13T19-48-27Z
   serviceType: ClusterIP
   accessKey: spinnakeradmin
   secretKey: spinnakeradmin
