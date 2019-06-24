@@ -105,6 +105,8 @@ definitions:
 #      }
 #    }
 
+## Ref: https://www.rabbitmq.com/rabbitmqctl.8.html#force_boot
+forceBoot: false
 
 ## RabbitMQ default VirtualHost
 ## Ref: https://www.rabbitmq.com/vhosts.html
