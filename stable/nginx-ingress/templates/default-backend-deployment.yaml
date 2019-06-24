@@ -35,6 +35,10 @@ spec:
 {{- if .Values.defaultBackend.priorityClassName }}
       priorityClassName: "{{ .Values.defaultBackend.priorityClassName }}"
 {{- end }}
+      {{- if .Values.defaultBackend.podSecurityContext }}
+      securityContext:
+{{ toYaml .Values.defaultBackend.podSecurityContext | indent 8 }}
+      {{- end }}
       containers:
         - name: {{ template "nginx-ingress.name" . }}-{{ .Values.defaultBackend.name }}
           image: "{{ .Values.defaultBackend.image.repository }}:{{ .Values.defaultBackend.image.tag }}"
@@ -47,6 +51,8 @@ spec:
             - --{{ $key }}
             {{- end }}
           {{- end }}
+          securityContext:
+            runAsUser: {{ .Values.defaultBackend.image.runAsUser }}
           livenessProbe:
             httpGet:
               path: /healthz
@@ -60,7 +66,6 @@ spec:
               protocol: TCP
           resources:
 {{ toYaml .Values.defaultBackend.resources | indent 12 }}
-      serviceAccountName: {{ template "nginx-ingress.serviceAccountName" . }}
     {{- if .Values.defaultBackend.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.defaultBackend.nodeSelector | indent 8 }}
