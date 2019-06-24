@@ -254,3 +254,6 @@ metrics:
     ## [Kube Prometheus Selector Label](https://github.com/helm/charts/tree/master/stable/prometheus-operator#exporters)
     selector:
       prometheus: kube-prometheus
+# Provide affinity for hooks if needed
+hooks:
+  affinity: {}
