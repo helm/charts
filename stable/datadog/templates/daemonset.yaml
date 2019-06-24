@@ -130,6 +130,11 @@ spec:
         - {name: debugfs, hostPath: {path: /sys/kernel/debug}}
         - {name: sysprobe-socket-dir, emptyDir: {}}
         {{- end }}
+        {{- if .Values.daemonset.useConfigMap }}
+        - name: {{ template "datadog.fullname" . }}-datadog-yaml
+          configMap:
+            name: {{ template "datadog.fullname" . }}-datadog-yaml
+        {{- end }}
 {{- if .Values.datadog.volumes }}
 {{ toYaml .Values.datadog.volumes | indent 8 }}
 {{- end }}

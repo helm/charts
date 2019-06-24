@@ -49,6 +49,7 @@ The following table lists the configurable parameters of the Sonarqube chart and
 | `ingress.labels`                            | Ingress additional labels                 | `{}`                                       |
 | `ingress.hosts[0].name`                     | Hostname to your SonarQube installation   | `sonar.organization.com`                   |
 | `ingress.hosts[0].path`                     | Path within the URL structure             | /                                          |
+| `ingress.tls`                               | Ingress secrets for TLS certificates      | `[]`                                       |
 | `livenessProbe.sonarWebContext`             | SonarQube web context for livenessProbe   | /                                          |
 | `readinessProbe.sonarWebContext`            | SonarQube web context for readinessProbe  | /                                          |
 | `service.type`                              | Kubernetes service type                   | `LoadBalancer`                             |
@@ -65,6 +66,7 @@ The following table lists the configurable parameters of the Sonarqube chart and
 | `customCerts.enabled`                       | Use `customCerts.secretName`              | false                                      |
 | `customCerts.secretName`                    | Name of the secret which conatins your `cacerts` | false                                      |
 | `sonarSecretKey`                            | Name of existing secret used for settings encryption | None                            |
+| `sonarProperties`                           | Custom `sonar.properties` file            | `{}`                                       |
 | `database.type`                             | Set to "mysql" to use mysql database       | `postgresql`|
 | `postgresql.enabled`                        | Set to `false` to use external server / mysql database     | `true`                                     |
 | `postgresql.postgresServer`                 | Hostname of the external Postgresql server| `null`                                     |
