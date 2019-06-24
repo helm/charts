@@ -96,6 +96,8 @@ The following table lists the configurable parameters of the external-dns chart 
 | `txtOwnerId`                       | When using the TXT registry, a name that identifies this instance of ExternalDNS (optional)                                | `"default"`                                        |
 | `txtPrefix`                        | When using the TXT registry, a prefix for ownership records that avoids collision with CNAME entries (optional)            | `""`                                               |
 | `zoneIdFilters`                    | Limit possible target zones by zone id (optional)                                                                          | `[]`                                               |
+| `crd.apiversion`                   | Sets the api version for the crd to watch                                                                                               | `"`   
+| `crd.kind`                   | Sets the kind for the crd to watch                                                                                               | `"`   
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.

@@ -15,6 +15,7 @@ metadata:
 {{ toYaml . | indent 4 }}
   {{- end }}
 spec:
+  serviceName: {{ template "atlantis.fullname" . }}
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
