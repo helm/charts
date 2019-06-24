@@ -10,7 +10,6 @@ keywords:
 home: https://github.com/kubernetes-incubator/external-dns
 sources:
 - https://github.com/kubernetes-incubator/external-dns
-engine: gotpl
 maintainers:
 - name: Bitnami
   email: containers@bitnami.com
