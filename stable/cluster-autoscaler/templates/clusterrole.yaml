@@ -104,11 +104,11 @@ rules:
     - get
 {{- if .Values.rbac.pspEnabled }}
   - apiGroups:
-    - extensions
+    - policy
     resources:
     - podsecuritypolicies
     resourceNames:
-    - privileged-{{ template "cluster-autoscaler.fullname" . }}
+    - {{ template "cluster-autoscaler.fullname" . }}
     verbs:
     - use
 {{- end -}}
