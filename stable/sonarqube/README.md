@@ -49,6 +49,7 @@ The following table lists the configurable parameters of the Sonarqube chart and
 | `ingress.labels`                            | Ingress additional labels                 | `{}`                                       |
 | `ingress.hosts[0].name`                     | Hostname to your SonarQube installation   | `sonar.organization.com`                   |
 | `ingress.hosts[0].path`                     | Path within the URL structure             | /                                          |
+| `ingress.tls`                               | Ingress secrets for TLS certificates      | `[]`                                       |
 | `livenessProbe.sonarWebContext`             | SonarQube web context for livenessProbe   | /                                          |
 | `readinessProbe.sonarWebContext`            | SonarQube web context for readinessProbe  | /                                          |
 | `service.type`                              | Kubernetes service type                   | `LoadBalancer`                             |
