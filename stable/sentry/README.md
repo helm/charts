@@ -145,6 +145,7 @@ Parameter                          | Description                                
 `metrics.serviceMonitor.namespace` | Optional namespace which Prometheus is running in                                                          | `nil`
 `metrics.serviceMonitor.interval`  | How frequently to scrape metrics (use by default, falling back to Prometheus' default)                     | `nil`
 `metrics.serviceMonitor.selector`  | Default to kube-prometheus install (CoreOS recommended), but should be set according to Prometheus install | `{ prometheus: kube-prometheus }`
+`hooks.affinity`                   | Affinity settings for hooks pods                                                                           | `{}`
 
 Dependent charts can also have values overwritten. Preface values with postgresql. _or redis._
 
