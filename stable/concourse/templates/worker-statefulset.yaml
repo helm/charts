@@ -16,6 +16,9 @@ spec:
       labels:
         app: {{ template "concourse.worker.fullname" . }}
         release: "{{ .Release.Name }}"
+        {{- with .Values.worker.labels }}
+{{ toYaml . | trim | indent 8 }}
+        {{- end }}
       {{- if .Values.worker.annotations }}
       annotations:
 {{ toYaml .Values.worker.annotations | indent 8 }}
