@@ -11,6 +11,10 @@ metadata:
     helm.sh/chart: {{ include "ambassador.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
+    {{- if .Values.deploymentAnnotations }}
+  annotations:
+      {{- toYaml .Values.deploymentAnnotations | nindent 4 }}
+    {{- end }}
 spec:
 {{- if not .Values.daemonSet }}
   replicas: {{ .Values.replicaCount }}

@@ -1,3 +1,4 @@
+---
 # Default values for ambassador.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
@@ -124,6 +125,10 @@ podAnnotations:
   {}
   # prometheus.io/scrape: "true"
   # prometheus.io/port: "9102"
+
+deploymentAnnotations:
+  {}
+  # configmap.reloader.stakater.com/auto: "true"
 
 resources:
   {}
