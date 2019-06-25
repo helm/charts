@@ -167,7 +167,7 @@ The following table lists the configurable parameters of the CockroachDB chart a
 | ------------------------------ | ------------------------------------------------ | ----------------------------------------- |
 | `Name`                         | Chart name                                       | `cockroachdb`                             |
 | `Image`                        | Container image name                             | `cockroachdb/cockroach`                   |
-| `ImageTag`                     | Container image tag                              | `v19.1.2`                                  |
+| `ImageTag`                     | Container image tag                              | `v19.1.2`                                 |
 | `ImagePullPolicy`              | Container pull policy                            | `Always`                                  |
 | `Replicas`                     | k8s statefulset replicas                         | `3`                                       |
 | `MaxUnavailable`               | k8s PodDisruptionBudget parameter                | `1`                                       |
@@ -180,7 +180,8 @@ The following table lists the configurable parameters of the CockroachDB chart a
 | `ExternalHttpPort`             | CockroachDB HTTP port on service                 | `8080`                                    |
 | `HttpName`                     | Name given to the http service port              | `http`                                    |
 | `Resources`                    | Resource requests and limits                     | `{}`                                      |
-| `Storage`                      | Persistent volume size                           | `100Gi`                                     |
+| `InitPodResources`             | Resource requests and limits for the short-lived init pod | `{}`                             |
+| `Storage`                      | Persistent volume size                           | `100Gi`                                   |
 | `StorageClass`                 | Persistent volume class                          | `null`                                    |
 | `CacheSize`                    | Size of CockroachDB's in-memory cache            | `25%`                                     |
 | `MaxSQLMemory`                 | Max memory to use processing SQL queries         | `25%`                                     |
