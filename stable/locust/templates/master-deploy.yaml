@@ -54,6 +54,9 @@ spec:
         volumeMounts:
           - name: locust-tasks
             mountPath: /locust-tasks/
+{{- if .Values.extraVolumeMounts }}
+{{ toYaml .Values.extraVolumeMounts | indent 10 }}
+{{- end }}
         livenessProbe:
           periodSeconds: 30
           httpGet:
@@ -68,6 +71,9 @@ spec:
       - name: "locust-tasks"
         configMap:
           name: {{ template "locust.worker-configmap" . }}
+{{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes | indent 6 }}
+{{- end }}
       restartPolicy: Always
 {{- with .Values.master.nodeSelector }}
       nodeSelector:

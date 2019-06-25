@@ -14,6 +14,21 @@ service:
   nodePort: 0
   annotations: {}
   extraLabels: {}
+
+# extra volumes and mounts for both worker and master pods
+extraVolumes: []
+# extraVolumes:
+# - name: mySecretVolume
+#   secret:
+#     secretName: mySecret
+# - name: myConfigMapVolume
+#   configMap:
+#     name: myConfigMap
+extraVolumeMounts: []
+# extraVolumeMounts:
+# - name: mySecretVolume
+#   mountPath: /locust/secrets/mySecretVolume/
+
 master:
   config:
     target-host: https://site.example.com

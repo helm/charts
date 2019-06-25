@@ -35,6 +35,8 @@ helm install -n locust-nymph --set master.config.target-host=http://site.example
 | `service.nodePort`           | Port on cluster to expose master        | `0`                                                   |
 | `service.annotations`        | KV containing custom annotations        | `{}`                                                  |
 | `service.extraLabels`        | KV containing extra labels              | `{}`                                                  |
+| `extraVolumes`               | List of additional Volumes              | `[]`                                                  |
+| `extraVolumeMounts`          | List of additional Volume Mounts        | `[]`                                                  |
 | `master.config.target-host`  | locust target host                      | `http://site.example.com`                             |
 | `master.nodeSelector`        | k8s nodeselector                        | `{}`                                                  |
 | `master.tolerations`         | k8s tolerance                           | `{}`                                                  |

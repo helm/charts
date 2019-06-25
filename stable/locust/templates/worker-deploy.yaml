@@ -32,6 +32,9 @@ spec:
         volumeMounts:
           - name: locust-tasks
             mountPath: /locust-tasks/
+{{- if .Values.extraVolumeMounts }}
+{{ toYaml .Values.extraVolumeMounts | indent 10 }}
+{{- end }}
         env:
         {{- range $key, $value :=  .Values.worker.config }}
         - name: {{ $key | upper | replace "-" "_" }}
@@ -52,6 +55,9 @@ spec:
         - name: "locust-tasks"
           configMap:
             name: {{ template "locust.worker-configmap" . }}
+{{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes | indent 8 }}
+{{- end }}
 {{- with .Values.worker.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
