@@ -35,9 +35,16 @@ ports:
   - name: http
     containerPort: 8080
     protocol: TCP
+  - name: https
+    containerPort: 8443
+    port: 443
+    protocol: TCP
 #   nodePort: 32080
   - name: grpc
     containerPort: 5000
+    protocol: TCP
+  - name: telemetry
+    containerPort: 5558
     protocol: TCP
 
 service:
@@ -128,13 +135,16 @@ config:
     level: debug
   web:
     http: 0.0.0.0:8080
-#   tlsCert: /etc/dex/tls/https/server/tls.crt
-#   tlsKey: /etc/dex/tls/https/server/tls.key
+    https: 0.0.0.0:8443
+    tlsCert: /etc/dex/tls/https/server/tls.crt
+    tlsKey: /etc/dex/tls/https/server/tls.key
   grpc:
     addr: 0.0.0.0:5000
     tlsCert: /etc/dex/tls/grpc/server/tls.crt
     tlsKey: /etc/dex/tls/grpc/server/tls.key
     tlsClientCA: /etc/dex/tls/grpc/ca/tls.crt
+  telemetry:
+    http: 0.0.0.0:5558
   connectors:
 #  - type: github
 #    id: github
