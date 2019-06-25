@@ -54,7 +54,7 @@ spec:
         env:
         {{- range $key, $value := .Values.env }}
         - name: {{ $key | quote }}
-          value: {{ tpl $value | quote }}"
+          value: {{ tpl $value $ | quote }}
         {{- end }}
         volumeMounts:
         - name: {{ template "kibana.fullname" . }}-dashboards
@@ -109,7 +109,7 @@ spec:
         env:
         {{- range $key, $value := .Values.env }}
         - name: {{ $key | quote }}
-          value: {{ tpl $value | quote }}"
+          value: {{ tpl $value $ | quote }}
         {{- end }}
         volumeMounts:
         - name: plugins
@@ -138,7 +138,7 @@ spec:
         env:
         {{- range $key, $value := .Values.env }}
         - name: {{ $key | quote }}
-          value: {{ tpl $value | quote }}"
+          value: {{ tpl $value $ | quote }}
         {{- end }}
 {{- if .Values.envFromSecrets }}
         {{- range $key,$value := .Values.envFromSecrets }}
