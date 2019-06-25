@@ -34,7 +34,7 @@ spec:
       nodePort: null
       {{- end }}
 {{- if .Values.service.extraPorts }}
-{{ toYaml .Values.service.extraPorts | indent 6 }}
+{{ toYaml .Values.service.extraPorts | indent 4 }}
 {{- end }}      
   selector:
     app: "{{ template "wordpress.fullname" . }}"
