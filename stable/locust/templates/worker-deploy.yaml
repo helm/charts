@@ -48,6 +48,9 @@ spec:
           value: "{{ .Values.service.internalPort }}"
         - name: TARGET_HOST
           value: {{ index .Values.master.config "target-host" | quote }}
+{{- if .Values.extraEnvs }}
+{{ toYaml .Values.extraEnvs | indent 8 }}
+{{- end }}
         resources:
 {{ toYaml .Values.worker.resources | indent 10 }}
       restartPolicy: Always

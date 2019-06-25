@@ -15,7 +15,7 @@ service:
   annotations: {}
   extraLabels: {}
 
-# extra volumes and mounts for both worker and master pods
+# extra volumes, volumeMounts and envs for both worker and master pods
 extraVolumes: []
 # extraVolumes:
 # - name: mySecretVolume
@@ -28,6 +28,15 @@ extraVolumeMounts: []
 # extraVolumeMounts:
 # - name: mySecretVolume
 #   mountPath: /locust/secrets/mySecretVolume/
+extraEnvs: []
+# extraEnvs:
+# - name: HELLO
+#   value: WORLD
+# - name: MY_SECRET
+#   valueFrom:
+#     secretKeyRef:
+#       name: mySecret
+#       key: mySecretKey
 
 master:
   config:

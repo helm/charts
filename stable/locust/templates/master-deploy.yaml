@@ -41,6 +41,9 @@ spec:
           value: "master"
         - name: LOCUST_SCRIPT
           value: {{ index .Values.worker.config "locust-script" | quote }}
+{{- if .Values.extraEnvs }}
+{{ toYaml .Values.extraEnvs | indent 8 }}
+{{- end }}
         ports:
         - containerPort: {{ .Values.service.internalPort }}
           name: loc-master-web
