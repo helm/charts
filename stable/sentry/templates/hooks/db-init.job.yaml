@@ -26,6 +26,7 @@ spec:
         {{- end }}
     spec:
       {{- with .Values.hooks.affinity }}
+      affinity:
 {{ toYaml . | indent 8 }}
       {{- end }}
       restartPolicy: Never
