@@ -76,6 +76,9 @@ spec:
               mountPath: /etc/rabbitmq
             - name: {{ .Values.persistentVolume.name }}
               mountPath: /var/lib/rabbitmq
+{{- if .Values.extraInitContainers }}
+{{ tpl (toYaml .Values.extraInitContainers) . | indent 8 }}
+{{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
@@ -174,6 +177,10 @@ spec:
             - name: RABBITMQ_HIPE_COMPILE
               value: {{ .Values.rabbitmqHipeCompile | quote }}
             {{- end }}
+            {{- range $key, $value := .Values.env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}            
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           volumeMounts:

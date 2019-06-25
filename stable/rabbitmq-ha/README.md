@@ -69,6 +69,8 @@ and their default values.
 | `existingSecret`                               | Use an existing secret for password, managementPassword & erlang cookie                                                                                                                                                   | `""`                                                       |
 | `extraPlugins`                                 | Additional plugins to add to the default configmap                                                                                                                                                    | `rabbitmq_shovel, rabbitmq_shovel_management, rabbitmq_federation, rabbitmq_federation_management,` |
 | `extraConfig`                                  | Additional configuration to add to default configmap                                                                                                                                                  | `{}`                                                         |
+| `extraInitContainers`                          | Additional init containers passed through the tpl 	                                                                                                                                                   | `[]`                                                         |
+| `env`                                          | Environment variables to set for Rabbitmq container                                                                                                                                                   | `{}`                                                         |
 | `advancedConfig`                               | Additional configuration in classic config format                                                                                                                                                   | `""`                                                           |
 | `definitions.users`                            | Additional users | `""` |
 | `definitions.vhosts`                           | Additional vhosts | `""` |
@@ -253,3 +255,9 @@ the following keys:
 ### Prometheus Monitoring & Alerts
 
 Prometheus and its features can be enabled by setting `prometheus.enabled` to `true`.  See values.yaml for more details and configuration options
+
+### Usage of the `tpl` Function
+
+The `tpl` function allows us to pass values from `values.yaml` through the templating engine. It is used for the following values:
+
+* `extraInitContainers`
