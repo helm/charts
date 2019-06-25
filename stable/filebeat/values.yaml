@@ -84,6 +84,8 @@ extraVolumeMounts: []
   # - name: varlog
   #   mountPath: /host/var/log
   #   readOnly: true
+extraSecrets: {}
+  # secret: "TEST1"
 
 extraInitContainers: []
   # - name: echo
