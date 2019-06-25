@@ -5,7 +5,7 @@ image:
   # repository is the Hazelcast image name
   repository: "hazelcast/hazelcast"
   # tag is the Hazelcast image tag
-  tag: "3.11.2"
+  tag: "3.12"
   # pullPolicy is the Docker image pull policy
   # It's recommended to change this to 'Always' if the image tag is 'latest'
   # ref: http://kubernetes.io/docs/user-guide/images/#updating-images
@@ -28,29 +28,20 @@ hazelcast:
   rest: true
   # javaOpts are additional JAVA_OPTS properties for Hazelcast member
   javaOpts:
-  # configurationFiles are Hazelcast configuration files
-  configurationFiles:
-    hazelcast.xml: |-
-      <?xml version="1.0" encoding="UTF-8"?>
-      <hazelcast xsi:schemaLocation="http://www.hazelcast.com/schema/config hazelcast-config-3.10.xsd"
-                     xmlns="http://www.hazelcast.com/schema/config"
-                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-
-        <properties>
-          <property name="hazelcast.discovery.enabled">true</property>
-        </properties>
-        <network>
-          <join>
-            <multicast enabled="false"/>
-            <kubernetes enabled="true">
-              <service-name>${serviceName}</service-name>
-              <namespace>${namespace}</namespace>
-              <resolve-not-ready-addresses>true</resolve-not-ready-addresses>
-            </kubernetes>
-          </join>
-        </network>
-      </hazelcast>
-
+  # yaml is the Hazelcast YAML configuration file
+  yaml:
+    hazelcast:
+      network:
+        join:
+          multicast:
+            enabled: false
+          kubernetes:
+            enabled: true
+            service-name: ${serviceName}
+            namespace: ${namespace}
+            resolve-not-ready-addresses: true
+  # configurationFiles are any additional Hazelcast configuration files
+  # configurationFiles:
 
 # nodeSelector is an array of Hazelcast Node labels for POD assignments
 # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector

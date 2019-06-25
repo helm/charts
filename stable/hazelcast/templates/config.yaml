@@ -1,4 +1,4 @@
-{{- if .Values.hazelcast.configurationFiles }}
+{{- if or .Values.hazelcast.configurationFiles .Values.hazelcast.yaml }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -13,4 +13,6 @@ data:
   {{ $key }}: |-
 {{ $val | indent 4}}
 {{- end }}
+  hazelcast.yaml: |-
+{{ toYaml .Values.hazelcast.yaml | indent 4 }}
 {{- end -}}
