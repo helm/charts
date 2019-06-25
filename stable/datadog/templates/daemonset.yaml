@@ -63,14 +63,12 @@ spec:
       {{- if .Values.systemProbe.enabled }}
         {{- include "system-probe-agent" . | nindent 8 }}
       {{- end }}
-      {{- if or .Values.systemProbe.enabled .Values.daemonset.useDedicatedContainers }}
       initContainers:
       {{- if .Values.systemProbe.enabled }}
         {{ include "system-probe-init" . | nindent 8 }}
       {{- end }}
       {{- if .Values.daemonset.useDedicatedContainers }}
         {{ include "containers-init" . | nindent 8 }}
-      {{- end }}
       {{- end }}
       volumes:
         {{- if .Values.daemonset.useDedicatedContainers }}
