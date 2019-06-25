@@ -99,6 +99,10 @@ spec:
           - name: ATLANTIS_ALLOW_FORK_PRS
             value: {{ .Values.allowForkPRs | quote }}
           {{- end }}
+          {{- if .Values.disableApplyAll }}
+          - name: ATLANTIS_DISABLE_APPLY_ALL
+            value: {{ .Values.disableApplyAll | quote }}
+          {{- end }}
           {{- if .Values.defaultTFVersion }}
           - name: ATLANTIS_DEFAULT_TF_VERSION
             value: {{ .Values.defaultTFVersion }}
