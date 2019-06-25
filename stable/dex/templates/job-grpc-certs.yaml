@@ -12,7 +12,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   annotations:
-    "helm.sh/hook": post-install
+    "helm.sh/hook": pre-install
     "helm.sh/hook-weight": "2"
     "helm.sh/hook-delete-policy": hook-succeeded
   name: {{ $fullname }}-grpc-certs
