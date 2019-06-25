@@ -262,3 +262,10 @@ initScripts:
   scripts:
     init.iql: |+
       CREATE DATABASE "telegraf" WITH DURATION 30d REPLICATION 1 NAME "rp_30d"
+
+backup:
+  enabled: false
+  schedule: "0 0 * * *"
+  destination: gs://bucket/influxdb
+  google:
+    serviceAccountSecret: influxdb-backup-key
