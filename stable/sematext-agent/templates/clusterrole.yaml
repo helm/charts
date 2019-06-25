@@ -27,6 +27,7 @@ rules:
   - nodes/metrics
   verbs:
   - get
+  - create
 - apiGroups:
   - ""
   resources:
