@@ -50,7 +50,7 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `ambassadorConfig`                 | Config thats mounted to `/ambassador/ambassador-config`                         | `""`                              |
 | `crds.create`                      | If `true`, Creates CRD resources                                                | `true`                            |
 | `crds.keep`                        | If `true`, if the ambassador CRDs should be kept when the chart is deleted      | `true`                            |
-| `daemonSet`                        | If `true`, Create a daemonSet. By default Deployment controller will be created | `false`                           |
+| `daemonSet`                        | If `true`, Create a DaemonSet. By default Deployment controller will be created | `false`                           |
 | `hostNetwork`                      | If `true`, uses the host network, useful for on-premise setups                  | `false`                           |
 | `dnsPolicy`                        | Dns policy, when hostNetwork set to ClusterFirstWithHostNet                     | `ClusterFirst`                    |
 | `env`                              | Any additional environment variables for ambassador pods                        | `{}`                              |
@@ -61,8 +61,9 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `namespace.name`                   | Set the `AMBASSADOR_NAMESPACE` environment variable                             | `metadata.namespace`              |
 | `scope.singleNamespace`            | Set the `AMBASSADOR_SINGLE_NAMESPACE` environment variable                      | `false`                           |
 | `podAnnotations`                   | Additional annotations for ambassador pods                                      | `{}`                              |
+| `deploymentAnnotations`            | Additional annotations for ambassador DaemonSet/Deployment                      | `{}`                              |
 | `podLabels`                        | Additional labels for ambassador pods                                           |                                   |
-| `priorityClassName`                | The name of the priorityClass for the ambassador Daemonset/Deployment           | `""`                              |
+| `priorityClassName`                | The name of the priorityClass for the ambassador DaemonSet/Deployment           | `""`                              |
 | `prometheusExporter.enabled`       | Prometheus exporter side-car enabled                                            | `false`                           |
 | `prometheusExporter.pullPolicy`    | Image pull policy                                                               | `IfNotPresent`                    |
 | `prometheusExporter.repository`    | Prometheus exporter image                                                       | `prom/statsd-exporter`            |
