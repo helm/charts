@@ -282,6 +282,7 @@ systemProbe:
   ## Set this to true to enable system-probe agent
   #
   enabled: false
+
   ## @param debugPort - integer - required
   ## Specify the port to expose pprof and expvar for system-probe agent
   #
@@ -292,6 +293,11 @@ systemProbe:
   ## Ref: http://conntrack-tools.netfilter.org/
   #
   enableConntrack: true
+
+  ## @param seccompRoot - string - required
+  ## Specify the seccomp profile root directory
+  #
+  seccompRoot: /var/lib/kubelet/seccomp
 
   ## @param bpfDebug - boolean - optional
   ## Enable logging for kernel debug

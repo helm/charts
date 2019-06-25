@@ -345,6 +345,7 @@ helm install --name <RELEASE_NAME> \
 | `clusterchecksDeployment.rbac.dedicated`                 | If true, use dedicated RBAC resources for clusterchecks agent's pods                          | `false`                                     |
 | `clusterchecksDeployment.rbac.serviceAccount`            | existing ServiceAccount to use (ignored if rbac.create=true) for clusterchecks                | `default`                                   |
 | `systemProbe.enabled`                  | If true, enable system probe collection                                                                    | `false`|
+| `systemProbe.seccompRoot`              | Seccomp root directory for system-probe                                                                    | `/var/lib/kubelet/seccomp`|
 | `systemProbe.debugPort`                | The port to expose pprof and expvar for system-probe agent, it is not enabled if the value is set to 0     | `0`    |
 | `systemProbe.enableConntrack`          | If true, system-probe connects to the netlink/conntrack subsystem to add NAT information to connection data. Ref: http://conntrack-tools.netfilter.org/| `true`|
 | `systemProbe.bpfDebug`                 | If true, system-probe writes debug logs to /sys/kernel/debug/tracing/trace_pipe                            | `false`|

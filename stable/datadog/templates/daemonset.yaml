@@ -129,7 +129,7 @@ spec:
           configMap:
             name: system-probe-config
         - hostPath:
-            path: /var/lib/kubelet/seccomp
+            path: {{ .Values.systemProbe.seccompRoot }}
           name: seccomp-root
         - hostPath:
             path: /sys/kernel/debug
