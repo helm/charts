@@ -69,7 +69,7 @@ and their default values.
 | `existingSecret`                               | Use an existing secret for password, managementPassword & erlang cookie                                                                                                                                                   | `""`                                                       |
 | `extraPlugins`                                 | Additional plugins to add to the default configmap                                                                                                                                                    | `rabbitmq_shovel, rabbitmq_shovel_management, rabbitmq_federation, rabbitmq_federation_management,` |
 | `extraConfig`                                  | Additional configuration to add to default configmap                                                                                                                                                  | `{}`                                                         |
-| `extraInitContainers`                          | Additional init container passed through the tpl 	                                                                                                                                                   | ``                                                           |
+| `extraInitContainers`                          | Additional init containers passed through the tpl 	                                                                                                                                                   | `[]`                                                         |
 | `env`                                          | Environment variables to set for Rabbitmq container                                                                                                                                                   | `{}`                                                         |
 | `advancedConfig`                               | Additional configuration in classic config format                                                                                                                                                   | `""`                                                           |
 | `definitions.users`                            | Additional users | `""` |
@@ -258,8 +258,6 @@ Prometheus and its features can be enabled by setting `prometheus.enabled` to `t
 
 ### Usage of the `tpl` Function
 
-The `tpl` function allows us to pass string values from `values.yaml` through the templating engine. It is used for the following values:
+The `tpl` function allows us to pass values from `values.yaml` through the templating engine. It is used for the following values:
 
 * `extraInitContainers`
-
-It is important that these values be configured as strings. Otherwise, installation will fail.
