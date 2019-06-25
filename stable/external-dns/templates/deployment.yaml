@@ -118,7 +118,8 @@ spec:
             - --rfc2136-insecure
             {{- end }}
           {{- end }}
-          {{- if .Values.crd }}
+          {{- if .Values.crd.create }}
+            - --source=crd
             {{- if .Values.crd.apiversion }}
             - --crd-source-apiversion={{ .Values.crd.apiversion }}
             {{- end }}
