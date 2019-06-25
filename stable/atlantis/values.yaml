@@ -79,7 +79,7 @@ serviceAccountSecrets:
 
 image:
   repository: runatlantis/atlantis
-  tag: v0.7.1
+  tag: v0.8.2
   pullPolicy: IfNotPresent
 
 ## Optionally specify an array of imagePullSecrets.
@@ -112,6 +112,9 @@ allowForkPRs: false
 
 ## defaultTFVersion set the default terraform version to be used in atlantis server
 # defaultTFVersion: v0.12.0
+
+# disableApplyAll disables running `atlantis apply` without any flags
+disableApplyAll: false
 
 # We only need to check every 60s since Atlantis is not a high-throughput service.
 livenessProbe:
