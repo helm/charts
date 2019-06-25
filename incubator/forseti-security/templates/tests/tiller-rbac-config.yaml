@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: tiller
+  namespace: kube-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: tiller
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: tiller-admin
+subjects:
+  - kind: ServiceAccount
+    name: tiller
+    namespace: kube-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: tiller-admin
+rules:
+- apiGroups: [""]
+  resources: ["pods", "services", "secrets", "configmaps", "namespaces", "persistentvolumeclaims"]
+  verbs: ["get", "list", "create", "delete", "update"]
+- apiGroups: ["extensions", "apps"]
+  resources: ["deployments", "replicasets"]
+  verbs: ["get", "list", "create", "delete", "update"]
+- apiGroups: ["extensions", "batch/v1beta1"]
+  resources: ["jobs", "cronjobs"]
+  verbs: ["get", "list", "create", "delete", "update"]
+- apiGroups: ["networking.k8s.io"]
+  resources: ["networkpolicies"]
+  verbs: ["get", "list", "create", "delete", "update"]

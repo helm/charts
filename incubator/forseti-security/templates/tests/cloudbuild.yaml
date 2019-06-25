@@ -1,0 +1,43 @@
+# Copyright 2019 The Forseti Security Authors. All rights reserved.
+#
+# Licensed under the Apache License, Versisn 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+steps:
+- name: 'gcr.io/cloud-builders/git'
+  id: Initialize git
+  args: ["init"]
+
+- name: 'gcr.io/cloud-builders/git'
+  id: Add official helm/charts as remote
+  args: ["remote", "add", "official", "https://github.com/helm/charts"]
+
+- name: 'gcr.io/cloud-builders/git'
+  id: Obtain latest charts from "official" remote
+  args: ["fetch", "official", "master"]
+
+- name: 'gcr.io/cloud-builders/gcloud'
+  env: ["CLOUDSDK_CONTAINER_USE_APPLICATION_DEFAULT_CREDENTIALS=true"]
+  id: Setup connection to GKE
+  args: ["container", "clusters", "get-credentials", "$_GKE_CLUSTER", "--project", "$_PROJECT_ID", "--region", "$_LOCATION"]
+
+- name: 'gcr.io/kubernetes-charts-ci/test-image:v3.3.2'
+  id: Lint and test forseti-security charts
+  args: ["ct", "lint-and-install", "--chart-dirs", "stable,incubator", "--charts", "incubator/forseti-security", "--remote", "official"]
+  env: ["CLOUDSDK_CONTAINER_USE_APPLICATION_DEFAULT_CREDENTIALS=true"]
+
+substitutions:
+  _PROJECT_ID: forseti-test-infrastructure
+  _GKE_CLUSTER: helm-test-cluster
+  _LOCATION:  us-central1
+  _IMAGE_TAG: v3.3.2
+  _IMAGE_REPOSITORY: gcr.io/kubernetes-charts-ci/test-image

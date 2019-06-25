@@ -1,0 +1,315 @@
+global:
+
+    dummy_key: this_is_just_a_placeholder_see_issue_2486
+
+##############################################################################
+
+inventory:
+
+    # You must set ONLY one of root_resource_id or composite_root in your
+    # configuration. Defining both will cause Forseti to exit with an error.
+
+    # Root resource to start crawling from, formatted as
+    # <resource_type>/<resource_id>, (e.g. "organizations/12345677890")
+    root_resource_id: ROOT_RESOURCE_ID
+
+    # Composite root resources: combines multiple resource roots into a single
+    # inventory, for use across all Forseti modules. Can contain one or more
+    # resources from the GCP Resource Hierarchy in any combination.
+    # https://cloud.google.com/resource-manager/docs/cloud-platform-resource-hierarchy
+    #
+    # All resources must grant the appropriate IAM permissions to the Forseti
+    # service account before they can be included in the inventory.
+    #
+    # Forseti Explain is not supported with a composite root at this time.
+    # Resources can exist in multiple organizations.
+    #
+    #composite_root_resources:
+    #    - "folders/12345"
+    #    - "folders/45678"
+    #    - "projects/98765"
+    #    - "organizations/56789"
+
+    # gsuite
+    domain_super_admin_email: DOMAIN_SUPER_ADMIN_EMAIL
+
+    api_quota:
+        # We are not using the max allowed API quota because we wanted to
+        # include some rooms for retries.
+        # Period is in seconds.
+
+        # Set disable_polling to True to disable polling that API for creation
+        # of the inventory. This can speed up inventory creation for
+        # organizations that do not use specific APIs. Defaults to False if
+        # not defined.
+        admin:
+          max_calls: 14
+          period: 1.0
+          disable_polling: False
+        appengine:
+          max_calls: 18
+          period: 1.0
+          disable_polling: False
+        bigquery:
+          max_calls: 160
+          period: 1.0
+          disable_polling: False
+        cloudasset:
+          max_calls: 1
+          period: 1.0
+          disable_polling: False
+        cloudbilling:
+          max_calls: 5
+          period: 1.2
+          disable_polling: False
+        compute:
+          max_calls: 18
+          period: 1.0
+          disable_polling: False
+        container:
+          max_calls: 9
+          period: 1.0
+          disable_polling: False
+        crm:
+          max_calls: 4
+          period: 1.2
+          disable_polling: False
+        groupssettings:
+          max_calls: 5
+          period: 1.1
+          disable_polling: False
+        iam:
+          max_calls: 90
+          period: 1.0
+          disable_polling: False
+        logging:
+          max_calls: 9
+          period: 1.0
+          disable_polling: False
+        securitycenter:
+          max_calls: 1
+          period: 1.1
+          disable_polling: False
+        servicemanagement:
+          max_calls: 2
+          period: 1.1
+          disable_polling: False
+        sqladmin:
+          max_calls: 1
+          period: 1.1
+          disable_polling: False
+        storage:  # Does not use API quota
+          disable_polling: False
+
+    cai:
+        # The FORSETI_CAI_BUCKET needs to be in Forseti project.
+        enabled: True
+        gcs_path: MY_FORSETI_CAI_GCS_BUCKET
+
+        # Timeout in seconds to wait for the exportAssets API to return success.
+        # Defaults to 3600 if not set.
+        api_timeout: 3600
+
+        # Optional list of asset types supported by Cloud Asset inventory API.
+        # https://cloud.google.com/resource-manager/docs/cloud-asset-inventory/overview
+        # If included, only the asset types listed will be included in the
+        # Forseti inventory. This can be used to reduce the size of the
+        # inventory database to save on storage and reduce the time to complete
+        # a pull of the inventory.
+        #
+        # If commented out then all currently supported asset types are
+        # exported from Cloud Asset API. The list of default asset types is
+        # in google/cloud/forseti/services/inventory/base/cloudasset.py
+
+        #asset_types:
+        #    - appengine.googleapis.com/Application
+        #    - appengine.googleapis.com/Service
+        #    - appengine.googleapis.com/Version
+        #    - bigquery.googleapis.com/Dataset
+        #    - bigquery.googleapis.com/Table
+        #    - cloudbilling.googleapis.com/BillingAccount
+        #    - cloudkms.googleapis.com/CryptoKey
+        #    - cloudkms.googleapis.com/CryptoKeyVersion
+        #    - cloudkms.googleapis.com/KeyRing
+        #    - cloudresourcemanager.googleapis.com/Folder
+        #    - cloudresourcemanager.googleapis.com/Organization
+        #    - cloudresourcemanager.googleapis.com/Project
+        #    - compute.googleapis.com/Autoscaler
+        #    - compute.googleapis.com/BackendBucket
+        #    - compute.googleapis.com/BackendService
+        #    - compute.googleapis.com/Disk
+        #    - compute.googleapis.com/Firewall
+        #    - compute.googleapis.com/ForwardingRule
+        #    - compute.googleapis.com/GlobalForwardingRule
+        #    - compute.googleapis.com/HealthCheck
+        #    - compute.googleapis.com/HttpHealthCheck
+        #    - compute.googleapis.com/HttpsHealthCheck
+        #    - compute.googleapis.com/Image
+        #    - compute.googleapis.com/Instance
+        #    - compute.googleapis.com/InstanceGroup
+        #    - compute.googleapis.com/InstanceGroupManager
+        #    - compute.googleapis.com/InstanceTemplate
+        #    - compute.googleapis.com/License
+        #    - compute.googleapis.com/Network
+        #    - compute.googleapis.com/Project
+        #    - compute.googleapis.com/RegionBackendService
+        #    - compute.googleapis.com/Route
+        #    - compute.googleapis.com/Router
+        #    - compute.googleapis.com/Snapshot
+        #    - compute.googleapis.com/SslCertificate
+        #    - compute.googleapis.com/Subnetwork
+        #    - compute.googleapis.com/TargetHttpProxy
+        #    - compute.googleapis.com/TargetHttpsProxy
+        #    - compute.googleapis.com/TargetInstance
+        #    - compute.googleapis.com/TargetPool
+        #    - compute.googleapis.com/TargetSslProxy
+        #    - compute.googleapis.com/TargetTcpProxy
+        #    - compute.googleapis.com/TargetVpnGateway
+        #    - compute.googleapis.com/UrlMap
+        #    - compute.googleapis.com/VpnTunnel
+        #    - container.googleapis.com/Cluster
+        #    - dataproc.googleapis.com/Cluster
+        #    - dataproc.googleapis.com/Job
+        #    - dns.googleapis.com/ManagedZone
+        #    - dns.googleapis.com/Policy
+        #    - iam.googleapis.com/Role
+        #    - iam.googleapis.com/ServiceAccount
+        #    - k8s.io/Namespace
+        #    - k8s.io/Node
+        #    - k8s.io/Pod
+        #    - pubsub.googleapis.com/Subscription
+        #    - pubsub.googleapis.com/Topic
+        #    - rbac.authorization.k8s.io/ClusterRole
+        #    - rbac.authorization.k8s.io/ClusterRoleBinding
+        #    - rbac.authorization.k8s.io/Role
+        #    - rbac.authorization.k8s.io/RoleBinding
+        #    - spanner.googleapis.com/Database
+        #    - spanner.googleapis.com/Instance
+        #    - sqladmin.googleapis.com/Instance
+        #    - storage.googleapis.com/Bucket
+
+    # Number of days to retain inventory data:
+    #  -1 : (default) keep all previous data forever
+    #   0 : delete all previous inventory data before running
+    retention_days: -1
+
+##############################################################################
+
+scanner:
+
+    # Output path (do not include filename).
+    # If GCS location, the format of the path should be:
+    # gs://bucket-name/path/for/output
+    output_path: OUTPUT_PATH
+
+    # Rules path (do not include filename).
+    # If GCS location, the format of the path should be:
+    # gs://bucket-name/path/for/rules_path
+    # if no rules_path is specified, rules are
+    # searched in /path/to/forseti_security/rules/
+    # rules_path: RULES_PATH
+
+    # Enable the scanners as default to true when integrated for Forseti 2.0.
+
+     scanners:
+        - name: audit_logging
+          enabled: false
+        - name: bigquery
+          enabled: true
+        - name: blacklist
+          enabled: true
+        - name: bucket_acl
+          enabled: true
+        - name: cloudsql_acl
+          enabled: true
+        - name: config_validator
+          enabled: false
+        - name: enabled_apis
+          enabled: false
+        - name: firewall_rule
+          enabled: true
+        - name: forwarding_rule
+          enabled: false
+        - name: group
+          enabled: true
+        - name: groups_settings
+          enabled: true
+        - name: iam_policy
+          enabled: true
+        - name: iap
+          enabled: true
+        - name: instance_network_interface
+          enabled: false
+        - name: ke_scanner
+          enabled: false
+        - name: ke_version_scanner
+          enabled: true
+        - name: service_account_key
+          enabled: true
+
+##############################################################################
+
+notifier:
+
+    # Provide connector details
+    email_connector:
+      name: sendgrid
+      auth:
+        api_key: {SENDGRID_API_KEY}
+      sender: {EMAIL_SENDER}
+      recipient: {EMAIL_RECIPIENT}
+      data_format: csv
+
+    # For every resource type you can set up a notification pipeline
+    # to send alerts for every violation found
+    resources:
+        - resource: iam_policy_violations
+          should_notify: true
+          notifiers:
+            # Email violations
+            - name: email_violations
+            # Upload violations to GCS.
+            - name: gcs_violations
+              configuration:
+                data_format: csv
+                # gcs_path should begin with "gs://"
+                gcs_path: ''
+            # Slack webhook pipeline
+            # Create an incoming webhook in your organization's Slack setting, located at:
+            # https://[your_org].slack.com/apps/manage/custom-integrations
+            # Add the provided URL in the configuration below in `webhook_url`.
+            - name: slack_webhook
+              configuration:
+                data_format: json  # slack only supports json
+                webhook_url: ''
+
+        - resource: groups_settings_violations
+          should_notify: true
+          notifiers:
+            # Email violations
+            - name: email_violations
+            # Upload violations to GCS.
+            - name: gcs_violations
+              configuration:
+                data_format: csv
+                # gcs_path should begin with "gs://"
+                gcs_path: gs://{FORSETI_BUCKET}/scanner_violations
+
+    violation:
+      cscc:
+        enabled: true
+        # Cloud SCC API uses a new source_id. It is unique per
+        # organization and must be generated via a self-registration process.
+        # The format is: organizations/ORG_ID/sources/SOURCE_ID
+        source_id:
+
+    inventory:
+      gcs_summary:
+        enabled: true
+        # data_format may be one of: csv (the default) or json
+        data_format: csv
+        # gcs_path should begin with "gs://"
+        gcs_path: gs://MY_BUCKET/inventory_summary
+      email_summary:
+        enabled: true
+
