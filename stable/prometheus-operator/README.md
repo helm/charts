@@ -157,7 +157,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheusOperator.tolerations` | Tolerations for use with node taints https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/ | `[]` |
 | `prometheusOperator.affinity` | Assign custom affinity rules to the prometheus operator https://kubernetes.io/docs/concepts/configuration/assign-pod-node/ | `{}` |
 | `prometheusOperator.image.repository` | Repository for prometheus operator image | `quay.io/coreos/prometheus-operator` |
-| `prometheusOperator.image.tag` | Tag for prometheus operator image | `v0.30.1` |
+| `prometheusOperator.image.tag` | Tag for prometheus operator image | `v0.31.0` |
 | `prometheusOperator.image.pullPolicy` | Pull policy for prometheus operator image | `IfNotPresent` |
 | `prometheusOperator.configmapReloadImage.repository` | Repository for configmapReload image | `quay.io/coreos/configmap-reload` |
 | `prometheusOperator.configmapReloadImage.tag` | Tag for configmapReload image | `v0.0.1` |
