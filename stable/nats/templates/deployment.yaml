@@ -84,12 +84,12 @@ spec:
         image: {{ template "nats.image" . }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         command:
-        - gnatsd
+        - nats-server
         args:
         - -c
-        - /opt/bitnami/nats/gnatsd.conf
+        - /opt/bitnami/nats/nats-server.conf
         # to ensure nats could run with non-root user, we put the configuration
-        # file under `/opt/bitnami/nats/gnatsd.conf`, please check the link below
+        # file under `/opt/bitnami/nats/nats-server.conf`, please check the link below
         # for the implementation inside Dockerfile:
         # - https://github.com/bitnami/bitnami-docker-nats/blob/master/1/debian-9/Dockerfile#L12
         {{- if .Values.extraArgs }}
@@ -128,8 +128,8 @@ spec:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
           - name: config
-            mountPath: /opt/bitnami/nats/gnatsd.conf
-            subPath: gnatsd.conf
+            mountPath: /opt/bitnami/nats/nats-server.conf
+            subPath: nats-server.conf
         {{- if .Values.sidecars }}
 {{ toYaml .Values.sidecars | indent 6 }}
         {{- end }}
