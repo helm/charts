@@ -20,8 +20,17 @@ spec:
     spec:
       securityContext:
 {{ toYaml .Values.securityContext | indent 8 }}
-      {{- if .Values.plugins.install }}
       initContainers:
+        - name: init-sysctl
+          image: busybox:1.31
+          command:
+          - sysctl
+          - -w
+          - vm.max_map_count=262144
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            privileged: true
+      {{- if .Values.plugins.install }}
         - name: install-plugins
           image: {{ default "joosthofman/wget:1.0" .Values.plugins.initContainerImage }}
           env:
@@ -75,7 +84,7 @@ spec:
             - containerPort: {{ .Values.service.internalPort }}
           {{- if .Values.plugins.install }}
           command:
-            - /usr/local/copy_plugins.sh
+            - /tmp/scripts/copy_plugins.sh
           {{- end }}
           env:
             {{- range $key, $value := .Values.extraEnv }}
@@ -126,6 +135,11 @@ spec:
             - mountPath: /opt/sonarqube/secret/
               name: secret
             {{- end }}
+            {{- if .Values.customCerts.enabled }}
+            - mountPath: /etc/ssl/certs/java/cacerts
+              subPath: cacerts
+              name: cacerts
+            {{- end }}
             - mountPath: /opt/sonarqube/data
               name: sonarqube
               subPath: data
@@ -147,7 +161,7 @@ spec:
             - mountPath: /tmp
               name: tmp-dir
             - name: copy-plugins
-              mountPath: /usr/local/
+              mountPath: /tmp/scripts
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- if .Values.nodeSelector }}
@@ -178,6 +192,14 @@ spec:
           items:
           - key: sonar-secret.txt
             path: sonar-secret.txt
+      {{- end }}
+      {{- if .Values.customCerts.enabled }}
+      - name: cacerts
+        secret:
+          secretName: {{ .Values.customCerts.secretName }}
+          items:
+          - key: cacerts
+            path: cacerts
       {{- end }}
       - name: install-plugins
         configMap:

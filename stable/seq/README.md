@@ -46,9 +46,10 @@ The following table lists the configurable parameters of the Seq chart and their
 |           Parameter           |                Description                        |           Default            |
 |-------------------------------|-------------------------------------------------- |------------------------------|
 | `image.repository`         | Image repository                    | `datalust/seq`                                          |
-| `image.tag`                | Seq image tag. Possible values listed [here](https://hub.docker.com/r/datalust/seq/tags/).| `5.0.832-pre`|
+| `image.tag`                | Seq image tag. Possible values listed [here](https://hub.docker.com/r/datalust/seq/tags/).| `5`|
 | `image.pullPolicy`         | Image pull policy                   | `IfNotPresent`                                          |
-| `acceptEULA`               | Accept EULA                         | `Y`                                                 |
+| `acceptEULA`               | Accept EULA                         | `Y`                                                     |
+| `baseURI`                  | Base URL for ingress/AAD (see values.yaml)|                                                   |
 | `service.type`             | Kubernetes service type             | `ClusterIP`                                             |
 | `service.port`             | Kubernetes port where service is exposed| `5341`                                              |
 | `persistence.enabled`      | Use persistent volume to store data | `true`                                                  |
