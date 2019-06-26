@@ -325,9 +325,9 @@ nginx:
 # Extra ports to add to Kong pods ports section
 podExtraPorts: []
 # e.g: if you want to expose prometheus metrics on each kong pods, uncomment the below port.
-#- name: metrics
-#  containerPort: 9542
-#  protocol: TCP
+# - name: metrics
+#   containerPort: 9542
+#   protocol: TCP
 
 # Kong pod count
 replicaCount: 1
