@@ -17,7 +17,6 @@ Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment
 ## Prerequisites
 
 - Kubernetes 1.8+ with Beta APIs enabled
-- PV provisioner support in the underlying infrastructure
 
 ## Installing the Chart
 

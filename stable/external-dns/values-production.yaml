@@ -26,6 +26,12 @@ image:
   # pullSecrets:
   #   - myRegistryKeySecretName
 
+## String to partially override external-dns.fullname template (will maintain the release name)
+# nameOverride:
+
+## String to fully override external-dns.fullname template
+# fullnameOverride:
+
 ## K8s resources type to be observed for new DNS entries by ExternalDNS
 ##
 sources:
@@ -222,6 +228,7 @@ priorityClassName: ""
 ## Installs the DNSEndpoint CRD
 ##
 crd:
+  create: false
   apiversion: ""
   kind: ""
 
