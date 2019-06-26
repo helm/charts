@@ -56,11 +56,14 @@ $ kubectl delete job/sentry-db-init job/sentry-user-create
 
 The following table lists the configurable parameters of the Sentry chart and their default values.
 
+Dependent charts can also have values overwritten. Preface values with postgresql.* or redis.*
+=======
 Parameter                          | Description                                                                                                | Default
 :--------------------------------- | :--------------------------------------------------------------------------------------------------------- | :---------------------------------------------------
 `image.repository`                 | Sentry image                                                                                               | `library/sentry`
 `image.tag`                        | Sentry image tag                                                                                           | `9.1.1`
 `imagePullPolicy`                  | Image pull policy                                                                                          | `IfNotPresent`
+`imagePullSecrets`                 | Specify image pull secrets                                                                                 | `[]`
 `web.podAnnotations`               | Web pod annotations                                                                                        | `{}`
 `web.podLabels`                    | Worker pod extra labels                                                                                    | `{}`
 `web.replicacount`                 | Amount of web pods to run                                                                                  | `1`
@@ -125,6 +128,8 @@ Parameter                          | Description                                
 `persistence.storageClass`         | PVC Storage Class                                                                                          | `nil` (uses alpha storage class annotation)
 `persistence.accessMode`           | PVC Access Mode                                                                                            | `ReadWriteOnce`
 `persistence.size`                 | PVC Storage Request                                                                                        | `10Gi`
+`persistence.filestore_dir`        | The container path to mount the PVC to                                                                     | `/var/lib/sentry/files`
+`persistence.persistentWorkers`    | Mount the PVC to Sentry workers, enabling features such as private source maps                             | `false`
 `config.configYml`                 | Sentry config.yml file                                                                                     | ``
 `config.sentryConfPy`              | Sentry sentry.conf.py file                                                                                 | ``
 `metrics.enabled`                  | Start an exporter for sentry metrics                                                                       | `false`
@@ -143,6 +148,7 @@ Parameter                          | Description                                
 `metrics.serviceMonitor.namespace` | Optional namespace which Prometheus is running in                                                          | `nil`
 `metrics.serviceMonitor.interval`  | How frequently to scrape metrics (use by default, falling back to Prometheus' default)                     | `nil`
 `metrics.serviceMonitor.selector`  | Default to kube-prometheus install (CoreOS recommended), but should be set according to Prometheus install | `{ prometheus: kube-prometheus }`
+`hooks.affinity`                   | Affinity settings for hooks pods                                                                           | `{}`
 
 Dependent charts can also have values overwritten. Preface values with postgresql. _or redis._
 
@@ -179,3 +185,9 @@ Persistent Volume Claims are used to keep the data across deployments. This is k
 ## Ingress
 
 This chart provides support for Ingress resource. If you have an available Ingress Controller such as Nginx or Traefik you maybe want to set `ingress.enabled` to true and choose an `ingress.hostname` for the URL. Then, you should be able to access the installation using that address.
+
+## Persistence
+
+This chart is capable of mounting the sentry-data PV in the Sentry worker and cron pods. This feature is disabled by default, but is needed for some advanced features such as private sourcemaps.
+
+You may enable mounting of the sentry-data PV across worker and cron pods by changing `persistence.persistentWorkers` to `true`. If you plan on deploying Sentry containers across multiple nodes, you may need to change your PVC's access mode to `ReadWriteMany` and check that your PV supports mounting across multiple nodes.

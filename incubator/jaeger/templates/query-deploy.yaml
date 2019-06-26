@@ -97,6 +97,8 @@ spec:
                 name: {{ include "jaeger.fullname" . }}
                 key: es.username
           {{- end }}
+          - name: QUERY_BASE_PATH
+            value: {{ .Values.query.basePath | quote }}
         ports:
         - name: query
           containerPort: 16686

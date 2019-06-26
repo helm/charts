@@ -179,3 +179,9 @@ service:
   type: ClusterIP
 
 priorityClassName: ""
+
+## Installs the DNSEndpoint CRD
+crd:
+  create: false
+  apiversion: ""
+  kind: ""
