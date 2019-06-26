@@ -8,7 +8,7 @@ metadata:
     chart: {{ template "redis.chart" . }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
-spec:
+spec: 
 {{- if .Values.slave.updateStrategy }}
   strategy:
 {{ toYaml .Values.slave.updateStrategy | indent 4 }}
@@ -25,6 +25,9 @@ spec:
   template:
     metadata:
       labels:
+        {{- if not .Values.networkPolicy.allowExternal }}
+        {{ template "redis.fullname" . }}-client: "true"
+        {{- end }}
         release: "{{ .Release.Name }}"
         chart: {{ template "redis.chart" . }}
         role: slave
