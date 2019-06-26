@@ -40,7 +40,7 @@ spec:
     {{- end }}
 {{- if .Values.kubeEtcd.serviceMonitor.metricRelabelings }}
     metricRelabelings:
-{{ toYaml .Values.kubeEtcd.serviceMonitor.metricRelabelings | indent 4 }}
+{{ tpl (toYaml .Values.kubeEtcd.serviceMonitor.metricRelabelings | indent 4) . }}
 {{- end }}
 {{- if .Values.kubeEtcd.serviceMonitor.relabelings }}
     relabelings:

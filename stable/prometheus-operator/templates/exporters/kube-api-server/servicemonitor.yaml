@@ -16,7 +16,7 @@ spec:
     scheme: https
 {{- if .Values.kubeApiServer.serviceMonitor.metricRelabelings }}
     metricRelabelings:
-{{ toYaml .Values.kubeApiServer.serviceMonitor.metricRelabelings | indent 6 }}
+{{ tpl (toYaml .Values.kubeApiServer.serviceMonitor.metricRelabelings | indent 6) . }}
 {{- end }}
 {{- if .Values.kubeApiServer.relabelings }}
     relabelings:
