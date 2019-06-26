@@ -33,6 +33,9 @@ controller:
   # Ingress status was blank because there is no Service exposing the NGINX Ingress controller in a configuration using the host network, the default --publish-service flag used in standard cloud setups does not apply
   reportNodeInternalIp: false
 
+  # TLS/HTTPS https://kubernetes.github.io/ingress-nginx/user-guide/tls/#ssl-passthrough
+  sslPassthrough: false
+
   ## Use host ports 80 and 443
   daemonset:
     useHostPort: false

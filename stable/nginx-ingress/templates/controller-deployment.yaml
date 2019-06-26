@@ -80,6 +80,9 @@ spec:
           {{- if and (.Values.controller.reportNodeInternalIp) (.Values.controller.hostNetwork) }}
             - --report-node-internal-ip-address={{ .Values.controller.reportNodeInternalIp }}
           {{- end }}
+          {{- if .Values.controller.sslPassthrough }}
+            - --enable-ssl-passthrough={{ .Values.controller.sslPassthrough }}
+          {{- end }}
           {{- range $key, $value := .Values.controller.extraArgs }}
             {{- if $value }}
             - --{{ $key }}={{ $value }}

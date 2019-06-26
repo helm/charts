@@ -77,8 +77,11 @@ spec:
           {{- if .Values.controller.scope.enabled }}
             - --watch-namespace={{ default .Release.Namespace .Values.controller.scope.namespace }}
           {{- end }}
-          {{- if and (.Values.controller.reportNodeInternalIp) (.Values.controller.hostNetwork)}}
+          {{- if and (.Values.controller.reportNodeInternalIp) (.Values.controller.hostNetwork) }}
             - --report-node-internal-ip-address={{ .Values.controller.reportNodeInternalIp }}
+          {{- end }}
+          {{- if .Values.controller.sslPassthrough }}
+            - --enable-ssl-passthrough={{ .Values.controller.sslPassthrough }}
           {{- end }}
           {{- range $key, $value := .Values.controller.extraArgs }}
             {{- if $value }}
