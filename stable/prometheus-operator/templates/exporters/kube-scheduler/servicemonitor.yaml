@@ -28,7 +28,7 @@ spec:
     {{- end}}
 {{- if .Values.kubeScheduler.serviceMonitor.metricRelabelings }}
     metricRelabelings:
-{{ toYaml .Values.kubeScheduler.serviceMonitor.metricRelabelings | indent 4 }}
+{{ tpl (toYaml .Values.kubeScheduler.serviceMonitor.metricRelabelings | indent 4) . }}
 {{- end }}
 {{- if .Values.kubeScheduler.serviceMonitor.relabelings }}
     relabelings:

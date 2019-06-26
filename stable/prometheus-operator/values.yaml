@@ -110,6 +110,16 @@ alertmanager:
     receivers:
     - name: 'null'
 
+  ## Pass the Alertmanager configuration directives through Helm's templating
+  ## engine. If the Alertmanager configuration contains Alertmanager templates,
+  ## they'll need to be properly escaped so that they are not interpreted by
+  ## Helm
+  ## ref: https://helm.sh/docs/developing_charts/#using-the-tpl-function
+  ##      https://prometheus.io/docs/alerting/configuration/#%3Ctmpl_string%3E
+  ##      https://prometheus.io/docs/alerting/notifications/
+  ##      https://prometheus.io/docs/alerting/notification_examples/
+  tplConfig: false
+
   ## Alertmanager template files to format alerts
   ## ref: https://prometheus.io/docs/alerting/notifications/
   ##      https://prometheus.io/docs/alerting/notification_examples/
