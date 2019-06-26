@@ -169,6 +169,17 @@ restic:
 #        - foo
 schedules: {}
 
+# Velero ConfigMaps.
+# Eg:
+# configMaps:
+#   restic-restore-action-config:
+#     labels:
+#       velero.io/plugin-config: ""
+#       velero.io/restic: RestoreItemAction
+#     data:
+#       image: gcr.io/heptio-images/velero-restic-restore-help
+configMaps: {}
+
 ##
 ## End of additional Velero resource settings.
 ##
