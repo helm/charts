@@ -18,7 +18,8 @@ spec:
     scrapeTimeout: {{ .Values.prometheus.jmx.scrapeTimeout }}
   {{- end }}
   namespaceSelector:
-    any: true
+    matchNames:
+      - {{ .Release.Namespace }}
 {{ end }}
 ---
 {{ if and .Values.prometheus.kafka.enabled .Values.prometheus.operator.enabled }}
@@ -41,5 +42,6 @@ spec:
     scrapeTimeout: {{ .Values.prometheus.kafka.scrapeTimeout }}
   {{- end }}
   namespaceSelector:
-    any: true
+    matchNames:
+      - {{ .Release.Namespace }}
 {{ end }}
