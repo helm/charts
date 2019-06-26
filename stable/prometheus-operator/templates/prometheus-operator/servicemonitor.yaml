@@ -15,7 +15,7 @@ spec:
     {{- end }}
 {{- if .Values.prometheusOperator.serviceMonitor.metricRelabelings }}
     metricRelabelings:
-{{ toYaml .Values.prometheusOperator.serviceMonitor.metricRelabelings | indent 6 }}
+{{ tpl (toYaml .Values.prometheusOperator.serviceMonitor.metricRelabelings | indent 6) . }}
 {{- end }}
 {{- if .Values.prometheusOperator.serviceMonitor.relabelings }}
     relabelings:

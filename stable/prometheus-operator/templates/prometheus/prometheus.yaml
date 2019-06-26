@@ -11,13 +11,15 @@ spec:
     alertmanagers:
 {{- if .Values.prometheus.prometheusSpec.alertingEndpoints }}
 {{ toYaml .Values.prometheus.prometheusSpec.alertingEndpoints | indent 6 }}
-{{- else }}
+{{- else if .Values.alertmanager.enabled }}
       - namespace: {{ .Release.Namespace }}
         name: {{ template "prometheus-operator.fullname" . }}-alertmanager
         port: web
         {{- if .Values.alertmanager.alertmanagerSpec.routePrefix }}
         pathPrefix: "{{ .Values.alertmanager.alertmanagerSpec.routePrefix }}"
         {{- end }}
+{{- else }}
+      []
 {{- end }}
 {{- if .Values.prometheus.prometheusSpec.image }}
   baseImage: {{ .Values.prometheus.prometheusSpec.image.repository }}
