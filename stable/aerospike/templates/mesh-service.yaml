@@ -8,11 +8,14 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
   annotations:
+    # deprecation in 1.10, supported until at least 1.13,  breaks peer-finder/kube-dns if not used
     service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
     {{- range $key, $value := .Values.meshService.annotations }}
     {{ $key }}: {{ $value | quote }}
     {{- end }}
 spec:
+  # deprecates service.alpha.kubernetes.io/tolerate-unready-endpoints as of 1.10? see: kubernetes/kubernetes#49239 Fixed in 1.11 as of #63742
+  publishNotReadyAddresses: true
   clusterIP: None
   type: ClusterIP
   ports:

@@ -6,11 +6,10 @@ metadata:
 {{ include "labels.standard" . | indent 4 }}
   name: {{ printf "%s-%s" .Release.Name .Values.name }}
 rules:
-  - apiGroups:
-      - ""
-    resources:
-      - pods
-    verbs:
-      - list
-      - delete
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["list", "delete"]
+  - apiGroups: [""]
+    resources: ["events"]
+    verbs: ["create"]
 {{- end -}}

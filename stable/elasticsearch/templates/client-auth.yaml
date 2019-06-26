@@ -1,0 +1,11 @@
+{{- if and ( .Values.client.ingress.user ) ( .Values.client.ingress.password ) }}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: '{{ include "elasticsearch.client.fullname" . }}-auth'
+type: Opaque
+data:
+  auth: {{ printf "%s:{PLAIN}%s\n" .Values.client.ingress.user .Values.client.ingress.password | b64enc | quote }}
+{{- end }}
+

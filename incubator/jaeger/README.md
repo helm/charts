@@ -175,14 +175,20 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `elasticsearch.data.persistence.enabled` | To enable storage persistence       |  false (Highly recommended to enable)  |
 | `elasticsearch.image.tag`                | Elasticsearch image tag             |  "5.4"                                 |
 | `elasticsearch.rbac.create`              | To enable RBAC                      |  false                                 |
+| `fullnameOverride`                       | Override full name                  |  `nil`                                 |
 | `hotrod.enabled`                         | Enables the Hotrod demo app         |  false                                 |
 | `hotrod.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`      |
+| `nameOverride`                           | Override name                       | `nil`                                  |
 | `provisionDataStore.cassandra`           | Provision Cassandra Data Store      |  true                                  |
 | `provisionDataStore.elasticsearch`       | Provision Elasticsearch Data Store  |  false                                 |
+| `query.agentSidecar.enabled`              | Enable agent sidecare for query deployment           |  true                                  |
 | `query.service.annotations`              | Annotations for Query SVC           |  nil                                   |
 | `query.cmdlineParams`                    | Additional command line parameters  |  nil                                   |
 | `query.image`                            | Image for Jaeger Query UI           |  jaegertracing/jaeger-query            |
 | `query.ingress.enabled`                  | Allow external traffic access       |  false                                 |
+| `query.ingress.annotations`              | Configure annotations for Ingress   |  {}                                    |
+| `query.ingress.hosts`                    | Configure host for Ingress          |  nil                                   |
+| `query.ingress.tls`                      | Configure tls for Ingress           |  nil                                   |
 | `query.podAnnotations`                   | Annotations for Query pod           |  nil                                   |
 | `query.pullPolicy`                       | Query UI image pullPolicy           |  IfNotPresent                          |
 | `query.tolerations`                      | Node Tolerations                    | `[]`                                   |
@@ -190,6 +196,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `query.service.queryPort`                | External accessible port            |  80                                    |
 | `query.service.targetPort`               | Internal Query UI port              |  16686                                 |
 | `query.service.type`                     | Service type                        |  ClusterIP                             |
+| `query.basePath`                         | Base path of Query UI, used for ingress as well (if it is enabled)   |  /    |
 | `schema.annotations`                     | Annotations for the schema job      |  nil                                   |
 | `schema.image`                           | Image to setup cassandra schema     |  jaegertracing/jaeger-cassandra-schema |
 | `schema.mode`                            | Schema mode (prod or test)          |  prod                                  |
@@ -213,7 +220,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `storage.elasticsearch.user`             | Provisioned elasticsearch user      |  elastic                               |
 | `storage.elasticsearch.nodesWanOnly`     | Only access specified es host       |  false                                 |
 | `storage.type`                           | Storage type (ES or Cassandra)      |  cassandra                             |
-| `tag`                                    | Image tag/version                   |  1.8.2                                 |
+| `tag`                                    | Image tag/version                   |  1.12.0                                 |
 
 For more information about some of the tunable parameters that Cassandra provides, please visit the helm chart for [cassandra](https://github.com/kubernetes/charts/tree/master/incubator/cassandra) and the official [website](http://cassandra.apache.org/) at apache.org.
 
@@ -235,18 +242,6 @@ Jaeger itself is a stateful application that by default uses Cassandra to store 
 
 Override any required configuration options in the Cassandra chart that is required and then enable persistence by setting the following option: `--set cassandra.persistence.enabled=true`
 
-### Image tags
-
-Jaeger offers a multitude of [tags](https://hub.docker.com/u/jaegertracing/) for the various components used in this chart.
-
 ### Pending enhancements
-- [x] Use ConfigMap for configurable parameters
-- [x] Add the Hotrod example app
-- [x] Allow only some of the components to be installed
-- [x] Add support for the spark dependencies job (as a [k8s cronjob](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/))
-- [x] Use `provisionDataStore` key in the values.yaml file instead of `tags` to configure data store provisioning.
-- [x] Refactor chart to remove unnecessary quotes
-- [x] Remove the command overrides of the docker images and use [environment variables configuration](http://jaeger.readthedocs.io/en/latest/deployment/#configuration) instead
-- [x] Fix hard-coded replica count
-- [x] Collector service works both as `NodePort` and `ClusterIP` service types
 - [ ] Sidecar deployment support
+

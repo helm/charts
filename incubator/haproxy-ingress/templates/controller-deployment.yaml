@@ -1,0 +1,188 @@
+{{ if eq .Values.controller.kind "Deployment" -}}
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  labels:
+    app: {{ template "haproxy-ingress.name" . }}
+    chart: {{ template "haproxy-ingress.chart" . }}
+    component: "{{ .Values.controller.name }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  name: {{ template "haproxy-ingress.controller.fullname" . }}
+spec:
+  replicas: {{ .Values.controller.replicaCount }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  strategy:
+{{ toYaml .Values.controller.updateStrategy | indent 4 }}
+  minReadySeconds: {{ .Values.controller.minReadySeconds }}
+  selector:
+    matchLabels:
+      app: {{ template "haproxy-ingress.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      annotations:
+{{- if .Values.controller.template }}
+        checksum/config: {{ include (print $.Template.BasePath "/controller-template.yaml") . | sha256sum }}
+{{- end }}
+      {{- if .Values.controller.podAnnotations }}
+{{ toYaml .Values.controller.podAnnotations | indent 8}}
+      {{- end }}
+      labels:
+        app: {{ template "haproxy-ingress.name" . }}
+        component: "{{ .Values.controller.name }}"
+        release: {{ .Release.Name }}
+        {{- if .Values.controller.podLabels }}
+{{ toYaml .Values.controller.podLabels | indent 8 }}
+        {{- end }}
+    spec:
+    {{- if .Values.controller.podAffinity }}
+      affinity:
+{{ toYaml .Values.controller.podAffinity | indent 8 }}
+    {{- end }}
+      serviceAccountName: {{ template "haproxy-ingress.serviceAccountName" . }}
+    {{- if .Values.controller.initContainers }}
+      initContainers:
+{{ toYaml .Values.controller.initContainers | indent 8 }}
+    {{- end }}
+      containers:
+        - name: haproxy-ingress
+          image:  "{{ .Values.controller.image.repository }}:{{ .Values.controller.image.tag }}"
+          imagePullPolicy: "{{ .Values.controller.image.pullPolicy }}"
+          args:
+            - --configmap={{ .Release.Namespace }}/{{ template "haproxy-ingress.controller.fullname" . }}
+            - --ingress-class={{ .Values.controller.ingressClass }}
+            - --sort-backends
+          {{- if .Values.controller.tcp }}
+            - --tcp-services-configmap={{ .Release.Namespace }}/{{ template "haproxy-ingress.controller.fullname" . }}-tcp
+          {{- end }}
+            - --default-backend-service={{ if .Values.defaultBackend.enabled }}{{ .Release.Namespace }}/{{ template "haproxy-ingress.defaultBackend.fullname" . }}{{ else }}{{ .Values.controller.defaultBackendService }}{{ end }}
+          {{- range $key, $value := .Values.controller.extraArgs }}
+            {{- if $value }}
+            - --{{ $key }}={{ $value }}
+            {{- else }}
+            - --{{ $key }}
+            {{- end }}
+          {{- end }}
+          ports:
+          {{- if .Values.controller.enableStaticPorts }}
+            - name: http
+              containerPort: 80
+            - name: https
+              containerPort: 443
+          {{- end }}
+          {{- if .Values.controller.stats.enabled }}
+            - name: stats
+              containerPort: {{ .Values.controller.stats.port }}
+              protocol: TCP
+          {{- end }}
+            - name: healthz
+              containerPort: {{ .Values.controller.healthzPort }}
+          {{- range $key, $value := .Values.controller.tcp }}
+            - name: "{{ tpl $key $ }}-tcp"
+              containerPort: {{ tpl $key $ }}
+              protocol: TCP
+          {{- end }}
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.controller.livenessProbe.path | quote }}
+              port: {{ .Values.controller.livenessProbe.port }}
+              scheme: HTTP
+            initialDelaySeconds: {{ .Values.controller.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.controller.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.controller.livenessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.controller.livenessProbe.successThreshold }}
+            failureThreshold: {{ .Values.controller.livenessProbe.failureThreshold }}
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.controller.readinessProbe.path | quote }}
+              port: {{ .Values.controller.readinessProbe.port }}
+              scheme: HTTP
+            initialDelaySeconds: {{ .Values.controller.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.controller.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.controller.readinessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.controller.readinessProbe.successThreshold }}
+            failureThreshold: {{ .Values.controller.readinessProbe.failureThreshold }}
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          {{- if .Values.controller.extraEnvs }}
+{{ toYaml .Values.controller.extraEnvs | indent 12 }}
+          {{- end }}
+{{- if .Values.controller.template }}
+          volumeMounts:
+            - name: haproxy-template
+              mountPath: /etc/haproxy/template
+{{- end }}
+          resources:
+{{ toYaml .Values.controller.resources | indent 12 }}
+      {{- if .Values.controller.logs.enabled }}
+        - name: access-logs
+          image:  "{{ .Values.controller.logs.image.repository }}:{{ .Values.controller.logs.image.tag }}"
+          imagePullPolicy: "{{ .Values.controller.logs.image.pullPolicy }}"
+          ports:
+            - name: udp
+              containerPort: 514
+              protocol: UDP
+          resources:
+{{ toYaml .Values.controller.logs.resources | indent 12 }}
+      {{- end }}
+      {{- if and .Values.controller.stats.enabled .Values.controller.metrics.enabled }}
+        - name: prometheus-exporter
+          image:  "{{ .Values.controller.metrics.image.repository }}:{{ .Values.controller.metrics.image.tag }}"
+          imagePullPolicy: "{{ .Values.controller.metrics.image.pullPolicy }}"
+          args:
+            - '--haproxy.scrape-uri=http://localhost:{{ .Values.controller.stats.port }}/haproxy?stats;csv'
+          {{- range $key, $value := .Values.controller.metrics.extraArgs }}
+            {{- if $value }}
+            - --{{ $key }}={{ $value }}
+            {{- else }}
+            - --{{ $key }}
+            {{- end }}
+          {{- end }}
+          ports:
+            - name: metrics
+              containerPort: 9101
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: metrics
+          resources:
+{{ toYaml .Values.controller.metrics.resources | indent 12 }}
+      {{- end }}
+{{- if .Values.controller.template }}
+      volumes:
+        - name: haproxy-template
+          configMap:
+            name: {{ template "haproxy-ingress.controller.fullname" . }}-template
+{{- end }}
+      terminationGracePeriodSeconds: 60
+      dnsPolicy: {{ .Values.controller.dnsPolicy }}
+      hostNetwork: {{ .Values.controller.hostNetwork }}
+    {{- if .Values.controller.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.controller.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.controller.tolerations }}
+      tolerations:
+{{ toYaml .Values.controller.tolerations | indent 8 }}
+    {{- end }}
+    {{- if .Values.controller.affinity }}
+      affinity:
+{{ toYaml .Values.controller.affinity | indent 8 }}
+    {{- end }}
+    {{- if .Values.controller.securityContext }}
+      securityContext:
+{{ toYaml .Values.controller.securityContext | indent 8 }}
+    {{- end }}
+    {{- if .Values.controller.priorityClassName }}
+      priorityClassName: {{ .Values.controller.priorityClassName | quote }}
+    {{- end }}
+{{- end }}

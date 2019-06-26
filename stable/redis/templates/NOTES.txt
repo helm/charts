@@ -21,15 +21,24 @@
 {{- end }}
 
 {{- if .Values.cluster.enabled }}
-Redis can be accessed via port {{ .Values.master.port }} on the following DNS names from within your cluster:
+{{- if .Values.sentinel.enabled }}
+Redis can be accessed via port {{ .Values.sentinel.service.redisPort }} on the following DNS name from within your cluster:
 
-{{ template "redis.fullname" . }}-master.{{ .Release.Namespace }}.svc.cluster.local for read/write operations
-{{ template "redis.fullname" . }}-slave.{{ .Release.Namespace }}.svc.cluster.local for read-only operations
+{{ template "redis.fullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }} for read only operations
+
+For read/write operations, first access the Redis Sentinel cluster, which is available in port {{ .Values.sentinel.service.sentinelPort }} using the same domain name above.
 
 {{- else }}
-Redis can be accessed via port {{ .Values.master.port }} on the following DNS name from within your cluster:
+Redis can be accessed via port {{ .Values.redisPort }} on the following DNS names from within your cluster:
 
-{{ template "redis.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+{{ template "redis.fullname" . }}-master.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }} for read/write operations
+{{ template "redis.fullname" . }}-slave.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }} for read-only operations
+{{- end }}
+
+{{- else }}
+Redis can be accessed via port {{ .Values.redisPort }} on the following DNS name from within your cluster:
+
+{{ template "redis.fullname" . }}-master.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}
 
 {{- end }}
 
@@ -51,10 +60,15 @@ To connect to your Redis server:
 2. Connect using the Redis CLI:
 
 {{- if .Values.cluster.enabled }}
+   {{- if .Values.sentinel.enabled }}
+   redis-cli -h {{ template "redis.fullname" . }} -p {{ .Values.sentinel.service.redisPort }}{{ if .Values.usePassword }} -a $REDIS_PASSWORD{{ end }} # Read only operations
+   redis-cli -h {{ template "redis.fullname" . }} -p {{ .Values.sentinel.service.sentinelPort }}{{ if .Values.usePassword }} -a $REDIS_PASSWORD{{ end }} # Sentinel access
+   {{- else }}
    redis-cli -h {{ template "redis.fullname" . }}-master{{ if .Values.usePassword }} -a $REDIS_PASSWORD{{ end }}
    redis-cli -h {{ template "redis.fullname" . }}-slave{{ if .Values.usePassword }} -a $REDIS_PASSWORD{{ end }}
+   {{- end }}
 {{- else }}
-   redis-cli -h {{ template "redis.fullname" . }}{{ if .Values.usePassword }} -a $REDIS_PASSWORD{{ end }}
+   redis-cli -h {{ template "redis.fullname" . }}-master{{ if .Values.usePassword }} -a $REDIS_PASSWORD{{ end }}
 {{- end }}
 
 {{ if and (.Values.networkPolicy.enabled) (not .Values.networkPolicy.allowExternal) }}
@@ -81,8 +95,10 @@ To connect to your database from outside the cluster execute the following comma
 
 {{- else if contains "ClusterIP" .Values.master.service.type }}
 
-    kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "redis.fullname" . }} {{ .Values.master.port }}:{{ .Values.master.port }} &
-    redis-cli -h 127.0.0.1 -p {{ .Values.master.port }} {{- if .Values.usePassword }} -a $REDIS_PASSWORD{{ end }}
+    kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "redis.fullname" . }} {{ .Values.redisPort }}:{{ .Values.redisPort }} &
+    redis-cli -h 127.0.0.1 -p {{ .Values.redisPort }} {{- if .Values.usePassword }} -a $REDIS_PASSWORD{{ end }}
 
 {{- end }}
 {{- end }}
+
+{{ include "redis.checkRollingTags" . }}

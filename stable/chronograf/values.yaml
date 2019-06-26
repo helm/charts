@@ -2,7 +2,7 @@
 ##
 image:
   repository: "docker.io/chronograf"
-  tag: "1.7-alpine"
+  tag: "1.7.7-alpine"
   pullPolicy: "Always"
 
 ## Specify a service type

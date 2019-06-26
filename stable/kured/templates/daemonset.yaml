@@ -8,7 +8,6 @@ metadata:
     chart: {{ template "kured.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-
 spec:
   updateStrategy:
     type: {{ .Values.updateStrategy }}
@@ -31,6 +30,17 @@ spec:
       serviceAccountName: {{ template "kured.serviceAccountName" . }}
       hostPID: true
       restartPolicy: Always
+      {{- with .Values.image.pullSecrets }}
+      imagePullSecrets:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

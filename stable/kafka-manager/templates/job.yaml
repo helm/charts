@@ -29,6 +29,19 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["/usr/local/script/addClusters.sh"]
+          env:
+            - name: KAFKA_MANAGER_AUTH_ENABLED
+              value: {{ .Values.basicAuth.enabled | quote }}
+            - name: KAFKA_MANAGER_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "kafka-manager.fullname" . }}
+                  key: basicAuthUsername
+            - name: KAFKA_MANAGER_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "kafka-manager.fullname" . }}
+                  key: basicAuthPassword
           volumeMounts:
             - name: script-volume
               mountPath: "/usr/local/script"

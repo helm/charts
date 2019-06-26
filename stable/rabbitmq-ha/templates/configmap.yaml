@@ -3,9 +3,10 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ template "rabbitmq-ha.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "rabbitmq-ha.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    chart: {{ template "rabbitmq-ha.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 {{- if .Values.extraLabels }}
@@ -65,7 +66,7 @@ data:
     # Set to false if automatic cleanup of absent nodes is desired.
     # This can be dangerous, see http://www.rabbitmq.com/cluster-formation.html#node-health-checks-and-cleanup.
     cluster_formation.node_cleanup.only_log_warning = true
-    cluster_partition_handling = autoheal
+    cluster_partition_handling = {{ .Values.rabbitmqClusterPartitionHandling }}
 
     ## The default "guest" user is only permitted to access the server
     ## via a loopback interface (e.g. localhost)
@@ -113,4 +114,9 @@ data:
 
 {{ .Values.extraConfig | indent 4 }}
 
+{{- end }}
+
+{{- if .Values.advancedConfig }}
+  advanced.config: |
+{{ .Values.advancedConfig | indent 4 }}
 {{- end }}

@@ -1,0 +1,11 @@
+{{- if and (eq .Values.provider "designate") .Values.designate.customCA.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "external-dns.fullname" . }}
+  labels: {{ include "external-dns.labels" . | indent 4 }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+data:
+  {{ .Values.designate.customCA.filename }}: |
+{{ .Values.designate.customCA.content | indent 4 }}
+{{- end }}

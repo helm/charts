@@ -1,7 +1,7 @@
 {{- if .Values.rbac.create }}
 
-{{- if .Values.rbac.clusterAdminRole }}
-# Cluster role binding for clusterAdminRole == true
+{{- if or .Values.rbac.clusterAdminRole .Values.rbac.clusterReadOnlyRole }}
+# Cluster role binding for clusterAdminRole == true or clusterReadOnlyRole=true
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
 metadata:
@@ -14,13 +14,17 @@ metadata:
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: cluster-admin
+  name: {{ if .Values.rbac.clusterAdminRole -}}
+cluster-admin
+{{- else if .Values.rbac.clusterReadOnlyRole -}}
+{{ template "kubernetes-dashboard.fullname" . }}-readonly
+{{- end }}
 subjects:
   - kind: ServiceAccount
     name: {{ template "kubernetes-dashboard.serviceAccountName" . }}
     namespace: {{ .Release.Namespace }}
 {{- else -}}
-# Role binding for clusterAdminRole == false
+# Role binding for clusterAdminRole == false and clusterReadOnlyRole=false
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: RoleBinding
 metadata:

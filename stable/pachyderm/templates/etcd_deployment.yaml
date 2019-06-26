@@ -8,19 +8,19 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
-    suite: pachyderm
+    suite: {{ template "fullname" . }}
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: {{ template "etcd.fullname" . }}
-      suite: pachyderm
+      suite: {{ template "fullname" . }}
   template:
     metadata:
       name: etcd
       labels:
         app: {{ template "etcd.fullname" . }}
-        suite: pachyderm
+        suite: {{ template "fullname" . }}
     spec:
       volumes:
         - name: etcdvol
@@ -50,6 +50,11 @@ spec:
            requests:
             cpu: '{{ .Values.etcd.resources.requests.cpu }}'
             memory: {{ .Values.etcd.resources.requests.memory }}
+          {{- if .Values.etcd.resources.limits }}
+           limits:
+            cpu: '{{ .Values.etcd.resources.limits.cpu }}'
+            memory: {{ .Values.etcd.resources.limits.memory }}
+          {{- end }}
           volumeMounts:
             - name: etcdvol
               mountPath: "/var/data/etcd"

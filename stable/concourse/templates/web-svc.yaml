@@ -1,3 +1,4 @@
+{{- if .Values.web.enabled -}}
 apiVersion: v1
 kind: Service
 metadata:
@@ -7,6 +8,10 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
+    {{- range $key, $value := .Values.web.service.labels }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+  {{- if or .Values.web.service.annotations .Values.concourse.web.prometheus.enabled }}
   annotations:
     {{- range $key, $value := .Values.web.service.annotations }}
     {{ $key }}: {{ $value | quote }}
@@ -15,6 +20,7 @@ metadata:
     prometheus.io/scrape: "true"
     prometheus.io/port: {{ .Values.concourse.web.prometheus.bindPort | quote }}
     {{- end }}
+  {{- end }}
 spec:
   type: {{ .Values.web.service.type }}
   {{ if .Values.web.service.loadBalancerSourceRanges }}
@@ -33,6 +39,14 @@ spec:
       {{ if and (eq "NodePort" .Values.web.service.type) .Values.web.service.atcNodePort }}
       nodePort: {{ .Values.web.service.atcNodePort}}
       {{ end }}
+    {{- if .Values.concourse.web.tls.enabled }}
+    - name: atc-tls
+      port: {{ .Values.concourse.web.tls.bindPort }}
+      targetPort: atc-tls
+      {{ if and (eq "NodePort" .Values.web.service.type) .Values.web.service.atcTlsNodePort }}
+      nodePort: {{ .Values.web.service.atcTlsNodePort}}
+      {{ end }}
+    {{- end }}
     - name: tsa
       port: {{ .Values.concourse.web.tsa.bindPort }}
       targetPort: tsa
@@ -46,3 +60,4 @@ spec:
     {{- end }}
   selector:
     app: {{ template "concourse.web.fullname" . }}
+{{- end }}

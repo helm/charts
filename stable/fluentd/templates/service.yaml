@@ -4,7 +4,7 @@ metadata:
   name: {{ template "fluentd.fullname" . }}
   labels:
     app: {{ template "fluentd.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    chart: {{ template "fluentd.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
@@ -15,6 +15,15 @@ spec:
       port: {{ $port.containerPort }}
       targetPort: {{ $port.containerPort }}
       protocol: {{ $port.protocol }}
+  {{- end }}
+  {{ if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nodePort))) }}
+      nodePort: {{ .Values.service.nodePort }}
+  {{ end }}
+  {{- if .Values.metrics.enabled }}
+    - name: metrics
+      port: {{ .Values.metrics.service.port }}
+      targetPort: metrics
+      protocol: TCP
   {{- end }}
   selector:
     app: {{ template "fluentd.name" . }}

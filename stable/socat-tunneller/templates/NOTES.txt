@@ -1,0 +1,1 @@
+Connect to the target by using kubectl port-forward to forward one of your local ports to a tunneller pod's port {{ .Values.tunnel.port }}, or to the service using svc/{{ include "tunneller.fullname" . }}.

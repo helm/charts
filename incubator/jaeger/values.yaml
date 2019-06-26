@@ -6,7 +6,10 @@ provisionDataStore:
   cassandra: true
   elasticsearch: false
 
-tag: 1.8.2
+tag: 1.12.0
+
+nameOverride: ""
+fullnameOverride: ""
 
 storage:
   # allowed values (cassandra, elasticsearch)
@@ -65,7 +68,7 @@ schema:
 # Begin: Override values on the Elasticsearch subchart to customize for Jaeger
 elasticsearch:
   image:
-    tag: "5.4"
+    tag: "6.6"
   cluster:
     name: "tracing"
   data:
@@ -129,6 +132,7 @@ collector:
     # List of IP ranges that are allowed to access the load balancer (if supported)
     loadBalancerSourceRanges: []
     type: ClusterIP
+    grpcPort: 14250
     # tchannelPort: used by jaeger-agent to send spans in jaeger.thrift format
     tchannelPort: 14267
     # httpPort: can accept spans directly from clients in jaeger.thrift format
@@ -154,12 +158,15 @@ collector:
 
 query:
   enabled: true
+  agentSidecar:
+    enabled: true
   annotations: {}
   image: jaegertracing/jaeger-query
   pullPolicy: IfNotPresent
   dnsPolicy: ClusterFirst
   cmdlineParams: {}
   healthCheckPort: 16687
+  basePath: /
   replicaCount: 1
   service:
     annotations: {}

@@ -98,6 +98,7 @@ CouchDB chart and their default values:
 | `erlangFlags`                   | Map of flags supplied to the underlying Erlang VM     | name: couchdb, setcookie: monster
 | `persistentVolume.enabled`      | Boolean determining whether to attach a PV to each node | false
 | `persistentVolume.size`         | If enabled, the size of the persistent volume to attach                          | 10Gi
+| `enableSearch`                  | Adds a sidecar for Lucene-powered text search         | false                                  |
 
 A variety of other parameters are also configurable. See the comments in the
 `values.yaml` file for further details:
@@ -108,11 +109,17 @@ A variety of other parameters are also configurable. See the comments in the
 | `adminPassword`                 | auto-generated                         |
 | `cookieAuthSecret`              | auto-generated                         |
 | `helperImage.repository`        | kocolosk/couchdb-statefulset-assembler |
-| `helperImage.tag`               | 0.1.0                                  |
+| `helperImage.tag`               | 1.2.0                                  |
 | `helperImage.pullPolicy`        | IfNotPresent                           |
 | `image.repository`              | couchdb                                |
-| `image.tag`                     | 2.2.0                                  |
+| `image.tag`                     | 2.3.0                                  |
 | `image.pullPolicy`              | IfNotPresent                           |
+| `searchImage.repository`        | kocolosk/couchdb-search                |
+| `searchImage.tag`               | 0.1.0                                  |
+| `searchImage.pullPolicy`        | IfNotPresent                           |
+| `initImage.repository`          | busybox                                |
+| `initImage.tag`                 | latest                                 |
+| `initImage.pullPolicy`          | Always                                 |
 | `ingress.enabled`               | false                                  |
 | `ingress.hosts`                 | chart-example.local                    |
 | `ingress.annotations`           |                                        |
@@ -122,6 +129,7 @@ A variety of other parameters are also configurable. See the comments in the
 | `podManagementPolicy`           | Parallel                               |
 | `affinity`                      |                                        |
 | `resources`                     |                                        |
+| `service.annotations`           |                                        |
 | `service.enabled`               | true                                   |
 | `service.type`                  | ClusterIP                              |
 | `service.externalPort`          | 5984                                   |

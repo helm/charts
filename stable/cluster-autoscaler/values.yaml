@@ -23,6 +23,8 @@ autoscalingGroupsnamePrefix: []
 
 # Required if cloudProvider=aws
 awsRegion: us-east-1
+awsAccessKeyID: ""
+awsSecretAccessKey: ""
 
 # Required if cloudProvider=azure
 # clientID/ClientSecret with contributor permission to Cluster and Node ResourceGroup
@@ -36,11 +38,14 @@ azureTenantID: ""
 azureVMType: "AKS"
 azureClusterName: ""
 azureNodeResourceGroup: ""
+# if using MSI, ensure subscription ID and resource group are set
+azureUseManagedIdentityExtension: false
 
 # Currently only `gce`, `aws`, `azure` & `spotinst` are supported
 cloudProvider: aws
 
 sslCertPath: /etc/ssl/certs/ca-certificates.crt
+sslCertHostPath: /etc/ssl/certs/ca-certificates.crt
 
 # Configuration file for cloud provider
 cloudConfigPath: /etc/gce.conf
@@ -88,6 +93,9 @@ podAnnotations: {}
 podLabels: {}
 replicaCount: 1
 
+deployment:
+  apiVersion: "extensions/v1beta1"
+
 rbac:
   ## If true, create & use RBAC resources
   ##
@@ -108,6 +116,11 @@ resources: {}
   #   memory: 300Mi
 
 priorityClassName: ""
+
+# Defaults to "ClusterFirst". Valid values are
+# 'ClusterFirstWithHostNet', 'ClusterFirst', 'Default' or 'None'
+# autoscaler does not depend on cluster DNS, recommended to set this to "Default"
+# dnsPolicy: "Default"
 
 service:
   annotations: {}

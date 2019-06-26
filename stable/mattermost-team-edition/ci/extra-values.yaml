@@ -9,7 +9,7 @@ extraEnvVars:
   - name: TEST_SAMPLE
     value: blablabal
 
-extraInitContainers: |
+extraInitContainers:
   - name: test-init
     image: busybox
     imagePullPolicy: IfNotPresent

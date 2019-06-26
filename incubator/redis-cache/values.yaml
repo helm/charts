@@ -8,7 +8,7 @@ replicaCount: 3
 redis:
   image:
     repository: redis
-    tag: 4.0.11-alpine
+    tag: 4.0.12-alpine
     pullPolicy: IfNotPresent
   resources:
     limits:

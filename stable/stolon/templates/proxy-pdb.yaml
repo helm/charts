@@ -1,0 +1,18 @@
+{{- if .Values.proxy.podDisruptionBudget }}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ template "stolon.fullname" . }}-proxy
+  labels:
+    app: {{ template "stolon.name" . }}
+    chart: {{ template "stolon.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "stolon.name" . }}
+      release: {{ .Release.Name }}
+      component: stolon-proxy
+{{ toYaml .Values.proxy.podDisruptionBudget | indent 2 }}
+{{- end }}

@@ -7,11 +7,18 @@ metadata:
     chart: {{ template "metrics-server.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+    {{- with .Values.service.labels -}}
+    {{ toYaml . | nindent 4 }}
+    {{- end }}
+  annotations:
+    {{- toYaml .Values.service.annotations | nindent 4 }}
 spec:
   ports:
-    - port: 443
+    - port: {{ .Values.service.port }}
       protocol: TCP
-      targetPort: 443
+      targetPort: https
   selector:
     app: {{ template "metrics-server.name" . }}
     release: {{ .Release.Name }}
+  type: {{ .Values.service.type }}
+

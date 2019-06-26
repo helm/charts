@@ -4,7 +4,7 @@
 replicaCount: 1
 image:
   repository: kbudde/rabbitmq-exporter
-  tag: v0.28.0
+  tag: v0.29.0
   pullPolicy: IfNotPresent
 service:
   type: ClusterIP
@@ -33,11 +33,27 @@ rabbitmq:
   url: http://myrabbit:15672
   user: guest
   password: guest
+  # If existingPasswordSecret is set then password is ignored
+  existingPasswordSecret: ~
   capabilities: bert,no_sort
   include_queues: ".*"
+  include_vhost: ".*"
   skip_queues: "^$"
+  skip_verify: "false"
+  skip_vhost: "^$"
+  exporters: "exchange,node,overview,queue"
+  output_format: "TTY"
+  timeout: 30
+  max_queues: 0
 
 annotations: {}
 #  prometheus.io/scrape: "true"
 #  prometheus.io/path: "/metrics"
 #  prometheus.io/port: 9419
+
+prometheus:
+  monitor:
+    enabled: false
+    additionalLabels: {}
+    interval: 15s
+    namespace: []

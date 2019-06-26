@@ -50,6 +50,7 @@ The following table lists the configurable parameters of the etcd chart and thei
 | `nodeSelector`          | Node labels for pod assignment       | `{}`                                               |
 | `tolerations`           | Toleration labels for pod assignment | `[]`                                               |
 | `extraEnv`              | Optional environment variables       | `[]`                                               |
+| `memoryMode`            | Using memory as backend storage      | `false`                                            |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 

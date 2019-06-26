@@ -8,6 +8,10 @@ metadata:
     app.kubernetes.io/name: {{ include "kafka-manager.name" . }}
     app.kubernetes.io/version: {{ .Chart.AppVersion | replace "+" "_" | trunc 63 }}
     helm.sh/chart: {{ include "kafka-manager.chart" . }}
+{{- with .Values.service.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
 spec:
   type: {{ .Values.service.type }}
   ports:

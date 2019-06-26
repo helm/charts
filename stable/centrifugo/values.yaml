@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: centrifugo/centrifugo
-  tag: v2.0.2
+  tag: v2.1.0
   pullPolicy: IfNotPresent
 
 service:
@@ -60,5 +60,6 @@ admin:
 args:
 - --config=centrifugo/config.json
 - --admin
+- --health
 
 resources: {}

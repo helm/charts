@@ -18,6 +18,10 @@ spec:
       labels:
         app.kubernetes.io/name: {{ include "spark-history-server.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
+{{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+{{- end }}
     spec:
       serviceAccountName: {{ include "spark-history-server.serviceAccountName" . }}
       containers:
@@ -31,8 +35,10 @@ spec:
           value: "true"
         ports:
         - name: historyport
-          containerPort: {{ .Values.service.port }}
+          containerPort: 18080
           protocol: TCP
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
         command:
         - "/bin/sh"
         - "-c"
@@ -46,12 +52,29 @@ spec:
             -Dspark.history.fs.logDirectory=$logDirectory";
           elif [ "$enableS3" == "true" ]; then
             export SPARK_HISTORY_OPTS="$SPARK_HISTORY_OPTS \
-              -Dspark.history.fs.logDirectory=$logDirectory
+              -Dspark.history.fs.logDirectory=$logDirectory \
               -Dspark.hadoop.fs.s3a.impl=org.apache.hadoop.fs.s3a.S3AFileSystem";
             if [ "$enableIAM" == "false" ]; then
               export SPARK_HISTORY_OPTS="$SPARK_HISTORY_OPTS \
               -Dspark.hadoop.fs.s3a.access.key=$(cat /etc/secrets/${accessKeyName}) \
               -Dspark.hadoop.fs.s3a.secret.key=$(cat /etc/secrets/${secretKeyName})";
+            fi;
+          elif [ "$enableWASBS" == "true" ]; then
+            container=$(cat /etc/secrets/${containerKeyName})
+            storageAccount=$(cat /etc/secrets/${storageAccountNameKeyName})
+
+            export SPARK_HISTORY_OPTS="$SPARK_HISTORY_OPTS \
+              -Dspark.history.fs.logDirectory=$logDirectory \
+              -Dspark.hadoop.fs.defaultFS=wasbs://$container@$storageAccount.blob.core.windows.net \
+              -Dspark.hadoop.fs.wasbs.impl=org.apache.hadoop.fs.azure.NativeAzureFileSystem \
+              -Dspark.hadoop.fs.AbstractFileSystem.wasbs.impl=org.apache.hadoop.fs.azure.Wasbs";
+            if [ "$sasKeyMode" == "true" ]; then
+              export SPARK_HISTORY_OPTS="$SPARK_HISTORY_OPTS \
+                -Dspark.hadoop.fs.azure.local.sas.key.mode=true \
+                -Dspark.hadoop.fs.azure.sas.$container.$storageAccount.blob.core.windows.net=$(cat /etc/secrets/${sasKeyName})";
+            else
+              export SPARK_HISTORY_OPTS="$SPARK_HISTORY_OPTS \
+                -Dspark.hadoop.fs.azure.account.key.$storageAccount.blob.core.windows.net=$(cat /etc/secrets/${storageAccountKeyName})";
             fi;
           else
             export SPARK_HISTORY_OPTS="$SPARK_HISTORY_OPTS \
@@ -83,6 +106,10 @@ spec:
         - name: secrets-volume
           mountPath: /etc/secrets
         {{- end }}
+        {{- else if .Values.wasbs.enableWASBS }}
+        volumeMounts:
+        - name: secrets-volume
+          mountPath: /etc/secrets
         {{- else }}
         volumeMounts:
         - name: core-site
@@ -109,6 +136,11 @@ spec:
         secret:
           secretName: {{ .Values.s3.secret }}
       {{- end }}
+      {{- else if .Values.wasbs.enableWASBS }}
+      volumes:
+      - name: secrets-volume
+        secret:
+          secretName: {{ .Values.wasbs.secret }}
       {{- else }}
       volumes:
       - name: hdfs-site
@@ -118,3 +150,19 @@ spec:
         configMap:
           name: {{ .Values.hdfs.coreSiteConfigMap }}
       {{- end }}
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

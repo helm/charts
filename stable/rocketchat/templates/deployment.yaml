@@ -3,17 +3,23 @@ kind: Deployment
 metadata:
   name: {{ template "rocketchat.fullname" . }}
   labels:
-    app: {{ template "rocketchat.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/name: {{ include "rocketchat.name" . }}
+    helm.sh/chart: {{ include "rocketchat.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "rocketchat.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ template "rocketchat.name" . }}
-        release: "{{ .Release.Name }}"
+        app.kubernetes.io/name: {{ include "rocketchat.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+      annotations:
+        checksum/secret: {{ include (print .Template.BasePath "/secret.yaml") . | sha256sum }}
     spec:
       {{- if .Values.securityContext.enabled }}
       securityContext:
@@ -21,9 +27,9 @@ spec:
         runAsUser: {{ .Values.securityContext.runAsUser }}
       {{- end }}
       containers:
-      - name: {{ template "rocketchat.fullname" . }}
-        image: "{{ .Values.image }}"
-        imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+      - name: rocketchat
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
         - name: DEPLOY_PLATFORM
           value: helm-chart
@@ -32,35 +38,43 @@ spec:
             fieldRef:
               fieldPath: status.podIP
         - name: MONGO_URL
-        {{ if .Values.mongodb.mongodbUsername }}
           valueFrom:
             secretKeyRef:
               name: {{ template "rocketchat.fullname" . }}
               key: mongo-uri
-        {{ else }}
-          value: mongodb://{{ template "rocketchat.mongodb.fullname" . }}:27017/rocketchat
-        {{ end }}
-        {{ if .Values.host }}
+        - name: MONGO_OPLOG_URL
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "rocketchat.fullname" . }}
+              key: mongo-oplog-uri
+        {{- if .Values.host }}
         - name: ROOT_URL
           value: https://{{ .Values.host }}
-        {{ end }}
+        {{- end }}
+        {{- if .Values.smtp.enabled }}
         - name: MAIL_URL
           valueFrom:
             secretKeyRef:
               name: {{ template "rocketchat.fullname" . }}
               key: mail-url
-        {{- range $key, $value :=  .Values.config }}
-        - name: {{ $key }}
-          value: {{ $value | quote }}
         {{- end }}
+{{- with .Values.extraEnv }}
+{{ tpl . $ | indent 8 }}
+{{- end }}
         ports:
         - name: http
           containerPort: 3000
         livenessProbe:
           httpGet:
-            path: /
+            path: /api/info
             port: http
           initialDelaySeconds: 60
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /api/info
+            port: http
+          initialDelaySeconds: 10
           timeoutSeconds: 5
         resources:
 {{ toYaml .Values.resources | indent 10 }}
@@ -75,4 +89,27 @@ spec:
       {{- else }}
         emptyDir: {}
       {{- end }}
-
+{{- if or .Values.podAntiAffinity .Values.affinity }}
+      affinity:
+{{- if .Values.affinity }}
+{{ toYaml .Values.affinity | indent 4 }}
+{{- end }}
+{{- if eq .Values.podAntiAffinity "hard" }}
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - topologyKey: {{ .Values.podAntiAffinityTopologyKey }}
+            labelSelector:
+              matchLabels:
+                app.kubernetes.io/name: {{ include "rocketchat.name" . }}
+{{- else if eq .Values.podAntiAffinity "soft" }}
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              topologyKey: {{ .Values.podAntiAffinityTopologyKey }}
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: {{ include "rocketchat.name" . }}
+                  app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+{{- end }}

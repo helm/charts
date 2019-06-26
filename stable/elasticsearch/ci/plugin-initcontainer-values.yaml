@@ -1,0 +1,7 @@
+---
+# Enable init container for installing plugins
+
+cluster:
+  plugins:
+    - ingest-attachment
+    - mapper-size

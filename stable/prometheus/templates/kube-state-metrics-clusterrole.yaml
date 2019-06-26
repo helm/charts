@@ -30,6 +30,7 @@ rules:
     resources:
       - daemonsets
       - deployments
+      - ingresses
       - replicasets
     verbs:
       - list
@@ -37,6 +38,8 @@ rules:
   - apiGroups:
       - apps
     resources:
+      - daemonsets
+      - deployments
       - statefulsets
     verbs:
       - get
@@ -54,6 +57,20 @@ rules:
       - autoscaling
     resources:
       - horizontalpodautoscalers
+    verbs:
+      - list
+      - watch
+  - apiGroups:
+      - policy
+    resources:
+      - poddisruptionbudgets
+    verbs:
+      - list
+      - watch
+  - apiGroups:
+      - certificates.k8s.io
+    resources:
+      - certificatesigningrequests
     verbs:
       - list
       - watch

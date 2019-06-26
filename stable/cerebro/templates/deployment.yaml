@@ -7,6 +7,10 @@ metadata:
     chart: {{ template "cerebro.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+{{- if .Values.deployment.annotations }}
+  annotations:
+{{ toYaml .Values.deployment.annotations | indent 4 }}
+{{- end }}
 spec:
   replicas: {{ .Values.replicaCount }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
@@ -30,6 +34,12 @@ spec:
           volumeMounts:
             - name: db
               mountPath: /var/db/cerebro
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -44,6 +54,11 @@ spec:
               mountPath: /var/db/cerebro
             - name: config
               mountPath: /etc/cerebro
+          {{- if .Values.envFromSecretRef }}
+          envFrom:
+            - secretRef:
+                name: "{{ .Values.envFromSecretRef }}"
+          {{- end }}
           livenessProbe:
             httpGet:
               path: /

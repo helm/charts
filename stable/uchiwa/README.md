@@ -69,7 +69,7 @@ The following table lists the configurable parameters of the Uchiwa chart and th
 | `port` | Port on which Uchiwa will listen | `3000` |
 | `refresh` | Determines the interval to pull the Sensu APIs, in seconds | `10` |
 | `loglevel` | Level of logging to show after Uchiwa has started | `info` |
-
+| `config` | Custom content configuration file (json) | [default](https://github.com/challengerdeep/charts/blob/uchiwa-config/stable/uchiwa/templates/configmap.yaml#L16)|
 
 Detailed documentation for the `config` json can be found at [Uchiwa/Docs](https://docs.uchiwa.io/getting-started/configuration/)
 

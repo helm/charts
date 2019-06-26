@@ -6,12 +6,19 @@ replicaCount: 3
 # imagePullSecret:
 image:
   repository: vault
-  tag: 0.11.2
+  tag:
   pullPolicy: IfNotPresent
 
+vaultExporter:
+  enabled: false
+  repository: grapeshot/vault_exporter
+  tag: v0.1.2
+  pullPolicy: IfNotPresent
+  vaultAddress: 127.0.0.1:8200
+  # tlsCAFile: /vault/tls/ca.crt
 consulAgent:
   repository: consul
-  tag: 1.2.3
+  tag: 1.4.0
   pullPolicy: IfNotPresent
   # If you set join to a consul server endpoint, a consul agent will
   # be started in the vault pod.  If unset, no agent container is
@@ -24,15 +31,30 @@ consulAgent:
   #
   # Optionally override the agent's http port
   HttpPort: 8500
+  resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
 service:
   name: vault
   type: ClusterIP
   # type: LoadBalancer
+  # Assign a static LB IP
+  # loadBalancerIP: 203.0.113.32
   loadBalancerSourceRanges: []
   #  - 10.0.0.0/8
   #  - 130.211.204.2/32
   externalPort: 8200
   port: 8200
+  # clusterExternalPort: 8201
+  clusterPort: 8201
   # clusterIP: None
   annotations: {}
   #   cloud.google.com/load-balancer-type: "Internal"
@@ -67,7 +89,14 @@ resources: {}
   # requests:
   #   cpu: 100m
   #   memory: 128Mi
-affinity: |
+
+## Node selector
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+nodeSelector: {}
+
+## Affinity
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+affinity:
   podAntiAffinity:
     preferredDuringSchedulingIgnoredDuringExecution:
     - weight: 100
@@ -75,13 +104,25 @@ affinity: |
         topologyKey: kubernetes.io/hostname
         labelSelector:
           matchLabels:
-            app: {{ template "vault.fullname" . }}
-            release: {{ .Release.Name }}
+            app: '{{ template "vault.name" . }}'
+            release: '{{ .Release.Name }}'
+
+## Tolerations
+## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+tolerations: []
 
 ## Deployment annotations
 annotations: {}
 
+## Extra Deployment labels
+labels: {}
+
+## Pod annotations
 podAnnotations: {}
+
+## Pod labels
+podLabels: {}
+
 ##    Read more about kube2iam to provide access to s3 https://github.com/jtblin/kube2iam
 #     iam.amazonaws.com/role: role-arn
 
@@ -89,10 +130,24 @@ podAnnotations: {}
 ## if automation saves your unseal keys to a k8s secret on deploy
 ## writing a script to do this would be trivial and solves the
 ## issues of scaling up if deployed in HA.
-# lifecycle: |
+# lifecycle:
 #   postStart:
 #     exec:
 #       command: ["./unseal -s my-unseal-keys"]
+
+# Priority class name for pods
+priorityClassName: ""
+
+# Minimum number of seconds that newly created replicas must be ready without any containers
+# crashing
+minReadySeconds: 0
+serviceAccount:
+  ## Specifies whether a ServiceAccount should be created
+  ##
+  create: false
+  ## The name of the ServiceAccount to use.
+  ## If not set and create is true, a name is generated using the fullname template
+  name:
 
 vault:
   # Only used to enable dev mode. When in dev mode, the rest of this config
@@ -100,27 +155,37 @@ vault:
   # https://www.vaultproject.io/intro/getting-started/dev-server.html for more
   # information.
   dev: true
-  # Allows the mounting of various custom secrets th enable production vault
-  # configurations. The comments show an example usage for mounting a TLS
-  # secret. The two fields required are a secretName indicating the name of
-  # the Kubernetes secret (created outside of this chart), and the mountPath
-  # at which it should be mounted in the Vault container.
-  customSecrets: []
-    # - secretName: vault-tls
-    #   mountPath: /vault/tls
-  #
   # Configure additional environment variables for the Vault containers
-  extraEnv: {}
+  extraEnv: []
   #   - name: VAULT_API_ADDR
   #     value: "https://vault.internal.domain.name:8200"
-  extraContainers: {}
+  extraContainers: []
   ## Additional containers to be added to the Vault pod
+  # extraContainers:
   # - name: vault-sidecar
   #   image: vault-sidecar:latest
   #   volumeMounts:
   #   - name: some-mount
   #     mountPath: /some/path
-  extraVolumes: {}
+  # Extra volumes to mount to the Vault pod. The comments show an example usage
+  # for mounting a TLS secret. In this example, the volume name must match
+  # the volumeMount name. The two other fields required are the name of the
+  # Kubernetes secret (created outside of this chart), and the mountPath
+  # at which it should be mounted in the Vault container.
+  extraVolumes: []
+  #   - name: vault-tls
+  #     secret:
+  #       secretName: vault-tls-secret
+  extraVolumeMounts: []
+  #   - name: vault-tls
+  #     mountPath: /vault/tls
+  #     readOnly: true
+  extraInitContainers: []
+  ## Init containers to be added
+  # extraInitContainers:
+  # - name: do-something
+  #   image: busybox
+  #   command: ['do', 'something']
   # Log level
   # https://www.vaultproject.io/docs/commands/server.html#log-level
   logLevel: "info"
@@ -128,10 +193,19 @@ vault:
   # - name: extra-volume
   #   secret:
   #     secretName: some-secret
+  liveness:
+    aliveIfUninitialized: true
+    aliveIfSealed: true
+    initialDelaySeconds: 30
+    periodSeconds: 10
   readiness:
     readyIfSealed: false
     readyIfStandby: true
     readyIfUninitialized: true
+    initialDelaySeconds: 10
+    periodSeconds: 10
+  ## Use an existing config in a named ConfigMap
+  # existingConfigName: vault-cm
   config:
     # A YAML representation of a final vault config.json file.
     # See https://www.vaultproject.io/docs/configuration/ for more information.

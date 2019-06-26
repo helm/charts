@@ -1,0 +1,16 @@
+{{- if .Values.rbac.create -}}
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ template "instana-agent.fullname" . }}
+  labels:
+    {{- include "instana-agent.commonLabels" . | nindent 4 }}
+subjects:
+- kind: ServiceAccount
+  name: {{ template "instana-agent.serviceAccountName" . }}
+  namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: ClusterRole
+  name: {{ template "instana-agent.fullname" . }}
+  apiGroup: rbac.authorization.k8s.io
+{{- end -}}

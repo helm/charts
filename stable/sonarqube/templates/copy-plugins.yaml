@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "sonarqube.fullname" . }}-copy-plugins
+  labels:
+    app: {{ template "sonarqube.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  copy_plugins.sh: |-
+      #!/bin/bash
+      {{- if .Values.plugins.deleteDefaultPlugins }}
+      rm -f /opt/sonarqube/extensions/plugins/*.jar
+      {{- end }}
+      for f in /opt/sonarqube/extensions/plugins/tmp/*.jar
+      do
+        file=${f##*/} && file=${file%-[0-9]*} 
+        for original in /opt/sonarqube/extensions/plugins/*.jar
+        do
+          originalfile=${original##*/} && originalfile=${originalfile%-[0-9]*} 
+          if [ "$originalfile" = "$file" ]; then
+            rm -f "$original"
+          fi
+        done
+      done
+      cp /opt/sonarqube/extensions/plugins/tmp/*.jar /opt/sonarqube/extensions/plugins/
+      /opt/sonarqube/bin/run.sh
+    
+    

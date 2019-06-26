@@ -15,7 +15,7 @@ From outside the cluster, the server URL(s) are:
 {{- else if contains "NodePort" .Values.service.type }}
 
 Get the Kubernetes Dashboard URL by running:
-  export NODE_PORT=$(kubectl get -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "kubernetes-dashboard.fullname" . }})
+  export NODE_PORT=$(kubectl get -n {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "kubernetes-dashboard.fullname" . }})
   export NODE_IP=$(kubectl get nodes -o jsonpath="{.items[0].status.addresses[0].address}")
 {{- if .Values.enableInsecureLogin }}
   echo http://$NODE_IP:$NODE_PORT/
@@ -26,10 +26,10 @@ Get the Kubernetes Dashboard URL by running:
 {{- else if contains "LoadBalancer" .Values.service.type }}
 
   NOTE: It may take a few minutes for the LoadBalancer IP to be available.
-        Watch the status with: 'kubectl get svc -w {{ template "kubernetes-dashboard.fullname" . }}'
+        Watch the status with: 'kubectl get svc -n {{ .Release.Namespace }} -w {{ template "kubernetes-dashboard.fullname" . }}'
 
 Get the Kubernetes Dashboard URL by running:
-  export SERVICE_IP=$(kubectl get svc {{ template "kubernetes-dashboard.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  export SERVICE_IP=$(kubectl get svc -n {{ .Release.Namespace }} {{ template "kubernetes-dashboard.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 {{- if .Values.enableInsecureLogin }}
   echo http://$SERVICE_IP/
 {{- else }}

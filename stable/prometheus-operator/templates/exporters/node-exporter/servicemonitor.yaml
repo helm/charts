@@ -1,5 +1,5 @@
 {{- if .Values.nodeExporter.enabled }}
-apiVersion: monitoring.coreos.com/v1
+apiVersion: {{ printf "%s/v1" (.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
 kind: ServiceMonitor
 metadata:
   name: {{ template "prometheus-operator.fullname" . }}-node-exporter
@@ -14,5 +14,15 @@ spec:
       release: {{ .Release.Name }}
   endpoints:
   - port: metrics
-    interval: 30s
+    {{- if .Values.nodeExporter.serviceMonitor.interval }}
+    interval: {{ .Values.nodeExporter.serviceMonitor.interval }}
+    {{- end }}
+{{- if .Values.nodeExporter.serviceMonitor.metricRelabelings }}
+    metricRelabelings:
+{{ tpl (toYaml .Values.nodeExporter.serviceMonitor.metricRelabelings | indent 4) . }}
+{{- end }}
+{{- if .Values.nodeExporter.serviceMonitor.relabelings }}
+    relabelings:
+{{ toYaml .Values.nodeExporter.serviceMonitor.relabelings | indent 4 }}
+{{- end }}
 {{- end }}

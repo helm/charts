@@ -15,16 +15,11 @@ rules:
       - endpoints
       - pods
       - ingresses
+      - configmaps
     verbs:
       - get
       - list
       - watch
-  - apiGroups:
-      - ""
-    resources:
-      - configmaps
-    verbs:
-      - get
   - apiGroups:
       - "extensions"
     resources:

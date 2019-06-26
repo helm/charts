@@ -8,6 +8,8 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: {{ template "bitcoind.name" . }}
@@ -18,6 +20,7 @@ spec:
         app: {{ template "bitcoind.name" . }}
         release: {{ .Release.Name }}
     spec:
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       {{- if .Values.configurationFile }}
       initContainers:
         - name: copy-bitcoind-config
@@ -34,7 +37,7 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
           resources:
-  {{ toYaml .Values.resources | indent 10 }}
+{{ toYaml .Values.resources | indent 12 }}
           ports:
             - name: rpc
               containerPort: {{ .Values.service.rpcPort }}

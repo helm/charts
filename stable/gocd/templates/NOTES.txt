@@ -61,3 +61,9 @@
     WARNING: Persistence is disabled. You will lose all data at the time of pod termination!
     ################################################################################################
 {{ end }}
+
+{{- if .Values.agent.env.agentAutoRegisterEnvironemnts -}}
+6. Deprecations
+   The property `agent.env.agentAutoRegisterEnvironemnts` is deprecated in favor of `agent.env.agentAutoRegisterEnvironments`.
+   Please note that the deprecated property will be removed in GoCD 19.3.0 (that is, when Chart.appVersion is 19.3.0). Users are encouraged to use the new property `agent.env.agentAutoRegisterEnvironments`.
+{{ end }}

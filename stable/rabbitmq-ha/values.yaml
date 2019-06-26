@@ -6,12 +6,20 @@ rabbitmqUsername: guest
 
 ## RabbitMQ Management user used for health checks
 managementUsername: management
-managementPassword: E9R3fjZm4ejFkVFE
+# managementPassword:
 
 ## Place any additional key/value configuration to add to rabbitmq.conf
 ## Ref: https://www.rabbitmq.com/configure.html#config-items
 extraConfig: |
 #  queue_master_locator = min-masters
+
+## Place advanced.config file in /etc/rabbitmq/advanced.config
+## Ref: https://www.rabbitmq.com/configure.html#advanced-config-file
+advancedConfig: |
+
+## Definitions specification within the secret, will always be mounted
+## at /etc/definitions/defintions.json
+definitionsSource: definitions.json
 
 ## Place any additional plugins to enable in /etc/rabbitmq/enabled_plugins
 ## Ref: https://www.rabbitmq.com/plugins.html
@@ -97,6 +105,8 @@ definitions:
 #      }
 #    }
 
+## Ref: https://www.rabbitmq.com/rabbitmqctl.8.html#force_boot
+forceBoot: false
 
 ## RabbitMQ default VirtualHost
 ## Ref: https://www.rabbitmq.com/vhosts.html
@@ -144,6 +154,12 @@ rabbitmqCert:
   certfile: |
   keyfile: |
 
+## Extra volumes for statefulset
+extraVolumes: []
+
+## Extra volume mounts for statefulset
+extraVolumeMounts: []
+
 ## Authentication mechanism
 ## Ref: http://www.rabbitmq.com/authentication.html
 rabbitmqAuth:
@@ -153,6 +169,13 @@ rabbitmqAuth:
     # auth_mechanisms.1 = PLAIN
     # auth_mechanisms.2 = AMQPLAIN
     # auth_mechanisms.3 = EXTERNAL
+
+## Automatic Partition Handling Strategy (split brain handling)
+## Ref: https://www.rabbitmq.com/partitions.html#automatic-handling
+## Note: pause-if-all-down is not supported without using a custom configmap since it requires extra
+## configuration.
+
+rabbitmqClusterPartitionHandling: autoheal
 
 ## Authentication backend
 ## Ref: https://github.com/rabbitmq/rabbitmq-auth-backend-http
@@ -247,7 +270,7 @@ replicaCount: 3
 
 image:
   repository: rabbitmq
-  tag: 3.7-alpine
+  tag: 3.7.15-alpine
   pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
@@ -258,8 +281,8 @@ image:
 
 busyboxImage:
   repository: busybox
-  tag: latest
-  pullPolicy: Always
+  tag: 1.30.1
+  pullPolicy: IfNotPresent
 
 ## Duration in seconds the pod needs to terminate gracefully
 terminationGracePeriodSeconds: 10
@@ -276,6 +299,13 @@ service:
   loadBalancerIP: ""
   loadBalancerSourceRanges: []
   type: ClusterIP
+
+  ## Customize nodePort number when the service type is NodePort
+  ### Ref: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
+  ###
+  epmdNodePort: null
+  amqpNodePort: null
+  managerNodePort: null
 
 podManagementPolicy: OrderedReady
 
@@ -299,19 +329,27 @@ updateStrategy: OnDelete
 ##
 resources: {}
   # limits:
-  #   cpu: 100mm
+  #   cpu: 100m
   #   memory: 1Gi
   # requests:
-  #   cpu: 100mm
+  #   cpu: 100m
   #   memory: 1Gi
 initContainer:
   resources: {}
   #   limits:
-  #     cpu: 100mm
+  #     cpu: 100m
   #     memory: 128Mi
   #   requests:
-  #     cpu: 100mm
+  #     cpu: 100m
   #     memory: 128Mi
+
+## Additional init containers
+extraInitContainers: []
+
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName:
 
 ## Data Persistency
 persistentVolume:
@@ -345,6 +383,7 @@ podAnnotations: {}
 ## Pod affinity
 ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 podAntiAffinity: soft
+podAntiAffinityTopologyKey: "kubernetes.io/hostname"
 
 ## Create default configMap
 ##
@@ -402,8 +441,20 @@ readinessProbe:
   timeoutSeconds: 3
   periodSeconds: 5
 
-# Specifies an existing secret to be used for RMQ password and Erlang Cookie
+# Specifies an existing secret to be used for RMQ password, management user password and Erlang Cookie
 existingSecret: ""
+
+
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+##
+securityContext:
+  fsGroup: 101
+  runAsGroup: 101
+  runAsNonRoot: true
+  runAsUser: 100
+
+## Sets environment variables for the rabbitmq container
+env: {}
 
 prometheus:
   ## Configures Prometheus Exporter to expose and scrape stats.
@@ -412,7 +463,7 @@ prometheus:
     env: {}
     image:
       repository: kbudde/rabbitmq-exporter
-      tag: v0.28.0
+      tag: v0.29.0
       pullPolicy: IfNotPresent
 
     ## Port Prometheus scrapes for metrics
@@ -460,3 +511,8 @@ prometheus:
 
 ## Kubernetes Cluster Domain
 clusterDomain: cluster.local
+
+## Pod Disruption Budget
+podDisruptionBudget: {}
+  # maxUnavailable: 1
+  # minAvailable: 1

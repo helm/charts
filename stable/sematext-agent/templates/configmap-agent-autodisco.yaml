@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "sematext-agent.fullname" . }}-agent-autodisco
+  labels:
+    app: {{ template "sematext-agent.name" . }}-agent-autodisco
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  autodisco.yml: |-
+    {{- range .Files.Lines "files/autodisco.yml" }}
+    {{ . }}{{ end }}

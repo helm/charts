@@ -13,11 +13,20 @@ spec:
     matchLabels:
       app: {{ template "hackmd.name" . }}
       release: {{ .Release.Name }}
+  strategy:
+    type: {{ .Values.deploymentStrategy }}
+  {{- if ne .Values.deploymentStrategy "RollingUpdate" }}
+    rollingUpdate: null
+  {{- end }}
   template:
     metadata:
       labels:
         app: {{ template "hackmd.name" . }}
         release: {{ .Release.Name }}
+{{- with .Values.podAnnotations }}
+      annotations:
+{{ toYaml . | indent 8 }}
+{{- end }}
     spec:
       containers:
         - name: {{ .Chart.Name }}
@@ -38,7 +47,7 @@ spec:
               port: 3000
             initialDelaySeconds: 30
           env:
-            - name: HMD_DB_PASSWORD
+            - name: CMD_DB_PASSWORD
               {{- if .Values.postgresql.install }}
               valueFrom:
                 secretKeyRef:
@@ -47,8 +56,15 @@ spec:
               {{- else }}
               value: {{ .Values.postgresql.postgresPassword }}
               {{- end }}
+            - name: CMD_SESSION_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "hackmd.fullname" . }}
+                  key: sessionSecret
+            - name: CMD_DB_URL
+              value: postgres://{{ .Values.postgresql.postgresUser }}:$(CMD_DB_PASSWORD)@{{ template "hackmd.database.host" . }}:5432/{{ .Values.postgresql.postgresDatabase }}
             - name: HMD_DB_URL
-              value: postgres://{{ .Values.postgresql.postgresUser }}:$(HMD_DB_PASSWORD)@{{ template "hackmd.database.host" . }}:5432/{{ .Values.postgresql.postgresDatabase }}
+              value: postgres://{{ .Values.postgresql.postgresUser }}:$(CMD_DB_PASSWORD)@{{ template "hackmd.database.host" . }}:5432/{{ .Values.postgresql.postgresDatabase }}
             {{- if .Values.extraVars }}
 {{ toYaml .Values.extraVars | indent 12 }}
             {{- end }}

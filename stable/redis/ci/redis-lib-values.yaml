@@ -7,5 +7,7 @@ image:
   tag: '4.0.11'
 
 master:
-  command:
-  - "redis-server"
+  command: "redis-server"
+
+slave:
+  command: "redis-server"

@@ -14,7 +14,7 @@ rules:
   verbs:
   - '*'
 - apiGroups:
-  - monitoring.coreos.com
+  - {{ .Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com" }}
   resources:
   - alertmanagers
   - prometheuses
@@ -48,11 +48,13 @@ rules:
   - ""
   resources:
   - services
+  - services/finalizers
   - endpoints
   verbs:
   - get
   - create
   - update
+  - delete
 - apiGroups:
   - ""
   resources:

@@ -8,6 +8,10 @@ metadata:
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
     component: agent
+  annotations:
+  {{- range $key, $value := .Values.agent.annotations.deployment }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
 spec:
   replicas: {{ .Values.agent.replicaCount }}
   {{- if .Values.agent.deployStrategy }}
@@ -25,9 +29,13 @@ spec:
         app: {{ template "gocd.name" . }}
         release: {{ .Release.Name | quote }}
         component: agent
+      annotations:
+      {{- range $key, $value := .Values.agent.annotations.pod }}
+        {{ $key }}: {{ $value | quote }}
+      {{- end }}
     spec:
       serviceAccountName: {{ template "gocd.agentServiceAccountName" . }}
-      {{- if or .Values.agent.persistence.enabled .Values.agent.security.ssh.enabled }}
+      {{- if or .Values.agent.persistence.enabled (or .Values.agent.security.ssh.enabled .Values.agent.persistence.extraVolumes) }}
       volumes:
       {{- end }}
       {{- if .Values.agent.persistence.enabled }}
@@ -42,6 +50,10 @@ spec:
         - name: ssh-secrets
           secret:
             secretName: {{ .Values.agent.security.ssh.secretName }}
+      {{- end }}
+      {{- if .Values.agent.initContainers }}
+      initContainers:
+{{ toYaml .Values.agent.initContainers | indent 8 }}
       {{- end }}
       containers:
         - name: {{ template "gocd.name" . }}-agent
@@ -69,7 +81,10 @@ spec:
             - name: AGENT_AUTO_REGISTER_RESOURCES
               value: {{ .Values.agent.env.agentAutoRegisterResources }}
             {{- end }}
-            {{- if .Values.agent.env.agentAutoRegisterEnvironemnts }}
+            {{- if .Values.agent.env.agentAutoRegisterEnvironments }}
+            - name: AGENT_AUTO_REGISTER_ENVIRONMENTS
+              value: {{ .Values.agent.env.agentAutoRegisterEnvironments }}
+            {{- else if .Values.agent.env.agentAutoRegisterEnvironemnts }}
             - name: AGENT_AUTO_REGISTER_ENVIRONMENTS
               value: {{ .Values.agent.env.agentAutoRegisterEnvironemnts }}
             {{- end }}
@@ -125,8 +140,19 @@ spec:
               readOnly: true
               mountPath: /home/go/.ssh
           {{- end }}
+          {{- if .Values.agent.preStop }}
+          lifecycle:
+            preStop:
+              exec:
+               command:
+{{ toYaml .Values.agent.preStop | indent 18 }}
+          {{- end }}
           securityContext:
             privileged: {{ .Values.agent.privileged }}
+      {{- if .Values.agent.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ .Values.agent.terminationGracePeriodSeconds }}
+      {{- end }}
+      restartPolicy: {{ .Values.agent.restartPolicy }}
     {{- if .Values.agent.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.agent.nodeSelector | indent 8 }}

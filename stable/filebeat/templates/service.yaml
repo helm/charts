@@ -1,0 +1,30 @@
+{{- if .Values.monitoring.enabled }}
+kind: Service
+apiVersion: v1
+metadata:
+{{- if not .Values.monitoring.serviceMonitor.enabled }}
+  annotations:
+{{- if .Values.monitoring.telemetryPath }}
+    prometheus.io/path: {{ .Values.monitoring.telemetryPath }}
+{{- else }}
+    prometheus.io/path: /metrics
+{{- end }}
+    prometheus.io/port: "{{ .Values.monitoring.exporterPort }}"
+    prometheus.io/scrape: "true"
+{{- end }}
+  name: {{ template "filebeat.fullname" . }}-metrics
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "filebeat.name" . }}
+    chart: {{ template "filebeat.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  selector:
+    app: {{ template "filebeat.name" . }}
+  ports:
+    - name: metrics
+      port: {{ .Values.monitoring.exporterPort }}
+      targetPort: {{ .Values.monitoring.targetPort }}
+      protocol: TCP
+{{ end }}

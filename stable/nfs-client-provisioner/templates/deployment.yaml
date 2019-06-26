@@ -34,6 +34,9 @@ spec:
       affinity:
 {{ toYaml .Values.affinity | indent 8 }}
       {{- end }}
+      {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName | quote }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -48,6 +51,10 @@ spec:
               value: {{ .Values.nfs.server }}
             - name: NFS_PATH
               value: {{ .Values.nfs.path }}
+          {{- with .Values.resources }}
+          resources:
+{{ toYaml . | indent 12 }}
+          {{- end }}
       volumes:
         - name: nfs-client-root
 {{- if .Values.buildMode }}

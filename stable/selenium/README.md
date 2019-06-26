@@ -42,17 +42,22 @@ The following table lists the configurable parameters of the Selenium chart and 
 
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
-| `global.nodeselector` | Node label to be useed globally for scheduling of all images | `nil` |
+| `global.nodeSelector` | Node label to be useed globally for scheduling of all images | `nil` |
 | `global.hostAliases` | A list of hostAliases, that contains ip and hostnames, to be used globally | `[]` |
 | `global.affinity` | Deployemnt affinities to be used globally for scheduling of all images | `nil` |
 | `global.tolerations` | Deployment tolerations to be used globally for scheduling of all images | `nil` |
+| `global.imagePullSecrets` | The secret to use for pulling the images for all deployments | `nil` |
 | `hub.image` | The selenium hub image | `selenium/hub` |
-| `hub.tag` | The selenium hub image tag | `3.14.0` |
+| `hub.tag` | The selenium hub image tag | `3.141.59` |
+| `hub.imagePullSecrets` | The secret to use for pulling the image. Will override the global parameter if set | `nil` |
 | `hub.pullPolicy` | The pull policy for the hub image | `IfNotPresent` |
 | `hub.port` | The port the hub listens on | `4444` |
+| `hub.servicePort` | The port the hub Service listens on | `4444` |
+| `hub.nodePort` | The port the hub is exposed when Nodeport mode is selected | `nil` |
 | `hub.podAnnotations` | Annotations on the hub pod | `{}` |
-| `hub.javaOpts` | The java options for the selenium hub JVM, default sets the maximum heap size to 1,000 mb | `-Xmx1000m` |
-| `hub.resources` | The resources for the hub container, defaults to minimum half a cpu and maximum 1,000 mb RAM | `{"limits":{"cpu":".5", "memory":"1000Mi"}}` |
+| `hub.extraEnvs` |  Any additional environment variables to set in the pods | `[]` |
+| `hub.javaOpts` | The java options for the selenium hub JVM, default sets the maximum heap size to 400 mb | `-Xmx400m` |
+| `hub.resources` | The resources for the hub container, defaults to minimum half a cpu and maximum 512 mb RAM | `{"limits":{"cpu":".5", "memory":"512Mi"}}` |
 | `hub.serviceType` | The Service type | `LoadBalancer` |
 | `hub.serviceLoadBalancerIP` | The Public IP for the Load Balancer | `nil` |
 | `hub.loadBalancerSourceRanges` | A list of IP CIDRs allowed access to load balancer (if supported) | `[]` |
@@ -64,10 +69,10 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `hub.gridTimeout` | | `nil` |
 | `hub.gridBrowserTimeout` | | `nil` |
 | `hub.gridMaxSession` | | `nil` |
-| `hub.gridUnregisterIfStillDownAfer` | | `nil` |
+| `hub.gridUnregisterIfStillDownAfter` | | `nil` |
 | `hub.seOpts` | Command line arguments to pass to hub | `nil` |
 | `hub.timeZone` | The time zone for the container | `nil` |
-| `hub.nodeselector` | Node label to use for scheduling of the hub if set this takes precedence over the global value | `nil` |
+| `hub.nodeSelector` | Node label to use for scheduling of the hub if set this takes precedence over the global value | `nil` |
 | `hub.affinity` | Deployemnt affinities to use for scheduling of the hub if set this takes precedence over the global value | `nil` |
 | `hub.tolerations` | Deployment tolerations to use for scheduling of the hub if set this takes precedence over the global value | `nil` |
 | `hub.ingress.enabled` | Configure an ingress for the selenium hub | `false` |
@@ -80,10 +85,12 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `hub.probePath` | Path for readiness and liveness probes to check | `/wd/hub/status` |
 | `chrome.enabled` | Schedule a chrome node pod | `false` |
 | `chrome.image` | The selenium node chrome image | `selenium/node-chrome` |
-| `chrome.tag` | The selenium node chrome tag | `3.14.0` |
+| `chrome.tag` | The selenium node chrome tag | `3.141.59` |
+| `chrome.imagePullSecrets` | The secret to use for pulling the image. Will override the global parameter if set | `nil` |
 | `chrome.pullPolicy` | The pull policy for the node chrome image | `IfNotPresent` |
 | `chrome.replicas` | The number of selenium node chrome pods | `1` |
 | `chrome.podAnnotations` | Annotations on the chrome pods | `{}` |
+| `chrome.extraEnvs` |  Any additional environment variables to set in the pods | `[]` |
 | `chrome.javaOpts` | The java options for the selenium node chrome JVM, default sets the maximum heap size to 900 mb | `-Xmx900m` |
 | `chrome.volumeMounts` | Additional volumes to mount, the default provides a larger shared memory | `[{"mountPath":"/dev/shm", "name":"dshm"}]` |
 | `chrome.volumes` | Additional volumes import, the default provides a larger shared memory | `[{"name":"dshm", "emptyDir":{"medium":"Memory"}}]` |
@@ -99,15 +106,17 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `chrome.nodePort` | The port to listen on | `nil` |
 | `chrome.seOpts` | Command line arguments to pass to node | `nil` |
 | `chrome.timeZone` | The time zone for the container | `nil` |
-| `chrome.nodeselector` | Node label to use for scheduling of chrome images if set this takes precedence over the global value | `nil` |
+| `chrome.nodeSelector` | Node label to use for scheduling of chrome images if set this takes precedence over the global value | `nil` |
 | `chrome.affinity` | Deployemnt affinities to use for scheduling of the chrome if set this takes precedence over the global value | `nil` |
 | `chrome.tolerations` | Deployment tolerations to use for scheduling of the chrome if set this takes precedence over the global value | `nil` |
 | `chromeDebug.enabled` | Schedule a selenium node chrome debug pod | `false` |
 | `chromeDebug.image` | The selenium node chrome debug image | `selenium/node-chrome-debug` |
-| `chromeDebug.tag` | The selenium node chrome debug tag | `3.14.0` |
+| `chromeDebug.tag` | The selenium node chrome debug tag | `3.141.59` |
+| `chromeDebug.imagePullSecrets` | The secret to use for pulling the image. Will override the global parameter if set | `nil` |
 | `chromeDebug.pullPolicy` | The selenium node chrome debug pull policy | `IfNotPresent` |
 | `chromeDebug.replicas` | The number of selenium node chrome debug pods | `1` |
 | `chromeDebug.podAnnotations` | Annotations on the Chrome debug pod | `{}` |
+| `chromeDebug.extraEnvs` |  Any additional environment variables to set in the pods | `[]` |
 | `chromeDebug.javaOpts` | The java options for a selenium node chrome debug JVM, default sets the max heap size to 900 mb | `-Xmx900m` |
 | `chromeDebug.volumeMounts` | Additional volumes to mount, the default provides a larger shared | `[{"mountPath":"/dev/shm", "name":"dshm"}]` |
 | `chromeDebug.volumes` | Additional volumes import, the default provides a larger shared | `[{"name":"dshm", "emptyDir":{"medium":"Memory"}}]` |
@@ -123,15 +132,17 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `chromeDebug.nodePort` | The port to listen on | `nil` |
 | `chromeDebug.seOpts` | Command line arguments to pass to node | `nil` |
 | `chromeDebug.timeZone` | The time zone for the container | `nil` |
-| `chromeDebug.nodeselector` | Node label to use for scheduling of chromeDebug images if set this takes precedence over the global value | `nil` |
+| `chromeDebug.nodeSelector` | Node label to use for scheduling of chromeDebug images if set this takes precedence over the global value | `nil` |
 | `chromeDebug.affinity` | Deployemnt affinities to use for scheduling of the chromeDebug if set this takes precedence over the global value | `nil` |
 | `chromeDebug.tolerations` | Deployment tolerations to use for scheduling of the chromeDebug if set this takes precedence over the global value | `nil` |
 | `firefox.enabled` | Schedule a selenium node firefox pod | `false` |
 | `firefox.image` | The selenium node firefox image | `selenium/node-firefox` |
-| `firefox.tag` | The selenium node firefox tag | `3.14.0` |
+| `firefox.tag` | The selenium node firefox tag | `3.141.59` |
+| `firefox.imagePullSecrets` | The secret to use for pulling the image. Will override the global parameter if set | `nil` |
 | `firefox.pullPolicy` | The selenium node firefox pull policy | `IfNotPresent` |
 | `firefox.replicas` | The number of selenium node firefox pods | `1` |
 | `firefox.podAnnotations` | Annotations on the firefox pods | `{}` |
+| `firefox.extraEnvs` |  Any additional environment variables to set in the pods | `[]` |
 | `firefox.javaOpts` | The java options for a selenium node firefox JVM, default sets the max heap size to 900 mb | `-Xmx900m` |
 | `firefox.resources` | The resources for the hub container, defaults to minimum half a cpu and maximum 1,000 mb | `{"limits":{"cpu":".5", "memory":"1000Mi"}}` |
 | `firefox.screenWidth` | | `nil` |
@@ -145,15 +156,17 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `firefox.nodePort` | The port to listen on | `nil` |
 | `firefox.seOpts` | Command line arguments to pass to node | `nil` |
 | `firefox.timeZone` | The time zone for the container | `nil` |
-| `firefox.nodeselector` | Node label to use for scheduling of firefox images if set this takes precedence over the global value | `nil` |
+| `firefox.nodeSelector` | Node label to use for scheduling of firefox images if set this takes precedence over the global value | `nil` |
 | `firefox.affinity` | Deployemnt affinities to use for scheduling of the firefox if set this takes precedence over the global value | `nil` |
 | `firefox.tolerations` | Deployment tolerations to use for scheduling of the firefox if set this takes precedence over the global value | `nil` |
 | `firefoxDebug.enabled` | Schedule a selenium node firefox debug pod | `false` |
 | `firefoxDebug.image` | The selenium node firefox debug image | `selenium/node-firefox-debug` |
-| `firefoxDebug.tag` | The selenium node firefox debug tag | `3.14.0` |
+| `firefoxDebug.tag` | The selenium node firefox debug tag | `3.141.59` |
+| `firefoxDebug.imagePullSecrets` | The secret to use for pulling the image. Will override the global parameter if set | `nil` |
 | `firefoxDebug.pullPolicy` | The selenium node firefox debug pull policy | `IfNotPresent` |
-| `firefoxDebug.replicas` | The numer of selenium node firefox debug pods | `1` |
+| `firefoxDebug.replicas` | The number of selenium node firefox debug pods | `1` |
 | `firefoxDebug.podAnnotations` | Annotations on the firefox debug pods | `{}` |
+| `firefoxDebug.extraEnvs` |  Any additional environment variables to set in the pods | `[]` |
 | `firefoxDebug.javaOpts` | The java options for a selenium node firefox debug JVM, default sets the max heap size to 900 mb | `-Xmx900m` |
 | `firefoxDebug.resources` | The resources for the selenium node firefox debug container, defaults to minimum half a cpu and maximum 1,000 mb | `{"limits":{"cpu":".5", "memory":"1000Mi"}}` |
 | `firefoxDebug.screenWidth` | | `nil` |
@@ -167,7 +180,7 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `firefoxDebug.nodePort` | The port to listen on | `nil` |
 | `firefoxDebug.seOpts` | Command line arguments to pass to node | `nil` |
 | `firefoxDebug.timeZone` | The time zone for the container | `nil` |
-| `firefoxDebug.nodeselector` | Node label to use for scheduling of firefoxDebug images if set this takes precedence over the global value | `nil` |
+| `firefoxDebug.nodeSelector` | Node label to use for scheduling of firefoxDebug images if set this takes precedence over the global value | `nil` |
 | `firefoxDebug.affinity` | Deployemnt affinities to use for scheduling of the firefoxDebug if set this takes precedence over the global value | `nil` |
 | `firefoxDebug.tolerations` | Deployment tolerations to use for scheduling of the firefoxDebug if set this takes precedence over the global value | `nil` |
 
