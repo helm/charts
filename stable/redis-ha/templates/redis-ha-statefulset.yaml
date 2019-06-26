@@ -136,7 +136,7 @@ spec:
 {{- end }}
         livenessProbe:
           exec:
-            command: [ "sh", "/probes/readiness.sh", "{{ .Values.redis.port }}"]
+            command: [ "sh", "/probes/liveness.sh", "{{ .Values.redis.port }}"]
           initialDelaySeconds: 15
           periodSeconds: 5
         readinessProbe:
