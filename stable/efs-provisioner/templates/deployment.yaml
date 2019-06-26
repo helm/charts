@@ -1,4 +1,4 @@
-{{- if ne .Values.efsProvisioner.efsFileSystemId "fs-12345678" }}
+{{- if or (ne .Values.efsProvisioner.efsFileSystemId "fs-12345678") (.Values.efsProvisioner.dnsName) }}
 {{/*
 The `efsFileSystemId` value must be set.
 
@@ -44,6 +44,12 @@ spec:
       {{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"
       {{- end }}
+{{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range $pullSecret := .Values.image.pullSecrets }}
+        - name: {{ $pullSecret }}
+      {{- end }}
+{{- end }}
       containers:
       - name: {{ template "efs-provisioner.fullname" . }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -55,6 +61,10 @@ spec:
           value: {{ .Values.efsProvisioner.awsRegion }}
         - name: PROVISIONER_NAME
           value: {{ .Values.efsProvisioner.provisionerName }}
+        {{- if .Values.efsProvisioner.dnsName }}
+        - name: DNS_NAME
+          value: {{ .Values.efsProvisioner.dnsName }}
+        {{- end }}
         resources:
           {{- toYaml .Values.resources | nindent 12 }}
         volumeMounts:
@@ -74,7 +84,11 @@ spec:
       volumes:
       - name: pv-volume
         nfs:
+          {{- if .Values.efsProvisioner.dnsName }}
+          server: {{ .Values.efsProvisioner.dnsName }}
+          {{- else }}
           server: {{ .Values.efsProvisioner.efsFileSystemId }}.efs.{{ .Values.efsProvisioner.awsRegion }}.amazonaws.com
+          {{- end }}
           path: /
 {{- end }}
     {{- if .Values.nodeSelector }}

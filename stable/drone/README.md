@@ -71,6 +71,7 @@ The following table lists the configurable parameters of the drone charts and th
 | `ingress.annotations`       | Ingress annotations                                                                           | `{}`                        |
 | `ingress.hosts`             | Ingress accepted hostnames                                                                    | `nil`                       |
 | `ingress.tls`               | Ingress TLS configuration                                                                     | `[]`                        |
+| `ingress.path`              | Ingress path mapping                                                                          | ``                       |
 | `sourceControl.provider`               | name of source control provider [github,gitlab,gitea,gogs,bitbucketCloud,bitbucketServer]              | ``       |
 | `sourceControl.secret`               | name of secret containing source control keys and passwords              | ``       |
 | `sourceControl.github`               | values to configure github    | see values.yaml       |
@@ -93,6 +94,7 @@ The following table lists the configurable parameters of the drone charts and th
 | `server.schedulerName`      | Drone **server** alternate scheduler name                                                     | `nil`                       |
 | `server.affinity`           | Drone **server** scheduling preferences                                                       | `{}`                        |
 | `server.nodeSelector`       | Drone **server** node labels for pod assignment                                               | `{}`                        |
+| `server.tolerations`        | Drone **server** node taints to tolerate                                                      | `[]`                        |
 | `server.extraContainers`    | Additional sidecar containers                                                                 | `""`                        |
 | `server.extraVolumes`       | Additional volumes for use in extraContainers                                                 | `""`                        |
 | `agent.env`                 | Drone **agent** environment variables                                                         | `(default values)`          |
@@ -102,6 +104,7 @@ The following table lists the configurable parameters of the drone charts and th
 | `agent.schedulerName`       | Drone **agent** alternate scheduler name                                                      | `nil`                       |
 | `agent.affinity`            | Drone **agent** scheduling preferences                                                        | `{}`                        |
 | `agent.nodeSelector`        | Drone **agent** node labels for pod assignment                                                | `{}`                        |
+| `agent.tolerations`         | Drone **agent** node taints to tolerate                                                       | `[]`                        |
 | `agent.livenessProbe` | Not currently used. | `{}` |
 | `agent.readinessProbe` | Not currently used  | `{}` |
 | `dind.enabled`              | Enable or disable **DinD**                                                                    | `true`                      |
