@@ -1,0 +1,23 @@
+{{ if and .Values.prometheus.exporter.enabled .Values.prometheus.jmx.enabled .Values.prometheus.servicemonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  app: {{ template "kafka-connect.name" . }}
+  name: {{ template "kafka-connect.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+{{- if .Values.prometheus.exporter.selector }}
+{{ toYaml .Values.prometheus.exporter.selector | indent 4 }}
+{{- end }}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "kafka-connect.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  endpoints:
+  - port: {{ .Values.prometheus.jmx.portName }}
+    interval: 10s
+  namespaceSelector:
+    matchNames:
+    - {{ .Release.Namespace }}
+{{ end }}

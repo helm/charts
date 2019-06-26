@@ -1,0 +1,22 @@
+{{- if .Values.ingress.enabled -}}
+{{- $fullName := include "kafka-connect.fullname" . -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ $fullName }}
+  labels:
+{{ include "kafka-connect.labels" . | indent 4 }}
+  {{- with .Values.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  rules:
+  - host: {{ .Values.ingress.host | quote }}
+    http:
+      paths:
+        - path: {{ .Values.ingress.path }}
+          backend:
+            serviceName: {{ $fullName }}-connect
+            servicePort: http
+{{- end }}

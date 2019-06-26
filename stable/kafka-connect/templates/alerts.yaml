@@ -1,0 +1,58 @@
+{{- if .Values.prometheus.alerts.enabled -}}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: {{ template "kafka-connect.fullname" . }}-alerts
+  namespace: search
+  labels:
+    app: {{ template "kafka-connect.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+{{- if .Values.prometheus.alerts.selector }}
+{{ toYaml .Values.prometheus.alerts.selector | indent 4 }}
+{{- end }}
+{{- if .Values.prometheus.exporter.selector }}
+{{ toYaml .Values.prometheus.exporter.selector | indent 4 }}
+{{- end }}
+spec:
+  groups:
+  - name: connect-alerts
+    rules:
+    - alert: KafkaConnectIsDown
+      expr: absent(sum(up{service="{{ template "kafka-connect.fullname" . }}"}) > 0) == 1
+      for: 1m
+      labels:
+        installed_by: {{ .Release.Name }}
+        severity: critical
+        team: {{ .Values.team }}
+      annotations:
+        description: Kafka Connect{{`{{ $labels.namespace }}`}}/{{`{{ $labels.pod}}`}} is down
+        summary: Kafka Connect Is Down
+
+    - alert: ConnectHighCPUUsage
+      expr: (sum(rate(container_cpu_usage_seconds_total{container_name="connect", pod_name=~"{{ template "kafka-connect.fullname" . }}-.*"}[2m])) by (pod_name)
+        /
+        sum(label_join(kube_pod_container_resource_limits_cpu_cores{container="connect", pod=~"{{ template "kafka-connect.fullname" . }}-.*"}, "pod_name", "", "pod")) by (pod_name)) * 100 > 75
+      for: 4m
+      labels:
+        installed_by: {{ .Release.Name }}
+        severity: critical
+        team: search
+      annotations:
+        description: Kafka Connect {{`{{ $labels.namespace }}`}}/{{`{{ $labels.pod }}`}} CPU usage is > 75%
+        summary: Kafka ConnectCPU usage is > 75%
+
+    - alert: ConnectHighMemoryUsage
+      expr: (sum(container_memory_working_set_bytes{container_name="connect", pod_name=~"{{ template "kafka-connect.fullname" . }}-.*" }) by (pod_name)
+        /
+        sum(label_join(kube_pod_container_resource_limits_memory_bytes{container="connect", pod=~"{{ template "kafka-connect.fullname" . }}-.*"}, "pod_name", "", "pod")) by (pod_name)) * 100 > 80
+      for: 5m
+      labels:
+        installed_by: {{ .Release.Name }}
+        severity: critical
+        team: {{ .Values.team }}
+      annotations:
+        description: Kafka Connect {{`{{ $labels.namespace }}`}}/{{`{{ $labels.pod }}`}} Memory usage is > 80%
+        summary: Kafka Connect Memory usage is > 80%
+{{- end -}}

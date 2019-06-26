@@ -1,0 +1,24 @@
+{{- if and .Values.prometheus.jmx.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "kafka-connect.fullname" . }}-jmx-configmap
+  labels:
+    app: {{ template "kafka-connect.name" . }}
+    chart: {{ template "kafka-connect.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  jmx-connect-server-prometheus.yml: |+
+    jmxUrl: service:jmx:rmi:///jndi/rmi://localhost:{{ .Values.jmx.port }}/jmxrmi
+    lowercaseOutputName: true
+    lowercaseOutputLabelNames: true
+    ssl: false
+    {{- if .Values.prometheus.jmx.rules }}
+    rules:
+    {{- range .Values.prometheus.jmx.rules }}
+    - pattern: {{ .pattern }}
+      name: {{ .name }}
+    {{- end }}
+    {{- end }}
+{{- end }}

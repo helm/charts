@@ -1,0 +1,278 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "kafka-connect.fullname" . }}
+  labels:
+{{ include "kafka-connect.labels" . | indent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "kafka-connect.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "kafka-connect.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+      {{- if or .Values.podAnnotations .Values.prometheus.jmx.enabled }}
+      annotations:
+      {{- range $key, $value := .Values.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+      {{- end }}
+      {{- if .Values.prometheus.jmx.enabled }}
+        prometheus.io/scrape: "true"
+        prometheus.io/port: {{ .Values.prometheus.jmx.port | quote }}
+        checksum/config-jmx: {{ include (print $.Template.BasePath "/jmx-configmap.yaml") . | sha256sum }}
+      {{- end }}
+      {{- end }}
+    spec:
+{{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+{{- end }}
+{{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+{{- end }}
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | indent 8 }}
+    {{- end }}
+      containers:
+      - name: connect
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        env:
+        - name: CONNECT_BOOTSTRAP_SERVERS
+          value: "{{ template "kafka-connect.kafka.bootstrapServers" . }}"
+        - name: CONNECT_REST_PORT
+          value: {{ .Values.service.port | quote }}
+        - name: CONNECT_GROUP_ID
+          value: "{{ template "kafka-connect.groupId" . }}"
+        - name: CONNECT_CONFIG_STORAGE_TOPIC
+          value: "{{ template "kafka-connect.configStorageTopic" . }}"
+        - name: CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR
+          value: "{{ .Values.configStorageReplicationFactor }}"
+        - name: CONNECT_OFFSET_STORAGE_TOPIC
+          value: "{{ template "kafka-connect.offsetStorageTopic" . }}"
+        - name: CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR
+          value: "{{ .Values.offsetStorageReplicationFactor }}"
+        - name: CONNECT_STATUS_STORAGE_TOPIC
+          value: "{{ template "kafka-connect.statusStorageTopic" . }}"
+        - name: CONNECT_STATUS_STORAGE_REPLICATION_FACTOR
+          value: "{{ .Values.statusStorageReplicationFactor }}"
+        - name: CONNECT_KEY_CONVERTER
+          value: {{ .Values.keyConverter | quote }}
+        - name: CONNECT_KEY_CONVERTER_SCHEMAS_ENABLE
+          value: {{ .Values.keyConverterSchemasEnable | quote }}
+        - name: CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL
+          value: "{{ template "kafka-connect.schemaRegistryUrl" . }}"
+        - name: CONNECT_VALUE_CONVERTER
+          value: {{ .Values.valueConverter | quote }}
+        - name: CONNECT_VALUE_CONVERTER_SCHEMAS_ENABLE
+          value: {{ .Values.valueConverterSchemasEnable | quote }}
+        - name: CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL
+          value: {{ .Values.schemaRegistryUrl | quote }}
+        - name: CONNECT_INTERNAL_KEY_CONVERTER
+          value: {{ .Values.internalKeyConverter | quote }}
+        - name: CONNECT_INTERNAL_VALUE_CONVERTER
+          value: {{ .Values.internalValueConverter | quote }}
+        - name: CONNECT_REST_ADVERTISED_HOST_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: CONNECT_LOG4J_LOGGERS
+          value: {{ .Values.log4jLoggers | quote }}
+        - name: CONNECT_PLUGIN_PATH
+          value: {{ .Values.pluginPath | quote }}
+        - name: CONNECT_SCHEMA_REGISTRY_URL
+          value: "{{ template "kafka-connect.schemaRegistryUrl" . }}"
+        - name: CONNECT_HEAP_OPTS
+          value: {{ .Values.heapOpts }}
+        {{- if .Values.jmx.port }}
+        - name: JMX_PORT
+          value: "{{ .Values.jmx.port }}"
+        {{- end }}
+        {{- if .Values.kafka.truststoreSecret }}
+        - name: CONNECT_SSL_TRUSTSTORE_TYPE
+          value: "JKS"
+        - name: CONNECT_SSL_TRUSTSTORE_LOCATION
+          value: "/etc/connect/truststore/client.truststore.jks"
+        - name: CONNECT_SSL_TRUSTSTORE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.kafka.truststoreSecret }}
+              key: password
+        - name: CONNECT_PRODUCER_SSL_TRUSTSTORE_TYPE
+          value: "JKS"
+        - name: CONNECT_PRODUCER_SSL_TRUSTSTORE_LOCATION
+          value: "/etc/connect/truststore/client.truststore.jks"
+        - name: CONNECT_PRODUCER_SSL_TRUSTSTORE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.kafka.truststoreSecret }}
+              key: password
+        - name: CONNECT_CONSUMER_SSL_TRUSTSTORE_TYPE
+          value: "JKS"
+        - name: CONNECT_CONSUMER_SSL_TRUSTSTORE_LOCATION
+          value: "/etc/connect/truststore/client.truststore.jks"
+        - name: CONNECT_CONSUMER_SSL_TRUSTSTORE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.kafka.truststoreSecret }}
+              key: password
+        {{- end }}
+        {{- if .Values.kafka.keystoreSecret }}
+        - name: CONNECT_SSL_KEY_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.kafka.keystoreSecret }}
+              key: password
+        - name: CONNECT_SECURITY_PROTOCOL
+          value: "SSL"
+        - name: CONNECT_SSL_KEYSTORE_TYPE
+          value: "PKCS12"
+        - name: CONNECT_SSL_KEYSTORE_LOCATION
+          value: "/etc/connect/keystore/client.keystore.p12"
+        - name: CONNECT_SSL_KEYSTORE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.kafka.keystoreSecret }}
+              key: password
+        - name: CONNECT_PRODUCER_SSL_KEY_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.kafka.keystoreSecret }}
+              key: password
+        - name: CONNECT_PRODUCER_SECURITY_PROTOCOL
+          value: "SSL"
+        - name: CONNECT_PRODUCER_SSL_KEYSTORE_TYPE
+          value: "PKCS12"
+        - name: CONNECT_PRODUCER_SSL_KEYSTORE_LOCATION
+          value: "/etc/connect/keystore/client.keystore.p12"
+        - name: CONNECT_PRODUCER_SSL_KEYSTORE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.kafka.keystoreSecret }}
+              key: password
+        - name: CONNECT_CONSUMER_SSL_KEY_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.kafka.keystoreSecret }}
+              key: password
+        - name: CONNECT_CONSUMER_SECURITY_PROTOCOL
+          value: "SSL"
+        - name: CONNECT_CONSUMER_SSL_KEYSTORE_TYPE
+          value: "PKCS12"
+        - name: CONNECT_CONSUMER_SSL_KEYSTORE_LOCATION
+          value: "/etc/connect/keystore/client.keystore.p12"
+        - name: CONNECT_CONSUMER_SSL_KEYSTORE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.kafka.keystoreSecret }}
+              key: password
+        {{- end }}
+        {{- if .Values.schemaRegistry.basicauthSecret }}
+        - name: CONNECT_SCHEMA_REGISTRY_BASIC_AUTH_CREDENTIALS_SOURCE
+          value: "USER_INFO"
+        - name: CONNECT_SCHEMA_REGISTRY_BASIC_AUTH_USER_INFO
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.schemaRegistry.basicauthSecret}}
+              key: userinfo
+        {{- end }}
+        {{- if .Values.schemaRegistry.truststoreSecret }}
+        - name: CONNECT_SCHEMA_REGISTRY_SECURITY_PROTOCOL
+          value: "SSL"
+        - name: CONNECT_SCHEMA_REGISTRY_SSL_TRUSTSTORE_LOCATION
+          value: "/etc/connect/truststore-schema-registry/client.truststore.jks"
+        - name: CONNECT_SCHEMA_REGISTRY_SSL_TRUSTSTORE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.schemaRegistry.truststoreSecret }}
+              key: password
+        {{- end }}
+        {{- range $key, $value := .Values.configurationOverrides }}
+        - name: {{ printf "CONNECT_%s" $key | replace "." "_" | upper | quote }}
+          value: {{ $value | quote }}
+        {{- end }}
+        ports:
+        - containerPort: {{ .Values.service.port }}
+          name: http
+        {{- if .Values.prometheus.jmx.enabled }}
+        - containerPort: {{ .Values.jmx.port }}
+          name: jmx
+        {{- end }}
+        livenessProbe:
+          httpGet:
+            path: /
+            port: {{ .Values.service.port }}
+          initialDelaySeconds: 60
+        readinessProbe:
+          httpGet:
+            path: /
+            port: {{ .Values.service.port }}
+          initialDelaySeconds: 60
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        volumeMounts:
+        {{- if .Values.kafka.truststoreSecret }}
+        - name: truststore
+          mountPath: /etc/connect/truststore
+        {{- end }}
+        {{- if .Values.kafka.keystoreSecret }}
+        - name: keystore
+          mountPath: /etc/connect/keystore
+        {{- end }}
+        {{- if .Values.schemaRegistry.truststoreSecret }}
+        - name: schema-registry-truststore
+          mountPath: /etc/connect/truststore-schema-registry
+        {{- end }}
+      {{- if .Values.prometheus.jmx.enabled }}
+      - name: prometheus-jmx-exporter
+        image: "{{ .Values.prometheus.jmx.image }}:{{ .Values.prometheus.jmx.imageTag }}"
+        command:
+        - java
+        - -XX:+UnlockExperimentalVMOptions
+        - -XX:+UseCGroupMemoryLimitForHeap
+        - -XX:MaxRAMFraction=1
+        - -XshowSettings:vm
+        - -jar
+        - jmx_prometheus_httpserver.jar
+        - {{ .Values.prometheus.jmx.port | quote }}
+        - /etc/jmx-connect-server/jmx-connect-server-prometheus.yml
+        ports:
+          - name: {{ .Values.prometheus.jmx.portName }}
+            containerPort: {{ .Values.prometheus.jmx.port }}
+        resources:
+{{ toYaml .Values.prometheus.jmx.resources | indent 12 }}
+        volumeMounts:
+        - name: jmx-config
+          mountPath: /etc/jmx-connect-server
+      {{- end }}
+      volumes:
+      {{- if .Values.kafka.truststoreSecret }}
+      - name: truststore
+        secret:
+          secretName: {{ .Values.kafka.truststoreSecret }}
+      {{- end }}
+      {{- if .Values.kafka.keystoreSecret }}
+      - name: keystore
+        secret:
+          secretName: {{ .Values.kafka.keystoreSecret }}
+      {{- end }}
+      {{- if .Values.schemaRegistry.truststoreSecret }}
+      - name: schema-registry-truststore
+        secret:
+          secretName: {{ .Values.schemaRegistry.truststoreSecret }}
+      {{- end }}
+      {{- if .Values.prometheus.jmx.enabled }}
+      - name: jmx-config
+        configMap:
+          name: {{ template "kafka-connect.fullname" . }}-jmx-configmap
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

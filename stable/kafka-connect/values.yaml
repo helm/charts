@@ -1,0 +1,165 @@
+## The deployment installs 1 pod by default
+replicaCount: 1
+
+image:
+  ## The kafka connect image repository
+  repository: confluentinc/cp-kafka-connect
+  ## The kafka connect image tag
+  tag: 5.2.2
+  ## The kafka connect image pull policy
+  pullPolicy: IfNotPresent
+
+## Required image pull secrets, if any
+imagePullSecrets: []
+
+## Override for chart name, if any
+nameOverride: ""
+
+## Override for chart fullname, if any
+fullnameOverride: ""
+
+## Kafka Connect Settings. See: https://docs.confluent.io/current/connect/references/allconfigs.html
+## The type of Kafka Connect key converter to use
+keyConverter: "org.apache.kafka.connect.json.JsonConverter"
+## Disable key converter schemas for default of JSON
+keyConverterSchemasEnable: "false"
+## The type of Kafka Connect Value converter to use
+valueConverter: "org.apache.kafka.connect.json.JsonConverter"
+## Disable value converter schemas for default of JSON
+valueConverterSchemasEnable: "false"
+## The type of Kafka Connect key converter to use internally
+internalKeyConverter: "org.apache.kafka.connect.json.JsonConverter"
+## The type of Kafka Connect value converter to use internally
+internalValueConverter: "org.apache.kafka.connect.json.JsonConverter"
+## The location of Kafka Connect plugins
+pluginPath: "/usr/share/java"
+## JVM Heap Options
+heapOpts: "-Xmx512m -Xms512m"
+## If specified, use the defined config storage topic
+configStorageNameOverride: ""
+## Use the following replication factor for the config topic. Set to at least 3 in production.
+configStorageReplicationFactor: "1"
+## If specified, use the defined offset storage topic
+offsetStorageNameOverride: ""
+## Use the following replication factor for the offset topic. Set to at least 3 in production.
+offsetStorageReplicationFactor: "1"
+## If specified, use the defined offset storage topic
+statusStorageNameOverride: ""
+## Use the following replication factor for the status topic. Set to at least 3 in production.
+statusStorageReplicationFactor: "1"
+
+## Kafka Connect configuration overrides, if any
+configurationOverrides: {}
+
+## Monitoring
+## JMX Settings
+## ref: https://docs.confluent.io/3.2.0/cp-docker-images/docs/operations/monitoring.html
+jmx:
+  port: 5555
+
+## Prometheus Exporter Configuration
+## ref: https://prometheus.io/docs/instrumenting/exporters/
+prometheus:
+  exporter:
+    enabled: false
+    selector:
+      ## Override this with the desired Prometheus Selector
+      ## https://github.com/coreos/prometheus-operator/blob/master/Documentation/user-guides/getting-started.md
+      prometheus: ""
+  alerts:
+    enabled: false
+    selector:
+      ## Override this with the desired Prometheus Selector
+      ## https://github.com/coreos/prometheus-operator/blob/master/Documentation/user-guides/getting-started.md
+      prometheus: ""
+
+  servicemonitor:
+    enabled: false
+  ## JMX Exporter Configuration
+  ## ref: https://github.com/prometheus/jmx_exporter
+  jmx:
+    enabled: true
+    image: solsson/kafka-prometheus-jmx-exporter@sha256
+    imageTag: 6f82e2b0464f50da8104acd7363fb9b995001ddff77d248379f8788e78946143
+    portName: "jmx-prometheus"
+    port: 5556
+
+    ## Resources configuration for the JMX exporter container.
+    ## See the `resources` documentation above for details.
+    resources: {}
+
+    ## A list of JMX exporter rules. By default all metrics are exported.
+    ## https://github.com/prometheus/jmx_exporter
+    rules: []
+    # - pattern: 'jmx-pattern-matcher'
+    #   name: 'new-pattern-name'
+
+## Schema Registry settings
+schemaRegistry:
+  ## This is enabled to allow installations of this chart without arguments
+  enabled: true
+  ## This value is required if schema registry installation is disabled -- it should be the service
+  ## address of Schema Registry in the cluster, or the URL of an out-of-cluster installation
+  overrideURL: ""
+  ## Name of JKS Truststore secret containing CA Certificate or PEM
+  ## Note that this chart will not create truststores for you.
+  truststoreSecret: ""
+  ## Secret containing Basic Auth credentials
+  basicauthSecret: ""
+
+## Kafka Settings
+kafka:
+  ## This is enabled to allow installations of this chart without arguments
+  enabled: true
+  ## This value is required if kafka installation is disabled -- it should be the headless service
+  ## address of Kafka in the cluster, or the broker addresses for an out-of-cluster installation
+  overrideBootstrapServers: ""
+  ## Name of JKS Truststore secret containing CA Certificate or PEM
+  ## Note that this chart will not create truststores for you.
+  truststoreSecret: ""
+  ## Keystore secret containing Kafka User Key and Certificate Pair
+  ## Note that this chart will not create keystores for you.
+  keystoreSecret: ""
+
+service:
+  ## The type of Kubernetes Service to expose
+  type: ClusterIP
+  ## The port on which the Kubernetes Service should be exposed
+  port: 80
+  ## Any service annotations
+  annotations: {}
+
+ingress:
+  ## If enabled, create an ingress to Kubernetes for Kafka Connect
+  enabled: false
+  ## Any ingress annotations
+  annotations: {}
+  ## The host(s) on which the ingress will exist
+  host: ""
+  path: ""
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+## Specific nodes that should run the kafka connect pods.
+## https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+nodeSelector: {}
+
+## Tolerations for nodes that have taints on them.
+## Useful if you want to colocate kafka connect with sources or kafka
+## https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+tolerations: []
+
+## Pod scheduling preferences (by default keep pods within a release on separate nodes).
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+## By default we don't set affinity
+affinity: {}
