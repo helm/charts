@@ -124,10 +124,10 @@ data:
     # Also, the program will be closed and reopened if falco is signaled with
     # SIGUSR1.
     {{- if .Values.integrations.gcscc.enabled }}
-    programOutput:
+    program_output:
       enabled: true
       keep_alive: false
-      program: "\"curl -d @- -X POST --header 'Content-Type: application/json' --header 'Authorization: {{ .Values.integrations.gcscc.webhookAuthenticationToken }}' {{ .Values.integrations.gcscc.webhookUrl }}/\""
+      program: "curl -d @- -X POST --header 'Content-Type: application/json' --header 'Authorization: {{ .Values.integrations.gcscc.webhookAuthenticationToken }}' {{ .Values.integrations.gcscc.webhookUrl }}"
     {{- else }}
     program_output:
       enabled: {{ .Values.falco.programOutput.enabled }}
