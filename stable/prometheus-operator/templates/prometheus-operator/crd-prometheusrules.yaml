@@ -1,4 +1,4 @@
-{{- if and .Release.IsInstall .Values.prometheusOperator.enabled .Values.prometheusOperator.createCustomResource -}}
+{{- if and .Values.prometheusOperator.enabled .Values.prometheusOperator.createCustomResource -}}
 # Source https://raw.githubusercontent.com/coreos/kube-prometheus/master/manifests/0prometheus-operator-0prometheusruleCustomResourceDefinition.yaml
 apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
@@ -10,7 +10,6 @@ metadata:
 {{ include "prometheus-operator.labels" . | indent 4 }}
   annotations:
     "helm.sh/hook": crd-install
-    "helm.sh/hook-delete-policy": "before-hook-creation"
 spec:
   group: {{ .Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com" }}
   names:
