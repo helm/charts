@@ -10,7 +10,7 @@ metadata:
     release: {{ .Release.Name | quote }}
   name: {{ template "nats.fullname" . }}
 data:
-  nats-server.conf: |-
+  {{ .Values.natsFilename }}.conf: |-
     listen: 0.0.0.0:{{ .Values.client.service.port }}
     http: 0.0.0.0:{{ .Values.monitoring.service.port }}
 
@@ -33,7 +33,7 @@ data:
     logtime: {{ .Values.debug.logtime }}
 
     # Pid file
-    pid_file: "/tmp/nats-server.pid"
+    pid_file: "/tmp/{{ .Values.natsFilename }}.pid"
 
     # Some system overides
     {{- if .Values.maxConnections }}

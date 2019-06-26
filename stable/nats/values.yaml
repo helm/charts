@@ -278,6 +278,14 @@ ingress:
 # Optional additional arguments
 extraArgs: []
 
+## Nats filenames:
+##  - For Nats 1.x.x version, some filenames (binary, configuration file, pid file) uses `gnatsd` as part of the name.
+##  - For Nats 2.x.x version, those filenames now uses `nats-server`
+## In order to make the chart compatible with NATS versions 1.0.0 and 2.0.0 we have parametrized the following value
+## to specify the proper filename according to the image version.
+##
+natsFilename: nats-server
+
 ## Metrics / Prometheus NATS Exporter
 ##
 ## ref: https://github.com/nats-io/prometheus-nats-exporter

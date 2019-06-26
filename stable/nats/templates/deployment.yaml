@@ -84,10 +84,10 @@ spec:
         image: {{ template "nats.image" . }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         command:
-        - nats-server
+        - {{ .Values.natsFilename }}
         args:
         - -c
-        - /opt/bitnami/nats/nats-server.conf
+        - /opt/bitnami/nats/{{ .Values.natsFilename }}.conf
         # to ensure nats could run with non-root user, we put the configuration
         # file under `/opt/bitnami/nats/nats-server.conf`, please check the link below
         # for the implementation inside Dockerfile:
