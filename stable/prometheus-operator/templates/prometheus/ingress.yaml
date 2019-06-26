@@ -24,6 +24,9 @@ spec:
     - host: {{ tpl $host $ }}
       http:
         paths:
+  {{- if .Values.alertmanager.ingress.extraPaths }}
+{{ .Values.prometheus.ingress.extraPaths . | indent 10 }}
+  {{- end -}}
   {{- range $p := $paths }}
           - path: {{ tpl $p $ }}
             backend:
@@ -34,6 +37,9 @@ spec:
   {{- else }}
     - http:
         paths:
+  {{- if .Values.alertmanager.ingress.extraPaths }}
+{{ .Values.prometheus.ingress.extraPaths . | indent 10 }}
+  {{- end -}}
   {{- range $p := $paths }}
           - path: {{ tpl $p $ }}
             backend:
