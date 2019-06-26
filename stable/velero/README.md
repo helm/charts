@@ -94,7 +94,7 @@ Parameter | Description | Default
 `restic.podVolumePath` | Location of pod volumes on the host | `/var/lib/kubelet/pods`
 `restic.privileged` | Whether restic should run as a privileged pod. Only necessary in special cases (SELinux) | `false`
 `restic.resources` | Restic DaemonSet resource requests and limits | `{}`
-`configmaps` | Configure Velero plugins with ConfigMaps | `[]`
+`configMaps` | Velero ConfigMaps | `[]`
 
 ## How to
 ```
