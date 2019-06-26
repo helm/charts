@@ -123,7 +123,11 @@ spec:
         {{- if eq .Values.filestore.backend "gcs" }}
         - name: sentry-google-cloud-key
           mountPath: /var/secrets/google
-        {{ end }}
+        {{- end }}
+        {{- if eq .Values.filestore.backend "filesystem" }}
+        - mountPath: {{ .Values.filestore.path }}
+          name: sentry-data
+        {{- end }}
         resources:
 {{ toYaml .Values.worker.resources | indent 12 }}
       volumes:
@@ -134,4 +138,11 @@ spec:
       - name: sentry-google-cloud-key
         secret:
           secretName: {{ .Values.filestore.gcs.secretName }}
+      {{ end }}
+      - name: sentry-data
+      {{- if and (.Values.filestore.filesystem.persistence.enabled) (.Values.filestore.filesystem.persistence.persistentWorkers) }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.filestore.filesystem.persistence.existingClaim | default (include "fullname" .) }}
+      {{- else }}
+        emptyDir: {}
       {{ end }}

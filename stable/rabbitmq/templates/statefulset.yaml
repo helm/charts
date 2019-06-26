@@ -263,6 +263,10 @@ spec:
             items:
             - key: rabbitmq.conf
               path: rabbitmq.conf
+        {{- if .Values.rabbitmq.advancedConfiguration}}
+            - key: advanced.config
+              path: advanced.config
+        {{- end }}      
             - key: enabled_plugins
               path: enabled_plugins
         {{- if .Values.rabbitmq.loadDefinition.enabled }}
