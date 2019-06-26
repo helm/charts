@@ -17,7 +17,7 @@ data:
       timeout -s 9 $1 \
       redis-cli \
 {{- if .Values.usePassword }}
-        -a $REDIS_PASSWORD \
+        -a $REDIS_PASSWORD --no-auth-warning \
 {{- end }}
         -h localhost \
         -p $REDIS_PORT \
@@ -37,7 +37,7 @@ data:
       timeout -s 9 $1 \
       redis-cli \
 {{- if .Values.usePassword }}
-        -a $REDIS_PASSWORD \
+        -a $REDIS_PASSWORD --no-auth-warning \
 {{- end }}
         -h localhost \
         -p $REDIS_SENTINEL_PORT \
@@ -72,7 +72,7 @@ data:
       timeout -s 9 $1 \
       redis-cli \
 {{- if .Values.usePassword }}
-        -a $REDIS_MASTER_PASSWORD \
+        -a $REDIS_MASTER_PASSWORD --no-auth-warning \
 {{- end }}
         -h $REDIS_MASTER_HOST \
         -p $REDIS_MASTER_PORT_NUMBER \
