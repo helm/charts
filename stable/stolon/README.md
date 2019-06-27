@@ -25,6 +25,7 @@ Kubernetes is the default store backend. `consul`, `etcdv2` or `etcdv3` can also
 
 | Parameter                               | Description                                    | Default                                                      |
 | --------------------------------------- | ---------------------------------------------- | ------------------------------------------------------------ |
+| `clusterName`                           | `stolon` cluster name                          | `nil`                                                |
 | `image.repository`                      | `stolon` image repository                      | `sorintlab/stolon`                                           |
 | `image.tag`                             | `stolon` image tag                             | `v0.13.0-pg10`                                               |
 | `image.pullPolicy`                      | `stolon` image pull policy                     | `IfNotPresent`                                               |
@@ -57,6 +58,7 @@ Kubernetes is the default store backend. `consul`, `etcdv2` or `etcdv3` can also
 | `job.autoCreateCluster`                 | Set to `false` to force-disable auto-cluster-creation which may clear pre-existing postgres db data | `true`  |
 | `job.autoUpdateClusterSpec`             | Set to `false` to force-disable auto-cluster-spec-update | `true`                                             |
 | `clusterSpec`                           | Stolon cluster spec [reference](https://github.com/sorintlab/stolon/blob/master/doc/cluster_spec.md) | `{}`   |
+| `keeper.uid_prefix`                     | Keeper prefix name                             | `keeper`                                                     |
 | `keeper.replicaCount`                   | Number of keeper nodes                         | `2`                                                          |
 | `keeper.resources`                      | Keeper resource requests/limit                 | `{}`                                                         |
 | `keeper.priorityClassName`              | Keeper priorityClassName                       | `nil`                                                        |
