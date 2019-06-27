@@ -5,11 +5,10 @@ metadata:
   name: {{ template "cassandra-operator.name" . }}-metrics
   labels:
     component: app
-    labels:
-      app: {{ template "cassandra-operator.name" . }}-metrics
-      chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-      heritage: {{ .Release.Service }}
-      release: {{ .Release.Name }}
+    app: {{ template "cassandra-operator.name" . }}-metrics
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
 spec:
   selector:
     app: {{ template "cassandra-operator.name" . }}
