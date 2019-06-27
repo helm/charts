@@ -52,3 +52,11 @@ spec:
         - name: "locust-tasks"
           configMap:
             name: {{ template "locust.worker-configmap" . }}
+{{- with .Values.worker.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.worker.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+{{- end }}
