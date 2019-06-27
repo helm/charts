@@ -303,7 +303,7 @@ Parameter | Description | Default
 `serviceAccounts.server.create` | If true, create the server service account | `true`
 `serviceAccounts.server.name` | name of the server service account to use or create | `{{ prometheus.server.fullname }}`
 `server.terminationGracePeriodSeconds` | Prometheus server Pod termination grace period | `300`
-`server.retention` | (optional) Prometheus data retention | `""`
+`server.retention` | (optional) Prometheus data retention | `"15d"`
 `serverFiles.alerts` | Prometheus server alerts configuration | `{}`
 `serverFiles.rules` | Prometheus server rules configuration | `{}`
 `serverFiles.prometheus.yml` | Prometheus server scrape configuration | example configuration
