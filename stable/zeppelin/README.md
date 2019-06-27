@@ -31,6 +31,11 @@ The following table lists the configurable parameters of the Zeppelin chart and 
 | `ingress.hosts`                      | Ingress Hostnames                                                 | `["zeppelin.local"]`                                       |
 | `ingress.path`                       | Path within the URL structure                                     | `/`                                                        |
 | `ingress.tls`                        | Ingress TLS configuration                                         | `[]`                                                       |
+| `persistence.enabled`                | Enable config persistence using PVC                               | `true`                                                     |
+| `persistence.storageClass`           | PVC Storage Class for config volume                               | `nil`                                                      |
+| `persistence.existingClaim`          | Name of an existing PVC to use for config                         | `nil`                                                      |
+| `persistence.accessMode`             | PVC Access Mode for config volume                                 | `ReadWriteOnce`                                            |
+| `persistence.size`                   | PVC Storage Request for config volume                             | `10Gi`                                                     |
 | `nodeSelecor`                        | Node selector for the Zeppelin deployment                         | `{}`                                                       |
 
 ## Related charts

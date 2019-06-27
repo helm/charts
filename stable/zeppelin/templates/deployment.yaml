@@ -45,6 +45,8 @@ spec:
             - mountPath: {{ .Values.hadoop.configPath }}
               name: hadoop-config
 {{- end }}
+            - name: {{ template "zeppelin.fullname" . }}-notebooks
+              mountPath: /zeppelin/notebook
           resources:
 {{ toYaml .Values.zeppelin.resources | indent 12 }} 
           readinessProbe:
@@ -53,11 +55,18 @@ spec:
               port: 8080
             initialDelaySeconds: 20
             timeoutSeconds: 1
-{{- if .Values.hadoop.useConfigMap }}
       volumes:
+{{- if .Values.hadoop.useConfigMap }} 
         - name: hadoop-config
           configMap:
             name: {{ .Values.hadoop.configMapName }}
+{{- end }}
+        - name: {{ template "zeppelin.fullname" . }}-notebooks
+{{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "zeppelin.fullname" . }}-notebooks{{- end }}
+{{- else }}
+          emptyDir: {}
 {{- end }}
 {{- if .Values.nodeSelector }}
       nodeSelector:
