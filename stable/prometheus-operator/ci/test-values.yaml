@@ -1624,7 +1624,7 @@ prometheus:
           ##
           # serverName: ""
 admissionWebhooks:
-  create: false
+  create: true
   ## If enabled, generate a self-signed certificate, then patch the webhook configurations with the generated data.
   ## On chart upgrades (or if the secret exists) the cert will not be re-generated. You can use this to provide your own
   ## certs ahead of time if you wish.

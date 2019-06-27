@@ -87,7 +87,7 @@ spec:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
         {{- end }}
-{{- if .Values.prometheusOperator.tlsProxy.create}}
+{{- if .Values.prometheusOperator.tlsProxy.create }}
       volumes:
         - name: tls-proxy-secret
           secret:
