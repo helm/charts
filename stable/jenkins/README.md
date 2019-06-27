@@ -357,17 +357,21 @@ Adds a backup CronJob for jenkins, along with required RBAC resources.
 
 ### Backup Values
 
-| Parameter                   | Description                                | Default                           |
-| --------------------------- | ------------------------------------------ | --------------------------------- |
-| `backup.enabled`            | Enable the use of a backup CronJob         | `false`                           |
-| `backup.schedule`           | Schedule to run jobs                       | `0 2 * * *`                       |
-| `backup.annotations`        | Backup pod annotations                     | iam.amazonaws.com/role: `jenkins` |
-| `backup.image.repo`         | Backup image repository                    | `nuvo/kube-tasks`                 |
-| `backup.image.tag`          | Backup image tag                           | `0.1.2`                           |
-| `backup.extraArgs`          | Additional arguments for kube-tasks        | `[]`                              |
-| `backup.env`                | Backup environment variables               | AWS_REGION: `us-east-1`           |
-| `backup.resources`          | Backup CPU/Memory resource requests/limits | Memory: `1Gi`, CPU: `1`           |
-| `backup.destination`        | Destination to store backup artifacts      | `s3://nuvo-jenkins-data/backup`   |
+| Parameter                              | Description                                            | Default                           |
+| -------------------------------------- | ------------------------------------------------------ | --------------------------------- |
+| `backup.enabled`                       | Enable the use of a backup CronJob                     | `false`                           |
+| `backup.schedule`                      | Schedule to run jobs                                   | `0 2 * * *`                       |
+| `backup.annotations`                   | Backup pod annotations                                 | iam.amazonaws.com/role: `jenkins` |
+| `backup.image.repo`                    | Backup image repository                                | `nuvo/kube-tasks`                 |
+| `backup.image.tag`                     | Backup image tag                                       | `0.1.2`                           |
+| `backup.extraArgs`                     | Additional arguments for kube-tasks                    | `[]`                              |
+| `backup.existingSecret`                | Environment variables to add to the cronjob container  | {}                                |
+| `backup.existingSecret.*`              | Specify the secret name containing the AWS credentials | `jenkinsaws`                      |
+| `backup.existingSecret.*.awsaccesskey` | `secretKeyRef.key` used for `AWS_ACCESS_KEY_ID`        | `jenkins_aws_access_key`          |
+| `backup.existingSecret.*.awssecretkey` | `secretKeyRef.key` used for `AWS_SECRET_ACCESS_KEY`    | `jenkins_aws_secret_key`          |
+| `backup.env`                           | Backup environment variables                           | AWS_REGION: `us-east-1`           |
+| `backup.resources`                     | Backup CPU/Memory resource requests/limits             | Memory: `1Gi`, CPU: `1`           |
+| `backup.destination`                   | Destination to store backup artifacts                  | `s3://nuvo-jenkins-data/backup`   |
 
 ### Restore from backup
 
