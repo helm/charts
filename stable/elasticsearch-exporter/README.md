@@ -49,6 +49,7 @@ Parameter | Description | Default
 `image.repository` | container image repository | `justwatch/elasticsearch_exporter`
 `image.tag` | container image tag | `1.0.2`
 `image.pullPolicy` | container image pull policy | `IfNotPresent`
+`image.pullSecret` | container image pull secret | `""`
 `resources` | resource requests & limits | `{}`
 `priorityClassName` | priorityClassName | `nil`
 `nodeSelector` | Node labels for pod assignment | `{}`
