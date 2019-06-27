@@ -95,9 +95,6 @@ The following table lists the configurable parameters of the Joomla! chart and t
 | `ingress.secrets[0].certificate`     | TLS Secret Certificate                                      | `nil`                                          |
 | `ingress.secrets[0].key`             | TLS Secret Key                                              | `nil`                                          |
 | `persistence.enabled`                | Enable persistence using PVC                                | `true`                                         |
-| `persistence.apache.storageClass`    | PVC Storage Class for Apache volume                         | `nil` (uses alpha storage annotation)          |
-| `persistence.apache.accessMode`      | PVC Access Mode for Apache volume                           | `ReadWriteOnce`                                |
-| `persistence.apache.size`            | PVC Storage Request for Apache volume                       | `1Gi`                                          |
 | `persistence.joomla.storageClass`    | PVC Storage Class for Joomla! volume                        | `nil` (uses alpha storage annotation)          |
 | `persistence.joomla.accessMode`      | PVC Access Mode for Joomla! volume                          | `ReadWriteOnce`                                |
 | `persistence.joomla.size`            | PVC Storage Request for Joomla! volume                      | `8Gi`                                          |
@@ -155,7 +152,7 @@ Bitnami will release a new chart updating its containers if a new version of the
 
 ## Persistence
 
-The [Bitnami Joomla!](https://github.com/bitnami/bitnami-docker-joomla) image stores the Joomla! data and configurations at the `/bitnami/joomla` and `/bitnami/apache` paths of the container.
+The [Bitnami Joomla!](https://github.com/bitnami/bitnami-docker-joomla) image stores the Joomla! data and configurations at the `/bitnami/joomla` path of the container.
 
 Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
 See the [Configuration](#configuration) section to configure the PVC or to disable persistence.

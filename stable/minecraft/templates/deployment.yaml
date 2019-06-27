@@ -85,6 +85,10 @@ spec:
           value: {{ .Values.minecraftServer.enableCommandBlock | quote }}
         - name: FORCE_gameMode
           value: {{ .Values.minecraftServer.forcegameMode | quote }}
+        {{- if .Values.minecraftServer.forceReDownload }}
+        - name: FORCE_REDOWNLOAD
+          value: "TRUE"
+        {{- end }}
         - name: GENERATE_STRUCTURES
           value: {{ .Values.minecraftServer.generateStructures | quote }}
         - name: HARDCORE
@@ -147,6 +151,11 @@ spec:
           value: "true"
         - name: QUERY_PORT
           value: {{ .Values.minecraftServer.query.port }}
+        {{- end }}
+
+        {{- range $key, $value := .Values.extraEnv }}
+        - name: {{ $key }}
+          value: {{ $value }}
         {{- end }}
 
         ports:

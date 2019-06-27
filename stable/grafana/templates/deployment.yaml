@@ -2,6 +2,7 @@ apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
   name: {{ template "grafana.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "grafana.name" . }}
     chart: {{ template "grafana.chart" . }}
@@ -17,11 +18,10 @@ spec:
     matchLabels:
       app: {{ template "grafana.name" . }}
       release: {{ .Release.Name }}
+{{- with .Values.deploymentStrategy }}
   strategy:
-    type: {{ .Values.deploymentStrategy }}
-  {{- if ne .Values.deploymentStrategy "RollingUpdate" }}
-    rollingUpdate: null
-  {{- end }}
+{{ toYaml . | trim | indent 4 }}
+{{- end }}
   template:
     metadata:
       labels:
@@ -30,7 +30,7 @@ spec:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         checksum/dashboards-json-config: {{ include (print $.Template.BasePath "/dashboards-json-configmap.yaml") . | sha256sum }}
-        checksum/sc-dashboard-provider-config: {{ include (print $.Template.BasePath "/configmap-dashboard-provider.yaml") . | sha256sum }}    
+        checksum/sc-dashboard-provider-config: {{ include (print $.Template.BasePath "/configmap-dashboard-provider.yaml") . | sha256sum }}
 {{- if not .Values.admin.existingSecret }}
         checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
 {{- end }}
@@ -38,6 +38,9 @@ spec:
 {{ toYaml . | indent 8 }}
 {{- end }}
     spec:
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+      {{- end }}
       serviceAccountName: {{ template "grafana.serviceAccountName" . }}
 {{- if .Values.schedulerName }}
       schedulerName: "{{ .Values.schedulerName }}"

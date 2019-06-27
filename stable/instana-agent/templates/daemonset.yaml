@@ -122,13 +122,17 @@ spec:
           ports:
             - containerPort: 42699
         - name: {{ template "instana-agent.name" . }}-leader-elector
-          image: instana/leader-elector:0.5.1
+          image: instana/leader-elector:0.5.4
           env:
             - name: INSTANA_AGENT_POD_NAME
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
-          args: ["--election=instana", "--http=localhost:{{ default 42655 .Values.agent.leaderElectorPort }}", "--id=$(INSTANA_AGENT_POD_NAME)"]
+          command:
+            - "/app/server"
+            - "--election=instana"
+            - "--http=localhost:{{ default 42655 .Values.agent.leaderElectorPort }}"
+            - "--id=$(INSTANA_AGENT_POD_NAME)"
           resources:
             requests:
               cpu: 0.1

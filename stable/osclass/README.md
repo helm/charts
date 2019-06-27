@@ -54,7 +54,7 @@ The following table lists the configurable parameters of the Osclass chart and t
 | `image.registry`                   | Osclass image registry                   | `docker.io`                                             |
 | `image.repository`                 | Osclass Image name                       | `bitnami/osclass`                                       |
 | `image.tag`                        | Osclass Image tag                        | `{TAG_NAME}`                                            |
-| `image.pullPolicy`                 | Image pull policy                        | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
+| `image.pullPolicy`                 | Image pull policy                        | `IfNotPresent`                                          |
 | `image.pullSecrets`                | Specify docker-registry secret names as an array               | `[]` (does not add image pull secrets to deployed pods) |
 | `osclassHost`                      | Osclass host to create application URLs  | `nil`                                                   |
 | `osclassLoadBalancerIP`            | `loadBalancerIP` for the Osclass Service | `nil`                                                   |
@@ -72,9 +72,6 @@ The following table lists the configurable parameters of the Osclass chart and t
 | `serviceType`                      | Kubernetes Service type                  | `LoadBalancer`                                          |
 | `resources`                        | CPU/Memory resource requests/limits      | Memory: `512Mi`, CPU: `300m`                            |
 | `persistence.enabled`              | Enable persistence using PVC             | `true`                                                  |
-| `persistence.apache.storageClass`  | PVC Storage Class for Apache volume      | `nil` (uses alpha storage class annotation)             |
-| `persistence.apache.accessMode`    | PVC Access Mode for Apache volume        | `ReadWriteOnce`                                         |
-| `persistence.apache.size`          | PVC Storage Request for Apache volume    | `1Gi`                                                   |
 | `persistence.moodle.storageClass`  | PVC Storage Class for OSClass volume     | `nil` (uses alpha storage class annotation)             |
 | `persistence.moodle.accessMode`    | PVC Access Mode for OSClass volume       | `ReadWriteOnce`                                         |
 | `persistence.moodle.size`          | PVC Storage Request for OSClass volume   | `8Gi`                                                   |
@@ -156,7 +153,7 @@ Bitnami will release a new chart updating its containers if a new version of the
 
 ## Persistence
 
-The [Bitnami Osclass](https://github.com/bitnami/bitnami-docker-osclass) image stores the Osclass data and configurations at the `/bitnami/osclass` and `/bitnami/apache` paths of the container.
+The [Bitnami Osclass](https://github.com/bitnami/bitnami-docker-osclass) image stores the Osclass data and configurations at the `/bitnami/osclass` path of the container.
 
 Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
 See the [Configuration](#configuration) section to configure the PVC or to disable persistence.
