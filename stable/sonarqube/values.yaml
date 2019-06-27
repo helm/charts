@@ -4,7 +4,7 @@
 replicaCount: 1
 image:
   repository: sonarqube
-  tag: 7.7-community
+  tag: 7.8-community
   # If using a private repository, the name of the imagePullSecret to use
   # pullSecret: my-repo-secret
 
@@ -43,7 +43,7 @@ ingress:
   # labels:
   #  traffic-type: external
   #  traffic-type: internal
-  tls: {}
+  tls: []
   # Secrets must be manually created in the namespace.
   # - secretName: chart-example-tls
   #   hosts:
