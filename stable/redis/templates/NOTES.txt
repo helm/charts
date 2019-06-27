@@ -24,21 +24,21 @@
 {{- if .Values.sentinel.enabled }}
 Redis can be accessed via port {{ .Values.sentinel.service.redisPort }} on the following DNS name from within your cluster:
 
-{{ template "redis.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local for read only operations
+{{ template "redis.fullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }} for read only operations
 
 For read/write operations, first access the Redis Sentinel cluster, which is available in port {{ .Values.sentinel.service.sentinelPort }} using the same domain name above.
 
 {{- else }}
 Redis can be accessed via port {{ .Values.redisPort }} on the following DNS names from within your cluster:
 
-{{ template "redis.fullname" . }}-master.{{ .Release.Namespace }}.svc.cluster.local for read/write operations
-{{ template "redis.fullname" . }}-slave.{{ .Release.Namespace }}.svc.cluster.local for read-only operations
+{{ template "redis.fullname" . }}-master.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }} for read/write operations
+{{ template "redis.fullname" . }}-slave.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }} for read-only operations
 {{- end }}
 
 {{- else }}
 Redis can be accessed via port {{ .Values.redisPort }} on the following DNS name from within your cluster:
 
-{{ template "redis.fullname" . }}-master.{{ .Release.Namespace }}.svc.cluster.local
+{{ template "redis.fullname" . }}-master.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}
 
 {{- end }}
 
@@ -100,3 +100,5 @@ To connect to your database from outside the cluster execute the following comma
 
 {{- end }}
 {{- end }}
+
+{{ include "redis.checkRollingTags" . }}

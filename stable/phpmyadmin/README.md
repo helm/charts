@@ -50,7 +50,7 @@ The following table lists the configurable parameters of the phpMyAdmin chart an
 | `global.imagePullSecrets`  | Global Docker registry secret names as an array | `[]` (does not add image pull secrets to deployed pods) |
 | `image.registry`           | phpMyAdmin image registry                | `docker.io`                                             |
 | `image.repository`         | phpMyAdmin image name                    | `bitnami/phpmyadmin`                                    |
-| `image.tag`                | phpMyAdmin image tag                     | `{VERSION}`                                             |
+| `image.tag`                | phpMyAdmin image tag                     | `{TAG_NAME}`                                            |
 | `image.pullPolicy`         | Image pull policy                        | `IfNotPresent`                                          |
 | `image.pullSecrets`        | Specify docker-registry secret names as an array               | `[]` (does not add image pull secrets to deployed pods)                                                   |
 | `service.type`             | Type of service for phpMyAdmin frontend  | `ClusterIP`                                             |
@@ -96,6 +96,12 @@ $ helm install --name my-release -f values.yaml stable/phpmyadmin
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+### [Rolling VS Immutable tags](https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/)
+
+It is strongly recommended to use immutable tags in a production environment. This ensures your deployment does not change automatically if the same tag is updated with a different image.
+
+Bitnami will release a new chart updating its containers if a new version of the main container, significant changes, or critical vulnerabilities exist.
 
 ## Upgrading
 

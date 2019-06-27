@@ -9,8 +9,12 @@ metadata:
     chart: {{ template "airflow.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+  annotations:
+  {{- if .Values.flower.service.annotations }}
+{{ toYaml .Values.flower.service.annotations | trim | indent 4 }}
+  {{- end }}
 spec:
-  type: {{ .Values.airflow.service.type }}
+  type: {{ .Values.flower.service.type | default "ClusterIP" }}
   selector:
     app: {{ template "airflow.name" . }}
     component: flower
@@ -18,5 +22,6 @@ spec:
   ports:
     - name: flower
       protocol: TCP
-      port: 5555
+      port: {{ .Values.flower.service.externalPort | default 5555 }}
+      targetPort: 5555
 {{- end }}

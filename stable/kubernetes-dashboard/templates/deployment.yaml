@@ -11,7 +11,6 @@ metadata:
     chart: {{ template "kubernetes-dashboard.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-    kubernetes.io/cluster-service: "true"
 {{- if .Values.labels }}
 {{ toYaml .Values.labels | indent 4 }}
 {{- end }}
@@ -31,7 +30,6 @@ spec:
       labels:
         app: {{ template "kubernetes-dashboard.name" . }}
         release: {{ .Release.Name }}
-        kubernetes.io/cluster-service: "true"
     spec:
       serviceAccountName: {{ template "kubernetes-dashboard.serviceAccountName" . }}
       containers:
