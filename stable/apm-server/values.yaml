@@ -62,6 +62,10 @@ ingress:
   labels: {}
   hosts:
     - apm-server-ingress.example.com
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
 
 config:
   apm-server:
