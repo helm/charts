@@ -204,7 +204,7 @@ Parameter | Description | Default
 `pushgateway.enabled` | If true, create pushgateway | `true`
 `pushgateway.name` | pushgateway container name | `pushgateway`
 `pushgateway.image.repository` | pushgateway container image repository | `prom/pushgateway`
-`pushgateway.image.tag` | pushgateway container image tag | `v0.6.0`
+`pushgateway.image.tag` | pushgateway container image tag | `v0.8.0`
 `pushgateway.image.pullPolicy` | pushgateway container image pull policy | `IfNotPresent`
 `pushgateway.extraArgs` | Additional pushgateway container arguments | `{}`
 `pushgateway.ingress.enabled` | If true, pushgateway Ingress will be created | `false`
