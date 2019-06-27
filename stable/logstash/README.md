@@ -75,12 +75,13 @@ The following table lists the configurable parameters of the chart and its defau
 | `podDisruptionBudget`           | Pod disruption budget                              | `maxUnavailable: 1`                              |
 | `updateStrategy`                | Update strategy                                    | `type: RollingUpdate`                            |
 | `image.repository`              | Container image name                               | `docker.elastic.co/logstash/logstash-oss`        |
-| `image.tag`                     | Container image tag                                | `6.7.0`                                          |
+| `image.tag`                     | Container image tag                                | `7.1.1`                                          |
 | `image.pullPolicy`              | Container image pull policy                        | `IfNotPresent`                                   |
 | `service.type`                  | Service type (ClusterIP, NodePort or LoadBalancer) | `ClusterIP`                                      |
 | `service.annotations`           | Service annotations                                | `{}`                                             |
 | `service.ports`                 | Ports exposed by service                           | beats                                            |
 | `service.loadBalancerIP`        | The load balancer IP for the service               | unset                                            |
+| `service.loadBalancerSourceRanges` | CIDR ranges to allow access to load balancer       | unset                                            |
 | `service.clusterIP`             | The cluster IP for the service                     | unset                                            |
 | `service.nodePort`              | The nodePort for the service                       | unset                                            |
 | `service.externalTrafficPolicy` | Set externalTrafficPolicy                          | unset                                            |

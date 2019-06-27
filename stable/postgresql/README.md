@@ -57,7 +57,7 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `image.registry`                              | PostgreSQL Image registry                                                                                              | `docker.io`                                                 |
 | `image.repository`                            | PostgreSQL Image name                                                                                                  | `bitnami/postgresql`                                        |
 | `image.tag`                                   | PostgreSQL Image tag                                                                                                   | `{TAG_NAME}`                                                |
-| `image.pullPolicy`                            | PostgreSQL Image pull policy                                                                                           | `Always`                                                    |
+| `image.pullPolicy`                            | PostgreSQL Image pull policy                                                                                           | `IfNotPresent`                                              |
 | `image.pullSecrets`                           | Specify Image pull secrets                                                                                             | `nil` (does not add image pull secrets to deployed pods)    |
 | `image.debug`                                 | Specify if debug values should be set                                                                                  | `false`                                                     |
 | `volumePermissions.image.registry`            | Init container volume-permissions image registry                                                                       | `docker.io`                                                 |
@@ -66,7 +66,7 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `volumePermissions.image.pullPolicy`          | Init container volume-permissions image pull policy                                                                    | `Always`                                                    |
 | `volumePermissions.securityContext.runAsUser` | User ID for the init container                                                                                         | `0`                                                         |
 | `usePasswordFile`                             | Have the secrets mounted as a file instead of env vars                                                                 | `false`                                                     |
-| `replication.enabled`                         | Would you like to enable replication                                                                                   | `false`                                                     |
+| `replication.enabled`                         | Enable replication                                                                                                     | `false`                                                     |
 | `replication.user`                            | Replication user                                                                                                       | `repl_user`                                                 |
 | `replication.password`                        | Replication user password                                                                                              | `repl_password`                                             |
 | `replication.slaveReplicas`                   | Number of slaves replicas                                                                                              | `1`                                                         |
@@ -124,7 +124,7 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `securityContext.runAsUser`                   | User ID for the container                                                                                              | `1001`                                                      |
 | `serviceAccount.enabled`                      | Enable service account (Note: Service Account will only be automatically created if `serviceAccount.name` is not set)  | `false`                                                     |
 | `serviceAcccount.name`                        | Name of existing service account                                                                                       | `nil`                                                       |
-| `livenessProbe.enabled`                       | Would you like a livessProbed to be enabled                                                                            | `true`                                                      |
+| `livenessProbe.enabled`                       | Would you like a livenessProbe to be enabled                                                                            | `true`                                                      |
 | `networkPolicy.enabled`                       | Enable NetworkPolicy                                                                                                   | `false`                                                     |
 | `networkPolicy.allowExternal`                 | Don't require client label for connections                                                                             | `true`                                                      |
 | `livenessProbe.initialDelaySeconds`           | Delay before liveness probe is initiated                                                                               | 30                                                          |
@@ -133,7 +133,7 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `livenessProbe.failureThreshold`              | Minimum consecutive failures for the probe to be considered failed after having succeeded.                             | 6                                                           |
 | `livenessProbe.successThreshold`              | Minimum consecutive successes for the probe to be considered successful after having failed                            | 1                                                           |
 | `readinessProbe.enabled`                      | would you like a readinessProbe to be enabled                                                                          | `true`                                                      |
-| `readinessProbe.initialDelaySeconds`          | Delay before liveness probe is initiated                                                                               | 5                                                           |
+| `readinessProbe.initialDelaySeconds`          | Delay before readiness probe is initiated                                                                               | 5                                                           |
 | `readinessProbe.periodSeconds`                | How often to perform the probe                                                                                         | 10                                                          |
 | `readinessProbe.timeoutSeconds`               | When the probe times out                                                                                               | 5                                                           |
 | `readinessProbe.failureThreshold`             | Minimum consecutive failures for the probe to be considered failed after having succeeded.                             | 6                                                           |
@@ -166,7 +166,7 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `metrics.readinessProbe.timeoutSeconds`       | When the probe times out                                                                                               | 5                                                           |
 | `metrics.readinessProbe.failureThreshold`     | Minimum consecutive failures for the probe to be considered failed after having succeeded.                             | 6                                                           |
 | `metrics.readinessProbe.successThreshold`     | Minimum consecutive successes for the probe to be considered successful after having failed                            | 1                                                           |
-| `extraEnv`                                    | Any extra environment variables you would like to pass on to the pod                                                   | `{}`                                                        |
+| `extraEnv`                                    | Any extra environment variables you would like to pass on to the pod. The value is evaluated as a template.            | `{}`                                                        |
 | `updateStrategy`                              | Update strategy policy                                                                                                 | `{type: "RollingUpdate"}`                                   |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
@@ -186,6 +186,51 @@ $ helm install --name my-release -f values.yaml stable/postgresql
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+### Production configuration
+
+This chart includes a `values-production.yaml` file where you can find some parameters oriented to production configuration in comparison to the regular `values.yaml`.
+
+```console
+$ helm install --name my-release -f ./values-production.yaml stable/postgresql
+```
+
+- Enable replication:
+```diff
+- replication.enabled: false
++ replication.enabled: true
+```
+
+- Number of slaves replicas:
+```diff
+- replication.slaveReplicas: 1
++ replication.slaveReplicas: 2
+```
+
+- Set synchronous commit mode:
+```diff
+- replication.synchronousCommit: "off"
++ replication.synchronousCommit: "on"
+```
+
+- Number of replicas that will have synchronous replication:
+```diff
+- replication.numSynchronousReplicas: 0
++ replication.numSynchronousReplicas: 1
+```
+
+- Start a prometheus exporter:
+```diff
+- metrics.enabled: false
++ metrics.enabled: true
+```
+
+To horizontally scale this chart, first download the [values-production.yaml](values-production.yaml) file to your local folder, then:
+
+```console
+$ helm install --name my-release -f ./values-production.yaml stable/postgresql
+$ kubectl scale statefulset my-postgresql-slave --replicas=3
+```
 
 ### [Rolling VS Immutable tags](https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/)
 
@@ -219,17 +264,6 @@ Alternatively, you can specify custom scripts using the `initdbScripts` paramete
 In addition to these options, you can also set an external ConfigMap with all the initialization scripts. This is done by setting the `initdbScriptsConfigMap` parameter. Note that this will override the two previous options. If your initialization scripts contain sensitive information such as credentials or passwords, you can use the `initdbScriptsSecret` parameter.
 
 The allowed extensions are `.sh`, `.sql` and `.sql.gz`.
-
-## Production and horizontal scaling
-
-The following repo contains the recommended production settings for PostgreSQL server in an alternative [values file](values-production.yaml). Please read carefully the comments in the values-production.yaml file to set up your environment
-
-To horizontally scale this chart, first download the [values-production.yaml](values-production.yaml) file to your local folder, then:
-
-```console
-$ helm install --name my-release -f ./values-production.yaml stable/postgresql
-$ kubectl scale statefulset my-postgresql-slave --replicas=3
-```
 
 ## Persistence
 
