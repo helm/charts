@@ -45,6 +45,8 @@ spec:
             - --app-port={{ .Values.host.port }}
           {{- if .Values.prometheus.metricsPort }}
             - --metrics-port={{ .Values.prometheus.metricsPort }}
+          {{- else }}
+            - --metrics-port={{ .Values.host.port }}
           {{- end }}
           env:
             - name: HOST_IP
@@ -79,8 +81,10 @@ spec:
             - name: http
               containerPort: {{ .Values.host.port }}
             {{- if .Values.prometheus.metricsPort }}
+            {{- if not (eq .Values.prometheus.metricsPort .Values.host.port) }}
             - name: metrics
               containerPort: {{ .Values.prometheus.metricsPort }}
+            {{- end}}
             {{- end}}
         {{- if .Values.probe }}
           livenessProbe:
