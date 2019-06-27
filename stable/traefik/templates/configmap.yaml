@@ -173,6 +173,10 @@ data:
         {{- end}}
       {{- end}}
     {{- end}}
+    {{- if .Values.fileBackend }}
+    [file]
+    {{- .Values.fileBackend | nindent 4 }}
+    {{- end }}
     {{- if .Values.traefikLogFormat }}
     [traefikLog]
       format = {{ .Values.traefikLogFormat | quote }}
