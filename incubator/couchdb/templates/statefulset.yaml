@@ -21,6 +21,9 @@ spec:
         app: {{ template "couchdb.name" . }}
         release: {{ .Release.Name }}
     spec:
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+      {{- end }}
       initContainers:
         - name: init-copy
           image: "{{ .Values.initImage.repository }}:{{ .Values.initImage.tag }}"
