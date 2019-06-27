@@ -43,8 +43,8 @@ their default values.
 | `dryrun`                             | Run Curator in dry-run mode                                 | `false`                                      |
 | `env`                                | Environment variables to add to the cronjob container       | {}                                           |
 | `envFromSecrets`                     | Environment variables from secrets to the cronjob container | {}                                           |
-| `envFromSecrets.*.from.secret`       | - `secretKeyRef.name` used for environment variable         |                                              |              
-| `envFromSecrets.*.from.key`          | - `secretKeyRef.key` used for environment variable          |                                              |              
+| `envFromSecrets.*.from.secret`       | - `secretKeyRef.name` used for environment variable         |                                              |
+| `envFromSecrets.*.from.key`          | - `secretKeyRef.key` used for environment variable          |                                              |
 | `command`                            | Command to execute                                          | ["curator"]                                  |
 | `configMaps.action_file_yml`         | Contents of the Curator action_file.yml                     | See values.yaml                              |
 | `configMaps.config_yml`              | Contents of the Curator config.yml (overrides config)       | See values.yaml                              |
@@ -53,7 +53,12 @@ their default values.
 | `extraVolumeMounts`                  | Mount extra volume(s),                                      |                                              |
 | `extraVolumes`                       | Extra volumes                                               |                                              |
 | `extraInitContainers`                | Init containers to add to the cronjob container             | {}                                           |
-| `securityContext`                    | Configure PodSecurityContext                                |                                              |
+| `securityContext`                    | Configure PodSecurityContext                                | `false`                                      |
+| `rbac.enabled`                       | Enable RBAC resources                                       | `false`                                      |
+| `psp.create`                         | Create pod security policy resources                        | `false`                                      |
+| `serviceAccount.create`              | Create a default serviceaccount for elasticsearch curator   | `true`                                       |
+| `serviceAccount.name`                | Name for elasticsearch curator serviceaccount               | `""`                                         |
+
 
 Specify each parameter using the `--set key=value[,key=value]` argument to
 `helm install`.

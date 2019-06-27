@@ -34,6 +34,9 @@ spec:
         {{ $key }}: {{ $value }}
         {{- end }}
     spec:
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+      {{- end }}
       {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
@@ -42,9 +45,39 @@ spec:
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
       {{- end }}
-    {{- with .Values.affinity }}
       affinity:
+    {{- if .Values.affinity }}
+    {{- with .Values.affinity }}
 {{ tpl . $ | indent 8 }}
+    {{- end }}
+    {{- else }}
+    {{- if .Values.additionalAffinities }}
+    {{ toYaml .Values.additionalAffinities | indent 8 }}
+    {{- end }}
+        podAntiAffinity:
+    {{- if .Values.hardAntiAffinity }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app: {{ template "redis-ha.name" . }}
+                  release: {{ .Release.Name }}
+              topologyKey: kubernetes.io/hostname
+    {{- else }}
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app: {{ template "redis-ha.name" . }}
+                  release: {{ .Release.Name }}
+              topologyKey: kubernetes.io/hostname
+    {{- end }}
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app:  {{ template "redis-ha.name" . }}
+                    release: {{ .Release.Name }}
+                topologyKey: failure-domain.beta.kubernetes.io/zone
     {{- end }}
       securityContext:
 {{ toYaml .Values.securityContext | indent 8 }}
@@ -103,7 +136,7 @@ spec:
             {{- else }}
               name: {{ template "redis-ha.fullname" . }}
             {{- end }}
-              key: auth
+              key: {{ .Values.authKey }}
 {{- end }}
         volumeMounts:
         - name: config
@@ -129,11 +162,11 @@ spec:
             {{- else }}
               name: {{ template "redis-ha.fullname" . }}
             {{- end }}
-              key: auth
+              key: {{ .Values.authKey }}
 {{- end }}
         livenessProbe:
           exec:
-            command: [ "sh", "/probes/readiness.sh", "{{ .Values.redis.port }}"]
+            command: [ "sh", "/probes/liveness.sh", "{{ .Values.redis.port }}"]
           initialDelaySeconds: 15
           periodSeconds: 5
         readinessProbe:
@@ -168,7 +201,7 @@ spec:
             {{- else }}
               name: {{ template "redis-ha.fullname" . }}
             {{- end }}
-              key: auth
+              key: {{ .Values.authKey }}
 {{- end }}
         livenessProbe:
           exec:
@@ -210,7 +243,7 @@ spec:
               {{- else }}
                 name: {{ template "redis-ha.fullname" . }}
               {{- end }}
-                key: auth
+                key: {{ .Values.authKey }}
         {{- end }}
         livenessProbe:
           httpGet:
@@ -236,7 +269,7 @@ spec:
       - name: host-sys
         hostPath:
           path: /sys
-      {{- end }}          
+      {{- end }}
 {{- if .Values.persistentVolume.enabled }}
   volumeClaimTemplates:
   - metadata:

@@ -2,13 +2,21 @@ restartPolicy: Always
 
 image:
   repository: prom/blackbox-exporter
-  tag: v0.12.0
+  tag: v0.14.0
   pullPolicy: IfNotPresent
+
+  ## Optionally specify an array of imagePullSecrets.
+  ## Secrets must be manually created in the namespace.
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  ##
+  # pullSecrets:
+  #   - myRegistrKeySecretName
 
 nodeSelector: {}
 tolerations: []
 affinity: {}
 
+secretConfig: false
 config:
   modules:
     http_2xx:

@@ -11,7 +11,7 @@ metadata:
 data:
   fluent-bit-service.conf: |-
     [SERVICE]
-        Flush        {{ .Values.service.flush }} 
+        Flush        {{ .Values.service.flush }}
         Daemon       Off
         Log_Level    {{ .Values.service.logLevel }}
         Parsers_File parsers.conf
@@ -53,12 +53,18 @@ data:
     [FILTER]
         Name                kubernetes
         Match               {{ .Values.filter.kubeTag }}.*
+        Kube_Tag_Prefix     {{ .Values.filter.kubeTagPrefix }}
         Kube_URL            {{ .Values.filter.kubeURL }}
         Kube_CA_File        {{ .Values.filter.kubeCAFile }}
         Kube_Token_File     {{ .Values.filter.kubeTokenFile }}
 {{- if .Values.filter.mergeJSONLog }}
         Merge_Log           On
 {{- end }}
+
+{{- if .Values.filter.mergeLogKey }}
+        Merge_Log_Key       {{ .Values.filter.mergeLogKey }}
+{{- end }}
+
 {{- if .Values.filter.enableParser }}
         K8S-Logging.Parser  On
 {{- end }}
@@ -191,4 +197,3 @@ data:
 {{- end }}
 
 {{- end -}}
-

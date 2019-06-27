@@ -54,7 +54,7 @@ The following table lists the configurable parameters of the Redis chart and the
 | Parameter                | Description                                                                                                                                                                                              | Default                                                                                    |
 |:-------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------|
 | `image`                  | Redis image                                                                                                                                                                                              | `redis`                                                                                    |
-| `tag`                    | Redis tag                                                                                                                                                                                                | `5.0.3-alpine`                                                                             |
+| `tag`                    | Redis tag                                                                                                                                                                                                | `5.0.5-alpine`                                                                             |
 | `replicas`               | Number of redis master/slave pods                                                                                                                                                                        | `3`                                                                                        |
 | `serviceAccount.create`  | Specifies whether a ServiceAccount should be created                                                                                                                                                     | `true`                                                                                     |
 | `serviceAccount.name`    | The name of the ServiceAccount to create                                                                                                                                                                 | Generated using the redis-ha.fullname template                                             |
@@ -72,10 +72,13 @@ The following table lists the configurable parameters of the Redis chart and the
 | `init.resources`         | CPU/Memory for init Container node resource requests/limits                                                                                                                                              | `{}`                                                                                       |
 | `auth`                   | Enables or disables redis AUTH (Requires `redisPassword` to be set)                                                                                                                                      | `false`                                                                                    |
 | `redisPassword`          | A password that configures a `requirepass` and `masterauth` in the conf parameters (Requires `auth: enabled`)                                                                                            | ``                                                                                         |
-| `existingSecret`         | An existing secret containing an `auth` key that configures `requirepass` and `masterauth` in the conf parameters (Requires `auth: enabled`, cannot be used in conjunction with `.Values.redisPassword`) | ``                                                                                         |
+| `authKey`                | The key holding the redis password in an existing secret.                                                                                                                                                | `auth`                                                                                     |
+| `existingSecret`         | An existing secret containing a key defined by `authKey` that configures `requirepass` and `masterauth` in the conf parameters (Requires `auth: enabled`, cannot be used in conjunction with `.Values.redisPassword`) | ``                                                                                         |
 | `nodeSelector`           | Node labels for pod assignment                                                                                                                                                                           | `{}`                                                                                       |
 | `tolerations`            | Toleration labels for pod assignment                                                                                                                                                                     | `[]`                                                                                       |
-| `podAntiAffinity.server` | Antiaffinity for pod assignment of servers, `hard` or `soft`                                                                                                                                             | `Hard node and soft zone anti-affinity`                                                    |
+| `hardAntiAffinity`      | Whether the Redis server pods should be forced to run on separate nodes.                                                                                                                                  | `true`                                                                                     |
+| `additionalAffinities`  | Additional affinities to add to the Redis server pods.                                                                                                                                                    | `{}`                                                                                       |
+| `affinity`               | Override all other affinity settings with a string.                                                                                                                                                      | `""`                                                                                       |
 | `exporter.enabled`       | If `true`, the prometheus exporter sidecar is enabled                                                                                                                                                    | `false`                                                                                    |
 | `exporter.image`         | Exporter image                                                                                                                                                                                           | `oliver006/redis_exporter`                                                                 |
 | `exporter.tag`           | Exporter tag                                                                                                                                                                                             | `v0.31.0`                                                                                  |
@@ -91,17 +94,18 @@ The following table lists the configurable parameters of the Redis chart and the
 | `sysctlImage.tag`                          | sysctlImage Init container tag                                                                                 | `latest`                                             |
 | `sysctlImage.pullPolicy`                   | sysctlImage Init container pull policy                                                                         | `Always`                                             |
 | `sysctlImage.mountHostSys`                 | Mount the host `/sys` folder to `/host-sys`                                                                    | `false`                                              |
+| `schedulerName`                            | Alternate scheduler name                                                                                       | `nil`                                                |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
 $ helm install \
   --set image=redis \
-  --set tag=5.0.3-alpine \
+  --set tag=5.0.5-alpine \
     stable/redis-ha
 ```
 
-The above command sets the Redis server within  `default` namespace.
+The above command sets the Redis server within `default` namespace.
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 

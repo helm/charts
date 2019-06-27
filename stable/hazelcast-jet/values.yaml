@@ -5,7 +5,7 @@ image:
   # repository is the Hazelcast Jet image name
   repository: "hazelcast/hazelcast-jet"
   # tag is the Hazelcast Jet image tag
-  tag: "0.7"
+  tag: "3.0"
   # pullPolicy is the Docker image pull policy
   # It's recommended to change this to 'Always' if the image tag is 'latest'
   # ref: http://kubernetes.io/docs/user-guide/images/#updating-images

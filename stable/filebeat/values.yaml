@@ -1,15 +1,10 @@
 image:
   repository: docker.elastic.co/beats/filebeat-oss
-  tag: 6.7.0
+  tag: 7.0.1
   pullPolicy: IfNotPresent
 
 config:
   filebeat.config:
-    prospectors:
-      # Mounted `filebeat-prospectors` configmap:
-      path: ${path.config}/prospectors.d/*.yml
-      # Reload prospectors configs as they change:
-      reload.enabled: false
     modules:
       path: ${path.config}/modules.d/*.yml
       # Reload module configs as they change:
@@ -18,7 +13,7 @@ config:
   processors:
     - add_cloud_metadata:
 
-  filebeat.prospectors:
+  filebeat.inputs:
     - type: log
       enabled: true
       paths:
@@ -49,6 +44,10 @@ config:
 
 # If overrideConfig is not empty, filebeat chart's default config won't be used at all.
 overrideConfig: {}
+
+# Path on the host to mount to /usr/share/filebeat/data in the container.
+data:
+  hostPath: /var/lib/filebeat
 
 # Upload index template to Elasticsearch if Logstash output is enabled
 # https://www.elastic.co/guide/en/beats/filebeat/current/filebeat-template.html
@@ -85,6 +84,8 @@ extraVolumeMounts: []
   # - name: varlog
   #   mountPath: /host/var/log
   #   readOnly: true
+extraSecrets: {}
+  # secret: "TEST1"
 
 extraInitContainers: []
   # - name: echo
