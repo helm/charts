@@ -32,6 +32,19 @@ Create chart name and version as used by the chart label.
 {{- end -}}
 
 {{/*
+Return the proper RabbitMQ plugin list
+*/}}
+{{- define "rabbitmq.plugins" -}}
+{{- $plugins := .Values.rabbitmq.plugins | replace " " ", " -}}
+{{- if .Values.rabbitmq.extraPlugins -}}
+{{- $extraPlugins := .Values.rabbitmq.extraPlugins | replace " " ", " -}}
+{{- printf "[%s, %s]." $plugins $extraPlugins | indent 4 -}}
+{{- else -}}
+{{- printf "[%s]." $plugins | indent 4 -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Return the proper RabbitMQ image name
 */}}
 {{- define "rabbitmq.image" -}}

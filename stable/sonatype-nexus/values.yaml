@@ -59,6 +59,14 @@ nexus:
   #   - "example.com"
   #   - "www.example.com"
 
+route:
+  enabled: false
+  name: docker
+  portName: docker
+  labels:
+  annotations:
+  # path: /docker
+
 nexusProxy:
   enabled: true
   # svcName: proxy-svc
@@ -89,6 +97,13 @@ nexusProxy:
     # limits:
       # cpu: 200m
       # memory: 512Mi
+
+nexusProxyRoute:
+  enabled: false
+  labels:
+  annotations:
+  # path: /nexus
+
 persistence:
   enabled: true
   accessMode: ReadWriteOnce
@@ -167,6 +182,7 @@ deployment:
     command:    # '["/bin/sh", "-c", "ls"]'
   additionalContainers:
   additionalVolumes:
+  additionalVolumeMounts:
 
 # # To use an additional secret, set enable to true and add data
 secret:

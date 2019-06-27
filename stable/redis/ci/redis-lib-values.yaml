@@ -8,3 +8,6 @@ image:
 
 master:
   command: "redis-server"
+
+slave:
+  command: "redis-server"

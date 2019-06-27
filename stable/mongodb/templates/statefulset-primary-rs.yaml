@@ -41,6 +41,9 @@ spec:
 {{- end }}
       {{- end }}
     spec:
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+      {{- end }}
       {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName }}
       {{- end }}
@@ -111,7 +114,7 @@ spec:
             value: {{ .Values.mongodbDatabase | quote }}
           {{- end }}
             {{- if .Values.usePassword }}
-            {{- if and .Values.mongodbUsername (or .Values.mongodbPassword .Values.existingSecret) }}
+            {{- if and .Values.mongodbUsername .Values.mongodbDatabase }}
           - name: MONGODB_PASSWORD
             valueFrom:
               secretKeyRef:
@@ -190,6 +193,11 @@ spec:
         - name: metrics
           image: {{ template "mongodb.metrics.image" . }}
           imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
+          {{- if .Values.securityContext.enabled }}
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: {{ .Values.securityContext.runAsUser }}
+          {{- end }}
           env:
           {{- if .Values.usePassword }}
           - name: MONGODB_ROOT_PASSWORD
@@ -210,7 +218,7 @@ spec:
               path: /metrics
               port: metrics
             initialDelaySeconds: {{ .Values.metrics.livenessProbe.initialDelaySeconds }}
-            periodSeconds: {{ .Values.metrics.readinessProbe.periodSeconds }}
+            periodSeconds: {{ .Values.metrics.livenessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.metrics.livenessProbe.timeoutSeconds }}
             failureThreshold: {{ .Values.metrics.livenessProbe.failureThreshold }}
             successThreshold: {{ .Values.metrics.livenessProbe.successThreshold }}
@@ -251,7 +259,7 @@ spec:
         name: datadir
         annotations:
         {{- range $key, $value := .Values.persistence.annotations }}
-          {{ $key }}: {{ $value }}
+          {{ $key }}: "{{ $value }}"
         {{- end }}
       spec:
         accessModes:

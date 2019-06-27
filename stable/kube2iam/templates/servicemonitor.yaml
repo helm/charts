@@ -1,0 +1,30 @@
+{{- if .Values.prometheus.serviceMonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ template "kube2iam.fullname" . }}
+  {{- if .Values.prometheus.serviceMonitor.namespace }}
+  namespace: {{ .Values.prometheus.serviceMonitor.namespace }}
+  {{- end }}
+  labels:
+    app: {{ template "kube2iam.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "kube2iam.name" . }}
+      release: {{ .Release.Name }}
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
+  endpoints:
+    {{- if .Values.prometheus.metricsPort }}
+    - port: metrics
+    {{- else }}
+    - port: http
+    {{- end }}
+      interval: {{ .Values.prometheus.serviceMonitor.interval }}
+      path: /metrics
+{{- end -}}

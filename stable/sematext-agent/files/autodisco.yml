@@ -44,11 +44,9 @@
 # the version of nginx server use '{{if isset .Meta "Version"}}{{ .Meta.Version }}{{end}}'
 # in `labels` section.
 
-# To pull secrets that are attached to containers use '{{index .Secrets "SECRET_NAME"}}'
-
 cassandra:
   process: java
-  args: .*org.apache.cassandra.service.CassandraDaemon.*
+  args: org.apache.cassandra.service.CassandraDaemon
   ports:
     - 7199
     - 7000
@@ -68,9 +66,23 @@ clickhouse:
     SPM_MONITOR_CLICKHOUSE_DB_USER:
     SPM_MONITOR_CLICKHOUSE_DB_PASSWORD:
 
-es:
+couchbase:
+  process: beam.smp
+  args: couchbase
+  ports:
+    - 8092
+    - 8093
+    - 8094
+    - 11210
+  labels:
+    COUCHBASE_HOSTPORT: "{{ .IP }}:8093"
+    COUCHBASE_QUERY_HOSTPORT: "{{ .IP }}:8093"
+    COUCHBASE_BASICAUTH_USERNAME:
+    COUCHBASE_BASICAUTH_PASSWORD:
+
+elasticsearch:
   process: java
-  args: .*org.elasticsearch.bootstrap.Elasticsearch.*
+  args: org.elasticsearch.bootstrap.Elasticsearch\b
   ports:
     - 9200
     - 9300
@@ -78,6 +90,18 @@ es:
     - 9202
     - 9301
     - 9302
+  labels:
+    SPM_MONITOR_ES_NODE_HOSTPORT: "{{ .IP }}:9200"
+
+flink:
+  process: java
+  args: org.apache.flink.runtime.entrypoint.StandaloneSessionClusterEntrypoint\b|org.apache.flink.runtime.taskexecutor.TaskManagerRunner\b
+  ports:
+    - 6123
+    - 6121
+    - 6122
+  lables:
+    FLINK_HOSTPORT: "{{ .IP }}:8081"
 
 haproxy:
   process: haproxy
@@ -110,6 +134,16 @@ mysql:
   ports:
     - 3306
 
+nats:
+  process: gnatsd
+  args: "gnatsd -c gnatsd.conf"
+  ports:
+    - 4222
+    - 8222
+    - 6222
+  labels:
+    NATS_SERVER_HOSTPORT: "{{ .IP }}:8222"
+
 nginx:
   process: nginx
   args: "nginx: master process.*|nginx: worker process.*|nginx -g daemon off.*"
@@ -123,6 +157,29 @@ nginx:
     container.id: '{{if isset .ContainerInfo "ID"}}{{ .ContainerInfo.ID }}{{end}}'
     version: '{{if isset .Meta "Version"}}{{ .Meta.Version }}{{end}}'
 
+postgresql:
+  process: postgres
+  args: postgres
+  ports:
+    - 5432
+  labels:
+    POSTGRESQL_DB_HOST_PORT: 5432
+    POSTGRESQL_DB_DATABASE: pg_stat_user_tables
+    POSTGRESQL_DB_USER:
+    POSTGRESQL_DB_PASSWORD:
+
+rabbitmq:
+  process: beam.smp
+  args: mnesia|rabbitmq
+  ports:
+    - 5672
+    - 5671
+    - 15672
+  labels:
+    RABBITMQ_API_URL: "http://{{ .IP }}:15672"
+    RABBITMQ_BASICAUTH_USERNAME:
+    RABBITMQ_BASICAUTH_PASSWORD:
+
 redis:
   process: redis-server
   args: redis-server .*
@@ -131,42 +188,42 @@ redis:
 
 solr:
   process: java
-  args: .*-Dsolr.solr.home.*|.*-Dsolr.install.dir.*
+  args: -Dsolr.solr.home|-Dsolr.data.home|-Dsolr.default.confdir
   ports:
     - 8983
     - 7983
 
 spark-master:
   process: java
-  args: .*org.apache.spark.deploy.master.Master.*
+  args: org.apache.spark.deploy.master.Master
   ports:
     - 7707
     - 4040
 
 spark-worker:
   process: java
-  args: .*org.apache.spark.deploy.worker.Worker.*
+  args: org.apache.spark.deploy.worker.Worker
   ports:
     - 7707
     - 4040
 
 spark-driver:
   process: java
-  args: .*org.apache.spark.deploy.SparkSubmit.*--deploy-mode client.*|.*org.apache.spark.deploy.worker.DriverWrapper.*
+  args: org.apache.spark.deploy.SparkSubmit.*--deploy-mode client.*|org.apache.spark.deploy.worker.DriverWrapper
   ports:
     - 7707
     - 4040
 
 spark-executor:
   process: java
-  args: .*org.apache.spark.executor.CoarseGrainedExecutorBackend.*
+  args: org.apache.spark.executor.CoarseGrainedExecutorBackend
   ports:
     - 7707
     - 4040
 
 storm-nimbus:
   process: java
-  args: .*org.apache.storm.daemon.nimbus.*
+  args: org.apache.storm.daemon.nimbus
   ports:
     - 6627
     - 6700
@@ -176,7 +233,7 @@ storm-nimbus:
 
 storm-supervisor:
   process: java
-  args: .*org.apache.storm.daemon.supervisor.Supervisor.*
+  args: org.apache.storm.daemon.supervisor.Supervisor
   ports:
     - 6627
     - 6700
@@ -186,7 +243,7 @@ storm-supervisor:
 
 storm-worker:
   process: java
-  args: .*org.apache.storm.daemon.worker.*
+  args: org.apache.storm.daemon.worker
   ports:
     - 6627
     - 6700
@@ -194,9 +251,18 @@ storm-worker:
     - 6702
     - 6703
 
+jvm:
+  process: java
+  args: org.eclipse.jetty.xml.XmlConfiguration|-Djetty.base
+  ports:
+    - 80
+    - 443
+    - 8080
+    - 8443
+
 tomcat:
   process: java
-  args: .*catalina.*org.apache.catalina.startup.Bootstrap.*
+  args: org.apache.catalina.startup.Bootstrap
   ports:
     - 80
     - 443
@@ -205,7 +271,7 @@ tomcat:
 
 zookeeper:
   process: java
-  args: .*-Dzookeeper.log.dir.*|.*org.apache.zookeeper.server.quorum.QuorumPeerMain.*
+  args: org.apache.zookeeper.server.quorum.QuorumPeerMain\b
   ports:
     - 2181
     - 2888
