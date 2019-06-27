@@ -63,7 +63,7 @@ airflow:
     repository: puckel/docker-airflow
     ##
     ## image tag
-    tag: 1.10.2
+    tag: 1.10.3
     ##
     ## Image pull policy
     ## values: Always or IfNotPresent
@@ -92,9 +92,6 @@ airflow:
   schedulerDoPickle: true
   ##
   ## Number of replicas for web server.
-  ## For the moment, we recommend to leave this value to 1, since the webserver instance performs
-  ## the 'initdb' operation, starting more replicas will cause all the web containers to execute
-  ## it, which may cause unwanted issues on the database.
   webReplicas: 1
   ##
   ## Custom airflow configuration environment variables
@@ -156,6 +153,11 @@ airflow:
   ## Additional volumes for the Scheduler, Worker and Web pods.
   # - name: synchronised-dags
   #   emptyDir: {}
+
+  ##
+  ## Run initdb when the scheduler starts.
+  initdb: true
+
 
 scheduler:
   resources: {}
