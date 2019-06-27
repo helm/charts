@@ -96,7 +96,7 @@ nodeSelector: {}
 
 ## Affinity
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
-affinity: |
+affinity:
   podAntiAffinity:
     preferredDuringSchedulingIgnoredDuringExecution:
     - weight: 100
@@ -104,8 +104,8 @@ affinity: |
         topologyKey: kubernetes.io/hostname
         labelSelector:
           matchLabels:
-            app: {{ template "vault.name" . }}
-            release: {{ .Release.Name }}
+            app: '{{ template "vault.name" . }}'
+            release: '{{ .Release.Name }}'
 
 ## Tolerations
 ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
@@ -130,11 +130,17 @@ podLabels: {}
 ## if automation saves your unseal keys to a k8s secret on deploy
 ## writing a script to do this would be trivial and solves the
 ## issues of scaling up if deployed in HA.
-# lifecycle: |
+# lifecycle:
 #   postStart:
 #     exec:
 #       command: ["./unseal -s my-unseal-keys"]
 
+# Priority class name for pods
+priorityClassName: ""
+
+# Minimum number of seconds that newly created replicas must be ready without any containers
+# crashing
+minReadySeconds: 0
 serviceAccount:
   ## Specifies whether a ServiceAccount should be created
   ##
@@ -150,11 +156,12 @@ vault:
   # information.
   dev: true
   # Configure additional environment variables for the Vault containers
-  extraEnv: {}
+  extraEnv: []
   #   - name: VAULT_API_ADDR
   #     value: "https://vault.internal.domain.name:8200"
-  extraContainers: {}
+  extraContainers: []
   ## Additional containers to be added to the Vault pod
+  # extraContainers:
   # - name: vault-sidecar
   #   image: vault-sidecar:latest
   #   volumeMounts:
@@ -165,16 +172,17 @@ vault:
   # the volumeMount name. The two other fields required are the name of the
   # Kubernetes secret (created outside of this chart), and the mountPath
   # at which it should be mounted in the Vault container.
-  extraVolumes: {}
+  extraVolumes: []
   #   - name: vault-tls
   #     secret:
   #       secretName: vault-tls-secret
-  extraVolumeMounts: {}
+  extraVolumeMounts: []
   #   - name: vault-tls
   #     mountPath: /vault/tls
   #     readOnly: true
-  extraInitContainers: {}
+  extraInitContainers: []
   ## Init containers to be added
+  # extraInitContainers:
   # - name: do-something
   #   image: busybox
   #   command: ['do', 'something']

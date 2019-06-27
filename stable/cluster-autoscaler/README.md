@@ -137,8 +137,10 @@ Parameter | Description | Default
 `extraArgs` | additional container arguments | `{}`
 `podDisruptionBudget` | Pod disruption budget | `maxUnavailable: 1`
 `extraEnv` | additional container environment variables | `{}`
+`envFromSecret` | additional container environment variables from secret | `nil`
 `nodeSelector` | node labels for pod assignment | `{}`
 `podAnnotations` | annotations to add to each pod | `{}`
+`deployment.apiVersion` | apiVersion for the deployment | `extensions/v1beta1`
 `rbac.create` | If true, create & use RBAC resources | `false`
 `rbac.serviceAccountName` | existing ServiceAccount to use (ignored if rbac.create=true) | `default`
 `rbac.pspEnabled` | Must be used with `rbac.create` true. If true, creates & uses RBAC resources required in the cluster with [Pod Security Policies](https://kubernetes.io/docs/concepts/policy/pod-security-policy/) enabled. | `false`

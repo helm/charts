@@ -12,7 +12,7 @@ spec:
   clusterIP: None
   ports:
   - name: postgresql
-    port: 5432
+    port: {{ template "postgresql.port" . }}
     targetPort: postgresql
   selector:
     app: {{ template "postgresql.name" . }}

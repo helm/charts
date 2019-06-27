@@ -40,6 +40,14 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- end -}}
 
 {{/*
+Create a default fully qualified app name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+*/}}
+{{- define "magento.elasticsearch.fullname" -}}
+{{- printf "%s-%s-client" .Release.Name "elasticsearch" | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{/*
 Get the user defined LoadBalancerIP for this release.
 Note, returns 127.0.0.1 if using ClusterIP.
 */}}
