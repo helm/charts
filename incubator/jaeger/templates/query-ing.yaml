@@ -1,5 +1,6 @@
 {{- if .Values.query.ingress.enabled -}}
 {{- $servicePort := .Values.query.service.queryPort -}}
+{{- $basePath := .Values.query.basePath -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -20,7 +21,7 @@ spec:
     - host: {{ $host }}
       http:
         paths:
-          - path: /
+          - path: {{ $basePath }}
             backend:
               serviceName: {{ template "jaeger.query.name" $ }}
               servicePort: {{ $servicePort }}

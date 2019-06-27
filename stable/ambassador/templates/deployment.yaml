@@ -11,6 +11,10 @@ metadata:
     helm.sh/chart: {{ include "ambassador.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
+    {{- if .Values.deploymentAnnotations }}
+  annotations:
+      {{- toYaml .Values.deploymentAnnotations | nindent 4 }}
+    {{- end }}
 spec:
 {{- if not .Values.daemonSet }}
   replicas: {{ .Values.replicaCount }}
@@ -100,6 +104,11 @@ spec:
             {{- end }}
             - name: admin
               containerPort: 8877
+          {{- range $key := .Values.additionalTCPPorts }}
+            - name: "{{ $key }}-tcp"
+              containerPort: {{ $key }}
+              protocol: TCP
+          {{- end }}
           env:
             - name: HOST_IP
               valueFrom:
@@ -201,4 +210,3 @@ spec:
         {{- toYaml .Values.imagePullSecrets | nindent 8 }}
       dnsPolicy: {{ .Values.dnsPolicy }}
       hostNetwork: {{ .Values.hostNetwork }}
-
