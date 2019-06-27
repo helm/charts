@@ -56,6 +56,7 @@ The following table lists the configurable parameters of the Blackbox-Exporter c
 | `image.repository`                     | container image repository                        | `prom/blackbox-exporter`      |
 | `image.tag`                            | container image tag                               | `v0.14.0`                     |
 | `image.pullPolicy`                     | container image pull policy                       | `IfNotPresent`                |
+| `image.pullSecrets`                    | container image pull secrets                      | `[]`                          |
 | `ingress.annotations`                  | Ingress annotations                               | None                          |
 | `ingress.enabled`                      | Enables Ingress                                   | `false`                       |
 | `ingress.hosts`                        | Ingress accepted hostnames                        | None                          |
