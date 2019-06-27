@@ -52,6 +52,11 @@ logLevel: "INFO"
 podDisruptionBudget:
   maxUnavailable: 1
 
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName:
+
 # Configuration for the solr PVC
 volumeClaimTemplates:
   storageClassName: ""
