@@ -1,5 +1,5 @@
 {{- if .Values.query.ingress.enabled -}}
-{{- $servicePort := .Values.query.service.queryPort -}}
+{{- $servicePort := .Values.query.service.port -}}
 {{- $basePath := .Values.query.basePath -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
