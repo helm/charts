@@ -75,6 +75,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `parsers.enabled`                  | Enable custom parsers | `false` |
 | `parsers.regex`                    | List of regex parsers | `NULL` |
 | `parsers.json`                     | List of json parsers | `NULL` |
+| `parsers.logfmt`                   | List of logfmt parsers | `NULL` |
 | **General**                   |
 | `annotations`                      | Optional deamonset set annotations        | `NULL`                |
 | `podAnnotations`                   | Optional pod annotations                  | `NULL`                |
