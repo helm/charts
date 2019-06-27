@@ -1,0 +1,97 @@
+# Default values for aad-pod-identity-helm.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+image:
+  repository: mcr.microsoft.com/k8s/aad-pod-identity
+  imagePullPolicy: Always
+
+# https://github.com/Azure/aad-pod-identity#4-optional-match-pods-in-the-namespace
+# By default, AAD Pod Identity matches pods to identities across namespaces.
+# To match only pods in the namespace containing AzureIdentity set this to true.
+forceNameSpaced: "false"
+
+## If using a separate service prinicipal for aad-pod-identity instead of cluster service principal specify the following
+## (The chart will perform the base64 encoding for you for values that are stored in secrets.)
+# adminsecret:
+#   cloud: <cloud environment name>
+#   subscriptionID: <subscription id>
+#   resourceGroup: <cluster resource group>
+#   vmType: <`standard` for normal virtual machine nodes, and `vmss` for cluster deployed with a virtual machine scale set>
+#   tenantID: <service principal tenant id>
+#   clientID: <service principal client id>
+#   clientSecret: <service principal client secret>
+
+mic:
+  image: mic
+  tag: 1.5-rc3
+  component: mic
+
+  # log level. Uses V logs (glog)
+  # logVerbosity: 0
+
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+  resources: {}
+
+  ## Node labels for pod assignment
+  ## aad-pod-identity is currently only supported on linux
+  nodeSelector:
+    beta.kubernetes.io/os: linux
+
+  tolerations: []
+
+  affinity: {}
+
+nmi:
+  image: nmi
+  tag: 1.5-rc3
+  component: nmi
+
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+  resources: {}
+
+  ## Node labels for pod assignment
+  ## aad-pod-identity is currently only supported on linux
+  nodeSelector:
+    beta.kubernetes.io/os: linux
+
+  tolerations: []
+
+  affinity: {}
+
+rbac:
+  enabled: true
+
+azureIdentity:
+  # enabled/disable deployment of azure identity and binding
+  enabled: false
+  name: "azure-identity"
+  # if not defined, then the azure identity will be deployed in the same namespace as the chart
+  namespace: ""
+  # type 0: MSI, type 1: Service Principal
+  type: 0
+  # /subscriptions/subscription-id/resourcegroups/resource-group/providers/Microsoft.ManagedIdentity/userAssignedIdentities/identity-name
+  resourceID: ""
+  clientID: ""
+
+azureIdentityBinding:
+  name: "azure-identity-binding"
+  selector: "demo"

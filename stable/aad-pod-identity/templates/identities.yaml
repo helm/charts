@@ -1,0 +1,20 @@
+{{- if .Values.azureIdentity.enabled }}
+apiVersion: "aadpodidentity.k8s.io/v1"
+kind: AzureIdentity
+metadata:
+ name: {{ .Values.azureIdentity.name }}
+ namespace: {{ template "aad-pod-identity.azureidentity.namespace" . }}
+spec:
+ type: {{ .Values.azureIdentity.type }}
+ ResourceID: {{required ".Values.azureIdentity.resourceID is required!" .Values.azureIdentity.resourceID }}
+ ClientID: {{required ".Values.azureIdentity.clientID is required!" .Values.azureIdentity.clientID }}
+---
+apiVersion: "aadpodidentity.k8s.io/v1"
+kind: AzureIdentityBinding
+metadata:
+ name: {{ .Values.azureIdentityBinding.name }}
+ namespace: {{ template "aad-pod-identity.azureidentitybinding.namespace" . }}
+spec:
+ AzureIdentity: {{ .Values.azureIdentity.name }}
+ Selector: {{required ".Values.azureIdentityBinding.selector is required!" .Values.azureIdentityBinding.selector }}
+{{- end }}
