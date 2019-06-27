@@ -94,9 +94,10 @@ backend:
 parsers:
   enabled: false
   ## List the respective parsers in key: value format per entry
-  ## Regex required fields are name and regex. JSON required field
+  ## Regex required fields are name and regex. JSON and Logfmt required field
   ## is name.
   regex: []
+  logfmt: []
   ##  json parser config can be defined by providing an extraEntries field.
   ##  The following entry:
   ## json:
