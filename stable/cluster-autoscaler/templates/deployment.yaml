@@ -148,6 +148,11 @@ spec:
             - name: {{ $key }}
               value: "{{ $value }}"
           {{- end }}
+          {{- if .Values.envFromSecret }}
+          envFrom:
+            - secretRef:
+                name: {{ .Values.envFromSecret }}
+          {{- end }}
           livenessProbe:
             httpGet:
               path: /health-check
