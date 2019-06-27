@@ -20,8 +20,17 @@ spec:
     spec:
       securityContext:
 {{ toYaml .Values.securityContext | indent 8 }}
-      {{- if .Values.plugins.install }}
       initContainers:
+        - name: init-sysctl
+          image: busybox:1.31
+          command:
+          - sysctl
+          - -w
+          - vm.max_map_count=262144
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            privileged: true
+      {{- if .Values.plugins.install }}
         - name: install-plugins
           image: {{ default "joosthofman/wget:1.0" .Values.plugins.initContainerImage }}
           env:
@@ -126,6 +135,11 @@ spec:
             - mountPath: /opt/sonarqube/secret/
               name: secret
             {{- end }}
+            {{- if .Values.customCerts.enabled }}
+            - mountPath: /etc/ssl/certs/java/cacerts
+              subPath: cacerts
+              name: cacerts
+            {{- end }}
             - mountPath: /opt/sonarqube/data
               name: sonarqube
               subPath: data
@@ -178,6 +192,14 @@ spec:
           items:
           - key: sonar-secret.txt
             path: sonar-secret.txt
+      {{- end }}
+      {{- if .Values.customCerts.enabled }}
+      - name: cacerts
+        secret:
+          secretName: {{ .Values.customCerts.secretName }}
+          items:
+          - key: cacerts
+            path: cacerts
       {{- end }}
       - name: install-plugins
         configMap:

@@ -109,6 +109,9 @@ spec:
             - key: newrelic-infra.yml
               path: newrelic-infra.yml
         {{- end }}
+      {{- if $.Values.priorityClassName }}
+      priorityClassName: {{ $.Values.priorityClassName }}
+      {{- end }}
       {{- if $.Values.nodeSelector }}
       nodeSelector:
 {{ toYaml $.Values.nodeSelector | indent 8 }}

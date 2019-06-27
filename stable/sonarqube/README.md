@@ -10,9 +10,9 @@ This chart bootstraps a SonarQube instance with a PostgreSQL database.
 
 - Kubernetes 1.6+
 
-## Installing the chart:
+## Installing the chart
 
-To install the chart :
+To install the chart:
 
 ```bash
 $ helm install stable/sonarqube
@@ -40,7 +40,7 @@ The following table lists the configurable parameters of the Sonarqube chart and
 | Parameter                                   | Description                               | Default                                    |
 | ------------------------------------------  | ----------------------------------------  | -------------------------------------------|
 | `image.repository`                          | image repository                          | `sonarqube`                                |
-| `image.tag`                                 | `sonarqube` image tag.                    | `7.7-community`                                        |
+| `image.tag`                                 | `sonarqube` image tag.                    | `7.8-community`                                        |
 | `image.pullPolicy`                          | Image pull policy                         | `IfNotPresent`                             |
 | `image.pullSecret`                          | imagePullSecret to use for private repository      |                                   |
 | `command`                                   | command to run in the container           | `nil` (need to be set prior to 6.7.6, and 7.4)      |
@@ -49,6 +49,7 @@ The following table lists the configurable parameters of the Sonarqube chart and
 | `ingress.labels`                            | Ingress additional labels                 | `{}`                                       |
 | `ingress.hosts[0].name`                     | Hostname to your SonarQube installation   | `sonar.organization.com`                   |
 | `ingress.hosts[0].path`                     | Path within the URL structure             | /                                          |
+| `ingress.tls`                               | Ingress secrets for TLS certificates      | `[]`                                       |
 | `livenessProbe.sonarWebContext`             | SonarQube web context for livenessProbe   | /                                          |
 | `readinessProbe.sonarWebContext`            | SonarQube web context for readinessProbe  | /                                          |
 | `service.type`                              | Kubernetes service type                   | `LoadBalancer`                             |
@@ -62,7 +63,10 @@ The following table lists the configurable parameters of the Sonarqube chart and
 | `persistence.accessMode`                    | Volumes access mode to be set             | `ReadWriteOnce`                            |
 | `persistence.size`                          | Size of the volume                        | None                                     |
 | `sonarProperties`                           | Custom `sonar.properties` file            | None                                       |
+| `customCerts.enabled`                       | Use `customCerts.secretName`              | false                                      |
+| `customCerts.secretName`                    | Name of the secret which conatins your `cacerts` | false                                      |
 | `sonarSecretKey`                            | Name of existing secret used for settings encryption | None                            |
+| `sonarProperties`                           | Custom `sonar.properties` file            | `{}`                                       |
 | `database.type`                             | Set to "mysql" to use mysql database       | `postgresql`|
 | `postgresql.enabled`                        | Set to `false` to use external server / mysql database     | `true`                                     |
 | `postgresql.postgresServer`                 | Hostname of the external Postgresql server| `null`                                     |
@@ -90,7 +94,37 @@ The following table lists the configurable parameters of the Sonarqube chart and
 | `plugins.deleteDefaultPlugins`              | Remove default plugins and use plugins.install list | `[]`                             |
 | `podLabels`                                 | Map of labels to add to the pods          | `{}`                                       |
 
-
 You can also configure values for the PostgreSQL / MySQL database via the Postgresql [README.md](https://github.com/kubernetes/charts/blob/master/stable/postgresql/README.md) / MySQL [README.md](https://github.com/kubernetes/charts/blob/master/stable/mysql/README.md)
 
 For overriding variables see: [Customizing the chart](https://docs.helm.sh/using_helm/#customizing-the-chart-before-installing)
+
+### Use custom `cacerts`
+
+In environments with air-gapped setup, especially with internal tooling (repos) and self-signed certificates it is required to provide an adequate `cacerts` which overrides the default one:
+
+1. Create a yaml file `cacerts.yaml` with a secret that contanins the `cacerts`
+
+   ```yaml
+   apiVersion: v1
+   kind: Secret
+   metadata:
+     name: my-cacerts
+   data:
+     cacerts: |
+       xxxxxxxxxxxxxxxxxxxxxxx
+   ```
+
+2. Upload your `cacerts.yaml` to a secret with the key you specify in `secretName` in the cluster you are installing Sonarqube to.
+
+   ```shell
+   $ kubectl apply -f cacerts.yaml
+   ```
+
+3. Set the following values of the chart:
+
+   ```yaml
+   customCerts:
+      ## Enable to override the default cacerts with your own one
+      enabled: false
+      secretName: my-cacerts
+   ```
