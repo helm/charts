@@ -37,6 +37,9 @@ spec:
 {{ toYaml . | indent 8 }}
 {{- end }}
     spec:
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+      {{- end }}
 {{- include "postgresql.imagePullSecrets" . | indent 6 }}
       {{- if .Values.master.nodeSelector }}
       nodeSelector:
@@ -71,11 +74,10 @@ spec:
           - sh
           - -c
           - |
-            find {{ .Values.persistence.mountPath }} -mindepth 1 -maxdepth 1 -not -name ".snapshot" | \
+            mkdir -p {{ .Values.persistence.mountPath }}/data
+            chmod 700 {{ .Values.persistence.mountPath }}/data
+            find {{ .Values.persistence.mountPath }} -mindepth 1 -maxdepth 1 -not -name ".snapshot" -not -name "lost+found" | \
               xargs chown -R {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }}
-            if [ -d {{ .Values.persistence.mountPath }}/data ]; then
-              chmod  0700 {{ .Values.persistence.mountPath }}/data;
-            fi
         securityContext:
           runAsUser: {{ .Values.volumePermissions.securityContext.runAsUser }}
         volumeMounts:
@@ -151,7 +153,7 @@ spec:
           value: {{ (include "postgresql.database" .) | quote }}
         {{- end }}
 {{- if .Values.extraEnv }}
-{{ toYaml .Values.extraEnv | indent 8 }}
+{{ tpl (toYaml .Values.extraEnv) $ | indent 8 }}
 {{- end }}
         ports:
         - name: postgresql
@@ -179,11 +181,7 @@ spec:
             command:
             - sh
             - -c
-           {{- if (include "postgresql.database" .) }}
-            - exec pg_isready -U {{ include "postgresql.username" . | quote }} -d {{ (include "postgresql.database" .) | quote }} -h 127.0.0.1 -p {{ template "postgresql.port" . }}
-           {{- else }}
-            - exec pg_isready -U {{ include "postgresql.username" . | quote }} -h 127.0.0.1 -p {{ template "postgresql.port" . }}
-           {{- end }}
+            {{- include "postgresql.readinessProbeCommand" . | nindent 12 }}
           initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
           timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
@@ -215,6 +213,9 @@ spec:
         {{- if or (.Files.Glob "files/postgresql.conf") (.Files.Glob "files/pg_hba.conf") .Values.postgresqlConfiguration .Values.pgHbaConfiguration .Values.configurationConfigMap }}
         - name: postgresql-config
           mountPath: /bitnami/postgresql/conf
+        {{- end }}
+        {{- if .Values.master.extraVolumeMounts }}
+        {{- toYaml .Values.master.extraVolumeMounts | nindent 8 }}
         {{- end }}
 {{- if .Values.metrics.enabled }}
       - name: metrics
@@ -298,6 +299,9 @@ spec:
       - name: custom-init-scripts-secret
         secret:
           secretName: {{ template "postgresql.initdbScriptsSecret" . }}
+      {{- end }}
+      {{- if .Values.master.extraVolumes }}
+      {{- toYaml .Values.master.extraVolumes | nindent 6}}
       {{- end }}
 {{- if and .Values.persistence.enabled .Values.persistence.existingClaim }}
       - name: data

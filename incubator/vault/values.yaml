@@ -135,6 +135,12 @@ podLabels: {}
 #     exec:
 #       command: ["./unseal -s my-unseal-keys"]
 
+# Priority class name for pods
+priorityClassName: ""
+
+# Minimum number of seconds that newly created replicas must be ready without any containers
+# crashing
+minReadySeconds: 0
 serviceAccount:
   ## Specifies whether a ServiceAccount should be created
   ##

@@ -1,7 +1,7 @@
 apiVersion: v1
 name: joomla
-version: 4.3.0
-appVersion: 3.9.6
+version: 4.3.4
+appVersion: 3.9.8
 description: PHP content management system (CMS) for publishing web content
 keywords:
 - joomla
