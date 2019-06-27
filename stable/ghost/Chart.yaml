@@ -1,7 +1,7 @@
 apiVersion: v1
 name: ghost
-version: 6.7.23
-appVersion: 2.25.2
+version: 6.7.24
+appVersion: 2.25.3
 description: A simple, powerful publishing platform that allows you to share your stories with the world
 keywords:
 - ghost
