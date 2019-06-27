@@ -41,6 +41,10 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name:
 
+securityContext: {}
+  # The securityContext this Pod should use. See https://kubernetes.io/docs/concepts/policy/security-context/ for more.
+  # runAsUser: 65534
+
 config:
   datasource:
     host:
