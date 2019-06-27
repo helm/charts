@@ -25,6 +25,10 @@ spec:
       {{- if .Values.serviceAccount.create }}
       serviceAccountName: {{ include "jaeger-operator.serviceAccountName" . }}
       {{- end }}
+      {{- with .Values.securityContext }}
+      securityContext:
+{{ toYaml . | indent 8 }}
+      {{- end }}
       containers:
         - name: {{ include "jaeger-operator.fullname" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
