@@ -16,10 +16,10 @@ metadata:
 spec:
   type: {{ .Values.hotrod.service.type }}
   ports:
-    - name: {{ .Values.hotrod.service.name }}
-      port: {{ .Values.hotrod.service.externalPort }}
+    - name: http
+      port: {{ .Values.hotrod.service.port }}
       protocol: TCP
-      targetPort: {{ .Values.hotrod.service.internalPort }}
+      targetPort: http
   selector:
     app.kubernetes.io/name: {{ include "jaeger.name" . }}
     app.kubernetes.io/component: hotrod

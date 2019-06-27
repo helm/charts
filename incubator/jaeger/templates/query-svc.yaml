@@ -15,10 +15,10 @@ metadata:
 {{- end }}
 spec:
   ports:
-  - name: jaeger-query
-    port: {{ .Values.query.service.queryPort }}
+  - name: query
+    port: {{ .Values.query.service.port }}
     protocol: TCP
-    targetPort: {{ .Values.query.service.targetPort }}
+    targetPort: query
   selector:
     app.kubernetes.io/name: {{ include "jaeger.name" . }}
     app.kubernetes.io/component: query

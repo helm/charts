@@ -52,10 +52,7 @@ spec:
             value: {{ $value }}
           {{- end }}
           - name: SPAN_STORAGE_TYPE
-            valueFrom:
-              configMapKeyRef:
-                name: {{ include "jaeger.fullname" . }}
-                key: span-storage.type
+            value: {{ .Values.storage.type }}
           {{- if eq .Values.storage.type "cassandra" }}
           - name: CASSANDRA_SERVERS
             valueFrom:
@@ -110,20 +107,20 @@ spec:
         - containerPort: {{ .Values.collector.service.httpPort }}
           name: http
           protocol: TCP
-        - containerPort: {{ .Values.collector.service.healthCheckPort }}
-          name: healthcheck
+        - containerPort: 14269
+          name: admin
           protocol: TCP
         - containerPort: {{ .Values.collector.service.zipkinPort }}
           name: zipkin
           protocol: TCP
         readinessProbe:
           httpGet:
-            port: healthcheck
-          initialDelaySeconds: 10
+            path: /
+            port: admin
         livenessProbe:
           httpGet:
-            port: healthcheck
-          initialDelaySeconds: 10
+            path: /
+            port: admin
         resources:
 {{ toYaml .Values.collector.resources | indent 10 }}
       dnsPolicy: {{ .Values.collector.dnsPolicy }}

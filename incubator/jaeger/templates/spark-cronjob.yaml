@@ -41,10 +41,7 @@ spec:
             imagePullPolicy: {{ .Values.spark.pullPolicy }}
             env:
             - name: STORAGE
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ include "jaeger.fullname" . }}
-                  key: span-storage.type
+              value: {{ .Values.storage.type }}
             {{- if eq .Values.storage.type "cassandra" }}
             - name: CASSANDRA_CONTACT_POINTS
               valueFrom:
