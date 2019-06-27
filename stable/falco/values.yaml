@@ -180,7 +180,7 @@ integrations:
   # * program_output:
   #     enabled: true
   #     keep_alive: false
-  #     program: "\"curl -d @- -X POST --header 'Content-Type: application/json' --header 'Authorization: authentication_token' url \""
+  #     program: "curl -d @- -X POST --header 'Content-Type: application/json' --header 'Authorization: authentication_token' url"
   gcscc:
     enabled: false
     webhookUrl: http://sysdig-gcscc-connector.default.svc.cluster.local:8080/events
