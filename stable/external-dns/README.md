@@ -209,3 +209,13 @@ Use the workaround below to upgrade from versions previous to 1.0.0. The followi
 $ kubectl delete deployment my-release-external-dns
 $ helm upgrade my-release stable/external-dns
 ```
+
+Other mayor changes included in this major version are:
+
+- Default image changes from `registry.opensource.zalan.do/teapot/external-dns` to `bitnami/external-dns`.
+- The parameters below are renamed:
+  - `aws.secretKey` -> `aws.credentials.secretKey`
+  - `aws.accessKey` -> `aws.credentials.accessKey`
+  - `aws.credentialsPath` -> `aws.credentials.mountPath`
+  - `designate.customCA.directory` -> `designate.customCA.mountPath`
+- Support to Prometheus metrics is added.
