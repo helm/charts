@@ -389,22 +389,22 @@ data:
     {{- if .Values.timeouts.responding }}
     [respondingTimeouts]
       {{- if .Values.timeouts.responding.readTimeout }}
-      readTimeout = {{ .Values.timeouts.responding.readTimeout }}
+      readTimeout = {{ .Values.timeouts.responding.readTimeout | quote }}
       {{- end }}
       {{- if .Values.timeouts.responding.writeTimeout }}
-      writeTimeout = {{ .Values.timeouts.responding.writeTimeout }}
+      writeTimeout = {{ .Values.timeouts.responding.writeTimeout | quote }}
       {{- end }}
       {{- if .Values.timeouts.responding.idleTimeout }}
-      idleTimeout = {{ .Values.timeouts.responding.idleTimeout }}
+      idleTimeout = {{ .Values.timeouts.responding.idleTimeout | quote }}
       {{- end }}
     {{- end }}
     {{- if .Values.timeouts.forwarding }}
     [forwardingTimeouts]
       {{- if .Values.timeouts.forwarding.dialTimeout }}
-      dialTimeout = {{ .Values.timeouts.forwarding.dialTimeout }}
+      dialTimeout = {{ .Values.timeouts.forwarding.dialTimeout | quote }}
       {{- end }}
       {{- if .Values.timeouts.forwarding.responseHeaderTimeout }}
-      responseHeaderTimeout = {{ .Values.timeouts.forwarding.responseHeaderTimeout }}
+      responseHeaderTimeout = {{ .Values.timeouts.forwarding.responseHeaderTimeout | quote }}
       {{- end }}
     {{- end }}
     {{- end }}
