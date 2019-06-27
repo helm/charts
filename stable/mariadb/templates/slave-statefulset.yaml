@@ -26,8 +26,8 @@ spec:
     metadata:
       {{- if .Values.slave.annotations }}
       annotations:
-        {{- range .Values.slave.annotations }}
-        {{ .key }}: '{{ .value }}'
+        {{- range $key, $value := .Values.slave.annotations }}
+        {{ $key }}: '{{ $value }}'
         {{- end }}
       {{- end }}
       labels:
@@ -98,6 +98,10 @@ spec:
         {{- if .Values.image.debug}}
         - name: BITNAMI_DEBUG
           value: "true"
+        {{- end }}
+        {{- if .Values.slave.extraFlags }}
+        - name: MARIADB_EXTRA_FLAGS
+          value: "{{ .Values.slave.extraFlags }}"
         {{- end }}
         - name: MARIADB_REPLICATION_MODE
           value: "slave"

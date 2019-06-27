@@ -28,6 +28,7 @@ spec:
     spec:
       securityContext:
         fsGroup: 8983
+        runAsUser: 8983
       affinity:
 {{ tpl (toYaml .Values.affinity) .  | indent 8 }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
