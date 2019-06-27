@@ -61,6 +61,8 @@ The following table lists the configurable parameters of the sumologic-fluentd c
 |-----------|-------------|---------|
 | `podAnnotations` | Annotations to add to the DaemonSet's Pods | `{}` |
 | `tolerations` | List of node taints to tolerate (requires Kubernetes >= 1.6) | `[]` |
+| `nodeSelector` | Node labels for fluentd pod assignment | `{}` |
+| `affinity` | Expressions for affinity | `{}` |
 | `extraEnv` | List of additional env vars to append to pods | `[]` |
 | `updateStrategy` | `OnDelete` or `RollingUpdate` (requires Kubernetes >= 1.6) | `OnDelete` |
 | `sumologic.collectorUrl` | An HTTP collector in SumoLogic that the container can send logs to via HTTP | `Nil` You must provide your own value |
