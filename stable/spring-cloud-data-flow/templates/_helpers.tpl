@@ -49,6 +49,14 @@ Create the name of the service account to use
   {{- end -}}
 {{- end -}}
 
+{{- define "scdf.database.scheme" -}}
+  {{- if .Values.mysql.enabled -}}
+    {{- printf "mysql" -}}
+  {{- else -}}
+    {{- .Values.database.scheme -}}
+  {{- end -}}
+{{- end -}}
+
 {{- define "scdf.database.host" -}}
   {{- if .Values.mysql.enabled -}}
     {{- printf "${%s_MYSQL_SERVICE_HOST}" (include "scdf.envrelease" . ) -}}
