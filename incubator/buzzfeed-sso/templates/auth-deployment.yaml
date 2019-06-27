@@ -57,6 +57,10 @@ spec:
               value: {{ .Values.emailDomain | quote }}
             - name: HOST
               value: {{ $authDomain }}
+            {{- if .Values.whitelistedEmails }}
+            - name: SSO_EMAIL_ADDRESSES
+              value: {{ .Values.whitelistedEmails }}
+            {{- end }}
             - name: REDIRECT_URL
               value: https://{{ $authDomain }}
             - name: PROXY_ROOT_DOMAIN
@@ -95,7 +99,7 @@ spec:
             - name: COOKIE_SECURE
               value: "true"
             - name: CLUSTER
-              value: dev
+              value: {{ .Values.cluster | quote }}
             # Provider variables
           {{- with .Values.provider.google }}
           {{- if .adminEmail }}
@@ -114,6 +118,9 @@ spec:
                 secretKeyRef:
                   name: {{ $googleSecret }}
                   key: google-client-secret
+          {{- end }}
+          {{- if .Values.auth.extraEnv }}
+{{ toYaml .Values.auth.extraEnv | indent 12 }}
           {{- end }}
           readinessProbe:
             httpGet:

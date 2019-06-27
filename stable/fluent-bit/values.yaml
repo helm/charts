@@ -1,11 +1,11 @@
-# Minikube stores its logs in a separate directory.
+  # Minikube stores its logs in a separate directory.
 # enable if started in minikube.
 on_minikube: false
 
 image:
   fluent_bit:
     repository: fluent/fluent-bit
-    tag: 1.1.0
+    tag: 1.2.0
   pullPolicy: Always
 
 testFramework:
@@ -19,6 +19,8 @@ fullnameOverride: ""
 metrics:
   enabled: false
   service:
+    # labels:
+    #   key: value
     annotations: {}
     # In order for Prometheus to consume metrics automatically use the following annotations:
     # prometheus.io/path: "/api/v1/metrics/prometheus"
@@ -232,6 +234,10 @@ filter:
 # If true, check to see if the log field content is a JSON string map, if so,
 # it append the map fields as part of the log structure.
   mergeJSONLog: true
+
+# If set, all unpacked keys from mergeJSONLog (Merge_Log) will be packed under
+# the key name specified on mergeLogKey (Merge_Log_Key)
+  mergeLogKey: log_processed
 
 # If true, enable the use of monitoring for a pod annotation of
 # fluentbit.io/parser: parser_name. parser_name must be the name

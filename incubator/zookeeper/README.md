@@ -18,6 +18,7 @@ This chart will do the following:
 * Optionally apply a [Pod Anti-Affinity](https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#inter-pod-affinity-and-anti-affinity-beta-feature) to spread the ZooKeeper ensemble across nodes.
 * Optionally start JMX Exporter and Zookeeper Exporter containers inside Zookeeper pods.
 * Optionally create a job which creates Zookeeper chroots (e.g. `/kafka1`).
+* Optionally create a Prometheus ServiceMonitor for each enabled exporter container
 
 ## Installing the Chart
 You can install the chart with the release name `zookeeper` as below.
@@ -52,12 +53,19 @@ zookeeper           ClusterIP  10.98.179.165  <none>       2181/TCP             
 ==> v1beta1/StatefulSet
 NAME       DESIRED  CURRENT  AGE
 zookeeper  3        3        2m
+
+==> monitoring.coreos.com/v1/ServiceMonitor
+NAME                      AGE
+zookeeper                 2m
+zookeeper-exporter        2m
 ```
 
 1. `statefulsets/zookeeper` is the StatefulSet created by the chart.
 1. `po/zookeeper-<0|1|2>` are the Pods created by the StatefulSet. Each Pod has a single container running a ZooKeeper server.
 1. `svc/zookeeper-headless` is the Headless Service used to control the network domain of the ZooKeeper ensemble.
 1. `svc/zookeeper` is a Service that can be used by clients to connect to an available ZooKeeper server.
+1. `servicemonitor/zookeeper` is a Prometheus ServiceMonitor which scrapes the jmx-exporter metrics endpoint
+1. `servicemonitor/zookeeper-exporter` is a Prometheus ServiceMonitor which scrapes the zookeeper-exporter metrics endpoint
 
 ## Configuration
 You can specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.

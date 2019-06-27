@@ -98,8 +98,9 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `filter.kubeTag`                   | Optional top-level tag for matching in filter         | `kube`                                 |
 | `filter.kubeTagPrefix`             | Optional tag prefix used by Tail   | `kube.var.log.containers.`                                |
 | `filter.mergeJSONLog`              | If the log field content is a JSON string map, append the map fields as part of the log structure         | `true`                                 |
+| `filter.mergeLogKey`               | If set, append the processed log keys under a new root key specified by this variable. | log_processed |
 | `image.fluent_bit.repository`      | Image                                      | `fluent/fluent-bit`                               |
-| `image.fluent_bit.tag`             | Image tag                                  | `1.0.6`                                          |
+| `image.fluent_bit.tag`             | Image tag                                  | `1.1.3`                                          |
 | `image.pullPolicy`                 | Image pull policy                          | `IfNotPresent`                                          |
 | `nameOverride`                     | Override name of app                   | `nil`                                        |
 | `fullnameOverride`                 | Override full name of app              | `nil`                                        |
@@ -125,6 +126,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `affinity`                         | Expressions for affinity                   | `NULL`                                            |
 | `metrics.enabled`                  | Specifies whether a service for metrics should be exposed | `false`                            |
 | `metrics.service.annotations`      | Optional metrics service annotations       | `NULL`                                            |
+| `metrics.service.labels`           | Additional labels for the fluent-bit metrics service definition, specified as a map.                                                    | None                                              |
 | `metrics.service.port`             | Port on where metrics should be exposed    | `2020`                                            |
 | `metrics.service.type`             | Service type for metrics                   | `ClusterIP`                                       |
 | `trackOffsets`                     | Specify whether to track the file offsets for tailing docker logs. This allows fluent-bit to pick up where it left after pod restarts but requires access to a `hostPath` | `false` |
