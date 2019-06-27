@@ -93,7 +93,7 @@ spec:
             ulimit -n "${RABBITMQ_ULIMIT_NOFILES}"
             {{- end }}
             #replace the default password that is generated
-            sed -i "s/CHANGEME/$RABBITMQ_PASSWORD/g" /opt/bitnami/rabbitmq/etc/rabbitmq/rabbitmq.conf
+            sed -i "s|CHANGEME|$RABBITMQ_PASSWORD|g" /opt/bitnami/rabbitmq/etc/rabbitmq/rabbitmq.conf
             #api check for probes
             cat > /opt/bitnami/rabbitmq/sbin/rabbitmq-api-check <<EOF
             #!/bin/sh
