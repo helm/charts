@@ -131,10 +131,6 @@ spec:
             - name: CONCOURSE_CAPTURE_ERROR_METRICS
               value: {{ .Values.concourse.web.metrics.captureErrorMetrics | quote }}
             {{- end }}
-            {{- if .Values.concourse.web.gc.missingGracePeriod }}
-            - name: CONCOURSE_GC_MISSING_GRACE_PERIOD
-              value: {{ .Values.concourse.web.gc.missingGracePeriod | quote }}
-            {{- end }}
             {{- if .Values.concourse.web.auth.mainTeam.config }}
             - name: CONCOURSE_MAIN_TEAM_CONFIG
               value: {{ .Values.concourse.web.auth.mainTeam.config | quote }}
@@ -597,7 +593,6 @@ spec:
             - name: CONCOURSE_X_FRAME_OPTIONS
               value: {{ .Values.concourse.web.xFrameOptions | quote }}
             {{- end }}
-            {{- if .Values.concourse.web.gc.overrideDefaults }}
             {{- if .Values.concourse.web.gc.interval }}
             - name: CONCOURSE_GC_INTERVAL
               value: {{ .Values.concourse.web.gc.interval | quote }}
@@ -606,6 +601,9 @@ spec:
             - name: CONCOURSE_GC_ONE_OFF_GRACE_PERIOD
               value: {{ .Values.concourse.web.gc.oneOffGracePeriod | quote }}
             {{- end }}
+            {{- if .Values.concourse.web.gc.missingGracePeriod }}
+            - name: CONCOURSE_GC_MISSING_GRACE_PERIOD
+              value: {{ .Values.concourse.web.gc.missingGracePeriod | quote }}
             {{- end }}
             {{- if .Values.concourse.web.syslog.enabled }}
             {{- if .Values.concourse.web.syslog.hostname }}
