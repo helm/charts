@@ -95,6 +95,11 @@ persistence:
   size: 8Gi
   annotations: {}
 
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName:
+
 ## Security context
 securityContext:
   enabled: false
@@ -144,6 +149,9 @@ metrics:
     initialDelaySeconds: 5
     timeoutSeconds: 1
   flags: []
+  serviceMonitor:
+    enabled: false
+    additionalLabels: {}
 
 ## Configure the service
 ## ref: http://kubernetes.io/docs/user-guide/services/

@@ -16,8 +16,9 @@ spec:
         app: {{ template "elasticsearch.name" . }}
         component: "{{ .Values.client.name }}"
         release: {{ .Release.Name }}
-        {{- if .Values.client.podAnnotations }}
       annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{- if .Values.client.podAnnotations }}
 {{ toYaml .Values.client.podAnnotations | indent 8 }}
         {{- end }}
     spec:
@@ -121,6 +122,10 @@ spec:
           initialDelaySeconds: 90
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+        {{- if .Values.securityContext.enabled }}
+        securityContext:
+          runAsUser: {{ .Values.securityContext.runAsUser }}
+        {{- end }}
         ports:
         - containerPort: 9200
           name: http
