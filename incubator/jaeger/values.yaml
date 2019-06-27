@@ -6,7 +6,7 @@ provisionDataStore:
   cassandra: true
   elasticsearch: false
 
-tag: 1.11.0
+tag: 1.12.0
 
 nameOverride: ""
 fullnameOverride: ""
@@ -132,6 +132,7 @@ collector:
     # List of IP ranges that are allowed to access the load balancer (if supported)
     loadBalancerSourceRanges: []
     type: ClusterIP
+    grpcPort: 14250
     # tchannelPort: used by jaeger-agent to send spans in jaeger.thrift format
     tchannelPort: 14267
     # httpPort: can accept spans directly from clients in jaeger.thrift format
@@ -157,6 +158,8 @@ collector:
 
 query:
   enabled: true
+  agentSidecar:
+    enabled: true
   annotations: {}
   image: jaegertracing/jaeger-query
   pullPolicy: IfNotPresent

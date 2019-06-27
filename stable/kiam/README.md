@@ -17,7 +17,8 @@ This chart bootstraps a [kiam](https://github.com/uswitch/kiam) deployment on a 
 
 ## Installing the Chart
 
-In order for the chart to configure kiam correctly during the installation process you should have created and installed TLS certificates and private keys as described [here](https://github.com/uswitch/kiam/blob/master/docs/TLS.md).
+The chart generates a self signed TLS certificate by default.
+If you want to create and install your own, you can create TLS certificates and private keys as described [here](https://github.com/uswitch/kiam/blob/master/docs/TLS.md).
 
 > **Tip**: The `hosts` field in the kiam server certificate should include the value _release-name_-server:_server-service-port_, e.g. `my-release-server:443`
 
@@ -161,6 +162,7 @@ Parameter | Description | Default
 `server.updateStrategy` | Strategy for server DaemonSet updates (requires Kubernetes 1.6+) | `OnDelete`
 `server.useHostNetwork` | If true, use hostNetwork on server to bypass agent iptable rules | `false`
 `rbac.create` | If `true`, create & use RBAC resources | `true`
+`psp.create` | If `true`, create Pod Security Policies for the agent and server when enabled | `false`
 `serviceAccounts.agent.create` | If true, create the agent service account | `true`
 `serviceAccounts.agent.name` | Name of the agent service account to use or create | `{{ kiam.agent.fullname }}`
 `serviceAccounts.server.create` | If true, create the server service account | `true`

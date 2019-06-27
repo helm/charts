@@ -16,6 +16,11 @@ image:
   # pullSecrets:
   #    - name: regsecret
 
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName: "default-scheduler"
+
 service:
   # If headless is set to TRUE then the service type is ignored
   headless: false

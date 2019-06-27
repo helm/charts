@@ -10,7 +10,7 @@ metadata:
   annotations:
     "helm.sh/hook": test-success
 spec:
-  serviceAccountName: {{ template "grafana.serviceAccountName" . }}-test
+  serviceAccountName: {{ template "grafana.serviceAccountNameTest" . }}
   initContainers:
     - name: test-framework
       image: "{{ .Values.testFramework.image}}:{{ .Values.testFramework.tag }}"
