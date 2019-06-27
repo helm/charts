@@ -14,4 +14,7 @@ spec:
       release: {{ .Release.Name }}
   endpoints:
     - port: metrics
+      {{- if .Values.prometheus.monitor.scrapeTimeout }}
+      scrapeTimeout: {{ .Values.prometheus.monitor.scrapeTimeout }}
+      {{- end }}
 {{- end }}
