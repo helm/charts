@@ -9,7 +9,7 @@ metadata:
     heritage: {{ .Release.Service }}
     component: server
 spec:
-  serviceName: {{ template "zookeeper.fullname" . }}-headless
+  serviceName: {{ template "zookeeper.headless" . }}
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
