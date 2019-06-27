@@ -21,8 +21,12 @@ metadata:
 {{- end }}
 spec:
   ports:
-    - name: {{ .Values.nexusProxy.name }}
-      port: {{ .Values.nexusProxy.port }}
+    - port: {{ .Values.nexusProxy.port }}
+{{- if .Values.nexusProxy.svcName }}
+      name: {{ .Values.nexusProxy.svcName }}
+{{- else }}
+      name: {{ template "nexus.fullname" . }}
+{{- end }}
       protocol: TCP
       targetPort: {{ .Values.nexusProxy.targetPort }}
   selector:

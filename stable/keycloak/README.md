@@ -1,4 +1,15 @@
-# Keycloak
+# DEPRECATED - Keycloak
+
+**This chart has been deprecated and moved to its new home:**
+
+- **GitHub repo:** https://github.com/codecentric/helm-charts
+- **Charts repo:** https://codecentric.github.io/helm-charts
+
+```bash
+helm repo add codecentric https://codecentric.github.io/helm-charts
+```
+
+---
 
 [Keycloak](http://www.keycloak.org/) is an open source identity and access management for modern applications and services.
 

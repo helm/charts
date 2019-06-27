@@ -21,6 +21,15 @@ serviceAccount:
 server:
   # server.enabled is the toggle to run GoCD Server. Change to false for Agent Only Deployment.
   enabled: true
+
+
+  # server.annotations is the annotations for the GoCD Server Deployment and Pod spec.
+  annotations:
+    deployment:
+      # iam.amazonaws.com/role: arn:aws:iam::xxx:role/my-custom-role
+    pod:
+      # iam.amazonaws.com/role: arn:aws:iam::xxx:role/my-custom-role
+
   # server.shouldPreconfigure is used to invoke a script to pre configure the elastic agent profile and the plugin settings in the GoCD server.
   # Note: If this value is set to true, then, the serviceAccount.name is configured for the GoCD server pod. The service account token is mounted as a secret and is used in the lifecycle hook.
   # Note: An attempt to preconfigure the GoCD server is made. There are cases where the pre-configuration can fail and the GoCD server starts with an empty config.
@@ -204,6 +213,13 @@ agent:
     # if reuseTopLevelServiceAccount is false, this field specifies the name of an existing service account to be associated with gocd agents
     # If field is empty, the service account "default" will be used.
     name:
+
+  # agent.annotations is the annotations for the GoCD Agent Deployment and Pod Spec
+  annotations:
+    deployment:
+      # iam.amazonaws.com/role: arn:aws:iam::xxx:role/my-custom-role
+    pod:
+      # iam.amazonaws.com/role: arn:aws:iam::xxx:role/my-custom-role
 
   # agent.replicaCount is the GoCD Agent replicas Count. Specify the number of GoCD agents to run
   replicaCount: 0

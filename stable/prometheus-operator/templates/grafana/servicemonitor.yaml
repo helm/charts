@@ -20,4 +20,12 @@ spec:
     interval: {{ .Values.grafana.serviceMonitor.interval }}
     {{- end }}
     path: "/metrics"
+{{- if .Values.grafana.serviceMonitor.metricRelabelings }}
+    metricRelabelings:
+{{ tpl (toYaml .Values.grafana.serviceMonitor.metricRelabelings | indent 6) . }}
+{{- end }}
+{{- if .Values.grafana.serviceMonitor.relabelings }}
+    relabelings:
+{{ toYaml .Values.grafana.serviceMonitor.relabelings | indent 6 }}
+{{- end }}
 {{- end }}

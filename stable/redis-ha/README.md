@@ -72,7 +72,8 @@ The following table lists the configurable parameters of the Redis chart and the
 | `init.resources`         | CPU/Memory for init Container node resource requests/limits                                                                                                                                              | `{}`                                                                                       |
 | `auth`                   | Enables or disables redis AUTH (Requires `redisPassword` to be set)                                                                                                                                      | `false`                                                                                    |
 | `redisPassword`          | A password that configures a `requirepass` and `masterauth` in the conf parameters (Requires `auth: enabled`)                                                                                            | ``                                                                                         |
-| `existingSecret`         | An existing secret containing an `auth` key that configures `requirepass` and `masterauth` in the conf parameters (Requires `auth: enabled`, cannot be used in conjunction with `.Values.redisPassword`) | ``                                                                                         |
+| `authKey`                | The key holding the redis password in an existing secret.                                                                                                                                                | `auth`                                                                                     |
+| `existingSecret`         | An existing secret containing a key defined by `authKey` that configures `requirepass` and `masterauth` in the conf parameters (Requires `auth: enabled`, cannot be used in conjunction with `.Values.redisPassword`) | ``                                                                                         |
 | `nodeSelector`           | Node labels for pod assignment                                                                                                                                                                           | `{}`                                                                                       |
 | `tolerations`            | Toleration labels for pod assignment                                                                                                                                                                     | `[]`                                                                                       |
 | `podAntiAffinity.server` | Antiaffinity for pod assignment of servers, `hard` or `soft`                                                                                                                                             | `Hard node and soft zone anti-affinity`                                                    |
@@ -91,6 +92,7 @@ The following table lists the configurable parameters of the Redis chart and the
 | `sysctlImage.tag`                          | sysctlImage Init container tag                                                                                 | `latest`                                             |
 | `sysctlImage.pullPolicy`                   | sysctlImage Init container pull policy                                                                         | `Always`                                             |
 | `sysctlImage.mountHostSys`                 | Mount the host `/sys` folder to `/host-sys`                                                                    | `false`                                              |
+| `schedulerName`                            | Alternate scheduler name                                                                                       | `nil`                                                |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
@@ -101,7 +103,7 @@ $ helm install \
     stable/redis-ha
 ```
 
-The above command sets the Redis server within  `default` namespace.
+The above command sets the Redis server within `default` namespace.
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 

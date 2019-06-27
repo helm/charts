@@ -180,12 +180,12 @@
         {{- end }}
 
         {{- if .Values.Master.OverwriteConfig }}
-           {{ fail "`Master.OverwriteConfig` does no longer exist. It has been renamed to `master.JCasC.configScripts`" }}
+           {{ fail "`Master.OverwriteConfig` does no longer exist. It has been renamed to `master.overwriteConfig`" }}
         {{- end }}
 
         {{- if .Values.JCasC }}
             {{- if .Values.JCasC.ConfigScripts }}
-               {{ fail "`Master.JCasC.ConfigScripts` does no longer exist. It has been renamed to `master.loadBalancerSourceRanges`" }}
+               {{ fail "`Master.JCasC.ConfigScripts` does no longer exist. It has been renamed to `master.JCasC.configScripts`" }}
             {{- end }}
         {{- end }}
 

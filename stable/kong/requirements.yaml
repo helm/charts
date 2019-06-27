@@ -4,6 +4,6 @@ dependencies:
   repository: https://kubernetes-charts.storage.googleapis.com/
   condition: postgresql.enabled
 - name: cassandra
-  version: ~0.10.2
+  version: ~0.10.5
   repository: https://kubernetes-charts-incubator.storage.googleapis.com/
   condition: cassandra.enabled

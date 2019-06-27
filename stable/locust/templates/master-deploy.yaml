@@ -69,3 +69,11 @@ spec:
         configMap:
           name: {{ template "locust.worker-configmap" . }}
       restartPolicy: Always
+{{- with .Values.master.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.master.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+{{- end }}

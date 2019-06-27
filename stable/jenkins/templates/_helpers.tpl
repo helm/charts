@@ -25,10 +25,12 @@ If release name contains chart name it will be used as a full name.
 {{- end -}}
 
 {{- define "jenkins.kubernetes-version" -}}
-  {{- range .Values.master.installPlugins -}}
-    {{ if hasPrefix "kubernetes:" . }}
-      {{- $split := splitList ":" . }}
-      {{- printf "%s" (index $split 1 ) -}}
+  {{- if .Values.master.installPlugins -}}
+    {{- range .Values.master.installPlugins -}}
+      {{ if hasPrefix "kubernetes:" . }}
+        {{- $split := splitList ":" . }}
+        {{- printf "%s" (index $split 1 ) -}}
+      {{- end -}}
     {{- end -}}
   {{- end -}}
 {{- end -}}
@@ -51,5 +53,16 @@ Create the name of the service account to use
     {{ default (include "jenkins.fullname" .) .Values.serviceAccount.name }}
 {{- else -}}
     {{ default "default" .Values.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Create the name of the service account for Jenkins agents to use
+*/}}
+{{- define "jenkins.serviceAccountAgentName" -}}
+{{- if .Values.serviceAccountAgent.create -}}
+    {{ default (printf "%s-%s" (include "jenkins.fullname" .) "agent") .Values.serviceAccountAgent.name }}
+{{- else -}}
+    {{ default "default" .Values.serviceAccountAgent.name }}
 {{- end -}}
 {{- end -}}
