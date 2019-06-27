@@ -59,7 +59,7 @@ The following table lists the configurable parameters of the consul chart and th
 | `uiIngress.annotations` | Associate annotations to the Ingress  | `{}`                                                       |
 | `uiIngress.labels`      | Associate labels to the Ingress       | `{}`                                                       |
 | `uiIngress.hosts`       | Associate hosts with the Ingress      | `[]`                                                       |
-| `uiIngress.tls`         | Associate TLS with the Ingress        | `{}`                                                       |
+| `uiIngress.tls`         | Associate TLS with the Ingress        | `[]`                                                       |
 | `uiService.enabled`     | Create dedicated Consul Web UI svc    | `true`                                                     |
 | `uiService.type`        | Dedicate Consul Web UI svc type       | `NodePort`                                                 |
 | `uiService.annotations` | Extra annotations for UI service      | `{}`                                                       |
