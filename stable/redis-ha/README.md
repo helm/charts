@@ -54,7 +54,7 @@ The following table lists the configurable parameters of the Redis chart and the
 | Parameter                | Description                                                                                                                                                                                              | Default                                                                                    |
 |:-------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------|
 | `image`                  | Redis image                                                                                                                                                                                              | `redis`                                                                                    |
-| `tag`                    | Redis tag                                                                                                                                                                                                | `5.0.3-alpine`                                                                             |
+| `tag`                    | Redis tag                                                                                                                                                                                                | `5.0.5-alpine`                                                                             |
 | `replicas`               | Number of redis master/slave pods                                                                                                                                                                        | `3`                                                                                        |
 | `serviceAccount.create`  | Specifies whether a ServiceAccount should be created                                                                                                                                                     | `true`                                                                                     |
 | `serviceAccount.name`    | The name of the ServiceAccount to create                                                                                                                                                                 | Generated using the redis-ha.fullname template                                             |
@@ -101,7 +101,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 ```bash
 $ helm install \
   --set image=redis \
-  --set tag=5.0.3-alpine \
+  --set tag=5.0.5-alpine \
     stable/redis-ha
 ```
 
