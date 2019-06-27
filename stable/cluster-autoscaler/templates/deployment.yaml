@@ -71,7 +71,7 @@ spec:
             - --cloud-config={{ .Values.cloudConfigPath }}
             {{- end }}
           {{- range $key, $value := .Values.extraArgs }}
-            - --{{ $key }}{{ if $value }}={{ $value }}{{ end }}
+            - --{{ $key }}={{ $value }}
           {{- end }}
 
           env:
