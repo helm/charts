@@ -65,7 +65,6 @@ The following tables lists the configurable parameters of the mysqldump chart an
 | persistence.size                              | size of PVC to create                                                          | 8Gi                          |
 | persistence.accessMode                        | accessMode to use for PVC                                                      | ReadWriteOnce                |
 | persistence.storageClass                      | storage class to use for PVC                                                   |                              |
-| persistence.reclaimPolicy                     | used PV reclaim policy                                                         | "delete"                     |
 | persistence.subPath                           | subPath for PVC                                                                |                              |
 | allDatabases.enabled                          | backup all databases                                                           | true                         |
 | allDatabases.SingleSqlFile                    | backup all databases to singel file                                            | false                        |

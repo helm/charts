@@ -8,7 +8,6 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     component: provisioner
-    openebs.io/component-name: openebs-provisioner
 spec:
   replicas: {{ .Values.provisioner.replicas }}
   selector:
@@ -21,6 +20,8 @@ spec:
         app: {{ template "openebs.name" . }}
         release: {{ .Release.Name }}
         component: provisioner
+        name: openebs-provisioner
+        openebs.io/component-name: openebs-provisioner
         openebs.io/version: {{ .Values.release.version }}
     spec:
       serviceAccountName: {{ template "openebs.serviceAccountName" . }}

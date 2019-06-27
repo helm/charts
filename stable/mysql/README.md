@@ -72,6 +72,7 @@ The following table lists the configurable parameters of the MySQL chart and the
 | `readinessProbe.timeoutSeconds`              | When the probe times out                                                                     | 1                                                    |
 | `readinessProbe.successThreshold`            | Minimum consecutive successes for the probe to be considered successful after having failed. | 1                                                    |
 | `readinessProbe.failureThreshold`            | Minimum consecutive failures for the probe to be considered failed after having succeeded.   | 3                                                    |
+| `schedulerName`                              | Name of the k8s scheduler (other than default)                                               | `nil`                                                |
 | `persistence.enabled`                        | Create a volume to store data                                                                | true                                                 |
 | `persistence.size`                           | Size of persistent volume claim                                                              | 8Gi RW                                               |
 | `persistence.storageClass`                   | Type of persistent volume claim                                                              | nil                                                  |

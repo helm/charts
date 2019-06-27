@@ -34,7 +34,7 @@ spec:
           command: ["/usr/local/bin/stolonctl"]
           args:
             - update
-            - --cluster-name={{ template "stolon.fullname" . }}
+            - --cluster-name={{ template "stolon.clusterName" . }}
             - --store-backend={{ .Values.store.backend }}
             {{- if eq .Values.store.backend "kubernetes" }}
             - --kube-resource-kind={{ .Values.store.kubeResourceKind }}
@@ -44,4 +44,3 @@ spec:
             - -p
             - '{ {{- range $key, $value := .Values.clusterSpec }} {{ $key | quote }}: {{ if typeIs "string" $value }} {{ $value | quote }} {{ else }} {{ $value }} {{ end }}, {{- end }} "pgParameters": {{ toJson .Values.pgParameters }} }'
 {{ end }}
-
