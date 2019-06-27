@@ -5,11 +5,7 @@ metadata:
   name: {{ template "prometheus-operator.fullname" . }}-operator-cleanup
   namespace: {{ .Release.Namespace }}
   annotations:
-    {{- if .Values.prometheusOperator.cleanupCustomResourceBeforeInstall }}
-    "helm.sh/hook": "pre-install,pre-delete"
-    {{- else }}
     "helm.sh/hook": pre-delete
-    {{- end }}
     "helm.sh/hook-weight": "3"
     "helm.sh/hook-delete-policy": hook-succeeded
   labels:
