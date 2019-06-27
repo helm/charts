@@ -16,69 +16,7 @@ data:
   cassandra.schema.mode: {{ .Values.schema.mode | quote }}
   cassandra.servers: {{ template "cassandra.host" . }}
   cassandra.username: {{ .Values.storage.cassandra.user }}
-  reporter.tchannel.host-port: {{ include "jaeger.collector.name" . }}:{{ .Values.collector.service.tchannelPort }}
-  reporter.grpc.host-port: {{ include "jaeger.collector.name" . }}:{{ .Values.collector.service.grpcPort }}
-  collector.http-port: {{ .Values.collector.service.httpPort | quote }}
-  collector.zipkin.http-port: {{ .Values.collector.service.zipkinPort | quote }}
   es.password: {{ .Values.storage.elasticsearch.password }}
   es.server-urls: {{ template "elasticsearch.client.url" . }}
   es.username: {{ .Values.storage.elasticsearch.user }}
   es.nodes-wan-only: {{ .Values.storage.elasticsearch.nodesWanOnly | quote }}
-  hotrod.agent-host: {{ template "jaeger.hotrod.tracing.host" . }}
-  hotrod.agent-port: {{ .Values.hotrod.tracing.port | quote }}
-  span-storage.type: {{ .Values.storage.type | quote }}
-  query.health-check-http-port: {{ .Values.query.healthCheckPort | quote }}
-  query.port: {{ .Values.query.service.targetPort | quote }}
-  query.base-path: {{ .Values.query.basePath | quote }}
-  # Not implemented
-  # cassandra.archive.connections-per-host:
-  # cassandra.archive.keyspace:
-  # cassandra.archive.max-retry-attempts:
-  # cassandra.archive.password:
-  # cassandra.archive.port:
-  # cassandra.archive.proto-version:
-  # cassandra.archive.servers:
-  # cassandra.archive.socket-keep-alive:
-  # cassandra.archive.timeout:
-  # cassandra.archive.username:
-  # cassandra.connections-per-host:
-  # cassandra.max-retry-attempts:
-  # cassandra.proto-version:
-  # cassandra.socket-keep-alive:
-  # cassandra.timeout:
-  # collector.health-check-http-port:
-  # collector.num-workers:
-  # collector.queue-size:
-  # collector.write-cache-ttl:
-  # dependency-storage.data-frequency:
-  # discovery.min-peers:
-  # es.archive.max-span-age:
-  # es.archive.num-replicas:
-  # es.archive.num-shards:
-  # es.archive.password:
-  # es.archive.server-urls:
-  # es.archive.sniffer:
-  # es.archive.username:
-  # es.max-span-age:
-  # es.num-replicas:
-  # es.num-shards:
-  # es.sniffer:
-  # http-server.host-port:
-  # log-level:
-  # metrics-backend:
-  # metrics-http-route:
-  # processor.jaeger-binary.server-host-port:
-  # processor.jaeger-binary.server-max-packet-size:
-  # processor.jaeger-binary.server-queue-size:
-  # processor.jaeger-binary.workers:
-  # processor.jaeger-compact.server-host-port:
-  # processor.jaeger-compact.server-max-packet-size:
-  # processor.jaeger-compact.server-queue-size:
-  # processor.jaeger-compact.workers:
-  # processor.zipkin-compact.server-host-port:
-  # processor.zipkin-compact.server-max-packet-size:
-  # processor.zipkin-compact.server-queue-size:
-  # processor.zipkin-compact.workers:
-  # query.prefix:
-  # query.static-files:
-  # query.ui-config:

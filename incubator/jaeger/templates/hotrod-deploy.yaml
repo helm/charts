@@ -26,29 +26,25 @@ spec:
     spec:
       containers:
         - name: {{ include "jaeger.fullname" . }}-hotrod
-          image: {{ .Values.hotrod.image.repository }}:{{ .Values.hotrod.image.tag }}
+          image: {{ .Values.hotrod.image.repository }}:{{ .Values.tag }}
           imagePullPolicy: {{ .Values.hotrod.image.pullPolicy }}
           env:
             - name: JAEGER_AGENT_HOST
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ include "jaeger.fullname" . }}
-                  key: hotrod.agent-host
+              value: {{ template "jaeger.hotrod.tracing.host" . }}
             - name: JAEGER_AGENT_PORT
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ include "jaeger.fullname" . }}
-                  key: hotrod.agent-port
+              value: {{ .Values.hotrod.tracing.port | quote }}
           ports:
-            - containerPort: {{ .Values.hotrod.service.internalPort }}
+            - name: http
+              containerPort: 8080
+              protocol: TCP
           livenessProbe:
             httpGet:
               path: /
-              port: {{ .Values.hotrod.service.internalPort }}
+              port: http
           readinessProbe:
             httpGet:
               path: /
-              port: {{ .Values.hotrod.service.internalPort }}
+              port: http
           resources:
 {{ toYaml .Values.hotrod.resources | indent 12 }}
     {{- if .Values.hotrod.nodeSelector }}
