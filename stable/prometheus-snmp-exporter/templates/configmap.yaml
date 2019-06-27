@@ -11,5 +11,5 @@ metadata:
     helm.sh/chart: {{ include "prometheus-snmp-exporter.chart" . }}
 data:
   snmp.yaml: |
-{{ toYaml .Values.config | indent 4 }}
+{{ .Values.config | indent 4 }}
 {{- end }}
