@@ -97,6 +97,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `filter.kubeTag`                   | Optional top-level tag for matching in filter         | `kube`                                 |
 | `filter.kubeTagPrefix`             | Optional tag prefix used by Tail   | `kube.var.log.containers.`                                |
 | `filter.mergeJSONLog`              | If the log field content is a JSON string map, append the map fields as part of the log structure         | `true`                                 |
+| `filter.mergeLogKey`               | If set, append the processed log keys under a new root key specified by this variable. | log_processed |
 | `image.fluent_bit.repository`      | Image                                      | `fluent/fluent-bit`                               |
 | `image.fluent_bit.tag`             | Image tag                                  | `1.1.3`                                          |
 | `image.pullPolicy`                 | Image pull policy                          | `IfNotPresent`                                          |
