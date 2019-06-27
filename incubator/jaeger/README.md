@@ -186,6 +186,9 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `query.cmdlineParams`                    | Additional command line parameters  |  nil                                   |
 | `query.image`                            | Image for Jaeger Query UI           |  jaegertracing/jaeger-query            |
 | `query.ingress.enabled`                  | Allow external traffic access       |  false                                 |
+| `query.ingress.annotations`              | Configure annotations for Ingress   |  {}                                    |
+| `query.ingress.hosts`                    | Configure host for Ingress          |  nil                                   |
+| `query.ingress.tls`                      | Configure tls for Ingress           |  nil                                   |
 | `query.podAnnotations`                   | Annotations for Query pod           |  nil                                   |
 | `query.pullPolicy`                       | Query UI image pullPolicy           |  IfNotPresent                          |
 | `query.tolerations`                      | Node Tolerations                    | `[]`                                   |
@@ -193,7 +196,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `query.service.queryPort`                | External accessible port            |  80                                    |
 | `query.service.targetPort`               | Internal Query UI port              |  16686                                 |
 | `query.service.type`                     | Service type                        |  ClusterIP                             |
-| `query.basePath`                         | Base path of Query UI               |  /                                     |
+| `query.basePath`                         | Base path of Query UI, used for ingress as well (if it is enabled)   |  /    |
 | `schema.annotations`                     | Annotations for the schema job      |  nil                                   |
 | `schema.image`                           | Image to setup cassandra schema     |  jaegertracing/jaeger-cassandra-schema |
 | `schema.mode`                            | Schema mode (prod or test)          |  prod                                  |
