@@ -72,5 +72,5 @@ spec:
   - metadata:
       name: {{ $pv.name | quote }}
     spec:
-      {{ toYaml $pv.template | indent 6 }}
+{{ toYaml $pv.template | indent 6 }}
   {{- end }}

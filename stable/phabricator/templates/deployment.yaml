@@ -127,8 +127,6 @@ spec:
         volumeMounts:
         - name: phabricator-data
           mountPath: /bitnami/phabricator
-        - name: apache-data
-          mountPath: /bitnami/apache
 {{- if .Values.metrics.enabled }}
       - name: metrics
         image: {{ template "phabricator.metrics.image" . }}
@@ -157,13 +155,6 @@ spec:
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
           claimName: {{ template "phabricator.fullname" . }}-phabricator
-      {{- else }}
-        emptyDir: {}
-      {{- end }}
-      - name: apache-data
-      {{- if .Values.persistence.enabled }}
-        persistentVolumeClaim:
-          claimName: {{ template "phabricator.fullname" . }}-apache
       {{- else }}
         emptyDir: {}
       {{- end }}

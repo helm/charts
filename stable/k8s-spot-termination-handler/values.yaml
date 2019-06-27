@@ -20,6 +20,9 @@ image:
 # Poll the metadata every pollInterval seconds for termination events:
 pollInterval: 5
 
+# Set VERBOSE=1 to get more output
+# verbose: 1
+
 # Send notifications to a Slack webhook URL - replace with your own value and uncomment:
 # slackUrl: https://hooks.slack.com/services/EXAMPLE123/EXAMPLE123/example1234567
 
