@@ -45,9 +45,39 @@ spec:
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
       {{- end }}
-    {{- with .Values.affinity }}
       affinity:
+    {{- if .Values.affinity }}
+    {{- with .Values.affinity }}
 {{ tpl . $ | indent 8 }}
+    {{- end }}
+    {{- else }}
+    {{- if .Values.additionalAffinities }}
+    {{ toYaml .Values.additionalAffinities | indent 8 }}
+    {{- end }}
+        podAntiAffinity:
+    {{- if .Values.hardAntiAffinity }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app: {{ template "redis-ha.name" . }}
+                  release: {{ .Release.Name }}
+              topologyKey: kubernetes.io/hostname
+    {{- else }}
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app: {{ template "redis-ha.name" . }}
+                  release: {{ .Release.Name }}
+              topologyKey: kubernetes.io/hostname
+    {{- end }}
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app:  {{ template "redis-ha.name" . }}
+                    release: {{ .Release.Name }}
+                topologyKey: failure-domain.beta.kubernetes.io/zone
     {{- end }}
       securityContext:
 {{ toYaml .Values.securityContext | indent 8 }}
