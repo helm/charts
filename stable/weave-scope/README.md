@@ -49,7 +49,7 @@ Note that most of this documentation is repeated in `values.yaml`; if you're in 
 |----------:|:------------|:--------|
 | **image.*** | the parameters of the image pulls for this release | |
 | **image.repository** | the image that will be used for this release (required) | `weaveworks/scope` |
-| **image.tag** | the version of Weave Scope desired for this release (required) | `1.11.1`
+| **image.tag** | the version of Weave Scope desired for this release (required) | `1.11.2`
 | **image.pullPolicy** | the imagePullPolicy for the container (required): IfNotPresent, Always, or Never | `IfNotPresent`
 | **service.*** | the configuration of the service used to access the frontend | |
 | **service.name** | the short name desired for the frontend service (optional, but if not specified by the user a value will be calculated) -- this is a global so we can access its value easily from the agent subchart | `weave-scope-app` |
@@ -90,6 +90,11 @@ The **agent** section controls how the Weave Scope node agent pods are installed
 | **resources.requests.memory** | memory request in MiB (Mi)| |
 | **resources.limits.cpu** | CPU limit in MHz (m) | |
 | **resources.limits.memory** | memory limit in MiB (Mi) | |
+| **ingress.enabled** | Enables Ingress for weave-scope-frontend | false |
+| **ingress.annotations** |	Ingress annotations | {} |
+| **ingress.paths** |	Ingress paths | [] |
+| **ingress.hosts** | Ingress accepted hostnames | nil |
+| **ingress.tls** |	Ingress TLS configuration |	[] |
 
 ## Other notes
 

@@ -54,7 +54,7 @@ The following table lists the configurable parameters of the OrangeHRM chart and
 | `image.registry`                     | OrangeHRM image registry                 | `docker.io`                                             |
 | `image.repository`                   | OrangeHRM Image name                     | `bitnami/orangehrm`                                     |
 | `image.tag`                          | OrangeHRM Image tag                      | `{TAG_NAME}`                                            |
-| `image.pullPolicy`                   | Image pull policy                        | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
+| `image.pullPolicy`                   | Image pull policy                        | `IfNotPresent`                                          |
 | `image.pullSecrets`                  | Specify docker-registry secret names as an array               | `[]` (does not add image pull secrets to deployed pods) |
 | `orangehrmUsername`                  | User of the application                  | `user`                                                  |
 | `orangehrmPassword`                  | Application password                     | _random 10 character long alphanumeric string_          |
