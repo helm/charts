@@ -139,7 +139,6 @@ collector:
     httpPort: 14268
     # can accept Zipkin spans in JSON or Thrift
     zipkinPort: 9411
-    healthCheckPort: 14269
   resources: {}
     # limits:
     #   cpu: 1
@@ -165,18 +164,13 @@ query:
   pullPolicy: IfNotPresent
   dnsPolicy: ClusterFirst
   cmdlineParams: {}
-  healthCheckPort: 16687
-  basePath: /
   replicaCount: 1
   service:
     annotations: {}
     type: ClusterIP
     # List of IP ranges that are allowed to access the load balancer (if supported)
     loadBalancerSourceRanges: []
-    # queryPort: externally accessible port for UI and API
-    queryPort: 80
-    # targetPort: the internal port the UI and API are exposed on
-    targetPort: 16686
+    port: 80
   ingress:
     enabled: false
     annotations: {}
@@ -237,7 +231,6 @@ hotrod:
   replicaCount: 1
   image:
     repository: jaegertracing/example-hotrod
-    tag: latest
     pullPolicy: Always
   service:
     annotations: {}
@@ -245,8 +238,7 @@ hotrod:
     type: ClusterIP
     # List of IP ranges that are allowed to access the load balancer (if supported)
     loadBalancerSourceRanges: []
-    externalPort: 80
-    internalPort: 8080
+    port: 80
   ingress:
     enabled: false
     # Used to create Ingress record (should be used with service.type: ClusterIP).

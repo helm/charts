@@ -15,22 +15,22 @@ metadata:
 {{- end }}
 spec:
   ports:
-  - name: agent-zipkin-thrift
+  - name: zipkin-compact
     port: {{ .Values.agent.service.zipkinThriftPort }}
     protocol: UDP
-    targetPort: {{ .Values.agent.service.zipkinThriftPort }}
-  - name: agent-compact
+    targetPort: zipkin-compact
+  - name: jaeger-compact
     port: {{ .Values.agent.service.compactPort }}
     protocol: UDP
-    targetPort: {{ .Values.agent.service.compactPort }}
-  - name: agent-binary
+    targetPort: jaeger-compact
+  - name: jaeger-binary
     port: {{ .Values.agent.service.binaryPort }}
     protocol: UDP
-    targetPort: {{ .Values.agent.service.binaryPort }}
-  - name: agent-sampling
+    targetPort: jaeger-binary
+  - name: http
     port: {{ .Values.agent.service.samplingPort }}
     protocol: TCP
-    targetPort: {{ .Values.agent.service.samplingPort }}
+    targetPort: http
   type: {{ .Values.agent.service.type }}
   selector:
     app.kubernetes.io/name: {{ include "jaeger.name" . }}

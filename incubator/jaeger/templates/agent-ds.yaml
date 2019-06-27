@@ -49,35 +49,47 @@ spec:
         imagePullPolicy: {{ .Values.agent.pullPolicy }}
         env:
         - name: REPORTER_GRPC_HOST_PORT
-          valueFrom:
-            configMapKeyRef:
-              name: {{ include "jaeger.fullname" . }}
-              key: reporter.grpc.host-port
+          value: {{ include "jaeger.collector.name" . }}:{{ .Values.collector.service.grpcPort }}
         {{- range $key, $value := .Values.agent.cmdlineParams }}
         - name: {{ $key | replace "." "_" | replace "-" "_" | upper | quote }}
           value: {{ $value }}
         {{- end }}
         ports:
-        - containerPort: {{ .Values.agent.service.zipkinThriftPort }}
+        - name: zipkin-compact
+          containerPort: {{ .Values.agent.service.zipkinThriftPort }}
           protocol: UDP
           {{- if .Values.agent.daemonset.useHostPort }}
           hostPort: {{ .Values.agent.service.zipkinThriftPort }}
           {{- end }}
-        - containerPort: {{ .Values.agent.service.compactPort }}
+        - name: jaeger-compact
+          containerPort: {{ .Values.agent.service.compactPort }}
           protocol: UDP
           {{- if .Values.agent.daemonset.useHostPort }}
           hostPort: {{ .Values.agent.service.compactPort }}
           {{- end }}
-        - containerPort: {{ .Values.agent.service.binaryPort }}
+        - name: jaeger-binary
+          containerPort: {{ .Values.agent.service.binaryPort }}
           protocol: UDP
           {{- if .Values.agent.daemonset.useHostPort }}
           hostPort: {{ .Values.agent.service.binaryPort }}
           {{- end }}
-        - containerPort: {{ .Values.agent.service.samplingPort }}
+        - name: http
+          containerPort: {{ .Values.agent.service.samplingPort }}
           protocol: TCP
           {{- if .Values.agent.daemonset.useHostPort }}
           hostPort: {{ .Values.agent.service.samplingPort }}
           {{- end }}
+        - name: admin
+          containerPort: 14271
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /
+            port: admin
+        readinessProbe:
+          httpGet:
+            path: /
+            port: admin
         resources:
 {{ toYaml .Values.agent.resources | indent 10 }}
 {{- end -}}

@@ -193,8 +193,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `query.pullPolicy`                       | Query UI image pullPolicy           |  IfNotPresent                          |
 | `query.tolerations`                      | Node Tolerations                    | `[]`                                   |
 | `query.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`       |
-| `query.service.queryPort`                | External accessible port            |  80                                    |
-| `query.service.targetPort`               | Internal Query UI port              |  16686                                 |
+| `query.service.port`                | External accessible port            |  80                                    |
 | `query.service.type`                     | Service type                        |  ClusterIP                             |
 | `query.basePath`                         | Base path of Query UI, used for ingress as well (if it is enabled)   |  /    |
 | `schema.annotations`                     | Annotations for the schema job      |  nil                                   |

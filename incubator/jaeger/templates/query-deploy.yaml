@@ -52,10 +52,7 @@ spec:
             value: {{ $value }}
           {{- end }}
           - name: SPAN_STORAGE_TYPE
-            valueFrom:
-              configMapKeyRef:
-                name: {{ include "jaeger.fullname" . }}
-                key: span-storage.type
+            value: {{ .Values.storage.type }}
           {{- if eq .Values.storage.type "cassandra" }}
           - name: CASSANDRA_SERVERS
             valueFrom:
@@ -100,49 +97,44 @@ spec:
                 name: {{ include "jaeger.fullname" . }}
                 key: es.username
           {{- end }}
-          - name: QUERY_PORT
-            valueFrom:
-              configMapKeyRef:
-                name: {{ include "jaeger.fullname" . }}
-                key: query.port
-          - name: QUERY_HEALTH_CHECK_HTTP_PORT
-            valueFrom:
-              configMapKeyRef:
-                name: {{ include "jaeger.fullname" . }}
-                key: query.health-check-http-port
           - name: QUERY_BASE_PATH
-            valueFrom:
-              configMapKeyRef:
-                name: {{ include "jaeger.fullname" . }}
-                key: query.base-path
+            value: {{ .Values.query.basePath | quote }}
         ports:
-        - containerPort: {{ .Values.query.service.targetPort }}
+        - name: query
+          containerPort: 16686
+          protocol: TCP
+        - name: admin
+          containerPort: 16687
           protocol: TCP
         resources:
 {{ toYaml .Values.query.resources | indent 10 }}
+        livenessProbe:
+          httpGet:
+            path: /
+            port: admin
         readinessProbe:
           httpGet:
             path: /
-            port: {{ .Values.query.healthCheckPort }}
+            port: admin
 {{- if .Values.query.agentSidecar.enabled }}
       - name: {{ template "jaeger.agent.name" . }}-sidecar
         image: {{ .Values.agent.image }}:{{ .Values.tag }}
         imagePullPolicy: {{ .Values.agent.pullPolicy }}
         env:
         - name: REPORTER_GRPC_HOST_PORT
-          valueFrom:
-            configMapKeyRef:
-              name: {{ include "jaeger.fullname" . }}
-              key: reporter.grpc.host-port
+          value: {{ include "jaeger.collector.name" . }}:{{ .Values.collector.service.grpcPort }}
         ports:
-        - containerPort: {{ .Values.agent.service.zipkinThriftPort }}
-          protocol: UDP
-        - containerPort: {{ .Values.agent.service.compactPort }}
-          protocol: UDP
-        - containerPort: {{ .Values.agent.service.binaryPort }}
-          protocol: UDP
-        - containerPort: {{ .Values.agent.service.samplingPort }}
+        - name: admin
+          containerPort: 14271
           protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /
+            port: admin
+        readinessProbe:
+          httpGet:
+            path: /
+            port: admin
 {{- end }}
       dnsPolicy: {{ .Values.query.dnsPolicy }}
       restartPolicy: Always
