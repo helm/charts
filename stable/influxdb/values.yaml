@@ -2,7 +2,7 @@
 ## ref: https://hub.docker.com/r/library/influxdb/tags/
 image:
   repository: "influxdb"
-  tag: "1.7.3-alpine"
+  tag: "1.7.6-alpine"
   pullPolicy: IfNotPresent
 
 ## Specify a service type
@@ -78,13 +78,13 @@ setDefaultUser:
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
-resources:
-  requests:
-    memory: 256Mi
-    cpu: 0.1
-  limits:
-    memory: 16Gi
-    cpu: 8
+resources: {}
+#  requests:
+#    memory: 256Mi
+#    cpu: 0.1
+#  limits:
+#    memory: 16Gi
+#    cpu: 8
 
 ingress:
   enabled: false
