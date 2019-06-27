@@ -45,6 +45,20 @@ spec:
             env:
 {{ toYaml . | indent 12 }}
             {{- end }}
+            {{- if .Values.backup.existingSecret }}
+            {{- range $key,$value := .Values.backup.existingSecret }}
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $key }}
+                  key: {{ $value.awsaccesskey | quote }}
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $key }}
+                  key: {{ $value.awssecretkey | quote}}
+            {{- end }}
+            {{- end }}
           {{- with .Values.backup.resources }}
             resources:
 {{ toYaml . | indent 14 }}
