@@ -54,7 +54,7 @@ The following table lists the configurable parameters of the PrestaShop chart an
 | `image.registry`                      | PrestaShop image registry                                                                    | `docker.io`                                                  |
 | `image.repository`                    | PrestaShop image name                                                                        | `bitnami/prestashop`                                         |
 | `image.tag`                           | PrestaShop image tag                                                                         | `{TAG_NAME}`                                                 |
-| `image.pullPolicy`                    | Image pull policy                                                                            | `Always` if `imageTag` is `latest`, else `IfNotPresent`      |
+| `image.pullPolicy`                    | Image pull policy                                                                            | `IfNotPresent`                                               |
 | `image.pullSecrets`                   | Specify docker-registry secret names as an array                                             | `[]` (does not add image pull secrets to deployed pods)      |
 | `service.type`                        | Kubernetes Service type                                                                      | `LoadBalancer`                                               |
 | `service.port`                        | Service HTTP port                                                                            | `80`                                                         |
