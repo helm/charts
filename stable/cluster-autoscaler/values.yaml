@@ -55,6 +55,13 @@ image:
   tag: v1.13.1
   pullPolicy: IfNotPresent
 
+  ## Optionally specify an array of imagePullSecrets.
+  ## Secrets must be manually created in the namespace.
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  ##
+  # pullSecrets:
+  #   - myRegistrKeySecretName
+
 tolerations: []
 
 extraArgs:
@@ -92,6 +99,9 @@ nodeSelector: {}
 podAnnotations: {}
 podLabels: {}
 replicaCount: 1
+
+deployment:
+  apiVersion: "extensions/v1beta1"
 
 rbac:
   ## If true, create & use RBAC resources
