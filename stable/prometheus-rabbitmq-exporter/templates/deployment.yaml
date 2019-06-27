@@ -30,8 +30,16 @@ spec:
               value: "{{ .Values.rabbitmq.url }}"
             - name: RABBIT_USER
               value: "{{ .Values.rabbitmq.user }}"
+            {{- if .Values.rabbitmq.existingPasswordSecret }}
+            - name: RABBIT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name:  "{{ .Values.rabbitmq.existingPasswordSecret }}"
+                  key: password
+            {{- else }}
             - name: RABBIT_PASSWORD
               value: "{{ .Values.rabbitmq.password }}"
+            {{- end }}
             - name: PUBLISH_PORT
               value: "{{ .Values.service.internalPort }}"
             - name: LOG_LEVEL

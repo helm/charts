@@ -129,13 +129,19 @@ replicaSet:
   replicas:
     secondary: 1
     arbiter: 1
+
   ## Pod Disruption Budget
   ## ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
   pdb:
+    enabled: true
     minAvailable:
       primary: 1
       secondary: 1
       arbiter: 1
+    # maxUnavailable:
+      # primary: 1
+      # secondary: 1
+      # arbiter: 1
 
 # Annotations to be added to MongoDB pods
 podAnnotations: {}
@@ -347,6 +353,10 @@ metrics:
   serviceMonitor:
     ## If the operator is installed in your cluster, set to true to create a Service Monitor Entry
     enabled: false
+
+    ## Specify a namespace if needed
+    # namespace: monitoring
+
     ## Used to pass Labels that are used by the Prometheus installed in your cluster to select Service Monitors to work with
     ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#prometheusspec
     additionalLabels: {}
