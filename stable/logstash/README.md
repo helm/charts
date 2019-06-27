@@ -75,7 +75,7 @@ The following table lists the configurable parameters of the chart and its defau
 | `podDisruptionBudget`           | Pod disruption budget                              | `maxUnavailable: 1`                              |
 | `updateStrategy`                | Update strategy                                    | `type: RollingUpdate`                            |
 | `image.repository`              | Container image name                               | `docker.elastic.co/logstash/logstash-oss`        |
-| `image.tag`                     | Container image tag                                | `6.7.0`                                          |
+| `image.tag`                     | Container image tag                                | `7.1.1`                                          |
 | `image.pullPolicy`              | Container image pull policy                        | `IfNotPresent`                                   |
 | `service.type`                  | Service type (ClusterIP, NodePort or LoadBalancer) | `ClusterIP`                                      |
 | `service.annotations`           | Service annotations                                | `{}`                                             |
