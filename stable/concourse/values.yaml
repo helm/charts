@@ -100,11 +100,11 @@ concourse:
     ## The number of attempts secret will be retried to be fetched,
     ## in case a retryable error happens.
     ##
-    secretRetryAttempts:
+    secretRetryAttempts: 5
 
     ## The interval between secret retry retieval attempts.
     ##
-    secretRetryInterval:
+    secretRetryInterval: 1s
 
     ## Enable in-memory cache for secrets.
     ##
@@ -122,11 +122,11 @@ concourse:
 
     ## Minimum level of logs to see. Possible options: debug, info, error.
     ##
-    logLevel:
+    logLevel: info
 
     ## IP address on which to listen for HTTP traffic (web UI and API).
     ##
-    bindIp:
+    bindIp: 0.0.0.0
 
     ## Port on which to listen for HTTP traffic (web UI and API).
     ##
@@ -176,7 +176,7 @@ concourse:
 
     ## IP address on which to listen for the pprof debugger endpoints.
     ##
-    debugBindIp:
+    debugBindIp: 127.0.0.1
 
     ## Port on which to listen for the pprof debugger endpoints.
     ##
@@ -184,27 +184,27 @@ concourse:
 
     ## Length of time for a intercepted session to be idle before terminating.
     ##
-    interceptIdleTimeout:
+    interceptIdleTimeout: 0m
 
     ## Time limit on checking for new versions of resources.
     ##
-    globalResourceCheckTimeout:
+    globalResourceCheckTimeout: 1h
 
     ## Interval on which to check for new versions of resources.
     ##
-    resourceCheckingInterval:
+    resourceCheckingInterval: 1m
 
     ## Interval on which to check for new versions of resource types.
     ##
-    resourceTypeCheckingInterval:
+    resourceTypeCheckingInterval: 1m
 
     ## Method by which a worker is selected during container placement.
     ## Possible values: volume-locality | random | fewest-build-containers
-    containerPlacementStrategy:
+    containerPlacementStrategy: volume-locality
 
     ## How long to wait for Baggageclaim to send the response header.
     ##
-    baggageclaimResponseHeaderTimeout:
+    baggageclaimResponseHeaderTimeout: 1m
 
     ## Directory containing downloadable CLI binaries.
     ## By default, Concourse will try to find the assets
@@ -218,7 +218,7 @@ concourse:
 
     ## Interval on which to run build tracking.
     ##
-    buildTrackerInterval:
+    buildTrackerInterval: 10s
 
     ## Default number of build logs to retain. 0 means all.
     ##
@@ -258,7 +258,7 @@ concourse:
 
       ## The port to connect to.
       ##
-      port:
+      port: 5432
 
       ## Path to a UNIX domain socket to connect to.
       ##
@@ -270,11 +270,11 @@ concourse:
 
       ## Dialing timeout. (0 means wait indefinitely)
       ##
-      connectTimeout:
+      connectTimeout: 5m
 
       ## The name of the database to use.
       ##
-      database:
+      database: atc
 
 
     kubernetes:
@@ -328,11 +328,11 @@ concourse:
 
       ## pipeline-specific template for Secrets Manager parameters, defaults to: /concourse/{team}/{pipeline}/{secret}
       ##
-      pipelineSecretTemplate:
+      pipelineSecretTemplate: /concourse/{{.Team}}/{{.Pipeline}}/{{.Secret}}
 
       ## team-specific template for Secrets Manager parameters, defaults to: /concourse/{team}/{secret}
       ##
-      teamSecretTemplate:
+      teamSecretTemplate: /concourse/{{.Team}}/{{.Secret}}
 
     ## Configuration for using AWS SSM as a credential manager.
     ## Ref: https://concourse-ci.org/creds.html#ssm
@@ -354,11 +354,11 @@ concourse:
 
       ## pipeline-specific template for SSM parameters, defaults to: /concourse/{team}/{pipeline}/{secret}
       ##
-      pipelineSecretTemplate:
+      pipelineSecretTemplate: /concourse/{{.Team}}/{{.Pipeline}}/{{.Secret}})
 
       ## team-specific template for SSM parameters, defaults to: /concourse/{team}/{secret}
       ##
-      teamSecretTemplate:
+      teamSecretTemplate: /concourse/{{.Team}}/{{.Secret}}
 
 
     ## Configuration for using Vault as a credential manager.
@@ -375,7 +375,7 @@ concourse:
 
       ## Vault path under which to namespace credentials lookup.
       ##
-      pathPrefix:
+      pathPrefix: /concourse
 
       ## Path under which to lookup shared credentials.
       ##
@@ -413,11 +413,11 @@ concourse:
 
       ## The maximum time between retries when logging in or reAuthing a secret.
       ##
-      retryMax:
+      retryMax: 5m
 
       ## The initial time between retries when logging in or reAuthing a secret.
       ##
-      retryInitial:
+      retryInitial: 1s
 
     ## Configuration for using Credhub as a credential manager.
     ## Ref: https://concourse-ci.org/credhub-credential-manager.html
@@ -572,13 +572,6 @@ concourse:
     xFrameOptions:
 
     gc:
-      ## Enables overriding the default values that Concourse sets
-      ## for the parameters related to scheduling.
-      ##
-      ## **Do not change this values unless you're sure about what you're doing**.
-      ##
-      overrideDefaults: false
-
       ## Interval on which to perform garbage collection.
       ##
       interval: 30s
@@ -590,7 +583,7 @@ concourse:
       ## Period after which to reap containers and volumes that were created but
       ## went missing from the worker.
       ##
-      missingGracePeriod:
+      missingGracePeriod: 5m
 
     syslog:
       ## Enables the emission of build logs to external log ingesters through
@@ -600,7 +593,7 @@ concourse:
 
       ## Client hostname with which the build logs will be sent to the syslog server.
       ##
-      hostName:
+      hostname: atc-syslog-drainer
 
       ## Remote syslog server address with port (Example: 0.0.0.0:514).
       ##
@@ -626,7 +619,7 @@ concourse:
 
       ## Length of time for which tokens are valid. Afterwards, users will have to log back in.
       ## The value must be specified as Go duration values (e.g.: 30m or 24h).
-      duration:
+      duration: 24h
 
       mainTeam:
         ## Configuration file for specifying team params.
@@ -951,11 +944,11 @@ concourse:
     tsa:
       ## Minimum level of logs to see. Possible values: debug, info, error.
       ##
-      logLevel:
+      logLevel: info
 
       ## IP address on which to listen for SSH.
       ##
-      bindIp:
+      bindIp: 0.0.0.0
 
       ## Port on which to listen for SSH.
       ##
@@ -963,7 +956,7 @@ concourse:
 
       ## IP address on which to listen for the pprof debugger endpoints (default: 127.0.0.1)
       ##
-      debugBindIp:
+      debugBindIp: 127.0.0.1
 
       ## Port on which to listen for TSA pprof server.
       ##
@@ -987,7 +980,7 @@ concourse:
 
       ## Interval on which to heartbeat workers to the ATC.
       ##
-      heartbeatInterval:
+      heartbeatInterval: 30s
 
     letsEncrypt:
       ## Automatically configure TLS certificates via Let's Encrypt/ACME.
@@ -1019,9 +1012,13 @@ concourse:
     ##
     rebalanceInterval:
 
+    ## Duration after which a worker should give up draining forwarded connections on shutdown.
+    ##
+    connectionDrainTimeout: 1h
+
     ## IP address on which to listen for health checking requests.
     ##
-    healthcheckBindIp:
+    healthcheckBindIp: 0.0.0.0
 
     ## Port on which to listen for health checking requests.
     ##
@@ -1029,7 +1026,7 @@ concourse:
 
     ## HTTP timeout for the full duration of health checking.
     ##
-    healthcheckTimeout:
+    healthcheckTimeout: 5s
 
     ## The name to set for the worker during registration. If not specified, the hostname will be used.
     ##
@@ -1061,7 +1058,7 @@ concourse:
 
     ## IP address on which to listen for the pprof debugger endpoints.
     ##
-    debugBindIp:
+    debugBindIp: 127.0.0.1
 
     ## Port on which to listen for beacon pprof server.
     ##
@@ -1077,15 +1074,23 @@ concourse:
 
     ## IP address on which to listen for the Garden server.
     ##
-    bindIp:
+    bindIp: 127.0.0.1
 
     ## Port on which to listen for the Garden server.
     ##
     bindPort: 7777
 
+    ## IP used to reach this worker from the ATC nodes.
+    ##
+    peerIp:
+
+    ## Interval on which containers and volumes will be garbage collected from the worker.
+    ##
+    sweepInterval: 30s
+
     ## Minimum level of logs to see. Possible options: debug, info, error.
     ##
-    logLevel:
+    logLevel: info
 
     ## Maximum number of containers which can be swept in parallel.
     ##
@@ -1120,7 +1125,7 @@ concourse:
     garden:
       ## Path to the 'gdn' executable (or leave as 'gdn' to find it in $PATH)
       ##
-      bin:
+      bin: gdn
 
       ## Path to a config file to use for Garden in INI format.
       ##
@@ -1145,11 +1150,11 @@ concourse:
     baggageclaim:
       ## Minimum level of logs to see. Possible values: debug, info, error
       ##
-      logLevel:
+      logLevel: info
 
       ## IP address on which to listen for API traffic.
       ##
-      bindIp:
+      bindIp: 127.0.0.1
 
       ## Port on which to listen for API traffic.
       ##
@@ -1157,15 +1162,15 @@ concourse:
 
       ## IP address on which to listen for the pprof debugger endpoints.
       ##
-      debugBindIp:
-
-      ## Disable remapping of user/group IDs in unprivileged volumes.
-      ##
-      disableUserNamespaces:
+      debugBindIp: 127.0.0.1
 
       ## Port on which to listen for baggageclaim pprof server.
       ##
       debugBindPort: 7787
+
+      ## Disable remapping of user/group IDs in unprivileged volumes.
+      ##
+      disableUserNamespaces:
 
       ## Directory in which to place volume data.
       ##
@@ -1178,15 +1183,19 @@ concourse:
 
       ## Path to btrfs binary
       ##
-      btrfsBin:
+      btrfsBin: btrfs
 
       ## Path to mkfs.btrfs binary
       ##
-      mkfsBin:
+      mkfsBin: mkfs.btrfs
 
       ## Path to directory in which to store overlay data
       ##
       overlaysDir:
+
+      ## Interval on which to reap expired volumes.
+      ##
+      reapInterval: 10s
 
 ## Configuration values for Concourse Web components.
 ## For more information regarding the characteristics of
