@@ -37,6 +37,7 @@ spec:
       serviceAccountName: {{ template "atlantis.serviceAccountName" . }}
       securityContext:
         fsGroup: 1000
+        runAsUser: 100
       volumes:
       {{- if .Values.tlsSecretName }}
       - name: tls
