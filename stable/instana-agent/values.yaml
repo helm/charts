@@ -2,7 +2,7 @@
 # name: instana-agent
 
 zone:
-  # zone.name is the uniquely-identifiable name by which your cluster will be known inside Instana.
+  # zone.name is the custom zone that detected technologies will be assigned to
   name: null
 
 agent:
@@ -72,3 +72,7 @@ serviceAccount:
   # The name of the ServiceAccount to use.
   # If not set and create is true, a name is generated using the fullname template
   # name: instana-agent
+
+cluster:
+  # cluster.name represents the name that will be assigned to this cluster in Instana
+  name: null

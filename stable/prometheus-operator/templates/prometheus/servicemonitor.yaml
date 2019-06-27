@@ -22,7 +22,7 @@ spec:
     path: "{{ trimSuffix "/" .Values.prometheus.prometheusSpec.routePrefix }}/metrics"
 {{- if .Values.prometheus.serviceMonitor.metricRelabelings }}
     metricRelabelings:
-{{ toYaml .Values.prometheus.serviceMonitor.metricRelabelings | indent 6 }}
+{{ tpl (toYaml .Values.prometheus.serviceMonitor.metricRelabelings | indent 6) . }}
 {{- end }}
 {{- if .Values.prometheus.serviceMonitor.relabelings }}
     relabelings:
