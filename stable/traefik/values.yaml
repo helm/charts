@@ -62,6 +62,23 @@ tolerations: []
   #   ip: "127.0.0.1"
   #   publishedService: "namespace/servicename"
   #   useDefaultPublishedService: false
+
+fileBackend: ""
+  # as in same traefik.toml
+  #
+  # [backends]
+  #   [backends.backend1]
+  #     # ...
+  #   [backends.backend2]
+  #     # ...
+  # [frontends]
+  #   [frontends.frontend1]
+  #   # ...
+  #   [frontends.frontend2]
+  #
+  # or separated file from configFiles
+  # filename = "/configs/rules.toml"
+
 proxyProtocol:
   enabled: false
   # trustedIPs is required when enabled
