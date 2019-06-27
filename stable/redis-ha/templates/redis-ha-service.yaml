@@ -20,6 +20,12 @@ spec:
     port: {{ .Values.sentinel.port }}
     protocol: TCP
     targetPort: sentinel
+{{- if .Values.exporter.enabled }}
+  - name: exporter-port
+    port: {{ .Values.exporter.port }}
+    protocol: TCP
+    targetPort: exporter-port
+{{- end }}
   selector:
     release: {{ .Release.Name }}
     app: {{ template "redis-ha.name" . }}
