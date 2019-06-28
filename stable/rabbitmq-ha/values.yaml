@@ -343,6 +343,9 @@ initContainer:
   #     cpu: 100m
   #     memory: 128Mi
 
+## Additional init containers
+extraInitContainers: []
+
 ## Use an alternate scheduler, e.g. "stork".
 ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
 ##
@@ -449,6 +452,9 @@ securityContext:
   runAsGroup: 101
   runAsNonRoot: true
   runAsUser: 100
+
+## Sets environment variables for the rabbitmq container
+env: {}
 
 prometheus:
   ## Configures Prometheus Exporter to expose and scrape stats.
