@@ -27,6 +27,9 @@ spec:
 {{- if .Values.customLdifFiles}}
         checksum/configmap-customldif: {{ include (print $.Template.BasePath "/configmap-customldif.yaml") . | sha256sum }}
 {{- end }}
+{{- if .Values.podAnnotations}}
+{{ toYaml .Values.podAnnotations | indent 8}}
+{{- end }}
       labels:
         app: {{ template "openldap.name" . }}
         release: {{ .Release.Name }}
@@ -38,6 +41,7 @@ spec:
       - name: {{ .Chart.Name }}-init-ldif
         image: busybox
         command: ['sh', '-c', 'cp /customldif/* /ldifworkingdir']
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
         volumeMounts:
         - name: customldif
           mountPath: /customldif
@@ -48,6 +52,7 @@ spec:
       - name: {{ .Chart.Name }}-init-tls
         image: busybox
         command: ['sh', '-c', 'cp /tls/* /certs']
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
         volumeMounts:
           - name: tls
             mountPath: /tls

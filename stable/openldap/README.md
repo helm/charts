@@ -31,6 +31,7 @@ The following table lists the configurable parameters of the openldap chart and 
 | `image.tag`                        | Container image tag                                                                                                                       | `1.1.10`            |
 | `image.pullPolicy`                 | Container pull policy                                                                                                                     | `IfNotPresent`      |
 | `extraLabels`                      | Labels to add to the Resources                                                                                                            | `{}`                |
+| `podAnnotations`                   | Annotations to add to the pod                                                                                                             | `{}`                |
 | `existingSecret`                   | Use an existing secret for admin and config user passwords                                                                                | `""`                |
 | `service.annotations`              | Annotations to add to the service                                                                                                         | `{}`                |
 | `service.clusterIP`                | IP address to assign to the service                                                                                                       | `""`                |
