@@ -60,6 +60,9 @@ spec:
           {{- range .Values.sources }}
             - --source={{ . }}
           {{- end }}
+          {{- range .Values.istioIngressGateways }}
+            - --istio-ingress-gateway={{ . }}
+          {{- end }}
           {{ if .Values.dryRun }}
             - --dry-run
           {{- end }}
