@@ -32,6 +32,13 @@ spec:
             role: metrics
             app: {{ template "redis.name" . }}
       {{- end }}
+      {{- if ge .Values.cluster.slaveCount 1.0 }}
+      - podSelector:
+          matchLabels:
+            release: "{{ .Release.Name }}"
+            role: slave
+            app: {{ template "redis.name" . }}
+      {{- end }}
       {{- end }}
     {{- if .Values.metrics.enabled }}
     # Allow prometheus scrapes for metrics
