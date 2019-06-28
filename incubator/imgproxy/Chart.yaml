@@ -1,16 +1,16 @@
 apiVersion: v1
 description: A fast and secure standalone server for resizing and converting remote images. The main principles of imgproxy are simplicity, speed, and security.
 name: imgproxy
-icon: https://cdn.rawgit.com/DarthSim/imgproxy/master/logo.svg
-version: 0.4.0
-appVersion: 2.2.13
+icon: https://cdn.rawgit.com/imgproxy/imgproxy/master/logo.svg
+version: 0.4.1
+appVersion: 2.3.0
 keywords:
 - imgproxy
 - image
 - processing
-home: https://github.com/darthsim/imgproxy
+home: https://github.com/imgproxy/imgproxy
 sources:
-- https://github.com/darthsim/imgproxy
+- https://github.com/imgproxy/imgproxy
 maintainers:
 - name: darthsim
   email: darthsim@evilmartians.com

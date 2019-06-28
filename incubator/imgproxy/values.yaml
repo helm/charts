@@ -8,7 +8,7 @@ nodeSelector: {}
 # Docker image repository, tag and a policy for Kubernetes to pull it.
 image:
   repo: darthsim/imgproxy
-  tag: v2.1.0
+  tag: v2.3.0
   pullPolicy: IfNotPresent
 
 imagePullSecrets: {}
