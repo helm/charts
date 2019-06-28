@@ -191,6 +191,10 @@ txtOwnerId: ""
 ## Prefix to create a TXT record with a name following the pattern prefix.<CNAME record>
 ##
 # txtPrefix: ""
+## Load balancer service to be used; ie: custom-istio-namespace/custom-istio-ingressgateway.
+## Omit to use the default (istio-system/istio-ingressgateway)
+##
+istioIngressGateways: []
 
 ## Extra Arguments to passed to external-dns
 ##
