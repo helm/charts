@@ -15,4 +15,14 @@ rules:
       - pods
     verbs:
       - get
+{{- if .Values.rbac.pspEnabled }}
+  - apiGroups:
+    - policy
+    resources:
+    - podsecuritypolicies
+    resourceNames:
+    - {{ template "fluent-bit.fullname" . }}
+    verbs:
+    - use
+{{- end }}
 {{- end -}}
