@@ -18,13 +18,19 @@ storage:
     host: cassandra
     port: 9042
     user: user
+    usePassword: true
     password: password
+    ## Use existing secret (ignores previous password)
+    # existingSecret:
   elasticsearch:
     scheme: http
     host: elasticsearch
     port: 9200
     user: elastic
+    usePassword: true
     password: changeme
+    ## Use existing secret (ignores previous password)
+    # existingSecret:
     nodesWanOnly: false
 
 # Begin: Override values on the Cassandra subchart to customize for Jaeger
@@ -67,15 +73,11 @@ schema:
 
 # Begin: Override values on the Elasticsearch subchart to customize for Jaeger
 elasticsearch:
-  image:
-    tag: "6.6"
   cluster:
     name: "tracing"
   data:
     persistence:
       enabled: false
-  rbac:
-    create: false
 
 agent:
   enabled: true

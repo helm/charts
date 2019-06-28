@@ -55,7 +55,10 @@ spec:
             - name: ES_NODES_WAN_ONLY
               value: {{ .Values.storage.elasticsearch.nodesWanOnly | quote }}
             - name: ES_PASSWORD
-              value: {{ .Values.storage.elasticsearch.password }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ if .Values.storage.elasticsearch.existingSecret }}{{ .Values.storage.elasticsearch.existingSecret }}{{- else }}{{ include "jaeger.fullname" . }}-elasticsearch{{- end }}
+                  key: password
             - name: ES_USERNAME
               value: {{ .Values.storage.elasticsearch.user }}
             {{- end }}
