@@ -56,11 +56,14 @@ $ kubectl delete job/sentry-db-init job/sentry-user-create
 
 The following table lists the configurable parameters of the Sentry chart and their default values.
 
+Dependent charts can also have values overwritten. Preface values with postgresql.* or redis.*
+=======
 Parameter                          | Description                                                                                                | Default
 :--------------------------------- | :--------------------------------------------------------------------------------------------------------- | :---------------------------------------------------
 `image.repository`                 | Sentry image                                                                                               | `library/sentry`
 `image.tag`                        | Sentry image tag                                                                                           | `9.1.1`
 `imagePullPolicy`                  | Image pull policy                                                                                          | `IfNotPresent`
+`imagePullSecrets`                 | Specify image pull secrets                                                                                 | `[]`
 `web.podAnnotations`               | Web pod annotations                                                                                        | `{}`
 `web.podLabels`                    | Worker pod extra labels                                                                                    | `{}`
 `web.replicacount`                 | Amount of web pods to run                                                                                  | `1`
@@ -145,6 +148,7 @@ Parameter                          | Description                                
 `metrics.serviceMonitor.namespace` | Optional namespace which Prometheus is running in                                                          | `nil`
 `metrics.serviceMonitor.interval`  | How frequently to scrape metrics (use by default, falling back to Prometheus' default)                     | `nil`
 `metrics.serviceMonitor.selector`  | Default to kube-prometheus install (CoreOS recommended), but should be set according to Prometheus install | `{ prometheus: kube-prometheus }`
+`hooks.affinity`                   | Affinity settings for hooks pods                                                                           | `{}`
 
 Dependent charts can also have values overwritten. Preface values with postgresql. _or redis._
 

@@ -98,6 +98,8 @@ spec:
         {{- if .Values.vault.extraEnv }}
 {{ toYaml .Values.vault.extraEnv | indent 10 }}
         {{- end }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
         - name: vault-config
           mountPath: /vault/config/
@@ -109,8 +111,6 @@ spec:
 {{- if .Values.vault.extraContainers }}
 {{ tpl (toYaml .Values.vault.extraContainers) . | indent 6}}
 {{- end }}
-        resources:
-{{ toYaml .Values.resources | indent 10 }}
       {{- if .Values.consulAgent.join }}
       - name: {{ .Chart.Name }}-consul-agent
         image: "{{ .Values.consulAgent.repository }}:{{ .Values.consulAgent.tag }}"
@@ -183,6 +183,7 @@ spec:
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
       {{- end }}
+      serviceAccountName: {{ template "vault.serviceAccountName" . }}
       volumes:
         - name: vault-config
           configMap:

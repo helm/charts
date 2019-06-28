@@ -82,6 +82,7 @@ The following table lists the configurable parameters of the nextcloud chart and
 | `mariadb.db.password`               | Password for the database                     | `changeme`                                              |
 | `mariadb.db.user`                   | Database user to create                       | `nextcloud`                                             |
 | `mariadb.rootUser.password`         | MariaDB admin password                        | `nil`                                                   |
+| `redis.enabled`                     | Whether to install/use redis for locking      | `false`                                                 |
 | `cronjob.enabled`                   | Whether to enable/disable cronjob             | `false`                                                 |
 | `cronjob.schedule`                  | Schedule for the CronJob                      | `*/15 * * * *`                                          |
 | `cronjob.annotations`               | Annotations to add to the cronjob             | {}                                                      |
