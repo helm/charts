@@ -3,6 +3,18 @@
 This file documents all notable changes to Sysdig Falco Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v0.7.12
+
+### Minor Changes
+
+* Fix issues introduced in https://github.com/helm/charts/pull/14813
+
+## v0.7.11
+
+### Minor Changes
+
+* Add a parameter for creating Pod Security Policy and apply to Falco daemonset
+
 ## v0.7.10
 
 ### Minor Changes
