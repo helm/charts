@@ -106,6 +106,8 @@ spec:
 {{- if .Values.prometheus.prometheusSpec.securityContext }}
   securityContext:
 {{ toYaml .Values.prometheus.prometheusSpec.securityContext | indent 4 }}
+{{- else }}
+  securityContext: {}
 {{- end }}
 {{- if .Values.prometheus.prometheusSpec.ruleNamespaceSelector }}
   ruleNamespaceSelector:
