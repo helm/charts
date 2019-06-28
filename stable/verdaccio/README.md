@@ -57,6 +57,7 @@ and their default values.
 | `image.repository`                 | Verdaccio container image repository                            | `verdaccio/verdaccio`                                    |
 | `image.tag`                        | Verdaccio container image tag                                   | `3.11.6`                                                 |
 | `nodeSelector`                     | Node labels for pod assignment                                  | `{}`                                                     |
+| `tolerations`                      | List of node taints to tolerate                                 | `[]`                                                     |
 | `persistence.accessMode`           | PVC Access Mode for Verdaccio volume                            | `ReadWriteOnce`                                          |
 | `persistence.enabled`              | Enable persistence using PVC                                    | `true`                                                   |
 | `persistence.existingClaim`        | Use existing PVC                                                | `nil`                                                    |
