@@ -251,6 +251,8 @@ filter:
 rbac:
   # Specifies whether RBAC resources should be created
   create: true
+  # Specifies whether a PodSecurityPolicy should be created
+  pspEnabled: false
 
 taildb:
   directory: /var/lib/fluent-bit

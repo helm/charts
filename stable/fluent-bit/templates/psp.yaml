@@ -1,0 +1,60 @@
+{{- if .Values.rbac.pspEnabled }}
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: {{ template "fluent-bit.fullname" . }}
+spec:
+  # Prevents running in privileged mode
+  privileged: false
+  # Required to prevent escalations to root.
+  allowPrivilegeEscalation: false
+  # This is redundant with non-root + disallow privilege escalation,
+  # but we can provide it for defense in depth.
+  requiredDropCapabilities:
+    - ALL
+  volumes:
+    - 'configMap'
+    - 'secret'
+    - 'hostPath'
+  allowedHostPaths:
+    - pathPrefix: "/var/log"
+    - pathPrefix: "/var/lib/docker/containers"
+      readOnly: true
+{{- if .Values.input.systemd.enabled }}
+    - pathPrefix: "/etc/machine-id"
+      readOnly: true
+{{- end }}
+    - pathPrefix: "/fluent-bit/etc"
+{{- if .Values.trackOffsets }}
+    - pathPrefix: {{ .Values.taildb.directory }}
+{{- end }}
+{{- if .Values.on_minikube }}
+    - pathPrefix: "/mnt"
+{{- end }}
+{{- range .Values.extraVolumes }}
+  {{- if .hostPath }}
+    - pathPrefix: {{ .hostPath.path }}
+  {{- end }}
+{{- end }}
+  hostNetwork: {{ .Values.hostNetwork }}
+  hostIPC: false
+  hostPID: false
+  runAsUser:
+    rule: 'RunAsAny'
+  seLinux:
+    # This policy assumes the nodes are using AppArmor rather than SELinux.
+    rule: 'RunAsAny'
+  supplementalGroups:
+    rule: 'MustRunAs'
+    ranges:
+      # Forbid adding the root group.
+      - min: 1
+        max: 65535
+  fsGroup:
+    rule: 'MustRunAs'
+    ranges:
+      # Forbid adding the root group.
+      - min: 1
+        max: 65535
+  readOnlyRootFilesystem: false
+{{- end }}
