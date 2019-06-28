@@ -61,6 +61,15 @@ alertmanager:
   ##
   extraEnv: {}
 
+  ## Additional alertmanager Secret mounts
+  # Defines additional mounts with secrets. Secrets must be manually created in the namespace.
+  extraSecretMounts: []
+    # - name: secret-files
+    #   mountPath: /etc/secrets
+    #   subPath: ""
+    #   secretName: alertmanager-secret-files
+    #   readOnly: true
+
   ## ConfigMap override where fullname is {{.Release.Name}}-{{.Values.alertmanager.configMapOverrideName}}
   ## Defining configMapOverrideName will cause templates/alertmanager-configmap.yaml
   ## to NOT generate a ConfigMap resource
@@ -518,7 +527,7 @@ server:
   ##
   image:
     repository: prom/prometheus
-    tag: v2.9.2
+    tag: v2.10.0
     pullPolicy: IfNotPresent
 
   ## prometheus server priorityClassName
@@ -787,6 +796,11 @@ pushgateway:
   ##
   enabled: true
 
+  ## Use an alternate scheduler, e.g. "stork".
+  ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+  ##
+  # schedulerName:
+
   ## pushgateway container name
   ##
   name: pushgateway
@@ -795,7 +809,7 @@ pushgateway:
   ##
   image:
     repository: prom/pushgateway
-    tag: v0.6.0
+    tag: v0.8.0
     pullPolicy: IfNotPresent
 
   ## pushgateway priorityClassName
