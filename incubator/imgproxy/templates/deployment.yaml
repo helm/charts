@@ -17,11 +17,11 @@ spec:
       labels:
         app: {{ template "imgproxy.fullname" . }}
         release: {{ .Release.Name | quote }}
-{{- if .Values.enablePrometheus }}
+{{- if .Values.annotations }}
       annotations:
-        prometheus.io/scrape: "true"
-        prometheus.io/path: /metrics
-        prometheus.io/port: "8081"
+        {{- range $key, $value := .Values.annotations }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
 {{- end }}
     spec:
     {{- if .Values.nodeSelector }}
@@ -202,6 +202,9 @@ spec:
         ports:
         - containerPort: 8080
           name: http
+          protocol: TCP
+        - containerPort: 8081
+          name: metrics
           protocol: TCP
         readinessProbe:
           httpGet:

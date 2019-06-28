@@ -52,13 +52,15 @@ Specify each parameter using the `--set key=value[,key=value]` argument to helm 
 helm install \
   --name imgproxy \
   --namespace imgproxy \
-  --set image.tag=v1.1.6 \
+  --set image.tag=v2.3.0 \
   incubator/imgproxy
 ```
 
 The above command installs a specified version of imgproxy.
 
-## Supporterd Chart values
+## Supported Chart values
+
+### imgproxy
 
 These are the values used to configure imgproxy itself:
 
@@ -83,5 +85,36 @@ These are the values used to configure imgproxy itself:
 |**jpegProgressive**|when true, enables progressive compression of JPEG|`false`|
 |**pngInterlaced**|when true, enables interlaced compression of PNG|`false`|
 |**baseUrl**|base URL part which will be added to every requestsd image URL. For example, if base URL is `http://example.com/images` and `/path/to/image.png` is requested, imgproxy will download the image from `http://example.com/images/path/to/image.png`||
+
+
+### k8s deployment
+
+Deployment specific options.
+
+|Value|Description|Default|
+|-----|-----------|-------|
+|**annotations**|Custom annotations for imgproxy pods|`{}`|
+|**replicaCount**|How many pods with imgproxy should be running simultaneously|`1`|
+|**imagePullSecrets.registry**|URL of a private registry you want to authorize to|``|
+|**imagePullSecrets.username**|Login to your private registry|``|
+|**imagePullSecrets.password**|Password to your private registry|``|
+|**resources**|Hash of resource limits for your pods|`{}`|
+|**podDisruptionBudget.enabled**|Enable or disable a disruprion budget policy|`false`|
+|**podDisruptionBudget.minAvailable**|minAvailable option for the PodDisruptionBudget|`0`|
+|**podDisruptionBudget.maxUnavailable**|maxUnavailable option for the PodDisruptionBudget|`0`|
+
+### Monitoring
+
+Options to configure ServiceMonitor for Prometheus Operator.
+
+
+|Value|Description|Default|
+|-----|-----------|-------|
+|**serviceMonitor.enabled**|Enables ServiceMonitor manifest|`false`|
+|**serviceMonitor.honorLabels**|Chooses the metric's labels on collisions with target labels|`true`|
+|**serviceMonitor.interval**|Interval at which metrics should be scraped (if it differs from default one)|`0`|
+|**serviceMonitor.namespace**|Namespace with PrometheusOperator|`monitoring`|
+|**serviceMonitor.selector**|Selector to select Pods|`release: prometheus-operator`|
+|**serviceMonitor.targetLabels**|Transfers mentioned labels on the Kubernetes Service onto the target|`["app","release"]`|
 
 See `values.yaml` for some more Kubernetes-specific configuration options.

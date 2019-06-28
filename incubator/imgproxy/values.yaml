@@ -76,10 +76,8 @@ podDisruptionBudget:
   minAvailable: 0
   maxUnavailable: 0
 
-# TLS key & certificate if tls is enable & acme is disabled for Ingress resource.
-tls: {}
-  # privateKey: ""
-  # certificate: ""
+# Pod annotations
+annotations: {}
 
 # Hex-encoded key for URL encoding. CHANGE IT!!!!
 key: 1b147116e57d9e06df3696b21260169902fe201ccdb9715267999176ccbfaae6f2c2b75b78110d0287643d98cde143e7a3f98a46ec825a1ab7ea10af426c2436
@@ -188,9 +186,6 @@ newRelicKey: ""
 
 # New Relic application name. Default: imgproxy
 newRelicAppName: ""
-
-# Enables Prometheus metrics
-enablePrometheus: false
 
 # Bugsnag API key. When provided, enables errors reporting to Bugsnag
 bugsnagKey: ""
