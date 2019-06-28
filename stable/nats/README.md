@@ -85,6 +85,7 @@ The following table lists the configurable parameters of the NATS chart and thei
 | `tolerations`                        | Toleration labels for pod assignment                                                         | `nil`                                                         |
 | `resources`                          | CPU/Memory resource requests/limits                                                          | {}                                                            |
 | `extraArgs`                          | Optional flags for NATS                                                                      | `[]`                                                          |
+| `natsFilename`                       | Filename used by several NATS files (binary, configurarion file, and pid file)               | `nats-server`                                                 |
 | `livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated                                                     | `30`                                                          |
 | `livenessProbe.periodSeconds`        | How often to perform the probe                                                               | `10`                                                          |
 | `livenessProbe.timeoutSeconds`       | When the probe times out                                                                     | `5`                                                           |
@@ -224,6 +225,14 @@ sidecars:
   ports:
   - name: portname
    containerPort: 1234
+```
+## Deploy chart with NATS version 1.x.x
+
+NATS version 2.0.0 has renamed the server binary filename from `gnatsd` to `nats-server`. Therefore, the default values has been changed in the chart,
+however, it is still possible to use the chart to deploy NATS version 1.x.x using the `natsFilename` property.
+
+```bash
+helm install --name nats-v1 --set natsFilename=gnatsd --set image.tag=1.4.1 stable/nats
 ```
 
 ## Upgrading
