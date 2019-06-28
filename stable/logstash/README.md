@@ -69,13 +69,13 @@ Please review the following links that expound on current best practices.
 
 The following table lists the configurable parameters of the chart and its default values.
 
-|              Parameter      |                    Description                     |                     Default                      |
-| --------------------------- | -------------------------------------------------- | ------------------------------------------------ |
+|              Parameter          |                    Description                     |                     Default                      |
+| ------------------------------- | -------------------------------------------------- | ------------------------------------------------ |
 | `replicaCount`                  | Number of replicas                                 | `1`                                              |
 | `podDisruptionBudget`           | Pod disruption budget                              | `maxUnavailable: 1`                              |
 | `updateStrategy`                | Update strategy                                    | `type: RollingUpdate`                            |
 | `image.repository`              | Container image name                               | `docker.elastic.co/logstash/logstash-oss`        |
-| `image.tag`                     | Container image tag                                | `6.7.0`                                          |
+| `image.tag`                     | Container image tag                                | `7.1.1`                                          |
 | `image.pullPolicy`              | Container image pull policy                        | `IfNotPresent`                                   |
 | `service.type`                  | Service type (ClusterIP, NodePort or LoadBalancer) | `ClusterIP`                                      |
 | `service.annotations`           | Service annotations                                | `{}`                                             |
@@ -101,7 +101,7 @@ The following table lists the configurable parameters of the chart and its defau
 | `podLabels`                     | Pod labels                                         | `{}`                                             |
 | `extraEnv`                      | Extra pod environment variables                    | `[]`                                             |
 | `extraInitContainers`           | Add additional initContainers                      | `[]`                                             |
-| `podManagementPolicy`          | podManagementPolicy of the StatefulSet              | `OrderedReady`                                   |
+| `podManagementPolicy`           | podManagementPolicy of the StatefulSet             | `OrderedReady`                                   |
 | `livenessProbe`                 | Liveness probe settings for logstash container     | (see `values.yaml`)                              |
 | `readinessProbe`                | Readiness probe settings for logstash container    | (see `values.yaml`)                              |
 | `persistence.enabled`           | Enable persistence                                 | `true`                                           |
@@ -109,8 +109,8 @@ The following table lists the configurable parameters of the chart and its defau
 | `persistence.accessMode`        | Access mode for PVCs                               | `ReadWriteOnce`                                  |
 | `persistence.size`              | Size for PVCs                                      | `2Gi`                                            |
 | `volumeMounts`                  | Volume mounts to configure for logstash container  | (see `values.yaml`)                              |
-| `volumes`                       | Volumes to configure for logstash container        | []                              |
-| `terminationGracePeriodSeconds` | Duration the pod needs to terminate gracefully     | `30`
+| `volumes`                       | Volumes to configure for logstash container        | []                                               |
+| `terminationGracePeriodSeconds` | Duration the pod needs to terminate gracefully     | `30`                                             |
 | `exporter.logstash`             | Prometheus logstash-exporter settings              | (see `values.yaml`)                              |
 | `exporter.logstash.enabled`     | Enables Prometheus logstash-exporter               | `false`                                          |
 | `elasticsearch.host`            | ElasticSearch hostname                             | `elasticsearch-client.default.svc.cluster.local` |
@@ -122,5 +122,8 @@ The following table lists the configurable parameters of the chart and its defau
 | `inputs`                        | Logstash inputs configuration                      | beats                                            |
 | `filters`                       | Logstash filters configuration                     | `nil`                                            |
 | `outputs`                       | Logstash outputs configuration                     | elasticsearch                                    |
-| `securityContext.fsGroup`                          | Group ID for the container                                                                   | `1000`                                                  |
-| `securityContext.runAsUser`                        | User ID for the container                                                                    | `1000`                                                  |
+| `securityContext.fsGroup`       | Group ID for the container                         | `1000`                                           |
+| `securityContext.runAsUser`     | User ID for the container                          | `1000`                                           |
+| `args`                          | Additional arguments to pass to Logstash           | `1000`                                           |
+| `serviceAccount.create`         | Specifies if a ServiceAccount should be created    | `true`                                           |
+| `serviceAccount.name`           | The name of the ServiceAccount to use              | `""`                                             |
