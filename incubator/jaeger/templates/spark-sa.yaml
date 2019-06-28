@@ -1,8 +1,8 @@
-{{- if and .Values.spark.enabled .Values.spark.serviceAccount.create -}}
+{{- if and .Values.spark.enabled .Values.serviceAccounts.spark.create -}}
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: {{ include "jaeger.fullname" . }}-spark
+  name: {{ template "jaeger.spark.serviceAccountName" . }}
   labels:
     app.kubernetes.io/name: {{ include "jaeger.name" . }}
     helm.sh/chart: {{ include "jaeger.chart" . }}

@@ -11,6 +11,26 @@ tag: 1.13.1
 nameOverride: ""
 fullnameOverride: ""
 
+serviceAccounts:
+  cassandraSchema:
+    create: true
+    name:
+  agent:
+    create: true
+    name:
+  collector:
+    create: true
+    name:
+  query:
+    create: true
+    name:
+  spark:
+    create: true
+    name:
+  hotrod:
+    create: true
+    name:
+
 storage:
   # allowed values (cassandra, elasticsearch)
   type: cassandra
@@ -56,8 +76,6 @@ schema:
   annotations: {}
   image: jaegertracing/jaeger-cassandra-schema
   pullPolicy: IfNotPresent
-  serviceAccount:
-    create: true
   # Acceptable values are test and prod. Default is for production use.
   mode: prod
   resources: {}
@@ -84,8 +102,6 @@ agent:
   annotations: {}
   image: jaegertracing/jaeger-agent
   pullPolicy: IfNotPresent
-  serviceAccount:
-    create: true
   collector:
     host: null
     port: null
@@ -128,8 +144,6 @@ collector:
   annotations: {}
   image: jaegertracing/jaeger-collector
   pullPolicy: IfNotPresent
-  serviceAccount:
-    create: true
   dnsPolicy: ClusterFirst
   cmdlineParams: {}
   replicaCount: 1
@@ -168,8 +182,6 @@ query:
   annotations: {}
   image: jaegertracing/jaeger-query
   pullPolicy: IfNotPresent
-  serviceAccount:
-    create: true
   dnsPolicy: ClusterFirst
   cmdlineParams: {}
   replicaCount: 1
@@ -215,8 +227,6 @@ spark:
   image: jaegertracing/spark-dependencies
   tag: latest
   pullPolicy: Always
-  serviceAccount:
-    create: true
   schedule: "49 23 * * *"
   successfulJobsHistoryLimit: 5
   failedJobsHistoryLimit: 5
@@ -242,8 +252,6 @@ hotrod:
   image:
     repository: jaegertracing/example-hotrod
     pullPolicy: Always
-  serviceAccount:
-    create: true
   service:
     annotations: {}
     name: hotrod

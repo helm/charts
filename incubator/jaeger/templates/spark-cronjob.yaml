@@ -35,7 +35,7 @@ spec:
       tolerations:
 {{ toYaml .Values.spark.tolerations | indent 8 }}
 {{- end }}
-          serviceAccountName: {{ include "jaeger.fullname" . }}-spark
+          serviceAccountName: {{ template "jaeger.spark.serviceAccountName" . }}
           containers:
           - name: {{ include "jaeger.fullname" . }}-spark
             image: {{ .Values.spark.image }}:{{ .Values.spark.tag }}
