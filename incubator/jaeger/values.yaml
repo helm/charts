@@ -6,7 +6,7 @@ provisionDataStore:
   cassandra: true
   elasticsearch: false
 
-tag: 1.12.0
+tag: 1.13.0
 
 nameOverride: ""
 fullnameOverride: ""
@@ -29,8 +29,6 @@ storage:
 
 # Begin: Override values on the Cassandra subchart to customize for Jaeger
 cassandra:
-  image:
-    tag: 3.11.3
   persistence:
     # To enable persistence, please see the documentation for the Cassandra chart
     enabled: false
@@ -52,6 +50,8 @@ schema:
   annotations: {}
   image: jaegertracing/jaeger-cassandra-schema
   pullPolicy: IfNotPresent
+  serviceAccount:
+    create: true
   # Acceptable values are test and prod. Default is for production use.
   mode: prod
   resources: {}
@@ -82,6 +82,8 @@ agent:
   annotations: {}
   image: jaegertracing/jaeger-agent
   pullPolicy: IfNotPresent
+  serviceAccount:
+    create: true
   collector:
     host: null
     port: null
@@ -124,6 +126,8 @@ collector:
   annotations: {}
   image: jaegertracing/jaeger-collector
   pullPolicy: IfNotPresent
+  serviceAccount:
+    create: true
   dnsPolicy: ClusterFirst
   cmdlineParams: {}
   replicaCount: 1
@@ -162,6 +166,8 @@ query:
   annotations: {}
   image: jaegertracing/jaeger-query
   pullPolicy: IfNotPresent
+  serviceAccount:
+    create: true
   dnsPolicy: ClusterFirst
   cmdlineParams: {}
   replicaCount: 1
@@ -207,6 +213,8 @@ spark:
   image: jaegertracing/spark-dependencies
   tag: latest
   pullPolicy: Always
+  serviceAccount:
+    create: true
   schedule: "49 23 * * *"
   successfulJobsHistoryLimit: 5
   failedJobsHistoryLimit: 5
@@ -232,6 +240,8 @@ hotrod:
   image:
     repository: jaegertracing/example-hotrod
     pullPolicy: Always
+  serviceAccount:
+    create: true
   service:
     annotations: {}
     name: hotrod

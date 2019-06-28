@@ -141,6 +141,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `agent.service.annotations`              | Annotations for Agent SVC           |  nil                                   |
 | `agent.service.binaryPort`               | jaeger.thrift over binary thrift    |  6832                                  |
 | `agent.service.compactPort`              | jaeger.thrift over compact thrift   |  6831                                  |
+| `agent.serviceAccount.create`              | Create service account   |  true                                  |
 | `agent.image`                            | Image for Jaeger Agent              |  jaegertracing/jaeger-agent            |
 | `agent.podAnnotations`                   | Annotations for Agent pod           |  nil                                   |
 | `agent.pullPolicy`                       | Agent image pullPolicy              |  IfNotPresent                          |
@@ -162,6 +163,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `collector.podAnnotations`               | Annotations for Collector pod       |  nil                                   |
 | `collector.service.httpPort`             | Client port for HTTP thrift         |  14268                                 |
 | `collector.service.annotations`          | Annotations for Collector SVC       |  nil                                   |
+| `collector.serviceAccount.create`              | Create service account   |  true                                  |
 | `collector.image`                        | Image for jaeger collector          |  jaegertracing/jaeger-collector        |
 | `collector.pullPolicy`                   | Collector image pullPolicy          |  IfNotPresent                          |
 | `collector.tolerations`                  | Node Tolerations                    | `[]`                                   |
@@ -178,11 +180,13 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `fullnameOverride`                       | Override full name                  |  `nil`                                 |
 | `hotrod.enabled`                         | Enables the Hotrod demo app         |  false                                 |
 | `hotrod.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`      |
+| `hotrod.serviceAccount.create`              | Create service account   |  true                                  |
 | `nameOverride`                           | Override name                       | `nil`                                  |
 | `provisionDataStore.cassandra`           | Provision Cassandra Data Store      |  true                                  |
 | `provisionDataStore.elasticsearch`       | Provision Elasticsearch Data Store  |  false                                 |
 | `query.agentSidecar.enabled`              | Enable agent sidecare for query deployment           |  true                                  |
 | `query.service.annotations`              | Annotations for Query SVC           |  nil                                   |
+| `query.serviceAccount.create`              | Create service account   |  true                                  |
 | `query.cmdlineParams`                    | Additional command line parameters  |  nil                                   |
 | `query.image`                            | Image for Jaeger Query UI           |  jaegertracing/jaeger-query            |
 | `query.ingress.enabled`                  | Allow external traffic access       |  false                                 |
@@ -200,10 +204,12 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `schema.image`                           | Image to setup cassandra schema     |  jaegertracing/jaeger-cassandra-schema |
 | `schema.mode`                            | Schema mode (prod or test)          |  prod                                  |
 | `schema.pullPolicy`                      | Schema image pullPolicy             |  IfNotPresent                          |
+| `schema.serviceAccount.create`              | Create service account   |  true                                  |
 | `spark.enabled`                          | Enables the dependencies job        |  false                                 |
 | `spark.image`                            | Image for the dependencies job      |  jaegertracing/spark-dependencies      |
 | `spark.pullPolicy`                       | Image pull policy of the deps image |  Always                                |
 | `spark.schedule`                         | Schedule of the cron job            |  "49 23 * * *"                         |
+| `spark.serviceAccount.create`              | Create service account   |  true                                  |
 | `spark.successfulJobsHistoryLimit`       | Cron job successfulJobsHistoryLimit |  5                                     |
 | `spark.failedJobsHistoryLimit`           | Cron job failedJobsHistoryLimit     |  5                                     |
 | `spark.tag`                              | Tag of the dependencies job image   |  latest                                |
@@ -219,7 +225,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `storage.elasticsearch.user`             | Provisioned elasticsearch user      |  elastic                               |
 | `storage.elasticsearch.nodesWanOnly`     | Only access specified es host       |  false                                 |
 | `storage.type`                           | Storage type (ES or Cassandra)      |  cassandra                             |
-| `tag`                                    | Image tag/version                   |  1.12.0                                 |
+| `tag`                                    | Image tag/version                   |  1.13.0                                 |
 
 For more information about some of the tunable parameters that Cassandra provides, please visit the helm chart for [cassandra](https://github.com/kubernetes/charts/tree/master/incubator/cassandra) and the official [website](http://cassandra.apache.org/) at apache.org.
 
