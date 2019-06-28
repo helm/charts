@@ -55,7 +55,7 @@ externalDatabase:
   ## Database host
   host: localhost
 
-  ## non-root Username for Wordpress Database
+  ## non-root Username for Odoo database
   user: postgres
 
   ## Database password
