@@ -1,4 +1,4 @@
-{{- if and .Values.agent.enabled .Values.psp.create}}
+{{- if and .Values.agent.enabled .Values.psp.create -}}
 apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
