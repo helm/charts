@@ -92,6 +92,7 @@ Parameter                          | Description                                
 `worker.schedulerName`             | Name of an alternate scheduler for worker                                                                  | `nil`
 `worker.affinity`                  | Affinity settings for worker pod assignment                                                                | `{}`
 `worker.tolerations`               | Toleration labels for worker pod assignment                                                                | `[]`
+`worker.concurrency`               | Celery worker concurrency                                                                                  | `nil`
 `user.create`                      | Create the default admin                                                                                   | `true`
 `user.email`                       | Username for default admin                                                                                 | `admin@sentry.local`
 `email.from_address`               | Email notifications are from                                                                               | `smtp`
