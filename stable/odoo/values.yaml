@@ -51,11 +51,11 @@ odooEmail: user@example.com
 # smtpProtocol:
 
 externalDatabase:
-## All of these values are only used when mariadb.enabled is set to false
+## All of these values are only used when postgresql.enabled is set to false
   ## Database host
   host: localhost
 
-  ## non-root Username for Wordpress Database
+  ## non-root Username for Odoo database
   user: postgres
 
   ## Database password
