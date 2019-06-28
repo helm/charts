@@ -98,6 +98,7 @@ Parameter | Description | Default
 `agent.image.tag` | Agent image tag | `v3.2`
 `agent.image.pullPolicy` | Agent image pull policy | `IfNotPresent`
 `agent.dnsPolicy` | Agent pod DNS policy | `ClusterFirstWithHostNet`
+`agent.whiteListRouteRegexp` | Agent pod whitelist metadata API path argument regex  | `{}`
 `agent.extraArgs` | Additional agent container arguments | `{}`
 `agent.extraEnv` | Additional agent container environment variables | `{}`
 `agent.extraHostPathMounts` | Additional agent container hostPath mounts | `[]`

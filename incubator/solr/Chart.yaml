@@ -2,7 +2,7 @@
 
 apiVersion: "v1"
 name: "solr"
-version: "1.0.2"
+version: "1.1.0"
 appVersion: "7.6.0"
 description: "A helm chart to install Apache Solr: http://lucene.apache.org/solr/"
 keywords:
