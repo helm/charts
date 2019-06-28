@@ -19,7 +19,7 @@ strategy: {}
 image:
   # From repository https://github.com/osixia/docker-openldap
   repository: osixia/openldap
-  tag: 1.2.1
+  tag: 1.2.4
   pullPolicy: IfNotPresent
 
 # Spcifies an existing secret to be used for admin and config user passwords
@@ -34,7 +34,8 @@ tls:
     secret: ""  # The name of a generic secret to use for custom CA certificate (ca.crt)
 ## Add additional labels to all resources
 extraLabels: {}
-
+## Add additional annotations to pods
+podAnnotations: {}
 service:
   annotations: {}
   clusterIP: ""
