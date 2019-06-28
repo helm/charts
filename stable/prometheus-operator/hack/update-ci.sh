@@ -1,2 +1,4 @@
 #!/usr/bin/env bash
-cat values.yaml | sed 's/cleanupCustomResource: false/cleanupCustomResource: true/' > ci/test-values.yaml
+sed -e 's/cleanupCustomResource: false/cleanupCustomResource: true/' \
+	-e 's/cleanupCustomResourceBeforeInstall: false/cleanupCustomResourceBeforeInstall: true/' \
+	values.yaml > ci/test-values.yaml
