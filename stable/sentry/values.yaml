@@ -68,6 +68,7 @@ worker:
   # schedulerName:
   # Optional extra labels for pod, i.e. redis-client: "true"
   # podLabels: []
+  # concurrency:
 
 # Admin user to create
 user:
