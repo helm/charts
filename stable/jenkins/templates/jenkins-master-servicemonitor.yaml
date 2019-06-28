@@ -4,6 +4,7 @@ kind: ServiceMonitor
 
 metadata:
   name: {{ template "jenkins.fullname" . }}
+  namespace: {{ template "jenkins.namespace" . }}
   labels:
     "app.kubernetes.io/name": '{{ template "jenkins.name" .}}'
     "helm.sh/chart": "{{ .Chart.Name }}-{{ .Chart.Version }}"
@@ -22,7 +23,7 @@ spec:
   jobLabel: {{ template "jenkins.fullname" . }}
   namespaceSelector:
     matchNames:
-    - "{{ $.Release.Namespace }}"
+    - "{{ template "jenkins.namespace" $ }}"
   selector:
     matchLabels:
       "app.kubernetes.io/name": '{{ template "jenkins.name" .}}'
