@@ -3,6 +3,7 @@
 # https://github.com/metabase/metabase/issues/2754
 # NOTE: Should remain 1
 replicaCount: 1
+podAnnotations: {}
 image:
   repository: metabase/metabase
   tag: v0.31.2
