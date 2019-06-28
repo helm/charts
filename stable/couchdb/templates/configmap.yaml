@@ -15,3 +15,7 @@ data:
     {{ printf "%s = %s" $key ($value | toString) }}
     {{ end }}
     {{ end }}
+
+  seedlistinifile: |
+    [cluster]
+    seedlist = {{ template "couchdb.seedlist" . }}

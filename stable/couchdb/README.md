@@ -108,11 +108,8 @@ A variety of other parameters are also configurable. See the comments in the
 | `adminUsername`                 | admin                                  |
 | `adminPassword`                 | auto-generated                         |
 | `cookieAuthSecret`              | auto-generated                         |
-| `helperImage.repository`        | kocolosk/couchdb-statefulset-assembler |
-| `helperImage.tag`               | 1.2.0                                  |
-| `helperImage.pullPolicy`        | IfNotPresent                           |
 | `image.repository`              | couchdb                                |
-| `image.tag`                     | 2.3.0                                  |
+| `image.tag`                     | 2.3.1                                  |
 | `image.pullPolicy`              | IfNotPresent                           |
 | `searchImage.repository`        | kocolosk/couchdb-search                |
 | `searchImage.tag`               | 0.1.0                                  |
@@ -133,3 +130,4 @@ A variety of other parameters are also configurable. See the comments in the
 | `service.enabled`               | true                                   |
 | `service.type`                  | ClusterIP                              |
 | `service.externalPort`          | 5984                                   |
+| `dns.clusterDomainSuffix`       | cluster.local                          |
