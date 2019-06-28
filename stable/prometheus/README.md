@@ -216,6 +216,7 @@ Parameter | Description | Default
 `pushgateway.podAnnotations` | annotations to be added to pushgateway pods | `{}`
 `pushgateway.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `pushgateway.replicaCount` | desired number of pushgateway pods | `1`
+`pushgateway.schedulerName` | pushgateway alternate scheduler name | `nil`
 `pushgateway.persistentVolume.enabled` | If true, Prometheus pushgateway will create a Persistent Volume Claim | `false`
 `pushgateway.persistentVolume.accessModes` | Prometheus pushgateway data Persistent Volume access modes | `[ReadWriteOnce]`
 `pushgateway.persistentVolume.annotations` | Prometheus pushgateway data Persistent Volume annotations | `{}`
