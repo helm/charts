@@ -226,6 +226,14 @@ sidecars:
   - name: portname
    containerPort: 1234
 ```
+## Deploy chart with NATS version 1.x.x
+
+NATS version 2.0.0 has renamed the server binary filename from `gnatsd` to `nats-server`. Therefore, the default values has been changed in the chart,
+however, it is still possible to use the chart to deploy NATS version 1.x.x using the `natsFilename` property.
+
+```bash
+helm install --name nats-v1 --set natsFilename=gnatsd --set image.tag=1.4.1 stable/nats
+```
 
 ## Upgrading
 
