@@ -89,7 +89,7 @@ spec:
           fi
           if [[ ! -f /opt/bitnami/redis/etc/redis.conf ]];then
             cp /opt/bitnami/redis/mounted-etc/redis.conf /opt/bitnami/redis/etc/redis.conf
-          fi          
+          fi
           ARGS=("--port" "${REDIS_PORT}")
           ARGS+=("--slaveof" "${REDIS_MASTER_HOST}" "${REDIS_MASTER_PORT_NUMBER}")
           {{- if .Values.usePassword }}
@@ -151,9 +151,9 @@ spec:
             - sh
             - -c
             {{- if .Values.sentinel.enabled }}
-            - /health/ping_local.sh {{ .Values.slave.livenessProbe.timeoutSeconds }}
+            - /health/ping_liveness_local.sh {{ .Values.slave.livenessProbe.timeoutSeconds }}
             {{- else }}
-            - /health/ping_local_and_master.sh {{ .Values.slave.livenessProbe.timeoutSeconds }}
+            - /health/ping_liveness_local_and_master.sh {{ .Values.slave.livenessProbe.timeoutSeconds }}
             {{- end }}
         {{- end }}
 
@@ -169,9 +169,9 @@ spec:
             - sh
             - -c
             {{- if .Values.sentinel.enabled }}
-            - /health/ping_local.sh {{ .Values.slave.livenessProbe.timeoutSeconds }}
+            - /health/ping_readiness_local.sh {{ .Values.slave.livenessProbe.timeoutSeconds }}
             {{- else }}
-            - /health/ping_local_and_master.sh {{ .Values.slave.livenessProbe.timeoutSeconds }}
+            - /health/ping_readiness_local_and_master.sh {{ .Values.slave.livenessProbe.timeoutSeconds }}
             {{- end }}
         {{- end }}
         resources:
