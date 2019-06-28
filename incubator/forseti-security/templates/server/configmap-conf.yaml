@@ -1,0 +1,29 @@
+# Copyright 2019 The Forseti Security Authors. All rights reserved.
+#
+# Licensed under the Apache License, Versisn 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: forseti-server-conf
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    gcs_bucket: "{{ .Values.serverBucket }}"
+    gcs_object: "{{ .Values.serverBucketConfigFolder }}"
+data:
+  forseti_conf_server.yaml: |-
+{{ if .Values.production }} 
+    {{ .Values.serverConfigContents | b64dec | nindent 4 }}
+{{ else }}
+    {{- (.Files.Get "files/forseti_conf_server.yaml.sample") | replace "ROOT_RESOURCE_ID" "organizations/12345677890" | replace "output_path: OUTPUT_PATH" " output_path: /home/forseti" | replace "DOMAIN_SUPER_ADMIN_EMAIL" "test@example.com" | nindent 4 }}
+{{ end }}
