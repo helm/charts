@@ -33,6 +33,9 @@ spec:
         release: "{{ .Release.Name }}"
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+        {{- if .Values.podAnnotations }}
+{{ toYaml .Values.podAnnotations | indent 8 }}
+        {{- end }}
     spec:
       serviceAccountName: {{ template "dex.serviceAccountName" . }}
       nodeSelector:
