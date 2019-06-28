@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: mailu/clamav
-  tag: latest
+  tag: "1.6"
   pullPolicy: IfNotPresent
 
 nameOverride: ""
