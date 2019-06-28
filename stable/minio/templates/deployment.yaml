@@ -51,6 +51,7 @@ spec:
   {{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"
   {{- end }}
+      serviceAccountName: {{ include "minio.serviceAccountName" . | quote }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
