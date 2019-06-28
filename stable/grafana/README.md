@@ -182,7 +182,7 @@ kind: ConfigMap
 metadata:
   name: sample-grafana-dashboard
   labels:
-     grafana_dashboard: 1
+     grafana_dashboard: "1"
 data:
   k8s-dashboard.json: |-
   [...]
@@ -199,7 +199,7 @@ kind: ConfigMap
 metadata:
   name: sample-grafana-datasource
   labels:
-     grafana_datasource: 1
+     grafana_datasource: "1"
 data:
   datasource.yaml: |-
     # config file version
