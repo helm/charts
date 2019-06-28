@@ -32,6 +32,12 @@ enableInsecureLogin: false
 #   - --enable-insecure-login
 #   - --system-banner="Welcome to Kubernetes"
 
+## Additional container environment variables
+##
+extraEnv: []
+# - name: SOME_VAR
+#   value: 'some value'
+
 # Annotations to be added to kubernetes dashboard pods
 podAnnotations: {}
 
