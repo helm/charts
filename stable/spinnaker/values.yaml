@@ -2,7 +2,7 @@ halyard:
   spinnakerVersion: 1.12.5
   image:
     repository: gcr.io/spinnaker-marketplace/halyard
-    tag: 1.16.0
+    tag: 1.20.2
   # Provide a config map with Hal commands that will be run the core config (storage)
   # The config map should contain a script in the config.sh key
   additionalScripts:
@@ -179,7 +179,7 @@ redis:
 # Minio is not exposed publically
 minio:
   enabled: true
-  imageTag: RELEASE.2018-06-09T02-18-09Z
+  imageTag: RELEASE.2019-02-13T19-48-27Z
   serviceType: ClusterIP
   accessKey: spinnakeradmin
   secretKey: spinnakeradmin
