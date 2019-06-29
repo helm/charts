@@ -94,7 +94,7 @@ spec:
             - server
             {{- if .Values.config }}
             - --config /etc/atlantis/atlantis.yaml
-            {{- end }}}}
+            {{- end }}
           ports:
           - name: atlantis
             containerPort: 4141
