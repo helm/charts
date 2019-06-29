@@ -79,6 +79,12 @@ data:
         Name  file
         Match *
         Path /tmp/fluent-bit.log
+{{ else if eq .Values.backend.type "kafka" }}
+    [OUTPUT]
+        Name                    kafka
+        Match                   *
+        Brokers                 {{ .Values.backend.kafka.brokers }}
+        Topics                  {{ .Values.backend.kafka.topics }}        
 {{ else if eq .Values.backend.type "forward" }}
     [OUTPUT]
         Name          forward
