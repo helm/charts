@@ -5,6 +5,7 @@ metadata:
   name: {{ include "ambassador.fullname" . }}-pro-redis
   labels:
     app.kubernetes.io/name: {{ include "ambassador.name" . }}-pro-redis
+    app.kubernetes.io/part-of: {{ .Release.Name }}
     helm.sh/chart: {{ include "ambassador.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
@@ -23,6 +24,7 @@ metadata:
   name: {{ include "ambassador.fullname" . }}-pro-redis
   labels:
     app.kubernetes.io/name: {{ include "ambassador.name" . }}-pro-redis
+    app.kubernetes.io/part-of: {{ .Release.Name }}
     helm.sh/chart: {{ include "ambassador.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}

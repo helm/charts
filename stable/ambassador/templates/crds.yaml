@@ -6,6 +6,7 @@ metadata:
   name: authservices.getambassador.io
   labels:
     app.kubernetes.io/name: {{ include "ambassador.name" . }}
+    app.kubernetes.io/part-of: {{ .Release.Name }}
     helm.sh/chart: {{ include "ambassador.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
@@ -32,13 +33,14 @@ metadata:
   name: consulresolvers.getambassador.io
   labels:
     app.kubernetes.io/name: {{ include "ambassador.name" . }}
+    app.kubernetes.io/part-of: {{ .Release.Name }}
     helm.sh/chart: {{ include "ambassador.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
   {{ if .Values.crds.keep }}
   annotations:
     "helm.sh/resource-policy": keep
-  {{ end }}    
+  {{ end }}
 spec:
   group: getambassador.io
   version: v1
@@ -58,6 +60,7 @@ metadata:
   name: kubernetesendpointresolvers.getambassador.io
   labels:
     app.kubernetes.io/name: {{ include "ambassador.name" . }}
+    app.kubernetes.io/part-of: {{ .Release.Name }}
     helm.sh/chart: {{ include "ambassador.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
@@ -84,6 +87,7 @@ metadata:
   name: kubernetesserviceresolvers.getambassador.io
   labels:
     app.kubernetes.io/name: {{ include "ambassador.name" . }}
+    app.kubernetes.io/part-of: {{ .Release.Name }}
     helm.sh/chart: {{ include "ambassador.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
@@ -110,6 +114,7 @@ metadata:
   name: mappings.getambassador.io
   labels:
     app.kubernetes.io/name: {{ include "ambassador.name" . }}
+    app.kubernetes.io/part-of: {{ .Release.Name }}
     helm.sh/chart: {{ include "ambassador.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
@@ -136,6 +141,7 @@ metadata:
   name: modules.getambassador.io
   labels:
     app.kubernetes.io/name: {{ include "ambassador.name" . }}
+    app.kubernetes.io/part-of: {{ .Release.Name }}
     helm.sh/chart: {{ include "ambassador.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
@@ -158,6 +164,7 @@ metadata:
   name: ratelimitservices.getambassador.io
   labels:
     app.kubernetes.io/name: {{ include "ambassador.name" . }}
+    app.kubernetes.io/part-of: {{ .Release.Name }}
     helm.sh/chart: {{ include "ambassador.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
@@ -184,6 +191,7 @@ metadata:
   name: tcpmappings.getambassador.io
   labels:
     app.kubernetes.io/name: {{ include "ambassador.name" . }}
+    app.kubernetes.io/part-of: {{ .Release.Name }}
     helm.sh/chart: {{ include "ambassador.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
@@ -210,6 +218,7 @@ metadata:
   name: tlscontexts.getambassador.io
   labels:
     app.kubernetes.io/name: {{ include "ambassador.name" . }}
+    app.kubernetes.io/part-of: {{ .Release.Name }}
     helm.sh/chart: {{ include "ambassador.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
