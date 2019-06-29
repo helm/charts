@@ -42,6 +42,15 @@ ingress:
   #    hosts:
   #      - mercure.local
 
+# GCP load balancers by default terminate connections after 30 seconds. This can be changed by
+# enabling the following backendConfig and changing the `timeoutSec` property.
+# More info at: https://github.com/dunglas/mercure/issues/106 and
+# https://cloud.google.com/kubernetes-engine/docs/how-to/configure-backend-service
+backendConfig:
+  enabled: false
+  timeoutSec: 30
+
+
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
