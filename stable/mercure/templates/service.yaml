@@ -7,6 +7,10 @@ metadata:
     helm.sh/chart: {{ include "mercure.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
+  {{- if .Values.backendConfig.enabled }}
+  annotations:
+    beta.cloud.google.com/backend-config: '{"default": "{{ include "mercure.fullname" . }}"}'
+  {{- end }}
 spec:
   type: {{ .Values.service.type }}
   ports:
