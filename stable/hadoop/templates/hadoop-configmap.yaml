@@ -31,6 +31,11 @@ data:
     # installing libraries if any - (resource urls added comma separated to the ACP system variable)
     cd $HADOOP_PREFIX/share/hadoop/common ; for cp in ${ACP//,/ }; do  echo == $cp; curl -LO $cp ; done; cd -
 
+    {{- if .Values.gcs.enabled }}
+    # install GCS connector
+    curl -L -o $HADOOP_PREFIX/share/hadoop/common/gcs-connector-hadoop2-latest.jar https://storage.googleapis.com/hadoop-lib/gcs/gcs-connector-hadoop2-latest.jar
+    {{- end }}
+
     if [[ "${HOSTNAME}" =~ "hdfs-nn" ]]; then
       mkdir -p /root/hdfs/namenode
       $HADOOP_PREFIX/bin/hdfs namenode -format -force -nonInteractive
@@ -94,24 +99,40 @@ data:
     <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
     <configuration>
       <property>
-            <name>fs.defaultFS</name>
-            <value>hdfs://{{ include "hadoop.fullname" . }}-hdfs-nn:9000/</value>
-            <description>NameNode URI</description>
-        </property>
+        <name>fs.defaultFS</name>
+        <value>hdfs://{{ include "hadoop.fullname" . }}-hdfs-nn:9000/</value>
+        <description>NameNode URI</description>
+      </property>
+      {{- if .Values.gcs.enabled }}
+      <property>
+        <name>fs.AbstractFileSystem.gs.impl</name>
+        <value>com.google.cloud.hadoop.fs.gcs.GoogleHadoopFS</value>
+        <description>The AbstractFileSystem for gs uris.</description>
+      </property>
+      <property>
+        <name>fs.gs.project.id</name>
+        <value>{{ .Values.gcs.projectId }}</value>
+        <description>
+          Optional. Google Cloud Project ID with access to GCS buckets.
+          Required only for list buckets and create bucket operations.
+        </description>
+      </property>
+      <property>
+        <name>google.cloud.auth.service.account.enable</name>
+        <value>true</value>
+        <description>
+          Whether to use a service account for GCS authorization.
+          If set to `false` then GCE VM metadata service will be used for
+          authorization.
+        </description>
+      </property>
+      {{- end }}
     </configuration>
 
   hdfs-site.xml: |
     <?xml version="1.0"?>
     <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
     <configuration>
-    
-{{- if .Values.hdfs.webhdfs.enabled -}}
-      <property>
-          <name>dfs.webhdfs.enabled</name>
-          <value>true</value>
-      </property> 
-{{- end -}}
-
       <property>
         <name>dfs.datanode.use.datanode.hostname</name>
         <value>false</value>

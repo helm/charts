@@ -36,9 +36,6 @@ hdfs:
         memory: "2048Mi"
         cpu: "1000m"
 
-  webhdfs:
-    enabled: false
-
 yarn:
   resourceManager:
     pdbMinAvailable: 1
@@ -82,3 +79,10 @@ persistence:
     storageClass: "-"
     accessMode: ReadWriteOnce
     size: 200Gi
+
+gcs:
+  enabled: false
+  projectId: ""
+  gcsKeyJson: ""
+
+existingSecret: ""
