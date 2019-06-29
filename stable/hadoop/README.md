@@ -64,6 +64,10 @@ The following table lists the configurable parameters of the Hadoop chart and th
 | `persistence.dataNode.storageClass`               | Name of the StorageClass to use per your volume provider                           | `-`                                                              |
 | `persistence.dataNode.accessMode`                 | Access mode for the volume                                                         | `ReadWriteOnce`                                                  |
 | `persistence.dataNode.size`                       | Size of the volume                                                                 | `200Gi`                                                          |
+| `gcs.enabled`                                     | Enable Google Cloud Storage alongside the HDFS                                     | `false`                                                          |
+| `gcs.projectId`                                   | Google Cloud Project ID with access to GCS buckets                                 | `""`                                                             |
+| `gcs.gcsKeyJson`                                  | The JSON key file of the service account used for GCS access                       | `""`                                                             |
+| `existingSecret`                                  | Name of existing secret with JSON key file of the service account used for GCS access| `""`                                                           |
 
 ## Related charts
 
