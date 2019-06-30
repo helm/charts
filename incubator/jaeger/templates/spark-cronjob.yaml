@@ -35,6 +35,7 @@ spec:
       tolerations:
 {{ toYaml .Values.spark.tolerations | indent 8 }}
 {{- end }}
+          serviceAccountName: {{ template "jaeger.spark.serviceAccountName" . }}
           containers:
           - name: {{ include "jaeger.fullname" . }}-spark
             image: {{ .Values.spark.image }}:{{ .Values.spark.tag }}
@@ -44,37 +45,22 @@ spec:
               value: {{ .Values.storage.type }}
             {{- if eq .Values.storage.type "cassandra" }}
             - name: CASSANDRA_CONTACT_POINTS
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ include "jaeger.fullname" . }}
-                  key: cassandra.contact-points
+              value: {{ template "cassandra.contact_points" . }}
             - name: CASSANDRA_KEYSPACE
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ include "jaeger.fullname" . }}
-                  key: cassandra.keyspace
+              value: {{ printf "%s_%s" "jaeger_v1" .Values.cassandra.config.dc_name | quote }}
               {{- end }}
             {{- if eq .Values.storage.type "elasticsearch" }}
             - name: ES_NODES
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ include "jaeger.fullname" . }}
-                  key: es.server-urls
+              value: {{ template "elasticsearch.client.url" . }}
             - name: ES_NODES_WAN_ONLY
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ include "jaeger.fullname" . }}
-                  key: es.nodes-wan-only
+              value: {{ .Values.storage.elasticsearch.nodesWanOnly | quote }}
             - name: ES_PASSWORD
               valueFrom:
-                configMapKeyRef:
-                  name: {{ include "jaeger.fullname" . }}
-                  key: es.password
+                secretKeyRef:
+                  name: {{ if .Values.storage.elasticsearch.existingSecret }}{{ .Values.storage.elasticsearch.existingSecret }}{{- else }}{{ include "jaeger.fullname" . }}-elasticsearch{{- end }}
+                  key: password
             - name: ES_USERNAME
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ include "jaeger.fullname" . }}
-                  key: es.username
+              value: {{ .Values.storage.elasticsearch.user }}
             {{- end }}
             resources:
 {{ toYaml .Values.spark.resources | indent 14 }}

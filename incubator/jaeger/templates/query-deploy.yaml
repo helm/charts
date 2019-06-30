@@ -42,6 +42,7 @@ spec:
       tolerations:
 {{ toYaml .Values.query.tolerations | indent 8 }}
 {{- end }}
+      serviceAccountName: {{ template "jaeger.query.serviceAccountName" . }}
       containers:
       - name: {{ template "jaeger.query.name" . }}
         image: {{ .Values.query.image }}:{{ .Values.tag }}
@@ -55,47 +56,29 @@ spec:
             value: {{ .Values.storage.type }}
           {{- if eq .Values.storage.type "cassandra" }}
           - name: CASSANDRA_SERVERS
-            valueFrom:
-              configMapKeyRef:
-                name: {{ include "jaeger.fullname" . }}
-                key: cassandra.servers
+            value: {{ template "cassandra.host" . }}
           - name: CASSANDRA_PORT
-            valueFrom:
-              configMapKeyRef:
-                name: {{ include "jaeger.fullname" . }}
-                key: cassandra.port
+            value: {{ .Values.storage.cassandra.port | quote }}
           - name: CASSANDRA_KEYSPACE
-            valueFrom:
-              configMapKeyRef:
-                name: {{ include "jaeger.fullname" . }}
-                key: cassandra.keyspace
+            value: {{ printf "%s_%s" "jaeger_v1" .Values.cassandra.config.dc_name | quote }}
           - name: CASSANDRA_USERNAME
-            valueFrom:
-              configMapKeyRef:
-                name: {{ include "jaeger.fullname" . }}
-                key: cassandra.username
+            value: {{ .Values.storage.cassandra.user }}
           - name: CASSANDRA_PASSWORD
             valueFrom:
-              configMapKeyRef:
-                name: {{ include "jaeger.fullname" . }}
-                key: cassandra.password
+              secretKeyRef:
+                name: {{ if .Values.storage.cassandra.existingSecret }}{{ .Values.storage.cassandra.existingSecret }}{{- else }}{{ include "jaeger.fullname" . }}-cassandra{{- end }}
+                key: password
           {{- end }}
           {{- if eq .Values.storage.type "elasticsearch" }}
           - name: ES_PASSWORD
             valueFrom:
-              configMapKeyRef:
-                name: {{ include "jaeger.fullname" . }}
-                key: es.password
+              secretKeyRef:
+                name: {{ if .Values.storage.elasticsearch.existingSecret }}{{ .Values.storage.elasticsearch.existingSecret }}{{- else }}{{ include "jaeger.fullname" . }}-elasticsearch{{- end }}
+                key: password
           - name: ES_SERVER_URLS
-            valueFrom:
-              configMapKeyRef:
-                name: {{ include "jaeger.fullname" . }}
-                key: es.server-urls
+            value: {{ template "elasticsearch.client.url" . }}
           - name: ES_USERNAME
-            valueFrom:
-              configMapKeyRef:
-                name: {{ include "jaeger.fullname" . }}
-                key: es.username
+            value: {{ .Values.storage.elasticsearch.user }}
           {{- end }}
           - name: QUERY_BASE_PATH
             value: {{ .Values.query.basePath | quote }}
