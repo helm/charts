@@ -185,3 +185,7 @@ crd:
   create: false
   apiversion: ""
   kind: ""
+
+## Load balancer service to be used; ie: custom-istio-namespace/custom-istio-ingressgateway.
+## Omit to use the default (istio-system/istio-ingressgateway)
+istioIngressGateways: []
