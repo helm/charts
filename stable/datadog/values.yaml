@@ -238,6 +238,16 @@ datadog:
   #     instances:
   #       - kube_state_url: http://%%host%%:8080/metrics
 
+  ## @param apm_config - string - optional
+  ## Provide additional apm configuration
+  ## ref: https://github.com/DataDog/datadog-agent/blob/master/pkg/config/config_template.yaml#L339
+  #
+  # apm_config: |-
+  #   enabled: true
+  #   max_traces_per_second: 20
+  #   analyzed_spans:
+  #     service|trace.name: 0.1
+
   ## @param checksd - list of key:value strings - optional
   ## Provide additional custom checks as python code
   ## Each key becomes a file in /checks.d
