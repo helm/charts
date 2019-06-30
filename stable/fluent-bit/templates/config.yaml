@@ -60,6 +60,11 @@ data:
 {{- if .Values.filter.mergeJSONLog }}
         Merge_Log           On
 {{- end }}
+
+{{- if .Values.filter.mergeLogKey }}
+        Merge_Log_Key       {{ .Values.filter.mergeLogKey }}
+{{- end }}
+
 {{- if .Values.filter.enableParser }}
         K8S-Logging.Parser  On
 {{- end }}
@@ -185,6 +190,22 @@ data:
 {{- if .decodeFieldAs  }}
         Decode_Field_As {{ .decodeFieldAs }} {{ .decodeField | default "log" }}
 {{- end}}
+{{- if .extraEntries }}
+{{ .extraEntries | indent 8 }}
+{{- end }}
+{{ end }}
+{{- end }}
+{{- if .Values.parsers.logfmt }}
+{{- range .Values.parsers.logfmt }}
+    [PARSER]
+        Name        {{ .name }}
+        Format      logfmt
+{{- if .timeKey }}
+        Time_Key    {{ .timeKey }}
+{{- end }}
+{{- if .timeFormat }}
+        Time_Format {{ .timeFormat }}
+{{- end }}
 {{- if .extraEntries }}
 {{ .extraEntries | indent 8 }}
 {{- end }}

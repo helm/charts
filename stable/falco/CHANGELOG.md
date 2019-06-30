@@ -3,6 +3,18 @@
 This file documents all notable changes to Sysdig Falco Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v0.9.0
+
+### Major Changes
+
+* Add nestorsalceda as an approver
+
+## v0.7.10
+
+### Minor Changes
+
+* Fix bug with Google Cloud Security Command Center and Falco integration
+
 ## v0.7.9
 
 ### Minor Changes
