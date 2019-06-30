@@ -43,6 +43,7 @@ spec:
       tolerations:
 {{ toYaml .Values.agent.tolerations | indent 8 }}
 {{- end }}
+      serviceAccountName: {{ template "jaeger.agent.serviceAccountName" . }}
       containers:
       - name: {{ template "jaeger.agent.name" . }}
         image: {{ .Values.agent.image }}:{{ .Values.tag }}

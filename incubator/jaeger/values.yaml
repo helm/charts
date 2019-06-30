@@ -6,10 +6,30 @@ provisionDataStore:
   cassandra: true
   elasticsearch: false
 
-tag: 1.12.0
+tag: 1.13.1
 
 nameOverride: ""
 fullnameOverride: ""
+
+serviceAccounts:
+  cassandraSchema:
+    create: true
+    name:
+  agent:
+    create: true
+    name:
+  collector:
+    create: true
+    name:
+  query:
+    create: true
+    name:
+  spark:
+    create: true
+    name:
+  hotrod:
+    create: true
+    name:
 
 storage:
   # allowed values (cassandra, elasticsearch)
@@ -18,19 +38,23 @@ storage:
     host: cassandra
     port: 9042
     user: user
+    usePassword: true
     password: password
+    ## Use existing secret (ignores previous password)
+    # existingSecret:
   elasticsearch:
     scheme: http
     host: elasticsearch
     port: 9200
     user: elastic
+    usePassword: true
     password: changeme
+    ## Use existing secret (ignores previous password)
+    # existingSecret:
     nodesWanOnly: false
 
 # Begin: Override values on the Cassandra subchart to customize for Jaeger
 cassandra:
-  image:
-    tag: 3.11.3
   persistence:
     # To enable persistence, please see the documentation for the Cassandra chart
     enabled: false
@@ -67,15 +91,11 @@ schema:
 
 # Begin: Override values on the Elasticsearch subchart to customize for Jaeger
 elasticsearch:
-  image:
-    tag: "6.6"
   cluster:
     name: "tracing"
   data:
     persistence:
       enabled: false
-  rbac:
-    create: false
 
 agent:
   enabled: true
