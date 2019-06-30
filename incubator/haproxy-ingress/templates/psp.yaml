@@ -1,0 +1,42 @@
+{{ if .Values.rbac.security.enable -}}
+apiVersion: extensions/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: {{ template "haproxy-ingress.fullname" . }}
+  labels:
+    app: {{ template "haproxy-ingress.name" . }}
+    chart: {{ template "haproxy-ingress.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  annotations:
+    seccomp.security.alpha.kubernetes.io/allowedProfileNames: 'docker/default'
+    apparmor.security.beta.kubernetes.io/allowedProfileNames: 'runtime/default'
+    seccomp.security.alpha.kubernetes.io/defaultProfileName:  'docker/default'
+    apparmor.security.beta.kubernetes.io/defaultProfileName:  'runtime/default'
+spec:
+  privileged: true
+  allowPrivilegeEscalation: true
+  defaultAllowPrivilegeEscalation: false
+  allowedCapabilities:
+    - SYS_RESOURCE
+  defaultAddCapabilities:
+    - SYS_RESOURCE
+  volumes:
+    - configMap
+    - secret
+  hostNetwork: false
+  hostPorts:
+  - min: 0
+    max: 65535
+  runAsUser:
+    rule: 'RunAsAny'
+  seLinux:
+    rule: 'RunAsAny'
+  supplementalGroups:
+    rule: 'RunAsAny'
+  fsGroup:
+    rule: 'RunAsAny'
+  allowedHostPaths:
+    - pathPrefix: /etc/haproxy/template
+      readOnly: false
+{{ end -}}

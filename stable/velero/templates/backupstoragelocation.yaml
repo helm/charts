@@ -1,0 +1,46 @@
+apiVersion: velero.io/v1
+kind: BackupStorageLocation
+metadata:
+  name: default
+  labels:
+    app.kubernetes.io/name: {{ include "velero.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "velero.chart" . }}
+spec:
+{{- with .Values.configuration }}
+{{- with .backupStorageLocation }}
+  provider: {{ .name  }}
+  objectStorage:
+    bucket: {{ .bucket  }}
+    {{- with .prefix }}
+    prefix: {{ . }}
+    {{- end }}
+{{- with .config }}
+  config:
+  {{- with .region }}
+    region: {{ . }}
+  {{- end }}
+  {{- with .s3ForcePathStyle }}
+    s3ForcePathStyle: {{ . | quote }}
+  {{- end }}
+  {{- with .s3Url }}
+    s3Url: {{ . }}
+  {{- end }}
+  {{- with .kmsKeyId }}
+    kmsKeyId: {{ . }}
+  {{- end }}
+  {{- with .resourceGroup }}
+    resourceGroup: {{ . }}
+  {{- end }}
+  {{- with .storageAccount }}
+    storageAccount: {{ . }}
+  {{- end }}
+  {{- if .publicUrl }}
+  {{- with .publicUrl }}
+    publicUrl: {{ . }}
+  {{- end }}
+  {{- end }}
+{{- end }}
+{{- end }}
+{{- end }}

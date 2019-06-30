@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "concourse.worker.fullname" . }}
+  labels:
+    app: {{ template "concourse.worker.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+  pre-stop-hook.sh: |
+    #!/bin/bash
+    kill -s {{ .Values.concourse.worker.shutdownSignal }} 1
+    while [ -e /proc/1 ]; do sleep 1; done
+

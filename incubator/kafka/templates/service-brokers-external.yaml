@@ -2,6 +2,7 @@
   {{- $fullName := include "kafka.fullname" . }}
   {{- $replicas := .Values.replicas | int }}
   {{- $servicePort := .Values.external.servicePort }}
+  {{- $firstListenerPort := .Values.external.firstListenerPort }}
   {{- $dnsPrefix := printf "%s" .Release.Name }}
   {{- $root := . }}
   {{- range $i, $e := until $replicas }}
@@ -45,11 +46,17 @@ spec:
   ports:
     - name: external-broker
       {{- if and (eq $root.Values.external.type "LoadBalancer") (not $root.Values.external.distinct) }}
-      port: {{ $externalListenerPort }}
+      port: {{ $firstListenerPort }}
       {{- else }}
       port: {{ $servicePort }}
       {{- end }}
+      {{- if and (eq $root.Values.external.type "LoadBalancer") ($root.Values.external.distinct) }}
+      targetPort: {{ $servicePort }}
+      {{- else if and (eq $root.Values.external.type "LoadBalancer") (not $root.Values.external.distinct) }}
+      targetPort: {{ $firstListenerPort }}
+      {{- else }}
       targetPort: {{ $externalListenerPort }}
+      {{- end }}
       {{- if eq $root.Values.external.type "NodePort" }}
       nodePort: {{ $externalListenerPort }}
       {{- end }}
@@ -60,6 +67,6 @@ spec:
   selector:
     app: {{ include "kafka.name" $root }}
     release: {{ $root.Release.Name }}
-    pod: {{ $responsiblePod | quote }}
+    statefulset.kubernetes.io/pod-name: {{ $responsiblePod | quote }}
   {{- end }}
 {{- end }}

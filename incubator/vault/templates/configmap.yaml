@@ -1,3 +1,4 @@
+{{ if not .Values.vault.existingConfigName }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -6,7 +7,8 @@ metadata:
     app: "{{ template "vault.name" . }}"
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    chart: "{{ template "vault.chart" . }}"
 data:
   config.json: |
     {{ .Values.vault.config | toJson }}
+{{ end }}

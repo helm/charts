@@ -26,6 +26,10 @@ logagent:
     LOGSENE_BULK_SIZE: "1000"
     LOGSENE_LOG_INTERVAL: "10000"
   resources: {}
+  extraHostVolumeMounts: {}
+  #  - name: <mountName>
+  #    hostPath: <hostPath>
+  #    mountPath: <mountPath>
 
 rbac:
   # Specifies whether RBAC resources should be created
@@ -42,7 +46,7 @@ serviceAccount:
 infraToken: null
 # determines the token for the container app (container metrics are delivered here)
 containerToken: null
-# logsene token to send logs
+# logs token to send logs
 logsToken: null
 
 # for private images
@@ -52,9 +56,9 @@ region: US
 
 # support for custom URLs
 customUrl: {}
-  # metricsServer: https://metrics-receiver.apps.test.sematext.com
-  # eventServer: https://event-receiver.apps.test.sematext.com
-  # logsServer: https://logs-token-receiver.apps.test.sematext.com
+  # serverBaseUrl: https://metrics-receiver.apps.test.sematext.com
+  # eventsRecieverUrl: https://event-receiver.apps.test.sematext.com
+  # logsReceiverUrl: https://logs-token-receiver.apps.test.sematext.com
 
 tolerations: []
 

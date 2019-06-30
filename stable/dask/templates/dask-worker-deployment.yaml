@@ -44,12 +44,15 @@ spec:
 {{ toYaml .Values.worker.resources | indent 12 }}
           env:
 {{ toYaml .Values.worker.env | indent 12 }}
+    {{- with .Values.worker.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.worker.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.worker.tolerations }}
       tolerations:
-        - key: "k8s.dask.org_dedicated"
-          operator: "Equal"
-          value: "worker"
-          effect: "NoSchedule"
-        - key: "k8s.dask.org/dedicated"
-          operator: "Equal"
-          value: "worker"
-          effect: "NoSchedule"
+{{ toYaml . | indent 8 }}
+    {{- end }}

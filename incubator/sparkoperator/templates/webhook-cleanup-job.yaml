@@ -2,7 +2,8 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ include "sparkoperator.fullname" . }}-cleanup
+  name: {{ include "sparkoperator.fullname" . }}-webhook-cleanup
+  namespace: {{ .Release.Namespace }}
   annotations:
     "helm.sh/hook": pre-delete, pre-upgrade
     "helm.sh/hook-delete-policy": hook-succeeded

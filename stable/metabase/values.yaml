@@ -3,6 +3,7 @@
 # https://github.com/metabase/metabase/issues/2754
 # NOTE: Should remain 1
 replicaCount: 1
+podAnnotations: {}
 image:
   repository: metabase/metabase
   tag: v0.31.2
@@ -44,7 +45,7 @@ password:
 
 timeZone: UTC
 emojiLogging: true
-# javaToolOptions:
+# javaOpts:
 # pluginsDirectory:
 
 service:
@@ -74,6 +75,12 @@ ingress:
     # - secretName: metabase-tls
     #   hosts:
     #     - metabase.domain.com
+
+# A custom log4j.properties file can be provided using a multiline YAML string.
+# See https://github.com/metabase/metabase/blob/master/resources/log4j.properties
+#
+# log4jProperties:
+
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little

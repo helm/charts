@@ -1,0 +1,27 @@
+{{- if .Values.prometheus.serviceMonitor.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+  name: {{ template "kube2iam.fullname" . }}-metrics
+  labels:
+    app: {{ template "kube2iam.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  selector:
+    app: {{ template "kube2iam.name" . }}
+    release: {{ .Release.Name }}
+  ports:
+    {{- if .Values.prometheus.metricsPort }}
+    - name: metrics
+      port: {{ .Values.prometheus.metricsPort }}
+      targetPort: {{ .Values.prometheus.metricsPort }}
+    {{- else }}
+    - name: http
+      port: {{ .Values.host.port }}
+      targetPort: {{ .Values.host.port }}
+    {{- end }}
+      protocol: TCP
+{{ end }}

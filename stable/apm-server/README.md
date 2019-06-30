@@ -1,6 +1,6 @@
 # apm-server
 
-[apm-server](https://www.elastic.co/guide/en/beats/apm-server/current/index.html)  is the server receives data from the Elastic APM agents and stores the data into a datastore like Elasticsearch.
+[apm-server](https://www.elastic.co/guide/en/apm/server/current/index.html)  is the server receives data from the Elastic APM agents and stores the data into a datastore like Elasticsearch.
 
 ## Introduction
 
@@ -43,16 +43,39 @@ The following table lists the configurable parameters of the apm-server chart an
 | `image.repository`                  | The image repository to pull from  | `docker.elastic.co/apm/apm-server`        |
 | `image.tag`                         | The image tag to pull              | `6.2.4`                                   |
 | `image.pullPolicy`                  | Image pull policy                  | `IfNotPresent`                            |
+| `kind`                              | Install as Deployment or DaemonSet | `Deployment`                              |
+| `replicaCount`                      | Number of replicas when kind is Deployment | `1`                               |
+| `updateStrategy`                    | Allows setting of RollingUpdate strategy | `{}`                                |
+| `service.enabled`                   | If true, create service pointing to APM Server | `true`                        |
+| `service.type`                      | type of service                          | `ClusterIP`                         |
+| `service.port`                      | Service port                             | `8200`                              |
+| `service.portName`                  | Service port name                        | None                                |
+| `service.clusterIP`                 | Static clusterIP or None for headless services | None                          |
+| `service.externalIPs`               | External IP addresses                    | None                                |
+| `service.loadBalancerIP`            | Load Balancer IP address                 | None                                |
+| `service.loadBalancerSourceRanges`  | Limit load balancer source IPs to list of CIDRs (where available)  | `[]`      |
+| `service.nodePort`                  | NodePort value if service.type is NodePort | None                              |
+| `service.annotations`               | Kubernetes service annotations           | None                                |
+| `service.labels`                    | Kubernetes service labels                | None                                |
+| `ingress.enabled`                   | If true, create ingress pointing to service | `false`                          |
+| `ingress.annotations`               | Kubernetes ingress annotations           | None                                |
+| `ingress.labels`                    | Kubernetes service labels                | None                                |
+| `ingress.hosts`                     | List of ingress accepted hostnames       | apm-server-ingress.example.com      |
+| `ingress.tls`                       | Ingress TLS configuration	             | `[]`                                |
 | `rbac.create`                       | If true, create & use RBAC resources | `true`                                  |
 | `rbac.serviceAccount`               | existing ServiceAccount to use (ignored if rbac.create=true) | `default`       |
-| `config`                            | The content of the configuration file consumed by apm-server. See the [apm-server documentation](https://www.elastic.co/guide/en/beats/apm-server/current/apm-server-reference-yml.html) for full details |
-| `plugins`                           | List of beat plugins                                                           |
+| `config`                            | The content of the configuration file consumed by apm-server. See the [apm-server documentation](https://www.elastic.co/guide/en/beats/apm-server/current/apm-server-reference-yml.html) for full details | |
+| `plugins`                           | List of apm-server plugins         |                                           |
 | `extraVars`                         | A map of additional environment variables |                                    |
 | `extraVolumes`, `extraVolumeMounts` | Additional volumes and mounts, for example to provide other configuration files | |
 | `resources.requests.cpu`            | CPU resource requests              |                                           |
 | `resources.limits.cpu`              | CPU resource limits                |                                           |
 | `resources.requests.memory`         | Memory resource requests           |                                           |
 | `resources.limits.memory`           | Memory resource limits             |                                           |
+| `nodeSelector`                      | Node labels for pod assignment     | `{}`                                      |
+| `tolerations`                       | List of node taints to tolerate    | `[]`                                      |
+| `affinity`                          | Node/Pod affinities                | None                                      |
+| `autoscaling` | HorizontalPodAutoscaler for the deployment | `{}` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

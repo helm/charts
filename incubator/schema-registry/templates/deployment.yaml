@@ -14,6 +14,16 @@ spec:
       labels:
         app: {{ template "schema-registry.name" . }}
         release: {{ .Release.Name }}
+      {{- if or .Values.podAnnotations .Values.prometheus.jmx.enabled }}
+      annotations:
+      {{- range $key, $value := .Values.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+      {{- end }}
+      {{- if .Values.prometheus.jmx.enabled }}
+        prometheus.io/scrape: "true"
+        prometheus.io/port: {{ .Values.prometheus.jmx.port | quote }}
+      {{- end }}
+      {{- end }}
     spec:
     {{- if .Values.sasl.scram.enabled }}
       initContainers:
@@ -58,6 +68,27 @@ spec:
           mountPath: {{ .Values.sasl.configPath | quote }}
     {{- end }}
       containers:
+        {{- if .Values.prometheus.jmx.enabled }}
+        - name: prometheus-jmx-exporter
+          image: "{{ .Values.prometheus.jmx.image }}:{{ .Values.prometheus.jmx.imageTag }}"
+          command:
+          - java
+          - -XX:+UnlockExperimentalVMOptions
+          - -XX:+UseCGroupMemoryLimitForHeap
+          - -XX:MaxRAMFraction=1
+          - -XshowSettings:vm
+          - -jar
+          - jmx_prometheus_httpserver.jar
+          - {{ .Values.prometheus.jmx.port | quote }}
+          - /etc/jmx-schema-registry/jmx-schema-registry-prometheus.yml
+          ports:
+          - containerPort: {{ .Values.prometheus.jmx.port }}
+          resources:
+{{ toYaml .Values.prometheus.jmx.resources | indent 12 }}
+          volumeMounts:
+          - name: jmx-config
+            mountPath: /etc/jmx-schema-registry
+        {{- end }}
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image }}:{{ .Values.imageTag }}"
           imagePullPolicy: {{ .Values.imagePullPolicy }}
@@ -109,8 +140,6 @@ spec:
             value: {{ template "schema-registry.kafkaStore.bootstrapServers" . }}
           - name: SCHEMA_REGISTRY_KAFKASTORE_GROUP_ID
             value: {{ template "schema-registry.kafkaStore.groupId" . }}
-          - name: SCHEMA_REGISTRY_MASTER_ELIGIBILITY
-            value: "true"
           {{ range $configName, $configValue := .Values.configurationOverrides }}
           - name: SCHEMA_REGISTRY_{{ $configName | replace "." "_" | upper }}
             value: {{ $configValue | quote }}
@@ -160,6 +189,11 @@ spec:
       - name: jaastemplate
         configMap:
           name: {{ template "schema-registry.fullname" . }}
+      {{- end }}
+      {{- if .Values.prometheus.jmx.enabled }}
+      - name: jmx-config
+        configMap:
+          name: {{ template "schema-registry.fullname" . }}-jmx-configmap
       {{- end }}
       {{- range .Values.secrets }}
       - name: {{ include "schema-registry.fullname" $ }}-{{ .name }}

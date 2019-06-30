@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 image:
   repository: prom/pushgateway
-  tag: v0.6.0
+  tag: v0.8.0
   pullPolicy: IfNotPresent
 
 service:
@@ -25,6 +25,9 @@ serviceAccountLabels: {}
 
 # Optional additional arguments
 extraArgs: []
+
+# Optional additional environment variables
+extraVars: []
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

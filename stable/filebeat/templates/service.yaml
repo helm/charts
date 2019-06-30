@@ -2,6 +2,16 @@
 kind: Service
 apiVersion: v1
 metadata:
+{{- if not .Values.monitoring.serviceMonitor.enabled }}
+  annotations:
+{{- if .Values.monitoring.telemetryPath }}
+    prometheus.io/path: {{ .Values.monitoring.telemetryPath }}
+{{- else }}
+    prometheus.io/path: /metrics
+{{- end }}
+    prometheus.io/port: "{{ .Values.monitoring.exporterPort }}"
+    prometheus.io/scrape: "true"
+{{- end }}
   name: {{ template "filebeat.fullname" . }}-metrics
   namespace: {{ .Release.Namespace }}
   labels:
