@@ -2,6 +2,13 @@
 image: traefik
 imageTag: 1.7.12
 
+## Optionally specify an array of imagePullSecrets.
+## Secrets must be manually created in the namespace.
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+# imagePullSecrets:
+# - "regsecret"
+
+
 testFramework:
   image: "dduportal/bats"
   tag: "0.4.0"
