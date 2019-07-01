@@ -75,8 +75,8 @@ spec:
         - name: download-dashboards
           image: "{{ .Values.downloadDashboardsImage.repository }}:{{ .Values.downloadDashboardsImage.tag }}"
           imagePullPolicy: {{ .Values.downloadDashboardsImage.pullPolicy }}
-          "command": ["/bin/sh"],
-          "args": [ "-c", "mkdir -p /var/lib/grafana/dashboards/default", "/etc/grafana/download_dashboards.sh" ],
+          command: ["/bin/sh"]
+          args: [ "-c", "mkdir -p /var/lib/grafana/dashboards/default", "/etc/grafana/download_dashboards.sh" ]
           volumeMounts:
             - name: config
               mountPath: "/etc/grafana/download_dashboards.sh"
