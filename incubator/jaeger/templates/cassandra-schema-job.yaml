@@ -25,21 +25,25 @@ spec:
 {{- end }}
     spec:
       serviceAccountName: {{ include "jaeger.fullname" . }}-cassandra-schema
+      securityContext:
+        {{- toYaml .Values.schema.podSecurityContext | nindent 8 }}
       containers:
-      - name: {{ include "jaeger.fullname" . }}-cassandra-schema
-        image: {{ .Values.schema.image }}:{{ .Values.tag }}
-        imagePullPolicy: {{ .Values.schema.pullPolicy }}
-        env:
-        - name: CQLSH_HOST
-          value: {{ template "cassandra.host" . }}
-        - name: MODE
-          value: {{ .Values.schema.mode | quote }}
-        - name: DATACENTER
-          value: {{ .Values.cassandra.config.dc_name | quote }}
-        - name: CASSANDRA_PORT
-          value: {{ .Values.storage.cassandra.port | quote }}
-        resources:
-{{ toYaml .Values.schema.resources | indent 10 }}
+        - name: {{ include "jaeger.fullname" . }}-cassandra-schema
+          securityContext:
+              {{- toYaml .Values.schema.securityContext | nindent 12 }}
+          image: {{ .Values.schema.image }}:{{ .Values.tag }}
+          imagePullPolicy: {{ .Values.schema.pullPolicy }}
+          env:
+            - name: CQLSH_HOST
+              value: {{ template "cassandra.host" . }}
+            - name: MODE
+              value: {{ .Values.schema.mode | quote }}
+            - name: DATACENTER
+              value: {{ .Values.cassandra.config.dc_name | quote }}
+            - name: CASSANDRA_PORT
+              value: {{ .Values.storage.cassandra.port | quote }}
+          resources:
+            {{ toYaml .Values.schema.resources | indent 12 }}
       restartPolicy: OnFailure
 {{- end -}}
 {{- end -}}

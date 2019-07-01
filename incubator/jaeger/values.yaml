@@ -88,6 +88,14 @@ schema:
   ## Additional pod labels
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   podLabels: {}
+  podSecurityContext: {}
+  securityContext: {}
+    # capabilities:
+    #   drop:
+    #   - ALL
+    # readOnlyRootFilesystem: true
+    # runAsNonRoot: true
+    # runAsUser: 10001
 
 # Begin: Override values on the Elasticsearch subchart to customize for Jaeger
 elasticsearch:
@@ -138,6 +146,14 @@ agent:
   tolerations: []
   useHostNetwork: false
   dnsPolicy: ClusterFirst
+  podSecurityContext: {}
+  securityContext:
+    capabilities:
+      drop:
+      - ALL
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+    runAsUser: 10001
 
 collector:
   enabled: true
@@ -174,6 +190,14 @@ collector:
   ## Allow the scheduling on tainted nodes (requires Kubernetes >= 1.6)
   ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
   tolerations: []
+  podSecurityContext: {}
+  securityContext:
+    capabilities:
+      drop:
+      - ALL
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+    runAsUser: 10001
 
 query:
   enabled: true
@@ -220,6 +244,14 @@ query:
   ## Allow the scheduling on tainted nodes (requires Kubernetes >= 1.6)
   ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
   tolerations: []
+  podSecurityContext: {}
+  securityContext:
+    capabilities:
+      drop:
+      - ALL
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+    runAsUser: 10001
 
 spark:
   enabled: false
@@ -244,6 +276,14 @@ spark:
   ## Allow the scheduling on tainted nodes (requires Kubernetes >= 1.6)
   ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
   tolerations: []
+  podSecurityContext: {}
+  securityContext: {}
+    # capabilities:
+    #   drop:
+    #   - ALL
+    # readOnlyRootFilesystem: true
+    # runAsNonRoot: true
+    # runAsUser: 10001
 # End: Default values for the various components of Jaeger
 
 hotrod:
@@ -286,3 +326,11 @@ hotrod:
   tracing:
     host: null
     port: 6831
+  podSecurityContext: {}
+  securityContext:
+    capabilities:
+      drop:
+      - ALL
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+    runAsUser: 10001

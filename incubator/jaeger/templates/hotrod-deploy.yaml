@@ -25,8 +25,12 @@ spec:
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       serviceAccountName: {{ template "jaeger.hotrod.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.hotrod.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ include "jaeger.fullname" . }}-hotrod
+          securityContext:
+            {{- toYaml .Values.hotrod.securityContext | nindent 12 }}
           image: {{ .Values.hotrod.image.repository }}:{{ .Values.tag }}
           imagePullPolicy: {{ .Values.hotrod.image.pullPolicy }}
           env:
@@ -47,9 +51,7 @@ spec:
               path: /
               port: http
           resources:
-{{ toYaml .Values.hotrod.resources | indent 12 }}
-    {{- if .Values.hotrod.nodeSelector }}
+            {{ toYaml .Values.hotrod.resources | indent 12 }}
       nodeSelector:
-{{ toYaml .Values.hotrod.nodeSelector | indent 8 }}
-    {{- end }}
+        {{ toYaml .Values.hotrod.nodeSelector | indent 8 }}
 {{- end }}

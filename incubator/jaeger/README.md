@@ -6,66 +6,6 @@
 
 This chart adds all components required to run Jaeger as described in the [jaeger-kubernetes](https://github.com/jaegertracing/jaeger-kubernetes) GitHub page for a production-like deployment. The chart default will deploy a new Cassandra cluster (using the [cassandra chart](https://github.com/kubernetes/charts/tree/master/incubator/cassandra)), but also supports using an existing Cassandra cluster, deploying a new ElasticSearch cluster (using the [elasticsearch chart](https://github.com/kubernetes/charts/tree/master/incubator/elasticsearch)), or connecting to an existing ElasticSearch cluster. Once the back storage available, the chart will deploy jaeger-agent as a DaemonSet and deploy the jaeger-collector and jaeger-query components as standard individual deployments.
 
-## Prerequisites
-
-- Has been tested on Kubernetes 1.7+
-  - The `spark` cron job requires [K8s CronJob](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/) support:
-    > You need a working Kubernetes cluster at version >= 1.8 (for CronJob). For previous versions of cluster (< 1.8) you need to explicitly enable `batch/v2alpha1` API by passing `--runtime-config=batch/v2alpha1=true` to the API server ([see Turn on or off an API version for your cluster for more](https://kubernetes.io/docs/admin/cluster-management/#turn-on-or-off-an-api-version-for-your-cluster)).
-
-- The Cassandra chart calls out the following requirements (default) for a test environment (please see the important note in the installation section):
-```
-resources:
-  requests:
-    memory: 4Gi
-    cpu: 2
-  limits:
-    memory: 4Gi
-    cpu: 2
-```
-- The Cassandra chart calls out the following requirements for a production environment:
-```
-resources:
-  requests:
-    memory: 8Gi
-    cpu: 2
-  limits:
-    memory: 8Gi
-    cpu: 2
-```
-
-- The ElasticSearch chart calls out the following requirements for a production environment:
-```
-client:
-  ...
-  resources:
-    limits:
-      cpu: "1"
-      # memory: "1024Mi"
-    requests:
-      cpu: "25m"
-      memory: "512Mi"
-
-master:
-  ...
-  resources:
-    limits:
-      cpu: "1"
-      # memory: "1024Mi"
-    requests:
-      cpu: "25m"
-      memory: "512Mi"
-
-data:
-  ...
-  resources:
-    limits:
-      cpu: "1"
-      # memory: "2048Mi"
-    requests:
-      cpu: "25m"
-      memory: "1536Mi"
-```
-
 ## Installing the Chart
 
 To install the chart with the release name `myrel`, run the following command:
@@ -116,19 +56,6 @@ helm install incubator/jaeger --name myrel --set provisionDataStore.cassandra=fa
 
 > **Tip**: It is highly encouraged to run the ElasticSearch cluster with storage persistence.
 
-
-## Uninstalling the Chart
-
-To uninstall/delete the `myrel` deployment:
-
-```bash
-$ helm delete myrel
-```
-
-The command removes all the Kubernetes components associated with the chart and deletes the release.
-
-> **Tip**: To completely remove the release, run `helm delete --purge myrel`
-
 ## Configuration
 
 The following table lists the configurable parameters of the Jaeger chart and their default values.
@@ -138,6 +65,8 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `agent.annotations`                      | Annotations for Agent               |  `nil`                                   |
 | `agent.cmdlineParams`                    | Additional command line parameters  |  `nil`                                   |
 | `agent.dnsPolicy`                        | Configure DNS policy for agents     |  `ClusterFirst`                          |
+| `agent.podSecurityContext`                      | Pod security context              |  `nil`                                   |
+| `agent.securityContext`                      | Container security Context              |  `capabilities.drop: ["ALL"]`<br>`readOnlyRootFilesystem: true`<br>`runAsNonRoot: true`<br>`runAsUser: 10001`                                   |
 | `agent.service.annotations`              | Annotations for Agent SVC           |  `nil`                                   |
 | `agent.service.binaryPort`               | jaeger.thrift over binary thrift    |  `6832`                                  |
 | `agent.service.compactPort`              | jaeger.thrift over compact thrift   |  `6831`                                  |
@@ -151,6 +80,8 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `agent.service.zipkinThriftPort`         | zipkin.thrift over compact thrift   |  `5775`                                  |
 | `agent.useHostNetwork`                   | Enable hostNetwork for agents       |  `false`                                 |
 | `agent.tolerations`                      | Node Tolerations                    | `[]`                                   |
+| `collector.podSecurityContext`           | Pod security context                |  `nil`                                   |
+| `collector.securityContext`              | Container security Context          |  `capabilities.drop: ["ALL"]`<br>`readOnlyRootFilesystem: true`<br>`runAsNonRoot: true`<br>`runAsUser: 10001`                                   |
 | `collector.cmdlineParams`                | Additional command line parameters  |  `nil`                                   |
 | `collector.podAnnotations`               | Annotations for Collector pod       |  `nil`                                   |
 | `collector.service.httpPort`             | Client port for HTTP thrift         |  `14268`                                 |
@@ -167,11 +98,15 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `elasticsearch.rbac.create`              | To enable RBAC                      |  `false`                                 |
 | `fullnameOverride`                       | Override full name                  |  `nil`                                 |
 | `hotrod.enabled`                         | Enables the Hotrod demo app         |  `false`                                 |
+| `hotrod.podSecurityContext`              | Pod security context                |  `nil`                                   |
+| `hotrod.securityContext`                 | Container security Context          |  `nil`                                   |
 | `hotrod.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`      |
 | `nameOverride`                           | Override name                       | `nil`                                  |
 | `provisionDataStore.cassandra`           | Provision Cassandra Data Store      |  `true`                                  |
 | `provisionDataStore.elasticsearch`       | Provision Elasticsearch Data Store  |  `false`                                 |
-| `query.agentSidecar.enabled`              | Enable agent sidecare for query deployment           |  `true`                                  |
+| `query.podSecurityContext`               | Pod security context                |  `nil`                                   |
+| `query.securityContext`                  | Container security Context          |  `capabilities.drop: ["ALL"]`<br>`readOnlyRootFilesystem: true`<br>`runAsNonRoot: true`<br>`runAsUser: 10001`                                   |
+| `query.agentSidecar.enabled`             | Enable agent sidecare for query deployment           |  `true`                                  |
 | `query.service.annotations`              | Annotations for Query SVC           |  `nil`                                   |
 | `query.cmdlineParams`                    | Additional command line parameters  |  `nil`                                   |
 | `query.image`                            | Image for Jaeger Query UI           |  `jaegertracing/jaeger-query `           |
@@ -183,10 +118,12 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `query.pullPolicy`                       | Query UI image pullPolicy           |  `IfNotPresent`                          |
 | `query.tolerations`                      | Node Tolerations                    | `[]`                                   |
 | `query.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`       |
-| `query.service.port`                | External accessible port            |  `80`                                    |
+| `query.service.port`                     | External accessible port            |  `80`                                    |
 | `query.service.type`                     | Service type                        |  `ClusterIP`                             |
 | `query.basePath`                         | Base path of Query UI, used for ingress as well (if it is enabled)   |  `/`    |
 | `schema.annotations`                     | Annotations for the schema job      |  `nil`                                   |
+| `schema.podSecurityContext`              | Pod security context                |  `nil`                                   |
+| `schema.securityContext`                 | Container security Context          |  `nil`                                   |
 | `schema.image`                           | Image to setup cassandra schema     |  `jaegertracing/jaeger-cassandra-schema` |
 | `schema.mode`                            | Schema mode (prod or test)          |  `prod`                                  |
 | `schema.pullPolicy`                      | Schema image pullPolicy             |  `IfNotPresent`                          |
@@ -208,6 +145,8 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `spark.schedule`                         | Schedule of the cron job            |  `"49 23 * * *"`                         |
 | `spark.successfulJobsHistoryLimit`       | Cron job successfulJobsHistoryLimit |  `5`                                     |
 | `spark.failedJobsHistoryLimit`           | Cron job failedJobsHistoryLimit     |  `5`                                     |
+| `spark.podSecurityContext`              | Pod security context                |  `nil`                                   |
+| `spark.securityContext`                 | Container security Context          |  `nil`                                   |
 | `spark.tag`                              | Tag of the dependencies job image   |  `latest`                                |
 | `spark.tolerations`                      | Node Tolerations                    | `[]`                                   |
 | `storage.cassandra.existingSecret`                 | Name of existing password secret object (for password authentication)          |  `nil`
@@ -229,23 +168,11 @@ The following table lists the configurable parameters of the Jaeger chart and th
 
 For more information about some of the tunable parameters that Cassandra provides, please visit the helm chart for [cassandra](https://github.com/kubernetes/charts/tree/master/incubator/cassandra) and the official [website](http://cassandra.apache.org/) at apache.org.
 
-For more information about some of the tunable parameters that Jaeger provides, please visit the official [Jaeger repo](https://github.com/uber/jaeger) at GitHub.com.
-
-Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
-
-```bash
-$ helm install --name myrel \
-    --set cassandra.config.rack_name=rack2 \
-    incubator/jaeger
-```
-
-Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart.
+For more information about some of the tunable parameters that Jaeger provides, please visit the official [Jaeger repo](https://github.com/jaegertracing/jaeger) at GitHub.com.
 
 ### Storage persistence
 
 Jaeger itself is a stateful application that by default uses Cassandra to store all related data. That means this helm chart has a dependency on the Cassandra helm chart for its data persistence. To deploy Jaeger with storage persistence, please take a look at the [README.md](https://github.com/kubernetes/charts/tree/master/incubator/cassandra) for configuration details.
-
-Override any required configuration options in the Cassandra chart that is required and then enable persistence by setting the following option: `--set cassandra.persistence.enabled=true`
 
 ### Pending enhancements
 - [ ] Sidecar deployment support
