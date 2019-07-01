@@ -2,7 +2,7 @@
 
   kubectl --namespace=kruise-system get pods -l control-plane=controller-manager
 
-Wait for all of the active pods turning into Running, and then one of them should become Ready.
+Wait for pods turning into Running, and one of them should become Ready.
 
 2. List all CRDs installed by Kruise:
 

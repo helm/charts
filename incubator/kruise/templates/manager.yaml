@@ -22,7 +22,7 @@ spec:
     controller-tools.k8s.io: "1.0"
 ---
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   labels:
     control-plane: controller-manager
@@ -30,17 +30,12 @@ metadata:
   name: kruise-controller-manager
   namespace: kruise-system
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: 1
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   selector:
     matchLabels:
       control-plane: controller-manager
       controller-tools.k8s.io: "1.0"
-  strategy:
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: {{ .Values.replicaCount }}
-    type: RollingUpdate
   template:
     metadata:
       annotations:

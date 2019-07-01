@@ -1,6 +1,5 @@
 # Default values for kruise.
 
-replicaCount: 2
 revisionHistoryLimit: 3
 
 spec:
@@ -19,7 +18,7 @@ manager:
     # repository for kruise-manager image
     repository: openkruise/kruise-manager
     # tag for kruise-manager image
-    tag: v0.1.0-beta.2
+    tag: v0.1.0-beta.3
 
   # resources of kruise-manager container
   resources: {}

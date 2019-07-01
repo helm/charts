@@ -44,7 +44,6 @@ The following table lists the configurable parameters of the Kruise chart and th
 | Parameter                                 | Description                                                        | Default                             |
 |-------------------------------------------|--------------------------------------------------------------------|-------------------------------------|
 | `log.level`                               | Log level that kruise-manager printed                              | `4`                                 |
-| `replicaCount`                            | Number of replicas                                                 | `2`                                 |
 | `revisionHistoryLimit`                    | Limit of revision history                                          | `3`                                 |
 | `manager.image.repository`                | Name of kruise-manager image                                       | `openkruise/kruise-manager`         |
 | `manager.image.tag`                       | Tag of kruise-manager image                                        | `v0.1.0-beta.1`                     |
