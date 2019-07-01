@@ -237,7 +237,7 @@ filter:
 
 # If set, all unpacked keys from mergeJSONLog (Merge_Log) will be packed under
 # the key name specified on mergeLogKey (Merge_Log_Key)
-  mergeLogKey: log_processed
+  mergeLogKey: ""
 
 # If true, enable the use of monitoring for a pod annotation of
 # fluentbit.io/parser: parser_name. parser_name must be the name
