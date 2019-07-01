@@ -43,6 +43,8 @@ serverImage: "gcr.io/forseti-containers/forseti"
 
 serverImageTag: "dev"
 
+serverKeyContents: ""
+
 serverLogLevel: info
 
 # The cron schedule for the server.  The default is every
