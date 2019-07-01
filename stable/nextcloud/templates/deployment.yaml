@@ -51,6 +51,22 @@ spec:
               name: {{ printf "%s-%s" .Release.Name "db"  }}
               key: db-password
         {{- else }}
+          {{- if eq .Values.externalDatabase.type "postgresql" }}
+        - name: POSTGRES_HOST
+          value: {{ .Values.externalDatabase.host | quote }}
+        - name: POSTGRES_DB
+          value: {{ .Values.externalDatabase.database | quote }}
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: {{ printf "%s-%s" .Release.Name "db" }}
+              key: db-username
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ printf "%s-%s" .Release.Name "db" }}
+              key: db-password
+          {{- else }}
         - name: MYSQL_HOST
           value: {{ .Values.externalDatabase.host | quote }}
         - name: MYSQL_DATABASE
@@ -65,6 +81,7 @@ spec:
             secretKeyRef:
               name: {{ printf "%s-%s" .Release.Name "db" }}
               key: db-password
+          {{- end }}
         {{- end }}
         - name: NEXTCLOUD_ADMIN_USER
           valueFrom:
