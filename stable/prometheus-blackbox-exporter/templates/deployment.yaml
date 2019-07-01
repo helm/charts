@@ -51,8 +51,9 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           securityContext:
+            readOnlyRootFilesystem: true
             runAsNonRoot: true
-            runAsUser: 1000
+            runAsUser: {{ .Values.runAsUser }}
           args:
 {{- if .Values.config }}
             - "--config.file=/config/blackbox.yaml"
@@ -62,8 +63,6 @@ spec:
         {{- if .Values.extraArgs }}
 {{ toYaml .Values.extraArgs | indent 12 }}
         {{- end }}
-          securityContext:
-            readOnlyRootFilesystem: true
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           ports:
@@ -83,6 +82,9 @@ spec:
         - name: configmap-reload
           image: "{{ .Values.configmapReload.image.repository }}:{{ .Values.configmapReload.image.tag }}"
           imagePullPolicy: "{{ .Values.configmapReload.image.pullPolicy }}"
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: {{ .Values.configmapReload.runAsUser }}
           args:
             - --volume-dir=/etc/config
             - --webhook-url=http://localhost:{{ .Values.service.port }}/-/reload
