@@ -245,6 +245,7 @@ Parameter | Description | Default
 `server.global.scrape_interval` | How frequently to scrape targets by default | `1m`
 `server.global.scrape_timeout` | How long until a scrape request times out | `10s`
 `server.global.evaluation_interval` | How frequently to evaluate rules | `1m`
+`server.alertRelabelConfig` | Alert relabel configs | ``
 `server.extraArgs` | Additional Prometheus server container arguments | `{}`
 `server.prefixURL` | The prefix slug at which the server can be accessed | ``
 `server.baseURL` | The external url at which the server can be accessed | ``
@@ -254,6 +255,7 @@ Parameter | Description | Default
 `server.extraSecretMounts` | Additional Prometheus server Secret mounts | `[]`
 `server.extraVolumeMounts` | Additional Prometheus server Volume mounts | `[]`
 `server.extraVolumes` | Additional Prometheus server Volumes | `[]`
+`server.extraAlertmanagerDiscoveryConfig` | Additional Prometheus server alertmanager discovery configs
 `server.configMapOverrideName` | Prometheus server ConfigMap override where full-name is `{{.Release.Name}}-{{.Values.server.configMapOverrideName}}` and setting this value will prevent the default server ConfigMap from being generated | `""`
 `server.ingress.enabled` | If true, Prometheus server Ingress will be created | `false`
 `server.ingress.annotations` | Prometheus server Ingress annotations | `[]`
