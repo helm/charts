@@ -96,7 +96,7 @@
     {{- end }}
     {{- if .Values.datadog.useDogStatsDSocketVolume }}
     - name: DD_DOGSTATSD_SOCKET
-      value: "/var/run/datadog/dsd.socket"
+      value: {{ default "/var/run/datadog/dsd.socket" .Values.datadog.dogStatsDSocketPath | quote }}
     {{- end }}
     {{- if and .Values.clusterAgent.clusterChecks.enabled  (not .Values.clusterchecksDeployment.enabled) }}
     - name: DD_EXTRA_CONFIG_PROVIDERS
