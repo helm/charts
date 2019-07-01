@@ -370,6 +370,8 @@ The following tables list the configurable parameters of the prometheus-operator
 | `kubeDns.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
 | `kubeDns.serviceMonitor.metricRelabelings` | The `metric_relabel_configs` for scraping kubeDns. | `` |
 | `kubeDns.serviceMonitor.relabelings` | The `relabel_configs` for scraping kubeDns. | `` |
+| `kubeDns.serviceMonitor.dnsmasqMetricRelabelings` | The `metric_relabel_configs` for scraping dnsmasq kubeDns. | `` |
+| `kubeDns.serviceMonitor.dnsmasqRelabelings` | The `relabel_configs` for scraping dnsmasq kubeDns. | `` |
 | `kubeEtcd.enabled` | Deploy components to scrape etcd | `true` |
 | `kubeEtcd.endpoints` | Endpoints where etcd runs. Provide this if running etcd outside the cluster | `[]` |
 | `kubeEtcd.service.port` | Etcd port | `4001` |
