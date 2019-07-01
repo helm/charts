@@ -75,6 +75,10 @@ The following table shows the configuration options for the Solr helm chart:
 | `exporter.service.type`                       | The type of the exporter service | `ClusterIP`                                                           |
 | `exporter.service.annotations`                | Annotations to apply to the exporter service | `{}` |
 
+## Startup Example with parameters
+
+helm install --name solr \
+    --set image.tag=6.6.4,javaMem="-Xms1g -Xmx1g",logLevel=DEBUG,replicaCount=1,livenessProbe.initialDelaySeconds=420,exporter.readinessProbe.periodSeconds=30 incubator/solr
 
 ## TLS Configuration
 
@@ -86,7 +90,7 @@ Generate SSL certificate for the installation:
 
 base64 Encode the CSR and apply into kubernetes as a CertificateSigningRequest
 
-```
+```sh
 export MY_CSR_NAME="solr-certifiate"
 cat <<EOF | ikubectl apply -f -
 apiVersion: certificates.k8s.io/v1beta1
@@ -116,3 +120,9 @@ We store the certificate and private key in a Kubernetes secret:
 Now the secret can be used in the solr installation:
 
 `helm install  . --set tls.enabled=true,tls.certSecret.name=solr-certificate,tls.importKubernetesCA=true`
+
+## Minikube Issue  
+
+Ensure you start minikube with enough menory to handle the solr instances.  
+-minikube start --vm-driver=hyperkit --memory 4096
+-minikube start --vm-driver=virtualbox --memory 4096
