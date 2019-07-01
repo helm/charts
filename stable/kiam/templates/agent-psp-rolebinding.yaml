@@ -16,8 +16,7 @@ roleRef:
   kind: ClusterRole
   name: {{ template "kiam.fullname" . }}-agent-psp-use
 subjects:
-- apiGroup: rbac.authorization.k8s.io
-  kind: ServiceAccount
+- kind: ServiceAccount
   name: {{ template "kiam.serviceAccountName.agent" . }}
 {{- end -}}
 {{- end }}
