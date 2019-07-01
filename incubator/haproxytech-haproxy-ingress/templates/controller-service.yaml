@@ -36,7 +36,7 @@ spec:
   healthCheckNodePort: {{ .Values.controller.service.healthCheckNodePort }}
 {{- end }}
   selector:
-    run: {{ template "haproxytech-ingress.fullname" . }}
+    app: {{ template "haproxytech-ingress.name" . }}
     component: "{{ .Values.controller.name }}"
     release: {{ .Release.Name }}
   type: "{{ .Values.controller.service.type }}"

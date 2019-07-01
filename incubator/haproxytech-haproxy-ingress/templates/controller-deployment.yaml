@@ -5,13 +5,15 @@ metadata:
     app: {{ template "haproxytech-ingress.name" . }}
     chart: {{ template "haproxytech-ingress.chart" . }}
     release: {{ .Release.Name }}
+    component: "{{ .Values.controller.name }}"
     heritage: {{ .Release.Service }}
   name: {{ template "haproxytech-ingress.fullname" . }}
 spec:
-  replicas: {{ .Values.controller.replicas }}
+  replicas: {{ .Values.controller.replicaCount }}
   selector:
     matchLabels:
-      run: {{ template "haproxytech-ingress.fullname" . }}
+      app: {{ template "haproxytech-ingress.name" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
       labels:

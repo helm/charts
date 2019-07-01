@@ -28,6 +28,7 @@ spec:
 {{ toYaml .Values.defaultBackend.podLabels | indent 8 }}
         {{- end }}
     spec:
+      terminationGracePeriodSeconds: 60
       containers:
         - name: {{ .Values.defaultBackend.name }}
           image: "{{ .Values.defaultBackend.image.repository }}:{{ .Values.defaultBackend.image.tag }}"
@@ -50,5 +51,4 @@ spec:
       affinity:
 {{ toYaml .Values.defaultBackend.affinity | indent 8 }}
     {{- end }}
-      terminationGracePeriodSeconds: 60
-{{- end }}
+{{- end -}}
