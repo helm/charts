@@ -20,7 +20,14 @@ data:
 {{- end -}}
 {{- if $root.Values.alertmanager.enabled }}
     alerting:
+      {{- if $root.Values.server.alertRelabelConfig }}
+      alert_relabel_configs:
+      {{- $root.Values.server.alertRelabelConfig | nindent 6 -}}
+      {{- end }}
       alertmanagers:
+      {{- if $root.Values.server.extraAlertmanagerDiscoveryConfig }}
+      {{ $root.Values.server.extraAlertmanagerDiscoveryConfig | nindent 6 }}
+      {{- end }}
       - kubernetes_sd_configs:
           - role: pod
         tls_config:

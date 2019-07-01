@@ -581,6 +581,17 @@ server:
     ##
     evaluation_interval: 1m
 
+  ## Prometheus server alert relabeling config
+  ## must be a string so you have to add a | after alertRelabelConfig
+  ## Ref: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
+  ##
+  alertRelabelConfig: ""
+
+  ## Prometheus server alertmanager discovery config
+  ## must be a string so you have to add a | after extraAlertmanagerDiscoveryConfig
+  ## Ref: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#alertmanager_config
+  extraAlertmanagerDiscoveryConfig: ""
+
   ## Additional Prometheus server container arguments
   ##
   extraArgs: {}
