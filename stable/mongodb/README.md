@@ -139,7 +139,7 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `metrics.extraArgs`                                | String with extra arguments for the MongoDB Exporter                                         | ``                                                      |
 | `metrics.resources`                                | Exporter resource requests/limit                                                             | `{}`                                                    |
 | `metrics.serviceMonitor.enabled`                   | Create ServiceMonitor Resource for scraping metrics using PrometheusOperator                 | `false`                                                 |
-| `metrics.serviceMonitor.namespace                  | Optional namespace which Prometheus is running in                                            | `nil`                                                   |
+| `metrics.serviceMonitor.namespace`                 | Optional namespace which Prometheus is running in                                            | `nil`                                                   |
 | `metrics.serviceMonitor.additionalLabels`          | Used to pass Labels that are required by the Installed Prometheus Operator                   | `{}`                                                    |
 | `metrics.serviceMonitor.relabellings`              | Specify Metric Relabellings to add to the scrape endpoint                                    | `nil`                                                   |
 | `metrics.serviceMonitor.alerting.rules`            | Define individual alerting rules as required                                                 | `{}`                                                    |
