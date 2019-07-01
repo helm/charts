@@ -20,16 +20,16 @@ spec:
   groups:
   - name: kube-apiserver.rules
     rules:
-    - expr: histogram_quantile(0.99, sum(rate(apiserver_request_latencies_bucket{job="apiserver"}[5m])) without(instance, pod)) / 1e+06
+    - expr: histogram_quantile(0.99, sum(rate(apiserver_request_duration_seconds_bucket{job="apiserver"}[5m])) without(instance, pod))
       labels:
         quantile: '0.99'
-      record: cluster_quantile:apiserver_request_latencies:histogram_quantile
-    - expr: histogram_quantile(0.9, sum(rate(apiserver_request_latencies_bucket{job="apiserver"}[5m])) without(instance, pod)) / 1e+06
+      record: cluster_quantile:apiserver_request_duration_seconds:histogram_quantile
+    - expr: histogram_quantile(0.9, sum(rate(apiserver_request_duration_seconds_bucket{job="apiserver"}[5m])) without(instance, pod))
       labels:
         quantile: '0.9'
-      record: cluster_quantile:apiserver_request_latencies:histogram_quantile
-    - expr: histogram_quantile(0.5, sum(rate(apiserver_request_latencies_bucket{job="apiserver"}[5m])) without(instance, pod)) / 1e+06
+      record: cluster_quantile:apiserver_request_duration_seconds:histogram_quantile
+    - expr: histogram_quantile(0.5, sum(rate(apiserver_request_duration_seconds_bucket{job="apiserver"}[5m])) without(instance, pod))
       labels:
         quantile: '0.5'
-      record: cluster_quantile:apiserver_request_latencies:histogram_quantile
+      record: cluster_quantile:apiserver_request_duration_seconds:histogram_quantile
 {{- end }}

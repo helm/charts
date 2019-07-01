@@ -25,11 +25,11 @@ spec:
         message: Cluster has overcommitted CPU resource requests for Pods and cannot tolerate node failure.
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubecpuovercommit
       expr: |-
-        sum(namespace_name:kube_pod_container_resource_requests_cpu_cores:sum)
+        sum(namespace:kube_pod_container_resource_requests_cpu_cores:sum)
           /
-        sum(node:node_num_cpu:sum)
+        sum(kube_node_status_allocatable_cpu_cores)
           >
-        (count(node:node_num_cpu:sum)-1) / count(node:node_num_cpu:sum)
+        (count(kube_node_status_allocatable_cpu_cores)-1) / count(kube_node_status_allocatable_cpu_cores)
       for: 5m
       labels:
         severity: warning
@@ -38,13 +38,13 @@ spec:
         message: Cluster has overcommitted memory resource requests for Pods and cannot tolerate node failure.
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubememovercommit
       expr: |-
-        sum(namespace_name:kube_pod_container_resource_requests_memory_bytes:sum)
+        sum(namespace:kube_pod_container_resource_requests_memory_bytes:sum)
           /
-        sum(node_memory_MemTotal_bytes)
+        sum(kube_node_status_allocatable_memory_bytes)
           >
-        (count(node:node_num_cpu:sum)-1)
+        (count(kube_node_status_allocatable_memory_bytes)-1)
           /
-        count(node:node_num_cpu:sum)
+        count(kube_node_status_allocatable_memory_bytes)
       for: 5m
       labels:
         severity: warning
@@ -55,7 +55,7 @@ spec:
       expr: |-
         sum(kube_resourcequota{job="kube-state-metrics", type="hard", resource="cpu"})
           /
-        sum(node:node_num_cpu:sum)
+        sum(kube_node_status_allocatable_cpu_cores)
           > 1.5
       for: 5m
       labels:
@@ -67,7 +67,7 @@ spec:
       expr: |-
         sum(kube_resourcequota{job="kube-state-metrics", type="hard", resource="memory"})
           /
-        sum(node_memory_MemTotal_bytes{job="node-exporter"})
+        sum(kube_node_status_allocatable_memory_bytes{job="node-exporter"})
           > 1.5
       for: 5m
       labels:
@@ -86,12 +86,12 @@ spec:
         severity: warning
     - alert: CPUThrottlingHigh
       annotations:
-        message: '{{`{{ printf "%0.0f" $value }}`}}% throttling of CPU in namespace {{`{{ $labels.namespace }}`}} for container {{`{{ $labels.container_name }}`}} in pod {{`{{ $labels.pod_name }}`}}.'
+        message: '{{`{{ printf "%0.0f" $value }}`}}% throttling of CPU in namespace {{`{{ $labels.namespace }}`}} for container {{`{{ $labels.container }}`}} in pod {{`{{ $labels.pod }}`}}.'
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-cputhrottlinghigh
       expr: |-
-        100 * sum(increase(container_cpu_cfs_throttled_periods_total{container_name!="", }[5m])) by (container_name, pod_name, namespace)
+        100 * sum(increase(container_cpu_cfs_throttled_periods_total{container!="", }[5m])) by (container, pod, namespace)
           /
-        sum(increase(container_cpu_cfs_periods_total{}[5m])) by (container_name, pod_name, namespace)
+        sum(increase(container_cpu_cfs_periods_total{}[5m])) by (container, pod, namespace)
           > 25
       for: 15m
       labels:
