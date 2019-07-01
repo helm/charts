@@ -5,6 +5,15 @@ image:
   tag: "1.7.6-alpine"
   pullPolicy: IfNotPresent
 
+## Customize livenessProbe and readinessProbe
+## ref: https://docs.influxdata.com/influxdb/v1.7/tools/api/#ping-http-endpoint
+##
+livenessProbe:
+  probePath: "/ping"
+
+readinessProbe:
+  probePath: "/ping"
+
 ## Specify a service type
 ## NodePort is default
 ## ref: http://kubernetes.io/docs/user-guide/services/
