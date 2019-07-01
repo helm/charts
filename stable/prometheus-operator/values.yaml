@@ -1271,7 +1271,10 @@ prometheus:
 
     ## ServiceMonitors to be selected for target discovery.
     ## If {}, select all ServiceMonitors
-    ##
+    ## Depending on value of serviceMonitorSelectorNilUsesHelmValues this will 
+    ## include either all ServiceMonitors in the namespace (check serviceMonitorNamespaceSelector)
+    ## or only ones labeled as this Prometheus instance
+    
     serviceMonitorSelector: {}
     ## Example which selects ServiceMonitors with label "prometheus" set to "somelabel"
     # serviceMonitorSelector:
