@@ -1,0 +1,13 @@
+{{- if .Values.controller.config }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: {{ template "haproxytech-ingress.name" . }}
+    chart: {{ template "haproxytech-ingress.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  name: {{ template "haproxytech-ingress.fullname" . }}
+data:
+{{ toYaml .Values.controller.config | indent 2 -}}
+{{- end -}}
