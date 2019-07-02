@@ -8,8 +8,20 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
+  {{- if .Values.updateStrategy }}
+  updateStrategy:
+    type: {{ .Values.updateStrategy }}
+    {{- if and .Values.updateStrategy (eq .Values.updateStrategy "RollingUpdate") }}
+    rollingUpdate:
+      maxUnavailable: {{ default 1 .Values.maxUnavailable }}
+    {{- end }}
+  {{- end }}
   template:
     metadata:
+      {{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+      {{- end }}
       labels:
         app.kubernetes.io/name: {{ template "k8s-spot-termination-handler.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
@@ -67,6 +79,6 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
-    {{- if .Values.priorityClassName }} 
+    {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName }}
     {{- end }}
