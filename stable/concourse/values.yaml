@@ -326,11 +326,11 @@ concourse:
         enabled: true
         useSessionToken: false
 
-      ## pipeline-specific template for Secrets Manager parameters, defaults to: /concourse/{team}/{pipeline}/{secret}
+      ## pipeline-specific template for Secrets Manager parameters, defaults to: /concourse/{{.Team}}/{{.Pipeline}}/{{.Secret}}
       ##
       pipelineSecretTemplate: /concourse/{{.Team}}/{{.Pipeline}}/{{.Secret}}
 
-      ## team-specific template for Secrets Manager parameters, defaults to: /concourse/{team}/{secret}
+      ## team-specific template for Secrets Manager parameters, defaults to: /concourse/{{.Team}}/{{.Secret}}
       ##
       teamSecretTemplate: /concourse/{{.Team}}/{{.Secret}}
 
@@ -352,11 +352,11 @@ concourse:
         enabled: true
         useSessionToken: false
 
-      ## pipeline-specific template for SSM parameters, defaults to: /concourse/{team}/{pipeline}/{secret}
+      ## pipeline-specific template for SSM parameters, defaults to: /concourse/{{.Team}}/{{.Pipeline}}/{{.Secret}}
       ##
       pipelineSecretTemplate: /concourse/{{.Team}}/{{.Pipeline}}/{{.Secret}})
 
-      ## team-specific template for SSM parameters, defaults to: /concourse/{team}/{secret}
+      ## team-specific template for SSM parameters, defaults to: /concourse/{{.Team}}/{{.Secret}}
       ##
       teamSecretTemplate: /concourse/{{.Team}}/{{.Secret}}
 
