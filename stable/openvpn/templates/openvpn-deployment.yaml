@@ -35,6 +35,9 @@ spec:
         command: ["/etc/openvpn/setup/configure.sh"]
         ports:
         - containerPort: {{ .Values.service.internalPort }}
+          {{- if .Values.service.hostPort }}
+          hostPort: {{ .Values.service.hostPort }}
+          {{- end }}
           name: openvpn
         securityContext:
           capabilities:

@@ -28,6 +28,9 @@ spec:
     app: {{ template "openvpn.name" . }}
     release: {{ .Release.Name }}
   type: {{ .Values.service.type }}
+{{- if .Values.service.clusterIP }}
+  clusterIP: {{ .Values.service.clusterIP }}
+{{- end }}
 {{- if .Values.service.loadBalancerIP }}
   loadBalancerIP: {{ .Values.service.loadBalancerIP }}
 {{- end }}
