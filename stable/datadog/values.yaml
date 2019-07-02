@@ -424,6 +424,23 @@ clusterAgent:
   #
   # readinessProbe:
 
+  ## @param service - object - required
+  ##
+  #
+  service:
+    type: ClusterIP
+    annotations: {}
+
+  ## @param useHostNetwork - boolean - optional
+  ## Bind ports on the hostNetwork. Useful for CNI networking where hostPort might
+  ## not be supported. The ports need to be available on all hosts. It can be
+  ## used for custom metrics instead of a service endpoint.
+  ##
+  ## WARNING: Make sure that hosts using this are properly firewalled otherwise
+  ## metrics and traces are accepted from any host able to connect to this host.
+  #
+  # useHostNetwork: true
+
 rbac:
 
   ## @param created - boolean - required
