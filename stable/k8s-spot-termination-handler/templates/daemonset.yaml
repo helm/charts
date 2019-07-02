@@ -14,6 +14,7 @@ spec:
         app.kubernetes.io/name: {{ template "k8s-spot-termination-handler.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
+      hostNetwork: {{ .Values.hostNetwork }}
       serviceAccountName: {{ template "k8s-spot-termination-handler.serviceAccountName" . }}
       containers:
         - name: {{ .Chart.Name }}
