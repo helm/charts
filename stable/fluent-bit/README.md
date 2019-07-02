@@ -75,6 +75,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `parsers.enabled`                  | Enable custom parsers | `false` |
 | `parsers.regex`                    | List of regex parsers | `NULL` |
 | `parsers.json`                     | List of json parsers | `NULL` |
+| `parsers.logfmt`                   | List of logfmt parsers | `NULL` |
 | **General**                   |
 | `annotations`                      | Optional deamonset set annotations        | `NULL`                |
 | `podAnnotations`                   | Optional pod annotations                  | `NULL`                |
@@ -97,6 +98,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `filter.kubeTag`                   | Optional top-level tag for matching in filter         | `kube`                                 |
 | `filter.kubeTagPrefix`             | Optional tag prefix used by Tail   | `kube.var.log.containers.`                                |
 | `filter.mergeJSONLog`              | If the log field content is a JSON string map, append the map fields as part of the log structure         | `true`                                 |
+| `filter.mergeLogKey`               | If set, append the processed log keys under a new root key specified by this variable. | `nil` |
 | `image.fluent_bit.repository`      | Image                                      | `fluent/fluent-bit`                               |
 | `image.fluent_bit.tag`             | Image tag                                  | `1.1.3`                                          |
 | `image.pullPolicy`                 | Image pull policy                          | `IfNotPresent`                                          |
@@ -112,6 +114,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `input.systemd.readFromTail`       | Please see https://docs.fluentbit.io/manual/input/systemd | `true`                             |
 | `input.systemd.tag`                | Please see https://docs.fluentbit.io/manual/input/systemd | `host.*`                           |
 | `rbac.create`                      | Specifies whether RBAC resources should be created.   | `true`                                 |
+| `rbac.pspEnabled`                  | Specifies whether a PodSecurityPolicy should be created. | `false`                             |
 | `serviceAccount.create`            | Specifies whether a ServiceAccount should be created. | `true`                                 |
 | `serviceAccount.name`              | The name of the ServiceAccount to use.     | `NULL`                                            |
 | `rawConfig`                        | Raw contents of fluent-bit.conf            | `@INCLUDE fluent-bit-service.conf`<br>`@INCLUDE fluent-bit-input.conf`<br>`@INCLUDE fluent-bit-filter.conf`<br>` @INCLUDE fluent-bit-output.conf`                                                                         |

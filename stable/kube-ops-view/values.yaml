@@ -21,10 +21,11 @@ resources:
     memory: 64Mi
 ingress:
   enabled: false
-  # hostname: kube-ops-view.local
-  # annotations:
+  path: /
+  hostname: kube-ops-view.local
+  annotations: {}
   #   kubernetes.io/ingress.class: nginx
-  # tls:
+  tls: []
   ## Secrets must be manually created in the namespace
   #   - secretName: kube-ops-view.local-tls
   #     hosts:

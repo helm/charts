@@ -32,4 +32,12 @@ rules:
       - get
       - list
       - watch
+  - apiGroups:
+      - externaldns.k8s.io
+    resources:
+      - dnsendpoints
+    verbs:
+      - get
+      - list
+      - watch
 {{- end -}}
