@@ -59,7 +59,11 @@ spec:
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         ports:
-{{ toYaml .Values.ports | indent 10 }}
+{{- range .Values.ports }}
+        - name: {{ .name }}
+          protocol: {{ .protocol }}
+          containerPort: {{ .containerPort }}
+{{- end }}
         env:
 {{ toYaml .Values.env | indent 10 }}
         volumeMounts:
