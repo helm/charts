@@ -55,7 +55,7 @@ backend:
     replace_dots: "On"
     time_key: "@timestamp"
     # Optional: Path prefix for ElasticSearch
-    # path: "/elastic" 
+    path: 
     # Optional username credential for Elastic X-Pack access
     http_user:
     # Password for user defined in HTTP_User
