@@ -962,6 +962,30 @@ alertmanagerFiles:
       receiver: default-receiver
       repeat_interval: 3h
 
+    templates:
+      - /etc/config/slack.tmpl
+
+## alertmanager custom notification templates entries
+alertmanagerNotificationTemplateFiles:
+  #slack template
+  slack.tmpl: |
+    {{ define "__slack_text" }}
+    {{ range .Alerts }}
+    {{ .Annotations.summary }}
+    {{ .Annotations.description }}
+    {{ end }}
+    :notebook: https://en.wikipedia.org/wiki/Runbook{{ end }}
+    {{ define "slack.default.text" }}{{ template "__slack_text" . }}{{ end }}
+
+  #pagerduty template
+  #pagerduty.tmpl: |
+   #{{ define "__subject" }}
+   #{{ .GroupLabels.SortedPairs.Values | join " " }}
+   #{{ if gt (len .CommonLabels) (len .GroupLabels) }}
+   #({{ with .CommonLabels.Remove .GroupLabels.Names }}{{ .Values | join " " }}{{ end }})
+   #{{ end }}
+   #{{ end }}
+
 ## Prometheus server ConfigMap entries
 ##
 serverFiles:
