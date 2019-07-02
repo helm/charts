@@ -6,7 +6,7 @@ metadata:
   labels:
     app: {{ template "anchore-engine.fullname" . }}
     component: {{ $component }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     {{- with .Values.anchoreApi.labels }}
