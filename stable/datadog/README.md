@@ -261,6 +261,7 @@ helm install --name <RELEASE_NAME> \
 | `datadog.useCriSocketVolume`             | Enable mounting the container runtime socket in Agent containers                          | `True`                                      |
 | `datadog.dogstatsdOriginDetection`       | Enable origin detection for container tagging                                             | `False`                                     |
 | `datadog.useDogStatsDSocketVolume`       | Enable dogstatsd over Unix Domain Socket                                                  | `False`                                     |
+| `datadog.dogStatsDSocketPath`            | Custom path to the socket, has to be located in the `/var/run/datadog` folder path        | `/var/run/datadog/dsd.socket`               |
 | `datadog.volumes`                        | Additional volumes for the daemonset or deployment                                        | `nil`                                       |
 | `datadog.volumeMounts`                   | Additional volumeMounts for the daemonset or deployment                                   | `nil`                                       |
 | `datadog.podAnnotationsAsTags`           | Kubernetes Annotations to Datadog Tags mapping                                            | `nil`                                       |
@@ -344,8 +345,8 @@ helm install --name <RELEASE_NAME> \
 | `clusterchecksDeployment.livenessProbe`                  | Overrides the default liveness probe                                                          | http port 5555                              |
 | `clusterchecksDeployment.rbac.dedicated`                 | If true, use dedicated RBAC resources for clusterchecks agent's pods                          | `false`                                     |
 | `clusterchecksDeployment.rbac.serviceAccount`            | existing ServiceAccount to use (ignored if rbac.create=true) for clusterchecks                | `default`                                   |
-| `systemProbe.enabled`                  | If both this flag and `daemonset.useDedicatedContainers` are true, enable system probe collection | `false`|
-| `systemProbe.seccompRoot`              | Seccomp root directory for system-probe                                                                    | `/var/lib/kubelet/seccomp`|
-| `systemProbe.debugPort`                | The port to expose pprof and expvar for system-probe agent, it is not enabled if the value is set to 0     | `0`    |
+| `systemProbe.enabled`                  | If both this flag and `daemonset.useDedicatedContainers` are true, enable system probe collection 	      | `false`                                           |
+| `systemProbe.seccompRoot`              | Seccomp root directory for system-probe                                                                    | `/var/lib/kubelet/seccomp`                        |
+| `systemProbe.debugPort`                | The port to expose pprof and expvar for system-probe agent, it is not enabled if the value is set to 0     | `0`                                               |
 | `systemProbe.enableConntrack`          | If true, system-probe connects to the netlink/conntrack subsystem to add NAT information to connection data. Ref: http://conntrack-tools.netfilter.org/| `true`|
-| `systemProbe.bpfDebug`                 | If true, system-probe writes debug logs to /sys/kernel/debug/tracing/trace_pipe                            | `false`|
+| `systemProbe.bpfDebug`                 | If true, system-probe writes debug logs to /sys/kernel/debug/tracing/trace_pipe                            | `false`                                           |

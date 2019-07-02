@@ -48,6 +48,10 @@ spec:
 {{- if .Values.extraArgs }}
 {{ toYaml .Values.extraArgs | indent 10 }}
 {{- end }}
+{{- if .Values.extraEnv }}
+        env:
+{{ toYaml .Values.extraEnv | indent 10 }}
+{{- end }}
         ports:
 {{- if .Values.enableInsecureLogin }}
         - name: http
