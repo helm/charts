@@ -44,3 +44,4 @@ Parameter | Description | Default
 `tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `affinity` | node/pod affinities (requires Kubernetes >=1.6) | `{}`
 `priorityClassName` | pod priorityClassName for pod. | ``
+`hostNetwork` | controls whether the pod may use the node network namespace | `true`
