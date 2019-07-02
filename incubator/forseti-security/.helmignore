@@ -24,3 +24,4 @@
 cloudbuild.yaml
 connection-test.yaml
 tiller-rbac-config.yaml
+cloudbuild-test-repo.yaml

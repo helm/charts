@@ -1,0 +1,42 @@
+# Copyright 2019 The Forseti Security Authors. All rights reserved.
+#
+# Licensed under the Apache License, Versisn 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  id: Create a folder for the chart package archive
+  entrypoint: /bin/mkdir
+  args: ['$_BUCKET/']
+- name: 'gcr.io/cloud-builders/docker'
+  id: List directories
+  entrypoint: /bin/ls
+  args: ['-al']
+- name: 'gcr.io/cloud-builders/docker'
+  id: Get present working dircetory
+  entrypoint: /bin/pwd
+- name: 'gcr.io/$PROJECT_ID/helm'
+  id: Build the forseti-security chart pacakge
+  args: ['package', '--destination', '$_BUCKET/', '/workspace/$_REPO_FOLDER/forseti-security/']
+- name: 'gcr.io/$PROJECT_ID/helm'
+  id: Index the chart package
+  args: ['repo', 'index', '$_BUCKET/', '--url', 'https://$_BUCKET.storage.googleapis.com']
+- name: 'gcr.io/cloud-builders/gsutil'
+  id: Copy chart package archive to $_BUCKET
+  args: ['cp', '$_BUCKET/forseti-security-*.tgz', 'gs://$_BUCKET']
+- name: 'gcr.io/cloud-builders/gsutil'
+  id: Copy chart index to $_BUCKET
+  args: ['cp', '$_BUCKET/index.yaml', 'gs://$_BUCKET']
+substitutions:
+  _REPO_FOLDER: incubator
+options:
+  env: ['CLOUDSDK_CONTAINER_CLUSTER=$_CLOUDSDK_CONTAINER_CLUSTER', 'CLOUDSDK_COMPUTE_REGION=$_CLOUDSDK_COMPUTE_REGION']
