@@ -15,9 +15,9 @@ labels: {}
 ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#defining-a-service
 service:
   ## Specifies the Service type. Supports: LoadBalancer. Default (Empty): ClusterIP
-  ## 
+  ##
   type: ClusterIP
-  ## Service Annotations 
+  ## Service Annotations
   ##
   annotations: {}
 
