@@ -6,7 +6,7 @@ keywords:
 - monitoring
 - prometheus
 - kubernetes
-version: 1.6.4
+version: 1.6.5
 appVersion: 1.6.0
 home: https://github.com/kubernetes/kube-state-metrics/
 sources:
