@@ -3,6 +3,17 @@
 This file documents all notable changes to Sysdig Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v1.4.11
+
+### Minor Changes
+
+* Add nestorsalceda as an approver in the OWNERS file
+
+## v1.4.10
+
+### Minor Changes
+
+* Use the latest image from Agent (0.90.3) by default.
 
 ## v1.4.9
 

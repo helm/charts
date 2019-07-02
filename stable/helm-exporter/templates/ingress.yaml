@@ -1,0 +1,24 @@
+{{- if .Values.ingress.enabled }}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ include "helm-exporter.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "helm-exporter.name" . }}
+    helm.sh/chart: {{ include "helm-exporter.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- with .Values.ingress.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
+spec:
+  rules:
+    - host: {{ .Values.ingress.host }}
+      http:
+        paths:
+          - path: {{ .Values.ingress.path }}
+            backend:
+              serviceName: {{ include "helm-exporter.name" . }}
+              servicePort: 9571
+{{- end }}

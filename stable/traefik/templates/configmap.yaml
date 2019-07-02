@@ -13,7 +13,7 @@ data:
     {{- if .Values.debug.enabled }}
     debug = true
     {{- else }}
-    logLevel = "INFO"
+    logLevel = {{ .Values.logLevel | default "info" | quote }}
     {{- end }}
     {{- if .Values.sendAnonymousUsage }}
     sendAnonymousUsage = true
@@ -137,6 +137,8 @@ data:
         {{- end }}
         {{- end }}
       {{- end }}
+    [ping]
+    entryPoint = "http"
     [kubernetes]
     {{- if .Values.kubernetes}}
       {{- if .Values.kubernetes.endpoint }}
@@ -171,6 +173,10 @@ data:
         {{- end}}
       {{- end}}
     {{- end}}
+    {{- if .Values.fileBackend }}
+    [file]
+    {{- .Values.fileBackend | nindent 4 }}
+    {{- end }}
     {{- if .Values.traefikLogFormat }}
     [traefikLog]
       format = {{ .Values.traefikLogFormat | quote }}
@@ -387,22 +393,22 @@ data:
     {{- if .Values.timeouts.responding }}
     [respondingTimeouts]
       {{- if .Values.timeouts.responding.readTimeout }}
-      readTimeout = {{ .Values.timeouts.responding.readTimeout }}
+      readTimeout = {{ .Values.timeouts.responding.readTimeout | quote }}
       {{- end }}
       {{- if .Values.timeouts.responding.writeTimeout }}
-      writeTimeout = {{ .Values.timeouts.responding.writeTimeout }}
+      writeTimeout = {{ .Values.timeouts.responding.writeTimeout | quote }}
       {{- end }}
       {{- if .Values.timeouts.responding.idleTimeout }}
-      idleTimeout = {{ .Values.timeouts.responding.idleTimeout }}
+      idleTimeout = {{ .Values.timeouts.responding.idleTimeout | quote }}
       {{- end }}
     {{- end }}
     {{- if .Values.timeouts.forwarding }}
     [forwardingTimeouts]
       {{- if .Values.timeouts.forwarding.dialTimeout }}
-      dialTimeout = {{ .Values.timeouts.forwarding.dialTimeout }}
+      dialTimeout = {{ .Values.timeouts.forwarding.dialTimeout | quote }}
       {{- end }}
       {{- if .Values.timeouts.forwarding.responseHeaderTimeout }}
-      responseHeaderTimeout = {{ .Values.timeouts.forwarding.responseHeaderTimeout }}
+      responseHeaderTimeout = {{ .Values.timeouts.forwarding.responseHeaderTimeout | quote }}
       {{- end }}
     {{- end }}
     {{- end }}

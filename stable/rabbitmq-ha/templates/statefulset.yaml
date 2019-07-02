@@ -44,10 +44,29 @@ spec:
 {{ toYaml .Values.securityContext | indent 10 }}
       serviceAccountName: {{ template "rabbitmq-ha.serviceAccountName" . }}
       initContainers:
-        - name: copy-rabbitmq-config
+        - name: bootstrap
           image: {{ .Values.busyboxImage.repository}}:{{ .Values.busyboxImage.tag}}
           imagePullPolicy: {{ .Values.busyboxImage.pullPolicy }}
-          command: ['sh', '-c', 'cp /configmap/* /etc/rabbitmq; rm -f /var/lib/rabbitmq/.erlang.cookie']
+          command: ['sh']
+          args:
+          - "-c"
+          - |
+            set -ex
+            cp /configmap/* /etc/rabbitmq
+            rm -f /var/lib/rabbitmq/.erlang.cookie
+            {{- if .Values.forceBoot }}
+            if [ -d "${RABBITMQ_MNESIA_DIR}" ]; then
+              touch "${RABBITMQ_MNESIA_DIR}/force_load"
+            fi
+            {{- end }}
+          env:
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.name
+          - name: RABBITMQ_MNESIA_DIR
+            value: /var/lib/rabbitmq/mnesia/rabbit@$(POD_NAME).{{ template "rabbitmq-ha.fullname" . }}-discovery.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}
           resources:
 {{ toYaml .Values.initContainer.resources | indent 12 }}
           volumeMounts:
@@ -57,6 +76,9 @@ spec:
               mountPath: /etc/rabbitmq
             - name: {{ .Values.persistentVolume.name }}
               mountPath: /var/lib/rabbitmq
+{{- if .Values.extraInitContainers }}
+{{ tpl (toYaml .Values.extraInitContainers) . | indent 8 }}
+{{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
@@ -155,6 +177,10 @@ spec:
             - name: RABBITMQ_HIPE_COMPILE
               value: {{ .Values.rabbitmqHipeCompile | quote }}
             {{- end }}
+            {{- range $key, $value := .Values.env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}            
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           volumeMounts:

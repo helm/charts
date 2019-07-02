@@ -11,8 +11,11 @@ spec:
   replicas: {{ .Values.worker.replicacount }}
   template:
     metadata:
-      {{- if .Values.worker.podAnnotations }}
       annotations:
+        metrics-enabled: {{ .Values.metrics.enabled | quote }}
+        checksum/configYml: {{ .Values.config.configYml | sha256sum }}
+        checksum/sentryConfPy: {{ .Values.config.sentryConfPy | sha256sum }}
+      {{- if .Values.worker.podAnnotations }}
 {{ toYaml .Values.worker.podAnnotations | indent 8 }}
       {{- end }}
       labels:
@@ -46,7 +49,13 @@ spec:
       - name: {{ .Chart.Name }}-workers
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        args: ["run", "worker"]
+        args:
+          - "run"
+          - "worker"
+          {{- if .Values.worker.concurrency }}
+          - "-c"
+          - "{{ .Values.worker.concurrency }}"
+          {{- end }}
         ports:
         - containerPort: {{ .Values.service.internalPort }}
         env:
@@ -113,9 +122,18 @@ spec:
         - mountPath: /etc/sentry
           name: config
           readOnly: true
+        - mountPath: {{ .Values.persistence.filestore_dir }}
+          name: sentry-data
         resources:
 {{ toYaml .Values.worker.resources | indent 12 }}
       volumes:
       - name: config
         configMap:
           name: {{ template "fullname" . }}
+      - name: sentry-data
+      {{- if and (.Values.persistence.enabled) (.Values.persistence.persistentWorkers) }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistence.existingClaim | default (include "fullname" .) }}
+      {{- else }}
+        emptyDir: {}
+      {{ end }}

@@ -30,6 +30,7 @@ The following table shows the configuration options for the Solr helm chart:
 | `replicaCount`                                | The number of replicas in the Solr statefulset | `3`                                                                   |
 | `javaMem`                                     | JVM memory settings to pass to Solr | `-Xms2g -Xmx3g`                                                       |
 | `resources`                                   | Resource limits and requests to set on the solr pods | `{}` |
+| `extraEnvVars`                                | Additional environment variables to set on the solr pods (in yaml syntax) | `[]` |
 | `terminationGracePeriodSeconds`               | The termination grace period of the Solr pods | `180`|
 | `image.repository`                            | The repository to pull the docker image from| `solr`                                                                |
 | `image.tag`                                   | The tag on the repository to pull | `7.6.0`                                                               |
@@ -43,6 +44,7 @@ The following table shows the configuration options for the Solr helm chart:
 | `updateStrategy`                              | The update strategy of the solr pods | `{}` |
 | `logLevel`                                    | The log level of the solr pods  | `INFO` |
 | `podDisruptionBudget`                         | The pod disruption budget for the Solr statefulset | `{"maxUnavailable": 1}`                                                                   |
+| `schedulerName`                               | The name of the k8s scheduler (other than default)  | ` nil`       |
 | `volumeClaimTemplates.storageClassName`       | The name of the storage class for the Solr PVC | ``                                                             |
 | `volumeClaimTemplates.storageSize`            | The size of the PVC | `20Gi`                                                                |
 | `volumeClaimTemplates.accessModes`            | The access mode of the PVC| `[ "ReadWriteOnce" ]`                                                       |
