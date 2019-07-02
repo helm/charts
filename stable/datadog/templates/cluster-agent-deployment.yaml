@@ -33,6 +33,9 @@ spec:
             ]
           }]
     spec:
+      {{- if .Values.clusterAgent.priorityClassName }}
+      priorityClassName: "{{ .Values.clusterAgent.priorityClassName }}"
+      {{- end }}
       {{- if .Values.clusterAgent.image.pullSecrets }}
       imagePullSecrets:
 {{ toYaml .Values.clusterAgent.image.pullSecrets | indent 8 }}
