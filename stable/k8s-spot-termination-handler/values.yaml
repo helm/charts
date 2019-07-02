@@ -63,3 +63,4 @@ tolerations: []
   #   effect: "NoSchedule"
 
 affinity: {}
+hostNetwork: true
