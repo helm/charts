@@ -5,12 +5,14 @@ metadata:
   labels:
 {{ include "labels.standard" . | indent 4 }}
   annotations:
-  {{- if .Values.serviceAnnotations }}
-{{ toYaml .Values.serviceAnnotations | indent 4 }}
+  {{- if .Values.service.annotations }}
+{{ toYaml .Values.service.annotations | indent 4 }}
   {{- end }}
 spec:
-  type: ClusterIP
+  type: {{ default "ClusterIP" .Values.service.type }}
+  {{- if (not .Values.service.type) }}
   clusterIP: None
+  {{- end }}
   ports:
   - name: server
     port: {{ .Values.redis.port }}

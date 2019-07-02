@@ -11,6 +11,16 @@ replicas: 3
 ## Custom labels for the redis pod
 labels: {}
 
+## Pods Service
+## ref: https://kubernetes.io/docs/concepts/services-networking/service/#defining-a-service
+service:
+  ## Specifies the Service type. Supports: LoadBalancer. Default (Empty): ClusterIP
+  ## 
+  # type:
+  ## Service Annotations 
+  ##
+  annotations: {}
+
 ## Pods Service Account
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
 serviceAccount:
