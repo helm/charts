@@ -1,4 +1,4 @@
-{{- if .Values.systemProbe.enabled }}
+{{- if and .Values.systemProbe.enabled .Values.daemonset.useDedicatedContainers }}
 apiVersion: v1
 kind: ConfigMap
 metadata:

@@ -22,7 +22,7 @@ spec:
         checksum/autoconf-config: {{ tpl (toYaml .Values.datadog.autoconf) . | sha256sum }}
         checksum/confd-config: {{ tpl (toYaml .Values.datadog.confd) . | sha256sum }}
         checksum/checksd-config: {{ tpl (toYaml .Values.datadog.checksd) . | sha256sum }}
-        {{- if .Values.systemProbe.enabled }}
+        {{- if and .Values.systemProbe.enabled .Values.daemonset.useDedicatedContainers }}
         container.apparmor.security.beta.kubernetes.io/system-probe: unconfined
         container.seccomp.security.alpha.kubernetes.io/system-probe: localhost/system-probe
         {{- end }}
@@ -57,18 +57,18 @@ spec:
         {{- if or (kindIs "invalid" .Values.datadog.processAgentEnabled) .Values.datadog.processAgentEnabled }}
           {{- include "container-process-agent" . | nindent 8 }}
         {{- end }}
+        {{- if .Values.systemProbe.enabled }}
+          {{- include "system-probe-agent" . | nindent 8 }}
+        {{- end }}
       {{- else }}
         {{- include "container-agents" . | nindent 8 }}
       {{- end}}
-      {{- if .Values.systemProbe.enabled }}
-        {{- include "system-probe-agent" . | nindent 8 }}
-      {{- end }}
       initContainers:
-      {{- if .Values.systemProbe.enabled }}
-        {{ include "system-probe-init" . | nindent 8 }}
-      {{- end }}
       {{- if .Values.daemonset.useDedicatedContainers }}
         {{ include "containers-init" . | nindent 8 }}
+        {{- if .Values.systemProbe.enabled }}
+          {{ include "system-probe-init" . | nindent 8 }}
+        {{- end }}
       {{- end }}
       volumes:
         {{- if .Values.daemonset.useDedicatedContainers }}
@@ -121,7 +121,7 @@ spec:
             path: /etc/passwd
           name: passwd
         {{- end }}
-        {{- if .Values.systemProbe.enabled }}
+        {{- if and .Values.systemProbe.enabled .Values.daemonset.useDedicatedContainers }}
         - name: datadog-agent-security
           configMap:
             name: datadog-agent-security
