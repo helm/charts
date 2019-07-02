@@ -15,6 +15,7 @@ metadata:
 {{ toYaml . | indent 4 }}
   {{- end }}
 spec:
+  serviceName: {{ template "atlantis.fullname" . }}
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
@@ -36,6 +37,7 @@ spec:
       serviceAccountName: {{ template "atlantis.serviceAccountName" . }}
       securityContext:
         fsGroup: 1000
+        runAsUser: 100
       volumes:
       {{- if .Values.tlsSecretName }}
       - name: tls
@@ -97,6 +99,10 @@ spec:
           {{- if .Values.allowForkPRs }}
           - name: ATLANTIS_ALLOW_FORK_PRS
             value: {{ .Values.allowForkPRs | quote }}
+          {{- end }}
+          {{- if .Values.disableApplyAll }}
+          - name: ATLANTIS_DISABLE_APPLY_ALL
+            value: {{ .Values.disableApplyAll | quote }}
           {{- end }}
           {{- if .Values.defaultTFVersion }}
           - name: ATLANTIS_DEFAULT_TF_VERSION

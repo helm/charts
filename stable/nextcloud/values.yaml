@@ -80,12 +80,14 @@ internalDatabase:
   enabled: true
   name: nextcloud
 
-
 ##
 ## External database configuration
 ##
 externalDatabase:
   enabled: false
+
+  ## Supported database engines: mysql or postgresql
+  type: mysql
 
   ## Database host
   host:
@@ -119,11 +121,27 @@ mariadb:
     accessMode: ReadWriteOnce
     size: 8Gi
 
+redis:
+  enabled: false
+  usePassword: false
+
+## Cronjob to execute Nextcloud background tasks
+## ref: https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/background_jobs_configuration.html#cron-jobs
+##
+cronjob:
+  enabled: false
+  # Every 15 minutes
+  # Note: Setting this to any any other value than 15 minutes might
+  #  cause issues with how nextcloud background jobs are executed
+  schedule: "*/15 * * * *"
+  annotations: {}
+  failedJobsHistoryLimit: 5
+  successfulJobsHistoryLimit: 2
+
 service:
   type: ClusterIP
   port: 8080
   loadBalancerIP: nil
-
 
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
@@ -159,6 +177,9 @@ resources: {}
   #  cpu: 100m
   #  memory: 128Mi
 
+## Liveness and readiness probe values
+## Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes
+##
 livenessProbe:
   enabled: true
   initialDelaySeconds: 30

@@ -1,4 +1,4 @@
-{{- if .Values.replicaSet.enabled }}
+{{- if and .Values.replicaSet.enabled .Values.replicaSet.pdb.enabled }}
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
@@ -9,10 +9,19 @@ metadata:
     release: {{ .Release.Name }}
   name: {{ template "mongodb.fullname" . }}-arbiter
 spec:
+  {{- if .Values.replicaSet.pdb.minAvailable }}
+  {{- if .Values.replicaSet.pdb.minAvailable.arbiter }}
+  minAvailable: {{ .Values.replicaSet.pdb.minAvailable.arbiter }}
+  {{- end }}
+  {{- end }}
+  {{- if .Values.replicaSet.pdb.maxUnavailable }}
+  {{- if .Values.replicaSet.pdb.maxUnavailable.arbiter }}
+  maxUnavailable: {{ .Values.replicaSet.pdb.maxUnavailable.arbiter }}
+  {{- end }}
+  {{- end }}
   selector:
     matchLabels:
       app: {{ template "mongodb.name" . }}
       release: {{ .Release.Name }}
       component: arbiter
-  minAvailable: {{ .Values.replicaSet.pdb.minAvailable.arbiter }}
 {{- end }}
