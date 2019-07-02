@@ -967,7 +967,7 @@ alertmanagerFiles:
 
 ## alertmanager custom notification templates entries
 alertmanagerNotificationTemplateFiles:
-  #slack template
+  # slack template
   slack.tmpl: |
     {{ define "__slack_text" }}
     {{ range .Alerts }}
@@ -977,14 +977,14 @@ alertmanagerNotificationTemplateFiles:
     :notebook: https://en.wikipedia.org/wiki/Runbook{{ end }}
     {{ define "slack.default.text" }}{{ template "__slack_text" . }}{{ end }}
 
-  #pagerduty template
-  #pagerduty.tmpl: |
-   #{{ define "__subject" }}
-   #{{ .GroupLabels.SortedPairs.Values | join " " }}
-   #{{ if gt (len .CommonLabels) (len .GroupLabels) }}
-   #({{ with .CommonLabels.Remove .GroupLabels.Names }}{{ .Values | join " " }}{{ end }})
-   #{{ end }}
-   #{{ end }}
+  # pagerduty template
+  # pagerduty.tmpl: |
+  #  {{ define "__subject" }}
+  #  {{ .GroupLabels.SortedPairs.Values | join " " }}
+  #  {{ if gt (len .CommonLabels) (len .GroupLabels) }}
+  #  ({{ with .CommonLabels.Remove .GroupLabels.Names }}{{ .Values | join " " }}{{ end }})
+  #  {{ end }}
+  #  {{ end }}
 
 ## Prometheus server ConfigMap entries
 ##
