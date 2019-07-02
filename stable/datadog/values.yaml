@@ -346,6 +346,11 @@ clusterAgent:
 #      cpu: 200m
 #      memory: 256Mi
 
+  ## @param priorityclassName - string - optional
+  ## Name of the priorityClass to apply to the Cluster Agent
+
+  # priorityClassName: system-cluster-critical
+
   ## @param livenessProbe - object - optional
   ## Override the agent's liveness probe logic from the default:
   ## In case of issues with the probe, you can disable it with the
