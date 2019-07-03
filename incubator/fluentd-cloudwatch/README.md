@@ -51,6 +51,7 @@ The following table lists the configurable parameters of the Fluentd Cloudwatch 
 | `image.repository`           | Image repository                                                                | `fluent/fluentd-kubernetes-daemonset` |
 | `image.tag`                  | Image tag                                                                       | `v1.3.3-debian-cloudwatch-1.0`        |
 | `image.pullPolicy`           | Image pull policy                                                               | `IfNotPresent`                        |
+| `initContainers.config.image`| Image for the copy-fluentd-config init container                                | `busybox`                             |
 | `resources.limits.cpu`       | CPU limit                                                                       | `100m`                                |
 | `resources.limits.memory`    | Memory limit                                                                    | `200Mi`                               |
 | `resources.requests.cpu`     | CPU request                                                                     | `100m`                                |
