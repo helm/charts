@@ -173,13 +173,13 @@ spec:
             - name: CONCOURSE_LOG_LEVEL
               value: {{ .Values.concourse.worker.logLevel | quote }}
             {{- end }}
-            {{ if and .Values.worker.enabled (not .Values.web.enabled) }}
+            {{ if not .Values.web.enabled }}
             - name: CONCOURSE_TSA_HOST
-              value: "{{ required "concourse.worker.tsa.host must be set in case of worker only deployment" .Values.concourse.worker.tsa.host }}:{{ .Values.concourse.worker.tsa.port}}"
+              value: "{{- range $i, $tsaHost := .Values.concourse.worker.tsa.hosts }}{{- if $i }},{{ end }}{{- $tsaHost }}{{- end -}}"
             {{ else }}
             - name: CONCOURSE_TSA_HOST
-              value: "{{ template "concourse.web.fullname" . }}:{{ .Values.concourse.worker.tsa.port}}"
-            {{ end }}
+              value: "{{ template "concourse.web.tsa.address" . -}}"
+            {{- end }}
             - name: CONCOURSE_TSA_PUBLIC_KEY
               value: "{{ .Values.worker.keySecretsPath }}/host_key.pub"
             - name: CONCOURSE_TSA_WORKER_PRIVATE_KEY
