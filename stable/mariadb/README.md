@@ -237,10 +237,10 @@ The feature allows for specifying a template string for a initContainer in the m
 master:
   extraInitContainers: |
     - name: initcontainer
-      image: alpine:latest
+      image: bitnami/minideb:latest
       command: ["/bin/sh", "-c"]
       args:
-        - curl http://api-service.local/db/starting;
+        - install_packages curl && curl http://api-service.local/db/starting;
 ```
 
 ## Upgrading
