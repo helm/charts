@@ -98,7 +98,7 @@ data:
 {{ tpl .Values.cluster.log4j2Properties . | indent 4 }}
 {{- end }}
 {{- if .Values.data.hooks.drain.enabled }}
-  pre-stop-hook.sh: |-
+  data-pre-stop-hook.sh: |-
     #!/bin/bash
     exec &> >(tee -a "/var/log/elasticsearch-hooks.log")
     NODE_NAME=${HOSTNAME}
@@ -120,7 +120,7 @@ data:
       sleep 1
     done
     echo "Node ${NODE_NAME} is ready to shutdown"
-  post-start-hook.sh: |-
+  data-post-start-hook.sh: |-
     #!/bin/bash
     exec &> >(tee -a "/var/log/elasticsearch-hooks.log")
     NODE_NAME=${HOSTNAME}
@@ -134,4 +134,31 @@ data:
       }"
     fi
     echo "Node ${NODE_NAME} is ready to be used"
+{{- else }}
+  {{- if .Values.data.hooks.preStop }}
+  data-pre-stop-hook.sh: |-
+{{ tpl .Values.data.hooks.preStop . | indent 4 }}
+  {{- end }}
+  {{- if .Values.data.hooks.postStart }}
+  data-post-start-hook.sh: |-
+{{ tpl .Values.data.hooks.postStart . | indent 4 }}
+  {{- end }}
+{{- end }}
+
+{{- if .Values.client.hooks.preStop }}
+  client-pre-stop-hook.sh: |-
+{{ tpl .Values.client.hooks.preStop . | indent 4 }}
+{{- end }}
+{{- if .Values.client.hooks.postStart }}
+  client-post-start-hook.sh: |-
+{{ tpl .Values.client.hooks.postStart . | indent 4 }}
+{{- end }}
+
+{{- if .Values.master.hooks.preStop }}
+  master-pre-stop-hook.sh: |-
+{{ tpl .Values.master.hooks.preStop . | indent 4 }}
+{{- end }}
+{{- if .Values.master.hooks.postStart }}
+  master-post-start-hook.sh: |-
+{{ tpl .Values.master.hooks.postStart . | indent 4 }}
 {{- end }}
