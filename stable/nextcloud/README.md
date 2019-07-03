@@ -73,6 +73,7 @@ The following table lists the configurable parameters of the nextcloud chart and
 | `internalDatabase.enabled`          | Whether to use internal sqlite database       | `true`                                                  |
 | `internalDatabase.database`         | Name of the existing database                 | `nextcloud`                                             |
 | `externalDatabase.enabled`          | Whether to use external database              | `false`                                                 |
+| `externalDatabase.type`             | External database type: `mysql`, `postgresql` | `mysql`                                                 |
 | `externalDatabase.host`             | Host of the external database                 | `nil`                                                   |
 | `externalDatabase.database`         | Name of the existing database                 | `nextcloud`                                             |
 | `externalDatabase.user`             | Existing username in the external db          | `nextcloud`                                             |
@@ -82,6 +83,7 @@ The following table lists the configurable parameters of the nextcloud chart and
 | `mariadb.db.password`               | Password for the database                     | `changeme`                                              |
 | `mariadb.db.user`                   | Database user to create                       | `nextcloud`                                             |
 | `mariadb.rootUser.password`         | MariaDB admin password                        | `nil`                                                   |
+| `redis.enabled`                     | Whether to install/use redis for locking      | `false`                                                 |
 | `cronjob.enabled`                   | Whether to enable/disable cronjob             | `false`                                                 |
 | `cronjob.schedule`                  | Schedule for the CronJob                      | `*/15 * * * *`                                          |
 | `cronjob.annotations`               | Annotations to add to the cronjob             | {}                                                      |

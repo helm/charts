@@ -71,7 +71,7 @@ spec:
             - --cloud-config={{ .Values.cloudConfigPath }}
             {{- end }}
           {{- range $key, $value := .Values.extraArgs }}
-            - --{{ $key }}{{ if $value }}={{ $value }}{{ end }}
+            - --{{ $key }}={{ $value }}
           {{- end }}
 
           env:
@@ -148,6 +148,11 @@ spec:
             - name: {{ $key }}
               value: "{{ $value }}"
           {{- end }}
+          {{- if .Values.envFromSecret }}
+          envFrom:
+            - secretRef:
+                name: {{ .Values.envFromSecret }}
+          {{- end }}
           livenessProbe:
             httpGet:
               path: /health-check
@@ -185,4 +190,10 @@ spec:
           hostPath:
             path: {{ .Values.cloudConfigPath }}
         {{- end }}
+    {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end }}
+    {{- end }}
 {{- end }}
