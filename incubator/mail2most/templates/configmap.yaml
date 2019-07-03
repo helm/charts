@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mail2most-configmap
+data:
+  mail2most.conf: |
+    # An example Mail2Most configuration
+
+    [General]
+      # File contains the default file location where mail2most stores its data
+      File = "data.json"
+
+    [Logging]
+      # Loglevel = ["info", "debug", "error"]
+      Loglevel = "info"
+      # LogType = ["json", "text"]
+      LogType = "text"
+      # Output = ["stdout", "logfile"]
+      Output = "stdout"
+      # Logfile is used if Output is set to "logfile"
+      Logfile = "mail2most.log"
+
+    #[[Profile]] defines a profile, you can have as many as you want
+    [[Profile]]
+
+      #[Profile.Mail] contains the mail server configuration
+      [Profile.Mail]
+      ImapServer = "mail.example.com:993"
+      Username = "username"
+      Password = "password"
+      # ReadOnly does not change any flags on emails
+      ReadOnly = true
+
+      #[Profile.Mattermost] contains the mattermost configuration
+      [Profile.Mattermost]
+      URL = "https://mattermost.example.com"
+      Team = "exampleTeam"
+      Username = "username"
+      Password = "password"
+      # Channels contains all channels to post your messages
+      Channels = ["#some-channel"]
+      # SubjectOnly will post only the mail subject
+      SubjectOnly = false
+
+      #[Profile.Filter] contains all filters that are applied to your mails
+      [Profile.Filter]
+      # Folders filters your mails only in specific email folders
+      Folders = ["some-email-folder", "some-other-email-folder"]
+      # Unseen lets you process unseen mails only
+      Unseen = false
+      # From filters for defined from addresses
+      From = ["test@example.com"]
+      # To filters for defined to addresses
+      To  = ["info@example.com"]
+      # Subject filters if the email subject contains one of the defined strings
+      Subject = ["example subject"]

@@ -1,0 +1,27 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ include "mail2most.fullname" . }}
+  labels:
+{{ include "mail2most.labels" . | indent 4 }}
+spec:
+  replicas: {{ .Values.deployment.replicas }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "mail2most.name" .}}
+    spec:
+      containers:
+        - name: mail2most
+          image: {{ .Values.deployment.image.repository }}:{{ .Values.deployment.image.tag }}
+          imagePullPolicy: {{ .Values.deployment.image.pullPolicy }}
+          volumeMounts:
+            - mountPath: /mail2most/conf/mail2most.conf
+              name: config-volume
+              subPath: mail2most.conf
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+      volumes:
+        - name: config-volume
+          configMap:
+            name: mail2most-configmap

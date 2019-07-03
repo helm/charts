@@ -1,0 +1,14 @@
+deployment:
+  replicas: 1
+  image:
+    repository: virtomize/mail2most
+    tag: latest
+    pullPolicy: Always
+
+resources:
+  limits:
+    cpu: 200m
+    memory: 256Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi

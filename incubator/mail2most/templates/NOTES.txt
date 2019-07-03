@@ -1,0 +1,3 @@
+Mail2Most is a simple application not providing any accessible ressources. 
+
+See logs for information if the service has successfully started and connected to your mail service and mattermost server.
