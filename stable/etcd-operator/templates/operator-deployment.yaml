@@ -45,9 +45,6 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
-        ports:
-        - containerPort: 8080
-          name: http
         resources:
           limits:
             cpu: {{ .Values.etcdOperator.resources.cpu }}
