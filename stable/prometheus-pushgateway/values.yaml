@@ -106,3 +106,7 @@ serviceMonitor:
   # Retain the job and instance labels of the metrics pushed to the Pushgateway
   # [Scraping Pushgateway](https://github.com/prometheus/pushgateway#configure-the-pushgateway-as-a-target-to-scrape)
   honorLabels: true
+
+# The values to set in the PodDisruptionBudget spec (minAvailable/maxUnavailable)
+# If not set then a PodDisruptionBudget will not be created
+podDisruptionBudget:
