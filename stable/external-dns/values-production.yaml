@@ -37,7 +37,7 @@ image:
 sources:
 - service
 - ingress
-- crd
+# - crd
 
 ## DNS provider where the DNS records will be created. Available providers are:
 ## - aws, azure, cloudflare, designate, digitalocoean, google, infoblox, rfc2136
