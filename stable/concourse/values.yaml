@@ -1101,13 +1101,15 @@ concourse:
     volumeSweeperMaxInFlight: 5
 
     tsa:
-      ## TSA host to forward the worker through.
-      ##
-      host:
 
-      ## TSA port to forward the worker through.
+      ## TSA host(s) to forward the worker through.
+      ## Only used for worker-only deployments.
+      ## Example:
+      ## hosts:
+      ##   - 1.1.1.1:2222
+      ##   - 2.2.2.2:2222
       ##
-      port: 2222
+      hosts: []
 
       ## File containing a public key to expect from the TSA.
       ##
