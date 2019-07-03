@@ -26,7 +26,7 @@ spec:
         release: {{ .Release.Name }}
         component: app
     spec:
-      {{- if (and (.Values.ingressController) (eq .Values.env.database "off")) }}
+      {{- if (and (.Values.ingressController.enabled) (eq .Values.env.database "off")) }}
       serviceAccountName: {{ template "kong.serviceAccountName" . }}
       {{ end }}
       {{- if .Values.image.pullSecrets }}
