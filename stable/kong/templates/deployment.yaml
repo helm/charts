@@ -136,6 +136,8 @@ spec:
         {{- include "kong.license" . | nindent 8 }}
         {{- end }}
         {{- include "kong.env" .  | indent 8 }}
+        - name: KONG_NGINX_HTTP_INCLUDE
+          value: /kong/servers.conf
         {{- if .Values.postgresql.enabled }}
         - name: KONG_PG_HOST
           value: {{ template "kong.postgresql.fullname" . }}
@@ -174,6 +176,9 @@ spec:
           {{- end}}
           protocol: TCP
         {{- end }}
+        - name: metrics
+          containerPort: 9542
+          protocol: TCP
         {{- if .Values.enterprise.enabled }}
         {{- if .Values.manager.http.enabled }}
         - name: manager
@@ -224,6 +229,9 @@ spec:
           protocol: TCP
         {{- end }}
         {{- end }}
+        volumeMounts:
+          - name: custom-nginx-template-volume
+            mountPath: /kong
         readinessProbe:
 {{ toYaml .Values.readinessProbe | indent 10 }}
         livenessProbe:
@@ -240,3 +248,8 @@ spec:
     {{- end }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
+      volumes:
+        - name: custom-nginx-template-volume
+          configMap:
+            name: kong-default-custom-server-blocks
+
