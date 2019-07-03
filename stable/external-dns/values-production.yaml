@@ -205,7 +205,7 @@ extraEnv: {}
 
 ## Replica count
 ##
-replicas: 1
+replicas: 3
 
 ## Affinity for pod assignment (this value is evaluated as a template)
 ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
@@ -326,6 +326,6 @@ readinessProbe:
 ## Prometheus Exporter / Metrics
 ##
 metrics:
-  enabled: false
+  enabled: true
   ## Metrics exporter pod Annotation and Labels
   ##
