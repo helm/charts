@@ -136,10 +136,8 @@ spec:
         {{- include "kong.license" . | nindent 8 }}
         {{- end }}
         {{- include "kong.env" .  | indent 8 }}
-        {{- if .Values.nginx.customTemplateConfigName }}
         - name: KONG_NGINX_HTTP_INCLUDE
           value: /kong/servers.conf
-        {{- end }}
         {{- if .Values.postgresql.enabled }}
         - name: KONG_PG_HOST
           value: {{ template "kong.postgresql.fullname" . }}
@@ -228,14 +226,9 @@ spec:
           protocol: TCP
         {{- end }}
         {{- end }}
-{{- if .Values.podExtraPorts }}
-{{ toYaml .Values.podExtraPorts | indent 8 }}
-{{- end }}
-        {{- if .Values.nginx.customTemplateConfigName }}
         volumeMounts:
           - name: custom-nginx-template-volume
             mountPath: /kong
-       {{- end }}
         readinessProbe:
 {{ toYaml .Values.readinessProbe | indent 10 }}
         livenessProbe:
@@ -252,10 +245,8 @@ spec:
     {{- end }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
-    {{- if .Values.nginx.customTemplateConfigName }}
       volumes:
         - name: custom-nginx-template-volume
           configMap:
-            name: {{ .Values.nginx.customTemplateConfigName }}
-    {{- end }}
+            name: kong-default-custom-server-blocks
 

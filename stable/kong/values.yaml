@@ -315,20 +315,6 @@ nodeSelector: {}
 # Annotation to be added to Kong pods
 podAnnotations: {}
 
-# Config map name including custom nginx template
-# Ref: https://docs.konghq.com/1.2.x/configuration/#custom-nginx-configuration
-# Default to server block exposing prometheus plugin on path /metrics, port 9542
-
-nginx:
-  customTemplateConfigName: kong-default-custom-server-blocks
-
-# Extra ports to add to Kong pods ports section
-podExtraPorts: []
-# e.g: if you want to expose prometheus metrics on each kong pods, uncomment the below port.
-# - name: metrics
-#   containerPort: 9542
-#   protocol: TCP
-
 # Kong pod count
 replicaCount: 1
 
