@@ -424,7 +424,9 @@ clusterAgent:
   #
   # readinessProbe:
 
-  ## @param service - object - required
+  ## @param service - object - optional
+  ##
+  # serviceType: ClusterIP
   ##
   #
   service:
