@@ -16,7 +16,7 @@ labels: {}
 service:
   ## Specifies the Service type. Supports: LoadBalancer. Default (Empty): ClusterIP
   ##
-  type: ClusterIP
+  type: LoadBalancer
   ## Service Annotations
   ##
   annotations: {}
