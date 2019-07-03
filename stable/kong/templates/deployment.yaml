@@ -176,6 +176,9 @@ spec:
           {{- end}}
           protocol: TCP
         {{- end }}
+        - name: metrics
+          containerPort: 9542
+          protocol: TCP
         {{- if .Values.enterprise.enabled }}
         {{- if .Values.manager.http.enabled }}
         - name: manager
