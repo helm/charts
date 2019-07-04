@@ -7,6 +7,7 @@
 # See templates/_helpers.tpl
 # nameOverride:
 # fullnameOverride:
+# namespaceOverride:
 
 # For FQDN resolving of the master service. Change this value to match your existing configuration.
 # ref: https://github.com/kubernetes/dns/blob/master/docs/specification.md
