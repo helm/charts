@@ -7,6 +7,30 @@ Expand the name of the chart.
 {{- end -}}
 
 {{/*
+Allow the release namespace to be overridden for multi-namespace deployments in combined charts.
+*/}}
+{{- define "jenkins.namespace" -}}
+  {{- if .Values.namespaceOverride -}}
+    {{- .Values.namespaceOverride -}}
+  {{- else -}}
+    {{- .Release.Namespace -}}
+  {{- end -}}
+{{- end -}}
+
+{{- define "jenkins.master.slaveKubernetesNamespace" -}}
+  {{- if .Values.master.slaveKubernetesNamespace -}}
+    {{- .Values.master.slaveKubernetesNamespace -}}
+  {{- else -}}
+    {{- if .Values.namespaceOverride -}}
+      {{- .Values.namespaceOverride -}}
+    {{- else -}}
+      {{- .Release.Namespace -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+
+
+{{/*
 Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.

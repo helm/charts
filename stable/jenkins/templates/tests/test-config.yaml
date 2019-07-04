@@ -2,6 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ template "jenkins.fullname" . }}-tests
+  namespace: {{ template "jenkins.namespace" . }}
 data:
   run.sh: |-
     @test "Testing Jenkins UI is accessible" {
