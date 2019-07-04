@@ -12,3 +12,7 @@ resources:
   requests:
     cpu: 100m
     memory: 128Mi
+
+persistence:
+  enabled: false
+  Size: 100Mi

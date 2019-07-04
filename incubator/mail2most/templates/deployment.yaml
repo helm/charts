@@ -25,3 +25,10 @@ spec:
         - name: config-volume
           configMap:
             name: mail2most-configmap
+        - name: mail2most-pd
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ template "mail2most.fullname" .}}-pvc
+        {{- else }}
+          emptyDir: {}
+        {{- end }}
