@@ -14,10 +14,10 @@ spec:
       {{- end }}
       labels: {{ include "external-dns.labels" . | nindent 8 }}
         {{- if or (and .Values.aws.credentials.secretKey .Values.aws.credentials.accessKey) .Values.cloudflare.apiKey .Values.digitalocean.apiToken (and .Values.infoblox.wapiUsername .Values.infoblox.wapiPassword) .Values.rfc2136.tsigSecret .Values.extraEnv .Values.google.serviceAccountKey }}
-        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum | trunc 63 }}
         {{- end }}
         {{- if and (eq .Values.provider "designate") .Values.designate.customCA.enabled }}
-        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum | trunc 63 }}
         {{- end }}
     spec:
 {{- include "external-dns.imagePullSecrets" . | indent 6 }}
@@ -86,7 +86,7 @@ spec:
           {{- if .Values.crd.kind }}
         - --crd-source-kind={{ .Values.crd.kind }}
           {{- end }}
-        {{- end }}        
+        {{- end }}
         {{- range $key, $value := .Values.extraArgs }}
           {{- if $value }}
         - --{{ $key }}={{ $value }}
@@ -96,7 +96,7 @@ spec:
         {{- end }}
         {{- range .Values.istioIngressGateways }}
         - --istio-ingress-gateway={{ . }}
-        {{- end }}        
+        {{- end }}
         {{- range .Values.sources }}
         - --source={{ . }}
         {{- end }}
@@ -189,9 +189,11 @@ spec:
         {{- if eq .Values.provider "cloudflare" }}
         - name: CF_API_KEY
           valueFrom:
-            key: cloudflare_api_key
+            secretKeyRef:
+              name: {{ template "external-dns.fullname" . }}
+              key: cloudflare_api_key
         - name: CF_API_EMAIL
-            value: {{ .Values.cloudflare.email | quote }}
+          value: {{ .Values.cloudflare.email | quote }}
         {{- end }}
         # DigitalOcean environment variables
         {{- if eq .Values.provider "digitalocean" }}
