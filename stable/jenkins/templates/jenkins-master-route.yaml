@@ -2,6 +2,7 @@
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
+  namespace: {{ template "jenkins.namespace" . }}
   labels:
     app: {{ template "jenkins.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
