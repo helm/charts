@@ -1,15 +1,18 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ include "mail2most.fullname" . }}
+  name: {{ template "fullname" . }}
   labels:
-{{ include "mail2most.labels" . | indent 4 }}
+    app:  {{ template "name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
 spec:
   replicas: {{ .Values.deployment.replicas }}
   template:
     metadata:
       labels:
-        app: {{ include "mail2most.name" .}}
+        app: {{ include "name" .}}
     spec:
       containers:
         - name: mail2most
@@ -28,7 +31,7 @@ spec:
         - name: mail2most-pd
         {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
-            claimName: {{ template "mail2most.fullname" .}}-pvc
+            claimName: {{ template "name" .}}-pvc
         {{- else }}
           emptyDir: {}
         {{- end }}

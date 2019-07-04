@@ -2,9 +2,9 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ template "mail2most.fullname" . }}-pvc
+  name: {{ template "name" . }}-pvc
   labels:
-    app: {{ template "mail2most.fullname" . }}
+    app: {{ template "name" . }}
     chart: "{{ .Chart.Name}}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
