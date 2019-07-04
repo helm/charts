@@ -11,6 +11,10 @@ image:
 
 podAnnotations: {}
 
+env:
+  - name: HOSTNAME
+    value: "telegraf-polling-service"
+
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 resources: {}
