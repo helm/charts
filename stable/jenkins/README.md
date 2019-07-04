@@ -62,6 +62,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `clusterZone`                     | Override the cluster name for FQDN resolving    | `cluster.local`                |
 | `nameOverride`                    | Override the resource name prefix    | `jenkins`                                 |
 | `fullnameOverride`                | Override the full resource names     | `jenkins-{release-name}` (or `jenkins` if release-name is `jenkins`) |
+| `namespaceOverride`               | Override the deployment namespace    | Not set (`Release.Namespace`)             |
 | `master.componentName`            | Jenkins master name                  | `jenkins-master`                          |
 | `master.image`                    | Master image name                    | `jenkins/jenkins`                         |
 | `master.imageTag`                 | Master image tag                     | `lts`                                     |
