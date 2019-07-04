@@ -3,6 +3,7 @@ name: kruise
 description: Helm chart for all kruise-manager components
 version: 0.1.0
 appVersion: 0.1.0
+icon: http://openkruise.io/img/kruise_white.png
 keywords:
   - kubernetes
   - kruise
