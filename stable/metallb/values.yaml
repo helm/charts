@@ -17,7 +17,7 @@ existingConfigMap: metallb-config
 #
 # Refer to https://metallb.universe.tf/configuration/ for
 # available options.
-configInline:
+configInline: {}
     # Example ARP Configuration
     # address-pools:
     # - name: default
@@ -38,6 +38,10 @@ configInline:
 
 rbac:
   # create specifies whether to install and use RBAC rules.
+  create: true
+
+psp:
+  # create specifies whether to install and use Pod Security Policies.
   create: true
 
 prometheus:

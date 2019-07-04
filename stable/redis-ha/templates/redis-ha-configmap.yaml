@@ -74,8 +74,9 @@ data:
         echo "Setting up defaults"
         if [ "$INDEX" = "0" ]; then
             echo "Setting this pod as the default master"
-            sed -i "s/^.*slaveof.*//" "$REDIS_CONF"
+            redis_update "$ANNOUNCE_IP"
             sentinel_update "$ANNOUNCE_IP"
+            sed -i "s/^.*slaveof.*//" "$REDIS_CONF"
         else
             DEFAULT_MASTER="$(getent hosts "$SERVICE-announce-0" | awk '{ print $1 }')"
             if [ -z "$DEFAULT_MASTER" ]; then
@@ -129,7 +130,8 @@ data:
 
     if [ "${AUTH:-}" ]; then
         echo "Setting auth values"
-        sed -i "s/replace-default-auth/$AUTH/" "$REDIS_CONF" "$SENTINEL_CONF"
+        ESCAPED_AUTH=$(echo "$AUTH" | sed -e 's/[\/&]/\\&/g');
+        sed -i "s/replace-default-auth/${ESCAPED_AUTH}/" "$REDIS_CONF" "$SENTINEL_CONF"
     fi
 
     echo "Ready..."

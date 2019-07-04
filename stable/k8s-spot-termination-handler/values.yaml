@@ -14,11 +14,14 @@ serviceAccount:
 
 image:
   repository: kubeaws/kube-spot-termination-notice-handler
-  tag: 1.10.8-1
+  tag: 1.13.0-1
   pullPolicy: IfNotPresent
 
 # Poll the metadata every pollInterval seconds for termination events:
 pollInterval: 5
+
+# Set VERBOSE=1 to get more output
+# verbose: 1
 
 # Send notifications to a Slack webhook URL - replace with your own value and uncomment:
 # slackUrl: https://hooks.slack.com/services/EXAMPLE123/EXAMPLE123/example1234567
@@ -32,6 +35,9 @@ enableLogspout: false
 # Trigger instance removal from AutoScaling Group on termination notice
 detachAsg: false
 
+# Grace period for node draining
+gracePeriod: 120
+
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
@@ -44,6 +50,9 @@ resources: {}
   #   cpu: 10m
   #   memory: 32Mi
 
+# Add a priority class to the deamonset
+priorityClassName: ""
+
 nodeSelector: {}
   # "node-role.kubernetes.io/spot-worker": "true"
 
@@ -54,3 +63,14 @@ tolerations: []
   #   effect: "NoSchedule"
 
 affinity: {}
+hostNetwork: true
+
+# annotations to be added to pods
+podAnnotations: {}
+
+# If the spot handler was installed before Kubernetes version 1.6
+# then you need to explicitly set the value below otherwise
+# you will have to manually cycle your pods every time you perform the update.
+# Default value for Kubernetes v1.5 and before was "OnDelete".
+updateStrategy: RollingUpdate
+maxUnavailable: 1

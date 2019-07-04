@@ -24,6 +24,13 @@ rules:
 - apiGroups:
   - ""
   resources:
+  - nodes/metrics
+  verbs:
+  - get
+  - create
+- apiGroups:
+  - ""
+  resources:
   - pods
   - configmaps
   verbs:
@@ -35,6 +42,14 @@ rules:
   resources:
   - deployments
   verbs:
+  - watch
+  - list
+- apiGroups:
+  - extensions
+  resources:
+  - replicasets
+  verbs:
+  - get
   - watch
   - list
 {{- end }}

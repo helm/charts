@@ -30,6 +30,7 @@ spec:
     spec:
       serviceAccountName: {{ template "sematext-agent.serviceAccountName" . }}
       containers:
+        {{- if or (.Values.containerToken) (.Values.infraToken) }}
         - name: agent
           image: "{{ .Values.agent.image.repository }}:{{ .Values.agent.image.tag }}"
           imagePullPolicy: {{ .Values.agent.image.pullPolicy }}
@@ -53,6 +54,10 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: spec.nodeName
+          - name: STA_NAMESPACE
+            valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
           envFrom:
           - configMapRef:
               name: {{ template "sematext-agent.fullname" . }}-agent
@@ -80,6 +85,9 @@ spec:
               mountPath: /var/run/docker.sock
             - name: journal
               mountPath: /opt/spm/st-agent
+            - name: lib
+              mountPath: /host/usr/lib
+              readOnly: true
             - name: autodisco-template
               mountPath: /etc/agent
           securityContext:
@@ -90,6 +98,8 @@ spec:
               protocol: TCP
           resources:
 {{ toYaml .Values.agent.resources | indent 12 }}
+        {{- end }}
+        {{- if .Values.logsToken }}
         - name: logagent
           image: "{{ .Values.logagent.image.repository }}:{{ .Values.logagent.image.tag }}"
           imagePullPolicy: {{ .Values.logagent.image.pullPolicy }}
@@ -105,8 +115,15 @@ spec:
           volumeMounts:
             - name: docker-sock
               mountPath: /var/run/docker.sock
+            {{- if .Values.logagent.extraHostVolumeMounts }}
+            {{- range $_, $mount := .Values.logagent.extraHostVolumeMounts }}
+            - name: {{ $mount.name }}
+              mountPath: {{ $mount.mountPath }}
+            {{- end }}
+            {{- end }}
           resources:
 {{ toYaml .Values.logagent.resources | indent 12 }}
+          {{- end }}
       volumes:
         - name: procfs
           hostPath:
@@ -126,6 +143,16 @@ spec:
         - name: journal
           hostPath:
             path: /opt/spm/st-agent
+        - name: lib
+          hostPath:
+            path: /host/usr/lib
+        {{- if .Values.logagent.extraHostVolumeMounts }}
+        {{- range $_, $mount := .Values.logagent.extraHostVolumeMounts }}
+        - name: {{ $mount.name }}
+          hostPath:
+            path: {{ $mount.hostPath }}
+        {{- end }}
+        {{- end }}
         - name: autodisco-template
           configMap:
             name: {{ template "sematext-agent.fullname" . }}-agent-autodisco

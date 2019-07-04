@@ -44,7 +44,7 @@ The default configuration values for this chart are listed in `values.yaml`.
 | `resources.limits`                    | Server resource  limits                                      | limits: {cpu: 100m, memory: 128Mi}                |
 | `resources.requests`                  | Server resource requests                                     | requests: {cpu: 100m, memory: 128Mi}              |
 | `command`                             | Commands for heapster pod                                    | "/heapster --source=kubernetes.summary_api:''     |
-| `rbac.create`                         | Bind system:heapster role                                    | false                                             |
+| `rbac.create`                         | Bind system:heapster role                                    | true                                             |
 | `rbac.serviceAccountName`             | existing ServiceAccount to use (ignored if rbac.create=true) | default                                           |
 | `resizer.enabled`                     | If enabled, scale resources                                  | true                                              |
 | `eventer.enabled`                     | If enabled, start eventer                                    | false                                             |

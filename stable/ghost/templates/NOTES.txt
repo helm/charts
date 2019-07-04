@@ -27,8 +27,8 @@ host. To configure Ghost with the URL of your service:
 
 2. Complete your Ghost deployment by running:
 
-  helm upgrade {{ .Release.Name }} stable/ghost\
-    --set service.type={{ .Values.service.type }},ghostHost=$APP_HOST,ghostPassword=$APP_PASSWORD,{{ if .Values.mariadb.mariadbRootPassword }},mariadb.mariadbRootPassword=$DATABASE_ROOT_PASSWORD{{ end }}mariadb.db.password=$APP_DATABASE_PASSWORD
+  helm upgrade {{ .Release.Name }} stable/{{ .Chart.Name }} \
+    --set service.type={{ .Values.service.type }},ghostHost=$APP_HOST,ghostPassword=$APP_PASSWORD,{{ if .Values.mariadb.mariadbRootPassword }},mariadb.mariadbRootPassword=$DATABASE_ROOT_PASSWORD{{ end }}mariadb.db.password=$APP_DATABASE_PASSWORD{{- if .Values.global }}{{- if .Values.global.imagePullSecrets }},global.imagePullSecrets={{ .Values.global.imagePullSecrets }}{{- end }}{{- end }}
 {{- else -}}
 1. Get the Ghost URL by running:
 
@@ -55,4 +55,11 @@ host. To configure Ghost with the URL of your service:
 
   echo Email:    {{ .Values.ghostEmail }}
   echo Password: $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "ghost.fullname" . }} -o jsonpath="{.data.ghost-password}" | base64 --decode)
+{{- end }}
+
+{{- if and (contains "bitnami/" .Values.image.repository) (not (.Values.image.tag | toString | regexFind "-r\\d+$|sha256:")) }}
+
+WARNING: Rolling tag detected ({{ .Values.image.repository }}:{{ .Values.image.tag }}), please note that it is strongly recommended to avoid using rolling tags in a production environment.
++info https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/
+
 {{- end }}

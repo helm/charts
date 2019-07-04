@@ -1,0 +1,7 @@
+# CI test for testing dbless deployment
+ingressController:
+  enabled: true
+env:
+  database: "off"
+postgresql:
+  enabled: false

@@ -5,7 +5,7 @@ metadata:
   name: {{ template "suitecrm.fullname" . }}-suitecrm
   labels:
     app: {{ template "suitecrm.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: "{{ template "suitecrm.chart" . }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:

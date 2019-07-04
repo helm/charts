@@ -2,14 +2,6 @@ Please wait while the OPA is deployed on your cluster.
 
 For example policies that you can enforce with OPA see https://www.openpolicyagent.org.
 
-You can query OPA to see the policies it has loaded:
-
-export OPA_POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "opa.fullname" . }}" -o jsonpath="{.items[0].metadata.name}")
-
-kubectl port-forward $OPA_POD_NAME 8080:443
-
-curl -k -s https://localhost:8080/v1/policies | jq -r '.result[].raw'
-
 If you installed this chart with the default values, you can exercise the sample policy.
 
 # 1. Create a namespace called "opa-example"
@@ -53,3 +45,15 @@ spec:
 EOF
 
 kubectl -n opa-example create -f ingress-bad.yaml
+
+If you want to turn off authz for debugging purposes, you can do so by upgrading the chart like so:
+helm upgrade {{ .Release.Name }} stable/opa --reuse-values --set authz.enabled=false
+
+You can query OPA to see the policies it has loaded (you will need to turn off authz as described above):
+
+export OPA_POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "opa.fullname" . }}" -o jsonpath="{.items[0].metadata.name}")
+
+kubectl port-forward $OPA_POD_NAME 8080:443
+
+curl -k -s https://localhost:8080/v1/policies | jq -r '.result[].raw'
+

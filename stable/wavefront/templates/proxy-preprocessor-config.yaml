@@ -1,0 +1,14 @@
+{{- if .Values.proxy.preprocessor }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/name : {{ template "wavefront.fullname" . }}
+    helm.sh/chart: {{ template "wavefront.chart" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    app.kubernetes.io.instance: {{ .Release.Name | quote }}
+    app.kubernetes.io/component: proxy
+  name: {{ template "wavefront.proxy.fullname" . }}-preprocessor
+data:
+{{ tpl (toYaml .Values.proxy.preprocessor) . | indent 2 }}
+{{- end }}

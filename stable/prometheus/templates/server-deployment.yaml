@@ -27,10 +27,6 @@ spec:
       labels:
         {{- include "prometheus.server.labels" . | nindent 8 }}
     spec:
-{{- if .Values.server.affinity }}
-      affinity:
-{{ toYaml .Values.server.affinity | indent 8 }}
-{{- end }}
 {{- if .Values.server.priorityClassName }}
       priorityClassName: "{{ .Values.server.priorityClassName }}"
 {{- end }}
@@ -44,7 +40,7 @@ spec:
         image: "{{ .Values.initChownData.image.repository }}:{{ .Values.initChownData.image.tag }}"
         imagePullPolicy: "{{ .Values.initChownData.image.pullPolicy }}"
         resources:
-{{ toYaml .Values.initChownData.resources | indent 12 }}
+{{ toYaml .Values.initChownData.resources | indent 10 }}
         # 65534 is the nobody user that prometheus uses.
         command: ["chown", "-R", "65534:65534", "{{ .Values.server.persistentVolume.mountPath }}"]
         volumeMounts:
@@ -87,7 +83,7 @@ spec:
           {{- end }}
           args:
           {{- if .Values.server.retention }}
-            - --storage.tsdb.retention={{ .Values.server.retention }}
+            - --storage.tsdb.retention.time={{ .Values.server.retention }}
           {{- end }}
             - --config.file={{ .Values.server.configPath }}
             - --storage.tsdb.path={{ .Values.server.persistentVolume.mountPath }}
@@ -183,7 +179,12 @@ spec:
           persistentVolumeClaim:
             claimName: {{ if .Values.server.persistentVolume.existingClaim }}{{ .Values.server.persistentVolume.existingClaim }}{{- else }}{{ template "prometheus.server.fullname" . }}{{- end }}
         {{- else }}
-          emptyDir: {}
+          emptyDir:
+          {{- if .Values.server.emptyDir.sizeLimit }}
+            sizeLimit: {{ .Values.server.emptyDir.sizeLimit }}
+          {{- else }}
+            {}
+          {{- end -}}
         {{- end -}}
 {{- if .Values.server.extraVolumes }}
 {{ toYaml .Values.server.extraVolumes | indent 8}}

@@ -1,4 +1,13 @@
-# Mattermost Team Edition
+# DEPRECATED - Mattermost Team Edition
+
+**This chart has been deprecated and moved to its new home:**
+
+- **GitHub repo:** https://github.com/mattermost/mattermost-helm
+- **Charts repo:** https://helm.mattermost.com
+
+```bash
+$ helm repo add mattermost https://helm.mattermost.com
+```
 
 [Mattermost](https://mattermost.com/) is a hybrid cloud enterprise messaging workspace that brings your messaging and tools together to get more done, faster.
 
@@ -30,6 +39,14 @@ $ helm install --name my-release stable/mattermost-team-edition
 The command deploys Mattermost on the Kubernetes cluster in the default configuration. The [configuration](#configuration)
 section lists the parameters that can be configured during installation.
 
+## Upgrading the Chart to 3.0.0+
+
+Breaking Helm chart changes was introduced with version 3.0.0. The easiest
+method of resolving them is to simply upgrade the chart and let it fail with and
+provide you with a custom message on what you need to change in your
+configuration. Note that this failure will occur before any changes have been
+made to the k8s cluster.
+
 ## Uninstalling the Chart
 
 To uninstall/delete the `my-release` deployment:
@@ -43,36 +60,29 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following table lists the configurable parameters of the Mattermost Team Edition chart and their default values.
 
-Parameter                            | Description                                                                                     | Default
----                                  | ---                                                                                             | ---
-`image.repository`                   | container image repository                                                                      | `mattermost/mattermost-team-edition`
-`image.tag`                          | container image tag                                                                             | `5.8.0`
-`image.imagePullPolicy`              | container image pull policy                                                                     | `IfNotPresent`
-`initContainerImage.repository`      | init container image repository                                                                 | `appropriate/curl`
-`initContainerImage.tag`             | init container image tag                                                                        | `latest`
-`initContainerImage.imagePullPolicy` | container image pull policy                                                                     | `IfNotPresent`
-`revisionHistoryLimit`               | How many old ReplicaSets for Mattermost Deployment you want to retain                           | `1`
-`config.SiteUrl`                     | The URL that users will use to access Mattermost. ie `https://mattermost.mycompany.com`         |  ``
-`config.SiteName`                    | Name of service shown in login screens and UI                                                   | `Mattermost`
-`config.FilesAccessKey`              | The AWS Access Key, if you want store the files on S3                                           | ``
-`config.FilesSecretKey`              | The AWS Secret Key                                                                              | ``
-`config.FileBucketName`              | The S3 bucket name                                                                              | ``
-`config.SMTPHost`                    | Location of SMTP email server                                                                   | ``
-`config.SMTPPort`                    | Port of SMTP email server                                                                       | ``
-`config.SMTPUsername`                | The username for authenticating to the SMTP server                                              | ``
-`config.SMTPPassword`                | The password associated with the SMTP username                                                  | ``
-`config.FeedbackEmail`               | Address displayed on email account used when sending notification emails from Mattermost system | ``
-`config.FeedbackName`                | Name displayed on email account used when sending notification emails from Mattermost system    | ``
-`config.enableSignUpWithEmail`       | Allow team creation and account signup using email and password.                                | `true`
-`ingress.enabled`                    | if `true`, an ingress is created                                                                | `false`
-`ingress.hosts`                      | a list of ingress hosts                                                                         | `[mattermost.example.com]`
-`ingress.tls`                        | a list of [IngressTLS](https://v1-8.docs.kubernetes.io/docs/api-reference/v1.8/#ingresstls-v1beta1-extensions) items | `[]`
-`mysql.mysqlRootPassword`            | Root Password for Mysql (Opcional)                                                              |  ""
-`mysql.mysqlUser`                    | Username for Mysql (Required)                                                                   |  ""
-`mysql.mysqlPassword`                | User Password for Mysql (Required)                                                              |  ""
-`mysql.mysqlDatabase`                | Database name (Required)                                                                        |  "mattermost"
-`extraEnvVars`                       | Extra environments variables to be used in the deployments                                      |
-`extraInitContainers`                | Additional init containers. Passed through the `tpl` function                                   | ``
+Parameter                             | Description                                                                                     | Default
+---                                   | ---                                                                                             | ---
+`configJSON`                          | The `config.json` configuration to be used by the mattermost server. The values you provide will by using Helm's merging behavior override individual default values only. See the [example configuration](#example-configuration) and the [Mattermost documentation](https://docs.mattermost.com/administration/config-settings.html) for details. |  See `configJSON` in [values.yaml](https://github.com/helm/charts/blob/master/stable/mattermost-team-edition/values.yaml)
+`image.repository`                    | Container image repository                                                                      | `mattermost/mattermost-team-edition`
+`image.tag`                           | Container image tag                                                                             | `5.9.0`
+`image.imagePullPolicy`               | Container image pull policy                                                                     | `IfNotPresent`
+`initContainerImage.repository`       | Init container image repository                                                                 | `appropriate/curl`
+`initContainerImage.tag`              | Init container image tag                                                                        | `latest`
+`initContainerImage.imagePullPolicy`  | Container image pull policy                                                                     | `IfNotPresent`
+`revisionHistoryLimit`                | How many old ReplicaSets for Mattermost Deployment you want to retain                           | `1`
+`ingress.enabled`                     | If `true`, an ingress is created                                                                | `false`
+`ingress.hosts`                       | A list of ingress hosts                                                                         | `[mattermost.example.com]`
+`ingress.tls`                         | A list of [ingress tls](https://kubernetes.io/docs/concepts/services-networking/ingress/#tls) items | `[]`
+`mysql.enabled`                       | Enables deployment of a mysql server                                                            | `true`
+`mysql.mysqlRootPassword`             | Root Password for Mysql (Optional)                                                              | ""
+`mysql.mysqlUser`                     | Username for Mysql (Required)                                                                   | ""
+`mysql.mysqlPassword`                 | User Password for Mysql (Required)                                                              | ""
+`mysql.mysqlDatabase`                 | Database name (Required)                                                                        | "mattermost"
+`externalDB.enabled`                  | Enables use of an preconfigured external database server                                        | `false`
+`externalDB.externalDriverType`       | `"postgres"` or `"mysql"`                                                                       | ""
+`externalDB.externalConnectionString` | See the section about [external databases](#External-Databases).                                | ""
+`extraEnvVars`                        | Extra environments variables to be used in the deployments                                      | `[]`
+`extraInitContainers`                 | Additional init containers                                                                      | `[]`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
@@ -88,6 +98,24 @@ Alternatively, a YAML file that specifies the values for the parameters can be p
 
 ```bash
 $ helm install --name my-release -f values.yaml stable/mattermost-team-edition
+```
+
+### Example configuration
+
+A basic example of a `.yaml` file with values that could be passed to the `helm`
+command with the `-f` or `--values` flag to get started.
+
+```yaml
+ingress:
+  enabled: true
+  hosts:
+    - mattermost.example.com
+
+configJSON:
+  ServiceSettings:
+    SiteURL: "https://mattermost.example.com"
+  TeamSettings:
+    SiteName: "Mattermost on Example.com"
 ```
 
 ### External Databases

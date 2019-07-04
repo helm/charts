@@ -11,9 +11,13 @@ metadata:
 spec:
   strategy:
     type: {{ .Values.DeploymentUpdate.type }}
+    {{- if eq .Values.DeploymentUpdate.type "RollingUpdate" }}
     rollingUpdate:
       maxSurge: {{ .Values.DeploymentUpdate.maxSurge }}
       maxUnavailable: {{ .Values.DeploymentUpdate.maxUnavailable }}
+    {{- else }}
+    rollingUpdate: null
+    {{- end}}
   {{- if .Values.nasgateway.enabled }}
   replicas: {{ .Values.nasgateway.replicas }}
   {{- end }}
@@ -39,10 +43,15 @@ spec:
       labels:
         app: {{ template "minio.name" . }}
         release: {{ .Release.Name }}
+      {{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+      {{- end }}
     spec:
   {{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"
   {{- end }}
+      serviceAccountName: {{ include "minio.serviceAccountName" . | quote }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -143,6 +152,7 @@ spec:
               {{- end }}
               path: /minio/health/ready
               port: service
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
             successThreshold: {{ .Values.readinessProbe.successThreshold }}
@@ -162,7 +172,7 @@ spec:
 {{ toYaml . | indent 8 }}
 {{- end }}
       volumes:
-        {{- if and (not .Values.gcsgateway.enabled) (not .Values.azuregateway.enabled) (not .Values.s3gateway.enabled) }}
+        {{- if and ((not .Values.gcsgateway.enabled) (not .Values.azuregateway.enabled) (not .Values.s3gateway.enabled)) }}
         - name: export
         {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:

@@ -1,3 +1,4 @@
+{{- if not .Values.config.existingConfig }}
 {{- if .Values.config.configFile }}
 apiVersion: v1
 kind: ConfigMap
@@ -10,4 +11,5 @@ metadata:
   name: {{ template "oauth2-proxy.fullname" . }}
 data:
   oauth2_proxy.cfg: {{ .Values.config.configFile | quote }}
+{{- end }}
 {{- end }}

@@ -38,7 +38,7 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         resources:
-{{ toYaml .Values.datadog.resources | indent 12 }}
+{{ toYaml .Values.datadog.resources | indent 10 }}
         ports:
         - containerPort: 8125
           name: dogstatsdport
@@ -94,7 +94,7 @@ spec:
           {{- end }}
           {{- if .Values.datadog.useDogStatsDSocketVolume }}
           - name: DD_DOGSTATSD_SOCKET
-            value: "/var/run/datadog/dsd.socket"
+            value: {{ default "/var/run/datadog/dsd.socket" .Values.datadog.dogStatsDSocketPath | quote }}
           {{- end }}
 {{- if .Values.datadog.env }}
 {{ toYaml .Values.datadog.env | indent 10 }}
@@ -160,12 +160,12 @@ spec:
         {{- if (or (.Values.datadog.confd) (.Values.datadog.autoconf)) }}
         - name: confd
           configMap:
-            name: {{ template "datadog.confd.fullname" . }}
+            name: {{ template "datadog.fullname" . }}-confd
         {{- end }}
         {{- if .Values.datadog.checksd }}
         - name: checksd
           configMap:
-            name: {{ template "datadog.checksd.fullname" . }}
+            name: {{ template "datadog.fullname" . }}-checksd
         {{- end }}
 {{- if .Values.datadog.volumes }}
 {{ toYaml .Values.datadog.volumes | indent 8 }}

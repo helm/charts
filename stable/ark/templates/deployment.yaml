@@ -74,6 +74,8 @@ spec:
         {{- if and .Values.credentials.useSecret (or (eq $provider "aws") (eq $provider "gcp")) }}
             - name: cloud-credentials
               mountPath: /credentials
+            - name: scratch
+              mountPath: /scratch
           env:
           {{- if eq $provider "aws" }}
             - name: AWS_SHARED_CREDENTIALS_FILE
@@ -81,6 +83,8 @@ spec:
             - name: GOOGLE_APPLICATION_CREDENTIALS
           {{- end }}
               value: /credentials/cloud
+            - name: ARK_SCRATCH_DIR
+              value: /scratch
           {{ if .Values.configuration.extraEnvVars }}
           {{- range $key, $value := .Values.configuration.extraEnvVars }}
             - name: {{ default "none" $key }}
@@ -88,6 +92,10 @@ spec:
           {{- end }}
           {{- end }}
         {{- end }}
+{{- if .Values.initContainers }}
+      initContainers:
+{{ toYaml .Values.initContainers | indent 8 }}
+{{- end }}
       volumes:
         {{- if and .Values.credentials.useSecret (or (eq $provider "aws") (eq $provider "gcp")) }}
         - name: cloud-credentials
@@ -95,6 +103,8 @@ spec:
             secretName: {{ template "ark.secretName" . }}
         {{- end }}
         - name: plugins
+          emptyDir: {}
+        - name: scratch
           emptyDir: {}
     {{- with .Values.nodeSelector }}
       nodeSelector:

@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "mercure.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "mercure.name" . }}
+    helm.sh/chart: {{ include "mercure.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  {{- if .Values.backendConfig.enabled }}
+  annotations:
+    beta.cloud.google.com/backend-config: '{"default": "{{ include "mercure.fullname" . }}"}'
+  {{- end }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: {{ include "mercure.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}

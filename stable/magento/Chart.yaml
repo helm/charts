@@ -1,7 +1,11 @@
+apiVersion: v1
 name: magento
-version: 4.1.4
-appVersion: 2.3.0
-description: A feature-rich flexible e-commerce solution. It includes transaction options, multi-store functionality, loyalty programs, product categorization and shopper filtering, promotion rules, and more.
+# The Magento chart is deprecated and no longer maintained. For details on deprecation,
+# including how to un-deprecate a chart, see the PROCESSES.md file.
+deprecated: true
+version: 5.1.4
+appVersion: 2.3.1
+description: DEPRECATED A feature-rich flexible e-commerce solution. It includes transaction options, multi-store functionality, loyalty programs, product categorization and shopper filtering, promotion rules, and more.
 keywords:
 - magento
 - e-commerce
@@ -11,8 +15,6 @@ keywords:
 home: https://magento.com/
 sources:
 - https://github.com/bitnami/bitnami-docker-magento
-maintainers:
-- name: Bitnami
-  email: containers@bitnami.com
+maintainers: []
 engine: gotpl
 icon: https://bitnami.com/assets/stacks/magento/img/magento-stack-110x117.png

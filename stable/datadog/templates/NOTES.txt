@@ -89,7 +89,7 @@ chart if your use case still requires a separate Deployment.
 
 The autoconf value is deprecated, Autodiscovery templates can now
 be safely moved to the confd value. As a temporary measure, both
-values were merged into the {{ template "datadog.confd.fullname" . }} configmap,
+values were merged into the {{ template "datadog.fullname" . }}-confd configmap,
 but this will be removed in a future chart release.
 Please note that duplicate file names may have conflicted during
 the merge. In that case, the confd entry will take precedence.

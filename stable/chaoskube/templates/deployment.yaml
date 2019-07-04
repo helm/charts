@@ -12,12 +12,16 @@ spec:
   replicas: {{ .Values.replicas }}
   selector:
     matchLabels:
-      app: {{ include "chaoskube.name" . }}
-      release: {{ .Release.Name }}
+      app.kubernetes.io/name: {{ include "chaoskube.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       labels:
 {{ include "labels.standard" . | indent 8 }}
+    {{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+    {{- end }}
     spec:
       containers:
         - name: {{ .Values.name }}
@@ -30,15 +34,34 @@ spec:
             {{- if not .Values.dryRun }}
             - --no-dry-run
             {{- end }}
+            {{- if .Values.includedPodNames }}
+            - --included-pod-names={{ .Values.includedPodNames }}
+            {{- end }}
+            {{- if .Values.excludedPodNames }}
+            - --excluded-pod-names={{ .Values.excludedPodNames }}
+            {{- end }}
             - --excluded-weekdays={{ .Values.excludedWeekdays }}
             - --excluded-times-of-day={{ .Values.excludedTimesOfDay }}
             - --excluded-days-of-year={{ .Values.excludedDaysOfYear }}
             - --timezone={{ .Values.timezone }}
+            {{- if .Values.logFormat }}
+            - --log-format={{ .Values.logFormat }}
+            {{- end }}
             {{- if .Values.debug }}
             - --debug
             {{- end }}
             - --minimum-age={{ .Values.minimumAge }}
             - --grace-period={{ .Values.gracePeriod }}
+          {{- if .Values.metrics.enabled }}
+            - --metrics-address=:{{ .Values.metrics.port }}
+          {{- else }}
+            - --metrics-address=
+          {{- end }}
+          {{- if .Values.metrics.enabled }}
+          ports:
+            - name: metrics
+              containerPort: {{ .Values.metrics.port }}
+          {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           securityContext:
