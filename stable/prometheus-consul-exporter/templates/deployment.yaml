@@ -27,10 +27,8 @@ spec:
           command: ["consul_exporter"]
           args: [
             "--consul.server={{ .Values.consulServer }}",
-            {{- range $option := .Values.options }}
-              {{- range $k, $v := . }}
-            "--{{ $k }}={{ $v }}", 
-              {{- end }}
+            {{- range $key, $value := .Values.options }}
+            "--{{ $key }}{{ if $value }}={{ $value }}{{ end }}",
             {{- end }}
           ]
           ports:

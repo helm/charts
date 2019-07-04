@@ -3,7 +3,7 @@
 image:
   registry: docker.io
   repository: falcosecurity/falco
-  tag: 0.15.0
+  tag: 0.15.3
   pullPolicy: IfNotPresent
 
 docker:
@@ -31,6 +31,10 @@ rbac:
   # Create and use rbac resources
   create: true
 
+podSecurityPolicy:
+  # Create a podSecurityPolicy
+  create: false
+
 serviceAccount:
   # Create and use serviceAccount resources
   create: true
@@ -54,6 +58,9 @@ proxy:
   httpProxy:
   httpsProxy:
   noProxy:
+
+# Set daemonset timezone
+timezone:
 
 ebpf:
   # Enable eBPF support for Falco
@@ -177,7 +184,7 @@ integrations:
   # * program_output:
   #     enabled: true
   #     keep_alive: false
-  #     program: "\"curl -d @- -X POST --header 'Content-Type: application/json' --header 'Authorization: authentication_token' url \""
+  #     program: "curl -d @- -X POST --header 'Content-Type: application/json' --header 'Authorization: authentication_token' url"
   gcscc:
     enabled: false
     webhookUrl: http://sysdig-gcscc-connector.default.svc.cluster.local:8080/events
