@@ -31,6 +31,7 @@ spec:
         env:
         - name: HOSTNAME
           value: "telegraf-polling-service"
+{{ toYaml .Values.env | indent 8 }}       
         volumeMounts:
         - name: config
           mountPath: /etc/telegraf
