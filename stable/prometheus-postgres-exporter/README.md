@@ -62,6 +62,7 @@ The following table lists the configurable parameters of the postgres Exporter c
 | `podLabels`                      | Additional labels to add to each pod      | `{}` |
 | `extraContainers`                | Additional sidecar containers | `""` |
 | `extraVolumes`                   | Additional volumes for use in extraContainers | `""` |
+| `securityContext`                | Security options the pod should run with. [More info](https://kubernetes.io/docs/concepts/policy/security-context/) | `{}` |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,

@@ -61,6 +61,12 @@ spec:
       {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName | quote }}
       {{- end }}
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.imagePullSecrets }}
+        - name: {{ . }}
+      {{- end }}
+      {{- end }}
       containers:
       - image: {{ .Values.image }}:{{ .Values.imageTag }}
         name: {{ template "traefik.fullname" . }}
@@ -76,7 +82,8 @@ spec:
 {{ toYaml .Values.resources | indent 10 }}
         {{- end }}
         readinessProbe:
-          tcpSocket:
+          httpGet:
+            path: /ping
             port: 80
           failureThreshold: 1
           initialDelaySeconds: 10
@@ -84,7 +91,8 @@ spec:
           successThreshold: 1
           timeoutSeconds: 2
         livenessProbe:
-          tcpSocket:
+          httpGet:
+            path: /ping
             port: 80
           failureThreshold: 3
           initialDelaySeconds: 10
