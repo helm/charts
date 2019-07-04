@@ -58,4 +58,3 @@ These information are stored in `/data/data.json` by default and can be changed 
 `mail2most.conf` within the [configmap.yaml](templates/configmap.yaml).
 
 If persistence is enabled information stored in `/data` are persisted.
-Persistence is disabled by default an can be enabled in [values.yaml](values.yaml)

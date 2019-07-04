@@ -5,14 +5,14 @@ deployment:
     tag: latest
     pullPolicy: Always
 
-resources:
-  limits:
-    cpu: 200m
-    memory: 256Mi
-  requests:
-    cpu: 100m
-    memory: 128Mi
+resources: {}
+#  limits:
+#    cpu: 200m
+#    memory: 256Mi
+#  requests:
+#    cpu: 100m
+#    memory: 128Mi
 
 persistence:
-  enabled: false
+  enabled: true
   Size: 100Mi
