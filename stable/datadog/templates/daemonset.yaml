@@ -63,8 +63,8 @@ spec:
       {{- else }}
         {{- include "container-agents" . | nindent 8 }}
       {{- end}}
-      initContainers:
       {{- if .Values.daemonset.useDedicatedContainers }}
+      initContainers:
         {{ include "containers-init" . | nindent 8 }}
         {{- if .Values.systemProbe.enabled }}
           {{ include "system-probe-init" . | nindent 8 }}
