@@ -233,7 +233,7 @@ data:
     [boltdb]
     endpoint = {{ .Values.kvprovider.boltdb.endpoint | quote }}
     watch = {{ .Values.kvprovider.boltdb.watch }}
-    prefix = {{ .Values.kvprovider.boltdb.prefix }}
+    prefix = {{ .Values.kvprovider.boltdb.prefix | quote }}
     {{- if .Values.kvprovider.boltdb.username }}username = {{ .Values.kvprovider.boltdb.username }}{{- end }}
     {{- if .Values.kvprovider.boltdb.password }}password = {{ .Values.kvprovider.boltdb.password }}{{- end }}
       {{- if .Values.kvprovider.boltdb.tls }}
