@@ -26,8 +26,12 @@ spec:
       annotations:
 {{ toYaml .Values.podAnnotations | indent 8 }}
     spec:
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+      {{- end }}
       securityContext:
         fsGroup: 8983
+        runAsUser: 8983
       affinity:
 {{ tpl (toYaml .Values.affinity) .  | indent 8 }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}

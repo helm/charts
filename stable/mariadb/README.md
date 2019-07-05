@@ -67,7 +67,7 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `securityContext.enabled`                 | Enable security context                             | `true`                                                            |
 | `securityContext.fsGroup`                 | Group ID for the container                          | `1001`                                                            |
 | `securityContext.runAsUser`               | User ID for the container                           | `1001`                                                            |
-| `existingSecret`                          | Use Existing secret for Password details (`rootUser.password`, `db.password`, `replication.password` will be ignored and picked up from this secret) |                         |
+| `existingSecret`                          | Use existing secret for password details (`rootUser.password`, `db.password`, `replication.password` will be ignored and picked up from this secret). The secret has to contain the keys `mariadb-root-password`, `mariadb-replication-password` and `mariadb-password`. |                         |
 | `rootUser.password`                       | Password for the `root` user. Ignored if existing secret is provided. | _random 10 character alphanumeric string_       |
 | `rootUser.forcePassword`                  | Force users to specify a password                   | `false`                                                           |
 | `db.user`                                 | Username of new user to create                      | `nil`                                                             |
@@ -82,6 +82,7 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `initdbScriptsConfigMap`                  | ConfigMap with the initdb scripts (Note: Overrides `initdbScripts`) | `nil`                                             |
 | `master.annotations[].key`                | key for the the annotation list item                |  `nil`                                                            |
 | `master.annotations[].value`              | value for the the annotation list item              |  `nil`                                                            |
+| `master.extraFlags`                       | MariaDB master additional command line flags        |  `nil`                                                            |
 | `master.affinity`                         | Master affinity (in addition to master.antiAffinity when set)  | `{}`                                                   |
 | `master.antiAffinity`                     | Master pod anti-affinity policy                     | `soft`                                                            |
 | `master.nodeSelector`                     | Master node labels for pod assignment               | `{}`                                                              |
@@ -116,6 +117,7 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `slave.replicas`                          | Desired number of slave replicas                    | `1`                                                               |
 | `slave.annotations[].key`                 | key for the the annotation list item                | `nil`                                                             |
 | `slave.annotations[].value`               | value for the the annotation list item              | `nil`                                                             |
+| `slave.extraFlags`                        | MariaDB slave additional command line flags         | `nil`                                                             |
 | `slave.affinity`                          | Slave affinity (in addition to slave.antiAffinity when set) | `{}`                                                      |
 | `slave.antiAffinity`                      | Slave pod anti-affinity policy                      | `soft`                                                            |
 | `slave.nodeSelector`                      | Slave node labels for pod assignment                | `{}`                                                              |
@@ -235,10 +237,10 @@ The feature allows for specifying a template string for a initContainer in the m
 master:
   extraInitContainers: |
     - name: initcontainer
-      image: alpine:latest
+      image: bitnami/minideb:latest
       command: ["/bin/sh", "-c"]
       args:
-        - curl http://api-service.local/db/starting;
+        - install_packages curl && curl http://api-service.local/db/starting;
 ```
 
 ## Upgrading
