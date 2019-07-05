@@ -148,7 +148,7 @@ data:
 
     {{- $fullName := include "redis-ha.fullname" . }}
     {{- $replicas := int .Values.replicas }}
-    {{ range $i := until $replicas }}
+    {{- range $i := until $replicas }}
     # Check Sentinel and whether they are nominated master
     backend check_if_redis_is_master_{{ $i }}
       mode tcp
@@ -160,7 +160,9 @@ data:
       tcp-check expect string REPLACE_ANNOUNCE{{ $i }}
       tcp-check send QUIT\r\n
       tcp-check expect string +OK
+      {{- range $i := until $replicas }}
       server R{{ $i }} {{ $fullName }}-announce-{{ $i }}:26379 check inter 1s
+      {{- end }}
     {{- end }}
 
     # decide redis backend to use
@@ -181,8 +183,6 @@ data:
       tcp-check expect string +OK
       {{- range $i := until $replicas }}
       use-server R{{ $i }} if { srv_is_up(R{{ $i }}) } { nbsrv(check_if_redis_is_master_{{ $i }}) ge 2 }
-      {{- end }}
-      {{- range $i := until $replicas }}
       server R{{ $i }} {{ $fullName }}-announce-{{ $i }}:6379 check inter 1s
       {{- end }}
 {{- end }}
@@ -192,7 +192,7 @@ data:
     cp /readonly/haproxy.cfg "$HAPROXY_CONF"
     {{- $fullName := include "redis-ha.fullname" . }}
     {{- $replicas := int .Values.replicas }}
-    {{ range $i := until $replicas }}
+    {{- range $i := until $replicas }}
     ANNOUNCE_IP{{ $i }}=$(getent hosts "{{ $fullName }}-announce-{{ $i }}" | awk '{ print $1 }')
     sed -i "s/REPLACE_ANNOUNCE{{ $i }}/$ANNOUNCE_IP{{ $i }}/" "$HAPROXY_CONF"
     {{- end }}

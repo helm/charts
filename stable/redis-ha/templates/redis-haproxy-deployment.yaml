@@ -32,7 +32,7 @@ spec:
       # Needed when using unmodified rbac-setup.yml
       serviceAccountName: {{ template "redis-ha.serviceAccountName" . }}-haproxy
       nodeSelector:
-{{ toYaml .Values.haproxy.nodeSelector | indent 8 }}
+{{ toYaml .Values.nodeSelector | indent 8 }}
       {{- if eq .Values.haproxy.podAntiAffinity "hard" }}
       affinity:
         podAntiAffinity:
