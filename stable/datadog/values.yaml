@@ -304,10 +304,10 @@ systemProbe:
   #
   seccompRoot: /var/lib/kubelet/seccomp
 
-  ## @param bpfDebug - boolean - optional
+  ## @param bpfDebug - boolean - required
   ## Enable logging for kernel debug
   #
-  # bpfDebug: false
+  bpfDebug: false
 
 ## @param clusterAgent - object - required
 ## This is the Datadog Cluster Agent implementation that handles cluster-wide
