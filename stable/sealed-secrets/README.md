@@ -41,6 +41,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | **resources** | CPU/Memory resource requests/limits | `{}` |
 | **crd.create** | `true` if crd resources should be created | `true` |
 | **crd.keep** | `true` if the sealed secret CRD should be kept when the chart is deleted | `true` |
+|**networkPolicy** | Whether to create a network policy that allows access to the service | `false`|
 
 - In the case that **serviceAccount.create** is `false` and **rbac.create** is `true` it is expected for a service account with the name **serviceAccount.name** to exist _in the same namespace as this chart_ before installation.
 - If **serviceAccount.create** is `true` there cannot be an existing service account with the name **serviceAccount.name**.
