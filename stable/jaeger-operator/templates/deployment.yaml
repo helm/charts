@@ -39,15 +39,24 @@ spec:
           args: ["start"]
           env:
             - name: WATCH_NAMESPACE
+            {{- if .Values.watchNamespace.own }}
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
+            {{ else if .Values.watchNamespace.specific }}
+              value: {{ .Values.watchNamespace.specific }}
+            {{ else if .Values.watchNamespace.all }}
+              value: ""
+            {{- end }}
             - name: POD_NAME
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
             - name: OPERATOR_NAME
               value: {{ include "jaeger-operator.fullname" . | quote }}
+{{- if .Values.ExtraEnvArgs }}
+{{ toYaml .Values.ExtraEnvArgs | indent 8 }}
+{{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}

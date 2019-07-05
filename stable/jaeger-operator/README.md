@@ -55,6 +55,9 @@ The following table lists the configurable parameters of the jaeger-operator cha
 | `tolerations`           | Toleration labels for pod assignment                                                                        | `[]`                            |
 | `affinity`              | Affinity settings for pod assignment                                                                        | `{}`                            |
 | `securityContext`       | Security context for pod                                                                                    | `{}`                            |
+| `watchNamespace.own`    | Watch own namespace only                                                                                    | `true`                          |
+| `watchNamespace.all`    | Watch all namespaces                                                                                        | `false`                         |
+| `watchNamespace.specific`| Watch specified namespace                                                                                  | `None`                          |
 
 Specify each parameter you'd like to override using a YAML file as described above in the [installation](#installing-the-chart) section.
 
