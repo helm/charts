@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: wrouesnel/postgres_exporter
-  tag: v0.4.7
+  tag: v0.5.0
   pullPolicy: IfNotPresent
 
 service:
