@@ -391,7 +391,7 @@ ingressController:
 # We pass the declarative config over here.
 declarativeConfig:
   _format_version: "1.1"
-  services: 
+  services:
     - name: version
       url: http://localhost
       routes:
@@ -404,9 +404,9 @@ declarativeConfig:
           status_code: 200
           message: "declarative-config"
     # Example httpbin
-    #- name: httpbin.org
-    #  url: https://httpbin.org/
-    #  routes:
-    #  - name: httpbin.org
-    #    paths:
-    #    - "/httpbin"
+    # - name: httpbin.org
+    #   url: https://httpbin.org/
+    #   routes:
+    #   - name: httpbin.org
+    #     paths:
+    #     - "/httpbin"
