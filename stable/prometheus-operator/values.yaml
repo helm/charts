@@ -589,6 +589,12 @@ kubeControllerManager:
     ##
     https: false
 
+    # Skip TLS certificate validation when scraping
+    insecureSkipVerify: null
+
+    # Name of the server to use when validating TLS certificate
+    serverName: null
+
     ## 	metric relabel configs to apply to samples before ingestion.
     ##
     metricRelabelings: []
@@ -754,6 +760,12 @@ kubeScheduler:
     ## Requires proper certs (not self-signed) and delegated authentication/authorization checks
     ##
     https: false
+
+    ## Skip TLS certificate validation when scraping
+    insecureSkipVerify: null
+
+    ## Name of the server to use when validating TLS certificate
+    serverName: null
 
     ## 	metric relabel configs to apply to samples before ingestion.
     ##
