@@ -25,6 +25,12 @@ spec:
     scheme: https
     tlsConfig:
       caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+      {{- if .Values.kubeControllerManager.serviceMonitor.insecureSkipVerify }}
+      insecureSkipVerify: {{ .Values.kubeControllerManager.serviceMonitor.insecureSkipVerify }}
+      {{- end }}
+      {{- if .Values.kubeControllerManager.serviceMonitor.serverName }}
+      serverName: {{ .Values.kubeControllerManager.serviceMonitor.serverName }}
+      {{- end }}
     {{- end }}
 {{- if .Values.kubeControllerManager.serviceMonitor.metricRelabelings }}
     metricRelabelings:

@@ -11,7 +11,7 @@ name: prometheus-operator
 sources:
   - https://github.com/coreos/prometheus-operator
   - https://coreos.com/operators/prometheus
-version: 5.14.1
+version: 5.15.0
 appVersion: 0.31.1
 home: https://github.com/coreos/prometheus-operator
 keywords:

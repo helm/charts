@@ -355,6 +355,8 @@ The following tables list the configurable parameters of the prometheus-operator
 | `kubeControllermanager.service.targetPort` | Controller-manager targetPort for the service runs on | `10252` |
 | `kubeControllermanager.service.selector` | Controller-manager service selector | `{"component" : "kube-controller-manager" }` |
 | `kubeControllermanager.serviceMonitor.https` | Controller-manager service scrape over https | `false` |
+| `kubeControllermanager.serviceMonitor.serverName` | Name of the server to use when validating TLS certificate | `null` |
+| `kubeControllermanager.serviceMonitor.insecureSkipVerify` | Skip TLS certificate validation when scraping | `null` |
 | `kubeControllermanager.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
 | `kubeControllermanager.serviceMonitor.metricRelabelings` | The `metric_relabel_configs` for scraping the scheduler. | `` |
 | `kubeControllermanager.serviceMonitor.relabelings` | The `relabel_configs` for scraping the scheduler. | `` |
@@ -390,6 +392,8 @@ The following tables list the configurable parameters of the prometheus-operator
 | `kubeScheduler.service.targetPort` | Scheduler targetPort for the service runs on | `10251` |
 | `kubeScheduler.service.selector` | Scheduler service selector | `{"component" : "kube-scheduler" }` |
 | `kubeScheduler.serviceMonitor.https` | Scheduler service scrape over https | `false` |
+| `kubeScheduler.serviceMonitor.serverName` | Name of the server to use when validating TLS certificate | `null` |
+| `kubeScheduler.serviceMonitor.insecureSkipVerify` | Skip TLS certificate validation when scraping | `null` |
 | `kubeScheduler.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
 | `kubeScheduler.serviceMonitor.metricRelabelings` | The `metric_relabel_configs` for scraping the Kubernetes scheduler. | `` |
 | `kubeScheduler.serviceMonitor.relabelings` | The `relabel_configs` for scraping the Kubernetes scheduler. | `` |
