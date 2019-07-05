@@ -64,6 +64,11 @@ spec:
         configMap:
           name:  {{ template "atlantis.fullname" . }}-repo-config
       {{- end }}
+      {{- if .Values.config }}
+      - name: config
+        configMap:
+          name:  {{ template "atlantis.fullname" . }}
+      {{- end }}
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
       {{- range .Values.imagePullSecrets }}
@@ -88,6 +93,9 @@ spec:
           {{- end }}
           args:
             - server
+            {{- if .Values.config }}
+            - --config /etc/atlantis/atlantis.yaml
+            {{- end }}
           ports:
           - name: atlantis
             containerPort: 4141
@@ -237,6 +245,11 @@ spec:
           {{- end }}
           {{- if .Values.repoConfig }}
           - name: repo-config
+            mountPath: /etc/atlantis
+            readOnly: true
+          {{- end }}
+          {{- if .Values.config }}
+          - name: config
             mountPath: /etc/atlantis
             readOnly: true
           {{- end }}
