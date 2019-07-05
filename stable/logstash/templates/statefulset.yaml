@@ -83,7 +83,7 @@ spec:
               value: {{ .Values.elasticsearch.port | quote }}
             # Logstash Java Options
             - name: LS_JAVA_OPTS
-              value: {{ .Values.logstashJavaOpts }}
+              value: {{ .Values.logstashJavaOpts  | default "-Xms1g -Xmx1g"}}
             ## Additional env vars
           {{- range $key, $value := .Values.config }}
             - name: {{ $key | upper | replace "." "_" }}

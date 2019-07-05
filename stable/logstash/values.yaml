@@ -75,7 +75,7 @@ ingress:
   #      - logstash.cluster.local
 
 # set java options like heap size
-logstashJavaOpts: "-Xmx1g -Xms1g"
+logstashJavaOpts: ""
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
