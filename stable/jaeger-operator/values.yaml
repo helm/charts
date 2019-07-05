@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 image:
   repository: jaegertracing/jaeger-operator
-  tag: 1.12.1
+  tag: 1.13.1
   pullPolicy: IfNotPresent
 
 rbac:
@@ -25,6 +25,18 @@ resources:
   # requests:
   #  cpu: 100m
   #  memory: 128Mi
+
+# These settings are mutual exclusive. 'own' takes precedence and is the default
+# 'specific' will set a specific namespace, but only if own is 'false'
+# 'all' will watch all namespaces by setting WATCH_NAMESPACES=""
+# Defaults to watching the namespace the operator is deployed into
+watchNamespace:
+  own: true
+  all: false
+  # specific: myproject
+
+# ExtraEnvArgs is a list of name,value tuples providing extra ENV variables.
+ExtraEnvArgs: []
 
 nodeSelector: {}
 
