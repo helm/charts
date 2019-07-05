@@ -118,6 +118,7 @@ The following table lists the configurable parameters of the external-dns chart 
 | `podSecurityContext.fsGroup`       | Group ID for the container                                                                               | `1001`                                                   |
 | `podSecurityContext.runAsUser`     | User ID for the container                                                                                | `1001`                                                   |
 | `priorityClassName`                | priorityClassName                                                                                        | `""`                                                     |
+| `securityContext`                  | Security context for the container                                                                       | `{}`                                                     |
 | `service.type`                     | Kubernetes Service type                                                                                  | `ClusterIP`                                              |
 | `service.port`                     | ExternalDNS client port                                                                                  | `7979`                                                   |
 | `service.nodePort`                 | Port to bind to for NodePort service type (client port)                                                  | `nil`                                                    |
