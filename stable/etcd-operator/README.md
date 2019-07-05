@@ -70,6 +70,7 @@ The following table lists the configurable parameters of the etcd-operator chart
 | `etcdOperator.resources.cpu`                      | CPU limit per etcd-operator pod                                      | `100m`                                         |
 | `etcdOperator.resources.memory`                   | Memory limit per etcd-operator pod                                   | `128Mi`                                        |
 | `etcdOperator.nodeSelector`                       | Node labels for etcd operator pod assignment                         | `{}`                                           |
+| `etcdOperator.podAnnotations`                     | Annotations for the etcd operator pod                                | `{}`                                           |
 | `etcdOperator.commandArgs`                        | Additional command arguments                                         | `{}`                                           |
 | `backupOperator.name`                             | Backup operator name                                                 | `etcd-backup-operator`                         |
 | `backupOperator.replicaCount`                     | Number of operator replicas to create (only 1 is supported)          | `1`                                            |
