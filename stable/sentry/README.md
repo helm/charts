@@ -2,6 +2,8 @@
 
 [Sentry](https://sentry.io/) is a cross-platform crash reporting and aggregation platform.
 
+_This helm chart is **not** official nor maintained by Sentry itself._
+
 ## TL;DR;
 
 ```console
