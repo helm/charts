@@ -151,7 +151,7 @@ Postgres is enabled by default.
 | env.cassandra_port                | Cassandra query port                                                   | `9042`                |
 | env.cassandra_keyspace            | Cassandra keyspace                                                     | `kong`                |
 | env.cassandra_repl_factor         | Replication factor for the Kong keyspace                               | `2`                   |
-
+| declarativeConfig                 | Yaml configuration file for the declarative configuration              | ``                    | 
 
 All `kong.env` parameters can also accept a mapping instead of a value to ensure the parameters can be set through configmaps and secrets.
 
@@ -323,6 +323,15 @@ If your SMTP server requires authentication, you should the `username` and
 `smtp_password_secret` keys under `.enterprise.smtp.auth`.
 `smtp_password_secret` must be a Secret containing an `smtp_password` key whose
 value is your SMTP password.
+
+### Declarative Configuration
+
+The helm chart assumes to be running in declarative mode when it is started in 
+DB-less mode (`env.database: "off"`) in combination with no Kong ingress controller 
+(`ingressController.enabled: false`). 
+
+In this case, the values section `declarativeConfig` will be parsed into a configMap 
+which will get injected into Kong during startup.
 
 ### Kong Ingress Controller
 

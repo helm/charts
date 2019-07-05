@@ -1,0 +1,14 @@
+{{- if (and (not .Values.ingressController.enabled) (eq .Values.env.database "off")) }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kong-custom-declarative-config
+  labels:
+    app: {{ template "kong.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+  kong.yml: |
+{{ .Values.declarativeConfig | toYaml | indent 4 }}
+{{- end }}
