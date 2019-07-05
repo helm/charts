@@ -21,7 +21,7 @@ Domain: consul
 Component: "consul"
 Replicas: 3
 Image: "consul"
-ImageTag: "1.0.0"
+ImageTag: "1.5.2"
 ImagePullPolicy: "Always"
 Resources: {}
  # requests:

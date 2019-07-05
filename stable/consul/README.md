@@ -28,7 +28,7 @@ The following table lists the configurable parameters of the consul chart and th
 | ----------------------- | ----------------------------------    | ---------------------------------------------------------- |
 | `Name`                  | Consul statefulset name               | `consul`                                                   |
 | `Image`                 | Container image name                  | `consul`                                                   |
-| `ImageTag`              | Container image tag                   | `1.0.0`                                                    |
+| `ImageTag`              | Container image tag                   | `1.5.2`                                                    |
 | `ImagePullPolicy`       | Container pull policy                 | `Always`                                                   |
 | `Replicas`              | k8s statefulset replicas              | `3`                                                        |
 | `Component`             | k8s selector key                      | `consul`                                                   |
