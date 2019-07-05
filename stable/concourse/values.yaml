@@ -326,11 +326,11 @@ concourse:
         enabled: true
         useSessionToken: false
 
-      ## pipeline-specific template for Secrets Manager parameters, defaults to: /concourse/{team}/{pipeline}/{secret}
+      ## pipeline-specific template for Secrets Manager parameters, defaults to: /concourse/{{.Team}}/{{.Pipeline}}/{{.Secret}}
       ##
       pipelineSecretTemplate: /concourse/{{.Team}}/{{.Pipeline}}/{{.Secret}}
 
-      ## team-specific template for Secrets Manager parameters, defaults to: /concourse/{team}/{secret}
+      ## team-specific template for Secrets Manager parameters, defaults to: /concourse/{{.Team}}/{{.Secret}}
       ##
       teamSecretTemplate: /concourse/{{.Team}}/{{.Secret}}
 
@@ -352,11 +352,11 @@ concourse:
         enabled: true
         useSessionToken: false
 
-      ## pipeline-specific template for SSM parameters, defaults to: /concourse/{team}/{pipeline}/{secret}
+      ## pipeline-specific template for SSM parameters, defaults to: /concourse/{{.Team}}/{{.Pipeline}}/{{.Secret}}
       ##
       pipelineSecretTemplate: /concourse/{{.Team}}/{{.Pipeline}}/{{.Secret}})
 
-      ## team-specific template for SSM parameters, defaults to: /concourse/{team}/{secret}
+      ## team-specific template for SSM parameters, defaults to: /concourse/{{.Team}}/{{.Secret}}
       ##
       teamSecretTemplate: /concourse/{{.Team}}/{{.Secret}}
 
@@ -1101,13 +1101,15 @@ concourse:
     volumeSweeperMaxInFlight: 5
 
     tsa:
-      ## TSA host to forward the worker through.
-      ##
-      host:
 
-      ## TSA port to forward the worker through.
+      ## TSA host(s) to forward the worker through.
+      ## Only used for worker-only deployments.
+      ## Example:
+      ## hosts:
+      ##   - 1.1.1.1:2222
+      ##   - 2.2.2.2:2222
       ##
-      port: 2222
+      hosts: []
 
       ## File containing a public key to expect from the TSA.
       ##

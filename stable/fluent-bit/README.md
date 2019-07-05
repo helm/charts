@@ -130,6 +130,11 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `metrics.service.labels`           | Additional labels for the fluent-bit metrics service definition, specified as a map.                                                    | None                                              |
 | `metrics.service.port`             | Port on where metrics should be exposed    | `2020`                                            |
 | `metrics.service.type`             | Service type for metrics                   | `ClusterIP`                                       |
+| `metrics.serviceMonitor.enabled`          | Set this to `true` to create ServiceMonitor for Prometheus operator                   | `false` |
+| `metrics.serviceMonitor.additionalLabels` | Additional labels that can be used so ServiceMonitor will be discovered by Prometheus | `{}`    |
+| `metrics.serviceMonitor.namespace`        | Optional namespace in which to create ServiceMonitor                                  | `nil`   |
+| `metrics.serviceMonitor.interval`         | Scrape interval. If not set, the Prometheus default scrape interval is used           | `nil`   |
+| `metrics.serviceMonitor.scrapeTimeout`    | Scrape timeout. If not set, the Prometheus default scrape timeout is used             | `nil`   |
 | `trackOffsets`                     | Specify whether to track the file offsets for tailing docker logs. This allows fluent-bit to pick up where it left after pod restarts but requires access to a `hostPath` | `false` |
 | `testFramework.image`              | `test-framework` image repository.         | `dduportal/bats`                                  |
 | `testFramework.tag`                | `test-framework` image tag.                | `0.4.0`                                           |
