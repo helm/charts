@@ -1,5 +1,4 @@
 {{- if .Values.service.enabled -}}
-{{- if .Values.service.enabled -}}
 apiVersion: v1
 kind: Service
 metadata:
@@ -47,5 +46,4 @@ spec:
   selector:
     app.kubernetes.io/name: {{ include "telegraf.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
-{{- end -}}
 {{- end -}}
