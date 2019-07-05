@@ -28,6 +28,12 @@ metrics:
     # prometheus.io/scrape: "true"
     port: 2020
     type: ClusterIP
+  serviceMonitor:
+    enabled: false
+    additionalLabels: {}
+    # namespace: monitoring
+    # interval: 30s
+    # scrapeTimeout: 10s
 
 # When enabled, fluent-bit will keep track of tailing offsets across pod restarts.
 trackOffsets: false
@@ -237,7 +243,7 @@ filter:
 
 # If set, all unpacked keys from mergeJSONLog (Merge_Log) will be packed under
 # the key name specified on mergeLogKey (Merge_Log_Key)
-  mergeLogKey: log_processed
+  mergeLogKey: ""
 
 # If true, enable the use of monitoring for a pod annotation of
 # fluentbit.io/parser: parser_name. parser_name must be the name
@@ -251,6 +257,8 @@ filter:
 rbac:
   # Specifies whether RBAC resources should be created
   create: true
+  # Specifies whether a PodSecurityPolicy should be created
+  pspEnabled: false
 
 taildb:
   directory: /var/lib/fluent-bit
