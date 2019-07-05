@@ -98,3 +98,47 @@ etcd:
   # limits:
   #  cpu: 250m
   #  memory: 512M
+
+  ## Set default image settings, resource requests and number of replicas of the dashboard
+dash:
+ enabled: true
+ ## For available images please check: https://hub.docker.com/r/pachyderm/dash/tags
+ image:
+  repository: pachyderm/dash
+  tag: 1.8-preview-7
+  pullPolicy: IfNotPresent
+ resources:
+  requests:
+   cpu: 250m
+   memory: 256M
+  # limits:
+  #  cpu: 250m
+  #  memory: 512M
+ proxy:
+  image:
+   repository: pachyderm/grpc-proxy
+   tag: 0.4.2
+   pullPolicy: IfNotPresent
+  resources:
+   requests:
+    cpu: 250m
+    memory: 256M
+  # limits:
+  #  cpu: 250m
+  #  memory: 512M
+ service:
+  http:
+   port: 8080
+  grpc:
+   port: 8081
+ ingress:
+  ## Set to true to enable ingress record generation
+  enabled: false
+  ## hostName: dash
+  path: /
+  ## Set this to true in order to enable TLS on the ingress record
+  tls: false
+  ## If TLS is set to true, you must declare what secret will store the key/certificate for TLS
+  tlsSecret: myTlsSecret
+  ## Ingress annotations done as key:value pairs
+  annotations: {}

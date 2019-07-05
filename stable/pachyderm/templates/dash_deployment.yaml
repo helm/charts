@@ -1,0 +1,56 @@
+{{- if .Values.dash.enabled }}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: dash
+  labels:
+    app: {{ template "dash.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+    suite: {{ template "fullname" . }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "dash.fullname" . }}
+      suite: {{ template "fullname" . }}
+  template:
+    metadata:
+      name: dash
+      labels:
+        app: {{ template "dash.fullname" . }}
+        suite: {{ template "fullname" . }}
+    spec:
+      containers:
+        - name: dash
+          image: '{{ .Values.dash.image.repository }}:{{ .Values.dash.image.tag }}'
+          imagePullPolicy: {{ .Values.etcd.image.pullPolicy }}
+          ports:
+            - name: dash-http
+              containerPort: 8080
+          resources:
+            requests:
+              cpu: '{{ .Values.dash.resources.requests.cpu }}'
+              memory: {{ .Values.dash.resources.requests.memory }}
+            {{- if .Values.dash.resources.limits }}
+            limits:
+              cpu: '{{ .Values.dash.resources.limits.cpu }}'
+              memory: {{ .Values.dash.resources.limits.memory }}
+            {{- end }}
+        - name: grpc-proxy
+          image: '{{ .Values.dash.proxy.image.repository }}:{{ .Values.dash.proxy.image.tag }}'
+          imagePullPolicy: {{ .Values.etcd.image.pullPolicy }}
+          ports:
+            - name: grpc-proxy-http
+              containerPort: 8081
+          resources:
+            requests:
+              cpu: '{{ .Values.dash.proxy.resources.requests.cpu }}'
+              memory: {{ .Values.dash.proxy.resources.requests.memory }}
+            {{- if .Values.dash.proxy.resources.limits }}
+            limits:
+              cpu: '{{ .Values.dash.proxy.resources.limits.cpu }}'
+              memory: {{ .Values.dash.proxy.resources.limits.memory }}
+            {{- end }}
+{{- end }}

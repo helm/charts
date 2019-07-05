@@ -22,3 +22,11 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- define "etcd.fullname" -}}
 {{- printf "%s-%s" .Release.Name "etcd" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{/*
+Create a default fully qualified app name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+*/}}
+{{- define "dash.fullname" -}}
+{{- printf "%s-%s" .Release.Name "dash" | trunc 63 | trimSuffix "-" -}}
+{{- end -}}

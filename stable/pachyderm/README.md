@@ -30,7 +30,7 @@ The following table lists the configurable parameters of `pachd` and their defau
 | `*.resources.requests`        | Memory and cpu request              | `{512M,250m}`     |
 | `*.resources.limits`          | Memory and cpu limit                | `nil`             |
 | `*.service.grpc.annotations`  | GRPC service additional annotations | `{}`              |
-| `*.service.grpc.prod`         | GRPC service pord                   | `30650`             |
+| `*.service.grpc.port`         | GRPC service port                   | `30650`           |
 | `*.service.grpc.type`         | GRPC service type                   | `NodePort`        |
 
 Next table lists the configurable parameters of `etcd` and their default values:
@@ -46,6 +46,26 @@ Next table lists the configurable parameters of `etcd` and their default values:
 | `*.persistence.size`        | Storage request       | `20G`                 |
 | `*.persistence.accessMode`  | Access mode for PV    | `ReadWriteOnce`       |
 | `*.persistence.storageClass`| PVC storage class     | `nil`                 |
+
+Next table lists the configurable parameters of `dash` and their default values:
+
+| Parameter                     | Description           | Default               |
+|-------------------------------|-----------------------|-----------------------|
+| `enabled`                     | Deploy the dashboard  | `true`                |
+| `dash.image.repository`       | Container image name  | `pachyderm/dash`      |
+| `*.image.tag`                 | Container image tag   | `<latest version>`    |
+| `*.image.pullPolicy`          | Image pull policy     | `IfNotPresent`        |
+| `*.resources.requests`        | Memory and cpu request| `{250M,250m}`         |
+| `*.resources.limits`          | Memory and cpu limit  | `nil`                 |
+| `*.service.http.port`         | HTTP service port     | `8080`                |
+| `*.service.grpc.port`         | GRPC service port     | `8081`                |
+| `*.proxy.image.repository`    | Proxy container image name   | `pachyderm/grpc-proxy`|
+| `*.proxy.image.tag`           | Proxy container image tag    | `<latest version>`    |
+| `*.proxy.image.pullPolicy`    | Proxy image pull policy      | `IfNotPresent`        |
+| `*.proxy.resources.requests`  | Proxy memory and cpu request | `{250M,250m}`         |
+| `*.proxy.resources.limits`    | Proxy memory and cpu limit   | `nil`                 |
+
+
 
 In order to set which object store credentials you want to use, please set the flag `credentials` with one of the following values: `local | s3 | google | amazon | microsoft`.
 

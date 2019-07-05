@@ -1,0 +1,43 @@
+{{- if .Values.dash.ingress.enabled -}}
+{{- $ingressPath := .Values.dash.ingress.path -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: dash
+  labels:
+    app: {{ template "dash.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+    suite: {{ template "fullname" . }}
+  annotations:
+    {{- if .Values.dash.ingress.tls }}
+    ingress.kubernetes.io/secure-backends: "true"
+    {{- end }}
+    {{- range $key, $value := .Values.dash.ingress.annotations }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+spec:
+  rules:
+  {{- if .Values.dash.ingress.hostName }}
+  - host: {{ .Values.dash.ingress.hostName }}
+    http:
+  {{- else }}
+  - http:
+  {{- end }}
+      paths:
+        - path: {{ .Values.dash.ingress.path }}
+          backend:
+            serviceName: dash
+            servicePort: {{ .Values.dash.service.http.port }}
+{{- if .Values.dash.ingress.tls }}
+  tls:
+  - hosts:
+    {{- if  .Values.dash.ingress.hostName }}
+    - {{ .Values.dash.ingress.hostName }}
+    secretName: {{  .Values.dash.ingress.tlsSecret }}
+    {{- else}}
+    - secretName: {{  .Values.dash.ingress.tlsSecret }}
+    {{- end }}
+{{- end }}
+{{- end }}
