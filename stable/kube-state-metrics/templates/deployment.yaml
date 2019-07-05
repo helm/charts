@@ -3,20 +3,20 @@ kind: Deployment
 metadata:
   name: {{ template "kube-state-metrics.fullname" . }}
   labels:
-    app: {{ template "kube-state-metrics.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/name: {{ template "kube-state-metrics.name" . }}
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app.kubernetes.io/instance: "{{ .Release.Name }}"
+    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
 spec:
   selector:
     matchLabels:
-      app: {{ template "kube-state-metrics.name" . }}
+      app.kubernetes.io/name: {{ template "kube-state-metrics.name" . }}
   replicas: {{ .Values.replicas }}
   template:
     metadata:
       labels:
-        app: {{ template "kube-state-metrics.name" . }}
-        release: "{{ .Release.Name }}"
+        app.kubernetes.io/name: {{ template "kube-state-metrics.name" . }}
+        app.kubernetes.io/instance: "{{ .Release.Name }}"
 {{- if .Values.podAnnotations }}
       annotations:
 {{ toYaml .Values.podAnnotations | indent 8 }}
