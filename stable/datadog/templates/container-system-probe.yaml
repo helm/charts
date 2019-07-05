@@ -1,4 +1,4 @@
-{{- define "system-probe-agent" -}}
+{{- define "container-system-probe" -}}
 - name: system-probe
   image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
   imagePullPolicy: {{ .Values.image.pullPolicy }}

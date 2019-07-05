@@ -58,7 +58,7 @@ spec:
           {{- include "container-process-agent" . | nindent 8 }}
         {{- end }}
         {{- if .Values.systemProbe.enabled }}
-          {{- include "system-probe-agent" . | nindent 8 }}
+          {{- include "container-system-probe" . | nindent 8 }}
         {{- end }}
       {{- else }}
         {{- include "container-agents" . | nindent 8 }}
