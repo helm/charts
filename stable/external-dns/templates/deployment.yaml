@@ -87,13 +87,6 @@ spec:
         - --crd-source-kind={{ .Values.crd.kind }}
           {{- end }}
         {{- end }}
-        {{- range $key, $value := .Values.extraArgs }}
-          {{- if $value }}
-        - --{{ $key }}={{ $value }}
-          {{- else }}
-        - --{{ $key }}
-          {{- end }}
-        {{- end }}
         {{- range .Values.istioIngressGateways }}
         - --istio-ingress-gateway={{ . }}
         {{- end }}
