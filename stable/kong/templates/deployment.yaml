@@ -18,8 +18,8 @@ spec:
   template:
     metadata:
       annotations:
-        {{- (and (not .Values.ingressController.enabled) (eq .Values.env.database "off")) }}
-        checksum/config: {{ .Values.declarativeConfig | toYaml | sha256sum }}
+        {{- if (and (not .Values.ingressController.enabled) (eq .Values.env.database "off" )) }}
+        checksum/declarativeConfig: {{ toYaml .Values.declarativeConfig | sha256sum }}
         {{- end }}
         {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
