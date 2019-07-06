@@ -1403,7 +1403,7 @@ web:
     ##   service.beta.kubernetes.io/aws-load-balancer-backend-port: "atc"
     ##   service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
     ##
-    annotations:
+    annotations: {}
 
     ## When using `web.service.type: LoadBalancer`, whitelist the load balancer to particular IPs
     ## Example:
@@ -1436,7 +1436,7 @@ web:
     ##   kubernetes.io/ingress.class: nginx
     ##   kubernetes.io/tls-acme: 'true'
     ##
-    annotations:
+    annotations: {}
 
     ## Hostnames.
     ## Must be provided if Ingress is enabled.
