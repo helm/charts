@@ -17,10 +17,13 @@ spec:
       component: app
   template:
     metadata:
-    {{- if .Values.podAnnotations }}
       annotations:
+        {{- (and (not .Values.ingressController.enabled) (eq .Values.env.database "off")) }}
+        checksum/config: {{ .Values.declarativeConfig | toYaml | sha256sum }}
+        {{- end }}
+        {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
-    {{- end }}
+        {{- end }}
       labels:
         app: {{ template "kong.name" . }}
         release: {{ .Release.Name }}
