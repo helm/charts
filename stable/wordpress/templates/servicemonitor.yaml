@@ -7,7 +7,7 @@ metadata:
   namespace: {{ .Values.metrics.serviceMonitor.namespace }}
   {{- end }}
   labels:
-    app: {{ template "wordpress.name" . }}
+    app: "{{ template "wordpress.fullname" . }}"
     chart: {{ template "wordpress.chart" .  }}
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
@@ -31,6 +31,6 @@ spec:
       - {{ .Release.Namespace }}
   selector:
     matchLabels:
-      app: {{ template "wordpress.name" . }}
+      app: "{{ template "wordpress.fullname" . }}"
       release: "{{ .Release.Name }}"
 {{- end }}
