@@ -34,9 +34,12 @@ spec:
             cat > /authz/authz.rego <<EOF
             package system.authz
             default allow = false
+            # Allow anonymous access to the default policy decision.
             allow { input.path = [""]; input.method = "POST" }
             allow { input.path = [""]; input.method = "GET" }
-            allow { input.identity = "$TOKEN" }
+            # This is only used for health check in liveness and readiness probe
+            allow { input.path = ["health"]; input.method = "GET" }
+            allow { input.identity == "$TOKEN" }
             EOF
           volumeMounts:
             - name: authz
