@@ -115,5 +115,9 @@ extraVolumes: {}
 
 image:
   repository: "pomerium/pomerium"
-  tag: "v0.0.5"
+  tag: "v0.1.0"
   pullPolicy: "IfNotPresent"
+
+metrics:
+  enabled: false
+  port: 9090

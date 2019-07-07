@@ -87,6 +87,9 @@ spec:
           - containerPort: 443
             name: https
             protocol: TCP
+          - containerPort: {{ .Values.metrics.port }}
+            name: metrics
+            protocol: TCP
         livenessProbe:
           httpGet:
             path: /ping
