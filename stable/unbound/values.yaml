@@ -29,6 +29,8 @@ tolerations: []
 
 affinity: {}
 
+# clusterIP:
+
 # Controls which IP address ranges unbound will allow queries from.
 # If you want to use unbound as an upstream for kube-dns, or allow other pods
 # to query the resolver directly, you'll at least need to allow the
