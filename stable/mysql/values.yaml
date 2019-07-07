@@ -194,9 +194,11 @@ ssl:
 ## Example: 'Australia/Sydney'
 # timezone:
 
+# Deployment Annotations
+deploymentAnnotations: {}
+
 # To be added to the database server pod(s)
 podAnnotations: {}
-
 podLabels: {}
 
 ## Set pod priorityClassName
