@@ -77,10 +77,11 @@ spec:
           fi
           if [[ ! -f /opt/bitnami/redis/etc/redis.conf ]];then
             cp /opt/bitnami/redis/mounted-etc/redis.conf /opt/bitnami/redis/etc/redis.conf
-          fi          
+          fi
           ARGS=("--port" "${REDIS_PORT}")
           {{- if .Values.usePassword }}
           ARGS+=("--requirepass" "${REDIS_PASSWORD}")
+          ARGS+=("--masterauth" "${REDIS_PASSWORD}")
           {{- else }}
           ARGS+=("--protected-mode" "no")
           {{- end }}
@@ -125,7 +126,7 @@ spec:
             command:
             - sh
             - -c
-            - /health/ping_local.sh {{ .Values.master.livenessProbe.timeoutSeconds }}
+            - /health/ping_liveness_local.sh {{ .Values.master.livenessProbe.timeoutSeconds }}
         {{- end }}
         {{- if .Values.master.readinessProbe.enabled}}
         readinessProbe:
@@ -138,7 +139,7 @@ spec:
             command:
             - sh
             - -c
-            - /health/ping_local.sh {{ .Values.master.livenessProbe.timeoutSeconds }}
+            - /health/ping_readiness_local.sh {{ .Values.master.livenessProbe.timeoutSeconds }}
         {{- end }}
         resources:
 {{ toYaml .Values.master.resources | indent 10 }}

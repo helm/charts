@@ -4,6 +4,7 @@ metadata:
   name: {{ include "ambassador.fullname" . }}
   labels:
     app.kubernetes.io/name: {{ include "ambassador.name" . }}
+    app.kubernetes.io/part-of: {{ .Release.Name }}
     helm.sh/chart: {{ include "ambassador.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
@@ -37,6 +38,12 @@ spec:
       {{- with .Values.service.https.nodePort }}
       nodePort: {{ toYaml . }}
       {{- end }}
+    {{- end }}
+    {{- range $key := .Values.additionalTCPPorts }}
+    - name: "{{ $key }}-tcp"
+      port: {{ $key }}
+      protocol: TCP
+      targetPort: "{{ $key }}-tcp"
     {{- end }}
   selector:
     app.kubernetes.io/name: {{ include "ambassador.name" . }}

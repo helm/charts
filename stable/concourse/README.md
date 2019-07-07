@@ -83,7 +83,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | `imageDigest` | Specific image digest to use in place of a tag. | `nil` |
 | `imagePullPolicy` | Concourse image pull policy | `IfNotPresent` |
 | `imagePullSecrets` | Array of imagePullSecrets in the namespace for pulling images | `[]` |
-| `imageTag` | Concourse image version | `5.0.0` |
+| `imageTag` | Concourse image version | `5.3.0` |
 | `image` | Concourse image | `concourse/concourse` |
 | `nameOverride` | Provide a name in place of `concourse` for `app:` labels | `nil` |
 | `persistence.enabled` | Enable Concourse persistence using Persistent Volume Claims | `true` |
@@ -91,13 +91,13 @@ The following table lists the configurable parameters of the Concourse chart and
 | `persistence.worker.size` | Concourse Worker Persistent Volume Storage Size | `20Gi` |
 | `persistence.worker.storageClass` | Concourse Worker Persistent Volume Storage Class | `generic` |
 | `postgresql.enabled` | Enable PostgreSQL as a chart dependency | `true` |
-| `postgresql.persistence.accessMode` | Persistent Volume Access Mode | `ReadWriteOnce` |
+| `postgresql.persistence.accessModes` | Persistent Volume Access Mode | `["ReadWriteOnce"]` |
 | `postgresql.persistence.enabled` | Enable PostgreSQL persistence using Persistent Volume Claims | `true` |
 | `postgresql.persistence.size` | Persistent Volume Storage Size | `8Gi` |
 | `postgresql.persistence.storageClass` | Concourse data Persistent Volume Storage Class | `nil` |
-| `postgresql.postgresDatabase` | PostgreSQL Database to create | `concourse` |
-| `postgresql.postgresPassword` | PostgreSQL Password for the new user | `concourse` |
-| `postgresql.postgresUser` | PostgreSQL User to create | `concourse` |
+| `postgresql.postgresqlDatabase` | PostgreSQL Database to create | `concourse` |
+| `postgresql.postgresqlPassword` | PostgreSQL Password for the new user | `concourse` |
+| `postgresql.postgresqlUsername` | PostgreSQL User to create | `concourse` |
 | `rbac.apiVersion` | RBAC version | `v1beta1` |
 | `rbac.create` | Enables creation of RBAC resources | `true` |
 | `rbac.webServiceAccountName` | Name of the service account to use for web pods if `rbac.create` is `false` | `default` |
@@ -114,6 +114,9 @@ The following table lists the configurable parameters of the Concourse chart and
 | `secrets.cfClientId` | Client ID for cf auth provider | `nil` |
 | `secrets.cfClientSecret` | Client secret for cf auth provider | `nil` |
 | `secrets.create` | Create the secret resource from the following values. *See [Secrets](#secrets)* | `true` |
+| `secrets.credhubCaCert` | Value of PEM-encoded CA cert file to use to verify the CredHub server SSL cert. | `nil` |
+| `secrets.credhubClientId` | Client ID for CredHub authorization. | `nil` |
+| `secrets.credhubClientSecret` | Client secret for CredHub authorization. | `nil` |
 | `secrets.encryptionKey` | current encryption key | `nil` |
 | `secrets.githubCaCert` | CA certificate for Enterprise Github OAuth | `nil` |
 | `secrets.githubClientId` | Application client ID for GitHub OAuth | `nil` |
@@ -152,8 +155,10 @@ The following table lists the configurable parameters of the Concourse chart and
 | `web.additionalAffinities` | Additional affinities to apply to web pods. E.g: node affinity | `{}` |
 | `web.additionalVolumeMounts` | VolumeMounts to be added to the web pods | `nil` |
 | `web.additionalVolumes` | Volumes to be added to the web pods | `nil` |
-| `web.annotations`| Concourse Web deployment annotations | `nil` |
+| `web.labels`| Additional labels to be added to the web pods | `{}` |
+| `web.annotations`| Annotations to be added to the web pods | `{}` |
 | `web.authSecretsPath` | Specify the mount directory of the web auth secrets | `/concourse-auth` |
+| `web.credhubSecretsPath` | Specify the mount directory of the web credhub secrets | `/concourse-credhub` |
 | `web.enabled` | Enable or disable the web component | `true` |
 | `web.env` | Configure additional environment variables for the web containers | `[]` |
 | `web.ingress.annotations` | Concourse Web Ingress annotations | `{}` |
@@ -192,6 +197,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | `worker.additionalAffinities` | Additional affinities to apply to worker pods. E.g: node affinity | `{}` |
 | `worker.additionalVolumeMounts` | VolumeMounts to be added to the worker pods | `nil` |
 | `worker.additionalVolumes` | Volumes to be added to the worker pods | `nil` |
+| `web.labels`| Additional labels to be added to the worker pods | `{}` |
 | `worker.annotations` | Annotations to be added to the worker pods | `{}` |
 | `worker.cleanUpWorkDirOnStart` | Removes any previous state created in `concourse.worker.workDir` | `true` |
 | `worker.emptyDirSize` | When persistance is disabled this value will be used to limit the emptyDir volume size | `nil` |
@@ -381,9 +387,9 @@ web:
 
 ### PostgreSQL
 
-By default, this chart uses a PostgreSQL database deployed as a chart dependency, with default values for username, password, and database name. These can be modified by setting the `postgresql.*` values.
+By default, this chart uses a PostgreSQL database deployed as a chart dependency (see the [PostgreSQL chart](https://github.com/helm/charts/blob/master/stable/postgresql/README.md)), with default values for username, password, and database name. These can be modified by setting the `postgresql.*` values.
 
-You can also bring your own PostgreSQL. To do so, set `postgresql.enabled` to false, and then configure Concourse's `postgres` values (`concourse.web.postgres.*`).
+You can also bring your own PostgreSQL. To do so, set `postgresql.enabled` to `false`, and then configure Concourse's `postgres` values (`concourse.web.postgres.*`).
 
 Note that some values get set in the form of secrets, like `postgresql-user`, `postgresql-password`, and others (see [templates/secrets.yaml](templates/secrets.yaml) for possible values and the [secrets section](#secrets) on this README for guidance on how to set those secrets).
 
@@ -462,6 +468,39 @@ concourse:
       ## vault path under which to namespace credential lookup, defaults to /concourse.
       ##
       # pathPrefix:
+```
+
+#### Credhub
+
+To use Credhub, set `concourse.web.kubernetes.enabled` to false, and consider the following values:
+
+```yaml
+## Configuration for using Credhub as a credential manager.
+## Ref: https://concourse-ci.org/credhub-credential-manager.html
+##
+concourse:
+  web:
+    credhub:
+      ## Enable the use of Credhub as a credential manager.
+      ##
+      enabled: true
+
+      ## CredHub server address used to access secrets
+      ## Example: https://credhub.example.com
+      ##
+      url:
+
+      ## Path under which to namespace credential lookup. (default: /concourse)
+      ##
+      pathPrefix:
+
+      ## Enables using a CA Certificate
+      ##
+      useCaCert: false
+
+      ## Enables insecure SSL verification.
+      ##
+      insecureSkipVerify: false
 ```
 
 #### AWS Systems Manager Parameter Store (SSM)
