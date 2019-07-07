@@ -158,14 +158,14 @@ sar:
 # To control the liveness and readiness probes change the fields below.
 readinessProbe:
   httpGet:
-    path: /
+    path: /health
     scheme: HTTPS
     port: 443
   initialDelaySeconds: 3
   periodSeconds: 5
 livenessProbe:
   httpGet:
-    path: /
+    path: /health
     scheme: HTTPS
     port: 443
   initialDelaySeconds: 3
