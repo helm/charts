@@ -43,8 +43,8 @@ trackOffsets: false
 priorityClassName: ""
 
 ## Run the container as a privileged user. Necessary for certain input plugins.
-## Pod podSpec.container.securityContext.privileged
-runAsPrivileged: false 
+## daemonSet.podSpec.container.securityContext.privileged
+runAsPrivileged: false
 
 backend:
   type: forward
