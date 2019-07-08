@@ -7,6 +7,7 @@
 # See templates/_helpers.tpl
 # nameOverride:
 # fullnameOverride:
+# namespaceOverride:
 
 # For FQDN resolving of the master service. Change this value to match your existing configuration.
 # ref: https://github.com/kubernetes/dns/blob/master/docs/specification.md
@@ -471,6 +472,14 @@ backup:
   # Additional arguments for kube-tasks
   # Ref: https://github.com/nuvo/kube-tasks#simple-backup
   extraArgs: []
+  # Add existingSecret for AWS credentials
+  existingSecret: {}
+  ## Example for using an existing secret
+   # jenkinsaws:
+  ## Use this key for AWS access key ID
+     # awsaccesskey: jenkins_aws_access_key
+  ## Use this key for AWS secret access key
+     # awssecretkey: jenkins_aws_secret_key
   # Add additional environment variables
   env:
   # Example environment variable required for AWS credentials chain

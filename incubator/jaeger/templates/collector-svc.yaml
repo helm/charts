@@ -15,38 +15,22 @@ metadata:
 {{- end }}
 spec:
   ports:
-  - name: jaeger-collector-grpc
+  - name: grpc
     port: {{ .Values.collector.service.grpcPort }}
     protocol: TCP
-    {{- if eq .Values.collector.service.type "NodePort" }}
-    nodePort: {{ .Values.collector.service.grpcPort }}
-    {{- else }}
     targetPort: grpc
-    {{- end }}
-  - name: jaeger-collector-tchannel
+  - name: tchannel
     port: {{ .Values.collector.service.tchannelPort }}
     protocol: TCP
-    {{- if eq .Values.collector.service.type "NodePort" }}
-    nodePort: {{ .Values.collector.service.tchannelPort }}
-    {{- else }}
     targetPort: tchannel
-    {{- end }}
-  - name: jaeger-collector-http
+  - name: http
     port: {{ .Values.collector.service.httpPort }}
     protocol: TCP
-    {{- if eq .Values.collector.service.type "NodePort" }}
-    nodePort: {{ .Values.collector.service.httpPort }}
-    {{- else }}
     targetPort: http
-    {{- end }}
-  - name: jaeger-collector-zipkin
+  - name: zipkin
     port: {{ .Values.collector.service.zipkinPort }}
     protocol: TCP
-    {{- if eq .Values.collector.service.type "NodePort" }}
-    nodePort: {{ .Values.collector.service.zipkinPort }}
-    {{- else }}
     targetPort: zipkin
-    {{- end }}
   selector:
     app.kubernetes.io/name: {{ include "jaeger.name" . }}
     app.kubernetes.io/component: collector

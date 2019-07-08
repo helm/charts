@@ -1,7 +1,7 @@
 {{- if .Values.hotrod.enabled -}}
 {{- if .Values.hotrod.ingress.enabled -}}
 {{- $serviceName := include "jaeger.fullname" . -}}
-{{- $servicePort := .Values.hotrod.service.externalPort -}}
+{{- $servicePort := .Values.hotrod.service.port -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
