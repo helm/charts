@@ -68,6 +68,10 @@ spec:
         - /bin/bash
         - -c
         - |
+          {{- if (eq .Values.securityContext.runAsUser 0.0) }}
+          useradd redis
+          chown -R redis {{ .Values.master.persistence.path }}
+          {{- end }}
           if [[ -n $REDIS_PASSWORD_FILE ]]; then
             password_aux=`cat ${REDIS_PASSWORD_FILE}`
             export REDIS_PASSWORD=$password_aux
