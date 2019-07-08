@@ -42,6 +42,10 @@ trackOffsets: false
 ## Ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/#priorityclass
 priorityClassName: ""
 
+## Run the container as a privileged user. Necessary for certain input plugins.
+## Pod podSpec.container.securityContext.privileged
+runAsPrivileged: false 
+
 backend:
   type: forward
   forward:
