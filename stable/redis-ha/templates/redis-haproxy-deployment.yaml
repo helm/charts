@@ -33,29 +33,6 @@ spec:
       serviceAccountName: {{ template "redis-ha.serviceAccountName" . }}-haproxy
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
-      {{- if eq .Values.haproxy.podAntiAffinity "hard" }}
-      affinity:
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchLabels:
-                app: {{ template "redis-ha.name" . }}
-                release: {{ .Release.Name }}
-                component: server
-            topologyKey: kubernetes.io/hostname
-      {{- else if eq .Values.haproxy.podAntiAffinity "soft" }}
-      affinity:
-        podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 1
-            podAffinityTerm:
-              labelSelector:
-                matchLabels:
-                  app: {{ template "redis-ha.fullname" . }}
-                  release: {{ .Release.Name }}
-                  component: server
-              topologyKey: kubernetes.io/hostname
-      {{- end }}
       initContainers:
       - name: config-init
         image: {{ .Values.haproxy.image.repository }}:{{ .Values.haproxy.image.tag }}
@@ -73,17 +50,19 @@ spec:
         - name: data
           mountPath: /data
       containers:
+      {{- if .Values.haproxy.exporter.enabled }}
       - name: prometheus-exporter
         image: quay.io/prometheus/haproxy-exporter:v0.9.0
         imagePullPolicy: {{ .Values.haproxy.pullPolicy }}
         ports:
         - name: exporter-port
-          containerPort: 9101
+          containerPort: {{ default "9101" .Values.haproxy.exporter.port }}
         command: ["haproxy_exporter",
                     "--haproxy.scrape-uri=unix:/run/haproxy/admin.sock"]
         volumeMounts:
           - name: shared-socket
             mountPath: /run/haproxy
+      {{- end }}
       - name: haproxy
         image: {{ .Values.haproxy.image.repository }}:{{ .Values.haproxy.image.tag }}
         imagePullPolicy: {{ .Values.haproxy.image.pullPolicy }}
