@@ -26,6 +26,9 @@ spec:
     {{- end }}
       labels:
         {{- include "prometheus.server.labels" . | nindent 8 }}
+        {{- if .Values.server.podLabels}}
+        {{ toYaml .Values.server.podLabels | nindent 8 }}
+        {{- end}}
     spec:
 {{- if .Values.server.priorityClassName }}
       priorityClassName: "{{ .Values.server.priorityClassName }}"

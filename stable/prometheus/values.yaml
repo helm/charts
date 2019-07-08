@@ -733,6 +733,10 @@ server:
   podAnnotations: {}
     # iam.amazonaws.com/role: prometheus
 
+  ## Labels to be added to Prometheus server pods
+  ##
+  podLabels: {}
+
   ## Use a StatefulSet if replicaCount needs to be greater than 1 (see below)
   ##
   replicaCount: 1
@@ -744,6 +748,7 @@ server:
     enabled: false
 
     annotations: {}
+    labels: {}
     podManagementPolicy: OrderedReady
 
     ## Alertmanager headless service to use for the statefulset
