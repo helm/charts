@@ -70,6 +70,7 @@ The following table lists the configurable parameters of the nextcloud chart and
 | `nextcloud.mail.smtp.authtype`      | SMTP authentication method                    | `LOGIN`                                                 |
 | `nextcloud.mail.smtp.name`          | SMTP username                                 | `''`                                                    |
 | `nextcloud.mail.smtp.password`      | SMTP password                                 | `''`                                                    |
+| `nextcloud.configs`                 | Config files created in `/var/www/html/config`| `{}`                                                    |
 | `internalDatabase.enabled`          | Whether to use internal sqlite database       | `true`                                                  |
 | `internalDatabase.database`         | Name of the existing database                 | `nextcloud`                                             |
 | `externalDatabase.enabled`          | Whether to use external database              | `false`                                                 |
@@ -157,3 +158,31 @@ To use this functionality, set `cronjob.enabled` parameter to `true` and switch 
 See the [Configuration](#configuration) section for further configuration of the cronjob resource.
 
 > **Note**: For the cronjobs to work correctly, ingress must be also enabled (set `ingress.enabled` to `true`) and `nextcloud.host` has to be publicly resolvable.
+
+## Multiple config.php file
+
+Nextcloud supports loading configuration parameters from multiple files. 
+You can add arbitrary files ending with `.config.php` in the `config/` directory. 
+See [documentation](https://docs.nextcloud.com/server/15/admin_manual/configuration_server/config_sample_php_parameters.html#multiple-config-php-file).
+
+For example, following config will configure Nextcloud with [S3 as primary storage](https://docs.nextcloud.com/server/13/admin_manual/configuration_files/primary_storage.html#simple-storage-service-s3) by creating file `/var/www/html/config/s3.config.php`:  
+
+```yaml
+nextcloud:
+  configs:
+    s3.config.php: |-
+      <?php
+      $CONFIG = array (
+        'objectstore' => array(
+          'class' => '\\OC\\Files\\ObjectStore\\S3',
+          'arguments' => array(
+            'bucket'     => 'my-bucket',
+            'autocreate' => true,
+            'key'        => 'xxx',
+            'secret'     => 'xxx',
+            'region'     => 'us-east-1',
+            'use_ssl'    => true
+          )
+        )
+      );
+```
