@@ -26,6 +26,7 @@ resources: {}
   #   cpu: 100m
 
 service:
+  enabled: true
   type: ClusterIP
 ## Exposed telegraf configuration
 ## For full list of possible values see `/docs/all-config-values.yaml` and `/docs/all-config-values.toml`
