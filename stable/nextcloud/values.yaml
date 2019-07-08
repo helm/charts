@@ -86,6 +86,9 @@ internalDatabase:
 externalDatabase:
   enabled: false
 
+  ## Supported database engines: mysql or postgresql
+  type: mysql
+
   ## Database host
   host:
 

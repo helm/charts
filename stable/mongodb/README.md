@@ -62,7 +62,7 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `mongodbUsername`                                  | MongoDB custom user                                                                          | `nil`                                                   |
 | `mongodbPassword`                                  | MongoDB custom user password                                                                 | `random alphanumeric string (10)`                       |
 | `mongodbDatabase`                                  | Database to create                                                                           | `nil`                                                   |
-| `mongodbEnableIPv6`                                | Switch to enable/disable IPv6 on MongoDB                                                     | `true`                                                  |
+| `mongodbEnableIPv6`                                | Switch to enable/disable IPv6 on MongoDB                                                     | `false`                                                 |
 | `mongodbDirectoryPerDB`                            | Switch to enable/disable DirectoryPerDB on MongoDB                                           | `false`                                                 |
 | `mongodbSystemLogVerbosity`                        | MongoDB systen log verbosity level                                                           | `0`                                                     |
 | `mongodbDisableSystemLog`                          | Whether to disable MongoDB system log or not                                                 | `false`                                                 |
@@ -139,7 +139,7 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `metrics.extraArgs`                                | String with extra arguments for the MongoDB Exporter                                         | ``                                                      |
 | `metrics.resources`                                | Exporter resource requests/limit                                                             | `{}`                                                    |
 | `metrics.serviceMonitor.enabled`                   | Create ServiceMonitor Resource for scraping metrics using PrometheusOperator                 | `false`                                                 |
-| `metrics.serviceMonitor.namespace                  | Optional namespace which Prometheus is running in                                            | `nil`                                                   |
+| `metrics.serviceMonitor.namespace`                 | Optional namespace which Prometheus is running in                                            | `nil`                                                   |
 | `metrics.serviceMonitor.additionalLabels`          | Used to pass Labels that are required by the Installed Prometheus Operator                   | `{}`                                                    |
 | `metrics.serviceMonitor.relabellings`              | Specify Metric Relabellings to add to the scrape endpoint                                    | `nil`                                                   |
 | `metrics.serviceMonitor.alerting.rules`            | Define individual alerting rules as required                                                 | `{}`                                                    |
@@ -248,6 +248,11 @@ The [Bitnami MongoDB](https://github.com/bitnami/bitnami-docker-mongodb) image s
 The chart mounts a [Persistent Volume](http://kubernetes.io/docs/user-guide/persistent-volumes/) at this location. The volume is created using dynamic volume provisioning.
 
 ## Upgrading
+
+### To 6.0.0
+
+From this version, `mongodbEnableIPv6` is set to `false` by default in order to work properly in most k8s clusters, if you want to use IPv6 support, you need to set this variable to `true` by adding `--set mongodbEnableIPv6=true` to your `helm` command.
+You can find more information in the [`bitnami/mongodb` image README](https://github.com/bitnami/bitnami-docker-mongodb/blob/master/README.md).
 
 ### To 5.0.0
 
