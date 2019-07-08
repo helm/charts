@@ -8,6 +8,9 @@ metadata:
 {{- end }}
   labels:
     {{- include "prometheus.server.labels" . | nindent 4 }}
+    {{- if .Values.server.statefulSet.labels}}
+    {{ toYaml .Values.server.statefulSet.labels | nindent 4 }}
+    {{- end}}
   name: {{ template "prometheus.server.fullname" . }}
 spec:
   serviceName: {{ template "prometheus.server.fullname" . }}-headless
@@ -24,6 +27,9 @@ spec:
     {{- end }}
       labels:
         {{- include "prometheus.server.labels" . | nindent 8 }}
+        {{- if .Values.server.statefulSet.labels}}
+        {{ toYaml .Values.server.statefulSet.labels | nindent 8 }}
+        {{- end}}
     spec:
 {{- if .Values.server.affinity }}
       affinity:
