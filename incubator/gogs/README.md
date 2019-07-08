@@ -55,6 +55,7 @@ chart and their default values.
 | `postgresql.persistence.enabled` | Enable PostgreSQL persistence using Persistent Volume Claims | `true`                                                     |
 | `service.httpNodePort`           | Enable a static port where the Gogs http service is exposed on each Node’s IP | `nil`                                     |
 | `service.sshNodePort`            | Enable a static port where the Gogs ssh service is exposed on each Node’s IP | `nil`                                      |
+| `service.staticRootPath`         | Upper level of the templates and static files path. The default is the path where Gogs is located.  | `nil`                                      |
 
 See [values.yaml](values.yaml) for a more complete list, and links to the Gogs documentation.
 
