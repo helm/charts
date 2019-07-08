@@ -128,7 +128,6 @@ Compile all warnings into a single message, and call fail.
 {{- $messages := append $messages (include "external-dns.validateValues.provider" .) -}}
 {{- $messages := append $messages (include "external-dns.validateValues.sources" .) -}}
 {{- $messages := append $messages (include "external-dns.validateValues.aws" .) -}}
-{{- $messages := append $messages (include "external-dns.validateValues.google" .) -}}
 {{- $messages := append $messages (include "external-dns.validateValues.infoblox.gridHost" .) -}}
 {{- $messages := append $messages (include "external-dns.validateValues.infoblox.wapiPassword" .) -}}
 {{- $messages := without $messages "" -}}
@@ -175,19 +174,6 @@ external-dns: aws.assumeRoleArn
     Ref: https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html
     Please set a valid ARN (--set aws.assumeRoleARN="xxxx")
 {{- end -}}
-{{- end -}}
-{{- end -}}
-
-{{/*
-Validate values of External DNS:
-- must provide a service account key when provider is "google"
-*/}}
-{{- define "external-dns.validateValues.google" -}}
-{{- if and (eq .Values.provider "google") (not .Values.google.serviceAccountSecret) (not .Values.google.serviceAccountKey) -}}
-external-dns: google.serviceAccountKey google.serviceAccountSecret
-    You must provide the service account key when provider="google".
-    Please set the service account key (--set google.serviceAccountKey="xxxx")
-    or reuse an existing secret (--set google.serviceAccountSecret="xxxx")
 {{- end -}}
 {{- end -}}
 
