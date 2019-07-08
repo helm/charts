@@ -54,9 +54,10 @@ spec:
         ports:
         - containerPort: 8080
           name: http
-        securityContext:{{- range $key, $value := .Values.securityContext}}
-          {{ $key }}:{{ $value }}
-        {{- end }}
+        securityContext:
+          runAsNonRoot: {{ .Values.securityContext.runAsNonRoot }}
+          runAsUser: {{ .Values.securityContext.runAsUser }}
+          allowPrivilegeEscalation: {{ .Values.securityContext.allowPrivilegeEscalation }}
         imagePullPolicy: {{ .Values.deployment.imagePullPolicy }}
         livenessProbe:
           failureThreshold: 3
