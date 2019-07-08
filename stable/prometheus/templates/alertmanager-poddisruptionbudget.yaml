@@ -1,0 +1,18 @@
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ template "prometheus.alertmanager.fullname" . }}
+  labels:
+    {{- include "prometheus.alertmanager.labels" . | nindent 4 }}
+spec:
+{{- if .Values.alertmanager.maxUnavailable  -}}
+  maxUnavailable: {{ .Values.alertmanager.poddisruptionbudget.maxUnavailable }}
+{{- end -}}
+{{- else if .Values.alertmanager.minAvailable -}}
+  minAvailable: {{ .Values.alertmanager.poddisruptionbudget.minAvailable }}
+{{- else -}}
+  maxUnavailable: {{ .Values.alertmanager.poddisruptionbudget.maxUnavailable | default 1 }}
+{{- end -}}
+  selector:
+    matchLabels:
+      {{- include "prometheus.alertmanager.matchLabels" . | nindent 4 }}

@@ -1,0 +1,18 @@
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ template "prometheus.pushgateway.fullname" . }}
+  labels:
+    {{- include "prometheus.pushgateway.labels" . | nindent 4 }}
+spec:
+{{- if .Values.pushgateway.maxUnavailable  -}}
+  maxUnavailable: {{ .Values.pushgateway.poddisruptionbudget.maxUnavailable }}
+{{- end -}}
+{{- else if .Values.pushgateway.minAvailable -}}
+  minAvailable: {{ .Values.pushgateway.poddisruptionbudget.minAvailable }}
+{{- else -}}
+  maxUnavailable: {{ .Values.pushgateway.poddisruptionbudget.maxUnavailable | default 1 }}
+{{- end -}}
+  selector:
+    matchLabels:
+      {{- include "prometheus.pushgateway.matchLabels" . | nindent 4 }}
