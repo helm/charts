@@ -71,11 +71,11 @@ spec:
             secretName: {{ .Values.secrets.peer.tlsClientRootCert }}
         {{- end }}
         {{- if .Values.secrets.channels }}
-        {{- range .Values.secrets.channels}}
+          {{- range .Values.secrets.channels }}
         - name: {{ . }}
           secret:
             secretName: {{ . }}
-        {{- end }}
+          {{- end }}
         {{- end }}
         {{- if .Values.secrets.adminCert }}
         - name: admin-cert
@@ -204,10 +204,10 @@ spec:
               name: ord-tls-rootcert
             {{- end }}
             {{- if .Values.secrets.channels }}
-            {{- range .Values.secrets.channels}}
-            - mountPath: /hl_config/channel/{{.}}
-              name: {{.}}
-            {{- end }}
+              {{- range .Values.secrets.channels }}
+            - mountPath: /hl_config/channel/{{ . }}
+              name: {{ . }}
+              {{- end }}
             {{- end }}
             {{- if .Values.secrets.adminCert }}
             - mountPath: /var/hyperledger/admin_msp/admincerts
