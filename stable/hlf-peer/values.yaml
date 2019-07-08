@@ -89,7 +89,9 @@ secrets:
     # tlsClientRootCerts: hlf--ord-tlsrootcert
   ## This should contain "channel" transaction derived from a configtx.yaml
   ## configtxgen -profile ComposerChannel -channelID composerchannel -outputCreateChannelTx composerchannel.tx
-  # channel: hlf--channel
+  # channels:
+  # - foochannel
+  # - barchannel
   ## This should contain the Certificate of the Peer Organisation admin
   ## This is necessary to successfully run the peer
   # adminCert: hlf--peer-admincert
