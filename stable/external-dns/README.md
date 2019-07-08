@@ -44,6 +44,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following table lists the configurable parameters of the external-dns chart and their default values.
 
+
 | Parameter                          | Description                                                                                              | Default                                                  |
 | ---------------------------------- | -------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
 | `global.imageRegistry`             | Global Docker image registry                                                                             | `nil`                                                    |
@@ -114,7 +115,10 @@ The following table lists the configurable parameters of the external-dns chart 
 | `tolerations`                      | Tolerations for pod assignment (this value is evaluated as a template)                                                                                | `[]`                                                     |
 | `podAnnotations`                   | Additional annotations to apply to the pod.                                                              | `{}`                                                     |
 | `podLabels`                        | Additional labels to be added to pods                                                                    | {}                                                       |
+| `podSecurityContext.fsGroup`       | Group ID for the container                                                                               | `1001`                                                   |
+| `podSecurityContext.runAsUser`     | User ID for the container                                                                                | `1001`                                                   |
 | `priorityClassName`                | priorityClassName                                                                                        | `""`                                                     |
+| `securityContext`                  | Security context for the container                                                                       | `{}`                                                     |
 | `service.type`                     | Kubernetes Service type                                                                                  | `ClusterIP`                                              |
 | `service.port`                     | ExternalDNS client port                                                                                  | `7979`                                                   |
 | `service.nodePort`                 | Port to bind to for NodePort service type (client port)                                                  | `nil`                                                    |
@@ -126,8 +130,6 @@ The following table lists the configurable parameters of the external-dns chart 
 | `rbac.create`                      | Wether to create & use RBAC resources or not                                                             | `false`                                                  |
 | `rbac.serviceAccountName`          | ServiceAccount (ignored if rbac.create == true)                                                          | `default`                                                |
 | `rbac.apiVersion`                  | Version of the RBAC API                                                                                  | `v1beta1`                                                |
-| `securityContext.fsGroup`          | Group ID for the container                                                                               | `1001`                                                   |
-| `securityContext.runAsUser`        | User ID for the container                                                                                | `1001`                                                   |
 | `resources`                        | CPU/Memory resource requests/limits.                                                                     | `{}`                                                     |
 | `livenessProbe`                    | Deployment Liveness Probe                                                                                | See `values.yaml`                                        |
 | `readinessProbe`                   | Deployment Readiness Probe                                                                               | See `values.yaml`                                        |
