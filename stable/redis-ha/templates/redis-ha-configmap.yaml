@@ -50,7 +50,7 @@ data:
     set -eu
 
     sentinel_update() {
-        echo "Updating sentinel config"
+        echo "Updating sentinel config with master $MASTER"
         eval MY_SENTINEL_ID="\${SENTINEL_ID_$INDEX}"
         sed -i "1s/^/sentinel myid $MY_SENTINEL_ID\\n/" "$SENTINEL_CONF"
         sed -i "2s/^/sentinel monitor $MASTER_GROUP $1 $REDIS_PORT $QUORUM \\n/" "$SENTINEL_CONF"
@@ -156,7 +156,7 @@ data:
       tcp-check connect
       tcp-check send PING\r\n
       tcp-check expect string +PONG
-      tcp-check send SENTINEL\ master\ mymaster\r\n
+      tcp-check send SENTINEL\ get-master-addr-by-name\ mymaster\r\n
       tcp-check expect string REPLACE_ANNOUNCE{{ $i }}
       tcp-check send QUIT\r\n
       tcp-check expect string +OK
@@ -183,7 +183,7 @@ data:
       tcp-check expect string +OK
       {{- range $i := until $replicas }}
       use-server R{{ $i }} if { srv_is_up(R{{ $i }}) } { nbsrv(check_if_redis_is_master_{{ $i }}) ge 2 }
-      server R{{ $i }} {{ $fullName }}-announce-{{ $i }}:6379 check inter 1s
+      server R{{ $i }} {{ $fullName }}-announce-{{ $i }}:6379 check inter 1s fall 1 rise 1
       {{- end }}
 {{- end }}
 {{- end }}
