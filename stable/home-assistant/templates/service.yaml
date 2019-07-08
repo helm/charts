@@ -45,12 +45,21 @@ spec:
       nodePort: {{.Values.service.nodePort}}
 {{ end }}
 {{- if .Values.configurator.enabled }}
-    - name: http
+    - name: configurator
       port: {{ .Values.configurator.service.port }}
       protocol: TCP
       targetPort: 3218
 {{ if (and (eq .Values.configurator.service.type "NodePort") (not (empty .Values.configurator.service.nodePort))) }}
       nodePort: {{.Values.configurator.service.nodePort}}
+{{ end }}
+{{- end }}
+{{- if .Values.vscode.enabled }}
+    - name: vscode
+      port: {{ .Values.vscode.service.port }}
+      protocol: TCP
+      targetPort: 80
+{{ if (and (eq .Values.vscode.service.type "NodePort") (not (empty .Values.vscode.service.nodePort))) }}
+      nodePort: {{.Values.vscode.service.nodePort}}
 {{ end }}
 {{- end }}
   selector:

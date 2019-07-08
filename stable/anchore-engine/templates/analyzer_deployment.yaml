@@ -2,28 +2,40 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: "{{ template "anchore-engine.analyzer.fullname" . }}"
+  name: {{ template "anchore-engine.analyzer.fullname" . }}
   labels:
-    app: "{{ template "anchore-engine.fullname" . }}"
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app: {{ template "anchore-engine.fullname" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
     component: {{ $component }}
+    {{- with .Values.anchoreAnalyzer.labels }}
+    {{ toYaml . | nindent 4 | trim }}
+    {{- end }}
+    {{- with .Values.anchoreGlobal.labels }}
+    {{ toYaml . | nindent 4 | trim }}
+    {{- end }}
 spec:
   selector:
     matchLabels:
-      app: "{{ template "anchore-engine.fullname" . }}"
+      app: {{ template "anchore-engine.fullname" . }}
       component: {{ $component }}
   replicas: {{ .Values.anchoreAnalyzer.replicaCount }}
   template:
     metadata:
       labels:
-        app: "{{ template "anchore-engine.fullname" . }}"
+        app: {{ template "anchore-engine.fullname" . }}
         component: {{ $component }}
-{{- if .Values.anchoreAnalyzer.annotations }}
+        {{- with .Values.anchoreAnalyzer.labels }}
+        {{ toYaml . | nindent 8 | trim }}
+        {{- end }}
+        {{- with .Values.anchoreGlobal.labels }}
+        {{ toYaml . | nindent 8 | trim }}
+        {{- end }}
+      {{- with .Values.anchoreAnalyzer.annotations }}
       annotations:
-{{ toYaml .Values.anchoreAnalyzer.annotations | indent 8 }}
-{{- end }}
+        {{ toYaml . | nindent 8 | trim }}
+      {{- end }}
     spec:
       containers:
       {{- if .Values.cloudsql.enabled  }}
@@ -31,12 +43,20 @@ spec:
         image: {{ .Values.cloudsql.image.repository }}:{{ .Values.cloudsql.image.tag }}
         imagePullPolicy: {{ .Values.cloudsql.image.pullPolicy }}
         command: ["/cloud_sql_proxy"]
-        args: ["-instances={{ .Values.cloudsql.instance }}=tcp:5432"]
+        args:
+        - "-instances={{ .Values.cloudsql.instance }}=tcp:5432"
+        {{- if .Values.cloudsql.useExistingServiceAcc }}
+        - "-credential_file=/var/{{ .Values.cloudsql.serviceAccSecretName }}/{{ .Values.cloudsql.serviceAccJsonName }}"
+        volumeMounts:
+        - mountPath: /var/{{ .Values.cloudsql.serviceAccSecretName }}
+          name: {{ .Values.cloudsql.serviceAccSecretName }}
+          readOnly: true
+        {{- end }}
       {{- end }}
       - name: {{ .Chart.Name }}-{{ $component }}
         image: {{ .Values.anchoreGlobal.image }}
         imagePullPolicy: {{ .Values.anchoreGlobal.imagePullPolicy }}
-        command: ["/usr/local/bin/anchore-manager"]
+        command: ["anchore-manager"]
         args: ["service", "start", "analyzer"]
         envFrom:
         - secretRef:
@@ -45,10 +65,10 @@ spec:
             name: {{ template "anchore-engine.fullname" . }}
         env:
         {{- with .Values.anchoreGlobal.extraEnv }}
-        {{- toYaml . | nindent 8 }}
+        {{- toYaml . | nindent 8 | trim }}
         {{- end }}
         {{- with .Values.anchoreAnalyzer.extraEnv }}
-        {{- toYaml . | nindent 8 }}
+        {{- toYaml . | nindent 8 | trim }}
         {{- end }}
         - name: ANCHORE_POD_NAME
           valueFrom:
@@ -63,11 +83,11 @@ spec:
           subPath: config.yaml
         {{- if .Values.anchoreGlobal.internalServicesSslEnabled }}
         - name: certs
-          mountPath: {{ default "/certs" .Values.anchoreGlobal.internalServicesSsl.certDir }}
+          mountPath: {{ .Values.anchoreGlobal.internalServicesSsl.certDir }}
           readOnly: true
         {{- end }}
-        - name: analysis-scratch
-          mountPath: {{ .Values.anchoreAnalyzer.scratchVolume.mountPath }}
+        - name: {{ $component }}-scratch
+          mountPath: {{ .Values.anchoreGlobal.scratchVolume.mountPath }}
         livenessProbe:
           httpGet:
             path: /health
@@ -86,7 +106,7 @@ spec:
           failureThreshold: 3
           successThreshold: 1
         resources:
-{{ toYaml .Values.anchoreAnalyzer.resources | indent 10 }}
+          {{ toYaml .Values.anchoreAnalyzer.resources | nindent 10 | trim }}
       volumes:
         - name: config-volume
           configMap:
@@ -96,17 +116,22 @@ spec:
           secret:
             secretName: {{ .Values.anchoreGlobal.internalServicesSsl.certSecret }}
         {{- end }}
-        - name: analysis-scratch
-{{ toYaml .Values.anchoreAnalyzer.scratchVolume.details | indent 10 }}
-    {{- if .Values.anchoreAnalyzer.nodeSelector }}
+        - name: {{ $component }}-scratch
+          {{ toYaml .Values.anchoreGlobal.scratchVolume.details | indent 10 | trim }}
+        {{- if .Values.cloudsql.useExistingServiceAcc }}
+        - name: {{ .Values.cloudsql.serviceAccSecretName }}
+          secret:
+            secretName: {{ .Values.cloudsql.serviceAccSecretName }}
+        {{- end }}
+      {{- with .Values.anchoreAnalyzer.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.anchoreAnalyzer.nodeSelector | indent 8 }}
-    {{- end }}
-    {{- with .Values.anchoreAnalyzer.affinity }}
+        {{ toYaml . | nindent 8 | trim }}
+      {{- end }}
+      {{- with .Values.anchoreAnalyzer.affinity }}
       affinity:
-{{ toYaml . | indent 8 }}
-    {{- end }}
-    {{- with .Values.anchoreAnalyzer.tolerations }}
+        {{ toYaml . | nindent 8 | trim }}
+      {{- end }}
+      {{- with .Values.anchoreAnalyzer.tolerations }}
       tolerations:
-{{ toYaml . | indent 8 }}
-    {{- end }}
+        {{ toYaml . | nindent 8 | trim }}
+      {{- end }}

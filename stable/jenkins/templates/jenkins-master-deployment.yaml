@@ -6,6 +6,7 @@ apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
   name: {{ template "jenkins.fullname" . }}
+  namespace: {{ template "jenkins.namespace" . }}
   labels:
     "app.kubernetes.io/name": '{{ template "jenkins.name" .}}'
     "helm.sh/chart": "{{ .Chart.Name }}-{{ .Chart.Version }}"
@@ -211,15 +212,18 @@ spec:
             httpGet:
               path: "{{ default "" .Values.master.jenkinsUriPrefix }}/login"
               port: http
-            initialDelaySeconds: {{ .Values.master.healthProbesLivenessTimeout }}
-            timeoutSeconds: 5
+            initialDelaySeconds: {{ .Values.master.healthProbeLivenessInitialDelay }}
+            periodSeconds: {{ .Values.master.healthProbeLivenessPeriodSeconds }}
+            timeoutSeconds: {{ .Values.master.healthProbesLivenessTimeout }}
             failureThreshold: {{ .Values.master.healthProbeLivenessFailureThreshold }}
           readinessProbe:
             httpGet:
               path: "{{ default "" .Values.master.jenkinsUriPrefix }}/login"
               port: http
-            initialDelaySeconds: {{ .Values.master.healthProbesReadinessTimeout }}
+            initialDelaySeconds: {{ .Values.master.healthProbeReadinessInitialDelay }}
             periodSeconds: {{ .Values.master.healthProbeReadinessPeriodSeconds }}
+            timeoutSeconds: {{ .Values.master.healthProbesReadinessTimeout }}
+            failureThreshold: {{ .Values.master.healthProbeReadinessFailureThreshold }}
 {{- end }}
 
           resources:
