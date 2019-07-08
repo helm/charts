@@ -185,6 +185,11 @@ spec:
         - name: nextcloud-data
           mountPath: /var/www/html/themes
           subPath: themes
+        {{- range $key, $value := .Values.nextcloud.configs }}
+        - name: nextcloud-config
+          mountPath: /var/www/html/config/{{ $key }}
+          subPath: {{ $key }}
+        {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -204,4 +209,9 @@ spec:
           claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "nextcloud.fullname" . }}-nextcloud{{- end }}
       {{- else }}
         emptyDir: {}
+      {{- end }}
+      {{- if .Values.nextcloud.configs }}
+      - name: nextcloud-config
+        configMap:
+          name: {{ template "nextcloud.fullname" . }}-config
       {{- end }}
