@@ -55,7 +55,7 @@ couchbase:
     - beam.smp couchbase
   labels:
     COUCHBASE_HOST_PORT: "{{ .IP }}:8093"
-    COUCHBASE_QUERY_HOSTPORT: "{{ .IP }}:8093"
+    COUCHBASE_QUERY_HOST_PORT: "{{ .IP }}:8093"
     COUCHBASE_BASICAUTH_USERNAME:
     COUCHBASE_BASICAUTH_PASSWORD:
 
