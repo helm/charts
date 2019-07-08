@@ -44,7 +44,7 @@ The following table lists the configurable parameters and their default values.
 | ---------------------- | --------------------------------------------------- | ------------------------- |
 | `replicaCount`         | desired number of prometheus-redis-exporter pods    | `1`                       |
 | `image.repository`     | prometheus-redis-exporter image repository          | `oliver006/redis_exporter`|
-| `image.tag`            | prometheus-redis-exporter image tag                 | `v0.28.0`                 |
+| `image.tag`            | prometheus-redis-exporter image tag                 | `v1.0.3`                 |
 | `image.pullPolicy`     | image pull policy                                   | `IfNotPresent`            |
 | `image.pullSecrets`    | image pull secrets                                  | {}                        |
 | `extraArgs`            | extra arguments for the binary; possible values [here](https://github.com/oliver006/redis_exporter#flags)| {}
@@ -54,7 +54,7 @@ The following table lists the configurable parameters and their default values.
 | `service.port`         | service external port                               | `9121`                    |
 | `service.annotations`  | Custom annotations for service                      | `{}`                      |
 | `service.labels`       | Additional custom labels for the service            | `{}`                      |
-| `redisAddress`         | A list of addresses of one or more redis nodes      | `redis://myredis:6379`    |
+| `redisAddress`         | Address of the Redis instance to scrape      | `redis://myredis:6379`    |
 | `annotations`          | pod annotations for easier discovery                | {}                        |
 | `rbac.create`           | Specifies whether RBAC resources should be created.| `true` |
 | `rbac.pspEnabled`       | Specifies whether a PodSecurityPolicy should be created.| `true` |
@@ -116,3 +116,9 @@ data:
     return result
 ```
 If you want to use this script for collecting metrics, you could do this by just set `script.configmap` to the name of the configmap (e.g. `prometheus-redis-exporter-script`) and `script.keyname` to the configmap-key holding the script (eg. `script`). The required variables inside the container will be set automatically.
+
+## Upgrading
+
+### To 3.0.0
+
+ The default tag for the exporter image is now `v1.x.x`. This major release includes changes to the names of various metrics and no longer directly supports the configuration (and scraping) of multiple redis instances; that is now the Prometheus server's responsibility. You'll want to use [this dashboard](https://github.com/oliver006/redis_exporter/blob/master/contrib/grafana_prometheus_redis_dashboard.json) now. Please see the [redis_exporter github page](https://github.com/oliver006/redis_exporter#upgrading-from-0x-to-1x) for more details.
