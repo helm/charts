@@ -6,7 +6,7 @@ metadata:
   labels:
 {{ include "labels.standard" . | indent 4 }}
 spec:
-  updateStrategy:
+  strategy:
     type: RollingUpdate
   revisionHistoryLimit: 1
   replicas: {{ .Values.haproxy.replicas }}
