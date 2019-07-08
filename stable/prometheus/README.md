@@ -139,6 +139,9 @@ Parameter | Description | Default
 `alertmanager.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `alertmanager.service.servicePort` | alertmanager service port | `80`
 `alertmanager.service.type` | type of alertmanager service to create | `ClusterIP`
+`alertmanager.poddisruptionbudget.enabled` | If true, Prometheus server PodDisrubtionBudget will be created | `false`
+`alertmanager.poddisruptionbudget.maxUnavailable` | which is a description of the number of pods from that set that can be unavailable after the eviction. It can be either an absolute number or a percentage | `1`
+`alertmanager.poddisruptionbudget.minAvailbale` | which is a description of the number of pods from that set that must still be available after the eviction, even in the absence of the evicted pod. It can be either an absolute number or a percentage | `1`
 `alertmanagerFiles.alertmanager.yml` | Prometheus alertmanager configuration | example configuration
 `configmapReload.name` | configmap-reload container name | `configmap-reload`
 `configmapReload.image.repository` | configmap-reload container image repository | `jimmidyson/configmap-reload`
@@ -234,6 +237,9 @@ Parameter | Description | Default
 `pushgateway.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `pushgateway.service.servicePort` | pushgateway service port | `9091`
 `pushgateway.service.type` | type of pushgateway service to create | `ClusterIP`
+`pushgateway.poddisruptionbudget.enabled` | If true, Prometheus server PodDisrubtionBudget will be created | `false`
+`pushgateway.poddisruptionbudget.maxUnavailable` | which is a description of the number of pods from that set that can be unavailable after the eviction. It can be either an absolute number or a percentage | `1`
+`pushgateway.poddisruptionbudget.minAvailbale` | which is a description of the number of pods from that set that must still be available after the eviction, even in the absence of the evicted pod. It can be either an absolute number or a percentage | `1`
 `rbac.create` | If true, create & use RBAC resources | `true`
 `server.name` | Prometheus server container name | `server`
 `server.image.repository` | Prometheus server container image repository | `prom/prometheus`
@@ -294,6 +300,9 @@ Parameter | Description | Default
 `server.service.servicePort` | Prometheus server service port | `80`
 `server.service.type` | type of Prometheus server service to create | `ClusterIP`
 `server.sidecarContainers` | array of snippets with your sidecar containers for prometheus server | `""`
+`server.poddisruptionbudget.enabled` | If true, Prometheus server PodDisrubtionBudget will be created | `false`
+`server.poddisruptionbudget.maxUnavailable` | which is a description of the number of pods from that set that can be unavailable after the eviction. It can be either an absolute number or a percentage | `1`
+`server.poddisruptionbudget.minAvailbale` | which is a description of the number of pods from that set that must still be available after the eviction, even in the absence of the evicted pod. It can be either an absolute number or a percentage | `1`
 `serviceAccounts.alertmanager.create` | If true, create the alertmanager service account | `true`
 `serviceAccounts.alertmanager.name` | name of the alertmanager service account to use or create | `{{ prometheus.alertmanager.fullname }}`
 `serviceAccounts.kubeStateMetrics.create` | If true, create the kubeStateMetrics service account | `true`

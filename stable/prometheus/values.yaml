@@ -255,7 +255,7 @@ alertmanager:
   ## The pod Disruption Budget if enabled, the spec maxUnavailable will be 1 by default.
   poddisruptionbudget:
     ## If false, the pod disrubtion will not be installed. 
-    enabled: true
+    enabled: false
     ## which is a description of the number of pods from that set that can be unavailable after the eviction.
     ## It can be either an absolute number or a percentage.
     maxUnavailable: 1
@@ -802,10 +802,16 @@ server:
   ## Prometheus data retention period (default if not specified is 15 days)
   ##
   retention: "15d"
-
+  ## Pushgateway Pod Disruption Budget
+  ## The Pod Disruption Budget if enabled, the spec maxUnavailable will be 1 by default.
   poddisruptionbudget:
-    enabled: true
+    ## If false, the pod disrubtion will not be installed. 
+    enabled: false
+    ## which is a description of the number of pods from that set that can be unavailable after the eviction.
+    ## It can be either an absolute number or a percentage.
     maxUnavailable: 1
+    ## which is a description of the number of pods from that set that must still be available after the eviction, even in the absence of the evicted pod.
+    ## It can be either an absolute number or a percentage.
     minAvailbale:
 
 pushgateway:
@@ -963,7 +969,7 @@ pushgateway:
   ## The Pod Disruption Budget if enabled, the spec maxUnavailable will be 1 by default.
   poddisruptionbudget:
     ## If false, the pod disrubtion will not be installed. 
-    enabled: true
+    enabled: false
     ## which is a description of the number of pods from that set that can be unavailable after the eviction.
     ## It can be either an absolute number or a percentage.
     maxUnavailable: 1
