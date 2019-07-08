@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "external-dns.fullname" . }}
@@ -21,10 +21,8 @@ spec:
         {{- end }}
     spec:
 {{- include "external-dns.imagePullSecrets" . | indent 6 }}
-      {{- if .Values.securityContext.enabled }}
-      securityContext:
-        fsGroup: {{ .Values.securityContext.fsGroup }}
-        runAsUser: {{ .Values.securityContext.runAsUser }}
+      {{- if .Values.podSecurityContext }}
+      securityContext: {{ toYaml .Values.podSecurityContext | nindent 8 }}
       {{- end }}
       {{- with .Values.affinity }}
       affinity: {{ tpl (toYaml .) $ | nindent 8 }}
@@ -254,6 +252,9 @@ spec:
           containerPort: {{ .Values.service.port }}
         readinessProbe: {{ toYaml .Values.readinessProbe | nindent 10 }}
         livenessProbe: {{ toYaml .Values.livenessProbe | nindent 10 }}
+        {{- if .Values.securityContext }}
+        securityContext: {{ toYaml .Values.securityContext | nindent 10 }}
+        {{- end }}
         {{- if .Values.resources }}
         resources: {{ toYaml .Values.resources | nindent 10 }}
         {{- end }}
