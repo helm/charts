@@ -22,7 +22,7 @@ serviceAccount:
   # name:
 
 ## Enables a HA Proxy for better LoadBalancing / Sentinel Master support. Automatically proxies to Redis master.
-## Recommend for externally exposed Redis clusters. 
+## Recommend for externally exposed Redis clusters.
 ## ref: https://cbonte.github.io/haproxy-dconv/1.9/intro.html
 haproxy:
   enabled: false
@@ -40,7 +40,7 @@ haproxy:
     annotations: {}
   serviceAccount:
     create: true
-  ## Prometheus metric exporter for HAProxy. 
+  ## Prometheus metric exporter for HAProxy.
   ##
   exporter:
     enabled: false
