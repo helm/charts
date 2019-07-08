@@ -12,13 +12,13 @@ spec:
   replicas: {{ .Values.haproxy.replicas }}
   selector:
     matchLabels:
-      app: {{ template "redis-ha.fullname" . }}
+      app: {{ template "redis-ha.name" . }}-haproxy
       release: {{ .Release.Name }}
   template:
     metadata:
       name: {{ template "redis-ha.fullname" . }}-haproxy
       labels:
-        app: {{ template "redis-ha.fullname" . }}
+        app: {{ template "redis-ha.name" . }}-haproxy
         release: {{ .Release.Name }}
       annotations:
         prometheus.io/path: /metrics

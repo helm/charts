@@ -25,7 +25,7 @@ serviceAccount:
 ## Recommend for externally exposed Redis clusters.
 ## ref: https://cbonte.github.io/haproxy-dconv/1.9/intro.html
 haproxy:
-  enabled: false
+  enabled: true
   replicas: 1
   image:
     repository: haproxy
@@ -43,7 +43,7 @@ haproxy:
   ## Prometheus metric exporter for HAProxy.
   ##
   exporter:
-    enabled: false
+    enabled: true
     port: 9101
   init:
     resources: {}

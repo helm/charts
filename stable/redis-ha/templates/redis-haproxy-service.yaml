@@ -10,8 +10,10 @@ metadata:
 {{ toYaml .Values.haproxy.service.annotations | indent 4 }}
   {{- end }}
 spec:
-  type: ClusterIP
+  type: {{ default "ClusterIP" .Values.haproxy.service.type }}
+  {{- if or (not .Values.haproxy.service.type) (eq .Values.haproxy.service.type "ClusterIP") }}
   clusterIP: None
+  {{- end }}
   ports:
   - name: haproxy
     port: {{ .Values.redis.port }}
@@ -25,5 +27,5 @@ spec:
 {{- end }}
   selector:
     release: {{ .Release.Name }}
-    app: {{ template "redis-ha.name" . }}
+    app: {{ template "redis-ha.name" . }}-haproxy
 {{- end }}
