@@ -1,3 +1,4 @@
+{{- if and .Values.pushgateway.enabled .Values.pushgateway.poddisruptionbudget.enabled -}}
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
@@ -5,10 +6,9 @@ metadata:
   labels:
     {{- include "prometheus.pushgateway.labels" . | nindent 4 }}
 spec:
-{{- if .Values.pushgateway.maxUnavailable  -}}
+{{ if .Values.pushgateway.poddisruptionbudget.maxUnavailable  }}
   maxUnavailable: {{ .Values.pushgateway.poddisruptionbudget.maxUnavailable }}
-{{- end -}}
-{{- else if .Values.pushgateway.minAvailable -}}
+{{- else if .Values.pushgateway.poddisruptionbudget.minAvailable }}
   minAvailable: {{ .Values.pushgateway.poddisruptionbudget.minAvailable }}
 {{- else -}}
   maxUnavailable: {{ .Values.pushgateway.poddisruptionbudget.maxUnavailable | default 1 }}
@@ -16,3 +16,4 @@ spec:
   selector:
     matchLabels:
       {{- include "prometheus.pushgateway.matchLabels" . | nindent 4 }}
+{{- end -}}
