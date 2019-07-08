@@ -21,24 +21,29 @@ serviceAccount:
   ## If not set and create is true, a name is generated using the redis-ha.fullname template
   # name:
 
-## Enables a HA Proxy / Service LB for 
+## Enables a HA Proxy for better LoadBalancing / Sentinel Master support. Automatically proxies to Redis master.
+## Recommend for externally exposed Redis clusters. 
+## ref: https://cbonte.github.io/haproxy-dconv/1.9/intro.html
 haproxy:
-  enabled: true
+  enabled: false
   replicas: 1
   image:
     repository: haproxy
-    tag: latest
+    tag: 2.0.1
     pullPolicy: IfNotPresent
-  podAntiAffinity: "soft"
   annotations: {}
   resources: {}
+  ## Service type for HAProx
+  ##
   service:
     type: ClusterIP
     annotations: {}
   serviceAccount:
     create: true
+  ## Prometheus metric exporter for HAProxy. 
+  ##
   exporter:
-    enabled: true
+    enabled: false
     port: 9101
   init:
     resources: {}
