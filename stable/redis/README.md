@@ -52,6 +52,10 @@ The command removes all the Kubernetes components associated with the chart and 
 A major chart version change (like v1.2.3 -> v2.0.0) indicates that there is an
 incompatible breaking change needing manual actions.
 
+### To 8.0.18
+
+For releases with `metrics.enabled: true` the default tag for the exporter image is now `v1.x.x`. This introduces many changes including metrics names. You'll want to use [this dashboard](https://github.com/oliver006/redis_exporter/blob/master/contrib/grafana_prometheus_redis_dashboard.json) now. Please see the [redis_exporter github page](https://github.com/oliver006/redis_exporter#upgrading-from-0x-to-1x) for more details.
+
 ### To 7.0.0
 
 This version causes a change in the Redis Master StatefulSet definition, so the command helm upgrade would not work out of the box. As an alternative, one of the following could be done:
@@ -146,7 +150,7 @@ The following table lists the configurable parameters of the Redis chart and the
 | `metrics.enabled`                             | Start a side-car prometheus exporter                                                                                                                | `false`                                                 |
 | `metrics.image.registry`                      | Redis exporter image registry                                                                                                                       | `docker.io`                                             |
 | `metrics.image.repository`                    | Redis exporter image name                                                                                                                           | `oliver006/redis_exporter`                              |
-| `metrics.image.tag`                           | Redis exporter image tag                                                                                                                            | `v0.31.0`                                               |
+| `metrics.image.tag`                           | Redis exporter image tag                                                                                                                            | `v1.0.3`                                               |
 | `metrics.image.pullPolicy`                    | Image pull policy                                                                                                                                   | `IfNotPresent`                                          |
 | `metrics.image.pullSecrets`                   | Specify docker-registry secret names as an array                                                                                                    | `nil`                                                   |
 | `metrics.extraArgs`                           | Extra arguments for the binary; possible values [here](https://github.com/oliver006/redis_exporter#flags)                                           | {}                                                      |
