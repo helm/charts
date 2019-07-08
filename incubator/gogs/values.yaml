@@ -41,6 +41,11 @@ service:
   ## ref: https://gogs.io/docs/advanced/configuration_cheat_sheet
   ##
   sshDomain: localhost
+  
+  ## STATIC_ROOT_PATH - root base path of the application
+  ## ref: https://gogs.io/docs/advanced/configuration_cheat_sheet
+  ##
+  # staticRootPath: gogz
 
   ## Gogs configuration values
   ## ref: https://gogs.io/docs/advanced/configuration_cheat_sheet
