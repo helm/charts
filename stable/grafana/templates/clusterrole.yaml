@@ -15,7 +15,13 @@ metadata:
 {{- if or .Values.sidecar.dashboards.enabled .Values.sidecar.datasources.enabled }}
 rules:
 - apiGroups: [""] # "" indicates the core API group
+  {{- if eq .Values.sidecar.resourceType "both" }}
+  resources: ["configmaps", "secrets"]
+  {{- else if eq .Values.sidecar.resourceType "secret" }}
+  resources: [secrets"]
+  {{- else }}
   resources: ["configmaps"]
+  {{- end}}
   verbs: ["get", "watch", "list"]
 {{- else }}
 rules: []
