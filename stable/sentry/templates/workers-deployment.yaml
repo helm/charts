@@ -117,7 +117,7 @@ spec:
           value: {{ .Values.email.from_address | quote }}
         {{ if eq .Values.filestore.backend "gcs" }}
         - name: GOOGLE_APPLICATION_CREDENTIALS
-          value: /var/secrets/google/{{ .Values.filestore.gcs.credentialsFile }}
+          value: /var/run/secrets/google/{{ .Values.filestore.gcs.credentialsFile }}
         {{ end }}
 {{- if .Values.worker.env }}
 {{ toYaml .Values.worker.env | indent 8 }}
@@ -128,7 +128,7 @@ spec:
           readOnly: true
         {{- if eq .Values.filestore.backend "gcs" }}
         - name: sentry-google-cloud-key
-          mountPath: /var/secrets/google
+          mountPath: /var/run/secrets/google
         {{- end }}
         {{- if eq .Values.filestore.backend "filesystem" }}
         - mountPath: {{ .Values.filestore.path }}
