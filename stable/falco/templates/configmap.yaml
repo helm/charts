@@ -160,6 +160,10 @@ data:
       program: {{ .Values.falco.programOutput.program }}
     {{- end }}
 
+    http_output:
+      enabled: {{ .Values.falco.httpOutput.enabled }}
+      url: {{ .Values.falco.httpOutput.url }}
+
   {{- if .Values.integrations.snsOutput.enabled }}
   aws_default_region: {{ .Values.integrations.snsOutput.aws_default_region }}
   {{- end }}

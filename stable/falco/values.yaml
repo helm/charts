@@ -190,6 +190,10 @@ falco:
     keepAlive: false
     program: mail -s "Falco Notification" someone@example.com
 
+  httpOutput:
+    enabled: false
+    url: http://some.url
+
 customRules: {}
   # Although Falco comes with a nice default rule set for detecting weird
   # behavior in containers, our users are going to customize the run-time
