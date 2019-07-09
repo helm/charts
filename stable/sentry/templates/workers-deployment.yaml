@@ -131,7 +131,7 @@ spec:
           mountPath: /var/run/secrets/google
         {{- end }}
         {{- if eq .Values.filestore.backend "filesystem" }}
-        - mountPath: {{ .Values.filestore.path }}
+        - mountPath: {{ .Values.filestore.filesystem.path }}
           name: sentry-data
         {{- end }}
         resources:
