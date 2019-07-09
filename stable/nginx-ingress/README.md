@@ -4,7 +4,7 @@
 
 To use, add the `kubernetes.io/ingress.class: nginx` annotation to your Ingress resources.
 
-## TL;DR;
+## Install
 
 ```console
 $ helm install stable/nginx-ingress
@@ -250,6 +250,13 @@ controller:
     annotations:
       domainName: "kubernetes-example.com"
 ```
+
+## L4 (TCP/UDP) mapping
+
+```console
+helm install stable/nginx-ingress --name ingress --set tcp.2181="default/zookeeper:2181"
+```
+Then you can edit ConfigMap "ingress-nginx-ingress-tcp" to add/delete more TCP ports. Same for UDP. 
 
 ## Helm error when upgrading: spec.clusterIP: Invalid value: ""
 
