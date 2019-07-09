@@ -173,3 +173,5 @@ podDisruptionBudget:
   enabled: false
   minAvailable:
   maxUnavailable:
+
+securityContext: {}
