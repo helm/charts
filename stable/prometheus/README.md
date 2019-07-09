@@ -275,10 +275,12 @@ Parameter | Description | Default
 `server.persistentVolume.subPath` | Subdirectory of Prometheus server data Persistent Volume to mount | `""`
 `server.emptyDir.sizeLimit` | emptyDir sizeLimit if a Persistent Volume is not used | `""`
 `server.podAnnotations` | annotations to be added to Prometheus server pods | `{}`
-`server.deploymentAnnotations` | annotations to be added to Prometheus server deployment | `{}'
+`server.podLabels` | labels to be added to Prometheus server pods | `{}`
+`server.deploymentAnnotations` | annotations to be added to Prometheus server deployment | `{}`
 `server.replicaCount` | desired number of Prometheus server pods | `1`
 `server.statefulSet.enabled` | If true, use a statefulset instead of a deployment for pod management | `false`
-`server.statefulSet.annotations` | annotations to be added to Prometheus server stateful set | `{}'
+`server.statefulSet.annotations` | annotations to be added to Prometheus server stateful set | `{}`
+`server.statefulSet.labels` | labels to be added to Prometheus server stateful set | `{}`
 `server.statefulSet.podManagementPolicy` | podManagementPolicy of server pods | `OrderedReady`
 `server.statefulSet.headless.annotations` | annotations for Prometheus server headless service | `{}`
 `server.statefulSet.headless.labels` | labels for Prometheus server headless service | `{}`

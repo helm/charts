@@ -108,6 +108,10 @@ spec:
           value: {{ .Values.email.use_tls | quote }}
         - name: SENTRY_SERVER_EMAIL
           value: {{ .Values.email.from_address | quote }}
+        {{ if eq .Values.filestore.backend "gcs" }}
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: /var/run/secrets/google/{{ .Values.filestore.gcs.credentialsFile }}
+        {{ end }}
 {{- if .Values.web.env }}
 {{ toYaml .Values.web.env | indent 8 }}
 {{- end }}
@@ -115,8 +119,12 @@ spec:
         - mountPath: /etc/sentry
           name: config
           readOnly: true
-        - mountPath: {{ .Values.persistence.filestore_dir }}
+        - mountPath: {{ .Values.filestore.filesystem.path }}
           name: sentry-data
+        {{- if eq .Values.filestore.backend "gcs" }}
+        - name: sentry-google-cloud-key
+          mountPath: /var/run/secrets/google
+        {{ end }}
         livenessProbe:
           failureThreshold: 5
           httpGet:
@@ -144,9 +152,14 @@ spec:
         configMap:
           name: {{ template "fullname" . }}
       - name: sentry-data
-      {{- if .Values.persistence.enabled }}
+      {{- if and (eq .Values.filestore.backend "filesystem") .Values.filestore.filesystem.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ .Values.persistence.existingClaim | default (include "fullname" .) }}
+          claimName: {{ .Values.filestore.filesystem.persistence.existingClaim | default (include "fullname" .) }}
       {{- else }}
         emptyDir: {}
+      {{ end }}
+      {{- if eq .Values.filestore.backend "gcs" }}
+      - name: sentry-google-cloud-key
+        secret:
+          secretName: {{ .Values.filestore.gcs.secretName }}
       {{ end }}
