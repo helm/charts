@@ -82,6 +82,11 @@ falco:
     - /etc/falco/falco_rules.local.yaml
     - /etc/falco/rules.d
 
+  # If true, the times displayed in log messages and output messages
+  # will be in ISO 8601. By default, times are displayed in the local
+  # time zone, as governed by /etc/localtime.
+  timeFormatISO8601: false
+
   # Whether to output events in json or text
   jsonOutput: false
 

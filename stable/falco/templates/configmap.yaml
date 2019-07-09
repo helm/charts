@@ -26,6 +26,11 @@ data:
       - {{ . }}
       {{- end }}
 
+    # If true, the times displayed in log messages and output messages
+    # will be in ISO 8601. By default, times are displayed in the local
+    # time zone, as governed by /etc/localtime.
+    time_format_iso_8601: {{ .Values.falco.timeFormatISO8601 }}
+
     # Whether to output events in json or text
     {{- if (or .Values.integrations.gcscc.enabled .Values.integrations.natsOutput.enabled .Values.integrations.snsOutput.enabled .Values.integrations.pubsubOutput.enabled) }}
     json_output: true
