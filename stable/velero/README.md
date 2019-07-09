@@ -80,16 +80,22 @@ Parameter | Description | Default
 `configuration.volumeSnapshotLocation.config.region` | The cloud provider region (AWS only) | ``
 `configuration.volumeSnapshotLocation.config.apitimeout` | The API timeout (`azure` only) |
 `configuration.volumeSnapshotLocation.config.resourceGroup` | The name of the resource group where volume snapshots should be stored, if different from the cluster’s resource group. (Azure only) |
+`configuration.volumeSnapshotLocation.config.project` | The project ID where snapshots should be stored, if different than the project that your IAM account is in. (GCP only) |
+`configuration.volumeSnapshotLocation.config.snapshotLocation` | The location where the snapshots will be stored. (GCP only) |
 `credentials.existingSecret` | If specified and `useSecret` is `true`, uses an existing secret with this name instead of creating one | ``
 `credentials.useSecret` | Whether a secret should be used. Set this to `false` when using `kube2iam` | `true`
 `credentials.secretContents` | Contents for the credentials secret | `{}`
+`snapshotsEnabled` | If `true`, create volumesnapshotlocation crd. Set this to `false` to disable snapshot feature | `true`
 `deployRestic` | If `true`, enable restic deployment | `false`
 `metrics.enabled` | Set this to `true` to enable exporting Prometheus monitoring metrics | `false`
 `metrics.scrapeInterval` | Scrape interval for the Prometheus ServiceMonitor | `30s`
 `metrics.serviceMonitor.enabled` | Set this to `true` to create ServiceMonitor for Prometheus operator | `false`
 `metrics.serviceMonitor.additionalLabels` | Additional labels that can be used so ServiceMonitor will be discovered by Prometheus | `{}`
 `schedules` | A dict of schedules | `{}`
-
+`restic.podVolumePath` | Location of pod volumes on the host | `/var/lib/kubelet/pods`
+`restic.privileged` | Whether restic should run as a privileged pod. Only necessary in special cases (SELinux) | `false`
+`restic.resources` | Restic DaemonSet resource requests and limits | `{}`
+`configMaps` | Velero ConfigMaps | `[]`
 
 ## How to
 ```

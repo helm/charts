@@ -11,8 +11,11 @@ spec:
   replicas: {{ .Values.cron.replicacount }}
   template:
     metadata:
-      {{- if .Values.cron.podAnnotations }}
       annotations:
+        metrics-enabled: {{ .Values.metrics.enabled | quote }}
+        checksum/configYml: {{ .Values.config.configYml | sha256sum }}
+        checksum/sentryConfPy: {{ .Values.config.sentryConfPy | sha256sum }}
+      {{- if .Values.cron.podAnnotations }}
 {{ toYaml .Values.cron.podAnnotations | indent 8 }}
       {{- end }}
       labels:
@@ -113,9 +116,18 @@ spec:
         - mountPath: /etc/sentry
           name: config
           readOnly: true
+        - mountPath: {{ .Values.filestore.filesystem.path }}
+          name: sentry-data
         resources:
 {{ toYaml .Values.cron.resources | indent 12 }}
       volumes:
       - name: config
         configMap:
           name: {{ template "fullname" . }}
+      - name: sentry-data
+      {{- if and (.Values.filestore.filesystem.persistence.enabled) (.Values.filestore.filesystem.persistence.persistentWorkers) }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.filestore.filesystem.persistence.existingClaim | default (include "fullname" .) }}
+      {{- else }}
+        emptyDir: {}
+      {{ end }}

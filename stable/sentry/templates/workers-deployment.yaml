@@ -11,8 +11,11 @@ spec:
   replicas: {{ .Values.worker.replicacount }}
   template:
     metadata:
-      {{- if .Values.worker.podAnnotations }}
       annotations:
+        metrics-enabled: {{ .Values.metrics.enabled | quote }}
+        checksum/configYml: {{ .Values.config.configYml | sha256sum }}
+        checksum/sentryConfPy: {{ .Values.config.sentryConfPy | sha256sum }}
+      {{- if .Values.worker.podAnnotations }}
 {{ toYaml .Values.worker.podAnnotations | indent 8 }}
       {{- end }}
       labels:
@@ -46,7 +49,13 @@ spec:
       - name: {{ .Chart.Name }}-workers
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        args: ["run", "worker"]
+        args:
+          - "run"
+          - "worker"
+          {{- if .Values.worker.concurrency }}
+          - "-c"
+          - "{{ .Values.worker.concurrency }}"
+          {{- end }}
         ports:
         - containerPort: {{ .Values.service.internalPort }}
         env:
@@ -106,6 +115,10 @@ spec:
           value: {{ .Values.email.use_tls | quote }}
         - name: SENTRY_SERVER_EMAIL
           value: {{ .Values.email.from_address | quote }}
+        {{ if eq .Values.filestore.backend "gcs" }}
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: /var/run/secrets/google/{{ .Values.filestore.gcs.credentialsFile }}
+        {{ end }}
 {{- if .Values.worker.env }}
 {{ toYaml .Values.worker.env | indent 8 }}
 {{- end }}
@@ -113,9 +126,29 @@ spec:
         - mountPath: /etc/sentry
           name: config
           readOnly: true
+        {{- if eq .Values.filestore.backend "gcs" }}
+        - name: sentry-google-cloud-key
+          mountPath: /var/run/secrets/google
+        {{- end }}
+        {{- if eq .Values.filestore.backend "filesystem" }}
+        - mountPath: {{ .Values.filestore.filesystem.path }}
+          name: sentry-data
+        {{- end }}
         resources:
 {{ toYaml .Values.worker.resources | indent 12 }}
       volumes:
       - name: config
         configMap:
           name: {{ template "fullname" . }}
+      {{- if eq .Values.filestore.backend "gcs" }}
+      - name: sentry-google-cloud-key
+        secret:
+          secretName: {{ .Values.filestore.gcs.secretName }}
+      {{ end }}
+      - name: sentry-data
+      {{- if and (.Values.filestore.filesystem.persistence.enabled) (.Values.filestore.filesystem.persistence.persistentWorkers) }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.filestore.filesystem.persistence.existingClaim | default (include "fullname" .) }}
+      {{- else }}
+        emptyDir: {}
+      {{ end }}
