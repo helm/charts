@@ -112,7 +112,7 @@ command:
 #   mountPath: /opt/zookeeper/secret
 
 persistence:
-  enabled: false
+  enabled: true
   ## zookeeper data Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
   ## If set to "-", storageClassName: "", which disables dynamic provisioning
