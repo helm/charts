@@ -201,3 +201,17 @@ This chart provides support for Ingress resource. If you have an available Ingre
 This chart is capable of mounting the sentry-data PV in the Sentry worker and cron pods. This feature is disabled by default, but is needed for some advanced features such as private sourcemaps.
 
 You may enable mounting of the sentry-data PV across worker and cron pods by changing `filestore.filesystem.persistence.persistentWorkers` to `true`. If you plan on deploying Sentry containers across multiple nodes, you may need to change your PVC's access mode to `ReadWriteMany` and check that your PV supports mounting across multiple nodes.
+
+## Upgrading from pre-2.0.0
+
+The `persistence` keys have changed in charts 2.0.0 and newer, the following shows the mapping of keys from pre-2.0.0 to their current form:
+
+Previous Key                    | New Key 
+:-------------------------------|---------
+`persistence.enabled`           | `filestore.filesystem.persistence.enabled`
+`persistence.existingClaim`     | `filestore.filesystem.persistence.existingClaim`
+`persistence.storageClass`      | `filestore.filesystem.persistence.storageClass`
+`persistence.accessMode`        | `filestore.filesystem.persistence.accessMode`
+`persistence.size`              | `filestore.filesystem.persistence.size`
+`persistence.filestore_dir`     | `filestore.filesystem.path`
+`persistence.persistentWorkers` | `filestore.filesystem.persistence.persistentWorkers`
