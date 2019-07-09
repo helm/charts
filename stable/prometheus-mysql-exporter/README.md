@@ -67,6 +67,9 @@ The following table lists the configurable parameters of the mysql exporter char
 | `serviceMonitor.enable`                | Integration with prometheus-operator                | `false`                            |
 | `serviceMonitor.interval`              | Interval for polling this exporter                  |                                    |
 | `serviceMonitor.scrapeTimeout`         | Timeout where exporter is considered faulty         |                                    |
+| `serviceMonitor.jobLabel`              | Label to use to retrieve the job name from          | `""`                               |
+| `serviceMonitor.targetLabels`          | Labels to transfer from service onto the target     | `[]`                               |
+| `serviceMonitor.podTargetLabels`       | Labels to transfor from pod onto the target         | `[]`                               |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
