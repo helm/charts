@@ -145,7 +145,7 @@ filestore:
       persistentWorkers: false
 
   ## Point this at a pre-configured secret containing a service account. The resulting
-  ## secret will be mounted at /var/secrets/google
+  ## secret will be mounted at /var/run/secrets/google
   gcs:
     credentialsFile: credentials.json
   #  secretName:
