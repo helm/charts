@@ -269,3 +269,15 @@ serviceAccount:
   # The name of the ServiceAccount to use.
   # If not set and create is true, a name is generated using the fullname template
   name:
+
+## Specifies security settings for a container
+## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
+securityContext: {}
+  # securityContext:
+  #   privileged: true
+
+## Specifies security settings for a pod
+## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
+podSecurityContext: {}
+  # podSecurityContext:
+  #   runAsUser: 1000
