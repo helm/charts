@@ -62,6 +62,10 @@ logSubPath: "logs"
 ##
 # schedulerName:
 
+## Use an alternate serviceAccount
+## Useful when using images in custom repositories
+# serviceAccountName:
+
 ## Pod scheduling preferences (by default keep pods within a release on separate nodes).
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 ## By default we don't set affinity

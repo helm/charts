@@ -2,7 +2,7 @@
 
 [Rocket.Chat](https://rocket.chat/) is free, unlimited and open source. Replace email, HipChat & Slack with the ultimate team chat software solution.
 
-> **WARNING**: Upgrading to chart version 1.1.0 (Rocket.Chat 1.0.3) might require extra steps to retain the MongoDB data. See [Upgrading to 1.1.0](###-To-1.1.0) for more details.
+> **WARNING**: Upgrading to chart version 1.1.x or higher (Rocket.Chat 1.0+) might require extra steps to retain the MongoDB data. See [Upgrading to 1.1.0](###-To-1.1.0) for more details.
 
 ## TL;DR;
 
@@ -43,7 +43,7 @@ The following table lists the configurable parameters of the Rocket.Chat chart a
 Parameter | Description | Default
 --- | --- | ---
 `image.repository` | Image repository | `rocketchat/rocket.chat`
-`image.tag` | Image tag | `1.0.3`
+`image.tag` | Image tag | `1.1.1`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
 `host` | Hostname for Rocket.Chat. Also used for ingress (if enabled) | `""`
 `replicaCount` | Number of replicas to run | `1`
@@ -53,6 +53,10 @@ Parameter | Description | Default
 `smtp.host` | Hostname of the SMTP server | `""`
 `smtp.port` | Port of the SMTP server | `587`
 `extraEnv` | Extra environment variables for Rocket.Chat. Used with `tpl` function, so this needs to be a string | `""`
+`podAntiAffinity` | Pod anti-affinity can prevent the scheduler from placing RocketChat replicas on the same node. The default value "soft" means that the scheduler should *prefer* to not schedule two replica pods onto the same node but no guarantee is provided. The value "hard" means that the scheduler is *required* to not schedule two replica pods onto the same node. The value "" will disable pod anti-affinity so that no anti-affinity rules will be configured. | `""` |
+`podAntiAffinityTopologyKey` | If anti-affinity is enabled sets the topologyKey to use for anti-affinity. This can be changed to, for example `failure-domain.beta.kubernetes.io/zone`| `kubernetes.io/hostname` |
+| `affinity` | Assign custom affinity rules to the RocketChat instance https://kubernetes.io/docs/concepts/configuration/assign-pod-node/ | `{}` |
+`minAvailable` | Minimum number / percentage of pods that should remain scheduled | `1` |
 `externalMongodbUrl` | MongoDB URL if using an externally provisioned MongoDB | `""`
 `externalMongodbOplogUrl` | MongoDB OpLog URL if using an externally provisioned MongoDB. Required if `externalMongodbUrl` is set | `""`
 `mongodb.enabled` | Enable or disable MongoDB dependency. Refer to the [stable/mongodb docs](https://github.com/helm/charts/tree/master/stable/mongodb#configuration) for more information | `true`
