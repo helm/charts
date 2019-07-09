@@ -130,6 +130,7 @@ The following table lists the configurable parameters of the external-dns chart 
 | `rbac.create`                      | Wether to create & use RBAC resources or not                                                             | `false`                                                  |
 | `rbac.serviceAccountName`          | ServiceAccount (ignored if rbac.create == true)                                                          | `default`                                                |
 | `rbac.apiVersion`                  | Version of the RBAC API                                                                                  | `v1beta1`                                                |
+| `rbac.pspEnabled`                  | PodSecurityPolicy                                                                                        | `false`                                                |
 | `resources`                        | CPU/Memory resource requests/limits.                                                                     | `{}`                                                     |
 | `livenessProbe`                    | Deployment Liveness Probe                                                                                | See `values.yaml`                                        |
 | `readinessProbe`                   | Deployment Readiness Probe                                                                               | See `values.yaml`                                        |
