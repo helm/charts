@@ -38,6 +38,8 @@ spec:
       - name: fluent-bit
         image: "{{ .Values.image.fluent_bit.repository }}:{{ .Values.image.fluent_bit.tag }}"
         imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+        securityContext:
+          privileged: {{ .Values.privileged }}
         env:
 {{ toYaml .Values.env | indent 10 }}
         resources:

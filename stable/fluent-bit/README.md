@@ -118,7 +118,8 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `serviceAccount.create`            | Specifies whether a ServiceAccount should be created. | `true`                                 |
 | `serviceAccount.name`              | The name of the ServiceAccount to use.     | `NULL`                                            |
 | `rawConfig`                        | Raw contents of fluent-bit.conf            | `@INCLUDE fluent-bit-service.conf`<br>`@INCLUDE fluent-bit-input.conf`<br>`@INCLUDE fluent-bit-filter.conf`<br>` @INCLUDE fluent-bit-output.conf`                                                                         |
-| `resources`                        | Pod resource requests & limits                                 | `{}`                          |
+| `privileged`                       | Start fluent-bit as a privileged container | `false`                          |
+| `resources`                        | Pod resource requests & limits             | `{}`                          |
 | `hostNetwork`                      | Use host's network                         | `false`                                           |
 | `dnsPolicy`                        | Specifies the dnsPolicy to use             | `ClusterFirst`                                    |
 | `priorityClassName`                | Specifies the priorityClassName to use     | `NULL`                                            |
