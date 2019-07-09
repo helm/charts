@@ -20,6 +20,17 @@ env: {}
   # LOGGING_VERBOSE: "true"
   # SERVER_DEFAULTROUTE: "/app/kibana"
 
+envFromSecrets: {}
+  ## Create a secret manually. Reference it here to inject environment variables
+  # ELASTICSEARCH_USERNAME:
+  #   from:
+  #     secret: secret-name-here
+  #     key: ELASTICSEARCH_USERNAME
+  # ELASTICSEARCH_PASSWORD:
+  #   from:
+  #     secret: secret-name-here
+  #     key: ELASTICSEARCH_PASSWORD
+
 files:
   kibana.yml:
     ## Default Kibana configuration from kibana-docker.
