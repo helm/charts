@@ -31,6 +31,10 @@ spec:
         app: {{ template "kubernetes-dashboard.name" . }}
         release: {{ .Release.Name }}
     spec:
+      {{- if .Values.securityContext }}
+      securityContext:
+{{ toYaml .Values.securityContext | indent 8 }}
+      {{- end }}
       serviceAccountName: {{ template "kubernetes-dashboard.serviceAccountName" . }}
       containers:
       - name: {{ .Chart.Name }}
