@@ -24,6 +24,10 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
 {{- end }}
     spec:
+{{- if .Values.podSecurityContext }}
+      securityContext:
+{{ toYaml .Values.podSecurityContext | indent 8 }}
+{{- end }}
 {{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"
 {{- end }}
@@ -52,6 +56,10 @@ spec:
 {{- if .Values.extraPorts }}
 {{ toYaml .Values.extraPorts | indent 8 }}
 {{- end }}
+{{- end }}
+{{- if .Values.securityContext }}
+        securityContext:
+{{ toYaml .Values.securityContext | indent 10 }}
 {{- end }}
         volumeMounts:
         - name: varlog
