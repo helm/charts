@@ -18,7 +18,7 @@ rules:
   {{- if eq .Values.sidecar.resourceType "both" }}
   resources: ["configmaps", "secrets"]
   {{- else if eq .Values.sidecar.resourceType "secret" }}
-  resources: [secrets"]
+  resources: ["secrets"]
   {{- else }}
   resources: ["configmaps"]
   {{- end}}
