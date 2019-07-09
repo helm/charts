@@ -9,6 +9,13 @@ numbering uses [semantic versioning](http://semver.org).
 
 * Add nestorsalceda as an approver
 
+## v0.8.0
+
+### Major Changes
+
+* Allow configuration of Pod Security Policy. This is needed to get Falco
+  running when the Admission Controller is enabled.
+
 ## v0.7.10
 
 ### Minor Changes
