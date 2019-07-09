@@ -14,6 +14,11 @@ agent:
     tag: v3.2
     pullPolicy: IfNotPresent
 
+  ## agent whitelist of proxy routes matching this reg-ex
+  ##
+  # whiteListRouteRegexp:
+
+
   ## Logging settings
   ##
   log:
@@ -37,6 +42,12 @@ agent:
   ## Labels to be added to pods
   ##
   podLabels: {}
+  ## Annotations to be added to service
+  ##
+  serviceAnnotations: {}
+  ## Labels to be added to service
+  ##
+  serviceLabels: {}
   ## Used to assign priority to agent pods
   ## Ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
   ##
@@ -143,6 +154,15 @@ server:
   ## Annotations to be added to pods
   ##
   podAnnotations: {}
+  ## Labels to be added to pods
+  ##
+  podLabels: {}
+  ## Annotations to be added to service
+  ##
+  serviceAnnotations: {}
+  ## Labels to be added to service
+  ##
+  serviceLabels: {}
   ## Used to assign priority to server pods
   ## Ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
   ##
@@ -246,6 +266,10 @@ server:
 rbac:
   # Specifies whether RBAC resources should be created
   create: true
+
+psp:
+  # Specifies whether PodSecurityPolicies should be created
+  create: false
 
 serviceAccounts:
   agent:
