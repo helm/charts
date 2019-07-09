@@ -70,11 +70,13 @@ spec:
                 key: password
           {{- end }}
           {{- if eq .Values.storage.type "elasticsearch" }}
+          {{- if eq .Values.storage.elasticsearch.usePassword }}
           - name: ES_PASSWORD
             valueFrom:
               secretKeyRef:
                 name: {{ if .Values.storage.elasticsearch.existingSecret }}{{ .Values.storage.elasticsearch.existingSecret }}{{- else }}{{ include "jaeger.fullname" . }}-elasticsearch{{- end }}
                 key: password
+          {{- end }}
           - name: ES_SERVER_URLS
             value: {{ template "elasticsearch.client.url" . }}
           - name: ES_USERNAME
