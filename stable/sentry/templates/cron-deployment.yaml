@@ -116,7 +116,7 @@ spec:
         - mountPath: /etc/sentry
           name: config
           readOnly: true
-        - mountPath: {{ .Values.persistence.filestore_dir }}
+        - mountPath: {{ .Values.filestore.filesystem.path }}
           name: sentry-data
         resources:
 {{ toYaml .Values.cron.resources | indent 12 }}
@@ -125,9 +125,9 @@ spec:
         configMap:
           name: {{ template "fullname" . }}
       - name: sentry-data
-      {{- if and (.Values.persistence.enabled) (.Values.persistence.persistentWorkers) }}
+      {{- if and (.Values.filestore.filesystem.persistence.enabled) (.Values.filestore.filesystem.persistence.persistentWorkers) }}
         persistentVolumeClaim:
-          claimName: {{ .Values.persistence.existingClaim | default (include "fullname" .) }}
+          claimName: {{ .Values.filestore.filesystem.persistence.existingClaim | default (include "fullname" .) }}
       {{- else }}
         emptyDir: {}
       {{ end }}
