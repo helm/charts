@@ -30,7 +30,6 @@ webhooks:
           - UPDATE
         resources:
           - broadcastjobs
-    sideEffects: Unknown
   - clientConfig:
       caBundle: fake
       service:
@@ -53,7 +52,6 @@ webhooks:
           - UPDATE
         resources:
           - sidecarsets
-    sideEffects: Unknown
   - clientConfig:
       caBundle: fake
       service:
@@ -76,4 +74,3 @@ webhooks:
           - UPDATE
         resources:
           - statefulsets
-    sideEffects: Unknown
