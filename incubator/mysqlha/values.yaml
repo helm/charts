@@ -4,6 +4,8 @@
 mysqlImage: mysql:5.7.13
 xtraBackupImage: gcr.io/google-samples/xtrabackup:1.0
 
+imagePullPolicy: IfNotPresent
+
 mysqlha:
   replicaCount: 3
 
@@ -74,7 +76,6 @@ metrics:
   enabled: false
   image: prom/mysqld-exporter
   imageTag: v0.10.0
-  imagePullPolicy: IfNotPresent
   annotations: {}
 
   livenessProbe:
