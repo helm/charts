@@ -364,6 +364,7 @@ alertmanager:
 ##
 grafana:
   enabled: true
+  deployed: true
 
   ## Deploy default dashboards.
   ##
@@ -788,6 +789,7 @@ kubeScheduler:
 ##
 kubeStateMetrics:
   enabled: true
+  deployed: true
   serviceMonitor:
     ## Scrape interval. If not set, the Prometheus default scrape interval is used.
     ##
@@ -822,6 +824,7 @@ kube-state-metrics:
 ##
 nodeExporter:
   enabled: true
+  deployed: true
 
   ## Use the value configured in prometheus-node-exporter.podLabels
   ##

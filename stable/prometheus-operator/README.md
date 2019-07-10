@@ -309,7 +309,8 @@ The following tables list the configurable parameters of the prometheus-operator
 ### Grafana
 | Parameter | Description | Default |
 | ----- | ----------- | ------ |
-| `grafana.enabled` | If true, deploy the grafana sub-chart | `true` |
+| `grafana.enabled` | If true, deploy the `serviceMonitor`for Grafana | `true` |
+| `grafana.deployed` | If true, deploy the grafana sub-chart | `true` |
 | `grafana.serviceMonitor.selfMonitor` | Create a `serviceMonitor` to automatically monitor the grafana instance | `true` |
 | `grafana.serviceMonitor.metricRelabelings` | The `metric_relabel_configs` for scraping the grafana instance. | `` |
 | `grafana.serviceMonitor.relabelings` | The `relabel_configs` for scraping the grafana instance. | `` |
@@ -397,13 +398,15 @@ The following tables list the configurable parameters of the prometheus-operator
 | `kubeScheduler.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
 | `kubeScheduler.serviceMonitor.metricRelabelings` | The `metric_relabel_configs` for scraping the Kubernetes scheduler. | `` |
 | `kubeScheduler.serviceMonitor.relabelings` | The `relabel_configs` for scraping the Kubernetes scheduler. | `` |
-| `kubeStateMetrics.enabled` | Deploy the `kube-state-metrics` chart and configure a servicemonitor to scrape | `true` |
+| `kubeStateMetrics.enabled` | If true, deploy the `serviceMonitor` for kube-state-metrics | `true` |
+| `kubeStateMetrics.deployed` | Deploy the `kube-state-metrics` sub-chart | `true` |
 | `kubeStateMetrics.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
 | `kubeStateMetrics.serviceMonitor.metricRelabelings` | Metric relablings for the `kube-state-metrics` ServiceMonitor | `[]` |
 | `kubeStateMetrics.serviceMonitor.relabelings` | The `relabel_configs` for scraping `kube-state-metrics`. | `` |
 | `kube-state-metrics.rbac.create` | Create RBAC components in kube-state-metrics. See `global.rbac.create` | `true` |
 | `kube-state-metrics.podSecurityPolicy.enabled` | Create pod security policy resource for kube-state-metrics. | `true` |
-| `nodeExporter.enabled` | Deploy the `prometheus-node-exporter` and scrape it | `true` |
+| `nodeExporter.enabled` | If true, deploy the `serviceMonitor`for node exporter | `true` |
+| `nodeExporter.deployed` | Deploy the `prometheus-node-exporter` sub-chart | `true` |
 | `nodeExporter.jobLabel` | The name of the label on the target service to use as the job name in prometheus. See `prometheus-node-exporter.podLabels.jobLabel=node-exporter` default | `jobLabel` |
 | `nodeExporter.serviceMonitor.metricRelabelings` | Metric relablings for the `prometheus-node-exporter` ServiceMonitor | `[]` |
 | `nodeExporter.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
