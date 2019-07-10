@@ -404,6 +404,18 @@ sidecar:
     # Otherwise the namespace in which the sidecar is running will be used.
     # It's also possible to specify ALL to search in all namespaces
     searchNamespace: null
+    # provider configuration that lets grafana manage the dashboards
+    provider:
+      # name of the provider, should be unique
+      name: sidecarProvider
+      # orgid as configured in grafana
+      orgid: 1
+      # folder in which the dashboards should be imported in grafana
+      folder: ''
+      # type of the provider
+      type: file
+      # disableDelete to activate a import-only behaviour
+      disableDelete: false
   datasources:
     enabled: false
     # label that the configmaps with datasources are marked with
