@@ -186,6 +186,14 @@ spec:
             value: "{{ .Values.pro.ports.ratelimitDebug }}"
           - name: APP_LOG_LEVEL
             value: "{{ .Values.pro.logLevel  }}"
+          - name: AMBASSADOR_NAMESPACE
+          {{- if .Values.namespace }}
+            value: {{ .Values.namespace.name | quote }}
+          {{ else }}
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          {{- end -}}
           - name: AMBASSADOR_LICENSE_KEY
           {{- if .Values.pro.licenseKey.secret }}
             valueFrom:
