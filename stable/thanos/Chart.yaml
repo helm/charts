@@ -7,7 +7,7 @@ icon: https://raw.githubusercontent.com/improbable-eng/thanos/master/website/sta
 sources:
   - https://github.com/improbable-eng/thanos
 maintainers:
-  - name: Ivan Kiselev
+  - name: homelessnessbo
     email: kiselev_ivan@pm.me
 engine: gotpl
 tillerVersion: ">=2.8.0"
