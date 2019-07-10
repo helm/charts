@@ -45,7 +45,7 @@ service:
   labels: {}
 
 ## Extra environment variables that will be passed into the exporter pod
-env: {}
+# env:
 
 es:
   ## Address (host and port) of the Elasticsearch node we should connect to.
