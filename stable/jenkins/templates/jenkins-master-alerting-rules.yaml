@@ -1,0 +1,20 @@
+{{- if and .Values.master.prometheus.enabled .Values.master.prometheus.alertingrules }}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: {{ template "jenkins.fullname" . }}
+  namespace: {{ template "jenkins.namespace" . }}
+  labels:
+    "app.kubernetes.io/name": '{{ template "jenkins.name" .}}'
+    "helm.sh/chart": "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    "app.kubernetes.io/managed-by": "{{ .Release.Service }}"
+    "app.kubernetes.io/instance": "{{ .Release.Name }}"
+    "app.kubernetes.io/component": "{{ .Values.master.componentName }}"
+    {{- range $key, $val := .Values.master.prometheus.alertingRulesAdditionalLabels }}
+    {{ $key }}: {{ $val | quote }}
+    {{- end}}
+spec:
+  groups:
+{{ toYaml .Values.master.prometheus.alertingrules | indent 2 }}
+{{- end }}

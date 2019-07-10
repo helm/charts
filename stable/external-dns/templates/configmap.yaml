@@ -3,8 +3,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ template "external-dns.fullname" . }}
-  labels: {{ include "external-dns.labels" . | indent 4 }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+  labels: {{ include "external-dns.labels" . | nindent 4 }}
 data:
   {{ .Values.designate.customCA.filename }}: |
 {{ .Values.designate.customCA.content | indent 4 }}

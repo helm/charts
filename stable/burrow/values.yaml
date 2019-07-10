@@ -79,37 +79,36 @@ persistence:
   accessMode: ReadWriteOnce
   persistentVolumeReclaimPolicy: "Retain"
 
-RPC:
-  Peer:
-    service:
-      type: ClusterIP
-    ingress:
-      enabled: false
-      hosts: []
+peer:
+  service:
+    type: ClusterIP
+  ingress:
+    enabled: false
+    hosts: []
 
-  GRPC:
-    service:
-      type: ClusterIP
-      loadBalance: true
-    ingress:
-      enabled: false
-      hosts: []
-      annotations: {}
-      tls: {}
+grpc:
+  service:
+    type: ClusterIP
+    loadBalance: true
+  ingress:
+    enabled: false
+    hosts: []
+    annotations: {}
+    tls: {}
 
-  Info:
-    service:
-      type: ClusterIP
-      loadBalance: true
-    ingress:
-      enabled: false
-      # exposing partial ingress only exposes
-      # the /accounts and /blocks paths outside the cluster
-      partial: false
-      pathLeader: "/"
-      annotations: {}
-      hosts: []
-      tls: {}
+info:
+  service:
+    type: ClusterIP
+    loadBalance: true
+  ingress:
+    enabled: false
+    # exposing partial ingress only exposes
+    # the /accounts and /blocks paths outside the cluster
+    partial: false
+    pathLeader: "/"
+    annotations: {}
+    hosts: []
+    tls: {}
 
 # resources:
 #   limits:

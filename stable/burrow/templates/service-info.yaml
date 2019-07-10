@@ -8,8 +8,8 @@ metadata:
     heritage: {{ .Release.Service }}
   name:  {{ template "burrow.fullname" . }}-info
 spec:
-  type: {{ .Values.RPC.Info.service.type }}
-{{- if .Values.RPC.Info.service.loadBalance }}
+  type: {{ .Values.info.service.type }}
+{{- if .Values.info.service.loadBalance }}
   sessionAffinity: ClientIP
 {{- end }}
   ports:
@@ -20,6 +20,6 @@ spec:
   selector:
     app: {{ template "burrow.name" . }}
     release: {{ .Release.Name }}
-{{- if not .Values.RPC.Info.service.loadBalance }}
-    nodeNumber: {{ .Values.RPC.Info.service.node | quote }}
+{{- if not .Values.info.service.loadBalance }}
+    nodeNumber: {{ .Values.info.service.node | quote }}
 {{- end }}

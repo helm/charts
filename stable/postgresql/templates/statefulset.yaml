@@ -37,6 +37,9 @@ spec:
 {{ toYaml . | indent 8 }}
 {{- end }}
     spec:
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+      {{- end }}
 {{- include "postgresql.imagePullSecrets" . | indent 6 }}
       {{- if .Values.master.nodeSelector }}
       nodeSelector:
@@ -55,7 +58,10 @@ spec:
       {{- end }}
       {{- if .Values.securityContext.enabled }}
       securityContext:
-        fsGroup: {{ .Values.securityContext.fsGroup }}      
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+      {{- end }}
+      {{- if .Values.serviceAccount.enabled }}
+      serviceAccountName: {{ default (include "postgresql.fullname" . ) .Values.serviceAccount.name }}
       {{- end }}
       {{- if and .Values.volumePermissions.enabled .Values.persistence.enabled }}
       initContainers:
@@ -68,10 +74,10 @@ spec:
           - sh
           - -c
           - |
-            chown -R {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }} /bitnami
-            if [ -d {{ .Values.persistence.mountPath }}/data ]; then
-              chmod  0700 {{ .Values.persistence.mountPath }}/data;
-            fi
+            mkdir -p {{ .Values.persistence.mountPath }}/data
+            chmod 700 {{ .Values.persistence.mountPath }}/data
+            find {{ .Values.persistence.mountPath }} -mindepth 1 -maxdepth 1 -not -name ".snapshot" -not -name "lost+found" | \
+              xargs chown -R {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }}
         securityContext:
           runAsUser: {{ .Values.volumePermissions.securityContext.runAsUser }}
         volumeMounts:
@@ -92,6 +98,8 @@ spec:
         env:
         - name: BITNAMI_DEBUG
           value: {{ ternary "true" "false" .Values.image.debug | quote }}
+        - name: POSTGRESQL_PORT_NUMBER
+          value: "{{ template "postgresql.port" . }}"
         {{- if .Values.postgresqlInitdbArgs }}
         - name: POSTGRES_INITDB_ARGS
           value: {{ .Values.postgresqlInitdbArgs | quote }}
@@ -145,7 +153,7 @@ spec:
           value: {{ (include "postgresql.database" .) | quote }}
         {{- end }}
 {{- if .Values.extraEnv }}
-{{ toYaml .Values.extraEnv | indent 8 }}
+{{ tpl (toYaml .Values.extraEnv) $ | indent 8 }}
 {{- end }}
         ports:
         - name: postgresql
@@ -157,9 +165,9 @@ spec:
             - sh
             - -c
            {{- if (include "postgresql.database" .) }}
-            - exec pg_isready -U {{ include "postgresql.username" . | quote }} -d {{ (include "postgresql.database" .) | quote }} -h 127.0.0.1
+            - exec pg_isready -U {{ include "postgresql.username" . | quote }} -d {{ (include "postgresql.database" .) | quote }} -h 127.0.0.1 -p {{ template "postgresql.port" . }}
            {{- else }}
-            - exec pg_isready -U {{ include "postgresql.username" . | quote }} -h 127.0.0.1
+            - exec pg_isready -U {{ include "postgresql.username" . | quote }} -h 127.0.0.1 -p {{ template "postgresql.port" . }}
            {{- end }}
           initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
@@ -173,11 +181,7 @@ spec:
             command:
             - sh
             - -c
-           {{- if (include "postgresql.database" .) }}
-            - exec pg_isready -U {{ include "postgresql.username" . | quote }} -d {{ (include "postgresql.database" .) | quote }} -h 127.0.0.1
-           {{- else }}
-            - exec pg_isready -U {{ include "postgresql.username" . | quote }} -h 127.0.0.1
-           {{- end }}
+            {{- include "postgresql.readinessProbeCommand" . | nindent 12 }}
           initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
           timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
@@ -210,6 +214,9 @@ spec:
         - name: postgresql-config
           mountPath: /bitnami/postgresql/conf
         {{- end }}
+        {{- if .Values.master.extraVolumeMounts }}
+        {{- toYaml .Values.master.extraVolumeMounts | nindent 8 }}
+        {{- end }}
 {{- if .Values.metrics.enabled }}
       - name: metrics
         image: {{ template "postgresql.metrics.image" . }}
@@ -217,7 +224,7 @@ spec:
        {{- if .Values.metrics.securityContext.enabled }}
         securityContext:
           runAsUser: {{ .Values.metrics.securityContext.runAsUser }}
-      {{- end }}        
+      {{- end }}
         env:
         {{- $database := required "In order to enable metrics you need to specify a database (.Values.postgresqlDatabase or .Values.global.postgresql.postgresqlDatabase)" (include "postgresql.database" .) }}
         - name: DATA_SOURCE_URI
@@ -292,6 +299,9 @@ spec:
       - name: custom-init-scripts-secret
         secret:
           secretName: {{ template "postgresql.initdbScriptsSecret" . }}
+      {{- end }}
+      {{- if .Values.master.extraVolumes }}
+      {{- toYaml .Values.master.extraVolumes | nindent 6}}
       {{- end }}
 {{- if and .Values.persistence.enabled .Values.persistence.existingClaim }}
       - name: data
