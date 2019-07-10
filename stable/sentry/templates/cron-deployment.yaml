@@ -1,9 +1,9 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}-cron
+  name: {{ template "sentry.fullname" . }}-cron
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "sentry.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -19,7 +19,7 @@ spec:
 {{ toYaml .Values.cron.podAnnotations | indent 8 }}
       {{- end }}
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "sentry.fullname" . }}
         release: "{{ .Release.Name }}"
         role: cron
         {{- if .Values.cron.podLabels }}
@@ -56,7 +56,7 @@ spec:
         - name: SENTRY_SECRET_KEY
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "sentry.fullname" . }}
               key: sentry-secret
         - name: SENTRY_DB_USER
           value: {{ default "sentry" .Values.postgresql.postgresUser | quote }}
@@ -68,13 +68,13 @@ spec:
             {{- if .Values.postgresql.existingSecret }}
               name: {{ .Values.postgresql.existingSecret }}
             {{- else }}
-              name: {{ template "postgresql.secret" . }}
+              name: {{ template "sentry.postgresql.secret" . }}
             {{- end }}
               key: postgres-password
         - name: SENTRY_POSTGRES_HOST
-          value: {{ template "postgresql.host" . }}
+          value: {{ template "sentry.postgresql.host" . }}
         - name: SENTRY_POSTGRES_PORT
-          value: {{ template "postgresql.port" . }}
+          value: {{ template "sentry.postgresql.port" . }}
         {{- if or (.Values.redis.enabled) (.Values.redis.password) }}
         - name: SENTRY_REDIS_PASSWORD
           valueFrom:
@@ -82,14 +82,14 @@ spec:
             {{- if .Values.redis.existingSecret }}
               name: {{ .Values.redis.existingSecret }}
             {{- else }}
-              name: {{ template "redis.secret" . }}
+              name: {{ template "sentry.redis.secret" . }}
             {{- end }}
               key: redis-password
         {{- end }}
         - name: SENTRY_REDIS_HOST
-          value: {{ template "redis.host" . }}
+          value: {{ template "sentry.redis.host" . }}
         - name: SENTRY_REDIS_PORT
-          value: {{ template "redis.port" . }}
+          value: {{ template "sentry.redis.port" . }}
         - name: SENTRY_EMAIL_HOST
           value: {{ default "" .Values.email.host | quote }}
         - name: SENTRY_EMAIL_PORT
@@ -102,7 +102,7 @@ spec:
             {{- if .Values.email.existingSecret }}
               name: {{ .Values.email.existingSecret }}
             {{- else }}
-              name: {{ template "fullname" . }}
+              name: {{ template "sentry.fullname" . }}
             {{- end }}
               key: smtp-password
         - name: SENTRY_EMAIL_USE_TLS
@@ -123,11 +123,11 @@ spec:
       volumes:
       - name: config
         configMap:
-          name: {{ template "fullname" . }}
+          name: {{ template "sentry.fullname" . }}
       - name: sentry-data
       {{- if and (.Values.filestore.filesystem.persistence.enabled) (.Values.filestore.filesystem.persistence.persistentWorkers) }}
         persistentVolumeClaim:
-          claimName: {{ .Values.filestore.filesystem.persistence.existingClaim | default (include "fullname" .) }}
+          claimName: {{ .Values.filestore.filesystem.persistence.existingClaim | default (include "sentry.fullname" .) }}
       {{- else }}
         emptyDir: {}
       {{ end }}
