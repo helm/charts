@@ -63,7 +63,7 @@ spec:
         {{- end }}
         {{- end }}
         {{- if .Values.htpasswdFile.enabled }}
-          - --htpasswd-file=/etc/oauth2-proxy/htpasswdfile/users.txt
+          - --htpasswd-file=/etc/oauth2_proxy/htpasswd/users.txt
         {{- end }}
         env:
         - name: OAUTH2_PROXY_CLIENT_ID
@@ -123,8 +123,8 @@ spec:
           readOnly: true
 {{- end }}
 {{- if .Values.htpasswdFile.enabled }}
-        - mountPath: /etc/oauth2-proxy
-          name: htpasswdfile
+        - mountPath: /etc/oauth2_proxy/htpasswd
+          name: {{ template "oauth2-proxy.fullname" . }}-htpasswd-file
           readOnly: true
 {{- end }}
       volumes:
@@ -135,6 +135,13 @@ spec:
           secretName: {{ if .existingSecret }}{{ .existingSecret }}{{ else }} {{ template "oauth2-proxy.secretName" . }}{{ end }}
 {{- end }}
 {{- end }}
+
+{{- if .Values.htpasswdFile.enabled }}
+      - name: {{ template "oauth2-proxy.fullname" . }}-htpasswd-file
+        secret:
+          secretName: {{ if .Values.htpasswdFile.existingSecret }}{{ .Values.htpasswdFile.existingSecret }}{{ else }} {{ template "oauth2-proxy.fullname" . }}-htpasswd-file {{ end }}
+{{- end }}
+
 {{- if or .Values.config.existingConfig .Values.config.configFile }}
       - configMap:
           defaultMode: 420
@@ -156,13 +163,6 @@ spec:
             path: authenticated-emails-list
 {{- end }}
         name: configaccesslist
-{{- end }}
-
-{{- if .Values.htpasswdFile.enabled }}
-      - configMap:
-          defaultMode: 420
-          name: {{ template "oauth2-proxy.fullname" . }}-htpasswd-file
-        name: htpasswdfile
 {{- end }}
 
       {{- if .Values.imagePullSecrets }}

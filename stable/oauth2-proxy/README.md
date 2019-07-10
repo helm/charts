@@ -54,6 +54,7 @@ Parameter | Description | Default
 `extraArgs` | key:value list of extra arguments to give the binary | `{}`
 `htpasswdFile.enabled` | enable htpasswd-file option | `false`
 `htpasswdFile.entries` | list of [SHA encrypted user:passwords](https://pusher.github.io/oauth2_proxy/configuration#command-line-options) | `{}`
+`htpasswdFile.existingSecret` | existing Kubernetes secret to use for OAuth2 htpasswd file` | `""`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
 `image.repository` | Image repository | `quay.io/pusher/oauth2_proxy`
 `image.tag` | Image tag | `v3.2.0`
