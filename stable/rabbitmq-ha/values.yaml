@@ -426,7 +426,7 @@ ingress:
   tlsSecret: myTlsSecret
 
   ## Ingress annotations done as key:value pairs
-  annotations:
+  annotations: {}
   #  kubernetes.io/ingress.class: nginx
 
 livenessProbe:
