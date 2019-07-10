@@ -66,6 +66,10 @@ sentinel:
   failoverTimeout: 18000
   parallelSyncs: 1
   port: 26379
+  ## Additional Redis configuration for the sentinel nodes
+  ## ref: https://redis.io/topics/config
+  ##
+  configmap:
   ## Configure extra options for Redis Sentinel liveness and readiness probes
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
   ##
@@ -189,6 +193,10 @@ master:
   ## Can be used to specify command line arguments, for example:
   ##
   command: "/run.sh"
+  ## Additional Redis configuration for the master nodes
+  ## ref: https://redis.io/topics/config
+  ##
+  configmap:
   ## Redis additional command line flags
   ##
   ## Can be used to specify command line flags, for example:
@@ -332,6 +340,10 @@ slave:
   ## Can be used to specify command line arguments, for example:
   ##
   command: "/run.sh"
+  ## Additional Redis configuration for the slave nodes
+  ## ref: https://redis.io/topics/config
+  ##
+  configmap:
   ## Redis extra flags
   extraFlags: []
   ## List of Redis commands to disable
