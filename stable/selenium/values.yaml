@@ -113,16 +113,16 @@ hub:
   # gridNewSessionWaitTimeout: -1
   # gridJettyMaxThreads: -1
   ## In milliseconds
-  # gridNodePolling: 5000
+  gridNodePolling: 5000
   ## In milliseconds
-  # gridCleanUpCycle: 5000
+  gridCleanUpCycle: 5000
   ## In milliseconds
-  # gridTimeout: 30000
+  gridTimeout: 30000
   ## In milliseconds
   # gridBrowserTimeout: 0
-  # gridMaxSession: 5
+  gridMaxSession: 5
   ## In milliseconds
-  # gridUnregisterIfStillDownAfter: 30000
+  gridUnregisterIfStillDownAfter: 30000
   # timeZone: UTC
 
   ## NodeSelector to be used for the hub
