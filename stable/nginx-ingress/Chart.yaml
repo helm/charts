@@ -11,10 +11,6 @@ keywords:
 sources:
   - https://github.com/kubernetes/ingress-nginx
 maintainers:
-  - name: jackzampolin
-    email: jack.zampolin@gmail.com
-  - name: mgoodness
-    email: mgoodness@gmail.com
   - name: ChiefAlexander
   - name: taharah
     email: Trevor.G.Wood@gmail.com
