@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "sentry.fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "sentry.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -382,7 +382,7 @@ data:
 {{- if .Values.metrics.enabled }}
     SENTRY_METRICS_BACKEND = 'sentry.metrics.statsd.StatsdMetricsBackend'
     SENTRY_METRICS_OPTIONS = {
-        'host': '{{ template "fullname" . }}-metrics',
+        'host': '{{ template "sentry.fullname" . }}-metrics',
         'port': 9125,
     }
 {{- end }} 
