@@ -3,4 +3,4 @@ dependencies:
   repository: https://kubernetes-charts.storage.googleapis.com/
   version: 5.11.3
 digest: sha256:0593b73b2163fbbbae061de1aa2b8280d43f8a423a91e1c7375c0b6c86784b1c
-generated: 2019-07-01T13:33:56.628962561Z
+generated: 2019-07-09T22:21:57.659633368Z
