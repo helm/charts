@@ -80,6 +80,13 @@ The command removes all the Kubernetes components associated with the chart and 
 | `extraSecrets`                          | Optional array of secrets to mount inside the CoreDNS container                       | []                                                          |
 | `customLabels`                          | Optional labels for Deployment(s), Pod, Service, ServiceMonitor objects               | {}                                                          |
 | `podDisruptionBudget`                   | Optional PodDisruptionBudget                                                          | {}                                                          |
+| `podAnnotations`                        | Optional Pod only Annotations                                                         | {}                                                          |
+| `terminationGracePeriodSeconds`         | Optional duration in seconds the pod needs to terminate gracefully.                   | 30                                                          |
+| `preStopSleep`                          | Definition of Kubernetes preStop hook executed before Pod termination                 | {}                                                          |
+| `hpa.enabled` || `false` |
+| `hpa.minReplicas` | | `1` |
+| `hpa.maxReplicas` | | `2` |
+| `hpa.metrics` | | {} |
 | `autoscaler.enabled`                    | Optionally enabled a cluster-proportional-autoscaler for CoreDNS                      | `false`                                                     |
 | `autoscaler.coresPerReplica`            | Number of cores in the cluster per CoreDNS replica                                    | `256`                                                       |
 | `autoscaler.nodesPerReplica`            | Number of nodes in the cluster per CoreDNS replica                                    | `16`                                                        |
