@@ -7,3 +7,8 @@ keywords:
   - kubernetes-external-secrets
   - secrets
 home: https://github.com/godaddy/kubernetes-external-secrets
+maintainers:
+  - name: Jeff Pearce
+    email: jxpearce@godaddy.com
+  - name: Kewei Lu
+    email: klu6@godaddy.com
