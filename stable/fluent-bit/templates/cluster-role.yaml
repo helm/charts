@@ -17,7 +17,7 @@ rules:
       - get
 {{- if .Values.rbac.pspEnabled }}
   - apiGroups:
-    - policy
+    - {{ template "rbac.pspApiGroup" . }}
     resources:
     - podsecuritypolicies
     resourceNames:
