@@ -54,7 +54,7 @@ spec:
               value: {{ template "elasticsearch.client.url" . }}
             - name: ES_NODES_WAN_ONLY
               value: {{ .Values.storage.elasticsearch.nodesWanOnly | quote }}
-            {{- if eq .Values.storage.elasticsearch.usePassword }}
+            {{- if .Values.storage.elasticsearch.usePassword }}
             - name: ES_PASSWORD
               valueFrom:
                 secretKeyRef:
