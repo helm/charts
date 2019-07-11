@@ -32,6 +32,14 @@ image:
   # pullSecrets:
   #   - myRegistryKeySecretName
 
+## String to partially override rabbitmq.fullname template (will maintain the release name)
+##
+# nameOverride:
+
+## String to fully override rabbitmq.fullname template
+##
+# fullnameOverride:
+
 ## Use an alternate scheduler, e.g. "stork".
 ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
 ##

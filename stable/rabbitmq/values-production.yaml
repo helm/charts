@@ -32,6 +32,14 @@ image:
   # pullSecrets:
   #   - myRegistryKeySecretName
 
+## String to partially override rabbitmq.fullname template (will maintain the release name)
+##
+# nameOverride:
+
+## String to fully override rabbitmq.fullname template
+##
+# fullnameOverride:
+
 ## Use an alternate scheduler, e.g. "stork".
 ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
 ##
@@ -129,9 +137,9 @@ rabbitmq:
   extraConfiguration: |-
     #disk_free_limit.absolute = 50MB
     #management.load_definitions = /app/load_definition.json
-    
+
   ## Configuration file content: advanced configuration
-  ## Use this as additional configuraton in classic config format (Erlang term configuration format) 
+  ## Use this as additional configuraton in classic config format (Erlang term configuration format)
   advancedConfiguration: |-
 
 ## Kubernetes service type
