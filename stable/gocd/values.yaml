@@ -6,7 +6,7 @@ rbac:
   # Specifies whether rbac resources must be created.
   create: true
   # The API version to use while creating the rbac resources. Use `kubectl api-versions | grep rbac` to find which abi versions are supported for your cluster.
-  apiVersion: v1beta1
+  apiVersion: v1
   # Create a cluster role binding with the existing role, do not create a new one. If left blank, a new cluster role is created.
   roleRef:
 
