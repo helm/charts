@@ -1,3 +1,23 @@
+{{- if .Values.clusterAgent.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "datadog.fullname" . }}-cluster-agent
+  labels:
+    app: "{{ template "datadog.fullname" . }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+spec:
+  type: ClusterIP
+  selector:
+    app: {{ template "datadog.fullname" . }}-cluster-agent
+  ports:
+  - port: 5005
+    name: agentport
+    protocol: TCP
+{{ end }}
+
 {{- if and .Values.clusterAgent.enabled .Values.clusterAgent.metricsProvider.enabled -}}
 apiVersion: v1
 kind: Service
