@@ -55,3 +55,13 @@ Create the name of the service account to use
 {{- end -}}
 {{- end -}}
 
+{{/*
+Return the appropriate apiGroup for PodSecurityPolicy.
+*/}}
+{{- define "rbac.pspApiGroup" -}}
+{{- if semverCompare "<1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- print "extensions" -}}
+{{- else if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- print "policy" -}}
+{{- end -}}
+{{- end -}}
