@@ -26,6 +26,14 @@ image:
   # pullSecrets:
   #   - myRegistryKeySecretName
 
+## String to partially override joomla.fullname template (will maintain the release name)
+##
+# nameOverride:
+
+## String to fully override joomla.fullname template
+##
+# fullnameOverride:
+
 ## User of the application
 ## ref: https://github.com/bitnami/bitnami-docker-joomla#environment-variables
 ##
