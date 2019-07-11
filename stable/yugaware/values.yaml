@@ -21,3 +21,7 @@ yugaware:
   health:
     username: ""
     password: ""
+
+helm:
+  timeout: 900
+  package: "/opt/yugabyte/helm/yugabyte-latest.tgz"
