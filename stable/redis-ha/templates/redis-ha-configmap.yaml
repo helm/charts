@@ -178,6 +178,9 @@ data:
       mode tcp
       option tcp-check
       tcp-check connect
+      {{- if .Values.auth }}
+      tcp-check send AUTH\ {{ .Values.redisPassword }}\r\n
+      {{- end }}
       tcp-check send PING\r\n
       tcp-check expect string +PONG
       tcp-check send info\ replication\r\n
