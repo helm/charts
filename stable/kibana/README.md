@@ -118,6 +118,7 @@ The following table lists the configurable parameters of the kibana chart and th
 | `extraConfigMapMounts`                     | Additional configmaps to be mounted                                    | `[]`                                  |
 | `deployment.annotations`                   | Annotations for deployment                                             | `{}`                                  |
 | `initContainers`                           | Init containers to add to the kibana deployment                        | `{}`                                  |
+| `testFramework.enabled`                    | enable the test framework                                              | true                                  |
 | `testFramework.image`                      | `test-framework` image repository.                                     | `dduportal/bats`                      |
 | `testFramework.tag`                        | `test-framework` image tag.                                            | `0.4.0`                               |
 
