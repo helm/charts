@@ -451,6 +451,10 @@ grafana:
     #   regex: 'kube_(daemonset|deployment|pod|namespace|node|statefulset).+'
     #   sourceLabels: [__name__]
 
+    ## Namespace selector. In case grafana run in a different namespace.
+    ##
+    namespaceSelector: ""
+
     # 	relabel configs to apply to samples before ingestion.
     ##
     relabelings: []
@@ -802,6 +806,10 @@ kubeStateMetrics:
     #   regex: 'kube_(daemonset|deployment|pod|namespace|node|statefulset).+'
     #   sourceLabels: [__name__]
 
+    ## Namespace selector. In case kube-state-metrics run in a different namespace.
+    ##
+    namespaceSelector: ""
+
     # 	relabel configs to apply to samples before ingestion.
     ##
     relabelings: []
@@ -843,6 +851,10 @@ nodeExporter:
     #   regex: ^node_mountstats_nfs_(event|operations|transport)_.+
     #   replacement: $1
     #   action: drop
+
+    ## Namespace selector. In case node operator run in a different namespace.
+    ##
+    namespaceSelector: ""
 
     ## 	relabel configs to apply to samples before ingestion.
     ##

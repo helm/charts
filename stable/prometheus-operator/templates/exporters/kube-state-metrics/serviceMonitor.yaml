@@ -8,6 +8,11 @@ metadata:
 {{ include "prometheus-operator.labels" . | indent 4 }}
 spec:
   jobLabel: app
+  {{- if not (eq .Values.kubeStateMetrics.serviceMonitor.namespaceSelector "") }}
+  namespaceSelector:
+    matchNames:
+      - "{{ .Values.kubeStateMetrics.serviceMonitor.namespaceSelector }}"
+  {{- end }}
   endpoints:
   - port: http
     {{- if .Values.kubeStateMetrics.serviceMonitor.interval }}

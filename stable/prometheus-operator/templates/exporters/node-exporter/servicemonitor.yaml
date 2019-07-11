@@ -14,6 +14,11 @@ spec:
       {{- if .Values.nodeExporter.deployed }}
       release: "{{ .Release.Name }}"
       {{- end }}
+  {{- if not (eq .Values.nodeExporter.serviceMonitor.namespaceSelector "") }}
+  namespaceSelector:
+    matchNames:
+      - "{{ .Values.nodeExporter.serviceMonitor.namespaceSelector }}"
+  {{- end }}
   endpoints:
   - port: metrics
     {{- if .Values.nodeExporter.serviceMonitor.interval }}

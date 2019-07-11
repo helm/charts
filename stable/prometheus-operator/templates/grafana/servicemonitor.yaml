@@ -13,9 +13,15 @@ spec:
       {{- if .Values.grafana.deployed }}
       release: "{{ .Release.Name }}"
       {{- end }}
+  {{- if not (eq .Values.grafana.serviceMonitor.namespaceSelector "") }}
+  namespaceSelector:
+    matchNames:
+      - "{{ .Values.grafana.serviceMonitor.namespaceSelector }}"
+  {{- else }}
   namespaceSelector:
     matchNames:
       - {{ .Release.Namespace | quote }}
+  {{- end }}
   endpoints:
   - port: service
     {{- if .Values.grafana.serviceMonitor.interval }}
