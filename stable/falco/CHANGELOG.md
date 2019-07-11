@@ -3,11 +3,27 @@
 This file documents all notable changes to Sysdig Falco Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v0.9.1
+
+### Minor Changes
+
+* Allow configuration using values for `time_format_iso8601` setting
+* Allow configuration using values for `syscall_event_drops` setting
+* Allow configuration using values for `http_output` setting
+* Add CHANGELOG entry for v0.8.0, [not present on its PR](https://github.com/helm/charts/pull/14813#issuecomment-506821432)
+
 ## v0.9.0
 
 ### Major Changes
 
 * Add nestorsalceda as an approver
+
+## v0.8.0
+
+### Major Changes
+
+* Allow configuration of Pod Security Policy. This is needed to get Falco
+  running when the Admission Controller is enabled.
 
 ## v0.7.10
 
