@@ -11,7 +11,9 @@ spec:
   selector:
     matchLabels:
       app: prometheus-node-exporter
-      release: {{ .Release.Name }}
+      {{- if .Values.nodeExporter.deployed }}
+      release: "{{ .Release.Name }}"
+      {{- end }}
   endpoints:
   - port: metrics
     {{- if .Values.nodeExporter.serviceMonitor.interval }}

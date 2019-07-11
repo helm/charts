@@ -25,5 +25,7 @@ spec:
   selector:
     matchLabels:
       app: kube-state-metrics
+      {{- if .Values.kubeStateMetrics.deployed }}
       release: "{{ .Release.Name }}"
+      {{- end }}
 {{- end }}

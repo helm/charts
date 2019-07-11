@@ -10,7 +10,9 @@ spec:
   selector:
     matchLabels:
       app: grafana
-      release: {{ .Release.Name | quote }}
+      {{- if .Values.grafana.deployed }}
+      release: "{{ .Release.Name }}"
+      {{- end }}
   namespaceSelector:
     matchNames:
       - {{ .Release.Namespace | quote }}
