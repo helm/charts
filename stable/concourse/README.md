@@ -170,7 +170,6 @@ The following table lists the configurable parameters of the Concourse chart and
 | `web.ingress.hosts` | Concourse Web Ingress Hostnames | `[]` |
 | `web.ingress.tls` | Concourse Web Ingress TLS configuration | `[]` |
 | `web.keySecretsPath` | Specify the mount directory of the web keys secrets | `/concourse-keys` |
-| `web.labels`| Additional labels to be added to the web pods | `{}` |
 | `web.labels`| Additional labels to be added to the worker pods | `{}` |
 | `web.livenessProbe.failureThreshold` | Minimum consecutive failures for the probe to be considered failed after having succeeded | `5` |
 | `web.livenessProbe.httpGet.path` | Path to access on the HTTP server when performing the healthcheck | `/api/v1/info` |
