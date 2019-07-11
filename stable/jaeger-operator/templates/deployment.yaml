@@ -39,9 +39,13 @@ spec:
           args: ["start"]
           env:
             - name: WATCH_NAMESPACE
+            {{- if kindIs "string" .Values.watchNamespace  }}
+              value: {{ .Values.watchNamespace }}
+            {{- else }}
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
+            {{- end }}
             - name: POD_NAME
               valueFrom:
                 fieldRef:

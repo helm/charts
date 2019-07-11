@@ -10,6 +10,7 @@ rbac:
   # Specifies whether RBAC resources should be created
   create: true
   pspEnabled: false
+  clusterRoleBinding: false
 
 serviceAccount:
   # Specifies whether a ServiceAccount should be created
@@ -33,3 +34,5 @@ tolerations: []
 affinity: {}
 
 securityContext: {}
+
+# watchNamespace: ""

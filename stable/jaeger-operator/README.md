@@ -41,20 +41,22 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following table lists the configurable parameters of the jaeger-operator chart and their default values.
 
-| Parameter               | Description                                                                                                 | Default                         |
-|:------------------------|:------------------------------------------------------------------------------------------------------------|:--------------------------------|
-| `image.repository`      | Controller container image repository                                                                       | `jaegertracing/jaeger-operator` |
-| `image.tag`             | Controller container image tag                                                                              | `1.12.1`                        |
-| `image.pullPolicy`      | Controller container image pull policy                                                                      | `IfNotPresent`                  |
-| `rbac.create`           | All required roles and rolebindings will be created                                                         | `true`                          |
-| `serviceAccount.create` | Service account to use                                                                                      | `true`                          |
-| `rbac.pspEnabled`       | Pod security policy for pod will be created and included in rbac role                                       | `false`                         |
-| `serviceAccount.name`   | Service account name to use. If not set and create is true, a name is generated using the fullname template | ``                              |
-| `resources`             | K8s pod resorces                                                                                            | `None`                          |
-| `nodeSelector`          | Node labels for pod assignment                                                                              | `{}`                            |
-| `tolerations`           | Toleration labels for pod assignment                                                                        | `[]`                            |
-| `affinity`              | Affinity settings for pod assignment                                                                        | `{}`                            |
-| `securityContext`       | Security context for pod                                                                                    | `{}`                            |
+| Parameter                | Description                                                                                                 | Default                         |
+|:-------------------------|:------------------------------------------------------------------------------------------------------------|:--------------------------------|
+| `image.repository`       | Controller container image repository                                                                       | `jaegertracing/jaeger-operator` |
+| `image.tag`              | Controller container image tag                                                                              | `1.12.1`                        |
+| `image.pullPolicy`       | Controller container image pull policy                                                                      | `IfNotPresent`                  |
+| `rbac.create`            | All required roles and rolebindings will be created                                                         | `true`                          |
+| `rbac.clusterRoleBinding | Create Cluster role binding instead of role binding                                                         | `false`                         |
+| `serviceAccount.create ` | Service account to use                                                                                      | `true`                          |
+| `rbac.pspEnabled`        | Pod security policy for pod will be created and included in rbac role                                       | `false`                         |
+| `serviceAccount.name`    | Service account name to use. If not set and create is true, a name is generated using the fullname template | ``                              |
+| `resources`              | K8s pod resources                                                                                           | `None`                          |
+| `nodeSelector`           | Node labels for pod assignment                                                                              | `{}`                            |
+| `tolerations`            | Toleration labels for pod assignment                                                                        | `[]`                            |
+| `affinity`               | Affinity settings for pod assignment                                                                        | `{}`                            |
+| `securityContext`        | Security context for pod                                                                                    | `{}`                            |
+| `watchNamespace`         | Namespace to watch for Jaeger resources ("" means all namespaces)                                           | `None`                          |
 
 Specify each parameter you'd like to override using a YAML file as described above in the [installation](#installing-the-chart) section.
 

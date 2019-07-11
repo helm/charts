@@ -1,9 +1,8 @@
-{{- if and (.Values.rbac.create) (not .Values.rbac.clusterRoleBinding) }}
-kind: Role
+{{- if and (.Values.rbac.create) (.Values.rbac.clusterRoleBinding) }}
+kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1beta1
 metadata:
   name: {{ include "jaeger-operator.fullname" . }}
-  namespace: {{ .Release.Namespace }}
   labels:
     app.kubernetes.io/name: {{ include "jaeger-operator.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
