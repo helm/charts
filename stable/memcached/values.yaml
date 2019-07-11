@@ -65,8 +65,8 @@ affinity: {}
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
 securityContext:
   enabled: true
-  fsGroup: 11211
-  runAsUser: 11211
+  fsGroup: 1001
+  runAsUser: 1001
 
 metrics:
   ## Expose memcached metrics in Prometheus format

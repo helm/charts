@@ -59,9 +59,9 @@ The following table lists the configurable parameters of the Memcached chart and
 | `nodeSelector`             | Simple pod scheduling control | `{}`                                                      |
 | `tolerations`              | Allow or deny specific node taints | `{}`                                                 |
 | `affinity`                 | Advanced pod scheduling control | `{}`                                                    |
-| `securityContext.enabled`  | Enable security context (both redis master and slave pods) | `true`                       |
-| `securityContext.fsGroup`  | Group ID for the container | `11211`                                                      |
-| `securityContext.runAsUser`| User ID for the container  | `11211`                                                      |
+| `securityContext.enabled`  | Enable security context    | `true`                                                       |
+| `securityContext.fsGroup`  | Group ID for the container | `1001`                                                       |
+| `securityContext.runAsUser`| User ID for the container  | `1001`                                                       |
 
 The above parameters map to `memcached` params. For more information please refer to the [Memcached documentation](https://github.com/memcached/memcached/wiki/ConfiguringServer).
 
