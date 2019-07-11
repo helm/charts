@@ -156,7 +156,7 @@ data:
       option tcp-check
       tcp-check connect
       {{- if $root.auth }}
-      tcp-check send AUTH\ {{ .Values.redisPassword }}\r\n
+      tcp-check send AUTH\ {{ $root.redisPassword }}\r\n
       tcp-check expect string +OK
       {{- end }}
       tcp-check send PING\r\n
