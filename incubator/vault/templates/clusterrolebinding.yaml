@@ -8,7 +8,6 @@ metadata:
     chart: {{ template "vault.chart" . }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
-  namespace: default
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -16,5 +15,5 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: {{ template "vault.serviceAccountName" . }}
-  namespace: default
+  namespace: {{ .Release.Namespace }}
 {{- end -}}
