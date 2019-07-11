@@ -156,6 +156,7 @@ data:
       tcp-check connect
       {{- if .Values.auth }}
       tcp-check send AUTH\ {{ .Values.redisPassword }}\r\n
+      tcp-check expect string +OK
       {{- end }}
       tcp-check send PING\r\n
       tcp-check expect string +PONG
@@ -180,6 +181,7 @@ data:
       tcp-check connect
       {{- if .Values.auth }}
       tcp-check send AUTH\ {{ .Values.redisPassword }}\r\n
+      tcp-check expect string +OK
       {{- end }}
       tcp-check send PING\r\n
       tcp-check expect string +PONG
