@@ -26,6 +26,14 @@ image:
   # pullSecrets:
   #   - myRegistryKeySecretName
 
+## String to partially override jasperreports.fullname template (will maintain the release name)
+##
+# nameOverride:
+
+## String to fully override jasperreports.fullname template
+##
+# fullnameOverride:
+
 ## User of the application
 ## ref: https://github.com/bitnami/bitnami-docker-jasperreports#configuration
 ##
