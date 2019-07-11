@@ -81,7 +81,7 @@ azure:
   secretName: ""
   ## Azure resource group to use
   ##
-  resoureGroup: ""
+  resourceGroup: ""
 
 ## Cloudflare configuration to be set via arguments/env. variables
 ##
