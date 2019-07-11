@@ -65,7 +65,7 @@ The following table lists the configurable parameters of the external-dns chart 
 | `aws.assumeRoleArn`                | When using the AWS provider, assume role by specifying --aws-assume-role to the external-dns daemon      | `""`                                                     |
 | `aws.batchChangeSize`              | When using the AWS provider, set the maximum number of changes that will be applied in each batch        | `1000`                                                   |
 | `azure.secretName`                 | When using the Azure provider, set the secret containing the `azure.json` file                           | `""`                                                     |
-| `azure.resoureGroup`               | When using the Azure provider, set the Azure Resource Group                                              | `""`                                                     |
+| `azure.resourceGroup`               | When using the Azure provider, set the Azure Resource Group                                              | `""`                                                     |
 | `cloudflare.apiKey`                | When using the Cloudflare provider, `CF_API_KEY` to set (optional)                                       | `""`                                                     |
 | `cloudflare.email`                 | When using the Cloudflare provider, `CF_API_EMAIL` to set (optional)                                     | `""`                                                     |
 | `cloudflare.proxied`               | When using the Cloudflare provider, enable the proxy feature (DDOS protection, CDN...) (optional)        | `true`                                                   |
