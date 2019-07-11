@@ -61,6 +61,13 @@ tolerations: {}
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
 affinity: {}
 
+## Memcached pod Security Context
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+securityContext:
+  enabled: true
+  fsGroup: 1001
+  runAsUser: 1001
+
 metrics:
   ## Expose memcached metrics in Prometheus format
   enabled: false
