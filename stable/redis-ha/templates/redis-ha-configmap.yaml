@@ -146,6 +146,7 @@ data:
       timeout server  30s
       timeout client  30s
 
+    {{- $root := . }}
     {{- $fullName := include "redis-ha.fullname" . }}
     {{- $replicas := int .Values.replicas }}
     {{- range $i := until $replicas }}
@@ -154,7 +155,7 @@ data:
       mode tcp
       option tcp-check
       tcp-check connect
-      {{- if .Values.auth }}
+      {{- if $root.auth }}
       tcp-check send AUTH\ {{ .Values.redisPassword }}\r\n
       tcp-check expect string +OK
       {{- end }}
