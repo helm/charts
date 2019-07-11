@@ -1,9 +1,20 @@
+### 1.12.0
+
+* [fa4bef2](https://github.com/kubernetes/charts/commit/fa4bef2):
+
+- Update API versions of Deployment and RBAC resources
+
 ### 1.11.0
+
 * [8207b8c](https://github.com/kubernetes/charts/commit/8207b8c):
+
 - Bump up GoCD Version to 19.5.0
 ### 1.10.0
+
 * [554019b](https://github.com/kubernetes/charts/commit/554019b):
+
 - Bump up GoCD Version to 19.4.0
+
 ### 1.9.1
 
 - Add support for Deployment and Pod annotations.
@@ -173,7 +184,7 @@
   - Updated post install script
        * From GoCD version 18.8.0 pipeline created using api is already in
          unpaused state
-  
+
 ### 1.3.6
 
 * [b7d596e](https://github.com/helm/charts/pull/7476/commits/b7d596e): Fixed role configuration instructions in README file.

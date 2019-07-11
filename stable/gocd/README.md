@@ -12,7 +12,7 @@ To quickly build your first pipeline while learning key GoCD concepts, visit the
 
 ## Prerequisites
 
-- Kubernetes 1.8+ with Beta APIs enabled
+- Kubernetes 1.13+ with Beta APIs enabled
 - PV provisioner support in the underlying infrastructure
 - LoadBalancer support or Ingress Controller
 - Ensure that the service account used for starting tiller has enough permissions to create a role.
