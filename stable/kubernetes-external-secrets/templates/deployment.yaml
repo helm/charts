@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "kubernetes-external-secrets.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "kubernetes-external-secrets.name" . }}
+    helm.sh/chart: {{ include "kubernetes-external-secrets.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "kubernetes-external-secrets.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "kubernetes-external-secrets.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+      annotations:
+      {{- if .Values.podAnnotations }}
+        {{- toYaml .Values.podAnnotations | nindent 8 }}
+      {{- end }}
+    spec:
+      serviceAccountName: {{ template "kubernetes-external-secrets.fullname" . }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          env:
+          {{- range $name, $value := .Values.env }}
+          {{- if not (empty $value) }}
+          - name: {{ $name | quote }}
+            value: {{ $value | quote }}
+          {{- end }}
+          {{- end }}
+          # Params for env vars populated from k8s secrets
+          {{- range $key, $value := .Values.envVarsFromSecret }}
+          - name: {{ $key }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ $value.secretKeyRef | quote }}
+                key: {{ $value.key | quote }}
+          {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

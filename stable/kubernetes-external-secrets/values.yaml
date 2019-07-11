@@ -1,0 +1,59 @@
+# Default values for kubernetes-external-secrets.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# Environment variables to set on deployment pod
+env:
+  AWS_REGION: us-west-2
+  EVENTS_INTERVAL_MILLISECONDS: 60000
+  POLLER_INTERVAL_MILLISECONDS: 10000
+
+# Create environment variables from exists k8s secrets
+#envVarsFromSecret:
+#  AWS_ACCESS_KEY_ID:
+#    secretKeyRef: aws-credentials
+#    key: id
+#  AWS_SECRET_ACCESS_KEY:
+#    secretKeyRef: aws-credentials
+#    key: key
+
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+replicaCount: 1
+
+image:
+  repository: godaddy/kubernetes-external-secrets
+  tag: 1.3.0
+  pullPolicy: IfNotPresent
+
+nameOverride: ""
+fullnameOverride: ""
+
+podAnnotations: {}
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

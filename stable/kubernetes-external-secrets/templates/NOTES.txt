@@ -1,0 +1,4 @@
+The kubernetes external secrets has been installed. Check its status by running:
+  kubectl --namespace {{ .Release.Namespace }} get pods -l "app.kubernetes.io/name={{ include "kubernetes-external-secrets.name" . }},app.kubernetes.io/instance={{ .Release.Name }}"
+
+Visit https://github.com/godaddy/kubernetes-external-secrets for instructions on how to use kubernetes external secrets
