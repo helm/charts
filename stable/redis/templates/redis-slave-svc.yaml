@@ -14,8 +14,8 @@ metadata:
 {{- end }}
 spec:
   type: {{ .Values.slave.service.type }}
-  {{ if eq .Values.master.service.type "ClusterIP" -}} {{ if .Values.master.service.ClusterIP -}}
-  ClusterIP: {{ .Values.master.service.ClusterIP }}
+  {{ if eq .Values.slave.service.type "ClusterIP" -}} {{ if .Values.slave.service.ClusterIP -}}
+  ClusterIP: {{ .Values.slave.service.ClusterIP }}
   {{ end -}}
   {{- end -}}
   {{ if eq .Values.slave.service.type "LoadBalancer" -}} {{ if .Values.slave.service.loadBalancerIP -}}
