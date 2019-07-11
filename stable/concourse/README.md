@@ -160,6 +160,10 @@ The following table lists the configurable parameters of the Concourse chart and
 | `web.authSecretsPath` | Specify the mount directory of the web auth secrets | `/concourse-auth` |
 | `web.credhubSecretsPath` | Specify the mount directory of the web credhub secrets | `/concourse-credhub` |
 | `web.enabled` | Enable or disable the web component | `true` |
+| `web.datadog.agentHostUseHostIP` | Use IP of Pod's node overrides `agentHost` | `false` |
+| `web.datadog.agentHost` | Datadog Agent host | `127.0.0.1` |
+| `web.datadog.enabled` | Enable or disable Datadog metrics | `false` |
+| `web.datadog.prefix` | Prefix for emitted metrics | `"concourse.ci"` |
 | `web.env` | Configure additional environment variables for the web containers | `[]` |
 | `web.ingress.annotations` | Concourse Web Ingress annotations | `{}` |
 | `web.ingress.enabled` | Enable Concourse Web Ingress | `false` |
