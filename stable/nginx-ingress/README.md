@@ -150,6 +150,16 @@ Parameter | Description | Default
 `defaultBackend.image.runAsUser` | User ID of the controller process. Value depends on the Linux distribution used inside of the container image. By default uses nobody user. | `65534`
 `defaultBackend.extraArgs` | Additional default backend container arguments | `{}`
 `defaultBackend.port` | Http port number | `8080`
+`defaultBackend.livenessProbe.initialDelaySeconds` | Delay before liveness probe is initiated | 30
+`defaultBackend.livenessProbe.periodSeconds` | How often to perform the probe | 10
+`defaultBackend.livenessProbe.timeoutSeconds` | When the probe times out | 5
+`defaultBackend.livenessProbe.successThreshold` | Minimum consecutive successes for the probe to be considered successful after having failed. | 1
+`defaultBackend.livenessProbe.failureThreshold` | Minimum consecutive failures for the probe to be considered failed after having succeeded. | 3
+`defaultBackend.readinessProbe.initialDelaySeconds` | Delay before readiness probe is initiated | 0
+`defaultBackend.readinessProbe.periodSeconds` | How often to perform the probe | 5
+`defaultBackend.readinessProbe.timeoutSeconds` | When the probe times out | 5
+`defaultBackend.readinessProbe.successThreshold` | Minimum consecutive successes for the probe to be considered successful after having failed. | 1
+`defaultBackend.readinessProbe.failureThreshold` | Minimum consecutive failures for the probe to be considered failed after having succeeded. | 6
 `defaultBackend.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `defaultBackend.affinity` | node/pod affinities (requires Kubernetes >=1.6) | `{}`
 `defaultBackend.nodeSelector` | node labels for pod assignment | `{}`
