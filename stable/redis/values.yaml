@@ -105,6 +105,7 @@ sentinel:
   service:
     ##  Redis Sentinel Service type
     type: ClusterIP
+    ClusterIP:
     sentinelPort: 26379
     redisPort: 6379
 
@@ -271,6 +272,7 @@ master:
   service:
     ##  Redis Master Service type
     type: ClusterIP
+    ClusterIP:
     port: 6379
 
     ## Specify the nodePort value for the LoadBalancer and NodePort service types.
@@ -329,6 +331,7 @@ slave:
   service:
     ## Redis Slave Service type
     type: ClusterIP
+    ClusterIP:
     ## Redis port
     port: 6379
     ## Specify the nodePort value for the LoadBalancer and NodePort service types.
