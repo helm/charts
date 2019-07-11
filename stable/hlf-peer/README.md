@@ -107,7 +107,7 @@ The following table lists the configurable parameters of the Hyperledger Fabric 
 | `secrets.peer.tlsRootCert`         | TLS root CA certificate: as 'cert.pem'               | ``                                                         |
 | `secrets.peer.tlsClient`           | TLS client secret: as 'tls.crt' and 'tls.key'        | ``                                                         |
 | `secrets.peer.tlsClientRootCerts`  | TLS Client root CA certificate files (any name)      | ``                                                         |
-| `secrets.channel`                  | Secret containing Channel tx for peer to create/join | ``                                                         |
+| `secrets.channels`                 | Array of secrets containing channel creation file    | ``                                                         |
 | `secrets.adminCert`                | Secret containing Peer Org admin certificate         | ``                                                         |
 | `secrets.adminCert`                | Secret containing Peer Org admin private key         | ``                                                         |
 | `secrets.ordTlsRootCert`           | Secret containing Orderer TLS root CA certificate    | ``                                                         |

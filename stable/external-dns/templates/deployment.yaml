@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "external-dns.fullname" . }}
@@ -21,10 +21,8 @@ spec:
         {{- end }}
     spec:
 {{- include "external-dns.imagePullSecrets" . | indent 6 }}
-      {{- if .Values.securityContext.enabled }}
-      securityContext:
-        fsGroup: {{ .Values.securityContext.fsGroup }}
-        runAsUser: {{ .Values.securityContext.runAsUser }}
+      {{- if .Values.podSecurityContext }}
+      securityContext: {{ toYaml .Values.podSecurityContext | nindent 8 }}
       {{- end }}
       {{- with .Values.affinity }}
       affinity: {{ tpl (toYaml .) $ | nindent 8 }}
@@ -85,13 +83,6 @@ spec:
           {{- end }}
           {{- if .Values.crd.kind }}
         - --crd-source-kind={{ .Values.crd.kind }}
-          {{- end }}
-        {{- end }}
-        {{- range $key, $value := .Values.extraArgs }}
-          {{- if $value }}
-        - --{{ $key }}={{ $value }}
-          {{- else }}
-        - --{{ $key }}
           {{- end }}
         {{- end }}
         {{- range .Values.istioIngressGateways }}
@@ -205,8 +196,10 @@ spec:
         {{- end }}
         # Google environment variables
         {{- if eq .Values.provider "google" }}
+        {{- if or .Values.google.serviceAccountSecret .Values.google.serviceAccountKey }}
         - name: GOOGLE_APPLICATION_CREDENTIALS
           value: /etc/secrets/service-account/credentials.json
+        {{- end }}
         {{- end }}
         # Infloblox environment variables
         {{- if eq .Values.provider "infoblox" }}
@@ -261,6 +254,9 @@ spec:
           containerPort: {{ .Values.service.port }}
         readinessProbe: {{ toYaml .Values.readinessProbe | nindent 10 }}
         livenessProbe: {{ toYaml .Values.livenessProbe | nindent 10 }}
+        {{- if .Values.securityContext }}
+        securityContext: {{ toYaml .Values.securityContext | nindent 10 }}
+        {{- end }}
         {{- if .Values.resources }}
         resources: {{ toYaml .Values.resources | nindent 10 }}
         {{- end }}
@@ -283,8 +279,10 @@ spec:
         {{- end }}
         # Google mountPath(s)
         {{- if eq .Values.provider "google" }}
+        {{- if or .Values.google.serviceAccountSecret .Values.google.serviceAccountKey }}
         - name: google-service-account
           mountPath: /etc/secrets/service-account/
+        {{- end }}
         {{- end }}
         # Designate mountPath(s)
         {{- if and (eq .Values.provider "designate") .Values.designate.customCA.enabled }}
@@ -313,13 +311,15 @@ spec:
       {{- end }}
       # Google volume(s)
       {{- if eq .Values.provider "google" }}
+      {{- if .Values.google.serviceAccountSecret }}
       - name: google-service-account
         secret:
-      {{- if .Values.google.serviceAccountSecret }}
           secretName: {{ .Values.google.serviceAccountSecret | quote }}
-      {{- else }}
+      {{- else if .Values.google.serviceAccountKey }}
+      - name: google-service-account
+        secret:
           secretName: {{ template "external-dns.fullname" . }}
-      {{- end }}
+      {{- end}}
       {{- end }}
       # Designate volume(s)
       {{- if and (eq .Values.provider "designate") .Values.designate.customCA.enabled }}
