@@ -1,4 +1,3 @@
-{{- if not .Values.haproxy.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -30,4 +29,3 @@ spec:
   selector:
     release: {{ .Release.Name }}
     app: {{ template "redis-ha.name" . }}
-{{- end }}
