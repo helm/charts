@@ -9,7 +9,7 @@ env:
   POLLER_INTERVAL_MILLISECONDS: 10000
 
 # Create environment variables from exists k8s secrets
-#envVarsFromSecret:
+# envVarsFromSecret:
 #  AWS_ACCESS_KEY_ID:
 #    secretKeyRef: aws-credentials
 #    key: id
