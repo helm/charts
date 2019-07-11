@@ -313,6 +313,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `grafana.deployed` | If true, deploy the grafana sub-chart | `true` |
 | `grafana.serviceMonitor.selfMonitor` | Create a `serviceMonitor` to automatically monitor the grafana instance | `true` |
 | `grafana.serviceMonitor.metricRelabelings` | The `metric_relabel_configs` for scraping the grafana instance. | `` |
+| `grafana.serviceMonitor.namespaceSelector` | Select namespace where `grafana` is deployed | `""` |
 | `grafana.serviceMonitor.relabelings` | The `relabel_configs` for scraping the grafana instance. | `` |
 | `grafana.additionalDataSources` | Configure additional grafana datasources | `[]` |
 | `grafana.adminPassword` | Admin password to log into the grafana UI | "prom-operator" |
@@ -402,6 +403,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `kubeStateMetrics.deployed` | Deploy the `kube-state-metrics` sub-chart | `true` |
 | `kubeStateMetrics.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
 | `kubeStateMetrics.serviceMonitor.metricRelabelings` | Metric relablings for the `kube-state-metrics` ServiceMonitor | `[]` |
+| `kubeStateMetrics.serviceMonitor.namespaceSelector` | Select namespace where `kube-state-metrics` is deployed | `""` |
 | `kubeStateMetrics.serviceMonitor.relabelings` | The `relabel_configs` for scraping `kube-state-metrics`. | `` |
 | `kube-state-metrics.rbac.create` | Create RBAC components in kube-state-metrics. See `global.rbac.create` | `true` |
 | `kube-state-metrics.podSecurityPolicy.enabled` | Create pod security policy resource for kube-state-metrics. | `true` |
@@ -410,6 +412,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `nodeExporter.jobLabel` | The name of the label on the target service to use as the job name in prometheus. See `prometheus-node-exporter.podLabels.jobLabel=node-exporter` default | `jobLabel` |
 | `nodeExporter.serviceMonitor.metricRelabelings` | Metric relablings for the `prometheus-node-exporter` ServiceMonitor | `[]` |
 | `nodeExporter.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
+| `nodeExporter.serviceMonitor.namespaceSelector` | Select namespace where `node-exporter` is deployed | `""` |
 | `nodeExporter.serviceMonitor.relabelings` | The `relabel_configs` for scraping the `prometheus-node-exporter`. | `` |
 | `prometheus-node-exporter.podLabels` | Additional labels for pods in the DaemonSet | `{"jobLabel":"node-exporter"}` |
 | `prometheus-node-exporter.extraArgs` | Additional arguments for the node exporter container | `["--collector.filesystem.ignored-mount-points=^/(dev|proc|sys|var/lib/docker/.+)($|/)", "--collector.filesystem.ignored-fs-types=^(autofs|binfmt_misc|cgroup|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|mqueue|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|sysfs|tracefs)$"]` |
