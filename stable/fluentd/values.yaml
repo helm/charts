@@ -73,14 +73,14 @@ ingress:
 #        - http-input.local
 
 configMaps:
-  general.conf: |
+  00-ignore-fluent.conf: |
     # Prevent fluentd from handling records containing its own logs. Otherwise
     # it can lead to an infinite loop, when error in sending one message generates
     # another message which also fails to be sent and so on.
     <match fluentd.**>
       @type null
     </match>
-
+  01-general.conf: |
     # Used for health checking
     <source>
       @type http
@@ -97,17 +97,17 @@ configMaps:
       port 24220
       tag fluentd.monitor.metrics
     </source>
-  system.conf: |-
+  01-system.conf: |-
     <system>
       root_dir /tmp/fluentd-buffers/
     </system>
-  forward-input.conf: |
+  01-forward-input.conf: |
     <source>
       @type forward
       port 24224
       bind 0.0.0.0
     </source>
-  output.conf: |
+  99-output.conf: |
     <match **>
       @id elasticsearch
       @type elasticsearch

@@ -9,8 +9,10 @@ metadata:
     heritage: {{ .Release.Service }}
 data:
 {{- range $key, $value := .Values.configMaps }}
+{{- if $value }}
   {{ $key }}: |-
 {{ $value | indent 4 }}
+{{- end }}
 {{- end }}
 {{- if .Values.metrics.enabled }}
   metrics.conf: |
