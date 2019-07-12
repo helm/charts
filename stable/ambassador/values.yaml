@@ -60,17 +60,20 @@ service:
 
   # Note that target http ports need to match your ambassador configurations service_port
   # https://www.getambassador.io/reference/modules/#the-ambassador-module
-  http:
-    enabled: true
-    port: 80
-    targetPort: 8080
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
     # nodePort: 30080
-
-  https:
-    enabled: true
-    port: 443
-    targetPort: 8443
-    # nodePort: 30443
+    - name: https
+      port: 443
+      targetPort: 8443
+      # nodePort: 30443
+    # TCPMapping_Port
+      # port: 2222
+      # targetPort: 2222
+      # nodePort: 30222
+    
 
   annotations:
     getambassador.io/config: |

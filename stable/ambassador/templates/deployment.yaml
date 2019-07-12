@@ -96,14 +96,10 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            {{- if .Values.service.http.enabled }}
-            - name: http
-              containerPort: {{ .Values.service.http.targetPort }}
-            {{- end }}
-            {{- if .Values.service.https.enabled }}
-            - name: https
-              containerPort: {{ .Values.service.https.targetPort }}
-            {{- end }}
+            {{- range .Values.service.ports }}
+            - name: {{ .name }}
+              containerPort: {{ .targetPort }}
+            {{- end}}
             - name: admin
               containerPort: 8877
           {{- range $key := .Values.additionalTCPPorts }}

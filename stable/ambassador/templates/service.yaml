@@ -21,24 +21,14 @@ spec:
   externalTrafficPolicy: "{{ .Values.service.externalTrafficPolicy }}"
   {{- end }}
   ports:
-    {{- if .Values.service.http.enabled }}
-    - port: {{ .Values.service.http.port }}
-      targetPort: {{ .Values.service.http.targetPort }}
-      protocol: TCP
-      name: http
-      {{- with .Values.service.http.nodePort }}
-      nodePort: {{ toYaml . }}
+    {{- range .Values.service.ports}}
+    - name: {{ .name }}
+      port: {{ .port }}
+      targetPort: {{ .targetPort }}
+      {{- if .nodePort }}
+      nodePort: {{ .nodePort }}
       {{- end }}
-    {{- end }}
-    {{- if .Values.service.https.enabled }}
-    - port: {{ .Values.service.https.port }}
-      targetPort: {{ .Values.service.https.targetPort }}
-      protocol: TCP
-      name: https
-      {{- with .Values.service.https.nodePort }}
-      nodePort: {{ toYaml . }}
-      {{- end }}
-    {{- end }}
+    {{- end}}
     {{- range $key := .Values.additionalTCPPorts }}
     - name: "{{ $key }}-tcp"
       port: {{ $key }}
