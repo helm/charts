@@ -4,7 +4,7 @@
 
 image:
   repository: quay.io/yugabyte/yugaware
-  tag: 1.2.8.0-b1  
+  tag: 1.2.13.0-b10
   pullPolicy: IfNotPresent
   pullSecret: yugabyte-k8s-pull-secret
 
@@ -21,3 +21,7 @@ yugaware:
   health:
     username: ""
     password: ""
+
+helm:
+  timeout: 900
+  package: "/opt/yugabyte/helm/yugabyte-latest.tgz"
