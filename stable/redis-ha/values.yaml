@@ -33,7 +33,7 @@ haproxy:
     pullPolicy: IfNotPresent
   annotations: {}
   resources: {}
-  ## Service type for HAProx
+  ## Service type for HAProxy
   ##
   service:
     type: ClusterIP
