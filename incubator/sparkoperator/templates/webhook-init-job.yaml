@@ -5,7 +5,7 @@ metadata:
   name: {{ include "sparkoperator.fullname" . }}-init
   namespace: {{ .Release.Namespace }}
   annotations:
-    "helm.sh/hook": post-install, post-upgrade
+    "helm.sh/hook": pre-install, pre-upgrade
     "helm.sh/hook-delete-policy": hook-succeeded
   labels:
     app.kubernetes.io/name: {{ include "sparkoperator.name" . }}
