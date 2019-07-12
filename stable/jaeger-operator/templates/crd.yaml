@@ -8,10 +8,7 @@ metadata:
     "helm.sh/hook-delete-policy": "before-hook-creation"
 {{- end }}
   labels:
-    app.kubernetes.io/name: {{ include "jaeger-operator.name" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
-    helm.sh/chart: {{ include "jaeger-operator.chart" . }}
+{{ include "jaeger-operator.labels" . | indent 4 }}
 spec:
   group: jaegertracing.io
   names:
