@@ -14,14 +14,12 @@ metadata:
 {{- end }}
 spec:
   type: {{ .Values.slave.service.type }}
-  {{ if eq .Values.slave.service.type "ClusterIP" -}} {{ if .Values.slave.service.ClusterIP -}}
-  ClusterIP: {{ .Values.slave.service.ClusterIP }}
-  {{ end -}}
-  {{- end -}}
-  {{ if eq .Values.slave.service.type "LoadBalancer" -}} {{ if .Values.slave.service.loadBalancerIP -}}
-  loadBalancerIP: {{ .Values.slave.service.loadBalancerIP }}
-  {{ end -}}
-  {{- end -}}
+  {{- if and (eq .Values.slave.service.type "ClusterIP") (.Values.slave.service.ClusterIP) }}
+    ClusterIP: {{ .Values.slave.service.ClusterIP }}
+  {{- end }}
+  {{- if and (eq .Values.slave.service.type "LoadBalancer") (.Values.slave.service.loadBalancerIP) }}
+    loadBalancerIP: {{ .Values.slave.service.loadBalancerIP }}
+  {{- end }}
   ports:
   - name: redis
     port: {{ .Values.slave.service.port }}
