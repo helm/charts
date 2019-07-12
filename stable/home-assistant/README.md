@@ -125,6 +125,8 @@ The following tables lists the configurable parameters of the Home Assistant cha
 | `nodeSelector`             | Node labels for pod assignment or the home-assistant GUI | `{}` |
 | `tolerations`              | Toleration labels for pod assignment or the home-assistant GUI | `[]` |
 | `affinity`                 | Affinity settings for pod assignment or the home-assistant GUI | `{}` |
+| `podAnnotations`            | Key-value pairs to add as pod annotations  | `{}` |
+
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
