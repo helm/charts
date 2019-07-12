@@ -4,11 +4,25 @@ spec:
     image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
     imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
     command: ["/bin/bash", "/scripts/backup.sh"]
+{{- if .Values.mysql.existingSecret }}
+    env:
+      - name: MYSQL_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: {{ .Values.mysql.existingSecret | quote }}
+            {{- if .Values.mysql.existingSecretKey }}
+            key: {{ .Values.mysql.existingSecretKey | quote }}
+            {{- else }}
+            key: "mysql-root-password"
+            {{- end }}
+{{- end }}
     envFrom:
     - configMapRef:
         name: "{{ template "mysqldump.fullname" . }}"
+{{- if not .Values.mysql.existingSecret }}
     - secretRef:
         name: "{{ template "mysqldump.fullname" . }}"
+{{- end }}
     volumeMounts:
     - name: backups
       mountPath: /backup
