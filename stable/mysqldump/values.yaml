@@ -3,8 +3,12 @@
 # Declare variables to be passed into your templates.
 
 image:
+  registry: docker.io
   repository: monotek/gcloud-mysql
   tag: "8"
+  ## Specify a imagePullPolicy
+  ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
+  ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images#
   pullPolicy: IfNotPresent
 
 mysql:
@@ -12,12 +16,16 @@ mysql:
 ## to be used only when there's an existing database to backup.
   host: ""
   username: root
+  # overriden by existingDbSecret / existingDbSecretKey if set
   password:
   port: 3306
   # db for single db backup
   db: dbname
+  # Get password from existing secret
+  # existingSecret:
+  # existingSecretKey:
 
-# use --all-databases
+# use --all-databases if enabled
 allDatabases:
   enabled: true
   # creates single backup file with all databases
@@ -28,6 +36,9 @@ options: "--opt --single-transaction"
 
 # save sql backup to a directory named like the database or "alldatabases"
 saveToDirectory: false
+
+# if to dump all databases to stdout when not uploading
+dumpAllToStdout: false
 
 ## set to `now` to get a one time job, or a cronjob schedule like `0 0 * * *`
 ## to get a cronjob.
@@ -66,7 +77,7 @@ persistence:
   ##
   # storageClass: "-"
 
-# delete backups older than 10 days
+# delete old backups
 housekeeping:
   enabled: true
   keepDays: 10
@@ -87,6 +98,7 @@ upload:
     # serviceAccountName
     # usingGCPController to enable autogeneration and injection of the service account
     usingGCPController: false
+
   ssh:
     enabled: false
     user: backup
