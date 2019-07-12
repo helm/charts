@@ -14,14 +14,12 @@ metadata:
 {{- end }}
 spec:
   type: {{ .Values.metrics.service.type }}
-  {{ if eq .Values.metrics.service.type "ClusterIP" -}} {{ if .Values.metrics.service.ClusterIP -}}
-  ClusterIP: {{ .Values.metrics.service.ClusterIP }}
-  {{ end -}}
-  {{- end -}}
-  {{ if eq .Values.metrics.service.type "LoadBalancer" -}} {{ if .Values.metrics.service.loadBalancerIP -}}
-  loadBalancerIP: {{ .Values.metrics.service.loadBalancerIP }}
-  {{ end -}}
-  {{- end -}}
+  {{- if and (eq .Values.metrics.service.type "ClusterIP") (.Values.metrics.service.ClusterIP) }}
+    ClusterIP: {{ .Values.metrics.service.ClusterIP }}
+  {{- end }}
+  {{- if and (eq .Values.metrics.service.type "LoadBalancer") (.Values.metrics.service.loadBalancerIP) }}
+    loadBalancerIP: {{ .Values.metrics.service.loadBalancerIP }}
+  {{- end }}
   ports:
   - name: metrics
     port: 9121
