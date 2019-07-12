@@ -496,7 +496,7 @@ concourse:
 
       ## Prefix for all metrics to easily find them in Datadog
       ##
-      prefix:
+      prefix: "concourse.ci"
 
     influxdb:
       enabled: false
