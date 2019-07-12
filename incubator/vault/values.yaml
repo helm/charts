@@ -155,6 +155,8 @@ vault:
   # https://www.vaultproject.io/intro/getting-started/dev-server.html for more
   # information.
   dev: true
+  # Configure additional arguments to pass to vault server command
+  extraArgs: []
   # Configure additional environment variables for the Vault containers
   extraEnv: []
   #   - name: VAULT_API_ADDR
