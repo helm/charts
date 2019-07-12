@@ -38,6 +38,26 @@ spec:
           - name: LOG_LEVEL
             value: {{ .Values.sentry.logLevel }}
           {{ end }}
+          {{ if .Values.sentry.mangleNames }}
+          - name: MANGLE_NAMES
+            value: {{ .Values.sentry.mangleNames }}
+          {{ end }}
+          {{ if .Values.sentry.eventLevels }}
+          - name: EVENT_LEVELS
+            value: {{ .Values.sentry.eventLevels }}
+          {{ end }}
+          {{ if .Values.sentry.reasonFilter }}
+          - name: REASON_FILTER
+            value: {{ .Values.sentry.reasonFilter }}
+          {{ end }}
+          {{ if .Values.sentry.componentFilter }}
+          - name: COMPONENT_FILTER
+            value: {{ .Values.sentry.componentFilter }}
+          {{ end }}
+          {{ if .Values.sentry.eventNamespaces }}
+          - name: EVENT_NAMESPACES
+            value: {{ .Values.sentry.eventNamespaces }}
+          {{ end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
     {{- if .Values.nodeSelector }}

@@ -19,6 +19,11 @@ The following table lists the configurable parameters of the sentry-kubernetes c
 | `sentry.environment`    | Sentry environment                                                                                                          | Empty                         |
 | `sentry.release`        | Sentry release                                                                                                              | Empty                         |
 | `sentry.logLevel`       | Sentry log level                                                                                                            | Empty                         |
+| `sentry.mangleNames`    | Comma-separated list of object kinds for which object name should be mangled                                                | Empty                         |
+| `sentry.eventLevels`    | Comma-separated list of event levels for which events should be reported                                                    | Empty                         |
+| `sentry.reasonFilter`   | Comma-separated list of reasons for which events should *not* be reported                                                   | Empty                         |
+| `sentry.componentFilter`| Comma-separated list of components for which events should *not* be reported                                                | Empty                         |
+| `sentry.eventNamespaces`| Comma-separated list of namespaces for which events should be reported                                                      | Empty                         |
 | `image.repository`      | Container image name                                                                                                        | `getsentry/sentry-kubernetes` |
 | `image.tag`             | Container image tag                                                                                                         | `latest`                      |
 | `rbac.create`           | If `true`, create and use RBAC resources                                                                                    | `true`                        |

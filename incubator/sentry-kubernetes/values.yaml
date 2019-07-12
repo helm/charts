@@ -5,6 +5,16 @@ sentry:
   logLevel: ~
 # Sentry DSN config using an existing secret:
 # existingSecret:
+# Comma-separated list of object kinds for which object name should be mangled
+# mangleNames:
+# Comma-separated list of event levels for which events should be reported
+# eventLevels:
+# Comma-separated list of reasons for which events should *not* be reported
+# reasonFilter:
+# Comma-separated list of components for which events should *not* be reported
+# componentFilter:
+# Comma-separated list of namespaces for which events should be reported
+# eventNamespaces:
 image:
   repository: getsentry/sentry-kubernetes
   tag: latest
