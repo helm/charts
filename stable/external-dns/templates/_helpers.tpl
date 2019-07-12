@@ -130,6 +130,8 @@ Compile all warnings into a single message, and call fail.
 {{- $messages := append $messages (include "external-dns.validateValues.aws" .) -}}
 {{- $messages := append $messages (include "external-dns.validateValues.infoblox.gridHost" .) -}}
 {{- $messages := append $messages (include "external-dns.validateValues.infoblox.wapiPassword" .) -}}
+{{- $messages := append $messages (include "external-dns.validateValues.pdns.apiUrl" .) -}}
+{{- $messages := append $messages (include "external-dns.validateValues.pdns.apiKey" .) -}}
 {{- $messages := without $messages "" -}}
 {{- $message := join "\n" $messages -}}
 
@@ -198,6 +200,30 @@ Validate values of External DNS:
 external-dns: infoblox.wapiPassword
     You must provide a WAPI password when provider="infoblox".
     Please set the wapiPassword parameter (--set infoblox.wapiPassword="xxxx")
+{{- end -}}
+{{- end -}}
+
+{{/*
+Validate values of External DNS:
+- must provide the PowerDNS API URL when provider is "pdns"
+*/}}
+{{- define "external-dns.validateValues.pdns.apiUrl" -}}
+{{- if and (eq .Values.provider "pdns") (not .Values.pdns.apiUrl) -}}
+external-dns: pdns.apiUrl
+    You must provide the the PowerDNS API URL when provider="pdns".
+    Please set the apiUrl parameter (--set pdns.apiUrl="xxxx")
+{{- end -}}
+{{- end -}}
+
+{{/*
+Validate values of External DNS:
+- must provide the PowerDNS API key when provider is "pdns"
+*/}}
+{{- define "external-dns.validateValues.pdns.apiKey" -}}
+{{- if and (eq .Values.provider "pdns") (not .Values.pdns.apiKey) -}}
+external-dns: pdns.apiKey
+    You must provide the the PowerDNS API key when provider="pdns".
+    Please set the apiKey parameter (--set pdns.apiKey="xxxx")
 {{- end -}}
 {{- end -}}
 
