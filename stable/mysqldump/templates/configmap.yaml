@@ -36,7 +36,7 @@ data:
     TIMESTAMP="$(date +%Y%m%d%H%M%S)"
 
     echo "test mysql connection"
-    if [ -z "$(mysql -h ${MYSQL_HOST} -P ${MYSQL_PORT} -u ${MYSQL_USERNAME}{{ if .Values.mysql.password }} -p${MYSQL_PASSWORD}{{ end }} -B -N -e 'SHOW DATABASES;')" ]; then
+    if [ -z "$(mysql -h ${MYSQL_HOST} -P ${MYSQL_PORT} -u ${MYSQL_USERNAME}{{ if or .Values.mysql.password .Values.mysql.existingSecret }} -p${MYSQL_PASSWORD}{{ end }} -B -N -e 'SHOW DATABASES;')" ]; then
       echo "mysql connection failed! exiting..."
       exit 1
     fi
@@ -54,13 +54,13 @@ data:
     MYSQL_DB="{{ .Values.mysql.db }}"
     echo "Backing up single db ${MYSQL_DB}"
     {{ if .Values.saveToDirectory }}mkdir -p "${BACKUP_DIR}"/"${MYSQL_DB}"{{ end }}
-    mysqldump ${MYSQL_OPTS} -h ${MYSQL_HOST} -P ${MYSQL_PORT} -u ${MYSQL_USERNAME}{{ if .Values.mysql.password }} -p${MYSQL_PASSWORD}{{ end }} --databases ${MYSQL_DB} | gzip > ${BACKUP_DIR}/{{ if .Values.saveToDirectory }}${MYSQL_DB}/{{ end }}${TIMESTAMP}_${MYSQL_DB}.sql.gz
+    mysqldump ${MYSQL_OPTS} -h ${MYSQL_HOST} -P ${MYSQL_PORT} -u ${MYSQL_USERNAME}{{ if or .Values.mysql.password .Values.mysql.existingSecret }} -p${MYSQL_PASSWORD}{{ end }} --databases ${MYSQL_DB} | gzip > ${BACKUP_DIR}/{{ if .Values.saveToDirectory }}${MYSQL_DB}/{{ end }}${TIMESTAMP}_${MYSQL_DB}.sql.gz
     rc=$?
     {{ else if and (.Values.allDatabases.enabled) (eq .Values.allDatabases.singleBackupFile false)}}
-    for MYSQL_DB in $(mysql -h "${MYSQL_HOST}" -u ${MYSQL_USERNAME}{{ if .Values.mysql.password }} -p${MYSQL_PASSWORD}{{ end }} -B -N -e "SHOW DATABASES;"|egrep -v '^(information|performance)_schema$'); do
+    for MYSQL_DB in $(mysql -h "${MYSQL_HOST}" -P ${MYSQL_PORT} -u ${MYSQL_USERNAME}{{ if or .Values.mysql.password .Values.mysql.existingSecret }} -p${MYSQL_PASSWORD}{{ end }} -B -N -e "SHOW DATABASES;"|egrep -v '^(information|performance)_schema$'); do
       echo "Backing up db ${MYSQL_DB}"
       {{ if .Values.saveToDirectory }}mkdir -p "${BACKUP_DIR}"/"${MYSQL_DB}"{{ end }}
-      mysqldump ${MYSQL_OPTS} -h ${MYSQL_HOST} -u ${MYSQL_USERNAME}{{ if .Values.mysql.password }} -p${MYSQL_PASSWORD}{{ end }} --databases ${MYSQL_DB} | gzip > ${BACKUP_DIR}/{{ if .Values.saveToDirectory }}${MYSQL_DB}/{{ end }}${TIMESTAMP}_${MYSQL_DB}.sql.gz
+      mysqldump ${MYSQL_OPTS} -h ${MYSQL_HOST} -P ${MYSQL_PORT} -u ${MYSQL_USERNAME}{{ if or .Values.mysql.password .Values.mysql.existingSecret }} -p${MYSQL_PASSWORD}{{ end }} --databases ${MYSQL_DB} | gzip > ${BACKUP_DIR}/{{ if .Values.saveToDirectory }}${MYSQL_DB}/{{ end }}${TIMESTAMP}_${MYSQL_DB}.sql.gz
       rc=$?
     done
 
@@ -68,7 +68,7 @@ data:
     echo "Backing up all databases"
     MYSQL_DB="alldatabases"
     {{ if .Values.saveToDirectory }}mkdir -p "${BACKUP_DIR}"/"${MYSQL_DB}"{{ end }}
-    mysqldump ${MYSQL_OPTS} -h ${MYSQL_HOST} -P ${MYSQL_PORT} -u ${MYSQL_USERNAME}{{ if .Values.mysql.password }} -p${MYSQL_PASSWORD}{{ end }} --all-databases | gzip > ${BACKUP_DIR}/{{ if .Values.saveToDirectory }}${MYSQL_DB}/{{ end }}${TIMESTAMP}_${MYSQL_DB}.sql.gz
+    mysqldump ${MYSQL_OPTS} -h ${MYSQL_HOST} -P ${MYSQL_PORT} -u ${MYSQL_USERNAME}{{ if or .Values.mysql.password .Values.mysql.existingSecret }} -p${MYSQL_PASSWORD}{{ end }} --all-databases | gzip > ${BACKUP_DIR}/{{ if .Values.saveToDirectory }}${MYSQL_DB}/{{ end }}${TIMESTAMP}_${MYSQL_DB}.sql.gz
     rc=$?
     {{- end -}}
 
@@ -91,11 +91,17 @@ data:
       exit 1
     fi
 
-    {{- else }}
-    mysqldump ${MYSQL_OPTS} -h ${MYSQL_HOST} -P ${MYSQL_PORT} -u ${MYSQL_USERNAME}{{ if .Values.mysql.password }} -p${MYSQL_PASSWORD}{{ end }} --all-databases
+    {{- else  }}
+    {{ if .Values.dumpAllToStdout }}
+    mysqldump ${MYSQL_OPTS} -h ${MYSQL_HOST} -P ${MYSQL_PORT} -u ${MYSQL_USERNAME}{{ if or .Values.mysql.password .Values.mysql.existingSecret }} -p${MYSQL_PASSWORD}{{ end }} --all-databases
     rc=$?
-
     {{ end }}
+    {{ end }}
+    {{ end }}
+
+    {{ if .Values.debug }}
+      echo Contents of ${BACKUP_DIR}
+      ls -lahR ${BACKUP_DIR}
     {{ end }}
 
     if [ "$rc" != "0" ]; then
@@ -104,13 +110,14 @@ data:
     fi
 
     {{ if .Values.additionalSteps }}
-    {{- range .Values.additionalSteps }}
-    {{ . }}
-    {{- end }}
+     {{- range .Values.additionalSteps }}
+      {{ . }}
+     {{- end }}
     {{- end }}
 
-    {{ if .Values.debug }}
-    ls -alh ${BACKUP_DIR}
-    {{ end }}
     echo "complete" > ${BACKUP_DIR}/${TIMESTAMP}.state
+
+    echo "Disk usage in ${BACKUP_DIR}"
+    du -h -d 2 ${BACKUP_DIR}
+
     echo "Backup successful! :-)"
