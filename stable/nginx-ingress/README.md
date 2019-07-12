@@ -47,7 +47,7 @@ Parameter | Description | Default
 --- | --- | ---
 `controller.name` | name of the controller component | `controller`
 `controller.image.repository` | controller container image repository | `quay.io/kubernetes-ingress-controller/nginx-ingress-controller`
-`controller.image.tag` | controller container image tag | `0.24.1`
+`controller.image.tag` | controller container image tag | `0.25.0`
 `controller.image.pullPolicy` | controller container image pull policy | `IfNotPresent`
 `controller.image.runAsUser` | User ID of the controller process. Value depends on the Linux distribution used inside of the container image. By default uses debian one. | `33`
 `controller.containerPort.http` | The port that the controller container listens on for http connections. | `80`
@@ -102,6 +102,8 @@ Parameter | Description | Default
 `controller.service.type` | type of controller service to create | `LoadBalancer`
 `controller.service.nodePorts.http` | If `controller.service.type` is either `NodePort` or `LoadBalancer` and this is non-empty, it sets the nodePort that maps to the Ingress' port 80 | `""`
 `controller.service.nodePorts.https` | If `controller.service.type` is either `NodePort` or `LoadBalancer` and this is non-empty, it sets the nodePort that maps to the Ingress' port 443 | `""`
+`controller.service.nodePorts.tcp` | Sets the nodePort for an entry referenced by its key from `tcp` | `{}`
+`controller.service.nodePorts.udp` | Sets the nodePort for an entry referenced by its key from `udp` | `{}`
 `controller.livenessProbe.initialDelaySeconds` | Delay before liveness probe is initiated | 10
 `controller.livenessProbe.periodSeconds` | How often to perform the probe | 10
 `controller.livenessProbe.timeoutSeconds` | When the probe times out | 5
@@ -148,6 +150,16 @@ Parameter | Description | Default
 `defaultBackend.image.runAsUser` | User ID of the controller process. Value depends on the Linux distribution used inside of the container image. By default uses nobody user. | `65534`
 `defaultBackend.extraArgs` | Additional default backend container arguments | `{}`
 `defaultBackend.port` | Http port number | `8080`
+`defaultBackend.livenessProbe.initialDelaySeconds` | Delay before liveness probe is initiated | 30
+`defaultBackend.livenessProbe.periodSeconds` | How often to perform the probe | 10
+`defaultBackend.livenessProbe.timeoutSeconds` | When the probe times out | 5
+`defaultBackend.livenessProbe.successThreshold` | Minimum consecutive successes for the probe to be considered successful after having failed. | 1
+`defaultBackend.livenessProbe.failureThreshold` | Minimum consecutive failures for the probe to be considered failed after having succeeded. | 3
+`defaultBackend.readinessProbe.initialDelaySeconds` | Delay before readiness probe is initiated | 0
+`defaultBackend.readinessProbe.periodSeconds` | How often to perform the probe | 5
+`defaultBackend.readinessProbe.timeoutSeconds` | When the probe times out | 5
+`defaultBackend.readinessProbe.successThreshold` | Minimum consecutive successes for the probe to be considered successful after having failed. | 1
+`defaultBackend.readinessProbe.failureThreshold` | Minimum consecutive failures for the probe to be considered failed after having succeeded. | 6
 `defaultBackend.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `defaultBackend.affinity` | node/pod affinities (requires Kubernetes >=1.6) | `{}`
 `defaultBackend.nodeSelector` | node labels for pod assignment | `{}`

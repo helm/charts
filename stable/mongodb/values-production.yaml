@@ -34,6 +34,14 @@ image:
   ## ref:  https://github.com/bitnami/minideb-extras/#turn-on-nami-debugging
   debug: false
 
+## String to partially override mongodb.fullname template (will maintain the release name)
+##
+# nameOverride:
+
+## String to fully override mongodb.fullname template
+##
+# fullnameOverride:
+
 ## Enable authentication
 ## ref: https://docs.mongodb.com/manual/tutorial/enable-authentication/
 #
@@ -55,7 +63,7 @@ usePassword: true
 ## Whether enable/disable IPv6 on MongoDB
 ## ref: https://github.com/bitnami/bitnami-docker-mongodb/blob/master/README.md#enabling/disabling-ipv6
 ##
-mongodbEnableIPv6: true
+mongodbEnableIPv6: false
 
 ## Whether enable/disable DirectoryPerDB on MongoDB
 ## ref: https://github.com/bitnami/bitnami-docker-mongodb/blob/master/README.md#enabling/disabling-directoryperdb
@@ -107,6 +115,11 @@ service:
   ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer
   ##
   # loadBalancerIP:
+
+  ## Specify the loadBalancerSourceRanges value for LoadBalancer service types.
+  ## ref: https://kubernetes.io/docs/tasks/access-application-cluster/configure-cloud-provider-firewall/#restrict-access-for-loadbalancer-service
+  ##
+  # loadBalancerSourceRanges: []
 
 ## Setting up replication
 ## ref: https://github.com/bitnami/bitnami-docker-mongodb#setting-up-a-replication

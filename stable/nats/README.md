@@ -54,6 +54,8 @@ The following table lists the configurable parameters of the NATS chart and thei
 | `image.tag`                          | NATS Image tag                                                                               | `{TAG_NAME}`                                                  |
 | `image.pullPolicy`                   | Image pull policy                                                                            | `IfNotPresent`                                                |
 | `image.pullSecrets`                  | Specify docker-registry secret names as an array                                             | `[]` (does not add image pull secrets to deployed pods)       |
+| `nameOverride`                       | String to partially override nats.fullname template with a string (will prepend the release name) | `nil`                                                    |
+| `fullnameOverride`                   | String to fully override nats.fullname template with a string                                | `nil`                                                         |
 | `auth.enabled`                       | Switch to enable/disable client authentication                                               | `true`                                                        |
 | `auth.user`                          | Client authentication user                                                                   | `nats_cluster`                                                |
 | `auth.password`                      | Client authentication password                                                               | `random alhpanumeric string (10)`                             |

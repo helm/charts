@@ -56,12 +56,14 @@ The following table lists the configurable parameters of the Ghost chart and the
 | `image.tag`                         | Ghost Image tag                                               | `{TAG_NAME}`                                             |
 | `image.pullPolicy`                  | Image pull policy                                             | `IfNotPresent`                                           |
 | `image.pullSecrets`                 | Specify docker-registry secret names as an array              | `[]` (does not add image pull secrets to deployed pods)  |
+| `nameOverride`                      | String to partially override ghost.fullname template with a string (will prepend the release name) | `nil`               |
+| `fullnameOverride`                  | String to fully override ghost.fullname template with a string                                     | `nil`               |
 | `volumePermissions.image.registry`  | Init container volume-permissions image registry              | `docker.io`                                              |
 | `volumePermissions.image.repository`| Init container volume-permissions image name                  | `bitnami/minideb`                                        |
 | `volumePermissions.image.tag`       | Init container volume-permissions image tag                   | `latest`                                                 |
 | `volumePermissions.image.pullPolicy`| Init container volume-permissions image pull policy           | `Always`                                                 |
 | `ghostHost`                         | Ghost host to create application URLs                         | `nil`                                                    |
-| `ghostPort`                         | Ghost port to use in application URLs (defaults to `service.port` if `nil`) | `nil`                                                    |
+| `ghostPort`                         | Ghost port to use in application URLs (defaults to `service.port` if `nil`) | `nil`                                      |
 | `ghostProtocol`                     | Protocol (http or https) to use in the application URLs       | `http`                                                   |
 | `ghostPath`                         | Ghost path to create application URLs                         | `nil`                                                    |
 | `ghostUsername`                     | User of the application                                       | `user@example.com`                                       |
@@ -83,7 +85,7 @@ The following table lists the configurable parameters of the Ghost chart and the
 | `service.nodePorts.http`            | Kubernetes http node port                                     | `""`                                                     |
 | `service.externalTrafficPolicy`     | Enable client source IP preservation                          | `Cluster`                                                |
 | `service.loadBalancerIP`            | LoadBalancerIP for the Ghost service                          | ``                                                       |
-| `service.annotations`            | Service annotations                          | ``                                                       |
+| `service.annotations`               | Service annotations                                           | ``                                                       |
 | `ingress.enabled`                   | Enable ingress controller resource                            | `false`                                                  |
 | `ingress.annotations`               | Ingress annotations                                           | `[]`                                                     |
 | `ingress.certManager`               | Add annotations for cert-manager                              | `false`                                                  |

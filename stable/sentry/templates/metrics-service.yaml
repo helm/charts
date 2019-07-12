@@ -2,9 +2,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "fullname" . }}-metrics
+  name: {{ template "sentry.fullname" . }}-metrics
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "sentry.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -23,7 +23,7 @@ spec:
     protocol: UDP
     name: statsd
   selector:
-    app: {{ template "fullname" . }}
+    app: {{ template "sentry.fullname" . }}
     release: {{ .Release.Name }}
     role: metrics
 {{- end }} 
