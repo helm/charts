@@ -93,7 +93,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `sidecar.image`                           | Sidecar image                                 | `kiwigrid/k8s-sidecar:0.0.16`                           |
 | `sidecar.imagePullPolicy`                 | Sidecar image pull policy                     | `IfNotPresent`                                          |
 | `sidecar.resources`                       | Sidecar resources                             | `{}`                                                    |
-| `sidecar.dashboards.enabled`              | Enabled the cluster wide search for dashboards and adds/updates/deletes them in grafana | `false`       |
+| `sidecar.dashboards.enabled`              | Enables the cluster wide search for dashboards and adds/updates/deletes them in grafana | `false`       |
 | `sidecar.dashboards.provider.name`        | Unique name of the grafana provider           | `sidecarProvider`                                       |
 | `sidecar.dashboards.provider.orgid`       | Id of the organisation, to which the dashboards should be added | `1`                                   |
 | `sidecar.dashboards.provider.folder`      | Logical folder in which grafana groups dashboards | `""`                                                |
@@ -181,7 +181,15 @@ the url value is https://yourgerritserver/a/user%2Frepo/branches/master/files/di
 
 ## Sidecar for dashboards
 
-If the parameter `sidecar.dashboards.enabled` is set, a sidecar container is deployed in the grafana pod. This container watches all configmaps (or secrets) in the cluster and filters out the ones with a label as defined in `sidecar.dashboards.label`. The files defined in those configmaps are written to a folder and accessed by grafana. Changes to the configmaps are monitored and the imported dashboards are deleted/updated. A recommendation is to use one configmap per dashboard, as an reduction of multiple dashboards inside one configmap is currently not properly mirrored in grafana.
+If the parameter `sidecar.dashboards.enabled` is set, a sidecar container is deployed in the grafana
+pod. This container watches all configmaps (or secrets) in the cluster and filters out the ones with
+a label as defined in `sidecar.dashboards.label`. The files defined in those configmaps are written
+to a folder and accessed by grafana. Changes to the configmaps are monitored and the imported
+dashboards are deleted/updated.
+
+A recommendation is to use one configmap per dashboard, as a reduction of multiple dashboards inside
+one configmap is currently not properly mirrored in grafana.
+
 Example dashboard config:
 ```
 apiVersion: v1
@@ -197,17 +205,26 @@ data:
 
 ## Sidecar for datasources
 
-If the parameter `sidecar.datasources.enabled` is set, an init container is deployed in the grafana pod. This container lists all configmaps (or secrets) in the cluster and filters out the ones with a label as defined in `sidecar.datasources.label`. The files defined in those configmaps are written to a folder and accessed by grafana on startup. Using these yaml files, the data sources in grafana can be imported. The configmaps must be created before `helm install` so that the datasources init container can list the configmaps.
+If the parameter `sidecar.datasources.enabled` is set, an init container is deployed in the grafana
+pod. This container lists all secrets (or configmaps, though not recommended) in the cluster and
+filters out the ones with a label as defined in `sidecar.datasources.label`. The files defined in
+those secrets are written to a folder and accessed by grafana on startup. Using these yaml files,
+the data sources in grafana can be imported. The secrets must be created before `helm install` so
+that the datasources init container can list the secrets.
+
+Secrets are recommended over configmaps for this usecase because datasources usually contain private
+data like usernames and passwords. Secrets are the more appropriate cluster ressource to manage those.
 
 Example datasource config adapted from [Grafana](http://docs.grafana.org/administration/provisioning/#example-datasource-config-file):
 ```
 apiVersion: v1
-kind: ConfigMap
+kind: Secret
 metadata:
   name: sample-grafana-datasource
   labels:
      grafana_datasource: 1
-data:
+type: Opaque
+stringData:
   datasource.yaml: |-
     # config file version
     apiVersion: 1

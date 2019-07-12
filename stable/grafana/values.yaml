@@ -383,7 +383,6 @@ smtp:
 sidecar:
   image: kiwigrid/k8s-sidecar:0.0.18
   imagePullPolicy: IfNotPresent
-  # resourceType: both
   resources: {}
 #   limits:
 #     cpu: 100m

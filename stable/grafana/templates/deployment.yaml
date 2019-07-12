@@ -103,10 +103,8 @@ spec:
               value: "{{ .Values.sidecar.datasources.label }}"
             - name: FOLDER
               value: "/etc/grafana/provisioning/datasources"
-            {{- if .Values.sidecar.resourceType }}
             - name: RESOURCE
-              value: "{{ .Values.sidecar.resourceType }}"
-            {{- end }}
+              value: "both"
             {{- if .Values.sidecar.datasources.searchNamespace }}
             - name: NAMESPACE
               value: "{{ .Values.sidecar.datasources.searchNamespace }}"
@@ -140,10 +138,8 @@ spec:
               value: "{{ .Values.sidecar.dashboards.label }}"
             - name: FOLDER
               value: "{{ .Values.sidecar.dashboards.folder }}{{- with .Values.sidecar.dashboards.defaultFolderName }}/{{ . }}{{- end }}"
-            {{- if .Values.sidecar.resourceType }}
             - name: RESOURCE
-              value: "{{ .Values.sidecar.resourceType }}"
-            {{- end }}
+              value: "both"
             {{- if .Values.sidecar.dashboards.searchNamespace }}
             - name: NAMESPACE
               value: "{{ .Values.sidecar.dashboards.searchNamespace }}"
