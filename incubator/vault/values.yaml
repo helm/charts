@@ -156,7 +156,7 @@ vault:
   # information.
   dev: true
   # Configure additional arguments to pass to vault server command
-  args: []
+  extraArgs: []
   # Configure additional environment variables for the Vault containers
   extraEnv: []
   #   - name: VAULT_API_ADDR
