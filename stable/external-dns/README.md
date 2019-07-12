@@ -95,6 +95,9 @@ The following table lists the configurable parameters of the external-dns chart 
 | `rfc2136.tsigKeyname`              | When using the rfc2136 provider, specify the tsig keyname to enable security (optional)                  | `"externaldns-key"`                                      |
 | `rfc2136.tsigSecretAlg`            | When using the rfc2136 provider, specify the tsig secret to enable security (optional)                   | `"hmac-sha256"`                                          |
 | `rfc2136.tsigAxfr`                 | When using the rfc2136 provider, enable AFXR to enable security (optional)                               | `true`                                                   |
+| `pdns.apiUrl`                      | When using the PowerDNS provider, specify the API URL of the server.                                                       | `""`                                               |
+| `pdns.apiPort`                     | When using the PowerDNS provider, specify the API port of the server.                                                      | `8081`                                             |
+| `pdns.apiKey`                      | When using the PowerDNS provider, specify the API key of the server.                                                       | `""`                                               |
 | `annotationFilter`                 | Filter sources managed by external-dns via annotation using label selector (optional)                    | `""`                                                     |
 | `domainFilters`                    | Limit possible target zones by domain suffixes (optional)                                                | `[]`                                                     |
 | `zoneIdFilters`                    | Limit possible target zones by zone id (optional)                                                        | `[]`                                                     |
