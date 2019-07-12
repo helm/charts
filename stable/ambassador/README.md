@@ -77,14 +77,7 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `initContainers`                   | Containers used to initialize context for pods                                  | `[]`                              |
 | `service.annotations`              | Annotations to apply to Ambassador service                                      | See "Annotations" below           |
 | `service.externalTrafficPolicy`    | Sets the external traffic policy for the service                                | `""`                              |
-| `service.http.enabled`             | if port 80 should be opened for service                                         | `true`                            |
-| `service.http.nodePort`            | If explicit NodePort is required                                                | None                              |
-| `service.http.port`                | if port 443 should be opened for service                                        | `true`                            |
-| `service.http.targetPort`          | Sets the targetPort that maps to the service's cleartext port                   | `8080`                            |
-| `service.https.enabled`            | if port 443 should be opened for service                                        | `true`                            |
-| `service.https.nodePort`           | If explicit NodePort is required                                                | None                              |
-| `service.https.port`               | if port 443 should be opened for service                                        | `true`                            |
-| `service.https.targetPort`         | Sets the targetPort that maps to the service's TLS port                         | `8443`                            |
+| `service.ports`                    | List of ports Ambassador is listening on                                        |  `[{"name": "http","port": 80,"targetPort": 8080},{"name": "https","port": 443,"targetPort": 8443}]` |
 | `service.loadBalancerIP`           | IP address to assign (if cloud provider supports it)                            | `""`                              |
 | `service.loadBalancerSourceRanges` | Passed to cloud provider load balancer if created (e.g: AWS ELB)                | None                              |
 | `service.type`                     | Service type to be used                                                         | `LoadBalancer`                    |
@@ -156,6 +149,37 @@ $ helm upgrade --install --wait my-release -f values.yaml stable/ambassador
 ---
 
 # Upgrading
+
+## To 3.0.0
+
+The way ports are assigned has been changed for a more dynamic method.
+
+Now, instead of setting the port assignments for only the http and https, any port can be open on the load balancer using a list like you would in a standard Kubernetes YAML manifest.
+
+`pre-3.0.0`
+```yaml
+service:
+  http:
+    enabled: true
+    port: 80
+    targetPort: 8080
+  https:
+    enabled: true
+    port: 443
+    targetPort: 8443
+```
+
+`3.0.0`
+```yaml
+service:
+  port:
+  - name: http
+    port: 80
+    targetPort: 8080
+  - name: https
+    port: 443
+    targetPort: 8443
+```
 
 ## To 2.0.0
 
