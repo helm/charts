@@ -44,6 +44,13 @@ service:
   annotations: {}
   labels: {}
 
+## Extra environment variables that will be passed into the exporter pod
+## example:
+## env:
+##   KEY_1: value1
+##   KEY_2: value2
+# env:
+
 es:
   ## Address (host and port) of the Elasticsearch node we should connect to.
   ## This could be a local node (localhost:9200, for instance), or the address
