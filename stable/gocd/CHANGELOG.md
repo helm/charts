@@ -1,3 +1,9 @@
+### 1.13.0
+
+* [484a09ef1](https://github.com/kubernetes/charts/commit/484a09ef1):
+
+- Bump up GoCD docker registry artifact plugin version from v1.0.1-92 to v1.1.0-104
+
 ### 1.12.0
 
 * [fa4bef2](https://github.com/kubernetes/charts/commit/fa4bef2):
