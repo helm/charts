@@ -45,6 +45,10 @@ service:
   labels: {}
 
 ## Extra environment variables that will be passed into the exporter pod
+## example:
+## env:
+##   KEY_1: value1
+##   KEY_2: value2
 # env:
 
 es:
