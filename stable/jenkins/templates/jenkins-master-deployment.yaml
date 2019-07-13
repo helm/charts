@@ -287,7 +287,7 @@ spec:
             - name: SSH_PORT
               value: "{{ .Values.master.sidecars.configAutoReload.sshTcpPort }}"
             - name: JENKINS_PORT
-              value: "{{ .Values.master.servicePort }}"
+              value: "{{ .Values.master.targetPort }}"
             {{- if .Values.master.useSecurity }}
             - name: ADMIN_USER
               valueFrom:
