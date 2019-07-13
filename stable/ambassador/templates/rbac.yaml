@@ -29,6 +29,9 @@ rules:
   - apiGroups: [ "apiextensions.k8s.io" ]
     resources: [ "customresourcedefinitions" ]
     verbs: ["get", "list", "watch"]
+  - apiGroups: [ "networking.internal.knative.dev"]
+    resources: [ "clusteringresses" ]
+    verbs: ["get", "list", "watch"]
   {{- if .Values.pro.enabled }}
   - apiGroups: [""]
     resources: [ "secrets" ]
