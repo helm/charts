@@ -117,6 +117,63 @@ helm install incubator/jaeger --name myrel --set provisionDataStore.cassandra=fa
 > **Tip**: It is highly encouraged to run the ElasticSearch cluster with storage persistence.
 
 
+## Installing the Chart using an Existing ElasticSearch Cluster with TLS
+
+If you already have an existing running ElasticSearch cluster with TLS, you can configure the chart as follows to use it as your backing store:
+
+Content of the `jaeger-values.yaml` file:
+
+```YAML
+storage:
+  type: elasticsearch
+  elasticsearch:
+    host: <HOST>
+    port: <PORT>
+    scheme: https
+    user: <USER>
+    password: <PASSWORD>
+provisionDataStore:
+  cassandra: false
+  elasticsearch: false
+query:
+  cmdlineParams:
+    es.tls.ca: "/tls/es.pem"
+  extraConfigmapMounts:
+    - name: jaeger-tls
+      mountPath: /tls
+      subPath: ""
+      configMap: jaeger-tls
+      readOnly: true
+collector:
+  cmdlineParams:
+    es.tls.ca: "/tls/es.pem"
+  extraConfigmapMounts:
+    - name: jaeger-tls
+      mountPath: /tls
+      subPath: ""
+      configMap: jaeger-tls
+      readOnly: true
+```
+
+Content of the `jaeger-tls-cfgmap.yaml` file:
+
+```YAML
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: jaeger-tls
+data:
+  es.pem: |
+    -----BEGIN CERTIFICATE-----
+    <CERT>
+    -----END CERTIFICATE-----
+```
+
+```bash
+kubectl apply -f jaeger-tls-cfgmap.yaml
+helm install incubator/jaeger --name myrel --values jaeger-values.yaml
+```
+
 ## Uninstalling the Chart
 
 To uninstall/delete the `myrel` deployment:
@@ -164,6 +221,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `collector.service.tchannelPort`         | Jaeger Agent port for thrift        |  `14267`                                 |
 | `collector.service.type`                 | Service type                        |  `ClusterIP`                             |
 | `collector.service.zipkinPort`           | Zipkin port for JSON/thrift HTTP    |  `9411`                                  |
+| `collector.extraConfigmapMounts`         | Additional collector configMap mounts |  `[]`                                  |
 | `elasticsearch.rbac.create`              | To enable RBAC                      |  `false`                                 |
 | `fullnameOverride`                       | Override full name                  |  `nil`                                 |
 | `hotrod.enabled`                         | Enables the Hotrod demo app         |  `false`                                 |
@@ -186,6 +244,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `query.service.port`                | External accessible port            |  `80`                                    |
 | `query.service.type`                     | Service type                        |  `ClusterIP`                             |
 | `query.basePath`                         | Base path of Query UI, used for ingress as well (if it is enabled)   |  `/`    |
+| `query.extraConfigmapMounts`             | Additional query configMap mounts   |  `[]`                                    |
 | `schema.annotations`                     | Annotations for the schema job      |  `nil`                                   |
 | `schema.image`                           | Image to setup cassandra schema     |  `jaegertracing/jaeger-cassandra-schema` |
 | `schema.mode`                            | Schema mode (prod or test)          |  `prod`                                  |
@@ -249,4 +308,3 @@ Override any required configuration options in the Cassandra chart that is requi
 
 ### Pending enhancements
 - [ ] Sidecar deployment support
-

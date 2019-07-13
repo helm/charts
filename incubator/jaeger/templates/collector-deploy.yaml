@@ -50,7 +50,7 @@ spec:
         env:
           {{- range $key, $value := .Values.collector.cmdlineParams }}
           - name: {{ $key | replace "." "_" | replace "-" "_" | upper | quote }}
-            value: {{ $value }}
+            value: {{ $value | quote }}
           {{- end }}
           - name: SPAN_STORAGE_TYPE
             value: {{ .Values.storage.type }}
@@ -108,6 +108,19 @@ spec:
             port: admin
         resources:
 {{ toYaml .Values.collector.resources | indent 10 }}
+        volumeMounts:
+        {{- range .Values.collector.extraConfigmapMounts }}
+          - name: {{ .name }}
+            mountPath: {{ .mountPath }}
+            subPath: {{ .subPath }}
+            readOnly: {{ .readOnly }}
+        {{- end }}
       dnsPolicy: {{ .Values.collector.dnsPolicy }}
       restartPolicy: Always
+      volumes:
+      {{- range .Values.collector.extraConfigmapMounts }}
+        - name: {{ .name }}
+          configMap:
+            name: {{ .configMap }}
+      {{- end }}
 {{- end -}}
