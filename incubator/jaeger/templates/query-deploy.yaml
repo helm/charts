@@ -50,7 +50,7 @@ spec:
         env:
           {{- range $key, $value := .Values.query.cmdlineParams }}
           - name: {{ $key | replace "." "_" | replace "-" "_" | upper | quote }}
-            value: {{ $value }}
+            value: {{ $value | quote }}
           {{- end }}
           - name: SPAN_STORAGE_TYPE
             value: {{ .Values.storage.type }}
@@ -93,6 +93,13 @@ spec:
           protocol: TCP
         resources:
 {{ toYaml .Values.query.resources | indent 10 }}
+        volumeMounts:
+        {{- range .Values.query.extraConfigmapMounts }}
+          - name: {{ .name }}
+            mountPath: {{ .mountPath }}
+            subPath: {{ .subPath }}
+            readOnly: {{ .readOnly }}
+        {{- end }}
         livenessProbe:
           httpGet:
             path: /
@@ -123,4 +130,10 @@ spec:
 {{- end }}
       dnsPolicy: {{ .Values.query.dnsPolicy }}
       restartPolicy: Always
+      volumes:
+      {{- range .Values.query.extraConfigmapMounts }}
+        - name: {{ .name }}
+          configMap:
+            name: {{ .configMap }}
+      {{- end }}
 {{- end -}}
