@@ -11,7 +11,7 @@ This chart adds a deployment, listening for cluster-wide pod failures and postin
 To install the chart with the release name `my-release`, configure an [Incoming Webhook](https://my.slack.com/apps/A0F7XDUAZ-incoming-webhooks) in Slack, note its url(`webhook-url` here) and run:
 
 ```console
-$ helm install stable/kube-slack --set slackUrl=webhook-url --name my-release
+$ helm install stable/kube-slack --set envVars.SLACK_URL=webhook-url --set envVars.SLACK_USERNAME=kube-slack --set envVars.SLACK_CHANNEL=slack-channel --name my-release
 ```
 
 ## Uninstalling the Chart
