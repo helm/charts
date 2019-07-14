@@ -47,14 +47,12 @@ spec:
         {{- toYaml .Values.collector.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ template "jaeger.collector.name" . }}
-          securityContext:
-              {{- toYaml .Values.collector.securityContext | nindent 12 }}
           image: {{ .Values.collector.image }}:{{ .Values.tag }}
           imagePullPolicy: {{ .Values.collector.pullPolicy }}
           env:
             {{- range $key, $value := .Values.collector.cmdlineParams }}
             - name: {{ $key | replace "." "_" | replace "-" "_" | upper | quote }}
-              value: {{ $value }}
+              value: {{ $value | quote }}
             {{- end }}
             - name: SPAN_STORAGE_TYPE
               value: {{ .Values.storage.type }}
@@ -74,17 +72,19 @@ spec:
                   key: password
             {{- end }}
             {{- if eq .Values.storage.type "elasticsearch" }}
+            {{- if .Values.storage.elasticsearch.usePassword }}
             - name: ES_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ if .Values.storage.elasticsearch.existingSecret }}{{ .Values.storage.elasticsearch.existingSecret }}{{- else }}{{ include "jaeger.fullname" . }}-elasticsearch{{- end }}
                   key: password
+            {{- end }}
             - name: ES_SERVER_URLS
               value: {{ template "elasticsearch.client.url" . }}
             - name: ES_USERNAME
               value: {{ .Values.storage.elasticsearch.user }}
             {{- end }}
-          ports:
+        ports:
           - containerPort: {{ .Values.collector.service.grpcPort }}
             name: grpc
             protocol: TCP
@@ -100,16 +100,29 @@ spec:
           - containerPort: {{ .Values.collector.service.zipkinPort }}
             name: zipkin
             protocol: TCP
-          readinessProbe:
-            httpGet:
-              path: /
-              port: admin
-          livenessProbe:
-            httpGet:
-              path: /
-              port: admin
-          resources:
-            {{ toYaml .Values.collector.resources | indent 12 }}
+        readinessProbe:
+          httpGet:
+            path: /
+            port: admin
+        livenessProbe:
+          httpGet:
+            path: /
+            port: admin
+        resources:
+{{ toYaml .Values.collector.resources | indent 10 }}
+        volumeMounts:
+        {{- range .Values.collector.extraConfigmapMounts }}
+          - name: {{ .name }}
+            mountPath: {{ .mountPath }}
+            subPath: {{ .subPath }}
+            readOnly: {{ .readOnly }}
+        {{- end }}
       dnsPolicy: {{ .Values.collector.dnsPolicy }}
       restartPolicy: Always
+      volumes:
+      {{- range .Values.collector.extraConfigmapMounts }}
+        - name: {{ .name }}
+          configMap:
+            name: {{ .configMap }}
+      {{- end }}
 {{- end -}}

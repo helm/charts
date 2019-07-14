@@ -6,7 +6,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: {{ $serviceName }}-schedule-agents
-  namespace: {{ .Values.master.slaveKubernetesNamespace | default .Release.Namespace}}
+  namespace: {{ template "jenkins.master.slaveKubernetesNamespace" . }}
   labels:
     "app.kubernetes.io/name": '{{ template "jenkins.name" .}}'
     "helm.sh/chart": "{{ .Chart.Name }}-{{ .Chart.Version }}"
@@ -26,7 +26,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: {{ $serviceName }}-schedule-agents
-  namespace: {{ .Values.master.slaveKubernetesNamespace | default .Release.Namespace}}
+  namespace: {{ template "jenkins.master.slaveKubernetesNamespace" . }}
   labels:
     "app.kubernetes.io/name": '{{ template "jenkins.name" .}}'
     "helm.sh/chart": "{{ .Chart.Name }}-{{ .Chart.Version }}"
@@ -40,7 +40,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: {{ template "jenkins.serviceAccountName" .}}
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ template "jenkins.namespace" . }}
 
 ---
 
@@ -51,7 +51,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: {{ template "jenkins.fullname" . }}-casc-reload
-  namespace: {{ .Release.Namespace}}
+  namespace: {{ template "jenkins.namespace" . }}
   labels:
     "app.kubernetes.io/name": '{{ template "jenkins.name" .}}'
     "helm.sh/chart": "{{ .Chart.Name }}-{{ .Chart.Version }}"
@@ -69,7 +69,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: {{ $serviceName }}-watch-configmaps
-  namespace: {{ .Release.Namespace}}
+  namespace: {{ template "jenkins.namespace" . }}
   labels:
     "app.kubernetes.io/name": '{{ template "jenkins.name" .}}'
     "helm.sh/chart": "{{ .Chart.Name }}-{{ .Chart.Version }}"
@@ -83,7 +83,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: {{ template "jenkins.serviceAccountName" . }}
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ template "jenkins.namespace" . }}
 
 {{- end}}
 

@@ -41,14 +41,12 @@ spec:
         {{- toYaml .Values.query.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ template "jaeger.query.name" . }}
-          securityContext:
-              {{- toYaml .Values.query.securityContext | nindent 12 }}
           image: {{ .Values.query.image }}:{{ .Values.tag }}
           imagePullPolicy: {{ .Values.query.pullPolicy }}
           env:
             {{- range $key, $value := .Values.query.cmdlineParams }}
             - name: {{ $key | replace "." "_" | replace "-" "_" | upper | quote }}
-              value: {{ $value }}
+              value: {{ $value | quote }}
             {{- end }}
             - name: SPAN_STORAGE_TYPE
               value: {{ .Values.storage.type }}
@@ -68,11 +66,13 @@ spec:
                   key: password
             {{- end }}
             {{- if eq .Values.storage.type "elasticsearch" }}
+            {{- if .Values.storage.elasticsearch.usePassword }}
             - name: ES_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ if .Values.storage.elasticsearch.existingSecret }}{{ .Values.storage.elasticsearch.existingSecret }}{{- else }}{{ include "jaeger.fullname" . }}-elasticsearch{{- end }}
                   key: password
+            {{- end }}
             - name: ES_SERVER_URLS
               value: {{ template "elasticsearch.client.url" . }}
             - name: ES_USERNAME
@@ -80,23 +80,30 @@ spec:
             {{- end }}
             - name: QUERY_BASE_PATH
               value: {{ .Values.query.basePath | quote }}
-          ports:
-            - name: query
-              containerPort: 16686
-              protocol: TCP
-            - name: admin
-              containerPort: 16687
-              protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /
-              port: admin
-          readinessProbe:
-            httpGet:
-              path: /
-              port: admin
-          resources:
-            {{ toYaml .Values.query.resources | indent 12 }}
+        ports:
+          - name: query
+            containerPort: 16686
+            protocol: TCP
+          - name: admin
+            containerPort: 16687
+            protocol: TCP
+        resources:
+{{ toYaml .Values.query.resources | indent 10 }}
+        volumeMounts:
+        {{- range .Values.query.extraConfigmapMounts }}
+          - name: {{ .name }}
+            mountPath: {{ .mountPath }}
+            subPath: {{ .subPath }}
+            readOnly: {{ .readOnly }}
+        {{- end }}
+        livenessProbe:
+          httpGet:
+            path: /
+            port: admin
+        readinessProbe:
+          httpGet:
+            path: /
+            port: admin
 {{- if .Values.query.agentSidecar.enabled }}
         - name: {{ template "jaeger.agent.name" . }}-sidecar
           securityContext:
@@ -124,4 +131,14 @@ spec:
       tolerations:
         {{ toYaml .Values.query.tolerations | indent 8 }}
       dnsPolicy: {{ .Values.query.dnsPolicy }}
+<<<<<<< HEAD
+=======
+      restartPolicy: Always
+      volumes:
+      {{- range .Values.query.extraConfigmapMounts }}
+        - name: {{ .name }}
+          configMap:
+            name: {{ .configMap }}
+      {{- end }}
+>>>>>>> master
 {{- end -}}

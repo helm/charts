@@ -58,6 +58,14 @@ image:
   # pullSecrets:
   #   - myRegistryKeySecretName
 
+## String to partially override kubewatch.fullname template (will maintain the release name)
+##
+# nameOverride:
+
+## String to fully override kubewatch.fullname template
+##
+# fullnameOverride:
+
 rbac:
   # If true, create & use RBAC resources
   #

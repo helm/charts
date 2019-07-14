@@ -33,6 +33,7 @@ spec:
           securityContext:
             {{- toYaml .Values.spark.podSecurityContext | nindent 12 }}
           containers:
+<<<<<<< HEAD
             - name: {{ include "jaeger.fullname" . }}-spark
               securityContext:
                   {{- toYaml .Values.spark.securityContext | nindent 16 }}
@@ -66,5 +67,36 @@ spec:
             {{ toYaml .Values.spark.nodeSelector | indent 12 }}
           tolerations:
             {{ toYaml .Values.spark.tolerations | indent 12 }}
+=======
+          - name: {{ include "jaeger.fullname" . }}-spark
+            image: {{ .Values.spark.image }}:{{ .Values.spark.tag }}
+            imagePullPolicy: {{ .Values.spark.pullPolicy }}
+            env:
+            - name: STORAGE
+              value: {{ .Values.storage.type }}
+            {{- if eq .Values.storage.type "cassandra" }}
+            - name: CASSANDRA_CONTACT_POINTS
+              value: {{ template "cassandra.contact_points" . }}
+            - name: CASSANDRA_KEYSPACE
+              value: {{ printf "%s_%s" "jaeger_v1" .Values.cassandra.config.dc_name | quote }}
+              {{- end }}
+            {{- if eq .Values.storage.type "elasticsearch" }}
+            - name: ES_NODES
+              value: {{ template "elasticsearch.client.url" . }}
+            - name: ES_NODES_WAN_ONLY
+              value: {{ .Values.storage.elasticsearch.nodesWanOnly | quote }}
+            {{- if .Values.storage.elasticsearch.usePassword }}
+            - name: ES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ if .Values.storage.elasticsearch.existingSecret }}{{ .Values.storage.elasticsearch.existingSecret }}{{- else }}{{ include "jaeger.fullname" . }}-elasticsearch{{- end }}
+                  key: password
+            {{- end }}
+            - name: ES_USERNAME
+              value: {{ .Values.storage.elasticsearch.user }}
+            {{- end }}
+            resources:
+{{ toYaml .Values.spark.resources | indent 14 }}
+>>>>>>> master
           restartPolicy: OnFailure
 {{- end -}}

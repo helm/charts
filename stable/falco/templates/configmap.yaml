@@ -26,6 +26,11 @@ data:
       - {{ . }}
       {{- end }}
 
+    # If true, the times displayed in log messages and output messages
+    # will be in ISO 8601. By default, times are displayed in the local
+    # time zone, as governed by /etc/localtime.
+    time_format_iso_8601: {{ .Values.falco.timeFormatISO8601 }}
+
     # Whether to output events in json or text
     {{- if (or .Values.integrations.gcscc.enabled .Values.integrations.natsOutput.enabled .Values.integrations.snsOutput.enabled .Values.integrations.pubsubOutput.enabled) }}
     json_output: true
@@ -63,6 +68,26 @@ data:
     # Whether or not output to any of the output channels below is
     # buffered. Defaults to false
     buffered_outputs: {{ .Values.falco.bufferedOutputs }}
+
+    # Falco uses a shared buffer between the kernel and userspace to pass
+    # system call information. When falco detects that this buffer is
+    # full and system calls have been dropped, it can take one or more of
+    # the following actions:
+    #   - "ignore": do nothing. If an empty list is provided, ignore is assumed.
+    #   - "log": log a CRITICAL message noting that the buffer was full.
+    #   - "alert": emit a falco alert noting that the buffer was full.
+    #   - "exit": exit falco with a non-zero rc.
+    #
+    # The rate at which log/alert messages are emitted is governed by a
+    # token bucket. The rate corresponds to one message every 30 seconds
+    # with a burst of 10 messages.
+    syscall_event_drops:
+      actions:
+        {{- range .Values.falco.syscallEventDrops.actions }}
+        - {{ . }}
+        {{- end }}
+      rate: {{ .Values.falco.syscallEventDrops.rate  }}
+      max_burst: {{ .Values.falco.syscallEventDrops.maxBurst }}
 
     # A throttling mechanism implemented as a token bucket limits the
     # rate of falco notifications. This throttling is controlled by the following configuration
@@ -134,6 +159,10 @@ data:
       keep_alive: {{ .Values.falco.programOutput.keepAlive }}
       program: {{ .Values.falco.programOutput.program }}
     {{- end }}
+
+    http_output:
+      enabled: {{ .Values.falco.httpOutput.enabled }}
+      url: {{ .Values.falco.httpOutput.url }}
 
   {{- if .Values.integrations.snsOutput.enabled }}
   aws_default_region: {{ .Values.integrations.snsOutput.aws_default_region }}
