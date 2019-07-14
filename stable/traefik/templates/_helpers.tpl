@@ -123,3 +123,15 @@ Create the block for RootCAs.
 	   {{- end -}}
          ]
 {{- end -}}
+
+{{/*
+Create the blocks for authResponseHeaders.
+*/}}
+{{- define "traefik.authResponseHeaders" -}}
+        authResponseHeaders = [
+        {{- range $idx, $header := .Values.forwardAuth.authResponseHeaders }}
+          {{- if $idx }}, {{ end }}
+          {{- $header | quote }}
+        {{- end -}}
+        ]
+{{- end -}}

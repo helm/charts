@@ -242,6 +242,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `forwardAuth.entryPoints`              | Enable forward authentication for these entryPoints: "http", "https", "httpn"                                                |                                                   |
 | `forwardAuth.address`                  | URL for forward authentication                                                                                               |                                                   |
 | `forwardAuth.trustForwardHeader`       | Trust X-Forwarded-* headers                                                                                                  |                                                   |
+| `forwardAuth.authResponseHeaders`      | Set authentication response headers                                                                                                  |  `[]`                                                   |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 

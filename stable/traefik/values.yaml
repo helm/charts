@@ -472,3 +472,4 @@ tracing:
 #   entryPoints: ["http", "https"]
 #   address: https://authserver.com/auth
 #   trustForwardHeader: true
+#   authResponseHeaders: []
