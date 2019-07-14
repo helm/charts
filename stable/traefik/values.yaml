@@ -194,6 +194,7 @@ kvprovider:
 
 
 acme:
+  keyType: RSA4096
   enabled: false
   email: admin@example.com
   onHostRule: true
