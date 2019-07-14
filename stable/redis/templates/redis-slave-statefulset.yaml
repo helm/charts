@@ -104,6 +104,11 @@ spec:
           {{- end }}
           ARGS+=("--include" "/opt/bitnami/redis/etc/redis.conf")
           ARGS+=("--include" "/opt/bitnami/redis/etc/replica.conf")
+          {{- if .Values.slave.extraFlags }}
+          {{- range .Values.slave.extraFlags }}
+          ARGS+=({{ . | quote }})
+          {{- end }}
+          {{- end }}
           {{- if .Values.slave.command }}
           {{ .Values.slave.command }} "${ARGS[@]}"
           {{- else }}
