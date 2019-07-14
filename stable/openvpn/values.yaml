@@ -91,5 +91,8 @@ openvpn:
   # conf: |
   #  max-clients 100
   #  client-to-client
+  # Enable istio support for openvpn connections
+  istio:
+    enabled: false
 
 nodeSelector: {}
