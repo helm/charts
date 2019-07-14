@@ -259,6 +259,7 @@ data:
     {{- end }}
     {{- if .Values.acme.enabled }}
     [acme]
+    KeyType = {{ .Values.acme.keyType | quote }}
     email = {{ .Values.acme.email | quote }}
     {{- if .Values.kvprovider.storeAcme }}
     storage = "traefik/acme/account"
