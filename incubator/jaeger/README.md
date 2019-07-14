@@ -65,8 +65,6 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `agent.annotations`                      | Annotations for Agent               |  `nil`                                   |
 | `agent.cmdlineParams`                    | Additional command line parameters  |  `nil`                                   |
 | `agent.dnsPolicy`                        | Configure DNS policy for agents     |  `ClusterFirst`                          |
-| `agent.podSecurityContext`                      | Pod security context              |  `nil`                                   |
-| `agent.securityContext`                      | Container security Context              |  `capabilities.drop: ["ALL"]`<br>`readOnlyRootFilesystem: true`<br>`runAsNonRoot: true`<br>`runAsUser: 10001`                                   |
 | `agent.service.annotations`              | Annotations for Agent SVC           |  `nil`                                   |
 | `agent.service.binaryPort`               | jaeger.thrift over binary thrift    |  `6832`                                  |
 | `agent.service.compactPort`              | jaeger.thrift over compact thrift   |  `6831`                                  |
@@ -80,8 +78,6 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `agent.service.zipkinThriftPort`         | zipkin.thrift over compact thrift   |  `5775`                                  |
 | `agent.useHostNetwork`                   | Enable hostNetwork for agents       |  `false`                                 |
 | `agent.tolerations`                      | Node Tolerations                    | `[]`                                   |
-| `collector.podSecurityContext`           | Pod security context                |  `nil`                                   |
-| `collector.securityContext`              | Container security Context          |  `capabilities.drop: ["ALL"]`<br>`readOnlyRootFilesystem: true`<br>`runAsNonRoot: true`<br>`runAsUser: 10001`                                   |
 | `collector.cmdlineParams`                | Additional command line parameters  |  `nil`                                   |
 | `collector.podAnnotations`               | Annotations for Collector pod       |  `nil`                                   |
 | `collector.service.httpPort`             | Client port for HTTP thrift         |  `14268`                                 |
@@ -98,14 +94,10 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `elasticsearch.rbac.create`              | To enable RBAC                      |  `false`                                 |
 | `fullnameOverride`                       | Override full name                  |  `nil`                                 |
 | `hotrod.enabled`                         | Enables the Hotrod demo app         |  `false`                                 |
-| `hotrod.podSecurityContext`              | Pod security context                |  `nil`                                   |
-| `hotrod.securityContext`                 | Container security Context          |  `nil`                                   |
 | `hotrod.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`      |
 | `nameOverride`                           | Override name                       | `nil`                                  |
 | `provisionDataStore.cassandra`           | Provision Cassandra Data Store      |  `true`                                  |
 | `provisionDataStore.elasticsearch`       | Provision Elasticsearch Data Store  |  `false`                                 |
-| `query.podSecurityContext`               | Pod security context                |  `nil`                                   |
-| `query.securityContext`                  | Container security Context          |  `capabilities.drop: ["ALL"]`<br>`readOnlyRootFilesystem: true`<br>`runAsNonRoot: true`<br>`runAsUser: 10001`                                   |
 | `query.agentSidecar.enabled`             | Enable agent sidecare for query deployment           |  `true`                                  |
 | `query.service.annotations`              | Annotations for Query SVC           |  `nil`                                   |
 | `query.cmdlineParams`                    | Additional command line parameters  |  `nil`                                   |
@@ -122,8 +114,6 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `query.service.type`                     | Service type                        |  `ClusterIP`                             |
 | `query.basePath`                         | Base path of Query UI, used for ingress as well (if it is enabled)   |  `/`    |
 | `schema.annotations`                     | Annotations for the schema job      |  `nil`                                   |
-| `schema.podSecurityContext`              | Pod security context                |  `nil`                                   |
-| `schema.securityContext`                 | Container security Context          |  `nil`                                   |
 | `schema.image`                           | Image to setup cassandra schema     |  `jaegertracing/jaeger-cassandra-schema` |
 | `schema.mode`                            | Schema mode (prod or test)          |  `prod`                                  |
 | `schema.pullPolicy`                      | Schema image pullPolicy             |  `IfNotPresent`                          |
@@ -145,8 +135,6 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `spark.schedule`                         | Schedule of the cron job            |  `"49 23 * * *"`                         |
 | `spark.successfulJobsHistoryLimit`       | Cron job successfulJobsHistoryLimit |  `5`                                     |
 | `spark.failedJobsHistoryLimit`           | Cron job failedJobsHistoryLimit     |  `5`                                     |
-| `spark.podSecurityContext`              | Pod security context                |  `nil`                                   |
-| `spark.securityContext`                 | Container security Context          |  `nil`                                   |
 | `spark.tag`                              | Tag of the dependencies job image   |  `latest`                                |
 | `spark.tolerations`                      | Node Tolerations                    | `[]`                                   |
 | `storage.cassandra.existingSecret`                 | Name of existing password secret object (for password authentication)          |  `nil`
