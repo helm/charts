@@ -21,7 +21,12 @@ $ helm install --name my-release \
     --set minecraftServer.eula=true stable/minecraft
 ```
 
-This command deploys a Minecraft dedicated server with sensible defaults.
+It is important to note that the deployment will not run correctly without specifying a Server Type.  For example...
+```bash
+$ helm install --name my-release \
+    --set minecraftServer.type=VANILLA stable/minecraft
+```
+Acceptable values include the following - "FORGE", "SPIGOT", "BUKKIT", "PAPER", "FTB", "SPONGEVANILLA"
 
 > **Tip**: List all releases using `helm list`
 
@@ -34,6 +39,12 @@ $ helm delete my-release
 ```
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
+
+```bash
+$ helm del --purge my-release
+
+```
+This command will delete the Kubernetes components, as well as remove the release name from Helm so that the release name can be re-used.
 
 ## Configuration
 
