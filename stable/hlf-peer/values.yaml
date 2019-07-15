@@ -13,6 +13,8 @@ service:
   portRequest: 7051
   portEvent: 7053
 
+dockerSocketPath: /var/run/docker.sock
+
 ingress:
   enabled: false
   annotations: {}
