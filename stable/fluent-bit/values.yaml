@@ -1,11 +1,11 @@
-  # Minikube stores its logs in a separate directory.
-# enable if started in minikube.
+# Minikube stores its logs in a separate directory.
+# Enable if you install the chart in minikube.
 on_minikube: false
 
 image:
   fluent_bit:
     repository: fluent/fluent-bit
-    tag: 1.2.0
+    tag: 1.2.1
   pullPolicy: Always
 
 testFramework:
