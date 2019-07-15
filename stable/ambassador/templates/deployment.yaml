@@ -102,11 +102,6 @@ spec:
             {{- end}}
             - name: admin
               containerPort: 8877
-          {{- range $key := .Values.additionalTCPPorts }}
-            - name: "{{ $key }}-tcp"
-              containerPort: {{ $key }}
-              protocol: TCP
-          {{- end }}
           env:
             - name: HOST_IP
               valueFrom:

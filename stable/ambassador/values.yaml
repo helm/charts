@@ -64,14 +64,17 @@ service:
     - name: http
       port: 80
       targetPort: 8080
-    # nodePort: 30080
+      # protocol: TCP
+      # nodePort: 30080
     - name: https
       port: 443
       targetPort: 8443
+      # protocol: TCP
       # nodePort: 30443
     # TCPMapping_Port
       # port: 2222
       # targetPort: 2222
+      # protocol: TCP
       # nodePort: 30222
     
 
@@ -141,8 +144,6 @@ serviceAccount:
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
   name:
-
-additionalTCPPorts: []
 
 initContainers: []
 
