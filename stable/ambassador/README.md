@@ -172,17 +172,21 @@ service:
     targetPort: 8443
 ```
 
-This change has also replaced the `.additionalTCPPorts` configuration. Additional TCP ports can be created the same as any port.
+This change has also replaced the `.additionalTCPPorts` configuration. Additional TCP ports can be created the same as the http and https ports above.
 
 ### Admin Service Name
 
-The admin service has been renamed to `{{chart deployment name}}-admin` to match the name from the YAML installation template at https://www.getambassador.io/yaml/ambassador/ambassador-rbac.yaml.
+The admin service has been renamed to `{{release name}}-admin` to match the name from the YAML installation template at https://www.getambassador.io/yaml/ambassador/ambassador-rbac.yaml.
 
 ### Annotations and `service_port` 
 
 The default Ambassador `Module` annotation is no longer being applied by default. This was causing confusion with the `service_port` being hard coded when enabling TLS termination in Ambassador.
 
 Ambassador has been listening on port 8080 for HTTP and 8443 for HTTPS by default since version `0.60.0` (chart version 2.2.0). 
+
+### RBAC and CRDs
+
+A `ClusterRole` and `ClusterRoleBinding` named `{{release name}}-crd` will be created to watch for the Ambassador Custom Resource Definitions. This will be created regardless of the value of `scope.singleNamespace` since CRDs are created the cluster scope.
 
 ## To 2.0.0
 

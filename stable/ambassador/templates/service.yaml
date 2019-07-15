@@ -28,7 +28,7 @@ spec:
       {{- if .nodePort }}
       nodePort: {{ .nodePort }}
       {{- end }}
-      {{-if .protocol }}
+      {{- if .protocol }}
       protocol: {{ .protocol }}
       {{- end }}
     {{- end}}
