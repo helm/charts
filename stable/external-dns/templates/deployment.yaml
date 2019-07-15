@@ -9,15 +9,16 @@ spec:
     matchLabels: {{ include "external-dns.matchLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- if or .Values.podAnnotations .Values.metrics.enabled }}
-      annotations: {{ include "external-dns.podAnnotations" . | nindent 8 }}
-      {{- end }}
       labels: {{ include "external-dns.labels" . | nindent 8 }}
+      annotations:
+        {{- if or .Values.podAnnotations .Values.metrics.enabled }}
+        {{ include "external-dns.podAnnotations" . | nindent 8 }}
+        {{- end }}
         {{- if or (and .Values.aws.credentials.secretKey .Values.aws.credentials.accessKey) .Values.cloudflare.apiKey .Values.digitalocean.apiToken (and .Values.infoblox.wapiUsername .Values.infoblox.wapiPassword) .Values.rfc2136.tsigSecret .Values.extraEnv .Values.google.serviceAccountKey }}
-        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum | trunc 63 }}
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
         {{- end }}
         {{- if and (eq .Values.provider "designate") .Values.designate.customCA.enabled }}
-        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum | trunc 63 }}
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         {{- end }}
     spec:
 {{- include "external-dns.imagePullSecrets" . | indent 6 }}
