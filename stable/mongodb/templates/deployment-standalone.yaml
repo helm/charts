@@ -70,8 +70,8 @@ spec:
         {{- end }}
         env:
         {{- if .Values.image.debug}}
-        - name: NAMI_DEBUG
-          value: "1"
+        - name: BITNAMI_DEBUG
+          value: "true"
         {{- end }}
         {{- if .Values.usePassword }}
         {{- if and .Values.mongodbUsername .Values.mongodbDatabase }}
