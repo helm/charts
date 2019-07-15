@@ -48,6 +48,7 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `adminService.nodePort`            | If explicit NodePort for admin service is required                              | `true`                            |
 | `adminService.type`                | Ambassador's admin service type to be used                                      | `ClusterIP`                       |
 | `ambassadorConfig`                 | Config thats mounted to `/ambassador/ambassador-config`                         | `""`                              |
+| `crds.enabled`                     | If `true`, enables CRD resources for the installation.                          | `true`                            |
 | `crds.create`                      | If `true`, Creates CRD resources                                                | `true`                            |
 | `crds.keep`                        | If `true`, if the ambassador CRDs should be kept when the chart is deleted      | `true`                            |
 | `daemonSet`                        | If `true`, Create a DaemonSet. By default Deployment controller will be created | `false`                           |
@@ -187,7 +188,9 @@ Ambassador has been listening on port 8080 for HTTP and 8443 for HTTPS by defaul
 
 A `ClusterRole` and `ClusterRoleBinding` named `{{release name}}-crd` will be created to watch for the Ambassador Custom Resource Definitions. This will be created regardless of the value of `scope.singleNamespace` since CRDs are created the cluster scope.
 
-`rbac.namespaced` has been removed. For namespaced RBAC, set `scope.singleNamespace: true` and `rbac.create: true`.
+`rbac.namespaced` has been removed. For namespaced RBAC, set `scope.singleNamespace: true` and `rbac.enabled: true`.
+
+`crds.enabled` will indicate that you are using CRDs and will create the rbac resources regardless of the value of `crds.create`. This allows for multiple deployments to use the CRDs.
 
 ## To 2.0.0
 
