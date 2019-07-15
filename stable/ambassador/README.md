@@ -38,6 +38,10 @@ $ helm delete --purge my-release
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
+## Changelog
+
+Notable chart changes are listed in the [CHANGELOG](https://github.com/helm/charts/blob/master/stable/ambassador/CHANGELOG.md)
+
 ## Configuration
 
 The following tables lists the configurable parameters of the Ambassador chart and their default values.
@@ -174,13 +178,20 @@ service:
 
 This change has also replaced the `.additionalTCPPorts` configuration. Additional TCP ports can be created the same as the http and https ports above.
 
-### Admin Service Name
-
-The admin service has been renamed to `{{release name}}-admin` to match the name from the YAML installation template at https://www.getambassador.io/yaml/ambassador/ambassador-rbac.yaml.
-
 ### Annotations and `service_port` 
 
-The default Ambassador `Module` annotation is no longer being applied by default. This was causing confusion with the `service_port` being hard coded when enabling TLS termination in Ambassador.
+The below Ambassador `Module` annotation is no longer being applied by default. 
+
+```yaml
+getambassador.io/config: |
+  ---
+  apiVersion: ambassador/v1
+  kind: Module
+  name: ambassador
+  config:
+    service_port: 8080
+```
+This was causing confusion with the `service_port` being hard-coded when enabling TLS termination in Ambassador.
 
 Ambassador has been listening on port 8080 for HTTP and 8443 for HTTPS by default since version `0.60.0` (chart version 2.2.0). 
 
