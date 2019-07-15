@@ -30,8 +30,8 @@ image:
   #   - myRegistryKeySecretName
 
   ## Set to true if you would like to see extra information on logs
-  ## It turns NAMI debugging in minideb
-  ## ref:  https://github.com/bitnami/minideb-extras/#turn-on-nami-debugging
+  ## It turns on Bitnami debugging in minideb-extras-base
+  ## ref:  https://github.com/bitnami/minideb-extras-base
   debug: false
 
 ## String to partially override mongodb.fullname template (will maintain the release name)
