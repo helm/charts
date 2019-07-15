@@ -5,7 +5,7 @@ name: cassandra-reaper
 home: http://cassandra-reaper.io/
 keywords:
   - cassandra
-version: 0.2.0
+version: 0.2.1
 maintainers:
   - name: kamsz
     email: kamil@szczygiel.io
