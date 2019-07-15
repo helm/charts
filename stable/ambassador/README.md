@@ -59,7 +59,7 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `image.tag`                        | Ambassador image tag                                                            | `0.72.0`                          |
 | `imagePullSecrets`                 | Image pull secrets                                                              | `[]`                              |
 | `namespace.name`                   | Set the `AMBASSADOR_NAMESPACE` environment variable                             | `metadata.namespace`              |
-| `scope.singleNamespace`            | Set the `AMBASSADOR_SINGLE_NAMESPACE` environment variable                      | `false`                           |
+| `scope.singleNamespace`            | Set the `AMBASSADOR_SINGLE_NAMESPACE` environment variable and create namespaced RBAC if `rbac.enabled: true` | `false`                           |
 | `podAnnotations`                   | Additional annotations for ambassador pods                                      | `{}`                              |
 | `deploymentAnnotations`            | Additional annotations for ambassador DaemonSet/Deployment                      | `{}`                              |
 | `podLabels`                        | Additional labels for ambassador pods                                           |                                   |
@@ -70,7 +70,6 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `prometheusExporter.tag`           | Prometheus exporter image                                                       | `v0.8.1`                          |
 | `prometheusExporter.resources`  | CPU/memory resource requests/limits                                                       | `{}`                          |
 | `rbac.create`                      | If `true`, create and use RBAC resources                                        | `true`                            |
-| `rbac.namespaced`                  | If `true`, permissions are namespace-scoped rather than cluster-scoped          | `false`                           |
 | `replicaCount`                     | Number of Ambassador replicas                                                   | `3`                               |
 | `resources`                        | CPU/memory resource requests/limits                                             | `{}`                              |
 | `securityContext`                  | Set security context for pod                                                    | `{ "runAsUser": "8888" }`         |
@@ -187,6 +186,8 @@ Ambassador has been listening on port 8080 for HTTP and 8443 for HTTPS by defaul
 ### RBAC and CRDs
 
 A `ClusterRole` and `ClusterRoleBinding` named `{{release name}}-crd` will be created to watch for the Ambassador Custom Resource Definitions. This will be created regardless of the value of `scope.singleNamespace` since CRDs are created the cluster scope.
+
+`rbac.namespaced` has been removed. For namespaced RBAC, set `scope.singleNamespace: true` and `rbac.create: true`.
 
 ## To 2.0.0
 
