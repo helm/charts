@@ -213,7 +213,7 @@ pro:
   enabled: false
   image:
     repository: quay.io/datawire/ambassador_pro
-    tag: amb-sidecar-0.4.0
+    tag: amb-sidecar-0.5.0
   ports:
     auth: 8500
     ratelimit: 8501
