@@ -75,7 +75,7 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `resources`                        | CPU/memory resource requests/limits                                             | `{}`                              |
 | `securityContext`                  | Set security context for pod                                                    | `{ "runAsUser": "8888" }`         |
 | `initContainers`                   | Containers used to initialize context for pods                                  | `[]`                              |
-| `service.annotations`              | Annotations to apply to Ambassador service                                      | See "Annotations" below           |
+| `service.annotations`              | Annotations to apply to Ambassador service                                      | `""`                              |
 | `service.externalTrafficPolicy`    | Sets the external traffic policy for the service                                | `""`                              |
 | `service.ports`                    | List of ports Ambassador is listening on                                        |  `[{"name": "http","port": 80,"targetPort": 8080},{"name": "https","port": 443,"targetPort": 8443}]` |
 | `service.loadBalancerIP`           | IP address to assign (if cloud provider supports it)                            | `""`                              |
@@ -103,17 +103,7 @@ The following tables lists the configurable parameters of the Ambassador chart a
 
 ### Annotations
 
-The default annotation applied to the Ambassador service is
-
-```
-getambassador.io/config: |
-  ---
-  apiVersion: ambassador/v1
-  kind: Module
-  name: ambassador
-  config:
-    service_port: 8080
-```
+Ambassador configuration is done through annotations on Kubernetes services or Custom Resource Definitions (CRDs). The `service.annotations` section of the values file contains commented out examples of [Ambassador Module](https://www.getambassador.io/reference/core/ambassador) and a global [TLSContext](https://www.getambassador.io/reference/core/tls) configurations which are typically created in the Ambassador service.
 
 If you intend to use `service.annotations`, remember to include the `getambassador.io/config` annotation key as above,
 and remember that you'll have to escape newlines. For example, the annotation above could be defined as
@@ -186,6 +176,12 @@ service:
 ### Admin Service Name
 
 The admin service has been renamed to `{{chart deployment name}}-admin` to match the name from the YAML installation template at https://www.getambassador.io/yaml/ambassador/ambassador-rbac.yaml.
+
+### Annotations and `service_port` 
+
+The default Ambassador `Module` annotation is no longer being applied by default. This was causing confusion with the `service_port` being hard coded when enabling TLS termination in Ambassador.
+
+Ambassador has been listening on port 8080 for HTTP and 8443 for HTTPS by default since version `0.60.0` (chart version 2.2.0). 
 
 ## To 2.0.0
 
