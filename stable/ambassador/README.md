@@ -152,6 +152,8 @@ $ helm upgrade --install --wait my-release -f values.yaml stable/ambassador
 
 ## To 3.0.0
 
+### Service Ports
+
 The way ports are assigned has been changed for a more dynamic method.
 
 Now, instead of setting the port assignments for only the http and https, any port can be open on the load balancer using a list like you would in a standard Kubernetes YAML manifest.
@@ -172,7 +174,7 @@ service:
 `3.0.0`
 ```yaml
 service:
-  port:
+  ports:
   - name: http
     port: 80
     targetPort: 8080
@@ -180,6 +182,10 @@ service:
     port: 443
     targetPort: 8443
 ```
+
+### Admin Service Name
+
+The admin service has been renamed to `{{chart deployment name}}-admin` to match the name from the YAML installation template at https://www.getambassador.io/yaml/ambassador/ambassador-rbac.yaml.
 
 ## To 2.0.0
 
