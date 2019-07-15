@@ -431,7 +431,6 @@ clusterAgent:
   #
   service:
     type: ClusterIP
-    annotations: {}
 
   ## @param useHostNetwork - boolean - optional
   ## Bind ports on the hostNetwork. Useful for CNI networking where hostPort might
