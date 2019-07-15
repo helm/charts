@@ -76,12 +76,11 @@ service:
       # targetPort: 2222
       # protocol: TCP
       # nodePort: 30222
-    
 
   annotations:
   #  Uncomment out fields you want to use.
-  #  See https://www.getambassador.io/reference/core/ambassador  and 
-  #  https://www.getambassador.io/reference/core/tls for more info 
+  #  See https://www.getambassador.io/reference/core/ambassador and
+  #  https://www.getambassador.io/reference/core/tls for more info
   #  getambassador.io/config: |
   #    ---
   #    apiVersion: ambassador/v1
