@@ -47,7 +47,7 @@ securityContext:
 
 image:
   repository: quay.io/datawire/ambassador
-  tag: 0.72.0
+  tag: 0.73.0
   pullPolicy: IfNotPresent
 
 nameOverride: ""
