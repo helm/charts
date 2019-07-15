@@ -32,6 +32,10 @@ spec:
               "cluster_checks_*"
             ]
           }]
+      {{- if .Values.clusterAgent.podAnnotations }}
+{{ toYaml .Values.clusterAgent.podAnnotations | indent 8 }}
+      {{- end }}
+
     spec:
       {{- if .Values.clusterAgent.priorityClassName }}
       priorityClassName: "{{ .Values.clusterAgent.priorityClassName }}"
