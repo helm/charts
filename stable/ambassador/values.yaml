@@ -25,7 +25,7 @@ autoscaling:
 # namespace:
   # name: default
 
-# Additional container environment variable
+# Additional container environment variable (comma-separated list)
 env:
   {}
   # Exposing statistics via StatsD

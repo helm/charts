@@ -185,6 +185,14 @@ spec:
               fieldRef:
                 fieldPath: metadata.namespace
           {{- end }}
+          {{- if .Values.env }}
+          {{- range $key,$value := .Values.env }}
+          {{- if eq $key "AMBASSADOR_ID"}}
+          - name: {{ $key | upper | quote}}
+            value: {{ $value | quote}}
+          {{- end }}
+          {{- end }}
+          {{- end }}
           - name: AMBASSADOR_LICENSE_KEY
           {{- if .Values.pro.licenseKey.secret }}
             valueFrom:
