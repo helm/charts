@@ -107,6 +107,11 @@ spec:
           mountPath: /fluent-bit/etc/parsers_custom.conf
           subPath: parsers.conf
 {{- end }}
+{{- if and .Values.backend.type "stackdriver" .Values.backend.stackdriver.google_service_credentials }}
+        - name: gcp-secret
+          mountPath: /secure/google_service_credentials.json
+          subPath: google_service_credentials.json
+{{- end }}
 {{- end }}
 {{- if or .Values.backend.es.tls_ca .Values.backend.es.tls_secret }}
         - name: es-tls-secret
@@ -155,6 +160,11 @@ spec:
       - name: es-tls-secret
         secret:
           secretName: {{ .Values.backend.es.tls_secret | default ( print ( include "fluent-bit.fullname" . ) "-es-tls-secret" ) | quote }}
+{{- end }}
+{{- if and .Values.backend.type "stackdriver" .Values.backend.stackdriver.google_service_credentials }}
+      - name: gcp-secret
+        secret:
+          secretName: "{{ template "fluent-bit.fullname" . }}-gcp-secret"
 {{- end }}
 {{- if .Values.trackOffsets }}
       - name: tail-db

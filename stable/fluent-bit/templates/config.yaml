@@ -137,6 +137,17 @@ data:
         TLS.Verify   {{ .Values.backend.splunk.tls_verify }}
         tls.debug {{ .Values.backend.splunk.tls_debug }}
         Message_Key   {{ .Values.backend.splunk.message_key }}
+{{ else if eq .Values.backend.type "stackdriver" }}
+    [OUTPUT]
+        Name  stackdriver
+        Match *
+        resource global
+{{- if .Values.backend.stackdriver.google_service_credentials }}
+        google_service_credentials /secure/google_service_credentials.json
+{{- else }}
+        service_account_email  {{ .Values.backend.stackdriver.service_account_email }}
+        service_account_secret  {{ .Values.backend.stackdriver.service_account_secret }}
+{{- end }}
 {{ else if eq .Values.backend.type "http" }}
     [OUTPUT]
         Name  http
