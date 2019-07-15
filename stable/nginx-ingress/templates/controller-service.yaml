@@ -42,7 +42,7 @@ spec:
     {{- $setNodePorts := (or (eq .Values.controller.service.type "NodePort") (eq .Values.controller.service.type "LoadBalancer")) }}
     {{- if .Values.controller.service.enableHttp }}
     - name: http
-      port: 80
+      port: {{ .Values.controller.service.ports.http }}
       protocol: TCP
       targetPort: {{ .Values.controller.service.targetPorts.http }}
       {{- if (and $setNodePorts (not (empty .Values.controller.service.nodePorts.http))) }}
@@ -51,7 +51,7 @@ spec:
     {{- end }}
     {{- if .Values.controller.service.enableHttps }}
     - name: https
-      port: 443
+      port: {{ .Values.controller.service.ports.https }}
       protocol: TCP
       targetPort: {{ .Values.controller.service.targetPorts.https }}
       {{- if (and $setNodePorts (not (empty .Values.controller.service.nodePorts.https))) }}
