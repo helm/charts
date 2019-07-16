@@ -12,6 +12,18 @@ image:
   pullPolicy: "IfNotPresent"
   pullSecrets: []
 
+## Here annotations can be added to the superset deployment
+##
+annotations: {}
+## Extra labels that can be added to the superset deployment
+##
+labels: {}
+# kubernetes.io/name: "superset"
+
+# Extra annotations to be added to superset pods
+##
+podAnnotations: {}
+
 initFile: |-
   /usr/local/bin/superset-init --username admin --firstname admin --lastname user --email admin@fab.org --password admin
   superset runserver

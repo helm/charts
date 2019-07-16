@@ -45,6 +45,9 @@ The command removes all the Kubernetes components associated with the chart and 
 | `image.tag`                | `superset` image tag                            | `0.28.1`                                                     |
 | `image.pullPolicy`         | Image pull policy                               | `IfNotPresent`                                               |
 | `image.pullSecrets`        | Secrets for private registry                    | `[]`                                                         |
+| `annotations`              | Add annotations to deployment                   | `{}`                                                         |
+| `labels`                   | Add extra labels to deployment                  | `{}`                                                         |
+| `podAnnotations`           | Add extra annotations to deployment             | `{}`                                                         |
 | `configFile`               | Content of [`superset_config.py`](https://superset.incubator.apache.org/installation.html) | See values.yaml](./values.yaml) |
 | `extraConfigFiles`         | Content of additional configuration files. Let the dictionary key name represent the name of the file and its value the files content. | `{}` |
 | `initFile`                 | Content of init shell script                    | See [values.yaml](./values.yaml)                             |
