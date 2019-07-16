@@ -55,6 +55,8 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `image.pullPolicy`                                 | Image pull policy                                                                            | `IfNotPresent`                                          |
 | `image.pullSecrets`                                | Specify docker-registry secret names as an array                                             | `[]` (does not add image pull secrets to deployed pods) |
 | `image.debug`                                      | Specify if debug logs should be enabled                                                      | `false`                                                 |
+| `nameOverride`                                     | String to partially override mongodb.fullname template with a string (will prepend the release name) | `nil`                                           |
+| `fullnameOverride`                                 | String to fully override mongodb.fullname template with a string                             | `nil`                                                   |
 | `clusterDomain`                                    | Default Kubernetes cluster domain                                                            | `cluster.local`                                         |
 | `usePassword`                                      | Enable password authentication                                                               | `true`                                                  |
 | `existingSecret`                                   | Existing secret with MongoDB credentials                                                     | `nil`                                                   |
@@ -73,6 +75,7 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `service.nodePort`                                 | Port to bind to for NodePort service type                                                    | `nil`                                                   |
 | `service.loadBalancerIP`                           | Static IP Address to use for LoadBalancer service type                                       | `nil`                                                   |
 | `service.externalIPs`                              | External IP list to use with ClusterIP service type                                          | `[]`                                                    |
+| `service.loadBalancerSourceRanges`                 | List of IP ranges allowed access to load balancer (if supported)                             | `[]` (does not add IP range restrictions to the service)|
 | `port`                                             | MongoDB service port                                                                         | `27017`                                                 |
 | `replicaSet.enabled`                               | Switch to enable/disable replica set configuration                                           | `false`                                                 |
 | `replicaSet.name`                                  | Name of the replica set                                                                      | `rs0`                                                   |

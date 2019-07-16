@@ -155,10 +155,14 @@ The following table lists the configurable parameters of the Concourse chart and
 | `web.additionalAffinities` | Additional affinities to apply to web pods. E.g: node affinity | `{}` |
 | `web.additionalVolumeMounts` | VolumeMounts to be added to the web pods | `nil` |
 | `web.additionalVolumes` | Volumes to be added to the web pods | `nil` |
-| `web.labels`| Additional labels to be added to the web pods | `{}` |
 | `web.annotations`| Annotations to be added to the web pods | `{}` |
 | `web.authSecretsPath` | Specify the mount directory of the web auth secrets | `/concourse-auth` |
 | `web.credhubSecretsPath` | Specify the mount directory of the web credhub secrets | `/concourse-credhub` |
+| `web.datadog.agentHostUseHostIP` | Use IP of Pod's node overrides `agentHost` | `false` |
+| `web.datadog.agentHost` | Datadog Agent host | `127.0.0.1` |
+| `web.datadog.agentPort` | Datadog Agent port | `8125` |
+| `web.datadog.enabled` | Enable or disable Datadog metrics | `false` |
+| `web.datadog.prefix` | Prefix for emitted metrics | `"concourse.ci"` |
 | `web.enabled` | Enable or disable the web component | `true` |
 | `web.env` | Configure additional environment variables for the web containers | `[]` |
 | `web.ingress.annotations` | Concourse Web Ingress annotations | `{}` |
@@ -166,6 +170,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | `web.ingress.hosts` | Concourse Web Ingress Hostnames | `[]` |
 | `web.ingress.tls` | Concourse Web Ingress TLS configuration | `[]` |
 | `web.keySecretsPath` | Specify the mount directory of the web keys secrets | `/concourse-keys` |
+| `web.labels`| Additional labels to be added to the worker pods | `{}` |
 | `web.livenessProbe.failureThreshold` | Minimum consecutive failures for the probe to be considered failed after having succeeded | `5` |
 | `web.livenessProbe.httpGet.path` | Path to access on the HTTP server when performing the healthcheck | `/api/v1/info` |
 | `web.livenessProbe.httpGet.port` | Name or number of the port to access on the container | `atc` |
@@ -178,7 +183,6 @@ The following table lists the configurable parameters of the Concourse chart and
 | `web.readinessProbe.httpGet.path` | Path to access on the HTTP server when performing the healthcheck | `/api/v1/info` |
 | `web.readinessProbe.httpGet.port` | Name or number of the port to access on the container | `atc` |
 | `web.replicas` | Number of Concourse Web replicas | `1` |
-| `web.strategy` | Strategy for updates to deployment. | `{}` |
 | `web.resources.requests.cpu` | Minimum amount of cpu resources requested | `100m` |
 | `web.resources.requests.memory` | Minimum amount of memory resources requested | `128Mi` |
 | `web.service.annotations` | Concourse Web Service annotations | `nil` |
@@ -190,6 +194,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | `web.service.tsaNodePort` | Sets the nodePort for tsa when using `NodePort` | `nil` |
 | `web.service.type` | Concourse Web service type | `ClusterIP` |
 | `web.sidecarContainers` | Array of extra containers to run alongside the Concourse web container | `nil` |
+| `web.strategy` | Strategy for updates to deployment. | `{}` |
 | `web.syslogSecretsPath` | Specify the mount directory of the web syslog secrets | `/concourse-syslog` |
 | `web.tlsSecretsPath` | Where in the container the web TLS secrets should be mounted | `/concourse-web-tls` |
 | `web.tolerations` | Tolerations for the web nodes | `[]` |
@@ -197,7 +202,6 @@ The following table lists the configurable parameters of the Concourse chart and
 | `worker.additionalAffinities` | Additional affinities to apply to worker pods. E.g: node affinity | `{}` |
 | `worker.additionalVolumeMounts` | VolumeMounts to be added to the worker pods | `nil` |
 | `worker.additionalVolumes` | Volumes to be added to the worker pods | `nil` |
-| `web.labels`| Additional labels to be added to the worker pods | `{}` |
 | `worker.annotations` | Annotations to be added to the worker pods | `{}` |
 | `worker.cleanUpWorkDirOnStart` | Removes any previous state created in `concourse.worker.workDir` | `true` |
 | `worker.emptyDirSize` | When persistance is disabled this value will be used to limit the emptyDir volume size | `nil` |
