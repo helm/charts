@@ -155,6 +155,7 @@ data:
       sed 's|NETWORK|'"${NETWORK}"'|' -i /etc/openvpn/openvpn.conf
       sed 's|NETMASK|'"${NETMASK}"'|' -i /etc/openvpn/openvpn.conf
 
+      # exec openvpn process so it receives lifecycle signals
       exec openvpn --config /etc/openvpn/openvpn.conf
   openvpn.conf: |-
       server {{ .Values.openvpn.OVPN_NETWORK }} {{ .Values.openvpn.OVPN_SUBNET }}
