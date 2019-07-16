@@ -98,18 +98,28 @@ data:
     $HAL_COMMAND config provider kubernetes enable
     {{- range $index, $context := .Values.kubeConfig.contexts }}
 
-    if $HAL_COMMAND config provider kubernetes account get {{ $context }}; then
+    # this is to replace the _ with - because the account name cannot contain _
+    context_as_variable={{ $context }}
+    context_replaced="${context_as_variable//_/-}"
+
+    if $HAL_COMMAND config provider kubernetes account get $context_replaced; then
       PROVIDER_COMMAND='edit'
     else
       PROVIDER_COMMAND='add'
     fi
 
-    $HAL_COMMAND config provider kubernetes account $PROVIDER_COMMAND {{ $context }} --docker-registries dockerhub \
+    $HAL_COMMAND config provider kubernetes account $PROVIDER_COMMAND $context_replaced --docker-registries dockerhub \
                 --context {{ $context }} {{ if not $.Values.kubeConfig.enabled }}--service-account true{{ end }} \
                 {{ if $.Values.kubeConfig.enabled }}--kubeconfig-file /opt/kube/{{ $.Values.kubeConfig.secretKey }}{{ end }} --omit-namespaces={{ template "omittedNameSpaces" $ }} --provider-version v2
     {{- end }}
-    $HAL_COMMAND config deploy edit --account-name {{ .Values.kubeConfig.deploymentContext }} --type distributed \
+    
+    # this is to replace the _ with - because the deployment name cannot contain _
+    deployment_context_as_variable={{ .Values.kubeConfig.deploymentContext }}
+    deployment_context_replaced="${deployment_context_as_variable//_/-}"
+    
+    $HAL_COMMAND config deploy edit --account-name $deployment_context_replaced --type distributed \
                            --location {{ .Release.Namespace }}
+                           
     # Use Deck to route to Gate
     $HAL_COMMAND config security api edit --no-validate --override-base-url /gate
     {{- range $index, $feature := .Values.spinnakerFeatureFlags }}
