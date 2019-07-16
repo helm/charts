@@ -83,8 +83,8 @@ spec:
             name: mongodb
           env:
           {{- if .Values.image.debug}}
-          - name: NAMI_DEBUG
-            value: "1"
+          - name: BITNAMI_DEBUG
+            value: "true"
           {{- end }}
           - name: MONGODB_SYSTEM_LOG_VERBOSITY
             value: {{ .Values.mongodbSystemLogVerbosity | quote }}

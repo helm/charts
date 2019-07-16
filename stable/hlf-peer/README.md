@@ -96,6 +96,7 @@ The following table lists the configurable parameters of the Hyperledger Fabric 
 | `ingress.path`                    | Ingress path                                      | `/`                       |
 | `ingress.hosts`                   | Ingress hostnames                                 | `[]`                      |
 | `ingress.tls`                     | Ingress TLS configuration                         | `[]`                      |
+| `dockerSocketPath`                | Docker Socket path                                | `/var/run/docker.sock`    |
 | `peer.databaseType`               | Database type to use (`goleveldb` or `CouchDB`)   | `goleveldb`               |
 | `peer.couchdbInstance`            | CouchDB chart name to use `cdb-peer1`             | `cdb-peer1`               |
 | `peer.mspID`                      | ID of MSP the Peer belongs to                     | `Org1MSP`                 |
