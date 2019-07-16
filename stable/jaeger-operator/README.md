@@ -44,7 +44,7 @@ The following table lists the configurable parameters of the jaeger-operator cha
 | Parameter               | Description                                                                                                 | Default                         |
 |:------------------------|:------------------------------------------------------------------------------------------------------------|:--------------------------------|
 | `image.repository`      | Controller container image repository                                                                       | `jaegertracing/jaeger-operator` |
-| `image.tag`             | Controller container image tag                                                                              | `1.12.1`                        |
+| `image.tag`             | Controller container image tag                                                                              | `1.13.1`                        |
 | `image.pullPolicy`      | Controller container image pull policy                                                                      | `IfNotPresent`                  |
 | `rbac.create`           | All required roles and rolebindings will be created                                                         | `true`                          |
 | `serviceAccount.create` | Service account to use                                                                                      | `true`                          |
