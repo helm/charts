@@ -9,8 +9,12 @@
            {{ fail "`Master.Image` does no longer exist. It has been renamed to `master.image`" }}
         {{- end }}
 
+        {{- if .Values.master.imageTag }}
+           {{ fail "`master.imageTag` does no longer exist. It has been renamed to `master.tag`" }}
+        {{- end }}
+
         {{- if .Values.Master.ImageTag }}
-           {{ fail "`Master.ImageTag` does no longer exist. It has been renamed to `master.imageTag`" }}
+           {{ fail "`Master.ImageTag` does no longer exist. It has been renamed to `master.tag`" }}
         {{- end }}
 
         {{- if .Values.Master.ImagePullPolicy }}
@@ -317,6 +321,10 @@
 
         {{- if .Values.Agent.ImagePullSecret }}
            {{ fail "`Agent.ImagePullSecret` does no longer exist. It has been renamed to `agent.imagePullSecret`" }}
+        {{- end }}
+
+        {{- if .Values.agent.imageTag }}
+           {{ fail "`agent.imageTag` does no longer exist. It has been renamed to `agent.tag`" }}
         {{- end }}
 
         {{- if .Values.Agent.ImageTag }}

@@ -16,7 +16,7 @@ data:
     <?xml version='1.0' encoding='UTF-8'?>
     <hudson>
       <disabledAdministrativeMonitors/>
-      <version>{{ .Values.master.imageTag }}</version>
+      <version>{{ .Values.master.tag }}</version>
       <numExecutors>{{ .Values.master.numExecutors }}</numExecutors>
       <mode>NORMAL</mode>
       <useSecurity>{{ .Values.master.useSecurity }}</useSecurity>
@@ -68,7 +68,7 @@ data:
               <containers>
                 <org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
                   <name>{{ .Values.agent.sideContainerName }}</name>
-                  <image>{{ .Values.agent.image }}:{{ .Values.agent.imageTag }}</image>
+                  <image>{{ .Values.agent.image }}:{{ .Values.agent.tag }}</image>
 {{- if .Values.agent.privileged }}
                   <privileged>true</privileged>
 {{- else }}
