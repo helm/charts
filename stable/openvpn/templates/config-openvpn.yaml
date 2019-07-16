@@ -16,7 +16,7 @@ data:
     then
       echo "found existing certs - reusing"
       {{- if .Values.openvpn.useCrl }}
-      if [ ! -e ${EASY_RSA_LOC}/pki/crl.pem ]
+      if [ ! -e ${EASY_RSA_LOC}/crl.pem ]
       then
         echo "generating missed crl file"
         ./easyrsa gen-crl
