@@ -1,4 +1,4 @@
-{{- if .Values.certs.grpc.create }}
+{{- if and .Values.grpc .Values.certs.grpc.create }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
