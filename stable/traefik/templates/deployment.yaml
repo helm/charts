@@ -84,7 +84,7 @@ spec:
         readinessProbe:
           httpGet:
             path: /ping
-            port: 80
+            port: {{ template "traefik.containerPort.http" . }}
           failureThreshold: 1
           initialDelaySeconds: 10
           periodSeconds: 10
@@ -93,7 +93,7 @@ spec:
         livenessProbe:
           httpGet:
             path: /ping
-            port: 80
+            port: {{ template "traefik.containerPort.http" . }}
           failureThreshold: 3
           initialDelaySeconds: 10
           periodSeconds: 10
@@ -139,7 +139,7 @@ spec:
         {{- end }}
         ports:
         - name: http
-          containerPort: 80
+          containerPort: {{ template "traefik.containerPort.http" . }}
           {{- if .Values.deployment.hostPort.httpEnabled }}
           hostPort: {{ default 80 .Values.deployment.hostPort.httpPort }}
           {{- end }}
@@ -148,7 +148,7 @@ spec:
           containerPort: 8880
           protocol: TCP
         - name: https
-          containerPort: 443
+          containerPort: {{ template "traefik.containerPort.https" . }}
           {{- if .Values.deployment.hostPort.httpsEnabled }}
           hostPort: {{ default 443 .Values.deployment.hostPort.httpsPort }}
           {{- end }}
