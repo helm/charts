@@ -31,7 +31,7 @@ data:
     {{- end }}
     [entryPoints]
       [entryPoints.http]
-      address = ":80"
+      address = ":{{ template "traefik.containerPort.http" . }}"
       compress = {{ .Values.gzip.enabled }}
       {{- if .Values.forwardAuth }}
       {{- if has "http" .Values.forwardAuth.entryPoints }}
@@ -64,7 +64,7 @@ data:
       {{- if .Values.whiteListSourceRange }}
       {{ template "traefik.whiteListSourceRange" . }}
       {{- end }}
-      address = ":443"
+      address = ":{{ template "traefik.containerPort.https" . }}"
       compress = {{ .Values.gzip.enabled }}
       {{- if .Values.forwardAuth }}
       {{- if has "https" .Values.forwardAuth.entryPoints }}
