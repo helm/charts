@@ -53,6 +53,7 @@ The following table lists the configurable parameters of the Vault chart and the
 | `image.repository`                | Container image to use                   | `vault`                             |
 | `image.tag`                       | Container image tag to deploy            | `.Chart.appVersion`                            |
 | `vault.dev`                       | Use Vault in dev mode                    | true (set to false in production)   |
+| `vault.extraArgs`                 | Additional arguments for vault server command | `[]`                           |
 | `vault.extraEnv`                  | Extra env vars for Vault pods            | `{}`                                |
 | `vault.extraContainers`           | Sidecar containers to add to the vault pod | `{}`                              |
 | `vault.extraInitContainers`       | Init containers to be added to the vault pod | `{}`                            |
