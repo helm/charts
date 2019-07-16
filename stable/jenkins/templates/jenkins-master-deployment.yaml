@@ -6,6 +6,7 @@ apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
   name: {{ template "jenkins.fullname" . }}
+  namespace: {{ template "jenkins.namespace" . }}
   labels:
     "app.kubernetes.io/name": '{{ template "jenkins.name" .}}'
     "helm.sh/chart": "{{ .Chart.Name }}-{{ .Chart.Version }}"
@@ -286,7 +287,7 @@ spec:
             - name: SSH_PORT
               value: "{{ .Values.master.sidecars.configAutoReload.sshTcpPort }}"
             - name: JENKINS_PORT
-              value: "{{ .Values.master.servicePort }}"
+              value: "{{ .Values.master.targetPort }}"
             {{- if .Values.master.useSecurity }}
             - name: ADMIN_USER
               valueFrom:

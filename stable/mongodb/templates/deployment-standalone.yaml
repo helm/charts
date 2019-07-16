@@ -32,6 +32,9 @@ spec:
 {{- end }}
       {{- end }}
     spec:
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+      {{- end }}
       {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName }}
       {{- end }}
@@ -67,8 +70,8 @@ spec:
         {{- end }}
         env:
         {{- if .Values.image.debug}}
-        - name: NAMI_DEBUG
-          value: "1"
+        - name: BITNAMI_DEBUG
+          value: "true"
         {{- end }}
         {{- if .Values.usePassword }}
         {{- if and .Values.mongodbUsername .Values.mongodbDatabase }}
@@ -164,6 +167,11 @@ spec:
       - name: metrics
         image: {{ template "mongodb.metrics.image" . }}
         imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
+        {{- if .Values.securityContext.enabled }}
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: {{ .Values.securityContext.runAsUser }}
+        {{- end }}
         env:
         {{- if .Values.usePassword }}
         - name: MONGODB_ROOT_PASSWORD

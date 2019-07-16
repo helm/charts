@@ -5,7 +5,7 @@ imagePullPolicy: IfNotPresent
 bootnode:
   image:
     repository: ethereum/client-go
-    tag: alltools-v1.8.27
+    tag: alltools-v1.9.0
 
 ethstats:
   image:
@@ -18,7 +18,7 @@ ethstats:
 geth:
   image:
     repository: ethereum/client-go
-    tag: v1.8.27
+    tag: v1.9.0
   tx:
     replicaCount: 2
     service:

@@ -34,6 +34,12 @@ spec:
             {{- if not .Values.dryRun }}
             - --no-dry-run
             {{- end }}
+            {{- if .Values.includedPodNames }}
+            - --included-pod-names={{ .Values.includedPodNames }}
+            {{- end }}
+            {{- if .Values.excludedPodNames }}
+            - --excluded-pod-names={{ .Values.excludedPodNames }}
+            {{- end }}
             - --excluded-weekdays={{ .Values.excludedWeekdays }}
             - --excluded-times-of-day={{ .Values.excludedTimesOfDay }}
             - --excluded-days-of-year={{ .Values.excludedDaysOfYear }}

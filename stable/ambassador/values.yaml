@@ -1,3 +1,4 @@
+---
 # Default values for ambassador.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
@@ -46,7 +47,7 @@ securityContext:
 
 image:
   repository: quay.io/datawire/ambassador
-  tag: 0.70.0
+  tag: 0.73.0
   pullPolicy: IfNotPresent
 
 nameOverride: ""
@@ -109,6 +110,8 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name:
 
+additionalTCPPorts: []
+
 initContainers: []
 
 volumes: []
@@ -123,6 +126,10 @@ podAnnotations:
   # prometheus.io/scrape: "true"
   # prometheus.io/port: "9102"
 
+deploymentAnnotations:
+  {}
+  # configmap.reloader.stakater.com/auto: "true"
+
 resources:
   {}
   # If you do want to specify resources, uncomment the following
@@ -133,6 +140,8 @@ resources:
   # requests:
   #  cpu: 100m
   #  memory: 128Mi
+
+priorityClassName: ""
 
 nodeSelector: {}
 
@@ -146,6 +155,15 @@ prometheusExporter:
   repository: prom/statsd-exporter
   tag: v0.8.1
   pullPolicy: IfNotPresent
+  resources: {}
+  # If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  #   limits:
+  #     cpu: 100m
+  #     memory: 256Mi
+  #   requests:
+  #     cpu: 50m
+  #     memory: 128Mi
   # You can configure the statsd exporter to modify the behavior of mappings and other features.
   # See documentation: https://github.com/prometheus/statsd_exporter/tree/v0.8.1#metric-mapping-and-configuration
   # Uncomment the following line if you wish to specify a custom configuration:

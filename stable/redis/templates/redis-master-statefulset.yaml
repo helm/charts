@@ -68,6 +68,10 @@ spec:
         - /bin/bash
         - -c
         - |
+          {{- if (eq .Values.securityContext.runAsUser 0.0) }}
+          useradd redis
+          chown -R redis {{ .Values.master.persistence.path }}
+          {{- end }}
           if [[ -n $REDIS_PASSWORD_FILE ]]; then
             password_aux=`cat ${REDIS_PASSWORD_FILE}`
             export REDIS_PASSWORD=$password_aux
@@ -77,15 +81,21 @@ spec:
           fi
           if [[ ! -f /opt/bitnami/redis/etc/redis.conf ]];then
             cp /opt/bitnami/redis/mounted-etc/redis.conf /opt/bitnami/redis/etc/redis.conf
-          fi          
+          fi
           ARGS=("--port" "${REDIS_PORT}")
           {{- if .Values.usePassword }}
           ARGS+=("--requirepass" "${REDIS_PASSWORD}")
+          ARGS+=("--masterauth" "${REDIS_PASSWORD}")
           {{- else }}
           ARGS+=("--protected-mode" "no")
           {{- end }}
           ARGS+=("--include" "/opt/bitnami/redis/etc/redis.conf")
           ARGS+=("--include" "/opt/bitnami/redis/etc/master.conf")
+          {{- if .Values.master.extraFlags }}
+          {{- range .Values.master.extraFlags }}
+          ARGS+=({{ . | quote }})
+          {{- end }}
+          {{- end }}
           {{- if .Values.master.command }}
           {{ .Values.master.command }} ${ARGS[@]}
           {{- else }}
@@ -125,7 +135,7 @@ spec:
             command:
             - sh
             - -c
-            - /health/ping_local.sh {{ .Values.master.livenessProbe.timeoutSeconds }}
+            - /health/ping_liveness_local.sh {{ .Values.master.livenessProbe.timeoutSeconds }}
         {{- end }}
         {{- if .Values.master.readinessProbe.enabled}}
         readinessProbe:
@@ -138,7 +148,7 @@ spec:
             command:
             - sh
             - -c
-            - /health/ping_local.sh {{ .Values.master.livenessProbe.timeoutSeconds }}
+            - /health/ping_readiness_local.sh {{ .Values.master.livenessProbe.timeoutSeconds }}
         {{- end }}
         resources:
 {{ toYaml .Values.master.resources | indent 10 }}

@@ -93,6 +93,9 @@ configuration:
     config: {}
   #    region:
   #    apitimeout:
+  #    resourceGroup:
+  #    snapshotLocation:
+  #    project:
 
   # These are server-level settings passed as CLI flags to the `velero server` command. Velero
   # uses default values if they're not passed in, so they only need to be explicitly specified
@@ -146,8 +149,17 @@ credentials:
   # of your IAM credentials file.
   secretContents: {}
 
+# Wheter to create volumesnapshotlocation crd, if false => disable snapshot feature
+snapshotsEnabled: true
+
 # Whether to deploy the restic daemonset.
 deployRestic: false
+
+restic:
+  podVolumePath: /var/lib/kubelet/pods
+  privileged: false
+  # Resource requests/limits to specify for the Restic daemonset deployment. Optional.
+  resources: {}
 
 # Backup schedules to create.
 # Eg:
@@ -159,6 +171,17 @@ deployRestic: false
 #       includedNamespaces:
 #        - foo
 schedules: {}
+
+# Velero ConfigMaps.
+# Eg:
+# configMaps:
+#   restic-restore-action-config:
+#     labels:
+#       velero.io/plugin-config: ""
+#       velero.io/restic: RestoreItemAction
+#     data:
+#       image: gcr.io/heptio-images/velero-restic-restore-help
+configMaps: {}
 
 ##
 ## End of additional Velero resource settings.

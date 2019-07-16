@@ -53,9 +53,11 @@ The following table lists the configurable parameters of the PrestaShop chart an
 | `global.imagePullSecrets`             | Global Docker registry secret names as an array                                              | `[]` (does not add image pull secrets to deployed pods)      |
 | `image.registry`                      | PrestaShop image registry                                                                    | `docker.io`                                                  |
 | `image.repository`                    | PrestaShop image name                                                                        | `bitnami/prestashop`                                         |
-| `image.tag`                           | PrestaShop image tag                                                                         | `{VERSION}`                                                  |
-| `image.pullPolicy`                    | Image pull policy                                                                            | `Always` if `imageTag` is `latest`, else `IfNotPresent`      |
+| `image.tag`                           | PrestaShop image tag                                                                         | `{TAG_NAME}`                                                 |
+| `image.pullPolicy`                    | Image pull policy                                                                            | `IfNotPresent`                                               |
 | `image.pullSecrets`                   | Specify docker-registry secret names as an array                                             | `[]` (does not add image pull secrets to deployed pods)      |
+| `nameOverride`                        | String to partially override prestashop.fullname template with a string (will prepend the release name) | `nil`                                             |
+| `fullnameOverride`                    | String to fully override prestashop.fullname template with a string                          | `nil`                                                        |
 | `service.type`                        | Kubernetes Service type                                                                      | `LoadBalancer`                                               |
 | `service.port`                        | Service HTTP port                                                                            | `80`                                                         |
 | `service.httpsPort`                   | Service HTTPS port                                                                           | `443`                                                        |
@@ -101,7 +103,7 @@ The following table lists the configurable parameters of the PrestaShop chart an
 | `sessionAffinity`                     | Configures the session affinity                                                              | `None`                                                       |
 | `persistence.enabled`                 | Enable persistence using PVC                                                                 | `true`                                                       |
 | `persistence.storageClass`            | PVC Storage Class for PrestaShop volume                                                      | `nil` (uses alpha storage class annotation)                  |
-| `persistence.existingClaim`           | An Existing PVC name for Apache volume                                                       | `nil` (uses alpha storage class annotation)                  |
+| `persistence.existingClaim`           | An Existing PVC name for PrestaShop volume                                                   | `nil` (uses alpha storage class annotation)                  |
 | `persistence.accessMode`              | PVC Access Mode for PrestaShop volume                                                        | `ReadWriteOnce`                                              |
 | `persistence.size`                    | PVC Storage Request for PrestaShop volume                                                    | `8Gi`                                                        |
 | `resources`                           | CPU/Memory resource requests/limits                                                          | Memory: `512Mi`, CPU: `300m`                                 |
@@ -159,9 +161,15 @@ $ helm install --name my-release -f values.yaml stable/prestashop
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
+### [Rolling VS Immutable tags](https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/)
+
+It is strongly recommended to use immutable tags in a production environment. This ensures your deployment does not change automatically if the same tag is updated with a different image.
+
+Bitnami will release a new chart updating its containers if a new version of the main container, significant changes, or critical vulnerabilities exist.
+
 ## Persistence
 
-The [Bitnami PrestaShop](https://github.com/bitnami/bitnami-docker-prestashop) image stores the PrestaShop data and configurations at the `/bitnami/prestashop` and `/bitnami/apache` paths of the container.
+The [Bitnami PrestaShop](https://github.com/bitnami/bitnami-docker-prestashop) image stores the PrestaShop data and configurations at the `/bitnami/prestashop` path of the container.
 
 Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
 See the [Configuration](#configuration) section to configure the PVC or to disable persistence.

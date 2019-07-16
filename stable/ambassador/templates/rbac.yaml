@@ -9,13 +9,16 @@ metadata:
   name: {{ include "ambassador.fullname" . }}
   labels:
     app.kubernetes.io/name: {{ include "ambassador.name" . }}
+    app.kubernetes.io/part-of: {{ .Release.Name }}
     helm.sh/chart: {{ include "ambassador.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 rules:
   - apiGroups: [""]
     resources:
+    {{- if not .Values.rbac.namespaced }}
     - namespaces
+    {{- end }}
     - services
     - secrets
     - endpoints
@@ -23,6 +26,17 @@ rules:
   - apiGroups: [ "getambassador.io" ]
     resources: [ "*" ]
     verbs: ["get", "list", "watch"]
+  - apiGroups: [ "apiextensions.k8s.io" ]
+    resources: [ "customresourcedefinitions" ]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [ "networking.internal.knative.dev"]
+    resources: [ "clusteringresses" ]
+    verbs: ["get", "list", "watch"]
+  {{- if .Values.pro.enabled }}
+  - apiGroups: [""]
+    resources: [ "secrets" ]
+    verbs: ["get", "list", "watch", "create"]
+  {{- end }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
 {{- if .Values.rbac.namespaced }}
@@ -34,6 +48,7 @@ metadata:
   name: {{ include "ambassador.fullname" . }}
   labels:
     app.kubernetes.io/name: {{ include "ambassador.name" . }}
+    app.kubernetes.io/part-of: {{ .Release.Name }}
     helm.sh/chart: {{ include "ambassador.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
