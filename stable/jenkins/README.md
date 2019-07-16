@@ -1,6 +1,6 @@
 # Jenkins Helm Chart
 
-Jenkins master and slave cluster utilizing the Jenkins Kubernetes plugin
+Jenkins master and agent cluster utilizing the Jenkins Kubernetes plugin
 
 * https://wiki.jenkins-ci.org/display/JENKINS/Kubernetes+Plugin
 
@@ -180,13 +180,13 @@ Some third-party systems, e.g. GitHub, use HTML-formatted data in their payload 
 | `agent.privileged`         | Agent privileged container                      | `false`                |
 | `agent.resources`          | Resources allocation (Requests and Limits)      | `{requests: {cpu: 200m, memory: 256Mi}, limits: {cpu: 200m, memory: 256Mi}}`|
 | `agent.volumes`            | Additional volumes                              | `nil`                  |
-| `agent.envVars`            | Environment variables for the slave Pod         | Not set                |
+| `agent.envVars`            | Environment variables for the agent Pod         | Not set                |
 | `agent.command`            | Executed command when side container starts     | Not set                |
 | `agent.args`               | Arguments passed to executed command            | Not set                |
 | `agent.sideContainerName`  | Side container name in agent                    | jnlp                   |
 | `agent.TTYEnabled`         | Allocate pseudo tty to the side container       | false                  |
 | `agent.containerCap`       | Maximum number of agent                         | 10                     |
-| `agent.podName`            | slave Pod base name                             | Not set                |
+| `agent.podName`            | Agent Pod base name                             | Not set                |
 | `agent.idleMinutes`        | Allows the Pod to remain active for reuse       | 0                      |
 | `agent.yamlTemplate`       | The raw yaml of a Pod API Object to merge into the agent spec | Not set                |
 
