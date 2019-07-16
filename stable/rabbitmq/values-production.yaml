@@ -118,6 +118,10 @@ rabbitmq:
     enabled: false
     secretName: load-definition
 
+  ## environment variables to configure rabbitmq
+  ## ref: https://www.rabbitmq.com/configure.html#customise-environment
+  env: {}
+
   ## Configuration file content: required cluster configuration
   ## Do not override unless you know what you are doing. To add more configuration, use `extraConfiguration` of `advancedConfiguration` instead
   configuration: |-
