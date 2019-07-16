@@ -52,7 +52,7 @@ spec:
         {{- end }}
             - -z
             - 127.0.0.1
-            - "443"
+            - "{{ .Values.service.internalPort }}"
         resources:
           requests:
             cpu: "{{ .Values.resources.requests.cpu }}"
