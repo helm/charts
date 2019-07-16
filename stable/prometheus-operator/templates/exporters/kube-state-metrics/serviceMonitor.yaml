@@ -24,6 +24,6 @@ spec:
 {{- end }}
   selector:
     matchLabels:
-      app: kube-state-metrics
-      release: "{{ .Release.Name }}"
+      app.kubernetes.io/name: kube-state-metrics
+      app.kubernetes.io/instance: "{{ .Release.Name }}"
 {{- end }}
