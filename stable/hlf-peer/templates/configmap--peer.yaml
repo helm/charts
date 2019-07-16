@@ -25,14 +25,14 @@ data:
   ###########
   # Logging #
   ###########
-  CORE_LOGGING_LEVEL: debug
-  CORE_LOGGING_PEER: debug
-  CORE_LOGGING_CAUTHDSL: debug
-  CORE_LOGGING_GOSSIP: debug
-  CORE_LOGGING_LEDGER: debug
-  CORE_LOGGING_MSP: info
-  CORE_LOGGING_POLICIES: debug
-  CORE_LOGGING_GRPC: debug
+  CORE_LOGGING_LEVEL: {{ .Values.logging.level | quote }}
+  CORE_LOGGING_PEER: {{ .Values.logging.peer | quote }}
+  CORE_LOGGING_CAUTHDSL: {{ .Values.logging.cauthdsl | quote }}
+  CORE_LOGGING_GOSSIP: {{ .Values.logging.gossip | quote }}
+  CORE_LOGGING_LEDGER: {{ .Values.logging.ledger | quote }}
+  CORE_LOGGING_MSP: {{ .Values.logging.msp | quote }}
+  CORE_LOGGING_POLICIES: {{ .Values.logging.policies | quote }}
+  CORE_LOGGING_GRPC: {{ .Values.logging.grpc | quote }}
   ##########
   # Gossip #
   ##########
