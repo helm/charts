@@ -27,8 +27,9 @@ data:
     SSH_DOMAIN = {{ default .Values.service.gogs.serverDomain .Values.service.sshDomain }}
     SSH_PORT = {{ .Values.service.sshPort }}
     SSH_LISTEN_PORT = {{ .Values.service.sshPort }}
+    {{- if .Values.service.staticRootPath }}
     STATIC_ROOT_PATH = {{ .Values.service.staticRootPath }}
-
+    {{- end }} 
     [service]
     ENABLE_CAPTCHA = {{ .Values.service.gogs.serviceEnableCaptcha }}
     ACTIVE_CODE_LIVE_MINUTES = 180
