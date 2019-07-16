@@ -69,7 +69,7 @@ The following table lists the configurable parameters of the patroni chart and t
 | `credentials.admin`               | Password of the admin                       | `cola`                                              |
 | `credentials.standby`             | Password of the replication user            | `pinacolada`                                        |
 | `kubernetes.dcs.enable`           | Using Kubernetes as DCS                     | `true`                                              |
-| `kubernetes.configmaps.enable`    | Using Kubernetes configmaps instead of endpoints | `false`                                             |
+| `kubernetes.configmaps.enable`    | Using Kubernetes configmaps instead of endpoints | `false`                                        |
 | `etcd.enable`                     | Using etcd as DCS                           | `false`                                             |
 | `etcd.deployChart`                | Deploy etcd chart                           | `false`                                             |
 | `etcd.host`                       | Host name of etcd cluster                   | `nil`                                               |
@@ -88,7 +88,8 @@ The following table lists the configurable parameters of the patroni chart and t
 | `resources`                       | Any resources you wish to assign to the pod | `{}`                                                |
 | `nodeSelector`                    | Node label to use for scheduling            | `{}`                                                |
 | `tolerations`                     | List of node taints to tolerate             | `[]`                                                |
-| `affinity`                        | Affinity settings                           | Preferred on hostname                               |
+| `affinityTemplate`                | A template string to use to generate the affinity settings | Anti-affinity preferred on hostname  |
+| `affinity`                        | Affinity settings. Overrides `affinityTemplate` if set. | `{}`                                    |
 | `persistentVolume.accessModes`    | Persistent Volume access modes              | `[ReadWriteOnce]`                                   |
 | `persistentVolume.annotations`    | Annotations for Persistent Volume Claim`    | `{}`                                                |
 | `persistentVolume.mountPath`      | Persistent Volume mount root path           | `/home/postgres/pgdata`                             |
