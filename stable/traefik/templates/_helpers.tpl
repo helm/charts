@@ -113,6 +113,7 @@ Create custom cipherSuites block
           ]
 {{- end -}}
 
+{{/*
 Create the block for RootCAs.
 */}}
 {{- define "traefik.rootCAs" -}}
@@ -122,4 +123,26 @@ Create the block for RootCAs.
 	     {{- $ca | quote }}
 	   {{- end -}}
          ]
+{{- end -}}
+
+{{/*
+Helper for containerPort (http)
+*/}}
+{{- define "traefik.containerPort.http" -}}
+	{{- if .Values.useNonPriviledgedPorts -}}
+	6080
+	{{- else -}}
+	80
+	{{- end -}}
+{{- end -}}
+
+{{/*
+Helper for containerPort (https)
+*/}}
+{{- define "traefik.containerPort.https" -}}
+	{{- if .Values.useNonPriviledgedPorts -}}
+	6443
+	{{- else -}}
+	443
+	{{- end -}}
 {{- end -}}
