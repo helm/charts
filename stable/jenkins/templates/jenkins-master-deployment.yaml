@@ -146,6 +146,9 @@ spec:
             - mountPath: /usr/share/jenkins/ref/secrets/
               name: secrets-dir
       containers:
+{{- if .Values.master.customContainers }}
+{{ tpl (toYaml .Values.master.customContainers) . | indent 8 }}
+{{- end }}
         - name: {{ template "jenkins.fullname" . }}
           image: "{{ .Values.master.image }}:{{ .Values.master.imageTag }}"
           imagePullPolicy: "{{ .Values.master.imagePullPolicy }}"
