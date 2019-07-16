@@ -83,6 +83,14 @@ The following table lists the configurable parameters of the Hyperledger Fabric 
 | `persistence.annotations`         | Persistent Volume annotations                     | `{}`                      |
 | `persistence.size`                | Size of data volume (adjust for production!)      | `1Gi`                     |
 | `persistence.storageClass`        | Storage class of backing PVC                      | `default`                 |
+| `logging.level`                   | Default logging level                             | `info`                    |
+| `logging.peer`                    | Peer logging level                                | `info`                    |
+| `logging.cauthdsl`                | Cauthdsl logging level                            | `warning`                 |
+| `logging.gossip`                  | Gossip logging level                              | `info`                    |
+| `logging.grpc`                    | gRPC logging level                                | `error`                   |
+| `logging.ledger`                  | Ledger logging level                              | `info`                    |
+| `logging.msp`                     | MSP logging level                                 | `warning`                 |
+| `logging.policies`                | Policies logging level                            | `warning`                 |
 | `ingress.enabled`                 | If true, Ingress will be created                  | `false`                   |
 | `ingress.annotations`             | Ingress annotations                               | `{}`                      |
 | `ingress.path`                    | Ingress path                                      | `/`                       |
