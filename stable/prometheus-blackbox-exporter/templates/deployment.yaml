@@ -51,8 +51,8 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           securityContext:
-            readOnlyRootFilesystem: true
-            runAsNonRoot: true
+            readOnlyRootFilesystem: {{ .Values.readOnlyRootFilesystem }}
+            runAsNonRoot: {{ .Values.runAsNonRoot  }}
             runAsUser: {{ .Values.runAsUser }}
           args:
 {{- if .Values.config }}
@@ -83,7 +83,7 @@ spec:
           image: "{{ .Values.configmapReload.image.repository }}:{{ .Values.configmapReload.image.tag }}"
           imagePullPolicy: "{{ .Values.configmapReload.image.pullPolicy }}"
           securityContext:
-            runAsNonRoot: true
+            runAsNonRoot: {{ .Values.configmapReload.runAsNonRoot }}
             runAsUser: {{ .Values.configmapReload.runAsUser }}
           args:
             - --volume-dir=/etc/config
