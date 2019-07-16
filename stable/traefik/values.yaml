@@ -46,6 +46,7 @@ deploymentStrategy: {}
   # type: RollingUpdate
 
 securityContext: {}
+useNonPriviledgedPorts: false
 env: {}
 
 nodeSelector: {}
