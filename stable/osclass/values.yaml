@@ -26,14 +26,6 @@ image:
   # pullSecrets:
   #   - myRegistryKeySecretName
 
-## String to partially override osclass.fullname template (will maintain the release name)
-##
-# nameOverride:
-
-## String to fully override osclass.fullname template
-##
-# fullnameOverride:
-
 ## Osclass host to create application URLs
 ## ref: https://github.com/bitnami/bitnami-docker-osclass#configuration
 ##
