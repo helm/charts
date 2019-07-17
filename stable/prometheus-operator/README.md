@@ -152,7 +152,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheusOperator.service.nodePort` | Port to expose prometheus operator service on each node | `30080` |
 | `prometheusOperator.service.annotations` | Annotations to be added to the prometheus operator service | `{}` |
 | `prometheusOperator.service.labels` |  Prometheus Operator Service Labels | `{}` |
-| `prometheusOperator.service.externalIPs` | List of IP addresses at which the Prometheus Operator server service is available  | `[]` |
+| `prometheusOperator.service.externalIPs` | List of IP addresses at which the Prometheus Operator server service is available | `[]` |
 | `prometheusOperator.service.loadBalancerIP` |  Prometheus Operator Loadbalancer IP | `""` |
 | `prometheusOperator.service.loadBalancerSourceRanges` | Prometheus Operator Load Balancer Source Ranges | `[]` |
 | `prometheusOperator.resources` | Resource limits for prometheus operator | `{}` |
@@ -199,7 +199,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheus.service.additionalPorts` |  Additional Prometheus Service ports to add for NodePort service type | `[]` |
 | `prometheus.service.annotations` |  Prometheus Service Annotations | `{}` |
 | `prometheus.service.labels` |  Prometheus Service Labels | `{}` |
-| `prometheus.service.externalIPs` | List of IP addresses at which the Prometheus server service is available  | `[]` |
+| `prometheus.service.externalIPs` | List of IP addresses at which the Prometheus server service is available | `[]` |
 | `prometheus.service.loadBalancerIP` |  Prometheus Loadbalancer IP | `""` |
 | `prometheus.service.loadBalancerSourceRanges` | Prometheus Load Balancer Source Ranges | `[]` |
 | `prometheus.service.sessionAffinity` | Prometheus Service Session Affinity | `""` |
@@ -275,7 +275,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `alertmanager.service.nodePort` | Alertmanager Service port for NodePort service type | `30903` |
 | `alertmanager.service.annotations` | Alertmanager Service annotations | `{}` |
 | `alertmanager.service.labels` |  Alertmanager Service Labels | `{}` |
-| `alertmanager.service.externalIPs` | List of IP addresses at which the Alertmanager server service is available  | `[]` |
+| `alertmanager.service.externalIPs` | List of IP addresses at which the Alertmanager server service is available | `[]` |
 | `alertmanager.service.loadBalancerIP` |  Alertmanager Loadbalancer IP | `""` |
 | `alertmanager.service.loadBalancerSourceRanges` | Alertmanager Load Balancer Source Ranges | `[]` |
 | `alertmanager.config` | Provide YAML to configure Alertmanager. See https://prometheus.io/docs/alerting/configuration/#configuration-file. The default provided works to suppress the Watchdog alert from `defaultRules.create` | `{"global":{"resolve_timeout":"5m"},"route":{"group_by":["job"],"group_wait":"30s","group_interval":"5m","repeat_interval":"12h","receiver":"null","routes":[{"match":{"alertname":"Watchdog"},"receiver":"null"}]},"receivers":[{"name":"null"}]}` |
@@ -307,15 +307,21 @@ The following tables list the configurable parameters of the prometheus-operator
 | `alertmanager.alertmanagerSpec.additionalPeers` | AdditionalPeers allows injecting a set of additional Alertmanagers to peer with to form a highly available cluster. | `[]` |
 
 ### Grafana
+This is not a full list of the possible values.
+
+For a full list of configurable values please refer to the [Grafana chart](https://github.com/helm/charts/tree/master/stable/grafana#configuration).
+
 | Parameter | Description | Default |
 | ----- | ----------- | ------ |
 | `grafana.enabled` | If true, deploy the grafana sub-chart | `true` |
+| `grafana.image.tag` | Image tag. (`Must be >= 5.0.0`) | `6.2.5` |
 | `grafana.serviceMonitor.selfMonitor` | Create a `serviceMonitor` to automatically monitor the grafana instance | `true` |
 | `grafana.serviceMonitor.metricRelabelings` | The `metric_relabel_configs` for scraping the grafana instance. | `` |
 | `grafana.serviceMonitor.relabelings` | The `relabel_configs` for scraping the grafana instance. | `` |
 | `grafana.additionalDataSources` | Configure additional grafana datasources | `[]` |
 | `grafana.adminPassword` | Admin password to log into the grafana UI | "prom-operator" |
 | `grafana.defaultDashboardsEnabled` | Deploy default dashboards. These are loaded using the sidecar | `true` |
+| `grafana.grafana.ini` | Grafana's primary configuration | `{}`
 | `grafana.ingress.enabled` | Enables Ingress for Grafana | `false` |
 | `grafana.ingress.annotations` | Ingress annotations for Grafana | `{}` |
 | `grafana.ingress.labels` | Custom labels for Grafana Ingress | `{}` |
