@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: mail2most-configmap
+  name: {{ template "name" . }}-configmap
 data:
   mail2most.conf: |
     # An example Mail2Most configuration
