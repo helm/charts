@@ -26,14 +26,6 @@ image:
   # pullSecrets:
   #   - myRegistryKeySecretName
 
-## String to partially override dokuwiki.fullname template (will maintain the release name)
-##
-# nameOverride:
-
-## String to fully override dokuwiki.fullname template
-##
-# fullnameOverride:
-
 ## User of the application
 ## ref: https://github.com/bitnami/bitnami-docker-dokuwiki#environment-variables
 ##
