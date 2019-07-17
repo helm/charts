@@ -26,14 +26,6 @@ image:
   # pullSecrets:
   #   - myRegistryKeySecretName
 
-## String to partially override suitecrm.fullname template (will maintain the release name)
-##
-# nameOverride:
-
-## String to fully override suitecrm.fullname template
-##
-# fullnameOverride:
-
 ## SuiteCRM host to create application URLs
 ## ref: https://github.com/bitnami/bitnami-docker-suitecrm#configuration
 ##
