@@ -2,6 +2,7 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: {{ template "metabase.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "metabase.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
