@@ -46,7 +46,8 @@ The following table lists the configurable parameters of the MySQL chart and the
 | `mysqlDatabase`                              | Name of the new Database to create                | `nil`                                  |
 | `configFiles.master.cnf`                     | Master configuration file                         | See `values.yaml`                      |
 | `configFiles.slave.cnf`                      | Slave configuration file                          | See `values.yaml`                      |
-|  `schedulerName`                             | Name of the k8s scheduler (other than default)    | `nil`                                  |
+| `podAnnotations`                             | Pod annotations                                   | `nil`                                  |
+| `schedulerName`                              | Name of the k8s scheduler (other than default)    | `nil`                                  |
 | `persistence.enabled`                        | Create a volume to store data                     | true                                   |
 | `persistence.size`                           | Size of persistent volume claim                   | 10Gi                                   |
 | `persistence.storageClass`                   | Type of persistent volume claim                   | `nil`                                  |
