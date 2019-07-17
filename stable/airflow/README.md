@@ -406,9 +406,9 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `serviceAccount.create`                  | create a service account                                | `true`                    |
 | `serviceAccount.name`                    | the service account name                                | ``                        |
 | `postgresql.enabled`                     | create a postgres server                                | `true`                    |
-| `postgresql.existingSecret`              | The name of an existing secret with a key `postgresql-password` to use as the password  | `nil` |
+| `postgresql.existingSecret`              | The name of an existing secret with a key `postgres-password` to use as the password  | `nil` |
 | `postgresql.uri`                         | full URL to custom postgres setup                       | (undefined)               |
-| `postgresql.portgresHost`                | PostgreSQL Hostname                                     | (undefined)               |
+| `postgresql.postgresHost`                | PostgreSQL Hostname                                     | (undefined)               |
 | `postgresql.postgresUser`                | PostgreSQL User                                         | `postgres`                |
 | `postgresql.postgresPassword`            | PostgreSQL Password                                     | `airflow`                 |
 | `postgresql.postgresDatabase`            | PostgreSQL Database name                                | `airflow`                 |
