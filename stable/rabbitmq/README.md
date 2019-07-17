@@ -55,8 +55,6 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `image.pullPolicy`                   | Image pull policy                                | `IfNotPresent`                                          |
 | `image.pullSecrets`                  | Specify docker-registry secret names as an array | `nil`                                                   |
 | `image.debug`                        | Specify if debug values should be set            | `false`                                                 |
-| `nameOverride`                       | String to partially override rabbitmq.fullname template with a string (will prepend the release name) | `nil` |
-| `fullnameOverride`                   | String to fully override rabbitmq.fullname template with a string                                     | `nil` |
 | `rbacEnabled`                        | Specify if rbac is enabled in your cluster       | `true`                                                  |
 | `podManagementPolicy`                | Pod management policy                            | `OrderedReady`                                          |
 | `rabbitmq.username`                  | RabbitMQ application username                    | `user`                                                  |
