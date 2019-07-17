@@ -26,14 +26,6 @@ image:
   # pullSecrets:
   #   - myRegistryKeySecretName
 
-## String to partially override ghost.fullname template (will maintain the release name)
-##
-# nameOverride:
-
-## String to fully override ghost.fullname template
-##
-# fullnameOverride:
-
 ## Init containers parameters:
 ## volumePermissions: Change the owner of the persist volume mountpoint to RunAsUser:fsGroup
 ##
