@@ -56,8 +56,6 @@ The following table lists the configurable parameters of the OrangeHRM chart and
 | `image.tag`                          | OrangeHRM Image tag                      | `{TAG_NAME}`                                            |
 | `image.pullPolicy`                   | Image pull policy                        | `IfNotPresent`                                          |
 | `image.pullSecrets`                  | Specify docker-registry secret names as an array               | `[]` (does not add image pull secrets to deployed pods) |
-| `nameOverride`                       | String to partially override orangehrm.fullname template with a string (will prepend the release name) | `nil` |
-| `fullnameOverride`                   | String to fully override orangehrm.fullname template with a string                                     | `nil` |
 | `orangehrmUsername`                  | User of the application                  | `user`                                                  |
 | `orangehrmPassword`                  | Application password                     | _random 10 character long alphanumeric string_          |
 | `smtpHost`                           | SMTP host                                | `nil`                                                   |
