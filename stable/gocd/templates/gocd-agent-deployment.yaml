@@ -92,9 +92,9 @@ spec:
             - name: AGENT_AUTO_REGISTER_HOSTNAME
               value: {{ .Values.agent.env.agentAutoRegisterHostname }}
             {{- end }}
-            {{- if .Values.agent.env.goAgentSystemProperties }}
-            - name: GO_AGENT_SYSTEM_PROPERTIES
-              value: {{ .Values.agent.env.goAgentSystemProperties }}
+            {{- if .Values.agent.env.goAgentJvmOpts }}
+            - name: GOCD_AGENT_JVM_OPTS
+              value: {{ .Values.agent.env.goAgentJvmOpts }}
             {{- end }}
             {{- if .Values.agent.env.goAgentBootstrapperJvmArgs }}
             - name: AGENT_BOOTSTRAPPER_JVM_ARGS

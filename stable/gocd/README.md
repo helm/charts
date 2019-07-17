@@ -83,8 +83,8 @@ The following tables list the configurable parameters of the GoCD chart and thei
 | `server.initContainers`                    | GoCD server init containers                                                                                   | `[]`                |
 | `server.restartPolicy`                     | GoCD server restart policy                                                                                    | `Always`            |
 | `server.nodeSelector`                      | GoCD server nodeSelector for pod labels                                                                       | `{}`                |
-| `server.affinity`                         | GoCD server affinity                                                                                           | `{}`                |
-| `server.env.goServerSystemProperties`      | GoCD Server system properties                                                                                 | `nil`               |
+| `server.affinity`                          | GoCD server affinity                                                                                          | `{}`                |
+| `server.env.goServerJvmOpts`               | GoCD Server JVM arguments                                                                                     | `nil`               |
 | `server.env.extraEnvVars`                  | GoCD Server extra Environment variables                                                                       | `nil`               |
 | `server.service.type`                      | Type of GoCD server Kubernetes service                                                                        | `NodePort`          |
 | `server.service.loadBalancerSourceRanges`  | GoCD server service Load Balancer source IP ranges to whitelist                                               | `nil`               |
@@ -185,6 +185,7 @@ $ kubectl create secret generic gocd-server-ssh \
 | `agent.env.agentAutoRegisterHostname`     | GoCD Agent hostname                                                                                                                                                              | `nil`                        |
 | `agent.env.goAgentBootstrapperArgs`       | GoCD Agent Bootstrapper Args. It can be used to [Configure end-to-end transport security](https://docs.gocd.org/current/installation/ssl_tls/end_to_end_transport_security.html) | `nil`                        |
 | `agent.env.goAgentBootstrapperJvmArgs`    | GoCD Agent Bootstrapper JVM Args.                                                                                                                                                | `nil`                        |
+| `agent.env.goAgentJvmOpts`                | GoCD Agent JVM arguments                                                                                     | `nil`               |
 | `agent.env.extraEnvVars`                  | GoCD Agent extra Environment variables                                                                       | `nil`               |
 | `agent.privileged`                        | Run container in privileged mode (needed for DinD, Docker-in-Docker agents)                                                                                                      | `false`                      |
 | `agent.healthCheck.enabled`               | Enable use of GoCD agent health checks.                                                                                                                                          | `false`                      |

@@ -96,9 +96,9 @@ server:
     # server.healthCheck.failureThreshold is the number of unsuccessful attempts made to the GoCD server health check endpoint before the container is restarted (for liveness) or marked as unready (for readiness)
     failureThreshold: 10
   env:
-    # server.env.goServerSystemProperties is a list of Java system properties, which needs to be provided to the GoCD Server, typically prefixed with -D unless otherwise stated.
+    # server.env.goServerJvmOpts is a list of JVM options, which needs to be provided to the GoCD Server, typically prefixed with -D unless otherwise stated.
     # Example: "-Xmx4096mb -Dfoo=bar"
-    goServerSystemProperties:
+    goServerJvmOpts:
     #  server.env.extraEnvVars is the list of environment variables passed to GoCD Server
     extraEnvVars:
       - name: GOCD_PLUGIN_INSTALL_kubernetes-elastic-agents
@@ -253,8 +253,8 @@ agent:
     agentAutoRegisterEnvironments:
     # agent.env.agentAutoRegisterHostname is the GoCD Agent auto-register hostname
     agentAutoRegisterHostname:
-    # agent.env.goAgentSystemProperties is the GoCD Agent system properties
-    goAgentSystemProperties:
+    # agent.env.goAgentJvmOpts is the GoCD Agent JVM options
+    goAgentJvmOpts:
     # agent.env.goAgentBootstrapperArgs is the GoCD Agent bootstrapper args
     goAgentBootstrapperArgs:
     # agent.env.goAgentBootstrapperJvmArgs is the GoCD Agent bootstrapper JVM args

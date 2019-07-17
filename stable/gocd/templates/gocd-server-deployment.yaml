@@ -68,9 +68,9 @@ spec:
           {{- end }}
           imagePullPolicy: {{ .Values.server.image.pullPolicy }}
           env:
-            {{- if .Values.server.env.goServerSystemProperties }}
-            - name: GO_SERVER_SYSTEM_PROPERTIES
-              value: {{ .Values.server.env.goServerSystemProperties }}
+            {{- if .Values.server.env.goServerJvmOpts }}
+            - name: GOCD_SERVER_JVM_OPTS
+              value: {{ .Values.server.env.goServerJvmOpts }}
             {{- end }}
             {{- if .Values.server.env.extraEnvVars }}
 {{ toYaml .Values.server.env.extraEnvVars | indent 12 }}
