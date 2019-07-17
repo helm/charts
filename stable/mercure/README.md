@@ -68,7 +68,7 @@ The following table lists the configurable parameters of the Moodle chart and th
 | `service.port`            | Service port                                                                                        | `80`                |   |   |
 | `ingress.enabled`         | Enables Ingress                                                                                     | `false`             |   |   |
 | `ingress.annotations`     | Ingress annotations                                                                                 | `{}`                |   |   |
-| `ingress.path`            | Ingress path                                                                                        | `/`                 |   |   |
+| `ingress.paths`           | Ingress paths for all hostnames                                                                     | `["/"]`             |   |   |
 | `ingress.hosts`           | Ingress accepted hostnames                                                                          | `["mercure.local"]` |   |   |
 | `ingress.tls`             | Ingress TLS configuration                                                                           | `[]`                |   |   |
 | `resources`               | controller pod resource requests & limits                                                           | `{}`                |   |   |
