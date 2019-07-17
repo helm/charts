@@ -26,14 +26,6 @@ image:
   # pullSecrets:
   #   - myRegistryKeySecretName
 
-## String to partially override phabricator.fullname template (will maintain the release name)
-##
-# nameOverride:
-
-## String to fully override phabricator.fullname template
-##
-# fullnameOverride:
-
 ## Phabricator host to create application URLs
 ## ref: https://github.com/bitnami/bitnami-docker-phabricator#configuration
 ##
