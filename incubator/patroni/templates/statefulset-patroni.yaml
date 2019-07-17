@@ -155,8 +155,8 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
-    {{- with .Values.schedulerName }}
-      schedulerName: {{ . }}
+    {{- if .Values.schedulerName }}
+      schedulerName: {{ .Values.schedulerName }}
     {{- end }}
     {{- if .Values.affinity }}
       affinity:
