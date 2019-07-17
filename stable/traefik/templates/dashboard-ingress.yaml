@@ -27,6 +27,9 @@ spec:
       - backend:
           serviceName: {{ template "traefik.fullname" . }}-dashboard
           servicePort: dashboard-http
+      {{- if .Values.dashboard.ingress.path }}
+        path: {{ .Values.dashboard.ingress.path | quote }}
+      {{- end }}
   {{- if .Values.dashboard.ingress.tls }}
   tls:
 {{ toYaml .Values.dashboard.ingress.tls | indent 4 }}
