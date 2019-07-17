@@ -1,0 +1,26 @@
+{{- if .Values.falco.webserver.enabled }}
+apiVersion: auditregistration.k8s.io/v1alpha1
+kind: AuditSink
+metadata:
+  name: {{ template "falco.fullname" .}}-audit-sink
+spec:
+  policy:
+    level: RequestResponse
+    stages:
+      - ResponseComplete
+      - ResponseStarted
+  webhook:
+    throttle:
+      qps: 10
+      burst: 15
+    clientConfig:
+      {{- if .Values.falco.webserver.clusterIP }}
+      url: http://{{ .Values.falco.webserver.clusterIP }}:{{ .Values.falco.webserver.listenPort }}{{ .Values.falco.webserver.k8sAuditEndpoint }}
+      {{- else }}
+      service:
+        namespace: "{{ .Release.Namespace }}"
+        name: {{ template "falco.fullname" .}}-audit-service
+        path: {{ .Values.falco.webserver.k8sAuditEndpoint }}
+        port: {{ .Values.falco.webserver.listenPort }}
+      {{- end }}
+{{- end }}
