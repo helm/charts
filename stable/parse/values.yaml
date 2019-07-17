@@ -7,14 +7,6 @@
 #   imagePullSecrets:
 #     - myRegistryKeySecretName
 
-## String to partially override parse.fullname template (will maintain the release name)
-##
-# nameOverride:
-
-## String to fully override parse.fullname template
-##
-# fullnameOverride:
-
 ## Kubernetes serviceType for Parse Deployment
 ## ref: http://kubernetes.io/docs/user-guide/services/#publishing-services---service-types
 ##
