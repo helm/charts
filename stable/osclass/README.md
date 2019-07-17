@@ -56,8 +56,6 @@ The following table lists the configurable parameters of the Osclass chart and t
 | `image.tag`                        | Osclass Image tag                        | `{TAG_NAME}`                                            |
 | `image.pullPolicy`                 | Image pull policy                        | `IfNotPresent`                                          |
 | `image.pullSecrets`                | Specify docker-registry secret names as an array               | `[]` (does not add image pull secrets to deployed pods) |
-| `nameOverride`                     | String to partially override osclass.fullname template with a string (will prepend the release name) | `nil` |
-| `fullnameOverride`                 | String to fully override osclass.fullname template with a string                                     | `nil` |
 | `osclassHost`                      | Osclass host to create application URLs  | `nil`                                                   |
 | `osclassLoadBalancerIP`            | `loadBalancerIP` for the Osclass Service | `nil`                                                   |
 | `osclassUsername`                  | User of the application                  | `user`                                                  |
