@@ -82,7 +82,7 @@ rules:
   verbs:
   - get
 ---
-{{- if not .Values.clusterchecksDeployment.rbac.dedicated -}}
+{{- if not .Values.clusterchecksDeployment.rbac.dedicated }}
 apiVersion: {{ template "rbac.apiVersion" . }}
 kind: ClusterRoleBinding
 metadata:
@@ -100,7 +100,7 @@ subjects:
   - kind: ServiceAccount
     name: {{ template "datadog.fullname" . }}
     namespace: {{ .Release.Namespace }}
-{{- end -}}
+{{- end }}
 ---
 apiVersion: v1
 kind: ServiceAccount
