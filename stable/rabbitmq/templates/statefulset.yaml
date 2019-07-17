@@ -133,7 +133,7 @@ spec:
             command:
               - sh
               - -c
-              - rabbitmq-api-check "http://{{ .Values.rabbitmq.username }}:$RABBITMQ_PASSWORD@127.0.0.1:{{ .Values.service.managerPort }}/api/healthchecks/node" '{"status":"ok"}'
+              - rabbitmq-api-check "http://{{ .Values.rabbitmq.username }}:$RABBITMQ_PASSWORD@127.0.0.1:{{ .Values.service.managerPort }}/api/healthchecks/node" '{"status":"ok"}' 
           initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
           timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
           periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
