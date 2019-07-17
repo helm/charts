@@ -26,14 +26,6 @@ image:
   # pullSecrets:
   #   - myRegistryKeySecretName
 
-## String to partially override wordpress.fullname template (will maintain the release name)
-##
-# nameOverride:
-
-## String to fully override wordpress.fullname template
-##
-# fullnameOverride:
-
 ## User of the application
 ## ref: https://github.com/bitnami/bitnami-docker-wordpress#environment-variables
 ##
