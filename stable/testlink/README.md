@@ -56,8 +56,6 @@ The following table lists the configurable parameters of the TestLink chart and 
 | `image.tag`                         | TestLink image tag                      | `{TAG_NAME}`                                            |
 | `image.pullPolicy`                  | Image pull policy                       | `IfNotPresent`                                          |
 | `image.pullSecrets`                 | Specify docker-registry secret names as an array  | `[]` (does not add image pull secrets to deployed pods) |
-| `nameOverride`                      | String to partially override testlink.fullname template with a string (will prepend the release name) | `nil` |
-| `fullnameOverride`                  | String to fully override testlink.fullname template with a string                                     | `nil` |
 | `testlinkUsername`                  | Admin username                          | `user`                                                  |
 | `testlinkPassword`                  | Admin user password                     | _random 10 character long alphanumeric string_          |
 | `testlinkEmail`                     | Admin user email                        | `user@example.com`                                      |
