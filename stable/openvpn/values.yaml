@@ -94,5 +94,7 @@ openvpn:
   # Enable istio support for openvpn connections
   istio:
     enabled: false
+    proxy:
+      port: 15001
 
 nodeSelector: {}

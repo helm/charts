@@ -105,6 +105,7 @@ Parameter | Description | Default
 `openvpn.taKey`                | Use/generate a ta.key file for hardening security                    | `false`
 `openvpn.cipher`               | Override the default cipher                                          | `nil` (OpenVPN default)
 `openvpn.istio.enabled`        | Enables istio support for openvpn clients                            | `false`
+`openvpn.istio.proxy.port`     | Istio proxy port                                                     | `15001`
 `nodeSelector`                 | Node labels for pod assignment                                       | `{}`
 
 This chart has been engineered to use kube-dns and route all network traffic to kubernetes pods and services,
