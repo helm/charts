@@ -81,6 +81,7 @@ spec:
          - |
             mkdir -p /opt/bitnami/rabbitmq/.rabbitmq/
             mkdir -p /opt/bitnami/rabbitmq/etc/rabbitmq/
+            touch /opt/bitnami/rabbitmq/var/lib/rabbitmq/.start
             #persist the erlang cookie in both places for server and cli tools
             echo $RABBITMQ_ERL_COOKIE > /opt/bitnami/rabbitmq/var/lib/rabbitmq/.erlang.cookie
             cp /opt/bitnami/rabbitmq/var/lib/rabbitmq/.erlang.cookie /opt/bitnami/rabbitmq/.rabbitmq/

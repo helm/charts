@@ -10,15 +10,15 @@ metadata:
 data:
   rabbitmq-health-check: |-
     #!/bin/sh
-    START_FLAG=/opt/bitnami/rabbitmq/var/lib/rabbitmq/.started
-    if [ ! -f ${START_FLAG} ]; then
+    START_FLAG=/opt/bitnami/rabbitmq/var/lib/rabbitmq/.start
+    if [ -f ${START_FLAG} ]; then
         rabbitmqctl node_health_check
         RESULT=$?
         if [ $RESULT -ne 0 ]; then
           rabbitmqctl status
           exit $?
         fi
-        touch ${START_FLAG}
+        rm -f ${START_FLAG}
         exit ${RESULT}
     fi
     rabbitmq-api-check $1 $2
