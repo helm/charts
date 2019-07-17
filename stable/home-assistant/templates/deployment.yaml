@@ -20,6 +20,12 @@ spec:
       labels:
         app.kubernetes.io/name: {{ include "home-assistant.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
+      {{- if .Values.podAnnotations }}
+      annotations:
+        {{- range $key, $value := .Values.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
+      {{- end }}
     spec:
       {{- with .Values.image.pullSecrets }}
       imagePullSecrets:
