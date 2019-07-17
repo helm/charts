@@ -154,7 +154,7 @@ spec:
       - name: moodle-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ .Values.persistence.existingClaim | default (include "moodle.fullname" . ) }}
+          claimName: {{ .Values.persistence.existingClaim | default (include "moodle.moodle.fullname" . ) }}
       {{- else }}
         emptyDir: {}
       {{- end }}
