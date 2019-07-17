@@ -26,14 +26,6 @@ image:
   # pullSecrets:
   #   - myRegistryKeySecretName
 
-## String to partially override owncloud.fullname template (will maintain the release name)
-##
-# nameOverride:
-
-## String to fully override owncloud.fullname template
-##
-# fullnameOverride:
-
 ## For Kubernetes v1.4, v1.5 and v1.6, use 'extensions/v1beta1'
 ## For Kubernetes v1.7, use 'networking.k8s.io/v1'
 networkPolicyApiVersion: extensions/v1beta1
