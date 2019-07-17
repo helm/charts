@@ -26,13 +26,6 @@ image:
   # pullSecrets:
   #   - myRegistryKeySecretName
 
-## String to partially override testlink.fullname template (will maintain the release name)
-##
-# nameOverride:
-
-## String to fully override testlink.fullname template
-##
-# fullnameOverride:
 
 ## List of nodeSelectors to limit where testlink can run
 ## i.e
