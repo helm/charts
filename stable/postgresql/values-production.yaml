@@ -32,14 +32,6 @@ image:
   ## ref:  https://github.com/bitnami/minideb-extras/#turn-on-bash-debugging
   debug: false
 
-## String to partially override postgresql.fullname template (will maintain the release name)
-##
-# nameOverride:
-
-## String to fully override postgresql.fullname template
-##
-# fullnameOverride:
-
 ##
 ## Init containers parameters:
 ## volumePermissions: Change the owner of the persist volume mountpoint to RunAsUser:fsGroup
