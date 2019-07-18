@@ -57,6 +57,8 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `image.pullPolicy`                        | MariaDB image pull policy                           | `IfNotPresent`                                                    |
 | `image.pullSecrets`                       | Specify docker-registry secret names as an array    | `[]` (does not add image pull secrets to deployed pods)           |
 | `image.debug`                             | Specify if debug logs should be enabled             | `false`                                                           |
+| `nameOverride`                            | String to partially override mariadb.fullname template with a string (will prepend the release name) | `nil`            |
+| `fullnameOverride`                        | String to fully override mariadb.fullname template with a string                                     | `nil`            |
 | `service.type`                            | Kubernetes service type                             | `ClusterIP`                                                       |
 | `service.clusterIp`                       | Specific cluster IP when service type is cluster IP. Use None for headless service | `nil`                              |
 | `service.port`                            | MySQL service port                                  | `3306`                                                            |
