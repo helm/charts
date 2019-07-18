@@ -29,6 +29,14 @@ image:
   # pullSecrets:
   #   - myRegistryKeySecretName
 
+## String to partially override redis.fullname template (will maintain the release name)
+##
+# nameOverride:
+
+## String to fully override redis.fullname template
+##
+# fullnameOverride:
+
 ## Cluster settings
 cluster:
   enabled: true
