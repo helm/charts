@@ -11,7 +11,7 @@ metadata:
     helm.sh/chart: {{ include "couchbase-operator.chart" . }}
 spec:
   selector:
-    app: {{ template "admission-controller.name" . }}
+    app.kubernetes.io/name : {{ template "admission-controller.name" . }}
   ports:
   - protocol: TCP
     port: {{ .Values.admissionService.port }}

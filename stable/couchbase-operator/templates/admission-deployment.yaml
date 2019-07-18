@@ -85,11 +85,11 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ template "admission-controller.name" . }}
+      app.kubernetes.io/name: {{ template "admission-controller.name" . }}
   template:
     metadata:
       labels:
-        app: {{ template "admission-controller.name" . }}
+        app.kubernetes.io/name: {{ template "admission-controller.name" . }}
       annotations:
         checksum/config: {{ printf "%s%s" $tls.clientCert $tls.clientKey | sha256sum }}
     spec:

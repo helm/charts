@@ -15,11 +15,11 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ template "couchbase-operator.name" . }}
+      app.kubernetes.io/name: {{ template "couchbase-operator.name" . }}
   template:
     metadata:
       labels:
-        app: {{ template "couchbase-operator.name" . }}
+        app.kubernetes.io/name: {{ template "couchbase-operator.name" . }}
     spec:
       serviceAccountName: {{ template "couchbase-operator.serviceAccountName" . }}
       imagePullSecrets:
