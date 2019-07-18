@@ -10,7 +10,7 @@
         {{- end }}
 
         {{- if .Values.master.imageTag }}
-           {{ fail "`master.imageTag` does no longer exist. It has been renamed to `master.tag`" }}
+           {{ fail "`master.imageTag` will be obsoleted soon. It has been renamed to `master.tag`" }}
         {{- end }}
 
         {{- if .Values.Master.ImageTag }}
@@ -324,7 +324,7 @@
         {{- end }}
 
         {{- if .Values.agent.imageTag }}
-           {{ fail "`agent.imageTag` does no longer exist. It has been renamed to `agent.tag`" }}
+           {{ fail "`agent.imageTag` will be obsoleted soon. It has been renamed to `agent.tag`" }}
         {{- end }}
 
         {{- if .Values.Agent.ImageTag }}
