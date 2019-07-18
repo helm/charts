@@ -174,13 +174,6 @@ falco:
   # Falco contains an embedded webserver that can be used to accept K8s
   # Audit Events. These config options control the behavior of that
   # webserver. (By default, the webserver is disabled).
-  #
-  # The ssl_certificate is a combination SSL Certificate and corresponding
-  # key contained in a single file. You can generate a key/cert as follows:
-  #
-  # $ openssl req -newkey rsa:2048 -nodes -keyout key.pem -x509 -days 365 -out certificate.pem
-  # $ cat certificate.pem key.pem > falco.pem
-  # $ sudo cp falco.pem /etc/falco/falco.pem
   webserver:
     enabled: false
     listenPort: 8765
