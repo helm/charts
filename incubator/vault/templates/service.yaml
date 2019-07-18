@@ -30,6 +30,12 @@ spec:
     protocol: TCP
     targetPort: {{ .Values.service.port }}
     name: api
+  {{- if .Values.vaultExporter.enabled }}
+  - port: 9140
+    protocol: TCP
+    targetPort: 9140
+    name: metrics
+  {{- end }}
   {{- if .Values.service.clusterExternalPort }}
   - port: {{ .Values.service.clusterExternalPort }}
     protocol: TCP
