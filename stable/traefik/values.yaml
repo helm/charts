@@ -1,4 +1,4 @@
-## Default values for Traefik
+﻿## Default values for Traefik
 image: traefik
 imageTag: 1.7.14
 
@@ -344,6 +344,7 @@ acme:
     # existingClaim:
 dashboard:
   enabled: false
+  create_ingress: true
   domain: traefik.example.com
   # serviceType: ClusterIP
   service: {}
