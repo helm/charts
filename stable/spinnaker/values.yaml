@@ -233,3 +233,7 @@ securityContext:
   # Specifies permissions to write for user/group
   userRights: 1000
   groupRights: 1000
+
+volumeClaim:
+  storageClassName: 
+  storage: 10Gi
