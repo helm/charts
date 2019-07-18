@@ -26,6 +26,14 @@ image:
   # pullSecrets:
   #   - myRegistryKeySecretName
 
+## String to partially override redmine.fullname template (will maintain the release name)
+##
+# nameOverride:
+
+## String to fully override redmine.fullname template
+##
+# fullnameOverride:
+
 ## User of the application
 ## ref: https://github.com/bitnami/bitnami-docker-redmine/#environment-variables
 ##
