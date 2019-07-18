@@ -68,6 +68,7 @@ The following table lists the configurable parameters and their default values.
 | `serviceMonitor.timeout`       | Timeout after which the scrape is ended                |                            |
 | `script.configmap`     | Let you run a custom lua script from a configmap. The corresponding environment variable `REDIS_EXPORTER_SCRIPT` will be set automatically ||
 | `script.keyname`       | Name of the key inside configmap which contains your script ||
+| `tolerations`           | Ensure that pods are scheduled to correct node based on taints | `[]` |
 
 For more information please refer to the [redis_exporter](https://github.com/oliver006/redis_exporter) documentation.
 
