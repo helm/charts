@@ -56,6 +56,8 @@ The following table lists the configurable parameters of the Drupal chart and th
 | `image.tag`                       | Drupal Image tag                           | `{TAG_NAME}`                                              |
 | `image.pullPolicy`                | Drupal image pull policy                   | `IfNotPresent`                                            |
 | `image.pullSecrets`               | Specify docker-registry secret names as an array | `[]` (does not add image pull secrets to deployed pods)  |
+| `nameOverride`                    | String to partially override drupal.fullname template with a string (will prepend the release name) | `nil` |
+| `fullnameOverride`                | String to fully override drupal.fullname template with a string                                     | `nil` |
 | `drupalProfile`                   | Drupal installation profile                | `standard`                                                |
 | `drupalUsername`                  | User of the application                    | `user`                                                    |
 | `drupalPassword`                  | Application password                       | _random 10 character long alphanumeric string_            |
