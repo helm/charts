@@ -26,6 +26,14 @@ image:
   # pullSecrets:
   #   - myRegistryKeySecretName
 
+## String to partially override opencart.fullname template (will maintain the release name)
+##
+# nameOverride:
+
+## String to fully override opencart.fullname template
+##
+# fullnameOverride:
+
 ## OpenCart host to create application URLs
 ## ref: https://github.com/bitnami/bitnami-docker-opencart#configuration
 ##
