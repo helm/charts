@@ -34,6 +34,14 @@ image:
   ## ref:  https://github.com/bitnami/minideb-extras-base
   debug: false
 
+## String to partially override mongodb.fullname template (will maintain the release name)
+##
+# nameOverride:
+
+## String to fully override mongodb.fullname template
+##
+# fullnameOverride:
+
 ## Enable authentication
 ## ref: https://docs.mongodb.com/manual/tutorial/enable-authentication/
 #
