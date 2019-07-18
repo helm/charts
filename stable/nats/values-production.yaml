@@ -26,6 +26,14 @@ image:
   # pullSecrets:
   #   - name: myRegistryKeySecretName
 
+## String to partially override nats.fullname template (will maintain the release name)
+##
+# nameOverride:
+
+## String to fully override nats.fullname template
+##
+# fullnameOverride:
+
 ## NATS replicas
 replicaCount: 3
 
