@@ -1,4 +1,4 @@
-# Traefik
+﻿# Traefik
 
 [Traefik](https://traefik.io/) is a modern HTTP reverse proxy and load balancer made to deploy
 microservices with ease.
@@ -175,6 +175,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `kvprovider.$name.tls.insecureSkipVerify`    | Optional Wether to skip verify                                                                                         | None                                              |
 | `kvprovider.etcd.useAPIV3`             | Use V3 or use V2 API of ETCD                                                                                                 | `false`                                           |
 | `dashboard.enabled`                    | Whether to enable the Traefik dashboard                                                                                      | `false`                                           |
+| `dashboard.create_ingress`             | Whether to create an ingress rule for the dashboard                                                                          | `true`                                            |
 | `dashboard.domain`                     | Domain for the Traefik dashboard                                                                                             | `traefik.example.com`                             |
 | `dashboard.serviceType`                | ServiceType for the Traefik dashboard Service                                                                                | `ClusterIP`                                       |
 | `dashboard.service.annotations`        | Annotations for the Traefik dashboard Service definition, specified as a map                                                 | None                                              |
