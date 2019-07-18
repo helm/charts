@@ -206,3 +206,33 @@ $ helm install --name falco -f custom-rules.yaml stable/falco
 ```
 
 And that's all, in a few seconds you will see your pods up and running with MongoDB, Redis and Traefik rules enabled.
+
+
+## Enabling K8s audit event support
+
+Since its v0.13.0 version, Falco supports a second source of events in addition
+to system call events: K8s Audit Events. An improved implementation of k8s audit
+events was introduced in k8s v1.11 and provides a log of requests and responses
+to kube-apiserver. Since almost all cluster management tasks are done through
+the API server, the audit log is a way to track the changes made to your cluster.
+Examples of this include:
+
+* Creating/destroying pods, services, deployments, daemonsets, etc.
+* Creating/updating/removing config maps or secrets
+* Attempts to subscribe to changes to any endpoint
+
+So that we can have Falco rules that looks for suspicious activity at cluster
+level, by example:
+
+* Creating pods that are privileged, mount sensitive host paths, or use host networking.
+* Granting overly broad permissions such as cluster-admin to users.
+* Creating configmaps with sensitive information.
+
+Once you’ve [configured your cluster with audit logging](https://github.com/falcosecurity/falco/tree/dev/examples/k8s_audit_config)
+and selected which events you’d like to pass along to Falco, you can write
+Falco rules that read these events and send notifications for suspicious or
+other notable activity.
+
+You can enable this feature using the Helm chart with the following command:
+
+`helm install --name falco --set falco.webserver.enabled=true  --set falco.webserver.clusterIP=10.96.0.40 stable/falco`
