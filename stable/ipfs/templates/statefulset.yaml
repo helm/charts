@@ -27,6 +27,10 @@ spec:
       - name: {{ .Chart.Name }}
         image: {{ .Values.image }}
         ports:
+{{- if .Values.swarm.enabled }}
+        - containerPort: 4001
+          name: swarm
+{{- end }}
         - containerPort: 5001
           name: api
         - containerPort: 8080
