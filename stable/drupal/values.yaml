@@ -26,6 +26,14 @@ image:
   # pullSecrets:
   #   - myRegistryKeySecretName
 
+## String to partially override drupal.fullname template (will maintain the release name)
+##
+# nameOverride:
+
+## String to fully override drupal.fullname template
+##
+# fullnameOverride:
+
 ## Installation Profile
 ## ref: https://github.com/bitnami/bitnami-docker-drupal#configuration
 ##
