@@ -180,6 +180,7 @@ persistence:
   enabled: false
   accessMode: ReadWriteOnce
   size: 8Gi
+  hostPath:
   labels: {}
   #   name: value
   ## A manually managed Persistent Volume and Claim

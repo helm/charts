@@ -74,6 +74,7 @@ their default values. See values.yaml for all available options.
 | `persistence.accessMode`                | Access mode to use for PVC                                         | `ReadWriteOnce`                      |
 | `persistence.enabled`                   | Whether to use a PVC for persistent storage                        | `false`                              |
 | `persistence.size`                      | Amount of space to claim for PVC                                   | `8Gi`                                |
+| `persistence.hostPath`                  | Host path for persistence storage                                  | ``                                   |
 | `persistence.labels`                    | Additional labels for PVC                                          | `{}`                                 |
 | `persistence.storageClass`              | Storage Class to use for PVC                                       | `-`                                  |
 | `persistence.volumeName`                | Volume to use for PVC                                              | ``                                   |

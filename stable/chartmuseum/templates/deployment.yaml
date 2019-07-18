@@ -145,8 +145,13 @@ spec:
       volumes:
       - name: storage-volume
       {{- if .Values.persistence.enabled }}
+      {{- if .Values.persistence.hostPath }}
+        hostPath:
+          path: {{ .Values.persistence.hostPath }}
+      {{- else }}
         persistentVolumeClaim:
           claimName: {{ .Values.persistence.existingClaim | default (include "chartmuseum.fullname" .) }}
+      {{- end }}
       {{- else }}
         emptyDir: {}
       {{- end -}}
