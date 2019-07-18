@@ -235,5 +235,5 @@ securityContext:
   groupRights: 1000
 
 volumeClaim:
-  storageClassName: 
+  storageClassName:
   storage: 10Gi
