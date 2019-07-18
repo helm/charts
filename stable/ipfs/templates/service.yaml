@@ -33,6 +33,10 @@ metadata:
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "5001"
+    prometheus.io/path: /debug/metrics/prometheus
 spec:
   type: {{ .Values.swarm.type }}
   {{- if .Values.swarm.loadBalancerIP }}
