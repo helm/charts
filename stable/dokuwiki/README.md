@@ -54,6 +54,8 @@ The following table lists the configurable parameters of the DokuWiki chart and 
 | `image.tag`                          | DokuWiki image tag                                         | `{TAG_NAME}`                                  |
 | `image.pullPolicy`                   | Image pull policy                                          | `Always`                                      |
 | `image.pullSecrets`                  | Specify docker-registry secret names as an array           | `[]` (does not add image pull secrets to deployed pods) |
+| `nameOverride`                       | String to partially override dokuwiki.fullname template with a string (will prepend the release name) | `nil` |
+| `fullnameOverride`                   | String to fully override dokuwiki.fullname template with a string                                     | `nil` |
 | `dokuwikiUsername`                   | User of the application                                    | `user`                                        |
 | `dokuwikiFullName`                   | User's full name                                           | `User Name`                                   |
 | `dokuwikiPassword`                   | Application password                                       | _random 10 character alphanumeric string_     |
