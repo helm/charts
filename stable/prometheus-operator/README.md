@@ -93,11 +93,16 @@ The `crd-install` hook is required to deploy the prometheus operator CRDs before
 1. Install prometheus-operator by itself, disabling everything but the prometheus-operator component, and also setting `prometheusOperator.serviceMonitor.selfMonitor=false`
 2. Install all the other components, and configure `prometheus.additionalServiceMonitors` to scrape the prometheus-operator service.
 
+### Upgrading from 5.x.x to 6.x.x
+Due to a change in deployment labels of kube-state-metrics, the upgrade requires `helm upgrade --force` in order to re-create the deployment. If this is not done an error will occur indicating that the deployment cannot be modified:
 
-### Upgrade
-When executing the `helm upgrade` to avoid the error below is need add the argument `--force`.
-> invalid: spec.selector: Invalid value: v1.LabelSelector{MatchLabels:map[string]string{"app.kubernetes.io/name":"kube-state-metrics"}, MatchExpressions:[]v1.LabelSelectorRequirement(nil)}: field is immutable
+```
+invalid: spec.selector: Invalid value: v1.LabelSelector{MatchLabels:map[string]string{"app.kubernetes.io/name":"kube-state-metrics"}, MatchExpressions:[]v1.LabelSelectorRequirement(nil)}: field is immutable
+```
+If this error has already been encountered, a `helm history` command can be used to determine which release has worked, then `helm rollback` to the release, then `helm upgrade --force` to this new one
 
+## prometheus.io/scrape
+The prometheus operator does not support annotation-based discovery of services, using the `serviceMonitor` CRD in its place as it provides far more configuration options. For information on how to use servicemonitors, please see the documentation on the coreos/prometheus-operator documentation here: [Running Exporters](https://github.com/coreos/prometheus-operator/blob/master/Documentation/user-guides/running-exporters.md)
 
 ## Configuration
 
