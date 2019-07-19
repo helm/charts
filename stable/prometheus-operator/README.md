@@ -333,7 +333,8 @@ For a full list of configurable values please refer to the [Grafana chart](https
 | `grafana.sidecar.dashboards.enabled` | Enable the Grafana sidecar to automatically load dashboards with a label `{{ grafana.sidecar.dashboards.label }}=1` | `true` |
 | `grafana.sidecar.dashboards.label` | If the sidecar is enabled, configmaps with this label will be loaded into Grafana as dashboards | `grafana_dashboard` |
 | `grafana.sidecar.datasources.enabled` | Enable the Grafana sidecar to automatically load dashboards with a label `{{ grafana.sidecar.datasources.label }}=1` | `true` |
-| `grafana.sidecar.datasources.defaultDatasourceEnabled` | Enable Grafana `Prometheus` default datasource` | `true` |
+| `grafana.sidecar.datasources.defaultDatasourceEnabled` | Enable Grafana `Prometheus` default datasource | `true` |
+| `grafana.sidecar.datasources.createPrometheusReplicasDatasources` | Create datasource for each Pod of Prometheus StatefulSet i.e. `Prometheus-0`, `Prometheus-1` | `false` |
 | `grafana.sidecar.datasources.label` | If the sidecar is enabled, configmaps with this label will be loaded into Grafana as datasources configurations | `grafana_datasource` |
 | `grafana.rbac.pspUseAppArmor` | Enforce AppArmor in created PodSecurityPolicy (requires rbac.pspEnabled) | `true` |
 | `grafana.extraConfigmapMounts` | Additional grafana server configMap volume mounts | `[]` |
