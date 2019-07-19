@@ -155,6 +155,15 @@ ingress:
   tls:
     enabled: true
     secretName: nexus-tls
+  # Specify custom rules in addition to or instead of the nexus-proxy rules
+  rules:
+  # - host: http://nexus.127.0.0.1.nip.io
+  #   http:
+  #     paths:
+  #     - backend:
+  #         serviceName: additional-svc
+  #         servicePort: 80
+
 
 tolerations: []
 
@@ -195,8 +204,9 @@ secret:
 service:
   # name: additional-svc
   enabled: false
-  portName: nexus-service
   labels: {}
   annotations: {}
-  targetPort: 80
-  port: 80
+  ports:
+  - name: nexus-service
+    targetPort: 80
+    port: 80
