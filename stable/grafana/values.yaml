@@ -236,7 +236,8 @@ extraVolumeMounts: []
 
 ## Pass the plugins you want installed as a list.
 ##
-plugins: []
+plugins:
+  - jdbranham-diagram-panel
   # - digrich-bubblechart-panel
   # - grafana-clock-panel
 
