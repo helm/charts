@@ -93,6 +93,12 @@ The `crd-install` hook is required to deploy the prometheus operator CRDs before
 1. Install prometheus-operator by itself, disabling everything but the prometheus-operator component, and also setting `prometheusOperator.serviceMonitor.selfMonitor=false`
 2. Install all the other components, and configure `prometheus.additionalServiceMonitors` to scrape the prometheus-operator service.
 
+
+### Upgrade
+When executing the `helm upgrade` to avoid the error below is need add the argument `--force`.
+> invalid: spec.selector: Invalid value: v1.LabelSelector{MatchLabels:map[string]string{"app.kubernetes.io/name":"kube-state-metrics"}, MatchExpressions:[]v1.LabelSelectorRequirement(nil)}: field is immutable
+
+
 ## Configuration
 
 The following tables list the configurable parameters of the prometheus-operator chart and their default values.
