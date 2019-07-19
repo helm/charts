@@ -1,25 +1,42 @@
 rbac:
+  # rbac.create -- Create and use RBAC resources
   create: true
+
+  # rbac.pspEnabled -- Create PodSecurityPolicy (with `rbac.create`, grant roles permissions as well)
   pspEnabled: true
+
+  # rbac.pspUseAppArmor -- Enforce AppArmor in created PodSecurityPolicy (requires `rbac.pspEnabled`)
   pspUseAppArmor: true
+
+  # rbac.namespaced -- Creates Role and Rolebinding instead of the default ClusterRole and ClusteRoleBindings for the grafana instance
   namespaced: false
+
 serviceAccount:
+  # serviceAccount.create -- Create service account
   create: true
+
+  # serviceAccount.name -- (string) Service account name to use, when empty will be set to created account if `serviceAccount.create` is set else to `default`
   name:
+
+  # serviceAccount.nameTest -- (string) Service account name to use for test, when empty will be set to created account if `serviceAccount.create` is set else to `default`
   nameTest:
 
+# replicas -- Number of nodes
 replicas: 1
 
 ## See `kubectl explain deployment.spec.strategy` for more
 ## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
+# deploymentStrategy -- Deployment strategy
 deploymentStrategy:
   type: RollingUpdate
 
+# readinessProbe -- Readiness Probe
 readinessProbe:
   httpGet:
     path: /api/health
     port: 3000
 
+# livenessProbe -- Liveness Probe
 livenessProbe:
   httpGet:
     path: /api/health
@@ -34,8 +51,11 @@ livenessProbe:
 # schedulerName: "default-scheduler"
 
 image:
+  # image.repository -- Image repository
   repository: grafana/grafana
+  # image.tag -- Image tag. (`Must be >= 5.0.0`)
   tag: 6.2.5
+  # image.pullPolicy -- Image pull policy
   pullPolicy: IfNotPresent
 
   ## Optionally specify an array of imagePullSecrets.
@@ -44,9 +64,14 @@ image:
   ##
   # pullSecrets:
   #   - myRegistrKeySecretName
+  # image.pullSecrets -- Image pull secrets
+  pullSecrets: []
 
 testFramework:
+  # testFramework.image -- `test-framework` image repository.
   image: "dduportal/bats"
+
+  # testFramework.tag -- `test-framework` image tag.
   tag: "0.4.0"
   securityContext: {}
 
@@ -55,6 +80,7 @@ securityContext:
   fsGroup: 472
 
 
+# extraConfigmapMounts -- Additional grafana server configMap volume mounts
 extraConfigmapMounts: []
   # - name: certs-configmap
   #   mountPath: /etc/grafana/ssl/
@@ -62,54 +88,77 @@ extraConfigmapMounts: []
   #   readOnly: true
 
 
+# extraEmptyDirMounts -- Additional grafana server emptyDir volume mounts
 extraEmptyDirMounts: []
   # - name: provisioning-notifiers
   #   mountPath: /etc/grafana/provisioning/notifiers
 
 
-## Assign a PriorityClassName to pods if set
-# priorityClassName:
+# priorityClassName -- (string) Name of Priority Class to assign pods
+priorityClassName:
 
 downloadDashboardsImage:
   repository: appropriate/curl
   tag: latest
   pullPolicy: IfNotPresent
 
+# downloadDashboards.env -- Environment variables to be passed to the `download-dashboards` container
 downloadDashboards:
   env: {}
 
-## Pod Annotations
-# podAnnotations: {}
+# podAnnotations -- Pod annotations
+podAnnotations: {}
 
-## Deployment annotations
-# annotations: {}
+# annotations -- Deployment annotations
+annotations: {}
 
 ## Expose the grafana service to be accessed from outside the cluster (LoadBalancer service).
 ## or access it from within the cluster (ClusterIP service). Set the service type and the port to serve it.
 ## ref: http://kubernetes.io/docs/user-guide/services/
 ##
 service:
+  # service.type -- Kubernetes service type
   type: ClusterIP
+
+  # service.port -- Kubernetes port where service is exposed
   port: 80
+
+  # service.targetPort -- internal service is port (4181 To be used with a proxy extraContainer)
   targetPort: 3000
-    # targetPort: 4181 To be used with a proxy extraContainer
+
+  # service.annotations -- Service annotations
   annotations: {}
+
+  # service.labels -- Custom labels
   labels: {}
 
 ingress:
+
+  # ingress.enabled -- Enables Ingress
   enabled: false
+
+  # ingress.annotations -- Ingress annotations
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
+
+  # ingress.labels -- Custom labels
   labels: {}
+
+  # ingress.path -- Ingress accepted path
   path: /
+
+  # ingress.hosts -- Ingress accepted hostnames
   hosts:
     - chart-example.local
+
+  # ingress.tls -- Ingress TLS configuration
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
 
+# resources -- CPU/Memory resource requests/limits
 resources: {}
 #  limits:
 #    cpu: 100m
@@ -118,24 +167,22 @@ resources: {}
 #    cpu: 100m
 #    memory: 128Mi
 
-## Node labels for pod assignment
+# nodeSelector -- Node labels for pod assignment
 ## ref: https://kubernetes.io/docs/user-guide/node-selection/
-#
 nodeSelector: {}
 
-## Tolerations for pod assignment
+# tolerations -- Toleration labels for pod assignment
 ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
-##
 tolerations: []
 
-## Affinity for pod assignment
+# affinity -- Affinity settings for pod assignment
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
-##
 affinity: {}
 
+# extraInitContainers -- Init containers to add to the grafana pod
 extraInitContainers: []
 
-## Enable an Specify container in extraContainers. This is meant to allow adding an authentication proxy to a grafana pod
+# extraContainers -- Sidecar containers to add to the grafana pod. This is meant to allow adding an authentication proxy to a grafana pod
 extraContainers: |
 # - name: proxy
 #   image: quay.io/gambol99/keycloak-proxy:latest
@@ -156,33 +203,50 @@ extraContainers: |
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ##
 persistence:
+  # persistence.enabled -- Use persistent volume to store data
   enabled: false
-  # storageClassName: default
+
+  # persistence.storageClassName -- (string) Type of persistent volume claim
+  storageClassName:
+
+  # persistence.accessModes -- Persistence access modes
   accessModes:
     - ReadWriteOnce
+
+  # persistence.size -- Size of persistent volume claim
   size: 10Gi
-  # annotations: {}
+
+  # persistence.annotations -- PersistentVolumeClaim annotations
+  annotations: {}
+
+  # persistence.finalizers -- PersistentVolumeClaim finalizers
   finalizers:
     - kubernetes.io/pvc-protection
-  # subPath: ""
-  # existingClaim:
+
+  # persistence.subPath -- Mount a sub dir of the persistent volume
+  subPath: ""
+
+  # persistence.existingClaim -- (string) Use an existing PVC to persist data
+  existingClaim:
 
 initChownData:
-  ## If false, data ownership will not be reset at startup
-  ## This allows the prometheus-server to be run with an arbitrary user
-  ##
+  # initChownData.enabled -- If false, don't reset data ownership at startup
   enabled: true
 
   ## initChownData container image
   ##
   image:
+    # initChownData.image.repository -- init-chown-data container image repository
     repository: busybox
+
+    # initChownData.image.tag -- init-chown-data container image tag
     tag: "1.30"
+
+    # initChownData.image.pullPolicy -- init-chown-data container image pull policy
     pullPolicy: IfNotPresent
 
-  ## initChownData resource requests and limits
+  # initChownData.resources -- init-chown-data pod resource requests & limits
   ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
-  ##
   resources: {}
   #  limits:
   #    cpu: 100m
@@ -198,54 +262,54 @@ adminUser: admin
 
 # Use an existing secret for the admin user.
 admin:
+  # admin.existingSecret -- The name of an existing secret containing the admin credentials.
   existingSecret: ""
+
+  # admin.userKey -- The key in the existing admin secret containing the username.
   userKey: admin-user
+
+  # admin.passwordKey -- The key in the existing admin secret containing the password.
   passwordKey: admin-password
 
 ## Define command to be executed at startup by grafana container
 ## Needed if using `vault-env` to manage secrets (ref: https://banzaicloud.com/blog/inject-secrets-into-pods-vault/)
 ## Default is "run.sh" as defined in grafana's Dockerfile
-# command:
-# - "sh"
-# - "/run.sh"
+# command -- Define command to be executed by grafana container at startup
+command: []
 
 ## Use an alternate scheduler, e.g. "stork".
 ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
 ##
-# schedulerName:
+# schedulerName -- (string) Name of the k8s scheduler (other than default)
+schedulerName:
 
-## Extra environment variables that will be pass onto deployment pods
+# env -- Extra environment variables will be passed onto deployment pods
 env: {}
 
-## The name of a secret in the same kubernetes namespace which contain values to be added to the environment
-## This can be useful for auth tokens, etc
+# envFromSecret -- Name of a Kubenretes secret (must be manually created in the same namespace) containing values to be added to the environment
 envFromSecret: ""
 
-## Additional grafana server secret mounts
-# Defines additional mounts with secrets. Secrets must be manually created in the namespace.
+# extraSecretMounts -- Additional grafana server secret mounts. Secrets must be manually created in the namespace.
 extraSecretMounts: []
   # - name: secret-files
   #   mountPath: /etc/secrets
   #   secretName: grafana-secret-files
   #   readOnly: true
 
-## Additional grafana server volume mounts
-# Defines additional volume mounts.
+# extraVolumeMounts -- Additional grafana server volume mounts
 extraVolumeMounts: []
   # - name: extra-volume
   #   mountPath: /mnt/volume
   #   readOnly: true
   #   existingClaim: volume-claim
 
-## Pass the plugins you want installed as a list.
-##
+# plugins -- Plugins to be loaded along with Grafana
 plugins: []
   # - digrich-bubblechart-panel
   # - grafana-clock-panel
 
-## Configure grafana datasources
+# datasources -- Configure grafana datasources (passed through tpl)
 ## ref: http://docs.grafana.org/administration/provisioning/#datasources
-##
 datasources: {}
 #  datasources.yaml:
 #    apiVersion: 1
@@ -256,9 +320,8 @@ datasources: {}
 #      access: proxy
 #      isDefault: true
 
-## Configure notifiers
+# notifiers -- Configure grafana notifiers
 ## ref: http://docs.grafana.org/administration/provisioning/#alert-notification-channels
-##
 notifiers: {}
 #  notifiers.yaml:
 #    notifiers:
@@ -274,11 +337,8 @@ notifiers: {}
 #        addresses: an_email_address@example.com
 #    delete_notifiers:
 
-## Configure grafana dashboard providers
+# dashboardProviders -- Configure grafana dashboard providers. `path` must be /var/lib/grafana/dashboards/<provider_name>
 ## ref: http://docs.grafana.org/administration/provisioning/#dashboards
-##
-## `path` must be /var/lib/grafana/dashboards/<provider_name>
-##
 dashboardProviders: {}
 #  dashboardproviders.yaml:
 #    apiVersion: 1
@@ -292,12 +352,9 @@ dashboardProviders: {}
 #      options:
 #        path: /var/lib/grafana/dashboards/default
 
-## Configure grafana dashboard to import
+# dashboards -- Dashboards per provider, use provider name as key
 ## NOTE: To use dashboards you must also enable/configure dashboardProviders
 ## ref: https://grafana.com/dashboards
-##
-## dashboards per provider, use provider name as key.
-##
 dashboards: {}
   # default:
   #   some-dashboard:
@@ -315,7 +372,8 @@ dashboards: {}
   #     url: https://example.com/repository/test-b64.json
   #     b64content: true
 
-## Reference to external ConfigMap per provider. Use provider name as key and ConfiMap name as value.
+# dashboardsConfigMaps -- Reference to external ConfigMap per provider. Use provider name as key and ConfiMap name as value
+##
 ## A provider dashboards must be defined either by external ConfigMaps or in values.yaml, not in both.
 ## ConfigMap data example:
 ##
@@ -355,10 +413,10 @@ grafana.ini:
 ## ref: http://docs.grafana.org/installation/configuration/#auth-ldap
 ## ref: http://docs.grafana.org/installation/ldap/#configuration
 ldap:
-  # `existingSecret` is a reference to an existing secret containing the ldap configuration
-  # for Grafana in a key `ldap-toml`.
+  # ldap.existingSecret -- The name of an existing secret containing the `ldap.toml` file, this must have the key `ldap-toml`.
   existingSecret: ""
-  # `config` is the content of `ldap.toml` that will be stored in the created secret
+
+  # ldap.config   -- Grafana's LDAP configuration
   config: ""
   # config: |-
   #   verbose_logging = true
@@ -375,17 +433,25 @@ ldap:
 ## NOTE: To enable, grafana.ini must be configured with smtp.enabled
 ## ref: http://docs.grafana.org/installation/configuration/#smtp
 smtp:
-  # `existingSecret` is a reference to an existing secret containing the smtp configuration
-  # for Grafana.
+  # smtp.existingSecret -- The name of an existing secret containing the SMTP credentials.
   existingSecret: ""
+
+  # smtp.userKey -- The key in the existing SMTP secret containing the username.
   userKey: "user"
+
+  # smtp.passwordKey -- The key in the existing SMTP secret containing the password.
   passwordKey: "password"
 
 ## Sidecars that collect the configmaps with specified label and stores the included files them into the respective folders
 ## Requires at least Grafana 5 to work and can't be used together with parameters dashboardProviders, datasources and dashboards
 sidecar:
+  # sidecar.image -- Sidecar image
   image: kiwigrid/k8s-sidecar:0.0.18
+
+  # sidecar.imagePullPolicy -- Sidecar image pull policy
   imagePullPolicy: IfNotPresent
+
+  # sidecar.resources -- Sidecar resources
   resources: {}
 #   limits:
 #     cpu: 100m
@@ -393,37 +459,49 @@ sidecar:
 #   requests:
 #     cpu: 50m
 #     memory: 50Mi
-  # skipTlsVerify Set to true to skip tls verification for kube api calls
-  # skipTlsVerify: true
+
+  # sidecar.skipTlsVerify -- Set to true to skip tls verification for kube api calls
+  skipTlsVerify: false
+
   dashboards:
+    # sidecar.dashboards.enabled -- Enabled the cluster wide search for dashboards and adds/updates/deletes them in grafana
     enabled: false
+
     # label that the configmaps with dashboards are marked with
+    # sidecar.dashboards.label -- Label that config maps with dashboards should have to be added
     label: grafana_dashboard
-    # folder in the pod that should hold the collected dashboards (unless `defaultFolderName` is set)
+
+    # sidecar.dashboards.folder -- Folder in the pod that should hold the collected dashboards (unless `sidecar.dashboards.defaultFolderName` is set). This path will be mounted.
     folder: /tmp/dashboards
-    # The default folder name, it will create a subfolder under the `folder` and put dashboards in there instead
+
+    # sidecar.dashboards.defaultFolderName -- The default folder name, it will create a subfolder under the `sidecar.dashboards.folder` and put dashboards in there instead
     defaultFolderName: null
-    # If specified, the sidecar will search for dashboard config-maps inside this namespace.
-    # Otherwise the namespace in which the sidecar is running will be used.
-    # It's also possible to specify ALL to search in all namespaces
+
+    # sidecar.dashboards.searchNamespace -- If specified, the sidecar will search for dashboard config-maps inside this namespace. Otherwise the namespace in which the sidecar is running will be used. It's also possible to specify ALL to search in all namespaces
     searchNamespace: null
+
     # provider configuration that lets grafana manage the dashboards
     provider:
-      # name of the provider, should be unique
       name: sidecarProvider
-      # orgid as configured in grafana
+
+      # sidecar.dashboards.provider.orgid -- Id of the organisation, to which the dashboards should be added
       orgid: 1
-      # folder in which the dashboards should be imported in grafana
+
+      # sidecar.dashboards.provider.folder -- Logical folder in which grafana groups dashboards
       folder: ''
-      # type of the provider
+
+      # sidecar.dashboards.provider.type -- Provider type
       type: file
-      # disableDelete to activate a import-only behaviour
+
+      # sidecar.dashboards.provider.disableDelete -- Activate to avoid the deletion of imported dashboards
       disableDelete: false
+
   datasources:
+    # sidecar.datasources.enabled -- Enabled the cluster wide search for datasources and adds/updates/deletes them in grafana
     enabled: false
-    # label that the configmaps with datasources are marked with
+
+    # sidecar.datasources.label -- Label that config maps with datasources should have to be added
     label: grafana_datasource
-    # If specified, the sidecar will search for datasource config-maps inside this namespace.
-    # Otherwise the namespace in which the sidecar is running will be used.
-    # It's also possible to specify ALL to search in all namespaces
+
+    # sidecar.datasources.searchNamespace -- (string) If specified, the sidecar will search for datasources config-maps inside this namespace. Otherwise the namespace in which the sidecar is running will be used. It's also possible to specify ALL to search in all namespaces
     searchNamespace: null
