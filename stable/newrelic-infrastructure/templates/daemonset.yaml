@@ -32,19 +32,17 @@ spec:
           securityContext:
             privileged: true
           env:
-            {{- if .Values.licenseKey }}
+            {{- if or .Values.licenseKey .Values.customSecret }}
             - name: NRIA_LICENSE_KEY
               valueFrom:
                 secretKeyRef:
+                  {{- if .Values.licenseKey }}
                   name: {{ template "newrelic.fullname" . }}-config
                   key: license
-            {{- end }}
-            {{- if and .Values.customSecret (not .Values.licenseKey) }}
-            - name: "NRIA_LICENSE_KEY"
-              valueFrom:
-                secretKeyRef:
+                  {{- else }}
                   name: {{ .Values.customSecret.name }}
                   key: {{ .Values.customSecret.key }}
+                  {{- end }}
             {{- end }}
             - name: "CLUSTER_NAME"
               value: "{{ .Values.cluster }}"
