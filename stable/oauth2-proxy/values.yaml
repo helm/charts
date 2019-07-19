@@ -95,12 +95,12 @@ resources: {}
 
 extraVolumes: []
   # - name: ca-bundle-cert
-  #   secret: 
+  #   secret:
   #     secretName: <secret-name>
 
 extraVolumeMounts: []
   # - mountPath: /etc/ssl/certs/
-  #   name: ca-bundle-cert 
+  #   name: ca-bundle-cert
 
 priorityClassName: ""
 

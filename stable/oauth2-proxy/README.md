@@ -116,12 +116,12 @@ extraArgs:
 
 extraVolumes:
   - name: ssl-cert
-    secret: 
+    secret:
       secretName: my-ssl-secret
 
 extraVolumeMounts:
   - mountPath: /path/to/
-    name: ssl-cert 
+    name: ssl-cert
 ...
 ```
 
