@@ -163,6 +163,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheusOperator.service.type` | Prometheus operator service type | `ClusterIP` |
 | `prometheusOperator.service.clusterIP` | Prometheus operator service clusterIP IP | `""` |
 | `prometheusOperator.service.nodePort` | Port to expose prometheus operator service on each node | `30080` |
+| `prometheusOperator.service.nodePortTls` | TLS port to expose prometheus operator service on each node | `30443` |
 | `prometheusOperator.service.annotations` | Annotations to be added to the prometheus operator service | `{}` |
 | `prometheusOperator.service.labels` |  Prometheus Operator Service Labels | `{}` |
 | `prometheusOperator.service.externalIPs` | List of IP addresses at which the Prometheus Operator server service is available | `[]` |
