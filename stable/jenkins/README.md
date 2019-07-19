@@ -65,7 +65,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `namespaceOverride`               | Override the deployment namespace    | Not set (`Release.Namespace`)             |
 | `master.componentName`            | Jenkins master name                  | `jenkins-master`                          |
 | `master.image`                    | Master image name                    | `jenkins/jenkins`                         |
-| `master.imageTag`                 | Master image tag                     | `lts`                                     |
+| `master.tag`                      | Master image tag                     | `lts`                                     |
 | `master.imagePullPolicy`          | Master image pull policy             | `Always`                                  |
 | `master.imagePullSecret`          | Master image pull secret             | Not set                                   |
 | `master.numExecutors`             | Set Number of executors              | 0                                         |
@@ -176,7 +176,7 @@ Some third-party systems, e.g. GitHub, use HTML-formatted data in their payload 
 | `agent.enabled`            | Enable Kubernetes plugin jnlp-agent podTemplate | `true`                 |
 | `agent.image`              | Agent image name                                | `jenkins/jnlp-slave`   |
 | `agent.imagePullSecret`    | Agent image pull secret                         | Not set                |
-| `agent.imageTag`           | Agent image tag                                 | `3.27-1`               |
+| `agent.tag`                | Agent image tag                                 | `3.27-1`               |
 | `agent.privileged`         | Agent privileged container                      | `false`                |
 | `agent.resources`          | Resources allocation (Requests and Limits)      | `{requests: {cpu: 200m, memory: 256Mi}, limits: {cpu: 200m, memory: 256Mi}}`|
 | `agent.volumes`            | Additional volumes                              | `nil`                  |
