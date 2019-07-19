@@ -105,6 +105,8 @@ definitions:
 #      }
 #    }
 
+## Ref: https://www.rabbitmq.com/rabbitmqctl.8.html#force_boot
+forceBoot: false
 
 ## RabbitMQ default VirtualHost
 ## Ref: https://www.rabbitmq.com/vhosts.html
@@ -341,6 +343,9 @@ initContainer:
   #     cpu: 100m
   #     memory: 128Mi
 
+## Additional init containers
+extraInitContainers: []
+
 ## Use an alternate scheduler, e.g. "stork".
 ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
 ##
@@ -421,7 +426,7 @@ ingress:
   tlsSecret: myTlsSecret
 
   ## Ingress annotations done as key:value pairs
-  annotations:
+  annotations: {}
   #  kubernetes.io/ingress.class: nginx
 
 livenessProbe:
@@ -447,6 +452,9 @@ securityContext:
   runAsGroup: 101
   runAsNonRoot: true
   runAsUser: 100
+
+## Sets environment variables for the rabbitmq container
+env: {}
 
 prometheus:
   ## Configures Prometheus Exporter to expose and scrape stats.

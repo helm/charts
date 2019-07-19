@@ -55,6 +55,8 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `image.pullPolicy`                                 | Image pull policy                                                                            | `IfNotPresent`                                          |
 | `image.pullSecrets`                                | Specify docker-registry secret names as an array                                             | `[]` (does not add image pull secrets to deployed pods) |
 | `image.debug`                                      | Specify if debug logs should be enabled                                                      | `false`                                                 |
+| `nameOverride`                                     | String to partially override mongodb.fullname template with a string (will prepend the release name) | `nil`                                           |
+| `fullnameOverride`                                 | String to fully override mongodb.fullname template with a string                             | `nil`                                                   |
 | `clusterDomain`                                    | Default Kubernetes cluster domain                                                            | `cluster.local`                                         |
 | `usePassword`                                      | Enable password authentication                                                               | `true`                                                  |
 | `existingSecret`                                   | Existing secret with MongoDB credentials                                                     | `nil`                                                   |
@@ -62,7 +64,7 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `mongodbUsername`                                  | MongoDB custom user                                                                          | `nil`                                                   |
 | `mongodbPassword`                                  | MongoDB custom user password                                                                 | `random alphanumeric string (10)`                       |
 | `mongodbDatabase`                                  | Database to create                                                                           | `nil`                                                   |
-| `mongodbEnableIPv6`                                | Switch to enable/disable IPv6 on MongoDB                                                     | `true`                                                  |
+| `mongodbEnableIPv6`                                | Switch to enable/disable IPv6 on MongoDB                                                     | `false`                                                 |
 | `mongodbDirectoryPerDB`                            | Switch to enable/disable DirectoryPerDB on MongoDB                                           | `false`                                                 |
 | `mongodbSystemLogVerbosity`                        | MongoDB systen log verbosity level                                                           | `0`                                                     |
 | `mongodbDisableSystemLog`                          | Whether to disable MongoDB system log or not                                                 | `false`                                                 |
@@ -73,6 +75,7 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `service.nodePort`                                 | Port to bind to for NodePort service type                                                    | `nil`                                                   |
 | `service.loadBalancerIP`                           | Static IP Address to use for LoadBalancer service type                                       | `nil`                                                   |
 | `service.externalIPs`                              | External IP list to use with ClusterIP service type                                          | `[]`                                                    |
+| `service.loadBalancerSourceRanges`                 | List of IP ranges allowed access to load balancer (if supported)                             | `[]` (does not add IP range restrictions to the service)|
 | `port`                                             | MongoDB service port                                                                         | `27017`                                                 |
 | `replicaSet.enabled`                               | Switch to enable/disable replica set configuration                                           | `false`                                                 |
 | `replicaSet.name`                                  | Name of the replica set                                                                      | `rs0`                                                   |
@@ -80,9 +83,13 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `replicaSet.key`                                   | Key used for authentication in the replica set                                               | `random alphanumeric string (10)`                       |
 | `replicaSet.replicas.secondary`                    | Number of secondary nodes in the replica set                                                 | `1`                                                     |
 | `replicaSet.replicas.arbiter`                      | Number of arbiter nodes in the replica set                                                   | `1`                                                     |
-| `replicaSet.pdb.minAvailable.primary`              | PDB for the MongoDB Primary nodes                                                            | `1`                                                     |
-| `replicaSet.pdb.minAvailable.secondary`            | PDB for the MongoDB Secondary nodes                                                          | `1`                                                     |
-| `replicaSet.pdb.minAvailable.arbiter`              | PDB for the MongoDB Arbiter nodes                                                            | `1`                                                     |
+| `replicaSet.pdb.enabled`                           | Switch to enable/disable Pod Disruption Budget                                               | `true`                                                  |
+| `replicaSet.pdb.minAvailable.primary`              | PDB (min available) for the MongoDB Primary nodes                                            | `1`                                                     |
+| `replicaSet.pdb.minAvailable.secondary`            | PDB (min available) for the MongoDB Secondary nodes                                          | `1`                                                     |
+| `replicaSet.pdb.minAvailable.arbiter`              | PDB (min available) for the MongoDB Arbiter nodes                                            | `1`                                                     |
+| `replicaSet.pdb.maxUnavailable.primary`            | PDB (max unavailable) for the MongoDB Primary nodes                                          | `nil`                                                   |
+| `replicaSet.pdb.maxUnavailable.secondary`          | PDB (max unavailable) for the MongoDB Secondary nodes                                        | `nil`                                                   |
+| `replicaSet.pdb.maxUnavailable.arbiter`            | PDB (max unavailable) for the MongoDB Arbiter nodes                                          | `nil`                                                   |
 | `podAnnotations`                                   | Annotations to be added to pods                                                              | `{}`                                                    |
 | `podLabels`                                        | Additional labels for the pod(s).                                                            | `{}`                                                    |
 | `resources`                                        | Pod resources                                                                                | `{}`                                                    |
@@ -135,6 +142,7 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `metrics.extraArgs`                                | String with extra arguments for the MongoDB Exporter                                         | ``                                                      |
 | `metrics.resources`                                | Exporter resource requests/limit                                                             | `{}`                                                    |
 | `metrics.serviceMonitor.enabled`                   | Create ServiceMonitor Resource for scraping metrics using PrometheusOperator                 | `false`                                                 |
+| `metrics.serviceMonitor.namespace`                 | Optional namespace which Prometheus is running in                                            | `nil`                                                   |
 | `metrics.serviceMonitor.additionalLabels`          | Used to pass Labels that are required by the Installed Prometheus Operator                   | `{}`                                                    |
 | `metrics.serviceMonitor.relabellings`              | Specify Metric Relabellings to add to the scrape endpoint                                    | `nil`                                                   |
 | `metrics.serviceMonitor.alerting.rules`            | Define individual alerting rules as required                                                 | `{}`                                                    |
@@ -243,6 +251,11 @@ The [Bitnami MongoDB](https://github.com/bitnami/bitnami-docker-mongodb) image s
 The chart mounts a [Persistent Volume](http://kubernetes.io/docs/user-guide/persistent-volumes/) at this location. The volume is created using dynamic volume provisioning.
 
 ## Upgrading
+
+### To 6.0.0
+
+From this version, `mongodbEnableIPv6` is set to `false` by default in order to work properly in most k8s clusters, if you want to use IPv6 support, you need to set this variable to `true` by adding `--set mongodbEnableIPv6=true` to your `helm` command.
+You can find more information in the [`bitnami/mongodb` image README](https://github.com/bitnami/bitnami-docker-mongodb/blob/master/README.md).
 
 ### To 5.0.0
 

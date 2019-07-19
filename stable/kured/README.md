@@ -10,6 +10,7 @@ See https://github.com/weaveworks/kured
 | `image.pullSecrets`     | Image pull secrets                                                          | `[]`                       |
 | `extraArgs`             | Extra arguments to pass to `/usr/bin/kured`. See below.                     | `{}`                       |
 | `rbac.create`           | Create RBAC roles                                                           | `true`                     |
+| `podSecurityPolicy.create` | Create podSecurityPolicy                                                 | `false`                     |
 | `serviceAccount.create` | Create service account roles                                                | `true`                     |
 | `serviceAccount.name`   | Service account name to create (or use if `serviceAccount.create` is false) | (chart fullname)           |
 | `updateStrategy`        | Daemonset update strategy                                                   | `OnDelete`                 |

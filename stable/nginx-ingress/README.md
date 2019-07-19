@@ -47,7 +47,7 @@ Parameter | Description | Default
 --- | --- | ---
 `controller.name` | name of the controller component | `controller`
 `controller.image.repository` | controller container image repository | `quay.io/kubernetes-ingress-controller/nginx-ingress-controller`
-`controller.image.tag` | controller container image tag | `0.24.1`
+`controller.image.tag` | controller container image tag | `0.25.0`
 `controller.image.pullPolicy` | controller container image pull policy | `IfNotPresent`
 `controller.image.runAsUser` | User ID of the controller process. Value depends on the Linux distribution used inside of the container image. By default uses debian one. | `33`
 `controller.containerPort.http` | The port that the controller container listens on for http connections. | `80`
@@ -56,6 +56,7 @@ Parameter | Description | Default
 `controller.hostNetwork` | If the nginx deployment / daemonset should run on the host's network namespace. Do not set this when `controller.service.externalIPs` is set and `kube-proxy` is used as there will be a port-conflict for port `80` | false
 `controller.defaultBackendService` | default 404 backend service; required only if `defaultBackend.enabled = false` | `""`
 `controller.dnsPolicy` | If using `hostNetwork=true`, change to `ClusterFirstWithHostNet`. See [pod's dns policy](https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-s-dns-policy) for details | `ClusterFirst`
+`controller.reportNodeInternalIp` | If using `hostNetwork=true`, setting `reportNodeInternalIp=true`, will pass the flag `report-node-internal-ip-address` to nginx-ingress. This sets the status of all Ingress objects to the internal IP address of all nodes running the NGINX Ingress controller.
 `controller.electionID` | election ID to use for the status update | `ingress-controller-leader`
 `controller.extraEnvs` | any additional environment variables to set in the pods | `{}`
 `controller.extraContainers` | Sidecar containers to add to the controller pod. See [LemonLDAP::NG controller](https://github.com/lemonldap-ng-controller/lemonldap-ng-controller) as example | `{}`
@@ -67,6 +68,11 @@ Parameter | Description | Default
 `controller.scope.namespace` | namespace to watch for ingress | `""` (use the release namespace)
 `controller.extraArgs` | Additional controller container arguments | `{}`
 `controller.kind` | install as Deployment or DaemonSet | `Deployment`
+`controller.autoscaling.enabled` | If true, creates Horizontal Pod Autoscaler | false
+`controller.autoscaling.minReplicas` | If autoscaling enabled, this field sets minimum replica count | `2`
+`controller.autoscaling.maxReplicas` | If autoscaling enabled, this field sets maximum replica count | `11`
+`controller.autoscaling.targetCPUUtilizationPercentage` | Target CPU utilization percentage to scale | `50`
+`controller.autoscaling.targetMemoryUtilizationPercentage` | Target memory utilization percentage to scale | `50`
 `controller.daemonset.useHostPort` | If `controller.kind` is `DaemonSet`, this will enable `hostPort` for TCP/80 and TCP/443 | false
 `controller.daemonset.hostPorts.http` | If `controller.daemonset.useHostPort` is `true` and this is non-empty, it sets the hostPort | `"80"`
 `controller.daemonset.hostPorts.https` | If `controller.daemonset.useHostPort` is `true` and this is non-empty, it sets the hostPort | `"443"`
@@ -98,9 +104,13 @@ Parameter | Description | Default
 `controller.service.enableHttps` | if port 443 should be opened for service | `true`
 `controller.service.targetPorts.http` | Sets the targetPort that maps to the Ingress' port 80 | `80`
 `controller.service.targetPorts.https` | Sets the targetPort that maps to the Ingress' port 443 | `443`
+`controller.service.ports.http` | Sets service http port | `80`
+`controller.service.ports.https` | Sets service https port | `443`
 `controller.service.type` | type of controller service to create | `LoadBalancer`
 `controller.service.nodePorts.http` | If `controller.service.type` is either `NodePort` or `LoadBalancer` and this is non-empty, it sets the nodePort that maps to the Ingress' port 80 | `""`
 `controller.service.nodePorts.https` | If `controller.service.type` is either `NodePort` or `LoadBalancer` and this is non-empty, it sets the nodePort that maps to the Ingress' port 443 | `""`
+`controller.service.nodePorts.tcp` | Sets the nodePort for an entry referenced by its key from `tcp` | `{}`
+`controller.service.nodePorts.udp` | Sets the nodePort for an entry referenced by its key from `udp` | `{}`
 `controller.livenessProbe.initialDelaySeconds` | Delay before liveness probe is initiated | 10
 `controller.livenessProbe.periodSeconds` | How often to perform the probe | 10
 `controller.livenessProbe.timeoutSeconds` | When the probe times out | 5
@@ -144,8 +154,19 @@ Parameter | Description | Default
 `defaultBackend.image.repository` | default backend container image repository | `k8s.gcr.io/defaultbackend-amd64`
 `defaultBackend.image.tag` | default backend container image tag | `1.5`
 `defaultBackend.image.pullPolicy` | default backend container image pull policy | `IfNotPresent`
+`defaultBackend.image.runAsUser` | User ID of the controller process. Value depends on the Linux distribution used inside of the container image. By default uses nobody user. | `65534`
 `defaultBackend.extraArgs` | Additional default backend container arguments | `{}`
 `defaultBackend.port` | Http port number | `8080`
+`defaultBackend.livenessProbe.initialDelaySeconds` | Delay before liveness probe is initiated | 30
+`defaultBackend.livenessProbe.periodSeconds` | How often to perform the probe | 10
+`defaultBackend.livenessProbe.timeoutSeconds` | When the probe times out | 5
+`defaultBackend.livenessProbe.successThreshold` | Minimum consecutive successes for the probe to be considered successful after having failed. | 1
+`defaultBackend.livenessProbe.failureThreshold` | Minimum consecutive failures for the probe to be considered failed after having succeeded. | 3
+`defaultBackend.readinessProbe.initialDelaySeconds` | Delay before readiness probe is initiated | 0
+`defaultBackend.readinessProbe.periodSeconds` | How often to perform the probe | 5
+`defaultBackend.readinessProbe.timeoutSeconds` | When the probe times out | 5
+`defaultBackend.readinessProbe.successThreshold` | Minimum consecutive successes for the probe to be considered successful after having failed. | 1
+`defaultBackend.readinessProbe.failureThreshold` | Minimum consecutive failures for the probe to be considered failed after having succeeded. | 6
 `defaultBackend.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `defaultBackend.affinity` | node/pod affinities (requires Kubernetes >=1.6) | `{}`
 `defaultBackend.nodeSelector` | node labels for pod assignment | `{}`
@@ -155,6 +176,7 @@ Parameter | Description | Default
 `defaultBackend.minAvailable` | minimum number of available default backend pods for PodDisruptionBudget | `1`
 `defaultBackend.resources` | default backend pod resource requests & limits | `{}`
 `defaultBackend.priorityClassName` | default backend  priorityClassName | `nil`
+`defaultBackend.podSecurityContext` | Security context policies to add to the default backend | `{}`
 `defaultBackend.service.annotations` | annotations for default backend service | `{}`
 `defaultBackend.service.clusterIP` | internal default backend cluster service IP | `""`
 `defaultBackend.service.omitClusterIP` | To omit the `clusterIP` from the default backend service | `false`

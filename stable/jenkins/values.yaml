@@ -7,6 +7,7 @@
 # See templates/_helpers.tpl
 # nameOverride:
 # fullnameOverride:
+# namespaceOverride:
 
 # For FQDN resolving of the master service. Change this value to match your existing configuration.
 # ref: https://github.com/kubernetes/dns/blob/master/docs/specification.md
@@ -194,10 +195,10 @@ master:
   # etc.  Best reference is https://<jenkins_url>/configuration-as-code/reference.  The example below creates a welcome message:
   JCasC:
     enabled: false
-    pluginVersion: 1.19
+    pluginVersion: "1.21"
     # it's only used when plugin version is <=1.18 for later version the
     # configuration as code support plugin is no longer needed
-    supportPluginVersion: 1.19
+    supportPluginVersion: "1.18"
     configScripts:
       welcome-message: |
         jenkins:
@@ -471,6 +472,14 @@ backup:
   # Additional arguments for kube-tasks
   # Ref: https://github.com/nuvo/kube-tasks#simple-backup
   extraArgs: []
+  # Add existingSecret for AWS credentials
+  existingSecret: {}
+  ## Example for using an existing secret
+   # jenkinsaws:
+  ## Use this key for AWS access key ID
+     # awsaccesskey: jenkins_aws_access_key
+  ## Use this key for AWS secret access key
+     # awssecretkey: jenkins_aws_secret_key
   # Add additional environment variables
   env:
   # Example environment variable required for AWS credentials chain

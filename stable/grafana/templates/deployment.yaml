@@ -75,7 +75,8 @@ spec:
         - name: download-dashboards
           image: "{{ .Values.downloadDashboardsImage.repository }}:{{ .Values.downloadDashboardsImage.tag }}"
           imagePullPolicy: {{ .Values.downloadDashboardsImage.pullPolicy }}
-          command: ["sh", "/etc/grafana/download_dashboards.sh"]
+          command: ["/bin/sh"]
+          args: [ "-c", "mkdir -p /var/lib/grafana/dashboards/default", "/etc/grafana/download_dashboards.sh" ]
           volumeMounts:
             - name: config
               mountPath: "/etc/grafana/download_dashboards.sh"
@@ -354,11 +355,11 @@ spec:
       {{- if .Values.sidecar.dashboards.enabled }}
         - name: sc-dashboard-volume
           emptyDir: {}
-      {{- if not .Values.dashboardProviders }}
+{{- if not .Values.dashboardProviders }}
         - name: sc-dashboard-provider
           configMap:
             name: {{ template "grafana.fullname" . }}-config-dashboards
-      {{- end -}}
+{{- end }}
       {{- end }}
       {{- if .Values.sidecar.datasources.enabled }}
         - name: sc-datasources-volume

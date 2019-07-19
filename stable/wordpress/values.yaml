@@ -13,7 +13,7 @@
 image:
   registry: docker.io
   repository: bitnami/wordpress
-  tag: 5.2.1-debian-9-r21
+  tag: 5.2.2-debian-9-r12
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -25,6 +25,14 @@ image:
   ##
   # pullSecrets:
   #   - myRegistryKeySecretName
+
+## String to partially override wordpress.fullname template (will maintain the release name)
+##
+# nameOverride:
+
+## String to fully override wordpress.fullname template
+##
+# fullnameOverride:
 
 ## User of the application
 ## ref: https://github.com/bitnami/bitnami-docker-wordpress#environment-variables
@@ -179,13 +187,17 @@ service:
   port: 80
   # HTTPS Port
   httpsPort: 443
+  # metrics Port
+  metricsPort: 9117
   ##
   ## nodePorts:
   ##   http: <to set explicitly, choose port between 30000-32767>
   ##   https: <to set explicitly, choose port between 30000-32767>
+  ##   metrics: <to set explicitly, choose port between 30000-32767>
   nodePorts:
     http: ""
     https: ""
+    metrics: ""
   ## Enable client source IP preservation
   ## ref http://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip
   ##
@@ -339,6 +351,26 @@ metrics:
   ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
   ##
   # resources: {}
+
+  ## Prometheus Service Monitor
+  ## ref: https://github.com/coreos/prometheus-operator
+  ##      https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#endpoint
+  serviceMonitor:
+    ## If the operator is installed in your cluster, set to true to create a Service Monitor Entry
+    enabled: false
+    ## Specify the namespace in which the serviceMonitor resource will be created
+    # namespace: ""
+    ## Specify the interval at which metrics should be scraped
+    interval: 30s
+    ## Specify the timeout after which the scrape is ended
+    # scrapeTimeout: 30s
+    ## Specify Metric Relabellings to add to the scrape endpoint
+    # relabellings:
+    ## Specify honorLabels parameter to add the scrape endpoint
+    honorLabels: false
+    ## Used to pass Labels that are used by the Prometheus installed in your cluster to select Service Monitors to work with
+    ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#prometheusspec
+    additionalLabels: {}
 
 sidecars:
 ## Add sidecars to the pod.

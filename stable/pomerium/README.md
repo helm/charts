@@ -79,3 +79,50 @@ Parameter                         | Description                                 
 `ingress.annotations`             | Ingress annotations                                                                                                                                                                                        | `{}`
 `ingress.hosts`                   | Ingress accepted hostnames                                                                                                                                                                                 | `nil`
 `ingress.tls`                     | Ingress TLS configuration                                                                                                                                                                                  | `[]`
+`metrics.enabled`                     | Enable prometheus metrics endpoint                                                                                                                                                                                  | `false`
+`metrics.port`                     | Prometheus metrics endpoint port                                                                                                                                                                                  | `9090`
+
+## Metrics Discovery Configuration
+
+
+### Prometheus kubernetes_sd_configs
+
+Example chart values:
+
+```yaml
+metrics:
+  enabled: true
+  port: 9090 # default
+service:
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "9090"
+```
+
+Example prometheus discovery config:
+```yaml
+- job_name: 'pomerium'
+metrics_path: /metrics
+kubernetes_sd_configs:
+- role: endpoints
+relabel_configs:
+- source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scrape]
+  action: keep
+  regex: true
+- source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_instance]
+  action: keep
+  regex: pomerium
+- action: labelmap
+  regex: __meta_kubernetes_service_label_(.+)
+- source_labels: [__meta_kubernetes_namespace]
+  action: replace
+  target_label: kubernetes_namespace
+- source_labels: [__meta_kubernetes_service_name]
+  action: replace
+  target_label: kubernetes_name
+- source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
+  action: replace
+  regex: ([^:]+)(?::\d+)?;(\d+)
+  replacement: $1:$2
+  target_label: __address__
+```

@@ -57,6 +57,8 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `image.pullPolicy`                        | MariaDB image pull policy                           | `IfNotPresent`                                                    |
 | `image.pullSecrets`                       | Specify docker-registry secret names as an array    | `[]` (does not add image pull secrets to deployed pods)           |
 | `image.debug`                             | Specify if debug logs should be enabled             | `false`                                                           |
+| `nameOverride`                            | String to partially override mariadb.fullname template with a string (will prepend the release name) | `nil`            |
+| `fullnameOverride`                        | String to fully override mariadb.fullname template with a string                                     | `nil`            |
 | `service.type`                            | Kubernetes service type                             | `ClusterIP`                                                       |
 | `service.clusterIp`                       | Specific cluster IP when service type is cluster IP. Use None for headless service | `nil`                              |
 | `service.port`                            | MySQL service port                                  | `3306`                                                            |
@@ -67,7 +69,7 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `securityContext.enabled`                 | Enable security context                             | `true`                                                            |
 | `securityContext.fsGroup`                 | Group ID for the container                          | `1001`                                                            |
 | `securityContext.runAsUser`               | User ID for the container                           | `1001`                                                            |
-| `existingSecret`                          | Use Existing secret for Password details (`rootUser.password`, `db.password`, `replication.password` will be ignored and picked up from this secret) |                         |
+| `existingSecret`                          | Use existing secret for password details (`rootUser.password`, `db.password`, `replication.password` will be ignored and picked up from this secret). The secret has to contain the keys `mariadb-root-password`, `mariadb-replication-password` and `mariadb-password`. |                         |
 | `rootUser.password`                       | Password for the `root` user. Ignored if existing secret is provided. | _random 10 character alphanumeric string_       |
 | `rootUser.forcePassword`                  | Force users to specify a password                   | `false`                                                           |
 | `db.user`                                 | Username of new user to create                      | `nil`                                                             |
@@ -237,10 +239,10 @@ The feature allows for specifying a template string for a initContainer in the m
 master:
   extraInitContainers: |
     - name: initcontainer
-      image: alpine:latest
+      image: bitnami/minideb:latest
       command: ["/bin/sh", "-c"]
       args:
-        - curl http://api-service.local/db/starting;
+        - install_packages curl && curl http://api-service.local/db/starting;
 ```
 
 ## Upgrading
