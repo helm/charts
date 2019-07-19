@@ -148,3 +148,6 @@ ingress:
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
+
+securityContext:
+  runAsUser: 65534  # run as nobody user instead of root
