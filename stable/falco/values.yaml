@@ -80,6 +80,7 @@ falco:
   rulesFile:
     - /etc/falco/falco_rules.yaml
     - /etc/falco/falco_rules.local.yaml
+    - /etc/falco/k8s_audit_rules.yaml
     - /etc/falco/rules.d
 
   # If true, the times displayed in log messages and output messages
@@ -169,6 +170,15 @@ falco:
 
   stdoutOutput:
     enabled: true
+
+  # Falco contains an embedded webserver that can be used to accept K8s
+  # Audit Events. These config options control the behavior of that
+  # webserver. (By default, the webserver is disabled).
+  webserver:
+    enabled: false
+    listenPort: 8765
+    k8sAuditEndpoint: /k8s-audit
+    clusterIP:
 
   # Possible additional things you might want to do with program output:
   #   - send to a slack webhook:
