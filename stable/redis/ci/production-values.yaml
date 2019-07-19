@@ -430,15 +430,6 @@ metrics:
     # pullSecrets:
     #   - myRegistryKeySecretName
 
-  service:
-    type: ClusterIP
-    ## Use serviceLoadBalancerIP to request a specific static IP,
-    ## otherwise leave blank
-    # loadBalancerIP:
-    annotations:
-      prometheus.io/scrape: "true"
-      prometheus.io/port: "9121"
-
   ## Metrics exporter resource requests and limits
   ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
   ##
@@ -449,12 +440,10 @@ metrics:
   ##   check-keys: myKey,myOtherKey
   # extraArgs: {}
 
-  ## Metrics exporter labels and tolerations for pod assignment
-  # nodeSelector: {"beta.kubernetes.io/arch": "amd64"}
-  # tolerations: []
-
   ## Metrics exporter pod Annotation and Labels
-  # podAnnotations: {}
+  podAnnotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "9121"
   # podLabels: {}
 
   # Enable this if you're using https://github.com/coreos/prometheus-operator
@@ -469,9 +458,6 @@ metrics:
     ## [Kube Prometheus Selector Label](https://github.com/helm/charts/tree/master/stable/prometheus-operator#exporters)
     selector:
       prometheus: kube-prometheus
-
-  ## Metrics exporter pod priorityClassName
-  # priorityClassName: {}
 
 ##
 ## Init containers parameters:
