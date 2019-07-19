@@ -1,4 +1,4 @@
-{{- if and .Values.admissionWebhooks.create .Values.admissionWebhooks.patch.create }}
+{{- if and .Values.admissionWebhooks.enabled .Values.admissionWebhooks.patch.enabled }}
 apiVersion: batch/v1
 kind: Job
 metadata:

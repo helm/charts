@@ -924,7 +924,7 @@ prometheusOperator:
   enabled: true
 
   tlsProxy:
-    create: true
+    enabled: true
     image:
       repository: squareup/ghostunnel
       tag: v1.4.1
@@ -1633,14 +1633,17 @@ prometheus:
           ## Server name used to verify host name
           ##
           # serverName: ""
+
+## Admission webhook support for PrometheusRules resources added in Prometheus Operator 0.30 can be enabled to prevent incorrectly formatted
+## rules from making their way into prometheus and potentially preventing the container from starting
 admissionWebhooks:
-  create: true
+  enabled: true
   ## If enabled, generate a self-signed certificate, then patch the webhook configurations with the generated data.
   ## On chart upgrades (or if the secret exists) the cert will not be re-generated. You can use this to provide your own
   ## certs ahead of time if you wish.
   ##
   patch:
-    create: true
+    enabled: true
     image:
       repository: jettech/kube-webhook-certgen
       tag: v0.3.0

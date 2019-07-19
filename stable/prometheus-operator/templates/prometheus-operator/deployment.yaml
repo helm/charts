@@ -61,7 +61,7 @@ spec:
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
-        {{- if .Values.prometheusOperator.tlsProxy.create }}
+        {{- if .Values.prometheusOperator.tlsProxy.enabled }}
         - name: tls-proxy
           image: {{ .Values.prometheusOperator.tlsProxy.image.repository }}:{{ .Values.prometheusOperator.tlsProxy.image.tag }}
           imagePullPolicy: {{ .Values.prometheusOperator.tlsProxy.image.pullPolicy }}
@@ -87,7 +87,7 @@ spec:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
         {{- end }}
-{{- if .Values.prometheusOperator.tlsProxy.create }}
+{{- if .Values.prometheusOperator.tlsProxy.enabled }}
       volumes:
         - name: tls-proxy-secret
           secret:
