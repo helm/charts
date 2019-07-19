@@ -1,4 +1,4 @@
-{{- if and .Values.admissionWebhooks.enabled }}
+{{- if and .Values.prometheusOperator.admissionWebhooks.enabled }}
 apiVersion: admissionregistration.k8s.io/v1beta1
 kind: ValidatingWebhookConfiguration
 metadata:
@@ -8,7 +8,11 @@ metadata:
 {{- include "prometheus-operator.labels" $ | indent 4 }}
 webhooks:
   - name: prometheusrulemutate.monitoring.coreos.com
+    {{- if .Values.prometheusOperator.admissionWebhooks.patch.enabled  }}
     failurePolicy: Ignore
+    {{- else }}
+    failurePolicy: {{ .Values.prometheusOperator.admissionWebhooks.failurePolicy }}
+    {{- end }}
     rules:
       - apiGroups:
           - {{ .Values.prometheusOperator.crdApiGroup }}

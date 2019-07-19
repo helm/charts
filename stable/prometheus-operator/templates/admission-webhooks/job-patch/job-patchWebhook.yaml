@@ -1,4 +1,4 @@
-{{- if and .Values.admissionWebhooks.enabled .Values.admissionWebhooks.patch.enabled }}
+{{- if and .Values.prometheusOperator.admissionWebhooks.enabled .Values.prometheusOperator.admissionWebhooks.patch.enabled }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -18,19 +18,19 @@ spec:
         app: {{ template "prometheus-operator.name" $ }}-admission-patch
 {{- include "prometheus-operator.labels" $ | indent 8 }}
     spec:
-      {{- if .Values.admissionWebhooks.patch.priorityClassName }}
-      priorityClassName: {{ .Values.admissionWebhooks.patch.priorityClassName }}
+      {{- if .Values.prometheusOperator.admissionWebhooks.patch.priorityClassName }}
+      priorityClassName: {{ .Values.prometheusOperator.admissionWebhooks.patch.priorityClassName }}
       {{- end }}
       containers:
         - name: patch
-          image: {{ .Values.admissionWebhooks.patch.image.repository }}:{{ .Values.admissionWebhooks.patch.image.tag }}
-          imagePullPolicy: {{ .Values.admissionWebhooks.patch.pullPolicy }}
+          image: {{ .Values.prometheusOperator.admissionWebhooks.patch.image.repository }}:{{ .Values.prometheusOperator.admissionWebhooks.patch.image.tag }}
+          imagePullPolicy: {{ .Values.prometheusOperator.admissionWebhooks.patch.pullPolicy }}
           args:
             - patch
             - --webhook-name={{ template "prometheus-operator.fullname" . }}-admission
             - --namespace={{ .Release.Namespace }}
             - --secret-name={{ template "prometheus-operator.fullname" . }}-admission
-            - --patch-failure-policy=Fail
+            - --patch-failure-policy={{ .Values.prometheusOperator.admissionWebhooks.failurePolicy }}
       restartPolicy: OnFailure
       serviceAccountName: {{ template "prometheus-operator.fullname" . }}-admission
       securityContext:

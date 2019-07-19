@@ -1,4 +1,4 @@
-{{- if and .Values.admissionWebhooks.enabled .Values.admissionWebhooks.patch.enabled }}
+{{- if and .Values.prometheusOperator.admissionWebhooks.enabled .Values.prometheusOperator.admissionWebhooks.patch.enabled }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
