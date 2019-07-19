@@ -32,7 +32,6 @@ spec:
           securityContext:
             privileged: true
           env:
-            {{- if or .Values.licenseKey .Values.customSecret }}
             - name: NRIA_LICENSE_KEY
               valueFrom:
                 secretKeyRef:
@@ -43,7 +42,6 @@ spec:
                   name: {{ .Values.customSecret.name }}
                   key: {{ .Values.customSecret.key }}
                   {{- end }}
-            {{- end }}
             - name: "CLUSTER_NAME"
               value: "{{ .Values.cluster }}"
             {{- if .Values.kubeStateMetricsUrl }}
