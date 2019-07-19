@@ -213,7 +213,7 @@ And that's all, in a few seconds you will see your pods up and running with Mong
 This has been tested with Kops and Minikube. You will need the following components:
 
 * A Kubernetes cluster greater than v1.13
-* The apiserver must be configured with Dynamic backend, do it with the following flags:
+* The apiserver must be configured with Dynamic Auditing feature, do it with the following flags:
   * `--audit-dynamic-configuration`
   * `--feature-gates=DynamicAuditing=true`
   * `--runtime-config=auditregistration.k8s.io/v1alpha1=true`
@@ -233,8 +233,13 @@ $ cd examples/k8s_audit_config
 $ APISERVER_HOST=api.my-kops-cluster.com bash ./enable-k8s-audit.sh kops dynamic
 ```
 
-And enabling the `falco.webserver` in the Helm Chart. You will need to provide
-and internal clusterIP where the service is going to be deployed:
+You also will need to [provide an internal clusterIP](https://kubernetes.io/docs/concepts/services-networking/service/#choosing-your-own-ip-address)
+where the service is going to be deployed. You need to choose an IPv4 or IPv6
+address from within the `service-cluster-ip-range` CIDR range that is configured
+for the apiserver.
+
+Then you can install Falco chart enabling the enabling the `falco.webserver`
+flag:
 
 `helm install --name falco --set falco.webserver.enabled=true  --set falco.webserver.clusterIP=10.96.0.40 stable/falco`
 
@@ -245,10 +250,11 @@ And that's it, you will start to see the K8s audit log related alerts.
 Perhaps you may find the case where you receive an error like the following one:
 
 ```
-$ helm install --name falco --set falco.webserver.enabled=true  --set falco.webserver.clusterIP=10.96.0.40 .                                                             falco-audit-log [!]
+$ helm install --name falco --set falco.webserver.enabled=true  --set falco.webserver.clusterIP=10.96.0.40 .
 Error: validation failed: unable to recognize "": no matches for kind "AuditSink" in version "auditregistration.k8s.io/v1alpha1"
 ```
 
 This means that the apiserver cannot recognize the `auditregistration.k8s.io`
-resource, which means that the dynamic backend hasn't been enabled properly. You
-need to enable it.
+resource, which means that the dynamic auditing feature hasn't been enabled
+properly. You need to enable it or ensure that your using a Kubernetes version
+greater than v1.13.
