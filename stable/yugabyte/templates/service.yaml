@@ -14,7 +14,7 @@ metadata:
     app: "{{ $service.label }}"
     heritage: {{ $root.Release.Service | quote }}
     release: {{ $root.Release.Name | quote }}
-    chart: "{{ $root.Chart.Name }}-{{ $root.Chart.Version }}"
+    chart: "{{ $root.Chart.Name }}"
     component: "{{ $root.Values.Component }}"
 type: Opaque
 data:
@@ -40,7 +40,7 @@ metadata:
     app: "{{ .label }}"
     heritage: {{ $root.Release.Service | quote }}
     release: {{ $root.Release.Name | quote }}
-    chart: "{{ $root.Chart.Name }}-{{ $root.Chart.Version }}"
+    chart: "{{ $root.Chart.Name }}"
     component: "{{ $root.Values.Component }}"
 spec:
   clusterIP: None
@@ -66,7 +66,7 @@ metadata:
     app: "{{ $endpoint.app }}"
     heritage: {{ $root.Release.Service | quote }}
     release: {{ $root.Release.Name | quote }}
-    chart: "{{ $root.Chart.Name }}-{{ $root.Chart.Version }}"
+    chart: "{{ $root.Chart.Name }}"
     component: "{{ $root.Values.Component }}"
 spec:
   clusterIP:
@@ -92,7 +92,7 @@ metadata:
     app: "{{ .label }}"
     heritage: {{ $root.Release.Service | quote }}
     release: {{ $root.Release.Name | quote }}
-    chart: "{{ $root.Chart.Name }}-{{ $root.Chart.Version }}"
+    chart: "{{ $root.Chart.Name }}"
     component: "{{ $root.Values.Component }}"
 spec:
   serviceName: "{{ .name }}"
@@ -112,7 +112,7 @@ spec:
         labels:
           heritage: {{ $root.Release.Service | quote }}
           release: {{ $root.Release.Name | quote }}
-          chart: "{{ $root.Chart.Name }}-{{ $root.Chart.Version }}"
+          chart: "{{ $root.Chart.Name }}"
           component: "{{ $root.Values.Component }}"
       spec:
         accessModes:
@@ -145,7 +145,7 @@ spec:
         app: "{{ .label }}"
         heritage: {{ $root.Release.Service | quote }}
         release: {{ $root.Release.Name | quote }}
-        chart: "{{ $root.Chart.Name }}-{{ $root.Chart.Version }}"
+        chart: "{{ $root.Chart.Name }}"
         component: "{{ $root.Values.Component }}"
     spec:
       {{- if $root.Values.Image.pullSecretName }}
@@ -202,12 +202,6 @@ spec:
         {{ else }}
 {{ toYaml $root.Values.resource.tserver | indent 10 }}
         {{ end }}
-        metadata:
-          labels:
-            heritage: {{ $root.Release.Service | quote }}
-            release: {{ $root.Release.Name | quote }}
-            chart: "{{ $root.Chart.Name }}-{{ $root.Chart.Version }}"
-            component: "{{ $root.Values.Component }}"
         command:
         {{ if eq .name "yb-masters" }}
           - "/home/yugabyte/bin/yb-master"
