@@ -205,6 +205,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheus.service.loadBalancerIP` |  Prometheus Loadbalancer IP | `""` |
 | `prometheus.service.loadBalancerSourceRanges` | Prometheus Load Balancer Source Ranges | `[]` |
 | `prometheus.service.sessionAffinity` | Prometheus Service Session Affinity | `""` |
+| `prometheus.podSecurityPolicy.allowedCapabilities` | Prometheus Pod Security Policy allowed capabilities | `""` |
 | `prometheus.additionalServiceMonitors` | List of `serviceMonitor` objects to create. See https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#servicemonitorspec | `[]` |
 | `prometheus.prometheusSpec.podMetadata` | Standard object’s metadata. More info: https://github.com/kubernetes/community/blob/master/contributors/devel/api-conventions.md#metadata Metadata Labels and Annotations gets propagated to the prometheus pods. | `{}` |
 | `prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues` | If true, a nil or {} value for prometheus.prometheusSpec.serviceMonitorSelector will cause the prometheus resource to be created with selectors based on values in the helm deployment, which will also match the servicemonitors created | `true` |
