@@ -15,7 +15,7 @@ swarm:
   nodePort: ""
   ## If static nodePort configuration is required it can be enabled as below
   ## Configure ports in allowable range (eg. 30000 - 32767 on minikube)
-  # nodePort: 304001
+  # nodePort: 34001
 
 resources: {}
 
