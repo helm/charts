@@ -8,6 +8,12 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
+{{ if .Values.presistence.annotations}}
+  annotations:
+    {{- range $key, $value := .Values.persistence.annotations }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+{{- end }}
 spec:
   accessModes:
     - {{ .Values.persistence.accessMode | quote }}
