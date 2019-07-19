@@ -133,6 +133,24 @@ data:
     stdout_output:
       enabled: {{ .Values.falco.stdoutOutput.enabled }}
 
+    # Falco contains an embedded webserver that can be used to accept K8s
+    # Audit Events. These config options control the behavior of that
+    # webserver. (By default, the webserver is disabled).
+    #
+    # The ssl_certificate is a combination SSL Certificate and corresponding
+    # key contained in a single file. You can generate a key/cert as follows:
+    #
+    # $ openssl req -newkey rsa:2048 -nodes -keyout key.pem -x509 -days 365 -out certificate.pem
+    # $ cat certificate.pem key.pem > falco.pem
+    # $ sudo cp falco.pem /etc/falco/falco.pem
+
+    webserver:
+      enabled: {{ .Values.falco.webserver.enabled }}
+      listen_port: {{ .Values.falco.webserver.listenPort }}
+      k8s_audit_endpoint: {{ .Values.falco.webserver.k8sAuditEndpoint }}
+      ssl_enabled: false
+      ssl_certificate: /etc/falco/falco.pem
+
     # Possible additional things you might want to do with program output:
     #   - send to a slack webhook:
     #         program: "\"jq '{text: .output}' | curl -d @- -X POST https://hooks.slack.com/services/XXX\""
