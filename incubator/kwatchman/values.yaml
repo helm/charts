@@ -1,0 +1,53 @@
+# Default values for kwatchman.
+
+image:
+  repository: snebel29/kwatchman
+  tag: latest
+  pullPolicy: IfNotPresent
+
+nameOverride: ""
+fullnameOverride: ""
+
+kwatchman:
+  filter_by:
+    namespace: ""
+    labelSelector: ""
+  config:
+    # Resources names need to match the registered resource name, which should be the kubernetes long name in lowercase
+    # to be 100% sure, you can find them within kwatchman resources definitions within its init() functions
+    resource:
+      - kind: deployment
+      - kind: service
+      - kind: statefulset
+      - kind: daemonset
+      - kind: ingress
+    # Handlers will be trigger in the specific list order, the order is very important then!
+    # Diff handler should typically be the first handler to trigger
+    # Handler names need to match the registered handler name which you will need to figure out in the documentation
+    # to be 100% sure, you can find them within kwatchman handler definitions within its init() functions
+    handler:
+      - name: diff
+      - name: log
+      # - name: ignoreEvents
+      #   events:
+      #     - Add
+      #     - Delete
+      # - name: slack
+      #   clustername: ""
+      #   webhookURL: ""
+
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+nodeSelector: {}
+tolerations: []
+affinity: {}

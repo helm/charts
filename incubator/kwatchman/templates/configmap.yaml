@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "kwatchman.fullname" . }}
+  labels:
+    app: {{ template "kwatchman.name" . }}
+    chart: {{ template "kwatchman.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  config.yaml: |
+  {{ toYaml .Values.kwatchman.config | nindent 4 }}

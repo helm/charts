@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "kwatchman.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "kwatchman.name" . }}
+    helm.sh/chart: {{ include "kwatchman.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  # replicas: 1 is hardcoded on purpose to disable configuring a different value, until-if some day kwatchman works in HA mode
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "kwatchman.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+      labels:
+        app.kubernetes.io/name: {{ include "kwatchman.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      serviceAccountName: {{ template "kwatchman.fullname" . }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          command: ["kwatchman"]
+          args:
+            - "--config=/etc/kwatchman/config.yaml"
+            {{- with .Values.kwatchman.filter_by.namespace }}
+            - "--namespace={{.}}"
+            {{- end }}
+            {{- with .Values.kwatchman.filter_by.labelSelector }}
+            - "--label-selector={{.}}"
+            {{- end }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: config
+              mountPath: /etc/kwatchman
+      volumes:
+        - name: config
+          configMap:
+            name: {{ template "kwatchman.fullname" . }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

@@ -1,0 +1,19 @@
+{{- if .Values.rbac.create -}}
+apiVersion: {{ template "kwatchman.rbac.apiVersion" . }}
+kind: ClusterRoleBinding
+metadata:
+  name: {{ template "kwatchman.fullname" . }}
+  labels:
+    app: {{ template "kwatchman.name" . }}
+    chart: {{ template "kwatchman.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ template "kwatchman.fullname" . }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ template "kwatchman.fullname" . }}
+    namespace: {{ .Release.Namespace }}
+{{- end -}}

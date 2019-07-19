@@ -1,0 +1,19 @@
+{{- if .Values.rbac.create -}}
+apiVersion: {{ template "kwatchman.rbac.apiVersion" . }}
+kind: ClusterRole
+metadata:
+  name: {{ template "kwatchman.fullname" . }}
+  labels:
+    app: {{ template "kwatchman.name" . }}
+    chart: {{ template "kwatchman.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+rules:
+  - apiGroups:
+      - '*'
+    resources:
+      - '*'
+    verbs:
+      - list
+      - watch
+{{- end -}}
