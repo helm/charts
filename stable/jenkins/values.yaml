@@ -17,7 +17,7 @@ master:
   # Used for label app.kubernetes.io/component
   componentName: "jenkins-master"
   image: "jenkins/jenkins"
-  imageTag: "lts"
+  tag: "lts"
   imagePullPolicy: "Always"
   imagePullSecretName:
   # Optionally configure lifetime for master-container
@@ -337,7 +337,7 @@ master:
 agent:
   enabled: true
   image: "jenkins/jnlp-slave"
-  imageTag: "3.27-1"
+  tag: "3.27-1"
   customJenkinsLabels: []
   # name of the secret to be used for image pulling
   imagePullSecretName:
