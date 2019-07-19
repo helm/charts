@@ -44,3 +44,12 @@ https://jenkins.io/projects/jcasc/
 ######            the Jenkins pod is terminated.                            #####
 #################################################################################
 {{- end }}
+
+{{- if .Values.master.imageTag }}
+
+#################################################################################
+######   WARNING: `master.imageTag` will be obsoleted soon!!!               #####
+######            It has been renamed to `master.tag`.                      #####
+#################################################################################
+{{- end }}
+
