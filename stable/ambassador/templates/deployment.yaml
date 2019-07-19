@@ -99,6 +99,9 @@ spec:
             {{- range .Values.service.ports }}
             - name: {{ .name }}
               containerPort: {{ .targetPort }}
+              {{- if .protocol }}
+              protocol: {{ .protocol }}
+              {{- end }}
             {{- end}}
             - name: admin
               containerPort: 8877

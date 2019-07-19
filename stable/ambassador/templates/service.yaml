@@ -21,17 +21,7 @@ spec:
   externalTrafficPolicy: "{{ .Values.service.externalTrafficPolicy }}"
   {{- end }}
   ports:
-    {{- range .Values.service.ports}}
-    - name: {{ .name }}
-      port: {{ .port }}
-      targetPort: {{ .targetPort }}
-      {{- if .nodePort }}
-      nodePort: {{ .nodePort }}
-      {{- end }}
-      {{- if .protocol }}
-      protocol: {{ .protocol }}
-      {{- end }}
-    {{- end}}
+    {{- toYaml .Values.service.ports | nindent 4 }}
   selector:
     app.kubernetes.io/name: {{ include "ambassador.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
