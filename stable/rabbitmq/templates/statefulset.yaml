@@ -275,10 +275,10 @@ spec:
             items:
             - key: rabbitmq-health-check
               path: rabbitmq-health-check
-              mode: 100
+              mode: 111
             - key: rabbitmq-api-check
               path: rabbitmq-api-check
-              mode: 100
+              mode: 111
         {{- if .Values.rabbitmq.loadDefinition.enabled }}
         - name: load-definition-volume
           secret:
