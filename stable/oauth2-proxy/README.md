@@ -102,3 +102,34 @@ $ helm install stable/oauth2-proxy --name my-release -f values.yaml
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+## SSL Configuration
+
+See: [SSL Configuration](https://pusher.github.io/oauth2_proxy/tls-configuration).
+Use ```values.yaml``` like:
+
+```yaml
+...
+extraArgs:
+  tls-cert: /path/to/cert.pem
+  tls-key: /path/to/cert.key
+
+extraVolumes:
+  - name: ssl-cert
+    secret: 
+      secretName: my-ssl-secret
+
+extraVolumeMounts:
+  - mountPath: /path/to/
+    name: ssl-cert 
+...
+```
+
+With a secret called `my-ssl-secret`:
+
+```yaml
+...
+data:
+  cert.pem: AB..==
+  cert.key: CD..==
+```
