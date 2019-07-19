@@ -82,7 +82,11 @@ spec:
 {{ tpl (toYaml .Values.master.customInitContainers) . | indent 8 }}
 {{- end }}
         - name: "copy-default-config"
+{{- if .Values.master.imageTag }}
           image: "{{ .Values.master.image }}:{{ .Values.master.imageTag }}"
+{{- else }}
+          image: "{{ .Values.master.image }}:{{ .Values.master.tag }}"
+{{- end }}
           imagePullPolicy: "{{ .Values.master.imagePullPolicy }}"
           command: [ "sh", "/var/jenkins_config/apply_config.sh" ]
           env:
@@ -147,7 +151,11 @@ spec:
               name: secrets-dir
       containers:
         - name: {{ template "jenkins.fullname" . }}
+{{- if .Values.master.imageTag }}
           image: "{{ .Values.master.image }}:{{ .Values.master.imageTag }}"
+{{- else }}
+          image: "{{ .Values.master.image }}:{{ .Values.master.tag }}"
+{{- end }}
           imagePullPolicy: "{{ .Values.master.imagePullPolicy }}"
           {{- if .Values.master.useSecurity }}
           args: [ "--argumentsRealm.passwd.$(ADMIN_USER)=$(ADMIN_PASSWORD)",  "--argumentsRealm.roles.$(ADMIN_USER)=admin"]
