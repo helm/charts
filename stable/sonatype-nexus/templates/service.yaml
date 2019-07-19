@@ -18,12 +18,17 @@ metadata:
 {{- end }}
 spec:
   ports:
-    - name: {{ .Values.service.portName }}
-      port: {{ .Values.service.port }}
-      protocol: TCP
-      targetPort: {{ .Values.service.targetPort }}
+  {{- if .Values.service.portName }}
+  - name: {{ .Values.service.portName }}
+    port: {{ .Values.service.port }}
+    targetPort: {{ .Values.service.targetPort }}
+  {{- end }}
+  {{- with .Values.service.ports  }}
+{{ toYaml . | indent 2 }}
+  {{- end -}}
   selector:
     app: {{ template "nexus.name" . }}
     release: {{ .Release.Name }}
   type: {{ .Values.service.serviceType }}
 {{- end}}
+
