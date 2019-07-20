@@ -55,6 +55,8 @@ Parameter | Description | Default
 `podAnnotations` | annotations to be added to pods | `{}`
 `priorityClassName` | priorityClassName to be added to pods | `{}`
 `prometheus.metricsPort` | Port to expose prometheus metrics on (if unspecified, `host.port` is used) | `host.port`
+`prometheus.service.enabled` | If true, create a Service resource for Prometheus | `false`
+`prometheus.service.annotations` | Annotations to be added to the service | `{}`
 `prometheus.serviceMonitor.enabled` | If true, create a Prometheus Operator ServiceMonitor resource | `false`
 `prometheus.serviceMonitor.interval` | Interval at which the metrics endpoint is scraped | `10s`
 `prometheus.serviceMonitor.namespace` | An alternative namespace in which to install the ServiceMonitor | `""`
