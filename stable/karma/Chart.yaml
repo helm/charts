@@ -6,7 +6,7 @@ home: https://github.com/prymitive/karma
 sources:
   - https://hub.docker.com/r/lmierzwa/karma/
   - https://github.com/prymitive/karma
-version: 1.1.16
+version: 1.1.17
 maintainers:
 - name: davidkarlsen
   email: david@davidkarlsen.com
