@@ -31,6 +31,7 @@ server:
   #  requests:
   #    cpu: 0.5
   #    memory: 640Mi
+  annotations: {}
 
 skipper:
   image: springcloud/spring-cloud-skipper-server

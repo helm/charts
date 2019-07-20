@@ -8,6 +8,10 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
+{{- if .Values.server.service.annotations }}
+  annotations:
+{{ toYaml .Values.server.service.annotations | indent 4 }}
+{{- end }}
 spec:
   # If you are running k8s on a local dev box, you can use type NodePort instead
   type: {{ .Values.server.service.type }}
