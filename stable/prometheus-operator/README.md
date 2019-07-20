@@ -196,9 +196,9 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheusOperator.admissionWebhooks.failurePolicy` | Failure policy for admission webhooks | `Fail` |
 | `prometheusOperator.admissionWebhooks.patch.enabled` | If true, will use a pre and post install hooks to generate a CA and certificate to use for the prometheus operator tls proxy, and patch the created webhooks with the CA. | `true` |
 | `prometheusOperator.admissionWebhooks.patch.image.repository` | Repository to use for the webhook integration jobs | `jettech/kube-webhook-certgen` |
-| `prometheusOperator.admissionWebhooks.patch.image.repository` | Tag to use for the webhook integration jobs | `v1.0.0` |
-| `prometheusOperator.admissionWebhooks.patch.image.repository` | Image pull policy for the webhook integration jobs | `v1.0.0` |
-| `prometheusOperator.admissionWebhooks.patch.priorityClassName` | Priority class for the webhook integration jobs | `v1.0.0` |
+| `prometheusOperator.admissionWebhooks.patch.image.tag` | Tag to use for the webhook integration jobs | `v1.0.0` |
+| `prometheusOperator.admissionWebhooks.patch.image.pullPolicy` | Image pull policy for the webhook integration jobs | `IfNotPresent` |
+| `prometheusOperator.admissionWebhooks.patch.priorityClassName` | Priority class for the webhook integration jobs | `nil` |
 
 ### Prometheus
 | Parameter | Description | Default |
