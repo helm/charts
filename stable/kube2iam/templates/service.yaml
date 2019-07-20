@@ -1,14 +1,17 @@
-{{- if .Values.prometheus.serviceMonitor.enabled }}
+{{- if or .Values.prometheus.serviceMonitor.enabled .Values.prometheus.service.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
-  annotations:
   name: {{ template "kube2iam.fullname" . }}-metrics
   labels:
     app: {{ template "kube2iam.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+  {{- if .Values.prometheus.service.annotations }}
+  annotations:
+    {{- toYaml .Values.prometheus.service.annotations | nindent 4 }}
+  {{- end }}
 spec:
   selector:
     app: {{ template "kube2iam.name" . }}
