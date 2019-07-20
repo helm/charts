@@ -60,6 +60,8 @@ tolerations: []
 
 affinity: {}
 
+securityContext: {}
+
 # configuration for liveness probe
 livenessProbe:
   delay: 5
