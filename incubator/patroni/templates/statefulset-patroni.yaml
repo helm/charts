@@ -49,10 +49,10 @@ spec:
           value: {{ (printf "{ \"app\": \"%s\", \"release\": \"%s\" }" (include "patroni.fullname" .) .Release.Name) | quote }}
         - name: KUBERNETES_SCOPE_LABEL
           value: "app"
-        {{- end }}
         {{- if .Values.kubernetes.configmaps.enable }}
         - name: KUBERNETES_USE_CONFIGMAPS
           value: "true"
+        {{- end }}
         {{- end }}
         {{- if .Values.etcd.enable }}
         {{- if .Values.etcd.deployChart }}
@@ -69,6 +69,14 @@ spec:
         {{- else }}
         - name: ZOOKEEPER_HOSTS
           value: {{ .Values.zookeeper.hosts | quote }}
+        {{- end }}
+        {{- else if .Values.consul.enable }}
+        {{- if .Values.consul.deployChart }}
+        - name: PATRONI_CONSUL_HOST
+          value: {{(printf "'%s-consul'" .Release.Name | trunc 63)}}
+        {{- else }}
+        - name: PATRONI_CONSUL_HOST
+          value: {{ .Values.consul.host | quote }}
         {{- end }}
         {{- end }}
         - name: SCOPE
@@ -114,6 +122,12 @@ spec:
             fieldRef:
               apiVersion: v1
               fieldPath: metadata.namespace
+        {{- if .Values.env }}
+        {{- range $key, $val := .Values.env }}
+        - name: {{  $key | quote | upper }}
+          value: {{ $val | quote }}
+        {{- end }}
+        {{- end }}
         ports:
         - containerPort: 8008
         - containerPort: 5432
