@@ -76,6 +76,15 @@ spec:
           timeoutSeconds: 5
           successThreshold: 1
           failureThreshold: 5
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8181
+            scheme: HTTP
+          initialDelaySeconds: 10
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 5
       volumes:
         - name: config-volume
           configMap:
