@@ -159,6 +159,8 @@ Parameter                                            | Description              
 `metrics.serviceMonitor.interval`                    | How frequently to scrape metrics (use by default, falling back to Prometheus' default)                     | `nil`
 `metrics.serviceMonitor.selector`                    | Default to kube-prometheus install (CoreOS recommended), but should be set according to Prometheus install | `{ prometheus: kube-prometheus }`
 `hooks.affinity`                                     | Affinity settings for hooks pods                                                                           | `{}`
+`hooks.dbInit.resources.limits`                      | Hook job resource limits                                                                                   | `{memory: 3200Mi}`
+`hooks.dbInit.resources.requests`                    | Hook job resource requests                                                                                 | `{memory: 3000Mi}`
 
 Dependent charts can also have values overwritten. Preface values with postgresql. _or redis._
 
