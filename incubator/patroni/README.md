@@ -77,6 +77,10 @@ The following table lists the configurable parameters of the patroni chart and t
 | `zookeeper.enable`                | Using ZooKeeper as DCS                      | `false`                                             |
 | `zookeeper.deployChart`           | Deploy ZooKeeper chart                      | `false`                                             |
 | `zookeeper.hosts`                 | List of ZooKeeper cluster members           | `host1:port1,host2:port,etc...`                     |
+| `consul.enable`                   | Using Consul as DCS                         | `false`                                             |
+| `consul.deployChart`              | Deploy Consul chart                         | `false`                                             |
+| `consul.host`                     | Host name of consul cluster                 | `nil`                                               |
+| `env`                             | Extra custom environment variables          | `{}`                                                |
 | `walE.enable`                     | Use of Wal-E tool for base backup/restore   | `false`                                             |
 | `walE.scheduleCronJob`            | Schedule of Wal-E backups                   | `00 01 * * *`                                       |
 | `walE.retainBackups`              | Number of base backups to retain            | `2`                                                 |

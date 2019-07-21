@@ -36,6 +36,14 @@ zookeeper:
   # If not deploying etcd chart, fill-in list of ZooKeeper members in format:
   # 'host1:port1','host2:port2','etc...'
   hosts:
+consul:
+  enable: false
+  deployChart: false
+  # Leave blank to use vendored consul chart
+  hosts:
+
+# Extra custom environment variables.
+env: {}
 
 walE:
   # Specifies whether Wal-E should be enabled
