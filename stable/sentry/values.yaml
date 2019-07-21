@@ -279,4 +279,4 @@ hooks:
       limits:
         memory: 3200Mi
       requests:
-        memory: 3100Mi
+        memory: 3000Mi
