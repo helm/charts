@@ -13,6 +13,8 @@ service:
   portRequest: 7051
   portEvent: 7053
 
+dockerSocketPath: /var/run/docker.sock
+
 ingress:
   enabled: false
   annotations: {}
@@ -41,6 +43,16 @@ persistence:
   accessMode: ReadWriteOnce
   size: 1Gi
   # existingClaim: ""
+
+logging:
+  level: info
+  peer: info
+  cauthdsl: warning
+  gossip: info
+  grpc: error
+  ledger: info
+  msp: warning
+  policies: warning
 
 ##################################
 ## Peer configuration options    #

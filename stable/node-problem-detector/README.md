@@ -44,8 +44,9 @@ The following table lists the configurable parameters for this chart and their d
 | `image.tag`                           | Image tag                                  | `v0.6.3`                                                     |
 | `nameOverride`                        | Override the name of the chart             | `nil`                                                        |
 | `rbac.create`                         | RBAC                                       | `true`                                                       |
+| `rbac.pspEnabled`                     | PodSecuritypolicy                          | `false`                                                      |
 | `hostNetwork`                         | Run pod on host network                    | `false`                                                      |
-| `priorityClassName`                   | Priority class name                        | `""`                                                      |
+| `priorityClassName`                   | Priority class name                        | `""`                                                         |
 | `resources`                           | Pod resource requests and limits           | `{}`                                                         |
 | `settings.custom_monitor_definitions` | User-specified custom monitor definitions  | `{}`                                                         |
 | `settings.log_monitors`               | System log monitor config files            | `/config/kernel-monitor.json`, `/config/docker-monitor.json` |
