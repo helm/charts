@@ -3,6 +3,12 @@
 This file documents all notable changes to Sysdig Falco Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v1.0.0
+
+### Major Changes
+
+* Add support for K8s audit logging
+
 ## v0.9.1
 
 ### Minor Changes

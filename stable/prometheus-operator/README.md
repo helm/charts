@@ -15,6 +15,8 @@ The default installation is intended to suit monitoring a kubernetes cluster the
   - kube-controller-manager
   - etcd
   - kube-dns/coredns
+  - kube-proxy
+
 With the installation, the chart also includes dashboards and alerts.
 
 The same chart can be used to run multiple prometheus instances in the same cluster if required. To achieve this, the other components need to be disabled - it is necessary to run only one instance of prometheus-operator and a pair of alertmanager pods for an HA configuration.
@@ -90,6 +92,12 @@ $ helm install --name my-release stable/prometheus-operator --set prometheusOper
 The `crd-install` hook is required to deploy the prometheus operator CRDs before they are used. If you are forced to use an earlier version of Helm you can work around this requirement as follows:
 1. Install prometheus-operator by itself, disabling everything but the prometheus-operator component, and also setting `prometheusOperator.serviceMonitor.selfMonitor=false`
 2. Install all the other components, and configure `prometheus.additionalServiceMonitors` to scrape the prometheus-operator service.
+
+
+### Upgrade
+When executing the `helm upgrade` to avoid the error below is need add the argument `--force`.
+> invalid: spec.selector: Invalid value: v1.LabelSelector{MatchLabels:map[string]string{"app.kubernetes.io/name":"kube-state-metrics"}, MatchExpressions:[]v1.LabelSelectorRequirement(nil)}: field is immutable
+
 
 ## Configuration
 
@@ -203,6 +211,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheus.service.loadBalancerIP` |  Prometheus Loadbalancer IP | `""` |
 | `prometheus.service.loadBalancerSourceRanges` | Prometheus Load Balancer Source Ranges | `[]` |
 | `prometheus.service.sessionAffinity` | Prometheus Service Session Affinity | `""` |
+| `prometheus.podSecurityPolicy.allowedCapabilities` | Prometheus Pod Security Policy allowed capabilities | `""` |
 | `prometheus.additionalServiceMonitors` | List of `serviceMonitor` objects to create. See https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#servicemonitorspec | `[]` |
 | `prometheus.prometheusSpec.podMetadata` | Standard object’s metadata. More info: https://github.com/kubernetes/community/blob/master/contributors/devel/api-conventions.md#metadata Metadata Labels and Annotations gets propagated to the prometheus pods. | `{}` |
 | `prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues` | If true, a nil or {} value for prometheus.prometheusSpec.serviceMonitorSelector will cause the prometheus resource to be created with selectors based on values in the helm deployment, which will also match the servicemonitors created | `true` |
@@ -330,7 +339,8 @@ For a full list of configurable values please refer to the [Grafana chart](https
 | `grafana.sidecar.dashboards.enabled` | Enable the Grafana sidecar to automatically load dashboards with a label `{{ grafana.sidecar.dashboards.label }}=1` | `true` |
 | `grafana.sidecar.dashboards.label` | If the sidecar is enabled, configmaps with this label will be loaded into Grafana as dashboards | `grafana_dashboard` |
 | `grafana.sidecar.datasources.enabled` | Enable the Grafana sidecar to automatically load dashboards with a label `{{ grafana.sidecar.datasources.label }}=1` | `true` |
-| `grafana.sidecar.datasources.defaultDatasourceEnabled` | Enable Grafana `Prometheus` default datasource` | `true` |
+| `grafana.sidecar.datasources.defaultDatasourceEnabled` | Enable Grafana `Prometheus` default datasource | `true` |
+| `grafana.sidecar.datasources.createPrometheusReplicasDatasources` | Create datasource for each Pod of Prometheus StatefulSet i.e. `Prometheus-0`, `Prometheus-1` | `false` |
 | `grafana.sidecar.datasources.label` | If the sidecar is enabled, configmaps with this label will be loaded into Grafana as datasources configurations | `grafana_datasource` |
 | `grafana.rbac.pspUseAppArmor` | Enforce AppArmor in created PodSecurityPolicy (requires rbac.pspEnabled) | `true` |
 | `grafana.extraConfigmapMounts` | Additional grafana server configMap volume mounts | `[]` |
@@ -403,6 +413,14 @@ For a full list of configurable values please refer to the [Grafana chart](https
 | `kubeScheduler.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
 | `kubeScheduler.serviceMonitor.metricRelabelings` | The `metric_relabel_configs` for scraping the Kubernetes scheduler. | `` |
 | `kubeScheduler.serviceMonitor.relabelings` | The `relabel_configs` for scraping the Kubernetes scheduler. | `` |
+| `kubeProxy.enabled` | Deploy a `service` and `serviceMonitor` to scrape the Kubernetes proxy | `true` |
+| `kubeProxy.service.port` | Kubernetes proxy port for the service runs on | `10249` |
+| `kubeProxy.service.targetPort` | Kubernetes proxy targetPort for the service runs on | `10249` |
+| `kubeProxy.service.selector` | Kubernetes proxy service selector | `{"k8s-app" : "kube-proxy" }` |
+| `kubeProxy.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
+| `kubeProxy.serviceMonitor.https` | Kubernetes proxy service scrape over https | `false` |
+| `kubeProxy.serviceMonitor.metricRelabelings` | The `metric_relabel_configs` for scraping the Kubernetes proxy. | `` |
+| `kubeProxy.serviceMonitor.relabelings` | The `relabel_configs` for scraping the Kubernetes proxy. | `` |
 | `kubeStateMetrics.enabled` | Deploy the `kube-state-metrics` chart and configure a servicemonitor to scrape | `true` |
 | `kubeStateMetrics.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
 | `kubeStateMetrics.serviceMonitor.metricRelabelings` | Metric relablings for the `kube-state-metrics` ServiceMonitor | `[]` |
@@ -520,3 +538,31 @@ status:
 ```
 
 The PVC will take ownership of the PV and when you create a release using a persistent volume claim template it will use the existing PVCs as they match the naming convention used by the chart. For other cloud providers similar approaches can be used.
+
+### KubeProxy
+
+The metrics bind address of kube-proxy is default to `127.0.0.1:10249` that prometheus instances **cannot** access to. You should expose metrics by changing `metricsBindAddress` field value to `0.0.0.0:10249` in ConfigMap `kube-system/kube-proxy` if you want to collect them. For example:
+
+```
+kubectl -n kube-system edit cm kube-proxy
+```
+
+```
+apiVersion: v1
+data:
+  config.conf: |-
+    apiVersion: kubeproxy.config.k8s.io/v1alpha1
+    kind: KubeProxyConfiguration
+    # ...
+    # metricsBindAddress: 127.0.0.1:10249
+    metricsBindAddress: 0.0.0.0:10249
+    # ...
+  kubeconfig.conf: |-
+    # ...
+kind: ConfigMap
+metadata:
+  labels:
+    app: kube-proxy
+  name: kube-proxy
+  namespace: kube-system
+```
