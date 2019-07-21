@@ -1,3 +1,11 @@
+{{- if (ne .Values.hooks.dbInit.resources.requests.memory "3000Mi") }}
+WARNING:
+  You have changed the default memory request for the db-init job hook. It may affect your setup.
+  If you are facing problems, check next links:
+    - https://github.com/helm/charts/issues/15296
+    - https://github.com/getsentry/onpremise/blob/master/install.sh
+
+{{- end }}
 1. Get the application URL by running these commands:
 {{- if contains "NodePort" .Values.service.type }}
   export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "sentry.fullname" . }})

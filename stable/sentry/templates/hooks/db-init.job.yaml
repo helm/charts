@@ -99,7 +99,10 @@ spec:
         - mountPath: /etc/sentry
           name: config
           readOnly: true
+        resources:
+{{ toYaml .Values.hooks.dbInit.resources | indent 10 }}
       volumes:
       - name: config
         configMap:
           name: {{ template "sentry.fullname" . }}
+
