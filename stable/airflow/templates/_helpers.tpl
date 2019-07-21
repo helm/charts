@@ -97,16 +97,16 @@ See script/entrypoint.sh in that repo for more info.
 The key names for postgres and redis are fixed, which is consistent with the subcharts.
 */}}
 {{- define "airflow.mapenvsecrets" }}
-  {{- if .Values.postgresql.enabled }}
   - name: POSTGRES_USER
     value: {{ default "postgres" .Values.postgresql.postgresUser | quote }}
+  {{- if .Values.postgresql.existingSecret }}
   - name: POSTGRES_PASSWORD
     valueFrom:
       secretKeyRef:
         name: {{ default (include "airflow.postgresql.fullname" .) .Values.postgresql.existingSecret }}
         key: postgres-password
   {{- end }}
-  {{- if .Values.redis.enabled }}
+  {{- if .Values.redis.existingSecret }}
   - name: REDIS_PASSWORD
     valueFrom:
       secretKeyRef:
