@@ -124,6 +124,10 @@ data:
       }
 
       /etc/openvpn/setup/setup-certs.sh
+{{ if .Values.openvpn.istio.enabled }}
+      iptables -t nat -A ISTIO_INBOUND -s {{ .Values.openvpn.OVPN_NETWORK }}/{{ .Values.openvpn.OVPN_SUBNET }} -i tun0 -p tcp -j REDIRECT --to-ports {{ .Values.openvpn.istio.proxy.port }}
+{{ end }}
+
       iptables -t nat -A POSTROUTING -s {{ .Values.openvpn.OVPN_NETWORK }}/{{ .Values.openvpn.OVPN_SUBNET }} -o eth0 -j MASQUERADE
       mkdir -p /dev/net
       if [ ! -c /dev/net/tun ]; then
