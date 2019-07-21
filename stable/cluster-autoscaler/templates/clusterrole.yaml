@@ -102,6 +102,13 @@ rules:
     - watch
     - list
     - get
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+    verbs:
+      - list
+      - watch
 {{- if .Values.rbac.pspEnabled }}
   - apiGroups:
     - extensions
