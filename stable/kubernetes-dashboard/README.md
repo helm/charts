@@ -32,6 +32,18 @@ helm delete my-release
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
+## Upgrading an existing Release to a new major version
+
+A major chart version change (like v1.2.3 -> v2.0.0) indicates that there is an
+incompatible breaking change needing manual actions.
+
+### To 2.0.0
+
+This version upgrades to kubernetes-dashboard v2.0.0 along with changes in RBAC management: all secrets are explicitely created and ServiceAccount do not have permission to create any secret.
+
+In order to upgrade, either remove the secrets or uninstall/reinstall.
+
+
 ## Access control
 
 It is critical for the Kubernetes cluster to correctly setup access control of Kubernetes Dashboard. See this [guide](https://github.com/kubernetes/dashboard/wiki/Access-control) for best practises.
@@ -44,8 +56,8 @@ The following table lists the configurable parameters of the kubernetes-dashboar
 
 | Parameter                           | Description                                                                                                                 | Default                                                                    |
 |-------------------------------------|-----------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------|
-| `image.repository`                  | Repository for container image                                                                                              | `k8s.gcr.io/kubernetes-dashboard-amd64`                                    |
-| `image.tag`                         | Image tag                                                                                                                   | `v1.10.1`                                                                  |
+| `image.repository`                  | Repository for container image                                                                                              | `kubernetesui/dashboard`                                    |
+| `image.tag`                         | Image tag                                                                                                                   | `v2.0.0`                                                                   |
 | `image.pullPolicy`                  | Image pull policy                                                                                                           | `IfNotPresent`                                                             |
 | `image.pullSecrets`                 | Image pull secrets                                                                                                          | `[]`                                                                       |
 | `annotations`                       | Annotations for deployment                                                                                                  | `{}`                                                                       |

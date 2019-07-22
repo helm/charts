@@ -9,7 +9,6 @@ metadata:
     release: {{ .Release.Name }}
   name: {{ template "kubernetes-dashboard.fullname" . }}
   namespace: {{ .Release.Namespace }}
-
 spec:
   {{- if .Values.podDisruptionBudget.minAvailable }}
   minAvailable: {{ .Values.podDisruptionBudget.minAvailable }}

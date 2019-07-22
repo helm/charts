@@ -1,0 +1,18 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app: {{ template "kubernetes-dashboard.name" . }}
+    chart: {{ template "kubernetes-dashboard.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: "{{ template "kubernetes-dashboard.fullname" . }}"
+  namespace: {{ .Release.Namespace }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ template "kubernetes-dashboard.fullname" . }}
+subjects:
+  - kind: ServiceAccount
+    name: kubernetes-dashboard
+    namespace: {{ .Release.Namespace }}
