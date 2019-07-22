@@ -127,6 +127,11 @@ data:
 {{ if .Values.openvpn.istio.enabled }}
       iptables -t nat -A ISTIO_INBOUND -s {{ .Values.openvpn.OVPN_NETWORK }}/{{ .Values.openvpn.OVPN_SUBNET }} -i tun0 -p tcp -j REDIRECT --to-ports {{ .Values.openvpn.istio.proxy.port }}
 {{ end }}
+{{ if .Values.openvpn.restrictToCluster }}
+      iptables -A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+      iptables -A FORWARD -m conntrack --ctstate NEW -d {{ .Values.openvpn.OVPN_K8S_POD_NETWORK }}/{{ .Values.openvpn.OVPN_K8S_POD_SUBNET }} -j ACCEPT
+      iptables -A FORWARD -j REJECT
+{{ end }}
 
       iptables -t nat -A POSTROUTING -s {{ .Values.openvpn.OVPN_NETWORK }}/{{ .Values.openvpn.OVPN_SUBNET }} -o eth0 -j MASQUERADE
       mkdir -p /dev/net

@@ -96,5 +96,8 @@ openvpn:
     enabled: false
     proxy:
       port: 15001
+  # Installs iptables rules to restrict network access of a openvpn client to the pod
+  # network
+  restrictToCluster: false
 
 nodeSelector: {}
