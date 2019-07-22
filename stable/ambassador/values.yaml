@@ -47,7 +47,7 @@ securityContext:
 
 image:
   repository: quay.io/datawire/ambassador
-  tag: 0.72.0
+  tag: 0.73.0
   pullPolicy: IfNotPresent
 
 nameOverride: ""
@@ -98,6 +98,8 @@ rbac:
   # Specifies whether RBAC resources should be created
   create: true
   namespaced: false
+  podSecurityPolicies:
+    {}
 
 scope:
   # tells Ambassador to only use resources in the namespace or namespace set by namespace.name

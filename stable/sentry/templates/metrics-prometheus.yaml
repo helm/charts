@@ -2,12 +2,12 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "sentry.fullname" . }}
   {{- if .Values.metrics.serviceMonitor.namespace }}
   namespace: {{ .Values.metrics.serviceMonitor.namespace }}
   {{- end }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "sentry.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -22,7 +22,7 @@ spec:
     {{- end }}
   selector:
     matchLabels:
-      app: {{ template "fullname" . }}
+      app: {{ template "sentry.fullname" . }}
       release: {{ .Release.Name }}
   namespaceSelector:
     matchNames:
