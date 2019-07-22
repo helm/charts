@@ -8,16 +8,18 @@ This chart will deploy the New Relic Infrastructure agent as a Daemonset.
 
 | Parameter                 | Description                                                  | Default                    |
 | ------------------------- | ------------------------------------------------------------ | -------------------------- |
-| `cluster`                 | The cluster name for the Kubernetes cluster.                 |                          |
-| `licenseKey`              | The [license key](https://docs.newrelic.com/docs/accounts/install-new-relic/account-setup/license-key)  for your New Relic Account. | |
-| `config`                  | A `newrelic.yml` file if you wish to provide.                |                         |
+| `cluster`                 | The cluster name for the Kubernetes cluster.                 |                            |
+| `licenseKey`              | The [license key](https://docs.newrelic.com/docs/accounts/install-new-relic/account-setup/license-key)  for your New Relic Account. This will be preferred configuration option if both `licenseKey` and `customSecret` are specified. | |
+| `customSecret.name`       | Name of the Secret object where the license key is stored    |                            |
+| `customSecret.key`        | Key in the Secret object where the license key is stored.    |                            |
+| `config`                  | A `newrelic.yml` file if you wish to provide.                |                            |
 | `kubeStateMetricsUrl`     | If provided, the discovery process for kube-state-metrics endpoint won't be triggered. Example: http://172.17.0.3:8080 |
 | `kubeStateMetricsTimeout` | Timeout for accessing kube-state-metrics in milliseconds. If not set the newrelic default is 5000 | |
 | `rbac.create`             | Enable Role-based authentication                             | `true`                     |
 | `rbac.pspEnabled`         | Enable pod security policy support                           | `false`                    |
 | `image.name`              | The container to pull.                                       | `newrelic/infrastructure`  |
 | `image.pullPolicy`        | The pull policy.                                             | `IfNotPresent`             |
-| `image.tag`               | The version of the container to pull.                        | `1.9.0`            |
+| `image.tag`               | The version of the container to pull.                        | `1.9.0`                    |
 | `resources`               | Any resources you wish to assign to the pod.                 | See Resources below        |
 | `verboseLog`              | Should the agent log verbosely. (Boolean)                    | `false`                    |
 | `priorityClassName`       | Scheduling priority of the pod                               | `nil`                      |

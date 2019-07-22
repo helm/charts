@@ -214,6 +214,10 @@ spec:
                 path: falco_rules.yaml
               - key: falco_rules.local.yaml
                 path: falco_rules.local.yaml
+              {{- if .Values.falco.webserver.enabled }}
+              - key: k8s_audit_rules.yaml
+                path: k8s_audit_rules.yaml
+              {{- end }}
         {{- if .Values.customRules }}
         - name: rules-volume
           configMap:

@@ -150,7 +150,7 @@ Get the password secret.
 */}}
 {{- define "redis.secretName" -}}
 {{- if .Values.existingSecret -}}
-{{- printf "%s" .Values.existingSecret -}}
+{{- printf "%s" (tpl .Values.existingSecret .) -}}
 {{- else -}}
 {{- printf "%s" (include "redis.fullname" .) -}}
 {{- end -}}

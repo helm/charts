@@ -1,0 +1,35 @@
+{{- if .Values.rbac.pspEnabled }}
+apiVersion: extensions/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: {{ template "node-problem-detector.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "node-problem-detector.name" . }}
+    helm.sh/chart: {{ include "node-problem-detector.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  privileged: true
+  allowPrivilegeEscalation: true
+  allowedCapabilities:
+  - '*'
+  volumes:
+  - 'configMap'
+  - 'emptyDir'
+  - 'projected'
+  - 'secret'
+  - 'downwardAPI'
+  - 'persistentVolumeClaim'
+  - 'hostPath'
+  hostNetwork: false
+  hostIPC: false
+  hostPID: false
+  runAsUser:
+    rule: 'RunAsAny'
+  seLinux:
+    rule: 'RunAsAny'
+  supplementalGroups:
+    rule: 'RunAsAny'
+  fsGroup:
+    rule: 'RunAsAny'
+{{- end }}

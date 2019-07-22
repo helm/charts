@@ -49,6 +49,8 @@ The following table lists the configurable parameters of the Parse chart and the
 |---------------------------------------|------------------------------------------|-------------------------------------------------------- |
 | `global.imageRegistry`                | Global Docker image registry             | `nil`                                                   |
 | `global.imagePullSecrets`             | Global Docker registry secret names as an array | `[]` (does not add image pull secrets to deployed pods) |
+| `nameOverride`                        | String to partially override parse.fullname template with a string (will prepend the release name) | `nil`|
+| `fullnameOverride`                    | String to fully override parse.fullname template with a string                                     | `nil`|
 | `service.type`                        | Kubernetes Service type                  | `LoadBalancer`                                          |
 | `service.port`                        | Service HTTP port (Dashboard)            | `80`                                                    |
 | `service.loadBalancerIP`              | `loadBalancerIP` for the Parse Service   | `nil`                                                   |
@@ -84,22 +86,22 @@ The following table lists the configurable parameters of the Parse chart and the
 | `persistence.storageClass`            | PVC Storage Class for Parse volume       | `nil` (uses alpha storage class annotation)             |
 | `persistence.accessMode`              | PVC Access Mode for Parse volume         | `ReadWriteOnce`                                         |
 | `persistence.size`                    | PVC Storage Request for Parse volume     | `8Gi`                                                   |
-| `ingress.enabled`                   | Enable ingress controller resource                            | `false`                                                  |
-| `ingress.annotations`               | Ingress annotations                                           | `[]`                                                     |
-| `ingress.certManager`               | Add annotations for cert-manager                              | `false`                                                  |
-| `ingress.dashboard.hosts[0].name`             | Hostname to your Parse Dashboard installation                           | `ghost.local`                                            |
-| `ingress.dashboard.hosts[0].path`             | Path within the url structure                                 | `/`                                                      |
-| `ingress.dashboard.hosts[0].tls`              | Utilize TLS backend in ingress                                | `false`                                                  |
-| `ingress.dashboard.hosts[0].tlsHosts`         | Array of TLS hosts for ingress record (defaults to `ingress.hosts[0].name` if `nil`)                               | `nil`                                                  |
-| `ingress.dashboard.hosts[0].tlsSecret`        | TLS Secret (certificates)                                     | `ghost.local-tls-secret`                                 |
-| `ingress.server.hosts[0].name`             | Hostname to your Parse Server installation                           | `ghost.local`                                            |
-| `ingress.server.hosts[0].path`             | Path within the url structure                                 | `/`                                                      |
-| `ingress.server.hosts[0].tls`              | Utilize TLS backend in ingress                                | `false`                                                  |
-| `ingress.server.hosts[0].tlsHosts`         | Array of TLS hosts for ingress record (defaults to `ingress.hosts[0].name` if `nil`)                               | `nil`                                                  |
-| `ingress.server.hosts[0].tlsSecret`        | TLS Secret (certificates)                                     | `ghost.local-tls-secret`                                 |
-| `ingress.secrets[0].name`           | TLS Secret Name                                               | `nil`                                                    |
-| `ingress.secrets[0].certificate`    | TLS Secret Certificate                                        | `nil`                                                    |
-| `ingress.secrets[0].key`            | TLS Secret Key                                                | `nil`                                                    |
+| `ingress.enabled`                     | Enable ingress controller resource       | `false`                                                 |
+| `ingress.annotations`                 | Ingress annotations                      | `[]`                                                    |
+| `ingress.certManager`                 | Add annotations for cert-manager         | `false`                                                 |
+| `ingress.dashboard.hosts[0].name`     | Hostname to your Parse Dashboard installation | `ghost.local`                                      |
+| `ingress.dashboard.hosts[0].path`     | Path within the url structure            | `/`                                                     |
+| `ingress.dashboard.hosts[0].tls`      | Utilize TLS backend in ingress           | `false`                                                 |
+| `ingress.dashboard.hosts[0].tlsHosts` | Array of TLS hosts for ingress record (defaults to `ingress.hosts[0].name` if `nil`) | `nil`       |
+| `ingress.dashboard.hosts[0].tlsSecret`| TLS Secret (certificates)                | `ghost.local-tls-secret`                                |
+| `ingress.server.hosts[0].name`        | Hostname to your Parse Server installation | `ghost.local`                                         |
+| `ingress.server.hosts[0].path`        | Path within the url structure            | `/`                                                     |
+| `ingress.server.hosts[0].tls`         | Utilize TLS backend in ingress           | `false`                                                 |
+| `ingress.server.hosts[0].tlsHosts`    | Array of TLS hosts for ingress record (defaults to `ingress.hosts[0].name` if `nil`) | `nil`       |
+| `ingress.server.hosts[0].tlsSecret`   | TLS Secret (certificates)                | `ghost.local-tls-secret`                                |
+| `ingress.secrets[0].name`             | TLS Secret Name                          | `nil`                                                   |
+| `ingress.secrets[0].certificate`      | TLS Secret Certificate                   | `nil`                                                   |
+| `ingress.secrets[0].key`              | TLS Secret Key                           | `nil`                                                   |
 | `mongodb.usePassword`                 | Enable MongoDB password authentication   | `true`                                                  |
 | `mongodb.password`                    | MongoDB admin password                   | `nil`                                                   |
 | `mongodb.persistence.enabled`         | Enable MongoDB persistence using PVC     | `true`                                                  |
