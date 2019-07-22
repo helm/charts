@@ -12,12 +12,12 @@ metadata:
 {{- if .Values.reloader.matchLabels }}
 {{ toYaml .Values.reloader.matchLabels | indent 4 }}
 {{- end }}
-  name: {{ template "reloader-name" . }}-role-binding
+  name: {{ template "reloader-fullname" . }}-role-binding
   namespace: {{ .Release.Namespace }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: {{ template "reloader-name" . }}-role
+  name: {{ template "reloader-fullname" . }}-role
 subjects:
   - kind: ServiceAccount
     name: {{ template "serviceAccountName" . }}
