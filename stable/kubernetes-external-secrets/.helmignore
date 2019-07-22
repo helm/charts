@@ -20,3 +20,5 @@
 .idea/
 *.tmproj
 .vscode/
+# OWNERS file for Kubernetes
+OWNERS

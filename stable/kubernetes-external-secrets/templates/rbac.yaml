@@ -2,12 +2,12 @@
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
 metadata:
-  name: {{ template "kubernetes-external-secrets.fullname" . }}
+  name: {{ include "kubernetes-external-secrets.fullname" . }}
   labels:
-    app: {{ template "kubernetes-external-secrets.name" . }}
-    chart: {{ template "kubernetes-external-secrets.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ include "kubernetes-external-secrets.name" . }}
+    helm.sh/chart: {{ include "kubernetes-external-secrets.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 rules:
   - apiGroups: [""]
     resources: ["secrets"]
@@ -26,12 +26,12 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
 metadata:
-  name: {{ template "kubernetes-external-secrets.fullname" . }}
+  name: {{ include "kubernetes-external-secrets.fullname" . }}
   labels:
-    app: {{ template "kubernetes-external-secrets.name" . }}
-    chart: {{ template "kubernetes-external-secrets.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ include "kubernetes-external-secrets.name" . }}
+    helm.sh/chart: {{ include "kubernetes-external-secrets.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
