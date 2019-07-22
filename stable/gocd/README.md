@@ -102,6 +102,9 @@ The following tables list the configurable parameters of the GoCD chart and thei
 | `server.hostAliases`                       | Aliases for IPs in /etc/hosts                                                                                 | `[]`                |
 | `server.security.ssh.enabled`              | Enable the use of SSH keys for GoCD server                                                                    | `false`             |
 | `server.security.ssh.secretName`           | The name of the secret holding the SSH keys                                                                   | `gocd-server-ssh`   |
+| `server.securityContext.runAsUser`         | The container user for all the GoCD server pods.                                                              | `1000`              |
+| `server.securityContext.runAsGroup`        | The container group for all the GoCD server pods.                                                             | `0`                 |
+| `server.securityContext.fsGroup`           | The container supplementary group for all the GoCD server pods.                                               | `0`                 |
 
 #### Preconfiguring the GoCD Server
 
@@ -195,6 +198,9 @@ $ kubectl create secret generic gocd-server-ssh \
 | `agent.hostAliases`                       | Aliases for IPs in /etc/hosts                                                                                 | `[]`                |
 | `agent.security.ssh.enabled`              | Enable the use of SSH keys for GoCD agent                                                                                                                                        | `false`                      |
 | `agent.security.ssh.secretName`           | The name of the secret holding the SSH keys                                                                                                                                      | `gocd-agent-ssh`             |
+| `agent.securityContext.runAsUser`         | The container user for all the GoCD agent pods.                                                                                                                                  | `1000`                       |
+| `agent.securityContext.runAsGroup`        | The container group for all the GoCD agent pods.                                                                                                                                 | `0`                          |
+| `agent.securityContext.fsGroup`           | The container supplementary group for all the GoCD agent pods.                                                                                                                   | `0`                          |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 

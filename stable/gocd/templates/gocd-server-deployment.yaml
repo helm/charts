@@ -33,6 +33,10 @@ spec:
         {{ $key }}: {{ $value | quote }}
       {{- end }}
     spec:
+      securityContext:
+        runAsUser: {{ .Values.server.securityContext.runAsUser }}
+        runAsGroup: {{ .Values.server.securityContext.runAsGroup }}
+        fsGroup: {{ .Values.server.securityContext.fsGroup }}
       serviceAccountName: {{ template "gocd.serviceAccountName" . }}
       {{- if or .Values.server.shouldPreconfigure (or .Values.server.persistence.enabled (or .Values.server.security.ssh.enabled .Values.server.persistence.extraVolumes)) }}
       volumes:

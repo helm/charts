@@ -35,6 +35,10 @@ spec:
       {{- end }}
     spec:
       serviceAccountName: {{ template "gocd.agentServiceAccountName" . }}
+      securityContext:
+        runAsUser: {{ .Values.agent.securityContext.runAsUser }}
+        runAsGroup: {{ .Values.agent.securityContext.runAsGroup }}
+        fsGroup: {{ .Values.agent.securityContext.fsGroup }}
       {{- if or .Values.agent.persistence.enabled (or .Values.agent.security.ssh.enabled .Values.agent.persistence.extraVolumes) }}
       volumes:
       {{- end }}
