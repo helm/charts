@@ -1,5 +1,4 @@
-{{- if .Values.dashboard.enabled }}
-{{- if .Values.dashboard.create_ingress }}
+{{- if and .Values.dashboard.enabled .Values.dashboard.create_ingress }}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -32,5 +31,4 @@ spec:
   tls:
 {{ toYaml .Values.dashboard.ingress.tls | indent 4 }}
   {{- end -}}
-{{- end }}
 {{- end }}
