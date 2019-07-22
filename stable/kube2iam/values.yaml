@@ -16,7 +16,14 @@ host:
 
 prometheus:
   # Port to expose the /metrics endpoint on. If unset, defaults to `host.port`
-  # metricsPort: 8181
+  # metricsPort: 9543
+
+  service:
+    enabled: false
+#    annotations:
+#      prometheus.io/scrape: "true"
+#      prometheus.io/port: "9543"
+#      prometheus.io/path: "/metrics"
 
   serviceMonitor:
     # Create prometheus-operator ServiceMonitor
@@ -28,7 +35,7 @@ prometheus:
 
 image:
   repository: jtblin/kube2iam
-  tag: 0.10.4
+  tag: 0.10.7
   pullPolicy: IfNotPresent
 
 # AWS Access keys to inject as environment variables
