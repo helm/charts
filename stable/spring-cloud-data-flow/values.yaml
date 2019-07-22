@@ -24,6 +24,7 @@ server:
   service:
     type: LoadBalancer
     externalPort: 80
+    annotations: {}
   resources: {}
   #  limits:
   #    cpu: 1.0
@@ -31,7 +32,6 @@ server:
   #  requests:
   #    cpu: 0.5
   #    memory: 640Mi
-  annotations: {}
 
 skipper:
   image: springcloud/spring-cloud-skipper-server
