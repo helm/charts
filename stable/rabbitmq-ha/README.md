@@ -72,6 +72,7 @@ and their default values.
 | `extraInitContainers`                          | Additional init containers passed through the tpl 	                                                                                                                                                   | `[]`                                                         |
 | `env`                                          | Environment variables to set for Rabbitmq container                                                                                                                                                   | `{}`                                                         |
 | `advancedConfig`                               | Additional configuration in classic config format                                                                                                                                                   | `""`                                                           |
+| `definitions.globalParameters`                 | Pre-configured global parameters | `""` |
 | `definitions.users`                            | Additional users | `""` |
 | `definitions.vhosts`                           | Additional vhosts | `""` |
 | `definitions.parameters`                       | Additional parameters | `""` |

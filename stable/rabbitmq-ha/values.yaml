@@ -30,6 +30,11 @@ extraPlugins: |
   rabbitmq_federation_management,
 
 definitions:
+  globalParameters: |-
+#    {
+#        "name": "cluster_name",
+#        "value": "rabbitmq-ha"
+#    }
   users: |-
 #   {
 #     "name": "myUsername",
