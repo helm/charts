@@ -1,0 +1,16 @@
+{{- if .Values.rbac.create }}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  name: {{ include "prometheus-yace-exporter.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "prometheus-yace-exporter.name" . }}
+    helm.sh/chart: {{ include "prometheus-yace-exporter.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+rules:
+  - apiGroups: [""]
+    resources: ["secrets","configmap"]
+    resourceNames: ["{{ include "prometheus-yace-exporter.fullname" . }}"]
+    verbs: ["get"]
+{{- end }}

@@ -1,0 +1,222 @@
+# Default values for prometheus-yace-exporter.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: quay.io/invisionag/yet-another-cloudwatch-exporter
+  tag: v0.13.7
+  pullPolicy: IfNotPresent
+
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  type: ClusterIP
+  port: 80
+  annotations: {}
+  labels: {}
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      paths: []
+
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+aws:
+  role:
+
+  # The name of a pre-created secret in which AWS credentials are stored. When
+  # set, aws_access_key_id is assumed to be in a field called access_key,
+  # aws_secret_access_key is assumed to be in a field called secret_key, and the
+  # session token, if it exists, is assumed to be in a field called
+  # security_token
+  secret:
+    name:
+    includesSessionToken: false
+
+  # Note: Do not specify the aws_access_key_id and aws_secret_access_key if you specified role or secret.name before
+  aws_access_key_id:
+  aws_secret_access_key:
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+serviceMonitor:
+  # When set true then use a ServiceMonitor to configure scraping
+  enabled: false
+  # Set the namespace the ServiceMonitor should be deployed
+  # namespace: monitoring
+  # Set how frequently Prometheus should scrape
+  # interval: 30s
+  # Set path to cloudwatch-exporter telemtery-path
+  # telemetryPath: /metrics
+  # Set labels for the ServiceMonitor, use this to define your scrape label for Prometheus Operator
+  # labels:
+  # Set timeout for scrape
+  # timeout: 10s
+
+
+config: |-
+  discovery:
+    exportedTagsOnMetrics:
+      ec2:
+        - Name
+      ebs:
+        - VolumeId
+    jobs:
+    - region: eu-west-1
+      type: "es"
+      searchTags:
+        - Key: type
+          Value: ^(easteregg|k8s)$
+      metrics:
+        - name: FreeStorageSpace
+          statistics:
+          - 'Sum'
+          period: 600
+          length: 60
+        - name: ClusterStatus.green
+          statistics:
+          - 'Minimum'
+          period: 600
+          length: 60
+        - name: ClusterStatus.yellow
+          statistics:
+          - 'Maximum'
+          period: 600
+          length: 60
+        - name: ClusterStatus.red
+          statistics:
+          - 'Maximum'
+          period: 600
+          length: 60
+    - type: "elb"
+      region: eu-west-1
+      searchTags:
+        - Key: KubernetesCluster
+          Value: production-19
+      metrics:
+        - name: HealthyHostCount
+          statistics:
+          - 'Minimum'
+          period: 600
+          length: 600
+        - name: HTTPCode_Backend_4XX
+          statistics:
+          - 'Sum'
+          period: 60
+          length: 900
+          delay: 300
+          nilToZero: true
+    - type: "alb"
+      region: eu-west-1
+      searchTags:
+        - Key: kubernetes.io/service-name
+          Value: .*
+      metrics:
+        - name: UnHealthyHostCount
+          statistics: [Maximum]
+          period: 60
+          length: 600
+    - type: "vpn"
+      region: eu-west-1
+      searchTags:
+        - Key: kubernetes.io/service-name
+          Value: .*
+      metrics:
+        - name: TunnelState
+          statistics:
+          - 'p90'
+          period: 60
+          length: 300
+    - type: "kinesis"
+      region: eu-west-1
+      metrics:
+        - name: PutRecords.Success
+          statistics:
+          - 'Sum'
+          period: 60
+          length: 300
+    - type: "s3"
+      region: eu-west-1
+      searchTags:
+        - Key: type
+          Value: public
+      additionalDimensions:
+        - name: StorageType
+          value: StandardStorage
+      metrics:
+        - name: NumberOfObjects
+          statistics:
+            - Average
+          period: 86400
+          length: 172800
+          addCloudwatchTimestamp: true
+        - name: BucketSizeBytes
+          statistics:
+            - Average
+          period: 86400
+          length: 172800
+          addCloudwatchTimestamp: true
+    - type: "ebs"
+      region: eu-west-1
+      searchTags:
+        - Key: type
+          Value: public
+      metrics:
+        - name: BurstBalance
+          statistics:
+          - 'Minimum'
+          period: 600
+          length: 600
+  static:
+    - namespace: AWS/AutoScaling
+      region: eu-west-1
+      dimensions:
+      - name: AutoScalingGroupName
+        value: Test
+      customTags:
+        - Key: CustomTag
+          Value: CustomValue
+      metrics:
+        - name: GroupInServiceInstances
+          statistics:
+          - 'Minimum'
+          period: 60
+          length: 300

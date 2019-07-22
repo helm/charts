@@ -1,0 +1,19 @@
+{{ if .Values.rbac.create }}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ include "prometheus-yace-exporter.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "prometheus-yace-exporter.name" . }}
+    helm.sh/chart: {{ include "prometheus-yace-exporter.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "prometheus-yace-exporter.fullname" . }}
+    namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: ClusterRole
+  name: {{ include "prometheus-yace-exporter.fullname" . }}
+  apiGroup: rbac.authorization.k8s.io
+{{ end }}
