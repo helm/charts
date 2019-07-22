@@ -99,6 +99,8 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `filter.kubeTagPrefix`             | Optional tag prefix used by Tail   | `kube.var.log.containers.`                                |
 | `filter.mergeJSONLog`              | If the log field content is a JSON string map, append the map fields as part of the log structure         | `true`                                 |
 | `filter.mergeLogKey`               | If set, append the processed log keys under a new root key specified by this variable. | `nil` |
+| `filter.lua.enabled`               | Enable the use of [lua](https://docs.fluentbit.io/manual/filter/lua) filters                   | `false`                                 |
+| `filter.lua.raw`                   | Provide your Lua file; the file is mounted as `extra.lua` | ``                                 | |
 | `image.fluent_bit.repository`      | Image                                      | `fluent/fluent-bit`                               |
 | `image.fluent_bit.tag`             | Image tag                                  | `1.2.1`                                           |
 | `image.pullPolicy`                 | Image pull policy                          | `Always`                                          |

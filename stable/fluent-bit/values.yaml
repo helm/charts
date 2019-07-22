@@ -120,6 +120,21 @@ parsers:
   ##
   json: []
 
+filters:
+  lua:
+    enabled: false
+    raw: |-
+    ## example callback from https://docs.fluentbit.io/manual/filter/lua
+    #   function cb_print(tag, timestamp, record)
+    #     return code, timestamp, record
+    #   end
+    ##  Usage:
+    # [FILTER]
+    # Name    lua
+    # Match   *
+    # script  extra.lua
+    # call    cb_print
+
 env: []
 
 ## Annotations to add to the DaemonSet's Pods
