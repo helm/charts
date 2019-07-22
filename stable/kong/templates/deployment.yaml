@@ -17,10 +17,13 @@ spec:
       component: app
   template:
     metadata:
-    {{- if .Values.podAnnotations }}
       annotations:
+        {{- if (and (not .Values.ingressController.enabled) (eq .Values.env.database "off" )) }}
+        checksum/declarativeMode.config: {{ toYaml .Values.declarativeMode.config | sha256sum }}
+        {{- end }}
+        {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
-    {{- end }}
+        {{- end }}
       labels:
         app: {{ template "kong.name" . }}
         release: {{ .Release.Name }}
@@ -40,7 +43,7 @@ spec:
       {{- include "kong.wait-for-db" . | nindent 6 }}
       {{ end }}
       containers:
-      {{- if (and (.Values.ingressController) (eq .Values.env.database "off")) }}
+      {{- if (and (.Values.ingressController.enabled) (eq .Values.env.database "off")) }}
       {{- include "kong.controller-container" . | nindent 6 }}
       {{ end }}
       - name: {{ template "kong.name" . }}
@@ -153,6 +156,10 @@ spec:
         - name: KONG_CASSANDRA_CONTACT_POINTS
           value: {{ template "kong.cassandra.fullname" . }}
         {{- end }}
+        {{- if (and (not .Values.ingressController.enabled) (eq .Values.env.database "off")) }}
+        - name: KONG_DECLARATIVE_CONFIG
+          value: "/kong_declarative/kong.yml"
+        {{- end }}
         ports:
         - name: admin
           containerPort: {{ .Values.admin.containerPort }}
@@ -232,6 +239,10 @@ spec:
         volumeMounts:
           - name: custom-nginx-template-volume
             mountPath: /kong
+          {{- if (and (not .Values.ingressController.enabled) (eq .Values.env.database "off")) }}
+          - name: kong-custom-declarative-config-volume
+            mountPath: /kong_declarative/
+          {{- end }}
         readinessProbe:
 {{ toYaml .Values.readinessProbe | indent 10 }}
         livenessProbe:
@@ -252,4 +263,12 @@ spec:
         - name: custom-nginx-template-volume
           configMap:
             name: kong-default-custom-server-blocks
-
+{{- if (and (not .Values.ingressController.enabled) (eq .Values.env.database "off")) }}
+        - name: kong-custom-declarative-config-volume
+          configMap:
+            {{- if .Values.declarativeMode.existingConfigMap }}
+            name: {{ .Values.declarativeMode.existingConfigMap }}
+            {{- else }}
+            name: kong-custom-declarative-config
+            {{- end }}
+{{- end }}

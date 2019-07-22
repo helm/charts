@@ -384,3 +384,31 @@ ingressController:
     name:
 
   ingressClass: kong
+
+# We pass the declarative config over here.
+declarativeMode:
+  # Either Kong's configuration is managed from an existing ConfigMap
+  existingConfigMap: ""
+  # Or the configuration is passed in full-text below
+  config:
+    _format_version: "1.1"
+    services:
+      - name: version
+        url: http://localhost
+        routes:
+        - name: version
+          paths:
+          - /version
+        plugins:
+        - name: request-termination
+          config:
+            status_code: 200
+            message: "declarative-config"
+      # Example httpbin
+      # - name: httpbin.org
+      #   url: https://httpbin.org/
+      #   routes:
+      #   - name: httpbin.org
+      #     paths:
+      #     - "/httpbin"
+

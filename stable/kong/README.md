@@ -141,7 +141,7 @@ Postgres is enabled by default.
 | postgresql.enabled                | Spin up a new postgres instance for Kong                               | `true`                |
 | waitImage.repository              | Image used to wait for database to become ready                        | `busybox`             |
 | waitImage.tag                     | Tag for image used to wait for database to become ready                | `latest`              |
-| env.database                      | Choose either `postgres` or `cassandra`                                | `postgres`            |
+| env.database                      | Choose either `postgres`, `cassandra` or `"off"` to use declarativeMode| `postgres`            |
 | env.pg_user                       | Postgres username                                                      | `kong`                |
 | env.pg_database                   | Postgres database name                                                 | `kong`                |
 | env.pg_password                   | Postgres database password (required if you are using your own database)| `kong`               |
@@ -151,7 +151,8 @@ Postgres is enabled by default.
 | env.cassandra_port                | Cassandra query port                                                   | `9042`                |
 | env.cassandra_keyspace            | Cassandra keyspace                                                     | `kong`                |
 | env.cassandra_repl_factor         | Replication factor for the Kong keyspace                               | `2`                   |
-
+| declarativeMode.existingConfigMap | Name of an existing ConfigMap containing the `kong.yml` file. This must have the key `kong.yml`.| `` |
+| declarativeMode.config            | Yaml configuration file for the declarative configuration of Kong      | see in `values.yaml`   |
 
 All `kong.env` parameters can also accept a mapping instead of a value to ensure the parameters can be set through configmaps and secrets.
 
@@ -323,6 +324,16 @@ If your SMTP server requires authentication, you should the `username` and
 `smtp_password_secret` keys under `.enterprise.smtp.auth`.
 `smtp_password_secret` must be a Secret containing an `smtp_password` key whose
 value is your SMTP password.
+
+### Declarative Configuration
+
+The helm chart assumes to be running in declarative mode when it is started in 
+DB-less mode (`env.database: "off"`) and without the ingress controller 
+(`ingressController.enabled: false`). 
+
+In this case, the user-provided ConfigMap referenced by `declarativeMode.existingConfigMap`
+is used. If no existing ConfigMap is given, then the values section `declarativeMode.config`
+is parsed into a ConfigMap which gets injected into Kong during startup.
 
 ### Kong Ingress Controller
 
