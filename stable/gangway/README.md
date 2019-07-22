@@ -42,6 +42,7 @@ At a minimum you *must* configure any of the values marked as **required** in th
 | `gangway.audience`                | Endpoint that provides user profile information [optional]. Not all providers will require this. To be taken from the configuration of your OIDC provider.  **Required**                                        | `""`                                               |
 | `gangway.authorizeURL`            | OAuth2 URL to start authorization flow. To be taken from the configuration of your OIDC provider.  **Required**                                                                                                 | `""`                                               |
 | `gangway.certData`                | The Public cert data. This is normally safe to leave alone.                                                                                                                                                     | `""`                                               |
+| `gangway.certFile`                | The public cert file (including root and intermediates) to use when serving TLS.                                                                                                                    | `/etc/gangway/tls/tls.crt`                         |
 | `gangway.clientID`                | API client ID as indicated by the identity provider. **Required**                                                                                                                                               | `""`                                               |
 | `gangway.clientSecret`            | API client secret as indicated by the identity provider. **Required**                                                                                                                                           | `""`                                               |
 | `gangway.cluster_ca_path`         | The path to find the CA bundle for the API server. Used to configure kubectl.  This is typically mounted into the default location for workloads running on a Kubernetes cluster and doesn't need to be set.    | `""`                                               |
@@ -49,6 +50,7 @@ At a minimum you *must* configure any of the values marked as **required** in th
 | `gangway.host`                    | The address to listen on. Defaults to 0.0.0.0 to listen on all interfaces.                                                                                                                                      | `80`                                               |
 | `gangway.httpPath`                | The path gangway uses to create urls (defaults to "")                                                                                                                                                           | `/`                                                |
 | `gangway.keyData`                 | The Private key data                                                                                                                                                                                            | `""`                                               |
+| `gangway.keyFile`                 | The private key file when serving TLS.                                                                                                                                                                          | `/etc/gangway/tls/tls.key`                         |
 | `gangway.port`                    | The port to listen on. Defaults to 8080.                                                                                                                                                                        | `80`                                               |
 | `gangway.redirectURL`             | Where to redirect back to. This should be a URL where gangway is reachable. Typically this also needs to be registered as part of the oauth application with the oAuth provider. **Required**                   | `""`                                               |
 | `gangway.scopes`                  | Used to specify the scope of the requested Oauth authorization.                                                                                                                                                 | `["openid", "profile", "email", "offline_access"]` |
@@ -114,3 +116,42 @@ $ helm upgrade --install --wait my-release stable/gangway -f values.yaml
 [gangway docs]: https://github.com/heptiolabs/gangway/tree/master/docs
 [Traefik]: https://docs.traefik.io/user-guide/kubernetes/
 [Gorilla Secure Cookie]: https://github.com/gorilla/securecookie
+
+## SSL Configuration
+
+### Either by using the ```values.yaml``` like:
+
+```yaml
+gangway:
+  certData: |
+    -----BEGIN CERTIFICATE-----
+    ...
+    -----END CERTIFICATE-----
+  keyData: |
+    -----BEGIN ENCRYPTED PRIVATE KEY-----
+    ...
+    -----END ENCRYPTED PRIVATE KEY-----
+```
+
+### Or by using the ```values.yaml``` with an existing secret:
+
+```yaml
+...
+extraVolumes:
+  - name: ssl-cert
+    secret:
+      secretName: my-ssl-secret
+extraVolumeMounts:
+  - name: ssl-cert
+    mountPath: /etc/gangway/tls
+...
+```
+
+With a secret called `my-ssl-secret`:
+
+```yaml
+...
+data:
+  tls.crt: AB..==
+  tls.key: CD..==
+```
