@@ -98,6 +98,8 @@ rbac:
   # Specifies whether RBAC resources should be created
   create: true
   namespaced: false
+  podSecurityPolicies:
+    {}
 
 scope:
   # tells Ambassador to only use resources in the namespace or namespace set by namespace.name
