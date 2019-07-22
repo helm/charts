@@ -54,7 +54,7 @@ The following table lists the configuration parameters of the `sematext-agent` c
 | `logagent.image.tag`             | The image tag                     | `latest`                                  |
 | `logagent.image.pullPolicy`      | Image pull policy                 | `Always`                                  |
 | `logagent.resources`             | Logagent resources                | `{}`                                      |
-| `logagent.customConfigs`         | Logagent custom configs           | `[]`                                      |
+| `logagent.customConfigs`         | Logagent custom configs           | `[]` Check `values.yaml`                  |
 | `logagent.extraHostVolumeMounts` | Extra mounts                      | `{}`                                      |
 | `customUrl.serverBaseUrl`        | Custom Base URL                   | `Nil`                                     |
 | `customUrl.logsReceiverUrl`      | Custom Logs receiver URL          | `Nil`                                     |

@@ -34,10 +34,10 @@ resources: {}
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
   # limits:
   #  cpu: 100m
-  #  memory: 128Mi
+  #  memory: 256Mi
   # requests:
   #  cpu: 100m
-  #  memory: 128Mi
+  #  memory: 256Mi
 
 nodeSelector: {}
 
@@ -63,7 +63,7 @@ persistence:
   ## If defined, PVC must be created manually before volume will be bound
   # existingClaim:
 
-  ## redis data Persistent Volume Storage Class
+  ## seq data Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
   ## If set to "-", storageClassName: "", which disables dynamic provisioning
   ## If undefined (the default) or set to null, no storageClassName spec is
@@ -87,3 +87,20 @@ ingress:
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
+
+## Configure liveness and readiness probe values
+## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes
+livenessProbe:
+  enabled: true
+  failureThreshold: 3
+  initialDelaySeconds: 0
+  periodSeconds: 10
+  successThreshold: 1
+  timeoutSeconds: 1
+readinessProbe:
+  enabled: true
+  failureThreshold: 3
+  initialDelaySeconds: 0
+  periodSeconds: 10
+  successThreshold: 1
+  timeoutSeconds: 1
