@@ -71,6 +71,7 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `prometheusExporter.resources`  | CPU/memory resource requests/limits                                                       | `{}`                          |
 | `rbac.create`                      | If `true`, create and use RBAC resources                                        | `true`                            |
 | `rbac.namespaced`                  | If `true`, permissions are namespace-scoped rather than cluster-scoped          | `false`                           |
+| `rbac.podSecurityPolicies`         | pod security polices to bind to                                                 |                                   |
 | `replicaCount`                     | Number of Ambassador replicas                                                   | `3`                               |
 | `resources`                        | CPU/memory resource requests/limits                                             | `{}`                              |
 | `securityContext`                  | Set security context for pod                                                    | `{ "runAsUser": "8888" }`         |
