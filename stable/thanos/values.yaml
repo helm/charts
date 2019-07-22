@@ -85,7 +85,7 @@ storeLayer:
   persistence:
     enabled: true
     size: 50Gi
-    storageClassName: ''
+    storageClassName: 'standard'
     mountPath: /thanos-store-persistent-data/
     accessModes:
     - ReadWriteOnce
@@ -145,7 +145,7 @@ compactLayer:
   persistence:
     enabled: true
     size: 50Gi
-    storageClassName: ''
+    storageClassName: 'standard'
     mountPath: /thanos-compact-persistent-data/
     accessModes:
     - ReadWriteOnce
@@ -196,7 +196,7 @@ ruleLayer:
   persistence:
     enabled: true
     size: 50Gi
-    storageClassName: ''
+    storageClassName: 'standard'
     mountPath: /thanos-rule-persistent-data/
     accessModes:
     - ReadWriteOnce
@@ -205,7 +205,6 @@ ruleLayer:
   rules: ''
   binaryArgs:
     - '--log.level=debug'
-    - '--data-dir=/thanos-rule-data/'
     - '--eval-interval=10s'
     - '--objstore.config-file=/etc/thanos-rule/bucket.yaml'
   deploymentAnnotations:
