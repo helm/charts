@@ -1,5 +1,5 @@
 {{- if .Values.server.enabled }}
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "gocd.fullname" . }}-server
@@ -9,6 +9,10 @@ metadata:
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
     component: server
+  annotations:
+  {{- range $key, $value := .Values.server.annotations.deployment }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
 spec:
   replicas: 1
   strategy:
@@ -24,7 +28,15 @@ spec:
         app: {{ template "gocd.name" . }}
         release: {{ .Release.Name | quote }}
         component: server
+      annotations:
+      {{- range $key, $value := .Values.server.annotations.pod }}
+        {{ $key }}: {{ $value | quote }}
+      {{- end }}
     spec:
+      securityContext:
+        runAsUser: {{ .Values.server.securityContext.runAsUser }}
+        runAsGroup: {{ .Values.server.securityContext.runAsGroup }}
+        fsGroup: {{ .Values.server.securityContext.fsGroup }}
       serviceAccountName: {{ template "gocd.serviceAccountName" . }}
       {{- if or .Values.server.shouldPreconfigure (or .Values.server.persistence.enabled (or .Values.server.security.ssh.enabled .Values.server.persistence.extraVolumes)) }}
       volumes:
@@ -60,9 +72,9 @@ spec:
           {{- end }}
           imagePullPolicy: {{ .Values.server.image.pullPolicy }}
           env:
-            {{- if .Values.server.env.goServerSystemProperties }}
-            - name: GO_SERVER_SYSTEM_PROPERTIES
-              value: {{ .Values.server.env.goServerSystemProperties }}
+            {{- if .Values.server.env.goServerJvmOpts }}
+            - name: GOCD_SERVER_JVM_OPTS
+              value: {{ .Values.server.env.goServerJvmOpts }}
             {{- end }}
             {{- if .Values.server.env.extraEnvVars }}
 {{ toYaml .Values.server.env.extraEnvVars | indent 12 }}

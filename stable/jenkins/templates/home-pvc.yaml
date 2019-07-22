@@ -1,28 +1,30 @@
-{{- if and .Values.Persistence.Enabled (not .Values.Persistence.ExistingClaim) -}}
+{{- if and .Values.persistence.enabled (not .Values.persistence.existingClaim) -}}
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-{{- if .Values.Persistence.Annotations }}
+{{- if .Values.persistence.annotations }}
   annotations:
-{{ toYaml .Values.Persistence.Annotations | indent 4 }}
+{{ toYaml .Values.persistence.annotations | indent 4 }}
 {{- end }}
   name: {{ template "jenkins.fullname" . }}
+  namespace: {{ template "jenkins.namespace" . }}
   labels:
-    app: {{ template "jenkins.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    "app.kubernetes.io/name": '{{ template "jenkins.name" .}}'
+    "helm.sh/chart": "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    "app.kubernetes.io/managed-by": "{{ .Release.Service }}"
+    "app.kubernetes.io/instance": "{{ .Release.Name }}"
+    "app.kubernetes.io/component": "{{ .Values.master.componentName }}"
 spec:
   accessModes:
-    - {{ .Values.Persistence.AccessMode | quote }}
+    - {{ .Values.persistence.accessMode | quote }}
   resources:
     requests:
-      storage: {{ .Values.Persistence.Size | quote }}
-{{- if .Values.Persistence.StorageClass }}
-{{- if (eq "-" .Values.Persistence.StorageClass) }}
+      storage: {{ .Values.persistence.size | quote }}
+{{- if .Values.persistence.storageClass }}
+{{- if (eq "-" .Values.persistence.storageClass) }}
   storageClassName: ""
 {{- else }}
-  storageClassName: "{{ .Values.Persistence.StorageClass }}"
+  storageClassName: "{{ .Values.persistence.storageClass }}"
 {{- end }}
 {{- end }}
 {{- end }}

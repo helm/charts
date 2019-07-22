@@ -8,7 +8,7 @@ metadata:
     release: {{ .Release.Name }}
   name: {{ template "redis.fullname" . }}-health
 data:
-  ping_local.sh: |-
+  ping_readiness_local.sh: |-
 {{- if .Values.usePasswordFile }}
     password_aux=`cat ${REDIS_PASSWORD_FILE}`
     export REDIS_PASSWORD=$password_aux
@@ -17,7 +17,7 @@ data:
       timeout -s 9 $1 \
       redis-cli \
 {{- if .Values.usePassword }}
-        -a $REDIS_PASSWORD \
+        -a $REDIS_PASSWORD --no-auth-warning \
 {{- end }}
         -h localhost \
         -p $REDIS_PORT \
@@ -27,7 +27,62 @@ data:
       echo "$response"
       exit 1
     fi
-  ping_master.sh: |-
+  ping_liveness_local.sh: |-
+{{- if .Values.usePasswordFile }}
+    password_aux=`cat ${REDIS_PASSWORD_FILE}`
+    export REDIS_PASSWORD=$password_aux
+{{- end }}
+    response=$(
+      timeout -s 9 $1 \
+      redis-cli \
+{{- if .Values.usePassword }}
+        -a $REDIS_PASSWORD --no-auth-warning \
+{{- end }}
+        -h localhost \
+        -p $REDIS_PORT \
+        ping
+    )
+    if [ "$response" != "PONG" ] && [ "$response" != "LOADING Redis is loading the dataset in memory" ]; then
+      echo "$response"
+      exit 1
+    fi
+{{- if .Values.sentinel.enabled }}
+  ping_sentinel.sh: |-
+{{- if .Values.usePasswordFile }}
+    password_aux=`cat ${REDIS_PASSWORD_FILE}`
+    export REDIS_PASSWORD=$password_aux
+{{- end }}
+    response=$(
+      timeout -s 9 $1 \
+      redis-cli \
+{{- if .Values.usePassword }}
+        -a $REDIS_PASSWORD --no-auth-warning \
+{{- end }}
+        -h localhost \
+        -p $REDIS_SENTINEL_PORT \
+        ping
+    )
+    if [ "$response" != "PONG" ]; then
+      echo "$response"
+      exit 1
+    fi
+  parse_sentinels.awk: |-
+    /ip/ {FOUND_IP=1}
+    /port/ {FOUND_PORT=1}
+    /runid/ {FOUND_RUNID=1}
+    !/ip|port|runid/ {
+      if (FOUND_IP==1) {
+        IP=$1; FOUND_IP=0;
+      }
+      else if (FOUND_PORT==1) {
+        PORT=$1;
+        FOUND_PORT=0;
+      } else if (FOUND_RUNID==1) {
+        printf "\nsentinel known-sentinel {{ .Values.sentinel.masterSet }} %s %s %s", IP, PORT, $0; FOUND_RUNID=0;
+      }
+    }
+{{- end }}
+  ping_readiness_master.sh: |-
 {{- if .Values.usePasswordFile }}
     password_aux=`cat ${REDIS_MASTER_PASSWORD_FILE}`
     export REDIS_MASTER_PASSWORD=$password_aux
@@ -36,7 +91,7 @@ data:
       timeout -s 9 $1 \
       redis-cli \
 {{- if .Values.usePassword }}
-        -a $REDIS_MASTER_PASSWORD \
+        -a $REDIS_MASTER_PASSWORD --no-auth-warning \
 {{- end }}
         -h $REDIS_MASTER_HOST \
         -p $REDIS_MASTER_PORT_NUMBER \
@@ -46,9 +101,34 @@ data:
       echo "$response"
       exit 1
     fi
-  ping_local_and_master.sh: |-
+  ping_liveness_master.sh: |-
+{{- if .Values.usePasswordFile }}
+    password_aux=`cat ${REDIS_MASTER_PASSWORD_FILE}`
+    export REDIS_MASTER_PASSWORD=$password_aux
+{{- end }}
+    response=$(
+      timeout -s 9 $1 \
+      redis-cli \
+{{- if .Values.usePassword }}
+        -a $REDIS_MASTER_PASSWORD --no-auth-warning \
+{{- end }}
+        -h $REDIS_MASTER_HOST \
+        -p $REDIS_MASTER_PORT_NUMBER \
+        ping
+    )
+    if [ "$response" != "PONG" ] && [ "$response" != "LOADING Redis is loading the dataset in memory" ]; then
+      echo "$response"
+      exit 1
+    fi
+  ping_readiness_local_and_master.sh: |-
     script_dir="$(dirname "$0")"
     exit_status=0
-    "$script_dir/ping_local.sh" $1 || exit_status=$?
-    "$script_dir/ping_master.sh" $1 || exit_status=$?
+    "$script_dir/ping_readiness_local.sh" $1 || exit_status=$?
+    "$script_dir/ping_readiness_master.sh" $1 || exit_status=$?
+    exit $exit_status
+  ping_liveness_local_and_master.sh: |-
+    script_dir="$(dirname "$0")"
+    exit_status=0
+    "$script_dir/ping_liveness_local.sh" $1 || exit_status=$?
+    "$script_dir/ping_liveness_master.sh" $1 || exit_status=$?
     exit $exit_status

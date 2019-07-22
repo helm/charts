@@ -2,11 +2,17 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: {{ template "mysql.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "mysql.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
+{{- with .Values.deploymentAnnotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
+
 spec:
   template:
     metadata:
@@ -20,6 +26,9 @@ spec:
 {{ toYaml . | indent 8 }}
 {{- end }}
     spec:
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+      {{- end }}
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
 {{ toYaml .Values.imagePullSecrets | indent 8 }}
@@ -27,10 +36,17 @@ spec:
       {{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"
       {{- end }}
+      {{- if .Values.securityContext.enabled }}
+      securityContext:
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+      {{- end }}
       initContainers:
       - name: "remove-lost-found"
         image: "{{ .Values.busybox.image}}:{{ .Values.busybox.tag }}"
         imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+        resources:
+{{ toYaml .Values.initContainer.resources | indent 10 }}
         command:  ["rm", "-fr", "/var/lib/mysql/lost+found"]
         volumeMounts:
         - name: data
@@ -53,6 +69,13 @@ spec:
       - name: {{ template "mysql.fullname" . }}
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+
+        {{- with .Values.args }}
+        args:
+        {{- range . }}
+          - {{ . | quote }}
+        {{- end }}
+        {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         env:
@@ -126,8 +149,11 @@ spec:
           subPath: {{ .Values.persistence.subPath }}
           {{- end }}
         {{- if .Values.configurationFiles }}
+        {{- range $key, $val := .Values.configurationFiles }}
         - name: configurations
-          mountPath: /etc/mysql/conf.d
+          mountPath: {{ $.Values.configurationFilesPath }}{{ $key }}
+          subPath: {{ $key }}
+        {{- end -}}
         {{- end }}
         {{- if .Values.initializationFiles }}
         - name: migrations
@@ -145,7 +171,10 @@ spec:
         image: "{{ .Values.metrics.image }}:{{ .Values.metrics.imageTag }}"
         imagePullPolicy: {{ .Values.metrics.imagePullPolicy | quote }}
         {{- if .Values.mysqlAllowEmptyPassword }}
-        command: [ 'sh', '-c', 'DATA_SOURCE_NAME="root@(localhost:3306)/" /bin/mysqld_exporter' ]
+        command:
+        - 'sh'
+        - '-c'
+        - 'DATA_SOURCE_NAME="root@(localhost:3306)/" /bin/mysqld_exporter'
         {{- else }}
         env:
         - name: MYSQL_ROOT_PASSWORD
@@ -153,7 +182,13 @@ spec:
             secretKeyRef:
               name: {{ template "mysql.secretName" . }}
               key: mysql-root-password
-        command: [ 'sh', '-c', 'DATA_SOURCE_NAME="root:$MYSQL_ROOT_PASSWORD@(localhost:3306)/" /bin/mysqld_exporter' ]
+        command:
+        - 'sh'
+        - '-c'
+        - 'DATA_SOURCE_NAME="root:$MYSQL_ROOT_PASSWORD@(localhost:3306)/" /bin/mysqld_exporter'
+        {{- end }}
+        {{- range $f := .Values.metrics.flags }}
+        - {{ $f | quote }}
         {{- end }}
         ports:
         - name: metrics

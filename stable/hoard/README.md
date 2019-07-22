@@ -47,6 +47,8 @@ The following table lists the configurable parameters of the Hoard chart and its
 | `config.secrets.symmetric` | symmetric secrets (publicid, passphrase) | `[]` |
 | `config.secrets.openpgp.privateid` | id of private key to sign with | `""` |
 | `config.secrets.openpgp.file` | name of the file mounted from secret | `"/secrets/keyring"` |
+| `controller.enabled` | enable the [shared-secrets](https://github.com/monax/shared-secrets) controller | `false` |
+| `controller.keep` | keep the shared-secrets crd after chart deletion | `true` |
 | `secrets.creds` | required secret for cloud providers | `"cloud-credentials"` |
 | `secrets.keyring` | required secret for openpgp grants | `"private-keyring"` |
 | `persistence.size` | size of local store | `"10Gi"` |
@@ -104,7 +106,15 @@ helm install --name my-release stable/hoard --set storage.type=gcp,storage.bucke
 
 Once configured, hoard can share access to a secret file by encrypting it with the public key of the recipient:
 
-```
+```bash
 kubectl create secret generic private-keyring --from-file ${GOPATH}/src/github.com/monax/hoard/grant/private.key.asc
 helm install --name my-release stable/hoard --set openpgp.id="10449759736975846181",openpgp.secret=private-keyring
+```
+
+## [Shared Secrets](https://github.com/monax/shared-secrets)
+
+To enable Hoard to act as a 'secrets broker', deploy our CustomResourceDefinition and controller:
+
+```bash
+helm install --name my-release stable/hoard --set controller.enabled=true
 ```

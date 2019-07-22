@@ -11,8 +11,13 @@ agent:
 
   image:
     repository: quay.io/uswitch/kiam
-    tag: v3.2
+    tag: v3.3
     pullPolicy: IfNotPresent
+
+  ## agent whitelist of proxy routes matching this reg-ex
+  ##
+  # whiteListRouteRegexp:
+
 
   ## Logging settings
   ##
@@ -37,6 +42,16 @@ agent:
   ## Labels to be added to pods
   ##
   podLabels: {}
+  ## Annotations to be added to service
+  ##
+  serviceAnnotations: {}
+  ## Labels to be added to service
+  ##
+  serviceLabels: {}
+  ## Used to assign priority to agent pods
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
+  ##
+  priorityClassName: ""
   ## Strategy for DaemonSet updates (requires Kubernetes 1.6+)
   ## Ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/
   ##
@@ -122,7 +137,7 @@ server:
 
   image:
     repository: quay.io/uswitch/kiam
-    tag: v3.2
+    tag: v3.3
     pullPolicy: IfNotPresent
 
   ## Logging settings
@@ -139,6 +154,19 @@ server:
   ## Annotations to be added to pods
   ##
   podAnnotations: {}
+  ## Labels to be added to pods
+  ##
+  podLabels: {}
+  ## Annotations to be added to service
+  ##
+  serviceAnnotations: {}
+  ## Labels to be added to service
+  ##
+  serviceLabels: {}
+  ## Used to assign priority to server pods
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
+  ##
+  priorityClassName: ""
   ## Strategy for DaemonSet updates (requires Kubernetes 1.6+)
   ## Ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/
   ##
@@ -238,6 +266,10 @@ server:
 rbac:
   # Specifies whether RBAC resources should be created
   create: true
+
+psp:
+  # Specifies whether PodSecurityPolicies should be created
+  create: false
 
 serviceAccounts:
   agent:

@@ -14,7 +14,7 @@ spec:
         checksum/secrets: {{ include (print .Template.BasePath "/secret.yaml") . | sha256sum }}
       labels:
         app: {{ template "sentry-kubernetes.name" . }}
-        release: {{.Release.Name }}    
+        release: {{.Release.Name }}
     spec:
       containers:
       - name: {{ .Chart.Name }}
@@ -24,15 +24,19 @@ spec:
           - name: DSN
             valueFrom:
               secretKeyRef:
-                name: {{ template "sentry-kubernetes.fullname" . }}
+                name: {{ template "sentry-kubernetes.secretName" . }}
                 key: sentry.dsn
           {{ if .Values.sentry.environment }}
           - name: ENVIRONMENT
             value: {{ .Values.sentry.environment }}
           {{ end }}
           {{ if .Values.sentry.release }}
-          - name: RELEASE 
+          - name: RELEASE
             value: {{ .Values.sentry.release }}
+          {{ end }}
+          {{ if .Values.sentry.logLevel }}
+          - name: LOG_LEVEL
+            value: {{ .Values.sentry.logLevel }}
           {{ end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}

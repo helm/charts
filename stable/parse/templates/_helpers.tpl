@@ -18,16 +18,32 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
 {{- define "parse.fullname" -}}
+{{- if .Values.fullnameOverride -}}
+{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
 {{- $name := default .Chart.Name .Values.nameOverride -}}
+{{- if contains $name .Release.Name -}}
+{{- .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
-
+{{- end -}}
+{{- end -}}
 {{/*
 Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
 {{- define "parse.mongodb.fullname" -}}
+{{- if .Values.fullnameOverride -}}
+{{- printf "%s-%s" .Values.fullnameOverride "mongodb" | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- $name := default .Chart.Name .Values.nameOverride -}}
+{{- if contains $name .Release.Name -}}
 {{- printf "%s-%s" .Release.Name "mongodb" | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- printf "%s-%s-%s" .Release.Name $name "mongodb" | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
 {{- end -}}
 
 {{/*
@@ -130,4 +146,16 @@ imagePullSecrets:
   - name: {{ . }}
 {{- end }}
 {{- end -}}
+{{- end -}}
+
+{{/* Check if there are rolling tags in the images */}}
+{{- define "parse.checkRollingTags" -}}
+{{- if and (contains "bitnami/" .Values.server.image.repository) (not (.Values.server.image.tag | toString | regexFind "-r\\d+$|sha256:")) }}
+WARNING: Rolling tag detected ({{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}), please note that it is strongly recommended to avoid using rolling tags in a production environment.
++info https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/
+{{- end }}
+{{- if and (contains "bitnami/" .Values.dashboard.image.repository) (not (.Values.dashboard.image.tag | toString | regexFind "-r\\d+$|sha256:")) }}
+WARNING: Rolling tag detected ({{ .Values.dashboard.image.repository }}:{{ .Values.dashboard.image.tag }}), please note that it is strongly recommended to avoid using rolling tags in a production environment.
++info https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/
+{{- end }}
 {{- end -}}

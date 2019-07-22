@@ -11,9 +11,13 @@ metadata:
 spec:
   strategy:
     type: {{ .Values.DeploymentUpdate.type }}
+    {{- if eq .Values.DeploymentUpdate.type "RollingUpdate" }}
     rollingUpdate:
       maxSurge: {{ .Values.DeploymentUpdate.maxSurge }}
       maxUnavailable: {{ .Values.DeploymentUpdate.maxUnavailable }}
+    {{- else }}
+    rollingUpdate: null
+    {{- end}}
   {{- if .Values.nasgateway.enabled }}
   replicas: {{ .Values.nasgateway.replicas }}
   {{- end }}
@@ -47,6 +51,7 @@ spec:
   {{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"
   {{- end }}
+      serviceAccountName: {{ include "minio.serviceAccountName" . | quote }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

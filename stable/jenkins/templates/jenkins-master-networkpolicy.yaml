@@ -1,33 +1,48 @@
-{{- if .Values.NetworkPolicy.Enabled }}
+{{- if .Values.networkPolicy.enabled }}
 kind: NetworkPolicy
-apiVersion: {{ .Values.NetworkPolicy.ApiVersion }}
+apiVersion: {{ .Values.networkPolicy.apiVersion }}
 metadata:
-  name: "{{ .Release.Name }}-{{ .Values.Master.Component }}"
+  name: "{{ .Release.Name }}-{{ .Values.master.componentName }}"
+  namespace: {{ template "jenkins.namespace" . }}
+  labels:
+    "app.kubernetes.io/name": '{{ template "jenkins.name" .}}'
+    "helm.sh/chart": "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    "app.kubernetes.io/managed-by": "{{ .Release.Service }}"
+    "app.kubernetes.io/instance": "{{ .Release.Name }}"
+    "app.kubernetes.io/component": "{{ .Values.master.componentName }}"
 spec:
   podSelector:
     matchLabels:
-      component: "{{ .Release.Name }}-{{ .Values.Master.Component }}"
+      "app.kubernetes.io/component": "{{ .Values.master.componentName }}"
+      "app.kubernetes.io/instance": "{{ .Release.Name }}"
   ingress:
     # Allow web access to the UI
     - ports:
-      - port: 8080
+      - port: {{ .Values.master.targetPort }}
     # Allow inbound connections from slave
     - from:
       - podSelector:
           matchLabels:
-            "jenkins/{{ .Release.Name }}-{{ .Values.Agent.Component }}": "true"
+            "jenkins/{{ .Release.Name }}-{{ .Values.agent.componentName }}": "true"
       ports:
-      - port: {{ .Values.Master.SlaveListenerPort }}
-{{- if .Values.Agent.Enabled }}
+      - port: {{ .Values.master.slaveListenerPort }}
+{{- if .Values.agent.enabled }}
 ---
 kind: NetworkPolicy
-apiVersion: {{ .Values.NetworkPolicy.ApiVersion }}
+apiVersion: {{ .Values.networkPolicy.apiVersion }}
 metadata:
-  name: "{{ .Release.Name }}-{{ .Values.Agent.Component }}"
+  name: "{{ .Release.Name }}-{{ .Values.agent.componentName }}"
+  namespace: {{ template "jenkins.namespace" . }}
+  labels:
+    "app.kubernetes.io/name": '{{ template "jenkins.name" .}}'
+    "helm.sh/chart": "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    "app.kubernetes.io/managed-by": "{{ .Release.Service }}"
+    "app.kubernetes.io/instance": "{{ .Release.Name }}"
+    "app.kubernetes.io/component": "{{ .Values.master.componentName }}"
 spec:
   podSelector:
     matchLabels:
       # DefaultDeny
-      "jenkins/{{ .Release.Name }}-{{ .Values.Agent.Component }}": "true"
+      "jenkins/{{ .Release.Name }}-{{ .Values.agent.componentName }}": "true"
 {{- end }}
 {{- end }}

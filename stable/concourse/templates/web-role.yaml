@@ -1,3 +1,4 @@
+{{- if .Values.web.enabled -}}
 {{- if .Values.rbac.create -}}
 {{- if .Values.concourse.web.kubernetes.enabled -}}
 apiVersion: rbac.authorization.k8s.io/{{ .Values.rbac.apiVersion }}
@@ -13,5 +14,6 @@ rules:
 - apiGroups: [""]
   resources: ["secrets"]
   verbs: ["get"]
+{{- end -}}
 {{- end -}}
 {{- end -}}
