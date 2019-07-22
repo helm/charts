@@ -119,6 +119,7 @@ spec:
         {{- end }}
         {{- end }}
         volumeMounts:
+        {{- if .Values.extraVolumeMounts }}{{ toYaml .Values.extraVolumeMounts | trim | nindent 8 }}{{ end }}
         - mountPath: /config
           name: config
         {{- if and .Values.ssl.enabled (not .Values.ssl.upstream) }}
@@ -168,6 +169,7 @@ spec:
         {{- end }}
 
       volumes:
+      {{- if .Values.extraVolumes  }}{{ toYaml .Values.extraVolumes | trim | nindent 6 }}{{ end }}
       - name: config
         configMap:
           name: {{ template "traefik.fullname" . }}

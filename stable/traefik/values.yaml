@@ -473,3 +473,15 @@ tracing:
 #   entryPoints: ["http", "https"]
 #   address: https://authserver.com/auth
 #   trustForwardHeader: true
+
+# Any extra volumes to define for the pod
+extraVolumes: []
+  # - name: example-name
+  #   hostPath:
+  #     path: /path/on/host
+  #     type: DirectoryOrCreate
+
+# Any extra volume mounts to define for the Traefik container
+extraVolumeMounts: []
+#   - name: example-name
+#     mountPath: /path/in/container
