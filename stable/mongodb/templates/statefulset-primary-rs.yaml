@@ -75,7 +75,7 @@ spec:
         command: ["chown", "-R", "{{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }}", "{{ .Values.persistence.mountPath }}"]
         securityContext:
           runAsUser: 0
-        resources: {{ toYaml .Values.volumePermissions.resources | nindent 10 -}}
+        resources: {{ toYaml .Values.volumePermissions.resources | nindent 10 }}
         volumeMounts:
         - name: datadir
           mountPath: {{ .Values.persistence.mountPath }}
