@@ -37,6 +37,13 @@ rules:
     resources: [ "secrets" ]
     verbs: ["get", "list", "watch", "create"]
   {{- end }}
+  {{- if .Values.rbac.podSecurityPolicies }}
+  - apiGroups: ['policy']
+    resources: ['podsecuritypolicies']
+    verbs: ['use']
+    resourceNames:
+      {{- toYaml .Values.rbac.podSecurityPolicies | nindent 6 }}
+  {{- end }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
 {{- if .Values.rbac.namespaced }}
