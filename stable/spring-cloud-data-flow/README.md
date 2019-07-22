@@ -81,6 +81,7 @@ The following tables list the configurable parameters and their default values.
 | server.version                    | The version/tag of the Data Flow server            | 2.0.2.RELEASE
 | server.imagePullPolicy            | The imagePullPolicy of the Data Flow server        | IfNotPresent
 | server.service.type               | The service type for the Data Flow server          | LoadBalancer
+| server.service.annotations        | Extra annotations for service resources            | {}
 | server.platformName               | The name of the configured platform account        | default
 | server.service.externalPort       | The external port for the Data Flow server         | 80
 
@@ -137,6 +138,7 @@ The following tables list the configurable parameters and their default values.
 | Parameter           | Description                    | Default                   |
 | ------------------- | ------------------------------ | ------------------------- |
 | database.driver     | Database driver                | nil
+| database.scheme     | Database scheme                | nil
 | database.host       | Database host                  | nil
 | database.port       | Database port                  | nil
 | database.user       | Database user                  | scdf

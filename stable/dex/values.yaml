@@ -4,12 +4,14 @@
 # name: value
 
 image: quay.io/dexidp/dex
-imageTag: "v2.16.0"
+imageTag: "v2.17.0"
 imagePullPolicy: "IfNotPresent"
 
 inMiniKube: false
 
 nodeSelector: {}
+
+podAnnotations: {}
 
 tolerations: []
   # - key: CriticalAddonsOnly

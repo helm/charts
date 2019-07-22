@@ -76,6 +76,10 @@ spec:
         - /bin/bash
         - -c
         - |
+          {{- if (eq .Values.securityContext.runAsUser 0.0) }}
+          useradd redis
+          chown -R redis {{ .Values.slave.persistence.path }}
+          {{- end }}
           if [[ -n $REDIS_PASSWORD_FILE ]]; then
             password_aux=`cat ${REDIS_PASSWORD_FILE}`
             export REDIS_PASSWORD=$password_aux
@@ -89,7 +93,7 @@ spec:
           fi
           if [[ ! -f /opt/bitnami/redis/etc/redis.conf ]];then
             cp /opt/bitnami/redis/mounted-etc/redis.conf /opt/bitnami/redis/etc/redis.conf
-          fi          
+          fi
           ARGS=("--port" "${REDIS_PORT}")
           ARGS+=("--slaveof" "${REDIS_MASTER_HOST}" "${REDIS_MASTER_PORT_NUMBER}")
           {{- if .Values.usePassword }}
@@ -100,6 +104,11 @@ spec:
           {{- end }}
           ARGS+=("--include" "/opt/bitnami/redis/etc/redis.conf")
           ARGS+=("--include" "/opt/bitnami/redis/etc/replica.conf")
+          {{- if .Values.slave.extraFlags }}
+          {{- range .Values.slave.extraFlags }}
+          ARGS+=({{ . | quote }})
+          {{- end }}
+          {{- end }}
           {{- if .Values.slave.command }}
           {{ .Values.slave.command }} "${ARGS[@]}"
           {{- else }}
@@ -151,9 +160,9 @@ spec:
             - sh
             - -c
             {{- if .Values.sentinel.enabled }}
-            - /health/ping_local.sh {{ .Values.slave.livenessProbe.timeoutSeconds }}
+            - /health/ping_liveness_local.sh {{ .Values.slave.livenessProbe.timeoutSeconds }}
             {{- else }}
-            - /health/ping_local_and_master.sh {{ .Values.slave.livenessProbe.timeoutSeconds }}
+            - /health/ping_liveness_local_and_master.sh {{ .Values.slave.livenessProbe.timeoutSeconds }}
             {{- end }}
         {{- end }}
 
@@ -169,9 +178,9 @@ spec:
             - sh
             - -c
             {{- if .Values.sentinel.enabled }}
-            - /health/ping_local.sh {{ .Values.slave.livenessProbe.timeoutSeconds }}
+            - /health/ping_readiness_local.sh {{ .Values.slave.livenessProbe.timeoutSeconds }}
             {{- else }}
-            - /health/ping_local_and_master.sh {{ .Values.slave.livenessProbe.timeoutSeconds }}
+            - /health/ping_readiness_local_and_master.sh {{ .Values.slave.livenessProbe.timeoutSeconds }}
             {{- end }}
         {{- end }}
         resources:
@@ -211,10 +220,6 @@ spec:
             printf "\nsentinel auth-pass {{ .Values.sentinel.masterSet }} $REDIS_PASSWORD" >> /opt/bitnami/redis-sentinel/etc/sentinel.conf
             {{- end }}
           fi
-          echo "Getting information about current running sentinels"
-          # Get information from existing sentinels
-          existing_sentinels=$(timeout -s 9 {{ .Values.sentinel.initialCheckTimeout }} redis-cli --raw -h {{ template "redis.fullname" . }} -a $REDIS_PASSWORD -p {{ .Values.sentinel.service.sentinelPort }} SENTINEL sentinels {{ .Values.sentinel.masterSet }})
-          echo "$existing_sentinels" | awk -f /health/parse_sentinels.awk | tee -a  /opt/bitnami/redis-sentinel/etc/sentinel.conf
 
           redis-server /opt/bitnami/redis-sentinel/etc/sentinel.conf --sentinel
         env:

@@ -32,6 +32,12 @@ enableInsecureLogin: false
 #   - --enable-insecure-login
 #   - --system-banner="Welcome to Kubernetes"
 
+## Additional container environment variables
+##
+extraEnv: []
+# - name: SOME_VAR
+#   value: 'some value'
+
 # Annotations to be added to kubernetes dashboard pods
 podAnnotations: {}
 
@@ -93,6 +99,9 @@ ingress:
 
   ## Kubernetes Dashboard Ingress annotations
   ##
+  ## Add custom labels
+  # labels:
+  #   key: value
   # annotations:
   #   kubernetes.io/ingress.class: nginx
   #   kubernetes.io/tls-acme: 'true'
@@ -164,3 +173,5 @@ podDisruptionBudget:
   enabled: false
   minAvailable:
   maxUnavailable:
+
+securityContext: {}

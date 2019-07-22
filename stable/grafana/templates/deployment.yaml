@@ -18,11 +18,10 @@ spec:
     matchLabels:
       app: {{ template "grafana.name" . }}
       release: {{ .Release.Name }}
+{{- with .Values.deploymentStrategy }}
   strategy:
-    type: {{ .Values.deploymentStrategy }}
-  {{- if ne .Values.deploymentStrategy "RollingUpdate" }}
-    rollingUpdate: null
-  {{- end }}
+{{ toYaml . | trim | indent 4 }}
+{{- end }}
   template:
     metadata:
       labels:
@@ -76,7 +75,8 @@ spec:
         - name: download-dashboards
           image: "{{ .Values.downloadDashboardsImage.repository }}:{{ .Values.downloadDashboardsImage.tag }}"
           imagePullPolicy: {{ .Values.downloadDashboardsImage.pullPolicy }}
-          command: ["sh", "/etc/grafana/download_dashboards.sh"]
+          command: ["/bin/sh"]
+          args: [ "-c", "mkdir -p /var/lib/grafana/dashboards/default && /etc/grafana/download_dashboards.sh" ]
           volumeMounts:
             - name: config
               mountPath: "/etc/grafana/download_dashboards.sh"
@@ -103,6 +103,8 @@ spec:
               value: "{{ .Values.sidecar.datasources.label }}"
             - name: FOLDER
               value: "/etc/grafana/provisioning/datasources"
+            - name: RESOURCE
+              value: "both"
             {{- if .Values.sidecar.datasources.searchNamespace }}
             - name: NAMESPACE
               value: "{{ .Values.sidecar.datasources.searchNamespace }}"
@@ -136,6 +138,8 @@ spec:
               value: "{{ .Values.sidecar.dashboards.label }}"
             - name: FOLDER
               value: "{{ .Values.sidecar.dashboards.folder }}{{- with .Values.sidecar.dashboards.defaultFolderName }}/{{ . }}{{- end }}"
+            - name: RESOURCE
+              value: "both"
             {{- if .Values.sidecar.dashboards.searchNamespace }}
             - name: NAMESPACE
               value: "{{ .Values.sidecar.dashboards.searchNamespace }}"
@@ -355,11 +359,11 @@ spec:
       {{- if .Values.sidecar.dashboards.enabled }}
         - name: sc-dashboard-volume
           emptyDir: {}
-      {{- if not .Values.dashboardProviders }}
+{{- if not .Values.dashboardProviders }}
         - name: sc-dashboard-provider
           configMap:
             name: {{ template "grafana.fullname" . }}-config-dashboards
-      {{- end -}}
+{{- end }}
       {{- end }}
       {{- if .Values.sidecar.datasources.enabled }}
         - name: sc-datasources-volume

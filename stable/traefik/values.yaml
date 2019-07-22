@@ -1,6 +1,13 @@
 ## Default values for Traefik
 image: traefik
-imageTag: 1.7.9
+imageTag: 1.7.12
+
+## Optionally specify an array of imagePullSecrets.
+## Secrets must be manually created in the namespace.
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+# imagePullSecrets:
+# - "regsecret"
+
 
 testFramework:
   image: "dduportal/bats"
@@ -39,6 +46,7 @@ deploymentStrategy: {}
   # type: RollingUpdate
 
 securityContext: {}
+useNonPriviledgedPorts: false
 env: {}
 
 nodeSelector: {}
@@ -62,6 +70,23 @@ tolerations: []
   #   ip: "127.0.0.1"
   #   publishedService: "namespace/servicename"
   #   useDefaultPublishedService: false
+
+fileBackend: ""
+  # as in same traefik.toml
+  #
+  # [backends]
+  #   [backends.backend1]
+  #     # ...
+  #   [backends.backend2]
+  #     # ...
+  # [frontends]
+  #   [frontends.frontend1]
+  #   # ...
+  #   [frontends.frontend2]
+  #
+  # or separated file from configFiles
+  # filename = "/configs/rules.toml"
+
 proxyProtocol:
   enabled: false
   # trustedIPs is required when enabled
@@ -170,6 +195,7 @@ kvprovider:
 
 
 acme:
+  keyType: RSA4096
   enabled: false
   email: admin@example.com
   onHostRule: true

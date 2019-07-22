@@ -4,7 +4,7 @@
 replicaCount: 1
 image:
   repository: sonarqube
-  tag: 7.7-community
+  tag: 7.8-community
   # If using a private repository, the name of the imagePullSecret to use
   # pullSecret: my-repo-secret
 
@@ -43,7 +43,7 @@ ingress:
   # labels:
   #  traffic-type: external
   #  traffic-type: internal
-  tls: {}
+  tls: []
   # Secrets must be manually created in the namespace.
   # - secretName: chart-example-tls
   #   hosts:
@@ -89,6 +89,9 @@ extraEnv: {}
   # If an ingress *path* is defined, it should be reflected here
   # sonar.web.context: /sonarqube
 
+# Set annotations for pods
+annotations: {}
+
 resources: {}
 # We usually recommend not to specify default resources and to leave this as a conscious
 # choice for the user. This also increases chances charts run on environments with little
@@ -102,6 +105,9 @@ resources: {}
 #  memory: 128Mi
 persistence:
   enabled: false
+  ## Set annotations on pvc
+  annotations: {}
+
   ## Specify an existing volume claim instead of creating a new one.
   ## When using this option all following options like storageClass, accessMode and size are ignored.
   # existingClaim:
@@ -131,12 +137,12 @@ plugins:
   # We allow the plugins init container to have a separate resources declaration because
   # the initContainer does not take as much resources.
 
-# A custom sonar.properties file can be provided using a multiline YAML string.
+# A custom sonar.properties file can be provided via dictionary.
 # For example:
-# sonarProperties: |
-#   sonar.forceAuthentication=true
-#   sonar.security.realm=LDAP
-#   ldap.url=ldaps://organization.com
+# sonarProperties:
+#   sonar.forceAuthentication: true
+#   sonar.security.realm: LDAP
+#   ldap.url: ldaps://organization.com
 
 # Kubernetes secret that contains the encryption key for the sonarqube instance.
 # The secret must contain the key 'sonar-secret.txt'.

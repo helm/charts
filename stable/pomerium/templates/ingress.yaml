@@ -16,29 +16,29 @@ spec:
   tls:
     - secretName: {{ default .Values.ingress.secretName .Values.ingress.secret.name}}
       hosts:
-        - '*.{{ .Values.config.rootDomain }}'
-        - {{ default (printf "authorize.%s" .Values.config.rootDomain ) .Values.proxy.authorizeServiceUrl }}
-        - {{ default (printf "authenticate.%s" .Values.config.rootDomain ) .Values.proxy.authenticateServiceUrl }}
+        - {{ printf "*.%s" .Values.config.rootDomain | quote }}
+        - {{ printf "authorize.%s" .Values.config.rootDomain | quote }}
+        - {{ printf "authenticate.%s" .Values.config.rootDomain | quote }}
   rules:
-    - host: {{ default (printf "authorize.%s" .Values.config.rootDomain ) .Values.proxy.authorizeServiceUrl }}
+    - host: {{ printf "*.%s" .Values.config.rootDomain| quote }}
       http:
         paths:
           - paths:
             backend:
-              serviceName: {{ include "pomerium.authorize.fullname" .}}
+              serviceName: {{ template "pomerium.proxy.fullname" . }}
               servicePort: https
-    - host: {{ default (printf "authenticate.%s" .Values.config.rootDomain ) .Values.proxy.authenticateServiceUrl }}
+    - host:  {{ printf "authorize.%s" .Values.config.rootDomain }}
       http:
         paths:
           - paths:
             backend:
-              serviceName: {{ include "pomerium.authenticate.fullname" .}}
+              serviceName: {{ template "pomerium.authorize.fullname" . }}
               servicePort: https
-    - host: '*.{{ .Values.config.rootDomain }}'
+    - host: {{ printf "authenticate.%s" .Values.config.rootDomain }}
       http:
         paths:
           - paths:
             backend:
-              serviceName: {{ include "pomerium.proxy.fullname" .}}
+              serviceName: {{ template "pomerium.authenticate.fullname" . }}
               servicePort: https
 {{- end }}

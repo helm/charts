@@ -17,7 +17,7 @@ spec:
     - host: {{ .Values.ingress.hostname }}
       http:
         paths:
-          - path: /
+          - path: {{ .Values.ingress.path }}
             backend:
               serviceName: {{ template "kube-ops-view.fullname" . }}
               servicePort: {{ .Values.service.externalPort }}

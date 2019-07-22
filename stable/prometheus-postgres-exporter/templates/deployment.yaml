@@ -76,6 +76,8 @@ spec:
 {{- with .Values.extraContainers }}
 {{ tpl . $ | indent 8 }}
 {{- end }}
+      securityContext:
+{{ toYaml .Values.securityContext | indent 8 }}
      {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

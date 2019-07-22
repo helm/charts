@@ -59,11 +59,13 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | Parameter                         | Description                          | Default                                   |
 | --------------------------------- | ------------------------------------ | ----------------------------------------- |
 | `checkDeprecation`                | Checks for deprecated values used    | `true`                                 |
+| `clusterZone`                     | Override the cluster name for FQDN resolving    | `cluster.local`                |
 | `nameOverride`                    | Override the resource name prefix    | `jenkins`                                 |
 | `fullnameOverride`                | Override the full resource names     | `jenkins-{release-name}` (or `jenkins` if release-name is `jenkins`) |
+| `namespaceOverride`               | Override the deployment namespace    | Not set (`Release.Namespace`)             |
 | `master.componentName`            | Jenkins master name                  | `jenkins-master`                          |
 | `master.image`                    | Master image name                    | `jenkins/jenkins`                         |
-| `master.imageTag`                 | Master image tag                     | `lts`                                     |
+| `master.tag`                      | Master image tag                     | `lts`                                     |
 | `master.imagePullPolicy`          | Master image pull policy             | `Always`                                  |
 | `master.imagePullSecret`          | Master image pull secret             | Not set                                   |
 | `master.numExecutors`             | Set Number of executors              | 0                                         |
@@ -174,7 +176,7 @@ Some third-party systems, e.g. GitHub, use HTML-formatted data in their payload 
 | `agent.enabled`            | Enable Kubernetes plugin jnlp-agent podTemplate | `true`                 |
 | `agent.image`              | Agent image name                                | `jenkins/jnlp-slave`   |
 | `agent.imagePullSecret`    | Agent image pull secret                         | Not set                |
-| `agent.imageTag`           | Agent image tag                                 | `3.27-1`               |
+| `agent.tag`                | Agent image tag                                 | `3.27-1`               |
 | `agent.privileged`         | Agent privileged container                      | `false`                |
 | `agent.resources`          | Resources allocation (Requests and Limits)      | `{requests: {cpu: 200m, memory: 256Mi}, limits: {cpu: 200m, memory: 256Mi}}`|
 | `agent.volumes`            | Additional volumes                              | `nil`                  |
@@ -356,17 +358,21 @@ Adds a backup CronJob for jenkins, along with required RBAC resources.
 
 ### Backup Values
 
-| Parameter                   | Description                                | Default                           |
-| --------------------------- | ------------------------------------------ | --------------------------------- |
-| `backup.enabled`            | Enable the use of a backup CronJob         | `false`                           |
-| `backup.schedule`           | Schedule to run jobs                       | `0 2 * * *`                       |
-| `backup.annotations`        | Backup pod annotations                     | iam.amazonaws.com/role: `jenkins` |
-| `backup.image.repo`         | Backup image repository                    | `nuvo/kube-tasks`                 |
-| `backup.image.tag`          | Backup image tag                           | `0.1.2`                           |
-| `backup.extraArgs`          | Additional arguments for kube-tasks        | `[]`                              |
-| `backup.env`                | Backup environment variables               | AWS_REGION: `us-east-1`           |
-| `backup.resources`          | Backup CPU/Memory resource requests/limits | Memory: `1Gi`, CPU: `1`           |
-| `backup.destination`        | Destination to store backup artifacts      | `s3://nuvo-jenkins-data/backup`   |
+| Parameter                              | Description                                            | Default                           |
+| -------------------------------------- | ------------------------------------------------------ | --------------------------------- |
+| `backup.enabled`                       | Enable the use of a backup CronJob                     | `false`                           |
+| `backup.schedule`                      | Schedule to run jobs                                   | `0 2 * * *`                       |
+| `backup.annotations`                   | Backup pod annotations                                 | iam.amazonaws.com/role: `jenkins` |
+| `backup.image.repo`                    | Backup image repository                                | `nuvo/kube-tasks`                 |
+| `backup.image.tag`                     | Backup image tag                                       | `0.1.2`                           |
+| `backup.extraArgs`                     | Additional arguments for kube-tasks                    | `[]`                              |
+| `backup.existingSecret`                | Environment variables to add to the cronjob container  | {}                                |
+| `backup.existingSecret.*`              | Specify the secret name containing the AWS credentials | `jenkinsaws`                      |
+| `backup.existingSecret.*.awsaccesskey` | `secretKeyRef.key` used for `AWS_ACCESS_KEY_ID`        | `jenkins_aws_access_key`          |
+| `backup.existingSecret.*.awssecretkey` | `secretKeyRef.key` used for `AWS_SECRET_ACCESS_KEY`    | `jenkins_aws_secret_key`          |
+| `backup.env`                           | Backup environment variables                           | AWS_REGION: `us-east-1`           |
+| `backup.resources`                     | Backup CPU/Memory resource requests/limits             | Memory: `1Gi`, CPU: `1`           |
+| `backup.destination`                   | Destination to store backup artifacts                  | `s3://nuvo-jenkins-data/backup`   |
 
 ### Restore from backup
 

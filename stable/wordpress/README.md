@@ -54,8 +54,10 @@ The following table lists the configurable parameters of the WordPress chart and
 | `image.registry`                 | WordPress image registry                                                      | `docker.io`                                                  |
 | `image.repository`               | WordPress image name                                                          | `bitnami/wordpress`                                          |
 | `image.tag`                      | WordPress image tag                                                           | `{TAG_NAME}`                                                 |
-| `image.pullPolicy`               | Image pull policy                                                             | `Always` if `imageTag` is `latest`, else `IfNotPresent`      |
+| `image.pullPolicy`               | Image pull policy                                                             | `IfNotPresent`                                               |
 | `image.pullSecrets`              | Specify docker-registry secret names as an array                              | `[]` (does not add image pull secrets to deployed pods)      |
+| `nameOverride`                   | String to partially override wordpress.fullname template with a string (will prepend the release name) | `nil`                               |
+| `fullnameOverride`               | String to fully override wordpress.fullname template with a string                                     | `nil`                               |
 | `wordpressSkipInstall`           | Skip wizard installation                                                      | `false`                                                      |
 | `wordpressUsername`              | User of the application                                                       | `user`                                                       |
 | `wordpressPassword`              | Application password                                                          | _random 10 character long alphanumeric string_               |
@@ -88,9 +90,11 @@ The following table lists the configurable parameters of the WordPress chart and
 | `service.type`                   | Kubernetes Service type                                                       | `LoadBalancer`                                               |
 | `service.port`                   | Service HTTP port                                                             | `80`                                                         |
 | `service.httpsPort`              | Service HTTPS port                                                            | `443`                                                        |
+| `service.metricsPort`              | Service Metrics port                                                            | `9117`                                                        |
 | `service.externalTrafficPolicy`  | Enable client source IP preservation                                          | `Cluster`                                                    |
 | `service.nodePorts.http`         | Kubernetes http node port                                                     | `""`                                                         |
 | `service.nodePorts.https`        | Kubernetes https node port                                                    | `""`                                                         |
+| `service.nodePorts.metrics`      | Kubernetes metrics node port                                                  | `""`                                                         |
 | `service.extraPorts`             | Extra ports to expose in the service (normally used with the `sidecar` value) | `nil`                                                        |
 | `healthcheckHttps`               | Use https for liveliness and readiness                                        | `false`                                                      |
 | `livenessProbeHeaders`           | Headers to use for livenessProbe                                              | `nil`                                                        |
@@ -123,6 +127,13 @@ The following table lists the configurable parameters of the WordPress chart and
 | `metrics.image.pullSecrets`      | Specify docker-registry secret names as an array                              | `[]` (does not add image pull secrets to deployed pods)      |
 | `metrics.podAnnotations`         | Additional annotations for Metrics exporter pod                               | `{prometheus.io/scrape: "true", prometheus.io/port: "9117"}` |
 | `metrics.resources`              | Exporter resource requests/limit                                              | `{}`                                                         |
+| `metrics.serviceMonitor.enabled`     | Create ServiceMonitor Resource for scraping metrics using PrometheusOperator   | `false`                                   |
+| `metrics.serviceMonitor.namespace`   | Namespace where servicemonitor resource should be created                      | `nil`                                     |
+| `metrics.serviceMonitor.interval`    | Specify the interval at which metrics should be scraped                        | `30s`                                     |
+| `metrics.serviceMonitor.scrapeTimeout`| Specify the timeout after which the scrape is ended                           | `nil`                                     |
+| `metrics.serviceMonitor.relabellings`| Specify Metric Relabellings to add to the scrape endpoint                      | `nil`                                     |
+| `metrics.serviceMonitor.honorLabels` | honorLabels chooses the metric's labels on collisions with target labels.      | `false`                                   |
+| `metrics.serviceMonitor.additionalLabels`| Used to pass Labels that are required by the Installed Prometheus Operator | `{}`                                      |
 | `sidecars`                       | Attach additional containers to the pod                                       | `nil`                                                        |
 | `updateStrategy`                 | Set up update strategy                                                        | `RollingUpdate`                                              |
 
@@ -146,20 +157,53 @@ $ helm install --name my-release -f values.yaml stable/wordpress
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
-### [Rolling VS Immutable tags](https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/)
+### Production configuration
 
-It is strongly recommended to use immutable tags in a production environment. This ensures your deployment does not change automatically if the same tag is updated with a different image.
-
-Bitnami will release a new chart updating its containers if a new version of the main container, significant changes, or critical vulnerabilities exist.
-
-## Production and horizontal scaling
-
-The following repo contains the recommended production settings for wordpress capture in an alternative [values file](values-production.yaml). Please read carefully the comments in the values-production.yaml file to set up your environment appropriately.
-
-To horizontally scale this chart, first download the [values-production.yaml](values-production.yaml) file to your local folder, then:
+This chart includes a `values-production.yaml` file where you can find some parameters oriented to production configuration in comparison to the regular `values.yaml`.
 
 ```console
 $ helm install --name my-release -f ./values-production.yaml stable/wordpress
+```
+
+- Set Apache AllowOverride directive to None:
+```diff
+- allowOverrideNone: false
++ allowOverrideNone: true
+```
+
+- Number of WordPress Pods to run
+```diff
+- replicaCount: 1
++ replicaCount: 3
+```
+
+- Kubernetes Service type:
+```diff
+- service.type: LoadBalancer
++ service.type: ClusterIP
+```
+
+- Enable client source IP preservation:
+```diff
+- service.externalTrafficPolicy: Cluster
++ service.externalTrafficPolicy: Local
+```
+
+- PVC Access Mode:
+```diff
+- persistence.accessMode: ReadWriteOnce
++ ##
++ ## To use the /admin portal and to ensure you can scale wordpress you need to provide a
++ ## ReadWriteMany PVC, if you dont have a provisioner for this type of storage
++ ## We recommend that you install the nfs provisioner and map it to a RWO volume
++ ## helm install stable/nfs-server-provisioner --set persistence.enabled=true,persistence.size=10Gi
++ persistence.accessMode: ReadWriteMany
+```
+
+- Start a side-car prometheus exporter:
+```diff
+- metrics.enabled: false
++ metrics.enabled: true
 ```
 
 Note that [values-production.yaml](values-production.yaml) includes a replicaCount of 3, so there will be 3 WordPress pods. As a result, to use the /admin portal and to ensure you can scale wordpress you need to provide a ReadWriteMany PVC, if you don't have a provisioner for this type of storage, we recommend that you install the nfs provisioner and map it to a RWO volume.
@@ -168,6 +212,12 @@ Note that [values-production.yaml](values-production.yaml) includes a replicaCou
 $ helm install stable/nfs-server-provisioner --set persistence.enabled=true,persistence.size=10Gi
 $ helm install --name my-release -f values-production.yaml --set persistence.storageClass=nfs stable/wordpress --set mariadb.master.persistence.storageClass=nfs
 ```
+
+### [Rolling VS Immutable tags](https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/)
+
+It is strongly recommended to use immutable tags in a production environment. This ensures your deployment does not change automatically if the same tag is updated with a different image.
+
+Bitnami will release a new chart updating its containers if a new version of the main container, significant changes, or critical vulnerabilities exist.
 
 ## Sidecars
 

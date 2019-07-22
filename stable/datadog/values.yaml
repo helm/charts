@@ -252,6 +252,11 @@ datadog:
   #
   # criSocketPath: /var/run/containerd/containerd.sock
 
+  ## @param dogStatsDSocketPath - string - optional
+  ## Path to the DogStatsD socket
+  #
+  # dogStatsDSocketPath: /var/run/datadog/dsd.socket
+
   ## @param livenessProbe - object - optional
   ## Override the agent's liveness probe logic from the default:
   ## In case of issues with the probe, you can disable it with the
@@ -341,6 +346,11 @@ clusterAgent:
 #      cpu: 200m
 #      memory: 256Mi
 
+  ## @param priorityclassName - string - optional
+  ## Name of the priorityClass to apply to the Cluster Agent
+
+  # priorityClassName: system-cluster-critical
+
   ## @param livenessProbe - object - optional
   ## Override the agent's liveness probe logic from the default:
   ## In case of issues with the probe, you can disable it with the
@@ -349,6 +359,12 @@ clusterAgent:
   # livenessProbe:
   #   exec:
   #     command: ["/bin/true"]
+
+  ## @param podAnnotations - list of key:value strings - optional
+  ## Annotations to add to the cluster-agents's pod(s)
+  #
+  # podAnnotations:
+  #   key: "value"
 
   ## @param readinessProbe - object - optional
   ## Override the cluster-agent's readiness probe logic from the default:
@@ -401,6 +417,86 @@ daemonset:
   ## get guaranteed delivery of the metrics in Datadog-per-namespace setup!
   #
   enabled: true
+
+  ## @param useDedicatedContainers - boolean - optional
+  ## Deploy each datadog agent process in a separate container. Allow fine-grained
+  ## control over allocated resources and better isolation.
+  #
+  # useDedicatedContainers: false
+
+  containers:
+
+    agent:
+      ## @param env - list - required
+      ## Additionnal environment variables for the agent container.
+      #
+      # env:
+
+      ## @param logLevel - string - optional
+      ## Set logging verbosity, valid log levels are:
+      ## trace, debug, info, warn, error, critical, and off.
+      ## If not set, fall back to the value of datadog.logLevel.
+      #
+      # logLevel: INFO
+
+      ## @param resources - object - required
+      ## Resource requests and limits for the agent container.
+      #
+      resources: {}
+      #  requests:
+      #    cpu: 200m
+      #    memory: 256Mi
+      #  limits:
+      #    cpu: 200m
+      #    memory: 256Mi
+
+    processAgent:
+      ## @param env - list - required
+      ## Additionnal environment variables for the process-agent container.
+      #
+      # env:
+
+      ## @param logLevel - string - optional
+      ## Set logging verbosity, valid log levels are:
+      ## trace, debug, info, warn, error, critical, and off.
+      ## If not set, fall back to the value of datadog.logLevel.
+      #
+      # logLevel: INFO
+
+      ## @param resources - object - required
+      ## Resource requests and limits for the process-agent container.
+      #
+      resources: {}
+      #  requests:
+      #    cpu: 100m
+      #    memory: 200Mi
+      #  limits:
+      #    cpu: 100m
+      #    memory: 200Mi
+
+    traceAgent:
+      ## @param env - list - required
+      ## Additionnal environment variables for the trace-agent container.
+      #
+      # env:
+
+      ## @param logLevel - string - optional
+      ## Set logging verbosity, valid log levels are:
+      ## trace, debug, info, warn, error, critical, and off.
+      ## If not set, fall back to the value of datadog.logLevel.
+      #
+      # logLevel: INFO
+
+      ## @param resources - object - required
+      ## Resource requests and limits for the trace-agent container.
+      #
+      resources: {}
+      #  requests:
+      #    cpu: 100m
+      #    memory: 200Mi
+      #  limits:
+      #    cpu: 100m
+      #    memory: 200Mi
 
   ## @param useHostNetwork - boolean - optional
   ## Bind ports on the hostNetwork. Useful for CNI networking where hostPort might
@@ -466,6 +562,11 @@ daemonset:
   ## Sets podLabels if defined.
   #
   # podLabels: {}
+
+  ## @param useConfigMap - boolean - optional
+  #  Configures a configmap to provide the agent configuration
+  #
+  # useConfigMap: false
 
 deployment:
   ## @param enabled - boolean - required

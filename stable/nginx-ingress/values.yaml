@@ -5,7 +5,7 @@ controller:
   name: controller
   image:
     repository: quay.io/kubernetes-ingress-controller/nginx-ingress-controller
-    tag: "0.24.1"
+    tag: "0.25.0"
     pullPolicy: IfNotPresent
     # www-data -> uid 33
     runAsUser: 33
@@ -14,7 +14,7 @@ controller:
   containerPort:
     http: 80
     https: 443
-
+  # Will add custom configuration options to Nginx https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/
   config: {}
   # Will add custom header to Nginx https://github.com/kubernetes/ingress-nginx/tree/master/docs/examples/customization/custom-headers
   headers: {}
@@ -28,6 +28,10 @@ controller:
   # By default, while using host network, name resolution uses the host's DNS. If you wish nginx-controller
   # to keep resolving names inside the k8s network, use ClusterFirstWithHostNet.
   dnsPolicy: ClusterFirst
+
+  # Bare-metal considerations via the host network https://kubernetes.github.io/ingress-nginx/deploy/baremetal/#via-the-host-network
+  # Ingress status was blank because there is no Service exposing the NGINX Ingress controller in a configuration using the host network, the default --publish-service flag used in standard cloud setups does not apply
+  reportNodeInternalIp: false
 
   ## Use host ports 80 and 443
   daemonset:
@@ -194,6 +198,10 @@ controller:
 
     healthCheckNodePort: 0
 
+    ports:
+      http: 80
+      https: 443
+
     targetPorts:
       http: http
       https: https
@@ -204,9 +212,13 @@ controller:
     # nodePorts:
     #   http: 32080
     #   https: 32443
+    #   tcp:
+    #     8080: 32808
     nodePorts:
       http: ""
       https: ""
+      tcp: {}
+      udp: {}
 
   extraContainers: []
   ## Additional containers to be added to the controller pod.
@@ -316,10 +328,28 @@ defaultBackend:
     repository: k8s.gcr.io/defaultbackend-amd64
     tag: "1.5"
     pullPolicy: IfNotPresent
+    # nobody user -> uid 65534
+    runAsUser: 65534
 
   extraArgs: {}
 
   port: 8080
+
+  ## Readiness and liveness probes for default backend
+  ## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
+  ##
+  livenessProbe:
+    failureThreshold: 3
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    successThreshold: 1
+    timeoutSeconds: 5
+  readinessProbe:
+    failureThreshold: 6
+    initialDelaySeconds: 0
+    periodSeconds: 5
+    successThreshold: 1
+    timeoutSeconds: 5
 
   ## Node tolerations for server scheduling to nodes with taints
   ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
@@ -331,6 +361,12 @@ defaultBackend:
   #    effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
 
   affinity: {}
+
+  ## Security Context policies for controller pods
+  ## See https://kubernetes.io/docs/tasks/administer-cluster/sysctl-cluster/ for
+  ## notes on enabling and using sysctls
+  ##
+  podSecurityContext: {}
 
   # labels to add to the pod container metadata
   podLabels: {}

@@ -1,0 +1,18 @@
+{{- if .Values.falco.webserver.enabled }}
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ template "falco.fullname" .}}-audit-service
+  labels:
+    app: {{ template "falco.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  selector:
+    app: {{ template "falco.fullname" .}}
+  clusterIP: {{ .Values.falco.webserver.clusterIP }}
+  ports:
+  - protocol: TCP
+    port: {{ .Values.falco.webserver.listenPort }}
+{{- end }}
