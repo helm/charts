@@ -188,9 +188,9 @@ gateway:
   replicas: 4
   s3:
     serviceEndpoint: ""
-  ## Use minio as an azure blob gateway, you should disable data persistence so no volume claim are created.
+  ## Use minio as an azure blob gateway, you should disable data persistence so no volume claim are created or use distributed mode.
   ## https://docs.minio.io/docs/minio-gateway-for-azure
-  ## Use minio as GCS (Google Cloud Storage) gateway, you should disable data persistence so no volume claim are created.
+  ## Use minio as GCS (Google Cloud Storage) gateway, you should disable data persistence so no volume claim are created or use distributed mode.
   ## https://docs.minio.io/docs/minio-gateway-for-gcs
   gcs:
     # credential json file of service account key
