@@ -24,6 +24,14 @@ admissionControllerKind: ValidatingWebhookConfiguration
 # recommend leaving the failure policy as Ignore.
 admissionControllerFailurePolicy: Ignore
 
+# Adds a namespace selector to the admission controller webhook
+admissionControllerNamespaceSelector:
+  matchExpressions:
+    - {key: openpolicyagent.org/webhook, operator: NotIn, values: [ignore]}
+
+# SideEffectClass for the webhook, setting to None enables dry-run
+admissionControllerSideEffect: Unknown
+
 # To restrict the kinds of operations and resources that are subject to OPA
 # policy checks, see the settings below. By default, all resources and
 # operations are subject to OPA policy checks.
@@ -150,15 +158,18 @@ sar:
 # To control the liveness and readiness probes change the fields below.
 readinessProbe:
   httpGet:
-    path: /
+    path: /health
     scheme: HTTPS
     port: 443
-    initialDelaySeconds: 3
-    periodSeconds: 5
+  initialDelaySeconds: 3
+  periodSeconds: 5
 livenessProbe:
   httpGet:
-    path: /
+    path: /health
     scheme: HTTPS
     port: 443
-    initialDelaySeconds: 3
-    periodSeconds: 5
+  initialDelaySeconds: 3
+  periodSeconds: 5
+
+# Set a priorityClass using priorityClassName
+# priorityClassName:

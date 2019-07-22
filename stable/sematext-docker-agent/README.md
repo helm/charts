@@ -1,3 +1,5 @@
+**This chart is DEPRECATED, use [stable/sematext-agent](https://github.com/helm/charts/tree/master/stable/sematext-agent) instead!**
+
 # Sematext Docker Agent
 
 [Sematext](https://sematext.com/) Agent for Docker collects Metrics, Events, and Logs from the Docker API for SPM Docker Monitoring & Logsene / Hosted ELK Log Management.

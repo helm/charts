@@ -17,12 +17,11 @@ image:
   ## Bitnami MongoDB image tag
   ## ref: https://hub.docker.com/r/bitnami/mongodb/tags/
   ##
-  tag: 4.0.9
-
+  tag: 4.0.10-debian-9-r53
   ## Specify a imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   ##
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -31,9 +30,17 @@ image:
   #   - myRegistryKeySecretName
 
   ## Set to true if you would like to see extra information on logs
-  ## It turns NAMI debugging in minideb
-  ## ref:  https://github.com/bitnami/minideb-extras/#turn-on-nami-debugging
+  ## It turns on Bitnami debugging in minideb-extras-base
+  ## ref:  https://github.com/bitnami/minideb-extras-base
   debug: false
+
+## String to partially override mongodb.fullname template (will maintain the release name)
+##
+# nameOverride:
+
+## String to fully override mongodb.fullname template
+##
+# fullnameOverride:
 
 ## Enable authentication
 ## ref: https://docs.mongodb.com/manual/tutorial/enable-authentication/
@@ -56,7 +63,7 @@ usePassword: true
 ## Whether enable/disable IPv6 on MongoDB
 ## ref: https://github.com/bitnami/bitnami-docker-mongodb/blob/master/README.md#enabling/disabling-ipv6
 ##
-mongodbEnableIPv6: true
+mongodbEnableIPv6: false
 
 ## Whether enable/disable DirectoryPerDB on MongoDB
 ## ref: https://github.com/bitnami/bitnami-docker-mongodb/blob/master/README.md#enabling/disabling-directoryperdb
@@ -109,6 +116,10 @@ service:
   ##
   # loadBalancerIP:
 
+  ## Specify the loadBalancerSourceRanges value for LoadBalancer service types.
+  ## ref: https://kubernetes.io/docs/tasks/access-application-cluster/configure-cloud-provider-firewall/#restrict-access-for-loadbalancer-service
+  ##
+  # loadBalancerSourceRanges: []
 
 ## Setting up replication
 ## ref: https://github.com/bitnami/bitnami-docker-mongodb#setting-up-a-replication
@@ -131,19 +142,30 @@ replicaSet:
   replicas:
     secondary: 1
     arbiter: 1
+
   ## Pod Disruption Budget
   ## ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
   pdb:
+    enabled: true
     minAvailable:
       primary: 1
       secondary: 1
       arbiter: 1
+    # maxUnavailable:
+      # primary: 1
+      # secondary: 1
+      # arbiter: 1
 
 # Annotations to be added to MongoDB pods
 podAnnotations: {}
 
 # Additional pod labels to apply
 podLabels: {}
+
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName:
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -299,7 +321,7 @@ metrics:
     registry: docker.io
     repository: forekshub/percona-mongodb-exporter
     tag: latest
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
     ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -344,6 +366,10 @@ metrics:
   serviceMonitor:
     ## If the operator is installed in your cluster, set to true to create a Service Monitor Entry
     enabled: false
+
+    ## Specify a namespace if needed
+    # namespace: monitoring
+
     ## Used to pass Labels that are used by the Prometheus installed in your cluster to select Service Monitors to work with
     ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#prometheusspec
     additionalLabels: {}

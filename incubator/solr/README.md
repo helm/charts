@@ -14,7 +14,7 @@ The chart installs the Solr docker image from: https://hub.docker.com/_/solr/
 
 To install the Solr helm chart run:
 
-```
+```txt
 helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
 $ helm install --name solr incubator/solr
 ```
@@ -23,13 +23,13 @@ $ helm install --name solr incubator/solr
 
 The following table shows the configuration options for the Solr helm chart:
 
-
 | Parameter                                     | Description                           | Default Value                                                       |
 | --------------------------------------------- | ------------------------------------- | --------------------------------------------------------------------- |
 | `port`                                        | The port that Solr will listen on | `8983`                                                                |
 | `replicaCount`                                | The number of replicas in the Solr statefulset | `3`                                                                   |
 | `javaMem`                                     | JVM memory settings to pass to Solr | `-Xms2g -Xmx3g`                                                       |
 | `resources`                                   | Resource limits and requests to set on the solr pods | `{}` |
+| `extraEnvVars`                                | Additional environment variables to set on the solr pods (in yaml syntax) | `[]` |
 | `terminationGracePeriodSeconds`               | The termination grace period of the Solr pods | `180`|
 | `image.repository`                            | The repository to pull the docker image from| `solr`                                                                |
 | `image.tag`                                   | The tag on the repository to pull | `7.6.0`                                                               |
@@ -43,6 +43,7 @@ The following table shows the configuration options for the Solr helm chart:
 | `updateStrategy`                              | The update strategy of the solr pods | `{}` |
 | `logLevel`                                    | The log level of the solr pods  | `INFO` |
 | `podDisruptionBudget`                         | The pod disruption budget for the Solr statefulset | `{"maxUnavailable": 1}`                                                                   |
+| `schedulerName`                               | The name of the k8s scheduler (other than default)  | ` nil`       |
 | `volumeClaimTemplates.storageClassName`       | The name of the storage class for the Solr PVC | ``                                                             |
 | `volumeClaimTemplates.storageSize`            | The size of the PVC | `20Gi`                                                                |
 | `volumeClaimTemplates.accessModes`            | The access mode of the PVC| `[ "ReadWriteOnce" ]`                                                       |
@@ -73,6 +74,11 @@ The following table shows the configuration options for the Solr helm chart:
 | `exporter.service.type`                       | The type of the exporter service | `ClusterIP`                                                           |
 | `exporter.service.annotations`                | Annotations to apply to the exporter service | `{}` |
 
+## Service Start with command sets
+
+helm install --name solr \
+    --set image.tag=7.7.2,javaMem="-Xms1g -Xmx1g",logLevel=INFO,replicaCount=2,livenessProbe.initialDelaySeconds=420,exporter.readinessProbe.periodSeconds=30 incubator/solr
+
 
 ## TLS Configuration
 
@@ -84,7 +90,7 @@ Generate SSL certificate for the installation:
 
 base64 Encode the CSR and apply into kubernetes as a CertificateSigningRequest
 
-```
+```sh
 export MY_CSR_NAME="solr-certifiate"
 cat <<EOF | ikubectl apply -f -
 apiVersion: certificates.k8s.io/v1beta1
@@ -114,3 +120,9 @@ We store the certificate and private key in a Kubernetes secret:
 Now the secret can be used in the solr installation:
 
 `helm install  . --set tls.enabled=true,tls.certSecret.name=solr-certificate,tls.importKubernetesCA=true`
+
+## Minikube Notes
+
+- Chart out of the box start with 2G,2G...So..
+- minikube start --vm-driver=hyperkit --memory 4096
+- minikube start --vm-driver=virtualbox --memory 4096

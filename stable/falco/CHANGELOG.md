@@ -3,6 +3,76 @@
 This file documents all notable changes to Sysdig Falco Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v1.0.0
+
+### Major Changes
+
+* Add support for K8s audit logging
+
+## v0.9.1
+
+### Minor Changes
+
+* Allow configuration using values for `time_format_iso8601` setting
+* Allow configuration using values for `syscall_event_drops` setting
+* Allow configuration using values for `http_output` setting
+* Add CHANGELOG entry for v0.8.0, [not present on its PR](https://github.com/helm/charts/pull/14813#issuecomment-506821432)
+
+## v0.9.0
+
+### Major Changes
+
+* Add nestorsalceda as an approver
+
+## v0.8.0
+
+### Major Changes
+
+* Allow configuration of Pod Security Policy. This is needed to get Falco
+  running when the Admission Controller is enabled.
+
+## v0.7.10
+
+### Minor Changes
+
+* Fix bug with Google Cloud Security Command Center and Falco integration
+
+## v0.7.9
+
+### Minor Changes
+
+* Upgrade to Falco 0.15.3
+* Upgrade rules to Falco 0.15.3
+
+## v0.7.8
+
+### Minor Changes
+
+* Add TZ parameter for time correlation in Falco logs
+
+## v0.7.7
+
+### Minor Changes
+
+* Upgrade to Falco 0.15.1
+* Upgrade rules to Falco 0.15.1
+
+## v0.7.6
+
+### Major Changes
+
+* Allow to enable/disable usage of the docker socket
+* Configurable docker socket path
+* CRI support, configurable CRI socket
+* Allow to enable/disable usage of the CRI socket
+
+## v0.7.5
+
+### Minor Changes
+
+* Upgrade to Falco 0.15.0
+* Upgrade rules to Falco 0.15.0
+
 ## v0.7.4
 
 ### Minor Changes
