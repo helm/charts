@@ -94,13 +94,13 @@ spec:
       - name: volume-permissions
         image: {{ template "mariadb.volumePermissions.image" . }}
         imagePullPolicy: {{ .Values.volumePermissions.image.pullPolicy | quote }}
-        command: ["chown", "-R", "{{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }}", "{{ .Values.slave.persistence.mountPath }}"]
+        command: ["chown", "-R", "{{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }}", "/bitnami/mariadb"]
         securityContext:
           runAsUser: 0
-        resources: {{ toYaml .Values.volumePermissions.resources | nindent 10 -}}
+        resources: {{ toYaml .Values.volumePermissions.resources | nindent 10 }}
         volumeMounts:
         - name: data
-          mountPath: {{ .Values.slave.persistence.mountPath }}
+          mountPath: /bitnami/mariadb
       {{- end }}
       containers:
       - name: "mariadb"
