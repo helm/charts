@@ -25,6 +25,22 @@ logagent:
   config:
     LOGSENE_BULK_SIZE: "1000"
     LOGSENE_LOG_INTERVAL: "10000"
+  # Refer to logagent docs for custom config at https://sematext.com/docs/logagent/config-file/
+  customConfigs: []
+    # logagent.conf: |-
+    #     options:
+    #       printStats: 60
+    #       suppress: true
+    #       geoipEnabled: true
+    #       diskBufferDir: /tmp/sematext-logagent
+    #     parser:
+    #       patternFiles:
+    #         - /etc/logagent/patterns.yml
+    #     output:
+    #       logsene:
+    #         module: elasticsearch
+    #         url: ${LOGSENE_RECEIVER_URL}
+
   resources: {}
   extraHostVolumeMounts: {}
   #  - name: <mountName>
