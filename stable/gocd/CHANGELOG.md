@@ -3,6 +3,7 @@
 * [c191fb46c](https://github.com/kubernetes/charts/commit/c191fb46c):
 
 - Bump up GoCD Version to 19.6.0
+- Add an option to specify security constraint for server and agent pod.
 - Remove `server.env.goServerSystemProperties` in favor of `server.env.goServerJvmOpts`
 - Remove `server.env.goAgentSystemProperties` in favor of `server.env.goAgentJvmOpts`
 
