@@ -111,6 +111,10 @@ gangway:
   # own in procution.
   # sessionKey:
 
+extraVolumes: []
+
+extraVolumeMounts: []
+
 service:
   type: ClusterIP
   port: 80
