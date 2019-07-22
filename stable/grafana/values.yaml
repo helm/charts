@@ -14,7 +14,6 @@ replicas: 1
 ## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
 deploymentStrategy:
   type: RollingUpdate
-  rollingUpdate: null
 
 readinessProbe:
   httpGet:
