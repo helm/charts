@@ -103,7 +103,7 @@ The following table lists the configurable parameters of the MinIO chart and the
 | `ingress.hosts`            | Ingress accepted hostnames          | `[]`                                                    |
 | `ingress.tls`              | Ingress TLS configuration           | `[]`                                                    |
 | `mode`                     | MinIO server mode (`standalone` or `distributed`)| `standalone`                               |
-| `replicas`                 | Number of nodes (applicable only for MinIO distributed mode). Should be 4 <= x <= 32 | `4`    |
+| `replicas`                 | Number of nodes (applicable for MinIO distributed mode or MinIO standalone mode when gateway functional enabled). For distributed mode should be 4 <= x <= 32 | `4`    |
 | `existingSecret`           | Name of existing secret with access and secret key.| `""`                                     |
 | `accessKey`                | Default access key (5 to 20 characters) | `AKIAIOSFODNN7EXAMPLE`                              |
 | `secretKey`                | Default secret key (8 to 40 characters) | `wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY`          |
@@ -146,19 +146,13 @@ The following table lists the configurable parameters of the MinIO chart and the
 | `defaultBucket.policy`     | Bucket policy                       | `none`                                                  |
 | `defaultBucket.purge`      | Purge the bucket if already exists  | `false`                                                 |
 | `buckets`                  | List of buckets to create after MinIO install  | `[]`                                         |
-| `s3gateway.enabled`        | Use MinIO as a [s3 gateway](https://github.com/minio/minio/blob/master/docs/gateway/s3.md)| `false` |
-| `s3gateway.replicas`       | Number of s3 gateway instances to run in parallel | `4` |
-| `s3gateway.serviceEndpoint`| Endpoint to the S3 compatible service | `""` |
-| `azuregateway.enabled`     | Use MinIO as an [azure gateway](https://docs.minio.io/docs/minio-gateway-for-azure)| `false`  |
-| `azuregateway.replicas`    | Number of azure gateway instances to run in parallel | `4` |
-| `gcsgateway.enabled`       | Use MinIO as a [Google Cloud Storage gateway](https://docs.minio.io/docs/minio-gateway-for-gcs)| `false` |
-| `gcsgateway.gcsKeyJson`    | credential json file of service account key | `""` |
-| `gcsgateway.projectId`     | Google cloud project id             | `""` |
-| `ossgateway.enabled`       | Use MinIO as an [Alibaba Cloud Object Storage Service gateway](https://github.com/minio/minio/blob/master/docs/gateway/oss.md)| `false` |
-| `ossgateway.replicas`      | Number of oss gateway instances to run in parallel | `4` |
-| `ossgateway.endpointURL`   | OSS server endpoint. | `""` |
-| `nasgateway.enabled`       | Use MinIO as a [NAS gateway](https://docs.MinIO.io/docs/minio-gateway-for-nas)             | `false` |
-| `nasgateway.replicas`      | Number of NAS gateway instances to be run in parallel on a PV            | `4` |
+| `gateway.enabled`          | Use MinIO as a gateway              | `false`                                                 |
+| `gateway.type`             | Set the backend to which MinIO gateway should use. It accept the following values: [s3](https://github.com/minio/minio/blob/master/docs/gateway/s3.md), [azure](https://docs.minio.io/docs/minio-gateway-for-azure), [gcs](https://docs.minio.io/docs/minio-gateway-for-gcs), [oss](https://github.com/minio/minio/blob/master/docs/gateway/oss.md) | `s3` |
+| `gateway.s3.serviceEndpoint`| Endpoint to the S3 compatible service | `""` |
+| `gateway.gcs.gcsKeyJson`    | credential json file of service account key | `""` |
+| `gateway.gcs.projectId`     | Google cloud project id             | `""` |
+| `gateway.oss.endpointURL`   | OSS server endpoint. | `""` |
+| `gateway.nas.pv`            | For NAS Gateway, you may want to bind the PVC to a specific PV.            | `~` |
 | `environment`              | Set MinIO server relevant environment variables in `values.yaml` file. MinIO containers will be passed these variables when they start. | `MINIO_BROWSER: "on"` |
 | `metrics.serviceMonitor.enabled`          | Set this to `true` to create ServiceMonitor for Prometheus operator                   | `false` |
 | `metrics.serviceMonitor.additionalLabels` | Additional labels that can be used so ServiceMonitor will be discovered by Prometheus | `{}`    |

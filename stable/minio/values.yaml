@@ -180,46 +180,31 @@ buckets: []
   #   policy: none
   #   purge: false
 
-s3gateway:
+gateway:
   enabled: false
-  replicas: 4
-  serviceEndpoint: ""
-
-## Use minio as an azure blob gateway, you should disable data persistence so no volume claim are created.
-## https://docs.minio.io/docs/minio-gateway-for-azure
-azuregateway:
-  enabled: false
+  # Minio gateway type. Available types are: s3, azure, gcs, oss, nas
+  type: "s3"
   # Number of parallel instances
   replicas: 4
-
-## Use minio as GCS (Google Cloud Storage) gateway, you should disable data persistence so no volume claim are created.
-## https://docs.minio.io/docs/minio-gateway-for-gcs
-
-gcsgateway:
-  enabled: false
-  # Number of parallel instances
-  replicas: 4
-  # credential json file of service account key
-  gcsKeyJson: ""
-  # Google cloud project-id
-  projectId: ""
-
-ossgateway:
-  enabled: false
-  # Number of parallel instances
-  replicas: 4
-  endpointURL: ""
-
-## Use minio on NAS backend
-## https://docs.minio.io/docs/minio-gateway-for-nas
-
-nasgateway:
-  enabled: false
-  # Number of parallel instances
-  replicas: 4
-  # For NAS Gateway, you may want to bind the PVC to a specific PV. To ensure that happens, PV to bind to should have
-  # a label like "pv: <value>", use value here.
-  pv: ~
+  s3:
+    serviceEndpoint: ""
+  ## Use minio as an azure blob gateway, you should disable data persistence so no volume claim are created.
+  ## https://docs.minio.io/docs/minio-gateway-for-azure
+  ## Use minio as GCS (Google Cloud Storage) gateway, you should disable data persistence so no volume claim are created.
+  ## https://docs.minio.io/docs/minio-gateway-for-gcs
+  gcs:
+    # credential json file of service account key
+    gcsKeyJson: ""
+    # Google cloud project-id
+    projectId: ""
+  oss:
+    endpointURL: ""
+  ## Use minio on NAS backend
+  ## https://docs.minio.io/docs/minio-gateway-for-nas
+  nas:
+    # For NAS Gateway, you may want to bind the PVC to a specific PV. To ensure that happens, PV to bind to should have
+    # a label like "pv: <value>", use value here.
+    pv: ~
 
 ## Use this field to add environment variables relevant to Minio server. These fields will be passed on to Minio container(s)
 ## when Chart is deployed

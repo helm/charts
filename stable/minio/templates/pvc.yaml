@@ -10,10 +10,10 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-{{- if and .Values.nasgateway.enabled .Values.nasgateway.pv }}
+{{- if and .Values.gateway.enabled (eq .Values.gateway.type "nas") .Values.gateway.nas.pv }}
   selector:
     matchLabels:
-      pv: {{ .Values.nasgateway.pv | quote }}
+      pv: {{ .Values.gateway.nas.pv | quote }}
 {{- end }}
   accessModes:
     - {{ .Values.persistence.accessMode | quote }}

@@ -18,20 +18,8 @@ spec:
     {{- else }}
     rollingUpdate: null
     {{- end}}
-  {{- if .Values.nasgateway.enabled }}
-  replicas: {{ .Values.nasgateway.replicas }}
-  {{- end }}
-  {{- if .Values.s3gateway.enabled }}
-  replicas: {{ .Values.s3gateway.replicas }}
-  {{- end }}
-  {{- if .Values.azuregateway.enabled }}
-  replicas: {{ .Values.azuregateway.replicas }}
-  {{- end }}
-  {{- if .Values.gcsgateway.enabled }}
-  replicas: {{ .Values.gcsgateway.replicas }}
-  {{- end }}
-  {{- if .Values.ossgateway.enabled }}
-  replicas: {{ .Values.ossgateway.replicas }}
+  {{- if .Values.gateway.enabled }}
+  replicas: {{ .Values.replicas }}
   {{- end }}
   selector:
     matchLabels:
@@ -56,49 +44,47 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- if .Values.s3gateway.enabled }}
+          {{- if and .Values.gateway.enabled  }}
+          {{- if eq .Values.gateway.type "s3" }}
           command: [ "/bin/sh",
           "-ce",
-          "/usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} gateway s3 {{ .Values.s3gateway.serviceEndpoint }}" ]
-          {{- else }}
-          {{- if .Values.azuregateway.enabled }}
+          "/usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} gateway s3 {{ .Values.gateway.s3.serviceEndpoint }}" ]
+          {{- end }}
+          {{- if eq .Values.gateway.type "azure" }}
           command: [ "/bin/sh", 
           "-ce", 
           "/usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} gateway azure" ]
-          {{- else }}
-          {{- if .Values.gcsgateway.enabled }}
+          {{- end }}
+          {{- if eq .Values.gateway.type "gcs" }}
           command: [ "/bin/sh", 
           "-ce", 
-          "/usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} gateway gcs {{ .Values.gcsgateway.projectId }}" ]
-          {{- else }}
-          {{- if .Values.ossgateway.enabled }}
+          "/usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} gateway gcs {{ .Values.gateway.gcs.projectId }}" ]
+          {{- end }}
+          {{- if eq .Values.gateway.type "oss" }}
           command: [ "/bin/sh", 
           "-ce", 
           "cp /tmp/config.json {{ .Values.configPath }} && 
-          /usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} gateway oss {{ .Values.ossgateway.endpointURL }}" ]
-          {{- else }}
-          {{- if .Values.nasgateway.enabled }}
+          /usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} gateway oss {{ .Values.gateway.oss.endpointURL }}" ]
+          {{- end }}
+          {{- if eq .Values.gateway.type "nas" }}
           command: [ "/bin/sh", 
           "-ce", 
           "/usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} gateway nas {{ .Values.mountPath }}" ]
+          {{- end }}
           {{- else }}
           command: [ "/bin/sh", 
           "-ce", 
           "/usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} server {{ .Values.mountPath }}" ]
           {{- end }}
-          {{- end }}
-          {{- end }}
-          {{- end }}
-          {{- end }}
           volumeMounts:
-            {{- if and .Values.persistence.enabled (not .Values.gcsgateway.enabled) (not .Values.azuregateway.enabled) (not .Values.s3gateway.enabled) }}
+            {{- if or .Values.persistence.enabled (and .Values.gateway.enabled (eq .Values.gateway.type "nas"))  }}
             - name: export
               mountPath: {{ .Values.mountPath }}
               {{- if .Values.persistence.subPath }}
               subPath: "{{ .Values.persistence.subPath }}"
               {{- end }}
             {{- end }}
-            {{- if .Values.gcsgateway.enabled }}
+            {{- if eq .Values.gateway.type "gcs" }}
             - name: minio-user
               mountPath: "/etc/credentials"
               readOnly: true
@@ -123,7 +109,7 @@ spec:
                 secretKeyRef:
                   name: {{ if .Values.existingSecret }}{{ .Values.existingSecret }}{{ else }}{{ template "minio.fullname" . }}{{ end }}
                   key: secretkey
-            {{- if .Values.gcsgateway.enabled }}
+            {{- if eq .Values.gateway.type "gcs" }}
             - name: GOOGLE_APPLICATION_CREDENTIALS
               value: "/etc/credentials/gcs_key.json"
             {{- end }}
@@ -172,7 +158,7 @@ spec:
 {{ toYaml . | indent 8 }}
 {{- end }}
       volumes:
-        {{- if and ((not .Values.gcsgateway.enabled) (not .Values.azuregateway.enabled) (not .Values.s3gateway.enabled)) }}
+        {{- if or (not .Values.gateway.enabled) (and .Values.gateway.enabled (eq .Values.gateway.type "nas")) }}
         - name: export
         {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
