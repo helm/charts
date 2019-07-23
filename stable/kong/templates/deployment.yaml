@@ -15,6 +15,11 @@ spec:
       app: {{ template "kong.name" . }}
       release: {{ .Release.Name }}
       component: app
+  strategy:                                                                                                                                                                                   
+    rollingUpdate:
+      maxSurge: {{ .Values.maxSurge }}
+      maxUnavailable: {{ .Values.maxUnavailable }}
+    type: RollingUpdate
   template:
     metadata:
     {{- if .Values.podAnnotations }}

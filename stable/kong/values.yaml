@@ -251,6 +251,10 @@ enterprise:
 # Set runMigrations to run Kong migrations
 runMigrations: true
 
+# set maxSurge and maxUnavailable
+maxSurge: 25%
+maxUnavailable: 25%
+
 # Specify Kong configurations
 # Kong configurations guide https://getkong.org/docs/latest/configuration/
 env:

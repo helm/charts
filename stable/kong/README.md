@@ -99,6 +99,8 @@ and their default values.
 | proxy.ingress.path             | Ingress path.                                                                    | `/`                 |
 | proxy.ingress.annotations      | Ingress annotations. See documentation for your ingress controller for details   | `{}`                |
 | env                            | Additional [Kong configurations](https://getkong.org/docs/latest/configuration/) |                     |
+| maxSurge                       | maxSurge parameter for proxy deployment                                          | `25%`               |
+| maxUnavailable                 | maxUnavailable for kong deployment                                               | `25%`               |
 | runMigrations                  | Run Kong migrations job                                                          | `true`              |
 | readinessProbe                 | Kong readiness probe                                                             |                     |
 | livenessProbe                  | Kong liveness probe                                                              |                     |
