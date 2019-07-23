@@ -3,7 +3,7 @@
 This file documents all notable changes to Sysdig Falco Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
-## v1.1.0
+## v1.0.1
 
 ### Minor Changes
 
