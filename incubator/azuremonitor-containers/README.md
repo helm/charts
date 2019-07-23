@@ -66,7 +66,7 @@ Parameter `omsagent.env.doNotCollectKubeSystemLogs` has been removed starting ch
 
 ## Agent data collection settings
 
-Staring with chart version 1.0.0, agent data collection settings are controlled thru a config map. Refer to documentation about agent data collection settings [here] (https://docs.microsoft.com/en-us/azure/azure-monitor/insights/container-insights-agent-config)
+Staring with chart version 1.0.0, agent data collection settings are controlled thru a config map. Refer to documentation about agent data collection settings [here](https://docs.microsoft.com/en-us/azure/azure-monitor/insights/container-insights-agent-config)
 
 You can create a Azure Loganalytics workspace from portal.azure.com and get its ID & PRIMARY KEY from 'Advanced Settings' tab in the Ux.
 
