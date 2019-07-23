@@ -3,6 +3,12 @@
 This file documents all notable changes to Sysdig Falco Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v1.0.1
+
+### Minor Changes
+
+* Extra environment variables passed to daemonset pods
+
 ## v1.0.0
 
 ### Major Changes
