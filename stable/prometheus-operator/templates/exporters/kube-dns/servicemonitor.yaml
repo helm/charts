@@ -21,6 +21,14 @@ spec:
     interval: {{ .Values.kubeDns.serviceMonitor.interval }}
     {{- end }}
     bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+{{- if .Values.kubeDns.serviceMonitor.dnsmasqMetricRelabelings }}
+    metricRelabelings:
+{{ tpl (toYaml .Values.kubeDns.serviceMonitor.dnsmasqMetricRelabelings | indent 4) . }}
+{{- end }}
+{{- if .Values.kubeDns.serviceMonitor.dnsmasqRelabelings }}
+    relabelings:
+{{ toYaml .Values.kubeDns.serviceMonitor.dnsmasqRelabelings | indent 4 }}
+{{- end }}
   - port: http-metrics-skydns
     {{- if .Values.kubeDns.serviceMonitor.interval }}
     interval: {{ .Values.kubeDns.serviceMonitor.interval }}
