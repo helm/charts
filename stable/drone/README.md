@@ -55,10 +55,10 @@ The following table lists the configurable parameters of the drone charts and th
 | Parameter                   | Description                                                                                   | Default                     |
 |-----------------------------|-----------------------------------------------------------------------------------------------|-----------------------------|
 | `images.server.repository`  | Drone **server** image                                                                        | `docker.io/drone/drone`     |
-| `images.server.tag`         | Drone **server** image tag                                                                    | `0.8.9`                     |
+| `images.server.tag`         | Drone **server** image tag                                                                    | `1.2`                       |
 | `images.server.pullPolicy`  | Drone **server** image pull policy                                                            | `IfNotPresent`              |
 | `images.agent.repository`   | Drone **agent** image                                                                         | `docker.io/drone/agent`     |
-| `images.agent.tag`          | Drone **agent** image tag                                                                     | `0.8.6`                     |
+| `images.agent.tag`          | Drone **agent** image tag                                                                     | `1.2`                       |
 | `images.agent.pullPolicy`   | Drone **agent** image pull policy                                                             | `IfNotPresent`              |
 | `images.dind.repository`    | Docker **dind** image                                                                         | `docker.io/library/docker`  |
 | `images.dind.tag`           | Docker **dind** image tag                                                                     | `18.06.1-ce-dind`           |
