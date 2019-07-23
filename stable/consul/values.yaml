@@ -139,10 +139,10 @@ tolerations: []
 additionalLabels: {}
 
 # Lifecycle for StatefulSet
-#lifecycle:
-#  preStop:
-#    exec:
-#      command:
-#      - sh
-#      - -c
-#      - "sleep 60"
+# lifecycle:
+#   preStop:
+#     exec:
+#       command:
+#       - sh
+#       - -c
+#       - "sleep 60"
