@@ -22,3 +22,4 @@ data:
   historySize: {{ .Values.historySize | quote }}
   readTimeout: {{ .Values.readTimeout | quote }}
   writeTimeout: {{ .Values.writeTimeout | quote }}
+  useForwardedHeaders: {{ .Values.useForwardedHeaders | quote }}
