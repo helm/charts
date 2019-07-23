@@ -35,3 +35,6 @@ caSyncImage:
   repository: quay.io/munnerz/apiextensions-ca-helper
   tag: v0.1.0
   pullPolicy: IfNotPresent
+
+# change the port the webhook is listening on
+secure_port: 6443

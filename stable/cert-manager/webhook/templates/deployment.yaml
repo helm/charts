@@ -38,7 +38,7 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           args:
           - --v=12
-          - --secure-port=6443
+          - --secure-port={{ .Values.secure_port }}
           - --tls-cert-file=/certs/tls.crt
           - --tls-private-key-file=/certs/tls.key
           - --disable-admission-plugins=NamespaceLifecycle,MutatingAdmissionWebhook,ValidatingAdmissionWebhook,Initializers
