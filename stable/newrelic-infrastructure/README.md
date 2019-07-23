@@ -10,8 +10,8 @@ This chart will deploy the New Relic Infrastructure agent as a Daemonset.
 | ------------------------- | ------------------------------------------------------------ | -------------------------- |
 | `cluster`                 | The cluster name for the Kubernetes cluster.                 |                            |
 | `licenseKey`              | The [license key](https://docs.newrelic.com/docs/accounts/install-new-relic/account-setup/license-key)  for your New Relic Account. This will be preferred configuration option if both `licenseKey` and `customSecret` are specified. | |
-| `customSecret.name`       | Name of the Secret object where the license key is stored    |                            |
-| `customSecret.key`        | Key in the Secret object where the license key is stored.    |                            |
+| `customSecretName`        | Name of the Secret object where the license key is stored    |                            |
+| `customSecretKey`         | Key in the Secret object where the license key is stored.    |                            |
 | `config`                  | A `newrelic.yml` file if you wish to provide.                |                            |
 | `kubeStateMetricsUrl`     | If provided, the discovery process for kube-state-metrics endpoint won't be triggered. Example: http://172.17.0.3:8080 |
 | `kubeStateMetricsTimeout` | Timeout for accessing kube-state-metrics in milliseconds. If not set the newrelic default is 5000 | |
