@@ -8,11 +8,11 @@ dependencies:
   repository: https://kubernetes-charts.storage.googleapis.com/
   condition: kibana.enabled
 - name: filebeat
-  version: ^1.7.0
+  version: ^2.0.1
   repository: https://kubernetes-charts.storage.googleapis.com/
   condition: filebeat.enabled
 - name: logstash
-  version: ^1.6.0
+  version: ^2.1.0
   repository: https://kubernetes-charts.storage.googleapis.com/
   condition: logstash.enabled
 - name: fluentd
@@ -20,7 +20,7 @@ dependencies:
   repository: https://kubernetes-charts.storage.googleapis.com/
   condition: fluentd.enabled
 - name: fluent-bit
-  version: ^1.9.0
+  version: ^2.4.3
   repository: https://kubernetes-charts.storage.googleapis.com/
   condition: fluent-bit.enabled
 - name: fluentd-elasticsearch

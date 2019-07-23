@@ -4,15 +4,42 @@
 elasticsearch:
   enabled: true
 
+  ## Enable persistence using Persistent Volume Claims
+  ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+  ##
+
+  master:
+    persistence:
+      enabled: true
+      ## If defined, storageClassName: <storageClass>
+      ## If set to "-", storageClassName: "", which disables dynamic provisioning
+      ## If undefined (the default) or set to null, no storageClassName spec is
+      ##   set, choosing the default provisioner.  (gp2 on AWS, azure-disk on
+      ##   Azure, standard on GKE, AWS & OpenStack)
+      ##
+      # storageClass: "-"
+
+  data:
+    persistence:
+      enabled: true
+      # storageClass: "-"
+
 kibana:
   enabled: true
   env:
     ELASTICSEARCH_HOSTS: http://{{ .Release.Name }}-elasticsearch-client:9200
 
+  persistentVolumeClaim:
+    enabled: false
+    # storageClass: "-"
+
 logstash:
   enabled: true
   # elasticsearch:
   #   host: elastic-stack-elasticsearch-client
+  persistence:
+    enabled: true
+    # storageClass: "-"
 
 filebeat:
   enabled: false
@@ -25,6 +52,10 @@ filebeat:
 
 fluentd:
   enabled: false
+
+  persistence:
+    enabled: false
+    # storageClass: "-"
 
 fluent-bit:
   enabled: false
