@@ -212,6 +212,6 @@ data:
 {{- end }}
 
   extra.lua: |-
-{{ .Values.filter.raw | indent 4 }}
+{{ .Values.filter.lua.raw | indent 4 }}
 
 {{- end -}}

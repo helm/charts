@@ -120,21 +120,6 @@ parsers:
   ##
   json: []
 
-filters:
-  lua:
-    enabled: false
-    raw: |-
-    ## example callback from https://docs.fluentbit.io/manual/filter/lua
-    #   function cb_print(tag, timestamp, record)
-    #     return code, timestamp, record
-    #   end
-    ##  Usage:
-    # [FILTER]
-    # Name    lua
-    # Match   *
-    # script  extra.lua
-    # call    cb_print
-
 env: []
 
 ## Annotations to add to the DaemonSet's Pods
@@ -268,6 +253,23 @@ filter:
 # If true, enable the use of monitoring for a pod annotation of
 # fluentbit.io/exclude: true. If present, discard logs from that pod.
   enableExclude: true
+
+# if true, enable support for Lua filters in final `extra.lua` file
+# see documentation at https://docs.fluentbit.io/manual/filter/lua
+  lua:
+    enabled: false
+    raw: |-   
+    ## example callback
+    #   function cb_print(tag, timestamp, record)
+    #     return code, timestamp, record
+    #   end
+    ##  Usage:
+    # [FILTER]
+    # Name    lua
+    # Match   *
+    # script  extra.lua
+    # call    cb_print
+
 
 rbac:
   # Specifies whether RBAC resources should be created
