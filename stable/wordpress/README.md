@@ -56,6 +56,8 @@ The following table lists the configurable parameters of the WordPress chart and
 | `image.tag`                      | WordPress image tag                                                           | `{TAG_NAME}`                                                 |
 | `image.pullPolicy`               | Image pull policy                                                             | `IfNotPresent`                                               |
 | `image.pullSecrets`              | Specify docker-registry secret names as an array                              | `[]` (does not add image pull secrets to deployed pods)      |
+| `nameOverride`                   | String to partially override wordpress.fullname template with a string (will prepend the release name) | `nil`                               |
+| `fullnameOverride`               | String to fully override wordpress.fullname template with a string                                     | `nil`                               |
 | `wordpressSkipInstall`           | Skip wizard installation                                                      | `false`                                                      |
 | `wordpressUsername`              | User of the application                                                       | `user`                                                       |
 | `wordpressPassword`              | Application password                                                          | _random 10 character long alphanumeric string_               |
@@ -88,9 +90,11 @@ The following table lists the configurable parameters of the WordPress chart and
 | `service.type`                   | Kubernetes Service type                                                       | `LoadBalancer`                                               |
 | `service.port`                   | Service HTTP port                                                             | `80`                                                         |
 | `service.httpsPort`              | Service HTTPS port                                                            | `443`                                                        |
+| `service.metricsPort`              | Service Metrics port                                                            | `9117`                                                        |
 | `service.externalTrafficPolicy`  | Enable client source IP preservation                                          | `Cluster`                                                    |
 | `service.nodePorts.http`         | Kubernetes http node port                                                     | `""`                                                         |
 | `service.nodePorts.https`        | Kubernetes https node port                                                    | `""`                                                         |
+| `service.nodePorts.metrics`      | Kubernetes metrics node port                                                  | `""`                                                         |
 | `service.extraPorts`             | Extra ports to expose in the service (normally used with the `sidecar` value) | `nil`                                                        |
 | `healthcheckHttps`               | Use https for liveliness and readiness                                        | `false`                                                      |
 | `livenessProbeHeaders`           | Headers to use for livenessProbe                                              | `nil`                                                        |
@@ -123,6 +127,13 @@ The following table lists the configurable parameters of the WordPress chart and
 | `metrics.image.pullSecrets`      | Specify docker-registry secret names as an array                              | `[]` (does not add image pull secrets to deployed pods)      |
 | `metrics.podAnnotations`         | Additional annotations for Metrics exporter pod                               | `{prometheus.io/scrape: "true", prometheus.io/port: "9117"}` |
 | `metrics.resources`              | Exporter resource requests/limit                                              | `{}`                                                         |
+| `metrics.serviceMonitor.enabled`     | Create ServiceMonitor Resource for scraping metrics using PrometheusOperator   | `false`                                   |
+| `metrics.serviceMonitor.namespace`   | Namespace where servicemonitor resource should be created                      | `nil`                                     |
+| `metrics.serviceMonitor.interval`    | Specify the interval at which metrics should be scraped                        | `30s`                                     |
+| `metrics.serviceMonitor.scrapeTimeout`| Specify the timeout after which the scrape is ended                           | `nil`                                     |
+| `metrics.serviceMonitor.relabellings`| Specify Metric Relabellings to add to the scrape endpoint                      | `nil`                                     |
+| `metrics.serviceMonitor.honorLabels` | honorLabels chooses the metric's labels on collisions with target labels.      | `false`                                   |
+| `metrics.serviceMonitor.additionalLabels`| Used to pass Labels that are required by the Installed Prometheus Operator | `{}`                                      |
 | `sidecars`                       | Attach additional containers to the pod                                       | `nil`                                                        |
 | `updateStrategy`                 | Set up update strategy                                                        | `RollingUpdate`                                              |
 

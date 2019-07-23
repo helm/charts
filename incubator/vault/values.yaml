@@ -144,7 +144,7 @@ minReadySeconds: 0
 serviceAccount:
   ## Specifies whether a ServiceAccount should be created
   ##
-  create: false
+  create: true
   ## The name of the ServiceAccount to use.
   ## If not set and create is true, a name is generated using the fullname template
   name:
@@ -155,6 +155,8 @@ vault:
   # https://www.vaultproject.io/intro/getting-started/dev-server.html for more
   # information.
   dev: true
+  # Configure additional arguments to pass to vault server command
+  extraArgs: []
   # Configure additional environment variables for the Vault containers
   extraEnv: []
   #   - name: VAULT_API_ADDR
@@ -239,3 +241,7 @@ vault:
       #   bucket: ""
       #   # Use a custom secret to mount this file.
       #   credentials_file: ""
+
+rbac:
+   ## Enable RBAC
+  create: true

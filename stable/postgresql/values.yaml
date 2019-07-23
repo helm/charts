@@ -32,6 +32,14 @@ image:
   ## ref:  https://github.com/bitnami/minideb-extras/#turn-on-bash-debugging
   debug: false
 
+## String to partially override postgresql.fullname template (will maintain the release name)
+##
+# nameOverride:
+
+## String to fully override postgresql.fullname template
+##
+# fullnameOverride:
+
 ##
 ## Init containers parameters:
 ## volumePermissions: Change the owner of the persist volume mountpoint to RunAsUser:fsGroup
@@ -337,8 +345,8 @@ metrics:
     # scrapeTimeout: 10s
   image:
     registry: docker.io
-    repository: wrouesnel/postgres_exporter
-    tag: v0.4.7
+    repository: bitnami/postgres-exporter
+    tag: 0.5.1-debian-9-r0
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.

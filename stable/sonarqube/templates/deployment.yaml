@@ -17,6 +17,12 @@ spec:
 {{- with .Values.podLabels }}
 {{ toYaml . | indent 8 }}
 {{- end }}
+{{ if .Values.annotations}}
+      annotations:
+    {{- range $key, $value := .Values.annotations }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+{{- end }}
     spec:
       securityContext:
 {{ toYaml .Values.securityContext | indent 8 }}

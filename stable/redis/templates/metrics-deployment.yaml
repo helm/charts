@@ -53,10 +53,12 @@ spec:
         {{- end }}
         env:
         - name: REDIS_ADDR
-        {{- if .Values.cluster.enabled }}
+        {{- if and .Values.cluster.enabled .Values.sentinel.enabled }}
+          value: {{ printf "%s:%d" ( include "redis.fullname" . ) ( int .Values.sentinel.service.redisPort ) | quote }}
+        {{- else if .Values.cluster.enabled }}
           value: {{ printf "%s-master:%d,%s-slave:%d" ( include "redis.fullname" . ) ( int .Values.redisPort ) ( include "redis.fullname" . ) ( int .Values.redisPort ) | quote }}
         {{- else }}
-          value: {{ printf "%s-master:%d" (include "redis.fullname" . ) (int .Values.redisPort) | quote }}
+          value: {{ printf "%s-master:%d" ( include "redis.fullname" . ) (int .Values.redisPort) | quote }}
         {{- end }}
         - name: REDIS_ALIAS
           value: {{ template "redis.fullname" . }}
