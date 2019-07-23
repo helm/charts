@@ -101,7 +101,6 @@ spec:
             - name: {{ . }}-volume
               readOnly: true
               mountPath: {{ $secretsDir }}/{{ . }}
-              subPath: {{ . }}
           {{- end }}
           {{- if .Values.persistence.enabled }}
             - name: dags-data
