@@ -25,7 +25,7 @@ spec:
           command:
             - controller
           args:
-            - "--key-name"
+            - "--key-prefix"
             - "{{ .Values.secretName }}"
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
