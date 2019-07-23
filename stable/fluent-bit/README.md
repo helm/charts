@@ -72,7 +72,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `backend.splunk.tls_debug`        | Set TLS debug verbosity level. It accept the following values: 0-4 | `1` |
 | `backend.splunk.message_key`           | Tag applied to all incoming logs | `kubernetes` |
 | **Parsers**                   |
-| `parsers.enabled`                  | Enable custom parsers | `false` |
+| `parsers.enabled`                  | Enable custom parsers (needs to be set for all parsers) | `false` |
 | `parsers.regex`                    | List of regex parsers | `NULL` |
 | `parsers.json`                     | List of json parsers | `NULL` |
 | `parsers.logfmt`                   | List of logfmt parsers | `NULL` |
