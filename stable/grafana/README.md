@@ -123,6 +123,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `command`                     | Define command to be executed by grafana container at startup  | `nil` |
 | `testFramework.image`                     | `test-framework` image repository.             | `dduportal/bats`                                       |
 | `testFramework.tag`                       | `test-framework` image tag.                    | `0.4.0`                                                |
+| `testFramework.securityContext`           | `test-framework securityContext                | `{}`                                                   |
 
 
 ### Example of extraVolumeMounts
