@@ -345,8 +345,8 @@ metrics:
     # scrapeTimeout: 10s
   image:
     registry: docker.io
-    repository: wrouesnel/postgres_exporter
-    tag: v0.4.7
+    repository: bitnami/postgres-exporter
+    tag: 0.5.1-debian-9-r0
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
