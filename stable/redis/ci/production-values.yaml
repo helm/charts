@@ -439,6 +439,14 @@ metrics:
   ## extraArgs:
   ##   check-keys: myKey,myOtherKey
   # extraArgs: {}
+  ## Metrics exporter pod priorityClassName
+  # priorityClassName: {}
+  service:
+    type: ClusterIP
+    ## Use serviceLoadBalancerIP to request a specific static IP,
+    ## otherwise leave blank
+    # loadBalancerIP:
+    annotations: {}
 
   ## Metrics exporter pod Annotation and Labels
   podAnnotations:

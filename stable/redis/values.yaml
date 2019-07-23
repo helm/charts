@@ -481,6 +481,12 @@ metrics:
 
   ## Metrics exporter pod priorityClassName
   # priorityClassName: {}
+  service:
+    type: ClusterIP
+    ## Use serviceLoadBalancerIP to request a specific static IP,
+    ## otherwise leave blank
+    # loadBalancerIP:
+    annotations: {}
 
 ##
 ## Init containers parameters:
