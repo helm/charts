@@ -676,6 +676,20 @@ kubeDns:
     #   target_label: nodename
     #   replacement: $1
     #   action: replace
+    dnsmasqMetricRelabelings: []
+    # - action: keep
+    #   regex: 'kube_(daemonset|deployment|pod|namespace|node|statefulset).+'
+    #   sourceLabels: [__name__]
+
+    # 	relabel configs to apply to samples before ingestion.
+    ##
+    dnsmasqRelabelings: []
+    # - sourceLabels: [__meta_kubernetes_pod_node_name]
+    #   separator: ;
+    #   regex: ^(.*)$
+    #   target_label: nodename
+    #   replacement: $1
+    #   action: replace
 
 ## Component scraping etcd
 ##
