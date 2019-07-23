@@ -104,6 +104,10 @@ spec:
           readOnly: true
           mountPath: /etc/consul/userconfig/{{ .name }}
         {{ end }}
+        {{- if .Values.lifecycle }}
+        lifecycle:
+{{ tpl (toYaml .Values.lifecycle) . | indent 10 }}
+        {{- end }}
         livenessProbe:
           exec:
             command:
