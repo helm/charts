@@ -1,0 +1,30 @@
+{{- if .Values.metrics.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+{{- if .Values.metrics.service.annotations }}
+  annotations:
+{{ toYaml .Values.metrics.service.annotations | indent 4 }}
+{{- end }}
+  name: {{ template "fluent-bit.fullname" . }}-metrics
+  labels:
+    app: {{ template "fluent-bit.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  {{- if .Values.metrics.service }}
+  {{- range $key, $value := .Values.metrics.service.labels }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
+  {{- end }}
+spec:
+  type: {{ .Values.metrics.service.type}}
+  sessionAffinity: None
+  ports:
+  - port: {{ .Values.metrics.service.port }}
+    targetPort: metrics
+    name: metrics
+  selector:
+    app: {{ template "fluent-bit.name" . }}
+    release: {{ .Release.Name }}
+{{- end }}

@@ -1,0 +1,28 @@
+{{- if .Values.rbac.create -}}
+apiVersion: {{ template "rbac.apiVersion" . }}
+kind: ClusterRole
+metadata:
+  labels:
+    app: {{ template "fluent-bit.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "fluent-bit.fullname" . }}
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - pods
+    verbs:
+      - get
+{{- if .Values.rbac.pspEnabled }}
+  - apiGroups:
+    - {{ template "rbac.pspApiGroup" . }}
+    resources:
+    - podsecuritypolicies
+    resourceNames:
+    - {{ template "fluent-bit.fullname" . }}
+    verbs:
+    - use
+{{- end }}
+{{- end -}}
