@@ -39,7 +39,7 @@ The following table lists the configurable parameters of the postgres Exporter c
 | Parameter                       | Description                                | Default                                                    |
 | ------------------------------- | ------------------------------------------ | ---------------------------------------------------------- |
 | `image`                         | Image                                      | `wrouesnel/postgres_exporter`                      |
-| `imageTag`                      | Image tag                                  | `v0.5.0`                                      |
+| `imageTag`                      | Image tag                                  | `v0.5.1`                                      |
 | `imagePullPolicy`               | Image pull policy                          | `IfNotPresent` |
 | `service.annotations`           | annotations for the service                | `{}`           |
 | `service.type`      | Service type |  `ClusterIP` |
