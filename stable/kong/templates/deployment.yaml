@@ -19,7 +19,7 @@ spec:
     metadata:
       annotations:
         {{- if (and (not .Values.ingressController.enabled) (eq .Values.env.database "off" )) }}
-        checksum/declarativeConfig: {{ toYaml .Values.declarativeConfig | sha256sum }}
+        checksum/declarativeMode.config: {{ toYaml .Values.declarativeMode.config | sha256sum }}
         {{- end }}
         {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
@@ -266,5 +266,9 @@ spec:
 {{- if (and (not .Values.ingressController.enabled) (eq .Values.env.database "off")) }}
         - name: kong-custom-declarative-config-volume
           configMap:
+            {{- if .Values.declarativeMode.existingConfigMap }}
+            name: {{ .Values.declarativeMode.existingConfigMap }}
+            {{- else }}
             name: kong-custom-declarative-config
+            {{- end }}
 {{- end }}
