@@ -6,6 +6,7 @@ apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
   name: {{ template "jenkins.fullname" . }}
+  namespace: {{ template "jenkins.namespace" . }}
   labels:
     "app.kubernetes.io/name": '{{ template "jenkins.name" .}}'
     "helm.sh/chart": "{{ .Chart.Name }}-{{ .Chart.Version }}"
@@ -81,7 +82,11 @@ spec:
 {{ tpl (toYaml .Values.master.customInitContainers) . | indent 8 }}
 {{- end }}
         - name: "copy-default-config"
+{{- if .Values.master.imageTag }}
           image: "{{ .Values.master.image }}:{{ .Values.master.imageTag }}"
+{{- else }}
+          image: "{{ .Values.master.image }}:{{ .Values.master.tag }}"
+{{- end }}
           imagePullPolicy: "{{ .Values.master.imagePullPolicy }}"
           command: [ "sh", "/var/jenkins_config/apply_config.sh" ]
           env:
@@ -146,7 +151,11 @@ spec:
               name: secrets-dir
       containers:
         - name: {{ template "jenkins.fullname" . }}
+{{- if .Values.master.imageTag }}
           image: "{{ .Values.master.image }}:{{ .Values.master.imageTag }}"
+{{- else }}
+          image: "{{ .Values.master.image }}:{{ .Values.master.tag }}"
+{{- end }}
           imagePullPolicy: "{{ .Values.master.imagePullPolicy }}"
           {{- if .Values.master.useSecurity }}
           args: [ "--argumentsRealm.passwd.$(ADMIN_USER)=$(ADMIN_PASSWORD)",  "--argumentsRealm.roles.$(ADMIN_USER)=admin"]
@@ -286,7 +295,7 @@ spec:
             - name: SSH_PORT
               value: "{{ .Values.master.sidecars.configAutoReload.sshTcpPort }}"
             - name: JENKINS_PORT
-              value: "{{ .Values.master.servicePort }}"
+              value: "{{ .Values.master.targetPort }}"
             {{- if .Values.master.useSecurity }}
             - name: ADMIN_USER
               valueFrom:

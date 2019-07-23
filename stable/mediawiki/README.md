@@ -56,6 +56,8 @@ The following table lists the configurable parameters of the MediaWiki chart and
 | `image.tag`                          | MediaWiki Image tag                                         | `{TAG_NAME}`                                            |
 | `image.pullPolicy`                   | Image pull policy                                           | `IfNotPresent`                                          |
 | `image.pullSecrets`                  | Specify docker-registry secret names as an array            | `[]` (does not add image pull secrets to deployed pods) |
+| `nameOverride`                       | String to partially override mediawiki.fullname template with a string (will prepend the release name)    | `nil`     |
+| `fullnameOverride`                   | String to fully override mediawiki.fullname template with a string                                        | `nil`     |
 | `mediawikiUser`                      | User of the application                                     | `user`                                                  |
 | `mediawikiPassword`                  | Application password                                        | _random 10 character long alphanumeric string_          |
 | `mediawikiEmail`                     | Admin email                                                 | `user@example.com`                                      |
