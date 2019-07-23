@@ -65,6 +65,10 @@ spec:
             - name: TZ
               value: {{ .Values.timezone }}
           {{- end }}
+          {{- range $key, $value := .Values.daemonset.env }}
+            - name: "{{ $key }}"
+              value: "{{ $value }}"
+          {{- end }}
           volumeMounts:
             {{- if (and .Values.docker.enabled .Values.docker.socket) }}
             - mountPath: /host/var/run/docker.sock
