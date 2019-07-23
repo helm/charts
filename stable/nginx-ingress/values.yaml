@@ -9,6 +9,7 @@ controller:
     pullPolicy: IfNotPresent
     # www-data -> uid 33
     runAsUser: 33
+    allowPrivilegeEscalation: true
 
   # Configures the ports the nginx-controller listens on
   containerPort:
