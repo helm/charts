@@ -409,8 +409,8 @@ metrics:
   enabled: false
   image:
     registry: docker.io
-    repository: prom/mysqld-exporter
-    tag: v0.10.0
+    repository: bitnami/mysqld-exporter
+    tag: 0.12.0-debian-9-r2
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
