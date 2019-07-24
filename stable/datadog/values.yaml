@@ -404,7 +404,8 @@ kube-state-metrics:
     ## @param serviceAccountName - string - required
     ## Ignored if rbac.create is true
     #
-    serviceAccountName: default
+    serviceAccount:
+      name: default
 
 daemonset:
 
