@@ -159,6 +159,13 @@ rfc2136:
   tsigKeyname: externaldns-key
   tsigAxfr: true
 
+## PowerDNS configuration to be set via arguments/env. variables
+##
+pdns:
+  apiUrl: ""
+  apiPort: "8081"
+  apiKey: ""
+
 ## Limit possible target zones by domain suffixes (optional)
 ##
 domainFilters: []

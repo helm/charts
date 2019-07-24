@@ -19,6 +19,7 @@ spec:
 {{ end }}
 
 {{- if and .Values.clusterAgent.enabled .Values.clusterAgent.metricsProvider.enabled -}}
+---
 apiVersion: v1
 kind: Service
 metadata:

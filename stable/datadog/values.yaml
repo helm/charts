@@ -360,6 +360,12 @@ clusterAgent:
   #   exec:
   #     command: ["/bin/true"]
 
+  ## @param podAnnotations - list of key:value strings - optional
+  ## Annotations to add to the cluster-agents's pod(s)
+  #
+  # podAnnotations:
+  #   key: "value"
+
   ## @param readinessProbe - object - optional
   ## Override the cluster-agent's readiness probe logic from the default:
   #
