@@ -13,7 +13,7 @@
 image:
   registry: docker.io
   repository: bitnami/owncloud
-  tag: 10.2.0-debian-9-r20
+  tag: 10.2.1-debian-9-r0
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -25,6 +25,14 @@ image:
   ##
   # pullSecrets:
   #   - myRegistryKeySecretName
+
+## String to partially override owncloud.fullname template (will maintain the release name)
+##
+# nameOverride:
+
+## String to fully override owncloud.fullname template
+##
+# fullnameOverride:
 
 ## For Kubernetes v1.4, v1.5 and v1.6, use 'extensions/v1beta1'
 ## For Kubernetes v1.7, use 'networking.k8s.io/v1'

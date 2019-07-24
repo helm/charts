@@ -68,6 +68,7 @@ The following table lists the configurable parameters of the pushgateway chart a
 | `serviceMonitor.interval`   | How frequently to scrape metrics (use by default, falling back to Prometheus' default)                                        |  `nil`                            |
 | `serviceMonitor.selector`   | Default to kube-prometheus install (CoreOS recommended), but should be set according to Prometheus install                    | `{ prometheus: kube-prometheus }` |
 | `serviceMonitor.honorLabels`| if `true`, label conflicts are resolved by keeping label values from the scraped data                                         | `true`                            |
+| `podDisruptionBudget`       | If set, create a PodDisruptionBudget with the items in this map set in the spec                                               | ``                                |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
