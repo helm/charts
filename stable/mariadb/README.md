@@ -156,8 +156,8 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `slave.podDisruptionBudget.maxUnavailable`| Maximum number / percentage of pods that may be made unavailable | `nil`                                                |
 | `metrics.enabled`                         | Start a side-car prometheus exporter                | `false`                                                           |
 | `metrics.image.registry`                  | Exporter image registry                             | `docker.io`                                                       |
-| `metrics.image.repository`                | Exporter image name                                 | `prom/mysqld-exporter`                                            |
-| `metrics.image.tag`                       | Exporter image tag                                  | `v0.10.0`                                                         |
+| `metrics.image.repository`                | Exporter image name                                 | `bitnami/mysqld-exporter`                                            |
+| `metrics.image.tag`                       | Exporter image tag                                  | `0.12.0-debian-9-r2`                                                         |
 | `metrics.image.pullPolicy`                | Exporter image pull policy                          | `IfNotPresent`                                                    |
 | `metrics.resources`                       | Exporter resource requests/limit                    | `nil`                                                             |
 | `metrics.serviceMonitor.enabled`          | if `true`, creates a Prometheus Operator ServiceMonitor (also requires `metrics.enabled` to be `true`)                    | `false`                                                             |
