@@ -4,8 +4,8 @@ on_minikube: false
 
 image:
   fluent_bit:
-    repository: fluent/fluent-bit
-    tag: 1.2.1
+    repository: amazon/aws-for-fluent-bit
+    tag: 1.2.0
   pullPolicy: Always
 
 testFramework:
@@ -80,6 +80,21 @@ backend:
     tls_verify: "off"
     tls_debug: 1
     message_key: "kubernetes"
+  firehose:
+    data_keys:
+    delivery_stream:
+    endpoint:
+    region:
+    role_arn:
+  cloudwatch:
+    auto_create_group:
+    endpoint:
+    log_group_name:
+    log_key:
+    log_stream_name:
+    log_stream_prefix:
+    region:
+    role_arn:
 
   ##
   ## Ref: http://fluentbit.io/documentation/current/output/http.html

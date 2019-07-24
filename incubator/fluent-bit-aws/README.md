@@ -71,6 +71,12 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `backend.splunk.tls_verify`           | Force TLS certificate validation | `off` |
 | `backend.splunk.tls_debug`        | Set TLS debug verbosity level. It accept the following values: 0-4 | `1` |
 | `backend.splunk.message_key`           | Tag applied to all incoming logs | `kubernetes` |
+| **AWS Firehose Backend**              |
+| `backend.firehose.data_keys`       | By default, the whole log record will be sent to Kinesis. If you specify a key name(s) with this option, then only those keys and values will be sent to Kinesis. If you specify multiple keys, they should be comma delimited. |  |
+| `backend.firehose.delivery_stream`       | The name of the delivery stream that you want log records sent to. |  |
+| `backend.firehose.endpoint`       | Specify a custom endpoint for the Kinesis Firehose API. |  |
+| `backend.firehose.region`         | The region which your Firehose delivery stream(s) is/are in. |  |
+| `backend.firehose.role_arn`       | ARN of an IAM role to assume (for cross account access). |  |
 | **Parsers**                   |
 | `parsers.enabled`                  | Enable custom parsers | `false` |
 | `parsers.regex`                    | List of regex parsers | `NULL` |
