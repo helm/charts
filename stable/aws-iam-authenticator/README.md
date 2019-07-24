@@ -9,6 +9,7 @@ chart only installs the DaemonSet and a ConfigMap.)
 ## Values
 
 | Config                  | Description               | Default                                  |
+|-------------------------|---------------------------|------------------------------------------|
 | `image.repository`      | Image repo                | `gcr.io/heptio-images/authenticator`     |
 | `image.tag`             | Image tag                 | `v0.1.0`                                 |
 | `image.pullPolicy`      | Image pull policy         | `IfNotPresent`                           |
@@ -24,6 +25,7 @@ how you map AWS IAM roles to groups in the cluster. See the
 aws-iam-authenticator docs for all of the possible options for this.
 
 A simple example values file might look like:
+
 ```
 config:
   clusterID: mycluster.io
