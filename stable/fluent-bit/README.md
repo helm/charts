@@ -75,6 +75,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `parsers.enabled`                  | Enable custom parsers | `false` |
 | `parsers.regex`                    | List of regex parsers | `NULL` |
 | `parsers.json`                     | List of json parsers | `NULL` |
+| `parsers.logfmt`                   | List of logfmt parsers | `NULL` |
 | **General**                   |
 | `annotations`                      | Optional deamonset set annotations        | `NULL`                |
 | `podAnnotations`                   | Optional pod annotations                  | `NULL`                |
@@ -97,9 +98,10 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `filter.kubeTag`                   | Optional top-level tag for matching in filter         | `kube`                                 |
 | `filter.kubeTagPrefix`             | Optional tag prefix used by Tail   | `kube.var.log.containers.`                                |
 | `filter.mergeJSONLog`              | If the log field content is a JSON string map, append the map fields as part of the log structure         | `true`                                 |
+| `filter.mergeLogKey`               | If set, append the processed log keys under a new root key specified by this variable. | `nil` |
 | `image.fluent_bit.repository`      | Image                                      | `fluent/fluent-bit`                               |
-| `image.fluent_bit.tag`             | Image tag                                  | `1.0.6`                                          |
-| `image.pullPolicy`                 | Image pull policy                          | `IfNotPresent`                                          |
+| `image.fluent_bit.tag`             | Image tag                                  | `1.2.1`                                           |
+| `image.pullPolicy`                 | Image pull policy                          | `Always`                                          |
 | `nameOverride`                     | Override name of app                   | `nil`                                        |
 | `fullnameOverride`                 | Override full name of app              | `nil`                                        |
 | `image.pullSecrets`                | Specify image pull secrets                 | `nil`                                             |
@@ -112,10 +114,13 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `input.systemd.readFromTail`       | Please see https://docs.fluentbit.io/manual/input/systemd | `true`                             |
 | `input.systemd.tag`                | Please see https://docs.fluentbit.io/manual/input/systemd | `host.*`                           |
 | `rbac.create`                      | Specifies whether RBAC resources should be created.   | `true`                                 |
+| `rbac.pspEnabled`                  | Specifies whether a PodSecurityPolicy should be created. | `false`                             |
 | `serviceAccount.create`            | Specifies whether a ServiceAccount should be created. | `true`                                 |
 | `serviceAccount.name`              | The name of the ServiceAccount to use.     | `NULL`                                            |
 | `rawConfig`                        | Raw contents of fluent-bit.conf            | `@INCLUDE fluent-bit-service.conf`<br>`@INCLUDE fluent-bit-input.conf`<br>`@INCLUDE fluent-bit-filter.conf`<br>` @INCLUDE fluent-bit-output.conf`                                                                         |
 | `resources`                        | Pod resource requests & limits                                 | `{}`                          |
+| `securityContext`                  | [Security settings for a container](https://kubernetes.io/docs/concepts/policy/security-context) | `{}` |
+| `podSecurityContext`               | [Security settings for a pod](https://kubernetes.io/docs/concepts/policy/security-context)       | `{}` |
 | `hostNetwork`                      | Use host's network                         | `false`                                           |
 | `dnsPolicy`                        | Specifies the dnsPolicy to use             | `ClusterFirst`                                    |
 | `priorityClassName`                | Specifies the priorityClassName to use     | `NULL`                                            |
@@ -127,6 +132,11 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `metrics.service.labels`           | Additional labels for the fluent-bit metrics service definition, specified as a map.                                                    | None                                              |
 | `metrics.service.port`             | Port on where metrics should be exposed    | `2020`                                            |
 | `metrics.service.type`             | Service type for metrics                   | `ClusterIP`                                       |
+| `metrics.serviceMonitor.enabled`          | Set this to `true` to create ServiceMonitor for Prometheus operator                   | `false` |
+| `metrics.serviceMonitor.additionalLabels` | Additional labels that can be used so ServiceMonitor will be discovered by Prometheus | `{}`    |
+| `metrics.serviceMonitor.namespace`        | Optional namespace in which to create ServiceMonitor                                  | `nil`   |
+| `metrics.serviceMonitor.interval`         | Scrape interval. If not set, the Prometheus default scrape interval is used           | `nil`   |
+| `metrics.serviceMonitor.scrapeTimeout`    | Scrape timeout. If not set, the Prometheus default scrape timeout is used             | `nil`   |
 | `trackOffsets`                     | Specify whether to track the file offsets for tailing docker logs. This allows fluent-bit to pick up where it left after pod restarts but requires access to a `hostPath` | `false` |
 | `testFramework.image`              | `test-framework` image repository.         | `dduportal/bats`                                  |
 | `testFramework.tag`                | `test-framework` image tag.                | `0.4.0`                                           |

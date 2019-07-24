@@ -20,6 +20,9 @@ spec:
       labels:
         app.kubernetes.io/name: {{ include "nextcloud.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
+        {{- if .Values.redis.enabled }}
+        {{ template "nextcloud.redis.fullname" . }}-client: "true"
+        {{- end }}
     spec:
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
@@ -51,6 +54,22 @@ spec:
               name: {{ printf "%s-%s" .Release.Name "db"  }}
               key: db-password
         {{- else }}
+          {{- if eq .Values.externalDatabase.type "postgresql" }}
+        - name: POSTGRES_HOST
+          value: {{ .Values.externalDatabase.host | quote }}
+        - name: POSTGRES_DB
+          value: {{ .Values.externalDatabase.database | quote }}
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: {{ printf "%s-%s" .Release.Name "db" }}
+              key: db-username
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ printf "%s-%s" .Release.Name "db" }}
+              key: db-password
+          {{- else }}
         - name: MYSQL_HOST
           value: {{ .Values.externalDatabase.host | quote }}
         - name: MYSQL_DATABASE
@@ -65,6 +84,7 @@ spec:
             secretKeyRef:
               name: {{ printf "%s-%s" .Release.Name "db" }}
               key: db-password
+          {{- end }}
         {{- end }}
         - name: NEXTCLOUD_ADMIN_USER
           valueFrom:
@@ -111,6 +131,12 @@ spec:
             secretKeyRef:
               name: {{ template "nextcloud.fullname" . }}
               key: smtp-password
+        {{- end }}
+        {{- if .Values.redis.enabled }}
+        - name: REDIS_HOST
+          value: {{ template "nextcloud.redis.fullname" . }}-master
+        - name: REDIS_HOST_PORT
+          value: {{ .Values.redis.redisPort | quote }}
         {{- end }}
         ports:
         - name: http
@@ -162,6 +188,11 @@ spec:
         - name: nextcloud-data
           mountPath: /var/www/html/themes
           subPath: themes
+        {{- range $key, $value := .Values.nextcloud.configs }}
+        - name: nextcloud-config
+          mountPath: /var/www/html/config/{{ $key }}
+          subPath: {{ $key }}
+        {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -181,4 +212,9 @@ spec:
           claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "nextcloud.fullname" . }}-nextcloud{{- end }}
       {{- else }}
         emptyDir: {}
+      {{- end }}
+      {{- if .Values.nextcloud.configs }}
+      - name: nextcloud-config
+        configMap:
+          name: {{ template "nextcloud.fullname" . }}-config
       {{- end }}

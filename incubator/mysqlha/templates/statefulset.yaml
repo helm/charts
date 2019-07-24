@@ -14,7 +14,14 @@ spec:
     metadata:
       labels:
         app: {{ template "fullname" . }}
+      {{- if .Values.mysqlha.podAnnotations }}
+      annotations:
+{{ toYaml .Values.mysqlha.podAnnotations | indent 8 }}
+      {{- end }}
     spec:
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+      {{- end }}
       initContainers:
       - name: clone-mysql
         image: {{ .Values.xtraBackupImage }}

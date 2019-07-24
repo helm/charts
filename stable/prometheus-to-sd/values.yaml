@@ -1,9 +1,10 @@
 replicaCount: 1
 image:
   repository: gcr.io/google-containers/prometheus-to-sd
-  tag: v0.2.2
+  tag: v0.5.2
   pullPolicy: IfNotPresent
 resources: {}
 port: 6060
-metricsSources: {}
+metricsSources:
+  kube-state-metrics: http://kube-state-metrics:8080
 nodeSelector: {}

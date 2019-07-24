@@ -55,6 +55,8 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `image.pullPolicy`                   | Image pull policy                                | `IfNotPresent`                                          |
 | `image.pullSecrets`                  | Specify docker-registry secret names as an array | `nil`                                                   |
 | `image.debug`                        | Specify if debug values should be set            | `false`                                                 |
+| `nameOverride`                       | String to partially override rabbitmq.fullname template with a string (will prepend the release name) | `nil` |
+| `fullnameOverride`                   | String to fully override rabbitmq.fullname template with a string                                     | `nil` |
 | `rbacEnabled`                        | Specify if rbac is enabled in your cluster       | `true`                                                  |
 | `podManagementPolicy`                | Pod management policy                            | `OrderedReady`                                          |
 | `rabbitmq.username`                  | RabbitMQ application username                    | `user`                                                  |
@@ -71,8 +73,10 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `rabbitmq.ulimitNofiles`             | Max File Descriptor limit                        | `65536`                                                 |
 | `rabbitmq.maxAvailableSchedulers`    | RabbitMQ maximum available scheduler threads     | `2`                                                     |
 | `rabbitmq.onlineSchedulers`          | RabbitMQ online scheduler threads                | `1`                                                     |
+| `rabbitmq.env`                       | RabbitMQ [environment variables](https://www.rabbitmq.com/configure.html#customise-environment) | `{}`     |
 | `rabbitmq.configuration`             | Required cluster configuration                   | See values.yaml                                         |
 | `rabbitmq.extraConfiguration`        | Extra configuration to add to rabbitmq.conf      | See values.yaml                                         |
+| `rabbitmq.advancedConfiguration`     | Extra configuration (in classic format) to add to advanced.config    | See values.yaml                                         |
 | `service.type`                       | Kubernetes Service type                          | `ClusterIP`                                             |
 | `service.port`                       | Amqp port                                        | `5672`                                                  |
 | `service.distPort`                   | Erlang distribution server port                  | `25672`                                                 |

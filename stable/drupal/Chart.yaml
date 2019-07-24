@@ -1,7 +1,7 @@
 apiVersion: v1
 name: drupal
-version: 3.3.4
-appVersion: 8.7.3
+version: 4.0.1
+appVersion: 8.7.5
 description: One of the most versatile open source content management systems.
 keywords:
 - drupal

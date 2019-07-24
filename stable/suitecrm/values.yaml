@@ -13,7 +13,7 @@
 image:
   registry: docker.io
   repository: bitnami/suitecrm
-  tag: 7.11.5-debian-9-r8
+  tag: 7.11.6-debian-9-r0
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -25,6 +25,14 @@ image:
   ##
   # pullSecrets:
   #   - myRegistryKeySecretName
+
+## String to partially override suitecrm.fullname template (will maintain the release name)
+##
+# nameOverride:
+
+## String to fully override suitecrm.fullname template
+##
+# fullnameOverride:
 
 ## SuiteCRM host to create application URLs
 ## ref: https://github.com/bitnami/bitnami-docker-suitecrm#configuration
