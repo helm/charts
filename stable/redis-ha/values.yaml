@@ -43,6 +43,9 @@ haproxy:
   ## Prometheus metric exporter for HAProxy.
   ##
   exporter:
+    image:
+      repository: quay.io/prometheus/haproxy-exporter
+      tag: v0.9.0
     enabled: false
     port: 9101
   init:

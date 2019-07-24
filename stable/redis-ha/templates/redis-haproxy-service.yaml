@@ -11,9 +11,6 @@ metadata:
   {{- end }}
 spec:
   type: {{ default "ClusterIP" .Values.haproxy.service.type }}
-  {{- if or (not .Values.haproxy.service.type) (eq .Values.haproxy.service.type "ClusterIP") }}
-  clusterIP: None
-  {{- end }}
   ports:
   - name: haproxy
     port: {{ .Values.redis.port }}

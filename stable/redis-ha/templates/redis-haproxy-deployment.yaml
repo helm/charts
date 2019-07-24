@@ -49,10 +49,16 @@ spec:
           readOnly: true
         - name: data
           mountPath: /data
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8888
+          initialDelaySeconds: 5
+          periodSeconds: 3
       containers:
       {{- if .Values.haproxy.exporter.enabled }}
       - name: prometheus-exporter
-        image: quay.io/prometheus/haproxy-exporter:v0.9.0
+        image: {{ .Values.haproxy..exporter.image.repository }}:{{ .Values.haproxy.exporter.image.tag }}
         imagePullPolicy: {{ .Values.haproxy.pullPolicy }}
         ports:
         - name: exporter-port

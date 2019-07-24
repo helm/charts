@@ -146,6 +146,12 @@ data:
       timeout server  30s
       timeout client  30s
 
+    listen health_check_http_url
+      bind :8888
+      mode http
+      monitor-uri /healthz
+      option      dontlognull
+
     {{- $root := . }}
     {{- $fullName := include "redis-ha.fullname" . }}
     {{- $replicas := int .Values.replicas }}
