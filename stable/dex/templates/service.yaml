@@ -23,6 +23,9 @@ spec:
     nodePort: {{ .nodePort }}
 {{- end}}
 {{- end}}
+{{- if and (eq "LoadBalancer" $.Values.service.type) (.Values.service.loadBalancerIP) }}
+  loadBalancerIP: {{ .Values.service.loadBalancerIP }}
+{{- end}}
 {{- if hasKey .Values.service "externalIPs" }}
   externalIPs:
 {{ toYaml .Values.service.externalIPs | indent 4 }}
