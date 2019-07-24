@@ -43,7 +43,7 @@ The following table lists the configurable parameters of the Hoverfly chart and 
 | Parameter                         | Description                                | Default                                                   |
 | --------------------------------- | ------------------------------------------ | --------------------------------------------------------- |
 | `image.repository`                | Hoverfly Image name                        | `docker.io/spectolabs/hoverfly`                           |
-| `image.tag`                       | Hoverfly Image tag                         | `v1.0.0-rc.2`                                             |
+| `image.tag`                       | Hoverfly Image tag                         | `v1.1.1`                                             |
 | `hoverflyFlags`                   | Flags to start Hoverfly with, eg. '-auth'  | `""`                                                      |
 | `healthcheckEndpoint`             | Admin API path for Kubernetes healthcheck  | `/api/health`                                             |
 | `service.type`                    | Kubernetes Service type                    | `ClusterIP`                                               |
