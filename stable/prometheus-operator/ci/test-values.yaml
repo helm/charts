@@ -245,7 +245,7 @@ alertmanager:
 
     ## Define Log Format
     # Use logfmt (default) or json-formatted logging
-    # logFormat: logfmt
+    logFormat: logfmt
 
     ## Log level for Alertmanager to be configured with.
     ##
