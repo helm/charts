@@ -74,8 +74,7 @@ spec:
           {{- if .Values.ossgateway.enabled }}
           command: [ "/bin/sh", 
           "-ce", 
-          "cp /tmp/config.json {{ .Values.configPath }} && 
-          /usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} gateway oss {{ .Values.ossgateway.endpointURL }}" ]
+          "/usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} gateway oss {{ .Values.ossgateway.endpointURL }}" ]
           {{- else }}
           {{- if .Values.nasgateway.enabled }}
           command: [ "/bin/sh", 
