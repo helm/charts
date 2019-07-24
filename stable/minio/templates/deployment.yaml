@@ -63,8 +63,7 @@ spec:
           {{- if eq .Values.gateway.type "oss" }}
           command: [ "/bin/sh", 
           "-ce", 
-          "cp /tmp/config.json {{ .Values.configPath }} && 
-          /usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} gateway oss {{ .Values.gateway.oss.endpointURL }}" ]
+          "/usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} gateway oss {{ .Values.gateway.oss.endpointURL }}" ]
           {{- end }}
           {{- if eq .Values.gateway.type "nas" }}
           command: [ "/bin/sh", 

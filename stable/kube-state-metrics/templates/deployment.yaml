@@ -101,6 +101,12 @@ spec:
 {{  if .Values.collectors.statefulsets  }}
         - --collectors=statefulsets
 {{  end  }}
+{{  if .Values.collectors.storageclasses  }}
+        - --collectors=storageclasses
+{{  end  }}
+{{  if .Values.collectors.verticalpodautoscalers  }}
+        - --collectors=verticalpodautoscalers
+{{  end  }}
 {{ if .Values.namespace }}
         - --namespace={{ .Values.namespace }}
 {{ end }}
