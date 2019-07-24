@@ -164,4 +164,3 @@ metrics:
     annotations:
       prometheus.io/scrape: "true"
       prometheus.io/path: "/metrics"
-
