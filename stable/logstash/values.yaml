@@ -47,6 +47,10 @@ service:
     # loadBalancerIP: 10.0.0.1
     # loadBalancerSourceRanges:
     #   - 192.168.0.1
+    # exporter:
+    #   port: 9198
+    #   protocol: TCP
+    #   targetPort: ls-exporter
 ports:
   # - name: syslog-udp
   #   containerPort: 1514
@@ -183,47 +187,44 @@ volumes: []
   #   hostPath:
   #     path: /tmp
 
-exporter:
-  logstash:
-    enabled: false
-    image:
-      repository: bonniernews/logstash_exporter
-      tag: v0.1.2
-      pullPolicy: IfNotPresent
-    env: {}
-    resources: {}
-    path: /metrics
-    port: 9198
-    target:
-      port: 9600
-      path: /metrics
-    livenessProbe:
-      httpGet:
-        path: /metrics
-        port: ls-exporter
-      periodSeconds: 15
-      timeoutSeconds: 60
-      failureThreshold: 8
-      successThreshold: 1
-    readinessProbe:
-      httpGet:
-        path: /metrics
-        port: ls-exporter
-      periodSeconds: 15
-      timeoutSeconds: 60
-      failureThreshold: 8
-      successThreshold: 1
+metrics:
+  enabled: false
   serviceMonitor:
-    ## If true, a ServiceMonitor CRD is created for a prometheus operator
-    ## https://github.com/coreos/prometheus-operator
-    ##
     enabled: false
-    #  namespace: monitoring
-    labels: {}
-    interval: 10s
-    scrapeTimeout: 10s
-    scheme: http
     port: metrics
+    additionalLabels: {}
+    # namespace: monitoring
+    # interval: 30s
+    # scrapeTimeout: 10s
+  image:
+    repository: bonniernews/logstash_exporter
+    tag: v0.1.2
+    pullPolicy: IfNotPresent
+  env: {}
+  resources: {}
+  path: /metrics
+  port: 9198
+  target:
+    port: 9600
+    path: /metrics
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
+  ## Configure extra options for liveness and readiness probes
+  livenessProbe:
+    httpGet:
+      path: /metrics
+      port: ls-exporter
+    periodSeconds: 15
+    timeoutSeconds: 60
+    failureThreshold: 8
+    successThreshold: 1
+  readinessProbe:
+    httpGet:
+      path: /metrics
+      port: ls-exporter
+    periodSeconds: 15
+    timeoutSeconds: 60
+    failureThreshold: 8
+    successThreshold: 1
 
 elasticsearch:
   host: elasticsearch-client.default.svc.cluster.local

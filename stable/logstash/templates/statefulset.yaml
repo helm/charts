@@ -59,7 +59,7 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: monitor
-              containerPort: {{ .Values.exporter.logstash.target.port }}
+              containerPort: {{ .Values.metrics.target.port }}
               protocol: TCP
 {{ toYaml .Values.ports | indent 12 }}
           livenessProbe:
@@ -75,7 +75,7 @@ spec:
             - name: HTTP_HOST
               value: "0.0.0.0"
             - name: HTTP_PORT
-              value: {{ .Values.exporter.logstash.target.port | quote }}
+              value: {{ .Values.metrics.target.port | quote }}
             ## Elasticsearch output
             - name: ELASTICSEARCH_HOST
               value: {{ tpl (.Values.elasticsearch.host | toString) $ | quote }}
@@ -97,28 +97,28 @@ spec:
           volumeMounts:
 {{ toYaml .Values.volumeMounts | indent 12 }}
 
-{{- if .Values.exporter.logstash.enabled }}
+{{- if .Values.metrics.enabled }}
         ## logstash-exporter
         - name: {{ .Chart.Name }}-exporter
-          image: "{{ .Values.exporter.logstash.image.repository }}:{{ .Values.exporter.logstash.image.tag }}"
-          imagePullPolicy: {{ .Values.exporter.logstash.image.pullPolicy }}
+          image: "{{ .Values.metrics.image.repository }}:{{ .Values.metrics.image.tag }}"
+          imagePullPolicy: {{ .Values.metrics.image.pullPolicy }}
           command: ["/bin/sh", "-c"]
           ## Delay start of logstash-exporter to give logstash more time to come online.
           args:
             - >-
               sleep 60;
               exec /logstash_exporter
-                --logstash.endpoint=http://localhost:{{ .Values.exporter.logstash.target.port }}
-                --web.listen-address=:{{ .Values.exporter.logstash.port }}
+                --logstash.endpoint=http://localhost:{{ .Values.metrics.target.port }}
+                --web.listen-address=:{{ .Values.metrics.port }}
           ports:
             - name: ls-exporter
-              containerPort: {{ .Values.exporter.logstash.port }}
+              containerPort: {{ .Values.metrics.port }}
               protocol: TCP
           livenessProbe:
-{{ toYaml .Values.exporter.logstash.livenessProbe | indent 12 }}
+{{ toYaml .Values.metrics.livenessProbe | indent 12 }}
           readinessProbe:
-{{ toYaml .Values.exporter.logstash.readinessProbe | indent 12 }}
-          {{- with .Values.exporter.logstash.config }}
+{{ toYaml .Values.metrics.readinessProbe | indent 12 }}
+          {{- with .Values.metrics.config }}
           env:
             {{- range $key, $value := . }}
             - name: {{ $key | upper | replace "." "_" }}
@@ -126,7 +126,7 @@ spec:
             {{- end }}
           {{- end }}
           resources:
-{{ toYaml .Values.exporter.logstash.resources | indent 12 }}
+{{ toYaml .Values.metrics.resources | indent 12 }}
 {{- end }}
 
     {{- with .Values.nodeSelector }}
