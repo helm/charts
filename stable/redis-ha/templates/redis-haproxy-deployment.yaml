@@ -49,16 +49,10 @@ spec:
           readOnly: true
         - name: data
           mountPath: /data
-        livenessProbe:
-          httpGet:
-            path: /healthz
-            port: 8888
-          initialDelaySeconds: 5
-          periodSeconds: 3
       containers:
       {{- if .Values.haproxy.exporter.enabled }}
       - name: prometheus-exporter
-        image: {{ .Values.haproxy..exporter.image.repository }}:{{ .Values.haproxy.exporter.image.tag }}
+        image: {{ .Values.haproxy.exporter.image.repository }}:{{ .Values.haproxy.exporter.image.tag }}
         imagePullPolicy: {{ .Values.haproxy.pullPolicy }}
         ports:
         - name: exporter-port
@@ -72,6 +66,12 @@ spec:
       - name: haproxy
         image: {{ .Values.haproxy.image.repository }}:{{ .Values.haproxy.image.tag }}
         imagePullPolicy: {{ .Values.haproxy.image.pullPolicy }}
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8888
+          initialDelaySeconds: 5
+          periodSeconds: 3
         ports:
         - name: redis
           containerPort: {{ default "6379" .Values.redis.port }}
