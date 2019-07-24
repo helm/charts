@@ -14,14 +14,18 @@ This chart will do the following:
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release stable/fluent-bit
+$ helm install --name my-release incubator/fluent-bit-aws
 ```
 
 When installing this chart on [Minikube](https://kubernetes.io/docs/getting-started-guides/minikube/), it's required to specify that so the DaemonSet will be able to mount the log files properly, make sure to append the _--set on\_minikube=true_ option at the end of the _helm_ command, e.g:
 
 ```bash
-$ helm install --name my-release stable/fluent-bit --set on_minikube=true
+$ helm install --name my-release incubator/fluent-bit-aws --set on_minikube=true
 ```
+## AWS provided OUTPUTs
+This chart is based on the AWS provided docker image [amazon/aws-for-fluent-bit](https://hub.docker.com/r/amazon/aws-for-fluent-bit) which provides 2 additional OUTPUTs. Please read their documentation for correct configuration.
+- [cloudwatch](https://github.com/aws/amazon-cloudwatch-logs-for-fluent-bit)
+- [firehose](https://github.com/aws/amazon-kinesis-firehose-for-fluent-bit)
 
 ## Configuration
 
@@ -87,7 +91,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `backend.cloudwatch.region`         | The region which your cloudwatch delivery stream(s) is/are in. |  |
 | `backend.cloudwatch.role_arn`       | ARN of an IAM role to assume (for cross account access). |  |
 | **Parsers**                   |
-| `parsers.enabled`                  | Enable custom parsers | `false` |
+| `parsers.enabled`                  | Enable custom parsers (needs to be set for all parsers) | `false` |
 | `parsers.regex`                    | List of regex parsers | `NULL` |
 | `parsers.json`                     | List of json parsers | `NULL` |
 | `parsers.logfmt`                   | List of logfmt parsers | `NULL` |
@@ -114,6 +118,8 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `filter.kubeTagPrefix`             | Optional tag prefix used by Tail   | `kube.var.log.containers.`                                |
 | `filter.mergeJSONLog`              | If the log field content is a JSON string map, append the map fields as part of the log structure         | `true`                                 |
 | `filter.mergeLogKey`               | If set, append the processed log keys under a new root key specified by this variable. | `nil` |
+| `filter.lua.enabled`               | Enable the use of [lua](https://docs.fluentbit.io/manual/filter/lua) filters                   | `false`                                 |
+| `filter.lua.raw`                   | Provide your Lua file; the file is mounted as `extra.lua` | ``                                 | |
 | `image.fluent_bit.repository`      | Image                                      | `fluent/fluent-bit`                               |
 | `image.fluent_bit.tag`             | Image tag                                  | `1.2.1`                                           |
 | `image.pullPolicy`                 | Image pull policy                          | `Always`                                          |
@@ -162,7 +168,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml stable/fluent-bit
+$ helm install --name my-release -f values.yaml incubator/fluent-bit-aws
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
