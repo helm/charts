@@ -1,0 +1,36 @@
+{{- if .Values.exporter.serviceMonitor.enabled }}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ template "logstash.fullname" . }}
+  {{- if .Values.exporter.serviceMonitor.namespace }}
+  namespace: {{ .Values.exporter.serviceMonitor.namespace }}
+  {{- end }}
+  labels:
+    chart: {{ template "logstash.chart" . }}
+    app: {{ template "logstash.name" . }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+    {{- if .Values.exporter.serviceMonitor.labels }}
+    {{- toYaml .Values.exporter.serviceMonitor.labels | nindent 4 }}
+    {{- end }}
+spec:
+  endpoints:
+  - interval: {{ .Values.exporter.serviceMonitor.interval }}
+    {{- if .Values.exporter.serviceMonitor.scrapeTimeout }}
+    scrapeTimeout: {{ .Values.exporter.serviceMonitor.scrapeTimeout }}
+    {{- end }}
+    honorLabels: true
+    targetPort: {{ .Values.exporter.logstash.port }}
+    path: {{ .Values.exporter.logstash.path }}
+    scheme: {{ .Values.exporter.serviceMonitor.scheme }}
+  jobLabel: "{{ .Release.Name }}"
+  selector:
+    matchLabels:
+      app: {{ template "logstash.name" . }}
+      release: "{{ .Release.Name }}"
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
+{{- end }}
