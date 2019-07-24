@@ -1,0 +1,49 @@
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: postgresqls.acid.zalan.do
+  labels:
+    app.kubernetes.io/name: {{ template "postgres-operator.name" . }}
+    helm.sh/chart: {{ template "postgres-operator.chart" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  annotations:
+    "helm.sh/hook": crd-install
+spec:
+  group: acid.zalan.do
+  names:
+    kind: postgresql
+    listKind: postgresqlList
+    plural: postgresqls
+    singular: postgresql
+    shortNames:
+    - pg
+  scope: Namespaced
+  subresources:
+    status: {}
+  version: v1
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: operatorconfigurations.acid.zalan.do
+  labels:
+    app.kubernetes.io/name: {{ template "postgres-operator.name" . }}
+    helm.sh/chart: {{ template "postgres-operator.chart" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  annotations:
+    "helm.sh/hook": crd-install
+spec:
+  group: acid.zalan.do
+  names:
+    kind: OperatorConfiguration
+    listKind: OperatorConfigurationList
+    plural: operatorconfigurations
+    singular: operatorconfiguration
+    shortNames:
+    - pgc
+  scope: Namespaced
+  subresources:
+    status: {}
+  version: v1

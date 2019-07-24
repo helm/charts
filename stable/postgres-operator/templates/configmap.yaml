@@ -1,0 +1,23 @@
+{{- if eq .Values.configTarget "ConfigMap" }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "postgres-operator.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ template "postgres-operator.name" . }}
+    helm.sh/chart: {{ template "postgres-operator.chart" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+data:
+  pod_service_account_name: {{ include "postgres-operator.serviceAccountName" . }}
+{{ toYaml .Values.configGeneral | indent 2 }}
+{{ toYaml .Values.configUsers | indent 2 }}
+{{ toYaml .Values.configKubernetes | indent 2 }}
+{{ toYaml .Values.configTimeouts | indent 2 }}
+{{ toYaml .Values.configLoadBalancer | indent 2 }}
+{{ toYaml .Values.configAwsOrGcp | indent 2 }}
+{{ toYaml .Values.configLogicalBackup | indent 2 }}
+{{ toYaml .Values.configDebug | indent 2 }}
+{{ toYaml .Values.configLoggingRestApi | indent 2 }}
+{{ toYaml .Values.configTeamsApi | indent 2 }}
+{{- end }}

@@ -1,0 +1,3 @@
+To verify that postgres-operator has started, run:
+
+  kubectl --namespace={{ .Release.Namespace }} get pods -l "app.kubernetes.io/name={{ template "postgres-operator.name" . }}"
