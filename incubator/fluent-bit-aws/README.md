@@ -77,6 +77,15 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `backend.firehose.endpoint`       | Specify a custom endpoint for the Kinesis Firehose API. |  |
 | `backend.firehose.region`         | The region which your Firehose delivery stream(s) is/are in. |  |
 | `backend.firehose.role_arn`       | ARN of an IAM role to assume (for cross account access). |  |
+| **AWS Cloudwatch Backend**              |
+| `backend.cloudwatch.auto_create_group`       | Automatically create the log group. Valid values are "true" or "false" (case insensitive). Defaults to *false*. |  |
+| `backend.cloudwatch.endpoint`       | Specify a custom endpoint for the Cloudwatch Logs API. |  |
+| `backend.cloudwatch.log_group_name`       | The name of the CloudWatch Log Group that you want log records sent to. |  |
+| `backend.cloudwatch.log_key`       | By default, the whole log record will be sent to CloudWatch. If you specify a key name with this option, then only the value of that key will be sent to CloudWatch. |  |
+| `backend.cloudwatch.log_stream_name`       | The name of the CloudWatch Log Stream that you want log records sent to. |  |
+| `backend.cloudwatch.log_stream_prefix`       | Prefix for the Log Stream name. The tag is appended to the prefix to construct the full log stream name. _Not compatible with the log_stream_name option._ |  |
+| `backend.cloudwatch.region`         | The region which your cloudwatch delivery stream(s) is/are in. |  |
+| `backend.cloudwatch.role_arn`       | ARN of an IAM role to assume (for cross account access). |  |
 | **Parsers**                   |
 | `parsers.enabled`                  | Enable custom parsers | `false` |
 | `parsers.regex`                    | List of regex parsers | `NULL` |

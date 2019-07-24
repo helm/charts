@@ -163,14 +163,16 @@ data:
         endpoint {{ .Values.backend.firehose.endpoint }}
 {{- end }}
         region {{ .Values.backend.firehose.region }}
-{{ .Values.backend.firehose.role_arn }}
+{{- if .Values.backend.firehose.role_arn }}
         role_arn {{ .Values.backend.firehose.role_arn }}
 {{- end }}
-{{ else if eq .Values.backend.type "firehose" }}
+{{ else if eq .Values.backend.type "cloudwatch" }}
     [OUTPUT]
         Name  cloudwatch
         Match **
+{{- if .Values.backend.cloudwatch.auto_create_group }}
         auto_create_group {{ .Values.backend.cloudwatch.auto_create_group }}
+{{- end }}
 {{- if .Values.backend.cloudwatch.endpoint }}
         endpoint {{ .Values.backend.cloudwatch.endpoint }}
 {{- end }}
@@ -178,7 +180,9 @@ data:
 {{- if .Values.backend.cloudwatch.log_key }}
         log_key {{ .Values.backend.cloudwatch.log_key }}
 {{- end }}
+{{- if .Values.backend.cloudwatch.log_stream_name }}
         log_stream_name {{ .Values.backend.cloudwatch.log_stream_name }}
+{{- end }}
 {{- if .Values.backend.cloudwatch.log_stream_prefix }}
         log_stream_prefix {{ .Values.backend.cloudwatch.log_stream_prefix }}
 {{- end }}
