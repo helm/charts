@@ -91,7 +91,11 @@ spec:
         - name: config
           mountPath: /fluent-bit/etc/fluent-bit-output.conf
           subPath: fluent-bit-output.conf
-
+{{- if .Values.filter.lua.enabled }}
+        - name: config
+          mountPath: /fluent-bit/etc/extra.lua
+          subPath: extra.lua
+{{- end }}
 {{- if .Values.parsers.enabled }}
         - name: config
           mountPath: /fluent-bit/etc/parsers_custom.conf

@@ -269,6 +269,22 @@ filter:
 # fluentbit.io/exclude: true. If present, discard logs from that pod.
   enableExclude: true
 
+# if true, enable support for Lua filters in final `extra.lua` file
+# see documentation at https://docs.fluentbit.io/manual/filter/lua
+  lua:
+    enabled: false
+    raw: |-
+    ## example callback
+    #   function cb_print(tag, timestamp, record)
+    #     return code, timestamp, record
+    #   end
+    ##  Usage:
+    # [FILTER]
+    # Name    lua
+    # Match   *
+    # script  extra.lua
+    # call    cb_print
+
 rbac:
   # Specifies whether RBAC resources should be created
   create: true
