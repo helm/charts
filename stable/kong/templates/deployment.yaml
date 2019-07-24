@@ -251,5 +251,5 @@ spec:
       volumes:
         - name: custom-nginx-template-volume
           configMap:
-            name: kong-default-custom-server-blocks
+            name: {{ .Release.Name }}-kong-default-custom-server-blocks
 
