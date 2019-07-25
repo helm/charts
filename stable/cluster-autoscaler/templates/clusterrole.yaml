@@ -108,7 +108,7 @@ rules:
       - watch
 {{- if .Values.rbac.pspEnabled }}
   - apiGroups:
-    - policy
+    - extensions
     resources:
     - podsecuritypolicies
     resourceNames:
