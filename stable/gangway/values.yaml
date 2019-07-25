@@ -110,6 +110,8 @@ gangway:
 service:
   type: ClusterIP
   port: 80
+  # Specifies a loadBalancerIP when using LoadBalancer service type
+  # loadBalancerIP: 192.168.0.51
 
 ingress:
   enabled: false
