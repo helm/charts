@@ -46,6 +46,7 @@ The following table lists the configurable parameters of the MySQL chart and the
 
 | Parameter                                    | Description                                                                                  | Default                                              |
 | -------------------------------------------- | -------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| `args`                                       | Additional arguments to pass to the MySQL container.                                         | `[]`                                                 |
 | `initContainer.resources`                    | initContainer resource requests/limits                                                       | Memory: `10Mi`, CPU: `10m`                           |
 | `image`                                      | `mysql` image repository.                                                                    | `mysql`                                              |
 | `imageTag`                                   | `mysql` image tag.                                                                           | `5.7.14`                                             |
@@ -72,6 +73,7 @@ The following table lists the configurable parameters of the MySQL chart and the
 | `readinessProbe.timeoutSeconds`              | When the probe times out                                                                     | 1                                                    |
 | `readinessProbe.successThreshold`            | Minimum consecutive successes for the probe to be considered successful after having failed. | 1                                                    |
 | `readinessProbe.failureThreshold`            | Minimum consecutive failures for the probe to be considered failed after having succeeded.   | 3                                                    |
+| `schedulerName`                              | Name of the k8s scheduler (other than default)                                               | `nil`                                                |
 | `persistence.enabled`                        | Create a volume to store data                                                                | true                                                 |
 | `persistence.size`                           | Size of persistent volume claim                                                              | 8Gi RW                                               |
 | `persistence.storageClass`                   | Type of persistent volume claim                                                              | nil                                                  |
@@ -91,6 +93,8 @@ The following table lists the configurable parameters of the MySQL chart and the
 | `metrics.readinessProbe.initialDelaySeconds` | Delay before metrics readiness probe is initiated                                            | 5                                                    |
 | `metrics.readinessProbe.timeoutSeconds`      | When the probe times out                                                                     | 1                                                    |
 | `metrics.flags`                              | Additional flags for the mysql exporter to use                                               | `[]`                                                 |
+| `metrics.serviceMonitor.enabled`             | Set this to `true` to create ServiceMonitor for Prometheus operator                          | `false`                                              |
+| `metrics.serviceMonitor.additionalLabels`    | Additional labels that can be used so ServiceMonitor will be discovered by Prometheus        | `{}`                                                 |
 | `resources`                                  | CPU/Memory resource requests/limits                                                          | Memory: `256Mi`, CPU: `100m`                         |
 | `configurationFiles`                         | List of mysql configuration files                                                            | `nil`                                                |
 | `configurationFilesPath`                     | Path of mysql configuration files                                                            | `/etc/mysql/conf.d/`                                 |
@@ -111,6 +115,7 @@ The following table lists the configurable parameters of the MySQL chart and the
 | `podAnnotations`                             | Map of annotations to add to the pods                                                        | `{}`                                                 |
 | `podLabels`                                  | Map of labels to add to the pods                                                             | `{}`                                                 |
 | `priorityClassName`                          | Set pod priorityClassName                                                                    | `{}`                                                 |
+| `deploymentAnnotations`		       | Map of annotations for deployment							      | `{}`						     |
 
 Some of the parameters above map to the env variables defined in the [MySQL DockerHub image](https://hub.docker.com/_/mysql/).
 

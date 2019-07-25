@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "gocd.fullname" . }}-agent
@@ -35,6 +35,10 @@ spec:
       {{- end }}
     spec:
       serviceAccountName: {{ template "gocd.agentServiceAccountName" . }}
+      securityContext:
+        runAsUser: {{ .Values.agent.securityContext.runAsUser }}
+        runAsGroup: {{ .Values.agent.securityContext.runAsGroup }}
+        fsGroup: {{ .Values.agent.securityContext.fsGroup }}
       {{- if or .Values.agent.persistence.enabled (or .Values.agent.security.ssh.enabled .Values.agent.persistence.extraVolumes) }}
       volumes:
       {{- end }}
@@ -92,9 +96,9 @@ spec:
             - name: AGENT_AUTO_REGISTER_HOSTNAME
               value: {{ .Values.agent.env.agentAutoRegisterHostname }}
             {{- end }}
-            {{- if .Values.agent.env.goAgentSystemProperties }}
-            - name: GO_AGENT_SYSTEM_PROPERTIES
-              value: {{ .Values.agent.env.goAgentSystemProperties }}
+            {{- if .Values.agent.env.goAgentJvmOpts }}
+            - name: GOCD_AGENT_JVM_OPTS
+              value: {{ .Values.agent.env.goAgentJvmOpts }}
             {{- end }}
             {{- if .Values.agent.env.goAgentBootstrapperJvmArgs }}
             - name: AGENT_BOOTSTRAPPER_JVM_ARGS

@@ -60,6 +60,9 @@ spec:
           {{- end }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if .Values.command }}
+          command: {{ toYaml .Values.command | nindent 12 -}}
+          {{- end }}
           ports:
             - name: container-port
               containerPort: 9106
@@ -97,6 +100,10 @@ spec:
     {{- end }}
     {{- with .Values.tolerations }}
       tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.securityContext }}
+      securityContext:
 {{ toYaml . | indent 8 }}
     {{- end }}
       volumes:

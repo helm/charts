@@ -24,6 +24,9 @@ spec:
         app: {{ template "opa.fullname" . }}
       name: {{ template "opa.fullname" . }}
     spec:
+{{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName }}
+{{- end }}
 {{- if .Values.authz.enabled }}
       initContainers:
         - name: initpolicy
@@ -40,9 +43,12 @@ spec:
             cat > /authz/authz.rego <<EOF
             package system.authz
             default allow = false
+            # Allow anonymous access to the default policy decision.
             allow { input.path = [""]; input.method = "POST" }
             allow { input.path = [""]; input.method = "GET" }
-            allow { input.identity = "$TOKEN" }
+            # This is only used for health check in liveness and readiness probe
+            allow { input.path = ["health"]; input.method = "GET" }
+            allow { input.identity == "$TOKEN" }
             EOF
           volumeMounts:
             - name: authz
@@ -88,6 +94,10 @@ spec:
               readOnly: true
               mountPath: /authz
 {{- end }}
+          readinessProbe:
+{{ toYaml .Values.readinessProbe | indent 12 }}
+          livenessProbe:
+{{ toYaml .Values.livenessProbe | indent 12 }}
 {{- if .Values.mgmt.enabled }}
         - name: mgmt
           image: {{ .Values.mgmt.image }}:{{ .Values.mgmt.imageTag }}
@@ -129,10 +139,6 @@ spec:
             - proxy
             - --accept-paths=^/apis/authorization.k8s.io/v1/subjectaccessreviews$
 {{- end }}
-          readinessProbe:
-{{ toYaml .Values.readinessProbe | indent 12 }}
-          livenessProbe:
-{{ toYaml .Values.livenessProbe | indent 12 }}
       serviceAccountName: {{ template "opa.serviceAccountName" .}}
       volumes:
         - name: certs

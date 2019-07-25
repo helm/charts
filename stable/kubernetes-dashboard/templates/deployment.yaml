@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "kubernetes-dashboard.fullname" . }}
@@ -21,6 +21,10 @@ spec:
       maxSurge: 0
       maxUnavailable: 1
     type: RollingUpdate
+  selector:
+    matchLabels:
+      app: {{ template "kubernetes-dashboard.name" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
     {{- if .Values.podAnnotations }}
@@ -31,6 +35,10 @@ spec:
         app: {{ template "kubernetes-dashboard.name" . }}
         release: {{ .Release.Name }}
     spec:
+      {{- if .Values.securityContext }}
+      securityContext:
+{{ toYaml .Values.securityContext | indent 8 }}
+      {{- end }}
       serviceAccountName: {{ template "kubernetes-dashboard.serviceAccountName" . }}
       containers:
       - name: {{ .Chart.Name }}
@@ -47,6 +55,10 @@ spec:
 {{- end }}
 {{- if .Values.extraArgs }}
 {{ toYaml .Values.extraArgs | indent 10 }}
+{{- end }}
+{{- if .Values.extraEnv }}
+        env:
+{{ toYaml .Values.extraEnv | indent 10 }}
 {{- end }}
         ports:
 {{- if .Values.enableInsecureLogin }}

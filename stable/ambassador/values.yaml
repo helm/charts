@@ -1,9 +1,26 @@
+---
 # Default values for ambassador.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
 replicaCount: 3
 daemonSet: false
+
+# Enable autoscaling using HorizontalPodAutoscaler
+# daemonSet: true, autoscaling will be disabled
+autoscaling:
+  enabled: false
+  minReplicas: 2
+  maxReplicas: 5
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: 60
+    - type: Resource
+      resource:
+        name: memory
+        targetAverageUtilization: 60
 
 # namespace:
   # name: default
@@ -30,7 +47,7 @@ securityContext:
 
 image:
   repository: quay.io/datawire/ambassador
-  tag: 0.61.0
+  tag: 0.73.0
   pullPolicy: IfNotPresent
 
 nameOverride: ""
@@ -81,6 +98,8 @@ rbac:
   # Specifies whether RBAC resources should be created
   create: true
   namespaced: false
+  podSecurityPolicies:
+    {}
 
 scope:
   # tells Ambassador to only use resources in the namespace or namespace set by namespace.name
@@ -92,6 +111,8 @@ serviceAccount:
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
   name:
+
+additionalTCPPorts: []
 
 initContainers: []
 
@@ -107,6 +128,10 @@ podAnnotations:
   # prometheus.io/scrape: "true"
   # prometheus.io/port: "9102"
 
+deploymentAnnotations:
+  {}
+  # configmap.reloader.stakater.com/auto: "true"
+
 resources:
   {}
   # If you do want to specify resources, uncomment the following
@@ -117,6 +142,8 @@ resources:
   # requests:
   #  cpu: 100m
   #  memory: 128Mi
+
+priorityClassName: ""
 
 nodeSelector: {}
 
@@ -130,6 +157,15 @@ prometheusExporter:
   repository: prom/statsd-exporter
   tag: v0.8.1
   pullPolicy: IfNotPresent
+  resources: {}
+  # If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  #   limits:
+  #     cpu: 100m
+  #     memory: 256Mi
+  #   requests:
+  #     cpu: 50m
+  #     memory: 128Mi
   # You can configure the statsd exporter to modify the behavior of mappings and other features.
   # See documentation: https://github.com/prometheus/statsd_exporter/tree/v0.8.1#metric-mapping-and-configuration
   # Uncomment the following line if you wish to specify a custom configuration:
@@ -157,3 +193,7 @@ pro:
   licenseKey:
     value:
     secret: false
+
+crds:
+  create: true
+  keep: true

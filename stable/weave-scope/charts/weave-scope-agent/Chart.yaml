@@ -1,7 +1,7 @@
 description: A Helm chart for the Weave Scope cluster visualizer node agent.
 name: weave-scope-agent
-version: 0.10.0
-appVersion: 1.9.1
+version: 1.1.3
+appVersion: 1.11.3
 keywords:
   - containers
   - dashboard
