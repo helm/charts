@@ -192,6 +192,10 @@ persistence: {}
 # Redis port
 redisPort: 6379
 
+## Headless service
+headless:
+  enabled: true
+
 ##
 ## Redis Master parameters
 ##

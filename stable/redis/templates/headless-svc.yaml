@@ -1,3 +1,4 @@
+{{- if .Values.headless.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -22,3 +23,4 @@ spec:
   selector:
     app: {{ template "redis.name" . }}
     release: "{{ .Release.Name }}"
+{{- end }}
