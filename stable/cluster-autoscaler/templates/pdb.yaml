@@ -3,15 +3,11 @@ apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
   labels:
-    app: {{ template "cluster-autoscaler.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+{{ include "cluster-autoscaler.labels" . | indent 4 }}
   name: {{ template "cluster-autoscaler.fullname" . }}
 spec:
   selector:
     matchLabels:
-      app: {{ template "cluster-autoscaler.name" . }}
-      release: {{ .Release.Name }}
+{{ include "cluster-autoscaler.instance-name" . | indent 6 }}
 {{ .Values.podDisruptionBudget | indent 2 }}
 {{- end -}}

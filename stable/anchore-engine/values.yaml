@@ -66,7 +66,7 @@ ingress:
 # Global configuration shared by all anchore-engine services.
 anchoreGlobal:
   # Image used for all anchore engine deployments (excluding enterprise components).
-  image: docker.io/anchore/anchore-engine:v0.4.0
+  image: docker.io/anchore/anchore-engine:v0.4.1
   imagePullPolicy: IfNotPresent
 
   # Add additionnal labels to all kubernetes resources
@@ -534,7 +534,7 @@ anchoreEnterpriseReports:
 anchoreEnterpriseUi:
   # If enabled is set to false, set anchore-ui-redis.enabled to false to ensure that helm doesn't stand up a unneccessary redis instance.
   enabled: true
-  image: docker.io/anchore/enterprise-ui:v0.3.3
+  image: docker.io/anchore/enterprise-ui:v0.3.4
   imagePullPolicy: IfNotPresent
 
   # Set extra environment variables. These will be set on all UI containers.
@@ -557,6 +557,17 @@ anchoreEnterpriseUi:
   # user session keys and data is emptied on application startup. If the datastore
   # is flushed, any users with active sessions will be required to re-authenticate.
   redisFlushdb: true
+  # The (optional) `policy_hub_uri` key specifies the address of a Policy Hub
+  # service. The value must be a string containing a properly-formed 'http' or
+  # 'https' URI, and can be overridden by using the `ANCHORE_POLICY_HUB_URI`
+  # environment variable.
+  #
+  # When this value is set, the Policy Hub component is enabled within the
+  # Policy Manager view (`/policy`). Note that the availability and integrity of
+  # Policy Hub data is determined by this component at run-time when this
+  # component is accessed.
+  #
+  policyHubUri: 'http://hub.anchore.io'
 
   # kubernetes service configuration for anchore UI
   service:

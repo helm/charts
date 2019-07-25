@@ -63,3 +63,14 @@ tolerations: []
   #   effect: "NoSchedule"
 
 affinity: {}
+hostNetwork: true
+
+# annotations to be added to pods
+podAnnotations: {}
+
+# If the spot handler was installed before Kubernetes version 1.6
+# then you need to explicitly set the value below otherwise
+# you will have to manually cycle your pods every time you perform the update.
+# Default value for Kubernetes v1.5 and before was "OnDelete".
+updateStrategy: RollingUpdate
+maxUnavailable: 1

@@ -37,6 +37,11 @@ testFramework:
 ##
 imagePullPolicy: IfNotPresent
 
+## Additionnal arguments that are passed to the MySQL container.
+## For example use --default-authentication-plugin=mysql_native_password if older clients need to
+## connect to a MySQL 8 instance.
+args: []
+
 extraVolumes: |
   # - name: extras
   #   emptyDir: {}
@@ -189,9 +194,11 @@ ssl:
 ## Example: 'Australia/Sydney'
 # timezone:
 
+# Deployment Annotations
+deploymentAnnotations: {}
+
 # To be added to the database server pod(s)
 podAnnotations: {}
-
 podLabels: {}
 
 ## Set pod priorityClassName
