@@ -295,3 +295,7 @@ Containers:
       --node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,k8s.io/cluster/<ClusterName>
       --v=4
 ```
+
+#### PodSecurityPolicy
+
+Though enough for the majority of installations, the default PodSecurityPolicy _could_ be too restrictive depending on the specifics of your release. Please make sure to check that the template fits with any customizations made or disable it by setting `rbac.pspEnabled` to `false`.
