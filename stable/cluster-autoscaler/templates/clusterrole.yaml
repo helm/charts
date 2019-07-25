@@ -112,7 +112,7 @@ rules:
     resources:
     - podsecuritypolicies
     resourceNames:
-    - privileged-{{ template "cluster-autoscaler.fullname" . }}
+    - {{ template "cluster-autoscaler.fullname" . }}
     verbs:
     - use
 {{- end -}}
