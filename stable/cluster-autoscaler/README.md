@@ -19,6 +19,17 @@ This chart bootstraps a cluster-autoscaler deployment on a [Kubernetes](http://k
   - Azure AKS specific Prerequisites:
     - Kubernetes 1.10+ with RBAC-enabled
 
+## Upgrading from <2.X
+
+In order to upgrade to chart version to 2.X from 1.X or 0.X, deleting the old helm release first is required.
+
+```console
+$ helm del --purge my-release
+```
+
+Once the old release is deleted, the new 2.X release can be installed using the standard instructions.
+Note that autoscaling will not occur during the time between deletion and installation.
+
 ## Installing the Chart
 
 **By default, no deployment is created and nothing will autoscale**.
@@ -37,7 +48,7 @@ To install the chart with the release name `my-release`:
 
 Auto-discovery finds ASGs tags as below and automatically manages them based on the min and max size specified in the ASG. `cloudProvider=aws` only.
 
-1) tag the ASGs with _key_ `k8s.io/cluster-autoscaler/enabled` and _key_ `kubernetes.io/cluster/<YOUR CLUSTER NAME>`
+1) tag the ASGs with _key_ `k8s.io/cluster-autoscaler/enabled` and _key_ `k8s.io/cluster/<YOUR CLUSTER NAME>`
 2) verify the [IAM Permissions](#iam)
 3) set `autoDiscovery.clusterName=<YOUR CLUSTER NAME>`
 4) set `awsRegion=<YOUR AWS REGION>`
@@ -134,9 +145,11 @@ Parameter | Description | Default
 `image.repository` | Image | `k8s.gcr.io/cluster-autoscaler`
 `image.tag` | Image tag  | `v1.13.1`
 `image.pullPolicy` | Image pull policy  | `IfNotPresent`
+`image.pullSecrets` | Image pull secrets  | `[]`
 `extraArgs` | additional container arguments | `{}`
 `podDisruptionBudget` | Pod disruption budget | `maxUnavailable: 1`
 `extraEnv` | additional container environment variables | `{}`
+`envFromSecret` | additional container environment variables from secret | `nil`
 `nodeSelector` | node labels for pod assignment | `{}`
 `podAnnotations` | annotations to add to each pod | `{}`
 `deployment.apiVersion` | apiVersion for the deployment | `extensions/v1beta1`
@@ -215,7 +228,7 @@ Unfortunately AWS does not support ARNs for autoscaling groups yet so you must u
 ## Auto-discovery
 
 For auto-discovery of instances to work, they must be tagged with
-`k8s.io/cluster-autoscaler/enabled` and `kubernetes.io/cluster/<ClusterName>`
+`k8s.io/cluster-autoscaler/enabled` and `k8s.io/cluster/<ClusterName>`
 
 The value of the tag does not matter, only the key.
 
@@ -243,7 +256,7 @@ metadata:
 spec:
   cloudLabels:
     k8s.io/cluster-autoscaler/enabled: ""
-    kubernetes.io/cluster/my.cluster.internal: owned
+    k8s.io/cluster/my.cluster.internal: owned
   image: kope.io/k8s-1.8-debian-jessie-amd64-hvm-ebs-2018-01-14
   machineType: r4.large
   maxSize: 4
@@ -279,6 +292,6 @@ Containers:
 # if specifying ASGs manually
       --nodes=1:10:your-scaling-group-name
 # if using autodiscovery
-      --node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,kubernetes.io/cluster/<ClusterName>
+      --node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,k8s.io/cluster/<ClusterName>
       --v=4
 ```
