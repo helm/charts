@@ -324,8 +324,6 @@ spec:
                 path: host_key.pub
               - key: worker-key
                 path: worker_key
-              - key: worker-key-pub
-                path: worker_key.pub
   {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
     - metadata:
