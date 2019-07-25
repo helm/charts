@@ -24,4 +24,5 @@ rules:
       - secrets
     verbs:
       - create
+      - list
 {{ end }}
