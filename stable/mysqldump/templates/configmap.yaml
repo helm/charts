@@ -3,10 +3,7 @@ kind: ConfigMap
 metadata:
   name: {{ template "mysqldump.fullname" . }}
   labels:
-    app.kubernetes.io/name: {{ include "mysqldump.name" . }}
-    helm.sh/chart: {{ include "mysqldump.chart" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{ include "mysqldump.labels" . | indent 4 }}
 data:
   MYSQL_HOST: {{ .Values.mysql.host | quote }}
   MYSQL_USERNAME: {{ .Values.mysql.username | quote }}
@@ -19,10 +16,7 @@ kind: ConfigMap
 metadata:
   name: {{ template "mysqldump.fullname" . }}-script
   labels:
-    app.kubernetes.io/name: {{ include "mysqldump.name" . }}
-    helm.sh/chart: {{ include "mysqldump.chart" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{ include "mysqldump.labels" . | indent 4 }}
 data:
   backup.sh: |-
     #!/bin/sh
@@ -36,7 +30,7 @@ data:
     TIMESTAMP="$(date +%Y%m%d%H%M%S)"
 
     echo "test mysql connection"
-    if [ -z "$(mysql -h ${MYSQL_HOST} -P ${MYSQL_PORT} -u ${MYSQL_USERNAME}{{ if or .Values.mysql.password .Values.mysql.existingSecret }} -p${MYSQL_PASSWORD}{{ end }} -B -N -e 'SHOW DATABASES;')" ]; then
+    if [ -z "$(mysql -h ${MYSQL_HOST} -P ${MYSQL_PORT} -u ${MYSQL_USERNAME} -B -N -e 'SHOW DATABASES;')" ]; then
       echo "mysql connection failed! exiting..."
       exit 1
     fi
@@ -54,13 +48,13 @@ data:
     MYSQL_DB="{{ .Values.mysql.db }}"
     echo "Backing up single db ${MYSQL_DB}"
     {{ if .Values.saveToDirectory }}mkdir -p "${BACKUP_DIR}"/"${MYSQL_DB}"{{ end }}
-    mysqldump ${MYSQL_OPTS} -h ${MYSQL_HOST} -P ${MYSQL_PORT} -u ${MYSQL_USERNAME}{{ if or .Values.mysql.password .Values.mysql.existingSecret }} -p${MYSQL_PASSWORD}{{ end }} --databases ${MYSQL_DB} | gzip > ${BACKUP_DIR}/{{ if .Values.saveToDirectory }}${MYSQL_DB}/{{ end }}${TIMESTAMP}_${MYSQL_DB}.sql.gz
+    mysqldump ${MYSQL_OPTS} -h ${MYSQL_HOST} -P ${MYSQL_PORT} -u ${MYSQL_USERNAME} --databases ${MYSQL_DB} | gzip > ${BACKUP_DIR}/{{ if .Values.saveToDirectory }}${MYSQL_DB}/{{ end }}${TIMESTAMP}_${MYSQL_DB}.sql.gz
     rc=$?
     {{ else if and (.Values.allDatabases.enabled) (eq .Values.allDatabases.singleBackupFile false)}}
-    for MYSQL_DB in $(mysql -h "${MYSQL_HOST}" -P ${MYSQL_PORT} -u ${MYSQL_USERNAME}{{ if or .Values.mysql.password .Values.mysql.existingSecret }} -p${MYSQL_PASSWORD}{{ end }} -B -N -e "SHOW DATABASES;"|egrep -v '^(information|performance)_schema$'); do
+    for MYSQL_DB in $(mysql -h "${MYSQL_HOST}" -P ${MYSQL_PORT} -u ${MYSQL_USERNAME} -B -N -e "SHOW DATABASES;"|egrep -v '^(information|performance)_schema$'); do
       echo "Backing up db ${MYSQL_DB}"
       {{ if .Values.saveToDirectory }}mkdir -p "${BACKUP_DIR}"/"${MYSQL_DB}"{{ end }}
-      mysqldump ${MYSQL_OPTS} -h ${MYSQL_HOST} -P ${MYSQL_PORT} -u ${MYSQL_USERNAME}{{ if or .Values.mysql.password .Values.mysql.existingSecret }} -p${MYSQL_PASSWORD}{{ end }} --databases ${MYSQL_DB} | gzip > ${BACKUP_DIR}/{{ if .Values.saveToDirectory }}${MYSQL_DB}/{{ end }}${TIMESTAMP}_${MYSQL_DB}.sql.gz
+      mysqldump ${MYSQL_OPTS} -h ${MYSQL_HOST} -P ${MYSQL_PORT} -u ${MYSQL_USERNAME} --databases ${MYSQL_DB} | gzip > ${BACKUP_DIR}/{{ if .Values.saveToDirectory }}${MYSQL_DB}/{{ end }}${TIMESTAMP}_${MYSQL_DB}.sql.gz
       rc=$?
     done
 
@@ -68,7 +62,7 @@ data:
     echo "Backing up all databases"
     MYSQL_DB="alldatabases"
     {{ if .Values.saveToDirectory }}mkdir -p "${BACKUP_DIR}"/"${MYSQL_DB}"{{ end }}
-    mysqldump ${MYSQL_OPTS} -h ${MYSQL_HOST} -P ${MYSQL_PORT} -u ${MYSQL_USERNAME}{{ if or .Values.mysql.password .Values.mysql.existingSecret }} -p${MYSQL_PASSWORD}{{ end }} --all-databases | gzip > ${BACKUP_DIR}/{{ if .Values.saveToDirectory }}${MYSQL_DB}/{{ end }}${TIMESTAMP}_${MYSQL_DB}.sql.gz
+    mysqldump ${MYSQL_OPTS} -h ${MYSQL_HOST} -P ${MYSQL_PORT} -u ${MYSQL_USERNAME} --all-databases | gzip > ${BACKUP_DIR}/{{ if .Values.saveToDirectory }}${MYSQL_DB}/{{ end }}${TIMESTAMP}_${MYSQL_DB}.sql.gz
     rc=$?
     {{- end -}}
 
@@ -93,7 +87,7 @@ data:
 
     {{- else  }}
     {{ if .Values.dumpAllToStdout }}
-    mysqldump ${MYSQL_OPTS} -h ${MYSQL_HOST} -P ${MYSQL_PORT} -u ${MYSQL_USERNAME}{{ if or .Values.mysql.password .Values.mysql.existingSecret }} -p${MYSQL_PASSWORD}{{ end }} --all-databases
+    mysqldump ${MYSQL_OPTS} -h ${MYSQL_HOST} -P ${MYSQL_PORT} -u ${MYSQL_USERNAME} --all-databases
     rc=$?
     {{ end }}
     {{ end }}
