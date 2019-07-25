@@ -51,6 +51,7 @@ The following table lists the configurable parameters of the kubernetes-dashboar
 | `annotations`                       | Annotations for deployment                                                                                                  | `{}`                                                                       |
 | `replicaCount`                      | Number of replicas                                                                                                          | `1`                                                                        |
 | `extraArgs`                         | Additional container arguments                                                                                              | `[]`                                                                       |
+| `extraEnv`                          | Additional container environment variables                                                                                  | `[]`                                                                       |
 | `podAnnotations`                    | Annotations to be added to pods                                                                                             | {}                                                                         |
 | `nodeSelector`                      | node labels for pod assignment                                                                                              | `{}`                                                                       |
 | `tolerations`                       | List of node taints to tolerate (requires Kubernetes >= 1.6)                                                                | `[]`                                                                       |
@@ -77,6 +78,8 @@ The following table lists the configurable parameters of the kubernetes-dashboar
 | `podDisruptionBudget.enabled`       | Create a PodDisruptionBudget                                                                                                | `false`                                                                    |
 | `podDisruptionBudget.minAvailable`  | Minimum available instances; ignored if there is no PodDisruptionBudget                                                     |                                                                            |
 | `podDisruptionBudget.maxUnavailable`| Maximum unavailable instances; ignored if there is no PodDisruptionBudget                                                   |                                                                            |
+| `securityContext`                   | Security context                                                                                                            | `{}`                                                                       |
+| `networkPolicy`                     | Whether to create a network policy that allows access to the service                                                        | `false`                                                                    |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

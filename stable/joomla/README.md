@@ -56,6 +56,8 @@ The following table lists the configurable parameters of the Joomla! chart and t
 | `image.tag`                          | Joomla! Image tag                                           | `{TAG_NAME}`                                   |
 | `image.pullPolicy`                   | Image pull policy                                           | `Always`                                       |
 | `image.pullSecrets`                  | Specify docker-registry secret names as an array            | `[]` (does not add image pull secrets to deployed pods) |
+| `nameOverride`                       | String to partially override joomla.fullname template with a string (will prepend the release name) | `nil`  |
+| `fullnameOverride`                   | String to fully override joomla.fullname template with a string                                     | `nil`  |
 | `joomlaUsername`                     | User of the application                                     | `user`                                         |
 | `joomlaPassword`                     | Application password                                        | _random 10 character long alphanumeric string_ |
 | `joomlaEmail`                        | Admin email                                                 | `user@example.com`                             |
@@ -117,8 +119,8 @@ The following table lists the configurable parameters of the Joomla! chart and t
 | `podAnnotations`                     | Pod annotations                                             | `{}`                                           |
 | `metrics.enabled`                    | Start a side-car prometheus exporter                        | `false`                                        |
 | `metrics.image.registry`             | Apache exporter image registry                              | `docker.io`                                    |
-| `metrics.image.repository`           | Apache exporter image name                                  | `lusotycoon/apache-exporter`                   |
-| `metrics.image.tag`                  | Apache exporter image tag                                   | `v0.5.0`                                       |
+| `metrics.image.repository`           | Apache exporter image name                                  | `bitnami/apache-exporter`                      |
+| `metrics.image.tag`                  | Apache exporter image tag                                   | `{TAG_NAME}`                                   |
 | `metrics.image.pullPolicy`           | Image pull policy                                           | `IfNotPresent`                                 |
 | `metrics.image.pullSecrets`          | Specify docker-registry secret names as an array            | `[]` (does not add image pull secrets to deployed    |
 | `metrics.podAnnotations`             | Additional annotations for Metrics exporter pod             | `{prometheus.io/scrape: "true", prometheus.io/port: "9117"}` |
