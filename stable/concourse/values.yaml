@@ -19,7 +19,7 @@ image: concourse/concourse
 ##      of `concourse/concourse`.
 ## Ref: https://hub.docker.com/r/concourse/concourse/tags/
 ##
-imageTag: "5.3.0"
+imageTag: "5.4.0"
 
 ## Specific image digest to use in place of a tag.
 ## Ref: https://kubernetes.io/docs/concepts/configuration/overview/#container-images
@@ -496,7 +496,7 @@ concourse:
 
       ## Prefix for all metrics to easily find them in Datadog
       ##
-      prefix:
+      prefix: "concourse.ci"
 
     influxdb:
       enabled: false
@@ -1403,7 +1403,7 @@ web:
     ##   service.beta.kubernetes.io/aws-load-balancer-backend-port: "atc"
     ##   service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
     ##
-    annotations:
+    annotations: {}
 
     ## When using `web.service.type: LoadBalancer`, whitelist the load balancer to particular IPs
     ## Example:
@@ -1436,7 +1436,7 @@ web:
     ##   kubernetes.io/ingress.class: nginx
     ##   kubernetes.io/tls-acme: 'true'
     ##
-    annotations:
+    annotations: {}
 
     ## Hostnames.
     ## Must be provided if Ingress is enabled.

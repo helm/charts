@@ -100,8 +100,8 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `filter.mergeJSONLog`              | If the log field content is a JSON string map, append the map fields as part of the log structure         | `true`                                 |
 | `filter.mergeLogKey`               | If set, append the processed log keys under a new root key specified by this variable. | `nil` |
 | `image.fluent_bit.repository`      | Image                                      | `fluent/fluent-bit`                               |
-| `image.fluent_bit.tag`             | Image tag                                  | `1.1.3`                                          |
-| `image.pullPolicy`                 | Image pull policy                          | `IfNotPresent`                                          |
+| `image.fluent_bit.tag`             | Image tag                                  | `1.2.1`                                           |
+| `image.pullPolicy`                 | Image pull policy                          | `Always`                                          |
 | `nameOverride`                     | Override name of app                   | `nil`                                        |
 | `fullnameOverride`                 | Override full name of app              | `nil`                                        |
 | `image.pullSecrets`                | Specify image pull secrets                 | `nil`                                             |
@@ -119,6 +119,8 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `serviceAccount.name`              | The name of the ServiceAccount to use.     | `NULL`                                            |
 | `rawConfig`                        | Raw contents of fluent-bit.conf            | `@INCLUDE fluent-bit-service.conf`<br>`@INCLUDE fluent-bit-input.conf`<br>`@INCLUDE fluent-bit-filter.conf`<br>` @INCLUDE fluent-bit-output.conf`                                                                         |
 | `resources`                        | Pod resource requests & limits                                 | `{}`                          |
+| `securityContext`                  | [Security settings for a container](https://kubernetes.io/docs/concepts/policy/security-context) | `{}` |
+| `podSecurityContext`               | [Security settings for a pod](https://kubernetes.io/docs/concepts/policy/security-context)       | `{}` |
 | `hostNetwork`                      | Use host's network                         | `false`                                           |
 | `dnsPolicy`                        | Specifies the dnsPolicy to use             | `ClusterFirst`                                    |
 | `priorityClassName`                | Specifies the priorityClassName to use     | `NULL`                                            |
