@@ -1,22 +1,23 @@
+{{- if .Values.metrics.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "hazelcast-jet.fullname" . }}
+  name: {{ template "hazelcast-jet.fullname" . }}-metrics
   labels:
     app.kubernetes.io/name: {{ template "hazelcast-jet.name" . }}
     helm.sh/chart: {{ template "hazelcast-jet.chart" . }}
     app.kubernetes.io/instance: "{{ .Release.Name }}"
     app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+  annotations:
+{{ toYaml .Values.metrics.service.annotations | indent 4 }}
 spec:
-  type: {{ .Values.service.type }}
-  {{- if .Values.service.clusterIP }}
-  clusterIP: {{ .Values.service.clusterIP }}
-  {{- end }}
+  type: {{ .Values.metrics.service.type }}
   selector:
     app.kubernetes.io/name: {{ template "hazelcast-jet.name" . }}
     app.kubernetes.io/instance: "{{ .Release.Name }}"
   ports:
   - protocol: TCP
-    port: {{ .Values.service.port }}
-    targetPort: hazelcast-jet
-    name: hzport
+    port: {{ .Values.metrics.service.port }}
+    targetPort: metrics
+    name: metrics
+{{- end }}
