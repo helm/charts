@@ -19,6 +19,17 @@ This chart bootstraps a cluster-autoscaler deployment on a [Kubernetes](http://k
   - Azure AKS specific Prerequisites:
     - Kubernetes 1.10+ with RBAC-enabled
 
+## Upgrading from <2.X
+
+In order to upgrade to chart version to 2.X from 1.X or 0.X, deleting the old helm release first is required.
+
+```console
+$ helm del --purge my-release
+```
+
+Once the old release is deleted, the new 2.X release can be installed using the standard instructions.
+Note that autoscaling will not occur during the time between deletion and installation.
+
 ## Installing the Chart
 
 **By default, no deployment is created and nothing will autoscale**.
