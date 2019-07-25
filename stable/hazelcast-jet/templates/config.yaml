@@ -4,10 +4,10 @@ kind: ConfigMap
 metadata:
   name: {{ template "hazelcast-jet.fullname" . }}-configuration
   labels:
-    app: {{ template "hazelcast-jet.name" . }}
-    chart: {{ template "hazelcast-jet.chart" . }}
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/name: {{ template "hazelcast-jet.name" . }}
+    helm.sh/chart: {{ template "hazelcast-jet.chart" . }}
+    app.kubernetes.io/instance: "{{ .Release.Name }}"
+    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
 data:
 {{- range $key, $val := .Values.jet.configurationFiles }}
   {{ $key }}: |-
