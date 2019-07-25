@@ -69,6 +69,8 @@ The command removes all the Kubernetes components associated with the chart and 
 | `elasticsearch.certsVolumes` | certs volumes, required to mount ssl certificates when elasticsearch has tls enabled | `NULL` |
 | `elasticsearch.certsVolumeMounts` | mount certs volumes, required to mount ssl certificates when elasticsearch has tls enabled | `NULL` |
 | `extraConfigOptions` | Additional options to propagate to all rules, cannot be `alert`, `type`, `name` or `index` | `{}` |
+| `extraVolumes`           | Additional volume definitions                     | []                              |
+| `extraVolumeMounts`      | Additional volumeMount definitions                | []                              |
 | `resources`              | Container resource requests and limits            | {}                              |
 | `rules`                  | Rule and alert configuration for Elastalert       | {} example shown in values.yaml |
 | `runIntervalMins`        | Default interval between alert checks, in minutes | 1                               |
