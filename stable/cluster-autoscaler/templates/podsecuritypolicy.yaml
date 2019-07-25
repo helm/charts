@@ -3,6 +3,8 @@ apiVersion: extensions/v1beta1
 kind: PodSecurityPolicy
 metadata:
   name: {{ template "cluster-autoscaler.fullname" . }}
+  labels:
+{{ include "cluster-autoscaler.labels" . | indent 4 }}
 spec:
   # Prevents running in privileged mode
   privileged: false
