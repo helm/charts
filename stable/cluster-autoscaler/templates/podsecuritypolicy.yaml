@@ -2,25 +2,43 @@
 apiVersion: extensions/v1beta1
 kind: PodSecurityPolicy
 metadata:
-  name: privileged-{{ template "cluster-autoscaler.fullname" . }}
+  name: {{ template "cluster-autoscaler.fullname" . }}
+  labels:
+{{ include "cluster-autoscaler.labels" . | indent 4 }}
 spec:
-  allowedCapabilities:
-  - '*'
-  fsGroup:
-    rule: RunAsAny
-  privileged: true
+  # Prevents running in privileged mode
+  privileged: false
+  # Required to prevent escalations to root.
+  allowPrivilegeEscalation: false
+  requiredDropCapabilities:
+    - ALL
+  volumes:
+    - 'configMap'
+    - 'secret'
+    - 'hostPath'
+  allowedHostPaths:
+    - pathPrefix: {{ .Values.sslCertHostPath }}
+{{- if eq .Values.cloudProvider "gce" }}
+    - pathPrefix: {{ .Values.cloudConfigPath }}
+{{- end }}
+  hostNetwork: false
+  hostIPC: false
+  hostPID: false
   runAsUser:
     rule: RunAsAny
   seLinux:
     rule: RunAsAny
   supplementalGroups:
-    rule: RunAsAny
-  volumes:
-  - '*'
-  hostPID: true
-  hostIPC: true
-  hostNetwork: true
-  hostPorts:
-  - min: 1
-    max: 65536
+    rule: 'MustRunAs'
+    ranges:
+      # Forbid adding the root group.
+      - min: 1
+        max: 65535
+  fsGroup:
+    rule: 'MustRunAs'
+    ranges:
+      # Forbid adding the root group.
+      - min: 1
+        max: 65535
+  readOnlyRootFilesystem: false
 {{- end }}
