@@ -54,7 +54,7 @@ Parameter | Description | Default
 `controller.containerPort.https` | The port that the controller container listens on for https connections. | `443`
 `controller.config` | nginx [ConfigMap](https://github.com/kubernetes/ingress-nginx/blob/master/docs/user-guide/nginx-configuration/configmap.md) entries | none
 `controller.hostNetwork` | If the nginx deployment / daemonset should run on the host's network namespace. Do not set this when `controller.service.externalIPs` is set and `kube-proxy` is used as there will be a port-conflict for port `80` | false
-`controller.defaultBackendService` | default 404 backend service; required only if `defaultBackend.enabled = false` | `""`
+`controller.defaultBackendService` | default 404 backend service; needed only if `defaultBackend.enabled = false` | `""`
 `controller.dnsPolicy` | If using `hostNetwork=true`, change to `ClusterFirstWithHostNet`. See [pod's dns policy](https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-s-dns-policy) for details | `ClusterFirst`
 `controller.reportNodeInternalIp` | If using `hostNetwork=true`, setting `reportNodeInternalIp=true`, will pass the flag `report-node-internal-ip-address` to nginx-ingress. This sets the status of all Ingress objects to the internal IP address of all nodes running the NGINX Ingress controller.
 `controller.electionID` | election ID to use for the status update | `ingress-controller-leader`
@@ -149,7 +149,7 @@ Parameter | Description | Default
 `controller.customTemplate.configMapKey` | configMap key containing the nginx template | `""`
 `controller.headers` | configMap key:value pairs containing the [custom headers](https://github.com/kubernetes/ingress-nginx/tree/master/docs/examples/customization/custom-headers) for Nginx | `{}`
 `controller.updateStrategy` | allows setting of RollingUpdate strategy | `{}`
-`defaultBackend.enabled` | If false, controller.defaultBackendService must be provided | `true`
+`defaultBackend.enabled` | Use default backend component | `true`
 `defaultBackend.name` | name of the default backend component | `default-backend`
 `defaultBackend.image.repository` | default backend container image repository | `k8s.gcr.io/defaultbackend-amd64`
 `defaultBackend.image.tag` | default backend container image tag | `1.5`
