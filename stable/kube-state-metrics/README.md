@@ -19,6 +19,7 @@ $ helm install stable/kube-state-metrics
 | `image.pullPolicy`                      | Image pull policy                                                                     | `IfNotPresent`                             |
 | `replicas`                              | Number of replicas                                                                    | `1`                                        |
 | `service.port`                          | The port of the container                                                             | `8080`                                     |
+| `customLabels`                          | Custom labels to apply to service, deployment and pods                                | `{}`                                       |
 | `hostNetwork`                           | Whether or not to use the host network                                                | `false`                                    |
 | `prometheusScrape`                      | Whether or not enable prom scrape                                                     | `true`                                     |
 | `rbac.create`                           | If true, create & use RBAC resources                                                  | `true`                                     |
