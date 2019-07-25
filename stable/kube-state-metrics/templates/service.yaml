@@ -7,6 +7,9 @@ metadata:
     helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     app.kubernetes.io/instance: "{{ .Release.Name }}"
     app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+{{- if .Values.customLabels }}
+{{ toYaml .Values.customLabels | indent 4 }}
+{{- end }}
   {{- if .Values.prometheusScrape }}
   annotations:
     prometheus.io/scrape: '{{ .Values.prometheusScrape }}'
