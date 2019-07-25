@@ -1,4 +1,4 @@
-{{- if and (or .Values.licenseKey .Values.customSecret) .Values.cluster }}
+{{ if and (or .Values.licenseKey (and .Values.customSecretName .Values.customSecretKey)) .Values.cluster }}
 apiVersion: apps/v1beta2
 kind: DaemonSet
 metadata:
@@ -39,8 +39,8 @@ spec:
                   name: {{ template "newrelic.fullname" . }}-config
                   key: license
                   {{- else }}
-                  name: {{ .Values.customSecret.name }}
-                  key: {{ .Values.customSecret.key }}
+                  name: {{ .Values.customSecretName }}
+                  key: {{ .Values.customSecretKey }}
                   {{- end }}
             - name: "CLUSTER_NAME"
               value: "{{ .Values.cluster }}"
