@@ -24,6 +24,7 @@ server:
   service:
     type: LoadBalancer
     externalPort: 80
+    annotations: {}
   resources: {}
   #  limits:
   #    cpu: 1.0

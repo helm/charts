@@ -2,7 +2,7 @@
 prometheusScrape: true
 image:
   repository: quay.io/coreos/kube-state-metrics
-  tag: v1.6.0
+  tag: v1.7.1
   pullPolicy: IfNotPresent
 
 replicas: 1
@@ -13,6 +13,8 @@ service:
   type: ClusterIP
   nodePort: 0
   loadBalancerIP: ""
+
+customLabels: {}
 
 hostNetwork: false
 
@@ -100,6 +102,8 @@ collectors:
   secrets: true
   services: true
   statefulsets: true
+  storageclasses: true
+  verticalpodautoscalers: false
 
 # Namespace to be enabled for collecting resources. By default all namespaces are collected.
 # namespace: ""
