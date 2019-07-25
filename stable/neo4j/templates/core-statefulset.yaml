@@ -15,7 +15,7 @@ spec:
       labels:
         heritage: {{ .Release.Service | quote }}
         release: {{ .Release.Name | quote }}
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        chart: {{ template "neo4j.chart" . }}
         app: {{ template "neo4j.name" . }}
         component: core
     spec:
@@ -44,7 +44,7 @@ spec:
                 key: neo4j-password
           {{- end }}
 {{- if .Values.core.extraVars }}
-{{ toYaml .Values.core.extraVars | indent 10 }}
+{{ tpl (toYaml .Values.core.extraVars) $ | indent 10 }}
 {{- end }}
         command:
           - "/bin/bash"
@@ -79,6 +79,9 @@ spec:
           {{- if .Values.core.persistentVolume.subPath }}
           subPath: {{ .Values.core.persistentVolume.subPath }}
           {{- end }}
+        {{- if .Values.core.extraVolumeMounts }}
+        {{- toYaml .Values.core.extraVolumeMounts | nindent 8 }}
+        {{- end }}
         - name: plugins
           mountPath: /plugins
         resources:
@@ -99,8 +102,11 @@ spec:
         - name: datadir
           emptyDir: {}
         {{- end }}
-        - name: plugins
-          emptyDir: {}
+      {{- if .Values.core.extraVolumes }}
+      {{- toYaml .Values.core.extraVolumes | nindent 6}}
+      {{- end }}
+      - name: plugins
+        emptyDir: {}
   {{- if .Values.core.persistentVolume.enabled }}
   volumeClaimTemplates:
     - metadata:

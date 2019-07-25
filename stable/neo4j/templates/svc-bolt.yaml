@@ -1,0 +1,29 @@
+{{- if .Values.service.bolt.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "neo4j.fullname" . }}-bolt
+  labels:
+    app: {{ template "neo4j.name" . }}
+    chart: {{ template "neo4j.chart" . }}
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+    component: core
+{{- with .Values.service.bolt.annotations }}
+  annotations:
+{{ tpl (toYaml . ) $ | indent 4 }}
+{{- end }}
+spec:
+  type: {{ .Values.service.bolt.type }}
+  {{- if and .Values.service.bolt.loadBalancerIP (eq .Values.service.bolt.type "LoadBalancer") }}
+  loadBalancerIP: {{ .Values.service.bolt.loadBalancerIP }}
+  {{- end }}
+  ports:
+    - name: bolt
+      port: {{ .Values.service.bolt.port }}
+      targetPort: bolt
+  selector:
+    app: {{ template "neo4j.name" . }}
+    release: {{ .Release.Name | quote }}
+    component: core
+{{- end }}
