@@ -3,10 +3,7 @@ kind: Service
 metadata:
   name: {{ template "kubernetes-dashboard.fullname" . }}
   labels:
-    app: {{ template "kubernetes-dashboard.name" . }}
-    chart: {{ template "kubernetes-dashboard.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+{{ include "kubernetes-dashboard.labels" . | indent 4 }}
     kubernetes.io/cluster-service: "true"
 {{- if .Values.service.labels }}
 {{ toYaml .Values.service.labels | indent 4 }}
@@ -34,5 +31,5 @@ spec:
 {{ toYaml .Values.service.loadBalancerSourceRanges | indent 4 }}
 {{- end }}
   selector:
-    app: {{ template "kubernetes-dashboard.name" . }}
-    release: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ include "kubernetes-dashboard.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}

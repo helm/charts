@@ -41,7 +41,9 @@ incompatible breaking change needing manual actions.
 
 This version upgrades to kubernetes-dashboard v2.0.0 along with changes in RBAC management: all secrets are explicitely created and ServiceAccount do not have permission to create any secret.
 
-In order to upgrade, either remove the secrets or uninstall/reinstall.
+Moreover, it updates all the labels to the new [recommended labels](https://github.com/helm/charts/blob/master/REVIEW_GUIDELINES.md#names-and-labels), most of them being immutable.
+
+In order to upgrade, please uninstall and reinstall the chart.
 
 
 ## Access control

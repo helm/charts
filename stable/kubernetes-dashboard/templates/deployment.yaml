@@ -7,10 +7,7 @@ metadata:
 {{ toYaml .Values.annotations | indent 4 }}
 {{- end }}
   labels:
-    app: {{ template "kubernetes-dashboard.name" . }}
-    chart: {{ template "kubernetes-dashboard.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+{{ include "kubernetes-dashboard.labels" . | indent 4 }}
 {{- if .Values.labels }}
 {{ toYaml .Values.labels | indent 4 }}
 {{- end }}
@@ -23,8 +20,8 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
-      app: {{ template "kubernetes-dashboard.name" . }}
-      release: {{ .Release.Name }}
+      app.kubernetes.io/name: {{ include "kubernetes-dashboard.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
     {{- if .Values.podAnnotations }}
@@ -32,8 +29,8 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
     {{- end }}
       labels:
-        app: {{ template "kubernetes-dashboard.name" . }}
-        release: {{ .Release.Name }}
+        app.kubernetes.io/name: {{ include "kubernetes-dashboard.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       {{- if .Values.securityContext }}
       securityContext:

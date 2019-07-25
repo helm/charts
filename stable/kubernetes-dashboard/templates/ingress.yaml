@@ -7,10 +7,7 @@ kind: Ingress
 metadata:
   name: {{ template "kubernetes-dashboard.fullname" . }}
   labels:
-    app: {{ template "kubernetes-dashboard.name" . }}
-    chart: {{ template "kubernetes-dashboard.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+{{ include "kubernetes-dashboard.labels" . | indent 4 }}
   {{- range $key, $value := .Values.ingress.labels }}
     {{ $key }}: {{ $value | quote }}
   {{- end }}
