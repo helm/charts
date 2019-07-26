@@ -61,11 +61,6 @@ spec:
             - --restore-resource-priorities={{ . }}
             {{- end }}
           {{- end }}
-          {{- if eq $provider "azure" }}
-          envFrom:
-            - secretRef:
-                name: {{ include "velero.secretName" . }}
-          {{- end }}
           {{- with .Values.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
@@ -73,19 +68,23 @@ spec:
           volumeMounts:
             - name: plugins
               mountPath: /plugins
-        {{- if and .Values.credentials.useSecret (or (eq $provider "aws") (eq $provider "gcp")) }}
-            - name: cloud-credentials
-              mountPath: /credentials
             - name: scratch
               mountPath: /scratch
+        {{- if .Values.credentials.useSecret }}
+            - name: cloud-credentials
+              mountPath: /credentials
         {{- end }}
-          {{- if (or (and .Values.credentials.useSecret (or (eq $provider "aws") (eq $provider "gcp"))) .Values.configuration.extraEnvVars) }}
+          {{- if (or .Values.credentials.useSecret .Values.configuration.extraEnvVars) }}
           env:
           {{- end }}
-          {{- if and .Values.credentials.useSecret (or (eq $provider "aws") (eq $provider "gcp")) }}
+          {{- if .Values.credentials.useSecret }}
             {{- if eq $provider "aws" }}
             - name: AWS_SHARED_CREDENTIALS_FILE
-            {{- else }}
+            {{- end }}
+            {{- if eq $provider "azure" }}
+            - name: AZURE_CREDENTIALS_FILE
+            {{- end }}
+            {{- if eq $provider "gcp" }}
             - name: GOOGLE_APPLICATION_CREDENTIALS
             {{- end }}
               value: /credentials/cloud
@@ -103,7 +102,7 @@ spec:
         {{- toYaml .Values.initContainers | nindent 8 }}
 {{- end }}
       volumes:
-        {{- if and .Values.credentials.useSecret (or (eq $provider "aws") (eq $provider "gcp")) }}
+        {{- if .Values.credentials.useSecret }}
         - name: cloud-credentials
           secret:
             secretName: {{ include "velero.secretName" . }}
