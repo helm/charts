@@ -19,6 +19,17 @@ This chart bootstraps a cluster-autoscaler deployment on a [Kubernetes](http://k
   - Azure AKS specific Prerequisites:
     - Kubernetes 1.10+ with RBAC-enabled
 
+## Upgrading from <2.X
+
+In order to upgrade to chart version to 2.X from 1.X or 0.X, deleting the old helm release first is required.
+
+```console
+$ helm del --purge my-release
+```
+
+Once the old release is deleted, the new 2.X release can be installed using the standard instructions.
+Note that autoscaling will not occur during the time between deletion and installation.
+
 ## Installing the Chart
 
 **By default, no deployment is created and nothing will autoscale**.
@@ -284,3 +295,7 @@ Containers:
       --node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,k8s.io/cluster/<ClusterName>
       --v=4
 ```
+
+#### PodSecurityPolicy
+
+Though enough for the majority of installations, the default PodSecurityPolicy _could_ be too restrictive depending on the specifics of your release. Please make sure to check that the template fits with any customizations made or disable it by setting `rbac.pspEnabled` to `false`.
