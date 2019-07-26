@@ -171,7 +171,7 @@ spec:
           - name: REDIS_SOCKET_TYPE
             value: tcp
           - name: REDIS_URL
-            value: {{ include "ambassador.fullname" . }}-pro-redis
+            value: {{ include "ambassador.fullname" . }}-pro-redis:6379
           - name: APRO_AUTH_PORT
             value: "{{ .Values.pro.ports.auth }}"
           - name: GRPC_PORT
