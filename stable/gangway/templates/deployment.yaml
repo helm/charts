@@ -52,7 +52,7 @@ spec:
           mountPath: /etc/gangway/tls
           readOnly: true
       {{ end }}
-{{- if ne (len .Values.extraVolumeMounts) 0 }}
+{{- if .Values.extraVolumeMounts }}
 {{ toYaml .Values.extraVolumeMounts | trim | indent 8 }}
 {{- end }}
         livenessProbe:
@@ -97,6 +97,6 @@ spec:
         secret:
           secretName: {{ include "gangway.fullname" . }}-tls
       {{ end -}}
-{{- if ne (len .Values.extraVolumes) 0 }}
+{{- if .Values.extraVolumes }}
 {{ toYaml .Values.extraVolumes | trim | indent 6 }}
 {{- end }}
