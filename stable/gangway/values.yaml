@@ -128,11 +128,11 @@ ingress:
     # kubernetes.io/tls-acme: "true"
   path: /
   hosts:
-    - chart-example.local
+  - chart-example.local
   tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
+  # - secretName: chart-example-tls
+  #   hosts:
+  #     - chart-example.local
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
