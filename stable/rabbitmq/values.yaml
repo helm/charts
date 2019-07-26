@@ -32,6 +32,14 @@ image:
   # pullSecrets:
   #   - myRegistryKeySecretName
 
+## String to partially override rabbitmq.fullname template (will maintain the release name)
+##
+# nameOverride:
+
+## String to fully override rabbitmq.fullname template
+##
+# fullnameOverride:
+
 ## Use an alternate scheduler, e.g. "stork".
 ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
 ##
@@ -109,6 +117,10 @@ rabbitmq:
   loadDefinition:
     enabled: false
     secretName: load-definition
+
+  ## environment variables to configure rabbitmq
+  ## ref: https://www.rabbitmq.com/configure.html#customise-environment
+  env: {}
 
   ## Configuration file content: required cluster configuration
   ## Do not override unless you know what you are doing. To add more configuration, use `extraConfiguration` of `advancedConfiguration` instead

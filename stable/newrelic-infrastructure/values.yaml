@@ -1,5 +1,9 @@
 # IMPORTANT: Specify your New Relic API key here.
 # licenseKey:
+#
+# or Specify secret which contains New Relic API key
+# customSecretName: secret_name
+# customSecretKey: secret_key
 
 # IMPORTANT: The Kubernetes cluster name
 # https://docs.newrelic.com/docs/kubernetes-monitoring-integration

@@ -9,6 +9,7 @@ controller:
     pullPolicy: IfNotPresent
     # www-data -> uid 33
     runAsUser: 33
+    allowPrivilegeEscalation: true
 
   # Configures the ports the nginx-controller listens on
   containerPort:
@@ -122,6 +123,15 @@ controller:
   #    effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
 
   affinity: {}
+    # podAntiAffinity:
+    #   requiredDuringSchedulingIgnoredDuringExecution:
+    #   - labelSelector:
+    #       matchExpressions:
+    #       - key: app
+    #         operator: In
+    #         values:
+    #         - nginx-ingress
+    #     topologyKey: "kubernetes.io/hostname"
 
   ## Node labels for controller pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
@@ -197,6 +207,10 @@ controller:
     externalTrafficPolicy: ""
 
     healthCheckNodePort: 0
+
+    ports:
+      http: 80
+      https: 443
 
     targetPorts:
       http: http

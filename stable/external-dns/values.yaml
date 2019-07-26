@@ -81,7 +81,7 @@ azure:
   secretName: ""
   ## Azure resource group to use
   ##
-  resoureGroup: ""
+  resourceGroup: ""
 
 ## Cloudflare configuration to be set via arguments/env. variables
 ##
@@ -158,6 +158,13 @@ rfc2136:
   tsigSecretAlg: hmac-sha256
   tsigKeyname: externaldns-key
   tsigAxfr: true
+
+## PowerDNS configuration to be set via arguments/env. variables
+##
+pdns:
+  apiUrl: ""
+  apiPort: "8081"
+  apiKey: ""
 
 ## Limit possible target zones by domain suffixes (optional)
 ##

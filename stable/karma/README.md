@@ -56,6 +56,7 @@ The following table lists the configurable parameters of the karma chart and the
 | `nodeSelector`                      | Settings for nodeselector              | `{}`                                      |
 | `tolerations`                       | Settings for toleration                | `{}`                                      |
 | `affinity`                          | Settings for affinity                  | `{}`                                      |
+| `securityContext`                   | Settings for security context          | `{}`                                      |
 | `serviceAccount.create`             | Create service-account                 | `true`                                    |
 | `serviceAccount.name`               | Override service-account name          | ``                                        |
 | `livenessProbe.delay`               | Specify delay in executing probe       | `5`                                       |
