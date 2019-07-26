@@ -16,9 +16,9 @@ image:
 
   ## @param tag - string - required
   ## Define the Agent version to use.
-  ## Use 6.9.0-jmx to enable jmx fetch collection
+  ## Use 6.12.1-jmx to enable jmx fetch collection
   #
-  tag: 6.10.1
+  tag: 6.12.1
 
   ## @param pullPolicy - string - required
   ## The Kubernetes pull policy.
@@ -272,12 +272,12 @@ datadog:
   ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
   #
   resources: {}
-#    requests:
-#      cpu: 200m
-#      memory: 256Mi
-#    limits:
-#      cpu: 200m
-#      memory: 256Mi
+  # requests:
+  #   cpu: 200m
+  #   memory: 256Mi
+  # limits:
+  #   cpu: 200m
+  #   memory: 256Mi
 
 ## @param clusterAgent - object - required
 ## This is the Datadog Cluster Agent implementation that handles cluster-wide
@@ -295,7 +295,7 @@ clusterAgent:
   containerName: cluster-agent
   image:
     repository: datadog/cluster-agent
-    tag: 1.2.0
+    tag: 1.3.2
     pullPolicy: IfNotPresent
 
   ## @param token - string - required
@@ -642,12 +642,12 @@ clusterchecksDeployment:
   ## Datadog clusterchecks-agent resource requests and limits.
   #
   resources: {}
-#    requests:
-#      cpu: 200m
-#      memory: 500Mi
-#    limits:
-#      cpu: 200m
-#      memory: 500Mi
+  # requests:
+  #   cpu: 200m
+  #   memory: 500Mi
+  # limits:
+  #   cpu: 200m
+  #   memory: 500Mi
 
   ## @param affinity - object - optional
   ## Allow the ClusterChecks Deployment to schedule using affinity rules.
