@@ -4,7 +4,7 @@ metadata:
   name: {{ template "opencart.fullname" . }}
   labels:
     app: {{ template "opencart.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: {{ template "opencart.chart" . }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
