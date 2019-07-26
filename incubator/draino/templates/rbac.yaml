@@ -1,0 +1,58 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app: "{{ template "draino.fullname" . }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    release: {{ .Release.Name | quote }}
+  name: {{ template "draino.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+{{- if .Values.imagePullSecret }}
+imagePullSecrets:
+- name: {{ .Values.imagePullSecret }}
+{{- end }}
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  labels:
+    app: "{{ template "draino.fullname" . }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    release: {{ .Release.Name | quote }}
+  name: {{ template "draino.fullname" . }}
+rules:
+- apiGroups: ['']
+  resources: [events]
+  verbs: [create, patch, update]
+- apiGroups: ['']
+  resources: [nodes]
+  verbs: [get, watch, list, update]
+- apiGroups: ['']
+  resources: [nodes/status]
+  verbs: [patch]
+- apiGroups: ['']
+  resources: [pods]
+  verbs: [get, watch, list]
+- apiGroups: ['']
+  resources: [pods/eviction]
+  verbs: [create]
+- apiGroups: [extensions]
+  resources: [daemonsets]
+  verbs: [get, watch, list]
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app: "{{ template "draino.fullname" . }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    release: {{ .Release.Name | quote }}
+  name: {{ template "draino.fullname" . }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ template "draino.fullname" . }}
+subjects:
+- kind: ServiceAccount
+  name: {{ template "draino.fullname" . }}
+  namespace: {{ .Release.Namespace }}

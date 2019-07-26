@@ -1,0 +1,9 @@
+# Command that runs at startup. See https://github.com/planetlabs/draino#usage
+command: /draino
+
+#  Arguments to be provided to the startup command.
+args: ["--debug", "--evict-daemonset-pods", "--evict-emptydir-pods", "KernelDeadlock"]
+
+image:
+  name: planetlabs/draino
+  tag: latest

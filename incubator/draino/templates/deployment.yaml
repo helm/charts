@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: "{{ template "draino.fullname" . }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    release: {{ .Release.Name | quote }}
+  name: {{ template "draino.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  # Draino does not currently support locking/master election, so you should
+  # only run one draino at a time. Draino won't start draining nodes immediately
+  # so it's usually safe for multiple drainos to exist for a brief period of
+  # time.
+  replicas: 1
+  selector:
+    matchLabels: 
+      app: "{{ template "draino.fullname" . }}"
+  template:
+    metadata:
+      labels:
+        app: "{{ template "draino.fullname" . }}"
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+        release: {{ .Release.Name | quote }}
+      name: {{ template "draino.fullname" . }}
+      namespace: {{ .Release.Namespace }}
+    spec:
+      containers:
+      - command: ["{{ .Values.command }}"]
+        args: 
+{{ toYaml .Values.args | trimSuffix "\n" | indent 10 }}
+        image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
+        livenessProbe:
+          httpGet: 
+            path: /healthz
+            port: 10002
+          initialDelaySeconds: 30
+        name: {{ template "draino.fullname" . }}
+      serviceAccountName: {{ template "draino.fullname" . }}

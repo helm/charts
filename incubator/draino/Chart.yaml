@@ -1,0 +1,9 @@
+apiVersion: v1
+appVersion: "1.0"
+description: Installs Draino in a cluster.
+maintainers:
+  - name: Scott Hawkins
+    email: scott@articulate.com
+name: draino
+version: 0.1.0
+home: https://github.com/planetlabs/draino
