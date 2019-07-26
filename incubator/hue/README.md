@@ -14,8 +14,9 @@ Feel free to ask questions on https://github.com/cloudera/hue.
 To install the Hue Chart into your Kubernetes cluster :
 
 ```bash
-helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
-helm install incubator/hue --namespace hue --name hue
+helm repo add gethue https://helm.gethue.com
+helm repo update
+helm install gethue/hue
 ```
 Then follow-up the instructions printed on the screen for getting the URL to connect to Hue.
 
