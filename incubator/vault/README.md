@@ -81,6 +81,7 @@ The following table lists the configurable parameters of the Vault chart and the
 | `podLabels`                       | Extra labels for pods                    | `{}`                                |
 | `serviceAccount.create`           | Specifies whether a ServiceAccount should be created | `true`                 |
 | `serviceAccount.name`             | The name of the ServiceAccount to create | Generated from fullname template    |
+| `serviceAccount.annotations`      | Annotations for the created ServiceAccount | `{}`                              |
 | `rbac.create`                     | Specifies whether RBAC should be created | `true`                              |
 | `consulAgent.join`                | If set, start start a consul agent       | `nil`                               |
 | `consulAgent.repository`          | Container image for consul agent         | `consul`                            |
