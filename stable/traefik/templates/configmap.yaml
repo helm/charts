@@ -92,6 +92,13 @@ data:
           {{- if .Values.ssl.sniStrict }}
           sniStrict = true
           {{- end }}
+          {{- if .Values.ssl.mtls }}
+          {{- if .Values.ssl.mtls.enabled }}
+          [entryPoints.https.tls.ClientCA]
+          {{ template "traefik.ssl.mtls.clientCAs" . }}
+          optional = {{ .Values.ssl.mtls.optional }}
+          {{- end }}
+          {{- end }}
           [[entryPoints.https.tls.certificates]]
           CertFile = "/ssl/tls.crt"
           KeyFile = "/ssl/tls.key"

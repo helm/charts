@@ -62,6 +62,7 @@ The following table lists the configurable parameters of the cerebro chart and t
 | `nodeSelector`                      | Settings for nodeselector           | `{}`                                      |
 | `tolerations`                       | Settings for toleration             | `{}`                                      |
 | `affinity`                          | Settings for affinity               | `{}`                                      |
+| `env`                               | Map of env vars (key/value   )      | `{}`                                      |
 | `envFromSecretRef`                  | Reference to Secret with env vars   |                                           |
 | `config.basePath`                   | Application base path               | `/`                                       |
 | `config.restHistorySize`            | Rest request history size per user  | `50`                                      |
