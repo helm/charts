@@ -111,6 +111,8 @@ spec:
             path: /ping
             port: https
             scheme: HTTPS
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
 {{- if or .Values.config.existingConfig .Values.config.policy }}
         volumeMounts:
         - mountPath: /etc/pomerium/
@@ -120,8 +122,6 @@ spec:
         configMap:
           name: {{ $configName }}
 {{- end }}
-      resources:
-{{ toYaml .Values.resources | indent 10 }}
 {{- if .Values.extraVolumes }}
       volumes:
 {{- toYaml .Values.extraVolumes | indent 8 }}
