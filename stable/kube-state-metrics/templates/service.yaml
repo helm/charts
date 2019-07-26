@@ -10,10 +10,13 @@ metadata:
 {{- if .Values.customLabels }}
 {{ toYaml .Values.customLabels | indent 4 }}
 {{- end }}
-  {{- if .Values.prometheusScrape }}
   annotations:
+    {{- if .Values.prometheusScrape }}
     prometheus.io/scrape: '{{ .Values.prometheusScrape }}'
-  {{- end }}
+    {{- end }}
+    {{- if .Values.service.annotations }}
+    {{- toYaml .Values.service.annotations | nindent 4 }}
+    {{- end }}
 spec:
   type: "{{ .Values.service.type }}"
   ports:
