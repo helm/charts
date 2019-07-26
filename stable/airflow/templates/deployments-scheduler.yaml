@@ -43,17 +43,17 @@ spec:
         - name: {{ .Values.airflow.image.pullSecret }}
       {{- end }}
       restartPolicy: Always
-      {{- if .Values.nodeSelector }}
+      {{- if .Values.scheduler.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.nodeSelector | indent 8 }}
+{{ toYaml .Values.scheduler.nodeSelector | indent 8 }}
       {{- end }}
-      {{- if .Values.affinity }}
+      {{- if .Values.scheduler.affinity }}
       affinity:
-{{ toYaml .Values.affinity | indent 8 }}
+{{ toYaml .Values.scheduler.affinity | indent 8 }}
       {{- end }}
-      {{- if .Values.tolerations }}
+      {{- if .Values.scheduler.tolerations }}
       tolerations:
-{{ toYaml .Values.tolerations | indent 8 }}
+{{ toYaml .Values.scheduler.tolerations | indent 8 }}
       {{- end }}
       serviceAccountName: {{ template "airflow.serviceAccountName" . }}
       {{- if .Values.dags.initContainer.enabled }}

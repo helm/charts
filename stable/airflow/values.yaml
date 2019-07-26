@@ -168,6 +168,13 @@ scheduler:
     #   cpu: "500m"
     #   memory: "512Mi"
 
+  ## Support Node, affinity and tolerations for scheduler pod assignment
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
 
 flower:
   resources: {}
@@ -182,6 +189,14 @@ flower:
     type: ClusterIP
     externalPort: 5555
 
+  ## Support Node, affinity and tolerations for flower pod assignment
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
+
 web:
   resources: {}
     # limits:
@@ -192,6 +207,15 @@ web:
     #   memory: "512Mi"
   initialStartupDelay: "60"
   initialDelaySeconds: "360"
+
+  ## Support Node, affinity and tolerations for web pod assignment
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
+
 ##
 ## Workers configuration
 workers:
@@ -226,13 +250,14 @@ workers:
   ## Secrets which will be mounted as a file at `secretsDir/<secret name>`.
   secrets: []
 
-## Support Node, affinity and tolerations for airflow and workers labels for pod assignment
-## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
-## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
-## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
-nodeSelector: {}
-affinity: {}
-tolerations: []
+  ## Support Node, affinity and tolerations for worker pod assignment
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
+
 ##
 ## Ingress configuration
 ingress:
