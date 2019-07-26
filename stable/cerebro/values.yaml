@@ -1,5 +1,8 @@
 replicaCount: 1
 revisionHistoryLimit: 3
+env:
+  # AUTH_TYPE: "basic"
+  # BASIC_AUTH_USER: "admin"
 
 image:
   repository: lmenezes/cerebro

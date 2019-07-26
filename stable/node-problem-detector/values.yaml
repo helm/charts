@@ -46,6 +46,7 @@ fullnameOverride: ""
 
 rbac:
   create: true
+  pspEnabled: false
 
 # Flag to run Node Problem Detector on the host's network. This is typically
 # not recommended, but may be useful for certain use cases.

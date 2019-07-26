@@ -406,9 +406,9 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `serviceAccount.create`                  | create a service account                                | `true`                    |
 | `serviceAccount.name`                    | the service account name                                | ``                        |
 | `postgresql.enabled`                     | create a postgres server                                | `true`                    |
-| `postgresql.existingSecret`              | The name of an existing secret with a key `postgresql-password` to use as the password  | `nil` |
+| `postgresql.existingSecret`              | The name of an existing secret with a key `postgres-password` to use as the password  | `nil` |
 | `postgresql.uri`                         | full URL to custom postgres setup                       | (undefined)               |
-| `postgresql.portgresHost`                | PostgreSQL Hostname                                     | (undefined)               |
+| `postgresql.postgresHost`                | PostgreSQL Hostname                                     | (undefined)               |
 | `postgresql.postgresUser`                | PostgreSQL User                                         | `postgres`                |
 | `postgresql.postgresPassword`            | PostgreSQL Password                                     | `airflow`                 |
 | `postgresql.postgresDatabase`            | PostgreSQL Database name                                | `airflow`                 |
@@ -433,6 +433,9 @@ The following table lists the configurable parameters of the Airflow chart and t
 Full and up-to-date documentation can be found in the comments of the `values.yaml` file.
 
 ## Upgrading
+
+### To 4.0.0
+This version splits the specs for the NodeSelector, Affinity and Toleration features. Instead of being global, and injected in every component, they are now defined _by component_ to provide more flexibility for your deployments. As such, the migration steps are really simple. Just copy and paste your node/affinity/tolerance definitions in the four airflow components, which are `worker`, `scheduler`, `flower` and `web`. The default values file should help you with locating those.
 
 ### To 3.0.0
 This version introduces a simplified way of managing secrets, including the database credentials to postgres and redis.
