@@ -60,7 +60,7 @@ spec:
           httpGet:
             path: {{ .Values.gangway.httpPath }}
             port: {{ .Values.gangway.port }}
-            scheme: HTTP
+            scheme: {{ .Values.livenessProbe.scheme }}
           initialDelaySeconds: 20
           periodSeconds: 60
           successThreshold: 1
@@ -70,7 +70,7 @@ spec:
           httpGet:
             path: {{ .Values.gangway.httpPath }}
             port: {{ .Values.gangway.port }}
-            scheme: HTTP
+            scheme: {{ .Values.readinessProbe.scheme }}
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 1

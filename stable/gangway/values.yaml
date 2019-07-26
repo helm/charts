@@ -129,6 +129,12 @@ extraVolumes: []
 
 extraVolumeMounts: []
 
+livenessProbe:
+  scheme: HTTP # HTTP or HTTPS
+
+readinessProbe:
+  scheme: HTTP # HTTP or HTTPS
+
 service:
   type: ClusterIP
   port: 80

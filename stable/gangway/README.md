@@ -68,9 +68,11 @@ At a minimum you *must* configure any of the values marked as **required** in th
 | `ingress.tls.hosts`               | List of FQDN's the above secret is associated with                                                                                                                                                              | `""`                                               |
 | `ingress.tls.secretName`          | Name of the secret to use                                                                                                                                                                                       | `""`                                               |
 | `ingress.tls`                     | List of SSL certs to use                                                                                                                                                                                        | `""`                                               |
+| `livenessProbe.scheme`            | Scheme to use for httpGet probe, `HTTP` or `HTTPS`.                                                                                                                                                             | `HTTP`                                               |
 | `nodeSelector`                    | Node labels for pod assignment                                                                                                                                                                                  | `{}`                                               |
 | `podAnnotations`                  | Additional annotations to apply to the pod.                                                                                                                                                                     | `{}`                                               |
 | `resources`                       | CPU/Memory resource requests/limits.                                                                                                                                                                            | `{}`                                               |
+| `readinessProbe.scheme`           | Scheme to use for httpGet probe, `HTTP` or `HTTPS`.                                                                                                                                                             | `HTTP`                                               |
 | `service.port`                    | The port the service should listen on                                                                                                                                                                           | `80`                                               |
 | `service.type`                    | Type of service to create                                                                                                                                                                                       | `ClusterIP`                                        |
 | `tls.certData`                    | The Public cert data. This is normally safe to leave alone.                                                                                                                                                     | `""`                                               |
@@ -120,30 +122,34 @@ $ helm upgrade --install --wait my-release stable/gangway -f values.yaml
 
 ## SSL Configuration
 
-### Either by pasting the certificate and private key in the `values.yaml` like:
+1. Edit `values.yaml`
+    1. Set `gangway.serveTLS` to `true`.
+    1. Set `livenessProbe.scheme` and `readinessProbe.scheme` to `HTTPS`.
+2. Pass the TLS configuration to Gangway:
+    - Either by pasting the certificate and private key in the `values.yaml` like:
 
-```yaml
-tls:
-  certData: |
-    -----BEGIN CERTIFICATE-----
+    ```yaml
+    tls:
+      certData: |
+        -----BEGIN CERTIFICATE-----
+        ...
+        -----END CERTIFICATE-----
+      keyData: |
+        -----BEGIN ENCRYPTED PRIVATE KEY-----
+        ...
+        -----END ENCRYPTED PRIVATE KEY-----
+    ```
+
+    - Or by specifying an existing secret in the `values.yaml` like:
+
+    ```yaml
     ...
-    -----END CERTIFICATE-----
-  keyData: |
-    -----BEGIN ENCRYPTED PRIVATE KEY-----
+    tls:
+      existingSecret: my-tls-secret
     ...
-    -----END ENCRYPTED PRIVATE KEY-----
-```
+    ```
 
-### Or by specifying an existing secret in the `values.yaml` like:
-
-```yaml
-...
-tls:
-  existingSecret: my-tls-secret
-...
-```
-
-> NB: The secret _must_ contain two entries, `tls.crt` and `tls.key`;
-> it will be mounted into `/etc/gangway/tls/` and e.g.
-> `/etc/gangway/tls/tls.crt` is the default path for `gangway.certFile`.
-> Otherwise adjust `gangway.certFile` and `gangway.keyFile` accordingly.
+    > NB: The secret _must_ contain two entries, `tls.crt` and `tls.key`;
+    > it will be mounted into `/etc/gangway/tls/` and e.g.
+    > `/etc/gangway/tls/tls.crt` is the default path for `gangway.certFile`.
+    > Otherwise adjust `gangway.certFile` and `gangway.keyFile` accordingly.
