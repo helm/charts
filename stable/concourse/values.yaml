@@ -444,6 +444,13 @@ concourse:
       ##
       insecureSkipVerify: false
 
+      ## Configures the way that the Concourse authenticates against CredHub
+      ## - secrets: makes use of `client-id` and `client-secret`
+      ## - mtls: leverages client certificates
+      ##
+      authenticationMode: "secrets"
+
+
     ## Don't actually do any automatic scheduling or checking.
     ##
     noop: false
@@ -1921,6 +1928,14 @@ secrets:
   ## Client secret for CredHub authorization.
   ##
   credhubClientSecret:
+
+  ## Client cert for Credhub authorization
+  ##
+  credhubClientCert:
+
+  ## Client key for Credhub authorization
+  ##
+  credhubClientKey:
 
   ## Secrets for CF OAuth
   ##
