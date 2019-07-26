@@ -141,6 +141,14 @@ ssl:
     # basic:
     #   testuser: $apr1$JXRA7j2s$LpVns9vsme8FHN0r.aSt11
 
+  # mtls:
+  #   enabled: true
+  #   optional: false
+  #   clientCaCerts: []
+  #   # When mTLS is enabled, the set of CA certificates used to validate client TLS certificates.
+  #   # https://docs.traefik.io/configuration/entrypoints/#tls-mutual-authentication
+  #   # CA certificates should be in PEM format.
+
 kvprovider:
   ## If you want to run Traefik in HA mode, you will need to setup a KV Provider. Therefore you can choose one of
   ## * etcd
