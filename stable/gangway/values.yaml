@@ -130,10 +130,12 @@ extraVolumes: []
 extraVolumeMounts: []
 
 livenessProbe:
-  scheme: HTTP # HTTP or HTTPS
+  # HTTP or HTTPS
+  scheme: HTTP
 
 readinessProbe:
-  scheme: HTTP # HTTP or HTTPS
+  # HTTP or HTTPS
+  scheme: HTTP
 
 service:
   type: ClusterIP
