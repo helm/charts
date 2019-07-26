@@ -47,7 +47,7 @@ spec:
         volumeMounts:
         - name: gangway
           mountPath: /gangway/
-      {{- if and .Values.gangway.certData .Values.gangway.keyData }}
+      {{- if and .Values.tls.certData .Values.tls.keyData }}
         - name: gangway-tls
           mountPath: /etc/gangway/tls
           readOnly: true
@@ -92,7 +92,7 @@ spec:
       - name: gangway
         configMap:
           name: {{ include "gangway.fullname" . }}
-      {{- if and .Values.gangway.certData .Values.gangway.keyData }}
+      {{- if and .Values.tls.certData .Values.tls.keyData }}
       - name: gangway-tls
         secret:
           secretName: {{ include "gangway.fullname" . }}-tls

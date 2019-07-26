@@ -41,7 +41,6 @@ At a minimum you *must* configure any of the values marked as **required** in th
 | `gangway.apiServerURL`            | The API server endpoint used to configure kubectl. **Required**                                                                                                                                                 | `""`                                               |
 | `gangway.audience`                | Endpoint that provides user profile information [optional]. Not all providers will require this. To be taken from the configuration of your OIDC provider.  **Required**                                        | `""`                                               |
 | `gangway.authorizeURL`            | OAuth2 URL to start authorization flow. To be taken from the configuration of your OIDC provider.  **Required**                                                                                                 | `""`                                               |
-| `gangway.certData`                | The Public cert data. This is normally safe to leave alone.                                                                                                                                                     | `""`                                               |
 | `gangway.certFile`                | The public cert file (including root and intermediates) to use when serving TLS.                                                                                                                    | `/etc/gangway/tls/tls.crt`                         |
 | `gangway.clientID`                | API client ID as indicated by the identity provider. **Required**                                                                                                                                               | `""`                                               |
 | `gangway.clientSecret`            | API client secret as indicated by the identity provider. **Required**                                                                                                                                           | `""`                                               |
@@ -49,7 +48,6 @@ At a minimum you *must* configure any of the values marked as **required** in th
 | `gangway.clusterName`             | The cluster name. Used in UI and kubectl config instructions. **Required**                                                                                                                                      | `""`                                               |
 | `gangway.host`                    | The address to listen on. Defaults to 0.0.0.0 to listen on all interfaces.                                                                                                                                      | `80`                                               |
 | `gangway.httpPath`                | The path gangway uses to create urls (defaults to "")                                                                                                                                                           | `/`                                                |
-| `gangway.keyData`                 | The Private key data                                                                                                                                                                                            | `""`                                               |
 | `gangway.keyFile`                 | The private key file when serving TLS.                                                                                                                                                                          | `/etc/gangway/tls/tls.key`                         |
 | `gangway.port`                    | The port to listen on. Defaults to 8080.                                                                                                                                                                        | `80`                                               |
 | `gangway.redirectURL`             | Where to redirect back to. This should be a URL where gangway is reachable. Typically this also needs to be registered as part of the oauth application with the oAuth provider. **Required**                   | `""`                                               |
@@ -75,6 +73,8 @@ At a minimum you *must* configure any of the values marked as **required** in th
 | `resources`                       | CPU/Memory resource requests/limits.                                                                                                                                                                            | `{}`                                               |
 | `service.port`                    | The port the service should listen on                                                                                                                                                                           | `80`                                               |
 | `service.type`                    | Type of service to create                                                                                                                                                                                       | `ClusterIP`                                        |
+| `tls.certData`                    | The Public cert data. This is normally safe to leave alone.                                                                                                                                                     | `""`                                               |
+| `tls.keyData`                     | The Private key data                                                                                                                                                                                            | `""`                                               |
 | `tolerations`                     | List of node taints to tolerate (requires Kubernetes >= 1.6)                                                                                                                                                    | `[]`                                               |
 
 You will likely want to expose Gangway to your users somehow, possibly by way of an ingress, the values below would be a way of doing this with the [Traefik] ingress controller, this assumes TLS offload is happening at the load balancer:
@@ -122,7 +122,7 @@ $ helm upgrade --install --wait my-release stable/gangway -f values.yaml
 ### Either by using the ```values.yaml``` like:
 
 ```yaml
-gangway:
+tls:
   certData: |
     -----BEGIN CERTIFICATE-----
     ...

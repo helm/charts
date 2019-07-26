@@ -111,6 +111,16 @@ gangway:
   # own in procution.
   # sessionKey:
 
+tls: {}
+  # certData: |
+  #   -----BEGIN CERTIFICATE-----
+  #   ...
+  #   -----END CERTIFICATE-----
+  # keyData: |
+  #   -----BEGIN ENCRYPTED PRIVATE KEY-----
+  #   ...
+  #   -----END ENCRYPTED PRIVATE KEY-----
+
 extraVolumes: []
 
 extraVolumeMounts: []
