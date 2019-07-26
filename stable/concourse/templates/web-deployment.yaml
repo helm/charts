@@ -479,6 +479,7 @@ spec:
             - name: CONCOURSE_CREDHUB_INSECURE_SKIP_VERIFY
               value: {{ .Values.concourse.web.credhub.insecureSkipVerify | quote }}
             {{- end }}
+            {{- if (eq .Values.concourse.web.credhub.authenticationMode "secrets") }}
             - name: CONCOURSE_CREDHUB_CLIENT_ID
               valueFrom:
                 secretKeyRef:
@@ -489,6 +490,18 @@ spec:
                 secretKeyRef:
                   name: {{ template "concourse.web.fullname" . }}
                   key: credhub-client-secret
+            {{- else if (eq .Values.concourse.web.credhub.authenticationMode "mtls") }}
+            - name: CONCOURSE_CREDHUB_CLIENT_CERT
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.web.fullname" . }}
+                  key: credhub-client-cert
+            - name: CONCOURSE_CREDHUB_CLIENT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.web.fullname" . }}
+                  key: credhub-client-key
+            {{- end }}
             {{- end }}
             {{- if .Values.concourse.web.noop }}
             - name: CONCOURSE_NOOP
