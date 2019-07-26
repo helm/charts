@@ -71,6 +71,9 @@ aws:
   ## Maximum number of changes that will be applied in each batch
   ##
   batchChangeSize: 1000
+  ## AWS Zone tags
+  ##
+  zoneTags: []
 
 ## Azure configuration to be set via arguments/env. variables
 ##
