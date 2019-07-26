@@ -231,3 +231,7 @@ serviceAccount:
   # If left blank it is auto-generated from the fullname of the release
   halyardName:
   spinnakerName:
+securityContext:
+  # Specifies permissions to write for user/group
+  runAsUser: 1000
+  fsGroup: 1000
