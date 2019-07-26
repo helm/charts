@@ -104,6 +104,9 @@ spec:
         - --aws-batch-change-size={{ .Values.aws.batchChangeSize }}
         {{- end }}
         {{- end }}
+        {{- range .Values.aws.zoneTags }}
+        - --aws-zone-tags={{ . }}
+        {{- end }}
         # Azure Arguments
         {{- if eq .Values.provider "azure" }}
         {{- if .Values.azure.resourceGroup }}
