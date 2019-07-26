@@ -123,6 +123,10 @@ controller:
   #    effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
 
   affinity: {}
+
+    # # See https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#inter-pod-affinity-and-anti-affinity
+
+    # # An example of preferred pod anti-affinity, weight is in the range 1-100
     # podAntiAffinity:
     #   preferredDuringSchedulingIgnoredDuringExecution:
     #   - weight: 100
@@ -134,6 +138,17 @@ controller:
     #           values:
     #           - nginx-ingress
     #       topologyKey: kubernetes.io/hostname
+
+    # # An example of required pod anti-affinity
+    # podAntiAffinity:
+    #   requiredDuringSchedulingIgnoredDuringExecution:
+    #   - labelSelector:
+    #       matchExpressions:
+    #       - key: app
+    #         operator: In
+    #         values:
+    #         - nginx-ingress
+    #     topologyKey: "kubernetes.io/hostname"
 
   ## Node labels for controller pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
