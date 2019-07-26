@@ -12,15 +12,16 @@ metadata:
 {{ toYaml . | indent 4 }}
 {{- end }}
   name: {{ template "grafana.fullname" . }}-config-dashboards
+  namespace: {{ .Release.Namespace }}
 data:
   provider.yaml: |-
     apiVersion: 1
     providers:
-    - name: 'default'
-      orgId: 1
-      folder: ''
-      type: file
-      disableDeletion: false
+    - name: '{{ .Values.sidecar.dashboards.provider.name }}'
+      orgId: {{ .Values.sidecar.dashboards.provider.orgid }}
+      folder: '{{ .Values.sidecar.dashboards.provider.folder }}'
+      type: {{ .Values.sidecar.dashboards.provider.type }}
+      disableDeletion: {{ .Values.sidecar.dashboards.provider.disableDelete }}
       options:
         path: {{ .Values.sidecar.dashboards.folder }}{{- with .Values.sidecar.dashboards.defaultFolderName }}/{{ . }}{{- end }}
 {{- end}}

@@ -4,6 +4,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ template "jenkins.fullname" . }}
+  namespace: {{ template "jenkins.namespace" . }}
   labels:
     "app.kubernetes.io/name": '{{ template "jenkins.name" .}}'
     "helm.sh/chart": "{{ .Chart.Name }}-{{ .Chart.Version }}"
@@ -15,7 +16,11 @@ data:
     <?xml version='1.0' encoding='UTF-8'?>
     <hudson>
       <disabledAdministrativeMonitors/>
+{{- if .Values.master.imageTag }}
       <version>{{ .Values.master.imageTag }}</version>
+{{- else }}
+      <version>{{ .Values.master.tag }}</version>
+{{- end }}
       <numExecutors>{{ .Values.master.numExecutors }}</numExecutors>
       <mode>NORMAL</mode>
       <useSecurity>{{ .Values.master.useSecurity }}</useSecurity>
@@ -67,7 +72,11 @@ data:
               <containers>
                 <org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
                   <name>{{ .Values.agent.sideContainerName }}</name>
+{{- if .Values.agent.imageTag }}
                   <image>{{ .Values.agent.image }}:{{ .Values.agent.imageTag }}</image>
+{{- else }}
+                  <image>{{ .Values.agent.image }}:{{ .Values.agent.tag }}</image>
+{{- end }}
 {{- if .Values.agent.privileged }}
                   <privileged>true</privileged>
 {{- else }}
@@ -92,7 +101,7 @@ data:
                   <envVars>
                     <org.csanchez.jenkins.plugins.kubernetes.ContainerEnvVar>
                       <key>JENKINS_URL</key>
-                      <value>http://{{ template "jenkins.fullname" . }}.{{.Release.Namespace}}.svc.cluster.local:{{.Values.master.servicePort}}{{ default "" .Values.master.jenkinsUriPrefix }}</value>
+                      <value>http://{{ template "jenkins.fullname" . }}.{{ template "jenkins.namespace" . }}.svc.{{.Values.clusterZone}}:{{.Values.master.servicePort}}{{ default "" .Values.master.jenkinsUriPrefix }}</value>
                     </org.csanchez.jenkins.plugins.kubernetes.ContainerEnvVar>
                   </envVars>
                 </org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
@@ -125,10 +134,10 @@ data:
           </templates>
           <serverUrl>https://kubernetes.default</serverUrl>
           <skipTlsVerify>false</skipTlsVerify>
-          <namespace>{{ default .Release.Namespace .Values.master.slaveKubernetesNamespace }}</namespace>
+          <namespace>{{ template "jenkins.master.slaveKubernetesNamespace" . }}</namespace>
 {{- if .Values.master.slaveKubernetesNamespace }}
-          <jenkinsUrl>http://{{ template "jenkins.fullname" . }}.{{.Release.Namespace}}:{{.Values.master.servicePort}}{{ default "" .Values.master.jenkinsUriPrefix }}</jenkinsUrl>
-          <jenkinsTunnel>{{ template "jenkins.fullname" . }}-agent.{{.Release.Namespace}}:{{ .Values.master.slaveListenerPort }}</jenkinsTunnel>
+          <jenkinsUrl>http://{{ template "jenkins.fullname" . }}.{{ template "jenkins.namespace" . }}:{{.Values.master.servicePort}}{{ default "" .Values.master.jenkinsUriPrefix }}</jenkinsUrl>
+          <jenkinsTunnel>{{ template "jenkins.fullname" . }}-agent.{{ template "jenkins.namespace" . }}:{{ .Values.master.slaveListenerPort }}</jenkinsTunnel>
 {{- else }}
           <jenkinsUrl>http://{{ template "jenkins.fullname" . }}:{{.Values.master.servicePort}}{{ default "" .Values.master.jenkinsUriPrefix }}</jenkinsUrl>
           <jenkinsTunnel>{{ template "jenkins.fullname" . }}-agent:{{ .Values.master.slaveListenerPort }}</jenkinsTunnel>
@@ -323,8 +332,10 @@ data:
   {{- if not (contains "configuration-as-code" (quote .Values.master.installPlugins)) }}
     configuration-as-code:{{ .Values.master.JCasC.pluginVersion }}
   {{- end }}
-  {{- if not (contains "configuration-as-code-support" (quote .Values.master.installPlugins)) }}
+  {{- if semverCompare "<=1.19" (printf "%v" .Values.master.JCasC.pluginVersion) }}
+    {{- if not (contains "configuration-as-code-support" (quote .Values.master.installPlugins)) }}
     configuration-as-code-support:{{ .Values.master.JCasC.supportPluginVersion }}
+    {{- end }}
   {{- end }}
 {{- end }}
 {{- end }}

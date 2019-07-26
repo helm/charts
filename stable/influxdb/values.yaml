@@ -1,8 +1,8 @@
 ## influxdb image version
 ## ref: https://hub.docker.com/r/library/influxdb/tags/
 image:
-  repo: "influxdb"
-  tag: "1.7.3-alpine"
+  repository: "influxdb"
+  tag: "1.7.6-alpine"
   pullPolicy: IfNotPresent
 
 ## Specify a service type
@@ -25,7 +25,7 @@ service:
 ## Persist data to a persistent volume
 ##
 persistence:
-  enabled: false
+  enabled: true
   ## If true will use an existing PVC instead of creating one
   # useExisting: false
   ## Name of existing PVC to be used in the influx deployment
@@ -78,13 +78,13 @@ setDefaultUser:
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
-resources:
-  requests:
-    memory: 256Mi
-    cpu: 0.1
-  limits:
-    memory: 16Gi
-    cpu: 8
+resources: {}
+#  requests:
+#    memory: 256Mi
+#    cpu: 0.1
+#  limits:
+#    memory: 16Gi
+#    cpu: 8
 
 ingress:
   enabled: false
@@ -122,7 +122,7 @@ tolerations: []
 ## The InfluxDB image uses several environment variables to automatically
 ## configure certain parts of the server.
 ## Ref: https://hub.docker.com/_/influxdb/
-env:
+env: {}
   # - name: INFLUXDB_DB
   #   value: "demo"
 

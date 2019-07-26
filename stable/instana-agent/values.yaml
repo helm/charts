@@ -2,7 +2,7 @@
 # name: instana-agent
 
 zone:
-  # zone.name is the uniquely-identifiable name by which your cluster will be known inside Instana.
+  # zone.name is the custom zone that detected technologies will be assigned to
   name: null
 
 agent:
@@ -62,6 +62,9 @@ agent:
   # agent.proxyUseDNS sets the INSTANA_AGENT_PROXY_USE_DNS environment variable.
   # proxyUseDNS: null
 
+  configuration_yaml: |
+    # Place agent configuration here
+
 rbac:
   # Specifies whether RBAC resources should be created
   create: true
@@ -72,3 +75,7 @@ serviceAccount:
   # The name of the ServiceAccount to use.
   # If not set and create is true, a name is generated using the fullname template
   # name: instana-agent
+
+cluster:
+  # cluster.name represents the name that will be assigned to this cluster in Instana
+  name: null

@@ -9,7 +9,8 @@ This approach is the [current recommended method to achieve overprovisioning](ht
 ## Prerequisites
 
 - Kubernetes 1.11+ with Beta APIs enabled or 1.8-1.10 with alpha APIs enabled
-- Configure the `cluster-autoscaler` for [your k8s version](https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/FAQ.md#how-can-i-configure-overprovisioning-with-cluster-autoscaler). Usually just add `extraArgs.expendable-pods-priority-cutoff=-10` setting.
+- [Pod priority and preemption](https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/FAQ.md#how-can-i-configure-overprovisioning-with-cluster-autoscaler) enabled in your cluster.  Pod priority and preemption is enabled by default in Kubernetes >= 1.11.
+- `cluster-autoscaler` installed in your cluster with [`--expendable-pods-priority-cutoff=-10` ](https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/FAQ.md#how-does-cluster-autoscaler-work-with-pod-priority-and-preemption).  Priority cutoff has a default of `-10` in `cluster-autoscaler` >= 1.12.
 
 ## Installing the Chart
 

@@ -231,6 +231,7 @@ helm install --name <RELEASE_NAME> \
 | `datadog.site`                           | Site ('datadoghq.com' or 'datadoghq.eu')                                                  | `nil`                                       |
 | `datadog.dd_url`                         | Datadog intake server                                                                     | `nil`                                       |
 | `datadog.env`                            | Additional Datadog environment variables                                                  | `nil`                                       |
+| `datadog.logLevel`                       | Agent log verbosity (possible values: trace, debug, info, warn, error, critical, and off) | `INFO`                                      |
 | `datadog.logsEnabled`                    | Enable log collection                                                                     | `nil`                                       |
 | `datadog.logsConfigContainerCollectAll`  | Collect logs from all containers                                                          | `nil`                                       |
 | `datadog.logsPointerHostPath`            | Host path to store the log tailing state in                                               | `/var/lib/datadog-agent/logs`               |
@@ -244,6 +245,7 @@ helm install --name <RELEASE_NAME> \
 | `datadog.useCriSocketVolume`             | Enable mounting the container runtime socket in Agent containers                          | `True`                                      |
 | `datadog.dogstatsdOriginDetection`       | Enable origin detection for container tagging                                             | `False`                                     |
 | `datadog.useDogStatsDSocketVolume`       | Enable dogstatsd over Unix Domain Socket                                                  | `False`                                     |
+| `datadog.dogStatsDSocketPath`            | Custom path to the socket, has to be located in the `/var/run/datadog` folder path        | `/var/run/datadog/dsd.socket`               |
 | `datadog.volumes`                        | Additional volumes for the daemonset or deployment                                        | `nil`                                       |
 | `datadog.volumeMounts`                   | Additional volumeMounts for the daemonset or deployment                                   | `nil`                                       |
 | `datadog.podAnnotationsAsTags`           | Kubernetes Annotations to Datadog Tags mapping                                            | `nil`                                       |
@@ -264,6 +266,25 @@ helm install --name <RELEASE_NAME> \
 | `daemonset.useHostNetwork`               | If true, use the host's network                                                           | `nil`                                       |
 | `daemonset.useHostPID`.                  | If true, use the host's PID namespace                                                     | `nil`                                       |
 | `daemonset.useHostPort`                  | If true, use the same ports for both host and container                                   | `nil`                                       |
+| `daemonset.useDedicatedContainers`       | If true, each Datadog agent will run in a separate container                              | `nil`                                       |
+| `daemonset.containers.agent.env`                          | Additional list of environment variables to use in the agent container                 | `nil`                                         |
+| `daemonset.containers.agent.logLevel`                     | Agent log verbosity                                                                    | `INFO`                                        |
+| `daemonset.containers.agent.resources.limits.cpu`         | CPU resource limits for the agent container                                            | `200m`                                        |
+| `daemonset.containers.agent.resources.requests.cpu`       | CPU resource requests for the agent container                                          | `200m`                                        |
+| `daemonset.containers.agent.resources.limits.memory`      | Memory resource limits for the agent container                                         | `256Mi`                                       |
+| `daemonset.containers.agent.resources.requests.memory`    | Memory resource requests for the agent container                                       | `256Mi`                                       |
+| `daemonset.containers.processAgent.env`                          | Additional list of environment variables to use in the process-agent container         | `nil`                                         |
+| `daemonset.containers.processAgent.logLevel`                     | Process agent log verbosity                                                            | `INFO`                                        |
+| `daemonset.containers.processAgent.resources.limits.cpu`         | CPU resource limits for the process-agent container                                    | `100m`                                        |
+| `daemonset.containers.processAgent.resources.requests.cpu`       | CPU resource requests for the process-agent container                                  | `100m`                                        |
+| `daemonset.containers.processAgent.resources.limits.memory`      | Memory resource limits for the process-agent container                                 | `200Mi`                                       |
+| `daemonset.containers.processAgent.resources.requests.memory`    | Memory resource requests for the process-agent container                               | `200Mi`                                       |
+| `daemonset.containers.traceAgent.env`                            | Additional list of environment variables to use in the trace-agent container           | `nil`                                         |
+| `daemonset.containers.traceAgent.logLevel`                       | Trace agent log verbosity                                                              | `INFO`                                        |
+| `daemonset.containers.traceAgent.resources.limits.cpu`           | CPU resource limits for the trace-agent container                                      | `100m`                                        |
+| `daemonset.containers.traceAgent.resources.requests.cpu`         | CPU resource requests for the trace-agent container                                    | `100m`                                        |
+| `daemonset.containers.traceAgent.resources.limits.memory`        | Memory resource limits for the trace-agent container                                   | `200Mi`                                       |
+| `daemonset.containers.traceAgent.resources.requests.memory`      | Memory resource requests for the trace-agent container                                 | `200Mi`                                       |
 | `daemonset.priorityClassName`            | Which Priority Class to associate with the daemonset                                      | `nil`                                       |
 | `datadog.leaderElection`                 | Enable the leader Election feature                                                        | `false`                                     |
 | `datadog.leaderLeaseDuration`            | The duration for which a leader stays elected.                                            | 60 sec, 15 if Cluster Checks enabled        |
@@ -284,6 +305,8 @@ helm install --name <RELEASE_NAME> \
 | `clusterAgent.metricsProvider.enabled`   | Enable Datadog metrics as a source for HPA scaling                                        | `false`                                     |
 | `clusterAgent.clusterChecks.enabled`     | Enable Cluster Checks on both the Cluster Agent and the Agent daemonset                   | `false`                                     |
 | `clusterAgent.confd`                     | Additional check configurations (static and Autodiscovery)                                | `nil`                                       |
+| `clusterAgent.podAnnotations`            | Annotations to add to the Cluster Agent Pod(s)                                            | `nil`                                       |
+| `clusterAgent.priorityClassName`         | Name of the priorityClass to apply to the Cluster Agent                                   | `nil`                                       |
 | `clusterAgent.resources.requests.cpu`    | CPU resource requests                                                                     | `200m`                                      |
 | `clusterAgent.resources.limits.cpu`      | CPU resource limits                                                                       | `200m`                                      |
 | `clusterAgent.resources.requests.memory` | Memory resource requests                                                                  | `256Mi`                                     |

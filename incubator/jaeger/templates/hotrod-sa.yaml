@@ -1,0 +1,12 @@
+{{- if and .Values.hotrod.enabled .Values.serviceAccounts.hotrod.create -}}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ template "jaeger.hotrod.serviceAccountName" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "jaeger.name" . }}
+    helm.sh/chart: {{ include "jaeger.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/component: hotrod
+{{- end -}}
