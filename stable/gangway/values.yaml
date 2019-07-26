@@ -121,6 +121,10 @@ tls: {}
   #   ...
   #   -----END ENCRYPTED PRIVATE KEY-----
 
+  # Name of an existing secret containing `tls.cert` and `tls.key`.
+  # Mounted on the default tls path `/etc/gangway/tls`
+  # existingSecret: ""
+
 extraVolumes: []
 
 extraVolumeMounts: []

@@ -74,6 +74,7 @@ At a minimum you *must* configure any of the values marked as **required** in th
 | `service.port`                    | The port the service should listen on                                                                                                                                                                           | `80`                                               |
 | `service.type`                    | Type of service to create                                                                                                                                                                                       | `ClusterIP`                                        |
 | `tls.certData`                    | The Public cert data. This is normally safe to leave alone.                                                                                                                                                     | `""`                                               |
+| `tls.existingSecret`              | An existing secret with a `tls.crt` and `tls.key`                                                                                                                                                               | `""`                                               |
 | `tls.keyData`                     | The Private key data                                                                                                                                                                                            | `""`                                               |
 | `tolerations`                     | List of node taints to tolerate (requires Kubernetes >= 1.6)                                                                                                                                                    | `[]`                                               |
 
@@ -119,7 +120,7 @@ $ helm upgrade --install --wait my-release stable/gangway -f values.yaml
 
 ## SSL Configuration
 
-### Either by using the ```values.yaml``` like:
+### Either by pasting the certificate and private key in the `values.yaml` like:
 
 ```yaml
 tls:
@@ -133,25 +134,16 @@ tls:
     -----END ENCRYPTED PRIVATE KEY-----
 ```
 
-### Or by using the ```values.yaml``` with an existing secret:
+### Or by specifying an existing secret in the `values.yaml` like:
 
 ```yaml
 ...
-extraVolumes:
-  - name: ssl-cert
-    secret:
-      secretName: my-ssl-secret
-extraVolumeMounts:
-  - name: ssl-cert
-    mountPath: /etc/gangway/tls
+tls:
+  existingSecret: my-tls-secret
 ...
 ```
 
-With a secret called `my-ssl-secret`:
-
-```yaml
-...
-data:
-  tls.crt: AB..==
-  tls.key: CD..==
-```
+> NB: The secret _must_ contain two entries, `tls.crt` and `tls.key`;
+> it will be mounted into `/etc/gangway/tls/` and e.g.
+> `/etc/gangway/tls/tls.crt` is the default path for `gangway.certFile`.
+> Otherwise adjust `gangway.certFile` and `gangway.keyFile` accordingly.
