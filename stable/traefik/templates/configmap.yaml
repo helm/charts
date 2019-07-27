@@ -327,7 +327,7 @@ data:
         buckets = [
           {{- range $idx, $element := .Values.metrics.prometheus.buckets }}
               {{- if $idx }},{{ end }}
-              {{- printf "%.1f" $element }}
+              {{- printf "%f" $element }}
           {{- end -}}
           ]
         {{- end -}}
