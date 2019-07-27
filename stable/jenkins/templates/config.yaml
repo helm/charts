@@ -286,7 +286,7 @@ data:
     yes {{ if not .Values.master.overwriteCredentialsXml }}n{{ end }} | cp -i /var/jenkins_credentials/credentials.xml /var/jenkins_home;
 {{- end }}
 {{- if .Values.master.secretsFilesSecret }}
-    yes n | cp -i /var/jenkins_secrets/* /usr/share/jenkins/ref/secrets/;
+    yes {{ if not .Values.master.overwriteSecretsFiles }}n{{ end }} | cp -i /var/jenkins_secrets/* /usr/share/jenkins/ref/secrets/;
 {{- end }}
 {{- if .Values.master.jobs }}
     for job in $(ls /var/jenkins_jobs); do

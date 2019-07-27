@@ -139,6 +139,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.credentialsXmlSecret`     | Kubernetes secret that contains a 'credentials.xml' file | Not set               |
 | `master.overwriteCredentialsXml`  | Overwrite installed credentials on start. | `false`                              |
 | `master.secretsFilesSecret`       | Kubernetes secret that contains 'secrets' files | Not set                        |
+| `master.overwriteSecretsFiles`    | Overwrite installed secrets on start. | `false`                                  |
 | `master.jobs`                     | Jenkins XML job configs              | Not set                                   |
 | `master.overwriteJobs`            | Replace jobs w/ ConfigMap on boot    | `false`                                   |
 | `master.installPlugins`           | List of Jenkins plugins to install. If you don't want to install plugins set it to `[]` | `kubernetes:1.14.0 workflow-aggregator:2.6 credentials-binding:1.17 git:3.9.1 workflow-job:2.31` |

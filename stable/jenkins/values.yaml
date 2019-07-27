@@ -183,6 +183,8 @@ master:
   # useful to manage encryption keys used for credentials.xml for instance (such as
   # master.key and hudson.util.Secret)
   # secretsFilesSecret: jenkins-secrets
+  # Overwrite installed secrets during Jenkins master start.
+  # overwriteSecretsFiles: false
   # Jenkins XML job configs to provision
   jobs:
   #  test: |-
