@@ -8,12 +8,18 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
+  annotations:
+    {{- toYaml .Values.backup.annotations | nindent 4 }}
 spec:
   schedule: {{.Values.backup.schedule | quote }}
   concurrencyPolicy: Forbid
   jobTemplate:
     spec:
       template:
+        metadata:
+          labels:
+            app: {{ template "influxdb.fullname" . }}
+            release: "{{ .Release.Name }}"
         spec:
           restartPolicy: OnFailure
           volumes:
@@ -21,7 +27,7 @@ spec:
             emptyDir: {}
           - name: google-cloud-key
             secret:
-              secretName: {{ .Values.backup.google.serviceAccountSecret | quote }}
+              secretName: {{ .Values.backup.gcs.serviceAccountSecret | quote }}
           initContainers:
           - name: influxdb-backup
             image: "{{ .Values.image.repo }}:{{ .Values.image.tag }}"
