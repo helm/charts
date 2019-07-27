@@ -147,11 +147,11 @@ config:
 # Section below is relevant only when grpc support is enabled
   grpc:
     # port is taken from ports section above
-    address: 127.0.0.0
+    address: 127.0.0.1
     tlsCert: /etc/dex/tls/grpc/server/tls.crt
     tlsKey: /etc/dex/tls/grpc/server/tls.key
     tlsClientCA: /etc/dex/tls/grpc/ca/tls.crt
-  connectors:
+  connectors: {}
 #  - type: github
 #    id: github
 #    name: GitHub
