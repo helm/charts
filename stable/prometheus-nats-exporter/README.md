@@ -39,7 +39,7 @@ The following table lists the configurable parameters of the postgres Exporter c
 | Parameter                       | Description                                   | Default                                                    |
 | ------------------------------- | --------------------------------------------- | ---------------------------------------------------------- |
 | `image`                         | Image                                         | `synadia/prometheus-nats-exporter`                         |
-| `imageTag`                      | Image tag                                     | `0.3.0`                                                    |
+| `imageTag`                      | Image tag                                     | `0.5.0`                                                    |
 | `imagePullPolicy`               | Image pull policy                             | `IfNotPresent`                                             |
 | `service.type`                  | Service type                                  | `ClusterIP`                                                |
 | `service.port`                  | The service port                              | `80`                                                       |
