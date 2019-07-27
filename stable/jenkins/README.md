@@ -137,6 +137,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.sidecars.others`          | Configures additional sidecar container(s) for Jenkins master | `{}`             |
 | `master.initScripts`              | List of Jenkins init scripts         | Not set                                   |
 | `master.credentialsXmlSecret`     | Kubernetes secret that contains a 'credentials.xml' file | Not set               |
+| `master.overwriteCredentialsXml`  | Overwrite installed credentials on start. | `false`                              |
 | `master.secretsFilesSecret`       | Kubernetes secret that contains 'secrets' files | Not set                        |
 | `master.jobs`                     | Jenkins XML job configs              | Not set                                   |
 | `master.overwriteJobs`            | Replace jobs w/ ConfigMap on boot    | `false`                                   |

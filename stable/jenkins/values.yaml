@@ -177,6 +177,8 @@ master:
   #    print 'adding global pipeline libraries, register properties, bootstrap jobs...'
   # Kubernetes secret that contains a 'credentials.xml' for Jenkins
   # credentialsXmlSecret: jenkins-credentials
+  # Overwrite installed credentials during Jenkins master start.
+  # overwriteCredentialsXml: false
   # Kubernetes secret that contains files to be put in the Jenkins 'secrets' directory,
   # useful to manage encryption keys used for credentials.xml for instance (such as
   # master.key and hudson.util.Secret)
