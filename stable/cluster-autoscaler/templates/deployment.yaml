@@ -52,8 +52,7 @@ spec:
           {{- end }}
           {{- if eq .Values.cloudProvider "aws" }}
             {{- if .Values.autoDiscovery.clusterName }}
-            - --node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,k8s.io/cluster/
-              {{- .Values.autoDiscovery.clusterName }}
+            - --node-group-auto-discovery=asg:tag={{ tpl (join "," .Values.autoDiscovery.tags) . }}
             {{- end }}
           {{- else if eq .Values.cloudProvider "gce" }}
           {{- if .Values.autoscalingGroupsnamePrefix }}

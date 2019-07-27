@@ -48,7 +48,7 @@ To install the chart with the release name `my-release`:
 
 Auto-discovery finds ASGs tags as below and automatically manages them based on the min and max size specified in the ASG. `cloudProvider=aws` only.
 
-1) tag the ASGs with _key_ `k8s.io/cluster-autoscaler/enabled` and _key_ `k8s.io/cluster/<YOUR CLUSTER NAME>`
+1) tag the ASGs with keys to match `.Values.autoDiscovery.tags`, by default: `k8s.io/cluster-autoscaler/enabled` and `k8s.io/cluster-autoscaler/<YOUR CLUSTER NAME>`
 2) verify the [IAM Permissions](#iam)
 3) set `autoDiscovery.clusterName=<YOUR CLUSTER NAME>`
 4) set `awsRegion=<YOUR AWS REGION>`
@@ -130,6 +130,7 @@ Parameter | Description | Default
 --- | --- | ---
 `affinity` | node/pod affinities | None
 `autoDiscovery.clusterName` | enable autodiscovery for name in ASG tag (only `cloudProvider=aws`). Must be set for `cloudProvider=gce`, but no MIG tagging required.| `""` **required unless autoscalingGroups[] provided**
+`autoDiscovery.tags` | ASG tags to match, run through `tpl` | `[ "k8s.io/cluster-autoscaler/enabled", "k8s.io/cluster-autoscaler/{{ .Values.autoDiscovery.clusterName }}" ]`
 `autoscalingGroups[].name` | autoscaling group name | None. Required unless `autoDiscovery.enabled=true`
 `autoscalingGroups[].maxSize` | maximum autoscaling group size | None. Required unless `autoDiscovery.enabled=true`
 `autoscalingGroups[].minSize` | minimum autoscaling group size | None. Required unless `autoDiscovery.enabled=true`
@@ -227,8 +228,8 @@ Unfortunately AWS does not support ARNs for autoscaling groups yet so you must u
 
 ## Auto-discovery
 
-For auto-discovery of instances to work, they must be tagged with
-`k8s.io/cluster-autoscaler/enabled` and `k8s.io/cluster/<ClusterName>`
+For auto-discovery of instances to work, they must be tagged with the keys in `.Values.autoDiscovery.tags`, which by default are
+`k8s.io/cluster-autoscaler/enabled` and `k8s.io/cluster-autoscaler/<ClusterName>`
 
 The value of the tag does not matter, only the key.
 
@@ -256,7 +257,7 @@ metadata:
 spec:
   cloudLabels:
     k8s.io/cluster-autoscaler/enabled: ""
-    k8s.io/cluster/my.cluster.internal: owned
+    k8s.io/cluster-autoscaler/my.cluster.internal: ""
   image: kope.io/k8s-1.8-debian-jessie-amd64-hvm-ebs-2018-01-14
   machineType: r4.large
   maxSize: 4
@@ -292,7 +293,7 @@ Containers:
 # if specifying ASGs manually
       --nodes=1:10:your-scaling-group-name
 # if using autodiscovery
-      --node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,k8s.io/cluster/<ClusterName>
+      --node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,k8s.io/cluster-autoscaler/<ClusterName>
       --v=4
 ```
 
