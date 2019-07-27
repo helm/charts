@@ -3,14 +3,20 @@ kind: Service
 metadata:
   name: {{ template "kube-state-metrics.fullname" . }}
   labels:
-    app: {{ template "kube-state-metrics.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
-  {{- if .Values.prometheusScrape }}
+    app.kubernetes.io/name: {{ template "kube-state-metrics.name" . }}
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app.kubernetes.io/instance: "{{ .Release.Name }}"
+    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+{{- if .Values.customLabels }}
+{{ toYaml .Values.customLabels | indent 4 }}
+{{- end }}
   annotations:
+    {{- if .Values.prometheusScrape }}
     prometheus.io/scrape: '{{ .Values.prometheusScrape }}'
-  {{- end }}
+    {{- end }}
+    {{- if .Values.service.annotations }}
+    {{- toYaml .Values.service.annotations | nindent 4 }}
+    {{- end }}
 spec:
   type: "{{ .Values.service.type }}"
   ports:
@@ -25,5 +31,5 @@ spec:
   loadBalancerIP: "{{ .Values.service.loadBalancerIP }}"
 {{- end }}
   selector:
-    app: {{ template "kube-state-metrics.name" . }}
-    release: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ template "kube-state-metrics.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
