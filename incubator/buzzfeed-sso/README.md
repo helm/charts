@@ -28,7 +28,7 @@ cluster using the [Helm](https://helm.sh) package manager.
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release stable/buzzfeed-sso
+$ helm install --name my-release incubator/buzzfeed-sso
 ```
 
 The command deploys SSO on the Kubernetes cluster using the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.

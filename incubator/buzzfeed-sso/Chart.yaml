@@ -1,7 +1,7 @@
 apiVersion: v1
 description: Single sign-on for your Kubernetes services using Google OAuth
 name: buzzfeed-sso
-version: 0.0.7
+version: 0.0.8
 appVersion: 1.2.0
 home: https://github.com/buzzfeed/sso
 sources:
