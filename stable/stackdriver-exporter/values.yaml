@@ -57,6 +57,9 @@ web:
 ##
 affinity: {}
 
+## Pod serviceAccount
+serviceAccount: default
+
 annotations: {}
 
 ## Node labels for stackdriver-exporter pod assignment

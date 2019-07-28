@@ -64,6 +64,7 @@ Parameter                           | Description                               
 `image.tag`                         | Container image tag                                                             | `v0.6.0`
 `image.pullPolicy`                  | Container image pull policy                                                     | `IfNotPresent`
 `resources`                         | Resource requests & limits                                                      | `{}`
+`serviceAccount`                    | Name of Kubernetes service account to use                                       | `default`
 `service.type`                      | Type of service to create                                                       | `ClusterIP`
 `service.httpPort`                  | Port for the http service                                                       | `9255`
 `stackdriver.projectId`             | GCP Project ID                                                                  | ``
