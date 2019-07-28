@@ -19,7 +19,7 @@ image: concourse/concourse
 ##      of `concourse/concourse`.
 ## Ref: https://hub.docker.com/r/concourse/concourse/tags/
 ##
-imageTag: "5.3.0"
+imageTag: "5.4.0"
 
 ## Specific image digest to use in place of a tag.
 ## Ref: https://kubernetes.io/docs/concepts/configuration/overview/#container-images
@@ -444,6 +444,13 @@ concourse:
       ##
       insecureSkipVerify: false
 
+      ## Configures the way that the Concourse authenticates against CredHub
+      ## - secrets: makes use of `client-id` and `client-secret`
+      ## - mtls: leverages client certificates
+      ##
+      authenticationMode: "secrets"
+
+
     ## Don't actually do any automatic scheduling or checking.
     ##
     noop: false
@@ -496,7 +503,7 @@ concourse:
 
       ## Prefix for all metrics to easily find them in Datadog
       ##
-      prefix:
+      prefix: "concourse.ci"
 
     influxdb:
       enabled: false
@@ -1921,6 +1928,14 @@ secrets:
   ## Client secret for CredHub authorization.
   ##
   credhubClientSecret:
+
+  ## Client cert for Credhub authorization
+  ##
+  credhubClientCert:
+
+  ## Client key for Credhub authorization
+  ##
+  credhubClientKey:
 
   ## Secrets for CF OAuth
   ##

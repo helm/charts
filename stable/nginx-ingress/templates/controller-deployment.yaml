@@ -95,6 +95,7 @@ spec:
                 add:
                 - NET_BIND_SERVICE
             runAsUser: {{ .Values.controller.image.runAsUser }}
+            allowPrivilegeEscalation: {{ .Values.controller.image.allowPrivilegeEscalation }}
           {{- end }}
           env:
             - name: POD_NAME
