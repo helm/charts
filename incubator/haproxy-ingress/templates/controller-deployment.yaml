@@ -157,6 +157,10 @@ spec:
           resources:
 {{ toYaml .Values.controller.metrics.resources | indent 12 }}
       {{- end }}
+{{- if .Values.controller.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.controller.imagePullSecrets | indent 8 }}
+{{- end }}
 {{- if .Values.controller.template }}
       volumes:
         - name: haproxy-template
