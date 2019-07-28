@@ -63,6 +63,10 @@ extraEnv: {}
 ##
 extraEnvFromSecret: ""
 
+## Deployment level annotations
+## Useful for passing other third party annotations to interact with eg. kube2iam.
+deploymentAnnotations: {}
+
 persistence:
 
   ## If true, superset server will create/use a Persistent Volume Claim
