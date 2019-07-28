@@ -1,0 +1,65 @@
+{{- if .Values.backup.enabled }}
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: {{ template "influxdb.fullname" . }}-backup
+  labels:
+    app: {{ template "influxdb.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+  annotations:
+    {{- toYaml .Values.backup.annotations | nindent 4 }}
+spec:
+  schedule: {{.Values.backup.schedule | quote }}
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: {{ template "influxdb.fullname" . }}
+            release: "{{ .Release.Name }}"
+        spec:
+          restartPolicy: OnFailure
+          volumes:
+          - name: backups
+            emptyDir: {}
+          - name: google-cloud-key
+            secret:
+              secretName: {{ .Values.backup.gcs.serviceAccountSecret | quote }}
+          initContainers:
+          - name: influxdb-backup
+            image: "{{ .Values.image.repo }}:{{ .Values.image.tag }}"
+            volumeMounts:
+            - name: backups
+              mountPath: /backups
+            command:
+            - /bin/sh
+            args:
+            - '-c'
+            - |
+              influxd backup -host {{ template "influxdb.fullname" . }}.{{ .Release.Namespace }}.svc:{{ .Values.config.rpc.bind_address }} -portable /backups/backup_$(date +%Y%m%d_%H%M%S)
+          containers:
+          - name: gsutil-cp
+            image: google/cloud-sdk:alpine
+            command:
+            - /bin/sh
+            args:
+            - '-c'
+            - |
+              gcloud auth activate-service-account --key-file $KEY_FILE
+              gsutil -m cp -r "$SRC_URL" "$DST_URL"
+            volumeMounts:
+            - name: backups
+              mountPath: /backups
+            - name: google-cloud-key
+              mountPath: /var/secrets/google/
+            env:
+              - name: SRC_URL
+                value: /backups
+              - name: DST_URL
+                value: {{ .Values.backup.destination}}
+              - name: KEY_FILE
+                value: /var/secrets/google/key.json
+{{- end }}

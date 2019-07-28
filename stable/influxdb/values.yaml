@@ -262,3 +262,12 @@ initScripts:
   scripts:
     init.iql: |+
       CREATE DATABASE "telegraf" WITH DURATION 30d REPLICATION 1 NAME "rp_30d"
+
+backup:
+  enabled: false
+  schedule: "0 0 * * *"
+  annotations: {}
+  destination: gs://bucket/influxdb
+  # Google Cloud Storage
+  gcs:
+    serviceAccountSecret: influxdb-backup-key
