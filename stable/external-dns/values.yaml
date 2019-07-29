@@ -211,7 +211,15 @@ istioIngressGateways: []
 extraArgs: {}
 ## Extra env. variable to set on external-dns container
 ##
-extraEnv: {}
+## extraEnv:
+## - name: SECRET_TO_SAVE
+##   value: secret_value
+## - name: AWS_ACCESS_KEY_ID
+##   valueFrom:
+##     secretKeyRef:
+##       name: existing-secret
+##       key: access-key-id
+extraEnv: []
 
 ## Replica count
 ##
