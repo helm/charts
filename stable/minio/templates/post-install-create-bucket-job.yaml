@@ -23,6 +23,14 @@ spec:
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
 {{- end }}
+{{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+{{- end }}
       volumes:
         - name: minio-configuration
           projected:
