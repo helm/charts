@@ -40,6 +40,7 @@ Parameter | Description | Default
 `serviceAccount.name` | the name of the service account to use. If not set and `create` is `true`, a name is generated using the fullname template. | ``
 `detachAsg` | if `true`, the spot termination handler will detect (standard) AutoScaling Group, and initiate detach when termination notice is detected. | `false`
 `gracePeriod` | Grace period for node draining | `120`
+`envFromSecret` | Name of a Kubenretes secret (must be manually created in the same namespace) containing values to be added to the environment | `""` |
 `resources` | pod resource requests & limits | `{}`
 `nodeSelector` | node labels for pod assignment | `{}`
 `tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
