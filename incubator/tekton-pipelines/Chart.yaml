@@ -10,3 +10,7 @@ kubeVersion: '>=1.12.0'
 name: tekton-pipelines
 tillerVersion: '>=2.9.1'
 version: 0.1.0
+home: https://tekton.dev/
+maintainers:
+- name: mhamwala
+  url: https://github.com/mhamwala
