@@ -98,6 +98,7 @@ elasticsearch:
       enabled: false
 
 agent:
+  priorityClassName: null
   enabled: true
   annotations: {}
   image: jaegertracing/jaeger-agent

@@ -55,6 +55,9 @@ spec:
         - name: {{ $key | replace "." "_" | replace "-" "_" | upper | quote }}
           value: {{ $value }}
         {{- end }}
+        {{- if .Values.agent.priorityClassName }}
+        priorityClassName: {{ .Values.agent.priorityClassName }}
+        {{- end }}
         ports:
         - name: zipkin-compact
           containerPort: {{ .Values.agent.service.zipkinThriftPort }}

@@ -201,6 +201,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `agent.image`                            | Image for Jaeger Agent              |  `jaegertracing/jaeger-agent`            |
 | `agent.podAnnotations`                   | Annotations for Agent pod           |  `nil`                                   |
 | `agent.pullPolicy`                       | Agent image pullPolicy              |  `IfNotPresent`                          |
+| `agent.priorityClassName`                | PriorityClassName for agent pod     |  `nil`                                   |
 | `agent.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`       |
 | `agent.service.annotations`              | Annotations for Agent SVC           |  `nil`                                   |
 | `agent.service.binaryPort`               | jaeger.thrift over binary thrift    |  `6832`                                  |
