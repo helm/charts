@@ -44,7 +44,7 @@ The following table lists the configurable parameters of the pushgateway chart a
 | `extraArgs`                 | Optional flags for pushgateway                                                                                                | `[]`                              |
 | `extraVars`                 | Optional environment variables for pushgateway                                                                                | `[]`                              |
 | `image.repository`          | Image repository                                                                                                              | `prom/pushgateway`                |
-| `image.tag`                 | Image tag                                                                                                                     | `v0.8.0`                          |
+| `image.tag`                 | Image tag                                                                                                                     | `v0.9.0`                          |
 | `image.pullPolicy`          | Image pull policy                                                                                                             | `IfNotPresent`                    |
 | `ingress.enabled`           | Enables Ingress for pushgateway                                                                                               | `false`                           |
 | `ingress.annotations`       | Ingress annotations                                                                                                           | `{}`                              |
