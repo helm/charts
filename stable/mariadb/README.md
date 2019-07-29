@@ -66,7 +66,8 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `volumePermissions.image.pullPolicy` | Init container volume-permissions image pull policy                                                                                                       | `Always`                                                     |
 | `volumePermissions.resources`        | Init container resource requests/limit                                                                                                                    | `nil`                                                        |
 | `service.type`                            | Kubernetes service type                             | `ClusterIP`                                                       |
-| `service.clusterIp`                       | Specific cluster IP when service type is cluster IP. Use None for headless service | `nil`                              |
+| `service.clusterIp.master`                | Specific cluster IP for master when service type is cluster IP. Use None for headless service | `nil`                   |
+| `service.clusterIp.slave`                 | Specific cluster IP for slave when service type is cluster IP. Use None for headless service | `nil`                    |
 | `service.port`                            | MySQL service port                                  | `3306`                                                            |
 | `serviceAccount.create`                   | Specifies whether a ServiceAccount should be created | `false`                                                          |
 | `serviceAccount.name`                     | The name of the ServiceAccount to create            | Generated using the mariadb.fullname template                     |
