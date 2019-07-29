@@ -1,0 +1,15 @@
+apiVersion: v1
+description: A Helm chart for Squid - HTTP/HTTPS(and more) Caching proxy
+name: squid
+version: 0.0.2
+icon: https://www.proxyrack.com/wp-content/uploads/2017/03/squid_holding_computer2.png
+home: http://www.squid-cache.org
+appVersion: 3.5.27-2
+keywords:
+- cache
+- squid
+sources:
+- https://github.com/squid-cache/squid
+maintainers:
+- name: Asaf
+  email: asaf@sysbind.co.il
