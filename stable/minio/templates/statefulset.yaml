@@ -30,6 +30,7 @@ metadata:
 spec:
   updateStrategy:
     type: {{ .Values.StatefulSetUpdate.updateStrategy }}
+  podManagementPolicy: "Parallel"
   serviceName: {{ template "minio.fullname" . }}-svc
   replicas: {{ .Values.replicas }}
   selector:
