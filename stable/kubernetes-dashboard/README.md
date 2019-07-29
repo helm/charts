@@ -80,7 +80,7 @@ The following table lists the configurable parameters of the kubernetes-dashboar
 | `affinity`                          | Affinity for pod assignment                                                                                                 | `[]`                                                                       |
 | `priorityClassName`                 | Name of Priority Class to assign pods                                                                                       | nil                                                                       |
 | `enableSkipLogin`                   | Enable possibility to skip login                                                                                            | `false`                                                                    |
-| `enableInsecureLogin`               | Serve application over HTTP without TLS                                                                                     | `false`                                                                    |
+| `enableInsecureLogin`               | Enable login page to serve over HTTP                                                                                        | `false`                                                                    |
 | `service.externalPort`              | Dashboard external port                                                                                                     | 443                                                                        |
 | `service.internalPort`              | Dashboard internal port                                                                                                     | 443                                                                        |
 | `service.loadBalancerSourceRanges`  | list of IP CIDRs allowed access to load balancer (if supported)                                                             | nil                                                                        |
@@ -102,6 +102,7 @@ The following table lists the configurable parameters of the kubernetes-dashboar
 | `podDisruptionBudget.maxUnavailable`| Maximum unavailable instances; ignored if there is no PodDisruptionBudget                                                   |                                                                            |
 | `securityContext`                   | PodSecurityContext for pod level securityContext                                                                            | `{}`                                                                       |
 | `networkPolicy`                     | Whether to create a network policy that allows access to the service                                                        | `false`                                                                    |
+| `protocolHttp`                      | Serve application over HTTP without TLS                                                                                     | `false`                                                                    | 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

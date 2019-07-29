@@ -18,11 +18,13 @@ annotations: {}
 labels: {}
 # kubernetes.io/name: "Kubernetes Dashboard"
 
+## Serve application over HTTP without TLS
+protocolHTTP: false
 
 ## Enable possibility to skip login
 enableSkipLogin: false
 
-## Serve application over HTTP without TLS
+## Enable login page to serve over HTTP
 enableInsecureLogin: false
 
 ## Additional container arguments

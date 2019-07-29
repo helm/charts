@@ -48,7 +48,7 @@ spec:
 {{- end }}
 {{- if .Values.enableInsecureLogin }}
           - --enable-insecure-login
-{{- else }}
+{{- else if not .Values.protocolHttp }}
           - --auto-generate-certificates
 {{- end }}
 {{- if .Values.extraArgs }}
@@ -59,7 +59,7 @@ spec:
 {{ toYaml .Values.extraEnv | indent 10 }}
 {{- end }}
         ports:
-{{- if .Values.enableInsecureLogin }}
+{{- if .Values.protocolHttp }}
         - name: http
           containerPort: 9090
           protocol: TCP
@@ -76,7 +76,7 @@ spec:
           name: tmp-volume
         livenessProbe:
           httpGet:
-{{- if .Values.enableInsecureLogin }}
+{{- if .Values.protocolHttp }}
             scheme: HTTP
             path: /
             port: 9090
