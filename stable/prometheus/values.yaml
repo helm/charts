@@ -505,6 +505,7 @@ server:
   ## Prometheus server container name
   ##
   name: server
+  initContainers:
   sidecarContainers:
 
   ## Prometheus server container image
