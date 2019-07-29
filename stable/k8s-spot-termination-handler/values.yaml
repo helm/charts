@@ -17,6 +17,9 @@ image:
   tag: 1.13.0-1
   pullPolicy: IfNotPresent
 
+# URL of EC2 spot instance termination notice endpoint
+noticeUrl: http://169.254.169.254/latest/meta-data/spot/termination-time
+
 # Poll the metadata every pollInterval seconds for termination events:
 pollInterval: 5
 
