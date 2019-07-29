@@ -149,7 +149,9 @@ spec:
       labels:
 {{ include "spinnaker.standard-labels-base" . | indent 8 }}
     spec:
-      storageClassName: {{ .Values.volumeClaim.storageClassName }}
+      {{- if .Values.volumeClaim.storageClassName }}
+      	storageClassName: {{ .Values.volumeClaim.storageClassName }}
+      {{- end }}
       accessModes: [ "ReadWriteOnce" ]
       resources:
         requests:

@@ -231,5 +231,5 @@ serviceAccount:
   spinnakerName:
 
 volumeClaim:
-  storageClassName:
+  # storageClassName: default
   storage: 10Gi
