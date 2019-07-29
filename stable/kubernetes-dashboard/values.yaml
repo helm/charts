@@ -175,3 +175,5 @@ podDisruptionBudget:
   maxUnavailable:
 
 securityContext: {}
+
+networkPolicy: false

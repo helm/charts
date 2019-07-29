@@ -163,3 +163,30 @@ Also, we can't use a single if because lazy evaluation is not an option
     {{- printf "%s/%s:%s" $registryName $repositoryName $tag -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Compile all warnings into a single message, and call fail.
+*/}}
+{{- define "mongodb.validateValues" -}}
+{{- $messages := list -}}
+{{- $messages := append $messages (include "mongodb.validateValues.mongodbCustomDatabase" .) -}}
+{{- $messages := without $messages "" -}}
+{{- $message := join "\n" $messages -}}
+
+{{- if $message -}}
+{{-   printf "\nVALUES VALIDATION:\n%s" $message | fail -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Validate values of MongoDB - both mongodbUsername and mongodbDatabase are necessary
+to create a custom user and database during 1st initialization
+*/}}
+{{- define "mongodb.validateValues.mongodbCustomDatabase" -}}
+{{- if or (and .Values.mongodbUsername (not .Values.mongodbDatabase)) (and (not .Values.mongodbUsername) .Values.mongodbDatabase) }}
+mongodb: mongodbUsername, mongodbDatabase
+    Both mongodbUsername and mongodbDatabase must be provided to create
+    a custom user and database during 1st initialization.
+    Please set both of them (--set mongodbUsername="xxxx",mongodbDatabase="yyyy")
+{{- end -}}
+{{- end -}}

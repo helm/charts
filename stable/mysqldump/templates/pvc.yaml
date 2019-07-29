@@ -5,10 +5,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: {{ template "mysqldump.fullname" . }}
   labels:
-    app.kubernetes.io/name: {{ include "mysqldump.name" . }}
-    helm.sh/chart: {{ include "mysqldump.chart" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{ include "mysqldump.labels" . | indent 4 }}
 spec:
   accessModes: [{{ .Values.persistence.accessMode | quote }}]
   {{- if .Values.persistence.storageClass }}

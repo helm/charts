@@ -37,9 +37,9 @@ The command removes all the Kubernetes components associated with the chart and 
 The following tables lists the configurable parameters of the Node-RED chart and their default values.
 
 | Parameter                          | Description                                                             | Default                   |
-|:-----------------------------------|:------------------------------------------------------------------------|:--------------------------|
+|:---------------------------------- |:----------------------------------------------------------------------- |:------------------------- |
 | `image.repository`                 | node-red image                                                          | `nodered/node-red-docker` |
-| `image.tag`                        | node-red image tag                                                      | `0.20.5-slim-v8`          |
+| `image.tag`                        | node-red image tag                                                      | `0.20.7-slim-v8`          |
 | `image.pullPolicy`                 | node-red image pull policy                                              | `IfNotPresent`            |
 | `strategyType`                     | Specifies the strategy used to replace old Pods by new ones             | `Recreate`                |
 | `flows`                            | Default flows configuration                                             | `flows.json`              |
