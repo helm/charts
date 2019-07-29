@@ -145,6 +145,10 @@ serviceAccount:
   ## Specifies whether a ServiceAccount should be created
   ##
   create: true
+  ## Annotations to set for the ServiceAccount
+  # annotations:
+    # my-annotation: my-annotation-value
+  annotations: {}
   ## The name of the ServiceAccount to use.
   ## If not set and create is true, a name is generated using the fullname template
   name:
