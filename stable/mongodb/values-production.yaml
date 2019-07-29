@@ -166,11 +166,9 @@ replicaSet:
   pdb:
     enabled: true
     minAvailable:
-      primary: 1
       secondary: 1
       arbiter: 1
     # maxUnavailable:
-      # primary: 1
       # secondary: 1
       # arbiter: 1
 
