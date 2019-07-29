@@ -32,6 +32,7 @@ spec:
       affinity:
 {{ toYaml .Values.affinity | indent 8 }}
 {{- end }}
+      serviceAccount: {{ template "stackdriver-exporter.serviceAccountName" . }}
       restartPolicy: {{ .Values.restartPolicy }}
       volumes:
       {{- if .Values.stackdriver.serviceAccountSecret }}
