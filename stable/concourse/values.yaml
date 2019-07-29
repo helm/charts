@@ -354,7 +354,7 @@ concourse:
 
       ## pipeline-specific template for SSM parameters, defaults to: /concourse/{{.Team}}/{{.Pipeline}}/{{.Secret}}
       ##
-      pipelineSecretTemplate: /concourse/{{.Team}}/{{.Pipeline}}/{{.Secret}})
+      pipelineSecretTemplate: /concourse/{{.Team}}/{{.Pipeline}}/{{.Secret}}
 
       ## team-specific template for SSM parameters, defaults to: /concourse/{{.Team}}/{{.Secret}}
       ##
