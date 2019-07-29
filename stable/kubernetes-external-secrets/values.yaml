@@ -5,7 +5,6 @@
 # Environment variables to set on deployment pod
 env:
   AWS_REGION: us-west-2
-  EVENTS_INTERVAL_MILLISECONDS: 60000
   POLLER_INTERVAL_MILLISECONDS: 10000
 
 # Create environment variables from exists k8s secrets
