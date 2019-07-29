@@ -63,8 +63,6 @@ The following table lists the configurable parameters of the Terracotta chart an
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
-helm install --dry-run --name my-release  --set replicaCount=4   --debug stable/terracotta
-
 ```bash
 $ helm install --name my-release \
   --set replicaCount=3  --set offheaps[0].name=otherOffheap --set offheaps[0].unit=GB --set offheaps[0].size=6 \
