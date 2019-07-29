@@ -1,23 +1,25 @@
+{{- if .Values.mancenter.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "hazelcast.fullname" . }}
+  name: {{ template "mancenter.fullname" . }}
   labels:
     app.kubernetes.io/name: {{ template "hazelcast.name" . }}
     helm.sh/chart: {{ template "hazelcast.chart" . }}
     app.kubernetes.io/instance: "{{ .Release.Name }}"
     app.kubernetes.io/managed-by: "{{ .Release.Service }}"
 spec:
-  type: {{ .Values.service.type }}
-  {{- if .Values.service.clusterIP }}
-  clusterIP: {{ .Values.service.clusterIP }}
+  type: {{ .Values.mancenter.service.type }}
+  {{- if .Values.mancenter.service.clusterIP }}
+  clusterIP: {{ .Values.mancenter.service.clusterIP }}
   {{- end }}
   selector:
     app.kubernetes.io/name: {{ template "hazelcast.name" . }}
     app.kubernetes.io/instance: "{{ .Release.Name }}"
-    role: hazelcast
+    role: mancenter
   ports:
   - protocol: TCP
-    port: {{ .Values.service.port }}
-    targetPort: hazelcast
-    name: hzport
+    port: {{ .Values.mancenter.service.port }}
+    targetPort: mancenter
+    name: mancenterport
+{{- end }}

@@ -4,17 +4,17 @@ kind: Service
 metadata:
   name: {{ template "hazelcast.fullname" . }}-metrics
   labels:
-    app: {{ template "hazelcast.name" . }}
-    chart: {{ template "hazelcast.chart" . }}
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/name: {{ template "hazelcast.name" . }}
+    helm.sh/chart: {{ template "hazelcast.chart" . }}
+    app.kubernetes.io/instance: "{{ .Release.Name }}"
+    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
   annotations:
 {{ toYaml .Values.metrics.service.annotations | indent 4 }}
 spec:
   type: {{ .Values.metrics.service.type }}
   selector:
-    app: {{ template "hazelcast.name" . }}
-    release: "{{ .Release.Name }}"
+    app.kubernetes.io/name: {{ template "hazelcast.name" . }}
+    app.kubernetes.io/instance: "{{ .Release.Name }}"
   ports:
   - protocol: TCP
     port: {{ .Values.metrics.service.port }}

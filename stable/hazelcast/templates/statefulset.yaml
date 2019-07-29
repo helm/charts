@@ -3,22 +3,26 @@ kind: StatefulSet
 metadata:
   name: {{ template "hazelcast.fullname" . }}
   labels:
-    app: {{ template "hazelcast.name" . }}
-    chart: {{ template "hazelcast.chart" . }}
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/name: {{ template "hazelcast.name" . }}
+    helm.sh/chart: {{ template "hazelcast.chart" . }}
+    app.kubernetes.io/instance: "{{ .Release.Name }}"
+    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
 spec:
   serviceName: {{ template "hazelcast.fullname" . }}
   replicas: {{ .Values.cluster.memberCount }}
   selector:
     matchLabels:
-      app: {{ template "hazelcast.name" . }}
-      release: "{{ .Release.Name }}"
+      app.kubernetes.io/name: {{ template "hazelcast.name" . }}
+      app.kubernetes.io/instance: "{{ .Release.Name }}"
+      role: hazelcast
   template:
     metadata:
       labels:
-        app: {{ template "hazelcast.name" . }}
-        release: "{{ .Release.Name }}"
+        app.kubernetes.io/name: {{ template "hazelcast.name" . }}
+        helm.sh/chart: {{ template "hazelcast.chart" . }}
+        app.kubernetes.io/instance: "{{ .Release.Name }}"
+        app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+        role: hazelcast
     spec:
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
@@ -33,19 +37,23 @@ spec:
       {{- if .Values.gracefulShutdown.enabled }}
       terminationGracePeriodSeconds: {{ .Values.gracefulShutdown.maxWaitSeconds }}
       {{- end }}
+      hostNetwork: false
+      hostPID: false
+      hostIPC: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+        fsGroup: {{ .Values.securityContext.fsGroup }}
       containers:
       - name: {{ template "hazelcast.fullname" . }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
-        {{- if .Values.securityContext }}
-        securityContext:
-{{ toYaml .Values.securityContext | indent 10 }}
-        {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         ports:
         - name: hazelcast
           containerPort: 5701
+          hostPort: {{ .Values.hostPort }}
         {{- if .Values.metrics.enabled }}
         - name: metrics
           containerPort: {{ .Values.metrics.service.port }}
@@ -75,15 +83,42 @@ spec:
         volumeMounts:
         - name: hazelcast-storage
           mountPath: /data/hazelcast
+        {{- if .Values.customVolume }}
+        - name: hazelcast-custom
+          mountPath: /data/custom
+        {{- end }}
         env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
         {{- if .Values.metrics.enabled }}
         - name: PROMETHEUS_PORT
           value: "{{ .Values.metrics.service.port }}"
         {{- end }}
         - name: JAVA_OPTS
-          value: "-Dhazelcast.rest.enabled={{ .Values.hazelcast.rest }} -Dhazelcast.config=/data/hazelcast/hazelcast.yaml -DserviceName={{ template "hazelcast.fullname" . }} -Dnamespace={{ .Release.Namespace }} {{ if .Values.gracefulShutdown.enabled }}-Dhazelcast.shutdownhook.policy=GRACEFUL -Dhazelcast.shutdownhook.enabled=true -Dhazelcast.graceful.shutdown.max.wait={{ .Values.gracefulShutdown.maxWaitSeconds }} {{ end }} {{ if .Values.metrics.enabled }}-Dhazelcast.jmx=true{{ end }} {{ .Values.hazelcast.javaOpts }}"
+          value: "-Dhazelcast.rest.enabled={{ .Values.hazelcast.rest }} -Dhazelcast.config=/data/hazelcast/hazelcast.yaml -DserviceName={{ template "hazelcast.fullname" . }} -Dnamespace={{ .Release.Namespace }} -Dhazelcast.mancenter.enabled={{ .Values.mancenter.enabled }} -Dhazelcast.mancenter.url=http://{{ template "mancenter.fullname" . }}:{{ .Values.mancenter.service.port }}/hazelcast-mancenter {{ if .Values.gracefulShutdown.enabled }}-Dhazelcast.shutdownhook.policy=GRACEFUL -Dhazelcast.shutdownhook.enabled=true -Dhazelcast.graceful.shutdown.max.wait={{ .Values.gracefulShutdown.maxWaitSeconds }} {{ end }} {{ if .Values.metrics.enabled }}-Dhazelcast.jmx=true{{ end }} {{ .Values.hazelcast.javaOpts }}"
+        {{- if .Values.securityContext.enabled }}
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: {{ .Values.securityContext.runAsUser }}
+          privileged: false
+          readOnlyRootFilesystem: true
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+        {{- end }}
       serviceAccountName: {{ template "hazelcast.serviceAccountName" . }}
       volumes:
       - name: hazelcast-storage
         configMap:
+          {{- if .Values.hazelcast.existingConfigMap }}
+          name: {{ .Values.hazelcast.existingConfigMap }}
+          {{- else }}
           name: {{ template "hazelcast.fullname" . }}-configuration
+          {{- end }}
+      {{- if .Values.customVolume }}
+      - name: hazelcast-custom
+{{ toYaml .Values.customVolume | indent 8 }}
+      {{- end }}
