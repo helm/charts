@@ -11,6 +11,15 @@ spec:
       app: {{ template "opa.fullname" . }}
   template:
     metadata:
+{{- if and .Values.generateAdmissionControllerCerts .Values.opa }}
+      annotations:
+{{- if .Values.generateAdmissionControllerCerts }}
+        checksum/certs: {{ include (print $.Template.BasePath "/webhookconfiguration.yaml") . | sha256sum }}
+{{- end }}
+{{- if .Values.opa }}
+        checksum/config: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
+{{- end }}
+{{- end }}
       labels:
         app: {{ template "opa.fullname" . }}
       name: {{ template "opa.fullname" . }}

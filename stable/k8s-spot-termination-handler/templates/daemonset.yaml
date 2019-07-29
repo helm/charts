@@ -37,6 +37,10 @@ spec:
             - name: VERBOSE
               value: {{ . | quote }}
             {{- end }}
+            {{- with .Values.noticeUrl }}
+            - name: NOTICE_URL
+              value: {{ . | quote }}
+            {{- end }}
             {{- if not .Values.enableLogspout }}
             - name: LOGSPOUT
               value: "ignore"

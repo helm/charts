@@ -80,7 +80,13 @@ The following table lists the configurable parameters of the Hazelcast chart and
 | `rbac.create`                              | Enable installing RBAC Role authorization                                                                      | `true`                                               |
 | `serviceAccount.create`                    | Enable installing Service Account                                                                              | `true`                                               |
 | `serviceAccount.name`                      | Name of Service Account, if not set, the name is generated using the fullname template                         | `nil`                                                |
-
+| `securityContext.enabled`                  | Enables Security Context for Hazelcast Jet                                 | `true`                                               |
+| `securityContext.runAsUser`                | User ID used to run the Hazelcast Jet containers                           | `1001`                                               |
+| `securityContext.fsGroup`                  | Group ID associated with the Hazelcast Jet container                       | `1001`                                               |
+| `metrics.enabled`                          | Turn on and off JMX Prometheus metrics available at `/metrics`                                                 | `false`                                              |
+| `metrics.service.type`                     | Type of the metrics service                                                                                    | `ClusterIP`                                          |
+| `metrics.service.port`                     | Port of the `/metrics` endpoint and the metrics service                                                        | `8080`                                               |
+| `metrics.service.annotations`              | Annotations for the Prometheus discovery                                                                       |                                                      |
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
