@@ -19,12 +19,22 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- end -}}
 {{- end -}}
 
+{{/* Generate mode label */}}
+{{- define "newrelic.mode" }}
+{{- if .Values.privileged -}}
+privileged
+{{- else -}}
+unprivileged
+{{- end }}
+{{- end -}}
+
 {{/* Generate basic labels */}}
 {{- define "newrelic.labels" }}
 app: {{ template "newrelic.name" . }}
 chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
 heritage: {{.Release.Service }}
 release: {{.Release.Name }}
+mode: {{ template "newrelic.mode" . }}
 {{- end }}
 
 {{/*
@@ -42,5 +52,16 @@ Create the name of the service account to use
     {{ default (include "newrelic.fullname" .) .Values.serviceAccount.name }}
 {{- else -}}
     {{ default "default" .Values.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Create the image name depending on the "privileged" flag
+*/}}
+{{- define "newrelic.image" -}}
+{{- if .Values.privileged -}}
+"{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+{{- else -}}
+"{{ .Values.image.repository }}:{{ .Values.image.tag }}-unprivileged"
 {{- end -}}
 {{- end -}}
