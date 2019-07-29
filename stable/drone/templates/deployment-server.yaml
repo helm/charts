@@ -67,6 +67,10 @@ spec:
           {{- else }}
             value: "{{ template "drone.fullname" . }}"
           {{- end }}
+          - name: DRONE_RPC_PROTO
+            value: "{{ .Values.server.rpcProtocol }}"
+          - name: DRONE_RPC_HOST
+            value: {{ template "drone.fullname" . }}.{{ .Release.Namespace }}:{{ .Values.service.httpPort }}
           - name: DRONE_SERVER_PROTO
             value: {{ .Values.server.protocol }}
           {{- if .Values.server.adminUser }}
@@ -117,7 +121,7 @@ spec:
         - name: data
           mountPath: /var/lib/drone
 {{- with .Values.server.extraContainers }}
-{{ tpl . $ | indent 10 }}
+{{ tpl . $ | indent 6 }}
 {{- end }}
       volumes:
       {{ if eq .Values.sourceControl.provider "bitbucketServer" -}}

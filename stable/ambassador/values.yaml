@@ -1,3 +1,4 @@
+---
 # Default values for ambassador.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
@@ -46,7 +47,7 @@ securityContext:
 
 image:
   repository: quay.io/datawire/ambassador
-  tag: 0.72.0
+  tag: 0.73.0
   pullPolicy: IfNotPresent
 
 nameOverride: ""
@@ -97,6 +98,8 @@ rbac:
   # Specifies whether RBAC resources should be created
   create: true
   namespaced: false
+  podSecurityPolicies:
+    {}
 
 scope:
   # tells Ambassador to only use resources in the namespace or namespace set by namespace.name
@@ -108,6 +111,8 @@ serviceAccount:
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
   name:
+
+additionalTCPPorts: []
 
 initContainers: []
 
@@ -123,6 +128,10 @@ podAnnotations:
   # prometheus.io/scrape: "true"
   # prometheus.io/port: "9102"
 
+deploymentAnnotations:
+  {}
+  # configmap.reloader.stakater.com/auto: "true"
+
 resources:
   {}
   # If you do want to specify resources, uncomment the following
@@ -133,6 +142,8 @@ resources:
   # requests:
   #  cpu: 100m
   #  memory: 128Mi
+
+priorityClassName: ""
 
 nodeSelector: {}
 

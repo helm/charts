@@ -1,7 +1,7 @@
 apiVersion: v1
 name: sonatype-nexus
-version: 1.18.4
-appVersion: 3.15.2-01
+version: 1.19.0
+appVersion: 3.17.0-01
 description: Sonatype Nexus is an open source repository manager
 keywords:
   - artifacts

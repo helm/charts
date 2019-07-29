@@ -20,6 +20,8 @@ prometheus:
     additionalLabels: {}
     namespace: ""
 
+    scrapeTimeout: 10s
+
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
@@ -27,7 +29,7 @@ resources: {}
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
   # limits:
   #   cpu: 200m
-  #    memory: 50Mi
+  #   memory: 50Mi
   # requests:
   #   cpu: 100m
   #   memory: 30Mi
@@ -97,3 +99,9 @@ extraHostVolumeMounts: {}
 #    mountPath: <mountPath>
 #    readOnly: true|false
 #    mountPropagation: None|HostToContainer|Bidirectional
+
+## Additional configmaps to be mounted.
+##
+configmaps: {}
+# - name: <configMapName>
+#   mountPath: <mountPath>

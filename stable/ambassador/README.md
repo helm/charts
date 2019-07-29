@@ -50,7 +50,7 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `ambassadorConfig`                 | Config thats mounted to `/ambassador/ambassador-config`                         | `""`                              |
 | `crds.create`                      | If `true`, Creates CRD resources                                                | `true`                            |
 | `crds.keep`                        | If `true`, if the ambassador CRDs should be kept when the chart is deleted      | `true`                            |
-| `daemonSet`                        | If `true`, Create a daemonSet. By default Deployment controller will be created | `false`                           |
+| `daemonSet`                        | If `true`, Create a DaemonSet. By default Deployment controller will be created | `false`                           |
 | `hostNetwork`                      | If `true`, uses the host network, useful for on-premise setups                  | `false`                           |
 | `dnsPolicy`                        | Dns policy, when hostNetwork set to ClusterFirstWithHostNet                     | `ClusterFirst`                    |
 | `env`                              | Any additional environment variables for ambassador pods                        | `{}`                              |
@@ -61,7 +61,9 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `namespace.name`                   | Set the `AMBASSADOR_NAMESPACE` environment variable                             | `metadata.namespace`              |
 | `scope.singleNamespace`            | Set the `AMBASSADOR_SINGLE_NAMESPACE` environment variable                      | `false`                           |
 | `podAnnotations`                   | Additional annotations for ambassador pods                                      | `{}`                              |
+| `deploymentAnnotations`            | Additional annotations for ambassador DaemonSet/Deployment                      | `{}`                              |
 | `podLabels`                        | Additional labels for ambassador pods                                           |                                   |
+| `priorityClassName`                | The name of the priorityClass for the ambassador DaemonSet/Deployment           | `""`                              |
 | `prometheusExporter.enabled`       | Prometheus exporter side-car enabled                                            | `false`                           |
 | `prometheusExporter.pullPolicy`    | Image pull policy                                                               | `IfNotPresent`                    |
 | `prometheusExporter.repository`    | Prometheus exporter image                                                       | `prom/statsd-exporter`            |
@@ -69,6 +71,7 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `prometheusExporter.resources`  | CPU/memory resource requests/limits                                                       | `{}`                          |
 | `rbac.create`                      | If `true`, create and use RBAC resources                                        | `true`                            |
 | `rbac.namespaced`                  | If `true`, permissions are namespace-scoped rather than cluster-scoped          | `false`                           |
+| `rbac.podSecurityPolicies`         | pod security polices to bind to                                                 |                                   |
 | `replicaCount`                     | Number of Ambassador replicas                                                   | `3`                               |
 | `resources`                        | CPU/memory resource requests/limits                                             | `{}`                              |
 | `securityContext`                  | Set security context for pod                                                    | `{ "runAsUser": "8888" }`         |
@@ -102,6 +105,7 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `autoscaling.minReplica`           | If autoscaling enabled, this field sets minimum replica count                   | `2`                               |
 | `autoscaling.maxReplica`           | If autoscaling enabled, this field sets maximum replica count                   | `5`                               |
 | `autoscaling.metrics`              | If autoscaling enabled, configure hpa metrics                                   |                                   |
+| `additionalTCPPorts`               | List of additional TCP ports to be exposed by the container and service         | `[]`                              |
 
 **NOTE:** Make sure the configured `service.http.targetPort` and `service.https.targetPort` ports match your [Ambassador Module's](https://www.getambassador.io/reference/modules/#the-ambassador-module) `service_port` and `redirect_cleartext_from` configurations.
 

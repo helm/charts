@@ -33,8 +33,18 @@ spec:
       {{- else if eq .Values.service.type "ClusterIP" }}
       nodePort: null
       {{- end }}
+      {{- if .Values.metrics.enabled }}
+    - name: metrics
+      port: {{ .Values.service.metricsPort }}
+      targetPort: metrics
+      {{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nodePorts.metrics)))}}
+      nodePort: {{ .Values.service.nodePorts.metrics }}
+      {{- else if eq .Values.service.type "ClusterIP" }}
+      nodePort: null
+      {{- end }}
+      {{- end }}
 {{- if .Values.service.extraPorts }}
-{{ toYaml .Values.service.extraPorts | indent 6 }}
+{{ toYaml .Values.service.extraPorts | indent 4 }}
 {{- end }}      
   selector:
     app: "{{ template "wordpress.fullname" . }}"

@@ -68,6 +68,12 @@ spec:
             {{- end }}
             {{- end }}
             {{- end }}
+            {{- if .Values.configmaps }}
+            {{- range $_, $mount := .Values.configmaps }}
+            - name: {{ $mount.name }}
+              mountPath: {{ $mount.mountPath }}
+            {{- end }}
+            {{- end }}
       hostNetwork: {{ .Values.hostNetwork }}
       hostPID: true
 {{- if .Values.affinity }}
@@ -94,5 +100,12 @@ spec:
         - name: {{ $mount.name }}
           hostPath:
             path: {{ $mount.hostPath }}
+        {{- end }}
+        {{- end }}
+        {{- if .Values.configmaps }}
+        {{- range $_, $mount := .Values.configmaps }}
+        - name: {{ $mount.name }}
+          configMap:
+            name: {{ $mount.name }}
         {{- end }}
         {{- end }}

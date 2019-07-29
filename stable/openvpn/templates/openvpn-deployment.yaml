@@ -40,6 +40,19 @@ spec:
           capabilities:
             add:
               - NET_ADMIN
+        readinessProbe:
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          successThreshold: 2
+          exec:
+            command:
+            - nc
+        {{- if eq .Values.openvpn.OVPN_PROTO "udp" }}
+            - -u
+        {{- end }}
+            - -z
+            - 127.0.0.1
+            - "{{ .Values.service.internalPort }}"
         resources:
           requests:
             cpu: "{{ .Values.resources.requests.cpu }}"
@@ -79,6 +92,10 @@ spec:
             path: "pki/issued/server.crt"
           - key: "dh.pem"
             path: "pki/dh.pem"
+          {{- if .Values.openvpn.useCrl }}
+          - key: "crl.pem"
+            path: "crl.pem"
+          {{- end }}
           {{- if .Values.openvpn.taKey }}
           - key: "ta.key"
             path: "pki/ta.key"

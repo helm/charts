@@ -95,6 +95,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `client.podAnnotations`              | Client Deployment annotations                                       | `{}`                                                |
 | `client.nodeSelector`                | Node labels for client pod assignment                               | `{}`                                                |
 | `client.tolerations`                 | Client tolerations                                                  | `[]`                                                |
+| `client.terminationGracePeriodSeconds` | Client nodes: Termination grace period (seconds)                  | `nil`                                               |
 | `client.serviceAnnotations`          | Client Service annotations                                          | `{}`                                                |
 | `client.serviceType`                 | Client service type                                                 | `ClusterIP`                                         |
 | `client.httpNodePort`                | Client service HTTP NodePort port number. Has no effect if client.serviceType is not `NodePort`.   | `nil`                                         |
@@ -103,6 +104,8 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `client.antiAffinity`                | Client anti-affinity policy                                         | `soft`                                              |
 | `client.nodeAffinity`                | Client node affinity policy                                         | `{}`                                                |
 | `client.initResources`               | Client initContainer resources requests & limits                    | `{}`                                                |
+| `client.hooks.preStop`               | Client nodes: Lifecycle hook script to execute prior the pod stops  | `nil`                                               |
+| `client.hooks.preStart`              | Client nodes: Lifecycle hook script to execute after the pod starts | `nil`                                               |
 | `client.additionalJavaOpts`          | Parameters to be added to `ES_JAVA_OPTS` environment variable for client | `""`                                           |
 | `client.ingress.enabled`             | Enable Client Ingress                                               | `false`                                             |
 | `client.ingress.user`                | If this & password are set, enable basic-auth on ingress            | `nil`                                               |
@@ -121,6 +124,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `master.podAnnotations`              | Master Deployment annotations                                       | `{}`                                                |
 | `master.nodeSelector`                | Node labels for master pod assignment                               | `{}`                                                |
 | `master.tolerations`                 | Master tolerations                                                  | `[]`                                                |
+| `master.terminationGracePeriodSeconds` | Master nodes: Termination grace period (seconds)                  | `nil`                                               |
 | `master.heapSize`                    | Master node heap size                                               | `512m`                                              |
 | `master.name`                        | Master component name                                               | `master`                                            |
 | `master.persistence.enabled`         | Master persistent enabled/disabled                                  | `true`                                              |
@@ -133,6 +137,8 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `master.nodeAffinity`                | Master node affinity policy                                         | `{}`                                                |
 | `master.podManagementPolicy`         | Master pod creation strategy                                        | `OrderedReady`                                      |
 | `master.updateStrategy`              | Master node update strategy policy                                  | `{type: "onDelete"}`                                |
+| `master.hooks.preStop`               | Master nodes: Lifecycle hook script to execute prior the pod stops  | `nil`                                               |
+| `master.hooks.preStart`              | Master nodes: Lifecycle hook script to execute after the pod starts | `nil`                                               |
 | `data.initResources`                 | Data initContainer resources requests & limits                      | `{}`                                                |
 | `data.additionalJavaOpts`            | Parameters to be added to `ES_JAVA_OPTS` environment variable for data | `""`                                             |
 | `data.exposeHttp`                    | Expose http port 9200 on data Pods for monitoring, etc              | `false`                                             |
@@ -141,6 +147,8 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `data.priorityClassName`             | Data priorityClass                                                  | `nil`                                               |
 | `data.heapSize`                      | Data node heap size                                                 | `1536m`                                             |
 | `data.hooks.drain.enabled`           | Data nodes: Enable drain pre-stop and post-start hook               | `true`                                              |
+| `data.hooks.preStop`                 | Data nodes: Lifecycle hook script to execute prior the pod stops. Ignored if `data.hooks.drain.enabled` is `true` | `nil` |
+| `data.hooks.preStart`                | Data nodes: Lifecycle hook script to execute after the pod starts. Ignored if `data.hooks.drain.enabled` is `true` | `nil`|
 | `data.persistence.enabled`           | Data persistent enabled/disabled                                    | `true`                                              |
 | `data.persistence.name`              | Data statefulset PVC template name                                  | `data`                                              |
 | `data.persistence.size`              | Data persistent volume size                                         | `30Gi`                                              |
@@ -155,7 +163,8 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `data.nodeAffinity`                  | Data node affinity policy                                           | `{}`                                                |
 | `data.podManagementPolicy`           | Data pod creation strategy                                          | `OrderedReady`                                      |
 | `data.updateStrategy`                | Data node update strategy policy                                    | `{type: "onDelete"}`                                |
-| `sysctlInitContainer.enabled`        | If true, the sysctl init container is enabled (does not stop extraInitContainers from running) | `true`                                              |
+| `sysctlInitContainer.enabled`        | If true, the sysctl init container is enabled (does not stop chownInitContainer or extraInitContainers from running) | `true`                                              |
+| `chownInitContainer.enabled`        | If true, the chown init container is enabled (does not stop sysctlInitContainer or extraInitContainers from running) | `true`                                              |
 | `extraInitContainers`                | Additional init container passed through the tpl                    | ``                                                  |
 | `podSecurityPolicy.annotations`      | Specify pod annotations in the pod security policy                  | `{}`                                              |
 | `podSecurityPolicy.enabled`          | Specify if a pod security policy must be created                    | `false`                                             |

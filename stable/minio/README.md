@@ -93,10 +93,10 @@ The following table lists the configurable parameters of the MinIO chart and the
 | Parameter                  | Description                         | Default                                                 |
 |----------------------------|-------------------------------------|---------------------------------------------------------|
 | `image.repository`         | Image repository                    | `minio/minio`                                           |
-| `image.tag`                | MinIO image tag. Possible values listed [here](https://hub.docker.com/r/minio/minio/tags/).| `RELEASE.2019-05-14T23-57-45Z`|
+| `image.tag`                | MinIO image tag. Possible values listed [here](https://hub.docker.com/r/minio/minio/tags/).| `RELEASE.2019-07-17T22-54-12Z`|
 | `image.pullPolicy`         | Image pull policy                   | `IfNotPresent`                                          |
 | `mcImage.repository`       | Client image repository             | `minio/mc`                                              |
-| `mcImage.tag`              | mc image tag. Possible values listed [here](https://hub.docker.com/r/minio/mc/tags/).| `RELEASE.2019-05-01T23-27-44Z`|
+| `mcImage.tag`              | mc image tag. Possible values listed [here](https://hub.docker.com/r/minio/mc/tags/).| `RELEASE.2019-07-17T22-13-42Z`|
 | `mcImage.pullPolicy`       | mc Image pull policy                | `IfNotPresent`                                          |
 | `ingress.enabled`          | Enables Ingress                     | `false`                                                 |
 | `ingress.annotations`      | Ingress annotations                 | `{}`                                                    |
@@ -115,6 +115,8 @@ The following table lists the configurable parameters of the MinIO chart and the
 | `service.port`             | Kubernetes port where service is exposed| `9000`                                              |
 | `service.externalIPs`      | service external IP addresses | `nil`                                                         |
 | `service.annotations`      | Service annotations                 | `{}`                                                    |
+| `serviceAccount.create`    | Toggle creation of new service account | `true`                                               |
+| `serviceAccount.name`      | Name of service account to create and/or use | `""`                                           |
 | `persistence.enabled`      | Use persistent volume to store data | `true`                                                  |
 | `persistence.size`         | Size of persistent volume claim     | `10Gi`                                                  |
 | `persistence.existingClaim`| Use an existing PVC to persist data | `nil`                                                   |
@@ -158,6 +160,11 @@ The following table lists the configurable parameters of the MinIO chart and the
 | `nasgateway.enabled`       | Use MinIO as a [NAS gateway](https://docs.MinIO.io/docs/minio-gateway-for-nas)             | `false` |
 | `nasgateway.replicas`      | Number of NAS gateway instances to be run in parallel on a PV            | `4` |
 | `environment`              | Set MinIO server relevant environment variables in `values.yaml` file. MinIO containers will be passed these variables when they start. | `MINIO_BROWSER: "on"` |
+| `metrics.serviceMonitor.enabled`          | Set this to `true` to create ServiceMonitor for Prometheus operator                   | `false` |
+| `metrics.serviceMonitor.additionalLabels` | Additional labels that can be used so ServiceMonitor will be discovered by Prometheus | `{}`    |
+| `metrics.serviceMonitor.namespace`        | Optional namespace in which to create ServiceMonitor                                  | `nil`   |
+| `metrics.serviceMonitor.interval`         | Scrape interval. If not set, the Prometheus default scrape interval is used           | `nil`   |
+| `metrics.serviceMonitor.scrapeTimeout`    | Scrape timeout. If not set, the Prometheus default scrape timeout is used             | `nil`   |
 
 Some of the parameters above map to the env variables defined in the [MinIO DockerHub image](https://hub.docker.com/r/minio/minio/).
 

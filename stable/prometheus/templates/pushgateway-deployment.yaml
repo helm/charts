@@ -7,6 +7,9 @@ metadata:
   name: {{ template "prometheus.pushgateway.fullname" . }}
 spec:
   selector:
+    {{- if .Values.schedulerName }}
+    schedulerName: "{{ .Values.schedulerName }}"
+    {{- end }}
     matchLabels:
       {{- include "prometheus.pushgateway.matchLabels" . | nindent 6 }}
   replicas: {{ .Values.pushgateway.replicaCount }}

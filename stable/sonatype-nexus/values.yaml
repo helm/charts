@@ -10,7 +10,7 @@ deploymentStrategy: {}
 
 nexus:
   imageName: quay.io/travelaudience/docker-nexus
-  imageTag: 3.15.2
+  imageTag: 3.17.0
   imagePullPolicy: IfNotPresent
   env:
     - name: install4jAddVmParams
@@ -71,7 +71,7 @@ nexusProxy:
   enabled: true
   # svcName: proxy-svc
   imageName: quay.io/travelaudience/docker-nexus-proxy
-  imageTag: 2.4.0_8u191
+  imageTag: 2.5.0
   imagePullPolicy: IfNotPresent
   port: 8080
   targetPort: 8080
@@ -125,7 +125,7 @@ persistence:
 nexusBackup:
   enabled: false
   imageName: quay.io/travelaudience/docker-nexus-backup
-  imageTag: 1.4.0
+  imageTag: 1.5.0
   imagePullPolicy: IfNotPresent
   env:
     targetBucket:
@@ -155,6 +155,15 @@ ingress:
   tls:
     enabled: true
     secretName: nexus-tls
+  # Specify custom rules in addition to or instead of the nexus-proxy rules
+  rules:
+  # - host: http://nexus.127.0.0.1.nip.io
+  #   http:
+  #     paths:
+  #     - backend:
+  #         serviceName: additional-svc
+  #         servicePort: 80
+
 
 tolerations: []
 
@@ -195,8 +204,9 @@ secret:
 service:
   # name: additional-svc
   enabled: false
-  portName: nexus-service
   labels: {}
   annotations: {}
-  targetPort: 80
-  port: 80
+  ports:
+  - name: nexus-service
+    targetPort: 80
+    port: 80
