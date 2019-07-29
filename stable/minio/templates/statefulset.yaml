@@ -131,6 +131,14 @@ spec:
             - name: {{ $key }}
               value: {{ $val | quote }}
             {{- end}}
+            {{- if and .Values.persistence.enabled .Values.gateway.enabled }}
+            - name: MINIO_CACHE_DRIVES
+              {{- if .Values.persistence.subPath }}
+              value: {{ printf "\"%s/%s\"" .Values.mountPath .Values.persistence.subPath  }}
+              {{ else }}
+              value: {{ .Values.mountPath | quote }}
+              {{- end }}
+            {{- end }}
           livenessProbe:
             httpGet:
               path: /minio/health/live
