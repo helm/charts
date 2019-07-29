@@ -27,7 +27,7 @@ The following table lists the configurable parameters of the k8s-spot-terminatio
 Parameter | Description | Default
 --- | --- | ---
 `image.repository` | container image repository | `kubeaws/kube-spot-termination-notice-handler`
-`image.tag` | container image tag | `1.13.0-1`
+`image.tag` | container image tag | `1.13.7-1`
 `image.pullPolicy` | container image pull policy | `IfNotPresent`
 `noticeUrl` | the URL of EC2 spot instance termination notice endpoint | `http://169.254.169.254/latest/meta-data/spot/termination-time`
 `pollInterval` | the interval in seconds between attempts to poll EC2 metadata API for termination events | `"5"`

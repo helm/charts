@@ -14,7 +14,7 @@ serviceAccount:
 
 image:
   repository: kubeaws/kube-spot-termination-notice-handler
-  tag: 1.13.0-1
+  tag: 1.13.7-1
   pullPolicy: IfNotPresent
 
 # URL of EC2 spot instance termination notice endpoint
