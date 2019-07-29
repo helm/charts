@@ -55,6 +55,7 @@ The following table lists the configurable parameters of the Sysdig chart and th
 | `ebpf.enabled`                  | Enable eBPF support for Sysdig instead of `sysdig-probe` kernel module | `false`                                     |
 | `ebpf.settings.mountEtcVolume`  | Needed to detect which kernel version are running in Google COS        | `true`                                      |
 | `sysdig.accessKey`              | Your Sysdig Monitor Access Key                                         | `Nil` You must provide your own key         |
+| `sysdig.existingSecret`         | Use an existing secret                                                 | `false`                                     |
 | `sysdig.settings`               | Settings for agent's configuration file                                | ` `                                         |
 | `secure.enabled`                | Enable Sysdig Secure                                                   | `false`                                     |
 | `customAppChecks`               | The custom app checks deployed with your agent                         | `{}`                                        |

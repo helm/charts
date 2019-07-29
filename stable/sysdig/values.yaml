@@ -57,6 +57,9 @@ sysdig:
   # Required: You need your Sysdig Monitor access key before running agents.
   accessKey: ""
 
+  # Use an existing secret with the same value as `sysdig.fullname`
+  existingSecret: false
+
   settings:
     ### Agent tags
     # tags: linux:ubuntu,dept:dev,local:nyc

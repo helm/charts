@@ -1,4 +1,4 @@
-{{- if .Values.sysdig.accessKey }}
+{{- if (or (.Values.sysdig.accessKey) (.Values.sysdig.existingSecret)) }}
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
