@@ -65,7 +65,9 @@ volumePermissions:
 service:
   ## Kubernetes service type, ClusterIP and NodePort are supported at present
   type: ClusterIP
-  # clusterIp: None
+  # clusterIp:
+  #   master: xx.xx.xx.xx
+  #   slave: xx.xx.xx.xx
   port: 3306
   ## Specify the nodePort value for the LoadBalancer and NodePort service types.
   ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
