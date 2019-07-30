@@ -1,0 +1,26 @@
+{{- if and (and .Values.mancenter.enabled .Values.mancenter.persistence.enabled (not .Values.mancenter.persistence.existingClaim)) }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "mancenter.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ template "hazelcast.name" . }}
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app.kubernetes.io/instance: "{{ .Release.Name }}"
+    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+spec:
+  accessModes:
+  {{- range .Values.mancenter.persistence.accessModes }}
+    - {{ . | quote }}
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.mancenter.persistence.size | quote }}
+{{- if .Values.mancenter.persistence.storageClass }}
+{{- if (eq "-" .Values.mancenter.persistence.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.mancenter.persistence.storageClass }}"
+{{- end }}
+{{- end }}
+{{- end }}
