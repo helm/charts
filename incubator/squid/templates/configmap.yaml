@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-squid-conf
+data:
+  squid.conf: |-
+{{ (tpl (.Files.Get "squid.conf") . ) | indent 4}}
+

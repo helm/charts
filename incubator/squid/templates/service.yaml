@@ -1,0 +1,24 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: squid-http
+spec:
+  selector:
+    app: squid
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 3128
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: squid-https
+spec:
+  selector:
+    app: squid
+  ports:
+  - protocol: TCP
+    port: 443
+    targetPort: 3128

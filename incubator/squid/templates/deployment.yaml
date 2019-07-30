@@ -3,7 +3,8 @@ kind: Deployment
 metadata:
   name: "squid"
   labels:
-    app: "squid"
+    app: squid
+    app.kubernetes.io/name: squid    
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
@@ -21,14 +22,14 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: {{ .Values.service.internalPort }}
-          livenessProbe:
-            httpGet:
-              path: /
-              port: {{ .Values.service.internalPort }}
-          readinessProbe:
-            httpGet:
-              path: /
-              port: {{ .Values.service.internalPort }}
+          volumeMounts:
+            - name: squid-conf
+              mountPath: /etc/squid/squid.conf
+              subPath: squid.conf       
+      volumes:
+      - name: squid-conf
+        configMap:
+          name: {{ .Release.Name }}-squid-conf              
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- if .Values.nodeSelector }}
