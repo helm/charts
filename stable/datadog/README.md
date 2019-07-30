@@ -225,7 +225,7 @@ helm install --name <RELEASE_NAME> \
 | `nameOverride`                           | Override name of app                                                                      | `nil`                                       |
 | `fullnameOverride`                       | Override full name of app                                                                 | `nil`                                       |
 | `rbac.create`                            | If true, create & use RBAC resources                                                      | `true`                                      |
-| `rbac.serviceAccount`                    | existing ServiceAccount to use (ignored if rbac.create=true)                              | `default`                                   |
+| `rbac.serviceAccountName`                | existing ServiceAccount to use (ignored if rbac.create=true)                              | `default`                                   |
 | `daemonset.podLabels`                    | labels to add to each pod                                                                 | `nil`                                       |
 | `datadog.name`                           | Container name if Daemonset or Deployment                                                 | `datadog`                                   |
 | `datadog.site`                           | Site ('datadoghq.com' or 'datadoghq.eu')                                                  | `nil`                                       |
@@ -294,7 +294,8 @@ helm install --name <RELEASE_NAME> \
 | `deployment.priorityClassName`           | Which Priority Class to associate with the deployment                                     | `nil`                                       |
 | `kubeStateMetrics.enabled`               | If true, create kube-state-metrics                                                        | `true`                                      |
 | `kube-state-metrics.rbac.create`         | If true, create & use RBAC resources for kube-state-metrics                               | `true`                                      |
-| `kube-state-metrics.rbac.serviceAccount` | existing ServiceAccount to use (ignored if rbac.create=true) for kube-state-metrics       | `default`                                   |
+| `kube-state-metrics.serviceAccount.create`                 | If true, create & use serviceAccount                                                  | `true`                                     |
+| `kube-state-metrics.serviceAccount.name`                   | If not set & create is true, use template fullname                                    |                                            |
 | `clusterAgent.enabled`                   | Use the cluster-agent for cluster metrics (Kubernetes 1.10+ only)                         | `false`                                     |
 | `clusterAgent.token`                     | A cluster-internal secret for agent-to-agent communication. Must be 32+ characters a-zA-Z | Generates a random value                    |
 | `clusterAgent.containerName`             | The container name for the Cluster Agent                                                  | `cluster-agent`                             |
