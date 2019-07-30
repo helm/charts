@@ -190,7 +190,9 @@ Parameter | Description | Default
 `serviceAccount.create` | if `true`, create a service account | `true`
 `serviceAccount.name` | The name of the service account to use. If not set and `create` is `true`, a name is generated using the fullname template. | ``
 `revisionHistoryLimit` | The number of old history to retain to allow rollback. | `10`
+`controller.tcpConfigMapNamespace` | The tcp-services-configmap namespace name | `ingress-nginx`
 `tcp` | TCP service key:value pairs. The value is evaluated as a template. | `{}`
+`controller.udpConfigMapNamespace` | The udp-services-configmap namespace name | `ingress-nginx`
 `udp` | UDP service key:value pairs The value is evaluated as a template. | `{}`
 
 ```console
