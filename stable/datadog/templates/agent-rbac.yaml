@@ -7,6 +7,10 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
+    app.kubernetes.io/name: "{{ template "datadog.fullname" . }}"
+    helm.sh/chart: "{{ template "datadog.chart" . }}"
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
   name: {{ template "datadog.fullname" . }}-cluster-agent
 rules:
 - apiGroups:
@@ -79,6 +83,10 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
+    app.kubernetes.io/name: "{{ template "datadog.fullname" . }}"
+    helm.sh/chart: "{{ template "datadog.chart" . }}"
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
   name: {{ template "datadog.fullname" . }}-cluster-agent
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -97,6 +105,10 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
+    app.kubernetes.io/name: "{{ template "datadog.fullname" . }}"
+    helm.sh/chart: "{{ template "datadog.chart" . }}"
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
   name: {{ template "datadog.fullname" . }}-cluster-agent
 {{- end }}
 
@@ -110,6 +122,10 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
+    app.kubernetes.io/name: "{{ template "datadog.fullname" . }}"
+    helm.sh/chart: "{{ template "datadog.chart" . }}"
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
   name: {{ template "datadog.fullname" . }}-cluster-agent:system:auth-delegator
 roleRef:
   apiGroup: rbac.authorization.k8s.io
