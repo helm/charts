@@ -96,4 +96,8 @@ spec:
       nodeSelector:
 {{ toYaml .Values.clusterchecksDeployment.nodeSelector | indent 8 }}
       {{- end }}
+      {{- if .Values.clusterchecksDeployment.tolerations }}
+      tolerations:
+{{ toYaml .Values.clusterchecksDeployment.tolerations | indent 8 }}
+      {{- end }}
 {{ end }}

@@ -322,6 +322,7 @@ helm install --name <RELEASE_NAME> \
 | `clusterchecksDeployment.resources.requests.memory`      | Memory resource requests                                                                      | `256Mi`                                     |
 | `clusterchecksDeployment.resources.limits.memory`        | Memory resource limits                                                                        | `256Mi`                                     |
 | `clusterchecksDeployment.nodeSelector`                   | Node selectors                                                                                | `nil`                                       |
+| `clusterchecksDeployment.tolerations`                    | List of node taints to tolerate                                                               | `nil`                                       |
 | `clusterchecksDeployment.affinity`                       | Node affinities                                                                               | avoid running pods on the same node         |
 | `clusterchecksDeployment.livenessProbe`                  | Overrides the default liveness probe                                                          | http port 5555                              |
 | `clusterchecksDeployment.rbac.dedicated`                  | If true, use dedicated RBAC resources for clusterchecks agent's pods                          | `false`                                     |
