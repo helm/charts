@@ -209,9 +209,17 @@ istioIngressGateways: []
 ## Extra Arguments to passed to external-dns
 ##
 extraArgs: {}
-## Extra env. variable to set on external-dns container
+## Extra env. variable to set on external-dns container.
 ##
-extraEnv: {}
+## extraEnv:
+## - name: VARNAME1
+##   value: value1
+## - name: VARNAME2
+##   valueFrom:
+##     secretKeyRef:
+##       name: existing-secret
+##       key: varname2-key
+extraEnv: []
 
 ## Replica count
 ##

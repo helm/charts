@@ -254,17 +254,8 @@ spec:
               key: pdns_api_key
         {{- end }}
         # Extra environment variables
-        {{- $root := . -}}
-        {{- range .Values.extraEnv }}
-        - name: {{ .name }}
-          valueFrom:
-            {{- if .valueFrom }}
-{{ toYaml .valueFrom | indent 12 }}
-            {{- else }}
-            secretKeyRef:
-              name: {{ template "external-dns.fullname" $root }}
-              key: {{ .name }}
-            {{- end }}
+        {{- if .Values.extraEnv }}
+        {{ toYaml .Values.extraEnv | nindent 8 }}
         {{- end }}
         ports:
         - name: http
