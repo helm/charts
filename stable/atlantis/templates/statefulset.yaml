@@ -104,6 +104,13 @@ spec:
           - name: {{ $key }}
             value: {{ $value | quote }}
           {{- end }}
+          {{- range .Values.environmentSecrets }}
+          - name: {{ .name }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ .secretKeyRef.name }}
+                key: {{ .secretKeyRef.key }}
+          {{- end }}
           {{- if .Values.allowForkPRs }}
           - name: ATLANTIS_ALLOW_FORK_PRS
             value: {{ .Values.allowForkPRs | quote }}
