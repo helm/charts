@@ -25,7 +25,7 @@ rules:
   resources: ["customresourcedefinitions"]
   verbs: [ "get", "list", "create", "update", "delete"]
 - apiGroups: ["*"]
-  resources: [ "disks"]
+  resources: [ "disks", "blockdevices", "blockdeviceclaims"]
   verbs: ["*" ]
 - apiGroups: ["*"]
   resources: [ "storagepoolclaims", "storagepoolclaims/finalizers","storagepools"]

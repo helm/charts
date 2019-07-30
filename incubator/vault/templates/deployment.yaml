@@ -18,6 +18,9 @@ spec:
     type: RollingUpdate
     rollingUpdate:
       maxUnavailable: 1
+  {{- if .Values.minReadySeconds }}
+  minReadySeconds: {{ .Values.minReadySeconds }}
+  {{- end }}
   template:
     metadata:
       labels:
@@ -36,6 +39,9 @@ spec:
       initContainers:
 {{ tpl (toYaml .Values.vault.extraInitContainers) . | indent 6 }}
       {{- end }}
+      {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName }}
+      {{- end }}
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ default .Chart.AppVersion .Values.image.tag }}"
@@ -44,6 +50,10 @@ spec:
         command: ["vault", "server", "-dev", "-dev-listen-address", "[::]:8200"]
         {{- else }}
         command: ["vault", "server", "-config", "/vault/config/config.json"]
+        {{- end }}
+        {{- if .Values.vault.extraArgs }}
+        args:
+{{ tpl (toYaml .Values.vault.extraArgs) . | indent 10 }}
         {{- end }}
         {{- if .Values.lifecycle }}
         lifecycle:
@@ -62,8 +72,8 @@ spec:
               {{- if .Values.vault.liveness.aliveIfSealed -}}sealedcode=204&{{- end }}
             port: {{ .Values.service.port }}
             scheme: {{ if .Values.vault.config.listener.tcp.tls_disable -}}HTTP{{- else -}}HTTPS{{- end }}
-            initialDelaySeconds: {{ .Values.vault.liveness.initialDelaySeconds }}
-            periodSeconds: {{ .Values.vault.liveness.periodSeconds }}
+          initialDelaySeconds: {{ .Values.vault.liveness.initialDelaySeconds }}
+          periodSeconds: {{ .Values.vault.liveness.periodSeconds }}
         readinessProbe:
           # Ready depends on preference
           httpGet:
@@ -73,8 +83,8 @@ spec:
               {{- if .Values.vault.readiness.readyIfUninitialized -}}uninitcode=204&{{- end }}
             port: {{ .Values.service.port }}
             scheme: {{ if .Values.vault.config.listener.tcp.tls_disable -}}HTTP{{- else -}}HTTPS{{- end }}
-            initialDelaySeconds: {{ .Values.vault.readiness.initialDelaySeconds }}
-            periodSeconds: {{ .Values.vault.readiness.periodSeconds }}
+          initialDelaySeconds: {{ .Values.vault.readiness.initialDelaySeconds }}
+          periodSeconds: {{ .Values.vault.readiness.periodSeconds }}
         securityContext:
           readOnlyRootFilesystem: true
           capabilities:
@@ -92,6 +102,8 @@ spec:
         {{- if .Values.vault.extraEnv }}
 {{ toYaml .Values.vault.extraEnv | indent 10 }}
         {{- end }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
         - name: vault-config
           mountPath: /vault/config/
@@ -103,8 +115,6 @@ spec:
 {{- if .Values.vault.extraContainers }}
 {{ tpl (toYaml .Values.vault.extraContainers) . | indent 6}}
 {{- end }}
-        resources:
-{{ toYaml .Values.resources | indent 10 }}
       {{- if .Values.consulAgent.join }}
       - name: {{ .Chart.Name }}-consul-agent
         image: "{{ .Values.consulAgent.repository }}:{{ .Values.consulAgent.tag }}"
@@ -177,6 +187,7 @@ spec:
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
       {{- end }}
+      serviceAccountName: {{ template "vault.serviceAccountName" . }}
       volumes:
         - name: vault-config
           configMap:

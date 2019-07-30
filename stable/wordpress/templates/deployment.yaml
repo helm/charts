@@ -12,6 +12,9 @@ spec:
     matchLabels:
       app: "{{ template "wordpress.fullname" . }}"
       release: {{ .Release.Name | quote }}
+  {{- if .Values.updateStrategy }}
+  strategy: {{ toYaml .Values.updateStrategy | nindent 4 }}
+  {{- end }}
   replicas: {{ .Values.replicaCount }}
   template:
     metadata:
@@ -29,6 +32,9 @@ spec:
 {{- end }}
 {{- end }}
     spec:
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+      {{- end }}
 {{- include "wordpress.imagePullSecrets" . | indent 6 }}
       hostAliases:
       - ip: "127.0.0.1"
@@ -153,15 +159,9 @@ spec:
           {{- end }}
 {{ toYaml .Values.readinessProbe | indent 10 }}
         volumeMounts:
-        - mountPath: /bitnami/apache
-          name: wordpress-data
-          subPath: apache
         - mountPath: /bitnami/wordpress
           name: wordpress-data
           subPath: wordpress
-        - mountPath: /bitnami/php
-          name: wordpress-data
-          subPath: php
         {{- if and .Values.allowOverrideNone .Values.customHTAccessCM}}
         - mountPath: /opt/bitnami/wordpress/wordpress-htaccess.conf
           name: custom-htaccess

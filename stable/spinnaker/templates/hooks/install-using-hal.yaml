@@ -59,7 +59,11 @@ spec:
       {{- if .Values.gcs.enabled }}
       - name: gcs-key
         secret:
+        {{- if .Values.gcs.secretName }}
+          secretName: {{ .Values.gcs.secretName }}
+        {{- else }}
           secretName: {{ template "spinnaker.fullname" . }}-gcs
+        {{- end }}
       {{- end }}
       {{- if and .Values.s3.enabled .Values.s3.accessKey .Values.s3.secretKey }}
       - name: s3-secrets

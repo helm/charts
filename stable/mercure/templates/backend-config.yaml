@@ -1,0 +1,8 @@
+{{- if .Values.backendConfig.enabled -}}
+apiVersion: cloud.google.com/v1beta1
+kind: BackendConfig
+metadata:
+  name: {{ include "mercure.fullname" . }}
+spec:
+  timeoutSec: {{ .Values.backendConfig.timeoutSec }}
+{{- end }}
