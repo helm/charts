@@ -59,9 +59,14 @@ The following table lists the configurable parameters of the MSOMS chart and the
 | `omsagent.secret.key`      | Azure Log analytics workspace key                  | Does not have a default value, needs to be provided                              |
 | `omsagent.domain`          | Azure Log analytics cloud domain (public / govt)   | opinsights.azure.com (Public cloud as default), opinsights.azure.us (Govt Cloud) |
 | `omsagent.env.clusterName` | Name of your cluster      | Does not have a default value, needs to be provided. If AKS-Engine or ACS-Engine K8S cluster, it is recommended to provide either one of the below as cluster name, to be able to use Azure Container monitoring User experience (aka.ms/azmon-containers)  <br/> <br/> - Azure Resource group resource ID of ACS-Engine cluster  <br/> - Provide a friendly name here and ensure this name is used to 'tag' the cluster master node(s) - see step-3 in pre-requisites above |
-|`omsagent.env.doNotCollectKubeSystemLogs`| Disable collecting logs from containers in 'kube-system' namespace | true|
 | `omsagent.rbac`             | rbac enabled/disabled      | true  (i.e enabled)     |
 
+### Note
+Parameter `omsagent.env.doNotCollectKubeSystemLogs` has been removed starting chart version 1.0.0. Refer to 'Agent data collection settings' section below to configure it using configmap.
+
+## Agent data collection settings
+
+Staring with chart version 1.0.0, agent data collection settings are controlled thru a config map. Refer to documentation about agent data collection settings [here](https://docs.microsoft.com/en-us/azure/azure-monitor/insights/container-insights-agent-config)
 
 You can create a Azure Loganalytics workspace from portal.azure.com and get its ID & PRIMARY KEY from 'Advanced Settings' tab in the Ux.
 
