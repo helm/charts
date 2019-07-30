@@ -27,7 +27,6 @@ autoscaling:
 
 # Additional container environment variable
 env:
-  {}
   # Exposing statistics via StatsD
   # STATSD_ENABLED: true
   # STATSD_HOST: statsd-sink
@@ -60,32 +59,66 @@ service:
 
   # Note that target http ports need to match your ambassador configurations service_port
   # https://www.getambassador.io/reference/modules/#the-ambassador-module
-  http:
-    enabled: true
-    port: 80
-    targetPort: 8080
-    # nodePort: 30080
-
-  https:
-    enabled: true
-    port: 443
-    targetPort: 8443
-    # nodePort: 30443
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+      # protocol: TCP
+      # nodePort: 30080
+    - name: https
+      port: 443
+      targetPort: 8443
+      # protocol: TCP
+      # nodePort: 30443
+    # TCPMapping_Port
+      # port: 2222
+      # targetPort: 2222
+      # protocol: TCP
+      # nodePort: 30222
 
   annotations:
-    getambassador.io/config: |
-      ---
-      apiVersion: ambassador/v1
-      kind: Module
-      name: ambassador
-      config:
-        service_port: 8080
-  #       diagnostics:
-  #         enabled: false
-
-  # externalTrafficPolicy:
-  # loadBalancerSourceRanges:
-  #   - YOUR_IP_RANGE
+  #  Uncomment out fields you want to use.
+  #  See https://www.getambassador.io/reference/core/ambassador and
+  #  https://www.getambassador.io/reference/core/tls for more info
+  #  getambassador.io/config: |
+  #    ---
+  #    apiVersion: ambassador/v1
+  #    kind: TLSContext
+  #    name: ambassador
+  #    secret: ambassador-certs
+  #    hosts: ["*"]
+  #    ---
+  #    apiVersion: ambassador/v1
+  #    kind: Module
+  #    name: ambassador
+  #    config:
+  #      admin_port: 8001
+  #      diag_port: 8877
+  #      diagnostics:
+  #        enabled: true
+  #      enable_grpc_http11_bridge: false
+  #      enable_grpc_web: false
+  #      enable_http10: false
+  #      enable_ipv4: true
+  #      enable_ipv6: false
+  #      liveness_probe:
+  #        enabled: true
+  #      lua_scripts:
+  #      readiness_probe:
+  #        enabled: true
+  #      server_name: envoy
+  #      service_port: 8080
+  #      use_proxy_proto: false
+  #      use_remote_address: true
+  #      xff_num_trusted_hops: 0
+  #      x_forwarded_proto_redirect: false
+  #      load_balancer:
+  #        policy: round_robin
+  #      circuit_breakers:
+  #        max_connections: 2048
+  #      retry_policy:
+  #        retry_on: "5xx"
+  #      cors:
 
 adminService:
   create: true
@@ -97,7 +130,6 @@ adminService:
 rbac:
   # Specifies whether RBAC resources should be created
   create: true
-  namespaced: false
   podSecurityPolicies:
     {}
 
@@ -111,8 +143,6 @@ serviceAccount:
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
   name:
-
-additionalTCPPorts: []
 
 initContainers: []
 
@@ -184,7 +214,7 @@ pro:
   enabled: false
   image:
     repository: quay.io/datawire/ambassador_pro
-    tag: amb-sidecar-0.4.0
+    tag: amb-sidecar-0.5.0
   ports:
     auth: 8500
     ratelimit: 8501
@@ -195,5 +225,6 @@ pro:
     secret: false
 
 crds:
+  enabled: true
   create: true
   keep: true
