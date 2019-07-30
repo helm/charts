@@ -1,0 +1,21 @@
+apiVersion: v1
+description: A Helm chart to deploy the New Relic metadata injection webhook.
+name: newrelic-metadata-injection
+version: 0.13.1
+appVersion: 1.9.0
+home: https://hub.docker.com/r/newrelic/k8s-metadata-injection
+source:
+  - https://github.com/newrelic/k8s-metadata-injection
+engine: gotpl
+icon: https://newrelic.com/assets/newrelic/source/NewRelic-logo-square.svg
+maintainers:
+  - name: alejandrodnm
+  - name: jfjoly
+    email: jjoly@newrelic.com
+  - name: douglascamata
+  - name: lorgan3
+  - name: dfernandeza
+keywords:
+  - infrastructure
+  - newrelic
+  - monitoring

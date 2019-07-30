@@ -1,0 +1,34 @@
+# IMPORTANT: The Kubernetes cluster name
+# https://docs.newrelic.com/docs/kubernetes-monitoring-integration
+# cluster: ""
+
+# Uncomment these lines in case you want to enable the metadata decoration
+# only for pods living in namespaces labeled with 'newrelic-metadata-injection'.
+# namespaceSelector:
+#   matchLabels:
+#     newrelic-metadata-injection: enabled
+injectOnlyAnnotatedPods: false
+
+image:
+  repository: newrelic/k8s-metadata-injection
+  tag: 1.1.0
+  pullPolicy: IfNotPresent
+
+jobImage:
+  repository: newrelic/k8s-webhook-cert-manager
+  tag: 1.0.1
+  pullPolicy: IfNotPresent
+
+resources:
+  limits:
+    memory: 80M
+  requests:
+    cpu: 100m
+    memory: 30M
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
