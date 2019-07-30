@@ -17,6 +17,9 @@ podAnnotations: {}
 # Optional pod labels
 podLabels: {}
 
+# Optional service annotations
+serviceAnnotations: {}
+
 # Optional service labels
 serviceLabels: {}
 
