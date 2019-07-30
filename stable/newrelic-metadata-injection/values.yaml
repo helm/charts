@@ -7,7 +7,7 @@
 # namespaceSelector:
 #   matchLabels:
 #     newrelic-metadata-injection: enabled
-injectOnlyAnnotatedPods: false
+injectOnlyLabeledNamespaces: false
 
 image:
   repository: newrelic/k8s-metadata-injection
