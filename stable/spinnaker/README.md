@@ -106,7 +106,7 @@ In environments with air-gapped setup, especially with internal tooling (repos) 
    apiVersion: v1
    kind: Secret
    metadata:
-     name: my-cacerts
+     name: custom-cacerts
    data:
      cacerts: |
        xxxxxxxxxxxxxxxxxxxxxxx
@@ -124,7 +124,7 @@ In environments with air-gapped setup, especially with internal tooling (repos) 
    customCerts:
       ## Enable to override the default cacerts with your own one
       enabled: false
-      secretName: my-cacerts
+      secretName: custom-cacerts
    ```
 
 ## Customizing your installation

@@ -78,7 +78,7 @@ halyard:
   customCerts:
     ## Enable to override the default cacerts with your own one
     enabled: false
-    secretName: my-cacerts
+    secretName: custom-cacerts
 
 # Define which registries and repositories you want available in your
 # Spinnaker pipeline definitions
