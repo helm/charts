@@ -2,8 +2,8 @@
 ## ref: https://hub.docker.com/r/rocketchat/rocket.chat/tags
 ##
 image:
-  repository: docker.io/library/rocket.chat
-  tag: 1.1.1
+  repository: docker.io/rocketchat/rocket.chat
+  tag: 1.2.3
   pullPolicy: IfNotPresent
 
 ## Host for the application
