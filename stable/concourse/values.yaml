@@ -199,8 +199,13 @@ concourse:
     resourceTypeCheckingInterval: 1m
 
     ## Method by which a worker is selected during container placement.
-    ## Possible values: volume-locality | random | fewest-build-containers
+    ## Possible values: volume-locality | random | fewest-build-containers| limit-active-tasks
     containerPlacementStrategy: volume-locality
+
+    # Maximum allowed number of active build tasks per worker. Has effect only when
+    # containerPlacementStrategy is set to use limit-active-tasks placement strategy.
+    # 0 means no limit. (default: 0)
+    limitActiveTasks: 0
 
     ## How long to wait for Baggageclaim to send the response header.
     ##

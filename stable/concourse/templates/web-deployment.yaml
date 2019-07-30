@@ -231,6 +231,10 @@ spec:
             - name: CONCOURSE_CONTAINER_PLACEMENT_STRATEGY
               value: {{ .Values.concourse.web.containerPlacementStrategy | quote }}
             {{- end }}
+            {{- if .Values.concourse.web.limitActiveTasks }}
+            - name: CONCOURSE_MAX_ACTIVE_TASKS_PER_WORKER
+              value: {{ .Values.concourse.web.limitActiveTasks | quote }}
+            {{- end}}
             {{- if .Values.concourse.web.baggageclaimResponseHeaderTimeout }}
             - name: CONCOURSE_BAGGAGECLAIM_RESPONSE_HEADER_TIMEOUT
               value: {{ .Values.concourse.web.baggageclaimResponseHeaderTimeout | quote }}
