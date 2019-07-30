@@ -223,7 +223,8 @@ data:
 metadata:
   name: omsagent-rs-config
   namespace: kube-system
-  chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-  release: {{ .Release.Name }}
-  heritage: {{ .Release.Service }}
+  labels:
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 {{- end }} 
