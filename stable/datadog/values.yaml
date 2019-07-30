@@ -672,7 +672,7 @@ clusterchecksDeployment:
   ## Tolerations for pod assignment
   ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
   #
-  tolerations: []
+  # tolerations: []
 
   ## @param livenessProbe - object - optional
   ## Override the agent's liveness probe logic from the default:
