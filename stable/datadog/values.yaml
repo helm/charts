@@ -16,9 +16,9 @@ image:
 
   ## @param tag - string - required
   ## Define the Agent version to use.
-  ## Use 6.12.1-jmx to enable jmx fetch collection
+  ## Use 6.13.0-jmx to enable jmx fetch collection
   #
-  tag: 6.12.1
+  tag: 6.13.0
 
   ## @param pullPolicy - string - required
   ## The Kubernetes pull policy.
@@ -401,10 +401,16 @@ kube-state-metrics:
     #
     create: true
 
-    ## @param serviceAccountName - string - required
-    ## Ignored if rbac.create is true
-    #
-    serviceAccountName: default
+    serviceAccount:
+      ## @param created - boolean - required
+      ## If true, create ServiceAccount, require rbac kube-state-metrics.rbac.create true
+      #
+      create: true
+      ## @param name - string - required
+      ## The name of the ServiceAccount to use.
+      ## If not set and create is true, a name is generated using the fullname template
+      #
+      name:
 
 daemonset:
 
