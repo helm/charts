@@ -51,6 +51,7 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `adminService.create`              | If `true`, create a service for Ambassador's admin UI                           | `true`                            |
 | `adminService.nodePort`            | If explicit NodePort for admin service is required                              | `true`                            |
 | `adminService.type`                | Ambassador's admin service type to be used                                      | `ClusterIP`                       |
+| `adminService.annotations`         | Annotations to apply to Ambassador admin service                                | `{}`                              |
 | `ambassadorConfig`                 | Config thats mounted to `/ambassador/ambassador-config`                         | `""`                              |
 | `crds.enabled`                     | If `true`, enables CRD resources for the installation.                          | `true`                            |
 | `crds.create`                      | If `true`, Creates CRD resources                                                | `true`                            |
