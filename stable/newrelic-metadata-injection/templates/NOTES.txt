@@ -1,0 +1,33 @@
+{{- if .Values.cluster }}
+Your deployment of the New Relic metadata injection webhook is complete. You can check on the progress of this by running the following command:
+
+    kubectl get deployments -o wide -w --namespace {{ .Release.Namespace }} {{ template "nr-metadata-injection.fullname" . }}
+
+To validate the injection of metadata create a dummy pod containing Busybox by running:
+
+    kubectl create -f https://git.io/vPieo
+
+Check if New Relic environment variables were injected:
+
+    kubectl exec busybox0 -- env | grep NEW_RELIC_METADATA_KUBERNETES
+
+    NEW_RELIC_METADATA_KUBERNETES_CLUSTER_NAME=fsi
+    NEW_RELIC_METADATA_KUBERNETES_NODE_NAME=nodea
+    NEW_RELIC_METADATA_KUBERNETES_NAMESPACE_NAME=default
+    NEW_RELIC_METADATA_KUBERNETES_POD_NAME=busybox0
+    NEW_RELIC_METADATA_KUBERNETES_CONTAINER_NAME=busybox
+
+{{- else -}}
+###############################################################
+####       ERROR: You did not set a cluster name.          ####
+###############################################################
+
+This deployment will be incomplete until you set a cluster name.
+
+Run:
+
+    helm upgrade {{ .Release.Name }} \
+        --set cluster=YOUR-CLUSTER-NAME \
+        stable/newrelic-metadata-injection
+
+{{- end -}}
