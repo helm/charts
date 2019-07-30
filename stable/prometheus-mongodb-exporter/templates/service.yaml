@@ -1,4 +1,3 @@
-{{ if .Values.serviceMonitor.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -9,15 +8,14 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     helm.sh/chart: {{ include "prometheus-mongodb-exporter.chart" . }}
   annotations:
-    {{- toYaml .Values.annotations | nindent 4 }}
+    {{- toYaml .Values.service.annotations | nindent 4 }}
 spec:
-  type: ClusterIP
   ports:
-    - port: {{ .Values.port }}
+    - port: {{ .Values.service.port }}
       targetPort: metrics
       protocol: TCP
       name: metrics
   selector:
     app.kubernetes.io/name: {{ include "prometheus-mongodb-exporter.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
-{{- end }}
+  type: {{ .Values.service.type }}
