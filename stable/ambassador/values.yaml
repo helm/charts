@@ -126,6 +126,8 @@ adminService:
   port: 8877
   # NodePort used if type is NodePort
   # nodePort: 38877
+  annotations:
+    {}
 
 rbac:
   # Specifies whether RBAC resources should be created
