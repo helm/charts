@@ -11,7 +11,7 @@ spec:
       app: {{ template "opa.fullname" . }}
   template:
     metadata:
-{{- if and .Values.generateAdmissionControllerCerts .Values.opa }}
+{{- if or .Values.generateAdmissionControllerCerts .Values.opa }}
       annotations:
 {{- if .Values.generateAdmissionControllerCerts }}
         checksum/certs: {{ include (print $.Template.BasePath "/webhookconfiguration.yaml") . | sha256sum }}
