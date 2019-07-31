@@ -22,6 +22,7 @@ service.type | The kubernetes service type to use. | ClusterIP
 service.port | The tcp port the service should listen on. | 80
 ingress | Any ingress rules to apply. | None
 resources | Any resource constraints to apply. | None
+rundeck.adminUser | The config to set up the admin user that should be placed at the realm.properties file. | "admin:admin,user,admin,architect,deploy,build"
 rundeck.env | The rundeck environment variables that you would want to set | Default variables provided in docker file
 rundeck.sshSecrets | A reference to the Kubernetes Secret that contains the ssh keys. | ""
 rundeck.awsCredentialsSecret | A reference to the Kubernetes Secret that contains the aws credentials. | ""
