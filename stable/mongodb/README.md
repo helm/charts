@@ -269,6 +269,16 @@ You can enable this initContainer by setting `volumePermissions.enabled` to `tru
 
 ## Upgrading
 
+### To 7.0.0
+From this version, the way of setting the ingress rules has changed. Instead of using `ingress.paths` and `ingress.hosts` as separate objects, you should now define the rules as objects inside the `ingress.hosts` value, for example:
+
+```yaml
+ingress:
+  hosts:
+  - name: mongodb.local
+    path: /
+```
+
 ### To 6.0.0
 
 From this version, `mongodbEnableIPv6` is set to `false` by default in order to work properly in most k8s clusters, if you want to use IPv6 support, you need to set this variable to `true` by adding `--set mongodbEnableIPv6=true` to your `helm` command.
@@ -279,7 +289,7 @@ You can find more information in the [`bitnami/mongodb` image README](https://gi
 When enabling replicaset configuration, backwards compatibility is not guaranteed unless you modify the labels used on the chart's statefulsets.
 Use the workaround below to upgrade from versions previous to 5.0.0. The following example assumes that the release name is `my-release`:
 
-```consoloe
+```console
 $ kubectl delete statefulset my-release-mongodb-arbiter my-release-mongodb-primary my-release-mongodb-secondary --cascade=false
 ```
 
