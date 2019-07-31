@@ -96,6 +96,37 @@ Spinnaker supports [many](https://www.spinnaker.io/setup/install/storage/) persi
 * Redis
 * AWS S3
 
+## Use custom `cacerts`
+
+In environments with air-gapped setup, especially with internal tooling (repos) and self-signed certificates it is required to provide an adequate `cacerts` which overrides the default one:
+
+1. Create a yaml file `cacerts.yaml` with a secret that contanins the `cacerts`
+
+   ```yaml
+   apiVersion: v1
+   kind: Secret
+   metadata:
+     name: custom-cacerts
+   data:
+     cacerts: |
+       xxxxxxxxxxxxxxxxxxxxxxx
+   ```
+
+2. Upload your `cacerts.yaml` to a secret with the key you specify in `secretName` in the cluster you are installing Spinnaker to.
+
+   ```shell
+   $ kubectl apply -f cacerts.yaml
+   ```
+
+3. Set the following values of the chart:
+
+   ```yaml
+   customCerts:
+      ## Enable to override the default cacerts with your own one
+      enabled: false
+      secretName: custom-cacerts
+   ```
+
 ## Customizing your installation
 
 ### Manual
