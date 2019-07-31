@@ -3,6 +3,12 @@ Your deployment of the New Relic metadata injection webhook is complete. You can
 
     kubectl get deployments -o wide -w --namespace {{ .Release.Namespace }} {{ template "nr-metadata-injection.fullname" . }}
 
+{{- if .Values.customTLSCertificate }}
+You have configure the chart to use a custom tls certificate, make sure to read the 'Manage custom certificates' section of the official docs to find the instructions on how to finish setting up the webhook.
+
+https://docs.newrelic.com/docs/integrations/kubernetes-integration/link-your-applications/link-your-applications-kubernetes#configure-injection
+{{- end }}
+
 To validate the injection of metadata create a dummy pod containing Busybox by running:
 
     kubectl create -f https://git.io/vPieo
