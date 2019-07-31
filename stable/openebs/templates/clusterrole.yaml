@@ -23,7 +23,7 @@ rules:
   verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
 - apiGroups: ["apiextensions.k8s.io"]
   resources: ["customresourcedefinitions"]
-  verbs: [ "get", "list", "create", "update", "delete"]
+  verbs: [ "patch", "get", "list", "create", "update", "delete"]
 - apiGroups: ["*"]
   resources: [ "disks", "blockdevices", "blockdeviceclaims"]
   verbs: ["*" ]
