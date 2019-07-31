@@ -11,6 +11,7 @@ metadata:
   labels:
     {{- include "prometheus.alertmanager.labels" . | nindent 4 }}
   name: {{ template "prometheus.alertmanager.fullname" . }}
+  namespace: {{ .Release.Namespace }}
 spec:
   accessModes:
 {{ toYaml .Values.alertmanager.persistentVolume.accessModes | indent 4 }}
