@@ -16,9 +16,9 @@ image:
 
   ## @param tag - string - required
   ## Define the Agent version to use.
-  ## Use 6.12.1-jmx to enable jmx fetch collection
+  ## Use 6.13.0-jmx to enable jmx fetch collection
   #
-  tag: 6.12.1
+  tag: 6.13.0
 
   ## @param pullPolicy - string - required
   ## The Kubernetes pull policy.
@@ -661,7 +661,7 @@ clusterchecksDeployment:
   ## Tolerations for pod assignment
   ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
   #
-  tolerations: []
+  # tolerations: []
 
   ## @param livenessProbe - object - optional
   ## Override the agent's liveness probe logic from the default:
