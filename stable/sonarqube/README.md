@@ -39,6 +39,8 @@ The following table lists the configurable parameters of the Sonarqube chart and
 
 | Parameter                                   | Description                               | Default                                    |
 | ------------------------------------------  | ----------------------------------------  | -------------------------------------------|
+| `replicaCount`                              | Number of replicas                        | `1`                                        |
+| `strategy`                                  | Deployment strategy                       | `{}`                                       |
 | `image.repository`                          | image repository                          | `sonarqube`                                |
 | `image.tag`                                 | `sonarqube` image tag.                    | `7.8-community`                                        |
 | `image.pullPolicy`                          | Image pull policy                         | `IfNotPresent`                             |
