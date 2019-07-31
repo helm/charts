@@ -4,6 +4,9 @@ image:
   repository: "influxdb"
   tag: "1.7.6-alpine"
   pullPolicy: IfNotPresent
+  ## If specified, use these secrets to access the images
+  # pullSecrets:
+  #   - registry-secret
 
 ## Specify a service type
 ## NodePort is default
