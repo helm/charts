@@ -1,12 +1,14 @@
-# Default values for hubot.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
+---
+
+fullnameOverride: ""
 
 replicaCount: 1
 
+strategyType: Recreate
+
 image:
-  repository: minddocdev/hubot
-  tag: 0.1.9
+  repository: decayofmind/hubot
+  tag: 3.3.2
   pullPolicy: IfNotPresent
 
 service:
@@ -27,16 +29,16 @@ ingress:
   #      - hubot.local
 
 resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #  cpu: 100m
-  #  memory: 128Mi
-  # requests:
-  #  cpu: 100m
-  #  memory: 128Mi
+# We usually recommend not to specify default resources and to leave this as a conscious
+# choice for the user. This also increases chances charts run on environments with little
+# resources, such as Minikube. If you do want to specify resources, uncomment the following
+# lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+# limits:
+#  cpu: 100m
+#  memory: 128Mi
+# requests:
+#  cpu: 100m
+#  memory: 128Mi
 
 nodeSelector: {}
 
@@ -44,11 +46,61 @@ tolerations: []
 
 affinity: {}
 
-hubot:
-  config: {}
+extraLabels: {}
 
-  scriptsFolder: /minddocbot/scripts
+extraConfigmapMounts: []
+# - name: certs-configmap
+#   mountPath: /home/hubot/ssl/
+#   configMap: certs-configmap
+#   readOnly: true
+
+hubot:
+  extraArgs: []
+  # - --alias
+  # - '!'
 
   scripts: {}
+  # hithere.coffee: |
+  #   module.exports = (robot) ->
+  #     robot.respond /hi my bot/i, (msg) ->
+  #       msg.send 'Hi there my human'
 
-  slackToken: ''
+  scriptsRepo:
+    enabled: false
+    image: k8s.gcr.io/git-sync:v3.1.2
+    repository: "" # https:///git.mycompany.com/hubot-scripts.git
+    branch: master
+  # username: git_username
+  # password: mysecretpassword
+  # existingSecretName: git-readonly-secret
+
+
+  # npm packages, required for custom scripts
+  extraPackages: []
+  #  - aws-sdk
+  #  - cron
+  #  - underscore
+
+  # external scripts (npm packages) to be enabled
+  externalScripts:
+    - hubot-diagnostics
+    - hubot-health
+    - hubot-help
+    - hubot-redis-brain
+    - hubot-rules
+    - hubot-plusplus
+
+  # Environment variables passed to Hubot.
+  # To save time from deciding which ones are sensitive and
+  # which ones are not, all goes to Secret
+  config: {}
+  # HUBOT_URL: "http://hubot.mycompany.internal/"
+  # HUBOT_LOG_LEVEL: 'debug'
+  # HUBOT_CACHE_IMAGE: 'true'
+  # HUBOT_SLACK_TOKEN: 'xoxb-somenumbers-someletters'
+
+redis:
+  enabled: true
+  usePassword: false
+  cluster:
+    enabled: false
