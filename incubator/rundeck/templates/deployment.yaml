@@ -42,7 +42,7 @@ spec:
                 periodSeconds: 5
           volumeMounts:
             - name: nginx-config
-            mountPath: /etc/nginx
+              mountPath: /etc/nginx
         - name: {{ .Chart.Name }}
           command:
           - /bin/sh
