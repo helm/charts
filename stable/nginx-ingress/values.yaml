@@ -82,6 +82,10 @@ controller:
     enabled: false
     namespace: ""   # defaults to .Release.Namespace
 
+  ## Allows customization of the configmap / nginx-configmap namespace
+  ##
+  configMapNamespace: ""   # defaults to .Release.Namespace
+
   ## Allows customization of the tcp-services-configmap namespace
   ##
   tcp:
