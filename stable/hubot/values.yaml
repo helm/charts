@@ -68,7 +68,7 @@ hubot:
   scriptsRepo:
     enabled: false
     image: k8s.gcr.io/git-sync:v3.1.2
-    repository: "" # https:///git.mycompany.com/hubot-scripts.git
+    repository: ""  # https:///git.mycompany.com/hubot-scripts.git
     branch: master
   # username: git_username
   # password: mysecretpassword
