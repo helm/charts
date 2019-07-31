@@ -2,7 +2,7 @@
 
 ## Chart Details
 
-This chart will deploy the New Relic Infrastructure mutation webhook.
+This chart will deploy the [New Relic Infrastructure metadata injection webhook][1].
 
 ## Configuration
 
@@ -17,8 +17,9 @@ This chart will deploy the New Relic Infrastructure mutation webhook.
 | `imageJob.pullPolicy`         | The job pull policy.                                         | `IfNotPresent`                      |
 | `imageJob.tag`                | The job version of the container to pull.                    | `1.1.0`                             |
 | `resources`                   | Any resources you wish to assign to the pod.                 | See Resources below                 |
-| `serviveAccount.create`       | If true a service account would be created and assigned for the webhook and the job | true |
+| `serviveAccount.create`       | If true a service account would be created and assigned for the webhook and the job | `true` |
 | `serviveAccount.name`         | The service account to assign to the webhook and the job. If `serviveAccount.create` is true then this name will be used when creating the service account | |
+| `customTLSCertificate`        | Use custom TLS certificate.                                  | `false`                             |
 
 ## Example
 
@@ -36,3 +37,5 @@ The default set of resources assigned to the pods is shown below:
       requests:
         cpu: 100m
         memory: 30M
+
+[1]: https://docs.newrelic.com/docs/integrations/kubernetes-integration/link-your-applications/link-your-applications-kubernetes#configure-injection

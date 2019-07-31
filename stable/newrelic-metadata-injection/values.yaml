@@ -27,8 +27,21 @@ resources:
     memory: 30M
 
 serviceAccount:
-  # Specifies whether a ServiceAccount should be created
+  # Specifies whether a ServiceAccount should be created for the job and
+  # the deployment.
+  #
+  # When `customTLSCertificate` is set to true, the service account is not
+  # necessary and it's not created in the case of `create=true`.
   create: true
   # The name of the ServiceAccount to use.
   # If not set and create is true, a name is generated using the fullname template
   name:
+
+# Use custom tls certificates for the webhook, or let the chart handle it
+# automatically.
+#
+# Make sure to read the 'Manage custom certificates' section of the official
+# docs when using custom certificates.
+#
+# https://docs.newrelic.com/docs/integrations/kubernetes-integration/link-your-applications/link-your-applications-kubernetes#configure-injection
+customTLSCertificate: false

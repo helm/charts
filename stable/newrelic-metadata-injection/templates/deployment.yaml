@@ -14,7 +14,9 @@ spec:
       labels:
         {{- include "nr-metadata-injection.labels" . | nindent 8 }}
     spec:
+      {{- if not .Values.customTLSCertificate }}
       serviceAccountName: {{ template "nr-metadata-injection.serviceAccountName" . }}
+      {{- end }}
       containers:
       - name: {{ template "nr-metadata-injection.name" . }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

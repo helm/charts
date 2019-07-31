@@ -1,3 +1,4 @@
+{{- if not .Values.customTLSCertificate }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
@@ -13,3 +14,4 @@ subjects:
   - kind: ServiceAccount
     name: {{ template "nr-metadata-injection.serviceAccountName" . }}
     namespace: {{ .Release.Namespace }}
+{{- end }}

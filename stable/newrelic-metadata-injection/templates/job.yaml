@@ -1,3 +1,4 @@
+{{- if not .Values.customTLSCertificate }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -28,3 +29,4 @@ spec:
           - {{ .Release.Namespace }}
       restartPolicy: Never
   backoffLimit: 1
+{{- end }}
