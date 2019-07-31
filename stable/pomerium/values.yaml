@@ -121,3 +121,10 @@ image:
 metrics:
   enabled: false
   port: 9090
+
+serviceMonitor:
+  enabled: false
+  namespace: false
+  labels:
+    release: prometheus
+  
