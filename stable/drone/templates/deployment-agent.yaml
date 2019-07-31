@@ -71,11 +71,18 @@ spec:
         volumeMounts:
           - mountPath: /var/run/docker.sock
             name: docker-socket
+      {{- with .Values.agent.volumeMounts }}
+          {{- toYaml . | nindent 10 }}
+      {{- end }}
       volumes:
         - name: docker-socket
           hostPath:
             path: /var/run/docker.sock
 {{- else }}
+      {{- with .Values.agent.volumeMounts }}
+        volumeMounts:
+          {{- toYaml . | nindent 10 }}
+      {{- end }}
       - name: dind
         image: "{{ .Values.images.dind.repository }}:{{ .Values.images.dind.tag }}"
         imagePullPolicy: {{ .Values.images.dind.pullPolicy }}
@@ -99,8 +106,14 @@ spec:
         volumeMounts:
           - name: docker-graph-storage
             mountPath: /var/lib/docker
+      {{- with .Values.dind.volumeMounts }}
+          {{- toYaml . | nindent 10 }}
+      {{- end }}
       volumes:
       - name: docker-graph-storage
         emptyDir: {}
 {{- end }}
+    {{- with .Values.agent.volumes }}
+        {{- toYaml . | nindent 6 }}
+    {{- end }}
 {{- end -}}
