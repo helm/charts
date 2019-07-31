@@ -151,6 +151,9 @@ data:
         Proxy {{ .Values.backend.http.proxy }}
 {{- end }}
         Format {{ .Values.backend.http.format }}
+{{- if .Values.backend.http.header }}
+        Header {{ .Values.backend.http.header }}
+{{- end }}
 {{- end }}
 {{ .Values.extraEntries.output | indent 8 }}
 
