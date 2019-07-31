@@ -55,7 +55,7 @@ spec:
               name: {{ .Release.Name }}-environment-configmap
           env:
             - name: RUNDECK_GRAILS_URL
-              value: "http://{{ include "rundeck.name" . }}.{{ .Release.Namespace }}.svc.cluster.local"
+              value: {{ .Values.rundeck.env.RUNDECK_GRAILS_URL }}
             - name: RUNDECK_SERVER_FORWARDED
               value: "true"
             - name: RUNDECK_LOGGING_STRATEGY
