@@ -146,7 +146,7 @@ sentinel:
 ## Specify dictionary of scripts to be run at first boot, the entry point script is postStartScript.sh
 ## i.e. you can create tablespace directory here.
 ##
-# nodePostStartScript:    
+# nodePostStartScript:
 #  postStartScript.sh: |-
 #    #!/bin/bash
 #     echo "Do something."
