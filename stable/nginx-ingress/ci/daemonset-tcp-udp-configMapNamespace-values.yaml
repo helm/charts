@@ -1,5 +1,7 @@
 controller:
   kind: DaemonSet
+  service:
+    type: ClusterIP
   tcp:
     configMapNamespace: default
   udp:
