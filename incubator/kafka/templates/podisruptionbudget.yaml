@@ -8,11 +8,11 @@ metadata:
     chart: {{ template "kafka.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-    component: server
 spec:
   selector:
     matchLabels:
       app: {{ template "kafka.name" . }}
       release: {{ .Release.Name }}
 {{ toYaml .Values.podDisruptionBudget | indent 2 }}
+
 {{- end }}
