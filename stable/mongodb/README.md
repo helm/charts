@@ -129,12 +129,16 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `readinessProbe.successThreshold`                  | Minimum consecutive successes for the probe to be considered successful after having failed.                                                              | `1`                                                      |
 | `initConfigMap.name`                               | Custom config map with init scripts                                                                                                                       | `nil`                                                    |
 | `configmap`                                        | MongoDB configuration file to be used                                                                                                                     | `nil`                                                    |
-| `ingress.enabled`                                  | Enables Ingress. Tested with nginx-ingress version `1.3.1`                                                                                                | `false`                                                  |
-| `ingress.annotations`                              | Ingress annotations                                                                                                                                       | `{}`                                                     |
-| `ingress.labels`                                   | Custom labels                                                                                                                                             | `{}`                                                     |
-| `ingress.paths`                                    | Ingress paths                                                                                                                                             | `[/]`                                                    |
-| `ingress.hosts`                                    | Ingress accepted hostnames                                                                                                                                | `[]`                                                     |
-| `ingress.tls`                                      | Ingress TLS configuration                                                                                                                                 | `[ { secretName: secret-tls, hosts: [] } ]`              |
+| `ingress.enabled`                         | Enable ingress controller resource                                                          | `false`                                                      |
+| `ingress.certManager`                     | Add annotations for cert-manager                                                            | `false`                                                      |
+| `ingress.annotations`                     | Ingress annotations                                                                         | `[]`                                                         |
+| `ingress.hosts[0].name`                   | Hostname to your MongoDB installation                                                     | `mongodb.local`                                              |
+| `ingress.hosts[0].path`                   | Path within the url structure                                                               | `/`                                                          |
+| `ingress.tls[0].hosts[0]`                 | TLS hosts                                                                                   | `mongodb.local`                                              |
+| `ingress.tls[0].secretName`               | TLS Secret (certificates)                                                                   | `mongodb.local-tls`                                          |
+| `ingress.secrets[0].name`                 | TLS Secret Name                                                                             | `nil`                                                        |
+| `ingress.secrets[0].certificate`          | TLS Secret Certificate                                                                      | `nil`                                                        |
+| `ingress.secrets[0].key`                  | TLS Secret Key                                                                              | `nil`                                                        |
 | `metrics.enabled`                                  | Start a side-car prometheus exporter                                                                                                                      | `false`                                                  |
 | `metrics.image.registry`                           | MongoDB exporter image registry                                                                                                                           | `docker.io`                                              |
 | `metrics.image.repository`                         | MongoDB exporter image name                                                                                                                               | `forekshub/percona-mongodb-exporter`                     |
@@ -265,6 +269,16 @@ You can enable this initContainer by setting `volumePermissions.enabled` to `tru
 
 ## Upgrading
 
+### To 7.0.0
+From this version, the way of setting the ingress rules has changed. Instead of using `ingress.paths` and `ingress.hosts` as separate objects, you should now define the rules as objects inside the `ingress.hosts` value, for example:
+
+```yaml
+ingress:
+  hosts:
+  - name: mongodb.local
+    path: /
+```
+
 ### To 6.0.0
 
 From this version, `mongodbEnableIPv6` is set to `false` by default in order to work properly in most k8s clusters, if you want to use IPv6 support, you need to set this variable to `true` by adding `--set mongodbEnableIPv6=true` to your `helm` command.
@@ -275,12 +289,12 @@ You can find more information in the [`bitnami/mongodb` image README](https://gi
 When enabling replicaset configuration, backwards compatibility is not guaranteed unless you modify the labels used on the chart's statefulsets.
 Use the workaround below to upgrade from versions previous to 5.0.0. The following example assumes that the release name is `my-release`:
 
-```consoloe
+```console
 $ kubectl delete statefulset my-release-mongodb-arbiter my-release-mongodb-primary my-release-mongodb-secondary --cascade=false
 ```
 
 ## Configure Ingress
-MongoDB can exposed externally using the [NGINX Ingress Controller](https://github.com/kubernetes/ingress-nginx). To do so, it's necessary to:
+MongoDB can exposed externally using an Ingress controller. To do so, it's necessary to:
 
 - Install the MongoDB chart setting the parameter `ingress.enabled=true`.
 - Create a ConfigMap to map the external port to use and the internal service/port where to redirect the requests (see https://github.com/kubernetes/ingress-nginx/blob/master/docs/user-guide/exposing-tcp-udp-services.md for more information).
