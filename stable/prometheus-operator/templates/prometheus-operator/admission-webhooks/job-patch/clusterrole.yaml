@@ -1,4 +1,4 @@
-{{- if and .Values.prometheusOperator.admissionWebhooks.enabled .Values.prometheusOperator.admissionWebhooks.patch.enabled }}
+{{- if and .Values.prometheusOperator.admissionWebhooks.enabled .Values.prometheusOperator.admissionWebhooks.patch.enabled .Values.global.rbac.create }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
@@ -18,4 +18,11 @@ rules:
     verbs:
       - get
       - update
+{{- if .Values.global.rbac.pspEnabled }}
+  - apiGroups: ['extensions']
+    resources: ['podsecuritypolicies']
+    verbs:     ['use']
+    resourceNames:
+    - {{ template "prometheus-operator.fullname" . }}-admission
+{{- end }}
 {{- end }}
