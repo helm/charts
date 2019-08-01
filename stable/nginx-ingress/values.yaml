@@ -82,6 +82,20 @@ controller:
     enabled: false
     namespace: ""   # defaults to .Release.Namespace
 
+  ## Allows customization of the configmap / nginx-configmap namespace
+  ##
+  configMapNamespace: ""   # defaults to .Release.Namespace
+
+  ## Allows customization of the tcp-services-configmap namespace
+  ##
+  tcp:
+    configMapNamespace: ""   # defaults to .Release.Namespace
+
+  ## Allows customization of the udp-services-configmap namespace
+  ##
+  udp:
+    configMapNamespace: ""   # defaults to .Release.Namespace
+
   ## Additional command line arguments to pass to nginx-ingress-controller
   ## E.g. to specify the default SSL certificate you can use
   ## extraArgs:
