@@ -1,4 +1,6 @@
 controller:
+  service:
+    type: ClusterIP
   tcp:
     configMapNamespace: default
   udp:
