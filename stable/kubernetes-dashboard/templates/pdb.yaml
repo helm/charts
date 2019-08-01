@@ -5,7 +5,6 @@ metadata:
   labels:
 {{ include "kubernetes-dashboard.labels" . | indent 4 }}
   name: {{ template "kubernetes-dashboard.fullname" . }}
-  namespace: {{ .Release.Namespace }}
 spec:
   {{- if .Values.podDisruptionBudget.minAvailable }}
   minAvailable: {{ .Values.podDisruptionBudget.minAvailable }}

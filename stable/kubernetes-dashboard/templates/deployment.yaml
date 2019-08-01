@@ -42,6 +42,7 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         args:
+          - --namespace={{ .Release.Namespace }}
 {{- if .Values.enableSkipLogin }}
           - --enable-skip-login
 {{- end }}

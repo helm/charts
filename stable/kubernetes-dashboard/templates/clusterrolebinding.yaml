@@ -4,7 +4,6 @@ metadata:
   labels:
 {{ include "kubernetes-dashboard.labels" . | indent 4 }}
   name: "{{ template "kubernetes-dashboard.fullname" . }}"
-  namespace: {{ .Release.Namespace }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole

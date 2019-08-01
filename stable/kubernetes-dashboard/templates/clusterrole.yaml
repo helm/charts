@@ -4,7 +4,6 @@ metadata:
   labels:
 {{ include "kubernetes-dashboard.labels" . | indent 4 }}
   name: "{{ template "kubernetes-dashboard.fullname" . }}"
-  namespace: {{ .Release.Namespace }}
 rules:
   # Allow Metrics Scraper to get metrics from the Metrics server
   - apiGroups: ["metrics.k8s.io"]
