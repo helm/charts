@@ -3,10 +3,7 @@ kind: Service
 metadata:
   name: {{ template "dex.fullname" . }}
   labels:
-    app: {{ template "dex.name" . }}
-    chart: {{ template "dex.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+{{ include "dex.labels" . | indent 4 }}
 {{- if .Values.service.annotations }}
   annotations:
 {{ toYaml .Values.service.annotations | indent 4 }}
@@ -37,5 +34,5 @@ spec:
   loadBalancerIP: {{ .Values.service.loadBalancerIP }}
 {{- end }}
   selector:
-    app: {{ template "dex.name" . }}
-    release: {{ .Release.Name | quote }}
+    app.kubernetes.io/name: {{ include "dex.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}

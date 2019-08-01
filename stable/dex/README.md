@@ -47,11 +47,15 @@ A major chart version change (like v1.5.1 -> v2.0.0) indicates that there is an 
 
 Breaking changes which should be considered and require manual actions during release upgrade:
 
-  - ability to switch grpc and https on and off via dedicated chart parameters 
-  - port definition for Pod, Service and dex config re-written from scratch
-  - dex config is _not_ taken from `.Values.config` as-is anymore, pay attention!
+- ability to switch grpc and https on and off via dedicated chart parameters
+- port definition for Pod, Service and dex config re-written from scratch
+- dex config is _not_ taken from `.Values.config` as-is anymore, pay attention!
 
 See the [Configuration](#configuration) section for the details on the parameters introduced in version 2.0.0.
+
+Moreover, this release updates all the labels to the new [recommended labels](https://github.com/helm/charts/blob/master/REVIEW_GUIDELINES.md#names-and-labels), most of them being immutable.
+
+In order to upgrade, please update your values file and uninstall/reinstall the chart.
 
 ## Configuration
 
