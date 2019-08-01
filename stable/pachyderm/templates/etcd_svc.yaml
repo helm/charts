@@ -12,8 +12,11 @@ metadata:
 spec:
   ports:
     - name: client-port
-      port: 2379
+      port: {{ .Values.etcd.service.port.client }}
       targetPort: 0
+      {{- if eq .Values.etcd.service.type "NodePort" }}
+      nodePort: {{ .Values.etcd.service.nodePort.client }}
+      {{- end }}
   selector:
     app: {{ template "etcd.fullname" . }}
-  type: NodePort
+  type: {{ .Values.etcd.service.type | quote }}

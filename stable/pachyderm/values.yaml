@@ -63,10 +63,16 @@ pachd:
   #  cpu: 250m
   #  memory: 512M
  service:
-  grpc:
-   annotations: {}
-   port: 30650
-   type: NodePort
+  annotations: {}
+  type: ClusterIP
+  port:
+   trace: 651
+   http: 652
+   grpc: 650
+  nodePort:
+   trace: 30651
+   http: 30652
+   grpc: 30650
 
 ## Set default image settings and persistence settings of etcd
 etcd:
@@ -98,6 +104,12 @@ etcd:
   # limits:
   #  cpu: 250m
   #  memory: 512M
+ service:
+  type: ClusterIP
+  port:
+   client: 2379
+  ndoePort:
+   client: 30215
 
   ## Set default image settings, resource requests and number of replicas of the dashboard
 dash:
@@ -127,15 +139,19 @@ dash:
   #  cpu: 250m
   #  memory: 512M
  service:
-  http:
-   port: 8080
-  grpc:
-   port: 8081
+  type: ClusterIP
+  port:
+   http: 8080
+   grpc: 8081
+  nodePort:
+   http: 30080
+   grpc: 30081
  ingress:
   ## Set to true to enable ingress record generation
   enabled: false
   ## hostName: dash
   path: /
+  wsPath: /ws
   ## Set this to true in order to enable TLS on the ingress record
   tls: false
   ## If TLS is set to true, you must declare what secret will store the key/certificate for TLS

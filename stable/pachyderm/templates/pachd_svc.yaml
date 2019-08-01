@@ -3,40 +3,9 @@ kind: Service
 apiVersion: v1
 metadata:
   name: pachd
-  labels:
-    app: pachd
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
-    suite: {{ template "fullname" . }}
-spec:
-  ports:
-    - name: trace-port
-      port: 651
-      targetPort: 651
-      nodePort: 30651
-    - name: api-http-port
-      port: 652
-      targetPort: 652
-      nodePort: 30652
-    {{- if eq .Values.pachd.service.grpc.type "NodePort" }}
-    - name: api-grpc-port
-      port: 650
-      targetPort: 650
-      nodePort: {{ .Values.pachd.service.grpc.port}}
-    {{- end }}
-  selector:
-    app: pachd
-  type: "NodePort"
----
-{{- if ne .Values.pachd.service.grpc.type "NodePort" }}
-kind: Service
-apiVersion: v1
-metadata:
-  name: pachd-api-grpc
-  {{- if .Values.pachd.service.grpc.annotations }}
+  {{- if .Values.pachd.service.annotations }}
   annotations:
-    {{ .Values.pachd.service.grpc.annotations | toYaml | indent 4 | trim  }}
+    {{ .Values.pachd.service.annotations | toYaml | indent 4 | trim  }}
   {{- end }}
   labels:
     app: pachd
@@ -46,10 +15,25 @@ metadata:
     suite: {{ template "fullname" . }}
 spec:
   ports:
+    - name: trace-port
+      port: {{ .Values.pachd.service.port.trace }}
+      targetPort: 651
+      {{- if eq .Values.pachd.service.type "NodePort" }}
+      nodePort: {{ .Values.pachd.service.nodePort.trace }}
+      {{- end }}
+    - name: api-http-port
+      port: {{ .Values.pachd.service.port.http }}
+      targetPort: 652
+      {{- if eq .Values.pachd.service.type "NodePort" }}
+      nodePort: {{ .Values.pachd.service.nodePort.http }}
+      {{- end }}
     - name: api-grpc-port
-      port: 650
+      port: {{ .Values.pachd.service.port.grpc }}
       targetPort: 650
+      {{- if eq .Values.pachd.service.type "NodePort" }}
+      nodePort: {{ .Values.pachd.service.nodePort.grpc }}
+      {{- end }}
+
   selector:
     app: pachd
-  type: {{ .Values.pachd.service.grpc.type | quote }}
-{{- end }}
+  type: {{ .Values.pachd.service.type | quote }}

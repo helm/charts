@@ -12,14 +12,18 @@ metadata:
 spec:
   ports:
     - name: dash-http
-      port: {{ .Values.dash.service.http.port }}
+      port: {{ .Values.dash.service.port.http }}
       targetPort: 8080
-      nodePort: 30080
+      {{- if eq .Values.dash.service.type "NodePort" }}
+      nodePort: {{ .Values.dash.service.nodePort.http }}
+      {{- end }}
     - name: grpc-proxy-http
-      port: {{ .Values.dash.service.grpc.port }}
+      port: {{ .Values.dash.service.port.grpc }}
       targetPort: 8081
-      nodePort: 30081
+      {{- if eq .Values.dash.service.type "NodePort" }}
+      nodePort: {{ .Values.dash.service.nodePort.grpc }}
+      {{- end }}
   selector:
     app: {{ template "dash.fullname" . }}
-  type: "NodePort"
+  type: {{ .Values.dash.service.type | quote }}
 {{- end }}

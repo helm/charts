@@ -29,7 +29,11 @@ spec:
         - path: {{ .Values.dash.ingress.path }}
           backend:
             serviceName: dash
-            servicePort: {{ .Values.dash.service.http.port }}
+            servicePort: {{ .Values.dash.service.port.http }}
+        - path: {{ .Values.dash.ingress.wsPath }}
+          backend:
+            serviceName: dash
+            servicePort: {{ .Values.dash.service.port.grpc }}
 {{- if .Values.dash.ingress.tls }}
   tls:
   - hosts:
