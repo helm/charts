@@ -1,0 +1,41 @@
+External Service Operator Deployed into the namespace `external-services`.
+You can now ExternalService Ressources in order to make them available in the cluster.
+E.g:
+
+cat << EOF | kubectl apply -f -
+apiVersion: eso.crowdfox.com/v1alpha1
+kind: ExternalService
+metadata:
+  annotations:
+    # those annotations will be added to the ingress ressource
+    traefik.ingress.kubernetes.io/preserve-host: "true"
+  name: complex-example
+  namespace: external-service
+spec:
+  hosts:
+  - host: static1.mydomain.com
+    path: ""
+  - host: static2.mydomain.com
+    path: ""
+  - host: mydomain.com
+    path: ""
+  - host: www.mydomain.com
+    path: ""
+  ips:
+  - 10.0.100.10
+  - 10.0.100.11
+  port: 80
+  readinessProbe:
+    failureThreshold: 3
+    httpGet:
+      host: www.mydomain.com
+      httpHeaders:
+      - name: X-Forwarded-Proto
+        value: https
+      path: /healthcheck
+      port: 8080
+      scheme: HTTP
+    periodSeconds: 10
+    successThreshold: 2
+    timeoutSeconds: 2
+EOF
