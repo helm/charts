@@ -40,7 +40,7 @@ sources:
 # - crd
 
 ## DNS provider where the DNS records will be created. Available providers are:
-## - aws, azure, cloudflare, designate, digitalocoean, google, infoblox, rfc2136
+## - aws, azure, cloudflare, coredns, designate, digitalocoean, google, infoblox, rfc2136
 ##
 provider: aws
 
@@ -106,7 +106,10 @@ coredns:
   ## Secure (https) endpoints can be used as well, in that case `etcdTLS` section
   ## should be filled in accordingly
   ##
-  etcdEndpoints: "https://etcd-extdns:2379"
+  etcdEndpoints: "http://etcd-extdns:2379"
+  ## Configuration of the secure communication and client authentication to the etcd cluster
+  ## If enabled all the values under this key must hold a valid data
+  ##
   etcdTLS:
     ## Enable or disable secure communication and client authentication to the etcd cluster
     ##
