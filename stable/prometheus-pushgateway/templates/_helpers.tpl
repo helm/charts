@@ -52,3 +52,26 @@ Create default labels
 {{- $labels := dict "app" $labelApp "chart" $labelChart "release" .Release.Name "heritage" .Release.Service -}}
 {{ merge .extraLabels $labels | toYaml | indent 4 }}
 {{- end -}}
+
+{{/*
+Create unified labels for prometheus components
+*/}}
+{{- define "prometheus-pushgateway.common.matchLabels" -}}
+app: {{ template "prometheus-pushgateway.name" . }}
+release: {{ .Release.Name }}
+{{- end -}}
+
+{{- define "prometheus-pushgateway.labels" -}}
+{{ include "prometheus-pushgateway.common.matchLabels" . }}
+{{ include "prometheus-pushgateway.common.metaLabels" . }}
+{{- end -}}
+
+{{- define "prometheus-pushgateway.matchLabels" -}}
+component: {{ .Values.name | quote }}
+{{ include "prometheus-pushgateway.common.matchLabels" . }}
+{{- end -}}
+
+{{- define "prometheus-pushgateway.common.metaLabels" -}}
+chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+heritage: {{ .Release.Service }}
+{{- end -}}
