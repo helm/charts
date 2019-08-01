@@ -1,6 +1,6 @@
 # Redis Commander - Redis web management tool written in node.js
 
-[Redis Commander](https://joeferner.github.io/redis-commander/) Redis-Commander is a node.js web application used to view, edit, and manage a Redis Database.
+[Redis Commander](https://joeferner.github.io/redis-commander/) is a node.js web application used to view, edit, and manage a Redis Database.
 
 ## Introduction
 
