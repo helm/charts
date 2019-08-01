@@ -5,3 +5,12 @@ icon: https://joeferner.github.io/redis-commander/images/banner.png
 description: Redis management tool written in node.js
 name: redis-commander
 version: 0.1.0
+keywords:
+- webui
+- redis
+sources:
+- https://www.github.com/joeferner/redis-commander
+maintainers:
+- name: asafo
+  email: asaf+github@sysbind.co.il
+    
