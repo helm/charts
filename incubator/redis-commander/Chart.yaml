@@ -1,6 +1,7 @@
 apiVersion: v1
 appVersion: "0.6.5"
 home: https://joeferner.github.io/redis-commander
+icon: https://joeferner.github.io/redis-commander/images/banner.png
 description: Redis management tool written in node.js
 name: redis-commander
 version: 0.1.0
