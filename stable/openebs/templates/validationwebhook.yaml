@@ -14,8 +14,11 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     component: admission-webhook
+    openebs.io/component-name: admission-webhook
 webhooks:
+# failurePolicy Fail means that an error calling the webhook causes the admission to fail.
   - name: admission-webhook.openebs.io
+    failurePolicy: Fail
     clientConfig:
       service:
         name: admission-server-svc
@@ -42,6 +45,7 @@ metadata:
     chart: {{ template "openebs.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+    openebs.io/component-name: admission-webhook
 type: Opaque
 data:
 {{- if .Values.webhook.generateTLS }}
