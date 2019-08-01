@@ -78,7 +78,7 @@ The following tables list the configurable parameters and their default values.
 
 | Parameter                         | Description                                        | Default          |
 | --------------------------------- | -------------------------------------------------- | ---------------- |
-| server.version                    | The version/tag of the Data Flow server            | 2.0.2.RELEASE
+| server.version                    | The version/tag of the Data Flow server            | 2.2.0.RELEASE
 | server.imagePullPolicy            | The imagePullPolicy of the Data Flow server        | IfNotPresent
 | server.service.type               | The service type for the Data Flow server          | LoadBalancer
 | server.service.annotations        | Extra annotations for service resources            | {}
@@ -89,7 +89,7 @@ The following tables list the configurable parameters and their default values.
 
 | Parameter                          | Description                                       | Default          |
 | ---------------------------------- | ------------------------------------------------- | ---------------- |
-| skipper.version                    | The version/tag of the Skipper server             | 2.0.1.RELEASE
+| skipper.version                    | The version/tag of the Skipper server             | 2.1.0.RELEASE
 | skipper.imagePullPolicy            | The imagePullPolicy of the Skipper server         | IfNotPresent
 | skipper.platformName               | The name of the configured platform account       | default
 | skipper.service.type               | The service type for the Skipper server           | ClusterIP
