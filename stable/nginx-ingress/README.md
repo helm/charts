@@ -149,6 +149,9 @@ Parameter | Description | Default
 `controller.customTemplate.configMapKey` | configMap key containing the nginx template | `""`
 `controller.headers` | configMap key:value pairs containing the [custom headers](https://github.com/kubernetes/ingress-nginx/tree/master/docs/examples/customization/custom-headers) for Nginx | `{}`
 `controller.updateStrategy` | allows setting of RollingUpdate strategy | `{}`
+`controller.configMapNamespace` | The nginx-configmap namespace name | `""`
+`controller.tcp.configMapNamespace` | The tcp-services-configmap namespace name | `""`
+`controller.udp.configMapNamespace` | The udp-services-configmap namespace name | `""`
 `defaultBackend.enabled` | Use default backend component | `true`
 `defaultBackend.name` | name of the default backend component | `default-backend`
 `defaultBackend.image.repository` | default backend container image repository | `k8s.gcr.io/defaultbackend-amd64`
