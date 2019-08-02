@@ -151,20 +151,14 @@ rbac:
   # Specifies whether RBAC resources should be created
   create: true
 
-  # Specifies whether cluster-admin ClusterRole will be used for dashboard
-  # ServiceAccount (NOT RECOMMENDED).
-  clusterAdminRole: false
-
   # Start in ReadOnly mode.
   # Only dashboard-related Secrets and ConfigMaps will still be available for writing.
   #
-  # Turn OFF clusterAdminRole to use clusterReadOnlyRole.
-  #
-  # The basic idea of the clusterReadOnlyRole comparing to the clusterAdminRole
+  # The basic idea of the clusterReadOnlyRole
   # is not to hide all the secrets and sensitive data but more
   # to avoid accidental changes in the cluster outside the standard CI/CD.
   #
-  # Same as for clusterAdminRole, it is NOT RECOMMENDED to use this version in production.
+  # It is NOT RECOMMENDED to use this version in production.
   # Instead you should review the role and remove all potentially sensitive parts such as
   # access to persistentvolumes, pods/log etc.
   clusterReadOnlyRole: false

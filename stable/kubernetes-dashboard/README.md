@@ -37,14 +37,21 @@ The command removes all the Kubernetes components associated with the chart and 
 A major chart version change (like v1.2.3 -> v2.0.0) indicates that there is an
 incompatible breaking change needing manual actions.
 
-### To 2.0.0
+### Upgrade from 0.x.x to 1.x.x
 
-This version upgrades to kubernetes-dashboard v2.0.0 along with changes in RBAC management: all secrets are explicitely created and ServiceAccount do not have permission to create any secret.
+Upgrade from 0.x.x version to 1.x.x version is seamless if you use default `ingress.path` value. If you have non-default `ingress.path` values with version 0.x.x, you need to add your custom path in `ingress.paths` list value as shown as examples in `values.yaml`.
+
+Notes:
+
+- The proxy url changed please refer to the [usage section](#using-the-dashboard-with-kubectl-proxy)
+
+### Upgrade from 1.x.x to 2.x.x
+
+This version upgrades to kubernetes-dashboard v2.0.0 along with changes in RBAC management: all secrets are explicitely created and ServiceAccount do not have permission to create any secret. On top of that, it completely removes the `clusterAdminRole` parameter, being too dangerous.
 
 Moreover, it updates all the labels to the new [recommended labels](https://github.com/helm/charts/blob/master/REVIEW_GUIDELINES.md#names-and-labels), most of them being immutable.
 
-In order to upgrade, please uninstall and reinstall the chart.
-
+In order to upgrade, please update your configuration to remove `clusterAdminRole` parameter and uninstall/reinstall the chart.
 
 ## Access control
 
@@ -85,8 +92,7 @@ The following table lists the configurable parameters of the kubernetes-dashboar
 | `ingress.tls`                       | Ingress TLS configuration                                                                                                   | `[]`                                                                       |
 | `resources`                         | Pod resource requests & limits                                                                                              | `limits: {cpu: 100m, memory: 100Mi}, requests: {cpu: 100m, memory: 100Mi}` |
 | `rbac.create`                       | Create & use RBAC resources                                                                                                 | `true`                                                                     |
-| `rbac.clusterAdminRole`             | "cluster-admin" ClusterRole will be used for dashboard ServiceAccount ([NOT RECOMMENDED](#access-control))                  | `false`                                                                    |
-| `rbac.clusterReadOnlyRole`          | If clusterAdminRole disabled, an additional role will be created with read only permissions to all resources listed inside. | `false`                                                                    |
+| `rbac.clusterReadOnlyRole`          | If set, an additional role will be created with read only permissions to all resources listed inside. | `false`                                                                    |
 | `serviceAccount.create`             | Whether a new service account name that the agent will use should be created.                                               | `true`                                                                     |
 | `serviceAccount.name`               | Service account to be used. If not set and serviceAccount.create is `true` a name is generated using the fullname template. |                                                                            |
 | `livenessProbe.initialDelaySeconds` | Number of seconds to wait before sending first probe                                                                        | 30                                                                         |
@@ -116,19 +122,11 @@ helm install stable/kubernetes-dashboard --name my-release -f values.yaml
 
 When running 'kubectl proxy', the address `localhost:8001/ui` automatically expands to:
 
-- `http://localhost:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:https/proxy/` or
-- `http://localhost:8001/api/v1/namespaces/kube-system/services/http:kubernetes-dashboard:http/proxy/` if `enableInsecureLogin=true`
+- `http://localhost:8001/api/v1/namespaces/my-namespace/services/https:kubernetes-dashboard:https/proxy/` or
+- `http://localhost:8001/api/v1/namespaces/my-namespace/services/http:kubernetes-dashboard:http/proxy/` if `enableInsecureLogin=true`
 
 For this to reach the dashboard, the name of the service must be 'kubernetes-dashboard', not any other value as set by Helm. You can manually specify this using the value 'fullnameOverride':
 
 ```
 fullnameOverride: 'kubernetes-dashboard'
 ```
-
-### Upgrade from 0.x.x to 1.x.x
-
-Upgrade from 0.x.x version to 1.x.x version is seamless if you use default `ingress.path` value. If you have non-default `ingress.path` values with version 0.x.x, you need to add your custom path in `ingress.paths` list value as shown as examples in `values.yaml`.
-
-Notes:
-
-- The proxy url changed please refer to the [usage section](#using-the-dashboard-with-kubectl-proxy)
