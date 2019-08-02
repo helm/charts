@@ -128,9 +128,11 @@ The following tables list the configurable parameters of the prometheus-operator
 | `defaultRules.rules.kubernetesResources` | Create Kubernetes Resources  default rules| `true` |
 | `defaultRules.rules.kubernetesStorage` | Create Kubernetes Storage  default rules| `true` |
 | `defaultRules.rules.kubernetesSystem` | Create Kubernetes System  default rules| `true` |
-| `defaultRules.rules.node` | Create Node  default rules| `true` |
+| `defaultRules.rules.node` | Create Node default rules | `true` |
+| `defaultRules.rules.network` | Create networking default rules | `true` |
 | `defaultRules.rules.PrometheusOperator` | Create Prometheus Operator  default rules| `true` |
 | `defaultRules.rules.prometheus` | Create Prometheus  default rules| `true` |
+| `defaultRules.rules.time` | Create time default rules | `true` |
 | `defaultRules.labels` | Labels for default rules for monitoring the cluster | `{}` |
 | `defaultRules.annotations` | Annotations for default rules for monitoring the cluster | `{}` |
 | `additionalPrometheusRules` | *DEPRECATED* Will be removed in a future release.  Please use **additionalPrometheusRulesMap** instead.  List of `prometheusRule` objects to create. See https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#prometheusrulespec. | `[]` |
