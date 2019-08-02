@@ -75,9 +75,9 @@ Parameter                         | Description                                 
 `service.annotations`             | Service annotations                                                                                                                                                                                        | `{}`
 `service.externalPort`            | Pomerium's port                                                                                                                                                                                            | `443`
 `service.type`                    | Service type (ClusterIP, NodePort or LoadBalancer)                                                                                                                                                         | `ClusterIP`
-`serviceMonitor.enabled`          | Create Prometheus Operator ServiceMonitor                  | `false`
-`serviceMonitor.namespace`        | Namespace to create the ServiceMonitor resource in         | The namespace of the chart
-`serviceMonitor.labels`           | Additional labels to apply to the ServiceMonitor resource  | `release: prometheus`
+`serviceMonitor.enabled`          | Create Prometheus Operator ServiceMonitor                                            | `false`
+`serviceMonitor.namespace`        | Namespace to create the ServiceMonitor resource in                                   | The namespace of the chart
+`serviceMonitor.labels`           | Additional labels to apply to the ServiceMonitor resource                            | `release: prometheus`
 `ingress.enabled`                 | Enables Ingress for pomerium                                                                                                                                                                               | `false`
 `ingress.annotations`             | Ingress annotations                                                                                                                                                                                        | `{}`
 `ingress.hosts`                   | Ingress accepted hostnames                                                                                                                                                                                 | `nil`
