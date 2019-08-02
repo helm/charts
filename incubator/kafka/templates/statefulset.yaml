@@ -158,6 +158,8 @@ spec:
               fieldPath: metadata.namespace
         - name: KAFKA_HEAP_OPTS
           value: {{ .Values.kafkaHeapOptions }}
+        - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
+          value: {{ include "kafka.replication.factor" . | quote }}
         {{- if not (hasKey .Values.configurationOverrides "zookeeper.connect") }}
         - name: KAFKA_ZOOKEEPER_CONNECT
           value: {{ include "zookeeper.url" . | quote }}
