@@ -16,8 +16,11 @@ controller:
   name: controller
   image:
     repository: quay.io/jcmoraisjr/haproxy-ingress
-    tag: "v0.7.1"
+    tag: "v0.7.2"
     pullPolicy: IfNotPresent
+
+  imagePullSecrets: []
+  # - name: secret-name
 
   ## Additional command line arguments to pass to haproxy-ingress-controller
   ## E.g. to specify the default SSL certificate you can use
