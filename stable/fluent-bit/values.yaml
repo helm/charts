@@ -81,10 +81,7 @@ backend:
     tls_verify: "off"
     tls_debug: 1
     message_key: "kubernetes"
-  stackdriver:
-    google_service_credentials:
-    service_account_email:
-    service_account_secret:
+  stackdriver: {}
 
   ##
   ## Ref: http://fluentbit.io/documentation/current/output/http.html
