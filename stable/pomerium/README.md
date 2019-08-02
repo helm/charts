@@ -75,6 +75,9 @@ Parameter                         | Description                                 
 `service.annotations`             | Service annotations                                                                                                                                                                                        | `{}`
 `service.externalPort`            | Pomerium's port                                                                                                                                                                                            | `443`
 `service.type`                    | Service type (ClusterIP, NodePort or LoadBalancer)                                                                                                                                                         | `ClusterIP`
+`serviceMonitor.enabled`          | Create Prometheus Operator ServiceMonitor                                            | `false`
+`serviceMonitor.namespace`        | Namespace to create the ServiceMonitor resource in                                   | The namespace of the chart
+`serviceMonitor.labels`           | Additional labels to apply to the ServiceMonitor resource                            | `release: prometheus`
 `ingress.enabled`                 | Enables Ingress for pomerium                                                                                                                                                                               | `false`
 `ingress.annotations`             | Ingress annotations                                                                                                                                                                                        | `{}`
 `ingress.hosts`                   | Ingress accepted hostnames                                                                                                                                                                                 | `nil`
@@ -84,6 +87,32 @@ Parameter                         | Description                                 
 
 ## Metrics Discovery Configuration
 
+This chart provices two ways to surface metrics for discovery.  Under normal circumstances, you will only set up one method.
+
+### Prometheus Operator 
+
+This chart assumes you have already installed the Prometheus Operator CRDs.
+
+Example chart values:
+
+```yaml
+metrics:
+  enabled: true
+  port: 9090 # default
+serviceMonitor:
+  enabled: true
+  labels:
+    release: prometheus # default
+
+```
+
+Example ServiceMonitor configuration:
+
+```yaml
+    serviceMonitorSelector:
+      matchLabels:
+        release: prometheus # operator chart default
+```
 
 ### Prometheus kubernetes_sd_configs
 
