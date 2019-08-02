@@ -28,15 +28,18 @@ defaultRules:
     kubeApiserver: true
     kubePrometheusNodeAlerting: true
     kubePrometheusNodeRecording: true
-    kubeScheduler: true
     kubernetesAbsent: true
     kubernetesApps: true
     kubernetesResources: true
     kubernetesStorage: true
     kubernetesSystem: true
+    kubeScheduler: true
+    network: true
     node: true
-    prometheusOperator: true
     prometheus: true
+    prometheusOperator: true
+    time: true
+
   ## Labels for default rules
   labels: {}
   ## Annotations for default rules
