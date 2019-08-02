@@ -38,6 +38,9 @@ spec:
           {{- if .Values.config.disableDefaultMetrics }}
           - "--disable-default-metrics"
           {{- end }}
+          {{- range $key, $value := .Values.config.extraArgs }}
+          - "{{ $value }}"
+          {{- end }}
           env:
           - name: DATA_SOURCE_URI
             value: {{ template "prometheus-postgres-exporter.data_source_uri" . }}
