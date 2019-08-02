@@ -30,6 +30,9 @@ data:
     play.crypto.secret=${APP_SECRET}
     play.i18n.langs = [ "en" ]
     pidfile.path = "/dev/null"
+    play.evolutions.enabled=false
+    play.modules.enabled += "org.flywaydb.play.PlayModule"
+
     db {
       default.url="jdbc:postgresql://127.0.0.1:5432/"${POSTGRES_DB}
       default.driver=org.postgresql.Driver
