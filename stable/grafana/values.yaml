@@ -75,6 +75,8 @@ downloadDashboardsImage:
   tag: latest
   pullPolicy: IfNotPresent
 
+downloadDashboardsEnv: {}
+
 ## Pod Annotations
 # podAnnotations: {}
 
