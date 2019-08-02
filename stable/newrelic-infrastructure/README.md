@@ -18,7 +18,7 @@ This chart will deploy the New Relic Infrastructure agent as a Daemonset.
 | `rbac.create`             | Enable Role-based authentication                             | `true`                     |
 | `rbac.pspEnabled`         | Enable pod security policy support                           | `false`                    |
 | `privileged`              | Enable privileged mode.                                      | `false`                    |
-| `image.name`              | The container to pull.                                       | `newrelic/infrastructure`  |
+| `image.repository`        | The container to pull.                                       | `newrelic/infrastructure`  |
 | `image.pullPolicy`        | The pull policy.                                             | `IfNotPresent`             |
 | `image.tag`               | The version of the container to pull.                        | `1.9.2`                    |
 | `resources`               | Any resources you wish to assign to the pod.                 | See Resources below        |
@@ -27,6 +27,8 @@ This chart will deploy the New Relic Infrastructure agent as a Daemonset.
 | `nodeSelector`            | Node label to use for scheduling                             | `nil`                      |
 | `tolerations`             | List of node taints to tolerate (requires Kubernetes >= 1.6) | `nil`                      |
 | `updateStrategy`          | Strategy for DaemonSet updates (requires Kubernetes >= 1.6)  | `RollingUpdate`            |
+| `serviveAccount.create`   | If true, a service account would be created and assigned to the deployment | true |
+| `serviveAccount.name`     | The service account to assign to the deployment. If `serviveAccount.create` is true then this name will be used when creating the service account | |
 
 ## Example
 
