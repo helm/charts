@@ -182,7 +182,7 @@ master:
   # master.key and hudson.util.Secret)
   # secretsFilesSecret: jenkins-secrets
   # Jenkins XML job configs to provision
-  jobs:
+  jobs: {}
   #  test: |-
   #    <<xml here>>
 
