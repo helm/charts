@@ -13,6 +13,9 @@ service:
   type: ClusterIP
   nodePort: 0
   loadBalancerIP: ""
+  annotations: {}
+
+customLabels: {}
 
 hostNetwork: false
 

@@ -31,8 +31,9 @@ webhooks:
       service:
         name: {{ template "opa.fullname" . }}
         namespace: {{ .Release.Namespace }}
+{{- if .Values.admissionControllerSideEffect }}
     sideEffects: {{ .Values.admissionControllerSideEffect }}
-
+{{- end }}
 {{ if .Values.certManager.enabled }}
 ---
 # Create a selfsigned Issuer, in order to create a root CA certificate for

@@ -41,17 +41,17 @@ spec:
         - name: {{ .Values.airflow.image.pullSecret }}
       {{- end }}
       restartPolicy: Always
-      {{- if .Values.nodeSelector }}
+      {{- if .Values.web.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.nodeSelector | indent 8 }}
+{{ toYaml .Values.web.nodeSelector | indent 8 }}
       {{- end }}
-      {{- if .Values.affinity }}
+      {{- if .Values.web.affinity }}
       affinity:
-{{ toYaml .Values.affinity | indent 8 }}
+{{ toYaml .Values.web.affinity | indent 8 }}
       {{- end }}
-      {{- if .Values.tolerations }}
+      {{- if .Values.web.tolerations }}
       tolerations:
-{{ toYaml .Values.tolerations | indent 8 }}
+{{ toYaml .Values.web.tolerations | indent 8 }}
       {{- end }}
       {{- if .Values.dags.initContainer.enabled }}
       initContainers:

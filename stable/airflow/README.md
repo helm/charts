@@ -434,6 +434,9 @@ Full and up-to-date documentation can be found in the comments of the `values.ya
 
 ## Upgrading
 
+### To 4.0.0
+This version splits the specs for the NodeSelector, Affinity and Toleration features. Instead of being global, and injected in every component, they are now defined _by component_ to provide more flexibility for your deployments. As such, the migration steps are really simple. Just copy and paste your node/affinity/tolerance definitions in the four airflow components, which are `worker`, `scheduler`, `flower` and `web`. The default values file should help you with locating those.
+
 ### To 3.0.0
 This version introduces a simplified way of managing secrets, including the database credentials to postgres and redis.
 With the default settings in prior versions, database credentials were generated and stored in an Airflow-managed Kubernetes secret.

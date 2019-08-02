@@ -54,6 +54,13 @@ spec:
               mountPath: /var/db/cerebro
             - name: config
               mountPath: /etc/cerebro
+          {{- if .Values.env }}
+          env:
+          {{- range $index, $element := .Values.env }}
+          - name: {{ $index | quote }}
+            value: {{ $element | quote }}
+          {{- end }}
+          {{- end }}
           {{- if .Values.envFromSecretRef }}
           envFrom:
             - secretRef:

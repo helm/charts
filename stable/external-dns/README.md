@@ -66,6 +66,7 @@ The following table lists the configurable parameters of the external-dns chart 
 | `aws.zoneType`                     | When using the AWS provider, filter for zones of this type (optional, options: public, private)          | `""`                                                     |
 | `aws.assumeRoleArn`                | When using the AWS provider, assume role by specifying --aws-assume-role to the external-dns daemon      | `""`                                                     |
 | `aws.batchChangeSize`              | When using the AWS provider, set the maximum number of changes that will be applied in each batch        | `1000`                                                   |
+| `aws.zoneTags`                     | When using the AWS provider, filter for zones with these tags                                            | `[]`                                                     |
 | `azure.secretName`                 | When using the Azure provider, set the secret containing the `azure.json` file                           | `""`                                                     |
 | `azure.resourceGroup`               | When using the Azure provider, set the Azure Resource Group                                              | `""`                                                     |
 | `cloudflare.apiKey`                | When using the Cloudflare provider, `CF_API_KEY` to set (optional)                                       | `""`                                                     |

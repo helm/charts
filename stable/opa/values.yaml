@@ -29,7 +29,10 @@ admissionControllerNamespaceSelector:
   matchExpressions:
     - {key: openpolicyagent.org/webhook, operator: NotIn, values: [ignore]}
 
-# SideEffectClass for the webhook, setting to None enables dry-run
+# SideEffectClass for the webhook, setting to None enables dry-run,
+# if you want to disable the admissionControllerSideEffect option or in case
+# you're using a Kubernetes version older than 1.12, you just need to comment
+# the line below.
 admissionControllerSideEffect: Unknown
 
 # To restrict the kinds of operations and resources that are subject to OPA
