@@ -150,7 +150,7 @@ spec:
             - mountPath: /usr/share/jenkins/ref/secrets/
               name: secrets-dir
       containers:
-        - name: {{ template "jenkins.fullname" . }}
+        - name: jenkins
 {{- if .Values.master.imageTag }}
           image: "{{ .Values.master.image }}:{{ .Values.master.imageTag }}"
 {{- else }}
