@@ -15,6 +15,6 @@ spec:
     - name: wget
       image: busybox
       command: ['wget']
-      args:  ['{{ include "ambassador.fullname" . }}:{{ .Values.service.http.port }}/ambassador/v0/check_ready']
+      args:  ['{{ include "ambassador.fullname" . }}:{{ include "ambassador.servicePort" . }}/ambassador/v0/check_ready']
   restartPolicy: Never
 {{- end }}

@@ -141,6 +141,14 @@ ssl:
     # basic:
     #   testuser: $apr1$JXRA7j2s$LpVns9vsme8FHN0r.aSt11
 
+  # mtls:
+  #   enabled: true
+  #   optional: false
+  #   clientCaCerts: []
+  #   # When mTLS is enabled, the set of CA certificates used to validate client TLS certificates.
+  #   # https://docs.traefik.io/configuration/entrypoints/#tls-mutual-authentication
+  #   # CA certificates should be in PEM format.
+
 kvprovider:
   ## If you want to run Traefik in HA mode, you will need to setup a KV Provider. Therefore you can choose one of
   ## * etcd
@@ -473,3 +481,15 @@ tracing:
 #   entryPoints: ["http", "https"]
 #   address: https://authserver.com/auth
 #   trustForwardHeader: true
+
+# Any extra volumes to define for the pod
+extraVolumes: []
+  # - name: example-name
+  #   hostPath:
+  #     path: /path/on/host
+  #     type: DirectoryOrCreate
+
+# Any extra volume mounts to define for the Traefik container
+extraVolumeMounts: []
+#   - name: example-name
+#     mountPath: /path/in/container

@@ -14,7 +14,6 @@ replicas: 1
 ## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
 deploymentStrategy:
   type: RollingUpdate
-  rollingUpdate: null
 
 readinessProbe:
   httpGet:
@@ -49,6 +48,7 @@ image:
 testFramework:
   image: "dduportal/bats"
   tag: "0.4.0"
+  securityContext: {}
 
 securityContext:
   runAsUser: 472
