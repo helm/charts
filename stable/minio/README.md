@@ -147,6 +147,7 @@ The following table lists the configurable parameters of the MinIO chart and the
 | `defaultBucket.purge`      | Purge the bucket if already exists  | `false`                                                 |
 | `buckets`                  | List of buckets to create after MinIO install  | `[]`                                         |
 | `gateway.enabled`          | Use MinIO as a gateway              | `false`                                                 |
+| `gateway.emptyDirSize`     | Size limit for gateway cache, applies only when persistence.enabled=false | `10Gi`            |
 | `gateway.type`             | Set the backend to which MinIO gateway should use. It accept the following values: [s3](https://github.com/minio/minio/blob/master/docs/gateway/s3.md), [azure](https://docs.minio.io/docs/minio-gateway-for-azure), [gcs](https://docs.minio.io/docs/minio-gateway-for-gcs), [oss](https://github.com/minio/minio/blob/master/docs/gateway/oss.md) | `s3` |
 | `gateway.s3.serviceEndpoint`| Endpoint to the S3 compatible service | `""` |
 | `gateway.gcs.gcsKeyJson`    | credential json file of service account key | `""` |
@@ -221,7 +222,7 @@ $ helm install --set nasgateway.enabled=true stable/minio
 This provisions 4 MinIO NAS gateway instances backed by single storage. To change the number of instances in your MinIO deployment, set the `replicas` field,
 
 ```bash
-$ helm install --set nasgateway.enabled=true,nasgateway.replicas=8 stable/minio
+$ helm install --set nasgateway.enabled=true,replicas=8 stable/minio
 ```
 
 This provisions MinIO NAS gateway with 8 instances.
