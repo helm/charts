@@ -3,10 +3,7 @@ kind: Service
 metadata:
   name: {{ template "dex.fullname" . }}
   labels:
-    app: {{ template "dex.name" . }}
-    chart: {{ template "dex.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+{{ include "dex.labels" . | indent 4 }}
 {{- if .Values.service.annotations }}
   annotations:
 {{ toYaml .Values.service.annotations | indent 4 }}
@@ -15,18 +12,27 @@ spec:
   type: {{ .Values.service.type}}
   sessionAffinity: None
   ports:
-{{- range .Values.ports }}
-  - name: {{ .name }} 
-    port: {{ .containerPort }}
-    targetPort: {{ .containerPort}}
-{{- if and (eq "NodePort" $.Values.service.type) (hasKey . "nodePort") }}
-    nodePort: {{ .nodePort }}
-{{- end}}
-{{- end}}
+  - name: {{ if .Values.https }}https{{ else }}http{{ end }}
+    targetPort: {{ if .Values.https }}https{{ else }}http{{ end }}
+{{- if eq "NodePort" .Values.service.type }}
+    nodePort: {{ .Values.ports.web.nodePort }}
+{{- end }}
+    port: {{ .Values.ports.web.servicePort }}
+{{- if .Values.grpc }}
+  - name: grpc
+    targetPort: grpc
+  {{- if eq "NodePort" .Values.service.type }}
+    nodePort: {{ .Values.ports.grpc.nodePort }}
+  {{- end }}
+    port: {{ .Values.ports.grpc.servicePort }}
+{{- end }}
 {{- if hasKey .Values.service "externalIPs" }}
   externalIPs:
 {{ toYaml .Values.service.externalIPs | indent 4 }}
 {{- end }}
+{{- if hasKey .Values.service "loadBalancerIP" }}
+  loadBalancerIP: {{ .Values.service.loadBalancerIP }}
+{{- end }}
   selector:
-    app: {{ template "dex.name" . }}
-    release: {{ .Release.Name | quote }}
+    app.kubernetes.io/name: {{ include "dex.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
