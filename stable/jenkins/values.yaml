@@ -156,11 +156,11 @@ master:
 
   # List of plugins to be install during Jenkins master start
   installPlugins:
-    - kubernetes:1.16.0
-    - workflow-job:2.32
+    - kubernetes:1.18.1
+    - workflow-job:2.33
     - workflow-aggregator:2.6
     - credentials-binding:1.19
-    - git:3.10.0
+    - git:3.11.0
 
   # Enable to always override the installed plugins with the values of 'master.installPlugins' on upgrade or redeployment.
   # overwritePlugins: true
@@ -195,7 +195,7 @@ master:
   # etc.  Best reference is https://<jenkins_url>/configuration-as-code/reference.  The example below creates a welcome message:
   JCasC:
     enabled: false
-    pluginVersion: "1.21"
+    pluginVersion: "1.25"
     # it's only used when plugin version is <=1.18 for later version the
     # configuration as code support plugin is no longer needed
     supportPluginVersion: "1.18"
