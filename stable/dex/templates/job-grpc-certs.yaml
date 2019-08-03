@@ -1,4 +1,4 @@
-{{- if .Values.certs.grpc.create }}
+{{- if and .Values.grpc .Values.certs.grpc.create }}
 {{ $fullname := include "dex.fullname" . }}
 {{ $tlsServerBuiltName := printf "%s-server-tls" $fullname }}
 {{ $tlsServerSecretName := default $tlsServerBuiltName .Values.certs.grpc.secret.serverTlsName }}
@@ -17,19 +17,16 @@ metadata:
     "helm.sh/hook-delete-policy": hook-succeeded
   name: {{ $fullname }}-grpc-certs
   labels:
-    app: {{ template "dex.name" . }}
-    chart: {{ template "dex.chart" . }}
-    heritage: "{{ .Release.Service }}"
-    release: "{{ .Release.Name }}"
-    component: "job"
+{{ include "dex.labels" . | indent 4 }}
+    app.kubernetes.io/component: "job-grpc-certs"
 spec:
   activeDeadlineSeconds: {{ .Values.certs.grpc.activeDeadlineSeconds }}
   template:
     metadata:
       labels:
-        app: {{ template "dex.name" . }}
-        release: "{{ .Release.Name }}"
-        component: "job"
+        app.kubernetes.io/name: {{ include "dex.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: "job-grpc-certs"
     spec:
       {{- if .Values.certs.securityContext.enabled }}
       securityContext:
