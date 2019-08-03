@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ado-agent.fullname" . }}
+  labels:
+{{ include "ado-agent.labels" . | indent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "ado-agent.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "ado-agent.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+          - name: VSTS_ACCOUNT
+            valueFrom:
+              secretKeyRef:
+                name: vsts
+                key: account
+          - name: VSTS_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: vsts
+                key: token
+          - name: VSTS_POOL
+            valueFrom:
+              secretKeyRef:
+                name: vsts
+                key: pool
+          ports:
+            - name: https
+              containerPort: 443
+              protocol: TCP
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - name: docker-graph-storage
+              mountPath: /var/lib/docker
+            - mountPath: /var/run/docker.sock
+              name: docker-socket-volume
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      volumes:
+        - name: docker-graph-storage
+          emptyDir: {}
+        - name: docker-socket-volume
+          hostPath:
+            path: /var/run/docker.sock
+            type: File

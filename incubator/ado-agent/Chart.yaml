@@ -1,0 +1,16 @@
+apiVersion: v1
+appVersion: "1.0"
+description: A Helm chart for Azure DevOps Agents
+name: ado-agent
+home: https://github.com/gambtho/aks-azuredevops-agent
+version: 0.1.0
+keywords:
+- azure
+- devops
+- agent
+sources:
+- https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/docker?view=azure-devops
+- https://dev.azure.com
+maintainers:
+- name: gambtho
+  email: thomasgamble2@gmail.com

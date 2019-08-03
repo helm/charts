@@ -1,0 +1,6 @@
+- You must set the vsts variables to the approriate values for your Azure DevOps Organization
+- vsts.account is the suffix of the url for your Azure DevOps Org https://dev.azure.com/<account>
+- vsts.token is a personal access token - https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=vsts
+- vsts.pool is an agent pool - https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/pools-queues?view=vsts
+- the values for these should be encoded with base64
+- default docker image for this chart is located here - https://hub.docker.com/r/gambtho/azure-pipeline-agent/dockerfile

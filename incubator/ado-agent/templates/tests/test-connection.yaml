@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "ado-agent.fullname" . }}-test-connection"
+  labels:
+{{ include "ado-agent.labels" . | indent 4 }}
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args:  ['{{ include "ado-agent.fullname" . }}:{{ .Values.service.port }}']
+  restartPolicy: Never

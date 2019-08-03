@@ -1,0 +1,20 @@
+replicaCount: 1
+image:
+  repository: gambtho/azure-pipeline-agent
+  tag: latest
+  pullPolicy: Always
+ingress:
+  enabled: false
+vsts:
+  account: "replacme"
+  token: "replaceme"
+  pool: "replaceme"
+service:
+  type: ClusterIP
+resources:
+  limits:
+    cpu: 200m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 256Mi
