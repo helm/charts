@@ -135,6 +135,9 @@ affinity: {}
 # Additational pod annotations
 podAnnotations: {}
 
+# Additional pod labels
+podLabels: {}
+
 ## Liveness and Readiness probe values.
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
 livenessProbe:
