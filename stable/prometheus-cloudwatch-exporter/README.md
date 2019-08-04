@@ -74,12 +74,12 @@ The following table lists the configurable parameters of the Cloudwatch Exporter
 | `affinity`                        | node/pod affinities                                                     | `{}`                        |
 | `livenessProbe`                   | Liveness probe settings                                                 |                             |
 | `readinessProbe`                  | Readiness probe settings                                                |                             |
-| `servicemonitor.enabled`          | Use servicemonitor from prometheus operator                             | `false`                     |
-| `servicemonitor.namespace`        | Namespace thes Servicemonitor  is installed in                          |                             |
-| `servicemonitor.interval`         | How frequently Prometheus should scrape                                 |                             |
-| `servicemonitor.telemetryPath`    | path to cloudwatch-exporter telemtery-path                              |                             |
-| `servicemonitor.labels`           | labels for the ServiceMonitor passed to Prometheus Operator             | `{}`                        |
-| `servicemonitor.timeout`          | Timeout after which the scrape is ended                                 |                             |
+| `serviceMonitor.enabled`          | Use servicemonitor from prometheus operator                             | `false`                     |
+| `serviceMonitor.namespace`        | Namespace thes Servicemonitor  is installed in                          |                             |
+| `serviceMonitor.interval`         | How frequently Prometheus should scrape                                 |                             |
+| `serviceMonitor.telemetryPath`    | path to cloudwatch-exporter telemtery-path                              |                             |
+| `serviceMonitor.labels`           | labels for the ServiceMonitor passed to Prometheus Operator             | `{}`                        |
+| `serviceMonitor.timeout`          | Timeout after which the scrape is ended                                 |                             |
 | `ingress.enabled`                 | Enables Ingress                                                         | `false`                     |
 | `ingress.annotations`             | Ingress annotations                                                     | `{}`                        |
 | `ingress.labels`                  | Custom labels                                                           | `{}`                        |
