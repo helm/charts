@@ -2,7 +2,7 @@ apiVersion: v1
 appVersion: "0.5.0"
 description: A Helm chart for prometheus-nats-exporter
 name: prometheus-nats-exporter
-version: 2.2.0
+version: 2.2.1
 home: https://github.com/nats-io/prometheus-nats-exporter
 sources:
   - https://github.com/nats-io/prometheus-nats-exporter
