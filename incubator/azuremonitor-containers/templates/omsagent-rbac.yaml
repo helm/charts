@@ -4,29 +4,34 @@ kind: ServiceAccount
 metadata:
   name: omsagent
   namespace: kube-system
-  chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-  release: {{ .Release.Name }}
-  heritage: {{ .Release.Service }}
+  labels:
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 ---
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1beta1
 metadata:
   name: omsagent-reader
-  chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-  release: {{ .Release.Name }}
-  heritage: {{ .Release.Service }}
+  labels:
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 rules:
 - apiGroups: [""]
   resources: ["pods", "events", "nodes", "namespaces", "services"]
-  verbs: ["list"]
+  verbs: ["list", "get", "watch"]
+- nonResourceURLs: ["/metrics"]
+  verbs: ["get"]
 ---
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1beta1
 metadata:
   name: omsagentclusterrolebinding
-  chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-  release: {{ .Release.Name }}
-  heritage: {{ .Release.Service }}
+  labels:
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 subjects:
   - kind: ServiceAccount
     name: omsagent

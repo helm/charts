@@ -67,7 +67,7 @@ spec:
             httpGet:
               path: /
               port: http
-              scheme: HTTP
+              scheme: {{ .Values.livenessProbe.scheme }}
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
@@ -80,7 +80,7 @@ spec:
             httpGet:
               path: /
               port: http
-              scheme: HTTP
+              scheme: {{ .Values.readinessProbe.scheme }}
             initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
@@ -89,7 +89,7 @@ spec:
           {{- end }}
           ports:
             - name: http
-              containerPort: 9980
+              containerPort: {{ .Values.service.port }}
               protocol: TCP
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

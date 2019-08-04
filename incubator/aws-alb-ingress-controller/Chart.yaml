@@ -1,7 +1,7 @@
 apiVersion: v1
 name: aws-alb-ingress-controller
 description: A Helm chart for AWS ALB Ingress Controller
-version: 0.1.9
+version: 0.1.10
 appVersion: "v1.1.2"
 engine: gotpl
 home: https://github.com/kubernetes-sigs/aws-alb-ingress-controller

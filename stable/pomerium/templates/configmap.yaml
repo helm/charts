@@ -19,6 +19,9 @@ data:
 {{- if .Values.config.extraOpts }}
 {{ toYaml .Values.config.extraOpts | indent 4 -}}
 {{- end -}}
+{{- if .Values.metrics.enabled }}
+    metrics_address: :{{ .Values.metrics.port }}
+{{- end -}}
 {{- if .Values.config.policy }}
     policy: 
 {{ toYaml .Values.config.policy | indent 6 }}

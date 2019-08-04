@@ -26,6 +26,7 @@ spec:
         checksum/config-agent: {{ include (print $.Template.BasePath "/configmap-agent.yaml") . | sha256sum }}
         checksum/config-agent-autodisco: {{ include (print $.Template.BasePath "/configmap-agent-autodisco.yaml") . | sha256sum }}
         checksum/config-logagent: {{ include (print $.Template.BasePath "/configmap-logagent.yaml") . | sha256sum }}
+        checksum/config-logagent-custom-configs: {{ include (print $.Template.BasePath "/configmap-logagent-custom-configs.yaml") . | sha256sum }}
         checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
     spec:
       serviceAccountName: {{ template "sematext-agent.serviceAccountName" . }}
@@ -70,6 +71,9 @@ spec:
               path: /health
               port: {{ .Values.agent.service.port }}
           volumeMounts:
+            - name: hostfs
+              mountPath: /hostfs
+              readOnly: true
             - name: procfs
               mountPath: /host/proc
               readOnly: true
@@ -115,6 +119,10 @@ spec:
           volumeMounts:
             - name: docker-sock
               mountPath: /var/run/docker.sock
+            {{- if .Values.logagent.customConfigs }}
+            - mountPath: /etc/sematext
+              name: logagent-config-volume
+            {{- end }}
             {{- if .Values.logagent.extraHostVolumeMounts }}
             {{- range $_, $mount := .Values.logagent.extraHostVolumeMounts }}
             - name: {{ $mount.name }}
@@ -125,6 +133,9 @@ spec:
 {{ toYaml .Values.logagent.resources | indent 12 }}
           {{- end }}
       volumes:
+        - name: hostfs
+          hostPath:
+            path: /
         - name: procfs
           hostPath:
             path: /proc
@@ -146,6 +157,11 @@ spec:
         - name: lib
           hostPath:
             path: /host/usr/lib
+        {{- if .Values.logagent.customConfigs }}
+        - name: logagent-config-volume
+          configMap:
+            name: {{ template "sematext-agent.fullname" . }}-logagent-custom-configs
+        {{- end }}
         {{- if .Values.logagent.extraHostVolumeMounts }}
         {{- range $_, $mount := .Values.logagent.extraHostVolumeMounts }}
         - name: {{ $mount.name }}
@@ -153,9 +169,6 @@ spec:
             path: {{ $mount.hostPath }}
         {{- end }}
         {{- end }}
-        - name: autodisco-template
-          configMap:
-            name: {{ template "sematext-agent.fullname" . }}-agent-autodisco
       {{ if .Values.imagePullSecrets }}
       imagePullSecrets:
         - name: {{ .Values.imagePullSecrets }}
