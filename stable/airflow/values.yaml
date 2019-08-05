@@ -42,6 +42,7 @@ airflow:
     annotations: {}
     type: ClusterIP
     externalPort: 8080
+    nodePort:
   ##
   ## The executor to use.
   ##

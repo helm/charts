@@ -22,4 +22,7 @@ spec:
     - name: web
       protocol: TCP
       port: {{ .Values.airflow.service.externalPort | default 8080 }}
+      {{- if .Values.airflow.service.nodePort }}
+      nodePort: {{ .Values.airflow.service.nodePort }}
+      {{- end }}
       targetPort: 8080
