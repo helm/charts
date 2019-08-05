@@ -15,7 +15,7 @@ $ helm install stable/kube-state-metrics
 | Parameter                               | Description                                                                           | Default                                    |
 |:----------------------------------------|:--------------------------------------------------------------------------------------|:-------------------------------------------|
 | `image.repository`                      | The image repository to pull from                                                     | quay.io/coreos/kube-state-metrics          |
-| `image.tag`                             | The image tag to pull from                                                            | `v1.7.1`                                   |
+| `image.tag`                             | The image tag to pull from                                                            | `v1.7.2`                                   |
 | `image.pullPolicy`                      | Image pull policy                                                                     | `IfNotPresent`                             |
 | `replicas`                              | Number of replicas                                                                    | `1`                                        |
 | `service.port`                          | The port of the container                                                             | `8080`                                     |
