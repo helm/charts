@@ -97,6 +97,8 @@ backupOperator:
   ## additional command arguments go here; will be translated to `--key=value` form
   ## e.g., analytics: true
   commandArgs: {}
+  securityContext: {}
+  tolerations: {}
 
 # restore spec
 restoreOperator:
@@ -122,6 +124,8 @@ restoreOperator:
   ## additional command arguments go here; will be translated to `--key=value` form
   ## e.g., analytics: true
   commandArgs: {}
+  securityContext: {}
+  tolerations: {}
 
 ## etcd-cluster specific values
 etcdCluster:
@@ -156,3 +160,5 @@ etcdCluster:
     ## Node labels for etcd pod assignment
     ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
     nodeSelector: {}
+    securityContext: {}
+    tolerations: {}
