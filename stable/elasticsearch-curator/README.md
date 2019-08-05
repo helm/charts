@@ -32,7 +32,7 @@ incompatible breaking change needing manual actions.
 
 v2.0.0 uses docker image from `elasticsearch-curator` author, which differs in its way to install curator.
 
-If you have an hardcoded `command` value, please update it to follow the new `curator` executable path: `/curator/curator` (which is not in PATH).
+If you have a hardcoded `command` value, please update it to follow the new `curator` executable path: `/curator/curator` (which is not in PATH).
 
 ## Configuration
 
