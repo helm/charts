@@ -46,6 +46,8 @@ The following table lists the configurable parameters of the Blackbox-Exporter c
 | `config`                               | Prometheus blackbox configuration                 | {}                            |
 | `secretConfig`                         | Whether to treat blackbox configuration as secret | `false`                       |
 | `configmapReload.name`                 | configmap-reload container name                   | `configmap-reload`            |
+| `configmapReload.runAsUser`            | User to run configmap-reload container as         | `65534`                       |
+| `configmapReload.runAsNonRoot`         | Run configmap-reload container as non-root        | `true`                        |
 | `configmapReload.image.repository`     | configmap-reload container image repository       | `jimmidyson/configmap-reload` |
 | `configmapReload.image.tag`            | configmap-reload container image tag              | `v0.2.2`                      |
 | `configmapReload.image.pullPolicy`     | configmap-reload container image pull policy      | `IfNotPresent`                |
@@ -62,6 +64,9 @@ The following table lists the configurable parameters of the Blackbox-Exporter c
 | `ingress.hosts`                        | Ingress accepted hostnames                        | None                          |
 | `ingress.tls`                          | Ingress TLS configuration                         | None                          |
 | `nodeSelector`                         | node labels for pod assignment                    | `{}`                          |
+| `runAsUser`                            | User to run blackbox-exporter container as        | `1000`                        |
+| `readOnlyRootFilesystem`               | Set blackbox-exporter file-system to read-only    | `true`                        |
+| `runAsNonRoot`                         | Run blackbox-exporter as non-root                 | `true`                        |
 | `tolerations`                          | node tolerations for pod assignment               | `[]`                          |
 | `affinity`                             | node affinity for pod assignment                  | `{}`                          |
 | `podAnnotations`                       | annotations to add to each pod                    | `{}`                          |
