@@ -28,6 +28,6 @@ spec:
     - {{ .Release.Namespace }}
   selector:
     matchLabels:
-      app: {{ include "prometheus-yace-exporter.name" . }}
-      release: {{ .Release.Name }}
+      app.kubernetes.io/name: {{ include "prometheus-yace-exporter.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
