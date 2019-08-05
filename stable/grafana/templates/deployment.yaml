@@ -77,6 +77,11 @@ spec:
           imagePullPolicy: {{ .Values.downloadDashboardsImage.pullPolicy }}
           command: ["/bin/sh"]
           args: [ "-c", "mkdir -p /var/lib/grafana/dashboards/default && /bin/sh /etc/grafana/download_dashboards.sh" ]
+          env:
+{{- range $key, $value := .Values.downloadDashboards.env }}
+            - name: "{{ $key }}"
+              value: "{{ $value }}"
+{{- end }}
           volumeMounts:
             - name: config
               mountPath: "/etc/grafana/download_dashboards.sh"
