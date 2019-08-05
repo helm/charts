@@ -12,6 +12,11 @@ image:
   # pullSecrets:
   #   - myRegistrKeySecretName
 
+## User to run blackbox-exporter container as
+runAsUser: 1000
+readOnlyRootFilesystem: true
+runAsNonRoot: true
+
 nodeSelector: {}
 tolerations: []
 affinity: {}
@@ -68,6 +73,11 @@ configmapReload:
   ## configmap-reload container name
   ##
   name: configmap-reload
+
+  ## User to run configmap-reload container as
+  ##
+  runAsUser: 65534
+  runAsNonRoot: true
 
   ## configmap-reload container image
   ##
