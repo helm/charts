@@ -52,6 +52,10 @@ spec:
       nodeSelector:
 {{ toYaml .Values.backupOperator.nodeSelector | indent 8 }}
     {{- end }}
+    {{- if .Values.backupOperator.securityContext }}
+      securityContext:
+{{ toYaml .Values.backupOperator.securityContext | indent 8 }}
+    {{- end }}
     {{- if .Values.backupOperator.tolerations }}
       tolerations:
 {{ toYaml .Values.backupOperator.tolerations | indent 8 }}

@@ -1,6 +1,12 @@
 # Default values for etcd-operator.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
+global:
+  ## Reference to one or more secrets to be used when pulling images
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  ##
+  imagePullSecrets: []
+  # - name: "image-pull-secret"
 
 ## Install Default RBAC roles and bindings
 rbac:
@@ -43,7 +49,7 @@ etcdOperator:
   replicaCount: 1
   image:
     repository: quay.io/coreos/etcd-operator
-    tag: v0.9.3
+    tag: v0.9.4
     pullPolicy: Always
   resources:
     cpu: 100m
@@ -75,7 +81,7 @@ backupOperator:
   replicaCount: 1
   image:
     repository: quay.io/coreos/etcd-operator
-    tag: v0.9.3
+    tag: v0.9.4
     pullPolicy: Always
   resources:
     cpu: 100m
@@ -98,7 +104,7 @@ restoreOperator:
   replicaCount: 1
   image:
     repository: quay.io/coreos/etcd-operator
-    tag: v0.9.3
+    tag: v0.9.4
     pullPolicy: Always
   port: 19999
   resources:

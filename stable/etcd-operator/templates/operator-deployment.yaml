@@ -78,6 +78,10 @@ spec:
       nodeSelector:
 {{ toYaml .Values.etcdOperator.nodeSelector | indent 8 }}
     {{- end }}
+    {{- if .Values.etcdOperator.securityContext }}
+      securityContext:
+{{ toYaml .Values.etcdOperator.securityContext | indent 8 }}
+    {{- end }}
     {{- if .Values.etcdOperator.tolerations }}
       tolerations:
 {{ toYaml .Values.etcdOperator.tolerations | indent 8 }}

@@ -69,6 +69,7 @@ The following table lists the configurable parameters of the etcd-operator chart
 | `etcdOperator.image.pullpolicy`                   | etcd-operator container image pull policy                            | `Always`                                       |
 | `etcdOperator.resources.cpu`                      | CPU limit per etcd-operator pod                                      | `100m`                                         |
 | `etcdOperator.resources.memory`                   | Memory limit per etcd-operator pod                                   | `128Mi`                                        |
+| `etcdOperator.securityContext`                    | SecurityContext for etcd operator                                    | `{}`                                           |
 | `etcdOperator.nodeSelector`                       | Node labels for etcd operator pod assignment                         | `{}`                                           |
 | `etcdOperator.podAnnotations`                     | Annotations for the etcd operator pod                                | `{}`                                           |
 | `etcdOperator.commandArgs`                        | Additional command arguments                                         | `{}`                                           |
@@ -79,6 +80,7 @@ The following table lists the configurable parameters of the etcd-operator chart
 | `backupOperator.image.pullpolicy`                 | Operator container image pull policy                                 | `Always`                                       |
 | `backupOperator.resources.cpu`                    | CPU limit per etcd-operator pod                                      | `100m`                                         |
 | `backupOperator.resources.memory`                 | Memory limit per etcd-operator pod                                   | `128Mi`                                        |
+| `backupOperator.securityContext`                  | SecurityContext for etcd backup operator                             | `{}`                                           |
 | `backupOperator.spec.storageType`                 | Storage to use for backup file, currently only S3 supported          | `S3`                                           |
 | `backupOperator.spec.s3.s3Bucket`                 | Bucket in S3 to store backup file                                    |                                                |
 | `backupOperator.spec.s3.awsSecret`                | Name of kubernetes secret containing aws credentials                |                                                |
@@ -91,6 +93,7 @@ The following table lists the configurable parameters of the etcd-operator chart
 | `restoreOperator.image.pullpolicy`                | Operator container image pull policy                                 | `Always`                                       |
 | `restoreOperator.resources.cpu`                   | CPU limit per etcd-operator pod                                      | `100m`                                         |
 | `restoreOperator.resources.memory`                | Memory limit per etcd-operator pod                                   | `128Mi`                                        |
+| `restoreOperator.securityContext`                 | SecurityContext for etcd restore operator                            | `{}`                                           |
 | `restoreOperator.spec.s3.path`                    | Path in S3 bucket containing the backup file                         |                                                |
 | `restoreOperator.spec.s3.awsSecret`               | Name of kubernetes secret containing aws credentials                |                                                |
 | `restoreOperator.nodeSelector`                    | Node labels for etcd operator pod assignment                         | `{}`                                           |

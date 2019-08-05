@@ -56,6 +56,9 @@ spec:
       nodeSelector:
 {{ toYaml .Values.restoreOperator.nodeSelector | indent 8 }}
     {{- end }}
+      securityContext:
+{{ toYaml .Values.restoreOperator.securityContext | indent 8 }}
+    {{- end }}
     {{- if .Values.restoreOperator.tolerations }}
       tolerations:
 {{ toYaml .Values.restoreOperator.tolerations | indent 8 }}
