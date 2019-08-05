@@ -1,5 +1,4 @@
 {{- if and .Values.rbac.create .Values.deployments.etcdOperator }}
----
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/{{ required "A valid .Values.rbac.apiVersion entry required!" .Values.rbac.apiVersion }}
 metadata:

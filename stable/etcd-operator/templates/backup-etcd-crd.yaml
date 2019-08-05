@@ -1,5 +1,4 @@
 {{- if .Values.customResources.createBackupCRD }}
----
 apiVersion: "etcd.database.coreos.com/v1beta2"
 kind: "EtcdBackup"
 metadata:

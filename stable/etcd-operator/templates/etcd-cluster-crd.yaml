@@ -1,5 +1,4 @@
 {{- if .Values.customResources.createEtcdClusterCRD }}
----
 apiVersion: "etcd.database.coreos.com/v1beta2"
 kind: "EtcdCluster"
 metadata:
@@ -22,4 +21,3 @@ spec:
 {{ toYaml .Values.etcdCluster.tls | indent 4 }}
   {{- end }}
 {{- end }}
-

@@ -1,5 +1,4 @@
 {{- if .Values.deployments.restoreOperator }}
----
 apiVersion: v1
 kind: Service
 metadata:

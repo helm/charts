@@ -1,5 +1,4 @@
 {{- if .Values.rbac.create }}
----
 apiVersion: rbac.authorization.k8s.io/{{ .Values.rbac.apiVersion }}
 kind: ClusterRole
 metadata:
