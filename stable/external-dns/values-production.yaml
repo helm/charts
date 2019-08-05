@@ -40,7 +40,7 @@ sources:
 # - crd
 
 ## DNS provider where the DNS records will be created. Available providers are:
-## - aws, azure, cloudflare, designate, digitalocoean, google, infoblox, rfc2136
+## - aws, azure, cloudflare, coredns, designate, digitalocoean, google, infoblox, rfc2136
 ##
 provider: aws
 
@@ -98,6 +98,42 @@ cloudflare:
   ## Enable the proxy feature of Cloudflare
   ##
   proxied: true
+
+## CoreDNS configuration to be set via arguments/env variables
+##
+coredns:
+  ## Comma-separated list of the etcd endpoints
+  ## Secure (https) endpoints can be used as well, in that case `etcdTLS` section
+  ## should be filled in accordingly
+  ##
+  etcdEndpoints: "https://etcd-extdns:2379"
+  ## Configuration of the secure communication and client authentication to the etcd cluster
+  ## If enabled all the values under this key must hold a valid data
+  ##
+  etcdTLS:
+    ## Enable or disable secure communication and client authentication to the etcd cluster 
+    ##
+    enabled: true
+    ## Name of the existing secret containing cert files for client communication
+    ## ref: https://github.com/etcd-io/etcd/blob/master/Documentation/op-guide/security.md
+    ## ref (secret creation):
+    ##  https://github.com/bitnami/charts/tree/master/bitnami/etcd#configure-certificates-for-client-communication
+    ##
+    secretName: "etcd-client-certs"
+    ## Location of the mounted certificates inside external-dns pod
+    ##
+    mountPath: "/etc/coredns/tls/etcd"
+    ## CA PEM file used to sign etcd TLS cert, should exist in the secret provided above
+    ##
+    caFilename: "ca.crt"
+    ## Certificate PEM file, should exist in the secret provided above
+    ## Will be used by external-dns to authenticate against etcd
+    ##
+    certFilename: "cert.pem"
+    ## Private key PEM file, should exist in the secret provided above
+    ## Will be used by external-dns to authenticate against etcd
+    ##
+    keyFilename: "key.pem"
 
 ## OpenStack Designate provider configuration to be set via arguments/env. variables
 ##
