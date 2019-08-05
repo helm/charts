@@ -195,6 +195,19 @@ spec:
         - name: CF_API_EMAIL
           value: {{ .Values.cloudflare.email | quote }}
         {{- end }}
+        # CoreDNS environment variables
+        {{- if eq .Values.provider "coredns" }}
+        - name: ETCD_URLS
+          value: {{ .Values.coredns.etcdEndpoints | quote }}
+        {{- if .Values.coredns.etcdTLS.enabled }}
+        - name: ETCD_CERT_FILE
+          value: {{ .Values.coredns.etcdTLS.mountPath }}/{{ .Values.coredns.etcdTLS.certFilename }}
+        - name: ETCD_KEY_FILE
+          value: {{ .Values.coredns.etcdTLS.mountPath }}/{{ .Values.coredns.etcdTLS.keyFilename }}
+        - name: ETCD_CA_FILE
+          value: {{ .Values.coredns.etcdTLS.mountPath }}/{{ .Values.coredns.etcdTLS.caFilename }}
+        {{- end }}
+        {{- end }}
         # DigitalOcean environment variables
         {{- if eq .Values.provider "digitalocean" }}
         - name: DO_TOKEN
@@ -285,6 +298,12 @@ spec:
           {{- end }}
           readOnly: true
         {{- end }}
+        # CoreDNS mountPath(s)
+        {{- if and (eq .Values.provider "coredns") (.Values.coredns.etcdTLS.enabled) }}
+        - name: {{ .Values.coredns.etcdTLS.secretName }}
+          mountPath: {{ .Values.coredns.etcdTLS.mountPath }}
+          readOnly: true
+        {{- end }}
         # Google mountPath(s)
         {{- if eq .Values.provider "google" }}
         {{- if or .Values.google.serviceAccountSecret .Values.google.serviceAccountKey }}
@@ -316,6 +335,13 @@ spec:
         secret:
           secretName: {{ .Values.azure.secretName }}
         {{- end }}
+      {{- end }}
+      # CoreDNS volume(s)
+      {{- if and (eq .Values.provider "coredns") (.Values.coredns.etcdTLS.enabled) }}
+      - name: {{ .Values.coredns.etcdTLS.secretName }}
+        secret:
+          secretName: {{ .Values.coredns.etcdTLS.secretName }}
+          defaultMode: 400
       {{- end }}
       # Google volume(s)
       {{- if eq .Values.provider "google" }}
