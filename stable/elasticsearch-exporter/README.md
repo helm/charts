@@ -44,6 +44,7 @@ The following table lists the configurable parameters of the Elasticsearch-Expor
 
 Parameter | Description | Default
 --- | --- | ---
+`appVersion` | Application Version | `1.0.2`
 `replicaCount` | desired number of pods | `1`
 `restartPolicy` | container restart policy | `Always`
 `image.repository` | container image repository | `justwatch/elasticsearch_exporter`

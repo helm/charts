@@ -43,8 +43,34 @@ spec:
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}
-          {{- if .Values.env }}
           env:
+          {{- if hasPrefix "1.1" .Values.appVersion }}
+          - name: ES_URI
+            value: "{{ .Values.es.uri }}"
+          - name: ES_ALL
+            value: "{{ .Values.es.all }}"
+          - name: ES_INDICES
+            value: "{{ .Values.es.indices }}"
+          - name: ES_TIMEOUT
+            value: "{{ .Values.es.timeout }}"
+          {{- if .Values.es.sslSkipVerify }}
+          - name: ES_SSL_SKIP_VERIFY
+            value: "true"
+          {{- end }}
+          {{- if .Values.es.ssl.enabled }}
+          - name: ES_CA
+            value: "/ssl/ca.pem"
+          - name: ES_CLIENT_CERT
+            value: "/ssl/client.pem"
+          - name: ES_CLIENT_PRIVATE_KEY
+            value: "/ssl/client.key"
+          {{- end }}
+          - name: WEB_LISTEN_ADDRESS
+            value: ":{{ .Values.service.httpPort }}"
+          - name: WEB_TELEMETRY_PART
+            value: "{{ .Values.web.path }}"
+          {{- end }}
+          {{- if .Values.env }}
           {{- range $key, $value := .Values.env }}
           - name: {{ $key }}
             value: "{{ $value }}"
@@ -52,6 +78,7 @@ spec:
           {{- end }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if hasPrefix "1.0." .Values.appVersion }}
           command: ["elasticsearch_exporter",
                     "-es.uri={{ .Values.es.uri }}",
                     "-es.all={{ .Values.es.all }}",
@@ -67,6 +94,7 @@ spec:
                     {{- end }}
                     "-web.listen-address=:{{ .Values.service.httpPort }}",
                     "-web.telemetry-path={{ .Values.web.path }}"]
+          {{- end }}
           securityContext:
             capabilities:
               drop:

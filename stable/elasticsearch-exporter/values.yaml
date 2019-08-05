@@ -1,3 +1,4 @@
+appVersion: 1.0.2
 ## number of exporter instances
 ##
 replicaCount: 1
