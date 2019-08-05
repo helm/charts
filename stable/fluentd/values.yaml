@@ -28,6 +28,7 @@ extraEnvVars:
 #        key: secret_key
 
 service:
+  annotations: {}
   type: ClusterIP
   # type: NodePort
   # nodePort:

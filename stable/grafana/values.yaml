@@ -48,6 +48,7 @@ image:
 testFramework:
   image: "dduportal/bats"
   tag: "0.4.0"
+  securityContext: {}
 
 securityContext:
   runAsUser: 472
@@ -73,6 +74,9 @@ downloadDashboardsImage:
   repository: appropriate/curl
   tag: latest
   pullPolicy: IfNotPresent
+
+downloadDashboards:
+  env: {}
 
 ## Pod Annotations
 # podAnnotations: {}

@@ -117,6 +117,8 @@ The following table lists the configurable parameters of the Concourse chart and
 | `secrets.credhubCaCert` | Value of PEM-encoded CA cert file to use to verify the CredHub server SSL cert. | `nil` |
 | `secrets.credhubClientId` | Client ID for CredHub authorization. | `nil` |
 | `secrets.credhubClientSecret` | Client secret for CredHub authorization. | `nil` |
+| `secrets.credhubClientKey` | Client key for Credhub authorization. | `nil` |
+| `secrets.credhubClientCert` | Client cert for Credhub authorization | `nil` |
 | `secrets.encryptionKey` | current encryption key | `nil` |
 | `secrets.githubCaCert` | CA certificate for Enterprise Github OAuth | `nil` |
 | `secrets.githubClientId` | Application client ID for GitHub OAuth | `nil` |
