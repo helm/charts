@@ -63,6 +63,8 @@ servers:
     parameters: 30
   - name: errors
   - name: health
+  # Serves a /ready endpoint on :8181
+  - name: ready
   - name: kubernetes
     parameters: cluster.local
   - name: loadbalance

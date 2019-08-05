@@ -129,6 +129,7 @@ The following table lists the configurable parameters of the MinIO chart and the
 | `affinity`                 | Affinity settings for pod assignment | `{}`                                                   |
 | `tolerations`              | Toleration labels for pod assignment | `[]`                                                   |
 | `podAnnotations`           | Pod annotations                      | `{}`                                                   |
+| `podLabels`                | Pod Labels                           | `{}`                                                   |
 | `tls.enabled`              | Enable TLS for MinIO server | `false`                                                         |
 | `tls.certSecret`           | Kubernetes Secret with `public.crt` and `private.key` files. | `""`                           |
 | `livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated        | `5`                               |
