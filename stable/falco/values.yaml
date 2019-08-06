@@ -65,6 +65,9 @@ proxy:
 # Set daemonset timezone
 timezone:
 
+# Set daemonset priorityClassName
+priorityClassName:
+
 ebpf:
   # Enable eBPF support for Falco
   enabled: false
