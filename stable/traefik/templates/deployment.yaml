@@ -162,7 +162,7 @@ spec:
           hostPort: {{ default 443 .Values.deployment.hostPort.httpsPort }}
           {{- end }}
           protocol: TCP
-        {{- if .Values.dashboard.enabled }}
+        {{- if or .Values.dashboard.enabled .Values.metrics.prometheus.enabled }}
         - name: dash
           containerPort: 8080
           {{- if .Values.deployment.hostPort.dashboardEnabled }}
