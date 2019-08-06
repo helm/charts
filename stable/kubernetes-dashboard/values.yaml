@@ -84,13 +84,15 @@ service:
   labels: {}
   # kubernetes.io/name: "Kubernetes Dashboard"
 
-resources:
-  limits:
-    cpu: 100m
-    memory: 100Mi
-  requests:
-    cpu: 100m
-    memory: 100Mi
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+resources: {}
+  # limits:
+  #   cpu: 100m
+  #   memory: 100Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 100Mi
 
 ingress:
   ## If true, Kubernetes Dashboard Ingress will be created.
