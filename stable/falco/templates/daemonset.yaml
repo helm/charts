@@ -20,6 +20,9 @@ spec:
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
       {{- end }}
+{{- if .Values.priorityClassName }}
+      priorityClassName: "{{ .Values.priorityClassName }}"
+{{- end }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
       containers:
