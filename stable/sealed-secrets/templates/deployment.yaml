@@ -32,6 +32,9 @@ spec:
           ports:
             - containerPort: 8080
               name: http
+          volumeMounts:
+          - mountPath: /tmp
+            name: tmp
           livenessProbe:
             httpGet:
               path: /healthz
@@ -46,6 +49,9 @@ spec:
             runAsUser: 1001
           resources:
 {{ toYaml .Values.resources | indent 12 }}
+      volumes:
+      - name: tmp
+        emptyDir: {}
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
