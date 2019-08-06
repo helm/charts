@@ -1,9 +1,9 @@
 {{- if (and (not .Values.ingressController.enabled) (eq .Values.env.database "off")) }}
-{{- if not .Values.declarativeMode.existingConfigMap }}
+{{- if not .Values.dblessConfig.configMap }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: kong-custom-declarative-config
+  name: {{ .Release.Name }}-kong-custom-dbless-config
   labels:
     app: {{ template "kong.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
@@ -11,6 +11,6 @@ metadata:
     heritage: "{{ .Release.Service }}"
 data:
   kong.yml: |
-{{ .Values.declarativeMode.config | toYaml | indent 4 }}
+{{ .Values.dblessConfig.config | toYaml | indent 4 }}
 {{- end }}
 {{- end }}

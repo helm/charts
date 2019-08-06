@@ -19,7 +19,7 @@ spec:
     metadata:
       annotations:
         {{- if (and (not .Values.ingressController.enabled) (eq .Values.env.database "off" )) }}
-        checksum/declarativeMode.config: {{ toYaml .Values.declarativeMode.config | sha256sum }}
+        checksum/dbless.config: {{ toYaml .Values.dblessConfig.config | sha256sum }}
         {{- end }}
         {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
@@ -157,7 +157,7 @@ spec:
         {{- end }}
         {{- if (and (not .Values.ingressController.enabled) (eq .Values.env.database "off")) }}
         - name: KONG_DECLARATIVE_CONFIG
-          value: "/kong_declarative/kong.yml"
+          value: "/kong_dbless/kong.yml"
         {{- end }}
         {{- include "kong.env" .  | indent 8 }}
         ports:
@@ -240,8 +240,8 @@ spec:
           - name: custom-nginx-template-volume
             mountPath: /kong
           {{- if (and (not .Values.ingressController.enabled) (eq .Values.env.database "off")) }}
-          - name: kong-custom-declarative-config-volume
-            mountPath: /kong_declarative/
+          - name: kong-custom-dbless-config-volume
+            mountPath: /kong_dbless/
           {{- end }}
         readinessProbe:
 {{ toYaml .Values.readinessProbe | indent 10 }}
@@ -264,11 +264,11 @@ spec:
           configMap:
             name: {{ .Release.Name }}-kong-default-custom-server-blocks
 {{- if (and (not .Values.ingressController.enabled) (eq .Values.env.database "off")) }}
-        - name: kong-custom-declarative-config-volume
+        - name: kong-custom-dbless-config-volume
           configMap:
-            {{- if .Values.declarativeMode.existingConfigMap }}
-            name: {{ .Values.declarativeMode.existingConfigMap }}
+            {{- if .Values.dblessConfig.configMap }}
+            name: {{ .Values.dblessConfig.configMap }}
             {{- else }}
-            name: kong-custom-declarative-config
+            name: {{ .Release.Name }}-kong-custom-dbless-config
             {{- end }}
 {{- end }}
