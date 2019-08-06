@@ -8,7 +8,7 @@ appVersion: 3.3.2
 home: https://hubot.github.com
 sources:
   - https://github.com/hubotio/hubot
-  - https://github.com/decayofmind/hubot-docker
+  - https://github.com/minddocdev/hubot
 keywords:
   - slack
   - hubot
