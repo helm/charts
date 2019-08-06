@@ -4,7 +4,7 @@ fullnameOverride: ""
 
 replicaCount: 1
 
-strategyType: Recreate
+strategyType: RollingUpdate
 
 image:
   repository: minddocdev/hubot
@@ -54,50 +54,49 @@ extraConfigmapMounts: []
 #   configMap: certs-configmap
 #   readOnly: true
 
-hubot:
-  extraArgs: []
-  # - --alias
-  # - '!'
+extraArgs: []
+# - --alias
+# - '!'
 
-  scripts: {}
-  # hithere.coffee: |
-  #   module.exports = (robot) ->
-  #     robot.respond /hi my bot/i, (msg) ->
-  #       msg.send 'Hi there my human'
+scripts: {}
+# hithere.coffee: |
+#   module.exports = (robot) ->
+#     robot.respond /hi my bot/i, (msg) ->
+#       msg.send 'Hi there my human'
 
-  scriptsRepo:
-    enabled: false
-    image: k8s.gcr.io/git-sync:v3.1.2
-    repository: ""  # https:///git.mycompany.com/hubot-scripts.git
-    branch: master
-  # username: git_username
-  # password: mysecretpassword
-  # existingSecretName: git-readonly-secret
+scriptsRepo:
+  enabled: false
+  image: k8s.gcr.io/git-sync:v3.1.2
+  repository: ""  # https:///git.mycompany.com/hubot-scripts.git
+  branch: master
+# username: git_username
+# password: mysecretpassword
+# existingSecretName: git-readonly-secret
 
 
-  # npm packages, required for custom scripts
-  extraPackages: []
-  #  - aws-sdk
-  #  - cron
-  #  - underscore
+# npm packages, required for custom scripts
+extraPackages: []
+#  - aws-sdk
+#  - cron
+#  - underscore
 
-  # external scripts (npm packages) to be enabled
-  externalScripts:
-    - hubot-diagnostics
-    - hubot-health
-    - hubot-help
-    - hubot-redis-brain
-    - hubot-rules
-    - hubot-plusplus
+# external scripts (npm packages) to be enabled
+externalScripts: []
+# - hubot-pugme
+# - hubot-plusplus
 
-  # Environment variables passed to Hubot.
-  # To save time from deciding which ones are sensitive and
-  # which ones are not, all goes to Secret
-  config: {}
-  # HUBOT_URL: "http://hubot.mycompany.internal/"
-  # HUBOT_LOG_LEVEL: 'debug'
-  # HUBOT_CACHE_IMAGE: 'true'
-  # HUBOT_SLACK_TOKEN: 'xoxb-somenumbers-someletters'
+# Environment variables passed to Hubot.
+config: {}
+# HUBOT_URL: "http://hubot.mycompany.internal/"
+# HUBOT_LOG_LEVEL: 'debug'
+# HUBOT_CACHE_IMAGE: 'true'
+
+# Sensitive environment variables passed to Hubot as Secret.
+secretConfig: {}
+# HUBOT_SLACK_TOKEN: 'xoxb-somenumbers-someletters'
+
+# Reference to an existing Secret with sensitive env vars.
+existingSecretConfigName: ""
 
 redis:
   enabled: true

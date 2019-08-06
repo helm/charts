@@ -1,6 +1,6 @@
-{{- if .Values.secretConfig }}
+{{- if .Values.config }}
 apiVersion: v1
-kind: Secret
+kind: ConfigMap
 metadata:
   name: {{ template "hubot.fullname" . }}-config
   labels:
@@ -8,9 +8,6 @@ metadata:
 {{- if .Values.extraLabels }}
 {{ toYaml .Values.extraLabels | indent 4 }}
 {{- end }}
-type: Opaque
 data:
-{{ range $key, $value := .Values.secretConfig }}
-  {{ $key }}: {{ $value | b64enc }}
-{{- end }}
+{{ toYaml .Values.config | indent 2 }}
 {{- end }}

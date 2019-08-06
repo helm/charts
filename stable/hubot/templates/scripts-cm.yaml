@@ -1,4 +1,4 @@
-{{- if .Values.hubot.scripts }}
+{{- if .Values.scripts }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -9,5 +9,5 @@ metadata:
 {{ toYaml .Values.extraLabels | indent 4 }}
 {{- end }}
 data:
-{{ toYaml .Values.hubot.scripts | indent 2 }}
+{{ toYaml .Values.scripts | indent 2 }}
 {{- end }}

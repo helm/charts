@@ -49,24 +49,26 @@ Parameter | Description | Default
 --- | --- | ---
 `fullnameOverride` | Override the full resource names | `""`
 `replicaCount` | Desired number of pods | `1`
-`strategyType` | Type of deployment strategy (usually only one instance of Hubot needed at the time) | `Recreate`
-`image.repository` | Container image repository | `decayofmind/hubot`
+`strategyType` | Type of deployment strategy | `RollingUpdate`
+`image.repository` | Container image repository | `minddocdev/hubot`
 `image.tag` | Container image tag | `3.3.2`
 `image.pullPolicy` | Container image pull policy | `IfNotPresent`
 `service.type` | Type of service to create | `NodePort`
 `service.port` | Port for the http service | `80`
-`hubot.config` | Hubot configuration (environment variables) | `{}`
-`hubot.extraArgs` | Additional arguments to Hubot binary | `[]`
-`hubot.scripts` | Custom hubot scripts | `{}`
-`hubot.scriptsRepo.enable` | Flag to checkout repo with scripts | `false`
-`hubot.scriptsRepo.image` | Image with git-sync | `k8s.gcr.io/git-sync:v3.1.2`
-`hubot.scriptsRepo.repository` | Git repository to checkout | `""`
-`hubot.scriptsRepo.branch` | Branch in repository to checkout from | `master`
-`hubot.scriptsRepo.username` | Git repo username | `null`
-`hubot.scriptsRepo.password` | Password for git repo | `null`
-`hubot.scriptsRepo.existingSecretName` | Set if your git credentials are stored in some existing Secret | `null`
-`hubot.extraPackages` | List of additional npm packages to install on Hubot startup (usually, dependencies for scripts) | `[]`
-`hubot.externalScripts` | Content for external-scripts.json file (all listed packages will be installed on startup) | `[hubot-diagnostics, hubot-health, hubot-help, hubot-redis-brain, hubot-rules, hubot-plusplus]`
+`config` | Hubot configuration (environment variables) | `{}`
+`secretConfig` | Sensitive environment variables passed to Hubot as Secret | `{}`
+`existingSecretConfigName` |  Reference to an existing Secret with sensitive env vars | `""`
+`extraArgs` | Additional arguments to Hubot binary | `[]`
+`scripts` | Custom hubot scripts | `{}`
+`scriptsRepo.enable` | Flag to checkout repo with scripts | `false`
+`scriptsRepo.image` | Image with git-sync | `k8s.gcr.io/git-sync:v3.1.2`
+`scriptsRepo.repository` | Git repository to checkout | `""`
+`scriptsRepo.branch` | Branch in repository to checkout from | `master`
+`scriptsRepo.username` | Git repo username | `null`
+`scriptsRepo.password` | Password for git repo | `null`
+`scriptsRepo.existingSecretName` | Set if your git credentials are stored in some existing Secret | `null`
+`extraPackages` | List of additional npm packages to install on Hubot startup (usually, dependencies for scripts) | `[]`
+`externalScripts` | Content for external-scripts.json file (all listed packages will be installed on startup) | `[]`
 `redis.enabled` | Install a dependency chart with Redis (needed for hubot-brain) | `true`
 `ingress.enabled` | flag to add ingress functionality | `false`
 `ingress.annotations` | ingress load balancer annotations | `Always`
@@ -103,16 +105,15 @@ $ helm install --name my-release -f values.yaml stable/hubot
 
 #### Config
 
-With the `hubot.config` parameter you can provide a hash that will be used as
-environment variables by hubot. These environment variables will be picked by
-hubot's scripts.
+With the `config` dictionary you can provide a hash that will be used as
+environment variables by Hubot. These environment variables will be picked by
+Hubot's scripts.
 
 For instance:
 
 ```yaml
-hubot:
-  config:
-    HUBOT_STANDUP_PREPEND: '@channel'
+config:
+  HUBOT_STANDUP_PREPEND: '@channel'
 ```
 
 A content of the hash will be stored as Secret.
@@ -122,9 +123,9 @@ A content of the hash will be stored as Secret.
 There are three ways of how to extend Hubot with scripts:
 
 * Install via npm and enable in `external-scripts.json` file
-* Use a git repository with scripts and set `hubot.scriptsRepo.enabled` to `true`.
+* Use a git repository with scripts and set `scriptsRepo.enabled` to `true`.
   It's common for companies to have a dedicated repo with customized scripts.
-* List scripts in `hubot.scripts` hash (good for small scripts).
+* List scripts in `scripts` hash (good for small scripts).
 In addition, you can add your own scripts, which will be created in the scripts
 folder, with `.js` or `.coffee` format.
 See [Hubot Scripting](https://hubot.github.com/docs/scripting/).
@@ -132,12 +133,11 @@ See [Hubot Scripting](https://hubot.github.com/docs/scripting/).
 For example:
 
 ```yaml
-hubot:
-  scripts:
-    hithere.coffee: |
-      # Description
-      #   A hubot script that is an example for this chart
-      module.exports = (robot) ->
-        robot.respond /hi my bot/i, (msg) ->
-          msg.send 'Hi there my human'
+scripts:
+  hithere.coffee: |
+    # Description
+    #   A hubot script that is an example for this chart
+    module.exports = (robot) ->
+      robot.respond /hi my bot/i, (msg) ->
+        msg.send 'Hi there my human'
 ```

@@ -20,9 +20,10 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/config-secret.yaml") . | sha256sum }}
+        checksum/config: {{ include (print $.Template.BasePath "/config-cm.yaml") . | sha256sum }}
+        checksum/secret-config: {{ include (print $.Template.BasePath "/config-secret.yaml") . | sha256sum }}
         checksum/external-scripts.json: {{ include (print $.Template.BasePath "/external-scripts-cm.yaml") . | sha256sum }}
-        {{- if .Values.hubot.scripts }}
+        {{- if .Values.scripts }}
         checksum/scripts: {{ include (print $.Template.BasePath "/scripts-cm.yaml") . | sha256sum }}
         {{- end }}
       labels:
@@ -40,9 +41,9 @@ spec:
             value: "{{ .Values.redis.master.service.port }}"
           command: [ "/bin/sh", "-c", "until nc -zv $HUBOT_REDIS_HOST $HUBOT_REDIS_PORT -w1; do echo 'waiting for redis'; sleep 1; done" ]
         {{- end }}
-        {{- if .Values.hubot.scriptsRepo.enabled }}
+        {{- if .Values.scriptsRepo.enabled }}
         - name: checkout-scripts-repo
-          image: {{ .Values.hubot.scriptsRepo.image }}
+          image: {{ .Values.scriptsRepo.image }}
           imagePullPolicy: Always
           volumeMounts:
             - name: scripts
@@ -51,26 +52,26 @@ spec:
             - name: GIT_SYNC_DEST
               value: "scripts"
             - name: GIT_SYNC_REPO
-              value: {{ .Values.hubot.scriptsRepo.repository | quote }}
+              value: {{ .Values.scriptsRepo.repository | quote }}
             - name: GIT_SYNC_ONE_TIME
               value: "true"
             - name: GIT_SYNC_DEPTH
               value: "1"
-          {{- if .Values.hubot.scriptsRepo.branch }}
+          {{- if .Values.scriptsRepo.branch }}
             - name: GIT_SYNC_BRANCH
-              value: {{ .Values.hubot.scriptsRepo.branch }}
+              value: {{ .Values.scriptsRepo.branch }}
           {{- end }}
-          {{- if .Values.hubot.scriptsRepo.username }}
-          {{- if .Values.hubot.scriptsRepo.existingSecretName }}
+          {{- if .Values.scriptsRepo.username }}
+          {{- if .Values.scriptsRepo.existingSecretName }}
             - name: GIT_SYNC_USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.hubot.scriptsRepo.existingSecretName }}
+                  name: {{ .Values.scriptsRepo.existingSecretName }}
                   key: username
             - name: GIT_SYNC_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.hubot.scriptsRepo.existingSecretName }}
+                  name: {{ .Values.scriptsRepo.existingSecretName }}
                   key: password
           {{- else }}
             - name: GIT_SYNC_USERNAME
@@ -95,8 +96,8 @@ spec:
             - "$(HUBOT_NAME)"
             - --adapter
             - slack
-        {{- if .Values.hubot.extraArgs }}
-{{ toYaml .Values.hubot.extraArgs | indent 12 }}
+        {{- if .Values.extraArgs }}
+{{ toYaml .Values.extraArgs | indent 12 }}
         {{- end }}
           ports:
             - name: http
@@ -120,13 +121,13 @@ spec:
               mountPath: {{ .mountPath }}
               readOnly: {{ .readOnly }}
             {{- end }}
-            {{- if .Values.hubot.scriptsRepo.enabled }}
+            {{- if .Values.scriptsRepo.enabled }}
             - name: scripts
               mountPath: /home/hubot/scripts
               subPath: scripts
             {{- end }}
-            {{- if .Values.hubot.scripts }}
-              {{- range keys .Values.hubot.scripts }}
+            {{- if .Values.scripts }}
+              {{- range keys .Values.scripts }}
             - name: "{{ template "hubot.fullname" $ }}-scripts"
               mountPath: "/home/hubot/scripts/{{ . }}"
               subPath: "{{ . }}"
@@ -139,14 +140,24 @@ spec:
               value: redis://{{ template "hubot.redis.fullname" . }}-master:{{ .Values.redis.port }}/hubot
         {{- end }}
             - name: EXTRA_PACKAGES
-              value: {{ (join "," .Values.hubot.extraPackages) | quote }}
+              value: {{ (join "," .Values.extraPackages) | quote }}
           envFrom:
+          {{- if .Values.config }}
+            - configMapRef:
+                name: {{ template "hubot.fullname" . }}-config
+          {{- end }}
+          {{- if .Values.secretConfig }}
             - secretRef:
                 name: {{ template "hubot.fullname" . }}-config
+          {{- end }}
+          {{- if .Values.existingSecretConfigName }}
+            - secretRef:
+                name: {{ .Values.existingSecretConfigName }}
+          {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
       volumes:
-    {{- if .Values.hubot.scriptsRepo.enabled }}
+    {{- if .Values.scriptsRepo.enabled }}
         - name: scripts
           emptyDir: {}
     {{- end }}
@@ -158,7 +169,7 @@ spec:
           configMap:
             name: {{ .configMap }}
       {{- end }}
-      {{- if .Values.hubot.scripts }}
+      {{- if .Values.scripts }}
         - name: {{ template "hubot.fullname" . }}-scripts
           configMap:
             name: {{ template "hubot.fullname" . }}-scripts

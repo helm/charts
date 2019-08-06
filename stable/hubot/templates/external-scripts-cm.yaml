@@ -1,7 +1,5 @@
----
-
-kind: ConfigMap
 apiVersion: v1
+kind: ConfigMap
 metadata:
   name: {{ template "hubot.fullname" . }}-external-scripts
   labels:
@@ -11,4 +9,13 @@ metadata:
 {{- end }}
 data:
   external-scripts.json: |-
-{{ toJson .Values.hubot.externalScripts | indent 4 }}
+    [
+    {{- range .Values.externalScripts }}
+      {{ . | quote }},
+    {{- end }}
+      "hubot-diagnostics",
+      "hubot-help",
+      "hubot-redis-brain",
+      "hubot-rules",
+      "hubot-health"
+    ]
