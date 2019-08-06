@@ -7,7 +7,7 @@ replicaCount: 1
 strategyType: Recreate
 
 image:
-  repository: decayofmind/hubot
+  repository: minddocdev/hubot
   tag: 3.3.2
   pullPolicy: IfNotPresent
 
