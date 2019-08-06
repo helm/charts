@@ -51,6 +51,7 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `adminService.create`              | If `true`, create a service for Ambassador's admin UI                           | `true`                            |
 | `adminService.nodePort`            | If explicit NodePort for admin service is required                              | `true`                            |
 | `adminService.type`                | Ambassador's admin service type to be used                                      | `ClusterIP`                       |
+| `adminService.annotations`         | Annotations to apply to Ambassador admin service                                | `{}`                              |
 | `ambassadorConfig`                 | Config thats mounted to `/ambassador/ambassador-config`                         | `""`                              |
 | `crds.enabled`                     | If `true`, enables CRD resources for the installation.                          | `true`                            |
 | `crds.create`                      | If `true`, Creates CRD resources                                                | `true`                            |
@@ -61,7 +62,7 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `env`                              | Any additional environment variables for ambassador pods                        | `{}`                              |
 | `image.pullPolicy`                 | Ambassador image pull policy                                                    | `IfNotPresent`                    |
 | `image.repository`                 | Ambassador image                                                                | `quay.io/datawire/ambassador`     |
-| `image.tag`                        | Ambassador image tag                                                            | `0.72.0`                          |
+| `image.tag`                        | Ambassador image tag                                                            | `0.74.0`                          |
 | `imagePullSecrets`                 | Image pull secrets                                                              | `[]`                              |
 | `namespace.name`                   | Set the `AMBASSADOR_NAMESPACE` environment variable                             | `metadata.namespace`              |
 | `scope.singleNamespace`            | Set the `AMBASSADOR_SINGLE_NAMESPACE` environment variable and create namespaced RBAC if `rbac.enabled: true` | `false`                           |
@@ -109,12 +110,7 @@ The following tables lists the configurable parameters of the Ambassador chart a
 
 Ambassador configuration is done through annotations on Kubernetes services or Custom Resource Definitions (CRDs). The `service.annotations` section of the values file contains commented out examples of [Ambassador Module](https://www.getambassador.io/reference/core/ambassador) and a global [TLSContext](https://www.getambassador.io/reference/core/tls) configurations which are typically created in the Ambassador service.
 
-If you intend to use `service.annotations`, remember to include the `getambassador.io/config` annotation key as above,
-and remember that you'll have to escape newlines. For example, the annotation above could be defined as
-
-```
-service.annotations: { "getambassador.io/config": "---\napiVersion: ambassador/v1\nkind: Module\nname: ambassador\nconfig:\n  service_port: 8080" }
-```
+If you intend to use `service.annotations`, remember to include the `getambassador.io/config` annotation key as above.
 
 ### Ambassador Pro
 

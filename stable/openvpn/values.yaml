@@ -96,5 +96,10 @@ openvpn:
     enabled: false
     proxy:
       port: 15001
+  iptablesExtra: []
+  # - -A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+  # - -A FORWARD -m conntrack --ctstate NEW -d 10.240.0.0/255.255.0.0 -j ACCEPT
+  # - -A FORWARD -j REJECT
+
 
 nodeSelector: {}
