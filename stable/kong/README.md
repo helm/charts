@@ -394,8 +394,7 @@ helm install stable/kong --set ingressController.enabled=true \
 | livenessProbe                    | Kong ingress controllers liveness probe                                                |                                                                              |
 | ingressClass                     | The ingress-class value for controller                                                 | kong                                                                         |
 | installCRDs                      | Install Kong ingress controllers custom resource definitions                           | true                                                                         |
-| cleanUpCRDs                      | Delete CRDs with the release (useful for CI scenarios)                                 | false                                                                        |
 | metrics.enabled                  | Enable Kong Prometheus plugin as KongPlugin (requires ingressController to be enabled) | false                                                                        |
-| metrics.serviceMonitor.create    | Create ServiceMonitor for Prometheus Operator                                          | false                                                                        |
+| metrics.serviceMonitor.enabled   | Create ServiceMonitor for Prometheus Operator                                          | false                                                                        |
 | metrics.serviceMonitor.interval  | Scrapping interval                                                                     | 10s                                                                          |
 | metrics.serviceMonitor.namespace | Where to create ServiceMonitor                                                         |                                                                              |

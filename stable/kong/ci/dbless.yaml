@@ -1,7 +1,6 @@
 # CI test for testing dbless deployment
 ingressController:
   enabled: true
-  cleanUpCRDs: true
 env:
   database: "off"
 postgresql:

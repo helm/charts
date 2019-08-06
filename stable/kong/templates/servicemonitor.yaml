@@ -1,4 +1,4 @@
-{{- if and ( .Capabilities.APIVersions.Has "monitoring.coreos.com/v1" ) .Values.ingressController.enabled .Values.ingressController.metrics.serviceMonitor.create }}
+{{- if and ( .Capabilities.APIVersions.Has "monitoring.coreos.com/v1" ) .Values.ingressController.enabled .Values.ingressController.metrics.serviceMonitor.enabled }}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
@@ -13,14 +13,10 @@ metadata:
     release: {{ .Release.Name }}
 spec:
   endpoints:
-  - port: kong-admin
+  - targetPort: metrics
+    scheme: http
     {{- if .Values.ingressController.metrics.serviceMonitor.interval }}
     interval: {{ .Values.ingressController.metrics.serviceMonitor.interval }}
-    {{- end }}
-    {{- if .Values.admin.useTLS }}
-    scheme: https
-    tlsConfig:
-      insecureSkipVerify: true
     {{- end }}
   jobLabel: {{ .Release.Name }}
   namespaceSelector:
