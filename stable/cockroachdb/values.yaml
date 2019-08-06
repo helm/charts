@@ -68,6 +68,10 @@ Secure:
   Enabled: false
   RequestCertsImage: "cockroachdb/cockroach-k8s-request-cert"
   RequestCertsImageTag: "0.4"
+  # If you are using a different RequestCertsImage you can override the command used in the cluster-init batch job here
+  RequestCertsInitCommandOverride: []
+  # If you are using a different RequestCertsImage you can override the command used in the statefulset init container here
+  RequestCertsCommandOverride: []
   ServiceAccount:
     # Specifies whether a service account should be created.
     Create: true

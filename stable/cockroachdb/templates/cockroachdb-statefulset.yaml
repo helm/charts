@@ -218,9 +218,13 @@ spec:
         image: "{{ .Values.Secure.RequestCertsImage }}:{{ .Values.Secure.RequestCertsImageTag }}"
         imagePullPolicy: "{{ .Values.ImagePullPolicy }}"
         command:
+{{- if .Values.Secure.RequestCertsCommandOverride }}
+{{ toYaml .Values.Secure.RequestCertsCommandOverride |indent 8 }}
+{{- else }}
         - "/bin/ash"
         - "-ecx"
         - "/request-cert -namespace=${POD_NAMESPACE} -certs-dir=/cockroach-certs -type=node -addresses=localhost,127.0.0.1,$(hostname -f),$(hostname -f|cut -f 1-2 -d '.'),{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}-public,{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}-public.$(hostname -f|cut -f 3- -d '.') -symlink-ca-from=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
+{{- end }}
         env:
         - name: POD_NAMESPACE
           valueFrom:

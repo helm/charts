@@ -32,9 +32,13 @@ spec:
         image: "{{ .Values.Secure.RequestCertsImage }}:{{ .Values.Secure.RequestCertsImageTag }}"
         imagePullPolicy: "{{ .Values.ImagePullPolicy }}"
         command:
+{{- if .Values.Secure.RequestCertsInitCommandOverride }}
+{{ toYaml .Values.Secure.RequestCertsInitCommandOverride |indent 8 }}
+{{- else }}
         - "/bin/ash"
         - "-ecx"
         - "/request-cert -namespace=${POD_NAMESPACE} -certs-dir=/cockroach-certs -type=client -user=root -symlink-ca-from=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
+{{- end }}
         env:
         - name: POD_NAMESPACE
           valueFrom:
