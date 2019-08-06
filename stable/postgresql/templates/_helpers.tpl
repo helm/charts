@@ -309,7 +309,4 @@ Get the readiness probe command
 {{- else }}
   pg_isready -U {{ include "postgresql.username" . | quote }} -h 127.0.0.1 -p {{ template "postgresql.port" . }}
 {{- end }}
-{{- if contains "bitnami/" .Values.image.repository }}
-  [ -f /opt/bitnami/postgresql/tmp/.initialized ]
-{{- end -}}
 {{- end -}}
