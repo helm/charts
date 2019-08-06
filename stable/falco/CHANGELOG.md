@@ -3,6 +3,12 @@
 This file documents all notable changes to Sysdig Falco Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v1.0.3
+
+### Minor Changes
+
+* Support [`priorityClassName`](https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/)
+
 ## v1.0.2
 
 ### Minor Changes
