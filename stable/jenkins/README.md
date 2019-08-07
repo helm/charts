@@ -336,7 +336,7 @@ master:
     configAutoReload:
       enabled: true
 rbac:
-  install: true
+  create: true
 ```
 
 ### Auto-reload with non-Jenkins identities
