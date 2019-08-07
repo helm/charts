@@ -74,7 +74,7 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `prometheusExporter.pullPolicy`    | Image pull policy                                                               | `IfNotPresent`                    |
 | `prometheusExporter.repository`    | Prometheus exporter image                                                       | `prom/statsd-exporter`            |
 | `prometheusExporter.tag`           | Prometheus exporter image                                                       | `v0.8.1`                          |
-| `prometheusExporter.resources`  | CPU/memory resource requests/limits                                                       | `{}`                          |
+| `prometheusExporter.resources`     | CPU/memory resource requests/limits                                             | `{}`                              |
 | `rbac.create`                      | If `true`, create and use RBAC resources                                        | `true`                            |
 | `rbac.podSecurityPolicies`         | pod security polices to bind to                                                 |                                   |
 | `replicaCount`                     | Number of Ambassador replicas                                                   | `3`                               |
@@ -98,8 +98,8 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `pro.ports.ratelimit`              | Ambassador Pro ratelimit port                                                   | `8500`                            |
 | `pro.logLevel`                     | Log level for Ambassador Pro                                                    | `"info"`                          |
 | `pro.licenseKey.value`             | License key for Ambassador Pro                                                  | ""                                |
-| `pro.licenseKey.secret`            | Stores the license key as a base64-encoded string in a Kubernetes secret       | `false`                           |
-| `pro.env`                          | Set additional environment variables for Ambassador Pro. (See below)         | {}                                |
+| `pro.licenseKey.secret`            | Stores the license key as a base64-encoded string in a Kubernetes secret        | `false`                           |
+| `pro.env`                          | Set additional environment variables for Ambassador Pro. (See below)            | `{}`                              |
 | `autoscaling.enabled`              | If true, creates Horizontal Pod Autoscaler                                      | `false`                           |
 | `autoscaling.minReplica`           | If autoscaling enabled, this field sets minimum replica count                   | `2`                               |
 | `autoscaling.maxReplica`           | If autoscaling enabled, this field sets maximum replica count                   | `5`                               |
