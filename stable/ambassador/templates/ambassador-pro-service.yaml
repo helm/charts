@@ -19,6 +19,13 @@ metadata:
       proto: grpc
       auth_service: 127.0.0.1:{{ .Values.pro.ports.auth }}
       allow_request_body: false # setting this to 'true' allows Plugin and External filters to access the body, but has performance overhead
+      {{- if .Values.env }}
+      {{- range $key,$value := .Values.env }}
+      {{- if eq $key "AMBASSADOR_ID" }}
+      ambassador_id: {{ $value | quote }}
+      {{- end }}
+      {{- end }}
+      {{- end }}
       ---
       # This mapping needs to exist, but is never actually followed.
       apiVersion: ambassador/v1
@@ -26,11 +33,25 @@ metadata:
       name: callback_mapping
       prefix: /callback
       service: NoTaReAlSeRvIcE
+      {{- if .Values.env }}
+      {{- range $key,$value := .Values.env }}
+      {{- if eq $key "AMBASSADOR_ID" }}
+      ambassador_id: {{ $value | quote }}
+      {{- end }}
+      {{- end }}
+      {{- end }}
       ---
       apiVersion: ambassador/v1
       kind: RateLimitService
       name: ambassador-pro-ratelimit
       service: 127.0.0.1:{{ .Values.pro.ports.ratelimit }}
+      {{- if .Values.env }}
+      {{- range $key,$value := .Values.env }}
+      {{- if eq $key "AMBASSADOR_ID" }}
+      ambassador_id: {{ $value | quote }}
+      {{- end }}
+      {{- end }}
+      {{- end }}
 spec:
   ports:
   - name: ratelimit-grpc
