@@ -162,7 +162,7 @@ $ helm install --name my-release -f values.yaml stable/rabbitmq
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
-### Production configuration
+### Production configuration and horizontal scaling
 
 This chart includes a `values-production.yaml` file where you can find some parameters oriented to production configuration in comparison to the regular `values.yaml`.
 
@@ -209,6 +209,27 @@ $ helm install --name my-release -f ./values-production.yaml stable/rabbitmq
 - volumePermissions.enabled: false
 + volumePermissions.enabled: true
 ```
+
+To horizontally scale this chart once it has been deployed you have two options:
+
+- Use `kubectl scale` command:
+
+```console
+$ kubectl scale statefulset my-release-rabbitmq --replicas=3
+```
+
+- Use `helm upgrade` command:
+
+```console
+RABBITMQ_PASSWORD="$(kubectl get secret my-release-rabbitmq -o jsonpath='{.data.rabbitmq-password}' | base64 --decode)"
+RABBITMQ_ERLANG_COOKIE="$(kubectl get secret my-release-rabbitmq -o jsonpath='{.data.rabbitmq-erlang-cookie}' | base64 --decode)"
+$ helm upgrade my-release stable/rabbitmq \
+  --set replicas=3 \
+  --set rabbitmq.password="$RABBITMQ_PASSWORD" \
+  --set rabbitmq.erlangCookie="$RABBITMQ_ERLANG_COOKIE"
+```
+
+> Note: please note it's mandatory to indicate the password and erlangCookie that was set the first time the chart was installed to upgrade the chart. Otherwise, new pods won't be able to join the cluster.
 
 ### [Rolling VS Immutable tags](https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/)
 
