@@ -178,8 +178,9 @@ spec:
             WAN_PEERS="${WAN_PEERS}${WAN_PEERS:+ }{{ . }}"
             {{- end }}
 
+            JOIN_WAN=""
             SUCCESS_LOOPS=5
-            while [ "$SUCCESS_LOOPS" -gt 0 ]; do
+            while [ $WAN_PEERS != "" ] && [ "$SUCCESS_LOOPS" -gt 0 ]; do
               ALL_READY=true
               JOIN_WAN=""
               for THIS_PEER in $WAN_PEERS; do
