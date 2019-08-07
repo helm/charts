@@ -167,8 +167,10 @@ spec:
               done
               if $ALL_READY; then
                 SUCCESS_LOOPS=$(( SUCCESS_LOOPS - 1 ))
+                echo "LAN peers appear ready, $SUCCESS_LOOPS verifications left"
+              else
+                echo "Waiting for LAN peer $THIS_PEER..."
               fi
-              echo "Waiting for LAN peers..."
               sleep 1s
             done
 
@@ -180,7 +182,7 @@ spec:
 
             JOIN_WAN=""
             SUCCESS_LOOPS=5
-            while [ $WAN_PEERS != "" ] && [ "$SUCCESS_LOOPS" -gt 0 ]; do
+            while [ "$WAN_PEERS" != "" ] && [ "$SUCCESS_LOOPS" -gt 0 ]; do
               ALL_READY=true
               JOIN_WAN=""
               for THIS_PEER in $WAN_PEERS; do
@@ -196,8 +198,10 @@ spec:
               done
               if $ALL_READY; then
                 SUCCESS_LOOPS=$(( SUCCESS_LOOPS - 1 ))
+                echo "WAN peers appear ready, $SUCCESS_LOOPS verifications left"
+              else
+                echo "Waiting for WAN peer $THIS_PEER..."
               fi
-              echo "Waiting for WAN peers..."
               sleep 1s
             done
 
