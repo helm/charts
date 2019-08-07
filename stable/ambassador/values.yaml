@@ -27,7 +27,7 @@ autoscaling:
 
 # Additional container environment variable
 env: 
-  # {}
+  {}
   # Exposing statistics via StatsD
   # STATSD_ENABLED: true
   # STATSD_HOST: statsd-sink
@@ -38,7 +38,7 @@ env:
   # sets the number of seconds that Ambassador will wait for the old Envoy to clean up and exit on a restart
   # AMBASSADOR_SHUTDOWN_TIME: 10
   # labels Ambassador with an ID to allow for configuring multiple Ambassadors in a cluster
-  AMBASSADOR_ID: default
+  # AMBASSADOR_ID: default
 
 imagePullSecrets: []
 
@@ -214,7 +214,7 @@ prometheusExporter:
 ambassadorConfig: ""
 
 pro:
-  enabled: true
+  enabled: false
   image:
     repository: quay.io/datawire/ambassador_pro
     tag: amb-sidecar-0.6.0
