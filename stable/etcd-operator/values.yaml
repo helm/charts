@@ -11,19 +11,12 @@ global:
 ## Install Default RBAC roles and bindings
 rbac:
   create: true
-  apiVersion: v1beta1
+  apiVersion: v1
 
-## Service account names and whether to create them
+## Service account name and whether to create it
 serviceAccount:
-  etcdOperatorServiceAccount:
-    create: true
-    name:
-  backupOperatorServiceAccount:
-    create: true
-    name:
-  restoreOperatorServiceAccount:
-    create: true
-    name:
+  create: true
+  name:
 
 # Select what to deploy
 deployments:
