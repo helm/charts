@@ -89,6 +89,7 @@ spec:
           mountPath: /etc/fluent/config.d
         - name: buffer
           mountPath: "/var/log/fluentd-buffers"
+      serviceAccountName: {{ .Values.serviceAccountName }}
       volumes:
         - name: config-volume-{{ template "fluentd.fullname" . }}
           configMap:
