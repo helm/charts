@@ -79,6 +79,7 @@ Parameter | Description | Default
 `controller.daemonset.hostPorts.stats` | If `controller.daemonset.useHostPort` is `true` and this is non-empty, it sets the hostPort | `"18080"`
 `controller.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `controller.affinity` | node/pod affinities (requires Kubernetes >=1.6) | `{}`
+`controller.terminationGracePeriodSeconds` | how many seconds to wait before terminating a pod | `60`
 `controller.minReadySeconds` | how many seconds a pod needs to be ready before killing the next, during update | `0`
 `controller.nodeSelector` | node labels for pod assignment | `{}`
 `controller.podAnnotations` | annotations to be added to pods | `{}`
