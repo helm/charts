@@ -26,7 +26,7 @@ autoscaling:
   # name: default
 
 # Additional container environment variable
-env: 
+env:
   {}
   # Exposing statistics via StatsD
   # STATSD_ENABLED: true
@@ -230,7 +230,6 @@ pro:
   # For consistency, AMBASSADOR_ID is copied over from the Ambassador env above and will be ignored if set here.
   env:
     {}
-    
 
 crds:
   enabled: true
