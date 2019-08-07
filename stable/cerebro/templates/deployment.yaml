@@ -68,12 +68,12 @@ spec:
           {{- end }}
           livenessProbe:
             httpGet:
-              path: /
+              path: {{ .Values.config.basePath }}
               port: http
             initialDelaySeconds: 120
           readinessProbe:
             httpGet:
-              path: /
+              path: {{ .Values.config.basePath }}
               port: http
             initialDelaySeconds: 120
           resources:
