@@ -149,11 +149,13 @@ spec:
 
             JOIN_PEERS=$( printf "%s\n" $JOIN_PEERS | sort | uniq )
 
+            # Require multiple loops in the case of unstable DNS resolution
             SUCCESS_LOOPS=5
             while [ "$SUCCESS_LOOPS" -gt 0 ]; do
               ALL_READY=true
               JOIN_LAN=""
               for THIS_PEER in $JOIN_PEERS; do
+                  # Make sure we can resolve hostname and ping IP
                   if PEER_IP="$(ping -c 1 $THIS_PEER | awk -F'[()]' '/PING/{print $2}')" && [ "$PEER_IP" != "" ]; then 
                     if [ "${PEER_IP}" != "${POD_IP}" ]; then
                       JOIN_LAN="${JOIN_LAN}${JOIN_LAN:+ } -retry-join=$THIS_PEER"
@@ -166,20 +168,36 @@ spec:
               if $ALL_READY; then
                 SUCCESS_LOOPS=$(( SUCCESS_LOOPS - 1 ))
               fi
-              echo "Waiting for peers..."
+              echo "Waiting for LAN peers..."
               sleep 1s
             done
 
-            JOIN_WAN=""
+
+            WAN_PEERS=""
             {{- range .Values.joinWan }}
-              JOIN_WAN="${JOIN_WAN}${JOIN_WAN:+ }{{ . }}"
+            WAN_PEERS="${WAN_PEERS}${WAN_PEERS:+ }{{ . }}"
             {{- end }}
-            WAN=""
-            for THIS_PEER in ${JOIN_WAN}; do
-              NEXT_PEER="$(ping -c 1 $THIS_PEER | awk -F'[()]' '/PING/{print $2}')"
-              if [ "${NEXT_PEER}" != "${POD_IP}" ]; then
-                PEERS="${PEERS}${PEERS:+ } -retry-join ${STATEFULSET_NAME}-${i}.${STATEFULSET_NAME}.${STATEFULSET_NAMESPACE}.svc"
+
+            SUCCESS_LOOPS=5
+            while [ "$SUCCESS_LOOPS" -gt 0 ]; do
+              ALL_READY=true
+              JOIN_WAN=""
+              for THIS_PEER in $WAN_PEERS; do
+                  # We don't care if we can ping the peer, but we do care that we can get its IP
+                  if PEER_IP="$( ( ping -c 1 $THIS_PEER || true ) | awk -F'[()]' '/PING/{print $2}')" && [ "$PEER_IP" != "" ]; then 
+                    if [ "${PEER_IP}" != "${POD_IP}" ]; then
+                      JOIN_WAN="${JOIN_WAN}${JOIN_WAN:+ } -retry-join-wan=$THIS_PEER"
+                    fi
+                  else
+                    ALL_READY=false
+                    break
+                  fi
+              done
+              if $ALL_READY; then
+                SUCCESS_LOOPS=$(( SUCCESS_LOOPS - 1 ))
               fi
+              echo "Waiting for WAN peers..."
+              sleep 1s
             done
 
             exec /bin/consul agent \
@@ -205,7 +223,7 @@ spec:
               -bind=0.0.0.0 \
               -advertise=${POD_IP} \
               ${JOIN_LAN} \
-              ${WAN} \
+              ${JOIN_WAN} \
             {{- if .Values.Gossip.Encrypt }}
               ${GOSSIP_KEY} \
             {{- end }}
