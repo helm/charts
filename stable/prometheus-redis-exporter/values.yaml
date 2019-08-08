@@ -13,7 +13,7 @@ serviceAccount:
 replicaCount: 1
 image:
   repository: oliver006/redis_exporter
-  tag: v1.0.3
+  tag: v1.0.4
   pullPolicy: IfNotPresent
 extraArgs: {}
 # Additional Environment variables
