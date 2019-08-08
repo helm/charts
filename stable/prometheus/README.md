@@ -290,6 +290,7 @@ Parameter | Description | Default
 `server.service.annotations` | annotations for Prometheus server service | `{}`
 `server.service.clusterIP` | internal Prometheus server cluster service IP | `""`
 `server.service.externalIPs` | Prometheus server service external IP addresses | `[]`
+`server.service.labels` | additional labels for Prometheus server service | `{}`
 `server.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `server.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `server.service.nodePort` | Port to be used as the service NodePort (ignored if `server.service.type` is not `NodePort`) | `0`
