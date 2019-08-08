@@ -15,6 +15,7 @@ $ helm install stable/nginx-ingress
 This chart bootstraps an nginx-ingress deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
 ## Prerequisites
+
   - Kubernetes 1.6+
 
 ## Installing the Chart
@@ -76,7 +77,6 @@ Parameter | Description | Default
 `controller.daemonset.useHostPort` | If `controller.kind` is `DaemonSet`, this will enable `hostPort` for TCP/80 and TCP/443 | false
 `controller.daemonset.hostPorts.http` | If `controller.daemonset.useHostPort` is `true` and this is non-empty, it sets the hostPort | `"80"`
 `controller.daemonset.hostPorts.https` | If `controller.daemonset.useHostPort` is `true` and this is non-empty, it sets the hostPort | `"443"`
-`controller.daemonset.hostPorts.stats` | If `controller.daemonset.useHostPort` is `true` and this is non-empty, it sets the hostPort | `"18080"`
 `controller.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `controller.affinity` | node/pod affinities (requires Kubernetes >=1.6) | `{}`
 `controller.terminationGracePeriodSeconds` | how many seconds to wait before terminating a pod | `60`
@@ -124,14 +124,6 @@ Parameter | Description | Default
 `controller.readinessProbe.successThreshold` | Minimum consecutive successes for the probe to be considered successful after having failed. | 1
 `controller.readinessProbe.failureThreshold` | Minimum consecutive failures for the probe to be considered failed after having succeeded. | 3
 `controller.readinessProbe.port` | The port number that the readiness probe will listen on. | 10254
-`controller.stats.enabled` | if `true`, enable status page | `false`
-`controller.stats.service.annotations` | annotations for controller stats service | `{}`
-`controller.stats.service.clusterIP` | internal controller stats cluster service IP | `""`
-`controller.stats.service.omitClusterIP` | To omit the `clusterIP` from the stats service | `false`
-`controller.stats.service.externalIPs` | controller service stats external IP addresses | `[]`
-`controller.stats.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
-`controller.stats.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
-`controller.stats.service.type` | type of controller stats service to create | `ClusterIP`
 `controller.metrics.enabled` | if `true`, enable Prometheus metrics | `false`
 `controller.metrics.service.annotations` | annotations for Prometheus metrics service | `{}`
 `controller.metrics.service.clusterIP` | cluster IP address to assign to service | `""`
@@ -197,9 +189,10 @@ Parameter | Description | Default
 `tcp` | TCP service key:value pairs. The value is evaluated as a template. | `{}`
 `udp` | UDP service key:value pairs The value is evaluated as a template. | `{}`
 
+These parameters can be passed via Helm's `--set` option
 ```console
 $ helm install stable/nginx-ingress --name my-release \
-    --set controller.stats.enabled=true
+    --set controller.metrics.enabled=true
 ```
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
@@ -217,6 +210,7 @@ $ helm install stable/nginx-ingress --set controller.extraArgs.v=2
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
 ## PodDisruptionBudget
+
 Note that the PodDisruptionBudget resource will only be defined if the replicaCount is greater than one,
 else it would make it impossible to evacuate a node. See [gh issue #7127](https://github.com/helm/charts/issues/7127) for more info.
 
@@ -230,6 +224,13 @@ $ helm install stable/nginx-ingress --name my-release \
 ```
 
 You can add Prometheus annotations to the metrics service using `controller.metrics.service.annotations`. Alternatively, if you use the Prometheus Operator, you can enable ServiceMonitor creation using `controller.metrics.serviceMonitor.enabled`.
+
+## nginx-ingress nginx\_status page/stats server
+
+Previous versions of this chart had a `controller.stats.*` configuration block, which is now obsolete due to the following changes in nginx ingress controller:
+* in [0.16.1](https://github.com/kubernetes/ingress-nginx/blob/master/Changelog.md#0161), the vts (virtual host traffic status) dashboard was removed
+* in [0.23.0](https://github.com/kubernetes/ingress-nginx/blob/master/Changelog.md#0230), the status page at port 18080 is now a unix socket webserver only available at localhost.
+  You can use `curl --unix-socket /tmp/nginx-status-server.sock http://localhost/nginx_status` inside the controller container to access it locally, or use the snippet from [nginx-ingress changelog](https://github.com/kubernetes/ingress-nginx/blob/master/Changelog.md#0230) to re-enable the http server
 
 ## ExternalDNS Service configuration
 
