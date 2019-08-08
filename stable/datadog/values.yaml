@@ -245,6 +245,7 @@ datadog:
   # apm_config: |-
   #   enabled: true
   #   max_traces_per_second: 20
+  #   apm_non_local_traffic: true
   #   analyzed_spans:
   #     service|trace.name: 0.1
 
