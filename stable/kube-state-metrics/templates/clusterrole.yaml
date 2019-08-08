@@ -52,7 +52,7 @@ rules:
   verbs: ["list", "watch"]
 {{ end -}}
 {{ if .Values.collectors.ingresses }}
-- apiGroups: ["extensions"]
+- apiGroups: ["extensions", "networking.k8s.io"]
   resources:
   - ingresses
   verbs: ["list", "watch"]
