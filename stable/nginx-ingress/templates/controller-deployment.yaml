@@ -126,11 +126,6 @@ spec:
             - name: https
               containerPort: {{ .Values.controller.containerPort.https }}
               protocol: TCP
-          {{- if .Values.controller.stats.enabled }}
-            - name: stats
-              containerPort: 18080
-              protocol: TCP
-          {{- end }}
           {{- if .Values.controller.metrics.enabled }}
             - name: metrics
               containerPort: 10254

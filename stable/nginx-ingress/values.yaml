@@ -41,8 +41,6 @@ controller:
     hostPorts:
       http: 80
       https: 443
-      ## healthz endpoint
-      stats: 18080
 
   ## Required only if defaultBackend.enabled = false
   ## Must be <namespace>/<service_name>
@@ -304,26 +302,6 @@ controller:
   # - name: init-myservice
   #   image: busybox
   #   command: ['sh', '-c', 'until nslookup myservice; do echo waiting for myservice; sleep 2; done;']
-
-
-  stats:
-    enabled: false
-
-    service:
-      annotations: {}
-      omitClusterIP: false
-      clusterIP: ""
-
-      ## List of IP addresses at which the stats service is available
-      ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
-      ##
-      externalIPs: []
-
-      loadBalancerIP: ""
-      loadBalancerSourceRanges: []
-      servicePort: 18080
-      type: ClusterIP
-
 
   metrics:
     enabled: false
