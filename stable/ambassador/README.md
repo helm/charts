@@ -93,10 +93,9 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `volumes`                          | Volumes for the ambassador service                                              | `[]`                              |
 | `pro.enabled`                      | Installs the Ambassador Pro container as a sidecar to Ambassador                | `false`                           |
 | `pro.image.repository`             | Ambassador Pro image                                                            | `quay.io/datawire/ambassador_pro` |
-| `pro.image.tag`                    | Ambassador Pro image tag                                                        | `amb-sidecar-0.4.0`               |
+| `pro.image.tag`                    | Ambassador Pro image tag                                                        | `amb-sidecar-0.6.0`               |
 | `pro.ports.auth`                   | Ambassador Pro authentication port                                              | `8500`                            |
-| `pro.ports.ratelimit`              | Ambassador Pro ratelimit port                                                   | `8501`                            |
-| `pro.ports.ratelimitDebug`         | Debug port for Ambassador Pro ratelimit                                         | `8502`                            |
+| `pro.ports.ratelimit`              | Ambassador Pro ratelimit port                                                   | `8500`                            |
 | `pro.licenseKey.value`             | License key for Ambassador Pro                                                  | ""                                |
 | `pro.licenseKey.secret`            | Stores the license key as a base64-encoded string in a Kubernetes secret        | `false`                           |
 | `autoscaling.enabled`              | If true, creates Horizontal Pod Autoscaler                                      | `false`                           |
@@ -117,6 +116,8 @@ If you intend to use `service.annotations`, remember to include the `getambassad
 Setting `pro.enabled: true` will install Ambassador Pro as a sidecar to Ambassador with the required CRDs and redis instance.
 
 You must set the `pro.licenseKey.value` to the license key issued to you. Sign up for a [free trial](https://www.getambassador.io/pro/free-trial) of Ambassador Pro or [contact](https://www.getambassador.io/contact) our sales team to obtain a license key.
+
+`pro.ports.auth` and `pro.ports.ratelimit` must be the same value. If changing one, you must change the other.
 
 For most use cases, `pro.image` and `pro.ports` can be left as default.
 
