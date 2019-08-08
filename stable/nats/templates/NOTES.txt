@@ -25,6 +25,7 @@ NATS can be accessed via port {{ .Values.client.service.port }} on the following
    {{ template "nats.fullname" . }}-client.{{ .Release.Namespace }}.svc.cluster.local
 
 {{- if .Values.auth.enabled }}
+
 To get the authentication credentials, run:
 
     export NATS_USER=$(kubectl get cm --namespace {{ .Release.Namespace }} {{ template "nats.fullname" . }} -o jsonpath='{.data.*}' | grep -m 1 user | awk '{print $2}')
@@ -35,7 +36,7 @@ To get the authentication credentials, run:
 
 NATS monitoring service can be accessed via port {{ .Values.monitoring.service.port }} on the following DNS name from within your cluster:
 
-   {{ template "nats.fullname" . }}-monitoring.{{ .Release.Namespace }}.svc.cluster.local
+    {{ template "nats.fullname" . }}-monitoring.{{ .Release.Namespace }}.svc.cluster.local
 
 To access the Monitoring svc from outside the cluster, follow the steps below:
 
@@ -43,10 +44,10 @@ To access the Monitoring svc from outside the cluster, follow the steps below:
 
 1. Get the hostname indicated on the Ingress Rule and associate it to your cluster external IP:
 
-   export CLUSTER_IP=$(minikube ip) # On Minikube. Use: `kubectl cluster-info` on others K8s clusters
-   export HOSTNAME=$(kubectl get ingress --namespace {{ .Release.Namespace }} {{ template "nats.fullname" . }}-monitoring -o jsonpath='{.spec.rules[0].host}')
-   echo "Monitoring URL: http://$HOSTNAME/"
-   echo "$CLUSTER_IP  $HOSTNAME" | sudo tee -a /etc/hosts
+    export CLUSTER_IP=$(minikube ip) # On Minikube. Use: `kubectl cluster-info` on others K8s clusters
+    export HOSTNAME=$(kubectl get ingress --namespace {{ .Release.Namespace }} {{ template "nats.fullname" . }}-monitoring -o jsonpath='{.spec.rules[0].host}')
+    echo "Monitoring URL: http://$HOSTNAME/"
+    echo "$CLUSTER_IP  $HOSTNAME" | sudo tee -a /etc/hosts
 
 2. Open a browser and access the NATS monitoring browsing to the Monitoring URL
 
@@ -62,7 +63,7 @@ To access the Monitoring svc from outside the cluster, follow the steps below:
 
 {{- else if contains "LoadBalancer" .Values.monitoring.service.type }}
 
-  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+    NOTE: It may take a few minutes for the LoadBalancer IP to be available.
         Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "nats.fullname" . }}-monitoring'
 
     export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "nats.fullname" . }}-monitoring --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
@@ -81,7 +82,7 @@ To access the Monitoring svc from outside the cluster, follow the steps below:
 
 3. Get the NATS Prometheus Metrics URL by running:
 
-    echo "Prometheus Metrics URL: http://127.0.0.1:{{ .Values.metrics.port }}"
+    echo "Prometheus Metrics URL: http://127.0.0.1:{{ .Values.metrics.port }}/metrics"
     kubectl port-forward --namespace {{ .Release.Namespace }} {{ template "nats.fullname" . }}-0 {{ .Values.metrics.port }}:{{ .Values.metrics.port }}
 
 4. Access NATS Prometheus metrics by opening the URL obtained in a browser.
