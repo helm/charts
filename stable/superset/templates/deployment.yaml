@@ -33,7 +33,7 @@ spec:
       volumes:
         - name: superset-configs
           secret:
-            secretName: {{ include "superset.fullname" . }}
+            secretName: {{ .Values.existingSecret | default (include "superset.fullname" .) }}
         - name: storage-volume
           {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
