@@ -180,6 +180,7 @@ spec:
             {{- range .Values.extraConfigmapMounts }}
             - name: {{ .name }}
               mountPath: {{ .mountPath }}
+              subPath: {{ .subPath | default "" }}
               readOnly: {{ .readOnly }}
             {{- end }}
             - name: storage
