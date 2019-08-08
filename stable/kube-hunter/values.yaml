@@ -17,7 +17,7 @@ pod:
 
 image:
   repository: aquasec/kube-hunter
-  tag: 34
+  tag: 312
   pullPolicy: IfNotPresent
 
 resources: {}

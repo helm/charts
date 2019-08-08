@@ -16,7 +16,7 @@ serviceAccount:
 ##
 image:
   repository: zenko/kafka-manager
-  tag: 1.3.3.18
+  tag: 1.3.3.22
   pullPolicy: IfNotPresent
 
 ## Kafka-manager zookeeper hosts. Default to localhost:2181 or
@@ -97,6 +97,7 @@ javaOptions: ""
 service:
   type: ClusterIP
   port: 9000
+  annotations: {}
 
 ## Ingress configuration
 ## Ref: https://kubernetes.io/docs/concepts/services-networking/ingress/

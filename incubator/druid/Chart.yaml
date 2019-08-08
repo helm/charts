@@ -1,0 +1,16 @@
+apiVersion: v1
+appVersion: 0.12.3
+description: Apache Druid (incubating) is a high performance analytics data store for event-driven data.
+name: druid
+version: 0.1.1
+home: http://druid.io/
+icon: http://druid.io/img/druid_nav.png
+maintainers:
+  - name: maver1ck
+    email: maciek@brynski.pl
+sources:
+  - https://github.com/apache/incubator-druid
+keywords:
+  - olap
+  - database
+  - analytics

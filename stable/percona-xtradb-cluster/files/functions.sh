@@ -28,9 +28,15 @@ if [ ! -e "$DATADIR/mysql" ]; then
 
     echo "Running --initialize-insecure on $DATADIR"
     ls -lah $DATADIR
-    mysqld --initialize-insecure
-    chown -R mysql:mysql "$DATADIR"
-    chown mysql:mysql /var/log/mysqld.log
+    if [ "$PERCONA_MAJOR" = "5.6" ]; then
+        mysql_install_db --user=mysql --datadir="$DATADIR"
+    else
+        mysqld --user=mysql --datadir="$DATADIR" --initialize-insecure
+    fi
+    chown -R mysql:mysql "$DATADIR" || true # default is root:root 777
+    if [ -f /var/log/mysqld.log ]; then
+        chown mysql:mysql /var/log/mysqld.log
+    fi
     echo 'Finished --initialize-insecure'
 
     mysqld --user=mysql --datadir="$DATADIR" --skip-networking &
@@ -58,15 +64,22 @@ if [ ! -e "$DATADIR/mysql" ]; then
     SET @@SESSION.SQL_LOG_BIN=0;
     CREATE USER 'root'@'${ALLOW_ROOT_FROM}' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}' ;
     GRANT ALL ON *.* TO 'root'@'${ALLOW_ROOT_FROM}' WITH GRANT OPTION ;
-    ALTER USER 'root'@'localhost' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}';
     GRANT ALL ON *.* TO 'root'@'localhost' WITH GRANT OPTION ;
     CREATE USER 'xtrabackup'@'localhost' IDENTIFIED BY '$XTRABACKUP_PASSWORD';
     GRANT RELOAD,PROCESS,LOCK TABLES,REPLICATION CLIENT ON *.* TO 'xtrabackup'@'localhost';
     GRANT REPLICATION CLIENT ON *.* TO monitor@'%' IDENTIFIED BY 'monitor';
     GRANT PROCESS ON *.* TO monitor@localhost IDENTIFIED BY 'monitor';
+    CREATE USER 'mysql'@'localhost' IDENTIFIED BY '' ;
     DROP DATABASE IF EXISTS test ;
     FLUSH PRIVILEGES ;
 EOSQL
+
+    if [ "$PERCONA_MAJOR" = "5.6" ]; then
+        echo "SET PASSWORD FOR 'root'@'localhost' = PASSWORD('${MYSQL_ROOT_PASSWORD}'); FLUSH PRIVILEGES;" | "${mysql[@]}"
+    else
+        echo "ALTER USER 'root'@'localhost' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}'; FLUSH PRIVILEGES;" | "${mysql[@]}"
+    fi
+
     if [ ! -z "$MYSQL_ROOT_PASSWORD" ]; then
     mysql+=( -p"${MYSQL_ROOT_PASSWORD}" )
     fi

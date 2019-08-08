@@ -1,0 +1,20 @@
+{{- if not .Values.daemonSet }}
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "ambassador.fullname" . }}-test-ready"
+  labels:
+    app.kubernetes.io/name: {{ include "ambassador.name" . }}
+    helm.sh/chart: {{ include "ambassador.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args:  ['{{ include "ambassador.fullname" . }}:{{ include "ambassador.servicePort" . }}/ambassador/v0/check_ready']
+  restartPolicy: Never
+{{- end }}

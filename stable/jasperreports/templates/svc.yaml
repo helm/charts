@@ -3,10 +3,10 @@ kind: Service
 metadata:
   name: {{ template "jasperreports.fullname" . }}
   labels:
-    app: {{ template "jasperreports.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app: "{{ template "jasperreports.fullname" . }}"
+    chart: "{{ template "jasperreports.chart" . }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
 spec:
   type: {{ .Values.service.type }}
   {{- if (or (eq .Values.service.type "LoadBalancer") (eq .Values.service.type "NodePort")) }}
@@ -20,4 +20,4 @@ spec:
       nodePort: {{ .Values.service.nodePorts.http }}
       {{- end }}
   selector:
-    app: {{ template "jasperreports.fullname" . }}
+    app: "{{ template "jasperreports.fullname" . }}"

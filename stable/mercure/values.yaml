@@ -1,0 +1,72 @@
+# Default values for chart.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+allowAnonymous: "0"
+corsAllowedOrigins: ""
+debug: "0"
+demo: "0"
+jwtKey: ""
+logFormat: "FLUENTD"
+publishAllowedOrigins: ""
+publisherJwtKey: ""
+subscriberJwtKey: ""
+heartbeatInterval: "0s"
+historyCleanupFrequency: 0.3
+historySize: 0
+readTimeout: "0s"
+writeTimeout: "0s"
+useForwardedHeaders: "0"
+
+image:
+  repository: dunglas/mercure
+  tag: v0
+  pullPolicy: IfNotPresent
+
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  type: NodePort
+  port: 80
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  paths:
+    - /
+  hosts:
+    - mercure.local
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - mercure.local
+
+# GCP load balancers by default terminate connections after 30 seconds. This can be changed by
+# enabling the following backendConfig and changing the `timeoutSec` property.
+# More info at: https://github.com/dunglas/mercure/issues/106 and
+# https://cloud.google.com/kubernetes-engine/docs/how-to/configure-backend-service
+backendConfig:
+  enabled: false
+  timeoutSec: 30
+
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

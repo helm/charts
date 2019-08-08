@@ -3,28 +3,23 @@ kind: Deployment
 metadata:
   name: {{ template "jasperreports.fullname" . }}
   labels:
-    app: {{ template "jasperreports.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app: "{{ template "jasperreports.fullname" . }}"
+    chart: "{{ template "jasperreports.chart" . }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
 spec:
   selector:
     matchLabels:
-      app: {{ template "jasperreports.fullname" . }}
-      release: "{{ .Release.Name }}"
+      app: "{{ template "jasperreports.fullname" . }}"
+      release: {{ .Release.Name | quote }}
   template:
     metadata:
       labels:
-        app: {{ template "jasperreports.fullname" . }}
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-        release: "{{ .Release.Name }}"
+        app: "{{ template "jasperreports.fullname" . }}"
+        chart: "{{ template "jasperreports.chart" . }}"
+        release: {{ .Release.Name | quote }}
     spec:
-      {{- if .Values.image.pullSecrets }}
-      imagePullSecrets:
-      {{- range .Values.image.pullSecrets }}
-        - name: {{ . }}
-      {{- end}}
-      {{- end }}
+{{- include "jasperreports.imagePullSecrets" . | indent 6 }}
       containers:
       - name: {{ template "jasperreports.fullname" . }}
         image: {{ template "jasperreports.image" . }}
@@ -70,21 +65,33 @@ spec:
               key: jasperreports-password
         - name: JASPERREPORTS_EMAIL
           value: {{ .Values.jasperreportsEmail | quote }}
+        {{- if .Values.smtpHost }}
         - name: SMTP_HOST
           value: {{ .Values.smtpHost | quote }}
+        {{- end }}
+        {{- if .Values.smtpPort }}
         - name: SMTP_PORT
           value: {{ .Values.smtpPort | quote }}
+        {{- end }}
+        {{- if .Values.smtpEmail }}
         - name: SMTP_EMAIL
           value: {{ .Values.smtpEmail| quote }}
+        {{- end }}
+        {{- if .Values.smtpUser }}
         - name: SMTP_USER
           value: {{ .Values.smtpUser | quote }}
+        {{- end }}
+        {{- if .Values.smtpPassword }}
         - name: SMTP_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "jasperreports.fullname" . }}
               key: smtp-password
+        {{- end }}
+        {{- if .Values.smtpProtocol }}
         - name: SMTP_PROTOCOL
           value: {{ .Values.smtpProtocol | quote }}
+        {{- end }}
         ports:
         - name: http
           containerPort: 8080

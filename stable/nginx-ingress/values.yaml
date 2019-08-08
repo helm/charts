@@ -5,11 +5,17 @@ controller:
   name: controller
   image:
     repository: quay.io/kubernetes-ingress-controller/nginx-ingress-controller
-    tag: "0.21.0"
+    tag: "0.25.0"
     pullPolicy: IfNotPresent
     # www-data -> uid 33
     runAsUser: 33
+    allowPrivilegeEscalation: true
 
+  # Configures the ports the nginx-controller listens on
+  containerPort:
+    http: 80
+    https: 443
+  # Will add custom configuration options to Nginx https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/
   config: {}
   # Will add custom header to Nginx https://github.com/kubernetes/ingress-nginx/tree/master/docs/examples/customization/custom-headers
   headers: {}
@@ -24,6 +30,10 @@ controller:
   # to keep resolving names inside the k8s network, use ClusterFirstWithHostNet.
   dnsPolicy: ClusterFirst
 
+  # Bare-metal considerations via the host network https://kubernetes.github.io/ingress-nginx/deploy/baremetal/#via-the-host-network
+  # Ingress status was blank because there is no Service exposing the NGINX Ingress controller in a configuration using the host network, the default --publish-service flag used in standard cloud setups does not apply
+  reportNodeInternalIp: false
+
   ## Use host ports 80 and 443
   daemonset:
     useHostPort: false
@@ -31,6 +41,8 @@ controller:
     hostPorts:
       http: 80
       https: 443
+      ## healthz endpoint
+      stats: 18080
 
   ## Required only if defaultBackend.enabled = false
   ## Must be <namespace>/<service_name>
@@ -49,6 +61,12 @@ controller:
   podLabels: {}
   #  key: value
 
+  ## Security Context policies for controller pods
+  ## See https://kubernetes.io/docs/tasks/administer-cluster/sysctl-cluster/ for
+  ## notes on enabling and using sysctls
+  ##
+  podSecurityContext: {}
+
   ## Allows customization of the external service
   ## the ingress will be bound to via DNS
   publishService:
@@ -63,6 +81,20 @@ controller:
   scope:
     enabled: false
     namespace: ""   # defaults to .Release.Namespace
+
+  ## Allows customization of the configmap / nginx-configmap namespace
+  ##
+  configMapNamespace: ""   # defaults to .Release.Namespace
+
+  ## Allows customization of the tcp-services-configmap namespace
+  ##
+  tcp:
+    configMapNamespace: ""   # defaults to .Release.Namespace
+
+  ## Allows customization of the udp-services-configmap namespace
+  ##
+  udp:
+    configMapNamespace: ""   # defaults to .Release.Namespace
 
   ## Additional command line arguments to pass to nginx-ingress-controller
   ## E.g. to specify the default SSL certificate you can use
@@ -104,7 +136,37 @@ controller:
   #    value: "value"
   #    effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
 
+  ## Affinity and anti-affinity
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  ##
   affinity: {}
+    # # An example of preferred pod anti-affinity, weight is in the range 1-100
+    # podAntiAffinity:
+    #   preferredDuringSchedulingIgnoredDuringExecution:
+    #   - weight: 100
+    #     podAffinityTerm:
+    #       labelSelector:
+    #         matchExpressions:
+    #         - key: app
+    #           operator: In
+    #           values:
+    #           - nginx-ingress
+    #       topologyKey: kubernetes.io/hostname
+
+    # # An example of required pod anti-affinity
+    # podAntiAffinity:
+    #   requiredDuringSchedulingIgnoredDuringExecution:
+    #   - labelSelector:
+    #       matchExpressions:
+    #       - key: app
+    #         operator: In
+    #         values:
+    #         - nginx-ingress
+    #     topologyKey: "kubernetes.io/hostname"
+
+  ## terminationGracePeriodSeconds
+  ##
+  terminationGracePeriodSeconds: 60
 
   ## Node labels for controller pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
@@ -160,6 +222,7 @@ controller:
   service:
     annotations: {}
     labels: {}
+    omitClusterIP: false
     clusterIP: ""
 
     ## List of IP addresses at which the controller services are available
@@ -180,6 +243,10 @@ controller:
 
     healthCheckNodePort: 0
 
+    ports:
+      http: 80
+      https: 443
+
     targetPorts:
       http: http
       https: https
@@ -190,9 +257,13 @@ controller:
     # nodePorts:
     #   http: 32080
     #   https: 32443
+    #   tcp:
+    #     8080: 32808
     nodePorts:
       http: ""
       https: ""
+      tcp: {}
+      udp: {}
 
   extraContainers: []
   ## Additional containers to be added to the controller pod.
@@ -240,6 +311,7 @@ controller:
 
     service:
       annotations: {}
+      omitClusterIP: false
       clusterIP: ""
 
       ## List of IP addresses at which the stats service is available
@@ -252,8 +324,7 @@ controller:
       servicePort: 18080
       type: ClusterIP
 
-  ## If controller.stats.enabled = true and controller.metrics.enabled = true, Prometheus metrics will be exported
-  ##
+
   metrics:
     enabled: false
 
@@ -262,6 +333,7 @@ controller:
       # prometheus.io/scrape: "true"
       # prometheus.io/port: "10254"
 
+      omitClusterIP: false
       clusterIP: ""
 
       ## List of IP addresses at which the stats-exporter service is available
@@ -277,6 +349,8 @@ controller:
     serviceMonitor:
       enabled: false
       additionalLabels: {}
+      namespace: ""
+      # honorLabels: true
 
   lifecycle: {}
 
@@ -296,13 +370,31 @@ defaultBackend:
 
   name: default-backend
   image:
-    repository: k8s.gcr.io/defaultbackend
-    tag: "1.4"
+    repository: k8s.gcr.io/defaultbackend-amd64
+    tag: "1.5"
     pullPolicy: IfNotPresent
+    # nobody user -> uid 65534
+    runAsUser: 65534
 
   extraArgs: {}
 
   port: 8080
+
+  ## Readiness and liveness probes for default backend
+  ## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
+  ##
+  livenessProbe:
+    failureThreshold: 3
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    successThreshold: 1
+    timeoutSeconds: 5
+  readinessProbe:
+    failureThreshold: 6
+    initialDelaySeconds: 0
+    periodSeconds: 5
+    successThreshold: 1
+    timeoutSeconds: 5
 
   ## Node tolerations for server scheduling to nodes with taints
   ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
@@ -314,6 +406,12 @@ defaultBackend:
   #    effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
 
   affinity: {}
+
+  ## Security Context policies for controller pods
+  ## See https://kubernetes.io/docs/tasks/administer-cluster/sysctl-cluster/ for
+  ## notes on enabling and using sysctls
+  ##
+  podSecurityContext: {}
 
   # labels to add to the pod container metadata
   podLabels: {}
@@ -342,6 +440,7 @@ defaultBackend:
 
   service:
     annotations: {}
+    omitClusterIP: false
     clusterIP: ""
 
     ## List of IP addresses at which the default backend service is available

@@ -20,7 +20,7 @@ This article describes how to set up and use [Azure Monitor - Containers](https:
 
 2. [Add the 'AzureMonitor-Containers' Solution to your Log Analytics workspace.](http://aka.ms/coinhelmdoc)
 
-3. [For ACS-engine K8S cluster, add Log Analytics workspace tag to cluster resources, to be able to use Azure Container monitoring User experience (aka.ms/azmon-containers)](http://aka.ms/coin-acs-tag-doc)
+3. [For AKS-Engine or ACS-Engine K8S cluster, add required tags on cluster resources, to be able to use Azure Container monitoring User experience (aka.ms/azmon-containers)](http://aka.ms/coin-acs-tag-doc)
 
 ---
 
@@ -58,10 +58,15 @@ The following table lists the configurable parameters of the MSOMS chart and the
 | `omsagent.secret.wsid`     | Azure Log analytics workspace id                   | Does not have a default value, needs to be provided                              |
 | `omsagent.secret.key`      | Azure Log analytics workspace key                  | Does not have a default value, needs to be provided                              |
 | `omsagent.domain`          | Azure Log analytics cloud domain (public / govt)   | opinsights.azure.com (Public cloud as default), opinsights.azure.us (Govt Cloud) |
-| `omsagent.env.clusterName` | Name of your cluster      | Does not have a default value, needs to be provided. If ACS-engine cluster, it is recommended to provide either one of the below as cluster name, to be able to use Azure Container monitoring User experience (aka.ms/azmon-containers)  <br/> <br/> - Azure Resource group resource ID of ACS-Engine cluster  <br/> - Provide a friendly name here and ensure this name is used to 'tag' the cluster master node(s) - see step-3 in pre-requisites above |
-|`omsagent.env.doNotCollectKubeSystemLogs`| Disable collecting logs from containers in 'kube-system' namespace | true|
+| `omsagent.env.clusterName` | Name of your cluster      | Does not have a default value, needs to be provided. If AKS-Engine or ACS-Engine K8S cluster, it is recommended to provide either one of the below as cluster name, to be able to use Azure Container monitoring User experience (aka.ms/azmon-containers)  <br/> <br/> - Azure Resource group resource ID of ACS-Engine cluster  <br/> - Provide a friendly name here and ensure this name is used to 'tag' the cluster master node(s) - see step-3 in pre-requisites above |
 | `omsagent.rbac`             | rbac enabled/disabled      | true  (i.e enabled)     |
 
+### Note
+Parameter `omsagent.env.doNotCollectKubeSystemLogs` has been removed starting chart version 1.0.0. Refer to 'Agent data collection settings' section below to configure it using configmap.
+
+## Agent data collection settings
+
+Staring with chart version 1.0.0, agent data collection settings are controlled thru a config map. Refer to documentation about agent data collection settings [here](https://docs.microsoft.com/en-us/azure/azure-monitor/insights/container-insights-agent-config)
 
 You can create a Azure Loganalytics workspace from portal.azure.com and get its ID & PRIMARY KEY from 'Advanced Settings' tab in the Ux.
 
@@ -70,7 +75,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 ```bash
 
 $ helm install --name myrelease-1 \
---set omsagent.secret.wsid=<your_workspace_id>,omsagent.secret.key=<your_workspace_key>,omsagent.env.clusterName=<my_Acs-engine_k8s_cluster_RG_ResourceID>  incubator/azuremonitor-containers
+--set omsagent.secret.wsid=<your_workspace_id>,omsagent.secret.key=<your_workspace_key>,omsagent.env.clusterName=<my_AKS-Engine_k8s_cluster_RG_ResourceID>  incubator/azuremonitor-containers
 ```
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
@@ -83,4 +88,4 @@ $ helm install --name myrelease-1 -f values.yaml incubator/azuremonitor-containe
 
 After you successfully deploy the chart, you will be able to see your data in the [azure portal](aka.ms/azmon-containers)
 
-If you need help with this chart, please reach us out thru [this](mailto:askcoin@microsoft.com) email.
+If you need help with this chart, please reach us out through [this](mailto:askcoin@microsoft.com) email.

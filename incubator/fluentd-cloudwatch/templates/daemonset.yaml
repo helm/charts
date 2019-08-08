@@ -20,10 +20,12 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
 {{- end }}
     spec:
+      securityContext:
+{{ toYaml .Values.podSecurityContext | indent 8 }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "fluentd-cloudwatch.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       initContainers:
         - name: copy-fluentd-config
-          image: busybox
+          image: "{{.Values.busybox.repository}}:{{.Values.busybox.tag}}"
           command: ['sh', '-c', 'cp /config-volume/* /etc/fluentd']
           volumeMounts:
             - name: config-volume
@@ -69,6 +71,9 @@ spec:
           readOnly: true
         - name: config
           mountPath: /fluentd/etc
+{{- if .Values.priorityClassName }}
+      priorityClassName: "{{ .Values.priorityClassName }}"
+{{- end }}
       terminationGracePeriodSeconds: 30
       volumes:
       - name: varlog
@@ -86,5 +91,13 @@ spec:
       tolerations:
 {{ toYaml .Values.tolerations | indent 6 }}
 {{- end }}
+      {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+      {{- end }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
   updateStrategy:
 {{ toYaml .Values.updateStrategy | indent 4 }}

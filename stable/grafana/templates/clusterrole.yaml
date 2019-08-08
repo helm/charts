@@ -1,4 +1,4 @@
-{{- if .Values.rbac.create }}
+{{- if and .Values.rbac.create (not .Values.rbac.namespaced) }}
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
@@ -15,7 +15,7 @@ metadata:
 {{- if or .Values.sidecar.dashboards.enabled .Values.sidecar.datasources.enabled }}
 rules:
 - apiGroups: [""] # "" indicates the core API group
-  resources: ["configmaps"]
+  resources: ["configmaps", "secrets"]
   verbs: ["get", "watch", "list"]
 {{- else }}
 rules: []

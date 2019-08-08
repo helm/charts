@@ -33,7 +33,7 @@ spec:
             - name: HUB_PORT_4444_TCP_ADDR
               value: {{ template "selenium.hub.fullname" . }}
             - name: HUB_PORT_4444_TCP_PORT
-              value: {{ .Values.hub.port | quote }}
+              value: {{ .Values.hub.servicePort | quote }}
             - name: JAVA_TOOL_OPTIONS
               value: {{ default "" .Values.chrome.javaOpts | quote }}
             - name: SE_OPTS
@@ -78,34 +78,41 @@ spec:
             - name: TZ
               value: {{ .Values.chrome.timeZone | quote }}
             {{- end }}
+            {{- if .Values.chrome.extraEnvs }}
+{{ toYaml .Values.chrome.extraEnvs | indent 12 }}
+            {{- end }}
           volumeMounts:
 {{ if .Values.chrome.volumeMounts -}}
-{{ toYaml .Values.chrome.volumeMounts | indent 12 }}
+{{ toYaml .Values.chrome.volumeMounts | trim | indent 12 }}
 {{- end }}
           resources:
-{{ toYaml .Values.chrome.resources | indent 12 }}
+{{ toYaml .Values.chrome.resources | trim | indent 12 }}
+{{- if or .Values.global.imagePullSecrets .Values.chrome.imagePullSecrets }}
+      imagePullSecrets: 
+      - name: {{ .Values.chrome.imagePullSecrets | default .Values.global.imagePullSecrets | quote }}
+{{- end }}
       volumes:
 {{ if .Values.chrome.volumes -}}
-{{ toYaml .Values.chrome.volumes | indent 8 }}
+{{ toYaml .Values.chrome.volumes | trim | indent 8 }}
 {{- end }}
       hostAliases:
-{{ toYaml .Values.global.hostAliases | indent 8 }}
+{{ toYaml .Values.global.hostAliases | trim | indent 8 }}
       nodeSelector:
 {{- if .Values.chrome.nodeSelector }}
-{{ toYaml .Values.chrome.nodeSelector | indent 8  }}
+{{ toYaml .Values.chrome.nodeSelector | trim | indent 8  }}
 {{- else if .Values.global.nodeSelector }}
-{{ toYaml .Values.global.nodeSelector | indent 8  }}
-{{- end -}}
+{{ toYaml .Values.global.nodeSelector | trim | indent 8  }}
+{{- end }}
       affinity:
 {{- if .Values.chrome.affinity }}
 {{ toYaml .Values.chrome.affinity | indent 8  }}
 {{- else if .Values.global.affinity }}
 {{ toYaml .Values.global.affinity | indent 8  }}
-{{- end -}}
+{{- end }}
       tolerations:
 {{- if .Values.chrome.tolerations }}
 {{ toYaml .Values.chrome.tolerations | indent 8  }}
 {{- else if .Values.global.tolerations }}
 {{ toYaml .Values.global.tolerations | indent 8  }}
-{{- end -}}
+{{- end }}
 {{- end -}}

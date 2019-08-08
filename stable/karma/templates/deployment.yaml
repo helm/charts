@@ -18,8 +18,16 @@ spec:
       labels:
         app.kubernetes.io/name: {{ include "karma.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
+      {{- if .Values.configMap.enabled }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+      {{- end }}
     spec:
       serviceAccountName: {{ template "karma.serviceAccountName" . }}
+      {{- if .Values.securityContext }}
+      securityContext:
+{{ toYaml .Values.securityContext | indent 8 }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -40,14 +48,14 @@ spec:
             httpGet:
               path: {{ .Values.livenessProbe.path }}
               port: http
-              initialDelaySeconds: {{ .Values.livenessProbe.delay }}
-              periodSeconds: {{ .Values.livenessProbe.period }}
+            initialDelaySeconds: {{ .Values.livenessProbe.delay }}
+            periodSeconds: {{ .Values.livenessProbe.period }}
           readinessProbe:
             httpGet:
               path: {{ .Values.livenessProbe.path }}
               port: http
-              initialDelaySeconds: {{ .Values.livenessProbe.delay }}
-              periodSeconds: {{ .Values.livenessProbe.period }}
+            initialDelaySeconds: {{ .Values.livenessProbe.delay }}
+            periodSeconds: {{ .Values.livenessProbe.period }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           {{- if .Values.configMap.enabled }}
@@ -73,4 +81,3 @@ spec:
         configMap:
           name: {{ .Release.Name }}-config
       {{- end }}
-

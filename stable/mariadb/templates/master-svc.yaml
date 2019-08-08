@@ -5,7 +5,7 @@ metadata:
   labels:
     app: "{{ template "mariadb.name" . }}"
     component: "master"
-    chart: {{ template "mariadb.chart" . }}
+    chart: "{{ template "mariadb.chart" . }}"
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
 {{- if .Values.metrics.enabled }}
@@ -16,7 +16,7 @@ spec:
   type: {{ .Values.service.type }}
   {{- if eq .Values.service.type "ClusterIP" }}
   {{- if .Values.service.clusterIp }}
-  clusterIP: {{ .Values.service.clusterIp }}
+  clusterIP: {{ .Values.service.clusterIp.master }}
   {{- end }}
   {{- end }}
   ports:

@@ -1,3 +1,18 @@
+{{- if and (not .Values.databaseType.mariadb) (not .Values.databaseType.postgresql) }}
+################################################################################
+### ERROR: You did not indicate MariaDB nor PostgreSQL as the database       ###
+###        server to use.                                                    ###
+################################################################################
+
+You have 4 alternatives:
+
+  a) Use MariaDB as database creating a new MariaDB server: set `databaseType.mariadb=true` and `mariadb.enabled=true`
+  b) Use MariaDB as database using a external MariaDB server: set `databaseType.mariadb=true` and `mariadb.enabled=false`
+  c) Use PostgreSQL as database creating a new PostgreSQL server: set `databaseType.postgresql=true` and `postgresql.enabled=true`
+  d) Use PostgreSQL as database using a external PostgreSQL server: `databaseType.postgresql=true` and `postgresql.enabled=false`
+
+{{- else }}
+
 1. Get the Redmine URL:
 
 {{- if contains "NodePort" .Values.service.type }}
@@ -34,3 +49,11 @@
 
   echo Username: {{ .Values.redmineUsername }}
   echo Password: $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "redmine.fullname" . }} -o jsonpath="{.data.redmine-password}" | base64 --decode)
+{{- end }}
+
+{{- if and (contains "bitnami/" .Values.image.repository) (not (.Values.image.tag | toString | regexFind "-r\\d+$|sha256:")) }}
+
+WARNING: Rolling tag detected ({{ .Values.image.repository }}:{{ .Values.image.tag }}), please note that it is strongly recommended to avoid using rolling tags in a production environment.
++info https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/
+
+{{- end }}

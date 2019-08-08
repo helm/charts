@@ -6,12 +6,12 @@ prometheus:
   enabled: false
   name: "prometheus"
   enableScraping: true
-  serviceMonitor: true
+  serviceMonitor: false
   enableAlerting: true
 
 image:
   repository: quay.io/comcast/kuberhealthy
-  tag: 0.1.1
+  tag: v1.0.2
 
 resources:
   requests:
@@ -30,6 +30,18 @@ deployment:
   maxSurge: 0
   maxUnavailable: 1
   imagePullPolicy: IfNotPresent
+  podAnnotations: {}
+  command:
+  - /app/kuberhealthy
+  # use this to override location of the test-image, see: https://github.com/Comcast/kuberhealthy/blob/master/docs/FLAGS.md
+  # args:
+  # - -dsPauseContainerImageOverride
+  # - your-repo/google_containers/pause:0.8.0
+
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 999
+  allowPrivilegeEscalation: false
 
 # Please remember that changing the service type to LoadBalancer
 # will expose Kuberhealthy to the internet, which could cause
@@ -41,3 +53,4 @@ deployment:
 service:
   externalPort: 80
   type: ClusterIP
+  annotations: {}

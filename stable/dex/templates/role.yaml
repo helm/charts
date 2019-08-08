@@ -1,0 +1,15 @@
+{{- if .Values.rbac.create }}
+{{- if or .Values.certs.grpc.create .Values.certs.web.create }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  labels:
+{{ include "dex.labels" . | indent 4 }}
+  name: {{ template "dex.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+rules:
+- apiGroups: [""]
+  resources: ["configmaps", "secrets"]
+  verbs: ["create", "delete"]
+{{- end -}}
+{{- end -}}

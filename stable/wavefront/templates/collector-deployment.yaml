@@ -1,0 +1,84 @@
+{{- if .Values.collector.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name : {{ template "wavefront.fullname" . }}
+    helm.sh/chart: {{ template "wavefront.chart" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    app.kubernetes.io.instance: {{ .Release.Name | quote }}
+    app.kubernetes.io/component: collector
+  name: {{ template "wavefront.collector.fullname" . }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name : {{ template "wavefront.fullname" .}}
+      app.kubernetes.io/component: collector
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name : {{ template "wavefront.fullname" .}}
+        app.kubernetes.io/component: collector
+    spec:
+      serviceAccountName: {{ template "wavefront.collector.serviceAccountName" . }}
+      containers:
+      - name: wavefront-collector
+        image: {{ .Values.collector.image.repository }}:{{ .Values.collector.image.tag }}
+        imagePullPolicy: {{ .Values.collector.image.pullPolicy }}
+        command:
+        - /wavefront-collector
+        - --source={{ .Values.collector.kubernetesSource | default "kubernetes.summary_api:''" }}
+        {{- if and (.Values.kubeStateMetrics.enabled) (not .Values.collector.discovery.enabled) }}
+        - --source=prometheus:''?url=http://{{ .Release.Name }}-kube-state-metrics:{{ index .Values "kube-state-metrics" "service" "port" }}/metrics
+        {{- end }}
+        {{- if .Values.collector.useProxy }}
+        {{- if .Values.collector.proxyAddress }}
+        - --sink=wavefront:?proxyAddress={{ .Values.collector.proxyAddress }}{{ template "wavefront.collector.sinkOptions" . }}
+        {{- else }}
+        - --sink=wavefront:?proxyAddress={{ template "wavefront.proxy.fullname" . }}:{{ .Values.proxy.port }}{{ template "wavefront.collector.sinkOptions" . }}
+        {{- end }}
+        {{- else }}
+        - --sink=wavefront:?server={{ .Values.wavefront.url }}&token={{ .Values.wavefront.token }}{{ template "wavefront.collector.sinkOptions" . }}
+        {{- end }}
+        - --enable-discovery={{ .Values.collector.discovery.enabled }}
+        {{- if and .Values.collector.discovery.enabled .Values.collector.discovery.config }}
+        - --discovery-config=/etc/collector/config.yaml
+        {{- end }}
+        {{- if .Values.collector.maxProcs }}
+        - --max-procs={{ .Values.collector.maxProcs }}
+        {{- end }}
+        {{- if .Values.collector.interval }}
+        - --metric-resolution={{ .Values.collector.interval }}
+        {{- end }}
+        {{- if .Values.collector.sinkDelay }}
+        - --sink-export-data-timeout={{ .Values.collector.sinkDelay }}
+        {{- end }}
+        {{- if .Values.collector.logVerbosity }}
+        - --v={{ .Values.collector.logVerbosity }}
+        {{- end }}
+        resources:
+{{ toYaml .Values.collector.resources | indent 10 }}
+        volumeMounts:
+        {{- if and .Values.collector.discovery.enabled .Values.collector.discovery.config }}
+        - name: config
+          mountPath: /etc/collector/
+          readOnly: true        
+        {{- end }}
+        {{- if not .Values.openshift.enabled }}
+        - name: ssl-certs
+          mountPath: /etc/ssl/certs
+          readOnly: true
+        {{- end }}
+      volumes:
+      {{- if and .Values.collector.discovery.enabled .Values.collector.discovery.config }}
+      - name: config
+        configMap:
+          name: {{ template "wavefront.collector.fullname" . }}-config
+      {{- end }}
+      {{- if not .Values.openshift.enabled }}
+      - name: ssl-certs
+        hostPath:
+          path: /etc/ssl/certs
+      {{- end }}
+{{- end }}

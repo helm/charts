@@ -1,0 +1,13 @@
+apiVersion: v1
+name: orientdb
+home: https://orientdb.com
+description: A Helm chart for Distributed OrientDB
+version: 0.1.2
+icon: https://orientdb.com/wp-content/uploads/cropped-favicon-orientdb-192x192.png
+maintainers:
+  - name: b-yond-infinite-network
+    email: sommeliers@b-yond.com
+    url: https://www.b-yond.com
+  - name: soujiro32167
+    email: eli.kasik@b-yond.com
+appVersion: 3.0.13

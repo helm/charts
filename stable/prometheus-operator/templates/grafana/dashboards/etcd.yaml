@@ -1,4 +1,6 @@
 # Generated from 'etcd' from https://raw.githubusercontent.com/etcd-io/etcd/master/Documentation/op-guide/grafana.json
+# Do not change in-place! In order to change this file first read following link:
+# https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
 {{- if and .Values.grafana.enabled .Values.grafana.defaultDashboardsEnabled .Values.kubeEtcd.enabled }}
 apiVersion: v1
 kind: ConfigMap
@@ -22,7 +24,7 @@ data:
         "hideControls": false,
         "id": 6,
         "links": [],
-        "refresh": false,
+        "refresh": "10s",
         "rows": [
             {
                 "collapse": false,

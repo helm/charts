@@ -40,21 +40,22 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following table lists the configurable parameters of the bitcoind chart and their default values.
 
-Parameter                  | Description                        | Default
------------------------    | ---------------------------------- | ----------------------------------------------------------
-`image.repository`         | Image source repository name       | `arilot/docker-bitcoind`
-`image.tag`                | `bitcoind` release tag.            | `0.15.1`
-`image.pullPolicy`         | Image pull policy                  | `IfNotPresent`
-`service.rpcPort`          | RPC port                           | `8332`
-`service.p2pPort`          | P2P port                           | `8333`
-`service.testnetPort`      | Testnet port                       | `18332`
-`service.testnetP2pPort`   | Testnet p2p ports                  | `18333`
-`service.selector`         | Node selector                      | `tx-broadcast-svc`
-`persistence.enabled`      | Create a volume to store data      | `true`
-`persistence.accessMode`   | ReadWriteOnce or ReadOnly          | `ReadWriteOnce`
-`persistence.size`         | Size of persistent volume claim    | `300Gi`
-`resources`                | CPU/Memory resource requests/limits| `{}`
-`configurationFile`        | Config file ConfigMap entry        |
+Parameter                 	 	| Description                        				| Default
+------------------------------- | ------------------------------------------------- | ----------------------------------------------------------
+`image.repository`         		| Image source repository name       				| `arilot/docker-bitcoind`
+`image.tag`                		| `bitcoind` release tag.            				| `0.17.1`
+`image.pullPolicy`         		| Image pull policy                  				| `IfNotPresent`
+`service.rpcPort`          		| RPC port                           				| `8332`
+`service.p2pPort`          		| P2P port                           				| `8333`
+`service.testnetPort`      		| Testnet port                       				| `18332`
+`service.testnetP2pPort`   		| Testnet p2p ports                  				| `18333`
+`service.selector`         		| Node selector                      				| `tx-broadcast-svc`
+`persistence.enabled`      		| Create a volume to store data      				| `true`
+`persistence.accessMode`   		| ReadWriteOnce or ReadOnly          				| `ReadWriteOnce`
+`persistence.size`         		| Size of persistent volume claim    				| `300Gi`
+`resources`                		| CPU/Memory resource requests/limits				| `{}`
+`configurationFile`        		| Config file ConfigMap entry      				    |
+`terminationGracePeriodSeconds` | Wait time before forcefully terminating container | `30`
 
 For more information about Bitcoin configuration please see [Bitcoin.conf_Configuration_File](https://en.bitcoin.it/wiki/Running_Bitcoin#Bitcoin.conf_Configuration_File).
 

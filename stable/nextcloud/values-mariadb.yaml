@@ -1,0 +1,5 @@
+internalDatabase:
+  enabled: false
+
+mariadb:
+  enabled: true

@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 image:
   repository: sentry
-  tag: "9.0"
+  tag: "9.1.1"
   pullPolicy: IfNotPresent
   # Add the secret name to pull from a private registry.
   imagePullSecrets: []
@@ -31,6 +31,8 @@ web:
   ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
   ##
   # schedulerName:
+  # Optional extra labels for pod, i.e. redis-client: "true"
+  # podLabels: []
 
 
 # How many cron instances to run
@@ -47,6 +49,8 @@ cron:
   tolerations: []
   affinity: {}
   # schedulerName:
+  # Optional extra labels for pod, i.e. redis-client: "true"
+  # podLabels: []
 
 # How many worker instances to run
 worker:
@@ -62,6 +66,9 @@ worker:
   tolerations: []
   affinity: {}
   # schedulerName:
+  # Optional extra labels for pod, i.e. redis-client: "true"
+  # podLabels: []
+  # concurrency:
 
 # Admin user to create
 user:
@@ -100,25 +107,55 @@ service:
   # externalIPs:
   # - 192.168.0.1
 
-## Enable persistence using Persistent Volume Claims
-## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
-##
-persistence:
-  enabled: true
-  ## database data Persistent Volume Storage Class
-  ## If defined, storageClassName: <storageClass>
-  ## If set to "-", storageClassName: "", which disables dynamic provisioning
-  ## If undefined (the default) or set to null, no storageClassName spec is
-  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
-  ##   GKE, AWS & OpenStack)
-  ##
-  # storageClass: "-"
-  accessMode: ReadWriteOnce
-  size: 10Gi
+  ## Load Balancer allow-list
+  # loadBalancerSourceRanges: []
 
-  # Where to store sentry files
-  # https://docs.sentry.io/server/filestore/
-  filestore_dir: /var/lib/sentry/files
+# Configure the location of Sentry artifacts
+filestore:
+  # Set to one of filesystem, gcs or s3 as supported by Sentry.
+  backend: filesystem
+
+  filesystem:
+    path: /var/lib/sentry/files
+
+    ## Enable persistence using Persistent Volume Claims
+    ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+    ##
+    persistence:
+      enabled: true
+      ## database data Persistent Volume Storage Class
+      ## If defined, storageClassName: <storageClass>
+      ## If set to "-", storageClassName: "", which disables dynamic provisioning
+      ## If undefined (the default) or set to null, no storageClassName spec is
+      ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+      ##   GKE, AWS & OpenStack)
+      ##
+      # storageClass: "-"
+      accessMode: ReadWriteOnce
+      size: 10Gi
+
+      ## Whether to mount the persistent volume to the Sentry worker and
+      ## cron deployments. This setting needs to be enabled for some advanced
+      ## Sentry features, such as private source maps. If you disable this
+      ## setting, the Sentry workers will not have access to artifacts you upload
+      ## through the web deployment.
+      ## Please note that you may need to change your accessMode to ReadWriteMany
+      ## if you plan on having the web, worker and cron deployments run on
+      ## different nodes.
+      persistentWorkers: false
+
+  ## Point this at a pre-configured secret containing a service account. The resulting
+  ## secret will be mounted at /var/run/secrets/google
+  gcs:
+    credentialsFile: credentials.json
+  #  secretName:
+  #  bucketName:
+
+  ## Currently unconfigured and changing this has no impact on the template configuration.
+  s3: {}
+  #  accessKey:
+  #  secretKey:
+  #  bucketName:
 
 ## Configure ingress resource that allow you to access the
 ## Sentry installation. Set up the URL
@@ -145,13 +182,24 @@ ingress:
 # TODO: add support for plugins https://docs.sentry.io/server/plugins/
 
 postgresql:
+  enabled: true
   postgresDatabase: sentry
   postgresUser: sentry
-  imageTag: "9.5"
+  # Only used when internal PG is disabled
+  # postgresHost: postgres
+  # postgresPassword: postgres
+  # postgresPort: 5432
+  imageTag: "9.6"
   persistence:
     enabled: true
 
 redis:
+  enabled: true
+  # Only used when internal redis is disabled
+  # host: redis
+  # Just omit the password field if your redis cluster doesn't use password
+  # password: redis
+  # port: 6379
   master:
     persistence:
       enabled: true
@@ -160,3 +208,75 @@ redis:
 config:
   configYml: ""
   sentryConfPy: ""
+
+## Prometheus Exporter / Metrics
+##
+metrics:
+  enabled: false
+
+  ## Configure extra options for liveness and readiness probes
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
+  livenessProbe:
+    enabled: true
+    initialDelaySeconds: 30
+    periodSeconds: 5
+    timeoutSeconds: 2
+    failureThreshold: 3
+    successThreshold: 1
+  readinessProbe:
+    enabled: true
+    initialDelaySeconds: 30
+    periodSeconds: 5
+    timeoutSeconds: 2
+    failureThreshold: 3
+    successThreshold: 1
+
+  ## Metrics exporter resource requests and limits
+  ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  resources: {}
+  #   limits:
+  #     cpu: 100m
+  #     memory: 100Mi
+  #   requests:
+  #     cpu: 100m
+  #     memory: 100Mi
+
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  # schedulerName:
+  # Optional extra labels for pod, i.e. redis-client: "true"
+  # podLabels: []
+  service:
+    type: ClusterIP
+    labels: {}
+
+  image:
+    repository: prom/statsd-exporter
+    tag: v0.10.5
+    pullPolicy: IfNotPresent
+
+  # Enable this if you're using https://github.com/coreos/prometheus-operator
+  serviceMonitor:
+    enabled: false
+    ## Specify a namespace if needed
+    # namespace: monitoring
+    # fallback to the prometheus default unless specified
+    # interval: 10s
+    ## Defaults to what's used if you follow CoreOS [Prometheus Install Instructions](https://github.com/helm/charts/tree/master/stable/prometheus-operator#tldr)
+    ## [Prometheus Selector Label](https://github.com/helm/charts/tree/master/stable/prometheus-operator#prometheus-operator-1)
+    ## [Kube Prometheus Selector Label](https://github.com/helm/charts/tree/master/stable/prometheus-operator#exporters)
+    selector:
+      prometheus: kube-prometheus
+
+# Provide affinity for hooks if needed
+hooks:
+  affinity: {}
+  dbInit:
+    resources:
+    # We setup 3000Mi for the memory limit because of a Sentry instance need at least 3Gb RAM to perform a migration process
+    # reference: https://github.com/helm/charts/issues/15296
+      limits:
+        memory: 3200Mi
+      requests:
+        memory: 3000Mi

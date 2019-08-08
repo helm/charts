@@ -31,13 +31,13 @@ prometheus:
   enabled: true # do we deploy a ServiceMonitor spec?
   name: "prometheus" # the name of the Prometheus deployment in your environment.
   enableScraping: true # add the Prometheus scrape annotation to Kuberhealthy pods
-  serviceMonitor: true # use a ServiceMonitor configuration
+  serviceMonitor: false # use a ServiceMonitor configuration, for if using Prometheus Operator
   enableAlerting: true # enable default Kuberhealthy alerts configuration
 app:
   name: "kuberhealthy" # what to name the kuberhealthy deployment
 image:
   repository: quay.io/comcast/kuberhealthy
-  tag: 0.1.1
+  tag: v1.0.2
 resources:
   requests:
     cpu: 100m
@@ -54,6 +54,18 @@ deployment:
   maxUnavailable: 1
   imagePullPolicy: IfNotPresent
   namespace: kuberhealthy
+  podAnnotations: {} # Annotations to be added to pods created by the deployment
+  command:
+  - /app/kuberhealthy
+  # use this to override location of the test-image, see: https://github.com/Comcast/kuberhealthy/blob/master/docs/FLAGS.md
+  # args:
+  # - -dsPauseContainerImageOverride
+  # - your-repo/google_containers/pause:0.8.0
+securityContext: # default container security context
+  runAsNonRoot: true
+  runAsUser: 999
+  fsGroup: 999
+  allowPrivilegeEscalation: false
 ```
 
 

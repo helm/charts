@@ -99,10 +99,15 @@ The configuration parameters in this section control the resources requested and
 | service.type     | Service Type                                                                                   | `ClusterIP`                      |
 | service.port     | Service Port                                                                                   | `1433`                           |
 | service.annotations | Kubernetes service annotations                                                              | `{}`                             |
+| service.labels   | Kubernetes service labels                                                                      | `{}`                             |
 | deployment.annotations | Kubernetes deployment annotations                                                        | `{}`                             |
+| deployment.labels | Kubernetes deployment labels                                                                  | `{}`                             |
+| pod.annotations   | Kubernetes pod annotations                                                                    | `{}`                             |
+| pod.labels        | Kubernetes pod labels                                                                         | `{}`                             |
 | collation        | Default collation for SQL Server                                                               | `SQL_Latin1_General_CP1_CI_AS`   |
 | lcid             | Default languages for SQL Server                                                               | `1033`                           |
 | hadr             | Enable Availability Group                                                                      | `0`                              |
+| schedulerName    | Name of the k8s scheduler (other than default)                                                 | `nil`                            |
 | persistence.enabled | Persist the Data and Log files for SQL Server                                               | `false`                          |
 | persistence.existingDataClaim | Identify an existing Claim to be used for the Data Directory                      | `Commented Out`                  |
 | persistence.existingTransactionLogClaim  | Identify an existing Claim to be used for the Log Directory            | `Commented Out`                  |

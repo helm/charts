@@ -1,0 +1,16 @@
+{{- if .Values.configFiles }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "traefik.fullname" . }}-configs
+  labels:
+    app: {{ template "traefik.name" . }}
+    chart: {{ template "traefik.chart" . }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+{{- range $filename, $fileContents := .Values.configFiles }}
+  {{ $filename }}: |-
+{{ $fileContents | indent 4 }}
+{{- end }}
+{{- end }}

@@ -1,0 +1,9 @@
+dependencies:
+- name: mariadb
+  version: ~6.4.0
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  condition: mariadb.enabled
+- name: redis
+  version: ~8.0.12
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  condition: redis.enabled

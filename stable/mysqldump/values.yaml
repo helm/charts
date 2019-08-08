@@ -3,39 +3,61 @@
 # Declare variables to be passed into your templates.
 
 image:
+  registry: docker.io
   repository: monotek/gcloud-mysql
   tag: "8"
+  ## Specify a imagePullPolicy
+  ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
+  ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images#
   pullPolicy: IfNotPresent
 
 mysql:
 ## Without a host set, this chart will not do anything as it is expected
 ## to be used only when there's an existing database to backup.
-  host:
+  host: ""
   username: root
+  # overriden by existingDbSecret / existingDbSecretKey if set
   password:
   port: 3306
   # db for single db backup
   db: dbname
+  # Get password from existing secret
+  # existingSecret:
+  # existingSecretKey:
 
-# use --all-databases
+# use --all-databases if enabled
 allDatabases:
   enabled: true
   # creates single backup file with all databases
   singleBackupFile: false
 
-## options to pass to mysqldump
+# options to pass to mysqldump
 options: "--opt --single-transaction"
+
+# save sql backup to a directory named like the database or "alldatabases"
+saveToDirectory: false
+
+# if to dump all databases to stdout when not uploading
+dumpAllToStdout: false
 
 ## set to `now` to get a one time job, or a cronjob schedule like `0 0 * * *`
 ## to get a cronjob.
 schedule: "0 3 * * *"
 
-## enable some debug options
+# enable some debug options
 debug: false
 
-## cronjob history
+# cronjob history
 successfulJobsHistoryLimit: 5
 failedJobsHistoryLimit: 5
+
+# additional steps for mysqldump shell script
+# will be inserted after all backup and upload jobs completed successfully.
+# Use "${BACKUP_DIR}/${TIMESTAMP}_${MYSQL_DB}.sql.gz" as dump file name.
+# see examples
+additionalSteps: []
+#  - gsutil cp "${BACKUP_DIR}/${TIMESTAMP}_${MYSQL_DB}.sql.gz" gs://mybucket/latest.sql.gz
+#  - echo "latest sql dump updated"
 
 ## set persistentVolumeClaim to use a PVC that already exists.
 ## if set will override any settings under `persistence` otherwise
@@ -55,7 +77,7 @@ persistence:
   ##
   # storageClass: "-"
 
-# delete backups older than 10 days
+# delete old backups
 housekeeping:
   enabled: true
   keepDays: 10
@@ -76,6 +98,7 @@ upload:
     # serviceAccountName
     # usingGCPController to enable autogeneration and injection of the service account
     usingGCPController: false
+
   ssh:
     enabled: false
     user: backup

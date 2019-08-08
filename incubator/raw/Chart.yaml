@@ -1,8 +1,11 @@
+apiVersion: v1
 name: raw
 home: https://github.com/helm/charts/blob/master/incubator/raw
-version: 0.1.0
-appVersion: 0.1.0
+version: 0.2.3
+appVersion: 0.2.3
 description: A place for all the Kubernetes resources which don't already have a home.
 maintainers:
 - name: josdotso
   email: josdotso@cisco.com
+- name: mumoshu
+  email: ykuoka@gmail.com

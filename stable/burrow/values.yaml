@@ -1,6 +1,6 @@
 image:
   repository: hyperledger/burrow
-  tag: 0.23.3
+  tag: 0.25.1
   pullPolicy: IfNotPresent
 
 chain:
@@ -8,14 +8,67 @@ chain:
   logLevel: info
   extraSeeds: []
   testing: false
+  restore:
+    enabled: false
+    dumpURL: ""
+
+config:
+  BurrowDir: ".burrow"
+  Tendermint:
+    Seeds: ""
+    SeedMode: false
+    ListenHost: "0.0.0.0"
+    ListenPort: "26656"
+    ExternalAddress: ""
+    Moniker: ""
+  Keys:
+    GRPCServiceEnabled: true
+    AllowBadFilePermissions: true
+    RemoteAddress: ""
+    KeysDirectory: "/keys"
+  RPC:
+    Info:
+      Enabled: true
+      ListenHost: "0.0.0.0"
+      ListenPort: "26658"
+    Profiler:
+      Enabled: false
+      ListenHost: "0.0.0.0"
+      ListenPort: "6060"
+    GRPC:
+      Enabled: true
+      ListenHost: "0.0.0.0"
+      ListenPort: "10997"
+    Metrics:
+      Enabled: true
+      ListenHost: "0.0.0.0"
+      ListenPort: "9102"
+      MetricsPath: "/metrics"
+      BlockSampleSize: 100
+  Logging:
+    ExcludeTrace: true
+    NonBlocking: true
+    RootSink:
+      Output:
+        OutputType: "stderr"
+        Format: "json"
 
 validatorAddresses:
   Validator_0:
     Address: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
     NodeAddress: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 
-env: {}
+contracts:
+  # wait required to ensure chain readiness
+  enabled: false
+  image: ""
+  tag: ""
+  deploy: ""
+
 extraArgs: {}
+environment:
+  inline: {}
+  secrets: []
 
 organization: "user"
 
@@ -29,15 +82,12 @@ persistence:
 peer:
   service:
     type: ClusterIP
-    port: 26656
   ingress:
     enabled: false
     hosts: []
 
-rpcGRPC:
-  enabled: true
+grpc:
   service:
-    port: 10997
     type: ClusterIP
     loadBalance: true
   ingress:
@@ -46,10 +96,8 @@ rpcGRPC:
     annotations: {}
     tls: {}
 
-rpcInfo:
-  enabled: true
+info:
   service:
-    port: 26658
     type: ClusterIP
     loadBalance: true
   ingress:
@@ -61,16 +109,6 @@ rpcInfo:
     annotations: {}
     hosts: []
     tls: {}
-
-rpcMetrics:
-  enabled: true
-  port: 9102
-  path: /metrics
-  blockSampleSize: 100
-
-rpcProfiler:
-  enabled: false
-  port: 6060
 
 # resources:
 #   limits:

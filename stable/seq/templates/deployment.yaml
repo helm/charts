@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "seq.fullname" . }}
@@ -25,6 +25,10 @@ spec:
           env:
             - name: "ACCEPT_EULA"
               value: "{{ .Values.acceptEULA }}"
+{{- if .Values.baseURI }}
+            - name: "BASE_URI"
+              value: "{{ .Values.baseURI }}"
+{{- end }}
           ports:
             - name: ingestion
               containerPort: 5341
@@ -32,21 +36,35 @@ spec:
             - name: ui
               containerPort: 80
               protocol: TCP
+          {{- if .Values.livenessProbe.enabled }}
           livenessProbe:
             httpGet:
               path: /
               port: ui
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+            successThreshold: {{ .Values.livenessProbe.successThreshold }}
+            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+          {{- end }}
+          {{- if .Values.readinessProbe.enabled }}
           readinessProbe:
             httpGet:
               path: /
               port: ui
+            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+            successThreshold: {{ .Values.readinessProbe.successThreshold }}
+            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+          {{- end }}
+          volumeMounts:
+          - name: seq-data
+            mountPath: {{ .Values.persistence.path }}
+            subPath: {{ .Values.persistence.subPath }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}
-          volumeMounts:
-            - name: seq-data
-              mountPath: {{ .Values.persistence.path }}
-              subPath: {{ .Values.persistence.subPath }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
     {{- end }}
@@ -58,7 +76,7 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
-    volumes:
+      volumes:
       - name: seq-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:

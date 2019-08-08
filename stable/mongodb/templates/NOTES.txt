@@ -19,7 +19,7 @@
 
 MongoDB can be accessed via port 27017 on the following DNS name from within your cluster:
 
-    {{ template "mongodb.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+    {{ template "mongodb.fullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}
 
 {{ if .Values.usePassword -}}
 
@@ -62,5 +62,14 @@ To connect to your database from outside the cluster execute the following comma
 
     kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "mongodb.fullname" . }} 27017:27017 &
     mongo --host 127.0.0.1 {{- if .Values.usePassword }} --authenticationDatabase admin -p $MONGODB_ROOT_PASSWORD{{- end }}
+
+{{- end }}
+
+{{- include "mongodb.validateValues" . -}}
+
+{{- if and (contains "bitnami/" .Values.image.repository) (not (.Values.image.tag | toString | regexFind "-r\\d+$|sha256:")) }}
+
+WARNING: Rolling tag detected ({{ .Values.image.repository }}:{{ .Values.image.tag }}), please note that it is strongly recommended to avoid using rolling tags in a production environment.
++info https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/
 
 {{- end }}

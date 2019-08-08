@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "datadog.confd.fullname" . }}
+  name: {{ template "datadog.fullname" . }}-confd
   labels:
     app: "{{ template "datadog.fullname" . }}"
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
@@ -18,8 +18,8 @@ override duplicates
 */}}
 {{- if .Values.datadog.autoconf }}
 {{ tpl (toYaml .Values.datadog.autoconf) . | indent 2 }}
-{{- end -}}
+{{- end }}
 {{- if .Values.datadog.confd }}
 {{ tpl (toYaml .Values.datadog.confd) . | indent 2 }}
-{{- end -}}
+{{- end }}
 {{- end -}}

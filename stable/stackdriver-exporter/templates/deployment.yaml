@@ -28,13 +28,37 @@ spec:
 {{ toYaml .Values.annotations | indent 8 }}
 {{- end }}
     spec:
+{{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+{{- end }}
+      serviceAccount: {{ template "stackdriver-exporter.serviceAccountName" . }}
       restartPolicy: {{ .Values.restartPolicy }}
+      volumes:
+      {{- if .Values.stackdriver.serviceAccountSecret }}
+        - name: stackdriver-service-account
+          secret:
+            secretName: {{ .Values.stackdriver.serviceAccountSecret | quote }}
+      {{- else if .Values.stackdriver.serviceAccountKey }}
+        - name: stackdriver-service-account
+          secret:
+            secretName: {{ template "stackdriver-exporter.fullname" . }}
+      {{- end}}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["stackdriver_exporter"]
+          volumeMounts:
+          {{- if or .Values.stackdriver.serviceAccountSecret .Values.stackdriver.serviceAccountKey }}
+            - name: stackdriver-service-account
+              mountPath: /etc/secrets/service-account/
+          {{- end}}
           env:
+          {{- if or .Values.stackdriver.serviceAccountSecret .Values.stackdriver.serviceAccountKey }}
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: /etc/secrets/service-account/credentials.json
+          {{- end }}
             - name: STACKDRIVER_EXPORTER_GOOGLE_PROJECT_ID
               value: {{ .Values.stackdriver.projectId | quote }}
             - name: STACKDRIVER_EXPORTER_MONITORING_METRICS_TYPE_PREFIXES
@@ -74,3 +98,12 @@ spec:
               port: http
             initialDelaySeconds: 10
             timeoutSeconds: 10
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+{{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+    {{- end }}
+

@@ -1,8 +1,11 @@
-## Global Docker image registry
-## Please, note that this will override the image registry for all the images, including dependencies, configured to use the global value
+## Global Docker image parameters
+## Please, note that this will override the image parameters, including dependencies, configured to use the global value
+## Current available global Docker image parameters: imageRegistry and imagePullSecrets
 ##
 # global:
-#   imageRegistry:
+#   imageRegistry: myRegistryName
+#   imagePullSecrets:
+#     - myRegistryKeySecretName
 
 slack:
   enabled: true
@@ -29,6 +32,9 @@ webhook:
   enabled: false
   # url: ""
 
+# namespace to watch, leave it empty for watching all.
+namespaceToWatch: ""
+
 # Resources to watch
 resourcesToWatch:
   deployment: true
@@ -43,8 +49,22 @@ resourcesToWatch:
 image:
   registry: "docker.io"
   repository: "bitnami/kubewatch"
-  tag: "0.0.4"
+  tag: "0.0.4-debian-9-r269"
   pullPolicy: "Always"
+  ## Optionally specify an array of imagePullSecrets.
+  ## Secrets must be manually created in the namespace.
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  ##
+  # pullSecrets:
+  #   - myRegistryKeySecretName
+
+## String to partially override kubewatch.fullname template (will maintain the release name)
+##
+# nameOverride:
+
+## String to fully override kubewatch.fullname template
+##
+# fullnameOverride:
 
 rbac:
   # If true, create & use RBAC resources

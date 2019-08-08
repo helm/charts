@@ -108,7 +108,7 @@ The container has the document root mounted at `/var/www/html` and the database 
 $ /entrypoint.sh mysqld &
 ```
 
-If another flavor of DB is used ([mariadb](https://hub.docker.com/_/mariadb/) or [percona](https://hub.docker.com/_/percona/)) then the repository and tag need to be pointing to the right container.
+If another flavor of DB is used ([mariadb](https://hub.docker.com/_/mariadb/) or [percona](https://hub.docker.com/_/percona/)) then the image needs to be pointing to the right container.
 
 After setting up your DB backup you can stop the database by executing
 ```console
@@ -129,8 +129,8 @@ $ im-done
 | Parameter | Description | Default |
 | - | - | - |
 | `init.manually.enabled` | Enables container for manual initialization | false |
-| `init.manually.repository` | Containers repository | lead4good/init-wp |
-| `init.manually.tag` | Repository tag | latest |
+| `init.manually.repository` | Containers image | lead4good/init-wp |
+| `init.manually.tag` | Containers image tag | latest |
 | `init.manually.pullPolicy` | Image pull policy | Always |
 
 ### Cloning charts
@@ -148,24 +148,26 @@ If `init.clone.release` is set to the fullname of an existing, already running L
 
 ### PHP and HTTPD Containers
 
-The PHP container is at the heart of the LAMP chart. By default, the LAMP chart uses the official PHP container from docker hub with PHP version 7.1. You can also use your own PHP container, which needs to have the official PHP container at its base.
+The PHP container is at the heart of the LAMP chart. By default, the LAMP chart uses the official PHP container from docker hub. You can also use your own PHP container, which needs to have the official PHP container at its base.
 FPM is enabled by default, this creates an additional HTTPD container which routes PHP request via FCGI to the PHP container. Set `php.fpmEnabled` to false to work with the official `php:apache` image.
 
 > **Note**: If you are using a custom container, be sure to use the official `php:apache` or `php:fpm` containers at its base and set `php.fpmEnabled` accordingly
 
 | Parameter | Description | Default |
 | - | - | - |
-| `php.version` | default php repository version, you can specify a different version like 5 or 7.0 | 7 |
-| `php.repository` | If not empty, repository is chosen over default php repo | _empty_ |
-| `php.tag` | Repository tag | _empty_ |
+| `php.repository` | default php image | php |
+| `php.tag` | default php image tag | 7-fpm-alpine |
 | `php.pullPolicy` | Image pull policy | Always |
-| `php.fpmEnabled` | Enables docker FPM repository, be sure to disable if working with a custom repository based on the apache tag | true |
+| `php.fpmEnabled` | Enables FPM functionality, be sure to disable if working with a custom repository based on the apache tag | true |
 | `php.sockets` | If FPM is enabled, enables communication between HTTPD and PHP via sockets instead of TCP | true |
 | `php.oldHTTPRoot` | Additionally mounts the webroot at `php.oldHTTPRoot` to compensate for absolute path file links  | _empty_ |
 | `php.ini` | additional PHP config values, see examples on how to use | _empty_ |
+| `php.fpm` | addditonal PHP FPM config values | _empty_ |
 | `php.copyRoot` | if true, copies the containers web root `/var/www/html` into persistent storage. This must be enabled, if the container already comes with files installed to `/var/www/html`  | false |
 | `php.persistentSubpaths` | instead of enabling persistence for the whole webroot, only subpaths of webroot can be enabled for persistence. Have a look at the [nextcloud example](examples/nextcloud.yaml) to see how it works | _empty_ |
 | `php.resources` | PHP container resource requests/limits | `resources` |
+| `httpd.repository` | default httpd image if fpm is enabled | httpd |
+| `httpd.tag` | default httpd image tag | 2.4-alpine |
 | `httpd.resources` | HTTPD container resource requests/limits | `resources` |
 
 ### MySQL Container
@@ -178,8 +180,8 @@ The MySQL container is disabled by default, any container with the base image of
 | `mysql.user` | MySQL user | _empty_ |
 | `mysql.password` | MySQL user password | _empty_ |
 | `mysql.database` | MySQL user database | _empty_ |
-| `mysql.repository` | MySQL repository - choose one of the official [mysql](https://hub.docker.com/_/mysql/), [mariadb](https://hub.docker.com/_/mariadb/) or [percona](https://hub.docker.com/_/percona/) images | mysql |
-| `mysql.tag` | Repository tag | 5.7 |
+| `mysql.repository` | MySQL image - choose one of the official [mysql](https://hub.docker.com/_/mysql/), [mariadb](https://hub.docker.com/_/mariadb/) or [percona](https://hub.docker.com/_/percona/) images | mysql |
+| `mysql.tag` | MySQL image tag | 5.7 |
 | `mysql.imagePullPolicy` | Image pull policy | Always |
 | `mysql.sockets` | Enables communication between MySQL and PHP via sockets instead of TCP | true |
 | `mysql.resources` | Resource requests/limits | `resources` |
@@ -188,8 +190,14 @@ The MySQL container is disabled by default, any container with the base image of
 
 SFTP is an instance of the atmoz/sftp container, through which you can access the webroot.
 
+> **Note**: The webroot is located in the subfolder of the sftp users home directory so putting files into the webroot via sftp have to be put to the web subfolder and the put command will fail if you upload to the root directory since writing permissions are disabled there.
+
+> **Note**: using a different image than the default atmoz/sftp will most probably not work since the containers startup command is overwritten to be able to configure the sftp user, you may however change the tag to a different version without any problems
+
 | Parameter | Description | Default |
 | - | - | - |
+| `sftp.repository` | default sftp image | atmoz/sftp |
+| `sftp.tag` | default sftp image tag | alpine |
 | `sftp.enabled` | Enables sftp service | false |
 | `sftp.port` | Port to advertise service in LoadBalancer mode | 22 |
 | `sftp.nodePort` |  Port to advertise service in Ingress mode| _empty_ |
@@ -244,8 +252,12 @@ If SVN is enabled, the contents of the specified repository will be synchronized
 
 An instance of PHPMyAdmin through which you can access the database.
 
+> **Note**: using a different image than the default phpmyadmin/phpmyadmin image might not work since the containers startup command is overwritten to be able to advertise the http services on `phpmyadmin.port`, you may however change the tag to a different version without any problems
+
 | Parameter | Description | Default |
 | - | - | - |
+| `phpmyadmin.repository` | default phpmyadmin image | phpmyadmin |
+| `phpmyadmin.tag` | default phpmyadmin image tag | phpmyadmin |
 | `phpmyadmin.enabled` | Enables phpmyadmin service | false |
 | `phpmyadmin.port` | Port to advertise service in LoadBalancer mode | 8080 |
 | `phpmyadmin.subdomain` | Subdomain to advertise service on if ingress is enabled | phpmyadmin |

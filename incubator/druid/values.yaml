@@ -1,0 +1,240 @@
+# Default values for druid.
+
+image:
+  repository: maver1ckpl/druid-docker
+  tag: 0.12.3-2
+  pullPolicy: IfNotPresent
+
+env:
+  DRUID_USE_CONTAINER_IP: true
+
+broker:
+  replicaCount: 1
+
+  name: broker
+
+  port: 8082
+  serviceType: ClusterIP
+
+  javaOpts: "-Xms2G -Xmx2G -XX:MaxDirectMemorySize=8g"
+
+  ingress:
+    enabled: false
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    path: /
+    hosts:
+      - chart-example.local
+    tls: []
+    #  - secretName: chart-example-tls
+    #    hosts:
+    #      - chart-example.local
+
+  resources: {}
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+  podAnnotations: {}
+
+coordinator:
+  replicaCount: 1
+
+  name: coordinator
+
+  port: 8081
+  serviceType: ClusterIP
+
+  javaOpts: "-Xms1G -Xmx1G"
+
+  ingress:
+    enabled: false
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    path: /
+    hosts:
+      - chart-example.local
+    tls: []
+    #  - secretName: chart-example-tls
+    #    hosts:
+    #      - chart-example.local
+
+  resources: {}
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+  podAnnotations: {}
+
+overlord:
+  replicaCount: 1
+
+  name: overlord
+
+  port: 8090
+  serviceType: ClusterIP
+
+  javaOpts: "-Xms1G -Xmx1G"
+
+  ingress:
+    enabled: false
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    path: /
+    hosts:
+      - chart-example.local
+    tls: []
+    #  - secretName: chart-example-tls
+    #    hosts:
+    #      - chart-example.local
+
+  resources: {}
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+  podAnnotations: {}
+
+historical:
+  name: historical
+  replicaCount: 1
+  port: 8083
+  serviceType: ClusterIP
+
+  javaOpts: "-Xms2G -Xmx2G -XX:MaxDirectMemorySize=8g"
+
+  ingress:
+    enabled: false
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    path: /
+    hosts:
+      - chart-example.local
+    tls: []
+    #  - secretName: chart-example-tls
+    #    hosts:
+    #      - chart-example.local
+
+  persistence:
+    enabled: true
+    accessMode: ReadWriteOnce
+    size: "4Gi"
+    # storageClass: "ssd"
+
+  antiAffinity: "soft"
+
+  nodeAffinity: {}
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  resources: {}
+
+  ## (dict) If specified, apply these annotations to each master Pod
+  podAnnotations: {}
+  #   example: master-foo
+
+  podDisruptionBudget:
+    enabled: false
+    # minAvailable: 2
+    maxUnavailable: 1
+
+  updateStrategy:
+    type: RollingUpdate
+
+middleManager:
+  name: middle-manager
+  replicaCount: 1
+  port: 8091
+  serviceType: ClusterIP
+
+  javaOpts: "-Xms1G -Xmx1G"
+
+  ingress:
+    enabled: false
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    path: /
+    hosts:
+      - chart-example.local
+    tls: []
+    #  - secretName: chart-example-tls
+    #    hosts:
+    #      - chart-example.local
+
+  persistence:
+    enabled: true
+    accessMode: ReadWriteOnce
+    size: "4Gi"
+    # storageClass: "ssd"
+
+  antiAffinity: "soft"
+
+  nodeAffinity: {}
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  resources: {}
+
+  ## (dict) If specified, apply these annotations to each master Pod
+  podAnnotations: {}
+  #   example: master-foo
+
+  podDisruptionBudget:
+    enabled: false
+    # minAvailable: 2
+    maxUnavailable: 1
+
+  updateStrategy:
+    type: RollingUpdate
+
+
+# ------------------------------------------------------------------------------
+# Zookeeper:
+# ------------------------------------------------------------------------------
+
+# zkHosts: druid-zookeeper-headless:2181
+
+zookeeper:
+  enabled: true
+  ## Environmental variables to set in Zookeeper
+  ##
+  env:
+    ## The JVM heap size to allocate to Zookeeper
+    ZK_HEAP_SIZE: "512M"
+  ## Configure Zookeeper persistence
+  persistence:
+    enabled: true
+
+
+# ------------------------------------------------------------------------------
+# MySQL:
+# ------------------------------------------------------------------------------
+mysql:
+  enabled: true
+  mysqlRootPassword: druidroot
+  mysqlUser: druid
+  mysqlPassword: druid
+  mysqlDatabase: druid
+  configurationFiles:
+    mysql_collate.cnf: |-
+      [mysqld]
+      character-set-server=utf8
+      collation-server=utf8_unicode_ci

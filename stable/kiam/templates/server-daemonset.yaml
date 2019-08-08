@@ -37,6 +37,10 @@ spec:
     {{- end }}
       tolerations:
 {{ toYaml .Values.server.tolerations | indent 8 }}
+      {{- if .Values.server.affinity }}
+      affinity:
+{{ toYaml .Values.server.affinity | indent 10 }}
+      {{- end }}
       volumes:
         - name: tls
           secret:
@@ -49,6 +53,9 @@ spec:
         - name: {{ .name }}
           hostPath:
             path: {{ .hostPath }}
+      {{- end }}
+      {{- if .Values.server.priorityClassName }}
+      priorityClassName: {{ .Values.server.priorityClassName | quote }}
       {{- end }}
       containers:
         - name: {{ template "kiam.name" . }}-{{ .Values.server.name }}

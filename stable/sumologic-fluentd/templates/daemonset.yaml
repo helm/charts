@@ -198,6 +198,9 @@ spec:
             - name: ENABLE_STAT_WATCHER
               value: {{ quote .Values.sumologic.enableStatWatcher }}
             {{- end }}
+{{- if .Values.extraEnv }}
+{{ toYaml .Values.extraEnv | indent 12 }}
+{{- end }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "sumologic-fluentd.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       volumes:
         - name: pos-files
@@ -226,7 +229,15 @@ spec:
         {{- end }}
     {{- if .Values.tolerations }}
       tolerations:
-{{ toYaml .Values.tolerations | indent 8 }}
+    {{ toYaml .Values.tolerations | indent 8 }}
+    {{- end }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+    {{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+    {{ if .Values.affinity }}
+      affinity:
+    {{ toYaml .Values.affinity | indent 8 }}
     {{- end }}
   updateStrategy:
     type: "{{ .Values.updateStrategy }}"

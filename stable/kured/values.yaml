@@ -1,7 +1,6 @@
 image:
-  repository: quay.io/weaveworks/kured
-  # Appears to be without numbered numbered tags, so using this instead
-  tag: 1.1.0
+  repository: weaveworks/kured
+  tag: 1.2.0
   pullPolicy: IfNotPresent
   pullSecrets: []
 
@@ -9,6 +8,9 @@ extraArgs: {}
 
 rbac:
   create: true
+
+podSecurityPolicy:
+  create: false
 
 serviceAccount:
   create: true
@@ -19,6 +21,8 @@ updateStrategy: OnDelete
 tolerations:
   - key: node-role.kubernetes.io/master
     effect: NoSchedule
+
+priorityClassName: ""
 
 nodeSelector: {}
 

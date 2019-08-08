@@ -7,13 +7,23 @@ metadata:
     app: {{ template "prometheus-operator.name" . }}-kube-state-metrics
 {{ include "prometheus-operator.labels" . | indent 4 }}
 spec:
-  jobLabel: app
+  jobLabel: app.kubernetes.io/name
   endpoints:
-  - interval: 30s
-    port: http
+  - port: http
+    {{- if .Values.kubeStateMetrics.serviceMonitor.interval }}
+    interval: {{ .Values.kubeStateMetrics.serviceMonitor.interval }}
+    {{- end }}
     honorLabels: true
+{{- if .Values.kubeStateMetrics.serviceMonitor.metricRelabelings }}
+    metricRelabelings:
+{{ tpl (toYaml .Values.kubeStateMetrics.serviceMonitor.metricRelabelings | indent 4) . }}
+{{- end }}
+{{- if .Values.kubeStateMetrics.serviceMonitor.relabelings }}
+    relabelings:
+{{ toYaml .Values.kubeStateMetrics.serviceMonitor.relabelings | indent 4 }}
+{{- end }}
   selector:
     matchLabels:
-      app: kube-state-metrics
-      release: "{{ .Release.Name }}"
+      app.kubernetes.io/name: kube-state-metrics
+      app.kubernetes.io/instance: "{{ .Release.Name }}"
 {{- end }}

@@ -5,8 +5,9 @@ elasticsearch:
   enabled: true
 
 kibana:
+  enabled: true
   env:
-    ELASTICSEARCH_URL: http://http.default.svc.cluster.local:9200
+    ELASTICSEARCH_HOSTS: http://{{ .Release.Name }}-elasticsearch-client:9200
 
 logstash:
   enabled: true

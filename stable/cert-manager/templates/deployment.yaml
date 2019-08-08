@@ -14,6 +14,10 @@ spec:
     matchLabels:
       app: {{ template "cert-manager.name" . }}
       release: {{ .Release.Name }}
+  {{- with .Values.strategy }}
+  strategy:
+    {{- . | toYaml | nindent 4 }}
+  {{- end }}
   template:
     metadata:
       labels:
@@ -28,6 +32,14 @@ spec:
       {{- end }}
     spec:
       serviceAccountName: {{ template "cert-manager.serviceAccountName" . }}
+      {{- if .Values.global.priorityClassName }}
+      priorityClassName: {{ .Values.global.priorityClassName | quote }}
+      {{- end }}
+      {{- if .Values.securityContext.enabled }}
+      securityContext:
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -59,14 +71,6 @@ spec:
           {{- if .defaultACMEDNS01ChallengeProvider }}
           - --default-acme-issuer-dns01-provider-name={{ .defaultACMEDNS01ChallengeProvider }}
           {{- end }}
-          {{- end }}
-          {{- if .Values.affinity }}
-          affinity:
-{{ toYaml .Values.affinity | indent 10 }}
-          {{- end }}
-          {{- if .Values.tolerations }}
-          tolerations:
-{{ toYaml .Values.tolerations | indent 10 }}
           {{- end }}
           env:
           - name: POD_NAMESPACE

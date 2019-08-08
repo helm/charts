@@ -8,4 +8,4 @@ metadata:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
 data:
-  fluent.conf: {{ toYaml .Values.fluentdConfig | indent 2 }}
+{{ toYaml .Values.data | indent 2 }}

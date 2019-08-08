@@ -1,0 +1,37 @@
+{{- if .Values.testFramework.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "kibana.fullname" . }}-test
+  labels:
+    app: {{ template "kibana.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+data:
+  run.sh: |-
+    @test "Test Status" {
+      {{- if .Values.service.selector }}
+      skip "Can't guarentee pod names with selector"
+      {{- else }}
+      {{- $port := .Values.service.externalPort }}
+      url="http://{{ template "kibana.fullname" . }}{{ if $port }}:{{ $port }}{{ end }}/api{{ .Values.livenessProbe.path }}"
+
+      # retry for 1 minute
+      run curl -s -o /dev/null -I -w "%{http_code}" --retry 30 --retry-delay 2 $url
+
+      code=$(curl -s -o /dev/null -I -w "%{http_code}" $url)
+      body=$(curl $url)
+      if [ "$code" == "503" ]
+      then
+        skip "Kibana Unavailable (503), can't get status - see pod logs: $body"
+      fi
+
+      result=$(echo $body | jq -cr '.status.statuses[]')
+      [ "$result" != "" ]
+
+      result=$(echo $body | jq -cr '.status.statuses[] | select(.state != "green")')
+      [ "$result" == "" ]
+      {{- end }}
+    }
+{{- end }}

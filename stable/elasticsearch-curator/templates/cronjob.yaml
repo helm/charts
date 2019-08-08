@@ -49,6 +49,20 @@ spec:
 {{- if .Values.priorityClassName }}
           priorityClassName: "{{ .Values.priorityClassName }}"
 {{- end }}
+{{- if .Values.image.pullSecret }}
+          imagePullSecrets:
+            - name: {{ .Values.image.pullSecret }}
+{{- end }}
+{{- if .Values.extraInitContainers }}
+          initContainers:
+{{- range $key, $value := .Values.extraInitContainers }}
+          - name: "{{ $key }}"
+{{ toYaml $value | indent 12 }}
+{{- end }}
+{{- end }}
+        {{- if .Values.rbac.enabled }}
+          serviceAccountName: {{ template "elasticsearch-curator.serviceAccountName" .}}
+        {{- end }}
           containers:
             - name: {{ .Chart.Name }}
               image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -58,9 +72,32 @@ spec:
                   mountPath: /etc/es-curator
 {{- if .Values.extraVolumeMounts }}
 {{ toYaml .Values.extraVolumeMounts | indent 16 }}
+{{ end }}
+{{ if .Values.command }}
+              command:
+{{ toYaml .Values.command | indent 16 }}
 {{- end }}
-              command: [ "curator" ]
+{{- if .Values.dryrun }}
+              args: [ "--dry-run", "--config", "/etc/es-curator/config.yml", "/etc/es-curator/action_file.yml" ]
+{{- else }}
               args: [ "--config", "/etc/es-curator/config.yml", "/etc/es-curator/action_file.yml" ]
+{{- end }}
+              env:
+{{- if .Values.env }}
+{{- range $key,$value := .Values.env }}
+              - name: {{ $key | upper | quote}}
+                value: {{ $value | quote}}
+{{- end }}
+{{- end }}
+{{- if .Values.envFromSecrets }}
+{{- range $key,$value := .Values.envFromSecrets }}
+              - name: {{ $key | upper | quote}}
+                valueFrom:
+                  secretKeyRef:
+                    name: {{ $value.from.secret | quote}}
+                    key: {{ $value.from.key | quote}}
+{{- end }}
+{{- end }}
               resources:
 {{ toYaml .Values.resources | indent 16 }}
     {{- with .Values.nodeSelector }}
@@ -73,5 +110,9 @@ spec:
     {{- end }}
     {{- with .Values.tolerations }}
           tolerations:
+{{ toYaml . | indent 12 }}
+    {{- end }}
+    {{- with .Values.securityContext }}
+          securityContext:
 {{ toYaml . | indent 12 }}
     {{- end }}

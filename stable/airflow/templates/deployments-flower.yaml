@@ -25,8 +25,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/configmap-airflow.yaml") . | sha256sum }}
-        configmap.fabric8.io/update-on-change: "{{ template "airflow.fullname" . }}-env"
+        checksum/config-env: {{ include (print $.Template.BasePath "/configmap-env.yaml") . | sha256sum }}
       labels:
         app: {{ template "airflow.name" . }}
         component: flower
@@ -37,6 +36,18 @@ spec:
         - name: {{ .Values.airflow.image.pullSecret }}
       {{- end }}
       restartPolicy: Always
+      {{- if .Values.flower.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.flower.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.flower.affinity }}
+      affinity:
+{{ toYaml .Values.flower.affinity | indent 8 }}
+      {{- end }}
+      {{- if .Values.flower.tolerations }}
+      tolerations:
+{{ toYaml .Values.flower.tolerations | indent 8 }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}-flower
           image: {{ .Values.airflow.image.repository }}:{{ .Values.airflow.image.tag }}
@@ -45,21 +56,7 @@ spec:
             - configMapRef:
                 name: "{{ template "airflow.fullname" . }}-env"
           env:
-            - name: POSTGRES_USER
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "airflow.secret" . }}
-                  key: postgresUser
-            - name: POSTGRES_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "airflow.secret" . }}
-                  key: postgresPassword
-            - name: REDIS_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "airflow.secret" . }}
-                  key: redisPassword
+          {{- include "airflow.mapenvsecrets" . | indent 10 }}
           ports:
             - name: flower
               containerPort: 5555
@@ -74,4 +71,6 @@ spec:
             timeoutSeconds: 1
             successThreshold: 1
             failureThreshold: 5
+          resources:
+{{ toYaml .Values.flower.resources | indent 12 }}
 {{- end }}

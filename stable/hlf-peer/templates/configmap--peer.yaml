@@ -6,12 +6,13 @@ metadata:
 {{ include "labels.standard" . | indent 4 }}
 data:
   CORE_PEER_ADDRESSAUTODETECT: "true"
+  CORE_PEER_ID: {{ .Release.Name }}
   CORE_PEER_NETWORKID: nid1
   # If we have an ingress, we set hostname to it
   {{- if .Values.ingress.enabled }}
   CORE_PEER_ADDRESS: {{ index .Values.ingress.hosts 0 }}:443
   {{- else }}
-  CORE_PEER_ADDRESS: {{ include "hlf-peer.fullname" . }}:7051
+  # Otherwise we use CORE_PEER_ADDRESSAUTODETECT to auto-detect its address
   {{- end }}
   CORE_PEER_LISTENADDRESS: 0.0.0.0:7051
   CORE_PEER_EVENTS_ADDRESS: 0.0.0.0:7053
@@ -24,14 +25,14 @@ data:
   ###########
   # Logging #
   ###########
-  CORE_LOGGING_LEVEL: debug
-  CORE_LOGGING_PEER: debug
-  CORE_LOGGING_CAUTHDSL: debug
-  CORE_LOGGING_GOSSIP: debug
-  CORE_LOGGING_LEDGER: debug
-  CORE_LOGGING_MSP: info
-  CORE_LOGGING_POLICIES: debug
-  CORE_LOGGING_GRPC: debug
+  CORE_LOGGING_LEVEL: {{ .Values.logging.level | quote }}
+  CORE_LOGGING_PEER: {{ .Values.logging.peer | quote }}
+  CORE_LOGGING_CAUTHDSL: {{ .Values.logging.cauthdsl | quote }}
+  CORE_LOGGING_GOSSIP: {{ .Values.logging.gossip | quote }}
+  CORE_LOGGING_LEDGER: {{ .Values.logging.ledger | quote }}
+  CORE_LOGGING_MSP: {{ .Values.logging.msp | quote }}
+  CORE_LOGGING_POLICIES: {{ .Values.logging.policies | quote }}
+  CORE_LOGGING_GRPC: {{ .Values.logging.grpc | quote }}
   ##########
   # Gossip #
   ##########

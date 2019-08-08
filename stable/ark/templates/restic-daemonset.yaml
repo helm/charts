@@ -1,0 +1,92 @@
+{{- if .Values.deployRestic }}
+{{- $provider := .Values.configuration.provider -}}
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: restic
+  labels:
+    app: {{ template "ark.name" . }}
+    chart: {{ template "ark.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  selector:
+    matchLabels:
+      name: restic
+  template:
+    metadata:
+      labels:
+        name: restic
+      {{- with .Values.podAnnotations }}
+      annotations:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+    spec:
+      {{- if .Values.serviceAccount.server.create }}
+      serviceAccountName: {{ template "ark.serverServiceAccount" . }}
+      {{- end }}
+      securityContext:
+        runAsUser: 0
+      volumes:
+        {{- if and .Values.credentials.useSecret (or (eq $provider "aws") (eq $provider "gcp")) }}
+        - name: cloud-credentials
+          secret:
+            secretName: {{ template "ark.secretName" . }}
+        {{- end }}
+        - name: host-pods
+          hostPath:
+            path: /var/lib/kubelet/pods
+        - name: scratch
+          emptyDir: {}
+      containers:
+        - name: ark
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - /ark
+          args:
+            - restic
+            - server
+          volumeMounts:
+            {{- if and .Values.credentials.useSecret (or (eq $provider "aws") (eq $provider "gcp")) }}
+            - name: cloud-credentials
+              mountPath: /credentials
+            {{- end }}
+            - name: host-pods
+              mountPath: /host_pods
+              mountPropagation: HostToContainer
+            - name: scratch
+              mountPath: /scratch
+          {{- if and .Values.credentials.useSecret (eq $provider "azure") }}
+          envFrom:
+            - secretRef:
+                name: {{ template "ark.secretName" . }}
+          {{- end }}
+          env:
+            - name: HEPTIO_ARK_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: ARK_SCRATCH_DIR
+              value: /scratch
+            {{- if eq $provider "aws" }}
+            - name: AWS_SHARED_CREDENTIALS_FILE
+              value: /credentials/cloud
+            {{- end }}
+            {{- if eq $provider "gcp" }}
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: /credentials/cloud
+            {{- end }}
+            {{- if eq $provider "minio" }}
+            - name: AWS_SHARED_CREDENTIALS_FILE
+              value: /credentials/cloud
+            {{- end }}
+          {{- with .Values.resources }}
+          resources:
+{{ toYaml . | indent 12 }}
+          {{- end }}
+{{- end }}
