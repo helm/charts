@@ -73,3 +73,8 @@ serviceAccount:
 affinity: {}
 
 nodeSelector: {}
+
+metrics:
+  serviceMonitor:
+    enabled: false
+    additionalLabels: {}

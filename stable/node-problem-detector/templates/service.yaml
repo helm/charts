@@ -1,8 +1,13 @@
+{{- if .Values.metrics.serviceMonitor.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
-  name: node-problem-detector
+  name: {{ template "node-problem-detector.fullname" . }}
   labels:
+    app.kubernetes.io/name: {{ include "node-problem-detector.name" . }}
+    helm.sh/chart: {{ include "node-problem-detector.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
     app: {{ include "node-problem-detector.name" . }}
   namespace: {{ .Release.Namespace }}
 spec:
@@ -14,4 +19,4 @@ spec:
     protocol: TCP
   selector:
     app: {{ include "node-problem-detector.name" . }}
-
+{{- end }}

@@ -1,10 +1,16 @@
+{{- if .Values.metrics.serviceMonitor.enabled }}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: node-problem-detector
+  name: {{ template "node-problem-detector.fullname" . }}
   labels:
-    app: {{ include "node-problem-detector.name" . }}
-    release: prometheus-operator
+    app.kubernetes.io/name: {{ include "node-problem-detector.name" . }}
+    helm.sh/chart: {{ include "node-problem-detector.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    {{- if .Values.metrics.serviceMonitor.additionalLabels }}
+{{ toYaml .Values.metrics.serviceMonitor.additionalLabels | indent 4 }}
+    {{- end }}
   namespace: {{ .Release.Namespace }}
 spec:
   selector:
@@ -17,3 +23,4 @@ spec:
   - port: exporter
     path: /metrics
     interval: 60s
+{{- end }}
