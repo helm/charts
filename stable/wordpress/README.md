@@ -66,6 +66,7 @@ The following table lists the configurable parameters of the WordPress chart and
 | `wordpressLastName`              | Last name                                                                     | `LastName`                                                   |
 | `wordpressBlogName`              | Blog name                                                                     | `User's Blog!`                                               |
 | `wordpressTablePrefix`           | Table prefix                                                                  | `wp_`                                                        |
+| `wordpressScheme`                | Scheme to generate application URLs [`http`, `https`]                         | `http`                                                       |
 | `allowEmptyPassword`             | Allow DB blank passwords                                                      | `true`                                                       |
 | `allowOverrideNone`              | Set Apache AllowOverride directive to None                                    | `false`                                                      |
 | `customHTAccessCM`               | Configmap with custom wordpress-htaccess.conf directives                      | `nil`                                                        |
