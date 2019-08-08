@@ -118,7 +118,7 @@ airflow:
   ##   - id: my_aws
   ##     type: aws
   ##     extra: '{"aws_access_key_id": "**********", "aws_secret_access_key": "***", "region_name":"eu-central-1"}'
-  connections: {}
+  connections: []
 
   ## Add airflow variables
   ## This should be a json string with your variables in it
