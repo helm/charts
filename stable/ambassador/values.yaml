@@ -216,11 +216,11 @@ pro:
   enabled: false
   image:
     repository: quay.io/datawire/ambassador_pro
-    tag: amb-sidecar-0.5.0
+    tag: amb-sidecar-0.6.0
+  # As of Ambassador Pro 0.6.0, both the RateLimitService and AuthService use the same port
   ports:
     auth: 8500
-    ratelimit: 8501
-    ratelimitDebug: 8502
+    ratelimit: 8500
   logLevel: info
   licenseKey:
     value:
