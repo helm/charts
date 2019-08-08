@@ -1,7 +1,7 @@
 apiVersion: v1
 name: node-problem-detector
-version: "1.5.1"
-appVersion: v0.6.3
+version: "1.5.2"
+appVersion: v0.7.0
 home: https://github.com/kubernetes/node-problem-detector
 description: Installs the node-problem-detector daemonset for monitoring extra attributes on nodes
 icon: https://github.com/kubernetes/kubernetes/raw/master/logo/logo.png
