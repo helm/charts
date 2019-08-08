@@ -307,6 +307,8 @@ metrics:
   ## environment variables to configure rabbitmq_exporter
   ## ref: https://github.com/kbudde/rabbitmq_exporter#configuration
   env: {}
+  ## Metrics exporter port
+  port: 9090
   ## Comma-separated list of extended scraping capabilities supported by the target RabbitMQ server
   ## ref: https://github.com/kbudde/rabbitmq_exporter#extended-rabbitmq-capabilities
   capabilities: "bert,no_sort"
