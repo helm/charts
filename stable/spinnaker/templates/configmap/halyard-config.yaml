@@ -112,6 +112,7 @@ data:
                 --context {{ $context }} {{ if not $.Values.kubeConfig.enabled }}--service-account true{{ end }} \
                 {{ if $.Values.kubeConfig.enabled }}--kubeconfig-file /opt/kube/{{ $.Values.kubeConfig.secretKey }}{{ end }} \
                 {{ if $.Values.kubeConfig.onlySpinnakerManaged.enabled }}--only-spinnaker-managed true{{ end }} \
+                {{ if $.Values.kubeConfig.liveManifestCalls.enabled }}--live-manifest-calls true{{ end }} \
                 --omit-namespaces={{ template "omittedNameSpaces" $ }} --provider-version v2
     {{- end }}
     $HAL_COMMAND config deploy edit --account-name {{ .Values.kubeConfig.deploymentContext }} --type distributed \

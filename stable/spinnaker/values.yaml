@@ -123,6 +123,8 @@ kubeConfig:
   - kube-public
   onlySpinnakerManaged:
     enabled: false
+  liveManifestCalls:
+    enabled: false
 
 # Change this if youd like to expose Spinnaker outside the cluster
 ingress:
