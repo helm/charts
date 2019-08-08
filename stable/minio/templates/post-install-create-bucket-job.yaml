@@ -67,4 +67,6 @@ spec:
           - name: cert-secret-volume-mc
             mountPath: {{ .Values.configPathmc }}certs
           {{ end }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
 {{- end }}
