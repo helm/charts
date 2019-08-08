@@ -23,8 +23,8 @@ data:
 
     # Enable APM by setting the DD_APM_ENABLED envvar to true, or override this configuration
     apm_config:
-      enabled: false
-      apm_non_local_traffic: true
+    {{- .Values.datadog.apmConfig | nindent 6 }}
+
 
     # Use java cgroup memory awareness
     jmx_use_cgroup_memory_limit: true
