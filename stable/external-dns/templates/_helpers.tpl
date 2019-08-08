@@ -37,12 +37,12 @@ app.kubernetes.io/name: {{ template "external-dns.name" . }}
 helm.sh/chart: {{ template "external-dns.chart" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
-{{- end -}}
-
-{{/* matchLabels */}}
 {{- if .Values.podLabels }}
 {{ toYaml .Values.podLabels }}
 {{- end }}
+{{- end -}}
+
+{{/* matchLabels */}}
 {{- define "external-dns.matchLabels" -}}
 app.kubernetes.io/name: {{ template "external-dns.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
