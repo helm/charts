@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: lmierzwa/karma
-  tag: v0.29
+  tag: v0.42
   pullPolicy: IfNotPresent
 
 nameOverride: ""
@@ -59,6 +59,8 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+securityContext: {}
 
 # configuration for liveness probe
 livenessProbe:

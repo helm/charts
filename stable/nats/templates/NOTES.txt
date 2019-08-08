@@ -85,4 +85,14 @@ To access the Monitoring svc from outside the cluster, follow the steps below:
     kubectl port-forward --namespace {{ .Release.Namespace }} {{ template "nats.fullname" . }}-0 {{ .Values.metrics.port }}:{{ .Values.metrics.port }}
 
 4. Access NATS Prometheus metrics by opening the URL obtained in a browser.
+
+{{- end }}
+
+{{- include "nats.validateValues" . -}}
+
+{{- if and (contains "bitnami/" .Values.image.repository) (not (.Values.image.tag | toString | regexFind "-r\\d+$|sha256:")) }}
+
+WARNING: Rolling tag detected ({{ .Values.image.repository }}:{{ .Values.image.tag }}), please note that it is strongly recommended to avoid using rolling tags in a production environment.
++info https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/
+
 {{- end }}

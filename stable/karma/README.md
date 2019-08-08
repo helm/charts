@@ -41,7 +41,7 @@ The following table lists the configurable parameters of the karma chart and the
 |-------------------------------------|----------------------------------------|-------------------------------------------|
 | `replicaCount`                      | Number of replicas                     | `1`                                       |
 | `image.repository`                  | The image to run                       | `lmierzwa/karma`                          |
-| `image.tag`                         | The image tag to pull                  | `v0.29`                                   |
+| `image.tag`                         | The image tag to pull                  | `v0.42`                                   |
 | `image.pullPolicy`                  | Image pull policy                      | `IfNotPresent`                            |
 | `nameOverride`                      | Override name of app                   | ``                                        |
 | `fullnameOverride`                  | Override full name of app              | ``                                        |
@@ -56,6 +56,7 @@ The following table lists the configurable parameters of the karma chart and the
 | `nodeSelector`                      | Settings for nodeselector              | `{}`                                      |
 | `tolerations`                       | Settings for toleration                | `{}`                                      |
 | `affinity`                          | Settings for affinity                  | `{}`                                      |
+| `securityContext`                   | Settings for security context          | `{}`                                      |
 | `serviceAccount.create`             | Create service-account                 | `true`                                    |
 | `serviceAccount.name`               | Override service-account name          | ``                                        |
 | `livenessProbe.delay`               | Specify delay in executing probe       | `5`                                       |

@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Service
+metadata:
+  # Need to append "svc" here because otherwise Kube will make an env var
+  # called GANGWAY_PORT with something like "tcp://100.67.143.54:80" as a value.
+  # The gangway binary then interprets this as a config variable and expects it
+  # to hold the int for the port to listen on. Result = bang!
+  name: {{ include "gangway.fullname" . }}svc
+  labels:
+    app.kubernetes.io/name: {{ include "gangway.name" . }}
+    helm.sh/chart: {{ include "gangway.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.gangway.port }}
+      protocol: TCP
+      name: http
+{{- if and (eq "LoadBalancer" $.Values.service.type) (.Values.service.loadBalancerIP) }}
+  loadBalancerIP: {{ .Values.service.loadBalancerIP }}
+{{- end}}
+  selector:
+    app.kubernetes.io/name: {{ include "gangway.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}

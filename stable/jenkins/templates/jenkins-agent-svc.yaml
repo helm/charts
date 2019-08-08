@@ -2,22 +2,26 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ template "jenkins.fullname" . }}-agent
+  namespace: {{ template "jenkins.namespace" . }}
   labels:
-    app: {{ template "jenkins.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    component: "{{ .Release.Name }}-{{ .Values.Master.Component }}"
-{{- if .Values.Master.SlaveListenerServiceAnnotations }}
+    "app.kubernetes.io/name": '{{ template "jenkins.name" .}}'
+    "helm.sh/chart": "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    "app.kubernetes.io/managed-by": "{{ .Release.Service }}"
+    "app.kubernetes.io/instance": "{{ .Release.Name }}"
+    "app.kubernetes.io/component": "{{ .Values.master.componentName }}"
+{{- if .Values.master.slaveListenerServiceAnnotations }}
   annotations:
-{{ toYaml .Values.Master.SlaveListenerServiceAnnotations | indent 4 }}
+{{ toYaml .Values.master.slaveListenerServiceAnnotations | indent 4 }}
 {{- end }}
 spec:
   ports:
-    - port: {{ .Values.Master.SlaveListenerPort }}
-      targetPort: {{ .Values.Master.SlaveListenerPort }}
-      {{ if (and (eq .Values.Master.SlaveListenerServiceType "NodePort") (not (empty .Values.Master.SlaveListenerPort))) }}
-      nodePort: {{.Values.Master.SlaveListenerPort}}
+    - port: {{ .Values.master.slaveListenerPort }}
+      targetPort: {{ .Values.master.slaveListenerPort }}
+      {{ if (and (eq .Values.master.slaveListenerServiceType "NodePort") (not (empty .Values.master.slaveListenerPort))) }}
+      nodePort: {{.Values.master.slaveListenerPort}}
       {{end}}
       name: slavelistener
   selector:
-    component: "{{ .Release.Name }}-{{ .Values.Master.Component }}"
-  type: {{ .Values.Master.SlaveListenerServiceType }}
+    "app.kubernetes.io/component": "{{ .Values.master.componentName }}"
+    "app.kubernetes.io/instance": "{{ .Release.Name }}"
+  type: {{ .Values.master.slaveListenerServiceType }}

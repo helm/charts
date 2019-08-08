@@ -23,7 +23,10 @@ spec:
         app: {{ template "fluentd.name" . }}
         release: {{ .Release.Name }}
       annotations:
-{{ toYaml .Values.annotations | indent 8 }}
+        checksum/configmap: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{- if .Values.annotations }}
+        {{- toYaml .Values.annotations | nindent 8 }}
+        {{- end }}
     spec:
 {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
@@ -52,6 +55,9 @@ spec:
           - name: {{ $key | quote }}
             value: {{ $value | quote }}
           {{- end }}
+          {{- if .Values.extraEnvVars }}
+{{ toYaml .Values.extraEnvVars | indent 10 }}
+          {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 12 }}
         ports:
@@ -59,6 +65,11 @@ spec:
           - name: {{ $port.name }}
             containerPort: {{ $port.containerPort }}
             protocol: {{ $port.protocol }}
+{{- end }}
+{{- if .Values.metrics.enabled }}
+          - name: metrics
+            containerPort: {{ .Values.metrics.service.port }}
+            protocol: TCP
 {{- end }}
           - name: http-input
             containerPort: 9880

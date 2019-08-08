@@ -12,11 +12,13 @@ spec:
     matchLabels:
       app.kubernetes.io/name: {{ include "node-problem-detector.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
+      app: {{ include "node-problem-detector.name" . }}
   template:
     metadata:
       labels:
         app.kubernetes.io/name: {{ include "node-problem-detector.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
+        app: {{ include "node-problem-detector.name" . }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/custom-config-configmap.yaml") . | sha256sum }}
         scheduler.alpha.kubernetes.io/critical-pod: ''
@@ -37,7 +39,7 @@ spec:
           command:
             - "/bin/sh"
             - "-c"
-            - "exec /node-problem-detector --logtostderr --system-log-monitors={{- range $index, $monitor := .Values.settings.log_monitors }}{{if ne $index 0}},{{end}}{{ $monitor }}{{- end }} {{- if .Values.settings.custom_plugin_monitors }} --custom-plugin-monitors={{- range $index, $monitor := .Values.settings.custom_plugin_monitors }}{{if ne $index 0}},{{end}}{{ $monitor }}{{- end }} {{- end }}"
+            - "exec /node-problem-detector --logtostderr --system-log-monitors={{- range $index, $monitor := .Values.settings.log_monitors }}{{if ne $index 0}},{{end}}{{ $monitor }}{{- end }} {{- if .Values.settings.custom_plugin_monitors }} --custom-plugin-monitors={{- range $index, $monitor := .Values.settings.custom_plugin_monitors }}{{if ne $index 0}},{{end}}{{ $monitor }}{{- end }} {{- end }} --prometheus-address={{ .Values.settings.prometheus_address }} --prometheus-port={{ .Values.settings.prometheus_port }}"
           securityContext:
             privileged: true
           env:
@@ -54,6 +56,9 @@ spec:
             - name: custom-config
               mountPath: /custom-config
               readOnly: true
+          ports:
+            - containerPort: {{ .Values.settings.prometheus_port }}
+              name: exporter
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.affinity }}
@@ -64,6 +69,10 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
       volumes:
         - name: log
           hostPath:

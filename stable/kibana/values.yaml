@@ -4,6 +4,7 @@ image:
   pullPolicy: "IfNotPresent"
 
 testFramework:
+  enabled: "true"
   image: "dduportal/bats"
   tag: "0.4.0"
 
@@ -11,21 +12,33 @@ commandline:
   args: []
 
 env: {}
-  # All Kibana configuration options are adjustable via env vars.
-  # To adjust a config option to an env var uppercase + replace `.` with `_`
-  # Ref: https://www.elastic.co/guide/en/kibana/current/settings.html
-  #
-  # ELASTICSEARCH_URL: http://elasticsearch-client:9200
+  ## All Kibana configuration options are adjustable via env vars.
+  ## To adjust a config option to an env var uppercase + replace `.` with `_`
+  ## Ref: https://www.elastic.co/guide/en/kibana/current/settings.html
+  ## For kibana < 6.6, use ELASTICSEARCH_URL instead
+  # ELASTICSEARCH_HOSTS: http://elasticsearch-client:9200
   # SERVER_PORT: 5601
   # LOGGING_VERBOSE: "true"
   # SERVER_DEFAULTROUTE: "/app/kibana"
+
+envFromSecrets: {}
+  ## Create a secret manually. Reference it here to inject environment variables
+  # ELASTICSEARCH_USERNAME:
+  #   from:
+  #     secret: secret-name-here
+  #     key: ELASTICSEARCH_USERNAME
+  # ELASTICSEARCH_PASSWORD:
+  #   from:
+  #     secret: secret-name-here
+  #     key: ELASTICSEARCH_PASSWORD
 
 files:
   kibana.yml:
     ## Default Kibana configuration from kibana-docker.
     server.name: kibana
     server.host: "0"
-    elasticsearch.url: http://elasticsearch:9200
+    ## For kibana < 6.6, use elasticsearch.url instead
+    elasticsearch.hosts: http://elasticsearch:9200
 
     ## Custom config properties below
     ## Ref: https://www.elastic.co/guide/en/kibana/current/settings.html

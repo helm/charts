@@ -9,8 +9,7 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 {{- if .Values.service.annotations }}
-  annotations:
-{{ toYaml .Values.service.annotations | indent 4 }}
+  annotations: {{ toYaml .Values.service.annotations | nindent 4 }}
 {{- end }}
 spec:
   type: {{ .Values.service.type }}
@@ -20,13 +19,23 @@ spec:
   {{- if and (eq .Values.service.type "LoadBalancer") .Values.service.loadBalancerIP }}
   loadBalancerIP: {{ .Values.service.loadBalancerIP }}
   {{- end }}
-
+  {{- if .Values.service.externalIPs }}
+  externalIPs: {{ toYaml .Values.service.externalIPs | nindent 4 }}
+  {{- end }}
+  {{- if .Values.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges: {{- toYaml .Values.service.loadBalancerSourceRanges | nindent 4 }}
+  {{- end }}
   ports:
   - name: mongodb
     port: 27017
     targetPort: mongodb
 {{- if .Values.service.nodePort }}
     nodePort: {{ .Values.service.nodePort }}
+{{- end }}
+{{- if .Values.metrics.enabled }}
+  - name: metrics
+    port: 9216
+    targetPort: metrics
 {{- end }}
   selector:
     app: {{ template "mongodb.name" . }}

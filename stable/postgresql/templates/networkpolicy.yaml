@@ -16,12 +16,17 @@ spec:
   ingress:
     # Allow inbound connections
     - ports:
-      - port: 5432
+      - port: {{ template "postgresql.port" . }}
     {{- if not .Values.networkPolicy.allowExternal }}
       from:
       - podSelector:
           matchLabels:
             {{ template "postgresql.fullname" . }}-client: "true"
+      - podSelector:
+          matchLabels:
+            app: {{ template "postgresql.name" . }}
+            release: {{ .Release.Name | quote }}
+            role: slave
     {{- end }}
     # Allow prometheus scrapes
     - ports:

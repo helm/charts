@@ -15,7 +15,7 @@ spec:
   type: ClusterIP
   clusterIP: None
   ports:
-    - port: 9100
+    - port: 9571
       targetPort: http
       protocol: TCP
       name: metrics

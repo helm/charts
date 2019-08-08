@@ -1,4 +1,4 @@
-# Generated from 'prometheus.rules' group from https://raw.githubusercontent.com/coreos/prometheus-operator/master/contrib/kube-prometheus/manifests/prometheus-rules.yaml
+# Generated from 'prometheus.rules' group from https://raw.githubusercontent.com/coreos/kube-prometheus/master/manifests/prometheus-rules.yaml
 # Do not change in-place! In order to change this file first read following link:
 # https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
 {{- if and .Values.defaultRules.create .Values.defaultRules.rules.prometheus }}
@@ -82,7 +82,7 @@ spec:
       annotations:
         description: '{{`{{$labels.job}}`}} at {{`{{$labels.instance}}`}} has a corrupted write-ahead log (WAL).'
         summary: Prometheus write-ahead log is corrupted
-      expr: tsdb_wal_corruptions_total{job="{{ $prometheusJob }}",namespace="{{ $namespace }}"} > 0
+      expr: prometheus_tsdb_wal_corruptions_total{job="{{ $prometheusJob }}",namespace="{{ $namespace }}"} > 0
       for: 4h
       labels:
         severity: warning

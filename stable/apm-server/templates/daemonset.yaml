@@ -1,27 +1,26 @@
+{{- if eq .Values.kind "DaemonSet" }}
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: {{ template "apm-server.fullname" . }}
   labels:
-    app: {{ template "apm-server.name" . }}
-    chart: {{ template "apm-server.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ include "apm-server.name" . }}
+    helm.sh/chart: {{ include "apm-server.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   selector:
     matchLabels:
-      app: {{ template "apm-server.name" . }}
-      release: {{ .Release.Name }}
+      app.kubernetes.io/name: {{ include "apm-server.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   minReadySeconds: 10
   updateStrategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxUnavailable: 1
+{{ toYaml .Values.updateStrategy | indent 4 }}
   template:
     metadata:
       labels:
-        app: {{ template "apm-server.name" . }}
-        release: {{ .Release.Name }}
+        app.kubernetes.io/name: {{ include "apm-server.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
         {{-  range $key, $value := .Values.podLabels }}
         {{ $key }}: {{ $value }}
         {{- end }}
@@ -50,7 +49,18 @@ spec:
           value: {{ $value }}
 {{- end }}
         ports:
-          - containerPort: 8200
+          - name: http
+            containerPort: 8200
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: 60
+        readinessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: 60
         securityContext:
           runAsUser: 0
         resources:
@@ -90,3 +100,4 @@ spec:
       affinity:
 {{ toYaml .Values.affinity | indent 8 }}
     {{- end }}
+{{- end }}

@@ -12,3 +12,9 @@ data:
   {{ $key }}: |-
 {{ $value | indent 4 }}
 {{- end }}
+binaryData:
+ {{- range $key, $value := .Values.binaryFiles }}
+   {{ $key }}: |-
+{{ $value | indent 4   }}
+ {{- end }}
+ 

@@ -1,3 +1,4 @@
+{{- if .Values.worker.enabled -}}
 {{- if .Values.rbac.create -}}
 apiVersion: rbac.authorization.k8s.io/{{ .Values.rbac.apiVersion }}
 kind: Role
@@ -18,3 +19,4 @@ rules:
   verbs:
   - use
 {{- end -}}
+{{- end }}

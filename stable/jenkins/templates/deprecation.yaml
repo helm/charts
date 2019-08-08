@@ -1,0 +1,356 @@
+{{- if .Values.checkDeprecation }}
+    {{- if .Values.Master }}
+
+        {{- if .Values.Master.Name }}
+           {{ fail "`Master.Name` does no longer exist. It has been renamed to `master.componentName`" }}
+        {{- end }}
+
+        {{- if .Values.Master.Image }}
+           {{ fail "`Master.Image` does no longer exist. It has been renamed to `master.image`" }}
+        {{- end }}
+
+        {{- if .Values.Master.ImageTag }}
+           {{ fail "`Master.ImageTag` does no longer exist. It has been renamed to `master.tag`" }}
+        {{- end }}
+
+        {{- if .Values.Master.ImagePullPolicy }}
+           {{ fail "`Master.ImagePullPolicy` does no longer exist. It has been renamed to `master.imagePullPolicy`" }}
+        {{- end }}
+
+        {{- if .Values.Master.ImagePullSecret }}
+           {{ fail "`Master.ImagePullPolicy` does no longer exist. It has been renamed to `master.imagePullSecretName`" }}
+        {{- end }}
+
+        {{- if .Values.Master.Component }}
+           {{ fail "`Master.Component` does no longer exist. It has been renamed to `master.componentName`" }}
+        {{- end }}
+
+        {{- if .Values.Master.NumExecutors }}
+           {{ fail "`Master.NumExecutors` does no longer exist. It has been renamed to `master.numExecutors`" }}
+        {{- end }}
+
+        {{- if .Values.Master.UseSecurity }}
+           {{ fail "`Master.UseSecurity` does no longer exist. It has been renamed to `master.useSecurity`" }}
+        {{- end }}
+
+        {{- if .Values.Master.SecurityRealm }}
+           {{ fail "`Master.SecurityRealm` does no longer exist. It has been renamed to `master.securityRealm`" }}
+        {{- end }}
+
+        {{- if .Values.Master.AuthorizationStrategy }}
+           {{ fail "`Master.AuthorizationStrategy` does no longer exist. It has been renamed to `master.authorizationStrategy`" }}
+        {{- end }}
+
+        {{- if .Values.Master.DeploymentLabels }}
+           {{ fail "`Master.DeploymentLabels` does no longer exist. It has been renamed to `master.deploymentLabels`" }}
+        {{- end }}
+
+        {{- if .Values.Master.ServiceLabels }}
+           {{ fail "`Master.ServiceLabels` does no longer exist. It has been renamed to `master.serviceLabels`" }}
+        {{- end }}
+
+        {{- if .Values.Master.PodLabels }}
+           {{ fail "`Master.PodLabels` does no longer exist. It has been renamed to `master.podLabels`" }}
+        {{- end }}
+
+        {{- if .Values.Master.AdminUser }}
+           {{ fail "`Master.AdminUser` does no longer exist. It has been renamed to `master.adminUser`" }}
+        {{- end }}
+
+        {{- if .Values.Master.AdminPassword }}
+           {{ fail "`Master.AdminPassword` does no longer exist. It has been renamed to `master.adminPassword`" }}
+        {{- end }}
+
+        {{- if .Values.Master.AdminSshKey }}
+           {{ fail "`Master.AdminSshKey` does no longer exist. It has been renamed to `master.adminSshKey`" }}
+        {{- end }}
+
+        {{- if .Values.Master.JenkinsAdminEmail }}
+           {{ fail "`Master.JenkinsAdminEmail` does no longer exist. It has been renamed to `master.jenkinsAdminEmail`" }}
+        {{- end }}
+
+        {{- if .Values.Master.JenkinsAdminEmail }}
+           {{ fail "`Master.JenkinsAdminEmail` does no longer exist. It has been renamed to `master.jenkinsAdminEmail`" }}
+        {{- end }}
+
+        {{- if .Values.Master.InitContainerEnv }}
+           {{ fail "`Master.InitContainerEnv` does no longer exist. It has been renamed to `master.initContainerEnv`" }}
+        {{- end }}
+
+        {{- if .Values.Master.ContainerEnv }}
+           {{ fail "`Master.ContainerEnv` does no longer exist. It has been renamed to `master.containerEnv`" }}
+        {{- end }}
+
+        {{- if .Values.Master.UsePodSecurityContext }}
+           {{ fail "`Master.UsePodSecurityContext` does no longer exist. It has been renamed to `master.usePodSecurityContext`" }}
+        {{- end }}
+
+        {{- if .Values.Master.RunAsUser }}
+           {{ fail "`Master.RunAsUser` does no longer exist. It has been renamed to `master.runAsUser`" }}
+        {{- end }}
+
+        {{- if .Values.Master.FsGroup }}
+           {{ fail "`Master.FsGroup` does no longer exist. It has been renamed to `master.fsGroup`" }}
+        {{- end }}
+
+        {{- if .Values.Master.HostAliases }}
+           {{ fail "`Master.HostAliases` does no longer exist. It has been renamed to `master.hostAliases`" }}
+        {{- end }}
+
+        {{- if .Values.Master.ServiceAnnotations }}
+           {{ fail "`Master.ServiceAnnotations` does no longer exist. It has been renamed to `master.serviceAnnotations`" }}
+        {{- end }}
+
+        {{- if .Values.Master.ServiceType }}
+           {{ fail "`Master.ServiceType` does no longer exist. It has been renamed to `master.serviceType`" }}
+        {{- end }}
+
+        {{- if .Values.Master.ServicePort }}
+           {{ fail "`Master.ServicePort` does no longer exist. It has been renamed to `master.servicePort`" }}
+        {{- end }}
+
+        {{- if .Values.Master.NodePort }}
+           {{ fail "`Master.NodePort` does no longer exist. It has been renamed to `master.nodePort`" }}
+        {{- end }}
+
+        {{- if .Values.Master.HealthProbes }}
+           {{ fail "`Master.HealthProbes` does no longer exist. It has been renamed to `master.healthProbes`" }}
+        {{- end }}
+
+        {{- if .Values.Master.HealthProbesLivenessTimeout }}
+           {{ fail "`Master.HealthProbesLivenessTimeout` does no longer exist. It has been renamed to `master.healthProbesLivenessTimeout`" }}
+        {{- end }}
+
+        {{- if .Values.Master.HealthProbesReadinessTimeout }}
+           {{ fail "`Master.HealthProbesReadinessTimeout` does no longer exist. It has been renamed to `master.healthProbesReadinessTimeout`" }}
+        {{- end }}
+
+        {{- if .Values.Master.HealthProbeReadinessPeriodSeconds }}
+           {{ fail "`Master.HealthProbeReadinessPeriodSeconds` does no longer exist. It has been renamed to `master.healthProbeReadinessPeriodSeconds`" }}
+        {{- end }}
+
+        {{- if .Values.Master.HealthProbeLivenessFailureThreshold }}
+           {{ fail "`Master.HealthProbeLivenessFailureThreshold` does no longer exist. It has been renamed to `master.healthProbeLivenessFailureThreshold`" }}
+        {{- end }}
+
+        {{- if .Values.Master.ServiceAnnotations }}
+           {{ fail "`Master.ServiceAnnotations` does no longer exist. It has been renamed to `master.serviceAnnotations`" }}
+        {{- end }}
+
+        {{- if .Values.Master.SlaveListenerPort }}
+           {{ fail "`Master.SlaveListenerPort` does no longer exist. It has been renamed to `master.slaveListenerPort`" }}
+        {{- end }}
+
+        {{- if .Values.Master.SlaveHostPort }}
+           {{ fail "`Master.SlaveHostPort` does no longer exist. It has been renamed to `master.slaveHostPort`" }}
+        {{- end }}
+
+        {{- if .Values.Master.DisabledAgentProtocols }}
+           {{ fail "`Master.DisabledAgentProtocols` does no longer exist. It has been renamed to `master.disabledAgentProtocols`" }}
+        {{- end }}
+
+        {{- if .Values.Master.CSRF }}
+            {{- if .Values.Master.CSRF.DefaultCrumbIssuer.Enabled }}
+               {{ fail "`Master.CSRF.DefaultCrumbIssuer.Enabled` does no longer exist. It has been renamed to `master.csrf.defaultCrumbIssuer.enabled`" }}
+            {{- end }}
+
+            {{- if .Values.Master.CSRF.DefaultCrumbIssuer.ProxyCompatability }}
+               {{ fail "`Master.CSRF.DefaultCrumbIssuer.ProxyCompatability` does no longer exist. It has been renamed to `master.csrf.defaultCrumbIssuer.proxyCompatability`" }}
+            {{- end }}
+        {{- end }}
+
+        {{- if .Values.Master.CLI }}
+           {{ fail "`Master.CLI` does no longer exist. It has been renamed to `master.cli`" }}
+        {{- end }}
+
+        {{- if .Values.Master.LoadBalancerSourceRanges }}
+           {{ fail "`Master.LoadBalancerSourceRanges` does no longer exist. It has been renamed to `master.loadBalancerSourceRanges`" }}
+        {{- end }}
+
+        {{- if .Values.Master.LoadBalancerIP }}
+           {{ fail "`Master.LoadBalancerIP` does no longer exist. It has been renamed to `master.loadBalancerIP`" }}
+        {{- end }}
+
+        {{- if .Values.Master.JMXPort }}
+           {{ fail "`Master.JMXPort` does no longer exist. It has been renamed to `master.jmxPort`" }}
+        {{- end }}
+
+        {{- if .Values.Master.ExtraPorts }}
+           {{ fail "`Master.ExtraPorts` does no longer exist. It has been renamed to `master.extraPorts`" }}
+        {{- end }}
+
+        {{- if .Values.Master.OverwriteConfig }}
+           {{ fail "`Master.OverwriteConfig` does no longer exist. It has been renamed to `master.overwriteConfig`" }}
+        {{- end }}
+
+        {{- if .Values.JCasC }}
+            {{- if .Values.JCasC.ConfigScripts }}
+               {{ fail "`Master.JCasC.ConfigScripts` does no longer exist. It has been renamed to `master.JCasC.configScripts`" }}
+            {{- end }}
+        {{- end }}
+
+        {{- if .Values.Master.Sidecars }}
+            {{- if .Values.Master.Sidecars.configAutoReload }}
+               {{ fail "`Master.Sidecars.configAutoReload` does no longer exist. It has been renamed to `master.sidecars.configAutoReload`" }}
+            {{- end }}
+        {{- end }}
+
+        {{- if .Values.Master.InitScripts }}
+           {{ fail "`Master.InitScripts` does no longer exist. It has been renamed to `master.initScripts`" }}
+        {{- end }}
+
+        {{- if .Values.Master.CredentialsXmlSecret }}
+           {{ fail "`Master.CredentialsXmlSecret` does no longer exist. It has been renamed to `master.credentialsXmlSecret`" }}
+        {{- end }}
+
+        {{- if .Values.Master.SecretsFilesSecret }}
+           {{ fail "`Master.SecretsFilesSecret` does no longer exist. It has been renamed to `master.secretsFilesSecret`" }}
+        {{- end }}
+
+        {{- if .Values.Master.CredentialsXmlSecret }}
+           {{ fail "`Master.CredentialsXmlSecret` does no longer exist. It has been renamed to `master.credentialsXmlSecret`" }}
+        {{- end }}
+
+        {{- if .Values.Master.Jobs }}
+           {{ fail "`Master.Jobs` does no longer exist. It has been renamed to `master.jobs`" }}
+        {{- end }}
+
+        {{- if .Values.Master.InstallPlugins }}
+           {{ fail "`Master.InstallPlugins` does no longer exist. It has been renamed to `master.installPlugins`" }}
+        {{- end }}
+
+        {{- if .Values.Master.OverwritePlugins }}
+           {{ fail "`Master.OverwritePlugins` does no longer exist. It has been renamed to `master.overwritePlugins`" }}
+        {{- end }}
+
+        {{- if .Values.Master.EnableRawHtmlMarkupFormatter }}
+           {{ fail "`Master.EnableRawHtmlMarkupFormatter` does no longer exist. It has been renamed to `master.enableRawHtmlMarkupFormatter`" }}
+        {{- end }}
+
+        {{- if .Values.Master.ScriptApproval }}
+           {{ fail "`Master.ScriptApproval` does no longer exist. It has been renamed to `master.scriptApproval`" }}
+        {{- end }}
+
+        {{- if .Values.Master.NodeSelector }}
+           {{ fail "`Master.NodeSelector` does no longer exist. It has been renamed to `master.nodeSelector`" }}
+        {{- end }}
+
+        {{- if .Values.Master.Affinity }}
+           {{ fail "`Master.Affinity` does no longer exist. It has been renamed to `master.affinity`" }}
+        {{- end }}
+
+        {{- if .Values.Master.PodAnnotations }}
+           {{ fail "`Master.PodAnnotations` does no longer exist. It has been renamed to `master.podAnnotations`" }}
+        {{- end }}
+
+        {{- if .Values.Master.CustomConfigMap }}
+           {{ fail "`Master.CustomConfigMap` does no longer exist. It has been renamed to `master.customConfigMap`" }}
+        {{- end }}
+
+        {{- if .Values.Master.JenkinsUriPrefix }}
+           {{ fail "`Master.JenkinsUriPrefix` does no longer exist. It has been renamed to `master.jenkinsUriPrefix`" }}
+        {{- end }}
+
+        {{- if .Values.Master.PriorityClassName }}
+           {{ fail "`Master.PriorityClassName` does no longer exist. It has been renamed to `master.priorityClassName`" }}
+        {{- end }}
+
+        {{ fail "Master.* values have been renamed, please check the documentation" }}
+    {{- end }}
+
+
+    {{- if .Values.NetworkPolicy }}
+
+        {{- if .Values.NetworkPolicy.Enabled }}
+           {{ fail "`NetworkPolicy.Enabled` does no longer exist. It has been renamed to `networkPolicy.enabled`" }}
+        {{- end }}
+
+        {{- if .Values.NetworkPolicy.ApiVersion }}
+           {{ fail "`NetworkPolicy.ApiVersion` does no longer exist. It has been renamed to `networkPolicy.apiVersion`" }}
+        {{- end }}
+
+        {{ fail "NetworkPolicy.* values have been renamed, please check the documentation" }}
+    {{- end }}
+
+
+    {{- if .Values.rbac.install }}
+       {{ fail "`rbac.install` does no longer exist. It has been renamed to `rbac.create` and is enabled by default!" }}
+    {{- end }}
+
+    {{- if .Values.rbac.serviceAccountName }}
+       {{ fail "`rbac.serviceAccountName` does no longer exist. It has been renamed to `serviceAccount.name`" }}
+    {{- end }}
+
+    {{- if .Values.rbac.serviceAccountAnnotations }}
+       {{ fail "`rbac.serviceAccountAnnotations` does no longer exist. It has been renamed to `serviceAccount.annotations`" }}
+    {{- end }}
+
+    {{- if .Values.rbac.roleRef }}
+       {{ fail "`rbac.roleRef` does no longer exist. RBAC roles are now generated, please check the documentation" }}
+    {{- end }}
+
+    {{- if .Values.rbac.roleKind }}
+       {{ fail "`rbac.roleKind` does no longer exist. RBAC roles are now generated, please check the documentation" }}
+    {{- end }}
+
+    {{- if .Values.rbac.roleBindingKind }}
+       {{ fail "`rbac.roleBindingKind` does no longer exist. RBAC roles are now generated, please check the documentation" }}
+    {{- end }}
+
+
+    {{- if .Values.Agent }}
+        {{- if .Values.Agent.AlwaysPullImage }}
+           {{ fail "`Agent.AlwaysPullImage` does no longer exist. It has been renamed to `agent.alwaysPullImage`" }}
+        {{- end }}
+
+        {{- if .Values.Agent.CustomJenkinsLabels }}
+           {{ fail "`Agent.CustomJenkinsLabels` does no longer exist. It has been renamed to `agent.customJenkinsLabels`" }}
+        {{- end }}
+
+        {{- if .Values.Agent.Enabled }}
+           {{ fail "`Agent.Enabled` does no longer exist. It has been renamed to `agent.enabled`" }}
+        {{- end }}
+
+        {{- if .Values.Agent.Image }}
+           {{ fail "`Agent.Image` does no longer exist. It has been renamed to `agent.image`" }}
+        {{- end }}
+
+        {{- if .Values.Agent.ImagePullSecret }}
+           {{ fail "`Agent.ImagePullSecret` does no longer exist. It has been renamed to `agent.imagePullSecret`" }}
+        {{- end }}
+
+        {{- if .Values.Agent.ImageTag }}
+           {{ fail "`Agent.ImageTag` does no longer exist. It has been renamed to `agent.imageTag`" }}
+        {{- end }}
+
+        {{- if .Values.Agent.Privileged }}
+           {{ fail "`Agent.Privileged` does no longer exist. It has been renamed to `agent.privileged`" }}
+        {{- end }}
+
+        {{- if .Values.Agent.Command }}
+           {{ fail "`Agent.Command` does no longer exist. It has been renamed to `agent.command`" }}
+        {{- end }}
+
+        {{- if .Values.Agent.Args }}
+           {{ fail "`Agent.Args` does no longer exist. It has been renamed to `agent.args`" }}
+        {{- end }}
+
+        {{- if .Values.Agent.SideContainerName }}
+           {{ fail "`Agent.SideContainerName` does no longer exist. It has been renamed to `agent.sideContainerName`" }}
+        {{- end }}
+
+        {{- if .Values.Agent.ContainerCap }}
+           {{ fail "`Agent.ContainerCap` does no longer exist. It has been renamed to `agent.containerCap`" }}
+        {{- end }}
+
+        {{- if .Values.Agent.PodName }}
+           {{ fail "`Agent.PodName` does no longer exist. It has been renamed to `agent.podName`" }}
+        {{- end }}
+
+       {{ fail "Agent.* values have been renamed, please check the documentation" }}
+    {{- end }}
+
+    {{- if .Values.Persistence }}
+       {{ fail "Persistence.* values have been renamed, please check the documentation" }}
+    {{- end }}
+{{- end }}

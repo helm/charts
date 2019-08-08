@@ -16,8 +16,9 @@ spec:
         app: {{ template "elasticsearch.name" . }}
         component: "{{ .Values.client.name }}"
         release: {{ .Release.Name }}
-        {{- if .Values.client.podAnnotations }}
       annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{- if .Values.client.podAnnotations }}
 {{ toYaml .Values.client.podAnnotations | indent 8 }}
         {{- end }}
     spec:
@@ -62,6 +63,9 @@ spec:
 {{- if .Values.client.tolerations }}
       tolerations:
 {{ toYaml .Values.client.tolerations | indent 8 }}
+{{- end }}
+{{- if .Values.client.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ .Values.client.terminationGracePeriodSeconds }}
 {{- end }}
 {{- if or .Values.extraInitContainers .Values.sysctlInitContainer.enabled .Values.cluster.plugins }}
       initContainers:
@@ -121,6 +125,10 @@ spec:
           initialDelaySeconds: 90
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+        {{- if .Values.securityContext.enabled }}
+        securityContext:
+          runAsUser: {{ .Values.securityContext.runAsUser }}
+        {{- end }}
         ports:
         - containerPort: 9200
           name: http
@@ -149,6 +157,29 @@ spec:
           mountPath: "/usr/share/elasticsearch/config/elasticsearch.keystore"
           subPath: elasticsearch.keystore
           readOnly: true
+{{- end }}
+{{- if .Values.client.hooks.preStop }}
+        - name: config
+          mountPath: /client-pre-stop-hook.sh
+          subPath: client-pre-stop-hook.sh
+{{- end }}
+{{- if .Values.client.hooks.postStart }}
+        - name: config
+          mountPath: /client-post-start-hook.sh
+          subPath: client-post-start-hook.sh
+{{- end }}
+{{- if or .Values.client.hooks.preStop .Values.client.hooks.postStart }}
+        lifecycle:
+  {{- if .Values.client.hooks.preStop }}
+          preStop:
+            exec:
+              command: ["/bin/bash","/client-pre-stop-hook.sh"]
+  {{- end }}
+  {{- if .Values.client.hooks.postStart }}
+          postStart:
+            exec:
+              command: ["/bin/bash","/client-post-start-hook.sh"]
+  {{- end }}
 {{- end }}
 {{- if .Values.image.pullSecrets }}
       imagePullSecrets:

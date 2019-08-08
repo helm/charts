@@ -1,3 +1,4 @@
+{{- if .Values.worker.enabled -}}
 ## A Headless Service is required when using a StatefulSet
 ## ref: https://kubernetes.io/docs/tutorials/stateful-application/basic-stateful-set/
 ##
@@ -19,3 +20,4 @@ spec:
   ports: []
   selector:
     app: {{ template "concourse.worker.fullname" . }}
+{{- end }}
