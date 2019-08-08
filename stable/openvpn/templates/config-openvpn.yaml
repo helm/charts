@@ -36,6 +36,20 @@ data:
       nobind
       dev tun
       remote ${MY_IP_ADDR} {{ .Values.service.externalPort }} {{ .Values.openvpn.OVPN_PROTO }}
+      proto tcp
+      sndbuf 0
+      rcvbuf 0
+      comp-lzo
+      resolv-retry infinite
+      persist-key
+      persist-tun
+      remote-cert-tls server
+      auth SHA512
+      cipher AES-256-CBC
+      setenv opt block-outside-dns
+      key-direction 1
+      verb 3
+      auth-nocache
       {{- if .Values.openvpn.redirectGateway }}
       redirect-gateway def1
       {{- end }}
@@ -92,6 +106,15 @@ data:
       keepalive 10 60
       persist-key
       persist-tun
+      topology subnet
+      sndbuf 0
+      rcvbuf 0
+      comp-lzo
+      auth SHA512
+      # tls-auth ta.key 0
+      cipher AES-256-CBC
+      explicit-exit-notify 0
+      auth-nocache
 
       proto {{ .Values.openvpn.OVPN_PROTO }}
       port  {{ .Values.service.internalPort }}
