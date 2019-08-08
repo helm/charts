@@ -2,7 +2,15 @@
 
 1. Get the JasperReports URL:
 
-{{- if contains "NodePort" .Values.service.type }}
+{{- if .Values.ingress.enabled }}
+
+  You should be able to access your new JasperReports installation through
+
+  {{- range .Values.ingress.hosts }}
+  {{ if .tls }}https{{ else }}http{{ end }}://{{ .name }}/jasperserver/
+  {{- end }}
+
+{{- else if contains "NodePort" .Values.service.type }}
 
   export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "jasperreports.fullname" . }})
   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
@@ -21,14 +29,6 @@
 
   echo "JasperReports URL: http://127.0.0.1:8080/jasperserver/"
   kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "jasperreports.fullname" . }} 8080:{{ .Values.service.port }}
-
-{{- else if .Values.ingress.enabled }}
-
-  You should be able to access your new JasperReports installation through
-
-  {{- range .Values.ingress.hosts }}
-  {{ if .tls }}https{{ else }}http{{ end }}://{{ .name }}/jasperserver/
-  {{- end }}
 
 {{- end }}
 
