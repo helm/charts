@@ -70,6 +70,11 @@ wordpressBlogName: User's Blog!
 ##
 wordpressTablePrefix: wp_
 
+## Scheme to generate application URLs
+## ref: https://github.com/bitnami/bitnami-docker-wordpress#environment-variables
+##
+wordpressScheme: http
+
 ## Skip wizard installation (only if you use an external database that already contains WordPress data)
 ## ref: https://github.com/bitnami/bitnami-docker-wordpress#connect-wordpress-docker-container-to-an-existing-database
 ##
