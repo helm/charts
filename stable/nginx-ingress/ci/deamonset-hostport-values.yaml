@@ -1,7 +1,0 @@
-controller:
-  kind: DaemonSet
-  daemonset:
-    useHostPort: true
-    hostPorts:
-      http: 58462
-      https: 58463
