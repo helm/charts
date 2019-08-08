@@ -67,7 +67,7 @@
     - name: DD_CLUSTER_AGENT_AUTH_TOKEN
       valueFrom:
         secretKeyRef:
-          name: {{ template "datadog.fullname" . }}-cluster-agent
+          name: {{ if not .Values.clusterAgent.tokenExistingSecret }}{{ template "datadog.fullname" . }}-cluster-agent{{ else }}"{{ .Values.clusterAgent.tokenExistingSecret }}"{{ end }}
           key: token
     {{- end }}
     {{- if .Values.datadog.podLabelsAsTags }}

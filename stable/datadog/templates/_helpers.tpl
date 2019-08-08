@@ -49,6 +49,14 @@ Return secret name to be used based on provided values.
 {{- end -}}
 
 {{/*
+Return secret name to be used based on provided values.
+*/}}
+{{- define "clusterAgent.tokenSecretName" -}}
+{{- $fullName := include "datadog.fullname" . -}}
+{{- default $fullName .Values.clusterAgent.tokenExistingSecret | quote -}}
+{{- end -}}
+
+{{/*
 Return the appropriate apiVersion for RBAC APIs.
 */}}
 {{- define "rbac.apiVersion" -}}
