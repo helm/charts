@@ -62,7 +62,7 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `env`                              | Any additional environment variables for ambassador pods                        | `{}`                              |
 | `image.pullPolicy`                 | Ambassador image pull policy                                                    | `IfNotPresent`                    |
 | `image.repository`                 | Ambassador image                                                                | `quay.io/datawire/ambassador`     |
-| `image.tag`                        | Ambassador image tag                                                            | `0.72.0`                          |
+| `image.tag`                        | Ambassador image tag                                                            | `0.74.1`                          |
 | `imagePullSecrets`                 | Image pull secrets                                                              | `[]`                              |
 | `namespace.name`                   | Set the `AMBASSADOR_NAMESPACE` environment variable                             | `metadata.namespace`              |
 | `scope.singleNamespace`            | Set the `AMBASSADOR_SINGLE_NAMESPACE` environment variable and create namespaced RBAC if `rbac.enabled: true` | `false`                           |
@@ -93,10 +93,9 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `volumes`                          | Volumes for the ambassador service                                              | `[]`                              |
 | `pro.enabled`                      | Installs the Ambassador Pro container as a sidecar to Ambassador                | `false`                           |
 | `pro.image.repository`             | Ambassador Pro image                                                            | `quay.io/datawire/ambassador_pro` |
-| `pro.image.tag`                    | Ambassador Pro image tag                                                        | `amb-sidecar-0.4.0`               |
+| `pro.image.tag`                    | Ambassador Pro image tag                                                        | `amb-sidecar-0.6.0`               |
 | `pro.ports.auth`                   | Ambassador Pro authentication port                                              | `8500`                            |
-| `pro.ports.ratelimit`              | Ambassador Pro ratelimit port                                                   | `8501`                            |
-| `pro.ports.ratelimitDebug`         | Debug port for Ambassador Pro ratelimit                                         | `8502`                            |
+| `pro.ports.ratelimit`              | Ambassador Pro ratelimit port                                                   | `8500`                            |
 | `pro.licenseKey.value`             | License key for Ambassador Pro                                                  | ""                                |
 | `pro.licenseKey.secret`            | Stores the license key as a base64-encoded string in a Kubernetes secret        | `false`                           |
 | `autoscaling.enabled`              | If true, creates Horizontal Pod Autoscaler                                      | `false`                           |
@@ -110,18 +109,15 @@ The following tables lists the configurable parameters of the Ambassador chart a
 
 Ambassador configuration is done through annotations on Kubernetes services or Custom Resource Definitions (CRDs). The `service.annotations` section of the values file contains commented out examples of [Ambassador Module](https://www.getambassador.io/reference/core/ambassador) and a global [TLSContext](https://www.getambassador.io/reference/core/tls) configurations which are typically created in the Ambassador service.
 
-If you intend to use `service.annotations`, remember to include the `getambassador.io/config` annotation key as above,
-and remember that you'll have to escape newlines. For example, the annotation above could be defined as
-
-```
-service.annotations: { "getambassador.io/config": "---\napiVersion: ambassador/v1\nkind: Module\nname: ambassador\nconfig:\n  service_port: 8080" }
-```
+If you intend to use `service.annotations`, remember to include the `getambassador.io/config` annotation key as above.
 
 ### Ambassador Pro
 
 Setting `pro.enabled: true` will install Ambassador Pro as a sidecar to Ambassador with the required CRDs and redis instance.
 
 You must set the `pro.licenseKey.value` to the license key issued to you. Sign up for a [free trial](https://www.getambassador.io/pro/free-trial) of Ambassador Pro or [contact](https://www.getambassador.io/contact) our sales team to obtain a license key.
+
+`pro.ports.auth` and `pro.ports.ratelimit` must be the same value. If changing one, you must change the other.
 
 For most use cases, `pro.image` and `pro.ports` can be left as default.
 

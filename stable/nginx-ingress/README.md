@@ -71,14 +71,15 @@ Parameter | Description | Default
 `controller.autoscaling.enabled` | If true, creates Horizontal Pod Autoscaler | false
 `controller.autoscaling.minReplicas` | If autoscaling enabled, this field sets minimum replica count | `2`
 `controller.autoscaling.maxReplicas` | If autoscaling enabled, this field sets maximum replica count | `11`
-`controller.autoscaling.targetCPUUtilizationPercentage` | Target CPU utilization percentage to scale | `50`
-`controller.autoscaling.targetMemoryUtilizationPercentage` | Target memory utilization percentage to scale | `50`
+`controller.autoscaling.targetCPUUtilizationPercentage` | Target CPU utilization percentage to scale | `"50"`
+`controller.autoscaling.targetMemoryUtilizationPercentage` | Target memory utilization percentage to scale | `"50"`
 `controller.daemonset.useHostPort` | If `controller.kind` is `DaemonSet`, this will enable `hostPort` for TCP/80 and TCP/443 | false
 `controller.daemonset.hostPorts.http` | If `controller.daemonset.useHostPort` is `true` and this is non-empty, it sets the hostPort | `"80"`
 `controller.daemonset.hostPorts.https` | If `controller.daemonset.useHostPort` is `true` and this is non-empty, it sets the hostPort | `"443"`
 `controller.daemonset.hostPorts.stats` | If `controller.daemonset.useHostPort` is `true` and this is non-empty, it sets the hostPort | `"18080"`
 `controller.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `controller.affinity` | node/pod affinities (requires Kubernetes >=1.6) | `{}`
+`controller.terminationGracePeriodSeconds` | how many seconds to wait before terminating a pod | `60`
 `controller.minReadySeconds` | how many seconds a pod needs to be ready before killing the next, during update | `0`
 `controller.nodeSelector` | node labels for pod assignment | `{}`
 `controller.podAnnotations` | annotations to be added to pods | `{}`
@@ -149,6 +150,9 @@ Parameter | Description | Default
 `controller.customTemplate.configMapKey` | configMap key containing the nginx template | `""`
 `controller.headers` | configMap key:value pairs containing the [custom headers](https://github.com/kubernetes/ingress-nginx/tree/master/docs/examples/customization/custom-headers) for Nginx | `{}`
 `controller.updateStrategy` | allows setting of RollingUpdate strategy | `{}`
+`controller.configMapNamespace` | The nginx-configmap namespace name | `""`
+`controller.tcp.configMapNamespace` | The tcp-services-configmap namespace name | `""`
+`controller.udp.configMapNamespace` | The udp-services-configmap namespace name | `""`
 `defaultBackend.enabled` | Use default backend component | `true`
 `defaultBackend.name` | name of the default backend component | `default-backend`
 `defaultBackend.image.repository` | default backend container image repository | `k8s.gcr.io/defaultbackend-amd64`
