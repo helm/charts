@@ -3,7 +3,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Release.Name }}-kong-custom-dbless-config
+  name: {{ template "kong.dblessConfig.fullname" . }}
   labels:
     app: {{ template "kong.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"

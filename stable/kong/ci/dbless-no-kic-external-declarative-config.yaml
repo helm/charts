@@ -1,0 +1,9 @@
+# CI test for testing dbless deployment without ingress controllers
+ingressController:
+  enabled: false
+env:
+  database: "off"
+postgresql:
+  enabled: false
+dblessConfig:
+  configMap: test-declarative-config

@@ -396,21 +396,10 @@ dblessConfig:
   config:
     _format_version: "1.1"
     services:
-      - name: version
-        url: http://example.com
-        routes:
-        - name: version
-          paths:
-          - /version
-        plugins:
-        - name: request-termination
-          config:
-            status_code: 200
-            message: "dbless-config"
-      # Example httpbin
-      # - name: httpbin.org
-      #   url: https://httpbin.org/
+      # Example configuration
+      # - name: example.com
+      #   url: http://example.com
       #   routes:
-      #   - name: httpbin.org
+      #   - name: example
       #     paths:
-      #     - "/httpbin"
+      #     - "/example"
