@@ -1,0 +1,14 @@
+{{- if .Values.freshclamConfig -}}
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ include "clamav.fullname" . }}-freshclam
+  labels:
+    app: {{ template "clamav.name" . }}
+    chart: {{ template "clamav.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  freshclam.conf:
+    {{ toYaml .Values.freshclamConfig | indent 4 }}
+{{- end }}
