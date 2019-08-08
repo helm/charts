@@ -40,6 +40,9 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
 
 {{/* matchLabels */}}
+{{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels }}
+{{- end }}
 {{- define "external-dns.matchLabels" -}}
 app.kubernetes.io/name: {{ template "external-dns.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
