@@ -60,7 +60,6 @@ Parameter | Description | Default
 `replicaCount` | desired number of pods | `1` ???
 `resources` | pod resource requests & limits | `{}`
 `priorityClassName` | priorityClassName | `nil`
-`serviceAccountName` | Name of the service account used by fluentd | `default`
 `service.ports` | port definition for the service | See [values.yaml](values.yaml)
 `service.type` | type of service | `ClusterIP`
 `service.annotations` | list of annotations for the service | `{}`
