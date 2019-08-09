@@ -174,8 +174,11 @@ spec:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
         - name: nextcloud-data
-          mountPath: /var/www/html/
+          mountPath: /var/www/
           subPath: root
+        - name: nextcloud-data
+          mountPath: /var/www/html
+          subPath: html
         - name: nextcloud-data
           mountPath: {{ .Values.nextcloud.datadir }}
           subPath: data
