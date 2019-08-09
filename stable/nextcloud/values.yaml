@@ -200,7 +200,7 @@ cronjob:
     # requests:
     #  cpu: 100m
     #  memory: 128Mi
-  
+
   # If not set, nextcloud deployment one will be set
   # nodeSelector: {}
 
