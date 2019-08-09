@@ -175,7 +175,7 @@ redis:
 cronjob:
   enabled: false
   # Nexcloud image is used as default but only curl is needed
-  # image:
+  image: {}
     # repository: nextcloud
     # tag: 16.0.3-apache
     # pullPolicy: IfNotPresent
