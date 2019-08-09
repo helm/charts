@@ -70,6 +70,7 @@ data:
     [http]
       enabled = {{ .Values.config.http.enabled }}
       bind-address = ":{{ .Values.config.http.bind_address }}"
+      flux-enabled = {{ .Values.config.http.flux_enabled }}
       auth-enabled = {{ .Values.config.http.auth_enabled }}
       log-enabled = {{ .Values.config.http.log_enabled }}
       write-tracing = {{ .Values.config.http.write_tracing }}
