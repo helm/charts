@@ -16,6 +16,11 @@ spec:
   - name: amqp
     port: {{ .Values.service.port }}
     targetPort: amqp
+{{- if .Values.rabbitmq.ssl.enabled }}
+  - name: amqp-ssl
+    port: {{ .Values.service.port_ssl }}
+    targetPort: amqp-ssl
+{{ end }}
   - name: dist
     port: {{ .Values.service.distPort }}
     targetPort: dist
