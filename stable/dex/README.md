@@ -59,10 +59,12 @@ In order to upgrade, please update your values file and uninstall/reinstall the 
 
 ## Configuration
 
-The following table lists parameters introduced in v2.0.0
+Parameters introduced starting from v2
 
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
+| `certs.grpc.pod.annotations` | Annotations for the pod created by the `grpc-certs` job | `{}` |
+| `certs.web.pod.annotations` | Annotations for the pod created by the `web-certs` job | `{}` |
 | `grpc` | Enable dex grpc endpoint | `true` |
 | `https` | Enable TLS termination for the dex http endpoint | `false` |
 | `ports.web.containerPort` | http/https port listened by the dex | `5556` |
