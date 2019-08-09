@@ -193,6 +193,11 @@ spec:
           mountPath: /var/www/html/config/{{ $key }}
           subPath: {{ $key }}
         {{- end }}
+        {{- range $key, $value := .Values.nextcloud.phpConfigs }}
+        - name: nextcloud-phpconfig
+          mountPath: /usr/local/etc/php/conf.d/{{ $key }}
+          subPath: {{ $key }}
+        {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -217,4 +222,9 @@ spec:
       - name: nextcloud-config
         configMap:
           name: {{ template "nextcloud.fullname" . }}-config
+      {{- end }}
+      {{- if .Values.nextcloud.phpConfigs }}
+      - name: nextcloud-phpconfig
+        configMap:
+          name: {{ template "nextcloud.fullname" . }}-phpconfig
       {{- end }}
