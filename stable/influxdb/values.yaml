@@ -185,6 +185,7 @@ config:
     enabled: true
     bind_address: 8086
     auth_enabled: false
+    flux_enabled: true
     log_enabled: true
     write_tracing: false
     pprof_enabled: true
