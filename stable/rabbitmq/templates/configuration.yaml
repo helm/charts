@@ -16,7 +16,16 @@ data:
     default_pass=CHANGEME
 {{ .Values.rabbitmq.configuration | indent 4 }}
 {{ .Values.rabbitmq.extraConfiguration | indent 4 }}
+{{- if .Values.rabbitmq.ssl.enabled }}
+    ssl_options.verify={{ .Values.rabbitmq.ssl.ssl_options_verify }}
+    listeners.ssl.default={{ .Values.service.port_ssl }}
+    ssl_options.fail_if_no_peer_cert={{ .Values.rabbitmq.ssl.fail_if_no_peer_cert }}
+    ssl_options.cacertfile = /opt/bitnami/rabbitmq/certs/ca_certificate.pem
+    ssl_options.certfile = /opt/bitnami/rabbitmq/certs/server_certificate.pem
+    ssl_options.keyfile = /opt/bitnami/rabbitmq/certs/server_key.pem
+{{ end }}
 {{ if .Values.rabbitmq.advancedConfiguration}}
   advanced.config: |-
 {{ .Values.rabbitmq.advancedConfiguration | indent 4 }}
 {{ end }}   
+{{ end }}

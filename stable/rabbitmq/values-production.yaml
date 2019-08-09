@@ -146,6 +146,15 @@ rabbitmq:
   ## Use this as additional configuraton in classic config format (Erlang term configuration format)
   advancedConfiguration: |-
 
+  ## Enable encryption to rabbitmq
+  ssl:
+    enabled: false
+    fail_if_no_peer_cert: true
+    ca_certificate: |-
+    server_certificate: |-
+    server_key: |-
+
+
 ## Kubernetes service type
 service:
   type: ClusterIP
@@ -154,10 +163,18 @@ service:
   ##
   # nodePort: 30672
 
+  ## Node port ssl
+  ##
+  # nodePort_ssl: 30671
+
   ## Amqp port
   ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
   ##
   port: 5672
+
+  ## Amqp ssl port
+  ##
+  port_ssl: 5671
 
   ## Dist port
   ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables

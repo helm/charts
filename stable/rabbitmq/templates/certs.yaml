@@ -1,0 +1,18 @@
+{{- if .Values.rabbitmq.ssl.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "rabbitmq.fullname" . }}-cert-config
+  labels:
+    app: {{ template "rabbitmq.name" . }}
+    chart: {{ template "rabbitmq.chart" .  }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+  ca_certificate.pem:
+    {{ .Values.rabbitmq.ssl.ca_certificate | quote }}
+  server_certificate.pem:
+    {{ .Values.rabbitmq.ssl.server_certificate | quote  }}
+  server_key.pem:
+    {{ .Values.rabbitmq.ssl.server_key | quote  }}
+{{ end }}
