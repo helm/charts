@@ -32,10 +32,16 @@ spec:
             app.kubernetes.io/managed-by: {{ .Release.Service }}
         spec:
           restartPolicy: Never
+          {{- if (default .Values.image.pullSecrets .Values.cronjob.image.pullSecrets) }}
+          imagePullSecrets:
+          {{- range (default .Values.image.pullSecrets .Values.cronjob.image.pullSecrets) }}
+            - name: {{ . }}
+          {{- end }}
+          {{- end }}
           containers:
             - name: {{ .Chart.Name }}
-              image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-              imagePullPolicy: {{ .Values.image.pullPolicy }}
+              image: "{{ default .Values.image.repository .Values.cronjob.image.repository }}:{{ default .Values.image.tag .Values.cronjob.image.tag }}"
+              imagePullPolicy: {{ default .Values.image.pullPolicy .Values.cronjob.image.pullPolicy }}
               command: [ "curl" ]
               args:
                 - "--fail"

@@ -156,6 +156,13 @@ redis:
 ##
 cronjob:
   enabled: false
+  # Nexcloud image is used as default but only curl is needed
+  # image:
+    # repository: nextcloud
+    # tag: 16.0.3-apache
+    # pullPolicy: IfNotPresent
+    # pullSecrets:
+    #   - myRegistrKeySecretName
   # Every 15 minutes
   # Note: Setting this to any any other value than 15 minutes might
   #  cause issues with how nextcloud background jobs are executed
