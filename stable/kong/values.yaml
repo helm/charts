@@ -253,6 +253,9 @@ runMigrations: true
 
 # Specify Kong configurations
 # Kong configurations guide https://getkong.org/docs/latest/configuration/
+# Values here take precedence over values from other sections of values.yaml,
+# e.g. setting pg_user here will override the value normally set when postgresql.enabled
+# is set below. In general, you should not set values here if they are set elsewhere.
 env:
   database: postgres
   proxy_access_log: /dev/stdout
