@@ -22,8 +22,8 @@ spec:
   jobTemplate:
     metadata:
       labels:
-        app: {{ include "nextcloud.name" . }}
-        release: {{ .Release.Name }}
+        app.kubernetes.io/name: {{ include "nextcloud.name" . }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
     spec:
       template:
         metadata:
