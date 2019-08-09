@@ -228,3 +228,6 @@ spec:
         configMap:
           name: {{ template "nextcloud.fullname" . }}-phpconfig
       {{- end }}
+      # Will mount configuration files as www-data (id: 33) for nextcloud
+      securityContext:
+        fsGroup: 33
