@@ -51,16 +51,16 @@ spec:
                 - "http://{{ .Values.nextcloud.host }}/cron.php"
               {{- end }}
               resources:
-{{ toYaml .Values.resources | indent 16 }}
-    {{- with .Values.nodeSelector }}
+{{ toYaml (default .Values.resources .Values.cronjob.resources) | indent 16 }}
+    {{- with (default .Values.nodeSelector .Values.cronjob.nodeSelector) }}
           nodeSelector:
 {{ toYaml . | indent 12 }}
     {{- end }}
-    {{- with .Values.affinity }}
+    {{- with (default .Values.affinity .Values.cronjob.affinity) }}
           affinity:
 {{ toYaml . | indent 12 }}
     {{- end }}
-    {{- with .Values.tolerations }}
+    {{- with (default .Values.tolerations .Values.cronjob.tolerations) }}
           tolerations:
 {{ toYaml . | indent 12 }}:
     {{- end }}
