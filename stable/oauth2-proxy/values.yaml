@@ -41,6 +41,9 @@ image:
 
 extraArgs: {}
 
+# Add extra environment variables to the deployment, for example "http_proxy" for firewalled environments.
+extraEnv: {}
+
 # To authorize individual email addresses
 # That is part of extraArgs but since this needs special treatment we need to do a separate section
 authenticatedEmailsFile:
