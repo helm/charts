@@ -27,5 +27,4 @@ data:
 {{ if .Values.rabbitmq.advancedConfiguration}}
   advanced.config: |-
 {{ .Values.rabbitmq.advancedConfiguration | indent 4 }}
-{{ end }}   
 {{ end }}
