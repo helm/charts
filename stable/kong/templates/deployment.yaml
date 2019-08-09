@@ -135,7 +135,6 @@ spec:
         {{- end }}
         {{- include "kong.license" . | nindent 8 }}
         {{- end }}
-        {{- include "kong.env" .  | indent 8 }}
         - name: KONG_NGINX_HTTP_INCLUDE
           value: /kong/servers.conf
         {{- if .Values.postgresql.enabled }}
@@ -153,6 +152,7 @@ spec:
         - name: KONG_CASSANDRA_CONTACT_POINTS
           value: {{ template "kong.cassandra.fullname" . }}
         {{- end }}
+        {{- include "kong.env" .  | indent 8 }}
         ports:
         - name: admin
           containerPort: {{ .Values.admin.containerPort }}
