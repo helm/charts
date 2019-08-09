@@ -4,8 +4,8 @@ metadata:
   labels:
     app: {{ template "mongodb-replicaset.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service  | trunc 63 | trimSuffix "-" }}
+    release: {{ .Release.Name | trunc 63 | trimSuffix "-" }}
   name: {{ template "mongodb-replicaset.fullname" . }}-test
   annotations:
     "helm.sh/hook": test-success

@@ -8,7 +8,7 @@ metadata:
     app: {{ template "mongodb-replicaset.name" . }}
     chart: {{ template "mongodb-replicaset.chart" . }}
     heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    release: {{ .Release.Name | trunc 63 | trimSuffix "-" }}
 {{- if .Values.extraLabels }}
 {{ toYaml .Values.extraLabels | indent 4 }}
 {{- end }}
@@ -22,4 +22,4 @@ spec:
   publishNotReadyAddresses: true
   selector:
     app: {{ template "mongodb-replicaset.name" . }}
-    release: {{ .Release.Name }}
+    release: {{ .Release.Name | trunc 63 | trimSuffix "-" }}

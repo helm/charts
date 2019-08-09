@@ -5,7 +5,7 @@ metadata:
     app: {{ template "mongodb-replicaset.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    release: {{ .Release.Name | trunc 63 | trimSuffix "-" }}
   name: {{ template "mongodb-replicaset.fullname" . }}-tests
 data:
   mongodb-up-test.sh: |

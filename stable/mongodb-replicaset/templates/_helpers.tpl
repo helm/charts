@@ -61,3 +61,19 @@ Create the name for the key secret.
         {{- template "mongodb-replicaset.fullname" . -}}-keyfile
     {{- end -}}
 {{- end -}}
+
+{{/*
+Create the name for the client full name.
+*/}}
+{{- define "mongodb-replicaset.truncForSuffix" -}}
+    {{- if .Values.fullnameOverride -}}
+        {{- .Values.fullnameOverride | trunc (int (sub 63 (len .suffix))) | trimSuffix "-" -}}{{ .suffix }}
+    {{- else -}}
+        {{- $name := default .Chart.Name .Values.nameOverride -}}
+        {{- if contains $name .Release.Name -}}
+            {{- .Release.Name | trunc (int (sub 63 (len .suffix))) | trimSuffix "-" -}}{{ .suffix }}
+        {{- else -}}
+            {{- printf "%s-%s" .Release.Name $name | trunc (int (sub 63 (len .suffix))) | trimSuffix "-" -}}{{ .suffix }}
+        {{- end -}}
+    {{- end -}}
+{{- end -}}
