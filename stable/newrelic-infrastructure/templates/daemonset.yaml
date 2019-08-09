@@ -4,6 +4,7 @@ kind: DaemonSet
 metadata:
   labels: {{ include "newrelic.labels" . | indent 4 }}
   name: {{ template "newrelic.fullname" . }}
+  namespace: {{ .Release.Namespace }}
 spec:
   updateStrategy:
     type: {{ .Values.updateStrategy }}
@@ -13,6 +14,7 @@ spec:
       release: {{.Release.Name }}
   template:
     metadata:
+      namespace: {{ .Release.Namespace }}
     {{- if .Values.podAnnotations }}
       annotations:
 {{ toYaml .Values.podAnnotations | indent 8}}

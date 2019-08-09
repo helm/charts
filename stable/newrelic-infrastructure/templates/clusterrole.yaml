@@ -4,6 +4,7 @@ kind: ClusterRole
 metadata:
   labels: {{ include "newrelic.labels" . | indent 4 }}
   name: {{ template "newrelic.fullname" . }}
+  namespace: {{ .Release.Namespace }}
 rules:
   - apiGroups: [""]
     resources:
