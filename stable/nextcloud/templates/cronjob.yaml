@@ -45,6 +45,7 @@ spec:
               command: [ "curl" ]
               args:
                 - "--fail"
+                - "-L"
               {{- if .Values.ingress.tls }}
                 - "https://{{ .Values.nextcloud.host }}/cron.php"
               {{- else }}
