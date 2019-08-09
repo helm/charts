@@ -24,7 +24,7 @@ forceNameSpaced: "false"
 
 mic:
   image: mic
-  tag: 1.5-rc3
+  tag: 1.5.1
   component: mic
 
   # log level. Uses V logs (glog)
@@ -53,7 +53,7 @@ mic:
 
 nmi:
   image: nmi
-  tag: 1.5-rc3
+  tag: 1.5.1
   component: nmi
 
   # We usually recommend not to specify default resources and to leave this as a conscious
