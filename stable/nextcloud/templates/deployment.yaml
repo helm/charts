@@ -199,11 +199,13 @@ spec:
           mountPath: /var/www/html/config/{{ $key }}
           subPath: {{ $key }}
         {{- end }}
+        {{- if .Values.nextcloud.configs }}
         {{- range $key, $value := .Values.nextcloud.defaultConfigs }}
         {{- if $value }}
         - name: nextcloud-config
           mountPath: /var/www/html/config/{{ $key }}
           subPath: {{ $key }}
+        {{- end }}
         {{- end }}
         {{- end }}
         {{- range $key, $value := .Values.nextcloud.phpConfigs }}
