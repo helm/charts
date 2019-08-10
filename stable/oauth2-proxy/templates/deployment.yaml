@@ -66,9 +66,8 @@ spec:
           - --htpasswd-file=/etc/oauth2_proxy/htpasswd/users.txt
         {{- end }}
         env:
-        {{- range $key, $value := .Values.extraEnv }}
-        - name: {{ $key }}
-          value: {{ $value | quote }}
+        {{- if .Values.extraEnv }}
+        {{ toYaml .Values.extraEnv | indent 10 }}
         {{- end }}
         - name: OAUTH2_PROXY_CLIENT_ID
           valueFrom:
