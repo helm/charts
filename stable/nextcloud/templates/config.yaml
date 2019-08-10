@@ -13,4 +13,115 @@ data:
   {{ $key }}: |-
 {{ $value | indent 4 }}
 {{- end }}
+{{- if .Values.nextcloud.defaultConfigs }}
+{{- if index .Values.nextcloud.defaultConfigs ".htaccess" }}
+  .htaccess: |-
+    # line below if for Apache 2.4
+    <ifModule mod_authz_core.c>
+    Require all denied
+    </ifModule>
+    # line below if for Apache 2.2
+    <ifModule !mod_authz_core.c>
+    deny from all
+    </ifModule>
+    # section for Apache 2.2 and 2.4
+    <ifModule mod_autoindex.c>
+    IndexIgnore *
+    </ifModule>
+{{- end }}
+{{- if index .Values.nextcloud.defaultConfigs "redis.config.php" }}
+  redis.config.php: |-
+    <?php
+    if (getenv('REDIS_HOST')) {
+      $CONFIG = array (
+        'memcache.distributed' => '\OC\Memcache\Redis',
+        'memcache.locking' => '\OC\Memcache\Redis',
+        'redis' => array(
+          'host' => getenv('REDIS_HOST'),
+          'port' => getenv('REDIS_HOST_PORT') ?: 6379,
+        ),
+      );
+    }
+{{- end }}
+{{- if index .Values.nextcloud.defaultConfigs "apache-pretty-urls.config.php" }}
+  apache-pretty-urls.config.php: |-
+    <?php
+    $CONFIG = array (
+      'htaccess.RewriteBase' => '/',
+    );
+{{- end }}
+{{- if index .Values.nextcloud.defaultConfigs "apcu.config.php" }}
+  apcu.config.php: |-
+    <?php
+    $CONFIG = array (
+      'memcache.local' => '\OC\Memcache\APCu',
+    );
+{{- end }}
+{{- if index .Values.nextcloud.defaultConfigs "apps.config.php" }}
+  apps.config.php: |-
+    <?php
+    $CONFIG = array (
+      "apps_paths" => array (
+          0 => array (
+                  "path"     => OC::$SERVERROOT."/apps",
+                  "url"      => "/apps",
+                  "writable" => false,
+          ),
+          1 => array (
+                  "path"     => OC::$SERVERROOT."/custom_apps",
+                  "url"      => "/custom_apps",
+                  "writable" => true,
+          ),
+      ),
+    );
+{{- end }}
+{{- if index .Values.nextcloud.defaultConfigs "autoconfig.php" }}
+  autoconfig.php: |-
+    <?php
+    $autoconfig_enabled = false;
+    if (getenv('SQLITE_DATABASE')) {
+        $AUTOCONFIG["dbtype"] = "sqlite";
+        $AUTOCONFIG["dbname"] = getenv('SQLITE_DATABASE');
+        $autoconfig_enabled = true;
+    } elseif (getenv('MYSQL_DATABASE') && getenv('MYSQL_USER') && getenv('MYSQL_PASSWORD') && getenv('MYSQL_HOST')) {
+        $AUTOCONFIG["dbtype"] = "mysql";
+        $AUTOCONFIG["dbname"] = getenv('MYSQL_DATABASE');
+        $AUTOCONFIG["dbuser"] = getenv('MYSQL_USER');
+        $AUTOCONFIG["dbpass"] = getenv('MYSQL_PASSWORD');
+        $AUTOCONFIG["dbhost"] = getenv('MYSQL_HOST');
+        $autoconfig_enabled = true;
+    } elseif (getenv('POSTGRES_DB') && getenv('POSTGRES_USER') && getenv('POSTGRES_PASSWORD') && getenv('POSTGRES_HOST')) {
+        $AUTOCONFIG["dbtype"] = "pgsql";
+        $AUTOCONFIG["dbname"] = getenv('POSTGRES_DB');
+        $AUTOCONFIG["dbuser"] = getenv('POSTGRES_USER');
+        $AUTOCONFIG["dbpass"] = getenv('POSTGRES_PASSWORD');
+        $AUTOCONFIG["dbhost"] = getenv('POSTGRES_HOST');
+        $autoconfig_enabled = true;
+    }
+    if ($autoconfig_enabled) {
+        if (getenv('NEXTCLOUD_TABLE_PREFIX')) {
+            $AUTOCONFIG["dbtableprefix"] = getenv('NEXTCLOUD_TABLE_PREFIX');
+        }
+        $AUTOCONFIG["directory"] = getenv('NEXTCLOUD_DATA_DIR') ?: "/var/www/html/data";
+    }
+{{- end }}
+{{- if index .Values.nextcloud.defaultConfigs "smtp.config.php" }}
+  smtp.config.php: |-
+    <?php
+    if (getenv('SMTP_HOST') && getenv('MAIL_FROM_ADDRESS') && getenv('MAIL_DOMAIN')) {
+      $CONFIG = array (
+        'mail_smtpmode' => 'smtp',
+        'mail_smtphost' => getenv('SMTP_HOST'),
+        'mail_smtpport' => getenv('SMTP_PORT') ?: (getenv('SMTP_SECURE') ? 465 : 25),
+        'mail_smtpsecure' => getenv('SMTP_SECURE') ?: '',
+        'mail_smtpauth' => getenv('SMTP_NAME') && getenv('SMTP_PASSWORD'),
+        'mail_smtpauthtype' => getenv('SMTP_AUTHTYPE') ?: 'LOGIN',
+        'mail_smtpname' => getenv('SMTP_NAME') ?: '',
+        'mail_smtppassword' => getenv('SMTP_PASSWORD') ?: '',
+        'mail_from_address' => getenv('MAIL_FROM_ADDRESS'),
+        'mail_domain' => getenv('MAIL_DOMAIN'),
+      );
+    }
+{{- end }}
+{{- end }}
 {{- end }}
