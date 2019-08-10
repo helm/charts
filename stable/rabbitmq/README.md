@@ -77,10 +77,18 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `rabbitmq.configuration`             | Required cluster configuration                   | See values.yaml                                         |
 | `rabbitmq.extraConfiguration`        | Extra configuration to add to rabbitmq.conf      | See values.yaml                                         |
 | `rabbitmq.advancedConfiguration`     | Extra configuration (in classic format) to add to advanced.config    | See values.yaml                                         |
+| `rabbitmq.ssl.enabled`                  | Enable ssl support to rabbitmq |                     |
+| `rabbitmq.ssl.fail_if_no_peer_cert`     | `true`  | When set to true, TLS connection will be rejected if client fails to provide a certificate |
+| `rabbitmq.ssl.ssl_options_verify`     | `verify_peer`  | Should [peer verification](https://www.rabbitmq.com/ssl.html#peer-verification) be enabled? |
+| `rabbitmq.ssl.ca_certificate`     | Ca certificate  | Certificate Authority (CA) bundle content |
+| `rabbitmq.ssl.server_certificate`     | Server certificate  | Server certificate content |
+| `rabbitmq.ssl.server_key`     | Server Key  | Server private key content |
 | `service.type`                       | Kubernetes Service type                          | `ClusterIP`                                             |
 | `service.port`                       | Amqp port                                        | `5672`                                                  |
+| `service.port_ssl`                   | Amqp ssl port                                    | `5671`                                                  |
 | `service.distPort`                   | Erlang distribution server port                  | `25672`                                                 |
 | `service.nodePort`                   | Node port override, if serviceType NodePort      | _random available between 30000-32767_                  |
+| `service.nodePort_ssl`               | Node port override, if serviceType NodePort      | _random available between 30000-32767_                  |
 | `service.managerPort`                | RabbitMQ Manager port                            | `15672`                                                 |
 | `persistence.enabled`                | Use a PVC to persist data                        | `true`                                                  |
 | `service.annotations`                | service annotations as an array                  | []                                                      |
@@ -284,7 +292,7 @@ $ helm install --set persistence.existingClaim=PVC_NAME rabbitmq
 
 ### To 6.0.0
 
-This new version updates the RabbitMQ image to a [new version based on bash instead of node.js](https://github.com/bitnami/bitnami-docker-rabbitmq#3715-r18-3715-ol-7-r19). However, since this Chart overwrites the container's command, the changes to the container shouldn't affect the Chart. To upgrade, it may be needed to enable the `fastBoot` option, as it is already the case from upgrading from 5.X to 5.Y.  
+This new version updates the RabbitMQ image to a [new version based on bash instead of node.js](https://github.com/bitnami/bitnami-docker-rabbitmq#3715-r18-3715-ol-7-r19). However, since this Chart overwrites the container's command, the changes to the container shouldn't affect the Chart. To upgrade, it may be needed to enable the `fastBoot` option, as it is already the case from upgrading from 5.X to 5.Y.
 
 ### To 5.0.0
 
