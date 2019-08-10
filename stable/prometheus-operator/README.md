@@ -128,9 +128,11 @@ The following tables list the configurable parameters of the prometheus-operator
 | `defaultRules.rules.kubernetesResources` | Create Kubernetes Resources  default rules| `true` |
 | `defaultRules.rules.kubernetesStorage` | Create Kubernetes Storage  default rules| `true` |
 | `defaultRules.rules.kubernetesSystem` | Create Kubernetes System  default rules| `true` |
-| `defaultRules.rules.node` | Create Node  default rules| `true` |
+| `defaultRules.rules.node` | Create Node default rules | `true` |
+| `defaultRules.rules.network` | Create networking default rules | `true` |
 | `defaultRules.rules.PrometheusOperator` | Create Prometheus Operator  default rules| `true` |
 | `defaultRules.rules.prometheus` | Create Prometheus  default rules| `true` |
+| `defaultRules.rules.time` | Create time default rules | `true` |
 | `defaultRules.labels` | Labels for default rules for monitoring the cluster | `{}` |
 | `defaultRules.annotations` | Annotations for default rules for monitoring the cluster | `{}` |
 | `additionalPrometheusRules` | *DEPRECATED* Will be removed in a future release.  Please use **additionalPrometheusRulesMap** instead.  List of `prometheusRule` objects to create. See https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#prometheusrulespec. | `[]` |
@@ -191,7 +193,6 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheusOperator.hyperkubeImage.repository` | Repository for hyperkube image used to perform maintenance tasks | `k8s.gcr.io/hyperkube` |
 | `prometheusOperator.hyperkubeImage.tag` | Tag for hyperkube image used to perform maintenance tasks | `v1.12.1` |
 | `prometheusOperator.hyperkubeImage.repository` | Image pull policy for hyperkube image used to perform maintenance tasks | `IfNotPresent` |
-
 | `prometheusOperator.admissionWebhooks.enabled` | Create PrometheusRules admission webhooks. Mutating webhook will patch PrometheusRules objects indicating they were validated. Validating webhook will check the rules syntax. | `true` |
 | `prometheusOperator.admissionWebhooks.failurePolicy` | Failure policy for admission webhooks | `Fail` |
 | `prometheusOperator.admissionWebhooks.patch.enabled` | If true, will use a pre and post install hooks to generate a CA and certificate to use for the prometheus operator tls proxy, and patch the created webhooks with the CA. | `true` |
@@ -210,7 +211,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheus.serviceMonitor.relabelings` | The `relabel_configs` for scraping the prometheus instance. | `` |
 | `prometheus.serviceAccount.create` | Create a default serviceaccount for prometheus to use | `true` |
 | `prometheus.serviceAccount.name` | Name for prometheus serviceaccount | `""` |
-| `prometheus.podDisruptionBudget.enabled` | If true, create a pod disruption budget for prometheus pods. The created resource cannot be modified once created - it must be deleted to perform a change | `true` |
+| `prometheus.podDisruptionBudget.enabled` | If true, create a pod disruption budget for prometheus pods. The created resource cannot be modified once created - it must be deleted to perform a change | `false` |
 | `prometheus.podDisruptionBudget.minAvailable` | Minimum number / percentage of pods that should remain scheduled | `1` |
 | `prometheus.podDisruptionBudget.maxUnavailable` | Maximum number / percentage of pods that may be made unavailable | `""` |
 | `prometheus.ingress.enabled` | If true, Prometheus Ingress will be created | `false` |

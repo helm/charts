@@ -142,6 +142,13 @@ spec:
             - name: {{ $key }}
               value: "{{ $value }}"
           {{- end }}
+          {{- range $key, $value := .Values.envFromConfigMap }}
+            - name: {{ $key }}
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ default (include "cluster-autoscaler.fullname" $) $value.name }}
+                  key: {{ required "Must specify key!" $value.key }}
+          {{- end }}
           {{- if .Values.envFromSecret }}
           envFrom:
             - secretRef:
