@@ -53,12 +53,14 @@ svc/mymssql-mssql-linux   ClusterIP   10.104.152.61   <none>        1433/TCP   9
 
 ### SA Password Retrieval
 
-The sa password is a randomized in the secret.yaml file.  To retrieve the password, perform the following steps once you install the helm chart.
+The sa password is randomized in the secret.yaml file.  To retrieve the password, perform the following steps once you install the helm chart.
 
 ```console
 $ printf $(kubectl get secret --namespace default mymssql-mssql-linux-secret -o jsonpath="{.data.sapassword}" | base64 --decode);echo
 ...
 ```
+
+In case an existing secret is used, the sa password must be retrieved from that secret, of course.
 
 ## Connecting to SQL Server Instance
 
@@ -90,6 +92,8 @@ The configuration parameters in this section control the resources requested and
 | acceptEula.value | EULA that needs to be accepted.  It will need to be changed via commandline or values.yaml.    | `n`                              |
 | edition.value    | The edition of SQL Server to install.  See section [Editions](#sql-server-for-linux-editions). | `Express`                        |
 | sapassword       | Password for sa login                                                                          | `Random (20-AlphNum)`<sup>1<sup> |
+| existingSecret   | Name of an existing secret containing the sa password                                          | `Empty String`                   |
+| existingSecretKey| Name of key of the password in existing secret                                                 | `sapassword`                     |
 | image.repository | The docker hub repo for SQL Server                                                             | `microsoft/mssql-server-linux`   |
 | image.tag        | The tag for the image                                                                          | `2017-CU5`                       |
 | image.pullPolicy | The pull policy for the deployment                                                             | `IfNotPresent`                   |
