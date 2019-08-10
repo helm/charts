@@ -11,19 +11,6 @@ image:
   tag: 0.8.4
   pullPolicy: IfNotPresent
 
-init:
-  image:
-    repository: docker.io/busybox
-    tag: musl
-    pullPolicy: IfNotPresent
-
-    ## Optionally specify an array of imagePullSecrets.
-    ## Secrets must be manually created in the namespace.
-    ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
-    ##
-    # pullSecrets:
-    #   - myRegistrKeySecretName
-
 deployment:
   annotations: {}
 
@@ -46,6 +33,11 @@ ingress:
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
+
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  runAsGroup: 1000
 
 resources: {}
 
