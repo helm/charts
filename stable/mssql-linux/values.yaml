@@ -7,6 +7,8 @@ lcid: 1033
 hadr: 0
 # Override sapassword in templates/secret.yaml
 # sapassword: "MyStrongPassword1234"
+existingSecret: ""
+existingSecretKey: sapassword
 image:
   repository: microsoft/mssql-server-linux
   tag: 2017-CU5
