@@ -290,7 +290,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `alertmanager.serviceMonitor.relabelings` | The `relabel_configs` for scraping the alertmanager instance. | `` |
 | `alertmanager.serviceAccount.create` | Create a `serviceAccount` for alertmanager | `true` |
 | `alertmanager.serviceAccount.name` | Name for Alertmanager service account | `""` |
-| `alertmanager.podDisruptionBudget.enabled` | If true, create a pod disruption budget for Alertmanager pods. The created resource cannot be modified once created - it must be deleted to perform a change | `true` |
+| `alertmanager.podDisruptionBudget.enabled` | If true, create a pod disruption budget for Alertmanager pods. The created resource cannot be modified once created - it must be deleted to perform a change | `false` |
 | `alertmanager.podDisruptionBudget.minAvailable` | Minimum number / percentage of pods that should remain scheduled | `1` |
 | `alertmanager.podDisruptionBudget.maxUnavailable` | Maximum number / percentage of pods that may be made unavailable | `""` |
 | `alertmanager.ingress.enabled` | If true, Alertmanager Ingress will be created | `false` |
