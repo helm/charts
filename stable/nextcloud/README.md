@@ -96,6 +96,7 @@ The following table lists the configurable parameters of the nextcloud chart and
 | `cronjob.enabled`                                            | Whether to enable/disable cronjob                       | `false`                                                 |
 | `cronjob.schedule`                                           | Schedule for the CronJob                                | `*/15 * * * *`                                          |
 | `cronjob.annotations`                                        | Annotations to add to the cronjob                       | {}                                                      |
+| `cronjob.curlInsecure`                                       | Set insecure (-k) option to curl                        | false                                                   |
 | `cronjob.failedJobsHistoryLimit`                             | Specify the number of failed Jobs to keep               | `5`                                                     |
 | `cronjob.successfulJobsHistoryLimit`                         | Specify the number of completed Jobs to keep            | `2`                                                     |
 | `cronjob.resources`                                          | Cronjob Resources                                       | `nil`                                                   |
