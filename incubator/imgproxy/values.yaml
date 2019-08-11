@@ -5,6 +5,12 @@ replicaCount: 1
 # A node selector label.
 nodeSelector: {}
 
+# Node and inter-pod affinity configuration
+affinity: {}
+
+# Toleration for K8s taints
+tolerations: {}
+
 # Docker image repository, tag and a policy for Kubernetes to pull it.
 image:
   repo: darthsim/imgproxy
