@@ -25,7 +25,6 @@ forceNameSpaced: "false"
 mic:
   image: mic
   tag: 1.5.1
-  component: mic
 
   # log level. Uses V logs (glog)
   # logVerbosity: 0
@@ -54,7 +53,6 @@ mic:
 nmi:
   image: nmi
   tag: 1.5.1
-  component: nmi
 
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little

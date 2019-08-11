@@ -5,6 +5,11 @@ metadata:
   annotations:
     "helm.sh/hook": crd-install
     "helm.sh/hook-delete-policy": "before-hook-creation"
+  labels:
+    app.kubernetes.io/name: {{ template "aad-pod-identity.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ template "aad-pod-identity.chart" . }}
 spec:
   group: aadpodidentity.k8s.io
   version: v1
@@ -20,6 +25,11 @@ metadata:
   annotations:
     "helm.sh/hook": crd-install
     "helm.sh/hook-delete-policy": "before-hook-creation"
+  labels:
+    app.kubernetes.io/name: {{ template "aad-pod-identity.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ template "aad-pod-identity.chart" . }}
 spec:
   group: aadpodidentity.k8s.io
   version: v1
@@ -35,6 +45,11 @@ metadata:
   annotations:
     "helm.sh/hook": crd-install
     "helm.sh/hook-delete-policy": "before-hook-creation"
+  labels:
+    app.kubernetes.io/name: {{ template "aad-pod-identity.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ template "aad-pod-identity.chart" . }}
 spec:
   group: aadpodidentity.k8s.io
   version: v1
@@ -51,6 +66,11 @@ metadata:
   annotations:
     "helm.sh/hook": crd-install
     "helm.sh/hook-delete-policy": "before-hook-creation"
+  labels:
+    app.kubernetes.io/name: {{ template "aad-pod-identity.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ template "aad-pod-identity.chart" . }}
 spec:
   group: aadpodidentity.k8s.io
   version: v1

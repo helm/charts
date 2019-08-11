@@ -1,0 +1,123 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "aad-pod-identity.mic.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ template "aad-pod-identity.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ template "aad-pod-identity.chart" . }}
+    app.kubernetes.io/component: mic
+  annotations:
+    description: {{ .Chart.Description }}
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ template "aad-pod-identity.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: mic
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ template "aad-pod-identity.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+        helm.sh/chart: {{ template "aad-pod-identity.chart" . }}
+        app.kubernetes.io/component: mic
+    spec:
+      {{- if .Values.rbac.enabled }}
+      serviceAccountName: {{ template "aad-pod-identity.mic.fullname" . }}
+      {{- end }}
+      containers:
+      - name: mic
+        image: "{{ .Values.image.repository }}/{{ .Values.mic.image }}:{{ .Values.mic.tag }}"
+        imagePullPolicy: {{ .Values.image.imagePullPolicy }}
+        args:
+          {{- if not .Values.adminsecret }}
+          - "--cloudconfig=/etc/kubernetes/azure.json"
+          {{- end }}
+          - "--logtostderr"
+          {{- if .Values.mic.logVerbosity }}
+          - -v={{ .Values.mic.logVerbosity }}
+          {{- end }}
+        env:
+          - name: FORCENAMESPACED
+            value: "{{ .Values.forceNameSpaced }}"
+          {{- if .Values.adminsecret }}
+          - name: CLOUD
+            valueFrom:
+              secretKeyRef:
+                key: Cloud
+                name: {{ template "aad-pod-identity.mic.fullname" . }}
+          - name: SUBSCRIPTION_ID
+            valueFrom:
+              secretKeyRef:
+                key: SubscriptionID
+                name: {{ template "aad-pod-identity.mic.fullname" . }}
+          - name: RESOURCE_GROUP
+            valueFrom:
+              secretKeyRef:
+                key: ResourceGroup
+                name: {{ template "aad-pod-identity.mic.fullname" . }}
+          - name: VM_TYPE
+            valueFrom:
+              secretKeyRef:
+                key: VMType
+                name: {{ template "aad-pod-identity.mic.fullname" . }}
+          - name: TENANT_ID
+            valueFrom:
+              secretKeyRef:
+                key: TenantID
+                name: {{ template "aad-pod-identity.mic.fullname" . }}
+          - name: CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                key: ClientID
+                name: {{ template "aad-pod-identity.mic.fullname" . }}
+          - name: CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                key: ClientSecret
+                name: {{ template "aad-pod-identity.mic.fullname" . }}
+          {{- end }}
+        volumeMounts:
+          - name: certificates
+            mountPath: /etc/kubernetes/certs
+            readOnly: true
+          {{- if not .Values.adminsecret }}
+          - name: k8s-azure-file
+            mountPath: /etc/kubernetes/azure.json
+            readOnly: true
+          {{- end }}
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5
+{{- with .Values.mic.resources }}
+        resources:
+{{ toYaml . | indent 12 }}
+{{- end }}
+      volumes:
+      - name: certificates
+        hostPath:
+          path: /etc/kubernetes/certs
+      {{- if not .Values.adminsecret }}
+      - name: k8s-azure-file
+        hostPath:
+          path: /etc/kubernetes/azure.json
+      {{- end }}
+{{- with .Values.mic.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.mic.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.mic.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+{{- end }}
