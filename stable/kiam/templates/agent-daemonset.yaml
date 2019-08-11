@@ -8,6 +8,13 @@ metadata:
     component: "{{ .Values.agent.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
+    {{- if .Values.agent.daemonsetLabels }}
+{{ toYaml .Values.agent.daemonsetLabels | indent 4 }}
+    {{- end }}
+  {{- if .Values.agent.daemonsetAnnotations }}
+  annotations:
+{{ toYaml .Values.agent.daemonsetAnnotations | indent 4 }}
+  {{- end }}
   name: {{ template "kiam.fullname" . }}-agent
 spec:
   selector:

@@ -115,6 +115,8 @@ Parameter | Description | Default
 `agent.prometheus.syncInterval` | Agent Prometheus synchronization interval | `5s`
 `agent.podAnnotations` | Annotations to be added to agent pods | `{}`
 `agent.podLabels` | Labels to be added to agent pods | `{}`
+`agent.daemonsetAnnotations` | Annotations to be added to agent daemonset | `{}`
+`agent.daemonsetLabels` | Labels to be added to agent daemonset | `{}`
 `agent.priorityClassName` | Agent pods priority class name | `""`
 `agent.resources` | Agent container resources | `{}`
 `agent.serviceAnnotations` | Annotations to be added to agent service | `{}`
@@ -145,6 +147,8 @@ Parameter | Description | Default
 `server.prometheus.syncInterval` | Server Prometheus synchronization interval | `5s`
 `server.podAnnotations` | Annotations to be added to server pods | `{}`
 `server.podLabels` | Labels to be added to server pods | `{}`
+`server.daemonsetAnnotations` | Annotations to be added to server daemonset | `{}`
+`server.daemonsetLabels` | Labels to be added to server daemonset | `{}`
 `server.probes.serverAddress` | Address that readyness and liveness probes will hit | `127.0.0.1`
 `server.priorityClassName` | Server pods priority class name | `""`
 `server.resources` | Server container resources | `{}`

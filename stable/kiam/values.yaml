@@ -42,6 +42,12 @@ agent:
   ## Labels to be added to pods
   ##
   podLabels: {}
+  ## Annotations to be added to daemonset
+  ##
+  daemonsetAnnotations: {}
+  ## Labels to be added to daemonset
+  ##
+  daemonsetLabels: {}
   ## Annotations to be added to service
   ##
   serviceAnnotations: {}
@@ -157,6 +163,12 @@ server:
   ## Labels to be added to pods
   ##
   podLabels: {}
+  ## Annotations to be added to daemonset
+  ##
+  daemonsetAnnotations: {}
+  ## Labels to be added to daemonset
+  ##
+  daemonsetLabels: {}
   ## Annotations to be added to service
   ##
   serviceAnnotations: {}

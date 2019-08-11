@@ -8,6 +8,13 @@ metadata:
     component: "{{ .Values.server.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
+    {{- if .Values.server.daemonsetLabels }}
+{{ toYaml .Values.server.daemonsetLabels | indent 4 }}
+    {{- end }}
+  {{- if .Values.server.daemonsetAnnotations }}
+  annotations:
+{{ toYaml .Values.server.daemonsetAnnotations | indent 4 }}
+  {{- end }}
   name: {{ template "kiam.fullname" . }}-server
 spec:
   selector:
