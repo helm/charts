@@ -1,11 +1,10 @@
-{{- if and .Values.alertmanager.enabled .Values.global.rbac.create .Values.global.rbac.pspEnabled }}
 apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
-  name: {{ template "prometheus-operator.fullname" . }}-alertmanager
-  labels:
-    app: {{ template "prometheus-operator.name" . }}-alertmanager
-{{ include "prometheus-operator.labels" . | indent 4 }}
+  name: cleanupcrds
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-delete-policy": hook-succeeded
 spec:
   privileged: false
   # Required to prevent escalations to root.
@@ -44,5 +43,3 @@ spec:
       - min: 0
         max: 65535
   readOnlyRootFilesystem: false
-{{- end }}
-

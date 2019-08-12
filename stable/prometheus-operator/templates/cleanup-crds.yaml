@@ -1,0 +1,27 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: prometheus-operator-operator-cleanup
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  template:
+    metadata:
+      name: prometheus-operator-operator-cleanup
+    spec:
+      serviceAccountName: cleanupcrds
+      containers:
+        - name: kubectl
+          image: "{{ .Values.prometheusOperator.hyperkubeImage.repository }}:{{ .Values.prometheusOperator.hyperkubeImage.tag }}"
+          imagePullPolicy: "{{ .Values.prometheusOperator.hyperkubeImage.pullPolicy }}"
+          command:
+          - /bin/sh
+          - -c
+          - >
+              kubectl delete crd alertmanagers.monitoring.coreos.com || true;
+              kubectl delete crd prometheuses.monitoring.coreos.com  || true;
+              kubectl delete crd prometheusrules.monitoring.coreos.com || true;
+              kubectl delete crd servicemonitors.monitoring.coreos.com || true;
+              kubectl delete crd podmonitors.monitoring.coreos.com || true;
+      restartPolicy: OnFailure
