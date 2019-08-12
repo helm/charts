@@ -140,7 +140,9 @@ Parameter | Description | Default
 `controller.metrics.serviceMonitor.honorLabels` | honorLabels chooses the metric's labels on collisions with target labels. | `false`
 `controller.customTemplate.configMapName` | configMap containing a custom nginx template | `""`
 `controller.customTemplate.configMapKey` | configMap key containing the nginx template | `""`
-`controller.headers` | configMap key:value pairs containing the [custom headers](https://github.com/kubernetes/ingress-nginx/tree/master/docs/examples/customization/custom-headers) for Nginx | `{}`
+`controller.addHeaders` | configMap key:value pairs containing [custom headers](https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/#add-headers) added before sending response to the client | `{}`
+`controller.proxySetHeaders` | configMap key:value pairs containing [custom headers](https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/#proxy-set-headers) added before sending request to the backends| `{}`
+`controller.headers` | DEPRECATED, Use `controller.proxySetHeaders` instead. | `{}`
 `controller.updateStrategy` | allows setting of RollingUpdate strategy | `{}`
 `controller.configMapNamespace` | The nginx-configmap namespace name | `""`
 `controller.tcp.configMapNamespace` | The tcp-services-configmap namespace name | `""`
