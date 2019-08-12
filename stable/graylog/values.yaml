@@ -257,6 +257,10 @@ graylog:
     ##
     deleteBeforeStart: false
 
+  init:
+    # Configure resource requests and limits for the Graylog StatefulSet initContainer
+    resources: {}
+
   ## Additional server files will be deployed to /etc/graylog/server
   ## For example, you can put server certificates or authorized clients certificates here
   ##
