@@ -126,8 +126,8 @@ The following table lists the configurable parameters of the NATS chart and thei
 | `networkPolicy.allowExternal`        | Allow external connections                                                                   | `true`                                                        |
 | `metrics.enabled`                    | Enable Prometheus metrics via exporter side-car                                              | `false`                                                       |
 | `metrics.image.registry`             | Prometheus metrics exporter image registry                                                   | `docker.io`                                                   |
-| `metrics.image.repository`           | Prometheus metrics exporter image name                                                       | `synadia/prometheus-nats-exporter`                            |
-| `metrics.image.tag`                  | Prometheus metrics exporter image tag                                                        | `0.1.0`                                                       |
+| `metrics.image.repository`           | Prometheus metrics exporter image name                                                       | `bitnami/nats-exporter`                                       |
+| `metrics.image.tag`                  | Prometheus metrics exporter image tag                                                        | `{TAG_NAME}`                                                  |
 | `metrics.image.pullPolicy`           | Prometheus metrics image pull policy                                                         | `IfNotPresent`                                                |
 | `metrics.image.pullSecrets`          | Prometheus metrics image pull secrets                                                        | `[]` (does not add image pull secrets to deployed pods)       |
 | `metrics.port`                       | Prometheus metrics exporter port                                                             | `7777`                                                        |
