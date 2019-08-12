@@ -301,8 +301,8 @@ metrics:
   enabled: false
   image:
     registry: docker.io
-    repository: synadia/prometheus-nats-exporter
-    tag: 0.1.0
+    repository: bitnami/nats-exporter
+    tag: 0.5.0-debian-9-r3
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
