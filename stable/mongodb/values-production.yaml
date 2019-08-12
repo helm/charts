@@ -369,8 +369,8 @@ metrics:
 
   image:
     registry: docker.io
-    repository: forekshub/percona-mongodb-exporter
-    tag: latest
+    repository: bitnami/mongodb-exporter
+    tag: 0.8.0-debian-9-r3
     pullPolicy: Always
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
