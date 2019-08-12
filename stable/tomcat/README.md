@@ -54,6 +54,7 @@ Parameter                       | Description                           | Defaul
 `extraVolumes`                  | Extra volumes                         | `none`
 `extraVolumeMounts`             | Extra volume mounts                   | `none`
 `extraInitContainers`           | Extra init containers                 | `none`
+`hostPort`                      | hostPort                              | `none`
 `service.name`                  | Tomcat service name                   | `http`
 `service.externalPort`          | Kubernetes service port               | `80`
 `service.internalPort`          | Tomcat front port                     | `8080`
