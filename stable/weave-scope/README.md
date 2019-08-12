@@ -64,6 +64,7 @@ The **weave-scope-frontend** section controls how the Scope frontend is installe
 | Parameter | Description | Default |
 |----------:|:------------|:--------|
 | **enabled** | controls whether the frontend is deployed | `true` |
+| **flags** | adds extra flag options for container | [] |
 | **resources.*** | controls requests/limits for the frontend (these values are all optional) | |
 | **resources.requests.cpu** | CPU request in MHz (m) | |
 | **resources.requests.memory** | memory request in MiB (Mi) | |
@@ -77,6 +78,7 @@ The **agent** section controls how the Weave Scope node agent pods are installed
 | Parameter | Description | Default |
 |----------:|:------------|:--------|
 | **enabled** | controls whether the agent is deployed | `true` |
+| **flags** | adds extra flag options for container | [] |
 | **dockerBridge** | the name of the Docker bridge interface | `docker0` |
 | **scopeFrontendAddr** | the host:port of a Scope frontend to send data to -- this is only needed in cases where the frontend is deployed separately from the agent (e.g. an install outside the cluster or a pre-existing install inside it) | |
 | **probeToken** | the token used to connect to Weave Cloud -- this is not needed for connecting to non-cloud Scope frontends | |
