@@ -38,6 +38,8 @@ The following table lists the configurable parameters of the MySQL chart and the
 | `mysqlImage`                                 | `mysql` image and tag.                            | `mysql:5.7.13`                         |
 | `xtraBackupImage`                            | `xtrabackup` image and tag.                       | `gcr.io/google-samples/xtrabackup:1.0` |
 | `imagePullPolicy`                            | Image pull policy.                                | `IfNotPresent`                         |
+| `nameOverride`                               | `String to partially override mysqlha.fullname template with a string (will prepend the release name)` | `nil` |
+| `fullnameOverride`                           | `String to fully override mysqlha.fullname template with a string`                 | `nil` |
 | `replicaCount`                               | Number of MySQL replicas                          | 3                                      |
 | `mysqlRootPassword`                          | Password for the `root` user.                     | Randomly generated                     |
 | `mysqlUser`                                  | Username of new user to create.                   | `nil`                                  |
