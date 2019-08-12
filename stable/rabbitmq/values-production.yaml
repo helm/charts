@@ -299,8 +299,8 @@ metrics:
   enabled: true
   image:
     registry: docker.io
-    repository: kbudde/rabbitmq-exporter
-    tag: v0.29.0
+    repository: bitnami/rabbitmq-exporter
+    tag: 0.29.0-debian-9-r3
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
