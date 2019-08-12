@@ -200,6 +200,9 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheusOperator.admissionWebhooks.patch.image.tag` | Tag to use for the webhook integration jobs | `v1.0.0` |
 | `prometheusOperator.admissionWebhooks.patch.image.pullPolicy` | Image pull policy for the webhook integration jobs | `IfNotPresent` |
 | `prometheusOperator.admissionWebhooks.patch.priorityClassName` | Priority class for the webhook integration jobs | `nil` |
+| `prometheusOperator.admissionWebhooks.patch.podAnnotations` | Annotations for the webhook job pods | `nil` |
+| `prometheusOperator.admissionWebhooks.patch.nodeSelector` | Node selector for running admission hook patch jobs | `nil` |
+
 
 ### Prometheus
 | Parameter | Description | Default |
