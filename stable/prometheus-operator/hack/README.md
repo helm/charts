@@ -16,7 +16,7 @@ Currently following imported:
      make generate-in-docker
      ```
 
-    - prepare and merge PR with imported changes into coreos/prometheus-operator
+    - prepare and merge PR with imported changes into coreos/kube-prometheus
     - run sync_prometheus_rules.py inside your fork of this repo
     - send PR with changes to this repo
 - [etcd-io/etc rules set](https://github.com/etcd-io/etcd/blob/master/Documentation/op-guide/etcd3_alert.rules.yml)
@@ -31,7 +31,7 @@ This script generates grafana dashboards from json files, splitting them to sepa
 
 Currently following imported:
 
-- [coreos/prometheus-operator dashboards](https://github.com/coreos/kube-prometheus/manifests/grafana-deployment.yaml)
+- [coreos/kube-prometheus dashboards](https://github.com/coreos/kube-prometheus/manifests/grafana-deployment.yaml)
   - In order to modify these dashboards:
     - prepare and merge PR into [kubernetes-mixin](https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/dashboards)
     - run import inside your fork of [coreos/kube-prometheus](https://github.com/coreos/kube-prometheus/tree/master)
@@ -41,7 +41,7 @@ Currently following imported:
      make generate-in-docker
      ```
 
-    - prepare and merge PR with imported changes into coreos/prometheus-operator
+    - prepare and merge PR with imported changes into coreos/kube-prometheus
     - run sync_grafana_dashboards.py inside your fork of this repo
     - send PR with changes to this repo
 - [etcd-io/etc dashboard](https://github.com/etcd-io/etcd/blob/master/Documentation/op-guide/grafana.json)
