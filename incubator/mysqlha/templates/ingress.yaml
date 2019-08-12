@@ -1,0 +1,34 @@
+{{- if .Values.ingress.enabled -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ template "mysqlha.chart" . }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+  annotations:
+    {{- range $key, $value := .Values.ingress.annotations }}
+      {{ $key }}: {{ $value | quote }}
+    {{- end }}
+spec:
+  rules:
+    {{- if .Values.ingress.hosts }}
+    - host: {{ .Values.ingress.hosts }}
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: {{ template "fullname" . }}
+              servicePort: 3306
+          - path: /read-only
+            backend:
+              serviceName: {{ template "fullname" . }}-readonly
+              servicePort: 3306
+          - path: /metrics
+            backend:
+              serviceName: {{ template "fullname" . }}-readonly
+              servicePort: 9104
+    {{- end -}}
+{{- end -}}
