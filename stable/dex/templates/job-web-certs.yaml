@@ -24,6 +24,10 @@ spec:
         app.kubernetes.io/name: {{ include "dex.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
         app.kubernetes.io/component: "job"
+{{- if .Values.certs.web.pod.annotations }}
+      annotations:
+{{ toYaml .Values.certs.web.pod.annotations | trim | indent 8 }}
+{{- end }}
     spec:
       {{- if .Values.certs.securityContext.enabled }}
       securityContext:
