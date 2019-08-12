@@ -34,6 +34,9 @@ spec:
             - '--probe.docker.bridge={{ .Values.dockerBridge }}'
             - '--probe.docker=true'
             - '--probe.kubernetes=true'
+            {{- range $arg := .Values.flags }}
+            - {{ $arg | quote }}
+            {{- end }}
             {{if .Values.readOnly}}
             - "--probe.no-controls"
             {{end}}
