@@ -1,5 +1,5 @@
 # Added manually, can be changed in-place.
-{{- if and .Values.grafana.enabled .Values.grafana.defaultDashboardsEnabled .Values.coreDns.enabled }}
+{{- if and (semverCompare ">=1.11.0" .Capabilities.KubeVersion.GitVersion) (semverCompare "<1.14.0" .Capabilities.KubeVersion.GitVersion) .Values.grafana.enabled .Values.grafana.defaultDashboardsEnabled .Values.coreDns.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
