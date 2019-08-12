@@ -58,6 +58,7 @@ securityContext:
 extraConfigmapMounts: []
   # - name: certs-configmap
   #   mountPath: /etc/grafana/ssl/
+  #   subPath: certificates.crt # (optional)
   #   configMap: certs-configmap
   #   readOnly: true
 
@@ -74,6 +75,9 @@ downloadDashboardsImage:
   repository: appropriate/curl
   tag: latest
   pullPolicy: IfNotPresent
+
+downloadDashboards:
+  env: {}
 
 ## Pod Annotations
 # podAnnotations: {}

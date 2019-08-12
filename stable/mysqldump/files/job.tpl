@@ -6,7 +6,7 @@ spec:
     command: ["/bin/bash", "/scripts/backup.sh"]
 {{- if .Values.mysql.existingSecret }}
     env:
-      - name: MYSQL_PASSWORD
+      - name: MYSQL_PWD
         valueFrom:
           secretKeyRef:
             name: {{ .Values.mysql.existingSecret | quote }}

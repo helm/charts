@@ -7,6 +7,9 @@ metadata:
     helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     app.kubernetes.io/instance: "{{ .Release.Name }}"
     app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+{{- if .Values.customLabels }}
+{{ toYaml .Values.customLabels | indent 4 }}
+{{- end }}
 spec:
   selector:
     matchLabels:
@@ -17,6 +20,9 @@ spec:
       labels:
         app.kubernetes.io/name: {{ template "kube-state-metrics.name" . }}
         app.kubernetes.io/instance: "{{ .Release.Name }}"
+{{- if .Values.customLabels }}
+{{ toYaml .Values.customLabels | indent 8 }}
+{{- end }}
 {{- if .Values.podAnnotations }}
       annotations:
 {{ toYaml .Values.podAnnotations | indent 8 }}
@@ -100,6 +106,12 @@ spec:
 {{  end  }}
 {{  if .Values.collectors.statefulsets  }}
         - --collectors=statefulsets
+{{  end  }}
+{{  if .Values.collectors.storageclasses  }}
+        - --collectors=storageclasses
+{{  end  }}
+{{  if .Values.collectors.verticalpodautoscalers  }}
+        - --collectors=verticalpodautoscalers
 {{  end  }}
 {{ if .Values.namespace }}
         - --namespace={{ .Values.namespace }}
