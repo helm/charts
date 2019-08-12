@@ -1,4 +1,4 @@
-{{- if or .Values.controller.config (or .Values.controller.proxySetHeaders .Values.controller.addHeaders) }}
+{{- if or .Values.controller.config (or (or .Values.controller.proxySetHeaders .Values.controller.headers) .Values.controller.addHeaders) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -11,9 +11,9 @@ metadata:
   name: {{ template "nginx-ingress.controller.fullname" . }}
 data:
 {{- if .Values.controller.addHeaders }}
-  proxy-set-headers: {{ .Release.Namespace }}/{{ template "nginx-ingress.fullname" . }}-custom-add-headers
+  add-headers: {{ .Release.Namespace }}/{{ template "nginx-ingress.fullname" . }}-custom-add-headers
 {{- end }}
-{{- if .Values.controller.proxySetHeaders }}
+{{- if or .Values.controller.proxySetHeaders .Values.controller.headers }}
   proxy-set-headers: {{ .Release.Namespace }}/{{ template "nginx-ingress.fullname" . }}-custom-proxy-headers
 {{- end }}
 {{- if .Values.controller.config }}
