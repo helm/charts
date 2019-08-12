@@ -22,7 +22,7 @@ data:
         echo "generating missed crl file"
         ./easyrsa gen-crl
         {{- end }}
-        cp ${EASY_RSA_LOC}/pki/crl.pem ${EASY_RSA_LOC}/crl.pem
+        cp -a ${EASY_RSA_LOC}/pki/crl.pem ${EASY_RSA_LOC}/crl.pem
         chown nobody:nogroup ${EASY_RSA_LOC}/crl.pem
       fi
       {{- end }}
@@ -42,7 +42,7 @@ data:
       ./easyrsa gen-dh
       {{- if .Values.openvpn.useCrl }}
       ./easyrsa gen-crl
-      cp ${EASY_RSA_LOC}/pki/crl.pem ${EASY_RSA_LOC}/crl.pem # Note: the pki/ directory is inaccessible after openvpn drops privileges, so we cp crl.pem to ${EASY_RSA_LOC} and chown to allow CRL updates without a restart
+      cp -a ${EASY_RSA_LOC}/pki/crl.pem ${EASY_RSA_LOC}/crl.pem # Note: the pki/ directory is inaccessible after openvpn drops privileges, so we cp crl.pem to ${EASY_RSA_LOC} and chown to allow CRL updates without a restart
       chown nobody:nogroup ${EASY_RSA_LOC}/crl.pem
       {{- end }}
       {{- if .Values.openvpn.taKey }}
@@ -92,7 +92,7 @@ data:
       cd $EASY_RSA_LOC
       ./easyrsa revoke $1 
       ./easyrsa gen-crl
-      cp ${EASY_RSA_LOC}/pki/crl.pem ${EASY_RSA_LOC}
+      cp -a ${EASY_RSA_LOC}/pki/crl.pem ${EASY_RSA_LOC}
       chown nobody:nogroup ${EASY_RSA_LOC}/crl.pem
 
   configure.sh: |-
