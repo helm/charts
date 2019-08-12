@@ -67,7 +67,7 @@ spec:
           - mountPath: /etc/openvpn/setup
             name: openvpn
             readOnly: false
-          - mountPath: /etc/openvpn/certs/pki
+          - mountPath: /etc/openvpn/certs
             {{- if .Values.persistence.subPath }}
             subPath: {{ .Values.persistence.subPath }}
             {{- end }}
@@ -88,20 +88,21 @@ spec:
           defaultMode: 448
           items:
           - key: "server.key"
-            path: "private/server.key"
+            path: "pki/private/server.key"
           - key: "ca.crt"
-            path: "ca.crt"
+            path: "pki/ca.crt"
           - key: "server.crt"
-            path: "issued/server.crt"
+            path: "pki/issued/server.crt"
           - key: "dh.pem"
-            path: "dh.pem"
+            path: "pki/dh.pem"
           {{- if .Values.openvpn.useCrl }}
           - key: "crl.pem"
             path: "crl.pem"
+            mode: 484
           {{- end }}
           {{- if .Values.openvpn.taKey }}
           - key: "ta.key"
-            path: "ta.key"
+            path: "pki/ta.key"
           {{- end }}
         {{- else }}
         emptyDir: {}
