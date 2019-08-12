@@ -52,8 +52,11 @@ Return secret name to be used based on provided values.
 Return secret name to be used based on provided values.
 */}}
 {{- define "clusterAgent.tokenSecretName" -}}
-{{- $fullName := include "datadog.fullname" . -}}
-{{- default $fullName .Values.clusterAgent.tokenExistingSecret | quote -}}
+{{- if not .Values.clusterAgent.tokenExistingSecret -}}
+{{- include "datadog.fullname" . -}}-cluster-agent
+{{- else -}}
+{{- .Values.clusterAgent.tokenExistingSecret -}}
+{{- end -}}
 {{- end -}}
 
 {{/*

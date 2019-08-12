@@ -40,7 +40,7 @@ spec:
           - name: DD_CLUSTER_AGENT_AUTH_TOKEN
             valueFrom:
               secretKeyRef:
-                name: {{ if not .Values.clusterAgent.tokenExistingSecret }}{{ template "datadog.fullname" . }}-cluster-agent{{ else }}"{{ .Values.clusterAgent.tokenExistingSecret }}"{{ end }}
+                name: {{ template "clusterAgent.tokenSecretName" . }}
                 key: token
           - name: DD_CLUSTER_AGENT_ENABLED
             value: {{ .Values.clusterAgent.enabled | quote }}
