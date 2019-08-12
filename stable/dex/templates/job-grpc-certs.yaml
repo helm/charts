@@ -27,6 +27,10 @@ spec:
         app.kubernetes.io/name: {{ include "dex.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
         app.kubernetes.io/component: "job-grpc-certs"
+{{- if .Values.certs.grpc.pod.annotations }}
+      annotations:
+{{ toYaml .Values.certs.grpc.pod.annotations | trim | indent 8 }}
+{{- end }}
     spec:
       {{- if .Values.certs.securityContext.enabled }}
       securityContext:

@@ -92,6 +92,8 @@ certs:
     secret:
       tlsName: dex-web-server-tls
       caName: dex-web-server-ca
+    pod:
+      annotations: {}
   # Section below is relevant only when grpc support is enabled
   grpc:
     create: true
@@ -103,6 +105,8 @@ certs:
       serverTlsName: dex-grpc-server-tls
       clientTlsName: dex-grpc-client-tls
       caName: dex-grpc-ca
+    pod:
+      annotations: {}
 
 env: []
 

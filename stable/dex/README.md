@@ -59,34 +59,37 @@ In order to upgrade, please update your values file and uninstall/reinstall the 
 
 ## Configuration
 
-The following table lists parameters introduced in v2.0.0
+Parameters introduced starting from v2
 
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
-| `grpc` | Enable dex grpc endpoint | `true` |
-| `https` | Enable TLS termination for the dex http endpoint | `false` |
-| `ports.web.containerPort` | http/https port listened by the dex | `5556` |
-| `ports.web.nodePort` | K8S Service node port for the dex http/https listener | `32000` |
-| `ports.web.servicePort` | K8S Service port for the dex http/https listener | `32000` |
-| `ports.grpc.containerPort` | grpc port listened by the dex | `5000` |
-| `ports.grpc.nodePort` | K8S Service node port for the dex grpc listener | `35000` |
-| `ports.grpc.servicePort` | K8S Service port for the dex grpc listener | `35000` |
-| `service.loadBalancerIP` | IP override for K8S LoadBalancer Service | `""` |
+| `certs.grpc.pod.annotations` | Annotations for the pod created by the `grpc-certs` job | `{}` |
+| `certs.web.pod.annotations` | Annotations for the pod created by the `web-certs` job | `{}` |
+| `config.connectors` | Maps to the dex config `connectors` dict param | `{}` |
+| `config.enablePasswordDB` | Maps to the dex config `enablePasswordDB` param | `true` |
+| `config.grpc.address` | dex grpc listen address | `127.0.0.1` |
+| `config.grpc.tlsCert` | Maps to the dex config `grpc.tlsCert` param | `/etc/dex/tls/grpc/server/tls.crt` |
+| `config.grpc.tlsClientCA` | Maps to the dex config `grpc.tlsClientCA` param | `/etc/dex/tls/grpc/ca/tls.crt` |
+| `config.grpc.tlsKey` | Maps to the dex config `grpc.tlsKey` param | `/etc/dex/tls/grpc/server/tls.key` |
 | `config.issuer` | Maps to the dex config `issuer` param | `http://dex.io:8080` |
-| `config.storage` | Maps to the dex config `storage` dict param | `{"type": "kubernetes", "config": {"inCluster": true}}` |
 | `config.logger` | Maps to the dex config `logger` dict param | `{"level": "debug"}` |
+| `config.oauth2.skipApprovalScreen` | Maps to the dex config `oauth2.skipApprovalScreen` param | `true` |
+| `config.staticClients` | Maps to the dex config `staticClients` list param | `""` |
+| `config.staticPasswords` | Maps to the dex config `staticPasswords` list param | `""` |
+| `config.storage` | Maps to the dex config `storage` dict param | `{"type": "kubernetes", "config": {"inCluster": true}}` |
 | `config.web.address` | dex http/https listen address | `0.0.0.0` |
 | `config.web.tlsCert` | Maps to the dex config `web.tlsCert` param | `/etc/dex/tls/https/server/tls.crt` |
 | `config.web.tlsKey` | Maps to the dex config `web.tlsKey` param | `/etc/dex/tls/https/server/tls.key` |
-| `config.grpc.address` | dex grpc listen address | `127.0.0.1` |
-| `config.grpc.tlsCert` | Maps to the dex config `grpc.tlsCert` param | `/etc/dex/tls/grpc/server/tls.crt` |
-| `config.grpc.tlsKey` | Maps to the dex config `grpc.tlsKey` param | `/etc/dex/tls/grpc/server/tls.key` |
-| `config.grpc.tlsClientCA` | Maps to the dex config `grpc.tlsClientCA` param | `/etc/dex/tls/grpc/ca/tls.crt` |
-| `config.connectors` | Maps to the dex config `connectors` dict param | `{}` |
-| `config.oauth2.skipApprovalScreen` | Maps to the dex config `oauth2.skipApprovalScreen` param | `true` |
-| `config.staticClients` | Maps to the dex config `staticClients` list param | `""` |
-| `config.enablePasswordDB` | Maps to the dex config `enablePasswordDB` param | `true` |
-| `config.staticPasswords` | Maps to the dex config `staticPasswords` list param | `""` |
+| `grpc` | Enable dex grpc endpoint | `true` |
+| `https` | Enable TLS termination for the dex http endpoint | `false` |
+| `ports.grpc.containerPort` | grpc port listened by the dex | `5000` |
+| `ports.grpc.nodePort` | K8S Service node port for the dex grpc listener | `35000` |
+| `ports.grpc.servicePort` | K8S Service port for the dex grpc listener | `35000` |
+| `ports.web.containerPort` | http/https port listened by the dex | `5556` |
+| `ports.web.nodePort` | K8S Service node port for the dex http/https listener | `32000` |
+| `ports.web.servicePort` | K8S Service port for the dex http/https listener | `32000` |
+| `service.loadBalancerIP` | IP override for K8S LoadBalancer Service | `""` |
+
 
 
 Check [values.yaml](values.yaml) notes together with [dex documentation][dex] and [config examples](https://github.com/dexidp/dex/tree/master/examples) for all the possible configuration options.
