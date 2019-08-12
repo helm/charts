@@ -4,7 +4,7 @@ metadata:
   name: {{ template "fullname" . }}
   labels:
     app: {{ template "fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: "{{ template "mysqlha.chart" . }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
@@ -251,7 +251,7 @@ spec:
             port: metrics
           initialDelaySeconds: {{ .Values.metrics.livenessProbe.initialDelaySeconds }}
           timeoutSeconds: {{ .Values.metrics.livenessProbe.timeoutSeconds }}
-        readinessprobe:
+        readinessProbe:
           httpGet:
             path: /
             port: metrics
