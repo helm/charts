@@ -120,8 +120,8 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `readinessProbe.successThreshold`    | number of successes                              | 1                                                       |
 | `metrics.enabled`                    | Start a side-car prometheus exporter             | `false`                                                 |
 | `metrics.image.registry`             | Exporter image registry                          | `docker.io`                                             |
-| `metrics.image.repository`           | Exporter image name                              | `kbudde/rabbitmq-exporter`                              |
-| `metrics.image.tag`                  | Exporter image tag                               | `v0.29.0`                                               |
+| `metrics.image.repository`           | Exporter image name                              | `bitnami/rabbitmq-exporter`                             |
+| `metrics.image.tag`                  | Exporter image tag                               | `{TAG_NAME}`                                            |
 | `metrics.image.pullPolicy`           | Exporter image pull policy                       | `IfNotPresent`                                          |
 | `metrics.serviceMonitor.enabled`     | Create ServiceMonitor Resource for scraping metrics using PrometheusOperator   | `false`                   |
 | `metrics.serviceMonitor.namespace`   | Namespace where servicemonitor resource should be created                      | `nil`                     |
