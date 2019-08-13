@@ -435,6 +435,7 @@ nodeExporter:
     #   mountPath: /srv/txt_collector
     #   hostPath: /var/lib/node-exporter
     #   readOnly: true
+    #   mountPropagation: HostToContainer
 
   extraConfigmapMounts: []
     # - name: certs-configmap
