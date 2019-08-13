@@ -2,7 +2,7 @@ apiVersion: v1
 appVersion: "5.5.4"
 description: A Helm chart for Elasticsearch Curator
 name: elasticsearch-curator
-version: 1.5.0
+version: 2.0.0
 home: https://github.com/elastic/curator
 keywords:
 - curator
@@ -12,7 +12,7 @@ sources:
 - https://github.com/kubernetes/charts/elasticsearch-curator
 - https://github.com/pires/docker-elasticsearch-curator
 maintainers:
-  - name: tmestdagh
-    email: mestdagh.tom@gmail.com
+  - name: desaintmartin
+    email: cedric.dsm@gmail.com
   - name: gianrubio
     email: gianrubio@gmail.com

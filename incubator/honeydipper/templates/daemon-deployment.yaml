@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "honeydipper.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "honeydipper.name" . }}
+    helm.sh/chart: {{ include "honeydipper.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.daemon.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "honeydipper.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "honeydipper.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      {{- with .Values.daemon.dnsConfig }}
+      dnsConfig:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.daemon.serviceAccountName }}
+      serviceAccountName: "{{ . }}"
+      {{- end }}
+      containers:
+        {{- if .Values.drivers.redis.local }}
+        - name: {{ .Chart.Name }}-redis
+          image: "{{ .Values.drivers.redis.image.repository }}:{{ .Values.drivers.redis.image.tag }}"
+        {{- end }}
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.daemon.image.repository }}:{{ .Values.daemon.image.tag }}"
+          imagePullPolicy: {{ .Values.daemon.image.pullPolicy }}
+          {{- with .Values.daemon.args }}
+          args:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.daemon.env }}
+          env:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.daemon.resources }}
+          resources:
+            {{- toYaml .Values.daemon.resources | nindent 12 }}
+          {{- end }}
+          {{- with .Values.daemon.extraVolumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          readinessProbe:
+            tcpSocket:
+              port: {{ .Values.drivers.webhook.service.port }}
+            initialDelaySeconds: 20
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: {{ .Values.drivers.webhook.service.port }}
+            initialDelaySeconds: 20
+            periodSeconds: 20
+      {{- with .Values.daemon.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.daemon.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.daemon.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.daemon.extraVolumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
