@@ -8,7 +8,9 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: 1
+  strategy:
+    type: {{ .Values.strategyType }}
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "node-red.name" . }}
@@ -45,6 +47,9 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /data
+{{- if .Values.persistence.subPath }}
+              subPath: {{ .Values.persistence.subPath }}
+{{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
       volumes:

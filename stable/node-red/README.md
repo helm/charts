@@ -34,38 +34,40 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Sentry chart and their default values.
+The following tables lists the configurable parameters of the Node-RED chart and their default values.
 
-| Parameter                            | Description                                | Default                                                    |
-| -------------------------------      | -------------------------------            | ---------------------------------------------------------- |
-| `image.repository`                   | node-red image                             | `nodered/node-red-docker` |
-| `image.tag`                          | node-red image tag                         | `0.19.4-v8` |
-| `image.pullPolicy`                   | node-red image pull policy                 | `IfNotPresent` |
-| `flows`                              | Default flows configuration                | `flows.json` |
-| `nodeOptions`                        | Node.js runtime arguments                  | `` |
-| `timezone`                           | Default timezone                           | `UTC` |
-| `service.type`                       | Kubernetes service type for the GUI        | `ClusterIP` |
-| `service.port`                       | Kubernetes port where the GUI is exposed   | `1880` |
-| `service.nodePort`                   | Kubernetes nodePort where the GUI is exposed | `` |
-| `service.annotations`                | Service annotations for the GUI            | `{}` |
-| `service.labels`                     | Custom labels                              | `{}` |
-| `service.loadBalancerIP`             | Loadbalance IP for the GUI                 | `{}` |
-| `service.loadBalancerSourceRanges`   | List of IP CIDRs allowed access to load balancer (if supported) | None
-| `service.externalTrafficPolicy`      | Set the externalTrafficPolicy in the Service to either Cluster or Local | `Cluster`
-| `ingress.enabled`                    | Enables Ingress                            | `false` |
-| `ingress.annotations`                | Ingress annotations                        | `{}` |
-| `ingress.path`                       | Ingress path                               | `/` |
-| `ingress.hosts`                      | Ingress accepted hostnames                 | `chart-example.local` |
-| `ingress.tls`                        | Ingress TLS configuration                  | `[]` |
-| `persistence.enabled`                | Use persistent volume to store data        | `false` |
-| `persistence.size`                   | Size of persistent volume claim            | `5Gi` |
-| `persistence.existingClaim`          | Use an existing PVC to persist data        | `nil` |
-| `persistence.storageClass`           | Type of persistent volume claim            | `-` |
-| `persistence.accessModes`            | Persistence access modes                   | `ReadWriteOnce` |
-| `resources`                          | CPU/Memory resource requests/limits        | `{}` |
-| `nodeSelector`                       | Node labels for pod assignment             | `{}` |
-| `tolerations`                        | Toleration labels for pod assignment       | `[]` |
-| `affinity`                           | Affinity settings for pod assignment       | `{}` |
+| Parameter                          | Description                                                             | Default                   |
+|:---------------------------------- |:----------------------------------------------------------------------- |:------------------------- |
+| `image.repository`                 | node-red image                                                          | `nodered/node-red-docker` |
+| `image.tag`                        | node-red image tag                                                      | `0.20.7-slim-v8`          |
+| `image.pullPolicy`                 | node-red image pull policy                                              | `IfNotPresent`            |
+| `strategyType`                     | Specifies the strategy used to replace old Pods by new ones             | `Recreate`                |
+| `flows`                            | Default flows configuration                                             | `flows.json`              |
+| `nodeOptions`                      | Node.js runtime arguments                                               | ``                        |
+| `timezone`                         | Default timezone                                                        | `UTC`                     |
+| `service.type`                     | Kubernetes service type for the GUI                                     | `ClusterIP`               |
+| `service.port`                     | Kubernetes port where the GUI is exposed                                | `1880`                    |
+| `service.nodePort`                 | Kubernetes nodePort where the GUI is exposed                            | ``                        |
+| `service.annotations`              | Service annotations for the GUI                                         | `{}`                      |
+| `service.labels`                   | Custom labels                                                           | `{}`                      |
+| `service.loadBalancerIP`           | Loadbalance IP for the GUI                                              | `{}`                      |
+| `service.loadBalancerSourceRanges` | List of IP CIDRs allowed access to load balancer (if supported)         | None                      |
+| `service.externalTrafficPolicy`    | Set the externalTrafficPolicy in the Service to either Cluster or Local | `Cluster`                 |
+| `ingress.enabled`                  | Enables Ingress                                                         | `false`                   |
+| `ingress.annotations`              | Ingress annotations                                                     | `{}`                      |
+| `ingress.path`                     | Ingress path                                                            | `/`                       |
+| `ingress.hosts`                    | Ingress accepted hostnames                                              | `chart-example.local`     |
+| `ingress.tls`                      | Ingress TLS configuration                                               | `[]`                      |
+| `persistence.enabled`              | Use persistent volume to store data                                     | `false`                   |
+| `persistence.size`                 | Size of persistent volume claim                                         | `5Gi`                     |
+| `persistence.existingClaim`        | Use an existing PVC to persist data                                     | `nil`                     |
+| `persistence.storageClass`         | Type of persistent volume claim                                         | `-`                       |
+| `persistence.accessModes`          | Persistence access modes                                                | `ReadWriteOnce`           |
+| `persistence.subPath`              | Mount a sub dir of the persistent volume                                | `nil`                     |
+| `resources`                        | CPU/Memory resource requests/limits                                     | `{}`                      |
+| `nodeSelector`                     | Node labels for pod assignment                                          | `{}`                      |
+| `tolerations`                      | Toleration labels for pod assignment                                    | `[]`                      |
+| `affinity`                         | Affinity settings for pod assignment                                    | `{}`                      |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

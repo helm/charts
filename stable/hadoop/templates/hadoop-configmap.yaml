@@ -104,6 +104,14 @@ data:
     <?xml version="1.0"?>
     <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
     <configuration>
+    
+{{- if .Values.hdfs.webhdfs.enabled -}}
+      <property>
+          <name>dfs.webhdfs.enabled</name>
+          <value>true</value>
+      </property> 
+{{- end -}}
+
       <property>
         <name>dfs.datanode.use.datanode.hostname</name>
         <value>false</value>

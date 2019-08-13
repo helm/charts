@@ -10,19 +10,39 @@ resources:
     memory: 512Mi
     cpu: 500m
 
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
 securityContext:
   # Security context settings
   runAsUser: 1000
   fsGroup: 2000
 # Most of these map to environment variables. See Minecraft for details:
 # https://hub.docker.com/r/itzg/minecraft-server/
+livenessProbe:
+  command:
+    - mcstatus
+    - localhost:25565
+    - status
+  initialDelaySeconds: 30
+  periodSeconds: 5
+readinessProbe:
+  command:
+    - mcstatus
+    - localhost:25565
+    - status
+  initialDelaySeconds: 30
+  periodSeconds: 5
 minecraftServer:
   # This must be overridden, since we can't accept this for the user.
   eula: "FALSE"
   # One of: LATEST, SNAPSHOT, or a specific version (ie: "1.7.9").
-  version: "1.13.1"
-  # This can be one of empty string, "FORGE", "SPIGOT", "BUKKIT", "PAPER", "FTB", "SPONGEVANILLA"; empty string will produce a vanilla server
-  type: ""
+  version: "1.14.4"
+  # This can be one of "VANILLA", "FORGE", "SPIGOT", "BUKKIT", "PAPER", "FTB", "SPONGEVANILLA"
+  type: "VANILLA"
   # If type is set to FORGE, this sets the version; this is ignored if forgeInstallerUrl is set
   forgeVersion:
   # If type is set to SPONGEVANILLA, this sets the version
@@ -91,6 +111,8 @@ minecraftServer:
   worldSaveName: world
   # If set, this URL will be downloaded at startup and used as a starting point
   downloadWorldUrl:
+  # force re-download of server file
+  forceReDownload: false
   # If set, the modpack at this URL will be downloaded at startup
   downloadModpackUrl:
   # If true, old versions of downloaded mods will be replaced with new ones from downloadModpackUrl
@@ -98,7 +120,11 @@ minecraftServer:
   # Check accounts against Minecraft account service.
   onlineMode: true
   # If you adjust this, you may need to adjust resources.requests above to match.
-  jvmOpts: "-Xmx512M -Xms512M"
+  memory: 512M
+  # General JVM options to be passed to the Minecraft server invocation
+  jvmOpts: ""
+  # Options like -X that need to proceed general JVM options
+  jvmXXOpts: ""
   serviceType: LoadBalancer
   rcon:
     # If you enable this, make SURE to change your password below.
@@ -111,6 +137,10 @@ minecraftServer:
     # If you enable this, your server will be "published" to Gamespy
     enabled: false
     port: 25565
+
+## Additional minecraft container environment variables
+##
+extraEnv: {}
 
 persistence:
   ## minecraft data Persistent Volume Storage Class

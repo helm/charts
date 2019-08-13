@@ -2,7 +2,7 @@
 replicaCount: 1
 image:
   repository: hjacobs/kube-ops-view
-  tag: 0.9
+  tag: 0.11
   pullPolicy: IfNotPresent
 service:
   # annotations:
@@ -21,10 +21,11 @@ resources:
     memory: 64Mi
 ingress:
   enabled: false
-  # hostname: kube-ops-view.local
-  # annotations:
+  path: /
+  hostname: kube-ops-view.local
+  annotations: {}
   #   kubernetes.io/ingress.class: nginx
-  # tls:
+  tls: []
   ## Secrets must be manually created in the namespace
   #   - secretName: kube-ops-view.local-tls
   #     hosts:
@@ -39,6 +40,7 @@ rbac:
 ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
 podLabels: {}
 affinity: {}
+tolerations: []
 
 # Add securityContext
 securityContext: {}

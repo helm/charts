@@ -19,7 +19,7 @@ rules:
     resources: ["statefulsets", "deployments", "replicasets"]
     verbs: ["get", "list", "watch", "create", "delete", "update", "patch"]
   - apiGroups: ["extensions"]
-    resources: ["deployments", "replicasets", "jobs"]
+    resources: ["deployments", "replicasets"]
     verbs: ["get", "list", "watch", "create", "delete", "update", "patch"]
   - apiGroups: ["batch"]
     resources: ["cronjobs", "jobs"]

@@ -1,4 +1,4 @@
-{{- if .Values.ingressController.enabled -}}
+{{- if (and (.Values.ingressController.enabled) (not (eq .Values.env.database "off"))) }}
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
@@ -35,34 +35,7 @@ spec:
       {{- end }}
       {{- end }}
       initContainers:
-      - name: wait-for-db
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        env:
-        - name: KONG_PROXY_ACCESS_LOG
-          value: "/dev/stdout"
-        - name: KONG_ADMIN_ACCESS_LOG
-          value: "/dev/stdout"
-        - name: KONG_PROXY_ERROR_LOG
-          value: "/dev/stderr"
-        - name: KONG_ADMIN_ERROR_LOG
-          value: "/dev/stderr"
-        {{- include "kong.env" .  | indent 8 }}
-        {{- if .Values.postgresql.enabled }}
-        - name: KONG_PG_HOST
-          value: {{ template "kong.postgresql.fullname" . }}
-        - name: KONG_PG_PORT
-          value: "{{ .Values.postgresql.service.port }}"
-        - name: KONG_PG_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ template "kong.postgresql.fullname" . }}
-              key: postgresql-password
-        {{- end }}
-        {{- if .Values.cassandra.enabled }}
-        - name: KONG_CASSANDRA_CONTACT_POINTS
-          value: {{ template "kong.cassandra.fullname" . }}
-        {{- end }}
-        command: [ "/bin/sh", "-c", "until kong start; do echo 'waiting for db'; sleep 1; done; kong stop" ]
+      {{- include "kong.wait-for-db" . | nindent 6 }}
       containers:
       - name: admin-api
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -70,11 +43,24 @@ spec:
         env:
         - name: KONG_PROXY_LISTEN
           value: 'off'
-        - name: KONG_ADMIN_ACCESS_LOG
-          value: "/dev/stdout"
-        - name: KONG_ADMIN_ERROR_LOG
-          value: "/dev/stderr"
-        {{- include "kong.env" .  | indent 8 }}
+        {{- if .Values.enterprise.enabled }}
+        {{- if .Values.enterprise.rbac.enabled }}
+        # TODO: uncomment this once we have a means of securely providing the
+        # controller its token using a secret.
+        #- name: KONG_ENFORCE_RBAC
+        #  value: "on"
+        {{- end }}
+        # the controller admin API should not receive requests to create admins or developers
+        # never enable SMTP on it as such
+        {{- if .Values.enterprise.smtp.enabled }}
+        - name: KONG_SMTP_MOCK
+          value: "on"
+        {{- else }}
+        - name: KONG_SMTP_MOCK
+          value: "on"
+        {{- end }}
+        {{- include "kong.license" . | nindent 8 }}
+        {{- end }}
         {{- if .Values.admin.useTLS }}
         - name: KONG_ADMIN_LISTEN
           value: "0.0.0.0:{{ .Values.admin.containerPort }} ssl"
@@ -95,6 +81,7 @@ spec:
         - name: KONG_CASSANDRA_CONTACT_POINTS
           value: {{ template "kong.cassandra.fullname" . }}
         {{- end }}
+        {{- include "kong.env" .  | indent 8 }}
         ports:
         - name: admin
           containerPort: {{ .Values.admin.containerPort }}
@@ -105,55 +92,5 @@ spec:
 {{ toYaml .Values.livenessProbe | indent 10 }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
-      - name: ingress-controller
-        args:
-        - /kong-ingress-controller
-        # the default service is the kong proxy service
-        - --default-backend-service={{ .Release.Namespace }}/{{ template "kong.fullname" . }}-proxy
-        # Service from were we extract the IP address/es to use in Ingress status
-        - --publish-service={{ .Release.Namespace }}/{{ template "kong.fullname" . }}-proxy
-        # Set the ingress class
-        - --ingress-class={{ .Values.ingressController.ingressClass }}
-        - --election-id=kong-ingress-controller-leader-{{ .Values.ingressController.ingressClass }}
-        # the kong URL points to the kong admin api server
-        {{- if .Values.admin.useTLS }}
-        - --kong-url=https://localhost:{{ .Values.admin.containerPort }}
-        - --admin-tls-skip-verify # TODO make this configurable
-        {{- else }}
-        - --kong-url=http://localhost:{{ .Values.admin.containerPort }}
-        {{- end }}
-        env:
-        - name: POD_NAME
-          valueFrom:
-            fieldRef:
-              apiVersion: v1
-              fieldPath: metadata.name
-        - name: POD_NAMESPACE
-          valueFrom:
-            fieldRef:
-              apiVersion: v1
-              fieldPath: metadata.namespace
-        image: "{{ .Values.ingressController.image.repository }}:{{ .Values.ingressController.image.tag }}"
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
-        livenessProbe:
-          failureThreshold: 3
-          httpGet:
-            path: /healthz
-            port: 10254
-            scheme: HTTP
-          initialDelaySeconds: 30
-          periodSeconds: 10
-          successThreshold: 1
-          timeoutSeconds: 1
-        readinessProbe:
-          failureThreshold: 3
-          httpGet:
-            path: /healthz
-            port: 10254
-            scheme: HTTP
-          periodSeconds: 10
-          successThreshold: 1
-          timeoutSeconds: 1
-        resources:
-{{ toYaml .Values.ingressController.resources | indent 10 }}
+      {{- include "kong.controller-container" . | nindent 6 }}
 {{- end -}}

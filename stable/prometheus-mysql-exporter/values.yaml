@@ -15,6 +15,19 @@ service:
   externalPort: 9104
   internalPort: 9104
 
+serviceMonitor:
+  # enabled should be set to true to enable prometheus-operator discovery of this service
+  enabled: false
+  # interval is the interval at which metrics should be scraped
+  # interval: 30s
+  # scrapeTimeout is the timeout after which the scrape is ended
+  # scrapeTimeout: 10s
+  # additionalLabels is the set of additional labels to add to the ServiceMonitor
+  additionalLabels: {}
+  jobLabel: ""
+  targetLabels: []
+  podTargetLabels: []
+
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
@@ -32,6 +45,8 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+podLabels: {}
 
 annotations:
   prometheus.io/scrape: "true"
@@ -90,7 +105,7 @@ cloudsqlproxy:
   enabled: false
   image:
     repo: "gcr.io/cloudsql-docker/gce-proxy"
-    tag: "1.11"
+    tag: "1.14"
     pullPolicy: "IfNotPresent"
   instanceConnectionName: "project:us-central1:dbname"
   port: "3306"

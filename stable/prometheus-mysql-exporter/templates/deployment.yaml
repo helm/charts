@@ -18,6 +18,9 @@ spec:
       labels:
         app: {{ template "prometheus-mysql-exporter.name" . }}
         release: {{ .Release.Name }}
+{{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | trim | indent 8 }}
+{{- end }}
       annotations:
       {{- if .Values.cloudsqlproxy.enabled }}
         checksum/config: {{ include (print .Template.BasePath "/secret.yaml") . | sha256sum }}
@@ -40,14 +43,14 @@ spec:
 {{- else if and (typeIs "bool" $element) (not $element) }}
 {{ printf "--no-collect.%s" $index | quote | indent 12 }},
 {{- else }}
-{{ printf "--collect.%s" $index | quote | indent 12 }}, {{ $element | quote }}
+{{ printf "--collect.%s" $index | quote | indent 12 }}, {{ $element | quote }},
 {{- end }}
 {{- end }}
           ]
 {{- end }}
-          env:
-            - name: DATA_SOURCE_NAME
-              value: "{{ .Values.mysql.user }}:{{ .Values.mysql.pass }}@{{ if .Values.mysql.protocol }}{{ .Values.mysql.protocol }}{{ end }}({{ .Values.mysql.host }}:{{ .Values.mysql.port }})/{{ if .Values.mysql.db }}{{ .Values.mysql.db }}{{ end }}{{ if .Values.mysql.param }}?{{ .Values.mysql.param }}{{ end }}"
+          envFrom:
+            - secretRef:
+                name: {{ template "prometheus-mysql-exporter.fullname" . }}
           ports:
             - containerPort: {{ .Values.service.internalPort }}
           livenessProbe:

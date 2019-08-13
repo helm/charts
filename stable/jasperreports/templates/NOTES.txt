@@ -1,9 +1,16 @@
 {{- if or .Values.mariadb.enabled .Values.externalDatabase.host -}}
-** Please be patient while the chart is being deployed **
 
-1. Get the JasperReports URL by running:
+1. Get the JasperReports URL:
 
-{{- if contains "NodePort" .Values.service.type }}
+{{- if .Values.ingress.enabled }}
+
+  You should be able to access your new JasperReports installation through
+
+  {{- range .Values.ingress.hosts }}
+  {{ if .tls }}https{{ else }}http{{ end }}://{{ .name }}/jasperserver/
+  {{- end }}
+
+{{- else if contains "NodePort" .Values.service.type }}
 
   export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "jasperreports.fullname" . }})
   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
@@ -11,12 +18,11 @@
 
 {{- else if contains "LoadBalancer" .Values.service.type }}
 
-** Please ensure an external IP is associated to the {{ template "jasperreports.fullname" . }} service before proceeding **
-** Watch the status using: kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "jasperreports.fullname" . }} **
-
-  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "jasperreports.fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+        Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "jasperreports.fullname" . }}'
 
 {{- $port:=.Values.service.port | toString }}
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "jasperreports.fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
   echo "JasperReports URL: http://$SERVICE_IP{{- if ne $port "80" }}:{{ .Values.service.port }}{{ end }}/jasperserver/"
 
 {{- else if contains "ClusterIP"  .Values.service.type }}
@@ -44,5 +50,12 @@ host. To configure JasperReports to use and external database host:
 1. Complete your JasperReports deployment by running:
 
   helm upgrade {{ .Release.Name }} --set service.type={{ .Values.service.type }},mariadb.enabled=false,externalDatabase.host=YOUR_EXTERNAL_DATABASE_HOST stable/jasperreports
+
+{{- end }}
+
+{{- if and (contains "bitnami/" .Values.image.repository) (not (.Values.image.tag | toString | regexFind "-r\\d+$|sha256:")) }}
+
+WARNING: Rolling tag detected ({{ .Values.image.repository }}:{{ .Values.image.tag }}), please note that it is strongly recommended to avoid using rolling tags in a production environment.
++info https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/
 
 {{- end }}

@@ -11,12 +11,11 @@ metadata:
     {{- toYaml .Values.service.annotations | nindent 4 }}
 spec:
   ports:
-  - name: metrics
-    port: {{ .Values.service.port }}
-    protocol: TCP
-    targetPort: metrics
+    - port: {{ .Values.service.port }}
+      targetPort: metrics
+      protocol: TCP
+      name: metrics
   selector:
     app.kubernetes.io/name: {{ include "prometheus-mongodb-exporter.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
   type: {{ .Values.service.type }}
-

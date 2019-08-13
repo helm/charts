@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "openebs.fullname" . }}-admission-server
+  labels:
+    app: admission-webhook
+    chart: {{ template "openebs.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: admission-webhook
+spec:
+  replicas: {{ .Values.webhook.replicas }}
+  selector:
+    matchLabels:
+      app: admission-webhook
+  template:
+    metadata:
+      labels:
+        app: admission-webhook
+        name: admission-webhook
+        openebs.io/version: {{ .Values.release.version }}
+        openebs.io/component-name: admission-webhook
+    spec:
+{{- if .Values.webhook.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.webhook.nodeSelector | indent 8 }}
+{{- end }}
+{{- if .Values.webhook.tolerations }}
+      tolerations:
+{{ toYaml .Values.webhook.tolerations | indent 8 }}
+{{- end }}
+{{- if .Values.webhook.affinity }}
+      affinity:
+{{ toYaml .Values.webhook.affinity | indent 8 }}
+{{- end }}
+      serviceAccountName: {{ template "openebs.serviceAccountName" . }}
+      containers:
+        - name: admission-webhook
+          image: "{{ .Values.webhook.image }}:{{ .Values.webhook.imageTag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args:
+            - -tlsCertFile=/etc/webhook/certs/cert.pem
+            - -tlsKeyFile=/etc/webhook/certs/key.pem
+            - -alsologtostderr
+            - -v=8
+            - 2>&1
+          volumeMounts:
+            - name: webhook-certs
+              mountPath: /etc/webhook/certs
+              readOnly: true
+      volumes:
+        - name: webhook-certs
+          secret:
+            secretName: admission-server-certs

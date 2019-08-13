@@ -75,6 +75,36 @@ spec:
                 secretKeyRef:
                   name: {{ include "mercure.fullname" . }}
                   key: subscriberJwtKey
+            - name: HEARTBEAT_INTERVAL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "mercure.fullname" . }}
+                  key: heartbeatInterval
+            - name: HISTORY_CLEANUP_FREQUENCY
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "mercure.fullname" . }}
+                  key: historyCleanupFrequency
+            - name: HISTORY_SIZE
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "mercure.fullname" . }}
+                  key: historySize
+            - name: READ_TIMEOUT
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "mercure.fullname" . }}
+                  key: readTimeout
+            - name: WRITE_TIMEOUT
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "mercure.fullname" . }}
+                  key: writeTimeout
+            - name: USE_FORWARDED_HEADERS
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "mercure.fullname" . }}
+                  key: useForwardedHeaders
           livenessProbe:
             httpGet:
               path: /

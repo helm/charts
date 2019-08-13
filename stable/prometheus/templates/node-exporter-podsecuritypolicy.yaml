@@ -19,7 +19,7 @@ spec:
     - 'configMap'
     - 'hostPath'
     - 'secret'
-  AllowedHostPaths:
+  allowedHostPaths:
     - pathPrefix: /proc
       readOnly: true
     - pathPrefix: /sys

@@ -1,5 +1,5 @@
 apiVersion: v1
-appVersion: "v0.6.1"
+appVersion: "v0.7.0"
 description: A Prometheus exporter for MongoDB metrics
 home: https://github.com/percona/mongodb_exporter
 keywords:
@@ -13,4 +13,4 @@ maintainers:
 name: prometheus-mongodb-exporter
 sources:
 - https://github.com/percona/mongodb_exporter
-version: 1.0.0
+version: 2.2.0

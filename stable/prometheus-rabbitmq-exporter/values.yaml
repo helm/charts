@@ -33,6 +33,8 @@ rabbitmq:
   url: http://myrabbit:15672
   user: guest
   password: guest
+  # If existingPasswordSecret is set then password is ignored
+  existingPasswordSecret: ~
   capabilities: bert,no_sort
   include_queues: ".*"
   include_vhost: ".*"
@@ -48,3 +50,10 @@ annotations: {}
 #  prometheus.io/scrape: "true"
 #  prometheus.io/path: "/metrics"
 #  prometheus.io/port: 9419
+
+prometheus:
+  monitor:
+    enabled: false
+    additionalLabels: {}
+    interval: 15s
+    namespace: []

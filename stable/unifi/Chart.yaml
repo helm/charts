@@ -1,8 +1,8 @@
 apiVersion: v1
-appVersion: 5.9.29
+appVersion: 5.10.19
 description: Ubiquiti Network's Unifi Controller
 name: unifi
-version: 0.3.2
+version: 0.4.2
 keywords:
   - ubiquiti
   - unifi
@@ -15,3 +15,5 @@ sources:
 maintainers:
   - name: billimek
     email: jeff@billimek.com
+  - name: mcronce
+    email: mike@quadra-tec.net

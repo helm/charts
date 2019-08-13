@@ -10,6 +10,7 @@ metadata:
     component: apiserver
     name: maya-apiserver
     openebs.io/component-name: maya-apiserver
+    openebs.io/version: {{ .Values.release.version }}
 spec:
   replicas: {{ .Values.apiserver.replicas }}
   selector:
@@ -22,6 +23,9 @@ spec:
         app: {{ template "openebs.name" . }}
         release: {{ .Release.Name }}
         component: apiserver
+        name: maya-apiserver
+        openebs.io/component-name: maya-apiserver
+        openebs.io/version: {{ .Values.release.version }}
     spec:
       serviceAccountName: {{ template "openebs.serviceAccountName" . }}
       containers:
@@ -41,15 +45,17 @@ spec:
         # This is supported for maya api server version 0.5.2 onwards
         #- name: OPENEBS_IO_K8S_MASTER
         #  value: "http://172.28.128.3:8080"
-{{- if .Values.ndm.sparse }}
-{{- if .Values.ndm.sparse.enabled }}
         # OPENEBS_IO_INSTALL_DEFAULT_CSTOR_SPARSE_POOL decides whether default cstor sparse pool should be
         # configured as a part of openebs installation.
         # If "true" a default cstor sparse pool will be configured, if "false" it will not be configured.
         - name: OPENEBS_IO_INSTALL_DEFAULT_CSTOR_SPARSE_POOL
-          value: "{{ .Values.ndm.sparse.enabled }}"
-{{- end }}
-{{- end }}
+          value: "{{ .Values.apiserver.sparse.enabled }}"
+        - name: OPENEBS_IO_CSTOR_POOL_SPARSE_DIR
+          value: "{{ .Values.ndm.sparse.path }}"
+        - name: OPENEBS_IO_CREATE_DEFAULT_STORAGE_CONFIG
+          value: "{{ .Values.defaultStorageConfig.enabled }}"
+        - name: OPENEBS_IO_CSTOR_TARGET_DIR
+          value: "{{ .Values.ndm.sparse.path }}"
         # OPENEBS_NAMESPACE provides the namespace of this deployment as an
         # environment variable
         - name: OPENEBS_NAMESPACE
@@ -84,6 +90,8 @@ spec:
           value: "{{ .Values.cstor.volumeMgmt.image }}:{{ .Values.cstor.volumeMgmt.imageTag }}"
         - name: OPENEBS_IO_VOLUME_MONITOR_IMAGE
           value: "{{ .Values.policies.monitoring.image }}:{{ .Values.policies.monitoring.imageTag }}"
+        - name: OPENEBS_IO_CSTOR_POOL_EXPORTER_IMAGE
+          value: "{{ .Values.policies.monitoring.image }}:{{ .Values.policies.monitoring.imageTag }}"
         # OPENEBS_IO_ENABLE_ANALYTICS if set to true sends anonymous usage
         # events to Google Analytics
         - name: OPENEBS_IO_ENABLE_ANALYTICS
@@ -92,6 +100,8 @@ spec:
         # for periodic ping events sent to Google Analytics. Default is 24 hours.
         - name: OPENEBS_IO_ANALYTICS_PING_INTERVAL
           value: "{{ .Values.analytics.pingInterval }}"
+        - name: OPENEBS_IO_INSTALLER_TYPE
+          value: "charts-helm"
         livenessProbe:
           exec:
             command:

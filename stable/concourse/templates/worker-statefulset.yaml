@@ -1,3 +1,4 @@
+{{- if .Values.worker.enabled -}}
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
@@ -15,6 +16,9 @@ spec:
       labels:
         app: {{ template "concourse.worker.fullname" . }}
         release: "{{ .Release.Name }}"
+        {{- with .Values.worker.labels }}
+{{ toYaml . | trim | indent 8 }}
+        {{- end }}
       {{- if .Values.worker.annotations }}
       annotations:
 {{ toYaml .Values.worker.annotations | indent 8 }}
@@ -47,12 +51,17 @@ spec:
           image: "{{ .Values.image }}:{{ .Values.imageTag }}"
           {{- end }}
           imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+          securityContext:
+            privileged: true
           command:
-            - /bin/sh
+            - /bin/bash
           args:
             - -ce
             - |-
-              rm -rf {{ .Values.concourse.worker.workDir }}/*
+              for v in $((btrfs subvolume list --sort=-ogen "{{ .Values.concourse.worker.workDir }}" || true) | awk '{print $9}'); do
+                (btrfs subvolume show "{{ .Values.concourse.worker.workDir }}/$v" && btrfs subvolume delete "{{ .Values.concourse.worker.workDir }}/$v") || true
+              done
+              rm -rf "{{ .Values.concourse.worker.workDir }}/*"
           volumeMounts:
             - name: concourse-work-dir
               mountPath: {{ .Values.concourse.worker.workDir | quote }}
@@ -82,10 +91,8 @@ spec:
             preStop:
               exec:
                 command:
-                  - "kill"
-                  - "-s"
-                  - {{ .Values.concourse.worker.shutdownSignal | quote }}
-                  - "1"
+                  - "/bin/bash"
+                  - "/pre-stop-hook.sh"
           env:
             {{- if .Values.concourse.worker.rebalanceInterval }}
             - name: CONCOURSE_REBALANCE_INTERVAL
@@ -171,14 +178,23 @@ spec:
             - name: CONCOURSE_LOG_LEVEL
               value: {{ .Values.concourse.worker.logLevel | quote }}
             {{- end }}
+            {{ if not .Values.web.enabled }}
             - name: CONCOURSE_TSA_HOST
-              value: "{{ template "concourse.web.fullname" . }}:{{ .Values.concourse.web.tsa.bindPort}}"
+              value: "{{- range $i, $tsaHost := .Values.concourse.worker.tsa.hosts }}{{- if $i }},{{ end }}{{- $tsaHost }}{{- end -}}"
+            {{ else }}
+            - name: CONCOURSE_TSA_HOST
+              value: "{{ template "concourse.web.tsa.address" . -}}"
+            {{- end }}
             - name: CONCOURSE_TSA_PUBLIC_KEY
               value: "{{ .Values.worker.keySecretsPath }}/host_key.pub"
             - name: CONCOURSE_TSA_WORKER_PRIVATE_KEY
               value: "{{ .Values.worker.keySecretsPath }}/worker_key"
+            {{- if .Values.concourse.worker.externalGardenUrl }}
+            - name: CONCOURSE_EXTERNAL_GARDEN_URL
+              value: {{ .Values.concourse.worker.externalGardenUrl | quote }}
+            {{- end }}
             {{- if .Values.concourse.worker.garden.useHoudini }}
-              - name: CONCOURSE_GARDEN_USE_HOUDINI
+            - name: CONCOURSE_GARDEN_USE_HOUDINI
               value: {{ .Values.concourse.worker.garden.useHoudini | quote }}
             {{- end }}
             {{- if .Values.concourse.worker.garden.bin }}
@@ -233,13 +249,17 @@ spec:
             - name: CONCOURSE_BAGGAGECLAIM_OVERLAYS_DIR
               value: {{ .Values.concourse.worker.baggageclaim.overlaysDir | quote }}
             {{- end }}
-            {{- if .Values.concourse.worker.baggageclaim.reapInterval }}
-            - name: CONCOURSE_BAGGAGECLAIM_REAP_INTERVAL
-              value: {{ .Values.concourse.worker.baggageclaim.reapInterval | quote }}
-            {{- end }}
             {{- if .Values.concourse.worker.baggageclaim.disableUserNamespaces }}
             - name: CONCOURSE_BAGGAGECLAIM_DISABLE_USER_NAMESPACES
               value: {{ .Values.concourse.worker.baggageclaim.disableUserNamespaces | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.volumeSweeperMaxInFlight }}
+            - name: CONCOURSE_VOLUME_SWEEPER_MAX_IN_FLIGHT
+              value: {{ .Values.concourse.worker.volumeSweeperMaxInFlight | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.containerSweeperMaxInFlight }}
+            - name: CONCOURSE_CONTAINER_SWEEPER_MAX_IN_FLIGHT
+              value: {{ .Values.concourse.worker.containerSweeperMaxInFlight | quote }}
             {{- end }}
 {{- if .Values.worker.env }}
 {{ toYaml .Values.worker.env | indent 12 }}
@@ -259,6 +279,10 @@ spec:
               readOnly: true
             - name: concourse-work-dir
               mountPath: {{ .Values.concourse.worker.workDir | quote }}
+            - name: pre-stop-hook
+              mountPath: /pre-stop-hook.sh
+              subPath: pre-stop-hook.sh
+
 {{- if .Values.worker.additionalVolumeMounts }}
 {{ toYaml .Values.worker.additionalVolumeMounts | indent 12 }}
 {{- end }}
@@ -288,17 +312,18 @@ spec:
 {{- if .Values.worker.additionalVolumes }}
 {{ toYaml .Values.worker.additionalVolumes | indent 8 }}
 {{- end }}
+        - name: pre-stop-hook
+          configMap:
+            name: {{ template "concourse.worker.fullname" . }}
         - name: concourse-keys
           secret:
-            secretName: {{ template "concourse.concourse.fullname" . }}
+            secretName: {{ template "concourse.worker.fullname" . }}
             defaultMode: 0400
             items:
               - key: host-key-pub
                 path: host_key.pub
               - key: worker-key
                 path: worker_key
-              - key: worker-key-pub
-                path: worker_key.pub
   {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
     - metadata:
@@ -332,3 +357,4 @@ spec:
   {{- if .Values.worker.podManagementPolicy }}
   podManagementPolicy: {{ .Values.worker.podManagementPolicy }}
   {{- end }}
+{{- end }}

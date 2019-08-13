@@ -20,4 +20,12 @@ spec:
     interval: {{ .Values.alertmanager.serviceMonitor.interval }}
     {{- end }}
     path: "{{ trimSuffix "/" .Values.alertmanager.alertmanagerSpec.routePrefix }}/metrics"
+{{- if .Values.alertmanager.serviceMonitor.metricRelabelings }}
+    metricRelabelings:
+{{ tpl (toYaml .Values.alertmanager.serviceMonitor.metricRelabelings | indent 6) . }}
+{{- end }}
+{{- if .Values.alertmanager.serviceMonitor.relabelings }}
+    relabelings:
+{{ toYaml .Values.alertmanager.serviceMonitor.relabelings | indent 6 }}
+{{- end }}
 {{- end }}
