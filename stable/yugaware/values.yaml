@@ -21,6 +21,7 @@ yugaware:
   health:
     username: ""
     password: ""
+    email: ""
 
 helm:
   timeout: 900
