@@ -1,5 +1,5 @@
 operatorImageName: gcr.io/spark-operator/spark-operator
-operatorVersion: v2.4.0-v1beta1-0.8.2
+operatorVersion: v2.4.0-v1beta1-0.9.0
 imagePullPolicy: IfNotPresent
 
 rbac:
