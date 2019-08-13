@@ -150,12 +150,12 @@ rabbitmq:
   ## ref: https://www.rabbitmq.com/ssl.html
   ##
   ssl:
-    enabled: true
-    fail_if_no_peer_cert: true
-    ssl_options_verify: verify_peer
-    ca_certificate: |-
-    server_certificate: |-
-    server_key: |-
+    enabled: false
+    failIfNoPeerCert: true
+    sslOptionsVerify: verify_peer
+    caCertificate: |-
+    serverCertificate: |-
+    serverKey: |-
 
 ## Kubernetes service type
 service:

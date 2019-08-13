@@ -147,13 +147,15 @@ rabbitmq:
   advancedConfiguration: |-
 
   ## Enable encryption to rabbitmq
+  ## ref: https://www.rabbitmq.com/ssl.html
+  ##
   ssl:
     enabled: false
-    fail_if_no_peer_cert: true
-    ca_certificate: |-
-    server_certificate: |-
-    server_key: |-
-
+    failIfNoPeerCert: true
+    sslOptionsVerify: verify_peer
+    caCertificate: |-
+    serverCertificate: |-
+    serverKey: |-
 
 ## Kubernetes service type
 service:

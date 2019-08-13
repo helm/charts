@@ -78,11 +78,11 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `rabbitmq.extraConfiguration`        | Extra configuration to add to rabbitmq.conf      | See values.yaml                                         |
 | `rabbitmq.advancedConfiguration`     | Extra configuration (in classic format) to add to advanced.config    | See values.yaml                                         |
 | `rabbitmq.ssl.enabled`                  | Enable ssl support to rabbitmq |                     |
-| `rabbitmq.ssl.fail_if_no_peer_cert`     | `true`  | When set to true, TLS connection will be rejected if client fails to provide a certificate |
-| `rabbitmq.ssl.ssl_options_verify`     | `verify_peer`  | Should [peer verification](https://www.rabbitmq.com/ssl.html#peer-verification) be enabled? |
-| `rabbitmq.ssl.ca_certificate`     | Ca certificate  | Certificate Authority (CA) bundle content |
-| `rabbitmq.ssl.server_certificate`     | Server certificate  | Server certificate content |
-| `rabbitmq.ssl.server_key`     | Server Key  | Server private key content |
+| `rabbitmq.ssl.failIfNoPeerCert`     | `true`  | When set to true, TLS connection will be rejected if client fails to provide a certificate |
+| `rabbitmq.ssl.sslOptionsVerify`     | `verify_peer`  | Should [peer verification](https://www.rabbitmq.com/ssl.html#peer-verification) be enabled? |
+| `rabbitmq.ssl.caCertificate`     | Ca certificate  | Certificate Authority (CA) bundle content |
+| `rabbitmq.ssl.serverCertificate`     | Server certificate  | Server certificate content |
+| `rabbitmq.ssl.serverKey`     | Server Key  | Server private key content |
 | `service.type`                       | Kubernetes Service type                          | `ClusterIP`                                             |
 | `service.port`                       | Amqp port                                        | `5672`                                                  |
 | `service.port_ssl`                   | Amqp ssl port                                    | `5671`                                                  |

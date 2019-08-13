@@ -10,9 +10,9 @@ metadata:
     heritage: "{{ .Release.Service }}"
 data:
   ca_certificate.pem:
-    {{ .Values.rabbitmq.ssl.ca_certificate | quote }}
+    {{ .Values.rabbitmq.ssl.caCertificate | quote }}
   server_certificate.pem:
-    {{ .Values.rabbitmq.ssl.server_certificate | quote  }}
+    {{ .Values.rabbitmq.ssl.serverCertificate | quote  }}
   server_key.pem:
-    {{ .Values.rabbitmq.ssl.server_key | quote  }}
+    {{ .Values.rabbitmq.ssl.serverKey | quote  }}
 {{ end }}
