@@ -1,0 +1,8 @@
+## Configuration for enabling Cluster-Agent and Cluster-Check-Worker
+clusterAgent:
+  enabled: true
+  clusterChecks:
+    enabled: true
+
+clusterchecksDeployment:
+  enabled: true
