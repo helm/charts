@@ -1,7 +1,7 @@
 # clusterName:
 image:
   repository: sorintlab/stolon
-  tag: v0.13.0-pg10
+  tag: v0.13.0-pg11
   pullPolicy: IfNotPresent
 
 # used by create-cluster-job when store.backend is etcd
@@ -54,7 +54,7 @@ replicationPassword:
 ## backend could be one of the following: consul, etcdv2, etcdv3 or kubernetes
 store:
   backend: kubernetes
-#  endpoints: "http://stolon-consul:8500"
+  #  endpoints: "http://stolon-consul:8500"
   kubeResourceKind: configmap
 
 pgParameters: {}
@@ -110,7 +110,7 @@ proxy:
   priorityClassName: ""
   service:
     type: ClusterIP
-#    loadBalancerIP: ""
+    # loadBalancerIP: ""
     annotations: {}
     ports:
       proxy:
