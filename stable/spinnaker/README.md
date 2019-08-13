@@ -200,6 +200,6 @@ halyard:
 ```yaml
 halyard:
   env:
-    - name: DEFAULT_JVM_OPTS
+    - name: JAVA_OPTS
       value: -Dhttp.proxyHost=proxy.example.com
 ```
