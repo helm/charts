@@ -228,6 +228,10 @@ spec:
               secretKeyRef:
                 name: {{ template "rabbitmq.secretPasswordName" . }}
                 key: rabbitmq-password
+          {{- range $key, $value := .Values.rabbitmq.env }}
+          - name: {{ $key }}
+            value: {{ $value | quote }}
+          {{- end }}
 {{- if .Values.metrics.enabled }}
       - name: metrics
         image: {{ template "rabbitmq.metrics.image" . }}
@@ -252,7 +256,7 @@ spec:
         {{- end }}
         ports:
         - name: metrics
-          containerPort: 9090
+          containerPort: {{ .Values.metrics.port }}
         livenessProbe:
           httpGet:
             path: /metrics

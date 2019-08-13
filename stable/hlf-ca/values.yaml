@@ -133,8 +133,8 @@ config:
   #     url: parent-ca.example.com
   #     port: 7054
   ## Affiliations used in ca Server configuration file
-  affiliations:
-    org1: []
+  affiliations: {}
+    # org1: []
 
 resources: {}
   ## We usually recommend not to specify default resources and to leave this as a conscious

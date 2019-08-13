@@ -51,6 +51,10 @@ spec:
         {{- else }}
         command: ["vault", "server", "-config", "/vault/config/config.json"]
         {{- end }}
+        {{- if .Values.vault.extraArgs }}
+        args:
+{{ tpl (toYaml .Values.vault.extraArgs) . | indent 10 }}
+        {{- end }}
         {{- if .Values.lifecycle }}
         lifecycle:
 {{ tpl (toYaml .Values.lifecycle) . | indent 10 }}

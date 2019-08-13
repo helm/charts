@@ -15,6 +15,12 @@ spec:
         app: {{ template "influxdb.fullname" . }}
         release: "{{ .Release.Name }}"
     spec:
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end}}
+      {{- end }}
       containers:
       - name: {{ template "influxdb.fullname" . }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -24,27 +30,27 @@ spec:
         ports:
         - name: api
           containerPort: {{ .Values.config.http.bind_address }}
-        {{ if .Values.config.admin.enabled -}}
+        {{- if .Values.config.admin.enabled }}
         - name: admin
           containerPort: {{ .Values.config.admin.bind_address }}
         {{- end }}
-        {{ if .Values.config.graphite.enabled -}}
+        {{- if .Values.config.graphite.enabled }}
         - name: graphite
           containerPort: {{ .Values.config.graphite.bind_address }}
         {{- end }}
-        {{ if .Values.config.collectd.enabled -}}
+        {{- if .Values.config.collectd.enabled }}
         - name: collectd
           containerPort: {{ .Values.config.collectd.bind_address }}
         {{- end }}
-        {{ if .Values.config.udp.enabled -}}
+        {{- if .Values.config.udp.enabled }}
         - name: udp
           containerPort: {{ .Values.config.udp.bind_address }}
         {{- end }}
-        {{ if .Values.config.opentsdb.enabled -}}
+        {{- if .Values.config.opentsdb.enabled }}
         - name: opentsdb
           containerPort: {{ .Values.config.opentsdb.bind_address }}
         {{- end }}
-        {{ if .Values.env }}
+        {{- if .Values.env }}
         env:
 {{ toYaml .Values.env | indent 10 }}
         {{- end }}
