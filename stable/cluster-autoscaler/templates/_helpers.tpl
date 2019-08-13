@@ -18,3 +18,28 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- printf "%s" $name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Create chart name and version as used by the chart label.
+*/}}
+{{- define "cluster-autoscaler.chart" -}}
+{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{/*
+Return instance and name labels.
+*/}}
+{{- define "cluster-autoscaler.instance-name" -}}
+app.kubernetes.io/instance: {{ .Release.Name | quote }}
+app.kubernetes.io/name: {{ include "cluster-autoscaler.name" . | quote }}
+{{- end -}}
+
+
+{{/*
+Return labels, including instance and name.
+*/}}
+{{- define "cluster-autoscaler.labels" -}}
+{{ include "cluster-autoscaler.instance-name" . }}
+app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+helm.sh/chart: {{ include "cluster-autoscaler.chart" . | quote }}
+{{- end -}}

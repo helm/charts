@@ -71,6 +71,10 @@ rbac:
 extraVars: []
 # - "{ name: NODE_NAME, valueFrom: { fieldRef: { fieldPath: spec.nodeName } } }"
 
+busybox:
+  repository: busybox
+  tag: 1.31.0
+
 updateStrategy:
   type: OnDelete
 

@@ -66,6 +66,7 @@ The following table lists the configurable parameters of the Node Exporter chart
 | `prometheus.monitor.additionalLabels` | Additional labels that can be used so ServiceMonitor will be discovered by Prometheus | `{}` | |
 | `prometheus.monitor.namespace` | namespace where servicemonitor resource should be created | `the same namespace as prometheus node exporter` | |
 | `prometheus.monitor.scrapeTimeout` | Timeout after which the scrape is ended | `10s` | |
+| `configmaps`                      | Allow mounting additional configmaps.                                                                                         | `{}`                                    |     |    
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

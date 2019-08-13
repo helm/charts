@@ -12,6 +12,11 @@ image:
   # pullSecrets:
   #   - myRegistrKeySecretName
 
+## User to run blackbox-exporter container as
+runAsUser: 1000
+readOnlyRootFilesystem: true
+runAsNonRoot: true
+
 nodeSelector: {}
 tolerations: []
 affinity: {}
@@ -69,6 +74,11 @@ configmapReload:
   ##
   name: configmap-reload
 
+  ## User to run configmap-reload container as
+  ##
+  runAsUser: 65534
+  runAsNonRoot: true
+
   ## configmap-reload container image
   ##
   image:
@@ -80,3 +90,16 @@ configmapReload:
   ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
   ##
   resources: {}
+
+serviceMonitor:
+  ## If true, a ServiceMonitor CRD is created for a prometheus operator
+  ## https://github.com/coreos/prometheus-operator
+  ##
+  enabled: false
+  labels: {}
+  interval: 30s
+  scrapeTimeout: 30s
+  # The URL that blackbox will scrape
+  url: http://example.com/healthz
+  # Optional human readable URL that will appear in Prometheus / AlertManager
+  urlHumanReadable:  # www.changemeoriwillfail.com
