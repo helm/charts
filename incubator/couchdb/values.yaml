@@ -25,6 +25,11 @@ adminUsername: admin
 # adminPassword: this_is_not_secure
 # cookieAuthSecret: neither_is_this
 
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName:
+
 ## The storage volume used by each Pod in the StatefulSet. If a
 ## persistentVolume is not enabled, the Pods will use `emptyDir` ephemeral
 ## local storage. Setting the storageClass attribute to "-" disables dynamic
@@ -40,7 +45,7 @@ persistentVolume:
 ## The CouchDB image
 image:
   repository: couchdb
-  tag: 2.3.0
+  tag: 2.3.1
   pullPolicy: IfNotPresent
 
 ## Sidecar that connects the individual Pods into a cluster
@@ -48,6 +53,15 @@ helperImage:
   repository: kocolosk/couchdb-statefulset-assembler
   tag: 1.2.0
   pullPolicy: IfNotPresent
+
+## Experimental integration with Lucene-powered fulltext search
+searchImage:
+  repository: kocolosk/couchdb-search
+  tag: 0.1.0
+  pullPolicy: IfNotPresent
+
+## Flip this to flag to include the Search container in each Pod
+enableSearch: false
 
 initImage:
   repository: busybox

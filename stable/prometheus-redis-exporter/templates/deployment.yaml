@@ -22,6 +22,12 @@ spec:
         release: {{ .Release.Name }}
     spec:
       serviceAccountName: {{ template "prometheus-redis-exporter.serviceAccountName" . }}
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end}}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -36,8 +42,17 @@ spec:
           env:
             - name: REDIS_ADDR
               value: {{ .Values.redisAddress }}
+{{- if .Values.script }}
+            - name: REDIS_EXPORTER_SCRIPT
+              value: /script/script.lua
+{{- end }}
 {{- if .Values.env }}
 {{ toYaml .Values.env | indent 12 }}
+{{- end }}
+{{- if .Values.script }}
+          volumeMounts:
+              - mountPath: /script
+                name: script-mount
 {{- end }}
           livenessProbe:
             httpGet:
@@ -49,6 +64,15 @@ spec:
               port: exporter-port
           resources:
 {{ toYaml .Values.resources | indent 12 }}
+    {{- if .Values.script }}
+      volumes:
+        - name: script-mount
+          configMap:
+             name: {{ .Values.script.configmap }}
+             items:
+              - key: {{ .Values.script.keyname }}
+                path: script.lua
+    {{- end }}
     {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}

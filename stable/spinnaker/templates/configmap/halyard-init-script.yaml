@@ -22,5 +22,5 @@ data:
 
     {{- if hasKey .Values.halyard "additionalInitScript" }}
     # additionalInitScript
-    {{ .Values.halyard.additionalInitScript | indent 4 }}
+    {{ tpl .Values.halyard.additionalInitScript $ | indent 4 }}
     {{- end }}

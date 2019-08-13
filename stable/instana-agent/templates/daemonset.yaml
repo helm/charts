@@ -1,5 +1,5 @@
 {{- if .Values.agent.key -}}
-{{- if .Values.zone.name -}}
+{{- if or .Values.zone.name .Values.cluster.name -}}
 apiVersion: apps/v1beta2
 kind: DaemonSet
 metadata:
@@ -32,6 +32,8 @@ spec:
               value: {{ .Values.agent.leaderElectorPort | quote }}
             - name: INSTANA_ZONE
               value: {{ .Values.zone.name | quote }}
+            - name: INSTANA_KUBERNETES_CLUSTER_NAME
+              value: {{ .Values.cluster.name | quote }}
             - name: INSTANA_AGENT_ENDPOINT
               value: {{ .Values.agent.endpointHost | quote }}
             - name: INSTANA_AGENT_ENDPOINT_PORT
@@ -92,10 +94,12 @@ spec:
             - name: dev
               mountPath: /dev
             - name: run
+              mountPath: /run
+            - name: var-run
               mountPath: /var/run
             - name: sys
               mountPath: /sys
-            - name: log
+            - name: var-log
               mountPath: /var/log
             - name: machine-id
               mountPath: /etc/machine-id
@@ -118,13 +122,17 @@ spec:
           ports:
             - containerPort: 42699
         - name: {{ template "instana-agent.name" . }}-leader-elector
-          image: instana/leader-elector:0.5.1
+          image: instana/leader-elector:0.5.4
           env:
             - name: INSTANA_AGENT_POD_NAME
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
-          args: ["--election=instana", "--http=localhost:{{ default 42655 .Values.agent.leaderElectorPort }}", "--id=$(INSTANA_AGENT_POD_NAME)"]
+          command:
+            - "/app/server"
+            - "--election=instana"
+            - "--http=localhost:{{ default 42655 .Values.agent.leaderElectorPort }}"
+            - "--id=$(INSTANA_AGENT_POD_NAME)"
           resources:
             requests:
               cpu: 0.1
@@ -147,11 +155,14 @@ spec:
             path: /dev
         - name: run
           hostPath:
+            path: /run
+        - name: var-run
+          hostPath:
             path: /var/run
         - name: sys
           hostPath:
             path: /sys
-        - name: log
+        - name: var-log
           hostPath:
             path: /var/log
         - name: machine-id

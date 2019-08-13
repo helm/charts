@@ -55,10 +55,10 @@ The following table lists the configurable parameters of the drone charts and th
 | Parameter                   | Description                                                                                   | Default                     |
 |-----------------------------|-----------------------------------------------------------------------------------------------|-----------------------------|
 | `images.server.repository`  | Drone **server** image                                                                        | `docker.io/drone/drone`     |
-| `images.server.tag`         | Drone **server** image tag                                                                    | `0.8.9`                     |
+| `images.server.tag`         | Drone **server** image tag                                                                    | `1.2`                       |
 | `images.server.pullPolicy`  | Drone **server** image pull policy                                                            | `IfNotPresent`              |
 | `images.agent.repository`   | Drone **agent** image                                                                         | `docker.io/drone/agent`     |
-| `images.agent.tag`          | Drone **agent** image tag                                                                     | `0.8.6`                     |
+| `images.agent.tag`          | Drone **agent** image tag                                                                     | `1.2`                       |
 | `images.agent.pullPolicy`   | Drone **agent** image pull policy                                                             | `IfNotPresent`              |
 | `images.dind.repository`    | Docker **dind** image                                                                         | `docker.io/library/docker`  |
 | `images.dind.tag`           | Docker **dind** image tag                                                                     | `18.06.1-ce-dind`           |
@@ -71,6 +71,7 @@ The following table lists the configurable parameters of the drone charts and th
 | `ingress.annotations`       | Ingress annotations                                                                           | `{}`                        |
 | `ingress.hosts`             | Ingress accepted hostnames                                                                    | `nil`                       |
 | `ingress.tls`               | Ingress TLS configuration                                                                     | `[]`                        |
+| `ingress.path`              | Ingress path mapping                                                                          | ``                       |
 | `sourceControl.provider`               | name of source control provider [github,gitlab,gitea,gogs,bitbucketCloud,bitbucketServer]              | ``       |
 | `sourceControl.secret`               | name of secret containing source control keys and passwords              | ``       |
 | `sourceControl.github`               | values to configure github    | see values.yaml       |
@@ -93,6 +94,7 @@ The following table lists the configurable parameters of the drone charts and th
 | `server.schedulerName`      | Drone **server** alternate scheduler name                                                     | `nil`                       |
 | `server.affinity`           | Drone **server** scheduling preferences                                                       | `{}`                        |
 | `server.nodeSelector`       | Drone **server** node labels for pod assignment                                               | `{}`                        |
+| `server.tolerations`        | Drone **server** node taints to tolerate                                                      | `[]`                        |
 | `server.extraContainers`    | Additional sidecar containers                                                                 | `""`                        |
 | `server.extraVolumes`       | Additional volumes for use in extraContainers                                                 | `""`                        |
 | `agent.env`                 | Drone **agent** environment variables                                                         | `(default values)`          |
@@ -102,10 +104,14 @@ The following table lists the configurable parameters of the drone charts and th
 | `agent.schedulerName`       | Drone **agent** alternate scheduler name                                                      | `nil`                       |
 | `agent.affinity`            | Drone **agent** scheduling preferences                                                        | `{}`                        |
 | `agent.nodeSelector`        | Drone **agent** node labels for pod assignment                                                | `{}`                        |
+| `agent.tolerations`         | Drone **agent** node taints to tolerate                                                       | `[]`                        |
 | `agent.livenessProbe` | Not currently used. | `{}` |
 | `agent.readinessProbe` | Not currently used  | `{}` |
+| `agent.volumes`             | Additional volumes to make available to agent (shared by dind if used)                        | `nil`                       |
+| `agent.volumeMounts`        | Mount points for volumes                                                                      | `nil`                       |
 | `dind.enabled`              | Enable or disable **DinD**                                                                    | `true`                      |
 | `dind.driver`               | **DinD** storage driver                                                                       | `overlay2`                  |
+| `dind.volumeMounts`         | Mount points for volumes (defined in agent.volumes)                                           | `nil`                       |
 | `dind.resources`            | **DinD** pod resource requests & limits                                                       | `{}`                        |
 | `dind.env`                  | **DinD** environment variables                                                                | `nil`                       |
 | `dind.command`              | **DinD** custom command instead of default entry point                                        | `nil`                       |

@@ -7,6 +7,8 @@ lcid: 1033
 hadr: 0
 # Override sapassword in templates/secret.yaml
 # sapassword: "MyStrongPassword1234"
+existingSecret: ""
+existingSecretKey: sapassword
 image:
   repository: microsoft/mssql-server-linux
   tag: 2017-CU5
@@ -15,6 +17,11 @@ image:
   ## See https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
   # pullSecrets:
   #    - name: regsecret
+
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName: "default-scheduler"
 
 service:
   # If headless is set to TRUE then the service type is ignored

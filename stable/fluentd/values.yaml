@@ -28,6 +28,7 @@ extraEnvVars:
 #        key: secret_key
 
 service:
+  annotations: {}
   type: ClusterIP
   # type: NodePort
   # nodePort:
@@ -36,6 +37,17 @@ service:
     - name: "monitor-agent"
       protocol: TCP
       containerPort: 24220
+
+metrics:
+  enabled: false
+  service:
+    port: 24231
+  serviceMonitor:
+    enabled: false
+    additionalLabels: {}
+    # namespace: monitoring
+    # interval: 30s
+    # scrapeTimeout: 10s
 
 annotations: {}
 #  prometheus.io/scrape: "true"

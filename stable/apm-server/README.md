@@ -57,6 +57,11 @@ The following table lists the configurable parameters of the apm-server chart an
 | `service.nodePort`                  | NodePort value if service.type is NodePort | None                              |
 | `service.annotations`               | Kubernetes service annotations           | None                                |
 | `service.labels`                    | Kubernetes service labels                | None                                |
+| `ingress.enabled`                   | If true, create ingress pointing to service | `false`                          |
+| `ingress.annotations`               | Kubernetes ingress annotations           | None                                |
+| `ingress.labels`                    | Kubernetes service labels                | None                                |
+| `ingress.hosts`                     | List of ingress accepted hostnames       | apm-server-ingress.example.com      |
+| `ingress.tls`                       | Ingress TLS configuration	             | `[]`                                |
 | `rbac.create`                       | If true, create & use RBAC resources | `true`                                  |
 | `rbac.serviceAccount`               | existing ServiceAccount to use (ignored if rbac.create=true) | `default`       |
 | `config`                            | The content of the configuration file consumed by apm-server. See the [apm-server documentation](https://www.elastic.co/guide/en/beats/apm-server/current/apm-server-reference-yml.html) for full details | |
@@ -70,6 +75,7 @@ The following table lists the configurable parameters of the apm-server chart an
 | `nodeSelector`                      | Node labels for pod assignment     | `{}`                                      |
 | `tolerations`                       | List of node taints to tolerate    | `[]`                                      |
 | `affinity`                          | Node/Pod affinities                | None                                      |
+| `autoscaling` | HorizontalPodAutoscaler for the deployment | `{}` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

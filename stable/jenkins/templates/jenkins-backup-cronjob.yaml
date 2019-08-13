@@ -3,6 +3,7 @@ apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: {{ template "jenkins.fullname" . }}-backup
+  namespace: {{ template "jenkins.namespace" . }}
   labels:
     "app.kubernetes.io/name": '{{ template "jenkins.name" .}}'
     "helm.sh/chart": "{{ .Chart.Name }}-{{ .Chart.Version }}"
@@ -29,7 +30,7 @@ spec:
             args:
             - simple-backup
             - -n
-            - {{ .Release.Namespace }}
+            - {{ template "jenkins.namespace" . }}
             - -l
             - app.kubernetes.io/instance={{ .Release.Name }}
             - --container
@@ -45,24 +46,40 @@ spec:
             env:
 {{ toYaml . | indent 12 }}
             {{- end }}
+            {{- if .Values.backup.existingSecret }}
+            {{- range $key,$value := .Values.backup.existingSecret }}
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $key }}
+                  key: {{ $value.awsaccesskey | quote }}
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $key }}
+                  key: {{ $value.awssecretkey | quote}}
+            {{- end }}
+            {{- end }}
           {{- with .Values.backup.resources }}
             resources:
 {{ toYaml . | indent 14 }}
           {{- end }}
-        affinity:
-          podAffinity:
-            preferredDuringSchedulingIgnoredDuringExecution:
-            - labelSelector:
-                matchExpressions:
-                - key: "app.kubernetes.io/name"
-                  operator: In
-                  values:
-                  - "{{ template "jenkins.name" . }}"
-                - key: "app.kubernetes.io/instance"
-                  operator: In
-                  values:
-                  - "{{ .Release.Name }}"
-              topologyKey: "kubernetes.io/hostname"
+          affinity:
+            podAffinity:
+              preferredDuringSchedulingIgnoredDuringExecution:
+              - weight: 100
+                podAffinityTerm:
+                  topologyKey: "kubernetes.io/hostname"
+                  labelSelector:
+                    matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                      - {{ template "jenkins.fullname" . }}
+                    - key: release
+                      operator: In
+                      values:
+                      - {{ .Release.Name }}
       {{- with .Values.tolerations }}
         tolerations:
 {{ toYaml . | indent 10 }}

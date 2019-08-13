@@ -100,3 +100,5 @@ To connect to your database from outside the cluster execute the following comma
 
 {{- end }}
 {{- end }}
+
+{{ include "redis.checkRollingTags" . }}

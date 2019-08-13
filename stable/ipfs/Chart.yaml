@@ -1,10 +1,10 @@
 apiVersion: v1
 description: A Helm chart for the Interplanetary File System
 name: ipfs
-version: 0.2.2
+version: 0.3.0
 icon: https://raw.githubusercontent.com/ipfs/logo/master/raster-generated/ipfs-logo-128-ice-text.png
 home: https://ipfs.io/
-appVersion: v0.4.9
+appVersion: v0.4.21
 keywords:
 - ipfs
 - distributed-web

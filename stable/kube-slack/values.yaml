@@ -4,6 +4,8 @@ envVars:
   ## e.g. https://hooks.slack.com/services/Txxxxxxxx/Bxxxxxxxx/XXXXXXXXXXXXXXXXXXXXXXXX
   SLACK_URL: ""
   ## Override channel to send
+  SLACK_USERNAME: ""
+  ## Override username to send
   SLACK_CHANNEL: ""
   ## URL of HTTP proxy used to connect to Slack
   SLACK_PROXY: ""
@@ -27,7 +29,7 @@ envVars:
 ## Configuration for the deployment:
 image:
   repository: willwill/kube-slack
-  tag: v4.1.1
+  tag: v4.2.0
   pullPolicy: IfNotPresent
 
 resources: {}

@@ -65,6 +65,11 @@ spec:
 {{- end }}
         securityContext:
           runAsUser: 0
+{{- if .Values.daemonset.capabilities }}
+          capabilities:
+            add:
+{{ toYaml .Values.daemonset.capabilities | indent 12 }}
+{{- end }}
         resources:
 {{- if .Values.daemonset.resources }}
 {{ toYaml .Values.daemonset.resources | indent 10 }}
@@ -120,8 +125,8 @@ spec:
       priorityClassName: {{ .Values.daemonset.priorityClassName }}
 {{- end }}
       serviceAccountName: {{ template "metricbeat.serviceAccountName" . }}
-      hostNetwork: true
-      dnsPolicy: ClusterFirstWithHostNet
+      hostNetwork: {{ .Values.daemonset.hostNetwork }}
+      dnsPolicy: {{ .Values.daemonset.dnsPolicy }}
 {{- if .Values.daemonset.tolerations }}
       tolerations:
 {{ toYaml .Values.daemonset.tolerations | indent 6 }}

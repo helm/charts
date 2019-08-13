@@ -48,3 +48,10 @@ host. To configure Phabricator with the URL of your service:
   echo Username: {{ .Values.phabricatorUsername }}
   echo Password: $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "phabricator.fullname" . }} -o jsonpath="{.data.phabricator-password}" | base64 --decode)
 {{- end }}
+
+{{- if and (contains "bitnami/" .Values.image.repository) (not (.Values.image.tag | toString | regexFind "-r\\d+$|sha256:")) }}
+
+WARNING: Rolling tag detected ({{ .Values.image.repository }}:{{ .Values.image.tag }}), please note that it is strongly recommended to avoid using rolling tags in a production environment.
++info https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/
+
+{{- end }}

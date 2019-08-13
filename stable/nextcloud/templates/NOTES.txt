@@ -1,6 +1,6 @@
 {{- if or .Values.mariadb.enabled .Values.externalDatabase.host -}}
 
-{{- if empty (include "nextcloud.host" .) -}}
+{{- if empty .Values.nextcloud.host -}}
 #################################################################################
 ### WARNING: You did not provide an external host in your 'helm install' call ###
 #################################################################################
@@ -51,7 +51,7 @@ host. To configure nextcloud with the URL of your service:
   kubectl port-forward $POD_NAME 8080:8080
 {{- else }}
 
-  echo http://{{ include "nextcloud.host" . }}{{ if .Values.nextcloudPort }}:{{ .Values.nextcloudPort  }}{{ end }}/
+  echo http://{{ .Values.nextcloud.host }}/
 {{- end }}
 
 2. Get your nextcloud login credentials by running:

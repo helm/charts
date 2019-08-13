@@ -1,6 +1,6 @@
 name: schema-registry
 home: https://docs.confluent.io/current/schema-registry/docs/index.html
-version: 1.1.3
+version: 1.1.5
 appVersion: 5.0.1
 keywords:
   - confluent

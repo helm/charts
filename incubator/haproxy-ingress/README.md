@@ -41,14 +41,15 @@ Parameter | Description | Default
 `serviceAccount.name` | ServiceAccount to be used | ``
 `controller.name` | name of the controller component | `controller`
 `controller.image.repository` | controller container image repository | `quay.io/jcmoraisjr/haproxy-ingress`
-`controller.image.tag` | controller container image tag | `v0.7.1`
+`controller.image.tag` | controller container image tag | `v0.7.2`
 `controller.image.pullPolicy` | controller container image pullPolicy | `IfNotPresent`
+`controller.imagePullSecrets` | controller image pull secrets | `[]`
 `controller.initContainers` | extra containers that can initialize the haproxy-ingress-controller | `[]`
 `controller.extraArgs` | extra command line arguments for the haproxy-ingress-controller | `{}`
 `controller.extraEnv` | extra environment variables for the haproxy-ingress-controller | `{}`
 `controller.template` | custom template for haproxy-ingress-controller | `{}`
 `controller.defaultBackendService` | backend service if defualtBackend.enabled==false | `""`
-`controller.ingressClass` | name of the ingress class to route through this controller | `happroxy`
+`controller.ingressClass` | name of the ingress class to route through this controller | `haproxy`
 `controller.healthzPort` | The haproxy health check (monitoring) port | `10253`
 `controller.livenessProbe.path` | The liveness probe path | `/healthz`
 `controller.livenessProbe.port` | The livneness probe port | `10253`
@@ -87,10 +88,10 @@ Parameter | Description | Default
 `controller.minAvailable` | PodDisruptionBudget minimum available controller pods | `1`
 `controller.resources` | controller container resource requests & limits | `{}`
 `controller.autoscaling.enabled` | enabling controller horizontal pod autoscaling (when `controller.kind` is `Deployment`) | `false`
-`controller.autoscaling.minReplicas` | minimum number of replicas | 
-`controller.autoscaling.maxReplicas` | maximum number of replicas | 
-`controller.autoscaling.targetCPUUtilizationPercentage` | target cpu utilization | 
-`controller.autoscaling.targetMemoryUtilizationPercentage` | target memory utilization | 
+`controller.autoscaling.minReplicas` | minimum number of replicas |
+`controller.autoscaling.maxReplicas` | maximum number of replicas |
+`controller.autoscaling.targetCPUUtilizationPercentage` | target cpu utilization |
+`controller.autoscaling.targetMemoryUtilizationPercentage` | target memory utilization |
 `controller.autoscaling.customMetrics` | Extra custom metrics to add to the HPA | `[]`
 `controller.tolerations` | to control scheduling to servers with taints | `[]`
 `controller.affinity` | to control scheduling | `{}`
@@ -144,7 +145,7 @@ Parameter | Description | Default
 `defaultBackend.podLabels` | Labels for the default backend pod | `{}`
 `defaultBackend.replicaCount` | the number of replicas to deploy (when `controller.kind` is `Deployment`) | `1`
 `defaultBackend.minAvailable` | PodDisruptionBudget minimum available default backend pods | `1`
-`defaultBackend.resources` | default backend pod resources | _see defaults below_ 
+`defaultBackend.resources` | default backend pod resources | _see defaults below_
 `defaultBackend.resources.limits.cpu` | default backend cpu resources limit | `10m`
 `defaultBackend.resources.limits.memory` | default backend memory resources limit | `20Mi`
 `defaultBackend.service.name` | name of default backend service to create | `ingress-default-backend`
