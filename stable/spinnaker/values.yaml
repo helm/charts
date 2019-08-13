@@ -73,7 +73,7 @@ halyard:
 
   ## Uncomment if you want to set environment variables on the Halyard pod.
   # env:
-  #   - name: DEFAULT_JVM_OPTS
+  #   - name: JAVA_OPTS
   #     value: -Dhttp.proxyHost=proxy.example.com
   customCerts:
     ## Enable to override the default cacerts with your own one
