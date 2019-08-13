@@ -94,7 +94,7 @@
     - name: DD_CLUSTER_AGENT_AUTH_TOKEN
       valueFrom:
         secretKeyRef:
-          name: {{ template "datadog.fullname" . }}-cluster-agent
+          name: {{ template "clusterAgent.tokenSecretName" . }}
           key: token
     {{- end }}
     - name: KUBERNETES
