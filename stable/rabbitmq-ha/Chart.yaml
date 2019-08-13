@@ -14,7 +14,7 @@ keywords:
 home: https://www.rabbitmq.com
 icon: https://bitnami.com/assets/stacks/rabbitmq/img/rabbitmq-stack-220x234.png
 sources:
-- https://github.com/rabbitmq/rabbitmq
+- https://github.com/rabbitmq/rabbitmq-server
 - https://github.com/docker-library/rabbitmq
 maintainers:
 - name: steven-sheehy
