@@ -1,0 +1,47 @@
+{{- if .Values.prometheus.serviceMonitor.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "metallb.fullname" . }}-controller-metrics
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: {{ template "metallb.chart" . }}
+    app: {{ template "metallb.name" . }}
+    jobLabel: {{ .Values.prometheus.serviceMonitor.jobLabel }}
+    component: controller
+spec:
+  type: ClusterIP
+  selector:
+    app: {{ template "metallb.name" . }}
+    release: {{ .Release.Name | quote }}
+    component: controller
+  ports:
+  - name: metrics
+    port: 7472
+    protocol: TCP
+    targetPort: 7472
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "metallb.fullname" . }}-speaker-metrics
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: {{ template "metallb.chart" . }}
+    app: {{ template "metallb.name" . }}
+    jobLabel: {{ .Values.prometheus.serviceMonitor.jobLabel }}
+    component: speaker
+spec:
+  type: ClusterIP
+  selector:
+    app: {{ template "metallb.name" . }}
+    release: {{ .Release.Name | quote }}
+    component: speaker
+  ports:
+  - name: metrics
+    port: 7472
+    protocol: TCP
+    targetPort: 7472
+{{- end }}
