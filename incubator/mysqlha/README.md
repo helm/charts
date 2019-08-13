@@ -35,7 +35,7 @@ The following table lists the configurable parameters of the MySQL chart and the
 
 | Parameter                                    | Description                                       | Default                                |
 | -----------------------------------------    | ------------------------------------------------- | -------------------------------------- |
-| `mysqlImage`                                 | `mysql` image and tag.                            | `mysql:5.7.13`                         |
+| `mysqlImage`                                 | `mysql` image and tag.                            | `mysql:5.7.14`                         |
 | `xtraBackupImage`                            | `xtrabackup` image and tag.                       | `gcr.io/google-samples/xtrabackup:1.0` |
 | `imagePullPolicy`                            | Image pull policy.                                | `IfNotPresent`                         |
 | `nameOverride`                               | `String to partially override mysqlha.fullname template with a string (will prepend the release name)` | `nil` |
@@ -59,7 +59,7 @@ The following table lists the configurable parameters of the MySQL chart and the
 | `resources`                                  | CPU/Memory resource requests/limits               | Memory: `128Mi`, CPU: `100m`           |
 | `metrics.enabled`                            | Start a side-car prometheus exporter              | false                                  |
 | `metrics.image`                              | Exporter image                                    | `prom/mysqld-exporter`                 |
-| `metrics.imageTag`                           | Exporter image                                    | `v0.10.0`                              |
+| `metrics.imageTag`                           | Exporter image                                    | `v0.12.0`                              |
 | `metrics.imagePullPolicy`                    | Exporter image pull policy                        | `IfNotPresent`                         |
 | `metrics.resources`                          | Exporter resource requests/limit                  | See `values.yaml`                      |
 | `metrics.livenessProbe.initialDelaySeconds`  | Delay before metrics liveness probe is initiated  | 15                                     |
