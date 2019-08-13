@@ -206,7 +206,7 @@ resources:
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
 livenessProbe:
   enabled: true
-  initialDelaySeconds: 300
+  initialDelaySeconds: 600
   periodSeconds: 30
   timeoutSeconds: 5
   failureThreshold: 6
