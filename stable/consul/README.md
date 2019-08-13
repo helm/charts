@@ -36,6 +36,8 @@ The following table lists the configurable parameters of the consul chart and th
 | `Cpu`                   | container requested cpu               | `100m`                                                     |
 | `DatacenterName`        | Consul Datacenter Name                | `dc1` (The consul default)                                 |
 | `DisableHostNodeId`     | Disable Node Id creation (uses random)| `false`                                                    |
+| `joinPeers`             | Set list of hosts for -retry-join     | `[]`                                                       |
+| `joinWan`               | Set list of hosts for -retry-join-wan | `[]`                                                       |
 | `EncryptGossip`         | Whether or not gossip is encrypted    | `true`                                                     |
 | `GossipKey`             | Gossip-key to use by all members      | `nil`                                                      |
 | `Storage`               | Persistent volume size                | `1Gi`                                                      |
