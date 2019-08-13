@@ -63,6 +63,11 @@ spec:
         volumeMounts:
         - name: config-volume
           mountPath: /etc/coredns
+{{- range .Values.extraSecrets }}
+        - name: {{ .name }}
+          mountPath: {{ .mountPath }}
+          readOnly: true
+{{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         ports:
@@ -73,6 +78,15 @@ spec:
             port: 8080
             scheme: HTTP
           initialDelaySeconds: 60
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 5
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8181
+            scheme: HTTP
+          initialDelaySeconds: 10
           timeoutSeconds: 5
           successThreshold: 1
           failureThreshold: 5
@@ -87,3 +101,9 @@ spec:
             - key: {{ .filename }}
               path: {{ .filename }}
             {{ end }}
+{{- range .Values.extraSecrets }}
+        - name: {{ .name }}
+          secret:
+            secretName: {{ .name }}
+            defaultMode: 400
+{{- end }}

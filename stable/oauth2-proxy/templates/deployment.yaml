@@ -62,6 +62,9 @@ spec:
           - --google-service-account-json=/google/service-account.json
         {{- end }}
         {{- end }}
+        {{- if .Values.htpasswdFile.enabled }}
+          - --htpasswd-file=/etc/oauth2_proxy/htpasswd/users.txt
+        {{- end }}
         env:
         - name: OAUTH2_PROXY_CLIENT_ID
           valueFrom:
@@ -119,6 +122,11 @@ spec:
           name: configaccesslist
           readOnly: true
 {{- end }}
+{{- if .Values.htpasswdFile.enabled }}
+        - mountPath: /etc/oauth2_proxy/htpasswd
+          name: {{ template "oauth2-proxy.fullname" . }}-htpasswd-file
+          readOnly: true
+{{- end }}
       volumes:
 {{- with .Values.config.google }}
 {{- if and .adminEmail (or .serviceAccountJson .existingSecret) }}
@@ -127,6 +135,13 @@ spec:
           secretName: {{ if .existingSecret }}{{ .existingSecret }}{{ else }} {{ template "oauth2-proxy.secretName" . }}{{ end }}
 {{- end }}
 {{- end }}
+
+{{- if .Values.htpasswdFile.enabled }}
+      - name: {{ template "oauth2-proxy.fullname" . }}-htpasswd-file
+        secret:
+          secretName: {{ if .Values.htpasswdFile.existingSecret }}{{ .Values.htpasswdFile.existingSecret }}{{ else }} {{ template "oauth2-proxy.fullname" . }}-htpasswd-file {{ end }}
+{{- end }}
+
 {{- if or .Values.config.existingConfig .Values.config.configFile }}
       - configMap:
           defaultMode: 420
@@ -149,6 +164,7 @@ spec:
 {{- end }}
         name: configaccesslist
 {{- end }}
+
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
 {{ toYaml .Values.imagePullSecrets | indent 8 }}
