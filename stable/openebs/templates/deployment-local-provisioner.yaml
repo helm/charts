@@ -10,7 +10,7 @@ metadata:
     component: localpv-provisioner
     openebs.io/component-name: openebs-localpv-provisioner
 spec:
-  replicas: {{ .Values.provisioner.replicas }}
+  replicas: {{ .Values.localprovisioner.replicas }}
   selector:
     matchLabels:
       app: {{ template "openebs.name" . }}
