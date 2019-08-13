@@ -9,6 +9,8 @@ data:
     [General]
       # File contains the default file location where mail2most stores its data
       File = "data.json"
+      # global time interval for checking mails in seconds
+      TimeInterval = 10
 
     [Logging]
       # Loglevel = ["info", "debug", "error"]
@@ -54,3 +56,6 @@ data:
       To  = ["info@example.com"]
       # Subject filters if the email subject contains one of the defined strings
       Subject = ["example subject"]
+      # TimeRange will only process mails that are not older than the defined time range
+      TimeRange = "24h"
+
