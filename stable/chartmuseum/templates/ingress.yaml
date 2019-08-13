@@ -2,7 +2,6 @@
 {{- $servicePort := .Values.service.externalPort -}}
 {{- $serviceName := include "chartmuseum.fullname" . -}}
 {{- $ingressExtraPaths := .Values.ingress.extraPaths -}}
- 
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -49,4 +48,3 @@ spec:
   {{- end }}
   {{- end }}
 {{- end -}}
-
