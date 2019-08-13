@@ -17,6 +17,14 @@ opa:
 certManager:
   enabled: false
 
+# Expose the prometheus scraping endpoint
+prometheus:
+  enabled: false
+
+# Annotations in the deployment template
+annotations:
+  {}
+
 # To enforce mutating policies, change to MutatingWebhookConfiguration.
 admissionControllerKind: ValidatingWebhookConfiguration
 
