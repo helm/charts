@@ -152,6 +152,15 @@ spec:
             timeoutSeconds: 1
             successThreshold: 1
             failureThreshold: 5
+          readinessProbe:
+            httpGet:
+              path: "{{ .Values.ingress.web.path }}/health"
+              port: web
+            initialDelaySeconds: {{ .Values.web.initialDelaySeconds }}
+            periodSeconds: 60
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 5
 {{- if .Values.airflow.extraContainers }}
 {{ toYaml .Values.airflow.extraContainers | indent 8 }}
 {{- end }}
