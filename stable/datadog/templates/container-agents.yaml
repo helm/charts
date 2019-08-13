@@ -98,7 +98,7 @@
           key: token
     {{- end }}
     - name: KUBERNETES
-      value: "yes"
+      value: "true"
     {{- if .Values.datadog.podLabelsAsTags }}
     - name: DD_KUBERNETES_POD_LABELS_AS_TAGS
       value: '{{ toJson .Values.datadog.podLabelsAsTags }}'

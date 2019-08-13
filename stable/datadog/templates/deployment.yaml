@@ -83,7 +83,7 @@ spec:
             value: {{ .Values.datadog.apmEnabled | quote }}
           {{- end }}
           - name: KUBERNETES
-            value: "yes"
+            value: "true"
           {{- if .Values.datadog.collectEvents }}
           - name: KUBERNETES_COLLECT_EVENTS
             value: "yes"
