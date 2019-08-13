@@ -20,6 +20,9 @@ spec:
         checksum/config: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
 {{- end }}
 {{- end }}
+{{- if .Values.annotations }}
+{{ toYaml .Values.annotations | indent 8 }}
+{{- end }}
       labels:
         app: {{ template "opa.fullname" . }}
       name: {{ template "opa.fullname" . }}
@@ -48,6 +51,10 @@ spec:
             allow { input.path = [""]; input.method = "GET" }
             # This is only used for health check in liveness and readiness probe
             allow { input.path = ["health"]; input.method = "GET" }
+{{- if .Values.prometheus.enabled }}
+            # This allows metrics to be scraped by prometheus
+            allow { input.path = ["metrics"]; input.method = "GET" }
+{{- end }}
             allow { input.identity == "$TOKEN" }
             EOF
           volumeMounts:
@@ -77,7 +84,9 @@ spec:
             - "/authz/authz.rego"
             - "--ignore=.*"
 {{- end }}
-{{- if .Values.mgmt.enabled }}
+{{- if .Values.prometheus.enabled }}
+            - "--insecure-addr=0.0.0.0:8181"
+{{- else if .Values.mgmt.enabled }}
             - "--insecure-addr=127.0.0.1:8181"
 {{- end }}
           volumeMounts:
