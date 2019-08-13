@@ -14,6 +14,12 @@ tolerations: []
 #     effect: NoSchedule
 #     operator: "Exists"
 
+## Node labels for fluentd pod assignment
+nodeSelector: {}
+
+## Expressions for affinity
+affinity: {}
+
 # Extra environment variables to set for fluentd
 extraEnv: []
 

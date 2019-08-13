@@ -68,6 +68,7 @@ worker:
   # schedulerName:
   # Optional extra labels for pod, i.e. redis-client: "true"
   # podLabels: []
+  # concurrency:
 
 # Admin user to create
 user:
@@ -109,25 +110,52 @@ service:
   ## Load Balancer allow-list
   # loadBalancerSourceRanges: []
 
-## Enable persistence using Persistent Volume Claims
-## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
-##
-persistence:
-  enabled: true
-  ## database data Persistent Volume Storage Class
-  ## If defined, storageClassName: <storageClass>
-  ## If set to "-", storageClassName: "", which disables dynamic provisioning
-  ## If undefined (the default) or set to null, no storageClassName spec is
-  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
-  ##   GKE, AWS & OpenStack)
-  ##
-  # storageClass: "-"
-  accessMode: ReadWriteOnce
-  size: 10Gi
+# Configure the location of Sentry artifacts
+filestore:
+  # Set to one of filesystem, gcs or s3 as supported by Sentry.
+  backend: filesystem
 
-  # Where to store sentry files
-  # https://docs.sentry.io/server/filestore/
-  filestore_dir: /var/lib/sentry/files
+  filesystem:
+    path: /var/lib/sentry/files
+
+    ## Enable persistence using Persistent Volume Claims
+    ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+    ##
+    persistence:
+      enabled: true
+      ## database data Persistent Volume Storage Class
+      ## If defined, storageClassName: <storageClass>
+      ## If set to "-", storageClassName: "", which disables dynamic provisioning
+      ## If undefined (the default) or set to null, no storageClassName spec is
+      ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+      ##   GKE, AWS & OpenStack)
+      ##
+      # storageClass: "-"
+      accessMode: ReadWriteOnce
+      size: 10Gi
+
+      ## Whether to mount the persistent volume to the Sentry worker and
+      ## cron deployments. This setting needs to be enabled for some advanced
+      ## Sentry features, such as private source maps. If you disable this
+      ## setting, the Sentry workers will not have access to artifacts you upload
+      ## through the web deployment.
+      ## Please note that you may need to change your accessMode to ReadWriteMany
+      ## if you plan on having the web, worker and cron deployments run on
+      ## different nodes.
+      persistentWorkers: false
+
+  ## Point this at a pre-configured secret containing a service account. The resulting
+  ## secret will be mounted at /var/run/secrets/google
+  gcs:
+    credentialsFile: credentials.json
+  #  secretName:
+  #  bucketName:
+
+  ## Currently unconfigured and changing this has no impact on the template configuration.
+  s3: {}
+  #  accessKey:
+  #  secretKey:
+  #  bucketName:
 
 ## Configure ingress resource that allow you to access the
 ## Sentry installation. Set up the URL
@@ -240,3 +268,15 @@ metrics:
     ## [Kube Prometheus Selector Label](https://github.com/helm/charts/tree/master/stable/prometheus-operator#exporters)
     selector:
       prometheus: kube-prometheus
+
+# Provide affinity for hooks if needed
+hooks:
+  affinity: {}
+  dbInit:
+    resources:
+    # We setup 3000Mi for the memory limit because of a Sentry instance need at least 3Gb RAM to perform a migration process
+    # reference: https://github.com/helm/charts/issues/15296
+      limits:
+        memory: 3200Mi
+      requests:
+        memory: 3000Mi

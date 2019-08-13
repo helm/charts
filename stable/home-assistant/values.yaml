@@ -4,7 +4,7 @@
 
 image:
   repository: homeassistant/home-assistant
-  tag: 0.93.2
+  tag: 0.95.4
   pullPolicy: IfNotPresent
   pullSecrets: []
 
@@ -94,6 +94,10 @@ git:
   secret: git-creds
   syncPath: /config
   keyPath: /root/.ssh
+
+zwave:
+  enabled: false
+  device: ttyACM0
 
 configurator:
   enabled: false
@@ -236,3 +240,5 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+podAnnotations: {}

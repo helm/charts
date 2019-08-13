@@ -73,7 +73,9 @@ spec:
       tolerations:
 {{ toYaml .Values.data.tolerations | indent 8 }}
 {{- end }}
+{{- if or .Values.extraInitContainers .Values.sysctlInitContainer.enabled .Values.chownInitContainer.enabled .Values.cluster.plugins }}
       initContainers:
+{{- end }}
 {{- if .Values.sysctlInitContainer.enabled }}
       # see https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html
       # and https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-configuration-memory.html#mlockall
@@ -86,6 +88,7 @@ spec:
         securityContext:
           privileged: true
 {{- end }}
+{{- if .Values.chownInitContainer.enabled }}
       - name: "chown"
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
@@ -110,6 +113,7 @@ spec:
         volumeMounts:
         - mountPath: /usr/share/elasticsearch/data
           name: data
+{{- end }}
 {{- if .Values.extraInitContainers }}
 {{ tpl .Values.extraInitContainers . | indent 6 }}
 {{- end }}
@@ -176,20 +180,28 @@ spec:
           subPath: elasticsearch.keystore
           readOnly: true
 {{- end }}
-{{- if .Values.data.hooks.drain.enabled }}
+{{- if or .Values.data.hooks.preStop .Values.data.hooks.drain.enabled }}
         - name: config
-          mountPath: /pre-stop-hook.sh
-          subPath: pre-stop-hook.sh
+          mountPath: /data-pre-stop-hook.sh
+          subPath: data-pre-stop-hook.sh
+{{- end }}
+{{- if or .Values.data.hooks.postStart .Values.data.hooks.drain.enabled }}
         - name: config
-          mountPath: /post-start-hook.sh
-          subPath: post-start-hook.sh
+          mountPath: /data-post-start-hook.sh
+          subPath: data-post-start-hook.sh
+{{- end }}
+{{- if or .Values.data.hooks.preStop .Values.data.hooks.postStart .Values.data.hooks.drain.enabled }}
         lifecycle:
+  {{- if or .Values.data.hooks.preStop .Values.data.hooks.drain.enabled }}
           preStop:
             exec:
-              command: ["/bin/bash","/pre-stop-hook.sh"]
+              command: ["/bin/bash","/data-pre-stop-hook.sh"]
+  {{- end }}
+  {{- if or .Values.data.hooks.postStart .Values.data.hooks.drain.enabled }}
           postStart:
             exec:
-              command: ["/bin/bash","/post-start-hook.sh"]
+              command: ["/bin/bash","/data-post-start-hook.sh"]
+  {{- end }}
 {{- end }}
       terminationGracePeriodSeconds: {{ .Values.data.terminationGracePeriodSeconds }}
 {{- if .Values.image.pullSecrets }}

@@ -14,19 +14,20 @@ metadata:
     "helm.sh/hook-delete-policy": hook-succeeded
   name: {{ $fullname  }}-web-certs
   labels:
-    app: {{ template "dex.name" . }}
-    chart: {{ template "dex.chart" . }}
-    heritage: "{{ .Release.Service }}"
-    release: "{{ .Release.Name }}"
-    component: "job"
+{{ include "dex.labels" . | indent 4 }}
+    app.kubernetes.io/component: "job-web-certs"
 spec:
   activeDeadlineSeconds: {{ .Values.certs.web.activeDeadlineSeconds }}
   template:
     metadata:
       labels:
-        app: {{ template "dex.name" . }}
-        release: "{{ .Release.Name }}"
-        component: "job"
+        app.kubernetes.io/name: {{ include "dex.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: "job"
+{{- if .Values.certs.web.pod.annotations }}
+      annotations:
+{{ toYaml .Values.certs.web.pod.annotations | trim | indent 8 }}
+{{- end }}
     spec:
       {{- if .Values.certs.securityContext.enabled }}
       securityContext:

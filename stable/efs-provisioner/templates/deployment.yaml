@@ -44,6 +44,12 @@ spec:
       {{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"
       {{- end }}
+{{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range $pullSecret := .Values.image.pullSecrets }}
+        - name: {{ $pullSecret }}
+      {{- end }}
+{{- end }}
       containers:
       - name: {{ template "efs-provisioner.fullname" . }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -71,6 +77,8 @@ spec:
         image: {{ .Values.busyboxImage.repository}}:{{ .Values.busyboxImage.tag}}
         imagePullPolicy: {{ .Values.busyboxImage.pullPolicy }}
         command: [ "sh", "-c", "mkdir -p /efs-vol-root/{{ (trimPrefix "/" .Values.efsProvisioner.path) }}" ]
+        resources:
+          {{- toYaml .Values.resources | nindent 12 }}
         volumeMounts:
         - name: pv-volume
           mountPath: /efs-vol-root

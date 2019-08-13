@@ -13,7 +13,7 @@
 image:
   registry: docker.io
   repository: bitnami/odoo
-  tag: 12.0.20190515-debian-9-r21
+  tag: 12.0.20190715-debian-9-r0
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -25,6 +25,14 @@ image:
   ##
   # pullSecrets:
   #   - myRegistryKeySecretName
+
+## String to partially override odoo.fullname template (will maintain the release name)
+##
+# nameOverride:
+
+## String to fully override odoo.fullname template
+##
+# fullnameOverride:
 
 ## User of the application
 ## ref: https://github.com/bitnami/bitnami-docker-odoo#configuration
@@ -51,11 +59,11 @@ odooEmail: user@example.com
 # smtpProtocol:
 
 externalDatabase:
-## All of these values are only used when mariadb.enabled is set to false
+## All of these values are only used when postgresql.enabled is set to false
   ## Database host
   host: localhost
 
-  ## non-root Username for Wordpress Database
+  ## non-root Username for Odoo database
   user: postgres
 
   ## Database password

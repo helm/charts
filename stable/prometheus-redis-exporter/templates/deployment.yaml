@@ -41,9 +41,18 @@ spec:
               containerPort: 9121
           env:
             - name: REDIS_ADDR
-              value: {{ join "," .Values.redisAddress }}
+              value: {{ .Values.redisAddress }}
+{{- if .Values.script }}
+            - name: REDIS_EXPORTER_SCRIPT
+              value: /script/script.lua
+{{- end }}
 {{- if .Values.env }}
 {{ toYaml .Values.env | indent 12 }}
+{{- end }}
+{{- if .Values.script }}
+          volumeMounts:
+              - mountPath: /script
+                name: script-mount
 {{- end }}
           livenessProbe:
             httpGet:
@@ -55,6 +64,15 @@ spec:
               port: exporter-port
           resources:
 {{ toYaml .Values.resources | indent 12 }}
+    {{- if .Values.script }}
+      volumes:
+        - name: script-mount
+          configMap:
+             name: {{ .Values.script.configmap }}
+             items:
+              - key: {{ .Values.script.keyname }}
+                path: script.lua
+    {{- end }}
     {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}

@@ -73,7 +73,12 @@ spec:
       tolerations:
 {{ toYaml .Values.master.tolerations | indent 8 }}
 {{- end }}
+{{- if .Values.master.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ .Values.master.terminationGracePeriodSeconds }}
+{{- end }}
+{{- if or .Values.extraInitContainers .Values.sysctlInitContainer.enabled .Values.chownInitContainer.enabled .Values.cluster.plugins }}
       initContainers:
+{{- end }}
 {{- if .Values.sysctlInitContainer.enabled }}
       # see https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html
       # and https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-configuration-memory.html#mlockall
@@ -86,6 +91,7 @@ spec:
         securityContext:
           privileged: true
 {{- end }}
+{{- if .Values.chownInitContainer.enabled }}
       - name: "chown"
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
@@ -110,6 +116,7 @@ spec:
         volumeMounts:
         - mountPath: /usr/share/elasticsearch/data
           name: data
+{{- end }}
 {{- if .Values.extraInitContainers }}
 {{ tpl .Values.extraInitContainers . | indent 6 }}
 {{- end }}
@@ -179,6 +186,29 @@ spec:
           mountPath: "/usr/share/elasticsearch/config/elasticsearch.keystore"
           subPath: elasticsearch.keystore
           readOnly: true
+{{- end }}
+{{- if .Values.master.hooks.preStop }}
+        - name: config
+          mountPath: /master-pre-stop-hook.sh
+          subPath: master-pre-stop-hook.sh
+{{- end }}
+{{- if .Values.master.hooks.postStart }}
+        - name: config
+          mountPath: /master-post-start-hook.sh
+          subPath: master-post-start-hook.sh
+{{- end }}
+{{- if or .Values.master.hooks.preStop .Values.master.hooks.postStart }}
+        lifecycle:
+  {{- if .Values.master.hooks.preStop }}
+          preStop:
+            exec:
+              command: ["/bin/bash","/master-pre-stop-hook.sh"]
+  {{- end }}
+  {{- if .Values.master.hooks.postStart }}
+          postStart:
+            exec:
+              command: ["/bin/bash","/master-post-start-hook.sh"]
+  {{- end }}
 {{- end }}
 {{- if .Values.image.pullSecrets }}
       imagePullSecrets:

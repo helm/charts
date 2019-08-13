@@ -62,6 +62,7 @@ Parameter | Description | Default
 `priorityClassName` | priorityClassName | `nil`
 `service.ports` | port definition for the service | See [values.yaml](values.yaml)
 `service.type` | type of service | `ClusterIP`
+`service.annotations` | list of annotations for the service | `{}`
 `tolerations` | List of node taints to tolerate | `[]`
 `persistence.enabled` | Enable buffer persistence | `false`
 `persistence.accessMode` | Access mode for buffer persistence | `ReadWriteOnce`

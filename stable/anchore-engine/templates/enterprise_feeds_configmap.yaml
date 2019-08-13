@@ -6,10 +6,13 @@ metadata:
   name: {{ template "anchore-engine.enterprise-feeds.fullname" . }}
   labels:
     app: {{ template "anchore-engine.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     component: {{ $component }}
+    {{- with .Values.anchoreGlobal.labels }}
+    {{ toYaml . | nindent 4 | trim }}
+    {{- end }}
 data:
   ANCHORE_DB_NAME: {{ index .Values "anchore-feeds-db" "postgresDatabase" | quote }}
   ANCHORE_DB_USER: {{ index .Values "anchore-feeds-db" "postgresUser"  | quote }}

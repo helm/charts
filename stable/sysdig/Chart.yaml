@@ -1,7 +1,7 @@
 apiVersion: v1
 name: sysdig
-version: 1.4.9
-appVersion: 0.90.2
+version: 1.4.12
+appVersion: 0.92.0
 description: Sysdig Monitor and Secure agent
 keywords:
   - monitoring

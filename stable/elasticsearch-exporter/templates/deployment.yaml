@@ -31,12 +31,25 @@ spec:
 {{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"
 {{- end }}
+{{- if .Values.image.pullSecret }}
+      imagePullSecrets:
+        - name: {{ .Values.image.pullSecret }}
+{{- end }}
       restartPolicy: {{ .Values.restartPolicy }}
+      {{- if .Values.securityContext.enabled }}
       securityContext:
         runAsNonRoot: true
-        runAsUser: 1000
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
+          {{- if .Values.env }}
+          env:
+          {{- range $key, $value := .Values.env }}
+          - name: {{ $key }}
+            value: "{{ $value }}"
+          {{- end }}
+          {{- end }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["elasticsearch_exporter",
@@ -44,6 +57,9 @@ spec:
                     "-es.all={{ .Values.es.all }}",
                     "-es.indices={{ .Values.es.indices }}",
                     "-es.timeout={{ .Values.es.timeout }}",
+                    {{- if .Values.es.sslSkipVerify }}
+                    "-es.ssl-skip-verify=true",
+                    {{- end }}
                     {{- if .Values.es.ssl.enabled }}
                     "-es.ca=/ssl/ca.pem",
                     "-es.client-cert=/ssl/client.pem",

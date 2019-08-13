@@ -35,7 +35,11 @@ data:
 
     # Storage
     {{ if .Values.minio.enabled }}
-    echo {{ .Values.minio.secretKey }} | $HAL_COMMAND config storage s3 edit --endpoint http://{{ .Release.Name }}-minio:9000 --access-key-id {{ .Values.minio.accessKey }} --secret-access-key --bucket {{ .Values.minio.bucket }}
+    echo {{ .Values.minio.secretKey }} | $HAL_COMMAND config storage s3 edit \
+        --endpoint http://{{ .Release.Name }}-minio:9000 \
+        --access-key-id {{ .Values.minio.accessKey }} \
+        --secret-access-key --bucket {{ .Values.minio.bucket }} \
+        --path-style-access true
     $HAL_COMMAND config storage edit --type s3
     {{ end }}
     {{ if .Values.s3.enabled }}
@@ -106,7 +110,9 @@ data:
 
     $HAL_COMMAND config provider kubernetes account $PROVIDER_COMMAND {{ $context }} --docker-registries dockerhub \
                 --context {{ $context }} {{ if not $.Values.kubeConfig.enabled }}--service-account true{{ end }} \
-                {{ if $.Values.kubeConfig.enabled }}--kubeconfig-file /opt/kube/{{ $.Values.kubeConfig.secretKey }}{{ end }} --omit-namespaces={{ template "omittedNameSpaces" $ }} --provider-version v2
+                {{ if $.Values.kubeConfig.enabled }}--kubeconfig-file /opt/kube/{{ $.Values.kubeConfig.secretKey }}{{ end }} \
+                {{ if $.Values.kubeConfig.onlySpinnakerManaged.enabled }}--only-spinnaker-managed true{{ end }} \
+                --omit-namespaces={{ template "omittedNameSpaces" $ }} --provider-version v2
     {{- end }}
     $HAL_COMMAND config deploy edit --account-name {{ .Values.kubeConfig.deploymentContext }} --type distributed \
                            --location {{ .Release.Namespace }}

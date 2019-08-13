@@ -80,12 +80,14 @@ The following tables lists the configurable parameters of this chart and their d
 | `livenessProbe.timeoutSeconds`                    | When the probe times out                                      | `2`                                                         |
 | `livenessProbe.successThreshold`                  | Minimum consecutive successes for the probe                   | `1`                                                         |
 | `livenessProbe.failureThreshold`                  | Minimum consecutive failures for the probe                    | `3`                                                         |
+| `livenessProbe.scheme`                            | Scheme for the probe                                          | `HTTP`                                                      |
 | `readinessProbe.enabled`                          | Turn on and off readiness probe                               | `true`                                                      |
 | `readinessProbe.initialDelaySeconds`              | Delay before readiness probe is initiated                     | `30`                                                        |
 | `readinessProbe.periodSeconds`                    | How often to perform the probe                                | `10`                                                        |
 | `readinessProbe.timeoutSeconds`                   | When the probe times out                                      | `2`                                                         |
 | `readinessProbe.successThreshold`                 | Minimum consecutive successes for the probe                   | `1`                                                         |
 | `readinessProbe.failureThreshold`                 | Minimum consecutive failures for the probe                    | `3`                                                         |
+| `readinessProbe.scheme`                           | Scheme for the probe                                          | `HTTP`                                                      |
 | `securityContext.allowPrivilegeEscalation`        | Create & use Pod Security Policy resources                    | `true`                                                      |
 | `securitycontext.capabilities.add`                | Collabora needs to run with MKNOD as capabibility             | `[MKNOD]`                                                   |
 | `resources`                                       | Resources required (e.g. CPU, memory)                         | `{}`                                                        |

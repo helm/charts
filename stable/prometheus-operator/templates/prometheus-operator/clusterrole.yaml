@@ -21,7 +21,9 @@ rules:
   - prometheuses/finalizers
   - alertmanagers/finalizers
   - servicemonitors
+  - podmonitors
   - prometheusrules
+  - podmonitors
   verbs:
   - '*'
 - apiGroups:

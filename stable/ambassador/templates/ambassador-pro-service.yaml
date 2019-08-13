@@ -6,6 +6,7 @@ metadata:
   labels:
     service: ambassador-pro
     app.kubernetes.io/name: {{ include "ambassador.name" . }}
+    app.kubernetes.io/part-of: {{ .Release.Name }}
     helm.sh/chart: {{ include "ambassador.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}

@@ -7,12 +7,17 @@
 # See templates/_helpers.tpl
 # nameOverride:
 # fullnameOverride:
+# namespaceOverride:
+
+# For FQDN resolving of the master service. Change this value to match your existing configuration.
+# ref: https://github.com/kubernetes/dns/blob/master/docs/specification.md
+clusterZone: "cluster.local"
 
 master:
   # Used for label app.kubernetes.io/component
   componentName: "jenkins-master"
   image: "jenkins/jenkins"
-  imageTag: "lts"
+  tag: "lts"
   imagePullPolicy: "Always"
   imagePullSecretName:
   # Optionally configure lifetime for master-container
@@ -151,11 +156,11 @@ master:
 
   # List of plugins to be install during Jenkins master start
   installPlugins:
-    - kubernetes:1.14.0
-    - workflow-job:2.31
+    - kubernetes:1.18.1
+    - workflow-job:2.33
     - workflow-aggregator:2.6
-    - credentials-binding:1.17
-    - git:3.9.1
+    - credentials-binding:1.19
+    - git:3.11.0
 
   # Enable to always override the installed plugins with the values of 'master.installPlugins' on upgrade or redeployment.
   # overwritePlugins: true
@@ -177,7 +182,7 @@ master:
   # master.key and hudson.util.Secret)
   # secretsFilesSecret: jenkins-secrets
   # Jenkins XML job configs to provision
-  jobs:
+  jobs: {}
   #  test: |-
   #    <<xml here>>
 
@@ -190,8 +195,10 @@ master:
   # etc.  Best reference is https://<jenkins_url>/configuration-as-code/reference.  The example below creates a welcome message:
   JCasC:
     enabled: false
-    pluginVersion: 1.5
-    supportPluginVersion: 1.5
+    pluginVersion: "1.25"
+    # it's only used when plugin version is <=1.18 for later version the
+    # configuration as code support plugin is no longer needed
+    supportPluginVersion: "1.18"
     configScripts:
       welcome-message: |
         jenkins:
@@ -291,6 +298,17 @@ master:
     #   hosts:
     #     - jenkins.cluster.local
 
+  # If you're running on GKE and need to configure a backendconfig
+  # to finish ingress setup, use the following values.
+  # Docs: https://cloud.google.com/kubernetes-engine/docs/concepts/backendconfig
+  backendconfig:
+    enabled: false
+    apiVersion: "extensions/v1beta1"
+    name:
+    labels: {}
+    annotations: {}
+    spec: {}
+
   # Openshift route
   route:
     enabled: false
@@ -330,7 +348,7 @@ master:
 agent:
   enabled: true
   image: "jenkins/jnlp-slave"
-  imageTag: "3.27-1"
+  tag: "3.27-1"
   customJenkinsLabels: []
   # name of the secret to be used for image pulling
   imagePullSecretName:
@@ -465,6 +483,14 @@ backup:
   # Additional arguments for kube-tasks
   # Ref: https://github.com/nuvo/kube-tasks#simple-backup
   extraArgs: []
+  # Add existingSecret for AWS credentials
+  existingSecret: {}
+  ## Example for using an existing secret
+   # jenkinsaws:
+  ## Use this key for AWS access key ID
+     # awsaccesskey: jenkins_aws_access_key
+  ## Use this key for AWS secret access key
+     # awssecretkey: jenkins_aws_secret_key
   # Add additional environment variables
   env:
   # Example environment variable required for AWS credentials chain

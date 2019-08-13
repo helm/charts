@@ -57,8 +57,17 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `image.pullPolicy`                        | MariaDB image pull policy                           | `IfNotPresent`                                                    |
 | `image.pullSecrets`                       | Specify docker-registry secret names as an array    | `[]` (does not add image pull secrets to deployed pods)           |
 | `image.debug`                             | Specify if debug logs should be enabled             | `false`                                                           |
+| `nameOverride`                            | String to partially override mariadb.fullname template with a string (will prepend the release name) | `nil`            |
+| `fullnameOverride`                        | String to fully override mariadb.fullname template with a string                                     | `nil`            |
+| `volumePermissions.enabled`          | Enable init container that changes volume permissions in the data directory (for cases where the default k8s `runAsUser` and `fsUser` values do not work) | `false`                                                      |
+| `volumePermissions.image.registry`   | Init container volume-permissions image registry                                                                                                          | `docker.io`                                                  |
+| `volumePermissions.image.repository` | Init container volume-permissions image name                                                                                                              | `bitnami/minideb`                                            |
+| `volumePermissions.image.tag`        | Init container volume-permissions image tag                                                                                                               | `latest`                                                     |
+| `volumePermissions.image.pullPolicy` | Init container volume-permissions image pull policy                                                                                                       | `Always`                                                     |
+| `volumePermissions.resources`        | Init container resource requests/limit                                                                                                                    | `nil`                                                        |
 | `service.type`                            | Kubernetes service type                             | `ClusterIP`                                                       |
-| `service.clusterIp`                       | Specific cluster IP when service type is cluster IP. Use None for headless service | `nil`                              |
+| `service.clusterIp.master`                | Specific cluster IP for master when service type is cluster IP. Use None for headless service | `nil`                   |
+| `service.clusterIp.slave`                 | Specific cluster IP for slave when service type is cluster IP. Use None for headless service | `nil`                    |
 | `service.port`                            | MySQL service port                                  | `3306`                                                            |
 | `serviceAccount.create`                   | Specifies whether a ServiceAccount should be created | `false`                                                          |
 | `serviceAccount.name`                     | The name of the ServiceAccount to create            | Generated using the mariadb.fullname template                     |
@@ -67,7 +76,7 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `securityContext.enabled`                 | Enable security context                             | `true`                                                            |
 | `securityContext.fsGroup`                 | Group ID for the container                          | `1001`                                                            |
 | `securityContext.runAsUser`               | User ID for the container                           | `1001`                                                            |
-| `existingSecret`                          | Use Existing secret for Password details (`rootUser.password`, `db.password`, `replication.password` will be ignored and picked up from this secret) |                         |
+| `existingSecret`                          | Use existing secret for password details (`rootUser.password`, `db.password`, `replication.password` will be ignored and picked up from this secret). The secret has to contain the keys `mariadb-root-password`, `mariadb-replication-password` and `mariadb-password`. |                         |
 | `rootUser.password`                       | Password for the `root` user. Ignored if existing secret is provided. | _random 10 character alphanumeric string_       |
 | `rootUser.forcePassword`                  | Force users to specify a password                   | `false`                                                           |
 | `db.user`                                 | Username of new user to create                      | `nil`                                                             |
@@ -82,6 +91,7 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `initdbScriptsConfigMap`                  | ConfigMap with the initdb scripts (Note: Overrides `initdbScripts`) | `nil`                                             |
 | `master.annotations[].key`                | key for the the annotation list item                |  `nil`                                                            |
 | `master.annotations[].value`              | value for the the annotation list item              |  `nil`                                                            |
+| `master.extraFlags`                       | MariaDB master additional command line flags        |  `nil`                                                            |
 | `master.affinity`                         | Master affinity (in addition to master.antiAffinity when set)  | `{}`                                                   |
 | `master.antiAffinity`                     | Master pod anti-affinity policy                     | `soft`                                                            |
 | `master.nodeSelector`                     | Master node labels for pod assignment               | `{}`                                                              |
@@ -116,6 +126,7 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `slave.replicas`                          | Desired number of slave replicas                    | `1`                                                               |
 | `slave.annotations[].key`                 | key for the the annotation list item                | `nil`                                                             |
 | `slave.annotations[].value`               | value for the the annotation list item              | `nil`                                                             |
+| `slave.extraFlags`                        | MariaDB slave additional command line flags         | `nil`                                                             |
 | `slave.affinity`                          | Slave affinity (in addition to slave.antiAffinity when set) | `{}`                                                      |
 | `slave.antiAffinity`                      | Slave pod anti-affinity policy                      | `soft`                                                            |
 | `slave.nodeSelector`                      | Slave node labels for pod assignment                | `{}`                                                              |
@@ -146,8 +157,8 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `slave.podDisruptionBudget.maxUnavailable`| Maximum number / percentage of pods that may be made unavailable | `nil`                                                |
 | `metrics.enabled`                         | Start a side-car prometheus exporter                | `false`                                                           |
 | `metrics.image.registry`                  | Exporter image registry                             | `docker.io`                                                       |
-| `metrics.image.repository`                | Exporter image name                                 | `prom/mysqld-exporter`                                            |
-| `metrics.image.tag`                       | Exporter image tag                                  | `v0.10.0`                                                         |
+| `metrics.image.repository`                | Exporter image name                                 | `bitnami/mysqld-exporter`                                         |
+| `metrics.image.tag`                       | Exporter image tag                                  | `{TAG_NAME}`                                                      |
 | `metrics.image.pullPolicy`                | Exporter image pull policy                          | `IfNotPresent`                                                    |
 | `metrics.resources`                       | Exporter resource requests/limit                    | `nil`                                                             |
 | `metrics.serviceMonitor.enabled`          | if `true`, creates a Prometheus Operator ServiceMonitor (also requires `metrics.enabled` to be `true`)                    | `false`                                                             |
@@ -227,6 +238,15 @@ The [Bitnami MariaDB](https://github.com/bitnami/bitnami-docker-mariadb) image s
 
 The chart mounts a [Persistent Volume](kubernetes.io/docs/user-guide/persistent-volumes/) volume at this location. The volume is created using dynamic volume provisioning, by default. An existing PersistentVolumeClaim can be defined.
 
+### Adjust permissions of persistent volume mountpoint
+
+As the image run as non-root by default, it is necessary to adjust the ownership of the persistent volume so that the container can write data into it.
+
+By default, the chart is configured to use Kubernetes Security Context to automatically change the ownership of the volume. However, this feature does not work in all Kubernetes distributions.
+As an alternative, this chart supports using an initContainer to change the ownership of the volume before mounting it in the final destination.
+
+You can enable this initContainer by setting `volumePermissions.enabled` to `true`.
+
 ## Extra Init Containers
 
 The feature allows for specifying a template string for a initContainer in the master/slave pod. Usecases include situations when you need some pre-run setup. For example, in IKS (IBM Cloud Kubernetes Service), non-root users do not have write permission on the volume mount path for NFS-powered file storage. So, you could use a initcontainer to `chown` the mount. See a example below, where we add an initContainer on the master pod that reports to an external resource that the db is going to starting.
@@ -235,10 +255,10 @@ The feature allows for specifying a template string for a initContainer in the m
 master:
   extraInitContainers: |
     - name: initcontainer
-      image: alpine:latest
+      image: bitnami/minideb:latest
       command: ["/bin/sh", "-c"]
       args:
-        - curl http://api-service.local/db/starting;
+        - install_packages curl && curl http://api-service.local/db/starting;
 ```
 
 ## Upgrading

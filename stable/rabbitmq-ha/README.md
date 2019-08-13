@@ -69,7 +69,10 @@ and their default values.
 | `existingSecret`                               | Use an existing secret for password, managementPassword & erlang cookie                                                                                                                                                   | `""`                                                       |
 | `extraPlugins`                                 | Additional plugins to add to the default configmap                                                                                                                                                    | `rabbitmq_shovel, rabbitmq_shovel_management, rabbitmq_federation, rabbitmq_federation_management,` |
 | `extraConfig`                                  | Additional configuration to add to default configmap                                                                                                                                                  | `{}`                                                         |
+| `extraInitContainers`                          | Additional init containers passed through the tpl 	                                                                                                                                                   | `[]`                                                         |
+| `env`                                          | Environment variables to set for Rabbitmq container                                                                                                                                                   | `{}`                                                         |
 | `advancedConfig`                               | Additional configuration in classic config format                                                                                                                                                   | `""`                                                           |
+| `definitions.globalParameters`                 | Pre-configured global parameters | `""` |
 | `definitions.users`                            | Additional users | `""` |
 | `definitions.vhosts`                           | Additional vhosts | `""` |
 | `definitions.parameters`                       | Additional parameters | `""` |
@@ -79,9 +82,10 @@ and their default values.
 | `definitions.bindings`                         | Pre-created bindings | `""` |
 | `definitions.policies`                         | HA policies to add to definitions.json | `""` |
 | `definitionsSource`                            | Use this key within an existing secret to reference the definitions specification | `"definitions.json"` |
-| `image.pullPolicy`                             | Image pull policy                                                                                                                                                                                     | `Always` if `image` tag is `latest`, else `IfNotPresent`   |
+| `forceBoot`                                    | [Force](https://www.rabbitmq.com/rabbitmqctl.8.html#force_boot) the cluster to start even if it was shutdown in an unexpected order, preferring availability over integrity | `false` |
+| `image.pullPolicy`                             | Image pull policy                                                                                                                                                                                     | `IfNotPresent`   |
 | `image.repository`                             | RabbitMQ container image repository                                                                                                                                                                   | `rabbitmq`                                                 |
-| `image.tag`                                    | RabbitMQ container image tag                                                                                                                                                                          | `3.7.12-alpine`                                            |
+| `image.tag`                                    | RabbitMQ container image tag                                                                                                                                                                          | `3.7.15-alpine`                                            |
 | `image.pullSecrets`                            | Specify docker-registry secret names as an array                                                                                                                                                      | `[]`                                                       |
 | `managementPassword`                           | Management user password.                                                                                                                                                                             | _random 24 character long alphanumeric string_             |
 | `managementUsername`                           | Management user with minimal permissions used for health checks                                                                                                                                       | `management`                                               |
@@ -166,8 +170,8 @@ and their default values.
 | `priorityClassName`                            | Statefulsets Pod Priority                                                                                                                                                                             | ``                                                         |
 | `extraLabels`                                  | Labels to add to the Resources                                                                                                                                                                        | `{}`                                                       |
 | `busyboxImage.repository`                      | Busybox initContainer image repo                                                                                                                                                                      | `busybox`                                                  |
-| `busyboxImage.tag`                             | Busybox initContainer image tag                                                                                                                                                                       | `latest`                                                   |
-| `busyboxImage.pullPolicy`                      | Busybox initContainer image pullPolicy                                                                                                                                                                | `Always`                                                   |
+| `busyboxImage.tag`                             | Busybox initContainer image tag                                                                                                                                                                       | `1.30.1`                                                   |
+| `busyboxImage.pullPolicy`                      | Busybox initContainer image pullPolicy                                                                                                                                                                | `IfNotPresent`                                                   |
 | `clusterDomain`                                | The internal Kubernetes cluster domain                                                                                                                                                                | `cluster.local`                                            |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
@@ -252,3 +256,9 @@ the following keys:
 ### Prometheus Monitoring & Alerts
 
 Prometheus and its features can be enabled by setting `prometheus.enabled` to `true`.  See values.yaml for more details and configuration options
+
+### Usage of the `tpl` Function
+
+The `tpl` function allows us to pass values from `values.yaml` through the templating engine. It is used for the following values:
+
+* `extraInitContainers`
