@@ -95,6 +95,7 @@ spec:
                 add:
                 - NET_BIND_SERVICE
             runAsUser: {{ .Values.controller.image.runAsUser }}
+            allowPrivilegeEscalation: {{ .Values.controller.image.allowPrivilegeEscalation }}
           {{- end }}
           env:
             - name: POD_NAME
@@ -131,14 +132,6 @@ spec:
               {{- if .Values.controller.daemonset.useHostPort }}
               hostPort: {{ .Values.controller.daemonset.hostPorts.https }}
               {{- end }}
-          {{- if .Values.controller.stats.enabled }}
-            - name: stats
-              containerPort: 18080
-              protocol: TCP
-              {{- if .Values.controller.daemonset.useHostPort }}
-              hostPort: {{ .Values.controller.daemonset.hostPorts.stats }}
-              {{- end }}
-          {{- end }}
           {{- if .Values.controller.metrics.enabled }}
             - name: metrics
               containerPort: 10254

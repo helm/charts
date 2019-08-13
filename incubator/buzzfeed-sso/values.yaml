@@ -36,7 +36,11 @@ auth:
 
 proxy:
   annotations: {}
-  extraEnv: []
+  extraEnv:
+    - name: STATSD_HOST
+      value: localhost
+    - name: STATSD_PORT
+      value: "11111"
   # providerUrlInternal: https://sso-auth.mydomain.com
   replicaCount: 1
   resources:
@@ -62,6 +66,7 @@ provider:
   google: {}  # Required.
   # google:
   #   adminEmail: me@mydomain.foo
+  #   slug: oauth2
   #   secret:
   #     clientId: foo123123-fake123123.apps.googleusercontent.com
   #     clientSecret: googleOauthClientSecret
@@ -73,7 +78,7 @@ provider:
 
 image:
   repository: buzzfeed/sso
-  tag: v1.2.0
+  tag: v2.0.0
   pullPolicy: IfNotPresent
 
 ingress:

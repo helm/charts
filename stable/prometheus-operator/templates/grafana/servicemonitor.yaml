@@ -22,7 +22,7 @@ spec:
     path: "/metrics"
 {{- if .Values.grafana.serviceMonitor.metricRelabelings }}
     metricRelabelings:
-{{ toYaml .Values.grafana.serviceMonitor.metricRelabelings | indent 6 }}
+{{ tpl (toYaml .Values.grafana.serviceMonitor.metricRelabelings | indent 6) . }}
 {{- end }}
 {{- if .Values.grafana.serviceMonitor.relabelings }}
     relabelings:
