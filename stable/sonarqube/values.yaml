@@ -89,6 +89,9 @@ extraEnv: {}
   # If an ingress *path* is defined, it should be reflected here
   # sonar.web.context: /sonarqube
 
+# Set annotations for pods
+annotations: {}
+
 resources: {}
 # We usually recommend not to specify default resources and to leave this as a conscious
 # choice for the user. This also increases chances charts run on environments with little
@@ -102,6 +105,9 @@ resources: {}
 #  memory: 128Mi
 persistence:
   enabled: false
+  ## Set annotations on pvc
+  annotations: {}
+
   ## Specify an existing volume claim instead of creating a new one.
   ## When using this option all following options like storageClass, accessMode and size are ignored.
   # existingClaim:
