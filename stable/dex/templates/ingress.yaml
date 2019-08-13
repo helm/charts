@@ -1,16 +1,13 @@
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := include "dex.fullname" . -}}
-{{- $servicePort := .Values.service.port -}}
+{{- $servicePort := .Values.ports.web.servicePort -}}
 {{- $ingressPath := .Values.ingress.path -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: {{ $fullName }}
   labels:
-    app: {{ template "dex.name" . }}
-    chart: {{ template "dex.chart" . }}
-    heritage: "{{ .Release.Service }}"
-    release: "{{ .Release.Name }}"
+{{ include "dex.labels" . | indent 4 }}
 {{- with .Values.ingress.annotations }}
   annotations:
 {{ toYaml . | indent 4 }}

@@ -24,6 +24,7 @@ spec:
         app.kubernetes.io/component: hotrod
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
+      serviceAccountName: {{ template "jaeger.hotrod.serviceAccountName" . }}
       containers:
         - name: {{ include "jaeger.fullname" . }}-hotrod
           image: {{ .Values.hotrod.image.repository }}:{{ .Values.tag }}

@@ -19,7 +19,7 @@ image: concourse/concourse
 ##      of `concourse/concourse`.
 ## Ref: https://hub.docker.com/r/concourse/concourse/tags/
 ##
-imageTag: "5.3.0"
+imageTag: "5.4.1"
 
 ## Specific image digest to use in place of a tag.
 ## Ref: https://kubernetes.io/docs/concepts/configuration/overview/#container-images
@@ -326,11 +326,11 @@ concourse:
         enabled: true
         useSessionToken: false
 
-      ## pipeline-specific template for Secrets Manager parameters, defaults to: /concourse/{team}/{pipeline}/{secret}
+      ## pipeline-specific template for Secrets Manager parameters, defaults to: /concourse/{{.Team}}/{{.Pipeline}}/{{.Secret}}
       ##
       pipelineSecretTemplate: /concourse/{{.Team}}/{{.Pipeline}}/{{.Secret}}
 
-      ## team-specific template for Secrets Manager parameters, defaults to: /concourse/{team}/{secret}
+      ## team-specific template for Secrets Manager parameters, defaults to: /concourse/{{.Team}}/{{.Secret}}
       ##
       teamSecretTemplate: /concourse/{{.Team}}/{{.Secret}}
 
@@ -352,11 +352,11 @@ concourse:
         enabled: true
         useSessionToken: false
 
-      ## pipeline-specific template for SSM parameters, defaults to: /concourse/{team}/{pipeline}/{secret}
+      ## pipeline-specific template for SSM parameters, defaults to: /concourse/{{.Team}}/{{.Pipeline}}/{{.Secret}}
       ##
-      pipelineSecretTemplate: /concourse/{{.Team}}/{{.Pipeline}}/{{.Secret}})
+      pipelineSecretTemplate: /concourse/{{.Team}}/{{.Pipeline}}/{{.Secret}}
 
-      ## team-specific template for SSM parameters, defaults to: /concourse/{team}/{secret}
+      ## team-specific template for SSM parameters, defaults to: /concourse/{{.Team}}/{{.Secret}}
       ##
       teamSecretTemplate: /concourse/{{.Team}}/{{.Secret}}
 
@@ -444,6 +444,13 @@ concourse:
       ##
       insecureSkipVerify: false
 
+      ## Configures the way that the Concourse authenticates against CredHub
+      ## - secrets: makes use of `client-id` and `client-secret`
+      ## - mtls: leverages client certificates
+      ##
+      authenticationMode: "secrets"
+
+
     ## Don't actually do any automatic scheduling or checking.
     ##
     noop: false
@@ -496,7 +503,7 @@ concourse:
 
       ## Prefix for all metrics to easily find them in Datadog
       ##
-      prefix:
+      prefix: "concourse.ci"
 
     influxdb:
       enabled: false
@@ -1101,13 +1108,15 @@ concourse:
     volumeSweeperMaxInFlight: 5
 
     tsa:
-      ## TSA host to forward the worker through.
-      ##
-      host:
 
-      ## TSA port to forward the worker through.
+      ## TSA host(s) to forward the worker through.
+      ## Only used for worker-only deployments.
+      ## Example:
+      ## hosts:
+      ##   - 1.1.1.1:2222
+      ##   - 2.2.2.2:2222
       ##
-      port: 2222
+      hosts: []
 
       ## File containing a public key to expect from the TSA.
       ##
@@ -1401,7 +1410,7 @@ web:
     ##   service.beta.kubernetes.io/aws-load-balancer-backend-port: "atc"
     ##   service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
     ##
-    annotations:
+    annotations: {}
 
     ## When using `web.service.type: LoadBalancer`, whitelist the load balancer to particular IPs
     ## Example:
@@ -1434,7 +1443,7 @@ web:
     ##   kubernetes.io/ingress.class: nginx
     ##   kubernetes.io/tls-acme: 'true'
     ##
-    annotations:
+    annotations: {}
 
     ## Hostnames.
     ## Must be provided if Ingress is enabled.
@@ -1919,6 +1928,14 @@ secrets:
   ## Client secret for CredHub authorization.
   ##
   credhubClientSecret:
+
+  ## Client cert for Credhub authorization
+  ##
+  credhubClientCert:
+
+  ## Client key for Credhub authorization
+  ##
+  credhubClientKey:
 
   ## Secrets for CF OAuth
   ##
