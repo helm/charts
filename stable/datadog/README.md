@@ -298,6 +298,7 @@ helm install --name <RELEASE_NAME> \
 | `kube-state-metrics.serviceAccount.name`                   | If not set & create is true, use template fullname                                    |                                            |
 | `clusterAgent.enabled`                   | Use the cluster-agent for cluster metrics (Kubernetes 1.10+ only)                         | `false`                                     |
 | `clusterAgent.token`                     | A cluster-internal secret for agent-to-agent communication. Must be 32+ characters a-zA-Z | Generates a random value                    |
+| `clusterAgent.tokenExistingSecret`                     | If set, use the secret with a provided name instead of creating a new one | `nil`                    |
 | `clusterAgent.containerName`             | The container name for the Cluster Agent                                                  | `cluster-agent`                             |
 | `clusterAgent.image.repository`          | The image repository for the cluster-agent                                                | `datadog/cluster-agent`                     |
 | `clusterAgent.image.tag`                 | The image tag to pull                                                                     | `1.2.0`                                     |
