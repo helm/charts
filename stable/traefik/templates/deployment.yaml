@@ -61,6 +61,12 @@ spec:
       {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName | quote }}
       {{- end }}
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.imagePullSecrets }}
+        - name: {{ . }}
+      {{- end }}
+      {{- end }}
       containers:
       - image: {{ .Values.image }}:{{ .Values.imageTag }}
         name: {{ template "traefik.fullname" . }}
@@ -78,7 +84,7 @@ spec:
         readinessProbe:
           httpGet:
             path: /ping
-            port: 80
+            port: {{ template "traefik.containerPort.http" . }}
           failureThreshold: 1
           initialDelaySeconds: 10
           periodSeconds: 10
@@ -87,7 +93,7 @@ spec:
         livenessProbe:
           httpGet:
             path: /ping
-            port: 80
+            port: {{ template "traefik.containerPort.http" . }}
           failureThreshold: 3
           initialDelaySeconds: 10
           periodSeconds: 10
@@ -113,11 +119,20 @@ spec:
         {{- end }}
         {{- end }}
         volumeMounts:
+        {{- if .Values.extraVolumeMounts }}{{ toYaml .Values.extraVolumeMounts | trim | nindent 8 }}{{ end }}
         - mountPath: /config
           name: config
-        {{- if and .Values.ssl.enabled (not .Values.ssl.upstream) }}
+        {{- if .Values.ssl.enabled }}
+        {{- if not .Values.ssl.upstream }}
         - mountPath: /ssl
           name: ssl
+        {{- end }}
+        {{- if .Values.ssl.mtls }}
+        {{- if .Values.ssl.mtls.enabled }}
+        - mountPath: /mtls
+          name: mtls
+        {{- end }}
+        {{- end }}
         {{- end }}
         {{- if .Values.acme.enabled }}
         - mountPath: /acme
@@ -133,7 +148,7 @@ spec:
         {{- end }}
         ports:
         - name: http
-          containerPort: 80
+          containerPort: {{ template "traefik.containerPort.http" . }}
           {{- if .Values.deployment.hostPort.httpEnabled }}
           hostPort: {{ default 80 .Values.deployment.hostPort.httpPort }}
           {{- end }}
@@ -142,12 +157,12 @@ spec:
           containerPort: 8880
           protocol: TCP
         - name: https
-          containerPort: 443
+          containerPort: {{ template "traefik.containerPort.https" . }}
           {{- if .Values.deployment.hostPort.httpsEnabled }}
           hostPort: {{ default 443 .Values.deployment.hostPort.httpsPort }}
           {{- end }}
           protocol: TCP
-        {{- if .Values.dashboard.enabled }}
+        {{- if or .Values.dashboard.enabled .Values.metrics.prometheus.enabled }}
         - name: dash
           containerPort: 8080
           {{- if .Values.deployment.hostPort.dashboardEnabled }}
@@ -162,13 +177,23 @@ spec:
         {{- end }}
 
       volumes:
+      {{- if .Values.extraVolumes  }}{{ toYaml .Values.extraVolumes | trim | nindent 6 }}{{ end }}
       - name: config
         configMap:
           name: {{ template "traefik.fullname" . }}
-      {{- if and .Values.ssl.enabled (not .Values.ssl.upstream) }}
+      {{- if .Values.ssl.enabled }}
+      {{- if not .Values.ssl.upstream }}
       - name: ssl
         secret:
           secretName: {{ template "traefik.fullname" . }}-default-cert
+      {{- end }}
+      {{- if .Values.ssl.mtls }}
+      {{- if .Values.ssl.mtls.enabled }}
+      - name: mtls
+        configMap:
+          name: {{ template "traefik.fullname" . }}-client-ca-certs
+      {{- end }}
+      {{- end }}
       {{- end }}
       {{- if .Values.acme.enabled }}
       - name: acme
