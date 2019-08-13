@@ -30,6 +30,7 @@ metadata:
 spec:
   updateStrategy:
     type: {{ .Values.StatefulSetUpdate.updateStrategy }}
+  podManagementPolicy: "Parallel"
   serviceName: {{ template "minio.fullname" . }}-svc
   replicas: {{ .Values.replicas }}
   selector:
@@ -42,6 +43,9 @@ spec:
       labels:
         app: {{ template "minio.name" . }}
         release: {{ .Release.Name }}
+{{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | indent 8 }}
+{{- end }}
       {{- if .Values.podAnnotations }}
       annotations:
 {{ toYaml .Values.podAnnotations | indent 8 }}

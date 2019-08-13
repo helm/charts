@@ -75,7 +75,88 @@ Parameter                         | Description                                 
 `service.annotations`             | Service annotations                                                                                                                                                                                        | `{}`
 `service.externalPort`            | Pomerium's port                                                                                                                                                                                            | `443`
 `service.type`                    | Service type (ClusterIP, NodePort or LoadBalancer)                                                                                                                                                         | `ClusterIP`
+`serviceMonitor.enabled`          | Create Prometheus Operator ServiceMonitor                                            | `false`
+`serviceMonitor.namespace`        | Namespace to create the ServiceMonitor resource in                                   | The namespace of the chart
+`serviceMonitor.labels`           | Additional labels to apply to the ServiceMonitor resource                            | `release: prometheus`
+`tracing.enabled`                 | Enable distributed tracing                                                                                                                                                                                 | `false`
+`tracing.debug`                   | Set trace sampling to 100%.  Use with caution!                                                                                                                                                             | `false`
+`tracing.provider`                | Specifies the tracing provider to configure (Valid options: Jaeger)                                                                                                                                                               | Required
+`tracing.jaeger.collector_endpoint` | The jaeger collector endpoint                                                                                                                                                                            | Required
+`tracing.jaeger.agent_endpoint`     | The jaeger agent endpoint                                                                                                                                                                                | Required
 `ingress.enabled`                 | Enables Ingress for pomerium                                                                                                                                                                               | `false`
 `ingress.annotations`             | Ingress annotations                                                                                                                                                                                        | `{}`
 `ingress.hosts`                   | Ingress accepted hostnames                                                                                                                                                                                 | `nil`
 `ingress.tls`                     | Ingress TLS configuration                                                                                                                                                                                  | `[]`
+`metrics.enabled`                     | Enable prometheus metrics endpoint                                                                                                                                                                                  | `false`
+`metrics.port`                     | Prometheus metrics endpoint port                                                                                                                                                                                  | `9090`
+
+## Metrics Discovery Configuration
+
+This chart provices two ways to surface metrics for discovery.  Under normal circumstances, you will only set up one method.
+
+### Prometheus Operator 
+
+This chart assumes you have already installed the Prometheus Operator CRDs.
+
+Example chart values:
+
+```yaml
+metrics:
+  enabled: true
+  port: 9090 # default
+serviceMonitor:
+  enabled: true
+  labels:
+    release: prometheus # default
+
+```
+
+Example ServiceMonitor configuration:
+
+```yaml
+    serviceMonitorSelector:
+      matchLabels:
+        release: prometheus # operator chart default
+```
+
+### Prometheus kubernetes_sd_configs
+
+Example chart values:
+
+```yaml
+metrics:
+  enabled: true
+  port: 9090 # default
+service:
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "9090"
+```
+
+Example prometheus discovery config:
+```yaml
+- job_name: 'pomerium'
+metrics_path: /metrics
+kubernetes_sd_configs:
+- role: endpoints
+relabel_configs:
+- source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scrape]
+  action: keep
+  regex: true
+- source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_instance]
+  action: keep
+  regex: pomerium
+- action: labelmap
+  regex: __meta_kubernetes_service_label_(.+)
+- source_labels: [__meta_kubernetes_namespace]
+  action: replace
+  target_label: kubernetes_namespace
+- source_labels: [__meta_kubernetes_service_name]
+  action: replace
+  target_label: kubernetes_name
+- source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
+  action: replace
+  regex: ([^:]+)(?::\d+)?;(\d+)
+  replacement: $1:$2
+  target_label: __address__
+```
