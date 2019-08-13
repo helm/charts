@@ -16,6 +16,17 @@ spec:
     matchLabels:
       app: {{ template "prometheus-mysql-exporter.name" . }}
       release: {{ .Release.Name }}
+  {{- with .Values.serviceMonitor.jobLabel }}
+  jobLabel: {{ . | quote}}
+  {{- end }}
+  {{- with .Values.serviceMonitor.targetLabels }}
+  targetLabels:
+{{ toYaml . | trim | indent 4 -}}
+  {{- end }}
+  {{- with .Values.serviceMonitor.podTargetLabels }}
+  podTargetLabels:
+{{ toYaml . | trim | indent 4 -}}
+  {{- end }}
   endpoints:
     - path: /metrics
       port: {{ .Values.service.name }}

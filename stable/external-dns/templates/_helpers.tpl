@@ -37,6 +37,9 @@ app.kubernetes.io/name: {{ template "external-dns.name" . }}
 helm.sh/chart: {{ template "external-dns.chart" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels }}
+{{- end }}
 {{- end -}}
 
 {{/* matchLabels */}}
@@ -128,9 +131,10 @@ Compile all warnings into a single message, and call fail.
 {{- $messages := append $messages (include "external-dns.validateValues.provider" .) -}}
 {{- $messages := append $messages (include "external-dns.validateValues.sources" .) -}}
 {{- $messages := append $messages (include "external-dns.validateValues.aws" .) -}}
-{{- $messages := append $messages (include "external-dns.validateValues.google" .) -}}
 {{- $messages := append $messages (include "external-dns.validateValues.infoblox.gridHost" .) -}}
 {{- $messages := append $messages (include "external-dns.validateValues.infoblox.wapiPassword" .) -}}
+{{- $messages := append $messages (include "external-dns.validateValues.pdns.apiUrl" .) -}}
+{{- $messages := append $messages (include "external-dns.validateValues.pdns.apiKey" .) -}}
 {{- $messages := without $messages "" -}}
 {{- $message := join "\n" $messages -}}
 
@@ -180,19 +184,6 @@ external-dns: aws.assumeRoleArn
 
 {{/*
 Validate values of External DNS:
-- must provide a service account key when provider is "google"
-*/}}
-{{- define "external-dns.validateValues.google" -}}
-{{- if and (eq .Values.provider "google") (not .Values.google.serviceAccountSecret) (not .Values.google.serviceAccountKey) -}}
-external-dns: google.serviceAccountKey google.serviceAccountSecret
-    You must provide the service account key when provider="google".
-    Please set the service account key (--set google.serviceAccountKey="xxxx")
-    or reuse an existing secret (--set google.serviceAccountSecret="xxxx")
-{{- end -}}
-{{- end -}}
-
-{{/*
-Validate values of External DNS:
 - must provide the Grid Manager host when provider is "infoblox"
 */}}
 {{- define "external-dns.validateValues.infoblox.gridHost" -}}
@@ -212,6 +203,30 @@ Validate values of External DNS:
 external-dns: infoblox.wapiPassword
     You must provide a WAPI password when provider="infoblox".
     Please set the wapiPassword parameter (--set infoblox.wapiPassword="xxxx")
+{{- end -}}
+{{- end -}}
+
+{{/*
+Validate values of External DNS:
+- must provide the PowerDNS API URL when provider is "pdns"
+*/}}
+{{- define "external-dns.validateValues.pdns.apiUrl" -}}
+{{- if and (eq .Values.provider "pdns") (not .Values.pdns.apiUrl) -}}
+external-dns: pdns.apiUrl
+    You must provide the the PowerDNS API URL when provider="pdns".
+    Please set the apiUrl parameter (--set pdns.apiUrl="xxxx")
+{{- end -}}
+{{- end -}}
+
+{{/*
+Validate values of External DNS:
+- must provide the PowerDNS API key when provider is "pdns"
+*/}}
+{{- define "external-dns.validateValues.pdns.apiKey" -}}
+{{- if and (eq .Values.provider "pdns") (not .Values.pdns.apiKey) -}}
+external-dns: pdns.apiKey
+    You must provide the the PowerDNS API key when provider="pdns".
+    Please set the apiKey parameter (--set pdns.apiKey="xxxx")
 {{- end -}}
 {{- end -}}
 
