@@ -1,4 +1,9 @@
 spec:
+  {{- if .Values.securityContext.enabled }}
+  securityContext:
+    fsGroup: {{ .Values.securityContext.fsGroup }}
+    runAsUser: {{ .Values.securityContext.runAsUser }}
+  {{- end }}
   containers:
   - name: mysql-backup
     image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

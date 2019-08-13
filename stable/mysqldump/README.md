@@ -100,6 +100,9 @@ The following tables lists the configurable parameters of the mysqldump chart an
 | nodeSelector                                  | node selector                                                                  | {}                           |
 | tolerations                                   | tolerations                                                                    | \[]                          |
 | affinity                                      | affinity                                                                       | {}                           |
+| securityContext.enabled                       | set true to change default security context of job/cronjob                     | false                        |
+| securityContext.fsGroup                       | group id to use                                                                | 999                          |
+| securityContext.runAsUser                     | user id to use                                                                 | 999                          |
 
 ### Auto generating the gcp service account
 
