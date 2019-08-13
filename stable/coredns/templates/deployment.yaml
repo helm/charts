@@ -63,6 +63,11 @@ spec:
         volumeMounts:
         - name: config-volume
           mountPath: /etc/coredns
+{{- range .Values.extraSecrets }}
+        - name: {{ .name }}
+          mountPath: {{ .mountPath }}
+          readOnly: true
+{{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         ports:
@@ -96,3 +101,9 @@ spec:
             - key: {{ .filename }}
               path: {{ .filename }}
             {{ end }}
+{{- range .Values.extraSecrets }}
+        - name: {{ .name }}
+          secret:
+            secretName: {{ .name }}
+            defaultMode: 400
+{{- end }}
