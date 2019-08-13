@@ -1,0 +1,30 @@
+{{- if ( .Values.metrics.serviceMonitor )  }}
+{{- if and ( .Values.metrics.serviceMonitor.enabled ) ( .Values.metrics.prometheus.enabled ) }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+{{- if .Values.metrics.serviceMonitor.labels }}
+  labels:
+{{ toYaml .Values.metrics.serviceMonitor.labels | indent 4}}
+{{- end }}
+  name: {{ template "traefik.fullname" . }}-prometheus-exporter
+{{- if .Values.metrics.serviceMonitor.namespace }}
+  namespace: {{ .Values.metrics.serviceMonitor.namespace }}
+{{- end }}
+spec:
+  endpoints:
+  - targetPort: metrics
+    path: /metrics
+{{- if .Values.metrics.serviceMonitor.interval }}
+    interval: {{ .Values.metrics.serviceMonitor.interval }}
+{{- end }}
+  jobLabel: {{ template "traefik.fullname" . }}-prometheus-exporter
+  namespaceSelector:
+    matchNames:
+    - {{ .Release.Namespace }}
+  selector:
+    matchLabels:
+      app: {{ template "traefik.name" . }}
+      release: {{ .Release.Name | quote }}
+{{- end }}
+{{- end }}
