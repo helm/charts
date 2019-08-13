@@ -4,17 +4,13 @@ apiVersion: {{ .Values.deployment.apiVersion }}
 kind: Deployment
 metadata:
   labels:
-    app: {{ template "cluster-autoscaler.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+{{ include "cluster-autoscaler.labels" . | indent 4 }}
   name: {{ template "cluster-autoscaler.fullname" . }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ template "cluster-autoscaler.name" . }}
-      release: {{ .Release.Name }}
+{{ include "cluster-autoscaler.instance-name" . | indent 6 }}
     {{- if .Values.podLabels }}
 {{ toYaml .Values.podLabels | indent 6 }}
     {{- end }}
@@ -25,8 +21,7 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
     {{- end }}
       labels:
-        app: {{ template "cluster-autoscaler.name" . }}
-        release: {{ .Release.Name }}
+{{ include "cluster-autoscaler.instance-name" . | indent 8 }}
       {{- if .Values.podLabels }}
 {{ toYaml .Values.podLabels | indent 8 }}
       {{- end }}
@@ -57,8 +52,7 @@ spec:
           {{- end }}
           {{- if eq .Values.cloudProvider "aws" }}
             {{- if .Values.autoDiscovery.clusterName }}
-            - --node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,kubernetes.io/cluster/
-              {{- .Values.autoDiscovery.clusterName }}
+            - --node-group-auto-discovery=asg:tag={{ tpl (join "," .Values.autoDiscovery.tags) . }}
             {{- end }}
           {{- else if eq .Values.cloudProvider "gce" }}
           {{- if .Values.autoscalingGroupsnamePrefix }}
@@ -71,7 +65,7 @@ spec:
             - --cloud-config={{ .Values.cloudConfigPath }}
             {{- end }}
           {{- range $key, $value := .Values.extraArgs }}
-            - --{{ $key }}{{ if $value }}={{ $value }}{{ end }}
+            - --{{ $key }}={{ $value }}
           {{- end }}
 
           env:
@@ -148,6 +142,18 @@ spec:
             - name: {{ $key }}
               value: "{{ $value }}"
           {{- end }}
+          {{- range $key, $value := .Values.envFromConfigMap }}
+            - name: {{ $key }}
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ default (include "cluster-autoscaler.fullname" $) $value.name }}
+                  key: {{ required "Must specify key!" $value.key }}
+          {{- end }}
+          {{- if .Values.envFromSecret }}
+          envFrom:
+            - secretRef:
+                name: {{ .Values.envFromSecret }}
+          {{- end }}
           livenessProbe:
             httpGet:
               path: /health-check
@@ -185,4 +191,10 @@ spec:
           hostPath:
             path: {{ .Values.cloudConfigPath }}
         {{- end }}
+    {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end }}
+    {{- end }}
 {{- end }}

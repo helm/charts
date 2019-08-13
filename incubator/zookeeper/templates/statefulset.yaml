@@ -9,7 +9,7 @@ metadata:
     heritage: {{ .Release.Service }}
     component: server
 spec:
-  serviceName: {{ template "zookeeper.fullname" . }}-headless
+  serviceName: {{ template "zookeeper.headless" . }}
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
@@ -63,9 +63,25 @@ spec:
 {{ toYaml $port | indent 14 }}
 {{- end }}
           livenessProbe:
-{{ toYaml .Values.livenessProbe | indent 12 }}
+            exec:
+              command:
+                - sh
+                - /config-scripts/ok
+            initialDelaySeconds: 20
+            periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 2
+            successThreshold: 1
           readinessProbe:
-{{ toYaml .Values.readinessProbe | indent 12 }}
+            exec:
+              command:
+                - sh
+                - /config-scripts/ready
+            initialDelaySeconds: 20
+            periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 2
+            successThreshold: 1
           env:
             - name: ZK_REPLICAS
               value: {{ .Values.replicaCount | quote }}
@@ -86,7 +102,7 @@ spec:
 {{ toYaml .Values.resources | indent 12 }}
           volumeMounts:
             - name: data
-              mountPath: /var/lib/zookeeper
+              mountPath: /data
             {{- range $secret := .Values.secrets }}
               {{- if $secret.mountPath }}
                 {{- range $key := $secret.keys }}
@@ -97,6 +113,8 @@ spec:
                 {{- end }}
               {{- end }}
             {{- end }}
+            - name: config
+              mountPath: /config-scripts
 
 
 {{- if .Values.exporters.jmx.enabled }}
@@ -170,6 +188,10 @@ spec:
 {{ toYaml . | indent 8 }}
     {{- end }}
       volumes:
+        - name: config
+          configMap:
+            name: {{ template "zookeeper.fullname" . }}
+            defaultMode: 0555
         {{- range .Values.secrets }}
         - name: {{ $.Release.Name }}-{{ .name }}
           secret:

@@ -3,8 +3,8 @@ description: Logstash is an open source, server-side data processing pipeline
 icon: https://www.elastic.co/assets/blt86e4472872eed314/logo-elastic-logstash-lt.svg
 home: https://www.elastic.co/products/logstash
 name: logstash
-version: 1.13.0
-appVersion: 6.7.0
+version: 2.1.0
+appVersion: 7.1.1
 sources:
 - https://www.docker.elastic.co
 - https://www.elastic.co/guide/en/logstash/current/index.html

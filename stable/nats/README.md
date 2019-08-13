@@ -54,6 +54,8 @@ The following table lists the configurable parameters of the NATS chart and thei
 | `image.tag`                          | NATS Image tag                                                                               | `{TAG_NAME}`                                                  |
 | `image.pullPolicy`                   | Image pull policy                                                                            | `IfNotPresent`                                                |
 | `image.pullSecrets`                  | Specify docker-registry secret names as an array                                             | `[]` (does not add image pull secrets to deployed pods)       |
+| `nameOverride`                       | String to partially override nats.fullname template with a string (will prepend the release name) | `nil`                                                    |
+| `fullnameOverride`                   | String to fully override nats.fullname template with a string                                | `nil`                                                         |
 | `auth.enabled`                       | Switch to enable/disable client authentication                                               | `true`                                                        |
 | `auth.user`                          | Client authentication user                                                                   | `nats_cluster`                                                |
 | `auth.password`                      | Client authentication password                                                               | `random alhpanumeric string (10)`                             |
@@ -85,6 +87,7 @@ The following table lists the configurable parameters of the NATS chart and thei
 | `tolerations`                        | Toleration labels for pod assignment                                                         | `nil`                                                         |
 | `resources`                          | CPU/Memory resource requests/limits                                                          | {}                                                            |
 | `extraArgs`                          | Optional flags for NATS                                                                      | `[]`                                                          |
+| `natsFilename`                       | Filename used by several NATS files (binary, configurarion file, and pid file)               | `nats-server`                                                 |
 | `livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated                                                     | `30`                                                          |
 | `livenessProbe.periodSeconds`        | How often to perform the probe                                                               | `10`                                                          |
 | `livenessProbe.timeoutSeconds`       | When the probe times out                                                                     | `5`                                                           |
@@ -123,8 +126,8 @@ The following table lists the configurable parameters of the NATS chart and thei
 | `networkPolicy.allowExternal`        | Allow external connections                                                                   | `true`                                                        |
 | `metrics.enabled`                    | Enable Prometheus metrics via exporter side-car                                              | `false`                                                       |
 | `metrics.image.registry`             | Prometheus metrics exporter image registry                                                   | `docker.io`                                                   |
-| `metrics.image.repository`           | Prometheus metrics exporter image name                                                       | `synadia/prometheus-nats-exporter`                            |
-| `metrics.image.tag`                  | Prometheus metrics exporter image tag                                                        | `0.1.0`                                                       |
+| `metrics.image.repository`           | Prometheus metrics exporter image name                                                       | `bitnami/nats-exporter`                                       |
+| `metrics.image.tag`                  | Prometheus metrics exporter image tag                                                        | `{TAG_NAME}`                                                  |
 | `metrics.image.pullPolicy`           | Prometheus metrics image pull policy                                                         | `IfNotPresent`                                                |
 | `metrics.image.pullSecrets`          | Prometheus metrics image pull secrets                                                        | `[]` (does not add image pull secrets to deployed pods)       |
 | `metrics.port`                       | Prometheus metrics exporter port                                                             | `7777`                                                        |
@@ -224,6 +227,14 @@ sidecars:
   ports:
   - name: portname
    containerPort: 1234
+```
+## Deploy chart with NATS version 1.x.x
+
+NATS version 2.0.0 has renamed the server binary filename from `gnatsd` to `nats-server`. Therefore, the default values has been changed in the chart,
+however, it is still possible to use the chart to deploy NATS version 1.x.x using the `natsFilename` property.
+
+```bash
+helm install --name nats-v1 --set natsFilename=gnatsd --set image.tag=1.4.1 stable/nats
 ```
 
 ## Upgrading

@@ -3,21 +3,28 @@ kind: StatefulSet
 metadata:
   name: {{ template "hazelcast-jet.fullname" . }}
   labels:
-    app: {{ template "hazelcast-jet.name" . }}
-    chart: {{ template "hazelcast-jet.chart" . }}
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/name: {{ template "hazelcast-jet.name" . }}
+    helm.sh/chart: {{ template "hazelcast-jet.chart" . }}
+    app.kubernetes.io/instance: "{{ .Release.Name }}"
+    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
 spec:
+  serviceName: {{ template "hazelcast-jet.fullname" . }}
   replicas: {{ .Values.cluster.memberCount }}
   selector:
     matchLabels:
-      app: {{ template "hazelcast-jet.name" . }}
-      release: "{{ .Release.Name }}"
+      app.kubernetes.io/name: {{ template "hazelcast-jet.name" . }}
+      helm.sh/chart: {{ template "hazelcast-jet.chart" . }}
+      app.kubernetes.io/instance: "{{ .Release.Name }}"
+      app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+      role: hazelcast-jet
   template:
     metadata:
       labels:
-        app: {{ template "hazelcast-jet.name" . }}
-        release: "{{ .Release.Name }}"
+        app.kubernetes.io/name: {{ template "hazelcast-jet.name" . }}
+        helm.sh/chart: {{ template "hazelcast-jet.chart" . }}
+        app.kubernetes.io/instance: "{{ .Release.Name }}"
+        app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+        role: hazelcast-jet
     spec:
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
@@ -41,6 +48,10 @@ spec:
         ports:
         - name: hazelcast-jet
           containerPort: 5701
+        {{- if .Values.metrics.enabled }}
+        - name: metrics
+          containerPort: {{ .Values.metrics.service.port }}
+        {{- end }}          
         {{- if .Values.livenessProbe.enabled }}
         livenessProbe:
           httpGet:
@@ -67,9 +78,18 @@ spec:
         - name: hazelcast-jet-storage
           mountPath: /data/hazelcast-jet
         env:
+        {{- if .Values.metrics.enabled }}
+        - name: PROMETHEUS_PORT
+          value: "{{ .Values.metrics.service.port }}"
+        {{- end }}
         - name: JAVA_OPTS
-          value: "-Dhazelcast.rest.enabled={{ .Values.jet.rest }} -Dhazelcast.config=/data/hazelcast-jet/hazelcast.xml -Dhazelcast.jet.config=/data/hazelcast-jet/hazelcast-jet.xml -DserviceName={{ template "hazelcast-jet.fullname" . }} -Dnamespace={{ .Release.Namespace }} {{ if .Values.gracefulShutdown.enabled }}-Dhazelcast.shutdownhook.policy=GRACEFUL -Dhazelcast.shutdownhook.enabled=true -Dhazelcast.graceful.shutdown.max.wait={{ .Values.gracefulShutdown.maxWaitSeconds }} {{ end }} {{ .Values.jet.javaOpts }}"
+          value: "-Dhazelcast.rest.enabled={{ .Values.jet.rest }} -Dhazelcast.config=/data/hazelcast-jet/hazelcast.yaml -Dhazelcast.jet.config=/data/hazelcast-jet/hazelcast-jet.yaml -DserviceName={{ template "hazelcast-jet.fullname" . }} -Dnamespace={{ .Release.Namespace }}  {{ if .Values.gracefulShutdown.enabled }}-Dhazelcast.shutdownhook.policy=GRACEFUL -Dhazelcast.shutdownhook.enabled=true -Dhazelcast.graceful.shutdown.max.wait={{ .Values.gracefulShutdown.maxWaitSeconds }} {{ end }}  {{ if .Values.metrics.enabled }}-Dhazelcast.jmx=true{{ end }} {{ .Values.jet.javaOpts }}"
       serviceAccountName: {{ template "hazelcast-jet.serviceAccountName" . }}
+      {{- if .Values.securityContext.enabled }}
+      securityContext:
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+      {{- end }}
       volumes:
       - name: hazelcast-jet-storage
         configMap:

@@ -9,16 +9,16 @@ metadata:
     heritage: {{ .Release.Service }}
 data:
 {{- range $key, $value := .Values.inputs }}
-  input_{{ $key }}: |-
+  input_{{ $key }}.conf: |-
 {{ $value | indent 4 }}
 {{- end }}
 
 {{- range $key, $value := .Values.filters }}
-  filter_{{ $key }}: |-
+  filter_{{ $key }}.conf: |-
 {{ $value | indent 4 }}
 {{- end }}
 
 {{- range $key, $value := .Values.outputs }}
-  output_{{ $key }}: |-
+  output_{{ $key }}.conf: |-
 {{ $value | indent 4 }}
 {{- end }}

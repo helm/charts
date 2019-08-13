@@ -62,6 +62,9 @@ agent:
   # agent.proxyUseDNS sets the INSTANA_AGENT_PROXY_USE_DNS environment variable.
   # proxyUseDNS: null
 
+  configuration_yaml: |
+    # Place agent configuration here
+
 rbac:
   # Specifies whether RBAC resources should be created
   create: true

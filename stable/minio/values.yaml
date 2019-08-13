@@ -6,7 +6,7 @@ clusterDomain: cluster.local
 ##
 image:
   repository: minio/minio
-  tag: RELEASE.2019-05-14T23-57-45Z
+  tag: RELEASE.2019-08-07T01-59-21Z
   pullPolicy: IfNotPresent
 
 ## Set default image, imageTag, and imagePullPolicy for the `mc` (the minio
@@ -14,7 +14,7 @@ image:
 ##
 mcImage:
   repository: minio/mc
-  tag: RELEASE.2019-05-01T23-27-44Z
+  tag: RELEASE.2019-08-07T23-14-43Z
   pullPolicy: IfNotPresent
 
 ## minio server mode, i.e. standalone or distributed.
@@ -135,6 +135,9 @@ affinity: {}
 # Additational pod annotations
 podAnnotations: {}
 
+# Additional pod labels
+podLabels: {}
+
 ## Liveness and Readiness probe values.
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
 livenessProbe:
@@ -249,3 +252,20 @@ environment:
 networkPolicy:
   enabled: false
   allowExternal: true
+
+## Specify the service account to use for the Minio pods. If 'create' is set to 'false'
+## and 'name' is left unspecified, the account 'default' will be used.
+serviceAccount:
+  create: true
+  ## The name of the service account to use. If 'create' is 'true', a service account with that name
+  ## will be created. Otherwise, a name will be auto-generated.
+  name:
+
+metrics:
+  # Metrics can not be disabled yet: https://github.com/minio/minio/issues/7493
+  serviceMonitor:
+    enabled: false
+    additionalLabels: {}
+    # namespace: monitoring
+    # interval: 30s
+    # scrapeTimeout: 10s
