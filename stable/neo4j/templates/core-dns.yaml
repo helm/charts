@@ -11,8 +11,12 @@ metadata:
 spec:
   clusterIP: None
   ports:
-    - port: 7474
+    - name: http
+      port: 7474
       targetPort: 7474
+    - name: bolt
+      port: 7687
+      targetPort: 7687
   selector:
     app: {{ template "neo4j.name" . }}
     release: {{ .Release.Name | quote }}
