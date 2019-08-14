@@ -26,15 +26,21 @@ spec:
     {{- end }}
   {{- end }}
   ports:
-  - port: {{ .Values.service.externalPort }}
+  - name: api
     protocol: TCP
+    port: {{ .Values.service.externalPort }}
     targetPort: {{ .Values.service.port }}
-    name: api
+    {{ if eq "NodePort" .Values.service.type }}
+    nodePort: {{ .Values.service.externalPort }}
+    {{ end }}
   {{- if .Values.service.clusterExternalPort }}
-  - port: {{ .Values.service.clusterExternalPort }}
+  - name: cluster
     protocol: TCP
+    port: {{ .Values.service.clusterExternalPort }}
     targetPort: {{ .Values.service.clusterPort }}
-    name: cluster
+    {{ if eq "NodePort" .Values.service.type }}
+    nodePort: {{ .Values.service.clusterExternalPort }}
+    {{ end }}
   {{- end }}
   selector:
     app: {{ template "vault.name" . }}
