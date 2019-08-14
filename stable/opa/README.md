@@ -86,3 +86,4 @@ Reference](https://www.openpolicyagent.org/docs/configuration.html).
 | `priorityClassName` | The name of the priorityClass for the pods. | Unset |
 | `prometheus.enabled` | Flag to expose the `/metrics` endpoint to be scraped. | `false` | 
 | `annotations` | Annotations to be added to the deployment template. | `{}` |
+| `bootstrapPolicies` | Bootstrap policies to be loaded during OPA startup. | `{}` |
