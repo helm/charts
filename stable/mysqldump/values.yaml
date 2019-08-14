@@ -107,6 +107,24 @@ upload:
     # id_rsa private key as string
     privatekey: ""
 
+  openstack:
+    enabled: false
+    user: backup@mydomain
+    userDomain: default
+    # overriden by used if secretName/secretKey set
+    password:
+    authUrl: https://mydomain:5000/v3
+    project: my_project
+    projectDomain: default
+    # container/folder(/subfolder ...)
+    destination: backup/mysql
+    # existingSecret can be enabled to use an existing secret
+    # existingSecret:
+    # existingSecretKey defines the key to use, or 'openstack-backup-password' if not set
+    # existingSecretKey:
+    # set to 0 to disable TTL on uploaded files
+    ttlDays: 30
+
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
@@ -124,3 +142,9 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+## Pod Security Context
+securityContext:
+  enabled: false
+  fsGroup: 999
+  runAsUser: 999
