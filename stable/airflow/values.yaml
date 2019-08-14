@@ -215,6 +215,12 @@ web:
   nodeSelector: {}
   affinity: {}
   tolerations: []
+  ##
+  ## Directory in which to mount secrets on webserver nodes.
+  secretsDir: /var/airflow/secrets
+  ##
+  ## Secrets which will be mounted as a file at `secretsDir/<secret name>`.
+  secrets: []
 
 ##
 ## Workers configuration
