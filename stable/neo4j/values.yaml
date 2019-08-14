@@ -89,6 +89,17 @@ core:
 
 # Read Replicas
 readReplica:
+  resources: {}
+  # limits:
+  #   cpu: 100m
+  #   memory: 512Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 512Mi
+  targetAverageUtilization: 70
+  minReplicas: 0
+  maxReplicas: 3
+
   numberOfServers: 0
   ## Pass extra environment variables to the Neo4j container.
   ##

@@ -1,0 +1,16 @@
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ template "neo4j.name" . }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ template "neo4j.name" . }}
+  minReplicas: {{ .Values.readReplica.minReplicas }}
+  maxReplicas: {{ .Values.readReplica.maxReplicas }}
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      targetAverageUtilization: {{ .Values.readReplica.targetAverageUtilization }}
