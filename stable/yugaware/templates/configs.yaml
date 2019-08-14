@@ -64,7 +64,7 @@ data:
       helm.timeout_secs = {{ .Values.helm.timeout }}
       health.check_interval_ms = 300000
       health.status_interval_ms = 43200000
-      health.default_email = "alerts@yugabyte.com"
+      health.default_email = "{{ .Values.yugaware.health.email }}"
       health.ses_email_username = "{{ .Values.yugaware.health.username }}"
       health.ses_email_password = "{{ .Values.yugaware.health.password }}"
     }
