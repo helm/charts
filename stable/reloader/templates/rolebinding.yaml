@@ -17,7 +17,7 @@ metadata:
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: {{ template "reloader-name" . }}-role
+  name: {{ template "reloader-fullname" . }}-role
 subjects:
   - kind: ServiceAccount
     name: {{ template "serviceAccountName" . }}
