@@ -96,6 +96,8 @@ The following table lists the configurable parameters of the Vault chart and the
 | `vaultExporter.pullPolicy`        | Image pull policy that sould be used     | `IfNotPresent`                      |
 | `vaultExporter.vaultAddress`      | Vault address that exporter should use   | `127.0.0.1:8200`                    |
 | `vaultExporter.tlsCAFile`         | Vault TLS CA certificate mount path      | `/vault/tls/ca.crt`                 |
+| `readiness.statuscodes`           | A map of statuscode arguments to use in readiness check      | `{}`            |
+| `liveness.statuscodes`            | A map of statuscode arguments to use in liveness check       | `{}`            |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
