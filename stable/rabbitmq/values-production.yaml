@@ -149,13 +149,14 @@ rabbitmq:
   ## Enable encryption to rabbitmq
   ## ref: https://www.rabbitmq.com/ssl.html
   ##
-  ssl:
+  tls:
     enabled: false
     failIfNoPeerCert: true
     sslOptionsVerify: verify_peer
     caCertificate: |-
     serverCertificate: |-
     serverKey: |-
+    # existingSecret: name-of-existing-secret-to-rabbitmq
 
 ## Kubernetes service type
 service:
@@ -167,7 +168,7 @@ service:
 
   ## Node port ssl
   ##
-  # nodePort_ssl: 30671
+  # nodeSSLPort: 30671
 
   ## Amqp port
   ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
@@ -176,7 +177,7 @@ service:
 
   ## Amqp ssl port
   ##
-  port_ssl: 5671
+  SSLPort: 5671
 
   ## Dist port
   ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables

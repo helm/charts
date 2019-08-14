@@ -1,6 +1,7 @@
-{{- if .Values.rabbitmq.ssl.enabled }}
+{{ if or (not .Values.rabbitmq.tls.existingSecret) ( not .Values.rabbitmq.tls.enabled) }}
 apiVersion: v1
-kind: ConfigMap
+apiVersion: v1
+kind: Secret
 metadata:
   name: {{ template "rabbitmq.fullname" . }}-cert-config
   labels:
@@ -8,11 +9,12 @@ metadata:
     chart: {{ template "rabbitmq.chart" .  }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
+type: Opaque
 data:
   ca_certificate.pem:
-    {{ .Values.rabbitmq.ssl.caCertificate | quote }}
+    {{ .Values.rabbitmq.tls.caCertificate | b64enc | quote }}
   server_certificate.pem:
-    {{ .Values.rabbitmq.ssl.serverCertificate | quote  }}
+    {{ .Values.rabbitmq.tls.serverCertificate| b64enc | quote }}
   server_key.pem:
-    {{ .Values.rabbitmq.ssl.serverKey | quote  }}
+    {{ .Values.rabbitmq.tls.serverKey | b64enc | quote }}
 {{ end }}
