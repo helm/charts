@@ -6,7 +6,7 @@ app: crate
 
 image:
   name: crate
-  tag: 3.1.1
+  tag: 4.0.3
   pullPolicy: IfNotPresent
 
 # 1) The Service connecting 3 ports.
@@ -31,7 +31,6 @@ crate:
   recoverAfterNodes: 1
   replicas: 1  # If you want more replicas, checkout the links above.
   recoverAfterTime: 5m
-  minimumMasterNodes: 1
 
 http:
   cors:

@@ -35,8 +35,7 @@ spec:
           - -Clicense.enterprise=false
           - -Ccluster.name={{ .Values.crate.clusterName }}
           - -Cnetwork.host="0.0.0.0"
-          - -Cdiscovery.zen.hosts_provider=srv
-          - -Cdiscovery.zen.minimum_master_nodes={{ .Values.crate.minimumMasterNodes }}
+          - -Cdiscovery.seed_providers=srv
           - -Cdiscovery.srv.query=_{{ .Values.service.clusterName }}._tcp.{{ .Values.service.name }}.{{ .Release.Namespace }}.svc.cluster.local
           - -Cgateway.recover_after_nodes={{ .Values.crate.recoverAfterNodes }}
           - -Cgateway.recover_after_time={{ .Values.crate.recoverAfterTime }}
@@ -68,8 +67,6 @@ spec:
           value: {{ .Values.crate.clusterName | quote }}
         - name: RECOVER_AFTER_NODES
           value: {{ .Values.crate.recoverAfterNodes | quote }}
-        - name: MINIMUM_MASTER_NODES
-          value: {{ .Values.crate.minimumMasterNodes | quote }}
         livenessProbe:
           exec:
             command: ["sh", "-c", "curl http://localhost:4200 2&>/dev/null | grep '\"ok\" : true'"]

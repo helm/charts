@@ -2,7 +2,7 @@ apiVersion: v1
 name: crate
 version: 0.1.0
 description: CrateDB is a distributed SQL database that handles massive amounts of machine data in real-time. This is a Helm chart for CrateDB, to simplify even further its deployment on Kubernetes clusters.
-appVersion: 3.1.1
+appVersion: 4.0.3
 home: https://crate.io
 icon: https://crate.io/wp-content/themes/webflow/images/logo-crate.png
 sources:
@@ -10,3 +10,5 @@ sources:
 maintainers:
 - name: taliaga
   email: tomas.aliaga@martel-innovate.com
+- name: OJFord
+  email: dev@ojford.com
