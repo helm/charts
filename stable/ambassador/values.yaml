@@ -27,6 +27,7 @@ autoscaling:
 
 # Additional container environment variable
 env:
+  {}
   # Exposing statistics via StatsD
   # STATSD_ENABLED: true
   # STATSD_HOST: statsd-sink
@@ -225,6 +226,10 @@ pro:
   licenseKey:
     value:
     secret: false
+  # Ambassador Pro environment variables can be found at https://www.getambassador.io/reference/pro/environment
+  # For consistency, AMBASSADOR_ID is copied over from the Ambassador env above and will be ignored if set here.
+  env:
+    {}
 
 crds:
   enabled: true
