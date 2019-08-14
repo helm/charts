@@ -204,12 +204,22 @@ vault:
     aliveIfSealed: true
     initialDelaySeconds: 30
     periodSeconds: 10
+    statuscodes: {}
+    # sealedcode: 200
+    # standbycode: 200
+    # uninitcode: 200
+
   readiness:
     readyIfSealed: false
     readyIfStandby: true
     readyIfUninitialized: true
     initialDelaySeconds: 10
     periodSeconds: 10
+    statuscodes: {}
+    # sealedcode: 200
+    # standbycode: 200
+    # uninitcode: 200
+
   ## Use an existing config in a named ConfigMap
   # existingConfigName: vault-cm
   config:

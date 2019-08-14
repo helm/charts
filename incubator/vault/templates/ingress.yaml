@@ -1,6 +1,9 @@
 {{- if .Values.ingress.enabled -}}
 {{- $serviceName := include "vault.fullname" . -}}
-{{- $servicePort := .Values.service.externalPort -}}
+{{- $servicePort := "api" -}}
+{{- if .Values.service.clusterExternalPort }}
+{{- $servicePort = "cluster" -}}
+{{- end }}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
