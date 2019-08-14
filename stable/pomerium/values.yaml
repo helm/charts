@@ -115,7 +115,7 @@ extraVolumes: {}
 
 image:
   repository: "pomerium/pomerium"
-  tag: "v0.2.0"
+  tag: "v0.2.1"
   pullPolicy: "IfNotPresent"
 
 metrics:
