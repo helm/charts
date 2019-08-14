@@ -10,7 +10,7 @@ controller:
     functionController:
       image:
         repository: kubeless/function-controller
-        tag: v1.0.3
+        tag: v1.0.4
         pullPolicy: IfNotPresent
     httpTriggerController:
       image:
@@ -198,6 +198,42 @@ config:
             ],
             "name": "node8",
             "version": "8"
+         },
+         {
+            "images": [
+               {
+                  "command": "/kubeless-npm-install.sh",
+                  "image": "kubeless/nodejs@sha256:9594e9d601cfe3868b54cccf1cd8763b2430493fed3e06d7dc128a69b263dfaf",
+                  "phase": "installation"
+               },
+               {
+                  "env": {
+                     "NODE_PATH": "$(KUBELESS_INSTALL_VOLUME)/node_modules"
+                  },
+                  "image": "kubeless/nodejs@sha256:9594e9d601cfe3868b54cccf1cd8763b2430493fed3e06d7dc128a69b263dfaf",
+                  "phase": "runtime"
+               }
+            ],
+            "name": "node10",
+            "version": "10"
+         },
+         {
+            "images": [
+               {
+                  "command": "/kubeless-npm-install.sh",
+                  "image": "kubeless/nodejs@sha256:1c45cda56384adc7deae9bf99e221b8e159ec25980c05b947939096bf91800e6",
+                  "phase": "installation"
+               },
+               {
+                  "env": {
+                     "NODE_PATH": "$(KUBELESS_INSTALL_VOLUME)/node_modules"
+                  },
+                  "image": "kubeless/nodejs@sha256:1c45cda56384adc7deae9bf99e221b8e159ec25980c05b947939096bf91800e6",
+                  "phase": "runtime"
+               }
+            ],
+            "name": "node12",
+            "version": "12"
          }
       ]
    },
@@ -214,12 +250,12 @@ config:
                   "phase": "installation"
                },
                {
-                  "image": "kubeless/php@sha256:9b86066b2640bedcd88acb27f43dfaa2b338f0d74d9d91131ea781402f7ec8ec",
+                  "image": "kubeless/php@sha256:8f7f8aa9980a14126d9b9e8b3742258efd2591b0e152b4d65e0d7b5faf61a041",
                   "phase": "runtime"
                }
             ],
-            "name": "php72",
-            "version": "7.2"
+            "name": "php73",
+            "version": "7.3"
          }
       ]
    },
@@ -360,6 +396,24 @@ config:
             ],
             "name": "ruby25",
             "version": "2.5"
+         },
+         {
+            "images": [
+               {
+                  "command": "bundle install --gemfile=$KUBELESS_DEPS_FILE --path=$KUBELESS_INSTALL_VOLUME",
+                  "image": "bitnami/ruby:2.6",
+                  "phase": "installation"
+               },
+               {
+                  "env": {
+                     "GEM_HOME": "$(KUBELESS_INSTALL_VOLUME)/ruby/2.6.0"
+                  },
+                  "image": "kubeless/ruby@sha256:6a79d335bec224d820f149a6eb293e2bbab333ad63581e747ec644fd1af19c61",
+                  "phase": "runtime"
+               }
+            ],
+            "name": "ruby26",
+            "version": "2.6"
          }
       ]
    },
@@ -382,6 +436,21 @@ config:
             ],
             "name": "jvm1.8",
             "version": "1.8"
+         },
+         {
+            "images": [
+               {
+                  "command": "mv /kubeless/* /kubeless/payload.jar && cp /opt/*.jar /kubeless/ > /dev/termination-log 2>&1",
+                  "image": "kubeless/java-init@sha256:b7a8ae3c17b7cefaa28364348d2f504a02c936d38aee57f46b61f3745c784c17",
+                  "phase": "compilation"
+               },
+               {
+                  "image": "kubeless/java@sha256:b04e8e1f4a1acb8a94778320df8fd13aaf1eed22034007bf6d9109e55a4aa0c8",
+                  "phase": "runtime"
+               }
+            ],
+            "name": "jvm11",
+            "version": "11"
          }
       ]
    },
