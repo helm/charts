@@ -23,6 +23,11 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
+{{- define "kong.dblessConfig.fullname" -}}
+{{- $name := default "kong-custom-dbless-config" .Values.dblessConfig.nameOverride -}}
+{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
 {{/*
 Create the name of the service account to use
 */}}
