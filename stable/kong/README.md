@@ -135,23 +135,24 @@ Enabling both will create both databases in your cluster, but only one
 will be used by Kong based on the `env.database` parameter.
 Postgres is enabled by default.
 
-| Parameter                         | Description                                                            | Default               |
-| ------------------------------    | --------------------------------------------------------------------   | -------------------   |
-| cassandra.enabled                 | Spin up a new cassandra cluster for Kong                               | `false`               |
-| postgresql.enabled                | Spin up a new postgres instance for Kong                               | `true`                |
-| waitImage.repository              | Image used to wait for database to become ready                        | `busybox`             |
-| waitImage.tag                     | Tag for image used to wait for database to become ready                | `latest`              |
-| env.database                      | Choose either `postgres` or `cassandra`                                | `postgres`            |
-| env.pg_user                       | Postgres username                                                      | `kong`                |
-| env.pg_database                   | Postgres database name                                                 | `kong`                |
-| env.pg_password                   | Postgres database password (required if you are using your own database)| `kong`               |
-| env.pg_host                       | Postgres database host (required if you are using your own database)   | ``                    |
-| env.pg_port                       | Postgres database port                                                 | `5432`                |
-| env.cassandra_contact_points      | Cassandra contact points (required if you are using your own database) | ``                    |
-| env.cassandra_port                | Cassandra query port                                                   | `9042`                |
-| env.cassandra_keyspace            | Cassandra keyspace                                                     | `kong`                |
-| env.cassandra_repl_factor         | Replication factor for the Kong keyspace                               | `2`                   |
-
+| Parameter                     | Description                                                             | Default               |
+| ------------------------------| ------------------------------------------------------------------------| ----------------------|
+| cassandra.enabled             | Spin up a new cassandra cluster for Kong                                | `false`               |
+| postgresql.enabled            | Spin up a new postgres instance for Kong                                | `true`                |
+| waitImage.repository          | Image used to wait for database to become ready                         | `busybox`             |
+| waitImage.tag                 | Tag for image used to wait for database to become ready                 | `latest`              |
+| env.database                  | Choose either `postgres`, `cassandra` or `"off"` (for dbless mode)      | `postgres`            |
+| env.pg_user                   | Postgres username                                                       | `kong`                |
+| env.pg_database               | Postgres database name                                                  | `kong`                |
+| env.pg_password               | Postgres database password (required if you are using your own database)| `kong`                |
+| env.pg_host                   | Postgres database host (required if you are using your own database)    | ``                    |
+| env.pg_port                   | Postgres database port                                                  | `5432`                |
+| env.cassandra_contact_points  | Cassandra contact points (required if you are using your own database)  | ``                    |
+| env.cassandra_port            | Cassandra query port                                                    | `9042`                |
+| env.cassandra_keyspace        | Cassandra keyspace                                                      | `kong`                |
+| env.cassandra_repl_factor     | Replication factor for the Kong keyspace                                | `2`                   |
+| dblessConfig.configMap        | Name of an existing ConfigMap containing the `kong.yml` file. This must have the key `kong.yml`.| `` |
+| dblessConfig.config           | Yaml configuration file for the dbless (declarative) configuration of Kong | see in `values.yaml`    |
 
 All `kong.env` parameters can also accept a mapping instead of a value to ensure the parameters can be set through configmaps and secrets.
 
@@ -323,6 +324,16 @@ If your SMTP server requires authentication, you should the `username` and
 `smtp_password_secret` keys under `.enterprise.smtp.auth`.
 `smtp_password_secret` must be a Secret containing an `smtp_password` key whose
 value is your SMTP password.
+
+### DB-less Configuration
+
+
+When deploying Kong in DB-less mode (`env.database: "off"`) and without the Ingress
+Controller (`ingressController.enabled: false`), Kong needs a config to run. In
+this case, configuration can be provided using an exsiting ConfigMap
+(`dblessConfig.configMap`) or pushed directly into the values file under
+`dblessConfig.config`. See the example configuration in the default values.yaml
+for more details.
 
 ### Kong Ingress Controller
 

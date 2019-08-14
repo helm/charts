@@ -387,3 +387,19 @@ ingressController:
     name:
 
   ingressClass: kong
+
+# We pass the dbless (declarative) config over here.
+dblessConfig:
+  # Either Kong's configuration is managed from an existing ConfigMap (with Key: kong.yml)
+  configMap: ""
+  # Or the configuration is passed in full-text below
+  config:
+    _format_version: "1.1"
+    services:
+      # Example configuration
+      # - name: example.com
+      #   url: http://example.com
+      #   routes:
+      #   - name: example
+      #     paths:
+      #     - "/example"
