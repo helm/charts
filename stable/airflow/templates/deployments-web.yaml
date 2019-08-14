@@ -92,6 +92,12 @@ spec:
           volumeMounts:
             - name: scripts
               mountPath: /usr/local/scripts
+          {{- $secretsDir := .Values.web.secretsDir -}}
+          {{- range .Values.web.secrets }}
+            - name: {{ . }}-volume
+              readOnly: true
+              mountPath: {{ $secretsDir }}/{{ . }}
+          {{- end }}
           {{- if .Values.persistence.enabled }}
             - name: dags-data
               mountPath: {{ .Values.dags.path }}
@@ -169,6 +175,11 @@ spec:
           configMap:
             name: {{ template "airflow.fullname" . }}-scripts
             defaultMode: 0755
+        {{- range .Values.web.secrets }}
+        - name: {{ . }}-volume
+          secret:
+            secretName: {{ . }}
+        {{- end }}
         - name: dags-data
         {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
