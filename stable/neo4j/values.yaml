@@ -96,9 +96,11 @@ readReplica:
   # requests:
   #   cpu: 100m
   #   memory: 512Mi
-  targetAverageUtilization: 70
-  minReplicas: 0
-  maxReplicas: 3
+  autoscaling:
+    enabled: false
+    targetAverageUtilization: 70
+    minReplicas: 1
+    maxReplicas: 3
 
   numberOfServers: 0
   ## Pass extra environment variables to the Neo4j container.
