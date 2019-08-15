@@ -1,6 +1,6 @@
 {{- if .Values.rbac.create }}
-kind: Role
-apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: {{ if .Values.rbac.clusterRole }}Cluster{{ end }}Role
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: {{ include "jaeger-operator.fullname" . }}
   namespace: {{ .Release.Namespace }}
