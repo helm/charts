@@ -57,7 +57,7 @@ helperImage:
 ## Experimental integration with Lucene-powered fulltext search
 searchImage:
   repository: kocolosk/couchdb-search
-  tag: 0.1.0
+  tag: 0.1.2
   pullPolicy: IfNotPresent
 
 ## Flip this to flag to include the Search container in each Pod
