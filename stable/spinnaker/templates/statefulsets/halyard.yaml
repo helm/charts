@@ -156,14 +156,14 @@ spec:
           mountPath: /opt/halyard/config
         - name: reg-secrets
           mountPath: /opt/registry/passwords
-        {{- if .Values.halyard.env }}
-        env:
-{{ toYaml .Values.halyard.env | indent 8 }}
-        {{- end }}
         {{- if .Values.halyard.customCerts.enabled }}
         - mountPath: /etc/ssl/certs/java/cacerts
           subPath: cacerts
           name: cacerts
+        {{- end }}
+        {{- if .Values.halyard.env }}
+        env:
+{{ toYaml .Values.halyard.env | indent 8 }}
         {{- end }}
 {{- if .Values.halyard.persistence.enabled }}
   volumeClaimTemplates:
