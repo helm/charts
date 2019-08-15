@@ -156,6 +156,9 @@ data:
 {{- end }}
         Format {{ .Values.backend.http.format }}
 {{- end }}
+{{- range  .Values.backend.http.headers }}
+        Header  {{ . }}
+{{- end }}
 {{ .Values.extraEntries.output | indent 8 }}
 
 
