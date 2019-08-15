@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: sstarcher/helm-exporter
-  tag: 0.4.0
+  tag: 0.4.2
   pullPolicy: Always
 
 # To override default tiller namespace name or to provide the multiple tiller namespaces like "kube-system,dev"
@@ -34,6 +34,7 @@ serviceMonitor:
   # Specifies whether a ServiceMonitor should be created
   create: false
   interval:
+  scrapeTimeout:
   namespace:
   additionalLabels: {}
 
