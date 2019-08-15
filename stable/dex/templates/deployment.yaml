@@ -72,8 +72,10 @@ spec:
         volumeMounts:
         - mountPath: /etc/dex/cfg
           name: config
+{{- if .Values.https }}
         - mountPath: /etc/dex/tls/https/server
           name: https-tls
+{{- end }}
 {{- if .Values.grpc }}
         - mountPath: /etc/dex/tls/grpc/server
           name: grpc-tls-server
@@ -91,10 +93,12 @@ spec:
             path: config.yaml
           secretName: {{ template "dex.fullname" . }}
         name: config
+{{- if .Values.https }}
       - name: https-tls
         secret:
           defaultMode: 420
           secretName: {{ $httpsTlsSecretName | quote }}
+{{- end }}
 {{- if .Values.grpc }}
       - name: grpc-tls-server
         secret:
