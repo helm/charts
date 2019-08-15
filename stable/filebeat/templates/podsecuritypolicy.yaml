@@ -16,7 +16,7 @@ spec:
       readOnly: true
     - pathPrefix: /var/lib/docker/containers
       readOnly: true
-    - pathPrefix: /var/lib/filebeat
+    - pathPrefix: {{ .Values.data.hostPath }}
   requiredDropCapabilities:
     - ALL
   volumes:
