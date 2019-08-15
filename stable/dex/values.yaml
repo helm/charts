@@ -81,6 +81,7 @@ certs:
   image: gcr.io/google_containers/kubernetes-dashboard-init-amd64
   imageTag: "v1.0.0"
   imagePullPolicy: "IfNotPresent"
+  # Section below is relevant only when https termination is enabled
   web:
     create: true
     activeDeadlineSeconds: 300
