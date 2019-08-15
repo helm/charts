@@ -115,6 +115,9 @@ spec:
         - name: clouseau
           image: "{{ .Values.searchImage.repository }}:{{ .Values.searchImage.tag }}"
           imagePullPolicy: {{ .Values.searchImage.pullPolicy }}
+          volumeMounts:
+          - name: database-storage
+            mountPath: /opt/couchdb-search/data
 {{- end }}
 {{- if .Values.nodeSelector }}
       nodeSelector:
