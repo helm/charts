@@ -119,3 +119,7 @@ spec:
       affinity:
 {{ toYaml . | trim | indent 8}}
 {{- end }}
+{{- with .Values.updateStrategy }}
+  updateStrategy:
+{{ toYaml . | indent 4 }}
+{{- end }}
