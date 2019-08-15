@@ -52,6 +52,10 @@ spec:
           name: cacerts
         {{- end }}
       volumes:
+      {{- if not .Values.halyard.persistence.enabled }}
+      - name: halyard-home
+        emptyDir: {}
+      {{- end }}
       {{- if .Values.kubeConfig.enabled }}
       - name: kube-config
         secret:
@@ -161,6 +165,7 @@ spec:
           subPath: cacerts
           name: cacerts
         {{- end }}
+{{- if .Values.halyard.persistence.enabled }}
   volumeClaimTemplates:
   - metadata:
       name: halyard-home
@@ -171,3 +176,4 @@ spec:
       resources:
         requests:
           storage: 10Gi
+{{- end }}
