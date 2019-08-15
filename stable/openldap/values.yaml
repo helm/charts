@@ -94,6 +94,14 @@ resources: {}
  #   cpu: "500m"
  #   memory: "512Mi"
 
+initResources: {}
+ # requests:
+ #   cpu: "100m"
+ #   memory: "128Mi"
+ # limits:
+ #   cpu: "100m"
+ #   memory: "128Mi"
+
 nodeSelector: {}
 
 tolerations: []
