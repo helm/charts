@@ -107,7 +107,7 @@ and their default values.
 | podAnnotations                     | Annotations to add to each pod                                                        | `{}`                |
 | resources                          | Pod resource requests & limits                                                        | `{}`                |
 | tolerations                        | List of node taints to tolerate                                                       | `[]`                |
-| podDisruptionBudget.enabled        | Enable PodDisruptionBudget for Kong                                                   | `true`              |
+| podDisruptionBudget.enabled        | Enable PodDisruptionBudget for Kong                                                   | `false`             |
 | podDisruptionBudget.maxUnavailable | Represents the minimum number of Pods that can be unavailable (integer or percentage) | `50%`               |
 | podDisruptionBudget.minAvailable   | Represents the number of Pods that must be available (integer or percentage)          |                     |
 
@@ -386,6 +386,6 @@ You can can learn about kong ingress custom resource definitions [here](https://
 | readinessProbe                     | Kong ingress controllers readiness probe                                              |                                                                              |
 | livenessProbe                      | Kong ingress controllers liveness probe                                               |                                                                              |
 | ingressClass                       | The ingress-class value for controller                                                | nginx                                                                        |
-| podDisruptionBudget.enabled        | Enable PodDisruptionBudget for ingress controller                                     | `true`                                                                       |
+| podDisruptionBudget.enabled        | Enable PodDisruptionBudget for ingress controller                                     | `false`                                                                      |
 | podDisruptionBudget.maxUnavailable | Represents the minimum number of Pods that can be unavailable (integer or percentage) | `50%`                                                                        |
 | podDisruptionBudget.minAvailable   | Represents the number of Pods that must be available (integer or percentage)          |                                                                              |
