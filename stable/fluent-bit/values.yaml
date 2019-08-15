@@ -96,6 +96,7 @@ backend:
     ## Specify the data format to be used in the HTTP request body
     ## Can be either 'msgpack' or 'json'
     format: msgpack
+    headers: []
 
 parsers:
   enabled: false
