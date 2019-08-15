@@ -1,8 +1,5 @@
 # CouchDB
 
-This chart has been promoted to stable, so the version in the incubator is now
-deprecated.
-
 Apache CouchDB is a database featuring seamless multi-master sync, that scales
 from big data to mobile, with an intuitive HTTP/JSON API and designed for
 reliability.
@@ -17,7 +14,7 @@ storage volumes to each Pod in the Deployment.
 ## TL;DR
 
 ```bash
-$ helm install incubator/couchdb --set allowAdminParty=true
+$ helm install stable/couchdb --set allowAdminParty=true
 ```
 
 ## Prerequisites
@@ -29,8 +26,7 @@ $ helm install incubator/couchdb --set allowAdminParty=true
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
-$ helm install --name my-release incubator/couchdb
+$ helm install --name my-release stable/couchdb
 ```
 
 This will create a Secret containing the admin credentials for the cluster.
@@ -50,7 +46,7 @@ $  kubectl create secret generic my-release-couchdb --from-literal=adminUsername
 and then install the chart while overriding the `createAdminSecret` setting:
 
 ```bash
-$ helm install --name my-release --set createAdminSecret=false incubator/couchdb
+$ helm install --name my-release --set createAdminSecret=false stable/couchdb
 ```
 
 This Helm chart deploys CouchDB on the Kubernetes cluster in a default
