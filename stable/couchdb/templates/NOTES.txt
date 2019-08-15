@@ -17,5 +17,4 @@ some required system databases:
     -u <adminUsername>
 {{- end }}
 
-NOTE: This version of the CouchDB chart is deprecated; please use the one from
-the stable Helm repository instead of the incubator.
+Then it's time to relax.
