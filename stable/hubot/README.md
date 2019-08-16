@@ -1,4 +1,4 @@
-# Hubot
+## Hubot
 
 Hubot 3 chatbot with the Slack adaptor
 
@@ -105,18 +105,45 @@ $ helm install --name my-release -f values.yaml stable/hubot
 
 #### Config
 
-With the `config` dictionary you can provide a hash that will be used as
-environment variables by Hubot. These environment variables will be picked by
-Hubot's scripts.
+The chart provides you with two dictionaries: `config` and `secretConfig`.
+Hashes in both of these variables will be exposed to the Hubot process
+as environment variables and may be picked by scripts.
+
+The difference between them is that the `config` dictionary will be saved as
+ConfigMap object, but the value of `secretConfig` will be saved as a Secret object.
 
 For instance:
 
 ```yaml
 config:
   HUBOT_STANDUP_PREPEND: '@channel'
+
+secretConfig:
+  HUBOT_SLACK_TOKEN: 'xxx-secret-token-xxx'
 ```
 
-A content of the hash will be stored as Secret.
+#### Redis
+
+By default, this chart will deploy a [Redis chart](https://github.com/helm/charts/tree/master/stable/redis)
+as a dependency. It's required by "hubot-redis-brain" script, which provides persistent
+storage for Hubot.
+In this case, the value of `REDIS_URL` environment variable will be set automatically.
+
+If you want Hubot to use an already existing Redis instance, you need to have
+`redis.enabled` set to `false` and then set `REDIS_URL` variable, pointing to that
+instance in `config` or `secretConfig` dictionaries.
+
+For instance:
+
+```
+redis:
+  enabled: false
+
+secretConfig:
+  REDIS_URL: "redis://:password@mycompany.redis:6379/prefix"
+
+```
+
 
 #### Scripts
 

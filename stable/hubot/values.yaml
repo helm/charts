@@ -50,7 +50,7 @@ extraLabels: {}
 
 extraConfigmapMounts: []
 # - name: certs-configmap
-#   mountPath: /home/hubot/ssl/
+#   mountPath: /hubot/ssl/
 #   configMap: certs-configmap
 #   readOnly: true
 
