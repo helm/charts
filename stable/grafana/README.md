@@ -90,7 +90,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `ldap.config  `                           | Grafana's LDAP configuration                  | `""`                                                    |
 | `annotations`                             | Deployment annotations                        | `{}`                                                    |
 | `podAnnotations`                          | Pod annotations                               | `{}`                                                    |
-| `sidecar.image`                           | Sidecar image                                 | `kiwigrid/k8s-sidecar:0.0.16`                           |
+| `sidecar.image`                           | Sidecar image                                 | `kiwigrid/k8s-sidecar:0.1.20`                           |
 | `sidecar.imagePullPolicy`                 | Sidecar image pull policy                     | `IfNotPresent`                                          |
 | `sidecar.resources`                       | Sidecar resources                             | `{}`                                                    |
 | `sidecar.dashboards.enabled`              | Enables the cluster wide search for dashboards and adds/updates/deletes them in grafana | `false`       |
@@ -123,7 +123,8 @@ The command removes all the Kubernetes components associated with the chart and 
 | `command`                     | Define command to be executed by grafana container at startup  | `nil` |
 | `testFramework.image`                     | `test-framework` image repository.             | `dduportal/bats`                                       |
 | `testFramework.tag`                       | `test-framework` image tag.                    | `0.4.0`                                                |
-| `testFramework.securityContext`           | `test-framework securityContext                | `{}`                                                   |
+| `testFramework.securityContext`           | `test-framework` securityContext                | `{}`                                                   |
+| `downloadDashboards.env`                  | Environment variables to be passed to the `download-dashboards` container | `{}`                                                   |
 
 
 ### Example of extraVolumeMounts

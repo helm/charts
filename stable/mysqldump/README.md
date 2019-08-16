@@ -85,10 +85,24 @@ The following tables lists the configurable parameters of the mysqldump chart an
 | upload.ssh.host                               | ssh server url                                                                 | yourdomain.com               |
 | upload.ssh.dir                                | directory on server                                                            | /backup                      |
 | upload.ssh.privatekey                         | ssh user private key                                                           | ""                           |
+| upload.openstack.enabled                      | upload backups via swift to openstack                                          | false                        |
+| upload.openstack.user                         | user name                                                                      | backup@mydomain              |
+| upload.openstack.userDomain                   | user domain                                                                    | default                      |
+| upload.openstack.password                     | user password, overriden by `existingSecret`/`existingSecretKey` if set        |                              |
+| upload.openstack.authUrl                      | openstack auth url (v3)                                                        | https://mydomain:5000/v3     |
+| upload.openstack.project                      | project name                                                                   | my_project                   |
+| upload.openstack.projectDomain                | project domain                                                                 | default                      |
+| upload.openstack.destination                  | destination path, starting witch container                                     | backup/mysql                 |
+| upload.openstack.existingSecret               | optional, specify a secret name to use for password                            |                              |
+| upload.openstack.existingSecretKey            | optional, specify a secret key to use for password                             | openstack-backup-password    |
+| upload.openstack.ttlDays                      | days to set time-to-live on uploaded objects (0 to disable)                    | 30                           |
 | resources                                     | resource definitions                                                           | {}                           |
 | nodeSelector                                  | node selector                                                                  | {}                           |
 | tolerations                                   | tolerations                                                                    | \[]                          |
 | affinity                                      | affinity                                                                       | {}                           |
+| securityContext.enabled                       | set true to change default security context of job/cronjob                     | false                        |
+| securityContext.fsGroup                       | group id to use                                                                | 999                          |
+| securityContext.runAsUser                     | user id to use                                                                 | 999                          |
 
 ### Auto generating the gcp service account
 

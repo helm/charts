@@ -6,7 +6,7 @@ This helm chart provides an implementation of the ZooKeeper [StatefulSet](http:/
 * Kubernetes 1.6+
 * PersistentVolume support on the underlying infrastructure
 * A dynamic provisioner for the PersistentVolumes
-* A familiarity with [Apache ZooKeeper 3.4.x](https://zookeeper.apache.org/doc/current/)
+* A familiarity with [Apache ZooKeeper 3.5.x](https://zookeeper.apache.org/doc/r3.5.5/)
 
 ## Chart Components
 This chart will do the following:
@@ -83,19 +83,19 @@ $ helm install --name my-release -f values.yaml incubator/zookeeper
 ## Deep Dive
 
 ## Image Details
-The image used for this chart is based on Ubuntu 16.04 LTS. This image is larger than Alpine or BusyBox, but it provides glibc, rather than ulibc or mucl, and a JVM release that is built against it. You can easily convert this chart to run against a smaller image with a JVM that is built against that image's libc. However, as far as we know, no Hadoop vendor supports, or has verified, ZooKeeper running on such a JVM.
+The image used for this chart is based on Alpine 3.9.0.
 
 ## JVM Details
-The Java Virtual Machine used for this chart is the OpenJDK JVM 8u111 JRE (headless).
+The Java Virtual Machine used for this chart is the OpenJDK JVM 8u192 JRE (headless).
 
 ## ZooKeeper Details
-The ZooKeeper version is the latest stable version (3.4.10). The distribution is installed into /opt/zookeeper-3.4.10. This directory is symbolically linked to /opt/zookeeper. Symlinks are created to simulate a rpm installation into /usr.
+The chart defaults to ZooKeeper 3.5 (latest released version).
 
 ## Failover
 You can test failover by killing the leader. Insert a key:
 ```console
-$ kubectl exec zookeeper-0 -- /opt/zookeeper/bin/zkCli.sh create /foo bar;
-$ kubectl exec zookeeper-2 -- /opt/zookeeper/bin/zkCli.sh get /foo;
+$ kubectl exec zookeeper-0 -- bin/zkCli.sh create /foo bar;
+$ kubectl exec zookeeper-2 -- bin/zkCli.sh get /foo;
 ```
 
 Watch existing members:
@@ -129,7 +129,7 @@ zookeeper-2   1/1       Running   0         41s
 
 Check the previously inserted key:
 ```console
-$ kubectl exec zookeeper-1 -- /opt/zookeeper/bin/zkCli.sh get /foo
+$ kubectl exec zookeeper-1 -- bin/zkCli.sh get /foo
 ionid = 0x354887858e80035, negotiated timeout = 30000
 
 WATCHER::
@@ -139,10 +139,7 @@ bar
 ```
 
 ## Scaling
-ZooKeeper can not be safely scaled in versions prior to 3.5.x. This chart currently uses 3.4.x. There are manual procedures for scaling a 3.4.x ensemble, but as noted in the [ZooKeeper 3.5.2 documentation](https://zookeeper.apache.org/doc/r3.5.2-alpha/zookeeperReconfig.html) these procedures require a rolling restart, are known to be error prone, and often result in a data loss.
-
-While ZooKeeper 3.5.x does allow for dynamic ensemble reconfiguration (including scaling membership), the current status of the release is still alpha, and 3.5.x is therefore not recommended for production use.
+ZooKeeper can not be safely scaled in versions prior to 3.5.x
 
 ## Limitations
-* StatefulSet and PodDisruptionBudget are beta resources.
 * Only supports storage options that have backends for persistent volume claims.

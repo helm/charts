@@ -81,6 +81,7 @@ certs:
   image: gcr.io/google_containers/kubernetes-dashboard-init-amd64
   imageTag: "v1.0.0"
   imagePullPolicy: "IfNotPresent"
+  # Section below is relevant only when https termination is enabled
   web:
     create: true
     activeDeadlineSeconds: 300
@@ -92,6 +93,8 @@ certs:
     secret:
       tlsName: dex-web-server-tls
       caName: dex-web-server-ca
+    pod:
+      annotations: {}
   # Section below is relevant only when grpc support is enabled
   grpc:
     create: true
@@ -103,6 +106,8 @@ certs:
       serverTlsName: dex-grpc-server-tls
       clientTlsName: dex-grpc-client-tls
       caName: dex-grpc-ca
+    pod:
+      annotations: {}
 
 env: []
 
