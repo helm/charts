@@ -91,6 +91,4 @@ serviceMonitor:
   # fallback to the prometheus default unless specified
   # interval: 10s
   ## Defaults to what's used if you follow CoreOS [Prometheus Install Instructions](https://github.com/helm/charts/tree/master/stable/prometheus-operator#tldr)
-  # Retain the job and instance labels of the metrics pushed to the Pushgateway
-  # [Scraping Pushgateway](https://github.com/prometheus/pushgateway#configure-the-pushgateway-as-a-target-to-scrape)
   honorLabels: true
