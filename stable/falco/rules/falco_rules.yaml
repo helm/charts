@@ -111,7 +111,7 @@
   items: [add-shell, remove-shell]
 
 - macro: shell_procs
-  condition: (proc.name in (shell_binaries))
+  condition: proc.name in (shell_binaries)
 
 - list: coreutils_binaries
   items: [
@@ -1265,7 +1265,7 @@
 - list: known_root_files
   items: [/root/.monit.state, /root/.auth_tokens, /root/.bash_history, /root/.ash_history, /root/.aws/credentials,
           /root/.viminfo.tmp, /root/.lesshst, /root/.bzr.log, /root/.gitconfig.lock, /root/.babel.json, /root/.localstack,
-          /root/.node_repl_history, /root/.mongorc.js, /root/.dbshell, /root/.augeas/history, /root/.rnd, /root/.wget-hsts, /health]
+          /root/.node_repl_history, /root/.mongorc.js, /root/.dbshell, /root/.augeas/history, /root/.rnd, /root/.wget-hsts, /health, /exec.fifo]
 
 - list: known_root_directories
   items: [/root/.oracle_jre_usage, /root/.ssh, /root/.subversion, /root/.nami]
@@ -1774,7 +1774,8 @@
     gcr.io/google_containers/hyperkube,
     gcr.io/google_containers/kube-proxy, docker.io/calico/node,
     docker.io/rook/toolbox, docker.io/cloudnativelabs/kube-router, docker.io/consul,
-    docker.io/datadog/docker-dd-agent, docker.io/datadog/agent, docker.io/docker/ucp-agent, docker.io/gliderlabs/logspout
+    docker.io/datadog/docker-dd-agent, docker.io/datadog/agent, docker.io/docker/ucp-agent, docker.io/gliderlabs/logspout,
+    docker.io/netdata/netdata, docker.io/google/cadvisor, docker.io/prom/node-exporter
     ]
 
 - macro: falco_sensitive_mount_containers
@@ -2341,12 +2342,16 @@
 - macro: allowed_clear_log_files
   condition: (never_true)
 
+- macro: trusted_logging_images
+  condition: (container.image.repository endswith "splunk/fluentd-hec")
+
 - rule: Clear Log Activities
   desc: Detect clearing of critical log files
   condition: >
     open_write and
     access_log_files and
     evt.arg.flags contains "O_TRUNC" and
+    not trusted_logging_images and
     not allowed_clear_log_files
   output: >
     Log files were tampered (user=%user.name command=%proc.cmdline file=%fd.name container_id=%container.id image=%container.image.repository)
