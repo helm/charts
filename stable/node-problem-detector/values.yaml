@@ -33,12 +33,15 @@ settings:
     # - /custom-config/docker-monitor-filelog.json
   custom_plugin_monitors: []
 
+  prometheus_address: 0.0.0.0
+  prometheus_port: 20257
+
 hostpath:
   logdir: /var/log/
 
 image:
   repository: k8s.gcr.io/node-problem-detector
-  tag: v0.6.3
+  tag: v0.7.0
   pullPolicy: IfNotPresent
 
 nameOverride: ""
@@ -68,3 +71,10 @@ serviceAccount:
   name:
 
 affinity: {}
+
+nodeSelector: {}
+
+metrics:
+  serviceMonitor:
+    enabled: false
+    additionalLabels: {}

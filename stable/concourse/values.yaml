@@ -19,7 +19,7 @@ image: concourse/concourse
 ##      of `concourse/concourse`.
 ## Ref: https://hub.docker.com/r/concourse/concourse/tags/
 ##
-imageTag: "5.4.0"
+imageTag: "5.4.1"
 
 ## Specific image digest to use in place of a tag.
 ## Ref: https://kubernetes.io/docs/concepts/configuration/overview/#container-images
@@ -354,7 +354,7 @@ concourse:
 
       ## pipeline-specific template for SSM parameters, defaults to: /concourse/{{.Team}}/{{.Pipeline}}/{{.Secret}}
       ##
-      pipelineSecretTemplate: /concourse/{{.Team}}/{{.Pipeline}}/{{.Secret}})
+      pipelineSecretTemplate: /concourse/{{.Team}}/{{.Pipeline}}/{{.Secret}}
 
       ## team-specific template for SSM parameters, defaults to: /concourse/{{.Team}}/{{.Secret}}
       ##

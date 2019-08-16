@@ -118,7 +118,7 @@ airflow:
   ##   - id: my_aws
   ##     type: aws
   ##     extra: '{"aws_access_key_id": "**********", "aws_secret_access_key": "***", "region_name":"eu-central-1"}'
-  connections: {}
+  connections: []
 
   ## Add airflow variables
   ## This should be a json string with your variables in it
@@ -215,6 +215,12 @@ web:
   nodeSelector: {}
   affinity: {}
   tolerations: []
+  ##
+  ## Directory in which to mount secrets on webserver nodes.
+  secretsDir: /var/airflow/secrets
+  ##
+  ## Secrets which will be mounted as a file at `secretsDir/<secret name>`.
+  secrets: []
 
 ##
 ## Workers configuration
