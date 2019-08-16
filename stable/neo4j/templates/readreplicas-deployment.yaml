@@ -75,6 +75,17 @@ spec:
       initContainers:
 {{ toYaml .Values.readReplica.initContainers | indent 6 }}
 {{- end }}
+{{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 6 }}
+{{- end }}
+{{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 6 }}
+{{- end }}
+{{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 6 }}
       volumes:
         - name: plugins
           emptyDir: {}
