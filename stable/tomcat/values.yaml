@@ -22,7 +22,7 @@ service:
   externalPort: 80
   internalPort: 8080
 
-# hostPort: 8009
+hostPort: 8009
 
 ingress:
   enabled: false
@@ -37,7 +37,7 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
-env: |
+env: []
   # - name: env
   #   value: test
 

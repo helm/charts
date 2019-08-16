@@ -50,11 +50,11 @@ Parameter                       | Description                           | Defaul
 `image.pullPolicy`              | Image pull policy                     | `IfNotPresent`
 `image.pullSecrets`             | Image pull secrets                    | `[]`
 `deploy.directory`              | Webarchive deployment directory       | `/usr/local/tomcat/webapps`
-`env`                           | Environment variables                 | `none`
+`env`                           | Environment variables                 | `[]`
 `extraVolumes`                  | Extra volumes                         | `none`
 `extraVolumeMounts`             | Extra volume mounts                   | `none`
 `extraInitContainers`           | Extra init containers                 | `none`
-`hostPort`                      | hostPort                              | `none`
+`hostPort`                      | hostPort                              | `8009`
 `service.name`                  | Tomcat service name                   | `http`
 `service.externalPort`          | Kubernetes service port               | `80`
 `service.internalPort`          | Tomcat front port                     | `8080`

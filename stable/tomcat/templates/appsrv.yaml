@@ -44,10 +44,10 @@ spec:
         - name: {{ .Chart.Name }}
           image: {{ .Values.image.tomcat.repository }}:{{ .Values.image.tomcat.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- with .Values.env }}
           env:
-            {{- if .Values.env }}
-{{ tpl .Values.env . | indent 12 }}
-            {{- end }}
+{{ toYaml . | indent 12 }}
+          {{- end }}
           volumeMounts:
             - name: app-volume
               mountPath: {{ .Values.deploy.directory }}
