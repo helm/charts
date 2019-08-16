@@ -31,18 +31,30 @@ replicas: 1
     # cpu: 100m
     # memory: 50Mi
 
+# grpc support
+grpc: true
+
+# https termination by dex itself
+https: false
+
 ports:
-  - name: http
-    containerPort: 8080
-    protocol: TCP
-#   nodePort: 32080
-  - name: grpc
+  web:
+    containerPort: 5556
+    # for service.type: NodePort
+    nodePort: 32000
+    servicePort: 32000
+# Relevant only when grpc support is enabled
+  grpc:
     containerPort: 5000
-    protocol: TCP
+    # for service.type: NodePort
+    nodePort: 35000
+    servicePort: 35000
 
 service:
   type: ClusterIP
-  port: 8080
+  # Override IP for the Service Type: LoadBalancer.
+  # This feature depends on whether the underlying cloud-provider supports specifying the loadBalancerIP when a load balancer is created.
+  # loadBalancerIP: 127.0.0.1
   annotations: {}
 
 ingress:
@@ -69,6 +81,7 @@ certs:
   image: gcr.io/google_containers/kubernetes-dashboard-init-amd64
   imageTag: "v1.0.0"
   imagePullPolicy: "IfNotPresent"
+  # Section below is relevant only when https termination is enabled
   web:
     create: true
     activeDeadlineSeconds: 300
@@ -80,6 +93,9 @@ certs:
     secret:
       tlsName: dex-web-server-tls
       caName: dex-web-server-ca
+    pod:
+      annotations: {}
+  # Section below is relevant only when grpc support is enabled
   grpc:
     create: true
     activeDeadlineSeconds: 300
@@ -90,6 +106,8 @@ certs:
       serverTlsName: dex-grpc-server-tls
       clientTlsName: dex-grpc-client-tls
       caName: dex-grpc-ca
+    pod:
+      annotations: {}
 
 env: []
 
@@ -127,15 +145,18 @@ config:
   logger:
     level: debug
   web:
-    http: 0.0.0.0:8080
-#   tlsCert: /etc/dex/tls/https/server/tls.crt
-#   tlsKey: /etc/dex/tls/https/server/tls.key
+    # port is taken from ports section above
+    address: 0.0.0.0
+    tlsCert: /etc/dex/tls/https/server/tls.crt
+    tlsKey: /etc/dex/tls/https/server/tls.key
+# Section below is relevant only when grpc support is enabled
   grpc:
-    addr: 0.0.0.0:5000
+    # port is taken from ports section above
+    address: 127.0.0.1
     tlsCert: /etc/dex/tls/grpc/server/tls.crt
     tlsKey: /etc/dex/tls/grpc/server/tls.key
     tlsClientCA: /etc/dex/tls/grpc/ca/tls.crt
-  connectors:
+  connectors: {}
 #  - type: github
 #    id: github
 #    name: GitHub
@@ -155,9 +176,9 @@ config:
 #    secret: ZXhhbXBsZS1hcHAtc2VjcmV0
 #
   enablePasswordDB: true
-# staticPasswords:
-#  - email: "admin@example.com"
-#    # bcrypt hash of the string "password"
-#    hash: "$2a$10$2b2cU8CPhOTaGrs1HRQuAueS7JTT5ZHsHSzYiFPm1leZck7Mc8T4W"
-#    username: "admin"
-#    userID: "08a8684b-db88-4b73-90a9-3cd1661f5466"
+#  staticPasswords:
+#   - email: "admin@example.com"
+#     # bcrypt hash of the string "password"
+#     hash: "$2a$10$2b2cU8CPhOTaGrs1HRQuAueS7JTT5ZHsHSzYiFPm1leZck7Mc8T4W"
+#     username: "admin"
+#     userID: "08a8684b-db88-4b73-90a9-3cd1661f5466"

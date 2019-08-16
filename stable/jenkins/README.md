@@ -138,9 +138,9 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.initScripts`              | List of Jenkins init scripts         | Not set                                   |
 | `master.credentialsXmlSecret`     | Kubernetes secret that contains a 'credentials.xml' file | Not set               |
 | `master.secretsFilesSecret`       | Kubernetes secret that contains 'secrets' files | Not set                        |
-| `master.jobs`                     | Jenkins XML job configs              | Not set                                   |
+| `master.jobs`                     | Jenkins XML job configs              | `{}`                                      |
 | `master.overwriteJobs`            | Replace jobs w/ ConfigMap on boot    | `false`                                   |
-| `master.installPlugins`           | List of Jenkins plugins to install. If you don't want to install plugins set it to `[]` | `kubernetes:1.14.0 workflow-aggregator:2.6 credentials-binding:1.17 git:3.9.1 workflow-job:2.31` |
+| `master.installPlugins`           | List of Jenkins plugins to install. If you don't want to install plugins set it to `[]` | `kubernetes:1.18.1 workflow-aggregator:2.6 credentials-binding:1.19 git:3.11.0 workflow-job:2.33` |
 | `master.overwritePlugins`         | Overwrite installed plugins on start.| `false`                                   |
 | `master.enableRawHtmlMarkupFormatter` | Enable HTML parsing using (see below) | false                                |
 | `master.scriptApproval`           | List of groovy functions to approve  | Not set                                   |
@@ -155,6 +155,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.lifecycle`                | Lifecycle specification for master-container | Not set                           |
 | `master.prometheus.enabled`       | Enables prometheus service monitor | `false`                                     |
 | `master.prometheus.serviceMonitorAdditionalLabels` | Additional labels to add to the service monitor object | `{}`                       |
+| `master.prometheus.serviceMonitorNamespace` | Custom namespace for serviceMonitor | Not set (same ns where is Jenkins being deployed) |
 | `master.prometheus.scrapeInterval` | How often prometheus should scrape metrics | `60s`                              |
 | `master.prometheus.scrapeEndpoint` | The endpoint prometheus should get metrics from | `/prometheus`                 |
 | `master.prometheus.alertingrules` | Array of prometheus alerting rules | `[]`                                        |
