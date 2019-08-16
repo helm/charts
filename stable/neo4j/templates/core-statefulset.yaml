@@ -112,6 +112,7 @@ spec:
 {{- with .Values.tolerations }}
       tolerations:
 {{ toYaml . | indent 6 }}
+{{- end }}
   {{- if .Values.core.persistentVolume.enabled }}
   volumeClaimTemplates:
     - metadata:

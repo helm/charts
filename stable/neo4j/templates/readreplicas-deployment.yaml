@@ -86,6 +86,7 @@ spec:
 {{- with .Values.tolerations }}
       tolerations:
 {{ toYaml . | indent 6 }}
+{{- end }}
       volumes:
         - name: plugins
           emptyDir: {}
