@@ -1,3 +1,4 @@
+{{- if .Values.server.enabled -}}
 {{- if .Values.server.statefulSet.enabled -}}
 apiVersion: apps/v1
 kind: StatefulSet
@@ -214,5 +215,6 @@ spec:
 {{- else }}
         - name: storage-volume
           emptyDir: {}
+{{- end }}
 {{- end }}
 {{- end }}
