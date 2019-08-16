@@ -48,6 +48,25 @@ If release name contains chart name it will be used as a full name.
 {{- end -}}
 {{- end -}}
 
+{{/*
+Returns the Jenkins URL
+*/}}
+{{- define "jenkins.url" -}}
+{{- if .Values.master.jenkinsUrl }}
+  {{- .Values.master.jenkinsUrl }}
+{{- else }}
+  {{- if .Values.master.ingress.hostName }}
+    {{- if .Values.master.ingress.tls }}
+      {{- default "https" .Values.master.jenkinsUrlProtocol }}://{{ .Values.master.ingress.hostName }}{{ default "" .Values.master.jenkinsUriPrefix }}
+    {{- else }}
+      {{- default "http" .Values.master.jenkinsUrlProtocol }}://{{ .Values.master.ingress.hostName }}{{ default "" .Values.master.jenkinsUriPrefix }}
+    {{- end }}
+  {{- else }}
+      {{- default "http" .Values.master.jenkinsUrlProtocol }}://{{ template "jenkins.fullname" . }}:{{.Values.master.servicePort}}{{ default "" .Values.master.jenkinsUriPrefix }}
+  {{- end}}
+{{- end}}
+{{- end -}}
+
 {{- define "jenkins.kubernetes-version" -}}
   {{- if .Values.master.installPlugins -}}
     {{- range .Values.master.installPlugins -}}
