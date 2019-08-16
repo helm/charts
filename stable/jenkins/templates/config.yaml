@@ -200,19 +200,7 @@ data:
     <?xml version='1.1' encoding='UTF-8'?>
     <jenkins.model.JenkinsLocationConfiguration>
       <adminAddress>{{ default "" .Values.master.jenkinsAdminEmail }}</adminAddress>
-{{- if .Values.master.jenkinsUrl }}
-      <jenkinsUrl>{{ .Values.master.jenkinsUrl }}</jenkinsUrl>
-{{- else }}
-  {{- if .Values.master.ingress.hostName }}
-    {{- if .Values.master.ingress.tls }}
-      <jenkinsUrl>{{ default "https" .Values.master.jenkinsUrlProtocol }}://{{ .Values.master.ingress.hostName }}{{ default "" .Values.master.jenkinsUriPrefix }}</jenkinsUrl>
-    {{- else }}
-      <jenkinsUrl>{{ default "http" .Values.master.jenkinsUrlProtocol }}://{{ .Values.master.ingress.hostName }}{{ default "" .Values.master.jenkinsUriPrefix }}</jenkinsUrl>
-    {{- end }}
-  {{- else }}
-      <jenkinsUrl>{{ default "http" .Values.master.jenkinsUrlProtocol }}://{{ template "jenkins.fullname" . }}:{{.Values.master.servicePort}}{{ default "" .Values.master.jenkinsUriPrefix }}</jenkinsUrl>
-  {{- end}}
-{{- end}}
+      <jenkinsUrl>{{ template "jenkins.url" . }}</jenkinsUrl>
     </jenkins.model.JenkinsLocationConfiguration>
   jenkins.CLI.xml: |-
     <?xml version='1.1' encoding='UTF-8'?>
