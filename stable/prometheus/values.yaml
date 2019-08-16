@@ -505,6 +505,7 @@ nodeExporter:
 server:
   ## Prometheus server container name
   ##
+  enabled: true
   name: server
   sidecarContainers:
 
