@@ -414,7 +414,13 @@ kube-state-metrics:
   ## @param resources - object - optional
   ## Resource requests and limits for the kube-state-metrics container.
   #
-  # resource:
+  # resources:
+  #   requests:
+  #     cpu: 200m
+  #     memory: 256Mi
+  #   limits:
+  #     cpu: 200m
+  #     memory: 256Mi
 
 daemonset:
 
