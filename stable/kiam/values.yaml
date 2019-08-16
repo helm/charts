@@ -107,7 +107,7 @@ agent:
 
   ## Timeout when creating the kiam gateway
   ##
-  gatewayTimeoutCreation: 50ms
+  gatewayTimeoutCreation: 1s
 
   ## Base64-encoded PEM values for agent's CA certificate(s), certificate and private key
   ##
@@ -222,7 +222,7 @@ server:
 
   ## Timeout when creating the kiam gateway
   ##
-  gatewayTimeoutCreation: 50ms
+  gatewayTimeoutCreation: 1s
 
   ## Server probe configuration
   probes:
