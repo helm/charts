@@ -339,7 +339,7 @@ controller:
       additionalLabels: {}
       namespace: ""
       rules: []
-        # # These are just examples rules, please adapt them to your needs 
+        # # These are just examples rules, please adapt them to your needs
         # - alert: TooMany500s
         #   expr: 100 * ( sum( nginx_ingress_controller_requests{status=~"5.+"} ) / sum(nginx_ingress_controller_requests) ) > 5
         #   for: 1m
