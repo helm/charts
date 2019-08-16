@@ -119,7 +119,9 @@ spec:
       affinity:
 {{ toYaml . | trim | indent 8}}
 {{- end }}
-{{- with .Values.updateStrategy }}
   updateStrategy:
-{{ toYaml . | indent 4 }}
+    type: {{ .Values.updateStrategy.type }}
+    {{- if (eq "Recreate" .Values.updateStrategy.type) }}
+    rollingUpdate: null
+    {{- end }}
 {{- end }}
