@@ -395,22 +395,32 @@ kubeStateMetrics:
 
 kube-state-metrics:
   rbac:
-
     ## @param created - boolean - required
     ## If true, create & use RBAC resources
     #
     create: true
 
-    serviceAccount:
-      ## @param created - boolean - required
-      ## If true, create ServiceAccount, require rbac kube-state-metrics.rbac.create true
-      #
-      create: true
-      ## @param name - string - required
-      ## The name of the ServiceAccount to use.
-      ## If not set and create is true, a name is generated using the fullname template
-      #
-      name:
+  serviceAccount:
+    ## @param created - boolean - required
+    ## If true, create ServiceAccount, require rbac kube-state-metrics.rbac.create true
+    #
+    create: true
+    ## @param name - string - required
+    ## The name of the ServiceAccount to use.
+    ## If not set and create is true, a name is generated using the fullname template
+    #
+    name:
+
+  ## @param resources - object - optional
+  ## Resource requests and limits for the kube-state-metrics container.
+  #
+  # resources:
+  #   requests:
+  #     cpu: 200m
+  #     memory: 256Mi
+  #   limits:
+  #     cpu: 200m
+  #     memory: 256Mi
 
 daemonset:
 
