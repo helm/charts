@@ -124,4 +124,3 @@ spec:
     {{- if (eq "Recreate" .Values.updateStrategy.type) }}
     rollingUpdate: null
     {{- end }}
-{{- end }}
