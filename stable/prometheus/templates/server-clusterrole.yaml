@@ -1,3 +1,4 @@
+{{- if .Values.server.enabled -}}
 {{- if .Values.rbac.create }}
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
@@ -33,4 +34,5 @@ rules:
       - "/metrics"
     verbs:
       - get
+{{- end }}
 {{- end }}
