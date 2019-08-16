@@ -99,6 +99,9 @@ and their default values.
 | proxy.ingress.path             | Ingress path.                                                                    | `/`                 |
 | proxy.ingress.annotations      | Ingress annotations. See documentation for your ingress controller for details   | `{}`                |
 | env                            | Additional [Kong configurations](https://getkong.org/docs/latest/configuration/) |                     |
+| serviceMonitor.enabled         | Create ServiceMonitor for Prometheus Operator                                    | false               |
+| serviceMonitor.interval        | Scrapping interval                                                               | 10s                 |
+| serviceMonitor.namespace       | Where to create ServiceMonitor                                                   |                     |
 | runMigrations                  | Run Kong migrations job                                                          | `true`              |
 | readinessProbe                 | Kong readiness probe                                                             |                     |
 | livenessProbe                  | Kong liveness probe                                                              |                     |
@@ -374,27 +377,6 @@ The custom resources are:
 
 You can can learn about kong ingress custom resource definitions [here](https://github.com/Kong/kubernetes-ingress-controller/blob/master/docs/custom-resources.md).
 
-#### Expose metrics in Prometheus format
-
-Kong can expose metrics in Prometheus format if prometheus plugin is enabled.
-Presence of Kong Ingress Controller allows you to enable this plugin, using
-KongPlugin custom resource during the chart installation:
-
-```bash
-helm install stable/kong --set ingressController.enabled=true \
-  --set ingressController.metrics.enabled=true --name kong --namespace kong
-```
-
-Optionaly you can install a ServiceMonitor for Prometheus Operator:
-
-```bash
-helm install stable/kong --set ingressController.enabled=true \
-  --set ingressController.metrics.enabled=true \
-  --set ingressController.metrics.serviceMonitor.create=true \
-  --name kong --namespace kong
-```
-
-
 | Parameter                        | Description                                                                            | Default                                                                      |
 | ---------------                  | ------------------------------------------                                             | ---------------------------------------------------------------------------- |
 | enabled                          | Deploy the ingress controller, rbac and crd                                            | false                                                                        |
@@ -405,7 +387,3 @@ helm install stable/kong --set ingressController.enabled=true \
 | livenessProbe                    | Kong ingress controllers liveness probe                                                |                                                                              |
 | ingressClass                     | The ingress-class value for controller                                                 | kong                                                                         |
 | installCRDs                      | Install Kong ingress controllers custom resource definitions                           | true                                                                         |
-| metrics.enabled                  | Enable Kong Prometheus plugin as KongPlugin (requires ingressController to be enabled) | false                                                                        |
-| metrics.serviceMonitor.enabled   | Create ServiceMonitor for Prometheus Operator                                          | false                                                                        |
-| metrics.serviceMonitor.interval  | Scrapping interval                                                                     | 10s                                                                          |
-| metrics.serviceMonitor.namespace | Where to create ServiceMonitor                                                         |                                                                              |
