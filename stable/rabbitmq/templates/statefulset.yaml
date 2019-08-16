@@ -256,7 +256,7 @@ spec:
         {{- end }}
         ports:
         - name: metrics
-          containerPort: {{ .Values.metrics.port }}
+          containerPort: 9090
         livenessProbe:
           httpGet:
             path: /metrics
