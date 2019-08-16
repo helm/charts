@@ -12,10 +12,10 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     {{- with .Values.anchoreEnterpriseUi.labels }}
-    {{ toYaml . | nindent 4 | trim }}
+    {{ toYaml . | nindent 4 }}
     {{- end }}
     {{- with .Values.anchoreGlobal.labels }}
-    {{ toYaml . | nindent 4 | trim }}
+    {{ toYaml . | nindent 4 }}
     {{- end }}
 spec:
   selector:
@@ -32,14 +32,14 @@ spec:
         release: {{ .Release.Name }}
         heritage: {{ .Release.Service }}
         {{- with .Values.anchoreEnterpriseUi.labels }}
-        {{ toYaml . | nindent 8 | trim }}
+        {{ toYaml . | nindent 8 }}
         {{- end }}
         {{- with .Values.anchoreGlobal.labels }}
-        {{ toYaml . | nindent 8 | trim }}
+        {{ toYaml . | nindent 8 }}
         {{- end }}
       {{- with .Values.anchoreEnterpriseUi.annotations }}
       annotations:
-        {{ toYaml . | nindent 8 | trim }}
+        {{ toYaml . | nindent 8 }}
       {{- end }}
     spec:
       imagePullSecrets:
@@ -65,10 +65,10 @@ spec:
         imagePullPolicy: {{ .Values.anchoreEnterpriseUi.imagePullPolicy }}
         env:
         {{- with .Values.anchoreGlobal.extraEnv }}
-        {{- toYaml . | nindent 8 | trim }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
         {{- with .Values.anchoreEnterpriseUi.extraEnv }}
-        {{- toYaml . | nindent 8 | trim }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
         ports:
         - containerPort: 3000
@@ -96,7 +96,7 @@ spec:
           failureThreshold: 3
           successThreshold: 1
         resources:
-          {{ toYaml .Values.anchoreEnterpriseUi.resources | nindent 10 | trim }}
+          {{ toYaml .Values.anchoreEnterpriseUi.resources | nindent 10 }}
       volumes:
       - name: anchore-license
         secret:
@@ -111,15 +111,15 @@ spec:
       {{- end }}
       {{- with .Values.anchoreEnterpriseUi.nodeSelector }}
       nodeSelector:
-        {{ toYaml .Values.anchoreEnterpriseUi.nodeSelector | nindent 8 | trim }}
+        {{ toYaml .Values.anchoreEnterpriseUi.nodeSelector | nindent 8 }}
       {{- end }}
       {{- with .Values.anchoreEnterpriseUi.affinity }}
       affinity:
-        {{ toYaml . | nindent 8 | trim }}
+        {{ toYaml . | nindent 8 }}
       {{- end }}
       {{- with .Values.anchoreEnterpriseUi.tolerations }}
       tolerations:
-        {{ toYaml . | nindent 8 | trim }}
+        {{ toYaml . | nindent 8 }}
      {{- end }}
 
 ---
@@ -134,14 +134,14 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     {{- with .Values.anchoreEnterpriseUi.service.labels }}
-    {{ toYaml . | nindent 4 | trim }}
+    {{ toYaml . | nindent 4 }}
     {{- end }}
     {{- with .Values.anchoreGlobal.labels }}
-    {{ toYaml . | nindent 4 | trim }}
+    {{ toYaml . | nindent 4 }}
     {{- end }}
   {{- with .Values.anchoreEnterpriseUi.service.annotations }}
   annotations:
-    {{ toYaml . | nindent 4 | trim }}
+    {{ toYaml . | nindent 4 }}
   {{- end }}
 spec:
   sessionAffinity: {{ .Values.anchoreEnterpriseUi.service.sessionAffinity }}

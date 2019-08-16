@@ -10,10 +10,10 @@ metadata:
     heritage: {{ .Release.Service }}
     component: {{ $component }}
     {{- with .Values.anchoreSimpleQueue.labels }}
-    {{ toYaml . | nindent 4 | trim }}
+    {{ toYaml . | nindent 4 }}
     {{- end }}
     {{- with .Values.anchoreGlobal.labels }}
-    {{ toYaml . | nindent 4 | trim }}
+    {{ toYaml . | nindent 4 }}
     {{- end }}
 spec:
   selector:
@@ -27,14 +27,14 @@ spec:
         app: {{ template "anchore-engine.fullname" . }}
         component: {{ $component }}
         {{- with .Values.anchoreSimpleQueue.labels }}
-        {{ toYaml . | nindent 8 | trim }}
+        {{ toYaml . | nindent 8 }}
         {{- end }}
         {{- with .Values.anchoreGlobal.labels }}
-        {{ toYaml . | nindent 8 | trim }}
+        {{ toYaml . | nindent 8 }}
         {{- end }}
       {{- with .Values.anchoreSimpleQueue.annotations }}
       annotations:
-        {{ toYaml . | nindent 8 | trim }}
+        {{ toYaml . | nindent 8 }}
       {{- end }}
     spec:
       containers:
@@ -65,10 +65,10 @@ spec:
             name: {{ template "anchore-engine.fullname" . }}
         env:
         {{- with .Values.anchoreGlobal.extraEnv }}
-        {{- toYaml . | nindent 8 | trim }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
         {{- with .Values.anchoreSimpleQueue.extraEnv }}
-        {{- toYaml . | nindent 8 | trim }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
         - name: ANCHORE_POD_NAME
           valueFrom:
@@ -104,7 +104,7 @@ spec:
           failureThreshold: 3
           successThreshold: 1
         resources:
-          {{ toYaml .Values.anchoreSimpleQueue.resources | nindent 10 | trim }}
+          {{ toYaml .Values.anchoreSimpleQueue.resources | nindent 10 }}
       volumes:
         - name: config-volume
           configMap:
@@ -121,15 +121,15 @@ spec:
         {{- end }}
       {{- with .Values.anchoreSimpleQueue.nodeSelector }}
       nodeSelector:
-        {{ toYaml . | nindent 8 | trim }}
+        {{ toYaml . | nindent 8 }}
       {{- end }}
       {{- with .Values.anchoreSimpleQueue.affinity }}
       affinity:
-        {{ toYaml . | nindent 8 | trim }}
+        {{ toYaml . | nindent 8 }}
       {{- end }}
       {{- with .Values.anchoreSimpleQueue.tolerations }}
       tolerations:
-        {{ toYaml . | indent 8 | trim }}
+        {{ toYaml . | nindent 8 }}
       {{- end }}
 
 ---
@@ -144,14 +144,14 @@ metadata:
     heritage: {{ .Release.Service }}
     component: {{ $component }}
     {{- with .Values.anchoreSimpleQueue.service.labels }}
-    {{ toYaml . | nindent 4 | trim }}
+    {{ toYaml . | nindent 4 }}
     {{- end }}
     {{- with .Values.anchoreGlobal.labels }}
-    {{ toYaml . | nindent 4 | trim }}
+    {{ toYaml . | nindent 4 }}
     {{- end }}
   {{- with .Values.anchoreSimpleQueue.service.annotations }}
   annotations:
-    {{ toYaml . | nindent 4 | trim }}
+    {{ toYaml . | nindent 4 }}
   {{- end }}
 spec:
   type: {{ .Values.anchoreSimpleQueue.service.type }}

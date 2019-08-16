@@ -11,7 +11,7 @@ metadata:
     heritage: {{ .Release.Service }}
     component: {{ $component }}
     {{- with .Values.anchoreGlobal.labels }}
-    {{ toYaml . | nindent 4 | trim }}
+    {{ toYaml . | nindent 4 }}
     {{- end }}
 data:
   config.yaml: |
@@ -75,7 +75,7 @@ data:
         enable_graphiql: "{{ .Values.anchoreEnterpriseReports.enableGraphql }}"
         enable_data_ingress: "{{ .Values.anchoreEnterpriseReports.enableDataIngress }}"
         cycle_timers:
-          {{ toYaml .Values.anchoreEnterpriseReports.cycleTimers | nindent 10 | trim }}
+          {{ toYaml .Values.anchoreEnterpriseReports.cycleTimers | nindent 10 }}
         {{- if .Values.anchoreEnterpriseRbac.enabled }}
         authorization_handler: external
         authorization_handler_config:

@@ -11,7 +11,7 @@ metadata:
     heritage: {{ .Release.Service }}
     component: {{ $component }}
     {{- with .Values.anchoreGlobal.labels }}
-    {{ toYaml . | nindent 4 | trim }}
+    {{ toYaml . | nindent 4 }}
     {{- end }}
 data:
   ANCHORE_DB_NAME: {{ index .Values "anchore-feeds-db" "postgresDatabase" | quote }}
@@ -62,7 +62,7 @@ data:
         port: {{ .Values.anchoreEnterpriseFeeds.service.port }}
         # Time delay in seconds between consecutive driver runs for processing data
         cycle_timers:
-          {{ toYaml .Values.anchoreEnterpriseFeeds.cycleTimers | nindent 10 | trim }}
+          {{ toYaml .Values.anchoreEnterpriseFeeds.cycleTimers | nindent 10 }}
         # Staging space for holding normalized output from drivers.
         local_workspace: {{ .Values.anchoreGlobal.scratchVolume.mountPath }}
         # Drivers process data from external sources and store normalized data in local_workspace. Processing large data sets

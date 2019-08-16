@@ -10,10 +10,10 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     {{- with .Values.anchoreApi.labels }}
-    {{ toYaml . | nindent 4 | trim }}
+    {{ toYaml . | nindent 4 }}
     {{- end }}
     {{- with .Values.anchoreGlobal.labels }}
-    {{ toYaml . | nindent 4 | trim }}
+    {{ toYaml . | nindent 4 }}
     {{- end }}
 spec:
   selector:
@@ -27,14 +27,14 @@ spec:
         app: {{ template "anchore-engine.fullname" . }}
         component: {{ $component }}
         {{- with .Values.anchoreApi.labels }}
-        {{ toYaml . | nindent 8 | trim }}
+        {{ toYaml . | nindent 8 }}
         {{- end }}
         {{- with .Values.anchoreGlobal.labels }}
-        {{ toYaml . | nindent 8 | trim }}
+        {{ toYaml . | nindent 8 }}
         {{- end }}
       {{- with .Values.anchoreApi.annotations }}
       annotations:
-        {{ toYaml . | nindent 8 | trim }}
+        {{ toYaml . | nindent 8 }}
       {{- end }}
     spec:
       {{ if and .Values.anchoreEnterpriseGlobal.enabled (or .Values.anchoreEnterpriseRbac.enabled .Values.anchoreEnterpriseReports.enabled) }}
@@ -69,10 +69,10 @@ spec:
             name: {{ template "anchore-engine.fullname" . }}
         env:
         {{- with .Values.anchoreGlobal.extraEnv }}
-        {{- toYaml . | nindent 8 | trim }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
         {{- with .Values.anchoreApi.extraEnv }}
-        {{- toYaml . | nindent 8 | trim }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
         - name: ANCHORE_POD_NAME
           valueFrom:
@@ -108,7 +108,7 @@ spec:
           failureThreshold: 3
           successThreshold: 1
         resources:
-          {{ toYaml .Values.anchoreApi.resources | nindent 10 | trim }}
+          {{ toYaml .Values.anchoreApi.resources | nindent 10 }}
       {{- if and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseRbac.enabled }}
       - name: {{ .Chart.Name }}-rbac-manager
         image: {{ .Values.anchoreEnterpriseGlobal.image }}
@@ -122,10 +122,10 @@ spec:
             name: {{ template "anchore-engine.fullname" . }}
         env:
         {{- with .Values.anchoreGlobal.extraEnv }}
-        {{- toYaml . | nindent 10 | trim }}
+        {{- toYaml . | nindent 10 }}
         {{- end }}
         {{- with .Values.anchoreEnterpriseRbac.extraEnv }}
-        {{- toYaml . | nindent 10 | trim }}
+        {{- toYaml . | nindent 10 }}
         {{- end }}
         - name: ANCHORE_POD_NAME
           valueFrom:
@@ -164,7 +164,7 @@ spec:
           failureThreshold: 3
           successThreshold: 1
         resources:
-          {{ toYaml .Values.anchoreEnterpriseRbac.managerResources | nindent 10 | trim }}
+          {{ toYaml .Values.anchoreEnterpriseRbac.managerResources | nindent 10 }}
       - name: {{ .Chart.Name }}-rbac-authorizer
         image: {{ .Values.anchoreEnterpriseGlobal.image }}
         imagePullPolicy: {{ .Values.anchoreEnterpriseGlobal.imagePullPolicy }}
@@ -177,10 +177,10 @@ spec:
             name: {{ template "anchore-engine.fullname" . }}
         env:
         {{- with .Values.anchoreGlobal.extraEnv }}
-        {{- toYaml . | nindent 10 | trim }}
+        {{- toYaml . | nindent 10 }}
         {{- end }}
         {{- with .Values.anchoreEnterpriseRbac.extraEnv }}
-        {{- toYaml . | nindent 10 | trim }}
+        {{- toYaml . | nindent 10 }}
         {{- end }}
         - name: ANCHORE_POD_NAME
           valueFrom:
@@ -223,7 +223,7 @@ spec:
           failureThreshold: 3
           successThreshold: 1
         resources:
-          {{ toYaml .Values.anchoreEnterpriseRbac.authResources | nindent 10 | trim }}
+          {{ toYaml .Values.anchoreEnterpriseRbac.authResources | nindent 10 }}
       {{- end }}
       {{- if and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseReports.enabled }}
       - name: "{{ .Chart.Name }}-reports"
@@ -241,10 +241,10 @@ spec:
             name: {{ template "anchore-engine.fullname" . }}
         env:
         {{- with .Values.anchoreGlobal.extraEnv }}
-        {{- toYaml . | nindent 10 | trim }}
+        {{- toYaml . | nindent 10 }}
         {{- end }}
         {{- with .Values.anchoreEnterpriseReports.extraEnv }}
-        {{- toYaml . | nindent 10 | trim }}
+        {{- toYaml . | nindent 10 }}
         {{- end }}
         - name: ANCHORE_POD_NAME
           valueFrom:
@@ -280,7 +280,7 @@ spec:
           failureThreshold: 3
           successThreshold: 1
         resources:
-          {{ toYaml .Values.anchoreEnterpriseReports.resources | nindent 10 | trim }}
+          {{ toYaml .Values.anchoreEnterpriseReports.resources | nindent 10 }}
       {{- end }}
       volumes:
         - name: config-volume
@@ -306,15 +306,15 @@ spec:
         {{- end }}
       {{- with .Values.anchoreApi.nodeSelector }}
       nodeSelector:
-        {{ toYaml . | nindent 8 | trim }}
+        {{ toYaml . | nindent 8 }}
       {{- end }}
       {{- with .Values.anchoreApi.affinity }}
       affinity:
-        {{ toYaml . | nindent 8 | trim }}
+        {{ toYaml . | nindent 8 }}
       {{- end }}
       {{- with .Values.anchoreApi.tolerations }}
       tolerations:
-        {{ toYaml . | nindent 8 | trim }}
+        {{ toYaml . | nindent 8 }}
       {{- end }}
 
 ---
@@ -329,14 +329,14 @@ metadata:
     heritage: {{ .Release.Service }}
     component: {{ $component }}
     {{- with .Values.anchoreApi.service.labels }}
-    {{ toYaml . | nindent 4 | trim }}
+    {{ toYaml . | nindent 4 }}
     {{- end }}
     {{- with .Values.anchoreGlobal.labels }}
-    {{ toYaml . | nindent 4 | trim }}
+    {{ toYaml . | nindent 4 }}
     {{- end }}
   {{- with .Values.anchoreApi.service.annotations }}
   annotations:
-    {{ toYaml . | nindent 4 | trim }}
+    {{ toYaml . | nindent 4 }}
   {{- end }}
 spec:
   type: {{ .Values.anchoreApi.service.type }}

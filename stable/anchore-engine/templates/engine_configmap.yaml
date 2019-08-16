@@ -8,7 +8,7 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     {{- with .Values.anchoreGlobal.labels }}
-    {{ toYaml . | nindent 4 | trim }}
+    {{ toYaml . | nindent 4 }}
     {{- end }}
 data:
   ANCHORE_DB_NAME: {{ index .Values "postgresql" "postgresDatabase" | quote }}
@@ -42,7 +42,7 @@ data:
     #
     {{ if .Values.anchoreGlobal.webhooksEnabled }}
     webhooks:
-      {{ toYaml .Values.anchoreGlobal.webhooks | nindent 6 | trim }}
+      {{ toYaml .Values.anchoreGlobal.webhooks | nindent 6 }}
     {{ end }}
 
     # Configure what feeds to sync.
@@ -119,7 +119,7 @@ data:
         port: {{ .Values.anchoreAnalyzer.containerPort }}
         cycle_timer_seconds: 1
         cycle_timers:
-          {{ toYaml .Values.anchoreAnalyzer.cycleTimers | nindent 10 | trim }}
+          {{ toYaml .Values.anchoreAnalyzer.cycleTimers | nindent 10 }}
         max_threads: {{ .Values.anchoreAnalyzer.concurrentTasksPerWorker }}
         analyzer_driver: 'nodocker'
         {{- if gt .Values.anchoreAnalyzer.layerCacheMaxGigabytes 0.0 }}
@@ -139,14 +139,14 @@ data:
         port: {{ .Values.anchoreCatalog.service.port }}
         cycle_timer_seconds: 1
         cycle_timers:
-          {{ toYaml .Values.anchoreCatalog.cycleTimers | nindent 10 | trim }}
+          {{ toYaml .Values.anchoreCatalog.cycleTimers | nindent 10 }}
         ssl_enable: {{ .Values.anchoreGlobal.internalServicesSslEnabled }}
         ssl_cert: "{{ .Values.anchoreGlobal.internalServicesSsl.certDir -}}/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretCertName }}"
         ssl_key: "{{ .Values.anchoreGlobal.internalServicesSsl.certDir -}}/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretKeyName }}"
         event_log:
-          {{ toYaml .Values.anchoreCatalog.events | nindent 10 | trim }}
+          {{ toYaml .Values.anchoreCatalog.events | nindent 10 }}
         archive:
-          {{ toYaml .Values.anchoreCatalog.archive | nindent 10 | trim }}
+          {{ toYaml .Values.anchoreCatalog.archive | nindent 10 }}
       simplequeue:
         enabled: true
         require_auth: true
@@ -164,7 +164,7 @@ data:
         port: {{ .Values.anchorePolicyEngine.service.port }}
         cycle_timer_seconds: 1
         cycle_timers:
-          {{ toYaml .Values.anchorePolicyEngine.cycleTimers | nindent 10 | trim }}
+          {{ toYaml .Values.anchorePolicyEngine.cycleTimers | nindent 10 }}
         ssl_cert: "{{ .Values.anchoreGlobal.internalServicesSsl.certDir -}}/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretCertName }}"
         ssl_key: "{{ .Values.anchoreGlobal.internalServicesSsl.certDir -}}/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretKeyName }}"
         ssl_enable: {{ .Values.anchoreGlobal.internalServicesSslEnabled }}
