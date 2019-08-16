@@ -23,8 +23,8 @@ data:
     ssl_options.cacertfile = /opt/bitnami/rabbitmq/certs/ca_certificate.pem
     ssl_options.certfile = /opt/bitnami/rabbitmq/certs/server_certificate.pem
     ssl_options.keyfile = /opt/bitnami/rabbitmq/certs/server_key.pem
-{{ end }}
+{{- end }}
 {{ if .Values.rabbitmq.advancedConfiguration}}
   advanced.config: |-
 {{ .Values.rabbitmq.advancedConfiguration | indent 4 }}
-{{ end }}
+{{- end }}

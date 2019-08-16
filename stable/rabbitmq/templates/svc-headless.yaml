@@ -20,7 +20,7 @@ spec:
   - name: amqp-tls
     port: {{ .Values.service.SSLPort }}
     targetPort: amqp-tls
-{{ end }}
+{{- end }}
   - name: dist
     port: {{ .Values.service.distPort }}
     targetPort: dist

@@ -40,8 +40,8 @@ spec:
     targetPort: amqp-ssl
     {{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nodeSSLPort))) }}
     nodePort: {{ .Values.service.nodeSSLPort }}
-    {{ end }}
-  {{ end }}
+    {{- end }}
+  {{- end }}
   - name: dist
     port: {{ .Values.service.distPort }}
     targetPort: dist

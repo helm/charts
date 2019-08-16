@@ -1,9 +1,8 @@
-{{ if or (not .Values.rabbitmq.tls.existingSecret) ( not .Values.rabbitmq.tls.enabled) }}
-apiVersion: v1
+{{ if and (not .Values.rabbitmq.tls.existingSecret) ( .Values.rabbitmq.tls.enabled) }}
 apiVersion: v1
 kind: Secret
 metadata:
-  name: {{ template "rabbitmq.fullname" . }}-cert-config
+  name: {{ template "rabbitmq.fullname" . }}-certs
   labels:
     app: {{ template "rabbitmq.name" . }}
     chart: {{ template "rabbitmq.chart" .  }}
@@ -17,4 +16,4 @@ data:
     {{ .Values.rabbitmq.tls.serverCertificate| b64enc | quote }}
   server_key.pem:
     {{ .Values.rabbitmq.tls.serverKey | b64enc | quote }}
-{{ end }}
+{{- end }}
