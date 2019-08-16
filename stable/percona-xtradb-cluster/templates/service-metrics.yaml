@@ -4,6 +4,11 @@ apiVersion: v1
 kind: Service
 metadata:
   name: "{{ template "percona-xtradb-cluster.fullname" . }}-metrics"
+{{- if and .Values.metricsExporter.enabled (not .Values.prometheus.operator.enabled) }}
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "9104"
+{{- end }}
   labels:
     app: {{ template "percona-xtradb-cluster.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
