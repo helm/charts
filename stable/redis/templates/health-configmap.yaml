@@ -7,6 +7,7 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
   name: {{ template "redis.fullname" . }}-health
+  namespace: {{ .Release.Namespace }}
 data:
   ping_readiness_local.sh: |-
 {{- if .Values.usePasswordFile }}
