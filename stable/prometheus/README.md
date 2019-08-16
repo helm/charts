@@ -46,6 +46,10 @@ Users of this chart will need to update their alerting rules to the new format b
 
 ## Upgrading from previous chart versions.
 
+Version 9.0 adds a new option to enable or disable the Prometheus Server.
+This supports the use case of running a Prometheus server in one k8s cluster and scraping exporters in another cluster while using the same chart for each deployment.
+To install the server `server.enabled` must be set to `true`.
+
 As of version 5.0, this chart uses Prometheus 2.x. This version of prometheus introduces a new data format and is not compatible with prometheus 1.x. It is recommended to install this as a new release, as updating existing releases will not work. See the [prometheus docs](https://prometheus.io/docs/prometheus/latest/migration/#storage) for instructions on retaining your old data.
 
 ### Example migration
@@ -235,6 +239,7 @@ Parameter | Description | Default
 `pushgateway.service.servicePort` | pushgateway service port | `9091`
 `pushgateway.service.type` | type of pushgateway service to create | `ClusterIP`
 `rbac.create` | If true, create & use RBAC resources | `true`
+`server.enabled` | If false, Prometheus server will not be created | `true`
 `server.name` | Prometheus server container name | `server`
 `server.image.repository` | Prometheus server container image repository | `prom/prometheus`
 `server.image.tag` | Prometheus server container image tag | `v2.11.1`
