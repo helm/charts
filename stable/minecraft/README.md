@@ -63,3 +63,13 @@ By default a PersistentVolumeClaim is created and mounted for saves but not mods
 you can change the values.yaml to disable persistence under the sub-sections under `persistence`.
 
 > *"An emptyDir volume is first created when a Pod is assigned to a Node, and exists as long as that Pod is running on that node. When a Pod is removed from a node for any reason, the data in the emptyDir is deleted forever."*
+
+## Backups
+
+You can backup the state of your minecraft server to your local machine via the `kubectl cp` command.  
+
+```
+NAMESPACE=default
+POD_ID=lionhope-387ff8d-sdis9
+kubectl cp ${NAMESPACE}/${POD_ID}:/data .
+```
