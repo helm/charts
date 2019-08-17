@@ -71,5 +71,8 @@ You can backup the state of your minecraft server to your local machine via the 
 ```
 NAMESPACE=default
 POD_ID=lionhope-387ff8d-sdis9
+kubectl exec ${NAMESPACE}/${POD_ID} rcon-cli save-off
+kubectl exec ${NAMESPACE}/${POD_ID} rcon-cli save-all
 kubectl cp ${NAMESPACE}/${POD_ID}:/data .
+kubectl exec ${NAMESPACE}/${POD_ID} rcon-cli save-on
 ```
