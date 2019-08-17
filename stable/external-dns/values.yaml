@@ -391,3 +391,5 @@ metrics:
   enabled: false
   ## Metrics exporter pod Annotation and Labels
   ##
+serviceMonitor:
+  enabled: false
