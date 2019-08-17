@@ -42,7 +42,14 @@ spec:
       - name: git-sync
         image: "{{ .Values.git.image.repository }}:{{ .Values.git.image.tag }}"
         imagePullPolicy: {{ .Values.git.image.pullPolicy }}
+        {{- if .Values.git.command }}
+        command:
+          {{- range .Values.git.command }}
+          - {{ . | quote }}
+          {{- end }}
+        {{- else }}
         command: ['sh', '-c', '[ "$(ls {{ .Values.git.syncPath }})" ] || git clone {{ .Values.git.repo }} {{ .Values.git.syncPath }}']
+        {{- end }}
         volumeMounts:
         - mountPath: /config
           name: config
