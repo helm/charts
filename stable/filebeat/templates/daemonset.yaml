@@ -3,15 +3,15 @@ kind: DaemonSet
 metadata:
   name: {{ template "filebeat.fullname" . }}
   labels:
-    app: {{ template "filebeat.name" . }}
-    chart: {{ template "filebeat.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ template "filebeat.name" . }}
+    helm.sh/chart: {{ template "filebeat.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   selector:
     matchLabels:
-      app: {{ template "filebeat.name" . }}
-      release: {{ .Release.Name }}
+      app.kubernetes.io/name: {{ template "filebeat.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   minReadySeconds: 10
   updateStrategy:
     type: RollingUpdate
@@ -20,8 +20,8 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "filebeat.name" . }}
-        release: {{ .Release.Name }}
+        app.kubernetes.io/name: {{ template "filebeat.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
       annotations:
         checksum/secret: {{ toYaml (default .Values.config .Values.overrideConfig) | sha256sum }}
 {{- if .Values.annotations }}
