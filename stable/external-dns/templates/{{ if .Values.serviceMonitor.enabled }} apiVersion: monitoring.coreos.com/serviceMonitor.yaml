@@ -1,0 +1,19 @@
+{{ if .Values.serviceMonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ template "external-dns.fullname" . }}
+  {{- if .Values.serviceMonitor.namespace }}
+  namespace: {{ .Values.serviceMonitor.namespace }}
+  {{- end }}
+  labels: {{ include "external-dns.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+{{ include "external-dns.labels" . | indent 6 }}
+  endpoints:
+  - port: {{ .Values.service.portName }}
+    interval: {{ .Values.serviceMonitor.interval }}
+  namespaceSelector:
+    any: true
+{{ end }} 
