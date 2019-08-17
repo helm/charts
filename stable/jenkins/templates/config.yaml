@@ -12,6 +12,7 @@ metadata:
     "app.kubernetes.io/instance": "{{ .Release.Name }}"
     "app.kubernetes.io/component": "{{ .Values.master.componentName }}"
 data:
+{{- if .Values.master.enableXmlConfig }}
   config.xml: |-
     <?xml version='1.0' encoding='UTF-8'?>
     <hudson>
@@ -211,7 +212,9 @@ data:
       <enabled>false</enabled>
 {{- end }}
     </jenkins.CLI>
+{{- end }}
   apply_config.sh: |-
+{{- if .Values.master.enableXmlConfig }}
     mkdir -p /usr/share/jenkins/ref/secrets/;
     echo "false" > /usr/share/jenkins/ref/secrets/slave-to-master-security-kill-switch;
 {{- if .Values.master.overwriteConfig }}
@@ -232,6 +235,7 @@ data:
     yes n | cp -i /var/jenkins_config/{{- $key }} /var/jenkins_home;
   {{- end }}
   {{- end }}
+{{- end }}
 {{- end }}
 {{- if .Values.master.overwritePlugins }}
     # remove all plugins from shared volume
@@ -270,6 +274,7 @@ data:
     cp -v /var/jenkins_config/*.yaml /var/jenkins_home/casc_configs
   {{- end }}
 {{- end }}
+{{- if .Values.master.enableXmlConfig }}
 {{- if .Values.master.credentialsXmlSecret }}
     yes n | cp -i /var/jenkins_credentials/credentials.xml /var/jenkins_home;
 {{- end }}
@@ -281,6 +286,7 @@ data:
       mkdir -p /var/jenkins_home/jobs/$job
       yes {{ if not .Values.master.overwriteJobs }}n{{ end }} | cp -i /var/jenkins_jobs/$job /var/jenkins_home/jobs/$job/config.xml
     done
+{{- end }}
 {{- end }}
 {{- range $key, $val := .Values.master.initScripts }}
   init{{ $key }}.groovy: |-
