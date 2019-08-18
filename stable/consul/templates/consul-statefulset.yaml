@@ -225,14 +225,22 @@ spec:
               -server \
               -bootstrap-expect=$( echo "$JOIN_PEERS" | wc -w ) \
               -disable-keyring-file \
+            {{- if .Values.forceIpv6 }}
+              -bind=:: \
+            {{- else }}
               -bind=0.0.0.0 \
+            {{- end }}
               -advertise=${POD_IP} \
               ${JOIN_LAN} \
               ${JOIN_WAN} \
             {{- if .Values.Gossip.Encrypt }}
               ${GOSSIP_KEY} \
             {{- end }}
+            {{- if .Values.forceIpv6 }}
+              -client=:: \
+            {{- else }}
               -client=0.0.0.0 \
+            {{- end }}
               -dns-port=${DNSPORT} \
               -http-port={{ .Values.HttpPort }}
       volumes:
