@@ -140,16 +140,16 @@ data:
     GRAYLOG_HOME=/usr/share/graylog
     MASTER_NAME="{{ template "graylog.fullname" . }}-master.{{ .Release.Namespace }}.svc.cluster.local"
     # Looking for Master IP
-    MASTER_IP=`/k8s/kubectl get pod -o jsonpath='{range .items[*]}{.metadata.name} {.status.podIP}{"\n"}{end}' -l graylog-role=master --field-selector=status.phase=Running|awk '{print $2}'`
+    MASTER_IP=`/k8s/kubectl --namespace {{ .Release.Namespace }} get pod -o jsonpath='{range .items[*]}{.metadata.name} {.status.podIP}{"\n"}{end}' -l graylog-role=master --field-selector=status.phase=Running|awk '{print $2}'`
     echo "Current master is $MASTER_IP"
     if [[ -z "$MASTER_IP" ]]; then
       echo "Launching $HOSTNAME as master"
       export GRAYLOG_IS_MASTER="true"
-      /k8s/kubectl label --overwrite pod $HOSTNAME graylog-role="master"
+      /k8s/kubectl --namespace {{ .Release.Namespace }} label --overwrite pod $HOSTNAME graylog-role="master"
     else
       echo "Launching $HOSTNAME as coordinating"
       export GRAYLOG_IS_MASTER="false"
-      /k8s/kubectl label --overwrite pod $HOSTNAME graylog-role="coordinating"
+      /k8s/kubectl --namespace {{ .Release.Namespace }} label --overwrite pod $HOSTNAME graylog-role="coordinating"
     fi
     # Download plugins
   {{- if .Values.graylog.plugins }}

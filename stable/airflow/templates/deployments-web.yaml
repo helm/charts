@@ -41,17 +41,17 @@ spec:
         - name: {{ .Values.airflow.image.pullSecret }}
       {{- end }}
       restartPolicy: Always
-      {{- if .Values.nodeSelector }}
+      {{- if .Values.web.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.nodeSelector | indent 8 }}
+{{ toYaml .Values.web.nodeSelector | indent 8 }}
       {{- end }}
-      {{- if .Values.affinity }}
+      {{- if .Values.web.affinity }}
       affinity:
-{{ toYaml .Values.affinity | indent 8 }}
+{{ toYaml .Values.web.affinity | indent 8 }}
       {{- end }}
-      {{- if .Values.tolerations }}
+      {{- if .Values.web.tolerations }}
       tolerations:
-{{ toYaml .Values.tolerations | indent 8 }}
+{{ toYaml .Values.web.tolerations | indent 8 }}
       {{- end }}
       {{- if .Values.dags.initContainer.enabled }}
       initContainers:
@@ -92,6 +92,12 @@ spec:
           volumeMounts:
             - name: scripts
               mountPath: /usr/local/scripts
+          {{- $secretsDir := .Values.web.secretsDir -}}
+          {{- range .Values.web.secrets }}
+            - name: {{ . }}-volume
+              readOnly: true
+              mountPath: {{ $secretsDir }}/{{ . }}
+          {{- end }}
           {{- if .Values.persistence.enabled }}
             - name: dags-data
               mountPath: {{ .Values.dags.path }}
@@ -152,6 +158,15 @@ spec:
             timeoutSeconds: 1
             successThreshold: 1
             failureThreshold: 5
+          readinessProbe:
+            httpGet:
+              path: "{{ .Values.ingress.web.path }}/health"
+              port: web
+            initialDelaySeconds: {{ .Values.web.initialDelaySeconds }}
+            periodSeconds: 60
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 5
 {{- if .Values.airflow.extraContainers }}
 {{ toYaml .Values.airflow.extraContainers | indent 8 }}
 {{- end }}
@@ -160,6 +175,11 @@ spec:
           configMap:
             name: {{ template "airflow.fullname" . }}-scripts
             defaultMode: 0755
+        {{- range .Values.web.secrets }}
+        - name: {{ . }}-volume
+          secret:
+            secretName: {{ . }}
+        {{- end }}
         - name: dags-data
         {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:

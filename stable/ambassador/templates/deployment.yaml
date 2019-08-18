@@ -96,21 +96,15 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            {{- if .Values.service.http.enabled }}
-            - name: http
-              containerPort: {{ .Values.service.http.targetPort }}
-            {{- end }}
-            {{- if .Values.service.https.enabled }}
-            - name: https
-              containerPort: {{ .Values.service.https.targetPort }}
-            {{- end }}
+            {{- range .Values.service.ports }}
+            - name: {{ .name }}
+              containerPort: {{ .targetPort }}
+              {{- if .protocol }}
+              protocol: {{ .protocol }}
+              {{- end }}
+            {{- end}}
             - name: admin
               containerPort: 8877
-          {{- range $key := .Values.additionalTCPPorts }}
-            - name: "{{ $key }}-tcp"
-              containerPort: {{ $key }}
-              protocol: TCP
-          {{- end }}
           env:
             - name: HOST_IP
               valueFrom:
@@ -171,21 +165,27 @@ spec:
             containerPort: {{ .Values.pro.ports.auth }}
           - name: grpc-ratelimit
             containerPort: {{ .Values.pro.ports.ratelimit }}
-          - name: http-debug
-            containerPort: {{ .Values.pro.ports.ratelimitDebug }}
           env:
           - name: REDIS_SOCKET_TYPE
             value: tcp
           - name: REDIS_URL
-            value: ambassador-pro-redis:6379
-          - name: APRO_AUTH_PORT
+            value: {{ include "ambassador.fullname" . }}-pro-redis:6379
+          - name: APRO_HTTP_PORT
             value: "{{ .Values.pro.ports.auth }}"
-          - name: GRPC_PORT
-            value: "{{ .Values.pro.ports.ratelimit }}"
-          - name: DEBUG_PORT
-            value: "{{ .Values.pro.ports.ratelimitDebug }}"
           - name: APP_LOG_LEVEL
             value: "{{ .Values.pro.logLevel  }}"
+          - name: AMBASSADOR_NAMESPACE
+          {{- if .Values.namespace }}
+            value: {{ .Values.namespace.name | quote }}
+          {{ else }}
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          {{- end }}
+          {{- if hasKey .Values.env "AMBASSADOR_ID" }}
+          - name: "AMBASSADOR_ID"
+            value: {{ .Values.env.AMBASSADOR_ID | quote }}
+          {{- end }}
           - name: AMBASSADOR_LICENSE_KEY
           {{- if .Values.pro.licenseKey.secret }}
             valueFrom:
@@ -194,6 +194,15 @@ spec:
                 key: key
           {{ else }}
             value: {{ .Values.pro.licenseKey.value }}
+          {{- end }}
+          {{- if .Values.pro.env }}
+          {{- range $key, $value := .Values.pro.env }}
+          {{- if eq $key "AMBASSADOR_ID" }}
+          {{- else}}
+          - name: {{ $key | upper | quote }}
+            value: {{ $value | quote }}
+          {{- end }}
+          {{- end }}
           {{- end }}
         {{- end }}
       {{- with .Values.nodeSelector }}

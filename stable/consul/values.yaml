@@ -21,7 +21,7 @@ Domain: consul
 Component: "consul"
 Replicas: 3
 Image: "consul"
-ImageTag: "1.5.2"
+ImageTag: "1.5.3"
 ImagePullPolicy: "Always"
 Resources: {}
  # requests:
@@ -44,6 +44,17 @@ DisableHostNodeId: false
 ## Datacenter name for consul. If not supplied, will use the consul
 ## default 'dc1'
 # DatacenterName: dc1
+
+## Explicitly set LAN hosts to join.
+# Added as -retry-join argument
+# If you set joinPeers then we will not auto-build the list of peers for you
+# These hostnames will be verified to be resolvable and ping-able before the consul service will start
+joinPeers: []
+
+## Set list of WAN hosts to join
+# Added as -retry-join-wan argument
+# These hostnames will be verified to be resolvable before the consul service will start
+joinWan: []
 
 ## Encrypt Gossip Traffic
 Gossip:
@@ -137,3 +148,13 @@ test:
 nodeSelector: {}
 tolerations: []
 additionalLabels: {}
+
+# Lifecycle for StatefulSet
+# lifecycle:
+#   preStop:
+#     exec:
+#       command:
+#       - sh
+#       - -c
+#       - "sleep 60"
+forceIpv6: false

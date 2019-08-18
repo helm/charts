@@ -7,6 +7,9 @@ metadata:
     helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     app.kubernetes.io/instance: "{{ .Release.Name }}"
     app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+{{- if .Values.customLabels }}
+{{ toYaml .Values.customLabels | indent 4 }}
+{{- end }}
 spec:
   selector:
     matchLabels:
@@ -17,6 +20,9 @@ spec:
       labels:
         app.kubernetes.io/name: {{ template "kube-state-metrics.name" . }}
         app.kubernetes.io/instance: "{{ .Release.Name }}"
+{{- if .Values.customLabels }}
+{{ toYaml .Values.customLabels | indent 8 }}
+{{- end }}
 {{- if .Values.podAnnotations }}
       annotations:
 {{ toYaml .Values.podAnnotations | indent 8 }}
@@ -101,6 +107,12 @@ spec:
 {{  if .Values.collectors.statefulsets  }}
         - --collectors=statefulsets
 {{  end  }}
+{{  if .Values.collectors.storageclasses  }}
+        - --collectors=storageclasses
+{{  end  }}
+{{  if .Values.collectors.verticalpodautoscalers  }}
+        - --collectors=verticalpodautoscalers
+{{  end  }}
 {{ if .Values.namespace }}
         - --namespace={{ .Values.namespace }}
 {{ end }}
@@ -108,12 +120,19 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         ports:
         - containerPort: 8080
-        readinessProbe:
+        livenessProbe:
           httpGet:
             path: /healthz
             port: 8080
           initialDelaySeconds: 5
           timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 5
+          timeoutSeconds: 5
+
         resources:
 {{ toYaml .Values.resources | indent 12 }}
 {{- if .Values.affinity }}

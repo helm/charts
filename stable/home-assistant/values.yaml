@@ -4,7 +4,7 @@
 
 image:
   repository: homeassistant/home-assistant
-  tag: 0.93.2
+  tag: 0.95.4
   pullPolicy: IfNotPresent
   pullSecrets: []
 
@@ -89,6 +89,9 @@ git:
     repository: causticlab/hass-configurator-docker
     tag: x86_64-0.3.1
     pullPolicy: IfNotPresent
+
+  ## Specify the command that runs in the git-sync container to pull in configuration.
+  # command: []
 
   # repo:
   secret: git-creds
@@ -240,3 +243,5 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+podAnnotations: {}
