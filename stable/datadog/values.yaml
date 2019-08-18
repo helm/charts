@@ -630,6 +630,12 @@ deployment:
   #
   # priorityClassName:
 
+  ## @param podAnnotations - list of key:value strings - optional
+  ## Annotations to add to the Deployment's Pods
+  #
+  # podAnnotations:
+  #   <POD_ANNOTATION>: '[{"key": "<KEY>", "value": "<VALUE>"}]'
+
 clusterchecksDeployment:
 
   ## @param enabled - boolean - required

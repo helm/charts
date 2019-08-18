@@ -292,6 +292,7 @@ helm install --name <RELEASE_NAME> \
 | `deployment.affinity`                    | Node / Pod affinities                                                                     | `{}`                                        |
 | `deployment.tolerations`                 | List of node taints to tolerate                                                           | `[]`                                        |
 | `deployment.priorityClassName`           | Which Priority Class to associate with the deployment                                     | `nil`                                       |
+| `deployment.podAnnotations`               | Annotations to add to the Deployment's Pods                                                | `nil`                                       |
 | `kubeStateMetrics.enabled`               | If true, create kube-state-metrics                                                        | `true`                                      |
 | `kube-state-metrics.rbac.create`         | If true, create & use RBAC resources for kube-state-metrics                               | `true`                                      |
 | `kube-state-metrics.serviceAccount.create`                 | If true, create & use serviceAccount                                    | `true`                                      |
