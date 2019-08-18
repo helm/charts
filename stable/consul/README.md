@@ -74,6 +74,7 @@ The following table lists the configurable parameters of the consul chart and th
 | `test.rbac.serviceAccountName`          | Name of existed service account for test container    | ``                         |
 | `additionalLabels`      | Add labels to Pod and StatefulSet     | `{}`                                                       |
 | `lifecycle`             | Lifecycle configuration, in YAML, for StatefulSet | `nil`                                          |
+| `forceIpv6`             | force to listen on IPv6 address                                                                    |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
