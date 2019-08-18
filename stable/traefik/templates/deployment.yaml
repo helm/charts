@@ -67,6 +67,7 @@ spec:
         - name: {{ . }}
       {{- end }}
       {{- end }}
+      hostNetwork: {{ .Values.deployment.hostNetwork | default ("false") }}
       containers:
       - image: {{ .Values.image }}:{{ .Values.imageTag }}
         name: {{ template "traefik.fullname" . }}
