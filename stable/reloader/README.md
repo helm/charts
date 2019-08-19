@@ -74,21 +74,22 @@ Update the `values.yaml` and set the following properties
 
 | Key           | Description                                                               | Example                            | Default Value                      |
 |---------------|---------------------------------------------------------------------------|------------------------------------|------------------------------------|
-| watchGlobally          | Option to watch configmap and secrets in all namespaces                                                | `true`                        | `true`                        |
-| matchLabels          | Additional match Labels for selector                                                | `{}`                        | `{}`                        |
-| deployment.annotations          | Annotations for deployment                                                | `{}`                        | `{}`                        |
-| deployment.labels          | Labels for deployment                                                | `provider`                        | `provider`                        |
-| deployment.image.name          | Image name for reloader                                                | `stakater/reloader`                        | `stakater/reloader`                        |
-| deployment.image.tag          | Image tag for reloader                                                | `v0.0.29`                        | `v0.0.29`                        |
-| deployment.image.pullPolicy          | Image pull policy for reloader                                                | `IfNotPresent`                        | `IfNotPresent`                        |
-| deployment.env.open          | Additional key value pair as environment variables                                                | `STORAGE: local`                        | ``                        |
-| deployment.env.secret          | Additional Key value pair as environment variables. It gets the values based on keys from default reloader secret if any                                               | `BASIC_AUTH_USER: test`                        | ``                        |
-| deployment.env.field          | Additional environment variables to expose pod information to containers.                                               | `POD_IP: status.podIP`                        | ``                        |
-| rbac.enabled          | Option to create rbac                                               | `true`                        | `true`                        |
-| rbac.labels          | Additional labels for rbac                                               | `{}`                        | `{}`                        |
-| serviceAccount.create          | Option to create serviceAccount                                               | `true`                        | `true`                        |
-| serviceAccount.name          | Name of serviceAccount                                               | `reloader`                        | `reloader`                        |
-| custom_annotations          | Optional flags to pass to the Reloader entrypoint           | `{}`          | `{}`          |
+| reloader.watchGlobally          | Option to watch configmap and secrets in all namespaces                                                | `true`                        | `true`                        |
+| reloader.matchLabels          | Additional match Labels for selector                                                | `{}`                        | `{}`                        |
+| reloader.deployment.annotations          | Annotations for deployment                                                | `{}`                        | `{}`                        |
+| reloader.deployment.labels          | Labels for deployment                                                | `provider`                        | `provider`                        |
+| reloader.deployment.image.name          | Image name for reloader                                                | `stakater/reloader`                        | `stakater/reloader`                        |
+| reloader.deployment.image.tag          | Image tag for reloader                                                | `v0.0.29`                        | `v0.0.29`                        |
+| reloader.deployment.image.pullPolicy          | Image pull policy for reloader                                                | `IfNotPresent`                        | `IfNotPresent`                        |
+| reloader.deployment.env.open          | Additional key value pair as environment variables                                                | `STORAGE: local`                        | ``                        |
+| reloader.deployment.env.secret          | Additional Key value pair as environment variables. It gets the values based on keys from default reloader secret if any                        | `BASIC_AUTH_USER: test`                        | ``                        |
+| reloader.deployment.env.field          | Additional environment variables to expose pod information to containers.                                               | `POD_IP: status.podIP`                        | ``                        |
+| reloader.rbac.enabled          | Option to create rbac                                               | `true`                        | `true`                        |
+| reloader.rbac.labels          | Additional labels for rbac                                               | `{}`                        | `{}`                        |
+| reloader.serviceAccount.create          | Option to create serviceAccount                                               | `true`                        | `true`                        |
+| reloader.serviceAccount.name          | Name of serviceAccount                                               | `reloader`                        | `reloader`                        |
+| reloader.custom_annotations          | Optional flags to pass to the Reloader entrypoint           | `{}`          | `{}`          |
+| reloader.nodeSelector          | Optional node labels for pod assignment           | `{}`          | `{}`          |
 ## Deploying to Kubernetes
 
 You can deploy Reloader by following methods:
