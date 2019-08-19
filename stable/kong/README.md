@@ -98,6 +98,8 @@ and their default values.
 | proxy.ingress.hosts                | List of ingress hosts.                                                                | `[]`                |
 | proxy.ingress.path                 | Ingress path.                                                                         | `/`                 |
 | proxy.ingress.annotations          | Ingress annotations. See documentation for your ingress controller for details        | `{}`                |
+| maxSurge                           | maxSurge parameter for kong-proxy deployment                                          | `100%`              |
+| maxUnavailable                     | maxUnavailable for kong-proxy deployment                                              | `0%`                |
 | env                                | Additional [Kong configurations](https://getkong.org/docs/latest/configuration/)      |                     |
 | runMigrations                      | Run Kong migrations job                                                               | `true`              |
 | readinessProbe                     | Kong readiness probe                                                                  |                     |
