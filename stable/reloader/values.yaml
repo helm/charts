@@ -28,10 +28,11 @@ reloader:
     labels: {}
     # The name of the ServiceAccount to use.
     # If not set and create is true, a name is generated using the fullname template
-    name: reloader
+    name:
   # Optional flags to pass to the Reloader entrypoint
   # Example:
   #   custom_annotations:
   #     configmap: "my.company.com/configmap"
   #     secret: "my.company.com/secret"
   custom_annotations: {}
+  nodeSelector: {}
