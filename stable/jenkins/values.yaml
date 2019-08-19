@@ -30,6 +30,10 @@ master:
   numExecutors: 0
   # configAutoReload requires UseSecurity is set to true:
   useSecurity: true
+
+  # enables configuration done directly via XML files
+  # People who want to configure Jenkins via https://github.com/jenkinsci/configuration-as-code-plugin only can set it to false
+  enableXmlConfig: true
   # Allows to configure different SecurityRealm using Jenkins XML
   securityRealm: |-
     <securityRealm class="hudson.security.LegacySecurityRealm"/>
@@ -120,8 +124,8 @@ master:
       enabled: true
       proxyCompatability: true
   cli: false
-  # Kubernetes service type for the JNLP slave service
-  # slaveListenerServiceType is the Kubernetes Service type for the JNLP slave service,
+  # Kubernetes service type for the JNLP agent service
+  # slaveListenerServiceType is the Kubernetes Service type for the JNLP agent service,
   # either 'LoadBalancer', 'NodePort', or 'ClusterIP'
   # Note if you set this to 'LoadBalancer', you *must* define annotations to secure it. By default
   # this will be an external load balancer and allowing inbound 0.0.0.0/0, a HUGE
@@ -130,7 +134,7 @@ master:
   slaveListenerServiceAnnotations: {}
   slaveKubernetesNamespace:
 
-  # Example of 'LoadBalancer' type of slave listener with annotations securing it
+  # Example of 'LoadBalancer' type of agent listener with annotations securing it
   # slaveListenerServiceType: LoadBalancer
   # slaveListenerServiceAnnotations:
   #   service.beta.kubernetes.io/aws-load-balancer-internal: "True"
@@ -195,7 +199,7 @@ master:
   # etc.  Best reference is https://<jenkins_url>/configuration-as-code/reference.  The example below creates a welcome message:
   JCasC:
     enabled: false
-    pluginVersion: "1.25"
+    pluginVersion: "1.27"
     # it's only used when plugin version is <=1.18 for later version the
     # configuration as code support plugin is no longer needed
     supportPluginVersion: "1.18"
@@ -365,14 +369,14 @@ agent:
       memory: "256Mi"
   # You may want to change this to true while testing a new image
   alwaysPullImage: false
-  # Controls how slave pods are retained after the Jenkins build completes
+  # Controls how agent pods are retained after the Jenkins build completes
   # Possible values: Always, Never, OnFailure
   podRetention: "Never"
   # You can define the volumes that you want to mount for this container
   # Allowed types are: ConfigMap, EmptyDir, HostPath, Nfs, Pod, Secret
   # Configure the attributes as they appear in the corresponding Java class for that type
   # https://github.com/jenkinsci/kubernetes-plugin/tree/master/src/main/java/org/csanchez/jenkins/plugins/kubernetes/volumes
-  # Pod-wide ennvironment, these vars are visible to any container in the slave pod
+  # Pod-wide ennvironment, these vars are visible to any container in the agent pod
   envVars:
   # - name: PATH
   #   value: /usr/local/bin

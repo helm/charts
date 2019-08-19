@@ -1,7 +1,7 @@
 apiVersion: v1
 name: neo4j
 home: https://www.neo4j.com
-version: 1.1.0
+version: 1.2.0
 appVersion: 3.4.5
 description: Neo4j is the world's leading graph database
 icon: http://info.neo4j.com/rs/773-GON-065/images/neo4j_logo.png

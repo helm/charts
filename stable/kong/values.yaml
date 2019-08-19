@@ -321,6 +321,11 @@ podAnnotations: {}
 # Kong pod count
 replicaCount: 1
 
+# Kong Pod Disruption Budget
+podDisruptionBudget:
+  enabled: false
+  maxUnavailable: "50%"
+
 # Kong has a choice of either Postgres or Cassandra as a backend datatstore.
 # This chart allows you to choose either of them with the `database.type`
 # parameter.  Postgres is chosen by default.
@@ -388,6 +393,9 @@ ingressController:
 
   ingressClass: kong
 
+  podDisruptionBudget:
+    enabled: false
+    maxUnavailable: "50%"
 # We pass the dbless (declarative) config over here.
 dblessConfig:
   # Either Kong's configuration is managed from an existing ConfigMap (with Key: kong.yml)
