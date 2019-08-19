@@ -10,7 +10,7 @@ spec:
     - port: {{ .Values.service.port }}
       targetPort: {{ .Values.service.targetPort }}
       protocol: TCP
-      name: http
+      name: {{ .Values.service.name }}
   selector:
     app: {{ template "prometheus-pushgateway.name" . }}
     release: {{ .Release.Name }}

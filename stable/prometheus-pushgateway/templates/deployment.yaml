@@ -32,7 +32,7 @@ spec:
 {{ toYaml .Values.extraArgs | indent 12 }}
         {{- end }}
           ports:
-            - name: metrics
+            - name: {{ .Values.service.name }}
               containerPort: 9091
               protocol: TCP
           livenessProbe:
