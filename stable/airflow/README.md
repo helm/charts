@@ -200,7 +200,7 @@ Next, you can use those secrets with the Helm chart:
 ```yaml
 # values.yaml
 
-postgres:
+postgresql:
   existingSecret: airflow-postgres
 
 redis:
@@ -415,8 +415,8 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `postgresql.postgresPassword`            | PostgreSQL Password                                     | `airflow`                 |
 | `postgresql.postgresDatabase`            | PostgreSQL Database name                                | `airflow`                 |
 | `postgresql.persistence.enabled`         | Enable Postgres PVC                                     | `true`                    |
-| `postgresql.persistance.storageClass`    | Persistant class                                        | (undefined)               |
-| `postgresql.persistance.accessMode`      | Access mode                                             | `ReadWriteOnce`           |
+| `postgresql.persistence.storageClass`    | Persistent class                                        | (undefined)               |
+| `postgresql.persistence.accessMode`      | Access mode                                             | `ReadWriteOnce`           |
 | `redis.enabled`                          | Create a Redis cluster                                  | `true`                    |
 | `redis.existingSecret`                   | The name of an existing secret with a key `redis-password` to use as the password  | `nil` |
 | `redis.redisHost`                        | Redis Hostname                                          | (undefined)               |
