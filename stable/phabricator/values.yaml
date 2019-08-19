@@ -6,6 +6,7 @@
 #   imageRegistry: myRegistryName
 #   imagePullSecrets:
 #     - myRegistryKeySecretName
+#   storageClass: myStorageClass
 
 ## Bitnami Phabricator image version
 ## ref: https://hub.docker.com/r/bitnami/phabricator/tags/
