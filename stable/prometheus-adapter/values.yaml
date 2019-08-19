@@ -104,5 +104,5 @@ tls:
 
 tolerations: []
 
-#Annotations added to the pod
+# Annotations added to the pod
 podAnnotations: {}
