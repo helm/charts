@@ -4,7 +4,7 @@ You should now be able to create sealed secrets.
 
 GOOS=$(go env GOOS)
 GOARCH=$(go env GOARCH)
-wget https://github.com/bitnami-labs/sealed-secrets/releases/download/$release/kubeseal-$GOOS-$GOARCH
+wget https://github.com/bitnami-labs/sealed-secrets/releases/download/{{ .Values.image.tag }}/kubeseal-$GOOS-$GOARCH
 sudo install -m 755 kubeseal-$GOOS-$GOARCH /usr/local/bin/kubeseal
 
 2. Create a sealed secret file
