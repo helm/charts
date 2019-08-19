@@ -14,7 +14,7 @@ metadata:
 {{- if .Values.reloader.matchLabels }}
 {{ toYaml .Values.reloader.matchLabels | indent 4 }}
 {{- end }}
-  name: {{ template "reloader-name" . }}
+  name: {{ template "reloader-fullname" . }}
   namespace: {{ .Release.Namespace }}
 spec:
   replicas: 1
@@ -88,3 +88,7 @@ spec:
           {{- end }}
         {{- end }}
       serviceAccountName: {{ template "serviceAccountName" . }}
+      {{- if .Values.reloader.nodeSelector }}
+      nodeSelector:
+      {{ toYaml .Values.reloader.nodeSelector | indent 8 }}
+      {{- end }}
