@@ -102,6 +102,7 @@ The following table lists the configurable parameters of the MySQL chart and the
 | `securityContext.fsGroup`                    | Group ID for the container (mysql pod)                                                       | 999                                                  |
 | `securityContext.runAsUser`                  | User ID for the container (mysql pod)                                                        | 999                                                  |
 | `service.annotations`                        | Kubernetes annotations for mysql                                                             | {}                                                   |
+| `service.type`                               | Kubernetes service type                                                                      | ClusterIP                                            |
 | `service.loadBalancerIP`                     | LoadBalancer service IP                                                                      | `""`                                                 |
 | `ssl.enabled`                                | Setup and use SSL for MySQL connections                                                      | `false`                                              |
 | `ssl.secret`                                 | Name of the secret containing the SSL certificates                                           | mysql-ssl-certs                                      |

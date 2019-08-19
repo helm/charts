@@ -36,6 +36,7 @@ weave-scope-frontend:
         # cpu: ""
         # weave-scope-frontend.resources.limits.memory: memory limit in MiB (Mi)
         # memory: ""
+  flags: []
   # weave-scope-frontend Ingress
   ingress:
     # If true, weave-scope-frontend ingress will be created
@@ -58,6 +59,7 @@ weave-scope-frontend:
 # weave-scope-agent.* controls how the Weave Scope node agent pods are installed
 weave-scope-agent:
   enabled: true
+  flags: []
   # weave-scope-agent.dockerBridge: (required if agent.enabled == true) the name of the Docker bridge interface
   dockerBridge: "docker0"
   # weave-scope-agent.scopeFrontendAddr: the host:port of a Scope frontend to send data to

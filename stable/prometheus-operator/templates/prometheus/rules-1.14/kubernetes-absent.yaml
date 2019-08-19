@@ -1,0 +1,125 @@
+# Generated from 'kubernetes-absent' group from https://raw.githubusercontent.com/coreos/kube-prometheus/master/manifests/prometheus-rules.yaml
+# Do not change in-place! In order to change this file first read following link:
+# https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
+{{- if and (semverCompare ">=1.14.0-0" .Capabilities.KubeVersion.GitVersion) (semverCompare "<1.16.0-0" .Capabilities.KubeVersion.GitVersion) .Values.defaultRules.create .Values.defaultRules.rules.kubernetesAbsent }}
+{{- $operatorJob := printf "%s-%s" (include "prometheus-operator.fullname" .) "operator" }}
+{{- $prometheusJob := printf "%s-%s" (include "prometheus-operator.fullname" .) "prometheus" }}
+{{- $alertmanagerJob := printf "%s-%s" (include "prometheus-operator.fullname" .) "alertmanager" }}
+{{- $namespace := .Release.Namespace }}
+apiVersion: {{ printf "%s/v1" (.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
+kind: PrometheusRule
+metadata:
+  name: {{ printf "%s-%s" (include "prometheus-operator.fullname" .) "kubernetes-absent" | trunc 63 | trimSuffix "-" }}
+  labels:
+    app: {{ template "prometheus-operator.name" . }}
+{{ include "prometheus-operator.labels" . | indent 4 }}
+{{- if .Values.defaultRules.labels }}
+{{ toYaml .Values.defaultRules.labels | indent 4 }}
+{{- end }}
+{{- if .Values.defaultRules.annotations }}
+  annotations:
+{{ toYaml .Values.defaultRules.annotations | indent 4 }}
+{{- end }}
+spec:
+  groups:
+  - name: kubernetes-absent
+    rules:
+{{- if .Values.alertmanager.enabled }}
+    - alert: AlertmanagerDown
+      annotations:
+        message: Alertmanager has disappeared from Prometheus target discovery.
+        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-alertmanagerdown
+      expr: absent(up{job="{{ $alertmanagerJob }}",namespace="{{ $namespace }}"} == 1)
+      for: 15m
+      labels:
+        severity: critical
+{{- end }}
+{{- if .Values.kubeDns.enabled }}
+    - alert: CoreDNSDown
+      annotations:
+        message: CoreDNS has disappeared from Prometheus target discovery.
+        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-corednsdown
+      expr: absent(up{job="kube-dns"} == 1)
+      for: 15m
+      labels:
+        severity: critical
+{{- end }}
+{{- if .Values.kubeApiServer.enabled }}
+    - alert: KubeAPIDown
+      annotations:
+        message: KubeAPI has disappeared from Prometheus target discovery.
+        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeapidown
+      expr: absent(up{job="apiserver"} == 1)
+      for: 15m
+      labels:
+        severity: critical
+{{- end }}
+{{- if .Values.kubeControllerManager.enabled }}
+    - alert: KubeControllerManagerDown
+      annotations:
+        message: KubeControllerManager has disappeared from Prometheus target discovery.
+        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubecontrollermanagerdown
+      expr: absent(up{job="kube-controller-manager"} == 1)
+      for: 15m
+      labels:
+        severity: critical
+{{- end }}
+{{- if .Values.kubeScheduler.enabled }}
+    - alert: KubeSchedulerDown
+      annotations:
+        message: KubeScheduler has disappeared from Prometheus target discovery.
+        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeschedulerdown
+      expr: absent(up{job="kube-scheduler"} == 1)
+      for: 15m
+      labels:
+        severity: critical
+{{- end }}
+{{- if .Values.kubeStateMetrics.enabled }}
+    - alert: KubeStateMetricsDown
+      annotations:
+        message: KubeStateMetrics has disappeared from Prometheus target discovery.
+        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubestatemetricsdown
+      expr: absent(up{job="kube-state-metrics"} == 1)
+      for: 15m
+      labels:
+        severity: critical
+{{- end }}
+{{- if .Values.prometheusOperator.kubeletService.enabled }}
+    - alert: KubeletDown
+      annotations:
+        message: Kubelet has disappeared from Prometheus target discovery.
+        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeletdown
+      expr: absent(up{job="kubelet"} == 1)
+      for: 15m
+      labels:
+        severity: critical
+{{- end }}
+{{- if .Values.nodeExporter.enabled }}
+    - alert: NodeExporterDown
+      annotations:
+        message: NodeExporter has disappeared from Prometheus target discovery.
+        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-nodeexporterdown
+      expr: absent(up{job="node-exporter"} == 1)
+      for: 15m
+      labels:
+        severity: critical
+{{- end }}
+    - alert: PrometheusDown
+      annotations:
+        message: Prometheus has disappeared from Prometheus target discovery.
+        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-prometheusdown
+      expr: absent(up{job="{{ $prometheusJob }}",namespace="{{ $namespace }}"} == 1)
+      for: 15m
+      labels:
+        severity: critical
+{{- if .Values.prometheusOperator.enabled }}
+    - alert: PrometheusOperatorDown
+      annotations:
+        message: PrometheusOperator has disappeared from Prometheus target discovery.
+        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-prometheusoperatordown
+      expr: absent(up{job="{{ $operatorJob }}",namespace="{{ $namespace }}"} == 1)
+      for: 15m
+      labels:
+        severity: critical
+{{- end }}
+{{- end }}
