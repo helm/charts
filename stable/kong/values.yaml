@@ -229,7 +229,7 @@ enterprise:
     # The key value must be a secret configuration, following the example at https://docs.konghq.com/enterprise/0.35-x/kong-manager/authentication/sessions/
     session_conf_secret: you-must-create-an-rbac-session-conf-secret
     # Set to the appropriate plugin config JSON if not using basic-auth
-    # admin_gui_auth_conf: ''
+    admin_gui_auth_conf: {}
   smtp:
     enabled: false
     portal_emails_from: none@example.com
