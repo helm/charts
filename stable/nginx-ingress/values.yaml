@@ -384,6 +384,9 @@ defaultBackend:
 
   extraArgs: {}
 
+  ## Additional environment variables to set for defaultBackend pods
+  extraEnvs: []
+
   port: 8080
 
   ## Readiness and liveness probes for default backend
