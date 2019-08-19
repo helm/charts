@@ -321,6 +321,11 @@ podAnnotations: {}
 # Kong pod count
 replicaCount: 1
 
+# Kong Pod Disruption Budget
+podDisruptionBudget:
+  enabled: false
+  maxUnavailable: "50%"
+
 # Kong has a choice of either Postgres or Cassandra as a backend datatstore.
 # This chart allows you to choose either of them with the `database.type`
 # parameter.  Postgres is chosen by default.
@@ -388,12 +393,9 @@ ingressController:
 
   ingressClass: kong
 
-serviceMonitor:
-  # Specifies whether ServiceMonitor for Prometheus operator should be created
-  enabled: false
-  # interval: 10s
-  # Specifies namespace, where ServiceMonitor should be installed
-  # namespace: monitoring
+  podDisruptionBudget:
+    enabled: false
+    maxUnavailable: "50%"
 
 # We pass the dbless (declarative) config over here.
 dblessConfig:
@@ -410,3 +412,10 @@ dblessConfig:
       #   - name: example
       #     paths:
       #     - "/example"
+      
+serviceMonitor:
+  # Specifies whether ServiceMonitor for Prometheus operator should be created
+  enabled: false
+  # interval: 10s
+  # Specifies namespace, where ServiceMonitor should be installed
+  # namespace: monitoring

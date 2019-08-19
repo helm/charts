@@ -73,6 +73,10 @@ their default values.
 | `core.persistentVolume.subPath`       | Subdirectory of the volume to mount                                                                                                     | `nil`                                           |
 | `core.persistentVolume.annotations`   | Persistent Volume Claim annotations                                                                                                     | `{}`                                            |
 | `readReplica.numberOfServers`         | Number of machines in READ_REPLICA mode                                                                                                 | `0`                                             |
+| `readReplica.autoscaling.enabled`  | Enable horizontal pod autoscaler  | `false`  |
+| `readReplica.autoscaling.targetAverageUtilization`  | Target CPU utilization  | `70`  |
+| `readReplica.autoscaling.minReplicas` | Min replicas for autoscaling  | `1`  |
+| `readReplica.autoscaling.maxReplicas`  | Max replicas for autoscaling  | `3` |
 | `readReplica.initContainers`          | Init containers to add to the replica pod. Example use case is a script that installs the APOC library                                  | `{}`                                            |
 | `resources`                           | Resources required (e.g. CPU, memory)                                                                                                   | `{}`                                            |
 | `clusterDomain`                       | Cluster domain                                                                                                                          | `cluster.local`                                 |
