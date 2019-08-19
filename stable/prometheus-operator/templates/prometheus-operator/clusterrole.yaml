@@ -23,7 +23,6 @@ rules:
   - servicemonitors
   - podmonitors
   - prometheusrules
-  - podmonitors
   verbs:
   - '*'
 - apiGroups:
