@@ -1,0 +1,20 @@
+{{- if and .Values.ingressController.enabled .Values.ingressController.podDisruptionBudget.enabled }}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: "{{ template "kong.fullname" . }}-controller"
+  labels:
+    app: "{{ template "kong.name" . }}"
+spec:
+  {{- if .Values.ingressController.podDisruptionBudget.minAvailable }}
+  minAvailable: {{ .Values.ingressController.podDisruptionBudget.minAvailable }}
+  {{- end  }}
+  {{- if .Values.ingressController.podDisruptionBudget.maxUnavailable }}
+  maxUnavailable: {{ .Values.ingressController.podDisruptionBudget.maxUnavailable }}
+  {{- end  }}
+  selector:
+    matchLabels:
+      app: {{ template "kong.name" . }}
+      release: {{ .Release.Name }}
+      component: controller
+{{- end }}
