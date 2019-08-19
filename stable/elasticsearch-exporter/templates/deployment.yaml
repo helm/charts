@@ -68,7 +68,6 @@ spec:
             value: ":{{ .Values.service.httpPort }}"
           - name: WEB_TELEMETRY_PART
             value: "{{ .Values.web.path }}"
-          {{- end }}
           {{- if .Values.env }}
           {{- range $key, $value := .Values.env }}
           - name: {{ $key }}
