@@ -30,7 +30,7 @@ spec:
       hostNetwork: true # This option is a requirement for the Infrastructure Agent to report the proper hostname in New Relic.
       dnsPolicy: ClusterFirstWithHostNet
       {{- end }}
-     containers:
+      containers:
         - name: {{ template "newrelic.name" . }}
           image: {{ template "newrelic.image" . }}
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
