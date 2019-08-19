@@ -15,6 +15,8 @@ $ helm install stable/elasticsearch-exporter
 This chart creates an Elasticsearch-Exporter deployment on a [Kubernetes](http://kubernetes.io)
 cluster using the [Helm](https://helm.sh) package manager.
 
+**Note:** This chart does not support versions before [`elasticsearch-exporter:1.1.0`](https://github.com/justwatchcom/elasticsearch_exporter/releases/tag/v1.1.0).
+
 ## Prerequisites
 
 - Kubernetes 1.8+ with Beta APIs enabled
@@ -25,6 +27,11 @@ To install the chart with the release name `my-release`:
 
 ```bash
 $ helm install --name my-release stable/elasticsearch-exporter
+```
+
+> Note: To use [previous stable elasticsearch-exporter version](https://github.com/justwatchcom/elasticsearch_exporter/releases/tag/v1.0.2) run:
+```
+$ helm install --name my-release stable/elasticsearch-exporter --version 1.7.0
 ```
 
 The command deploys Elasticsearch-Exporter on the Kubernetes cluster using the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -44,7 +51,6 @@ The following table lists the configurable parameters of the Elasticsearch-Expor
 
 Parameter | Description | Default
 --- | --- | ---
-`appVersion` | Application Version | `1.0.2`
 `replicaCount` | desired number of pods | `1`
 `restartPolicy` | container restart policy | `Always`
 `image.repository` | container image repository | `justwatch/elasticsearch_exporter`

@@ -44,7 +44,6 @@ spec:
       containers:
         - name: {{ .Chart.Name }}
           env:
-          {{- if hasPrefix "1.1" .Values.appVersion }}
           - name: ES_URI
             value: "{{ .Values.es.uri }}"
           - name: ES_ALL
@@ -78,23 +77,6 @@ spec:
           {{- end }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- if hasPrefix "1.0." .Values.appVersion }}
-          command: ["elasticsearch_exporter",
-                    "-es.uri={{ .Values.es.uri }}",
-                    "-es.all={{ .Values.es.all }}",
-                    "-es.indices={{ .Values.es.indices }}",
-                    "-es.timeout={{ .Values.es.timeout }}",
-                    {{- if .Values.es.sslSkipVerify }}
-                    "-es.ssl-skip-verify=true",
-                    {{- end }}
-                    {{- if .Values.es.ssl.enabled }}
-                    "-es.ca=/ssl/ca.pem",
-                    "-es.client-cert=/ssl/client.pem",
-                    "-es.client-private-key=/ssl/client.key",
-                    {{- end }}
-                    "-web.listen-address=:{{ .Values.service.httpPort }}",
-                    "-web.telemetry-path={{ .Values.web.path }}"]
-          {{- end }}
           securityContext:
             capabilities:
               drop:
