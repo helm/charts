@@ -11,7 +11,7 @@ Parse Server
 {{- if .Values.ingress.enabled }}
 {{ $ingressHost := first .Values.ingress.server.hosts }}
 
-  You should be able to access Server trough: {{- range .Values.ingress.server.hosts }} {{ if .tls }}https{{ else }}http{{ end }}://{{ .name }} {{- end }}
+  You should be able to access Server through: {{- range .Values.ingress.server.hosts }} {{ if .tls }}https{{ else }}http{{ end }}://{{ .name }} {{- end }}
   For instance:
 
   export SERVICE_HOST={{ $ingressHost.name }}
@@ -74,7 +74,7 @@ service:
 
 {{- if .Values.ingress.enabled }}
 
-  You should be able to access Parse Dashboard trough: {{- range .Values.ingress.dashboard.hosts }} {{ if .tls }}https{{ else }}http{{ end }}://{{ .name }} {{- end }}
+  You should be able to access Parse Dashboard through: {{- range .Values.ingress.dashboard.hosts }} {{ if .tls }}https{{ else }}http{{ end }}://{{ .name }} {{- end }}
 
 {{- else if eq .Values.service.type "ClusterIP" }}
 
