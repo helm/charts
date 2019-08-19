@@ -118,6 +118,10 @@ securityContext:
 
 priorityClassName: ""
 
+podDisruptionBudget: {}
+  # maxUnavailable: 1
+  # minAvailable: 2
+
 nodeSelector: {}
 
 tolerations: []
