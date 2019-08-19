@@ -29,10 +29,15 @@ kubectl create -f mysealedsecret.[json|yaml]
 Running 'kubectl get secret secret-name -o [json|yaml]' will show the decrypted secret that was generated from the sealed secret.
 
 Both the SealedSecret and generated Secret must have the same name and namespace.
-
 {{ if not (eq .Release.Namespace "kube-system") }}
 --------------------------------------------------------------------------------------------------
 
 Please Note: Since this chart was not installed in the kube-system namespace all kubeseal commands must pass the option `--controller-namespace {{ .Release.Namespace }}`
+
+{{ end }}
+{{ if not (eq .Values.service.name "sealed-secrets-controller") }}
+--------------------------------------------------------------------------------------------------
+
+Please Note: Since this chart was installed with a custom service name all kubeseal commands must pass the option `--controller-name {{ .Values.service.name }}`
 
 {{ end }}

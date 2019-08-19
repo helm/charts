@@ -29,3 +29,6 @@ crd:
   keep: true
 
 networkPolicy: false
+
+service:
+  name: sealed-secrets-controller
