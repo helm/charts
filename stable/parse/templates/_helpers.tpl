@@ -59,7 +59,19 @@ If not using ClusterIP, or if a host or LoadBalancerIP is not defined, the value
 */}}
 {{- define "parse.host" -}}
 {{- $host := default "" .Values.server.host -}}
+{{- if .Values.ingress.enabled -}}
+{{- $ingressHost := first .Values.ingress.server.hosts -}}
+{{- $host = default $ingressHost.name $host -}}
+{{- end -}}
 {{- default (include "parse.serviceIP" .) $host -}}
+{{- end -}}
+
+{{/*
+Gets the port to access Parse outside the cluster.
+When using ingress, we should use the port 80 instead of service.port
+*/}}
+{{- define "parse.external-port" -}}
+{{- ternary "80" .Values.server.port .Values.ingress.enabled -}}
 {{- end -}}
 
 {{/*
