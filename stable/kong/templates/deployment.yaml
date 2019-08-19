@@ -264,7 +264,7 @@ spec:
       volumes:
         - name: custom-nginx-template-volume
           configMap:
-            name: {{ .Release.Name }}-kong-default-custom-server-blocks
+            name: {{ template "kong.fullname" . }}-default-custom-server-blocks
 {{- if (and (not .Values.ingressController.enabled) (eq .Values.env.database "off")) }}
         - name: kong-custom-dbless-config-volume
           configMap:
