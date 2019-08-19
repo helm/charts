@@ -114,6 +114,7 @@ The following table lists the configurable parameters of the Prometheus Adapter 
 | `logLevel`                      | Log level                                                                       | `4`                                         |
 | `metricsRelistInterval`         | Interval at which to re-list the set of all available metrics from Prometheus   | `1m`                                        |
 | `nodeSelector`                  | Node labels for pod assignment                                                  | `{}`                                        |
+| `podAnnotations`                | Annotations to add to the pod                                                   | `{}`                                        |
 | `priorityClassName`             | Pod priority                                                                    | ``                                          |
 | `prometheus.url`                | Url of where we can find the Prometheus service                                 | `http://prometheus.default.svc`             |
 | `prometheus.port`               | Port of where we can find the Prometheus service, zero to omit this option      | `9090`                                      |
