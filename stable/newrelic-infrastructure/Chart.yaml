@@ -1,7 +1,7 @@
 apiVersion: v1
 description: A Helm chart to deploy the New Relic Infrastructure Agent as a DaemonSet
 name: newrelic-infrastructure
-version: 0.13.5
+version: 0.13.6
 appVersion: 1.9.3
 home: https://hub.docker.com/r/newrelic/infrastructure-k8s/
 source:
