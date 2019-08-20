@@ -36,6 +36,8 @@ $ helm install --name my-release -f values.yaml stable/spinnaker
 
 ## Adding Kubernetes Clusters to Spinnaker
 
+
+### Configuring arbitrary clusters with a kubernetes secret
 By default, installing the chart only registers the local cluster as a deploy target
 for Spinnaker. If you want to add arbitrary clusters need to do the following:
 
@@ -45,13 +47,37 @@ for Spinnaker. If you want to add arbitrary clusters need to do the following:
 $ kubectl create secret generic --from-file=$HOME/.kube/config my-kubeconfig
 ```
 
-1. Set the following values of the chart:
+2. Set the following values of the chart:
 
 ```yaml
 kubeConfig:
   enabled: true
   secretName: my-kubeconfig
   secretKey: config
+  contexts:
+  # Names of contexts available in the uploaded kubeconfig
+  - my-context
+  # This is the context from the list above that you would like
+  # to deploy Spinnaker itself to.
+  deploymentContext: my-context
+```
+
+### Configuring arbitrary clusters with s3
+By default, installing the chart only registers the local cluster as a deploy target
+for Spinnaker. If you do not want to store your kubeconfig as a secret on the cluster, you
+can also store in s3. Full documentation can be found [here](https://www.spinnaker.io/reference/halyard/secrets/s3-secrets/#secrets-in-s3).
+
+1. Upload your kubeconfig to a s3 bucket that halyard and spinnaker services can access.
+
+
+2. Set the following values of the chart:
+
+```yaml
+kubeConfig:
+  enabled: true
+  # secretName: my-kubeconfig
+  # secretKey: config
+  encryptedKubeconfig: encrypted:s3!r:us-west-2!b:mybucket!f:mykubeconfig
   contexts:
   # Names of contexts available in the uploaded kubeconfig
   - my-context
