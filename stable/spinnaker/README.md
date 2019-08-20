@@ -36,7 +36,6 @@ $ helm install --name my-release -f values.yaml stable/spinnaker
 
 ## Adding Kubernetes Clusters to Spinnaker
 
-
 ### Configuring arbitrary clusters with a kubernetes secret
 By default, installing the chart only registers the local cluster as a deploy target
 for Spinnaker. If you want to add arbitrary clusters need to do the following:
