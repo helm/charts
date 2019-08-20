@@ -6,6 +6,7 @@
 #   imageRegistry: myRegistryName
 #   imagePullSecrets:
 #     - myRegistryKeySecretName
+#   storageClass: myStorageClass
 
 ## Bitnami OrangeHRM image version
 ## ref: https://hub.docker.com/r/bitnami/orangehrm/tags/
