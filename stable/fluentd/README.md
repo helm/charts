@@ -32,6 +32,12 @@ $ helm delete my-release
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
+## Autoscaling
+
+By enabling autoscaling the chart will use statefulset with hpa instead of ceployment with PVC.
+Please be noted to [statefulset limitation](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#limitations)
+The autoscaling is disabled by default for backward compatibility
+
 ## Configuration
 
 The following table lists the configurable parameters of the fluentd chart and their default values.
@@ -67,6 +73,10 @@ Parameter | Description | Default
 `persistence.enabled` | Enable buffer persistence | `false`
 `persistence.accessMode` | Access mode for buffer persistence | `ReadWriteOnce`
 `persistence.size` | Volume size for buffer persistence | `10Gi`
+`autoscaling.enabled` | Set this to `true` to enable autoscaling | `false`
+`autoscaling.minReplicas` | Set minimum number of replicas | `2`
+`autoscaling.maxReplicas` | Set maximum number of replicas | `5`
+`autoscaling.metrics` | metrics used for autoscaling | See [values.yaml](values.yaml)
 `metrics.enabled`                         | Set this to `true` to enable Prometheus metrics HTTP endpoint                         | `false`
 `metrics.service.port`                    | Prometheus metrics HTTP endpoint port                                                 | `24231`
 `metrics.serviceMonitor.enabled`          | Set this to `true` to create ServiceMonitor for Prometheus operator                   | `false`
