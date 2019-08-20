@@ -17,7 +17,7 @@ spec:
       component: app
   {{- if .Values.updateStrategy }}
   strategy:
-    {{ toYaml .Values.updateStrategy | indent 4 }}
+{{ toYaml .Values.updateStrategy | indent 4 }}
   {{- end }}
 
   template:
