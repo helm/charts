@@ -88,7 +88,7 @@ spec:
           {{- end }}
         {{- end }}
       serviceAccountName: {{ template "serviceAccountName" . }}
-      {{- if .Values.reloader.nodeSelector }}
+{{- if .Values.reloader.nodeSelector }}
       nodeSelector:
-      {{ toYaml .Values.reloader.nodeSelector | indent 8 }}
-      {{- end }}
+{{ toYaml .Values.reloader.nodeSelector | indent 8 }}
+{{- end }}
