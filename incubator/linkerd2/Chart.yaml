@@ -10,6 +10,12 @@ sources:
 - https://github.com/linkerd/linkerd2/
 version: 0.1.0
 maintainers:
-  - name: Linkerd authors
+  - name: grampelberg
+    email: cncf-linkerd-dev@lists.cncf.io
+    url: https://linkerd.io/
+  - name: alpeb
+    email: cncf-linkerd-dev@lists.cncf.io
+    url: https://linkerd.io/
+  - name: ihcsim
     email: cncf-linkerd-dev@lists.cncf.io
     url: https://linkerd.io/
