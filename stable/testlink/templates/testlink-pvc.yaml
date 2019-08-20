@@ -14,11 +14,5 @@ spec:
   resources:
     requests:
       storage: {{ .Values.persistence.testlink.size | quote }}
-{{- if .Values.persistence.testlink.storageClass }}
-{{- if (eq "-" .Values.persistence.testlink.storageClass) }}
-  storageClassName: ""
-{{- else }}
-  storageClassName: "{{ .Values.persistence.testlink.storageClass }}"
-{{- end }}
-{{- end }}
+  storageClassName: {{ include "testlink.storageClass" . }}
 {{- end -}}
