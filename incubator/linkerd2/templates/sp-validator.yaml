@@ -1,0 +1,100 @@
+{{with .Values -}}
+---
+###
+### Service Profile Validator
+###
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: linkerd-sp-validator
+  namespace: {{.Namespace}}
+  labels:
+    {{.ControllerComponentLabel}}: sp-validator
+    {{.ControllerNamespaceLabel}}: {{.Namespace}}
+  annotations:
+    {{.CreatedByAnnotation}}: {{default (printf "linkerd/helm %s" .LinkerdVersion) .CliVersion}}
+spec:
+  type: ClusterIP
+  selector:
+    {{.ControllerComponentLabel}}: sp-validator
+  ports:
+  - name: sp-validator
+    port: 443
+    targetPort: sp-validator
+---
+{{ $_ := set .Proxy "WorkloadKind" "deployment" -}}
+{{ $_ := set .Proxy "Component" "linkerd-sp-validator" -}}
+{{ include "linkerd.proxy.validation" .Proxy -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    {{.CreatedByAnnotation}}: {{default (printf "linkerd/helm %s" .LinkerdVersion) .CliVersion}}
+  labels:
+    {{.ControllerComponentLabel}}: sp-validator
+    {{.ControllerNamespaceLabel}}: {{.Namespace}}
+  name: linkerd-sp-validator
+  namespace: {{.Namespace}}
+spec:
+  replicas: {{.ControllerReplicas}}
+  selector:
+    matchLabels:
+      {{.ControllerComponentLabel}}: sp-validator
+  template:
+    metadata:
+      annotations:
+        {{.CreatedByAnnotation}}: {{default (printf "linkerd/helm %s" .LinkerdVersion) .CliVersion}}
+        {{- include "partials.proxy.annotations" .Proxy| nindent 8}}
+      labels:
+        {{.ControllerComponentLabel}}: sp-validator
+        {{.ControllerNamespaceLabel}}: {{.Namespace}}
+        {{- include "partials.proxy.labels" .Proxy | nindent 8}}
+    spec:
+      {{- if .EnablePodAntiAffinity -}}
+      {{- $local := dict "Component" "sp-validator" "Label" .ControllerComponentLabel -}}
+      {{- include "linkerd.pod-affinity" $local | nindent 6 -}}
+      {{- end }}
+      containers:
+      - args:
+        - sp-validator
+        - -log-level={{.ControllerLogLevel}}
+        image: {{.ControllerImage}}:{{default .LinkerdVersion .ControllerImageVersion}}
+        imagePullPolicy: {{.ImagePullPolicy}}
+        livenessProbe:
+          httpGet:
+            path: /ping
+            port: 9997
+          initialDelaySeconds: 10
+        name: sp-validator
+        ports:
+        - containerPort: 8443
+          name: sp-validator
+        - containerPort: 9997
+          name: admin-http
+        readinessProbe:
+          failureThreshold: 7
+          httpGet:
+            path: /ready
+            port: 9997
+        {{- if .SPValidatorResources -}}
+        {{- include "partials.resources" .SPValidatorResources | nindent 8 }}
+        {{- end }}
+        securityContext:
+          runAsUser: {{.ControllerUID}}
+        volumeMounts:
+        - mountPath: /var/run/linkerd/tls
+          name: tls
+          readOnly: true
+      - {{- include "partials.proxy" . | indent 8 | trimPrefix (repeat 7 " ") }}
+      {{ if not .NoInitContainer -}}
+      initContainers:
+      - {{- include "partials.proxy-init" . | indent 8 | trimPrefix (repeat 7 " ") }}
+      {{ end -}}
+      serviceAccountName: linkerd-sp-validator
+      volumes:
+      - name: tls
+        secret:
+          secretName: linkerd-sp-validator-tls
+      - {{- include "partials.proxy.volumes.identity" . | indent 8 | trimPrefix (repeat 7 " ") }}
+{{end -}}

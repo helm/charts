@@ -1,0 +1,55 @@
+{{with .Values -}}
+---
+###
+### Controller RBAC
+###
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: linkerd-{{.Namespace}}-controller
+  labels:
+    {{.ControllerComponentLabel}}: controller
+    {{.ControllerNamespaceLabel}}: {{.Namespace}}
+rules:
+- apiGroups: ["extensions", "apps"]
+  resources: ["daemonsets", "deployments", "replicasets", "statefulsets"]
+  verbs: ["list", "get", "watch"]
+- apiGroups: ["extensions", "batch"]
+  resources: ["jobs"]
+  verbs: ["list" , "get", "watch"]
+- apiGroups: [""]
+  resources: ["pods", "endpoints", "services", "replicationcontrollers", "namespaces"]
+  verbs: ["list", "get", "watch"]
+- apiGroups: ["linkerd.io"]
+  resources: ["serviceprofiles"]
+  verbs: ["list", "get", "watch"]
+- apiGroups: ["split.smi-spec.io"]
+  resources: ["trafficsplits"]
+  verbs: ["list", "get", "watch"]
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: linkerd-{{.Namespace}}-controller
+  labels:
+    {{.ControllerComponentLabel}}: controller
+    {{.ControllerNamespaceLabel}}: {{.Namespace}}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: linkerd-{{.Namespace}}-controller
+subjects:
+- kind: ServiceAccount
+  name: linkerd-controller
+  namespace: {{.Namespace}}
+---
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: linkerd-controller
+  namespace: {{.Namespace}}
+  labels:
+    {{.ControllerComponentLabel}}: controller
+    {{.ControllerNamespaceLabel}}: {{.Namespace}}
+{{ end -}}

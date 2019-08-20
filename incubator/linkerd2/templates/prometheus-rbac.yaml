@@ -1,0 +1,43 @@
+{{with .Values -}}
+---
+###
+### Prometheus RBAC
+###
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: linkerd-{{.Namespace}}-prometheus
+  labels:
+    {{.ControllerComponentLabel}}: prometheus
+    {{.ControllerNamespaceLabel}}: {{.Namespace}}
+rules:
+- apiGroups: [""]
+  resources: ["nodes", "nodes/proxy", "pods"]
+  verbs: ["get", "list", "watch"]
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: linkerd-{{.Namespace}}-prometheus
+  labels:
+    {{.ControllerComponentLabel}}: prometheus
+    {{.ControllerNamespaceLabel}}: {{.Namespace}}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: linkerd-{{.Namespace}}-prometheus
+subjects:
+- kind: ServiceAccount
+  name: linkerd-prometheus
+  namespace: {{.Namespace}}
+---
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: linkerd-prometheus
+  namespace: {{.Namespace}}
+  labels:
+    {{.ControllerComponentLabel}}: prometheus
+    {{.ControllerNamespaceLabel}}: {{.Namespace}}
+{{- end }}

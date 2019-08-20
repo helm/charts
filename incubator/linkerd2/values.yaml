@@ -1,0 +1,126 @@
+# Default values for linkerd.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+ClusterDomain: &cluster_domain cluster.local
+EnableH2Upgrade: true
+ImagePullPolicy: &image_pull_policy IfNotPresent
+
+# control plane version. See Proxy section for proxy version
+LinkerdVersion: &linkerd_version stable-2.5.0
+
+Namespace: linkerd
+OmitWebhookSideEffects: false
+WebhookFailurePolicy: Ignore
+
+# controller configuration
+ControllerImage: gcr.io/linkerd-io/controller
+ControllerLogLevel: &controller_log_level info
+ControllerReplicas: 1
+ControllerUID: 2103
+
+# identity configuration
+Identity:
+  Issuer:
+    ClockSkewAllowance: 20s
+
+    # must match the expiry date in CrtPEM
+    CrtExpiry:
+
+    # control plane annotation - do not edit
+    CrtExpiryAnnotation: linkerd.io/identity-issuer-expiry
+
+    IssuanceLifeTime: 86400s
+
+    TLS:
+      # PEM-encoded certificate
+      CrtPEM: |
+
+      # PEM-encoded ECDSA private key
+      KeyPEM: |
+
+  TrustAnchorsPEM: |
+
+  TrustDomain: *cluster_domain
+
+# grafana configuration
+GrafanaImage: gcr.io/linkerd-io/grafana
+
+# heartbeat configuration
+HeartbeatSchedule: "0 0 * * * "
+
+# prometheus configuration
+PrometheusImage: prom/prometheus:v2.11.1
+PrometheusLogLevel: *controller_log_level
+
+# proxy configuration
+Proxy:
+  EnableExternalProfiles: false
+  Image:
+    Name: gcr.io/linkerd-io/proxy
+    PullPolicy: *image_pull_policy
+    Version: *linkerd_version
+  LogLevel: warn,linkerd2_proxy=info
+  Ports:
+    Admin: 4191
+    Control: 4190
+    Inbound: 4143
+    Outbound: 4140
+  Resources:
+    CPU:
+      Limit: ""
+      Request: ""
+    Memory:
+      Limit: ""
+      Request: ""
+  UID: 2102
+
+# proxy-init configuration
+ProxyInit:
+  IgnoreInboundPorts: ""
+  IgnoreOutboundPorts: ""
+  Image:
+    Name: gcr.io/linkerd-io/proxy-init
+    PullPolicy: *image_pull_policy
+    Version: v1.1.0
+  Resources:
+    CPU:
+      Limit: 100m
+      Request: 10m
+    Memory:
+      Limit: 50Mi
+      Request: 10Mi
+
+# proxy injector configuration
+ProxyInjector:
+  # if empty, Helm will auto-generate these fields
+  CrtPEM: |
+
+  KeyPEM: |
+
+# service profile validator configuration
+ProfileValidator:
+  # if empty, Helm will auto-generate these fields
+  CrtPEM: |
+
+  KeyPEM: |
+
+# tap configuration
+Tap:
+  # if empty, Helm will auto-generate these fields
+  CrtPEM: |
+
+  KeyPEM: |
+
+# web configuration
+WebImage: gcr.io/linkerd-io/web
+
+# control plane annotations - do not edit
+CreatedByAnnotation: linkerd.io/created-by
+ProxyInjectAnnotation: linkerd.io/inject
+ProxyInjectDisabled: disabled
+
+# control plane labels - do not edit
+ControllerComponentLabel: linkerd.io/control-plane-component
+ControllerNamespaceLabel: linkerd.io/control-plane-ns
+LinkerdNamespaceLabel: linkerd.io/is-control-plane

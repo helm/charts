@@ -1,0 +1,38 @@
+{{with .Values -}}
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: linkerd-config
+  namespace: {{.Namespace}}
+  labels:
+    {{.ControllerComponentLabel}}: controller
+    {{.ControllerNamespaceLabel}}: {{.Namespace}}
+  annotations:
+    {{.CreatedByAnnotation}}: {{default (printf "linkerd/helm %s" .LinkerdVersion) .CliVersion}}
+data:
+  global: |
+  {{- if .Configs -}}
+  {{- if .Configs.Global -}}
+  {{.Configs.Global | nindent 4}}
+  {{- end }}
+  {{- else -}}
+  {{- include "linkerd.configs.global" . | nindent 4}}
+  {{- end }}
+  proxy: |
+  {{- if .Configs -}}
+  {{- if .Configs.Proxy -}}
+  {{.Configs.Proxy | nindent 4}}
+  {{- end }}
+  {{- else -}}
+  {{- include "linkerd.configs.proxy" . | nindent 4}}
+  {{- end }}
+  install: |
+  {{- if .Configs -}}
+  {{- if .Configs.Install -}}
+  {{.Configs.Install | nindent 4}}
+  {{- end }}
+  {{- else -}}
+  {{- include "linkerd.configs.install" . | nindent 4}}
+  {{- end }}
+{{- end }}

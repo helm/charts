@@ -1,0 +1,108 @@
+{{with .Values -}}
+---
+###
+### Tap
+###
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: linkerd-tap
+  namespace: {{.Namespace}}
+  labels:
+    {{.ControllerComponentLabel}}: tap
+    {{.ControllerNamespaceLabel}}: {{.Namespace}}
+  annotations:
+    {{.CreatedByAnnotation}}: {{default (printf "linkerd/helm %s" .LinkerdVersion) .CliVersion}}
+spec:
+  type: ClusterIP
+  selector:
+    {{.ControllerComponentLabel}}: tap
+  ports:
+  - name: grpc
+    port: 8088
+    targetPort: 8088
+  - name: apiserver
+    port: 443
+    targetPort: apiserver
+---
+{{ $_ := set .Proxy "WorkloadKind" "deployment" -}}
+{{ $_ := set .Proxy "Component" "linkerd-tap" -}}
+{{ include "linkerd.proxy.validation" .Proxy -}}
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  annotations:
+    {{.CreatedByAnnotation}}: {{default (printf "linkerd/helm %s" .LinkerdVersion) .CliVersion}}
+  labels:
+    {{.ControllerComponentLabel}}: tap
+    {{.ControllerNamespaceLabel}}: {{.Namespace}}
+  name: linkerd-tap
+  namespace: {{.Namespace}}
+spec:
+  replicas: {{.ControllerReplicas}}
+  selector:
+    matchLabels:
+      {{.ControllerComponentLabel}}: tap
+      {{.ControllerNamespaceLabel}}: {{.Namespace}}
+      {{- include "partials.proxy.labels" .Proxy | nindent 6}}
+  template:
+    metadata:
+      annotations:
+        {{.CreatedByAnnotation}}: {{default (printf "linkerd/helm %s" .LinkerdVersion) .CliVersion}}
+        {{- include "partials.proxy.annotations" .Proxy| nindent 8}}
+      labels:
+        {{.ControllerComponentLabel}}: tap
+        {{.ControllerNamespaceLabel}}: {{.Namespace}}
+        {{- include "partials.proxy.labels" .Proxy | nindent 8}}
+    spec:
+      {{- if .EnablePodAntiAffinity -}}
+      {{- $local := dict "Component" "tap" "Label" .ControllerComponentLabel -}}
+      {{- include "linkerd.pod-affinity" $local | nindent 6 -}}
+      {{- end }}
+      containers:
+      - args:
+        - tap
+        - -controller-namespace={{.Namespace}}
+        - -log-level={{.ControllerLogLevel}}
+        image: {{.ControllerImage}}:{{default .LinkerdVersion .ControllerImageVersion}}
+        imagePullPolicy: {{.ImagePullPolicy}}
+        livenessProbe:
+          httpGet:
+            path: /ping
+            port: 9998
+          initialDelaySeconds: 10
+        name: tap
+        ports:
+        - containerPort: 8088
+          name: grpc
+        - containerPort: 8089
+          name: apiserver
+        - containerPort: 9998
+          name: admin-http
+        readinessProbe:
+          failureThreshold: 7
+          httpGet:
+            path: /ready
+            port: 9998
+        {{- if .TapResources -}}
+        {{- include "partials.resources" .TapResources | nindent 8 }}
+        {{- end }}
+        securityContext:
+          runAsUser: {{.ControllerUID}}
+        volumeMounts:
+        - mountPath: /var/run/linkerd/tls
+          name: tls
+          readOnly: true
+      - {{- include "partials.proxy" . | indent 8 | trimPrefix (repeat 7 " ") }}
+      {{ if not .NoInitContainer -}}
+      initContainers:
+      - {{- include "partials.proxy-init" . | indent 8 | trimPrefix (repeat 7 " ") }}
+      {{ end -}}
+      serviceAccountName: linkerd-tap
+      volumes:
+      - {{- include "partials.proxy.volumes.identity" . | indent 8 | trimPrefix (repeat 7 " ") }}
+      - name: tls
+        secret:
+          secretName: linkerd-tap-tls
+{{ end -}}

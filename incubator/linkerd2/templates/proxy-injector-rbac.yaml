@@ -1,0 +1,95 @@
+{{with .Values -}}
+---
+###
+### Proxy Injector RBAC
+###
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: linkerd-{{.Namespace}}-proxy-injector
+  labels:
+    {{.ControllerComponentLabel}}: proxy-injector
+    {{.ControllerNamespaceLabel}}: {{.Namespace}}
+rules:
+- apiGroups: [""]
+  resources: ["namespaces"]
+  verbs: ["list", "get", "watch"]
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["list"]
+- apiGroups: ["apps"]
+  resources: ["replicasets"]
+  verbs: ["list", "get", "watch"]
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: linkerd-{{.Namespace}}-proxy-injector
+  labels:
+    {{.ControllerComponentLabel}}: proxy-injector
+    {{.ControllerNamespaceLabel}}: {{.Namespace}}
+subjects:
+- kind: ServiceAccount
+  name: linkerd-proxy-injector
+  namespace: {{.Namespace}}
+  apiGroup: ""
+roleRef:
+  kind: ClusterRole
+  name: linkerd-{{.Namespace}}-proxy-injector
+  apiGroup: rbac.authorization.k8s.io
+---
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: linkerd-proxy-injector
+  namespace: {{.Namespace}}
+  labels:
+    {{.ControllerComponentLabel}}: proxy-injector
+    {{.ControllerNamespaceLabel}}: {{.Namespace}}
+---
+kind: Secret
+apiVersion: v1
+metadata:
+  name: linkerd-proxy-injector-tls
+  namespace: {{ .Namespace }}
+  labels:
+    {{ .ControllerComponentLabel }}: proxy-injector
+    {{.ControllerNamespaceLabel}}: {{.Namespace}}
+  annotations:
+    {{.CreatedByAnnotation}}: {{default (printf "linkerd/helm %s" .LinkerdVersion) .CliVersion}}
+type: Opaque
+data:
+  {{ $ca := genCA (printf "linkerd-proxy-injector.%s.svc" .Namespace) 365 -}}
+  crt.pem: {{ ternary (b64enc $ca.Cert) (b64enc .ProxyInjector.CrtPEM) (empty .ProxyInjector.CrtPEM) }}
+  key.pem: {{ ternary (b64enc $ca.Key) (b64enc .ProxyInjector.KeyPEM) (empty .ProxyInjector.KeyPEM) }}
+---
+apiVersion: admissionregistration.k8s.io/v1beta1
+kind: MutatingWebhookConfiguration
+metadata:
+  name: linkerd-proxy-injector-webhook-config
+  labels:
+    {{.ControllerComponentLabel}}: proxy-injector
+    {{.ControllerNamespaceLabel}}: {{.Namespace}}
+webhooks:
+- name: linkerd-proxy-injector.linkerd.io
+  namespaceSelector:
+    matchExpressions:
+    - key: linkerd.io/is-control-plane
+      operator: DoesNotExist
+  clientConfig:
+    service:
+      name: linkerd-proxy-injector
+      namespace: {{ .Namespace }}
+      path: "/"
+    caBundle: {{ ternary (b64enc $ca.Cert) (b64enc .ProxyInjector.CrtPEM) (empty .ProxyInjector.CrtPEM) }}
+  failurePolicy: {{.WebhookFailurePolicy}}
+  rules:
+  - operations: [ "CREATE" ]
+    apiGroups: [""]
+    apiVersions: ["v1"]
+    resources: ["pods"]
+  {{- if not .OmitWebhookSideEffects }}
+  sideEffects: None
+  {{- end }}
+{{end -}}

@@ -1,0 +1,15 @@
+{{with .Values -}}
+---
+###
+### Linkerd Namespace
+###
+---
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: {{ .Namespace }}
+  annotations:
+    {{.ProxyInjectAnnotation}}: {{.ProxyInjectDisabled}}
+  labels:
+    {{.LinkerdNamespaceLabel}}: "true"
+{{ end -}}

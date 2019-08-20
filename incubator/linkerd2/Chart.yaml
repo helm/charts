@@ -1,0 +1,15 @@
+apiVersion: "v1"
+appVersion: stable-2.5.0
+description: Linkerd gives you observability, reliability, and security for your microservices — with no code change required.
+home: https://linkerd.io
+keywords:
+- service-mesh
+kubeVersion: ">=1.12.0-0"
+name: "linkerd2"
+sources:
+- https://github.com/linkerd/linkerd2/
+version: 0.1.0
+maintainers:
+  - name: Linkerd authors
+    email: cncf-linkerd-dev@lists.cncf.io
+    url: https://linkerd.io/

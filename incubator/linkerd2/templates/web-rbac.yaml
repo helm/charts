@@ -1,0 +1,33 @@
+{{with .Values -}}
+---
+###
+### Web RBAC
+###
+---
+{{- if not .RestrictDashboardPrivileges }}
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: linkerd-{{.Namespace}}-web-admin
+  labels:
+    {{.ControllerComponentLabel}}: web
+    {{.ControllerNamespaceLabel}}: {{.Namespace}}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: linkerd-{{.Namespace}}-tap-admin
+subjects:
+- kind: ServiceAccount
+  name: linkerd-web
+  namespace: {{.Namespace}}
+---
+{{- end}}
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: linkerd-web
+  namespace: {{.Namespace}}
+  labels:
+    {{.ControllerComponentLabel}}: web
+    {{.ControllerNamespaceLabel}}: {{.Namespace}}
+{{- end }}

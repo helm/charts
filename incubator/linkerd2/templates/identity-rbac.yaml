@@ -1,0 +1,45 @@
+{{with .Values -}}
+{{if .Identity -}}
+---
+###
+### Identity Controller Service RBAC
+###
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: linkerd-{{.Namespace}}-identity
+  labels:
+    {{.ControllerComponentLabel}}: identity
+    {{.ControllerNamespaceLabel}}: {{.Namespace}}
+rules:
+- apiGroups: ["authentication.k8s.io"]
+  resources: ["tokenreviews"]
+  verbs: ["create"]
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: linkerd-{{.Namespace}}-identity
+  labels:
+    {{.ControllerComponentLabel}}: identity
+    {{.ControllerNamespaceLabel}}: {{.Namespace}}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: linkerd-{{.Namespace}}-identity
+subjects:
+- kind: ServiceAccount
+  name: linkerd-identity
+  namespace: {{.Namespace}}
+---
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: linkerd-identity
+  namespace: {{.Namespace}}
+  labels:
+    {{.ControllerComponentLabel}}: identity
+    {{.ControllerNamespaceLabel}}: {{.Namespace}}
+{{ end -}}
+{{ end -}}

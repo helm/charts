@@ -1,0 +1,102 @@
+{{with .Values -}}
+---
+###
+### Web
+###
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: linkerd-web
+  namespace: {{.Namespace}}
+  labels:
+    {{.ControllerComponentLabel}}: web
+    {{.ControllerNamespaceLabel}}: {{.Namespace}}
+  annotations:
+    {{.CreatedByAnnotation}}: {{default (printf "linkerd/helm %s" .LinkerdVersion) .CliVersion}}
+spec:
+  type: ClusterIP
+  selector:
+    {{.ControllerComponentLabel}}: web
+  ports:
+  - name: http
+    port: 8084
+    targetPort: 8084
+  - name: admin-http
+    port: 9994
+    targetPort: 9994
+---
+{{ $_ := set .Proxy "WorkloadKind" "deployment" -}}
+{{ $_ := set .Proxy "Component" "linkerd-web" -}}
+{{ include "linkerd.proxy.validation" .Proxy -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    {{.CreatedByAnnotation}}: {{default (printf "linkerd/helm %s" .LinkerdVersion) .CliVersion}}
+  labels:
+    {{.ControllerComponentLabel}}: web
+    {{.ControllerNamespaceLabel}}: {{.Namespace}}
+  name: linkerd-web
+  namespace: {{.Namespace}}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{.ControllerComponentLabel}}: web
+      {{.ControllerNamespaceLabel}}: {{.Namespace}}
+      {{- include "partials.proxy.labels" .Proxy | nindent 6}}
+  template:
+    metadata:
+      annotations:
+        {{.CreatedByAnnotation}}: {{default (printf "linkerd/helm %s" .LinkerdVersion) .CliVersion}}
+        {{- include "partials.proxy.annotations" .Proxy| nindent 8}}
+      labels:
+        {{.ControllerComponentLabel}}: web
+        {{.ControllerNamespaceLabel}}: {{.Namespace}}
+        {{- include "partials.proxy.labels" .Proxy | nindent 8}}
+    spec:
+      containers:
+      - args:
+        - -api-addr=linkerd-controller-api.{{.Namespace}}.svc.{{.ClusterDomain}}:8085
+        - -grafana-addr=linkerd-grafana.{{.Namespace}}.svc.{{.ClusterDomain}}:3000
+        - -controller-namespace={{.Namespace}}
+        - -log-level={{.ControllerLogLevel}}
+        image: {{.WebImage}}:{{default .LinkerdVersion .ControllerImageVersion}}
+        imagePullPolicy: {{.ImagePullPolicy}}
+        livenessProbe:
+          httpGet:
+            path: /ping
+            port: 9994
+          initialDelaySeconds: 10
+        name: web
+        ports:
+        - containerPort: 8084
+          name: http
+        - containerPort: 9994
+          name: admin-http
+        readinessProbe:
+          failureThreshold: 7
+          httpGet:
+            path: /ready
+            port: 9994
+        {{- if .WebResources -}}
+        {{- include "partials.resources" .WebResources | nindent 8 }}
+        {{- end }}
+        securityContext:
+          runAsUser: {{.ControllerUID}}
+        volumeMounts:
+        - mountPath: /var/run/linkerd/config
+          name: config
+      - {{- include "partials.proxy" . | indent 8 | trimPrefix (repeat 7 " ") }}
+      {{ if not .NoInitContainer -}}
+      initContainers:
+      - {{- include "partials.proxy-init" . | indent 8 | trimPrefix (repeat 7 " ") }}
+      {{ end -}}
+      serviceAccountName: linkerd-web
+      volumes:
+      - configMap:
+          name: linkerd-config
+        name: config
+      - {{- include "partials.proxy.volumes.identity" . | indent 8 | trimPrefix (repeat 7 " ") }}
+{{end -}}

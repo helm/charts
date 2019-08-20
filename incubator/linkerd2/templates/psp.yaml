@@ -1,0 +1,115 @@
+{{with .Values -}}
+---
+###
+### Control Plane PSP
+###
+---
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: linkerd-{{.Namespace}}-control-plane
+  labels:
+    {{.ControllerNamespaceLabel}}: {{.Namespace}}
+spec:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  {{- if empty .NoInitContainer }}
+  allowedCapabilities:
+  - NET_ADMIN
+  - NET_RAW
+  {{- end}}
+  requiredDropCapabilities:
+  - ALL
+  hostNetwork: false
+  hostIPC: false
+  hostPID: false
+  seLinux:
+    rule: RunAsAny
+  runAsUser:
+    {{- if .NoInitContainer }}
+    rule: MustRunAsNonRoot
+    {{- else }}
+    rule: RunAsAny
+    {{- end }}
+  supplementalGroups:
+    rule: MustRunAs
+    ranges:
+    {{- if .NoInitContainer }}
+    - min: 10001
+      max: 65535
+    {{- else }}
+    - min: 1
+      max: 65535
+    {{- end }}
+  fsGroup:
+    rule: MustRunAs
+    ranges:
+    {{- if .NoInitContainer }}
+    - min: 10001
+      max: 65535
+    {{- else }}
+    - min: 1
+      max: 65535
+    {{- end }}
+  volumes:
+  - configMap
+  - emptyDir
+  - secret
+  - projected
+  - downwardAPI
+  - persistentVolumeClaim
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: linkerd-psp
+  namespace: {{.Namespace}}
+  labels:
+    {{.ControllerNamespaceLabel}}: {{.Namespace}}
+rules:
+- apiGroups: ['policy', 'extensions']
+  resources: ['podsecuritypolicies']
+  verbs: ['use']
+  resourceNames:
+  - linkerd-{{.Namespace}}-control-plane
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: linkerd-psp
+  namespace: {{.Namespace}}
+  labels:
+    {{.ControllerNamespaceLabel}}: {{.Namespace}}
+roleRef:
+  kind: Role
+  name: linkerd-psp
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+- kind: ServiceAccount
+  name: linkerd-controller
+  namespace: {{.Namespace}}
+- kind: ServiceAccount
+  name: linkerd-grafana
+  namespace: {{.Namespace}}
+- kind: ServiceAccount
+  name: linkerd-heartbeat
+  namespace: {{.Namespace}}
+- kind: ServiceAccount
+  name: linkerd-identity
+  namespace: {{.Namespace}}
+- kind: ServiceAccount
+  name: linkerd-prometheus
+  namespace: {{.Namespace}}
+- kind: ServiceAccount
+  name: linkerd-proxy-injector
+  namespace: {{.Namespace}}
+- kind: ServiceAccount
+  name: linkerd-sp-validator
+  namespace: {{.Namespace}}
+- kind: ServiceAccount
+  name: linkerd-tap
+  namespace: {{.Namespace}}
+- kind: ServiceAccount
+  name: linkerd-web
+  namespace: {{.Namespace}}
+{{ end -}}

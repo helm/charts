@@ -1,0 +1,66 @@
+# This values.yaml file contains the values needed to enable HA mode.
+# Usage:
+#   helm install -f values.yaml -f values-ha.yaml
+
+EnablePodAntiAffinity: true
+
+# controller configuration
+ControllerReplicas: 3
+ControllerResources: &controller_resources
+  CPU: &controller_resources_cpu
+    Limit: "1"
+    Request: 100m
+  Memory:
+    Limit: 250Mi
+    Request: 50Mi
+DestinationResources: *controller_resources
+PublicAPIResources: *controller_resources
+
+# identity configuration
+IdentityResources:
+  CPU: *controller_resources_cpu
+  Memory:
+    Limit: 250Mi
+    Request: 10Mi
+
+# grafana configuration
+GrafanaResources:
+  CPU: *controller_resources_cpu
+  Memory:
+    Limit: 1024Mi
+    Request: 50Mi
+
+# heartbeat configuration
+HeartbeatResources: *controller_resources
+
+# prometheus configuration
+PrometheusResources:
+  CPU:
+    Limit: "4"
+    Request: 300m
+  Memory:
+    Limit: 8192Mi
+    Request: 300Mi
+
+# proxy configuration
+Proxy:
+  Resources:
+    CPU:
+      Limit: "1"
+      Request: 100m
+    Memory:
+      Limit: 250Mi
+      Request: 20Mi
+
+# proxy injector configuration
+ProxyInjectorResources: *controller_resources
+WebhookFailurePolicy: Fail
+
+# service profile validator configuration
+SPValidatorResources: *controller_resources
+
+# tap configuration
+TapResources: *controller_resources
+
+# web configuration
+WebResources: *controller_resources
