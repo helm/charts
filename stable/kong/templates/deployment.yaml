@@ -15,11 +15,10 @@ spec:
       app: {{ template "kong.name" . }}
       release: {{ .Release.Name }}
       component: app
+  {{- if .Values.updateStrategy }}
   strategy:
-    rollingUpdate:
-      maxSurge: {{ .Values.maxSurge }}
-      maxUnavailable: {{ .Values.maxUnavailable }}
-    type: RollingUpdate
+    {{ toYaml .Values.updateStrategy | indent 4 }}
+  {{- end }}
 
   template:
     metadata:

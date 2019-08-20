@@ -251,9 +251,12 @@ enterprise:
 # Set runMigrations to run Kong migrations
 runMigrations: true
 
-# set maxSurge and maxUnavailable
-maxSurge: "100%"
-maxUnavailable: "0%"
+# update strategy
+updateStrategy: {}
+  # type: RollingUpdate
+  # rollingUpdate:
+  #   maxSurge: "100%"
+  #   maxUnavailable: "0%"
 
 # Specify Kong configurations
 # Kong configurations guide https://getkong.org/docs/latest/configuration/
