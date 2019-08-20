@@ -51,6 +51,7 @@ The following table lists the configurable parameters of the SuiteCRM chart and 
 |-------------------------------------|-------------------------------------------------|---------------------------------------------------------|
 | `global.imageRegistry`              | Global Docker image registry                    | `nil`                                                   |
 | `global.imagePullSecrets`           | Global Docker registry secret names as an array | `[]` (does not add image pull secrets to deployed pods) |
+| `global.storageClass`                     | Global storage class for dynamic provisioning                                               | `nil`                                                        |
 | `image.registry`                    | SuiteCRM image registry                         | `docker.io`                                             |
 | `image.repository`                  | SuiteCRM image name                             | `bitnami/suitecrm`                                      |
 | `image.tag`                         | SuiteCRM image tag                              | `{TAG_NAME}`                                            |
