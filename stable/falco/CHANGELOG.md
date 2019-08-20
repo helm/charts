@@ -7,8 +7,8 @@ numbering uses [semantic versioning](http://semver.org).
 
 ### Minor Changes
 
-* Added 3 resources (`daemonsets`, `deployments`, `replicasets`) to the ClusterRole resource list  
-  Taken from the [PR#514](https://github.com/falcosecurity/falco/pull/514) from Falco repository
+* Add 3 resources (`daemonsets`, `deployments`, `replicasets`) to the ClusterRole resource list  
+  Ref: [PR#514](https://github.com/falcosecurity/falco/pull/514) from Falco repository
 
 ## v1.0.4
 
