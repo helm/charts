@@ -51,6 +51,7 @@ The following table lists the configurable parameters of the Odoo chart and thei
 |---------------------------------------|-----------------------------------------------------------|---------------------------------------------------------|
 | `global.imageRegistry`                | Global Docker image registry                              | `nil`                                                   |
 | `global.imagePullSecrets`             | Global Docker registry secret names as an array           | `[]` (does not add image pull secrets to deployed pods) |
+| `global.storageClass`                     | Global storage class for dynamic provisioning                                               | `nil`                                                        |
 | `image.registry`                      | Odoo image registry                                       | `docker.io`                                             |
 | `image.repository`                    | Odoo Image name                                           | `bitnami/odoo`                                          |
 | `image.tag`                           | Odoo Image tag                                            | `{TAG_NAME}`                                            |
