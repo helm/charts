@@ -1,4 +1,4 @@
-# Generated from 'node-time' group from https://raw.githubusercontent.com/coreos/kube-prometheus/release-0.1/manifests/prometheus-rules.yaml
+# Generated from 'node-time' group from https://raw.githubusercontent.com/coreos/kube-prometheus/da959c643657c7d2aac6f5ddd68582a949283c49/manifests/prometheus-rules.yaml
 # Do not change in-place! In order to change this file first read following link:
 # https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
 {{- if and (semverCompare ">=1.11.0-0" .Capabilities.KubeVersion.GitVersion) (semverCompare "<1.14.0-0" .Capabilities.KubeVersion.GitVersion) .Values.defaultRules.create .Values.defaultRules.rules.time }}
@@ -23,7 +23,7 @@ spec:
     - alert: ClockSkewDetected
       annotations:
         message: Clock skew detected on node-exporter {{`{{ $labels.namespace }}`}}/{{`{{ $labels.pod }}`}}. Ensure NTP is configured correctly on this host.
-      expr: abs(node_timex_offset_seconds{job="node-exporter"}) > 0.03
+      expr: abs(node_timex_offset_seconds{job="node-exporter"}) > 0.05
       for: 2m
       labels:
         severity: warning

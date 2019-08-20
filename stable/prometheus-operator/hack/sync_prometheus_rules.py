@@ -37,7 +37,7 @@ charts = [
         'max_kubernetes': '1.16.0-0'
     },
     {
-        'source': 'https://raw.githubusercontent.com/coreos/kube-prometheus/release-0.1/manifests/prometheus-rules.yaml',
+        'source': 'https://raw.githubusercontent.com/coreos/kube-prometheus/da959c643657c7d2aac6f5ddd68582a949283c49/manifests/prometheus-rules.yaml',
         'destination': '../templates/prometheus/rules',
         'min_kubernetes': '1.11.0-0',
         'max_kubernetes': '1.14.0-0'
