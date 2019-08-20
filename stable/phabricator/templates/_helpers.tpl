@@ -132,3 +132,23 @@ imagePullSecrets:
 {{- end }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Return  the proper Storage Class
+*/}}
+{{- define "phabricator.storageClass" -}}
+{{- $storageClass := "" }}
+{{- if .Values.persistence.phabricator.storageClass -}}
+    {{- $storageClass = .Values.persistence.phabricator.storageClass -}}
+{{- end -}}
+{{- if .Values.global -}}
+    {{- if .Values.global.storageClass -}}
+        {{- $storageClass = .Values.global.storageClass -}}
+    {{- end -}}
+{{- end -}}
+{{- if (eq "-" $storageClass) -}}
+    {{- printf "\"\"" -}}
+{{- else }}
+    {{- printf "%s" $storageClass -}}
+{{- end -}}
+{{- end -}}
