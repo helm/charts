@@ -1089,10 +1089,29 @@ spec:
             - name: auth-keys
               mountPath: {{ .Values.web.authSecretsPath | quote }}
               readOnly: true
-{{- if .Values.web.additionalAffinities }}
+
       affinity:
+{{- if .Values.web.additionalAffinities }}
 {{ toYaml .Values.web.additionalAffinities | indent 8 }}
 {{- end }}
+        podAntiAffinity:
+          {{- if .Values.web.hardAntiAffinity }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                app: {{ template "concourse.web.fullname" . }}
+                release: {{ .Release.Name | quote }}
+            topologyKey: kubernetes.io/hostname
+          {{- else }}
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              topologyKey: kubernetes.io/hostname
+              labelSelector:
+                matchLabels:
+                  app: {{ template "concourse.web.fullname" . }}
+                  release: {{ .Release.Name | quote }}
+          {{- end }}
       volumes:
 {{- if .Values.web.additionalVolumes }}
 {{ toYaml .Values.web.additionalVolumes | indent 8 }}
