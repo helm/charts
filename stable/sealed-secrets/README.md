@@ -26,6 +26,20 @@ $ helm delete [--purge] my-release
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
+## Using kubeseal
+
+Install the kubeseal CLI by downloading the binary from [sealed-secrets/releases](https://github.com/bitnami-labs/sealed-secrets/releases).
+
+Fetch the public key by passing the release name and namespace:
+
+```bash
+kubeseal --fetch-cert \
+--controller-name=my-release \
+--controller-namespace=my-release-namespace \
+> pub-cert.pem
+```
+
+Read about kubeseal usage on [sealed-secrets docs](https://github.com/bitnami-labs/sealed-secrets#usage).
 
 ## Configuration
 
