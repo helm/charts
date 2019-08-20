@@ -139,3 +139,24 @@ imagePullSecrets:
 {{- end }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Return  the proper Storage Class
+*/}}
+{{- define "opencart.storageClass" -}}
+{{- $storageClass := "" }}
+{{- if .Values.global -}}
+    {{- if .Values.global.storageClass -}}
+        {{- $storageClass = .Values.global.storageClass -}}
+    {{- else if .Values.persistence.opencart.storageClass -}}
+        {{- $storageClass = .Values.persistence.opencart.storageClass -}}
+    {{- end -}}
+{{- else if .Values.persistence.opencart.storageClass -}}
+    {{- $storageClass = .Values.persistence.opencart.storageClass -}}
+{{- end -}}
+{{- if (eq "-" $storageClass) -}}
+    {{- printf "\"\"" -}}
+{{- else }}
+    {{- printf "%s" $storageClass -}}
+{{- end -}}
+{{- end -}}
