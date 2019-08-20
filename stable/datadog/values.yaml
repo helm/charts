@@ -18,7 +18,7 @@ image:
   ## Define the Agent version to use.
   ## Use 6.13.0-jmx to enable jmx fetch collection
   #
-  tag: 6.13.0
+  tag: 6.14.0
 
   ## @param pullPolicy - string - required
   ## The Kubernetes pull policy.
