@@ -26,6 +26,10 @@ spec:
         mode: {{ template "newrelic.mode" . }}
     spec:
       serviceAccountName: {{ template "newrelic.serviceAccountName" . }}
+      {{- if .Values.privileged }}
+      hostNetwork: true # This option is a requirement for the Infrastructure Agent to report the proper hostname in New Relic.
+      dnsPolicy: ClusterFirstWithHostNet
+      {{- end }}
       containers:
         - name: {{ template "newrelic.name" . }}
           image: {{ template "newrelic.image" . }}
@@ -92,8 +96,6 @@ spec:
               subPath: newrelic-infra.yml
             {{- end }}
             {{- if .Values.privileged }}
-            - name: dev
-              mountPath: /dev
             - name: host-docker-socket
               mountPath: /var/run/docker.sock
             - name: log
@@ -115,9 +117,6 @@ spec:
           {{- end }}
       volumes:
         {{- if .Values.privileged }}
-        - name: dev
-          hostPath:
-            path: /dev
         - name: host-docker-socket
           hostPath:
             path: /var/run/docker.sock
