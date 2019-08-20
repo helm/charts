@@ -172,3 +172,43 @@ Also, we can't use a single if because lazy evaluation is not an option
     {{- printf "%s/%s:%s" $registryName $repositoryName $tag -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Return  the proper Storage Class for the master
+*/}}
+{{- define "mariadb.master.storageClass" -}}
+{{- $storageClass := "" }}
+{{- if .Values.master.persistence.storageClass -}}
+    {{- $storageClass = .Values.master.persistence.storageClass -}}
+{{- end -}}
+{{- if .Values.global -}}
+    {{- if .Values.global.storageClass -}}
+        {{- $storageClass = .Values.global.storageClass -}}
+    {{- end -}}
+{{- end -}}
+{{- if (eq "-" $storageClass) -}}
+    {{- printf "\"\"" -}}
+{{- else }}
+    {{- printf "%s" $storageClass -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return  the proper Storage Class for the slave
+*/}}
+{{- define "mariadb.slave.storageClass" -}}
+{{- $storageClass := "" }}
+{{- if .Values.slave.persistence.storageClass -}}
+    {{- $storageClass = .Values.slave.persistence.storageClass -}}
+{{- end -}}
+{{- if .Values.global -}}
+    {{- if .Values.global.storageClass -}}
+        {{- $storageClass = .Values.global.storageClass -}}
+    {{- end -}}
+{{- end -}}
+{{- if (eq "-" $storageClass) -}}
+    {{- printf "\"\"" -}}
+{{- else }}
+    {{- printf "%s" $storageClass -}}
+{{- end -}}
+{{- end -}}
