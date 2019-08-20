@@ -110,3 +110,23 @@ imagePullSecrets:
 {{- end }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Return  the proper Storage Class
+*/}}
+{{- define "dokuwiki.storageClass" -}}
+{{- $storageClass := "" }}
+{{- if .Values.persistence.dokuwiki.storageClass -}}
+    {{- $storageClass = .Values.persistence.dokuwiki.storageClass -}}
+{{- end -}}
+{{- if .Values.global -}}
+    {{- if .Values.global.storageClass -}}
+        {{- $storageClass = .Values.global.storageClass -}}
+    {{- end -}}
+{{- end -}}
+{{- if (eq "-" $storageClass) -}}
+    {{- printf "\"\"" -}}
+{{- else }}
+    {{- printf "%s" $storageClass -}}
+{{- end -}}
+{{- end -}}
