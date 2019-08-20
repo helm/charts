@@ -237,3 +237,43 @@ WARNING: Rolling tag detected ({{ .Values.sentinel.image.repository }}:{{ .Value
 +info https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/
 {{- end }}
 {{- end -}}
+
+{{/*
+Return  the proper Storage Class
+*/}}
+{{- define "redis.master.storageClass" -}}
+{{- $storageClass := "" }}
+{{- if .Values.master.persistence.storageClass -}}
+    {{- $storageClass = .Values.master.persistence.storageClass -}}
+{{- end -}}
+{{- if .Values.global -}}
+    {{- if .Values.global.storageClass -}}
+        {{- $storageClass = .Values.global.storageClass -}}
+    {{- end -}}
+{{- end -}}
+{{- if (eq "-" $storageClass) -}}
+    {{- printf "\"\"" -}}
+{{- else }}
+    {{- printf "%s" $storageClass -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return  the proper Storage Class
+*/}}
+{{- define "redis.slave.storageClass" -}}
+{{- $storageClass := "" }}
+{{- if .Values.slave.persistence.storageClass -}}
+    {{- $storageClass = .Values.slave.persistence.storageClass -}}
+{{- end -}}
+{{- if .Values.global -}}
+    {{- if .Values.global.storageClass -}}
+        {{- $storageClass = .Values.global.storageClass -}}
+    {{- end -}}
+{{- end -}}
+{{- if (eq "-" $storageClass) -}}
+    {{- printf "\"\"" -}}
+{{- else }}
+    {{- printf "%s" $storageClass -}}
+{{- end -}}
+{{- end -}}
