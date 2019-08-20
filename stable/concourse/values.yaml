@@ -1313,6 +1313,13 @@ web:
   ##
   additionalVolumeMounts:
 
+  ## Whether the web pods should be forced to run on separate nodes.
+  ## This is accomplished by setting their AntiAffinity with requiredDuringSchedulingIgnoredDuringExecution as opposed to preferred
+  ## If false, it's *preferred* they be on separate nodes as opposed to forced
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#inter-pod-affinity-and-anti-affinity-beta-feature
+  ##
+  hardAntiAffinity: false
+
   ## Additional affinities to add to the web pods.
   ##
   ## Example:
