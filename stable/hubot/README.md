@@ -58,6 +58,7 @@ Parameter | Description | Default
 `config` | Hubot configuration (environment variables) | `{}`
 `secretConfig` | Sensitive environment variables passed to Hubot as Secret | `{}`
 `existingSecretConfigName` |  Reference to an existing Secret with sensitive env vars | `""`
+`args` | Arguments passed to Hubot binary | `["--name", "${HUBOT_NAME}", "--adapter", "--slack"]`
 `extraArgs` | Additional arguments to Hubot binary | `[]`
 `scripts` | Custom hubot scripts | `{}`
 `scriptsRepo.enable` | Flag to checkout repo with scripts | `false`

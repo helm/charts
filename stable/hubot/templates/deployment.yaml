@@ -92,12 +92,12 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           args:
-            - --name
-            - "$(HUBOT_NAME)"
-            - --adapter
-            - slack
+{{ toYaml .Values.args | indent 12 }}
         {{- if .Values.extraArgs }}
 {{ toYaml .Values.extraArgs | indent 12 }}
+        {{- end }}
+        {{- if .Values.tty }}
+          tty: true
         {{- end }}
           ports:
             - name: http

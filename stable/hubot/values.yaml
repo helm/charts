@@ -54,6 +54,12 @@ extraConfigmapMounts: []
 #   configMap: certs-configmap
 #   readOnly: true
 
+args:
+  - --name
+  - "${HUBOT_NAME}"
+  - --adapter
+  - slack
+
 extraArgs: []
 # - --alias
 # - '!'
@@ -103,3 +109,6 @@ redis:
   usePassword: false
   cluster:
     enabled: false
+
+# This should be changed only during CI tests
+tty: false
