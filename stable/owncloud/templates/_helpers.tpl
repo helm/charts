@@ -139,3 +139,23 @@ imagePullSecrets:
 {{- end }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Return  the proper Storage Class
+*/}}
+{{- define "owncloud.storageClass" -}}
+{{- $storageClass := "" }}
+{{- if .Values.persistence.owncloud.storageClass -}}
+    {{- $storageClass = .Values.persistence.owncloud.storageClass -}}
+{{- end -}}
+{{- if .Values.global -}}
+    {{- if .Values.global.storageClass -}}
+        {{- $storageClass = .Values.global.storageClass -}}
+    {{- end -}}
+{{- end -}}
+{{- if (eq "-" $storageClass) -}}
+    {{- printf "\"\"" -}}
+{{- else }}
+    {{- printf "%s" $storageClass -}}
+{{- end -}}
+{{- end -}}
