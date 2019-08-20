@@ -168,7 +168,7 @@ data:
         <string>{{ . }}</string>
 {{- end }}
       </disabledAgentProtocols>
-      <label></label>
+      <label>{{ .Values.master.customJenkinsLabels | join " " }}</label>
 {{- if .Values.master.csrf.defaultCrumbIssuer.enabled }}
       <crumbIssuer class="hudson.security.csrf.DefaultCrumbIssuer">
 {{- if .Values.master.csrf.defaultCrumbIssuer.proxyCompatability }}
