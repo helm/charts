@@ -147,14 +147,14 @@ The following table lists the configurable parameters of the MinIO chart and the
 | `defaultBucket.policy`                    | Bucket policy                                                                                                                           | `none`                                     |
 | `defaultBucket.purge`                     | Purge the bucket if already exists                                                                                                      | `false`                                    |
 | `buckets`                                 | List of buckets to create after MinIO install                                                                                           | `[]`                                       |
-| `gateway.enabled`          | Use MinIO as a gateway              | `false`                                                 |
-| `gateway.emptyDirSize`     | Size limit for gateway cache, applies only when persistence.enabled=false | `10Gi`            |
-| `gateway.type`             | Set the backend to which MinIO gateway should use. It accept the following values: [s3](https://github.com/minio/minio/blob/master/docs/gateway/s3.md), [azure](https://docs.minio.io/docs/minio-gateway-for-azure), [gcs](https://docs.minio.io/docs/minio-gateway-for-gcs), [oss](https://github.com/minio/minio/blob/master/docs/gateway/oss.md) | `s3` |
-| `gateway.s3.serviceEndpoint`| Endpoint to the S3 compatible service | `""` |
-| `gateway.gcs.gcsKeyJson`    | credential json file of service account key | `""` |
-| `gateway.gcs.projectId`     | Google cloud project id             | `""` |
-| `gateway.oss.endpointURL`   | OSS server endpoint. | `""` |
-| `gateway.nas.pv`            | For NAS Gateway, you may want to bind the PVC to a specific PV.            | `~` |
+| `gateway.enabled`                         | Use MinIO as a gateway                                                                                                                  | `false`                                    |
+| `gateway.emptyDirSize`                    | Size limit for gateway cache, applies only when persistence.enabled=false                                                               | `10Gi`                                     |
+| `gateway.type`                            | Set the backend to which MinIO gateway should use. It accept the following values: [s3](https://github.com/minio/minio/blob/master/docs/gateway/s3.md), [azure](https://docs.minio.io/docs/minio-gateway-for-azure), [gcs](https://docs.minio.io/docs/minio-gateway-for-gcs), [oss](https://github.com/minio/minio/blob/master/docs/gateway/oss.md) | `s3` |
+| `gateway.s3.serviceEndpoint`              | Endpoint to the S3 compatible service                                                                                                   | `""`                                       |
+| `gateway.gcs.gcsKeyJson`                  | credential json file of service account key                                                                                             | `""`                                       |
+| `gateway.gcs.projectId`                   | Google cloud project id                                                                                                                 | `""`                                       |
+| `gateway.oss.endpointURL`                 | OSS server endpoint.                                                                                                                    | `""`                                       |
+| `gateway.nas.pv`                          | For NAS Gateway, you may want to bind the PVC to a specific PV.                                                                         | `~`                                        |
 | `environment`                             | Set MinIO server relevant environment variables in `values.yaml` file. MinIO containers will be passed these variables when they start. | `MINIO_BROWSER: "on"`                      |
 | `metrics.serviceMonitor.enabled`          | Set this to `true` to create ServiceMonitor for Prometheus operator                                                                     | `false`                                    |
 | `metrics.serviceMonitor.additionalLabels` | Additional labels that can be used so ServiceMonitor will be discovered by Prometheus                                                   | `{}`                                       |
