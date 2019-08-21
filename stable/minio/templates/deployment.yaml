@@ -79,7 +79,7 @@ spec:
           "/usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} server {{ .Values.mountPath }}" ]
           {{- end }}
           volumeMounts:
-            {{- if or .Values.persistence.enabled .Values.gateway.enabled }}
+            {{- if and .Values.persistence.enabled (not .Values.gateway.enabled) }}
             - name: export
               mountPath: {{ .Values.mountPath }}
               {{- if .Values.persistence.subPath }}
@@ -114,14 +114,6 @@ spec:
             {{- if eq .Values.gateway.type "gcs" }}
             - name: GOOGLE_APPLICATION_CREDENTIALS
               value: "/etc/credentials/gcs_key.json"
-            {{- end }}
-            {{- if .Values.gateway.enabled }}
-            - name: MINIO_CACHE_DRIVES
-              {{- if and .Values.persistence.enabled .Values.persistence.subPath }}
-              value: {{ printf "\"%s/%s\"" .Values.mountPath .Values.persistence.subPath  }}
-              {{ else }}
-              value: {{ .Values.mountPath | quote }}
-              {{- end }}
             {{- end }}
             {{- range $key, $val := .Values.environment }}
             - name: {{ $key }}
@@ -168,13 +160,14 @@ spec:
 {{ toYaml . | indent 8 }}
 {{- end }}
       volumes:
+        {{- if not .Values.gateway.enabled }}
         - name: export
         {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
             claimName: {{ .Values.persistence.existingClaim | default (include "minio.fullname" .) }}
         {{- else }}
-          emptyDir:
-            sizeLimit: {{ .Values.gateway.emptyDirSize }}
+          emptyDir: {}
+        {{- end }}
         {{- end }}
         - name: minio-user
           secret:

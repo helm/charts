@@ -187,8 +187,6 @@ gateway:
   enabled: false
   # Minio gateway type. Available types are: s3, azure, gcs, oss, nas
   type: "s3"
-  # Size limit for gateway cache, applies only when persistence.enabled=false
-  emptyDirSize: 10Gi
   s3:
     serviceEndpoint: ""
   ## Use minio as an azure blob gateway, you should disable data persistence so no volume claim are created or use distributed mode.
@@ -217,7 +215,6 @@ environment:
   ## To enable virtual-host-style requests, set this value to Minio host domain name.
   # MINIO_DOMAIN: ""
   ## Minio Cache settings, refer: https://docs.minio.io/docs/minio-disk-cache-guide.html
-  # You do not need to specify the MINIO_CACHE_DRIVES variable, by default it will be defined if you set gateway.enabled = true
   # MINIO_CACHE_DRIVES: ""
   # MINIO_CACHE_EXCLUDE: ""
   # MINIO_CACHE_EXPIRY: ""
