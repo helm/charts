@@ -20,7 +20,7 @@ This chart will deploy the New Relic Infrastructure agent as a Daemonset.
 | `privileged`              | Enable privileged mode.                                      | `true`                    |
 | `image.repository`        | The container to pull.                                       | `newrelic/infrastructure`  |
 | `image.pullPolicy`        | The pull policy.                                             | `IfNotPresent`             |
-| `image.tag`               | The version of the container to pull.                        | `1.9.3`                    |
+| `image.tag`               | The version of the container to pull.                        | `1.9.4`                    |
 | `resources`               | Any resources you wish to assign to the pod.                 | See Resources below        |
 | `verboseLog`              | Should the agent log verbosely. (Boolean)                    | `false`                    |
 | `priorityClassName`       | Scheduling priority of the pod                               | `nil`                      |
