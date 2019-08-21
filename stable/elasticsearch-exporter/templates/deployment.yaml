@@ -53,20 +53,33 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["elasticsearch_exporter",
-                    "-es.uri={{ .Values.es.uri }}",
-                    "-es.all={{ .Values.es.all }}",
-                    "-es.indices={{ .Values.es.indices }}",
-                    "-es.timeout={{ .Values.es.timeout }}",
+                    "--es.uri={{ .Values.es.uri }}",
+                    {{- if .Values.es.all }}
+                    "--es.all",
+                    {{- end }}
+                    {{- if .Values.es.indices }}
+                    "--es.indices",
+                    {{- end }}
+                    {{- if .Values.es.shards }}
+                    "--es.shards",
+                    {{- end }}
+                    {{- if .Values.es.snapshots }}
+                    "--es.snapshots",
+                    {{- end }}
+                    {{- if .Values.es.cluster_settings }}
+                    "--es.cluster_settings",
+                    {{- end }}
+                    "--es.timeout={{ .Values.es.timeout }}",
                     {{- if .Values.es.sslSkipVerify }}
-                    "-es.ssl-skip-verify=true",
+                    "--es.ssl-skip-verify",
                     {{- end }}
                     {{- if .Values.es.ssl.enabled }}
-                    "-es.ca=/ssl/ca.pem",
-                    "-es.client-cert=/ssl/client.pem",
-                    "-es.client-private-key=/ssl/client.key",
+                    "--es.ca=/ssl/ca.pem",
+                    "--es.client-cert=/ssl/client.pem",
+                    "--es.client-private-key=/ssl/client.key",
                     {{- end }}
-                    "-web.listen-address=:{{ .Values.service.httpPort }}",
-                    "-web.telemetry-path={{ .Values.web.path }}"]
+                    "--web.listen-address=:{{ .Values.service.httpPort }}",
+                    "--web.telemetry-path={{ .Values.web.path }}"]
           securityContext:
             capabilities:
               drop:
