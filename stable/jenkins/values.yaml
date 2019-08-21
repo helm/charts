@@ -28,6 +28,7 @@ master:
   #      - "uname"
   #      - "-a"
   numExecutors: 0
+  customJenkinsLabels: []
   # configAutoReload requires UseSecurity is set to true:
   useSecurity: true
 
