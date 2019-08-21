@@ -251,6 +251,13 @@ enterprise:
 # Set runMigrations to run Kong migrations
 runMigrations: true
 
+# update strategy
+updateStrategy: {}
+  # type: RollingUpdate
+  # rollingUpdate:
+  #   maxSurge: "100%"
+  #   maxUnavailable: "0%"
+
 # Specify Kong configurations
 # Kong configurations guide https://getkong.org/docs/latest/configuration/
 # Values here take precedence over values from other sections of values.yaml,
