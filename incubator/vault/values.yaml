@@ -231,8 +231,10 @@ vault:
       #   path: ""
       #
       # etcd:
-      #   address: ""
+      #   address: "http://vault-etcd:2379"
       #   path: "vault/"
+      #   etcd_api: "v3"
+      #   ha_enabled: "true"
       #
       # s3:
       #   bucket: ""
