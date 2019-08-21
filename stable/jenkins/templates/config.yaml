@@ -214,9 +214,9 @@ data:
     </jenkins.CLI>
 {{- end }}
   apply_config.sh: |-
-{{- if .Values.master.enableXmlConfig }}
     mkdir -p /usr/share/jenkins/ref/secrets/;
     echo "false" > /usr/share/jenkins/ref/secrets/slave-to-master-security-kill-switch;
+{{- if .Values.master.enableXmlConfig }}
 {{- if .Values.master.overwriteConfig }}
     cp /var/jenkins_config/config.xml /var/jenkins_home;
     cp /var/jenkins_config/jenkins.CLI.xml /var/jenkins_home;
@@ -278,15 +278,15 @@ data:
 {{- if .Values.master.credentialsXmlSecret }}
     yes n | cp -i /var/jenkins_credentials/credentials.xml /var/jenkins_home;
 {{- end }}
-{{- if .Values.master.secretsFilesSecret }}
-    yes n | cp -i /var/jenkins_secrets/* /usr/share/jenkins/ref/secrets/;
-{{- end }}
 {{- if .Values.master.jobs }}
     for job in $(ls /var/jenkins_jobs); do
       mkdir -p /var/jenkins_home/jobs/$job
       yes {{ if not .Values.master.overwriteJobs }}n{{ end }} | cp -i /var/jenkins_jobs/$job /var/jenkins_home/jobs/$job/config.xml
     done
 {{- end }}
+{{- end }}
+{{- if .Values.master.secretsFilesSecret }}
+    yes n | cp -i /var/jenkins_secrets/* /usr/share/jenkins/ref/secrets/;
 {{- end }}
 {{- range $key, $val := .Values.master.initScripts }}
   init{{ $key }}.groovy: |-
