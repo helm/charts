@@ -126,7 +126,7 @@ spec:
               {{- end }}
             - mountPath: /var/jenkins_config
               name: jenkins-config
-            {{- if .Values.master.enabledXmlConfig }}
+            {{- if .Values.master.enableXmlConfig }}
             {{- if .Values.master.credentialsXmlSecret }}
             - mountPath: /var/jenkins_credentials
               name: jenkins-credentials
