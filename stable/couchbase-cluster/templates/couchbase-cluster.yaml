@@ -1,0 +1,50 @@
+---
+apiVersion: "couchbase.com/v1"
+kind: "CouchbaseCluster"
+metadata:
+  name: {{ template "couchbase-cluster.clustername" . }}
+  labels:
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "couchbase-cluster.chart" . }}
+spec:
+  baseImage: {{ .Values.couchbaseCluster.baseImage }}
+  version: {{ .Values.couchbaseCluster.version }}
+  authSecret: {{ template "couchbase-cluster.secret.name" . }}
+  exposeAdminConsole: {{ .Values.couchbaseCluster.exposeAdminConsole }}
+  adminConsoleServices: {{ .Values.couchbaseCluster.adminConsoleServices }}
+  exposedFeatures: {{ .Values.couchbaseCluster.exposedFeatures }}
+  adminConsoleServiceType: {{ .Values.couchbaseCluster.adminConsoleServiceType }}
+  exposedFeatureServiceType: {{ .Values.couchbaseCluster.exposedFeatureServiceType }}
+  logRetentionTime: {{ .Values.couchbaseCluster.logRetentionTime }}
+  logRetentionCount: {{ .Values.couchbaseCluster.logRetentionCount }}
+{{- if .Values.couchbaseCluster.dns }}
+  dns:
+    domain: {{ .Values.couchbaseCluster.dns.domain }}
+{{- end }}
+{{- if .Values.couchbaseCluster.platform }}
+  platform: {{ .Values.couchbaseCluster.platform }}
+{{- end }}
+  cluster:
+{{ toYaml .Values.couchbaseCluster.cluster | indent 4 }}
+  buckets:
+  {{- range $bucket, $config := .Values.couchbaseCluster.buckets }}
+  -
+{{ toYaml $config | indent 4 }}
+  {{- end }}
+  servers:
+  {{- range $server, $config := .Values.couchbaseCluster.servers }}
+  - name: {{ $server }}
+{{ toYaml $config | indent 4 }}
+  {{- end }}
+{{- if .Values.couchbaseTLS.create }}
+  tls:
+    static:
+      member:
+        serverSecret: {{ template "couchbase-cluster.secret.tls-server" . }}
+      operatorSecret: {{ template "couchbase-cluster.secret.tls-operator" . }}
+{{- end }}
+  securityContext:
+{{ toYaml .Values.couchbaseCluster.securityContext | indent 4 }}
+  volumeClaimTemplates:
+{{ toYaml .Values.couchbaseCluster.volumeClaimTemplates | indent 4 }}

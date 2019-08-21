@@ -1,0 +1,6 @@
+1. Get couchbase cluster status
+  kubectl describe --namespace {{ .Release.Namespace }} couchbasecluster {{ (include "couchbase-cluster.clustername" .) }}
+
+2. Connect to Admin console
+  kubectl port-forward --namespace {{ .Release.Namespace }} {{ printf "%s-0000" (include "couchbase-cluster.clustername" .) }} 8091:8091
+  # open http://localhost:8091

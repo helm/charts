@@ -1,0 +1,141 @@
+# Default values for couchbase-cluster.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# couchbaseCluster config
+couchbaseCluster:
+  # create flag to deploy couchbase cluster
+  create: true
+  # name of the cluster. defaults to name of chart release
+  name: ""
+  # username of the cluster admin.
+  username: "Administrator"
+  # password of the cluster admin.
+  password: "password"
+  # authSecretOverride is name of secret to use instead of using
+  # the default secret with username and password specified above
+  authSecretOverride: ""
+  # BaseImage is the base couchbase image name that will be used to launch
+  # couchbase clusters. This is useful for private registries, etc.
+  baseImage: "couchbase/server"
+  # Version is the expected version of the couchbase cluster
+  version: "enterprise-6.0.1"
+  # Option to expose admin console
+  exposeAdminConsole: true
+  # Option to expose admin console
+  adminConsoleServices:
+    - data
+  # Specific services to use when exposing ui
+  exposedFeatures:
+    - xdcr
+  # Defines how the admin console service is exposed.
+  # Allowed values are NodePort and LoadBalancer.
+  # If this field is LoadBalancer then you must also define a spec.dns.domain.
+  adminConsoleServiceType: NodePort
+  # Defines how the per Couchbase node ports are exposed.
+  # Allowed values are NodePort and LoadBalancer.
+  # If this field is LoadBalancer then you must also define a spec.dns.domain.
+  exposedFeatureServiceType: NodePort
+  # The retention period that log volumes are kept for after their associated pods have been deleted.
+  logRetentionTime: 604800s
+  # The maximum number of log volumes that can be kept after their associated pods have been deleted.
+  logRetentionCount: 20
+  # Uncomment these 2 lines for specifying the dynamic DNS configuration to use when exposing services
+  #dns:
+  # domain:  example.domain.com
+  # Indicates which underlying cloud platform the Kubernetes cluster is running.
+  # The Value must be one of aws, gce or azure
+  platform:
+  # Cluster wide settings for nodes and services
+  cluster:
+    # The amount of memory that should be allocated to the data service
+    dataServiceMemoryQuota: 256
+    # The amount of memory that should be allocated to the index service
+    indexServiceMemoryQuota: 256
+    # The amount of memory that should be allocated to the search service
+    searchServiceMemoryQuota: 256
+    # The amount of memory that should be allocated to the eventing service
+    eventingServiceMemoryQuota: 256
+    # The amount of memory that should be allocated to the analytics service
+    analyticsServiceMemoryQuota: 1024
+    # The index storage mode to use for secondary indexing
+    indexStorageSetting: memory_optimized
+    # Timeout that expires to trigger the auto failover.
+    autoFailoverTimeout: 120
+    # The number of failover events we can tolerate
+    autoFailoverMaxCount: 3
+    # Whether to auto failover if disk issues are detected
+    autoFailoverOnDataDiskIssues: true
+    # How long to wait for transient errors before failing over a faulty disk
+    autoFailoverOnDataDiskIssuesTimePeriod: 120
+    # Whether to enable failing over a server group
+    autoFailoverServerGroup: false
+
+  # cluster buckets
+  buckets:
+    # The default bucket
+    default:
+      # Name of the bucket
+      name: default
+      # The type of bucket to use
+      type: couchbase
+      # The amount of memory that should be allocated to the bucket
+      memoryQuota: 128
+      # The number of bucket replicates
+      replicas: 1
+      # The priority when compared to other buckets
+      ioPriority: high
+      # The bucket eviction policy which determines behavior during expire and high mem usage
+      evictionPolicy: fullEviction
+      # The bucket's conflict resolution mechanism; which is to be used if a conflict occurs during Cross Data-Center Replication (XDCR). Sequence-based and timestamp-based mechanisms are supported.
+      conflictResolution: seqno
+      # The enable flush option denotes wether the data in the bucket can be flushed
+      enableFlush: true
+      # Enable Index replica specifies whether or not to enable view index replicas for this bucket.
+      enableIndexReplica: false
+      # data compression mode for the bucket to run in [off, passive, active]
+      compressionMode: "passive"
+  servers:
+    # Name for the server configuration. It must be unique.
+    all_services:
+      # Size of the couchbase cluster.
+      size: 3
+      # The services to run on nodes
+      services:
+        - data
+        - index
+        - query
+        - search
+        - eventing
+        - analytics
+      # ServerGroups define the set of availability zones we want to distribute pods over.
+      serverGroups: []
+      # Pod defines the policy to create pod for the couchbase pod.
+      pod: {}
+  # Security Context for all pods
+  securityContext: {}
+  # VolumeClaimTemplates define the desired characteristics of a volume
+  # that can be requested and claimed by a pod.
+  volumeClaimTemplates: []
+
+# couchbaseTLS can be used to override the Certs that will be used
+# to sign the keys used by the nodes.
+couchbaseTLS:
+  # disable if manually creating certs
+  # provide cert and key via --set-file
+  create: false
+  # A base64 encoded PEM format certificate for the CA
+  cert:
+  # A base64 encoded PEM format private key for the CA
+  key:
+  # Expiry time of CA in days for generated certs
+  expiration: 365
+  # OperatorSecret is the secret containing TLS certs used by operator
+  operatorSecret:
+    name: ""
+    # PEM format certificate for operator (auto-generated)
+    # override via --set-file
+    cert:
+    # PEM format private key for operator (auto-generated)
+    # override via --set-file
+    key:
