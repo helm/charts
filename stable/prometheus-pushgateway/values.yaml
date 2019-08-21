@@ -10,6 +10,7 @@ service:
   type: ClusterIP
   port: 9091
   targetPort: 9091
+  annotations: {}
 
 # Optional pod annotations
 podAnnotations: {}
