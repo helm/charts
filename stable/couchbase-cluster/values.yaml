@@ -40,11 +40,7 @@ couchbaseCluster:
   logRetentionTime: 604800s
   # The maximum number of log volumes that can be kept after their associated pods have been deleted.
   logRetentionCount: 20
-  # Uncomment these 2 lines for specifying the dynamic DNS configuration to use when exposing services
-  #dns:
-  # domain:  example.domain.com
-  # Indicates which underlying cloud platform the Kubernetes cluster is running.
-  # The Value must be one of aws, gce or azure
+  # The cloud platform
   platform:
   # Cluster wide settings for nodes and services
   cluster:
