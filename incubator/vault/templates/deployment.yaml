@@ -132,8 +132,12 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: status.podIP
+          - name: VAULT_API_ADDR
+            value: "https://$(POD_IP):8200"
+        {{- if not .Values.vault.dev }}
           - name: VAULT_CLUSTER_ADDR
             value: "https://$(POD_IP):8201"
+        {{- end }}
           - name: VAULT_LOG_LEVEL
             value: {{ .Values.vault.logLevel | quote }}
         {{- if .Values.vault.extraEnv }}
