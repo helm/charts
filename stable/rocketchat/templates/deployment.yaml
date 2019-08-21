@@ -92,7 +92,7 @@ spec:
 {{- if or .Values.podAntiAffinity .Values.affinity }}
       affinity:
 {{- if .Values.affinity }}
-{{ toYaml .Values.affinity | indent 4 }}
+{{ toYaml .Values.affinity | indent 8 }}
 {{- end }}
 {{- if eq .Values.podAntiAffinity "hard" }}
         podAntiAffinity:
