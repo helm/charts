@@ -1,6 +1,6 @@
 apiVersion: v1
 name: prestashop
-version: 8.1.0
+version: 8.1.1
 appVersion: 1.7.6-0
 description: A popular open source ecommerce solution. Professional tools are easily accessible to increase online sales including instant guest checkout, abandoned cart reminders and automated Email marketing.
 keywords:
