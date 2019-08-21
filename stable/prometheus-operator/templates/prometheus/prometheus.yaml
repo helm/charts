@@ -67,6 +67,9 @@ spec:
 {{ toYaml .Values.prometheus.prometheusSpec.resources | indent 4 }}
 {{- end }}
   retention: {{ .Values.prometheus.prometheusSpec.retention | quote  }}
+{{- if .Values.prometheus.prometheusSpec.retentionSize }}
+  retentionSize: {{ .Values.prometheus.prometheusSpec.retentionSize | quote }}
+{{- end }}
 {{- if .Values.prometheus.prometheusSpec.routePrefix }}
   routePrefix: {{ .Values.prometheus.prometheusSpec.routePrefix | quote  }}
 {{- end }}

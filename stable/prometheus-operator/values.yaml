@@ -1395,6 +1395,10 @@ prometheus:
     ##
     retention: 10d
 
+    ## Maximum size of metrics
+    ##
+    retentionSize: ""
+
     ## If true, the Operator won't process any Prometheus configuration changes
     ##
     paused: false
