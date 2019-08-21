@@ -146,7 +146,7 @@ spec:
               echo "adding variables" &&
               airflow variables -i /usr/local/variables-pools/variables.json &&
             {{- end }}
-            {{- if .Values.airflow.variables }}
+            {{- if .Values.airflow.pools }}
               echo "adding pools" &&
               airflow pool -i /usr/local/variables-pools/pools.json &&
             {{- end }}
@@ -170,7 +170,7 @@ spec:
               echo "adding variables" &&
               airflow variables -i /usr/local/variables-pools/variables.json &&
             {{- end }}
-            {{- if .Values.airflow.variables }}
+            {{- if .Values.airflow.pools }}
               echo "adding pools" &&
               airflow pool -i /usr/local/variables-pools/pools.json &&
             {{- end }}
