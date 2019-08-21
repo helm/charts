@@ -59,6 +59,7 @@ The following table lists the configurable parameters of the Redmine chart and t
 | ----------------------------------- | ------------------------------------------ | ------------------------------------------------------- |
 | `global.imageRegistry`              | Global Docker image registr  y             | `nil`                                                   |
 | `global.imagePullSecrets`           | Global Docker registry secret names as an array | `[]` (does not add image pull secrets to deployed pods) |
+| `global.storageClass`                     | Global storage class for dynamic provisioning                                               | `nil`                                                        |
 | `image.registry`                    | Redmine image registry                     | `docker.io`                                             |
 | `image.repository`                  | Redmine image name                         | `bitnami/redmine`                                       |
 | `image.tag`                         | Redmine image tag                          | `{TAG_NAME}`                                            |
