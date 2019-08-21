@@ -410,7 +410,7 @@ For a full list of configurable values please refer to the [Grafana chart](https
 | `coreDns.enabled` | Deploy coreDns scraping components. Use either this or kubeDns | true |
 | `coreDns.service.port` | CoreDns port | `9153` |
 | `coreDns.service.targetPort` | CoreDns targetPort | `9153` |
-| `coreDns.service.selector` | CoreDns service selector | `{"k8s-app" : "kube-dns" }` |
+| `coreDns.service.selector` | CoreDns service selector | `{"k8s-app" : "coredns" }` |
 | `coreDns.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
 | `coreDns.serviceMonitor.metricRelabelings` | The `metric_relabel_configs` for scraping CoreDns. | `` |
 | `coreDns.serviceMonitor.relabelings` | The `relabel_configs` for scraping CoreDNS. | `` |

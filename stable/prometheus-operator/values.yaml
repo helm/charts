@@ -628,7 +628,7 @@ coreDns:
     port: 9153
     targetPort: 9153
     selector:
-      k8s-app: kube-dns
+      k8s-app: coredns
   serviceMonitor:
     ## Scrape interval. If not set, the Prometheus default scrape interval is used.
     ##
