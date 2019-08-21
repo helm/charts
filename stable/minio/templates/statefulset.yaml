@@ -59,34 +59,6 @@ spec:
         - name: {{ .Chart.Name }}
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- if .Values.gateway.enabled  }}
-          {{- if eq .Values.gateway.type "s3" }}
-          command: [ "/bin/sh",
-          "-ce",
-          "/usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} gateway s3 {{ .Values.gateway.s3.serviceEndpoint }}" ]
-          {{- end }}
-          {{- if eq .Values.gateway.type "azure" }}
-          command: [ "/bin/sh",
-          "-ce",
-          "/usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} gateway azure" ]
-          {{- end }}
-          {{- if eq .Values.gateway.type "gcs" }}
-          command: [ "/bin/sh",
-          "-ce",
-          "/usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} gateway gcs {{ .Values.gateway.gcs.projectId }}" ]
-          {{- end }}
-          {{- if eq .Values.gateway.type "oss" }}
-          command: [ "/bin/sh",
-          "-ce",
-          "cp /tmp/config.json {{ .Values.configPath }} &&
-          /usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} gateway oss {{ .Values.gateway.oss.endpointURL }}" ]
-          {{- end }}
-          {{- if eq .Values.gateway.type "nas" }}
-          command: [ "/bin/sh",
-          "-ce",
-          "/usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} gateway nas {{ .Values.mountPath }}" ]
-          {{- end }}
-          {{- else }}
           {{- if .Values.tls.enabled }}
           command: [ "/bin/sh",
           "-ce",
@@ -102,7 +74,6 @@ spec:
           http://{{ template `minio.fullname` $ }}-{{ $i }}.{{ template `minio.fullname` $ }}-svc.{{ $.Release.Namespace }}.svc.{{ $.Values.clusterDomain }}{{ $.Values.mountPath }}
           {{- end }}" ]
           {{ end }}
-          {{- end }}
           volumeMounts:
             {{- if .Values.persistence.enabled }}
             - name: export
@@ -131,14 +102,6 @@ spec:
                 secretKeyRef:
                   name: {{ if .Values.existingSecret }}{{ .Values.existingSecret }}{{ else }}{{ template "minio.fullname" . }}{{ end }}
                   key: secretkey
-            {{- if .Values.gateway.enabled }}
-            - name: MINIO_CACHE_DRIVES
-              {{- if and .Values.persistence.enabled .Values.persistence.subPath }}
-              value: {{ printf "\"%s/%s\"" .Values.mountPath .Values.persistence.subPath  }}
-              {{ else }}
-              value: {{ .Values.mountPath | quote }}
-              {{- end }}
-            {{- end }}
             {{- range $key, $val := .Values.environment }}
             - name: {{ $key }}
               value: {{ $val | quote }}
@@ -189,11 +152,6 @@ spec:
             - key: {{ .Values.tls.publicCrt }}
               path: CAs/public.crt
         {{ end }}
-        {{- if not .Values.persistence.enabled }}
-        - name: export
-          emptyDir:
-            sizeLimit: {{ .Values.gateway.emptyDirSize }}
-        {{- end }}
 {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
     - metadata:
