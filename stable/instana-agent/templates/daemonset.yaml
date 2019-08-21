@@ -82,6 +82,10 @@ spec:
             - name: INSTANA_AGENT_HTTP_LISTEN
               value: {{ .Values.agent.listenAddress | quote }}
             {{- end }}
+            {{- if .Values.agent.redactKubernetesSecrets }}
+            - name: INSTANA_KUBERNETES_REDACT_SECRETS
+              value: {{ .Values.agent.redactKubernetesSecrets | quote }}
+            {{- end }}
             - name: JAVA_OPTS
               value: "-Xmx{{ div (default 512 .Values.agent.pod.requests.memory) 3 }}M -XX:+ExitOnOutOfMemoryError"
             - name: INSTANA_AGENT_POD_NAME
