@@ -261,5 +261,5 @@ spec:
         resources:
           requests:
             storage: {{ .Values.master.persistence.size | quote }}
-        storageClassName: {{ include "mariadb.master.storageClass" . }}
+        {{ include "mariadb.master.storageClass" . }}
 {{- end }}
