@@ -58,12 +58,18 @@ Gets the host to be used for this application.
 If not using ClusterIP, or if a host or LoadBalancerIP is not defined, the value will be empty.
 */}}
 {{- define "parse.host" -}}
+{{/*
+Helm 2.11 supports the assignment of a value to a variable defined in a different scope,
+but Helm 2.9 and 2.10 does not support it, so we need to implement this if-else logic.
+*/}}
 {{- $host := default "" .Values.server.host -}}
 {{- if .Values.ingress.enabled -}}
 {{- $ingressHost := first .Values.ingress.server.hosts -}}
-{{- $host = default $ingressHost.name $host -}}
-{{- end -}}
+{{- $serverHost := default $ingressHost.name $host -}}
+{{- default (include "parse.serviceIP" .) $serverHost -}}
+{{- else -}}
 {{- default (include "parse.serviceIP" .) $host -}}
+{{- end -}}
 {{- end -}}
 
 {{/*
