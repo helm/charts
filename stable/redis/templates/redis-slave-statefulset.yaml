@@ -403,7 +403,7 @@ spec:
         resources:
           requests:
             storage: {{ .Values.slave.persistence.size | quote }}
-        storageClassName: {{ include "redis.slave.storageClass" . }}
+        {{ include "redis.slave.storageClass" . }}
   {{- end }}
   updateStrategy:
     type: {{ .Values.slave.statefulset.updateStrategy }}
