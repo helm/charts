@@ -38,6 +38,7 @@ spec:
         - name: {{ $pullSecret }}
       {{- end }}
 {{- end }}
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
