@@ -100,6 +100,7 @@ spec:
 {{- end }}
 {{- if .Values.prometheus.prometheusSpec.podMonitorSelector }}
   podMonitorSelector:
+{{ toYaml .Values.prometheus.prometheusSpec.podMonitorSelector | indent 4 }}
 {{ else if .Values.prometheus.prometheusSpec.podMonitorSelectorNilUsesHelmValues  }}
   podMonitorSelector:
     matchLabels:
