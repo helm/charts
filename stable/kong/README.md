@@ -98,6 +98,7 @@ and their default values.
 | proxy.ingress.hosts                | List of ingress hosts.                                                                | `[]`                |
 | proxy.ingress.path                 | Ingress path.                                                                         | `/`                 |
 | proxy.ingress.annotations          | Ingress annotations. See documentation for your ingress controller for details        | `{}`                |
+| updateStrategy                     | update strategy for deployment                                                        | `{}`                |
 | env                                | Additional [Kong configurations](https://getkong.org/docs/latest/configuration/)      |                     |
 | runMigrations                      | Run Kong migrations job                                                               | `true`              |
 | readinessProbe                     | Kong readiness probe                                                                  |                     |
@@ -110,6 +111,9 @@ and their default values.
 | podDisruptionBudget.enabled        | Enable PodDisruptionBudget for Kong                                                   | `false`             |
 | podDisruptionBudget.maxUnavailable | Represents the minimum number of Pods that can be unavailable (integer or percentage) | `50%`               |
 | podDisruptionBudget.minAvailable   | Represents the number of Pods that must be available (integer or percentage)          |                     |
+| serviceMonitor.enabled             | Create ServiceMonitor for Prometheus Operator                                         | false               |
+| serviceMonitor.interval            | Scrapping interval                                                                    | 10s                 |
+| serviceMonitor.namespace           | Where to create ServiceMonitor                                                        |                     |
 
 ### Admin/Proxy listener override
 
@@ -118,12 +122,12 @@ the value provided by you as opposed to constructing a listen variable
 from fields like `proxy.http.containerPort` and `proxy.http.enabled`. This allows
 you to be more prescriptive when defining listen directives.
 
-**Note:** Overriding `env.proxy_listen` and `env.admin_listen` will potentially cause 
-`admin.containerPort`, `proxy.http.containerPort` and `proxy.tls.containerPort` to become out of sync, 
+**Note:** Overriding `env.proxy_listen` and `env.admin_listen` will potentially cause
+`admin.containerPort`, `proxy.http.containerPort` and `proxy.tls.containerPort` to become out of sync,
 and therefore must be updated accordingly.
 
-I.E. updatating to `env.proxy_listen: 0.0.0.0:4444, 0.0.0.0:4443 ssl` will need 
-`proxy.http.containerPort: 4444` and `proxy.tls.containerPort: 4443` to be set in order 
+I.E. updatating to `env.proxy_listen: 0.0.0.0:4444, 0.0.0.0:4443 ssl` will need
+`proxy.http.containerPort: 4444` and `proxy.tls.containerPort: 4443` to be set in order
 for the service definition to work properly.
 
 ### Kong-specific parameters
@@ -171,7 +175,7 @@ kong:
             key: kong
             name: postgres
 ```
- 
+
 
 For complete list of Kong configurations please check https://getkong.org/docs/latest/configuration/.
 
@@ -377,6 +381,7 @@ The custom resources are:
 
 You can can learn about kong ingress custom resource definitions [here](https://github.com/Kong/kubernetes-ingress-controller/blob/master/docs/custom-resources.md).
 
+
 | Parameter                          | Description                                                                           | Default                                                                      |
 | ---------------------------------- | ------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
 | enabled                            | Deploy the ingress controller, rbac and crd                                           | false                                                                        |
@@ -389,3 +394,4 @@ You can can learn about kong ingress custom resource definitions [here](https://
 | podDisruptionBudget.enabled        | Enable PodDisruptionBudget for ingress controller                                     | `false`                                                                      |
 | podDisruptionBudget.maxUnavailable | Represents the minimum number of Pods that can be unavailable (integer or percentage) | `50%`                                                                        |
 | podDisruptionBudget.minAvailable   | Represents the number of Pods that must be available (integer or percentage)          |                                                                              |
+

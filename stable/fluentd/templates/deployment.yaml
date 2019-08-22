@@ -1,5 +1,9 @@
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
+{{- if .Values.autoscaling.enabled}}
+kind: StatefulSet
+{{- else}}
 kind: Deployment
+{{- end}}
 metadata:
   name: {{ template "fluentd.fullname" . }}
   labels:
@@ -94,9 +98,19 @@ spec:
           configMap:
             name: {{ template "fluentd.fullname" . }}
         - name: buffer
-          {{- if .Values.persistence.enabled }}
+          {{- if and .Values.persistence.enabled (not .Values.autoscaling.enabled) }}
           persistentVolumeClaim:
             claimName: {{ template "fluentd.fullname" . }}
+          {{- else if and .Values.persistence.enabled (.Values.autoscaling.enabled) }}
+          volumeClaimTemplates:
+          - metadata:
+              name: buffer
+            spec:
+              accessModes: [{{ .Values.persistence.accessMode | quote }}]
+              storageClassName: {{ .Values.persistence.storageClass }} 
+              resources:
+                requests:
+                  storage: {{ .Values.persistence.size }}        
           {{- else }}
           emptyDir: {}
           {{- end }}

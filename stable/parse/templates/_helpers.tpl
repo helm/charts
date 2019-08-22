@@ -59,7 +59,19 @@ If not using ClusterIP, or if a host or LoadBalancerIP is not defined, the value
 */}}
 {{- define "parse.host" -}}
 {{- $host := default "" .Values.server.host -}}
+{{- if .Values.ingress.enabled -}}
+{{- $ingressHost := first .Values.ingress.server.hosts -}}
+{{- $host = default $ingressHost.name $host -}}
+{{- end -}}
 {{- default (include "parse.serviceIP" .) $host -}}
+{{- end -}}
+
+{{/*
+Gets the port to access Parse outside the cluster.
+When using ingress, we should use the port 80 instead of service.port
+*/}}
+{{- define "parse.external-port" -}}
+{{- ternary "80" .Values.server.port .Values.ingress.enabled -}}
 {{- end -}}
 
 {{/*
@@ -181,5 +193,40 @@ Also, we can't use a single if because lazy evaluation is not an option
     {{- end -}}
 {{- else -}}
     {{- printf "%s/%s:%s" $registryName $repositoryName $tag -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return  the proper Storage Class
+*/}}
+{{- define "parse.storageClass" -}}
+{{/*
+Helm 2.11 supports the assignment of a value to a variable defined in a different scope,
+but Helm 2.9 and 2.10 does not support it, so we need to implement this if-else logic.
+*/}}
+{{- if .Values.global -}}
+    {{- if .Values.global.storageClass -}}
+        {{- if (eq "-" .Values.global.storageClass) -}}
+            {{- printf "\"\"" -}}
+        {{- else }}
+            {{- printf "%s" .Values.global.storageClass -}}
+        {{- end -}}
+    {{- else -}}
+        {{- if .Values.persistence.storageClass -}}
+              {{- if (eq "-" .Values.persistence.storageClass) -}}
+                  {{- printf "\"\"" -}}
+              {{- else }}
+                  {{- printf "%s" .Values.persistence.storageClass -}}
+              {{- end -}}
+        {{- end -}}
+    {{- end -}}
+{{- else -}}
+    {{- if .Values.persistence.storageClass -}}
+        {{- if (eq "-" .Values.persistence.storageClass) -}}
+            {{- printf "\"\"" -}}
+        {{- else }}
+            {{- printf "%s" .Values.persistence.storageClass -}}
+        {{- end -}}
+    {{- end -}}
 {{- end -}}
 {{- end -}}

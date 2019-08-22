@@ -229,7 +229,7 @@ enterprise:
     # The key value must be a secret configuration, following the example at https://docs.konghq.com/enterprise/0.35-x/kong-manager/authentication/sessions/
     session_conf_secret: you-must-create-an-rbac-session-conf-secret
     # Set to the appropriate plugin config JSON if not using basic-auth
-    # admin_gui_auth_conf: ''
+    admin_gui_auth_conf: {}
   smtp:
     enabled: false
     portal_emails_from: none@example.com
@@ -250,6 +250,13 @@ enterprise:
 
 # Set runMigrations to run Kong migrations
 runMigrations: true
+
+# update strategy
+updateStrategy: {}
+  # type: RollingUpdate
+  # rollingUpdate:
+  #   maxSurge: "100%"
+  #   maxUnavailable: "0%"
 
 # Specify Kong configurations
 # Kong configurations guide https://getkong.org/docs/latest/configuration/
@@ -396,6 +403,7 @@ ingressController:
   podDisruptionBudget:
     enabled: false
     maxUnavailable: "50%"
+
 # We pass the dbless (declarative) config over here.
 dblessConfig:
   # Either Kong's configuration is managed from an existing ConfigMap (with Key: kong.yml)
@@ -411,3 +419,10 @@ dblessConfig:
       #   - name: example
       #     paths:
       #     - "/example"
+
+serviceMonitor:
+  # Specifies whether ServiceMonitor for Prometheus operator should be created
+  enabled: false
+  # interval: 10s
+  # Specifies namespace, where ServiceMonitor should be installed
+  # namespace: monitoring
