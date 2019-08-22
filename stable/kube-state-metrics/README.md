@@ -15,10 +15,11 @@ $ helm install stable/kube-state-metrics
 | Parameter                               | Description                                                                           | Default                                    |
 |:----------------------------------------|:--------------------------------------------------------------------------------------|:-------------------------------------------|
 | `image.repository`                      | The image repository to pull from                                                     | quay.io/coreos/kube-state-metrics          |
-| `image.tag`                             | The image tag to pull from                                                            | `v1.7.1`                                   |
+| `image.tag`                             | The image tag to pull from                                                            | `v1.7.2`                                   |
 | `image.pullPolicy`                      | Image pull policy                                                                     | `IfNotPresent`                             |
 | `replicas`                              | Number of replicas                                                                    | `1`                                        |
 | `service.port`                          | The port of the container                                                             | `8080`                                     |
+| `service.annotations`                   | Annotations to be added to the service                                                | `{}`
 | `customLabels`                          | Custom labels to apply to service, deployment and pods                                | `{}`                                       |
 | `hostNetwork`                           | Whether or not to use the host network                                                | `false`                                    |
 | `prometheusScrape`                      | Whether or not enable prom scrape                                                     | `true`                                     |
@@ -64,3 +65,4 @@ $ helm install stable/kube-state-metrics
 | `prometheus.monitor.enabled`            | Set this to `true` to create ServiceMonitor for Prometheus operator                   | `false`                                    |
 | `prometheus.monitor.additionalLabels`   | Additional labels that can be used so ServiceMonitor will be discovered by Prometheus | `{}`                                       |
 | `prometheus.monitor.namespace`          | Namespace where servicemonitor resource should be created                             | `the same namespace as kube-state-metrics` |
+| `prometheus.monitor.honorLabels`        | Honor metric labels                                                                   | `false`                                    |

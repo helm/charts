@@ -18,12 +18,21 @@ rules:
       - get
       - list
       - watch
+      - update
   - apiGroups:
       - ""
     resources:
       - secrets
     verbs:
+      - get
       - create
       - update
       - delete
+  - apiGroups:
+      - ""
+    resources:
+      - events
+    verbs:
+      - create
+      - patch
 {{ end }}

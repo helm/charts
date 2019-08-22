@@ -14,11 +14,5 @@ spec:
   resources:
     requests:
       storage: {{ .Values.persistence.phpbb.size | quote }}
-{{- if .Values.persistence.phpbb.storageClass }}
-{{- if (eq "-" .Values.persistence.phpbb.storageClass) }}
-  storageClassName: ""
-{{- else }}
-  storageClassName: "{{ .Values.persistence.phpbb.storageClass }}"
-{{- end }}
-{{- end }}
+  storageClassName: {{ include "phpbb.storageClass" . }}
 {{- end -}}

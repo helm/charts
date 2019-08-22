@@ -197,7 +197,7 @@ spec:
           fi
           echo "Getting information about current running sentinels"
           # Get information from existing sentinels
-          existing_sentinels=$(timeout -s 9 {{ .Values.sentinel.initialCheckTimeout }} redis-cli --raw -h {{ template "redis.fullname" . }} -a $REDIS_PASSWORD -p {{ .Values.sentinel.service.sentinelPort }} SENTINEL sentinels {{ .Values.sentinel.masterSet }})
+          existing_sentinels=$(timeout -s 9 {{ .Values.sentinel.initialCheckTimeout }} redis-cli --raw -h {{ template "redis.fullname" . }} -a "$REDIS_PASSWORD" -p {{ .Values.sentinel.service.sentinelPort }} SENTINEL sentinels {{ .Values.sentinel.masterSet }})
           echo "$existing_sentinels" | awk -f /health/parse_sentinels.awk | tee -a  /opt/bitnami/redis-sentinel/etc/sentinel.conf
 
           redis-server /opt/bitnami/redis-sentinel/etc/sentinel.conf --sentinel
@@ -385,13 +385,7 @@ spec:
         resources:
           requests:
             storage: {{ .Values.master.persistence.size | quote }}
-      {{- if .Values.master.persistence.storageClass }}
-      {{- if (eq "-" .Values.master.persistence.storageClass) }}
-        storageClassName: ""
-      {{- else }}
-        storageClassName: {{ .Values.master.persistence.storageClass | quote }}
-      {{- end }}
-      {{- end }}
+        storageClassName: {{ include "redis.master.storageClass" . }}
   {{- end }}
   updateStrategy:
     type: {{ .Values.master.statefulset.updateStrategy }}

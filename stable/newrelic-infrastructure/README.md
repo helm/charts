@@ -17,15 +17,18 @@ This chart will deploy the New Relic Infrastructure agent as a Daemonset.
 | `kubeStateMetricsTimeout` | Timeout for accessing kube-state-metrics in milliseconds. If not set the newrelic default is 5000 | |
 | `rbac.create`             | Enable Role-based authentication                             | `true`                     |
 | `rbac.pspEnabled`         | Enable pod security policy support                           | `false`                    |
-| `image.name`              | The container to pull.                                       | `newrelic/infrastructure`  |
+| `privileged`              | Enable privileged mode.                                      | `true`                    |
+| `image.repository`        | The container to pull.                                       | `newrelic/infrastructure`  |
 | `image.pullPolicy`        | The pull policy.                                             | `IfNotPresent`             |
-| `image.tag`               | The version of the container to pull.                        | `1.9.0`                    |
+| `image.tag`               | The version of the container to pull.                        | `1.9.4`                    |
 | `resources`               | Any resources you wish to assign to the pod.                 | See Resources below        |
 | `verboseLog`              | Should the agent log verbosely. (Boolean)                    | `false`                    |
 | `priorityClassName`       | Scheduling priority of the pod                               | `nil`                      |
 | `nodeSelector`            | Node label to use for scheduling                             | `nil`                      |
-| `tolerations`             | List of node taints to tolerate (requires Kubernetes >= 1.6) | `nil`                      |
+| `tolerations`             | List of node taints to tolerate (requires Kubernetes >= 1.6) | See Tolerarions below      |
 | `updateStrategy`          | Strategy for DaemonSet updates (requires Kubernetes >= 1.6)  | `RollingUpdate`            |
+| `serviveAccount.create`   | If true, a service account would be created and assigned to the deployment | true |
+| `serviveAccount.name`     | The service account to assign to the deployment. If `serviveAccount.create` is true then this name will be used when creating the service account | |
 
 ## Example
 
@@ -39,13 +42,26 @@ helm install stable/newrelic-infrastructure \
 
 The default set of resources assigned to the pods is shown below:
 
-    resources:
-      limits:
-        memory: 150M
-      requests:
-        cpu: 100m
-        memory: 30M
+```yaml
+resources:
+  limits:
+    memory: 150M
+  requests:
+    cpu: 100m
+    memory: 30M
+```
+
+## Tolerations
+
+The default set of relations assigned to our daemonset is shown below:
+
+```yaml
+- operator: "Exists"
+  effect: "NoSchedule"
+- operator: "Exists"
+  effect: "NoExecute"
+```
 
 # Config file
 
-If you wish to provide your own `newrelic.yml` you may do so under `config`. There are a few notable exceptions you should be aware of. Three options have been omitted because they are handled either by variables, or a secret. They are license_key, log_file and verbose.
+If you wish to provide your own `newrelic.yml` you may do so under `config`. There are a few notable exceptions you should be aware of. Some options have been omitted because they are handled either by variables, or a secret. They are display_name, license_key, log_file and verbose.
