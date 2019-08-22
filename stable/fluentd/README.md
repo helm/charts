@@ -77,6 +77,7 @@ Parameter | Description | Default
 `autoscaling.minReplicas` | Set minimum number of replicas | `2`
 `autoscaling.maxReplicas` | Set maximum number of replicas | `5`
 `autoscaling.metrics` | metrics used for autoscaling | See [values.yaml](values.yaml)
+`terminationGracePeriodSeconds` | Optional duration in seconds the pod needs to terminate gracefully | `30`
 `metrics.enabled`                         | Set this to `true` to enable Prometheus metrics HTTP endpoint                         | `false`
 `metrics.service.port`                    | Prometheus metrics HTTP endpoint port                                                 | `24231`
 `metrics.serviceMonitor.enabled`          | Set this to `true` to create ServiceMonitor for Prometheus operator                   | `false`
