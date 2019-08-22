@@ -65,7 +65,11 @@ spec:
         - name: SPRING_CLOUD_KUBERNETES_SECRETS_PATHS
           value: /etc/secrets
         - name: SPRING_CLOUD_KUBERNETES_CONFIG_NAME
+          {{- if .Values.server.configMap }}
+          value: {{ .Values.server.configMap | quote }}
+          {{- else }}
           value: {{ template "scdf.fullname" . }}-server
+          {{- end }}
         - name: SPRING_CLOUD_SKIPPER_CLIENT_SERVER_URI
           value: 'http://${{ printf "{" }}{{ template "scdf.envname" . }}_SKIPPER_SERVICE_HOST}/api'
         - name: SPRING_CLOUD_DATAFLOW_SERVER_URI
