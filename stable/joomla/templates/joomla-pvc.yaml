@@ -14,5 +14,5 @@ spec:
   resources:
     requests:
       storage: {{ .Values.persistence.joomla.size | quote }}
-  storageClassName: {{ include "joomla.storageClass" . }}
+  {{ include "joomla.storageClass" . }}
 {{- end -}}
