@@ -4,21 +4,21 @@ kind: Deployment
 metadata:
   name: {{ template "phabricator.fullname" . }}
   labels:
-    app: {{ template "phabricator.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/name: {{ include "phabricator.name" . }}
+    helm.sh/chart: {{ include "phabricator.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   selector:
     matchLabels:
-      app: {{ template "phabricator.fullname" . }}
-      release: "{{ .Release.Name }}"
+      app.kubernetes.io/name: {{ include "phabricator.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ template "phabricator.fullname" . }}
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-        release: "{{ .Release.Name }}"
+        app.kubernetes.io/name: {{ include "phabricator.name" . }}
+        helm.sh/chart: {{ include "phabricator.chart" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
 {{- if or .Values.podAnnotations .Values.metrics.enabled }}
       annotations:
   {{- if .Values.podAnnotations }}
@@ -154,7 +154,7 @@ spec:
       - name: phabricator-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "phabricator.fullname" . }}-phabricator
+          claimName: {{ template "phabricator.fullname" . }}
       {{- else }}
         emptyDir: {}
       {{- end }}

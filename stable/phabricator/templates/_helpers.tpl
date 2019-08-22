@@ -24,6 +24,13 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- end -}}
 
 {{/*
+Create chart name and version as used by the chart label.
+*/}}
+{{- define "phabricator.chart" -}}
+{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{/*
 Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
@@ -134,21 +141,32 @@ imagePullSecrets:
 {{- end -}}
 
 {{/*
-Return  the proper Storage Class
+Return the proper Storage Class
 */}}
 {{- define "phabricator.storageClass" -}}
-{{- $storageClass := "" }}
-{{- if .Values.persistence.phabricator.storageClass -}}
-    {{- $storageClass = .Values.persistence.phabricator.storageClass -}}
-{{- end -}}
 {{- if .Values.global -}}
     {{- if .Values.global.storageClass -}}
-        {{- $storageClass = .Values.global.storageClass -}}
+        {{- if (eq "-" .Values.global.storageClass) -}}
+            {{- printf "storageClassName: \"\"" -}}
+        {{- else }}
+            {{- printf "storageClassName: %s" .Values.global.storageClass -}}
+        {{- end -}}
+    {{- else -}}
+        {{- if .Values.persistence.storageClass -}}
+              {{- if (eq "-" .Values.persistence.storageClass) -}}
+                  {{- printf "storageClassName: \"\"" -}}
+              {{- else }}
+                  {{- printf "storageClassName: %s" .Values.persistence.storageClass -}}
+              {{- end -}}
+        {{- end -}}
     {{- end -}}
-{{- end -}}
-{{- if (eq "-" $storageClass) -}}
-    {{- printf "\"\"" -}}
-{{- else }}
-    {{- printf "%s" $storageClass -}}
+{{- else -}}
+    {{- if .Values.persistence.storageClass -}}
+        {{- if (eq "-" .Values.persistence.storageClass) -}}
+            {{- printf "storageClassName: \"\"" -}}
+        {{- else }}
+            {{- printf "storageClassName: %s" .Values.persistence.storageClass -}}
+        {{- end -}}
+    {{- end -}}
 {{- end -}}
 {{- end -}}
