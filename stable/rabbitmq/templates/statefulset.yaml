@@ -319,5 +319,5 @@ spec:
         resources:
             requests:
               storage: {{ .Values.persistence.size | quote }}
-        storageClassName: {{ include "rabbitmq.storageClass" . }}
+        {{ include "rabbitmq.storageClass" . }}
   {{- end }}
