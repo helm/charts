@@ -332,5 +332,5 @@ spec:
         resources:
           requests:
             storage: {{ .Values.persistence.size | quote }}
-        storageClassName: {{ include "postgresql.storageClass" . }}
+        {{ include "postgresql.storageClass" . }}
 {{- end }}
