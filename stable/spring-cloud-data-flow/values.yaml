@@ -25,6 +25,7 @@ server:
     type: LoadBalancer
     externalPort: 80
     annotations: {}
+  configMap:
   resources: {}
   #  limits:
   #    cpu: 1.0
@@ -40,6 +41,7 @@ skipper:
   platformName: default
   service:
     type: ClusterIP
+  configMap:
   resources: {}
   #  limits:
   #    cpu: 1.0
