@@ -15,12 +15,22 @@ spec:
       app: {{ template "kong.name" . }}
       release: {{ .Release.Name }}
       component: app
+  {{- if .Values.updateStrategy }}
+  strategy:
+{{ toYaml .Values.updateStrategy | indent 4 }}
+  {{- end }}
+
   template:
     metadata:
-    {{- if .Values.podAnnotations }}
       annotations:
+        {{- if (and (not .Values.ingressController.enabled) (eq .Values.env.database "off" )) }}
+        {{- if .Values.dblessConfig.config }}
+        checksum/dbless.config: {{ toYaml .Values.dblessConfig.config | sha256sum }}
+        {{- end }}
+        {{- end }}
+        {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
-    {{- end }}
+        {{- end }}
       labels:
         app: {{ template "kong.name" . }}
         release: {{ .Release.Name }}
@@ -40,7 +50,7 @@ spec:
       {{- include "kong.wait-for-db" . | nindent 6 }}
       {{ end }}
       containers:
-      {{- if (and (.Values.ingressController) (eq .Values.env.database "off")) }}
+      {{- if (and (.Values.ingressController.enabled) (eq .Values.env.database "off")) }}
       {{- include "kong.controller-container" . | nindent 6 }}
       {{ end }}
       - name: {{ template "kong.name" . }}
@@ -98,7 +108,7 @@ spec:
         - name: KONG_ADMIN_GUI_AUTH
           value: {{ .Values.enterprise.rbac.admin_gui_auth | default "basic-auth" }}
         - name: KONG_ADMIN_GUI_AUTH_CONF
-          value: {{ toJson .Values.enterprise.rbac.admin_gui_auth_conf | default "" }}
+          value: '{{ toJson .Values.enterprise.rbac.admin_gui_auth_conf }}'
         - name: KONG_ADMIN_GUI_SESSION_CONF
           valueFrom:
             secretKeyRef:
@@ -151,6 +161,10 @@ spec:
         {{- if .Values.cassandra.enabled }}
         - name: KONG_CASSANDRA_CONTACT_POINTS
           value: {{ template "kong.cassandra.fullname" . }}
+        {{- end }}
+        {{- if (and (not .Values.ingressController.enabled) (eq .Values.env.database "off")) }}
+        - name: KONG_DECLARATIVE_CONFIG
+          value: "/kong_dbless/kong.yml"
         {{- end }}
         {{- include "kong.env" .  | indent 8 }}
         ports:
@@ -232,6 +246,10 @@ spec:
         volumeMounts:
           - name: custom-nginx-template-volume
             mountPath: /kong
+          {{- if (and (not .Values.ingressController.enabled) (eq .Values.env.database "off")) }}
+          - name: kong-custom-dbless-config-volume
+            mountPath: /kong_dbless/
+          {{- end }}
         readinessProbe:
 {{ toYaml .Values.readinessProbe | indent 10 }}
         livenessProbe:
@@ -251,5 +269,13 @@ spec:
       volumes:
         - name: custom-nginx-template-volume
           configMap:
-            name: {{ .Release.Name }}-kong-default-custom-server-blocks
-
+            name: {{ template "kong.fullname" . }}-default-custom-server-blocks
+{{- if (and (not .Values.ingressController.enabled) (eq .Values.env.database "off")) }}
+        - name: kong-custom-dbless-config-volume
+          configMap:
+            {{- if .Values.dblessConfig.configMap }}
+            name: {{ .Values.dblessConfig.configMap }}
+            {{- else }}
+            name: {{ template "kong.dblessConfig.fullname" . }}
+            {{- end }}
+{{- end }}

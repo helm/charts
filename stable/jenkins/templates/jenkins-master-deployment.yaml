@@ -126,6 +126,7 @@ spec:
               {{- end }}
             - mountPath: /var/jenkins_config
               name: jenkins-config
+            {{- if .Values.master.enableXmlConfig }}
             {{- if .Values.master.credentialsXmlSecret }}
             - mountPath: /var/jenkins_credentials
               name: jenkins-credentials
@@ -141,14 +142,17 @@ spec:
               name: jenkins-jobs
               readOnly: true
             {{- end }}
+            {{- end }}
             {{- if .Values.master.installPlugins }}
             - mountPath: /usr/share/jenkins/ref/plugins
               name: plugins
             - mountPath: /var/jenkins_plugins
               name: plugin-dir
             {{- end }}
+            {{- if .Values.master.enableXmlConfig }}
             - mountPath: /usr/share/jenkins/ref/secrets/
               name: secrets-dir
+            {{- end }}
       containers:
         - name: jenkins
 {{- if .Values.master.imageTag }}
@@ -251,6 +255,7 @@ spec:
             - mountPath: /var/jenkins_config
               name: jenkins-config
               readOnly: true
+            {{- if .Values.master.enableXmlConfig }}
             {{- if .Values.master.credentialsXmlSecret }}
             - mountPath: /var/jenkins_credentials
               name: jenkins-credentials
@@ -266,14 +271,17 @@ spec:
               name: jenkins-jobs
               readOnly: true
             {{- end }}
+            {{- end }}
             {{- if .Values.master.installPlugins }}
             - mountPath: /usr/share/jenkins/ref/plugins/
               name: plugin-dir
               readOnly: false
             {{- end }}
+            {{- if .Values.master.enableXmlConfig }}
             - mountPath: /usr/share/jenkins/ref/secrets/
               name: secrets-dir
               readOnly: false
+            {{- end }}
             {{- if and (.Values.master.JCasC.enabled) (.Values.master.sidecars.configAutoReload.enabled) }}
             - name: sc-config-volume
               mountPath: {{ .Values.master.sidecars.configAutoReload.folder | default "/var/jenkins_home/casc_configs" | quote }}
@@ -340,6 +348,7 @@ spec:
       - name: jenkins-config
         configMap:
           name: {{ template "jenkins.fullname" . }}
+      {{- if .Values.master.enableXmlConfig }}
       {{- if .Values.master.credentialsXmlSecret }}
       - name: jenkins-credentials
         secret:
@@ -355,12 +364,15 @@ spec:
         configMap:
           name: {{ template "jenkins.fullname" . }}-jobs
       {{- end }}
+      {{- end }}
       {{- if .Values.master.installPlugins }}
       - name: plugin-dir
         emptyDir: {}
       {{- end }}
+      {{- if .Values.master.enableXmlConfig }}
       - name: secrets-dir
         emptyDir: {}
+      {{- end }}
       - name: jenkins-home
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:

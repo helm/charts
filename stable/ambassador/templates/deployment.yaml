@@ -182,13 +182,9 @@ spec:
               fieldRef:
                 fieldPath: metadata.namespace
           {{- end }}
-          {{- if .Values.env }}
-          {{- range $key,$value := .Values.env }}
-          {{- if eq $key "AMBASSADOR_ID"}}
-          - name: {{ $key | upper | quote}}
-            value: {{ $value | quote}}
-          {{- end }}
-          {{- end }}
+          {{- if hasKey .Values.env "AMBASSADOR_ID" }}
+          - name: "AMBASSADOR_ID"
+            value: {{ .Values.env.AMBASSADOR_ID | quote }}
           {{- end }}
           - name: AMBASSADOR_LICENSE_KEY
           {{- if .Values.pro.licenseKey.secret }}
@@ -198,6 +194,15 @@ spec:
                 key: key
           {{ else }}
             value: {{ .Values.pro.licenseKey.value }}
+          {{- end }}
+          {{- if .Values.pro.env }}
+          {{- range $key, $value := .Values.pro.env }}
+          {{- if eq $key "AMBASSADOR_ID" }}
+          {{- else}}
+          - name: {{ $key | upper | quote }}
+            value: {{ $value | quote }}
+          {{- end }}
+          {{- end }}
           {{- end }}
         {{- end }}
       {{- with .Values.nodeSelector }}

@@ -9,11 +9,5 @@ spec:
   resources:
     requests:
       storage: {{ .Values.persistence.owncloud.size | quote }}
-{{- if .Values.persistence.owncloud.storageClass }}
-{{- if (eq "-" .Values.persistence.owncloud.storageClass) }}
-  storageClassName: ""
-{{- else }}
-  storageClassName: "{{ .Values.persistence.owncloud.storageClass }}"
-{{- end }}
-{{- end }}
+  storageClassName: {{ include "owncloud.storageClass" . }}
 {{- end -}}
