@@ -23,7 +23,7 @@ rules:
 {{- end }}
 {{- if and .Values.rbac.namespaced (or .Values.sidecar.dashboards.enabled .Values.sidecar.datasources.enabled) }}
 - apiGroups: [""] # "" indicates the core API group
-  resources: ["configmaps"]
+  resources: ["configmaps", "secrets"]
   verbs: ["get", "watch", "list"]
 {{- end }}
 {{- else }}

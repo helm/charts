@@ -356,6 +356,8 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `web.resources`                          | custom resource configuration for web pod               | `{}`                      |
 | `web.initialStartupDelay`                | amount of time webserver pod should sleep before initializing webserver             | `60`  |
 | `web.initialDelaySeconds`                | initial delay on livenessprobe before checking if webserver is available    | `360` |
+| `web.secretsDir`                         | directory in which to mount secrets on webserver nodes  | /var/airflow/secrets      |
+| `web.secrets`                            | secrets to mount as volumes on webserver nodes          | []                        |
 | `scheduler.resources`                    | custom resource configuration for scheduler pod         | `{}`                      |
 | `workers.enabled`                        | enable workers                                          | `true`                    |
 | `workers.replicas`                       | number of workers pods to launch                        | `1`                       |
@@ -433,6 +435,9 @@ The following table lists the configurable parameters of the Airflow chart and t
 Full and up-to-date documentation can be found in the comments of the `values.yaml` file.
 
 ## Upgrading
+
+### To 4.0.0
+This version splits the specs for the NodeSelector, Affinity and Toleration features. Instead of being global, and injected in every component, they are now defined _by component_ to provide more flexibility for your deployments. As such, the migration steps are really simple. Just copy and paste your node/affinity/tolerance definitions in the four airflow components, which are `worker`, `scheduler`, `flower` and `web`. The default values file should help you with locating those.
 
 ### To 3.0.0
 This version introduces a simplified way of managing secrets, including the database credentials to postgres and redis.

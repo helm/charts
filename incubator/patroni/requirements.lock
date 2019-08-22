@@ -5,5 +5,8 @@ dependencies:
 - name: zookeeper
   repository: https://kubernetes-charts-incubator.storage.googleapis.com/
   version: 1.0.0
-digest: sha256:b65cce5b82c3c9971b7551e923e03a9253bcb9771386086a4e75992a9682ca03
-generated: 2019-01-26T09:48:28.627975698-06:00
+- name: consul
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  version: 3.6.1
+digest: sha256:65ce2049b946b29c3705df1c6b3df323bbaccd571b51cb3b2c4964608a1f0e37
+generated: 2019-05-13T14:05:58.771774+07:00

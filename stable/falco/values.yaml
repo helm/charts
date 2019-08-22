@@ -3,7 +3,7 @@
 image:
   registry: docker.io
   repository: falcosecurity/falco
-  tag: 0.15.3
+  tag: 0.17.0
   pullPolicy: IfNotPresent
 
 docker:
@@ -53,6 +53,9 @@ daemonset:
     # need it
     type: RollingUpdate
 
+  ## Extra environment variables that will be pass onto deployment pods
+  env: {}
+
 # If is behind a proxy you can set the proxy server
 proxy:
   httpProxy:
@@ -61,6 +64,9 @@ proxy:
 
 # Set daemonset timezone
 timezone:
+
+# Set daemonset priorityClassName
+priorityClassName:
 
 ebpf:
   # Enable eBPF support for Falco
@@ -80,6 +86,7 @@ falco:
   rulesFile:
     - /etc/falco/falco_rules.yaml
     - /etc/falco/falco_rules.local.yaml
+    - /etc/falco/k8s_audit_rules.yaml
     - /etc/falco/rules.d
 
   # If true, the times displayed in log messages and output messages
@@ -169,6 +176,15 @@ falco:
 
   stdoutOutput:
     enabled: true
+
+  # Falco contains an embedded webserver that can be used to accept K8s
+  # Audit Events. These config options control the behavior of that
+  # webserver. (By default, the webserver is disabled).
+  webserver:
+    enabled: false
+    listenPort: 8765
+    k8sAuditEndpoint: /k8s-audit
+    clusterIP:
 
   # Possible additional things you might want to do with program output:
   #   - send to a slack webhook:

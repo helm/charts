@@ -10,6 +10,7 @@ metadata:
     component: apiserver
     name: maya-apiserver
     openebs.io/component-name: maya-apiserver
+    openebs.io/version: {{ .Values.release.version }}
 spec:
   replicas: {{ .Values.apiserver.replicas }}
   selector:
@@ -50,6 +51,10 @@ spec:
         - name: OPENEBS_IO_INSTALL_DEFAULT_CSTOR_SPARSE_POOL
           value: "{{ .Values.apiserver.sparse.enabled }}"
         - name: OPENEBS_IO_CSTOR_POOL_SPARSE_DIR
+          value: "{{ .Values.ndm.sparse.path }}"
+        - name: OPENEBS_IO_CREATE_DEFAULT_STORAGE_CONFIG
+          value: "{{ .Values.defaultStorageConfig.enabled }}"
+        - name: OPENEBS_IO_CSTOR_TARGET_DIR
           value: "{{ .Values.ndm.sparse.path }}"
         # OPENEBS_NAMESPACE provides the namespace of this deployment as an
         # environment variable

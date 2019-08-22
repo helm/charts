@@ -124,16 +124,19 @@ imagePullSecrets:
 {{- range .Values.global.imagePullSecrets }}
   - name: {{ . }}
 {{- end }}
-{{- else if or .Values.image.pullSecrets .Values.metrics.image.pullSecrets }}
+{{- else if or .Values.image.pullSecrets .Values.metrics.image.pullSecrets .Values.volumePermissions.image.pullSecrets }}
 imagePullSecrets:
 {{- range .Values.image.pullSecrets }}
   - name: {{ . }}
 {{- end }}
 {{- range .Values.metrics.image.pullSecrets }}
+  - name: {{ . }}
+{{- end }}
+{{- range .Values.volumePermissions.image.pullSecrets }}
   - name: {{ . }}
 {{- end }}
 {{- end -}}
-{{- else if or .Values.image.pullSecrets .Values.metrics.image.pullSecrets }}
+{{- else if or .Values.image.pullSecrets .Values.metrics.image.pullSecrets .Values.volumePermissions.image.pullSecrets }}
 imagePullSecrets:
 {{- range .Values.image.pullSecrets }}
   - name: {{ . }}
@@ -141,5 +144,101 @@ imagePullSecrets:
 {{- range .Values.metrics.image.pullSecrets }}
   - name: {{ . }}
 {{- end }}
+{{- range .Values.volumePermissions.image.pullSecrets }}
+  - name: {{ . }}
+{{- end }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return the proper image name (for the init container volume-permissions image)
+*/}}
+{{- define "mariadb.volumePermissions.image" -}}
+{{- $registryName := .Values.volumePermissions.image.registry -}}
+{{- $repositoryName := .Values.volumePermissions.image.repository -}}
+{{- $tag := .Values.volumePermissions.image.tag | toString -}}
+{{/*
+Helm 2.11 supports the assignment of a value to a variable defined in a different scope,
+but Helm 2.9 and 2.10 doesn't support it, so we need to implement this if-else logic.
+Also, we can't use a single if because lazy evaluation is not an option
+*/}}
+{{- if .Values.global }}
+    {{- if .Values.global.imageRegistry }}
+        {{- printf "%s/%s:%s" .Values.global.imageRegistry $repositoryName $tag -}}
+    {{- else -}}
+        {{- printf "%s/%s:%s" $registryName $repositoryName $tag -}}
+    {{- end -}}
+{{- else -}}
+    {{- printf "%s/%s:%s" $registryName $repositoryName $tag -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return  the proper Storage Class for the master
+*/}}
+{{- define "mariadb.master.storageClass" -}}
+{{/*
+Helm 2.11 supports the assignment of a value to a variable defined in a different scope,
+but Helm 2.9 and 2.10 does not support it, so we need to implement this if-else logic.
+*/}}
+{{- if .Values.global -}}
+    {{- if .Values.global.storageClass -}}
+        {{- if (eq "-" .Values.global.storageClass) -}}
+            {{- printf "\"\"" -}}
+        {{- else }}
+            {{- printf "%s" .Values.global.storageClass -}}
+        {{- end -}}
+    {{- else -}}
+        {{- if .Values.master.persistence.storageClass -}}
+              {{- if (eq "-" .Values.master.persistence.storageClass) -}}
+                  {{- printf "\"\"" -}}
+              {{- else }}
+                  {{- printf "%s" .Values.master.persistence.storageClass -}}
+              {{- end -}}
+        {{- end -}}
+    {{- end -}}
+{{- else -}}
+    {{- if .Values.master.persistence.storageClass -}}
+        {{- if (eq "-" .Values.master.persistence.storageClass) -}}
+            {{- printf "\"\"" -}}
+        {{- else }}
+            {{- printf "%s" .Values.master.persistence.storageClass -}}
+        {{- end -}}
+    {{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return  the proper Storage Class for the slave
+*/}}
+{{- define "mariadb.slave.storageClass" -}}
+{{/*
+Helm 2.11 supports the assignment of a value to a variable defined in a different scope,
+but Helm 2.9 and 2.10 does not support it, so we need to implement this if-else logic.
+*/}}
+{{- if .Values.global -}}
+    {{- if .Values.global.storageClass -}}
+        {{- if (eq "-" .Values.global.storageClass) -}}
+            {{- printf "\"\"" -}}
+        {{- else }}
+            {{- printf "%s" .Values.global.storageClass -}}
+        {{- end -}}
+    {{- else -}}
+        {{- if .Values.slave.persistence.storageClass -}}
+              {{- if (eq "-" .Values.slave.persistence.storageClass) -}}
+                  {{- printf "\"\"" -}}
+              {{- else }}
+                  {{- printf "%s" .Values.slave.persistence.storageClass -}}
+              {{- end -}}
+        {{- end -}}
+    {{- end -}}
+{{- else -}}
+    {{- if .Values.slave.persistence.storageClass -}}
+        {{- if (eq "-" .Values.slave.persistence.storageClass) -}}
+            {{- printf "\"\"" -}}
+        {{- else }}
+            {{- printf "%s" .Values.slave.persistence.storageClass -}}
+        {{- end -}}
+    {{- end -}}
 {{- end -}}
 {{- end -}}

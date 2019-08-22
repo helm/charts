@@ -36,6 +36,8 @@ The following table lists the configurable parameters of the consul chart and th
 | `Cpu`                   | container requested cpu               | `100m`                                                     |
 | `DatacenterName`        | Consul Datacenter Name                | `dc1` (The consul default)                                 |
 | `DisableHostNodeId`     | Disable Node Id creation (uses random)| `false`                                                    |
+| `joinPeers`             | Set list of hosts for -retry-join     | `[]`                                                       |
+| `joinWan`               | Set list of hosts for -retry-join-wan | `[]`                                                       |
 | `EncryptGossip`         | Whether or not gossip is encrypted    | `true`                                                     |
 | `GossipKey`             | Gossip-key to use by all members      | `nil`                                                      |
 | `Storage`               | Persistent volume size                | `1Gi`                                                      |
@@ -71,6 +73,8 @@ The following table lists the configurable parameters of the consul chart and th
 | `test.rbac.create`                      | Create rbac for test container                 | `false`                           |
 | `test.rbac.serviceAccountName`          | Name of existed service account for test container    | ``                         |
 | `additionalLabels`      | Add labels to Pod and StatefulSet     | `{}`                                                       |
+| `lifecycle`             | Lifecycle configuration, in YAML, for StatefulSet | `nil`                                          |
+| `forceIpv6`             | force to listen on IPv6 address                                                                    |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 

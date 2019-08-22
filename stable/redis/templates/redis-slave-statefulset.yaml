@@ -32,12 +32,18 @@ spec:
       {{- if .Values.slave.podLabels }}
 {{ toYaml .Values.slave.podLabels | indent 8 }}
       {{- end }}
+      {{- if .Values.metrics.podLabels }}
+{{ toYaml .Values.metrics.podLabels | indent 8 }}
+      {{- end }}
       annotations:
         checksum/health: {{ include (print $.Template.BasePath "/health-configmap.yaml") . | sha256sum }}
         checksum/configmap: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
       {{- if .Values.slave.podAnnotations }}
 {{ toYaml .Values.slave.podAnnotations | indent 8 }}
+      {{- end }}
+      {{- if .Values.metrics.podAnnotations }}
+{{ toYaml .Values.metrics.podAnnotations | indent 8 }}
       {{- end }}
     spec:
 {{- include "redis.imagePullSecrets" . | indent 6 }}
@@ -286,6 +292,40 @@ spec:
         - name: sentinel-tmp-conf
           mountPath: /opt/bitnami/redis-sentinel/etc
       {{- end }}
+{{- if .Values.metrics.enabled }}
+      - name: metrics
+        image: {{ template "redis.metrics.image" . }}
+        imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
+        args:
+        {{- range $key, $value := .Values.metrics.extraArgs }}
+          - --{{ $key }}={{ $value }}
+        {{- end }}
+        env:
+        - name: REDIS_ALIAS
+          value: {{ template "redis.fullname" . }}
+        {{- if .Values.usePassword }}
+        {{- if .Values.usePasswordFile }}
+        - name: REDIS_PASSWORD_FILE
+          value: "/secrets/redis-password"
+        {{- else }}
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "redis.secretName" . }}
+              key: redis-password
+        {{- end }}
+        {{- end }}
+        volumeMounts:
+        {{- if .Values.usePasswordFile }}
+        - name: redis-password
+          mountPath: /secrets/
+        {{- end }}
+        ports:
+        - name: metrics
+          containerPort: 9121
+        resources:
+{{ toYaml .Values.metrics.resources | indent 10 }}
+{{- end }}
       {{- $needsVolumePermissions := and .Values.volumePermissions.enabled (and .Values.slave.persistence.enabled .Values.securityContext.enabled) }}
       {{- if or $needsVolumePermissions .Values.sysctlImage.enabled }}
       initContainers:
@@ -363,13 +403,7 @@ spec:
         resources:
           requests:
             storage: {{ .Values.slave.persistence.size | quote }}
-      {{- if .Values.slave.persistence.storageClass }}
-      {{- if (eq "-" .Values.slave.persistence.storageClass) }}
-        storageClassName: ""
-      {{- else }}
-        storageClassName: {{ .Values.slave.persistence.storageClass | quote }}
-      {{- end }}
-      {{- end }}
+        storageClassName: {{ include "redis.slave.storageClass" . }}
   {{- end }}
   updateStrategy:
     type: {{ .Values.slave.statefulset.updateStrategy }}

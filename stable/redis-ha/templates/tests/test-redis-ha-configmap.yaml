@@ -17,20 +17,8 @@ spec:
     - name: config
       mountPath: /readonly-config
       readOnly: true
-  - name: check-probes
-    image: koalaman/shellcheck:v0.5.0
-    args:
-    - --shell=sh
-    - /probes/check-quorum.sh
-    volumeMounts:
-    - name: probes
-      mountPath: /probes
-      readOnly: true
   volumes:
   - name: config
     configMap:
       name: {{ template "redis-ha.fullname" . }}-configmap
-  - name: probes
-    configMap:
-      name: {{ template "redis-ha.fullname" . }}-probes
   restartPolicy: Never
