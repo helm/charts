@@ -94,14 +94,14 @@ spec:
                 - |
                   EPS=""
                   for i in $(seq 0 $((${INITIAL_CLUSTER_SIZE} - 1))); do
-                      EPS="${EPS}${EPS:+,}https://${SET_NAME}-${i}.${SET_NAME}:2379"
+                      EPS="${EPS}${EPS:+,}{{ $etcdPeerProtocol }}://${SET_NAME}-${i}.${SET_NAME}:2379"
                   done
 
                   HOSTNAME=$(hostname)
                   AUTH_OPTIONS="{{ $etcdAuthOptions }}"                  
 
                   member_hash() {
-                      etcdctl $AUTH_OPTIONS member list | grep https://${HOSTNAME}.${SET_NAME}:2380 | cut -d':' -f1 | cut -d'[' -f1
+                      etcdctl $AUTH_OPTIONS member list | grep {{ $etcdPeerProtocol }}://${HOSTNAME}.${SET_NAME}:2380 | cut -d':' -f1 | cut -d'[' -f1
                   }
 
                   SET_ID=${HOSTNAME##*[^0-9]}
