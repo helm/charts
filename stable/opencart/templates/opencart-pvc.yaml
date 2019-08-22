@@ -14,5 +14,5 @@ spec:
   resources:
     requests:
       storage: {{ .Values.persistence.opencart.size | quote }}
-  storageClassName: {{ include "opencart.storageClass" . }}
+  {{ include "opencart.storageClass" . }}
 {{- end -}}
