@@ -23,9 +23,7 @@ spec:
       name: {{ template "k8s-prometheus-adapter.name" . }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/custom-metrics-configmap.yaml") . | sha256sum }}
-{{- with .Values.podAnnotations }}
-{{ toYaml . | indent 8 }}
-{{- end }}
+        {{- toYaml .Values.podAnnotations | trim | nindent 8 }}
     spec:
       serviceAccountName: {{ template "k8s-prometheus-adapter.serviceAccountName" . }}
       containers:
