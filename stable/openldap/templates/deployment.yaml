@@ -39,9 +39,9 @@ spec:
       {{- end }}
       {{- if .Values.customLdifFiles }}
       - name: {{ .Chart.Name }}-init-ldif
-        image: busybox
+        image: "{{ .Values.initImage.repository }}:{{ .Values.initImage.tag }}"
         command: ['sh', '-c', 'cp /customldif/* /ldifworkingdir']
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        imagePullPolicy: {{ .Values.initImage.pullPolicy }}
         volumeMounts:
         - name: customldif
           mountPath: /customldif
@@ -52,9 +52,9 @@ spec:
       {{- end }}
       {{- if .Values.tls.enabled }}
       - name: {{ .Chart.Name }}-init-tls
-        image: busybox
+        image: "{{ .Values.initImage.repository }}:{{ .Values.initImage.tag }}"
         command: ['sh', '-c', 'cp /tls/* /certs']
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        imagePullPolicy: {{ .Values.initImage.pullPolicy }}
         volumeMounts:
           - name: tls
             mountPath: /tls
@@ -64,8 +64,9 @@ spec:
 {{ toYaml .Values.initResources | indent 10 }}
       {{- if .Values.tls.CA.enabled }}
       - name: {{ .Chart.Name }}-init-catls
-        image: busybox
+        image: "{{ .Values.initImage.repository }}:{{ .Values.initImage.tag }}"
         command: ['sh', '-c', 'cp /catls/ca.crt /certs']
+        imagePullPolicy: {{ .Values.initImage.pullPolicy }}
         volumeMounts:
           - name: catls
             mountPath: /catls
