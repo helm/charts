@@ -14,5 +14,5 @@ spec:
   resources:
     requests:
       storage: {{ .Values.persistence.orangehrm.size | quote }}
-  storageClassName: {{ include "orangehrm.storageClass" . }}
+  {{ include "orangehrm.storageClass" . }}
 {{- end -}}

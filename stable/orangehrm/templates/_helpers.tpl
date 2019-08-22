@@ -130,25 +130,25 @@ but Helm 2.9 and 2.10 does not support it, so we need to implement this if-else 
 {{- if .Values.global -}}
     {{- if .Values.global.storageClass -}}
         {{- if (eq "-" .Values.global.storageClass) -}}
-            {{- printf "\"\"" -}}
+            {{- printf "storageClassName: \"\"" -}}
         {{- else }}
-            {{- printf "%s" .Values.global.storageClass -}}
+            {{- printf "storageClassName: %s" .Values.global.storageClass -}}
         {{- end -}}
     {{- else -}}
         {{- if .Values.persistence.orangehrm.storageClass -}}
               {{- if (eq "-" .Values.persistence.orangehrm.storageClass) -}}
-                  {{- printf "\"\"" -}}
+                  {{- printf "storageClassName: \"\"" -}}
               {{- else }}
-                  {{- printf "%s" .Values.persistence.orangehrm.storageClass -}}
+                  {{- printf "storageClassName: %s" .Values.persistence.orangehrm.storageClass -}}
               {{- end -}}
         {{- end -}}
     {{- end -}}
 {{- else -}}
     {{- if .Values.persistence.orangehrm.storageClass -}}
         {{- if (eq "-" .Values.persistence.orangehrm.storageClass) -}}
-            {{- printf "\"\"" -}}
+            {{- printf "storageClassName: \"\"" -}}
         {{- else }}
-            {{- printf "%s" .Values.persistence.orangehrm.storageClass -}}
+            {{- printf "storageClassName: %s" .Values.persistence.orangehrm.storageClass -}}
         {{- end -}}
     {{- end -}}
 {{- end -}}
