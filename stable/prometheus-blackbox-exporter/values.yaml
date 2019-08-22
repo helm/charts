@@ -99,6 +99,7 @@ serviceMonitor:
   labels: {}
   interval: 30s
   scrapeTimeout: 30s
+  module: http_2xx
   # The URL that blackbox will scrape
   url: http://example.com/healthz
   # Optional human readable URL that will appear in Prometheus / AlertManager
