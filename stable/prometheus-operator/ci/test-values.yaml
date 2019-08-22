@@ -28,18 +28,15 @@ defaultRules:
     kubeApiserver: true
     kubePrometheusNodeAlerting: true
     kubePrometheusNodeRecording: true
+    kubeScheduler: true
     kubernetesAbsent: true
     kubernetesApps: true
     kubernetesResources: true
     kubernetesStorage: true
     kubernetesSystem: true
-    kubeScheduler: true
-    network: true
     node: true
-    prometheus: true
     prometheusOperator: true
-    time: true
-
+    prometheus: true
   ## Labels for default rules
   labels: {}
   ## Annotations for default rules
@@ -414,11 +411,6 @@ grafana:
     datasources:
       enabled: true
       defaultDatasourceEnabled: true
-      ## Create datasource for each Pod of Prometheus StatefulSet;
-      ## this uses headless service `prometheus-operated` which is
-      ## created by Prometheus Operator
-      ## ref: https://git.io/fjaBS
-      createPrometheusReplicasDatasources: false
       label: grafana_datasource
 
   extraConfigmapMounts: []
@@ -926,36 +918,6 @@ prometheus-node-exporter:
 prometheusOperator:
   enabled: true
 
-  tlsProxy:
-    enabled: true
-    image:
-      repository: squareup/ghostunnel
-      tag: v1.4.1
-      pullPolicy: IfNotPresent
-    resources: {}
-
-  ## Admission webhook support for PrometheusRules resources added in Prometheus Operator 0.30 can be enabled to prevent incorrectly formatted
-  ## rules from making their way into prometheus and potentially preventing the container from starting
-  admissionWebhooks:
-    failurePolicy: Fail
-    enabled: true
-    ## If enabled, generate a self-signed certificate, then patch the webhook configurations with the generated data.
-    ## On chart upgrades (or if the secret exists) the cert will not be re-generated. You can use this to provide your own
-    ## certs ahead of time if you wish.
-    ##
-    patch:
-      enabled: true
-      image:
-        repository: jettech/kube-webhook-certgen
-        tag: v1.0.0
-        pullPolicy: IfNotPresent
-      ## Provide a priority class name to the webhook patching job
-      ##
-      priorityClassName: ""
-      podAnnotations: {}
-      nodeSelector: {}
-
-
   ## Service account for Alertmanager to use.
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
   ##
@@ -974,8 +936,6 @@ prometheusOperator:
   ## Only used if service.type is 'NodePort'
   ##
     nodePort: 30080
-
-    nodePortTls: 30443
 
   ## Additional ports to open for Prometheus service
   ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#multi-port-services
@@ -1217,11 +1177,6 @@ prometheus:
       #   hosts:
       #     - prometheus.example.com
 
-  ## Configure additional options for default pod security policy for Prometheus
-  ## ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/
-  podSecurityPolicy:
-    allowedCapabilities: []
-
   serviceMonitor:
     ## Scrape interval. If not set, the Prometheus default scrape interval is used.
     ##
@@ -1390,26 +1345,6 @@ prometheus:
     ## See https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#namespaceselector for usage
     ##
     serviceMonitorNamespaceSelector: {}
-
-    ## If true, a nil or {} value for prometheus.prometheusSpec.podMonitorSelector will cause the
-    ## prometheus resource to be created with selectors based on values in the helm deployment,
-    ## which will also match the podmonitors created
-    ##
-    podMonitorSelectorNilUsesHelmValues: true
-
-    ## PodMonitors to be selected for target discovery.
-    ## If {}, select all PodMonitors
-    ##
-    podMonitorSelector: {}
-    ## Example which selects PodMonitors with label "prometheus" set to "somelabel"
-    # podMonitorSelector:
-    #   matchLabels:
-    #     prometheus: somelabel
-
-    ## Namespaces to be selected for PodMonitor discovery.
-    ## See https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#namespaceselector for usage
-    ##
-    podMonitorNamespaceSelector: {}
 
     ## How long to retain metrics
     ##
@@ -1681,60 +1616,3 @@ prometheus:
           ## Server name used to verify host name
           ##
           # serverName: ""
-
-  additionalPodMonitors: []
-  ## Name of the PodMonitor to create
-  ##
-  # - name: ""
-
-    ## Additional labels to set used for the PodMonitorSelector. Together with standard labels from
-    ## the chart
-    ##
-    # additionalLabels: {}
-
-    ## Pod label for use in assembling a job name of the form <label value>-<port>
-    ## If no label is specified, the pod endpoint name is used.
-    ##
-    # jobLabel: ""
-
-    ## labels to transfer from the kubernetes pods to the target
-    ##
-    # podTargetLabels: ""
-
-    ## Label selector for pods to which this PodMonitor applies
-    ##
-    # selector: {}
-
-    ## Namespaces from which pods are selected
-    ##
-    # namespaceSelector:
-      ## Match any namespace
-      ##
-      # any: false
-
-      ## Explicit list of namespace names to select
-      ##
-      # matchNames: []
-
-    ## Endpoints of the selected pods to be monitored
-    ##
-    # podMetricsEndpoints: []
-      ## Name of the port this endpoint refers to
-      ## Mutually exclusive with targetPort
-      # - port: ""
-
-      ## Name or number of the target port of the endpoint
-      ## Mutually exclusive with port
-      # - targetPort: ""
-
-      ## Interval at which metrics should be scraped
-      ##
-      #   interval: 30s
-
-      ## HTTP path to scrape for metrics
-      ##
-      #   path: /metrics
-
-      ## HTTP scheme to use for scraping
-      ##
-      #   scheme: http

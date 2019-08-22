@@ -1701,10 +1701,6 @@ prometheus:
     ##
     # jobLabel: ""
 
-    ## labels to transfer from the kubernetes pods to the target
-    ##
-    # podTargetLabels: ""
-
     ## Label selector for pods to which this PodMonitor applies
     ##
     # selector: {}
@@ -1721,6 +1717,7 @@ prometheus:
       # matchNames: []
 
     ## Endpoints of the selected pods to be monitored
+    ## https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#podmetricsendpoint
     ##
     # podMetricsEndpoints: []
       ## Name of the port this endpoint refers to
