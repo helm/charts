@@ -225,7 +225,7 @@ master:
       enabled: false
       image: shadwell/k8s-sidecar:0.0.2
       imagePullPolicy: IfNotPresent
-      resources:
+      resources: {}
         #   limits:
         #     cpu: 100m
         #     memory: 100Mi
