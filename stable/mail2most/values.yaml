@@ -3,7 +3,7 @@ deployment:
   image:
     repository: virtomize/mail2most
     tag: v1.3.0-1-gf21be72
-    pullPolicy: IfNotPresent 
+    pullPolicy: IfNotPresent
 
 resources: {}
 #  limits:
@@ -40,4 +40,3 @@ persistence:
     nfs:
       server:
       path:
-
