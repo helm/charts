@@ -36,6 +36,8 @@ tolerations: {}
 
 podAnnotations: {}
 
+affinity: {}
+
 service:
   type: ClusterIP
   httpPort: 9108
