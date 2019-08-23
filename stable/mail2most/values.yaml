@@ -2,7 +2,7 @@ deployment:
   replicas: 1
   image:
     repository: virtomize/mail2most
-    tag: latest
+    tag: v1.3.0-1-gf21be72
     pullPolicy: Always
 
 resources: {}
