@@ -17,5 +17,5 @@ spec:
   resources:
     requests:
       storage: {{ .Values.persistence.drupal.size | quote }}
-  storageClassName: {{ include "drupal.storageClass" . }}
+  {{ include "drupal.storageClass" . }}
 {{- end -}}
