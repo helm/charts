@@ -215,8 +215,8 @@ data:
 {{- end }}
   apply_config.sh: |-
     mkdir -p /usr/share/jenkins/ref/secrets/;
-    echo "false" > /usr/share/jenkins/ref/secrets/slave-to-master-security-kill-switch;
 {{- if .Values.master.enableXmlConfig }}
+    echo "false" > /usr/share/jenkins/ref/secrets/slave-to-master-security-kill-switch;
 {{- if .Values.master.overwriteConfig }}
     cp /var/jenkins_config/config.xml /var/jenkins_home;
     cp /var/jenkins_config/jenkins.CLI.xml /var/jenkins_home;
