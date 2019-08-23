@@ -385,7 +385,7 @@ spec:
         resources:
           requests:
             storage: {{ .Values.master.persistence.size | quote }}
-        storageClassName: {{ include "redis.master.storageClass" . }}
+        {{ include "redis.master.storageClass" . }}
   {{- end }}
   updateStrategy:
     type: {{ .Values.master.statefulset.updateStrategy }}

@@ -80,6 +80,7 @@ The following table lists the configurable parameters of the Blackbox-Exporter c
 | `serviceMonitor.enabled`               | If true, a ServiceMonitor CRD is created for a prometheus operator | `false`      |
 | `serviceMonitor.labels`                | Labels for prometheus operator                    | `{}`                          |
 | `serviceMonitor.interval`              | Interval for prometheus operator endpoint         | `30s`                         |
+| `serviceMonitor.module`                | The module that blackbox will use if serviceMonitor is enabled | `http_2xx` |
 | `serviceMonitor.url`                   | The URL that blackbox will scrape if serviceMonitor is enabled | `http://example.com/healthz` |
 | `serviceMonitor.urlHumanReadable`      | Optional human readable URL that will appear in Prometheus / AlertManager | `nil` |
 
