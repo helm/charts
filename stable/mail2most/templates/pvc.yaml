@@ -4,10 +4,10 @@ apiVersion: v1
 metadata:
   name: {{ template "name" . }}-pvc
   labels:
-    app: {{ template "name" . }}
-    chart: "{{ .Chart.Name}}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/name:  {{ template "name" . }}
+    app.kubernetes.io/instance: "{{ .Release.Name }}"
+    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
 spec:
   accessModes:
     - ReadWriteMany

@@ -3,10 +3,10 @@ kind: ConfigMap
 metadata:
   name: {{ template "name" . }}-configmap
   labels:
-    app:  {{ template "name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/name:  {{ template "name" . }}
+    app.kubernetes.io/instance: "{{ .Release.Name }}"
+    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
 data:
   mail2most.conf: |
     # An example Mail2Most configuration
