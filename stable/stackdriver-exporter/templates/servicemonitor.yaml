@@ -24,4 +24,4 @@ spec:
       app: {{ template "stackdriver-exporter.name" . }}
       release: "{{ .Release.Name }}"
       heritage: "{{ .Release.Service }}"
-{{- end -}}
+{{- end }}
