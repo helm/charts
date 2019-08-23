@@ -47,7 +47,7 @@ spec:
                   apiVersion: v1
                   fieldPath: status.podIP
           args:
-            - --config.file=/etc/config/alertmanager.yml
+            - --config.file=/etc/config/{{ .Values.alertmanager.configFileName }}
             - --storage.path={{ .Values.alertmanager.persistentVolume.mountPath }}
             - --cluster.advertise-address=$(POD_IP):6783
           {{- if .Values.alertmanager.statefulSet.headless.enableMeshPeer }}
@@ -115,8 +115,13 @@ spec:
     {{- end }}
       volumes:
         - name: config-volume
+          {{- if empty .Values.alertmanager.configFromSecret }}
           configMap:
             name: {{ if .Values.alertmanager.configMapOverrideName }}{{ .Release.Name }}-{{ .Values.alertmanager.configMapOverrideName }}{{- else }}{{ template "prometheus.alertmanager.fullname" . }}{{- end }}
+          {{- else }}
+          secret:
+            secretName: {{ .Values.alertmanager.configFromSecret }}
+          {{- end }}
       {{- range .Values.alertmanager.extraSecretMounts }}
         - name: {{ .name }}
           secret:
