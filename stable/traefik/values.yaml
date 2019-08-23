@@ -346,7 +346,8 @@ dashboard:
   service: {}
     # annotations:
     #   key: value
-  ingress: {}
+  ingress:
+    enabled: true
     # annotations:
     #   key: value
     # labels:

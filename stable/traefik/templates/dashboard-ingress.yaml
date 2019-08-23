@@ -1,4 +1,4 @@
-{{- if .Values.dashboard.enabled }}
+{{- if and .Values.dashboard.enabled .Values.dashboard.ingress.enabled }}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
