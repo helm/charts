@@ -9,5 +9,5 @@ spec:
   resources:
     requests:
       storage: {{ .Values.persistence.owncloud.size | quote }}
-  storageClassName: {{ include "owncloud.storageClass" . }}
+  {{ include "owncloud.storageClass" . }}
 {{- end -}}
