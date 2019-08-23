@@ -15,7 +15,7 @@ Before installing the service edit [configmap.yaml](templates/configmap.yaml) an
 To install the chart with the release name `my-release`, run:
 
 ```bash
-$ helm install --name mail2most incubator/mail2most
+$ helm install --name mail2most stable/mail2most
 ```
 
 This deploys a singel instance of mail2most using the default configuration.
@@ -40,13 +40,13 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 ```bash
 $ helm install --name mail2most \
     --set resources.limits.cpu=200m \
-    incubator/mail2most
+    stable/mail2most
 ```
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name mail2most -f values.yaml incubator/mail2most
+$ helm install --name mail2most -f values.yaml stable/mail2most
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
