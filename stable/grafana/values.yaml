@@ -171,6 +171,7 @@ extraContainers: |
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ##
 persistence:
+  type: pvc # pvc or statefulset
   enabled: false
   # storageClassName: default
   accessModes:
