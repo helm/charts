@@ -8,7 +8,7 @@ restartPolicy: Always
 
 image:
   repository: justwatch/elasticsearch_exporter
-  tag: 1.0.2
+  tag: 1.1.0
   pullPolicy: IfNotPresent
   pullSecret: ""
 
@@ -35,6 +35,8 @@ nodeSelector: {}
 tolerations: {}
 
 podAnnotations: {}
+
+affinity: {}
 
 service:
   type: ClusterIP
@@ -67,6 +69,18 @@ es:
   ## If true, query stats for all indices in the cluster.
   ##
   indices: true
+
+  ## If true, query stats for shards in the cluster.
+  ##
+  shards: true
+
+  ## If true, query stats for snapshots in the cluster.
+  ##
+  snapshots: true
+
+  ## If true, query stats for cluster settings.
+  ##
+  cluster_settings: false
 
   ## Timeout for trying to get stats from Elasticsearch. (ex: 20s)
   ##

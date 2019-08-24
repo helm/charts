@@ -58,55 +58,62 @@ chart and deletes the release.
 The following table lists the configurable parameters of the Kong chart
 and their default values.
 
-| Parameter                      | Description                                                                      | Default             |
-| ------------------------------ | -------------------------------------------------------------------------------- | ------------------- |
-| image.repository               | Kong image                                                                       | `kong`              |
-| image.tag                      | Kong image version                                                               | `1.2`               |
-| image.pullPolicy               | Image pull policy                                                                | `IfNotPresent`      |
-| image.pullSecrets              | Image pull secrets                                                               | `null`              |
-| replicaCount                   | Kong instance count                                                              | `1`                 |
-| admin.useTLS                   | Secure Admin traffic                                                             | `true`              |
-| admin.servicePort              | TCP port on which the Kong admin service is exposed                              | `8444`              |
-| admin.containerPort            | TCP port on which Kong app listens for admin traffic                             | `8444`              |
-| admin.nodePort                 | Node port when service type is `NodePort`                                        |                     |
-| admin.hostPort                 | Host port to use for admin traffic                                               |                     |
-| admin.type                     | k8s service type, Options: NodePort, ClusterIP, LoadBalancer                     | `NodePort`          |
-| admin.loadBalancerIP           | Will reuse an existing ingress static IP for the admin service                   | `null`              |
-| admin.loadBalancerSourceRanges | Limit admin access to CIDRs if set and service type is `LoadBalancer`            | `[]`                |
-| admin.ingress.enabled          | Enable ingress resource creation (works with proxy.type=ClusterIP)               | `false`             |
-| admin.ingress.tls              | Name of secret resource, containing TLS secret                                   |                     |
-| admin.ingress.hosts            | List of ingress hosts.                                                           | `[]`                |
-| admin.ingress.path             | Ingress path.                                                                    | `/`                 |
-| admin.ingress.annotations      | Ingress annotations. See documentation for your ingress controller for details   | `{}`                |
-| proxy.http.enabled             | Enables http on the proxy                                                        | true                |
-| proxy.http.servicePort         | Service port to use for http                                                     | 80                  |
-| proxy.http.containerPort       | Container port to use for http                                                   | 8000                |
-| proxy.http.nodePort            | Node port to use for http                                                        | 32080               |
-| proxy.http.hostPort            | Host port to use for http                                                        |                     |
-| proxy.tls.enabled              | Enables TLS on the proxy                                                         | true                |
-| proxy.tls.containerPort        | Container port to use for TLS                                                    | 8443                |
-| proxy.tls.servicePort          | Service port to use for TLS                                                      | 8443                |
-| proxy.tls.nodePort             | Node port to use for TLS                                                         | 32443               |
-| proxy.tls.hostPort             | Host port to use for TLS                                                         |                     |
-| proxy.type                     | k8s service type. Options: NodePort, ClusterIP, LoadBalancer                     | `NodePort`          |
-| proxy.loadBalancerSourceRanges | Limit proxy access to CIDRs if set and service type is `LoadBalancer`            | `[]`                |
-| proxy.loadBalancerIP           | To reuse an existing ingress static IP for the admin service                     |                     |
-| proxy.externalIPs              | IPs for which nodes in the cluster will also accept traffic for the proxy        | `[]`                |
-| proxy.externalTrafficPolicy    | k8s service's externalTrafficPolicy. Options: Cluster, Local                     |                     |
-| proxy.ingress.enabled          | Enable ingress resource creation (works with proxy.type=ClusterIP)               | `false`             |
-| proxy.ingress.tls              | Name of secret resource, containing TLS secret                                   |                     |
-| proxy.ingress.hosts            | List of ingress hosts.                                                           | `[]`                |
-| proxy.ingress.path             | Ingress path.                                                                    | `/`                 |
-| proxy.ingress.annotations      | Ingress annotations. See documentation for your ingress controller for details   | `{}`                |
-| env                            | Additional [Kong configurations](https://getkong.org/docs/latest/configuration/) |                     |
-| runMigrations                  | Run Kong migrations job                                                          | `true`              |
-| readinessProbe                 | Kong readiness probe                                                             |                     |
-| livenessProbe                  | Kong liveness probe                                                              |                     |
-| affinity                       | Node/pod affinities                                                              |                     |
-| nodeSelector                   | Node labels for pod assignment                                                   | `{}`                |
-| podAnnotations                 | Annotations to add to each pod                                                   | `{}`                |
-| resources                      | Pod resource requests & limits                                                   | `{}`                |
-| tolerations                    | List of node taints to tolerate                                                  | `[]`                |
+| Parameter                          | Description                                                                           | Default             |
+| ---------------------------------- | ------------------------------------------------------------------------------------- | ------------------- |
+| image.repository                   | Kong image                                                                            | `kong`              |
+| image.tag                          | Kong image version                                                                    | `1.2`               |
+| image.pullPolicy                   | Image pull policy                                                                     | `IfNotPresent`      |
+| image.pullSecrets                  | Image pull secrets                                                                    | `null`              |
+| replicaCount                       | Kong instance count                                                                   | `1`                 |
+| admin.useTLS                       | Secure Admin traffic                                                                  | `true`              |
+| admin.servicePort                  | TCP port on which the Kong admin service is exposed                                   | `8444`              |
+| admin.containerPort                | TCP port on which Kong app listens for admin traffic                                  | `8444`              |
+| admin.nodePort                     | Node port when service type is `NodePort`                                             |                     |
+| admin.hostPort                     | Host port to use for admin traffic                                                    |                     |
+| admin.type                         | k8s service type, Options: NodePort, ClusterIP, LoadBalancer                          | `NodePort`          |
+| admin.loadBalancerIP               | Will reuse an existing ingress static IP for the admin service                        | `null`              |
+| admin.loadBalancerSourceRanges     | Limit admin access to CIDRs if set and service type is `LoadBalancer`                 | `[]`                |
+| admin.ingress.enabled              | Enable ingress resource creation (works with proxy.type=ClusterIP)                    | `false`             |
+| admin.ingress.tls                  | Name of secret resource, containing TLS secret                                        |                     |
+| admin.ingress.hosts                | List of ingress hosts.                                                                | `[]`                |
+| admin.ingress.path                 | Ingress path.                                                                         | `/`                 |
+| admin.ingress.annotations          | Ingress annotations. See documentation for your ingress controller for details        | `{}`                |
+| proxy.http.enabled                 | Enables http on the proxy                                                             | true                |
+| proxy.http.servicePort             | Service port to use for http                                                          | 80                  |
+| proxy.http.containerPort           | Container port to use for http                                                        | 8000                |
+| proxy.http.nodePort                | Node port to use for http                                                             | 32080               |
+| proxy.http.hostPort                | Host port to use for http                                                             |                     |
+| proxy.tls.enabled                  | Enables TLS on the proxy                                                              | true                |
+| proxy.tls.containerPort            | Container port to use for TLS                                                         | 8443                |
+| proxy.tls.servicePort              | Service port to use for TLS                                                           | 8443                |
+| proxy.tls.nodePort                 | Node port to use for TLS                                                              | 32443               |
+| proxy.tls.hostPort                 | Host port to use for TLS                                                              |                     |
+| proxy.type                         | k8s service type. Options: NodePort, ClusterIP, LoadBalancer                          | `NodePort`          |
+| proxy.loadBalancerSourceRanges     | Limit proxy access to CIDRs if set and service type is `LoadBalancer`                 | `[]`                |
+| proxy.loadBalancerIP               | To reuse an existing ingress static IP for the admin service                          |                     |
+| proxy.externalIPs                  | IPs for which nodes in the cluster will also accept traffic for the proxy             | `[]`                |
+| proxy.externalTrafficPolicy        | k8s service's externalTrafficPolicy. Options: Cluster, Local                          |                     |
+| proxy.ingress.enabled              | Enable ingress resource creation (works with proxy.type=ClusterIP)                    | `false`             |
+| proxy.ingress.tls                  | Name of secret resource, containing TLS secret                                        |                     |
+| proxy.ingress.hosts                | List of ingress hosts.                                                                | `[]`                |
+| proxy.ingress.path                 | Ingress path.                                                                         | `/`                 |
+| proxy.ingress.annotations          | Ingress annotations. See documentation for your ingress controller for details        | `{}`                |
+| updateStrategy                     | update strategy for deployment                                                        | `{}`                |
+| env                                | Additional [Kong configurations](https://getkong.org/docs/latest/configuration/)      |                     |
+| runMigrations                      | Run Kong migrations job                                                               | `true`              |
+| readinessProbe                     | Kong readiness probe                                                                  |                     |
+| livenessProbe                      | Kong liveness probe                                                                   |                     |
+| affinity                           | Node/pod affinities                                                                   |                     |
+| nodeSelector                       | Node labels for pod assignment                                                        | `{}`                |
+| podAnnotations                     | Annotations to add to each pod                                                        | `{}`                |
+| resources                          | Pod resource requests & limits                                                        | `{}`                |
+| tolerations                        | List of node taints to tolerate                                                       | `[]`                |
+| podDisruptionBudget.enabled        | Enable PodDisruptionBudget for Kong                                                   | `false`             |
+| podDisruptionBudget.maxUnavailable | Represents the minimum number of Pods that can be unavailable (integer or percentage) | `50%`               |
+| podDisruptionBudget.minAvailable   | Represents the number of Pods that must be available (integer or percentage)          |                     |
+| serviceMonitor.enabled             | Create ServiceMonitor for Prometheus Operator                                         | false               |
+| serviceMonitor.interval            | Scrapping interval                                                                    | 10s                 |
+| serviceMonitor.namespace           | Where to create ServiceMonitor                                                        |                     |
 
 ### Admin/Proxy listener override
 
@@ -115,12 +122,12 @@ the value provided by you as opposed to constructing a listen variable
 from fields like `proxy.http.containerPort` and `proxy.http.enabled`. This allows
 you to be more prescriptive when defining listen directives.
 
-**Note:** Overriding `env.proxy_listen` and `env.admin_listen` will potentially cause 
-`admin.containerPort`, `proxy.http.containerPort` and `proxy.tls.containerPort` to become out of sync, 
+**Note:** Overriding `env.proxy_listen` and `env.admin_listen` will potentially cause
+`admin.containerPort`, `proxy.http.containerPort` and `proxy.tls.containerPort` to become out of sync,
 and therefore must be updated accordingly.
 
-I.E. updatating to `env.proxy_listen: 0.0.0.0:4444, 0.0.0.0:4443 ssl` will need 
-`proxy.http.containerPort: 4444` and `proxy.tls.containerPort: 4443` to be set in order 
+I.E. updatating to `env.proxy_listen: 0.0.0.0:4444, 0.0.0.0:4443 ssl` will need
+`proxy.http.containerPort: 4444` and `proxy.tls.containerPort: 4443` to be set in order
 for the service definition to work properly.
 
 ### Kong-specific parameters
@@ -168,7 +175,7 @@ kong:
             key: kong
             name: postgres
 ```
- 
+
 
 For complete list of Kong configurations please check https://getkong.org/docs/latest/configuration/.
 
@@ -374,12 +381,17 @@ The custom resources are:
 
 You can can learn about kong ingress custom resource definitions [here](https://github.com/Kong/kubernetes-ingress-controller/blob/master/docs/custom-resources.md).
 
-| Parameter        | Description                                 | Default                                                                      |
-| ---------------  | -----------------------------------------   | ---------------------------------------------------------------------------- |
-| enabled          | Deploy the ingress controller, rbac and crd | false                                                                        |
-| replicaCount     | Number of desired ingress controllers       | 1                                                                            |
-| image.repository | Docker image with the ingress controller    | kong-docker-kubernetes-ingress-controller.bintray.io/kong-ingress-controller |
-| image.tag        | Version of the ingress controller           | 0.2.0                                                                        |
-| readinessProbe   | Kong ingress controllers readiness probe    |                                                                              |
-| livenessProbe    | Kong ingress controllers liveness probe     |                                                                              |
-| ingressClass     | The ingress-class value for controller      | nginx
+
+| Parameter                          | Description                                                                           | Default                                                                      |
+| ---------------------------------- | ------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| enabled                            | Deploy the ingress controller, rbac and crd                                           | false                                                                        |
+| replicaCount                       | Number of desired ingress controllers                                                 | 1                                                                            |
+| image.repository                   | Docker image with the ingress controller                                              | kong-docker-kubernetes-ingress-controller.bintray.io/kong-ingress-controller |
+| image.tag                          | Version of the ingress controller                                                     | 0.2.0                                                                        |
+| readinessProbe                     | Kong ingress controllers readiness probe                                              |                                                                              |
+| livenessProbe                      | Kong ingress controllers liveness probe                                               |                                                                              |
+| ingressClass                       | The ingress-class value for controller                                                | nginx                                                                        |
+| podDisruptionBudget.enabled        | Enable PodDisruptionBudget for ingress controller                                     | `false`                                                                      |
+| podDisruptionBudget.maxUnavailable | Represents the minimum number of Pods that can be unavailable (integer or percentage) | `50%`                                                                        |
+| podDisruptionBudget.minAvailable   | Represents the number of Pods that must be available (integer or percentage)          |                                                                              |
+

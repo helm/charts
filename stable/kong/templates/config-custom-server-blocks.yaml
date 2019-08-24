@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Release.Name }}-kong-default-custom-server-blocks
+  name: {{ template "kong.fullname" . }}-default-custom-server-blocks
   labels:
     app: {{ template "kong.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"

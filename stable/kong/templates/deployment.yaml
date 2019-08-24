@@ -15,6 +15,11 @@ spec:
       app: {{ template "kong.name" . }}
       release: {{ .Release.Name }}
       component: app
+  {{- if .Values.updateStrategy }}
+  strategy:
+{{ toYaml .Values.updateStrategy | indent 4 }}
+  {{- end }}
+
   template:
     metadata:
       annotations:
@@ -103,7 +108,7 @@ spec:
         - name: KONG_ADMIN_GUI_AUTH
           value: {{ .Values.enterprise.rbac.admin_gui_auth | default "basic-auth" }}
         - name: KONG_ADMIN_GUI_AUTH_CONF
-          value: {{ toJson .Values.enterprise.rbac.admin_gui_auth_conf | default "" }}
+          value: '{{ toJson .Values.enterprise.rbac.admin_gui_auth_conf }}'
         - name: KONG_ADMIN_GUI_SESSION_CONF
           valueFrom:
             secretKeyRef:
@@ -264,7 +269,7 @@ spec:
       volumes:
         - name: custom-nginx-template-volume
           configMap:
-            name: {{ .Release.Name }}-kong-default-custom-server-blocks
+            name: {{ template "kong.fullname" . }}-default-custom-server-blocks
 {{- if (and (not .Values.ingressController.enabled) (eq .Values.env.database "off")) }}
         - name: kong-custom-dbless-config-volume
           configMap:
