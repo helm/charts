@@ -93,15 +93,18 @@ openvpn:
   # serverConf: |
   #  max-clients 100
   #  client-to-client
+  
   # Lines appended to the end of the client configuration file
-  # CAUTION: These client options are written to ALL client configuration files, so make sure they apply to all clients
-  # For example, if all of your clients are Ubuntu (18.04+) you may need to install the update-systemd-resolved package (apt install update-systemd-resolved) then set the following to make sure systemd-resolved routes DNS requests correctly:
+  # Example: if all of your clients are Ubuntu (18.04+) you may need to install
+  # the update-systemd-resolved package (apt install update-systemd-resolved) then
+  # set the following to make sure systemd-resolved routes DNS requests correctly:
   # clientConf: |
   #  script-security 2
   #  up /etc/openvpn/update-systemd-resolved
   #  up-restart
   #  down /etc/openvpn/update-systemd-resolved
   #  down-pre
+
   # Enable istio support for openvpn connections
   istio:
     enabled: false

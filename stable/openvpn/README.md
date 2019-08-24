@@ -156,9 +156,7 @@ Note: using mounted secret makes creation of new client certificates impossible 
 
 Issue: https://github.com/helm/charts/issues/6398
 
-The symptom you'll see is that no traffic comes back from the VPN.  This stems from Kubernetes not allowing ip_forward for non-privileged containers [Kubernetes Issue](https://github.com/kubernetes/kubernetes/issues/62942).
-
-Possible Workaround: https://github.com/helm/charts/issues/6398#issuecomment-522074523
+If routes look correct on the client but data is not returning from the vpn then the kubernetes node running openvpn may not have ip_forward enabled.  Set the `ipForwardInitContainer` value to `true` to run an init container that enables ip forwarding.
 
 ### 2. Ubuntu/systemd-resolved DNS
 
