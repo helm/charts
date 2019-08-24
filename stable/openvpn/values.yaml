@@ -93,7 +93,7 @@ openvpn:
   # serverConf: |
   #  max-clients 100
   #  client-to-client
-  
+
   # Lines appended to the end of the client configuration file
   # Example: if all of your clients are Ubuntu (18.04+) you may need to install
   # the update-systemd-resolved package (apt install update-systemd-resolved) then
