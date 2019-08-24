@@ -45,7 +45,7 @@ data:
       REMOTE_ADDR=$2
 
       cd $EASY_RSA_LOC
-      export EASYRSA_PKI=$EASY_RSA_LOC
+      export EASYRSA_PKI=$EASY_RSA_LOC/pki
       easyrsa build-client-full $CLIENT_NAME nopass
 
       cat >${EASY_RSA_LOC}/pki/$1.ovpn <<EOF
