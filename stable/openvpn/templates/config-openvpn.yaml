@@ -10,6 +10,7 @@ metadata:
 data:
   setup-certs.sh: |-
     #!/bin/bash
+    set -eu
     EASY_RSA_LOC="/etc/openvpn/certs"
     SERVER_CERT="${EASY_RSA_LOC}/pki/issued/server.crt"
     if [ -e "$SERVER_CERT" ]
@@ -32,7 +33,7 @@ data:
         fi
       {{- end }}
     else
-      export EASYRSA_PKI=$EASY_RSA_LOC
+      export EASYRSA_PKI=$EASY_RSA_LOC/pki
       ovpn_genconfig -u server
       echo "ca\n" | ovpn_initpki nopass
     fi
@@ -150,13 +151,14 @@ data:
       sed 's|NETWORK|'"${NETWORK}"'|' -i /etc/openvpn/openvpn.conf
       sed 's|NETMASK|'"${NETMASK}"'|' -i /etc/openvpn/openvpn.conf
 
-      if [ "$DEBUG" == "1" ]; then
-        echo ========== /etc/openvpn/openvpn.conf ==========
-        cat /etc/openvpn/openvpn.conf
-        echo ===============================================
+      if [ "{{ .Values.debug }}" == "true" ]; then
+          echo ">>> DEBUG: printing openvpn.conf below"
+          echo ========== /etc/openvpn/openvpn.conf ==========
+          cat /etc/openvpn/openvpn.conf
+          echo ===============================================
       fi
 
-      exec openvpn --config /etc/openvpn/openvpn.conf
+      OPENVPN=/etc/openvpn ovpn_run
 
   openvpn.conf: |-
       server {{ .Values.openvpn.OVPN_NETWORK }} {{ .Values.openvpn.OVPN_SUBNET }}

@@ -105,3 +105,4 @@ openvpn:
 
 
 nodeSelector: {}
+debug: false
