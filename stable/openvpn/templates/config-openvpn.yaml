@@ -75,7 +75,6 @@ data:
       key-direction 1
       {{- end }}
       EOF
-      cat pki/$1.ovpn
 
   revokeClientCert.sh: |-
       #!/bin/bash
