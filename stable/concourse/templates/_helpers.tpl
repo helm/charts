@@ -59,8 +59,5 @@ Creates the address of the TSA service.
 */}}
 {{- define "concourse.web.tsa.address" -}}
 {{- $port := .Values.concourse.web.tsa.bindPort -}}
-{{- if and (eq "NodePort" .Values.web.service.type) .Values.web.service.tsaNodePort -}}
-  {{- $port = .Values.web.service.tsaNodePort -}}
-{{- end -}}
 {{ template "concourse.web.fullname" . }}:{{- print $port -}}
 {{- end -}}

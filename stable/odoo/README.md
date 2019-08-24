@@ -51,11 +51,14 @@ The following table lists the configurable parameters of the Odoo chart and thei
 |---------------------------------------|-----------------------------------------------------------|---------------------------------------------------------|
 | `global.imageRegistry`                | Global Docker image registry                              | `nil`                                                   |
 | `global.imagePullSecrets`             | Global Docker registry secret names as an array           | `[]` (does not add image pull secrets to deployed pods) |
+| `global.storageClass`                     | Global storage class for dynamic provisioning                                               | `nil`                                                        |
 | `image.registry`                      | Odoo image registry                                       | `docker.io`                                             |
 | `image.repository`                    | Odoo Image name                                           | `bitnami/odoo`                                          |
 | `image.tag`                           | Odoo Image tag                                            | `{TAG_NAME}`                                            |
 | `image.pullPolicy`                    | Image pull policy                                         | `Always`                                                |
 | `image.pullSecrets`                   | Specify docker-registry secret names as an array          | `[]` (does not add image pull secrets to deployed pods) |
+| `nameOverride`                        | String to partially override odoo.fullname template with a string (will prepend the release name) | `nil`           |
+| `fullnameOverride`                    | String to fully override odoo.fullname template with a string                                     | `nil`           |
 | `odooUsername`                        | User of the application                                   | `user@example.com`                                      |
 | `odooPassword`                        | Admin account password                                    | _random 10 character long alphanumeric string_          |
 | `odooEmail`                           | Admin account email                                       | `user@example.com`                                      |

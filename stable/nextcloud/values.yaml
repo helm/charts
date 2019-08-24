@@ -3,7 +3,7 @@
 ##
 image:
   repository: nextcloud
-  tag: 16.0.1-apache
+  tag: 16.0.3-apache
   pullPolicy: IfNotPresent
   # pullSecrets:
   #   - myRegistrKeySecretName
@@ -75,6 +75,27 @@ nextcloud:
       authtype: LOGIN
       name: user
       password: pass
+  # PHP Configuration files
+  # Will be injected in /usr/local/etc/php/conf.d
+  phpConfigs: {}
+  # Default config files
+  # IMPORTANT: Will be used only if you put extra configs, otherwise default will come from nextcloud itself
+  # Default confgurations can be found here: https://github.com/nextcloud/docker/tree/master/16.0/apache/config
+  defaultConfigs:
+    # To protect /var/www/html/config
+    .htaccess: true
+    # Redis default configuration
+    redis.config.php: true
+    # Apache configuration for rewrite urls
+    apache-pretty-urls.config.php: true
+    # Define APCu as local cache
+    apcu.config.php: true
+    # Apps directory configs
+    apps.config.php: true
+    # Used for auto configure database
+    autoconfig.php: true
+    # SMTP default configuration
+    smtp.config.php: true
   # Extra config files created in /var/www/html/config/
   # ref: https://docs.nextcloud.com/server/15/admin_manual/configuration_server/config_sample_php_parameters.html#multiple-config-php-file
   configs: {}
@@ -153,6 +174,13 @@ redis:
 ##
 cronjob:
   enabled: false
+  # Nexcloud image is used as default but only curl is needed
+  image: {}
+    # repository: nextcloud
+    # tag: 16.0.3-apache
+    # pullPolicy: IfNotPresent
+    # pullSecrets:
+    #   - myRegistrKeySecretName
   # Every 15 minutes
   # Note: Setting this to any any other value than 15 minutes might
   #  cause issues with how nextcloud background jobs are executed
@@ -160,6 +188,27 @@ cronjob:
   annotations: {}
   failedJobsHistoryLimit: 5
   successfulJobsHistoryLimit: 2
+  # If not set, nextcloud deployment one will be set
+  # resources:
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #  cpu: 100m
+    #  memory: 128Mi
+    # requests:
+    #  cpu: 100m
+    #  memory: 128Mi
+
+  # If not set, nextcloud deployment one will be set
+  # nodeSelector: {}
+
+  # If not set, nextcloud deployment one will be set
+  # tolerations: []
+
+  # If not set, nextcloud deployment one will be set
+  # affinity: {}
 
 service:
   type: ClusterIP
@@ -170,7 +219,9 @@ service:
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ##
 persistence:
+  # Nextcloud Data (/var/www/html)
   enabled: false
+  annotations: {}
   ## nextcloud data Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
   ## If set to "-", storageClassName: "", which disables dynamic provisioning

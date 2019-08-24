@@ -11,6 +11,8 @@ image:
 
 podAnnotations: {}
 
+imagePullSecrets: []
+
 env:
   - name: HOSTNAME
     value: "telegraf-polling-service"

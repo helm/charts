@@ -11,6 +11,7 @@ metadata:
     {{- end }}
 spec:
   rules:
+{{- if .Values.nexusProxy.enabled -}}  
   {{- if .Values.nexusProxy.env.nexusHttpHost }}
     - host: {{ .Values.nexusProxy.env.nexusHttpHost }}
       http:
@@ -37,6 +38,10 @@ spec:
               servicePort: {{ .Values.nexusProxy.port }}
             path: {{ .Values.ingress.path }}
   {{- end }}
+{{- end -}}  
+{{- with .Values.ingress.rules  }}
+{{ toYaml . | indent 2 }}
+  {{- end -}}
 {{- if .Values.ingress.tls.enabled }}
   tls:
     - hosts:

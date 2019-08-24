@@ -145,6 +145,10 @@ metadata:
     helm.sh/chart: {{ include "ambassador.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
+  {{ if .Values.crds.keep }}
+  annotations:
+    "helm.sh/resource-policy": keep
+  {{ end }}
 spec:
   group: getambassador.io
   version: v1

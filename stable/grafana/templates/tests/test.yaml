@@ -11,6 +11,9 @@ metadata:
     "helm.sh/hook": test-success
 spec:
   serviceAccountName: {{ template "grafana.serviceAccountNameTest" . }}
+  {{- if .Values.testFramework.securityContext }}
+  securityContext: {{ toYaml .Values.testFramework.securityContext | nindent 4 }}
+  {{- end }}
   initContainers:
     - name: test-framework
       image: "{{ .Values.testFramework.image}}:{{ .Values.testFramework.tag }}"
