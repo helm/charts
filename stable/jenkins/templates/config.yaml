@@ -4,6 +4,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ template "jenkins.fullname" . }}
+  namespace: {{ template "jenkins.namespace" . }}
   labels:
     "app.kubernetes.io/name": '{{ template "jenkins.name" .}}'
     "helm.sh/chart": "{{ .Chart.Name }}-{{ .Chart.Version }}"
@@ -11,11 +12,16 @@ metadata:
     "app.kubernetes.io/instance": "{{ .Release.Name }}"
     "app.kubernetes.io/component": "{{ .Values.master.componentName }}"
 data:
+{{- if .Values.master.enableXmlConfig }}
   config.xml: |-
     <?xml version='1.0' encoding='UTF-8'?>
     <hudson>
       <disabledAdministrativeMonitors/>
+{{- if .Values.master.imageTag }}
       <version>{{ .Values.master.imageTag }}</version>
+{{- else }}
+      <version>{{ .Values.master.tag }}</version>
+{{- end }}
       <numExecutors>{{ .Values.master.numExecutors }}</numExecutors>
       <mode>NORMAL</mode>
       <useSecurity>{{ .Values.master.useSecurity }}</useSecurity>
@@ -44,8 +50,9 @@ data:
               <inheritFrom></inheritFrom>
               <name>{{ .Values.agent.podName }}</name>
               <instanceCap>2147483647</instanceCap>
-              <idleMinutes>0</idleMinutes>
+              <idleMinutes>{{ .Values.agent.idleMinutes }}</idleMinutes>
               <label>{{ .Release.Name }}-{{ .Values.agent.componentName }} {{ .Values.agent.customJenkinsLabels  | join " " }}</label>
+              <serviceAccount>{{ include "jenkins.serviceAccountAgentName" . }}</serviceAccount>
               <nodeSelector>
                 {{- $local := dict "first" true }}
                 {{- range $key, $value := .Values.agent.nodeSelector }}
@@ -66,7 +73,11 @@ data:
               <containers>
                 <org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
                   <name>{{ .Values.agent.sideContainerName }}</name>
+{{- if .Values.agent.imageTag }}
                   <image>{{ .Values.agent.image }}:{{ .Values.agent.imageTag }}</image>
+{{- else }}
+                  <image>{{ .Values.agent.image }}:{{ .Values.agent.tag }}</image>
+{{- end }}
 {{- if .Values.agent.privileged }}
                   <privileged>true</privileged>
 {{- else }}
@@ -91,11 +102,7 @@ data:
                   <envVars>
                     <org.csanchez.jenkins.plugins.kubernetes.ContainerEnvVar>
                       <key>JENKINS_URL</key>
-{{- if .Values.master.slaveKubernetesNamespace }}
-                      <value>http://{{ template "jenkins.fullname" . }}.{{.Release.Namespace}}:{{.Values.master.servicePort}}{{ default "" .Values.master.jenkinsUriPrefix }}</value>
-{{- else }}
-                      <value>http://{{ template "jenkins.fullname" . }}:{{.Values.master.servicePort}}{{ default "" .Values.master.jenkinsUriPrefix }}</value>
-{{- end }}
+                      <value>http://{{ template "jenkins.fullname" . }}.{{ template "jenkins.namespace" . }}.svc.{{.Values.clusterZone}}:{{.Values.master.servicePort}}{{ default "" .Values.master.jenkinsUriPrefix }}</value>
                     </org.csanchez.jenkins.plugins.kubernetes.ContainerEnvVar>
                   </envVars>
                 </org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
@@ -119,16 +126,19 @@ data:
               <imagePullSecrets/>
 {{- end }}
               <nodeProperties/>
+{{- if .Values.agent.yamlTemplate }}
+              <yaml>{{ tpl .Values.agent.yamlTemplate . | html | indent 4 | trim }}</yaml>
+{{- end }}
               <podRetention class="org.csanchez.jenkins.plugins.kubernetes.pod.retention.Default"/>
             </org.csanchez.jenkins.plugins.kubernetes.PodTemplate>
 {{- end -}}
           </templates>
           <serverUrl>https://kubernetes.default</serverUrl>
           <skipTlsVerify>false</skipTlsVerify>
-          <namespace>{{ default .Release.Namespace .Values.master.slaveKubernetesNamespace }}</namespace>
+          <namespace>{{ template "jenkins.master.slaveKubernetesNamespace" . }}</namespace>
 {{- if .Values.master.slaveKubernetesNamespace }}
-          <jenkinsUrl>http://{{ template "jenkins.fullname" . }}.{{.Release.Namespace}}:{{.Values.master.servicePort}}{{ default "" .Values.master.jenkinsUriPrefix }}</jenkinsUrl>
-          <jenkinsTunnel>{{ template "jenkins.fullname" . }}-agent.{{.Release.Namespace}}:{{ .Values.master.slaveListenerPort }}</jenkinsTunnel>
+          <jenkinsUrl>http://{{ template "jenkins.fullname" . }}.{{ template "jenkins.namespace" . }}:{{.Values.master.servicePort}}{{ default "" .Values.master.jenkinsUriPrefix }}</jenkinsUrl>
+          <jenkinsTunnel>{{ template "jenkins.fullname" . }}-agent.{{ template "jenkins.namespace" . }}:{{ .Values.master.slaveListenerPort }}</jenkinsTunnel>
 {{- else }}
           <jenkinsUrl>http://{{ template "jenkins.fullname" . }}:{{.Values.master.servicePort}}{{ default "" .Values.master.jenkinsUriPrefix }}</jenkinsUrl>
           <jenkinsTunnel>{{ template "jenkins.fullname" . }}-agent:{{ .Values.master.slaveListenerPort }}</jenkinsTunnel>
@@ -158,7 +168,7 @@ data:
         <string>{{ . }}</string>
 {{- end }}
       </disabledAgentProtocols>
-      <label></label>
+      <label>{{ .Values.master.customJenkinsLabels | join " " }}</label>
 {{- if .Values.master.csrf.defaultCrumbIssuer.enabled }}
       <crumbIssuer class="hudson.security.csrf.DefaultCrumbIssuer">
 {{- if .Values.master.csrf.defaultCrumbIssuer.proxyCompatability }}
@@ -191,19 +201,7 @@ data:
     <?xml version='1.1' encoding='UTF-8'?>
     <jenkins.model.JenkinsLocationConfiguration>
       <adminAddress>{{ default "" .Values.master.jenkinsAdminEmail }}</adminAddress>
-{{- if .Values.master.jenkinsUrl }}
-      <jenkinsUrl>{{ .Values.master.jenkinsUrl }}</jenkinsUrl>
-{{- else }}
-  {{- if .Values.master.ingress.hostName }}
-    {{- if .Values.master.ingress.tls }}
-      <jenkinsUrl>{{ default "https" .Values.master.jenkinsUrlProtocol }}://{{ .Values.master.ingress.hostName }}{{ default "" .Values.master.jenkinsUriPrefix }}</jenkinsUrl>
-    {{- else }}
-      <jenkinsUrl>{{ default "http" .Values.master.jenkinsUrlProtocol }}://{{ .Values.master.ingress.hostName }}{{ default "" .Values.master.jenkinsUriPrefix }}</jenkinsUrl>
-    {{- end }}
-  {{- else }}
-      <jenkinsUrl>{{ default "http" .Values.master.jenkinsUrlProtocol }}://{{ template "jenkins.fullname" . }}:{{.Values.master.servicePort}}{{ default "" .Values.master.jenkinsUriPrefix }}</jenkinsUrl>
-  {{- end}}
-{{- end}}
+      <jenkinsUrl>{{ template "jenkins.url" . }}</jenkinsUrl>
     </jenkins.model.JenkinsLocationConfiguration>
   jenkins.CLI.xml: |-
     <?xml version='1.1' encoding='UTF-8'?>
@@ -214,22 +212,30 @@ data:
       <enabled>false</enabled>
 {{- end }}
     </jenkins.CLI>
+{{- end }}
   apply_config.sh: |-
     mkdir -p /usr/share/jenkins/ref/secrets/;
+{{- if .Values.master.enableXmlConfig }}
     echo "false" > /usr/share/jenkins/ref/secrets/slave-to-master-security-kill-switch;
 {{- if .Values.master.overwriteConfig }}
     cp /var/jenkins_config/config.xml /var/jenkins_home;
     cp /var/jenkins_config/jenkins.CLI.xml /var/jenkins_home;
     cp /var/jenkins_config/jenkins.model.JenkinsLocationConfiguration.xml /var/jenkins_home;
-  {{- else }}
+  {{- if .Values.master.additionalConfig }}
+  {{- range $key, $val := .Values.master.additionalConfig }}
+    cp /var/jenkins_config/{{- $key }} /var/jenkins_home;
+  {{- end }}
+  {{- end }}
+{{- else }}
     yes n | cp -i /var/jenkins_config/config.xml /var/jenkins_home;
     yes n | cp -i /var/jenkins_config/jenkins.CLI.xml /var/jenkins_home;
     yes n | cp -i /var/jenkins_config/jenkins.model.JenkinsLocationConfiguration.xml /var/jenkins_home;
   {{- if .Values.master.additionalConfig }}
-{{- range $key, $val := .Values.master.additionalConfig }}
-    cp /var/jenkins_config/{{- $key }} /var/jenkins_home;
+  {{- range $key, $val := .Values.master.additionalConfig }}
+    yes n | cp -i /var/jenkins_config/{{- $key }} /var/jenkins_home;
   {{- end }}
   {{- end }}
+{{- end }}
 {{- end }}
 {{- if .Values.master.overwritePlugins }}
     # remove all plugins from shared volume
@@ -268,17 +274,19 @@ data:
     cp -v /var/jenkins_config/*.yaml /var/jenkins_home/casc_configs
   {{- end }}
 {{- end }}
+{{- if .Values.master.enableXmlConfig }}
 {{- if .Values.master.credentialsXmlSecret }}
     yes n | cp -i /var/jenkins_credentials/credentials.xml /var/jenkins_home;
-{{- end }}
-{{- if .Values.master.secretsFilesSecret }}
-    yes n | cp -i /var/jenkins_secrets/* /usr/share/jenkins/ref/secrets/;
 {{- end }}
 {{- if .Values.master.jobs }}
     for job in $(ls /var/jenkins_jobs); do
       mkdir -p /var/jenkins_home/jobs/$job
       yes {{ if not .Values.master.overwriteJobs }}n{{ end }} | cp -i /var/jenkins_jobs/$job /var/jenkins_home/jobs/$job/config.xml
     done
+{{- end }}
+{{- end }}
+{{- if .Values.master.secretsFilesSecret }}
+    yes n | cp -i /var/jenkins_secrets/* /usr/share/jenkins/ref/secrets/;
 {{- end }}
 {{- range $key, $val := .Values.master.initScripts }}
   init{{ $key }}.groovy: |-
@@ -318,8 +326,10 @@ data:
   {{- if not (contains "configuration-as-code" (quote .Values.master.installPlugins)) }}
     configuration-as-code:{{ .Values.master.JCasC.pluginVersion }}
   {{- end }}
-  {{- if not (contains "configuration-as-code-support" (quote .Values.master.installPlugins)) }}
+  {{- if semverCompare "<=1.19" (printf "%v" .Values.master.JCasC.pluginVersion) }}
+    {{- if not (contains "configuration-as-code-support" (quote .Values.master.installPlugins)) }}
     configuration-as-code-support:{{ .Values.master.JCasC.supportPluginVersion }}
+    {{- end }}
   {{- end }}
 {{- end }}
 {{- end }}

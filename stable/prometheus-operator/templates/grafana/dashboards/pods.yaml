@@ -1,7 +1,7 @@
-# Generated from 'pods' from https://raw.githubusercontent.com/coreos/kube-prometheus/master/manifests/grafana-dashboardDefinitions.yaml
+# Generated from 'pods' from https://raw.githubusercontent.com/coreos/kube-prometheus/release-0.1/manifests/grafana-dashboardDefinitions.yaml
 # Do not change in-place! In order to change this file first read following link:
 # https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
-{{- if and .Values.grafana.enabled .Values.grafana.defaultDashboardsEnabled }}
+{{- if and (semverCompare ">=1.11.0-0" .Capabilities.KubeVersion.GitVersion) (semverCompare "<1.14.0-0" .Capabilities.KubeVersion.GitVersion) .Values.grafana.enabled .Values.grafana.defaultDashboardsEnabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -23,7 +23,20 @@ data:
         ],
         "annotations": {
             "list": [
-
+                {
+                    "builtIn": 1,
+                    "datasource": "$datasource",
+                    "enable": true,
+                    "expr": "time() == BOOL timestamp(rate(kube_pod_container_status_restarts_total{job=\"kube-state-metrics\", cluster=\"$cluster\", namespace=\"$namespace\", pod=\"$pod\"}[2m]) > 0)",
+                    "hide": false,
+                    "iconColor": "rgba(215, 44, 44, 1)",
+                    "name": "Restarts",
+                    "showIn": 0,
+                    "tags": [
+                        "restart"
+                    ],
+                    "type": "rows"
+                }
             ]
         },
         "editable": false,
@@ -103,6 +116,13 @@ data:
                                 "intervalFactor": 2,
                                 "legendFormat": "Limit: {{`{{ container }}`}}",
                                 "refId": "C"
+                            },
+                            {
+                                "expr": "sum by(container_name) (container_memory_cache{job=\"kubelet\", namespace=\"$namespace\", pod_name=~\"$pod\", container_name=~\"$container\", container_name!=\"POD\"})",
+                                "format": "time_series",
+                                "intervalFactor": 2,
+                                "legendFormat": "Cache: {{`{{ container_name }}`}}",
+                                "refId": "D"
                             }
                         ],
                         "thresholds": [
@@ -323,8 +343,15 @@ data:
                                 "expr": "sort_desc(sum by (pod_name) (rate(container_network_receive_bytes_total{job=\"kubelet\", cluster=\"$cluster\", namespace=\"$namespace\", pod_name=\"$pod\"}[1m])))",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{ pod_name }}`}}",
+                                "legendFormat": "RX: {{`{{ pod_name }}`}}",
                                 "refId": "A"
+                            },
+                            {
+                                "expr": "sort_desc(sum by (pod_name) (rate(container_network_transmit_bytes_total{job=\"kubelet\", cluster=\"$cluster\", namespace=\"$namespace\", pod_name=\"$pod\"}[1m])))",
+                                "format": "time_series",
+                                "intervalFactor": 2,
+                                "legendFormat": "TX: {{`{{ pod_name }}`}}",
+                                "refId": "B"
                             }
                         ],
                         "thresholds": [
@@ -359,6 +386,110 @@ data:
                             },
                             {
                                 "format": "bytes",
+                                "label": null,
+                                "logBase": 1,
+                                "max": null,
+                                "min": 0,
+                                "show": true
+                            }
+                        ]
+                    }
+                ],
+                "repeat": null,
+                "repeatIteration": null,
+                "repeatRowId": null,
+                "showTitle": false,
+                "title": "Dashboard Row",
+                "titleSize": "h6",
+                "type": "row"
+            },
+            {
+                "collapse": false,
+                "collapsed": false,
+                "panels": [
+                    {
+                        "aliasColors": {
+
+                        },
+                        "bars": false,
+                        "dashLength": 10,
+                        "dashes": false,
+                        "datasource": "$datasource",
+                        "fill": 1,
+                        "gridPos": {
+
+                        },
+                        "id": 5,
+                        "legend": {
+                            "alignAsTable": true,
+                            "avg": true,
+                            "current": true,
+                            "max": false,
+                            "min": false,
+                            "rightSide": true,
+                            "show": true,
+                            "total": false,
+                            "values": false
+                        },
+                        "lines": true,
+                        "linewidth": 1,
+                        "links": [
+
+                        ],
+                        "nullPointMode": "null",
+                        "percentage": false,
+                        "pointradius": 5,
+                        "points": false,
+                        "renderer": "flot",
+                        "repeat": null,
+                        "seriesOverrides": [
+
+                        ],
+                        "spaceLength": 10,
+                        "span": 12,
+                        "stack": false,
+                        "steppedLine": false,
+                        "targets": [
+                            {
+                                "expr": "max by (container) (kube_pod_container_status_restarts_total{job=\"kube-state-metrics\", cluster=\"$cluster\", namespace=\"$namespace\", pod=\"$pod\", container=~\"$container\"})",
+                                "format": "time_series",
+                                "intervalFactor": 2,
+                                "legendFormat": "Restarts: {{`{{ container }}`}}",
+                                "refId": "A"
+                            }
+                        ],
+                        "thresholds": [
+
+                        ],
+                        "timeFrom": null,
+                        "timeShift": null,
+                        "title": "Total Restarts Per Container",
+                        "tooltip": {
+                            "shared": false,
+                            "sort": 0,
+                            "value_type": "individual"
+                        },
+                        "type": "graph",
+                        "xaxis": {
+                            "buckets": null,
+                            "mode": "time",
+                            "name": null,
+                            "show": true,
+                            "values": [
+
+                            ]
+                        },
+                        "yaxes": [
+                            {
+                                "format": "short",
+                                "label": null,
+                                "logBase": 1,
+                                "max": null,
+                                "min": 0,
+                                "show": true
+                            },
+                            {
+                                "format": "short",
                                 "label": null,
                                 "logBase": 1,
                                 "max": null,

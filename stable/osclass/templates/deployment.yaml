@@ -5,7 +5,7 @@ metadata:
   name: {{ template "osclass.fullname" . }}
   labels:
     app: {{ template "osclass.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: {{ template "osclass.chart" . }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
@@ -17,7 +17,7 @@ spec:
     metadata:
       labels:
         app: {{ template "osclass.fullname" . }}
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        chart: {{ template "osclass.chart" . }}
         release: "{{ .Release.Name }}"
 {{- if or .Values.podAnnotations .Values.metrics.enabled }}
       annotations:
@@ -131,8 +131,6 @@ spec:
         volumeMounts:
         - name: osclass-data
           mountPath: /bitnami/osclass
-        - name: apache-data
-          mountPath: /bitnami/apache
 {{- if .Values.metrics.enabled }}
       - name: metrics
         image: {{ template "osclass.metrics.image" . }}
@@ -161,13 +159,6 @@ spec:
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
           claimName: {{ template "osclass.fullname" . }}-osclass
-      {{- else }}
-        emptyDir: {}
-      {{- end }}
-      - name: apache-data
-      {{- if .Values.persistence.enabled }}
-        persistentVolumeClaim:
-          claimName: {{ template "osclass.fullname" . }}-apache
       {{- else }}
         emptyDir: {}
       {{- end }}

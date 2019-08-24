@@ -8,18 +8,39 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
+  {{- if .Values.updateStrategy }}
+  updateStrategy:
+    type: {{ .Values.updateStrategy }}
+    {{- if and .Values.updateStrategy (eq .Values.updateStrategy "RollingUpdate") }}
+    rollingUpdate:
+      maxUnavailable: {{ default 1 .Values.maxUnavailable }}
+    {{- end }}
+  {{- end }}
   template:
     metadata:
+      {{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+      {{- end }}
       labels:
         app.kubernetes.io/name: {{ template "k8s-spot-termination-handler.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
+      hostNetwork: {{ .Values.hostNetwork }}
       serviceAccountName: {{ template "k8s-spot-termination-handler.serviceAccountName" . }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
+            {{- with .Values.verbose }}
+            - name: VERBOSE
+              value: {{ . | quote }}
+            {{- end }}
+            {{- with .Values.noticeUrl }}
+            - name: NOTICE_URL
+              value: {{ . | quote }}
+            {{- end }}
             {{- if not .Values.enableLogspout }}
             - name: LOGSPOUT
               value: "ignore"
@@ -48,6 +69,11 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
+          {{- if .Values.envFromSecret }}
+          envFrom:
+            - secretRef:
+                name: {{ .Values.envFromSecret }}
+          {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}
@@ -61,4 +87,7 @@ spec:
     {{- with .Values.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName }}
     {{- end }}

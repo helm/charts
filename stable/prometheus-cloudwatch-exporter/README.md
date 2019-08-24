@@ -48,41 +48,46 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following table lists the configurable parameters of the Cloudwatch Exporter chart and their default values.
 
-|          Parameter          |                      Description                       |          Default           |
-| --------------------------- | ------------------------------------------------------ | -------------------------- |
-| `image.repository`          | Image                                                  | `prom/cloudwatch-exporter` |
-| `image.tag`                 | Image tag                                              | `cloudwatch_exporter-0.5.0`                   |
-| `image.pullPolicy`          | Image pull policy                                      | `IfNotPresent`             |
-| `service.type`              | Service type                                           | `ClusterIP`                |
-| `service.port`              | The service port                                       | `80`                       |
-| `service.portName`          | The name of the service port                           | `http`                     |
-| `service.annotations`       | Custom annotations for service                         | `{}`                       |
-| `service.labels`            | Additional custom labels for the service               | `{}`                       |
-| `resources`                 |                                                        | `{}`                       |
-| `aws.role`                  | AWS IAM Role To Use                                    |                            |
-| `aws.aws_access_key_id`     | AWS access key id                                      |                            |
-| `aws.aws_secret_access_key` | AWS secret access key                                  |                            |
-| `aws.secret.name` | The name of a pre-created secret in which AWS credentials are stored                                 |                            |
-| `aws.secret.includesSessionToken` |  Whether or not the pre-created secret contains an AWS STS session token                                  |                            |
-| `config`                    | Cloudwatch exporter configuration                      | `example configuration`    |
-| `rbac.create`               | If true, create & use RBAC resources                   | `false`                    |
-| `serviceAccount.create`     | Specifies whether a service account should be created. | `true`                     |
-| `serviceAccount.name`       | Name of the service account.                           |                            |
-| `tolerations`               | Add tolerations                                        | `[]`                       |
-| `nodeSelector`              | node labels for pod assignment                         | `{}`                       |
-| `affinity`                  | node/pod affinities                                    | `{}`                       |
-| `livenessProbe`             | Liveness probe settings                                |                            |
-| `readinessProbe`            | Readiness probe settings                               |                            |
-| `servicemonitor.enabled`    | Use servicemonitor from prometheus operator            | `false`                    |
-| `servicemonitor.namespace`  | Namespace thes Servicemonitor  is installed in         |                            |
-| `servicemonitor.interval`   | How frequently Prometheus should scrape                |                            |
-| `servicemonitor.telemetryPath` |  path to cloudwatch-exporter telemtery-path         |                            |
-| `servicemonitor.labels`     |   labels for the ServiceMonitor passed to Prometheus Operator      |  `{}`          |
-| `ingress.enabled`           | Enables Ingress                                        | `false`                    |
-| `ingress.annotations`       | Ingress annotations                                    | `{}`                       |
-| `ingress.labels`            | Custom labels                                          | `{}`                       |
-| `ingress.hosts`             | Ingress accepted hostnames                             | `[]`                       |
-| `ingress.tls`               | Ingress TLS configuration                              | `[]`                       |
+| Parameter                         | Description                                                             | Default                     |
+| --------------------------------- | ----------------------------------------------------------------------- | --------------------------- |
+| `image.repository`                | Image                                                                   | `prom/cloudwatch-exporter`  |
+| `image.tag`                       | Image tag                                                               | `cloudwatch_exporter-0.5.0` |
+| `image.pullPolicy`                | Image pull policy                                                       | `IfNotPresent`              |
+| `command`                         | Container entrypoint command                                            | `[]`                        |
+| `service.type`                    | Service type                                                            | `ClusterIP`                 |
+| `service.port`                    | The service port                                                        | `80`                        |
+| `service.portName`                | The name of the service port                                            | `http`                      |
+| `service.annotations`             | Custom annotations for service                                          | `{}`                        |
+| `service.labels`                  | Additional custom labels for the service                                | `{}`                        |
+| `resources`                       |                                                                         | `{}`                        |
+| `aws.role`                        | AWS IAM Role To Use                                                     |                             |
+| `aws.aws_access_key_id`           | AWS access key id                                                       |                             |
+| `aws.aws_secret_access_key`       | AWS secret access key                                                   |                             |
+| `aws.secret.name`                 | The name of a pre-created secret in which AWS credentials are stored    |                             |
+| `aws.secret.includesSessionToken` | Whether or not the pre-created secret contains an AWS STS session token |                             |
+| `config`                          | Cloudwatch exporter configuration                                       | `example configuration`     |
+| `rbac.create`                     | If true, create & use RBAC resources                                    | `false`                     |
+| `serviceAccount.create`           | Specifies whether a service account should be created.                  | `true`                      |
+| `serviceAccount.name`             | Name of the service account.                                            |                             |
+| `tolerations`                     | Add tolerations                                                         | `[]`                        |
+| `nodeSelector`                    | node labels for pod assignment                                          | `{}`                        |
+| `affinity`                        | node/pod affinities                                                     | `{}`                        |
+| `livenessProbe`                   | Liveness probe settings                                                 |                             |
+| `readinessProbe`                  | Readiness probe settings                                                |                             |
+| `serviceMonitor.enabled`          | Use servicemonitor from prometheus operator                             | `false`                     |
+| `serviceMonitor.namespace`        | Namespace thes Servicemonitor  is installed in                          |                             |
+| `serviceMonitor.interval`         | How frequently Prometheus should scrape                                 |                             |
+| `serviceMonitor.telemetryPath`    | path to cloudwatch-exporter telemtery-path                              |                             |
+| `serviceMonitor.labels`           | labels for the ServiceMonitor passed to Prometheus Operator             | `{}`                        |
+| `serviceMonitor.timeout`          | Timeout after which the scrape is ended                                 |                             |
+| `serviceMonitor.relabelings`      | RelabelConfigs to apply to samples before scraping.                     |                             |
+| `serviceMonitor.metricRelabelings`| MetricRelabelConfigs to apply to samples before ingestion.              |                             |
+| `ingress.enabled`                 | Enables Ingress                                                         | `false`                     |
+| `ingress.annotations`             | Ingress annotations                                                     | `{}`                        |
+| `ingress.labels`                  | Custom labels                                                           | `{}`                        |
+| `ingress.hosts`                   | Ingress accepted hostnames                                              | `[]`                        |
+| `ingress.tls`                     | Ingress TLS configuration                                               | `[]`                        |
+| `securityContext`                 | Security Context for the pod                                            | `{}`                        |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

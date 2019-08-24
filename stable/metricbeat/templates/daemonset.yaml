@@ -37,6 +37,9 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         args:
+{{- if .Values.daemonset.args }}
+{{ toYaml .Values.daemonset.args | indent 8 }}
+{{- else }}
         - "-e"
 {{- if .Values.plugins }}
         - "--plugin"
@@ -46,6 +49,7 @@ spec:
 {{- if .Values.daemonset.debug }}
         - "-d"
         - "*"
+{{- end }}
 {{- end }}
         env:
         - name: POD_NAMESPACE
@@ -61,6 +65,11 @@ spec:
 {{- end }}
         securityContext:
           runAsUser: 0
+{{- if .Values.daemonset.capabilities }}
+          capabilities:
+            add:
+{{ toYaml .Values.daemonset.capabilities | indent 12 }}
+{{- end }}
         resources:
 {{- if .Values.daemonset.resources }}
 {{ toYaml .Values.daemonset.resources | indent 10 }}
@@ -116,8 +125,8 @@ spec:
       priorityClassName: {{ .Values.daemonset.priorityClassName }}
 {{- end }}
       serviceAccountName: {{ template "metricbeat.serviceAccountName" . }}
-      hostNetwork: true
-      dnsPolicy: ClusterFirstWithHostNet
+      hostNetwork: {{ .Values.daemonset.hostNetwork }}
+      dnsPolicy: {{ .Values.daemonset.dnsPolicy }}
 {{- if .Values.daemonset.tolerations }}
       tolerations:
 {{ toYaml .Values.daemonset.tolerations | indent 6 }}

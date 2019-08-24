@@ -2,6 +2,7 @@ apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
   name: {{ template "rabbitmq-ha.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "rabbitmq-ha.name" . }}
     chart: {{ template "rabbitmq-ha.chart" . }}
@@ -43,10 +44,29 @@ spec:
 {{ toYaml .Values.securityContext | indent 10 }}
       serviceAccountName: {{ template "rabbitmq-ha.serviceAccountName" . }}
       initContainers:
-        - name: copy-rabbitmq-config
+        - name: bootstrap
           image: {{ .Values.busyboxImage.repository}}:{{ .Values.busyboxImage.tag}}
           imagePullPolicy: {{ .Values.busyboxImage.pullPolicy }}
-          command: ['sh', '-c', 'cp /configmap/* /etc/rabbitmq; rm -f /var/lib/rabbitmq/.erlang.cookie']
+          command: ['sh']
+          args:
+          - "-c"
+          - |
+            set -ex
+            cp /configmap/* /etc/rabbitmq
+            rm -f /var/lib/rabbitmq/.erlang.cookie
+            {{- if .Values.forceBoot }}
+            if [ -d "${RABBITMQ_MNESIA_DIR}" ]; then
+              touch "${RABBITMQ_MNESIA_DIR}/force_load"
+            fi
+            {{- end }}
+          env:
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.name
+          - name: RABBITMQ_MNESIA_DIR
+            value: /var/lib/rabbitmq/mnesia/rabbit@$(POD_NAME).{{ template "rabbitmq-ha.fullname" . }}-discovery.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}
           resources:
 {{ toYaml .Values.initContainer.resources | indent 12 }}
           volumeMounts:
@@ -56,6 +76,9 @@ spec:
               mountPath: /etc/rabbitmq
             - name: {{ .Values.persistentVolume.name }}
               mountPath: /var/lib/rabbitmq
+{{- if .Values.extraInitContainers }}
+{{ tpl (toYaml .Values.extraInitContainers) . | indent 8 }}
+{{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
@@ -101,28 +124,10 @@ spec:
               protocol: TCP
               containerPort: 5671
             {{- end }}
-          {{- $managementCredentials := printf "%s:%s" .Values.managementUsername .Values.managementPassword | b64enc }}
-          {{- $managementHeader := printf "Authorization: Basic %s" $managementCredentials }}
           livenessProbe:
-            exec:
-              command:
-              - /bin/sh
-              - -c
-              - 'wget -O - -q --header "{{ $managementHeader }}" http://localhost:15672/api/healthchecks/node | grep -qF "{\"status\":\"ok\"}"'
-            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
-            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
-            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
-            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+            {{- toYaml .Values.livenessProbe | trim | nindent 12 }}
           readinessProbe:
-            exec:
-              command:
-              - /bin/sh
-              - -c
-              - 'wget -O - -q --header "{{ $managementHeader }}" http://localhost:15672/api/healthchecks/node | grep -qF "{\"status\":\"ok\"}"'
-            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
-            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
-            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
-            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+            {{- toYaml .Values.readinessProbe | trim | nindent 12 }}
           env:
             - name: MY_POD_NAME
               valueFrom:
@@ -142,10 +147,24 @@ spec:
                 secretKeyRef:
                   name: {{ template "rabbitmq-ha.secretName" . }}
                   key: rabbitmq-erlang-cookie
+            - name: RABBIT_MANAGEMENT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "rabbitmq-ha.secretName" . }}
+                  key: rabbitmq-management-username
+            - name: RABBIT_MANAGEMENT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "rabbitmq-ha.secretName" . }}
+                  key: rabbitmq-management-password
             {{- if .Values.rabbitmqHipeCompile }}
             - name: RABBITMQ_HIPE_COMPILE
               value: {{ .Values.rabbitmqHipeCompile | quote }}
             {{- end }}
+            {{- range $key, $value := .Values.env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}            
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           volumeMounts:
@@ -210,7 +229,7 @@ spec:
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
-            - topologyKey: "kubernetes.io/hostname"
+            - topologyKey: "{{ .Values.podAntiAffinityTopologyKey }}"
               labelSelector:
                 matchLabels:
                   app: {{ template "rabbitmq-ha.name" . }}
@@ -221,7 +240,7 @@ spec:
           preferredDuringSchedulingIgnoredDuringExecution:
             - weight: 1
               podAffinityTerm:
-                topologyKey: kubernetes.io/hostname
+                topologyKey: "{{ .Values.podAntiAffinityTopologyKey }}"
                 labelSelector:
                   matchLabels:
                     app: {{ template "rabbitmq-ha.name" . }}

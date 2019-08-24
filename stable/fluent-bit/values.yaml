@@ -1,12 +1,12 @@
 # Minikube stores its logs in a separate directory.
-# enable if started in minikube.
+# Enable if you install the chart in minikube.
 on_minikube: false
 
 image:
   fluent_bit:
     repository: fluent/fluent-bit
-    tag: 1.0.6
-  pullPolicy: IfNotPresent
+    tag: 1.2.2
+  pullPolicy: Always
 
 testFramework:
   image: "dduportal/bats"
@@ -19,6 +19,8 @@ fullnameOverride: ""
 metrics:
   enabled: false
   service:
+    # labels:
+    #   key: value
     annotations: {}
     # In order for Prometheus to consume metrics automatically use the following annotations:
     # prometheus.io/path: "/api/v1/metrics/prometheus"
@@ -26,9 +28,19 @@ metrics:
     # prometheus.io/scrape: "true"
     port: 2020
     type: ClusterIP
+  serviceMonitor:
+    enabled: false
+    additionalLabels: {}
+    # namespace: monitoring
+    # interval: 30s
+    # scrapeTimeout: 10s
 
 # When enabled, fluent-bit will keep track of tailing offsets across pod restarts.
 trackOffsets: false
+
+## PriorityClassName
+## Ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/#priorityclass
+priorityClassName: ""
 
 backend:
   type: forward
@@ -84,13 +96,15 @@ backend:
     ## Specify the data format to be used in the HTTP request body
     ## Can be either 'msgpack' or 'json'
     format: msgpack
+    headers: []
 
 parsers:
   enabled: false
   ## List the respective parsers in key: value format per entry
-  ## Regex required fields are name and regex. JSON required field
+  ## Regex required fields are name and regex. JSON and Logfmt required field
   ## is name.
   regex: []
+  logfmt: []
   ##  json parser config can be defined by providing an extraEntries field.
   ##  The following entry:
   ## json:
@@ -127,12 +141,22 @@ fullConfigMap: false
 ##
 existingConfigMap: ""
 
+
+# NOTE If you want to add extra sections, add them here, inbetween the includes,
+# wherever they need to go. Sections order matters.
+
 rawConfig: |-
   @INCLUDE fluent-bit-service.conf
   @INCLUDE fluent-bit-input.conf
   @INCLUDE fluent-bit-filter.conf
   @INCLUDE fluent-bit-output.conf
 
+
+# WARNING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# This is to add extra entries to an existing section, NOT for adding new sections
+# Do not submit bugs against indent being wrong. Add your new sections to rawConfig
+# instead.
+#
 extraEntries:
   input: |-
 #     # >=1 additional Key/Value entrie(s) for existing Input section
@@ -140,6 +164,8 @@ extraEntries:
 #     # >=1 additional Key/Value entrie(s) for existing Filter section
   output: |-
 #     # >=1 additional Key/Value entrie(s) for existing Ouput section
+# WARNING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 
 ## Extra ports to add to the daemonset ports section
 extraPorts: []
@@ -210,9 +236,15 @@ filter:
   kubeCAFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
   kubeTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
   kubeTag: kube
+  kubeTagPrefix: kube.var.log.containers.
+
 # If true, check to see if the log field content is a JSON string map, if so,
 # it append the map fields as part of the log structure.
   mergeJSONLog: true
+
+# If set, all unpacked keys from mergeJSONLog (Merge_Log) will be packed under
+# the key name specified on mergeLogKey (Merge_Log_Key)
+  mergeLogKey: ""
 
 # If true, enable the use of monitoring for a pod annotation of
 # fluentbit.io/parser: parser_name. parser_name must be the name
@@ -226,6 +258,8 @@ filter:
 rbac:
   # Specifies whether RBAC resources should be created
   create: true
+  # Specifies whether a PodSecurityPolicy should be created
+  pspEnabled: false
 
 taildb:
   directory: /var/lib/fluent-bit
@@ -236,3 +270,15 @@ serviceAccount:
   # The name of the ServiceAccount to use.
   # If not set and create is true, a name is generated using the fullname template
   name:
+
+## Specifies security settings for a container
+## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
+securityContext: {}
+  # securityContext:
+  #   privileged: true
+
+## Specifies security settings for a pod
+## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
+podSecurityContext: {}
+  # podSecurityContext:
+  #   runAsUser: 1000

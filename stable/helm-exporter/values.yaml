@@ -2,8 +2,11 @@ replicaCount: 1
 
 image:
   repository: sstarcher/helm-exporter
-  tag: 0.1.0
+  tag: 0.4.2
   pullPolicy: Always
+
+# To override default tiller namespace name or to provide the multiple tiller namespaces like "kube-system,dev"
+tillerNamespaces: ""
 
 nameOverride: ""
 fullnameOverride: ""
@@ -31,5 +34,16 @@ serviceMonitor:
   # Specifies whether a ServiceMonitor should be created
   create: false
   interval:
+  scrapeTimeout:
   namespace:
   additionalLabels: {}
+
+ingress:
+  # Specifies whether an Ingress should be created
+  enabled: false
+
+  annotations: {}
+  # kubernetes.io/ingress.class: nginx
+  path: /
+  # Name of host e.g example.com
+  host:

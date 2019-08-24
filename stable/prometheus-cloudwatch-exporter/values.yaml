@@ -9,6 +9,20 @@ image:
   tag: cloudwatch_exporter-0.5.0
   pullPolicy: IfNotPresent
 
+# Example proxy configuration:
+# command:
+#   - 'java'
+#   - '-Dhttp.proxyHost=proxy.example.com'
+#   - '-Dhttp.proxyPort=3128'
+#   - '-Dhttps.proxyHost=proxy.example.com'
+#   - '-Dhttps.proxyPort=3128'
+#   - '-jar'
+#   - '/cloudwatch_exporter.jar'
+#   - '9106'
+#   - '/config/config.yml'
+
+command: []
+
 service:
   type: ClusterIP
   port: 9106
@@ -118,6 +132,19 @@ serviceMonitor:
   # telemetryPath: /metrics
   # Set labels for the ServiceMonitor, use this to define your scrape label for Prometheus Operator
   # labels:
+  # Set timeout for scrape
+  # timeout: 10s
+  # Set relabelings for the ServiceMonitor, use to apply to samples before scraping
+  # relabelings: []
+  # Set metricRelabelings for the ServiceMonitor, use to apply to samples for ingestion
+  # metricRelabelings: []
+  #
+  # Example - note the Kubernetes convention of camelCase instead of Prometheus' snake_case
+  # metricRelabelings:
+  #   - sourceLabels: [dbinstance_identifier]
+  #     action: replace
+  #     replacement: mydbname
+  #     targetLabel: dbname
 
 ingress:
   enabled: false
@@ -132,3 +159,6 @@ ingress:
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
+
+securityContext:
+  runAsUser: 65534  # run as nobody user instead of root

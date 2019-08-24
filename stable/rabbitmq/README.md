@@ -49,29 +49,35 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | ------------------------------------ | ------------------------------------------------ | ------------------------------------------------------- |
 | `global.imageRegistry`               | Global Docker image registry                     | `nil`                                                   |
 | `global.imagePullSecrets`            | Global Docker registry secret names as an array  | `[]` (does not add image pull secrets to deployed pods) |
+| `global.storageClass`                     | Global storage class for dynamic provisioning                                               | `nil`                                                        |
 | `image.registry`                     | Rabbitmq Image registry                          | `docker.io`                                             |
 | `image.repository`                   | Rabbitmq Image name                              | `bitnami/rabbitmq`                                      |
-| `image.tag`                          | Rabbitmq Image tag                               | `{VERSION}`                                             |
-| `image.pullPolicy`                   | Image pull policy                                | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
+| `image.tag`                          | Rabbitmq Image tag                               | `{TAG_NAME}`                                            |
+| `image.pullPolicy`                   | Image pull policy                                | `IfNotPresent`                                          |
 | `image.pullSecrets`                  | Specify docker-registry secret names as an array | `nil`                                                   |
 | `image.debug`                        | Specify if debug values should be set            | `false`                                                 |
+| `nameOverride`                       | String to partially override rabbitmq.fullname template with a string (will prepend the release name) | `nil` |
+| `fullnameOverride`                   | String to fully override rabbitmq.fullname template with a string                                     | `nil` |
 | `rbacEnabled`                        | Specify if rbac is enabled in your cluster       | `true`                                                  |
 | `podManagementPolicy`                | Pod management policy                            | `OrderedReady`                                          |
 | `rabbitmq.username`                  | RabbitMQ application username                    | `user`                                                  |
 | `rabbitmq.password`                  | RabbitMQ application password                    | _random 10 character long alphanumeric string_          |
-| `rabbitmq.existingPasswordSecret`    | Existing secret with RabbitMQ credentials        | nil                                                     |
+| `rabbitmq.existingPasswordSecret`    | Existing secret with RabbitMQ credentials        | `nil`                                                   |
 | `rabbitmq.erlangCookie`              | Erlang cookie                                    | _random 32 character long alphanumeric string_          |
-| `rabbitmq.existingErlangSecret`      | Existing secret with RabbitMQ Erlang cookie      | nil                                                     |
+| `rabbitmq.existingErlangSecret`      | Existing secret with RabbitMQ Erlang cookie      | `nil`                                                   |
 | `rabbitmq.plugins`                   | List of plugins to enable                        | `rabbitmq_management rabbitmq_peer_discovery_k8s`       |
 | `rabbitmq.extraPlugins`              | Extra plugings to enable                         | `nil`                                                   |
 | `rabbitmq.clustering.address_type`   | Switch clustering mode                           | `ip` or `hostname`                                      |
 | `rabbitmq.clustering.k8s_domain`     | Customize internal k8s cluster domain            | `cluster.local`                                         |
 | `rabbitmq.logs`                      | Value for the RABBITMQ_LOGS environment variable | `-`                                                     |
+| `rabbitmq.setUlimitNofiles`          | Specify if max file descriptor limit should be set | `true`                                                |
 | `rabbitmq.ulimitNofiles`             | Max File Descriptor limit                        | `65536`                                                 |
-| `rabbitmq.maxAvailableSchedulers     | RabbitMQ maximum available scheduler threads     | `2`                                                     |
-| `rabbitmq.onlineSchedulers           | RabbitMQ online scheduler threads                | `1`                                                     |
+| `rabbitmq.maxAvailableSchedulers`    | RabbitMQ maximum available scheduler threads     | `2`                                                     |
+| `rabbitmq.onlineSchedulers`          | RabbitMQ online scheduler threads                | `1`                                                     |
+| `rabbitmq.env`                       | RabbitMQ [environment variables](https://www.rabbitmq.com/configure.html#customise-environment) | `{}`     |
 | `rabbitmq.configuration`             | Required cluster configuration                   | See values.yaml                                         |
 | `rabbitmq.extraConfiguration`        | Extra configuration to add to rabbitmq.conf      | See values.yaml                                         |
+| `rabbitmq.advancedConfiguration`     | Extra configuration (in classic format) to add to advanced.config    | See values.yaml                                         |
 | `service.type`                       | Kubernetes Service type                          | `ClusterIP`                                             |
 | `service.port`                       | Amqp port                                        | `5672`                                                  |
 | `service.distPort`                   | Erlang distribution server port                  | `25672`                                                 |
@@ -79,8 +85,9 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `service.managerPort`                | RabbitMQ Manager port                            | `15672`                                                 |
 | `persistence.enabled`                | Use a PVC to persist data                        | `true`                                                  |
 | `service.annotations`                | service annotations as an array                  | []                                                      |
+| `schedulerName`                      | Name of the k8s service (other than default)     | `nil`                                                   |
 | `persistence.storageClass`           | Storage class of backing PVC                     | `nil` (uses alpha storage class annotation)             |
-| `persistence.existingClaim`           | RabbitMQ data Persistent Volume existing claim name                     |  ""          |
+| `persistence.existingClaim`          | RabbitMQ data Persistent Volume existing claim name, evaluated as a template |  ""          |
 | `persistence.accessMode`             | Use volume as ReadOnly or ReadWrite              | `ReadWriteOnce`                                         |
 | `persistence.size`                   | Size of data volume                              | `8Gi`                                                   |
 | `persistence.path`                   | Mount path of the data volume                    | `/opt/bitnami/rabbitmq/var/lib/rabbitmq`                |
@@ -88,6 +95,7 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `securityContext.fsGroup`            | Group ID for the container                       | `1001`                                                  |
 | `securityContext.runAsUser`          | User ID for the container                        | `1001`                                                  |
 | `resources`                          | resource needs and limits to apply to the pod    | {}                                                      |
+| `replicas`                           | Replica count                                    | `1`                                                     |
 | `priorityClassName`                  | Pod priority class name                          | ``                                                      |
 | `nodeSelector`                       | Node labels for pod assignment                   | {}                                                      |
 | `affinity`                           | Affinity settings for pod assignment             | {}                                                      |
@@ -113,9 +121,17 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `readinessProbe.successThreshold`    | number of successes                              | 1                                                       |
 | `metrics.enabled`                    | Start a side-car prometheus exporter             | `false`                                                 |
 | `metrics.image.registry`             | Exporter image registry                          | `docker.io`                                             |
-| `metrics.image.repository`           | Exporter image name                              | `kbudde/rabbitmq-exporter`                              |
-| `metrics.image.tag`                  | Exporter image tag                               | `v0.29.0`                                               |
+| `metrics.image.repository`           | Exporter image name                              | `bitnami/rabbitmq-exporter`                             |
+| `metrics.image.tag`                  | Exporter image tag                               | `{TAG_NAME}`                                            |
 | `metrics.image.pullPolicy`           | Exporter image pull policy                       | `IfNotPresent`                                          |
+| `metrics.serviceMonitor.enabled`     | Create ServiceMonitor Resource for scraping metrics using PrometheusOperator   | `false`                   |
+| `metrics.serviceMonitor.namespace`   | Namespace where servicemonitor resource should be created                      | `nil`                     |
+| `metrics.serviceMonitor.interval`    | Specify the interval at which metrics should be scraped                        | `30s`                     |
+| `metrics.serviceMonitor.scrapeTimeout`| Specify the timeout after which the scrape is ended                           | `nil`                     |
+| `metrics.serviceMonitor.relabellings`| Specify Metric Relabellings to add to the scrape endpoint                      | `nil`                     |
+| `metrics.serviceMonitor.honorLabels` | honorLabels chooses the metric's labels on collisions with target labels.      | `false`                   |
+| `metrics.serviceMonitor.additionalLabels`| Used to pass Labels that are required by the Installed Prometheus Operator | `{}`                      |
+| `metrics.port`                       | Prometheus metrics exporter port                 | `9419`                                                  |
 | `metrics.env`                        | Exporter [configuration environment variables](https://github.com/kbudde/rabbitmq_exporter#configuration) | `{}` |
 | `metrics.resources`                  | Exporter resource requests/limit                 | `nil`                                                   |
 | `metrics.capabilities`               | Exporter: Comma-separated list of extended [scraping capabilities supported by the target RabbitMQ server](https://github.com/kbudde/rabbitmq_exporter#extended-rabbitmq-capabilities) | `bert,no_sort` |
@@ -124,8 +140,9 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `volumePermissions.image.registry`         | Init container volume-permissions image registry                                                               | `docker.io`                                          |
 | `volumePermissions.image.repository`       | Init container volume-permissions image name                                                                   | `bitnami/minideb`                                    |
 | `volumePermissions.image.tag`              | Init container volume-permissions image tag                                                                    | `latest`                                             |
-| `volumePermissions.image.pullPolicy`       | Init container volume-permissions image pull policy                                                            | `IfNotPresent`                                       |
+| `volumePermissions.image.pullPolicy`       | Init container volume-permissions image pull policy                                                            | `Always`                                             |
 | `volumePermissions.resources`                  | Init container resource requests/limit                 | `nil`                                                   |
+| `forceBoot.enabled`         | Executes 'rabbitmqctl force_boot' to force boot cluster shut down unexpectedly in an unknown order. Use it only if you prefer availability over integrity.                                                               | `false`                                          |
 
 The above parameters map to the env variables defined in [bitnami/rabbitmq](http://github.com/bitnami/bitnami-docker-rabbitmq). For more information please refer to the [bitnami/rabbitmq](http://github.com/bitnami/bitnami-docker-rabbitmq) image documentation.
 
@@ -146,6 +163,81 @@ $ helm install --name my-release -f values.yaml stable/rabbitmq
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+### Production configuration and horizontal scaling
+
+This chart includes a `values-production.yaml` file where you can find some parameters oriented to production configuration in comparison to the regular `values.yaml`.
+
+```console
+$ helm install --name my-release -f ./values-production.yaml stable/rabbitmq
+```
+
+- Resource needs and limits to apply to the pod:
+```diff
+- resources: {}
++ resources:
++   requests:
++     memory: 256Mi
++     cpu: 100m
+```
+
+- Replica count:
+```diff
+- replicas: 1
++ replicas: 3
+```
+
+- Node labels for pod assignment:
+```diff
+- nodeSelector: {}
++ nodeSelector:
++   beta.kubernetes.io/arch: amd64
+```
+
+- Enable ingress with TLS:
+```diff
+- ingress.tls: false
++ ingress.tls: true
+```
+
+- Start a side-car prometheus exporter:
+```diff
+- metrics.enabled: false
++ metrics.enabled: true
+```
+
+- Enable init container that changes volume permissions in the data directory:
+```diff
+- volumePermissions.enabled: false
++ volumePermissions.enabled: true
+```
+
+To horizontally scale this chart once it has been deployed you have two options:
+
+- Use `kubectl scale` command:
+
+```console
+$ kubectl scale statefulset my-release-rabbitmq --replicas=3
+```
+
+- Use `helm upgrade` command:
+
+```console
+RABBITMQ_PASSWORD="$(kubectl get secret my-release-rabbitmq -o jsonpath='{.data.rabbitmq-password}' | base64 --decode)"
+RABBITMQ_ERLANG_COOKIE="$(kubectl get secret my-release-rabbitmq -o jsonpath='{.data.rabbitmq-erlang-cookie}' | base64 --decode)"
+$ helm upgrade my-release stable/rabbitmq \
+  --set replicas=3 \
+  --set rabbitmq.password="$RABBITMQ_PASSWORD" \
+  --set rabbitmq.erlangCookie="$RABBITMQ_ERLANG_COOKIE"
+```
+
+> Note: please note it's mandatory to indicate the password and erlangCookie that was set the first time the chart was installed to upgrade the chart. Otherwise, new pods won't be able to join the cluster.
+
+### [Rolling VS Immutable tags](https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/)
+
+It is strongly recommended to use immutable tags in a production environment. This ensures your deployment does not change automatically if the same tag is updated with a different image.
+
+Bitnami will release a new chart updating its containers if a new version of the main container, significant changes, or critical vulnerabilities exist.
 
 ### Load Definitions
 It is possible to [load a RabbitMQ definitions file to configure RabbitMQ](http://www.rabbitmq.com/management.html#load-definitions). Because definitions may contain RabbitMQ credentials, [store the JSON as a Kubernetes secret](https://kubernetes.io/docs/concepts/configuration/secret/#using-secrets-as-files-from-a-pod). Within the secret's data, choose a key name that corresponds with the desired load definitions filename (i.e. `load_definition.json`) and use the JSON object as the value. For example:
@@ -173,14 +265,6 @@ Any load definitions specified will be available within in the container at `/ap
 
 > Loading a definition will take precedence over any configuration done through [Helm values](#configuration).
 
-## Production configuration
-
-A standard configuration is provided by default that will run on most development environments. To operate this chart in a production environment, we recommend you use the alternative file values-production.yaml provided in this repository.
-
-```bash
-$ helm install --name my-release -f values-production.yaml stable/rabbitmq
-```
-
 ## Persistence
 
 The [Bitnami RabbitMQ](https://github.com/bitnami/bitnami-docker-rabbitmq) image stores the RabbitMQ data and configurations at the `/opt/bitnami/rabbitmq/var/lib/rabbitmq/` path of the container.
@@ -198,6 +282,10 @@ $ helm install --set persistence.existingClaim=PVC_NAME rabbitmq
 ```
 
 ## Upgrading
+
+### To 6.0.0
+
+This new version updates the RabbitMQ image to a [new version based on bash instead of node.js](https://github.com/bitnami/bitnami-docker-rabbitmq#3715-r18-3715-ol-7-r19). However, since this Chart overwrites the container's command, the changes to the container shouldn't affect the Chart. To upgrade, it may be needed to enable the `fastBoot` option, as it is already the case from upgrading from 5.X to 5.Y.  
 
 ### To 5.0.0
 

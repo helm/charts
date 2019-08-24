@@ -1,0 +1,17 @@
+{{- if and (eq .Values.kind "Deployment") .Values.autoscaling.enabled }}
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ template "apm-server.fullname" . }}
+  labels:
+    app: {{ template "apm-server.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ template "apm-server.fullname" . }}
+{{ (unset .Values.autoscaling "enabled") | toYaml | indent 2 }} 
+{{- end }}

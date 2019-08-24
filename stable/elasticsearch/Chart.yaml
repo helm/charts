@@ -1,6 +1,7 @@
+apiVersion: v1
 name: elasticsearch
 home: https://www.elastic.co/products/elasticsearch
-version: 1.26.0
+version: 1.30.0
 appVersion: 6.7.0
 description: Flexible and powerful open source, distributed real-time search and analytics
   engine.
@@ -21,3 +22,7 @@ maintainers:
   email: pete.brown@powerhrg.com
 - name: desaintmartin
   email: cedric@desaintmartin.fr
+- name: KongZ
+  email: goonohc@gmail.com
+- name: hectorj2f
+  email: hfernandez@mesosphere.com

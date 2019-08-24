@@ -13,14 +13,26 @@
 image:
   registry: docker.io
   repository: bitnami/nats
-  tag: 1.4.1
-  pullPolicy: Always
+  tag: 2.0.4-debian-9-r0
+  ## Specify a imagePullPolicy
+  ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
+  ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+  ##
+  pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
   ##
   # pullSecrets:
   #   - name: myRegistryKeySecretName
+
+## String to partially override nats.fullname template (will maintain the release name)
+##
+# nameOverride:
+
+## String to fully override nats.fullname template
+##
+# fullnameOverride:
 
 ## NATS replicas
 replicaCount: 3
@@ -65,7 +77,13 @@ podLabels: {}
 ##
 # priorityClassName: ""
 
-## Update strategy, can be set to RollingUpdate or OnDelete by default.
+## NATS cluster resource type under Kubernetes. Allowed values: statefulset (default) or deployment
+## ref:
+## - https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/
+## - https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+resourceType: "statefulset"
+
+## Update strategy for statefulset, can be set to RollingUpdate or OnDelete by default.
 ## https://kubernetes.io/docs/tutorials/stateful-application/basic-stateful-set/#updating-statefulsets
 statefulset:
   updateStrategy: OnDelete
@@ -73,6 +91,12 @@ statefulset:
   ## https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#partitions
   # rollingUpdatePartition:
 
+## Update strategy for deployment, can be set to RollingUpdate or OnDelete by default.
+## https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
+deployment:
+  updateType: RollingUpdate
+  # maxSurge: 25%
+  # maxUnavailable: 25%
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -144,7 +168,7 @@ networkPolicy:
   enabled: true
 
   ## The Policy model to apply. When set to false, only pods with the correct
-  ## client label will have network access to the port NATS is listening
+  ## client labels will have network access to the port NATS is listening
   ## on. When true, NATS will accept connections from any source
   ## (with the correct destination port).
   ##
@@ -171,6 +195,7 @@ client:
     ## otherwise leave blank
     ##
     # loadBalancerIP:
+
 ## Kubernetes svc used for clustering
 ## ref: https://github.com/nats-io/gnatsd#clustering
 ##
@@ -192,6 +217,7 @@ cluster:
     ## otherwise leave blank
     ##
     # loadBalancerIP:
+
 ## NATS svc used for monitoring
 ## ref: https://github.com/nats-io/gnatsd#monitoring
 ##
@@ -260,6 +286,14 @@ ingress:
 # Optional additional arguments
 extraArgs: []
 
+## Nats filenames:
+##  - For Nats 1.x.x version, some filenames (binary, configuration file, pid file) uses `gnatsd` as part of the name.
+##  - For Nats 2.x.x version, those filenames now uses `nats-server`
+## In order to make the chart compatible with NATS versions 1.0.0 and 2.0.0 we have parametrized the following value
+## to specify the proper filename according to the image version.
+##
+natsFilename: nats-server
+
 ## Metrics / Prometheus NATS Exporter
 ##
 ## ref: https://github.com/nats-io/prometheus-nats-exporter
@@ -267,8 +301,8 @@ metrics:
   enabled: true
   image:
     registry: docker.io
-    repository: synadia/prometheus-nats-exporter
-    tag: 0.1.0
+    repository: bitnami/nats-exporter
+    tag: 0.5.0-debian-9-r6
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.

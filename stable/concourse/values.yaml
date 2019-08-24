@@ -19,7 +19,7 @@ image: concourse/concourse
 ##      of `concourse/concourse`.
 ## Ref: https://hub.docker.com/r/concourse/concourse/tags/
 ##
-imageTag: "5.1.0"
+imageTag: "5.4.1"
 
 ## Specific image digest to use in place of a tag.
 ## Ref: https://kubernetes.io/docs/concepts/configuration/overview/#container-images
@@ -52,27 +52,81 @@ concourse:
   ## through the `concourse web` command.
   ##
   web:
+    ## A name for this Concourse cluster, to be displayed on the dashboard page.
+    ##
+    clusterName:
+
     ## Enable equivalent resources across pipelines and teams to share a single version history.
     ## Ref: https://concourse-ci.org/global-resources.html
     ##
     enableGlobalResources: true
 
+    ## Enable auditing for all api requests connected to builds.
+    ##
+    enableBuildAuditing: false
+
+    ## Enable auditing for all api requests connected to containers.
+    ##
+    enableContainerAuditing: false
+
+    ## Enable auditing for all api requests connected to jobs.
+    ##
+    enableJobAuditing: false
+
+    ## Enable auditing for all api requests connected to pipelines.
+    ##
+    enablePipelineAuditing: false
+
+    ## Enable auditing for all api requests connected to resources.
+    ##
+    enableResourceAuditing: false
+
+    ## Enable auditing for all api requests connected to system transactions.
+    ##
+    enableSystemAuditing: false
+
+    ## Enable auditing for all api requests connected to teams.
+    ##
+    enableTeamAuditing: false
+
+    ## Enable auditing for all api requests connected to workers.
+    ##
+    enableWorkerAuditing: false
+
+    ## Enable auditing for all api requests connected to volumes.
+    ##
+    enableVolumeAuditing: false
+
     ## The number of attempts secret will be retried to be fetched,
     ## in case a retryable error happens.
     ##
-    secretRetryAttempts:
+    secretRetryAttempts: 5
 
     ## The interval between secret retry retieval attempts.
     ##
-    secretRetryInterval:
+    secretRetryInterval: 1s
+
+    ## Enable in-memory cache for secrets.
+    ##
+    secretCacheEnabled: false
+
+    ## If the cache is enabled, secret values will be cached for not longer
+    ## than this duration (it can be less, if underlying secret lease time
+    ## is smaller).
+    ##
+    secretCacheDuration:
+
+    ## If the cache is enabled, expired items will be removed on this internal.
+    ##
+    secretCachePurgeInterval:
 
     ## Minimum level of logs to see. Possible options: debug, info, error.
     ##
-    logLevel:
+    logLevel: info
 
     ## IP address on which to listen for HTTP traffic (web UI and API).
     ##
-    bindIp:
+    bindIp: 0.0.0.0
 
     ## Port on which to listen for HTTP traffic (web UI and API).
     ##
@@ -122,7 +176,7 @@ concourse:
 
     ## IP address on which to listen for the pprof debugger endpoints.
     ##
-    debugBindIp:
+    debugBindIp: 127.0.0.1
 
     ## Port on which to listen for the pprof debugger endpoints.
     ##
@@ -130,27 +184,27 @@ concourse:
 
     ## Length of time for a intercepted session to be idle before terminating.
     ##
-    interceptIdleTimeout:
+    interceptIdleTimeout: 0m
 
     ## Time limit on checking for new versions of resources.
     ##
-    globalResourceCheckTimeout:
+    globalResourceCheckTimeout: 1h
 
     ## Interval on which to check for new versions of resources.
     ##
-    resourceCheckingInterval:
+    resourceCheckingInterval: 1m
 
     ## Interval on which to check for new versions of resource types.
     ##
-    resourceTypeCheckingInterval:
+    resourceTypeCheckingInterval: 1m
 
     ## Method by which a worker is selected during container placement.
     ## Possible values: volume-locality | random | fewest-build-containers
-    containerPlacementStrategy:
+    containerPlacementStrategy: volume-locality
 
     ## How long to wait for Baggageclaim to send the response header.
     ##
-    baggageclaimResponseHeaderTimeout:
+    baggageclaimResponseHeaderTimeout: 1m
 
     ## Directory containing downloadable CLI binaries.
     ## By default, Concourse will try to find the assets
@@ -164,7 +218,7 @@ concourse:
 
     ## Interval on which to run build tracking.
     ##
-    buildTrackerInterval:
+    buildTrackerInterval: 10s
 
     ## Default number of build logs to retain. 0 means all.
     ##
@@ -173,6 +227,14 @@ concourse:
     ## Maximum build logs to retain, 0 means not specified. Will override values configured in jobs.
     ##
     maxBuildLogsToRetain:
+
+    ## Default days to retain build logs. 0 means unlimited.
+    ##
+    defaultDaysToRetainBuildLogs:
+
+    ## Maximum days to retain build logs, 0 means not specified. Will override values configured in jobs.
+    ##
+    maxDaysToRetainBuildLogs:
 
     ## Default max number of cpu shares per task, 0 means unlimited.
     ##
@@ -196,7 +258,7 @@ concourse:
 
       ## The port to connect to.
       ##
-      port:
+      port: 5432
 
       ## Path to a UNIX domain socket to connect to.
       ##
@@ -208,11 +270,11 @@ concourse:
 
       ## Dialing timeout. (0 means wait indefinitely)
       ##
-      connectTimeout:
+      connectTimeout: 5m
 
       ## The name of the database to use.
       ##
-      database:
+      database: atc
 
 
     kubernetes:
@@ -264,13 +326,13 @@ concourse:
         enabled: true
         useSessionToken: false
 
-      ## pipeline-specific template for Secrets Manager parameters, defaults to: /concourse/{team}/{pipeline}/{secret}
+      ## pipeline-specific template for Secrets Manager parameters, defaults to: /concourse/{{.Team}}/{{.Pipeline}}/{{.Secret}}
       ##
-      pipelineSecretTemplate:
+      pipelineSecretTemplate: /concourse/{{.Team}}/{{.Pipeline}}/{{.Secret}}
 
-      ## team-specific template for Secrets Manager parameters, defaults to: /concourse/{team}/{secret}
+      ## team-specific template for Secrets Manager parameters, defaults to: /concourse/{{.Team}}/{{.Secret}}
       ##
-      teamSecretTemplate:
+      teamSecretTemplate: /concourse/{{.Team}}/{{.Secret}}
 
     ## Configuration for using AWS SSM as a credential manager.
     ## Ref: https://concourse-ci.org/creds.html#ssm
@@ -290,13 +352,13 @@ concourse:
         enabled: true
         useSessionToken: false
 
-      ## pipeline-specific template for SSM parameters, defaults to: /concourse/{team}/{pipeline}/{secret}
+      ## pipeline-specific template for SSM parameters, defaults to: /concourse/{{.Team}}/{{.Pipeline}}/{{.Secret}}
       ##
-      pipelineSecretTemplate:
+      pipelineSecretTemplate: /concourse/{{.Team}}/{{.Pipeline}}/{{.Secret}}
 
-      ## team-specific template for SSM parameters, defaults to: /concourse/{team}/{secret}
+      ## team-specific template for SSM parameters, defaults to: /concourse/{{.Team}}/{{.Secret}}
       ##
-      teamSecretTemplate:
+      teamSecretTemplate: /concourse/{{.Team}}/{{.Secret}}
 
 
     ## Configuration for using Vault as a credential manager.
@@ -313,7 +375,7 @@ concourse:
 
       ## Vault path under which to namespace credentials lookup.
       ##
-      pathPrefix:
+      pathPrefix: /concourse
 
       ## Path under which to lookup shared credentials.
       ##
@@ -328,14 +390,6 @@ concourse:
       ## Currently supported backends: token, approle, cert.
       ##
       authBackend: ""
-
-      ## Cache returned secrets for their lease duration in memory
-      ##
-      cache: false
-
-      ## If the cache is enabled, and this is set, override secrets lease duration with a maximum value
-      ##
-      maxLease:
 
       ## Path to a directory of PEMEncoded CA cert files to verify the vault server SSL cert.
       ##
@@ -359,11 +413,43 @@ concourse:
 
       ## The maximum time between retries when logging in or reAuthing a secret.
       ##
-      retryMax:
+      retryMax: 5m
 
       ## The initial time between retries when logging in or reAuthing a secret.
       ##
-      retryInitial:
+      retryInitial: 1s
+
+    ## Configuration for using Credhub as a credential manager.
+    ## Ref: https://concourse-ci.org/credhub-credential-manager.html
+    ##
+    credhub:
+      ## Enable the use of Credhub as a credential manager.
+      ##
+      enabled: false
+
+      ## CredHub server address used to access secrets
+      ## Example: https://credhub.example.com
+      ##
+      url:
+
+      ## Path under which to namespace credential lookup. (default: /concourse)
+      ##
+      pathPrefix:
+
+      ## Enables using a CA Certificate
+      ##
+      useCaCert: false
+
+      ## Enables insecure SSL verification.
+      ##
+      insecureSkipVerify: false
+
+      ## Configures the way that the Concourse authenticates against CredHub
+      ## - secrets: makes use of `client-id` and `client-secret`
+      ## - mtls: leverages client certificates
+      ##
+      authenticationMode: "secrets"
+
 
     ## Don't actually do any automatic scheduling or checking.
     ##
@@ -417,7 +503,7 @@ concourse:
 
       ## Prefix for all metrics to easily find them in Datadog
       ##
-      prefix:
+      prefix: "concourse.ci"
 
     influxdb:
       enabled: false
@@ -493,13 +579,6 @@ concourse:
     xFrameOptions:
 
     gc:
-      ## Enables overriding the default values that Concourse sets
-      ## for the parameters related to scheduling.
-      ##
-      ## **Do not change this values unless you're sure about what you're doing**.
-      ##
-      overrideDefaults: false
-
       ## Interval on which to perform garbage collection.
       ##
       interval: 30s
@@ -511,7 +590,7 @@ concourse:
       ## Period after which to reap containers and volumes that were created but
       ## went missing from the worker.
       ##
-      missingGracePeriod:
+      missingGracePeriod: 5m
 
     syslog:
       ## Enables the emission of build logs to external log ingesters through
@@ -521,7 +600,7 @@ concourse:
 
       ## Client hostname with which the build logs will be sent to the syslog server.
       ##
-      hostName:
+      hostname: atc-syslog-drainer
 
       ## Remote syslog server address with port (Example: 0.0.0.0:514).
       ##
@@ -547,7 +626,7 @@ concourse:
 
       ## Length of time for which tokens are valid. Afterwards, users will have to log back in.
       ## The value must be specified as Go duration values (e.g.: 30m or 24h).
-      duration:
+      duration: 24h
 
       mainTeam:
         ## Configuration file for specifying team params.
@@ -872,11 +951,11 @@ concourse:
     tsa:
       ## Minimum level of logs to see. Possible values: debug, info, error.
       ##
-      logLevel:
+      logLevel: info
 
       ## IP address on which to listen for SSH.
       ##
-      bindIp:
+      bindIp: 0.0.0.0
 
       ## Port on which to listen for SSH.
       ##
@@ -884,7 +963,7 @@ concourse:
 
       ## IP address on which to listen for the pprof debugger endpoints (default: 127.0.0.1)
       ##
-      debugBindIp:
+      debugBindIp: 127.0.0.1
 
       ## Port on which to listen for TSA pprof server.
       ##
@@ -908,7 +987,16 @@ concourse:
 
       ## Interval on which to heartbeat workers to the ATC.
       ##
-      heartbeatInterval:
+      heartbeatInterval: 30s
+
+    letsEncrypt:
+      ## Automatically configure TLS certificates via Let's Encrypt/ACME.
+      ##
+      enabled: false
+
+      ## URL of the ACME CA directory endpoint.
+      ##
+      acmeURL:
 
   worker:
     ## Signal to send to the worker container when shutting down.
@@ -931,9 +1019,13 @@ concourse:
     ##
     rebalanceInterval:
 
+    ## Duration after which a worker should give up draining forwarded connections on shutdown.
+    ##
+    connectionDrainTimeout: 1h
+
     ## IP address on which to listen for health checking requests.
     ##
-    healthcheckBindIp:
+    healthcheckBindIp: 0.0.0.0
 
     ## Port on which to listen for health checking requests.
     ##
@@ -941,7 +1033,7 @@ concourse:
 
     ## HTTP timeout for the full duration of health checking.
     ##
-    healthcheckTimeout:
+    healthcheckTimeout: 5s
 
     ## The name to set for the worker during registration. If not specified, the hostname will be used.
     ##
@@ -973,7 +1065,7 @@ concourse:
 
     ## IP address on which to listen for the pprof debugger endpoints.
     ##
-    debugBindIp:
+    debugBindIp: 127.0.0.1
 
     ## Port on which to listen for beacon pprof server.
     ##
@@ -989,15 +1081,23 @@ concourse:
 
     ## IP address on which to listen for the Garden server.
     ##
-    bindIp:
+    bindIp: 127.0.0.1
 
     ## Port on which to listen for the Garden server.
     ##
     bindPort: 7777
 
+    ## IP used to reach this worker from the ATC nodes.
+    ##
+    peerIp:
+
+    ## Interval on which containers and volumes will be garbage collected from the worker.
+    ##
+    sweepInterval: 30s
+
     ## Minimum level of logs to see. Possible options: debug, info, error.
     ##
-    logLevel:
+    logLevel: info
 
     ## Maximum number of containers which can be swept in parallel.
     ##
@@ -1008,9 +1108,15 @@ concourse:
     volumeSweeperMaxInFlight: 5
 
     tsa:
-      ## TSA host to forward the worker through. Can be specified multiple times.
+
+      ## TSA host(s) to forward the worker through.
+      ## Only used for worker-only deployments.
+      ## Example:
+      ## hosts:
+      ##   - 1.1.1.1:2222
+      ##   - 2.2.2.2:2222
       ##
-      host:
+      hosts: []
 
       ## File containing a public key to expect from the TSA.
       ##
@@ -1020,10 +1126,15 @@ concourse:
       ##
       workerPrivateKey:
 
+    ## API endpoint of an externally managed Garden server to use instead of
+    ## running the embedded Garden server.
+    ##
+    externalGardenUrl:
+
     garden:
       ## Path to the 'gdn' executable (or leave as 'gdn' to find it in $PATH)
       ##
-      bin:
+      bin: gdn
 
       ## Path to a config file to use for Garden in INI format.
       ##
@@ -1048,11 +1159,11 @@ concourse:
     baggageclaim:
       ## Minimum level of logs to see. Possible values: debug, info, error
       ##
-      logLevel:
+      logLevel: info
 
       ## IP address on which to listen for API traffic.
       ##
-      bindIp:
+      bindIp: 127.0.0.1
 
       ## Port on which to listen for API traffic.
       ##
@@ -1060,15 +1171,15 @@ concourse:
 
       ## IP address on which to listen for the pprof debugger endpoints.
       ##
-      debugBindIp:
-
-      ## Disable remapping of user/group IDs in unprivileged volumes.
-      ##
-      disableUserNamespaces:
+      debugBindIp: 127.0.0.1
 
       ## Port on which to listen for baggageclaim pprof server.
       ##
       debugBindPort: 7787
+
+      ## Disable remapping of user/group IDs in unprivileged volumes.
+      ##
+      disableUserNamespaces:
 
       ## Directory in which to place volume data.
       ##
@@ -1081,21 +1192,30 @@ concourse:
 
       ## Path to btrfs binary
       ##
-      btrfsBin:
+      btrfsBin: btrfs
 
       ## Path to mkfs.btrfs binary
       ##
-      mkfsBin:
+      mkfsBin: mkfs.btrfs
 
       ## Path to directory in which to store overlay data
       ##
       overlaysDir:
+
+      ## Interval on which to reap expired volumes.
+      ##
+      reapInterval: 10s
 
 ## Configuration values for Concourse Web components.
 ## For more information regarding the characteristics of
 ## Concourse Web nodes, see https://concourse-ci.org/concourse-web.html.
 ##
 web:
+
+  ## Enable or disable the web component.
+  ## This allows the creation of worker-only releases by setting this to false.
+  ##
+  enabled: true
 
   ## Override the components name (defaults to web).
   ##
@@ -1163,6 +1283,7 @@ web:
   teamSecretsPath: "/team-authorized-keys"
   authSecretsPath: "/concourse-auth"
   vaultSecretsPath: "/concourse-vault"
+  credhubSecretsPath: "/concourse-credhub"
   postgresqlSecretsPath: "/concourse-postgresql"
   syslogSecretsPath: "/concourse-syslog"
   tlsSecretsPath: "/concourse-web-tls"
@@ -1209,6 +1330,16 @@ web:
   ##
   additionalAffinities:
 
+  ## Additional Labels to be added to the web pods.
+  ##
+  ## Example:
+  ##   key1: "value1"
+  ##   key2: "value2"
+  ##
+  ## Ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+  ##
+  labels: {}
+
   ## Annotations for the web nodes.
   ##
   ## Example:
@@ -1235,6 +1366,17 @@ web:
   ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
   ##
   tolerations: []
+
+  ## Strategy for web deployment updates.
+  ##
+  ## Example:
+  ##
+  ##   strategy:
+  ##     type: RollingUpdate
+  ##     rollingUpdate:
+  ##       maxSurge: 1
+  ##       maxUnavailable: 25%
+  strategy: {}
 
   ## Service configuration.
   ## Ref: https://kubernetes.io/docs/user-guide/services/
@@ -1268,7 +1410,7 @@ web:
     ##   service.beta.kubernetes.io/aws-load-balancer-backend-port: "atc"
     ##   service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
     ##
-    annotations:
+    annotations: {}
 
     ## When using `web.service.type: LoadBalancer`, whitelist the load balancer to particular IPs
     ## Example:
@@ -1301,7 +1443,7 @@ web:
     ##   kubernetes.io/ingress.class: nginx
     ##   kubernetes.io/tls-acme: 'true'
     ##
-    annotations:
+    annotations: {}
 
     ## Hostnames.
     ## Must be provided if Ingress is enabled.
@@ -1324,6 +1466,12 @@ web:
 ## Concourse Workers, see https://concourse-ci.org/concourse-worker.html
 ##
 worker:
+
+  ## Enable or disable the worker component.
+  ## This can allow users to create web only releases by setting this to false
+  ##
+  enabled: true
+
   ## Override the components name (defaults to worker).
   ##
   nameOverride:
@@ -1399,6 +1547,16 @@ worker:
   ##     mountPath: /baggageclaim
   ##
   additionalVolumeMounts: []
+
+  ## Additional Labels to be added to the worker pods.
+  ##
+  ## Example:
+  ##   key1: "value1"
+  ##   key2: "value2"
+  ##
+  ## Ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+  ##
+  labels: {}
 
   ## Annotations to be added to the worker pods.
   ##
@@ -1529,24 +1687,30 @@ persistence:
 postgresql:
 
   ## Use the PostgreSQL chart dependency.
-  ## Set to false if bringing your own PostgreSQL, and set secret value postgresql-uri.
+  ##
+  ## Set to false if bringing your own PostgreSQL, and set the corresponding `secrets`
+  ## fields that correspond to the PostgreSQL variables that `concourse web` should use
+  ## to connect to.
+  ##
+  ## Should be set to false if using the chart as a worker only deployment.
   ##
   enabled: true
 
   ### PostgreSQL User to create.
   ##
-  postgresUser: concourse
+  postgresqlUsername: concourse
 
   ## PostgreSQL Password for the new user.
   ## If not set, a random 10 characters password will be used.
   ##
-  postgresPassword: concourse
+  postgresqlPassword: concourse
 
   ## PostgreSQL Database to create.
   ##
-  postgresDatabase: concourse
+  postgresqlDatabase: concourse
 
-  ## Persistent Volume Storage configuration.
+  ## Persistent Volume Storage configuration for PostgreSQL.
+  ##
   ## Ref: https://kubernetes.io/docs/user-guide/persistent-volumes
   ##
   persistence:
@@ -1554,7 +1718,8 @@ postgresql:
     ##
     enabled: true
 
-    ## Concourse data Persistent Volume Storage Class.
+    ## Persistent Volume Storage Class to be used by PersistentVolumes created
+    ## for PostgreSQL.
     ##
     ## If defined, storageClassName: <storageClass>
     ## If set to "-", storageClassName: "", which disables dynamic provisioning
@@ -1566,7 +1731,8 @@ postgresql:
 
     ## Persistent Volume Access Mode.
     ##
-    accessMode: ReadWriteOnce
+    accessModes:
+      - ReadWriteOnce
 
     ## Persistent Volume Storage Size.
     ##
@@ -1749,6 +1915,28 @@ secrets:
   awsSecretsmanagerSecretKey:
   awsSecretsmanagerSessionToken:
 
+  ## Secrets for using CredHub as a credential manager.
+  ##
+  ## Value of PEM-encoded CA cert file to use to verify the CredHub server SSL cert.
+  ##
+  credhubCaCert:
+
+  ## Client ID for CredHub authorization.
+  ##
+  credhubClientId:
+
+  ## Client secret for CredHub authorization.
+  ##
+  credhubClientSecret:
+
+  ## Client cert for Credhub authorization
+  ##
+  credhubClientCert:
+
+  ## Client key for Credhub authorization
+  ##
+  credhubClientKey:
+
   ## Secrets for CF OAuth
   ##
   cfClientId:
@@ -1802,8 +1990,8 @@ secrets:
   ## vault authentication parameters
   ## Parameter to pass when logging in via the backend
   ## Required for "approle" authenication method
-  ## e.g. "role_id=x,secret_id=x"
-  ## Ref: https://concourse-ci.org/creds.html#vault-auth-param=NAME=VALUE
+  ## e.g. "role_id:x,secret_id:x"
+  ## Ref: https://concourse-ci.org/vault-credential-manager.html#vault-approle-auth
   ##
   vaultAuthParam:
 

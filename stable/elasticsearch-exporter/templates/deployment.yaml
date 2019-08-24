@@ -31,26 +31,55 @@ spec:
 {{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"
 {{- end }}
+{{- if .Values.image.pullSecret }}
+      imagePullSecrets:
+        - name: {{ .Values.image.pullSecret }}
+{{- end }}
       restartPolicy: {{ .Values.restartPolicy }}
+      {{- if .Values.securityContext.enabled }}
       securityContext:
         runAsNonRoot: true
-        runAsUser: 1000
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
+          {{- if .Values.env }}
+          env:
+          {{- range $key, $value := .Values.env }}
+          - name: {{ $key }}
+            value: "{{ $value }}"
+          {{- end }}
+          {{- end }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["elasticsearch_exporter",
-                    "-es.uri={{ .Values.es.uri }}",
-                    "-es.all={{ .Values.es.all }}",
-                    "-es.indices={{ .Values.es.indices }}",
-                    "-es.timeout={{ .Values.es.timeout }}",
-                    {{- if .Values.es.ssl.enabled }}
-                    "-es.ca=/ssl/ca.pem",
-                    "-es.client-cert=/ssl/client.pem",
-                    "-es.client-private-key=/ssl/client.key",
+                    "--es.uri={{ .Values.es.uri }}",
+                    {{- if .Values.es.all }}
+                    "--es.all",
                     {{- end }}
-                    "-web.listen-address=:{{ .Values.service.httpPort }}",
-                    "-web.telemetry-path={{ .Values.web.path }}"]
+                    {{- if .Values.es.indices }}
+                    "--es.indices",
+                    {{- end }}
+                    {{- if .Values.es.shards }}
+                    "--es.shards",
+                    {{- end }}
+                    {{- if .Values.es.snapshots }}
+                    "--es.snapshots",
+                    {{- end }}
+                    {{- if .Values.es.cluster_settings }}
+                    "--es.cluster_settings",
+                    {{- end }}
+                    "--es.timeout={{ .Values.es.timeout }}",
+                    {{- if .Values.es.sslSkipVerify }}
+                    "--es.ssl-skip-verify",
+                    {{- end }}
+                    {{- if .Values.es.ssl.enabled }}
+                    "--es.ca=/ssl/ca.pem",
+                    "--es.client-cert=/ssl/client.pem",
+                    "--es.client-private-key=/ssl/client.key",
+                    {{- end }}
+                    "--web.listen-address=:{{ .Values.service.httpPort }}",
+                    "--web.telemetry-path={{ .Values.web.path }}"]
           securityContext:
             capabilities:
               drop:
@@ -98,6 +127,10 @@ spec:
 {{- if .Values.tolerations }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
+{{- end }}
+{{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
 {{- end }}
       volumes:
         {{- if .Values.es.ssl.enabled }}

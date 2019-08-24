@@ -34,6 +34,9 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
       {{- end }}
     spec:
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+      {{- end }}
 {{- include "rabbitmq.imagePullSecrets" . | indent 6 }}
       {{- if .Values.rbacEnabled}}
       serviceAccountName: {{ template "rabbitmq.fullname" . }}
@@ -78,6 +81,7 @@ spec:
          - |
             mkdir -p /opt/bitnami/rabbitmq/.rabbitmq/
             mkdir -p /opt/bitnami/rabbitmq/etc/rabbitmq/
+            touch /opt/bitnami/rabbitmq/var/lib/rabbitmq/.start
             #persist the erlang cookie in both places for server and cli tools
             echo $RABBITMQ_ERL_COOKIE > /opt/bitnami/rabbitmq/var/lib/rabbitmq/.erlang.cookie
             cp /opt/bitnami/rabbitmq/var/lib/rabbitmq/.erlang.cookie /opt/bitnami/rabbitmq/.rabbitmq/
@@ -86,9 +90,11 @@ spec:
             #copy the mounted configuration to both places
             cp  /opt/bitnami/rabbitmq/conf/* /opt/bitnami/rabbitmq/etc/rabbitmq
             # Apply resources limits
+            {{- if .Values.rabbitmq.setUlimitNofiles }}
             ulimit -n "${RABBITMQ_ULIMIT_NOFILES}"
+            {{- end }}
             #replace the default password that is generated
-            sed -i "s/CHANGEME/$RABBITMQ_PASSWORD/g" /opt/bitnami/rabbitmq/etc/rabbitmq/rabbitmq.conf
+            sed -i "/CHANGEME/cdefault_pass=${RABBITMQ_PASSWORD//\\/\\\\}" /opt/bitnami/rabbitmq/etc/rabbitmq/rabbitmq.conf
             #api check for probes
             cat > /opt/bitnami/rabbitmq/sbin/rabbitmq-api-check <<EOF
             #!/bin/sh
@@ -100,6 +106,26 @@ spec:
             test "\${EXPECTED}" = "\${ACTUAL}"
             EOF
             chmod a+x /opt/bitnami/rabbitmq/sbin/rabbitmq-api-check
+            #health check for probes, handle period during rabbtmq sync
+            cat > /opt/bitnami/rabbitmq/sbin/rabbitmq-health-check <<EOF
+            #!/bin/sh
+            START_FLAG=/opt/bitnami/rabbitmq/var/lib/rabbitmq/.start
+            if [ -f \${START_FLAG} ]; then
+               rabbitmqctl node_health_check
+               RESULT=\$?
+               if [ \$RESULT -ne 0 ]; then
+                  rabbitmqctl status
+                  exit $?
+               fi
+               rm -f \${START_FLAG}
+               exit \${RESULT}
+            fi
+            rabbitmq-api-check \$1 \$2
+            EOF
+            chmod a+x /opt/bitnami/rabbitmq/sbin/rabbitmq-health-check
+            {{- if and .Values.persistence.enabled .Values.forceBoot.enabled }}
+            if [ -d "{{ .Values.persistence.path }}/mnesia/${RABBITMQ_NODENAME}" ]; then rabbitmqctl force_boot; fi
+            {{- end }}
             exec rabbitmq-server
         {{- if .Values.resources }}
         resources:
@@ -130,7 +156,7 @@ spec:
             command:
               - sh
               - -c
-              - rabbitmq-api-check "http://{{ .Values.rabbitmq.username }}:$RABBITMQ_PASSWORD@127.0.0.1:{{ .Values.service.managerPort }}/api/healthchecks/node" '{"status":"ok"}'
+              - rabbitmq-api-check "http://{{ .Values.rabbitmq.username }}:$RABBITMQ_PASSWORD@127.0.0.1:{{ .Values.service.managerPort }}/api/healthchecks/node" '{"status":"ok"}' 
           initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
           timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
           periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
@@ -143,7 +169,7 @@ spec:
             command:
               - sh
               - -c
-              - rabbitmq-api-check "http://{{ .Values.rabbitmq.username }}:$RABBITMQ_PASSWORD@127.0.0.1:{{ .Values.service.managerPort }}/api/healthchecks/node" '{"status":"ok"}'
+              - rabbitmq-health-check "http://{{ .Values.rabbitmq.username }}:$RABBITMQ_PASSWORD@127.0.0.1:{{ .Values.service.managerPort }}/api/healthchecks/node" '{"status":"ok"}'
           initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
           timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
           periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
@@ -151,12 +177,8 @@ spec:
           successThreshold: {{ .Values.readinessProbe.successThreshold }}
         {{- end }}
         env:
-        {{- if .Values.image.debug}}
-          - name: BASH_DEBUG
-            value: "1"
-          - name: NAMI_DEBUG
-            value: "1"
-        {{- end }}
+          - name: BITNAMI_DEBUG
+            value: {{ ternary "true" "false" .Values.image.debug | quote }}
           - name: MY_POD_IP
             valueFrom:
               fieldRef:
@@ -206,6 +228,10 @@ spec:
               secretKeyRef:
                 name: {{ template "rabbitmq.secretPasswordName" . }}
                 key: rabbitmq-password
+          {{- range $key, $value := .Values.rabbitmq.env }}
+          - name: {{ $key }}
+            value: {{ $value | quote }}
+          {{- end }}
 {{- if .Values.metrics.enabled }}
       - name: metrics
         image: {{ template "rabbitmq.metrics.image" . }}
@@ -259,6 +285,10 @@ spec:
             items:
             - key: rabbitmq.conf
               path: rabbitmq.conf
+        {{- if .Values.rabbitmq.advancedConfiguration}}
+            - key: advanced.config
+              path: advanced.config
+        {{- end }}      
             - key: enabled_plugins
               path: enabled_plugins
         {{- if .Values.rabbitmq.loadDefinition.enabled }}
@@ -272,7 +302,9 @@ spec:
       {{- else if .Values.persistence.existingClaim }}
         - name: data
           persistentVolumeClaim:
-            claimName: {{ .Values.persistence.existingClaim }}
+          {{- with .Values.persistence.existingClaim }}
+            claimName: {{ tpl . $ }}
+          {{- end }}
   {{- else }}
   volumeClaimTemplates:
     - metadata:
@@ -287,11 +319,5 @@ spec:
         resources:
             requests:
               storage: {{ .Values.persistence.size | quote }}
-      {{- if .Values.persistence.storageClass }}
-      {{- if (eq "-" .Values.persistence.storageClass) }}
-        storageClassName: ""
-      {{- else }}
-        storageClassName: "{{ .Values.persistence.storageClass }}"
-      {{- end }}
-      {{- end }}
+        {{ include "rabbitmq.storageClass" . }}
   {{- end }}

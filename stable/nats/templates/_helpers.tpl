@@ -12,8 +12,16 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
 {{- define "nats.fullname" -}}
+{{- if .Values.fullnameOverride -}}
+{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
 {{- $name := default .Chart.Name .Values.nameOverride -}}
+{{- if contains $name .Release.Name -}}
+{{- .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
 {{- end -}}
 
 {{- define "nats.chart" -}}
@@ -117,5 +125,28 @@ imagePullSecrets:
 {{- range .Values.metrics.image.pullSecrets }}
   - name: {{ . }}
 {{- end }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Compile all warnings into a single message, and call fail.
+*/}}
+{{- define "nats.validateValues" -}}
+{{- $messages := list -}}
+{{- $messages := append $messages (include "nats.validateValues.resourceType" .) -}}
+{{- $messages := without $messages "" -}}
+{{- $message := join "\n" $messages -}}
+
+{{- if $message -}}
+{{-   printf "\nVALUES VALIDATION:\n%s" $message | fail -}}
+{{- end -}}
+{{- end -}}
+
+{{/* Validate values of NATS - must provide a valid resourceType ("deployment" or "statefulset") */}}
+{{- define "nats.validateValues.resourceType" -}}
+{{- if and (ne .Values.resourceType "deployment") (ne .Values.resourceType "statefulset") -}}
+nats: resourceType
+    Invalid resourceType selected. Valid values are "deployment" and
+    "statefulset". Please set a valid mode (--set resourceType="xxxx")
 {{- end -}}
 {{- end -}}

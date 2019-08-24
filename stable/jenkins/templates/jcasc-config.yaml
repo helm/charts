@@ -6,6 +6,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ template "jenkins.fullname" $root }}-jenkins-config-{{ $key }}
+  namespace: {{ template "jenkins.namespace" $root }}
   labels:
     "app.kubernetes.io/name": {{ template "jenkins.name" $root}}
     "helm.sh/chart": {{ $.Chart.Name }}-{{ $.Chart.Version }}

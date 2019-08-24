@@ -17,12 +17,39 @@ opa:
 certManager:
   enabled: false
 
+# Expose the prometheus scraping endpoint
+prometheus:
+  enabled: false
+
+# Annotations in the deployment template
+annotations:
+  {}
+
+# Bootstrap policies to load upon startup
+# Define policies in the form of:
+# <policyName> : |-
+#   <regoBody>
+# For example, to mask the entire input body in the decision logs:
+# bootstrapPolicies:
+#   log: |-
+#     package system.log
+#     mask["/input"]
+bootstrapPolicies: {}
+
 # To enforce mutating policies, change to MutatingWebhookConfiguration.
 admissionControllerKind: ValidatingWebhookConfiguration
 
 # To _fail closed_ on failures, change to Fail. During initial testing, we
 # recommend leaving the failure policy as Ignore.
 admissionControllerFailurePolicy: Ignore
+
+# Adds a namespace selector to the admission controller webhook
+admissionControllerNamespaceSelector:
+  matchExpressions:
+    - {key: openpolicyagent.org/webhook, operator: NotIn, values: [ignore]}
+
+# SideEffectClass for the webhook, setting to None enables dry-run
+admissionControllerSideEffect: Unknown
 
 # To restrict the kinds of operations and resources that are subject to OPA
 # policy checks, see the settings below. By default, all resources and
@@ -150,15 +177,18 @@ sar:
 # To control the liveness and readiness probes change the fields below.
 readinessProbe:
   httpGet:
-    path: /
+    path: /health
     scheme: HTTPS
     port: 443
-    initialDelaySeconds: 3
-    periodSeconds: 5
+  initialDelaySeconds: 3
+  periodSeconds: 5
 livenessProbe:
   httpGet:
-    path: /
+    path: /health
     scheme: HTTPS
     port: 443
-    initialDelaySeconds: 3
-    periodSeconds: 5
+  initialDelaySeconds: 3
+  periodSeconds: 5
+
+# Set a priorityClass using priorityClassName
+# priorityClassName:

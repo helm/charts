@@ -1,9 +1,9 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}-worker
+  name: {{ template "sentry.fullname" . }}-worker
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "sentry.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -11,12 +11,15 @@ spec:
   replicas: {{ .Values.worker.replicacount }}
   template:
     metadata:
-      {{- if .Values.worker.podAnnotations }}
       annotations:
+        metrics-enabled: {{ .Values.metrics.enabled | quote }}
+        checksum/configYml: {{ .Values.config.configYml | sha256sum }}
+        checksum/sentryConfPy: {{ .Values.config.sentryConfPy | sha256sum }}
+      {{- if .Values.worker.podAnnotations }}
 {{ toYaml .Values.worker.podAnnotations | indent 8 }}
       {{- end }}
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "sentry.fullname" . }}
         release: "{{ .Release.Name }}"
         role: worker
         {{- if .Values.worker.podLabels }}
@@ -46,14 +49,20 @@ spec:
       - name: {{ .Chart.Name }}-workers
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        args: ["run", "worker"]
+        args:
+          - "run"
+          - "worker"
+          {{- if .Values.worker.concurrency }}
+          - "-c"
+          - "{{ .Values.worker.concurrency }}"
+          {{- end }}
         ports:
         - containerPort: {{ .Values.service.internalPort }}
         env:
         - name: SENTRY_SECRET_KEY
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "sentry.fullname" . }}
               key: sentry-secret
         - name: SENTRY_DB_USER
           value: {{ default "sentry" .Values.postgresql.postgresUser | quote }}
@@ -65,13 +74,13 @@ spec:
             {{- if .Values.postgresql.existingSecret }}
               name: {{ .Values.postgresql.existingSecret }}
             {{- else }}
-              name: {{ template "postgresql.secret" . }}
+              name: {{ template "sentry.postgresql.secret" . }}
             {{- end }}
               key: postgres-password
         - name: SENTRY_POSTGRES_HOST
-          value: {{ template "postgresql.host" . }}
+          value: {{ template "sentry.postgresql.host" . }}
         - name: SENTRY_POSTGRES_PORT
-          value: {{ template "postgresql.port" . }}
+          value: {{ template "sentry.postgresql.port" . }}
         {{- if or (.Values.redis.enabled) (.Values.redis.password) }}
         - name: SENTRY_REDIS_PASSWORD
           valueFrom:
@@ -79,14 +88,14 @@ spec:
             {{- if .Values.redis.existingSecret }}
               name: {{ .Values.redis.existingSecret }}
             {{- else }}
-              name: {{ template "redis.secret" . }}
+              name: {{ template "sentry.redis.secret" . }}
             {{- end }}
               key: redis-password
         {{- end }}
         - name: SENTRY_REDIS_HOST
-          value: {{ template "redis.host" . }}
+          value: {{ template "sentry.redis.host" . }}
         - name: SENTRY_REDIS_PORT
-          value: {{ template "redis.port" . }}
+          value: {{ template "sentry.redis.port" . }}
         - name: SENTRY_EMAIL_HOST
           value: {{ default "" .Values.email.host | quote }}
         - name: SENTRY_EMAIL_PORT
@@ -99,13 +108,17 @@ spec:
             {{- if .Values.email.existingSecret }}
               name: {{ .Values.email.existingSecret }}
             {{- else }}
-              name: {{ template "fullname" . }}
+              name: {{ template "sentry.fullname" . }}
             {{- end }}
               key: smtp-password
         - name: SENTRY_EMAIL_USE_TLS
           value: {{ .Values.email.use_tls | quote }}
         - name: SENTRY_SERVER_EMAIL
           value: {{ .Values.email.from_address | quote }}
+        {{ if eq .Values.filestore.backend "gcs" }}
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: /var/run/secrets/google/{{ .Values.filestore.gcs.credentialsFile }}
+        {{ end }}
 {{- if .Values.worker.env }}
 {{ toYaml .Values.worker.env | indent 8 }}
 {{- end }}
@@ -113,9 +126,29 @@ spec:
         - mountPath: /etc/sentry
           name: config
           readOnly: true
+        {{- if eq .Values.filestore.backend "gcs" }}
+        - name: sentry-google-cloud-key
+          mountPath: /var/run/secrets/google
+        {{- end }}
+        {{- if eq .Values.filestore.backend "filesystem" }}
+        - mountPath: {{ .Values.filestore.filesystem.path }}
+          name: sentry-data
+        {{- end }}
         resources:
 {{ toYaml .Values.worker.resources | indent 12 }}
       volumes:
       - name: config
         configMap:
-          name: {{ template "fullname" . }}
+          name: {{ template "sentry.fullname" . }}
+      {{- if eq .Values.filestore.backend "gcs" }}
+      - name: sentry-google-cloud-key
+        secret:
+          secretName: {{ .Values.filestore.gcs.secretName }}
+      {{ end }}
+      - name: sentry-data
+      {{- if and (.Values.filestore.filesystem.persistence.enabled) (.Values.filestore.filesystem.persistence.persistentWorkers) }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.filestore.filesystem.persistence.existingClaim | default (include "sentry.fullname" .) }}
+      {{- else }}
+        emptyDir: {}
+      {{ end }}

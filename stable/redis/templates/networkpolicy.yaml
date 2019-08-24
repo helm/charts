@@ -17,46 +17,32 @@ spec:
     # Allow inbound connections
     - ports:
       - port: {{ .Values.redisPort }}
-      {{- if not .Values.networkPolicy.allowExternal }}
-        from:
-          - podSelector:
-              matchLabels:
-                {{ template "redis.fullname" . }}-client: "true"
-          {{- if .Values.metrics.enabled }}
-          - podSelector:
-              matchLabels:
-                release: "{{ .Release.Name }}"
-                role: metrics
-                app: {{ template "redis.name" . }}
-          {{- end }}
-        {{- end }}
+      {{- if .Values.sentinel.enabled }}
       - port: {{ .Values.sentinel.port }}
-      {{- if not .Values.networkPolicy.allowExternal }}
-        from:
-          - podSelector:
-              matchLabels:
-                {{ template "redis.fullname" . }}-client: "true"
-          {{- if .Values.metrics.enabled }}
-          - podSelector:
-              matchLabels:
-                release: "{{ .Release.Name }}"
-                role: metrics
-                app: {{ template "redis.name" . }}
-          {{- end }}
-        {{- end }}
-      {{- if .Values.metrics.enabled }}
-      # Allow prometheus scrapes for metrics
-      - port: 9121
-      {{- if not .Values.networkPolicy.allowExternal }}
-        from:
-          - podSelector:
-              matchLabels:
-                {{ template "redis.fullname" . }}-client: "true"
-          - podSelector:
-              matchLabels:
-                release: "{{ .Release.Name }}"
-                role: metrics
-                app: {{ template "redis.name" . }}
       {{- end }}
+      {{- if not .Values.networkPolicy.allowExternal }}
+      from:
+      - podSelector:
+          matchLabels:
+            {{ template "redis.fullname" . }}-client: "true"
+      {{- if .Values.metrics.enabled }}
+      - podSelector:
+          matchLabels:
+            release: "{{ .Release.Name }}"
+            role: metrics
+            app: {{ template "redis.name" . }}
+      {{- end }}
+      {{- if ge .Values.cluster.slaveCount 1.0 }}
+      - podSelector:
+          matchLabels:
+            release: "{{ .Release.Name }}"
+            role: slave
+            app: {{ template "redis.name" . }}
+      {{- end }}
+      {{- end }}
+    {{- if .Values.metrics.enabled }}
+    # Allow prometheus scrapes for metrics
+    - ports:
+      - port: 9121
     {{- end }}
 {{- end }}

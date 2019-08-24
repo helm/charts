@@ -26,8 +26,8 @@ spec:
     metadata:
       {{- if .Values.slave.annotations }}
       annotations:
-        {{- range .Values.slave.annotations }}
-        {{ .key }}: '{{ .value }}'
+        {{- range $key, $value := .Values.slave.annotations }}
+        {{ $key }}: '{{ $value }}'
         {{- end }}
       {{- end }}
       labels:
@@ -36,6 +36,9 @@ spec:
         release: "{{ .Release.Name }}"
         chart: "{{ template "mariadb.chart" . }}"
     spec:
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+      {{- end }}
       serviceAccountName: "{{ template "mariadb.serviceAccountName" . }}"
       {{- if .Values.securityContext.enabled }}
       securityContext:
@@ -74,14 +77,30 @@ spec:
 {{ toYaml . | indent 8 }}
       {{- end }}
       {{- end }}
+      {{- if .Values.slave.nodeSelector }}
+      nodeSelector:
+        {{ toYaml .Values.slave.nodeSelector | nindent 8 }}
+      {{- end -}}
       {{- with .Values.slave.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
       {{- end }}
 {{- include "mariadb.imagePullSecrets" . | indent 6 }}
-      {{- if .Values.master.extraInitContainers }}
       initContainers:
+      {{- if .Values.master.extraInitContainers }}
 {{ tpl .Values.master.extraInitContainers . | indent 6}}
+      {{- end }}
+      {{- if and .Values.volumePermissions.enabled .Values.slave.persistence.enabled }}
+      - name: volume-permissions
+        image: {{ template "mariadb.volumePermissions.image" . }}
+        imagePullPolicy: {{ .Values.volumePermissions.image.pullPolicy | quote }}
+        command: ["chown", "-R", "{{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }}", "/bitnami/mariadb"]
+        securityContext:
+          runAsUser: 0
+        resources: {{ toYaml .Values.volumePermissions.resources | nindent 10 }}
+        volumeMounts:
+        - name: data
+          mountPath: /bitnami/mariadb
       {{- end }}
       containers:
       - name: "mariadb"
@@ -91,6 +110,10 @@ spec:
         {{- if .Values.image.debug}}
         - name: BITNAMI_DEBUG
           value: "true"
+        {{- end }}
+        {{- if .Values.slave.extraFlags }}
+        - name: MARIADB_EXTRA_FLAGS
+          value: "{{ .Values.slave.extraFlags }}"
         {{- end }}
         - name: MARIADB_REPLICATION_MODE
           value: "slave"
@@ -209,13 +232,7 @@ spec:
         resources:
           requests:
             storage: {{ .Values.slave.persistence.size | quote }}
-      {{- if .Values.slave.persistence.storageClass }}
-      {{- if (eq "-" .Values.slave.persistence.storageClass) }}
-        storageClassName: ""
-      {{- else }}
-        storageClassName: {{ .Values.slave.persistence.storageClass | quote }}
-      {{- end }}
-      {{- end }}
+        {{ include "mariadb.slave.storageClass" . }}
 {{- else }}
         - name: "data"
           emptyDir: {}

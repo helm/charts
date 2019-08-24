@@ -63,6 +63,9 @@ enableLivenessProbe: false
 # How long to wait (in seconds) before checking the liveness probe
 livenessProbeInitialDelay: 30
 
+# How long to wait before timeout (in seconds) when checking controller liveness
+livenessProbeTimeout: 1
+
 rbac:
   ## If true, create & use RBAC resources
   ##
@@ -99,3 +102,18 @@ tolerations: []
   #    effect: NoSchedule
 
 affinity: {}
+
+volumeMounts: []
+  # - name: aws-iam-credentials
+  #   mountPath: /meta/aws-iam
+  #   readOnly: true
+
+volumes: []
+  # - name: aws-iam-credentials
+  #   secret:
+  #     secretName: alb-ingress-controller-role
+
+# Leverage a PriorityClass to ensure your pods survive resource shortages
+# ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
+# PriorityClass: system-cluster-critical
+priorityClassName: ""

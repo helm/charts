@@ -18,11 +18,19 @@ spec:
         component: "{{ .Values.master.name }}"
         release: {{ .Release.Name }}
         role: master
-        {{- if .Values.master.podAnnotations }}
+{{- if or .Values.master.podAnnotations (eq .Values.master.updateStrategy.type "RollingUpdate") }}
       annotations:
+      {{- if .Values.master.podAnnotations }}
 {{ toYaml .Values.master.podAnnotations | indent 8 }}
-        {{- end }}
+      {{- end }}
+      {{- if eq .Values.master.updateStrategy.type "RollingUpdate" }}
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+      {{- end }}
+{{- end }}
     spec:
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+      {{- end }}
       serviceAccountName: {{ template "elasticsearch.serviceAccountName.master" . }}
 {{- if .Values.master.priorityClassName }}
       priorityClassName: "{{ .Values.master.priorityClassName }}"
@@ -65,7 +73,12 @@ spec:
       tolerations:
 {{ toYaml .Values.master.tolerations | indent 8 }}
 {{- end }}
+{{- if .Values.master.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ .Values.master.terminationGracePeriodSeconds }}
+{{- end }}
+{{- if or .Values.extraInitContainers .Values.sysctlInitContainer.enabled .Values.chownInitContainer.enabled .Values.cluster.plugins }}
       initContainers:
+{{- end }}
 {{- if .Values.sysctlInitContainer.enabled }}
       # see https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html
       # and https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-configuration-memory.html#mlockall
@@ -78,6 +91,7 @@ spec:
         securityContext:
           privileged: true
 {{- end }}
+{{- if .Values.chownInitContainer.enabled }}
       - name: "chown"
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
@@ -102,6 +116,7 @@ spec:
         volumeMounts:
         - mountPath: /usr/share/elasticsearch/data
           name: data
+{{- end }}
 {{- if .Values.extraInitContainers }}
 {{ tpl .Values.extraInitContainers . | indent 6 }}
 {{- end }}
@@ -135,6 +150,10 @@ spec:
 {{ toYaml .Values.master.readinessProbe | indent 10 }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+        {{- if .Values.securityContext.enabled }}
+        securityContext:
+          runAsUser: {{ .Values.securityContext.runAsUser }}
+        {{- end }}
         ports:
         - containerPort: 9300
           name: transport
@@ -167,6 +186,29 @@ spec:
           mountPath: "/usr/share/elasticsearch/config/elasticsearch.keystore"
           subPath: elasticsearch.keystore
           readOnly: true
+{{- end }}
+{{- if .Values.master.hooks.preStop }}
+        - name: config
+          mountPath: /master-pre-stop-hook.sh
+          subPath: master-pre-stop-hook.sh
+{{- end }}
+{{- if .Values.master.hooks.postStart }}
+        - name: config
+          mountPath: /master-post-start-hook.sh
+          subPath: master-post-start-hook.sh
+{{- end }}
+{{- if or .Values.master.hooks.preStop .Values.master.hooks.postStart }}
+        lifecycle:
+  {{- if .Values.master.hooks.preStop }}
+          preStop:
+            exec:
+              command: ["/bin/bash","/master-pre-stop-hook.sh"]
+  {{- end }}
+  {{- if .Values.master.hooks.postStart }}
+          postStart:
+            exec:
+              command: ["/bin/bash","/master-post-start-hook.sh"]
+  {{- end }}
 {{- end }}
 {{- if .Values.image.pullSecrets }}
       imagePullSecrets:

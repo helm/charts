@@ -1,6 +1,6 @@
 {{- if .Values.rbac.create -}}
 apiVersion: rbac.authorization.k8s.io/v1beta1
-{{- if .Values.rbac.namespaced }}
+{{- if .Values.scope.singleNamespace }}
 kind: Role
 {{- else }}
 kind: ClusterRole
@@ -9,20 +9,44 @@ metadata:
   name: {{ include "ambassador.fullname" . }}
   labels:
     app.kubernetes.io/name: {{ include "ambassador.name" . }}
+    app.kubernetes.io/part-of: {{ .Release.Name }}
     helm.sh/chart: {{ include "ambassador.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 rules:
   - apiGroups: [""]
     resources:
+    {{- if not .Values.scope.singleNamespace }}
     - namespaces
+    {{- end }}
     - services
     - secrets
     - endpoints
     verbs: ["get", "list", "watch"]
+  - apiGroups: [ "getambassador.io" ]
+    resources: [ "*" ]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [ "apiextensions.k8s.io" ]
+    resources: [ "customresourcedefinitions" ]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [ "networking.internal.knative.dev"]
+    resources: [ "clusteringresses" ]
+    verbs: ["get", "list", "watch"]
+  {{- if .Values.pro.enabled }}
+  - apiGroups: [""]
+    resources: [ "secrets" ]
+    verbs: ["get", "list", "watch", "create"]
+  {{- end }}
+  {{- if .Values.rbac.podSecurityPolicies }}
+  - apiGroups: ['policy']
+    resources: ['podsecuritypolicies']
+    verbs: ['use']
+    resourceNames:
+      {{- toYaml .Values.rbac.podSecurityPolicies | nindent 6 }}
+  {{- end }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
-{{- if .Values.rbac.namespaced }}
+{{- if .Values.scope.singleNamespace }}
 kind: RoleBinding
 {{- else }}
 kind: ClusterRoleBinding
@@ -31,12 +55,13 @@ metadata:
   name: {{ include "ambassador.fullname" . }}
   labels:
     app.kubernetes.io/name: {{ include "ambassador.name" . }}
+    app.kubernetes.io/part-of: {{ .Release.Name }}
     helm.sh/chart: {{ include "ambassador.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
-  {{- if .Values.rbac.namespaced }}
+  {{- if .Values.scope.singleNamespace }}
   kind: Role
   {{- else }}
   kind: ClusterRole

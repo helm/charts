@@ -6,6 +6,7 @@
 #   imageRegistry: myRegistryName
 #   imagePullSecrets:
 #     - myRegistryKeySecretName
+#   storageClass: myStorageClass
 
 ## Bitnami phpBB image version
 ## ref: https://hub.docker.com/r/bitnami/phpbb/tags/
@@ -13,7 +14,7 @@
 image:
   registry: docker.io
   repository: bitnami/phpbb
-  tag: 3.2.5
+  tag: 3.2.7-debian-9-r94
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -25,6 +26,14 @@ image:
   ##
   # pullSecrets:
   #   - myRegistryKeySecretName
+
+## String to partially override phpbb.fullname template (will maintain the release name)
+##
+# nameOverride:
+
+## String to fully override phpbb.fullname template
+##
+# fullnameOverride:
 
 ## User of the application
 ## ref: https://github.com/bitnami/bitnami-docker-phpbb#environment-variables
@@ -200,17 +209,6 @@ service:
 ##
 persistence:
   enabled: true
-  apache:
-    ## apache data Persistent Volume Storage Class
-    ## If defined, storageClassName: <storageClass>
-    ## If set to "-", storageClassName: "", which disables dynamic provisioning
-    ## If undefined (the default) or set to null, no storageClassName spec is
-    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
-    ##   GKE, AWS & OpenStack)
-    ##
-    # storageClass: "-"
-    accessMode: ReadWriteOnce
-    size: 1Gi
   phpbb:
     ## phpbb data Persistent Volume Storage Class
     ## If defined, storageClassName: <storageClass>
@@ -241,8 +239,8 @@ metrics:
   enabled: false
   image:
     registry: docker.io
-    repository: lusotycoon/apache-exporter
-    tag: v0.5.0
+    repository: bitnami/apache-exporter
+    tag: 0.7.0-debian-9-r22
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.

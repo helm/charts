@@ -30,6 +30,9 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
 {{- end }}
     spec:
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+      {{- end }}
       hostNetwork: {{ .Values.hostNetwork }}
 {{- if .Values.selector }}
 {{ toYaml .Values.selector | indent 6 }}
@@ -93,7 +96,7 @@ spec:
           value: {{ required "You must fill \".Values.config.seeds\" with list of Cassandra seeds when hostNetwork is set to true" .Values.config.seeds | quote }}
           {{- else }}
           value: "{{- range $i, $e := until $seed_size }}{{ template "cassandra.fullname" $global }}-{{ $i }}.{{ template "cassandra.fullname" $global }}.{{ $global.Release.Namespace }}.svc.{{ $global.Values.config.cluster_domain }}{{- if (lt ( add1 $i ) $seed_size ) }},{{- end }}{{- end }}"
-          {{- end }}     
+          {{- end }}
         - name: MAX_HEAP_SIZE
           value: {{ default "8192M" .Values.config.max_heap_size | quote }}
         - name: HEAP_NEWSIZE
@@ -126,7 +129,7 @@ spec:
           failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
         readinessProbe:
           exec:
-            command: [ "/bin/sh", "-c", "nodetool status | grep -E \"^UN\\s+${POD_IP}\"" ]
+            command: [ "/bin/sh", "-c", "nodetool status | grep -E \"^UN\\s+{{ .Values.readinessProbe.address }}\"" ]
           initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
           timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}

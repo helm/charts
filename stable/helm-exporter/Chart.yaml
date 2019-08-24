@@ -1,8 +1,8 @@
 apiVersion: v1
-appVersion: "0.1.0"
+appVersion: "0.4.0"
 description: Exports helm release stats to prometheus
 name: helm-exporter
-version: 0.2.0
+version: 0.3.1
 home: https://github.com/sstarcher/helm-exporter
 sources:
 - https://github.com/sstarcher/helm-exporter

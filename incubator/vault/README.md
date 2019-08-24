@@ -53,6 +53,7 @@ The following table lists the configurable parameters of the Vault chart and the
 | `image.repository`                | Container image to use                   | `vault`                             |
 | `image.tag`                       | Container image tag to deploy            | `.Chart.appVersion`                            |
 | `vault.dev`                       | Use Vault in dev mode                    | true (set to false in production)   |
+| `vault.extraArgs`                 | Additional arguments for vault server command | `[]`                           |
 | `vault.extraEnv`                  | Extra env vars for Vault pods            | `{}`                                |
 | `vault.extraContainers`           | Sidecar containers to add to the vault pod | `{}`                              |
 | `vault.extraInitContainers`       | Init containers to be added to the vault pod | `{}`                            |
@@ -75,7 +76,13 @@ The following table lists the configurable parameters of the Vault chart and the
 | `labels`                          | Extra labels for deployment              | `{}`                                |
 | `ingress.labels`                  | Labels for ingress                       | `{}`                                |
 | `podAnnotations`                  | Annotations for pods                     | `{}`                                |
-| `serviceAccount.create`           | Specifies whether a ServiceAccount should be created | `false`                 |
+| `priorityClassName`               | Priority class name for pods             | `""`                                |
+| `minReadySeconds`                 | Minimum number of seconds that newly created replicas must be ready without any containers crashing | `0`                                |
+| `podLabels`                       | Extra labels for pods                    | `{}`                                |
+| `serviceAccount.create`           | Specifies whether a ServiceAccount should be created | `true`                 |
+| `serviceAccount.name`             | The name of the ServiceAccount to create | Generated from fullname template    |
+| `serviceAccount.annotations`      | Annotations for the created ServiceAccount | `{}`                              |
+| `rbac.create`                     | Specifies whether RBAC should be created | `true`                              |
 | `consulAgent.join`                | If set, start start a consul agent       | `nil`                               |
 | `consulAgent.repository`          | Container image for consul agent         | `consul`                            |
 | `consulAgent.tag`                 | Container image tag for consul agent     | `1.4.0`                             |

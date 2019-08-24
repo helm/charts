@@ -43,7 +43,7 @@ spec:
           command: ["/bin/sso-proxy"]
           ports:
             - name: http
-              containerPort: 8080
+              containerPort: 4180
               protocol: TCP
           env:
             - name: CLIENT_ID
@@ -63,22 +63,26 @@ spec:
                   key: proxy-cookie-secret
             - name: EMAIL_DOMAIN
               value: {{ .Values.emailDomain | quote }}
+            {{- if .Values.whitelistedEmails }}
+            - name: EMAIL_ADDRESSES
+              value: {{ .Values.whitelistedEmails }}
+            {{- end }}
             - name: UPSTREAM_CONFIGS
               value: /sso/upstream_configs.yml
             - name: PROVIDER_URL
               value: https://{{ .Values.auth.domain }}
-            # STATSD_HOST and STATSD_PORT must be defined or the app wont launch, they dont need to be a real host / port, but they do need to be defined.
-            - name: STATSD_HOST
-              value: localhost
-            - name: STATSD_PORT
-              value: "11111"
             - name: COOKIE_SECURE
               value: "true"
             - name: CLUSTER
-              value: {{ .Values.proxy.cluster | quote }}
+              value: {{ .Values.cluster | quote }}
+            - name: DEFAULT_PROVIDER_SLUG
+              value: {{ .Values.provider.google.slug | default "oauth2" | quote }}
           {{- if .Values.proxy.providerUrlInternal }}
             - name: PROVIDER_URL_INTERNAL
               value: {{ .Values.proxy.providerUrlInternal | quote }}
+          {{- end }}
+          {{- if .Values.proxy.extraEnv }}
+{{ toYaml .Values.proxy.extraEnv | indent 12 }}
           {{- end }}
           readinessProbe:
             httpGet:

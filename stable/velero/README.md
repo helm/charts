@@ -1,20 +1,26 @@
 # Velero-server
 
-This helm chart installs Velero version v0.11.0
-https://github.com/heptio/velero/tree/v0.11.0
+This helm chart installs Velero version v1.0.0
+https://github.com/heptio/velero/tree/v1.0.0
 
+
+## Upgrading to v1.0.0
+
+As of v1.0.0, Heptio Velero is no longer backwards-compatible with Heptio Ark.
+
+The [instructions found here](https://velero.io/docs/v1.0.0/upgrade-to-1.0/) will assist you in upgrading from version v0.11.0 to v1.0.0
 
 ## Upgrading to v0.11.0
 
 As of v0.11.0, Heptio Ark has become Velero.
 
-The [instructions found here](https://heptio.github.io/velero/v0.11.0/migrating-to-velero) will assist you in upgrading from Ark to Velero
+The [instructions found here](https://velero.io/docs/v0.11.0/migrating-to-velero/) will assist you in upgrading from Ark to Velero
 
 ## Prerequisites
 
 ### Secret for cloud provider credentials
 Velero server needs an IAM service account in order to run, if you don't have it you must create it.
-Please follow the official documentation: https://heptio.github.io/velero/v0.11.0/install-overview
+Please follow the official documentation: https://velero.io/docs/v1.0.0/install-overview/
 
 Don't forget the step to create the secret
 ```
@@ -23,7 +29,7 @@ kubectl create secret generic cloud-credentials --namespace <VELERO_NAMESPACE> -
 
 ### Configuration
 Please change the values.yaml according to your setup
-See here for the official documentation https://heptio.github.io/velero/v0.11.0/install-overview
+See here for the official documentation https://velero.io/docs/v1.0.0/install-overview/
 
 #### Required Parameters
 Parameter | Description | Default | Required
@@ -45,7 +51,7 @@ Parameter | Description | Default | Required
 Parameter | Description | Default
 --- | --- | ---
 `image.repository` | Image repository | `gcr.io/heptio-images/velero`
-`image.tag` | Image tag | `v0.11.0`
+`image.tag` | Image tag | `v1.0.0`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
 `podAnnotations` | Annotations for the Velero server pod | `{}`
 `rbac.create` | If true, create and use RBAC resources | `true`
@@ -73,16 +79,23 @@ Parameter | Description | Default
 `configuration.volumeSnapshotLocation.name` | The name of the cloud provider the cluster is using for persistent volumes, if any | `{}`
 `configuration.volumeSnapshotLocation.config.region` | The cloud provider region (AWS only) | ``
 `configuration.volumeSnapshotLocation.config.apitimeout` | The API timeout (`azure` only) |
+`configuration.volumeSnapshotLocation.config.resourceGroup` | The name of the resource group where volume snapshots should be stored, if different from the cluster’s resource group. (Azure only) |
+`configuration.volumeSnapshotLocation.config.project` | The project ID where snapshots should be stored, if different than the project that your IAM account is in. (GCP only) |
+`configuration.volumeSnapshotLocation.config.snapshotLocation` | The location where the snapshots will be stored. (GCP only) |
 `credentials.existingSecret` | If specified and `useSecret` is `true`, uses an existing secret with this name instead of creating one | ``
 `credentials.useSecret` | Whether a secret should be used. Set this to `false` when using `kube2iam` | `true`
 `credentials.secretContents` | Contents for the credentials secret | `{}`
+`snapshotsEnabled` | If `true`, create volumesnapshotlocation crd. Set this to `false` to disable snapshot feature | `true`
 `deployRestic` | If `true`, enable restic deployment | `false`
 `metrics.enabled` | Set this to `true` to enable exporting Prometheus monitoring metrics | `false`
 `metrics.scrapeInterval` | Scrape interval for the Prometheus ServiceMonitor | `30s`
 `metrics.serviceMonitor.enabled` | Set this to `true` to create ServiceMonitor for Prometheus operator | `false`
 `metrics.serviceMonitor.additionalLabels` | Additional labels that can be used so ServiceMonitor will be discovered by Prometheus | `{}`
 `schedules` | A dict of schedules | `{}`
-
+`restic.podVolumePath` | Location of pod volumes on the host | `/var/lib/kubelet/pods`
+`restic.privileged` | Whether restic should run as a privileged pod. Only necessary in special cases (SELinux) | `false`
+`restic.resources` | Restic DaemonSet resource requests and limits | `{}`
+`configMaps` | Velero ConfigMaps | `[]`
 
 ## How to
 ```

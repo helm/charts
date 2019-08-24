@@ -128,8 +128,6 @@ spec:
         volumeMounts:
         - name: phpbb-data
           mountPath: /bitnami/phpbb
-        - name: apache-data
-          mountPath: /bitnami/apache
 {{- if .Values.metrics.enabled }}
       - name: metrics
         image: {{ template "phpbb.metrics.image" . }}
@@ -158,13 +156,6 @@ spec:
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
           claimName: "{{ template "phpbb.fullname" . }}-phpbb"
-      {{- else }}
-        emptyDir: {}
-      {{- end }}
-      - name: apache-data
-      {{- if .Values.persistence.enabled }}
-        persistentVolumeClaim:
-          claimName: "{{ template "phpbb.fullname" . }}-apache"
       {{- else }}
         emptyDir: {}
       {{- end }}

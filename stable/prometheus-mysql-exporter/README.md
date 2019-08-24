@@ -59,11 +59,17 @@ The following table lists the configurable parameters of the mysql exporter char
 | `mysql.user`                           | MySQL connection username                           | `exporter`                         |
 | `cloudsqlproxy.enabled`                | Flag to enable the connection using Cloud SQL Proxy | `false`                            |
 | `cloudsqlproxy.image.repo`             | Cloud SQL Proxy image repository                    | `gcr.io/cloudsql-docker/gce-proxy` |
-| `cloudsqlproxy.image.tag`              | Cloud SQL Proxy image tag                           | `1.11`                             |
+| `cloudsqlproxy.image.tag`              | Cloud SQL Proxy image tag                           | `1.14`                             |
 | `cloudsqlproxy.image.pullPolicy`       | Cloud SQL Proxy image pull policy                   | `IfNotPresent`                     |
 | `cloudsqlproxy.instanceConnectionName` | Google Cloud instance connection name               | `project:us-central1:dbname`       |
 | `cloudsqlproxy.port`                   | Cloud SQL Proxy listening port                      | `3306`                             |
 | `cloudsqlproxy.credentials`            | Cloud SQL Proxy service account credentials         | `bogus credential file`            |
+| `serviceMonitor.enable`                | Integration with prometheus-operator                | `false`                            |
+| `serviceMonitor.interval`              | Interval for polling this exporter                  |                                    |
+| `serviceMonitor.scrapeTimeout`         | Timeout where exporter is considered faulty         |                                    |
+| `serviceMonitor.jobLabel`              | Label to use to retrieve the job name from          | `""`                               |
+| `serviceMonitor.targetLabels`          | Labels to transfer from service onto the target     | `[]`                               |
+| `serviceMonitor.podTargetLabels`       | Labels to transfor from pod onto the target         | `[]`                               |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

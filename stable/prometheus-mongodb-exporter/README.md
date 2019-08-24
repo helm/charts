@@ -16,7 +16,7 @@ This command deploys the MongoDB Exporter with the default configuration. The [c
 ## Using the Chart
 
 To use the chart, ensure the `mongodb.uri` is populated with a valid [MongoDB URI](https://docs.mongodb.com/manual/reference/connection-string).
-If the MongoDB server requires authentication, credentials should be populated in the connection string as well. The MongoDB Exporter supports 
+If the MongoDB server requires authentication, credentials should be populated in the connection string as well. The MongoDB Exporter supports
 connecting to either a MongoDB replica set member, shard, or standalone instance.
 
 The chart comes with a ServiceMonitor for use with the [Prometheus Operator](https://github.com/helm/charts/tree/master/stable/prometheus-operator).
@@ -51,6 +51,9 @@ podAnnotations:
 | `resources` | Pod resource requests and limits | `{}` |
 | `env` | Extra environment variables passed to pod | `{}` |
 | `securityContext` | Security context for the pod | See values.yaml |
+| `service.annotations` | Annotations to be added to the service | `{}` |
+| `service.port` | The port to expose | `9216` |
+| `service.type` | The type of service to expose | `ClusterIP` |
 | `serviceMonitor.enabled` | Set to true if using the Prometheus Operator | `true` |
 | `serviceMonitor.interval` | Interval at which metrics should be scraped | `30s` |
 | `serviceMonitor.scrapeTimeout` | Interval at which metric scrapes should time out | `10s` |

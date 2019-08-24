@@ -1,7 +1,7 @@
-# Generated from 'k8s-resources-cluster' from https://raw.githubusercontent.com/coreos/kube-prometheus/master/manifests/grafana-dashboardDefinitions.yaml
+# Generated from 'k8s-resources-cluster' from https://raw.githubusercontent.com/coreos/kube-prometheus/release-0.1/manifests/grafana-dashboardDefinitions.yaml
 # Do not change in-place! In order to change this file first read following link:
 # https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
-{{- if and .Values.grafana.enabled .Values.grafana.defaultDashboardsEnabled }}
+{{- if and (semverCompare ">=1.11.0-0" .Capabilities.KubeVersion.GitVersion) (semverCompare "<1.14.0-0" .Capabilities.KubeVersion.GitVersion) .Values.grafana.enabled .Values.grafana.defaultDashboardsEnabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -1146,24 +1146,6 @@ data:
                                 "unit": "short"
                             },
                             {
-                                "alias": "CPU Usage",
-                                "colorMode": null,
-                                "colors": [
-
-                                ],
-                                "dateFormat": "YYYY-MM-DD HH:mm:ss",
-                                "decimals": 2,
-                                "link": false,
-                                "linkTooltip": "Drill down",
-                                "linkUrl": "",
-                                "pattern": "Value #C",
-                                "thresholds": [
-
-                                ],
-                                "type": "number",
-                                "unit": "short"
-                            },
-                            {
                                 "alias": "Memory Usage",
                                 "colorMode": null,
                                 "colors": [
@@ -1174,7 +1156,7 @@ data:
                                 "link": false,
                                 "linkTooltip": "Drill down",
                                 "linkUrl": "",
-                                "pattern": "Value #D",
+                                "pattern": "Value #C",
                                 "thresholds": [
 
                                 ],
@@ -1192,7 +1174,7 @@ data:
                                 "link": false,
                                 "linkTooltip": "Drill down",
                                 "linkUrl": "",
-                                "pattern": "Value #E",
+                                "pattern": "Value #D",
                                 "thresholds": [
 
                                 ],
@@ -1210,7 +1192,7 @@ data:
                                 "link": false,
                                 "linkTooltip": "Drill down",
                                 "linkUrl": "",
-                                "pattern": "Value #F",
+                                "pattern": "Value #E",
                                 "thresholds": [
 
                                 ],
@@ -1228,7 +1210,7 @@ data:
                                 "link": false,
                                 "linkTooltip": "Drill down",
                                 "linkUrl": "",
-                                "pattern": "Value #G",
+                                "pattern": "Value #F",
                                 "thresholds": [
 
                                 ],
@@ -1246,7 +1228,7 @@ data:
                                 "link": false,
                                 "linkTooltip": "Drill down",
                                 "linkUrl": "",
-                                "pattern": "Value #H",
+                                "pattern": "Value #G",
                                 "thresholds": [
 
                                 ],

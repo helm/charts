@@ -13,7 +13,7 @@ agent:
     API_SERVER_HOST: 0.0.0.0
     LOGGING_WRITE_EVENTS: false
     LOGGING_REQUEST_TRACKING: false
-    AUTODISCO_TEMPLATES_PATH: /etc/agent/autodisco.yml
+    AUTODISCO_ALLOWED_NAMESPACES: "default"
     LOGGING_LEVEL: warn
   resources: {}
 
@@ -25,7 +25,27 @@ logagent:
   config:
     LOGSENE_BULK_SIZE: "1000"
     LOGSENE_LOG_INTERVAL: "10000"
+  # Refer to logagent docs for custom config at https://sematext.com/docs/logagent/config-file/
+  customConfigs: []
+    # logagent.conf: |-
+    #     options:
+    #       printStats: 60
+    #       suppress: true
+    #       geoipEnabled: true
+    #       diskBufferDir: /tmp/sematext-logagent
+    #     parser:
+    #       patternFiles:
+    #         - /etc/logagent/patterns.yml
+    #     output:
+    #       logsene:
+    #         module: elasticsearch
+    #         url: ${LOGSENE_RECEIVER_URL}
+
   resources: {}
+  extraHostVolumeMounts: {}
+  #  - name: <mountName>
+  #    hostPath: <hostPath>
+  #    mountPath: <mountPath>
 
 rbac:
   # Specifies whether RBAC resources should be created
@@ -42,8 +62,8 @@ serviceAccount:
 infraToken: null
 # determines the token for the container app (container metrics are delivered here)
 containerToken: null
-# logsene token to send logs
-logseneToken: null
+# logs token to send logs
+logsToken: null
 
 # for private images
 # imagePullSecrets:

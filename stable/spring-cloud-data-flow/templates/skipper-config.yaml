@@ -1,3 +1,4 @@
+{{- if not .Values.skipper.configMap }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -18,20 +19,21 @@ data:
               kubernetes:
                 accounts:
                   {{ .Values.skipper.platformName }}:
-                    {{- if .Values.rabbitmq.enabled}}
-                    environmentVariables: 'SPRING_RABBITMQ_HOST=${{ printf "{" }}{{ template "scdf.envrelease" . }}_RABBITMQ_SERVICE_HOST},SPRING_RABBITMQ_PORT=${{ printf "{" }}{{ template "scdf.envrelease" . }}_RABBITMQ_SERVICE_PORT_AMQP},SPRING_RABBITMQ_USERNAME={{ .Values.rabbitmq.rabbitmqUsername }},SPRING_RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}'
-                    {{- else if .Values.kafka.enabled}}
+                    {{- if or .Values.rabbitmq.enabled (index .Values "rabbitmq-ha" "enabled") }}
+                    environmentVariables: 'SPRING_RABBITMQ_HOST={{ template "scdf.broker.rabbitmq.host" . }},SPRING_RABBITMQ_PORT={{ template "scdf.broker.rabbitmq.port" . }},SPRING_RABBITMQ_USERNAME={{ template "scdf.broker.rabbitmq.user" . }},SPRING_RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}'
+                    {{- else if .Values.kafka.enabled }}
                     environmentVariables: 'SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS=${{ printf "{" }}{{ template "scdf.envrelease" . }}_KAFKA_SERVICE_HOST}:${{ printf "{" }}{{ template "scdf.envrelease" . }}_KAFKA_SERVICE_PORT},SPRING_CLOUD_STREAM_KAFKA_BINDER_ZK_NODES=${{ printf "{" }}{{ template "scdf.envrelease" . }}_ZOOKEEPER_SERVICE_HOST}:${{ printf "{" }}{{ template "scdf.envrelease" . }}_ZOOKEEPER_SERVICE_PORT}'
-                    {{- end}}
+                    {{- end }}
                     limits:
                       memory: {{ .Values.deployer.resourceLimits.memory }}
                       cpu: {{ .Values.deployer.resourceLimits.cpu }}
                     readinessProbeDelay: {{ .Values.deployer.readinessProbe.initialDelaySeconds }}
                     livenessProbeDelay: {{ .Values.deployer.livenessProbe.initialDelaySeconds }}
       datasource:
-        url: 'jdbc:mysql://${{ printf "{" }}{{ template "scdf.envrelease" . }}_MYSQL_SERVICE_HOST}:${{ printf "{" }}{{ template "scdf.envrelease" . }}_MYSQL_SERVICE_PORT}/skipper'
-        driverClassName: org.mariadb.jdbc.Driver
-        username: root
-        password: ${mysql-root-password}
+        url: 'jdbc:{{ template "scdf.database.scheme" . }}://{{ template "scdf.database.host" . }}:{{ template "scdf.database.port" . }}/{{ template "scdf.database.skipper" . }}'
+        driverClassName: {{ template "scdf.database.driver" . }}
+        username: {{ template "scdf.database.user" . }}
+        password: {{ template "scdf.database.password" . }}
         testOnBorrow: true
         validationQuery: "SELECT 1"
+{{- end }}

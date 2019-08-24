@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: coredns/coredns
-  tag: "1.4.0"
+  tag: "1.6.2"
   pullPolicy: IfNotPresent
 
 resources:
@@ -18,6 +18,12 @@ resources:
     memory: 128Mi
 
 serviceType: "ClusterIP"
+
+prometheus:
+  monitor:
+    enabled: false
+    additionalLabels: {}
+    namespace: ""
 
 service:
 # clusterIP: ""
@@ -45,6 +51,9 @@ rbac:
 # isClusterService specifies whether chart should be deployed as cluster-service or normal k8s app.
 isClusterService: true
 
+# Optional priority class to be used for the coredns pods
+priorityClassName: ""
+
 servers:
 - zones:
   - zone: .
@@ -54,6 +63,8 @@ servers:
     parameters: 30
   - name: errors
   - name: health
+  # Serves a /ready endpoint on :8181
+  - name: ready
   - name: kubernetes
     parameters: cluster.local
   - name: loadbalance
@@ -115,3 +126,11 @@ zoneFiles: []
 #      example.com.   IN NS  a.iana-servers.net.
 #      example.com.   IN A   192.168.99.102
 #      *.example.com. IN A   192.168.99.102
+
+# optional array of secrets to mount inside coredns container
+# possible usecase: need for secure connection with etcd backend
+extraSecrets: []
+# - name: etcd-client-certs
+#   mountPath: /etc/coredns/tls/etcd
+# - name: some-fancy-secret
+#   mountPath: /etc/wherever

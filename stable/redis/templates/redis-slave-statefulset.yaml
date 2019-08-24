@@ -32,12 +32,18 @@ spec:
       {{- if .Values.slave.podLabels }}
 {{ toYaml .Values.slave.podLabels | indent 8 }}
       {{- end }}
+      {{- if .Values.metrics.podLabels }}
+{{ toYaml .Values.metrics.podLabels | indent 8 }}
+      {{- end }}
       annotations:
         checksum/health: {{ include (print $.Template.BasePath "/health-configmap.yaml") . | sha256sum }}
         checksum/configmap: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
       {{- if .Values.slave.podAnnotations }}
 {{ toYaml .Values.slave.podAnnotations | indent 8 }}
+      {{- end }}
+      {{- if .Values.metrics.podAnnotations }}
+{{ toYaml .Values.metrics.podAnnotations | indent 8 }}
       {{- end }}
     spec:
 {{- include "redis.imagePullSecrets" . | indent 6 }}
@@ -76,6 +82,10 @@ spec:
         - /bin/bash
         - -c
         - |
+          {{- if (eq .Values.securityContext.runAsUser 0.0) }}
+          useradd redis
+          chown -R redis {{ .Values.slave.persistence.path }}
+          {{- end }}
           if [[ -n $REDIS_PASSWORD_FILE ]]; then
             password_aux=`cat ${REDIS_PASSWORD_FILE}`
             export REDIS_PASSWORD=$password_aux
@@ -89,17 +99,22 @@ spec:
           fi
           if [[ ! -f /opt/bitnami/redis/etc/redis.conf ]];then
             cp /opt/bitnami/redis/mounted-etc/redis.conf /opt/bitnami/redis/etc/redis.conf
-          fi          
+          fi
           ARGS=("--port" "${REDIS_PORT}")
+          ARGS+=("--slaveof" "${REDIS_MASTER_HOST}" "${REDIS_MASTER_PORT_NUMBER}")
           {{- if .Values.usePassword }}
           ARGS+=("--requirepass" "${REDIS_PASSWORD}")
-          ARGS+=("--slaveof" "${REDIS_MASTER_HOST}" "${REDIS_MASTER_PORT_NUMBER}")
           ARGS+=("--masterauth" "${REDIS_MASTER_PASSWORD}")
           {{- else }}
           ARGS+=("--protected-mode" "no")
           {{- end }}
           ARGS+=("--include" "/opt/bitnami/redis/etc/redis.conf")
           ARGS+=("--include" "/opt/bitnami/redis/etc/replica.conf")
+          {{- if .Values.slave.extraFlags }}
+          {{- range .Values.slave.extraFlags }}
+          ARGS+=({{ . | quote }})
+          {{- end }}
+          {{- end }}
           {{- if .Values.slave.command }}
           {{ .Values.slave.command }} "${ARGS[@]}"
           {{- else }}
@@ -109,7 +124,7 @@ spec:
         - name: REDIS_REPLICATION_MODE
           value: slave
         - name: REDIS_MASTER_HOST
-          value: {{ template "redis.fullname" . }}-master-0.{{ template "redis.fullname" . }}-headless.{{ .Release.Namespace }}.svc.cluster.local
+          value: {{ template "redis.fullname" . }}-master-0.{{ template "redis.fullname" . }}-headless.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}
         - name: REDIS_PORT
           value: {{ .Values.redisPort | quote }}
         - name: REDIS_MASTER_PORT_NUMBER
@@ -151,9 +166,9 @@ spec:
             - sh
             - -c
             {{- if .Values.sentinel.enabled }}
-            - /health/ping_local.sh {{ .Values.slave.livenessProbe.timeoutSeconds }}
+            - /health/ping_liveness_local.sh {{ .Values.slave.livenessProbe.timeoutSeconds }}
             {{- else }}
-            - /health/ping_local_and_master.sh {{ .Values.slave.livenessProbe.timeoutSeconds }}
+            - /health/ping_liveness_local_and_master.sh {{ .Values.slave.livenessProbe.timeoutSeconds }}
             {{- end }}
         {{- end }}
 
@@ -169,9 +184,9 @@ spec:
             - sh
             - -c
             {{- if .Values.sentinel.enabled }}
-            - /health/ping_local.sh {{ .Values.slave.livenessProbe.timeoutSeconds }}
+            - /health/ping_readiness_local.sh {{ .Values.slave.livenessProbe.timeoutSeconds }}
             {{- else }}
-            - /health/ping_local_and_master.sh {{ .Values.slave.livenessProbe.timeoutSeconds }}
+            - /health/ping_readiness_local_and_master.sh {{ .Values.slave.livenessProbe.timeoutSeconds }}
             {{- end }}
         {{- end }}
         resources:
@@ -211,10 +226,6 @@ spec:
             printf "\nsentinel auth-pass {{ .Values.sentinel.masterSet }} $REDIS_PASSWORD" >> /opt/bitnami/redis-sentinel/etc/sentinel.conf
             {{- end }}
           fi
-          echo "Getting information about current running sentinels"
-          # Get information from existing sentinels
-          existing_sentinels=$(timeout -s 9 {{ .Values.sentinel.initialCheckTimeout }} redis-cli --raw -h {{ template "redis.fullname" . }} -a $REDIS_PASSWORD -p {{ .Values.sentinel.service.sentinelPort }} SENTINEL sentinels {{ .Values.sentinel.masterSet }})
-          echo "$existing_sentinels" | awk -f /health/parse_sentinels.awk | tee -a  /opt/bitnami/redis-sentinel/etc/sentinel.conf
 
           redis-server /opt/bitnami/redis-sentinel/etc/sentinel.conf --sentinel
         env:
@@ -281,6 +292,40 @@ spec:
         - name: sentinel-tmp-conf
           mountPath: /opt/bitnami/redis-sentinel/etc
       {{- end }}
+{{- if .Values.metrics.enabled }}
+      - name: metrics
+        image: {{ template "redis.metrics.image" . }}
+        imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
+        args:
+        {{- range $key, $value := .Values.metrics.extraArgs }}
+          - --{{ $key }}={{ $value }}
+        {{- end }}
+        env:
+        - name: REDIS_ALIAS
+          value: {{ template "redis.fullname" . }}
+        {{- if .Values.usePassword }}
+        {{- if .Values.usePasswordFile }}
+        - name: REDIS_PASSWORD_FILE
+          value: "/secrets/redis-password"
+        {{- else }}
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "redis.secretName" . }}
+              key: redis-password
+        {{- end }}
+        {{- end }}
+        volumeMounts:
+        {{- if .Values.usePasswordFile }}
+        - name: redis-password
+          mountPath: /secrets/
+        {{- end }}
+        ports:
+        - name: metrics
+          containerPort: 9121
+        resources:
+{{ toYaml .Values.metrics.resources | indent 10 }}
+{{- end }}
       {{- $needsVolumePermissions := and .Values.volumePermissions.enabled (and .Values.slave.persistence.enabled .Values.securityContext.enabled) }}
       {{- if or $needsVolumePermissions .Values.sysctlImage.enabled }}
       initContainers:
@@ -338,7 +383,10 @@ spec:
         emptyDir: {}
       - name: redis-tmp-conf
         emptyDir: {}
-  {{- if and .Values.slave.persistence.enabled }}
+  {{- if not .Values.slave.persistence.enabled }}
+      - name: redis-data
+        emptyDir: {}
+  {{- else }}
   volumeClaimTemplates:
     - metadata:
         name: redis-data
@@ -355,13 +403,7 @@ spec:
         resources:
           requests:
             storage: {{ .Values.slave.persistence.size | quote }}
-      {{- if .Values.slave.persistence.storageClass }}
-      {{- if (eq "-" .Values.slave.persistence.storageClass) }}
-        storageClassName: ""
-      {{- else }}
-        storageClassName: {{ .Values.slave.persistence.storageClass | quote }}
-      {{- end }}
-      {{- end }}
+        {{ include "redis.slave.storageClass" . }}
   {{- end }}
   updateStrategy:
     type: {{ .Values.slave.statefulset.updateStrategy }}

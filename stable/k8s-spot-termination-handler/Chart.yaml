@@ -1,8 +1,8 @@
 apiVersion: v1
-appVersion: "1.13.0-1"
+appVersion: "1.13.7-1"
 description: The K8s Spot Termination handler handles draining AWS Spot Instances in response to termination requests.
 name: k8s-spot-termination-handler
-version: 1.1.0
+version: 1.4.3
 keywords:
   - spot
   - termination
@@ -12,3 +12,5 @@ sources:
 maintainers:
   - name: kierranm
     email: kierranm@gmail.com
+  - name: egeland
+    email: egeland@gmail.com

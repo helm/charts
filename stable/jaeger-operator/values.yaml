@@ -3,12 +3,14 @@
 # Declare variables to be passed into your templates.
 image:
   repository: jaegertracing/jaeger-operator
-  tag: 1.11.0
+  tag: 1.13.1
   pullPolicy: IfNotPresent
 
 rbac:
   # Specifies whether RBAC resources should be created
   create: true
+  pspEnabled: false
+  clusterRole: false
 
 serviceAccount:
   # Specifies whether a ServiceAccount should be created
@@ -30,3 +32,5 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+securityContext: {}

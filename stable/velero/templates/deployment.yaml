@@ -78,22 +78,31 @@ spec:
               mountPath: /credentials
             - name: scratch
               mountPath: /scratch
+        {{- end }}
+          {{- if (or (and .Values.credentials.useSecret (or (eq $provider "aws") (eq $provider "gcp"))) .Values.configuration.extraEnvVars) }}
           env:
-          {{- if eq $provider "aws" }}
-            - name: AWS_SHARED_CREDENTIALS_FILE
-          {{- else }}
-            - name: GOOGLE_APPLICATION_CREDENTIALS
           {{- end }}
+          {{- if and .Values.credentials.useSecret (or (eq $provider "aws") (eq $provider "gcp")) }}
+            {{- if eq $provider "aws" }}
+            - name: AWS_SHARED_CREDENTIALS_FILE
+            {{- else }}
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+            {{- end }}
               value: /credentials/cloud
             - name: VELERO_SCRATCH_DIR
               value: /scratch
-          {{ with .Values.configuration.extraEnvVars }}
+          {{- end }}
+            - name: VELERO_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
+          {{- with .Values.configuration.extraEnvVars }}
           {{- range $key, $value := . }}
             - name: {{ default "none" $key }}
               value: {{ default "none" $value }}
           {{- end }}
           {{- end }}
-        {{- end }}
 {{- if .Values.initContainers }}
       initContainers:
         {{- toYaml .Values.initContainers | nindent 8 }}

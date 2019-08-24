@@ -1,3 +1,4 @@
+{{- if .Values.worker.enabled -}}
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
@@ -15,6 +16,9 @@ spec:
       labels:
         app: {{ template "concourse.worker.fullname" . }}
         release: "{{ .Release.Name }}"
+        {{- with .Values.worker.labels }}
+{{ toYaml . | trim | indent 8 }}
+        {{- end }}
       {{- if .Values.worker.annotations }}
       annotations:
 {{ toYaml .Values.worker.annotations | indent 8 }}
@@ -47,12 +51,17 @@ spec:
           image: "{{ .Values.image }}:{{ .Values.imageTag }}"
           {{- end }}
           imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+          securityContext:
+            privileged: true
           command:
-            - /bin/sh
+            - /bin/bash
           args:
             - -ce
             - |-
-              rm -rf {{ .Values.concourse.worker.workDir }}/*
+              for v in $((btrfs subvolume list --sort=-ogen "{{ .Values.concourse.worker.workDir }}" || true) | awk '{print $9}'); do
+                (btrfs subvolume show "{{ .Values.concourse.worker.workDir }}/$v" && btrfs subvolume delete "{{ .Values.concourse.worker.workDir }}/$v") || true
+              done
+              rm -rf "{{ .Values.concourse.worker.workDir }}/*"
           volumeMounts:
             - name: concourse-work-dir
               mountPath: {{ .Values.concourse.worker.workDir | quote }}
@@ -169,14 +178,23 @@ spec:
             - name: CONCOURSE_LOG_LEVEL
               value: {{ .Values.concourse.worker.logLevel | quote }}
             {{- end }}
+            {{ if not .Values.web.enabled }}
             - name: CONCOURSE_TSA_HOST
-              value: "{{ template "concourse.web.fullname" . }}:{{ .Values.concourse.web.tsa.bindPort}}"
+              value: "{{- range $i, $tsaHost := .Values.concourse.worker.tsa.hosts }}{{- if $i }},{{ end }}{{- $tsaHost }}{{- end -}}"
+            {{ else }}
+            - name: CONCOURSE_TSA_HOST
+              value: "{{ template "concourse.web.tsa.address" . -}}"
+            {{- end }}
             - name: CONCOURSE_TSA_PUBLIC_KEY
               value: "{{ .Values.worker.keySecretsPath }}/host_key.pub"
             - name: CONCOURSE_TSA_WORKER_PRIVATE_KEY
               value: "{{ .Values.worker.keySecretsPath }}/worker_key"
+            {{- if .Values.concourse.worker.externalGardenUrl }}
+            - name: CONCOURSE_EXTERNAL_GARDEN_URL
+              value: {{ .Values.concourse.worker.externalGardenUrl | quote }}
+            {{- end }}
             {{- if .Values.concourse.worker.garden.useHoudini }}
-              - name: CONCOURSE_GARDEN_USE_HOUDINI
+            - name: CONCOURSE_GARDEN_USE_HOUDINI
               value: {{ .Values.concourse.worker.garden.useHoudini | quote }}
             {{- end }}
             {{- if .Values.concourse.worker.garden.bin }}
@@ -299,15 +317,13 @@ spec:
             name: {{ template "concourse.worker.fullname" . }}
         - name: concourse-keys
           secret:
-            secretName: {{ template "concourse.concourse.fullname" . }}
+            secretName: {{ template "concourse.worker.fullname" . }}
             defaultMode: 0400
             items:
               - key: host-key-pub
                 path: host_key.pub
               - key: worker-key
                 path: worker_key
-              - key: worker-key-pub
-                path: worker_key.pub
   {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
     - metadata:
@@ -341,3 +357,4 @@ spec:
   {{- if .Values.worker.podManagementPolicy }}
   podManagementPolicy: {{ .Values.worker.podManagementPolicy }}
   {{- end }}
+{{- end }}

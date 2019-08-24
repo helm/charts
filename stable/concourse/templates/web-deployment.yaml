@@ -1,3 +1,4 @@
+{{- if .Values.web.enabled -}}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -9,11 +10,17 @@ metadata:
     heritage: "{{ .Release.Service }}"
 spec:
   replicas: {{ .Values.web.replicas }}
+{{- if .Values.web.strategy }}
+{{ toYaml .Values.web.strategy | indent 2 }}
+{{- end }}
   template:
     metadata:
       labels:
         app: {{ template "concourse.web.fullname" . }}
         release: "{{ .Release.Name }}"
+        {{- with .Values.web.labels }}
+{{ toYaml . | trim | indent 8 }}
+        {{- end }}
       {{- if .Values.web.annotations }}
       annotations:
 {{ toYaml .Values.web.annotations | indent 8 }}
@@ -48,9 +55,49 @@ spec:
           args:
             - web
           env:
+            {{- if .Values.concourse.web.clusterName }}
+            - name: CONCOURSE_CLUSTER_NAME
+              value: {{ .Values.concourse.web.clusterName | quote }}
+            {{- end }}
             {{- if .Values.concourse.web.enableGlobalResources }}
             - name: CONCOURSE_ENABLE_GLOBAL_RESOURCES
               value: {{ .Values.concourse.web.enableGlobalResources | quote }}
+            {{- end }}
+            {{- if .Values.concourse.web.enableBuildAuditing }}
+            - name: CONCOURSE_ENABLE_BUILD_AUDITING
+              value: {{ .Values.concourse.web.enableBuildAuditing | quote }}
+            {{- end }}
+            {{- if .Values.concourse.web.enableContainerAuditing }}
+            - name: CONCOURSE_ENABLE_CONTAINER_AUDITING
+              value: {{ .Values.concourse.web.enableContainerAuditing | quote }}
+            {{- end }}
+            {{- if .Values.concourse.web.enableJobAuditing }}
+            - name: CONCOURSE_ENABLE_JOB_AUDITING
+              value: {{ .Values.concourse.web.enableJobAuditing | quote }}
+            {{- end }}
+            {{- if .Values.concourse.web.enablePipelineAuditing }}
+            - name: CONCOURSE_ENABLE_PIPELINE_AUDITING
+              value: {{ .Values.concourse.web.enablePipelineAuditing | quote }}
+            {{- end }}
+            {{- if .Values.concourse.web.enableResourceAuditing }}
+            - name: CONCOURSE_ENABLE_RESOURCE_AUDITING
+              value: {{ .Values.concourse.web.enableResourceAuditing | quote }}
+            {{- end }}
+            {{- if .Values.concourse.web.enableSystemAuditing }}
+            - name: CONCOURSE_ENABLE_SYSTEM_AUDITING
+              value: {{ .Values.concourse.web.enableSystemAuditing | quote }}
+            {{- end }}
+            {{- if .Values.concourse.web.enableTeamAuditing }}
+            - name: CONCOURSE_ENABLE_TEAM_AUDITING
+              value: {{ .Values.concourse.web.enableTeamAuditing | quote }}
+            {{- end }}
+            {{- if .Values.concourse.web.enableWorkerAuditing }}
+            - name: CONCOURSE_ENABLE_WORKER_AUDITING
+              value: {{ .Values.concourse.web.enableWorkerAuditing | quote }}
+            {{- end }}
+            {{- if .Values.concourse.web.enableVolumeAuditing }}
+            - name: CONCOURSE_ENABLE_VOLUME_AUDITING
+              value: {{ .Values.concourse.web.enableVolumeAuditing | quote }}
             {{- end }}
             {{- if .Values.concourse.web.secretRetryAttempts }}
             - name: CONCOURSE_SECRET_RETRY_ATTEMPTS
@@ -59,6 +106,18 @@ spec:
             {{- if .Values.concourse.web.secretRetryInterval }}
             - name: CONCOURSE_SECRET_RETRY_INTERVAL
               value: {{ .Values.concourse.web.secretRetryInterval | quote }}
+            {{- end }}
+            {{- if .Values.concourse.web.secretCacheDuration }}
+            - name: CONCOURSE_SECRET_CACHE_DURATION
+              value: {{ .Values.concourse.web.secretCacheDuration | quote }}
+            {{- end }}
+            {{- if .Values.concourse.web.secretCacheEnabled }}
+            - name: CONCOURSE_SECRET_CACHE_ENABLED
+              value: {{ .Values.concourse.web.secretCacheEnabled | quote }}
+            {{- end }}
+            {{- if .Values.concourse.web.secretCachePurgeInterval }}
+            - name: CONCOURSE_SECRET_CACHE_PURGE_INTERVAL
+              value: {{ .Values.concourse.web.secretCachePurgeInterval | quote }}
             {{- end }}
             {{- if .Values.concourse.web.awsSecretsManager.region }}
             - name: CONCOURSE_AWS_SECRETSMANAGER_REGION
@@ -71,10 +130,6 @@ spec:
             {{- if .Values.concourse.web.metrics.captureErrorMetrics }}
             - name: CONCOURSE_CAPTURE_ERROR_METRICS
               value: {{ .Values.concourse.web.metrics.captureErrorMetrics | quote }}
-            {{- end }}
-            {{- if .Values.concourse.web.gc.missingGracePeriod }}
-            - name: CONCOURSE_GC_MISSING_GRACE_PERIOD
-              value: {{ .Values.concourse.web.gc.missingGracePeriod | quote }}
             {{- end }}
             {{- if .Values.concourse.web.auth.mainTeam.config }}
             - name: CONCOURSE_MAIN_TEAM_CONFIG
@@ -92,12 +147,12 @@ spec:
             - name: CONCOURSE_BITBUCKET_CLOUD_CLIENT_ID
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "concourse.concourse.fullname" . }}
+                  name: {{ template "concourse.web.fullname" . }}
                   key: bitbucket-cloud-client-id
             - name: CONCOURSE_BITBUCKET_CLOUD_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "concourse.concourse.fullname" . }}
+                  name: {{ template "concourse.web.fullname" . }}
                   key: bitbucket-cloud-client-secret
             {{- end }}
             {{- if .Values.concourse.web.logLevel }}
@@ -116,7 +171,7 @@ spec:
             - name: CONCOURSE_ADD_LOCAL_USER
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "concourse.concourse.fullname" . }}
+                  name: {{ template "concourse.web.fullname" . }}
                   key: local-users
             {{- end }}
             {{- if .Values.concourse.web.tls.enabled }}
@@ -140,12 +195,12 @@ spec:
             - name: CONCOURSE_ENCRYPTION_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "concourse.concourse.fullname" . }}
+                  name: {{ template "concourse.web.fullname" . }}
                   key: encryption-key
             - name: CONCOURSE_OLD_ENCRYPTION_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "concourse.concourse.fullname" . }}
+                  name: {{ template "concourse.web.fullname" . }}
                   key: old-encryption-key
             {{- end }}
             {{- if .Values.concourse.web.debugBindIp }}
@@ -200,6 +255,14 @@ spec:
             - name: CONCOURSE_MAX_BUILD_LOGS_TO_RETAIN
               value: {{ .Values.concourse.web.maxBuildLogsToRetain | quote }}
             {{- end }}
+            {{- if .Values.concourse.web.defaultDaysToRetainBuildLogs }}
+            - name: CONCOURSE_DEFAULT_DAYS_TO_RETAIN_BUILD_LOGS
+              value: {{ .Values.concourse.web.defaultDaysToRetainBuildLogs | quote }}
+            {{- end }}
+            {{- if .Values.concourse.web.maxDaysToRetainBuildLogs }}
+            - name: CONCOURSE_MAX_DAYS_TO_RETAIN_BUILD_LOGS
+              value: {{ .Values.concourse.web.maxDaysToRetainBuildLogs | quote }}
+            {{- end }}
             {{- if .Values.concourse.web.defaultTaskCpuLimit }}
             - name: CONCOURSE_DEFAULT_TASK_CPU_LIMIT
               value: {{ .Values.concourse.web.defaultTaskCpuLimit | quote }}
@@ -212,14 +275,14 @@ spec:
             - name: CONCOURSE_POSTGRES_HOST
               value: {{ template "concourse.postgresql.fullname" . }}
             - name: CONCOURSE_POSTGRES_USER
-              value: {{ .Values.postgresql.postgresUser | quote }}
+              value: {{ .Values.postgresql.postgresqlUsername | quote }}
             - name: CONCOURSE_POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ template "concourse.postgresql.fullname" . }}
-                  key: postgres-password
+                  key: postgresql-password
             - name: CONCOURSE_POSTGRES_DATABASE
-              value: {{ .Values.postgresql.postgresDatabase | quote }}
+              value: {{ .Values.postgresql.postgresqlDatabase | quote }}
             {{- else }}
             {{- if .Values.concourse.web.postgres.host }}
             - name: CONCOURSE_POSTGRES_HOST
@@ -236,12 +299,12 @@ spec:
             - name: CONCOURSE_POSTGRES_USER
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "concourse.concourse.fullname" . }}
+                  name: {{ template "concourse.web.fullname" . }}
                   key: postgresql-user
             - name: CONCOURSE_POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "concourse.concourse.fullname" . }}
+                  name: {{ template "concourse.web.fullname" . }}
                   key: postgresql-password
             {{- if .Values.concourse.web.postgres.sslmode }}
             - name: CONCOURSE_POSTGRES_SSLMODE
@@ -288,18 +351,18 @@ spec:
             - name: CONCOURSE_AWS_SECRETSMANAGER_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "concourse.concourse.fullname" . }}
+                  name: {{ template "concourse.web.fullname" . }}
                   key: aws-secretsmanager-access-key
             - name: CONCOURSE_AWS_SECRETSMANAGER_SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "concourse.concourse.fullname" . }}
+                  name: {{ template "concourse.web.fullname" . }}
                   key: aws-secretsmanager-secret-key
             {{- if .Values.concourse.web.awsSecretsManager.keyAuth.useSessionToken }}
             - name: CONCOURSE_AWS_SECRETSMANAGER_SESSION_TOKEN
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "concourse.concourse.fullname" . }}
+                  name: {{ template "concourse.web.fullname" . }}
                   key: aws-secretsmanager-session-token
             {{- end }}
             {{- end }}
@@ -317,18 +380,18 @@ spec:
             - name: CONCOURSE_AWS_SSM_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "concourse.concourse.fullname" . }}
+                  name: {{ template "concourse.web.fullname" . }}
                   key: aws-ssm-access-key
             - name: CONCOURSE_AWS_SSM_SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "concourse.concourse.fullname" . }}
+                  name: {{ template "concourse.web.fullname" . }}
                   key: aws-ssm-secret-key
             {{- if .Values.concourse.web.awsSsm.keyAuth.useSessionToken }}
             - name: CONCOURSE_AWS_SSM_SESSION_TOKEN
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "concourse.concourse.fullname" . }}
+                  name: {{ template "concourse.web.fullname" . }}
                   key: aws-ssm-session-token
             {{- end }}
             {{- end }}
@@ -360,7 +423,7 @@ spec:
             - name: CONCOURSE_VAULT_CLIENT_TOKEN
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "concourse.concourse.fullname" . }}
+                  name: {{ template "concourse.web.fullname" . }}
                   key: vault-client-token
             {{- end }}
             {{- if eq .Values.concourse.web.vault.authBackend "cert" }}
@@ -373,16 +436,12 @@ spec:
             - name: CONCOURSE_VAULT_AUTH_PARAM
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "concourse.concourse.fullname" . }}
+                  name: {{ template "concourse.web.fullname" . }}
                   key: vault-client-auth-param
             {{- end }}
             {{- if .Values.concourse.web.vault.authBackendMaxTtl }}
             - name: CONCOURSE_VAULT_AUTH_BACKEND_MAX_TTL
               value: {{ .Values.concourse.web.vault.authBackendMaxTtl | quote }}
-            {{- end }}
-            {{- if .Values.concourse.web.vault.cache }}
-            - name: CONCOURSE_VAULT_CACHE
-              value: {{ .Values.concourse.web.vault.cache | quote }}
             {{- end }}
             {{- if .Values.concourse.web.vault.caPath }}
             - name: CONCOURSE_VAULT_CA_PATH
@@ -391,10 +450,6 @@ spec:
             {{- if .Values.concourse.web.vault.insecureSkipVerify }}
             - name: CONCOURSE_VAULT_INSECURE_SKIP_VERIFY
               value: {{ .Values.concourse.web.vault.insecureSkipVerify | quote }}
-            {{- end }}
-            {{- if .Values.concourse.web.vault.maxLease }}
-            - name: CONCOURSE_VAULT_MAX_LEASE
-              value: {{ .Values.concourse.web.vault.maxLease | quote }}
             {{- end }}
             {{- if .Values.concourse.web.vault.retryInitial }}
             - name: CONCOURSE_VAULT_RETRY_INITIAL
@@ -407,6 +462,45 @@ spec:
             {{- if .Values.concourse.web.vault.serverName }}
             - name: CONCOURSE_VAULT_SERVER_NAME
               value: {{ .Values.concourse.web.vault.serverName | quote }}
+            {{- end }}
+            {{- end }}
+            {{- if .Values.concourse.web.credhub.enabled }}
+            {{- if .Values.concourse.web.credhub.useCaCert }}
+            - name: CONCOURSE_CREDHUB_CA_CERT
+              value: "{{ .Values.web.credhubSecretsPath }}/ca.cert"
+            {{- end }}
+            - name: CONCOURSE_CREDHUB_URL
+              value: {{ .Values.concourse.web.credhub.url | quote }}
+            {{- if.Values.concourse.web.credhub.pathPrefix }}
+            - name: CONCOURSE_CREDHUB_PATH_PREFIX
+              value: {{ .Values.concourse.web.credhub.pathPrefix | quote }}
+            {{- end }}
+            {{- if .Values.concourse.web.credhub.insecureSkipVerify }}
+            - name: CONCOURSE_CREDHUB_INSECURE_SKIP_VERIFY
+              value: {{ .Values.concourse.web.credhub.insecureSkipVerify | quote }}
+            {{- end }}
+            {{- if (eq .Values.concourse.web.credhub.authenticationMode "secrets") }}
+            - name: CONCOURSE_CREDHUB_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.web.fullname" . }}
+                  key: credhub-client-id
+            - name: CONCOURSE_CREDHUB_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.web.fullname" . }}
+                  key: credhub-client-secret
+            {{- else if (eq .Values.concourse.web.credhub.authenticationMode "mtls") }}
+            - name: CONCOURSE_CREDHUB_CLIENT_CERT
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.web.fullname" . }}
+                  key: credhub-client-cert
+            - name: CONCOURSE_CREDHUB_CLIENT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.web.fullname" . }}
+                  key: credhub-client-key
             {{- end }}
             {{- end }}
             {{- if .Values.concourse.web.noop }}
@@ -461,7 +555,7 @@ spec:
             - name: CONCOURSE_INFLUXDB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "concourse.concourse.fullname" . }}
+                  name: {{ template "concourse.web.fullname" . }}
                   key: influxdb-password
             - name: CONCOURSE_INFLUXDB_INSECURE_SKIP_VERIFY
               value: {{ .Values.concourse.web.influxdb.insecureSkipVerify | quote}}
@@ -512,7 +606,6 @@ spec:
             - name: CONCOURSE_X_FRAME_OPTIONS
               value: {{ .Values.concourse.web.xFrameOptions | quote }}
             {{- end }}
-            {{- if .Values.concourse.web.gc.overrideDefaults }}
             {{- if .Values.concourse.web.gc.interval }}
             - name: CONCOURSE_GC_INTERVAL
               value: {{ .Values.concourse.web.gc.interval | quote }}
@@ -521,6 +614,9 @@ spec:
             - name: CONCOURSE_GC_ONE_OFF_GRACE_PERIOD
               value: {{ .Values.concourse.web.gc.oneOffGracePeriod | quote }}
             {{- end }}
+            {{- if .Values.concourse.web.gc.missingGracePeriod }}
+            - name: CONCOURSE_GC_MISSING_GRACE_PERIOD
+              value: {{ .Values.concourse.web.gc.missingGracePeriod | quote }}
             {{- end }}
             {{- if .Values.concourse.web.syslog.enabled }}
             {{- if .Values.concourse.web.syslog.hostname }}
@@ -622,12 +718,12 @@ spec:
             - name: CONCOURSE_CF_CLIENT_ID
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "concourse.concourse.fullname" . }}
+                  name: {{ template "concourse.web.fullname" . }}
                   key: cf-client-id
             - name: CONCOURSE_CF_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "concourse.concourse.fullname" . }}
+                  name: {{ template "concourse.web.fullname" . }}
                   key: cf-client-secret
             {{- if .Values.concourse.web.auth.cf.apiUrl }}
             - name: CONCOURSE_CF_API_URL
@@ -646,12 +742,12 @@ spec:
             - name: CONCOURSE_GITHUB_CLIENT_ID
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "concourse.concourse.fullname" . }}
+                  name: {{ template "concourse.web.fullname" . }}
                   key: github-client-id
             - name: CONCOURSE_GITHUB_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "concourse.concourse.fullname" . }}
+                  name: {{ template "concourse.web.fullname" . }}
                   key: github-client-secret
             {{- if .Values.concourse.web.auth.github.host }}
             - name: CONCOURSE_GITHUB_HOST
@@ -666,12 +762,12 @@ spec:
             - name: CONCOURSE_GITLAB_CLIENT_ID
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "concourse.concourse.fullname" . }}
+                  name: {{ template "concourse.web.fullname" . }}
                   key: gitlab-client-id
             - name: CONCOURSE_GITLAB_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "concourse.concourse.fullname" . }}
+                  name: {{ template "concourse.web.fullname" . }}
                   key: gitlab-client-secret
             {{- if .Values.concourse.web.auth.gitlab.host }}
             - name: CONCOURSE_GITLAB_HOST
@@ -772,12 +868,12 @@ spec:
             - name: CONCOURSE_OAUTH_CLIENT_ID
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "concourse.concourse.fullname" . }}
+                  name: {{ template "concourse.web.fullname" . }}
                   key: oauth-client-id
             - name: CONCOURSE_OAUTH_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "concourse.concourse.fullname" . }}
+                  name: {{ template "concourse.web.fullname" . }}
                   key: oauth-client-secret
             {{- if .Values.concourse.web.auth.oauth.authUrl }}
             - name: CONCOURSE_OAUTH_AUTH_URL
@@ -828,12 +924,12 @@ spec:
             - name: CONCOURSE_OIDC_CLIENT_ID
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "concourse.concourse.fullname" . }}
+                  name: {{ template "concourse.web.fullname" . }}
                   key: oidc-client-id
             - name: CONCOURSE_OIDC_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "concourse.concourse.fullname" . }}
+                  name: {{ template "concourse.web.fullname" . }}
                   key: oidc-client-secret
             {{- if .Values.concourse.web.auth.oidc.scope }}
             - name: CONCOURSE_OIDC_SCOPE
@@ -909,6 +1005,14 @@ spec:
             - name: CONCOURSE_TSA_HEARTBEAT_INTERVAL
               value: {{ .Values.concourse.web.tsa.heartbeatInterval | quote }}
             {{- end }}
+            {{- if .Values.concourse.web.letsEncrypt.enabled }}
+            - name: CONCOURSE_ENABLE_LETS_ENCRYPT
+              value: {{ .Values.concourse.web.letsEncrypt.enabled | quote }}
+            {{- end }}
+            {{- if .Values.concourse.web.letsEncrypt.acmeURL }}
+            - name: CONCOURSE_LETS_ENCRYPT_ACME_URL
+              value: {{ .Values.concourse.web.letsEncrypt.acmeURL | quote }}
+            {{- end }}
 {{- if .Values.web.env }}
 {{ toYaml .Values.web.env | indent 12 }}
 {{- end }}
@@ -967,6 +1071,11 @@ spec:
               mountPath: {{ .Values.web.vaultSecretsPath | quote }}
               readOnly: true
             {{- end }}
+            {{- if .Values.concourse.web.credhub.enabled }}
+            - name: credhub-keys
+              mountPath: {{ .Values.web.credhubSecretsPath | quote }}
+              readOnly: true
+            {{- end }}
             {{- if not (eq .Values.concourse.web.postgres.sslmode "disable") }}
             - name: postgresql-keys
               mountPath: {{ .Values.web.postgresqlSecretsPath | quote }}
@@ -990,7 +1099,7 @@ spec:
 {{- end }}
         - name: concourse-keys
           secret:
-            secretName: {{ template "concourse.concourse.fullname" . }}
+            secretName: {{ template "concourse.web.fullname" . }}
             defaultMode: 0400
             items:
               - key: host-key
@@ -1002,7 +1111,7 @@ spec:
         {{- if .Values.secrets.teamAuthorizedKeys }}
         - name: team-authorized-keys
           secret:
-            secretName: {{ template "concourse.concourse.fullname" . }}
+            secretName: {{ template "concourse.web.fullname" . }}
             defaultMode: 0400
             items:
             {{- range .Values.secrets.teamAuthorizedKeys }}
@@ -1013,7 +1122,7 @@ spec:
         {{- if .Values.concourse.web.tls.enabled }}
         - name: web-tls
           secret:
-            secretName: {{ template "concourse.concourse.fullname" . }}
+            secretName: {{ template "concourse.web.fullname" . }}
             defaultMode: 0400
             items:
               - key: web-tls-cert
@@ -1024,7 +1133,7 @@ spec:
         {{- if .Values.concourse.web.vault.enabled }}
         - name: vault-keys
           secret:
-            secretName: {{ template "concourse.concourse.fullname" . }}
+            secretName: {{ template "concourse.web.fullname" . }}
             defaultMode: 0400
             items:
             {{- if .Values.concourse.web.vault.useCaCert }}
@@ -1038,10 +1147,21 @@ spec:
                 path: client.key
             {{- end }}
         {{- end }}
+        {{- if .Values.concourse.web.credhub.enabled }}
+        - name: credhub-keys
+          secret:
+            secretName: {{ template "concourse.web.fullname" . }}
+            defaultMode: 0400
+            items:
+            {{- if .Values.concourse.web.credhub.useCaCert }}
+              - key: credhub-ca-cert
+                path: ca.cert
+            {{- end }}
+        {{- end }}
         {{- if not (eq .Values.concourse.web.postgres.sslmode "disable") }}
         - name: postgresql-keys
           secret:
-            secretName: {{ template "concourse.concourse.fullname" . }}
+            secretName: {{ template "concourse.web.fullname" . }}
             defaultMode: 0400
             items:
               - key: postgresql-ca-cert
@@ -1054,7 +1174,7 @@ spec:
         {{- if .Values.concourse.web.syslog.enabled }}
         - name: syslog-keys
           secret:
-            secretName: {{ template "concourse.concourse.fullname" . }}
+            secretName: {{ template "concourse.web.fullname" . }}
             defaultMode: 0400
             items:
               - key: syslog-ca-cert
@@ -1062,7 +1182,7 @@ spec:
         {{- end }}
         - name: auth-keys
           secret:
-            secretName: {{ template "concourse.concourse.fullname" . }}
+            secretName: {{ template "concourse.web.fullname" . }}
             defaultMode: 0400
             items:
               {{- if .Values.concourse.web.auth.cf.useCaCert }}
@@ -1085,3 +1205,4 @@ spec:
               - key: oidc-ca-cert
                 path: oidc_ca.cert
               {{- end }}
+{{- end }}

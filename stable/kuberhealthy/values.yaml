@@ -37,10 +37,10 @@ deployment:
   # args:
   # - -dsPauseContainerImageOverride
   # - your-repo/google_containers/pause:0.8.0
+
 securityContext:
   runAsNonRoot: true
   runAsUser: 999
-  fsGroup: 999
   allowPrivilegeEscalation: false
 
 # Please remember that changing the service type to LoadBalancer
@@ -53,3 +53,4 @@ securityContext:
 service:
   externalPort: 80
   type: ClusterIP
+  annotations: {}

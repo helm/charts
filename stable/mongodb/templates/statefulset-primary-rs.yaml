@@ -41,6 +41,9 @@ spec:
 {{- end }}
       {{- end }}
     spec:
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+      {{- end }}
       {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName }}
       {{- end }}
@@ -61,9 +64,21 @@ spec:
 {{ toYaml .Values.tolerations | indent 8 }}
       {{- end }}
 {{- include "mongodb.imagePullSecrets" . | indent 6 }}
-      {{- if .Values.extraInitContainers }}
       initContainers:
+      {{- if .Values.extraInitContainers }}
 {{ tpl .Values.extraInitContainers . | indent 6}}
+      {{- end }}
+      {{- if and .Values.volumePermissions.enabled .Values.persistence.enabled }}
+      - name: volume-permissions
+        image: {{ template "mongodb.volumePermissions.image" . }}
+        imagePullPolicy: {{ .Values.volumePermissions.image.pullPolicy | quote }}
+        command: ["chown", "-R", "{{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }}", "{{ .Values.persistence.mountPath }}"]
+        securityContext:
+          runAsUser: 0
+        resources: {{ toYaml .Values.volumePermissions.resources | nindent 10 }}
+        volumeMounts:
+        - name: datadir
+          mountPath: {{ .Values.persistence.mountPath }}
       {{- end }}
       containers:
         - name: {{ template "mongodb.name" . }}-primary
@@ -79,8 +94,8 @@ spec:
             name: mongodb
           env:
           {{- if .Values.image.debug}}
-          - name: NAMI_DEBUG
-            value: "1"
+          - name: BITNAMI_DEBUG
+            value: "true"
           {{- end }}
           - name: MONGODB_SYSTEM_LOG_VERBOSITY
             value: {{ .Values.mongodbSystemLogVerbosity | quote }}
@@ -111,7 +126,7 @@ spec:
             value: {{ .Values.mongodbDatabase | quote }}
           {{- end }}
             {{- if .Values.usePassword }}
-            {{- if and .Values.mongodbUsername (or .Values.mongodbPassword .Values.existingSecret) }}
+            {{- if and .Values.mongodbUsername .Values.mongodbDatabase }}
           - name: MONGODB_PASSWORD
             valueFrom:
               secretKeyRef:
@@ -190,6 +205,11 @@ spec:
         - name: metrics
           image: {{ template "mongodb.metrics.image" . }}
           imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
+          {{- if .Values.securityContext.enabled }}
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: {{ .Values.securityContext.runAsUser }}
+          {{- end }}
           env:
           {{- if .Values.usePassword }}
           - name: MONGODB_ROOT_PASSWORD
@@ -251,7 +271,7 @@ spec:
         name: datadir
         annotations:
         {{- range $key, $value := .Values.persistence.annotations }}
-          {{ $key }}: {{ $value }}
+          {{ $key }}: "{{ $value }}"
         {{- end }}
       spec:
         accessModes:
@@ -261,13 +281,7 @@ spec:
         resources:
           requests:
             storage: {{ .Values.persistence.size | quote }}
-      {{- if .Values.persistence.storageClass }}
-      {{- if (eq "-" .Values.persistence.storageClass) }}
-        storageClassName: ""
-      {{- else }}
-        storageClassName: "{{ .Values.persistence.storageClass }}"
-      {{- end }}
-      {{- end }}
+        {{ include "mongodb.storageClass" . }}
 {{- else }}
         - name: datadir
           emptyDir: {}

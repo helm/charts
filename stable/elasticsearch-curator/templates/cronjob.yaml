@@ -60,6 +60,9 @@ spec:
 {{ toYaml $value | indent 12 }}
 {{- end }}
 {{- end }}
+        {{- if .Values.rbac.enabled }}
+          serviceAccountName: {{ template "elasticsearch-curator.serviceAccountName" .}}
+        {{- end }}
           containers:
             - name: {{ .Chart.Name }}
               image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

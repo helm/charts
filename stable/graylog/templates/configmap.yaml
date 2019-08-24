@@ -16,7 +16,6 @@ data:
             <Console name="STDOUT" target="SYSTEM_OUT">
                 <PatternLayout pattern="%d %-7level [%c{1}] - %m - %X%n"/>
             </Console>
-
             <RollingFile name="rolling-file" fileName="/usr/share/graylog/log/server.log" filePattern="/usr/share/graylog/log/server.log.%i.gz">
                 <PatternLayout>
                     <Pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} %-5p [%c{1}] %m%n</Pattern>
@@ -26,11 +25,8 @@ data:
                 </Policies>
                 <DefaultRolloverStrategy max="10" fileIndex="min"/>
             </RollingFile>
-
             <!-- Internal Graylog log appender. Please do not disable. This makes internal log messages available via REST calls. -->
             <Memory name="graylog-internal-logs" bufferSize="500"/>
-            <Syslog name="graylog-internal-syslog" host="localhost" port="20514" protocol="UDP" appName="graylog" facility="LOCAL0"/>
-            <Syslog name="graylog-audit-syslog" host="localhost" port="20514" protocol="UDP" appName="graylog" facility="AUDIT" messageId="AUDIT"/>
             <!-- Rotate audit logs daily -->
             <RollingFile name="AUDITLOG" fileName="/usr/share/graylog/log/audit.log" filePattern="/usr/share/graylog/log/audit-%d{yyyy-MM-dd}.log.gz">
                 <PatternLayout>
@@ -62,25 +58,19 @@ data:
             <Logger name="org.apache.shiro.session.mgt.AbstractValidatingSessionManager" level="warn"/>
             <Root level="warn">
                 <AppenderRef ref="STDOUT"/>
-                <AppenderRef ref="graylog-internal-logs"/>
-                <AppenderRef ref="graylog-internal-syslog"/>
             </Root>
             <!-- Security Loggers -->
           <Logger name="org.graylog2.security.realm.PasswordAuthenticator" level="trace" additivity="false">
                 <AppenderRef ref="AUDITLOG"/>
-                <AppenderRef ref="graylog-audit-syslog"/>
             </Logger>
             <Logger name="org.graylog2.security.realm.AccessTokenAuthenticator" level="trace" additivity="false">
                 <AppenderRef ref="AUDITLOG"/>
-                <AppenderRef ref="graylog-audit-syslog"/>
             </Logger>
             <Logger name="org.graylog2.security.realm.RootAccountRealm" level="trace" additivity="false">
                 <AppenderRef ref="AUDITLOG"/>
-                <AppenderRef ref="graylog-audit-syslog"/>
             </Logger>
             <Logger name="org.graylog2.shared.security.ShiroAuthorizationFilter" level="trace" additivity="false">
                 <AppenderRef ref="AUDITLOG"/>
-                <AppenderRef ref="graylog-audit-syslog"/>
             </Logger>
         </Loggers>
     </Configuration>
@@ -90,27 +80,21 @@ data:
     root_email = {{ .Values.graylog.rootEmail }}
     root_timezone = {{ default "UTC" .Values.graylog.rootTimezone }}
     plugin_dir = /usr/share/graylog/plugin
+  {{- if contains ":2" .Values.graylog.image.repository }}
     rest_listen_uri = http://0.0.0.0:9000/api/
-    #web_enable = true
     web_listen_uri = http://0.0.0.0:9000/
   {{- if .Values.graylog.ingress.enabled }}
     web_endpoint_uri =  {{ template "graylog.url" .}}/api
   {{- end }}
+  {{- else }}
+    http_bind_address = 0.0.0.0:9000
+    {{- if .Values.graylog.ingress.enabled }}
+    http_external_uri = {{ template "graylog.url" .}}/
+    {{- end }}
+  {{- end }}
     elasticsearch_hosts = {{ template "graylog.elasticsearch.hosts" . }}
-    elasticsearch_connect_timeout = 10s
-    elasticsearch_socket_timeout = 60s
-    #elasticsearch_idle_timeout = -1s
-    #elasticsearch_max_total_connections = 20
-    #elasticsearch_max_total_connections_per_route = 2
-    #elasticsearch_max_retries = 2
-    rotation_strategy = {{ default "time" .Values.graylog.elasticsearch.rotationStrategy }}
-    elasticsearch_max_docs_per_index = {{ default "20000000" .Values.graylog.elasticsearch.maxDocsPerIndex }}
-    elasticsearch_max_time_per_index = 1w
-    elasticsearch_max_number_of_indices = {{ default 24 .Values.graylog.elasticsearch.maxNumberOfIndices }}
-    retention_strategy = {{ default "delete" .Values.graylog.elasticsearch.retentionStrategy }}
-    elasticsearch_shards = {{ default 5 .Values.graylog.elasticsearch.shards }}
-    elasticsearch_replicas = {{ default 0 .Values.graylog.elasticsearch.replicas }}
-    elasticsearch_index_prefix = {{ default "graylog" .Values.graylog.elasticsearch.indexPrefix }}
+    allow_leading_wildcard_searches = false
+    allow_highlighting = false
     output_batch_size = 500
     output_flush_interval = 1
     output_fault_count_threshold = 5
@@ -123,6 +107,7 @@ data:
     inputbuffer_processors = 2
     inputbuffer_wait_strategy = blocking
     message_journal_enabled = true
+    # Do not change `message_journal_dir` location
     message_journal_dir = /usr/share/graylog/data/journal
     lb_recognition_period_seconds = 3
     # Use a replica set instead of a single host
@@ -135,7 +120,7 @@ data:
     transport_email_port = {{ default .Values.graylog.transportEmail.port }}
     transport_email_use_auth = {{ default .Values.graylog.transportEmail.useAuth }}
     transport_email_use_tls = {{ default .Values.graylog.transportEmail.useTls }}
-    transport_email_use_ssl = {{ default .Values.graylog.transportEmail.useSsl }}
+    transport_email_use_ssl = {{ default false .Values.graylog.transportEmail.useSsl }}
     transport_email_auth_username = {{ default .Values.graylog.transportEmail.authUsername }}
     transport_email_auth_password = {{ default .Values.graylog.transportEmail.authPassword }}
     transport_email_subject_prefix = {{ default .Values.graylog.transportEmail.subjectPrefix }}
@@ -146,3 +131,58 @@ data:
     content_packs_dir = /usr/share/graylog/data/contentpacks
     content_packs_auto_load = grok-patterns.json
     proxied_requests_thread_pool_size = 32
+  {{- if .Values.graylog.config }}
+{{ .Values.graylog.config | indent 4 }}
+  {{- end }}
+  entrypoint.sh: |-
+    #!/usr/bin/env bash
+
+    GRAYLOG_HOME=/usr/share/graylog
+    MASTER_NAME="{{ template "graylog.fullname" . }}-master.{{ .Release.Namespace }}.svc.cluster.local"
+    # Looking for Master IP
+    MASTER_IP=`/k8s/kubectl --namespace {{ .Release.Namespace }} get pod -o jsonpath='{range .items[*]}{.metadata.name} {.status.podIP}{"\n"}{end}' -l graylog-role=master --field-selector=status.phase=Running|awk '{print $2}'`
+    echo "Current master is $MASTER_IP"
+    if [[ -z "$MASTER_IP" ]]; then
+      echo "Launching $HOSTNAME as master"
+      export GRAYLOG_IS_MASTER="true"
+      /k8s/kubectl --namespace {{ .Release.Namespace }} label --overwrite pod $HOSTNAME graylog-role="master"
+    else
+      echo "Launching $HOSTNAME as coordinating"
+      export GRAYLOG_IS_MASTER="false"
+      /k8s/kubectl --namespace {{ .Release.Namespace }} label --overwrite pod $HOSTNAME graylog-role="coordinating"
+    fi
+    # Download plugins
+  {{- if .Values.graylog.plugins }}
+    echo "Downloading Graylog Plugins..."
+  {{- range .Values.graylog.plugins }}
+    echo "Downloading {{ .url }} ..."
+    curl -s --location --retry 3 -o ${GRAYLOG_HOME}/plugin/{{ .name }} "{{ .url }}"
+  {{- end }}
+  {{- end }}
+  {{- if .Values.graylog.metrics.enabled }}
+    echo "Downloading https://github.com/graylog-labs/graylog-plugin-metrics-reporter/releases/download/2.4.0-beta.3/metrics-reporter-prometheus-2.4.0-beta.3.jar ..."
+    curl -s --location --retry 3 -o ${GRAYLOG_HOME}/plugin/metrics-reporter-prometheus-2.4.0-beta.3.jar "https://github.com/graylog-labs/graylog-plugin-metrics-reporter/releases/download/2.4.0-beta.3/metrics-reporter-prometheus-2.4.0-beta.3.jar"
+  {{- end }}
+  {{- if .Values.graylog.geoip.enabled }}
+    echo "Downloading Maxmind GeoLite2 ..."
+    curl -s --location --retry 3 -o /tmp/GeoLite2-City.tar.gz "https://geolite.maxmind.com/download/geoip/database/GeoLite2-City.tar.gz"
+    curlreturn=$?
+    if [[ $curlreturn -eq 0 ]]; then
+      mkdir -p ${GRAYLOG_HOME}/geoip && cd ${GRAYLOG_HOME}/geoip && tar xvzf /tmp/GeoLite2-City.tar.gz --wildcards "*.mmdb" --strip-components=1 -C ${GRAYLOG_HOME}/geoip && chown -R graylog:graylog ${GRAYLOG_HOME}/geoip
+    fi
+  {{- end }}
+    # Start Graylog
+    echo "Starting graylog"
+    # Original docker-entrypoint.sh in Graylog Docker will error while executing since you can't chown readonly files in `config`
+    # exec /docker-entrypoint.sh graylog
+    echo "Graylog Home ${GRAYLOG_HOME}"
+    echo "JVM Options ${GRAYLOG_SERVER_JAVA_OPTS}"
+    "${JAVA_HOME}/bin/java" \
+      ${GRAYLOG_SERVER_JAVA_OPTS} \
+      -jar \
+      -Dlog4j.configurationFile=${GRAYLOG_HOME}/config/log4j2.xml \
+      -Djava.library.path=${GRAYLOG_HOME}/lib/sigar/ \
+      -Dgraylog2.installation_source=docker \
+      ${GRAYLOG_HOME}/graylog.jar \
+      server \
+      -f ${GRAYLOG_HOME}/config/graylog.conf

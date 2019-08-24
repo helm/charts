@@ -15,6 +15,22 @@ data:
     if [ -e "$SERVER_CERT" ]
     then
       echo "found existing certs - reusing"
+      {{- if .Values.openvpn.useCrl }}
+      if [ ! -e ${EASY_RSA_LOC}/pki/crl.pem ]
+      then
+        echo "generating missed crl file"
+        ./easyrsa gen-crl
+        cp ${EASY_RSA_LOC}/pki/crl.pem ${EASY_RSA_LOC}/crl.pem
+        chmod 644 ${EASY_RSA_LOC}/crl.pem
+      fi
+      {{- end }}
+      {{- if .Values.openvpn.taKey }}
+        if [ ! -e ${EASY_RSA_LOC}/pki/ta.key ]
+        then
+          echo "generating missed ta.key"
+          openvpn --genkey --secret ${EASY_RSA_LOC}/pki/ta.key
+        fi
+      {{- end }}
     else
       export EASYRSA_PKI=$EASY_RSA_LOC
       ovpn_genconfig -u server
@@ -36,6 +52,9 @@ data:
       nobind
       dev tun
       remote ${REMOTE_ADDR} {{ .Values.service.externalPort }} {{ .Values.openvpn.OVPN_PROTO }}
+      {{- if .Values.openvpn.cipher }}
+      cipher {{ .Values.openvpn.cipher }}
+      {{- end }}
       {{- if .Values.openvpn.redirectGateway }}
       redirect-gateway def1
       {{- end }}
@@ -48,8 +67,23 @@ data:
       <ca>
       `cat ${EASY_RSA_LOC}/pki/ca.crt`
       </ca>
+      {{- if .Values.openvpn.taKey }}
+      <tls-auth>
+      `cat ${EASY_RSA_LOC}/pki/ta.key`
+      </tls-auth>
+      key-direction 1
+      {{- end }}
       EOF
       cat pki/$1.ovpn
+
+  revokeClientCert.sh: |-
+      #!/bin/bash
+      EASY_RSA_LOC="/etc/openvpn/certs"
+      cd $EASY_RSA_LOC
+      ./easyrsa revoke $1 
+      ./easyrsa gen-crl
+      cp ${EASY_RSA_LOC}/pki/crl.pem ${EASY_RSA_LOC}
+      chmod 644 ${EASY_RSA_LOC}/crl.pem
 
   configure.sh: |-
       #!/bin/sh
@@ -82,6 +116,13 @@ data:
       }
 
       /etc/openvpn/setup/setup-certs.sh
+{{ if .Values.openvpn.istio.enabled }}
+      iptables -t nat -A PREROUTING -s {{ .Values.openvpn.OVPN_NETWORK }}/{{ .Values.openvpn.OVPN_SUBNET }} -i tun0 -p tcp -j REDIRECT --to-ports {{ .Values.openvpn.istio.proxy.port }}
+{{ end }}
+
+{{ range .Values.openvpn.iptablesExtra }}
+      iptables {{ . }}
+{{ end }}
 
       iptables -t nat -A POSTROUTING -s {{ .Values.openvpn.OVPN_NETWORK }}/{{ .Values.openvpn.OVPN_SUBNET }} -o eth0 -j MASQUERADE
       mkdir -p /dev/net
@@ -115,16 +156,25 @@ data:
         echo ===============================================
       fi
 
-      openvpn --config /etc/openvpn/openvpn.conf
+      exec openvpn --config /etc/openvpn/openvpn.conf
 
   openvpn.conf: |-
       server {{ .Values.openvpn.OVPN_NETWORK }} {{ .Values.openvpn.OVPN_SUBNET }}
       verb 3
+{{ if .Values.openvpn.useCrl }}
+      crl-verify /etc/openvpn/certs/crl.pem
+{{ end }}
       key /etc/openvpn/certs/pki/private/server.key
       ca /etc/openvpn/certs/pki/ca.crt
       cert /etc/openvpn/certs/pki/issued/server.crt
       dh /etc/openvpn/certs/pki/dh.pem
+{{ if .Values.openvpn.taKey }}
+      tls-auth /etc/openvpn/certs/pki/ta.key 0
+{{ end }}
 
+{{ if .Values.openvpn.cipher }}
+      cipher {{ .Values.openvpn.cipher }}
+{{ end }}
       key-direction 0
       keepalive 10 60
       persist-key

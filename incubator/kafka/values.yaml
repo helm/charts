@@ -26,6 +26,9 @@ resources: {}
   #   memory: 1024Mi
 kafkaHeapOptions: "-Xmx1G -Xms1G"
 
+## Optional Container Security context
+securityContext: {}
+
 ## The StatefulSet Update Strategy which Kafka will use when changes are applied.
 ## ref: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#update-strategies
 updateStrategy:
@@ -58,6 +61,10 @@ logSubPath: "logs"
 ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
 ##
 # schedulerName:
+
+## Use an alternate serviceAccount
+## Useful when using images in custom repositories
+# serviceAccountName:
 
 ## Pod scheduling preferences (by default keep pods within a release on separate nodes).
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
@@ -151,12 +158,17 @@ external:
 # Annotation to be added to Kafka pods
 podAnnotations: {}
 
+# Labels to be added to Kafka pods
+podLabels: {}
+  # service: broker
+  # team: developers
+
+
 ## Configuration Overrides. Specify any Kafka settings you would like set on the StatefulSet
 ## here in map format, as defined in the official docs.
 ## ref: https://kafka.apache.org/documentation/#brokerconfigs
 ##
 configurationOverrides:
-  "offsets.topic.replication.factor": 3
   "confluent.support.metrics.enable": false  # Disables confluent metric submission
   # "auto.leader.rebalance.enable": true
   # "auto.create.topics.enable": true
@@ -172,9 +184,12 @@ configurationOverrides:
   ## If external service type is Nodeport:
   # "advertised.listeners": |-
   #   EXTERNAL://kafka.cluster.local:$((31090 + ${KAFKA_BROKER_ID}))
-  ## If external service type is LoadBalancer:
+  ## If external service type is LoadBalancer and distinct is true:
   # "advertised.listeners": |-
   #   EXTERNAL://kafka-$((${KAFKA_BROKER_ID})).cluster.local:19092
+  ## If external service type is LoadBalancer and distinct is false:
+  # "advertised.listeners": |-
+  #   EXTERNAL://${LOAD_BALANCER_IP}:31090
   ## Uncomment to define the EXTERNAL Listener protocol
   # "listener.security.protocol.map": |-
   #   PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT

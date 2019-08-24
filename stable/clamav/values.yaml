@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: mailu/clamav
-  tag: latest
+  tag: "1.6"
   pullPolicy: IfNotPresent
 
 nameOverride: ""
@@ -28,6 +28,11 @@ ingress:
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
+
+# Use freshclamConfig to define the content of /etc/clamav/freshclam.conf. Example:
+# freshclamConfig: |
+#   HTTPProxyServer your-proxy.example.com
+#   HTTPProxyPort 8080
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

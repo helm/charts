@@ -1,7 +1,8 @@
+apiVersion: v1
 name: consul
 home: https://github.com/hashicorp/consul
-version: 3.6.1
-appVersion: 1.0.0
+version: 3.8.1
+appVersion: 1.5.3
 description: Highly available and distributed service discovery and key-value store
   designed with support for the modern data center to make distributed systems and
   configuration easy.

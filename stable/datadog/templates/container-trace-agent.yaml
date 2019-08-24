@@ -1,0 +1,33 @@
+{{- define "container-trace-agent" -}}
+- name: trace-agent
+  image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+  imagePullPolicy: {{ .Values.image.pullPolicy }}
+  command: ["trace-agent", "--config=/etc/datadog-agent/datadog.yaml"]
+  resources:
+{{ toYaml .Values.daemonset.containers.traceAgent.resources | indent 4 }}
+  ports:
+  - containerPort: 8126
+    {{- if .Values.daemonset.useHostPort }}
+    hostPort: 8126
+    {{- end }}
+    name: traceport
+    protocol: TCP
+  env:
+    {{- include "containers-common-env" . | nindent 4 }}
+    - name: DD_APM_ENABLED
+      value: {{ .Values.datadog.apmEnabled | quote }}
+    - name: DD_LOG_LEVEL
+      value: {{ .Values.daemonset.containers.traceAgent.logLevel | default .Values.datadog.logLevel | quote }}
+{{- if .Values.daemonset.containers.traceAgent.env }}
+{{ toYaml .Values.daemonset.containers.traceAgent.env | indent 4 }}
+{{- end }}
+  volumeMounts:
+    - name: config
+      mountPath: /etc/datadog-agent
+  livenessProbe:
+    tcpSocket:
+      port: 8126
+    initialDelaySeconds: 15
+    periodSeconds: 15
+    timeoutSeconds: 5
+{{- end -}}

@@ -1,7 +1,7 @@
-# Generated from 'persistentvolumesusage' from https://raw.githubusercontent.com/coreos/kube-prometheus/master/manifests/grafana-dashboardDefinitions.yaml
+# Generated from 'persistentvolumesusage' from https://raw.githubusercontent.com/coreos/kube-prometheus/release-0.1/manifests/grafana-dashboardDefinitions.yaml
 # Do not change in-place! In order to change this file first read following link:
 # https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
-{{- if and .Values.grafana.enabled .Values.grafana.defaultDashboardsEnabled }}
+{{- if and (semverCompare ">=1.11.0-0" .Capabilities.KubeVersion.GitVersion) (semverCompare "<1.14.0-0" .Capabilities.KubeVersion.GitVersion) .Values.grafana.enabled .Values.grafana.defaultDashboardsEnabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -54,7 +54,7 @@ data:
                         },
                         "id": 2,
                         "legend": {
-                            "alignAsTable": false,
+                            "alignAsTable": true,
                             "avg": true,
                             "current": true,
                             "max": true,
@@ -79,16 +79,23 @@ data:
 
                         ],
                         "spaceLength": 10,
-                        "span": 12,
-                        "stack": false,
+                        "span": 9,
+                        "stack": true,
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "(kubelet_volume_stats_capacity_bytes{cluster=\"$cluster\", job=\"kubelet\", persistentvolumeclaim=\"$volume\"} - kubelet_volume_stats_available_bytes{cluster=\"$cluster\", job=\"kubelet\", persistentvolumeclaim=\"$volume\"}) / kubelet_volume_stats_capacity_bytes{cluster=\"$cluster\", job=\"kubelet\", persistentvolumeclaim=\"$volume\"} * 100\n",
+                                "expr": "(\n  sum without(instance, node) (kubelet_volume_stats_capacity_bytes{cluster=\"$cluster\", job=\"kubelet\", namespace=\"$namespace\", persistentvolumeclaim=\"$volume\"})\n  -\n  sum without(instance, node) (kubelet_volume_stats_available_bytes{cluster=\"$cluster\", job=\"kubelet\", namespace=\"$namespace\", persistentvolumeclaim=\"$volume\"})\n)\n",
                                 "format": "time_series",
                                 "intervalFactor": 1,
-                                "legendFormat": "{{`{{ Usage }}`}}",
+                                "legendFormat": "Used Space",
                                 "refId": "A"
+                            },
+                            {
+                                "expr": "sum without(instance, node) (kubelet_volume_stats_available_bytes{cluster=\"$cluster\", job=\"kubelet\", namespace=\"$namespace\", persistentvolumeclaim=\"$volume\"})\n",
+                                "format": "time_series",
+                                "intervalFactor": 1,
+                                "legendFormat": "Free Space",
+                                "refId": "B"
                             }
                         ],
                         "thresholds": [
@@ -114,22 +121,106 @@ data:
                         },
                         "yaxes": [
                             {
-                                "format": "percent",
+                                "format": "bytes",
                                 "label": null,
                                 "logBase": 1,
-                                "max": 100,
+                                "max": null,
                                 "min": 0,
                                 "show": true
                             },
                             {
-                                "format": "percent",
+                                "format": "bytes",
                                 "label": null,
                                 "logBase": 1,
-                                "max": 100,
+                                "max": null,
                                 "min": 0,
                                 "show": true
                             }
                         ]
+                    },
+                    {
+                        "cacheTimeout": null,
+                        "colorBackground": false,
+                        "colorValue": false,
+                        "colors": [
+                            "rgba(50, 172, 45, 0.97)",
+                            "rgba(237, 129, 40, 0.89)",
+                            "rgba(245, 54, 54, 0.9)"
+                        ],
+                        "datasource": "$datasource",
+                        "format": "percent",
+                        "gauge": {
+                            "maxValue": 100,
+                            "minValue": 0,
+                            "show": true,
+                            "thresholdLabels": false,
+                            "thresholdMarkers": true
+                        },
+                        "gridPos": {
+
+                        },
+                        "id": 3,
+                        "interval": null,
+                        "links": [
+
+                        ],
+                        "mappingType": 1,
+                        "mappingTypes": [
+                            {
+                                "name": "value to text",
+                                "value": 1
+                            },
+                            {
+                                "name": "range to text",
+                                "value": 2
+                            }
+                        ],
+                        "maxDataPoints": 100,
+                        "nullPointMode": "connected",
+                        "nullText": null,
+                        "postfix": "",
+                        "postfixFontSize": "50%",
+                        "prefix": "",
+                        "prefixFontSize": "50%",
+                        "rangeMaps": [
+                            {
+                                "from": "null",
+                                "text": "N/A",
+                                "to": "null"
+                            }
+                        ],
+                        "span": 3,
+                        "sparkline": {
+                            "fillColor": "rgba(31, 118, 189, 0.18)",
+                            "full": false,
+                            "lineColor": "rgb(31, 120, 193)",
+                            "show": false
+                        },
+                        "tableColumn": "",
+                        "targets": [
+                            {
+                                "expr": "(\n  kubelet_volume_stats_capacity_bytes{cluster=\"$cluster\", job=\"kubelet\", namespace=\"$namespace\", persistentvolumeclaim=\"$volume\"}\n  -\n  kubelet_volume_stats_available_bytes{cluster=\"$cluster\", job=\"kubelet\", namespace=\"$namespace\", persistentvolumeclaim=\"$volume\"}\n)\n/\nkubelet_volume_stats_capacity_bytes{cluster=\"$cluster\", job=\"kubelet\", namespace=\"$namespace\", persistentvolumeclaim=\"$volume\"}\n* 100\n",
+                                "format": "time_series",
+                                "intervalFactor": 2,
+                                "legendFormat": "",
+                                "refId": "A"
+                            }
+                        ],
+                        "thresholds": "80, 90",
+                        "title": "Volume Space Usage",
+                        "tooltip": {
+                            "shared": false
+                        },
+                        "type": "singlestat",
+                        "valueFontSize": "80%",
+                        "valueMaps": [
+                            {
+                                "op": "=",
+                                "text": "N/A",
+                                "value": "null"
+                            }
+                        ],
+                        "valueName": "current"
                     }
                 ],
                 "repeat": null,
@@ -156,9 +247,9 @@ data:
                         "gridPos": {
 
                         },
-                        "id": 3,
+                        "id": 4,
                         "legend": {
-                            "alignAsTable": false,
+                            "alignAsTable": true,
                             "avg": true,
                             "current": true,
                             "max": true,
@@ -183,16 +274,23 @@ data:
 
                         ],
                         "spaceLength": 10,
-                        "span": 12,
-                        "stack": false,
+                        "span": 9,
+                        "stack": true,
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "kubelet_volume_stats_inodes_used{cluster=\"$cluster\", job=\"kubelet\", persistentvolumeclaim=\"$volume\"} / kubelet_volume_stats_inodes{cluster=\"$cluster\", job=\"kubelet\", persistentvolumeclaim=\"$volume\"} * 100\n",
+                                "expr": "sum without(instance, node) (kubelet_volume_stats_inodes_used{cluster=\"$cluster\", job=\"kubelet\", namespace=\"$namespace\", persistentvolumeclaim=\"$volume\"})\n",
                                 "format": "time_series",
                                 "intervalFactor": 1,
-                                "legendFormat": "{{`{{ Usage }}`}}",
+                                "legendFormat": "Used inodes",
                                 "refId": "A"
+                            },
+                            {
+                                "expr": "(\n  sum without(instance, node) (kubelet_volume_stats_inodes{cluster=\"$cluster\", job=\"kubelet\", namespace=\"$namespace\", persistentvolumeclaim=\"$volume\"})\n  -\n  sum without(instance, node) (kubelet_volume_stats_inodes_used{cluster=\"$cluster\", job=\"kubelet\", namespace=\"$namespace\", persistentvolumeclaim=\"$volume\"})\n)\n",
+                                "format": "time_series",
+                                "intervalFactor": 1,
+                                "legendFormat": " Free inodes",
+                                "refId": "B"
                             }
                         ],
                         "thresholds": [
@@ -218,22 +316,106 @@ data:
                         },
                         "yaxes": [
                             {
-                                "format": "percent",
+                                "format": "none",
                                 "label": null,
                                 "logBase": 1,
-                                "max": 100,
+                                "max": null,
                                 "min": 0,
                                 "show": true
                             },
                             {
-                                "format": "percent",
+                                "format": "none",
                                 "label": null,
                                 "logBase": 1,
-                                "max": 100,
+                                "max": null,
                                 "min": 0,
                                 "show": true
                             }
                         ]
+                    },
+                    {
+                        "cacheTimeout": null,
+                        "colorBackground": false,
+                        "colorValue": false,
+                        "colors": [
+                            "rgba(50, 172, 45, 0.97)",
+                            "rgba(237, 129, 40, 0.89)",
+                            "rgba(245, 54, 54, 0.9)"
+                        ],
+                        "datasource": "$datasource",
+                        "format": "percent",
+                        "gauge": {
+                            "maxValue": 100,
+                            "minValue": 0,
+                            "show": true,
+                            "thresholdLabels": false,
+                            "thresholdMarkers": true
+                        },
+                        "gridPos": {
+
+                        },
+                        "id": 5,
+                        "interval": null,
+                        "links": [
+
+                        ],
+                        "mappingType": 1,
+                        "mappingTypes": [
+                            {
+                                "name": "value to text",
+                                "value": 1
+                            },
+                            {
+                                "name": "range to text",
+                                "value": 2
+                            }
+                        ],
+                        "maxDataPoints": 100,
+                        "nullPointMode": "connected",
+                        "nullText": null,
+                        "postfix": "",
+                        "postfixFontSize": "50%",
+                        "prefix": "",
+                        "prefixFontSize": "50%",
+                        "rangeMaps": [
+                            {
+                                "from": "null",
+                                "text": "N/A",
+                                "to": "null"
+                            }
+                        ],
+                        "span": 3,
+                        "sparkline": {
+                            "fillColor": "rgba(31, 118, 189, 0.18)",
+                            "full": false,
+                            "lineColor": "rgb(31, 120, 193)",
+                            "show": false
+                        },
+                        "tableColumn": "",
+                        "targets": [
+                            {
+                                "expr": "kubelet_volume_stats_inodes_used{cluster=\"$cluster\", job=\"kubelet\", namespace=\"$namespace\", persistentvolumeclaim=\"$volume\"}\n/\nkubelet_volume_stats_inodes{cluster=\"$cluster\", job=\"kubelet\", namespace=\"$namespace\", persistentvolumeclaim=\"$volume\"}\n* 100\n",
+                                "format": "time_series",
+                                "intervalFactor": 2,
+                                "legendFormat": "",
+                                "refId": "A"
+                            }
+                        ],
+                        "thresholds": "80, 90",
+                        "title": "Volume inodes Usage",
+                        "tooltip": {
+                            "shared": false
+                        },
+                        "type": "singlestat",
+                        "valueFontSize": "80%",
+                        "valueMaps": [
+                            {
+                                "op": "=",
+                                "text": "N/A",
+                                "value": "null"
+                            }
+                        ],
+                        "valueName": "current"
                     }
                 ],
                 "repeat": null,

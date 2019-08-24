@@ -11,12 +11,17 @@ metadata:
     {{- end }}
 spec:
   rules:
+{{- if .Values.nexusProxy.enabled -}}  
   {{- if .Values.nexusProxy.env.nexusHttpHost }}
     - host: {{ .Values.nexusProxy.env.nexusHttpHost }}
       http:
         paths:
           - backend:
+            {{- if .Values.nexusProxy.svcName }}
+              serviceName: {{ .Values.nexusProxy.svcName }}
+            {{- else }}
               serviceName: {{ template "nexus.fullname" . }}
+            {{- end }}
               servicePort: {{ .Values.nexusProxy.port }}
             path: {{ .Values.ingress.path }}
   {{- end }}
@@ -25,10 +30,18 @@ spec:
       http:
         paths:
           - backend:
+            {{- if .Values.nexusProxy.svcName }}
+              serviceName: {{ .Values.nexusProxy.svcName }}
+            {{- else }}
               serviceName: {{ template "nexus.fullname" . }}
+            {{- end }}
               servicePort: {{ .Values.nexusProxy.port }}
             path: {{ .Values.ingress.path }}
   {{- end }}
+{{- end -}}  
+{{- with .Values.ingress.rules  }}
+{{ toYaml . | indent 2 }}
+  {{- end -}}
 {{- if .Values.ingress.tls.enabled }}
   tls:
     - hosts:

@@ -52,11 +52,18 @@ Parameter | Description | Default
 `config.google.serviceAccountJson` | google service account json contents | `""`
 `config.google.existingConfig` | existing Kubernetes configmap to use for the service account file. See [google secret template](https://github.com/helm/charts/blob/master/stable/oauth2-proxy/templates/google-secret.yaml) for the required values | `nil`
 `extraArgs` | key:value list of extra arguments to give the binary | `{}`
+`htpasswdFile.enabled` | enable htpasswd-file option | `false`
+`htpasswdFile.entries` | list of [SHA encrypted user:passwords](https://pusher.github.io/oauth2_proxy/configuration#command-line-options) | `{}`
+`htpasswdFile.existingSecret` | existing Kubernetes secret to use for OAuth2 htpasswd file` | `""`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
 `image.repository` | Image repository | `quay.io/pusher/oauth2_proxy`
-`image.tag` | Image tag | `v3.1.0`
+`image.tag` | Image tag | `v3.2.0`
 `imagePullSecrets` | Specify image pull secrets | `nil` (does not add image pull secrets to deployed pods)
-`ingress.enabled` | enable ingress | `false`
+`ingress.enabled` | Enable Ingress | `false`
+`ingress.path` | Ingress accepted path | `/`
+`ingress.annotations` | Ingress annotations | `nil`
+`ingress.hosts` | Ingress accepted hostnames | `nil`
+`ingress.tls` | Ingress TLS configuration | `nil`
 `livenessProbe.enabled`  | enable Kubernetes livenessProbe. Disable to use oauth2-proxy with Istio mTLS. See [Istio FAQ](https://istio.io/help/faq/security/#k8s-health-checks) | `true`
 `livenessProbe.initialDelaySeconds` | number of seconds | 0
 `livenessProbe.timeoutSeconds` | number of seconds | 1

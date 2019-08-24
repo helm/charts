@@ -10,14 +10,22 @@ serviceAccount:
   # If not set and create is true, a name is generated using the serviceAccountName template
   name:
 
+initContainers:
+  dbWait:
+    image: "busybox"
+    tag: "1.30.1"
+    imagePullPolicy: IfNotPresent
+
 server:
   image: springcloud/spring-cloud-dataflow-server
-  version: 2.0.1.RELEASE
+  version: 2.2.0.RELEASE
   imagePullPolicy: IfNotPresent
   platformName: default
   service:
     type: LoadBalancer
     externalPort: 80
+    annotations: {}
+  configMap:
   resources: {}
   #  limits:
   #    cpu: 1.0
@@ -28,11 +36,12 @@ server:
 
 skipper:
   image: springcloud/spring-cloud-skipper-server
-  version: 2.0.0.RELEASE
+  version: 2.1.0.RELEASE
   imagePullPolicy: IfNotPresent
   platformName: default
   service:
     type: ClusterIP
+  configMap:
   resources: {}
   #  limits:
   #    cpu: 1.0
@@ -54,6 +63,10 @@ rabbitmq:
   enabled: true
   rabbitmqUsername: user
 
+rabbitmq-ha:
+  enabled: false
+  rabbitmqUsername: user
+
 kafka:
   enabled: false
   replicas: 1
@@ -64,4 +77,17 @@ kafka:
     replicaCount: 1
 
 mysql:
+  enabled: true
   mysqlDatabase: dataflow
+
+## If you are using an external database,
+## you must specify the following database details
+database:
+  driver:
+  scheme:
+  host:
+  port:
+  user: scdf
+  password:
+  dataflow: dataflow
+  skipper: skipper

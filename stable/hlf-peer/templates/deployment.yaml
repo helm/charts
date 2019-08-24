@@ -29,7 +29,7 @@ spec:
         {{- end }}
         - name: dockersocket
           hostPath:
-            path: /var/run/docker.sock
+            path: {{ .Values.dockerSocketPath }}
         {{- if .Values.secrets.peer.cert }}
         - name: id-cert
           secret:
@@ -70,10 +70,12 @@ spec:
           secret:
             secretName: {{ .Values.secrets.peer.tlsClientRootCert }}
         {{- end }}
-        {{- if .Values.secrets.channel }}
-        - name: channel
+        {{- if .Values.secrets.channels }}
+          {{- range .Values.secrets.channels }}
+        - name: {{ . }}
           secret:
-            secretName: {{ .Values.secrets.channel }}
+            secretName: {{ . }}
+          {{- end }}
         {{- end }}
         {{- if .Values.secrets.adminCert }}
         - name: admin-cert
@@ -201,9 +203,11 @@ spec:
             - mountPath: /var/hyperledger/tls/ord/cert
               name: ord-tls-rootcert
             {{- end }}
-            {{- if .Values.secrets.channel }}
-            - mountPath: /hl_config/channel
-              name: channel
+            {{- if .Values.secrets.channels }}
+              {{- range .Values.secrets.channels }}
+            - mountPath: /hl_config/channel/{{ . }}
+              name: {{ . }}
+              {{- end }}
             {{- end }}
             {{- if .Values.secrets.adminCert }}
             - mountPath: /var/hyperledger/admin_msp/admincerts

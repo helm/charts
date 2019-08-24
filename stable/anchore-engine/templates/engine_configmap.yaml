@@ -4,9 +4,12 @@ metadata:
   name: {{ template "anchore-engine.fullname" . }}
   labels:
     app: {{ template "anchore-engine.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+    {{- with .Values.anchoreGlobal.labels }}
+    {{ toYaml . | nindent 4 | trim }}
+    {{- end }}
 data:
   ANCHORE_DB_NAME: {{ index .Values "postgresql" "postgresDatabase" | quote }}
   ANCHORE_DB_USER: {{ index .Values "postgresql" "postgresUser" | quote }}
@@ -22,7 +25,7 @@ data:
     # Anchore Service Configuration File from ConfigMap
 
     service_dir: {{ .Values.anchoreGlobal.serviceDir }}
-    tmp_dir: {{ default "/scratch" .Values.anchoreAnalyzer.scratchVolume.mountPath }}
+    tmp_dir: {{ .Values.anchoreGlobal.scratchVolume.mountPath }}
     log_level: {{ .Values.anchoreGlobal.logLevel }}
     cleanup_images: {{ .Values.anchoreGlobal.cleanupImages }}
 
@@ -39,11 +42,10 @@ data:
     #
     {{ if .Values.anchoreGlobal.webhooksEnabled }}
     webhooks:
-{{ toYaml .Values.anchoreGlobal.webhooks | indent 6 }}
+      {{ toYaml .Values.anchoreGlobal.webhooks | nindent 6 | trim }}
     {{ end }}
 
-    # Configure what feeds to sync. The 'admin' anchoreIO credentials are used if present, but not required.
-    # The 'anonymous' user is used for the sync otherwise.
+    # Configure what feeds to sync.
     # The sync will hit http://ancho.re/feeds, if any outbound firewall config needs to be set in your environment.
     feeds:
       sync_enabled: true
@@ -87,7 +89,7 @@ data:
 
     credentials:
       database:
-        db_connect: "postgresql+pg8000://${ANCHORE_DB_USER}:${ANCHORE_DB_PASSWORD}@${ANCHORE_DB_HOST}/${ANCHORE_DB_NAME}"
+        db_connect: "postgresql://${ANCHORE_DB_USER}:${ANCHORE_DB_PASSWORD}@${ANCHORE_DB_HOST}/${ANCHORE_DB_NAME}"
         db_connect_args:
           timeout: {{ .Values.anchoreGlobal.dbConfig.timeout }}
           ssl: {{ .Values.anchoreGlobal.dbConfig.ssl }}
@@ -117,9 +119,15 @@ data:
         port: {{ .Values.anchoreAnalyzer.containerPort }}
         cycle_timer_seconds: 1
         cycle_timers:
-{{ toYaml .Values.anchoreAnalyzer.cycleTimers | indent 10 }}
+          {{ toYaml .Values.anchoreAnalyzer.cycleTimers | nindent 10 | trim }}
         max_threads: {{ .Values.anchoreAnalyzer.concurrentTasksPerWorker }}
         analyzer_driver: 'nodocker'
+        {{- if gt .Values.anchoreAnalyzer.layerCacheMaxGigabytes 0.0 }}
+        layer_cache_enable: true
+        {{- else }}
+        layer_cache_enable: false
+        {{- end }}
+        layer_cache_max_gigabytes: {{ .Values.anchoreAnalyzer.layerCacheMaxGigabytes }}
         ssl_cert: "{{ .Values.anchoreGlobal.internalServicesSsl.certDir -}}/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretCertName }}"
         ssl_key: "{{ .Values.anchoreGlobal.internalServicesSsl.certDir -}}/{{ .Values.anchoreGlobal.internalServicesSsl.certSecretKeyName }}"
         ssl_enable: {{ .Values.anchoreGlobal.internalServicesSslEnabled }}
@@ -131,14 +139,14 @@ data:
         port: {{ .Values.anchoreCatalog.service.port }}
         cycle_timer_seconds: 1
         cycle_timers:
-{{ toYaml .Values.anchoreCatalog.cycleTimers | indent 10 }}
+          {{ toYaml .Values.anchoreCatalog.cycleTimers | nindent 10 | trim }}
         ssl_enable: {{ .Values.anchoreGlobal.internalServicesSslEnabled }}
         ssl_cert: "{{ .Values.anchoreGlobal.internalServicesSsl.certDir -}}/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretCertName }}"
         ssl_key: "{{ .Values.anchoreGlobal.internalServicesSsl.certDir -}}/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretKeyName }}"
         event_log:
-{{ toYaml .Values.anchoreCatalog.events | indent 10 }}
+          {{ toYaml .Values.anchoreCatalog.events | nindent 10 | trim }}
         archive:
-{{ toYaml .Values.anchoreCatalog.archive | indent 10 }}
+          {{ toYaml .Values.anchoreCatalog.archive | nindent 10 | trim }}
       simplequeue:
         enabled: true
         require_auth: true
@@ -156,7 +164,7 @@ data:
         port: {{ .Values.anchorePolicyEngine.service.port }}
         cycle_timer_seconds: 1
         cycle_timers:
-{{ toYaml .Values.anchorePolicyEngine.cycleTimers | indent 10 }}
+          {{ toYaml .Values.anchorePolicyEngine.cycleTimers | nindent 10 | trim }}
         ssl_cert: "{{ .Values.anchoreGlobal.internalServicesSsl.certDir -}}/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretCertName }}"
         ssl_key: "{{ .Values.anchoreGlobal.internalServicesSsl.certDir -}}/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretKeyName }}"
         ssl_enable: {{ .Values.anchoreGlobal.internalServicesSslEnabled }}

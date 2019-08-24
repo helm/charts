@@ -6,8 +6,8 @@ name: openvpn
 version: 4.0.0
 appVersion: 2.3.0
 maintainers:
-- name: jfelten
-  email: john.felten@gmail.com
+- name: jasongwartz
+- name: dippynark
 icon: https://forums.openvpn.net/styles/openvpn/theme/images/ovpnlogo.png
 keywords:
 - openvpn

@@ -1,3 +1,4 @@
+{{- if .Values.snapshotsEnabled }}
 apiVersion: velero.io/v1
 kind: VolumeSnapshotLocation
 metadata:
@@ -19,6 +20,16 @@ spec:
   {{- with .apitimeout }}
     apiTimeout: {{ . }}
   {{- end }}
+  {{- with .resourceGroup }}
+    resourceGroup: {{ . }}
+  {{- end }}
+  {{- with .snapshotLocation }}
+    snapshotLocation: {{ . }}
+  {{- end}}
+  {{- with .project }}
+    project: {{ . }}
+  {{- end}}
+{{- end }}
 {{- end }}
 {{- end }}
 {{- end }}

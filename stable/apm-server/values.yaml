@@ -1,6 +1,6 @@
 image:
   repository: docker.elastic.co/apm/apm-server
-  tag: 6.6.2
+  tag: 7.0.0
   pullPolicy: IfNotPresent
 
 # DaemonSet or Deployment
@@ -8,6 +8,21 @@ kind: DaemonSet
 
 # Number of replicas when kind is Deployment
 replicaCount: 1
+
+# Create HorizontalPodAutoscaler object when kind is Deployment
+autoscaling:
+  enabled: false
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      targetAverageUtilization: 60
+  - type: Resource
+    resource:
+      name: memory
+      targetAverageUtilization: 60
 
 # The update strategy to apply to the Deployment or DaemonSet
 updateStrategy: {}
@@ -39,6 +54,18 @@ service:
     ## Label example: show service URL in `kubectl cluster-info`
     # kubernetes.io/cluster-service: "true"
 
+ingress:
+  enabled: false
+  annotations: {}
+    # Annotation example: set nginx ingress type
+    # kubernetes.io/ingress.class: nginx-public
+  labels: {}
+  hosts:
+    - apm-server-ingress.example.com
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
 
 config:
   apm-server:

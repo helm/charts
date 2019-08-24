@@ -25,8 +25,8 @@ spec:
     metadata:
       {{- if .Values.master.annotations }}
       annotations:
-        {{- range .Values.master.annotations }}
-        {{ .key }}: '{{ .value }}'
+        {{- range $key, $value := .Values.master.annotations }}
+        {{ $key }}: '{{ $value }}'
         {{- end }}
       {{- end }}
       labels:
@@ -35,6 +35,9 @@ spec:
         release: "{{ .Release.Name }}"
         chart: "{{ template "mariadb.chart" . }}"
     spec:
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+      {{- end }}
       serviceAccountName: "{{ template "mariadb.serviceAccountName" . }}"
       {{- if .Values.securityContext.enabled }}
       securityContext:
@@ -73,14 +76,30 @@ spec:
 {{ toYaml . | indent 8 }}
       {{- end }}
       {{- end }}
+      {{- if .Values.master.nodeSelector }}
+      nodeSelector:
+        {{ toYaml .Values.master.nodeSelector | nindent 8 }}
+      {{- end -}}
       {{- with .Values.master.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
       {{- end }}
 {{- include "mariadb.imagePullSecrets" . | indent 6 }}
-      {{- if .Values.master.extraInitContainers }}
       initContainers:
+      {{- if .Values.master.extraInitContainers }}
 {{ tpl .Values.master.extraInitContainers . | indent 6}}
+      {{- end }}
+      {{- if and .Values.volumePermissions.enabled .Values.master.persistence.enabled }}
+      - name: volume-permissions
+        image: {{ template "mariadb.volumePermissions.image" . }}
+        imagePullPolicy: {{ .Values.volumePermissions.image.pullPolicy | quote }}
+        command: ["chown", "-R", "{{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }}", "{{ .Values.master.persistence.mountPath }}"]
+        securityContext:
+          runAsUser: 0
+        resources: {{ toYaml .Values.volumePermissions.resources | nindent 10 }}
+        volumeMounts:
+        - name: data
+          mountPath: {{ .Values.master.persistence.mountPath }}
       {{- end }}
       containers:
       - name: "mariadb"
@@ -90,6 +109,10 @@ spec:
         {{- if .Values.image.debug}}
         - name: BITNAMI_DEBUG
           value: "true"
+        {{- end }}
+        {{- if .Values.master.extraFlags }}
+        - name: MARIADB_EXTRA_FLAGS
+          value: "{{ .Values.master.extraFlags }}"
         {{- end }}
         - name: MARIADB_ROOT_PASSWORD
           valueFrom:
@@ -158,6 +181,9 @@ spec:
         volumeMounts:
         - name: data
           mountPath: {{ .Values.master.persistence.mountPath }}
+          {{- if .Values.master.persistence.subPath }}
+          subPath: {{ .Values.master.persistence.subPath }}
+          {{- end }}
         {{- if or (.Files.Glob "files/docker-entrypoint-initdb.d/*.{sh,sql,sql.gz}") .Values.initdbScriptsConfigMap .Values.initdbScripts }}
         - name: custom-init-scripts
           mountPath: /docker-entrypoint-initdb.d
@@ -235,11 +261,5 @@ spec:
         resources:
           requests:
             storage: {{ .Values.master.persistence.size | quote }}
-      {{- if .Values.master.persistence.storageClass }}
-      {{- if (eq "-" .Values.master.persistence.storageClass) }}
-        storageClassName: ""
-      {{- else }}
-        storageClassName: {{ .Values.master.persistence.storageClass | quote }}
-      {{- end }}
-      {{- end }}
+        {{ include "mariadb.master.storageClass" . }}
 {{- end }}

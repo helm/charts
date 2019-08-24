@@ -1,9 +1,21 @@
 replicaCount: 1
 
-image: ipfs/go-ipfs:v0.4.9
+image: ipfs/go-ipfs:v0.4.21
 
 service:
   type: ClusterIP
+
+swarm:
+  enabled: false
+  type: ClusterIP
+  # loadBalancerIP: ""
+  # externalIP: ""
+  ## Further config for service of type NodePort
+  ## Default config with empty string "" will assign a dynamic nodePort
+  nodePort: ""
+  ## If static nodePort configuration is required it can be enabled as below
+  ## Configure ports in allowable range (eg. 30000 - 32767 on minikube)
+  # nodePort: 34001
 
 resources: {}
 

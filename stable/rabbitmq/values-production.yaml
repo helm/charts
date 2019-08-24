@@ -6,6 +6,7 @@
 #   imageRegistry: myRegistryName
 #   imagePullSecrets:
 #     - myRegistryKeySecretName
+#   storageClass: myStorageClass
 
 ## Bitnami RabbitMQ image version
 ## ref: https://hub.docker.com/r/bitnami/rabbitmq/tags/
@@ -13,7 +14,7 @@
 image:
   registry: docker.io
   repository: bitnami/rabbitmq
-  tag: 3.7.14
+  tag: 3.7.17-debian-9-r0
 
   ## set to true if you would like to see extra information on logs
   ## it turns BASH and NAMI debugging in minideb
@@ -32,9 +33,21 @@ image:
   # pullSecrets:
   #   - myRegistryKeySecretName
 
+## String to partially override rabbitmq.fullname template (will maintain the release name)
+##
+# nameOverride:
+
+## String to fully override rabbitmq.fullname template
+##
+# fullnameOverride:
+
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName:
+
 ## does your cluster have rbac enabled? assume yes by default
 rbacEnabled: true
-
 
 ## RabbitMQ should be initialized one by one when building cluster for the first time.
 ## Therefore, the default value of podManagementPolicy is 'OrderedReady'
@@ -81,6 +94,7 @@ rabbitmq:
   ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
   ## ref: https://www.rabbitmq.com/install-debian.html#kernel-resource-limits
   ##
+  setUlimitNofiles: true
   ulimitNofiles: '65536'
 
   ## RabbitMQ maximum available scheduler threads and online scheduler threads
@@ -105,8 +119,12 @@ rabbitmq:
     enabled: false
     secretName: load-definition
 
+  ## environment variables to configure rabbitmq
+  ## ref: https://www.rabbitmq.com/configure.html#customise-environment
+  env: {}
+
   ## Configuration file content: required cluster configuration
-  ## Do not override unless you know what you are doing. To add more configuration, use `extraConfiguration` instead
+  ## Do not override unless you know what you are doing. To add more configuration, use `extraConfiguration` of `advancedConfiguration` instead
   configuration: |-
     ## Clustering
     cluster_formation.peer_discovery_backend  = rabbit_peer_discovery_k8s
@@ -124,6 +142,10 @@ rabbitmq:
   extraConfiguration: |-
     #disk_free_limit.absolute = 50MB
     #management.load_definitions = /app/load_definition.json
+
+  ## Configuration file content: advanced configuration
+  ## Use this as additional configuraton in classic config format (Erlang term configuration format)
+  advancedConfiguration: |-
 
 ## Kubernetes service type
 service:
@@ -184,6 +206,8 @@ persistence:
   accessMode: ReadWriteOnce
 
   ## Existing PersistentVolumeClaims
+  ## The value is evaluated as a template
+  ## So, for example, the name can depend on .Release or .Chart
   # existingClaim: ""
 
   # If you change this value, you might have to adjust `rabbitmq.diskFreeLimit` as well.
@@ -276,8 +300,8 @@ metrics:
   enabled: true
   image:
     registry: docker.io
-    repository: kbudde/rabbitmq-exporter
-    tag: v0.29.0
+    repository: bitnami/rabbitmq-exporter
+    tag: 0.29.0-debian-9-r3
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
@@ -288,6 +312,8 @@ metrics:
   ## environment variables to configure rabbitmq_exporter
   ## ref: https://github.com/kbudde/rabbitmq_exporter#configuration
   env: {}
+  ## Metrics exporter port
+  port: 9419
   ## Comma-separated list of extended scraping capabilities supported by the target RabbitMQ server
   ## ref: https://github.com/kbudde/rabbitmq_exporter#extended-rabbitmq-capabilities
   capabilities: "bert,no_sort"
@@ -295,6 +321,26 @@ metrics:
   annotations:
     prometheus.io/scrape: "true"
     prometheus.io/port: "9090"
+
+  ## Prometheus Service Monitor
+  ## ref: https://github.com/coreos/prometheus-operator
+  ##      https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#endpoint
+  serviceMonitor:
+    ## If the operator is installed in your cluster, set to true to create a Service Monitor Entry
+    enabled: false
+    ## Specify the namespace in which the serviceMonitor resource will be created
+    # namespace: ""
+    ## Specify the interval at which metrics should be scraped
+    interval: 30s
+    ## Specify the timeout after which the scrape is ended
+    # scrapeTimeout: 30s
+    ## Specify Metric Relabellings to add to the scrape endpoint
+    # relabellings:
+    ## Specify honorLabels parameter to add the scrape endpoint
+    honorLabels: false
+    ## Used to pass Labels that are used by the Prometheus installed in your cluster to select Service Monitors to work with
+    ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#prometheusspec
+    additionalLabels: {}
 
 ##
 ## Init containers parameters:
@@ -306,7 +352,7 @@ volumePermissions:
     registry: docker.io
     repository: bitnami/minideb
     tag: latest
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
     ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -314,3 +360,10 @@ volumePermissions:
     # pullSecrets:
     #   - myRegistryKeySecretName
   resources: {}
+
+## forceBoot: executes 'rabbitmqctl force_boot' to force boot cluster shut down unexpectedly in an
+## unknown order.
+## ref: https://www.rabbitmq.com/rabbitmqctl.8.html#force_boot
+##
+forceBoot:
+  enabled: false

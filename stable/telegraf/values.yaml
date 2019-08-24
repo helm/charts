@@ -6,8 +6,16 @@ replicaCount: 1
 
 image:
   repo: "telegraf"
-  tag: "1.9-alpine"
+  tag: "1.10-alpine"
   pullPolicy: IfNotPresent
+
+podAnnotations: {}
+
+imagePullSecrets: []
+
+env:
+  - name: HOSTNAME
+    value: "telegraf-polling-service"
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -20,6 +28,7 @@ resources: {}
   #   cpu: 100m
 
 service:
+  enabled: true
   type: ClusterIP
 ## Exposed telegraf configuration
 ## For full list of possible values see `/docs/all-config-values.yaml` and `/docs/all-config-values.toml`

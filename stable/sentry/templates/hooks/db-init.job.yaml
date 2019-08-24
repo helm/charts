@@ -4,14 +4,14 @@ kind: Job
 metadata:
   name: "{{ .Release.Name }}-db-init"
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "sentry.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
   annotations:
     # This is what defines this resource as a hook. Without this line, the
     # job is considered part of the release.
-    "helm.sh/hook": post-install
+    "helm.sh/hook": "post-install,post-upgrade"
     "helm.sh/hook-delete-policy": "hook-succeeded,before-hook-creation"
     "helm.sh/hook-weight": "-5"
 spec:
@@ -19,12 +19,16 @@ spec:
     metadata:
       name: "{{ .Release.Name }}-db-init"
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "sentry.fullname" . }}
         release: "{{ .Release.Name }}"
         {{- if .Values.worker.podLabels }}
 {{ toYaml .Values.worker.podLabels | indent 8 }}
         {{- end }}
     spec:
+      {{- with .Values.hooks.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+      {{- end }}
       restartPolicy: Never
       {{- if .Values.image.imagePullSecrets }}
       imagePullSecrets:
@@ -38,7 +42,7 @@ spec:
         - name: SENTRY_SECRET_KEY
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "sentry.fullname" . }}
               key: sentry-secret
         - name: SENTRY_DB_USER
           value: {{ default "sentry" .Values.postgresql.postgresUser | quote }}
@@ -50,13 +54,13 @@ spec:
             {{- if .Values.postgresql.existingSecret }}
               name: {{ .Values.postgresql.existingSecret }}
             {{- else }}
-              name: {{ template "postgresql.secret" . }}
+              name: {{ template "sentry.postgresql.secret" . }}
             {{- end }}
               key: postgres-password
         - name: SENTRY_POSTGRES_HOST
-          value: {{ template "postgresql.host" . }}
+          value: {{ template "sentry.postgresql.host" . }}
         - name: SENTRY_POSTGRES_PORT
-          value: {{ template "postgresql.port" . }}
+          value: {{ template "sentry.postgresql.port" . }}
         {{- if or (.Values.redis.enabled) (.Values.redis.password) }}
         - name: SENTRY_REDIS_PASSWORD
           valueFrom:
@@ -64,14 +68,14 @@ spec:
             {{- if .Values.redis.existingSecret }}
               name: {{ .Values.redis.existingSecret }}
             {{- else }}
-              name: {{ template "redis.secret" . }}
+              name: {{ template "sentry.redis.secret" . }}
             {{- end }}
               key: redis-password
         {{- end }}
         - name: SENTRY_REDIS_HOST
-          value: {{ template "redis.host" . }}
+          value: {{ template "sentry.redis.host" . }}
         - name: SENTRY_REDIS_PORT
-          value: {{ template "redis.port" . }}
+          value: {{ template "sentry.redis.port" . }}
         - name: SENTRY_EMAIL_HOST
           value: {{ default "" .Values.email.host | quote }}
         - name: SENTRY_EMAIL_PORT
@@ -84,7 +88,7 @@ spec:
             {{- if .Values.email.existingSecret }}
               name: {{ .Values.email.existingSecret }}
             {{- else }}
-              name: {{ template "fullname" . }}
+              name: {{ template "sentry.fullname" . }}
             {{- end }}
               key: smtp-password
         - name: SENTRY_EMAIL_USE_TLS
@@ -95,7 +99,10 @@ spec:
         - mountPath: /etc/sentry
           name: config
           readOnly: true
+        resources:
+{{ toYaml .Values.hooks.dbInit.resources | indent 10 }}
       volumes:
       - name: config
         configMap:
-          name: {{ template "fullname" . }}
+          name: {{ template "sentry.fullname" . }}
+

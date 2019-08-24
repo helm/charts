@@ -16,9 +16,9 @@ image:
 
   ## @param tag - string - required
   ## Define the Agent version to use.
-  ## Use 6.9.0-jmx to enable jmx fetch collection
+  ## Use 6.13.0-jmx to enable jmx fetch collection
   #
-  tag: 6.10.1
+  tag: 6.13.0
 
   ## @param pullPolicy - string - required
   ## The Kubernetes pull policy.
@@ -174,6 +174,14 @@ datadog:
   #
   # logsConfigContainerCollectAll: false
 
+  ## @param containerLogsPath - string - optional - default: /var/lib/docker/containers
+  ## This to allow log collection from container log path. Set to a different path if not
+  ## using docker runtime.
+  ## ref: https://docs.datadoghq.com/agent/kubernetes/daemonset_setup/?tab=k8sfile#create-manifest
+  #
+  containerLogsPath: /var/lib/docker/containers
+
+
   ## @param apmEnabled - boolean - optional - default: false
   ## Enable this to enable APM and tracing, on port 8126
   ## ref: https://github.com/DataDog/docker-dd-agent#tracing-from-the-host
@@ -244,6 +252,11 @@ datadog:
   #
   # criSocketPath: /var/run/containerd/containerd.sock
 
+  ## @param dogStatsDSocketPath - string - optional
+  ## Path to the DogStatsD socket
+  #
+  # dogStatsDSocketPath: /var/run/datadog/dsd.socket
+
   ## @param livenessProbe - object - optional
   ## Override the agent's liveness probe logic from the default:
   ## In case of issues with the probe, you can disable it with the
@@ -258,13 +271,13 @@ datadog:
   ## Make sure to keep requests and limits equal to keep the pods in the Guaranteed QoS class
   ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
   #
-  resources:
-    requests:
-      cpu: 200m
-      memory: 256Mi
-    limits:
-      cpu: 200m
-      memory: 256Mi
+  resources: {}
+  # requests:
+  #   cpu: 200m
+  #   memory: 256Mi
+  # limits:
+  #   cpu: 200m
+  #   memory: 256Mi
 
 ## @param clusterAgent - object - required
 ## This is the Datadog Cluster Agent implementation that handles cluster-wide
@@ -282,7 +295,7 @@ clusterAgent:
   containerName: cluster-agent
   image:
     repository: datadog/cluster-agent
-    tag: 1.2.0
+    tag: 1.3.2
     pullPolicy: IfNotPresent
 
   ## @param token - string - required
@@ -325,13 +338,18 @@ clusterAgent:
   ## @param resources - object -required
   ## Datadog cluster-agent resource requests and limits.
   #
-  resources:
-    requests:
-      cpu: 200m
-      memory: 256Mi
-    limits:
-      cpu: 200m
-      memory: 256Mi
+  resources: {}
+#    requests:
+#      cpu: 200m
+#      memory: 256Mi
+#    limits:
+#      cpu: 200m
+#      memory: 256Mi
+
+  ## @param priorityclassName - string - optional
+  ## Name of the priorityClass to apply to the Cluster Agent
+
+  # priorityClassName: system-cluster-critical
 
   ## @param livenessProbe - object - optional
   ## Override the agent's liveness probe logic from the default:
@@ -341,6 +359,12 @@ clusterAgent:
   # livenessProbe:
   #   exec:
   #     command: ["/bin/true"]
+
+  ## @param podAnnotations - list of key:value strings - optional
+  ## Annotations to add to the cluster-agents's pod(s)
+  #
+  # podAnnotations:
+  #   key: "value"
 
   ## @param readinessProbe - object - optional
   ## Override the cluster-agent's readiness probe logic from the default:
@@ -371,16 +395,32 @@ kubeStateMetrics:
 
 kube-state-metrics:
   rbac:
-
     ## @param created - boolean - required
     ## If true, create & use RBAC resources
     #
     create: true
 
-    ## @param serviceAccountName - string - required
-    ## Ignored if rbac.create is true
+  serviceAccount:
+    ## @param created - boolean - required
+    ## If true, create ServiceAccount, require rbac kube-state-metrics.rbac.create true
     #
-    serviceAccountName: default
+    create: true
+    ## @param name - string - required
+    ## The name of the ServiceAccount to use.
+    ## If not set and create is true, a name is generated using the fullname template
+    #
+    name:
+
+  ## @param resources - object - optional
+  ## Resource requests and limits for the kube-state-metrics container.
+  #
+  # resources:
+  #   requests:
+  #     cpu: 200m
+  #     memory: 256Mi
+  #   limits:
+  #     cpu: 200m
+  #     memory: 256Mi
 
 daemonset:
 
@@ -393,6 +433,86 @@ daemonset:
   ## get guaranteed delivery of the metrics in Datadog-per-namespace setup!
   #
   enabled: true
+
+  ## @param useDedicatedContainers - boolean - optional
+  ## Deploy each datadog agent process in a separate container. Allow fine-grained
+  ## control over allocated resources and better isolation.
+  #
+  # useDedicatedContainers: false
+
+  containers:
+
+    agent:
+      ## @param env - list - required
+      ## Additionnal environment variables for the agent container.
+      #
+      # env:
+
+      ## @param logLevel - string - optional
+      ## Set logging verbosity, valid log levels are:
+      ## trace, debug, info, warn, error, critical, and off.
+      ## If not set, fall back to the value of datadog.logLevel.
+      #
+      # logLevel: INFO
+
+      ## @param resources - object - required
+      ## Resource requests and limits for the agent container.
+      #
+      resources: {}
+      #  requests:
+      #    cpu: 200m
+      #    memory: 256Mi
+      #  limits:
+      #    cpu: 200m
+      #    memory: 256Mi
+
+    processAgent:
+      ## @param env - list - required
+      ## Additionnal environment variables for the process-agent container.
+      #
+      # env:
+
+      ## @param logLevel - string - optional
+      ## Set logging verbosity, valid log levels are:
+      ## trace, debug, info, warn, error, critical, and off.
+      ## If not set, fall back to the value of datadog.logLevel.
+      #
+      # logLevel: INFO
+
+      ## @param resources - object - required
+      ## Resource requests and limits for the process-agent container.
+      #
+      resources: {}
+      #  requests:
+      #    cpu: 100m
+      #    memory: 200Mi
+      #  limits:
+      #    cpu: 100m
+      #    memory: 200Mi
+
+    traceAgent:
+      ## @param env - list - required
+      ## Additionnal environment variables for the trace-agent container.
+      #
+      # env:
+
+      ## @param logLevel - string - optional
+      ## Set logging verbosity, valid log levels are:
+      ## trace, debug, info, warn, error, critical, and off.
+      ## If not set, fall back to the value of datadog.logLevel.
+      #
+      # logLevel: INFO
+
+      ## @param resources - object - required
+      ## Resource requests and limits for the trace-agent container.
+      #
+      resources: {}
+      #  requests:
+      #    cpu: 100m
+      #    memory: 200Mi
+      #  limits:
+      #    cpu: 100m
+      #    memory: 200Mi
 
   ## @param useHostNetwork - boolean - optional
   ## Bind ports on the hostNetwork. Useful for CNI networking where hostPort might
@@ -453,6 +573,16 @@ daemonset:
   ## Sets PriorityClassName if defined.
   #
   # priorityClassName:
+
+  ## @param podLabels - object - optional
+  ## Sets podLabels if defined.
+  #
+  # podLabels: {}
+
+  ## @param useConfigMap - boolean - optional
+  #  Configures a configmap to provide the agent configuration
+  #
+  # useConfigMap: false
 
 deployment:
   ## @param enabled - boolean - required
@@ -527,13 +657,13 @@ clusterchecksDeployment:
   ## @param resources - object -required
   ## Datadog clusterchecks-agent resource requests and limits.
   #
-  resources:
-    requests:
-      cpu: 200m
-      memory: 500Mi
-    limits:
-      cpu: 200m
-      memory: 500Mi
+  resources: {}
+  # requests:
+  #   cpu: 200m
+  #   memory: 500Mi
+  # limits:
+  #   cpu: 200m
+  #   memory: 500Mi
 
   ## @param affinity - object - optional
   ## Allow the ClusterChecks Deployment to schedule using affinity rules.
@@ -552,7 +682,7 @@ clusterchecksDeployment:
   ## Tolerations for pod assignment
   ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
   #
-  tolerations: []
+  # tolerations: []
 
   ## @param livenessProbe - object - optional
   ## Override the agent's liveness probe logic from the default:

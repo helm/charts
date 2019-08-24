@@ -61,6 +61,7 @@ Reference](https://www.openpolicyagent.org/docs/configuration.html).
 | `admissionControllerKind` | Type of admission controller to install. | `ValidatingWebhookConfiguration` |
 | `admissionControllerFailurePolicy` | Fail-open (`Ignore`) or fail-closed (`Fail`)? | `Ignore` |
 | `admissionControllerRules` | Types of operations resources to check. | `*` |
+| `admissionControllerNamespaceSelector` | Namespace selector for the admission controller | See [values.yaml](values.yaml) |
 | `generateAdmissionControllerCerts` | Auto-generate TLS certificates for admission controller. | `true` |
 | `admissionControllerCA` | Manually set admission controller certificate CA. | Unset |
 | `admissionControllerCert` | Manually set admission controller certificate. | Unset |
@@ -82,3 +83,7 @@ Reference](https://www.openpolicyagent.org/docs/configuration.html).
 | `opa` | OPA configuration. | See [values.yaml](values.yaml) |
 | `mgmt.resources` | CPU and memory limits for the kube-mgmt container. | `{}` |
 | `sar.resources` | CPU and memory limits for the sar container. | `{}` |
+| `priorityClassName` | The name of the priorityClass for the pods. | Unset |
+| `prometheus.enabled` | Flag to expose the `/metrics` endpoint to be scraped. | `false` | 
+| `annotations` | Annotations to be added to the deployment template. | `{}` |
+| `bootstrapPolicies` | Bootstrap policies to be loaded during OPA startup. | `{}` |

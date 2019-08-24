@@ -66,10 +66,13 @@ and their default values.
 | Parameter                                      | Description                                                                                                                                                                                           | Default                                                    |
 |------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------|
 | `existingConfigMap`                            | Use an existing ConfigMap                                                                                                                                                                             | `false`                                                    |
-| `existingSecret`                               | Use an existing secret for password & erlang cookie                                                                                                                                                   | `""`                                                       |
+| `existingSecret`                               | Use an existing secret for password, managementPassword & erlang cookie                                                                                                                                                   | `""`                                                       |
 | `extraPlugins`                                 | Additional plugins to add to the default configmap                                                                                                                                                    | `rabbitmq_shovel, rabbitmq_shovel_management, rabbitmq_federation, rabbitmq_federation_management,` |
 | `extraConfig`                                  | Additional configuration to add to default configmap                                                                                                                                                  | `{}`                                                         |
+| `extraInitContainers`                          | Additional init containers passed through the tpl 	                                                                                                                                                   | `[]`                                                         |
+| `env`                                          | Environment variables to set for Rabbitmq container                                                                                                                                                   | `{}`                                                         |
 | `advancedConfig`                               | Additional configuration in classic config format                                                                                                                                                   | `""`                                                           |
+| `definitions.globalParameters`                 | Pre-configured global parameters | `""` |
 | `definitions.users`                            | Additional users | `""` |
 | `definitions.vhosts`                           | Additional vhosts | `""` |
 | `definitions.parameters`                       | Additional parameters | `""` |
@@ -79,11 +82,12 @@ and their default values.
 | `definitions.bindings`                         | Pre-created bindings | `""` |
 | `definitions.policies`                         | HA policies to add to definitions.json | `""` |
 | `definitionsSource`                            | Use this key within an existing secret to reference the definitions specification | `"definitions.json"` |
-| `image.pullPolicy`                             | Image pull policy                                                                                                                                                                                     | `Always` if `image` tag is `latest`, else `IfNotPresent`   |
+| `forceBoot`                                    | [Force](https://www.rabbitmq.com/rabbitmqctl.8.html#force_boot) the cluster to start even if it was shutdown in an unexpected order, preferring availability over integrity | `false` |
+| `image.pullPolicy`                             | Image pull policy                                                                                                                                                                                     | `IfNotPresent`   |
 | `image.repository`                             | RabbitMQ container image repository                                                                                                                                                                   | `rabbitmq`                                                 |
-| `image.tag`                                    | RabbitMQ container image tag                                                                                                                                                                          | `3.7.12-alpine`                                            |
+| `image.tag`                                    | RabbitMQ container image tag                                                                                                                                                                          | `3.7.15-alpine`                                            |
 | `image.pullSecrets`                            | Specify docker-registry secret names as an array                                                                                                                                                      | `[]`                                                       |
-| `managementPassword`                           | Management user password. Should be changed from default                                                                                                                                              | `E9R3fjZm4ejFkVFE`                                         |
+| `managementPassword`                           | Management user password.                                                                                                                                                                             | _random 24 character long alphanumeric string_             |
 | `managementUsername`                           | Management user with minimal permissions used for health checks                                                                                                                                       | `management`                                               |
 | `nodeSelector`                                 | Node labels for pod assignment                                                                                                                                                                        | `{}`                                                       |
 | `persistentVolume.accessMode`                  | Persistent volume access modes                                                                                                                                                                        | `[ReadWriteOnce]`                                          |
@@ -93,6 +97,7 @@ and their default values.
 | `persistentVolume.size`                        | Persistent volume size                                                                                                                                                                                | `8Gi`                                                      |
 | `persistentVolume.storageClass`                | Persistent volume storage class                                                                                                                                                                       | `-`                                                        |
 | `podAntiAffinity`                              | Pod antiaffinity, `hard` or `soft`                                                                                                                                                                    | `hard`                                                     |
+| `podAntiAffinityTopologyKey`                   | TopologyKey for antiaffinity, default is hostname
 | `podDisruptionBudget`                          | Pod Disruption Budget rules                                                                                                                                                                           | `{}`                                                       |
 | `podManagementPolicy`                          | Whether the pods should be restarted in parallel or one at a time. Either `OrderedReady` or `Parallel`.                                                                                               | `OrderedReady`                                             |
 | `prometheus.exporter.enabled`                  | Configures Prometheus Exporter to expose and scrape stats                                                                                                                                             | `false`                                                    |
@@ -127,7 +132,7 @@ and their default values.
 | `rabbitmqMemoryHighWatermark`                  | Memory high watermark                                                                                                                                                                                 | `256MB`                                                    |
 | `rabbitmqMemoryHighWatermarkType`              | Memory high watermark type. Either absolute or relative                                                                                                                                               | `absolute`                                                 |
 | `rabbitmqNodePort`                             | Node port                                                                                                                                                                                             | `5672`                                                     |
-| `rabbitmqPassword`                             | RabbitMQ application password                                                                                                                                                                         | _random 10 character long alphanumeric string_             |
+| `rabbitmqPassword`                             | RabbitMQ application password                                                                                                                                                                         | _random 24 character long alphanumeric string_             |
 | `rabbitmqSTOMPPlugin.config`                   | STOMP configuration                                                                                                                                                                                   | ``                                                         |
 | `rabbitmqSTOMPPlugin.enabled`                  | Enable STOMP plugin                                                                                                                                                                                   | `false`                                                    |
 | `rabbitmqUsername`                             | RabbitMQ application username                                                                                                                                                                         | `guest`                                                    |
@@ -165,20 +170,21 @@ and their default values.
 | `priorityClassName`                            | Statefulsets Pod Priority                                                                                                                                                                             | ``                                                         |
 | `extraLabels`                                  | Labels to add to the Resources                                                                                                                                                                        | `{}`                                                       |
 | `busyboxImage.repository`                      | Busybox initContainer image repo                                                                                                                                                                      | `busybox`                                                  |
-| `busyboxImage.tag`                             | Busybox initContainer image tag                                                                                                                                                                       | `latest`                                                   |
-| `busyboxImage.pullPolicy`                      | Busybox initContainer image pullPolicy                                                                                                                                                                | `Always`                                                   |
+| `busyboxImage.tag`                             | Busybox initContainer image tag                                                                                                                                                                       | `1.30.1`                                                   |
+| `busyboxImage.pullPolicy`                      | Busybox initContainer image pullPolicy                                                                                                                                                                | `IfNotPresent`                                                   |
 | `clusterDomain`                                | The internal Kubernetes cluster domain                                                                                                                                                                | `cluster.local`                                            |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
 $ helm install --name my-release \
-  --set rabbitmqUsername=admin,rabbitmqPassword=secretpassword,rabbitmqErlangCookie=secretcookie \
+  --set rabbitmqUsername=admin,rabbitmqPassword=secretpassword,managementPassword=anothersecretpassword,rabbitmqErlangCookie=secretcookie \
     stable/rabbitmq-ha
 ```
 
 The above command sets the RabbitMQ admin username and password to `admin` and
-`secretpassword` respectively. Additionally the secure erlang cookie is set to
+`secretpassword` respectively. Additionally the management user password is set
+to `anothersecretpassword` and the secure erlang cookie is set to
 `secretcookie`.
 
 Alternatively, a YAML file that specifies the values for the parameters can be
@@ -242,9 +248,17 @@ the following keys:
 
 * `rabbitmq-user`
 * `rabbitmq-password`
+* `rabbitmq-management-user`
+* `rabbitmq-management-password`
 * `rabbitmq-erlang-cookie`
 * `definitions.json` (the name can be altered by setting the `definitionsSource`)
 
 ### Prometheus Monitoring & Alerts
 
 Prometheus and its features can be enabled by setting `prometheus.enabled` to `true`.  See values.yaml for more details and configuration options
+
+### Usage of the `tpl` Function
+
+The `tpl` function allows us to pass values from `values.yaml` through the templating engine. It is used for the following values:
+
+* `extraInitContainers`

@@ -4,11 +4,11 @@ Please be aware that certificate generation is variable and may take some time (
 
 Check pod status with the command:
 
-  POD_NAME=$(kubectl get pods --namespace "{{ .Release.Namespace }}" -l app=openvpn -o jsonpath='{ .items[0].metadata.name }') && kubectl logs $POD_NAME --follow
+  POD_NAME=$(kubectl get pods --namespace "{{ .Release.Namespace }}" -l app=openvpn -o jsonpath='{ .items[0].metadata.name }') && kubectl --namespace "{{ .Release.Namespace }}" logs $POD_NAME --follow
 
 LoadBalancer ingress creation can take some time as well. Check service status with the command:
 
-  kubectl get svc
+  kubectl --namespace "{{ .Release.Namespace }}" get svc
 {{ if and (eq "NodePort" .Values.service.type) (hasKey .Values.service "nodePort") }}
 You set the service type to NodePort, port {{ .Values.service.nodePort }} will be used on each node.
 {{ end }}
@@ -20,5 +20,10 @@ Once the external IP is available and all the server certificates are generated 
   KEY_NAME=kubeVPN
   kubectl --namespace "{{ .Release.Namespace }}" exec -it "$POD_NAME" /etc/openvpn/setup/newClientCert.sh "$KEY_NAME" "$SERVICE_IP"
   kubectl --namespace "{{ .Release.Namespace }}" exec -it "$POD_NAME" cat "/etc/openvpn/certs/pki/$KEY_NAME.ovpn" > "$KEY_NAME.ovpn"
+
+Revoking certificates works just as easy:
+  KEY_NAME=<name>
+  POD_NAME=$(kubectl get pods -n "{{ .Release.Namespace }}" -l "app=openvpn,release={{ .Release.Name }}" -o jsonpath='{.items[0].metadata.name}')
+  kubectl -n "{{ .Release.Namespace }}" exec -it "$POD_NAME" /etc/openvpn/setup/revokeClientCert.sh $KEY_NAME
 
 Copy the resulting $KEY_NAME.ovpn file to your open vpn client (ex: in tunnelblick, just double click on the file).  Do this for each user that needs to connect to the VPN.  Change KEY_NAME for each additional user.

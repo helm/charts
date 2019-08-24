@@ -6,7 +6,7 @@ rabbitmqUsername: guest
 
 ## RabbitMQ Management user used for health checks
 managementUsername: management
-managementPassword: E9R3fjZm4ejFkVFE
+# managementPassword:
 
 ## Place any additional key/value configuration to add to rabbitmq.conf
 ## Ref: https://www.rabbitmq.com/configure.html#config-items
@@ -30,6 +30,11 @@ extraPlugins: |
   rabbitmq_federation_management,
 
 definitions:
+  globalParameters: |-
+#    {
+#        "name": "cluster_name",
+#        "value": "rabbitmq-ha"
+#    }
   users: |-
 #   {
 #     "name": "myUsername",
@@ -105,6 +110,8 @@ definitions:
 #      }
 #    }
 
+## Ref: https://www.rabbitmq.com/rabbitmqctl.8.html#force_boot
+forceBoot: false
 
 ## RabbitMQ default VirtualHost
 ## Ref: https://www.rabbitmq.com/vhosts.html
@@ -268,7 +275,7 @@ replicaCount: 3
 
 image:
   repository: rabbitmq
-  tag: 3.7.12-alpine
+  tag: 3.7.15-alpine
   pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
@@ -279,8 +286,8 @@ image:
 
 busyboxImage:
   repository: busybox
-  tag: latest
-  pullPolicy: Always
+  tag: 1.30.1
+  pullPolicy: IfNotPresent
 
 ## Duration in seconds the pod needs to terminate gracefully
 terminationGracePeriodSeconds: 10
@@ -341,6 +348,9 @@ initContainer:
   #     cpu: 100m
   #     memory: 128Mi
 
+## Additional init containers
+extraInitContainers: []
+
 ## Use an alternate scheduler, e.g. "stork".
 ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
 ##
@@ -378,6 +388,7 @@ podAnnotations: {}
 ## Pod affinity
 ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 podAntiAffinity: soft
+podAntiAffinityTopologyKey: "kubernetes.io/hostname"
 
 ## Create default configMap
 ##
@@ -420,7 +431,7 @@ ingress:
   tlsSecret: myTlsSecret
 
   ## Ingress annotations done as key:value pairs
-  annotations:
+  annotations: {}
   #  kubernetes.io/ingress.class: nginx
 
 livenessProbe:
@@ -428,14 +439,24 @@ livenessProbe:
   periodSeconds: 10
   timeoutSeconds: 5
   failureThreshold: 6
+  exec:
+    command:
+      - /bin/sh
+      - -c
+      - 'wget -O - -q --header "Authorization: Basic `echo -n \"$RABBIT_MANAGEMENT_USER:$RABBIT_MANAGEMENT_PASSWORD\" | base64`" http://localhost:15672/api/healthchecks/node | grep -qF "{\"status\":\"ok\"}"'
 
 readinessProbe:
-  failureThreshold: 6
   initialDelaySeconds: 20
-  timeoutSeconds: 3
   periodSeconds: 5
+  timeoutSeconds: 3
+  failureThreshold: 6
+  exec:
+    command:
+      - /bin/sh
+      - -c
+      - 'wget -O - -q --header "Authorization: Basic `echo -n \"$RABBIT_MANAGEMENT_USER:$RABBIT_MANAGEMENT_PASSWORD\" | base64`" http://localhost:15672/api/healthchecks/node | grep -qF "{\"status\":\"ok\"}"'
 
-# Specifies an existing secret to be used for RMQ password and Erlang Cookie
+# Specifies an existing secret to be used for RMQ password, management user password and Erlang Cookie
 existingSecret: ""
 
 
@@ -446,6 +467,9 @@ securityContext:
   runAsGroup: 101
   runAsNonRoot: true
   runAsUser: 100
+
+## Sets environment variables for the rabbitmq container
+env: {}
 
 prometheus:
   ## Configures Prometheus Exporter to expose and scrape stats.

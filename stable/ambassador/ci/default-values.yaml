@@ -7,3 +7,6 @@ ambassadorConfig: |
   name: ambassador
   config:
     service_port: 8080
+
+crds:
+  keep: false

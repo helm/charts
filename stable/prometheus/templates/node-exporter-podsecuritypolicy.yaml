@@ -1,5 +1,5 @@
 {{- if and .Values.nodeExporter.enabled .Values.rbac.create }}
-{{- if .Values.nodeExporter.podSecurityPolicy.enabled }}
+{{- if .Values.podSecurityPolicy.enabled }}
 apiVersion: extensions/v1beta1
 kind: PodSecurityPolicy
 metadata:
@@ -19,7 +19,7 @@ spec:
     - 'configMap'
     - 'hostPath'
     - 'secret'
-  AllowedHostPaths:
+  allowedHostPaths:
     - pathPrefix: /proc
       readOnly: true
     - pathPrefix: /sys

@@ -1,8 +1,8 @@
 apiVersion: v1
 description: A Helm chart for Vault, a tool for managing secrets
 name: vault
-version: 0.18.2
-appVersion: 1.0.1
+version: 0.19.0
+appVersion: 1.1.2
 home: https://www.vaultproject.io/
 icon: https://www.vaultproject.io/assets/images/mega-nav/logo-vault-0f83e3d2.svg
 sources:
@@ -11,3 +11,5 @@ sources:
 maintainers:
   - name: jpds
     email: jpds@protonmail.com
+  - name: jbialy
+    email: jbialy@gmail.com

@@ -17,7 +17,7 @@ To install the chart run the following command:
 
 ```bash
 $ helm install --name release_name \
-    --set containerToken=YOUR_CONTAINER_TOKEN,logseneToken=YOUR_LOGS_TOKEN stable/sematext-agent
+    --set containerToken=YOUR_CONTAINER_TOKEN,logsToken=YOUR_LOGS_TOKEN stable/sematext-agent
 ```
 
 After a few minutes, you should see logs, metrics, and events reported in Sematext web UI.
@@ -38,29 +38,32 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following table lists the configuration parameters of the `sematext-agent` chart and default values.
 
-|           Parameter           |             Description              |                  Default                  |
-|-------------------------------|--------------------------------------|-------------------------------------------|
-| `containerToken`              | Sematext Container token             | `Nil` Provide your Container token        |
-| `logseneToken`                | Sematext Logsene token               | `Nil` Provide your Logsene token          |
-| `region`                      | Sematext region                      | `US` Sematext US or EU region             |
-| `agent.image.repository`      | The image repository                 | `sematext/agent`                          |
-| `agent.image.tag`             | The image tag                        | `latest`                                  |
-| `agent.image.pullPolicy`      | Image pull policy                    | `Always`                                  |
-| `agent.service.port`          | Service port                         | `80`                                      |
-| `agent.service.type`          | Service type                         | `ClusterIP`                               |
-| `agent.resources`             | Agent resources                      | `{}`                                      |
-| `logagent.image.repository`   | The image repository                 | `sematext/logagent`                       |
-| `logagent.image.tag`          | The image tag                        | `latest`                                  |
-| `logagent.image.pullPolicy`   | Image pull policy                    | `Always`                                  |
-| `logagent.resources`          | Logagent resources                   | `{}`                                      |
-| `customUrl.serverBaseUrl`     | Custom Base URL                      | `Nil`                                     |
-| `customUrl.logsReceiverUrl`   | Custom Logsene receiver URL          | `Nil`                                     |
-| `customUrl.eventsRecieverUrl` | Custom Event receiver URL            | `Nil`                                     |
-| `serviceAccount.create`       | Create a service account             | `true`                                    |
-| `serviceAccount.name`         | Service account name                 | `Nil` Defaults to chart name              |
-| `rbac.create`                 | RBAC enabled                         | `true`                                    |
-| `tolerations`                 | Tolerations                          | `[]`                                      |
-| `nodeSelector`                | Node selector                        | `{}`                                      |
+|             Parameter            |            Description            |                  Default                  |
+|----------------------------------|-----------------------------------|-------------------------------------------|
+| `containerToken`                 | Sematext Container token          | `Nil` Provide your Container token        |
+| `logsToken`                      | Sematext Logs token               | `Nil` Provide your Logs token             |
+| `infraToken`                     | Sematext Infra token              | `Nil` Provide your Infra token            |
+| `region`                         | Sematext region                   | `US` Sematext US or EU region             |
+| `agent.image.repository`         | The image repository              | `sematext/agent`                          |
+| `agent.image.tag`                | The image tag                     | `latest`                                  |
+| `agent.image.pullPolicy`         | Image pull policy                 | `Always`                                  |
+| `agent.service.port`             | Service port                      | `80`                                      |
+| `agent.service.type`             | Service type                      | `ClusterIP`                               |
+| `agent.resources`                | Agent resources                   | `{}`                                      |
+| `logagent.image.repository`      | The image repository              | `sematext/logagent`                       |
+| `logagent.image.tag`             | The image tag                     | `latest`                                  |
+| `logagent.image.pullPolicy`      | Image pull policy                 | `Always`                                  |
+| `logagent.resources`             | Logagent resources                | `{}`                                      |
+| `logagent.customConfigs`         | Logagent custom configs           | `[]` Check `values.yaml`                  |
+| `logagent.extraHostVolumeMounts` | Extra mounts                      | `{}`                                      |
+| `customUrl.serverBaseUrl`        | Custom Base URL                   | `Nil`                                     |
+| `customUrl.logsReceiverUrl`      | Custom Logs receiver URL          | `Nil`                                     |
+| `customUrl.eventsRecieverUrl`    | Custom Event receiver URL         | `Nil`                                     |
+| `serviceAccount.create`          | Create a service account          | `true`                                    |
+| `serviceAccount.name`            | Service account name              | `Nil` Defaults to chart name              |
+| `rbac.create`                    | RBAC enabled                      | `true`                                    |
+| `tolerations`                    | Tolerations                       | `[]`                                      |
+| `nodeSelector`                   | Node selector                     | `{}`                                      |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 

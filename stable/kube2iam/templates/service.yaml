@@ -1,18 +1,21 @@
-{{- if .Values.prometheus.serviceMonitor.enabled }}
+{{- if or .Values.prometheus.serviceMonitor.enabled .Values.prometheus.service.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
-  annotations:
   name: {{ template "kube2iam.fullname" . }}-metrics
   labels:
-    app: {{ template "kube2iam.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ template "kube2iam.name" . }}
+    helm.sh/chart: {{ template "kube2iam.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  {{- if .Values.prometheus.service.annotations }}
+  annotations:
+    {{- toYaml .Values.prometheus.service.annotations | nindent 4 }}
+  {{- end }}
 spec:
   selector:
-    app: {{ template "kube2iam.name" . }}
-    release: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ template "kube2iam.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
   ports:
     {{- if .Values.prometheus.metricsPort }}
     - name: metrics

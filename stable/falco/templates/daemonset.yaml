@@ -20,6 +20,9 @@ spec:
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
       {{- end }}
+{{- if .Values.priorityClassName }}
+      priorityClassName: "{{ .Values.priorityClassName }}"
+{{- end }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
       containers:
@@ -32,10 +35,14 @@ spec:
             privileged: true
           args:
             - /usr/bin/falco
+            {{- if (and .Values.cri.enabled .Values.cri.socket) }}
+            - --cri
+            - /host/var/run/cri.sock
+            {{- end }}
             - -K
             - /var/run/secrets/kubernetes.io/serviceaccount/token
             - -k
-            - https://kubernetes.default
+            - "https://$(KUBERNETES_SERVICE_HOST)"
             - -pk
         {{- if .Values.extraArgs }}
 {{ toYaml .Values.extraArgs | indent 12 }}
@@ -57,9 +64,23 @@ spec:
             - name: no_proxy
               value: {{ .Values.proxy.noProxy }}
           {{- end }}
+          {{- if .Values.timezone }}
+            - name: TZ
+              value: {{ .Values.timezone }}
+          {{- end }}
+          {{- range $key, $value := .Values.daemonset.env }}
+            - name: "{{ $key }}"
+              value: "{{ $value }}"
+          {{- end }}
           volumeMounts:
+            {{- if (and .Values.docker.enabled .Values.docker.socket) }}
             - mountPath: /host/var/run/docker.sock
               name: docker-socket
+            {{- end}}
+            {{- if (and .Values.cri.enabled .Values.cri.socket) }}
+            - mountPath: /host/var/run/cri.sock
+              name: cri-socket
+            {{- end}}
             - mountPath: /host/dev
               name: dev-fs
             - mountPath: /host/proc
@@ -160,9 +181,16 @@ spec:
         - name: dshm
           emptyDir:
             medium: Memory
+        {{- if (and .Values.docker.enabled .Values.docker.socket) }}
         - name: docker-socket
           hostPath:
-            path: /var/run/docker.sock
+            path: {{ .Values.docker.socket }}
+        {{- end}}
+        {{- if (and .Values.cri.enabled .Values.cri.socket) }}
+        - name: cri-socket
+          hostPath:
+            path: {{ .Values.cri.socket }}
+        {{- end}}
         - name: dev-fs
           hostPath:
             path: /dev
@@ -193,6 +221,12 @@ spec:
                 path: falco_rules.yaml
               - key: falco_rules.local.yaml
                 path: falco_rules.local.yaml
+              - key: application_rules.yaml
+                path: rules.available/application_rules.yaml
+              {{- if .Values.falco.webserver.enabled }}
+              - key: k8s_audit_rules.yaml
+                path: k8s_audit_rules.yaml
+              {{- end }}
         {{- if .Values.customRules }}
         - name: rules-volume
           configMap:

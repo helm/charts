@@ -55,12 +55,12 @@ spec:
             protocol: TCP
         livenessProbe:
           httpGet:
-            path: /healthcheck
+            path: /
             port: http
           initialDelaySeconds: 60
         readinessProbe:
           httpGet:
-            path: /healthcheck
+            path: /
             port: http
           initialDelaySeconds: 60
         securityContext:
