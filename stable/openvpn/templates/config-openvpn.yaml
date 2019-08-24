@@ -158,7 +158,7 @@ data:
           echo ===============================================
       fi
 
-      OPENVPN=/etc/openvpn ovpn_run
+      openvpn --config /etc/openvpn/openvpn.conf
 
   openvpn.conf: |-
       server {{ .Values.openvpn.OVPN_NETWORK }} {{ .Values.openvpn.OVPN_SUBNET }}
