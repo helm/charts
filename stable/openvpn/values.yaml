@@ -17,8 +17,10 @@ service:
   type: LoadBalancer
   externalPort: 443
   internalPort: 443
+  # hostPort: 443
   externalIPs: []
   nodePort: 32085
+  # clusterIP: None
   # LoadBalancerSourceRanges: 0.0.0.0/0
   # loadBalancerIP: 10.0.0.1
 
