@@ -43,7 +43,7 @@ kubectl -n "$NAMESPACE" exec -it "$POD_NAME" /etc/openvpn/setup/newClientCert.sh
 kubectl -n "$NAMESPACE" exec -it "$POD_NAME" cat "/etc/openvpn/certs/pki/$KEY_NAME.ovpn" > "$KEY_NAME.ovpn"
 ```
 
-In order to revoke certificates in later steps: 
+In order to revoke certificates in later steps:
 ```bash
 #!/bin/bash
 
@@ -78,7 +78,9 @@ Parameter | Description | Default
 `service.type`                 | k8s service type exposing ports, e.g. `NodePort`                     | `LoadBalancer`
 `service.externalPort`         | TCP port reported when creating configuration files                  | `443`
 `service.internalPort`         | TCP port on which the service works                                  | `443`
+`service.hostPort`             | Expose openvpn directly using host port                              | `nil`
 `service.nodePort`             | NodePort value if service.type is `NodePort`                         | `nil` (auto-assigned)
+`service.clusterIP`            | clusterIP value if service.type is `ClusterIP`                       | `nil`
 `service.externalIPs`          | External IPs to listen on                                            | `[]`
 `resources.requests.cpu`       | OpenVPN cpu request                                                  | `300m`
 `resources.requests.memory`    | OpenVPN memory request                                               | `128Mi`

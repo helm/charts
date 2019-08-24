@@ -65,6 +65,9 @@ agent:
   configuration_yaml: |
     # Place agent configuration here
 
+  # agent.redactKubernetesSecrets sets the INSTANA_KUBERNETES_REDACT_SECRETS environment variable.
+  # redactKubernetesSecrets: null
+
 rbac:
   # Specifies whether RBAC resources should be created
   create: true
