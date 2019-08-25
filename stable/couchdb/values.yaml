@@ -48,12 +48,6 @@ image:
   tag: 2.3.1
   pullPolicy: IfNotPresent
 
-## Sidecar that connects the individual Pods into a cluster
-helperImage:
-  repository: kocolosk/couchdb-statefulset-assembler
-  tag: 2.0.0
-  pullPolicy: IfNotPresent
-
 ## Experimental integration with Lucene-powered fulltext search
 searchImage:
   repository: kocolosk/couchdb-search
@@ -143,3 +137,9 @@ couchdbConfig:
     # chttpd.require_valid_user disables all the anonymous requests to the port
     # 5984 when is set to true.
     require_valid_user: false
+
+
+# Kubernetes local cluster domain.
+# This is used to generate FQDNs for peers when joining the CouchDB cluster.
+dns:
+  clusterDomainSuffix: cluster.local
