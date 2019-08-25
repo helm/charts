@@ -1,0 +1,22 @@
+{{- if and .Values.exporter.enabled .Values.exporter.servicemonitor }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ template "cassandra.fullname" . }}
+  name: hello-prometheus-scraping
+  labels:
+    app: {{ template "cassandra.name" . }}
+    chart: {{ template "cassandra.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  jobLabel: {{ template "cassandra.name" . }}
+  endpoints:
+  - port: metrics
+    interval: 10s
+  selector:
+    matchLabels:
+    app: {{ template "cassandra.name" . }}
+  namespaceSelector:
+    any: true
+{{- end }}
