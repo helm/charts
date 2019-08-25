@@ -1,0 +1,33 @@
+{{- if .Values.networkPolicy.enabled }}
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: "{{ template "redis-ha.fullname" . }}"
+  labels:
+{{ include "labels.standard" . | indent 4 }}
+spec:
+  podSelector:
+    matchLabels:
+      app: {{ template "redis-ha.name" . }}
+      release: "{{ .Release.Name }}"
+  ingress:
+    # Allow inbound connections
+    - ports:
+      - port: {{ .Values.redisPort }}
+      - port: {{ .Values.sentinel.port }}
+      {{- if not .Values.networkPolicy.allowExternal }}
+      from:
+    # From redis-ha client(s)
+      - podSelector:
+          matchLabels:
+            {{ template "redis-ha.fullname" . }}-client: "true"
+    # From fellow redis-ha pods
+      - podSelector:
+          matchLabels:
+            app: {{ template "redis-ha.name" . }}
+            release: "{{ .Release.Name }}"
+      {{- end }}
+    # Allow prometheus scrapes for metrics
+    - ports:
+      - port: {{ .Values.exporter.port }}
+{{- end }}
