@@ -158,7 +158,7 @@ affinity: |
 exporter:
   enabled: false
   image: oliver006/redis_exporter
-  tag: v0.31.0
+  tag: v1.1.0
   pullPolicy: IfNotPresent
 
   # prometheus port & scrape path
