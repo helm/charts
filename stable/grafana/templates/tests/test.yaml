@@ -33,6 +33,18 @@ spec:
     - name: {{ . }}
   {{- end}}
   {{- end }}
+  {{- with .Values.nodeSelector }}
+  nodeSelector:
+{{ toYaml . | indent 4 }}
+  {{- end }}
+  {{- with .Values.affinity }}
+  affinity:
+{{ toYaml . | indent 4 }}
+  {{- end }}
+  {{- with .Values.tolerations }}
+  tolerations:
+{{ toYaml . | indent 4 }}
+  {{- end }}
   containers:
     - name: {{ .Release.Name }}-test
       image: "{{ .Values.testFramework.image}}:{{ .Values.testFramework.tag }}"
