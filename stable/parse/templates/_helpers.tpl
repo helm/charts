@@ -58,12 +58,18 @@ Gets the host to be used for this application.
 If not using ClusterIP, or if a host or LoadBalancerIP is not defined, the value will be empty.
 */}}
 {{- define "parse.host" -}}
+{{/*
+Helm 2.11 supports the assignment of a value to a variable defined in a different scope,
+but Helm 2.9 and 2.10 does not support it, so we need to implement this if-else logic.
+*/}}
 {{- $host := default "" .Values.server.host -}}
 {{- if .Values.ingress.enabled -}}
 {{- $ingressHost := first .Values.ingress.server.hosts -}}
-{{- $host = default $ingressHost.name $host -}}
-{{- end -}}
+{{- $serverHost := default $ingressHost.name $host -}}
+{{- default (include "parse.serviceIP" .) $serverHost -}}
+{{- else -}}
 {{- default (include "parse.serviceIP" .) $host -}}
+{{- end -}}
 {{- end -}}
 
 {{/*
@@ -200,18 +206,33 @@ Also, we can't use a single if because lazy evaluation is not an option
 Return  the proper Storage Class
 */}}
 {{- define "parse.storageClass" -}}
-{{- $storageClass := "" }}
-{{- if .Values.persistence.storageClass -}}
-    {{- $storageClass = .Values.persistence.storageClass -}}
-{{- end -}}
+{{/*
+Helm 2.11 supports the assignment of a value to a variable defined in a different scope,
+but Helm 2.9 and 2.10 does not support it, so we need to implement this if-else logic.
+*/}}
 {{- if .Values.global -}}
     {{- if .Values.global.storageClass -}}
-        {{- $storageClass = .Values.global.storageClass -}}
+        {{- if (eq "-" .Values.global.storageClass) -}}
+            {{- printf "storageClassName: \"\"" -}}
+        {{- else }}
+            {{- printf "storageClassName: %s" .Values.global.storageClass -}}
+        {{- end -}}
+    {{- else -}}
+        {{- if .Values.persistence.storageClass -}}
+              {{- if (eq "-" .Values.persistence.storageClass) -}}
+                  {{- printf "storageClassName: \"\"" -}}
+              {{- else }}
+                  {{- printf "storageClassName: %s" .Values.persistence.storageClass -}}
+              {{- end -}}
+        {{- end -}}
     {{- end -}}
-{{- end -}}
-{{- if (eq "-" $storageClass) -}}
-    {{- printf "\"\"" -}}
-{{- else }}
-    {{- printf "%s" $storageClass -}}
+{{- else -}}
+    {{- if .Values.persistence.storageClass -}}
+        {{- if (eq "-" .Values.persistence.storageClass) -}}
+            {{- printf "storageClassName: \"\"" -}}
+        {{- else }}
+            {{- printf "storageClassName: %s" .Values.persistence.storageClass -}}
+        {{- end -}}
+    {{- end -}}
 {{- end -}}
 {{- end -}}

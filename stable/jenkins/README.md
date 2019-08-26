@@ -69,6 +69,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.imagePullPolicy`          | Master image pull policy             | `Always`                                  |
 | `master.imagePullSecret`          | Master image pull secret             | Not set                                   |
 | `master.numExecutors`             | Set Number of executors              | 0                                         |
+| `master.customJenkinsLabels`      | Append Jenkins labels to the master  | `{}`                                      |
 | `master.useSecurity`              | Use basic security                   | `true`                                    |
 | `master.securityRealm`            | Custom Security Realm                | Not set                                   |
 | `master.authorizationStrategy`    | Jenkins XML job config for AuthorizationStrategy | Not set                       |

@@ -14,7 +14,7 @@
 image:
   registry: docker.io
   repository: bitnami/ghost
-  tag: 2.28.1-debian-9-r0
+  tag: 2.29.1-debian-9-r0
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
