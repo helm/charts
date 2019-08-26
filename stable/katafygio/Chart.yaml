@@ -5,7 +5,7 @@ name: katafygio
 home: https://github.com/bpineau/katafygio
 sources:
 - https://github.com/bpineau/katafygio
-version: 0.4.0
+version: 1.0.0
 keywords:
 - backup
 - dump
