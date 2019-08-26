@@ -3,7 +3,6 @@ apiVersion: extensions/v1beta1
 kind: PodSecurityPolicy
 metadata:
   labels:
-  labels:
     app: {{ template "elasticsearch-curator.name" . }}
     chart: {{ template "elasticsearch-curator.chart" . }}
     release: {{ .Release.Name }}
