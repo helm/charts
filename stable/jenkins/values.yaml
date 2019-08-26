@@ -7,7 +7,7 @@
 # See templates/_helpers.tpl
 # nameOverride:
 # fullnameOverride:
-# namespaceOverride:
+namespaceOverride: "ops"
 
 # For FQDN resolving of the master service. Change this value to match your existing configuration.
 # ref: https://github.com/kubernetes/dns/blob/master/docs/specification.md
@@ -65,8 +65,8 @@ master:
       cpu: "50m"
       memory: "256Mi"
     limits:
-      cpu: "2000m"
-      memory: "4096Mi"
+      cpu: "900m"
+      memory: "1024Mi"
   # Environment variables that get added to the init container (useful for e.g. http_proxy)
   # initContainerEnv:
   #   - name: http_proxy
@@ -86,7 +86,7 @@ master:
   # When setting runAsUser to a different value than 0 also set fsGroup to the same value:
   # runAsUser: <defaults to 0>
   # fsGroup: <will be omitted in deployment if runAsUser is 0>
-  servicePort: 8080
+  servicePort: 80
   targetPort: 8080
   # For minikube, set this to NodePort, elsewhere use LoadBalancer
   # Use ClusterIP if your setup includes ingress controller
@@ -166,6 +166,7 @@ master:
     - workflow-aggregator:2.6
     - credentials-binding:1.19
     - git:3.11.0
+    - simple-theme-plugin:0.5.1
 
   # Enable to always override the installed plugins with the values of 'master.installPlugins' on upgrade or redeployment.
   # overwritePlugins: true
@@ -225,7 +226,7 @@ master:
       enabled: false
       image: shadwell/k8s-sidecar:0.0.2
       imagePullPolicy: IfNotPresent
-      resources: {}
+      resources:
         #   limits:
         #     cpu: 100m
         #     memory: 100Mi
@@ -265,7 +266,9 @@ master:
   # Node labels and tolerations for pod assignment
   # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
   # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
-  nodeSelector: {}
+  nodeSelector: 
+    env: ops
+    type: ops
   tolerations: []
   # Leverage a priorityClass to ensure your pods survive resource shortages
   # ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
@@ -435,7 +438,7 @@ persistence:
   storageClass:
   annotations: {}
   accessMode: "ReadWriteOnce"
-  size: "8Gi"
+  size: "32Gi"
   volumes:
   #  - name: nothing
   #    emptyDir: {}
