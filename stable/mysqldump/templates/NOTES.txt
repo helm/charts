@@ -40,6 +40,10 @@ $ kubectl logs $(kubectl get pods --selector \
   --output=jsonpath='{.items[-1:].metadata.name}') \
   --output=jsonpath={.items..metadata.name})
 
+To run cronjob now run:
+
+$ kubectl create job {{ template "mysqldump.fullname" . }} --from=cronjob/{{ template "mysqldump.fullname" . }}
+
 mysqldump contents can be found in:
 {{- if .Values.persistentVolumeClaim }}
 $ kubectl get persistentvolumeclaim {{ .Values.persistentVolumeClaim }}

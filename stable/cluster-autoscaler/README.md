@@ -150,6 +150,7 @@ Parameter | Description | Default
 `extraArgs` | additional container arguments | `{}`
 `podDisruptionBudget` | Pod disruption budget | `maxUnavailable: 1`
 `extraEnv` | additional container environment variables | `{}`
+`envFromConfigMap` |  additional container environment variables from a configmap | `[]`
 `envFromSecret` | additional container environment variables from secret | `nil`
 `nodeSelector` | node labels for pod assignment | `{}`
 `podAnnotations` | annotations to add to each pod | `{}`

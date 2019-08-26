@@ -1,6 +1,6 @@
 # Jenkins Helm Chart
 
-Jenkins master and slave cluster utilizing the Jenkins Kubernetes plugin
+Jenkins master and agent cluster utilizing the Jenkins Kubernetes plugin
 
 * https://wiki.jenkins-ci.org/display/JENKINS/Kubernetes+Plugin
 
@@ -69,6 +69,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.imagePullPolicy`          | Master image pull policy             | `Always`                                  |
 | `master.imagePullSecret`          | Master image pull secret             | Not set                                   |
 | `master.numExecutors`             | Set Number of executors              | 0                                         |
+| `master.customJenkinsLabels`      | Append Jenkins labels to the master  | `{}`                                      |
 | `master.useSecurity`              | Use basic security                   | `true`                                    |
 | `master.securityRealm`            | Custom Security Realm                | Not set                                   |
 | `master.authorizationStrategy`    | Jenkins XML job config for AuthorizationStrategy | Not set                       |
@@ -131,6 +132,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.jenkinsUrlProtocol`       | Set protocol for JenkinsLocationConfiguration.xml | Set to `https` if `Master.ingress.tls`, `http` otherwise |
 | `master.JCasC.enabled`            | Wheter Jenkins Configuration as Code is enabled or not | `false`                 |
 | `master.JCasC.configScripts`      | List of Jenkins Config as Code scripts | False                                   |
+| `master.enableXmlConfig`          | enables configuration done via XML files | `false`                               |
 | `master.sidecars.configAutoReload` | Jenkins Config as Code auto-reload settings |                                   |
 | `master.sidecars.configAutoReload.enabled` | Jenkins Config as Code auto-reload settings (Attention: rbac needs to be enabled otherwise the sidecar can't read the config map) | `false`                                                      |
 | `master.sidecars.configAutoReload.image` | Image which triggers the reload | `shadwell/k8s-sidecar:0.0.2`            |
@@ -138,9 +140,9 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.initScripts`              | List of Jenkins init scripts         | Not set                                   |
 | `master.credentialsXmlSecret`     | Kubernetes secret that contains a 'credentials.xml' file | Not set               |
 | `master.secretsFilesSecret`       | Kubernetes secret that contains 'secrets' files | Not set                        |
-| `master.jobs`                     | Jenkins XML job configs              | Not set                                   |
+| `master.jobs`                     | Jenkins XML job configs              | `{}`                                      |
 | `master.overwriteJobs`            | Replace jobs w/ ConfigMap on boot    | `false`                                   |
-| `master.installPlugins`           | List of Jenkins plugins to install. If you don't want to install plugins set it to `[]` | `kubernetes:1.14.0 workflow-aggregator:2.6 credentials-binding:1.17 git:3.9.1 workflow-job:2.31` |
+| `master.installPlugins`           | List of Jenkins plugins to install. If you don't want to install plugins set it to `[]` | `kubernetes:1.18.1 workflow-aggregator:2.6 credentials-binding:1.19 git:3.11.0 workflow-job:2.33` |
 | `master.overwritePlugins`         | Overwrite installed plugins on start.| `false`                                   |
 | `master.enableRawHtmlMarkupFormatter` | Enable HTML parsing using (see below) | false                                |
 | `master.scriptApproval`           | List of groovy functions to approve  | Not set                                   |
@@ -155,6 +157,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.lifecycle`                | Lifecycle specification for master-container | Not set                           |
 | `master.prometheus.enabled`       | Enables prometheus service monitor | `false`                                     |
 | `master.prometheus.serviceMonitorAdditionalLabels` | Additional labels to add to the service monitor object | `{}`                       |
+| `master.prometheus.serviceMonitorNamespace` | Custom namespace for serviceMonitor | Not set (same ns where is Jenkins being deployed) |
 | `master.prometheus.scrapeInterval` | How often prometheus should scrape metrics | `60s`                              |
 | `master.prometheus.scrapeEndpoint` | The endpoint prometheus should get metrics from | `/prometheus`                 |
 | `master.prometheus.alertingrules` | Array of prometheus alerting rules | `[]`                                        |
@@ -186,13 +189,13 @@ Some third-party systems, e.g. GitHub, use HTML-formatted data in their payload 
 | `agent.privileged`         | Agent privileged container                      | `false`                |
 | `agent.resources`          | Resources allocation (Requests and Limits)      | `{requests: {cpu: 200m, memory: 256Mi}, limits: {cpu: 200m, memory: 256Mi}}`|
 | `agent.volumes`            | Additional volumes                              | `nil`                  |
-| `agent.envVars`            | Environment variables for the slave Pod         | Not set                |
+| `agent.envVars`            | Environment variables for the agent Pod         | Not set                |
 | `agent.command`            | Executed command when side container starts     | Not set                |
 | `agent.args`               | Arguments passed to executed command            | Not set                |
 | `agent.sideContainerName`  | Side container name in agent                    | jnlp                   |
 | `agent.TTYEnabled`         | Allocate pseudo tty to the side container       | false                  |
 | `agent.containerCap`       | Maximum number of agent                         | 10                     |
-| `agent.podName`            | slave Pod base name                             | Not set                |
+| `agent.podName`            | Agent Pod base name                             | Not set                |
 | `agent.idleMinutes`        | Allows the Pod to remain active for reuse       | 0                      |
 | `agent.yamlTemplate`       | The raw yaml of a Pod API Object to merge into the agent spec | Not set                |
 

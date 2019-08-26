@@ -165,19 +165,13 @@ spec:
             containerPort: {{ .Values.pro.ports.auth }}
           - name: grpc-ratelimit
             containerPort: {{ .Values.pro.ports.ratelimit }}
-          - name: http-debug
-            containerPort: {{ .Values.pro.ports.ratelimitDebug }}
           env:
           - name: REDIS_SOCKET_TYPE
             value: tcp
           - name: REDIS_URL
             value: {{ include "ambassador.fullname" . }}-pro-redis:6379
-          - name: APRO_AUTH_PORT
+          - name: APRO_HTTP_PORT
             value: "{{ .Values.pro.ports.auth }}"
-          - name: GRPC_PORT
-            value: "{{ .Values.pro.ports.ratelimit }}"
-          - name: DEBUG_PORT
-            value: "{{ .Values.pro.ports.ratelimitDebug }}"
           - name: APP_LOG_LEVEL
             value: "{{ .Values.pro.logLevel  }}"
           - name: AMBASSADOR_NAMESPACE
@@ -188,13 +182,9 @@ spec:
               fieldRef:
                 fieldPath: metadata.namespace
           {{- end }}
-          {{- if .Values.env }}
-          {{- range $key,$value := .Values.env }}
-          {{- if eq $key "AMBASSADOR_ID"}}
-          - name: {{ $key | upper | quote}}
-            value: {{ $value | quote}}
-          {{- end }}
-          {{- end }}
+          {{- if hasKey .Values.env "AMBASSADOR_ID" }}
+          - name: "AMBASSADOR_ID"
+            value: {{ .Values.env.AMBASSADOR_ID | quote }}
           {{- end }}
           - name: AMBASSADOR_LICENSE_KEY
           {{- if .Values.pro.licenseKey.secret }}
@@ -204,6 +194,15 @@ spec:
                 key: key
           {{ else }}
             value: {{ .Values.pro.licenseKey.value }}
+          {{- end }}
+          {{- if .Values.pro.env }}
+          {{- range $key, $value := .Values.pro.env }}
+          {{- if eq $key "AMBASSADOR_ID" }}
+          {{- else}}
+          - name: {{ $key | upper | quote }}
+            value: {{ $value | quote }}
+          {{- end }}
+          {{- end }}
           {{- end }}
         {{- end }}
       {{- with .Values.nodeSelector }}
