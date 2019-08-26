@@ -1,0 +1,829 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "knox.fullname" . }}-confmap
+  labels:
+    app: {{ template "knox.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  topologies-sandbox.xml: |
+    <?xml version="1.0" encoding="utf-8"?>
+    <topology>
+
+        <gateway>
+            <provider>
+                <role>authentication</role>
+                <name>ShiroProvider</name>
+                <enabled>true</enabled>
+                <param>
+                    <!-- 
+                    session timeout in minutes,  this is really idle timeout,
+                    defaults to 30mins, if the property value is not defined,, 
+                    current client authentication would expire if client idles contiuosly for more than this value
+                    -->
+                    <name>sessionTimeout</name>
+                    <value>30</value>
+                </param>
+                <param>
+                    <name>main.ldapRealm</name>
+                    <value>org.apache.knox.gateway.shirorealm.KnoxLdapRealm</value>
+                </param>
+                <param>
+                    <name>main.ldapContextFactory</name>
+                    <value>org.apache.knox.gateway.shirorealm.KnoxLdapContextFactory</value>
+                </param>
+                <param>
+                    <name>main.ldapRealm.contextFactory</name>
+                    <value>$ldapContextFactory</value>
+                </param>
+                <param>
+                    <name>main.ldapRealm.userDnTemplate</name>
+                    <value>uid={0},ou=people,dc=hadoop,dc=apache,dc=org</value>
+                </param>
+                <param>
+                    <name>main.ldapRealm.contextFactory.url</name>
+                    <value>ldap://localhost:33389</value>
+                </param>
+                <param>
+                    <name>main.ldapRealm.contextFactory.authenticationMechanism</name>
+                    <value>simple</value>
+                </param>
+                <param>
+                    <name>urls./**</name>
+                    <value>authcBasic</value>
+                </param>
+            </provider>
+
+            <provider>
+                <role>authorization</role>
+                <name>AclsAuthz</name>
+                <enabled>true</enabled>
+                <param>
+                    <name>knox.acl</name>
+                    <value>admin;*;*</value>
+                </param>
+            </provider>
+
+            <provider>
+                <role>identity-assertion</role>
+                <name>Default</name>
+                <enabled>true</enabled>
+            </provider>
+        </gateway>
+
+        <service>
+            <role>NAMENODE</role>
+            <url>{{ .Values.knox.hadoop.nameNodeUrl }}</url> <!-- e.g. hdfs://hadoop-demo-name-node:9000/webhdfs -->
+        </service>
+
+        <!-- TODO: Find currect URL of the jobtracker
+        <service>
+            <role>JOBTRACKER</role>
+            <url>rpc://localhost:8050</url>
+        </service>
+        -->
+        <service>
+            <role>RESOURCEMANAGER</role>
+            <url>{{ .Values.knox.hadoop.resourceManagerUrl }}</url> <!-- e.g. http://hadoop-demo-yarn-rm:8088/ws -->
+        </service>
+        
+        <service>
+            <role>WEBHDFS</role>
+            <url>{{ .Values.knox.hadoop.webHdfsUrl }}</url> <!-- e.g. http://hadoop-demo-name-node:50070/webhdfs -->
+        </service>
+
+
+    </topology>
+
+  topologies-admin.xml: |
+    <?xml version="1.0" encoding="utf-8"?>
+    <!--
+      Licensed to the Apache Software Foundation (ASF) under one or more
+      contributor license agreements.  See the NOTICE file distributed with
+      this work for additional information regarding copyright ownership.
+      The ASF licenses this file to You under the Apache License, Version 2.0
+      (the "License"); you may not use this file except in compliance with
+      the License.  You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+      Unless required by applicable law or agreed to in writing, software
+      distributed under the License is distributed on an "AS IS" BASIS,
+      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+      See the License for the specific language governing permissions and
+      limitations under the License.
+    -->
+    <topology>
+
+        <gateway>
+
+            <provider>
+                <role>authentication</role>
+                <name>ShiroProvider</name>
+                <enabled>true</enabled>
+                <param>
+                    <!-- 
+                    session timeout in minutes,  this is really idle timeout,
+                    defaults to 30mins, if the property value is not defined,, 
+                    current client authentication would expire if client idles contiuosly for more than this value
+                    -->
+                    <name>sessionTimeout</name>
+                    <value>30</value>
+                </param>
+                <param>
+                    <name>main.ldapRealm</name>
+                    <value>org.apache.knox.gateway.shirorealm.KnoxLdapRealm</value>
+                </param>
+                <param>
+                    <name>main.ldapContextFactory</name>
+                    <value>org.apache.knox.gateway.shirorealm.KnoxLdapContextFactory</value>
+                </param>
+                <param>
+                    <name>main.ldapRealm.contextFactory</name>
+                    <value>$ldapContextFactory</value>
+                </param>
+                <param>
+                    <name>main.ldapRealm.userDnTemplate</name>
+                    <value>uid={0},ou=people,dc=hadoop,dc=apache,dc=org</value>
+                </param>
+                <param>
+                    <name>main.ldapRealm.contextFactory.url</name>
+                    <value>ldap://localhost:33389</value>
+                </param>
+                <param>
+                    <name>main.ldapRealm.contextFactory.authenticationMechanism</name>
+                    <value>simple</value>
+                </param>
+                <param>
+                    <name>urls./**</name>
+                    <value>authcBasic</value>
+                </param>
+            </provider>
+
+            <provider>
+                <role>authorization</role>
+                <name>AclsAuthz</name>
+                <enabled>true</enabled>
+                <param>
+                    <name>knox.acl</name>
+                    <value>admin;*;*</value>
+                </param>
+            </provider>
+
+            <provider>
+                <role>identity-assertion</role>
+                <name>Default</name>
+                <enabled>true</enabled>
+            </provider>
+
+            <provider>
+                <role>hostmap</role>
+                <name>static</name>
+                <enabled>true</enabled>
+                <param>
+                    <name>localhost</name>
+                    <value>sandbox,sandbox.hortonworks.com</value>
+                </param>
+            </provider>
+
+        </gateway>
+
+        <service>
+            <role>KNOX</role>
+        </service>
+
+    </topology>
+
+  topologies-knoxsso.xml: |
+    <?xml version="1.0" encoding="utf-8"?>
+    <!--
+      Licensed to the Apache Software Foundation (ASF) under one or more
+      contributor license agreements.  See the NOTICE file distributed with
+      this work for additional information regarding copyright ownership.
+      The ASF licenses this file to You under the Apache License, Version 2.0
+      (the "License"); you may not use this file except in compliance with
+      the License.  You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+      Unless required by applicable law or agreed to in writing, software
+      distributed under the License is distributed on an "AS IS" BASIS,
+      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+      See the License for the specific language governing permissions and
+      limitations under the License.
+    -->
+    <topology>
+        <gateway>
+          <provider>
+            <role>webappsec</role>
+            <name>WebAppSec</name>
+            <enabled>true</enabled>
+            <param><name>xframe.options.enabled</name><value>true</value></param>
+          </provider>
+
+            <provider>
+                <role>authentication</role>
+                <name>ShiroProvider</name>
+                <enabled>true</enabled>
+                <param>
+                    <!-- 
+                    session timeout in minutes,  this is really idle timeout,
+                    defaults to 30mins, if the property value is not defined,, 
+                    current client authentication would expire if client idles contiuosly for more than this value
+                    -->
+                    <name>sessionTimeout</name>
+                    <value>30</value>
+                </param>
+                <param>
+                    <name>redirectToUrl</name>
+                    <value>/gateway/knoxsso/knoxauth/login.html</value>
+                </param>
+                <param>
+                    <name>restrictedCookies</name>
+                    <value>rememberme,WWW-Authenticate</value>
+                </param>
+                <param>
+                    <name>main.ldapRealm</name>
+                    <value>org.apache.knox.gateway.shirorealm.KnoxLdapRealm</value>
+                </param>
+                <param>
+                    <name>main.ldapContextFactory</name>
+                    <value>org.apache.knox.gateway.shirorealm.KnoxLdapContextFactory</value>
+                </param>
+                <param>
+                    <name>main.ldapRealm.contextFactory</name>
+                    <value>$ldapContextFactory</value>
+                </param>
+                <param>
+                    <name>main.ldapRealm.userDnTemplate</name>
+                    <value>uid={0},ou=people,dc=hadoop,dc=apache,dc=org</value>
+                </param>
+                <param>
+                    <name>main.ldapRealm.contextFactory.url</name>
+                    <value>ldap://localhost:33389</value>
+                </param>    
+                <param>
+                    <name>main.ldapRealm.authenticationCachingEnabled</name>
+                    <value>false</value>
+                </param>
+                <param>
+                    <name>main.ldapRealm.contextFactory.authenticationMechanism</name>
+                    <value>simple</value>
+                </param>
+                <param>
+                    <name>urls./**</name>
+                    <value>authcBasic</value>
+                </param>
+            </provider>
+
+            <provider>
+                <role>identity-assertion</role>
+                <name>Default</name>
+                <enabled>true</enabled>
+            </provider>
+
+            <provider>
+                <role>hostmap</role>
+                <name>static</name>
+                <enabled>true</enabled>
+                <param>
+                    <name>localhost</name>
+                    <value>sandbox,sandbox.hortonworks.com</value>
+                </param>
+            </provider>
+
+        </gateway>
+
+        <application>
+          <name>knoxauth</name>
+        </application>
+
+        <service>
+            <role>KNOXSSO</role>
+            <param>
+                <name>knoxsso.cookie.secure.only</name>
+                <value>true</value>
+            </param>
+            <param>
+                <name>knoxsso.token.ttl</name>
+                <value>-1</value>
+            </param>
+            <param>
+              <name>knoxsso.redirect.whitelist.regex</name>
+              <value>^https?:\/\/(localhost|127\.0\.0\.1|0:0:0:0:0:0:0:1|::1):[0-9].*$</value>
+            </param>
+        </service>
+
+    </topology>
+
+  topologies-manager.xml: |
+    <?xml version="1.0" encoding="utf-8"?>
+    <!--
+      Licensed to the Apache Software Foundation (ASF) under one or more
+      contributor license agreements.  See the NOTICE file distributed with
+      this work for additional information regarding copyright ownership.
+      The ASF licenses this file to You under the Apache License, Version 2.0
+      (the "License"); you may not use this file except in compliance with
+      the License.  You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+      Unless required by applicable law or agreed to in writing, software
+      distributed under the License is distributed on an "AS IS" BASIS,
+      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+      See the License for the specific language governing permissions and
+      limitations under the License.
+    -->
+    <topology>
+
+        <gateway>
+
+            <provider>
+                <role>webappsec</role>
+                <name>WebAppSec</name>
+                <enabled>true</enabled>
+                <param><name>csrf.enabled</name><value>true</value></param>
+                <param><name>csrf.customHeader</name><value>X-XSRF-Header</value></param>
+                <param><name>csrf.methodsToIgnore</name><value>GET,OPTIONS,HEAD</value></param>
+                <param><name>xframe.options.enabled</name><value>true</value></param>
+                <param><name>strict.transport.enabled</name><value>true</value></param>
+            </provider>
+
+            <provider>
+                <role>authentication</role>
+                <name>ShiroProvider</name>
+                <enabled>true</enabled>
+                <param>
+                    <!-- 
+                    session timeout in minutes,  this is really idle timeout,
+                    defaults to 30mins, if the property value is not defined,, 
+                    current client authentication would expire if client idles contiuosly for more than this value
+                    -->
+                    <name>sessionTimeout</name>
+                    <value>30</value>
+                </param>
+                <param>
+                    <name>main.ldapRealm</name>
+                    <value>org.apache.knox.gateway.shirorealm.KnoxLdapRealm</value>
+                </param>
+                <param>
+                    <name>main.ldapContextFactory</name>
+                    <value>org.apache.knox.gateway.shirorealm.KnoxLdapContextFactory</value>
+                </param>
+                <param>
+                    <name>main.ldapRealm.contextFactory</name>
+                    <value>$ldapContextFactory</value>
+                </param>
+                <param>
+                    <name>main.ldapRealm.userDnTemplate</name>
+                    <value>uid={0},ou=people,dc=hadoop,dc=apache,dc=org</value>
+                </param>
+                <param>
+                    <name>main.ldapRealm.contextFactory.url</name>
+                    <value>ldap://localhost:33389</value>
+                </param>
+                <param>
+                    <name>main.ldapRealm.contextFactory.authenticationMechanism</name>
+                    <value>simple</value>
+                </param>
+                <param>
+                    <name>urls./**</name>
+                    <value>authcBasic</value>
+                </param>
+            </provider>
+
+            <provider>
+                <role>authorization</role>
+                <name>AclsAuthz</name>
+                <enabled>true</enabled>
+                <param>
+                    <name>knox.acl</name>
+                    <value>admin;*;*</value>
+                </param>
+            </provider>
+
+            <provider>
+                <role>identity-assertion</role>
+                <name>Default</name>
+                <enabled>true</enabled>
+            </provider>
+
+            <provider>
+                <role>hostmap</role>
+                <name>static</name>
+                <enabled>true</enabled>
+                <param>
+                    <name>localhost</name>
+                    <value>sandbox,sandbox.hortonworks.com</value>
+                </param>
+            </provider>
+
+        </gateway>
+
+        <application>
+            <role>admin-ui</role>
+        </application>
+
+        <service>
+            <role>KNOX</role>
+        </service>
+
+    </topology>
+
+
+  gateway-log4j.properties: |
+    # Licensed to the Apache Software Foundation (ASF) under one
+    # or more contributor license agreements.  See the NOTICE file
+    # distributed with this work for additional information
+    # regarding copyright ownership.  The ASF licenses this file
+    # to you under the Apache License, Version 2.0 (the
+    # "License"); you may not use this file except in compliance
+    # with the License.  You may obtain a copy of the License at
+    #
+    #     http://www.apache.org/licenses/LICENSE-2.0
+    #
+    # Unless required by applicable law or agreed to in writing, software
+    # distributed under the License is distributed on an "AS IS" BASIS,
+    # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    # See the License for the specific language governing permissions and
+    # limitations under the License.
+
+    app.log.dir=${launcher.dir}/../logs
+    app.log.file=${launcher.name}.log
+    app.audit.file=${launcher.name}-audit.log
+
+    log4j.rootLogger=INFO, drfa
+
+    #log4j.logger.org.apache.knox.gateway=INFO
+    log4j.logger.org.apache.knox.gateway=DEBUG
+
+    #log4j.logger.org.eclipse.jetty=DEBUG
+    #log4j.logger.org.apache.shiro=DEBUG
+    #log4j.logger.org.apache.http=DEBUG
+    #log4j.logger.org.apache.http.client=DEBUG
+    #log4j.logger.org.apache.http.headers=DEBUG
+    #log4j.logger.org.apache.http.wire=DEBUG
+
+    log4j.appender.stdout=org.apache.log4j.ConsoleAppender
+    log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
+    log4j.appender.stdout.layout.ConversionPattern=%d{yy/MM/dd HH:mm:ss} %p %c{2}: %m%n
+
+    log4j.appender.drfa=org.apache.log4j.DailyRollingFileAppender
+    log4j.appender.drfa.File=${app.log.dir}/${app.log.file}
+    log4j.appender.drfa.DatePattern=.yyyy-MM-dd
+    log4j.appender.drfa.layout=org.apache.log4j.PatternLayout
+    log4j.appender.drfa.layout.ConversionPattern=%d{ISO8601} %-5p %c{2} (%F:%M(%L)) - %m%n
+
+    log4j.logger.audit=INFO, auditfile
+    log4j.appender.auditfile=org.apache.log4j.DailyRollingFileAppender
+    log4j.appender.auditfile.File=${app.log.dir}/${app.audit.file}
+    log4j.appender.auditfile.Append = true
+    log4j.appender.auditfile.DatePattern = '.'yyyy-MM-dd
+    log4j.appender.auditfile.layout = org.apache.knox.gateway.audit.log4j.layout.AuditLayout
+
+    #log4j.logger.org.apache.knox.gateway.access=TRACE,httpaccess
+    #log4j.additivity.org.apache.knox.gateway.access=false
+
+    #log4j.logger.org.apache.knox.gateway.http=TRACE,httpserver
+    #log4j.additivity.org.apache.knox.gateway.http=false
+    ##log4j.logger.org.apache.knox.gateway.http.request.headers=OFF
+    ##log4j.logger.org.apache.knox.gateway.http.response.headers=OFF
+    ##log4j.logger.org.apache.knox.gateway.http.request.body=OFF
+    ##log4j.logger.org.apache.knox.gateway.http.response.body=OFF
+
+    #log4j.logger.org.apache.http.wire=DEBUG,httpclient
+    #log4j.additivity.org.apache.http.wire=false
+
+    #log4j.appender.httpaccess=org.apache.log4j.DailyRollingFileAppender
+    #log4j.appender.httpaccess.File=${app.log.dir}/${launcher.name}-http-access.log
+    #log4j.appender.httpaccess.DatePattern=.yyyy-MM-dd
+    #log4j.appender.httpaccess.layout=org.apache.log4j.PatternLayout
+    #log4j.appender.httpaccess.layout.ConversionPattern=%d{ISO8601}|%t|%m%n
+
+    #log4j.appender.httpserver=org.apache.log4j.DailyRollingFileAppender
+    #log4j.appender.httpserver.File=${app.log.dir}/${launcher.name}-http-server.log
+    #log4j.appender.httpserver.DatePattern=.yyyy-MM-dd
+    #log4j.appender.httpserver.layout=org.apache.log4j.PatternLayout
+    #log4j.appender.httpserver.layout.ConversionPattern=%d{ISO8601}|%t|%m%n
+
+    #log4j.appender.httpclient=org.apache.log4j.DailyRollingFileAppender
+    #log4j.appender.httpclient.File=${app.log.dir}/${launcher.name}-http-client.log
+    #log4j.appender.httpclient.DatePattern=.yyyy-MM-dd
+    #log4j.appender.httpclient.layout=org.apache.log4j.PatternLayout
+    #log4j.appender.httpclient.layout.ConversionPattern=%d{ISO8601}|%t|%m%n
+
+    # Apache Shiro Related logging - KNOX-757
+    #log4j.logger.org.springframework=DEBUG
+    #log4j.logger.net.sf.ehcache=DEBUG
+    #log4j.logger.org.apache.shiro.util.ThreadContext=DEBUG
+
+
+  gateway-site.xml: |
+    <?xml version="1.0" encoding="UTF-8"?>
+    <!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+    -->
+    <configuration>
+
+        <property>
+            <name>gateway.port</name>
+            <value>8080</value>
+            <description>The HTTP port for the Gateway.</description>
+        </property>
+
+        <property>
+            <name>gateway.path</name>
+            <value>gateway</value>
+            <description>The default context path for the gateway.</description>
+        </property>
+
+        <property>
+            <name>default.app.topology.name</name>
+             <value>sandbox</value>
+        </property>
+
+        <property>
+            <name>ssl.enabled</name>
+            <value>false</value>
+        </property>
+
+        <property>
+            <name>gateway.gateway.conf.dir</name>
+            <value>deployments</value>
+            <description>The directory within GATEWAY_HOME that contains gateway topology files and deployments.</description>
+        </property>
+
+        <property>
+            <name>gateway.hadoop.kerberos.secured</name>
+            <value>false</value>
+            <description>Boolean flag indicating whether the Hadoop cluster protected by Gateway is secured with Kerberos</description>
+        </property>
+
+        <property>
+            <name>java.security.krb5.conf</name>
+            <value>/etc/knox/conf/krb5.conf</value>
+            <description>Absolute path to krb5.conf file</description>
+        </property>
+
+        <property>
+            <name>java.security.auth.login.config</name>
+            <value>/etc/knox/conf/krb5JAASLogin.conf</value>
+            <description>Absolute path to JAAS login config file</description>
+        </property>
+
+        <property>
+            <name>sun.security.krb5.debug</name>
+            <value>true</value>
+            <description>Boolean flag indicating whether to enable debug messages for krb5 authentication</description>
+        </property>
+
+        <!-- @since 0.10 Websocket configs -->
+        <property>
+            <name>gateway.websocket.feature.enabled</name>
+            <value>false</value>
+            <description>Enable/Disable websocket feature.</description>
+        </property>
+
+        <property>
+            <name>gateway.scope.cookies.feature.enabled</name>
+            <value>false</value>
+            <description>Enable/Disable cookie scoping feature.</description>
+        </property>
+
+        <property>
+            <name>gateway.cluster.config.monitor.ambari.enabled</name>
+            <value>false</value>
+            <description>Enable/disable Ambari cluster configuration monitoring.</description>
+        </property>
+
+        <property>
+            <name>gateway.cluster.config.monitor.ambari.interval</name>
+            <value>60</value>
+            <description>The interval (in seconds) for polling Ambari for cluster configuration changes.</description>
+        </property>
+
+    </configuration>
+
+  knoxcli-log4j.properties: |
+    # Licensed to the Apache Software Foundation (ASF) under one
+    # or more contributor license agreements.  See the NOTICE file
+    # distributed with this work for additional information
+    # regarding copyright ownership.  The ASF licenses this file
+    # to you under the Apache License, Version 2.0 (the
+    # "License"); you may not use this file except in compliance
+    # with the License.  You may obtain a copy of the License at
+    #
+    #     http://www.apache.org/licenses/LICENSE-2.0
+    #
+    # Unless required by applicable law or agreed to in writing, software
+    # distributed under the License is distributed on an "AS IS" BASIS,
+    # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    # See the License for the specific language governing permissions and
+    # limitations under the License.
+
+    app.log.dir=${launcher.dir}/../logs
+    app.log.file=${launcher.name}.log
+
+    log4j.rootLogger=INFO, drfa
+
+    log4j.logger.org.apache.knox.gateway=INFO
+    #log4j.logger.org.apache.knox.gateway=DEBUG
+
+    log4j.appender.stdout=org.apache.log4j.ConsoleAppender
+    log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
+    log4j.appender.stdout.layout.ConversionPattern=%d{yy/MM/dd HH:mm:ss} %p %c{2}: %m%n
+
+    log4j.appender.drfa=org.apache.log4j.DailyRollingFileAppender
+    log4j.appender.drfa.File=${app.log.dir}/${app.log.file}
+    log4j.appender.drfa.DatePattern=.yyyy-MM-dd
+    log4j.appender.drfa.layout=org.apache.log4j.PatternLayout
+    log4j.appender.drfa.layout.ConversionPattern=%d{ISO8601} %-5p %c{2} (%F:%M(%L)) - %m%n
+
+
+  ldap-log4j.properties: |
+    # Licensed to the Apache Software Foundation (ASF) under one
+    # or more contributor license agreements.  See the NOTICE file
+    # distributed with this work for additional information
+    # regarding copyright ownership.  The ASF licenses this file
+    # to you under the Apache License, Version 2.0 (the
+    # "License"); you may not use this file except in compliance
+    # with the License.  You may obtain a copy of the License at
+    #
+    #     http://www.apache.org/licenses/LICENSE-2.0
+    #
+    # Unless required by applicable law or agreed to in writing, software
+    # distributed under the License is distributed on an "AS IS" BASIS,
+    # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    # See the License for the specific language governing permissions and
+    # limitations under the License.
+
+    app.log.dir=${launcher.dir}/../logs
+    app.log.file=${launcher.name}.log
+
+    log4j.rootLogger=INFO, drfa
+    log4j.logger.org.apache.directory.server.ldap.LdapServer=INFO
+    log4j.logger.org.apache.directory=WARN
+
+    log4j.appender.stdout=org.apache.log4j.ConsoleAppender
+    log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
+    log4j.appender.stdout.layout.ConversionPattern=%d{yy/MM/dd HH:mm:ss} %p %c{2}: %m%n
+
+    log4j.appender.drfa=org.apache.log4j.DailyRollingFileAppender
+    log4j.appender.drfa.File=${app.log.dir}/${app.log.file}
+    log4j.appender.drfa.DatePattern=.yyyy-MM-dd
+    log4j.appender.drfa.layout=org.apache.log4j.PatternLayout
+    log4j.appender.drfa.layout.ConversionPattern=%d{ISO8601} %-5p %c{2} (%F:%M(%L)) - %m%n
+
+  shell-log4j.properties: |
+    # Licensed to the Apache Software Foundation (ASF) under one
+    # or more contributor license agreements.  See the NOTICE file
+    # distributed with this work for additional information
+    # regarding copyright ownership.  The ASF licenses this file
+    # to you under the Apache License, Version 2.0 (the
+    # "License"); you may not use this file except in compliance
+    # with the License.  You may obtain a copy of the License at
+    #
+    #     http://www.apache.org/licenses/LICENSE-2.0
+    #
+    # Unless required by applicable law or agreed to in writing, software
+    # distributed under the License is distributed on an "AS IS" BASIS,
+    # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    # See the License for the specific language governing permissions and
+    # limitations under the License.
+
+    app.log.dir=${launcher.dir}/../logs
+    app.log.file=${launcher.name}.log
+
+    log4j.rootLogger=INFO, drfa
+
+    #log4j.logger.org.apache.http.wire=DEBUG
+
+    log4j.appender.stdout=org.apache.log4j.ConsoleAppender
+    log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
+    log4j.appender.stdout.layout.ConversionPattern=%d{yy/MM/dd HH:mm:ss} %p %c{2}: %m%n
+
+    log4j.appender.drfa=org.apache.log4j.DailyRollingFileAppender
+    log4j.appender.drfa.File=${app.log.dir}/${app.log.file}
+    log4j.appender.drfa.DatePattern=.yyyy-MM-dd
+    log4j.appender.drfa.layout=org.apache.log4j.PatternLayout
+    log4j.appender.drfa.layout.ConversionPattern=%d{ISO8601} %-5p %c{2} (%F:%M(%L)) - %m%n
+
+
+  users.ldif: |
+    # Licensed to the Apache Software Foundation (ASF) under one
+    # or more contributor license agreements.  See the NOTICE file
+    # distributed with this work for additional information
+    # regarding copyright ownership.  The ASF licenses this file
+    # to you under the Apache License, Version 2.0 (the
+    # "License"); you may not use this file except in compliance
+    # with the License.  You may obtain a copy of the License at
+    #
+    #     http://www.apache.org/licenses/LICENSE-2.0
+    #
+    # Unless required by applicable law or agreed to in writing, software
+    # distributed under the License is distributed on an "AS IS" BASIS,
+    # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    # See the License for the specific language governing permissions and
+    # limitations under the License.
+
+    version: 1
+
+    # Please replace with site specific values
+    dn: dc=hadoop,dc=apache,dc=org
+    objectclass: organization
+    objectclass: dcObject
+    o: Hadoop
+    dc: hadoop
+
+    # Entry for a sample people container
+    # Please replace with site specific values
+    dn: ou=people,dc=hadoop,dc=apache,dc=org
+    objectclass:top
+    objectclass:organizationalUnit
+    ou: people
+
+    # Entry for a sample end user
+    # Please replace with site specific values
+    dn: uid=guest,ou=people,dc=hadoop,dc=apache,dc=org
+    objectclass:top
+    objectclass:person
+    objectclass:organizationalPerson
+    objectclass:inetOrgPerson
+    cn: Guest
+    sn: User
+    uid: guest
+    userPassword:guest-password
+
+    # entry for sample user admin
+    dn: uid=admin,ou=people,dc=hadoop,dc=apache,dc=org
+    objectclass:top
+    objectclass:person
+    objectclass:organizationalPerson
+    objectclass:inetOrgPerson
+    cn: Admin
+    sn: Admin
+    uid: admin
+    userPassword:{{ .Values.knox.users.admin.pw }}
+
+    # entry for sample user sam
+    dn: uid=sam,ou=people,dc=hadoop,dc=apache,dc=org
+    objectclass:top
+    objectclass:person
+    objectclass:organizationalPerson
+    objectclass:inetOrgPerson
+    cn: sam
+    sn: sam
+    uid: sam
+    userPassword:{{ .Values.knox.users.sam.pw }}
+
+    # entry for sample user tom
+    dn: uid=tom,ou=people,dc=hadoop,dc=apache,dc=org
+    objectclass:top
+    objectclass:person
+    objectclass:organizationalPerson
+    objectclass:inetOrgPerson
+    cn: tom
+    sn: tom
+    uid: tom
+    userPassword:{{ .Values.knox.users.tom.pw }}
+
+    # create FIRST Level groups branch
+    dn: ou=groups,dc=hadoop,dc=apache,dc=org
+    objectclass:top
+    objectclass:organizationalUnit
+    ou: groups
+    description: generic groups branch
+
+    # create the analyst group under groups
+    dn: cn=analyst,ou=groups,dc=hadoop,dc=apache,dc=org
+    objectclass:top
+    objectclass: groupofnames
+    cn: analyst
+    description:analyst  group
+    member: uid=sam,ou=people,dc=hadoop,dc=apache,dc=org
+    member: uid=tom,ou=people,dc=hadoop,dc=apache,dc=org
+
+
+    # create the scientist group under groups
+    dn: cn=scientist,ou=groups,dc=hadoop,dc=apache,dc=org
+    objectclass:top
+    objectclass: groupofnames
+    cn: scientist
+    description: scientist group
+    member: uid=sam,ou=people,dc=hadoop,dc=apache,dc=org

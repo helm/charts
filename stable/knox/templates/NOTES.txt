@@ -1,0 +1,22 @@
+1. You can check the status of Apache Knox  by running this command:
+
+{{- if eq .Values.knox.servicetype "LoadBalancer" -}}
+	# Get the IP of load balancer service
+	
+	KNOX_IP=`kubectl get -o jsonpath='{ .status.loadBalancer.ingress[0].ip }' -n {{ .Release.Namespace }} svc/{{ include "knox.fullname" . }}-svc`
+
+	# Verify its running (should return a non-empty response)
+	wget --user admin --password {{ .Values.knox.users.admin.pw }} -q -O - "http://$KNOX_IP:8080/webhdfs/v1?op=LISTSTATUS"
+
+{{ else }}
+	# Locate the name of the Knox pod
+	kubectl get pod -n {{ .Release.Namespace }} | grep {{ include "knox.fullname" . }}
+
+	# Open a shell in the container
+	kubectl exec -ti  -n {{ .Release.Namespace }} <name_of_the_pod_from_above> bash
+	
+	# Verify its running (should return a non-empty response)
+	wget --user admin --password {{ .Values.knox.users.admin.pw }} -q -O -  "http://localhost:8080/webhdfs/v1?op=LISTSTATUS"
+
+{{- end -}}
+

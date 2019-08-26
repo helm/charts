@@ -1,0 +1,21 @@
+# The base Apache Knox image, see https://github.com/pfisterer/apache-knox-docker for details
+image:
+  repository: farberg/apache-knox-docker
+  tag: latest
+  pullPolicy: IfNotPresent
+
+knox:
+  users:
+    admin:
+      pw: "admin-password"
+    sam:
+      pw: "sam-password"
+    tom:
+      pw: "tom-password"
+
+  servicetype: LoadBalancer
+
+  hadoop:
+    nameNodeUrl: "hdfs://nn:9000/webhdfs"
+    resourceManagerUrl: "http://rm:8088/ws"
+    webHdfsUrl: "http://nn:50070/webhdfs"
