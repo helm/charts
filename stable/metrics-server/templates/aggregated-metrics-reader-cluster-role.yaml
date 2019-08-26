@@ -13,6 +13,6 @@ metadata:
     rbac.authorization.k8s.io/aggregate-to-admin: "true"
 rules:
   - apiGroups: ["metrics.k8s.io"]
-    resources: ["pods"]
+    resources: ["pods", "nodes"]
     verbs: ["get", "list", "watch"]
 {{- end -}}
