@@ -49,7 +49,7 @@ The following table lists the configurable parameters of the Katafygio chart and
 |-------------------------|-------------------------------------------------------------|--------------------------------------|
 | `replicaCount`          | Desired number of pods                                      | `1`                                  |
 | `image.repository`      | Katafygio container image name                              | `bpineau/katafygio`                  |
-| `image.tag`             | Katafygio container image tag                               | `v0.7.1`                             |
+| `image.tag`             | Katafygio container image tag                               | `v0.8.1`                             |
 | `image.pullPolicy`      | Katafygio container image pull policy                       | `IfNotPresent`                       |
 | `localDir`              | Container's local path where Katafygio will dump and commit | `/tmp/kf-dump`                       |
 | `gitUrl`                | Optional remote repository where changes will be pushed     | `nil`                                |
