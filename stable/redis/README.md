@@ -48,7 +48,7 @@ $ kubectl create secret generic redis-password-file --from-file=/tmp/redis-passw
 And deploy the Helm Chart using the secret name:
 
 ```bash
-$ helm install stable/redis --set usePasswordFile=true,existingSecret=redis-password-file
+$ helm install stable/redis --set usePassword=true,usePasswordFile=true,existingSecret=redis-password-file,sentinels.enabled=true,metrics.enabled=true
 ```
 
 ## Uninstalling the Chart
