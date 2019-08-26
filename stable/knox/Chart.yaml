@@ -1,6 +1,7 @@
 name: knox
 description: Apache Knox
 version: 0.1.0
+appVersion: 1.1.0
 keywords:
   - Apache Hadoop
   - Apache Knox
