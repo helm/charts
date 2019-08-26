@@ -37,6 +37,20 @@ The command deploys Redis on the Kubernetes cluster in the default configuration
 
 > **Tip**: List all releases using `helm list`
 
+## Using password file
+To use a password file for Redis you need to create a secret containing the password:
+
+```bash
+$ kubectl create secret generic redis-password-file --from-file=/tmp/redis-password
+```
+> *NOTE*: It is important that the file with the password must be called `redis-password`
+
+And deploy the Helm Chart using the secret name:
+
+```bash
+$ helm install stable/redis --set usePasswordFile=true,existingSecret=redis-password-file
+```
+
 ## Uninstalling the Chart
 
 To uninstall/delete the `my-release` deployment:

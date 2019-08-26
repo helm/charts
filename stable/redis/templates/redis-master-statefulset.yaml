@@ -269,6 +269,15 @@ spec:
       - name: metrics
         image: {{ template "redis.metrics.image" . }}
         imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
+        command:
+        - /bin/bash
+        - -c
+        - |
+          if [[ -f '/secrets/redis-password' ]]; then
+           password_aux-`cat /secret/redis-password`
+           export REDIS_PASSWORD=$password_aux
+          fi
+          redis_exporter
         args:
         {{- range $key, $value := .Values.metrics.extraArgs }}
           - --{{ $key }}={{ $value }}
@@ -276,17 +285,12 @@ spec:
         env:
         - name: REDIS_ALIAS
           value: {{ template "redis.fullname" . }}
-        {{- if .Values.usePassword }}
-        {{- if .Values.usePasswordFile }}
-        - name: REDIS_PASSWORD_FILE
-          value: "/secrets/redis-password"
-        {{- else }}
+        {{- if and .Values.usePassword (not .Values.usePasswordFile) }}
         - name: REDIS_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "redis.secretName" . }}
               key: redis-password
-        {{- end }}
         {{- end }}
         volumeMounts:
         {{- if .Values.usePasswordFile }}
