@@ -84,6 +84,9 @@ spec:
             secretKeyRef:
               name:  {{ template "oauth2-proxy.secretName" . }}
               key: cookie-secret
+        {{- if .Values.extraEnv }}
+{{ toYaml .Values.extraEnv | indent 8 }}
+        {{- end }}
         ports:
           - containerPort: 4180
             name: http

@@ -34,7 +34,7 @@ orgWhitelist: <replace-me>
 #   token: bar
 # Bitbucket Server only:
 #   secret: baz
-#   base_url: https://bitbucket.yourorganization.com
+#   baseURL: https://bitbucket.yourorganization.com
 # (The chart will perform the base64 encoding for you for values that are stored in secrets.)
 
 # If managing secrets outside the chart for the webhook, use this variable to reference the secret name

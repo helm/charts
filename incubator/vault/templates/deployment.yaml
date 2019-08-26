@@ -43,6 +43,43 @@ spec:
       priorityClassName: {{ .Values.priorityClassName }}
       {{- end }}
       containers:
+      {{- if .Values.consulAgent.join }}
+      - name: {{ .Chart.Name }}-consul-agent
+        image: "{{ .Values.consulAgent.repository }}:{{ .Values.consulAgent.tag }}"
+        imagePullPolicy: {{ .Values.consulAgent.pullPolicy }}
+        securityContext:
+          readOnlyRootFilesystem: true
+        volumeMounts:
+        - name: consul-data
+          mountPath: /etc/consul
+        {{- if .Values.consulAgent.gossipKeySecretName }}
+        - name: consul-gossip-key
+          mountPath: /etc/consul/secrets
+          readOnly: true
+        {{- end }}
+        command:
+          - "/bin/sh"
+          - "-ec"
+          - |
+            {{- if .Values.consulAgent.gossipKeySecretName }}
+            if [ -e /etc/consul/secrets/gossip-key ]; then
+              echo "{\"encrypt\": \"$(base64 /etc/consul/secrets/gossip-key)\"}" > /etc/consul/encrypt.json
+              GOSSIP_KEY="-config-file /etc/consul/encrypt.json"
+            fi
+            {{- end }}
+            {{- if .Values.vault.config.storage.consul.token }}
+            echo "{\"acl\":{\"tokens\":{\"agent\":\"{{ .Values.vault.config.storage.consul.token }}\"}}}" > /etc/consul/agent-token.json
+            AGENT_TOKEN="-config-file /etc/consul/agent-token.json"
+            {{- end }}
+
+            exec /bin/consul agent \
+              $GOSSIP_KEY \
+              $AGENT_TOKEN \
+              -join={{- .Values.consulAgent.join }} \
+              -data-dir=/etc/consul
+        resources:
+{{ toYaml .Values.consulAgent.resources | indent 10 }}
+      {{- end }}
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ default .Chart.AppVersion .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
@@ -95,8 +132,12 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: status.podIP
+          - name: VAULT_API_ADDR
+            value: "https://$(POD_IP):8200"
+        {{- if not .Values.vault.dev }}
           - name: VAULT_CLUSTER_ADDR
             value: "https://$(POD_IP):8201"
+        {{- end }}
           - name: VAULT_LOG_LEVEL
             value: {{ .Values.vault.logLevel | quote }}
         {{- if .Values.vault.extraEnv }}
@@ -115,43 +156,6 @@ spec:
 {{- if .Values.vault.extraContainers }}
 {{ tpl (toYaml .Values.vault.extraContainers) . | indent 6}}
 {{- end }}
-      {{- if .Values.consulAgent.join }}
-      - name: {{ .Chart.Name }}-consul-agent
-        image: "{{ .Values.consulAgent.repository }}:{{ .Values.consulAgent.tag }}"
-        imagePullPolicy: {{ .Values.consulAgent.pullPolicy }}
-        securityContext:
-          readOnlyRootFilesystem: true
-        volumeMounts:
-        - name: consul-data
-          mountPath: /etc/consul
-        {{- if .Values.consulAgent.gossipKeySecretName }}
-        - name: consul-gossip-key
-          mountPath: /etc/consul/secrets
-          readOnly: true
-        {{- end }}
-        command:
-          - "/bin/sh"
-          - "-ec"
-          - |
-            {{- if .Values.consulAgent.gossipKeySecretName }}
-            if [ -e /etc/consul/secrets/gossip-key ]; then
-              echo "{\"encrypt\": \"$(base64 /etc/consul/secrets/gossip-key)\"}" > /etc/consul/encrypt.json
-              GOSSIP_KEY="-config-file /etc/consul/encrypt.json"
-            fi
-            {{- end }}
-            {{- if .Values.vault.config.storage.consul.token }}
-            echo "{\"acl\":{\"tokens\":{\"agent\":\"{{ .Values.vault.config.storage.consul.token }}\"}}}" > /etc/consul/agent-token.json
-            AGENT_TOKEN="-config-file /etc/consul/agent-token.json"
-            {{- end }}
-
-            exec /bin/consul agent \
-              $GOSSIP_KEY \
-              $AGENT_TOKEN \
-              -join={{- .Values.consulAgent.join }} \
-              -data-dir=/etc/consul
-        resources:
-{{ toYaml .Values.consulAgent.resources | indent 10 }}
-      {{- end }}
       {{- if .Values.vaultExporter.enabled }}
       - name: {{ .Chart.Name }}-exporter
         image: "{{ .Values.vaultExporter.repository }}:{{ .Values.vaultExporter.tag }}"

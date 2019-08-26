@@ -1,0 +1,37 @@
+# Generated from 'kube-prometheus-node-alerting.rules' group from https://raw.githubusercontent.com/coreos/kube-prometheus/master/manifests/prometheus-rules.yaml
+# Do not change in-place! In order to change this file first read following link:
+# https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
+{{- if and (semverCompare ">=1.14.0-0" .Capabilities.KubeVersion.GitVersion) (semverCompare "<1.16.0-0" .Capabilities.KubeVersion.GitVersion) .Values.defaultRules.create .Values.defaultRules.rules.kubePrometheusNodeAlerting }}
+apiVersion: {{ printf "%s/v1" (.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
+kind: PrometheusRule
+metadata:
+  name: {{ printf "%s-%s" (include "prometheus-operator.fullname" .) "kube-prometheus-node-alerting.rules" | trunc 63 | trimSuffix "-" }}
+  labels:
+    app: {{ template "prometheus-operator.name" . }}
+{{ include "prometheus-operator.labels" . | indent 4 }}
+{{- if .Values.defaultRules.labels }}
+{{ toYaml .Values.defaultRules.labels | indent 4 }}
+{{- end }}
+{{- if .Values.defaultRules.annotations }}
+  annotations:
+{{ toYaml .Values.defaultRules.annotations | indent 4 }}
+{{- end }}
+spec:
+  groups:
+  - name: kube-prometheus-node-alerting.rules
+    rules:
+    - alert: NodeDiskRunningFull
+      annotations:
+        message: Device {{`{{ $labels.device }}`}} on node {{`{{ $labels.instance }}`}} will be full within the next 24 hours.
+      expr: '(node:node_filesystem_usage: > 0.85) and (predict_linear(node:node_filesystem_avail:[6h], 3600 * 24) < 0)'
+      for: 30m
+      labels:
+        severity: warning
+    - alert: NodeDiskRunningFull
+      annotations:
+        message: Device {{`{{ $labels.device }}`}} on node {{`{{ $labels.instance }}`}} will be full within the next 2 hours.
+      expr: '(node:node_filesystem_usage: > 0.85) and (predict_linear(node:node_filesystem_avail:[30m], 3600 * 2) < 0)'
+      for: 10m
+      labels:
+        severity: critical
+{{- end }}

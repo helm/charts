@@ -6,6 +6,7 @@
 #   imageRegistry: myRegistryName
 #   imagePullSecrets:
 #     - myRegistryKeySecretName
+#   storageClass: myStorageClass
 
 ## Bitnami RabbitMQ image version
 ## ref: https://hub.docker.com/r/bitnami/rabbitmq/tags/
@@ -299,8 +300,8 @@ metrics:
   enabled: true
   image:
     registry: docker.io
-    repository: kbudde/rabbitmq-exporter
-    tag: v0.29.0
+    repository: bitnami/rabbitmq-exporter
+    tag: 0.29.0-debian-9-r3
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
@@ -312,7 +313,7 @@ metrics:
   ## ref: https://github.com/kbudde/rabbitmq_exporter#configuration
   env: {}
   ## Metrics exporter port
-  port:	9090
+  port: 9419
   ## Comma-separated list of extended scraping capabilities supported by the target RabbitMQ server
   ## ref: https://github.com/kbudde/rabbitmq_exporter#extended-rabbitmq-capabilities
   capabilities: "bert,no_sort"
