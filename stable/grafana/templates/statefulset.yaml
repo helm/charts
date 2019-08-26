@@ -38,7 +38,7 @@ spec:
       {{- include "grafana.pod" . | nindent 6 }}
   volumeClaimTemplates:
   - metadata:
-    name: storage
+      name: storage
     spec:
       accessModes: {{ .Values.persistence.accessModes }}
       storageClassName: {{ .Values.persistence.storageClassName }}
