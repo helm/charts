@@ -79,9 +79,14 @@ spec:
             - name: scratch
               mountPath: /scratch
         {{- end }}
-          {{- if (or (and .Values.credentials.useSecret (or (eq $provider "aws") (eq $provider "gcp"))) .Values.configuration.extraEnvVars) }}
           env:
-          {{- end }}
+            - name: VELERO_SCRATCH_DIR
+              value: /scratch
+            - name: VELERO_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
           {{- if and .Values.credentials.useSecret (or (eq $provider "aws") (eq $provider "gcp")) }}
             {{- if eq $provider "aws" }}
             - name: AWS_SHARED_CREDENTIALS_FILE
@@ -89,14 +94,7 @@ spec:
             - name: GOOGLE_APPLICATION_CREDENTIALS
             {{- end }}
               value: /credentials/cloud
-            - name: VELERO_SCRATCH_DIR
-              value: /scratch
           {{- end }}
-            - name: VELERO_NAMESPACE
-              valueFrom:
-                fieldRef:
-                  apiVersion: v1
-                  fieldPath: metadata.namespace
           {{- with .Values.configuration.extraEnvVars }}
           {{- range $key, $value := . }}
             - name: {{ default "none" $key }}
