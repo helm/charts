@@ -31,6 +31,17 @@ spec:
         {{ $key }}: {{ $value }}
         {{- end }}
     spec:
+{{- if .Values.runAsUser }}
+      initContainers:
+      - name: busybox
+        image: busybox:1.31.0
+        command: ['sh','-c']
+        args: 
+        - chown {{.Values.runAsUser}}:{{default 1000 .Values.runAsGroup}} -R /usr/share/apm-server
+        volumeMounts:
+        - name: data
+          mountPath: /usr/share/apm-server/data
+{{- end }}
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -64,7 +75,8 @@ spec:
             port: http
           initialDelaySeconds: 60
         securityContext:
-          runAsUser: 0
+          runAsUser: {{ default 1000 .Values.runAsUser }}
+          runAsGroup: {{ default 1000 .Values.runAsGroup }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
