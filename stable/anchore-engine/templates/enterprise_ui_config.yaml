@@ -30,7 +30,9 @@ stringData:
     {{- if .Values.anchoreEnterpriseReports.enabled }}
     reports_uri: 'http://{{ template "anchore-engine.api.fullname" . }}:{{ .Values.anchoreEnterpriseReports.service.port}}/v1'
     {{- end }}
-    {{- if and .Values.postgresql.externalEndpoint (not .Values.postgresql.enabled) }}
+    {{- if and (and .Values.postgresql.externalEndpoint (not .Values.postgresql.enabled)) .Values.anchoreGlobal.dbConfig.ssl }}
+    appdb_uri: 'postgresql://{{ .Values.postgresql.postgresUser }}:{{ .Values.postgresql.postgresPassword }}@{{ .Values.postgresql.externalEndpoint }}/{{ .Values.postgresql.postgresDatabase }}?ssl=verify-full'
+    {{- else if and .Values.postgresql.externalEndpoint (not .Values.postgresql.enabled) }}
     appdb_uri: 'postgresql://{{ .Values.postgresql.postgresUser }}:{{ .Values.postgresql.postgresPassword }}@{{ .Values.postgresql.externalEndpoint }}/{{ .Values.postgresql.postgresDatabase }}'
     {{- else if and (index .Values "cloudsql" "enabled") (not (index .Values "postgresql" "enabled")) }}
     appdb_uri: 'postgresql://{{ .Values.postgresql.postgresUser }}:{{ .Values.postgresql.postgresPassword }}@localhost:5432/{{ .Values.postgresql.postgresDatabase }}'

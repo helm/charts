@@ -45,6 +45,12 @@ data:
         db_connect_args:
           timeout: {{ .Values.anchoreEnterpriseFeeds.dbConfig.timeout }}
           ssl: {{ .Values.anchoreEnterpriseFeeds.dbConfig.ssl }}
+          {{- if .Values.anchoreEnterpriseFeeds.dbConfig.ssl }}
+          sslmode: {{ default "verify-full" .Values.anchoreEnterpriseFeeds.dbConfig.sslMode }}
+          {{- end }}
+          {{- with .Values.anchoreEnterpriseFeeds.dbConfig.sslRootCertPath }}
+          sslrootcert: {{ . }}
+          {{- end }}
         db_pool_size: {{ .Values.anchoreEnterpriseFeeds.dbConfig.connectionPoolSize }}
         db_pool_max_overflow: {{ .Values.anchoreEnterpriseFeeds.dbConfig.connectionPoolSize }}
     services:

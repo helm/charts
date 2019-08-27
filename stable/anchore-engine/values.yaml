@@ -108,8 +108,10 @@ anchoreGlobal:
   # Configure the database connection within anchore-engine & enterprise-ui. This may get split into 2 different configurations based on service utilized.
   dbConfig:
     timeout: 120
-    # Use ssl, but the default postgresql config in helm's stable repo does not support ssl on server side, so this should be set for external dbs only for the time being
+    # Use ssl, but the default postgresql config in helm's stable repo does not support ssl on server side, so this should be set for external dbs only.
     ssl: false
+    # To specify path to an additional root CA certificate, uncomment 'sslRootCertPath' - this is only utilized if 'ssl: true' is configured.
+    sslRootCertPath: ""
     connectionPoolSize: 30
     connectionPoolMaxOverflow: 100
 
@@ -430,8 +432,10 @@ anchoreEnterpriseFeeds:
   # Configure the database connection within anchore-engine & enterprise-ui. This may get split into 2 different configurations based on service utilized.
   dbConfig:
     timeout: 120
-    # Use ssl, but the default postgresql config in helm's stable repo does not support ssl on server side, so this should be set for external dbs only for the time being
+    # Use ssl, but the default postgresql config in helm's stable repo does not support ssl on server side, so this should be set for external dbs
     ssl: false
+    # Specify path to an additional root CA certificate - this is only utilized if 'ssl: true' is configured.
+    sslRootCertPath: ""
     connectionPoolSize: 30
     connectionPoolMaxOverflow: 100
 

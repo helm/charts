@@ -40,6 +40,12 @@ data:
         db_connect_args:
           timeout: {{ .Values.anchoreGlobal.dbConfig.timeout }}
           ssl: {{ .Values.anchoreGlobal.dbConfig.ssl }}
+          {{- if .Values.anchoreGlobal.dbConfig.ssl }}
+          sslmode: {{ default "verify-full" .Values.anchoreGlobal.dbConfig.sslMode }}
+          {{- end }}
+          {{- with .Values.anchoreGlobal.dbConfig.sslRootCertPath }}
+          sslrootcert: {{ . }}
+          {{- end }}
         db_pool_size: {{ .Values.anchoreGlobal.dbConfig.connectionPoolSize }}
         db_pool_max_overflow: {{ .Values.anchoreGlobal.dbConfig.connectionPoolSize }}
 
