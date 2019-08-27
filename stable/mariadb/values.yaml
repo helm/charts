@@ -6,6 +6,7 @@
 #   imageRegistry: myRegistryName
 #   imagePullSecrets:
 #     - myRegistryKeySecretName
+#   storageClass: myStorageClass
 
 ## Use an alternate scheduler, e.g. "stork".
 ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
@@ -18,7 +19,7 @@
 image:
   registry: docker.io
   repository: bitnami/mariadb
-  tag: 10.3.16-debian-9-r29
+  tag: 10.3.17-debian-9-r0
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -65,7 +66,9 @@ volumePermissions:
 service:
   ## Kubernetes service type, ClusterIP and NodePort are supported at present
   type: ClusterIP
-  # clusterIp: None
+  # clusterIp:
+  #   master: xx.xx.xx.xx
+  #   slave: xx.xx.xx.xx
   port: 3306
   ## Specify the nodePort value for the LoadBalancer and NodePort service types.
   ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
@@ -409,8 +412,8 @@ metrics:
   enabled: false
   image:
     registry: docker.io
-    repository: prom/mysqld-exporter
-    tag: v0.10.0
+    repository: bitnami/mysqld-exporter
+    tag: 0.12.1-debian-9-r2
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.

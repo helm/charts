@@ -40,7 +40,7 @@ spec:
           - name: DD_CLUSTER_AGENT_AUTH_TOKEN
             valueFrom:
               secretKeyRef:
-                name: {{ template "datadog.fullname" . }}-cluster-agent
+                name: {{ template "clusterAgent.tokenSecretName" . }}
                 key: token
           - name: DD_CLUSTER_AGENT_ENABLED
             value: {{ .Values.clusterAgent.enabled | quote }}
@@ -95,5 +95,9 @@ spec:
       {{- if .Values.clusterchecksDeployment.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.clusterchecksDeployment.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.clusterchecksDeployment.tolerations }}
+      tolerations:
+{{ toYaml .Values.clusterchecksDeployment.tolerations | indent 8 }}
       {{- end }}
 {{ end }}

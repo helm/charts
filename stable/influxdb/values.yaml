@@ -4,6 +4,9 @@ image:
   repository: "influxdb"
   tag: "1.7.6-alpine"
   pullPolicy: IfNotPresent
+  ## If specified, use these secrets to access the images
+  # pullSecrets:
+  #   - registry-secret
 
 ## Specify a service type
 ## NodePort is default
@@ -182,6 +185,7 @@ config:
     enabled: true
     bind_address: 8086
     auth_enabled: false
+    flux_enabled: true
     log_enabled: true
     write_tracing: false
     pprof_enabled: true
@@ -262,3 +266,12 @@ initScripts:
   scripts:
     init.iql: |+
       CREATE DATABASE "telegraf" WITH DURATION 30d REPLICATION 1 NAME "rp_30d"
+
+backup:
+  enabled: false
+  schedule: "0 0 * * *"
+  annotations: {}
+  destination: gs://bucket/influxdb
+  # Google Cloud Storage
+  gcs:
+    serviceAccountSecret: influxdb-backup-key

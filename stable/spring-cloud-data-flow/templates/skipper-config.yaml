@@ -1,3 +1,4 @@
+{{- if not .Values.skipper.configMap }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -35,3 +36,4 @@ data:
         password: {{ template "scdf.database.password" . }}
         testOnBorrow: true
         validationQuery: "SELECT 1"
+{{- end }}

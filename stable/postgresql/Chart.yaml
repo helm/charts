@@ -1,7 +1,7 @@
 apiVersion: v1
 name: postgresql
-version: 6.1.0
-appVersion: 11.4.0
+version: 6.3.2
+appVersion: 11.5.0
 description: Chart for PostgreSQL, an object-relational database management system (ORDBMS) with an emphasis on extensibility and on standards-compliance.
 keywords:
 - postgresql

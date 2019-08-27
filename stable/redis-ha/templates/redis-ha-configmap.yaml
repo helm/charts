@@ -10,7 +10,7 @@ metadata:
 data:
   redis.conf: |
 {{- if .Values.redis.customConfig }}
-{{ .Values.redis.customConfig | indent 4 }}
+{{ tpl .Values.redis.customConfig . | indent 4 }}
 {{- else }}
     dir "/data"
     {{- range $key, $value := .Values.redis.config }}
@@ -24,7 +24,7 @@ data:
 
   sentinel.conf: |
 {{- if .Values.sentinel.customConfig }}
-{{ .Values.sentinel.customConfig | indent 4 }}
+{{ tpl .Values.sentinel.customConfig . | indent 4 }}
 {{- else }}
     dir "/data"
     {{- $root := . -}}

@@ -3,6 +3,9 @@ halyard:
   image:
     repository: gcr.io/spinnaker-marketplace/halyard
     tag: 1.20.2
+  # Set to false to disable persistence data volume for halyard
+  persistence:
+    enabled: true
   # Provide a config map with Hal commands that will be run the core config (storage)
   # The config map should contain a script in the config.sh key
   additionalScripts:
@@ -73,8 +76,12 @@ halyard:
 
   ## Uncomment if you want to set environment variables on the Halyard pod.
   # env:
-  #   - name: DEFAULT_JVM_OPTS
+  #   - name: JAVA_OPTS
   #     value: -Dhttp.proxyHost=proxy.example.com
+  customCerts:
+    ## Enable to override the default cacerts with your own one
+    enabled: false
+    secretName: custom-cacerts
 
 # Define which registries and repositories you want available in your
 # Spinnaker pipeline definitions
@@ -231,3 +238,7 @@ serviceAccount:
   # If left blank it is auto-generated from the fullname of the release
   halyardName:
   spinnakerName:
+securityContext:
+  # Specifies permissions to write for user/group
+  runAsUser: 1000
+  fsGroup: 1000

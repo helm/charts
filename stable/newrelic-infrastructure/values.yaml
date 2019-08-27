@@ -2,9 +2,8 @@
 # licenseKey:
 #
 # or Specify secret which contains New Relic API key
-# customSecret:
-#   name: secret_name
-#   key: secret_key
+# customSecretName: secret_name
+# customSecretKey: secret_key
 
 # IMPORTANT: The Kubernetes cluster name
 # https://docs.newrelic.com/docs/kubernetes-monitoring-integration
@@ -21,7 +20,7 @@ verboseLog: false
 
 image:
   repository: newrelic/infrastructure-k8s
-  tag: 1.9.0
+  tag: 1.9.4
   pullPolicy: IfNotPresent
 
 resources:
@@ -30,6 +29,8 @@ resources:
   requests:
     cpu: 100m
     memory: 30M
+
+privileged: true
 
 rbac:
   # Specifies whether RBAC resources should be created
@@ -48,9 +49,9 @@ serviceAccount:
 # podLabels:
 
 # If you wish to provide your own newrelic.yml file include it under config:
-# the sample config file is included here as an example. Three options have
+# the sample config file is included here as an example. Some options have
 # been omitted because they are handled either by variables, or a secret. They
-# are license_key, log_file and verbose.
+# are display_name, license_key, log_file and verbose.
 # config:
   #
   # New Relic Infrastructure configuration file
@@ -59,14 +60,6 @@ serviceAccount:
   # Infrastructure agent. If options have command line equivalents, New Relic
   # will use the command line option to override any value set in this file.
   #
-
-  #
-  # Option : display_name
-  # Value  : Hostname to replace the automatically generated hostname for
-  #          reporting.
-  # Default: Automatically generated hostname
-  #
-  # display_name: new_name
 
   #
   # Option : proxy
@@ -95,7 +88,13 @@ serviceAccount:
 # Ref: https://kubernetes.io/docs/user-guide/node-selection/
 nodeSelector: {}
 
-tolerations: []
+# These are default tolerations to be able to run the New Relic Kubernetes
+# integration.
+tolerations:
+  - operator: "Exists"
+    effect: "NoSchedule"
+  - operator: "Exists"
+    effect: "NoExecute"
 
 updateStrategy: RollingUpdate
 

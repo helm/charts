@@ -6,7 +6,7 @@ keywords:
 - redis
 - keyvalue
 - database
-version: 3.7.0
+version: 3.7.2
 appVersion: 5.0.5
 description: Highly available Kubernetes implementation of Redis
 icon: https://upload.wikimedia.org/wikipedia/en/thumb/6/6b/Redis_Logo.svg/1200px-Redis_Logo.svg.png

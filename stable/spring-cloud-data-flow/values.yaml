@@ -18,13 +18,14 @@ initContainers:
 
 server:
   image: springcloud/spring-cloud-dataflow-server
-  version: 2.1.2.RELEASE
+  version: 2.2.0.RELEASE
   imagePullPolicy: IfNotPresent
   platformName: default
   service:
     type: LoadBalancer
     externalPort: 80
     annotations: {}
+  configMap:
   resources: {}
   #  limits:
   #    cpu: 1.0
@@ -35,11 +36,12 @@ server:
 
 skipper:
   image: springcloud/spring-cloud-skipper-server
-  version: 2.0.2.RELEASE
+  version: 2.1.0.RELEASE
   imagePullPolicy: IfNotPresent
   platformName: default
   service:
     type: ClusterIP
+  configMap:
   resources: {}
   #  limits:
   #    cpu: 1.0

@@ -28,7 +28,7 @@ cluster using the [Helm](https://helm.sh) package manager.
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release stable/buzzfeed-sso
+$ helm install --name my-release incubator/buzzfeed-sso
 ```
 
 The command deploys SSO on the Kubernetes cluster using the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -83,6 +83,7 @@ Parameter | Description | Default
 `proxy.customSecret` | the secret key to reuse (avoids secret creation via helm) | REQUIRED if `proxy.secret` is not set
 `provider.google` | the Oauth provider to use (only Google support for now) | REQUIRED
 `provider.google.adminEmail` | the Google admin email | `undefined`
+`provider.google.slug` | the Google provider slug | `oauth2`
 `provider.google.secret` | the Google OAuth secrets | REQUIRED if `provider.google.customSecret` is not set
 `provider.google.customSecret` | the secret key to reuse instead of creating it via helm | REQUIRED if `provider.google.secret` is not set
 `image.repository` | container image repository | `buzzfeed/sso`
