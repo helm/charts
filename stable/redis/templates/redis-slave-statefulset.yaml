@@ -301,8 +301,7 @@ spec:
         - -c
         - |
           if [[ -f '/secrets/redis-password' ]]; then
-           password_aux-`cat /secrets/redis-password`
-           export REDIS_PASSWORD=$password_aux
+           export REDIS_PASSWORD=$(cat /secrets/redis-password)
           fi
           redis_exporter
         args:

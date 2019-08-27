@@ -1,3 +1,4 @@
+
 # Redis
 
 [Redis](http://redis.io/) is an advanced key-value cache and store. It is often referred to as a data structure server since keys can contain strings, hashes, lists, sets, sorted sets, bitmaps and hyperloglogs.
@@ -36,20 +37,6 @@ $ helm install --name my-release stable/redis
 The command deploys Redis on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
 
 > **Tip**: List all releases using `helm list`
-
-## Using password file
-To use a password file for Redis you need to create a secret containing the password:
-
-```bash
-$ kubectl create secret generic redis-password-file --from-file=/tmp/redis-password
-```
-> *NOTE*: It is important that the file with the password must be called `redis-password`
-
-And deploy the Helm Chart using the secret name:
-
-```bash
-$ helm install stable/redis --set usePassword=true,usePasswordFile=true,existingSecret=redis-password-file,sentinels.enabled=true,metrics.enabled=true
-```
 
 ## Uninstalling the Chart
 
@@ -325,6 +312,20 @@ $ helm install --name my-release -f values.yaml stable/redis
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
 > **Note for minikube users**: Current versions of minikube (v0.24.1 at the time of writing) provision `hostPath` persistent volumes that are only writable by root. Using chart defaults cause pod failure for the Redis pod as it attempts to write to the `/bitnami` directory. Consider installing Redis with `--set persistence.enabled=false`. See minikube issue [1990](https://github.com/kubernetes/minikube/issues/1990) for more information.
+
+### Using password file
+To use a password file for Redis you need to create a secret containing the password:
+
+```bash
+$ kubectl create secret generic redis-password-file --from-file=/tmp/redis-password
+```
+> *NOTE*: It is important that the file with the password must be called `redis-password`
+
+And deploy the Helm Chart using the secret name:
+
+```bash
+$ helm install stable/redis --set usePassword=true,usePasswordFile=true,existingSecret=redis-password-file,sentinels.enabled=true,metrics.enabled=true
+```
 
 ### Production configuration
 
