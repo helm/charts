@@ -49,6 +49,11 @@ spec:
         secret:
           secretName: {{ $name }}
       {{- end }}
+      {{- range .Values.googleServiceAccountSecrets }}
+      - name: {{ .name }}
+        secret:
+          secretName: {{ .secretName }}
+      {{- end }}
       {{- if .Values.gitconfig }}
       - name: gitconfig-volume
         secret:
@@ -235,6 +240,11 @@ spec:
           - name: {{ $name }}-volume
             readOnly: true
             mountPath: /etc/{{ $name }}
+          {{- end }}
+          {{- range .Values.googleServiceAccountSecrets }}
+          - name: {{ .name }}
+            readOnly: true
+            mountPath: /var/secrets/{{ .name }}
           {{- end }}
           {{- if .Values.gitconfig}}
           - name: gitconfig-volume
