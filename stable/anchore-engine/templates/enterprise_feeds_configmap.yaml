@@ -26,24 +26,19 @@ data:
 
   config.yaml: |
     # Anchore Enterprise Service Configuration File
-
     # General system-wide configuration options, these should not need to
     # be altered for basic operation
-    #
     service_dir: {{ .Values.anchoreGlobal.serviceDir }}
     tmp_dir: {{ .Values.anchoreGlobal.scratchVolume.mountPath }}
     log_level: {{ .Values.anchoreGlobal.logLevel }}
     cleanup_images: {{ .Values.anchoreGlobal.cleanupImages }}
-
     allow_awsecr_iam_auto: {{ .Values.anchoreGlobal.allowECRUseIAMRole }}
     host_id: "${ANCHORE_POD_NAME}"
     internal_ssl_verify: {{ .Values.anchoreGlobal.internalServicesSsl.verifyCerts }}
     auto_restart_services: false
     license_file: "/home/anchore/license.yaml"
-
     metrics:
       enabled: {{ .Values.anchoreGlobal.enableMetrics }}
-
     credentials:
       database:
         db_connect: "postgresql://${ANCHORE_DB_USER}:${ANCHORE_DB_PASSWORD}@${ANCHORE_DB_HOST}/${ANCHORE_DB_NAME}"
@@ -52,7 +47,6 @@ data:
           ssl: {{ .Values.anchoreEnterpriseFeeds.dbConfig.ssl }}
         db_pool_size: {{ .Values.anchoreEnterpriseFeeds.dbConfig.connectionPoolSize }}
         db_pool_max_overflow: {{ .Values.anchoreEnterpriseFeeds.dbConfig.connectionPoolSize }}
-
     services:
       feeds:
         enabled: true
@@ -97,7 +91,13 @@ data:
           alpine:
             enabled: {{ default "true" .Values.anchoreEnterpriseFeeds.alpineDriverEnabled }}
           snyk:
-            enabled: {{ default "true" .Values.anchoreEnterpriseFeeds.snykDriverEnabled }}
+            enabled: {{ default "false" .Values.anchoreEnterpriseFeeds.snykDriverEnabled }}
+          nvddb:
+            enabled: {{ default "false" .Values.anchoreEnterpriseFeeds.nvdDriverEnabled }}                        
+          nvdv2:
+            enabled: {{ default "true" .Values.anchoreEnterpriseFeeds.nvdv2DriverEnabled }}            
+          vulndb:
+            enabled: {{ default "true" .Values.anchoreEnterpriseFeeds.vulndbDriverEnabled }}                    
         ssl_cert: "{{ .Values.anchoreGlobal.internalServicesSsl.certDir -}}/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretCertName }}"
         ssl_key: "{{ .Values.anchoreGlobal.internalServicesSsl.certDir -}}/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretKeyName }}"
         ssl_enable: {{ .Values.anchoreGlobal.internalServicesSslEnabled }}

@@ -20,31 +20,24 @@ data:
   {{- else }}
   ANCHORE_DB_HOST: "{{ template "postgres.fullname" . }}:5432"
   {{- end }}
-
   config.yaml: |
     # Anchore Service Configuration File from ConfigMap
-
     service_dir: {{ .Values.anchoreGlobal.serviceDir }}
     tmp_dir: {{ .Values.anchoreGlobal.scratchVolume.mountPath }}
     log_level: {{ .Values.anchoreGlobal.logLevel }}
     cleanup_images: {{ .Values.anchoreGlobal.cleanupImages }}
-
     allow_awsecr_iam_auto: {{ .Values.anchoreGlobal.allowECRUseIAMRole }}
     host_id: "${ANCHORE_POD_NAME}"
     internal_ssl_verify: {{ .Values.anchoreGlobal.internalServicesSsl.verifyCerts }}
     auto_restart_services: false
-
     metrics:
       enabled: {{ .Values.anchoreGlobal.enableMetrics }}
-
     # Uncomment if you have a local endpoint that can accept
     # notifications from the anchore-engine, as configured below
-    #
     {{ if .Values.anchoreGlobal.webhooksEnabled }}
     webhooks:
       {{ toYaml .Values.anchoreGlobal.webhooks | nindent 6 }}
     {{ end }}
-
     # Configure what feeds to sync.
     # The sync will hit http://ancho.re/feeds, if any outbound firewall config needs to be set in your environment.
     feeds:
@@ -56,7 +49,7 @@ data:
           # Vulnerabilities feed is the feed for distro cve sources (redhat, debian, ubuntu, oracle, alpine....)
           vulnerabilities: {{ default "true" .Values.anchoreGlobal.syncVulnerabilites }}
           # NVD Data is used for non-distro CVEs (jars, npm, etc) that are not packaged and released by distros as rpms, debs, etc
-          nvd: {{ default "true" .Values.anchoreGlobal.syncNvd }}
+          nvdv2: {{ default "true" .Values.anchoreGlobal.syncNvd }}
           # Warning: enabling the package sync causes the service to require much
           #   more memory to do process the significant data volume. We recommend at least 4GB available for the container
           {{- if and (and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseFeeds.enabled) (or .Values.anchoreEnterpriseFeeds.gemDriverEnabled .Values.anchoreEnterpriseFeeds.npmDriverEnabled) }}
@@ -64,12 +57,12 @@ data:
           {{- else }}
           packages: {{ default "false" .Values.anchoreGlobal.syncPackages }}
           {{- end }}
-          # Enabling snyk syncs snyk vulnerability data from an on-premise anchore enterprise feeds service. Please contact
+          # Enabling vulndb syncs vulndb vulnerability data from an on-premise anchore enterprise feeds service. Please contact
           # anchore support for finding out more about this service
           {{- if and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseFeeds.enabled }}
-          snyk: {{ default "true" .Values.anchoreEnterpriseFeeds.synkDriverEnabled }}
+          vulndb: {{ default "true" .Values.anchoreEnterpriseFeeds.vulndbDriverEnabled }}
           {{- else }}
-          snyk: false
+          vulndb: false
           {{- end }}
       {{- if and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseFeeds.enabled }}
       url: "http://{{ template "anchore-engine.enterprise-feeds.fullname" . }}:{{ .Values.anchoreEnterpriseFeeds.service.port }}/v1/feeds"
@@ -83,10 +76,8 @@ data:
       {{- end }}
       connection_timeout_seconds: {{ default 3 .Values.anchoreGlobal.feedsConnectionTimeout }}
       read_timeout_seconds: {{ default 60 .Values.anchoreGlobal.feedsReadTimeout }}
-
     default_admin_password: ${ANCHORE_ADMIN_PASSWORD}
     default_admin_email: {{ .Values.anchoreGlobal.defaultAdminEmail }}
-
     credentials:
       database:
         db_connect: "postgresql://${ANCHORE_DB_USER}:${ANCHORE_DB_PASSWORD}@${ANCHORE_DB_HOST}/${ANCHORE_DB_NAME}"
@@ -95,7 +86,6 @@ data:
           ssl: {{ .Values.anchoreGlobal.dbConfig.ssl }}
         db_pool_size: {{ .Values.anchoreGlobal.dbConfig.connectionPoolSize }}
         db_pool_max_overflow: {{ .Values.anchoreGlobal.dbConfig.connectionPoolSize }}
-
     services:
       apiext:
         enabled: true
