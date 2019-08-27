@@ -11,7 +11,7 @@ metadata:
     {{ toYaml . | nindent 4 }}
     {{- end }}
   annotations:
-    {{- toYaml .Values.service.annotations | nindent 4 }}
+    {{- toYaml .Values.service.annotations | trim | nindent 4 }}
 spec:
   ports:
     - port: {{ .Values.service.port }}
@@ -21,4 +21,3 @@ spec:
     app: {{ template "metrics-server.name" . }}
     release: {{ .Release.Name }}
   type: {{ .Values.service.type }}
-
