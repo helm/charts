@@ -23,7 +23,7 @@ hostNetwork:
   #
   # You would require this enabled if you use alternate overlay networking for pods and
   # API server unable to communicate with metrics-server. As an example, this is required
-  # if you use Weave netwok on EKS
+  # if you use Weave network on EKS
   enabled: false
 
 image:
