@@ -1,11 +1,11 @@
 apiVersion: v1
-appVersion: 0.7.1
+appVersion: 0.8.1
 description: Continuously backup Kubernetes objets as YAML files in git
 name: katafygio
 home: https://github.com/bpineau/katafygio
 sources:
 - https://github.com/bpineau/katafygio
-version: 0.4.0
+version: 1.0.0
 keywords:
 - backup
 - dump
