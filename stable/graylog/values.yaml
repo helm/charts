@@ -171,9 +171,9 @@ graylog:
   # heapSize: "1024g"
 
   ## RollingUpdate update strategy
-  ## ref: https://kubernetes.io/docs/tutorials/stateful-application/basic-stateful-set/#updating-statefulsets
+  ## ref: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#update-strategies
   ##
-  updateStrategy: OnDelete
+  updateStrategy: RollingUpdate
   ## Graylog server pod termination grace period
   ##
   terminationGracePeriodSeconds: 120

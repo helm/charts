@@ -86,7 +86,7 @@ Set the following values in `values.yaml`
 
 ```yaml
 graylog:
-  tolerations: 
+  tolerations:
     - key: graylog
       value: "true"
       operator: "Equal"
@@ -114,7 +114,7 @@ The following table lists the configurable parameters of the Cassandra chart and
 | `graylog.service.master.annotations`    | Graylog Master Service annotations                                                                                                                    | `{}`                                  |
 | `graylog.podAnnotations`                | Kubernetes Pod annotations                                                                                                                            | `{}`                                  |
 | `graylog.terminationGracePeriodSeconds` | Pod termination grace period                                                                                                                          | `120`                                 |
-| `graylog.updateStrategy`                | Update Strategy of the StatefulSet                                                                                                                    | `OnDelete`                            |
+| `graylog.updateStrategy`                | Update Strategy of the StatefulSet                                                                                                                    | `RollingUpdate`                           |
 | `graylog.persistence.enabled`           | Use a PVC to persist data                                                                                                                             | `true`                                |
 | `graylog.persistence.storageClass`      | Storage class of backing PVC                                                                                                                          | `nil` (uses storage class annotation) |
 | `graylog.persistence.accessMode`        | Use volume as ReadOnly or ReadWrite                                                                                                                   | `ReadWriteOnce`                       |
