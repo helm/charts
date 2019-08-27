@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "knox.fullname" . }}-dep
+  labels:
+    app: {{ template "knox.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: knox-deployment
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "knox.name" . }}
+      chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+      release: {{ .Release.Name }}
+      heritage: {{ .Release.Service }}
+      component: knox-deployment-pod
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ template "knox.name" . }}
+        chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+        release: {{ .Release.Name }}
+        heritage: {{ .Release.Service }}
+        component: knox-deployment-pod
+    spec:
+      containers:
+      - image: farberg/apache-knox-docker:latest
+        name: {{ template "knox.fullname" . }}-pod
+        ports:
+          - containerPort: 8080
+        volumeMounts:
+          - name: {{ template "knox.fullname" . }}-dep-config-volume
+            mountPath: /opt/knox-1.0.0/conf
+# TODO: this requires authentication
+#        readinessProbe:
+#          httpGet:
+#            path: /webhdfs/v1/?op=LISTSTATUS
+#            port: 8080
+#          initialDelaySeconds: 5
+#          timeoutSeconds: 5
+#        livenessProbe:
+#          httpGet:
+#            path: /webhdfs/v1/?op=LISTSTATUS
+#            port: 8080
+#          initialDelaySeconds: 10
+#          timeoutSeconds: 5
+#          periodSeconds: 30
+
+      volumes:
+      - name: {{ template "knox.fullname" . }}-dep-config-volume
+        configMap:
+          name: {{ template "knox.fullname" . }}-confmap
+          items:
+          - key: topologies-admin.xml
+            path: topologies/admin.xml
+          - key: topologies-knoxsso.xml
+            path: topologies/knoxsso.xml
+          - key: topologies-manager.xml
+            path: topologies/manager.xml
+          - key: topologies-sandbox.xml
+            path: topologies/sandbox.xml
+          - key: gateway-log4j.properties
+            path: gateway-log4j.properties
+          - key: gateway-site.xml
+            path: gateway-site.xml
+          - key: ldap-log4j.properties
+            path: ldap-log4j.properties
+          - key: knoxcli-log4j.properties
+            path: knoxcli-log4j.properties
+          - key: shell-log4j.properties
+            path: shell-log4j.properties
+          - key: users.ldif
+            path: users.ldif

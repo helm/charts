@@ -1,0 +1,14 @@
+name: knox
+description: Apache Knox
+version: 0.1.0
+appVersion: 1.1.0
+keywords:
+  - Apache Hadoop
+  - Apache Knox
+home: https://github.com/pfisterer/apache-knox-helm
+sources:
+  - https://hub.docker.com/r/farberg/apache-knox-docker
+maintainers:
+  - name: pfisterer
+    url: http://github.com/pfisterer
+    
