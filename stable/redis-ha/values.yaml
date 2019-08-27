@@ -29,7 +29,7 @@ haproxy:
   replicas: 1
   image:
     repository: haproxy
-    tag: 2.0.1
+    tag: 2.0.4
     pullPolicy: IfNotPresent
   annotations: {}
   resources: {}
