@@ -113,6 +113,7 @@ webhook:
   image: "quay.io/openebs/admission-server"
   imageTag: "1.1.0"
   generateTLS: true
+  failurePolicy: Ignore
   replicas: 1
   nodeSelector: {}
   tolerations: []
