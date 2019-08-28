@@ -18,7 +18,7 @@ metadata:
 webhooks:
 # failurePolicy Fail means that an error calling the webhook causes the admission to fail.
   - name: admission-webhook.openebs.io
-    failurePolicy: Fail
+    failurePolicy: {{ .Values.webhook.failurePolicy }}
     clientConfig:
       service:
         name: admission-server-svc
