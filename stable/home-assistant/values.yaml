@@ -90,6 +90,9 @@ git:
     tag: x86_64-0.3.1
     pullPolicy: IfNotPresent
 
+  ## Specify the command that runs in the git-sync container to pull in configuration.
+  # command: []
+
   # repo:
   secret: git-creds
   syncPath: /config

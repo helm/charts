@@ -71,15 +71,12 @@ spec:
               value: /sso/upstream_configs.yml
             - name: PROVIDER_URL
               value: https://{{ .Values.auth.domain }}
-            # STATSD_HOST and STATSD_PORT must be defined or the app wont launch, they dont need to be a real host / port, but they do need to be defined.
-            - name: STATSD_HOST
-              value: localhost
-            - name: STATSD_PORT
-              value: "11111"
             - name: COOKIE_SECURE
               value: "true"
             - name: CLUSTER
               value: {{ .Values.cluster | quote }}
+            - name: DEFAULT_PROVIDER_SLUG
+              value: {{ .Values.provider.google.slug | default "oauth2" | quote }}
           {{- if .Values.proxy.providerUrlInternal }}
             - name: PROVIDER_URL_INTERNAL
               value: {{ .Values.proxy.providerUrlInternal | quote }}

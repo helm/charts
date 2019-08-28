@@ -1,8 +1,8 @@
 apiVersion: v1
 description: Toolkit for building data processing pipelines.
 name: spring-cloud-data-flow
-version: 2.3.2
-appVersion: 2.1.2.RELEASE
+version: 2.4.2
+appVersion: 2.2.1.RELEASE
 home: http://cloud.spring.io/spring-cloud-dataflow/
 sources:
 - https://github.com/spring-cloud/spring-cloud-dataflow

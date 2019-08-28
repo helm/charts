@@ -107,8 +107,11 @@ The following table lists the configurable parameters of the drone charts and th
 | `agent.tolerations`         | Drone **agent** node taints to tolerate                                                       | `[]`                        |
 | `agent.livenessProbe` | Not currently used. | `{}` |
 | `agent.readinessProbe` | Not currently used  | `{}` |
+| `agent.volumes`             | Additional volumes to make available to agent (shared by dind if used)                        | `nil`                       |
+| `agent.volumeMounts`        | Mount points for volumes                                                                      | `nil`                       |
 | `dind.enabled`              | Enable or disable **DinD**                                                                    | `true`                      |
 | `dind.driver`               | **DinD** storage driver                                                                       | `overlay2`                  |
+| `dind.volumeMounts`         | Mount points for volumes (defined in agent.volumes)                                           | `nil`                       |
 | `dind.resources`            | **DinD** pod resource requests & limits                                                       | `{}`                        |
 | `dind.env`                  | **DinD** environment variables                                                                | `nil`                       |
 | `dind.command`              | **DinD** custom command instead of default entry point                                        | `nil`                       |
