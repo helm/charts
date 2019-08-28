@@ -2,9 +2,13 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 replicaCount: 1
+
+# This will use the default deployment strategy unless it is overriden
+deploymentStrategy: {}
+
 image:
   repository: sonarqube
-  tag: 7.8-community
+  tag: 7.9-community
   # If using a private repository, the name of the imagePullSecret to use
   # pullSecret: my-repo-secret
 
