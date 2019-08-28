@@ -214,6 +214,9 @@ spec:
           resources:
 {{ toYaml .Values.prometheus.exporter.resources | indent 12 }}
         {{ end }}
+        {{- if .Values.extraContainers }}
+{{ tpl (toYaml .Values.extraContainers) . | indent 8 }}
+        {{- end }}
       {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
