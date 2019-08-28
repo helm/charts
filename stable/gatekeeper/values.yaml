@@ -1,0 +1,95 @@
+# Default values for gatekeeper.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+## Provide a name in place of prometheus-operator for `app:` labels
+##
+nameOverride: ""
+
+## Provide a name to substitute for the full names of resources
+##
+fullnameOverride: ""
+
+## Labels to apply to all resources
+##
+commonLabels: {}
+# scmhash: abc123
+# myLabel: aakkmd
+
+image:
+  # image.name is the name of the Gatekeeper container image.
+  name: quay.io/open-policy-agent/gatekeeper
+  # image.tag is the tag name of the Gatekeeper container image.
+  tag:
+  # image.pullPolicy specifies when to pull the image.
+  pullPolicy: IfNotPresent
+
+port: 8443
+
+securityContext: {}
+  # runAsUser: 65534
+  # fsGroup: 0
+
+service:
+  annotations: {}
+  type: ClusterIP
+  port: 443
+
+  # For nodeport, specify the following:
+  #   type: NodePort
+  #   nodePort: <port-number>
+
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+priorityClassName:
+
+resources: {}
+  # limits:
+  #   cpu: 1
+  #   memory: 500Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 300Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+# To _fail closed_ on failures, change to Fail. During initial testing, we
+# recommend leaving the failure policy as Ignore.
+admissionControllerFailurePolicy: Ignore
+
+# Adds a namespace selector to the admission controller webhook
+admissionControllerNamespaceSelector:
+  matchExpressions:
+  - {key: validation.gatekeeper.sh/disable-validation, operator: NotIn, values: ["true"]}
+
+# Adds an object selector to the admission controller webhook
+admissionControllerObjectSelector:
+  matchExpressions: []
+  # - {key: foo, operator: NotIn, values: ["bar"]}
+  matchLabels: []
+  # - foo: bar
+
+webhook:
+  apiGroups:
+  - ""
+  apiVersions:
+  - "*"
+  operations:
+  - CREATE
+  - UPDATE
+  resources:
+  - pods
+  scope: Namespaced

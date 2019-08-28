@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "gatekeeper.fullname" . }}
+  labels:
+    {{- include "gatekeeper.commonLabels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "gatekeeper.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "gatekeeper.commonLabels" . | nindent 8 }}
+    spec:
+      serviceAccount: {{ template "gatekeeper.serviceAccountName" . }}
+      {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName }}
+      {{- end }}
+      {{- if or (.Values.securityContext.runAsUser) (.Values.securityContext.fsGroup) }}
+      securityContext:
+        {{- if .Values.securityContext.runAsUser }}
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+        {{- end }}
+        {{- if .Values.securityContext.fsGroup }}
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+        {{- end }}
+      {{- end }}
+      containers:
+      - args:
+        - --auditInterval=30
+        - --port={{ .Values.port }}
+        - --enable-manual-deploy
+        command:
+        - /root/manager
+        env:
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+        image: {{ .Values.image.name }}:{{ include "gatekeeper.imageTag" . }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        name: manager
+        ports:
+        - containerPort: {{ .Values.port }}
+          name: http
+          protocol: TCP
+        resources:
+          {{ toYaml .Values.resources | nindent 10 }}
+        volumeMounts:
+        - mountPath: /certs
+          name: cert
+          readOnly: true
+      terminationGracePeriodSeconds: 10
+      volumes:
+      - name: cert
+        secret:
+          defaultMode: 420
+          secretName: {{ template "gatekeeper.fullname" . }}-webhook-server-secret
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{ toYaml . | nindent 8 }}
+      {{- end }}

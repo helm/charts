@@ -1,0 +1,64 @@
+{{- $serviceName := include "gatekeeper.fullname" . }}
+{{- $ca := genCA ( printf "%s-ca" $serviceName ) 3650 }}
+{{- $altName1 := printf "%s.%s" $serviceName .Release.Namespace }}
+{{- $altName2 := printf "%s.%s.svc" $serviceName .Release.Namespace }}
+{{- $cert := genSignedCert $serviceName nil (list $altName1 $altName2) 3650 $ca }}
+---
+apiVersion: admissionregistration.k8s.io/v1beta1
+kind: ValidatingWebhookConfiguration
+metadata:
+  name: {{ template "gatekeeper.fullname" . }}
+  labels:
+    {{- include "gatekeeper.commonLabels" . | nindent 4 }}
+webhooks:
+- admissionReviewVersions:
+  - v1beta1
+  clientConfig:
+    caBundle: {{ b64enc $ca.Cert }}
+    service:
+      name: {{ template "gatekeeper.fullname" . }}
+      namespace: {{ .Release.Namespace }}
+      path: /v1/admit
+      port: {{ .Values.service.port }}
+  failurePolicy: {{ .Values.admissionControllerFailurePolicy }}
+  matchPolicy: Exact
+  name: validation.gatekeeper.sh
+  {{- with .Values.admissionControllerNamespaceSelector }}
+  namespaceSelector:
+    {{ toYaml . | nindent 4 }}
+  {{ end }}
+  objectSelector:
+    matchExpressions:
+    - {key: app.kubernetes.io/name, operator: NotIn, values: ["{{ include "gatekeeper.name" . }}"]}
+    - {key: app.kubernetes.io/instance, operator: NotIn, values: ["{{ .Release.Name }}"]}
+    {{- with .Values.admissionControllerObjectSelector.matchExpressions }}
+    {{ toYaml . | nindent 4 }}
+    {{ end }}
+    {{- with .Values.admissionControllerObjectSelector.matchLabels }}
+    matchLabels:
+    {{ toYaml . | nindent 4 }}
+    {{ end }}
+  rules:
+  - apiGroups:
+    {{ toYaml .Values.webhook.apiGroups | nindent 4 }}
+    apiVersions:
+    {{ toYaml .Values.webhook.apiVersions | nindent 4 }}
+    operations:
+    {{ toYaml .Values.webhook.operations | nindent 4 }}
+    resources:
+    {{ toYaml .Values.webhook.resources | nindent 4 }}
+    scope: {{ .Values.webhook.scope }}
+  sideEffects: None
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ template "gatekeeper.fullname" . }}-webhook-server-secret
+  labels:
+    {{- include "gatekeeper.commonLabels" . | nindent 4 }}
+type: Opaque
+data:
+  cert.pem: {{ b64enc $cert.Cert }}
+  key.pem: {{ b64enc $cert.Key }}
+  ca-cert.pem: {{ b64enc $ca.Cert }}
+

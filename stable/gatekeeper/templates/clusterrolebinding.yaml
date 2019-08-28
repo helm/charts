@@ -1,0 +1,16 @@
+{{- if .Values.rbac.create -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ template "gatekeeper.fullname" . }}-rolebinding
+  labels:
+    {{- include "gatekeeper.commonLabels" . | nindent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ template "gatekeeper.fullname" . }}-role
+subjects:
+- kind: ServiceAccount
+  name: {{ template "gatekeeper.serviceAccountName" . }}
+  namespace: {{ .Release.Namespace }}
+{{- end -}}
