@@ -1,8 +1,5 @@
 # The base Apache Knox image, see https://github.com/pfisterer/apache-knox-docker for details
 image:
-  repository: 
-
-image:
   repository: farberg/apache-knox-docker
   tag: 1.3.0
   pullPolicy: IfNotPresent
