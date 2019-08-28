@@ -166,6 +166,37 @@ anchoreAnalyzer:
   # For more info see - https://docs.anchore.com/current/docs/engine/engine_installation/storage/layer_caching/
   # Enable image layer caching by setting a cache size > 0GB.
   layerCacheMaxGigabytes: 0
+  configFile:
+    # Anchore analyzer config file
+    #
+    # WARNING - malforming this file can cause the analyzer to fail on all image analysis
+    #
+    # Options for any analyzer module(s) that takes customizable input
+    #
+    # example configuration for the 'retrieve_files' analyzer, if installed
+    retrieve_files:
+      file_list:
+        - '/etc/passwd'
+        # - '/etc/services'
+        # - '/etc/sudoers'
+
+    # example configuration for the 'content_search' analyze, if installed
+    secret_search:
+      match_params:
+        - MAXFILESIZE=10000
+        - STOREONMATCH=n
+      regexp_match:
+        - "AWS_ACCESS_KEY=(?i).*aws_access_key_id( *=+ *).*(?<![A-Z0-9])[A-Z0-9]{20}(?![A-Z0-9]).*"
+        - "AWS_SECRET_KEY=(?i).*aws_secret_access_key( *=+ *).*(?<![A-Za-z0-9/+=])[A-Za-z0-9/+=]{40}(?![A-Za-z0-9/+=]).*"
+        - "PRIV_KEY=(?i)-+BEGIN(.*)PRIVATE KEY-+"
+        - "DOCKER_AUTH=(?i).*\"auth\": *\".+\""
+        - "API_KEY=(?i).*api(-|_)key( *=+ *).*(?<![A-Z0-9])[A-Z0-9]{20,60}(?![A-Z0-9]).*"
+        # - "ALPINE_NULL_ROOT=^root:::0:::::$"
+    # content_search:
+    #   match_params:
+    #     - MAXFILESIZE=10000
+    #   regexp_match:
+    #     - "EXAMPLE_MATCH="
 
   # resources:
   #  limits:

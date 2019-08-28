@@ -78,6 +78,9 @@ spec:
         - name: analyzer-api
           containerPort: {{ .Values.anchoreAnalyzer.containerPort }}
         volumeMounts:
+        - name: analyzer-config-volume
+          mountPath: /anchore_service/analyzer_config.yaml
+          subPath: analyzer_config.yaml
         - name: config-volume
           mountPath: /config/config.yaml
           subPath: config.yaml
@@ -111,6 +114,9 @@ spec:
         - name: config-volume
           configMap:
             name: {{ template "anchore-engine.fullname" .}}
+        - name: analyzer-config-volume
+          configMap:
+            name: {{ template "anchore-engine.analyzer.fullname" . }}
         {{- if .Values.anchoreGlobal.internalServicesSslEnabled }}
         - name: certs
           secret:
