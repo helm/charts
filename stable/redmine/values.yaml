@@ -14,7 +14,7 @@
 image:
   registry: docker.io
   repository: bitnami/redmine
-  tag: 4.0.4-debian-9-r22
+  tag: 4.0.4-debian-9-r70
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -96,7 +96,7 @@ mariadb:
   db:
     name: bitnami_redmine
     user: bn_redmine
-    ## If the password is not specified, mariadb will generates a random password
+    ## If the password is not specified, mariadb will generate a random password
     ##
     # password:
 
@@ -131,9 +131,14 @@ mariadb:
 postgresql:
   ## Whether to deploy a PostgreSQL server to satisfy the applications database requirements. To use an external database set this to false and configure the externalDatabase parameters
   enabled: false
-  ## PostgreSQL admin password
-  ## ref: https://github.com/bitnami/bitnami-docker-postgresql/blob/master/README.md#setting-the-root-password-on-first-run
+
+  ## Create a database and a database user
+  ## ref: https://github.com/bitnami/bitnami-docker-postgresql/#creating-a-database-on-first-run
   ##
+  postgresqlDatabase: bitnami_redmine
+  postgresqlUsername: bn_redmine
+  ##
+  ## If the password is not specified, postgresql will generate a random password
   # postgresqlPassword:
 
   ## Enable persistence using Persistent Volume Claims
@@ -164,10 +169,13 @@ externalDatabase:
   ## Database host
   host: localhost
 
-  ## Database Admin User
-  user: root
+  ## Database name
+  name: database
 
-  ## Database Admin Password
+  ## Database User
+  user: user
+
+  ## Database Password
   password: ""
 
   ## Database port number (use 5432 when using PostgreSQL)
