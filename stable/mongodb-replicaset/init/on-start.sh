@@ -39,8 +39,7 @@ fi
 log() {
     local msg="$1"
     local timestamp
-    timestamp=$(date --iso-8601=ns)
-	echo "[$timestamp] [$script_name] $msg" 2>&1
+    timestamp=$(date --iso-8601=ns)	
     echo "[$timestamp] [$script_name] $msg" 2>&1 | tee -a /work-dir/log.txt 1>&2
 }
 
@@ -55,7 +54,7 @@ retry_until() {
         creds=()
     fi
     
-	echo "trying to connect to server ${host} with credentials: ${creds[@]} with arguments: ${ssl_args[@]}"
+	echo "trying to connect to server ${host} with arguments: ${ssl_args[@]}"
 	
     until [[ $(mongo admin --host "${host}" "${creds[@]}" "${ssl_args[@]}" --quiet --eval "${command}") == "${expected}" ]]; do
         sleep 1
@@ -139,7 +138,7 @@ cat >openssl.cnf <<EOL
 req_extensions = v3_req
 distinguished_name = req_distinguished_name
 [req_distinguished_name]
-[ v3_req ]f
+[ v3_req ]
 basicConstraints = CA:FALSE
 keyUsage = nonRepudiation, digitalSignature, keyEncipherment
 subjectAltName = @alt_names
@@ -151,10 +150,6 @@ DNS.4 = localhost
 DNS.5 = 127.0.0.1
 EOL
 
-log "my_hostname: $my_hostname"
-
-log "service_name: $service_name"
-
     export RANDFILE=/work-dir/.rnd
 	
     # Generate the certs	
@@ -163,29 +158,9 @@ log "service_name: $service_name"
     openssl x509 -req -in mongo.csr \
         -CA "$ca_crt" -CAkey "$ca_key" -CAcreateserial \
         -out mongo.crt -days 3650 -extensions v3_req -extfile openssl.cnf
-
-	log "CA: $(cat $ca_crt)"
-	log "CA KEY: $(cat $ca_key)"
-	
-    log "mongo.key: $(cat mongo.key)"
-	log "mongo.crt: $(cat mongo.crt)"
 	
     rm mongo.csr
-    #openssl x509 -in mongo.crt -out mogo.pem -outform PEM
-	#cat mogo.pem > $pem	
-	
-	#cat mongo.crt > $pem
-	#cat mongo.key >> $pem
-	#cat $ca_crt >> $pem	
-	
-	#echo LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURDakNDQWZLZ0F3SUJBZ0lRQ1ZKbHlyVmdmMmlzK3ErRmVCaUhvVEFOQmdrcWhraUc5dzBCQVFzRkFEQW0KTVJVd0V3WURWUVFLRXd4alpYSjBMVzFoYm1GblpYSXhEVEFMQmdOVkJBTVRCR2xoWVdnd0hoY05NVGt3TlRJegpNVE15T0RVNFdoY05NVGt3T0RJeE1UTXlPRFU0V2pBbU1SVXdFd1lEVlFRS0V3eGpaWEowTFcxaGJtRm5aWEl4CkRUQUxCZ05WQkFNVEJHbGhZV2d3Z2dFaU1BMEdDU3FHU0liM0RRRUJBUVVBQTRJQkR3QXdnZ0VLQW9JQkFRQ3MKOFNDZlp0d3pOQXZ2SXhZV29MMzJuQ0U2UzRUTWpIaVRGb2x6cVlqc3JQMjZxQmxCam5ZYXh4dmFGeXN6c3NveAoxV3psSlFSWFNyZmc1M0xyZnBWbVM3UXNXQ2pncmozdUxIeDlva0o4UzV6UzFaU1huNVpPaEo3RHJhREJtUndvCkNYTWVUUzFQbzR1K0Y3YVM5Y3NQTng5Y0gwblVLMDB5ZW1NS3MxSG14Q0ttVWJBYmVvS2lrOGdNc1RyWFlJS1AKZ2ZVbXUxNFBqaUhLeW5sallXTno5MW03QUtra2Q5eE81TjRWSUE1MnZvYmUrRDNPNXU1SFJ1V0wvUGFKZnlDQgowOHlSWDVJU3B0WU44NjJ1UVNIdE1oU3lZNENJYi9oeTlSUkN0TGxadXJmdVVmZWRLbVlaQmoyWTlnZTZnR3RQCkpPQWhCTnY5aklBK2ZrSS9Ra2tIQWdNQkFBR2pOREF5TUE0R0ExVWREd0VCL3dRRUF3SUNwREFQQmdOVkhSTUIKQWY4RUJUQURBUUgvTUE4R0ExVWRFUVFJTUFhQ0JHbGhZV2d3RFFZSktvWklodmNOQVFFTEJRQURnZ0VCQUNLcwowLzM1ekhGTWdrTEpGem01THk0ZzdIRVdGNXM1OFZzcTJpeTZpSVlKdkhXVEdZUDdZTGdRK0hST3JpTEJPdURECi9aZ29nOGQrQXFCajNWY2dDOHlwUXBVdWJVK1RLbVlaZnJOU0RTOE5PcEQ3S2M3OE5nRW1vaTlIZzdBeld5SFQKend0VHB3ekJFNFl3d1Z5VVJCRzJTNXFKei83ZkFXU0pCRTlOTHBCOFN1dm95ZWlLUC9vVFJ3cmN0K1ZPLzUxYQoycGUrQjRuRy94WmkvcUlicE82N3NOeDllODJ1NnpoNzJIU0JHNUQ3cUlQT1IrUHRMT3FHYWlDTHNXWC9IZHpyCmNGUWtsdDIxK2pTeEdsWm5lUTBJU1lrZHJJMkVJNWNOVkRzSkZmMDZTUC9lSjVKTnBseXg4cGU0MXBKVDltb3UKYTRyWGJ3VmdxOWtIUmVpRzQ3TT0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo= > $pem
-	#cat mongo.crt mongo.key >> $pem
-	
-	cat mongo.crt > $pem
-	echo LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURDakNDQWZLZ0F3SUJBZ0lRQ1ZKbHlyVmdmMmlzK3ErRmVCaUhvVEFOQmdrcWhraUc5dzBCQVFzRkFEQW0KTVJVd0V3WURWUVFLRXd4alpYSjBMVzFoYm1GblpYSXhEVEFMQmdOVkJBTVRCR2xoWVdnd0hoY05NVGt3TlRJegpNVE15T0RVNFdoY05NVGt3T0RJeE1UTXlPRFU0V2pBbU1SVXdFd1lEVlFRS0V3eGpaWEowTFcxaGJtRm5aWEl4CkRUQUxCZ05WQkFNVEJHbGhZV2d3Z2dFaU1BMEdDU3FHU0liM0RRRUJBUVVBQTRJQkR3QXdnZ0VLQW9JQkFRQ3MKOFNDZlp0d3pOQXZ2SXhZV29MMzJuQ0U2UzRUTWpIaVRGb2x6cVlqc3JQMjZxQmxCam5ZYXh4dmFGeXN6c3NveAoxV3psSlFSWFNyZmc1M0xyZnBWbVM3UXNXQ2pncmozdUxIeDlva0o4UzV6UzFaU1huNVpPaEo3RHJhREJtUndvCkNYTWVUUzFQbzR1K0Y3YVM5Y3NQTng5Y0gwblVLMDB5ZW1NS3MxSG14Q0ttVWJBYmVvS2lrOGdNc1RyWFlJS1AKZ2ZVbXUxNFBqaUhLeW5sallXTno5MW03QUtra2Q5eE81TjRWSUE1MnZvYmUrRDNPNXU1SFJ1V0wvUGFKZnlDQgowOHlSWDVJU3B0WU44NjJ1UVNIdE1oU3lZNENJYi9oeTlSUkN0TGxadXJmdVVmZWRLbVlaQmoyWTlnZTZnR3RQCkpPQWhCTnY5aklBK2ZrSS9Ra2tIQWdNQkFBR2pOREF5TUE0R0ExVWREd0VCL3dRRUF3SUNwREFQQmdOVkhSTUIKQWY4RUJUQURBUUgvTUE4R0ExVWRFUVFJTUFhQ0JHbGhZV2d3RFFZSktvWklodmNOQVFFTEJRQURnZ0VCQUNLcwowLzM1ekhGTWdrTEpGem01THk0ZzdIRVdGNXM1OFZzcTJpeTZpSVlKdkhXVEdZUDdZTGdRK0hST3JpTEJPdURECi9aZ29nOGQrQXFCajNWY2dDOHlwUXBVdWJVK1RLbVlaZnJOU0RTOE5PcEQ3S2M3OE5nRW1vaTlIZzdBeld5SFQKend0VHB3ekJFNFl3d1Z5VVJCRzJTNXFKei83ZkFXU0pCRTlOTHBCOFN1dm95ZWlLUC9vVFJ3cmN0K1ZPLzUxYQoycGUrQjRuRy94WmkvcUlicE82N3NOeDllODJ1NnpoNzJIU0JHNUQ3cUlQT1IrUHRMT3FHYWlDTHNXWC9IZHpyCmNGUWtsdDIxK2pTeEdsWm5lUTBJU1lrZHJJMkVJNWNOVkRzSkZmMDZTUC9lSjVKTnBseXg4cGU0MXBKVDltb3UKYTRyWGJ3VmdxOWtIUmVpRzQ3TT0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo= >> $pem
-    cat mongo.key >> $pem
-	
-    #cat mongo.crt mongo.key > $pem
+    cat mongo.crt mongo.key > $pem
     rm mongo.key mongo.crt
 fi
 
@@ -256,4 +231,3 @@ fi
 
 log "MongoDB bootstrap complete"
 exit 0
-
