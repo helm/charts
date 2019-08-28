@@ -30,3 +30,16 @@ Create chart name and version as used by the chart label.
 {{- define "hubot.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{/* Generate basic labels */}}
+{{- define "hubot.labels" }}
+app.kubernetes.io/name: {{ include "hubot.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+helm.sh/chart: {{ include "hubot.chart" . }}
+{{- end }}
+
+{{- define "hubot.redis.fullname" -}}
+{{- $name := default "redis" .Values.redis.nameOverride -}}
+{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
