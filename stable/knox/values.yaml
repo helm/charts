@@ -1,7 +1,10 @@
 # The base Apache Knox image, see https://github.com/pfisterer/apache-knox-docker for details
 image:
+  repository: 
+
+image:
   repository: farberg/apache-knox-docker
-  tag: latest
+  tag: 1.3.0
   pullPolicy: IfNotPresent
 
 knox:
@@ -19,3 +22,9 @@ knox:
     nameNodeUrl: "hdfs://nn:9000/webhdfs"
     resourceManagerUrl: "http://rm:8088/ws"
     webHdfsUrl: "http://nn:50070/webhdfs"
+
+  gateway:
+    logLevel: "DEBUG"
+
+  ldap:
+    logLevel: "INFO"

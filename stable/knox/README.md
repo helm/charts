@@ -25,16 +25,20 @@ $ helm install --name knox stable/knox \
 
 The following table lists the configurable parameters of the Apache Knox chart and their default values.
 
-| Parameter                        | Description                              | Default                                                                                  |
-| -------------------------------- | ---------------------------------------- | ---------------------------------------------------------------------------------------- |
-| `knox.image`                     | Docker image for Apache Knox             | [farberg/apache-knox-docker:latest](https://hub.docker.com/r/farberg/apache-knox-docker) |
-| `knox.servicetype`               | Type of service exposure for Apache Knox | `LoadBalancer`                                                                           |
-| `knox.hadoop.nameNodeUrl`        | URL to Hadoop's name node                | `hdfs://nn:9000/webhdfs`                                                                 |
-| `knox.hadoop.resourceManagerUrl` | URL to Hadoop's Resource Manager         | `http://rm:8088/ws`                                                                      |
-| `knox.hadoop.webHdfsUrl`         | URL to Hadoop's webhdfs                  | `http://nn:50070/webhdfs`                                                                |
-| `knox.users.admin.pw`            | Password for user `admin`                | `admin-password`                                                                         |
-| `knox.users.sam.pw`              | Password for user `sam`                  | `sam-password`                                                                           |
-| `knox.users.tom.pw`              | Password for user `tom`                  | `tom-password`                                                                           |
+| Parameter                        | Description                               | Default                                                                           |
+| -------------------------------- | ----------------------------------------- | --------------------------------------------------------------------------------- |
+| `knox.image.repository`          | Docker image for Apache Knox              | [farberg/apache-knox-docker](https://hub.docker.com/r/farberg/apache-knox-docker) |
+| `knox.image.tag`                 | Docker image tag                          | `1.3.0`                                                                           |
+| `knox.image.pullPolicy`          | Pull policy for the images                | `IfNotPresent`                                                                    |
+| `knox.servicetype`               | Type of service exposure for Apache Knox  | `LoadBalancer`                                                                    |
+| `knox.hadoop.nameNodeUrl`        | URL to Hadoop's name node                 | `hdfs://nn:9000/webhdfs`                                                          |
+| `knox.hadoop.resourceManagerUrl` | URL to Hadoop's Resource Manager          | `http://rm:8088/ws`                                                               |
+| `knox.hadoop.webHdfsUrl`         | URL to Hadoop's webhdfs                   | `http://nn:50070/webhdfs`                                                         |
+| `knox.users.admin.pw`            | Password for user `admin`                 | `admin-password`                                                                  |
+| `knox.users.sam.pw`              | Password for user `sam`                   | `sam-password`                                                                    |
+| `knox.users.tom.pw`              | Password for user `tom`                   | `tom-password`                                                                    |
+| `knox.gateway.logLevel`          | Log4j log level for the gateway component | `DEBUG`                                                                           |
+| `knox.ldap.logLevel`             | Log4j log level for the LDAP server       | `INFO`                                                                            |
 
 ## Open Issues
 

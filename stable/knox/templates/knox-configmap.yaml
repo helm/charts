@@ -456,8 +456,7 @@ data:
 
     log4j.rootLogger=INFO, drfa
 
-    #log4j.logger.org.apache.knox.gateway=INFO
-    log4j.logger.org.apache.knox.gateway=DEBUG
+    log4j.logger.org.apache.knox.gateway={{ .Values.knox.gateway.logLevel }}
 
     #log4j.logger.org.eclipse.jetty=DEBUG
     #log4j.logger.org.apache.shiro=DEBUG
@@ -476,7 +475,7 @@ data:
     log4j.appender.drfa.layout=org.apache.log4j.PatternLayout
     log4j.appender.drfa.layout.ConversionPattern=%d{ISO8601} %-5p %c{2} (%F:%M(%L)) - %m%n
 
-    log4j.logger.audit=INFO, auditfile
+    log4j.logger.audit=DEBUG, auditfile
     log4j.appender.auditfile=org.apache.log4j.DailyRollingFileAppender
     log4j.appender.auditfile.File=${app.log.dir}/${app.audit.file}
     log4j.appender.auditfile.Append = true
@@ -642,8 +641,8 @@ data:
 
     log4j.rootLogger=INFO, drfa
 
-    log4j.logger.org.apache.knox.gateway=INFO
-    #log4j.logger.org.apache.knox.gateway=DEBUG
+    log4j.logger.org.apache.knox.gateway=DEBUG
+    #log4j.logger.org.apache.knox.gateway=ALL
 
     log4j.appender.stdout=org.apache.log4j.ConsoleAppender
     log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
@@ -654,7 +653,6 @@ data:
     log4j.appender.drfa.DatePattern=.yyyy-MM-dd
     log4j.appender.drfa.layout=org.apache.log4j.PatternLayout
     log4j.appender.drfa.layout.ConversionPattern=%d{ISO8601} %-5p %c{2} (%F:%M(%L)) - %m%n
-
 
   ldap-log4j.properties: |
     # Licensed to the Apache Software Foundation (ASF) under one
@@ -677,8 +675,8 @@ data:
     app.log.file=${launcher.name}.log
 
     log4j.rootLogger=INFO, drfa
-    log4j.logger.org.apache.directory.server.ldap.LdapServer=INFO
-    log4j.logger.org.apache.directory=WARN
+    log4j.logger.org.apache.directory.server.ldap.LdapServer={{ .Values.knox.ldap.logLevel }}
+    log4j.logger.org.apache.directory={{ .Values.knox.ldap.logLevel }}
 
     log4j.appender.stdout=org.apache.log4j.ConsoleAppender
     log4j.appender.stdout.layout=org.apache.log4j.PatternLayout

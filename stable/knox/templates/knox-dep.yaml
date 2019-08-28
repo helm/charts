@@ -27,13 +27,14 @@ spec:
         component: knox-deployment-pod
     spec:
       containers:
-      - image: farberg/apache-knox-docker:latest
+      - image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         name: {{ template "knox.fullname" . }}-pod
         ports:
           - containerPort: 8080
         volumeMounts:
           - name: {{ template "knox.fullname" . }}-dep-config-volume
-            mountPath: /opt/knox-1.0.0/conf
+            mountPath: /opt/knox/conf/
 # TODO: this requires authentication
 #        readinessProbe:
 #          httpGet:
