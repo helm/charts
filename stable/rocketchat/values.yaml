@@ -73,7 +73,15 @@ mongodb:
 
   replicaSet:
     enabled: true
-    # key:
+    replicas:
+      secondary: 0
+      arbiter: 0
+    pdb:
+      minAvailable:
+        secondary: 0
+        arbiter: 0
+
+   # key:
 
   persistence:
     enabled: true
