@@ -1,0 +1,7 @@
+additionalDeployments:
+  - name: ci-test
+    replicaCount: 1
+    nodeSelector: {}
+    resources: {}
+    tolerations: []
+    affinity: {}
