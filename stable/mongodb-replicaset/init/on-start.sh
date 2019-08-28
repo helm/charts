@@ -39,7 +39,7 @@ fi
 log() {
     local msg="$1"
     local timestamp
-    timestamp=$(date --iso-8601=ns)	
+    timestamp=$(date --iso-8601=ns)
     echo "[$timestamp] [$script_name] $msg" 2>&1 | tee -a /work-dir/log.txt 1>&2
 }
 
@@ -154,7 +154,7 @@ EOL
 	
     # Generate the certs	
     openssl genrsa -out mongo.key 2048
-    openssl req -new -key mongo.key -out mongo.csr -subj "/O=cert-manager/OU=MongoDB/CN=$my_hostname" -config openssl.cnf
+    openssl req -new -key mongo.key -out mongo.csr -subj "/OU=MongoDB/CN=$my_hostname" -config openssl.cnf
     openssl x509 -req -in mongo.csr \
         -CA "$ca_crt" -CAkey "$ca_key" -CAcreateserial \
         -out mongo.crt -days 3650 -extensions v3_req -extfile openssl.cnf
