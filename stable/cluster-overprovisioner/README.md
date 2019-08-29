@@ -34,31 +34,25 @@ Some thought or experimentation is required to set `deployment.resources` and `d
 
 The following table lists the configurable parameters for this chart and their default values.
 
-| Parameter                                      | Description                                       | Default           |
-| -----------------------------------------------|---------------------------------------------------|-------------------|
-| `priorityClassOverprovision.name`              | Name of the overprovision priorityClass           | `overprovision`   |
-| `priorityClassOverprovision.value`             | Priority value of the overprovision priorityClass | `-1`              |
-| `priorityClassDefault.enabled`                 | If true, enable default priorityClass             | `true`            |
-| `priorityClassDefault.name`                    | Name of the default priorityClass                 | `default`         |
-| `priorityClassDefault.value`                   | Priority value of the default priorityClass       | `0`               |
-| `replicaCount`                                 | Number of replicas                                | `1`               |
-| `resources`                                    | Resources for the overprovision pods              | `{}`              |
-| `image.repository`                             | Image repository                                  | `k8s.gcr.io/pause`|
-| `image.tag`                                    | Image tag                                         | `3.1`             |
-| `image.pullPolicy`                             | Container pull policy                             | `IfNotPresent`    |
-| `affinity`                                     | Map of node/pod affinities                        | `{}`              |
-| `nodeSelector`                                 | Node labels for pod assignment                    | `{}`              |
-| `annotations`                                  | Optional deployment annotations                   | `{}`              |
-| `fullnameOverride`                             | Override the fullname of the chart                | `nil`             |
-| `nameOverride`                                 | Override the name of the chart                    | `nil`             |
-| `tolerations`                                  | Optional deployment tolerations                   | `[]`              |
-| `additionalDeployments`                        | Define optional additional deployments            | `[]`              |
-| `additionalDeployments[].name`                 | Name for additional deployments                   | ``                |
-| `additionalDeployments[].replicaCount`         | Number of replicas                                | `1`               |
-| `additionalDeployments[].resources`            | Resources for the overprovision pods              | `{}`              |
-| `additionalDeployments[].affinity`             | Map of node/pod affinities                        | `{}`              |
-| `additionalDeployments[].nodeSelector`         | Node labels for pod assignment                    | `{}`              |
-| `additionalDeployments[].tolerations`          | Optional deployment tolerations                   | `[]`              |
+| Parameter                          | Description                                       | Default           |
+| -----------------------------------|---------------------------------------------------|-------------------|
+| `priorityClassOverprovision.name`  | Name of the overprovision priorityClass           | `overprovision`   |
+| `priorityClassOverprovision.value` | Priority value of the overprovision priorityClass | `-1`              |
+| `priorityClassDefault.enabled`     | If true, enable default priorityClass             | `true`            |
+| `priorityClassDefault.name`        | Name of the default priorityClass                 | `default`         |
+| `priorityClassDefault.value`       | Priority value of the default priorityClass       | `0`               |
+| `image.repository`                 | Image repository                                  | `k8s.gcr.io/pause`|
+| `image.tag`                        | Image tag                                         | `3.1`             |
+| `image.pullPolicy`                 | Container pull policy                             | `IfNotPresent`    |
+| `fullnameOverride`                 | Override the fullname of the chart                | `nil`             |
+| `nameOverride`                     | Override the name of the chart                    | `nil`             |
+| `deployments`                      | Define optional additional deployments            | `[]`              |
+| `deployments[].name`               | Name for additional deployments                   | ``                |
+| `deployments[].replicaCount`       | Number of replicas                                | `1`               |
+| `deployments[].resources`          | Resources for the overprovision pods              | `{}`              |
+| `deployments[].affinity`           | Map of node/pod affinities                        | `{}`              |
+| `deployments[].nodeSelector`       | Node labels for pod assignment                    | `{}`              |
+| `deployments[].tolerations`        | Optional deployment tolerations                   | `[]`              |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install` or provide a YAML file containing the values for the above parameters:
