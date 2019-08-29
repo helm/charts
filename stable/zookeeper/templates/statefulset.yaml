@@ -1,0 +1,96 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: zk
+  labels:
+{{ include "zookeeper.labels" . | indent 4 }}
+spec:
+  serviceName: zk-hs
+  replicas: {{ .Values.replicaCount }}
+  podManagementPolicy: Parallel
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "zookeeper.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        {{- if .Values.resources }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        {{- end }}
+        ports:
+        - containerPort: {{ .Values.service.port }}
+          name: client
+        - containerPort: {{ .Values.server.port }}
+          name: server
+        - containerPort: {{ .Values.election.port }}
+          name: leader-election
+        command:
+        - sh
+        - -c
+        - "start-zookeeper \
+          --servers={{ .Values.replicaCount }} \
+          --data_dir=/var/lib/zookeeper/data \
+          --data_log_dir=/var/lib/zookeeper/data/log \
+          --conf_dir=/opt/zookeeper/conf \
+          --client_port=2181 \
+          --election_port={{ .Values.election.port }} \
+          --server_port={{ .Values.server.port }} \
+          --tick_time={{ .Values.tickTime }} \
+          --init_limit={{ .Values.initLimit }} \
+          --sync_limit={{ .Values.syncLimit }} \
+          --heap={{.Values.heapSize }} \
+          --max_client_cnxns={{ .Values.maxClientConnections }} \
+          --snap_retain_count={{ .Values.snapRetainCount }} \
+          --purge_interval={{ .Values.purgeInterval }} \
+          --max_session_timeout={{ .Values.maxSessionTimeout }} \
+          --min_session_timeout={{ .Values.minSessionTimeout }} \
+          --log_level=INFO"
+        readinessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - "zookeeper-ready {{ .Values.service.port }}"
+          initialDelaySeconds: 10
+          timeoutSeconds: 5
+        livenessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - "zookeeper-ready {{ .Values.service.port }}"
+          initialDelaySeconds: 10
+          timeoutSeconds: 5
+        volumeMounts:
+        - name: datadir
+          mountPath: /var/lib/zookeeper
+      securityContext:
+        runAsUser: 1000
+        fsGroup: 1000
+  volumeClaimTemplates:
+  - metadata:
+      name: datadir
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: {{ .Values.storageSize }}

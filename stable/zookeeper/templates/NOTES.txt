@@ -1,0 +1,14 @@
+1. Test your service is operating by running these commands:
+
+Connect to zookeeper through the zk-cs service {{ .Values.service.type }} on port {{ .Values.service.port }}
+
+export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ include "zookeeper.name" . }},app.kubernetes.io/instance={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
+kubectl port-forward $POD_NAME 2181:2181
+echo stat | nc localhost:2181
+
+
+2. Alternatively log into the pod and find out its operating mode
+
+kubectl exec -it zk-0 /bin/bash
+echo stat | nc localhost 2181 | grep Mode
+Mode: follower
