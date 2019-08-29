@@ -3,6 +3,7 @@ apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: Role
 metadata:
   name: {{ template "grafana.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "grafana.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
@@ -22,7 +23,7 @@ rules:
 {{- end }}
 {{- if and .Values.rbac.namespaced (or .Values.sidecar.dashboards.enabled .Values.sidecar.datasources.enabled) }}
 - apiGroups: [""] # "" indicates the core API group
-  resources: ["configmaps"]
+  resources: ["configmaps", "secrets"]
   verbs: ["get", "watch", "list"]
 {{- end }}
 {{- else }}

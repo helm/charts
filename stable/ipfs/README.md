@@ -48,12 +48,15 @@ The following table lists the configurable parameters of the Memcached chart and
 | `persistence.annotations` | Extra annotations for the persistent volume claim. | `{}` |
 | `persistence.accessModes` | List of access modes for use with the persistent volume claim | `["ReadWriteOnce"]` |
 | `persistence.size` | Size of the PVC for each IPFS pod, used as persistent cache | `8Gi`  |
+| `service.swarm.enabled` | Expose port `4001` (IPFS swarm network port) | `false` |
+| `service.swarm.type` | Service type for swarm | `LoadBalancer` |
+| `service.swarm.nodePort` | Desired nodePort for service of type NodePort used for swarm requests | blank ('') - will assign a dynamic node port |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
 $ helm install --name my-release \
-  --set storage.size="20Gi" \
+  --set persistence.size="20Gi" \
     stable/ipfs
 ```
 

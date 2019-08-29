@@ -11,6 +11,11 @@ metadata:
 spec:
   serviceName: {{ template "mongodb.fullname" . }}-headless
   replicas: 1
+  updateStrategy:
+    type: {{ .Values.updateStrategy.type }}
+    {{- if (eq "Recreate" .Values.updateStrategy.type) }}
+    rollingUpdate: null
+    {{- end }}
   selector:
     matchLabels:
       app: {{ template "mongodb.name" . }}
@@ -36,6 +41,9 @@ spec:
 {{- end }}
       {{- end }}
     spec:
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+      {{- end }}
       {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName }}
       {{- end }}
@@ -55,15 +63,22 @@ spec:
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
       {{- end }}
-      {{- if .Values.image.pullSecrets }}
-      imagePullSecrets:
-      {{- range .Values.image.pullSecrets }}
-        - name: {{ . }}
-      {{- end}}
-      {{- end }}
-      {{- if .Values.extraInitContainers }}
+{{- include "mongodb.imagePullSecrets" . | indent 6 }}
       initContainers:
+      {{- if .Values.extraInitContainers }}
 {{ tpl .Values.extraInitContainers . | indent 6}}
+      {{- end }}
+      {{- if and .Values.volumePermissions.enabled .Values.persistence.enabled }}
+      - name: volume-permissions
+        image: {{ template "mongodb.volumePermissions.image" . }}
+        imagePullPolicy: {{ .Values.volumePermissions.image.pullPolicy | quote }}
+        command: ["chown", "-R", "{{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }}", "{{ .Values.persistence.mountPath }}"]
+        securityContext:
+          runAsUser: 0
+        resources: {{ toYaml .Values.volumePermissions.resources | nindent 10 }}
+        volumeMounts:
+        - name: datadir
+          mountPath: {{ .Values.persistence.mountPath }}
       {{- end }}
       containers:
         - name: {{ template "mongodb.name" . }}-primary
@@ -79,8 +94,8 @@ spec:
             name: mongodb
           env:
           {{- if .Values.image.debug}}
-          - name: NAMI_DEBUG
-            value: "1"
+          - name: BITNAMI_DEBUG
+            value: "true"
           {{- end }}
           - name: MONGODB_SYSTEM_LOG_VERBOSITY
             value: {{ .Values.mongodbSystemLogVerbosity | quote }}
@@ -111,7 +126,7 @@ spec:
             value: {{ .Values.mongodbDatabase | quote }}
           {{- end }}
             {{- if .Values.usePassword }}
-            {{- if or .Values.mongodbPassword .Values.existingSecret }}
+            {{- if and .Values.mongodbUsername .Values.mongodbDatabase }}
           - name: MONGODB_PASSWORD
             valueFrom:
               secretKeyRef:
@@ -173,8 +188,9 @@ spec:
           {{- end }}
           volumeMounts:
             - name: datadir
-              mountPath: /bitnami/mongodb
-            {{- if  (.Files.Glob "files/docker-entrypoint-initdb.d/*[sh|js]") }}
+              mountPath: {{ .Values.persistence.mountPath }}
+              subPath: {{ .Values.persistence.subPath }}
+            {{- if  or (.Files.Glob "files/docker-entrypoint-initdb.d/*[sh|js|json]") (.Values.initConfigMap) }}
             - name: custom-init-scripts
               mountPath: /docker-entrypoint-initdb.d
             {{- end }}
@@ -187,8 +203,13 @@ spec:
 {{ toYaml .Values.resources | indent 12 }}
 {{- if .Values.metrics.enabled }}
         - name: metrics
-          image: {{ template "metrics.image" . }}
+          image: {{ template "mongodb.metrics.image" . }}
           imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
+          {{- if .Values.securityContext.enabled }}
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: {{ .Values.securityContext.runAsUser }}
+          {{- end }}
           env:
           {{- if .Values.usePassword }}
           - name: MONGODB_ROOT_PASSWORD
@@ -203,26 +224,41 @@ spec:
           ports:
           - name: metrics
             containerPort: 9216
+          {{- if .Values.metrics.livenessProbe.enabled }}
           livenessProbe:
             httpGet:
               path: /metrics
               port: metrics
-            initialDelaySeconds: {{ default 15 .Values.metrics.livenessProbe.initialDelaySeconds }}
-            timeoutSeconds: {{ default 5 .Values.metrics.livenessProbe.timeoutSeconds }}
+            initialDelaySeconds: {{ .Values.metrics.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.metrics.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.metrics.livenessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.metrics.livenessProbe.failureThreshold }}
+            successThreshold: {{ .Values.metrics.livenessProbe.successThreshold }}
+          {{- end }}
+          {{- if .Values.metrics.readinessProbe.enabled }}
           readinessProbe:
             httpGet:
               path: /metrics
               port: metrics
-            initialDelaySeconds: {{ default 5 .Values.metrics.readinessProbe.initialDelaySeconds }}
-            timeoutSeconds: {{ default 1 .Values.metrics.readinessProbe.timeoutSeconds }}
+            initialDelaySeconds: {{ .Values.metrics.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.metrics.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.metrics.readinessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.metrics.readinessProbe.failureThreshold }}
+            successThreshold: {{ .Values.metrics.readinessProbe.successThreshold }}
+          {{- end }}
           resources:
 {{ toYaml .Values.metrics.resources | indent 12 }}
 {{- end }}
       volumes:
-        {{- if  (.Files.Glob "files/docker-entrypoint-initdb.d/*[sh|js]") }}
+        {{- if (.Files.Glob "files/docker-entrypoint-initdb.d/*[sh|js|json]") }}
         - name: custom-init-scripts
           configMap:
             name: {{ template "mongodb.fullname" . }}-init-scripts
+        {{- end }}
+        {{- if (.Values.initConfigMap) }}
+        - name: custom-init-scripts
+          configMap:
+            name: {{ .Values.initConfigMap.name }}
         {{- end }}
         {{- if .Values.configmap }}
         - name: config
@@ -235,7 +271,7 @@ spec:
         name: datadir
         annotations:
         {{- range $key, $value := .Values.persistence.annotations }}
-          {{ $key }}: {{ $value }}
+          {{ $key }}: "{{ $value }}"
         {{- end }}
       spec:
         accessModes:
@@ -245,13 +281,7 @@ spec:
         resources:
           requests:
             storage: {{ .Values.persistence.size | quote }}
-      {{- if .Values.persistence.storageClass }}
-      {{- if (eq "-" .Values.persistence.storageClass) }}
-        storageClassName: ""
-      {{- else }}
-        storageClassName: "{{ .Values.persistence.storageClass }}"
-      {{- end }}
-      {{- end }}
+        {{ include "mongodb.storageClass" . }}
 {{- else }}
         - name: datadir
           emptyDir: {}

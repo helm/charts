@@ -32,15 +32,15 @@ spec:
       {{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"
       {{- end }}
-{{- if or (.Values.initContainers) (.Values.dashboardImport.dashboards) (.Values.plugins.enabled) }}
+{{- if or (.Values.initContainers) (.Values.dashboardImport.enabled) (.Values.plugins.enabled) }}
       initContainers:
 {{- if .Values.initContainers }}
 {{- range $key, $value := .Values.initContainers }}
-      - name: "{{ $key }}"
+      - name: {{ $key | quote }}
 {{ toYaml $value | indent 8 }}
 {{- end }}
 {{- end }}
-{{- if .Values.dashboardImport.dashboards }}
+{{- if .Values.dashboardImport.enabled }}
       - name: {{ .Chart.Name }}-dashboardimport
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
@@ -53,8 +53,8 @@ spec:
 {{- end }}
         env:
         {{- range $key, $value := .Values.env }}
-        - name: "{{ $key }}"
-          value: "{{ $value }}"
+        - name: {{ $key | quote }}
+          value: {{ tpl $value $ | quote }}
         {{- end }}
         volumeMounts:
         - name: {{ template "kibana.fullname" . }}-dashboards
@@ -108,8 +108,8 @@ spec:
             done
         env:
         {{- range $key, $value := .Values.env }}
-        - name: "{{ $key }}"
-          value: "{{ $value }}"
+        - name: {{ $key | quote }}
+          value: {{ tpl $value $ | quote }}
         {{- end }}
         volumeMounts:
         - name: plugins
@@ -137,9 +137,18 @@ spec:
         {{- end }}
         env:
         {{- range $key, $value := .Values.env }}
-        - name: "{{ $key }}"
-          value: "{{ $value }}"
+        - name: {{ $key | quote }}
+          value: {{ tpl $value $ | quote }}
         {{- end }}
+{{- if .Values.envFromSecrets }}
+        {{- range $key,$value := .Values.envFromSecrets }}
+        - name: {{ $key | upper | quote}}
+          valueFrom:
+            secretKeyRef:
+              name: {{ $value.from.secret | quote}}
+              key: {{ $value.from.key | quote}}
+        {{- end }}
+{{- end }}
 {{- if (not .Values.authProxyEnabled) }}
         ports:
         - containerPort: {{ .Values.service.internalPort }}
@@ -149,7 +158,7 @@ spec:
 {{- if .Values.livenessProbe.enabled }}
         livenessProbe:
           httpGet:
-            path: /status
+            path: {{ .Values.livenessProbe.path }}
             port: {{ .Values.service.internalPort }}
           initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
           timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
@@ -157,7 +166,7 @@ spec:
 {{- if .Values.readinessProbe.enabled }}
         readinessProbe:
           httpGet:
-            path: /status
+            path: {{ .Values.readinessProbe.path }}
             port: {{ .Values.service.internalPort }}
           initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
           timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
@@ -219,7 +228,7 @@ spec:
           emptyDir: {}
           {{- end }}
 {{- end }}
-{{- if .Values.dashboardImport.dashboards }}
+{{- if .Values.dashboardImport.enabled }}
         - name: {{ template "kibana.fullname" . }}-dashboards
           configMap:
             name: {{ template "kibana.fullname" . }}-dashboards

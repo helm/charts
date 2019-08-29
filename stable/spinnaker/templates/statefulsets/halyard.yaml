@@ -13,6 +13,10 @@ spec:
       component: halyard
   template:
     metadata:
+      {{- if .Values.halyard.annotations }}
+      annotations:
+{{ toYaml .Values.halyard.annotations | indent 8 }}
+      {{- end }}
       labels:
 {{ include "spinnaker.standard-labels" . | indent 8 }}
         component: halyard
@@ -23,8 +27,8 @@ spec:
       serviceAccountName: {{ template "spinnaker.fullname" . }}-halyard
       {{- end }}
       securityContext:
-        runAsUser: 1000
-        fsGroup: 1000
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+        fsGroup: {{ .Values.securityContext.fsGroup }}
       initContainers:
       - name: "create-halyard-local"
         image: {{ .Values.halyard.image.repository }}:{{ .Values.halyard.image.tag }}
@@ -38,13 +42,20 @@ spec:
           mountPath: /tmp/service-settings
         - name: halyard-home
           mountPath: /tmp/spinnaker
-        {{- if .Values.halyard.additionalProfileConfigMaps.create }}
         - name: additional-profile-config-maps
           mountPath: /tmp/additionalProfileConfigMaps
-        {{- end }}
         - name: halyard-initscript
           mountPath: /tmp/initscript
+        {{- if .Values.halyard.customCerts.enabled }}
+        - mountPath: /etc/ssl/certs/java/cacerts
+          subPath: cacerts
+          name: cacerts
+        {{- end }}
       volumes:
+      {{- if not .Values.halyard.persistence.enabled }}
+      - name: halyard-home
+        emptyDir: {}
+      {{- end }}
       {{- if .Values.kubeConfig.enabled }}
       - name: kube-config
         secret:
@@ -64,7 +75,7 @@ spec:
           {{- if .Values.dockerRegistryAccountSecret }}
           secretName: {{ .Values.dockerRegistryAccountSecret }}
           {{- else }}
-          secretName: {{ template "spinnaker.fullname" .}}-registry
+          secretName: {{ template "spinnaker.fullname" . }}-registry
           {{- end }}
       {{- if and .Values.s3.enabled .Values.s3.accessKey .Values.s3.secretKey }}
       - name: s3-secrets
@@ -80,16 +91,18 @@ spec:
           secretName: {{ .Values.halyard.additionalSecrets.name }}
         {{- end }}
       {{- end }}
-      {{- if .Values.halyard.additionalConfigMaps.create }}
+      {{- if or .Values.halyard.additionalConfigMaps.create (hasKey .Values.halyard.additionalConfigMaps "name") }}
       - name: additional-config-maps
         configMap:
+        {{- if .Values.halyard.additionalConfigMaps.create }}
           name: {{ template "spinnaker.fullname" . }}-additional-config-maps
+        {{- else if .Values.halyard.additionalConfigMaps.name }}
+          name: {{ .Values.halyard.additionalConfigMaps.name }}
+        {{- end }}
       {{- end }}
-      {{- if .Values.halyard.additionalProfileConfigMaps.create }}
       - name: additional-profile-config-maps
         configMap:
           name: {{ template "spinnaker.fullname" . }}-additional-profile-config-maps
-      {{- end }}
       - name: halyard-config
         emptyDir: {}
       - name: service-settings
@@ -98,12 +111,24 @@ spec:
       - name: halyard-initscript
         configMap:
           name: {{ template "spinnaker.fullname" . }}-halyard-init-script
+      {{- if .Values.halyard.customCerts.enabled }}
+      - name: cacerts
+        secret:
+          secretName: {{ .Values.halyard.customCerts.secretName }}
+          items:
+          - key: cacerts
+            path: cacerts
+      {{- end }}
       containers:
       - name: halyard
         image: {{ .Values.halyard.image.repository }}:{{ .Values.halyard.image.tag }}
         ports:
         - containerPort: 8064
           name: daemon
+        {{- if .Values.halyard.resources }}
+        resources:
+{{ toYaml .Values.halyard.resources | indent 10 }}
+        {{- end }}
         volumeMounts:
         {{- if .Values.gcs.enabled }}
         - name: gcs-key
@@ -121,7 +146,7 @@ spec:
         - name: additional-secrets
           mountPath: /opt/halyard/additionalSecrets
         {{- end }}
-        {{- if .Values.halyard.additionalConfigMaps.create }}
+        {{- if or .Values.halyard.additionalConfigMaps.create (hasKey .Values.halyard.additionalConfigMaps "name") }}
         - name: additional-config-maps
           mountPath: /opt/halyard/additionalConfigMaps
         {{- end }}
@@ -131,13 +156,24 @@ spec:
           mountPath: /opt/halyard/config
         - name: reg-secrets
           mountPath: /opt/registry/passwords
+        {{- if .Values.halyard.env }}
+        env:
+{{ toYaml .Values.halyard.env | indent 8 }}
+        {{- end }}
+        {{- if .Values.halyard.customCerts.enabled }}
+        - mountPath: /etc/ssl/certs/java/cacerts
+          subPath: cacerts
+          name: cacerts
+        {{- end }}
+{{- if .Values.halyard.persistence.enabled }}
   volumeClaimTemplates:
   - metadata:
       name: halyard-home
       labels:
-{{ include "spinnaker.standard-labels" . | indent 8 }}
+{{ include "spinnaker.standard-labels-base" . | indent 8 }}
     spec:
       accessModes: [ "ReadWriteOnce" ]
       resources:
         requests:
           storage: 10Gi
+{{- end }}

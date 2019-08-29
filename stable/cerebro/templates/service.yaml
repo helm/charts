@@ -10,10 +10,10 @@ metadata:
 {{- if .Values.service.labels }}
 {{ toYaml .Values.service.labels | indent 4 }}
 {{- end }}
+{{- with .Values.service.annotations }}
   annotations:
-    {{- range $key, $value := .Values.service.annotations }}
-      {{ $key }}: {{ $value | quote }}
-    {{- end }}
+{{ toYaml . | indent 4 }}
+{{- end }}
 spec:
   type: {{ .Values.service.type }}
   ports:

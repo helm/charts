@@ -1,8 +1,38 @@
-## Global Docker image registry
-## Please, note that this will override the image registry for all the images, including dependencies, configured to use the global value
+## Global Docker image parameters
+## Please, note that this will override the image parameters, including dependencies, configured to use the global value
+## Current available global Docker image parameters: imageRegistry and imagePullSecrets
 ##
 # global:
-#   imageRegistry:
+#   imageRegistry: myRegistryName
+#   imagePullSecrets:
+#     - myRegistryKeySecretName
+#   storageClass: myStorageClass
+
+## String to partially override parse.fullname template (will maintain the release name)
+##
+# nameOverride:
+
+## String to fully override parse.fullname template
+##
+# fullnameOverride:
+
+## Init containers parameters:
+## volumePermissions: Change the owner and group of the persistent volume mountpoint to runAsUser:fsGroup values from the securityContext section.
+##
+volumePermissions:
+  enabled: false
+  image:
+    registry: docker.io
+    repository: bitnami/minideb
+    tag: latest
+    pullPolicy: Always
+    ## Optionally specify an array of imagePullSecrets.
+    ## Secrets must be manually created in the namespace.
+    ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+    ##
+    # pullSecrets:
+    #   - myRegistryKeySecretName
+  resources: {}
 
 ## Kubernetes serviceType for Parse Deployment
 ## ref: http://kubernetes.io/docs/user-guide/services/#publishing-services---service-types
@@ -26,7 +56,6 @@ service:
 ## ref: http://kubernetes.io/docs/user-guide/services/#type-loadbalancer
 ##
 #
-
 server:
   ## Bitnami Parse image version
   ## ref: https://hub.docker.com/r/bitnami/parse/tags/
@@ -34,7 +63,7 @@ server:
   image:
     registry: docker.io
     repository: bitnami/parse
-    tag: 3.1.3
+    tag: 3.7.2-debian-9-r19
     ## Specify a imagePullPolicy
     ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
     ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -45,7 +74,7 @@ server:
     ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
     ##
     # pullSecrets:
-    #   - myRegistrKeySecretName
+    #   - myRegistryKeySecretName
 
   ## Parse Server Pod Security Context
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
@@ -94,7 +123,7 @@ dashboard:
   image:
     registry: docker.io
     repository: bitnami/parse-dashboard
-    tag: 1.2.0
+    tag: 1.4.3-debian-9-r22
     ## Specify a imagePullPolicy
     ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
     ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -105,7 +134,7 @@ dashboard:
     ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
     ##
     # pullSecrets:
-    #   - myRegistrKeySecretName
+    #   - myRegistryKeySecretName
 
   ## Parse Dashboard Pod Security Context
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
@@ -138,6 +167,86 @@ dashboard:
     # requests:
     #   memory: 512Mi
     #   cpu: 300m
+
+## Configure the ingress resource that allows you to access the
+## Parse installation.
+## ref: http://kubernetes.io/docs/user-guide/ingress/
+##
+ingress:
+  ## Set to true to enable ingress record generation
+  ##
+  enabled: false
+
+  ## Set this to true in order to add the corresponding annotations for cert-manager
+  ##
+  certManager: false
+
+  ## Ingress annotations done as key:value pairs. If certManager is set to true,
+  ## the annotation 'kubernetes.io/tls-acme: "true"' will automatically be set
+  ## ref: https://github.com/kubernetes/ingress-nginx/blob/master/docs/annotations.md
+  ##
+  annotations:
+  #  kubernetes.io/ingress.class: nginx
+
+  dashboard:
+    ## The list of hostnames to be covered with this ingress record.
+    ## Most likely this will be just one host, but in the event more hosts are needed, this is an array
+    ##
+    hosts:
+    - name: parse.local
+      path: /
+
+      ## Set this to true in order to enable TLS on the ingress record
+      ##
+      tls: false
+
+      ## Optionally specify the TLS hosts for the ingress record
+      ## Useful when the Ingress controller supports www-redirection
+      ## If not specified, the above host name will be used
+      # tlsHosts:
+      # - www.parse.local
+      # - parse.local
+
+      ## If TLS is set to true, you must declare what secret will store the key/certificate for TLS
+      ##
+      tlsSecret: parse.local-tls
+
+  server:
+    ## The list of hostnames to be covered with this ingress record.
+    ## Most likely this will be just one host, but in the event more hosts are needed, this is an array
+    ##
+    hosts:
+    - name: parse-server.local
+      path: /
+
+      ## Set this to true in order to enable TLS on the ingress record
+      ##
+      tls: false
+
+      ## Optionally specify the TLS hosts for the ingress record
+      ## Useful when the Ingress controller supports www-redirection
+      ## If not specified, the above host name will be used
+      # tlsHosts:
+      # - www.parse.local
+      # - parse.local
+
+      ## If TLS is set to true, you must declare what secret will store the key/certificate for TLS
+      ##
+      tlsSecret: parse.local-tls
+
+  secrets:
+  ## If you're providing your own certificates, please use this to add the certificates as secrets
+  ## key and certificate should start with -----BEGIN CERTIFICATE----- or
+  ## -----BEGIN RSA PRIVATE KEY-----
+  ##
+  ## name should line up with a tlsSecret set further up
+  ## If you're using cert-manager, this is unneeded, as it will create the secret for you if it is not set
+  ##
+  ## It is also possible to create and manage the certificates outside of this helm chart
+  ## Please see README.md for more information
+  # - name: parse.local-tls
+  #   key:
+  #   certificate:
 
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/

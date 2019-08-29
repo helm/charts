@@ -10,7 +10,7 @@ terminationGracePeriodSeconds: 30
 
 image:
   repository: docker.elastic.co/logstash/logstash-oss
-  tag: 6.6.1
+  tag: 7.1.1
   pullPolicy: IfNotPresent
   ## Add secrets manually via kubectl on kubernetes cluster and reference here
   #  pullSecrets:
@@ -45,6 +45,8 @@ service:
     #  targetPort: http
     #  protocol: TCP
     # loadBalancerIP: 10.0.0.1
+    # loadBalancerSourceRanges:
+    #   - 192.168.0.1
 ports:
   # - name: syslog-udp
   #   containerPort: 1514
@@ -71,6 +73,9 @@ ingress:
   #  - secretName: logstash-tls
   #    hosts:
   #      - logstash.cluster.local
+
+# set java options like heap size
+logstashJavaOpts: "-Xmx1g -Xms1g"
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -112,6 +117,18 @@ podLabels: {}
   # team: "developers"
   # service: "logstash"
 
+extraEnv: []
+
+extraInitContainers: []
+  # - name: echo
+  #   image: busybox
+  #   imagePullPolicy: Always
+  #   args:
+  #     - echo
+  #     - hello
+
+podManagementPolicy: OrderedReady
+ # can be OrderReady or Parallel
 livenessProbe:
   httpGet:
     path: /
@@ -150,6 +167,8 @@ volumeMounts:
     mountPath: /usr/share/logstash/data
   - name: patterns
     mountPath: /usr/share/logstash/patterns
+  - name: files
+    mountPath: /usr/share/logstash/files
   - name: pipeline
     mountPath: /usr/share/logstash/pipeline
 
@@ -194,6 +213,17 @@ exporter:
       timeoutSeconds: 60
       failureThreshold: 8
       successThreshold: 1
+  serviceMonitor:
+    ## If true, a ServiceMonitor CRD is created for a prometheus operator
+    ## https://github.com/coreos/prometheus-operator
+    ##
+    enabled: false
+    #  namespace: monitoring
+    labels: {}
+    interval: 10s
+    scrapeTimeout: 10s
+    scheme: http
+    port: metrics
 
 elasticsearch:
   host: elasticsearch-client.default.svc.cluster.local
@@ -216,6 +246,38 @@ config:
 patterns:
   # main: |-
   #   TESTING {"foo":.*}$
+
+## Custom files that can be referenced by plugins.
+## Each YAML heredoc will become located in the logstash home directory under
+## the files subdirectory.
+files:
+  # logstash-template.json: |-
+  #   {
+  #     "order": 0,
+  #     "version": 1,
+  #     "index_patterns": [
+  #       "logstash-*"
+  #     ],
+  #     "settings": {
+  #       "index": {
+  #         "refresh_interval": "5s"
+  #       }
+  #     },
+  #     "mappings": {
+  #       "doc": {
+  #         "_meta": {
+  #           "version": "1.0.0"
+  #         },
+  #         "enabled": false
+  #       }
+  #     },
+  #     "aliases": {}
+  #   }
+
+## Custom binary files encoded as base64 string that can be referenced by plugins
+## Each base64 encoded string is decoded & mounted as a file under logstash home directory under
+## the files subdirectory.
+binaryFiles: {}
 
 ## NOTE: To achieve multiple pipelines with this chart, current best practice
 ## is to maintain one pipeline per chart release. In this way configuration is
@@ -261,7 +323,6 @@ outputs:
         hosts => ["${ELASTICSEARCH_HOST}:${ELASTICSEARCH_PORT}"]
         manage_template => false
         index => "%{[@metadata][beat]}-%{+YYYY.MM.dd}"
-        document_type => "%{[@metadata][type]}"
       }
       # kafka {
       #   ## ref: https://www.elastic.co/guide/en/logstash/current/plugins-outputs-kafka.html
@@ -271,3 +332,14 @@ outputs:
       #   topic_id => "destination"
       # }
     }
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+## Additional arguments to pass to the Logstash entrypoint
+# args:
+  # - fizz

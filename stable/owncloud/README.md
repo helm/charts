@@ -50,11 +50,15 @@ The following table lists the configurable parameters of the ownCloud chart and 
 |              Parameter              |                Description                 |                   Default                               |
 |-------------------------------------|--------------------------------------------|-------------------------------------------------------- |
 | `global.imageRegistry`              | Global Docker image registry               | `nil`                                                   |
+| `global.imagePullSecrets`           | Global Docker registry secret names as an array | `[]` (does not add image pull secrets to deployed pods) |
+| `global.storageClass`                     | Global storage class for dynamic provisioning                                               | `nil`                                                        |
 | `image.registry`                    | ownCloud image registry                    | `docker.io`                                             |
 | `image.repository`                  | ownCloud Image name                        | `bitnami/owncloud`                                      |
-| `image.tag`                         | ownCloud Image tag                         | `{VERSION}`                                             |
-| `image.pullPolicy`                  | Image pull policy                          | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
+| `image.tag`                         | ownCloud Image tag                         | `{TAG_NAME}`                                            |
+| `image.pullPolicy`                  | Image pull policy                          | `IfNotPresent`                                          |
 | `image.pullSecrets`                 | Specify docker-registry secret names as an array | `[]` (does not add image pull secrets to deployed pods) |
+| `nameOverride`                      | String to partially override owncloud.fullname template with a string (will prepend the release name) | `nil` |
+| `fullnameOverride`                  | String to fully override owncloud.fullname template with a string                                     | `nil` |
 | `ingress.enabled`                   | Enable ingress controller resource         | `false`                                                 |
 | `ingress.hosts[0].name`             | Hostname to your ownCloud installation     | `owncloud.local`                                        |
 | `ingress.hosts[0].path`             | Path within the url structure              | `/`                                                     |
@@ -85,24 +89,20 @@ The following table lists the configurable parameters of the ownCloud chart and 
 | `mariadb.rootUser.password`         | MariaDB admin password                     | `nil`                                                   |
 | `serviceType`                       | Kubernetes Service type                    | `LoadBalancer`                                          |
 | `persistence.enabled`               | Enable persistence using PVC               | `true`                                                  |
-| `persistence.apache.storageClass`   | PVC Storage Class for Apache volume        | `nil` (uses alpha storage class annotation)             |
-| `persistence.apache.existingClaim`  | An Existing PVC name for Apache volume     | `nil` (uses alpha storage class annotation)             |
-| `persistence.apache.accessMode`     | PVC Access Mode for Apache volume          | `ReadWriteOnce`                                         |
-| `persistence.apache.size`           | PVC Storage Request for Apache volume      | `1Gi`                                                   |
 | `persistence.owncloud.storageClass` | PVC Storage Class for ownCloud volume      | `nil` (uses alpha storage class annotation)             |
 | `persistence.owncloud.existingClaim`| An Existing PVC name for ownCloud volume   | `nil` (uses alpha storage class annotation)             |
 | `persistence.owncloud.accessMode`   | PVC Access Mode for ownCloud volume        | `ReadWriteOnce`                                         |
 | `persistence.owncloud.size`         | PVC Storage Request for ownCloud volume    | `8Gi`                                                   |
 | `resources`                         | CPU/Memory resource requests/limits        | Memory: `512Mi`, CPU: `300m`                            |
-| `podAnnotations`                | Pod annotations                                   | `{}`                                                       |
-| `metrics.enabled`                          | Start a side-car prometheus exporter                                                                           | `false`                                              |
-| `metrics.image.registry`                   | Apache exporter image registry                                                                                  | `docker.io`                                          |
-| `metrics.image.repository`                 | Apache exporter image name                                                                                      | `lusotycoon/apache-exporter`                           |
-| `metrics.image.tag`                        | Apache exporter image tag                                                                                       | `v0.5.0`                                            |
-| `metrics.image.pullPolicy`                 | Image pull policy                                                                                              | `IfNotPresent`                                       |
-| `metrics.image.pullSecrets`                | Specify docker-registry secret names as an array                                                               | `[]` (does not add image pull secrets to deployed pods)  |
-| `metrics.podAnnotations`                   | Additional annotations for Metrics exporter pod                                                                | `{prometheus.io/scrape: "true", prometheus.io/port: "9117"}`                                                   |
-| `metrics.resources`                        | Exporter resource requests/limit                                                                               | {}                        |
+| `podAnnotations`                    | Pod annotations                            | `{}`                                                    |
+| `metrics.enabled`                   | Start a side-car prometheus exporter       | `false`                                                 |
+| `metrics.image.registry`            | Apache exporter image registry             | `docker.io`                                             |
+| `metrics.image.repository`          | Apache exporter image name                 | `bitnami/apache-exporter`                               |
+| `metrics.image.tag`                 | Apache exporter image tag                  | `{TAG_NAME}`                                            |
+| `metrics.image.pullPolicy`          | Image pull policy                          | `IfNotPresent`                                          |
+| `metrics.image.pullSecrets`         | Specify docker-registry secret names as an array | `[]` (does not add image pull secrets to deployed pods)  |
+| `metrics.podAnnotations`            | Additional annotations for Metrics exporter pod  | `{prometheus.io/scrape: "true", prometheus.io/port: "9117"}` |
+| `metrics.resources`                 | Exporter resource requests/limit           | {}                                                      |
 
 The above parameters map to the env variables defined in [bitnami/owncloud](http://github.com/bitnami/bitnami-docker-owncloud). For more information please refer to the [bitnami/owncloud](http://github.com/bitnami/bitnami-docker-owncloud) image documentation.
 
@@ -138,9 +138,15 @@ $ helm install --name my-release -f values.yaml stable/owncloud
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
+### [Rolling VS Immutable tags](https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/)
+
+It is strongly recommended to use immutable tags in a production environment. This ensures your deployment does not change automatically if the same tag is updated with a different image.
+
+Bitnami will release a new chart updating its containers if a new version of the main container, significant changes, or critical vulnerabilities exist.
+
 ## Persistence
 
-The [Bitnami ownCloud](https://github.com/bitnami/bitnami-docker-owncloud) image stores the ownCloud data and configurations at the `/bitnami/owncloud` and `/bitnami/apache` paths of the container.
+The [Bitnami ownCloud](https://github.com/bitnami/bitnami-docker-owncloud) image stores the ownCloud data and configurations at the `/bitnami/owncloud` path of the container.
 
 Persistent Volume Claims are used to keep the data across deployments. There is a [known issue](https://github.com/kubernetes/kubernetes/issues/39178) in Kubernetes Clusters with EBS in different availability zones. Ensure your cluster is configured properly to create Volumes in the same availability zone where the nodes are running. Kuberentes 1.12 solved this issue with the [Volume Binding Mode](https://kubernetes.io/docs/concepts/storage/storage-classes/#volume-binding-mode).
 

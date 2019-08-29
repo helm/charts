@@ -11,7 +11,7 @@ metadata:
 data:
   fluent-bit-service.conf: |-
     [SERVICE]
-        Flush        {{ .Values.service.flush }} 
+        Flush        {{ .Values.service.flush }}
         Daemon       Off
         Log_Level    {{ .Values.service.logLevel }}
         Parsers_File parsers.conf
@@ -42,7 +42,7 @@ data:
         Name            systemd
         Tag             {{ .Values.input.systemd.tag }}
 {{- range $value := .Values.input.systemd.filters.systemdUnit }}
-        Systemd_Filter  _SYSTEMD_UNIT="{{ $value }}"
+        Systemd_Filter  _SYSTEMD_UNIT={{ $value }}
 {{- end }}
         Max_Entries     {{ .Values.input.systemd.maxEntries }}
         Read_From_Tail  {{ .Values.input.systemd.readFromTail }}
@@ -53,12 +53,18 @@ data:
     [FILTER]
         Name                kubernetes
         Match               {{ .Values.filter.kubeTag }}.*
+        Kube_Tag_Prefix     {{ .Values.filter.kubeTagPrefix }}
         Kube_URL            {{ .Values.filter.kubeURL }}
         Kube_CA_File        {{ .Values.filter.kubeCAFile }}
         Kube_Token_File     {{ .Values.filter.kubeTokenFile }}
 {{- if .Values.filter.mergeJSONLog }}
         Merge_Log           On
 {{- end }}
+
+{{- if .Values.filter.mergeLogKey }}
+        Merge_Log_Key       {{ .Values.filter.mergeLogKey }}
+{{- end }}
+
 {{- if .Values.filter.enableParser }}
         K8S-Logging.Parser  On
 {{- end }}
@@ -89,7 +95,7 @@ data:
         Match *
         Host  {{ .Values.backend.es.host }}
         Port  {{ .Values.backend.es.port }}
-        Logstash_Format On
+        Logstash_Format {{ default "On" .Values.backend.es.logstash_format  }}
         Retry_Limit False
         Type  {{ .Values.backend.es.type }}
 {{- if .Values.backend.es.time_key }}
@@ -105,7 +111,11 @@ data:
 {{- end }}
 {{- if .Values.backend.es.http_user }}
         HTTP_User {{ .Values.backend.es.http_user }}
+{{- if .Values.backend.es.http_passwd }}
         HTTP_Passwd {{ .Values.backend.es.http_passwd }}
+{{- else }}
+        HTTP_Passwd ${HTTP_PASSWORD}
+{{- end }}
 {{- end }}
 {{if eq .Values.backend.es.tls "on" }}
         tls {{ .Values.backend.es.tls }}
@@ -145,6 +155,9 @@ data:
         Proxy {{ .Values.backend.http.proxy }}
 {{- end }}
         Format {{ .Values.backend.http.format }}
+{{- end }}
+{{- range  .Values.backend.http.headers }}
+        Header  {{ . }}
 {{- end }}
 {{ .Values.extraEntries.output | indent 8 }}
 
@@ -189,6 +202,21 @@ data:
 {{- end }}
 {{ end }}
 {{- end }}
+{{- if .Values.parsers.logfmt }}
+{{- range .Values.parsers.logfmt }}
+    [PARSER]
+        Name        {{ .name }}
+        Format      logfmt
+{{- if .timeKey }}
+        Time_Key    {{ .timeKey }}
+{{- end }}
+{{- if .timeFormat }}
+        Time_Format {{ .timeFormat }}
+{{- end }}
+{{- if .extraEntries }}
+{{ .extraEntries | indent 8 }}
+{{- end }}
+{{ end }}
+{{- end }}
 
 {{- end -}}
-

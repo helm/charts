@@ -8,7 +8,7 @@ Pipelines consist of [Spring Boot](http://projects.spring.io/spring-boot/) apps,
 This chart will provision a fully functional and fully featured Spring Cloud Data Flow installation
 that can deploy and manage data processing pipelines in the cluster that it is deployed to.
 
-MySQL and Redis are used as the stores for Spring Cloud Data Flow state and RabbitMQ is used for the pipelines' messaging layer.
+Either the default MySQL deployment or an external database can be used as the data store for Spring Cloud Data Flow state and either RabbitMQ or Kafka can be used as the messaging layer for streaming apps to communicate with one another.
 
 For more information on Spring Cloud Data Flow and its capabilities, see it's [documentation](http://docs.spring.io/spring-cloud-dataflow/docs/current/reference/htmlsingle/).
 
@@ -30,6 +30,31 @@ If you are using a cluster that does not have a load balancer (like Minikube) th
 $ helm install --name my-release --set server.service.type=NodePort stable/spring-cloud-data-flow
 ```
 
+### Data Store
+
+By default, MySQL is deployed with this chart. However, if you wish to use an external database, please use the following `set` flags to the `helm` command to disable MySQL deployment, for example:
+
+`--set mysql.enabled=false`
+
+In addition, you are required to set all fields listed in [External Database Configuration](#external-database-configuration).
+
+### Messaging Layer
+
+There are three messaging layers available in this chart:
+- RabbitMQ (default)
+- RabbitMQ HA
+- Kafka
+
+To change the messaging layer to a highly available (HA) version of RabbitMQ, use the following `set` flags to the `helm` command, for example:
+
+`--set rabbitmq-ha.enabled=true,rabbitmq.enabled=false`
+
+Alternatively, to change the messaging layer to Kafka, use the following `set` flags to the `helm` command, for example:
+
+`--set kafka.enabled=true,rabbitmq.enabled=false`
+
+Only one messaging layer can be used at a given time. If RabbitMQ and Kafka are enabled, both charts will be installed with RabbitMQ being used in the deployment.
+
 Note that this chart pulls in many different Docker images so can take a while to fully install.
 
 ## Configuration
@@ -49,44 +74,29 @@ The following tables list the configurable parameters and their default values.
 | serviceAccount.create | Create ServiceAccount  | true
 | serviceAccount.name   | ServiceAccount name    | (generated if not specified)
 
-### Data Flow User Accounts
-
-| Parameter               | Description                            | Default                   |
-| ----------------------- | -------------------------------------- | ------------------------- |
-| dataflowUsername        | The username for the primary user      | user
-| dataflowPassword        | The password for the primary user      | password
-| dataflowRoles           | The roles assigned to the primary user | ROLE_VIEW, ROLE_CREATE
-| dataflowAdminUsername   | The username for the admin user        | admin
-| dataflowAdminPassword   | The password for the admin user        | admin
-| dataflowAdminRoles      | The roles assigned to the admin user   | ROLE_MANAGE, ROLE_VIEW
-
 ### Data Flow Server Configuration
 
-| Parameter                         | Description                                        | Default          |
-| --------------------------------- | -------------------------------------------------- | ---------------- |
-| server.version                    | The version/tag of the Data Flow server            | 1.7.3.RELEASE
-| server.imagePullPolicy            | The imagePullPolicy of the Data Flow server        | IfNotPresent
-| server.service.type               | The service type for the Data Flow server          | LoadBalancer
-| server.service.externalPort       | The external port for the Data Flow server         | 80
+| Parameter                         | Description                                                        | Default          |
+| --------------------------------- | ------------------------------------------------------------------ | ---------------- |
+| server.version                    | The version/tag of the Data Flow server                            | 2.2.1.RELEASE
+| server.imagePullPolicy            | The imagePullPolicy of the Data Flow server                        | IfNotPresent
+| server.service.type               | The service type for the Data Flow server                          | LoadBalancer
+| server.service.annotations        | Extra annotations for service resources                            | {}
+| server.platformName               | The name of the configured platform account                        | default
+| server.service.externalPort       | The external port for the Data Flow server                         | 80
+| server.configMap                  | Custom ConfigMap name for Data Flow server configuration           |
 
 ### Skipper Server Configuration
 
-| Parameter                          | Description                                       | Default          |
-| ---------------------------------- | ------------------------------------------------- | ---------------- |
-| skipper.version                    | The version/tag of the Skipper server             | 1.1.4.RELEASE
-| skipper.imagePullPolicy            | The imagePullPolicy of the Skipper server         | IfNotPresent
-| skipper.platformName               | The name of the configured platform account       | minikube
-| skipper.service.type               | The service type for the Skipper server           | ClusterIP
+| Parameter                         | Description                                                      | Default          |
+| --------------------------------- | ---------------------------------------------------------------- | ---------------- |
+| skipper.version                   | The version/tag of the Skipper server                            | 2.1.2.RELEASE
+| skipper.imagePullPolicy           | The imagePullPolicy of the Skipper server                        | IfNotPresent
+| skipper.platformName              | The name of the configured platform account                      | default
+| skipper.service.type              | The service type for the Skipper server                          | ClusterIP
+| skipper.configMap                 | Custom ConfigMap name for Skipper server configuration           |
 
-### Metrics Server Configuration
-
-| Parameter                          | Description                                       | Default          |
-| ---------------------------------- | ------------------------------------------------- | ---------------- |
-| metrics.version                    | The version/tag of the Metrics server             | 2.0.0.RELEASE
-| metrics.imagePullPolicy            | The imagePullPolicy of the Metrics server         | IfNotPresent
-| metrics.service.type               | The service type for the Metrics server           | ClusterIP
-
-### Spring Cloud Deployer Configuration
+### Spring Cloud Deployer for Kubernetes Configuration
 
 | Parameter                                   | Description                            | Default                   |
 | ------------------------------------------- | -------------------------------------- | ------------------------- |
@@ -97,12 +107,43 @@ The following tables list the configurable parameters and their default values.
 
 ### RabbitMQ Configuration
 
-| Parameter                  | Description           | Default                   |
-| -------------------------- | --------------------- | ------------------------- |
-| rabbitmq.rabbitmqUsername  | RabbitMQ user name    | user
+| Parameter                  | Description                              | Default                   |
+| -------------------------- | ---------------------------------------- | ------------------------- |
+| rabbitmq.enabled           | Enable RabbitMQ as the middleware to use | true
+| rabbitmq.rabbitmqUsername  | RabbitMQ user name                       | user
+
+### RabbitMQ HA Configuration
+
+| Parameter                     | Description                                 | Default                   |
+| ----------------------------- | ------------------------------------------- | ------------------------- |
+| rabbitmq-ha.enabled           | Enable RabbitMQ HA as the middleware to use | false
+| rabbitmq-ha.rabbitmqUsername  | RabbitMQ user name                          | user
+
+### Kafka Configuration
+
+| Parameter                    | Description                               | Default                                     |
+| ---------------------------- | ----------------------------------------- | ------------------------------------------- |
+| kafka.enabled                | Enable RabbitMQ as the middleware to use  | false
+| kafka.replicas               | The number of Kafka replicas to use       | 1
+| kafka.configurationOverrides | Kafka deployment configuration overrides  | replication.factor=1, metrics.enabled=false
+| kafka.zookeeper.replicaCount | The number of ZooKeeper replicates to use | 1
 
 ### MySQL Configuration
 
-| Parameter                  | Description           | Default                   |
-| -------------------------- | --------------------- | ------------------------- |
-| mysql.mysqlDatabase        | MySQL database name   | dataflow
+| Parameter                  | Description                  | Default                   |
+| -------------------------- | ---------------------------- | ------------------------- |
+| mysql.enabled              | Enable deployment of MySQL   | true
+| mysql.mysqlDatabase        | MySQL database name          | dataflow
+
+### External Database Configuration
+
+| Parameter           | Description                    | Default                   |
+| ------------------- | ------------------------------ | ------------------------- |
+| database.driver     | Database driver                | nil
+| database.scheme     | Database scheme                | nil
+| database.host       | Database host                  | nil
+| database.port       | Database port                  | nil
+| database.user       | Database user                  | scdf
+| database.password   | Database password              | nil
+| database.dataflow   | Database name for SCDF server  | dataflow
+| database.skipper    | Database name for SCDF skipper | skipper

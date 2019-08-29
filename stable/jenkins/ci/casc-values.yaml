@@ -1,0 +1,10 @@
+master:
+  JCasC:
+    enabled: true
+  sidecars:
+    configAutoReload:
+      enabled: true
+  healthProbeLivenessInitialDelay: 10
+  healthProbeReadinessInitialDelay: 10
+persistence:
+  enabled: false

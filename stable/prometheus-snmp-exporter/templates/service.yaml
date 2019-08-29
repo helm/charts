@@ -2,6 +2,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: {{ template "prometheus-snmp-exporter.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   {{- if .Values.service.annotations }}
   annotations:
 {{ toYaml .Values.service.annotations | indent 4 }}

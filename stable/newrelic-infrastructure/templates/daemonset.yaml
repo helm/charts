@@ -1,4 +1,4 @@
-{{- if and .Values.licenseKey .Values.cluster }}
+{{ if and (or .Values.licenseKey (and .Values.customSecretName .Values.customSecretKey)) .Values.cluster }}
 apiVersion: apps/v1beta2
 kind: DaemonSet
 metadata:
@@ -23,30 +23,46 @@ spec:
         {{- if .Values.podLabels}}
         {{ toYaml .Values.podLabels }}
         {{- end }}
+        mode: {{ template "newrelic.mode" . }}
     spec:
       serviceAccountName: {{ template "newrelic.serviceAccountName" . }}
+      {{- if .Values.privileged }}
+      hostNetwork: true # This option is a requirement for the Infrastructure Agent to report the proper hostname in New Relic.
+      dnsPolicy: ClusterFirstWithHostNet
+      {{- end }}
       containers:
         - name: {{ template "newrelic.name" . }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: {{ template "newrelic.image" . }}
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           securityContext:
+            {{- if .Values.privileged }}
             privileged: true
+            {{- else }}
+            runAsUser: 1000 # nri-agent
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            {{- end }}
           env:
             - name: NRIA_LICENSE_KEY
               valueFrom:
                 secretKeyRef:
+                  {{- if .Values.licenseKey }}
                   name: {{ template "newrelic.fullname" . }}-config
                   key: license
+                  {{- else }}
+                  name: {{ .Values.customSecretName }}
+                  key: {{ .Values.customSecretKey }}
+                  {{- end }}
             - name: "CLUSTER_NAME"
               value: "{{ .Values.cluster }}"
-           {{- if .Values.kubeStateMetricsUrl }}
+            {{- if .Values.kubeStateMetricsUrl }}
             - name: "KUBE_STATE_METRICS_URL"
               value: "{{ .Values.kubeStateMetricsUrl }}"
-           {{- end }}
-           {{- if .Values.kubeStateMetricsTimeout }}
+            {{- end }}
+            {{- if .Values.kubeStateMetricsTimeout }}
             - name: TIMEOUT
               value: {{ .Values.kubeStateMetricsTimeout | quote }}
-           {{- end }}
+            {{- end }}
             - name: "NRIA_DISPLAY_NAME"
               valueFrom:
                 fieldRef:
@@ -69,14 +85,17 @@ spec:
             - name: NRIA_LOG_FILE
               value: {{ .Values.logFile }}
             {{- end }}
+            {{- if not .Values.privileged }}
+            - name: "DISCOVERY_CACHE_DIR"
+              value: "/tmp/nr-kubernetes"
+            {{- end }}
           volumeMounts:
             {{- if .Values.config }}
             - name: config
               mountPath: /etc/newrelic-infra.yml
               subPath: newrelic-infra.yml
             {{- end }}
-            - name: dev
-              mountPath: /dev
+            {{- if .Values.privileged }}
             - name: host-docker-socket
               mountPath: /var/run/docker.sock
             - name: log
@@ -84,23 +103,37 @@ spec:
             - name: host-volume
               mountPath: /host
               readOnly: true
+            {{- else }}
+            - mountPath: /var/db/newrelic-infra/data
+              name: tmpfs-data
+            - mountPath: /var/db/newrelic-infra/user_data
+              name: tmpfs-user-data
+            - mountPath: /tmp
+              name: tmpfs-tmp
+            {{- end }}
           {{- if .Values.resources }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           {{- end }}
       volumes:
-        - name: dev
-          hostPath:
-            path: /dev
+        {{- if .Values.privileged }}
         - name: host-docker-socket
           hostPath:
-              path: /var/run/docker.sock
+            path: /var/run/docker.sock
         - name: log
           hostPath:
-              path: /var/log
+            path: /var/log
         - name: host-volume
           hostPath:
-              path: /
+            path: /
+        {{- else }}
+        - name: tmpfs-data
+          emptyDir: {}
+        - name: tmpfs-user-data
+          emptyDir: {}
+        - name: tmpfs-tmp
+          emptyDir: {}
+        {{- end }}
         {{- if .Values.config }}
         - name: config
           configMap:
@@ -109,6 +142,9 @@ spec:
             - key: newrelic-infra.yml
               path: newrelic-infra.yml
         {{- end }}
+      {{- if $.Values.priorityClassName }}
+      priorityClassName: {{ $.Values.priorityClassName }}
+      {{- end }}
       {{- if $.Values.nodeSelector }}
       nodeSelector:
 {{ toYaml $.Values.nodeSelector | indent 8 }}

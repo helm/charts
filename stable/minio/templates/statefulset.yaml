@@ -1,5 +1,23 @@
 {{- if eq .Values.mode "distributed" }}
 {{ $nodeCount := .Values.replicas | int }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "minio.fullname" . }}-svc
+  labels:
+    app: {{ template "minio.name" . }}
+    chart: {{ template "minio.chart" . }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  clusterIP: None
+  ports:
+    - name: service
+      port: {{ .Values.service.port }}
+      protocol: TCP
+  selector:
+    app: {{ template "minio.name" . }}
+---
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
@@ -12,7 +30,8 @@ metadata:
 spec:
   updateStrategy:
     type: {{ .Values.StatefulSetUpdate.updateStrategy }}
-  serviceName: {{ template "minio.fullname" . }}
+  podManagementPolicy: "Parallel"
+  serviceName: {{ template "minio.fullname" . }}-svc
   replicas: {{ .Values.replicas }}
   selector:
     matchLabels:
@@ -24,6 +43,9 @@ spec:
       labels:
         app: {{ template "minio.name" . }}
         release: {{ .Release.Name }}
+{{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | indent 8 }}
+{{- end }}
       {{- if .Values.podAnnotations }}
       annotations:
 {{ toYaml .Values.podAnnotations | indent 8 }}
@@ -32,6 +54,7 @@ spec:
       {{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"
       {{- end }}
+      serviceAccountName: {{ include "minio.serviceAccountName" . | quote }}
       containers:
         - name: {{ .Chart.Name }}
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
@@ -41,22 +64,24 @@ spec:
           "-ce",
           "/usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} server
           {{- range $i := until $nodeCount }}
-          https://{{ template `minio.fullname` $ }}-{{ $i }}.{{ template `minio.fullname` $ }}.{{ $.Release.Namespace }}.svc.{{ $.Values.clusterDomain }}{{ $.Values.mountPath }}
+          https://{{ template `minio.fullname` $ }}-{{ $i }}.{{ template `minio.fullname` $ }}-svc.{{ $.Release.Namespace }}.svc.{{ $.Values.clusterDomain }}{{ $.Values.mountPath }}
           {{- end }}" ]
           {{ else }}
           command: [ "/bin/sh",
           "-ce",
           "/usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} server
           {{- range $i := until $nodeCount }}
-          http://{{ template `minio.fullname` $ }}-{{ $i }}.{{ template `minio.fullname` $ }}.{{ $.Release.Namespace }}.svc.{{ $.Values.clusterDomain }}{{ $.Values.mountPath }}
+          http://{{ template `minio.fullname` $ }}-{{ $i }}.{{ template `minio.fullname` $ }}-svc.{{ $.Release.Namespace }}.svc.{{ $.Values.clusterDomain }}{{ $.Values.mountPath }}
           {{- end }}" ]
           {{ end }}
           volumeMounts:
+            {{- if .Values.persistence.enabled }}
             - name: export
               mountPath: {{ .Values.mountPath }}
               {{- if and .Values.persistence.enabled .Values.persistence.subPath }}
               subPath: "{{ .Values.persistence.subPath }}"
               {{- end }}
+            {{ end }}
             - name: minio-config-dir
               mountPath: {{ .Values.configPath }}
             {{- if .Values.tls.enabled }}
@@ -127,6 +152,7 @@ spec:
             - key: {{ .Values.tls.publicCrt }}
               path: CAs/public.crt
         {{ end }}
+{{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
     - metadata:
         name: export
@@ -138,4 +164,5 @@ spec:
         resources:
           requests:
             storage: {{ .Values.persistence.size }}
+{{ end }}
 {{- end }}

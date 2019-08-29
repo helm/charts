@@ -1,3 +1,4 @@
+---
 # Default values for ambassador.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
@@ -5,11 +6,23 @@
 replicaCount: 3
 daemonSet: false
 
-ambassador:
-  id: default
+# Enable autoscaling using HorizontalPodAutoscaler
+# daemonSet: true, autoscaling will be disabled
+autoscaling:
+  enabled: false
+  minReplicas: 2
+  maxReplicas: 5
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: 60
+    - type: Resource
+      resource:
+        name: memory
+        targetAverageUtilization: 60
 
-namespace:
-  single: false
+# namespace:
   # name: default
 
 # Additional container environment variable
@@ -24,8 +37,8 @@ env:
   # AMBASSADOR_DRAIN_TIME: 5
   # sets the number of seconds that Ambassador will wait for the old Envoy to clean up and exit on a restart
   # AMBASSADOR_SHUTDOWN_TIME: 10
-  # sets the number of seconds that Ambassador will wait for the old Envoy to clean up and exit on a restart
-  # AMBASSADOR_SINGLE_NAMESPACE: true
+  # labels Ambassador with an ID to allow for configuring multiple Ambassadors in a cluster
+  # AMBASSADOR_ID: default
 
 imagePullSecrets: []
 
@@ -34,43 +47,79 @@ securityContext:
 
 image:
   repository: quay.io/datawire/ambassador
-  tag: 0.50.3
+  tag: 0.76.0
   pullPolicy: IfNotPresent
 
 nameOverride: ""
 fullnameOverride: ""
+dnsPolicy: "ClusterFirst"
+hostNetwork: false
 
 service:
   type: LoadBalancer
 
   # Note that target http ports need to match your ambassador configurations service_port
   # https://www.getambassador.io/reference/modules/#the-ambassador-module
-  http:
-    enabled: true
-    port: 80
-    targetPort: 8080
-    # nodePort: 30080
-
-  https:
-    enabled: true
-    port: 443
-    targetPort: 8443
-    # nodePort: 30443
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+      # protocol: TCP
+      # nodePort: 30080
+    - name: https
+      port: 443
+      targetPort: 8443
+      # protocol: TCP
+      # nodePort: 30443
+    # TCPMapping_Port
+      # port: 2222
+      # targetPort: 2222
+      # protocol: TCP
+      # nodePort: 30222
 
   annotations:
-    getambassador.io/config: |
-      ---
-      apiVersion: ambassador/v1
-      kind: Module
-      name: ambassador
-      config:
-        service_port: 8080
-  #       diagnostics:
-  #         enabled: false
-
-  # externalTrafficPolicy:
-  # loadBalancerSourceRanges:
-  #   - YOUR_IP_RANGE
+  #  Uncomment out fields you want to use.
+  #  See https://www.getambassador.io/reference/core/ambassador and
+  #  https://www.getambassador.io/reference/core/tls for more info
+  #  getambassador.io/config: |
+  #    ---
+  #    apiVersion: ambassador/v1
+  #    kind: TLSContext
+  #    name: ambassador
+  #    secret: ambassador-certs
+  #    hosts: ["*"]
+  #    ---
+  #    apiVersion: ambassador/v1
+  #    kind: Module
+  #    name: ambassador
+  #    config:
+  #      admin_port: 8001
+  #      diag_port: 8877
+  #      diagnostics:
+  #        enabled: true
+  #      enable_grpc_http11_bridge: false
+  #      enable_grpc_web: false
+  #      enable_http10: false
+  #      enable_ipv4: true
+  #      enable_ipv6: false
+  #      liveness_probe:
+  #        enabled: true
+  #      lua_scripts:
+  #      readiness_probe:
+  #        enabled: true
+  #      server_name: envoy
+  #      service_port: 8080
+  #      use_proxy_proto: false
+  #      use_remote_address: true
+  #      xff_num_trusted_hops: 0
+  #      x_forwarded_proto_redirect: false
+  #      load_balancer:
+  #        policy: round_robin
+  #      circuit_breakers:
+  #        max_connections: 2048
+  #      retry_policy:
+  #        retry_on: "5xx"
+  #      cors:
 
 adminService:
   create: true
@@ -78,11 +127,18 @@ adminService:
   port: 8877
   # NodePort used if type is NodePort
   # nodePort: 38877
+  annotations:
+    {}
 
 rbac:
   # Specifies whether RBAC resources should be created
   create: true
-  namespaced: false
+  podSecurityPolicies:
+    {}
+
+scope:
+  # tells Ambassador to only use resources in the namespace or namespace set by namespace.name
+  singleNamespace: false
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -91,14 +147,23 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name:
 
+initContainers: []
+
 volumes: []
 
 volumeMounts: []
+
+podLabels:
+  {}
 
 podAnnotations:
   {}
   # prometheus.io/scrape: "true"
   # prometheus.io/port: "9102"
+
+deploymentAnnotations:
+  {}
+  # configmap.reloader.stakater.com/auto: "true"
 
 resources:
   {}
@@ -110,6 +175,8 @@ resources:
   # requests:
   #  cpu: 100m
   #  memory: 128Mi
+
+priorityClassName: ""
 
 nodeSelector: {}
 
@@ -123,6 +190,15 @@ prometheusExporter:
   repository: prom/statsd-exporter
   tag: v0.8.1
   pullPolicy: IfNotPresent
+  resources: {}
+  # If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  #   limits:
+  #     cpu: 100m
+  #     memory: 256Mi
+  #   requests:
+  #     cpu: 50m
+  #     memory: 128Mi
   # You can configure the statsd exporter to modify the behavior of mappings and other features.
   # See documentation: https://github.com/prometheus/statsd_exporter/tree/v0.8.1#metric-mapping-and-configuration
   # Uncomment the following line if you wish to specify a custom configuration:
@@ -136,3 +212,26 @@ prometheusExporter:
   #       cluster_name: "$1"
 
 ambassadorConfig: ""
+
+pro:
+  enabled: false
+  image:
+    repository: quay.io/datawire/ambassador_pro
+    tag: amb-sidecar-0.6.0
+  # As of Ambassador Pro 0.6.0, both the RateLimitService and AuthService use the same port
+  ports:
+    auth: 8500
+    ratelimit: 8500
+  logLevel: info
+  licenseKey:
+    value:
+    secret: false
+  # Ambassador Pro environment variables can be found at https://www.getambassador.io/reference/pro/environment
+  # For consistency, AMBASSADOR_ID is copied over from the Ambassador env above and will be ignored if set here.
+  env:
+    {}
+
+crds:
+  enabled: true
+  create: true
+  keep: true

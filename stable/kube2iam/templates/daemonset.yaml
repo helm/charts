@@ -2,10 +2,10 @@ apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
   labels:
-    app: {{ template "kube2iam.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ template "kube2iam.name" . }}
+    helm.sh/chart: {{ template "kube2iam.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
   name: {{ template "kube2iam.fullname" . }}
 spec:
   template:
@@ -15,8 +15,8 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
     {{- end }}
       labels:
-        app: {{ template "kube2iam.name" . }}
-        release: {{ .Release.Name }}
+        app.kubernetes.io/name: {{ template "kube2iam.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
       {{- if .Values.podLabels }}
 {{ toYaml .Values.podLabels | indent 8 }}
       {{- end }}
@@ -43,6 +43,11 @@ spec:
             - --verbose
           {{- end }}
             - --app-port={{ .Values.host.port }}
+          {{- if .Values.prometheus.metricsPort }}
+            - --metrics-port={{ .Values.prometheus.metricsPort }}
+          {{- else }}
+            - --metrics-port={{ .Values.host.port }}
+          {{- end }}
           env:
             - name: HOST_IP
               valueFrom:
@@ -73,7 +78,14 @@ spec:
               value: {{ quote $value }}
           {{- end }}
           ports:
-            - containerPort: {{ .Values.host.port }}
+            - name: http
+              containerPort: {{ .Values.host.port }}
+            {{- if .Values.prometheus.metricsPort }}
+            {{- if not (eq .Values.prometheus.metricsPort .Values.host.port) }}
+            - name: metrics
+              containerPort: {{ .Values.prometheus.metricsPort }}
+            {{- end}}
+            {{- end}}
         {{- if .Values.probe }}
           livenessProbe:
             httpGet:

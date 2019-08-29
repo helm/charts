@@ -6,10 +6,10 @@ kind: Ingress
 metadata:
   name: {{ template "prometheus-blackbox-exporter.fullname" . }}
   labels:
-    app: {{ template "prometheus-blackbox-exporter.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ include "prometheus-blackbox-exporter.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "prometheus-blackbox-exporter.chart" . }}
   annotations:
 {{ toYaml .Values.ingress.annotations | indent 4 }}
 spec:

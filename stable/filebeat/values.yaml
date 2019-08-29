@@ -1,15 +1,10 @@
 image:
   repository: docker.elastic.co/beats/filebeat-oss
-  tag: 6.6.1
+  tag: 7.0.1
   pullPolicy: IfNotPresent
 
 config:
   filebeat.config:
-    prospectors:
-      # Mounted `filebeat-prospectors` configmap:
-      path: ${path.config}/prospectors.d/*.yml
-      # Reload prospectors configs as they change:
-      reload.enabled: false
     modules:
       path: ${path.config}/modules.d/*.yml
       # Reload module configs as they change:
@@ -18,7 +13,7 @@ config:
   processors:
     - add_cloud_metadata:
 
-  filebeat.prospectors:
+  filebeat.inputs:
     - type: log
       enabled: true
       paths:
@@ -46,6 +41,13 @@ config:
   # --set config."http\.enabled"=true
   http.enabled: true
   http.port: 5066
+
+# If overrideConfig is not empty, filebeat chart's default config won't be used at all.
+overrideConfig: {}
+
+# Path on the host to mount to /usr/share/filebeat/data in the container.
+data:
+  hostPath: /var/lib/filebeat
 
 # Upload index template to Elasticsearch if Logstash output is enabled
 # https://www.elastic.co/guide/en/beats/filebeat/current/filebeat-template.html
@@ -82,6 +84,8 @@ extraVolumeMounts: []
   # - name: varlog
   #   mountPath: /host/var/log
   #   readOnly: true
+extraSecrets: {}
+  # secret: "TEST1"
 
 extraInitContainers: []
   # - name: echo
@@ -139,6 +143,8 @@ podSecurityPolicy:
     # seccomp.security.alpha.kubernetes.io/allowedProfileNames: '*'
     # seccomp.security.alpha.kubernetes.io/defaultProfileName: 'docker/default'
     # apparmor.security.beta.kubernetes.io/defaultProfileName: 'runtime/default'
+
+privileged: false
 
 ## Add Elastic beat-exporter for Prometheus
 ## https://github.com/trustpilot/beat-exporter

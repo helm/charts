@@ -33,12 +33,10 @@ spec:
 {{ toYaml . | indent 8 }}
 {{- end }}
     spec:
-      {{- if .Values.image.pullSecrets }}
-      imagePullSecrets:
-      {{- range .Values.image.pullSecrets }}
-        - name: {{ . }}
-      {{- end}}
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
       {{- end }}
+{{- include "postgresql.imagePullSecrets" . | indent 6 }}
       {{- if .Values.slave.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.slave.nodeSelector | indent 8 }}
@@ -58,6 +56,9 @@ spec:
       securityContext:
         fsGroup: {{ .Values.securityContext.fsGroup }}
       {{- end }}
+      {{- if .Values.serviceAccount.enabled }}
+      serviceAccountName: {{ default (include "postgresql.fullname" . ) .Values.serviceAccount.name}}
+      {{- end }}
       {{- if and .Values.volumePermissions.enabled .Values.persistence.enabled }}
       initContainers:
       - name: init-chmod-data
@@ -69,15 +70,16 @@ spec:
           - sh
           - -c
           - |
-            chown -R {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }} /bitnami
-            if [ -d {{ .Values.persistence.mountPath }}/data ]; then
-              chmod  0700 {{ .Values.persistence.mountPath }}/data;
-            fi
+            mkdir -p {{ .Values.persistence.mountPath }}/data
+            chmod 700 {{ .Values.persistence.mountPath }}/data
+            find {{ .Values.persistence.mountPath }} -mindepth 1 -maxdepth 1 -not -name ".snapshot" -not -name "lost+found" | \
+              xargs chown -R {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }}
         securityContext:
           runAsUser: {{ .Values.volumePermissions.securityContext.runAsUser }}
         volumeMounts:
         - name: data
           mountPath: {{ .Values.persistence.mountPath }}
+          subPath: {{ .Values.persistence.subPath }}
       {{- end }}
       containers:
       - name: {{ template "postgresql.fullname" . }}
@@ -90,20 +92,20 @@ spec:
           runAsUser: {{ .Values.securityContext.runAsUser }}
         {{- end }}
         env:
-        {{- if .Values.image.debug}}
-        - name: BASH_DEBUG
-          value: "1"
-        - name: NAMI_DEBUG
-          value: "1"
-        {{- end }}
+        - name: BITNAMI_DEBUG
+          value: {{ ternary "true" "false" .Values.image.debug | quote }}
+        - name: POSTGRESQL_VOLUME_DIR
+          value: "{{ .Values.persistence.mountPath }}"
+        - name: POSTGRESQL_PORT_NUMBER
+          value: "{{ template "postgresql.port" . }}"
         {{- if .Values.persistence.mountPath }}
         - name: PGDATA
-          value: {{ .Values.persistence.mountPath | quote }}
+          value: {{ .Values.postgresqlDataDir | quote }}
         {{- end }}
         - name: POSTGRES_REPLICATION_MODE
           value: "slave"
         - name: POSTGRES_REPLICATION_USER
-          value: {{ .Values.replication.user | quote }}
+          value: {{ include "postgresql.replication.username" . | quote }}
         {{- if .Values.usePasswordFile }}
         - name: POSTGRES_REPLICATION_PASSWORD_FILE
           value: "/opt/bitnami/postgresql/secrets/postgresql-replication-password"
@@ -119,20 +121,30 @@ spec:
         - name: POSTGRES_MASTER_HOST
           value: {{ template "postgresql.fullname" . }}
         - name: POSTGRES_MASTER_PORT_NUMBER
-          value: {{ .Values.service.port | quote }}
+          value: {{ include "postgresql.port" . | quote }}
+        {{- if .Values.usePasswordFile }}
+        - name: POSTGRES_PASSWORD_FILE
+          value: "/opt/bitnami/postgresql/secrets/postgresql-password"
+        {{- else }}
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "postgresql.secretName" . }}
+              key: postgresql-password
+        {{- end }}
         ports:
         - name: postgresql
-          containerPort: {{ .Values.service.port }}
+          containerPort: {{ template "postgresql.port" . }}
         {{- if .Values.livenessProbe.enabled }}
         livenessProbe:
           exec:
             command:
             - sh
             - -c
-           {{- if .Values.postgresqlDatabase }}
-            - exec pg_isready -U {{ .Values.postgresqlUsername | quote }} -d {{ .Values.postgresqlDatabase | quote }} -h localhost
+           {{- if (include "postgresql.database" .) }}
+            - exec pg_isready -U {{ include "postgresql.username" . | quote }} -d {{ (include "postgresql.database" .) | quote }} -h 127.0.0.1 -p {{ template "postgresql.port" . }}
            {{- else }}
-            - exec pg_isready -U {{ .Values.postgresqlUsername | quote }} -h localhost
+            - exec pg_isready -U {{ include "postgresql.username" . | quote }} -h 127.0.0.1 -p {{ template "postgresql.port" . }}
            {{- end }}
           initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
@@ -146,11 +158,7 @@ spec:
             command:
             - sh
             - -c
-           {{- if .Values.postgresqlDatabase }}
-            - exec pg_isready -U {{ .Values.postgresqlUsername | quote }} -d {{ .Values.postgresqlDatabase | quote }} -h localhost
-           {{- else }}
-            - exec pg_isready -U {{ .Values.postgresqlUsername | quote }} -h localhost
-           {{- end }}
+            {{- include "postgresql.readinessProbeCommand" . | nindent 12 }}
           initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
           timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
@@ -160,11 +168,12 @@ spec:
         volumeMounts:
         {{- if .Values.usePasswordFile }}
         - name: postgresql-password
-          mountPath: /opt/bitnami/postgresql/secrets
-        {{ end }}
+          mountPath: /opt/bitnami/postgresql/secrets/
+        {{- end }}
         {{- if .Values.persistence.enabled }}
         - name: data
           mountPath: {{ .Values.persistence.mountPath }}
+          subPath: {{ .Values.persistence.subPath }}
         {{ end }}
         {{- if or (.Files.Glob "files/conf.d/*.conf") .Values.postgresqlExtendedConf .Values.extendedConfConfigMap }}
         - name: postgresql-extended-config
@@ -174,12 +183,15 @@ spec:
         - name: postgresql-config
           mountPath: /bitnami/postgresql/conf
         {{- end }}
+        {{- if .Values.slave.extraVolumeMounts }}
+        {{- toYaml .Values.slave.extraVolumeMounts | nindent 8 }}
+        {{- end }}
       volumes:
       {{- if .Values.usePasswordFile }}
       - name: postgresql-password
         secret:
           secretName: {{ template "postgresql.secretName" . }}
-      {{ end }}
+      {{- end }}
       {{- if or (.Files.Glob "files/postgresql.conf") (.Files.Glob "files/pg_hba.conf") .Values.postgresqlConfiguration .Values.pgHbaConfiguration .Values.configurationConfigMap}}
       - name: postgresql-config
         configMap:
@@ -194,8 +206,14 @@ spec:
       - name: data
         emptyDir: {}
       {{- end }}
+      {{- if .Values.slave.extraVolumes }}
+      {{- toYaml .Values.slave.extraVolumes | nindent 6}}
+      {{- end }}
   updateStrategy:
     type: {{ .Values.updateStrategy.type }}
+    {{- if (eq "Recreate" .Values.updateStrategy.type) }}
+    rollingUpdate: null
+    {{- end }}
 {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
     - metadata:
@@ -214,12 +232,6 @@ spec:
         resources:
           requests:
             storage: {{ .Values.persistence.size | quote }}
-      {{- if .Values.persistence.storageClass }}
-      {{- if (eq "-" .Values.persistence.storageClass) }}
-        storageClassName: ""
-      {{- else }}
-        storageClassName: "{{ .Values.persistence.storageClass }}"
-      {{- end }}
-      {{- end }}
+        {{ include "postgresql.storageClass" . }}
 {{- end }}
 {{- end }}

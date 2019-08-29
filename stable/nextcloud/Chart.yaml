@@ -1,6 +1,7 @@
+apiVersion: v1
 name: nextcloud
-version: 1.0.1
-appVersion: 15.0.2
+version: 1.7.1
+appVersion: 16.0.3
 description: A file sharing server that puts the control and security of your own data back into your hands.
 keywords:
 - nextcloud
@@ -15,3 +16,5 @@ sources:
 maintainers:
 - name: chrisingenhaag
   email: christian.ingenhaag@googlemail.com
+- name: billimek
+  email: jeff@billimek.com

@@ -47,82 +47,89 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following table lists the configurable parameters of the PrestaShop chart and their default values.
 
-|               Parameter               |                                         Description                                          |                         Default                              |
-|---------------------------------------|----------------------------------------------------------------------------------------------|--------------------------------------------------------------|
-| `global.imageRegistry`                | Global Docker image registry                                                                 | `nil`                                                        |
-| `image.registry`                      | PrestaShop image registry                                                                    | `docker.io`                                                  |
-| `image.repository`                    | PrestaShop image name                                                                        | `bitnami/prestashop`                                         |
-| `image.tag`                           | PrestaShop image tag                                                                         | `{VERSION}`                                                  |
-| `image.pullPolicy`                    | Image pull policy                                                                            | `Always` if `imageTag` is `latest`, else `IfNotPresent`      |
-| `image.pullSecrets`                   | Specify docker-registry secret names as an array                                             | `[]` (does not add image pull secrets to deployed pods)      |
-| `service.type`                        | Kubernetes Service type                                                                      | `LoadBalancer`                                               |
-| `service.port`                        | Service HTTP port                                                                            | `80`                                                         |
-| `service.httpsPort`                   | Service HTTPS port                                                                           | `443`                                                        |
-| `service.nodePorts.http`              | Kubernetes http node port                                                                    | `""`                                                         |
-| `service.nodePorts.https`             | Kubernetes https node port                                                                   | `""`                                                         |
-| `service.externalTrafficPolicy`       | Enable client source IP preservation                                                         | `Cluster`                                                    |
-| `service.loadBalancerIP          `    | LoadBalancer service IP address                                                              | `""`                                                         |
-| `ingress.enabled`                     | Enable ingress controller resource                                                           | `false`                                                      |
-| `ingress.certManager`                 | Add annotations for cert-manager                                                             | `false`                                                      |
-| `ingress.annotations`                 | Ingress annotations                                                                          | `[]`                                                         |
-| `ingress.hosts[0].name`               | Hostname to your PrestaShop installation                                                     | `prestashop.local`                                           |
-| `ingress.hosts[0].path`               | Path within the url structure                                                                | `/`                                                          |
-| `ingress.hosts[0].tls`                | Utilize TLS backend in ingress                                                               | `false`                                                      |
-| `ingress.hosts[0].tlsSecret`          | TLS Secret (certificates)                                                                    | `prestashop.local-tls`                                       |
-| `ingress.secrets[0].name`             | TLS Secret Name                                                                              | `nil`                                                        |
-| `ingress.secrets[0].certificate`      | TLS Secret Certificate                                                                       | `nil`                                                        |
-| `ingress.secrets[0].key`              | TLS Secret Key                                                                               | `nil`                                                        |
-| `prestashopHost`                      | PrestaShop host to create application URLs (when ingress, it will be ignored)                | `nil`                                                        |
-| `prestashopUsername`                  | User of the application                                                                      | `user@example.com`                                           |
-| `prestashopPassword`                  | Application password                                                                         | _random 10 character long alphanumeric string_               |
-| `prestashopEmail`                     | Admin email                                                                                  | `user@example.com`                                           |
-| `prestashopFirstName`                 | First Name                                                                                   | `Bitnami`                                                    |
-| `prestashopLastName`                  | Last Name                                                                                    | `Name`                                                       |
-| `prestashopCookieCheckIP`             | Whether to check the cookie's IP address or not                                              | `no`                                                         |
-| `prestashopCountry`                   | Default country of the store                                                                 | `us`                                                         |
-| `prestashopLanguage`                  | Default language of the store (iso code)                                                     | `en`                                                         |
-| `smtpHost`                            | SMTP host                                                                                    | `nil`                                                        |
-| `smtpPort`                            | SMTP port                                                                                    | `nil`                                                        |
-| `smtpUser`                            | SMTP user                                                                                    | `nil`                                                        |
-| `smtpPassword`                        | SMTP password                                                                                | `nil`                                                        |
-| `smtpProtocol`                        | SMTP protocol [`ssl`, `tls`]                                                                 | `nil`                                                        |
-| `allowEmptyPassword`                  | Allow DB blank passwords                                                                     | `yes`                                                        |
-| `externalDatabase.host`               | Host of the external database                                                                | `nil`                                                        |
-| `externalDatabase.port`               | SMTP protocol [`ssl`, `none`]                                                                | `3306`                                                       |
-| `externalDatabase.user`               | Existing username in the external db                                                         | `bn_prestashop`                                              |
-| `externalDatabase.password`           | Password for the above username                                                              | `nil`                                                        |
-| `externalDatabase.database`           | Name of the existing database                                                                | `bitnami_prestashop`                                         |
-| `mariadb.enabled`                     | Whether to use the MariaDB chart                                                             | `true`                                                       |
-| `mariadb.db.name`                     | Database name to create                                                                      | `bitnami_prestashop`                                         |
-| `mariadb.db.user`                     | Database user to create                                                                      | `bn_prestashop`                                              |
-| `mariadb.db.password`                 | Password for the database                                                                    | `nil`                                                        |
-| `mariadb.rootUser.password`           | MariaDB admin password                                                                       | `nil`                                                        |
-| `sessionAffinity`                     | Configures the session affinity                                                              | `None`                                                       |
-| `persistence.enabled`                 | Enable persistence using PVC                                                                 | `true`                                                       |
-| `persistence.storageClass`            | PVC Storage Class for PrestaShop volume                                                      | `nil` (uses alpha storage class annotation)                  |
-| `persistence.existingClaim`           | An Existing PVC name for Apache volume                                                       | `nil` (uses alpha storage class annotation)                  |
-| `persistence.accessMode`              | PVC Access Mode for PrestaShop volume                                                        | `ReadWriteOnce`                                              |
-| `persistence.size`                    | PVC Storage Request for PrestaShop volume                                                    | `8Gi`                                                        |
-| `resources`                           | CPU/Memory resource requests/limits                                                          | Memory: `512Mi`, CPU: `300m`                                 |
-| `livenessProbe.initialDelaySeconds`   | Delay before liveness probe is initiated                                                     | 600                                                          |
-| `livenessProbe.periodSeconds`         | How often to perform the probe                                                               | 3                                                            |
-| `livenessProbe.timeoutSeconds`        | When the probe times out                                                                     | 5                                                            |
-| `livenessProbe.failureThreshold`      | Minimum consecutive failures for the probe to be considered failed after having succeeded.   | 6                                                            |
-| `livenessProbe.successThreshold`      | Minimum consecutive successes for the probe to be considered successful after having failed. | 1                                                            |
-| `readinessProbe.initialDelaySeconds`  | Delay before readiness probe is initiated                                                    | 30                                                           |
-| `readinessProbe.periodSeconds`        | How often to perform the probe                                                               | 3                                                            |
-| `readinessProbe.timeoutSeconds`       | When the probe times out                                                                     | 5                                                            |
-| `readinessProbe.failureThreshold`     | Minimum consecutive failures for the probe to be considered failed after having succeeded.   | 6                                                            |
-| `readinessProbe.successThreshold`     | Minimum consecutive successes for the probe to be considered successful after having failed. | 1                                                            |
-| `podAnnotations`                      | Pod annotations                                                                              | `{}`                                                         |
-| `metrics.enabled`                     | Start a side-car prometheus exporter                                                         | `false`                                                      |
-| `metrics.image.registry`              | Apache exporter image registry                                                               | `docker.io`                                                  |
-| `metrics.image.repository`            | Apache exporter image name                                                                   | `lusotycoon/apache-exporter`                                 |
-| `metrics.image.tag`                   | Apache exporter image tag                                                                    | `v0.5.0`                                                     |
-| `metrics.image.pullPolicy`            | Image pull policy                                                                            | `IfNotPresent`                                               |
-| `metrics.image.pullSecrets`           | Specify docker-registry secret names as an array                                             | `[]` (does not add image pull secrets to deployed pods)      |
-| `metrics.podAnnotations`              | Additional annotations for Metrics exporter pod                                              | `{prometheus.io/scrape: "true", prometheus.io/port: "9117"}` |
-| `metrics.resources`                   | Exporter resource requests/limit                                                             | {}                                                           |
+| Parameter                            | Description                                                                                             | Default                                                      |
+| ------------------------------------ | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| `global.imageRegistry`               | Global Docker image registry                                                                            | `nil`                                                        |
+| `global.imagePullSecrets`            | Global Docker registry secret names as an array                                                         | `[]` (does not add image pull secrets to deployed pods)      |
+| `global.storageClass`                     | Global storage class for dynamic provisioning                                               | `nil`                                                        |
+| `image.registry`                     | PrestaShop image registry                                                                               | `docker.io`                                                  |
+| `image.repository`                   | PrestaShop image name                                                                                   | `bitnami/prestashop`                                         |
+| `image.tag`                          | PrestaShop image tag                                                                                    | `{TAG_NAME}`                                                 |
+| `image.pullPolicy`                   | Image pull policy                                                                                       | `IfNotPresent`                                               |
+| `image.pullSecrets`                  | Specify docker-registry secret names as an array                                                        | `[]` (does not add image pull secrets to deployed pods)      |
+| `nameOverride`                       | String to partially override prestashop.fullname template with a string (will prepend the release name) | `nil`                                                        |
+| `fullnameOverride`                   | String to fully override prestashop.fullname template with a string                                     | `nil`                                                        |
+| `service.type`                       | Kubernetes Service type                                                                                 | `LoadBalancer`                                               |
+| `service.port`                       | Service HTTP port                                                                                       | `80`                                                         |
+| `service.httpsPort`                  | Service HTTPS port                                                                                      | `443`                                                        |
+| `service.nodePorts.http`             | Kubernetes http node port                                                                               | `""`                                                         |
+| `service.nodePorts.https`            | Kubernetes https node port                                                                              | `""`                                                         |
+| `service.externalTrafficPolicy`      | Enable client source IP preservation                                                                    | `Cluster`                                                    |
+| `service.loadBalancerIP          `   | LoadBalancer service IP address                                                                         | `""`                                                         |
+| `ingress.enabled`                    | Enable ingress controller resource                                                                      | `false`                                                      |
+| `ingress.certManager`                | Add annotations for cert-manager                                                                        | `false`                                                      |
+| `ingress.annotations`                | Ingress annotations                                                                                     | `[]`                                                         |
+| `ingress.hosts[0].name`              | Hostname to your PrestaShop installation                                                                | `prestashop.local`                                           |
+| `ingress.hosts[0].path`              | Path within the url structure                                                                           | `/`                                                          |
+| `ingress.hosts[0].tls`               | Utilize TLS backend in ingress                                                                          | `false`                                                      |
+| `ingress.hosts[0].tlsSecret`         | TLS Secret (certificates)                                                                               | `prestashop.local-tls`                                       |
+| `ingress.secrets[0].name`            | TLS Secret Name                                                                                         | `nil`                                                        |
+| `ingress.secrets[0].certificate`     | TLS Secret Certificate                                                                                  | `nil`                                                        |
+| `ingress.secrets[0].key`             | TLS Secret Key                                                                                          | `nil`                                                        |
+| `prestashopHost`                     | PrestaShop host to create application URLs (when ingress, it will be ignored)                           | `nil`                                                        |
+| `prestashopUsername`                 | User of the application                                                                                 | `user@example.com`                                           |
+| `prestashopPassword`                 | Application password                                                                                    | _random 10 character long alphanumeric string_               |
+| `prestashopEmail`                    | Admin email                                                                                             | `user@example.com`                                           |
+| `prestashopFirstName`                | First Name                                                                                              | `Bitnami`                                                    |
+| `prestashopLastName`                 | Last Name                                                                                               | `Name`                                                       |
+| `prestashopCookieCheckIP`            | Whether to check the cookie's IP address or not                                                         | `no`                                                         |
+| `prestashopCountry`                  | Default country of the store                                                                            | `us`                                                         |
+| `prestashopLanguage`                 | Default language of the store (iso code)                                                                | `en`                                                         |
+| `smtpHost`                           | SMTP host                                                                                               | `nil`                                                        |
+| `smtpPort`                           | SMTP port                                                                                               | `nil`                                                        |
+| `smtpUser`                           | SMTP user                                                                                               | `nil`                                                        |
+| `smtpPassword`                       | SMTP password                                                                                           | `nil`                                                        |
+| `smtpProtocol`                       | SMTP protocol [`ssl`, `tls`]                                                                            | `nil`                                                        |
+| `allowEmptyPassword`                 | Allow DB blank passwords                                                                                | `yes`                                                        |
+| `externalDatabase.host`              | Host of the external database                                                                           | `nil`                                                        |
+| `externalDatabase.port`              | SMTP protocol [`ssl`, `none`]                                                                           | `3306`                                                       |
+| `externalDatabase.user`              | Existing username in the external db                                                                    | `bn_prestashop`                                              |
+| `externalDatabase.password`          | Password for the above username                                                                         | `nil`                                                        |
+| `externalDatabase.database`          | Name of the existing database                                                                           | `bitnami_prestashop`                                         |
+| `mariadb.enabled`                    | Whether to use the MariaDB chart                                                                        | `true`                                                       |
+| `mariadb.image.registry`             | MariaDB image registry                                                                                  | `docker.io`                                                  |
+| `mariadb.image.repository`           | MariaDB image name                                                                                      | `bitnami/mariadb`                                            |
+| `mariadb.image.tag`                  | MariaDB image tag                                                                                       | `{TAG_NAME}`                                                 |
+| `mariadb.db.name`                    | Database name to create                                                                                 | `bitnami_prestashop`                                         |
+| `mariadb.db.user`                    | Database user to create                                                                                 | `bn_prestashop`                                              |
+| `mariadb.db.password`                | Password for the database                                                                               | `nil`                                                        |
+| `mariadb.rootUser.password`          | MariaDB admin password                                                                                  | `nil`                                                        |
+| `sessionAffinity`                    | Configures the session affinity                                                                         | `None`                                                       |
+| `persistence.enabled`                | Enable persistence using PVC                                                                            | `true`                                                       |
+| `persistence.storageClass`           | PVC Storage Class for PrestaShop volume                                                                 | `nil` (uses alpha storage class annotation)                  |
+| `persistence.existingClaim`          | An Existing PVC name for PrestaShop volume                                                              | `nil` (uses alpha storage class annotation)                  |
+| `persistence.accessMode`             | PVC Access Mode for PrestaShop volume                                                                   | `ReadWriteOnce`                                              |
+| `persistence.size`                   | PVC Storage Request for PrestaShop volume                                                               | `8Gi`                                                        |
+| `resources`                          | CPU/Memory resource requests/limits                                                                     | Memory: `512Mi`, CPU: `300m`                                 |
+| `livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated                                                                | 600                                                          |
+| `livenessProbe.periodSeconds`        | How often to perform the probe                                                                          | 3                                                            |
+| `livenessProbe.timeoutSeconds`       | When the probe times out                                                                                | 5                                                            |
+| `livenessProbe.failureThreshold`     | Minimum consecutive failures for the probe to be considered failed after having succeeded.              | 6                                                            |
+| `livenessProbe.successThreshold`     | Minimum consecutive successes for the probe to be considered successful after having failed.            | 1                                                            |
+| `readinessProbe.initialDelaySeconds` | Delay before readiness probe is initiated                                                               | 30                                                           |
+| `readinessProbe.periodSeconds`       | How often to perform the probe                                                                          | 3                                                            |
+| `readinessProbe.timeoutSeconds`      | When the probe times out                                                                                | 5                                                            |
+| `readinessProbe.failureThreshold`    | Minimum consecutive failures for the probe to be considered failed after having succeeded.              | 6                                                            |
+| `readinessProbe.successThreshold`    | Minimum consecutive successes for the probe to be considered successful after having failed.            | 1                                                            |
+| `podAnnotations`                     | Pod annotations                                                                                         | `{}`                                                         |
+| `metrics.enabled`                    | Start a side-car prometheus exporter                                                                    | `false`                                                      |
+| `metrics.image.registry`             | Apache exporter image registry                                                                          | `docker.io`                                                  |
+| `metrics.image.repository`           | Apache exporter image name                                                                              | `bitnami/apache-exporter`                                    |
+| `metrics.image.tag`                  | Apache exporter image tag                                                                               | `{TAG_NAME}`                                                 |
+| `metrics.image.pullPolicy`           | Image pull policy                                                                                       | `IfNotPresent`                                               |
+| `metrics.image.pullSecrets`          | Specify docker-registry secret names as an array                                                        | `[]` (does not add image pull secrets to deployed pods)      |
+| `metrics.podAnnotations`             | Additional annotations for Metrics exporter pod                                                         | `{prometheus.io/scrape: "true", prometheus.io/port: "9117"}` |
+| `metrics.resources`                  | Exporter resource requests/limit                                                                        | {}                                                           |
 
 The above parameters map to the env variables defined in [bitnami/prestashop](http://github.com/bitnami/bitnami-docker-prestashop). For more information please refer to the [bitnami/prestashop](http://github.com/bitnami/bitnami-docker-prestashop) image documentation.
 
@@ -158,9 +165,15 @@ $ helm install --name my-release -f values.yaml stable/prestashop
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
+### [Rolling VS Immutable tags](https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/)
+
+It is strongly recommended to use immutable tags in a production environment. This ensures your deployment does not change automatically if the same tag is updated with a different image.
+
+Bitnami will release a new chart updating its containers if a new version of the main container, significant changes, or critical vulnerabilities exist.
+
 ## Persistence
 
-The [Bitnami PrestaShop](https://github.com/bitnami/bitnami-docker-prestashop) image stores the PrestaShop data and configurations at the `/bitnami/prestashop` and `/bitnami/apache` paths of the container.
+The [Bitnami PrestaShop](https://github.com/bitnami/bitnami-docker-prestashop) image stores the PrestaShop data and configurations at the `/bitnami/prestashop` path of the container.
 
 Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
 See the [Configuration](#configuration) section to configure the PVC or to disable persistence.

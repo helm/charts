@@ -1,21 +1,27 @@
-{{- if .Values.anchoreGlobal.ingress.enabled -}}
+{{- if .Values.ingress.enabled -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: {{ template "anchore-engine.fullname" . }}
   labels:
     app: {{ template "anchore-engine.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-  {{- if .Values.anchoreGlobal.ingress.annotations }}
+    {{- with .Values.ingress.labels }}
+    {{ toYaml . | nindent 4 | trim }}
+    {{- end }}
+    {{- with .Values.anchoreGlobal.labels }}
+    {{ toYaml . | nindent 4 | trim }}
+    {{- end }}
+  {{- with .Values.ingress.annotations }}
   annotations:
-{{ toYaml .Values.anchoreGlobal.ingress.annotations | indent 4 }}
+    {{ toYaml . | nindent 4 | trim }}
   {{- end }}
 spec:
-  {{- if .Values.anchoreGlobal.ingress.tls }}
+  {{- if .Values.ingress.tls }}
   tls:
-    {{- range .Values.anchoreGlobal.ingress.tls }}
+    {{- range .Values.ingress.tls }}
     - hosts:
       {{- range .hosts }}
         - {{ . | quote }}
@@ -24,36 +30,36 @@ spec:
     {{- end }}
   {{- end }}
   rules:
-  {{- if .Values.anchoreApi.ingress.hosts }}
-    {{- range .Values.anchoreApi.ingress.hosts }}
+  {{- if .Values.ingress.apiHosts }}
+    {{- range .Values.ingress.apiHosts }}
     - host: {{ . | quote }}
       http:
         paths:
-        - path: {{ $.Values.anchoreApi.ingress.path }}
+        - path: {{ $.Values.ingress.apiPath }}
           backend:
             serviceName: {{ template "anchore-engine.api.fullname" $ }}
             servicePort: {{ $.Values.anchoreApi.service.port }}
     {{- end }}
-  {{- if and (and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseUi.enabled) .Values.anchoreEnterpriseUi.ingress.hosts }}
-    {{- range .Values.anchoreEnterpriseUi.ingress.hosts }}
+    {{- if and (and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseUi.enabled) .Values.ingress.uiHosts }}
+    {{- range .Values.ingress.uiHosts }}
     - host: {{ . | quote }}
       http:
         paths:
-        - path: {{ $.Values.anchoreEnterpriseUi.ingress.path }}
+        - path: {{ $.Values.ingress.uiPath }}
           backend:
             serviceName: {{ template "anchore-engine.enterprise-ui.fullname" $ }}
             servicePort: {{ $.Values.anchoreEnterpriseUi.service.port }}
     {{- end }}
-  {{- end }}
-    {{- else }}
+    {{- end }}
+  {{- else }}
     - http:
         paths:
-        - path: {{ $.Values.anchoreApi.ingress.path }}
+        - path: {{ $.Values.ingress.apiPath }}
           backend:
             serviceName: {{ template "anchore-engine.api.fullname" $ }}
             servicePort: {{ $.Values.anchoreApi.service.port }}
         {{- if and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseUi.enabled }}
-        - path: {{ $.Values.anchoreEnterpriseUi.ingress.path }}
+        - path: {{ $.Values.ingress.uiPath }}
           backend:
             serviceName: {{ template "anchore-engine.enterprise-ui.fullname" $ }}
             servicePort: {{ $.Values.anchoreEnterpriseUi.service.port }}

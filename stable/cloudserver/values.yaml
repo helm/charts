@@ -17,7 +17,7 @@ serviceAccounts:
 ##
 image:
   repository: zenko/cloudserver
-  tag: 8.1.1
+  tag: 8.1.5
   pullPolicy: IfNotPresent
 
 ## Configuration for the cloudserver api component

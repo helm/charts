@@ -28,7 +28,7 @@ The following table lists the configurable parameters of the consul chart and th
 | ----------------------- | ----------------------------------    | ---------------------------------------------------------- |
 | `Name`                  | Consul statefulset name               | `consul`                                                   |
 | `Image`                 | Container image name                  | `consul`                                                   |
-| `ImageTag`              | Container image tag                   | `1.0.0`                                                    |
+| `ImageTag`              | Container image tag                   | `1.5.2`                                                    |
 | `ImagePullPolicy`       | Container pull policy                 | `Always`                                                   |
 | `Replicas`              | k8s statefulset replicas              | `3`                                                        |
 | `Component`             | k8s selector key                      | `consul`                                                   |
@@ -36,6 +36,8 @@ The following table lists the configurable parameters of the consul chart and th
 | `Cpu`                   | container requested cpu               | `100m`                                                     |
 | `DatacenterName`        | Consul Datacenter Name                | `dc1` (The consul default)                                 |
 | `DisableHostNodeId`     | Disable Node Id creation (uses random)| `false`                                                    |
+| `joinPeers`             | Set list of hosts for -retry-join     | `[]`                                                       |
+| `joinWan`               | Set list of hosts for -retry-join-wan | `[]`                                                       |
 | `EncryptGossip`         | Whether or not gossip is encrypted    | `true`                                                     |
 | `GossipKey`             | Gossip-key to use by all members      | `nil`                                                      |
 | `Storage`               | Persistent volume size                | `1Gi`                                                      |
@@ -59,7 +61,7 @@ The following table lists the configurable parameters of the consul chart and th
 | `uiIngress.annotations` | Associate annotations to the Ingress  | `{}`                                                       |
 | `uiIngress.labels`      | Associate labels to the Ingress       | `{}`                                                       |
 | `uiIngress.hosts`       | Associate hosts with the Ingress      | `[]`                                                       |
-| `uiIngress.tls`         | Associate TLS with the Ingress        | `{}`                                                       |
+| `uiIngress.tls`         | Associate TLS with the Ingress        | `[]`                                                       |
 | `uiService.enabled`     | Create dedicated Consul Web UI svc    | `true`                                                     |
 | `uiService.type`        | Dedicate Consul Web UI svc type       | `NodePort`                                                 |
 | `uiService.annotations` | Extra annotations for UI service      | `{}`                                                       |
@@ -70,6 +72,9 @@ The following table lists the configurable parameters of the consul chart and th
 | `test.imageTag`         | Test container image tag  (used for helm test)     | `v1.4.8-bash`                                 |
 | `test.rbac.create`                      | Create rbac for test container                 | `false`                           |
 | `test.rbac.serviceAccountName`          | Name of existed service account for test container    | ``                         |
+| `additionalLabels`      | Add labels to Pod and StatefulSet     | `{}`                                                       |
+| `lifecycle`             | Lifecycle configuration, in YAML, for StatefulSet | `nil`                                          |
+| `forceIpv6`             | force to listen on IPv6 address                                                                    |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 

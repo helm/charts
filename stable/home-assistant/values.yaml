@@ -2,13 +2,14 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-replicaCount: 1
-
 image:
   repository: homeassistant/home-assistant
-  tag: 0.84.6
+  tag: 0.95.4
   pullPolicy: IfNotPresent
   pullSecrets: []
+
+# upgrade strategy type (e.g. Recreate or RollingUpdate)
+strategyType: Recreate
 
 service:
   type: ClusterIP
@@ -71,6 +72,36 @@ extraEnvSecrets:
   #   secret: mqtt
   #   key: password
 
+# Enable pod security context (must be `true` if runAsUser or fsGroup are set)
+usePodSecurityContext: true
+# Set runAsUser to 1000 to let home-assistant run as non-root user 'hass' which exists in 'runningman84/alpine-homeassistant' docker image.
+# When setting runAsUser to a different value than 0 also set fsGroup to the same value:
+# runAsUser: <defaults to 0>
+# fsGroup: <will be omitted in deployment if runAsUser is 0>
+
+git:
+  enabled: false
+
+  ## we just use the hass-configurator container image
+  ## you can use any image which has git and openssh installed
+  ##
+  image:
+    repository: causticlab/hass-configurator-docker
+    tag: x86_64-0.3.1
+    pullPolicy: IfNotPresent
+
+  ## Specify the command that runs in the git-sync container to pull in configuration.
+  # command: []
+
+  # repo:
+  secret: git-creds
+  syncPath: /config
+  keyPath: /root/.ssh
+
+zwave:
+  enabled: false
+  device: ttyACM0
+
 configurator:
   enabled: false
 
@@ -127,6 +158,74 @@ configurator:
     loadBalancerSourceRanges: []
     # nodePort: 30000
 
+## Add support for Prometheus
+# settings has to be enabled in configuration.yaml
+# https://www.home-assistant.io/components/prometheus/
+monitoring:
+  enabled: false
+  serviceMonitor:
+    # When set true and if Prometheus Operator is installed then use a ServiceMonitor to configure scraping
+    enabled: true
+    # Set the namespace the ServiceMonitor should be deployed
+    # namespace: monitoring
+    # Set how frequently Prometheus should scrape
+    # interval: 30s
+    # Set path to beats-exporter telemtery-path
+    # telemetryPath: /metrics
+    # Set labels for the ServiceMonitor, use this to define your scrape label for Prometheus Operator
+    # labels:
+
+vscode:
+  enabled: false
+
+  ## code-server container image
+  ##
+  image:
+    repository: codercom/code-server
+    tag: 1.939
+    pullPolicy: IfNotPresent
+
+  ## VSCode password
+  # password:
+
+  ## path where the home assistant configuration is stored
+  hassConfig: /config
+
+  ## path where the VS Code data should reside
+  vscodePath: /config/.vscode
+
+  ## Additional hass-vscode container environment variable
+  ## For instance to add a http_proxy
+  ##
+  extraEnv: {}
+
+  ingress:
+    enabled: false
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    path: /
+    hosts:
+      - home-assistant.local
+    tls: []
+    #  - secretName: home-assistant-tls
+    #    hosts:
+    #      - home-assistant.local
+
+  service:
+    type: ClusterIP
+    port: 80
+    annotations: {}
+    labels: {}
+    clusterIP: ""
+    ## List of IP addresses at which the hass-vscode service is available
+    ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+    ##
+    externalIPs: []
+    loadBalancerIP: ""
+    loadBalancerSourceRanges: []
+    # nodePort: 30000
+
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
@@ -144,3 +243,5 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+podAnnotations: {}

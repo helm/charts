@@ -3,7 +3,7 @@ kind: StatefulSet
 metadata:
   name: {{ template "patroni.fullname" . }}
   labels:
-    app: {{ template "patroni.name" . }}
+    app: {{ template "patroni.fullname" . }}
     chart: {{ template "patroni.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
@@ -12,13 +12,13 @@ spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ template "patroni.name" . }}
+      app: {{ template "patroni.fullname" . }}
       release: {{ .Release.Name }}
   template:
     metadata:
       name: {{ template "patroni.fullname" . }}
       labels:
-        app: {{ template "patroni.name" . }}
+        app: {{ template "patroni.fullname" . }}
         release: {{ .Release.Name }}
     spec:
       serviceAccountName: {{ template "patroni.serviceAccountName" . }}
@@ -46,13 +46,13 @@ spec:
         - name: DCS_ENABLE_KUBERNETES_API
           value: "true"
         - name: KUBERNETES_LABELS
-          value: {{ (printf "{ \"app\": \"%s\", \"release\": \"%s\" }" (include "patroni.name" .) .Release.Name) | quote }}
+          value: {{ (printf "{ \"app\": \"%s\", \"release\": \"%s\" }" (include "patroni.fullname" .) .Release.Name) | quote }}
         - name: KUBERNETES_SCOPE_LABEL
           value: "app"
-        {{- end }}
         {{- if .Values.kubernetes.configmaps.enable }}
         - name: KUBERNETES_USE_CONFIGMAPS
           value: "true"
+        {{- end }}
         {{- end }}
         {{- if .Values.etcd.enable }}
         {{- if .Values.etcd.deployChart }}
@@ -69,6 +69,14 @@ spec:
         {{- else }}
         - name: ZOOKEEPER_HOSTS
           value: {{ .Values.zookeeper.hosts | quote }}
+        {{- end }}
+        {{- else if .Values.consul.enable }}
+        {{- if .Values.consul.deployChart }}
+        - name: PATRONI_CONSUL_HOST
+          value: {{(printf "'%s-consul'" .Release.Name | trunc 63)}}
+        {{- else }}
+        - name: PATRONI_CONSUL_HOST
+          value: {{ .Values.consul.host | quote }}
         {{- end }}
         {{- end }}
         - name: SCOPE
@@ -114,6 +122,12 @@ spec:
             fieldRef:
               apiVersion: v1
               fieldPath: metadata.namespace
+        {{- if .Values.env }}
+        {{- range $key, $val := .Values.env }}
+        - name: {{  $key | quote | upper }}
+          value: {{ $val | quote }}
+        {{- end }}
+        {{- end }}
         ports:
         - containerPort: 8008
         - containerPort: 5432
@@ -141,8 +155,16 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
+    {{- if .Values.schedulerName }}
+      schedulerName: {{ .Values.schedulerName }}
+    {{- end }}
+    {{- if .Values.affinity }}
       affinity:
-{{ tpl .Values.affinity . | indent 8 }}
+{{ .Values.affinity | toYaml | indent 8 }}
+    {{- else if .Values.affinityTemplate }}
+      affinity:
+{{ tpl .Values.affinityTemplate . | indent 8 }}
+    {{- end }}
       volumes:
       - name: patroni-config
         secret:
@@ -167,7 +189,7 @@ spec:
 {{ toYaml .Values.persistentVolume.annotations | indent 8 }}
         {{- end }}
         labels:
-          app: {{ template "patroni.name" . }}
+          app: {{ template "patroni.fullname" . }}
           release: {{ .Release.Name }}
           heritage: {{ .Release.Service }}
       spec:

@@ -3,15 +3,15 @@ kind: DaemonSet
 metadata:
   name: {{ template "filebeat.fullname" . }}
   labels:
-    app: {{ template "filebeat.name" . }}
-    chart: {{ template "filebeat.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ template "filebeat.name" . }}
+    helm.sh/chart: {{ template "filebeat.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   selector:
     matchLabels:
-      app: {{ template "filebeat.name" . }}
-      release: {{ .Release.Name }}
+      app.kubernetes.io/name: {{ template "filebeat.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   minReadySeconds: 10
   updateStrategy:
     type: RollingUpdate
@@ -20,10 +20,10 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "filebeat.name" . }}
-        release: {{ .Release.Name }}
+        app.kubernetes.io/name: {{ template "filebeat.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
       annotations:
-        checksum/secret: {{ toYaml .Values.config | sha256sum }}
+        checksum/secret: {{ toYaml (default .Values.config .Values.overrideConfig) | sha256sum }}
 {{- if .Values.annotations }}
 {{ toYaml .Values.annotations | indent 8 }}
 {{- end }}
@@ -89,6 +89,9 @@ spec:
         {{- end }}
         securityContext:
           runAsUser: 0
+{{- if .Values.privileged }}
+          privileged: true
+{{- end }}
 {{- if .Values.resources }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
@@ -121,9 +124,9 @@ spec:
         resources:
 {{ toYaml .Values.monitoring.resources | indent 10 }}
 {{- end }}
-{{- end }}
         ports:
           - containerPort: {{ .Values.monitoring.exporterPort}}
+{{- end }}
       volumes:
       - name: varlog
         hostPath:
@@ -136,7 +139,7 @@ spec:
           secretName: {{ template "filebeat.fullname" . }}
       - name: data
         hostPath:
-          path: /var/lib/filebeat
+          path: {{ .Values.data.hostPath }}
           type: DirectoryOrCreate
 {{- if .Values.extraVolumes }}
 {{ toYaml .Values.extraVolumes | indent 6 }}

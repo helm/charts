@@ -11,32 +11,68 @@ spec:
   {{- if .Values.kubelet.serviceMonitor.https }}
   - port: https-metrics
     scheme: https
-    interval: 15s
+    {{- if .Values.kubelet.serviceMonitor.interval }}
+    interval: {{ .Values.kubelet.serviceMonitor.interval }}
+    {{- end }}
     tlsConfig:
       caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
       insecureSkipVerify: true
     bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
     honorLabels: true
+{{- if .Values.kubelet.serviceMonitor.metricRelabelings }}
+    metricRelabelings:
+{{ tpl (toYaml .Values.kubelet.serviceMonitor.metricRelabelings | indent 4) . }}
+{{- end }}
+{{- if .Values.kubelet.serviceMonitor.relabelings }}
+    relabelings:
+{{ toYaml .Values.kubelet.serviceMonitor.relabelings | indent 4 }}
+{{- end }}
   - port: https-metrics
     scheme: https
     path: /metrics/cadvisor
-    interval: 30s
+    {{- if .Values.kubelet.serviceMonitor.interval }}
+    interval: {{ .Values.kubelet.serviceMonitor.interval }}
+    {{- end }}
     honorLabels: true
     tlsConfig:
       caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
       insecureSkipVerify: true
     bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+{{- if .Values.kubelet.serviceMonitor.cAdvisorMetricRelabelings }}
+    metricRelabelings:
+{{ tpl (toYaml .Values.kubelet.serviceMonitor.cAdvisorMetricRelabelings | indent 4) . }}
+{{- end }}
+{{- if .Values.kubelet.serviceMonitor.cAdvisorRelabelings }}
+    relabelings:
+{{ toYaml .Values.kubelet.serviceMonitor.cAdvisorRelabelings | indent 4 }}
+{{- end }}
   {{- else }}
   - port: http-metrics
-    interval: 30s
+    {{- if .Values.kubelet.serviceMonitor.interval }}
+    interval: {{ .Values.kubelet.serviceMonitor.interval }}
+    {{- end }}
     honorLabels: true
+{{- if .Values.kubelet.serviceMonitor.metricRelabelings }}
+    metricRelabelings:
+{{ tpl (toYaml .Values.kubelet.serviceMonitor.metricRelabelings | indent 4) . }}
+{{- end }}
+{{- if .Values.kubelet.serviceMonitor.relabelings }}
+    relabelings:
+{{ toYaml .Values.kubelet.serviceMonitor.relabelings | indent 4 }}
+{{- end }}
   - port: http-metrics
     path: /metrics/cadvisor
-    interval: 30s
+    {{- if .Values.kubelet.serviceMonitor.interval }}
+    interval: {{ .Values.kubelet.serviceMonitor.interval }}
+    {{- end }}
     honorLabels: true
 {{- if .Values.kubelet.serviceMonitor.cAdvisorMetricRelabelings }}
     metricRelabelings:
-{{ toYaml .Values.kubelet.serviceMonitor.cAdvisorMetricRelabelings | indent 4 }}
+{{ tpl (toYaml .Values.kubelet.serviceMonitor.cAdvisorMetricRelabelings | indent 4) . }}
+{{- end }}
+{{- if .Values.kubelet.serviceMonitor.cAdvisorRelabelings }}
+    relabelings:
+{{ toYaml .Values.kubelet.serviceMonitor.cAdvisorRelabelings | indent 4 }}
 {{- end }}
   {{- end }}
   jobLabel: k8s-app

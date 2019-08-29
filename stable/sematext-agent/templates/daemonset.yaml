@@ -26,10 +26,12 @@ spec:
         checksum/config-agent: {{ include (print $.Template.BasePath "/configmap-agent.yaml") . | sha256sum }}
         checksum/config-agent-autodisco: {{ include (print $.Template.BasePath "/configmap-agent-autodisco.yaml") . | sha256sum }}
         checksum/config-logagent: {{ include (print $.Template.BasePath "/configmap-logagent.yaml") . | sha256sum }}
+        checksum/config-logagent-custom-configs: {{ include (print $.Template.BasePath "/configmap-logagent-custom-configs.yaml") . | sha256sum }}
         checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
     spec:
       serviceAccountName: {{ template "sematext-agent.serviceAccountName" . }}
       containers:
+        {{- if or (.Values.containerToken) (.Values.infraToken) }}
         - name: agent
           image: "{{ .Values.agent.image.repository }}:{{ .Values.agent.image.tag }}"
           imagePullPolicy: {{ .Values.agent.image.pullPolicy }}
@@ -53,6 +55,10 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: spec.nodeName
+          - name: STA_NAMESPACE
+            valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
           envFrom:
           - configMapRef:
               name: {{ template "sematext-agent.fullname" . }}-agent
@@ -65,6 +71,9 @@ spec:
               path: /health
               port: {{ .Values.agent.service.port }}
           volumeMounts:
+            - name: hostfs
+              mountPath: /hostfs
+              readOnly: true
             - name: procfs
               mountPath: /host/proc
               readOnly: true
@@ -80,6 +89,9 @@ spec:
               mountPath: /var/run/docker.sock
             - name: journal
               mountPath: /opt/spm/st-agent
+            - name: lib
+              mountPath: /host/usr/lib
+              readOnly: true
             - name: autodisco-template
               mountPath: /etc/agent
           securityContext:
@@ -90,6 +102,8 @@ spec:
               protocol: TCP
           resources:
 {{ toYaml .Values.agent.resources | indent 12 }}
+        {{- end }}
+        {{- if .Values.logsToken }}
         - name: logagent
           image: "{{ .Values.logagent.image.repository }}:{{ .Values.logagent.image.tag }}"
           imagePullPolicy: {{ .Values.logagent.image.pullPolicy }}
@@ -105,9 +119,23 @@ spec:
           volumeMounts:
             - name: docker-sock
               mountPath: /var/run/docker.sock
+            {{- if .Values.logagent.customConfigs }}
+            - mountPath: /etc/sematext
+              name: logagent-config-volume
+            {{- end }}
+            {{- if .Values.logagent.extraHostVolumeMounts }}
+            {{- range $_, $mount := .Values.logagent.extraHostVolumeMounts }}
+            - name: {{ $mount.name }}
+              mountPath: {{ $mount.mountPath }}
+            {{- end }}
+            {{- end }}
           resources:
 {{ toYaml .Values.logagent.resources | indent 12 }}
+          {{- end }}
       volumes:
+        - name: hostfs
+          hostPath:
+            path: /
         - name: procfs
           hostPath:
             path: /proc
@@ -126,9 +154,21 @@ spec:
         - name: journal
           hostPath:
             path: /opt/spm/st-agent
-        - name: autodisco-template
+        - name: lib
+          hostPath:
+            path: /host/usr/lib
+        {{- if .Values.logagent.customConfigs }}
+        - name: logagent-config-volume
           configMap:
-            name: {{ template "sematext-agent.fullname" . }}-agent-autodisco
+            name: {{ template "sematext-agent.fullname" . }}-logagent-custom-configs
+        {{- end }}
+        {{- if .Values.logagent.extraHostVolumeMounts }}
+        {{- range $_, $mount := .Values.logagent.extraHostVolumeMounts }}
+        - name: {{ $mount.name }}
+          hostPath:
+            path: {{ $mount.hostPath }}
+        {{- end }}
+        {{- end }}
       {{ if .Values.imagePullSecrets }}
       imagePullSecrets:
         - name: {{ .Values.imagePullSecrets }}

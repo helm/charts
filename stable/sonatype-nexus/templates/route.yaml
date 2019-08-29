@@ -1,0 +1,27 @@
+{{- if .Values.route.enabled }}
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: {{ .Values.route.name }}
+  labels: {{ .Values.route.labels }}
+  annotations:
+    {{- range $key, $value := .Values.route.annotations }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+spec:
+  host: {{ .Values.route.path }}
+  port:
+    targetPort: {{ .Values.service.portName }}
+  tls:
+    insecureEdgeTerminationPolicy: Redirect
+    termination: edge
+  to:
+    kind: Service
+{{- if .Values.service.name }}
+    name: {{ .Values.service.name }}
+{{- else }}
+    name: {{ template "nexus.name" . }}-service
+{{- end }}
+    weight: 100
+  wildcardPolicy: None
+{{- end }}

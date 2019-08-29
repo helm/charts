@@ -1,7 +1,7 @@
-# Generated from 'k8s-resources-cluster' from https://raw.githubusercontent.com/coreos/prometheus-operator/master/contrib/kube-prometheus/manifests/grafana-dashboardDefinitions.yaml
+# Generated from 'k8s-resources-cluster' from https://raw.githubusercontent.com/coreos/kube-prometheus/release-0.1/manifests/grafana-dashboardDefinitions.yaml
 # Do not change in-place! In order to change this file first read following link:
 # https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
-{{- if and .Values.grafana.enabled .Values.grafana.defaultDashboardsEnabled }}
+{{- if and (semverCompare ">=1.11.0-0" .Capabilities.KubeVersion.GitVersion) (semverCompare "<1.14.0-0" .Capabilities.KubeVersion.GitVersion) .Values.grafana.enabled .Values.grafana.defaultDashboardsEnabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -72,7 +72,7 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "1 - avg(rate(node_cpu_seconds_total{mode=\"idle\"}[1m]))",
+                                "expr": "1 - avg(rate(node_cpu_seconds_total{mode=\"idle\", cluster=\"$cluster\"}[1m]))",
                                 "format": "time_series",
                                 "instant": true,
                                 "intervalFactor": 2,
@@ -84,7 +84,7 @@ data:
                         "timeShift": null,
                         "title": "CPU Utilisation",
                         "tooltip": {
-                            "shared": true,
+                            "shared": false,
                             "sort": 0,
                             "value_type": "individual"
                         },
@@ -156,7 +156,7 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "sum(kube_pod_container_resource_requests_cpu_cores) / sum(node:node_num_cpu:sum)",
+                                "expr": "sum(kube_pod_container_resource_requests_cpu_cores{cluster=\"$cluster\"}) / sum(node:node_num_cpu:sum{cluster=\"$cluster\"})",
                                 "format": "time_series",
                                 "instant": true,
                                 "intervalFactor": 2,
@@ -168,7 +168,7 @@ data:
                         "timeShift": null,
                         "title": "CPU Requests Commitment",
                         "tooltip": {
-                            "shared": true,
+                            "shared": false,
                             "sort": 0,
                             "value_type": "individual"
                         },
@@ -240,7 +240,7 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "sum(kube_pod_container_resource_limits_cpu_cores) / sum(node:node_num_cpu:sum)",
+                                "expr": "sum(kube_pod_container_resource_limits_cpu_cores{cluster=\"$cluster\"}) / sum(node:node_num_cpu:sum{cluster=\"$cluster\"})",
                                 "format": "time_series",
                                 "instant": true,
                                 "intervalFactor": 2,
@@ -252,7 +252,7 @@ data:
                         "timeShift": null,
                         "title": "CPU Limits Commitment",
                         "tooltip": {
-                            "shared": true,
+                            "shared": false,
                             "sort": 0,
                             "value_type": "individual"
                         },
@@ -324,7 +324,7 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "1 - sum(:node_memory_MemFreeCachedBuffers_bytes:sum) / sum(:node_memory_MemTotal_bytes:sum)",
+                                "expr": "1 - sum(:node_memory_MemFreeCachedBuffers_bytes:sum{cluster=\"$cluster\"}) / sum(:node_memory_MemTotal_bytes:sum{cluster=\"$cluster\"})",
                                 "format": "time_series",
                                 "instant": true,
                                 "intervalFactor": 2,
@@ -336,7 +336,7 @@ data:
                         "timeShift": null,
                         "title": "Memory Utilisation",
                         "tooltip": {
-                            "shared": true,
+                            "shared": false,
                             "sort": 0,
                             "value_type": "individual"
                         },
@@ -408,7 +408,7 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "sum(kube_pod_container_resource_requests_memory_bytes) / sum(:node_memory_MemTotal_bytes:sum)",
+                                "expr": "sum(kube_pod_container_resource_requests_memory_bytes{cluster=\"$cluster\"}) / sum(:node_memory_MemTotal_bytes:sum{cluster=\"$cluster\"})",
                                 "format": "time_series",
                                 "instant": true,
                                 "intervalFactor": 2,
@@ -420,7 +420,7 @@ data:
                         "timeShift": null,
                         "title": "Memory Requests Commitment",
                         "tooltip": {
-                            "shared": true,
+                            "shared": false,
                             "sort": 0,
                             "value_type": "individual"
                         },
@@ -492,7 +492,7 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "sum(kube_pod_container_resource_limits_memory_bytes) / sum(:node_memory_MemTotal_bytes:sum)",
+                                "expr": "sum(kube_pod_container_resource_limits_memory_bytes{cluster=\"$cluster\"}) / sum(:node_memory_MemTotal_bytes:sum{cluster=\"$cluster\"})",
                                 "format": "time_series",
                                 "instant": true,
                                 "intervalFactor": 2,
@@ -504,7 +504,7 @@ data:
                         "timeShift": null,
                         "title": "Memory Limits Commitment",
                         "tooltip": {
-                            "shared": true,
+                            "shared": false,
                             "sort": 0,
                             "value_type": "individual"
                         },
@@ -587,7 +587,7 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "sum(namespace_pod_name_container_name:container_cpu_usage_seconds_total:sum_rate) by (namespace)",
+                                "expr": "sum(namespace_pod_name_container_name:container_cpu_usage_seconds_total:sum_rate{cluster=\"$cluster\"}) by (namespace)",
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "{{`{{namespace}}`}}",
@@ -602,7 +602,7 @@ data:
                         "timeShift": null,
                         "title": "CPU Usage",
                         "tooltip": {
-                            "shared": true,
+                            "shared": false,
                             "sort": 0,
                             "value_type": "individual"
                         },
@@ -691,6 +691,42 @@ data:
                                 "type": "hidden"
                             },
                             {
+                                "alias": "Pods",
+                                "colorMode": null,
+                                "colors": [
+
+                                ],
+                                "dateFormat": "YYYY-MM-DD HH:mm:ss",
+                                "decimals": 0,
+                                "link": true,
+                                "linkTooltip": "Drill down to pods",
+                                "linkUrl": "/d/85a562078cdf77779eaa1add43ccec1e/k8s-resources-namespace?var-datasource=$datasource&var-cluster=$cluster&var-namespace=$__cell_1",
+                                "pattern": "Value #A",
+                                "thresholds": [
+
+                                ],
+                                "type": "number",
+                                "unit": "short"
+                            },
+                            {
+                                "alias": "Workloads",
+                                "colorMode": null,
+                                "colors": [
+
+                                ],
+                                "dateFormat": "YYYY-MM-DD HH:mm:ss",
+                                "decimals": 0,
+                                "link": true,
+                                "linkTooltip": "Drill down to workloads",
+                                "linkUrl": "/d/a87fb0d919ec0ea5f6543124e16c42a5/k8s-resources-workloads-namespace?var-datasource=$datasource&var-cluster=$cluster&var-namespace=$__cell_1",
+                                "pattern": "Value #B",
+                                "thresholds": [
+
+                                ],
+                                "type": "number",
+                                "unit": "short"
+                            },
+                            {
                                 "alias": "CPU Usage",
                                 "colorMode": null,
                                 "colors": [
@@ -701,7 +737,7 @@ data:
                                 "link": false,
                                 "linkTooltip": "Drill down",
                                 "linkUrl": "",
-                                "pattern": "Value #A",
+                                "pattern": "Value #C",
                                 "thresholds": [
 
                                 ],
@@ -719,7 +755,7 @@ data:
                                 "link": false,
                                 "linkTooltip": "Drill down",
                                 "linkUrl": "",
-                                "pattern": "Value #B",
+                                "pattern": "Value #D",
                                 "thresholds": [
 
                                 ],
@@ -737,7 +773,7 @@ data:
                                 "link": false,
                                 "linkTooltip": "Drill down",
                                 "linkUrl": "",
-                                "pattern": "Value #C",
+                                "pattern": "Value #E",
                                 "thresholds": [
 
                                 ],
@@ -755,7 +791,7 @@ data:
                                 "link": false,
                                 "linkTooltip": "Drill down",
                                 "linkUrl": "",
-                                "pattern": "Value #D",
+                                "pattern": "Value #F",
                                 "thresholds": [
 
                                 ],
@@ -773,7 +809,7 @@ data:
                                 "link": false,
                                 "linkTooltip": "Drill down",
                                 "linkUrl": "",
-                                "pattern": "Value #E",
+                                "pattern": "Value #G",
                                 "thresholds": [
 
                                 ],
@@ -789,8 +825,8 @@ data:
                                 "dateFormat": "YYYY-MM-DD HH:mm:ss",
                                 "decimals": 2,
                                 "link": true,
-                                "linkTooltip": "Drill down",
-                                "linkUrl": "/d/85a562078cdf77779eaa1add43ccec1e/k8s-resources-namespace?var-datasource=$datasource&var-namespace=$__cell",
+                                "linkTooltip": "Drill down to pods",
+                                "linkUrl": "/d/85a562078cdf77779eaa1add43ccec1e/k8s-resources-namespace?var-datasource=$datasource&var-cluster=$cluster&var-namespace=$__cell",
                                 "pattern": "namespace",
                                 "thresholds": [
 
@@ -816,7 +852,7 @@ data:
                         ],
                         "targets": [
                             {
-                                "expr": "sum(namespace_pod_name_container_name:container_cpu_usage_seconds_total:sum_rate) by (namespace)",
+                                "expr": "count(mixin_pod_workload{cluster=\"$cluster\"}) by (namespace)",
                                 "format": "table",
                                 "instant": true,
                                 "intervalFactor": 2,
@@ -825,7 +861,7 @@ data:
                                 "step": 10
                             },
                             {
-                                "expr": "sum(kube_pod_container_resource_requests_cpu_cores) by (namespace)",
+                                "expr": "count(avg(mixin_pod_workload{cluster=\"$cluster\"}) by (workload, namespace)) by (namespace)",
                                 "format": "table",
                                 "instant": true,
                                 "intervalFactor": 2,
@@ -834,7 +870,7 @@ data:
                                 "step": 10
                             },
                             {
-                                "expr": "sum(namespace_pod_name_container_name:container_cpu_usage_seconds_total:sum_rate) by (namespace) / sum(kube_pod_container_resource_requests_cpu_cores) by (namespace)",
+                                "expr": "sum(namespace_pod_name_container_name:container_cpu_usage_seconds_total:sum_rate{cluster=\"$cluster\"}) by (namespace)",
                                 "format": "table",
                                 "instant": true,
                                 "intervalFactor": 2,
@@ -843,7 +879,7 @@ data:
                                 "step": 10
                             },
                             {
-                                "expr": "sum(kube_pod_container_resource_limits_cpu_cores) by (namespace)",
+                                "expr": "sum(kube_pod_container_resource_requests_cpu_cores{cluster=\"$cluster\"}) by (namespace)",
                                 "format": "table",
                                 "instant": true,
                                 "intervalFactor": 2,
@@ -852,12 +888,30 @@ data:
                                 "step": 10
                             },
                             {
-                                "expr": "sum(namespace_pod_name_container_name:container_cpu_usage_seconds_total:sum_rate) by (namespace) / sum(kube_pod_container_resource_limits_cpu_cores) by (namespace)",
+                                "expr": "sum(namespace_pod_name_container_name:container_cpu_usage_seconds_total:sum_rate{cluster=\"$cluster\"}) by (namespace) / sum(kube_pod_container_resource_requests_cpu_cores{cluster=\"$cluster\"}) by (namespace)",
                                 "format": "table",
                                 "instant": true,
                                 "intervalFactor": 2,
                                 "legendFormat": "",
                                 "refId": "E",
+                                "step": 10
+                            },
+                            {
+                                "expr": "sum(kube_pod_container_resource_limits_cpu_cores{cluster=\"$cluster\"}) by (namespace)",
+                                "format": "table",
+                                "instant": true,
+                                "intervalFactor": 2,
+                                "legendFormat": "",
+                                "refId": "F",
+                                "step": 10
+                            },
+                            {
+                                "expr": "sum(namespace_pod_name_container_name:container_cpu_usage_seconds_total:sum_rate{cluster=\"$cluster\"}) by (namespace) / sum(kube_pod_container_resource_limits_cpu_cores{cluster=\"$cluster\"}) by (namespace)",
+                                "format": "table",
+                                "instant": true,
+                                "intervalFactor": 2,
+                                "legendFormat": "",
+                                "refId": "G",
                                 "step": 10
                             }
                         ],
@@ -868,7 +922,7 @@ data:
                         "timeShift": null,
                         "title": "CPU Quota",
                         "tooltip": {
-                            "shared": true,
+                            "shared": false,
                             "sort": 0,
                             "value_type": "individual"
                         },
@@ -952,7 +1006,7 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "sum(container_memory_rss{container_name!=\"\"}) by (namespace)",
+                                "expr": "sum(container_memory_rss{cluster=\"$cluster\", container_name!=\"\"}) by (namespace)",
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "{{`{{namespace}}`}}",
@@ -967,7 +1021,7 @@ data:
                         "timeShift": null,
                         "title": "Memory Usage (w/o cache)",
                         "tooltip": {
-                            "shared": true,
+                            "shared": false,
                             "sort": 0,
                             "value_type": "individual"
                         },
@@ -983,7 +1037,7 @@ data:
                         },
                         "yaxes": [
                             {
-                                "format": "decbytes",
+                                "format": "bytes",
                                 "label": null,
                                 "logBase": 1,
                                 "max": null,
@@ -1056,43 +1110,43 @@ data:
                                 "type": "hidden"
                             },
                             {
-                                "alias": "Memory Usage",
+                                "alias": "Pods",
                                 "colorMode": null,
                                 "colors": [
 
                                 ],
                                 "dateFormat": "YYYY-MM-DD HH:mm:ss",
-                                "decimals": 2,
-                                "link": false,
-                                "linkTooltip": "Drill down",
-                                "linkUrl": "",
+                                "decimals": 0,
+                                "link": true,
+                                "linkTooltip": "Drill down to pods",
+                                "linkUrl": "/d/85a562078cdf77779eaa1add43ccec1e/k8s-resources-namespace?var-datasource=$datasource&var-cluster=$cluster&var-namespace=$__cell_1",
                                 "pattern": "Value #A",
                                 "thresholds": [
 
                                 ],
                                 "type": "number",
-                                "unit": "decbytes"
+                                "unit": "short"
                             },
                             {
-                                "alias": "Memory Requests",
+                                "alias": "Workloads",
                                 "colorMode": null,
                                 "colors": [
 
                                 ],
                                 "dateFormat": "YYYY-MM-DD HH:mm:ss",
-                                "decimals": 2,
-                                "link": false,
-                                "linkTooltip": "Drill down",
-                                "linkUrl": "",
+                                "decimals": 0,
+                                "link": true,
+                                "linkTooltip": "Drill down to workloads",
+                                "linkUrl": "/d/a87fb0d919ec0ea5f6543124e16c42a5/k8s-resources-workloads-namespace?var-datasource=$datasource&var-cluster=$cluster&var-namespace=$__cell_1",
                                 "pattern": "Value #B",
                                 "thresholds": [
 
                                 ],
                                 "type": "number",
-                                "unit": "decbytes"
+                                "unit": "short"
                             },
                             {
-                                "alias": "Memory Requests %",
+                                "alias": "Memory Usage",
                                 "colorMode": null,
                                 "colors": [
 
@@ -1107,10 +1161,10 @@ data:
 
                                 ],
                                 "type": "number",
-                                "unit": "percentunit"
+                                "unit": "bytes"
                             },
                             {
-                                "alias": "Memory Limits",
+                                "alias": "Memory Requests",
                                 "colorMode": null,
                                 "colors": [
 
@@ -1125,10 +1179,10 @@ data:
 
                                 ],
                                 "type": "number",
-                                "unit": "decbytes"
+                                "unit": "bytes"
                             },
                             {
-                                "alias": "Memory Limits %",
+                                "alias": "Memory Requests %",
                                 "colorMode": null,
                                 "colors": [
 
@@ -1146,6 +1200,42 @@ data:
                                 "unit": "percentunit"
                             },
                             {
+                                "alias": "Memory Limits",
+                                "colorMode": null,
+                                "colors": [
+
+                                ],
+                                "dateFormat": "YYYY-MM-DD HH:mm:ss",
+                                "decimals": 2,
+                                "link": false,
+                                "linkTooltip": "Drill down",
+                                "linkUrl": "",
+                                "pattern": "Value #F",
+                                "thresholds": [
+
+                                ],
+                                "type": "number",
+                                "unit": "bytes"
+                            },
+                            {
+                                "alias": "Memory Limits %",
+                                "colorMode": null,
+                                "colors": [
+
+                                ],
+                                "dateFormat": "YYYY-MM-DD HH:mm:ss",
+                                "decimals": 2,
+                                "link": false,
+                                "linkTooltip": "Drill down",
+                                "linkUrl": "",
+                                "pattern": "Value #G",
+                                "thresholds": [
+
+                                ],
+                                "type": "number",
+                                "unit": "percentunit"
+                            },
+                            {
                                 "alias": "Namespace",
                                 "colorMode": null,
                                 "colors": [
@@ -1154,8 +1244,8 @@ data:
                                 "dateFormat": "YYYY-MM-DD HH:mm:ss",
                                 "decimals": 2,
                                 "link": true,
-                                "linkTooltip": "Drill down",
-                                "linkUrl": "/d/85a562078cdf77779eaa1add43ccec1e/k8s-resources-namespace?var-datasource=$datasource&var-namespace=$__cell",
+                                "linkTooltip": "Drill down to pods",
+                                "linkUrl": "/d/85a562078cdf77779eaa1add43ccec1e/k8s-resources-namespace?var-datasource=$datasource&var-cluster=$cluster&var-namespace=$__cell",
                                 "pattern": "namespace",
                                 "thresholds": [
 
@@ -1181,7 +1271,7 @@ data:
                         ],
                         "targets": [
                             {
-                                "expr": "sum(container_memory_rss{container_name!=\"\"}) by (namespace)",
+                                "expr": "count(mixin_pod_workload{cluster=\"$cluster\"}) by (namespace)",
                                 "format": "table",
                                 "instant": true,
                                 "intervalFactor": 2,
@@ -1190,7 +1280,7 @@ data:
                                 "step": 10
                             },
                             {
-                                "expr": "sum(kube_pod_container_resource_requests_memory_bytes) by (namespace)",
+                                "expr": "count(avg(mixin_pod_workload{cluster=\"$cluster\"}) by (workload, namespace)) by (namespace)",
                                 "format": "table",
                                 "instant": true,
                                 "intervalFactor": 2,
@@ -1199,7 +1289,7 @@ data:
                                 "step": 10
                             },
                             {
-                                "expr": "sum(container_memory_rss{container_name!=\"\"}) by (namespace) / sum(kube_pod_container_resource_requests_memory_bytes) by (namespace)",
+                                "expr": "sum(container_memory_rss{cluster=\"$cluster\", container_name!=\"\"}) by (namespace)",
                                 "format": "table",
                                 "instant": true,
                                 "intervalFactor": 2,
@@ -1208,7 +1298,7 @@ data:
                                 "step": 10
                             },
                             {
-                                "expr": "sum(kube_pod_container_resource_limits_memory_bytes) by (namespace)",
+                                "expr": "sum(kube_pod_container_resource_requests_memory_bytes{cluster=\"$cluster\"}) by (namespace)",
                                 "format": "table",
                                 "instant": true,
                                 "intervalFactor": 2,
@@ -1217,12 +1307,30 @@ data:
                                 "step": 10
                             },
                             {
-                                "expr": "sum(container_memory_rss{container_name!=\"\"}) by (namespace) / sum(kube_pod_container_resource_limits_memory_bytes) by (namespace)",
+                                "expr": "sum(container_memory_rss{cluster=\"$cluster\", container_name!=\"\"}) by (namespace) / sum(kube_pod_container_resource_requests_memory_bytes{cluster=\"$cluster\"}) by (namespace)",
                                 "format": "table",
                                 "instant": true,
                                 "intervalFactor": 2,
                                 "legendFormat": "",
                                 "refId": "E",
+                                "step": 10
+                            },
+                            {
+                                "expr": "sum(kube_pod_container_resource_limits_memory_bytes{cluster=\"$cluster\"}) by (namespace)",
+                                "format": "table",
+                                "instant": true,
+                                "intervalFactor": 2,
+                                "legendFormat": "",
+                                "refId": "F",
+                                "step": 10
+                            },
+                            {
+                                "expr": "sum(container_memory_rss{cluster=\"$cluster\", container_name!=\"\"}) by (namespace) / sum(kube_pod_container_resource_limits_memory_bytes{cluster=\"$cluster\"}) by (namespace)",
+                                "format": "table",
+                                "instant": true,
+                                "intervalFactor": 2,
+                                "legendFormat": "",
+                                "refId": "G",
                                 "step": 10
                             }
                         ],
@@ -1233,7 +1341,7 @@ data:
                         "timeShift": null,
                         "title": "Requests by Namespace",
                         "tooltip": {
-                            "shared": true,
+                            "shared": false,
                             "sort": 0,
                             "value_type": "individual"
                         },
@@ -1298,6 +1406,33 @@ data:
                     "refresh": 1,
                     "regex": "",
                     "type": "datasource"
+                },
+                {
+                    "allValue": null,
+                    "current": {
+                        "text": "prod",
+                        "value": "prod"
+                    },
+                    "datasource": "$datasource",
+                    "hide": 2,
+                    "includeAll": false,
+                    "label": "cluster",
+                    "multi": false,
+                    "name": "cluster",
+                    "options": [
+
+                    ],
+                    "query": "label_values(node_cpu_seconds_total, cluster)",
+                    "refresh": 1,
+                    "regex": "",
+                    "sort": 2,
+                    "tagValuesQuery": "",
+                    "tags": [
+
+                    ],
+                    "tagsQuery": "",
+                    "type": "query",
+                    "useTags": false
                 }
             ]
         },

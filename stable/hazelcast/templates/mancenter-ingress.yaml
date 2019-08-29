@@ -1,0 +1,44 @@
+{{- if .Values.mancenter.ingress.enabled -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: "{{ include "mancenter.fullname" . }}"
+  labels:
+    app.kubernetes.io/name: {{ template "hazelcast.name" . }}
+    helm.sh/chart: {{ template "hazelcast.chart" . }}
+    app.kubernetes.io/instance: "{{ .Release.Name }}"
+    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+{{- if .Values.mancenter.ingress.annotations }}
+  annotations:
+{{ toYaml .Values.mancenter.ingress.annotations | indent 4 }}
+{{- end }}
+spec:
+{{- if .Values.mancenter.ingress.tls }}
+  tls:
+  {{- range .Values.mancenter.ingress.tls }}
+    - hosts:
+      {{- range .hosts }}
+        - {{ . | quote }}
+      {{- end }}
+      secretName: {{ .secretName }}
+  {{- end }}
+{{- end }}
+  rules:
+  {{- $serviceName := include "mancenter.fullname" . -}}
+  {{- if .Values.mancenter.ingress.hosts }}
+  {{- range $host := .Values.mancenter.ingress.hosts }}
+    - host: {{ $host | quote }}
+      http:
+        paths:
+          - backend:
+              serviceName: {{ $serviceName }}
+              servicePort: mancenterport
+  {{- end }}
+  {{- else }}
+  - http:
+      paths:
+      - backend:
+          serviceName: {{ $serviceName }}
+          servicePort: mancenterport
+  {{- end }}
+{{- end }}

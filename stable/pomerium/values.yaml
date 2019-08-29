@@ -1,0 +1,137 @@
+# For detailed explanation of each of the configuration settings see
+# https://www.pomerium.io/reference/
+
+# settings that are shared by all services
+config:
+  # routes under this wildcard domain are handled by pomerium
+  rootDomain: corp.beyondperimeter.com
+  # existingSecret:
+  # existingConfig:
+  sharedSecret: ""
+  cookieSecret: ""
+  generateTLS: true
+  extraOpts: {}
+  existingPolicy: ""
+  policy: {}
+
+authenticate:
+  # fullnameOverride: authenticate
+  # nameOverride: authenticate
+  redirectUrl: ""
+  # see https://www.pomerium.io/docs/identity-providers.html
+  idp:
+    provider: google
+    clientID: "REPLACE_ME"
+    clientSecret: "REPLACE_ME"
+    url: ""
+    serviceAccount: ""
+  tls:
+    cert: ""
+    key: ""
+    defaultSANList: []
+    defaultIPList: []
+
+authorize:
+  # fullnameOverride: authorize
+  # nameOverride: authorize
+  tls:
+    cert: ""
+    key: ""
+    defaultSANList: []
+    defaultIPList: []
+
+proxy:
+  # fullnameOverride: proxy
+  # nameOverride: proxy
+  tls:
+    cert: ""
+    key: ""
+    defaultSANList: []
+    defaultIPList: []
+  authenticateServiceUrl: ""
+  authorizeServiceUrl: ""
+  authorizeInternalUrl: ""
+  authenticateInternalUrl: ""
+
+service:
+  # Service type can be set to ClusterIP, NodePort or LoadBalancer.
+  type: ClusterIP
+  externalPort: 443
+  annotations:
+    {}
+    # ===  GKE load balancer tweaks; default on until I can figure out
+    # how the hell to escape this string from the helm CLI
+    # cloud.google.com/app-protocols: '{"https":"HTTPS"}'
+  labels: {}
+
+ingress:
+  secretName: ""
+  secret:
+    name: ""
+    cert: ""
+    key: ""
+  enabled: true
+  annotations:
+    {}
+    # === nginx tweaks
+    # kubernetes.io/ingress.class: nginx
+    # nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    # nginx.ingress.kubernetes.io/proxy-buffer-size: "16k"
+    # ===  GKE load balancer tweaks; default on until I can figure out
+    # how the hell to escape this string from the helm CLI
+    # kubernetes.io/ingress.allow-http: "false"
+resources:
+  {}
+  # limits:
+  #   cpu: 100m
+  #   memory: 300Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 300Mi
+
+priorityClassName: ""
+
+# Affinity for pod assignment
+# Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+# affinity: {}
+
+# Tolerations for pod assignment
+# Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+# tolerations: []
+
+# Node labels for pod assignment
+# Ref: https://kubernetes.io/docs/user-guide/node-selection/
+# nodeSelector: {}
+
+podAnnotations: {}
+podLabels: {}
+replicaCount: 1
+
+# For any other settings that are optional. for a complete listing see:
+# https://www.pomerium.io/docs/config-reference.html
+extraEnv: {}
+extraArgs: {}
+extraVolumes: {}
+
+image:
+  repository: "pomerium/pomerium"
+  tag: "v0.2.1"
+  pullPolicy: "IfNotPresent"
+
+metrics:
+  enabled: false
+  port: 9090
+
+tracing:
+  enabled: false
+  provider: ""
+  debug: false
+  jaeger:
+    collector_endpoint: ""
+    agent_endpoint: ""
+
+serviceMonitor:
+  enabled: false
+  namespace: ""
+  labels:
+    release: prometheus

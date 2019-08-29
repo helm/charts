@@ -19,6 +19,24 @@ If you want to delete your Chart, use this command
 helm delete  --purge "cassandra"
 ```
 
+## Upgrading
+
+To upgrade your Cassandra release, simply run
+
+```bash
+helm upgrade "cassandra" incubator/cassandra
+```
+
+### 0.12.0
+
+This version fixes https://github.com/helm/charts/issues/7803 by removing mutable labels in `spec.VolumeClaimTemplate.metadata.labels` so that it is upgradable.
+
+Until this version, in order to upgrade, you have to delete the Cassandra StatefulSet before upgrading:
+```bash
+$ kubectl delete statefulset --cascade=false my-cassandra-release
+```
+
+
 ## Persist data
 You need to create `StorageClass` before able to persist data in persistent volume.
 To create a `StorageClass` on Google Cloud, run the following
@@ -103,6 +121,7 @@ The following table lists the configurable parameters of the Cassandra chart and
 | `commandOverrides`                   | Overrides default docker command                | `[]`                                                       |
 | `argsOverrides`                      | Overrides default docker args                   | `[]`                                                       |
 | `env`                                | Custom env variables                            | `{}`                                                       |
+| `schedulerName`                      | Name of k8s scheduler (other than the default)  | `nil`                                                      |
 | `persistence.enabled`                | Use a PVC to persist data                       | `true`                                                     |
 | `persistence.storageClass`           | Storage class of backing PVC                    | `nil` (uses alpha storage class annotation)                |
 | `persistence.accessMode`             | Use volume as ReadOnly or ReadWrite             | `ReadWriteOnce`                                            |
@@ -123,23 +142,27 @@ The following table lists the configurable parameters of the Cassandra chart and
 | `readinessProbe.timeoutSeconds`      | When the probe times out                        | `5`                                                        |
 | `readinessProbe.successThreshold`    | Minimum consecutive successes for the probe to be considered successful after having failed.           | `1` |
 | `readinessProbe.failureThreshold`    | Minimum consecutive failures for the probe to be considered failed after having succeeded.             | `3` |
+| `readinessProbe.address`             | Address to use for checking node has joined the cluster and is ready.                          | `${POD_IP}` |
 | `rbac.create`                        | Specifies whether RBAC resources should be created                                                  | `true` |
 | `serviceAccount.create`              | Specifies whether a ServiceAccount should be created                                                | `true` |
 | `serviceAccount.name`                | The name of the ServiceAccount to use           |                                                            |
 | `backup.enabled`                     | Enable backup on chart installation             | `false`                                                    |
 | `backup.schedule`                    | Keyspaces to backup, each with cron time        |                                                            |
 | `backup.annotations`                 | Backup pod annotations                          | iam.amazonaws.com/role: `cain`                             |
-| `backup.image.repo`                  | Backup image repository                         | `nuvo/cain`                                                |
-| `backup.image.tag`                   | Backup image tag                                | `0.4.1`                                                    |
+| `backup.image.repository`            | Backup image repository                         | `maorfr/cain`                                              |
+| `backup.image.tag`                   | Backup image tag                                | `0.6.0`                                                    |
 | `backup.extraArgs`                   | Additional arguments for cain                   | `[]`                                                       |
 | `backup.env`                         | Backup environment variables                    | AWS_REGION: `us-east-1`                                    |
 | `backup.resources`                   | Backup CPU/Memory resource requests/limits      | Memory: `1Gi`, CPU: `1`                                    |
 | `backup.destination`                 | Destination to store backup artifacts           | `s3://bucket/cassandra`                                    |
+| `backup.google.serviceAccountSecret` | Secret containing credentials if GCS is used as destination |                                                |
 | `exporter.enabled`                   | Enable Cassandra exporter                       | `false`                                                    |
+| `exporter.servicemonitor`            | Enable ServiceMonitor for exporter              | `true`                                                    |
 | `exporter.image.repo`                | Exporter image repository                       | `criteord/cassandra_exporter`                              |
 | `exporter.image.tag`                 | Exporter image tag                              | `2.0.2`                                                    |
 | `exporter.port`                      | Exporter port                                   | `5556`                                                     |
 | `exporter.jvmOpts`                   | Exporter additional JVM options                 |                                                            |
+| `exporter.resources`                 | Exporter CPU/Memory resource requests/limits    | `{}`                                                       |
 | `affinity`                           | Kubernetes node affinity                        | `{}`                                                       |
 | `tolerations`                        | Kubernetes node tolerations                     | `[]`                                                       |
 

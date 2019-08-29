@@ -7,6 +7,30 @@ Expand the name of the chart.
 {{- end -}}
 
 {{/*
+Allow the release namespace to be overridden for multi-namespace deployments in combined charts.
+*/}}
+{{- define "jenkins.namespace" -}}
+  {{- if .Values.namespaceOverride -}}
+    {{- .Values.namespaceOverride -}}
+  {{- else -}}
+    {{- .Release.Namespace -}}
+  {{- end -}}
+{{- end -}}
+
+{{- define "jenkins.master.slaveKubernetesNamespace" -}}
+  {{- if .Values.master.slaveKubernetesNamespace -}}
+    {{- .Values.master.slaveKubernetesNamespace -}}
+  {{- else -}}
+    {{- if .Values.namespaceOverride -}}
+      {{- .Values.namespaceOverride -}}
+    {{- else -}}
+      {{- .Release.Namespace -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+
+
+{{/*
 Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
@@ -24,11 +48,32 @@ If release name contains chart name it will be used as a full name.
 {{- end -}}
 {{- end -}}
 
+{{/*
+Returns the Jenkins URL
+*/}}
+{{- define "jenkins.url" -}}
+{{- if .Values.master.jenkinsUrl }}
+  {{- .Values.master.jenkinsUrl }}
+{{- else }}
+  {{- if .Values.master.ingress.hostName }}
+    {{- if .Values.master.ingress.tls }}
+      {{- default "https" .Values.master.jenkinsUrlProtocol }}://{{ .Values.master.ingress.hostName }}{{ default "" .Values.master.jenkinsUriPrefix }}
+    {{- else }}
+      {{- default "http" .Values.master.jenkinsUrlProtocol }}://{{ .Values.master.ingress.hostName }}{{ default "" .Values.master.jenkinsUriPrefix }}
+    {{- end }}
+  {{- else }}
+      {{- default "http" .Values.master.jenkinsUrlProtocol }}://{{ template "jenkins.fullname" . }}:{{.Values.master.servicePort}}{{ default "" .Values.master.jenkinsUriPrefix }}
+  {{- end}}
+{{- end}}
+{{- end -}}
+
 {{- define "jenkins.kubernetes-version" -}}
-  {{- range .Values.Master.InstallPlugins -}}
-    {{ if hasPrefix "kubernetes:" . }}
-      {{- $split := splitList ":" . }}
-      {{- printf "%s" (index $split 1 ) -}}
+  {{- if .Values.master.installPlugins -}}
+    {{- range .Values.master.installPlugins -}}
+      {{ if hasPrefix "kubernetes:" . }}
+        {{- $split := splitList ":" . }}
+        {{- printf "%s" (index $split 1 ) -}}
+      {{- end -}}
     {{- end -}}
   {{- end -}}
 {{- end -}}
@@ -37,8 +82,30 @@ If release name contains chart name it will be used as a full name.
 Generate private key for jenkins CLI
 */}}
 {{- define "jenkins.gen-key" -}}
-{{- if not .Values.Master.OwnSshKey -}}
+{{- if not .Values.master.adminSshKey -}}
 {{- $key := genPrivateKey "rsa" -}}
-jenkins-admin-private-key: {{ $key | b64enc }}
+jenkins-admin-private-key: {{ $key | b64enc | quote }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Create the name of the service account to use
+*/}}
+{{- define "jenkins.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create -}}
+    {{ default (include "jenkins.fullname" .) .Values.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Create the name of the service account for Jenkins agents to use
+*/}}
+{{- define "jenkins.serviceAccountAgentName" -}}
+{{- if .Values.serviceAccountAgent.create -}}
+    {{ default (printf "%s-%s" (include "jenkins.fullname" .) "agent") .Values.serviceAccountAgent.name }}
+{{- else -}}
+    {{ default "default" .Values.serviceAccountAgent.name }}
 {{- end -}}
 {{- end -}}

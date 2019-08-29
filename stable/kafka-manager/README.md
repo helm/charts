@@ -54,6 +54,7 @@ Parameter | Description | Default
 `javaOptions` | Java runtime options | `""`
 `service.type` | Kafka-manager service type | `ClusterIP`
 `service.port` | Kafka-manager service port | `9000`
+`service.annotations` | Optional service annotations | `{}`
 `ingress.enabled` | If true, create an ingress resource | `false`
 `ingress.annotations` | Optional ingress annotations | `{}`
 `ingress.path` | Ingress path | `/`

@@ -14,7 +14,8 @@ metadata:
 {{- if .Values.reloader.matchLabels }}
 {{ toYaml .Values.reloader.matchLabels | indent 4 }}
 {{- end }}
-  name: {{ template "reloader-name" . }}
+  name: {{ template "reloader-fullname" . }}
+  namespace: {{ .Release.Namespace }}
 spec:
   replicas: 1
   revisionHistoryLimit: 2
@@ -71,4 +72,23 @@ spec:
         image: "{{ .Values.reloader.deployment.image.name }}:{{ .Values.reloader.deployment.image.tag }}"
         imagePullPolicy: {{ .Values.reloader.deployment.image.pullPolicy }}
         name: {{ template "reloader-name" . }}
+      {{- if .Values.reloader.custom_annotations }}
+        args:
+          {{- if .Values.reloader.custom_annotations.configmap }}
+          - "--configmap-annotation"
+          - "{{ .Values.reloader.custom_annotations.configmap }}"
+          {{- end }}
+          {{- if .Values.reloader.custom_annotations.secret }}
+          - "--secret-annotation"
+          - "{{ .Values.reloader.custom_annotations.secret }}"
+          {{- end }}
+          {{- if .Values.reloader.custom_annotations.auto }}
+          - "--auto-annotation"
+          - "{{ .Values.reloader.custom_annotations.auto }}"
+          {{- end }}
+        {{- end }}
       serviceAccountName: {{ template "serviceAccountName" . }}
+{{- if .Values.reloader.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.reloader.nodeSelector | indent 8 }}
+{{- end }}

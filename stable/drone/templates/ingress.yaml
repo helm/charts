@@ -20,13 +20,15 @@ spec:
     - host: {{ . }}
       http:
         paths:
-        {{- if index $.Values.ingress "annotations" }}
-          {{- if eq (index $.Values.ingress.annotations "kubernetes.io/ingress.class" | default "") "gce" "alb" }}
+        {{- if $.Values.ingress.path }}
+          - path: {{ $.Values.ingress.path }}
+        {{- else if index $.Values.ingress "annotations" }}
+          {{- if eq (index $.Values.ingress.annotations "kubernetes.io/ingress.class" | default "") "gce" "alb" "istio" }}
           - path: /*
-          {{- else }}{{/* Has annotations but ingress class is not "gce" nor "alb" */}}
+          {{- else }}{{/* Has annotations but ingress class is not "gce" nor "alb" nor "istio" */}}
           - path: /
           {{- end }}
-        {{- else}}{{/* Has no annotations */}}
+        {{- else }}{{/* Has no annotations */}}
           - path: /
         {{- end }}
             backend:

@@ -8,21 +8,24 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
   annotations:
+    # deprecation in 1.10, supported until at least 1.13,  breaks peer-finder/kube-dns if not used
     service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
     {{- range $key, $value := .Values.service.annotations }}
     {{ $key }}: {{ $value | quote }}
     {{- end }}
 spec:
-{{ if .Values.service.clusterIP }}
+  # deprecates service.alpha.kubernetes.io/tolerate-unready-endpoints as of 1.10? see: kubernetes/kubernetes#49239 Fixed in 1.11 as of #63742
+  publishNotReadyAddresses: true
+  {{ if .Values.service.clusterIP }}
   clusterIP: {{ .Values.service.clusterIP | quote  }}
-{{ end }}
+  {{ end }}
   type: {{ .Values.service.type }}
   {{ if eq .Values.service.type "LoadBalancer" -}} {{ if .Values.service.loadBalancerIP -}}
   loadBalancerIP: {{ .Values.service.loadBalancerIP }}
   {{ end -}}
   {{- if .Values.service.loadBalancerSourceRanges }}
   loadBalancerSourceRanges:
-  {{ toYaml .Values.service.loadBalancerSourceRanges | indent 2}}  
+  {{ toYaml .Values.service.loadBalancerSourceRanges | indent 2}}
   {{ end -}}
   {{- end -}}
   ports:

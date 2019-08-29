@@ -2,7 +2,7 @@
 
 # Anchore engine has a dependency on Postgresql, configure here
 postgresql:
-  # To use an external DB, uncomment & set 'enabled: false'
+  # To use an external DB or Google CloudSQL in GKE, uncomment & set 'enabled: false'
   # externalEndpoint, postgresUser, postgresPassword & postgresDatabase are required values for external postgres
   # enabled: false
   postgresUser: anchoreengine
@@ -14,41 +14,88 @@ postgresql:
   externalEndpoint: Null
 
   # Configure size of the persitant volume used with helm managed chart.
-  # This is ignored if using an external endpoint.
+  # This should be commented out if using an external endpoint.
   persistence:
-    size: 8Gi
+    resourcePolicy: nil
+    size: 20Gi
+
+# Google CloudSQL support in GKE via gce-proxy
+cloudsql:
+  # To use CloudSQL in GKE set 'enable: true'
+  enabled: false
+  # set CloudSQL instance: 'project:zone:instancname'
+  instance: ""
+  # Optional existing service account secret to use.
+  # useExistingServiceAcc: false
+  # serviceAccSecretName: service_acc
+  # serviceAccJsonName: for_cloudsql.json
+  image:
+    # set repo and image tag of gce-proxy
+    repository: gcr.io/cloudsql-docker/gce-proxy
+    tag: 1.12
+    pullPolicy: IfNotPresent
+
+# Create an ingress resource for all external anchore engine services (API & Enterprise UI).
+# By default this chart is setup to use the NGINX ingress controller which needs to be installed & configured on your cluster.
+# To utilize a GCE/ALB ingress controller comment out the nginx annotations below, change ingress.class, edit path configurions as per the comments, & set API/UI services to use NodePort.
+ingress:
+  enabled: false
+  labels: {}
+  # Use the following paths for GCE/ALB ingress controller
+  # apiPath: /v1/*
+  # uiPath: /*
+  apiPath: /v1/
+  uiPath: /
+  # Uncomment the following lines to bind on specific hostnames
+  # apiHosts:
+  #   - anchore-api.example.com
+  # uiHosts:
+  #   - anchore-ui.example.com
+  annotations:
+    # kubernetes.io/ingress.class: gce
+    kubernetes.io/ingress.class: nginx
+    # nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    # kubernetes.io/ingress.allow-http: false
+    # kubernetes.io/tls-acme: true
+  tls: []
+  # Secrets must be manually created in the namespace.
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
 
 # Global configuration shared by all anchore-engine services.
 anchoreGlobal:
   # Image used for all anchore engine deployments (excluding enterprise components).
-  image: docker.io/anchore/anchore-engine:v0.3.2
+  image: docker.io/anchore/anchore-engine:v0.4.2
   imagePullPolicy: IfNotPresent
 
-  # Create an ingress resource for all external anchore engine services.
-  # By default this chart is setup to use the NGINX ingress controller which needs to be installed & configured on your cluster.
-  # To utilize a GCE ingress controller comment out the annotations below, also edit path configurion the UI & Api configs as per the comments.
-  # Ingress paths/hosts can be setup for the anchoreApi & anchoreEnterpriseUi deployments in the corresponding values sections.
-  ingress:
-    enabled: false
-    annotations:
-      kubernetes.io/ingress.class: nginx
-      # nginx.ingress.kubernetes.io/ssl-redirect: "false"
-      # kubernetes.io/ingress.allow-http: false
-      # kubernetes.io/tls-acme: true
-    tls: []
-    # Secrets must be manually created in the namespace.
-    #  - secretName: chart-example-tls
-    #    hosts:
-    #      - chart-example.local
+  # Add additionnal labels to all kubernetes resources
+  labels: {}
+
+  # Set extra environment variables. These will be set on all containers.
+  extraEnv: []
+    # - name: foo
+    #   value: bar
+
+  # Specifies an existing secret to be used for admin and db passwords
+  existingSecret: ""
+
+  # The scratchVolume controls the mounting of an external volume for scratch space for image analysis. Generally speaking
+  # you need to provision 3x the size of the largest image (uncompressed) that you want to analyze for this space.
+  scratchVolume:
+    mountPath: /analysis_scratch
+    details:
+      # Specify volume configuration here
+      emptyDir: {}
 
   ###
-  # Start of General Anchore Engine Configurations (populates config.yaml)
+  # Start of General Anchore Engine Configurations (populates /config/config.yaml)
   ###
   # Set where default configs are placed at startup. This must be a writable location for the pod.
-  serviceDir: /anchore_service_config
+  serviceDir: /anchore_service
   logLevel: INFO
 
-  # If true, if a user adds an ECR registry with username = awsauto then the system will look for an instance profile to use for auth against the registry
+  # If true, when a user adds an ECR registry with username = awsauto then the system will look for an instance profile to use for auth against the registry
   allowECRUseIAMRole: false
 
   # Enable prometheus metrics
@@ -71,7 +118,7 @@ anchoreGlobal:
   internalServicesSsl:
     # specify whether cert is verfied against the local certifacte bundle (allow self-signed certs if set to false)
     verifyCerts: false
-    certDir: /certs
+    certDir: /home/anchore/certs
     certSecret: Null
     certSecretKeyName: tls.key
     certSecretCertName: tls.crt
@@ -98,6 +145,11 @@ anchoreAnalyzer:
   replicaCount: 1
   containerPort: 8084
 
+  # Set extra environment variables. These will be set only on analyzer containers.
+  extraEnv: []
+    # - name: foo
+    #   value: bar
+
   # The cycle timer is the interval between checks to the work queue for new jobs
   cycleTimers:
     image_analyzer: 5
@@ -106,13 +158,12 @@ anchoreAnalyzer:
   # necessarily be faster depending on hardware. Should test and balance this value vs. number of analyzers for your deployment cluster performance.
   concurrentTasksPerWorker: 1
 
-  # The analysisVolume controls the mounting of an external volume for scratch space for image analysis. Generally speaking
-  # you need to provision 3x the size of the largest image (uncompressed) that you want to analyze for this space.
-  scratchVolume:
-    mountPath: /scratch
-    details:
-      # Specify volume configuration here
-      emptyDir: {}
+  # Image layer caching can be enabled to speed up image downloads before analysis.
+  # This chart sets up a scratch directory for all analyzer pods using the values found at anchoreGlobal.scratchVolume.
+  # When setting anchoreAnalyzer.layerCacheMaxGigabytes, ensure the scratch volume has suffient storage space.
+  # For more info see - https://docs.anchore.com/current/docs/engine/engine_installation/storage/layer_caching/
+  # Enable image layer caching by setting a cache size > 0GB.
+  layerCacheMaxGigabytes: 0
 
   # resources:
   #  limits:
@@ -122,6 +173,7 @@ anchoreAnalyzer:
   #    cpu: 100m
   #    memory: 3Gi
 
+  labels: {}
   annotations: {}
   nodeSelector: {}
   tolerations: []
@@ -132,22 +184,17 @@ anchoreAnalyzer:
 anchoreApi:
   replicaCount: 1
 
+  # Set extra environment variables. These will be set on all api containers.
+  extraEnv: []
+    # - name: foo
+    #   value: bar
+
   # kubernetes service configuration for anchore external API
   service:
     type: ClusterIP
     port: 8228
     annotations: {}
-
-  # Used to create Ingress record for the anchore engine external API (api service)
-  # (should used with service.type: ClusterIP or NodePort depending on platform)
-  ingress:
-    # For GCE ingress controllers use the following path
-    # path: /v1/*
-    # By default this is configured to use an NGINX ingress controller.
-    path: /v1/
-    # You can bound on specific hostnames
-    # hosts:
-    #   - anchore-api.local
+    label: {}
 
   # resources:
   #  limits:
@@ -157,6 +204,7 @@ anchoreApi:
   #    cpu: 100m
   #    memory: 4Gi
 
+  labels: {}
   annotations: {}
   nodeSelector: {}
   tolerations: []
@@ -164,6 +212,11 @@ anchoreApi:
 
 anchoreCatalog:
   replicaCount: 1
+
+  # Set extra environment variables. These will be set on all catalog containers.
+  extraEnv: []
+    # - name: foo
+    #   value: bar
 
   # Intervals to run specific events on (seconds)
   cycleTimers:
@@ -185,7 +238,7 @@ anchoreCatalog:
   # Event log configuration for webhooks
   events:
     notification:
-      enabled: true
+      enabled: false
       # Send notifications for events with severity level that matches items in this list
       level:
         - error
@@ -244,6 +297,7 @@ anchoreCatalog:
     type: ClusterIP
     port: 8082
     annotations: {}
+    labels: {}
 
   # resources:
   #  limits:
@@ -253,6 +307,7 @@ anchoreCatalog:
   #    cpu: 100m
   #    memory: 3Gi
 
+  labels: {}
   annotations: {}
   nodeSelector: {}
   tolerations: []
@@ -261,6 +316,11 @@ anchoreCatalog:
 # Pod configuration for the anchore engine policy service.
 anchorePolicyEngine:
   replicaCount: 1
+
+  # Set extra environment variables. These will be set on all policy engine containers.
+  extraEnv: []
+    # - name: foo
+    #   value: bar
 
   # Intervals to run specific events on (seconds)
   cycleTimers:
@@ -274,6 +334,7 @@ anchorePolicyEngine:
     type: ClusterIP
     port: 8087
     annotations: {}
+    labels: {}
 
   # resources:
   #  limits:
@@ -283,6 +344,7 @@ anchorePolicyEngine:
   #    cpu: 100m
   #    memory: 3Gi
 
+  labels: {}
   annotations: {}
   nodeSelector: {}
   tolerations: []
@@ -292,11 +354,17 @@ anchorePolicyEngine:
 anchoreSimpleQueue:
   replicaCount: 1
 
+  # Set extra environment variables. These will be set on all simplequeue containers.
+  extraEnv: []
+    # - name: foo
+    #   value: bar
+
   # kubernetes service configuration for anchore simplequeue api
   service:
     type: ClusterIP
     port: 8083
     annotations: {}
+    labels: {}
 
   # resources:
   #  limits:
@@ -306,6 +374,7 @@ anchoreSimpleQueue:
   #    cpu: 100m
   #    memory: 2Gi
 
+  labels: {}
   annotations: {}
   nodeSelector: {}
   tolerations: []
@@ -318,16 +387,16 @@ anchoreEnterpriseGlobal:
   # Create this secret with the following command - kubectl create secret generic anchore-license --from-file=license.yaml=<PATH TO LICENSE.YAML>
   licenseSecretName: anchore-enterprise-license
 
-  image: docker.io/anchore/enterprise:v0.3.3
+  image: docker.io/anchore/enterprise:v0.4.1
   imagePullPolicy: IfNotPresent
   # Name of the kubernetes secret containing your dockerhub creds with access to the anchore enterprise images.
   # Create this secret with the following command - kubectl create secret docker-registry anchore-dockerhub-creds --docker-server=docker.io --docker-username=<USERNAME> --docker-password=<PASSWORD> --docker-email=<EMAIL_ADDRESS>
   imagePullSecretName: anchore-enterprise-pullcreds
 
 # Configure the second postgres database instance for the enterprise feeds service.
-# Only utilized if anchoreEnterpriseFeeds.enabled: true
+# Only utilized if anchoreEnterpriseGlobal.enabled: true
 anchore-feeds-db:
-  # To use an external DB, uncomment & set 'enabled: false'
+  # To use an external DB or Google CloudSQL, uncomment & set 'enabled: false'
   # externalEndpoint, postgresUser, postgresPassword & postgresDatabase are required values for external postgres
   # enabled: false
   postgresUser: anchoreengine
@@ -339,14 +408,20 @@ anchore-feeds-db:
   externalEndpoint: Null
 
   # Configure size of the persitant volume used with helm managed chart.
-  # This is ignored if using an external endpoint.
+  # This should be commented out if using an external endpoint.
   persistence:
-    size: 8Gi
+    resourcePolicy: nil
+    size: 20Gi
 
 # Configure & enable the Anchore Enterprise on-prem feeds service.
 anchoreEnterpriseFeeds:
   # If enabled is set to false, set anchore-feeds-db.enabled to false to ensure that helm doesn't stand up a unneccessary postgres instance.
   enabled: true
+
+  # Set extra environment variables. These will be set on all feeds containers.
+  extraEnv: []
+    # - name: foo
+    #   value: bar
 
   # Time delay in seconds between consecutive driver runs for processing data
   cycleTimers:
@@ -365,13 +440,7 @@ anchoreEnterpriseFeeds:
     type: ClusterIP
     port: 8448
     annotations: {}
-
-  # Staging space for holding normalized output from drivers.
-  scratchVolume:
-    mountPath: /scratch
-    details:
-      # Specify volume configuration here
-      emptyDir: {}
+    labels: {}
 
   # resources:
   #  limits:
@@ -381,6 +450,7 @@ anchoreEnterpriseFeeds:
   #    cpu: 100m
   #    memory: 3Gi
 
+  labels: {}
   annotations: {}
   nodeSelector: {}
   tolerations: []
@@ -390,6 +460,11 @@ anchoreEnterpriseFeeds:
 # This component consists of 2 containers that run as side-cars in the anchore engine api pod.
 anchoreEnterpriseRbac:
   enabled: true
+
+  # Set extra environment variables. These will be set on all rbac containers.
+  extraEnv: []
+    # - name: foo
+    #   value: bar
 
   # Kubernetes service config - annotations & serviceType configs must be set in anchoreApi
   # Due to RBAC sharing a service with the general API.
@@ -413,10 +488,60 @@ anchoreEnterpriseRbac:
   #    cpu: 100m
   #    memory: 3Gi
 
+# Configure the Anchore Enterprise reporting component.
+anchoreEnterpriseReports:
+  enabled: true
+
+  # Set extra environment variables. These will be set on all rbac containers.
+  extraEnv: []
+    # - name: foo
+    #   value: bar
+
+  # GraphiQL is a GUI for editing and testing GraphQL queries and mutations.
+  # Set enable_graphiql to true and open http://<host>:<port>/v1/reports/graphql in a browser for reports API
+  enableGraphql: true
+  # Set enable_data_ingress to true for periodically syncing data from anchore engine into the reports service
+  enableDataIngress: true
+
+  cycleTimers:
+    # images and tags synced every 10 minutes
+    reports_data_load: 600
+    # policy evaluations and vulnerabilities refreshed every 2 hours
+    reports_data_refresh: 7200
+    # metrics generated every hour
+    reports_metrics: 3600
+
+  # Kubernetes service config - annotations & serviceType configs must be set in anchoreApi
+  # Due to Reports sharing a service with the general API.
+  service:
+    port: 8558
+
+  # resources:
+  #  limits:
+  #    cpu: 100m
+  #    memory: 8Gi
+  #  requests:
+  #    cpu: 100m
+  #    memory: 3Gi
+
+  labels: {}
+  annotations: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
 # Configure the Anchore Enterprise UI.
 anchoreEnterpriseUi:
   # If enabled is set to false, set anchore-ui-redis.enabled to false to ensure that helm doesn't stand up a unneccessary redis instance.
   enabled: true
+  image: docker.io/anchore/enterprise-ui:v0.3.4
+  imagePullPolicy: IfNotPresent
+
+  # Set extra environment variables. These will be set on all UI containers.
+  extraEnv: []
+    # - name: foo
+    #   value: bar
+
   # Specifies whether to trust a reverse proxy when setting secure cookies (via the `X-Forwarded-Proto` header).
   enableProxy: false
   # Specifies if SSL is enabled in the web app container.
@@ -428,24 +553,29 @@ anchoreEnterpriseUi:
   # sessions that are using the same set of credentials. Note that setting this property to `false` does not prevent a
   # single session from being viewed within multiple *tabs* inside the same browser.
   enableSharedLogin: true
-
-  image: docker.io/anchore/enterprise-ui:v0.3.1
-  imagePullPolicy: IfNotPresent
+  # The redisFlushdb` key specifies if the Redis datastore containing
+  # user session keys and data is emptied on application startup. If the datastore
+  # is flushed, any users with active sessions will be required to re-authenticate.
+  redisFlushdb: true
+  # The (optional) `policy_hub_uri` key specifies the address of a Policy Hub
+  # service. The value must be a string containing a properly-formed 'http' or
+  # 'https' URI, and can be overridden by using the `ANCHORE_POLICY_HUB_URI`
+  # environment variable.
+  #
+  # When this value is set, the Policy Hub component is enabled within the
+  # Policy Manager view (`/policy`). Note that the availability and integrity of
+  # Policy Hub data is determined by this component at run-time when this
+  # component is accessed.
+  #
+  policyHubUri: 'http://hub.anchore.io'
 
   # kubernetes service configuration for anchore UI
   service:
     type: ClusterIP
     port: 80
     annotations: {}
-
-  ingress:
-    # For GCE ingress controllers use the following path
-    # path: /*
-    # By default this is configured to use an NGINX ingress controller.
-    path: /
-    # You can bound on specific hostnames
-    # hosts:
-    #   - anchore-ui.local
+    labels: {}
+    sessionAffinity: ClientIP
 
   # resources:
   #  limits:
@@ -455,6 +585,7 @@ anchoreEnterpriseUi:
   #    cpu: 100m
   #    memory: 3Gi
 
+  labels: {}
   annotations: {}
   nodeSelector: {}
   tolerations: []

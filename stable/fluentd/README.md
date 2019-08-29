@@ -32,6 +32,12 @@ $ helm delete my-release
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
+## Autoscaling
+
+By enabling autoscaling the chart will use statefulset with hpa instead of ceployment with PVC.
+Please be noted to [statefulset limitation](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#limitations)
+The autoscaling is disabled by default for backward compatibility
+
 ## Configuration
 
 The following table lists the configurable parameters of the fluentd chart and their default values.
@@ -46,22 +52,39 @@ Parameter | Description | Default
 `output.sslVersion` | output ssl version | `TLSv1`
 `output.buffer_chunk_limit` | output buffer chunk limit | `2M`
 `output.buffer_queue_limit` | output buffer queue limit | `8`
-`service.type` | type of service | `ClusterIP`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
 `image.repository` | Image repository | `gcr.io/google-containers/fluentd-elasticsearch`
-`image.tag` | Image tag | `v2.3.1`
+`image.tag` | Image tag | `v2.4.0`
 `imagePullSecrets` | Specify image pull secrets | `nil` (does not add image pull secrets to deployed pods)
+`extraEnvVars` | Adds additional environment variables to the deployment (in yaml syntax) | `{}` See [values.yaml](values.yaml)
 `ingress.enabled` | enable ingress | `false`
+`ingress.labels` | list of labels for the ingress rule | See [values.yaml](values.yaml)
+`ingress.annotations` | list of annotations for the ingress rule | `kubernetes.io/ingress.class: nginx` See [values.yaml](values.yaml)
+`ingress.hosts` | host definition for ingress | See [values.yaml](values.yaml)
+`ingress.tls` | tls rules for ingress | See [values.yaml](values.yaml)
 `nodeSelector` | node labels for pod assignment | `{}`
 `replicaCount` | desired number of pods | `1` ???
 `resources` | pod resource requests & limits | `{}`
 `priorityClassName` | priorityClassName | `nil`
-`service.port` | port for the service | `80`
+`service.ports` | port definition for the service | See [values.yaml](values.yaml)
 `service.type` | type of service | `ClusterIP`
+`service.annotations` | list of annotations for the service | `{}`
 `tolerations` | List of node taints to tolerate | `[]`
 `persistence.enabled` | Enable buffer persistence | `false`
 `persistence.accessMode` | Access mode for buffer persistence | `ReadWriteOnce`
 `persistence.size` | Volume size for buffer persistence | `10Gi`
+`autoscaling.enabled` | Set this to `true` to enable autoscaling | `false`
+`autoscaling.minReplicas` | Set minimum number of replicas | `2`
+`autoscaling.maxReplicas` | Set maximum number of replicas | `5`
+`autoscaling.metrics` | metrics used for autoscaling | See [values.yaml](values.yaml)
+`terminationGracePeriodSeconds` | Optional duration in seconds the pod needs to terminate gracefully | `30`
+`metrics.enabled`                         | Set this to `true` to enable Prometheus metrics HTTP endpoint                         | `false`
+`metrics.service.port`                    | Prometheus metrics HTTP endpoint port                                                 | `24231`
+`metrics.serviceMonitor.enabled`          | Set this to `true` to create ServiceMonitor for Prometheus operator                   | `false`
+`metrics.serviceMonitor.additionalLabels` | Additional labels that can be used so ServiceMonitor will be discovered by Prometheus | `{}`
+`metrics.serviceMonitor.namespace`        | Optional namespace in which to create ServiceMonitor                                  | `nil`
+`metrics.serviceMonitor.interval`         | Scrape interval. If not set, the Prometheus default scrape interval is used           | `nil`
+`metrics.serviceMonitor.scrapeTimeout`    | Scrape timeout. If not set, the Prometheus default scrape timeout is used             | `nil`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

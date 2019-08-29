@@ -39,7 +39,7 @@ The following table lists the configurable parameters of the Node Exporter chart
 |             Parameter             |                                                          Description                                                          |                 Default                 |     |
 | --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | --------------------------------------- | --- |
 | `image.repository`                | Image repository                                                                                                              | `quay.io/prometheus/node-exporter`      |     |
-| `image.tag`                       | Image tag                                                                                                                     | `v0.16.0`                               |     |
+| `image.tag`                       | Image tag                                                                                                                     | `v0.18.0`                               |     |
 | `image.pullPolicy`                | Image pull policy                                                                                                             | `IfNotPresent`                          |     |
 | `extraArgs`                       | Additional container arguments                                                                                                | `[]`                                    |     |
 | `extraHostVolumeMounts`           | Additional host volume mounts                                                                                                 | {}                                      |     |
@@ -61,9 +61,12 @@ The following table lists the configurable parameters of the Node Exporter chart
 | `tolerations`                     | List of node taints to tolerate                                                                                               | `- effect: NoSchedule operator: Exists` |     |
 | `priorityClassName`               | Name of Priority Class to assign pods                                                                                         | `nil`                                   |     |
 | `endpoints`            | list of addresses that have node exporter deployed outside of the cluster                                                                | `[]`                                    |     |
+| `hostNetwork`                     | Whether to expose the service to the host network                                                                             | `true`                                  |     |
 | `prometheus.monitor.enabled` | Set this to `true` to create ServiceMonitor for Prometheus operator | `false` | |
 | `prometheus.monitor.additionalLabels` | Additional labels that can be used so ServiceMonitor will be discovered by Prometheus | `{}` | |
 | `prometheus.monitor.namespace` | namespace where servicemonitor resource should be created | `the same namespace as prometheus node exporter` | |
+| `prometheus.monitor.scrapeTimeout` | Timeout after which the scrape is ended | `10s` | |
+| `configmaps`                      | Allow mounting additional configmaps.                                                                                         | `{}`                                    |     |    
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

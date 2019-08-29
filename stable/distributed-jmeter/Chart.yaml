@@ -2,7 +2,7 @@ apiVersion: v1
 appVersion: "3.3"
 description: A Distributed JMeter Helm chart
 name: distributed-jmeter
-version: 1.0.0
+version: 1.0.1
 home: http://jmeter.apache.org/
 icon: http://jmeter.apache.org/images/logo.svg
 sources:

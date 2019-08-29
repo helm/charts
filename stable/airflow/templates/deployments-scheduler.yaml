@@ -25,8 +25,11 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/configmap-airflow.yaml") . | sha256sum }}
-        configmap.fabric8.io/update-on-change: "{{ template "airflow.fullname" . }}-env"
+        checksum/config-env: {{ include (print $.Template.BasePath "/configmap-env.yaml") . | sha256sum }}
+        checksum/config-git-clone: {{ include (print $.Template.BasePath "/configmap-git-clone.yaml") . | sha256sum }}
+        checksum/config-scripts: {{ include (print $.Template.BasePath "/configmap-scripts.yaml") . | sha256sum }}
+        checksum/config-variables-pools: {{ include (print $.Template.BasePath "/configmap-variables-pools.yaml") . | sha256sum }}
+        checksum/secret-connections: {{ include (print $.Template.BasePath "/secret-connections.yaml") . | sha256sum }}
 {{- if .Values.airflow.podAnnotations }}
 {{ toYaml .Values.airflow.podAnnotations | indent 8 }}
 {{- end }}
@@ -40,6 +43,18 @@ spec:
         - name: {{ .Values.airflow.image.pullSecret }}
       {{- end }}
       restartPolicy: Always
+      {{- if .Values.scheduler.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.scheduler.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.scheduler.affinity }}
+      affinity:
+{{ toYaml .Values.scheduler.affinity | indent 8 }}
+      {{- end }}
+      {{- if .Values.scheduler.tolerations }}
+      tolerations:
+{{ toYaml .Values.scheduler.tolerations | indent 8 }}
+      {{- end }}
       serviceAccountName: {{ template "airflow.serviceAccountName" . }}
       {{- if .Values.dags.initContainer.enabled }}
       initContainers:
@@ -71,12 +86,15 @@ spec:
               name: "{{ template "airflow.fullname" . }}-env"
           env:
           {{- include "airflow.mapenvsecrets" . | indent 10 }}
+          resources:
+{{ toYaml .Values.scheduler.resources | indent 12 }}
           volumeMounts:
             - name: scripts
               mountPath: /usr/local/scripts
           {{- if .Values.persistence.enabled }}
             - name: dags-data
               mountPath: {{ .Values.dags.path }}
+              subPath: {{ .Values.persistence.subPath | default "" }}
           {{- else if .Values.dags.initContainer.enabled }}
             - name: dags-data
               mountPath: {{ .Values.dags.path }}
@@ -84,15 +102,23 @@ spec:
           {{- if .Values.logsPersistence.enabled }}
             - name: logs-data
               mountPath: {{ .Values.logs.path }}
+              subPath: {{ .Values.logsPersistence.subPath | default "" }}
           {{- end }}
           {{- if .Values.airflow.connections }}
             - name: connections
               mountPath: /usr/local/connections
           {{- end}}
+          {{- if or .Values.airflow.variables .Values.airflow.pools }}
+            - name: variables-pools
+              mountPath: /usr/local/variables-pools/
+          {{- end}}
           {{- range .Values.airflow.extraConfigmapMounts }}
             - name: {{ .name }}
               mountPath: {{ .mountPath }}
               readOnly: {{ .readOnly }}
+              {{ if .subPath }}
+              subPath: {{ .subPath }}
+              {{ end }}
           {{- end }}
 {{- if .Values.airflow.extraVolumeMounts }}
 {{ toYaml .Values.airflow.extraVolumeMounts | indent 12 }}
@@ -108,11 +134,21 @@ spec:
               mkdir -p /usr/local/airflow/.local/bin &&
               export PATH=/usr/local/airflow/.local/bin:$PATH &&
               /usr/local/scripts/install-requirements.sh &&
+              {{- if .Values.airflow.initdb }}
               echo "executing initdb" &&
               airflow initdb &&
+              {{- end }}
             {{- if .Values.airflow.connections }}
               echo "adding connections" &&
               /usr/local/connections/add-connections.sh &&
+            {{- end }}
+            {{- if .Values.airflow.variables }}
+              echo "adding variables" &&
+              airflow variables -i /usr/local/variables-pools/variables.json &&
+            {{- end }}
+            {{- if .Values.airflow.pools }}
+              echo "adding pools" &&
+              airflow pool -i /usr/local/variables-pools/pools.json &&
             {{- end }}
               echo "executing scheduler" &&
               airflow scheduler -n {{ .Values.airflow.schedulerNumRuns }}
@@ -122,11 +158,21 @@ spec:
               sleep 10 &&
               mkdir -p /usr/local/airflow/.local/bin &&
               export PATH=/usr/local/airflow/.local/bin:$PATH &&
+              {{- if .Values.airflow.initdb }}
               echo "executing initdb" &&
               airflow initdb &&
+              {{- end }}
             {{- if .Values.airflow.connections }}
               echo "adding connections" &&
               /usr/local/connections/add-connections.sh &&
+            {{- end }}
+            {{- if .Values.airflow.variables }}
+              echo "adding variables" &&
+              airflow variables -i /usr/local/variables-pools/variables.json &&
+            {{- end }}
+            {{- if .Values.airflow.pools }}
+              echo "adding pools" &&
+              airflow pool -i /usr/local/variables-pools/pools.json &&
             {{- end }}
               echo "executing scheduler" &&
               airflow scheduler -n {{ .Values.airflow.schedulerNumRuns }}
@@ -167,6 +213,12 @@ spec:
         - name: connections
           secret:
             secretName: {{ template "airflow.fullname" . }}-connections
+            defaultMode: 0755
+        {{- end }}
+        {{- if or .Values.airflow.variables .Values.airflow.pools }}
+        - name: variables-pools
+          configMap:
+            name: {{ template "airflow.fullname" . }}-variables-pools
             defaultMode: 0755
         {{- end }}
         {{- range .Values.airflow.extraConfigmapMounts }}

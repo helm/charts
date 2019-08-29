@@ -1,7 +1,7 @@
 name: oauth2-proxy
-version: 0.9.1
+version: 0.14.1
 apiVersion: v1
-appVersion: 3.1.0
+appVersion: 3.2.0
 home: http://www.videntity.com/
 description: A reverse proxy that provides authentication with Google, Github or other providers
 keywords:

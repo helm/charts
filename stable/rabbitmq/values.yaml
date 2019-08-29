@@ -1,8 +1,12 @@
-## Global Docker image registry
-## Please, note that this will override the image registry for all the images, including dependencies, configured to use the global value
+## Global Docker image parameters
+## Please, note that this will override the image parameters, including dependencies, configured to use the global value
+## Current available global Docker image parameters: imageRegistry and imagePullSecrets
 ##
 # global:
-#   imageRegistry:
+#   imageRegistry: myRegistryName
+#   imagePullSecrets:
+#     - myRegistryKeySecretName
+#   storageClass: myStorageClass
 
 ## Bitnami RabbitMQ image version
 ## ref: https://hub.docker.com/r/bitnami/rabbitmq/tags/
@@ -10,7 +14,7 @@
 image:
   registry: docker.io
   repository: bitnami/rabbitmq
-  tag: 3.7.13
+  tag: 3.7.17-debian-9-r0
 
   ## set to true if you would like to see extra information on logs
   ## it turns BASH and NAMI debugging in minideb
@@ -27,10 +31,35 @@ image:
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
   ##
   # pullSecrets:
-  #   - myRegistrKeySecretName
+  #   - myRegistryKeySecretName
+
+## String to partially override rabbitmq.fullname template (will maintain the release name)
+##
+# nameOverride:
+
+## String to fully override rabbitmq.fullname template
+##
+# fullnameOverride:
+
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName:
 
 ## does your cluster have rbac enabled? assume yes by default
 rbacEnabled: true
+
+## RabbitMQ should be initialized one by one when building cluster for the first time.
+## Therefore, the default value of podManagementPolicy is 'OrderedReady'
+## Once the RabbitMQ participates in the cluster, it waits for a response from another
+## RabbitMQ in the same cluster at reboot, except the last RabbitMQ of the same cluster.
+## If the cluster exits gracefully, you do not need to change the podManagementPolicy
+## because the first RabbitMQ of the statefulset always will be last of the cluster.
+## However if the last RabbitMQ of the cluster is not the first RabbitMQ due to a failure,
+## you must change podManagementPolicy to 'Parallel'.
+## ref : https://www.rabbitmq.com/clustering.html#restarting
+##
+podManagementPolicy: OrderedReady
 
 ## section of specific values for rabbitmq
 rabbitmq:
@@ -56,23 +85,46 @@ rabbitmq:
   ##
   # rabbitmqClusterNodeName:
 
+  ## Value for the RABBITMQ_LOGS environment variable
+  ## ref: https://www.rabbitmq.com/logging.html#log-file-location
+  ##
+  logs: '-'
+
   ## RabbitMQ Max File Descriptors
   ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
   ## ref: https://www.rabbitmq.com/install-debian.html#kernel-resource-limits
   ##
+  setUlimitNofiles: true
   ulimitNofiles: '65536'
 
+  ## RabbitMQ maximum available scheduler threads and online scheduler threads
+  ## ref: https://hamidreza-s.github.io/erlang/scheduling/real-time/preemptive/migration/2016/02/09/erlang-scheduler-details.html#scheduler-threads
+  ##
+  maxAvailableSchedulers: 2
+  onlineSchedulers: 1
+
   ## Plugins to enable
-  plugins: |-
-      [rabbitmq_management, rabbitmq_peer_discovery_k8s].
+  plugins: "rabbitmq_management rabbitmq_peer_discovery_k8s"
+
+  ## Extra plugins to enable
+  ## Use this instead of `plugins` to add new plugins
+  # extraPlugins: ""
 
   ## Clustering settings
   clustering:
-    address_type: ip
+    address_type: hostname
     k8s_domain: cluster.local
 
+  loadDefinition:
+    enabled: false
+    secretName: load-definition
+
+  ## environment variables to configure rabbitmq
+  ## ref: https://www.rabbitmq.com/configure.html#customise-environment
+  env: {}
+
   ## Configuration file content: required cluster configuration
-  ## Do not override unless you know what you are doing. To add more configuration, use `extraConfiguration` instead
+  ## Do not override unless you know what you are doing. To add more configuration, use `extraConfiguration` of `advancedConfiguration` instead
   configuration: |-
     ## Clustering
     cluster_formation.peer_discovery_backend  = rabbit_peer_discovery_k8s
@@ -86,9 +138,14 @@ rabbitmq:
     loopback_users.guest = false
 
   ## Configuration file content: extra configuration
-  ## Use this instead of  `configuration` to add more configuration
+  ## Use this instead of `configuration` to add more configuration
   extraConfiguration: |-
     #disk_free_limit.absolute = 50MB
+    #management.load_definitions = /app/load_definition.json
+
+  ## Configuration file content: advanced configuration
+  ## Use this as additional configuraton in classic config format (Erlang term configuration format)
+  advancedConfiguration: |-
 
 ## Kubernetes service type
 service:
@@ -113,6 +170,16 @@ service:
   ##
   managerPort: 15672
 
+  ## Service annotations
+  annotations:
+    # service.beta.kubernetes.io/aws-load-balancer-internal: 0.0.0.0/0
+
+  ## Load Balancer sources
+  ## https://kubernetes.io/docs/tasks/access-application-cluster/configure-cloud-provider-firewall/#restrict-access-for-loadbalancer-service
+  ##
+  # loadBalancerSourceRanges:
+  # - 10.10.10.0/24
+
 # Additional pod labels to apply
 podLabels: {}
 
@@ -126,7 +193,7 @@ securityContext:
 
 persistence:
   ## this enables PVC templates that will create one per pod
-  enabled: false
+  enabled: true
 
   ## rabbitmq data Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
@@ -138,8 +205,16 @@ persistence:
   # storageClass: "-"
   accessMode: ReadWriteOnce
 
+  ## Existing PersistentVolumeClaims
+  ## The value is evaluated as a template
+  ## So, for example, the name can depend on .Release or .Chart
+  # existingClaim: ""
+
   # If you change this value, you might have to adjust `rabbitmq.diskFreeLimit` as well.
   size: 8Gi
+
+  # persistence directory, maps to the rabbitmq data directory
+  path: /opt/bitnami/rabbitmq/var/lib/rabbitmq
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -152,6 +227,11 @@ replicas: 1
 ## Pod priority
 ## https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
 # priorityClassName: ""
+
+## updateStrategy for RabbitMQ statefulset
+## ref: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#update-strategies
+updateStrategy:
+  type: RollingUpdate
 
 ## Node labels and tolerations for pod assignment
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
@@ -216,10 +296,70 @@ metrics:
   enabled: false
   image:
     registry: docker.io
-    repository: kbudde/rabbitmq-exporter
-    tag: v0.29.0
+    repository: bitnami/rabbitmq-exporter
+    tag: 0.29.0-debian-9-r3
     pullPolicy: IfNotPresent
+    ## Optionally specify an array of imagePullSecrets.
+    ## Secrets must be manually created in the namespace.
+    ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+    ##
+    # pullSecrets:
+    #   - myRegistryKeySecretName
+  ## environment variables to configure rabbitmq_exporter
+  ## ref: https://github.com/kbudde/rabbitmq_exporter#configuration
+  env: {}
+  ## Metrics exporter port
+  port: 9419
+  ## Comma-separated list of extended scraping capabilities supported by the target RabbitMQ server
+  ## ref: https://github.com/kbudde/rabbitmq_exporter#extended-rabbitmq-capabilities
+  capabilities: "bert,no_sort"
   resources: {}
   annotations:
     prometheus.io/scrape: "true"
     prometheus.io/port: "9090"
+
+  ## Prometheus Service Monitor
+  ## ref: https://github.com/coreos/prometheus-operator
+  ##      https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#endpoint
+  serviceMonitor:
+    ## If the operator is installed in your cluster, set to true to create a Service Monitor Entry
+    enabled: false
+    ## Specify the namespace in which the serviceMonitor resource will be created
+    # namespace: ""
+    ## Specify the interval at which metrics should be scraped
+    interval: 30s
+    ## Specify the timeout after which the scrape is ended
+    # scrapeTimeout: 30s
+    ## Specify Metric Relabellings to add to the scrape endpoint
+    # relabellings:
+    ## Specify honorLabels parameter to add the scrape endpoint
+    honorLabels: false
+    ## Used to pass Labels that are used by the Prometheus installed in your cluster to select Service Monitors to work with
+    ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#prometheusspec
+    additionalLabels: {}
+
+##
+## Init containers parameters:
+## volumePermissions: Change the owner of the persist volume mountpoint to RunAsUser:fsGroup
+##
+volumePermissions:
+  enabled: false
+  image:
+    registry: docker.io
+    repository: bitnami/minideb
+    tag: latest
+    pullPolicy: Always
+    ## Optionally specify an array of imagePullSecrets.
+    ## Secrets must be manually created in the namespace.
+    ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+    ##
+    # pullSecrets:
+    #   - myRegistryKeySecretName
+  resources: {}
+
+## forceBoot: executes 'rabbitmqctl force_boot' to force boot cluster shut down unexpectedly in an
+## unknown order.
+## ref: https://www.rabbitmq.com/rabbitmqctl.8.html#force_boot
+##
+forceBoot:
+  enabled: false

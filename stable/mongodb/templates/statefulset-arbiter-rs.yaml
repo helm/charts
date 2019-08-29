@@ -16,6 +16,11 @@ spec:
       component: arbiter
   serviceName: {{ template "mongodb.fullname" . }}-headless
   replicas: {{ .Values.replicaSet.replicas.arbiter }}
+  updateStrategy:
+    type: {{ .Values.updateStrategy.type }}
+    {{- if (eq "Recreate" .Values.updateStrategy.type) }}
+    rollingUpdate: null
+    {{- end }}
   template:
     metadata:
       labels:
@@ -31,6 +36,9 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
       {{- end }}
     spec:
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+      {{- end }}
       {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName }}
       {{- end }}
@@ -50,12 +58,7 @@ spec:
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
       {{- end }}
-      {{- if .Values.image.pullSecrets }}
-      imagePullSecrets:
-      {{- range .Values.image.pullSecrets }}
-        - name: {{ . }}
-      {{- end}}
-      {{- end }}
+{{- include "mongodb.imagePullSecrets" . | indent 6 }}
       {{- if .Values.extraInitContainers }}
       initContainers:
 {{ tpl .Values.extraInitContainers . | indent 6}}
@@ -74,8 +77,8 @@ spec:
             name: mongodb
           env:
           {{- if .Values.image.debug}}
-          - name: NAMI_DEBUG
-            value: "1"
+          - name: BITNAMI_DEBUG
+            value: "true"
           {{- end }}
           - name: MONGODB_SYSTEM_LOG_VERBOSITY
             value: {{ .Values.mongodbSystemLogVerbosity | quote }}

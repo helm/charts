@@ -2,11 +2,12 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-replicaCount: 1
+# upgrade strategy type (e.g. Recreate or RollingUpdate)
+strategyType: Recreate
 
 image:
   repository: nodered/node-red-docker
-  tag: 0.19.4-v8
+  tag: 0.20.7-slim-v8
   pullPolicy: IfNotPresent
 
 nameOverride: ""
@@ -66,6 +67,8 @@ persistence:
   # existingClaim: your-claim
   accessMode: ReadWriteOnce
   size: 5Gi
+  ## When mounting the data volume you may specify a subPath
+  # subPath: /configs/node-red
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

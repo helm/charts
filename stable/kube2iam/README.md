@@ -47,12 +47,19 @@ Parameter | Description | Default
 `host.ip` | IP address of host | `$(HOST_IP)`
 `host.iptables` | Add iptables rule | `false`
 `host.interface` | Host interface for proxying AWS metadata | `docker0`
+`host.port` | Port to listen on | `8181`
 `image.repository` | Image | `jtblin/kube2iam`
-`image.tag` | Image tag | `0.10.4`
+`image.tag` | Image tag | `0.10.7`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
 `nodeSelector` | node labels for pod assignment | `{}`
 `podAnnotations` | annotations to be added to pods | `{}`
 `priorityClassName` | priorityClassName to be added to pods | `{}`
+`prometheus.metricsPort` | Port to expose prometheus metrics on (if unspecified, `host.port` is used) | `host.port`
+`prometheus.service.enabled` | If true, create a Service resource for Prometheus | `false`
+`prometheus.service.annotations` | Annotations to be added to the service | `{}`
+`prometheus.serviceMonitor.enabled` | If true, create a Prometheus Operator ServiceMonitor resource | `false`
+`prometheus.serviceMonitor.interval` | Interval at which the metrics endpoint is scraped | `10s`
+`prometheus.serviceMonitor.namespace` | An alternative namespace in which to install the ServiceMonitor | `""`
 `rbac.create` | If true, create & use RBAC resources | `false`
 `rbac.serviceAccountName` | existing ServiceAccount to use (ignored if rbac.create=true) | `default`
 `resources` | pod resource requests & limits | `{}`

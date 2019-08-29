@@ -4,7 +4,7 @@ metadata:
   name: {{ template "parse.fullname" . }}-server
   labels:
     app: {{ template "parse.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: {{ template "parse.chart" . }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
     component: "server"
@@ -28,11 +28,19 @@ spec:
         fsGroup: {{ .Values.server.securityContext.fsGroup }}
         runAsUser: {{ .Values.server.securityContext.runAsUser }}
       {{- end }}
-      {{- if .Values.server.image.pullSecrets }}
-      imagePullSecrets:
-      {{- range .Values.server.image.pullSecrets }}
-        - name: {{ . }}
-      {{- end}}
+{{- include "parse.imagePullSecrets" . | indent 6 }}
+      {{- if and .Values.volumePermissions.enabled .Values.persistence.enabled }}
+      initContainers:
+      - name: volume-permissions
+        image: {{ template "parse.volumePermissions.image" . }}
+        imagePullPolicy: {{ .Values.volumePermissions.image.pullPolicy | quote }}
+        command: ["chown", "-R", "{{ .Values.server.securityContext.runAsUser }}:{{ .Values.server.securityContext.fsGroup }}", "/bitnami/parse"]
+        securityContext:
+          runAsUser: 0
+        resources: {{ toYaml .Values.volumePermissions.resources | nindent 10 }}
+        volumeMounts:
+        - name: parse-data
+          mountPath: /bitnami/parse
       {{- end }}
       containers:
       - name: {{ template "parse.fullname" . }}

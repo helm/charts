@@ -2,7 +2,7 @@ apiVersion: v1
 description: Scales worker nodes within autoscaling groups.
 icon: https://github.com/kubernetes/kubernetes/blob/master/logo/logo.png
 name: cluster-autoscaler
-version: 0.11.3
+version: 3.2.0
 appVersion: 1.13.1
 home: https://github.com/kubernetes/autoscaler
 sources:
@@ -11,4 +11,6 @@ sources:
 maintainers:
 - name: mgoodness
   email: mgoodness@gmail.com
+- name: yurrriq
+  email: e.bailey@sportradar.com
 engine: gotpl

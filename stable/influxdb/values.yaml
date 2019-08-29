@@ -1,9 +1,12 @@
 ## influxdb image version
 ## ref: https://hub.docker.com/r/library/influxdb/tags/
 image:
-  repo: "influxdb"
-  tag: "1.7.3-alpine"
+  repository: "influxdb"
+  tag: "1.7.6-alpine"
   pullPolicy: IfNotPresent
+  ## If specified, use these secrets to access the images
+  # pullSecrets:
+  #   - registry-secret
 
 ## Specify a service type
 ## NodePort is default
@@ -25,7 +28,7 @@ service:
 ## Persist data to a persistent volume
 ##
 persistence:
-  enabled: false
+  enabled: true
   ## If true will use an existing PVC instead of creating one
   # useExisting: false
   ## Name of existing PVC to be used in the influx deployment
@@ -78,13 +81,13 @@ setDefaultUser:
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
-resources:
-  requests:
-    memory: 256Mi
-    cpu: 0.1
-  limits:
-    memory: 16Gi
-    cpu: 8
+resources: {}
+#  requests:
+#    memory: 256Mi
+#    cpu: 0.1
+#  limits:
+#    memory: 16Gi
+#    cpu: 8
 
 ingress:
   enabled: false
@@ -122,7 +125,7 @@ tolerations: []
 ## The InfluxDB image uses several environment variables to automatically
 ## configure certain parts of the server.
 ## Ref: https://hub.docker.com/_/influxdb/
-env:
+env: {}
   # - name: INFLUXDB_DB
   #   value: "demo"
 
@@ -182,6 +185,7 @@ config:
     enabled: true
     bind_address: 8086
     auth_enabled: false
+    flux_enabled: true
     log_enabled: true
     write_tracing: false
     pprof_enabled: true
@@ -251,3 +255,23 @@ config:
     format: auto
     level: info
     supress_logo: false
+
+# Allow executing custom init scripts
+#
+# If the container finds any files with the extensions .sh or .iql inside of the
+# /docker-entrypoint-initdb.d folder, it will execute them. The order they are
+# executed in is determined by the shell. This is usually alphabetical order.
+initScripts:
+  enabled: false
+  scripts:
+    init.iql: |+
+      CREATE DATABASE "telegraf" WITH DURATION 30d REPLICATION 1 NAME "rp_30d"
+
+backup:
+  enabled: false
+  schedule: "0 0 * * *"
+  annotations: {}
+  destination: gs://bucket/influxdb
+  # Google Cloud Storage
+  gcs:
+    serviceAccountSecret: influxdb-backup-key

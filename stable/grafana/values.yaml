@@ -6,10 +6,14 @@ rbac:
 serviceAccount:
   create: true
   name:
+  nameTest:
 
 replicas: 1
 
-deploymentStrategy: RollingUpdate
+## See `kubectl explain deployment.spec.strategy` for more
+## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
+deploymentStrategy:
+  type: RollingUpdate
 
 readinessProbe:
   httpGet:
@@ -24,9 +28,14 @@ livenessProbe:
   timeoutSeconds: 30
   failureThreshold: 10
 
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName: "default-scheduler"
+
 image:
   repository: grafana/grafana
-  tag: 6.0.0
+  tag: 6.2.5
   pullPolicy: IfNotPresent
 
   ## Optionally specify an array of imagePullSecrets.
@@ -36,6 +45,11 @@ image:
   # pullSecrets:
   #   - myRegistrKeySecretName
 
+testFramework:
+  image: "dduportal/bats"
+  tag: "0.4.0"
+  securityContext: {}
+
 securityContext:
   runAsUser: 472
   fsGroup: 472
@@ -44,8 +58,14 @@ securityContext:
 extraConfigmapMounts: []
   # - name: certs-configmap
   #   mountPath: /etc/grafana/ssl/
+  #   subPath: certificates.crt # (optional)
   #   configMap: certs-configmap
   #   readOnly: true
+
+
+extraEmptyDirMounts: []
+  # - name: provisioning-notifiers
+  #   mountPath: /etc/grafana/provisioning/notifiers
 
 
 ## Assign a PriorityClassName to pods if set
@@ -56,10 +76,8 @@ downloadDashboardsImage:
   tag: latest
   pullPolicy: IfNotPresent
 
-chownDataImage:
-  repository: busybox
-  tag: 1.30.0
-  pullPolicy: IfNotPresent
+downloadDashboards:
+  env: {}
 
 ## Pod Annotations
 # podAnnotations: {}
@@ -116,6 +134,8 @@ tolerations: []
 ##
 affinity: {}
 
+extraInitContainers: []
+
 ## Enable an Specify container in extraContainers. This is meant to allow adding an authentication proxy to a grafana pod
 extraContainers: |
 # - name: proxy
@@ -138,14 +158,40 @@ extraContainers: |
 ##
 persistence:
   enabled: false
-  initChownData: true
   # storageClassName: default
   accessModes:
     - ReadWriteOnce
   size: 10Gi
   # annotations: {}
+  finalizers:
+    - kubernetes.io/pvc-protection
   # subPath: ""
   # existingClaim:
+
+initChownData:
+  ## If false, data ownership will not be reset at startup
+  ## This allows the prometheus-server to be run with an arbitrary user
+  ##
+  enabled: true
+
+  ## initChownData container image
+  ##
+  image:
+    repository: busybox
+    tag: "1.30"
+    pullPolicy: IfNotPresent
+
+  ## initChownData resource requests and limits
+  ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  ##
+  resources: {}
+  #  limits:
+  #    cpu: 100m
+  #    memory: 128Mi
+  #  requests:
+  #    cpu: 100m
+  #    memory: 128Mi
+
 
 # Administrator credentials when not using an existing secret (see below)
 adminUser: admin
@@ -156,6 +202,13 @@ admin:
   existingSecret: ""
   userKey: admin-user
   passwordKey: admin-password
+
+## Define command to be executed at startup by grafana container
+## Needed if using `vault-env` to manage secrets (ref: https://banzaicloud.com/blog/inject-secrets-into-pods-vault/)
+## Default is "run.sh" as defined in grafana's Dockerfile
+# command:
+# - "sh"
+# - "/run.sh"
 
 ## Use an alternate scheduler, e.g. "stork".
 ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
@@ -203,6 +256,24 @@ datasources: {}
 #      url: http://prometheus-prometheus-server
 #      access: proxy
 #      isDefault: true
+
+## Configure notifiers
+## ref: http://docs.grafana.org/administration/provisioning/#alert-notification-channels
+##
+notifiers: {}
+#  notifiers.yaml:
+#    notifiers:
+#    - name: email-notifier
+#      type: email
+#      uid: email1
+#      # either:
+#      org_id: 1
+#      # or
+#      org_name: Main Org.
+#      is_default: true
+#      settings:
+#        addresses: an_email_address@example.com
+#    delete_notifiers:
 
 ## Configure grafana dashboard providers
 ## ref: http://docs.grafana.org/administration/provisioning/#dashboards
@@ -314,7 +385,7 @@ smtp:
 ## Sidecars that collect the configmaps with specified label and stores the included files them into the respective folders
 ## Requires at least Grafana 5 to work and can't be used together with parameters dashboardProviders, datasources and dashboards
 sidecar:
-  image: kiwigrid/k8s-sidecar:0.0.11
+  image: kiwigrid/k8s-sidecar:0.1.20
   imagePullPolicy: IfNotPresent
   resources: {}
 #   limits:
@@ -323,16 +394,32 @@ sidecar:
 #   requests:
 #     cpu: 50m
 #     memory: 50Mi
+  # skipTlsVerify Set to true to skip tls verification for kube api calls
+  # skipTlsVerify: true
   dashboards:
     enabled: false
     # label that the configmaps with dashboards are marked with
     label: grafana_dashboard
-    # folder in the pod that should hold the collected dashboards
+    # folder in the pod that should hold the collected dashboards (unless `defaultFolderName` is set)
     folder: /tmp/dashboards
+    # The default folder name, it will create a subfolder under the `folder` and put dashboards in there instead
+    defaultFolderName: null
     # If specified, the sidecar will search for dashboard config-maps inside this namespace.
     # Otherwise the namespace in which the sidecar is running will be used.
     # It's also possible to specify ALL to search in all namespaces
     searchNamespace: null
+    # provider configuration that lets grafana manage the dashboards
+    provider:
+      # name of the provider, should be unique
+      name: sidecarProvider
+      # orgid as configured in grafana
+      orgid: 1
+      # folder in which the dashboards should be imported in grafana
+      folder: ''
+      # type of the provider
+      type: file
+      # disableDelete to activate a import-only behaviour
+      disableDelete: false
   datasources:
     enabled: false
     # label that the configmaps with datasources are marked with

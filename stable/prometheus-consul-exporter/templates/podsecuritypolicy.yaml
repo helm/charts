@@ -10,9 +10,11 @@ metadata:
     release: {{ .Release.Name }}
   annotations:
     seccomp.security.alpha.kubernetes.io/allowedProfileNames: 'docker/default'
-    apparmor.security.beta.kubernetes.io/allowedProfileNames: 'runtime/default'
     seccomp.security.alpha.kubernetes.io/defaultProfileName:  'docker/default'
+    {{- if .Values.rbac.pspUseAppArmor }}
+    apparmor.security.beta.kubernetes.io/allowedProfileNames: 'runtime/default'
     apparmor.security.beta.kubernetes.io/defaultProfileName:  'runtime/default'
+    {{- end }}
 spec:
   privileged: false
   allowPrivilegeEscalation: false

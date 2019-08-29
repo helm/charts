@@ -1,0 +1,46 @@
+{{- if and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseUi.enabled -}}
+{{- $component := "enterprise-ui" -}}
+
+# Using a secret until UI app supports ENV vars inside the config file. Redis password is included in config.
+kind: Secret
+apiVersion: v1
+metadata:
+  name: {{ include "anchore-engine.enterprise-ui.fullname" . | quote }}
+  labels:
+    app: {{ include "anchore-engine.fullname" . | quote }}
+    component: {{ $component }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    {{- with .Values.anchoreGlobal.labels }}
+    {{ toYaml . | nindent 4 | trim }}
+    {{- end }}
+type: Opaque
+stringData:
+  config-ui.yaml: |
+    engine_uri: 'http://{{ template "anchore-engine.api.fullname" . }}:{{ .Values.anchoreApi.service.port }}/v1'
+    {{- if and (index .Values "anchore-ui-redis" "externalEndpoint") (not (index .Values "anchore-ui-redis" "enabled")) }}
+    redis_uri: '{{ index .Values "anchore-ui-redis" "externalEndpoint" }}'
+    {{- else }}
+    redis_uri: 'redis://:{{ index .Values "anchore-ui-redis" "password" }}@{{ template "redis.fullname" . }}-master:6379'
+    {{- end }}
+    {{- if .Values.anchoreEnterpriseRbac.enabled }}
+    rbac_uri: 'http://{{ template "anchore-engine.api.fullname" . }}:{{ .Values.anchoreEnterpriseRbac.service.apiPort }}/v1'
+    {{- end }}
+    {{- if .Values.anchoreEnterpriseReports.enabled }}
+    reports_uri: 'http://{{ template "anchore-engine.api.fullname" . }}:{{ .Values.anchoreEnterpriseReports.service.port}}/v1'
+    {{- end }}
+    {{- if and .Values.postgresql.externalEndpoint (not .Values.postgresql.enabled) }}
+    appdb_uri: 'postgresql://{{ .Values.postgresql.postgresUser }}:{{ .Values.postgresql.postgresPassword }}@{{ .Values.postgresql.externalEndpoint }}/{{ .Values.postgresql.postgresDatabase }}'
+    {{- else if and (index .Values "cloudsql" "enabled") (not (index .Values "postgresql" "enabled")) }}
+    appdb_uri: 'postgresql://{{ .Values.postgresql.postgresUser }}:{{ .Values.postgresql.postgresPassword }}@localhost:5432/{{ .Values.postgresql.postgresDatabase }}'
+    {{- else }}
+    appdb_uri: 'postgresql://{{ .Values.postgresql.postgresUser }}:{{ .Values.postgresql.postgresPassword }}@{{ template "postgres.fullname" . }}:5432/{{ .Values.postgresql.postgresDatabase }}'
+    {{- end }}
+    license_path: '/home/anchore/'
+    enable_ssl: {{ .Values.anchoreEnterpriseUi.enableSsl }}
+    enable_proxy: {{ .Values.anchoreEnterpriseUi.enableProxy }}
+    allow_shared_login: {{ .Values.anchoreEnterpriseUi.enableSharedLogin }}
+    redis_flushdb: {{ .Values.anchoreEnterpriseUi.redisFlushdb }}
+    policy_hub_uri: {{ .Values.anchoreEnterpriseUi.policyHubUri }}
+{{- end -}}

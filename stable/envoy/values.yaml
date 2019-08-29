@@ -238,3 +238,40 @@ files:
 #               port_value: 443
 #         tls_context:
 #           sni: www.google.com
+
+## ServiceMonitor consumed by prometheus-operator
+serviceMonitor:
+  ## If the operator is installed in your cluster, set to true to create a Service Monitor Entry
+  enabled: false
+  interval: "15s"
+  ## Namespace in which the service monitor is created
+  # namespace: monitoring
+  # Added to the ServiceMonitor object so that prometheus-operator is able to discover it
+  ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#prometheusspec
+  additionalLabels: {}
+
+## PrometheusRule consumed by prometheus-operator
+prometheusRule:
+  enabled: false
+  ## Namespace in which the prometheus rule is created
+  # namespace: monitoring
+  ## Define individual alerting rules as required
+  ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#rulegroup
+  ##      https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/
+  groups:
+    upstream-rules:
+      enabled: true
+      rules:
+        high4xxRate:
+          enabled: true
+          alert: High4xxRate
+          expr: sum(rate(envoy_cluster_upstream_rq_xx{response_code_class="4"}[1m])) / sum(rate(envoy_cluster_upstream_rq_xx[1m])) * 100 > 1
+          for: 1m
+          labels:
+            severity: page
+          annotations:
+            summary: "4xx response rate above 1%"
+            description: "The 4xx error response rate for envoy cluster {{ $labels.envoy_cluster_name }} reported a service replication success rate of {{ $value }}% for more than 1 minute."
+  ## Added to the PrometheusRule object so that prometheus-operator is able to discover it
+  ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#prometheusspec
+  additionalLabels: {}

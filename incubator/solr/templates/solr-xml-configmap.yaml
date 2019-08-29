@@ -1,0 +1,29 @@
+---
+
+apiVersion: "v1"
+kind: "ConfigMap"
+metadata:
+  name: "{{ include "solr.configmap-name" . }}"
+  labels:
+{{ include "solr.common.labels" . | indent 4}}
+data:
+  solr.xml: |
+    <?xml version="1.0" encoding="UTF-8" ?>
+    <solr>
+      <solrcloud>
+        <str name="host">${host:}</str>
+        <int name="hostPort">${jetty.port:8983}</int>
+        <str name="hostContext">${hostContext:solr}</str>
+        <bool name="genericCoreNodeNames">${genericCoreNodeNames:true}</bool>
+        <int name="zkClientTimeout">${zkClientTimeout:30000}</int>
+        <int name="distribUpdateSoTimeout">${distribUpdateSoTimeout:600000}</int>
+        <int name="distribUpdateConnTimeout">${distribUpdateConnTimeout:60000}</int>
+        <str name="zkCredentialsProvider">${zkCredentialsProvider:org.apache.solr.common.cloud.DefaultZkCredentialsProvider}</str>
+        <str name="zkACLProvider">${zkACLProvider:org.apache.solr.common.cloud.DefaultZkACLProvider}</str>
+      </solrcloud>
+      <shardHandlerFactory name="shardHandlerFactory"
+        class="HttpShardHandlerFactory">
+        <int name="socketTimeout">${socketTimeout:600000}</int>
+        <int name="connTimeout">${connTimeout:60000}</int>
+      </shardHandlerFactory>
+    </solr>

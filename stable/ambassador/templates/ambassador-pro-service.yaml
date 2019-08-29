@@ -1,0 +1,47 @@
+{{- if .Values.pro.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "ambassador.fullname" . }}-pro
+  labels:
+    service: ambassador-pro
+    app.kubernetes.io/name: {{ include "ambassador.name" . }}
+    app.kubernetes.io/part-of: {{ .Release.Name }}
+    helm.sh/chart: {{ include "ambassador.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  annotations:
+    getambassador.io/config: |
+      ---
+      apiVersion: ambassador/v1
+      kind: AuthService
+      name: ambassador-pro-auth
+      proto: grpc
+      auth_service: 127.0.0.1:{{ .Values.pro.ports.auth }}
+      allow_request_body: false # setting this to 'true' allows Plugin and External filters to access the body, but has performance overhead
+      {{- if hasKey .Values.env "AMBASSADOR_ID" }}
+      ambassador_id: {{ .Values.env.AMBASSADOR_ID | quote }}
+      {{- end }}
+      ---
+      # This mapping needs to exist, but is never actually followed.
+      apiVersion: ambassador/v1
+      kind: Mapping
+      name: callback_mapping
+      prefix: /callback
+      service: NoTaReAlSeRvIcE
+      {{- if hasKey .Values.env "AMBASSADOR_ID" }}
+      ambassador_id: {{ .Values.env.AMBASSADOR_ID | quote }}
+      {{- end }}
+      ---
+      apiVersion: ambassador/v1
+      kind: RateLimitService
+      name: ambassador-pro-ratelimit
+      service: 127.0.0.1:{{ .Values.pro.ports.ratelimit }}
+      {{- if hasKey .Values.env "AMBASSADOR_ID" }}
+      ambassador_id: {{ .Values.env.AMBASSADOR_ID | quote }}
+      {{- end }}
+spec:
+  ports:
+  - name: ratelimit-grpc
+    port: 80
+{{- end -}}

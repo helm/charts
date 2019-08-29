@@ -79,7 +79,14 @@ spec:
             - mountPath: /opt/draios/lib/python/checks.custom.d
               name: custom-app-checks-volume
             {{- end }}
+            - mountPath: /host/etc/os-release
+              name: osrel
+              readOnly: true
       volumes:
+        - name: osrel
+          hostPath:
+            path: /etc/os-release
+            type: FileOrCreate
         - name: dshm
           emptyDir:
             medium: Memory

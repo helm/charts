@@ -1,13 +1,13 @@
 {{- if .Values.hotrod.enabled -}}
 {{- if .Values.hotrod.ingress.enabled -}}
 {{- $serviceName := include "jaeger.fullname" . -}}
-{{- $servicePort := .Values.hotrod.service.externalPort -}}
+{{- $servicePort := .Values.hotrod.service.port -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: {{ template "jaeger.fullname" . }}-hotrod
+  name: {{ include "jaeger.fullname" . }}-hotrod
   labels:
-    app.kubernetes.io/name: {{ template "jaeger.name" . }}
+    app.kubernetes.io/name: {{ include "jaeger.name" . }}
     helm.sh/chart: {{ include "jaeger.chart" . }}
     app.kubernetes.io/component: hotrod
     app.kubernetes.io/instance: {{ .Release.Name }}

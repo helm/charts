@@ -1,25 +1,35 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "kube-state-metrics.fullname" . }}
   labels:
-    app: {{ template "kube-state-metrics.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/name: {{ template "kube-state-metrics.name" . }}
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app.kubernetes.io/instance: "{{ .Release.Name }}"
+    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+{{- if .Values.customLabels }}
+{{ toYaml .Values.customLabels | indent 4 }}
+{{- end }}
 spec:
-  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ template "kube-state-metrics.name" . }}
+  replicas: {{ .Values.replicas }}
   template:
     metadata:
       labels:
-        app: {{ template "kube-state-metrics.name" . }}
-        release: "{{ .Release.Name }}"
+        app.kubernetes.io/name: {{ template "kube-state-metrics.name" . }}
+        app.kubernetes.io/instance: "{{ .Release.Name }}"
+{{- if .Values.customLabels }}
+{{ toYaml .Values.customLabels | indent 8 }}
+{{- end }}
 {{- if .Values.podAnnotations }}
       annotations:
 {{ toYaml .Values.podAnnotations | indent 8 }}
 {{- end }}
     spec:
-      serviceAccountName: {{ if .Values.rbac.create }}{{ template "kube-state-metrics.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+      hostNetwork: {{ .Values.hostNetwork }}
+      serviceAccountName: {{ template "kube-state-metrics.serviceAccountName" . }}
       {{- if .Values.securityContext.enabled }}
       securityContext:
         fsGroup: {{ .Values.securityContext.fsGroup }}
@@ -31,6 +41,9 @@ spec:
       containers:
       - name: {{ .Chart.Name }}
         args:
+{{  if .Values.collectors.certificatesigningrequests  }}
+        - --collectors=certificatesigningrequests
+{{  end  }}
 {{  if .Values.collectors.configmaps  }}
         - --collectors=configmaps
 {{  end  }}
@@ -48,6 +61,9 @@ spec:
 {{  end  }}
 {{  if .Values.collectors.horizontalpodautoscalers  }}
         - --collectors=horizontalpodautoscalers
+{{  end  }}
+{{  if .Values.collectors.ingresses  }}
+        - --collectors=ingresses
 {{  end  }}
 {{  if .Values.collectors.jobs  }}
         - --collectors=jobs
@@ -91,6 +107,12 @@ spec:
 {{  if .Values.collectors.statefulsets  }}
         - --collectors=statefulsets
 {{  end  }}
+{{  if .Values.collectors.storageclasses  }}
+        - --collectors=storageclasses
+{{  end  }}
+{{  if .Values.collectors.verticalpodautoscalers  }}
+        - --collectors=verticalpodautoscalers
+{{  end  }}
 {{ if .Values.namespace }}
         - --namespace={{ .Values.namespace }}
 {{ end }}
@@ -98,14 +120,25 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         ports:
         - containerPort: 8080
-        readinessProbe:
+        livenessProbe:
           httpGet:
             path: /healthz
             port: 8080
           initialDelaySeconds: 5
           timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 5
+          timeoutSeconds: 5
+
         resources:
 {{ toYaml .Values.resources | indent 12 }}
+{{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+{{- end }}
 {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
@@ -114,4 +147,3 @@ spec:
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
 {{- end }}
-
