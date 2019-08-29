@@ -1,7 +1,7 @@
 replicaCount: 1
 image:
    repository: quay.io/samsung_cnct/jenkins-operator
-   tag: 0.2.16
+   tag: 0.3.0
    pullPolicy: IfNotPresent
 
 # short resource name override

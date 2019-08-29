@@ -37,6 +37,9 @@ spec:
           properties:
             adminsecret:
               type: string
+            affinity:
+              description: Affinity settings
+              type: object
             annotations:
               description: Jenkins deployment annotations
               type: object
@@ -53,6 +56,9 @@ spec:
             cascsecret:
               description: configuration-as-code secret name
               type: string
+            dnspolicy:
+              description: dns policy
+              type: string
             env:
               description: Dictionary of environment variable values
               type: object
@@ -63,6 +69,20 @@ spec:
               description: What container image to use for a new jenkins instance
               pattern: .+:.+
               type: string
+            imagepullpolicy:
+              description: image pull policy
+              type: string
+            imagepullsecrets:
+              description: image pull secrets
+              items:
+                type: object
+              type: array
+            nodename:
+              description: specific node name
+              type: string
+            nodeselector:
+              description: node selector
+              type: object
             plugins:
               description: Array of plugins to be installed
               items:
@@ -78,6 +98,9 @@ spec:
                 - version
                 type: object
               type: array
+            resources:
+              description: container resource requests
+              type: object
             service:
               description: Jenkins service options
               properties:
@@ -108,6 +131,11 @@ spec:
                   description: If PVC is to be created, what is its spec
                   type: object
               type: object
+            tolerations:
+              description: tolerations
+              items:
+                type: object
+              type: array
           type: object
         status:
           properties:
