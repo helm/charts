@@ -42,7 +42,7 @@ their default values.
 |          Parameter                   |                         Description                         |                   Default                    |
 | :----------------------------------- | :---------------------------------------------------------- | :------------------------------------------- |
 | `image.pullPolicy`                   | Container pull policy                                       | `IfNotPresent`                               |
-| `image.repository`                   | Container image to use                                      | `untergeek/curator`                          |
+| `image.repository`                   | Container image to use                                      | `bobrik/curator`                             |
 | `image.tag`                          | Container image tag to deploy                               | `5.7.6`                                      |
 | `hooks`                              | Whether to run job on selected hooks                        | `{ "install": false, "upgrade": false }`     |
 | `cronjob.schedule`                   | Schedule for the CronJob                                    | `0 1 * * *`                                  |
@@ -56,7 +56,7 @@ their default values.
 | `envFromSecrets`                     | Environment variables from secrets to the cronjob container | {}                                           |
 | `envFromSecrets.*.from.secret`       | - `secretKeyRef.name` used for environment variable         |                                              |
 | `envFromSecrets.*.from.key`          | - `secretKeyRef.key` used for environment variable          |                                              |
-| `command`                            | Command to execute                                          | ["/curator/curator"]                         |
+| `command`                            | Command to execute                                          | ["/usr/bin/curator"]                         |
 | `configMaps.action_file_yml`           | Contents of the Curator action_file.yml                      | See values.yaml                              |
 | `configMaps.config_yml`                | Contents of the Curator config.yml (overrides config)         | See values.yaml                              |
 | `resources`                          | Resource requests and limits                                | {}                                           |

@@ -30,7 +30,7 @@ psp:
   create: false
 
 image:
-  repository: untergeek/curator
+  repository: bobrik/curator
   tag: 5.7.6
   pullPolicy: IfNotPresent
 
@@ -41,7 +41,7 @@ hooks:
 # run curator in dry-run mode
 dryrun: false
 
-command: ["/curator/curator"]
+command: ["/usr/bin/curator"]
 env: {}
 
 configMaps:
