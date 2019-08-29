@@ -144,6 +144,7 @@ ingress:
   ## Most likely this will be just one host, but in the event more hosts are needed, this is an array
   hosts:
   - name: odoo.local
+    path: /
 
     ## Set this to true in order to enable TLS on the ingress record
     ## A side effect of this will be that the backend odoo service will be connected at port 443
