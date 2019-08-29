@@ -26,11 +26,12 @@ spec:
             serviceName: {{ template "odoo.fullname" $ }}
             servicePort: http
   {{- end }}
-{{- if .Values.ingress.tls }}
   tls:
   - hosts:
+{{ range .Values.ingress.hosts }}
+{{- if .tls }}
     - {{ .name }}
     secretName: {{ .tlsSecret }}
 {{- end }}
----
+{{- end }}
 {{- end }}
