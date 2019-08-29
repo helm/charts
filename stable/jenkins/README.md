@@ -291,10 +291,12 @@ It is possible to mount several volumes using `persistence.volumes` and `persist
 | `persistence.enabled`       | Enable the use of a Jenkins PVC | `true`          |
 | `persistence.existingClaim` | Provide the name of a PVC       | `nil`           |
 | `persistence.annotations`   | Annotations for the PVC         | `{}`            |
+| `persistence.storageClass`  | Provider custom storage class   | `nil`           |
 | `persistence.accessMode`    | The PVC access mode             | `ReadWriteOnce` |
 | `persistence.size`          | The size of the PVC             | `8Gi`           |
 | `persistence.subPath`       | SubPath for jenkins-home mount  | `nil`           |
 | `persistence.volumes`       | Additional volumes              | `nil`           |
+| `persistence.mounts`        | Additional mounts               | `nil`           |
 | `persistence.mounts`        | Additional mounts               | `nil`           |
 
 #### Existing PersistentVolumeClaim
