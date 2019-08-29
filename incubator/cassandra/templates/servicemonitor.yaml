@@ -16,7 +16,7 @@ spec:
     interval: 10s
   selector:
     matchLabels:
-    app: {{ template "cassandra.name" . }}
+      app: {{ template "cassandra.name" . }}
   namespaceSelector:
     any: true
 {{- end }}
