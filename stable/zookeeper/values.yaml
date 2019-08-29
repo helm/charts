@@ -63,3 +63,68 @@ affinity: {}
 heapSize: 1024m
 
 storageSize: 250Gi
+# Default values for zookeeper.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 3
+
+image:
+  repository: k8s.gcr.io/kubernetes-zookeeper
+  # https://github.com/kow3ns/kubernetes-zookeeper/tree/master/docker
+  tag: 1.0-3.4.10
+  pullPolicy: IfNotPresent
+
+maxClientConnections: 60
+# Limits the number of concurrent connections (at the socket level) that a single client,
+# identified by IP address, may make to a single member of the ZooKeeper ensemble.
+# This is used to prevent certain classes of DoS attacks, including file descriptor exhaustion.
+# The default is 10. Setting this to 0 entirely removes the limit on concurrent connections.
+maxSessionTimeout: 40000
+# New in 3.3.0: the maximum session timeout in milliseconds that the server will allow the client to negotiate. Defaults to 20 times the tickTime.
+minSessionTimeout: 4000
+# New in 3.3.0: the minimum session timeout in milliseconds that the server will allow the client to negotiate. Defaults to 2 times the tickTime.
+tickTime: 2000
+# the length of a single tick, which is the basic time unit used by ZooKeeper, as measured in milliseconds. It is used to regulate heartbeats, and timeouts.
+# For example, the minimum session timeout will be two ticks.
+purgeInterval: 12
+initLimit: 10
+# Amount of time, in ticks (see tickTime), to allow followers to connect and sync to a leader.
+# Increased this value as needed, if the amount of data managed by ZooKeeper is large.
+syncLimit: 5
+# Amount of time, in ticks (see tickTime), to allow followers to sync with ZooKeeper. If followers fall too far behind a leader, they will be dropped.
+snapRetainCount: 3
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  type: ClusterIP
+  port: 2181
+election:
+  port: 3888
+server:
+  port: 2888
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+heapSize: 1024m
+
+storageSize: 250Gi
