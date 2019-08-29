@@ -920,6 +920,7 @@ prometheus-node-exporter:
   extraArgs:
     - --collector.filesystem.ignored-mount-points=^/(dev|proc|sys|var/lib/docker/.+)($|/)
     - --collector.filesystem.ignored-fs-types=^(autofs|binfmt_misc|cgroup|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|mqueue|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|sysfs|tracefs)$
+  nodeSelector: {}
 
 ## Manages Prometheus and Alertmanager components
 ##
@@ -1394,6 +1395,10 @@ prometheus:
     ## How long to retain metrics
     ##
     retention: 10d
+
+    ## Maximum size of metrics
+    ##
+    retentionSize: ""
 
     ## If true, the Operator won't process any Prometheus configuration changes
     ##
