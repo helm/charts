@@ -2,17 +2,17 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: {{ template "odoo.fullname" $ }}
+  name: {{ template "odoo.fullname" . }}
   labels:
-    app: {{ template "odoo.name" $ }}
-    chart: {{ template "odoo.chart" $ }}
-    release: {{ $.Release.Name | quote }}
-    heritage: {{ $.Release.Service | quote }}
+    app: {{ template "odoo.name" . }}
+    chart: {{ template "odoo.chart" . }}
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
   annotations:
-    {{- if .certManager }}
+    {{- if .Values.ingress.certManager }}
     kubernetes.io/tls-acme: "true"
     {{- end }}
-    {{- range $key, $value := .annotations }}
+    {{- range $key, $value := .Values.ingress.annotations }}
     {{ $key }}: {{ $value | quote }}
     {{- end }}
 spec:
