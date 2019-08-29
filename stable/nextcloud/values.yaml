@@ -186,6 +186,8 @@ cronjob:
   #  cause issues with how nextcloud background jobs are executed
   schedule: "*/15 * * * *"
   annotations: {}
+  # Set curl's insecure option if you use e.g. self-signed certificates
+  curlInsecure: false
   failedJobsHistoryLimit: 5
   successfulJobsHistoryLimit: 2
   # If not set, nextcloud deployment one will be set
