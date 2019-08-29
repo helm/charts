@@ -98,7 +98,7 @@ spec:
           {{- if .Values.openvpn.useCrl }}
           - key: "crl.pem"
             path: "crl.pem"
-            mode: 484
+            mode: 0644
           {{- end }}
           {{- if .Values.openvpn.taKey }}
           - key: "ta.key"
