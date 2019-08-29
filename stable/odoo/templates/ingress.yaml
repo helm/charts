@@ -1,5 +1,4 @@
 {{- if .Values.ingress.enabled }}
-{{- range .Values.ingress.hosts }}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -18,6 +17,7 @@ metadata:
     {{- end }}
 spec:
   rules:
+  {{- range .Values.ingress.hosts }}
   - host: {{ .name }}
     http:
       paths:
@@ -25,12 +25,13 @@ spec:
           backend:
             serviceName: {{ template "odoo.fullname" $ }}
             servicePort: http
-{{- if .tls }}
+  {{- end }}
   tls:
   - hosts:
+{{ range .Values.ingress.hosts }}
+{{- if .tls }}
     - {{ .name }}
     secretName: {{ .tlsSecret }}
 {{- end }}
----
 {{- end }}
 {{- end }}
