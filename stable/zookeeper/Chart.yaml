@@ -3,6 +3,7 @@ appVersion: "3.4.10"
 description: A Helm chart for Zookeeper
 name: zookeeper
 version: 1.0.0
+home: https://zookeeper.apache.org
 icon: https://zookeeper.apache.org/images/zookeeper_small.gif
 maintainers:
 - name: Alex Jones
