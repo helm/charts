@@ -25,3 +25,5 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+additionalDeployments: []
