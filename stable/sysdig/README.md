@@ -177,6 +177,32 @@ And then, upgrade Helm chart with:
 $ helm upgrade my-release -f values.yaml stable/sysdig
 ```
 
+## How to upgrade to the last version
+
+In case you deployed the chart with a values.yaml file, you just need to modify (or add if it's missing) the `image.tag` field and execute:
+
+```bash
+$ helm install --name sysdig -f values.yaml stable/sysdig
+```
+
+If you deployed the chart setting the values as CLI parameters, like for example:
+
+```bash
+$ helm install \
+    --name sysdig \
+    --set sysdig.accessKey=xxxx \
+    --set secure.enabled=true \
+    --set ebpf.enabled=true \
+    --namespace sysdig-agent \
+    stable/sysdig
+```
+
+You will need to execute something like:
+
+```bash
+$ helm upgrade --set image.tag=<last_version> --reuse-values sysdig stable/sysdig
+```
+
 ## Adding custom AppChecks
 
 [Application checks](https://sysdigdocs.atlassian.net/wiki/spaces/Monitor/pages/204767363/) are integrations that allow the Sysdig agent to collect metrics exposed by specific services. Sysdig has several built-in AppChecks, but sometimes you might need to [create your own](https://sysdigdocs.atlassian.net/wiki/spaces/Monitor/pages/204767436/).
