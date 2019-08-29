@@ -51,7 +51,7 @@ spec:
           --data_dir=/var/lib/zookeeper/data \
           --data_log_dir=/var/lib/zookeeper/data/log \
           --conf_dir=/opt/zookeeper/conf \
-          --client_port=2181 \
+          --client_port={{ .Values.service.port }} \
           --election_port={{ .Values.election.port }} \
           --server_port={{ .Values.server.port }} \
           --tick_time={{ .Values.tickTime }} \
