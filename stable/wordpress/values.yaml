@@ -193,6 +193,10 @@ service:
   port: 80
   # HTTPS Port
   httpsPort: 443
+  # HTTPS Target Port
+  # defaults to https unless overridden to the specified port.
+  # if you want the target port to be "http" or "80" you can specify that here.
+  httpsTargetPort: https
   # metrics Port
   metricsPort: 9117
   ##
