@@ -37,6 +37,17 @@ $ helm delete my-release
 
 The command removes all the Kubernetes components EXCEPT the persistent volume.
 
+## Updating
+Once you have a new chart version, you can update your deployment with:
+```
+helm upgrade my-release stable/etcd-operator
+```
+
+Example resizing etcd cluster from `3` to `5` nodes during helm upgrade:
+```bash
+$ helm upgrade my-release --set customResources.createEtcdClusterCRD=true --set etcdCluster.size=5 stable/etcd-operator
+```
+
 ## Configuration
 
 The following table lists the configurable parameters of the etcd-operator chart and their default values.
