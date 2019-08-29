@@ -36,7 +36,7 @@ spec:
       - name: {{ template "fluentd-cloudwatch.fullname" . }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
-        #hostNetwork: {{ default false .Values.hostNetwork }}
+        hostNetwork: {{ default false .Values.hostNetwork }}
         env:
         - name: AWS_REGION
           value: {{ .Values.awsRegion }}
