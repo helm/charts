@@ -9,7 +9,7 @@
 {{- $imageTag := .Values.image.tag }}
 {{- $pullPolicy := .Values.image.pullPolicy }}
 
-{{ range .Values.additionalDeployments }}
+{{ range .Values.deployments }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
