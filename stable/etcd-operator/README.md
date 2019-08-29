@@ -27,6 +27,11 @@ To install the chart with the release name `my-release`:
 $ helm install stable/etcd-operator --name my-release
 ```
 
+Note that by default chart installs etcd operator only. If you want to also deploy `etcd` cluster, enable `customResources.createEtcdClusterCRD` flag:
+```bash
+$ helm install --name my-release --set customResources.createEtcdClusterCRD=true stable/etcd-operator
+```
+
 ## Uninstalling the Chart
 
 To uninstall/delete the `my-release` deployment:
@@ -40,12 +45,12 @@ The command removes all the Kubernetes components EXCEPT the persistent volume.
 ## Updating
 Once you have a new chart version, you can update your deployment with:
 ```
-helm upgrade my-release stable/etcd-operator
+$ helm upgrade my-release stable/etcd-operator
 ```
 
 Example resizing etcd cluster from `3` to `5` nodes during helm upgrade:
 ```bash
-$ helm upgrade my-release --set customResources.createEtcdClusterCRD=true --set etcdCluster.size=5 stable/etcd-operator
+$ helm upgrade my-release --set etcdCluster.size=5 --set customResources.createEtcdClusterCRD=true stable/etcd-operator
 ```
 
 ## Configuration
