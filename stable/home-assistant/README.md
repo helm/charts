@@ -36,7 +36,7 @@ The following tables lists the configurable parameters of the Home Assistant cha
 | Parameter                  | Description                         | Default                                                 |
 |----------------------------|-------------------------------------|---------------------------------------------------------|
 | `image.repository`         | Image repository | `homeassistant/home-assistant` |
-| `image.tag`                | Image tag. Possible values listed [here](https://hub.docker.com/r/homeassistant/home-assistant/tags/).| `0.95.4`|
+| `image.tag`                | Image tag. Possible values listed [here](https://hub.docker.com/r/homeassistant/home-assistant/tags/).| `0.98.0`|
 | `image.pullPolicy`         | Image pull policy | `IfNotPresent` |
 | `image.pullSecrets`        | Secrets to use when pulling the image | `[]` |
 | `strategyType`             | Specifies the strategy used to replace old Pods by new ones | `Recreate` |
@@ -69,7 +69,7 @@ The following tables lists the configurable parameters of the Home Assistant cha
 | `extraEnvSecrets`   | Extra env vars to pass to the home-assistant container from k8s secrets - see `values.yaml` for an example | `{}` |
 | `configurator.enabled`     | Enable the optional [configuration UI](https://github.com/danielperna84/hass-configurator) | `false` |
 | `configurator.image.repository`         | Image repository | `billimek/hass-configurator-docker` |
-| `configurator.image.tag`                | Image tag | `x86_64-0.3.0`|
+| `configurator.image.tag`                | Image tag | `0.3.5-x86_64`|
 | `configurator.image.pullPolicy`         | Image pull policy | `IfNotPresent` |
 | `configurator.hassApiUrl`               | Home Assistant API URL (e.g. 'http://home-assistant:8123/api/') - will auto-configure to proper URL if not set | ``|
 | `configurator.hassApiPassword`          | Home Assistant API Password | `` |
@@ -100,7 +100,7 @@ The following tables lists the configurable parameters of the Home Assistant cha
 | `configurator.service.loadBalancerSourceRanges`   | Loadbalancer client IP restriction range for the configurator UI | `[]` |
 | `vscode.enabled`                  | Enable the optional [VS Code Server Sidecar](https://github.com/cdr/code-server) | `false` |
 | `vscode.image.repository`         | Image repository | `codercom/code-server` |
-| `vscode.image.tag`                | Image tag | `1.939`|
+| `vscode.image.tag`                | Image tag | `2.preview.11-vsc1.37.0`|
 | `vscode.image.pullPolicy`         | Image pull policy | `IfNotPresent` |
 | `vscode.hassConfig`               | Base path of the home assistant configuration files | `/config` |
 | `vscode.vscodePath`               | Base path of the VS Code configuration files | `/config/.vscode` |
