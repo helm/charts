@@ -93,7 +93,11 @@ spec:
             {{- toYaml .Values.prometheusExporter.resources | nindent 12 }}
         {{- end }}
         - name: {{ .Chart.Name }}
+          {{- if and .Values.pro.enabled (gt .Values.pro.image.tag "0.6.0") }}
+          image: "{{ .Values.pro.image.repository }}:amb-core-{{ .Values.pro.image.tag }}"
+          {{ else }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          {{- end }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             {{- range .Values.service.ports }}
@@ -110,6 +114,17 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: status.hostIP
+            {{- if and .Values.pro.enabled (gt .Values.pro.image.tag "0.6.0") }}
+            - name: AMBASSADOR_LICENSE_KEY
+            {{- if .Values.pro.licenseKey.secret }}
+              valueFrom:
+                secretKeyRef:
+                  name: ambassador-pro-license-key
+                  key: key
+            {{ else }}
+              value: {{ .Values.pro.licenseKey.value }}
+            {{- end }}
+            {{- end }}
             {{- if .Values.prometheusExporter.enabled }}
             - name: STATSD_ENABLED
               value: "true"
@@ -159,7 +174,7 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
         {{- if .Values.pro.enabled }}
         - name: ambassador-pro
-          image: "{{ .Values.pro.image.repository }}:{{ .Values.pro.image.tag }}"
+          image: "{{ .Values.pro.image.repository }}:amb-sidecar-{{ .Values.pro.image.tag }}"
           ports:
           - name: grpc-auth
             containerPort: {{ .Values.pro.ports.auth }}
