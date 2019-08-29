@@ -1,4 +1,4 @@
-additionalDeployments:
+deployments:
   - name: ci-test1
     replicaCount: 1
     nodeSelector: {}
