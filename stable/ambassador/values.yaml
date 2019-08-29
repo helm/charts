@@ -225,7 +225,7 @@ pro:
   logLevel: info
   licenseKey:
     value:
-    secret: false
+    secret: true
   # Ambassador Pro environment variables can be found at https://www.getambassador.io/reference/pro/environment
   # For consistency, AMBASSADOR_ID is copied over from the Ambassador env above and will be ignored if set here.
   env:
