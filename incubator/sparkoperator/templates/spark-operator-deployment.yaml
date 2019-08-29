@@ -78,6 +78,10 @@ spec:
         - -webhook-svc-name={{ .Release.Name }}-webhook
         - -webhook-config-name={{ include "sparkoperator.fullname" . }}-webhook-config
         {{- end }}
+        {{- if .Values.resources }}
+        resources:
+        {{ toYaml .Values.resources | indent 10 }}
+        {{- end }}
       {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
