@@ -1,4 +1,4 @@
-{{- if .Values.customResources.createEtcdClusterCRD }}
+{{- if .Values.deployments.etcdOperator }}
 # Synced with https://github.com/coreos/etcd-operator/blob/master/pkg/util/k8sutil/crd.go
 ---
 apiVersion: apiextensions.k8s.io/v1beta1
@@ -10,6 +10,9 @@ metadata:
     app: {{ template "etcd-operator.name" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
+  annotations:
+    helm.sh/hook: crd-install
+    helm.sh/hook-delete-policy: before-hook-creation
 spec:
   group: etcd.database.coreos.com
   scope: Namespaced
@@ -21,6 +24,8 @@ spec:
     plural: etcdclusters
     shortNames:
     - etcd
+{{- end }}
+{{- if .Values.customResources.createEtcdClusterCRD }}
 ---
 apiVersion: "etcd.database.coreos.com/v1beta2"
 kind: "EtcdCluster"
