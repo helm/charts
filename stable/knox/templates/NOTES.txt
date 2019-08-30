@@ -9,6 +9,9 @@
 	# Verify its running (should return a non-empty JSON response)
 	curl -v -u 'admin:{{ .Values.knox.users.admin.pw }}' -q -O - "http://$KNOX_IP:8080/webhdfs/v1?op=LISTSTATUS"
 
+	# HDFS UI: http://$KNOX_IP:8080/hdfs/
+	# YARN UI: http://$KNOX_IP:8080/yarn/
+
 {{ else }}
 	# Locate the name of the Knox pod
 	kubectl get pod -n {{ .Release.Namespace }} | grep {{ include "knox.fullname" . }}
@@ -18,5 +21,8 @@
 	
 	# Verify its running (should return a non-empty response)
 	curl -v -u 'admin:{{ .Values.knox.users.admin.pw }}' "http://localhost:8080/webhdfs/v1?op=LISTSTATUS"
+
+	# HDFS UI: curl http://localhost:8080/hdfs/
+	# YARN UI: curl http://localhost:8080/yarn/
 
 {{- end -}}
