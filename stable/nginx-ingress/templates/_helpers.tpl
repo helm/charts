@@ -55,12 +55,23 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- end -}}
 
 {{/*
-Create the name of the service account to use
+Create the name of the controller service account to use
 */}}
 {{- define "nginx-ingress.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create -}}
     {{ default (include "nginx-ingress.fullname" .) .Values.serviceAccount.name }}
 {{- else -}}
     {{ default "default" .Values.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Create the name of the backend service account to use - only used when podsecuritypolicy is also enabled
+*/}}
+{{- define "nginx-ingress.backend.serviceAccountName" -}}
+{{- if .Values.defaultBackend.serviceAccount.create -}}
+    {{ default (include "nginx-ingress.fullname" .)-backend .Values.defaultBackend.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.defaultBackend.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
