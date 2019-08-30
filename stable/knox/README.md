@@ -34,6 +34,7 @@ The following table lists the configurable parameters of the Apache Knox chart a
 | `knox.hadoop.nameNodeUrl`        | URL to Hadoop's name node                 | `hdfs://nn:9000/webhdfs`                                                          |
 | `knox.hadoop.resourceManagerUrl` | URL to Hadoop's Resource Manager          | `http://rm:8088/ws`                                                               |
 | `knox.hadoop.webHdfsUrl`         | URL to Hadoop's webhdfs                   | `http://nn:50070/webhdfs`                                                         |
+| `knox.hadoop.hdfsUIUrl`          | URL to Hadoop's hdfs web UI               | `http://nn:50070/`                                                                |
 | `knox.users.admin.pw`            | Password for user `admin`                 | `admin-password`                                                                  |
 | `knox.users.sam.pw`              | Password for user `sam`                   | `sam-password`                                                                    |
 | `knox.users.tom.pw`              | Password for user `tom`                   | `tom-password`                                                                    |

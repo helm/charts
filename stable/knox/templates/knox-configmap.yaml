@@ -78,12 +78,6 @@ data:
             <url>{{ .Values.knox.hadoop.nameNodeUrl }}</url> <!-- e.g. hdfs://hadoop-demo-name-node:9000/webhdfs -->
         </service>
 
-        <!-- TODO: Find currect URL of the jobtracker
-        <service>
-            <role>JOBTRACKER</role>
-            <url>rpc://localhost:8050</url>
-        </service>
-        -->
         <service>
             <role>RESOURCEMANAGER</role>
             <url>{{ .Values.knox.hadoop.resourceManagerUrl }}</url> <!-- e.g. http://hadoop-demo-yarn-rm:8088/ws -->
@@ -94,6 +88,35 @@ data:
             <url>{{ .Values.knox.hadoop.webHdfsUrl }}</url> <!-- e.g. http://hadoop-demo-name-node:50070/webhdfs -->
         </service>
 
+        <service>
+            <role>HDFSUI</role>
+            <url>{{ .Values.knox.hadoop.hdfsUIUrl }}</url> <!-- e.g. http://sandbox.hortonworks.com:50070 -->
+            
+            <!-- cf. https://issues.apache.org/jira/browse/KNOX-1644 and https://community.cloudera.com/t5/Support-Questions/HDP-3-1-0-Knox-proxy-HDFSUI-HTTP-401-Error/m-p/240282 -->
+            <version>2.7.0</version> 
+        </service>
+
+        <!-- TODO: Find currect URL of the jobtracker
+                The RPC address at which the Resource Manager exposes the JOBTRACKER endpoint can be found via the yarn.resourcemanager.address in the yarn-site.xml file. In a Sandbox installation this can typically be found in /etc/hadoop/conf/yarn-site.xml.
+        <service>
+            <role>JOBTRACKER</role>
+            <url>rpc://localhost:8050</url>
+        </service>
+        -->
+
+        <!-- TODO:
+        <service>
+            <role>JOBHISTORYUI</role>
+            <url>http://sandbox.hortonworks.com:19888</url>
+        </service>
+        -->
+
+        <!-- TODO:
+        <service>
+            <role>YARNUI</role>
+            <url>http://sandbox.hortonworks.com:8088</url>
+        </service>
+        -->
 
     </topology>
 
