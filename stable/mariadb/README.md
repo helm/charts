@@ -63,7 +63,7 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `volumePermissions.enabled`          | Enable init container that changes volume permissions in the data directory (for cases where the default k8s `runAsUser` and `fsUser` values do not work) | `false`                                                      |
 | `volumePermissions.image.registry`   | Init container volume-permissions image registry                                                                                                          | `docker.io`                                                  |
 | `volumePermissions.image.repository` | Init container volume-permissions image name                                                                                                              | `bitnami/minideb`                                            |
-| `volumePermissions.image.tag`        | Init container volume-permissions image tag                                                                                                               | `latest`                                                     |
+| `volumePermissions.image.tag`        | Init container volume-permissions image tag                                                                                                               | `buster`                                                     |
 | `volumePermissions.image.pullPolicy` | Init container volume-permissions image pull policy                                                                                                       | `Always`                                                     |
 | `volumePermissions.resources`        | Init container resource requests/limit                                                                                                                    | `nil`                                                        |
 | `service.type`                            | Kubernetes service type                             | `ClusterIP`                                                       |
@@ -256,7 +256,7 @@ The feature allows for specifying a template string for a initContainer in the m
 master:
   extraInitContainers: |
     - name: initcontainer
-      image: bitnami/minideb:latest
+      image: bitnami/minideb:buster
       command: ["/bin/sh", "-c"]
       args:
         - install_packages curl && curl http://api-service.local/db/starting;
