@@ -80,7 +80,7 @@ spec:
         {{- end }}
         {{- if .Values.resources }}
         resources:
-        {{ toYaml .Values.resources | indent 10 }}
+{{ toYaml .Values.resources | indent 10 }}
         {{- end }}
       {{- if .Values.nodeSelector }}
       nodeSelector:
