@@ -157,7 +157,7 @@ spec:
               subPath: mongodb.conf
           {{- end }}
           resources:
-{{ toYaml .Values.resources | indent 12 }}
+{{ toYaml .Values.resourcesArbiter | indent 12 }}
       volumes:
       {{- if .Values.configmap }}
         - name: config
