@@ -65,6 +65,8 @@ Parameter | Description | Default
 `nodeSelector` | node labels for pod assignment | `{}`
 `replicaCount` | desired number of pods | `1` ???
 `resources` | pod resource requests & limits | `{}`
+`plugins.enabled` | Enable Plugins Installation | `false`
+`plugins.pluginsList` | List of plugins to install | `[]`
 `priorityClassName` | priorityClassName | `nil`
 `service.ports` | port definition for the service | See [values.yaml](values.yaml)
 `service.type` | type of service | `ClusterIP`

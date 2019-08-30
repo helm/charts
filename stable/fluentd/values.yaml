@@ -27,6 +27,11 @@ extraEnvVars:
 #        name: secret_name
 #        key: secret_key
 
+plugins:
+  enabled: true
+  pluginsList:
+    - fluent-plugin-dedot_filter
+
 service:
   annotations: {}
   type: ClusterIP

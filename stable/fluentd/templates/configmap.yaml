@@ -27,3 +27,11 @@ data:
       @type prometheus_output_monitor
     </source>
 {{- end }}
+{{- if .Values.plugins.enabled }}
+  install-plugins.sh: |-
+    #!/bin/sh
+  {{- range $plugin := .Values.plugins.pluginsList }}
+    fluent-gem install {{ $plugin }}
+  {{- end }}
+    exec /run.sh
+{{- end }}
