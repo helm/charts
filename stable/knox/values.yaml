@@ -20,6 +20,7 @@ knox:
     resourceManagerUrl: "http://rm:8088/ws"
     webHdfsUrl: "http://nn:50070/webhdfs"
     hdfsUIUrl: "http://nn:50070/"
+    yarnUIUrl: "http://yarn-ui:8088"
 
   gateway:
     logLevel: "DEBUG"

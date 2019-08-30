@@ -111,12 +111,10 @@ data:
         </service>
         -->
 
-        <!-- TODO:
         <service>
             <role>YARNUI</role>
-            <url>http://sandbox.hortonworks.com:8088</url>
+             <url>{{ .Values.knox.hadoop.yarnUIUrl }}</url> <!-- e.g. http://sandbox.hortonworks.com:8088 -->
         </service>
-        -->
 
     </topology>
 
