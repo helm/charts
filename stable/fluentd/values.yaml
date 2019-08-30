@@ -28,9 +28,8 @@ extraEnvVars:
 #        key: secret_key
 
 plugins:
-  enabled: true
-  pluginsList:
-    - fluent-plugin-dedot_filter
+  enabled: false
+  pluginsList: []
 
 service:
   annotations: {}
