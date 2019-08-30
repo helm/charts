@@ -23,6 +23,11 @@ spec:
       {{- if .Values.metrics.serviceMonitor.scrapeTimeout }}
       scrapeTimeout: {{ .Values.metrics.serviceMonitor.scrapeTimeout }}
       {{- end }}
+      honorLabels: true
+      targetPort: {{ .Values.metrics.port }}
+      path: {{ .Values.metrics.path }}
+      scheme: {{ .Values.metrics.serviceMonitor.scheme }}
+  jobLabel: {{ .Release.Name }}
   namespaceSelector:
     matchNames:
       - {{ .Release.Namespace }}

@@ -118,6 +118,7 @@ The following table lists the configurable parameters of the chart and its defau
 | `metrics.serviceMonitor.namespace`            | Optional namespace in which to create ServiceMonitor                                          | `nil`                                                         |
 | `metrics.serviceMonitor.interval`             | Timeout after which the scrape is ended                                                       | `nil`                                                         |
 | `metrics.serviceMonitor.scrapeTimeout`        | Scrape timeout. If not set, the Logstash default scrape timeout is used                       | `nil`                                                         |
+| `metrics.serviceMonitor.scheme`               | Scheme to use for scraping                                                                    | `http`                                                         |
 | `metrics.image.repository`                    | Logstash Image name                                                                           | `bitnami/postgres-exporter`                                   |
 | `metrics.image.tag`                           | Logstash Image tag                                                                            | `{TAG_NAME}`                                                  |
 | `metrics.image.pullPolicy`                    | Logstash Image pull policy                                                                    | `IfNotPresent`                                                |

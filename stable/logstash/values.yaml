@@ -193,6 +193,7 @@ metrics:
     enabled: false
     port: metrics
     additionalLabels: {}
+    scheme: http
     # namespace: monitoring
     # interval: 30s
     # scrapeTimeout: 10s
