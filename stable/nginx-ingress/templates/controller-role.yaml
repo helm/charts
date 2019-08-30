@@ -85,7 +85,7 @@ rules:
   - apiGroups:      ['extensions']
     resources:      ['podsecuritypolicies']
     verbs:          ['use']
-    resourceNames:  [{{ template "nginx-ingress.fullname" . }}]
+    resourceNames:  [{{ template "nginx-ingress.fullname" . }}-controller]
 {{- end }}
 
 {{- end -}}
