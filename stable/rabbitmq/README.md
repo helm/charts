@@ -65,7 +65,7 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `rabbitmq.existingPasswordSecret`    | Existing secret with RabbitMQ credentials        | `nil`                                                   |
 | `rabbitmq.erlangCookie`              | Erlang cookie                                    | _random 32 character long alphanumeric string_          |
 | `rabbitmq.existingErlangSecret`      | Existing secret with RabbitMQ Erlang cookie      | `nil`                                                   |
-| `rabbitmq.plugins`                   | List of plugins to enable                        | `rabbitmq_management rabbitmq_peer_discovery_k8s`       |
+| `rabbitmq.plugins`                   | List of plugins to enable                        | `[rabbitmq_management,rabbitmq_peer_discovery_k8s].`    |
 | `rabbitmq.extraPlugins`              | Extra plugings to enable                         | `nil`                                                   |
 | `rabbitmq.clustering.address_type`   | Switch clustering mode                           | `ip` or `hostname`                                      |
 | `rabbitmq.clustering.k8s_domain`     | Customize internal k8s cluster domain            | `cluster.local`                                         |
