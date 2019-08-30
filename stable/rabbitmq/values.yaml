@@ -104,7 +104,7 @@ rabbitmq:
   onlineSchedulers: 1
 
   ## Plugins to enable
-  plugins: "rabbitmq_management rabbitmq_peer_discovery_k8s"
+  plugins: "[rabbitmq_management,rabbitmq_peer_discovery_k8s]."
 
   ## Extra plugins to enable
   ## Use this instead of `plugins` to add new plugins
