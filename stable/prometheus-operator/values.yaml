@@ -1732,22 +1732,3 @@ prometheus:
     ## https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#podmetricsendpoint
     ##
     # podMetricsEndpoints: []
-      ## Name of the port this endpoint refers to
-      ## Mutually exclusive with targetPort
-      # - port: ""
-
-      ## Name or number of the target port of the endpoint
-      ## Mutually exclusive with port
-      # - targetPort: ""
-
-      ## Interval at which metrics should be scraped
-      ##
-      #   interval: 30s
-
-      ## HTTP path to scrape for metrics
-      ##
-      #   path: /metrics
-
-      ## HTTP scheme to use for scraping
-      ##
-      #   scheme: http
