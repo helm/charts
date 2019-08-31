@@ -85,9 +85,9 @@ spec:
         - name: config-volume
           mountPath: /config/config.yaml
           subPath: config.yaml
-        {{- if .Values.anchoreGlobal.internalServicesSslEnabled }}
+        {{- if (.Values.anchoreGlobal.certStoreSecretName) }}
         - name: certs
-          mountPath: {{ .Values.anchoreGlobal.internalServicesSsl.certDir }}
+          mountPath: /home/anchore/certs/
           readOnly: true
         {{- end }}
         livenessProbe:
@@ -122,10 +122,10 @@ spec:
             name: {{ template "anchore-engine.fullname" . }}
         env:
         {{- with .Values.anchoreGlobal.extraEnv }}
-        {{- toYaml . | nindent 10 }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
         {{- with .Values.anchoreEnterpriseRbac.extraEnv }}
-        {{- toYaml . | nindent 10 }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
         - name: ANCHORE_POD_NAME
           valueFrom:
@@ -141,9 +141,9 @@ spec:
         - name: enterprise-config-volume
           mountPath: /config/config.yaml
           subPath: config.yaml
-        {{- if .Values.anchoreGlobal.internalServicesSslEnabled }}
+        {{- if (.Values.anchoreGlobal.certStoreSecretName) }}
         - name: certs
-          mountPath: {{ .Values.anchoreGlobal.internalServicesSsl.certDir }}
+          mountPath: /home/anchore/certs/
           readOnly: true
         {{- end }}
         livenessProbe:
@@ -177,10 +177,10 @@ spec:
             name: {{ template "anchore-engine.fullname" . }}
         env:
         {{- with .Values.anchoreGlobal.extraEnv }}
-        {{- toYaml . | nindent 10 }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
         {{- with .Values.anchoreEnterpriseRbac.extraEnv }}
-        {{- toYaml . | nindent 10 }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
         - name: ANCHORE_POD_NAME
           valueFrom:
@@ -196,9 +196,9 @@ spec:
         - name: enterprise-config-volume
           mountPath: /config/config.yaml
           subPath: config.yaml
-        {{- if .Values.anchoreGlobal.internalServicesSslEnabled }}
+        {{- if (.Values.anchoreGlobal.certStoreSecretName) }}
         - name: certs
-          mountPath: {{ .Values.anchoreGlobal.internalServicesSsl.certDir }}
+          mountPath: /home/anchore/certs/
           readOnly: true
         {{- end }}
         livenessProbe:
@@ -241,10 +241,10 @@ spec:
             name: {{ template "anchore-engine.fullname" . }}
         env:
         {{- with .Values.anchoreGlobal.extraEnv }}
-        {{- toYaml . | nindent 10 }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
         {{- with .Values.anchoreEnterpriseReports.extraEnv }}
-        {{- toYaml . | nindent 10 }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
         - name: ANCHORE_POD_NAME
           valueFrom:
@@ -257,9 +257,9 @@ spec:
         - name: anchore-license
           mountPath: /home/anchore/license.yaml
           subPath: license.yaml
-        {{- if .Values.anchoreGlobal.internalServicesSslEnabled }}
+        {{- if (.Values.anchoreGlobal.certStoreSecretName) }}
         - name: certs
-          mountPath: {{ .Values.anchoreGlobal.internalServicesSsl.certDir }}
+          mountPath: /home/anchore/certs/
           readOnly: true
         {{- end }}
         livenessProbe:
@@ -294,10 +294,10 @@ spec:
           configMap:
             name: {{ template "anchore-engine.enterprise.fullname" . }}
         {{- end}}
-        {{- if .Values.anchoreGlobal.internalServicesSslEnabled }}
+        {{- with .Values.anchoreGlobal.certStoreSecretName }}
         - name: certs
           secret:
-            secretName: {{ .Values.anchoreGlobal.internalServicesSsl.certSecret }}
+            secretName: {{ . }}
         {{- end }}
         {{- if .Values.cloudsql.useExistingServiceAcc }}
         - name: {{ .Values.cloudsql.serviceAccSecretName }}

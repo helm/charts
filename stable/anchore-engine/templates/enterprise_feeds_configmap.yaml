@@ -36,21 +36,42 @@ data:
     host_id: "${ANCHORE_POD_NAME}"
     internal_ssl_verify: {{ .Values.anchoreGlobal.internalServicesSsl.verifyCerts }}
     auto_restart_services: false
-    license_file: "/home/anchore/license.yaml"
+    license_file: /home/anchore/license.yaml
     metrics:
       enabled: {{ .Values.anchoreGlobal.enableMetrics }}
+
+    # Locations for keys used for signing and encryption. Only one of 'secret' or 'public_key_path'/'private_key_path' needs to be set. If all are set then the keys take precedence over the secret value
+    # Secret is for a shared secret and if set, all components in anchore should have the exact same value in their configs.
+    keys:
+      secret: {{ .Values.anchoreGlobal.saml.secret }}
+      {{- with .Values.anchoreGlobal.saml.publicKeyName }}
+      public_key_path: /home/anchore/certs/{{- . }}
+      {{- end }}
+      {{- with .Values.anchoreGlobal.saml.privateKeyName }}
+      private_key_path: /home/anchore/certs/{{- . }}
+      {{- end }}
+
+    # Configuring supported user authentication and credential management
+    user_authentication:
+      oauth:
+        enabled: {{ .Values.anchoreGlobal.oauthEnabled }}
+        default_token_expiration_seconds: {{ .Values.anchoreGlobal.oauthTokenExpirationSeconds }}
+
+      # Set this to True to enable storing user passwords only as secure hashes in the db. This can dramatically increase CPU usage if you
+      # don't also use oauth and tokens for internal communications (which requires keys/secret to be configured as well)
+      # WARNING: you should not change this after a system has been initialized as it may cause a mismatch in existing passwords
+      hashed_passwords: {{ .Values.anchoreGlobal.hashedPasswords }}
+
     credentials:
       database:
+        {{- if .Values.anchoreEnterpriseFeeds.dbConfig.ssl }}
+        db_connect: "postgresql://${ANCHORE_DB_USER}:${ANCHORE_DB_PASSWORD}@${ANCHORE_DB_HOST}/${ANCHORE_DB_NAME}?sslmode={{- .Values.anchoreEnterpriseFeeds.dbConfig.sslMode -}}&sslrootcert=/home/anchore/certs/{{- .Values.anchoreEnterpriseFeeds.dbConfig.sslRootCertName }}"
+        {{- else }}
         db_connect: "postgresql://${ANCHORE_DB_USER}:${ANCHORE_DB_PASSWORD}@${ANCHORE_DB_HOST}/${ANCHORE_DB_NAME}"
+        {{- end }}
         db_connect_args:
           timeout: {{ .Values.anchoreEnterpriseFeeds.dbConfig.timeout }}
-          ssl: {{ .Values.anchoreEnterpriseFeeds.dbConfig.ssl }}
-          {{- if .Values.anchoreEnterpriseFeeds.dbConfig.ssl }}
-          sslmode: {{ default "verify-full" .Values.anchoreEnterpriseFeeds.dbConfig.sslMode }}
-          {{- end }}
-          {{- with .Values.anchoreEnterpriseFeeds.dbConfig.sslRootCertPath }}
-          sslrootcert: {{ . }}
-          {{- end }}
+          ssl: false
         db_pool_size: {{ .Values.anchoreEnterpriseFeeds.dbConfig.connectionPoolSize }}
         db_pool_max_overflow: {{ .Values.anchoreEnterpriseFeeds.dbConfig.connectionPoolSize }}
     services:
@@ -62,7 +83,7 @@ data:
         port: {{ .Values.anchoreEnterpriseFeeds.service.port }}
         # Time delay in seconds between consecutive driver runs for processing data
         cycle_timers:
-          {{ toYaml .Values.anchoreEnterpriseFeeds.cycleTimers | nindent 10 }}
+          {{- toYaml .Values.anchoreEnterpriseFeeds.cycleTimers | nindent 10 }}
         # Staging space for holding normalized output from drivers.
         local_workspace: {{ .Values.anchoreGlobal.scratchVolume.mountPath }}
         # Drivers process data from external sources and store normalized data in local_workspace. Processing large data sets
@@ -99,12 +120,16 @@ data:
           snyk:
             enabled: {{ default "false" .Values.anchoreEnterpriseFeeds.snykDriverEnabled }}
           nvddb:
-            enabled: {{ default "false" .Values.anchoreEnterpriseFeeds.nvdDriverEnabled }}                        
+            enabled: {{ default "false" .Values.anchoreEnterpriseFeeds.nvdDriverEnabled }}
           nvdv2:
-            enabled: {{ default "true" .Values.anchoreEnterpriseFeeds.nvdv2DriverEnabled }}            
+            enabled: {{ default "true" .Values.anchoreEnterpriseFeeds.nvdv2DriverEnabled }}
           vulndb:
-            enabled: {{ default "true" .Values.anchoreEnterpriseFeeds.vulndbDriverEnabled }}                    
-        ssl_cert: "{{ .Values.anchoreGlobal.internalServicesSsl.certDir -}}/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretCertName }}"
-        ssl_key: "{{ .Values.anchoreGlobal.internalServicesSsl.certDir -}}/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretKeyName }}"
-        ssl_enable: {{ .Values.anchoreGlobal.internalServicesSslEnabled }}
+            enabled: {{ default "true" .Values.anchoreEnterpriseFeeds.vulndbDriverEnabled }}
+        ssl_enable: {{ .Values.anchoreGlobal.internalServicesSsl.enabled }}
+        {{- with .Values.anchoreGlobal.internalServicesSsl.certSecretCertName }}
+        ssl_cert: "/home/anchore/certs/{{- . }}"
+        {{- end }}
+        {{- with .Values.anchoreGlobal.internalServicesSsl.certSecretKeyName }}
+        ssl_key: "/home/anchore/certs/{{- . }}"
+        {{- end }}
 {{- end -}}

@@ -16,5 +16,5 @@ metadata:
 data:
   analyzer_config.yaml: |
     {{- with .Values.anchoreAnalyzer.configFile }}
-    {{ toYaml . | nindent 4 }}
+    {{- toYaml . | nindent 4 }}
     {{- end }}

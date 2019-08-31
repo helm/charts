@@ -64,9 +64,13 @@ spec:
         image: {{ .Values.anchoreEnterpriseUi.image }}
         imagePullPolicy: {{ .Values.anchoreEnterpriseUi.imagePullPolicy }}
         env:
-        {{ with .Values.anchoreGlobal.dbConfig.sslRootCertPath }}
+        {{ if .Values.anchoreGlobal.dbConfig.ssl }}
         - name: PGSSLROOTCERT
-          value: {{ . }}
+          value: /home/anchore/certs/{{ .Values.anchoreGlobal.dbConfig.sslRootCertName }}
+        {{- end }}
+        {{ with .Values.anchoreEnterpriseUi.ldapsRootCaCertName }}
+        - name: NODE_EXTRA_CA_CERTS
+          value: /home/anchore/certs/{{- . }}
         {{- end }}
         {{- with .Values.anchoreGlobal.extraEnv }}
         {{- toYaml . | nindent 8 }}
@@ -85,6 +89,11 @@ spec:
         - name: anchore-ui-config
           mountPath: /config/config-ui.yaml
           subPath: config-ui.yaml
+        {{- if (.Values.anchoreGlobal.certStoreSecretName) }}
+        - name: certs
+          mountPath: /home/anchore/certs/
+          readOnly: true
+        {{- end }}
         livenessProbe:
           tcpSocket:
             port: enterprise-ui
@@ -108,6 +117,11 @@ spec:
       - name: anchore-ui-config
         secret:
           secretName: {{ template "anchore-engine.enterprise-ui.fullname" . }}
+      {{- with .Values.anchoreGlobal.certStoreSecretName }}
+      - name: certs
+        secret:
+          secretName: {{ . }}
+      {{- end }}
       {{- if .Values.cloudsql.useExistingServiceAcc }}
       - name: {{ .Values.cloudsql.serviceAccSecretName }}
         secret:

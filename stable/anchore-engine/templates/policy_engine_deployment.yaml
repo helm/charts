@@ -81,9 +81,9 @@ spec:
         - name: config-volume
           mountPath: /config/config.yaml
           subPath: config.yaml
-        {{- if .Values.anchoreGlobal.internalServicesSslEnabled }}
+        {{- if (.Values.anchoreGlobal.certStoreSecretName) }}
         - name: certs
-          mountPath: {{ .Values.anchoreGlobal.internalServicesSsl.certDir }}
+          mountPath: /home/anchore/certs/
           readOnly: true
         {{- end }}
         livenessProbe:
@@ -109,10 +109,10 @@ spec:
         - name: config-volume
           configMap:
             name: {{ template "anchore-engine.fullname" .}}
-        {{- if .Values.anchoreGlobal.internalServicesSslEnabled }}
+        {{- with .Values.anchoreGlobal.certStoreSecretName }}
         - name: certs
           secret:
-            secretName: {{ .Values.anchoreGlobal.internalServicesSsl.certSecret }}
+            secretName: {{ . }}
         {{- end }}
         {{- if .Values.cloudsql.useExistingServiceAcc }}
         - name: {{ .Values.cloudsql.serviceAccSecretName }}

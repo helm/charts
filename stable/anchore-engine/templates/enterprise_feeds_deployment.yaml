@@ -94,6 +94,11 @@ spec:
         - name: anchore-license
           mountPath: /home/anchore/license.yaml
           subPath: license.yaml
+        {{- if (.Values.anchoreGlobal.certStoreSecretName) }}
+        - name: certs
+          mountPath: /home/anchore/certs/
+          readOnly: true
+        {{- end }}
         livenessProbe:
           httpGet:
             path: /health
@@ -126,6 +131,11 @@ spec:
         - name: {{ .Values.cloudsql.serviceAccSecretName }}
           secret:
             secretName: {{ .Values.cloudsql.serviceAccSecretName }}
+        {{- end }}
+        {{- with .Values.anchoreGlobal.certStoreSecretName }}
+        - name: certs
+          secret:
+            secretName: {{ . }}
         {{- end }}
       {{- with .Values.anchoreEnterpriseFeeds.nodeSelector }}
       nodeSelector:
