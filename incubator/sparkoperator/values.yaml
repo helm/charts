@@ -32,4 +32,9 @@ webhookPort: 8080
 ##
 nodeSelector: {}
 
+## Resources for the sparkoperator deployment
+## Ref: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
+##
+resources: {}
+
 logLevel: 2
