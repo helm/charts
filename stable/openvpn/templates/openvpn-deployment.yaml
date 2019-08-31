@@ -85,7 +85,7 @@ spec:
         {{- else if .Values.openvpn.keystoreSecret }}
         secret:
           secretName: "{{ .Values.openvpn.keystoreSecret }}"
-          defaultMode: 448
+          defaultMode: 0600
           items:
           - key: "server.key"
             path: "pki/private/server.key"
