@@ -1108,7 +1108,7 @@ prometheusOperator:
   ##
   image:
     repository: quay.io/coreos/prometheus-operator
-    tag: v0.31.1
+    tag: v0.32.0
     pullPolicy: IfNotPresent
 
   ## Configmap-reload image to use for reloading configmaps
@@ -1121,7 +1121,7 @@ prometheusOperator:
   ##
   prometheusConfigReloaderImage:
     repository: quay.io/coreos/prometheus-config-reloader
-    tag: v0.31.1
+    tag: v0.32.0
 
   ## Set the prometheus config reloader side-car CPU limit. If unset, uses the prometheus-operator project default
   ##
@@ -1272,7 +1272,7 @@ prometheus:
     ##
     image:
       repository: quay.io/prometheus/prometheus
-      tag: v2.10.0
+      tag: v2.12.0
 
     ## Tolerations for use with node taints
     ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
@@ -1418,6 +1418,10 @@ prometheus:
     ## Maximum size of metrics
     ##
     retentionSize: ""
+
+    ## Enable compression of the write-ahead log using Snappy.
+    ##
+    walCompression: false
 
     ## If true, the Operator won't process any Prometheus configuration changes
     ##
@@ -1704,6 +1708,14 @@ prometheus:
     ## Label selector for pods to which this PodMonitor applies
     ##
     # selector: {}
+
+    ## PodTargetLabels transfers labels on the Kubernetes Pod onto the target.
+    ##
+    # podTargetLabels: {}
+
+    ## SampleLimit defines per-scrape limit on number of scraped samples that will be accepted.
+    ##
+    # sampleLimit: 0
 
     ## Namespaces from which pods are selected
     ##

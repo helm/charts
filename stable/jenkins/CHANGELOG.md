@@ -6,6 +6,14 @@ numbering uses [semantic versioning](http://semver.org).
 
 NOTE: The change log until version 1.5.7 is auto generated based on git commits. Those include a reference to the git commit to be able to get more details.
 
+## 1.5.9
+
+Fixed a warning when sidecar resources are provided through a parent chart or override values
+
+## 1.5.8
+
+Fixed an issue when master.enableXmlConfig is set to false: Always mount jenkins-secrets volume if secretsFilesSecret is set (#16512)
+
 ## 1.5.7
 
 added initial changelog (#16324)

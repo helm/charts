@@ -13,13 +13,11 @@ spec:
   podManagementPolicy: {{ .Values.podManagementPolicy }}
   selector:
     matchLabels:
-      app: {{ template "couchdb.name" . }}
-      release: {{ .Release.Name }}
+{{ include "couchdb.ss.selector" . | indent 6 }}
   template:
     metadata:
       labels:
-        app: {{ template "couchdb.name" . }}
-        release: {{ .Release.Name }}
+{{ include "couchdb.ss.selector" . | indent 8 }}
     spec:
       {{- if .Values.schedulerName }}
       schedulerName: "{{ .Values.schedulerName }}"
@@ -28,7 +26,7 @@ spec:
         - name: init-copy
           image: "{{ .Values.initImage.repository }}:{{ .Values.initImage.tag }}"
           imagePullPolicy: {{ .Values.initImage.pullPolicy }}
-          command: ['sh','-c','cp /tmp/chart.ini /default.d; ls -lrt /default.d;']
+          command: ['sh','-c','cp /tmp/chart.ini /default.d; cp /tmp/seedlist.ini /default.d; ls -lrt /default.d;']
           volumeMounts:
           - name: config
             mountPath: /tmp/
@@ -95,22 +93,6 @@ spec:
             mountPath: /opt/couchdb/etc/default.d
           - name: database-storage
             mountPath: /opt/couchdb/data
-        - name: couchdb-statefulset-assembler
-          image: "{{ .Values.helperImage.repository }}:{{ .Values.helperImage.tag }}"
-          imagePullPolicy: {{ .Values.helperImage.pullPolicy }}
-{{- if not .Values.allowAdminParty }}
-          env:
-            - name: COUCHDB_USER
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "couchdb.fullname" . }}
-                  key: adminUsername
-            - name: COUCHDB_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "couchdb.fullname" . }}
-                  key: adminPassword
-{{- end }}
 {{- if .Values.enableSearch }}
         - name: clouseau
           image: "{{ .Values.searchImage.repository }}:{{ .Values.searchImage.tag }}"
@@ -136,6 +118,9 @@ spec:
             items:
               - key: inifile
                 path: chart.ini
+              - key: seedlistinifile
+                path: seedlist.ini
+
 {{- if not .Values.persistentVolume.enabled }}
         - name: database-storage
           emptyDir: {}

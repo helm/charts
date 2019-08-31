@@ -15,7 +15,7 @@ items:
         {{- end }}
     spec:
       podMetricsEndpoints:
-{{ toYaml .endpoints | indent 8 }}
+{{ toYaml .podMetricsEndpoints | indent 8 }}
     {{- if .jobLabel }}
       jobLabel: {{ .jobLabel }}
     {{- end }}
@@ -25,9 +25,12 @@ items:
     {{- end }}
       selector:
 {{ toYaml .selector | indent 8 }}
-    {{- if .targetLabels }}
-      targetLabels:
-{{ toYaml .targetLabels | indent 8 }}
+    {{- if .podTargetLabels }}
+      podTargetLabels:
+{{ toYaml .podTargetLabels | indent 8 }}
+    {{- end }}
+    {{- if .sampleLimit }}
+      sampleLimit: {{ .sampleLimit }}
     {{- end }}
 {{- end }}
 {{- end }}

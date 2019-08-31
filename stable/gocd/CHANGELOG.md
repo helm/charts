@@ -1,3 +1,7 @@
+### 1.16.1
+
+* [c70a0b189](https://github.com/kubernetes/charts/commit/c70a0b189): Bump up kubernetes plugin version to v3.1.0
+
 ### 1.16.0
 
 * [7872692](https://github.com/kubernetes/charts/commit/7872692): Update Pipeline config API version, use getting started repo's script for task

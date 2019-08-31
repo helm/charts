@@ -6,7 +6,7 @@ metadata:
   name: {{ template "minio.fullname" . }}-svc
   labels:
     app: {{ template "minio.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: {{ template "minio.chart" . }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
