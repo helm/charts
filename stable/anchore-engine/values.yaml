@@ -66,11 +66,13 @@ ingress:
 # Global configuration shared by all anchore-engine services.
 anchoreGlobal:
   # Image used for all anchore engine deployments (excluding enterprise components).
-  image: docker.io/anchore/anchore-engine:v0.4.2
+  image: docker.io/anchore/anchore-engine:v0.5.0
   imagePullPolicy: IfNotPresent
 
   # Add additionnal labels to all kubernetes resources
   labels: {}
+    # app.kubernetes.io/managed-by: Helm
+    # foo: bar
 
   # Set extra environment variables. These will be set on all containers.
   extraEnv: []
@@ -114,8 +116,8 @@ anchoreGlobal:
     # Locations for keys used for signing and encryption. Only one of 'secret' or 'public_key_path'/'private_key_path' needs to be set. If all are set then the keys take precedence over the secret value
     # Secret is for a shared secret and if set, all components in anchore should have the exact same value in their configs.
     secret: Null
-    privateKeyName: anchore_saml_rsa.pem
-    publicKeyName: anchore_saml_rsa.pub
+    privateKeyName: Null
+    publicKeyName: Null
 
   oauthEnabled: false
   oauthTokenExpirationSeconds: 3600
@@ -440,7 +442,7 @@ anchoreEnterpriseGlobal:
   # Create this secret with the following command - kubectl create secret generic anchore-license --from-file=license.yaml=<PATH TO LICENSE.YAML>
   licenseSecretName: anchore-enterprise-license
 
-  image: docker.io/anchore/enterprise:v0.4.1
+  image: docker.io/anchore/enterprise:v0.5.0
   imagePullPolicy: IfNotPresent
   # Name of the kubernetes secret containing your dockerhub creds with access to the anchore enterprise images.
   # Create this secret with the following command - kubectl create secret docker-registry anchore-dockerhub-creds --docker-server=docker.io --docker-username=<USERNAME> --docker-password=<PASSWORD> --docker-email=<EMAIL_ADDRESS>
@@ -590,7 +592,7 @@ anchoreEnterpriseReports:
 anchoreEnterpriseUi:
   # If enabled is set to false, set anchore-ui-redis.enabled to false to ensure that helm doesn't stand up a unneccessary redis instance.
   enabled: true
-  image: docker.io/anchore/enterprise-ui:v0.3.4
+  image: docker.io/anchore/enterprise-ui:v0.3.5
   imagePullPolicy: IfNotPresent
 
   # Set extra environment variables. These will be set on all UI containers.
