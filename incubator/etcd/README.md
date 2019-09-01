@@ -7,15 +7,13 @@ Credit to https://github.com/ingvagabund. This is an implementation of that work
 ## Prerequisites Details
 * Kubernetes 1.5 (for `StatefulSets` support)
 * PV support on the underlying infrastructure
+* ETCD version >= 3.0.0
 
 ## StatefulSet Details
 * https://kubernetes.io/docs/concepts/abstractions/controllers/statefulsets/
 
 ## StatefulSet Caveats
 * https://kubernetes.io/docs/concepts/abstractions/controllers/statefulsets/#limitations
-
-## Todo
-* Implement SSL
 
 ## Chart Details
 This chart will do the following:
@@ -54,7 +52,7 @@ The following table lists the configurable parameters of the etcd chart and thei
 | `auth.client.enableAuthentication`  | Enables host authentication using TLS certificates. Existing secret is required.    | `false` |
 | `auth.client.secureTransport`       | Enables encryption of client communication using TLS certificates | `false` |
 | `auth.peer.useAutoTLS`              | Automatically create the TLS certificates | `false` |
-| `auth.peer.secureTransport`         | Enables encryption peer communication using TLS certificates | `false` |
+| `auth.peer.secureTransport`         | Enables encryption peer communication using TLS certificates **(At the moment works only with Auto TLS)** | `false` |
 | `auth.peer.enableAuthentication`     | Enables host authentication using TLS certificates. Existing secret required | `false` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
