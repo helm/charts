@@ -56,6 +56,7 @@ ingress:
   #    - secretName: nextcloud-tls
   #      hosts:
   #        - nextcloud.kube.home
+  labels: {}
 
 nextcloud:
   host: nextcloud.kube.home
