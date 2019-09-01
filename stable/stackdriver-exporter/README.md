@@ -85,6 +85,10 @@ Parameter                           | Description                               
 `affinity`                          | Pod affinity                                                                    | `{}`
 `nodeSelector`                      | Node labels for pod assignment												  | `{}`
 `tolerations`                       | Node taints to tolerate (requires Kubernetes >=1.6) 							  | `[]`
+`serviceMonitor.enabled`            | if `true`, creates a Prometheus Operator ServiceMonitor                         | `false`
+`serviceMonitor.namespace`          | Namespace where you want to create the ServiceMonitor                           | `monitoring`
+`serviceMonitor.interval`           | How frequently to scrape metrics (not set: fall back to Prometheus' default)    |  `nil`
+`serviceMonitor.honorLabels`        | if `true`, label conflicts are resolved by keeping label values from the scraped data | `true`
 
 
 
