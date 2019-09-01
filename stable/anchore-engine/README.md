@@ -482,3 +482,4 @@ To set a specific number of service containers:
 To update the number in a running configuration:
 
 `helm upgrade --set anchoreAnalyzer.replicaCount=2 <releasename> stable/anchore-engine -f anchore_values.yaml`
+

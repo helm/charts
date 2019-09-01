@@ -78,12 +78,10 @@ data:
         endpoint_hostname: localhost
         listen: 127.0.0.1
         port: {{ .Values.anchoreEnterpriseRbac.service.authPort }}
+        {{- if .Values.anchoreGlobal.internalServicesSsl.enabled }}
         ssl_enable: {{ .Values.anchoreGlobal.internalServicesSsl.enabled }}
-        {{- with .Values.anchoreGlobal.internalServicesSsl.certSecretCertName }}
-        ssl_cert: "/home/anchore/certs/{{- . }}"
-        {{- end }}
-        {{- with .Values.anchoreGlobal.internalServicesSsl.certSecretKeyName }}
-        ssl_key: "/home/anchore/certs/{{- . }}"
+        ssl_cert: "/home/anchore/certs/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretCertName }}"
+        ssl_key: "/home/anchore/certs/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretKeyName }}"
         {{- end }}
       rbac_manager:
         enabled: true
@@ -94,12 +92,10 @@ data:
         authorization_handler: external
         authorization_handler_config:
           endpoint: "http://localhost:{{- .Values.anchoreEnterpriseRbac.service.authPort }}"
+        {{- if .Values.anchoreGlobal.internalServicesSsl.enabled }}
         ssl_enable: {{ .Values.anchoreGlobal.internalServicesSsl.enabled }}
-        {{- with .Values.anchoreGlobal.internalServicesSsl.certSecretCertName }}
-        ssl_cert: "/home/anchore/certs/{{- . }}"
-        {{- end }}
-        {{- with .Values.anchoreGlobal.internalServicesSsl.certSecretKeyName }}
-        ssl_key: "/home/anchore/certs/{{- . }}"
+        ssl_cert: "/home/anchore/certs/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretCertName }}"
+        ssl_key: "/home/anchore/certs/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretKeyName }}"
         {{- end }}
       {{- end }}
       {{- if .Values.anchoreEnterpriseReports.enabled }}
@@ -118,12 +114,10 @@ data:
         authorization_handler_config:
           endpoint: "http://localhost:{{- .Values.anchoreEnterpriseRbac.service.authPort }}"
         {{- end }}
+        {{- if .Values.anchoreGlobal.internalServicesSsl.enabled }}
         ssl_enable: {{ .Values.anchoreGlobal.internalServicesSsl.enabled }}
-        {{- with .Values.anchoreGlobal.internalServicesSsl.certSecretCertName }}
-        ssl_cert: "/home/anchore/certs/{{- . }}"
-        {{- end }}
-        {{- with .Values.anchoreGlobal.internalServicesSsl.certSecretKeyName }}
-        ssl_key: "/home/anchore/certs/{{- . }}"
+        ssl_cert: "/home/anchore/certs/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretCertName }}"
+        ssl_key: "/home/anchore/certs/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretKeyName }}"
         {{- end }}
       {{- end }}
 {{- end -}}

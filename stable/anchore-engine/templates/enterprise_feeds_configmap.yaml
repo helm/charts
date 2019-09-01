@@ -125,11 +125,9 @@ data:
             enabled: {{ default "true" .Values.anchoreEnterpriseFeeds.nvdv2DriverEnabled }}
           vulndb:
             enabled: {{ default "true" .Values.anchoreEnterpriseFeeds.vulndbDriverEnabled }}
+        {{- if .Values.anchoreGlobal.internalServicesSsl.enabled }}
         ssl_enable: {{ .Values.anchoreGlobal.internalServicesSsl.enabled }}
-        {{- with .Values.anchoreGlobal.internalServicesSsl.certSecretCertName }}
-        ssl_cert: "/home/anchore/certs/{{- . }}"
-        {{- end }}
-        {{- with .Values.anchoreGlobal.internalServicesSsl.certSecretKeyName }}
-        ssl_key: "/home/anchore/certs/{{- . }}"
+        ssl_cert: "/home/anchore/certs/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretCertName }}"
+        ssl_key: "/home/anchore/certs/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretKeyName }}"
         {{- end }}
 {{- end -}}

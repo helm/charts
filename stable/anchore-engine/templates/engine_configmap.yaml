@@ -123,12 +123,10 @@ data:
         authorization_handler_config:
           endpoint: "http://localhost:{{- .Values.anchoreEnterpriseRbac.service.authPort }}"
         {{- end }}
+        {{- if .Values.anchoreGlobal.internalServicesSsl.enabled }}
         ssl_enable: {{ .Values.anchoreGlobal.internalServicesSsl.enabled }}
-        {{- with .Values.anchoreGlobal.internalServicesSsl.certSecretCertName }}
-        ssl_cert: "/home/anchore/certs/{{- . }}"
-        {{- end }}
-        {{- with .Values.anchoreGlobal.internalServicesSsl.certSecretKeyName }}
-        ssl_key: "/home/anchore/certs/{{- . }}"
+        ssl_cert: "/home/anchore/certs/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretCertName }}"
+        ssl_key: "/home/anchore/certs/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretKeyName }}"
         {{- end }}
       analyzer:
         enabled: true
@@ -147,12 +145,10 @@ data:
         layer_cache_enable: false
         {{- end }}
         layer_cache_max_gigabytes: {{ .Values.anchoreAnalyzer.layerCacheMaxGigabytes }}
+        {{- if .Values.anchoreGlobal.internalServicesSsl.enabled }}
         ssl_enable: {{ .Values.anchoreGlobal.internalServicesSsl.enabled }}
-        {{- with .Values.anchoreGlobal.internalServicesSsl.certSecretCertName }}
-        ssl_cert: "/home/anchore/certs/{{- . }}"
-        {{- end }}
-        {{- with .Values.anchoreGlobal.internalServicesSsl.certSecretKeyName }}
-        ssl_key: "/home/anchore/certs/{{- . }}"
+        ssl_cert: "/home/anchore/certs/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretCertName }}"
+        ssl_key: "/home/anchore/certs/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretKeyName }}"
         {{- end }}
       catalog:
         enabled: true
@@ -163,29 +159,25 @@ data:
         cycle_timer_seconds: 1
         cycle_timers:
           {{- toYaml .Values.anchoreCatalog.cycleTimers | nindent 10 }}
-        ssl_enable: {{ .Values.anchoreGlobal.internalServicesSsl.enabled }}
-        {{- with .Values.anchoreGlobal.internalServicesSsl.certSecretCertName }}
-        ssl_cert: "/home/anchore/certs/{{- . }}"
-        {{- end }}
-        {{- with .Values.anchoreGlobal.internalServicesSsl.certSecretKeyName }}
-        ssl_key: "/home/anchore/certs/{{- . }}"
-        {{- end }}
         event_log:
           {{- toYaml .Values.anchoreCatalog.events | nindent 10 }}
         archive:
           {{- toYaml .Values.anchoreCatalog.archive | nindent 10 }}
+        {{- if .Values.anchoreGlobal.internalServicesSsl.enabled }}
+        ssl_enable: {{ .Values.anchoreGlobal.internalServicesSsl.enabled }}
+        ssl_cert: "/home/anchore/certs/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretCertName }}"
+        ssl_key: "/home/anchore/certs/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretKeyName }}"
+        {{- end }}
       simplequeue:
         enabled: true
         require_auth: true
         endpoint_hostname: {{ template "anchore-engine.simplequeue.fullname" . }}
         listen: 0.0.0.0
         port: {{ .Values.anchoreSimpleQueue.service.port }}
+        {{- if .Values.anchoreGlobal.internalServicesSsl.enabled }}
         ssl_enable: {{ .Values.anchoreGlobal.internalServicesSsl.enabled }}
-        {{- with .Values.anchoreGlobal.internalServicesSsl.certSecretCertName }}
-        ssl_cert: "/home/anchore/certs/{{- . }}"
-        {{- end }}
-        {{- with .Values.anchoreGlobal.internalServicesSsl.certSecretKeyName }}
-        ssl_key: "/home/anchore/certs/{{- . }}"
+        ssl_cert: "/home/anchore/certs/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretCertName }}"
+        ssl_key: "/home/anchore/certs/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretKeyName }}"
         {{- end }}
       policy_engine:
         enabled: true
@@ -196,11 +188,9 @@ data:
         cycle_timer_seconds: 1
         cycle_timers:
           {{- toYaml .Values.anchorePolicyEngine.cycleTimers | nindent 10 }}
+        {{- if .Values.anchoreGlobal.internalServicesSsl.enabled }}
         ssl_enable: {{ .Values.anchoreGlobal.internalServicesSsl.enabled }}
-        {{- with .Values.anchoreGlobal.internalServicesSsl.certSecretCertName }}
-        ssl_cert: "/home/anchore/certs/{{- . }}"
-        {{- end }}
-        {{- with .Values.anchoreGlobal.internalServicesSsl.certSecretKeyName }}
-        ssl_key: "/home/anchore/certs/{{- . }}"
+        ssl_cert: "/home/anchore/certs/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretCertName }}"
+        ssl_key: "/home/anchore/certs/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretKeyName }}"
         {{- end }}
 
