@@ -6,6 +6,7 @@
 #   imageRegistry: myRegistryName
 #   imagePullSecrets:
 #     - myRegistryKeySecretName
+#   storageClass: myStorageClass
 
 image:
   ## Bitnami MongoDB registry
@@ -17,7 +18,7 @@ image:
   ## Bitnami MongoDB image tag
   ## ref: https://hub.docker.com/r/bitnami/mongodb/tags/
   ##
-  tag: 4.0.11-debian-9-r0
+  tag: 4.0.12-debian-9-r5
   ## Specify a imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   ##
@@ -187,6 +188,9 @@ podLabels: {}
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ##
 resources: {}
+# Define separate resources per arbiter, which are less then primary or secondary
+# used only when replica set is enabled
+resourcesArbiter: {}
 # limits:
 #   cpu: 500m
 #   memory: 512Mi
@@ -369,8 +373,8 @@ metrics:
 
   image:
     registry: docker.io
-    repository: forekshub/percona-mongodb-exporter
-    tag: latest
+    repository: bitnami/mongodb-exporter
+    tag: 0.8.0-debian-9-r4
     pullPolicy: Always
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.

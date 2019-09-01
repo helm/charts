@@ -60,6 +60,7 @@ backend:
     type: flb_type
     logstash_prefix: kubernetes_cluster
     replace_dots: "On"
+    logstash_format: "On"
     time_key: "@timestamp"
     # Optional username credential for Elastic X-Pack access
     http_user:
@@ -97,6 +98,7 @@ backend:
     ## Specify the data format to be used in the HTTP request body
     ## Can be either 'msgpack' or 'json'
     format: msgpack
+    headers: []
 
 parsers:
   enabled: false

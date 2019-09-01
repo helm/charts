@@ -150,7 +150,7 @@ Get the password secret.
 */}}
 {{- define "redis.secretName" -}}
 {{- if .Values.existingSecret -}}
-{{- printf "%s" (tpl .Values.existingSecret .) -}}
+{{- printf "%s" .Values.existingSecret -}}
 {{- else -}}
 {{- printf "%s" (include "redis.fullname" .) -}}
 {{- end -}}
@@ -236,4 +236,74 @@ WARNING: Rolling tag detected ({{ .Values.image.repository }}:{{ .Values.image.t
 WARNING: Rolling tag detected ({{ .Values.sentinel.image.repository }}:{{ .Values.sentinel.image.tag }}), please note that it is strongly recommended to avoid using rolling tags in a production environment.
 +info https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/
 {{- end }}
+{{- end -}}
+
+{{/*
+Return  the proper Storage Class for master
+*/}}
+{{- define "redis.master.storageClass" -}}
+{{/*
+Helm 2.11 supports the assignment of a value to a variable defined in a different scope,
+but Helm 2.9 and 2.10 does not support it, so we need to implement this if-else logic.
+*/}}
+{{- if .Values.global -}}
+    {{- if .Values.global.storageClass -}}
+        {{- if (eq "-" .Values.global.storageClass) -}}
+            {{- printf "storageClassName: \"\"" -}}
+        {{- else }}
+            {{- printf "storageClassName: %s" .Values.global.storageClass -}}
+        {{- end -}}
+    {{- else -}}
+        {{- if .Values.master.persistence.storageClass -}}
+              {{- if (eq "-" .Values.master.persistence.storageClass) -}}
+                  {{- printf "storageClassName: \"\"" -}}
+              {{- else }}
+                  {{- printf "storageClassName: %s" .Values.master.persistence.storageClass -}}
+              {{- end -}}
+        {{- end -}}
+    {{- end -}}
+{{- else -}}
+    {{- if .Values.master.persistence.storageClass -}}
+        {{- if (eq "-" .Values.master.persistence.storageClass) -}}
+            {{- printf "storageClassName: \"\"" -}}
+        {{- else }}
+            {{- printf "storageClassName: %s" .Values.master.persistence.storageClass -}}
+        {{- end -}}
+    {{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return  the proper Storage Class for slave
+*/}}
+{{- define "redis.slave.storageClass" -}}
+{{/*
+Helm 2.11 supports the assignment of a value to a variable defined in a different scope,
+but Helm 2.9 and 2.10 does not support it, so we need to implement this if-else logic.
+*/}}
+{{- if .Values.global -}}
+    {{- if .Values.global.storageClass -}}
+        {{- if (eq "-" .Values.global.storageClass) -}}
+            {{- printf "storageClassName: \"\"" -}}
+        {{- else }}
+            {{- printf "storageClassName: %s" .Values.global.storageClass -}}
+        {{- end -}}
+    {{- else -}}
+        {{- if .Values.slave.persistence.storageClass -}}
+              {{- if (eq "-" .Values.slave.persistence.storageClass) -}}
+                  {{- printf "storageClassName: \"\"" -}}
+              {{- else }}
+                  {{- printf "storageClassName: %s" .Values.slave.persistence.storageClass -}}
+              {{- end -}}
+        {{- end -}}
+    {{- end -}}
+{{- else -}}
+    {{- if .Values.slave.persistence.storageClass -}}
+        {{- if (eq "-" .Values.slave.persistence.storageClass) -}}
+            {{- printf "storageClassName: \"\"" -}}
+        {{- else }}
+            {{- printf "storageClassName: %s" .Values.slave.persistence.storageClass -}}
+        {{- end -}}
+    {{- end -}}
+{{- end -}}
 {{- end -}}
