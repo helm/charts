@@ -13,7 +13,7 @@ metadata:
   annotations:
 {{ toYaml . | indent 4 }}
 {{- end }}
-{{- if or .Values.rbac.pspEnabled (and .Values.rbac.namespaced (or .Values.sidecar.dashboards.enabled .Values.sidecar.datasources.enabled)) }}
+{{- if or .Values.rbac.pspEnabled (and .Values.rbac.namespaced (or .Values.sidecar.dashboards.enabled (or .Values.sidecar.datasources.enabled .Values.rbac.extraRoleRules))) }}
 rules:
 {{- if .Values.rbac.pspEnabled }}
 - apiGroups:      ['extensions']
@@ -26,6 +26,9 @@ rules:
   resources: ["configmaps", "secrets"]
   verbs: ["get", "watch", "list"]
 {{- end }}
+{{- with .Values.rbac.extraRoleRules }}
+{{ toYaml . | indent 0 }}
+{{- end}}
 {{- else }}
 rules: []
 {{- end }}
