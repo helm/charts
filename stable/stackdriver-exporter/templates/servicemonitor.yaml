@@ -1,0 +1,27 @@
+{{- if .Values.serviceMonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ template "prometheus-pushgateway.name" .  }}
+  {{- if .Values.serviceMonitor.namespace }}
+  namespace: {{ .Values.serviceMonitor.namespace }}
+  {{- end }}
+  labels:
+    chart: {{ template "stackdriver-exporter.chart" . }}
+    app: {{ template "stackdriver-exporter.name" . }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  endpoints:
+  - port: http
+    {{- if .Values.serviceMonitor.interval }}
+    interval: {{ .Values.serviceMonitor.interval }}
+    {{- end }}
+    honorLabels: {{ .Values.serviceMonitor.honorLabels }}
+  selector:
+    matchLabels:
+      chart: {{ template "stackdriver-exporter.chart" . }}
+      app: {{ template "stackdriver-exporter.name" . }}
+      release: "{{ .Release.Name }}"
+      heritage: "{{ .Release.Service }}"
+{{- end }}
