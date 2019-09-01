@@ -3,6 +3,14 @@ rbac:
   pspEnabled: true
   pspUseAppArmor: true
   namespaced: false
+  extraRoleRules: []
+  # - apiGroups: []
+  #   resources: []
+  #   verbs: []
+  extraClusterRoleRules: []
+  # - apiGroups: []
+  #   resources: []
+  #   verbs: []
 serviceAccount:
   create: true
   name:
