@@ -5,7 +5,6 @@ engine: gotpl
 maintainers:
   - name: gianrubio
     email: gianrubio@gmail.com
-  - name: anothertobi
   - name: vsliouniaev
 name: prometheus-operator
 sources:
