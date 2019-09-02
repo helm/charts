@@ -59,11 +59,14 @@ The following table lists the configurable parameters of the Redmine chart and t
 | ----------------------------------- | ------------------------------------------ | ------------------------------------------------------- |
 | `global.imageRegistry`              | Global Docker image registr  y             | `nil`                                                   |
 | `global.imagePullSecrets`           | Global Docker registry secret names as an array | `[]` (does not add image pull secrets to deployed pods) |
+| `global.storageClass`                     | Global storage class for dynamic provisioning                                               | `nil`                                                        |
 | `image.registry`                    | Redmine image registry                     | `docker.io`                                             |
 | `image.repository`                  | Redmine image name                         | `bitnami/redmine`                                       |
 | `image.tag`                         | Redmine image tag                          | `{TAG_NAME}`                                            |
 | `image.pullPolicy`                  | Image pull policy                          | `IfNotPresent`                                          |
-| `image.pullSecrets`                 | Specify docker-registry secret names as an array                 | `[]` (does not add image pull secrets to deployed pods)   |
+| `image.pullSecrets`                 | Specify docker-registry secret names as an array | `[]` (does not add image pull secrets to deployed pods)   |
+| `nameOverride`                      | String to partially override redmine.fullname template with a string (will prepend the release name) | `nil`     |
+| `fullnameOverride`                  | String to fully override redmine.fullname template with a string                                     | `nil`     |
 | `redmineUsername`                   | User of the application                    | `user`                                                  |
 | `redminePassword`                   | Application password                       | _random 10 character long alphanumeric string_          |
 | `redmineEmail`                      | Admin email                                | `user@example.com`                                      |
@@ -79,10 +82,13 @@ The following table lists the configurable parameters of the Redmine chart and t
 | `mariadb.enabled`                   | Whether to deploy a MariaDB server to satisfy the applications database requirements     | `true`    |
 | `mariadb.rootUser.password`         | MariaDB admin password                     | `nil`                                                   |
 | `postgresql.enabled`                | Whether to deploy a PostgreSQL server to satisfy the applications database requirements  | `false`   |
-| `postgresql.postgresqlPassword`     | PostgreSQL admin password                  | `nil`                                                   |
+| `postgresql.postgresqlDatabase`     | PostgreSQL database                        | `bitnami_redmine`                                       |
+| `postgresql.postgresqlUsername`     | PostgreSQL user                            | `bn_redmine`                                            |
+| `postgresql.postgresqlPassword`     | PostgreSQL password                        | `nil`                                                   |
 | `externalDatabase.host`             | Host of the external database              | `localhost`                                             |
-| `externalDatabase.user`             | External db admin user                     | `root`                                                  |
-| `externalDatabase.password`         | Password for the admin user                | `""`                                                    |
+| `externalDatabase.name`             | Name of the external database              | `localhost`                                             |
+| `externalDatabase.user`             | External db user                           | `user`                                                  |
+| `externalDatabase.password`         | Password for the db user                   | `""`                                                    |
 | `externalDatabase.port`             | Database port number                       | `3306`                                                  |
 | `service.type`                      | Kubernetes Service type                    | `LoadBalancer`                                          |
 | `service.port`                      | Service HTTP port                          | `80`                                                    |

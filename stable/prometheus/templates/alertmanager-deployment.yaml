@@ -71,6 +71,12 @@ spec:
             - name: storage-volume
               mountPath: "{{ .Values.alertmanager.persistentVolume.mountPath }}"
               subPath: "{{ .Values.alertmanager.persistentVolume.subPath }}"
+          {{- range .Values.alertmanager.extraSecretMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              subPath: {{ .subPath }}
+              readOnly: {{ .readOnly }}
+          {{- end }}
 
         - name: {{ template "prometheus.name" . }}-{{ .Values.alertmanager.name }}-{{ .Values.configmapReload.name }}
           image: "{{ .Values.configmapReload.image.repository }}:{{ .Values.configmapReload.image.tag }}"
@@ -113,6 +119,11 @@ spec:
           secret:
             secretName: {{ .Values.alertmanager.configFromSecret }}
           {{- end }}
+      {{- range .Values.alertmanager.extraSecretMounts }}
+        - name: {{ .name }}
+          secret:
+            secretName: {{ .secretName }}
+      {{- end }}
         - name: storage-volume
         {{- if .Values.alertmanager.persistentVolume.enabled }}
           persistentVolumeClaim:

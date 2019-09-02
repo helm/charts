@@ -85,9 +85,21 @@ spec:
 {{ toYaml . | indent 8 }}
       {{- end }}
 {{- include "mariadb.imagePullSecrets" . | indent 6 }}
-      {{- if .Values.master.extraInitContainers }}
       initContainers:
+      {{- if .Values.master.extraInitContainers }}
 {{ tpl .Values.master.extraInitContainers . | indent 6}}
+      {{- end }}
+      {{- if and .Values.volumePermissions.enabled .Values.master.persistence.enabled }}
+      - name: volume-permissions
+        image: {{ template "mariadb.volumePermissions.image" . }}
+        imagePullPolicy: {{ .Values.volumePermissions.image.pullPolicy | quote }}
+        command: ["chown", "-R", "{{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }}", "{{ .Values.master.persistence.mountPath }}"]
+        securityContext:
+          runAsUser: 0
+        resources: {{ toYaml .Values.volumePermissions.resources | nindent 10 }}
+        volumeMounts:
+        - name: data
+          mountPath: {{ .Values.master.persistence.mountPath }}
       {{- end }}
       containers:
       - name: "mariadb"
@@ -249,11 +261,5 @@ spec:
         resources:
           requests:
             storage: {{ .Values.master.persistence.size | quote }}
-      {{- if .Values.master.persistence.storageClass }}
-      {{- if (eq "-" .Values.master.persistence.storageClass) }}
-        storageClassName: ""
-      {{- else }}
-        storageClassName: {{ .Values.master.persistence.storageClass | quote }}
-      {{- end }}
-      {{- end }}
+        {{ include "mariadb.master.storageClass" . }}
 {{- end }}

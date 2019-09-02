@@ -3,6 +3,7 @@ apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: {{ template "jenkins.fullname" . }}-backup
+  namespace: {{ template "jenkins.namespace" . }}
   labels:
     "app.kubernetes.io/name": '{{ template "jenkins.name" .}}'
     "helm.sh/chart": "{{ .Chart.Name }}-{{ .Chart.Version }}"
@@ -29,11 +30,11 @@ spec:
             args:
             - simple-backup
             - -n
-            - {{ .Release.Namespace }}
+            - {{ template "jenkins.namespace" . }}
             - -l
             - app.kubernetes.io/instance={{ .Release.Name }}
             - --container
-            - {{ template "jenkins.fullname" . }}
+            - jenkins
             - --path
             - /var/jenkins_home
             - --dst
@@ -44,6 +45,20 @@ spec:
             {{- with .Values.backup.env }}
             env:
 {{ toYaml . | indent 12 }}
+            {{- end }}
+            {{- if .Values.backup.existingSecret }}
+            {{- range $key,$value := .Values.backup.existingSecret }}
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $key }}
+                  key: {{ $value.awsaccesskey | quote }}
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $key }}
+                  key: {{ $value.awssecretkey | quote}}
+            {{- end }}
             {{- end }}
           {{- with .Values.backup.resources }}
             resources:

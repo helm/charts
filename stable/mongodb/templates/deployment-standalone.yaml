@@ -55,9 +55,21 @@ spec:
 {{ toYaml .Values.tolerations | indent 8 }}
       {{- end }}
 {{- include "mongodb.imagePullSecrets" . | indent 6 }}
-      {{- if .Values.extraInitContainers }}
       initContainers:
+      {{- if .Values.extraInitContainers }}
 {{ tpl .Values.extraInitContainers . | indent 6}}
+      {{- end }}
+      {{- if and .Values.volumePermissions.enabled .Values.persistence.enabled }}
+      - name: volume-permissions
+        image: {{ template "mongodb.volumePermissions.image" . }}
+        imagePullPolicy: {{ .Values.volumePermissions.image.pullPolicy | quote }}
+        command: ["chown", "-R", "{{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }}", "{{ .Values.persistence.mountPath }}"]
+        securityContext:
+          runAsUser: 0
+        resources: {{ toYaml .Values.volumePermissions.resources | nindent 10 }}
+        volumeMounts:
+        - name: data
+          mountPath: {{ .Values.persistence.mountPath }}
       {{- end }}
       containers:
       - name: {{ template "mongodb.fullname" . }}
@@ -70,8 +82,8 @@ spec:
         {{- end }}
         env:
         {{- if .Values.image.debug}}
-        - name: NAMI_DEBUG
-          value: "1"
+        - name: BITNAMI_DEBUG
+          value: "true"
         {{- end }}
         {{- if .Values.usePassword }}
         {{- if and .Values.mongodbUsername .Values.mongodbDatabase }}

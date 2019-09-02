@@ -1,3 +1,7 @@
 {{ if not (or .Values.web.enabled .Values.worker.enabled) }}
 {{- required "Must set either web.enabled or worker.enabled to create a concourse deployment" "" }}
 {{ end }}
+
+{{ if and (not .Values.concourse.worker.tsa.hosts) (and (not .Values.web.enabled) (.Values.worker.enabled)) }}
+{{- required "concourse.worker.tsa.hosts must be set in case of worker only deployment" "" }}
+{{ end }}

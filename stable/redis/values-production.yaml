@@ -6,6 +6,7 @@
 #   imageRegistry: myRegistryName
 #   imagePullSecrets:
 #     - myRegistryKeySecretName
+#   storageClass: myStorageClass
 
 ## Bitnami Redis image version
 ## ref: https://hub.docker.com/r/bitnami/redis/tags/
@@ -16,7 +17,7 @@ image:
   ## Bitnami Redis image tag
   ## ref: https://github.com/bitnami/bitnami-docker-redis#supported-tags-and-respective-dockerfile-links
   ##
-  tag: 5.0.5-debian-9-r36
+  tag: 5.0.5-debian-9-r104
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -28,6 +29,14 @@ image:
   ##
   # pullSecrets:
   #   - myRegistryKeySecretName
+
+## String to partially override redis.fullname template (will maintain the release name)
+##
+# nameOverride:
+
+## String to fully override redis.fullname template
+##
+# fullnameOverride:
 
 ## Cluster settings
 cluster:
@@ -66,6 +75,10 @@ sentinel:
   failoverTimeout: 18000
   parallelSyncs: 1
   port: 26379
+  ## Additional Redis configuration for the sentinel nodes
+  ## ref: https://redis.io/topics/config
+  ##
+  configmap:
   ## Configure extra options for Redis Sentinel liveness and readiness probes
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
   ##
@@ -189,6 +202,10 @@ master:
   ## Can be used to specify command line arguments, for example:
   ##
   command: "/run.sh"
+  ## Additional Redis configuration for the master nodes
+  ## ref: https://redis.io/topics/config
+  ##
+  configmap:
   ## Redis additional command line flags
   ##
   ## Can be used to specify command line flags, for example:
@@ -332,6 +349,10 @@ slave:
   ## Can be used to specify command line arguments, for example:
   ##
   command: "/run.sh"
+  ## Additional Redis configuration for the slave nodes
+  ## ref: https://redis.io/topics/config
+  ##
+  configmap:
   ## Redis extra flags
   extraFlags: []
   ## List of Redis commands to disable
@@ -421,8 +442,8 @@ metrics:
 
   image:
     registry: docker.io
-    repository: oliver006/redis_exporter
-    tag: v0.31.0
+    repository: bitnami/redis-exporter
+    tag: 1.1.0-debian-9-r1
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
@@ -430,15 +451,6 @@ metrics:
     ##
     # pullSecrets:
     #   - myRegistryKeySecretName
-
-  service:
-    type: ClusterIP
-    ## Use serviceLoadBalancerIP to request a specific static IP,
-    ## otherwise leave blank
-    # loadBalancerIP:
-    annotations:
-      prometheus.io/scrape: "true"
-      prometheus.io/port: "9121"
 
   ## Metrics exporter resource requests and limits
   ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -450,12 +462,18 @@ metrics:
   ##   check-keys: myKey,myOtherKey
   # extraArgs: {}
 
-  ## Metrics exporter labels and tolerations for pod assignment
-  # nodeSelector: {"beta.kubernetes.io/arch": "amd64"}
-  # tolerations: []
-
+  ## Metrics exporter pod priorityClassName
+  # priorityClassName: {}
+  service:
+    type: ClusterIP
+    ## Use serviceLoadBalancerIP to request a specific static IP,
+    ## otherwise leave blank
+    # loadBalancerIP:
+    annotations: {}
   ## Metrics exporter pod Annotation and Labels
-  # podAnnotations: {}
+  podAnnotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "9121"
   # podLabels: {}
 
   # Enable this if you're using https://github.com/coreos/prometheus-operator
@@ -470,9 +488,6 @@ metrics:
     ## [Kube Prometheus Selector Label](https://github.com/helm/charts/tree/master/stable/prometheus-operator#exporters)
     selector:
       prometheus: kube-prometheus
-
-  ## Metrics exporter pod priorityClassName
-  # priorityClassName: {}
 
 ##
 ## Init containers parameters:

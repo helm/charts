@@ -3,6 +3,26 @@
 This file documents all notable changes to Sysdig Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v1.4.13
+
+### Minor changes
+
+* Use the latest image from Agent (0.92.1) by default.
+* Increase `resources.requests` and `resources.limits` to match the [values
+  provided by Sysdig's agent team.](https://github.com/draios/sysdig-cloud-scripts/blob/master/agent_deploy/kubernetes/sysdig-agent-daemonset-v2.yaml#L70)
+
+## v1.4.12
+
+### Minor changes
+
+* Use the latest image from Agent (0.92.0) by default.
+
+## v1.4.11
+
+### Minor Changes
+
+* Add nestorsalceda as an approver in the OWNERS file
+
 ## v1.4.10
 
 ### Minor Changes

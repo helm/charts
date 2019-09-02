@@ -63,7 +63,7 @@ airflow:
     repository: puckel/docker-airflow
     ##
     ## image tag
-    tag: 1.10.2
+    tag: 1.10.4
     ##
     ## Image pull policy
     ## values: Always or IfNotPresent
@@ -118,7 +118,7 @@ airflow:
   ##   - id: my_aws
   ##     type: aws
   ##     extra: '{"aws_access_key_id": "**********", "aws_secret_access_key": "***", "region_name":"eu-central-1"}'
-  connections: {}
+  connections: []
 
   ## Add airflow variables
   ## This should be a json string with your variables in it
@@ -168,6 +168,13 @@ scheduler:
     #   cpu: "500m"
     #   memory: "512Mi"
 
+  ## Support Node, affinity and tolerations for scheduler pod assignment
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
 
 flower:
   resources: {}
@@ -182,6 +189,14 @@ flower:
     type: ClusterIP
     externalPort: 5555
 
+  ## Support Node, affinity and tolerations for flower pod assignment
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
+
 web:
   resources: {}
     # limits:
@@ -192,6 +207,21 @@ web:
     #   memory: "512Mi"
   initialStartupDelay: "60"
   initialDelaySeconds: "360"
+
+  ## Support Node, affinity and tolerations for web pod assignment
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
+  ##
+  ## Directory in which to mount secrets on webserver nodes.
+  secretsDir: /var/airflow/secrets
+  ##
+  ## Secrets which will be mounted as a file at `secretsDir/<secret name>`.
+  secrets: []
+
 ##
 ## Workers configuration
 workers:
@@ -226,13 +256,14 @@ workers:
   ## Secrets which will be mounted as a file at `secretsDir/<secret name>`.
   secrets: []
 
-## Support Node, affinity and tolerations for airflow and workers labels for pod assignment
-## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
-## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
-## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
-nodeSelector: {}
-affinity: {}
-tolerations: []
+  ## Support Node, affinity and tolerations for worker pod assignment
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
+
 ##
 ## Ingress configuration
 ingress:
@@ -462,8 +493,10 @@ postgresql:
 
   ##
   ## The name of an existing secret that contains the postgres password.
-  ## Note that the secret must have a key called postgres-password.
   existingSecret:
+
+  ## Name of the key containing the secret.
+  existingSecretKey: postgres-password
 
   ##
   ## If you are bringing your own PostgreSQL, you should set postgresHost and
@@ -507,8 +540,10 @@ redis:
 
   ##
   ## The name of an existing secret that contains the redis password.
-  ## Note that the secret must have a key called redis-password.
   existingSecret:
+
+  ## Name of the key containing the secret.
+  existingSecretKey: redis-password
 
   ##
   ## If you are bringing your own redis, you can set the host in redisHost.

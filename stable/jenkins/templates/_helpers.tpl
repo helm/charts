@@ -7,6 +7,30 @@ Expand the name of the chart.
 {{- end -}}
 
 {{/*
+Allow the release namespace to be overridden for multi-namespace deployments in combined charts.
+*/}}
+{{- define "jenkins.namespace" -}}
+  {{- if .Values.namespaceOverride -}}
+    {{- .Values.namespaceOverride -}}
+  {{- else -}}
+    {{- .Release.Namespace -}}
+  {{- end -}}
+{{- end -}}
+
+{{- define "jenkins.master.slaveKubernetesNamespace" -}}
+  {{- if .Values.master.slaveKubernetesNamespace -}}
+    {{- .Values.master.slaveKubernetesNamespace -}}
+  {{- else -}}
+    {{- if .Values.namespaceOverride -}}
+      {{- .Values.namespaceOverride -}}
+    {{- else -}}
+      {{- .Release.Namespace -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+
+
+{{/*
 Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
@@ -22,6 +46,25 @@ If release name contains chart name it will be used as a full name.
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 {{- end -}}
+{{- end -}}
+
+{{/*
+Returns the Jenkins URL
+*/}}
+{{- define "jenkins.url" -}}
+{{- if .Values.master.jenkinsUrl }}
+  {{- .Values.master.jenkinsUrl }}
+{{- else }}
+  {{- if .Values.master.ingress.hostName }}
+    {{- if .Values.master.ingress.tls }}
+      {{- default "https" .Values.master.jenkinsUrlProtocol }}://{{ .Values.master.ingress.hostName }}{{ default "" .Values.master.jenkinsUriPrefix }}
+    {{- else }}
+      {{- default "http" .Values.master.jenkinsUrlProtocol }}://{{ .Values.master.ingress.hostName }}{{ default "" .Values.master.jenkinsUriPrefix }}
+    {{- end }}
+  {{- else }}
+      {{- default "http" .Values.master.jenkinsUrlProtocol }}://{{ template "jenkins.fullname" . }}:{{.Values.master.servicePort}}{{ default "" .Values.master.jenkinsUriPrefix }}
+  {{- end}}
+{{- end}}
 {{- end -}}
 
 {{- define "jenkins.kubernetes-version" -}}

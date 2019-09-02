@@ -2,9 +2,13 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 replicaCount: 1
+
+ # This will use the default deployment strategy unless it is overriden
+deploymentStrategy: {}
+
 image:
   repository: sonarqube
-  tag: 7.7-community
+  tag: 7.9-community
   # If using a private repository, the name of the imagePullSecret to use
   # pullSecret: my-repo-secret
 
@@ -43,7 +47,7 @@ ingress:
   # labels:
   #  traffic-type: external
   #  traffic-type: internal
-  tls: {}
+  tls: []
   # Secrets must be manually created in the namespace.
   # - secretName: chart-example-tls
   #   hosts:
@@ -89,6 +93,9 @@ extraEnv: {}
   # If an ingress *path* is defined, it should be reflected here
   # sonar.web.context: /sonarqube
 
+# Set annotations for pods
+annotations: {}
+
 resources: {}
 # We usually recommend not to specify default resources and to leave this as a conscious
 # choice for the user. This also increases chances charts run on environments with little
@@ -102,6 +109,9 @@ resources: {}
 #  memory: 128Mi
 persistence:
   enabled: false
+  ## Set annotations on pvc
+  annotations: {}
+
   ## Specify an existing volume claim instead of creating a new one.
   ## When using this option all following options like storageClass, accessMode and size are ignored.
   # existingClaim:

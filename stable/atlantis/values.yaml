@@ -34,7 +34,7 @@ orgWhitelist: <replace-me>
 #   token: bar
 # Bitbucket Server only:
 #   secret: baz
-#   base_url: https://bitbucket.yourorganization.com
+#   baseURL: https://bitbucket.yourorganization.com
 # (The chart will perform the base64 encoding for you for values that are stored in secrets.)
 
 # If managing secrets outside the chart for the webhook, use this variable to reference the secret name
@@ -79,7 +79,7 @@ serviceAccountSecrets:
 
 image:
   repository: runatlantis/atlantis
-  tag: v0.7.1
+  tag: v0.8.2
   pullPolicy: IfNotPresent
 
 ## Optionally specify an array of imagePullSecrets.
@@ -112,6 +112,9 @@ allowForkPRs: false
 
 ## defaultTFVersion set the default terraform version to be used in atlantis server
 # defaultTFVersion: v0.12.0
+
+# disableApplyAll disables running `atlantis apply` without any flags
+disableApplyAll: false
 
 # We only need to check every 60s since Atlantis is not a high-throughput service.
 livenessProbe:
@@ -191,3 +194,18 @@ serviceAccount:
   name:
 
 # tlsSecretName: tls
+
+# Optionally specify additional environment variables to be populated from Kubernetes secrets.
+# Useful for passing in TF_VAR_foo or other secret environment variables from Kubernetes secrets.
+environmentSecrets: []
+# environmentSecrets:
+#   - name: THE_ENV_VAR
+#     secretKeyRef:
+#       name: the_k8s_secret_name
+#       value: the_key_of_the_value_in_the_secret
+
+# Optionally specify google service account credentials as Kubernetes secrets. If you are using the terraform google provider you can specify the credentials as "${file("/var/secrets/some-secret-name/key.json")}".
+googleServiceAccountSecrets: []
+# googleServiceAccountSecrets:
+#   - name: some-secret-name
+#     secretName: the_k8s_secret_name

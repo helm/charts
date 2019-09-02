@@ -3,7 +3,7 @@
 image:
   registry: docker.io
   repository: falcosecurity/falco
-  tag: 0.15.3
+  tag: 0.17.0
   pullPolicy: IfNotPresent
 
 docker:
@@ -31,6 +31,10 @@ rbac:
   # Create and use rbac resources
   create: true
 
+podSecurityPolicy:
+  # Create a podSecurityPolicy
+  create: false
+
 serviceAccount:
   # Create and use serviceAccount resources
   create: true
@@ -49,6 +53,9 @@ daemonset:
     # need it
     type: RollingUpdate
 
+  ## Extra environment variables that will be pass onto deployment pods
+  env: {}
+
 # If is behind a proxy you can set the proxy server
 proxy:
   httpProxy:
@@ -57,6 +64,9 @@ proxy:
 
 # Set daemonset timezone
 timezone:
+
+# Set daemonset priorityClassName
+priorityClassName:
 
 ebpf:
   # Enable eBPF support for Falco
@@ -76,7 +86,13 @@ falco:
   rulesFile:
     - /etc/falco/falco_rules.yaml
     - /etc/falco/falco_rules.local.yaml
+    - /etc/falco/k8s_audit_rules.yaml
     - /etc/falco/rules.d
+
+  # If true, the times displayed in log messages and output messages
+  # will be in ISO 8601. By default, times are displayed in the local
+  # time zone, as governed by /etc/localtime.
+  timeFormatISO8601: false
 
   # Whether to output events in json or text
   jsonOutput: false
@@ -106,6 +122,25 @@ falco:
   # Whether or not output to any of the output channels below is
   # buffered.
   bufferedOutputs: false
+
+  # Falco uses a shared buffer between the kernel and userspace to pass
+  # system call information. When falco detects that this buffer is
+  # full and system calls have been dropped, it can take one or more of
+  # the following actions:
+  #   - "ignore": do nothing. If an empty list is provided, ignore is assumed.
+  #   - "log": log a CRITICAL message noting that the buffer was full.
+  #   - "alert": emit a falco alert noting that the buffer was full.
+  #   - "exit": exit falco with a non-zero rc.
+  #
+  # The rate at which log/alert messages are emitted is governed by a
+  # token bucket. The rate corresponds to one message every 30 seconds
+  # with a burst of 10 messages.
+  syscallEventDrops:
+    actions:
+      - log
+      - alert
+    rate: .03333
+    maxBurst: 10
 
   # A throttling mechanism implemented as a token bucket limits the
   # rate of falco notifications. This throttling is controlled by the following configuration
@@ -142,6 +177,15 @@ falco:
   stdoutOutput:
     enabled: true
 
+  # Falco contains an embedded webserver that can be used to accept K8s
+  # Audit Events. These config options control the behavior of that
+  # webserver. (By default, the webserver is disabled).
+  webserver:
+    enabled: false
+    listenPort: 8765
+    k8sAuditEndpoint: /k8s-audit
+    clusterIP:
+
   # Possible additional things you might want to do with program output:
   #   - send to a slack webhook:
   #     program: "\"jq '{text: .output}' | curl -d @- -X POST https://hooks.slack.com/services/XXX\""
@@ -162,6 +206,10 @@ falco:
     keepAlive: false
     program: mail -s "Falco Notification" someone@example.com
 
+  httpOutput:
+    enabled: false
+    url: http://some.url
+
 customRules: {}
   # Although Falco comes with a nice default rule set for detecting weird
   # behavior in containers, our users are going to customize the run-time
@@ -180,7 +228,7 @@ integrations:
   # * program_output:
   #     enabled: true
   #     keep_alive: false
-  #     program: "\"curl -d @- -X POST --header 'Content-Type: application/json' --header 'Authorization: authentication_token' url \""
+  #     program: "curl -d @- -X POST --header 'Content-Type: application/json' --header 'Authorization: authentication_token' url"
   gcscc:
     enabled: false
     webhookUrl: http://sysdig-gcscc-connector.default.svc.cluster.local:8080/events

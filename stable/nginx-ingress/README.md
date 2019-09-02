@@ -15,6 +15,7 @@ $ helm install stable/nginx-ingress
 This chart bootstraps an nginx-ingress deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
 ## Prerequisites
+
   - Kubernetes 1.6+
 
 ## Installing the Chart
@@ -47,15 +48,16 @@ Parameter | Description | Default
 --- | --- | ---
 `controller.name` | name of the controller component | `controller`
 `controller.image.repository` | controller container image repository | `quay.io/kubernetes-ingress-controller/nginx-ingress-controller`
-`controller.image.tag` | controller container image tag | `0.24.1`
+`controller.image.tag` | controller container image tag | `0.25.0`
 `controller.image.pullPolicy` | controller container image pull policy | `IfNotPresent`
 `controller.image.runAsUser` | User ID of the controller process. Value depends on the Linux distribution used inside of the container image. By default uses debian one. | `33`
 `controller.containerPort.http` | The port that the controller container listens on for http connections. | `80`
 `controller.containerPort.https` | The port that the controller container listens on for https connections. | `443`
 `controller.config` | nginx [ConfigMap](https://github.com/kubernetes/ingress-nginx/blob/master/docs/user-guide/nginx-configuration/configmap.md) entries | none
 `controller.hostNetwork` | If the nginx deployment / daemonset should run on the host's network namespace. Do not set this when `controller.service.externalIPs` is set and `kube-proxy` is used as there will be a port-conflict for port `80` | false
-`controller.defaultBackendService` | default 404 backend service; required only if `defaultBackend.enabled = false` | `""`
+`controller.defaultBackendService` | default 404 backend service; needed only if `defaultBackend.enabled = false` | `""`
 `controller.dnsPolicy` | If using `hostNetwork=true`, change to `ClusterFirstWithHostNet`. See [pod's dns policy](https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-s-dns-policy) for details | `ClusterFirst`
+`controller.reportNodeInternalIp` | If using `hostNetwork=true`, setting `reportNodeInternalIp=true`, will pass the flag `report-node-internal-ip-address` to nginx-ingress. This sets the status of all Ingress objects to the internal IP address of all nodes running the NGINX Ingress controller.
 `controller.electionID` | election ID to use for the status update | `ingress-controller-leader`
 `controller.extraEnvs` | any additional environment variables to set in the pods | `{}`
 `controller.extraContainers` | Sidecar containers to add to the controller pod. See [LemonLDAP::NG controller](https://github.com/lemonldap-ng-controller/lemonldap-ng-controller) as example | `{}`
@@ -67,12 +69,17 @@ Parameter | Description | Default
 `controller.scope.namespace` | namespace to watch for ingress | `""` (use the release namespace)
 `controller.extraArgs` | Additional controller container arguments | `{}`
 `controller.kind` | install as Deployment or DaemonSet | `Deployment`
+`controller.autoscaling.enabled` | If true, creates Horizontal Pod Autoscaler | false
+`controller.autoscaling.minReplicas` | If autoscaling enabled, this field sets minimum replica count | `2`
+`controller.autoscaling.maxReplicas` | If autoscaling enabled, this field sets maximum replica count | `11`
+`controller.autoscaling.targetCPUUtilizationPercentage` | Target CPU utilization percentage to scale | `"50"`
+`controller.autoscaling.targetMemoryUtilizationPercentage` | Target memory utilization percentage to scale | `"50"`
 `controller.daemonset.useHostPort` | If `controller.kind` is `DaemonSet`, this will enable `hostPort` for TCP/80 and TCP/443 | false
 `controller.daemonset.hostPorts.http` | If `controller.daemonset.useHostPort` is `true` and this is non-empty, it sets the hostPort | `"80"`
 `controller.daemonset.hostPorts.https` | If `controller.daemonset.useHostPort` is `true` and this is non-empty, it sets the hostPort | `"443"`
-`controller.daemonset.hostPorts.stats` | If `controller.daemonset.useHostPort` is `true` and this is non-empty, it sets the hostPort | `"18080"`
 `controller.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `controller.affinity` | node/pod affinities (requires Kubernetes >=1.6) | `{}`
+`controller.terminationGracePeriodSeconds` | how many seconds to wait before terminating a pod | `60`
 `controller.minReadySeconds` | how many seconds a pod needs to be ready before killing the next, during update | `0`
 `controller.nodeSelector` | node labels for pod assignment | `{}`
 `controller.podAnnotations` | annotations to be added to pods | `{}`
@@ -98,9 +105,13 @@ Parameter | Description | Default
 `controller.service.enableHttps` | if port 443 should be opened for service | `true`
 `controller.service.targetPorts.http` | Sets the targetPort that maps to the Ingress' port 80 | `80`
 `controller.service.targetPorts.https` | Sets the targetPort that maps to the Ingress' port 443 | `443`
+`controller.service.ports.http` | Sets service http port | `80`
+`controller.service.ports.https` | Sets service https port | `443`
 `controller.service.type` | type of controller service to create | `LoadBalancer`
 `controller.service.nodePorts.http` | If `controller.service.type` is either `NodePort` or `LoadBalancer` and this is non-empty, it sets the nodePort that maps to the Ingress' port 80 | `""`
 `controller.service.nodePorts.https` | If `controller.service.type` is either `NodePort` or `LoadBalancer` and this is non-empty, it sets the nodePort that maps to the Ingress' port 443 | `""`
+`controller.service.nodePorts.tcp` | Sets the nodePort for an entry referenced by its key from `tcp` | `{}`
+`controller.service.nodePorts.udp` | Sets the nodePort for an entry referenced by its key from `udp` | `{}`
 `controller.livenessProbe.initialDelaySeconds` | Delay before liveness probe is initiated | 10
 `controller.livenessProbe.periodSeconds` | How often to perform the probe | 10
 `controller.livenessProbe.timeoutSeconds` | When the probe times out | 5
@@ -113,14 +124,6 @@ Parameter | Description | Default
 `controller.readinessProbe.successThreshold` | Minimum consecutive successes for the probe to be considered successful after having failed. | 1
 `controller.readinessProbe.failureThreshold` | Minimum consecutive failures for the probe to be considered failed after having succeeded. | 3
 `controller.readinessProbe.port` | The port number that the readiness probe will listen on. | 10254
-`controller.stats.enabled` | if `true`, enable status page | `false`
-`controller.stats.service.annotations` | annotations for controller stats service | `{}`
-`controller.stats.service.clusterIP` | internal controller stats cluster service IP | `""`
-`controller.stats.service.omitClusterIP` | To omit the `clusterIP` from the stats service | `false`
-`controller.stats.service.externalIPs` | controller service stats external IP addresses | `[]`
-`controller.stats.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
-`controller.stats.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
-`controller.stats.service.type` | type of controller stats service to create | `ClusterIP`
 `controller.metrics.enabled` | if `true`, enable Prometheus metrics | `false`
 `controller.metrics.service.annotations` | annotations for Prometheus metrics service | `{}`
 `controller.metrics.service.clusterIP` | cluster IP address to assign to service | `""`
@@ -135,17 +138,38 @@ Parameter | Description | Default
 `controller.metrics.serviceMonitor.additionalLabels` | Additional labels that can be used so ServiceMonitor will be discovered by Prometheus | `{}`
 `controller.metrics.serviceMonitor.namespace` | namespace where servicemonitor resource should be created | `the same namespace as nginx ingress`
 `controller.metrics.serviceMonitor.honorLabels` | honorLabels chooses the metric's labels on collisions with target labels. | `false`
+`controller.metrics.prometheusRule.enabled` | Set this to `true` to create prometheusRules for Prometheus operator | `false`
+`controller.metrics.prometheusRule.additionalLabels` | Additional labels that can be used so prometheusRules will be discovered by Prometheus | `{}`
+`controller.metrics.prometheusRule.namespace` | namespace where prometheusRules resource should be created | `the same namespace as nginx ingress`
+`controller.metrics.prometheusRule.rules` | [rules](https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/) to be prometheus in YAML format, check values for an example. | `[]`
 `controller.customTemplate.configMapName` | configMap containing a custom nginx template | `""`
 `controller.customTemplate.configMapKey` | configMap key containing the nginx template | `""`
-`controller.headers` | configMap key:value pairs containing the [custom headers](https://github.com/kubernetes/ingress-nginx/tree/master/docs/examples/customization/custom-headers) for Nginx | `{}`
+`controller.addHeaders` | configMap key:value pairs containing [custom headers](https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/#add-headers) added before sending response to the client | `{}`
+`controller.proxySetHeaders` | configMap key:value pairs containing [custom headers](https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/#proxy-set-headers) added before sending request to the backends| `{}`
+`controller.headers` | DEPRECATED, Use `controller.proxySetHeaders` instead. | `{}`
 `controller.updateStrategy` | allows setting of RollingUpdate strategy | `{}`
-`defaultBackend.enabled` | If false, controller.defaultBackendService must be provided | `true`
+`controller.configMapNamespace` | The nginx-configmap namespace name | `""`
+`controller.tcp.configMapNamespace` | The tcp-services-configmap namespace name | `""`
+`controller.udp.configMapNamespace` | The udp-services-configmap namespace name | `""`
+`defaultBackend.enabled` | Use default backend component | `true`
 `defaultBackend.name` | name of the default backend component | `default-backend`
 `defaultBackend.image.repository` | default backend container image repository | `k8s.gcr.io/defaultbackend-amd64`
 `defaultBackend.image.tag` | default backend container image tag | `1.5`
 `defaultBackend.image.pullPolicy` | default backend container image pull policy | `IfNotPresent`
+`defaultBackend.image.runAsUser` | User ID of the controller process. Value depends on the Linux distribution used inside of the container image. By default uses nobody user. | `65534`
 `defaultBackend.extraArgs` | Additional default backend container arguments | `{}`
+`defaultBackend.extraEnvs` | any additional environment variables to set in the defaultBackend pods | `[]`
 `defaultBackend.port` | Http port number | `8080`
+`defaultBackend.livenessProbe.initialDelaySeconds` | Delay before liveness probe is initiated | 30
+`defaultBackend.livenessProbe.periodSeconds` | How often to perform the probe | 10
+`defaultBackend.livenessProbe.timeoutSeconds` | When the probe times out | 5
+`defaultBackend.livenessProbe.successThreshold` | Minimum consecutive successes for the probe to be considered successful after having failed. | 1
+`defaultBackend.livenessProbe.failureThreshold` | Minimum consecutive failures for the probe to be considered failed after having succeeded. | 3
+`defaultBackend.readinessProbe.initialDelaySeconds` | Delay before readiness probe is initiated | 0
+`defaultBackend.readinessProbe.periodSeconds` | How often to perform the probe | 5
+`defaultBackend.readinessProbe.timeoutSeconds` | When the probe times out | 5
+`defaultBackend.readinessProbe.successThreshold` | Minimum consecutive successes for the probe to be considered successful after having failed. | 1
+`defaultBackend.readinessProbe.failureThreshold` | Minimum consecutive failures for the probe to be considered failed after having succeeded. | 6
 `defaultBackend.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `defaultBackend.affinity` | node/pod affinities (requires Kubernetes >=1.6) | `{}`
 `defaultBackend.nodeSelector` | node labels for pod assignment | `{}`
@@ -155,6 +179,7 @@ Parameter | Description | Default
 `defaultBackend.minAvailable` | minimum number of available default backend pods for PodDisruptionBudget | `1`
 `defaultBackend.resources` | default backend pod resource requests & limits | `{}`
 `defaultBackend.priorityClassName` | default backend  priorityClassName | `nil`
+`defaultBackend.podSecurityContext` | Security context policies to add to the default backend | `{}`
 `defaultBackend.service.annotations` | annotations for default backend service | `{}`
 `defaultBackend.service.clusterIP` | internal default backend cluster service IP | `""`
 `defaultBackend.service.omitClusterIP` | To omit the `clusterIP` from the default backend service | `false`
@@ -165,15 +190,16 @@ Parameter | Description | Default
 `imagePullSecrets` | name of Secret resource containing private registry credentials | `nil`
 `rbac.create` | if `true`, create & use RBAC resources | `true`
 `podSecurityPolicy.enabled` | if `true`, create & use Pod Security Policy resources | `false`
-`serviceAccount.create` | if `true`, create a service account | ``
+`serviceAccount.create` | if `true`, create a service account | `true`
 `serviceAccount.name` | The name of the service account to use. If not set and `create` is `true`, a name is generated using the fullname template. | ``
 `revisionHistoryLimit` | The number of old history to retain to allow rollback. | `10`
 `tcp` | TCP service key:value pairs. The value is evaluated as a template. | `{}`
 `udp` | UDP service key:value pairs The value is evaluated as a template. | `{}`
 
+These parameters can be passed via Helm's `--set` option
 ```console
 $ helm install stable/nginx-ingress --name my-release \
-    --set controller.stats.enabled=true
+    --set controller.metrics.enabled=true
 ```
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
@@ -191,6 +217,7 @@ $ helm install stable/nginx-ingress --set controller.extraArgs.v=2
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
 ## PodDisruptionBudget
+
 Note that the PodDisruptionBudget resource will only be defined if the replicaCount is greater than one,
 else it would make it impossible to evacuate a node. See [gh issue #7127](https://github.com/helm/charts/issues/7127) for more info.
 
@@ -205,6 +232,13 @@ $ helm install stable/nginx-ingress --name my-release \
 
 You can add Prometheus annotations to the metrics service using `controller.metrics.service.annotations`. Alternatively, if you use the Prometheus Operator, you can enable ServiceMonitor creation using `controller.metrics.serviceMonitor.enabled`.
 
+## nginx-ingress nginx\_status page/stats server
+
+Previous versions of this chart had a `controller.stats.*` configuration block, which is now obsolete due to the following changes in nginx ingress controller:
+* in [0.16.1](https://github.com/kubernetes/ingress-nginx/blob/master/Changelog.md#0161), the vts (virtual host traffic status) dashboard was removed
+* in [0.23.0](https://github.com/kubernetes/ingress-nginx/blob/master/Changelog.md#0230), the status page at port 18080 is now a unix socket webserver only available at localhost.
+  You can use `curl --unix-socket /tmp/nginx-status-server.sock http://localhost/nginx_status` inside the controller container to access it locally, or use the snippet from [nginx-ingress changelog](https://github.com/kubernetes/ingress-nginx/blob/master/Changelog.md#0230) to re-enable the http server
+
 ## ExternalDNS Service configuration
 
 Add an [ExternalDNS](https://github.com/kubernetes-incubator/external-dns) annotation to the LoadBalancer service:
@@ -218,7 +252,7 @@ controller:
 
 ## AWS L7 ELB with SSL Termination
 
-Annotate the controller as shown in the [nginx-ingress l7 patch](https://github.com/kubernetes/ingress-nginx/blob/master/deploy/provider/aws/service-l7.yaml):
+Annotate the controller as shown in the [nginx-ingress l7 patch](https://github.com/kubernetes/ingress-nginx/blob/master/deploy/aws/l7/service-l7.yaml):
 
 ```yaml
 controller:

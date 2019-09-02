@@ -2,7 +2,10 @@ halyard:
   spinnakerVersion: 1.12.5
   image:
     repository: gcr.io/spinnaker-marketplace/halyard
-    tag: 1.16.0
+    tag: 1.20.2
+  # Set to false to disable persistence data volume for halyard
+  persistence:
+    enabled: true
   # Provide a config map with Hal commands that will be run the core config (storage)
   # The config map should contain a script in the config.sh key
   additionalScripts:
@@ -73,8 +76,12 @@ halyard:
 
   ## Uncomment if you want to set environment variables on the Halyard pod.
   # env:
-  #   - name: DEFAULT_JVM_OPTS
+  #   - name: JAVA_OPTS
   #     value: -Dhttp.proxyHost=proxy.example.com
+  customCerts:
+    ## Enable to override the default cacerts with your own one
+    enabled: false
+    secretName: custom-cacerts
 
 # Define which registries and repositories you want available in your
 # Spinnaker pipeline definitions
@@ -117,6 +124,8 @@ kubeConfig:
   omittedNameSpaces:
   - kube-system
   - kube-public
+  onlySpinnakerManaged:
+    enabled: false
 
 # Change this if youd like to expose Spinnaker outside the cluster
 ingress:
@@ -179,7 +188,7 @@ redis:
 # Minio is not exposed publically
 minio:
   enabled: true
-  imageTag: RELEASE.2018-06-09T02-18-09Z
+  imageTag: RELEASE.2019-02-13T19-48-27Z
   serviceType: ClusterIP
   accessKey: spinnakeradmin
   secretKey: spinnakeradmin
@@ -229,3 +238,7 @@ serviceAccount:
   # If left blank it is auto-generated from the fullname of the release
   halyardName:
   spinnakerName:
+securityContext:
+  # Specifies permissions to write for user/group
+  runAsUser: 1000
+  fsGroup: 1000

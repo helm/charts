@@ -6,7 +6,7 @@ rbac:
   # Specifies whether rbac resources must be created.
   create: true
   # The API version to use while creating the rbac resources. Use `kubectl api-versions | grep rbac` to find which abi versions are supported for your cluster.
-  apiVersion: v1beta1
+  apiVersion: v1
   # Create a cluster role binding with the existing role, do not create a new one. If left blank, a new cluster role is created.
   roleRef:
 
@@ -29,7 +29,14 @@ server:
       # iam.amazonaws.com/role: arn:aws:iam::xxx:role/my-custom-role
     pod:
       # iam.amazonaws.com/role: arn:aws:iam::xxx:role/my-custom-role
-
+  # Specify security settings for GoCD Server Pod
+  securityContext:
+    # Specify the container user for the GoCD server pod
+    runAsUser: 1000
+    # Specify the container group for the GoCD server pod
+    runAsGroup: 0
+    # Specify the container supplementary group for the GoCD server pod
+    fsGroup: 0
   # server.shouldPreconfigure is used to invoke a script to pre configure the elastic agent profile and the plugin settings in the GoCD server.
   # Note: If this value is set to true, then, the serviceAccount.name is configured for the GoCD server pod. The service account token is mounted as a secret and is used in the lifecycle hook.
   # Note: An attempt to preconfigure the GoCD server is made. There are cases where the pre-configuration can fail and the GoCD server starts with an empty config.
@@ -96,15 +103,15 @@ server:
     # server.healthCheck.failureThreshold is the number of unsuccessful attempts made to the GoCD server health check endpoint before the container is restarted (for liveness) or marked as unready (for readiness)
     failureThreshold: 10
   env:
-    # server.env.goServerSystemProperties is a list of Java system properties, which needs to be provided to the GoCD Server, typically prefixed with -D unless otherwise stated.
+    # server.env.goServerJvmOpts is a list of JVM options, which needs to be provided to the GoCD Server, typically prefixed with -D unless otherwise stated.
     # Example: "-Xmx4096mb -Dfoo=bar"
-    goServerSystemProperties:
+    goServerJvmOpts:
     #  server.env.extraEnvVars is the list of environment variables passed to GoCD Server
     extraEnvVars:
       - name: GOCD_PLUGIN_INSTALL_kubernetes-elastic-agents
-        value: https://github.com/gocd/kubernetes-elastic-agents/releases/download/v3.0.0-156/kubernetes-elastic-agent-3.0.0-156.jar
+        value: https://github.com/gocd/kubernetes-elastic-agents/releases/download/v3.1.0-177/kubernetes-elastic-agent-3.1.0-177.jar
       - name: GOCD_PLUGIN_INSTALL_docker-registry-artifact-plugin
-        value: https://github.com/gocd/docker-registry-artifact-plugin/releases/download/v1.0.1-92/docker-registry-artifact-plugin-1.0.1-92.jar
+        value: https://github.com/gocd/docker-registry-artifact-plugin/releases/download/v1.1.0-104/docker-registry-artifact-plugin-1.1.0-104.jar
   service:
     # server.service.type is the GoCD Server service type
     type: "NodePort"
@@ -221,6 +228,14 @@ agent:
     pod:
       # iam.amazonaws.com/role: arn:aws:iam::xxx:role/my-custom-role
 
+  # Specify security settings for GoCD Agent Pod
+  securityContext:
+    # Specify the container user for all the GoCD agent pods
+    runAsUser: 1000
+    # Specify the container group for all the GoCD agent pods
+    runAsGroup: 0
+    # Specify the container supplementary group for all the GoCD agent pods
+    fsGroup: 0
   # agent.replicaCount is the GoCD Agent replicas Count. Specify the number of GoCD agents to run
   replicaCount: 0
   # agent.preStop - array of commands to use in the agent pre-stop lifecycle hook
@@ -253,8 +268,8 @@ agent:
     agentAutoRegisterEnvironments:
     # agent.env.agentAutoRegisterHostname is the GoCD Agent auto-register hostname
     agentAutoRegisterHostname:
-    # agent.env.goAgentSystemProperties is the GoCD Agent system properties
-    goAgentSystemProperties:
+    # agent.env.goAgentJvmOpts is the GoCD Agent JVM options
+    goAgentJvmOpts:
     # agent.env.goAgentBootstrapperArgs is the GoCD Agent bootstrapper args
     goAgentBootstrapperArgs:
     # agent.env.goAgentBootstrapperJvmArgs is the GoCD Agent bootstrapper JVM args

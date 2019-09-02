@@ -69,7 +69,11 @@ and their default values.
 | `existingSecret`                               | Use an existing secret for password, managementPassword & erlang cookie                                                                                                                                                   | `""`                                                       |
 | `extraPlugins`                                 | Additional plugins to add to the default configmap                                                                                                                                                    | `rabbitmq_shovel, rabbitmq_shovel_management, rabbitmq_federation, rabbitmq_federation_management,` |
 | `extraConfig`                                  | Additional configuration to add to default configmap                                                                                                                                                  | `{}`                                                         |
+| `extraContainers`                              | Additional containers passed through the tpl 	                                                                                                                                                 | `[]`                                                         |
+| `extraInitContainers`                          | Additional init containers passed through the tpl 	                                                                                                                                                   | `[]`                                                         |
+| `env`                                          | Environment variables to set for Rabbitmq container                                                                                                                                                   | `{}`                                                         |
 | `advancedConfig`                               | Additional configuration in classic config format                                                                                                                                                   | `""`                                                           |
+| `definitions.globalParameters`                 | Pre-configured global parameters | `""` |
 | `definitions.users`                            | Additional users | `""` |
 | `definitions.vhosts`                           | Additional vhosts | `""` |
 | `definitions.parameters`                       | Additional parameters | `""` |
@@ -79,6 +83,7 @@ and their default values.
 | `definitions.bindings`                         | Pre-created bindings | `""` |
 | `definitions.policies`                         | HA policies to add to definitions.json | `""` |
 | `definitionsSource`                            | Use this key within an existing secret to reference the definitions specification | `"definitions.json"` |
+| `forceBoot`                                    | [Force](https://www.rabbitmq.com/rabbitmqctl.8.html#force_boot) the cluster to start even if it was shutdown in an unexpected order, preferring availability over integrity | `false` |
 | `image.pullPolicy`                             | Image pull policy                                                                                                                                                                                     | `IfNotPresent`   |
 | `image.repository`                             | RabbitMQ container image repository                                                                                                                                                                   | `rabbitmq`                                                 |
 | `image.tag`                                    | RabbitMQ container image tag                                                                                                                                                                          | `3.7.15-alpine`                                            |
@@ -252,3 +257,10 @@ the following keys:
 ### Prometheus Monitoring & Alerts
 
 Prometheus and its features can be enabled by setting `prometheus.enabled` to `true`.  See values.yaml for more details and configuration options
+
+### Usage of the `tpl` Function
+
+The `tpl` function allows us to pass values from `values.yaml` through the templating engine. It is used for the following values:
+
+* `extraContainers`
+* `extraInitContainers`

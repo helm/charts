@@ -356,6 +356,8 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `web.resources`                          | custom resource configuration for web pod               | `{}`                      |
 | `web.initialStartupDelay`                | amount of time webserver pod should sleep before initializing webserver             | `60`  |
 | `web.initialDelaySeconds`                | initial delay on livenessprobe before checking if webserver is available    | `360` |
+| `web.secretsDir`                         | directory in which to mount secrets on webserver nodes  | /var/airflow/secrets      |
+| `web.secrets`                            | secrets to mount as volumes on webserver nodes          | []                        |
 | `scheduler.resources`                    | custom resource configuration for scheduler pod         | `{}`                      |
 | `workers.enabled`                        | enable workers                                          | `true`                    |
 | `workers.replicas`                       | number of workers pods to launch                        | `1`                       |
@@ -406,9 +408,10 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `serviceAccount.create`                  | create a service account                                | `true`                    |
 | `serviceAccount.name`                    | the service account name                                | ``                        |
 | `postgresql.enabled`                     | create a postgres server                                | `true`                    |
-| `postgresql.existingSecret`              | The name of an existing secret with a key `postgresql-password` to use as the password  | `nil` |
+| `postgresql.existingSecret`              | The name of an existing secret with a key named `postgresql.existingSecretKey` to use as the password  | `nil` |
+| `postgresql.existingSecretKey`           | The name of the key containing the password in the secret named `postgresql.existingSecret`  | `postgres-password` |
 | `postgresql.uri`                         | full URL to custom postgres setup                       | (undefined)               |
-| `postgresql.portgresHost`                | PostgreSQL Hostname                                     | (undefined)               |
+| `postgresql.postgresHost`                | PostgreSQL Hostname                                     | (undefined)               |
 | `postgresql.postgresUser`                | PostgreSQL User                                         | `postgres`                |
 | `postgresql.postgresPassword`            | PostgreSQL Password                                     | `airflow`                 |
 | `postgresql.postgresDatabase`            | PostgreSQL Database name                                | `airflow`                 |
@@ -416,7 +419,8 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `postgresql.persistance.storageClass`    | Persistant class                                        | (undefined)               |
 | `postgresql.persistance.accessMode`      | Access mode                                             | `ReadWriteOnce`           |
 | `redis.enabled`                          | Create a Redis cluster                                  | `true`                    |
-| `redis.existingSecret`                   | The name of an existing secret with a key `redis-password` to use as the password  | `nil` |
+| `redis.existingSecret`                   | The name of an existing secret with a key named `redis.existingSecretKey` to use as the password  | `nil` |
+| `redis.existingSecretKey`                | The name of the key containing the password in the secret named `redis.existingSecret`  | `redis-password` |
 | `redis.redisHost`                        | Redis Hostname                                          | (undefined)               |
 | `redis.password`                         | Redis password                                          | `airflow`                 |
 | `redis.master.persistence.enabled`       | Enable Redis PVC                                        | `false`                   |
@@ -433,6 +437,9 @@ The following table lists the configurable parameters of the Airflow chart and t
 Full and up-to-date documentation can be found in the comments of the `values.yaml` file.
 
 ## Upgrading
+
+### To 4.0.0
+This version splits the specs for the NodeSelector, Affinity and Toleration features. Instead of being global, and injected in every component, they are now defined _by component_ to provide more flexibility for your deployments. As such, the migration steps are really simple. Just copy and paste your node/affinity/tolerance definitions in the four airflow components, which are `worker`, `scheduler`, `flower` and `web`. The default values file should help you with locating those.
 
 ### To 3.0.0
 This version introduces a simplified way of managing secrets, including the database credentials to postgres and redis.

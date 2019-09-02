@@ -6,6 +6,7 @@
 #   imageRegistry: myRegistryName
 #   imagePullSecrets:
 #     - myRegistryKeySecretName
+#   storageClass: myStorageClass
 
 ## Bitnami PrestaShop image version
 ## ref: https://hub.docker.com/r/bitnami/prestashop/tags/
@@ -13,7 +14,7 @@
 image:
   registry: docker.io
   repository: bitnami/prestashop
-  tag: 1.7.5-2-debian-9-r24
+  tag: 1.7.6-1-debian-9-r0
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -25,6 +26,14 @@ image:
   ##
   # pullSecrets:
   #   - myRegistryKeySecretName
+
+## String to partially override prestashop.fullname template (will maintain the release name)
+##
+# nameOverride:
+
+## String to fully override prestashop.fullname template
+##
+# fullnameOverride:
 
 ## PrestaShop host to create application URLs
 ## ref: https://github.com/bitnami/bitnami-docker-prestashop#configuration
@@ -112,6 +121,12 @@ externalDatabase:
 mariadb:
   ## Whether to deploy a mariadb server to satisfy the applications database requirements. To use an external database set this to false and configure the externalDatabase parameters
   enabled: true
+  ## Tag for the Bitnami MariaDB image to use
+  ## ref: https://github.com/bitnami/bitnami-docker-mariadb
+  image:
+    registry: docker.io
+    repository: bitnami/mariadb
+    tag: 10.1.41-debian-9-r31
   ## Disable MariaDB replication
   replication:
     enabled: false
@@ -280,8 +295,8 @@ metrics:
   enabled: false
   image:
     registry: docker.io
-    repository: lusotycoon/apache-exporter
-    tag: v0.5.0
+    repository: bitnami/apache-exporter
+    tag: 0.7.0-debian-9-r36
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.

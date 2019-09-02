@@ -6,10 +6,30 @@ provisionDataStore:
   cassandra: true
   elasticsearch: false
 
-tag: 1.12.0
+tag: 1.13.1
 
 nameOverride: ""
 fullnameOverride: ""
+
+serviceAccounts:
+  cassandraSchema:
+    create: true
+    name:
+  agent:
+    create: true
+    name:
+  collector:
+    create: true
+    name:
+  query:
+    create: true
+    name:
+  spark:
+    create: true
+    name:
+  hotrod:
+    create: true
+    name:
 
 storage:
   # allowed values (cassandra, elasticsearch)
@@ -18,19 +38,23 @@ storage:
     host: cassandra
     port: 9042
     user: user
+    usePassword: true
     password: password
+    ## Use existing secret (ignores previous password)
+    # existingSecret:
   elasticsearch:
     scheme: http
     host: elasticsearch
     port: 9200
     user: elastic
+    usePassword: true
     password: changeme
+    ## Use existing secret (ignores previous password)
+    # existingSecret:
     nodesWanOnly: false
 
 # Begin: Override values on the Cassandra subchart to customize for Jaeger
 cassandra:
-  image:
-    tag: 3.11.3
   persistence:
     # To enable persistence, please see the documentation for the Cassandra chart
     enabled: false
@@ -67,15 +91,11 @@ schema:
 
 # Begin: Override values on the Elasticsearch subchart to customize for Jaeger
 elasticsearch:
-  image:
-    tag: "6.6"
   cluster:
     name: "tracing"
   data:
     persistence:
       enabled: false
-  rbac:
-    create: false
 
 agent:
   enabled: true
@@ -132,13 +152,13 @@ collector:
     # List of IP ranges that are allowed to access the load balancer (if supported)
     loadBalancerSourceRanges: []
     type: ClusterIP
+    grpcPort: 14250
     # tchannelPort: used by jaeger-agent to send spans in jaeger.thrift format
     tchannelPort: 14267
     # httpPort: can accept spans directly from clients in jaeger.thrift format
     httpPort: 14268
     # can accept Zipkin spans in JSON or Thrift
     zipkinPort: 9411
-    healthCheckPort: 14269
   resources: {}
     # limits:
     #   cpu: 1
@@ -154,6 +174,12 @@ collector:
   ## Allow the scheduling on tainted nodes (requires Kubernetes >= 1.6)
   ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
   tolerations: []
+  extraConfigmapMounts: []
+  # - name: jaeger-tls
+  #   mountPath: /tls
+  #   subPath: ""
+  #   configMap: jaeger-tls
+  #   readOnly: true
 
 query:
   enabled: true
@@ -164,18 +190,13 @@ query:
   pullPolicy: IfNotPresent
   dnsPolicy: ClusterFirst
   cmdlineParams: {}
-  healthCheckPort: 16687
-  basePath: /
   replicaCount: 1
   service:
     annotations: {}
     type: ClusterIP
     # List of IP ranges that are allowed to access the load balancer (if supported)
     loadBalancerSourceRanges: []
-    # queryPort: externally accessible port for UI and API
-    queryPort: 80
-    # targetPort: the internal port the UI and API are exposed on
-    targetPort: 16686
+    port: 80
   ingress:
     enabled: false
     annotations: {}
@@ -205,6 +226,12 @@ query:
   ## Allow the scheduling on tainted nodes (requires Kubernetes >= 1.6)
   ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
   tolerations: []
+  extraConfigmapMounts: []
+  # - name: jaeger-tls
+  #   mountPath: /tls
+  #   subPath: ""
+  #   configMap: jaeger-tls
+  #   readOnly: true
 
 spark:
   enabled: false
@@ -236,7 +263,6 @@ hotrod:
   replicaCount: 1
   image:
     repository: jaegertracing/example-hotrod
-    tag: latest
     pullPolicy: Always
   service:
     annotations: {}
@@ -244,8 +270,7 @@ hotrod:
     type: ClusterIP
     # List of IP ranges that are allowed to access the load balancer (if supported)
     loadBalancerSourceRanges: []
-    externalPort: 80
-    internalPort: 8080
+    port: 80
   ingress:
     enabled: false
     # Used to create Ingress record (should be used with service.type: ClusterIP).

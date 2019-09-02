@@ -144,7 +144,11 @@ minReadySeconds: 0
 serviceAccount:
   ## Specifies whether a ServiceAccount should be created
   ##
-  create: false
+  create: true
+  ## Annotations to set for the ServiceAccount
+  # annotations:
+    # my-annotation: my-annotation-value
+  annotations: {}
   ## The name of the ServiceAccount to use.
   ## If not set and create is true, a name is generated using the fullname template
   name:
@@ -155,6 +159,8 @@ vault:
   # https://www.vaultproject.io/intro/getting-started/dev-server.html for more
   # information.
   dev: true
+  # Configure additional arguments to pass to vault server command
+  extraArgs: []
   # Configure additional environment variables for the Vault containers
   extraEnv: []
   #   - name: VAULT_API_ADDR
@@ -225,8 +231,10 @@ vault:
       #   path: ""
       #
       # etcd:
-      #   address: ""
+      #   address: "http://vault-etcd:2379"
       #   path: "vault/"
+      #   etcd_api: "v3"
+      #   ha_enabled: "true"
       #
       # s3:
       #   bucket: ""
@@ -239,3 +247,7 @@ vault:
       #   bucket: ""
       #   # Use a custom secret to mount this file.
       #   credentials_file: ""
+
+rbac:
+   ## Enable RBAC
+  create: true

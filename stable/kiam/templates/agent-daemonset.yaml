@@ -56,6 +56,7 @@ spec:
         - name: xtables
           hostPath:
             path: /run/xtables.lock
+            type: FileOrCreate
       {{- range .Values.agent.extraHostPathMounts }}
         - name: {{ .name }}
           hostPath:
@@ -93,6 +94,9 @@ spec:
             {{- if .Values.agent.prometheus.scrape }}
             - --prometheus-listen-addr=0.0.0.0:{{ .Values.agent.prometheus.port }}
             - --prometheus-sync-interval={{ .Values.agent.prometheus.syncInterval }}
+            {{- end }}
+            {{- if .Values.agent.whiteListRouteRegexp }}
+            - --whitelist-route-regexp={{ .Values.agent.whiteListRouteRegexp }}
             {{- end }}
             - --gateway-timeout-creation={{ .Values.agent.gatewayTimeoutCreation }}
           {{- range $key, $value := .Values.agent.extraArgs }}

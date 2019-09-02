@@ -1,3 +1,4 @@
+{{- if .Values.server.enabled -}}
 {{- if not .Values.server.statefulSet.enabled -}}
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -26,6 +27,9 @@ spec:
     {{- end }}
       labels:
         {{- include "prometheus.server.labels" . | nindent 8 }}
+        {{- if .Values.server.podLabels}}
+        {{ toYaml .Values.server.podLabels | nindent 8 }}
+        {{- end}}
     spec:
 {{- if .Values.server.priorityClassName }}
       priorityClassName: "{{ .Values.server.priorityClassName }}"
@@ -34,20 +38,6 @@ spec:
       schedulerName: "{{ .Values.server.schedulerName }}"
 {{- end }}
       serviceAccountName: {{ template "prometheus.serviceAccountName.server" . }}
-      {{- if .Values.initChownData.enabled }}
-      initContainers:
-      - name: "{{ .Values.initChownData.name }}"
-        image: "{{ .Values.initChownData.image.repository }}:{{ .Values.initChownData.image.tag }}"
-        imagePullPolicy: "{{ .Values.initChownData.image.pullPolicy }}"
-        resources:
-{{ toYaml .Values.initChownData.resources | indent 10 }}
-        # 65534 is the nobody user that prometheus uses.
-        command: ["chown", "-R", "65534:65534", "{{ .Values.server.persistentVolume.mountPath }}"]
-        volumeMounts:
-        - name: storage-volume
-          mountPath: {{ .Values.server.persistentVolume.mountPath }}
-          subPath: "{{ .Values.server.persistentVolume.subPath }}"
-      {{- end }}
       containers:
         - name: {{ template "prometheus.name" . }}-{{ .Values.server.name }}-{{ .Values.configmapReload.name }}
           image: "{{ .Values.configmapReload.image.repository }}:{{ .Values.configmapReload.image.tag }}"
@@ -148,7 +138,6 @@ spec:
       {{- if .Values.server.sidecarContainers }}
       {{- toYaml .Values.server.sidecarContainers | nindent 8 }}
       {{- end }}
-
     {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
        {{ toYaml .Values.imagePullSecrets | indent 2 }}
@@ -214,4 +203,5 @@ spec:
           configMap:
             name: {{ .configMap }}
       {{- end }}
+{{- end -}}
 {{- end -}}

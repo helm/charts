@@ -149,6 +149,9 @@ credentials:
   # of your IAM credentials file.
   secretContents: {}
 
+# Wheter to create volumesnapshotlocation crd, if false => disable snapshot feature
+snapshotsEnabled: true
+
 # Whether to deploy the restic daemonset.
 deployRestic: false
 
@@ -168,6 +171,17 @@ restic:
 #       includedNamespaces:
 #        - foo
 schedules: {}
+
+# Velero ConfigMaps.
+# Eg:
+# configMaps:
+#   restic-restore-action-config:
+#     labels:
+#       velero.io/plugin-config: ""
+#       velero.io/restic: RestoreItemAction
+#     data:
+#       image: gcr.io/heptio-images/velero-restic-restore-help
+configMaps: {}
 
 ##
 ## End of additional Velero resource settings.

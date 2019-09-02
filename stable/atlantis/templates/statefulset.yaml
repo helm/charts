@@ -15,6 +15,7 @@ metadata:
 {{ toYaml . | indent 4 }}
   {{- end }}
 spec:
+  serviceName: {{ template "atlantis.fullname" . }}
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
@@ -36,6 +37,7 @@ spec:
       serviceAccountName: {{ template "atlantis.serviceAccountName" . }}
       securityContext:
         fsGroup: 1000
+        runAsUser: 100
       volumes:
       {{- if .Values.tlsSecretName }}
       - name: tls
@@ -46,6 +48,11 @@ spec:
       - name: {{ $name }}-volume
         secret:
           secretName: {{ $name }}
+      {{- end }}
+      {{- range .Values.googleServiceAccountSecrets }}
+      - name: {{ .name }}
+        secret:
+          secretName: {{ .secretName }}
       {{- end }}
       {{- if .Values.gitconfig }}
       - name: gitconfig-volume
@@ -61,6 +68,11 @@ spec:
       - name: repo-config
         configMap:
           name:  {{ template "atlantis.fullname" . }}-repo-config
+      {{- end }}
+      {{- if .Values.config }}
+      - name: config
+        configMap:
+          name:  {{ template "atlantis.fullname" . }}
       {{- end }}
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -86,6 +98,9 @@ spec:
           {{- end }}
           args:
             - server
+            {{- if .Values.config }}
+            - --config /etc/atlantis/atlantis.yaml
+            {{- end }}
           ports:
           - name: atlantis
             containerPort: 4141
@@ -94,9 +109,20 @@ spec:
           - name: {{ $key }}
             value: {{ $value | quote }}
           {{- end }}
+          {{- range .Values.environmentSecrets }}
+          - name: {{ .name }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ .secretKeyRef.name }}
+                key: {{ .secretKeyRef.key }}
+          {{- end }}
           {{- if .Values.allowForkPRs }}
           - name: ATLANTIS_ALLOW_FORK_PRS
             value: {{ .Values.allowForkPRs | quote }}
+          {{- end }}
+          {{- if .Values.disableApplyAll }}
+          - name: ATLANTIS_DISABLE_APPLY_ALL
+            value: {{ .Values.disableApplyAll | quote }}
           {{- end }}
           {{- if .Values.defaultTFVersion }}
           - name: ATLANTIS_DEFAULT_TF_VERSION
@@ -215,6 +241,11 @@ spec:
             readOnly: true
             mountPath: /etc/{{ $name }}
           {{- end }}
+          {{- range .Values.googleServiceAccountSecrets }}
+          - name: {{ .name }}
+            readOnly: true
+            mountPath: /var/secrets/{{ .name }}
+          {{- end }}
           {{- if .Values.gitconfig}}
           - name: gitconfig-volume
             readOnly: true
@@ -231,6 +262,11 @@ spec:
           {{- end }}
           {{- if .Values.repoConfig }}
           - name: repo-config
+            mountPath: /etc/atlantis
+            readOnly: true
+          {{- end }}
+          {{- if .Values.config }}
+          - name: config
             mountPath: /etc/atlantis
             readOnly: true
           {{- end }}

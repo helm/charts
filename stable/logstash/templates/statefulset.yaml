@@ -66,6 +66,10 @@ spec:
 {{ toYaml .Values.livenessProbe | indent 12 }}
           readinessProbe:
 {{ toYaml .Values.readinessProbe | indent 12 }}
+          {{- if .Values.args }}
+          args:
+{{ .Values.args | toYaml | indent 12 }}
+          {{- end }}
           env:
             ## Logstash monitoring API host and port env vars
             - name: HTTP_HOST
@@ -137,6 +141,7 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
+      serviceAccountName: {{ template "logstash.serviceAccountName" . }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       volumes:
         - name: patterns

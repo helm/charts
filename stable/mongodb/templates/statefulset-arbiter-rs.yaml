@@ -77,8 +77,8 @@ spec:
             name: mongodb
           env:
           {{- if .Values.image.debug}}
-          - name: NAMI_DEBUG
-            value: "1"
+          - name: BITNAMI_DEBUG
+            value: "true"
           {{- end }}
           - name: MONGODB_SYSTEM_LOG_VERBOSITY
             value: {{ .Values.mongodbSystemLogVerbosity | quote }}
@@ -157,7 +157,7 @@ spec:
               subPath: mongodb.conf
           {{- end }}
           resources:
-{{ toYaml .Values.resources | indent 12 }}
+{{ toYaml .Values.resourcesArbiter | indent 12 }}
       volumes:
       {{- if .Values.configmap }}
         - name: config

@@ -67,6 +67,11 @@ securityContext:
   runAsNonRoot: true
   runAsUser: 10000
 
+service:
+  annotations: {}
+  port: 9216
+  type: ClusterIP
+
 serviceMonitor:
   enabled: true
   interval: 30s

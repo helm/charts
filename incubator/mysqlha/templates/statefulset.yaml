@@ -4,7 +4,7 @@ metadata:
   name: {{ template "fullname" . }}
   labels:
     app: {{ template "fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: "{{ template "mysqlha.chart" . }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
@@ -14,10 +14,18 @@ spec:
     metadata:
       labels:
         app: {{ template "fullname" . }}
+      {{- if .Values.mysqlha.podAnnotations }}
+      annotations:
+{{ toYaml .Values.mysqlha.podAnnotations | indent 8 }}
+      {{- end }}
     spec:
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+      {{- end }}
       initContainers:
       - name: clone-mysql
         image: {{ .Values.xtraBackupImage }}
+        imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
         command:
           - bash
           - "-c"
@@ -51,6 +59,7 @@ spec:
           mountPath: /etc/mysql/conf.d
       - name: init-mysql
         image: {{ .Values.mysqlImage }}
+        imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
         command: ["/bin/bash"]
         args:
           - "-c"
@@ -82,6 +91,7 @@ spec:
       containers:
       - name: mysql
         image: {{ .Values.mysqlImage }}
+        imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
         env:
         - name: MYSQL_DATABASE
           value: {{ default "" .Values.mysqlha.mysqlDatabase | quote }}
@@ -139,6 +149,7 @@ spec:
           timeoutSeconds: 1
       - name: xtrabackup
         image: {{ .Values.xtraBackupImage }}
+        imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
         env:
         - name: MYSQL_PWD
           valueFrom:
@@ -219,7 +230,7 @@ spec:
       {{- if .Values.metrics.enabled }}
       - name: metrics
         image: "{{ .Values.metrics.image }}:{{ .Values.metrics.imageTag }}"
-        imagePullPolicy: {{ .Values.pullPolicy | quote }}
+        imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
         {{- if .Values.mysqlha.mysqlAllowEmptyPassword }}
         command: ['sh', '-c', 'DATA_SOURCE_NAME="root@(localhost:3306)/" /bin/mysqld_exporter' ]
         {{- else }}
@@ -240,7 +251,7 @@ spec:
             port: metrics
           initialDelaySeconds: {{ .Values.metrics.livenessProbe.initialDelaySeconds }}
           timeoutSeconds: {{ .Values.metrics.livenessProbe.timeoutSeconds }}
-        readinessprobe:
+        readinessProbe:
           httpGet:
             path: /
             port: metrics

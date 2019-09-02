@@ -2,6 +2,10 @@ autoDiscovery:
 # Only cloudProvider `aws` and `gce` are supported by auto-discovery at this time
 # AWS: Set tags as described in https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/cloudprovider/aws/README.md#auto-discovery-setup
   clusterName:  # cluster.local
+  tags:
+  - k8s.io/cluster-autoscaler/enabled
+  - k8s.io/cluster-autoscaler/{{ .Values.autoDiscovery.clusterName }}
+  # - kubernetes.io/cluster/{{ .Values.autoDiscovery.clusterName }}
 
 autoscalingGroups: []
 # At least one element is required if not using autoDiscovery
@@ -54,6 +58,13 @@ image:
   repository: k8s.gcr.io/cluster-autoscaler
   tag: v1.13.1
   pullPolicy: IfNotPresent
+
+  ## Optionally specify an array of imagePullSecrets.
+  ## Secrets must be manually created in the namespace.
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  ##
+  # pullSecrets:
+  #   - myRegistrKeySecretName
 
 tolerations: []
 

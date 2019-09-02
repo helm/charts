@@ -225,7 +225,7 @@ helm install --name <RELEASE_NAME> \
 | `nameOverride`                           | Override name of app                                                                      | `nil`                                       |
 | `fullnameOverride`                       | Override full name of app                                                                 | `nil`                                       |
 | `rbac.create`                            | If true, create & use RBAC resources                                                      | `true`                                      |
-| `rbac.serviceAccount`                    | existing ServiceAccount to use (ignored if rbac.create=true)                              | `default`                                   |
+| `rbac.serviceAccountName`                | existing ServiceAccount to use (ignored if rbac.create=true)                              | `default`                                   |
 | `daemonset.podLabels`                    | labels to add to each pod                                                                 | `nil`                                       |
 | `datadog.name`                           | Container name if Daemonset or Deployment                                                 | `datadog`                                   |
 | `datadog.site`                           | Site ('datadoghq.com' or 'datadoghq.eu')                                                  | `nil`                                       |
@@ -245,6 +245,7 @@ helm install --name <RELEASE_NAME> \
 | `datadog.useCriSocketVolume`             | Enable mounting the container runtime socket in Agent containers                          | `True`                                      |
 | `datadog.dogstatsdOriginDetection`       | Enable origin detection for container tagging                                             | `False`                                     |
 | `datadog.useDogStatsDSocketVolume`       | Enable dogstatsd over Unix Domain Socket                                                  | `False`                                     |
+| `datadog.dogStatsDSocketPath`            | Custom path to the socket, has to be located in the `/var/run/datadog` folder path        | `/var/run/datadog/dsd.socket`               |
 | `datadog.volumes`                        | Additional volumes for the daemonset or deployment                                        | `nil`                                       |
 | `datadog.volumeMounts`                   | Additional volumeMounts for the daemonset or deployment                                   | `nil`                                       |
 | `datadog.podAnnotationsAsTags`           | Kubernetes Annotations to Datadog Tags mapping                                            | `nil`                                       |
@@ -293,9 +294,12 @@ helm install --name <RELEASE_NAME> \
 | `deployment.priorityClassName`           | Which Priority Class to associate with the deployment                                     | `nil`                                       |
 | `kubeStateMetrics.enabled`               | If true, create kube-state-metrics                                                        | `true`                                      |
 | `kube-state-metrics.rbac.create`         | If true, create & use RBAC resources for kube-state-metrics                               | `true`                                      |
-| `kube-state-metrics.rbac.serviceAccount` | existing ServiceAccount to use (ignored if rbac.create=true) for kube-state-metrics       | `default`                                   |
+| `kube-state-metrics.serviceAccount.create`                 | If true, create & use serviceAccount                                    | `true`                                      |
+| `kube-state-metrics.serviceAccount.name`                   | If not set & create is true, use template fullname                      |                                             |
+| `kube-state-metrics.resources`                             | Overwrite the default kube-state-metrics container resources (Optional) |                                             |
 | `clusterAgent.enabled`                   | Use the cluster-agent for cluster metrics (Kubernetes 1.10+ only)                         | `false`                                     |
 | `clusterAgent.token`                     | A cluster-internal secret for agent-to-agent communication. Must be 32+ characters a-zA-Z | Generates a random value                    |
+| `clusterAgent.tokenExistingSecret`                     | If set, use the secret with a provided name instead of creating a new one | `nil`                    |
 | `clusterAgent.containerName`             | The container name for the Cluster Agent                                                  | `cluster-agent`                             |
 | `clusterAgent.image.repository`          | The image repository for the cluster-agent                                                | `datadog/cluster-agent`                     |
 | `clusterAgent.image.tag`                 | The image tag to pull                                                                     | `1.2.0`                                     |
@@ -304,6 +308,8 @@ helm install --name <RELEASE_NAME> \
 | `clusterAgent.metricsProvider.enabled`   | Enable Datadog metrics as a source for HPA scaling                                        | `false`                                     |
 | `clusterAgent.clusterChecks.enabled`     | Enable Cluster Checks on both the Cluster Agent and the Agent daemonset                   | `false`                                     |
 | `clusterAgent.confd`                     | Additional check configurations (static and Autodiscovery)                                | `nil`                                       |
+| `clusterAgent.podAnnotations`            | Annotations to add to the Cluster Agent Pod(s)                                            | `nil`                                       |
+| `clusterAgent.priorityClassName`         | Name of the priorityClass to apply to the Cluster Agent                                   | `nil`                                       |
 | `clusterAgent.resources.requests.cpu`    | CPU resource requests                                                                     | `200m`                                      |
 | `clusterAgent.resources.limits.cpu`      | CPU resource limits                                                                       | `200m`                                      |
 | `clusterAgent.resources.requests.memory` | Memory resource requests                                                                  | `256Mi`                                     |
@@ -318,6 +324,7 @@ helm install --name <RELEASE_NAME> \
 | `clusterchecksDeployment.resources.requests.memory`      | Memory resource requests                                                                      | `256Mi`                                     |
 | `clusterchecksDeployment.resources.limits.memory`        | Memory resource limits                                                                        | `256Mi`                                     |
 | `clusterchecksDeployment.nodeSelector`                   | Node selectors                                                                                | `nil`                                       |
+| `clusterchecksDeployment.tolerations`                    | List of node taints to tolerate                                                               | `nil`                                       |
 | `clusterchecksDeployment.affinity`                       | Node affinities                                                                               | avoid running pods on the same node         |
 | `clusterchecksDeployment.livenessProbe`                  | Overrides the default liveness probe                                                          | http port 5555                              |
 | `clusterchecksDeployment.rbac.dedicated`                  | If true, use dedicated RBAC resources for clusterchecks agent's pods                          | `false`                                     |

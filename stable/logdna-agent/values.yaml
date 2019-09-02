@@ -22,4 +22,10 @@ resources:
     memory: 500Mi
 
 daemonset:
+  # updateStrategy:
+  #   type: "RollingUpdate"
   tolerations: []
+
+priorityClassName: ""
+
+# updateOnSecretChange: true

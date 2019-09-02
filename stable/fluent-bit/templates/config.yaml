@@ -60,6 +60,11 @@ data:
 {{- if .Values.filter.mergeJSONLog }}
         Merge_Log           On
 {{- end }}
+
+{{- if .Values.filter.mergeLogKey }}
+        Merge_Log_Key       {{ .Values.filter.mergeLogKey }}
+{{- end }}
+
 {{- if .Values.filter.enableParser }}
         K8S-Logging.Parser  On
 {{- end }}
@@ -90,7 +95,7 @@ data:
         Match *
         Host  {{ .Values.backend.es.host }}
         Port  {{ .Values.backend.es.port }}
-        Logstash_Format On
+        Logstash_Format {{ default "On" .Values.backend.es.logstash_format  }}
         Retry_Limit False
         Type  {{ .Values.backend.es.type }}
 {{- if .Values.backend.es.time_key }}
@@ -106,7 +111,11 @@ data:
 {{- end }}
 {{- if .Values.backend.es.http_user }}
         HTTP_User {{ .Values.backend.es.http_user }}
+{{- if .Values.backend.es.http_passwd }}
         HTTP_Passwd {{ .Values.backend.es.http_passwd }}
+{{- else }}
+        HTTP_Passwd ${HTTP_PASSWORD}
+{{- end }}
 {{- end }}
 {{if eq .Values.backend.es.tls "on" }}
         tls {{ .Values.backend.es.tls }}
@@ -147,6 +156,9 @@ data:
 {{- end }}
         Format {{ .Values.backend.http.format }}
 {{- end }}
+{{- range  .Values.backend.http.headers }}
+        Header  {{ . }}
+{{- end }}
 {{ .Values.extraEntries.output | indent 8 }}
 
 
@@ -185,6 +197,22 @@ data:
 {{- if .decodeFieldAs  }}
         Decode_Field_As {{ .decodeFieldAs }} {{ .decodeField | default "log" }}
 {{- end}}
+{{- if .extraEntries }}
+{{ .extraEntries | indent 8 }}
+{{- end }}
+{{ end }}
+{{- end }}
+{{- if .Values.parsers.logfmt }}
+{{- range .Values.parsers.logfmt }}
+    [PARSER]
+        Name        {{ .name }}
+        Format      logfmt
+{{- if .timeKey }}
+        Time_Key    {{ .timeKey }}
+{{- end }}
+{{- if .timeFormat }}
+        Time_Format {{ .timeFormat }}
+{{- end }}
 {{- if .extraEntries }}
 {{ .extraEntries | indent 8 }}
 {{- end }}

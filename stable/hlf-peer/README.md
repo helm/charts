@@ -71,50 +71,59 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following table lists the configurable parameters of the Hyperledger Fabric Peer chart and default values.
 
-| Parameter                          | Description                                     | Default                                                    |
-| ---------------------------------- | ---------------------------------------------------- | ---------------------------------------------------------- |
-| `image.repository`                 | `hlf-peer` image repository                          | `hyperledger/fabric-peer`                                  |
-| `image.tag`                        | `hlf-peer` image tag                                 | `x86_64-1.1.0`                                             |
-| `image.pullPolicy`                 | Image pull policy                                    | `IfNotPresent`                                             |
-| `service.portRequest`              | TCP port for requests to Peer                        | `7051`                                                     |
-| `service.portEvent`                | TCP port for event service on Peer                   | `7053`                                                     |
-| `service.type`                     | K8S service type exposing ports, e.g. `ClusterIP`    | `ClusterIP`                                                |
-| `persistence.accessMode`           | Use volume as ReadOnly or ReadWrite                  | `ReadWriteOnce`                                            |
-| `persistence.annotations`          | Persistent Volume annotations                        | `{}`                                                       |
-| `persistence.size`                 | Size of data volume (adjust for production!)         | `1Gi`                                                      |
-| `persistence.storageClass`         | Storage class of backing PVC                         | `default`                                                  |
-| `ingress.enabled`                  | If true, Ingress will be created                     | `false`                                                    |
-| `ingress.annotations`              | Ingress annotations                                  | `{}`                                                       |
-| `ingress.path`                     | Ingress path                                         | `/`                                                        |
-| `ingress.hosts`                    | Ingress hostnames                                    | `[]`                                                       |
-| `ingress.tls`                      | Ingress TLS configuration                            | `[]`                                                       |
-| `peer.databaseType`                | Database type to use (`goleveldb` or `CouchDB`)      | `goleveldb`                                                |
-| `peer.couchdbInstance              | CouchDB chart name to use `cdb-peer1`                | `cdb-peer1`                                                |
-| `peer.mspID`                       | ID of MSP the Peer belongs to                        | `Org1MSP`                                                  |
-| `peer.gossip.bootstrap`            | Gossip bootstrap address                             | ``                                                         |
-| `peer.gossip.endpoint`             | Gossip endpoint                                      | ``                                                         |
-| `peer.gossip.externalEndpoint`     | Gossip external endpoint                             | ``                                                         |
-| `peer.gossip.orgLeader`            | Gossip organisation leader ("true"/"false")          | `"false"`                                                  |
-| `peer.gossip.useLeaderElection`    | Gossip use leader election                           | `"true"`                                                   |
-| `peer.tls.server.enabled`          | Do we enable server-side TLS?                        | `false`                                                    |
-| `peer.tls.client.enabled`          | Do we enable client-side TLS?                        | `false`                                                    |
-| `secrets.peer.cred`                | Credentials: 'CA_USERNAME' and 'CA_PASSWORD'         | ``                                                         |
-| `secrets.peer.cert`                | Certificate: as 'cert.pem'                           | ``                                                         |
-| `secrets.peer.key`                 | Private key: as 'key.pem'                            | ``                                                         |
-| `secrets.peer.caCert`              | CA Cert: as 'cacert.pem'                             | ``                                                         |
-| `secrets.peer.intCaCert`           | Int. CA Cert: as 'intermediatecacert.pem'            | ``                                                         |
-| `secrets.peer.tls`                 | TLS secret: as 'tls.crt' and 'tls.key'               | ``                                                         |
-| `secrets.peer.tlsRootCert`         | TLS root CA certificate: as 'cert.pem'               | ``                                                         |
-| `secrets.peer.tlsClient`           | TLS client secret: as 'tls.crt' and 'tls.key'        | ``                                                         |
-| `secrets.peer.tlsClientRootCerts`  | TLS Client root CA certificate files (any name)      | ``                                                         |
-| `secrets.channel`                  | Secret containing Channel tx for peer to create/join | ``                                                         |
-| `secrets.adminCert`                | Secret containing Peer Org admin certificate         | ``                                                         |
-| `secrets.adminCert`                | Secret containing Peer Org admin private key         | ``                                                         |
-| `secrets.ordTlsRootCert`           | Secret containing Orderer TLS root CA certificate    | ``                                                         |
-| `resources`                        | CPU/Memory resource requests/limits                  | `{}`                                                       |
-| `nodeSelector`                     | Node labels for pod assignment                       | `{}`                                                       |
-| `tolerations`                      | Toleration labels for pod assignment                 | `[]`                                                       |
-| `affinity`                         | Affinity settings for pod assignment                 | `{}`                                                       |
+| Parameter                         | Description                                       | Default                   |
+| --------------------------------- | ------------------------------------------------- | ------------------------- |
+| `image.repository`                | `hlf-peer` image repository                       | `hyperledger/fabric-peer` |
+| `image.tag`                       | `hlf-peer` image tag                              | `x86_64-1.1.0`            |
+| `image.pullPolicy`                | Image pull policy                                 | `IfNotPresent`            |
+| `service.portRequest`             | TCP port for requests to Peer                     | `7051`                    |
+| `service.portEvent`               | TCP port for event service on Peer                | `7053`                    |
+| `service.type`                    | K8S service type exposing ports, e.g. `ClusterIP` | `ClusterIP`               |
+| `persistence.accessMode`          | Use volume as ReadOnly or ReadWrite               | `ReadWriteOnce`           |
+| `persistence.annotations`         | Persistent Volume annotations                     | `{}`                      |
+| `persistence.size`                | Size of data volume (adjust for production!)      | `1Gi`                     |
+| `persistence.storageClass`        | Storage class of backing PVC                      | `default`                 |
+| `logging.level`                   | Default logging level                             | `info`                    |
+| `logging.peer`                    | Peer logging level                                | `info`                    |
+| `logging.cauthdsl`                | Cauthdsl logging level                            | `warning`                 |
+| `logging.gossip`                  | Gossip logging level                              | `info`                    |
+| `logging.grpc`                    | gRPC logging level                                | `error`                   |
+| `logging.ledger`                  | Ledger logging level                              | `info`                    |
+| `logging.msp`                     | MSP logging level                                 | `warning`                 |
+| `logging.policies`                | Policies logging level                            | `warning`                 |
+| `ingress.enabled`                 | If true, Ingress will be created                  | `false`                   |
+| `ingress.annotations`             | Ingress annotations                               | `{}`                      |
+| `ingress.path`                    | Ingress path                                      | `/`                       |
+| `ingress.hosts`                   | Ingress hostnames                                 | `[]`                      |
+| `ingress.tls`                     | Ingress TLS configuration                         | `[]`                      |
+| `dockerSocketPath`                | Docker Socket path                                | `/var/run/docker.sock`    |
+| `peer.databaseType`               | Database type to use (`goleveldb` or `CouchDB`)   | `goleveldb`               |
+| `peer.couchdbInstance`            | CouchDB chart name to use `cdb-peer1`             | `cdb-peer1`               |
+| `peer.mspID`                      | ID of MSP the Peer belongs to                     | `Org1MSP`                 |
+| `peer.gossip.bootstrap`           | Gossip bootstrap address                          | ``                        |
+| `peer.gossip.endpoint`            | Gossip endpoint                                   | ``                        |
+| `peer.gossip.externalEndpoint`    | Gossip external endpoint                          | ``                        |
+| `peer.gossip.orgLeader`           | Gossip organisation leader ("true"/"false")       | `"false"`                 |
+| `peer.gossip.useLeaderElection`   | Gossip use leader election                        | `"true"`                  |
+| `peer.tls.server.enabled`         | Do we enable server-side TLS?                     | `false`                   |
+| `peer.tls.client.enabled`         | Do we enable client-side TLS?                     | `false`                   |
+| `secrets.peer.cred`               | Credentials: 'CA_USERNAME' and 'CA_PASSWORD'      | ``                        |
+| `secrets.peer.cert`               | Certificate: as 'cert.pem'                        | ``                        |
+| `secrets.peer.key`                | Private key: as 'key.pem'                         | ``                        |
+| `secrets.peer.caCert`             | CA Cert: as 'cacert.pem'                          | ``                        |
+| `secrets.peer.intCaCert`          | Int. CA Cert: as 'intermediatecacert.pem'         | ``                        |
+| `secrets.peer.tls`                | TLS secret: as 'tls.crt' and 'tls.key'            | ``                        |
+| `secrets.peer.tlsRootCert`        | TLS root CA certificate: as 'cert.pem'            | ``                        |
+| `secrets.peer.tlsClient`          | TLS client secret: as 'tls.crt' and 'tls.key'     | ``                        |
+| `secrets.peer.tlsClientRootCerts` | TLS Client root CA certificate files (any name)   | ``                        |
+| `secrets.channels`                | Array of secrets containing channel creation file | ``                        |
+| `secrets.adminCert`               | Secret containing Peer Org admin certificate      | ``                        |
+| `secrets.adminCert`               | Secret containing Peer Org admin private key      | ``                        |
+| `secrets.ordTlsRootCert`          | Secret containing Orderer TLS root CA certificate | ``                        |
+| `resources`                       | CPU/Memory resource requests/limits               | `{}`                      |
+| `nodeSelector`                    | Node labels for pod assignment                    | `{}`                      |
+| `tolerations`                     | Toleration labels for pod assignment              | `[]`                      |
+| `affinity`                        | Affinity settings for pod assignment              | `{}`                      |
 
 ## Persistence
 

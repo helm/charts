@@ -51,11 +51,14 @@ The following table lists the configurable parameters of the SuiteCRM chart and 
 |-------------------------------------|-------------------------------------------------|---------------------------------------------------------|
 | `global.imageRegistry`              | Global Docker image registry                    | `nil`                                                   |
 | `global.imagePullSecrets`           | Global Docker registry secret names as an array | `[]` (does not add image pull secrets to deployed pods) |
+| `global.storageClass`                     | Global storage class for dynamic provisioning                                               | `nil`                                                        |
 | `image.registry`                    | SuiteCRM image registry                         | `docker.io`                                             |
 | `image.repository`                  | SuiteCRM image name                             | `bitnami/suitecrm`                                      |
 | `image.tag`                         | SuiteCRM image tag                              | `{TAG_NAME}`                                            |
 | `image.pullPolicy`                  | Image pull policy                               | `IfNotPresent`                                          |
-| `image.pullSecrets`                 | Specify docker-registry secret names as an array| `[]` (does not add image pull secrets to deployed pods)|
+| `image.pullSecrets`                 | Specify docker-registry secret names as an array| `[]` (does not add image pull secrets to deployed pods) |
+| `nameOverride`                      | String to partially override suitecrm.fullname template with a string (will prepend the release name) | `nil` |
+| `fullnameOverride`                  | String to fully override suitecrm.fullname template with a string                                     | `nil` |
 | `suitecrmHost`                      | SuiteCRM host to create application URLs        | `nil`                                                   |
 | `suitecrmUsername`                  | User of the application                         | `user`                                                  |
 | `suitecrmPassword`                  | Application password                            | _random 10 character alphanumeric string_               |
@@ -104,9 +107,9 @@ The following table lists the configurable parameters of the SuiteCRM chart and 
 | `resources`                         | CPU/Memory resource requests/limits             | Memory: `512Mi`, CPU: `300m`                            |
 | `podAnnotations`                | Pod annotations                                   | `{}`                                                       |
 | `metrics.enabled`                          | Start a side-car prometheus exporter                                                                           | `false`                                              |
-| `metrics.image.registry`                   | Apache exporter image registry                                                                                  | `docker.io`                                          |
-| `metrics.image.repository`                 | Apache exporter image name                                                                                      | `lusotycoon/apache-exporter`                           |
-| `metrics.image.tag`                        | Apache exporter image tag                                                                                       | `v0.5.0`                                            |
+| `metrics.image.registry`                   | Apache exporter image registry                                                                                  | `docker.io`                                         |
+| `metrics.image.repository`                 | Apache exporter image name                                                                                      | `bitnami/apache-exporter`                           |
+| `metrics.image.tag`                        | Apache exporter image tag                                                                                       | `{TAG_NAME}`                                        |
 | `metrics.image.pullPolicy`                 | Image pull policy                                                                                              | `IfNotPresent`                                       |
 | `metrics.image.pullSecrets`                | Specify docker-registry secret names as an array                                                               | `nil`                                                |
 | `metrics.podAnnotations`                   | Additional annotations for Metrics exporter pod                                                                | `{prometheus.io/scrape: "true", prometheus.io/port: "9117"}`                                                   |

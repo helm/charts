@@ -1,7 +1,7 @@
 apiVersion: v1
 name: datadog
-version: 1.31.2
-appVersion: 6.10.1
+version: 1.33.0
+appVersion: 6.13.0
 description: DataDog Agent
 keywords:
 - monitoring

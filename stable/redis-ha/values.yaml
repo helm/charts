@@ -3,7 +3,7 @@
 ##
 image:
   repository: redis
-  tag: 5.0.3-alpine
+  tag: 5.0.5-alpine
   pullPolicy: IfNotPresent
 ## replicas number for each component
 replicas: 3
@@ -21,10 +21,40 @@ serviceAccount:
   ## If not set and create is true, a name is generated using the redis-ha.fullname template
   # name:
 
+## Enables a HA Proxy for better LoadBalancing / Sentinel Master support. Automatically proxies to Redis master.
+## Recommend for externally exposed Redis clusters.
+## ref: https://cbonte.github.io/haproxy-dconv/1.9/intro.html
+haproxy:
+  enabled: false
+  replicas: 1
+  image:
+    repository: haproxy
+    tag: 2.0.4
+    pullPolicy: IfNotPresent
+  annotations: {}
+  resources: {}
+  ## Service type for HAProxy
+  ##
+  service:
+    type: ClusterIP
+    annotations: {}
+  serviceAccount:
+    create: true
+  ## Prometheus metric exporter for HAProxy.
+  ##
+  exporter:
+    image:
+      repository: quay.io/prometheus/haproxy-exporter
+      tag: v0.9.0
+    enabled: false
+    port: 9101
+  init:
+    resources: {}
+
+
 ## Role Based Access
 ## Ref: https://kubernetes.io/docs/admin/authorization/rbac/
 ##
-
 rbac:
   create: true
 
@@ -108,22 +138,52 @@ securityContext:
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+nodeSelector: {}
+
+## Whether the Redis server pods should be forced to run on separate nodes.
+## This is accomplished by setting their AntiAffinity with requiredDuringSchedulingIgnoredDuringExecution as opposed to preferred.
+## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#inter-pod-affinity-and-anti-affinity-beta-feature
+##
+hardAntiAffinity: true
+
+## Additional affinities to add to the Redis server pods.
+##
+## Example:
+##   nodeAffinity:
+##     preferredDuringSchedulingIgnoredDuringExecution:
+##       - weight: 50
+##         preference:
+##           matchExpressions:
+##             - key: spot
+##               operator: NotIn
+##               values:
+##                 - "true"
+##
+## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+##
+additionalAffinities: {}
+
+## Override all other affinity settings for the Redis server pods with a string.
+##
+## Example:
+## affinity: |
+##   podAntiAffinity:
+##     requiredDuringSchedulingIgnoredDuringExecution:
+##       - labelSelector:
+##           matchLabels:
+##             app: {{ template "redis-ha.name" . }}
+##             release: {{ .Release.Name }}
+##         topologyKey: kubernetes.io/hostname
+##     preferredDuringSchedulingIgnoredDuringExecution:
+##       - weight: 100
+##         podAffinityTerm:
+##           labelSelector:
+##             matchLabels:
+##               app:  {{ template "redis-ha.name" . }}
+##               release: {{ .Release.Name }}
+##           topologyKey: failure-domain.beta.kubernetes.io/zone
+##
 affinity: |
-  podAntiAffinity:
-    requiredDuringSchedulingIgnoredDuringExecution:
-      - labelSelector:
-          matchLabels:
-            app: {{ template "redis-ha.name" . }}
-            release: {{ .Release.Name }}
-        topologyKey: kubernetes.io/hostname
-    preferredDuringSchedulingIgnoredDuringExecution:
-      - weight: 100
-        podAffinityTerm:
-          labelSelector:
-            matchLabels:
-              app:  {{ template "redis-ha.name" . }}
-              release: {{ .Release.Name }}
-          topologyKey: failure-domain.beta.kubernetes.io/zone
 
 # Prometheus exporter specific configuration options
 exporter:

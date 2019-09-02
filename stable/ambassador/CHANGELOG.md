@@ -3,6 +3,21 @@
 This file documents all notable changes to Ambassador Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v3.0.0
+
+### Breaking Changes
+
+- The default annotation has been removed. The service port will be set dynamically to 8080 or 8443 for http and https respectively.
+- `service.http`, `service.https`, and `additionalTCPPort` has been replaced with `service.ports`.
+- `rbac.namespaced` has been removed. Use `scope.singleNamespace` instead.
+
+### Minor Changes
+
+- Ambassador Pro will pick up when `AMBASSADOR_ID` is set in `.Values.env` [[#15025]](https://github.com/helm/charts/issues/15025).
+- `{{release name}}-admins` has been renamed to `{{release name}}-admin` to match YAML install templates
+- RBAC configuration has been updated to allow for CRD use when `scope.singleNamespace: true`. [[ambassador/#1576]](https://github.com/datawire/ambassador/issues/1576)
+- RBAC configuration now allows for multiple Ambassadors to use CRDs. Set `crds.enabled` in releases that expect CRDs [[ambassador/#1679]](https://github.com/datawire/ambassador/issues/1679)
+
 ## v2.6.0
 
 ### Minor Changes

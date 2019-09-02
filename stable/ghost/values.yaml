@@ -6,6 +6,7 @@
 #   imageRegistry: myRegistryName
 #   imagePullSecrets:
 #     - myRegistryKeySecretName
+#   storageClass: myStorageClass
 
 ## Bitnami Ghost image version
 ## ref: https://hub.docker.com/r/bitnami/ghost/tags/
@@ -13,7 +14,7 @@
 image:
   registry: docker.io
   repository: bitnami/ghost
-  tag: 2.23.4-debian-9-r0
+  tag: 2.30.2-debian-9-r1
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -25,6 +26,14 @@ image:
   ##
   # pullSecrets:
   #   - myRegistryKeySecretName
+
+## String to partially override ghost.fullname template (will maintain the release name)
+##
+# nameOverride:
+
+## String to fully override ghost.fullname template
+##
+# fullnameOverride:
 
 ## Init containers parameters:
 ## volumePermissions: Change the owner of the persist volume mountpoint to RunAsUser:fsGroup
