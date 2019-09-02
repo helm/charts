@@ -407,6 +407,9 @@ extraLabels: {}
 rbac:
   create: true
 
+  ## Extra rules for rabbitmq role
+  extraRules: []
+
 ## Service Account
 ## Ref: https://kubernetes.io/docs/admin/service-accounts-admin/
 ##

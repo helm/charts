@@ -16,4 +16,7 @@ rules:
   - apiGroups: [""]
     resources: ["endpoints"]
     verbs: ["get"]
+{{- if .Values.rbac.extraRules }}
+{{ toYaml .Values.rbac.extraRules | indent 2 }}
+{{- end }}
 {{- end }}
