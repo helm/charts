@@ -209,6 +209,8 @@ nodeSelector: {}
 ## Affinity
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 affinity: {}
+# Define separate affinity for arbiter pod
+affinityArbiter: {}
 
 ## Tolerations
 ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
