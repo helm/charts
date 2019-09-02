@@ -14,7 +14,7 @@
 image:
   registry: docker.io
   repository: bitnami/redmine
-  tag: 4.0.4-debian-9-r70
+  tag: 4.0.4-debian-9-r76
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
