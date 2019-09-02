@@ -3,6 +3,12 @@
 This file documents all notable changes to Sysdig Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v1.4.14
+
+### Minor changes
+
+* Update REAMED.md to fix the example in how to use the `sysdig.settings.tags` in the command line with `--set`
+
 ## v1.4.13
 
 ### Minor changes
