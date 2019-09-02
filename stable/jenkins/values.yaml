@@ -352,6 +352,10 @@ master:
     # The `groups` root object is added by default, simply add the rule entries
     alertingrules: []
 
+  # Jenkins master UI test
+  test:
+    enabled: true
+
 agent:
   enabled: true
   image: "jenkins/jnlp-slave"

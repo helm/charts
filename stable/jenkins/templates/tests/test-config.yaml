@@ -1,3 +1,4 @@
+{{- if .Values.master.test.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -8,3 +9,4 @@ data:
     @test "Testing Jenkins UI is accessible" {
       curl --retry 48 --retry-delay 10 {{ template "jenkins.fullname" . }}:{{ .Values.master.servicePort }}{{ default "" .Values.master.jenkinsUriPrefix }}/login
     }
+{{- end }}
