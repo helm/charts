@@ -72,7 +72,10 @@ The following table lists the configurable parameters of the consul chart and th
 | `test.imageTag`         | Test container image tag  (used for helm test)     | `v1.4.8-bash`                                 |
 | `test.rbac.create`                      | Create rbac for test container                 | `false`                           |
 | `test.rbac.serviceAccountName`          | Name of existed service account for test container    | ``                         |
-| `additionalLabels`      | Add labels to Pod and StatefulSet     | `{}`                                                       |
+| `additionalLabels`      | Add labels to Pod and StatefulSet     | `{}`
+
+| `additionalAnnotations` | Add annotations to Pod and StatefulSet     | `{}`
+                                                    |
 | `lifecycle`             | Lifecycle configuration, in YAML, for StatefulSet | `nil`                                          |
 | `forceIpv6`             | force to listen on IPv6 address                                                                    |
 

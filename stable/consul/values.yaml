@@ -149,6 +149,12 @@ nodeSelector: {}
 tolerations: []
 additionalLabels: {}
 
+# additionalAnnotations is an object to provide additional annotations to the Statefulset
+# e.g.:
+# additionalAnnotations:
+#   key: values
+additionalAnnotations: {}
+
 # Lifecycle for StatefulSet
 # lifecycle:
 #   preStop:
