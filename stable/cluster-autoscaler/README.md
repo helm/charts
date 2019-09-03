@@ -162,6 +162,8 @@ Parameter | Description | Default
 `envFromConfigMap` | additional container environment variables from a configmap | `{}`
 `envFromSecret` | secret name containing keys that will be exposed as envs | `nil`
 `extraEnvSecrets` | additional container environment variables from a secret | `{}`
+`fullnameOverride` | String to fully override cluster-autoscaler.fullname template | `""`
+`nameOverride` | String to partially override cluster-autoscaler.fullname template (will maintain the release name) | `""`
 `nodeSelector` | node labels for pod assignment | `{}`
 `podAnnotations` | annotations to add to each pod | `{}`
 `rbac.create` | If true, create & use RBAC resources | `false`
