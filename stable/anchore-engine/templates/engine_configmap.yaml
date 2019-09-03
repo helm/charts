@@ -68,6 +68,7 @@ data:
       {{- else }}
       url: "http://{{- template "anchore-engine.enterprise-feeds.fullname" . }}:{{- .Values.anchoreEnterpriseFeeds.service.port }}/v1/feeds"
       {{- end }}
+      ssl_verify: {{ .Values.anchoreGlobal.internalServicesSsl.verifyCerts }}
       client_url:
       token_url:
       {{- else }}
