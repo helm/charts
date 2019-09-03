@@ -14,7 +14,7 @@
 image:
   registry: docker.io
   repository: bitnami/wordpress
-  tag: 5.2.2-debian-9-r12
+  tag: 5.2.2-debian-9-r47
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -346,7 +346,7 @@ metrics:
   image:
     registry: docker.io
     repository: bitnami/apache-exporter
-    tag: 0.7.0-debian-9-r2
+    tag: 0.7.0-debian-9-r42
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
