@@ -147,6 +147,6 @@ sentinel:
 ## i.e. you can create tablespace directory here.
 ##
 # nodePostStartScript:
-#  postStartScript.sh: |-
+#  postStartScript.sh: |
 #    #!/bin/bash
 #     echo "Do something."

@@ -6,7 +6,7 @@ metadata:
 data:
 {{- with .Values.initdbScripts }}
 {{ toYaml . | indent 2 }}
-{{ end }}
+{{- end }}
 ---
 {{- if .Values.initdbScripts }}
 apiVersion: batch/v1
@@ -55,4 +55,4 @@ spec:
         - name: wait-for-database
           image: jwilder/dockerize
           command: ['dockerize', '-timeout', '30s', '-wait', 'tcp://{{ template "stolon.fullname" . }}-proxy:5432']
-{{ end }}
+{{- end }}

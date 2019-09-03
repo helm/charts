@@ -32,4 +32,4 @@ data:
 {{- end }}
 {{- with .Values.nodePostStartScript }}
 {{ toYaml . | indent 2 }}
-{{ end }}
+{{- end }}
