@@ -1,4 +1,4 @@
-{{- if eq .Values.controller.kind "Deployment" }}
+{{- if or (eq .Values.controller.kind "Deployment") (eq .Values.controller.kind "Both") }}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
