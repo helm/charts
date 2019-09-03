@@ -63,7 +63,11 @@ data:
           vulndb: false
           {{- end }}
       {{- if and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseFeeds.enabled }}
+      {{- if .Values.anchoreGlobal.internalServicesSsl.enabled }}
+      url: "https://{{- template "anchore-engine.enterprise-feeds.fullname" . }}:{{- .Values.anchoreEnterpriseFeeds.service.port }}/v1/feeds"
+      {{- else }}
       url: "http://{{- template "anchore-engine.enterprise-feeds.fullname" . }}:{{- .Values.anchoreEnterpriseFeeds.service.port }}/v1/feeds"
+      {{- end }}
       client_url:
       token_url:
       {{- else }}

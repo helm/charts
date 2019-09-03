@@ -78,11 +78,6 @@ data:
         endpoint_hostname: localhost
         listen: 127.0.0.1
         port: {{ .Values.anchoreEnterpriseRbac.service.authPort }}
-        {{- if .Values.anchoreGlobal.internalServicesSsl.enabled }}
-        ssl_enable: {{ .Values.anchoreGlobal.internalServicesSsl.enabled }}
-        ssl_cert: "/home/anchore/certs/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretCertName }}"
-        ssl_key: "/home/anchore/certs/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretKeyName }}"
-        {{- end }}
       rbac_manager:
         enabled: true
         require_auth: true

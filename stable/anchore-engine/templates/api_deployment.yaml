@@ -216,16 +216,9 @@ spec:
         livenessProbe:
           exec:
             command:
-              {{- if .Values.anchoreGlobal.internalServicesSsl.enabled }}
-              - curl
-              - -f
-              - -k
-              - 'https://localhost:{{ .Values.anchoreEnterpriseRbac.service.authPort }}/health'
-              {{- else }}
               - curl
               - -f
               - 'localhost:{{ .Values.anchoreEnterpriseRbac.service.authPort }}/health'
-              {{- end }}
           initialDelaySeconds: 120
           timeoutSeconds: 10
           periodSeconds: 10
@@ -234,16 +227,9 @@ spec:
         readinessProbe:
           exec:
             command:
-              {{- if .Values.anchoreGlobal.internalServicesSsl.enabled }}
-              - curl
-              - -f
-              - -k
-              - 'https://localhost:{{ .Values.anchoreEnterpriseRbac.service.authPort }}/health'
-              {{- else }}
               - curl
               - -f
               - 'localhost:{{ .Values.anchoreEnterpriseRbac.service.authPort }}/health'
-              {{- end }}
           timeoutSeconds: 10
           periodSeconds: 10
           failureThreshold: 3
