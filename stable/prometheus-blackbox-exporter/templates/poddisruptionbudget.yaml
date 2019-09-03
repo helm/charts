@@ -1,0 +1,15 @@
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ template "prometheus-blackbox-exporter.fullname" . }}
+  labels:
+    app: {{ template "prometheus-blackbox-exporter.name" . }}
+    chart: {{ template "prometheus-blackbox-exporter.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "prometheus-blackbox-exporter.name" . }}
+      release: {{ .Release.Name }}
+{{ toYaml .Values.podDisruptionBudget | indent 2 }}
