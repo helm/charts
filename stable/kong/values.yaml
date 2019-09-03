@@ -4,7 +4,7 @@
 image:
   repository: kong
   # repository: kong-docker-kong-enterprise-edition-docker.bintray.io/kong-enterprise-edition
-  tag: 1.2
+  tag: 1.3
   pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
