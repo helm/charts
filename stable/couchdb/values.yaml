@@ -80,6 +80,9 @@ affinity:
   #             - couchdb
   #       topologyKey: "kubernetes.io/hostname"
 
+## Optional Annotations
+podAnnotations: {}
+
 ## A StatefulSet requires a headless Service to establish the stable network
 ## identities of the Pods, and that Service is created automatically by this
 ## chart without any additional configuration. The Service block below refers
