@@ -33,6 +33,7 @@ webUI:
   ingress:
     enabled: false
     tls: false
+    # secretName: dask-scheduler-tls
     hostname: dask-ui.example.com
     annotations:
      # kubernetes.io/ingress.class: "nginx"
@@ -106,6 +107,7 @@ jupyter:
   ingress:
     enabled: false
     tls: false
+    # secretName: dask-jupyter-tls
     hostname: dask-jupyter.example.com
     annotations:
       # kubernetes.io/ingress.class: "nginx"

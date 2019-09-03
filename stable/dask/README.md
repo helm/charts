@@ -47,14 +47,15 @@ their default values.
 
 ### Dask webUI
 
-| Parameter                   | Description                        | Default             |
-| --------------------------- | ---------------------------------- | ------------------- |
-| `webUI.name`                | Dask webui name                    | `webui`             |
-| `webUI.servicePort`         | k8s service port                   | `80`                |
-| `webUI.ingress.enabled`     | Enable ingress controller resource | false               |
-| `webUI.ingress.hostname`    | Ingress resource hostnames         | dask-ui.example.com |
-| `webUI.ingress.tls`         | Ingress TLS configuration          | false               |
-| `webUI.ingress.annotations` | Ingress annotations configuration  | null                |
+| Parameter                   | Description                        | Default              |
+| --------------------------- | ---------------------------------- | -------------------- |
+| `webUI.name`                | Dask webui name                    | `webui`              |
+| `webUI.servicePort`         | k8s service port                   | `80`                 |
+| `webUI.ingress.enabled`     | Enable ingress controller resource | false                |
+| `webUI.ingress.hostname`    | Ingress resource hostnames         | dask-ui.example.com  |
+| `webUI.ingress.tls`         | Ingress TLS configuration          | false                |
+| `webUI.ingress.secretName`  | Ingress TLS secret name            | `dask-scheduler-tls` |
+| `webUI.ingress.annotations` | Ingress annotations configuration  | null                 |
 
 ### Dask worker
 
@@ -86,6 +87,7 @@ their default values.
 | `jupyter.ingress.enabled`     | Enable ingress controller resource | false                   |
 | `jupyter.ingress.hostname`    | Ingress resource hostnames         | dask-ui.example.com     |
 | `jupyter.ingress.tls`         | Ingress TLS configuration          | false                   |
+| `jupyter.ingress.secretName`  | Ingress TLS secret name            | `dask-jupyter-tls`      |
 | `jupyter.ingress.annotations` | Ingress annotations configuration  | null                    |
 
 #### Jupyter Password
