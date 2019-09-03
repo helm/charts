@@ -9,6 +9,7 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
   name: {{ template "nginx-ingress.fullname" . }}-custom-add-headers
+  namespace: {{ .Release.Namespace }}
 data:
 {{ toYaml .Values.controller.addHeaders | indent 2 }}
 {{- end }}

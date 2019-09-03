@@ -5,6 +5,8 @@ metadata:
   name: {{ template "nginx-ingress.controller.fullname" . }}
   {{- if .Values.controller.metrics.prometheusRule.namespace }}
   namespace: {{ .Values.controller.metrics.prometheusRule.namespace }}
+  {{- else }}
+  namespace: {{ .Release.Namespace }}
   {{- end }}
   labels:
     app: {{ template "nginx-ingress.name" . }}

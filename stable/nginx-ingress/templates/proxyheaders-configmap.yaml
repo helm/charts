@@ -9,6 +9,7 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
   name: {{ template "nginx-ingress.fullname" . }}-custom-proxy-headers
+  namespace: {{ .Release.Namespace }}
 data:
 {{- if .Values.controller.proxySetHeaders }}
 {{ toYaml .Values.controller.proxySetHeaders | indent 2 }}

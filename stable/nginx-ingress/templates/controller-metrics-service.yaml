@@ -18,6 +18,7 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
   name: {{ template "nginx-ingress.controller.fullname" . }}-metrics
+  namespace: {{ .Release.Namespace }}
 spec:
 {{- if not .Values.controller.metrics.service.omitClusterIP }}
   clusterIP: "{{ .Values.controller.metrics.service.clusterIP }}"

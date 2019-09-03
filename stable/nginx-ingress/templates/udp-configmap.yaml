@@ -9,6 +9,7 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
   name: {{ template "nginx-ingress.fullname" . }}-udp
+  namespace: {{ .Release.Namespace }}
 data:
 {{ tpl (toYaml .Values.udp) . | indent 2 }}
 {{- end }}
