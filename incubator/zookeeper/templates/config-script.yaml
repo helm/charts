@@ -46,8 +46,6 @@ data:
       LOG4J_PROPERTIES="$ZK_CONF_DIR/log4j.properties"
       HOST=$(hostname)
       DOMAIN=`hostname -d`
-      ZOOCFG=zoo.cfg
-      ZOOCFGDIR=$ZK_CONF_DIR
       JVMFLAGS="-Xmx$ZK_HEAP_SIZE -Xms$ZK_HEAP_SIZE"
 
       APPJAR=$(echo $ROOT/*jar)
