@@ -39,8 +39,10 @@ The following table lists the configurable parameters of the Sonarqube chart and
 
 | Parameter                                   | Description                               | Default                                    |
 | ------------------------------------------  | ----------------------------------------  | -------------------------------------------|
+| `replicaCount`                              | Number of replicas deployed               | `1`                                        |
+| `deploymentStrategy`                        | Deployment strategy                       | `{}`                                       |
 | `image.repository`                          | image repository                          | `sonarqube`                                |
-| `image.tag`                                 | `sonarqube` image tag.                    | `7.8-community`                                        |
+| `image.tag`                                 | `sonarqube` image tag.                    | `7.9-community`                            |
 | `image.pullPolicy`                          | Image pull policy                         | `IfNotPresent`                             |
 | `image.pullSecret`                          | imagePullSecret to use for private repository      |                                   |
 | `command`                                   | command to run in the container           | `nil` (need to be set prior to 6.7.6, and 7.4)      |
@@ -58,6 +60,7 @@ The following table lists the configurable parameters of the Sonarqube chart and
 | `service.loadBalancerSourceRanges`          | Kubernetes service LB Allowed inbound IP addresses | 0.0.0.0/0                            |
 | `service.loadBalancerIP`                    | Kubernetes service LB Optional fixed external IP   | None                                       |
 | `persistence.enabled`                       | Flag for enabling persistent storage      | false                                      |
+| `persistence.annotations`                   | Kubernetes pvc annotations                | `{}`                                      |
 | `persistence.existingClaim`                 | Do not create a new PVC but use this one  | None                                       |
 | `persistence.storageClass`                  | Storage class to be used                  | "-"                                        |
 | `persistence.accessMode`                    | Volumes access mode to be set             | `ReadWriteOnce`                            |
@@ -83,6 +86,7 @@ The following table lists the configurable parameters of the Sonarqube chart and
 | `mysql.mysqlDatabase`                       | Mysql database name                       | `sonarDB`                                  |
 | `mysql.mysqlParams`                         | Mysql parameters for JDBC connection string     | `{}`                                 |
 | `mysql.service.port`                        | Mysql port                                | `3306`                                     |
+| `annotations`                               | Sonarqube Pod annotations                 | `{}`                                       |
 | `resources`                                 | Sonarqube Pod resource requests & limits  | `{}`                                       |
 | `affinity`                                  | Node / Pod affinities                     | `{}`                                       |
 | `nodeSelector`                              | Node labels for pod assignment            | `{}`                                       |

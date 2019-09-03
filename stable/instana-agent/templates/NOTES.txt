@@ -61,6 +61,6 @@ It may take a few moments for the agents to fully deploy. You can see what agent
 
 You can get the logs for all of the agents with `kubectl logs`:
 
-    kubectl logs -f $(kubectl get pods -n {{ .Release.Namespace }} -o name) -n {{ .Release.Namespace }} -c instana-agent
+    kubectl logs -l app.kubernetes.io/instance={{ .Release.Name }} -n {{ .Release.Namespace }} -c instana-agent
 
 {{- end }}

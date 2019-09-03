@@ -51,11 +51,14 @@ The following table lists the configurable parameters of the TestLink chart and 
 |-------------------------------------|-----------------------------------------|---------------------------------------------------------|
 | `global.imageRegistry`              | Global Docker image registry            | `nil`                                                   |
 | `global.imagePullSecrets`           | Global Docker registry secret names as an array | `[]` (does not add image pull secrets to deployed pods) |
+| `global.storageClass`                     | Global storage class for dynamic provisioning                                               | `nil`                                                        |
 | `image.registry`                    | TestLink image registry                 | `docker.io`                                             |
 | `image.repository`                  | TestLink image name                     | `bitnami/testlink`                                      |
 | `image.tag`                         | TestLink image tag                      | `{TAG_NAME}`                                            |
 | `image.pullPolicy`                  | Image pull policy                       | `IfNotPresent`                                          |
 | `image.pullSecrets`                 | Specify docker-registry secret names as an array  | `[]` (does not add image pull secrets to deployed pods) |
+| `nameOverride`                      | String to partially override testlink.fullname template with a string (will prepend the release name) | `nil` |
+| `fullnameOverride`                  | String to fully override testlink.fullname template with a string                                     | `nil` |
 | `testlinkUsername`                  | Admin username                          | `user`                                                  |
 | `testlinkPassword`                  | Admin user password                     | _random 10 character long alphanumeric string_          |
 | `testlinkEmail`                     | Admin user email                        | `user@example.com`                                      |
@@ -102,8 +105,8 @@ The following table lists the configurable parameters of the TestLink chart and 
 | `podAnnotations`                | Pod annotations                                   | `{}`                                                       |
 | `metrics.enabled`                          | Start a side-car prometheus exporter                        | `false`                                              |
 | `metrics.image.registry`                   | Apache exporter image registry                              | `docker.io`                                          |
-| `metrics.image.repository`                 | Apache exporter image name                                  | `lusotycoon/apache-exporter`                           |
-| `metrics.image.tag`                        | Apache exporter image tag                                   | `v0.5.0`                                            |
+| `metrics.image.repository`                 | Apache exporter image name                                  | `bitnami/apache-exporter`                            |
+| `metrics.image.tag`                        | Apache exporter image tag                                   | `{TAG_NAME}`                                         |
 | `metrics.image.pullPolicy`                 | Image pull policy                                           | `IfNotPresent`                                       |
 | `metrics.image.pullSecrets`                | Specify docker-registry secret names as an array            | `[]` (does not add image pull secrets to deployed pods)  |
 | `metrics.podAnnotations`                   | Additional annotations for Metrics exporter pod             | `{prometheus.io/scrape: "true", prometheus.io/port: "9117"}`                                                   |

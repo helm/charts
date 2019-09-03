@@ -20,6 +20,9 @@ rules:
       - services
       - events
       - configmaps
+      - daemonsets
+      - deployments
+      - replicasets
     verbs:
       - get
       - list

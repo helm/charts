@@ -39,7 +39,7 @@ The following table lists the configurable parameters of the postgres Exporter c
 | Parameter                       | Description                                | Default                                                    |
 | ------------------------------- | ------------------------------------------ | ---------------------------------------------------------- |
 | `image`                         | Image                                      | `wrouesnel/postgres_exporter`                      |
-| `imageTag`                      | Image tag                                  | `v0.4.6`                                      |
+| `imageTag`                      | Image tag                                  | `v0.5.1`                                      |
 | `imagePullPolicy`               | Image pull policy                          | `IfNotPresent` |
 | `service.annotations`           | annotations for the service                | `{}`           |
 | `service.type`      | Service type |  `ClusterIP` |
@@ -47,6 +47,12 @@ The following table lists the configurable parameters of the postgres Exporter c
 | `service.targetPort`                      | The target port of the container                               | `9187`                                        |
 | `service.name`                  | Name of the service port                   | `http`                                                     |
 | `service.labels`                | Labels to add to the service               | `{}`                                                       |
+| `servicemonitor.enabled`          | Use servicemonitor from prometheus operator                             | `false`                     |
+| `servicemonitor.namespace`        | Namespace thes Servicemonitor  is installed in                          |                             |
+| `servicemonitor.interval`         | How frequently Prometheus should scrape                                 |                             |
+| `servicemonitor.telemetryPath`    | path to cloudwatch-exporter telemtery-path                              |                             |
+| `servicemonitor.labels`           | labels for the ServiceMonitor passed to Prometheus Operator             | `{}`                        |
+| `servicemonitor.timeout`          | Timeout after which the scrape is ended                                 |                             |
 | `resources`          |                                  |                    `{}`                                  |
 | `config.datasource`                 | Postgresql datasource configuration                      |  see [values.yaml](values.yaml)              |
 | `config.queries`                | SQL queries that the exporter will run | [postgres exporter defaults](https://github.com/wrouesnel/postgres_exporter/blob/master/queries.yaml) |

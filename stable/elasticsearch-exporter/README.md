@@ -47,7 +47,7 @@ Parameter | Description | Default
 `replicaCount` | desired number of pods | `1`
 `restartPolicy` | container restart policy | `Always`
 `image.repository` | container image repository | `justwatch/elasticsearch_exporter`
-`image.tag` | container image tag | `1.0.2`
+`image.tag` | container image tag | `1.1.0`
 `image.pullPolicy` | container image pull policy | `IfNotPresent`
 `image.pullSecret` | container image pull secret | `""`
 `resources` | resource requests & limits | `{}`
@@ -60,9 +60,14 @@ Parameter | Description | Default
 `service.metricsPort.name` | name for the http service | `http`
 `service.annotations` | Annotations on the http service | `{}`
 `service.labels` | Additional labels for the service definition | `{}`
-`es.uri` | address of the Elasticsearch node to connect to | `http://localhost:9200`
+`env` | Extra environment variables passed to pod | `{}`
+`affinity` | Affinity rules | `{}`
+`es.uri` | address of the Elasticsearch node to connect to | `localhost:9200`
 `es.all` | if `true`, query stats for all nodes in the cluster, rather than just the node we connect to | `true`
 `es.indices` | if true, query stats for all indices in the cluster | `true`
+`es.shards` | if true, query stats for shards in the cluster | `true`
+`es.cluster_settings` | if true, query stats for cluster settings | `true`
+`es.snapshots` | if true, query stats for snapshots in the cluster | `true`
 `es.timeout` | timeout for trying to get stats from Elasticsearch | `30s`
 `es.ssl.enabled` | If true, a secure connection to E cluster is used | `false`
 `es.ssl.client.ca.pem` | PEM that contains trusted CAs used for setting up secure Elasticsearch connection |
@@ -75,6 +80,10 @@ Parameter | Description | Default
 `serviceMonitor.interval` | Interval at which metrics should be scraped | `10s`
 `serviceMonitor.scrapeTimeout` | Timeout after which the scrape is ended | `10s`
 `serviceMonitor.scheme` | Scheme to use for scraping | `http`
+`prometheusRule.enabled` | If true, a PrometheusRule CRD is created for a prometheus operator | `false`
+`prometheusRule.namespace` | If set, the PrometheusRule will be installed in a different namespace  | `""`
+`prometheusRule.labels` | Labels for prometheus operator | `{}`
+`prometheusRule.rules` | List of Prometheus rules | `[]`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

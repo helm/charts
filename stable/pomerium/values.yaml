@@ -115,5 +115,23 @@ extraVolumes: {}
 
 image:
   repository: "pomerium/pomerium"
-  tag: "v0.0.5"
+  tag: "v0.3.0"
   pullPolicy: "IfNotPresent"
+
+metrics:
+  enabled: false
+  port: 9090
+
+tracing:
+  enabled: false
+  provider: ""
+  debug: false
+  jaeger:
+    collector_endpoint: ""
+    agent_endpoint: ""
+
+serviceMonitor:
+  enabled: false
+  namespace: ""
+  labels:
+    release: prometheus

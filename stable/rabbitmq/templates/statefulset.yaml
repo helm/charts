@@ -81,6 +81,7 @@ spec:
          - |
             mkdir -p /opt/bitnami/rabbitmq/.rabbitmq/
             mkdir -p /opt/bitnami/rabbitmq/etc/rabbitmq/
+            touch /opt/bitnami/rabbitmq/var/lib/rabbitmq/.start
             #persist the erlang cookie in both places for server and cli tools
             echo $RABBITMQ_ERL_COOKIE > /opt/bitnami/rabbitmq/var/lib/rabbitmq/.erlang.cookie
             cp /opt/bitnami/rabbitmq/var/lib/rabbitmq/.erlang.cookie /opt/bitnami/rabbitmq/.rabbitmq/
@@ -105,6 +106,23 @@ spec:
             test "\${EXPECTED}" = "\${ACTUAL}"
             EOF
             chmod a+x /opt/bitnami/rabbitmq/sbin/rabbitmq-api-check
+            #health check for probes, handle period during rabbtmq sync
+            cat > /opt/bitnami/rabbitmq/sbin/rabbitmq-health-check <<EOF
+            #!/bin/sh
+            START_FLAG=/opt/bitnami/rabbitmq/var/lib/rabbitmq/.start
+            if [ -f \${START_FLAG} ]; then
+               rabbitmqctl node_health_check
+               RESULT=\$?
+               if [ \$RESULT -ne 0 ]; then
+                  rabbitmqctl status
+                  exit $?
+               fi
+               rm -f \${START_FLAG}
+               exit \${RESULT}
+            fi
+            rabbitmq-api-check \$1 \$2
+            EOF
+            chmod a+x /opt/bitnami/rabbitmq/sbin/rabbitmq-health-check
             {{- if and .Values.persistence.enabled .Values.forceBoot.enabled }}
             if [ -d "{{ .Values.persistence.path }}/mnesia/${RABBITMQ_NODENAME}" ]; then rabbitmqctl force_boot; fi
             {{- end }}
@@ -138,7 +156,7 @@ spec:
             command:
               - sh
               - -c
-              - rabbitmq-api-check "http://{{ .Values.rabbitmq.username }}:$RABBITMQ_PASSWORD@127.0.0.1:{{ .Values.service.managerPort }}/api/healthchecks/node" '{"status":"ok"}'
+              - rabbitmq-api-check "http://{{ .Values.rabbitmq.username }}:$RABBITMQ_PASSWORD@127.0.0.1:{{ .Values.service.managerPort }}/api/healthchecks/node" '{"status":"ok"}' 
           initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
           timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
           periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
@@ -151,7 +169,7 @@ spec:
             command:
               - sh
               - -c
-              - rabbitmq-api-check "http://{{ .Values.rabbitmq.username }}:$RABBITMQ_PASSWORD@127.0.0.1:{{ .Values.service.managerPort }}/api/healthchecks/node" '{"status":"ok"}'
+              - rabbitmq-health-check "http://{{ .Values.rabbitmq.username }}:$RABBITMQ_PASSWORD@127.0.0.1:{{ .Values.service.managerPort }}/api/healthchecks/node" '{"status":"ok"}'
           initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
           timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
           periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
@@ -210,6 +228,10 @@ spec:
               secretKeyRef:
                 name: {{ template "rabbitmq.secretPasswordName" . }}
                 key: rabbitmq-password
+          {{- range $key, $value := .Values.rabbitmq.env }}
+          - name: {{ $key }}
+            value: {{ $value | quote }}
+          {{- end }}
 {{- if .Values.metrics.enabled }}
       - name: metrics
         image: {{ template "rabbitmq.metrics.image" . }}
@@ -297,11 +319,5 @@ spec:
         resources:
             requests:
               storage: {{ .Values.persistence.size | quote }}
-      {{- if .Values.persistence.storageClass }}
-      {{- if (eq "-" .Values.persistence.storageClass) }}
-        storageClassName: ""
-      {{- else }}
-        storageClassName: "{{ .Values.persistence.storageClass }}"
-      {{- end }}
-      {{- end }}
+        {{ include "rabbitmq.storageClass" . }}
   {{- end }}

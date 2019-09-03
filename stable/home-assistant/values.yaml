@@ -4,7 +4,7 @@
 
 image:
   repository: homeassistant/home-assistant
-  tag: 0.93.2
+  tag: 0.98.0
   pullPolicy: IfNotPresent
   pullSecrets: []
 
@@ -87,8 +87,11 @@ git:
   ##
   image:
     repository: causticlab/hass-configurator-docker
-    tag: x86_64-0.3.1
+    tag: 0.3.5-x86_64
     pullPolicy: IfNotPresent
+
+  ## Specify the command that runs in the git-sync container to pull in configuration.
+  # command: []
 
   # repo:
   secret: git-creds
@@ -106,7 +109,7 @@ configurator:
   ##
   image:
     repository: causticlab/hass-configurator-docker
-    tag: x86_64-0.3.1
+    tag: 0.3.5-x86_64
     pullPolicy: IfNotPresent
 
   ## URL for the home assistant API endpoint
@@ -179,7 +182,7 @@ vscode:
   ##
   image:
     repository: codercom/code-server
-    tag: 1.939
+    tag: 2.preview.11-vsc1.37.0
     pullPolicy: IfNotPresent
 
   ## VSCode password
@@ -240,3 +243,5 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+podAnnotations: {}

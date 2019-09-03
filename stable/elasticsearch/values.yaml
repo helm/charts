@@ -1,7 +1,7 @@
 # Default values for elasticsearch.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-appVersion: "6.7.0"
+appVersion: "6.8.2"
 
 ## Define serviceAccount names for components. Defaults to component's fully qualified name.
 ##
@@ -42,7 +42,7 @@ securityContext:
 
 image:
   repository: "docker.elastic.co/elasticsearch/elasticsearch-oss"
-  tag: "6.7.0"
+  tag: "6.8.2"
   pullPolicy: "IfNotPresent"
   # If specified, use these secrets to access the image
   # pullSecrets:
@@ -124,6 +124,7 @@ client:
   nodeAffinity: {}
   nodeSelector: {}
   tolerations: []
+  # terminationGracePeriodSeconds: 60
   initResources: {}
     # limits:
     #   cpu: "25m"
@@ -146,6 +147,12 @@ client:
     enabled: false
     minAvailable: 1
     # maxUnavailable: 1
+  hooks: {}
+    ## (string) Script to execute prior the client pod stops.
+    # preStop: |-
+
+    ## (string) Script to execute after the client pod starts.
+    # postStart: |-
   ingress:
     enabled: false
     # user: NAME
@@ -182,6 +189,7 @@ master:
   nodeAffinity: {}
   nodeSelector: {}
   tolerations: []
+  # terminationGracePeriodSeconds: 60
   initResources: {}
     # limits:
     #   cpu: "25m"
@@ -207,6 +215,12 @@ master:
     # maxUnavailable: 1
   updateStrategy:
     type: OnDelete
+  hooks: {}
+    ## (string) Script to execute prior the master pod stops.
+    # preStop: |-
+
+    ## (string) Script to execute after the master pod starts.
+    # postStart: |-
 
 data:
   name: data
@@ -255,9 +269,39 @@ data:
   podManagementPolicy: OrderedReady
   updateStrategy:
     type: OnDelete
-  hooks:  # post-start and pre-stop hooks
-    drain:  # drain the node before stopping it and re-integrate it into the cluster after start
+  hooks:
+    ## Drain the node before stopping it and re-integrate it into the cluster after start.
+    ## When enabled, it supersedes `data.hooks.preStop` and `data.hooks.postStart` defined below.
+    drain:
       enabled: true
+
+    ## (string) Script to execute prior the data pod stops. Ignored if `data.hooks.drain.enabled` is true (default)
+    # preStop: |-
+    #   #!/bin/bash
+    #   exec &> >(tee -a "/var/log/elasticsearch-hooks.log")
+    #   NODE_NAME=${HOSTNAME}
+    #   curl -s -XPUT -H 'Content-Type: application/json' '{{ template "elasticsearch.client.fullname" . }}:9200/_cluster/settings' -d "{
+    #     \"transient\" :{
+    #         \"cluster.routing.allocation.exclude._name\" : \"${NODE_NAME}\"
+    #     }
+    #   }"
+    #   echo "Node ${NODE_NAME} is exluded from the allocation"
+
+    ## (string) Script to execute after the data pod starts. Ignored if `data.hooks.drain.enabled` is true (default)
+    # postStart: |-
+    #   #!/bin/bash
+    #   exec &> >(tee -a "/var/log/elasticsearch-hooks.log")
+    #   NODE_NAME=${HOSTNAME}
+    #   CLUSTER_SETTINGS=$(curl -s -XGET "http://{{ template "elasticsearch.client.fullname" . }}:9200/_cluster/settings")
+    #   if echo "${CLUSTER_SETTINGS}" | grep -E "${NODE_NAME}"; then
+    #     echo "Activate node ${NODE_NAME}"
+    #     curl -s -XPUT -H 'Content-Type: application/json' "http://{{ template "elasticsearch.client.fullname" . }}:9200/_cluster/settings" -d "{
+    #       \"transient\" :{
+    #           \"cluster.routing.allocation.exclude._name\" : null
+    #       }
+    #     }"
+    #   fi
+    #   echo "Node ${NODE_NAME} is ready to be used"
 
 ## Sysctl init container to setup vm.max_map_count
 # see https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html

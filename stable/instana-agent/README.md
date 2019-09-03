@@ -117,10 +117,17 @@ The following table lists the configurable parameters of the Instana chart and t
 | `agent.pod.requests.cpu`           | Container cpu requests in cpu cores                                     | `0.5`                                                                                                       |
 | `agent.pod.limits.memory`          | Container memory limits in MiB                                          | `512`                                                                                                       |
 | `agent.pod.limits.cpu`             | Container cpu limits in cpu cores                                       | `1.5`                                                                                                       |
+| `agent.configuration_yaml`         | Custom content for the agent configuration.yaml file                    | `nil` See [below](#agent) for more details                                                                  |
+| `agent.redactKubernetesSecrets`    | Enable additional secrets redaction for selected Kubernetes resources   | `nil` See [Kubernetes secrets](https://docs.instana.io/quick_start/agent_setup/container/kubernetes/#secrets) for more details.   |
 | `rbac.create`                      | Whether RBAC resources should be created                                | `true`                                                                                                      |
 | `serviceAccount.create`            | Whether a ServiceAccount should be created                              | `true`                                                                                                      |
 | `serviceAccount.name`              | Name of the ServiceAccount to use                                       | `instana-agent`                                                                                             |
 
 ### Agent
 
-There is a [config map](templates/configmap.yaml) which you can edit to configure the agent. This configuration will be used for all instana agents on all nodes.
+To configure the agent, you can either:
+
+- edit the [config map](templates/configmap.yaml), or
+- provide the configuration via the `agent.configuration_yaml` parameter in [values.yaml](values.yaml)
+
+This configuration will be used for all instana agents on all nodes. Visit the [agent configuration documentation](https://docs.instana.io/quick_start/agent_configuration/#configuration) for more details on configuration options.

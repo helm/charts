@@ -19,7 +19,7 @@ Render profiles for each service by merging predefined defaults with values pass
 {{- /* Defaults: Add special settings for gate if GCE or ALB ingress is used */}}
 {{- /* https://github.com/spinnaker/spinnaker/issues/1630#issuecomment-467359999 */}}
 {{- if index $.Values.ingress "annotations" -}}
-{{- if eq (index $.Values.ingress.annotations "kubernetes.io/ingress.class" | default "") "gce" "alb" }}
+{{- if eq (index $.Values.ingress.annotations "kubernetes.io/ingress.class" | default "") "gce" "alb" "nsx" }}
 {{- $tomcatProxySettings := dict -}}
 {{- $_ := set $tomcatProxySettings "protocolHeader" "X-Forwarded-Proto" -}}
 {{- $_ := set $tomcatProxySettings "remoteIpHeader" "X-Forwarded-For" -}}

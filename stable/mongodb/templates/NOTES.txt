@@ -17,7 +17,7 @@
 
 ** Please be patient while the chart is being deployed **
 
-MongoDB can be accessed via port 27017 on the following DNS name from within your cluster:
+MongoDB can be accessed via port {{ .Values.service.port }} on the following DNS name from within your cluster:
 
     {{ template "mongodb.fullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}
 
@@ -60,10 +60,12 @@ To connect to your database from outside the cluster execute the following comma
 
 {{- else if contains "ClusterIP" .Values.service.type }}
 
-    kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "mongodb.fullname" . }} 27017:27017 &
+    kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "mongodb.fullname" . }} {{ .Values.service.port }}:{{ .Values.service.port }} &
     mongo --host 127.0.0.1 {{- if .Values.usePassword }} --authenticationDatabase admin -p $MONGODB_ROOT_PASSWORD{{- end }}
 
 {{- end }}
+
+{{- include "mongodb.validateValues" . -}}
 
 {{- if and (contains "bitnami/" .Values.image.repository) (not (.Values.image.tag | toString | regexFind "-r\\d+$|sha256:")) }}
 

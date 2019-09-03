@@ -3,6 +3,14 @@ rbac:
   pspEnabled: true
   pspUseAppArmor: true
   namespaced: false
+  extraRoleRules: []
+  # - apiGroups: []
+  #   resources: []
+  #   verbs: []
+  extraClusterRoleRules: []
+  # - apiGroups: []
+  #   resources: []
+  #   verbs: []
 serviceAccount:
   create: true
   name:
@@ -14,7 +22,6 @@ replicas: 1
 ## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
 deploymentStrategy:
   type: RollingUpdate
-  rollingUpdate: null
 
 readinessProbe:
   httpGet:
@@ -36,7 +43,7 @@ livenessProbe:
 
 image:
   repository: grafana/grafana
-  tag: 6.2.4
+  tag: 6.3.4
   pullPolicy: IfNotPresent
 
   ## Optionally specify an array of imagePullSecrets.
@@ -49,6 +56,7 @@ image:
 testFramework:
   image: "dduportal/bats"
   tag: "0.4.0"
+  securityContext: {}
 
 securityContext:
   runAsUser: 472
@@ -58,6 +66,7 @@ securityContext:
 extraConfigmapMounts: []
   # - name: certs-configmap
   #   mountPath: /etc/grafana/ssl/
+  #   subPath: certificates.crt # (optional)
   #   configMap: certs-configmap
   #   readOnly: true
 
@@ -74,6 +83,9 @@ downloadDashboardsImage:
   repository: appropriate/curl
   tag: latest
   pullPolicy: IfNotPresent
+
+downloadDashboards:
+  env: {}
 
 ## Pod Annotations
 # podAnnotations: {}
@@ -159,6 +171,8 @@ persistence:
     - ReadWriteOnce
   size: 10Gi
   # annotations: {}
+  finalizers:
+    - kubernetes.io/pvc-protection
   # subPath: ""
   # existingClaim:
 
@@ -379,7 +393,7 @@ smtp:
 ## Sidecars that collect the configmaps with specified label and stores the included files them into the respective folders
 ## Requires at least Grafana 5 to work and can't be used together with parameters dashboardProviders, datasources and dashboards
 sidecar:
-  image: kiwigrid/k8s-sidecar:0.0.16
+  image: kiwigrid/k8s-sidecar:0.1.20
   imagePullPolicy: IfNotPresent
   resources: {}
 #   limits:
@@ -402,6 +416,18 @@ sidecar:
     # Otherwise the namespace in which the sidecar is running will be used.
     # It's also possible to specify ALL to search in all namespaces
     searchNamespace: null
+    # provider configuration that lets grafana manage the dashboards
+    provider:
+      # name of the provider, should be unique
+      name: sidecarProvider
+      # orgid as configured in grafana
+      orgid: 1
+      # folder in which the dashboards should be imported in grafana
+      folder: ''
+      # type of the provider
+      type: file
+      # disableDelete to activate a import-only behaviour
+      disableDelete: false
   datasources:
     enabled: false
     # label that the configmaps with datasources are marked with

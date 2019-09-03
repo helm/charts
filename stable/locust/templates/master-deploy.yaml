@@ -41,6 +41,9 @@ spec:
           value: "master"
         - name: LOCUST_SCRIPT
           value: {{ index .Values.worker.config "locust-script" | quote }}
+{{- if .Values.extraEnvs }}
+{{ toYaml .Values.extraEnvs | indent 8 }}
+{{- end }}
         ports:
         - containerPort: {{ .Values.service.internalPort }}
           name: loc-master-web
@@ -54,6 +57,9 @@ spec:
         volumeMounts:
           - name: locust-tasks
             mountPath: /locust-tasks/
+{{- if .Values.extraVolumeMounts }}
+{{ toYaml .Values.extraVolumeMounts | indent 10 }}
+{{- end }}
         livenessProbe:
           periodSeconds: 30
           httpGet:
@@ -68,6 +74,9 @@ spec:
       - name: "locust-tasks"
         configMap:
           name: {{ template "locust.worker-configmap" . }}
+{{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes | indent 6 }}
+{{- end }}
       restartPolicy: Always
 {{- with .Values.master.nodeSelector }}
       nodeSelector:

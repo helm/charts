@@ -8,7 +8,7 @@ metadata:
   labels:
     app: {{ include "anchore-engine.fullname" . }}
     component: {{ $component }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     {{- with .Values.anchoreEnterpriseUi.labels }}
@@ -130,7 +130,7 @@ metadata:
   labels:
     app: {{ template "anchore-engine.fullname" . }}
     component: {{ $component }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     {{- with .Values.anchoreEnterpriseUi.service.labels }}

@@ -9,6 +9,10 @@ metadata:
     heritage: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.replicaCount }}
+{{- if .Values.deploymentStrategy }}
+  strategy:
+{{ toYaml .Values.deploymentStrategy | indent 4 }}
+{{- end }}
   template:
     metadata:
       labels:
@@ -16,6 +20,12 @@ spec:
         release: {{ .Release.Name }}
 {{- with .Values.podLabels }}
 {{ toYaml . | indent 8 }}
+{{- end }}
+{{ if .Values.annotations}}
+      annotations:
+    {{- range $key, $value := .Values.annotations }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
 {{- end }}
     spec:
       securityContext:
@@ -187,7 +197,7 @@ spec:
       {{- end }}
       {{- if .Values.sonarSecretKey }}
       - name: secret
-        secret: 
+        secret:
           secretName: {{ .Values.sonarSecretKey }}
           items:
           - key: sonar-secret.txt

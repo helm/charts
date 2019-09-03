@@ -6,6 +6,7 @@
 #   imageRegistry: myRegistryName
 #   imagePullSecrets:
 #     - myRegistryKeySecretName
+#   storageClass: myStorageClass
 
 ## Bitnami OpenCart image version
 ## ref: https://hub.docker.com/r/bitnami/opencart/tags/
@@ -13,7 +14,7 @@
 image:
   registry: docker.io
   repository: bitnami/opencart
-  tag: 3.0.3-2-debian-9-r45
+  tag: 3.0.3-2-debian-9-r121
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -25,6 +26,14 @@ image:
   ##
   # pullSecrets:
   #   - myRegistryKeySecretName
+
+## String to partially override opencart.fullname template (will maintain the release name)
+##
+# nameOverride:
+
+## String to fully override opencart.fullname template
+##
+# fullnameOverride:
 
 ## OpenCart host to create application URLs
 ## ref: https://github.com/bitnami/bitnami-docker-opencart#configuration
@@ -234,8 +243,8 @@ metrics:
   enabled: false
   image:
     registry: docker.io
-    repository: lusotycoon/apache-exporter
-    tag: v0.5.0
+    repository: bitnami/apache-exporter
+    tag: 0.7.0-debian-9-r43
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.

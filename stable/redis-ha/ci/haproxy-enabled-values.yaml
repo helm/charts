@@ -1,0 +1,8 @@
+---
+## Enable HAProxy to manage Load Balancing
+haproxy:
+  enabled: true
+  serviceAccount:
+    create: true
+  exporter:
+    enabled: false

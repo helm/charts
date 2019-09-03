@@ -18,8 +18,8 @@ override duplicates
 */}}
 {{- if .Values.datadog.autoconf }}
 {{ tpl (toYaml .Values.datadog.autoconf) . | indent 2 }}
-{{- end -}}
+{{- end }}
 {{- if .Values.datadog.confd }}
 {{ tpl (toYaml .Values.datadog.confd) . | indent 2 }}
-{{- end -}}
+{{- end }}
 {{- end -}}

@@ -11,7 +11,7 @@ agent:
 
   image:
     repository: quay.io/uswitch/kiam
-    tag: v3.2
+    tag: v3.3
     pullPolicy: IfNotPresent
 
   ## agent whitelist of proxy routes matching this reg-ex
@@ -137,7 +137,7 @@ server:
 
   image:
     repository: quay.io/uswitch/kiam
-    tag: v3.2
+    tag: v3.3
     pullPolicy: IfNotPresent
 
   ## Logging settings

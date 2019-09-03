@@ -2,6 +2,10 @@ autoDiscovery:
 # Only cloudProvider `aws` and `gce` are supported by auto-discovery at this time
 # AWS: Set tags as described in https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/cloudprovider/aws/README.md#auto-discovery-setup
   clusterName:  # cluster.local
+  tags:
+  - k8s.io/cluster-autoscaler/enabled
+  - k8s.io/cluster-autoscaler/{{ .Values.autoDiscovery.clusterName }}
+  # - kubernetes.io/cluster/{{ .Values.autoDiscovery.clusterName }}
 
 autoscalingGroups: []
 # At least one element is required if not using autoDiscovery

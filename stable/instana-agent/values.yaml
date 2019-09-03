@@ -62,6 +62,12 @@ agent:
   # agent.proxyUseDNS sets the INSTANA_AGENT_PROXY_USE_DNS environment variable.
   # proxyUseDNS: null
 
+  configuration_yaml: |
+    # Place agent configuration here
+
+  # agent.redactKubernetesSecrets sets the INSTANA_KUBERNETES_REDACT_SECRETS environment variable.
+  # redactKubernetesSecrets: null
+
 rbac:
   # Specifies whether RBAC resources should be created
   create: true

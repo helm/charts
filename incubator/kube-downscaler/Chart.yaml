@@ -1,0 +1,14 @@
+name: kube-downscaler
+apiVersion: v1
+version: 0.1.0
+appVersion: 0.6
+description: A Helm chart for kube-downscaler
+home: https://github.com/hjacobs/kube-downscaler
+sources:
+  - https://github.com/hjacobs/kube-downscaler
+keywords:
+  - k8s pods scheduler
+  - scheduled lifecycle
+maintainers:
+  - name: Rowern
+    email: c.tresarrieu@gmail.com

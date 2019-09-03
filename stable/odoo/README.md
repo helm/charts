@@ -51,11 +51,14 @@ The following table lists the configurable parameters of the Odoo chart and thei
 |---------------------------------------|-----------------------------------------------------------|---------------------------------------------------------|
 | `global.imageRegistry`                | Global Docker image registry                              | `nil`                                                   |
 | `global.imagePullSecrets`             | Global Docker registry secret names as an array           | `[]` (does not add image pull secrets to deployed pods) |
+| `global.storageClass`                     | Global storage class for dynamic provisioning                                               | `nil`                                                        |
 | `image.registry`                      | Odoo image registry                                       | `docker.io`                                             |
 | `image.repository`                    | Odoo Image name                                           | `bitnami/odoo`                                          |
 | `image.tag`                           | Odoo Image tag                                            | `{TAG_NAME}`                                            |
 | `image.pullPolicy`                    | Image pull policy                                         | `Always`                                                |
 | `image.pullSecrets`                   | Specify docker-registry secret names as an array          | `[]` (does not add image pull secrets to deployed pods) |
+| `nameOverride`                        | String to partially override odoo.fullname template with a string (will prepend the release name) | `nil`           |
+| `fullnameOverride`                    | String to fully override odoo.fullname template with a string                                     | `nil`           |
 | `odooUsername`                        | User of the application                                   | `user@example.com`                                      |
 | `odooPassword`                        | Admin account password                                    | _random 10 character long alphanumeric string_          |
 | `odooEmail`                           | Admin account email                                       | `user@example.com`                                      |
@@ -75,12 +78,12 @@ The following table lists the configurable parameters of the Odoo chart and thei
 | `externalDatabase.database`           | Name of the existing database                             | `bitnami_odoo`                                          |
 | `externalDatabase.port`               | Database port number                                      | `5432`                                                  |
 | `ingress.enabled`                     | Enable ingress controller resource                        | `false`                                                 |
+| `ingress.certManager`                 | Add annotations for cert-manager                          | `false`                                                 |
+| `ingress.annotations`                 | Annotations for the ingress                               | `[]`                                                    |
 | `ingress.hosts[0].name`               | Hostname to your Odoo installation                        | `odoo.local`                                            |
 | `ingress.hosts[0].path`               | Path within the url structure                             | `/`                                                     |
 | `ingress.hosts[0].tls`                | Utilize TLS backend in ingress                            | `false`                                                 |
-| `ingress.hosts[0].certManager`        | Add annotations for cert-manager                          | `false`                                                 |
 | `ingress.hosts[0].tlsSecret`          | TLS Secret (certificates)                                 | `odoo.local-tls-secret`                                 |
-| `ingress.hosts[0].annotations`        | Annotations for this host's ingress record                | `[]`                                                    |
 | `ingress.secrets[0].name`             | TLS Secret Name                                           | `nil`                                                   |
 | `ingress.secrets[0].certificate`      | TLS Secret Certificate                                    | `nil`                                                   |
 | `ingress.secrets[0].key`              | TLS Secret Key                                            | `nil`                                                   |

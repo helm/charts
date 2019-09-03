@@ -8,7 +8,7 @@ restartPolicy: Always
 
 image:
   repository: justwatch/elasticsearch_exporter
-  tag: 1.0.2
+  tag: 1.1.0
   pullPolicy: IfNotPresent
   pullSecret: ""
 
@@ -36,6 +36,8 @@ tolerations: {}
 
 podAnnotations: {}
 
+affinity: {}
+
 service:
   type: ClusterIP
   httpPort: 9108
@@ -43,6 +45,13 @@ service:
     name: http
   annotations: {}
   labels: {}
+
+## Extra environment variables that will be passed into the exporter pod
+## example:
+## env:
+##   KEY_1: value1
+##   KEY_2: value2
+# env:
 
 es:
   ## Address (host and port) of the Elasticsearch node we should connect to.
@@ -60,6 +69,18 @@ es:
   ## If true, query stats for all indices in the cluster.
   ##
   indices: true
+
+  ## If true, query stats for shards in the cluster.
+  ##
+  shards: true
+
+  ## If true, query stats for snapshots in the cluster.
+  ##
+  snapshots: true
+
+  ## If true, query stats for cluster settings.
+  ##
+  cluster_settings: false
 
   ## Timeout for trying to get stats from Elasticsearch. (ex: 20s)
   ##
@@ -107,3 +128,34 @@ serviceMonitor:
   interval: 10s
   scrapeTimeout: 10s
   scheme: http
+
+prometheusRule:
+  ## If true, a PrometheusRule CRD is created for a prometheus operator
+  ## https://github.com/coreos/prometheus-operator
+  ##
+  enabled: false
+  #  namespace: monitoring
+  labels: {}
+  rules: []
+    # - record: elasticsearch_filesystem_data_used_percent
+    #   expr: 100 * (elasticsearch_filesystem_data_size_bytes - elasticsearch_filesystem_data_free_bytes)
+    #     / elasticsearch_filesystem_data_size_bytes
+    # - record: elasticsearch_filesystem_data_free_percent
+    #   expr: 100 - elasticsearch_filesystem_data_used_percent
+    # - alert: ElasticsearchTooFewNodesRunning
+    #   expr: elasticsearch_cluster_health_number_of_nodes < 3
+    #   for: 5m
+    #   labels:
+    #     severity: critical
+    #   annotations:
+    #     description: There are only {{$value}} < 3 ElasticSearch nodes running
+    #     summary: ElasticSearch running on less than 3 nodes
+    # - alert: ElasticsearchHeapTooHigh
+    #   expr: elasticsearch_jvm_memory_used_bytes{area="heap"} / elasticsearch_jvm_memory_max_bytes{area="heap"}
+    #     > 0.9
+    #   for: 15m
+    #   labels:
+    #     severity: critical
+    #   annotations:
+    #     description: The heap usage is over 90% for 15m
+    #     summary: ElasticSearch node {{$labels.node}} heap usage is high

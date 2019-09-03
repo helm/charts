@@ -3,11 +3,66 @@
 This file documents all notable changes to Sysdig Falco Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v1.0.5
+
+### Minor Changes
+
+* Add 3 resources (`daemonsets`, `deployments`, `replicasets`) to the ClusterRole resource list  
+  Ref: [PR#514](https://github.com/falcosecurity/falco/pull/514) from Falco repository
+
+## v1.0.4
+
+### Minor Changes
+
+* Upgrade to Falco 0.17.0
+* Upgrade rules to Falco 0.17.0
+
+## v1.0.3
+
+### Minor Changes
+
+* Support [`priorityClassName`](https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/)
+
+## v1.0.2
+
+### Minor Changes
+
+* Upgrade to Falco 0.16.0
+* Upgrade rules to Falco 0.16.0
+
+## v1.0.1
+
+### Minor Changes
+
+* Extra environment variables passed to daemonset pods
+
+## v1.0.0
+
+### Major Changes
+
+* Add support for K8s audit logging
+
+## v0.9.1
+
+### Minor Changes
+
+* Allow configuration using values for `time_format_iso8601` setting
+* Allow configuration using values for `syscall_event_drops` setting
+* Allow configuration using values for `http_output` setting
+* Add CHANGELOG entry for v0.8.0, [not present on its PR](https://github.com/helm/charts/pull/14813#issuecomment-506821432)
+
 ## v0.9.0
 
 ### Major Changes
 
 * Add nestorsalceda as an approver
+
+## v0.8.0
+
+### Major Changes
+
+* Allow configuration of Pod Security Policy. This is needed to get Falco
+  running when the Admission Controller is enabled.
 
 ## v0.7.10
 

@@ -75,8 +75,13 @@ spec:
         - name: download-dashboards
           image: "{{ .Values.downloadDashboardsImage.repository }}:{{ .Values.downloadDashboardsImage.tag }}"
           imagePullPolicy: {{ .Values.downloadDashboardsImage.pullPolicy }}
-          "command": ["/bin/sh"],
-          "args": [ "-c", "mkdir -p /var/lib/grafana/dashboards/default", "/etc/grafana/download_dashboards.sh" ],
+          command: ["/bin/sh"]
+          args: [ "-c", "mkdir -p /var/lib/grafana/dashboards/default && /bin/sh /etc/grafana/download_dashboards.sh" ]
+          env:
+{{- range $key, $value := .Values.downloadDashboards.env }}
+            - name: "{{ $key }}"
+              value: "{{ $value }}"
+{{- end }}
           volumeMounts:
             - name: config
               mountPath: "/etc/grafana/download_dashboards.sh"
@@ -103,6 +108,8 @@ spec:
               value: "{{ .Values.sidecar.datasources.label }}"
             - name: FOLDER
               value: "/etc/grafana/provisioning/datasources"
+            - name: RESOURCE
+              value: "both"
             {{- if .Values.sidecar.datasources.searchNamespace }}
             - name: NAMESPACE
               value: "{{ .Values.sidecar.datasources.searchNamespace }}"
@@ -136,6 +143,8 @@ spec:
               value: "{{ .Values.sidecar.dashboards.label }}"
             - name: FOLDER
               value: "{{ .Values.sidecar.dashboards.folder }}{{- with .Values.sidecar.dashboards.defaultFolderName }}/{{ . }}{{- end }}"
+            - name: RESOURCE
+              value: "both"
             {{- if .Values.sidecar.dashboards.searchNamespace }}
             - name: NAMESPACE
               value: "{{ .Values.sidecar.dashboards.searchNamespace }}"
@@ -171,6 +180,7 @@ spec:
             {{- range .Values.extraConfigmapMounts }}
             - name: {{ .name }}
               mountPath: {{ .mountPath }}
+              subPath: {{ .subPath | default "" }}
               readOnly: {{ .readOnly }}
             {{- end }}
             - name: storage
@@ -213,11 +223,9 @@ spec:
 {{- if .Values.sidecar.dashboards.enabled }}
             - name: sc-dashboard-volume
               mountPath: {{ .Values.sidecar.dashboards.folder | quote }}
-{{- if not .Values.dashboardProviders }}
             - name: sc-dashboard-provider
               mountPath: "/etc/grafana/provisioning/dashboards/sc-dashboardproviders.yaml"
               subPath: provider.yaml
-{{- end}}
 {{- end}}
 {{- if .Values.sidecar.datasources.enabled }}
             - name: sc-datasources-volume
@@ -355,11 +363,11 @@ spec:
       {{- if .Values.sidecar.dashboards.enabled }}
         - name: sc-dashboard-volume
           emptyDir: {}
-      {{- if not .Values.dashboardProviders }}
+{{- if .Values.sidecar.dashboards.enabled }}
         - name: sc-dashboard-provider
           configMap:
             name: {{ template "grafana.fullname" . }}-config-dashboards
-      {{- end -}}
+{{- end }}
       {{- end }}
       {{- if .Values.sidecar.datasources.enabled }}
         - name: sc-datasources-volume

@@ -56,10 +56,10 @@ spec:
         - name: CLEANUP_JOB_IMAGE
           value: "{{ .Values.ndmOperator.cleanupImage }}:{{ .Values.ndmOperator.cleanupImageTag }}"
 {{- if .Values.ndmOperator.nodeSelector }}
-     nodeSelector:
+      nodeSelector:
 {{ toYaml .Values.ndmOperator.nodeSelector | indent 8 }}
 {{- end }}
 {{- if .Values.ndmOperator.tolerations }}
-     tolerations:
+      tolerations:
 {{ toYaml .Values.ndmOperator.tolerations | indent 8 }}
 {{- end }}
