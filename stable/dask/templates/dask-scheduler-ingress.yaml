@@ -15,7 +15,7 @@ spec:
   tls:
     - hosts:
       - {{ .Values.webUI.ingress.hostname | quote }}
-      secretName: {{ .Values.webUI.ingress.secretName | default (printf "%s-tls" (include "dask.fullname" .)) }}
+      secretName: {{ .Values.webUI.ingress.secretName | default (printf "%s-scheduler-tls" (include "dask.fullname" .)) }}
 {{- end }}
   rules:
   - host: {{ .Values.webUI.ingress.hostname }}
