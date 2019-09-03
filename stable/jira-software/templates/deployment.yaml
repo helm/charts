@@ -8,7 +8,7 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: 1
   strategy:
     type: Recreate
   selector:
@@ -33,6 +33,10 @@ spec:
               name: {{ include "jira-software.pvcname" . }}
             - mountPath: /var/atlassian/application-data/jira/secrets/cas
               name: jira-cas
+          {{- with .Values.env }}
+          env:
+            {{- . | toYaml | trim | nindent 12 }}
+          {{- end }}
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}
@@ -100,7 +104,7 @@ spec:
               value: "postgres72"
             {{- else if .Values.psql }}
             - name: ATL_JDBC_URL
-              value: "jdbc:postgresql://{{ .Values.psql.host }}:{{ .Values.psql.port }}/{{ .Values.psql.database }}"
+              value: "jdbc:postgresql://{{ .Values.psql.host }}:{{ .Values.psql.port | default "5432" }}/{{ .Values.psql.database }}"
             - name: ATL_JDBC_USER
               value: {{ .Values.psql.username | quote }}
             - name: ATL_JDBC_PASSWORD

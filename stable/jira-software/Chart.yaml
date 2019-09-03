@@ -16,4 +16,4 @@ maintainers:
 name: jira-software
 sources:
 - https://bitbucket.org/atlassian-docker/docker-atlassian-jira-software
-version: 1.0.0
+version: 0.0.1

@@ -3,8 +3,6 @@ image:
   tag: 8.3.3
   pullPolicy: IfNotPresent
 
-replicaCount: 1
-
 nameOverride: ""
 fullnameOverride: ""
 
@@ -37,6 +35,7 @@ envVars:
 
 persistence:
   enabled: false
+  # existingClaim: existing-pvc
   accessMode: ReadWriteOnce
   storageClass: standard
   size: 8Gi
@@ -67,8 +66,3 @@ ingress:
 ##
 # postgresql:
 #   enabled: false
-#   postgresqlUsername: jira
-#   postgresqlDatabase: jira
-#   imageTag: 9.6.15
-#   existingSecret: jira-postgresql-secret
-
