@@ -1,7 +1,7 @@
 apiVersion: v1
 name: mongodb
-version: 7.0.2
-appVersion: 4.0.11
+version: 7.2.7
+appVersion: 4.0.12
 description: NoSQL document-oriented database that stores JSON-like documents with dynamic schemas, simplifying the integration of data in content-driven applications.
 keywords:
 - mongodb

@@ -26,6 +26,12 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+{{- if .Values.freshclamConfig }}
+          volumeMounts:
+          - name: freshclam-config-volume
+            mountPath: /etc/clamav/freshclam.conf
+            subPath: freshclam.conf
+{{- end }}
           ports:
             - name: clamavport
               containerPort: 3310
@@ -40,6 +46,12 @@ spec:
             initialDelaySeconds: 300
           resources:
 {{ toYaml .Values.resources | indent 12 }}
+{{- if .Values.freshclamConfig }}
+      volumes:
+        - name: freshclam-config-volume
+          configMap:
+            name: {{ include "clamav.fullname" . }}-freshclam
+{{- end }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

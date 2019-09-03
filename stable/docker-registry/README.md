@@ -44,7 +44,8 @@ their default values.
 | `replicaCount`              | k8s replicas                                                                               | `1`             |
 | `updateStrategy`            | update strategy for deployment                                                             | `{}`            |
 | `podAnnotations`            | Annotations for pod                                                                        | `{}`            |
-| `podLabels`                 | Labels for pod       | `{}`            |
+| `podLabels`                 | Labels for pod                                                                             | `{}`            |
+| `podDisruptionBudget`       | Pod disruption budget                                                                      | `{}`            |
 | `resources.limits.cpu`      | Container requested CPU                                                                    | `nil`           |
 | `resources.limits.memory`   | Container requested memory                                                                 | `nil`           |
 | `priorityClassName      `   | priorityClassName                                                                          | `""`            |

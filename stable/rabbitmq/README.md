@@ -49,6 +49,7 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | ------------------------------------ | ------------------------------------------------ | ------------------------------------------------------- |
 | `global.imageRegistry`               | Global Docker image registry                     | `nil`                                                   |
 | `global.imagePullSecrets`            | Global Docker registry secret names as an array  | `[]` (does not add image pull secrets to deployed pods) |
+| `global.storageClass`                     | Global storage class for dynamic provisioning                                               | `nil`                                                        |
 | `image.registry`                     | Rabbitmq Image registry                          | `docker.io`                                             |
 | `image.repository`                   | Rabbitmq Image name                              | `bitnami/rabbitmq`                                      |
 | `image.tag`                          | Rabbitmq Image tag                               | `{TAG_NAME}`                                            |
@@ -120,8 +121,8 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `readinessProbe.successThreshold`    | number of successes                              | 1                                                       |
 | `metrics.enabled`                    | Start a side-car prometheus exporter             | `false`                                                 |
 | `metrics.image.registry`             | Exporter image registry                          | `docker.io`                                             |
-| `metrics.image.repository`           | Exporter image name                              | `kbudde/rabbitmq-exporter`                              |
-| `metrics.image.tag`                  | Exporter image tag                               | `v0.29.0`                                               |
+| `metrics.image.repository`           | Exporter image name                              | `bitnami/rabbitmq-exporter`                             |
+| `metrics.image.tag`                  | Exporter image tag                               | `{TAG_NAME}`                                            |
 | `metrics.image.pullPolicy`           | Exporter image pull policy                       | `IfNotPresent`                                          |
 | `metrics.serviceMonitor.enabled`     | Create ServiceMonitor Resource for scraping metrics using PrometheusOperator   | `false`                   |
 | `metrics.serviceMonitor.namespace`   | Namespace where servicemonitor resource should be created                      | `nil`                     |
@@ -130,6 +131,7 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `metrics.serviceMonitor.relabellings`| Specify Metric Relabellings to add to the scrape endpoint                      | `nil`                     |
 | `metrics.serviceMonitor.honorLabels` | honorLabels chooses the metric's labels on collisions with target labels.      | `false`                   |
 | `metrics.serviceMonitor.additionalLabels`| Used to pass Labels that are required by the Installed Prometheus Operator | `{}`                      |
+| `metrics.port`                       | Prometheus metrics exporter port                 | `9419`                                                  |
 | `metrics.env`                        | Exporter [configuration environment variables](https://github.com/kbudde/rabbitmq_exporter#configuration) | `{}` |
 | `metrics.resources`                  | Exporter resource requests/limit                 | `nil`                                                   |
 | `metrics.capabilities`               | Exporter: Comma-separated list of extended [scraping capabilities supported by the target RabbitMQ server](https://github.com/kbudde/rabbitmq_exporter#extended-rabbitmq-capabilities) | `bert,no_sort` |
@@ -137,7 +139,7 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `volumePermissions.enabled`         | Enable init container that changes volume permissions in the data directory (for cases where the default k8s `runAsUser` and `fsUser` values do not work)                                                               | `false`                                          |
 | `volumePermissions.image.registry`         | Init container volume-permissions image registry                                                               | `docker.io`                                          |
 | `volumePermissions.image.repository`       | Init container volume-permissions image name                                                                   | `bitnami/minideb`                                    |
-| `volumePermissions.image.tag`              | Init container volume-permissions image tag                                                                    | `latest`                                             |
+| `volumePermissions.image.tag`              | Init container volume-permissions image tag                                                                    | `stretch`                                             |
 | `volumePermissions.image.pullPolicy`       | Init container volume-permissions image pull policy                                                            | `Always`                                             |
 | `volumePermissions.resources`                  | Init container resource requests/limit                 | `nil`                                                   |
 | `forceBoot.enabled`         | Executes 'rabbitmqctl force_boot' to force boot cluster shut down unexpectedly in an unknown order. Use it only if you prefer availability over integrity.                                                               | `false`                                          |
@@ -162,7 +164,7 @@ $ helm install --name my-release -f values.yaml stable/rabbitmq
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
-### Production configuration
+### Production configuration and horizontal scaling
 
 This chart includes a `values-production.yaml` file where you can find some parameters oriented to production configuration in comparison to the regular `values.yaml`.
 
@@ -209,6 +211,27 @@ $ helm install --name my-release -f ./values-production.yaml stable/rabbitmq
 - volumePermissions.enabled: false
 + volumePermissions.enabled: true
 ```
+
+To horizontally scale this chart once it has been deployed you have two options:
+
+- Use `kubectl scale` command:
+
+```console
+$ kubectl scale statefulset my-release-rabbitmq --replicas=3
+```
+
+- Use `helm upgrade` command:
+
+```console
+RABBITMQ_PASSWORD="$(kubectl get secret my-release-rabbitmq -o jsonpath='{.data.rabbitmq-password}' | base64 --decode)"
+RABBITMQ_ERLANG_COOKIE="$(kubectl get secret my-release-rabbitmq -o jsonpath='{.data.rabbitmq-erlang-cookie}' | base64 --decode)"
+$ helm upgrade my-release stable/rabbitmq \
+  --set replicas=3 \
+  --set rabbitmq.password="$RABBITMQ_PASSWORD" \
+  --set rabbitmq.erlangCookie="$RABBITMQ_ERLANG_COOKIE"
+```
+
+> Note: please note it's mandatory to indicate the password and erlangCookie that was set the first time the chart was installed to upgrade the chart. Otherwise, new pods won't be able to join the cluster.
 
 ### [Rolling VS Immutable tags](https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/)
 

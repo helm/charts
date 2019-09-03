@@ -6,6 +6,7 @@
 #   imageRegistry: myRegistryName
 #   imagePullSecrets:
 #     - myRegistryKeySecretName
+#   storageClass: myStorageClass
 
 ## Bitnami Odoo image version
 ## ref: https://hub.docker.com/r/bitnami/odoo/tags/
@@ -13,7 +14,7 @@
 image:
   registry: docker.io
   repository: bitnami/odoo
-  tag: 12.0.20190715-debian-9-r0
+  tag: 12.0.20190815-debian-9-r13
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -143,26 +144,26 @@ ingress:
   ## Most likely this will be just one host, but in the event more hosts are needed, this is an array
   hosts:
   - name: odoo.local
+    path: /
 
     ## Set this to true in order to enable TLS on the ingress record
     ## A side effect of this will be that the backend odoo service will be connected at port 443
     tls: false
 
-    ## Set this to true in order to add the corresponding annotations for cert-manager
-    certManager: false
-
     ## If TLS is set to true, you must declare what secret will store the key/certificate for TLS
     tlsSecret: odoo.local-tls
 
-    ## Ingress annotations done as key:value pairs
-    ## For a full list of possible ingress annotations, please see
-    ## ref: https://github.com/kubernetes/ingress-nginx/blob/master/docs/annotations.md
-    ##
-    ## If tls is set to true, annotation ingress.kubernetes.io/secure-backends: "true" will automatically be set
-    ## If certManager is set to true, annotation kubernetes.io/tls-acme: "true" will automatically be set
-    annotations:
-    #  kubernetes.io/ingress.class: nginx
-    #  kubernetes.io/tls-acme: true
+  ## Set this to true in order to add the corresponding annotations for cert-manager
+  certManager: false
+  ## Ingress annotations done as key:value pairs
+  ## For a full list of possible ingress annotations, please see
+  ## ref: https://github.com/kubernetes/ingress-nginx/blob/master/docs/annotations.md
+  ##
+  ## If tls is set to true, annotation ingress.kubernetes.io/secure-backends: "true" will automatically be set
+  ## If certManager is set to true, annotation kubernetes.io/tls-acme: "true" will automatically be set
+  annotations:
+  #  kubernetes.io/ingress.class: nginx
+  #  kubernetes.io/tls-acme: true
 
   secrets:
   ## If you're providing your own certificates, please use this to add the certificates as secrets
@@ -206,7 +207,7 @@ resources:
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
 livenessProbe:
   enabled: true
-  initialDelaySeconds: 300
+  initialDelaySeconds: 600
   periodSeconds: 30
   timeoutSeconds: 5
   failureThreshold: 6
