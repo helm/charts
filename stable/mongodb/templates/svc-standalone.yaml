@@ -27,7 +27,7 @@ spec:
   {{- end }}
   ports:
   - name: mongodb
-    port: 27017
+    port: {{ .Values.service.port }}
     targetPort: mongodb
 {{- if .Values.service.nodePort }}
     nodePort: {{ .Values.service.nodePort }}

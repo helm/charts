@@ -5,8 +5,12 @@ edition:
 collation: SQL_Latin1_General_CP1_CI_AS
 lcid: 1033
 hadr: 0
+agent:
+  enabled: false
 # Override sapassword in templates/secret.yaml
 # sapassword: "MyStrongPassword1234"
+existingSecret: ""
+existingSecretKey: sapassword
 image:
   repository: microsoft/mssql-server-linux
   tag: 2017-CU5
@@ -28,6 +32,7 @@ service:
   port: 1433
   annotations: {}
   labels: {}
+  loadBalancerIP:
 deployment:
   annotations: {}
   labels: {}

@@ -42,8 +42,8 @@ spec:
     targetPort: stats
 {{- if .Values.metrics.enabled }}
   - name: metrics
-    port: 9090
-    targetPort: metrics
+    port: {{ .Values.metrics.port }}
+    targetPort: 9090
 {{- end }}
   selector:
     app: {{ template "rabbitmq.name" . }}

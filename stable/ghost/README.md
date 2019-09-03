@@ -51,6 +51,7 @@ The following table lists the configurable parameters of the Ghost chart and the
 |-------------------------------------|---------------------------------------------------------------|----------------------------------------------------------|
 | `global.imageRegistry`              | Global Docker image registry                                  | `nil`                                                    |
 | `global.imagePullSecrets`           | Global Docker registry secret names as an array               | `[]` (does not add image pull secrets to deployed pods)  |
+| `global.storageClass`                     | Global storage class for dynamic provisioning                                               | `nil`                                                        |
 | `image.registry`                    | Ghost image registry                                          | `docker.io`                                              |
 | `image.repository`                  | Ghost Image name                                              | `bitnami/ghost`                                          |
 | `image.tag`                         | Ghost Image tag                                               | `{TAG_NAME}`                                             |
@@ -60,7 +61,7 @@ The following table lists the configurable parameters of the Ghost chart and the
 | `fullnameOverride`                  | String to fully override ghost.fullname template with a string                                     | `nil`               |
 | `volumePermissions.image.registry`  | Init container volume-permissions image registry              | `docker.io`                                              |
 | `volumePermissions.image.repository`| Init container volume-permissions image name                  | `bitnami/minideb`                                        |
-| `volumePermissions.image.tag`       | Init container volume-permissions image tag                   | `latest`                                                 |
+| `volumePermissions.image.tag`       | Init container volume-permissions image tag                   | `stretch`                                                 |
 | `volumePermissions.image.pullPolicy`| Init container volume-permissions image pull policy           | `Always`                                                 |
 | `ghostHost`                         | Ghost host to create application URLs                         | `nil`                                                    |
 | `ghostPort`                         | Ghost port to use in application URLs (defaults to `service.port` if `nil`) | `nil`                                      |

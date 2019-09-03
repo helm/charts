@@ -6,6 +6,7 @@
 #   imageRegistry: myRegistryName
 #   imagePullSecrets:
 #     - myRegistryKeySecretName
+#   storageClass: myStorageClass
 
 ## Bitnami WordPress image version
 ## ref: https://hub.docker.com/r/bitnami/wordpress/tags/
@@ -13,7 +14,7 @@
 image:
   registry: docker.io
   repository: bitnami/wordpress
-  tag: 5.2.2-debian-9-r12
+  tag: 5.2.2-debian-9-r47
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -69,6 +70,11 @@ wordpressBlogName: User's Blog!
 ## ref: https://github.com/bitnami/bitnami-docker-wordpress#environment-variables
 ##
 wordpressTablePrefix: wp_
+
+## Scheme to generate application URLs
+## ref: https://github.com/bitnami/bitnami-docker-wordpress#environment-variables
+##
+wordpressScheme: http
 
 ## Skip wizard installation (only if you use an external database that already contains WordPress data)
 ## ref: https://github.com/bitnami/bitnami-docker-wordpress#connect-wordpress-docker-container-to-an-existing-database
@@ -335,7 +341,7 @@ metrics:
   image:
     registry: docker.io
     repository: bitnami/apache-exporter
-    tag: 0.7.0-debian-9-r2
+    tag: 0.7.0-debian-9-r42
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.

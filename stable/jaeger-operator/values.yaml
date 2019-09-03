@@ -10,6 +10,7 @@ rbac:
   # Specifies whether RBAC resources should be created
   create: true
   pspEnabled: false
+  clusterRole: false
 
 serviceAccount:
   # Specifies whether a ServiceAccount should be created

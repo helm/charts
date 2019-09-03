@@ -6,6 +6,7 @@
 #   imageRegistry: myRegistryName
 #   imagePullSecrets:
 #     - myRegistryKeySecretName
+#   storageClass: myStorageClass
 
 ## Bitnami Joomla! image version
 ## ref: https://hub.docker.com/r/bitnami/dokuwiki/tags/
@@ -13,7 +14,7 @@
 image:
   registry: docker.io
   repository: bitnami/joomla
-  tag: 3.9.10-debian-9-r0
+  tag: 3.9.11-debian-9-r20
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -96,7 +97,7 @@ mariadb:
   image:
     registry: docker.io
     repository: bitnami/mariadb
-    tag: 10.1.40-debian-9-r80
+    tag: 10.1.41-debian-9-r38
   ## Disable MariaDB replication
   replication:
     enabled: false
@@ -277,7 +278,7 @@ metrics:
   image:
     registry: docker.io
     repository: bitnami/apache-exporter
-    tag: 0.7.0-debian-9-r2
+    tag: 0.7.0-debian-9-r43
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
