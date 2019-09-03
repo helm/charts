@@ -1,0 +1,145 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ include "jira-software.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "jira-software.name" . }}
+    helm.sh/chart: {{ include "jira-software.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "jira-software.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "jira-software.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      {{- if .Values.caCerts }}
+      initContainers:
+        - name: ca-certs
+          image: adoptopenjdk/openjdk8:alpine
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["sh"]
+          args: ["-c", "cp -f \"${JAVA_HOME}/jre/lib/security/cacerts\" /var/atlassian/application-data/jira/cacerts; keytool -importcert -file /var/atlassian/application-data/jira/secrets/cas/{{ .Values.caCerts.key }} -alias {{ .Values.caCerts.key }} -keystore /var/atlassian/application-data/jira/cacerts -storepass changeit -trustcacerts -noprompt"]
+          volumeMounts:
+            - mountPath: /var/atlassian/application-data/jira
+              name: {{ include "jira-software.pvcname" . }}
+            - mountPath: /var/atlassian/application-data/jira/secrets/cas
+              name: jira-cas
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 120
+            periodSeconds: 30
+            failureThreshold: 6
+            timeoutSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 120
+            periodSeconds: 30
+            failureThreshold: 6
+            timeoutSeconds: 10
+          volumeMounts:
+            - mountPath: /var/atlassian/application-data/jira
+              name: {{ include "jira-software.pvcname" . }}
+          env:
+            - name: JVM_MINIMUM_MEMORY
+              value: {{ .Values.envVars.jvmMinMemory | quote }}
+            - name: JVM_MAXIMUM_MEMORY
+              value: {{ .Values.envVars.jvmMaxMemory | quote }}
+            {{- if .Values.caCerts }}
+            - name: JVM_SUPPORT_RECOMMENDED_ARGS
+              value: "-Djavax.net.ssl.trustStore=/var/atlassian/application-data/jira/cacerts"
+            {{- end }}
+            {{- if .Values.ingress.enabled }}
+            - name: ATL_PROXY_NAME
+              value: {{ index .Values.ingress.hosts 0 | quote }}
+            - name: ATL_PROXY_PORT
+              value: {{ if .Values.ingress.tls }}"443"{{ else }}"80"{{ end }}
+            - name: ATL_TOMCAT_SCHEME
+              value: {{ if .Values.ingress.tls }}"https"{{ else }}"http"{{ end }}
+            - name: ATL_TOMCAT_SECURE
+              value: {{ if .Values.ingress.tls }}"true"{{ else }}"false"{{ end }}
+            {{- end }}
+            {{- if .Values.postgresql.enabled }}
+            - name: ATL_JDBC_URL
+              value: "jdbc:postgresql://{{ include "jira-software.postgresql.fullname" . }}:{{ .Values.postgresql.service.port | default "5432" }}/{{ .Values.postgresql.postgresqlDatabase }}"
+            - name: ATL_JDBC_USER
+              value: {{.Values.postgresql.postgresqlUsername | quote }}
+            - name: ATL_JDBC_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  {{- if .Values.postgresql.existingSecret }}
+                  name:  {{ .Values.postgresql.existingSecret }}
+                  {{- else }}
+                  name:  {{ include "jira-software.postgresql.fullname" . }}
+                  {{- end }}
+                  key: postgresql-password
+            - name: ATL_DB_DRIVER
+              value: "org.postgresql.Driver"
+            - name: ATL_DB_TYPE
+              value: "postgres72"
+            {{- else if .Values.psql }}
+            - name: ATL_JDBC_URL
+              value: "jdbc:postgresql://{{ .Values.psql.host }}:{{ .Values.psql.port }}/{{ .Values.psql.database }}"
+            - name: ATL_JDBC_USER
+              value: {{ .Values.psql.username | quote }}
+            - name: ATL_JDBC_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.psql.password.secret }}
+                  key: {{ .Values.psql.password.key }}
+            - name: ATL_DB_DRIVER
+              value: "org.postgresql.Driver"
+            - name: ATL_DB_TYPE
+              value: "postgres72"
+            {{- end }}
+            {{- with .Values.env }}
+            {{- . | toYaml | trim | nindent 12 }}
+            {{- end }}
+          resources:
+            {{- .Values.resources | toYaml | trim | nindent 12 }}
+      volumes:
+        - name: {{ include "jira-software.pvcname" . }}
+          {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.existingClaim | default (include "jira-software.pvcname" .) }}
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
+        {{- if .Values.caCerts }}
+        - name: jira-cas
+          secret:
+            secretName: {{ .Values.caCerts.secret }}
+        {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- . | toYaml | trim | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- . | toYaml | trim | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- . | toYaml | trim | nindent 8 }}
+      {{- end }}

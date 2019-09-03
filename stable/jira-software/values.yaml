@@ -1,0 +1,74 @@
+image:
+  repository: atlassian/jira-software
+  tag: 8.3.3
+  pullPolicy: IfNotPresent
+
+replicaCount: 1
+
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  type: ClusterIP
+  port: 8080
+
+# caCerts:
+#   secret: my-secret
+#   key: cacerts
+
+## These settings are only required if you wish to use an existing postgresql instance
+##
+# psql:
+  # host: postgresdb.local
+  # port: 5432
+  # database: jira
+  # username: jira
+  # password:
+      # secret: jira-postgres
+      # key: password
+
+envVars:
+  jvmMinMemory: 384M
+  jvmMaxMemory: 768M
+
+# env:
+#   - name: VARIABLE
+#     value: my-value
+
+persistence:
+  enabled: false
+  accessMode: ReadWriteOnce
+  storageClass: standard
+  size: 8Gi
+
+resources: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  path: /
+  hosts: []
+    # - jira.local
+  tls: []
+    # - secretName: nexus-local-tls
+    #   hosts:
+    #     - jira.local
+
+## Configuration values for the postgresql dependency
+## ref: https://github.com/kubernetes/charts/blob/master/stable/postgresql/README.md
+##
+# postgresql:
+#   enabled: false
+#   postgresqlUsername: jira
+#   postgresqlDatabase: jira
+#   imageTag: 9.6.15
+#   existingSecret: jira-postgresql-secret
+

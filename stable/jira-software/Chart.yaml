@@ -1,0 +1,19 @@
+apiVersion: v1
+appVersion: 8.3.2
+description: Atlassian Jira Software is a project Management Tool for Agile Teams.
+home: https://www.atlassian.com/software/jira
+icon: https://wac-cdn.atlassian.com/dam/jcr:b544631f-b225-441b-9e05-57b7fd0d495b/Jira%20Software@2x-icon-blue.png
+keywords:
+- jira
+- jira-software
+- atlassian
+- agile
+- project
+- management
+maintainers:
+- email: steve.hipwell@gmail.com
+  name: Steve Hipwell
+name: jira-software
+sources:
+- https://bitbucket.org/atlassian-docker/docker-atlassian-jira-software
+version: 1.0.0
