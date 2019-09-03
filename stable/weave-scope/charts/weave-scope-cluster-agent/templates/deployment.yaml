@@ -1,11 +1,11 @@
 {{- if .Values.enabled -}}
 apiVersion: extensions/v1beta1
-kind: DaemonSet
+kind: Deployment
 metadata:
   labels:
     {{- include "weave-scope-agent.helm_std_labels" . | indent 4 }}
-    component: agent
-  name: {{ template "weave-scope-agent.fullname" . }}
+    component: cluster-agent
+  name: {{ template "weave-scope-cluster-agent.fullname" . }}
   annotations:
     {{- include "weave-scope-agent.annotations" . | indent 4 }}
 spec:
@@ -13,7 +13,7 @@ spec:
     matchLabels:
       app: {{ template "toplevel.name" . }}
       release: {{ .Release.Name }}
-      component: agent
+      component: cluster-agent
   updateStrategy:
     type: RollingUpdate
   template:
@@ -22,55 +22,26 @@ spec:
         {{- include "weave-scope-agent.helm_std_labels" . | indent 8 }}
         component: agent
     spec:
-      tolerations:
-        - effect: NoSchedule
-          operator: Exists
       containers:
-        - name: {{ template "weave-scope-agent.name" . }}
+        - name: {{ template "weave-scope-cluster-agent.name" . }}
           image: "{{ .Values.global.image.repository }}:{{ .Values.global.image.tag }}"
           imagePullPolicy: "{{ .Values.global.image.pullPolicy }}"
           args:
             - '--mode=probe'
             - '--probe-only'
-            - '--probe.kubernetes.role=host'
-            - '--probe.docker.bridge={{ .Values.dockerBridge }}'
-            - '--probe.docker=true'
-            - '--probe.kubernetes=true'
+            - '--probe.kubernetes.role=cluster'
             {{- range $arg := .Values.flags }}
             - {{ $arg | quote }}
             {{- end }}
             {{if .Values.readOnly}}
             - "--probe.no-controls"
             {{end}}
-            {{- if .Values.global.probeToken }}
-            - '--probe-token={{ .Values.global.probeToken }}'
-            {{- else if .Values.global.scopeFrontendAddr }}
+            {{- if .Values.global.scopeFrontendAddr }}
             - {{ .Values.global.scopeFrontendAddr }}
             {{- else }}
             - {{ .Values.global.service.name | default (include "toplevel.fullname" .) }}.{{ .Release.Namespace }}.svc:{{ .Values.global.service.port }}
             {{- end }}
-          securityContext:
-            privileged: true
           resources:
 {{ toYaml .Values.resources | indent 12 }}
-          volumeMounts:
-            - name: docker-socket
-              mountPath: /var/run/docker.sock
-            - name: scope-plugins
-              mountPath: /var/run/scope/plugins
-            - name: sys-kernel-debug
-              mountPath: /sys/kernel/debug
-      volumes:
-        - name: docker-socket
-          hostPath:
-            path: /var/run/docker.sock
-        - name: scope-plugins
-          hostPath:
-            path: /var/run/scope/plugins
-        - name: sys-kernel-debug
-          hostPath:
-            path: /sys/kernel/debug
-      hostPID: true
-      hostNetwork: true
-      dnsPolicy: ClusterFirstWithHostNet
+      serviceAccountName: {{ template "weave-scope-cluster-agent.serviceAccountName" . }}
 {{- end -}}
