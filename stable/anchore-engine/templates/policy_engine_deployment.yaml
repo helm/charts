@@ -90,6 +90,9 @@ spec:
           httpGet:
             path: /health
             port: policy
+            {{- if .Values.anchoreGlobal.internalServicesSsl.enabled }}
+            scheme: HTTPS
+            {{- end }}
           initialDelaySeconds: 120
           timeoutSeconds: 10
           periodSeconds: 10
@@ -99,6 +102,9 @@ spec:
           httpGet:
             path: /health
             port: policy
+            {{- if .Values.anchoreGlobal.internalServicesSsl.enabled }}
+            scheme: HTTPS
+            {{- end }}
           timeoutSeconds: 10
           periodSeconds: 10
           failureThreshold: 3

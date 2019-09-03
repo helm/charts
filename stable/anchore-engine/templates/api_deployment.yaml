@@ -94,6 +94,9 @@ spec:
           httpGet:
             path: /health
             port: external-api
+            {{- if .Values.anchoreGlobal.internalServicesSsl.enabled }}
+            scheme: HTTPS
+            {{- end }}
           initialDelaySeconds: 120
           timeoutSeconds: 10
           periodSeconds: 10
@@ -103,6 +106,9 @@ spec:
           httpGet:
             path: /health
             port: external-api
+            {{- if .Values.anchoreGlobal.internalServicesSsl.enabled }}
+            scheme: HTTPS
+            {{- end }}
           timeoutSeconds: 10
           periodSeconds: 10
           failureThreshold: 3
@@ -150,6 +156,9 @@ spec:
           httpGet:
             path: /health
             port: rbac-manager
+            {{- if .Values.anchoreGlobal.internalServicesSsl.enabled }}
+            scheme: HTTPS
+            {{- end }}
           initialDelaySeconds: 120
           timeoutSeconds: 10
           periodSeconds: 10
@@ -159,6 +168,9 @@ spec:
           httpGet:
             path: /health
             port: rbac-manager
+            {{- if .Values.anchoreGlobal.internalServicesSsl.enabled }}
+            scheme: HTTPS
+            {{- end }}
           timeoutSeconds: 10
           periodSeconds: 10
           failureThreshold: 3
@@ -204,9 +216,18 @@ spec:
         livenessProbe:
           exec:
             command:
+            {{- if .Values.anchoreGlobal.internalServicesSsl.enabled }}
+              - curl
+              - -f
+              {{- if (not .Values.anchoreGlobal.internalServicesSsl.verifyCerts) }}
+              - -k
+              {{- end }}
+              - 'https://localhost:{{ .Values.anchoreEnterpriseRbac.service.authPort }}/health'
+            {{- else }}
               - curl
               - -f
               - 'localhost:{{ .Values.anchoreEnterpriseRbac.service.authPort }}/health'
+            {{- end }}
           initialDelaySeconds: 120
           timeoutSeconds: 10
           periodSeconds: 10
@@ -215,9 +236,18 @@ spec:
         readinessProbe:
           exec:
             command:
+            {{- if .Values.anchoreGlobal.internalServicesSsl.enabled }}
+              - curl
+              - -f
+              {{- if (not .Values.anchoreGlobal.internalServicesSsl.verifyCerts) }}
+              - -k
+              {{- end }}
+              - 'https://localhost:{{ .Values.anchoreEnterpriseRbac.service.authPort }}/health'
+            {{- else }}
               - curl
               - -f
               - 'localhost:{{ .Values.anchoreEnterpriseRbac.service.authPort }}/health'
+            {{- end }}
           timeoutSeconds: 10
           periodSeconds: 10
           failureThreshold: 3
@@ -266,6 +296,9 @@ spec:
           httpGet:
             path: /health
             port: reports-api
+            {{- if .Values.anchoreGlobal.internalServicesSsl.enabled }}
+            scheme: HTTPS
+            {{- end }}
           initialDelaySeconds: 120
           timeoutSeconds: 10
           periodSeconds: 10
@@ -275,6 +308,9 @@ spec:
           httpGet:
             path: /health
             port: reports-api
+            {{- if .Values.anchoreGlobal.internalServicesSsl.enabled }}
+            scheme: HTTPS
+            {{- end }}
           timeoutSeconds: 10
           periodSeconds: 10
           failureThreshold: 3
