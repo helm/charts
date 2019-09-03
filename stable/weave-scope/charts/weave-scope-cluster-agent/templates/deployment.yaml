@@ -3,11 +3,11 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    {{- include "weave-scope-agent.helm_std_labels" . | indent 4 }}
+    {{- include "weave-scope-cluster-agent.helm_std_labels" . | indent 4 }}
     component: cluster-agent
   name: {{ template "weave-scope-cluster-agent.fullname" . }}
   annotations:
-    {{- include "weave-scope-agent.annotations" . | indent 4 }}
+    {{- include "weave-scope-cluster-agent.annotations" . | indent 4 }}
 spec:
   selector:
     matchLabels:
@@ -19,8 +19,8 @@ spec:
   template:
     metadata:
       labels:
-        {{- include "weave-scope-agent.helm_std_labels" . | indent 8 }}
-        component: agent
+        {{- include "weave-scope-cluster-agent.helm_std_labels" . | indent 8 }}
+        component: cluster-agent
     spec:
       containers:
         - name: {{ template "weave-scope-cluster-agent.name" . }}
