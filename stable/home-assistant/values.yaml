@@ -102,6 +102,8 @@ zwave:
   enabled: false
   device: ttyACM0
 
+deviceMounts: []
+
 configurator:
   enabled: false
 
