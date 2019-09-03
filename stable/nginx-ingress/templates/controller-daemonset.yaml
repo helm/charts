@@ -1,4 +1,4 @@
-{{- if eq .Values.controller.kind "DaemonSet" }}
+{{- if or (eq .Values.controller.kind "DaemonSet") (eq .Values.controller.kind "Both") }}
 {{- $useHostPort := .Values.controller.daemonset.useHostPort -}}
 apiVersion: extensions/v1beta1
 kind: DaemonSet
