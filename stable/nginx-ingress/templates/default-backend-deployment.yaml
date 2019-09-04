@@ -87,6 +87,7 @@ spec:
       nodeSelector:
 {{ toYaml .Values.defaultBackend.nodeSelector | indent 8 }}
     {{- end }}
+      serviceAccountName: {{ template "nginx-ingress.defaultBackend.serviceAccountName" . }}
     {{- if .Values.defaultBackend.tolerations }}
       tolerations:
 {{ toYaml .Values.defaultBackend.tolerations | indent 8 }}
