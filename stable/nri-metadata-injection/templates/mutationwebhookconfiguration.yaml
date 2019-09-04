@@ -1,14 +1,14 @@
 apiVersion: admissionregistration.k8s.io/v1beta1
 kind: MutatingWebhookConfiguration
 metadata:
-  name: {{ template "nr-metadata-injection.fullname" . }}
+  name: {{ template "nri-metadata-injection.fullname" . }}
   labels:
-    {{- include "nr-metadata-injection.labels" . | nindent 4 }}
+    {{- include "nri-metadata-injection.labels" . | nindent 4 }}
 webhooks:
 - name: metadata-injection.newrelic.com
   clientConfig:
     service:
-      name: {{ template "nr-metadata-injection.fullname" . }}
+      name: {{ template "nri-metadata-injection.fullname" . }}
       namespace: default
       path: "/mutate"
     caBundle: ""

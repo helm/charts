@@ -1,7 +1,7 @@
 {{- if .Values.cluster }}
 Your deployment of the New Relic metadata injection webhook is complete. You can check on the progress of this by running the following command:
 
-    kubectl get deployments -o wide -w --namespace {{ .Release.Namespace }} {{ template "nr-metadata-injection.fullname" . }}
+    kubectl get deployments -o wide -w --namespace {{ .Release.Namespace }} {{ template "nri-metadata-injection.fullname" . }}
 
 {{- if .Values.customTLSCertificate }}
 You have configure the chart to use a custom tls certificate, make sure to read the 'Manage custom certificates' section of the official docs to find the instructions on how to finish setting up the webhook.
@@ -34,6 +34,6 @@ Run:
 
     helm upgrade {{ .Release.Name }} \
         --set cluster=YOUR-CLUSTER-NAME \
-        stable/newrelic-metadata-injection
+        stable/nri-metadata-injection
 
 {{- end -}}

@@ -2,23 +2,23 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "nr-metadata-injection.fullname" . }}
+  name: {{ template "nri-metadata-injection.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "nr-metadata-injection.labels" . | nindent 4 }}
+    {{- include "nri-metadata-injection.labels" . | nindent 4 }}
 spec:
   replicas: 1
   template:
     metadata:
       namespace: {{ .Release.Namespace }}
       labels:
-        {{- include "nr-metadata-injection.labels" . | nindent 8 }}
+        {{- include "nri-metadata-injection.labels" . | nindent 8 }}
     spec:
       {{- if not .Values.customTLSCertificate }}
-      serviceAccountName: {{ template "nr-metadata-injection.serviceAccountName" . }}
+      serviceAccountName: {{ template "nri-metadata-injection.serviceAccountName" . }}
       {{- end }}
       containers:
-      - name: {{ template "nr-metadata-injection.name" . }}
+      - name: {{ template "nri-metadata-injection.name" . }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: "{{ .Values.image.pullPolicy }}"
         env:
@@ -36,7 +36,7 @@ spec:
       volumes:
       - name: tls-key-cert-pair
         secret:
-          secretName: {{ template "nr-metadata-injection.fullname" . }}
+          secretName: {{ template "nri-metadata-injection.fullname" . }}
       {{- if .Values.resources }}
       resources:
 {{ toYaml .Values.resources | indent 8 }}
