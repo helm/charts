@@ -128,23 +128,23 @@ spec:
           - name: config
             mountPath: /pre-stop-hook.sh
             subPath: pre-stop-hook.sh
-{{ end }}
+{{- end }}
 {{- if .Values.nodePostStartScript }}
           - name: config
             mountPath: /postStartScript.sh
             subPath: postStartScript.sh
-{{ end }}
+{{- end }}
           lifecycle:
 {{- if .Values.keeper.hooks.failKeeper.enabled }}
             preStop:
               exec:
                 command: ["/bin/bash", "-e", "/pre-stop-hook.sh"]
-{{ end }}
+{{- end }}
 {{- if .Values.nodePostStartScript }}
             postStart:
               exec:
                 command: ["/bin/bash", "-e", "/postStartScript.sh"]
-{{ end }}
+{{- end }}
 {{- with .Values.keeper.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
