@@ -104,6 +104,40 @@ To use this Helm chart with the enterprise services enabled, perform these steps
     password: <PASSWORD>
   ```
 
+## Upgrading to Chart version 1.3.0
+The following features were added with this chart version:
+  * Allow custom CA certificates for TLS on all system dependencies (postgresql, ldap, registries)
+  * Customization of the analyzer configuration
+  * Improved authentication methods, allowing SAML/token based auth
+  * Enterprise UI reporting improvements
+  * Enterprise SSO integration
+  * Enterprise vulnerability data enhancement using VulnDB
+
+Internal Service SSL configuration has been changed to support a global certificate storage secret. When upgrading to v1.3.0 of the chart, make sure the values file is updated appropriately.
+
+#### Chart v1.3.0 internal service SSL configuration
+```
+anchoreGlobal:
+  certStoreSecretName: anchore-certs
+  internalServicesSsl:
+    enabled: true
+    verifyCerts: true
+    certSecretKeyName: anchore.example.com.key
+    certSecretCertName: anchore.example.com.crt
+```
+
+#### Chart v1.2.0 internal service SSL configuration
+```
+anchoreGlobal:
+  internalServicesSslEnabled: true
+  internalServicesSsl:
+    verifyCerts: true
+    certSecret: anchore-certs
+    certDir: /home/anchore/certs
+    certSecretKeyName: anchore.example.com.key
+    certSecretCertName: anchore.example.com.crt
+```
+
 ## Upgrading to Chart version 1.0.0
 The following features were added with this chart version:
   * Rootless UBI 7 base image
@@ -449,6 +483,10 @@ Anchore Engine supports exporting prometheus metrics form each container. To ena
 When enabled, each service provides the metrics over the existing service port so your prometheus deployment will need to
 know about each pod and the ports it provides to scrape the metrics.
 
+### Using custom certificates
+A secret needs to be created in the same namespace as the anchore-engine chart installation. This secret should contain all custom certs, including CA certs & any certs used for internal TLS communication. 
+This secret will be mounted to all anchore-engine pods at /home/anchore/certs to be utilized by the system.
+
 ### Event Notifications
 
 Anchore Engine in v0.2.3 introduces a new events subsystem that exposes system-wide events via both a REST api as well
@@ -482,4 +520,3 @@ To set a specific number of service containers:
 To update the number in a running configuration:
 
 `helm upgrade --set anchoreAnalyzer.replicaCount=2 <releasename> stable/anchore-engine -f anchore_values.yaml`
-
