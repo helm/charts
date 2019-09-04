@@ -73,6 +73,7 @@ Parameters introduced starting from v2
 | `config.grpc.tlsKey` | Maps to the dex config `grpc.tlsKey` param | `/etc/dex/tls/grpc/server/tls.key` |
 | `config.issuer` | Maps to the dex config `issuer` param | `http://dex.io:8080` |
 | `config.logger` | Maps to the dex config `logger` dict param | `{"level": "debug"}` |
+| `config.oauth2.alwaysShowLoginScreen` | Maps to the dex config `oauth2.alwaysShowLoginScreen` param | `false` |
 | `config.oauth2.skipApprovalScreen` | Maps to the dex config `oauth2.skipApprovalScreen` param | `true` |
 | `config.staticClients` | Maps to the dex config `staticClients` list param | `""` |
 | `config.staticPasswords` | Maps to the dex config `staticPasswords` list param | `""` |
