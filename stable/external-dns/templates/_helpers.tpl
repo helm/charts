@@ -123,6 +123,21 @@ region = {{ .Values.aws.region }}
 source_profile = default
 {{ end }}
 
+{{- define "external-dns.azure-credentials" -}}
+{
+  "tenantId": "{{ .Values.azure.tenantId }}",
+  "subscriptionId": "{{ .Values.azure.subscriptionId }}",
+  "resourceGroup": "{{ .Values.azure.resourceGroup }}",
+  {{- if not .Values.azure.useManagedIdentityExtension }}
+  "aadClientId": "{{ .Values.azure.aadClientId }}",
+  "aadClientSecret": "{{ .Values.azure.aadClientSecret }}"
+  {{- end }}
+  {{- if .Values.azure.useManagedIdentityExtension }}
+  "useManagedIdentityExtension": true
+  {{- end }}
+}
+{{ end }}
+
 {{/*
 Compile all warnings into a single message, and call fail.
 */}}
