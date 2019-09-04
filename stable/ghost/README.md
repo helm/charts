@@ -114,6 +114,7 @@ The following table lists the configurable parameters of the Ghost chart and the
 | `persistence.size`                  | PVC Storage Request for Ghost volume                          | `8Gi`                                                    |
 | `persistence.path`                  | Path to mount the volume at, to use other images              | `/bitnami`                                               |
 | `resources`                         | CPU/Memory resource requests/limits                           | Memory: `512Mi`, CPU: `300m`                             |
+| `affinity`                          | Map of node/pod affinities                                    | `{}`                                                     |
 
 The above parameters map to the env variables defined in [bitnami/ghost](http://github.com/bitnami/bitnami-docker-ghost). For more information please refer to the [bitnami/ghost](http://github.com/bitnami/bitnami-docker-ghost) image documentation.
 
