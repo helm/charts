@@ -19,7 +19,7 @@ In addition, this chart supports scaling of Rocket.Chat for increased server cap
 ## Prerequisites Details
 
 The chart has an optional dependency on the [MongoDB](https://github.com/kubernetes/charts/tree/master/stable/mongodb) chart.
-By default, the MongoDB chart requires StatefulSet support on underlying infrastructure (may be overridden).
+By default, the MongoDB chart requires PV support on underlying infrastructure (may be disabled).
 
 ## Installing the Chart
 
