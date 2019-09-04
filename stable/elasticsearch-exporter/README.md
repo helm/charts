@@ -61,6 +61,7 @@ Parameter | Description | Default
 `service.annotations` | Annotations on the http service | `{}`
 `service.labels` | Additional labels for the service definition | `{}`
 `env` | Extra environment variables passed to pod | `{}`
+`secretMounts` |  list of secrets and their paths to mount inside the pod | `[]`
 `affinity` | Affinity rules | `{}`
 `es.uri` | address of the Elasticsearch node to connect to | `localhost:9200`
 `es.all` | if `true`, query stats for all nodes in the cluster, rather than just the node we connect to | `true`
@@ -69,10 +70,14 @@ Parameter | Description | Default
 `es.cluster_settings` | if true, query stats for cluster settings | `true`
 `es.snapshots` | if true, query stats for snapshots in the cluster | `true`
 `es.timeout` | timeout for trying to get stats from Elasticsearch | `30s`
-`es.ssl.enabled` | If true, a secure connection to E cluster is used | `false`
-`es.ssl.client.ca.pem` | PEM that contains trusted CAs used for setting up secure Elasticsearch connection |
+`es.ssl.enabled` | If true, a secure connection to Elasticsearch cluster is used | `false`
+`es.ssl.useExistingSecrets` | If true, certs from secretMounts will be used | `false`
+`es.ssl.ca.pem` | PEM that contains trusted CAs used for setting up secure Elasticsearch connection |
+`es.ssl.ca.pemPath` | Path of ca pem file which should match a secretMount path |
 `es.ssl.client.pem` | PEM that contains the client cert to connect to Elasticsearch |
+`es.ssl.client.pemPath` | Path of client pem file which should match a secretMount path |
 `es.ssl.client.key` | Private key for client auth when connecting to Elasticsearch |
+`es.ssl.client.keyPath` | Path of client key file which should match a secretMount path |
 `web.path` | path under which to expose metrics | `/metrics`
 `serviceMonitor.enabled` | If true, a ServiceMonitor CRD is created for a prometheus operator | `false`
 `serviceMonitor.namespace` | If set, the ServiceMonitor will be installed in a different namespace  | `""`
