@@ -68,10 +68,10 @@ Create the name of the controller service account to use
 {{/*
 Create the name of the backend service account to use - only used when podsecuritypolicy is also enabled
 */}}
-{{- define "nginx-ingress.backend.serviceAccountName" -}}
+{{- define "nginx-ingress.defaultBackend.serviceAccountName" -}}
 {{- if .Values.defaultBackend.serviceAccount.create -}}
-    {{ default (include "nginx-ingress.fullname" .)-backend .Values.defaultBackend.serviceAccount.name }}
+    {{ default (printf "%s-backend" (include "nginx-ingress.fullname" .)) .Values.defaultBackend.serviceAccount.name }}
 {{- else -}}
-    {{ default "default" .Values.defaultBackend.serviceAccount.name }}
+    {{ default "default-backend" .Values.defaultBackend.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
