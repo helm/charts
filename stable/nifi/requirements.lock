@@ -2,5 +2,5 @@ dependencies:
 - name: zookeeper
   repository: file://./vendor/zookeeper
   version: 1.0.0
-digest: sha256:8f436790d28246a3ebbc0d37e49e0b173475f472ec208ac19062fd3e5e422788
-generated: "2019-09-03T08:37:44.216121+01:00"
+digest: sha256:211eafe03e3ce2cc24e78b06bf342239cf8d448e40c983e4f79a880590527f48
+generated: "2019-09-04T21:14:54.412586188+01:00"
