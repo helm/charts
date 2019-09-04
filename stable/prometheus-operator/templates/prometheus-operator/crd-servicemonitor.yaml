@@ -9,7 +9,7 @@ metadata:
     app: {{ template "prometheus-operator.name" . }}-operator
 {{ include "prometheus-operator.labels" . | indent 4 }}
   annotations:
-{{- if .Values.cleanupCustomResourceBeforeInstall }}
+{{- if .Values.prometheusOperator.cleanupCustomResourceBeforeInstall }}
     "helm.sh/hook-delete-policy": "before-hook-creation"
 {{- end }}
     "helm.sh/hook": crd-install

@@ -25,15 +25,15 @@ spec:
         message: Pod {{`{{ $labels.namespace }}`}}/{{`{{ $labels.pod }}`}} ({{`{{ $labels.container }}`}}) is restarting {{`{{ printf "%.2f" $value }}`}} times / 5 minutes.
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubepodcrashlooping
       expr: rate(kube_pod_container_status_restarts_total{job="kube-state-metrics"}[15m]) * 60 * 5 > 0
-      for: 1h
+      for: 15m
       labels:
         severity: critical
     - alert: KubePodNotReady
       annotations:
-        message: Pod {{`{{ $labels.namespace }}`}}/{{`{{ $labels.pod }}`}} has been in a non-ready state for longer than an hour.
+        message: Pod {{`{{ $labels.namespace }}`}}/{{`{{ $labels.pod }}`}} has been in a non-ready state for longer than 15 minutes.
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubepodnotready
       expr: sum by (namespace, pod) (kube_pod_status_phase{job="kube-state-metrics", phase=~"Failed|Pending|Unknown"}) > 0
-      for: 1h
+      for: 15m
       labels:
         severity: critical
     - alert: KubeDeploymentGenerationMismatch
@@ -49,13 +49,13 @@ spec:
         severity: critical
     - alert: KubeDeploymentReplicasMismatch
       annotations:
-        message: Deployment {{`{{ $labels.namespace }}`}}/{{`{{ $labels.deployment }}`}} has not matched the expected number of replicas for longer than an hour.
+        message: Deployment {{`{{ $labels.namespace }}`}}/{{`{{ $labels.deployment }}`}} has not matched the expected number of replicas for longer than 15 minutes.
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubedeploymentreplicasmismatch
       expr: |-
         kube_deployment_spec_replicas{job="kube-state-metrics"}
           !=
         kube_deployment_status_replicas_available{job="kube-state-metrics"}
-      for: 1h
+      for: 15m
       labels:
         severity: critical
     - alert: KubeStatefulSetReplicasMismatch
@@ -150,7 +150,7 @@ spec:
         message: Job {{`{{ $labels.namespace }}`}}/{{`{{ $labels.job_name }}`}} failed to complete.
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubejobfailed
       expr: kube_job_status_failed{job="kube-state-metrics"}  > 0
-      for: 1h
+      for: 15m
       labels:
         severity: warning
 {{- end }}

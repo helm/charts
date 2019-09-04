@@ -1,7 +1,7 @@
 # Generated from 'k8s-resources-cluster' from https://raw.githubusercontent.com/coreos/kube-prometheus/release-0.1/manifests/grafana-dashboardDefinitions.yaml
 # Do not change in-place! In order to change this file first read following link:
 # https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
-{{- if and (semverCompare ">=1.11.0-0" .Capabilities.KubeVersion.GitVersion) (semverCompare "<1.14.0-0" .Capabilities.KubeVersion.GitVersion) .Values.grafana.enabled .Values.grafana.defaultDashboardsEnabled }}
+{{- if and (semverCompare ">=1.10.0-0" .Capabilities.KubeVersion.GitVersion) (semverCompare "<1.14.0-0" .Capabilities.KubeVersion.GitVersion) .Values.grafana.enabled .Values.grafana.defaultDashboardsEnabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:

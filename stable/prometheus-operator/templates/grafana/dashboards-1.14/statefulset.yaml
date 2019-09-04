@@ -843,7 +843,7 @@ data:
                     "options": [
 
                     ],
-                    "query": "label_values(kube_statefulset_metadata_generation{job=\"kube-state-metrics\"}, namespace)",
+                    "query": "label_values(kube_statefulset_metadata_generation{job=\"kube-state-metrics\"}, cluster=\"$cluster\", namespace)",
                     "refresh": 2,
                     "regex": "",
                     "sort": 0,
@@ -869,7 +869,7 @@ data:
                     "options": [
 
                     ],
-                    "query": "label_values(kube_statefulset_metadata_generation{job=\"kube-state-metrics\", namespace=\"$namespace\"}, statefulset)",
+                    "query": "label_values(kube_statefulset_metadata_generation{job=\"kube-state-metrics\", cluster=\"$cluster\", namespace=\"$namespace\"}, statefulset)",
                     "refresh": 2,
                     "regex": "",
                     "sort": 0,
