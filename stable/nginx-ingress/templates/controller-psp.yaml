@@ -2,7 +2,7 @@
 apiVersion: extensions/v1beta1
 kind: PodSecurityPolicy
 metadata:
-  name: {{ template "nginx-ingress.fullname" . }}-controller
+  name: {{ template "nginx-ingress.fullname" . }}
   labels:
     app: {{ template "nginx-ingress.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
