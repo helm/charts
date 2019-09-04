@@ -51,7 +51,7 @@ haproxy:
   init:
     resources: {}
 
- # Enable if you want a dedicated port in haproxy for redis-slaves
+##Enable if you want a dedicated port in haproxy for redis-slaves
 hapreadport:
   enabled: false
   port: 6380
