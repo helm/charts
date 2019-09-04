@@ -23,9 +23,7 @@ spec:
 {{- end }}
 {{ if .Values.annotations}}
       annotations:
-    {{- range $key, $value := .Values.annotations }}
-    {{ $key }}: {{ $value | quote }}
-    {{- end }}
+{{ toYaml .Values.annotations | indent 8 }}
 {{- end }}
     spec:
       securityContext:
