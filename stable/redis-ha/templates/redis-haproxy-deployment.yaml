@@ -76,6 +76,11 @@ spec:
         - name: redis
           containerPort: {{ default "6379" .Values.redis.port }}
           hostPort: 6379
+        {{- if .Values.hapreadport.enabled }}
+        - name: hapreadport
+          containerPort: {{ default "6380" .Values.hapreadport.port }}
+          hostPort: 6380
+        {{- end }}
         resources:
 {{ toYaml .Values.haproxy.resources | indent 10 }}
         volumeMounts:
