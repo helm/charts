@@ -18,7 +18,10 @@ spec:
   template:
     metadata:
       annotations:
-        {{- toYaml .Values.podAnnotations | nindent 8 }}
+        checksum/config: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+        {{- if .Values.podAnnotations }}
+          {{- toYaml .Values.podAnnotations | nindent 8 }}
+        {{- end }}
       labels:
         app.kubernetes.io/name: {{ include "prometheus-mongodb-exporter.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
