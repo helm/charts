@@ -40,4 +40,12 @@ rules:
   - get
   - list
   - watch
+{{- if .Values.crd.create }}
+- apiGroups:
+  - externaldns.k8s.io
+  resources:
+  - dnsendpoints/status
+  verbs:
+  - update
+{{- end }}
 {{- end }}
