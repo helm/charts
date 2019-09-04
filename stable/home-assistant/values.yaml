@@ -54,6 +54,9 @@ persistence:
   ## If you want to reuse an existing claim, you can pass the name of the PVC using
   ## the existingClaim variable
   # existingClaim: your-claim
+  ##
+  ## If you want to use a volume on the host machine instead of a PVC:
+  # hostPath: /path/to/the/config/folder
   accessMode: ReadWriteOnce
   size: 5Gi
 
@@ -101,6 +104,12 @@ git:
 zwave:
   enabled: false
   device: ttyACM0
+
+# Mount devices or folders from the host machine. Can be used for USB device mounting.
+hostMounts: []
+  # Example
+  # - name: zha
+  #   hostPath: /dev/serial/by-id/usb-Silicon_Labs_HubZ_Smart_Home_Controller_6120245D-if01-port0
 
 configurator:
   enabled: false
