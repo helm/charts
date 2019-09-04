@@ -1,0 +1,49 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: nifi
+  labels:
+{{ include "nifi.labels" . | indent 4 }}
+spec:
+  serviceName: nifi
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "nifi.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/bin/sh","-c"]
+          args: ['sleep 15 && sed -e "s/^search/& $(dnsdomainname)/" /etc/resolv.conf > /tmp/resolv.conf;cat /tmp/resolv.conf  > /etc/resolv.conf; cd /opt/nifi && ./start_nifi.sh']
+          ports:
+            - containerPort: {{ .Values.service.port }}
+            - containerPort: {{ .Values.listener.port }}
+            - containerPort: 2881
+            - containerPort: 2882
+          env:
+            - name: ZK_NODES_LIST
+              value: "{{ .Values.zookeeper.nodeList }}"
+            - name: ZK_MONITOR_PORT
+              value: "{{ .Values.zookeeper.nodePort }}"
+            - name: IS_CLUSTER_NODE
+              value: "yes"
+            - name: BANNER_TEXT
+              value: "{{ .Values.bannerText }}"
+            - name: NIFI_WEB_HTTP_PORT
+              value: "{{ .Values.service.port }}"

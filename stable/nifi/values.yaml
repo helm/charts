@@ -1,0 +1,52 @@
+# Default values for nifi.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 3
+
+image:
+  repository: xemuliam/nifi
+  tag: 1.9
+  # https://github.com/xemuliam/docker-nifi-base/blob/1.9.0/Dockerfile
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+bannerText: Nifi Cluster
+
+service:
+  type: LoadBalancer
+  # Access the web UI from http://<IP>:8080/nifi/
+  port: 8080
+
+listener:
+  # This sets the nifi http listener port
+  port: 8081
+
+zookeeper:
+  deploy:
+    enabled: true
+    # Enabled true will deploy zookeeper from the vendor folder
+  nodeList: zk-0.zk-hs,zk-1.zk-hs,zk-2.zk-hs
+  # NodeList can set a custom connection string of zookeeper hosts
+  nodePort: 2888
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "zookeeper.fullname" . }}-test-connection"
+  labels:
+{{ include "zookeeper.labels" . | indent 4 }}
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command:
+      - sh
+      - -c
+      - "echo stat | nc 'zk-cs:{{ .Values.service.port }}'"
+  restartPolicy: Never

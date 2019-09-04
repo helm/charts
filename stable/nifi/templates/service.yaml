@@ -1,0 +1,39 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: nifi-http
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: {{ include "nifi.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  ports:
+    - protocol: TCP
+      port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.port }}
+      name: nifi
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: nifi
+spec:
+  clusterIP: None
+  selector:
+    app.kubernetes.io/name: {{ include "nifi.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  ports:
+    - protocol: TCP
+      port: {{ .Values.listener.port }}
+      targetPort: {{ .Values.listener.port }}
+      name: nifi-listen-http
+    - protocol: TCP
+      port: 2881
+      targetPort: 2881
+      name: nifi-site-protocol
+    - protocol: TCP
+      port: 2882
+      targetPort: 2882
+      name: nifi-node-protocol
