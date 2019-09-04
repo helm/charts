@@ -190,8 +190,10 @@ Parameter | Description | Default
 `imagePullSecrets` | name of Secret resource containing private registry credentials | `nil`
 `rbac.create` | if `true`, create & use RBAC resources | `true`
 `podSecurityPolicy.enabled` | if `true`, create & use Pod Security Policy resources | `false`
-`serviceAccount.create` | if `true`, create a service account | `true`
-`serviceAccount.name` | The name of the service account to use. If not set and `create` is `true`, a name is generated using the fullname template. | ``
+`serviceAccount.create` | if `true`, create a service account for the controller | `true`
+`serviceAccount.name` | The name of the controller service account to use. If not set and `create` is `true`, a name is generated using the fullname template. | ``
+`serviceAccount.backend.create` | if `true`, create a backend service account. Only useful if you need a pod security policy to run the backend. | `true`
+`serviceAccount.backend.name` | The name of the backend service account to use. If not set and `create` is `true`, a name is generated using the fullname template. Only useful if you need a pod security policy to run the backend. | ``
 `revisionHistoryLimit` | The number of old history to retain to allow rollback. | `10`
 `tcp` | TCP service key:value pairs. The value is evaluated as a template. | `{}`
 `udp` | UDP service key:value pairs The value is evaluated as a template. | `{}`
