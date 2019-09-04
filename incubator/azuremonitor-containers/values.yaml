@@ -20,6 +20,11 @@ omsagent:
   env:
     clusterName: <my_Acs-engine_k8s_cluster_RG_ResourceID>
   rbac: true
+  logsettings:
+    logflushintervalsecs: ""
+    tailbufchunksizemegabytes: ""
+    tailbufmaxsizemegabytes: ""
+
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
