@@ -2,9 +2,9 @@
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: Role
 metadata:
+  name: {{ template "kubernetes-dashboard.fullname" . }}
   labels:
 {{ include "kubernetes-dashboard.labels" . | indent 4 }}
-  name: {{ template "kubernetes-dashboard.fullname" . }}
 rules:
     # Allow Dashboard to get, update and delete Dashboard exclusive secrets.
   - apiGroups: [""]
