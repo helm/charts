@@ -39,13 +39,13 @@ charts = [
     {
         'source': 'https://raw.githubusercontent.com/coreos/kube-prometheus/release-0.1/manifests/prometheus-rules.yaml',
         'destination': '../templates/prometheus/rules',
-        'min_kubernetes': '1.11.0-0',
+        'min_kubernetes': '1.10.0-0',
         'max_kubernetes': '1.14.0-0'
     },
     {
         'source': 'https://raw.githubusercontent.com/etcd-io/etcd/master/Documentation/op-guide/etcd3_alert.rules.yml',
         'destination': '../templates/prometheus/rules',
-        'min_kubernetes': '1.11.0-0',
+        'min_kubernetes': '1.10.0-0',
         'max_kubernetes': '1.14.0-0'
     },
 ]
