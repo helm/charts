@@ -13,6 +13,23 @@ spec:
     matchLabels:
       app: {{ template "redis.name" . }}
       release: "{{ .Release.Name }}"
+  {{- if ge .Values.cluster.slaveCount 1.0 }}
+  policyTypes:
+    - Ingress
+    - Egress
+  egress:
+    # Allow outbound connections to other cluster pods
+    - ports:
+      - port: {{ .Values.redisPort }}
+      {{- if .Values.sentinel.enabled }}
+      - port: {{ .Values.sentinel.port }}
+      {{- end }}
+      to:
+      - podSelector:
+          matchLabels:
+            release: "{{ .Release.Name }}"
+            app: {{ template "redis.name" . }}
+  {{- end }}
   ingress:
     # Allow inbound connections
     - ports:
