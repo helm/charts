@@ -6,4 +6,4 @@ Assuming deployment is ready...
 kubectl port-forward crate-0 4200:4200
 ```
 
-Now open an explorer at http://localhost:4200, you should see the CrateDB's Admin UI.
+Now open a browser at http://localhost:4200, you should see the CrateDB's Admin UI.

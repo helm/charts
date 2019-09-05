@@ -11,7 +11,7 @@ You may want to adjust first your preferred number of nodes in `values.yml`.
 
 ## Configuration
 
-The following table lists the configurable parameters of the crateDB chart and their default values.
+The following table lists the configurable parameters of the CrateDB chart and their default values.
 
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
