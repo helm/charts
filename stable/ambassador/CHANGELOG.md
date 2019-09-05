@@ -17,6 +17,7 @@ numbering uses [semantic versioning](http://semver.org).
 - Introduces the ability to configure additional `AuthService` options (see [AuthService documentation](https://www.getambassador.io/reference/services/auth-service/))
 - The ambassador-pro-auth `AuthService` and ambassador-pro-ratelimit `RateLimitService` and now created as CRDs when `.Values.crds.enabled: true`
 - Fixed misnamed selector for redis instance that failed in an edge case
+- Exposes annotations for redis deployment and service
 
 ## v3.0.0
 
