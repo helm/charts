@@ -201,7 +201,7 @@ pro:
     auth: 8500
     ratelimit: 8500
   logLevel: info
-  # A license key is required to use Ambassador Pro. 
+  # A license key is required to use Ambassador Pro.
   # Get a license key by signing up for a free trial here: https://www.getambassador.io/pro/free-trial
   licenseKey:
     value: {{"INSERT LICENSE KEY HERE"}}
@@ -216,7 +216,7 @@ pro:
     {}
   resources: {}
   # If you want to specify resources, uncomment the following
-  # lines and remove the curly braces after 'resources:'. 
+  # lines and remove the curly braces after 'resources:'.
   # These are placeholder values and must be tuned.
   #   limits:
   #     cpu: 100m
@@ -252,7 +252,7 @@ pro:
           {}
       resources: {}
       # If you want to specify resources, uncomment the following
-      # lines and remove the curly braces after 'resources:'. 
+      # lines and remove the curly braces after 'resources:'.
       # These are placeholder values and must be tuned.
       #   limits:
       #     cpu: 100m
@@ -261,7 +261,7 @@ pro:
       #     cpu: 50m
       #     memory: 128Mi
 
-# DEPRECATED: Ambassador now exposes the /metrics endpoint in Envoy. 
+# DEPRECATED: Ambassador now exposes the /metrics endpoint in Envoy.
 # DEPRECATED: See https://www.getambassador.io/user-guide/monitoring#deployment for more information on how to use the /metrics endpoint
 #
 # DEPRECATED: Enabling the prometheus exporter creates a sidecar and configures ambassador to use it
