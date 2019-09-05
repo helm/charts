@@ -59,7 +59,6 @@ ghostProtocol: http
 # ghostPort:
 ghostPath: /
 
-
 ## User of the application
 ## ref: https://github.com/bitnami/bitnami-docker-ghost#configuration
 ##
@@ -264,3 +263,8 @@ ingress:
   # - name: ghost.local-tls
   #   key:
   #   certificate:
+
+## Affinity for pod assignment
+## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+##
+affinity: {}
