@@ -67,7 +67,7 @@ The following table lists the configurable parameters of the mongodb chart and t
 | `init.timeout`                      | The amount of time in seconds to wait for bootstrap to finish             | `900`                                               |
 | `metrics.enabled`                   | Enable Prometheus compatible metrics for pods and replicasets             | `false`                                             |
 | `metrics.image.repository`          | Image name for metrics exporter                                           | `bitnami/mongodb-exporter`                         |
-| `metrics.image.tag`                 | Image tag for metrics exporter                                            | `0.6.1`                                             |
+| `metrics.image.tag`                 | Image tag for metrics exporter                                            | `0.9.0-debian-9-r2`                                             |
 | `metrics.image.pullPolicy`          | Image pull policy for metrics exporter                                    | `IfNotPresent`                                      |
 | `metrics.port`                      | Port for metrics exporter                                                 | `9216`                                              |
 | `metrics.path`                      | URL Path to expose metics                                                 | `/metrics`                                          |
