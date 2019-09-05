@@ -55,7 +55,14 @@ spec:
             - mountPath: /data
               name: data
         resources:
-{{ toYaml .Values.resources | indent 10 }}
+          requests:
+            cpu: {{ .Values.resources.requests.cpu }}
+            memory: {{ mul .Values.crate.heapSize 2 }}Gi
+          limits:
+            cpu: {{ .Values.resources.limits.cpu }}
+            memory: {{ if $m := .Values.resources.limits.memory -}}
+              {{ $m }}{{ else }}{{ mul .Values.crate.heapSize 3 }}Gi
+            {{- end }}
         ports:
         - containerPort: {{ .Values.service.ports.psql }}
           name: psql
@@ -65,7 +72,7 @@ spec:
           name: ui
         env:
         - name: CRATE_HEAP_SIZE
-          value: {{ .Values.crate.crateHeapSize | quote }}
+          value: {{ .Values.crate.heapSize }}g
         - name: CLUSTER_NAME
           value: {{ .Values.crate.clusterName | quote }}
         - name: MIN_VCPU_COUNT

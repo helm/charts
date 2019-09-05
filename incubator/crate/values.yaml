@@ -17,10 +17,9 @@ service:
 
 # 2) The StatefulSet forming the cluster. Read more:
 # https://crate.io/docs/crate/guide/en/latest/scaling/multi-node-setup.html#id10
-# https://crate.io/docs/crate/reference/en/latest/config/environment.html#use-max-50-of-available-ram
 crate:
   clusterName: my-cluster
-  crateHeapSize: 1g
+  heapSize: 1.0  # GiB
   numberOfNodes: 1
   recoverAfterNodes: null  # defaults to the minimum allowed: floor(numberOfNodes/2) + 1
 
@@ -32,9 +31,11 @@ http:
 # 3) Resources and Volumes.
 resources:
   requests:
-    memory: 1Gi
+    cpu: 500m
+    # requests.memory is inferred from crate.crateHeapSize * 2
   limits:
-    memory: 2Gi
+    cpu: 1
+    memory: null  # defaults to crate.crateHeapSize * 3
 
 persistentVolume:
   enabled: true
