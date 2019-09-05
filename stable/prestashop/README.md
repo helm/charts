@@ -122,6 +122,7 @@ The following table lists the configurable parameters of the PrestaShop chart an
 | `readinessProbe.failureThreshold`    | Minimum consecutive failures for the probe to be considered failed after having succeeded.              | 6                                                            |
 | `readinessProbe.successThreshold`    | Minimum consecutive successes for the probe to be considered successful after having failed.            | 1                                                            |
 | `podAnnotations`                     | Pod annotations                                                                                         | `{}`                                                         |
+| `affinity`                           | Map of node/pod affinities                                                                              | `{}`                                                         |
 | `metrics.enabled`                    | Start a side-car prometheus exporter                                                                    | `false`                                                      |
 | `metrics.image.registry`             | Apache exporter image registry                                                                          | `docker.io`                                                  |
 | `metrics.image.repository`           | Apache exporter image name                                                                              | `bitnami/apache-exporter`                                    |
