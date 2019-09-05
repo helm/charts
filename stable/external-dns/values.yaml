@@ -329,6 +329,9 @@ rbac:
   ## https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
   ##
   serviceAccountName: default
+  ## Annotations for the Service Account
+  ##
+  serviceAccountAnnotations: {}
   ## RBAC API version
   ##
   apiVersion: v1beta1
