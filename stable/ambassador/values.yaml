@@ -204,7 +204,7 @@ pro:
   # A license key is required to use Ambassador Pro.
   # Get a license key by signing up for a free trial here: https://www.getambassador.io/pro/free-trial
   licenseKey:
-    value: {{"INSERT LICENSE KEY HERE"}}
+    value: "{{INSERT LICENSE KEY HERE}}"
     # The license key will be stored and read from a Kubernetes secret named ambassador-pro-license-key
     # Set create: true for the first install and create: false for all subsequent installs
     secret:
