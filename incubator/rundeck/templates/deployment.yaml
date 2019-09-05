@@ -19,6 +19,8 @@ spec:
         app.kubernetes.io/name: {{ include "rundeck.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
+      securityContext:
+        fsGroup: 1000
       containers:
         - name: nginx
           image: nginx:stable
@@ -99,7 +101,14 @@ spec:
               - key: nginx.conf
                 path: nginx.conf
         - name: data
+        {{- if .Values.rundeck.awsVolumeId }}
+          # This AWS EBS volume must already exist.
+          awsElasticBlockStore:
+            volumeID: {{ .Values.rundeck.awsVolumeId }}
+            fsType: ext4
+        {{- else }}
           emptyDir: {}
+        {{- end }}  
         {{- if .Values.rundeck.sshSecrets }}
         - name: sshkeys
           secret:

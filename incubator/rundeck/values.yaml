@@ -26,6 +26,7 @@ rundeck:
     # RUNDECK_CONFIG_STORAGE_CONVERTER_1_CONFIG_PASSWORD: ${RUNDECK_STORAGE_PASSWORD}
   # sshSecrets: "ssh-secret"
   awsCredentialsSecret: ""
+  awsVolumeId: ""
 
 nameOverride: ""
 fullnameOverride: ""
