@@ -63,7 +63,9 @@ condition_map = {
     'controller-manager': ' .Values.kubeControllerManager.enabled',
     'kubelet': ' .Values.kubelet.enabled',
     'proxy': ' .Values.kubeProxy.enabled',
-    'scheduler': ' .Values.kubeScheduler.enabled'
+    'scheduler': ' .Values.kubeScheduler.enabled',
+    'node-rsrc-use': ' .Values.nodeExporter.enabled',
+    'node-cluster-rsrc-use': ' .Values.nodeExporter.enabled'
 }
 
 # standard header
