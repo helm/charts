@@ -3,6 +3,14 @@ rbac:
   pspEnabled: true
   pspUseAppArmor: true
   namespaced: false
+  extraRoleRules: []
+  # - apiGroups: []
+  #   resources: []
+  #   verbs: []
+  extraClusterRoleRules: []
+  # - apiGroups: []
+  #   resources: []
+  #   verbs: []
 serviceAccount:
   create: true
   name:
@@ -35,7 +43,7 @@ livenessProbe:
 
 image:
   repository: grafana/grafana
-  tag: 6.2.5
+  tag: 6.3.4
   pullPolicy: IfNotPresent
 
   ## Optionally specify an array of imagePullSecrets.
@@ -106,6 +114,12 @@ ingress:
   path: /
   hosts:
     - chart-example.local
+  ## Extra paths to prepend to every host configuration. This is useful when working with annotation based services.
+  extraPaths: []
+  # - path: /*
+  #   backend:
+  #     serviceName: ssl-redirect
+  #     servicePort: use-annotation
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:

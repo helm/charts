@@ -66,11 +66,13 @@ ingress:
 # Global configuration shared by all anchore-engine services.
 anchoreGlobal:
   # Image used for all anchore engine deployments (excluding enterprise components).
-  image: docker.io/anchore/anchore-engine:v0.4.2
+  image: docker.io/anchore/anchore-engine:v0.5.0
   imagePullPolicy: IfNotPresent
 
   # Add additionnal labels to all kubernetes resources
   labels: {}
+    # app.kubernetes.io/managed-by: Helm
+    # foo: bar
 
   # Set extra environment variables. These will be set on all containers.
   extraEnv: []
@@ -78,7 +80,7 @@ anchoreGlobal:
     #   value: bar
 
   # Specifies an existing secret to be used for admin and db passwords
-  existingSecret: ""
+  existingSecret: Null
 
   # The scratchVolume controls the mounting of an external volume for scratch space for image analysis. Generally speaking
   # you need to provision 3x the size of the largest image (uncompressed) that you want to analyze for this space.
@@ -88,12 +90,17 @@ anchoreGlobal:
       # Specify volume configuration here
       emptyDir: {}
 
+  # A secret must be created in the same namespace as anchore-engine is deployed, containing the certificates & public/private keys used for SSL, SAML & custom CAs.
+  # Certs and keys should be added using the file name the certificate is stored at. This secret will be mounted to /home/anchore/certs.
+  certStoreSecretName: Null
+
   ###
   # Start of General Anchore Engine Configurations (populates /config/config.yaml)
   ###
   # Set where default configs are placed at startup. This must be a writable location for the pod.
   serviceDir: /anchore_service
   logLevel: INFO
+  cleanupImages: true
 
   # If true, when a user adds an ECR registry with username = awsauto then the system will look for an instance profile to use for auth against the registry
   allowECRUseIAMRole: false
@@ -105,23 +112,40 @@ anchoreGlobal:
   defaultAdminPassword: foobar
   defaultAdminEmail: example@email.com
 
+  saml:
+    # Locations for keys used for signing and encryption. Only one of 'secret' or 'public_key_path'/'private_key_path' needs to be set. If all are set then the keys take precedence over the secret value
+    # Secret is for a shared secret and if set, all components in anchore should have the exact same value in their configs.
+    secret: Null
+    privateKeyName: Null
+    publicKeyName: Null
+
+  oauthEnabled: false
+  oauthTokenExpirationSeconds: 3600
+
+  # Set this to True to enable storing user passwords only as secure hashes in the db. This can dramatically increase CPU usage if you
+  # don't also use oauth and tokens for internal communications (which requires keys/secret to be configured as well)
+  # WARNING: you should not change this after a system has been initialized as it may cause a mismatch in existing passwords
+  hashedPasswords: false
+
   # Configure the database connection within anchore-engine & enterprise-ui. This may get split into 2 different configurations based on service utilized.
   dbConfig:
     timeout: 120
-    # Use ssl, but the default postgresql config in helm's stable repo does not support ssl on server side, so this should be set for external dbs only for the time being
+    # Use ssl, but the default postgresql config in helm's stable repo does not support ssl on server side, so this should be set for external dbs only.
+    # All ssl dbConfig values are only utilized when ssl=true
     ssl: false
+    sslMode: verify-full
+    # sslRootCertName is the name of the postgres root CA certificate stored in anchoreGlobal.certStoreSecretName
+    sslRootCertName: Null
     connectionPoolSize: 30
     connectionPoolMaxOverflow: 100
 
-  # Enable to force all anchore-engine services to communicate internally using SSL
-  internalServicesSslEnabled: false
   internalServicesSsl:
+    # Enable to force all anchore-engine services to communicate internally using SSL
+    enabled: false
     # specify whether cert is verfied against the local certifacte bundle (allow self-signed certs if set to false)
     verifyCerts: false
-    certDir: /home/anchore/certs
-    certSecret: Null
-    certSecretKeyName: tls.key
-    certSecretCertName: tls.crt
+    certSecretKeyName: Null
+    certSecretCertName: Null
 
   # To enable webhooks, set webhooksEnabled: true
   webhooksEnabled: false
@@ -164,6 +188,37 @@ anchoreAnalyzer:
   # For more info see - https://docs.anchore.com/current/docs/engine/engine_installation/storage/layer_caching/
   # Enable image layer caching by setting a cache size > 0GB.
   layerCacheMaxGigabytes: 0
+  configFile:
+    # Anchore analyzer config file
+    #
+    # WARNING - malforming this file can cause the analyzer to fail on all image analysis
+    #
+    # Options for any analyzer module(s) that takes customizable input
+    #
+    # example configuration for the 'retrieve_files' analyzer, if installed
+    retrieve_files:
+      file_list:
+        - '/etc/passwd'
+        # - '/etc/services'
+        # - '/etc/sudoers'
+
+    # example configuration for the 'content_search' analyze, if installed
+    secret_search:
+      match_params:
+        - MAXFILESIZE=10000
+        - STOREONMATCH=n
+      regexp_match:
+        - "AWS_ACCESS_KEY=(?i).*aws_access_key_id( *=+ *).*(?<![A-Z0-9])[A-Z0-9]{20}(?![A-Z0-9]).*"
+        - "AWS_SECRET_KEY=(?i).*aws_secret_access_key( *=+ *).*(?<![A-Za-z0-9/+=])[A-Za-z0-9/+=]{40}(?![A-Za-z0-9/+=]).*"
+        - "PRIV_KEY=(?i)-+BEGIN(.*)PRIVATE KEY-+"
+        - "DOCKER_AUTH=(?i).*\"auth\": *\".+\""
+        - "API_KEY=(?i).*api(-|_)key( *=+ *).*(?<![A-Z0-9])[A-Z0-9]{20,60}(?![A-Z0-9]).*"
+        # - "ALPINE_NULL_ROOT=^root:::0:::::$"
+    # content_search:
+    #   match_params:
+    #     - MAXFILESIZE=10000
+    #   regexp_match:
+    #     - "EXAMPLE_MATCH="
 
   # resources:
   #  limits:
@@ -387,7 +442,7 @@ anchoreEnterpriseGlobal:
   # Create this secret with the following command - kubectl create secret generic anchore-license --from-file=license.yaml=<PATH TO LICENSE.YAML>
   licenseSecretName: anchore-enterprise-license
 
-  image: docker.io/anchore/enterprise:v0.4.1
+  image: docker.io/anchore/enterprise:v0.5.0
   imagePullPolicy: IfNotPresent
   # Name of the kubernetes secret containing your dockerhub creds with access to the anchore enterprise images.
   # Create this secret with the following command - kubectl create secret docker-registry anchore-dockerhub-creds --docker-server=docker.io --docker-username=<USERNAME> --docker-password=<PASSWORD> --docker-email=<EMAIL_ADDRESS>
@@ -430,8 +485,11 @@ anchoreEnterpriseFeeds:
   # Configure the database connection within anchore-engine & enterprise-ui. This may get split into 2 different configurations based on service utilized.
   dbConfig:
     timeout: 120
-    # Use ssl, but the default postgresql config in helm's stable repo does not support ssl on server side, so this should be set for external dbs only for the time being
+    # Use ssl, but the default postgresql config in helm's stable repo does not support ssl on server side, so this should be set for external dbs
     ssl: false
+    sslMode: verify-full
+    # Specify path to an additional root CA certificate - this is only utilized if 'ssl: true' is configured.
+    sslRootCertName: Null
     connectionPoolSize: 30
     connectionPoolMaxOverflow: 100
 
@@ -534,13 +592,16 @@ anchoreEnterpriseReports:
 anchoreEnterpriseUi:
   # If enabled is set to false, set anchore-ui-redis.enabled to false to ensure that helm doesn't stand up a unneccessary redis instance.
   enabled: true
-  image: docker.io/anchore/enterprise-ui:v0.3.4
+  image: docker.io/anchore/enterprise-ui:v0.5.0
   imagePullPolicy: IfNotPresent
 
   # Set extra environment variables. These will be set on all UI containers.
   extraEnv: []
     # - name: foo
     #   value: bar
+
+  # If using LDAPS with a custom CA certificate, add the certificate to the secret specified at anchoreGlobal.certStoreSecretName and specify the name of the cert here
+  ldapsRootCaCertName: Null
 
   # Specifies whether to trust a reverse proxy when setting secure cookies (via the `X-Forwarded-Proto` header).
   enableProxy: false
