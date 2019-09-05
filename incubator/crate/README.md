@@ -15,13 +15,13 @@ The following table lists the configurable parameters of the CrateDB chart and t
 
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
-| crate.clusterName | Name of CrateDB cluster. See [docs](https://crate.io/docs/crate/guide/en/4.0.3/scaling/multi-node-setup.html#id3) | my-cluster |
-| crate.crateHeapSize | See [docs](https://crate.io/docs/crate/reference/en/4.0.3/config/environment.html) | 1g |
-| crate.recoverAfterNodes | See [docs](https://crate.io/docs/crate/guide/en/4.0.3/scaling/multi-node-setup.html#gateway-configuration) | 1 |
+| crate.clusterName | Name of CrateDB cluster. See [docs](https://crate.io/docs/crate/guide/en/4.0.4/scaling/multi-node-setup.html#id3) | my-cluster |
+| crate.crateHeapSize | See [docs](https://crate.io/docs/crate/reference/en/4.0.4/config/environment.html) | 1g |
+| crate.recoverAfterNodes | See [docs](https://crate.io/docs/crate/guide/en/4.0.4/scaling/multi-node-setup.html#gateway-configuration) | 1 |
 | crate.numberOfNodes | The number of instances to deploy. Also the number of expected nodes in the cluster formation | 1 |
-| http.cors.enabled | Whether CORS is enabled. See [docs](https://crate.io/docs/crate/reference/en/4.0.3/config/node.html#cross-origin-resource-sharing-cors) | False |
-| http.cors.allowOrigin | CORS origin to allow (if enabled). See [docs](https://crate.io/docs/crate/reference/en/4.0.3/config/node.html#cross-origin-resource-sharing-cors) | * |
-| image.tag | Container image tag (version) | 4.0.3 |
+| http.cors.enabled | Whether CORS is enabled. See [docs](https://crate.io/docs/crate/reference/en/4.0.4/config/node.html#cross-origin-resource-sharing-cors) | False |
+| http.cors.allowOrigin | CORS origin to allow (if enabled). See [docs](https://crate.io/docs/crate/reference/en/4.0.4/config/node.html#cross-origin-resource-sharing-cors) | * |
+| image.tag | Container image tag (version) | 4.0.4 |
 | service.name | Name of K8S service created for CrateDB | crate |
 | service.ports.ui | Port to use for admin UI | 4200 |
 | service.ports.psql | Port to use for psql connections | 5432 |

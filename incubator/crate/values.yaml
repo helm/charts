@@ -5,7 +5,7 @@
 app: crate
 
 image:
-  tag: 4.0.3
+  tag: 4.0.4
 
 # 1) The Service connecting 3 ports.
 service:
