@@ -21,8 +21,8 @@ service:
 crate:
   clusterName: my-cluster
   crateHeapSize: 1g
-  recoverAfterNodes: 1
-  numberOfNodes: 1  # If you want more replicas, checkout the links above.
+  numberOfNodes: 1
+  recoverAfterNodes: null  # defaults to the minimum allowed: floor(numberOfNodes/2) + 1
 
 http:
   cors:

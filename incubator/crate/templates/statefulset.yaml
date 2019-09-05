@@ -41,7 +41,9 @@ spec:
           - -Cnode.name="$POD_NAME"
           - -Cdiscovery.seed_providers=srv
           - -Cdiscovery.srv.query=_{{ .Values.service.clusterName }}._tcp.{{ .Values.service.name }}.{{ .Release.Namespace }}.svc.cluster.local
-          - -Cgateway.recover_after_nodes={{ .Values.crate.recoverAfterNodes }}
+          - -Cgateway.recover_after_nodes={{ if $r := .Values.crate.recoverAfterNodes -}}
+              {{ $r }}{{ else }}{{ div .Values.crate.numberOfNodes 2 | floor | add 1 }}
+         {{- end }}
           - -Cgateway.expected_nodes={{ .Values.crate.numberOfNodes }}
           - -Chttp.cors.enabled={{ .Values.http.cors.enabled }}
           - -Chttp.cors.allow-origin={{ .Values.http.cors.allowOrigin }}
@@ -70,8 +72,6 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
-        - name: RECOVER_AFTER_NODES
-          value: {{ .Values.crate.recoverAfterNodes | quote }}
         livenessProbe:
           exec:
             command: ["sh", "-c", "curl http://localhost:4200 2&>/dev/null | grep '\"ok\" : true'"]
