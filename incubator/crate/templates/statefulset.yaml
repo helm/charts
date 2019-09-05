@@ -33,8 +33,12 @@ spec:
         command:
           - /docker-entrypoint.sh
           - -Clicense.enterprise=false
+          - -Ccluster.initial_master_nodes={{ range $i := until (int .Values.crate.numberOfNodes) -}}
+              {{ if $i }},{{ end }}crate-{{ $i }}
+         {{- end }}
           - -Ccluster.name={{ .Values.crate.clusterName }}
           - -Cnetwork.host="0.0.0.0"
+          - -Cnode.name="$POD_NAME"
           - -Cdiscovery.seed_providers=srv
           - -Cdiscovery.srv.query=_{{ .Values.service.clusterName }}._tcp.{{ .Values.service.name }}.{{ .Release.Namespace }}.svc.cluster.local
           - -Cgateway.recover_after_nodes={{ .Values.crate.recoverAfterNodes }}
@@ -62,6 +66,10 @@ spec:
           value: {{ .Values.crate.crateHeapSize | quote }}
         - name: CLUSTER_NAME
           value: {{ .Values.crate.clusterName | quote }}
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
         - name: RECOVER_AFTER_NODES
           value: {{ .Values.crate.recoverAfterNodes | quote }}
         livenessProbe:
