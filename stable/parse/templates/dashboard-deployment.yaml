@@ -78,7 +78,7 @@ spec:
       volumes:
       - name: parse-dashboard-data
         emptyDir: {}
-      {{- with .Values.affinity }}
+      {{- with .Values.dashboard.affinity }}
       affinity:
 {{ toYaml . | indent 8 }}
       {{- end }}
