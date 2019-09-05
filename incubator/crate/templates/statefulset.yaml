@@ -49,7 +49,7 @@ spec:
           - -Chttp.cors.allow-origin={{ .Values.http.cors.allowOrigin }}
           - -Cpath.data=/data
           {{- if .Values.resources.limits.cpu }}
-          - -Cprocessors={{ .Values.resources.limits.cpu }}
+          - -Cprocessors="$MIN_VCPU_COUNT"
           {{- end }}
         volumeMounts:
             - mountPath: /data
@@ -68,6 +68,11 @@ spec:
           value: {{ .Values.crate.crateHeapSize | quote }}
         - name: CLUSTER_NAME
           value: {{ .Values.crate.clusterName | quote }}
+        - name: MIN_VCPU_COUNT
+          valueFrom:
+            resourceFieldRef:
+              resource: requests.cpu
+              divisor: 1
         - name: POD_NAME
           valueFrom:
             fieldRef:
