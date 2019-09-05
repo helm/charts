@@ -184,7 +184,35 @@ tolerations: []
 
 affinity: {}
 
-# Enabling the prometheus exporter creates a sidecar and configures ambassador to use it
+ambassadorConfig: ""
+
+pro:
+  enabled: false
+  image:
+    repository: quay.io/datawire/ambassador_pro
+    tag: 0.7.0
+  # As of Ambassador Pro 0.6.0, both the RateLimitService and AuthService use the same port
+  ports:
+    auth: 8500
+    ratelimit: 8500
+  logLevel: info
+  licenseKey:
+    value:
+    secret: true
+  # Ambassador Pro environment variables can be found at https://www.getambassador.io/reference/pro/environment
+  # For consistency, AMBASSADOR_ID is copied over from the Ambassador env above and will be ignored if set here.
+  env:
+    {}
+
+crds:
+  enabled: true
+  create: true
+  keep: true
+
+# DEPRECATED: Ambassador now exposes the /metrics endpoint in Envoy. 
+# DEPRECATED: See https://www.getambassador.io/user-guide/monitoring#deployment for more information on how to use the /metrics endpoint
+#
+# DEPRECATED: Enabling the prometheus exporter creates a sidecar and configures ambassador to use it
 prometheusExporter:
   enabled: false
   repository: prom/statsd-exporter
@@ -210,28 +238,3 @@ prometheusExporter:
   #     timer_type: 'histogram'
   #     labels:
   #       cluster_name: "$1"
-
-ambassadorConfig: ""
-
-pro:
-  enabled: false
-  image:
-    repository: quay.io/datawire/ambassador_pro
-    tag: 0.7.0
-  # As of Ambassador Pro 0.6.0, both the RateLimitService and AuthService use the same port
-  ports:
-    auth: 8500
-    ratelimit: 8500
-  logLevel: info
-  licenseKey:
-    value:
-    secret: true
-  # Ambassador Pro environment variables can be found at https://www.getambassador.io/reference/pro/environment
-  # For consistency, AMBASSADOR_ID is copied over from the Ambassador env above and will be ignored if set here.
-  env:
-    {}
-
-crds:
-  enabled: true
-  create: true
-  keep: true

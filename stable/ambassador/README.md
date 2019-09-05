@@ -70,11 +70,6 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `deploymentAnnotations`            | Additional annotations for ambassador DaemonSet/Deployment                      | `{}`                              |
 | `podLabels`                        | Additional labels for ambassador pods                                           |                                   |
 | `priorityClassName`                | The name of the priorityClass for the ambassador DaemonSet/Deployment           | `""`                              |
-| `prometheusExporter.enabled`       | Prometheus exporter side-car enabled                                            | `false`                           |
-| `prometheusExporter.pullPolicy`    | Image pull policy                                                               | `IfNotPresent`                    |
-| `prometheusExporter.repository`    | Prometheus exporter image                                                       | `prom/statsd-exporter`            |
-| `prometheusExporter.tag`           | Prometheus exporter image                                                       | `v0.8.1`                          |
-| `prometheusExporter.resources`     | CPU/memory resource requests/limits                                             | `{}`                              |
 | `rbac.create`                      | If `true`, create and use RBAC resources                                        | `true`                            |
 | `rbac.podSecurityPolicies`         | pod security polices to bind to                                                 |                                   |
 | `replicaCount`                     | Number of Ambassador replicas                                                   | `3`                               |
@@ -104,6 +99,11 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `autoscaling.minReplica`           | If autoscaling enabled, this field sets minimum replica count                   | `2`                               |
 | `autoscaling.maxReplica`           | If autoscaling enabled, this field sets maximum replica count                   | `5`                               |
 | `autoscaling.metrics`              | If autoscaling enabled, configure hpa metrics                                   |                                   |
+| `prometheusExporter.enabled`       | DEPRECATED: Prometheus exporter side-car enabled                                | `false`                           |
+| `prometheusExporter.pullPolicy`    | DEPRECATED: Image pull policy                                                   | `IfNotPresent`                    |
+| `prometheusExporter.repository`    | DEPRECATED: Prometheus exporter image                                           | `prom/statsd-exporter`            |
+| `prometheusExporter.tag`           | DEPRECATED: Prometheus exporter image                                           | `v0.8.1`                          |
+| `prometheusExporter.resources`     | DEPRECATED: CPU/memory resource requests/limits                                 | `{}`                              |
 
 **NOTE:** Make sure the configured `service.http.targetPort` and `service.https.targetPort` ports match your [Ambassador Module's](https://www.getambassador.io/reference/modules/#the-ambassador-module) `service_port` and `redirect_cleartext_from` configurations.
 
@@ -112,6 +112,12 @@ The following tables lists the configurable parameters of the Ambassador chart a
 Ambassador configuration is done through annotations on Kubernetes services or Custom Resource Definitions (CRDs). The `service.annotations` section of the values file contains commented out examples of [Ambassador Module](https://www.getambassador.io/reference/core/ambassador) and a global [TLSContext](https://www.getambassador.io/reference/core/tls) configurations which are typically created in the Ambassador service.
 
 If you intend to use `service.annotations`, remember to include the `getambassador.io/config` annotation key as above.
+
+### Prometheus Metrics
+
+Using the Prometheus Exporter has been deprecated and is no longer recommended.
+
+Please see Ambassador's [monitoring with Prometheus](https://www.getambassador.io/user-guide/monitoring/) docs for more information on using the `/metrics` endpoint for metrics collection
 
 ### Ambassador Pro
 
