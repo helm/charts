@@ -26,3 +26,4 @@ rundeck.adminUser | The config to set up the admin user that should be placed at
 rundeck.env | The rundeck environment variables that you would want to set | Default variables provided in docker file
 rundeck.sshSecrets | A reference to the Kubernetes Secret that contains the ssh keys. | ""
 rundeck.awsCredentialsSecret | A reference to the Kubernetes Secret that contains the aws credentials. | ""
+rundeck.awsVolumeId | A Volume ID from a pre-existent AWS EBS volume to persist Rundeck data from /home/rundeck/server/data path. | "" 
