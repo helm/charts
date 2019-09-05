@@ -3,6 +3,13 @@
 This file documents all notable changes to Sysdig Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v1.4.15
+
+### Minor changes
+
+* Add configmaps and secrets to the resources we can read
+* Add support for priorityClassName, httpProxy, timezone and any env variable settings
+
 ## v1.4.14
 
 ### Minor changes
