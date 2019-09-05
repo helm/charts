@@ -1,0 +1,20 @@
+{{- if .Values.rbac.enabled }}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ template "aad-pod-identity.nmi.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ template "aad-pod-identity.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ template "aad-pod-identity.chart" . }}
+    app.kubernetes.io/component: nmi
+subjects:
+- kind: ServiceAccount
+  name: {{ template "aad-pod-identity.nmi.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: ClusterRole
+  name: {{ template "aad-pod-identity.nmi.fullname" . }}
+  apiGroup: rbac.authorization.k8s.io
+{{- end }}
