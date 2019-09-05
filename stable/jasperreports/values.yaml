@@ -224,3 +224,8 @@ ingress:
   # - name: jasperreports.local-tls
   #   key:
   #   certificate:
+
+## Affinity for pod assignment
+## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+##
+affinity: {}
