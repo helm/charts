@@ -18,7 +18,7 @@ service:
 # 2) The StatefulSet forming the cluster. Read more:
 # https://crate.io/docs/crate/guide/en/latest/scaling/multi-node-setup.html#id10
 crate:
-  clusterName: my-cluster
+  clusterName: null  # defaults to the value of app
   heapSize: 1.0  # GiB
   numberOfNodes: 1
   recoverAfterNodes: null  # defaults to the minimum allowed: floor(numberOfNodes/2) + 1

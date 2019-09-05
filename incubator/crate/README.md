@@ -15,7 +15,7 @@ The following table lists the configurable parameters of the CrateDB chart and t
 
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
-| crate.clusterName | Name of CrateDB cluster. See [docs](https://crate.io/docs/crate/guide/en/4.0.4/scaling/multi-node-setup.html#id3) | my-cluster |
+| crate.clusterName | Name of CrateDB cluster. See [docs](https://crate.io/docs/crate/guide/en/4.0.4/scaling/multi-node-setup.html#id3) | crate |
 | crate.crateHeapSize | See [docs](https://crate.io/docs/crate/reference/en/4.0.4/config/environment.html) | 1g |
 | crate.numberOfNodes | The number of instances to deploy. Also the number of expected nodes in the cluster formation | 1 |
 | crate.recoverAfterNodes | See [docs](https://crate.io/docs/crate/guide/en/4.0.4/scaling/multi-node-setup.html#gateway-configuration) | floor(crate.numberOfNodes/2) + 1 |
