@@ -1,0 +1,80 @@
+# Generated from 'node-exporter.rules' group from https://raw.githubusercontent.com/coreos/kube-prometheus/master/manifests/prometheus-rules.yaml
+# Do not change in-place! In order to change this file first read following link:
+# https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
+{{- if and (semverCompare ">=1.14.0-0" .Capabilities.KubeVersion.GitVersion) (semverCompare "<1.16.0-0" .Capabilities.KubeVersion.GitVersion) .Values.defaultRules.create .Values.nodeExporter.enabled .Values.defaultRules.rules.node }}
+apiVersion: {{ printf "%s/v1" (.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
+kind: PrometheusRule
+metadata:
+  name: {{ printf "%s-%s" (include "prometheus-operator.fullname" .) "node-exporter.rules" | trunc 63 | trimSuffix "-" }}
+  labels:
+    app: {{ template "prometheus-operator.name" . }}
+{{ include "prometheus-operator.labels" . | indent 4 }}
+{{- if .Values.defaultRules.labels }}
+{{ toYaml .Values.defaultRules.labels | indent 4 }}
+{{- end }}
+{{- if .Values.defaultRules.annotations }}
+  annotations:
+{{ toYaml .Values.defaultRules.annotations | indent 4 }}
+{{- end }}
+spec:
+  groups:
+  - name: node-exporter.rules
+    rules:
+    - expr: |-
+        count without (cpu) (
+          count without (mode) (
+            node_cpu_seconds_total{job="node-exporter"}
+          )
+        )
+      record: instance:node_num_cpu:sum
+    - expr: |-
+        1 - avg without (cpu, mode) (
+          rate(node_cpu_seconds_total{job="node-exporter", mode="idle"}[1m])
+        )
+      record: instance:node_cpu_utilisation:rate1m
+    - expr: |-
+        (
+          node_load1{job="node-exporter"}
+        /
+          instance:node_num_cpu:sum{job="node-exporter"}
+        )
+      record: instance:node_load1_per_cpu:ratio
+    - expr: |-
+        1 - (
+          node_memory_MemAvailable_bytes{job="node-exporter"}
+        /
+          node_memory_MemTotal_bytes{job="node-exporter"}
+        )
+      record: instance:node_memory_utilisation:ratio
+    - expr: |-
+        (
+          rate(node_vmstat_pgpgin{job="node-exporter"}[1m])
+        +
+          rate(node_vmstat_pgpgout{job="node-exporter"}[1m])
+        )
+      record: instance:node_memory_swap_io_pages:rate1m
+    - expr: rate(node_disk_io_time_seconds_total{job="node-exporter", device=~"nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+"}[1m])
+      record: instance_device:node_disk_io_time_seconds:rate1m
+    - expr: rate(node_disk_io_time_weighted_seconds_total{job="node-exporter", device=~"nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+"}[1m])
+      record: instance_device:node_disk_io_time_weighted_seconds:rate1m
+    - expr: |-
+        sum without (device) (
+          rate(node_network_receive_bytes_total{job="node-exporter", device!="lo"}[1m])
+        )
+      record: instance:node_network_receive_bytes_excluding_lo:rate1m
+    - expr: |-
+        sum without (device) (
+          rate(node_network_transmit_bytes_total{job="node-exporter", device!="lo"}[1m])
+        )
+      record: instance:node_network_transmit_bytes_excluding_lo:rate1m
+    - expr: |-
+        sum without (device) (
+          rate(node_network_receive_drop_total{job="node-exporter", device!="lo"}[1m])
+        )
+      record: instance:node_network_receive_drop_excluding_lo:rate1m
+    - expr: |-
+        sum without (device) (
+          rate(node_network_transmit_drop_total{job="node-exporter", device!="lo"}[1m])
+        )
+      record: instance:node_network_transmit_drop_excluding_lo:rate1m
+{{- end }}

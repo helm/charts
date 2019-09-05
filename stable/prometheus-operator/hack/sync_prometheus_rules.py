@@ -63,6 +63,8 @@ condition_map = {
     'kubernetes-resources': ' .Values.defaultRules.rules.kubernetesResources',
     'kubernetes-storage': ' .Values.defaultRules.rules.kubernetesStorage',
     'kubernetes-system': ' .Values.defaultRules.rules.kubernetesSystem',
+    'node-exporter.rules': ' .Values.nodeExporter.enabled .Values.defaultRules.rules.node',
+    'node-exporter': ' .Values.nodeExporter.enabled .Values.defaultRules.rules.node',
     'node.rules': ' .Values.nodeExporter.enabled .Values.defaultRules.rules.node',
     'node-network': ' .Values.defaultRules.rules.network',
     'node-time': ' .Values.defaultRules.rules.time',
