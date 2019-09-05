@@ -100,6 +100,8 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `pro.authService.enabled`          | Enables the Ambassador Pro authentication service                               | `true`                            |
 | `pro.authService.optional_configurations` | Exposes [additional configuration options](https://www.getambassador.io/reference/services/auth-service/) for the `AuthService` | `""` | 
 | `pro.rateLimit.enabled`            | Enables the Ambassador Pro rate limit service                                   | `true`                            |
+| `pro.rateLimit.redis.annotations.deployment` | Annotations for the redis deployment                                  | `{}`                              |
+| `pro.rateLimit.redis.annotations.service` | Annotations for the redis service                                        | `{}`                              |
 | `pro.rateLimit.redis.resources`    | Set resource requests and limits for the rate limit service's redis instance    | `{}`                              |
 | `autoscaling.enabled`              | If true, creates Horizontal Pod Autoscaler                                      | `false`                           |
 | `autoscaling.minReplica`           | If autoscaling enabled, this field sets minimum replica count                   | `2`                               |
@@ -214,7 +216,6 @@ Method for creating a Kubernetes secret to hold the license key has been changed
 +      enabled: true
 +      create: true
 ```
-
 
 ## To 3.0.0
 

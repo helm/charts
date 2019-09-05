@@ -9,6 +9,8 @@ metadata:
     helm.sh/chart: {{ include "ambassador.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
+  annotations:
+    {{- toYaml .Values.pro.rateLimit.redis.annotations.service | nindent 4}}
 spec:
   type: ClusterIP
   ports:
@@ -28,6 +30,8 @@ metadata:
     helm.sh/chart: {{ include "ambassador.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
+  annotations:
+    {{- toYaml .Values.pro.rateLimit.redis.annotations.deployment | nindent 4}}
 spec:
   replicas: 1
   selector:

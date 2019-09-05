@@ -244,6 +244,12 @@ pro:
   rateLimit:
     enabled: true
     redis:
+      # Annotations for Ambassador Pro's redis instance.
+      annotations:
+        deployment:
+          {}
+        service:
+          {}
       resources: {}
       # If you want to specify resources, uncomment the following
       # lines and remove the curly braces after 'resources:'. 
