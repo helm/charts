@@ -52,8 +52,8 @@ extraVars: {}
 metrics:
   enabled: false
   image:
-    repository: ssalaues/mongodb-exporter
-    tag: 0.6.1
+    repository: bitnami/mongodb-exporter
+    tag: 0.9.0-debian-9-r2
     pullPolicy: IfNotPresent
   port: 9216
   path: "/metrics"
