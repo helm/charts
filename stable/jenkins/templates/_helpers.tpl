@@ -67,6 +67,15 @@ Returns the Jenkins URL
 {{- end}}
 {{- end -}}
 
+{{/*
+Returns configuration as code default config
+*/}}
+{{- define "jenkins.casc.defaults" -}}
+unclassified:
+  location:
+    url: {{ template "jenkins.url" . }}
+{{- end -}}
+
 {{- define "jenkins.kubernetes-version" -}}
   {{- if .Values.master.installPlugins -}}
     {{- range .Values.master.installPlugins -}}

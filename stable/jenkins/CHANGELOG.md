@@ -6,9 +6,37 @@ numbering uses [semantic versioning](http://semver.org).
 
 NOTE: The change log until version 1.5.7 is auto generated based on git commits. Those include a reference to the git commit to be able to get more details.
 
+## 1.7.0
+
+[Jenkins Configuration as Code Plugin](https://github.com/jenkinsci/configuration-as-code-plugin) default configuration can now be enabled via `master.JCasC.defaultConfig`.
+
+Example `values.yaml` disables all XML configuration, enables JCasC, it's default config and configAutoReload:
+
+```
+master:
+  enableXmlConfig: false
+  javaOpts: "-Djenkins.install.runSetupWizard=false"
+  JCasC:
+    enabled: true
+    defaultConfig: true
+  sidecars:
+    configAutoReload:
+      enabled: true
+```
+
+add master.JCasC.defaultConfig and configure location
+
+- JCasC configuration is stored in template `jenkins.casc.defaults`
+  so that it can be used in `config.yaml` and `jcasc-config.yaml`
+  depending on if configAutoReload is enabled or not
+
+- Jenkins Location (URL) is configured to provide a startin point
+  for the config
+
 ## 1.6.1
 
 Print error message when `master.sidecars.configAutoReload.enabled` is `true`, but the admin user can't be found to configure the SSH key.
+=>>>>>> add master.JCasC.defaultConfig and configure location
 
 ## 1.6.0
 

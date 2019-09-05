@@ -200,6 +200,7 @@ master:
   # etc.  Best reference is https://<jenkins_url>/configuration-as-code/reference.  The example below creates a welcome message:
   JCasC:
     enabled: false
+    defaultConfig: false
     pluginVersion: "1.27"
     # it's only used when plugin version is <=1.18 for later version the
     # configuration as code support plugin is no longer needed
