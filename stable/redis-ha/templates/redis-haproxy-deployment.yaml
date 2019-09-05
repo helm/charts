@@ -33,6 +33,8 @@ spec:
       serviceAccountName: {{ template "redis-ha.serviceAccountName" . }}-haproxy
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
       initContainers:
       - name: config-init
         image: {{ .Values.haproxy.image.repository }}:{{ .Values.haproxy.image.tag }}
