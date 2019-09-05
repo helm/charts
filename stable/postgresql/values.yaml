@@ -179,6 +179,9 @@ postgresqlDataDir: /bitnami/postgresql/data
 ## NOTE: This will override initdbScripts
 # initdbScriptsConfigMap:
 
+## The path the initdb scripts will be mounted at
+initdbScriptsMountPath: /docker-entrypoint-initdb.d/
+
 ## Secret with scripts to be run at first boot (in case it contains sensitive information)
 ## NOTE: This can work along initdbScripts or initdbScriptsConfigMap
 # initdbScriptsSecret:

@@ -193,11 +193,11 @@ spec:
         volumeMounts:
         {{- if or (.Files.Glob "files/docker-entrypoint-initdb.d/*.{sh,sql,sql.gz}") .Values.initdbScriptsConfigMap .Values.initdbScripts }}
         - name: custom-init-scripts
-          mountPath: /docker-entrypoint-initdb.d/
+          mountPath: {{ .Values.initdbScriptsMountPath | quote }}
         {{- end }}
         {{- if .Values.initdbScriptsSecret }}
         - name: custom-init-scripts-secret
-          mountPath: /docker-entrypoint-initdb.d/secret
+          mountPath: {{ printf "%s/secret" .Values.initdbScriptsMountPath | quote }}
         {{- end }}
         {{- if or (.Files.Glob "files/conf.d/*.conf") .Values.postgresqlExtendedConf .Values.extendedConfConfigMap }}
         - name: postgresql-extended-config
