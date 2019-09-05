@@ -112,6 +112,11 @@ server:
     #   memory: 512Mi
     #   cpu: 300m
 
+  ## Affinity for pod assignment
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  ##
+  affinity: {}
+
 dashboard:
   ## Enable deployment of Parse Dashboard
   ##
@@ -167,6 +172,11 @@ dashboard:
     # requests:
     #   memory: 512Mi
     #   cpu: 300m
+
+  ## Affinity for pod assignment
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  ##
+  affinity: {}
 
 ## Configure the ingress resource that allows you to access the
 ## Parse installation.
