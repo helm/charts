@@ -3,13 +3,15 @@ kind: PodDisruptionBudget
 metadata:
   name: {{ template "prometheus-blackbox-exporter.fullname" . }}
   labels:
-    app: {{ template "prometheus-blackbox-exporter.name" . }}
-    chart: {{ template "prometheus-blackbox-exporter.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ include "prometheus-blackbox-exporter.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "prometheus-blackbox-exporter.chart" . }}
 spec:
   selector:
     matchLabels:
-      app: {{ template "prometheus-blackbox-exporter.name" . }}
-      release: {{ .Release.Name }}
+      app.kubernetes.io/name: {{ include "prometheus-blackbox-exporter.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/managed-by: {{ .Release.Service }}
+      helm.sh/chart: {{ include "prometheus-blackbox-exporter.chart" . }}
 {{ toYaml .Values.podDisruptionBudget | indent 2 }}
