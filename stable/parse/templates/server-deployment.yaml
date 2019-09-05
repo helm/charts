@@ -103,3 +103,7 @@ spec:
       {{- else }}
         emptyDir: {}
       {{- end }}
+      {{- with .Values.server.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+      {{- end }}
