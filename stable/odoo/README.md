@@ -111,6 +111,7 @@ The following table lists the configurable parameters of the Odoo chart and thei
 | `readinessProbe.timeoutSeconds`       | When the probe times out                                  | 5                                                       |
 | `readinessProbe.failureThreshold`     | Minimum consecutive failures to be considered failed      | 6                                                       |
 | `readinessProbe.successThreshold`     | Minimum consecutive successes to be considered successful | 1                                                       |
+| `affinity`                            | Map of node/pod affinities                                | `{}`                                                    |
 
 The above parameters map to the env variables defined in [bitnami/odoo](http://github.com/bitnami/bitnami-docker-odoo). For more information please refer to the [bitnami/odoo](http://github.com/bitnami/bitnami-docker-odoo) image documentation.
 
