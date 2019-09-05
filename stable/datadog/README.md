@@ -370,6 +370,7 @@ helm install --name <RELEASE_NAME> \
 | `clusterchecksDeployment.rbac.dedicated`                 | If true, use dedicated RBAC resources for clusterchecks agent's pods                          | `false`                                     |
 | `clusterchecksDeployment.rbac.serviceAccount`            | existing ServiceAccount to use (ignored if rbac.create=true) for clusterchecks                | `default`                                   |
 | `clusterchecksDeployment.strategy`                       | Which update strategy to deploy the Cluster Checks Deployment                                 | RollingUpdate with 0 maxUnavailable, 1 maxSurge |
+| `clusterchecksDeployment.podAnnotations`                 | Annotations to add to pods of the Cluster Check Deployment                                    | `nil`                                       |
 | `systemProbe.enabled`                  | If both this flag and `daemonset.useDedicatedContainers` are true, enable system probe collection 	        | `false`                                           |
 | `systemProbe.seccompRoot`              | Seccomp root directory for system-probe                                                                    | `/var/lib/kubelet/seccomp`                        |
 | `systemProbe.debugPort`                | The port to expose pprof and expvar for system-probe agent, it is not enabled if the value is set to 0     | `0`                                               |

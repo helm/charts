@@ -38,6 +38,10 @@ spec:
       labels:
         app: {{ template "datadog.fullname" . }}-clusterchecks
       name: {{ template "datadog.fullname" . }}-clusterchecks
+      {{- if .Values.clusterchecksDeployment.podAnnotations }}
+      annotations:
+{{ toYaml .Values.clusterchecksDeployment.podAnnotations | indent 8 }}
+      {{- end }}
     spec:
       {{- if .Values.clusterchecksDeployment.rbac.dedicated }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "datadog.fullname" . }}-cluster-checks{{ else }}"{{ .Values.clusterchecksDeployment.rbac.serviceAccountName }}"{{ end }}

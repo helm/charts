@@ -832,3 +832,10 @@ clusterchecksDeployment:
   # env:
   #   - name: <ENV_VAR_NAME>
   #     value: <ENV_VAR_VALUE>
+  
+  ## @param podAnnotations - list of key:value strings - optional
+  ## Annotations to add to the cluster-agents's pod(s)
+  #
+  # podAnnotations:
+  #   key: "value"
+
