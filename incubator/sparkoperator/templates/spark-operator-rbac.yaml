@@ -33,6 +33,13 @@ rules:
 - apiGroups: ["sparkoperator.k8s.io"]
   resources: ["sparkapplications", "scheduledsparkapplications"]
   verbs: ["*"]
+  {{- if .Values.enableBatchScheduler }}
+  # This api resources below is configured for the `volcano` batch scheduler.
+- apiGroups: ["scheduling.incubator.k8s.io", "scheduling.sigs.dev"]
+  resources: ["podgroups"]
+  verbs: ["*"]
+  {{- end }}
+
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
