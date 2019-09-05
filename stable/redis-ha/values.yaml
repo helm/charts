@@ -26,6 +26,10 @@ serviceAccount:
 ## ref: https://cbonte.github.io/haproxy-dconv/1.9/intro.html
 haproxy:
   enabled: false
+  # Enable if you want a dedicated port in haproxy for redis-slaves
+  readOnlyPort:
+    enabled: false
+    port: 6380
   replicas: 1
   image:
     repository: haproxy
@@ -50,11 +54,6 @@ haproxy:
     port: 9101
   init:
     resources: {}
-
- # Enable if you want a dedicated port in haproxy for redis-slaves
-hapreadport:
-  enabled: false
-  port: 6380
 
 
 ## Role Based Access

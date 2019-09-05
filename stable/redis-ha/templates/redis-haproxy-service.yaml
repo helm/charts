@@ -16,11 +16,11 @@ spec:
     port: {{ .Values.redis.port }}
     protocol: TCP
     targetPort: redis
-{{- if .Values.hapreadport.enabled }}  
-  - name: haproxyslave
-    port: {{ .Values.hapreadport.port }}
+{{- if .Values.haproxy.readOnlyPort.enabled }}  
+  - name: haproxyreadonlyport
+    port: {{ .Values.haproxy.readOnlyPort.port }}
     protocol: TCP
-    targetPort: hapreadport
+    targetPort: readonlyport
 {{- end }}
 {{- if .Values.exporter.enabled }}
   - name: exporter-port
