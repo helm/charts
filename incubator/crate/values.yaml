@@ -5,22 +5,15 @@
 app: crate
 
 image:
-  name: crate
   tag: 4.0.3
-  pullPolicy: IfNotPresent
 
 # 1) The Service connecting 3 ports.
 service:
   name: crate
   type: ClusterIP
-
-  adminName: crate-web
-  adminPort: 4200
-  clusterName: cluster
-  clusterPort: 4300
-  # https://crate.io/docs/crate/reference/en/latest/interfaces/postgres.html
-  postgresName: postgres
-  postgresPort: 5432
+  ports:
+    psql: 5432
+    ui: 4200
 
 # 2) The StatefulSet forming the cluster. Read more:
 # https://crate.io/docs/crate/guide/en/latest/scaling/multi-node-setup.html#id10
@@ -29,8 +22,7 @@ crate:
   clusterName: my-cluster
   crateHeapSize: 1g
   recoverAfterNodes: 1
-  replicas: 1  # If you want more replicas, checkout the links above.
-  recoverAfterTime: 5m
+  numberOfNodes: 1  # If you want more replicas, checkout the links above.
 
 http:
   cors:

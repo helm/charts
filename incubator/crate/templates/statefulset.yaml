@@ -4,7 +4,7 @@ metadata:
   name: crate
 spec:
   serviceName: "crate-db"
-  replicas: {{ .Values.crate.replicas }}
+  replicas: {{ .Values.crate.numberOfNodes }}
   selector:
     matchLabels:
       app: {{ .Values.app }}
@@ -28,8 +28,8 @@ spec:
           privileged: true
       containers:
       - name: crate
-        image: {{ .Values.image.name }}:{{ .Values.image.tag }}
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        image: crate:{{ .Values.image.tag }}
+        imagePullPolicy: IfNotPresent
         command:
           - /docker-entrypoint.sh
           - -Clicense.enterprise=false
@@ -38,8 +38,7 @@ spec:
           - -Cdiscovery.seed_providers=srv
           - -Cdiscovery.srv.query=_{{ .Values.service.clusterName }}._tcp.{{ .Values.service.name }}.{{ .Release.Namespace }}.svc.cluster.local
           - -Cgateway.recover_after_nodes={{ .Values.crate.recoverAfterNodes }}
-          - -Cgateway.recover_after_time={{ .Values.crate.recoverAfterTime }}
-          - -Cgateway.expected_nodes={{ .Values.crate.replicas }}
+          - -Cgateway.expected_nodes={{ .Values.crate.numberOfNodes }}
           - -Chttp.cors.enabled={{ .Values.http.cors.enabled }}
           - -Chttp.cors.allow-origin={{ .Values.http.cors.allowOrigin }}
           - -Cpath.data=/data
@@ -52,17 +51,15 @@ spec:
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         ports:
-        - containerPort: {{ .Values.service.adminPort }}
-          name: {{ .Values.service.adminName }}
-        - containerPort: {{ .Values.service.clusterPort }}
-          name: {{ .Values.service.clusterName }}
-        - containerPort: {{ .Values.service.postgresPort }}
-          name: {{ .Values.service.postgresName }}
+        - containerPort: {{ .Values.service.ports.psql }}
+          name: psql
+        - containerPort: 4300
+          name: transport
+        - containerPort: {{ .Values.service.ports.ui }}
+          name: ui
         env:
         - name: CRATE_HEAP_SIZE
           value: {{ .Values.crate.crateHeapSize | quote }}
-        - name: EXPECTED_NODES
-          value: {{ .Values.crate.replicas | quote }}
         - name: CLUSTER_NAME
           value: {{ .Values.crate.clusterName | quote }}
         - name: RECOVER_AFTER_NODES

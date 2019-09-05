@@ -11,12 +11,12 @@ metadata:
     app: {{ .Values.app }}
 spec:
   ports:
-  - port: {{ .Values.service.adminPort }}
-    name: {{ .Values.service.adminName }}
-  - port: {{ .Values.service.clusterPort }}
-    name: {{ .Values.service.clusterName }}
-  - port: {{ .Values.service.postgresPort }}
-    name: {{ .Values.service.postgresName }}
+    - name: psql
+      port: {{ .Values.service.ports.psql }}
+    - name: transport
+      port: 4300
+    - name: ui
+      port: {{ .Values.service.ports.ui }}
   type: {{ .Values.service.type }}
   selector:
     app: {{ .Values.app }}
