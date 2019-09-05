@@ -122,3 +122,7 @@ spec:
       {{- else }}
         emptyDir: {}
       {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+      {{- end }}
