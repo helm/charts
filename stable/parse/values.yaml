@@ -173,10 +173,10 @@ dashboard:
     #   memory: 512Mi
     #   cpu: 300m
 
-## Affinity for pod assignment
-## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
-##
-affinity: {}
+  ## Affinity for pod assignment
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  ##
+  affinity: {}
 
 ## Configure the ingress resource that allows you to access the
 ## Parse installation.
@@ -301,7 +301,3 @@ mongodb:
     accessMode: ReadWriteOnce
     size: 8Gi
 
-## Affinity for pod assignment
-## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
-##
-affinity: {}
