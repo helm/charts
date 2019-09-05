@@ -88,13 +88,19 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `volumes`                          | Volumes for the ambassador service                                              | `[]`                              |
 | `pro.enabled`                      | Installs the Ambassador Pro container as a sidecar to Ambassador                | `false`                           |
 | `pro.image.repository`             | Ambassador Pro image                                                            | `quay.io/datawire/ambassador_pro` |
-| `pro.image.tag`                    | Ambassador Pro image tag                                                        | `amb-sidecar-0.6.0`               |
+| `pro.image.tag`                    | Ambassador Pro image tag                                                        | `0.7.0`               |
 | `pro.ports.auth`                   | Ambassador Pro authentication port                                              | `8500`                            |
 | `pro.ports.ratelimit`              | Ambassador Pro ratelimit port                                                   | `8500`                            |
 | `pro.logLevel`                     | Log level for Ambassador Pro                                                    | `"info"`                          |
 | `pro.licenseKey.value`             | License key for Ambassador Pro                                                  | ""                                |
-| `pro.licenseKey.secret`            | Stores the license key as a base64-encoded string in a Kubernetes secret        | `false`                           |
+| `pro.licenseKey.secret.enabled`    | Reads the license key as a base64-encoded string in a Kubernetes secret         | `true`                            |
+| `pro.licenseKey.secret.create`     | Stores the license key as a base64-encoded string in a Kubernetes secret        | `true`                            |
 | `pro.env`                          | Set additional environment variables for Ambassador Pro. (See below)            | `{}`                              |
+| `pro.resources`                    | Set resource requests and limits from Ambassador Pro                            | `{}`                              |
+| `pro.authService.enabled`          | Enables the Ambassador Pro authentication service                               | `true`                            |
+| `pro.authService.optional_configurations` | Exposes [additional configuration options](https://www.getambassador.io/reference/services/auth-service/) for the `AuthService` | `""` | 
+| `pro.rateLimit.enabled`            | Enables the Ambassador Pro rate limit service                                   | `true`                            |
+| `pro.rateLimit.redis.resources`    | Set resource requests and limits for the rate limit service's redis instance    | `{}`                              |
 | `autoscaling.enabled`              | If true, creates Horizontal Pod Autoscaler                                      | `false`                           |
 | `autoscaling.minReplica`           | If autoscaling enabled, this field sets minimum replica count                   | `2`                               |
 | `autoscaling.maxReplica`           | If autoscaling enabled, this field sets maximum replica count                   | `5`                               |
@@ -117,7 +123,7 @@ If you intend to use `service.annotations`, remember to include the `getambassad
 
 Using the Prometheus Exporter has been deprecated and is no longer recommended.
 
-Please see Ambassador's [monitoring with Prometheus](https://www.getambassador.io/user-guide/monitoring/) docs for more information on using the `/metrics` endpoint for metrics collection
+Please see Ambassador's [monitoring with Prometheus](https://www.getambassador.io/user-guide/monitoring/) docs for more information on using the `/metrics` endpoint for metrics collection.
 
 ### Ambassador Pro
 
@@ -168,6 +174,47 @@ $ helm upgrade --install --wait my-release -f values.yaml stable/ambassador
 ---
 
 # Upgrading
+
+## To 4.0.0
+
+The 4.0.0 chart contains a number of changes to the way Ambassador Pro is installed.
+
+- Introduces the performance tuned and certified build of open source Ambassador, Ambassador core
+- The license key is now stored and read from a Kubernetes secret by default
+- Added `.Values.pro.licenseKey.secret.enabled` `.Values.pro.licenseKey.secret.create` fields to allow multiple releases in the same namespace to use the same license key secret.
+- Introduces the ability to configure resource limits for both Ambassador Pro and it's redis instance
+- Introduces the ability to configure additional `AuthService` options (see [AuthService documentation](https://www.getambassador.io/reference/services/auth-service/))
+- The ambassador-pro-auth `AuthService` and ambassador-pro-ratelimit `RateLimitService` and now created as CRDs when `.Values.crds.enabled: true`
+- Fixed misnamed selector for redis instance that failed in an edge case
+
+### Breaking changes
+
+The value of `.Values.pro.image.tag` has been shortened to assume `amb-sidecar` (and `amb-core` for Ambassador core)
+`values.yaml`
+```diff
+<3.0.0>
+  image:
+    repository: quay.io/datawire/ambassador_pro
+-    tag: amb-sidecar-0.6.0
+
+<4.0.0+>
+  image:
+    repository: quay.io/datawire/ambassador_pro
++    tag: 0.7.0
+```
+
+Method for creating a Kubernetes secret to hold the license key has been changed
+
+`values.yaml`
+```diff
+<3.0.0>
+-    secret: false
+<4.0.0>
++    secret:
++      enabled: true
++      create: true
+```
+
 
 ## To 3.0.0
 

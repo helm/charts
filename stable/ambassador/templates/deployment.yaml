@@ -116,7 +116,7 @@ spec:
                   fieldPath: status.hostIP
             {{- if and .Values.pro.enabled (gt .Values.pro.image.tag "0.6.0") }}
             - name: AMBASSADOR_LICENSE_KEY
-            {{- if .Values.pro.licenseKey.secret }}
+            {{- if .Values.pro.licenseKey.secret.enabled }}
               valueFrom:
                 secretKeyRef:
                   name: ambassador-pro-license-key
@@ -202,7 +202,7 @@ spec:
             value: {{ .Values.env.AMBASSADOR_ID | quote }}
           {{- end }}
           - name: AMBASSADOR_LICENSE_KEY
-          {{- if .Values.pro.licenseKey.secret }}
+          {{- if .Values.pro.licenseKey.secret.enabled }}
             valueFrom:
               secretKeyRef:
                 name: ambassador-pro-license-key
@@ -219,6 +219,8 @@ spec:
           {{- end }}
           {{- end }}
           {{- end }}
+          resources:
+            {{- toYaml .Values.pro.resources | nindent 12 }}
         {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
