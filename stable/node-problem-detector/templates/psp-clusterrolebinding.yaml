@@ -13,7 +13,7 @@ roleRef:
   kind: ClusterRole
   name: {{ template "node-problem-detector.fullname" . }}-psp
 subjects:
-  - kind: ServiceAccount
+- kind: ServiceAccount
   name: {{ template "node-problem-detector.serviceAccountName" . }}
-    namespace: {{ .Release.Namespace }}
+  namespace: {{ .Release.Namespace }}
 {{- end }}

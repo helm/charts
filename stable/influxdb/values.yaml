@@ -4,6 +4,18 @@ image:
   repository: "influxdb"
   tag: "1.7.6-alpine"
   pullPolicy: IfNotPresent
+  ## If specified, use these secrets to access the images
+  # pullSecrets:
+  #   - registry-secret
+
+## Customize livenessProbe and readinessProbe
+## ref: https://docs.influxdata.com/influxdb/v1.7/tools/api/#ping-http-endpoint
+##
+livenessProbe:
+  probePath: "/ping"
+
+readinessProbe:
+  probePath: "/ping"
 
 ## Specify a service type
 ## NodePort is default
@@ -182,6 +194,7 @@ config:
     enabled: true
     bind_address: 8086
     auth_enabled: false
+    flux_enabled: true
     log_enabled: true
     write_tracing: false
     pprof_enabled: true

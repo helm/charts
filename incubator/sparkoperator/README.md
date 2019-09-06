@@ -38,6 +38,8 @@ The following table lists the configurable parameters of the Spark operator char
 | `metricsPrefix`           | Prefix for the metrics                                       | ""                                     |
 | `resyncInterval`          | Informer resync interval in seconds                          | 30                                     |
 | `webhookPort`             | Service port of the webhook server                           | 8080                                   |
+| `resources`               | Resources needed for the sparkoperator deployment            | {}                                     |
+| `enableBatchScheduler`    | Whether to enable batch scheduler for pod scheduling         | false                                  |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. 
 

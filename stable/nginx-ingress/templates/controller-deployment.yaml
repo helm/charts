@@ -1,4 +1,4 @@
-{{- if eq .Values.controller.kind "Deployment" }}
+{{- if or (eq .Values.controller.kind "Deployment") (eq .Values.controller.kind "Both") }}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -64,15 +64,15 @@ spec:
             - --ingress-class={{ .Values.controller.ingressClass }}
           {{- end }}
           {{- if (semverCompare ">=0.9.0-beta.1" .Values.controller.image.tag) }}
-            - --configmap={{ .Release.Namespace }}/{{ template "nginx-ingress.controller.fullname" . }}
+            - --configmap={{ default .Release.Namespace .Values.controller.configMapNamespace }}/{{ template "nginx-ingress.controller.fullname" . }}
           {{- else }}
-            - --nginx-configmap={{ .Release.Namespace }}/{{ template "nginx-ingress.controller.fullname" . }}
+            - --nginx-configmap={{ default .Release.Namespace .Values.controller.configMapNamespace }}/{{ template "nginx-ingress.controller.fullname" . }}
           {{- end }}
           {{- if .Values.tcp }}
-            - --tcp-services-configmap={{ .Release.Namespace }}/{{ template "nginx-ingress.fullname" . }}-tcp
+            - --tcp-services-configmap={{ default .Release.Namespace .Values.controller.tcp.configMapNamespace }}/{{ template "nginx-ingress.fullname" . }}-tcp
           {{- end }}
           {{- if .Values.udp }}
-            - --udp-services-configmap={{ .Release.Namespace }}/{{ template "nginx-ingress.fullname" . }}-udp
+            - --udp-services-configmap={{ default .Release.Namespace .Values.controller.udp.configMapNamespace }}/{{ template "nginx-ingress.fullname" . }}-udp
           {{- end }}
           {{- if .Values.controller.scope.enabled }}
             - --watch-namespace={{ default .Release.Namespace .Values.controller.scope.namespace }}
@@ -126,11 +126,6 @@ spec:
             - name: https
               containerPort: {{ .Values.controller.containerPort.https }}
               protocol: TCP
-          {{- if .Values.controller.stats.enabled }}
-            - name: stats
-              containerPort: 18080
-              protocol: TCP
-          {{- end }}
           {{- if .Values.controller.metrics.enabled }}
             - name: metrics
               containerPort: 10254
@@ -190,7 +185,7 @@ spec:
 {{ toYaml .Values.controller.affinity | indent 8 }}
     {{- end }}
       serviceAccountName: {{ template "nginx-ingress.serviceAccountName" . }}
-      terminationGracePeriodSeconds: 60
+      terminationGracePeriodSeconds: {{ .Values.controller.terminationGracePeriodSeconds }}
 {{- if (or .Values.controller.customTemplate.configMapName .Values.controller.extraVolumes) }}
       volumes:
 {{- end }}

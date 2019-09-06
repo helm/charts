@@ -37,6 +37,9 @@ app.kubernetes.io/name: {{ template "external-dns.name" . }}
 helm.sh/chart: {{ template "external-dns.chart" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels }}
+{{- end }}
 {{- end -}}
 
 {{/* matchLabels */}}

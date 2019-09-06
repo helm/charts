@@ -63,7 +63,7 @@ airflow:
     repository: puckel/docker-airflow
     ##
     ## image tag
-    tag: 1.10.3
+    tag: 1.10.4
     ##
     ## Image pull policy
     ## values: Always or IfNotPresent
@@ -118,7 +118,7 @@ airflow:
   ##   - id: my_aws
   ##     type: aws
   ##     extra: '{"aws_access_key_id": "**********", "aws_secret_access_key": "***", "region_name":"eu-central-1"}'
-  connections: {}
+  connections: []
 
   ## Add airflow variables
   ## This should be a json string with your variables in it
@@ -215,6 +215,12 @@ web:
   nodeSelector: {}
   affinity: {}
   tolerations: []
+  ##
+  ## Directory in which to mount secrets on webserver nodes.
+  secretsDir: /var/airflow/secrets
+  ##
+  ## Secrets which will be mounted as a file at `secretsDir/<secret name>`.
+  secrets: []
 
 ##
 ## Workers configuration
@@ -487,8 +493,10 @@ postgresql:
 
   ##
   ## The name of an existing secret that contains the postgres password.
-  ## Note that the secret must have a key called postgres-password.
   existingSecret:
+
+  ## Name of the key containing the secret.
+  existingSecretKey: postgres-password
 
   ##
   ## If you are bringing your own PostgreSQL, you should set postgresHost and
@@ -532,8 +540,10 @@ redis:
 
   ##
   ## The name of an existing secret that contains the redis password.
-  ## Note that the secret must have a key called redis-password.
   existingSecret:
+
+  ## Name of the key containing the secret.
+  existingSecretKey: redis-password
 
   ##
   ## If you are bringing your own redis, you can set the host in redisHost.

@@ -1,7 +1,7 @@
 apiVersion: v1
 description: Prometheus Blackbox Exporter
 name: prometheus-blackbox-exporter
-version: 1.0.0
+version: 1.2.0
 appVersion: 0.14.0
 home: https://github.com/prometheus/blackbox_exporter
 sources:

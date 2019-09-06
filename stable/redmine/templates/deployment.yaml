@@ -52,11 +52,15 @@ spec:
         - name: REDMINE_DB_MYSQL
         {{- if .Values.mariadb.enabled }}
           value: {{ template "redmine.mariadb.fullname" . }}
+        - name: REDMINE_DB_NAME
+          value: {{ .Values.mariadb.db.name | quote }}
+        - name: REDMINE_DB_USERNAME
+          value: {{ .Values.mariadb.db.user | quote }}
         - name: REDMINE_DB_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "redmine.mariadb.fullname" . }}
-              key: mariadb-root-password
+              key: mariadb-password
         {{- else }}
           value: {{ .Values.externalDatabase.host | quote }}
         {{- end }}
@@ -64,6 +68,10 @@ spec:
         - name: REDMINE_DB_POSTGRES
         {{- if .Values.postgresql.enabled }}
           value: {{ template "redmine.postgresql.fullname" . }}
+        - name: REDMINE_DB_NAME
+          value: {{ .Values.postgresql.postgresqlDatabase | quote }}
+        - name: REDMINE_DB_USERNAME
+          value: {{ .Values.postgresql.postgresqlUsername | quote }}
         - name: REDMINE_DB_PASSWORD
           valueFrom:
             secretKeyRef:
@@ -74,11 +82,10 @@ spec:
         {{- end }}
         {{- end }}
         {{- if or (and .Values.databaseType.mariadb (not .Values.mariadb.enabled)) (and .Values.databaseType.postgresql (not .Values.postgresql.enabled)) }}
+        - name: REDMINE_DB_NAME
+          value: {{ .Values.externalDatabase.name | quote }}
         - name: REDMINE_DB_USERNAME
-          valueFrom:
-            secretKeyRef:
-              name: {{ printf "%s-%s" .Release.Name "externaldb" }}
-              key: db-admin-user
+          value: {{ .Values.externalDatabase.user | quote }}
         - name: REDMINE_DB_PASSWORD
           valueFrom:
             secretKeyRef:
@@ -128,7 +135,7 @@ spec:
           httpGet:
             path: /
             port: http
-          initialDelaySeconds: 120
+          initialDelaySeconds: 300
           timeoutSeconds: 5
         readinessProbe:
           httpGet:
