@@ -115,7 +115,7 @@ spec:
 {{ toYaml .Values.client.resources | indent 12 }}
         readinessProbe:
           httpGet:
-            path: /_cluster/health
+            path: /_cluster/health?local=true
             port: 9200
           initialDelaySeconds: 5
         livenessProbe:
