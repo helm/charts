@@ -11,6 +11,11 @@ metadata:
     chart: {{ template "traefik.chart" . }}
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
+    {{- toYaml .Values.deployment.labels | nindent 4 }}
+  {{- with .Values.deployment.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   replicas: {{ default 1 .Values.replicas }}
   selector:
