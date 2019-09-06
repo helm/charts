@@ -1,4 +1,4 @@
-{{- if not (and (eq .Values.controller.kind "DaemonSet") .Values.controller.daemonset.useHostPort) }}
+{{- if .Values.controller.service.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
