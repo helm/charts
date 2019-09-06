@@ -20,75 +20,71 @@ spec:
         pod.alpha.kubernetes.io/initialized: "true"
     spec:
       initContainers:
-      - name: init-sysctl
-        image: busybox
-        imagePullPolicy: IfNotPresent
-        command: ["sysctl", "-w", "vm.max_map_count=262144"]
-        securityContext:
-          privileged: true
+        - name: init-sysctl
+          image: busybox
+          imagePullPolicy: IfNotPresent
+          command: ["sysctl", "-w", "vm.max_map_count=262144"]
+          securityContext:
+            privileged: true
       containers:
-      - name: crate
-        image: crate:{{ .Values.image.tag }}
-        imagePullPolicy: IfNotPresent
-        command:
-          - /docker-entrypoint.sh
-          - -Clicense.enterprise=false
-          - -Ccluster.initial_master_nodes={{ range $i := until (int .Values.crate.numberOfNodes) -}}
-              {{ if $i }},{{ end }}crate-{{ $i }}
-         {{- end }}
-          - -Ccluster.name={{ include "crate.clusterName" . }}
-          - -Cnetwork.host="0.0.0.0"
-          - -Cnode.name="$POD_NAME"
-          - -Cdiscovery.seed_providers=srv
-          - -Cdiscovery.srv.query=_{{ include "crate.clusterName" . }}._tcp.{{ .Values.service.name }}.{{ .Release.Namespace }}.svc.cluster.local
-          - -Cgateway.recover_after_nodes={{ if $r := .Values.crate.recoverAfterNodes -}}
-              {{ $r }}{{ else }}{{ div .Values.crate.numberOfNodes 2 | floor | add 1 }}
-         {{- end }}
-          - -Cgateway.expected_nodes={{ .Values.crate.numberOfNodes }}
-          - -Chttp.cors.enabled={{ .Values.http.cors.enabled }}
-          - -Chttp.cors.allow-origin={{ .Values.http.cors.allowOrigin }}
-          - -Cpath.data=/data
-          {{- if .Values.resources.limits.cpu }}
-          - -Cprocessors="$MIN_VCPU_COUNT"
-          {{- end }}
-        volumeMounts:
+        - name: crate
+          image: crate:{{ .Values.image.tag }}
+          imagePullPolicy: IfNotPresent
+          command:
+            - /docker-entrypoint.sh
+            - -Ccluster.initial_master_nodes={{ include "crate.initialMasterNodes" . }}
+            - -Ccluster.name={{ include "crate.clusterName" . }}
+            - -Cdiscovery.seed_providers=srv
+            - -Cdiscovery.srv.query=_{{ include "crate.clusterName" . }}._tcp.{{ .Values.service.name }}.{{ .Release.Namespace }}.svc.cluster.local
+            - -Clicense.enterprise=false
+            - -Cnetwork.host="0.0.0.0"
+            - -Cnode.name="$POD_NAME"
+            - -Cgateway.expected_nodes={{ .Values.crate.numberOfNodes }}
+            - -Cgateway.recover_after_nodes={{ include "crate.recoverAfterNodes" . }}
+            - -Chttp.cors.allow-origin={{ .Values.http.cors.allowOrigin }}
+            - -Chttp.cors.enabled={{ .Values.http.cors.enabled }}
+            - -Cpath.data=/data
+            {{- if .Values.resources.limits.cpu }}
+            - -Cprocessors="$MIN_VCPU_COUNT"
+            {{- end }}
+          volumeMounts:
             - mountPath: /data
               name: data
-        resources:
-          requests:
-            cpu: {{ .Values.resources.requests.cpu }}
-            memory: {{ mul .Values.crate.heapSize 2 }}Gi
-          limits:
-            cpu: {{ .Values.resources.limits.cpu }}
-            memory: {{ if $m := .Values.resources.limits.memory -}}
-              {{ $m }}{{ else }}{{ mul .Values.crate.heapSize 3 }}Gi
-            {{- end }}
-        ports:
-        - containerPort: {{ .Values.service.ports.psql }}
-          name: psql
-        - containerPort: 4300
-          name: transport
-        - containerPort: {{ .Values.service.ports.ui }}
-          name: ui
-        env:
-        - name: CRATE_HEAP_SIZE
-          value: {{ .Values.crate.heapSize }}g
-        - name: CLUSTER_NAME
-          value: {{ .Values.crate.clusterName | quote }}
-        - name: MIN_VCPU_COUNT
-          valueFrom:
-            resourceFieldRef:
-              resource: requests.cpu
-              divisor: 1
-        - name: POD_NAME
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.name
-        livenessProbe:
-          exec:
-            command: ["sh", "-c", "curl http://localhost:4200 2&>/dev/null | grep '\"ok\" : true'"]
-          initialDelaySeconds: 100
-          periodSeconds: 60
+          resources:
+            requests:
+              cpu: {{ .Values.resources.requests.cpu }}
+              memory: {{ mul .Values.crate.heapSize 2 }}Gi
+            limits:
+              cpu: {{ .Values.resources.limits.cpu }}
+              memory: {{ if $m := .Values.resources.limits.memory -}}
+                {{ $m }}{{ else }}{{ mul .Values.crate.heapSize 3 }}Gi
+              {{- end }}
+          ports:
+            - containerPort: {{ .Values.service.ports.psql }}
+              name: psql
+            - containerPort: 4300
+              name: transport
+            - containerPort: {{ .Values.service.ports.ui }}
+              name: ui
+          env:
+            - name: CRATE_HEAP_SIZE
+              value: {{ .Values.crate.heapSize }}g
+            - name: CLUSTER_NAME
+              value: {{ .Values.crate.clusterName | quote }}
+            - name: MIN_VCPU_COUNT
+              valueFrom:
+                resourceFieldRef:
+                  resource: requests.cpu
+                  divisor: 1
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          livenessProbe:
+            exec:
+              command: ["sh", "-c", "curl http://localhost:4200 2&>/dev/null | grep '\"ok\" : true'"]
+            initialDelaySeconds: 100
+            periodSeconds: 60
 {{- if .Values.persistentVolume.enabled }}
   volumeClaimTemplates:
     - metadata:
