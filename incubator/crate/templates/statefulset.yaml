@@ -105,6 +105,7 @@ spec:
         storageClassName: "{{ .Values.persistentVolume.storageClass }}"
       {{- end }}
 {{- else }}
+      volumes:
         - name: data
           emptyDir:
             medium: "Memory"
