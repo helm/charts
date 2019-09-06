@@ -181,7 +181,7 @@ data:
     frontend ft_redis_master
       bind *:6379
       use_backend bk_redis_master
-    {{ if .Values.haproxy.readOnlyPort.enabled }}
+    {{ if .Values.haproxy.readOnly.enabled }}
     #slave
     frontend ft_redis_slave
       bind *:6380
@@ -206,7 +206,7 @@ data:
       use-server R{{ $i }} if { srv_is_up(R{{ $i }}) } { nbsrv(check_if_redis_is_master_{{ $i }}) ge 2 }
       server R{{ $i }} {{ $fullName }}-announce-{{ $i }}:6379 check inter 1s fall 1 rise 1
       {{- end }}     
-    {{ if .Values.haproxy.readOnlyPort.enabled }}
+    {{ if .Values.haproxy.readOnly.enabled }}
     backend bk_redis_slave
       mode tcp
       option tcp-check

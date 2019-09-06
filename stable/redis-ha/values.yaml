@@ -27,7 +27,7 @@ serviceAccount:
 haproxy:
   enabled: false
   # Enable if you want a dedicated port in haproxy for redis-slaves
-  readOnlyPort:
+  readOnly:
     enabled: false
     port: 6380
   replicas: 1
