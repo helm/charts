@@ -83,7 +83,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | `imageDigest` | Specific image digest to use in place of a tag. | `nil` |
 | `imagePullPolicy` | Concourse image pull policy | `IfNotPresent` |
 | `imagePullSecrets` | Array of imagePullSecrets in the namespace for pulling images | `[]` |
-| `imageTag` | Concourse image version | `5.4.0` |
+| `imageTag` | Concourse image version | `5.5.0` |
 | `image` | Concourse image | `concourse/concourse` |
 | `nameOverride` | Provide a name in place of `concourse` for `app:` labels | `nil` |
 | `persistence.enabled` | Enable Concourse persistence using Persistent Volume Claims | `true` |
