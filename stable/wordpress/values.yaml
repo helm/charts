@@ -14,7 +14,7 @@
 image:
   registry: docker.io
   repository: bitnami/wordpress
-  tag: 5.2.2-debian-9-r47
+  tag: 5.2.3-debian-9-r0
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -193,6 +193,10 @@ service:
   port: 80
   # HTTPS Port
   httpsPort: 443
+  # HTTPS Target Port
+  # defaults to https unless overridden to the specified port.
+  # if you want the target port to be "http" or "80" you can specify that here.
+  httpsTargetPort: https
   # metrics Port
   metricsPort: 9117
   ##
@@ -341,7 +345,7 @@ metrics:
   image:
     registry: docker.io
     repository: bitnami/apache-exporter
-    tag: 0.7.0-debian-9-r42
+    tag: 0.7.0-debian-9-r46
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.

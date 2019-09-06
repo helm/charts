@@ -39,13 +39,13 @@ charts = [
     {
         'source': 'https://raw.githubusercontent.com/coreos/kube-prometheus/release-0.1/manifests/prometheus-rules.yaml',
         'destination': '../templates/prometheus/rules',
-        'min_kubernetes': '1.11.0-0',
+        'min_kubernetes': '1.10.0-0',
         'max_kubernetes': '1.14.0-0'
     },
     {
         'source': 'https://raw.githubusercontent.com/etcd-io/etcd/master/Documentation/op-guide/etcd3_alert.rules.yml',
         'destination': '../templates/prometheus/rules',
-        'min_kubernetes': '1.11.0-0',
+        'min_kubernetes': '1.10.0-0',
         'max_kubernetes': '1.14.0-0'
     },
 ]
@@ -63,6 +63,8 @@ condition_map = {
     'kubernetes-resources': ' .Values.defaultRules.rules.kubernetesResources',
     'kubernetes-storage': ' .Values.defaultRules.rules.kubernetesStorage',
     'kubernetes-system': ' .Values.defaultRules.rules.kubernetesSystem',
+    'node-exporter.rules': ' .Values.nodeExporter.enabled .Values.defaultRules.rules.node',
+    'node-exporter': ' .Values.nodeExporter.enabled .Values.defaultRules.rules.node',
     'node.rules': ' .Values.nodeExporter.enabled .Values.defaultRules.rules.node',
     'node-network': ' .Values.defaultRules.rules.network',
     'node-time': ' .Values.defaultRules.rules.time',
