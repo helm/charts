@@ -15,17 +15,28 @@ The following table lists the configurable parameters of the CrateDB chart and t
 
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
-| crate.clusterName | Name of CrateDB cluster. See [docs](https://crate.io/docs/crate/guide/en/latest/scaling/multi-node-setup.html#id3) | crate |
-| crate.crateHeapSize | See [docs](https://crate.io/docs/crate/reference/en/4.0/config/environment.html) | 1g |
-| crate.numberOfNodes | The number of instances to deploy. Also the number of expected nodes in the cluster formation | 1 |
+| app | Name used in resource metadata. | crate |
+| crate.clusterName | Name of CrateDB cluster - [docs](https://crate.io/docs/crate/guide/en/latest/scaling/multi-node-setup.html#id3) | crate |
+| crate.heapSize | Crate's heap size (in GiB) - [docs](https://crate.io/docs/crate/reference/en/4.0/config/environment.html) | 1 |
+| crate.numberOfNodes | Number of pods (Crate nodes) | 1 |
 | crate.recoverAfterNodes | See [docs](https://crate.io/docs/crate/guide/en/latest/scaling/multi-node-setup.html#gateway-configuration) | floor(crate.numberOfNodes/2) + 1 |
-| http.cors.enabled | Whether CORS is enabled. See [docs](https://crate.io/docs/crate/reference/en/4.0/config/node.html#cross-origin-resource-sharing-cors) | False |
-| http.cors.allowOrigin | CORS origin to allow (if enabled). See [docs](https://crate.io/docs/crate/reference/en/4.0/config/node.html#cross-origin-resource-sharing-cors) | * |
-| image.tag | Container image tag (version) | 4.0.4 |
-| service.name | Name of K8S service created for CrateDB | crate |
+| http.cors.enabled | Whether CORS is enabled - [docs](https://crate.io/docs/crate/reference/en/4.0/config/node.html#cross-origin-resource-sharing-cors) | False |
+| http.cors.allowOrigin | CORS origin to allow (if enabled) - [docs](https://crate.io/docs/crate/reference/en/4.0/config/node.html#cross-origin-resource-sharing-cors) | * |
+| image.tag | Crate image tag (version) | 4.0.4 |
+| persistentVolume.enabled | Whether to use a persistent volume (vs. memory) | true |
+| persistentVolume.storageClass | Storage class of the PV (if enabled) | retain |
+| persistentVolume.accessModes | Access modes of the PV (if enabled) | [ReadWriteOnce] |
+| persistentVolume.size | Size of the PV (if enabled) | 10Gi |
+| persistentVolume.annotations | Annotations of the PV (if enabled) | {} |
+| resources.limits.cpu | Maximum CPU per pod | 1 |
+| resources.limits.memory | Maximum memory per pod | crate.heapSize * 3 |
+| resources.requests.cpu | Amount of CPU requested per pod | 500m |
+| service.name | Name of K8s service created for CrateDB | crate |
 | service.ports.ui | Port to use for admin UI | 4200 |
 | service.ports.psql | Port to use for psql connections | 5432 |
-| service.type | Type of K8S service created for CrateDB | ClusterIP |
+| service.type | Type of K8s service created for CrateDB | ClusterIP |
+
+NB: `resources.requests.memory` is not configurable: the minimum of `crate.heapSize * 2` is inferred.
 
 ## More info
 
