@@ -1,6 +1,9 @@
 rbac:
   create: true
 
+podSecurityPolicy:
+  enabled: false
+
 imagePullSecrets:
 # - name: "image-pull-secret"
 
@@ -36,7 +39,7 @@ alertmanager:
   ##
   image:
     repository: prom/alertmanager
-    tag: v0.15.3
+    tag: v0.18.0
     pullPolicy: IfNotPresent
 
   ## alertmanager priorityClassName
@@ -60,6 +63,15 @@ alertmanager:
   ## For instance to add a http_proxy
   ##
   extraEnv: {}
+
+  ## Additional alertmanager Secret mounts
+  # Defines additional mounts with secrets. Secrets must be manually created in the namespace.
+  extraSecretMounts: []
+    # - name: secret-files
+    #   mountPath: /etc/secrets
+    #   subPath: ""
+    #   secretName: alertmanager-secret-files
+    #   readOnly: true
 
   ## ConfigMap override where fullname is {{.Release.Name}}-{{.Values.alertmanager.configMapOverrideName}}
   ## Defining configMapOverrideName will cause templates/alertmanager-configmap.yaml
@@ -183,6 +195,20 @@ alertmanager:
   ##
   podAnnotations: {}
 
+  ## Specify if a Pod Security Policy for node-exporter must be created
+  ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/
+  ##
+  podSecurityPolicy:
+    annotations: {}
+      ## Specify pod annotations
+      ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#apparmor
+      ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#seccomp
+      ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#sysctl
+      ##
+      # seccomp.security.alpha.kubernetes.io/allowedProfileNames: '*'
+      # seccomp.security.alpha.kubernetes.io/defaultProfileName: 'docker/default'
+      # apparmor.security.beta.kubernetes.io/defaultProfileName: 'runtime/default'
+
   ## Use a StatefulSet if replicaCount needs to be greater than 1 (see below)
   ##
   replicaCount: 1
@@ -220,7 +246,11 @@ alertmanager:
 
   ## Security context to be added to alertmanager pods
   ##
-  securityContext: {}
+  securityContext:
+    runAsUser: 65534
+    runAsNonRoot: true
+    runAsGroup: 65534
+    fsGroup: 65534
 
   service:
     annotations: {}
@@ -280,28 +310,6 @@ configmapReload:
   ##
   resources: {}
 
-initChownData:
-  ## If false, data ownership will not be reset at startup
-  ## This allows the prometheus-server to be run with an arbitrary user
-  ##
-  enabled: true
-
-  ## initChownData container name
-  ##
-  name: init-chown-data
-
-  ## initChownData container image
-  ##
-  image:
-    repository: busybox
-    tag: latest
-    pullPolicy: IfNotPresent
-
-  ## initChownData resource requests and limits
-  ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
-  ##
-  resources: {}
-
 kubeStateMetrics:
   ## If false, kube-state-metrics will not be installed
   ##
@@ -315,7 +323,7 @@ kubeStateMetrics:
   ##
   image:
     repository: quay.io/coreos/kube-state-metrics
-    tag: v1.5.0
+    tag: v1.6.0
     pullPolicy: IfNotPresent
 
   ## kube-state-metrics priorityClassName
@@ -344,6 +352,20 @@ kubeStateMetrics:
   ##
   podAnnotations: {}
 
+  ## Specify if a Pod Security Policy for node-exporter must be created
+  ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/
+  ##
+  podSecurityPolicy:
+    annotations: {}
+      ## Specify pod annotations
+      ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#apparmor
+      ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#seccomp
+      ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#sysctl
+      ##
+      # seccomp.security.alpha.kubernetes.io/allowedProfileNames: '*'
+      # seccomp.security.alpha.kubernetes.io/defaultProfileName: 'docker/default'
+      # apparmor.security.beta.kubernetes.io/defaultProfileName: 'runtime/default'
+
   pod:
     labels: {}
 
@@ -362,7 +384,9 @@ kubeStateMetrics:
 
   ## Security context to be added to kube-state-metrics pods
   ##
-  securityContext: {}
+  securityContext:
+    runAsUser: 65534
+    runAsNonRoot: true
 
   service:
     annotations:
@@ -404,14 +428,13 @@ nodeExporter:
   ##
   image:
     repository: prom/node-exporter
-    tag: v0.17.0
+    tag: v0.18.0
     pullPolicy: IfNotPresent
 
   ## Specify if a Pod Security Policy for node-exporter must be created
   ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/
   ##
   podSecurityPolicy:
-    enabled: False
     annotations: {}
       ## Specify pod annotations
       ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#apparmor
@@ -442,6 +465,7 @@ nodeExporter:
     #   mountPath: /srv/txt_collector
     #   hostPath: /var/lib/node-exporter
     #   readOnly: true
+    #   mountPropagation: HostToContainer
 
   extraConfigmapMounts: []
     # - name: certs-configmap
@@ -511,6 +535,7 @@ nodeExporter:
 server:
   ## Prometheus server container name
   ##
+  enabled: true
   name: server
   sidecarContainers:
 
@@ -518,7 +543,7 @@ server:
   ##
   image:
     repository: prom/prometheus
-    tag: v2.7.2
+    tag: v2.11.1
     pullPolicy: IfNotPresent
 
   ## prometheus server priorityClassName
@@ -716,10 +741,31 @@ server:
     ##
     subPath: ""
 
+  emptyDir:
+    sizeLimit: ""
+
   ## Annotations to be added to Prometheus server pods
   ##
   podAnnotations: {}
     # iam.amazonaws.com/role: prometheus
+
+  ## Labels to be added to Prometheus server pods
+  ##
+  podLabels: {}
+
+  ## Specify if a Pod Security Policy for node-exporter must be created
+  ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/
+  ##
+  podSecurityPolicy:
+    annotations: {}
+      ## Specify pod annotations
+      ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#apparmor
+      ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#seccomp
+      ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#sysctl
+      ##
+      # seccomp.security.alpha.kubernetes.io/allowedProfileNames: '*'
+      # seccomp.security.alpha.kubernetes.io/defaultProfileName: 'docker/default'
+      # apparmor.security.beta.kubernetes.io/defaultProfileName: 'runtime/default'
 
   ## Use a StatefulSet if replicaCount needs to be greater than 1 (see below)
   ##
@@ -732,6 +778,7 @@ server:
     enabled: false
 
     annotations: {}
+    labels: {}
     podManagementPolicy: OrderedReady
 
     ## Alertmanager headless service to use for the statefulset
@@ -754,7 +801,11 @@ server:
 
   ## Security context to be added to server pods
   ##
-  securityContext: {}
+  securityContext:
+    runAsUser: 65534
+    runAsNonRoot: true
+    runAsGroup: 65534
+    fsGroup: 65534
 
   service:
     annotations: {}
@@ -775,14 +826,19 @@ server:
   ##
   terminationGracePeriodSeconds: 300
 
-  ## Prometheus data retention period (i.e 360h)
+  ## Prometheus data retention period (default if not specified is 15 days)
   ##
-  retention: ""
+  retention: "15d"
 
 pushgateway:
   ## If false, pushgateway will not be installed
   ##
   enabled: true
+
+  ## Use an alternate scheduler, e.g. "stork".
+  ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+  ##
+  # schedulerName:
 
   ## pushgateway container name
   ##
@@ -792,7 +848,7 @@ pushgateway:
   ##
   image:
     repository: prom/pushgateway
-    tag: v0.6.0
+    tag: v0.8.0
     pullPolicy: IfNotPresent
 
   ## pushgateway priorityClassName
@@ -848,6 +904,20 @@ pushgateway:
   ##
   podAnnotations: {}
 
+  ## Specify if a Pod Security Policy for node-exporter must be created
+  ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/
+  ##
+  podSecurityPolicy:
+    annotations: {}
+      ## Specify pod annotations
+      ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#apparmor
+      ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#seccomp
+      ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#sysctl
+      ##
+      # seccomp.security.alpha.kubernetes.io/allowedProfileNames: '*'
+      # seccomp.security.alpha.kubernetes.io/defaultProfileName: 'docker/default'
+      # apparmor.security.beta.kubernetes.io/defaultProfileName: 'runtime/default'
+
   replicaCount: 1
 
   ## pushgateway resource requests and limits
@@ -863,7 +933,9 @@ pushgateway:
 
   ## Security context to be added to push-gateway pods
   ##
-  securityContext: {}
+  securityContext:
+    runAsUser: 65534
+    runAsNonRoot: true
 
   service:
     annotations:

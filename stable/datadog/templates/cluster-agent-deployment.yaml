@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "datadog.clusterAgent.fullname" . }}
+  name: {{ template "datadog.fullname" . }}-cluster-agent
   labels:
     app: "{{ template "datadog.fullname" . }}"
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
@@ -12,13 +12,34 @@ spec:
   replicas: {{ .Values.clusterAgent.replicas }}
   selector:
     matchLabels:
-      app: {{ template "datadog.clusterAgent.fullname" . }}
+      app: {{ template "datadog.fullname" . }}-cluster-agent
   template:
     metadata:
       labels:
-        app: {{ template "datadog.clusterAgent.fullname" . }}
-      name: {{ template "datadog.clusterAgent.fullname" . }}
+        app: {{ template "datadog.fullname" . }}-cluster-agent
+      name: {{ template "datadog.fullname" . }}-cluster-agent
+      annotations:
+        ad.datadoghq.com/{{ .Values.clusterAgent.containerName }}.check_names: '["prometheus"]'
+        ad.datadoghq.com/{{ .Values.clusterAgent.containerName }}.init_configs: '[{}]'
+        ad.datadoghq.com/{{ .Values.clusterAgent.containerName }}.instances: |
+          [{
+            "prometheus_url": "http://%%host%%:5000/metrics",
+            "namespace": "datadog.cluster_agent",
+            "metrics": [
+              "go_goroutines", "go_memstats_*", "process_*",
+              "api_requests",
+              "datadog_requests", "external_metrics",
+              "cluster_checks_*"
+            ]
+          }]
+      {{- if .Values.clusterAgent.podAnnotations }}
+{{ toYaml .Values.clusterAgent.podAnnotations | indent 8 }}
+      {{- end }}
+
     spec:
+      {{- if .Values.clusterAgent.priorityClassName }}
+      priorityClassName: "{{ .Values.clusterAgent.priorityClassName }}"
+      {{- end }}
       {{- if .Values.clusterAgent.image.pullSecrets }}
       imagePullSecrets:
 {{ toYaml .Values.clusterAgent.image.pullSecrets | indent 8 }}
@@ -28,7 +49,7 @@ spec:
         image: "{{ .Values.clusterAgent.image.repository }}:{{ .Values.clusterAgent.image.tag }}"
         imagePullPolicy: {{ .Values.clusterAgent.image.pullPolicy }}
         resources:
-{{ toYaml .Values.clusterAgent.resources | indent 12 }}
+{{ toYaml .Values.clusterAgent.resources | indent 10 }}
         ports:
         - containerPort: 5005
           name: agentport
@@ -53,6 +74,18 @@ spec:
                 name: {{ template "datadog.appKeySecretName" . }}
                 key: app-key
           {{- end }}
+          {{- if .Values.clusterAgent.clusterChecks.enabled }}
+          - name: DD_CLUSTER_CHECKS_ENABLED
+            value: {{ .Values.clusterAgent.clusterChecks.enabled | quote }}
+          - name: DD_EXTRA_CONFIG_PROVIDERS
+            value: "kube_services"
+          - name: DD_EXTRA_LISTENERS
+            value: "kube_services"
+          {{- end }}
+          {{- if .Values.datadog.clusterName }}
+          - name: DD_CLUSTER_NAME
+            value: {{ .Values.datadog.clusterName | quote }}
+          {{- end }}
           {{- if .Values.datadog.site }}
           - name: DD_SITE
             value: {{ .Values.datadog.site | quote }}
@@ -70,17 +103,20 @@ spec:
           {{- if .Values.datadog.leaderLeaseDuration }}
           - name: DD_LEADER_LEASE_DURATION
             value: {{ .Values.datadog.leaderLeaseDuration | quote }}
+          {{- else if .Values.clusterAgent.clusterChecks.enabled }}
+          - name: DD_LEADER_LEASE_DURATION
+            value: "15"
           {{- end }}
           {{- if .Values.datadog.collectEvents }}
           - name: DD_COLLECT_KUBERNETES_EVENTS
             value: {{ .Values.datadog.collectEvents | quote}}
           - name: DD_CLUSTER_AGENT_KUBERNETES_SERVICE_NAME
-            value: {{ template "datadog.clusterAgent.fullname" . }}
+            value: {{ template "datadog.fullname" . }}-cluster-agent
           {{- end }}
           - name: DD_CLUSTER_AGENT_AUTH_TOKEN
             valueFrom:
               secretKeyRef:
-                name: {{ template "datadog.clusterAgent.fullname" . }}
+                name: {{ template "clusterAgent.tokenSecretName" . }}
                 key: token
           - name: DD_KUBE_RESOURCES_NAMESPACE
             value: {{ .Release.Namespace }}
@@ -107,6 +143,16 @@ spec:
             path: /healthz
             scheme: HTTPS
 {{- end }}
+{{- if .Values.clusterAgent.confd }}
+        volumeMounts:
+          - name: confd
+            mountPath: /conf.d
+            readOnly: true
+      volumes:
+        - name: confd
+          configMap:
+            name: {{ template "datadog.fullname" . }}-cluster-agent-confd
+{{- end }}
       {{- if .Values.clusterAgent.tolerations }}
       tolerations:
 {{ toYaml .Values.clusterAgent.tolerations | indent 8 }}
@@ -115,5 +161,5 @@ spec:
       affinity:
 {{ toYaml .Values.clusterAgent.affinity | indent 8 }}
       {{- end }}
-      serviceAccountName: {{ if .Values.rbac.create }}{{ template "datadog.clusterAgent.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+      serviceAccountName: {{ if .Values.rbac.create }}{{ template "datadog.fullname" . }}-cluster-agent{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
 {{ end }}

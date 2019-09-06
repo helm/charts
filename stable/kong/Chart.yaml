@@ -7,8 +7,10 @@ icon: https://s3.amazonaws.com/downloads.kong/universe/assets/icon-kong-inc-larg
 maintainers:
 - name: shashiranjan84
   email: shashi@konghq.com
+- name: hbagdi
+  email: harry@konghq.com
 name: kong
 sources:
 - https://github.com/Kong/kong
-version: 0.9.5
-appVersion: 1.0.2
+version: 0.17.0
+appVersion: 1.3

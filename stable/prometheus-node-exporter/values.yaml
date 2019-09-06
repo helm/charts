@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 image:
   repository: quay.io/prometheus/node-exporter
-  tag: v0.17.0
+  tag: v0.18.0
   pullPolicy: IfNotPresent
 
 service:
@@ -14,6 +14,14 @@ service:
   annotations:
     prometheus.io/scrape: "true"
 
+prometheus:
+  monitor:
+    enabled: false
+    additionalLabels: {}
+    namespace: ""
+
+    scrapeTimeout: 10s
+
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
@@ -21,7 +29,7 @@ resources: {}
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
   # limits:
   #   cpu: 200m
-  #    memory: 50Mi
+  #   memory: 50Mi
   # requests:
   #   cpu: 100m
   #   memory: 30Mi
@@ -49,6 +57,9 @@ rbac:
 # for deployments that have node_exporter deployed outside of the cluster, list
 # their addresses here
 endpoints: []
+
+# Expose the service to the host network
+hostNetwork: true
 
 ## Assign a group of affinity scheduling rules
 ##
@@ -88,3 +99,9 @@ extraHostVolumeMounts: {}
 #    mountPath: <mountPath>
 #    readOnly: true|false
 #    mountPropagation: None|HostToContainer|Bidirectional
+
+## Additional configmaps to be mounted.
+##
+configmaps: {}
+# - name: <configMapName>
+#   mountPath: <mountPath>

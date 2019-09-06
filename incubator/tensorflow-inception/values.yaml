@@ -10,7 +10,7 @@ component: "tensorflow-inception"
 replicas: 1
 image:
   repository: "quay.io/thomasjungblut/tfs-inception"
-  tag: "tfs-1.8.0-gpu"
+  tag: "tfs-1.8.0-cpu"
   pullPolicy: "IfNotPresent"
 
 env:

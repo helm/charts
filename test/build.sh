@@ -18,7 +18,7 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-readonly IMAGE_TAG=v3.2.0
+readonly IMAGE_TAG=v3.3.2
 readonly IMAGE_REPOSITORY="gcr.io/kubernetes-charts-ci/test-image"
 readonly SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
 

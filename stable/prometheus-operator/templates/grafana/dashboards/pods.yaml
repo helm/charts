@@ -1,7 +1,7 @@
-# Generated from 'pods' from https://raw.githubusercontent.com/coreos/prometheus-operator/master/contrib/kube-prometheus/manifests/grafana-dashboardDefinitions.yaml
+# Generated from 'pods' from https://raw.githubusercontent.com/coreos/kube-prometheus/release-0.1/manifests/grafana-dashboardDefinitions.yaml
 # Do not change in-place! In order to change this file first read following link:
 # https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
-{{- if and .Values.grafana.enabled .Values.grafana.defaultDashboardsEnabled }}
+{{- if and (semverCompare ">=1.10.0-0" .Capabilities.KubeVersion.GitVersion) (semverCompare "<1.14.0-0" .Capabilities.KubeVersion.GitVersion) .Values.grafana.enabled .Values.grafana.defaultDashboardsEnabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -23,7 +23,20 @@ data:
         ],
         "annotations": {
             "list": [
-
+                {
+                    "builtIn": 1,
+                    "datasource": "$datasource",
+                    "enable": true,
+                    "expr": "time() == BOOL timestamp(rate(kube_pod_container_status_restarts_total{job=\"kube-state-metrics\", cluster=\"$cluster\", namespace=\"$namespace\", pod=\"$pod\"}[2m]) > 0)",
+                    "hide": false,
+                    "iconColor": "rgba(215, 44, 44, 1)",
+                    "name": "Restarts",
+                    "showIn": 0,
+                    "tags": [
+                        "restart"
+                    ],
+                    "type": "rows"
+                }
             ]
         },
         "editable": false,
@@ -79,29 +92,37 @@ data:
 
                         ],
                         "spaceLength": 10,
+                        "span": 12,
                         "stack": false,
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "sum by(container_name) (container_memory_usage_bytes{job=\"kubelet\", namespace=\"$namespace\", pod_name=\"$pod\", container_name=\u007e\"$container\", container_name!=\"POD\"})",
+                                "expr": "sum by(container_name) (container_memory_usage_bytes{job=\"kubelet\", cluster=\"$cluster\", namespace=\"$namespace\", pod_name=\"$pod\", container_name=~\"$container\", container_name!=\"POD\"})",
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "Current: {{`{{ container_name }}`}}",
                                 "refId": "A"
                             },
                             {
-                                "expr": "sum by(container) (kube_pod_container_resource_requests_memory_bytes{job=\"kube-state-metrics\", namespace=\"$namespace\", pod=\"$pod\", container=\u007e\"$container\"})",
+                                "expr": "sum by(container) (kube_pod_container_resource_requests{job=\"kube-state-metrics\", cluster=\"$cluster\", namespace=\"$namespace\", resource=\"memory\", pod=\"$pod\", container=~\"$container\"})",
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "Requested: {{`{{ container }}`}}",
                                 "refId": "B"
                             },
                             {
-                                "expr": "sum by(container) (kube_pod_container_resource_limits_memory_bytes{job=\"kube-state-metrics\", namespace=\"$namespace\", pod=\"$pod\", container=\u007e\"$container\"})",
+                                "expr": "sum by(container) (kube_pod_container_resource_limits{job=\"kube-state-metrics\", cluster=\"$cluster\", namespace=\"$namespace\", resource=\"memory\", pod=\"$pod\", container=~\"$container\"})",
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "Limit: {{`{{ container }}`}}",
                                 "refId": "C"
+                            },
+                            {
+                                "expr": "sum by(container_name) (container_memory_cache{job=\"kubelet\", namespace=\"$namespace\", pod_name=~\"$pod\", container_name=~\"$container\", container_name!=\"POD\"})",
+                                "format": "time_series",
+                                "intervalFactor": 2,
+                                "legendFormat": "Cache: {{`{{ container_name }}`}}",
+                                "refId": "D"
                             }
                         ],
                         "thresholds": [
@@ -111,7 +132,7 @@ data:
                         "timeShift": null,
                         "title": "Memory Usage",
                         "tooltip": {
-                            "shared": true,
+                            "shared": false,
                             "sort": 0,
                             "value_type": "individual"
                         },
@@ -196,15 +217,30 @@ data:
 
                         ],
                         "spaceLength": 10,
+                        "span": 12,
                         "stack": false,
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "sum by (container_name) (rate(container_cpu_usage_seconds_total{job=\"kubelet\", namespace=\"$namespace\", image!=\"\",container_name!=\"POD\",pod_name=\"$pod\"}[1m]))",
+                                "expr": "sum by (container_name) (rate(container_cpu_usage_seconds_total{job=\"kubelet\", cluster=\"$cluster\", namespace=\"$namespace\", image!=\"\", pod_name=\"$pod\", container_name=~\"$container\", container_name!=\"POD\"}[1m]))",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{ container_name }}`}}",
+                                "legendFormat": "Current: {{`{{ container_name }}`}}",
                                 "refId": "A"
+                            },
+                            {
+                                "expr": "sum by(container) (kube_pod_container_resource_requests{job=\"kube-state-metrics\", cluster=\"$cluster\", namespace=\"$namespace\", resource=\"cpu\", pod=\"$pod\", container=~\"$container\"})",
+                                "format": "time_series",
+                                "intervalFactor": 2,
+                                "legendFormat": "Requested: {{`{{ container }}`}}",
+                                "refId": "B"
+                            },
+                            {
+                                "expr": "sum by(container) (kube_pod_container_resource_limits{job=\"kube-state-metrics\", cluster=\"$cluster\", namespace=\"$namespace\", resource=\"cpu\", pod=\"$pod\", container=~\"$container\"})",
+                                "format": "time_series",
+                                "intervalFactor": 2,
+                                "legendFormat": "Limit: {{`{{ container }}`}}",
+                                "refId": "C"
                             }
                         ],
                         "thresholds": [
@@ -214,7 +250,7 @@ data:
                         "timeShift": null,
                         "title": "CPU Usage",
                         "tooltip": {
-                            "shared": true,
+                            "shared": false,
                             "sort": 0,
                             "value_type": "individual"
                         },
@@ -299,15 +335,23 @@ data:
 
                         ],
                         "spaceLength": 10,
+                        "span": 12,
                         "stack": false,
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "sort_desc(sum by (pod_name) (rate(container_network_receive_bytes_total{job=\"kubelet\", namespace=\"$namespace\", pod_name=\"$pod\"}[1m])))",
+                                "expr": "sort_desc(sum by (pod_name) (rate(container_network_receive_bytes_total{job=\"kubelet\", cluster=\"$cluster\", namespace=\"$namespace\", pod_name=\"$pod\"}[1m])))",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{ pod_name }}`}}",
+                                "legendFormat": "RX: {{`{{ pod_name }}`}}",
                                 "refId": "A"
+                            },
+                            {
+                                "expr": "sort_desc(sum by (pod_name) (rate(container_network_transmit_bytes_total{job=\"kubelet\", cluster=\"$cluster\", namespace=\"$namespace\", pod_name=\"$pod\"}[1m])))",
+                                "format": "time_series",
+                                "intervalFactor": 2,
+                                "legendFormat": "TX: {{`{{ pod_name }}`}}",
+                                "refId": "B"
                             }
                         ],
                         "thresholds": [
@@ -317,7 +361,7 @@ data:
                         "timeShift": null,
                         "title": "Network I/O",
                         "tooltip": {
-                            "shared": true,
+                            "shared": false,
                             "sort": 0,
                             "value_type": "individual"
                         },
@@ -342,6 +386,110 @@ data:
                             },
                             {
                                 "format": "bytes",
+                                "label": null,
+                                "logBase": 1,
+                                "max": null,
+                                "min": 0,
+                                "show": true
+                            }
+                        ]
+                    }
+                ],
+                "repeat": null,
+                "repeatIteration": null,
+                "repeatRowId": null,
+                "showTitle": false,
+                "title": "Dashboard Row",
+                "titleSize": "h6",
+                "type": "row"
+            },
+            {
+                "collapse": false,
+                "collapsed": false,
+                "panels": [
+                    {
+                        "aliasColors": {
+
+                        },
+                        "bars": false,
+                        "dashLength": 10,
+                        "dashes": false,
+                        "datasource": "$datasource",
+                        "fill": 1,
+                        "gridPos": {
+
+                        },
+                        "id": 5,
+                        "legend": {
+                            "alignAsTable": true,
+                            "avg": true,
+                            "current": true,
+                            "max": false,
+                            "min": false,
+                            "rightSide": true,
+                            "show": true,
+                            "total": false,
+                            "values": false
+                        },
+                        "lines": true,
+                        "linewidth": 1,
+                        "links": [
+
+                        ],
+                        "nullPointMode": "null",
+                        "percentage": false,
+                        "pointradius": 5,
+                        "points": false,
+                        "renderer": "flot",
+                        "repeat": null,
+                        "seriesOverrides": [
+
+                        ],
+                        "spaceLength": 10,
+                        "span": 12,
+                        "stack": false,
+                        "steppedLine": false,
+                        "targets": [
+                            {
+                                "expr": "max by (container) (kube_pod_container_status_restarts_total{job=\"kube-state-metrics\", cluster=\"$cluster\", namespace=\"$namespace\", pod=\"$pod\", container=~\"$container\"})",
+                                "format": "time_series",
+                                "intervalFactor": 2,
+                                "legendFormat": "Restarts: {{`{{ container }}`}}",
+                                "refId": "A"
+                            }
+                        ],
+                        "thresholds": [
+
+                        ],
+                        "timeFrom": null,
+                        "timeShift": null,
+                        "title": "Total Restarts Per Container",
+                        "tooltip": {
+                            "shared": false,
+                            "sort": 0,
+                            "value_type": "individual"
+                        },
+                        "type": "graph",
+                        "xaxis": {
+                            "buckets": null,
+                            "mode": "time",
+                            "name": null,
+                            "show": true,
+                            "values": [
+
+                            ]
+                        },
+                        "yaxes": [
+                            {
+                                "format": "short",
+                                "label": null,
+                                "logBase": 1,
+                                "max": null,
+                                "min": 0,
+                                "show": true
+                            },
+                            {
+                                "format": "short",
                                 "label": null,
                                 "logBase": 1,
                                 "max": null,
@@ -389,6 +537,32 @@ data:
 
                     },
                     "datasource": "$datasource",
+                    "hide": 2,
+                    "includeAll": false,
+                    "label": "cluster",
+                    "multi": false,
+                    "name": "cluster",
+                    "options": [
+
+                    ],
+                    "query": "label_values(kube_pod_info, cluster)",
+                    "refresh": 2,
+                    "regex": "",
+                    "sort": 0,
+                    "tagValuesQuery": "",
+                    "tags": [
+
+                    ],
+                    "tagsQuery": "",
+                    "type": "query",
+                    "useTags": false
+                },
+                {
+                    "allValue": null,
+                    "current": {
+
+                    },
+                    "datasource": "$datasource",
                     "hide": 0,
                     "includeAll": false,
                     "label": "Namespace",
@@ -397,7 +571,7 @@ data:
                     "options": [
 
                     ],
-                    "query": "label_values(kube_pod_info, namespace)",
+                    "query": "label_values(kube_pod_info{cluster=\"$cluster\"}, namespace)",
                     "refresh": 2,
                     "regex": "",
                     "sort": 0,
@@ -423,7 +597,7 @@ data:
                     "options": [
 
                     ],
-                    "query": "label_values(kube_pod_info{namespace=\u007e\"$namespace\"}, pod)",
+                    "query": "label_values(kube_pod_info{cluster=\"$cluster\", namespace=~\"$namespace\"}, pod)",
                     "refresh": 2,
                     "regex": "",
                     "sort": 0,
@@ -449,7 +623,7 @@ data:
                     "options": [
 
                     ],
-                    "query": "label_values(kube_pod_container_info{namespace=\"$namespace\", pod=\"$pod\"}, container)",
+                    "query": "label_values(kube_pod_container_info{cluster=\"$cluster\", namespace=\"$namespace\", pod=\"$pod\"}, container)",
                     "refresh": 2,
                     "regex": "",
                     "sort": 0,

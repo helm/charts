@@ -29,12 +29,7 @@ spec:
   {{- end }}
 {{- end }}
     spec:
-      {{- if .Values.image.pullSecrets }}
-      imagePullSecrets:
-      {{- range .Values.image.pullSecrets }}
-        - name: {{ . }}
-      {{- end}}
-      {{- end }}
+{{- include "drupal.imagePullSecrets" . | indent 6 }}
       hostAliases:
       - ip: "127.0.0.1"
         hostnames:
@@ -113,13 +108,9 @@ spec:
         volumeMounts:
         - name: drupal-data
           mountPath: {{ .Values.volumeMounts.drupal.mountPath }}
-        {{- if .Values.volumeMounts.apache.mountPath }}
-        - name: apache-data
-          mountPath: {{ .Values.volumeMounts.apache.mountPath }}
-        {{- end }}
 {{- if .Values.metrics.enabled }}
       - name: metrics
-        image: {{ template "metrics.image" . }}
+        image: {{ template "drupal.metrics.image" . }}
         imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
         command: [ '/bin/apache_exporter', '-scrape_uri', 'http://status.localhost:80/server-status/?auto']
         ports:
@@ -148,12 +139,7 @@ spec:
       {{- else }}
         emptyDir: {}
       {{- end }}
-      {{- if .Values.volumeMounts.apache.mountPath }}
-      - name: apache-data
-      {{- if .Values.persistence.enabled }}
-        persistentVolumeClaim:
-          claimName: {{ template "drupal.fullname" . }}-apache
-      {{- else }}
-        emptyDir: {}
-      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
       {{- end }}

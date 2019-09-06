@@ -7,6 +7,9 @@ metadata:
     release: {{ .Release.Name | quote }}
     chart: {{ template "consul.chart" . }}
     component: "{{ .Release.Name }}-{{ .Values.Component }}"
+{{- if .Values.additionalLabels }}
+{{ toYaml .Values.additionalLabels | indent 4 }}
+{{- end }}
 spec:
   serviceName: "{{ template "consul.fullname" . }}"
   replicas: {{ default 3 .Values.Replicas }}
@@ -24,6 +27,9 @@ spec:
         release: {{ .Release.Name | quote }}
         chart: {{ template "consul.chart" . }}
         component: "{{ .Release.Name }}-{{ .Values.Component }}"
+{{- if .Values.additionalLabels }}
+{{ toYaml .Values.additionalLabels | indent 8 }}
+{{- end }}
     spec:
       securityContext:
         fsGroup: 1000
@@ -98,6 +104,10 @@ spec:
           readOnly: true
           mountPath: /etc/consul/userconfig/{{ .name }}
         {{ end }}
+        {{- if .Values.lifecycle }}
+        lifecycle:
+{{ tpl (toYaml .Values.lifecycle) . | indent 10 }}
+        {{- end }}
         livenessProbe:
           exec:
             command:
@@ -110,8 +120,13 @@ spec:
           - "/bin/sh"
           - "-ec"
           - |
-            IP=$(hostname -i)
+            set -o pipefail
 
+            if [ -z "$POD_IP"  ]; then
+              POD_IP=$(hostname -i)
+            fi
+            FQDN_SUFFIX="${STATEFULSET_NAME}.${STATEFULSET_NAMESPACE}.svc{{- if .Values.ClusterDomain }}.{{ .Values.ClusterDomain }}{{- end -}}"
+            NODE_NAME="$(hostname -s).${FQDN_SUFFIX}"
             {{- if .Values.Gossip.Encrypt }}
             if [ -e /etc/consul/secrets/gossip-key ]; then
               echo "{\"encrypt\": \"$(base64 /etc/consul/secrets/gossip-key)\"}" > /etc/consul/encrypt.json
@@ -119,27 +134,82 @@ spec:
             fi
             {{- end }}
 
-            for i in $(seq 0 $((${INITIAL_CLUSTER_SIZE} - 1))); do
-                while true; do
-                    echo "Waiting for ${STATEFULSET_NAME}-${i}.${STATEFULSET_NAME} to come up"
-                    ping -W 1 -c 1 ${STATEFULSET_NAME}-${i}.${STATEFULSET_NAME}.${STATEFULSET_NAMESPACE}.svc > /dev/null && break
-                    sleep 1s
-                done
+            JOIN_PEERS=""
+
+            {{- if .Values.joinPeers }}
+            {{- range .Values.joinPeers }}
+            JOIN_PEERS="${JOIN_PEERS}${JOIN_PEERS:+ }{{ . }}"
+            {{- end }}
+            {{- else }}
+            JOIN_PEERS=""
+            for i in $( seq 0 $((${INITIAL_CLUSTER_SIZE} - 1)) ); do
+              JOIN_PEERS="${JOIN_PEERS}${JOIN_PEERS:+ }${STATEFULSET_NAME}-${i}.${FQDN_SUFFIX}"
+            done
+            {{- end }}
+
+            JOIN_PEERS=$( printf "%s\n" $JOIN_PEERS | sort | uniq )
+
+            # Require multiple loops in the case of unstable DNS resolution
+            SUCCESS_LOOPS=5
+            while [ "$SUCCESS_LOOPS" -gt 0 ]; do
+              ALL_READY=true
+              JOIN_LAN=""
+              for THIS_PEER in $JOIN_PEERS; do
+                  # Make sure we can resolve hostname and ping IP
+                  if PEER_IP="$(ping -c 1 $THIS_PEER | awk -F'[()]' '/PING/{print $2}')" && [ "$PEER_IP" != "" ]; then 
+                    if [ "${PEER_IP}" != "${POD_IP}" ]; then
+                      JOIN_LAN="${JOIN_LAN}${JOIN_LAN:+ } -retry-join=$THIS_PEER"
+                    fi
+                  else
+                    ALL_READY=false
+                    break
+                  fi
+              done
+              if $ALL_READY; then
+                SUCCESS_LOOPS=$(( SUCCESS_LOOPS - 1 ))
+                echo "LAN peers appear ready, $SUCCESS_LOOPS verifications left"
+              else
+                echo "Waiting for LAN peer $THIS_PEER..."
+              fi
+              sleep 1s
             done
 
-            PEERS=""
-            for i in $(seq 0 $((${INITIAL_CLUSTER_SIZE} - 1))); do
-              NEXT_PEER="$(ping -c 1 ${STATEFULSET_NAME}-${i}.${STATEFULSET_NAME}.${STATEFULSET_NAMESPACE}.svc | awk -F'[()]' '/PING/{print $2}')"
-              if [ "${NEXT_PEER}" != "${POD_IP}" ]; then
-                PEERS="${PEERS}${PEERS:+ } -retry-join ${STATEFULSET_NAME}-${i}.${STATEFULSET_NAME}.${STATEFULSET_NAMESPACE}.svc"
+
+            WAN_PEERS=""
+            {{- range .Values.joinWan }}
+            WAN_PEERS="${WAN_PEERS}${WAN_PEERS:+ }{{ . }}"
+            {{- end }}
+
+            JOIN_WAN=""
+            SUCCESS_LOOPS=5
+            while [ "$WAN_PEERS" != "" ] && [ "$SUCCESS_LOOPS" -gt 0 ]; do
+              ALL_READY=true
+              JOIN_WAN=""
+              for THIS_PEER in $WAN_PEERS; do
+                  # We don't care if we can ping the peer, but we do care that we can get its IP
+                  if PEER_IP="$( ( ping -c 1 $THIS_PEER || true ) | awk -F'[()]' '/PING/{print $2}')" && [ "$PEER_IP" != "" ]; then 
+                    if [ "${PEER_IP}" != "${POD_IP}" ]; then
+                      JOIN_WAN="${JOIN_WAN}${JOIN_WAN:+ } -retry-join-wan=$THIS_PEER"
+                    fi
+                  else
+                    ALL_READY=false
+                    break
+                  fi
+              done
+              if $ALL_READY; then
+                SUCCESS_LOOPS=$(( SUCCESS_LOOPS - 1 ))
+                echo "WAN peers appear ready, $SUCCESS_LOOPS verifications left"
+              else
+                echo "Waiting for WAN peer $THIS_PEER..."
               fi
+              sleep 1s
             done
 
             exec /bin/consul agent \
             {{- range .Values.ConsulConfig }}
               -config-dir /etc/consul/userconfig/{{ .name }} \
             {{- end}}
-            {{- if .Values.uiService.enabled }}
+            {{- if .Values.ui.enabled }}
               -ui \
             {{- end }}
             {{- if .Values.DisableHostNodeId }}
@@ -153,15 +223,24 @@ spec:
             {{- end }}
               -data-dir=/var/lib/consul \
               -server \
-              -bootstrap-expect=${INITIAL_CLUSTER_SIZE} \
+              -bootstrap-expect=$( echo "$JOIN_PEERS" | wc -w ) \
               -disable-keyring-file \
+            {{- if .Values.forceIpv6 }}
+              -bind=:: \
+            {{- else }}
               -bind=0.0.0.0 \
-              -advertise=${IP} \
-              ${PEERS} \
+            {{- end }}
+              -advertise=${POD_IP} \
+              ${JOIN_LAN} \
+              ${JOIN_WAN} \
             {{- if .Values.Gossip.Encrypt }}
               ${GOSSIP_KEY} \
             {{- end }}
+            {{- if .Values.forceIpv6 }}
+              -client=:: \
+            {{- else }}
               -client=0.0.0.0 \
+            {{- end }}
               -dns-port=${DNSPORT} \
               -http-port={{ .Values.HttpPort }}
       volumes:

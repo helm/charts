@@ -1,7 +1,10 @@
 # Ark-server
 
-This helm chart installs Ark version v0.10.1
-https://github.com/heptio/ark/tree/v0.10.1
+# THIS CHART HAS BEEN DEPRECATED. PLEASE MOVE TO THE STABLE/VELERO CHART.
+
+
+This helm chart installs Ark version v0.10.2
+https://github.com/heptio/ark/tree/v0.10.2
 
 ## Upgrading to v0.10
 
@@ -60,6 +63,7 @@ Parameter | Description | Default
 `rbac.server.serviceAccount.create` | Whether a new service account name that the server will use should be created | `true`
 `rbac.server.serviceAccount.name` | Service account to be used for the server. If not set and `rbac.server.serviceAccount.create` is `true` a name is generated using the fullname template | ``
 `resources` | Resource requests and limits | `{}`
+`initContainers` | InitContainers and their specs to start with the deployment pod | `[]`
 `tolerations` | List of node taints to tolerate | `[]`
 `nodeSelector` | Node labels for pod assignment | `{}`
 `configuration.backupStorageLocation.name` | The name of the cloud provider that will be used to actually store the backups (`aws`, `azure`, `gcp`) | ``

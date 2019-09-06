@@ -1,7 +1,7 @@
 # Default values for elasticsearch.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-appVersion: "6.6.1"
+appVersion: "6.8.2"
 
 ## Define serviceAccount names for components. Defaults to component's fully qualified name.
 ##
@@ -31,13 +31,26 @@ podSecurityPolicy:
     # seccomp.security.alpha.kubernetes.io/defaultProfileName: 'docker/default'
     # apparmor.security.beta.kubernetes.io/defaultProfileName: 'runtime/default'
 
+securityContext:
+  enabled: false
+  runAsUser: 1000
+
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName: "default-scheduler"
+
 image:
   repository: "docker.elastic.co/elasticsearch/elasticsearch-oss"
-  tag: "6.6.1"
+  tag: "6.8.2"
   pullPolicy: "IfNotPresent"
   # If specified, use these secrets to access the image
   # pullSecrets:
   #   - registry-secret
+
+testFramework:
+  image: "dduportal/bats"
+  tag: "0.4.0"
 
 initImage:
   repository: "busybox"
@@ -67,10 +80,39 @@ cluster:
     # - ingest-attachment
     # - mapper-size
 
+  loggingYml:
+    # you can override this using by setting a system property, for example -Des.logger.level=DEBUG
+    es.logger.level: INFO
+    rootLogger: ${es.logger.level}, console
+    logger:
+      # log action execution errors for easier debugging
+      action: DEBUG
+      # reduce the logging for aws, too much is logged under the default INFO
+      com.amazonaws: WARN
+    appender:
+      console:
+        type: console
+        layout:
+          type: consolePattern
+          conversionPattern: "[%d{ISO8601}][%-5p][%-25c] %m%n"
+
+  log4j2Properties: |
+    status = error
+    appender.console.type = Console
+    appender.console.name = console
+    appender.console.layout.type = PatternLayout
+    appender.console.layout.pattern = [%d{ISO8601}][%-5p][%-25c{1.}] %marker%m%n
+    rootLogger.level = info
+    rootLogger.appenderRef.console.ref = console
+    logger.searchguard.name = com.floragunn
+    logger.searchguard.level = info
+
 client:
   name: client
   replicas: 2
   serviceType: ClusterIP
+  ## If coupled with serviceType = "NodePort", this will set a specific nodePort to the client HTTP port
+  # httpNodePort: 30920
   loadBalancerIP: {}
   loadBalancerSourceRanges: {}
 ## (dict) If specified, apply these annotations to the client service
@@ -82,6 +124,7 @@ client:
   nodeAffinity: {}
   nodeSelector: {}
   tolerations: []
+  # terminationGracePeriodSeconds: 60
   initResources: {}
     # limits:
     #   cpu: "25m"
@@ -104,6 +147,12 @@ client:
     enabled: false
     minAvailable: 1
     # maxUnavailable: 1
+  hooks: {}
+    ## (string) Script to execute prior the client pod stops.
+    # preStop: |-
+
+    ## (string) Script to execute after the client pod starts.
+    # postStart: |-
   ingress:
     enabled: false
     # user: NAME
@@ -140,6 +189,7 @@ master:
   nodeAffinity: {}
   nodeSelector: {}
   tolerations: []
+  # terminationGracePeriodSeconds: 60
   initResources: {}
     # limits:
     #   cpu: "25m"
@@ -158,12 +208,19 @@ master:
   ## (dict) If specified, apply these annotations to each master Pod
   # podAnnotations:
   #   example: master-foo
+  podManagementPolicy: OrderedReady
   podDisruptionBudget:
     enabled: false
     minAvailable: 2  # Same as `cluster.env.MINIMUM_MASTER_NODES`
     # maxUnavailable: 1
   updateStrategy:
     type: OnDelete
+  hooks: {}
+    ## (string) Script to execute prior the master pod stops.
+    # preStop: |-
+
+    ## (string) Script to execute after the master pod starts.
+    # postStart: |-
 
 data:
   name: data
@@ -209,16 +266,52 @@ data:
     enabled: false
     # minAvailable: 1
     maxUnavailable: 1
+  podManagementPolicy: OrderedReady
   updateStrategy:
     type: OnDelete
-  hooks:  # post-start and pre-stop hooks
-    drain:  # drain the node before stopping it and re-integrate it into the cluster after start
+  hooks:
+    ## Drain the node before stopping it and re-integrate it into the cluster after start.
+    ## When enabled, it supersedes `data.hooks.preStop` and `data.hooks.postStart` defined below.
+    drain:
       enabled: true
+
+    ## (string) Script to execute prior the data pod stops. Ignored if `data.hooks.drain.enabled` is true (default)
+    # preStop: |-
+    #   #!/bin/bash
+    #   exec &> >(tee -a "/var/log/elasticsearch-hooks.log")
+    #   NODE_NAME=${HOSTNAME}
+    #   curl -s -XPUT -H 'Content-Type: application/json' '{{ template "elasticsearch.client.fullname" . }}:9200/_cluster/settings' -d "{
+    #     \"transient\" :{
+    #         \"cluster.routing.allocation.exclude._name\" : \"${NODE_NAME}\"
+    #     }
+    #   }"
+    #   echo "Node ${NODE_NAME} is exluded from the allocation"
+
+    ## (string) Script to execute after the data pod starts. Ignored if `data.hooks.drain.enabled` is true (default)
+    # postStart: |-
+    #   #!/bin/bash
+    #   exec &> >(tee -a "/var/log/elasticsearch-hooks.log")
+    #   NODE_NAME=${HOSTNAME}
+    #   CLUSTER_SETTINGS=$(curl -s -XGET "http://{{ template "elasticsearch.client.fullname" . }}:9200/_cluster/settings")
+    #   if echo "${CLUSTER_SETTINGS}" | grep -E "${NODE_NAME}"; then
+    #     echo "Activate node ${NODE_NAME}"
+    #     curl -s -XPUT -H 'Content-Type: application/json' "http://{{ template "elasticsearch.client.fullname" . }}:9200/_cluster/settings" -d "{
+    #       \"transient\" :{
+    #           \"cluster.routing.allocation.exclude._name\" : null
+    #       }
+    #     }"
+    #   fi
+    #   echo "Node ${NODE_NAME} is ready to be used"
 
 ## Sysctl init container to setup vm.max_map_count
 # see https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html
 # and https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-configuration-memory.html#mlockall
 sysctlInitContainer:
   enabled: true
+## Chown init container to change ownership of data and logs directories to elasticsearch user
+chownInitContainer:
+  enabled: true
 ## Additional init containers
 extraInitContainers: |
+
+forceIpv6: false

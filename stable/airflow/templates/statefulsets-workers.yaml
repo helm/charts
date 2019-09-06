@@ -29,8 +29,9 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/configmap-airflow.yaml") . | sha256sum }}
-        configmap.fabric8.io/update-on-change: "{{ template "airflow.fullname" . }}-env"
+        checksum/config-env: {{ include (print $.Template.BasePath "/configmap-env.yaml") . | sha256sum }}
+        checksum/config-git-clone: {{ include (print $.Template.BasePath "/configmap-git-clone.yaml") . | sha256sum }}
+        checksum/config-scripts: {{ include (print $.Template.BasePath "/configmap-scripts.yaml") . | sha256sum }}
 {{- if .Values.airflow.podAnnotations }}
 {{ toYaml .Values.airflow.podAnnotations | indent 8 }}
 {{- end }}
@@ -49,6 +50,19 @@ spec:
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
       serviceAccountName: {{ template "airflow.serviceAccountName" . }}
+      {{- if .Values.workers.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.workers.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.workers.affinity }}
+      affinity:
+{{ toYaml .Values.workers.affinity | indent 8 }}
+      {{- end }}
+      {{- if .Values.workers.tolerations }}
+      tolerations:
+{{ toYaml .Values.workers.tolerations | indent 8 }}
+      {{- end }}
+
       {{- if .Values.dags.initContainer.enabled }}
       initContainers:
         - name: git-clone
@@ -87,19 +101,27 @@ spec:
             - name: {{ . }}-volume
               readOnly: true
               mountPath: {{ $secretsDir }}/{{ . }}
-              subPath: {{ . }}
           {{- end }}
           {{- if .Values.persistence.enabled }}
             - name: dags-data
               mountPath: {{ .Values.dags.path }}
+              subPath: {{ .Values.persistence.subPath | default "" }}
           {{- else if .Values.dags.initContainer.enabled }}
             - name: dags-data
               mountPath: {{ .Values.dags.path }}
+          {{- end }}
+          {{- if .Values.logsPersistence.enabled }}
+            - name: logs-data
+              mountPath: {{ .Values.logs.path }}
+              subPath: {{ .Values.logsPersistence.subPath | default "" }}
           {{- end }}
           {{- range .Values.airflow.extraConfigmapMounts }}
             - name: {{ .name }}
               mountPath: {{ .mountPath }}
               readOnly: {{ .readOnly }}
+              {{ if .subPath }}
+              subPath: {{ .subPath }}
+              {{ end }}
           {{- end }}
 {{- if .Values.airflow.extraVolumeMounts }}
 {{ toYaml .Values.airflow.extraVolumeMounts | indent 12 }}
@@ -151,6 +173,11 @@ spec:
             claimName: {{ .Values.persistence.existingClaim | default (include "airflow.fullname" .) }}
         {{- else }}
           emptyDir: {}
+        {{- end }}
+        {{- if .Values.logsPersistence.enabled }}
+        - name: logs-data
+          persistentVolumeClaim:
+            claimName: {{ .Values.logsPersistence.existingClaim | default (printf "%s-logs" (include "airflow.fullname" . | trunc 58 )) }}
         {{- end }}
         {{- if .Values.dags.initContainer.enabled }}
         - name: git-clone

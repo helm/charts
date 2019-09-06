@@ -6,76 +6,91 @@ apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
   name: {{ template "jenkins.fullname" . }}
+  namespace: {{ template "jenkins.namespace" . }}
   labels:
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    component: "{{ .Release.Name }}-{{ .Values.Master.Name }}"
-    {{- range $key, $val := .Values.Master.DeploymentLabels }}
+    "app.kubernetes.io/name": '{{ template "jenkins.name" .}}'
+    "helm.sh/chart": "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    "app.kubernetes.io/managed-by": "{{ .Release.Service }}"
+    "app.kubernetes.io/instance": "{{ .Release.Name }}"
+    "app.kubernetes.io/component": "{{ .Values.master.componentName }}"
+    {{- range $key, $val := .Values.master.deploymentLabels }}
     {{ $key }}: {{ $val | quote }}
     {{- end}}
 spec:
   replicas: 1
   strategy:
-    type: {{ if .Values.Persistence.Enabled }}Recreate{{ else }}RollingUpdate{{ end }}
-    rollingUpdate: {{ if .Values.Persistence.Enabled }}{{ else }}true{{ end }}
+    type: {{ if .Values.persistence.enabled }}Recreate{{ else }}RollingUpdate
+    rollingUpdate:
+{{ toYaml .Values.master.rollingUpdate | indent 6 }}
+    {{- end }}
   selector:
     matchLabels:
-      component: "{{ .Release.Name }}-{{ .Values.Master.Component }}"
+      "app.kubernetes.io/component": "{{ .Values.master.componentName }}"
+      "app.kubernetes.io/instance": "{{ .Release.Name }}"
   template:
     metadata:
       labels:
-        app: {{ template "jenkins.fullname" . }}
-        heritage: {{ .Release.Service | quote }}
-        release: {{ .Release.Name | quote }}
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-        component: "{{ .Release.Name }}-{{ .Values.Master.Component }}"
-        {{- range $key, $val := .Values.Master.PodLabels }}
+        "app.kubernetes.io/name": '{{ template "jenkins.name" .}}'
+        "helm.sh/chart": "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        "app.kubernetes.io/managed-by": "{{ .Release.Service }}"
+        "app.kubernetes.io/instance": "{{ .Release.Name }}"
+        "app.kubernetes.io/component": "{{ .Values.master.componentName }}"
+        {{- range $key, $val := .Values.master.podLabels }}
         {{ $key }}: {{ $val | quote }}
         {{- end}}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
-        {{- if .Values.Master.PodAnnotations }}
-{{ toYaml .Values.Master.PodAnnotations | indent 8 }}
+        {{- if .Values.master.podAnnotations }}
+{{ toYaml .Values.master.podAnnotations | indent 8 }}
         {{- end }}
     spec:
-      {{- if .Values.Master.NodeSelector }}
+      {{- if .Values.master.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.Master.NodeSelector | indent 8 }}
+{{ toYaml .Values.master.nodeSelector | indent 8 }}
       {{- end }}
-      {{- if .Values.Master.Tolerations }}
+      {{- if .Values.master.tolerations }}
       tolerations:
-{{ toYaml .Values.Master.Tolerations | indent 8 }}
+{{ toYaml .Values.master.tolerations | indent 8 }}
       {{- end }}
-      {{- if .Values.Master.Affinity }}
+      {{- if .Values.master.affinity }}
       affinity:
-{{ toYaml .Values.Master.Affinity | indent 8 }}
+{{ toYaml .Values.master.affinity | indent 8 }}
       {{- end }}
-{{- if .Values.Master.UsePodSecurityContext }}
+      {{- if and (.Capabilities.APIVersions.Has "scheduling.k8s.io/v1beta1") (.Values.master.priorityClassName) }}
+      priorityClassName: {{ .Values.master.priorityClassName }}
+      {{- end }}
+{{- if .Values.master.usePodSecurityContext }}
       securityContext:
-        runAsUser: {{ default 0 .Values.Master.RunAsUser }}
-{{- if and (.Values.Master.RunAsUser) (.Values.Master.FsGroup) }}
-{{- if not (eq .Values.Master.RunAsUser 0.0) }}
-        fsGroup: {{ .Values.Master.FsGroup }}
+        runAsUser: {{ default 0 .Values.master.runAsUser }}
+{{- if and (.Values.master.runAsUser) (.Values.master.fsGroup) }}
+{{- if not (eq .Values.master.runAsUser 0.0) }}
+        fsGroup: {{ .Values.master.fsGroup }}
 {{- end }}
 {{- end }}
 {{- end }}
-      serviceAccountName: {{ if .Values.rbac.install }}{{ template "jenkins.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
-{{- if .Values.Master.HostNetworking }}
+      serviceAccountName: "{{ template "jenkins.serviceAccountName" . }}"
+{{- if .Values.master.hostNetworking }}
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
 {{- end }}
-      {{- if .Values.Master.HostAliases }}
+      {{- if .Values.master.hostAliases }}
       hostAliases:
-        {{- toYaml .Values.Master.HostAliases | nindent 8 }}
+        {{- toYaml .Values.master.hostAliases | nindent 8 }}
       {{- end }}
       initContainers:
+{{- if .Values.master.customInitContainers }}
+{{ tpl (toYaml .Values.master.customInitContainers) . | indent 8 }}
+{{- end }}
         - name: "copy-default-config"
-          image: "{{ .Values.Master.Image }}:{{ .Values.Master.ImageTag }}"
-          imagePullPolicy: "{{ .Values.Master.ImagePullPolicy }}"
+{{- if .Values.master.imageTag }}
+          image: "{{ .Values.master.image }}:{{ .Values.master.imageTag }}"
+{{- else }}
+          image: "{{ .Values.master.image }}:{{ .Values.master.tag }}"
+{{- end }}
+          imagePullPolicy: "{{ .Values.master.imagePullPolicy }}"
           command: [ "sh", "/var/jenkins_config/apply_config.sh" ]
           env:
-          {{- if .Values.Master.UseSecurity }}
+          {{- if .Values.master.useSecurity }}
             - name: ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
@@ -86,8 +101,8 @@ spec:
                 secretKeyRef:
                   name: {{ template "jenkins.fullname" . }}
                   key: jenkins-admin-user
-            {{- if or (.Values.Master.OwnSshKey) (.Values.Master.Sidecars.configAutoReload.enabled) }}
-            {{- if .Values.Master.JCasC.enabled }}
+            {{- if or (.Values.master.adminSshKey) (.Values.master.sidecars.configAutoReload.enabled) }}
+            {{- if .Values.master.JCasC.enabled }}
             - name: ADMIN_PRIVATE_KEY
               valueFrom:
                 secretKeyRef:
@@ -96,62 +111,69 @@ spec:
             {{- end }}
             {{- end }}
             {{- end }}
-            {{- if .Values.Master.InitContainerEnv }}
-{{ toYaml .Values.Master.InitContainerEnv | indent 12 }}
+            {{- if .Values.master.initContainerEnv }}
+{{ toYaml .Values.master.initContainerEnv | indent 12 }}
             {{- end }}
           resources:
-{{ toYaml .Values.Master.resources | indent 12 }}
+{{ toYaml .Values.master.resources | indent 12 }}
           volumeMounts:
-            -
-              mountPath: /var/jenkins_home
+            - mountPath: /tmp
+              name: tmp
+            - mountPath: /var/jenkins_home
               name: jenkins-home
-              {{- if .Values.Persistence.SubPath }}
-              subPath: {{ .Values.Persistence.SubPath }}
+              {{- if .Values.persistence.subPath }}
+              subPath: {{ .Values.persistence.subPath }}
               {{- end }}
-            -
-              mountPath: /var/jenkins_config
+            - mountPath: /var/jenkins_config
               name: jenkins-config
-            {{- if .Values.Master.CredentialsXmlSecret }}
-            -
-              mountPath: /var/jenkins_credentials
+            {{- if .Values.master.enableXmlConfig }}
+            {{- if .Values.master.credentialsXmlSecret }}
+            - mountPath: /var/jenkins_credentials
               name: jenkins-credentials
               readOnly: true
             {{- end }}
-            {{- if .Values.Master.SecretsFilesSecret }}
-            -
-              mountPath: /var/jenkins_secrets
-              name: jenkins-secrets
-              readOnly: true
-            {{- end }}
-            {{- if .Values.Master.Jobs }}
-            -
-              mountPath: /var/jenkins_jobs
+            {{- if .Values.master.jobs }}
+            - mountPath: /var/jenkins_jobs
               name: jenkins-jobs
               readOnly: true
             {{- end }}
-            {{- if .Values.Master.InstallPlugins }}
-            -
-              mountPath: /var/jenkins_plugins
+            - mountPath: /usr/share/jenkins/ref/secrets/
+              name: secrets-dir
+            {{- end }}
+            {{- if .Values.master.secretsFilesSecret }}
+            - mountPath: /var/jenkins_secrets
+              name: jenkins-secrets
+              readOnly: true
+            {{- end }}
+            {{- if .Values.master.installPlugins }}
+            - mountPath: /usr/share/jenkins/ref/plugins
+              name: plugins
+            - mountPath: /var/jenkins_plugins
               name: plugin-dir
             {{- end }}
-            -
-              mountPath: /usr/share/jenkins/ref/secrets/
-              name: secrets-dir
       containers:
-        - name: {{ template "jenkins.fullname" . }}
-          image: "{{ .Values.Master.Image }}:{{ .Values.Master.ImageTag }}"
-          imagePullPolicy: "{{ .Values.Master.ImagePullPolicy }}"
-          {{- if .Values.Master.UseSecurity }}
+        - name: jenkins
+{{- if .Values.master.imageTag }}
+          image: "{{ .Values.master.image }}:{{ .Values.master.imageTag }}"
+{{- else }}
+          image: "{{ .Values.master.image }}:{{ .Values.master.tag }}"
+{{- end }}
+          imagePullPolicy: "{{ .Values.master.imagePullPolicy }}"
+          {{- if .Values.master.useSecurity }}
           args: [ "--argumentsRealm.passwd.$(ADMIN_USER)=$(ADMIN_PASSWORD)",  "--argumentsRealm.roles.$(ADMIN_USER)=admin"]
+          {{- end }}
+          {{- if .Values.master.lifecycle }}
+          lifecycle:
+{{ toYaml .Values.master.lifecycle | indent 12 }}
           {{- end }}
           env:
             - name: JAVA_OPTS
-              value: {{ default "" .Values.Master.JavaOpts | quote }}
+              value: {{ default "" .Values.master.javaOpts | quote }}
             - name: JENKINS_OPTS
-              value: "{{ if .Values.Master.JenkinsUriPrefix }}--prefix={{ .Values.Master.JenkinsUriPrefix }} {{ end }}{{ default "" .Values.Master.JenkinsOpts}}"
+              value: "{{ if .Values.master.jenkinsUriPrefix }}--prefix={{ .Values.master.jenkinsUriPrefix }} {{ end }}{{ default "" .Values.master.jenkinsOpts}}"
             - name: JENKINS_SLAVE_AGENT_PORT
-              value: "{{ .Values.Master.SlaveListenerPort }}"
-            {{- if .Values.Master.UseSecurity }}
+              value: "{{ .Values.master.slaveListenerPort }}"
+            {{- if .Values.master.useSecurity }}
             - name: ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
@@ -162,8 +184,8 @@ spec:
                 secretKeyRef:
                   name: {{ template "jenkins.fullname" . }}
                   key: jenkins-admin-user
-            {{- if or (.Values.Master.OwnSshKey) (.Values.Master.Sidecars.configAutoReload.enabled) }}
-            {{- if .Values.Master.JCasC.enabled }}
+            {{- if or (.Values.master.adminSshKey) (.Values.master.sidecars.configAutoReload.enabled) }}
+            {{- if .Values.master.JCasC.enabled }}
             - name: ADMIN_PRIVATE_KEY
               valueFrom:
                 secretKeyRef:
@@ -172,128 +194,120 @@ spec:
             {{- end }}
             {{- end }}
             {{- end }}
-            {{- if .Values.Master.ContainerEnv }}
-{{ toYaml .Values.Master.ContainerEnv | indent 12 }}
+            {{- if .Values.master.containerEnv }}
+{{ toYaml .Values.master.containerEnv | indent 12 }}
             {{- end }}
-            {{- if .Values.Master.JCasC.enabled }}
+            {{- if .Values.master.JCasC.enabled }}
             - name: CASC_JENKINS_CONFIG
-              value: {{ .Values.Master.Sidecars.configAutoReload.folder | default "/var/jenkins_home/casc_configs" | quote }}
+              value: {{ .Values.master.sidecars.configAutoReload.folder | default "/var/jenkins_home/casc_configs" | quote }}
             {{- end }}
           ports:
             - containerPort: 8080
               name: http
-            - containerPort: {{ .Values.Master.SlaveListenerPort }}
+            - containerPort: {{ .Values.master.slaveListenerPort }}
               name: slavelistener
-              {{- if .Values.Master.SlaveHostPort }}
-              hostPort: {{ .Values.Master.SlaveHostPort }}
+              {{- if .Values.master.slaveHostPort }}
+              hostPort: {{ .Values.master.slaveHostPort }}
               {{- end }}
-            {{- if .Values.Master.JMXPort }}
-            - containerPort: {{ .Values.Master.JMXPort }}
+            {{- if .Values.master.jmxPort }}
+            - containerPort: {{ .Values.master.jmxPort }}
               name: jmx
             {{- end }}
-{{- range $index, $port := .Values.Master.ExtraPorts }}
+{{- range $index, $port := .Values.master.extraPorts }}
             - containerPort: {{ $port.port }}
               name: {{ $port.name }}
 {{- end }}
-{{- if .Values.Master.HealthProbes }}
+{{- if .Values.master.healthProbes }}
           livenessProbe:
             httpGet:
-              path: "{{ default "" .Values.Master.JenkinsUriPrefix }}/login"
+              path: "{{ default "" .Values.master.jenkinsUriPrefix }}/login"
               port: http
-            initialDelaySeconds: {{ .Values.Master.HealthProbesLivenessTimeout }}
-            timeoutSeconds: 5
-            failureThreshold: {{ .Values.Master.HealthProbeLivenessFailureThreshold }}
+            initialDelaySeconds: {{ .Values.master.healthProbeLivenessInitialDelay }}
+            periodSeconds: {{ .Values.master.healthProbeLivenessPeriodSeconds }}
+            timeoutSeconds: {{ .Values.master.healthProbesLivenessTimeout }}
+            failureThreshold: {{ .Values.master.healthProbeLivenessFailureThreshold }}
           readinessProbe:
             httpGet:
-              path: "{{ default "" .Values.Master.JenkinsUriPrefix }}/login"
+              path: "{{ default "" .Values.master.jenkinsUriPrefix }}/login"
               port: http
-            initialDelaySeconds: {{ .Values.Master.HealthProbesReadinessTimeout }}
-            periodSeconds: {{ .Values.Master.HealthProbeReadinessPeriodSeconds }}
+            initialDelaySeconds: {{ .Values.master.healthProbeReadinessInitialDelay }}
+            periodSeconds: {{ .Values.master.healthProbeReadinessPeriodSeconds }}
+            timeoutSeconds: {{ .Values.master.healthProbesReadinessTimeout }}
+            failureThreshold: {{ .Values.master.healthProbeReadinessFailureThreshold }}
 {{- end }}
-          # Resources configuration is a little hacky. This was to prevent breaking
-          # changes, and should be cleanned up in the future once everybody had
-          # enough time to migrate.
+
           resources:
-{{ if or .Values.Master.Cpu .Values.Master.Memory }}
-            requests:
-              cpu: "{{ .Values.Master.Cpu }}"
-              memory: "{{ .Values.Master.Memory }}"
-{{ else }}
-{{ toYaml .Values.Master.resources | indent 12 }}
-{{ end }}
+{{ toYaml .Values.master.resources | indent 12 }}
           volumeMounts:
-{{- if .Values.Persistence.mounts }}
-{{ toYaml .Values.Persistence.mounts | indent 12 }}
+{{- if .Values.persistence.mounts }}
+{{ toYaml .Values.persistence.mounts | indent 12 }}
 {{- end }}
-            -
-              mountPath: /var/jenkins_home
+            - mountPath: /tmp
+              name: tmp
+            - mountPath: /var/jenkins_home
               name: jenkins-home
               readOnly: false
-              {{- if .Values.Persistence.SubPath }}
-              subPath: {{ .Values.Persistence.SubPath }}
+              {{- if .Values.persistence.subPath }}
+              subPath: {{ .Values.persistence.subPath }}
               {{- end }}
-            -
-              mountPath: /var/jenkins_config
+            - mountPath: /var/jenkins_config
               name: jenkins-config
               readOnly: true
-            {{- if .Values.Master.CredentialsXmlSecret }}
-            -
-              mountPath: /var/jenkins_credentials
+            {{- if .Values.master.enableXmlConfig }}
+            {{- if .Values.master.credentialsXmlSecret }}
+            - mountPath: /var/jenkins_credentials
               name: jenkins-credentials
               readOnly: true
             {{- end }}
-            {{- if .Values.Master.SecretsFilesSecret }}
-            -
-              mountPath: /var/jenkins_secrets
-              name: jenkins-secrets
-              readOnly: true
-            {{- end }}
-            {{- if .Values.Master.Jobs }}
-            -
-              mountPath: /var/jenkins_jobs
+            {{- if .Values.master.jobs }}
+            - mountPath: /var/jenkins_jobs
               name: jenkins-jobs
               readOnly: true
             {{- end }}
-            {{- if .Values.Master.InstallPlugins }}
-            -
-              mountPath: /usr/share/jenkins/ref/plugins/
+            - mountPath: /usr/share/jenkins/ref/secrets/
+              name: secrets-dir
+              readOnly: false
+            {{- end }}
+            {{- if or .Values.master.secretsFilesSecret }}
+            - mountPath: /var/jenkins_secrets
+              name: jenkins-secrets
+              readOnly: true
+            {{- end }}
+            {{- if .Values.master.installPlugins }}
+            - mountPath: /usr/share/jenkins/ref/plugins/
               name: plugin-dir
               readOnly: false
             {{- end }}
-            -
-              mountPath: /usr/share/jenkins/ref/secrets/
-              name: secrets-dir
-              readOnly: false
-            {{- if and (.Values.Master.JCasC.enabled) (.Values.Master.Sidecars.configAutoReload.enabled) }}
+            {{- if and (.Values.master.JCasC.enabled) (.Values.master.sidecars.configAutoReload.enabled) }}
             - name: sc-config-volume
-              mountPath: {{ .Values.Master.Sidecars.configAutoReload.folder | default "/var/jenkins_home/casc_configs" | quote }}
+              mountPath: {{ .Values.master.sidecars.configAutoReload.folder | default "/var/jenkins_home/casc_configs" | quote }}
             {{- end }}
 
-{{- if and (.Values.Master.JCasC.enabled) (.Values.Master.Sidecars.configAutoReload.enabled) }}
+{{- if and (.Values.master.JCasC.enabled) (.Values.master.sidecars.configAutoReload.enabled) }}
         - name: {{ template "jenkins.name" . }}-sc-config
-          image: "{{ .Values.Master.Sidecars.configAutoReload.image }}"
-          imagePullPolicy: {{ .Values.Master.Sidecars.configAutoReload.imagePullPolicy }}
+          image: "{{ .Values.master.sidecars.configAutoReload.image }}"
+          imagePullPolicy: {{ .Values.master.sidecars.configAutoReload.imagePullPolicy }}
           env:
             - name: JENKINSRELOADCONFIG
               value: "true"
             - name: LABEL
-              value: "{{ .Values.Master.Sidecars.configAutoReload.label }}"
+              value: "{{ template "jenkins.fullname" . }}-jenkins-config"
             - name: FOLDER
-              value: "{{ .Values.Master.Sidecars.configAutoReload.folder }}"
+              value: "{{ .Values.master.sidecars.configAutoReload.folder }}"
             - name: NAMESPACE
-              value: "{{ .Values.Master.Sidecars.configAutoReload.searchNamespace }}"
+              value: "{{ .Values.master.sidecars.configAutoReload.searchNamespace }}"
             - name: SSH_PORT
-              value: "{{ .Values.Master.Sidecars.configAutoReload.sshTcpPort }}"
+              value: "{{ .Values.master.sidecars.configAutoReload.sshTcpPort }}"
             - name: JENKINS_PORT
-              value: "{{ .Values.Master.ServicePort }}"
-            {{- if .Values.Master.UseSecurity }}
+              value: "{{ .Values.master.targetPort }}"
+            {{- if .Values.master.useSecurity }}
             - name: ADMIN_USER
               valueFrom:
                 secretKeyRef:
                   name: {{ template "jenkins.fullname" . }}
                   key: jenkins-admin-user
-            {{- if or (.Values.Master.OwnSshKey) (.Values.Master.Sidecars.configAutoReload.enabled) }}
-            {{- if .Values.Master.JCasC.enabled }}
+            {{- if or (.Values.master.adminSshKey) (.Values.master.sidecars.configAutoReload.enabled) }}
+            {{- if .Values.master.JCasC.enabled }}
             - name: ADMIN_PRIVATE_KEY
               valueFrom:
                 secretKeyRef:
@@ -303,62 +317,68 @@ spec:
             {{- end }}
             {{- end }}
           resources:
-{{ toYaml .Values.Master.Sidecars.configAutoReload.resources | indent 12 }}
+{{ toYaml .Values.master.sidecars.configAutoReload.resources | indent 12 }}
           volumeMounts:
             - name: sc-config-volume
-              mountPath: {{ .Values.Master.Sidecars.configAutoReload.folder | quote }}
+              mountPath: {{ .Values.master.sidecars.configAutoReload.folder | quote }}
             - name: jenkins-home
               mountPath: /var/jenkins_home
-              {{- if .Values.Persistence.SubPath }}
-                subPath: {{ .Values.Persistence.SubPath }}
+              {{- if .Values.persistence.subPath }}
+                subPath: {{ .Values.persistence.subPath }}
               {{- end }}
 {{- end}}
 
 
-{{- if .Values.Master.Sidecars.other}}
-{{ tpl (toYaml .Values.Master.Sidecars.other | indent 8) .}}
+{{- if .Values.master.sidecars.other}}
+{{ tpl (toYaml .Values.master.sidecars.other | indent 8) .}}
 {{- end }}
 
       volumes:
-{{- if .Values.Persistence.volumes }}
-{{ toYaml .Values.Persistence.volumes | indent 6 }}
+{{- if .Values.persistence.volumes }}
+{{ tpl (toYaml .Values.persistence.volumes | indent 6) . }}
 {{- end }}
+      - name: plugins
+        emptyDir: {}
+      - name: tmp
+        emptyDir: {}
       - name: jenkins-config
         configMap:
           name: {{ template "jenkins.fullname" . }}
-      {{- if .Values.Master.CredentialsXmlSecret }}
+      {{- if .Values.master.enableXmlConfig }}
+      {{- if .Values.master.credentialsXmlSecret }}
       - name: jenkins-credentials
         secret:
-          secretName: {{ .Values.Master.CredentialsXmlSecret }}
+          secretName: {{ .Values.master.credentialsXmlSecret }}
       {{- end }}
-      {{- if .Values.Master.SecretsFilesSecret }}
-      - name: jenkins-secrets
-        secret:
-          secretName: {{ .Values.Master.SecretsFilesSecret }}
-      {{- end }}
-      {{- if .Values.Master.Jobs }}
+      {{- if .Values.master.jobs }}
       - name: jenkins-jobs
         configMap:
           name: {{ template "jenkins.fullname" . }}-jobs
       {{- end }}
-      {{- if .Values.Master.InstallPlugins }}
+      - name: secrets-dir
+        emptyDir: {}
+      {{- end }}
+      {{- if .Values.master.secretsFilesSecret }}
+      - name: jenkins-secrets
+        secret:
+          secretName: {{ .Values.master.secretsFilesSecret }}
+      {{- end }}
+      {{- if .Values.master.installPlugins }}
       - name: plugin-dir
         emptyDir: {}
       {{- end }}
-      - name: secrets-dir
-        emptyDir: {}
       - name: jenkins-home
-      {{- if .Values.Persistence.Enabled }}
+      {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ .Values.Persistence.ExistingClaim | default (include "jenkins.fullname" .) }}
+          claimName: {{ .Values.persistence.existingClaim | default (include "jenkins.fullname" .) }}
       {{- else }}
         emptyDir: {}
       {{- end -}}
-      {{- if .Values.Master.JCasC.enabled }}
+      {{- if .Values.master.JCasC.enabled }}
       - name: sc-config-volume
         emptyDir: {}
       {{- end }}
-{{- if .Values.Master.ImagePullSecret }}
+{{- if .Values.master.imagePullSecretName }}
       imagePullSecrets:
-      - name: {{ .Values.Master.ImagePullSecret }}
+      - name: {{ .Values.master.imagePullSecretName }}
 {{- end -}}

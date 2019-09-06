@@ -1,8 +1,12 @@
-## Global Docker image registry
-## Please, note that this will override the image registry for all the images, including dependencies, configured to use the global value
+## Global Docker image parameters
+## Please, note that this will override the image parameters, including dependencies, configured to use the global value
+## Current available global Docker image parameters: imageRegistry and imagePullSecrets
 ##
 # global:
-#   imageRegistry:
+#   imageRegistry: myRegistryName
+#   imagePullSecrets:
+#     - myRegistryKeySecretName
+#   storageClass: myStorageClass
 
 image:
   ## Bitnami MongoDB registry
@@ -14,23 +18,48 @@ image:
   ## Bitnami MongoDB image tag
   ## ref: https://hub.docker.com/r/bitnami/mongodb/tags/
   ##
-  tag: 4.0.6
-
+  tag: 4.0.12-debian-9-r22
   ## Specify a imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   ##
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
   ##
   # pullSecrets:
-  #   - myRegistrKeySecretName
+  #   - myRegistryKeySecretName
 
   ## Set to true if you would like to see extra information on logs
-  ## It turns NAMI debugging in minideb
-  ## ref:  https://github.com/bitnami/minideb-extras/#turn-on-nami-debugging
+  ## It turns on Bitnami debugging in minideb-extras-base
+  ## ref:  https://github.com/bitnami/minideb-extras-base
   debug: false
+
+## String to partially override mongodb.fullname template (will maintain the release name)
+##
+# nameOverride:
+
+## String to fully override mongodb.fullname template
+##
+# fullnameOverride:
+
+## Init containers parameters:
+## volumePermissions: Change the owner and group of the persistent volume mountpoint to runAsUser:fsGroup values from the securityContext section.
+##
+volumePermissions:
+  enabled: false
+  image:
+    registry: docker.io
+    repository: bitnami/minideb
+    tag: stretch
+    pullPolicy: Always
+    ## Optionally specify an array of imagePullSecrets.
+    ## Secrets must be manually created in the namespace.
+    ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+    ##
+    # pullSecrets:
+    #   - myRegistryKeySecretName
+  resources: {}
 
 ## Enable authentication
 ## ref: https://docs.mongodb.com/manual/tutorial/enable-authentication/
@@ -53,7 +82,7 @@ usePassword: true
 ## Whether enable/disable IPv6 on MongoDB
 ## ref: https://github.com/bitnami/bitnami-docker-mongodb/blob/master/README.md#enabling/disabling-ipv6
 ##
-mongodbEnableIPv6: true
+mongodbEnableIPv6: false
 
 ## Whether enable/disable DirectoryPerDB on MongoDB
 ## ref: https://github.com/bitnami/bitnami-docker-mongodb/blob/master/README.md#enabling/disabling-directoryperdb
@@ -97,11 +126,19 @@ service:
   ##
   # nodePort:
 
+  ## Specify the externalIP value ClusterIP service type.
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#external-ips
+  # externalIPs: []
+
   ## Specify the loadBalancerIP value for LoadBalancer service types.
   ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer
   ##
   # loadBalancerIP:
 
+  ## Specify the loadBalancerSourceRanges value for LoadBalancer service types.
+  ## ref: https://kubernetes.io/docs/tasks/access-application-cluster/configure-cloud-provider-firewall/#restrict-access-for-loadbalancer-service
+  ##
+  # loadBalancerSourceRanges: []
 
 ## Setting up replication
 ## ref: https://github.com/bitnami/bitnami-docker-mongodb#setting-up-a-replication
@@ -124,13 +161,17 @@ replicaSet:
   replicas:
     secondary: 1
     arbiter: 1
+
   ## Pod Disruption Budget
   ## ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
   pdb:
+    enabled: true
     minAvailable:
-      primary: 1
       secondary: 1
       arbiter: 1
+    # maxUnavailable:
+      # secondary: 1
+      # arbiter: 1
 
 # Annotations to be added to MongoDB pods
 podAnnotations: {}
@@ -138,10 +179,18 @@ podAnnotations: {}
 # Additional pod labels to apply
 podLabels: {}
 
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName:
+
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ##
 resources: {}
+# Define separate resources per arbiter, which are less then primary or secondary
+# used only when replica set is enabled
+resourcesArbiter: {}
 # limits:
 #   cpu: 500m
 #   memory: 512Mi
@@ -160,10 +209,17 @@ nodeSelector: {}
 ## Affinity
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 affinity: {}
+# Define separate affinity for arbiter pod
+affinityArbiter: {}
 
 ## Tolerations
 ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
 tolerations: []
+
+## updateStrategy for MongoDB Primary, Secondary and Arbitrer statefulsets
+## ref: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#update-strategies
+updateStrategy:
+  type: RollingUpdate
 
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
@@ -173,7 +229,18 @@ persistence:
   ## A manually managed Persistent Volume and Claim
   ## Requires persistence.enabled: true
   ## If defined, PVC must be created manually before volume will be bound
+  ##
   # existingClaim:
+
+  ## The path the volume will be mounted at, useful when using different
+  ## MongoDB images.
+  ##
+  mountPath: /bitnami/mongodb
+
+  ## The subdirectory of the volume to mount to, useful in dev environments
+  ## and one PV for multiple services.
+  ##
+  subPath: ""
 
   ## mongodb data Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
@@ -187,6 +254,62 @@ persistence:
     - ReadWriteOnce
   size: 8Gi
   annotations: {}
+
+## Configure the ingress resource that allows you to access the
+## MongoDB installation. Set up the URL
+## ref: http://kubernetes.io/docs/user-guide/ingress/
+##
+ingress:
+  ## Set to true to enable ingress record generation
+  enabled: false
+
+  ## Set this to true in order to add the corresponding annotations for cert-manager
+  certManager: false
+
+  ## Ingress annotations done as key:value pairs
+  ## For a full list of possible ingress annotations, please see
+  ## ref: https://github.com/kubernetes/ingress-nginx/blob/master/docs/annotations.md
+  ##
+  ## If tls is set to true, annotation ingress.kubernetes.io/secure-backends: "true" will automatically be set
+  ## If certManager is set to true, annotation kubernetes.io/tls-acme: "true" will automatically be set
+  annotations:
+  #  kubernetes.io/ingress.class: nginx
+
+  ## The list of hostnames to be covered with this ingress record.
+  ## Most likely this will be just one host, but in the event more hosts are needed, this is an array
+  hosts:
+  - name: mongodb.local
+    path: /
+
+  ## The tls configuration for the ingress
+  ## see: https://kubernetes.io/docs/concepts/services-networking/ingress/#tls
+  tls:
+  - hosts:
+      - mongodb.local
+    secretName: mongodb.local-tls
+
+  secrets:
+  ## If you're providing your own certificates, please use this to add the certificates as secrets
+  ## key and certificate should start with -----BEGIN CERTIFICATE----- or
+  ## -----BEGIN RSA PRIVATE KEY-----
+  ##
+  ## name should line up with a tlsSecret set further up
+  ## If you're using cert-manager, this is unneeded, as it will create the secret for you if it is not set
+  ##
+  ## It is also possible to create and manage the certificates outside of this helm chart
+  ## Please see README.md for more information
+  # - name: airflow.local-tls
+  #   key:
+  #   certificate:
+
+## Configure the options for init containers to be run before the main app containers
+## are started. All init containers are run sequentially and must exit without errors
+## for the next one to be started.
+## ref: https://kubernetes.io/docs/concepts/workloads/pods/init-containers/
+# extraInitContainers: |
+#   - name: do-something
+#     image: busybox
+#     command: ['do', 'something']
 
 ## Configure extra options for liveness and readiness probes
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
@@ -204,6 +327,10 @@ readinessProbe:
   timeoutSeconds: 5
   failureThreshold: 6
   successThreshold: 1
+
+# Define custom config map with init scripts
+initConfigMap: {}
+#  name: "init-config-map"
 
 # Entries for the MongoDB config file
 configmap:
@@ -248,15 +375,15 @@ metrics:
 
   image:
     registry: docker.io
-    repository: forekshub/percona-mongodb-exporter
-    tag: latest
-    pullPolicy: IfNotPresent
+    repository: bitnami/mongodb-exporter
+    tag: 0.9.0-debian-9-r2
+    pullPolicy: Always
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
     ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
     ##
     # pullSecrets:
-    #   - myRegistrKeySecretName
+    #   - myRegistryKeySecretName
 
   ## String with extra arguments to the metrics exporter
   ## ref: https://github.com/dcu/mongodb_exporter/blob/master/mongodb_exporter.go
@@ -274,11 +401,15 @@ metrics:
     initialDelaySeconds: 15
     periodSeconds: 5
     timeoutSeconds: 5
+    failureThreshold: 3
+    successThreshold: 1
   readinessProbe:
     enabled: true
     initialDelaySeconds: 5
     periodSeconds: 5
     timeoutSeconds: 1
+    failureThreshold: 3
+    successThreshold: 1
 
   ## Metrics exporter pod Annotation
   podAnnotations:
@@ -291,6 +422,10 @@ metrics:
   serviceMonitor:
     ## If the operator is installed in your cluster, set to true to create a Service Monitor Entry
     enabled: false
+
+    ## Specify a namespace if needed
+    # namespace: monitoring
+
     ## Used to pass Labels that are used by the Prometheus installed in your cluster to select Service Monitors to work with
     ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#prometheusspec
     additionalLabels: {}

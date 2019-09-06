@@ -1,0 +1,18 @@
+resources:
+- apiVersion: v1
+  kind: Secret
+  metadata:
+    name: common
+  stringData:
+    foo: bar
+
+mysecret: abc134
+
+templates:
+- |
+  apiVersion: v1
+  kind: Secret
+  metadata:
+    name: common-secret
+  stringData:
+    mykey: "{{ .Values.mysecret }}"

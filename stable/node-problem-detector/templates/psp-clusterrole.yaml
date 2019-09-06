@@ -1,0 +1,17 @@
+{{- if .Values.rbac.pspEnabled }}
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ template "node-problem-detector.fullname" . }}-psp
+  labels:
+    app.kubernetes.io/name: {{ include "node-problem-detector.name" . }}
+    helm.sh/chart: {{ include "node-problem-detector.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+rules:
+- apiGroups: ['extensions']
+  resources: ['podsecuritypolicies']
+  verbs:     ['use']
+  resourceNames:
+  - {{ template "node-problem-detector.fullname" . }}
+{{- end }}

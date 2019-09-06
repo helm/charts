@@ -1,3 +1,4 @@
+{{- if .Values.daemonset.enabled }}
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
@@ -23,8 +24,8 @@ spec:
         app: {{ template "metricbeat.name" . }}
         release: {{ .Release.Name }}
       annotations:
-        checksum/daemonset: {{ toYaml .Values.daemonset.modules | sha256sum }}
-        checksum/config: {{ toYaml .Values.daemonset.config | sha256sum }}
+        checksum/config: {{ toYaml (default .Values.daemonset.config .Values.daemonset.overrideConfig) | sha256sum }}
+        checksum/modules: {{ toYaml (default .Values.daemonset.modules .Values.daemonset.overrideModules) | sha256sum }}
 {{- if .Values.daemonset.podAnnotations }}
   {{- range $key, $value := .Values.daemonset.podAnnotations }}
         {{ $key }}: {{ $value }}
@@ -36,6 +37,9 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         args:
+{{- if .Values.daemonset.args }}
+{{ toYaml .Values.daemonset.args | indent 8 }}
+{{- else }}
         - "-e"
 {{- if .Values.plugins }}
         - "--plugin"
@@ -45,6 +49,7 @@ spec:
 {{- if .Values.daemonset.debug }}
         - "-d"
         - "*"
+{{- end }}
 {{- end }}
         env:
         - name: POD_NAMESPACE
@@ -60,6 +65,11 @@ spec:
 {{- end }}
         securityContext:
           runAsUser: 0
+{{- if .Values.daemonset.capabilities }}
+          capabilities:
+            add:
+{{ toYaml .Values.daemonset.capabilities | indent 12 }}
+{{- end }}
         resources:
 {{- if .Values.daemonset.resources }}
 {{ toYaml .Values.daemonset.resources | indent 10 }}
@@ -111,9 +121,12 @@ spec:
 {{ toYaml .Values.extraVolumes | indent 6 }}
 {{- end }}
       terminationGracePeriodSeconds: 60
+{{- if .Values.daemonset.priorityClassName }}
+      priorityClassName: {{ .Values.daemonset.priorityClassName }}
+{{- end }}
       serviceAccountName: {{ template "metricbeat.serviceAccountName" . }}
-      hostNetwork: true
-      dnsPolicy: ClusterFirstWithHostNet
+      hostNetwork: {{ .Values.daemonset.hostNetwork }}
+      dnsPolicy: {{ .Values.daemonset.dnsPolicy }}
 {{- if .Values.daemonset.tolerations }}
       tolerations:
 {{ toYaml .Values.daemonset.tolerations | indent 6 }}
@@ -125,4 +138,5 @@ spec:
 {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
 {{- end }}

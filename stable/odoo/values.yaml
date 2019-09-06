@@ -1,8 +1,12 @@
-## Global Docker image registry
-## Please, note that this will override the image registry for all the images, including dependencies, configured to use the global value
+## Global Docker image parameters
+## Please, note that this will override the image parameters, including dependencies, configured to use the global value
+## Current available global Docker image parameters: imageRegistry and imagePullSecrets
 ##
 # global:
-#   imageRegistry:
+#   imageRegistry: myRegistryName
+#   imagePullSecrets:
+#     - myRegistryKeySecretName
+#   storageClass: myStorageClass
 
 ## Bitnami Odoo image version
 ## ref: https://hub.docker.com/r/bitnami/odoo/tags/
@@ -10,7 +14,7 @@
 image:
   registry: docker.io
   repository: bitnami/odoo
-  tag: 11.0.20190215
+  tag: 12.0.20190815-debian-9-r15
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -21,7 +25,15 @@ image:
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
   ##
   # pullSecrets:
-  #   - myRegistrKeySecretName
+  #   - myRegistryKeySecretName
+
+## String to partially override odoo.fullname template (will maintain the release name)
+##
+# nameOverride:
+
+## String to fully override odoo.fullname template
+##
+# fullnameOverride:
 
 ## User of the application
 ## ref: https://github.com/bitnami/bitnami-docker-odoo#configuration
@@ -47,12 +59,27 @@ odooEmail: user@example.com
 # smtpPassword:
 # smtpProtocol:
 
+externalDatabase:
+## All of these values are only used when postgresql.enabled is set to false
+  ## Database host
+  host: localhost
+
+  ## non-root Username for Odoo database
+  user: postgres
+
+  ## Database password
+  password: ""
+
+  ## Database port number
+  port: 5432
+
 ##
 ## PostgreSQL chart configuration
 ##
 ## https://github.com/helm/charts/blob/master/stable/postgresql/values.yaml
 ##
 postgresql:
+  enabled: true
   ## PostgreSQL password
   ## ref: https://hub.docker.com/_/postgres/
   ##
@@ -63,6 +90,11 @@ postgresql:
   ##
   persistence:
     enabled: true
+    ## If you want to reuse an existing claim, you can pass the name of the PVC using
+    ## the existingClaim variable
+    ##
+    # existingClaim: your-claim
+
     ## postgresql data Persistent Volume Storage Class
     ## If defined, storageClassName: <storageClass>
     ## If set to "-", storageClassName: "", which disables dynamic provisioning
@@ -112,26 +144,26 @@ ingress:
   ## Most likely this will be just one host, but in the event more hosts are needed, this is an array
   hosts:
   - name: odoo.local
+    path: /
 
     ## Set this to true in order to enable TLS on the ingress record
     ## A side effect of this will be that the backend odoo service will be connected at port 443
     tls: false
 
-    ## Set this to true in order to add the corresponding annotations for cert-manager
-    certManager: false
-
     ## If TLS is set to true, you must declare what secret will store the key/certificate for TLS
     tlsSecret: odoo.local-tls
 
-    ## Ingress annotations done as key:value pairs
-    ## For a full list of possible ingress annotations, please see
-    ## ref: https://github.com/kubernetes/ingress-nginx/blob/master/docs/annotations.md
-    ##
-    ## If tls is set to true, annotation ingress.kubernetes.io/secure-backends: "true" will automatically be set
-    ## If certManager is set to true, annotation kubernetes.io/tls-acme: "true" will automatically be set
-    annotations:
-    #  kubernetes.io/ingress.class: nginx
-    #  kubernetes.io/tls-acme: true
+  ## Set this to true in order to add the corresponding annotations for cert-manager
+  certManager: false
+  ## Ingress annotations done as key:value pairs
+  ## For a full list of possible ingress annotations, please see
+  ## ref: https://github.com/kubernetes/ingress-nginx/blob/master/docs/annotations.md
+  ##
+  ## If tls is set to true, annotation ingress.kubernetes.io/secure-backends: "true" will automatically be set
+  ## If certManager is set to true, annotation kubernetes.io/tls-acme: "true" will automatically be set
+  annotations:
+  #  kubernetes.io/ingress.class: nginx
+  #  kubernetes.io/tls-acme: true
 
   secrets:
   ## If you're providing your own certificates, please use this to add the certificates as secrets
@@ -175,7 +207,7 @@ resources:
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
 livenessProbe:
   enabled: true
-  initialDelaySeconds: 300
+  initialDelaySeconds: 600
   periodSeconds: 30
   timeoutSeconds: 5
   failureThreshold: 6
@@ -187,3 +219,8 @@ readinessProbe:
   timeoutSeconds: 5
   failureThreshold: 6
   successThreshold: 1
+
+## Affinity for pod assignment
+## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+##
+affinity: {}

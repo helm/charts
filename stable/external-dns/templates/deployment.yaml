@@ -1,200 +1,350 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
-  labels: {{ include "external-dns.labels" . | indent 4 }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
   name: {{ template "external-dns.fullname" . }}
+  labels: {{ include "external-dns.labels" . | nindent 4 }}
 spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels: {{ include "external-dns.matchLabels" . | nindent 6 }}
   template:
     metadata:
-    {{- if .Values.podAnnotations }}
+      labels: {{ include "external-dns.labels" . | nindent 8 }}
       annotations:
-{{ toYaml .Values.podAnnotations | indent 8}}
-    {{- end }}
-      labels: {{ include "external-dns.labels" . | indent 8 }}
-    spec:
-      {{- if .Values.image.pullSecrets }}
-      imagePullSecrets:
-      {{- range $sec := .Values.image.pullSecrets }}
-        - name: {{$sec | quote }}
-      {{- end }}
-      {{- end }}
-      {{- if .Values.priorityClassName }}
-      priorityClassName: "{{ .Values.priorityClassName }}"
-      {{- end }}
-      containers:
-        - name: {{ template "external-dns.name" . }}
-          image: "{{.Values.image.name}}:{{ .Values.image.tag }}"
-          imagePullPolicy: "{{ .Values.image.pullPolicy }}"
-          args:
-          {{- if .Values.logLevel }}
-            - --log-level={{ .Values.logLevel }}
-          {{- end }}
-          {{- if .Values.publishInternalServices }}
-            - --publish-internal-services
-          {{- end }}
-          {{- range .Values.domainFilters }}
-            - --domain-filter={{ . }}
-          {{- end }}
-          {{- range .Values.zoneIdFilters }}
-            - --zone-id-filter={{ . }}
-          {{- end }}
-            - --policy={{ .Values.policy }}
-            - --provider={{ .Values.provider }}
-            - --registry={{ .Values.registry }}
-            - --interval={{ .Values.interval }}
-          {{- if .Values.txtOwnerId }}
-            - --txt-owner-id={{ .Values.txtOwnerId }}
-          {{- end }}
-          {{- if .Values.txtPrefix }}
-            - --txt-prefix={{ .Values.txtPrefix }}
-          {{- end }}
-          {{- if .Values.annotationFilter }}
-            - --annotation-filter={{ .Values.annotationFilter }}
-          {{- end }}
-          {{- range .Values.sources }}
-            - --source={{ . }}
-          {{- end }}
-          {{ if .Values.dryRun }}
-            - --dry-run
-          {{- end }}
-          {{- range $key, $value := .Values.extraArgs }}
-            {{- if $value }}
-            - --{{ $key }}={{ $value }}
-            {{- else }}
-            - --{{ $key }}
-            {{- end }}
-          {{- end }}
-          {{- if eq .Values.provider "cloudflare" }}
-            {{- if .Values.cloudflare.proxied }}
-            - --cloudflare-proxied
-            {{- end }}
-          {{- end }}
-          {{- if .Values.aws.zoneType }}
-            - --aws-zone-type={{ .Values.aws.zoneType }}
-          {{- end }}
-          {{- if .Values.google.project }}
-            - --google-project={{ .Values.google.project }}
-          {{- end }}
-          {{- if eq .Values.provider "infoblox" }}
-            - --infoblox-grid-host={{ .Values.infoblox.gridHost }}
-            {{- if .Values.infoblox.domainFilter }}
-            - --domain-filter={{ .Values.infoblox.domainFilter }}
-            {{- end }}
-            {{- if .Values.infoblox.wapiPort }}
-            - --infoblox-wapi-port={{ .Values.infoblox.wapiPort }}
-            {{- end }}
-            {{- if .Values.infoblox.wapiVersion }}
-            - --infoblox-wapi-version={{ .Values.infoblox.wapiVersion }}
-            {{- end }}
-            {{- if .Values.infoblox.noSslVerify }}
-            - --no-infoblox-ssl-verify
-            {{- else }}
-            - --infoblox-ssl-verify
-            {{- end }}
-          {{- end }}
-          volumeMounts:
-          {{- if or .Values.google.serviceAccountSecret .Values.google.serviceAccountKey }}
-          - name: google-service-account
-            mountPath: /etc/secrets/service-account/
-          {{- end}}
-          {{- if eq .Values.provider "azure" }}
-          - name: azure-config-file
-            {{- if not .Values.azure.secretName }}
-            mountPath: /etc/kubernetes/azure.json
-            {{- else }}
-            mountPath: /etc/kubernetes/
-            {{- end }}
-            readOnly: true
-          {{- end }}
-          {{- if (and .Values.aws.secretKey .Values.aws.accessKey) }}
-          - name: aws-credentials
-            mountPath: {{ .Values.aws.credentialsPath }}
-            readOnly: true
-          {{- end }}
-          {{- if and (eq .Values.provider "designate") .Values.designate.customCA.enabled }}
-          - name: designate-custom-ca
-            mountPath: {{ .Values.designate.customCA.directory }}
-            readOnly: true
-          {{- end }}
-          env:
-        {{- if or .Values.google.serviceAccountSecret .Values.google.serviceAccountKey }}
-          - name: GOOGLE_APPLICATION_CREDENTIALS
-            value: /etc/secrets/service-account/credentials.json
+        {{- if or .Values.podAnnotations .Values.metrics.enabled }}
+        {{ include "external-dns.podAnnotations" . | nindent 8 }}
         {{- end }}
-        {{- if or (eq .Values.provider "aws") (eq .Values.provider "aws-sd") }}
-        {{- if .Values.aws.region }}
-          - name: AWS_DEFAULT_REGION
-            value: {{ .Values.aws.region }}
-        {{- end }}
-        {{- end }}
-        {{- if and .Values.cloudflare.apiKey .Values.cloudflare.email }}
-          - name: CF_API_KEY
-            valueFrom:
-              secretKeyRef:
-                name: {{ template "external-dns.fullname" . }}
-                key: cloudflare_api_key
-          - name: CF_API_EMAIL
-            value: "{{ .Values.cloudflare.email }}"
-        {{- end }}
-        {{- if .Values.digitalocean.apiToken }}
-          - name: DO_TOKEN
-            valueFrom:
-              secretKeyRef:
-                name: {{ template "external-dns.fullname" . }}
-                key: digitalocean_api_token
-        {{- end }}
-        {{- if .Values.infoblox.wapiConnectionPoolSize }}
-          - name: EXTERNAL_DNS_INFOBLOX_HTTP_POOL_CONNECTIONS
-            value: "{{ .Values.infoblox.wapiConnectionPoolSize }}"
-        {{- end }}
-        {{- if .Values.infoblox.wapiHttpTimeout }}
-          - name: EXTERNAL_DNS_INFOBLOX_HTTP_REQUEST_TIMEOUT
-            value: "{{ .Values.infoblox.wapiHttpTimeout }}"
-        {{- end }}
-        {{- if and .Values.infoblox.wapiUsername .Values.infoblox.wapiPassword }}
-          - name: EXTERNAL_DNS_INFOBLOX_WAPI_USERNAME
-            valueFrom:
-              secretKeyRef:
-                name: {{ template "external-dns.fullname" . }}
-                key: infoblox_wapi_username
-          - name: EXTERNAL_DNS_INFOBLOX_WAPI_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: {{ template "external-dns.fullname" . }}
-                key: infoblox_wapi_password
+        {{- if or (and .Values.aws.credentials.secretKey .Values.aws.credentials.accessKey) .Values.cloudflare.apiKey .Values.digitalocean.apiToken (and .Values.infoblox.wapiUsername .Values.infoblox.wapiPassword) .Values.rfc2136.tsigSecret .Values.extraEnv .Values.google.serviceAccountKey }}
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
         {{- end }}
         {{- if and (eq .Values.provider "designate") .Values.designate.customCA.enabled }}
-          - name: OPENSTACK_CA_FILE
-            value: {{ .Values.designate.customCA.directory }}/{{ .Values.designate.customCA.filename }}
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         {{- end }}
-        {{- $root := . -}}
-        {{- range .Values.extraEnv }}
-          - name: {{ .name }}
-            valueFrom:
-          {{- if .valueFrom }}
-{{ toYaml .valueFrom | indent 14 }}
-          {{- else }}
-              secretKeyRef:
-                name: {{ template "external-dns.fullname" $root }}
-                key: {{ .name }}
+    spec:
+{{- include "external-dns.imagePullSecrets" . | indent 6 }}
+      {{- if .Values.podSecurityContext }}
+      securityContext: {{ toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity: {{ tpl (toYaml .) $ | nindent 8 }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector: {{ tpl (toYaml .) $ | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations: {{ tpl (toYaml .) $ | nindent 8 }}
+      {{- end }}
+      {{- if .Values.rbac.create }}
+      serviceAccountName: {{ template "external-dns.fullname" . }}
+      {{- else }}
+      serviceAccountName: {{ .Values.rbac.serviceAccountName | quote }}
+      {{- end }}
+      {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName | quote }}
+      {{- end }}
+      containers:
+      - name: external-dns
+        image: "{{ template "external-dns.image" . }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+        args:
+        # Generic arguments
+        {{- if .Values.logLevel }}
+        - --log-level={{ .Values.logLevel }}
+        {{- end }}
+        {{- if .Values.dryRun }}
+        - --dry-run
+        {{- end }}
+        {{- if .Values.publishInternalServices }}
+        - --publish-internal-services
+        {{- end }}
+        {{- range .Values.domainFilters }}
+        - --domain-filter={{ . }}
+        {{- end }}
+        {{- range .Values.zoneIdFilters }}
+        - --zone-id-filter={{ . }}
+        {{- end }}
+        - --policy={{ .Values.policy }}
+        - --provider={{ .Values.provider }}
+        - --registry={{ .Values.registry }}
+        - --interval={{ .Values.interval }}
+        {{- if eq .Values.registry "txt" }}
+        {{- if .Values.txtOwnerId }}
+        - --txt-owner-id={{ .Values.txtOwnerId }}
+        {{- end }}
+        {{- if .Values.txtPrefix }}
+        - --txt-prefix={{ .Values.txtPrefix }}
+        {{- end }}
+        {{- end }}
+        {{- if .Values.annotationFilter }}
+        - --annotation-filter={{ .Values.annotationFilter }}
+        {{- end }}
+        {{- if .Values.crd.create }}
+          {{- if .Values.crd.apiversion }}
+        - --crd-source-apiversion={{ .Values.crd.apiversion }}
+          {{- end }}
+          {{- if .Values.crd.kind }}
+        - --crd-source-kind={{ .Values.crd.kind }}
           {{- end }}
         {{- end }}
-          livenessProbe:
-            httpGet:
-              path: /healthz
-              port: 7979
-          ports:
-            - containerPort: 7979
+        {{- range .Values.istioIngressGateways }}
+        - --istio-ingress-gateway={{ . }}
+        {{- end }}
+        {{- range .Values.sources }}
+        - --source={{ . }}
+        {{- end }}
+        # AWS arguments
+        {{- if or (eq .Values.provider "aws") (eq .Values.provider "aws-sd") }}
+        {{- if .Values.aws.zoneType }}
+        - --aws-zone-type={{ .Values.aws.zoneType }}
+        {{- end }}
+        {{- if .Values.aws.assumeRoleArn }}
+        - --aws-assume-role={{ .Values.aws.assumeRoleArn }}
+        {{- end }}
+        {{- if .Values.aws.batchChangeSize }}
+        - --aws-batch-change-size={{ .Values.aws.batchChangeSize }}
+        {{- end }}
+        {{- end }}
+        {{- range .Values.aws.zoneTags }}
+        - --aws-zone-tags={{ . }}
+        {{- end }}
+        # Azure Arguments
+        {{- if eq .Values.provider "azure" }}
+        {{- if .Values.azure.resourceGroup }}
+        - --azure-resource-group={{ .Values.azure.resourceGroup }}
+        {{- end }}
+        {{- end }}
+        # Cloudflare arguments
+        {{- if eq .Values.provider "cloudflare" }}
+          {{- if .Values.cloudflare.proxied }}
+        - --cloudflare-proxied
+          {{- end }}
+        {{- end }}
+        # Google Arguments
+        {{- if eq .Values.provider "google" }}
+        - --google-project={{ .Values.google.project }}
+        {{- end }}
+        # Infloblox Arguments
+        {{- if eq .Values.provider "infoblox" }}
+        - --infoblox-grid-host={{ .Values.infoblox.gridHost }}
+          {{- if .Values.infoblox.domainFilter }}
+        - --domain-filter={{ .Values.infoblox.domainFilter }}
+          {{- end }}
+          {{- if .Values.infoblox.wapiPort }}
+        - --infoblox-wapi-port={{ .Values.infoblox.wapiPort }}
+          {{- end }}
+          {{- if .Values.infoblox.wapiVersion }}
+        - --infoblox-wapi-version={{ .Values.infoblox.wapiVersion }}
+          {{- end }}
+          {{- if .Values.infoblox.noSslVerify }}
+        - --no-infoblox-ssl-verify
+          {{- else }}
+        - --infoblox-ssl-verify
+          {{- end }}
+        {{- end }}
+        # RFC 2136 arguments
+        {{- if eq .Values.provider "rfc2136" }}
+        - --rfc2136-host={{ required "rfc2136.host must be supplied for provider 'rfc2136'" .Values.rfc2136.host }}
+        - --rfc2136-port={{ .Values.rfc2136.port }}
+        - --rfc2136-zone={{ required "rfc2136.zone must be supplied for provider 'rfc2136'" .Values.rfc2136.zone }}
+          {{- if .Values.rfc2136.tsigKeyname }}
+        - --rfc2136-tsig-secret-alg={{ .Values.rfc2136.tsigSecretAlg }}
+        - --rfc2136-tsig-keyname={{ .Values.rfc2136.tsigKeyname }}
+            {{- if .Values.rfc2136.tsigAxfr }}
+        - --rfc2136-tsig-axfr
+            {{- end }}
+          {{- else }}
+        - --rfc2136-insecure
+          {{- end }}
+        {{- end }}
+        # PowerDNS arguments
+        {{- if eq .Values.provider "pdns" }}
+        - --pdns-server={{ .Values.pdns.apiUrl }}:{{ .Values.pdns.apiPort }}
+        - --pdns-api-key=$(PDNS_API_KEY)
+        {{- end }}
+        # Extra arguments
+        {{- range $key, $value := .Values.extraArgs }}
+          {{- if $value }}
+        - --{{ $key }}={{ $value }}
+          {{- else }}
+        - --{{ $key }}
+          {{- end }}
+        {{- end }}
+        env:
+        # AWS environment variables
+        {{- if or (eq .Values.provider "aws") (eq .Values.provider "aws-sd") }}
+        {{- if .Values.aws.region }}
+        - name: AWS_DEFAULT_REGION
+          value: {{ .Values.aws.region }}
+        {{- end }}
+        {{- if .Values.aws.roleArn }}
+        - name: AWS_CONFIG_FILE
+          value: {{ .Values.aws.credentials.mountPath }}/config
+        {{- end }}
+        {{- if and .Values.aws.credentials.secretKey .Values.aws.credentials.accessKey }}
+        - name: AWS_SHARED_CREDENTIALS_FILE
+          value: {{ .Values.aws.credentials.mountPath }}/credentials
+        {{- end }}
+        {{- end }}
+        # Cloudflare environment variables
+        {{- if eq .Values.provider "cloudflare" }}
+        - name: CF_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "external-dns.fullname" . }}
+              key: cloudflare_api_key
+        - name: CF_API_EMAIL
+          value: {{ .Values.cloudflare.email | quote }}
+        {{- end }}
+        # CoreDNS environment variables
+        {{- if eq .Values.provider "coredns" }}
+        - name: ETCD_URLS
+          value: {{ .Values.coredns.etcdEndpoints | quote }}
+        {{- if .Values.coredns.etcdTLS.enabled }}
+        - name: ETCD_CERT_FILE
+          value: {{ .Values.coredns.etcdTLS.mountPath }}/{{ .Values.coredns.etcdTLS.certFilename }}
+        - name: ETCD_KEY_FILE
+          value: {{ .Values.coredns.etcdTLS.mountPath }}/{{ .Values.coredns.etcdTLS.keyFilename }}
+        - name: ETCD_CA_FILE
+          value: {{ .Values.coredns.etcdTLS.mountPath }}/{{ .Values.coredns.etcdTLS.caFilename }}
+        {{- end }}
+        {{- end }}
+        # DigitalOcean environment variables
+        {{- if eq .Values.provider "digitalocean" }}
+        - name: DO_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "external-dns.fullname" . }}
+              key: digitalocean_api_token
+        {{- end }}
+        # Google environment variables
+        {{- if eq .Values.provider "google" }}
+        {{- if or .Values.google.serviceAccountSecret .Values.google.serviceAccountKey }}
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: /etc/secrets/service-account/credentials.json
+        {{- end }}
+        {{- end }}
+        # Infloblox environment variables
+        {{- if eq .Values.provider "infoblox" }}
+        {{- if .Values.infoblox.wapiConnectionPoolSize }}
+        - name: EXTERNAL_DNS_INFOBLOX_HTTP_POOL_CONNECTIONS
+          value: "{{ .Values.infoblox.wapiConnectionPoolSize }}"
+        {{- end }}
+        {{- if .Values.infoblox.wapiHttpTimeout }}
+        - name: EXTERNAL_DNS_INFOBLOX_HTTP_REQUEST_TIMEOUT
+          value: "{{ .Values.infoblox.wapiHttpTimeout }}"
+        {{- end }}
+        {{- if and .Values.infoblox.wapiUsername .Values.infoblox.wapiPassword }}
+        - name: EXTERNAL_DNS_INFOBLOX_WAPI_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "external-dns.fullname" . }}
+              key: infoblox_wapi_username
+        - name: EXTERNAL_DNS_INFOBLOX_WAPI_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "external-dns.fullname" . }}
+              key: infoblox_wapi_password
+        {{- end }}
+        {{- end }}
+        # RFC 2136 environment variables
+        {{- if and .Values.rfc2136.tsigSecret }}
+        - name: EXTERNAL_DNS_RFC2136_TSIG_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "external-dns.fullname" . }}
+              key: rfc2136_tsig_secret
+        {{- end }}
+        {{- if and (eq .Values.provider "designate") .Values.designate.customCA.enabled }}
+        - name: OPENSTACK_CA_FILE
+          value: {{ .Values.designate.customCA.mountPath }}/{{ .Values.designate.customCA.filename }}
+        {{- end }}
+        # PowerDNS environment variables
+        {{- if and (eq .Values.provider "pdns") .Values.pdns.apiKey }}
+        - name: PDNS_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "external-dns.fullname" . }}
+              key: pdns_api_key
+        {{- end }}
+        # Extra environment variables
+        {{- if .Values.extraEnv }}
+        {{ toYaml .Values.extraEnv | nindent 8 }}
+        {{- end }}
+        ports:
+        - name: http
+          containerPort: {{ .Values.service.port }}
+        readinessProbe: {{ toYaml .Values.readinessProbe | nindent 10 }}
+        livenessProbe: {{ toYaml .Values.livenessProbe | nindent 10 }}
         {{- if .Values.securityContext }}
-          securityContext:
-{{ toYaml .Values.securityContext | indent 12 }}
+        securityContext: {{ toYaml .Values.securityContext | nindent 10 }}
         {{- end }}
         {{- if .Values.resources }}
-          resources:
-{{ toYaml .Values.resources | indent 12 }}
+        resources: {{ toYaml .Values.resources | nindent 10 }}
+        {{- end }}
+        volumeMounts:
+        # AWS mountPath(s)
+        {{- if and (eq .Values.provider "aws") (or .Values.aws.assumeRoleArn (and .Values.aws.credentials.secretKey .Values.aws.credentials.accessKey)) }}
+        - name: aws-credentials
+          mountPath: {{ .Values.aws.credentials.mountPath }}
+          readOnly: true
+        {{- end }}
+        # Azure mountPath(s)
+        {{- if eq .Values.provider "azure" }}
+        - name: azure-config-file
+          {{- if not .Values.azure.secretName }}
+          mountPath: /etc/kubernetes/azure.json
+          {{- else }}
+          mountPath: /etc/kubernetes/
+          {{- end }}
+          readOnly: true
+        {{- end }}
+        # CoreDNS mountPath(s)
+        {{- if and (eq .Values.provider "coredns") (.Values.coredns.etcdTLS.enabled) }}
+        - name: {{ .Values.coredns.etcdTLS.secretName }}
+          mountPath: {{ .Values.coredns.etcdTLS.mountPath }}
+          readOnly: true
+        {{- end }}
+        # Google mountPath(s)
+        {{- if eq .Values.provider "google" }}
+        {{- if or .Values.google.serviceAccountSecret .Values.google.serviceAccountKey }}
+        - name: google-service-account
+          mountPath: /etc/secrets/service-account/
+        {{- end }}
+        {{- end }}
+        # Designate mountPath(s)
+        {{- if and (eq .Values.provider "designate") .Values.designate.customCA.enabled }}
+        - name: designate-custom-ca
+          mountPath: {{ .Values.designate.customCA.mountPath }}
+          readOnly: true
         {{- end }}
       volumes:
+      # AWS volume(s)
+      {{- if and (eq .Values.provider "aws") (or .Values.aws.assumeRoleArn (and .Values.aws.credentials.secretKey .Values.aws.credentials.accessKey)) }}
+      - name: aws-credentials
+        secret:
+          secretName: {{ template "external-dns.fullname" . }}
+      {{- end }}
+      # Azure volume(s)
+      {{- if eq .Values.provider "azure" }}
+      - name: azure-config-file
+        {{- if (not .Values.azure.secretName) }}
+        hostPath:
+          path: /etc/kubernetes/azure.json
+          type: File
+        {{- else }}
+        secret:
+          secretName: {{ .Values.azure.secretName }}
+        {{- end }}
+      {{- end }}
+      # CoreDNS volume(s)
+      {{- if and (eq .Values.provider "coredns") (.Values.coredns.etcdTLS.enabled) }}
+      - name: {{ .Values.coredns.etcdTLS.secretName }}
+        secret:
+          secretName: {{ .Values.coredns.etcdTLS.secretName }}
+          defaultMode: 400
+      {{- end }}
+      # Google volume(s)
+      {{- if eq .Values.provider "google" }}
       {{- if .Values.google.serviceAccountSecret }}
       - name: google-service-account
         secret:
@@ -204,22 +354,8 @@ spec:
         secret:
           secretName: {{ template "external-dns.fullname" . }}
       {{- end}}
-      {{- if eq .Values.provider "azure" }}
-      - name: azure-config-file
-        {{- if (not .Values.azure.secretName)}}
-        hostPath:
-          path: /etc/kubernetes/azure.json
-          type: File
-        {{- else}}
-        secret:
-          secretName: {{.Values.azure.secretName}}
-        {{- end}}
       {{- end }}
-      {{- if (and .Values.aws.secretKey .Values.aws.accessKey) }}
-      - name: aws-credentials
-        secret:
-          secretName: {{ template "external-dns.fullname" . }}
-      {{- end }}
+      # Designate volume(s)
       {{- if and (eq .Values.provider "designate") .Values.designate.customCA.enabled }}
       - name: designate-custom-ca
         configMap:
@@ -228,16 +364,3 @@ spec:
           - key: {{ .Values.designate.customCA.filename }}
             path: {{ .Values.designate.customCA.filename }}
       {{- end }}
-    {{- if .Values.nodeSelector }}
-      nodeSelector:
-{{ toYaml .Values.nodeSelector | indent 8 }}
-    {{- end }}
-    {{- if .Values.tolerations }}
-      tolerations:
-{{ toYaml .Values.tolerations | indent 8 }}
-    {{- end }}
-{{- if .Values.affinity }}
-      affinity:
-{{ toYaml .Values.affinity | indent 8 }}
-    {{- end }}
-      serviceAccountName: {{ if .Values.rbac.create }}{{ template "external-dns.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}

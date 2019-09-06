@@ -26,8 +26,13 @@ data:
       - {{ . }}
       {{- end }}
 
+    # If true, the times displayed in log messages and output messages
+    # will be in ISO 8601. By default, times are displayed in the local
+    # time zone, as governed by /etc/localtime.
+    time_format_iso_8601: {{ .Values.falco.timeFormatISO8601 }}
+
     # Whether to output events in json or text
-    {{- if (or .Values.integrations.gcscc.enabled .Values.integrations.natsOutput.enabled .Values.integrations.snsOutput.enabled) }}
+    {{- if (or .Values.integrations.gcscc.enabled .Values.integrations.natsOutput.enabled .Values.integrations.snsOutput.enabled .Values.integrations.pubsubOutput.enabled) }}
     json_output: true
     {{- else }}
     json_output: {{ .Values.falco.jsonOutput }}
@@ -37,7 +42,7 @@ data:
     # itself (e.g. "File below a known binary directory opened for writing
     # (user=root ....") in the json output.
 
-    {{- if (or .Values.integrations.natsOutput.enabled .Values.integrations.snsOutput.enabled) }}
+    {{- if (or .Values.integrations.natsOutput.enabled .Values.integrations.snsOutput.enabled .Values.integrations.pubsubOutput.enabled) }}
     json_include_output_property: true
     {{- else }}
     json_include_output_property: {{ .Values.falco.jsonIncludeOutputProperty }}
@@ -63,6 +68,26 @@ data:
     # Whether or not output to any of the output channels below is
     # buffered. Defaults to false
     buffered_outputs: {{ .Values.falco.bufferedOutputs }}
+
+    # Falco uses a shared buffer between the kernel and userspace to pass
+    # system call information. When falco detects that this buffer is
+    # full and system calls have been dropped, it can take one or more of
+    # the following actions:
+    #   - "ignore": do nothing. If an empty list is provided, ignore is assumed.
+    #   - "log": log a CRITICAL message noting that the buffer was full.
+    #   - "alert": emit a falco alert noting that the buffer was full.
+    #   - "exit": exit falco with a non-zero rc.
+    #
+    # The rate at which log/alert messages are emitted is governed by a
+    # token bucket. The rate corresponds to one message every 30 seconds
+    # with a burst of 10 messages.
+    syscall_event_drops:
+      actions:
+        {{- range .Values.falco.syscallEventDrops.actions }}
+        - {{ . }}
+        {{- end }}
+      rate: {{ .Values.falco.syscallEventDrops.rate  }}
+      max_burst: {{ .Values.falco.syscallEventDrops.maxBurst }}
 
     # A throttling mechanism implemented as a token bucket limits the
     # rate of falco notifications. This throttling is controlled by the following configuration
@@ -93,7 +118,7 @@ data:
     # Also, the file will be closed and reopened if falco is signaled with
     # SIGUSR1.
 
-    {{- if (or .Values.integrations.natsOutput.enabled .Values.integrations.snsOutput.enabled) }}
+    {{- if (or .Values.integrations.natsOutput.enabled .Values.integrations.snsOutput.enabled .Values.integrations.pubsubOutput.enabled) }}
     file_output:
       enabled: true
       keep_alive: true
@@ -107,6 +132,24 @@ data:
 
     stdout_output:
       enabled: {{ .Values.falco.stdoutOutput.enabled }}
+
+    # Falco contains an embedded webserver that can be used to accept K8s
+    # Audit Events. These config options control the behavior of that
+    # webserver. (By default, the webserver is disabled).
+    #
+    # The ssl_certificate is a combination SSL Certificate and corresponding
+    # key contained in a single file. You can generate a key/cert as follows:
+    #
+    # $ openssl req -newkey rsa:2048 -nodes -keyout key.pem -x509 -days 365 -out certificate.pem
+    # $ cat certificate.pem key.pem > falco.pem
+    # $ sudo cp falco.pem /etc/falco/falco.pem
+
+    webserver:
+      enabled: {{ .Values.falco.webserver.enabled }}
+      listen_port: {{ .Values.falco.webserver.listenPort }}
+      k8s_audit_endpoint: {{ .Values.falco.webserver.k8sAuditEndpoint }}
+      ssl_enabled: false
+      ssl_certificate: /etc/falco/falco.pem
 
     # Possible additional things you might want to do with program output:
     #   - send to a slack webhook:
@@ -124,16 +167,20 @@ data:
     # Also, the program will be closed and reopened if falco is signaled with
     # SIGUSR1.
     {{- if .Values.integrations.gcscc.enabled }}
-    programOutput:
+    program_output:
       enabled: true
       keep_alive: false
-      program: "\"curl -d @- -X POST --header 'Content-Type: application/json' --header 'Authorization: {{ .Values.integrations.gcscc.webhookAuthenticationToken }}' {{ .Values.integrations.gcscc.webhookUrl }}/\""
+      program: "curl -d @- -X POST --header 'Content-Type: application/json' --header 'Authorization: {{ .Values.integrations.gcscc.webhookAuthenticationToken }}' {{ .Values.integrations.gcscc.webhookUrl }}"
     {{- else }}
     program_output:
       enabled: {{ .Values.falco.programOutput.enabled }}
       keep_alive: {{ .Values.falco.programOutput.keepAlive }}
       program: {{ .Values.falco.programOutput.program }}
     {{- end }}
+
+    http_output:
+      enabled: {{ .Values.falco.httpOutput.enabled }}
+      url: {{ .Values.falco.httpOutput.url }}
 
   {{- if .Values.integrations.snsOutput.enabled }}
   aws_default_region: {{ .Values.integrations.snsOutput.aws_default_region }}

@@ -4,14 +4,13 @@ metadata:
   labels:
     app: {{ template "kuberhealthy.name" . }}
     release: {{ .Release.Name }}
-  {{ if .Values.prometheus.enabled -}}
-  {{ if .Values.prometheus.enableScraping -}}
-  annotations:
-    prometheus.io/scrape: "true"
-    prometheus.io/path: "/metrics"
-  {{ end -}}
-  {{ end -}}
   name: {{ template "kuberhealthy.name" . }}
+  {{- if .Values.service.annotations }}
+  annotations:
+  {{- range $key, $value := .Values.service.annotations }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
+  {{- end }}
 spec:
   type: {{ .Values.service.type }}
   ports:

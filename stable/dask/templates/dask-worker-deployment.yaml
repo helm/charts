@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "dask.fullname" . }}-worker
@@ -24,12 +24,14 @@ spec:
         release: {{ .Release.Name | quote }}
         component: worker
     spec:
+      imagePullSecrets:
+        {{- toYaml .Values.worker.image.pullSecrets | nindent 8 }}
       containers:
         - name: {{ template "dask.fullname" . }}-worker
           image: "{{ .Values.worker.image.repository }}:{{ .Values.worker.image.tag }}"
           imagePullPolicy: {{ .Values.worker.image.pullPolicy }}
           args:
-            - dask-worker
+            - {{ .Values.worker.image.dask_worker }}
             - {{ template "dask.fullname" . }}-scheduler:{{ .Values.scheduler.servicePort }}
           {{- if .Values.worker.resources.limits }}
             - --nthreads
@@ -41,15 +43,18 @@ spec:
           ports:
             - containerPort: 8789
           resources:
-{{ toYaml .Values.worker.resources | indent 12 }}
+            {{- toYaml .Values.worker.resources | nindent 12 }}
           env:
-{{ toYaml .Values.worker.env | indent 12 }}
+            {{- toYaml .Values.worker.env | nindent 12 }}
+    {{- with .Values.worker.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.worker.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.worker.tolerations }}
       tolerations:
-        - key: "k8s.dask.org_dedicated"
-          operator: "Equal"
-          value: "worker"
-          effect: "NoSchedule"
-        - key: "k8s.dask.org/dedicated"
-          operator: "Equal"
-          value: "worker"
-          effect: "NoSchedule"
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

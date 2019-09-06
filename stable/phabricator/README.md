@@ -47,61 +47,65 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following table lists the configurable parameters of the Phabricator chart and their default values.
 
-|               Parameter                |                 Description                  |                         Default                          |
-|----------------------------------------|----------------------------------------------|----------------------------------------------------------|
-| `global.imageRegistry`                 | Global Docker image registry                 | `nil`                                                    |
-| `image.registry`                       | Phabricator image registry                   | `docker.io`                                              |
-| `image.repository`                     | Phabricator image name                       | `bitnami/phabricator`                                    |
-| `image.tag`                            | Phabricator image tag                        | `{VERSION}`                                              |
-| `image.pullPolicy`                     | Image pull policy                            | `Always` if `imageTag` is `latest`, else `IfNotPresent`  |
-| `image.pullSecrets`                    | Specify docker-registry secret names as an array                   | `[]` (does not add image pull secrets to deployed pods)                                                    |
-| `phabricatorHost`                      | Phabricator host to create application URLs  | `nil`                                                    |
-| `phabricatorAlternateFileDomain`       | Phabricator alternate domain to upload files | `nil`                                                    |
-| `phabricatorUsername`                  | User of the application                      | `user`                                                   |
-| `phabricatorPassword`                  | Application password                         | _random 10 character long alphanumeric string_           |
-| `phabricatorEmail`                     | Admin email                                  | `user@example.com`                                       |
-| `phabricatorFirstName`                 | First name                                   | `First Name`                                             |
-| `phabricatorLastName`                  | Last name                                    | `Last Name`                                              |
-| `smtpHost`                             | SMTP host                                    | `nil`                                                    |
-| `smtpPort`                             | SMTP port                                    | `nil`                                                    |
-| `smtpUser`                             | SMTP user                                    | `nil`                                                    |
-| `smtpPassword`                         | SMTP password                                | `nil`                                                    |
-| `smtpProtocol`                         | SMTP protocol [`ssl`, `tls`]                 | `nil`                                                    |
-| `mariadb.rootUser.password`            | MariaDB admin password                       | `nil`                                                    |
-| `service.type`                    | Kubernetes Service type                    | `LoadBalancer`                                          |
-| `service.port`                    | Service HTTP port                 | `80`                                          |
-| `service.httpsPort`                    | Service HTTP port                 | `443`                                          |
-| `service.loadBalancerIP`            | `loadBalancerIP` for the Phabricator Service | `nil`                                                    |
-| `service.externalTrafficPolicy`   | Enable client source IP preservation       | `Cluster`                                               |
-| `service.nodePorts.http`                 | Kubernetes http node port                  | `""`                                                    |
-| `service.nodePorts.https`                 | Kubernetes https node port                  | `""`                                                    |
-| `persistence.enabled`                  | Enable persistence using PVC                 | `true`                                                   |
-| `persistence.apache.storageClass`      | PVC Storage Class for Apache volume          | `nil` (uses alpha storage class annotation)              |
-| `persistence.apache.accessMode`        | PVC Access Mode for Apache volume            | `ReadWriteOnce`                                          |
-| `persistence.apache.size`              | PVC Storage Request for Apache volume        | `1Gi`                                                    |
-| `persistence.phabricator.storageClass` | PVC Storage Class for Phabricator volume     | `nil` (uses alpha storage class annotation)              |
-| `persistence.phabricator.accessMode`   | PVC Access Mode for Phabricator volume       | `ReadWriteOnce`                                          |
-| `persistence.phabricator.size`         | PVC Storage Request for Phabricator volume   | `8Gi`                                                    |
-| `resources`                            | CPU/Memory resource requests/limits          | Memory: `512Mi`, CPU: `300m`                             |
-| `ingress.enabled`                      | Enable ingress controller resource           | `false`                                                  |
-| `ingress.hosts[0].name`                | Hostname to your Phabricator installation    | `phabricator.local`                                      |
-| `ingress.hosts[0].path`                | Path within the url structure                | `/`                                                      |
-| `ingress.hosts[0].tls`                 | Utilize TLS backend in ingress               | `false`                                                  |
-| `ingress.hosts[0].certManager`         | Add annotations for cert-manager             | `false`                                                  |
-| `ingress.hosts[0].tlsSecret`           | TLS Secret (certificates)                    | `phabricator.local-tls-secret`                           |
-| `ingress.hosts[0].annotations`         | Annotations for this host's ingress record   | `[]`                                                     |
-| `ingress.secrets[0].name`              | TLS Secret Name                              | `nil`                                                    |
-| `ingress.secrets[0].certificate`       | TLS Secret Certificate                       | `nil`                                                    |
-| `ingress.secrets[0].key`               | TLS Secret Key                               | `nil`                                                    |
-| `podAnnotations`                       | Pod annotations                                  | `{}`                                                 |
-| `metrics.enabled`                      | Start a side-car prometheus exporter             | `false`                                              |
-| `metrics.image.registry`               | Apache exporter image registry                   | `docker.io`                                          |
-| `metrics.image.repository`             | Apache exporter image name                       | `lusotycoon/apache-exporter`                         |
-| `metrics.image.tag`                    | Apache exporter image tag                        | `v0.5.0`                                             |
-| `metrics.image.pullPolicy`             | Image pull policy                                | `IfNotPresent`                                       |
-| `metrics.image.pullSecrets`            | Specify docker-registry secret names as an array | `[]` (does not add image pull secrets to deployed pods)      |
-| `metrics.podAnnotations`               | Additional annotations for Metrics exporter pod  | `{prometheus.io/scrape: "true", prometheus.io/port: "9117"}` |
-| `metrics.resources`                    | Exporter resource requests/limit                 | {}                                                    |
+| Parameter                        | Description                                                                                              | Default                                                      |
+| -------------------------------- | -------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| `global.imageRegistry`           | Global Docker image registry                                                                             | `nil`                                                        |
+| `global.imagePullSecrets`        | Global Docker registry secret names as an array                                                          | `[]` (does not add image pull secrets to deployed pods)      |
+| `global.storageClass`            | Global storage class for dynamic provisioning                                                            | `nil`                                                        |
+| `image.registry`                 | Phabricator image registry                                                                               | `docker.io`                                                  |
+| `image.repository`               | Phabricator image name                                                                                   | `bitnami/phabricator`                                        |
+| `image.tag`                      | Phabricator image tag                                                                                    | `{TAG_NAME}`                                                 |
+| `image.pullPolicy`               | Image pull policy                                                                                        | `IfNotPresent`                                               |
+| `image.pullSecrets`              | Specify docker-registry secret names as an array                                                         | `[]` (does not add image pull secrets to deployed pods)      |
+| `nameOverride`                   | String to partially override phabricator.fullname template with a string (will prepend the release name) | `nil`                                                        |
+| `fullnameOverride`               | String to fully override phabricator.fullname template with a string                                     | `nil`                                                        |
+| `phabricatorHost`                | Phabricator host to create application URLs                                                              | `nil`                                                        |
+| `phabricatorAlternateFileDomain` | Phabricator alternate domain to upload files                                                             | `nil`                                                        |
+| `phabricatorUsername`            | User of the application                                                                                  | `user`                                                       |
+| `phabricatorPassword`            | Application password                                                                                     | _random 10 character long alphanumeric string_               |
+| `phabricatorEmail`               | Admin email                                                                                              | `user@example.com`                                           |
+| `phabricatorFirstName`           | First name                                                                                               | `First Name`                                                 |
+| `phabricatorLastName`            | Last name                                                                                                | `Last Name`                                                  |
+| `smtpHost`                       | SMTP host                                                                                                | `nil`                                                        |
+| `smtpPort`                       | SMTP port                                                                                                | `nil`                                                        |
+| `smtpUser`                       | SMTP user                                                                                                | `nil`                                                        |
+| `smtpPassword`                   | SMTP password                                                                                            | `nil`                                                        |
+| `smtpProtocol`                   | SMTP protocol [`ssl`, `tls`]                                                                             | `nil`                                                        |
+| `mariadb.rootUser.password`      | MariaDB admin password                                                                                   | `nil`                                                        |
+| `service.type`                   | Kubernetes Service type                                                                                  | `LoadBalancer`                                               |
+| `service.port`                   | Service HTTP port                                                                                        | `80`                                                         |
+| `service.httpsPort`              | Service HTTP port                                                                                        | `443`                                                        |
+| `service.loadBalancerIP`         | `loadBalancerIP` for the Phabricator Service                                                             | `nil`                                                        |
+| `service.externalTrafficPolicy`  | Enable client source IP preservation                                                                     | `Cluster`                                                    |
+| `service.nodePorts.http`         | Kubernetes http node port                                                                                | `""`                                                         |
+| `service.nodePorts.https`        | Kubernetes https node port                                                                               | `""`                                                         |
+| `persistence.enabled`            | Enable persistence using PVC                                                                             | `true`                                                       |
+| `persistence.storageClass`       | PVC Storage Class for Phabricator volume                                                                 | `nil` (uses alpha storage class annotation)                  |
+| `persistence.accessMode`         | PVC Access Mode for Phabricator volume                                                                   | `ReadWriteOnce`                                              |
+| `persistence.size`               | PVC Storage Request for Phabricator volume                                                               | `8Gi`                                                        |
+| `resources`                      | CPU/Memory resource requests/limits                                                                      | Memory: `512Mi`, CPU: `300m`                                 |
+| `ingress.enabled`                | Enable ingress controller resource                                                                       | `false`                                                      |
+| `ingress.certManager`            | Add annotations for cert-manager                                                                         | `false`                                                      |
+| `ingress.annotations`            | Ingress annotations                                                                                      | `[]`                                                         |
+| `ingress.hosts[0].name`          | Hostname to your Phabricator installation                                                                | `phabricator.local`                                          |
+| `ingress.hosts[0].path`          | Path within the url structure                                                                            | `/`                                                          |
+| `ingress.tls[0].hosts[0]`        | TLS hosts                                                                                                | `phabricator.local`                                          |
+| `ingress.tls[0].secretName`      | TLS Secret (certificates)                                                                                | `phabricator.local-tls`                                      |
+| `ingress.secrets[0].name`        | TLS Secret Name                                                                                          | `nil`                                                        |
+| `ingress.secrets[0].certificate` | TLS Secret Certificate                                                                                   | `nil`                                                        |
+| `ingress.secrets[0].key`         | TLS Secret Key                                                                                           | `nil`                                                        |
+| `podAnnotations`                 | Pod annotations                                                                                          | `{}`                                                         |
+| `metrics.enabled`                | Start a side-car prometheus exporter                                                                     | `false`                                                      |
+| `metrics.image.registry`         | Apache exporter image registry                                                                           | `docker.io`                                                  |
+| `metrics.image.repository`       | Apache exporter image name                                                                               | `bitnami/apache-exporter`                                    |
+| `metrics.image.tag`              | Apache exporter image tag                                                                                | `{TAG_NAME}`                                                 |
+| `metrics.image.pullPolicy`       | Image pull policy                                                                                        | `IfNotPresent`                                               |
+| `metrics.image.pullSecrets`      | Specify docker-registry secret names as an array                                                         | `[]` (does not add image pull secrets to deployed pods)      |
+| `metrics.podAnnotations`         | Additional annotations for Metrics exporter pod                                                          | `{prometheus.io/scrape: "true", prometheus.io/port: "9117"}` |
+| `metrics.resources`              | Exporter resource requests/limit                                                                         | {}                                                           |
+| `nodeSelector`                   | Node labels for pod assignment                                                                           | `nil`                                                        |
+| `affinity`                       | Node/pod affinities                                                                                      | `nil`                                                        |
+| `tolerations`                    | List of node taints to tolerate                                                                          | `nil`                                                        |
 
 The above parameters map to the env variables defined in [bitnami/phabricator](http://github.com/bitnami/bitnami-docker-phabricator). For more information please refer to the [bitnami/phabricator](http://github.com/bitnami/bitnami-docker-phabricator) image documentation.
 
@@ -122,9 +126,8 @@ The above parameters map to the env variables defined in [bitnami/phabricator](h
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
-$ helm install --name my-release \
+$ helm install stable/phabricator --name my-release \
   --set phabricatorUsername=admin,phabricatorPassword=password,mariadb.mariadbRootPassword=secretpassword \
-    stable/phabricator
 ```
 
 The above command sets the Phabricator administrator account username and password to `admin` and `password` respectively. Additionally, it sets the MariaDB `root` user password to `secretpassword`.
@@ -137,28 +140,56 @@ $ helm install --name my-release -f values.yaml stable/phabricator
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
+### [Rolling VS Immutable tags](https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/)
+
+It is strongly recommended to use immutable tags in a production environment. This ensures your deployment does not change automatically if the same tag is updated with a different image.
+
+Bitnami will release a new chart updating its containers if a new version of the main container, significant changes, or critical vulnerabilities exist.
+
 ## Persistence
 
-The [Bitnami Phabricator](https://github.com/bitnami/bitnami-docker-phabricator) image stores the Phabricator data and configurations at the `/bitnami/phabricator` and `/bitnami/apache` paths of the container.
+The [Bitnami Phabricator](https://github.com/bitnami/bitnami-docker-phabricator) image stores the Phabricator data and configurations at the `/bitnami/phabricator` path of the container.
 
 Persistent Volume Claims are used to keep the data across deployments. There is a [known issue](https://github.com/kubernetes/kubernetes/issues/39178) in Kubernetes Clusters with EBS in different availability zones. Ensure your cluster is configured properly to create Volumes in the same availability zone where the nodes are running. Kuberentes 1.12 solved this issue with the [Volume Binding Mode](https://kubernetes.io/docs/concepts/storage/storage-classes/#volume-binding-mode).
 
 See the [Configuration](#configuration) section to configure the PVC or to disable persistence.
 
-## Ingress With Reverse Proxy And Kube Lego
+## Ingress with Reverse Proxy and cert-manager
 
-You can define a custom ingress following the example config in values.yaml
+You can define a custom ingress rule for Phabricator with TLS certificates auto-generated by cert-manager as follows:
 
-`helm install stable/phabricator/ --name my-release --set phabricatorHost=example.com`
+```console
+$ helm install stable/phabricator --name my-release \
+  --set ingress.enabled=true \
+  --set ingress.certManager=true \
+  --set ingress.hosts[0].name=phabricator.example.com \
+  --set ingress.tls[0].hosts[0]=phabricator.example.com \
+  --set phabricatorHost=example.com
+```
 
 Everything looks great but requests over https will cause asset requests to fail. Assuming you want to use HTTPS/TLS you will need to set the base-uri to an https schema.
 
-```
-export POD_NAME=$(kubectl get pods -l "app=my-release-phabricator" -o jsonpath="{.items[0].metadata.name}")
-kubectl exec $POD_NAME /opt/bitnami/phabricator/bin/config set phabricator.base-uri https://example.com
+```console
+$ export POD_NAME=$(kubectl get pods -l "app.kubernetes.io/name=phabricator,app.kubernetes.io/instance=my-release" -o jsonpath="{.items[0].metadata.name}")
+$ kubectl exec $POD_NAME /opt/bitnami/phabricator/bin/config set phabricator.base-uri https://phabricator.example.com
 ```
 
 ## Upgrading
+
+### To 7.0.0
+
+Backwards compatibility is not guaranteed. The following notables changes were included:
+
+- Labels are adapted to follow the Helm charts best practices.
+- The parameters `persistence.phabricator.storageClass`, `persistence.phabricator.accessMode`, and `persistence.phabricator.size` switch to `persistence.storageClass`, `persistence.accessMode`, and `persistence.size`.
+- The way of setting the ingress rules has changed. Instead of using `ingress.paths` and `ingress.hosts` as separate objects, you should now define the rules as objects inside the `ingress.hosts` value, for example:
+
+```yaml
+ingress:
+  hosts:
+  - name: phabricator.local
+    path: /
+```
 
 ### To 3.0.0
 

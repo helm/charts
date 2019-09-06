@@ -1,8 +1,8 @@
 Name: locust
 
 image:
-  repository: quay.io/honestbee/locust
-  tag: 0.7.5
+  repository: greenbirdit/locust
+  tag: 0.9.0
   pullPolicy: IfNotPresent
   pullSecrets: []
 
@@ -14,6 +14,30 @@ service:
   nodePort: 0
   annotations: {}
   extraLabels: {}
+
+# extra volumes, volumeMounts and envs for both worker and master pods
+extraVolumes: []
+# extraVolumes:
+# - name: mySecretVolume
+#   secret:
+#     secretName: mySecret
+# - name: myConfigMapVolume
+#   configMap:
+#     name: myConfigMap
+extraVolumeMounts: []
+# extraVolumeMounts:
+# - name: mySecretVolume
+#   mountPath: /locust/secrets/mySecretVolume/
+extraEnvs: []
+# extraEnvs:
+# - name: HELLO
+#   value: WORLD
+# - name: MY_SECRET
+#   valueFrom:
+#     secretKeyRef:
+#       name: mySecret
+#       key: mySecretKey
+
 master:
   config:
     target-host: https://site.example.com
@@ -24,10 +48,20 @@ master:
     requests:
       cpu: 100m
       memory: 128Mi
+  nodeSelector: {}
+    # kops.k8s.io/instancegroup: master
+  tolerations: {}
+  # - key: "application"
+  #   operator: "Equal"
+  #   value: "api"
+  #   effect: "NoSchedule"
 worker:
   config:
 
-    # all files from tasks folder are mounted under `/locust-tasks`
+    # Optional parameter to use an existing configmap instead of deploying one with the Chart
+    # configmapName: locust-worker-configs
+
+    # all files from specified configmap (or tasks folder) are mounted under `/locust-tasks`
     locust-script: "/locust-tasks/tasks.py"
   replicaCount: 2
   resources:
@@ -37,3 +71,10 @@ worker:
     requests:
       cpu: 100m
       memory: 128Mi
+  nodeSelector: {}
+    # kops.k8s.io/instancegroup: worker
+  tolerations: {}
+  # - key: "application"
+  #   operator: "Equal"
+  #   value: "api"
+  #   effect: "NoSchedule"

@@ -94,7 +94,10 @@ spec:
           containerPort: 4444
         livenessProbe:
           exec:
-            command: ["mysqladmin","ping"]
+            command:
+              - "/bin/bash"
+              - "-c"
+              - "mysqladmin ping || test -e /var/lib/mysql/sst_in_progress"
           initialDelaySeconds: 30
           timeoutSeconds: 2
         readinessProbe:
@@ -131,7 +134,11 @@ spec:
       {{ end }}
       {{ if .Values.metricsExporter.enabled }}
       - name: metrics
+        {{- if .Values.metricsExporter.tag }}
+        image: prom/mysqld-exporter:{{ .Values.metricsExporter.tag }}
+        {{- else }}
         image: prom/mysqld-exporter
+        {{- end }}
         imagePullPolicy: IfNotPresent
 {{- if .Values.metricsExporter.commandOverrides }}
         command:

@@ -50,11 +50,15 @@ The following table lists the configurable parameters of the OrangeHRM chart and
 |              Parameter               |               Description                |                    Default                              |
 |--------------------------------------|------------------------------------------|-------------------------------------------------------- |
 | `global.imageRegistry`               | Global Docker image registry             | `nil`                                                   |
+| `global.imagePullSecrets`            | Global Docker registry secret names as an array | `[]` (does not add image pull secrets to deployed pods) |
+| `global.storageClass`                     | Global storage class for dynamic provisioning                                               | `nil`                                                        |
 | `image.registry`                     | OrangeHRM image registry                 | `docker.io`                                             |
 | `image.repository`                   | OrangeHRM Image name                     | `bitnami/orangehrm`                                     |
-| `image.tag`                          | OrangeHRM Image tag                      | `{VERSION}`                                             |
-| `image.pullPolicy`                   | Image pull policy                        | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
+| `image.tag`                          | OrangeHRM Image tag                      | `{TAG_NAME}`                                            |
+| `image.pullPolicy`                   | Image pull policy                        | `IfNotPresent`                                          |
 | `image.pullSecrets`                  | Specify docker-registry secret names as an array               | `[]` (does not add image pull secrets to deployed pods) |
+| `nameOverride`                       | String to partially override orangehrm.fullname template with a string (will prepend the release name) | `nil` |
+| `fullnameOverride`                   | String to fully override orangehrm.fullname template with a string                                     | `nil` |
 | `orangehrmUsername`                  | User of the application                  | `user`                                                  |
 | `orangehrmPassword`                  | Application password                     | _random 10 character long alphanumeric string_          |
 | `smtpHost`                           | SMTP host                                | `nil`                                                   |
@@ -68,11 +72,19 @@ The following table lists the configurable parameters of the OrangeHRM chart and
 | `service.externalTrafficPolicy`   | Enable client source IP preservation       | `Cluster`                                               |
 | `service.nodePorts.http`                 | Kubernetes http node port                  | `""`                                                    |
 | `service.nodePorts.https`                | Kubernetes https node port                 | `""`                                                    |
+| `ingress.enabled`                   | Enable ingress controller resource                            | `false`                                                  |
+| `ingress.annotations`               | Ingress annotations                                           | `[]`                                                     |
+| `ingress.certManager`               | Add annotations for cert-manager                              | `false`                                                  |
+| `ingress.hosts[0].name`             | Hostname to your OrangeHRM installation                           | `orangehrm.local`                                            |
+| `ingress.hosts[0].path`             | Path within the url structure                                 | `/`                                                      |
+| `ingress.hosts[0].tls`              | Utilize TLS backend in ingress                                | `false`                                                  |
+| `ingress.hosts[0].tlsHosts`         | Array of TLS hosts for ingress record (defaults to `ingress.hosts[0].name` if `nil`)                               | `nil`                                                  |
+| `ingress.hosts[0].tlsSecret`        | TLS Secret (certificates)                                     | `orangehrm.local-tls-secret`                                 |
+| `ingress.secrets[0].name`           | TLS Secret Name                                               | `nil`                                                    |
+| `ingress.secrets[0].certificate`    | TLS Secret Certificate                                        | `nil`                                                    |
+| `ingress.secrets[0].key`            | TLS Secret Key                                                | `nil`                                                    |
 | `resources`                          | CPU/Memory resource requests/limits      | Memory: `512Mi`, CPU: `300m`                            |
 | `persistence.enabled`                | Enable persistence using PVC             | `true`                                                  |
-| `persistence.apache.storageClass`    | PVC Storage Class for Apache volume      | `nil` (uses alpha storage class annotation)             |
-| `persistence.apache.accessMode`      | PVC Access Mode for Apache volume        | `ReadWriteOnce`                                         |
-| `persistence.apache.size`            | PVC Storage Request for Apache volume    | `1Gi`                                                   |
 | `persistence.orangehrm.storageClass` | PVC Storage Class for OrangeHRM volume   | `nil` (uses alpha storage class annotation)             |
 | `persistence.orangehrm.accessMode`   | PVC Access Mode for OrangeHRM volume     | `ReadWriteOnce`                                         |
 | `persistence.orangehrm.size`         | PVC Storage Request for OrangeHRM volume | `8Gi`                                                   |
@@ -92,10 +104,11 @@ The following table lists the configurable parameters of the OrangeHRM chart and
 | `mariadb.persistence.accessMode`     | PVC Access Mode for MariaDB volume       | `ReadWriteOnce`                                         |
 | `mariadb.persistence.size`           | PVC Storage Request for MariaDB volume   | `8Gi`                                                   |
 | `podAnnotations`                | Pod annotations                                   | `{}`                                                       |
+| `affinity`                        | Map of node/pod affinities                 | `{}`                                                      |
 | `metrics.enabled`                          | Start a side-car prometheus exporter                                                                           | `false`                                              |
-| `metrics.image.registry`                   | Apache exporter image registry                                                                                  | `docker.io`                                          |
-| `metrics.image.repository`                 | Apache exporter image name                                                                                      | `lusotycoon/apache-exporter`                           |
-| `metrics.image.tag`                        | Apache exporter image tag                                                                                       | `v0.5.0`                                            |
+| `metrics.image.registry`                   | Apache exporter image registry                                                                                  | `docker.io`                                         |
+| `metrics.image.repository`                 | Apache exporter image name                                                                                      | `bitnami/apache-exporter`                           |
+| `metrics.image.tag`                        | Apache exporter image tag                                                                                       | `{TAG_NAME}`                                        |
 | `metrics.image.pullPolicy`                 | Image pull policy                                                                                              | `IfNotPresent`                                       |
 | `metrics.image.pullSecrets`                | Specify docker-registry secret names as an array                                                               | `[]` (does not add image pull secrets to deployed pods)                                                |
 | `metrics.podAnnotations`                   | Additional annotations for Metrics exporter pod                                                                | `{prometheus.io/scrape: "true", prometheus.io/port: "9117"}`                                                   |
@@ -121,9 +134,15 @@ $ helm install --name my-release -f values.yaml stable/orangehrm
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
+### [Rolling VS Immutable tags](https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/)
+
+It is strongly recommended to use immutable tags in a production environment. This ensures your deployment does not change automatically if the same tag is updated with a different image.
+
+Bitnami will release a new chart updating its containers if a new version of the main container, significant changes, or critical vulnerabilities exist.
+
 ## Persistence
 
-The [Bitnami OrangeHRM](https://github.com/bitnami/bitnami-docker-orangehrm) image stores the OrangeHRM data and configurations at the `/bitnami/orangehrm` and `/bitnami/apache` paths of the container.
+The [Bitnami OrangeHRM](https://github.com/bitnami/bitnami-docker-orangehrm) image stores the OrangeHRM data and configurations at the `/bitnami/orangehrm` path of the container.
 
 Persistent Volume Claims are used to keep the data across deployments. There is a [known issue](https://github.com/kubernetes/kubernetes/issues/39178) in Kubernetes Clusters with EBS in different availability zones. Ensure your cluster is configured properly to create Volumes in the same availability zone where the nodes are running. Kuberentes 1.12 solved this issue with the [Volume Binding Mode](https://kubernetes.io/docs/concepts/storage/storage-classes/#volume-binding-mode).
 

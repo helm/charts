@@ -17,20 +17,37 @@ spec:
       app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+        {{- if .Values.podAnnotations }}
+          {{- toYaml .Values.podAnnotations | nindent 8 }}
+        {{- end }}
       labels:
         app.kubernetes.io/name: {{ include "prometheus-mongodb-exporter.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       containers:
       - name: mongodb-exporter
+        env:
+          - name: MONGODB_URI
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "prometheus-mongodb-exporter.fullname" . }}
+                key: mongodb-uri
+        {{- if .Values.env }}
+        {{- range $key, $value := .Values.env }}
+          - name: "{{ $key }}"
+            value: "{{ $value }}"
+        {{- end }}
+        {{- end }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         args:
-        - -mongodb.uri={{ required "A MongoDB URI is required" .Values.mongodb.uri }}
+        - --web.listen-address={{ printf ":%s" .Values.port }}
         {{- toYaml .Values.extraArgs | nindent 8 }}
         ports:
         - name: metrics
-          containerPort: 9216
+          containerPort: {{ .Values.port }}
           protocol: TCP
         livenessProbe:
           {{- toYaml .Values.livenessProbe | nindent 10 }}

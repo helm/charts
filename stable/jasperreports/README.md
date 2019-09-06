@@ -47,43 +47,59 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following table lists the configurable parameters of the JasperReports chart and their default values.
 
-|           Parameter           |                 Description                  |                         Default                          |
-|-------------------------------|----------------------------------------------|----------------------------------------------------------|
-| `global.imageRegistry`        | Global Docker image registry                 | `nil`                                                    |
-| `image.registry`              | JasperReports image registry                 | `docker.io`                                              |
-| `image.repository`            | JasperReports Image name                     | `bitnami/jasperreports`                                  |
-| `image.tag`                   | JasperReports Image tag                      | `{VERSION}`                                              |
-| `image.pullPolicy`            | Image pull policy                            | `Always` if `imageTag` is `latest`, else `IfNotPresent`  |
-| `image.pullSecrets`           | Specify docker-registry secret names as an array | `[]` (does not add image pull secrets to deployed pods) |
-| `jasperreportsUsername`       | User of the application                      | `user`                                                   |
-| `jasperreportsPassword`       | Application password                         | _random 10 character long alphanumeric string_           |
-| `jasperreportsEmail`          | User email                                   | `user@example.com`                                       |
-| `smtpHost`                    | SMTP host                                    | `nil`                                                    |
-| `smtpPort`                    | SMTP port                                    | `nil`                                                    |
-| `smtpEmail`                   | SMTP email                                   | `nil`                                                    |
-| `smtpUser`                    | SMTP user                                    | `nil`                                                    |
-| `smtpPassword`                | SMTP password                                | `nil`                                                    |
-| `smtpProtocol`                | SMTP protocol [`ssl`, `none`]                | `nil`                                                    |
-| `allowEmptyPassword`          | Allow DB blank passwords                     | `yes`                                                    |
-| `externalDatabase.host`       | Host of the external database                | `nil`                                                    |
-| `externalDatabase.port`       | Port of the external database                | `3306`                                                   |
-| `externalDatabase.user`       | Existing username in the external db         | `bn_jasperreports`                                       |
-| `externalDatabase.password`   | Password for the above username              | `nil`                                                    |
-| `externalDatabase.database`   | Name of the existing database                | `bitnami_jasperreports`                                  |
-| `mariadb.enabled`             | Whether to use the MariaDB chart             | `true`                                                   |
-| `mariadb.db.name`             | Database name to create                      | `bitnami_jasperreports`                                  |
-| `mariadb.db.user`             | Database user to create                      | `bn_jasperreports`                                       |
-| `mariadb.db.password`         | Password for the database                    | `nil`                                                    |
-| `mariadb.rootUser.password`   | MariaDB admin password                       | `nil`                                                    |
-| `service.type`                | Kubernetes Service type                      | `LoadBalancer`                                           |
-| `service.externalTrafficPolicy`   | Enable client source IP preservation     | `Cluster`                                                |
-| `service.port`                | Service HTTP port                            | `80`                                                     |
-| `service.nodePorts.http`      | Kubernetes http node port                    | `""`                                                     |
-| `persistence.enabled`         | Enable persistence using PVC                 | `true`                                                   |
-| `persistence.storageClass`    | PVC Storage Class for JasperReports volume   | `nil` (uses alpha storage annotation)                    |
-| `persistence.accessMode`      | PVC Access Mode for JasperReports volume     | `ReadWriteOnce`                                          |
-| `persistence.size`            | PVC Storage Request for JasperReports volume | `8Gi`                                                    |
-| `resources`                   | CPU/Memory resource requests/limits          | Memory: `512Mi`, CPU: `300m`                             |
+|           Parameter              |                 Description                  |                         Default                          |
+|----------------------------------|----------------------------------------------|----------------------------------------------------------|
+| `global.imageRegistry`           | Global Docker image registry                 | `nil`                                                    |
+| `global.imagePullSecrets`        | Global Docker registry secret names as an array | `[]` (does not add image pull secrets to deployed pods) |
+| `global.storageClass`                     | Global storage class for dynamic provisioning                                               | `nil`                                                        |
+| `image.registry`                 | JasperReports image registry                 | `docker.io`                                              |
+| `image.repository`               | JasperReports Image name                     | `bitnami/jasperreports`                                  |
+| `image.tag`                      | JasperReports Image tag                      | `{TAG_NAME}`                                             |
+| `image.pullPolicy`               | Image pull policy                            | `IfNotPresent`                                           |
+| `image.pullSecrets`              | Specify docker-registry secret names as an array | `[]` (does not add image pull secrets to deployed pods) |
+| `nameOverride`                   | String to partially override jasperreports.fullname template with a string (will prepend the release name) | `nil` |
+| `fullnameOverride`               | String to fully override jasperreports.fullname template with a string                                     | `nil` |
+| `jasperreportsUsername`          | User of the application                      | `user`                                                   |
+| `jasperreportsPassword`          | Application password                         | _random 10 character long alphanumeric string_           |
+| `jasperreportsEmail`             | User email                                   | `user@example.com`                                       |
+| `smtpHost`                       | SMTP host                                    | `nil`                                                    |
+| `smtpPort`                       | SMTP port                                    | `nil`                                                    |
+| `smtpEmail`                      | SMTP email                                   | `nil`                                                    |
+| `smtpUser`                       | SMTP user                                    | `nil`                                                    |
+| `smtpPassword`                   | SMTP password                                | `nil`                                                    |
+| `smtpProtocol`                   | SMTP protocol [`ssl`, `none`]                | `nil`                                                    |
+| `allowEmptyPassword`             | Allow DB blank passwords                     | `yes`                                                    |
+| `ingress.enabled`                | Enable ingress controller resource           | `false`                                                  |
+| `ingress.annotations`            | Ingress annotations                          | `[]`                                                     |
+| `ingress.certManager`            | Add annotations for cert-manager             | `false`                                                  |
+| `ingress.hosts[0].name`          | Hostname to your JasperReports installation  | `jasperreports.local`                                    |
+| `ingress.hosts[0].path`          | Path within the url structure                | `/`                                                      |
+| `ingress.hosts[0].tls`           | Utilize TLS backend in ingress               | `false`                                                  |
+| `ingress.hosts[0].tlsHosts`      | Array of TLS hosts for ingress record (defaults to `ingress.hosts[0].name` if `nil`) | `nil`            |
+| `ingress.hosts[0].tlsSecret`     | TLS Secret (certificates)                    | `jasperreports.local-tls-secret`                         |
+| `ingress.secrets[0].name`        | TLS Secret Name                              | `nil`                                                    |
+| `ingress.secrets[0].certificate` | TLS Secret Certificate                       | `nil`                                                    |
+| `ingress.secrets[0].key`         | TLS Secret Key                               | `nil`                                                    |
+| `externalDatabase.host`          | Host of the external database                | `nil`                                                    |
+| `externalDatabase.port`          | Port of the external database                | `3306`                                                   |
+| `externalDatabase.user`          | Existing username in the external db         | `bn_jasperreports`                                       |
+| `externalDatabase.password`      | Password for the above username              | `nil`                                                    |
+| `externalDatabase.database`      | Name of the existing database                | `bitnami_jasperreports`                                  |
+| `mariadb.enabled`                | Whether to use the MariaDB chart             | `true`                                                   |
+| `mariadb.db.name`                | Database name to create                      | `bitnami_jasperreports`                                  |
+| `mariadb.db.user`                | Database user to create                      | `bn_jasperreports`                                       |
+| `mariadb.db.password`            | Password for the database                    | `nil`                                                    |
+| `mariadb.rootUser.password`      | MariaDB admin password                       | `nil`                                                    |
+| `service.type`                   | Kubernetes Service type                      | `LoadBalancer`                                           |
+| `service.externalTrafficPolicy`  | Enable client source IP preservation         | `Cluster`                                                |
+| `service.port`                   | Service HTTP port                            | `80`                                                     |
+| `service.nodePorts.http`         | Kubernetes http node port                    | `""`                                                     |
+| `persistence.enabled`            | Enable persistence using PVC                 | `true`                                                   |
+| `persistence.storageClass`       | PVC Storage Class for JasperReports volume   | `nil` (uses alpha storage annotation)                    |
+| `persistence.accessMode`         | PVC Access Mode for JasperReports volume     | `ReadWriteOnce`                                          |
+| `persistence.size`               | PVC Storage Request for JasperReports volume | `8Gi`                                                    |
+| `resources`                      | CPU/Memory resource requests/limits          | `{Memory: 512Mi, CPU: 300m}`                             |
+| `affinity`                       | Map of node/pod affinities                   | `{}`                                                     |
 
 The above parameters map to the env variables defined in [bitnami/jasperreports](http://github.com/bitnami/bitnami-docker-jasperreports). For more information please refer to the [bitnami/jasperreports](http://github.com/bitnami/bitnami-docker-jasperreports) image documentation.
 
@@ -104,6 +120,12 @@ $ helm install --name my-release -f values.yaml stable/jasperreports
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+### [Rolling VS Immutable tags](https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/)
+
+It is strongly recommended to use immutable tags in a production environment. This ensures your deployment does not change automatically if the same tag is updated with a different image.
+
+Bitnami will release a new chart updating its containers if a new version of the main container, significant changes, or critical vulnerabilities exist.
 
 ## Persistence
 

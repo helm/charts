@@ -16,6 +16,16 @@ spec:
       - {{ .Release.Namespace | quote }}
   endpoints:
   - port: web
-    interval: 30s
+    {{- if .Values.prometheus.serviceMonitor.interval }}
+    interval: {{ .Values.prometheus.serviceMonitor.interval }}
+    {{- end }}
     path: "{{ trimSuffix "/" .Values.prometheus.prometheusSpec.routePrefix }}/metrics"
+{{- if .Values.prometheus.serviceMonitor.metricRelabelings }}
+    metricRelabelings:
+{{ tpl (toYaml .Values.prometheus.serviceMonitor.metricRelabelings | indent 6) . }}
+{{- end }}
+{{- if .Values.prometheus.serviceMonitor.relabelings }}
+    relabelings:
+{{ toYaml .Values.prometheus.serviceMonitor.relabelings | indent 6 }}
+{{- end }}
 {{- end }}

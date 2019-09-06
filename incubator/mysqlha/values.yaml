@@ -4,6 +4,19 @@
 mysqlImage: mysql:5.7.13
 xtraBackupImage: gcr.io/google-samples/xtrabackup:1.0
 
+## Specify an imagePullPolicy (Required)
+## It's recommended to change this to 'Always' if the image tag is 'latest'
+## ref: http://kubernetes.io/docs/user-guide/images/#updating-images
+##
+imagePullPolicy: IfNotPresent
+
+## String to partially override orangehrm.fullname template (will maintain the release name)
+##
+# nameOverride: ""
+## String to fully override orangehrm.fullname template
+##
+# fullnameOverride: ""
+
 mysqlha:
   replicaCount: 3
 
@@ -43,6 +56,13 @@ mysqlha:
       super-read-only
       skip_name_resolve
 
+  podAnnotations: {}
+
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName:
+
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ##
@@ -64,3 +84,20 @@ resources:
   requests:
     cpu: 100m
     memory: 128Mi
+
+metrics:
+  enabled: false
+  image: prom/mysqld-exporter
+  imageTag: v0.10.0
+  annotations: {}
+
+  livenessProbe:
+    initialDelaySeconds: 15
+    timeoutSeconds: 5
+  readinessProbe:
+    initialDelaySeconds: 5
+    timeoutSeconds: 1
+  resources:
+    requests:
+      cpu: 100m
+      memory: 100Mi

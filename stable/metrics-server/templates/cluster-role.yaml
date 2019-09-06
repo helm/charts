@@ -14,18 +14,12 @@ rules:
     resources:
       - pods
       - nodes
+      - nodes/stats
       - namespaces
     verbs:
       - get
       - list
       - watch
-  - apiGroups:
-    - ""
-    resources:
-    - nodes/stats
-    verbs:
-    - get
-    - create
   {{- if .Values.rbac.pspEnabled }}
   - apiGroups:
     - extensions

@@ -3,12 +3,9 @@ priorityClassOverprovision:
   value: -1
 
 priorityClassDefault:
+  enabled: true
   name: default
   value: 0
-
-replicaCount: 1
-
-resources: {}
 
 image:
   repository: k8s.gcr.io/pause
@@ -19,8 +16,10 @@ nameOverride: ""
 
 fullnameOverride: ""
 
-nodeSelector: {}
-
-tolerations: []
-
-affinity: {}
+deployments: []
+  # - name: default
+  #   replicaCount: 1
+  #   nodeSelector: {}
+  #   resources: {}
+  #   tolerations: []
+  #   affinity: {}

@@ -14,7 +14,7 @@ rules:
   verbs: ["*"]
 - apiGroups: [""]
   resources: ["services", "configmaps", "secrets"]
-  verbs: ["create", "get", "delete"]
+  verbs: ["create", "get", "delete", "update"]
 - apiGroups: ["extensions"]
   resources: ["ingresses"]
   verbs: ["create", "get", "delete"]
@@ -33,12 +33,18 @@ rules:
 - apiGroups: ["sparkoperator.k8s.io"]
   resources: ["sparkapplications", "scheduledsparkapplications"]
   verbs: ["*"]
+  {{- if .Values.enableBatchScheduler }}
+  # This api resources below is configured for the `volcano` batch scheduler.
+- apiGroups: ["scheduling.incubator.k8s.io", "scheduling.sigs.dev"]
+  resources: ["podgroups"]
+  verbs: ["*"]
+  {{- end }}
+
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: {{ include "sparkoperator.fullname" . }}-crb
-  namespace: {{ .Release.Namespace }}
   labels:
     app.kubernetes.io/name: {{ include "sparkoperator.name" . }}
     helm.sh/chart: {{ include "sparkoperator.chart" . }}

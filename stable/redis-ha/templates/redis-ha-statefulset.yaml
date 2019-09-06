@@ -18,7 +18,6 @@ spec:
     metadata:
       annotations:
         checksum/init-config: {{ include (print $.Template.BasePath "/redis-ha-configmap.yaml") . | sha256sum }}
-        checksum/probe-config: {{ include (print $.Template.BasePath "/redis-ha-healthchecks.yaml") . | sha256sum }}
       {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
       {{- end }}
@@ -34,6 +33,9 @@ spec:
         {{ $key }}: {{ $value }}
         {{- end }}
     spec:
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+      {{- end }}
       {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
@@ -42,14 +44,59 @@ spec:
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
       {{- end }}
-    {{- with .Values.affinity }}
       affinity:
+    {{- if .Values.affinity }}
+    {{- with .Values.affinity }}
 {{ tpl . $ | indent 8 }}
+    {{- end }}
+    {{- else }}
+    {{- if .Values.additionalAffinities }}
+{{ toYaml .Values.additionalAffinities | indent 8 }}
+    {{- end }}
+        podAntiAffinity:
+    {{- if .Values.hardAntiAffinity }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app: {{ template "redis-ha.name" . }}
+                  release: {{ .Release.Name }}
+              topologyKey: kubernetes.io/hostname
+    {{- else }}
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app: {{ template "redis-ha.name" . }}
+                  release: {{ .Release.Name }}
+              topologyKey: kubernetes.io/hostname
+    {{- end }}
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app:  {{ template "redis-ha.name" . }}
+                    release: {{ .Release.Name }}
+                topologyKey: failure-domain.beta.kubernetes.io/zone
     {{- end }}
       securityContext:
 {{ toYaml .Values.securityContext | indent 8 }}
       serviceAccountName: {{ template "redis-ha.serviceAccountName" . }}
       initContainers:
+      {{- if .Values.sysctlImage.enabled }}
+      - name: init-sysctl
+        image: {{ template "redis.sysctl.image" . }}
+        {{- if .Values.sysctlImage.mountHostSys }}
+        volumeMounts:
+        - name: host-sys
+          mountPath: /host-sys
+        {{- end }}
+        command:
+{{ toYaml .Values.sysctlImage.command | indent 10 }}
+        securityContext:
+          runAsNonRoot: false
+          privileged: true
+          runAsUser: 0
+      {{- end }}
 {{- if and .Values.hostPath.path .Values.hostPath.chown }}
       - name: hostpath-chown
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
@@ -77,7 +124,7 @@ spec:
 {{- $replicas := int .Values.replicas -}}
 {{- range $i := until $replicas }}
         - name: SENTINEL_ID_{{ $i }}
-          value: {{ printf "%s\nindex: %d" (include "labels.standard" $) $i | sha1sum }}
+          value: {{ printf "%s\n%s\nindex: %d" (include "redis-ha.name" $) ($.Release.Name) $i | sha1sum }}
 {{ end -}}
 {{- if .Values.auth }}
         - name: AUTH
@@ -88,7 +135,7 @@ spec:
             {{- else }}
               name: {{ template "redis-ha.fullname" . }}
             {{- end }}
-              key: auth
+              key: {{ .Values.authKey }}
 {{- end }}
         volumeMounts:
         - name: config
@@ -114,18 +161,12 @@ spec:
             {{- else }}
               name: {{ template "redis-ha.fullname" . }}
             {{- end }}
-              key: auth
+              key: {{ .Values.authKey }}
 {{- end }}
         livenessProbe:
-          exec:
-            command: [ "sh", "/probes/readiness.sh", "{{ .Values.redis.port }}"]
+          tcpSocket:
+            port: {{ .Values.redis.port }}
           initialDelaySeconds: 15
-          periodSeconds: 5
-        readinessProbe:
-          exec:
-            command: ["sh", "/probes/readiness.sh", "{{ .Values.redis.port }}"]
-          initialDelaySeconds: 15
-          periodSeconds: 5
         resources:
 {{ toYaml .Values.redis.resources | indent 10 }}
         ports:
@@ -134,8 +175,6 @@ spec:
         volumeMounts:
         - mountPath: /data
           name: data
-        - mountPath: /probes
-          name: probes
       - name: sentinel
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
@@ -153,18 +192,12 @@ spec:
             {{- else }}
               name: {{ template "redis-ha.fullname" . }}
             {{- end }}
-              key: auth
+              key: {{ .Values.authKey }}
 {{- end }}
         livenessProbe:
-          exec:
-            command: [ "sh", "/probes/readiness.sh", "{{ .Values.sentinel.port }}"]
+          tcpSocket:
+            port: {{ .Values.sentinel.port }}
           initialDelaySeconds: 15
-          periodSeconds: 5
-        readinessProbe:
-          exec:
-            command: ["sh", "/probes/readiness.sh", "{{ .Values.sentinel.port }}"]
-          initialDelaySeconds: 15
-          periodSeconds: 5
         resources:
 {{ toYaml .Values.sentinel.resources | indent 10 }}
         ports:
@@ -173,8 +206,6 @@ spec:
         volumeMounts:
         - mountPath: /data
           name: data
-        - mountPath: /probes
-          name: probes
 {{- if .Values.exporter.enabled }}
       - name: redis-exporter
         image: "{{ .Values.exporter.image }}:{{ .Values.exporter.tag }}"
@@ -195,7 +226,7 @@ spec:
               {{- else }}
                 name: {{ template "redis-ha.fullname" . }}
               {{- end }}
-                key: auth
+                key: {{ .Values.authKey }}
         {{- end }}
         livenessProbe:
           httpGet:
@@ -214,9 +245,11 @@ spec:
       - name: config
         configMap:
           name: {{ template "redis-ha.fullname" . }}-configmap
-      - name: probes
-        configMap:
-          name: {{ template "redis-ha.fullname" . }}-probes
+      {{- if .Values.sysctlImage.mountHostSys }}
+      - name: host-sys
+        hostPath:
+          path: /sys
+      {{- end }}
 {{- if .Values.persistentVolume.enabled }}
   volumeClaimTemplates:
   - metadata:

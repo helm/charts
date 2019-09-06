@@ -1,4 +1,4 @@
-{{- if ne .Values.efsProvisioner.efsFileSystemId "fs-12345678" }}
+{{- if or (ne .Values.efsProvisioner.efsFileSystemId "fs-12345678") (.Values.efsProvisioner.dnsName) }}
 {{/*
 The `efsFileSystemId` value must be set.
 
@@ -39,13 +39,17 @@ spec:
       labels:
         app: {{ template "efs-provisioner.name" . }}
         release: "{{ .Release.Name }}"
-      annotations:
-{{ toYaml .Values.annotations | indent 8 }}
     spec:
       serviceAccount: {{ template "efs-provisioner.serviceAccountName" . }}
       {{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"
       {{- end }}
+{{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range $pullSecret := .Values.image.pullSecrets }}
+        - name: {{ $pullSecret }}
+      {{- end }}
+{{- end }}
       containers:
       - name: {{ template "efs-provisioner.fullname" . }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -57,6 +61,12 @@ spec:
           value: {{ .Values.efsProvisioner.awsRegion }}
         - name: PROVISIONER_NAME
           value: {{ .Values.efsProvisioner.provisionerName }}
+        {{- if .Values.efsProvisioner.dnsName }}
+        - name: DNS_NAME
+          value: {{ .Values.efsProvisioner.dnsName }}
+        {{- end }}
+        resources:
+          {{- toYaml .Values.resources | nindent 12 }}
         volumeMounts:
         - name: pv-volume
           subPath: {{ (trimPrefix "/" .Values.efsProvisioner.path) }}
@@ -67,6 +77,8 @@ spec:
         image: {{ .Values.busyboxImage.repository}}:{{ .Values.busyboxImage.tag}}
         imagePullPolicy: {{ .Values.busyboxImage.pullPolicy }}
         command: [ "sh", "-c", "mkdir -p /efs-vol-root/{{ (trimPrefix "/" .Values.efsProvisioner.path) }}" ]
+        resources:
+          {{- toYaml .Values.resources | nindent 12 }}
         volumeMounts:
         - name: pv-volume
           mountPath: /efs-vol-root
@@ -74,7 +86,11 @@ spec:
       volumes:
       - name: pv-volume
         nfs:
+          {{- if .Values.efsProvisioner.dnsName }}
+          server: {{ .Values.efsProvisioner.dnsName }}
+          {{- else }}
           server: {{ .Values.efsProvisioner.efsFileSystemId }}.efs.{{ .Values.efsProvisioner.awsRegion }}.amazonaws.com
+          {{- end }}
           path: /
 {{- end }}
     {{- if .Values.nodeSelector }}
@@ -84,4 +100,8 @@ spec:
     {{- if .Values.affinity }}
       affinity:
 {{ toYaml .Values.affinity | indent 8 }}
+    {{- end }}
+    {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations| indent 8 }}
     {{- end }}

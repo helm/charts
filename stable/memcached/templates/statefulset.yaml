@@ -8,7 +8,9 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  {{- if eq .Values.kind "StatefulSet" }}
   serviceName: {{ template "memcached.fullname" . }}
+  {{- end }}
   replicas: {{ .Values.replicaCount }}
   template:
     metadata:
@@ -17,11 +19,18 @@ spec:
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
         heritage: "{{ .Release.Service }}"
+{{- with .Values.podLabels }}
+{{ toYaml . | indent 8 }}
+{{- end}}
 {{- with .Values.podAnnotations }}
       annotations:
 {{ toYaml . | indent 8 }}
 {{- end }}
     spec:
+      {{- if .Values.securityContext.enabled }}
+      securityContext:
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+      {{- end }}
       affinity:
         podAntiAffinity:
         {{- if eq .Values.AntiAffinity "hard" }}
@@ -45,9 +54,13 @@ spec:
       - name: {{ template "memcached.fullname" . }}
         image: {{ .Values.image }}
         imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+        {{- if .Values.securityContext.enabled }}
+        securityContext:
+          runAsUser: {{ .Values.securityContext.runAsUser }}
+        {{- end }}
         command:
         - memcached
-        - -m {{ .Values.memcached.maxItemMemory  }}
+        - -m {{ .Values.memcached.maxItemMemory }}
         {{- if .Values.memcached.extendedOptions }}
         - -o
         - {{ .Values.memcached.extendedOptions }}
@@ -55,6 +68,9 @@ spec:
         {{- if .Values.memcached.verbosity }}
         - -{{ .Values.memcached.verbosity }}
         {{- end }}
+{{- with .Values.memcached.extraArgs }}
+{{ toYaml . | indent 8 }}
+{{- end }}
         ports:
         - name: memcache
           containerPort: 11211
@@ -74,6 +90,10 @@ spec:
       - name: metrics
         image: {{ .Values.metrics.image }}
         imagePullPolicy: {{ default "" .Values.metrics.imagePullPolicy | quote }}
+        {{- if .Values.securityContext.enabled }}
+        securityContext:
+          runAsUser: {{ .Values.securityContext.runAsUser }}
+        {{- end }}
         ports:
         - name: metrics
           containerPort: 9150

@@ -181,6 +181,10 @@ service:
     ##
     databaseName:
 
+    ## Database SSL Mode for Postgres.  Unused unless `postgresql.install` is false.
+    ##
+    databaseSSLMode: disable
+
     ## Hook task queue length, increase if webhook shooting starts hanging
     ##
     webhookQueueLength: 1000
@@ -364,6 +368,10 @@ postgresql:
   ## PostgreSQL Database to create.
   ##
   postgresDatabase: gogs
+
+  ## PostgreSQL SSL Mode
+  ##
+  postgresSSLMode: disable
 
   ## Persistent Volume Storage configuration.
   ## ref: https://kubernetes.io/docs/user-guide/persistent-volumes

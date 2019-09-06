@@ -22,7 +22,7 @@ autoDiscoverAwsVpcID: false
 
 scope:
   ## If provided, the ALB ingress controller will only act on Ingress resources annotated with this class
-  ## Ref: https://github.com/kubernetes-sigs/aws-alb-ingress-controller/blob/master/docs/configuration.md#limiting-ingress-class
+  ## Ref: https://github.com/kubernetes-sigs/aws-alb-ingress-controller/blob/master/docs/guide/controller/config.md#limiting-ingress-class
   ingressClass: alb
 
   ## If true, the ALB ingress controller will only act on Ingress resources in a single namespace
@@ -30,7 +30,7 @@ scope:
   singleNamespace: false
 
   ## If scope.singleNamespace=true, the ALB ingress controller will only act on Ingress resources in this namespace
-  ## Ref: https://github.com/kubernetes-sigs/aws-alb-ingress-controller/blob/master/docs/configuration.md#limiting-namespaces
+  ## Ref: https://github.com/kubernetes-sigs/aws-alb-ingress-controller/blob/master/docs/guide/controller/config.md#limiting-namespaces
   ## Default: namespace of the ALB ingress controller
   watchNamespace: ""
 
@@ -63,6 +63,9 @@ enableLivenessProbe: false
 # How long to wait (in seconds) before checking the liveness probe
 livenessProbeInitialDelay: 30
 
+# How long to wait before timeout (in seconds) when checking controller liveness
+livenessProbeTimeout: 1
+
 rbac:
   ## If true, create & use RBAC resources
   ##
@@ -71,7 +74,7 @@ rbac:
 
 image:
   repository: docker.io/amazon/aws-alb-ingress-controller
-  tag: "v1.0.1"
+  tag: "v1.1.2"
   pullPolicy: IfNotPresent
 
 replicaCount: 1
@@ -99,3 +102,18 @@ tolerations: []
   #    effect: NoSchedule
 
 affinity: {}
+
+volumeMounts: []
+  # - name: aws-iam-credentials
+  #   mountPath: /meta/aws-iam
+  #   readOnly: true
+
+volumes: []
+  # - name: aws-iam-credentials
+  #   secret:
+  #     secretName: alb-ingress-controller-role
+
+# Leverage a PriorityClass to ensure your pods survive resource shortages
+# ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
+# PriorityClass: system-cluster-critical
+priorityClassName: ""

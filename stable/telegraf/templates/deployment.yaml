@@ -1,32 +1,43 @@
-{{- if gt (len .Values.single.config.outputs.influxdb.urls) 0 }}
-{{- if .Values.single.enabled -}}
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}-s
+  name: {{ include "telegraf.fullname" . }}
   labels:
-    app: {{ template "fullname" . }}-s
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
+    app.kubernetes.io/name: {{ include "telegraf.name" . }}
+    helm.sh/chart: {{ include "telegraf.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "telegraf.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}-s
+        app.kubernetes.io/name: {{ include "telegraf.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+      {{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+      {{- end }}
     spec:
       containers:
-      - name: {{ template "fullname" . }}
+      - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repo }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ default "" .Values.image.pullPolicy | quote }}
         resources:
-{{ toYaml .Values.single.resources | indent 10 }}
+{{ toYaml .Values.resources | indent 10 }}
+        env:
+{{ toYaml .Values.env | indent 8 }}       
         volumeMounts:
         - name: config
           mountPath: /etc/telegraf
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | indent 8 }}
+      {{- end }}
       volumes:
       - name: config
         configMap:
-          name: {{ template "fullname" . }}-s
-{{- end -}}
-{{- end -}}
+          name: {{ include "telegraf.fullname" . }}

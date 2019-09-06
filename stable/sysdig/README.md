@@ -1,6 +1,6 @@
 # Sysdig
 
-[Sysdig](https://www.sysdig.com/) is a unified platform for container and microservices monitoring, troubleshooting, security and forensics. Sysdig platform has been built on top of [Sysdig tool](https://sysdig.com/opensource/sysdig/) and [Sysdig Inspect](https://sysdig.com/blog/sysdig-inspect/) open-source technologies.
+[Sysdig](https://sysdig.com/) is a unified platform for container and microservices monitoring, troubleshooting, security and forensics. Sysdig platform has been built on top of [Sysdig tool](https://sysdig.com/opensource/sysdig/) and [Sysdig Inspect](https://sysdig.com/blog/sysdig-inspect/) open-source technologies.
 
 ## Introduction
 
@@ -15,8 +15,7 @@ This chart adds the Sysdig agent for [Sysdig Monitor](https://sysdig.com/product
 To install the chart with the release name `my-release`, retrieve your Sysdig Monitor Access Key from your [Account Settings](https://app.sysdigcloud.com/#/settings/agentInstallation) and run:
 
 ```bash
-$ helm install --name my-release \
-    --set sysdig.accessKey=YOUR-KEY-HERE stable/sysdig
+$ helm install --name my-release --set sysdig.accessKey=YOUR-KEY-HERE stable/sysdig
 ```
 
 After a few seconds, you should see hosts and containers appearing in Sysdig Monitor and Sysdig Secure.
@@ -42,13 +41,13 @@ The following table lists the configurable parameters of the Sysdig chart and th
 | ---                             | ---                                                                    | ---                                         |
 | `image.registry`                | Sysdig agent image registry                                            | `docker.io`                                 |
 | `image.repository`              | The image repository to pull from                                      | `sysdig/agent`                              |
-| `image.tag`                     | The image tag to pull                                                  | `0.88.1`                                    |
+| `image.tag`                     | The image tag to pull                                                  | `0.92.1`                                    |
 | `image.pullPolicy`              | The Image pull policy                                                  | `IfNotPresent`                              |
 | `image.pullSecrets`             | Image pull secrets                                                     | `nil`                                       |
-| `resources.requests.cpu`        | CPU requested for being run in a node                                  | `100m`                                      |
+| `resources.requests.cpu`        | CPU requested for being run in a node                                  | `600m`                                      |
 | `resources.requests.memory`     | Memory requested for being run in a node                               | `512Mi`                                     |
-| `resources.limits.cpu`          | CPU limit                                                              | `200m`                                      |
-| `resources.limits.memory`       | Memory limit                                                           | `1024Mi`                                    |
+| `resources.limits.cpu`          | CPU limit                                                              | `2000m`                                     |
+| `resources.limits.memory`       | Memory limit                                                           | `1536Mi`                                    |
 | `rbac.create`                   | If true, create & use RBAC resources                                   | `true`                                      |
 | `serviceAccount.create`         | Create serviceAccount                                                  | `true`                                      |
 | `serviceAccount.name`           | Use this value as serviceAccountName                                   | ` `                                         |
@@ -56,7 +55,7 @@ The following table lists the configurable parameters of the Sysdig chart and th
 | `ebpf.enabled`                  | Enable eBPF support for Sysdig instead of `sysdig-probe` kernel module | `false`                                     |
 | `ebpf.settings.mountEtcVolume`  | Needed to detect which kernel version are running in Google COS        | `true`                                      |
 | `sysdig.accessKey`              | Your Sysdig Monitor Access Key                                         | `Nil` You must provide your own key         |
-| `sysdig.settings`               | Settings for agent's configuration file                                | `{}`                                        |
+| `sysdig.settings`               | Settings for agent's configuration file                                | ` `                                         |
 | `secure.enabled`                | Enable Sysdig Secure                                                   | `false`                                     |
 | `customAppChecks`               | The custom app checks deployed with your agent                         | `{}`                                        |
 | `tolerations`                   | The tolerations for scheduling                                         | `node-role.kubernetes.io/master:NoSchedule` |
@@ -65,7 +64,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 ```bash
 $ helm install --name my-release \
-    --set sysdig.accessKey=YOUR-KEY-HERE,sysdig.settings.tags="role:webserver,location:europe" \
+    --set sysdig.accessKey=YOUR-KEY-HERE,sysdig.settings.tags="role:webserver\,location:europe" \
     stable/sysdig
 ```
 
@@ -77,11 +76,11 @@ $ helm install --name my-release -f values.yaml stable/sysdig
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
-## On-Premise deployment settings
+## On-Premise backend deployment settings
 
-There are several people who runs Sysdig platform On-Premise, in its own infrastructure.
+Sysdig platform backend can be also deployed On-Premise in your own infrastructure.
 
-This is also supported by the Helm chart, and you can enable it with the following parameters:
+Installing the agent using the Helm chart is also possible in this scenario, and you can enable it with the following parameters:
 
 | Parameter                                | Description                                              | Default |
 | ---                                      | ---                                                      | ---     |
@@ -93,7 +92,7 @@ This is also supported by the Helm chart, and you can enable it with the followi
 For example:
 
 ```bash
-$ helm install --name sysdig-agent-on-prem \
+$ helm install --name my-release \
     --set sysdig.accessKey=YOUR-KEY-HERE \
     --set sysdig.settings.collector=42.32.196.18 \
     --set sysdig.settings.collector_port=6443 \
@@ -101,43 +100,87 @@ $ helm install --name sysdig-agent-on-prem \
     stable/sysdig
 ```
 
-## Using private image registries
+## Using private Docker image registry
 
-To authenticate against an image registry you will need to store the credentials
-in a Secret:
+If you pull the Sysdig agent Docker image from a private registry that requires authentication, some additional configuration is required.
+
+First, create a secret that stores the registry credentials:
 
 ```bash
-kubectl create secret docker-registry NAME \
- --docker-server=SERVER \
- --docker-username=USERNAME \
- --docker-password=TOKEN \
- --docker-email=EMAIL
+$ kubectl create secret docker-registry SECRET_NAME \
+  --docker-server=SERVER \
+  --docker-username=USERNAME \
+  --docker-password=TOKEN \
+  --docker-email=EMAIL
 ```
 
-The values YAML file will need to point to the Secret you just created (this
-cannot be done using the command-line):
+Then, point to this secret in the values YAML file:
 
 ```yaml
+sysdig:
+  accessKey: YOUR-KEY-HERE
 image:
+  registry: myrepo.mydomain.tld
+  repository: sysdig-agent
+  tag: latest-tag
   pullSecrets:
-    - name: NAME
+    - name: SECRET_NAME
 ```
 
 Finally, set the accessKey value and you are ready to deploy the Sysdig agent
 using the Helm chart:
 
-
 ```bash
-helm install --name sysdig-agent -f private-registry-values.yaml stable/sysdig
+$ helm install --name my-release -f values.yaml stable/sysdig
 ```
 
 You can read more details about this in [Kubernetes Documentation](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/).
 
-## Custom App Checks
+## Modifying Sysdig agent configuration
 
-Application checks are integrations that allow the Sysdig agent to poll specific metrics exposed by any application. Sysdig Monitor has several built-in app checks, but sometimes you need to create your own.
+The Sysdig agent uses a file called `dragent.yaml` to store the configuration.
 
-You can deploy them with the following YAML:
+Using the Helm chart, the default configuration settings can be updated using `sysdig.settings` either via `--set sysdig.settings.key = value` or in the values YAML file. For example, to eanble Prometheus metrics scraping, you need this in your `values.yaml` file::
+
+```yaml
+sysdig:
+  accessKey: YOUR-KEY-HERE
+  settings:
+    prometheus:
+      enabled: true
+      histograms: true
+```
+
+```bash
+$ helm install --name my-release -f values.yaml stable/sysdig
+```
+
+## Upgrading Sysdig agent configuration
+
+If you need to upgrade the agent configuration file, first modify the YAML file (in this case we are increasing the metrics limit scraping Prometheus metrics):
+
+```yaml
+sysdig:
+  accessKey: YOUR-KEY-HERE
+  settings:
+    prometheus:
+      enabled: true
+      histograms: true
+      max_metrics: 2000
+      max_metrics_per_process: 400
+```
+
+And then, upgrade Helm chart with:
+
+```bash
+$ helm upgrade my-release -f values.yaml stable/sysdig
+```
+
+## Adding custom AppChecks
+
+[Application checks](https://sysdigdocs.atlassian.net/wiki/spaces/Monitor/pages/204767363/) are integrations that allow the Sysdig agent to collect metrics exposed by specific services. Sysdig has several built-in AppChecks, but sometimes you might need to [create your own](https://sysdigdocs.atlassian.net/wiki/spaces/Monitor/pages/204767436/).
+
+Your own AppChecks can deployed with the Helm chart embedding them in the values YAML file:
 
 ```yaml
 customAppChecks:
@@ -149,84 +192,57 @@ customAppChecks:
             self.gauge("testhelm", 1)
 
 sysdig:
+  accessKey: YOUR-KEY-HERE
   settings:
     app_checks:
       - name: sample
         interval: 10
         pattern: # pattern to match the application
-          comm: systemd
+          comm: myprocess
         conf:
-          key: value
+          mykey: myvalue
 ```
 
-The first section, deploys the Custom App Check in a Kubernetes configmap, and the second configures it using dragent.yaml file. So that deploy Sysdig Chart using this file:
+The first section, dumps the AppCheck in a Kubernetes configmap and makes it available within the Sysdig agent container. The second, configures it on the `dragent.yaml` file.
+
+Once the values YAML file is ready, we will deploy the Chart like before:
 
 ```bash
-$ helm install --name sysdig-agent-1 \
-  --set sysdig.accessKey=SYSDIG_ACCESS_KEY \
-  -f custom-appchecks.yaml \
-  stable/sysdig
-
+$ helm install --name my-release -f values.yaml stable/sysdig
 ```
-
-And that's all, you will have your Custom App Check up and running.
-
-You can get more information about [Custom App Checks in Sysdig's Official Documentation](https://sysdigdocs.atlassian.net/wiki/spaces/Monitor/pages/204767436/).
 
 ### Automating the generation of custom-app-checks.yaml file
 
-Sometimes edit YAML files with multistrings is a bit cumbersome and error prone, so we added a script for automating this step and make your life easier.
+Sometimes editing and maintaining YAML files can be a bit cumbersome and error prone, so we have created a script for automating this process and make your life easier.
 
-This script lives in [Helm Chart repository](https://github.com/helm/charts) in the `stable/sysdig/scripts` directory.
+Imagine that you have custom AppChecks for a number of services like Redis, MongoDB and Traefik.
 
-Imagine that you would like to add rules for your Redis, MongoDB and Traefik containers, you have to:
+You have already a `values.yaml` with just your configuration:
+
+```yaml
+sysdig:
+  accessKey: YOUR-KEY-HERE
+  settings:
+    app_checks:
+      - name: myredis
+        [...]
+      - name: mymongo
+        [...]
+      - name: mytraefik
+        [...]
+```
+
+You can generate an additional values YAML file with the custom AppChecks:
 
 ```bash
 $ git clone https://github.com/kubernetes/charts.git
 $ cd stable/sysdig
 $ ./scripts/appchecks2helm appChecks/solr.py appChecks/traefik.py appChecks/nats.py > custom-app-checks.yaml
-$ helm install --name sysdig -f custom-app-checks.yaml stable/sysdig
 ```
 
-## Deploying the AWS Marketplace Sysdig agent image
-
-This is an use case similar to pulling images from a private registry. First you
-need to get the authorization token for the AWS Marketplace ECS image registry:
+And deploy the Chart with both of them:
 
 ```bash
-aws ecr --region=us-east-1 get-authorization-token --output text --query authorizationData[].authorizationToken | base64 -d | cut -d: -f2
+$ helm install --name my-release -f custom-app-checks.yaml -f values.yaml stable/sysdig
 ```
 
-And then use it to create the Secret. Don't forget to replace TOKEN and EMAIL
-with your own values:
-
-```bash
-kubectl create secret docker-registry aws-marketplace-credentials \
- --docker-server=217273820646.dkr.ecr.us-east-1.amazonaws.com \
- --docker-username=AWS \
- --docker-password="TOKEN" \
- --docker-email="EMAIL"
-```
-
-Next you need to create a values YAML file to pass the specific ECS registry
-configuration (you will find these values when you activate the software from
-the AWS Marketplace):
-
-```yaml
-sysdig:
-  accessKey: XxxXXxXXxXXxxx
-
-image:
-  registry: 217273820646.dkr.ecr.us-east-1.amazonaws.com
-  repository: 2df5da52-6fa2-46f6-b164-5b879e86fd85/cg-3361214151/agent
-  tag: 0.85.1-latest
-  pullSecrets:
-    - name: aws-marketplace-credentials
-```
-
-Finally, set the accessKey value and you are ready to deploy the Sysdig agent
-using the Helm chart:
-
-```bash
-helm install --name sysdig-agent -f aws-marketplace-values.yaml stable/sysdig
-```

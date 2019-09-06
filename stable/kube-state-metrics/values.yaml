@@ -1,20 +1,44 @@
 # Default values for kube-state-metrics.
 prometheusScrape: true
 image:
-  repository: k8s.gcr.io/kube-state-metrics
-  tag: v1.5.0
+  repository: quay.io/coreos/kube-state-metrics
+  tag: v1.7.2
   pullPolicy: IfNotPresent
+
+replicas: 1
+
 service:
   port: 8080
   # Default to clusterIP for backward compatibility
   type: ClusterIP
   nodePort: 0
   loadBalancerIP: ""
+  annotations: {}
+
+customLabels: {}
+
+hostNetwork: false
+
 rbac:
   # If true, create & use RBAC resources
   create: true
-  # Ignored if rbac.create is true
-  serviceAccountName: default
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created, require rbac true
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+  # Reference to one or more secrets to be used when pulling images
+  # ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  imagePullSecrets: []
+
+prometheus:
+  monitor:
+    enabled: false
+    additionalLabels: {}
+    namespace: ""
+    honorLabels: false
 
 ## Specify if a Pod Security Policy for kube-state-metrics must be created
 ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/
@@ -41,6 +65,10 @@ securityContext:
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
 nodeSelector: {}
 
+## Affinity settings for pod assignment
+## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+affinity: {}
+
 ## Tolerations for pod assignment
 ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
 tolerations: []
@@ -54,12 +82,14 @@ podAnnotations: {}
 # Available collectors for kube-state-metrics. By default all available
 # collectors are enabled.
 collectors:
+  certificatesigningrequests: true
   configmaps: true
   cronjobs: true
   daemonsets: true
   deployments: true
   endpoints: true
   horizontalpodautoscalers: true
+  ingresses: true
   jobs: true
   limitranges: true
   namespaces: true
@@ -74,6 +104,8 @@ collectors:
   secrets: true
   services: true
   statefulsets: true
+  storageclasses: true
+  verticalpodautoscalers: false
 
 # Namespace to be enabled for collecting resources. By default all namespaces are collected.
 # namespace: ""

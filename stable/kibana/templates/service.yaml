@@ -48,6 +48,9 @@ spec:
   selector:
     app: {{ template "kibana.name" . }}
     release: {{ .Release.Name }}
+{{- range $key, $value := .Values.service.selector }}
+    {{ $key }}: {{ $value | quote }}
+{{- end }}
 {{- if .Values.service.loadBalancerIP }}
   loadBalancerIP: {{ .Values.service.loadBalancerIP }}
 {{- end }}

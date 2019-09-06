@@ -29,12 +29,7 @@ spec:
   {{- end }}
 {{- end }}
     spec:
-      {{- if .Values.image.pullSecrets }}
-      imagePullSecrets:
-      {{- range .Values.image.pullSecrets }}
-        - name: {{ . }}
-      {{- end}}
-      {{- end }}
+{{- include "prestashop.imagePullSecrets" . | indent 6 }}
       hostAliases:
       - ip: "127.0.0.1"
         hostnames:
@@ -162,15 +157,12 @@ spec:
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
-        - mountPath: /bitnami/apache
-          name: prestashop-data
-          subPath: apache
         - mountPath: /bitnami/prestashop
           name: prestashop-data
           subPath: prestashop
 {{- if .Values.metrics.enabled }}
       - name: metrics
-        image: {{ template "metrics.image" . }}
+        image: {{ template "prestashop.metrics.image" . }}
         imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
         command: [ '/bin/apache_exporter', '-scrape_uri', 'http://status.localhost:80/server-status/?auto']
         ports:
@@ -198,5 +190,9 @@ spec:
           claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "prestashop.fullname" . }}-prestashop{{- end }}
       {{- else }}
         emptyDir: {}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
       {{- end }}
 {{- end -}}

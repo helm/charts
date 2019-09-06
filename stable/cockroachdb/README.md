@@ -1,8 +1,11 @@
 # CockroachDB Helm Chart
 
+## Documentation
+Below is a brief overview of operating the CockroachDB Helm Chart and some specific implementation details.  For additional information, please see https://www.cockroachlabs.com/docs/v19.1/orchestrate-cockroachdb-with-kubernetes-insecure.html
+
 ## Prerequisites Details
 * Kubernetes 1.8
-* PV support on the underlying infrastructure
+* PV support on the underlying infrastructure. [Docker for windows hostpath provisioner is not supported](https://github.com/cockroachdb/docs/issues/3184).
 * If you want to secure your cluster to use TLS certificates for all network
   communication, [Helm must be installed with RBAC
   privileges](https://github.com/kubernetes/helm/blob/master/docs/rbac.md)
@@ -43,7 +46,102 @@ certificate for each node (e.g.  `default.node.eerie-horse-cockroachdb-0` and
 one client certificate for the job that initializes the cluster (e.g.
 `default.node.root`).
 
+Confirm that three pods are ```running``` successfully and init has completed:
+
+```shell
+kubectl get pods
+```
+```
+NAME                                READY     STATUS      RESTARTS   AGE
+my-release-cockroachdb-0            1/1       Running     0          1m
+my-release-cockroachdb-1            1/1       Running     0          1m
+my-release-cockroachdb-2            1/1       Running     0          1m
+my-release-cockroachdb-init-k6jcr   0/1       Completed   0          1m
+```
+
+Confirm that persistent volumes are created and claimed for each pod:
+```shell
+kubectl get persistentvolumes
+```
+```
+NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS    CLAIM                                      STORAGECLASS   REASON    AGE
+pvc-64878ebf-f3f0-11e8-ab5b-42010a8e0035   100Gi      RWO            Delete           Bound     default/datadir-my-release-cockroachdb-0   standard                 51s
+pvc-64945b4f-f3f0-11e8-ab5b-42010a8e0035   100Gi      RWO            Delete           Bound     default/datadir-my-release-cockroachdb-1   standard                 51s
+pvc-649d920d-f3f0-11e8-ab5b-42010a8e0035   100Gi      RWO            Delete           Bound     default/datadir-my-release-cockroachdb-2   standard                 51s
+```
 ## Upgrading
+### From 2.0.0 on
+Launch a temporary interactive pod and start the built-in SQL client:
+
+```shell
+kubectl run cockroachdb -it \
+--image=cockroachdb/cockroach \
+--rm \
+--restart=Never \
+-- sql \
+--insecure \
+--host=my-release-cockroachdb-public
+```
+
+Set the  ```cluster.preserve_downgrade_option``` cluster setting where $current_version = the version of CRDB currently running, e.g. 2.1:
+```> SET CLUSTER SETTING cluster.preserve_downgrade_option = '$current_version';```
+
+Exit the shell and delete the temp pod:
+```> \q ```
+
+Kick off the upgrade process by changing to the new Docker image, where $new_version is the version being upgraded to:
+
+```shell
+kubectl delete job my-release-cockroachdb-init
+```
+```shell
+helm upgrade \
+my-release \
+stable/cockroachdb \
+--set ImageTag=$new_version \
+--reuse-values
+```
+Monitor the cluster's pods until all have been successfully restarted:
+
+```shell
+kubectl get pods
+```
+```
+NAME                                READY     STATUS              RESTARTS   AGE
+my-release-cockroachdb-0            1/1       Running             0          2m
+my-release-cockroachdb-1            1/1       Running             0          3m
+my-release-cockroachdb-2            1/1       Running             0          3m
+my-release-cockroachdb-3            0/1       ContainerCreating   0          25s
+my-release-cockroachdb-init-nwjkh   0/1       ContainerCreating   0          6s
+```
+```shell
+kubectl get pods \
+-o jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.spec.containers[0].image}{"\n"}'
+```
+```
+my-release-cockroachdb-0    cockroachdb/cockroach:v19.1.1
+my-release-cockroachdb-1    cockroachdb/cockroach:v19.1.1
+my-release-cockroachdb-2    cockroachdb/cockroach:v19.1.1
+my-release-cockroachdb-3    cockroachdb/cockroach:v19.1.1
+```
+
+Resume normal operations.  Once you are comfortable that the stability and performance of the cluster is what you'd expect post upgrade, finalize it by running the following:
+
+```shell
+kubectl run cockroachdb -it \
+--image=cockroachdb/cockroach \
+--rm \
+--restart=Never \
+-- sql \
+--insecure \
+--host=my-release-cockroachdb-public
+```
+```
+> RESET CLUSTER SETTING cluster.preserve_downgrade_option;
+```
+```
+\q
+```
 ### To 2.0.0
 Due to having no explicit selector set for the StatefulSet before version 2.0.0 of
 this chart, upgrading from any version that uses a version of kubernetes that locks
@@ -69,7 +167,7 @@ The following table lists the configurable parameters of the CockroachDB chart a
 | ------------------------------ | ------------------------------------------------ | ----------------------------------------- |
 | `Name`                         | Chart name                                       | `cockroachdb`                             |
 | `Image`                        | Container image name                             | `cockroachdb/cockroach`                   |
-| `ImageTag`                     | Container image tag                              | `v2.1.5`                                  |
+| `ImageTag`                     | Container image tag                              | `v19.1.3`                                 |
 | `ImagePullPolicy`              | Container pull policy                            | `Always`                                  |
 | `Replicas`                     | k8s statefulset replicas                         | `3`                                       |
 | `MaxUnavailable`               | k8s PodDisruptionBudget parameter                | `1`                                       |
@@ -82,7 +180,8 @@ The following table lists the configurable parameters of the CockroachDB chart a
 | `ExternalHttpPort`             | CockroachDB HTTP port on service                 | `8080`                                    |
 | `HttpName`                     | Name given to the http service port              | `http`                                    |
 | `Resources`                    | Resource requests and limits                     | `{}`                                      |
-| `Storage`                      | Persistent volume size                           | `100Gi`                                     |
+| `InitPodResources`             | Resource requests and limits for the short-lived init pod | `{}`                             |
+| `Storage`                      | Persistent volume size                           | `100Gi`                                   |
 | `StorageClass`                 | Persistent volume class                          | `null`                                    |
 | `CacheSize`                    | Size of CockroachDB's in-memory cache            | `25%`                                     |
 | `MaxSQLMemory`                 | Max memory to use processing SQL queries         | `25%`                                     |
@@ -104,6 +203,9 @@ The following table lists the configurable parameters of the CockroachDB chart a
 | `Locality`                     | Locality attribute for this deployment           | `""`                                      |
 | `ExtraArgs`                    | Additional command-line arguments                | `[]`                                      |
 | `ExtraSecretMounts`            | Additional secrets to mount at cluster members   | `[]`                                      |
+| `ExtraEnvArgs`                 | Allows to set extra ENV args                     | `[]`                                      |
+| `ExtraAnnotations`             | Allows to set extra Annotations                  | `[]`                                      |
+| `ExtraInitAnnotations`         | Allows to set extra Annotations to init pod      | `[]`                                      |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 

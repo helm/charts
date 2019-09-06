@@ -117,6 +117,63 @@ helm install incubator/jaeger --name myrel --set provisionDataStore.cassandra=fa
 > **Tip**: It is highly encouraged to run the ElasticSearch cluster with storage persistence.
 
 
+## Installing the Chart using an Existing ElasticSearch Cluster with TLS
+
+If you already have an existing running ElasticSearch cluster with TLS, you can configure the chart as follows to use it as your backing store:
+
+Content of the `jaeger-values.yaml` file:
+
+```YAML
+storage:
+  type: elasticsearch
+  elasticsearch:
+    host: <HOST>
+    port: <PORT>
+    scheme: https
+    user: <USER>
+    password: <PASSWORD>
+provisionDataStore:
+  cassandra: false
+  elasticsearch: false
+query:
+  cmdlineParams:
+    es.tls.ca: "/tls/es.pem"
+  extraConfigmapMounts:
+    - name: jaeger-tls
+      mountPath: /tls
+      subPath: ""
+      configMap: jaeger-tls
+      readOnly: true
+collector:
+  cmdlineParams:
+    es.tls.ca: "/tls/es.pem"
+  extraConfigmapMounts:
+    - name: jaeger-tls
+      mountPath: /tls
+      subPath: ""
+      configMap: jaeger-tls
+      readOnly: true
+```
+
+Content of the `jaeger-tls-cfgmap.yaml` file:
+
+```YAML
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: jaeger-tls
+data:
+  es.pem: |
+    -----BEGIN CERTIFICATE-----
+    <CERT>
+    -----END CERTIFICATE-----
+```
+
+```bash
+kubectl apply -f jaeger-tls-cfgmap.yaml
+helm install incubator/jaeger --name myrel --values jaeger-values.yaml
+```
+
 ## Uninstalling the Chart
 
 To uninstall/delete the `myrel` deployment:
@@ -135,86 +192,99 @@ The following table lists the configurable parameters of the Jaeger chart and th
 
 |             Parameter                    |            Description              |                  Default               |
 |------------------------------------------|-------------------------------------|----------------------------------------|
-| `agent.annotations`                      | Annotations for Agent               |  nil                                   |
-| `agent.cmdlineParams`                    | Additional command line parameters  |  nil                                   |
-| `agent.dnsPolicy`                        | Configure DNS policy for agents     |  ClusterFirst                          |
-| `agent.service.annotations`              | Annotations for Agent SVC           |  nil                                   |
-| `agent.service.binaryPort`               | jaeger.thrift over binary thrift    |  6832                                  |
-| `agent.service.compactPort`              | jaeger.thrift over compact thrift   |  6831                                  |
-| `agent.image`                            | Image for Jaeger Agent              |  jaegertracing/jaeger-agent            |
-| `agent.podAnnotations`                   | Annotations for Agent pod           |  nil                                   |
-| `agent.pullPolicy`                       | Agent image pullPolicy              |  IfNotPresent                          |
+| `agent.annotations`                      | Annotations for Agent               |  `nil`                                   |
+| `agent.cmdlineParams`                    | Additional command line parameters  |  `nil`                                   |
+| `agent.dnsPolicy`                        | Configure DNS policy for agents     |  `ClusterFirst`                          |
+| `agent.service.annotations`              | Annotations for Agent SVC           |  `nil`                                   |
+| `agent.service.binaryPort`               | jaeger.thrift over binary thrift    |  `6832`                                  |
+| `agent.service.compactPort`              | jaeger.thrift over compact thrift   |  `6831`                                  |
+| `agent.image`                            | Image for Jaeger Agent              |  `jaegertracing/jaeger-agent`            |
+| `agent.podAnnotations`                   | Annotations for Agent pod           |  `nil`                                   |
+| `agent.pullPolicy`                       | Agent image pullPolicy              |  `IfNotPresent`                          |
 | `agent.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`       |
-| `agent.service.annotations`              | Annotations for Agent SVC           |  nil                                   |
-| `agent.service.binaryPort`               | jaeger.thrift over binary thrift    |  6832                                  |
-| `agent.service.compactPort`              | jaeger.thrift over compact thrift   |  6831                                  |
-| `agent.service.zipkinThriftPort`         | zipkin.thrift over compact thrift   |  5775                                  |
-| `agent.useHostNetwork`                   | Enable hostNetwork for agents       |  false                                 |
+| `agent.service.annotations`              | Annotations for Agent SVC           |  `nil`                                   |
+| `agent.service.binaryPort`               | jaeger.thrift over binary thrift    |  `6832`                                  |
+| `agent.service.compactPort`              | jaeger.thrift over compact thrift   |  `6831`                                  |
+| `agent.service.zipkinThriftPort`         | zipkin.thrift over compact thrift   |  `5775`                                  |
+| `agent.useHostNetwork`                   | Enable hostNetwork for agents       |  `false`                                 |
 | `agent.tolerations`                      | Node Tolerations                    | `[]`                                   |
-| `cassandra.config.cluster_name`          | Cluster name                        |  jaeger                                |
-| `cassandra.config.dc_name`               | Datacenter name                     |  dc1                                   |
-| `cassandra.config.endpoint_snitch`       | Node discovery method               |  GossipingPropertyFileSnitch           |
-| `cassandra.config.rack_name`             | Rack name                           |  rack1                                 |
-| `cassandra.config.seed_size`             | Seed size                           |  1                                     |
-| `cassandra.image.tag`                    | The image tag/version               |  3.11.3                                |
-| `cassandra.persistence.enabled`          | To enable storage persistence       |  false (Highly recommended to enable)  |
-| `collector.cmdlineParams`                | Additional command line parameters  |  nil                                   |
-| `collector.podAnnotations`               | Annotations for Collector pod       |  nil                                   |
-| `collector.service.httpPort`             | Client port for HTTP thrift         |  14268                                 |
-| `collector.service.annotations`          | Annotations for Collector SVC       |  nil                                   |
-| `collector.image`                        | Image for jaeger collector          |  jaegertracing/jaeger-collector        |
-| `collector.pullPolicy`                   | Collector image pullPolicy          |  IfNotPresent                          |
+| `collector.cmdlineParams`                | Additional command line parameters  |  `nil`                                   |
+| `collector.podAnnotations`               | Annotations for Collector pod       |  `nil`                                   |
+| `collector.service.httpPort`             | Client port for HTTP thrift         |  `14268`                                 |
+| `collector.service.annotations`          | Annotations for Collector SVC       |  `nil`                                   |
+| `collector.image`                        | Image for jaeger collector          |  `jaegertracing/jaeger-collector`        |
+| `collector.pullPolicy`                   | Collector image pullPolicy          |  `IfNotPresent`                          |
 | `collector.tolerations`                  | Node Tolerations                    | `[]`                                   |
-| `collector.service.annotations`          | Annotations for Collector SVC       |  nil                                   |
-| `collector.service.httpPort`             | Client port for HTTP thrift         |  14268                                 |
+| `collector.service.annotations`          | Annotations for Collector SVC       |  `nil`                                   |
+| `collector.service.httpPort`             | Client port for HTTP thrift         |  `14268`                                 |
 | `collector.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`   |
-| `collector.service.tchannelPort`         | Jaeger Agent port for thrift        |  14267                                 |
-| `collector.service.type`                 | Service type                        |  ClusterIP                             |
-| `collector.service.zipkinPort`           | Zipkin port for JSON/thrift HTTP    |  9411                                  |
-| `elasticsearch.cluster.name`             | Elasticsearch cluster name          |  "tracing"                             |
-| `elasticsearch.data.persistence.enabled` | To enable storage persistence       |  false (Highly recommended to enable)  |
-| `elasticsearch.image.tag`                | Elasticsearch image tag             |  "5.4"                                 |
-| `elasticsearch.rbac.create`              | To enable RBAC                      |  false                                 |
-| `hotrod.enabled`                         | Enables the Hotrod demo app         |  false                                 |
+| `collector.service.tchannelPort`         | Jaeger Agent port for thrift        |  `14267`                                 |
+| `collector.service.type`                 | Service type                        |  `ClusterIP`                             |
+| `collector.service.zipkinPort`           | Zipkin port for JSON/thrift HTTP    |  `9411`                                  |
+| `collector.extraConfigmapMounts`         | Additional collector configMap mounts |  `[]`                                  |
+| `elasticsearch.rbac.create`              | To enable RBAC                      |  `false`                                 |
+| `fullnameOverride`                       | Override full name                  |  `nil`                                 |
+| `hotrod.enabled`                         | Enables the Hotrod demo app         |  `false`                                 |
 | `hotrod.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`      |
-| `provisionDataStore.cassandra`           | Provision Cassandra Data Store      |  true                                  |
-| `provisionDataStore.elasticsearch`       | Provision Elasticsearch Data Store  |  false                                 |
-| `query.service.annotations`              | Annotations for Query SVC           |  nil                                   |
-| `query.cmdlineParams`                    | Additional command line parameters  |  nil                                   |
-| `query.image`                            | Image for Jaeger Query UI           |  jaegertracing/jaeger-query            |
-| `query.ingress.enabled`                  | Allow external traffic access       |  false                                 |
-| `query.podAnnotations`                   | Annotations for Query pod           |  nil                                   |
-| `query.pullPolicy`                       | Query UI image pullPolicy           |  IfNotPresent                          |
+| `nameOverride`                           | Override name                       | `nil`                                  |
+| `provisionDataStore.cassandra`           | Provision Cassandra Data Store      |  `true`                                  |
+| `provisionDataStore.elasticsearch`       | Provision Elasticsearch Data Store  |  `false`                                 |
+| `query.agentSidecar.enabled`              | Enable agent sidecare for query deployment           |  `true`                                  |
+| `query.service.annotations`              | Annotations for Query SVC           |  `nil`                                   |
+| `query.cmdlineParams`                    | Additional command line parameters  |  `nil`                                   |
+| `query.image`                            | Image for Jaeger Query UI           |  `jaegertracing/jaeger-query `           |
+| `query.ingress.enabled`                  | Allow external traffic access       |  `false`                                 |
+| `query.ingress.annotations`              | Configure annotations for Ingress   |  `{}`                                    |
+| `query.ingress.hosts`                    | Configure host for Ingress          |  `nil`                                   |
+| `query.ingress.tls`                      | Configure tls for Ingress           |  `nil`                                   |
+| `query.podAnnotations`                   | Annotations for Query pod           |  `nil`                                   |
+| `query.pullPolicy`                       | Query UI image pullPolicy           |  `IfNotPresent`                          |
 | `query.tolerations`                      | Node Tolerations                    | `[]`                                   |
 | `query.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`       |
-| `query.service.queryPort`                | External accessible port            |  80                                    |
-| `query.service.targetPort`               | Internal Query UI port              |  16686                                 |
-| `query.service.type`                     | Service type                        |  ClusterIP                             |
-| `query.basePath`                         | Base path of Query UI               |  /                                     |
-| `schema.annotations`                     | Annotations for the schema job      |  nil                                   |
-| `schema.image`                           | Image to setup cassandra schema     |  jaegertracing/jaeger-cassandra-schema |
-| `schema.mode`                            | Schema mode (prod or test)          |  prod                                  |
-| `schema.pullPolicy`                      | Schema image pullPolicy             |  IfNotPresent                          |
-| `spark.enabled`                          | Enables the dependencies job        |  false                                 |
-| `spark.image`                            | Image for the dependencies job      |  jaegertracing/spark-dependencies      |
-| `spark.pullPolicy`                       | Image pull policy of the deps image |  Always                                |
-| `spark.schedule`                         | Schedule of the cron job            |  "49 23 * * *"                         |
-| `spark.successfulJobsHistoryLimit`       | Cron job successfulJobsHistoryLimit |  5                                     |
-| `spark.failedJobsHistoryLimit`           | Cron job failedJobsHistoryLimit     |  5                                     |
-| `spark.tag`                              | Tag of the dependencies job image   |  latest                                |
+| `query.service.port`                | External accessible port            |  `80`                                    |
+| `query.service.type`                     | Service type                        |  `ClusterIP`                             |
+| `query.basePath`                         | Base path of Query UI, used for ingress as well (if it is enabled)   |  `/`    |
+| `query.extraConfigmapMounts`             | Additional query configMap mounts   |  `[]`                                    |
+| `schema.annotations`                     | Annotations for the schema job      |  `nil`                                   |
+| `schema.image`                           | Image to setup cassandra schema     |  `jaegertracing/jaeger-cassandra-schema` |
+| `schema.mode`                            | Schema mode (prod or test)          |  `prod`                                  |
+| `schema.pullPolicy`                      | Schema image pullPolicy             |  `IfNotPresent`                          |
+| `serviceAccounts.agent.create`              | Create service account   |  `true`                                  |
+| `serviceAccounts.agent.name`              | The name of the ServiceAccount to use. If not set and create is true, a name is generated using the fullname template  |  ``                                  |
+| `serviceAccounts.cassandraSchema.create`              | Create service account   |  `true`                                  |
+| `serviceAccounts.cassandraSchema.name`              | The name of the ServiceAccount to use. If not set and create is true, a name is generated using the fullname template  |  ``                                  |
+| `serviceAccounts.collector.create`              | Create service account   |  `true`                                  |
+| `serviceAccounts.collector.name`              | The name of the ServiceAccount to use. If not set and create is true, a name is generated using the fullname template  |  ``                                  |
+| `serviceAccounts.hotrod.create`              | Create service account   |  `true`                                  |
+| `serviceAccounts.hotrod.name`              | The name of the ServiceAccount to use. If not set and create is true, a name is generated using the fullname template  |  ``                                  |
+| `serviceAccounts.query.create`              | Create service account   |  `true`                                  |
+| `serviceAccounts.query.name`              | The name of the ServiceAccount to use. If not set and create is true, a name is generated using the fullname template  |  ``                                  |
+| `serviceAccounts.spark.create`              | Create service account   |  `true`                                  |
+| `serviceAccounts.spark.name`              | The name of the ServiceAccount to use. If not set and create is true, a name is generated using the fullname template  |  ``                                  |
+| `spark.enabled`                          | Enables the dependencies job        |  `false`                                 |
+| `spark.image`                            | Image for the dependencies job      |  `jaegertracing/spark-dependencies`      |
+| `spark.pullPolicy`                       | Image pull policy of the deps image |  `Always`                                |
+| `spark.schedule`                         | Schedule of the cron job            |  `"49 23 * * *"`                         |
+| `spark.successfulJobsHistoryLimit`       | Cron job successfulJobsHistoryLimit |  `5`                                     |
+| `spark.failedJobsHistoryLimit`           | Cron job failedJobsHistoryLimit     |  `5`                                     |
+| `spark.tag`                              | Tag of the dependencies job image   |  `latest`                                |
 | `spark.tolerations`                      | Node Tolerations                    | `[]`                                   |
-| `storage.cassandra.host`                 | Provisioned cassandra host          |  cassandra                             |
-| `storage.cassandra.password`             | Provisioned cassandra password      |  password                              |
-| `storage.cassandra.port`                 | Provisioned cassandra port          |  9042                                  |
-| `storage.cassandra.user`                 | Provisioned cassandra username      |  user                                  |
-| `storage.elasticsearch.host`             | Provisioned elasticsearch host      |  elasticsearch                         |
-| `storage.elasticsearch.password`         | Provisioned elasticsearch password  |  changeme                              |
-| `storage.elasticsearch.port`             | Provisioned elasticsearch port      |  9200                                  |
-| `storage.elasticsearch.scheme`           | Provisioned elasticsearch scheme    |  http                                  |
-| `storage.elasticsearch.user`             | Provisioned elasticsearch user      |  elastic                               |
-| `storage.elasticsearch.nodesWanOnly`     | Only access specified es host       |  false                                 |
-| `storage.type`                           | Storage type (ES or Cassandra)      |  cassandra                             |
-| `tag`                                    | Image tag/version                   |  1.9.0                                 |
+| `storage.cassandra.existingSecret`                 | Name of existing password secret object (for password authentication)          |  `nil`
+| `storage.cassandra.host`                 | Provisioned cassandra host          |  `cassandra`                             |
+| `storage.cassandra.password`             | Provisioned cassandra password  (ignored if storage.cassandra.existingSecret set)     |  `password`                              |
+| `storage.cassandra.port`                 | Provisioned cassandra port          |  `9042`                                  |
+| `storage.cassandra.usePassword`                 | Use password          |  `true`                                 |
+| `storage.cassandra.user`                 | Provisioned cassandra username      |  `user`                                  |
+| `storage.elasticsearch.existingSecret`                 | Name of existing password secret object (for password authentication)          |  `nil`                                 |
+| `storage.elasticsearch.host`             | Provisioned elasticsearch host      |  `elasticsearch`                         |
+| `storage.elasticsearch.password`         | Provisioned elasticsearch password  (ignored if storage.elasticsearch.existingSecret set)  |  `changeme`                              |
+| `storage.elasticsearch.port`             | Provisioned elasticsearch port      |  `9200`                                  |
+| `storage.elasticsearch.scheme`           | Provisioned elasticsearch scheme    |  `http`                                  |
+| `storage.elasticsearch.usePassword`                 | Use password          |  `true`                                 |
+| `storage.elasticsearch.user`             | Provisioned elasticsearch user      |  `elastic`                               |
+| `storage.elasticsearch.nodesWanOnly`     | Only access specified es host       |  `false`                                 |
+| `storage.type`                           | Storage type (ES or Cassandra)      |  `cassandra`                             |
+| `tag`                                    | Image tag/version                   |  `1.13.1`                                 |
 
 For more information about some of the tunable parameters that Cassandra provides, please visit the helm chart for [cassandra](https://github.com/kubernetes/charts/tree/master/incubator/cassandra) and the official [website](http://cassandra.apache.org/) at apache.org.
 
@@ -236,18 +306,5 @@ Jaeger itself is a stateful application that by default uses Cassandra to store 
 
 Override any required configuration options in the Cassandra chart that is required and then enable persistence by setting the following option: `--set cassandra.persistence.enabled=true`
 
-### Image tags
-
-Jaeger offers a multitude of [tags](https://hub.docker.com/u/jaegertracing/) for the various components used in this chart.
-
 ### Pending enhancements
-- [x] Use ConfigMap for configurable parameters
-- [x] Add the Hotrod example app
-- [x] Allow only some of the components to be installed
-- [x] Add support for the spark dependencies job (as a [k8s cronjob](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/))
-- [x] Use `provisionDataStore` key in the values.yaml file instead of `tags` to configure data store provisioning.
-- [x] Refactor chart to remove unnecessary quotes
-- [x] Remove the command overrides of the docker images and use [environment variables configuration](http://jaeger.readthedocs.io/en/latest/deployment/#configuration) instead
-- [x] Fix hard-coded replica count
-- [x] Collector service works both as `NodePort` and `ClusterIP` service types
 - [ ] Sidecar deployment support

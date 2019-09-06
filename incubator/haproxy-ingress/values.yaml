@@ -16,8 +16,11 @@ controller:
   name: controller
   image:
     repository: quay.io/jcmoraisjr/haproxy-ingress
-    tag: "v0.7-beta.7"
+    tag: "v0.7.2"
     pullPolicy: IfNotPresent
+
+  imagePullSecrets: []
+  # - name: secret-name
 
   ## Additional command line arguments to pass to haproxy-ingress-controller
   ## E.g. to specify the default SSL certificate you can use
@@ -36,7 +39,7 @@ controller:
   #         name: secret-resource
 
   ## Additional containers that can initialize the pod.
-  initContainers: {}
+  initContainers: []
 
   # custom haproxy template
   template: ""
@@ -118,6 +121,9 @@ controller:
   tcp: {}
   #  8080: "default/example-tcp-svc:9000"
 
+  # optionally disable static ports, including the default 80 and 443
+  enableStaticPorts: true
+
   ## Use host ports 80 and 443
   daemonset:
     useHostPort: false
@@ -177,8 +183,6 @@ controller:
   ##
   nodeSelector: {}
 
-  accessLogsSidecar: true
-
   service:
     annotations: {}
     labels: {}
@@ -236,8 +240,22 @@ controller:
     # (scrapes the stats port and exports metrics to prometheus)
     image:
       repository: quay.io/prometheus/haproxy-exporter
-      tag: "v0.9.0"
+      tag: "v0.10.0"
       pullPolicy: IfNotPresent
+
+    ## Additional command line arguments to pass to haproxy_exporter
+    ## E.g. to specify the client timeout you can use
+    ## extraArgs:
+    ##   haproxy.timeout: 15s
+    extraArgs: {}
+
+    resources: {}
+    #  limits:
+    #    cpu: 500m
+    #    memory: 600Mi
+    #  requests:
+    #    cpu: 200m
+    #    memory: 400Mi
 
     service:
       annotations: {}
@@ -255,6 +273,28 @@ controller:
       loadBalancerSourceRanges: []
       servicePort: 9101
       type: ClusterIP
+
+  ## access-logs side-car container for collecting haproxy logs
+  ## Enabling this will configure haproxy to emit logs to syslog localhost:514 UDP port.
+  ## The access-logs container starts a syslog process that listens on UDP 514 and outputs to stdout.
+  logs:
+    enabled: false
+
+    # syslog for haproxy
+    # https://github.com/whereisaaron/kube-syslog-sidecar
+    # (listens on UDP port 514 and outputs to stdout)
+    image:
+      repository: whereisaaron/kube-syslog-sidecar
+      tag: latest
+      pullPolicy: IfNotPresent
+
+    resources: {}
+    #  limits:
+    #    cpu: 200m
+    #    memory: 128Mi
+    #  requests:
+    #    cpu: 100m
+    #    memory: 32Mi
 
 # Default 404 backend
 defaultBackend:

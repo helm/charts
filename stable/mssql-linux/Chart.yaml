@@ -1,7 +1,7 @@
 apiVersion: v1
 description: SQL Server 2017 Linux Helm Chart
 name: mssql-linux
-version: 0.7.0
+version: 0.10.0
 appVersion: 14.0.3023.8
 home: https://hub.docker.com/r/microsoft/mssql-server-linux/
 icon: https://img-prod-cms-rt-microsoft-com.akamaized.net/cms/api/am/imageFileData/RE1I4Dx

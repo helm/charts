@@ -9,8 +9,7 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 {{- if .Values.service.annotations }}
-  annotations:
-{{ toYaml .Values.service.annotations | indent 4 }}
+  annotations: {{ toYaml .Values.service.annotations | nindent 4 }}
 {{- end }}
 spec:
   type: ClusterIP
@@ -18,11 +17,6 @@ spec:
   ports:
   - name: mongodb
     port: {{ .Values.service.port }}
-{{- if .Values.metrics.enabled }}
-  - name: metrics
-    port: 9216
-    targetPort: metrics
-{{- end }}
   selector:
     app: {{ template "mongodb.name" . }}
     release: {{ .Release.Name }}

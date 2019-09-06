@@ -3,7 +3,7 @@
 image:
   registry: docker.io
   repository: sysdig/agent
-  tag: 0.89.0
+  tag: 0.92.1
   # Specify a imagePullPolicy
   # Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   # ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -20,11 +20,11 @@ resources:
   # a sane defaults ones. If you have more questions or concerns, please refer
   # to Sysdig Support for more info about it
   requests:
-    cpu: 100m
+    cpu: 600m
     memory: 512Mi
   limits:
-    cpu: 200m
-    memory: 1024Mi
+    cpu: 2000m
+    memory: 1536Mi
 
 rbac:
   # true here enables creation of rbac resources
@@ -43,6 +43,20 @@ daemonset:
     # You can also customize maxUnavailable, maxSurge or minReadySeconds if you
     # need it
     type: RollingUpdate
+  ## Extra environment variables that will be pass onto deployment pods
+  env: {}
+
+# If is behind a proxy you can set the proxy server
+proxy:
+  httpProxy:
+  httpsProxy:
+  noProxy:
+
+# Set daemonset timezone
+timezone:
+
+# Set daemonset priorityClassName
+priorityClassName:
 
 ebpf:
   # Enable eBPF support for Sysdig Agent
@@ -54,10 +68,10 @@ ebpf:
     mountEtcVolume: true
 
 sysdig:
-    # Required: You need your Sysdig Monitor access key before running agents.
-    # accessKey: ""
+  # Required: You need your Sysdig Monitor access key before running agents.
+  accessKey: ""
 
-  settings: {}
+  settings:
     ### Agent tags
     # tags: linux:ubuntu,dept:dev,local:nyc
     #### Sysdig Software related config ####
@@ -70,7 +84,6 @@ sysdig:
     # collector certificate validation
     # ssl_verify_certificate: true
     #######################################
-    # new_k8s: true
     # k8s_cluster_name: production
 
 secure:

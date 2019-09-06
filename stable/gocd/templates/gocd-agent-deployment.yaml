@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "gocd.fullname" . }}-agent
@@ -8,6 +8,10 @@ metadata:
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
     component: agent
+  annotations:
+  {{- range $key, $value := .Values.agent.annotations.deployment }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
 spec:
   replicas: {{ .Values.agent.replicaCount }}
   {{- if .Values.agent.deployStrategy }}
@@ -25,8 +29,16 @@ spec:
         app: {{ template "gocd.name" . }}
         release: {{ .Release.Name | quote }}
         component: agent
+      annotations:
+      {{- range $key, $value := .Values.agent.annotations.pod }}
+        {{ $key }}: {{ $value | quote }}
+      {{- end }}
     spec:
       serviceAccountName: {{ template "gocd.agentServiceAccountName" . }}
+      securityContext:
+        runAsUser: {{ .Values.agent.securityContext.runAsUser }}
+        runAsGroup: {{ .Values.agent.securityContext.runAsGroup }}
+        fsGroup: {{ .Values.agent.securityContext.fsGroup }}
       {{- if or .Values.agent.persistence.enabled (or .Values.agent.security.ssh.enabled .Values.agent.persistence.extraVolumes) }}
       volumes:
       {{- end }}
@@ -84,9 +96,9 @@ spec:
             - name: AGENT_AUTO_REGISTER_HOSTNAME
               value: {{ .Values.agent.env.agentAutoRegisterHostname }}
             {{- end }}
-            {{- if .Values.agent.env.goAgentSystemProperties }}
-            - name: GO_AGENT_SYSTEM_PROPERTIES
-              value: {{ .Values.agent.env.goAgentSystemProperties }}
+            {{- if .Values.agent.env.goAgentJvmOpts }}
+            - name: GOCD_AGENT_JVM_OPTS
+              value: {{ .Values.agent.env.goAgentJvmOpts }}
             {{- end }}
             {{- if .Values.agent.env.goAgentBootstrapperJvmArgs }}
             - name: AGENT_BOOTSTRAPPER_JVM_ARGS
@@ -132,8 +144,18 @@ spec:
               readOnly: true
               mountPath: /home/go/.ssh
           {{- end }}
+          {{- if .Values.agent.preStop }}
+          lifecycle:
+            preStop:
+              exec:
+               command:
+{{ toYaml .Values.agent.preStop | indent 18 }}
+          {{- end }}
           securityContext:
             privileged: {{ .Values.agent.privileged }}
+      {{- if .Values.agent.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ .Values.agent.terminationGracePeriodSeconds }}
+      {{- end }}
       restartPolicy: {{ .Values.agent.restartPolicy }}
     {{- if .Values.agent.nodeSelector }}
       nodeSelector:

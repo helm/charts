@@ -29,7 +29,7 @@ spec:
               name: jmx
               protocol: TCP
             {{- end }}
-            - containerPort: 5900 
+            - containerPort: 5900
               name: vnc
           env:
             - name: HUB_PORT_4444_TCP_ADDR
@@ -80,8 +80,15 @@ spec:
             - name: TZ
               value: {{ .Values.firefoxDebug.timeZone | quote }}
             {{- end }}
+            {{- if .Values.firefoxDebug.extraEnvs }}
+{{ toYaml .Values.firefoxDebug.extraEnvs | indent 12 }}
+            {{- end }}
           resources:
 {{ toYaml .Values.firefoxDebug.resources | indent 12 }}
+{{- if or .Values.global.imagePullSecrets .Values.firefoxDebug.imagePullSecrets }}
+      imagePullSecrets: 
+      - name: {{ .Values.firefoxDebug.imagePullSecrets | default .Values.global.imagePullSecrets | quote }}
+{{- end }}
       hostAliases:
 {{ toYaml .Values.global.hostAliases | indent 8 }}
       nodeSelector:

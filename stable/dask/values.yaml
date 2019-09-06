@@ -1,3 +1,4 @@
+---
 # nameOverride: dask
 # fullnameOverride: dask
 
@@ -5,18 +6,26 @@ scheduler:
   name: scheduler
   image:
     repository: "daskdev/dask"
-    tag: 1.1.0
+    tag: 1.1.5
     pullPolicy: IfNotPresent
+    # See https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+    pullSecrets:
+    #  - name: regcred
   replicas: 1
+  # serviceType: "ClusterIP"
+  # serviceType: "NodePort"
   serviceType: "LoadBalancer"
   servicePort: 8786
   resources: {}
-    # limits:
-    #   cpu: 1.8
-    #   memory: 6G
-    # requests:
-    #   cpu: 1.8
-    #   memory: 6G
+  #  limits:
+  #    cpu: 1.8
+  #    memory: 6G
+  #  requests:
+  #    cpu: 1.8
+  #    memory: 6G
+  tolerations: []
+  nodeSelector: {}
+  affinity: {}
 
 webUI:
   name: webui
@@ -26,46 +35,63 @@ worker:
   name: worker
   image:
     repository: "daskdev/dask"
-    tag: 1.1.0
+    tag: 1.1.5
     pullPolicy: IfNotPresent
+    # dask_worker: "dask-cuda-worker"
+    dask_worker: "dask-worker"
+    pullSecrets:
+    #  - name: regcred
   replicas: 3
   aptPackages: >-
   default_resources:  # overwritten by resource limits if they exist
     cpu: 1
     memory: "4GiB"
   env:
-    # - name: EXTRA_CONDA_PACKAGES
-    #   value: numba xarray -c conda-forge
-    # - name: EXTRA_PIP_PACKAGES
-    #   value: s3fs dask-ml --upgrade
+  #  - name: EXTRA_CONDA_PACKAGES
+  #    value: numba xarray -c conda-forge
+  #  - name: EXTRA_PIP_PACKAGES
+  #    value: s3fs dask-ml --upgrade
   resources: {}
-    # limits:
-    #   cpu: 1
-    #   memory: 3G
-    # requests:
-    #   cpu: 1
-    #   memory: 3G
+  #  limits:
+  #    cpu: 1
+  #    memory: 3G
+  #    nvidia.com/gpu: 1
+  #  requests:
+  #    cpu: 1
+  #    memory: 3G
+  #    nvidia.com/gpu: 1
+  tolerations: []
+  nodeSelector: {}
+  affinity: {}
 
 jupyter:
   name: jupyter
   enabled: true
   image:
     repository: "daskdev/dask-notebook"
-    tag: 1.1.0
+    tag: 1.1.5
     pullPolicy: IfNotPresent
+    pullSecrets:
+    #  - name: regcred
   replicas: 1
+  # serviceType: "ClusterIP"
+  # serviceType: "NodePort"
   serviceType: "LoadBalancer"
   servicePort: 80
-  password: 'sha1:aae8550c0a44:9507d45e087d5ee481a5ce9f4f16f37a0867318c'  # 'dask'
+  # This hash corresponds to the password 'dask'
+  password: 'sha1:aae8550c0a44:9507d45e087d5ee481a5ce9f4f16f37a0867318c'
   env:
-    # - name: EXTRA_CONDA_PACKAGES
-    #   value: numba xarray -c conda-forge
-    # - name: EXTRA_PIP_PACKAGES
-    #   value: s3fs dask-ml --upgrade
+  #  - name: EXTRA_CONDA_PACKAGES
+  #    value: "numba xarray -c conda-forge"
+  #  - name: EXTRA_PIP_PACKAGES
+  #    value: "s3fs dask-ml --upgrade"
   resources: {}
-    # limits:
-    #   cpu: 2
-    #   memory: 6G
-    # requests:
-    #   cpu: 2
-    #   memory: 6G
+  #  limits:
+  #    cpu: 2
+  #    memory: 6G
+  #  requests:
+  #    cpu: 2
+  #    memory: 6G
+  tolerations: []
+  nodeSelector: {}
+  affinity: {}

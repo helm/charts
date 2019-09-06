@@ -11,9 +11,23 @@ data:
   datasource.yaml: |-
     apiVersion: 1
     datasources:
+{{- if .Values.grafana.sidecar.datasources.defaultDatasourceEnabled }}
     - name: Prometheus
       type: prometheus
       url: http://{{ template "prometheus-operator.fullname" . }}-prometheus:9090/{{ trimPrefix "/" .Values.prometheus.prometheusSpec.routePrefix }}
       access: proxy
       isDefault: true
+{{- if .Values.grafana.sidecar.datasources.createPrometheusReplicasDatasources }}
+{{- range until (int .Values.prometheus.prometheusSpec.replicas) }}
+    - name: Prometheus-{{ . }}
+      type: prometheus
+      url: http://prometheus-{{ template "prometheus-operator.fullname" $ }}-prometheus-{{ . }}.prometheus-operated:9090/{{ trimPrefix "/" $.Values.prometheus.prometheusSpec.routePrefix }}
+      access: proxy
+      isDefault: false
+{{- end }}
+{{- end }}
+{{- end }}
+{{- if .Values.grafana.additionalDataSources }}
+{{ toYaml .Values.grafana.additionalDataSources | indent 4}}
+{{- end }}
 {{- end }}

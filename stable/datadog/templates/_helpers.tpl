@@ -9,6 +9,7 @@ Expand the name of the chart.
 {{/*
 Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+And depending on the resources the name is completed with an extension.
 If release name contains chart name it will be used as a full name.
 */}}
 {{- define "datadog.fullname" -}}
@@ -22,6 +23,13 @@ If release name contains chart name it will be used as a full name.
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 {{- end -}}
+{{- end -}}
+
+{{/*
+Create chart name and version as used by the chart label.
+*/}}
+{{- define "datadog.chart" -}}
+{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*
@@ -41,27 +49,14 @@ Return secret name to be used based on provided values.
 {{- end -}}
 
 {{/*
-Create a default fully qualified confd name.
-We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+Return secret name to be used based on provided values.
 */}}
-{{- define "datadog.confd.fullname" -}}
-{{- printf "%s-datadog-confd" .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- define "clusterAgent.tokenSecretName" -}}
+{{- if not .Values.clusterAgent.tokenExistingSecret -}}
+{{- include "datadog.fullname" . -}}-cluster-agent
+{{- else -}}
+{{- .Values.clusterAgent.tokenExistingSecret -}}
 {{- end -}}
-
-{{/*
-Create a default fully qualified checksd name.
-We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
-*/}}
-{{- define "datadog.checksd.fullname" -}}
-{{- printf "%s-datadog-checksd" .Release.Name | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
-
-{{/*
-Create a default fully qualified cluster-agent name.
-We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
-*/}}
-{{- define "datadog.clusterAgent.fullname" -}}
-{{- printf "%s-cluster-agent" .Release.Name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*

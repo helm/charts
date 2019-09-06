@@ -3,6 +3,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: {{ include "sparkoperator.fullname" . }}-init
+  namespace: {{ .Release.Namespace }}
   annotations:
     "helm.sh/hook": post-install, post-upgrade
     "helm.sh/hook-delete-policy": hook-succeeded

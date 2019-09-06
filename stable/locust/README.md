@@ -12,6 +12,7 @@ testing using Kubernetes.
 This chart will do the following:
 
 * Convert all files in `tasks/` folder into a configmap
+* If an existing configmap is specified, it will be used instead of building one from the chart
 * Create a Locust master and Locust worker deployment with the Target host
   and Tasks file specified.
 
@@ -27,16 +28,24 @@ helm install -n locust-nymph --set master.config.target-host=http://site.example
 | Parameter                    | Description                             | Default                                               |
 | ---------------------------- | ----------------------------------      | ----------------------------------------------------- |
 | `Name`                       | Locust master name                      | `locust`                                              |
-| `image.repository`           | Locust container image name             | `quay.io/honestbee/locust`                            |
-| `image.tag`                  | Locust Container image tag              | `0.7.5`                                               |
+| `image.repository`           | Locust container image name             | `greenbirdit/locust`                                  |
+| `image.tag`                  | Locust Container image tag              | `0.9.0`                                               |
 | `image.pullSecrets`          | Locust Container image registry secret  | `None`                                                |
 | `service.type`               | k8s service type exposing master        | `NodePort`                                            |
 | `service.nodePort`           | Port on cluster to expose master        | `0`                                                   |
 | `service.annotations`        | KV containing custom annotations        | `{}`                                                  |
 | `service.extraLabels`        | KV containing extra labels              | `{}`                                                  |
+| `extraVolumes`               | List of extra Volumes                   | `[]`                                                  |
+| `extraVolumeMounts`          | List of extra Volume Mounts             | `[]`                                                  |
+| `extraEnvs`                  | List of extra Environment Variables     | `[]`                                                  |
 | `master.config.target-host`  | locust target host                      | `http://site.example.com`                             |
+| `master.nodeSelector`        | k8s nodeselector                        | `{}`                                                  |
+| `master.tolerations`         | k8s tolerance                           | `{}`                                                  |
 | `worker.config.locust-script`| locust script to run                    | `/locust-tasks/tasks.py`                              |
+| `worker.config.configmapName`| configmap to mount locust scripts from  | `empty, configmap is created from tasks folder in Chart` |
 | `worker.replicaCount`        | Number of workers to run                | `2`                                                   |
+| `worker.nodeSelector`        | k8s nodeselector                        | `{}`                                                  |
+| `worker.tolerations`         | k8s tolerance                           | `{}`                                                  |
 
 Specify parameters using `--set key=value[,key=value]` argument to `helm install`
 
@@ -46,9 +55,26 @@ Alternatively a YAML file that specifies the values for the parameters can be pr
 $ helm install --name my-release -f values.yaml stable/locust
 ```
 
-You can start the swarm from the command line using Port forwarding as follows:
+#### Creating configmap with your Locust task files
 
-Get the Locust URL following the Post Installation notes.
+You're probably developing your own Locust scripts that you want to run in this distributed setup.
+To get those scripts into this deployment you can fork the chart and put them into the `tasks` folder. From there
+they will be converted to a configmap and mounted for use in Locust.
+
+Another solution, if you don't want to fork the Chart, is to put your Locust scripts in a configmap and provide the name
+as a config parameter in `values.yaml`. You can read more on the use of configmaps as volumes in pods [here](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/).
+
+If you have your Locust task files in a folder named "scripts" you would use something like the following command:
+
+`kubectl create configmap locust-worker-configs --from-file path/to/scripts`
+
+
+### Interacting with Locust
+
+Get the Locust URL following the Post Installation notes. Using port forwarding you should be able to connect to the
+web ui on Locust master node.
+
+You can start the swarm from the command line using port forwarding as follows:
 
 for example:
 ```bash

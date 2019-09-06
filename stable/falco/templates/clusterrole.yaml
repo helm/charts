@@ -20,6 +20,9 @@ rules:
       - services
       - events
       - configmaps
+      - daemonsets
+      - deployments
+      - replicasets
     verbs:
       - get
       - list
@@ -29,4 +32,14 @@ rules:
       - /healthz/*
     verbs:
       - get
+{{- if .Values.podSecurityPolicy.create }}
+  - apiGroups:
+      - extensions
+    resources:
+      - podsecuritypolicies
+    resourceNames:
+      - {{ template "falco.fullname" . }}
+    verbs:
+      - use
+{{- end }}
 {{- end }}

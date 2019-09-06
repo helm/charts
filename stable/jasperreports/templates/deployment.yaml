@@ -19,12 +19,7 @@ spec:
         chart: "{{ template "jasperreports.chart" . }}"
         release: {{ .Release.Name | quote }}
     spec:
-      {{- if .Values.image.pullSecrets }}
-      imagePullSecrets:
-      {{- range .Values.image.pullSecrets }}
-        - name: {{ . }}
-      {{- end}}
-      {{- end }}
+{{- include "jasperreports.imagePullSecrets" . | indent 6 }}
       containers:
       - name: {{ template "jasperreports.fullname" . }}
         image: {{ template "jasperreports.image" . }}
@@ -126,4 +121,8 @@ spec:
           claimName: {{ template "jasperreports.fullname" . }}
       {{- else }}
         emptyDir: {}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
       {{- end }}

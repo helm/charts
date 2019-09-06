@@ -1,5 +1,5 @@
 name: kubewatch
-version: 0.6.1
+version: 0.8.7
 apiVersion: v1
 appVersion: 0.0.4
 home: https://github.com/bitnami-labs/kubewatch

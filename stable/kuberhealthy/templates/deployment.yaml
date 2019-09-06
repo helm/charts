@@ -26,6 +26,16 @@ spec:
         {{ $key }}: {{ $value | quote }}
       {{- end }}
       {{- end }}
+      {{- if .Values.prometheus.enabled -}}
+      {{- if .Values.prometheus.enableScraping -}}
+      {{- if not .Values.deployment.podAnnotations }}
+      annotations:
+      {{- end}}
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/metrics"
+        prometheus.io/port: "8080"
+      {{- end }}
+      {{- end }}
       labels:
         app: {{ template "kuberhealthy.name" . }}
         chart: {{ .Chart.Name }}
@@ -45,7 +55,9 @@ spec:
         - containerPort: 8080
           name: http
         securityContext:
-        {{- toYaml .Values.securityContext | nindent 10 -}}
+          runAsNonRoot: {{ .Values.securityContext.runAsNonRoot }}
+          runAsUser: {{ .Values.securityContext.runAsUser }}
+          allowPrivilegeEscalation: {{ .Values.securityContext.allowPrivilegeEscalation }}
         imagePullPolicy: {{ .Values.deployment.imagePullPolicy }}
         livenessProbe:
           failureThreshold: 3
@@ -55,7 +67,7 @@ spec:
           tcpSocket:
             port: 8080
           timeoutSeconds: 1
-        name:  {{ template "kuberhealthy.name" . }}
+        name: {{ template "kuberhealthy.name" . }}
         env:
           - name: POD_NAME
             valueFrom:

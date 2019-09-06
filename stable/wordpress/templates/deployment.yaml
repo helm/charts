@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "wordpress.fullname" . }}
@@ -12,6 +12,9 @@ spec:
     matchLabels:
       app: "{{ template "wordpress.fullname" . }}"
       release: {{ .Release.Name | quote }}
+  {{- if .Values.updateStrategy }}
+  strategy: {{ toYaml .Values.updateStrategy | nindent 4 }}
+  {{- end }}
   replicas: {{ .Values.replicaCount }}
   template:
     metadata:
@@ -29,12 +32,10 @@ spec:
 {{- end }}
 {{- end }}
     spec:
-      {{- if .Values.image.pullSecrets }}
-      imagePullSecrets:
-      {{- range .Values.image.pullSecrets }}
-        - name: {{ . }}
-      {{- end}}
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
       {{- end }}
+{{- include "wordpress.imagePullSecrets" . | indent 6 }}
       hostAliases:
       - ip: "127.0.0.1"
         hostnames:
@@ -45,11 +46,7 @@ spec:
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         env:
         - name: ALLOW_EMPTY_PASSWORD
-        {{- if .Values.allowEmptyPassword }}
-          value: "yes"
-        {{- else }}
-          value: "no"
-        {{- end }}
+          value: {{ ternary "yes" "no" .Values.allowEmptyPassword | quote }}
         - name: MARIADB_HOST
         {{- if .Values.mariadb.enabled }}
           value: {{ template "mariadb.fullname" . }}
@@ -98,11 +95,15 @@ spec:
         - name: WORDPRESS_LAST_NAME
           value: {{ .Values.wordpressLastName | quote }}
         - name: WORDPRESS_HTACCESS_OVERRIDE_NONE
-          value: {{ .Values.allowOverrideNone | quote }}
+          value: {{ ternary "yes" "no" .Values.allowOverrideNone | quote }}
         - name: WORDPRESS_BLOG_NAME
           value: {{ .Values.wordpressBlogName | quote }}
+        - name: WORDPRESS_SKIP_INSTALL
+          value: {{ ternary "yes" "no" .Values.wordpressSkipInstall | quote }}
         - name: WORDPRESS_TABLE_PREFIX
           value: {{ .Values.wordpressTablePrefix | quote }}
+        - name: WORDPRESS_SCHEME
+          value: {{ .Values.wordpressScheme | quote }}
         {{- if .Values.smtpHost }}
         - name: SMTP_HOST
           value: {{ .Values.smtpHost | quote }}
@@ -138,12 +139,10 @@ spec:
         livenessProbe:
           httpGet:
             path: /wp-login.php
-          {{- if not .Values.healthcheckHttps }}
-            port: http
-          {{- else }}
-            port: https
+            port: {{ ternary "https" "http" .Values.healthcheckHttps }}
+            {{- if .Values.healthcheckHttps }}
             scheme: HTTPS
-          {{- end }}
+            {{- end }}
           {{- if .Values.livenessProbeHeaders }}
             httpHeaders:
 {{ toYaml .Values.livenessProbeHeaders | indent 14 }}
@@ -152,29 +151,21 @@ spec:
         readinessProbe:
           httpGet:
             path: /wp-login.php
-          {{- if not .Values.healthcheckHttps }}
-            port: http
-          {{- else }}
-            port: https
+            port: {{ ternary "https" "http" .Values.healthcheckHttps }}
+            {{- if .Values.healthcheckHttps }}
             scheme: HTTPS
-          {{- end }}
+            {{- end }}
           {{- if .Values.readinessProbeHeaders }}
             httpHeaders:
 {{ toYaml .Values.readinessProbeHeaders | indent 14 }}
           {{- end }}
 {{ toYaml .Values.readinessProbe | indent 10 }}
         volumeMounts:
-        - mountPath: /bitnami/apache
-          name: wordpress-data
-          subPath: apache
         - mountPath: /bitnami/wordpress
           name: wordpress-data
           subPath: wordpress
-        - mountPath: /bitnami/php
-          name: wordpress-data
-          subPath: php
         {{- if and .Values.allowOverrideNone .Values.customHTAccessCM}}
-        - mountPath: /opt/bitnami/wordpress
+        - mountPath: /opt/bitnami/wordpress/wordpress-htaccess.conf
           name: custom-htaccess
           subPath: wordpress-htaccess.conf
         {{- end }}
@@ -182,7 +173,7 @@ spec:
 {{ toYaml .Values.resources | indent 10 }}
 {{- if .Values.metrics.enabled }}
       - name: metrics
-        image: {{ template "metrics.image" . }}
+        image: {{ template "wordpress.metrics.image" . }}
         imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
         command: [ '/bin/apache_exporter', '-scrape_uri', 'http://status.localhost:80/server-status/?auto']
         ports:
@@ -211,7 +202,7 @@ spec:
       - name: custom-htaccess
         configMap:
           name: {{ template "wordpress.customHTAccessCM" . }}
-      {{- end }} 
+      {{- end }}
       - name: wordpress-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:

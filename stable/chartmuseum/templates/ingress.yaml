@@ -1,6 +1,7 @@
+{{- if .Values.ingress.enabled }}
 {{- $servicePort := .Values.service.externalPort -}}
 {{- $serviceName := include "chartmuseum.fullname" . -}}
-{{- if .Values.ingress.enabled }}
+{{- $ingressExtraPaths := .Values.ingress.extraPaths -}}
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -15,19 +16,35 @@ metadata:
 {{ include "chartmuseum.labels.standard" . | indent 4 }}
 spec:
   rules:
-  {{- range $host, $paths := .Values.ingress.hosts }}
-  - host: {{ $host }}
+  {{- range .Values.ingress.hosts }}
+  - host: {{ .name }}
     http:
       paths:
-      {{- range $paths }}
-      - path: {{ . }}
+      {{- range $ingressExtraPaths }}
+      - path: {{ default "/" .path | quote }}
         backend:
-          serviceName: {{ $serviceName }}
-          servicePort: {{ $servicePort }}
-      {{- end -}}
-  {{- end -}}
-  {{- if .Values.ingress.tls }}
+        {{- if $.Values.service.servicename }}
+          serviceName: {{ $.Values.service.servicename }}
+        {{- else }}
+          serviceName: {{ default $serviceName .service }}
+        {{- end }}  
+          servicePort: {{ default $servicePort .port }}
+      {{- end }}
+      - path: {{ default "/" .path | quote }}
+        backend:
+        {{- if $.Values.service.servicename }}
+          serviceName: {{ $.Values.service.servicename }}
+        {{- else }}
+          serviceName: {{ default $serviceName .service }}
+        {{- end }} 
+          servicePort: {{ default $servicePort .servicePort }}
+  {{- end }}
   tls:
-{{ toYaml .Values.ingress.tls | indent 4 }}
-  {{- end -}}
+  {{- range .Values.ingress.hosts }}
+  {{- if .tls }}
+  - hosts:
+    - {{ .name }}
+    secretName: {{ .tlsSecret }}
+  {{- end }}
+  {{- end }}
 {{- end -}}

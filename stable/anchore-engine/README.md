@@ -2,7 +2,7 @@
 
 This chart deploys the Anchore Engine docker container image analysis system. Anchore Engine requires a PostgreSQL database (>=9.6) which may be handled by the chart or supplied externally, and executes in a service based architecture utilizing the following Anchore Engine services: External API, Simplequeue, Catalog, Policy Engine, and Analyzer.
 
-This chart can also be used to install the following Anchore Enterprise services: GUI, RBAC, On-prem Feeds. Enterprise services require a valid Anchore Enterprise License as well as credentials with access to the private dockerhub repository hosting the images. These are not enabled by default.
+This chart can also be used to install the following Anchore Enterprise services: GUI, RBAC, Reporting, & On-premises Feeds. Enterprise services require a valid Anchore Enterprise License as well as credentials with access to the private Dockerhub repository hosting the images. These are not enabled by default.
 
 Each of these services can be scaled and configured independently.
 
@@ -16,21 +16,21 @@ The chart is split into global and service specific configurations for the OSS A
   * The `anchoreEnterpriseGlobal` section is for configuration values required by all Anchore Engine Enterprise components.
   * Service specific configuration values allow customization for each individual service.
 
-For a description of each component, view the official documentation at: [Anchore Enterprise Service Overview](https://anchore.freshdesk.com/support/solutions/articles/36000098518-enterprise-service-overview-and-architecture)
+For a description of each component, view the official documentation at: [Anchore Enterprise Service Overview](https://docs.anchore.com/current/docs/overview/architecture/)
 
-## Installing the Anchore Engine OSS Chart
+## Installing the Anchore Engine Helm Chart
 TL;DR - `helm install stable/anchore-engine`
 
 Anchore Engine will take approximately 3 minutes to bootstrap. After the initial bootstrap period, Anchore Engine will begin a vulnerability feed sync. During this time, image analysis will show zero vulnerabilities until the sync is completed. This sync can take multiple hours depending on which feeds are enabled. The following anchore-cli command is available to poll the system and report back when the engine is bootstrapped and the vulnerability feeds are all synced up. `anchore-cli system wait`
 
+The recommended way to install the Anchore Engine Helm Chart is with a customized values file and a custom release name. It is highly recommended to set non-default passwords when deploying, all passwords are set to defaults specified in the chart. It is also recommended to utilize an external database, rather than using the included postgresql chart.
 
-The recommended way to install the Anchore Engine Chart is with a customized values file and a custom release name. Create a new file named `anchore_values.yaml` and add all desired custom values (examples below); then run the following command:
+Create a new file named `anchore_values.yaml` and add all desired custom values (examples below); then run the following command:
 
   `helm install --name <release_name> -f anchore_values.yaml stable/anchore-engine`
 
-*Note: It is highly recommended to set non-default passwords when deploying. All passwords are set to defaults specified in the chart.*
-
-##### Install using chart managed PostgreSQL service with custom passwords.
+##### Example anchore_values.yaml - using chart managed PostgreSQL service with custom passwords.
+*Note: Installs with chart managed PostgreSQL database. This is not a guaranteed production ready config.*
   ```
   ## anchore_values.yaml
 
@@ -43,11 +43,161 @@ The recommended way to install the Anchore Engine Chart is with a customized val
     defaultAdminPassword: <PASSWORD>
     defaultAdminEmail: <EMAIL>
   ```
+
+## Adding Enterprise Components
+
+ The following features are available to Anchore Enterprise customers. Please contact the Anchore team for more information about getting a license for the enterprise features. [Anchore Enterprise Demo](https://anchore.com/demo/)
+
+    * Role based access control
+    * LDAP integration
+    * Graphical user interface
+    * Customizable UI dashboards
+    * On-premises feeds service
+    * Proprietary vulnerability data feed
+    * Anchore reporting API
+
+### Enabling Enterprise Services
+Enterprise services require an Anchore Enterprise license, as well as credentials with
+permission to the private docker repositories that contain the enterprise images.
+
+To use this Helm chart with the enterprise services enabled, perform these steps.
+
+1. Create a kubernetes secret containing your license file.
+
+    `kubectl create secret generic anchore-enterprise-license --from-file=license.yaml=<PATH/TO/LICENSE.YAML>`
+
+1. Create a kubernetes secret containing dockerhub credentials with access to the private anchore enterprise repositories.
+
+    `kubectl create secret docker-registry anchore-enterprise-pullcreds --docker-server=docker.io --docker-username=<DOCKERHUB_USER> --docker-password=<DOCKERHUB_PASSWORD> --docker-email=<EMAIL_ADDRESS>`
+
+1. (demo) Install the Helm chart using default values
+
+    `helm fetch stable/anchore-engine --untar && helm install --name enterprise stable/anchore-engine -f anchore-engine/enterprise_values.yaml`
+
+1. (production) Install the Helm chart using a custom anchore_values.yaml file - *see examples below*
+
+    `helm install --name <release_name> -f /path/to/anchore_values.yaml stable/anchore-engine`
+
+##### Example anchore_values.yaml - installing Anchore Enterprise
+*Note: Installs with chart managed PostgreSQL & Redis databases. This is not a guaranteed production ready config.*
+
+  ```
+  ## anchore_values.yaml
+
+  postgresql:
+    postgresPassword: <PASSWORD>
+    persistence:
+      size: 50Gi
+
+  anchoreGlobal:
+    defaultAdminPassword: <PASSWORD>
+    defaultAdminEmail: <EMAIL>
+    enableMetrics: True
+
+  anchoreEnterpriseGlobal:
+    enabled: True
+
+  anchore-feeds-db:
+    postgresPassword: <PASSWORD>
+
+  anchore-ui-redis:
+    password: <PASSWORD>
+  ```
+
+## Upgrading to Chart version 1.3.0
+The following features were added with this chart version:
+  * Allow custom CA certificates for TLS on all system dependencies (postgresql, ldap, registries)
+  * Customization of the analyzer configuration
+  * Improved authentication methods, allowing SAML/token based auth
+  * Enterprise UI reporting improvements
+  * Enterprise SSO integration
+  * Enterprise vulnerability data enhancement using VulnDB
+
+Internal Service SSL configuration has been changed to support a global certificate storage secret. When upgrading to v1.3.0 of the chart, make sure the values file is updated appropriately.
+
+#### Chart v1.3.0 internal service SSL configuration
+```
+anchoreGlobal:
+  certStoreSecretName: anchore-certs
+  internalServicesSsl:
+    enabled: true
+    verifyCerts: true
+    certSecretKeyName: anchore.example.com.key
+    certSecretCertName: anchore.example.com.crt
+```
+
+#### Chart v1.2.0 internal service SSL configuration
+```
+anchoreGlobal:
+  internalServicesSslEnabled: true
+  internalServicesSsl:
+    verifyCerts: true
+    certSecret: anchore-certs
+    certDir: /home/anchore/certs
+    certSecretKeyName: anchore.example.com.key
+    certSecretCertName: anchore.example.com.crt
+```
+
+## Upgrading to Chart version 1.0.0
+The following features were added with this chart version:
+  * Rootless UBI 7 base image
+  * Analyzer image layer caching
+  * Enterprise UI dashboards
+  * Enterprise LDAP integration
+  * Enterprise Reporting API
+
+Scratch volume configs for the analyzer component & the enterprise-feeds component have been moved to the anchoreGlobal section. Update your values.yaml file to reflect this change.
+
+#### Chart v0.13.0 scratch volume config
+```
+anchoreAnalyzer:
+  scratchVolume:
+      mountPath: /analysis_scratch
+      details:
+        # Specify volume configuration here
+        emptyDir: {}
+
+anchoreEnterpriseFeeds:
+  scratchVolume:
+    mountPath: /analysis_scratch
+    details:
+      # Specify volume configuration here
+      emptyDir: {}
+```
+
+#### Chart v1.0.0 scratch volume config
+```
+anchoreGlobal:
+  scratchVolume:
+    mountPath: /analysis_scratch
+    details:
+      # Specify volume configuration here
+      emptyDir: {}
+```
+
+## Upgrading to Chart version 0.12.0
+Redis dependency chart major version updated to v6.1.3 - check redis chart readme for instructions for upgrade.
+
+The ingress configuration has been consolidated to a single global section. This should make it easier to manage the ingress resource. Before performing an upgrade ensure you update your custom values file to reflect this change.
+
+#### Chart v0.12.0 ingress config
+```
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: gce
+  apiPath: /v1/*
+  uiPath: /*
+  apiHosts:
+  - anchore-api.example.com
+  uiHosts:
+  - anchore-ui.example.com
+```
+
 ## Upgrading to Chart version 0.11.0
 The image map has been removed in all configuration sections in favor of individual keys. This should make configuration for tools like skaffold simpler. If using a custom values file, update your `image.repository`, `image.tag`, & `image.pullPolicy` values with `image` & `imagePullPolicy`.
 
-##### v0.11.0 image config
-
+#### Chart v0.11.0 image config
 ```
 anchoreGlobal:
   image: docker.io/anchore/anchore-engine:v0.3.2
@@ -69,16 +219,7 @@ Ingress resources have been changed to work natively with NGINX ingress controll
 
 Service configs have been moved from the anchoreGlobal section, to individual component sections in the values.yaml file. If you're upgrading from a previous install and are using custom ports or serviceTypes, be sure to update your values.yaml file accordingly.
 
-##### v0.9.0 service config
-
-```
-anchoreGlobal:
-  service:
-    type: ClusterIP
-    apiPort: 8228
-```
-
-##### v0.10.0 service config
+#### Chart v0.10.0 service config
 ```
 anchoreApi:
   service:
@@ -107,43 +248,72 @@ All configurations should be appended to your custom `anchore_values.yaml` file 
 
 #### Using Ingress
 
-This configuration allows SSL termination at the LB.
-
-*Note: Ingress controllers can use custom hosts or paths for routing requests. Custom paths or hosts should be set in the corresponding component configuration - anchoreEnterpriseUI.ingress or anchoreApi.ingress*
+This configuration allows SSL termination using your chosen ingress controller.
 
 ##### NGINX Ingress Controller
 ```
-anchoreGlobal:
-  ingress:
-    enabled: true
+ingress:
+  enabled: true
 ```
 
-##### GCE Ingress Controller
-  ```
-  anchoreGlobal:
-    ingress:
-      enabled: true
-      annotations: null
+##### ALB Ingress Controller
+```
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: alb
+      alb.ingress.kubernetes.io/scheme: internet-facing
+    apiPath: /v1/*
+    uiPath: /*
+    apiHosts:
+      - anchore-api.example.com
+    uiHosts:
+      - anchore-ui.example.com
 
   anchoreApi:
-    ingress:
-      path: /v1/*
     service:
       type: NodePort
 
   anchoreEnterpriseUi:
-    ingress:
-      path: /*
+    service
+      type: NodePort
+```
+
+##### GCE Ingress Controller
+  ```
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: gce
+    apiPath: /v1/*
+    uiPath: /*
+    apiHosts:
+      - anchore-api.example.com
+    uiHosts:
+      - anchore-ui.example.com
+
+  anchoreApi:
+    service:
+      type: NodePort
+
+  anchoreEnterpriseUi:
     service
       type: NodePort
   ```
 
-##### Using Service Type
+#### Using Service Type
   ```
   anchoreApi:
     service:
       type: LoadBalancer
   ```
+
+### Utilize an Existing Secret
+Can be used to override the default secrets.yaml provided
+```
+anchoreGlobal:
+  existingSecret: "foo-bar"
+```
 
 ### Install using an existing/external PostgreSQL instance
 *Note: it is recommended to use an external Postgresql instance for production installs*
@@ -159,6 +329,28 @@ anchoreGlobal:
   anchoreGlobal:
     dbConfig:
       ssl: true
+  ```
+
+### Install using Google CloudSQL
+  ```
+  ## anchore_values.yaml
+  postgresql:
+    enabled: false
+    postgresPassword: <CLOUDSQL-PASSWORD>
+    postgresUser: <CLOUDSQL-USER>
+    postgresDatabase: <CLOUDSQL-DATABASE>
+
+  cloudsql:
+    enabled: true
+    instance: "project:zone:cloudsqlinstancename"
+    # Optional existing service account secret to use.
+    useExistingServiceAcc: true
+    serviceAccSecretName: my_service_acc
+    serviceAccJsonName: for_cloudsql.json
+    image:
+      repository: gcr.io/cloudsql-docker/gce-proxy
+      tag: 1.12
+      pullPolicy: IfNotPresent
   ```
 
 ### Archive Driver
@@ -291,6 +483,10 @@ Anchore Engine supports exporting prometheus metrics form each container. To ena
 When enabled, each service provides the metrics over the existing service port so your prometheus deployment will need to
 know about each pod and the ports it provides to scrape the metrics.
 
+### Using custom certificates
+A secret needs to be created in the same namespace as the anchore-engine chart installation. This secret should contain all custom certs, including CA certs & any certs used for internal TLS communication. 
+This secret will be mounted to all anchore-engine pods at /home/anchore/certs to be utilized by the system.
+
 ### Event Notifications
 
 Anchore Engine in v0.2.3 introduces a new events subsystem that exposes system-wide events via both a REST api as well
@@ -324,56 +520,3 @@ To set a specific number of service containers:
 To update the number in a running configuration:
 
 `helm upgrade --set anchoreAnalyzer.replicaCount=2 <releasename> stable/anchore-engine -f anchore_values.yaml`
-
-## Adding Enterprise Components
-
- The following features are available to Anchore Enterprise customers. Please contact the Anchore team for more information about getting a license for the enterprise features. [Anchore Enterprise Demo](https://anchore.com/demo/)
-
-    * Role based access control
-    * Graphical User Interface
-    * On-prem feeds service
-    * Snyk vulnerability data
-
-### Enabling Enterprise Services
-Enterprise services require an Anchore Enterprise license, as well as credentials with
-permission to the private docker repositories that contain the enterprise images.
-
-To use this Helm chart with the enterprise services enabled, perform these steps.
-
-1. Create a kubernetes secret containing your license file.
-
-    `kubectl create secret generic anchore-enterprise-license --from-file=license.yaml=<PATH/TO/LICENSE.YAML>`
-
-1. Create a kubernetes secret containing dockerhub credentials with access to the private anchore enterprise repositories.
-
-    `kubectl create secret docker-registry anchore-enterprise-pullcreds --docker-server=docker.io --docker-username=<DOCKERHUB_USER> --docker-password=<DOCKERHUB_PASSWORD> --docker-email=<EMAIL_ADDRESS>`
-
-1. Install the helm chart using a custom anchore_values.yaml file (see examples below)
-
-    `helm install --name <release_name> -f /path/to/anchore_values.yaml stable/anchore-engine`
-
-##### Example anchore_values.yaml file for installing Anchore Enterprise
-*Note: This installs with chart managed PostgreSQL & Redis databases. This is not a production ready config.*
-
-  ```
-  ## anchore_values.yaml
-
-  postgresql:
-    postgresPassword: <PASSWORD>
-    persistence:
-      size: 50Gi
-
-  anchoreGlobal:
-    defaultAdminPassword: <PASSWORD>
-    defaultAdminEmail: <EMAIL>
-    enableMetrics: True
-
-  anchoreEnterpriseGlobal:
-    enabled: True
-
-  anchore-feeds-db:
-    postgresPassword: <PASSWORD>
-
-  anchore-ui-redis:
-    password: <PASSWORD>
-  ```

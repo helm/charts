@@ -2,6 +2,9 @@
 
 sentry:
   dsn: <change-me>
+  logLevel: ~
+# Sentry DSN config using an existing secret:
+# existingSecret:
 image:
   repository: getsentry/sentry-kubernetes
   tag: latest

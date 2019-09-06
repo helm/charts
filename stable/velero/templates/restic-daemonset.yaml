@@ -1,0 +1,99 @@
+{{- if .Values.deployRestic }}
+{{- $provider := .Values.configuration.provider -}}
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: restic
+  labels:
+    app.kubernetes.io/name: {{ include "velero.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "velero.chart" . }}
+spec:
+  selector:
+    matchLabels:
+      name: restic
+  template:
+    metadata:
+      labels:
+        name: restic
+        app.kubernetes.io/name: {{ include "velero.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+        helm.sh/chart: {{ include "velero.chart" . }}
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      {{- if .Values.serviceAccount.server.create }}
+      serviceAccountName: {{ include "velero.serverServiceAccount" . }}
+      {{- end }}
+      securityContext:
+        runAsUser: 0
+      volumes:
+        {{- if and .Values.credentials.useSecret (or (eq $provider "aws") (eq $provider "gcp")) }}
+        - name: cloud-credentials
+          secret:
+            secretName: {{ include "velero.secretName" . }}
+        {{- end }}
+        - name: host-pods
+          hostPath:
+            path: {{ .Values.restic.podVolumePath }}
+        - name: scratch
+          emptyDir: {}
+      containers:
+        - name: velero
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - /velero
+          args:
+            - restic
+            - server
+          volumeMounts:
+            {{- if and .Values.credentials.useSecret (or (eq $provider "aws") (eq $provider "gcp")) }}
+            - name: cloud-credentials
+              mountPath: /credentials
+            {{- end }}
+            - name: host-pods
+              mountPath: /host_pods
+              mountPropagation: HostToContainer
+            - name: scratch
+              mountPath: /scratch
+          {{- if and .Values.credentials.useSecret (eq $provider "azure") }}
+          envFrom:
+            - secretRef:
+                name: {{ include "velero.secretName" . }}
+          {{- end }}
+          env:
+            - name: VELERO_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: VELERO_SCRATCH_DIR
+              value: /scratch
+            {{- if and .Values.credentials.useSecret (or (eq $provider "aws") (eq $provider "gcp")) }}
+              {{- if eq $provider "aws" }}
+              - name: AWS_SHARED_CREDENTIALS_FILE
+                value: /credentials/cloud
+              {{- else }}
+              - name: GOOGLE_APPLICATION_CREDENTIALS
+                value: /credentials/cloud
+              {{- end }}
+            {{- end }}
+            {{- if eq $provider "minio" }}
+            - name: AWS_SHARED_CREDENTIALS_FILE
+              value: /credentials/cloud
+            {{- end }}
+          securityContext:
+            privileged: {{ .Values.restic.privileged }}
+          {{- with .Values.restic.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+{{- end }}

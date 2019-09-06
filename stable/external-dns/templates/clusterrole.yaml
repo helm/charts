@@ -1,35 +1,51 @@
-{{- if .Values.rbac.create -}}
+{{- if .Values.rbac.create }}
 apiVersion: rbac.authorization.k8s.io/{{ .Values.rbac.apiVersion }}
 kind: ClusterRole
 metadata:
-  labels: {{ include "external-dns.labels" . | indent 4 }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
   name: {{ template "external-dns.fullname" . }}
+  labels: {{ include "external-dns.labels" . | nindent 4 }}
 rules:
-  - apiGroups:
-      - ""
-    resources:
-      - services
-      - pods
-      - nodes
-    verbs:
-      - get
-      - list
-      - watch
-  - apiGroups:
-      - extensions
-    resources:
-      - ingresses
-    verbs:
-      - get
-      - list
-      - watch
-  - apiGroups:
-      - networking.istio.io
-    resources:
-      - gateways
-    verbs:
-      - get
-      - list
-      - watch
-{{- end -}}
+- apiGroups:
+  - ""
+  resources:
+  - services
+  - pods
+  - nodes
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - extensions
+  - "networking.k8s.io" # k8s 1.14+
+  resources:
+  - ingresses
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - networking.istio.io
+  resources:
+  - gateways
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - externaldns.k8s.io
+  resources:
+  - dnsendpoints
+  verbs:
+  - get
+  - list
+  - watch
+{{- if .Values.crd.create }}
+- apiGroups:
+  - externaldns.k8s.io
+  resources:
+  - dnsendpoints/status
+  verbs:
+  - update
+{{- end }}
+{{- end }}

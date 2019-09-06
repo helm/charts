@@ -341,7 +341,7 @@ spec:
         name: datadir
         annotations:
         {{- range $key, $value := .Values.persistentVolume.annotations }}
-          {{ $key }}: {{ $value }}
+          {{ $key }}: "{{ $value }}"
         {{- end }}
       spec:
         accessModes:

@@ -3,6 +3,14 @@
 This chart uses a standard Docker image of Elasticsearch (docker.elastic.co/elasticsearch/elasticsearch-oss) and uses a service pointing to the master's transport port for service discovery.
 Elasticsearch does not communicate with the Kubernetes API, hence no need for RBAC permissions.
 
+## **Pre-deprecation notice**
+As mentioned in #10543 we are planning on deprecating this chart in favour of the official [Elastic Helm Chart](https://github.com/elastic/helm-charts/tree/master/elasticsearch).
+We have made steps towards that goal by producing a [migration guide](https://github.com/elastic/helm-charts/blob/master/elasticsearch/examples/migration/README.md) to help people switch the management of their clusters over to the new Charts.
+The Elastic Helm Chart supports version 7 of Elasticsearch and it was decided it would be easier for people to upgrade after migrating to the Elastic Helm Chart because it's upgrade process works better.
+During deprecation process we want to make sure that Chart will do what people are using this chart to do.
+Please look at the Elastic Helm Charts and if you see anything missing from please [open an issue](https://github.com/elastic/helm-charts/issues/new/choose) to let us know what you need.
+The Elastic Chart repo is also in [Helm Hub](https://hub.helm.sh).
+
 ## Warning for previous users
 If you are currently using an earlier version of this Chart you will need to redeploy your Elasticsearch clusters. The discovery method used here is incompatible with using RBAC.
 If you are upgrading to Elasticsearch 6 from the 5.5 version used in this chart before, please note that your cluster needs to do a full cluster restart.
@@ -61,13 +69,14 @@ The following table lists the configurable parameters of the elasticsearch chart
 
 |              Parameter               |                             Description                             |                       Default                       |
 | ------------------------------------ | ------------------------------------------------------------------- | --------------------------------------------------- |
-| `appVersion`                         | Application Version (Elasticsearch)                                 | `6.6.1`                                             |
+| `appVersion`                         | Application Version (Elasticsearch)                                 | `6.8.2`                                             |
 | `image.repository`                   | Container image name                                                | `docker.elastic.co/elasticsearch/elasticsearch-oss` |
-| `image.tag`                          | Container image tag                                                 | `6.6.1`                                             |
+| `image.tag`                          | Container image tag                                                 | `6.8.2`                                             |
 | `image.pullPolicy`                   | Container pull policy                                               | `IfNotPresent`                                      |
 | `initImage.repository`               | Init container image name                                           | `busybox`                                           |
 | `initImage.tag`                      | Init container image tag                                            | `latest`                                            |
 | `initImage.pullPolicy`               | Init container pull policy                                          | `Always`                                            |
+| `schedulerName`                      | Name of the k8s scheduler (other than default)                      | `nil`                                               |
 | `cluster.name`                       | Cluster name                                                        | `elasticsearch`                                     |
 | `cluster.xpackEnable`                | Writes the X-Pack configuration options to the configuration file   | `false`                                             |
 | `cluster.config`                     | Additional cluster config appended                                  | `{}`                                                |
@@ -76,6 +85,8 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `cluster.bootstrapShellCommand`      | Post-init command to run in separate Job                            | `""`                                                |
 | `cluster.additionalJavaOpts`         | Cluster parameters to be added to `ES_JAVA_OPTS` environment variable | `""`                                              |
 | `cluster.plugins`                    | List of Elasticsearch plugins to install                            | `[]`                                                |
+| `cluster.loggingYml`                 | Cluster logging configuration for ES v2                             | see `values.yaml` for defaults                      |
+| `cluster.log4j2Properties`           | Cluster logging configuration for ES v5 and 6                       | see `values.yaml` for defaults                      |
 | `client.name`                        | Client component name                                               | `client`                                            |
 | `client.replicas`                    | Client node replicas (deployment)                                   | `2`                                                 |
 | `client.resources`                   | Client node resources requests & limits                             | `{} - cpu limit must be an integer`                 |
@@ -84,13 +95,17 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `client.podAnnotations`              | Client Deployment annotations                                       | `{}`                                                |
 | `client.nodeSelector`                | Node labels for client pod assignment                               | `{}`                                                |
 | `client.tolerations`                 | Client tolerations                                                  | `[]`                                                |
+| `client.terminationGracePeriodSeconds` | Client nodes: Termination grace period (seconds)                  | `nil`                                               |
 | `client.serviceAnnotations`          | Client Service annotations                                          | `{}`                                                |
 | `client.serviceType`                 | Client service type                                                 | `ClusterIP`                                         |
+| `client.httpNodePort`                | Client service HTTP NodePort port number. Has no effect if client.serviceType is not `NodePort`.   | `nil`                                         |
 | `client.loadBalancerIP`              | Client loadBalancerIP                                               | `{}`                                                |
 | `client.loadBalancerSourceRanges`    | Client loadBalancerSourceRanges                                     | `{}`                                                |
 | `client.antiAffinity`                | Client anti-affinity policy                                         | `soft`                                              |
 | `client.nodeAffinity`                | Client node affinity policy                                         | `{}`                                                |
 | `client.initResources`               | Client initContainer resources requests & limits                    | `{}`                                                |
+| `client.hooks.preStop`               | Client nodes: Lifecycle hook script to execute prior the pod stops  | `nil`                                               |
+| `client.hooks.preStart`              | Client nodes: Lifecycle hook script to execute after the pod starts | `nil`                                               |
 | `client.additionalJavaOpts`          | Parameters to be added to `ES_JAVA_OPTS` environment variable for client | `""`                                           |
 | `client.ingress.enabled`             | Enable Client Ingress                                               | `false`                                             |
 | `client.ingress.user`                | If this & password are set, enable basic-auth on ingress            | `nil`                                               |
@@ -98,6 +113,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `client.ingress.annotations`         | Client Ingress annotations                                          | `{}`                                                |
 | `client.ingress.hosts`               | Client Ingress Hostnames                                            | `[]`                                                |
 | `client.ingress.tls`                 | Client Ingress TLS configuration                                    | `[]`                                                |
+| `client.exposeTransportPort`         | Expose transport port 9300 on client service (ClusterIP)            | `false`                                             |
 | `master.initResources`               | Master initContainer resources requests & limits                    | `{}`                                                |
 | `master.additionalJavaOpts`          | Parameters to be added to `ES_JAVA_OPTS` environment variable for master | `""`                                           |
 | `master.exposeHttp`                  | Expose http port 9200 on master Pods for monitoring, etc            | `false`                                             |
@@ -108,6 +124,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `master.podAnnotations`              | Master Deployment annotations                                       | `{}`                                                |
 | `master.nodeSelector`                | Node labels for master pod assignment                               | `{}`                                                |
 | `master.tolerations`                 | Master tolerations                                                  | `[]`                                                |
+| `master.terminationGracePeriodSeconds` | Master nodes: Termination grace period (seconds)                  | `nil`                                               |
 | `master.heapSize`                    | Master node heap size                                               | `512m`                                              |
 | `master.name`                        | Master component name                                               | `master`                                            |
 | `master.persistence.enabled`         | Master persistent enabled/disabled                                  | `true`                                              |
@@ -118,7 +135,10 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `master.readinessProbe`              | Master container readiness probes                                   | see `values.yaml` for defaults                      |
 | `master.antiAffinity`                | Master anti-affinity policy                                         | `soft`                                              |
 | `master.nodeAffinity`                | Master node affinity policy                                         | `{}`                                                |
+| `master.podManagementPolicy`         | Master pod creation strategy                                        | `OrderedReady`                                      |
 | `master.updateStrategy`              | Master node update strategy policy                                  | `{type: "onDelete"}`                                |
+| `master.hooks.preStop`               | Master nodes: Lifecycle hook script to execute prior the pod stops  | `nil`                                               |
+| `master.hooks.preStart`              | Master nodes: Lifecycle hook script to execute after the pod starts | `nil`                                               |
 | `data.initResources`                 | Data initContainer resources requests & limits                      | `{}`                                                |
 | `data.additionalJavaOpts`            | Parameters to be added to `ES_JAVA_OPTS` environment variable for data | `""`                                             |
 | `data.exposeHttp`                    | Expose http port 9200 on data Pods for monitoring, etc              | `false`                                             |
@@ -126,7 +146,9 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `data.resources`                     | Data node resources requests & limits                               | `{} - cpu limit must be an integer`                 |
 | `data.priorityClassName`             | Data priorityClass                                                  | `nil`                                               |
 | `data.heapSize`                      | Data node heap size                                                 | `1536m`                                             |
-| `data.hooks.drain.enabled            | Data nodes: Enable drain pre-stop and post-start hook               | `true`                                              |
+| `data.hooks.drain.enabled`           | Data nodes: Enable drain pre-stop and post-start hook               | `true`                                              |
+| `data.hooks.preStop`                 | Data nodes: Lifecycle hook script to execute prior the pod stops. Ignored if `data.hooks.drain.enabled` is `true` | `nil` |
+| `data.hooks.preStart`                | Data nodes: Lifecycle hook script to execute after the pod starts. Ignored if `data.hooks.drain.enabled` is `true` | `nil`|
 | `data.persistence.enabled`           | Data persistent enabled/disabled                                    | `true`                                              |
 | `data.persistence.name`              | Data statefulset PVC template name                                  | `data`                                              |
 | `data.persistence.size`              | Data persistent volume size                                         | `30Gi`                                              |
@@ -139,17 +161,24 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `data.terminationGracePeriodSeconds` | Data termination grace period (seconds)                             | `3600`                                              |
 | `data.antiAffinity`                  | Data anti-affinity policy                                           | `soft`                                              |
 | `data.nodeAffinity`                  | Data node affinity policy                                           | `{}`                                                |
+| `data.podManagementPolicy`           | Data pod creation strategy                                          | `OrderedReady`                                      |
 | `data.updateStrategy`                | Data node update strategy policy                                    | `{type: "onDelete"}`                                |
-| `sysctlInitContainer.enabled`        | If true, the sysctl init container is enabled (does not stop extraInitContainers from running) | `true`                                              |
+| `sysctlInitContainer.enabled`        | If true, the sysctl init container is enabled (does not stop chownInitContainer or extraInitContainers from running) | `true`                                              |
+| `chownInitContainer.enabled`        | If true, the chown init container is enabled (does not stop sysctlInitContainer or extraInitContainers from running) | `true`                                              |
 | `extraInitContainers`                | Additional init container passed through the tpl                    | ``                                                  |
-| `podSecurityPolicy.annotations`      | Specify pod annotations in the pod security policy                  | `{}`                                                |
+| `podSecurityPolicy.annotations`      | Specify pod annotations in the pod security policy                  | `{}`                                              |
 | `podSecurityPolicy.enabled`          | Specify if a pod security policy must be created                    | `false`                                             |
-| `serviceAccounts.client.create`      | If true, create the client service account                          | `true`                                              |
+| `securityContext.enabled`      | If true, add securityContext to client, master and data pods                          | `false`                                 |
+| `securityContext.runAsUser`      | user ID to run containerized process                          | `1000`                                                        |
+| `serviceAccounts.client.create`      | If true, create the client service account                          | `true`                                        |
 | `serviceAccounts.client.name`        | Name of the client service account to use or create                 | `{{ elasticsearch.client.fullname }}`               |
 | `serviceAccounts.master.create`      | If true, create the master service account                          | `true`                                              |
 | `serviceAccounts.master.name`        | Name of the master service account to use or create                 | `{{ elasticsearch.master.fullname }}`               |
 | `serviceAccounts.data.create`        | If true, create the data service account                            | `true`                                              |
 | `serviceAccounts.data.name`          | Name of the data service account to use or create                   | `{{ elasticsearch.data.fullname }}`                 |
+| `testFramework.image`                | `test-framework` image repository.                                  | `dduportal/bats`                                    |
+| `testFramework.tag`                  | `test-framework` image tag.                                         | `0.4.0`                                             |
+| `forceIpv6`                          | force to use IPv6 address to listen if set to true                  | `false`                                             |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 

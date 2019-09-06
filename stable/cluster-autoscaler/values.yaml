@@ -2,6 +2,10 @@ autoDiscovery:
 # Only cloudProvider `aws` and `gce` are supported by auto-discovery at this time
 # AWS: Set tags as described in https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/cloudprovider/aws/README.md#auto-discovery-setup
   clusterName:  # cluster.local
+  tags:
+  - k8s.io/cluster-autoscaler/enabled
+  - k8s.io/cluster-autoscaler/{{ .Values.autoDiscovery.clusterName }}
+  # - kubernetes.io/cluster/{{ .Values.autoDiscovery.clusterName }}
 
 autoscalingGroups: []
 # At least one element is required if not using autoDiscovery
@@ -23,6 +27,8 @@ autoscalingGroupsnamePrefix: []
 
 # Required if cloudProvider=aws
 awsRegion: us-east-1
+awsAccessKeyID: ""
+awsSecretAccessKey: ""
 
 # Required if cloudProvider=azure
 # clientID/ClientSecret with contributor permission to Cluster and Node ResourceGroup
@@ -36,11 +42,14 @@ azureTenantID: ""
 azureVMType: "AKS"
 azureClusterName: ""
 azureNodeResourceGroup: ""
+# if using MSI, ensure subscription ID and resource group are set
+azureUseManagedIdentityExtension: false
 
 # Currently only `gce`, `aws`, `azure` & `spotinst` are supported
 cloudProvider: aws
 
 sslCertPath: /etc/ssl/certs/ca-certificates.crt
+sslCertHostPath: /etc/ssl/certs/ca-certificates.crt
 
 # Configuration file for cloud provider
 cloudConfigPath: /etc/gce.conf
@@ -49,6 +58,13 @@ image:
   repository: k8s.gcr.io/cluster-autoscaler
   tag: v1.13.1
   pullPolicy: IfNotPresent
+
+  ## Optionally specify an array of imagePullSecrets.
+  ## Secrets must be manually created in the namespace.
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  ##
+  # pullSecrets:
+  #   - myRegistrKeySecretName
 
 tolerations: []
 
@@ -88,6 +104,9 @@ podAnnotations: {}
 podLabels: {}
 replicaCount: 1
 
+deployment:
+  apiVersion: "extensions/v1beta1"
+
 rbac:
   ## If true, create & use RBAC resources
   ##
@@ -108,6 +127,11 @@ resources: {}
   #   memory: 300Mi
 
 priorityClassName: ""
+
+# Defaults to "ClusterFirst". Valid values are
+# 'ClusterFirstWithHostNet', 'ClusterFirst', 'Default' or 'None'
+# autoscaler does not depend on cluster DNS, recommended to set this to "Default"
+# dnsPolicy: "Default"
 
 service:
   annotations: {}

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "traefik.fullname" . }}-test
+  labels:
+    app: {{ template "traefik.fullname" . }}
+    chart: {{ template "traefik.chart" . }}
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+data:
+  run.sh: |-
+    @test "Test Access" {
+      curl -D - http://{{ template "traefik.fullname" . }}/
+    }
+
