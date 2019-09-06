@@ -22,7 +22,6 @@ spec:
 {{- if .Values.serviceMonitor.timeout }}
     scrapeTimeout: {{ .Values.serviceMonitor.timeout }}
 {{- end }}
-  jobLabel: {{ include "prometheus-consul-exporter.fullname" . }}
   namespaceSelector:
     matchNames:
     - {{ .Release.Namespace }}
