@@ -166,8 +166,8 @@ master:
   ## Mariadb Master additional pod annotations
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
   # annotations:
-  #   - key: key1
-  #     value: value1
+  #   key: value
+  #   another-key: another-value
 
   ## MariaDB additional command line flags
   ## Can be used to specify command line flags, for example:
@@ -299,8 +299,8 @@ slave:
   ## Mariadb Slave additional pod annotations
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
   # annotations:
-  #   - key: key1
-  #     value: value1
+  #   key: value
+  #   another-key: another-value  
 
   ## MariaDB additional command line flags
   ## Can be used to specify command line flags, for example:
