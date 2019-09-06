@@ -77,13 +77,14 @@ spec:
                   fieldPath: spec.nodeName
             - name: VELERO_SCRATCH_DIR
               value: /scratch
-            {{- if eq $provider "aws" }}
-            - name: AWS_SHARED_CREDENTIALS_FILE
-              value: /credentials/cloud
-            {{- end }}
-            {{- if eq $provider "gcp" }}
-            - name: GOOGLE_APPLICATION_CREDENTIALS
-              value: /credentials/cloud
+            {{- if and .Values.credentials.useSecret (or (eq $provider "aws") (eq $provider "gcp")) }}
+              {{- if eq $provider "aws" }}
+              - name: AWS_SHARED_CREDENTIALS_FILE
+                value: /credentials/cloud
+              {{- else }}
+              - name: GOOGLE_APPLICATION_CREDENTIALS
+                value: /credentials/cloud
+              {{- end }}
             {{- end }}
             {{- if eq $provider "minio" }}
             - name: AWS_SHARED_CREDENTIALS_FILE
