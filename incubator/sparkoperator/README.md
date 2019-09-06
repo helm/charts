@@ -15,7 +15,7 @@ $ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incuba
 $ helm install incubator/sparkoperator --namespace spark-operator --set sparkJobNamespace=default
 ```
 
-Note that you need to use the `--namespace` flag during `helm install` to specify in which namespace you want to install the operator. The namespace can be existing or not. When it's not available, Helm would take care of creating the namespace. Note that this namespace has no relation to the namespace where you would like to deploy Spark jobs (i.e. the setting `sparkJobNamespace` shown in the table below). They can be the same namespace or different ones. 
+Note that you need to use the `--namespace` flag during `helm install` to specify in which namespace you want to install the operator. The namespace can be existing or not. When it's not available, Helm would take care of creating the namespace. Note that this namespace has no relation to the namespace where you would like to deploy Spark jobs (i.e. the setting `sparkJobNamespace` shown in the table below). They can be the same namespace or different ones.
 
 #### Configuration
 
@@ -36,10 +36,10 @@ The following table lists the configurable parameters of the Spark operator char
 | `metricsPort`             | Port for the metrics endpoint                                | 10254                                  |
 | `metricsEndpoint`         | Metrics endpoint                                             | "/metrics"                             |
 | `metricsPrefix`           | Prefix for the metrics                                       | ""                                     |
+| `podAnnotations`          | annotations to be added to pods                              | `{}`                                   |
 | `resyncInterval`          | Informer resync interval in seconds                          | 30                                     |
 | `webhookPort`             | Service port of the webhook server                           | 8080                                   |
 | `resources`               | Resources needed for the sparkoperator deployment            | {}                                     |
 | `enableBatchScheduler`    | Whether to enable batch scheduler for pod scheduling         | false                                  |
 
-Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. 
-
+Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
