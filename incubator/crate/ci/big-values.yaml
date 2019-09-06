@@ -1,0 +1,12 @@
+crate:
+  heapSize: 3.5
+  numberOfNodes: 3
+
+persistentVolume:
+  size: 30Gi
+
+resources:
+  limits:
+    cpu: 1.5
+  requests:
+    cpu: 900m

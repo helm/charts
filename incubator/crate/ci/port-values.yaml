@@ -1,0 +1,4 @@
+service:
+  ports:
+    ui: 1234
+    psql: 5678

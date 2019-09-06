@@ -1,0 +1,4 @@
+app: my-awesome-crate
+
+crate:
+  clusterName: cr8
