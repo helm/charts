@@ -141,6 +141,16 @@ jenkins:
           {{ tpl .Values.agent.yamlTemplate . | nindent 10 | trim }}
         yamlMergeStrategy: "override"
       {{- end }}
+  {{- if .Values.master.csrf.defaultCrumbIssuer.enabled }}
+  crumbIssuer:
+    standard:
+      excludeClientIPFromCrumb: {{ if .Values.master.csrf.defaultCrumbIssuer.proxyCompatability }}true{{ else }}false{{- end }}
+  {{- end }}
+security:
+  apiToken:
+    creationOfLegacyTokenEnabled: false
+    tokenGenerationOnCreationEnabled: false
+    usageStatisticsEnabled: true
 unclassified:
   location:
     adminAddress: {{ default "" .Values.master.jenkinsAdminEmail }}

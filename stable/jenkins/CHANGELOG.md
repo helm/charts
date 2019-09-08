@@ -12,7 +12,8 @@ NOTE: The change log until version 1.5.7 is auto generated based on git commits.
 
 JCasC default configuration includes:
   - Jenkins url
-  - Admin email via `master.jenkinsAdminEmail`
+  - Admin email `master.jenkinsAdminEmail`
+  - crumbIssuer
   - disableRememberMe: false
   - mode: NORMAL
   - numExecutors: {{ .Values.master.numExecutors }}
@@ -53,6 +54,11 @@ JCasC default configuration includes:
       - slaveConnectTimeoutStr: "100"
       - yaml: `agent.yamlTemplate`
       - yamlMergeStrategy: "override"
+  - security:
+    - apiToken:
+      - creationOfLegacyTokenEnabled: false
+      - tokenGenerationOnCreationEnabled: false
+      - usageStatisticsEnabled: true
 
 Example `values.yaml` which enables JCasC, it's default config and configAutoReload:
 
@@ -78,7 +84,6 @@ add master.JCasC.defaultConfig and configure location
 ## 1.6.1
 
 Print error message when `master.sidecars.configAutoReload.enabled` is `true`, but the admin user can't be found to configure the SSH key.
-=>>>>>> add master.JCasC.defaultConfig and configure location
 
 ## 1.6.0
 
