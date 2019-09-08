@@ -12,10 +12,47 @@ NOTE: The change log until version 1.5.7 is auto generated based on git commits.
 
 JCasC default configuration includes:
   - Jenkins url
+  - Admin email via `master.jenkinsAdminEmail`
   - disableRememberMe: false
   - mode: NORMAL
   - numExecutors: {{ .Values.master.numExecutors }}
   - projectNamingStrategy: "standard"
+  - kubernetes plugin
+    - containerCapStr via `agent.containerCap`
+    - jenkinsTunnel
+    - jenkinsUrl
+    - maxRequestsPerHostStr: "32"
+    - name: "kubernetes"
+    - namespace
+    - serverUrl: "https://kubernetes.default"
+    - template
+      - containers
+        - alwaysPullImage: `agent.alwaysPullImage`
+        - args
+        - command
+        - envVars
+        - image: `agent.image:agent.imageTag`
+        - name: `.agent.sideContainerName`
+        - privileged: `.agent.privileged`
+        - resourceLimitCpu: `agent.resources.limits.cpu`
+        - resourceLimitMemory: `agent.resources.limits.memory`
+        - resourceRequestCpu: `agent.resources.requests.cpu`
+        - resourceRequestMemory: `agent.resources.requests.memory`
+        - ttyEnabled: `agent.TTYEnabled`
+        - workingDir: "/home/jenkins"
+      - idleMinutes: `agent.idleMinutes`
+      - instanceCap: 2147483647
+      - imagePullSecrets:
+        - name: `.agent.imagePullSecretName`
+      - label
+      - name
+      - nodeUsageMode: "NORMAL"
+      - podRetention: `agent.podRetention`
+      - serviceAccount
+      - showRawYaml: true
+      - slaveConnectTimeoutStr: "100"
+      - yaml: `agent.yamlTemplate`
+      - yamlMergeStrategy: "override"
 
 Example `values.yaml` which enables JCasC, it's default config and configAutoReload:
 
