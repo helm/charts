@@ -96,30 +96,27 @@ The following table lists the configurable parameters of the Prometheus chart an
 
 Parameter | Description | Default
 --------- | ----------- | -------
-`alertmanager.enabled` | If true, create alertmanager | `true`
-`alertmanager.name` | alertmanager container name | `alertmanager`
-`alertmanager.image.repository` | alertmanager container image repository | `prom/alertmanager`
-`alertmanager.image.tag` | alertmanager container image tag | `v0.18.0`
-`alertmanager.image.pullPolicy` | alertmanager container image pull policy | `IfNotPresent`
-`alertmanager.prefixURL` | The prefix slug at which the server can be accessed | ``
+`alertmanager.affinity` | pod affinity | `{}`
 `alertmanager.baseURL` | The external url at which the server can be accessed | `/`
+`alertmanager.configFileName` | The configuration file name to be loaded to alertmanager. Must match the key within configuration loaded from ConfigMap/Secret. | `alertmanager.yml`
+`alertmanager.configFromSecret` | The name of a secret in the same kubernetes namespace which contains the Alertmanager config, setting this value will prevent the default alertmanager ConfigMap from being generated | `""`
+`alertmanager.configMapOverrideName` | Prometheus alertmanager ConfigMap override where full-name is `{{.Release.Name}}-{{.Values.alertmanager.configMapOverrideName}}` and setting this value will prevent the default alertmanager ConfigMap from being generated | `""`
+`alertmanager.enabled` | If true, create alertmanager | `true`
 `alertmanager.extraArgs` | Additional alertmanager container arguments | `{}`
 `alertmanager.extraSecretMounts` | Additional alertmanager Secret mounts | `[]`
-`alertmanager.configMapOverrideName` | Prometheus alertmanager ConfigMap override where full-name is `{{.Release.Name}}-{{.Values.alertmanager.configMapOverrideName}}` and setting this value will prevent the default alertmanager ConfigMap from being generated | `""`
-`alertmanager.configFromSecret` | The name of a secret in the same kubernetes namespace which contains the Alertmanager config, setting this value will prevent the default alertmanager ConfigMap from being generated | `""`
-`alertmanager.configFileName` | The configuration file name to be loaded to alertmanager. Must match the key within configuration loaded from ConfigMap/Secret. | `alertmanager.yml`
-`alertmanager.ingress.enabled` | If true, alertmanager Ingress will be created | `false`
+`alertmanager.image.pullPolicy` | alertmanager container image pull policy | `IfNotPresent`
+`alertmanager.image.repository` | alertmanager container image repository | `prom/alertmanager`
+`alertmanager.image.tag` | alertmanager container image tag | `v0.18.0`
 `alertmanager.ingress.annotations` | alertmanager Ingress annotations | `{}`
+`alertmanager.ingress.enabled` | If true, alertmanager Ingress will be created | `false`
 `alertmanager.ingress.extraLabels` | alertmanager Ingress additional labels | `{}`
 `alertmanager.ingress.hosts` | alertmanager Ingress hostnames | `[]`
 `alertmanager.ingress.tls` | alertmanager Ingress TLS configuration (YAML) | `[]`
+`alertmanager.name` | alertmanager container name | `alertmanager`
 `alertmanager.nodeSelector` | node labels for alertmanager pod assignment | `{}`
-`alertmanager.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
-`alertmanager.affinity` | pod affinity | `{}`
-`alertmanager.schedulerName` | alertmanager alternate scheduler name | `nil`
-`alertmanager.persistentVolume.enabled` | If true, alertmanager will create a Persistent Volume Claim | `true`
 `alertmanager.persistentVolume.accessModes` | alertmanager data Persistent Volume access modes | `[ReadWriteOnce]`
 `alertmanager.persistentVolume.annotations` | Annotations for alertmanager Persistent Volume Claim | `{}`
+`alertmanager.persistentVolume.enabled` | If true, alertmanager will create a Persistent Volume Claim | `true`
 `alertmanager.persistentVolume.existingClaim` | alertmanager data Persistent Volume existing claim name | `""`
 `alertmanager.persistentVolume.mountPath` | alertmanager data Persistent Volume mount root path | `/data`
 `alertmanager.persistentVolume.size` | alertmanager data Persistent Volume size | `2Gi`
@@ -127,15 +124,11 @@ Parameter | Description | Default
 `alertmanager.persistentVolume.subPath` | Subdirectory of alertmanager data Persistent Volume to mount | `""`
 `alertmanager.podAnnotations` | annotations to be added to alertmanager pods | `{}`
 `alertmanager.podSecurityPolicy.annotations` | Specify pod annotations in the pod security policy | `{}` |
-`alertmanager.replicaCount` | desired number of alertmanager pods | `1`
-`alertmanager.statefulSet.enabled` | If true, use a statefulset instead of a deployment for pod management | `false`
-`alertmanager.statefulSet.podManagementPolicy` | podManagementPolicy of alertmanager pods | `OrderedReady`
-`alertmanager.statefulSet.headless.annotations` | annotations for alertmanager headless service | `{}`
-`alertmanager.statefulSet.headless.labels` | labels for alertmanager headless service | `{}`
-`alertmanager.statefulSet.headless.enableMeshPeer` | If true, enable the mesh peer endpoint for the headless service | `{}`
-`alertmanager.statefulSet.headless.servicePort` | alertmanager headless service port | `80`
+`alertmanager.prefixURL` | The prefix slug at which the server can be accessed | ``
 `alertmanager.priorityClassName` | alertmanager priorityClassName | `nil`
+`alertmanager.replicaCount` | desired number of alertmanager pods | `1`
 `alertmanager.resources` | alertmanager pod resource requests & limits | `{}`
+`alertmanager.schedulerName` | alertmanager alternate scheduler name | `nil`
 `alertmanager.securityContext` | Custom [security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) for Alert Manager containers | `{}`
 `alertmanager.service.annotations` | annotations for alertmanager service | `{}`
 `alertmanager.service.clusterIP` | internal alertmanager cluster service IP | `""`
@@ -144,34 +137,42 @@ Parameter | Description | Default
 `alertmanager.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `alertmanager.service.servicePort` | alertmanager service port | `80`
 `alertmanager.service.type` | type of alertmanager service to create | `ClusterIP`
+`alertmanager.statefulSet.enabled` | If true, use a statefulset instead of a deployment for pod management | `false`
+`alertmanager.statefulSet.headless.annotations` | annotations for alertmanager headless service | `{}`
+`alertmanager.statefulSet.headless.enableMeshPeer` | If true, enable the mesh peer endpoint for the headless service | `{}`
+`alertmanager.statefulSet.headless.labels` | labels for alertmanager headless service | `{}`
+`alertmanager.statefulSet.headless.servicePort` | alertmanager headless service port | `80`
+`alertmanager.statefulSet.podManagementPolicy` | podManagementPolicy of alertmanager pods | `OrderedReady`
+`alertmanager.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `alertmanagerFiles.alertmanager.yml` | Prometheus alertmanager configuration | example configuration
-`configmapReload.name` | configmap-reload container name | `configmap-reload`
+`alertRelabelConfigs` | Prometheus server [alert relabeling configs](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#alert_relabel_configs) for H/A prometheus | ""
+`configmapReload.extraArgs` | Additional configmap-reload container arguments | `{}`
+`configmapReload.extraConfigmapMounts` | Additional configmap-reload configMap mounts | `[]`
+`configmapReload.extraVolumeDirs` | Additional configmap-reload volume directories | `{}`
+`configmapReload.image.pullPolicy` | configmap-reload container image pull policy | `IfNotPresent`
 `configmapReload.image.repository` | configmap-reload container image repository | `jimmidyson/configmap-reload`
 `configmapReload.image.tag` | configmap-reload container image tag | `v0.2.2`
-`configmapReload.image.pullPolicy` | configmap-reload container image pull policy | `IfNotPresent`
-`configmapReload.extraArgs` | Additional configmap-reload container arguments | `{}`
-`configmapReload.extraVolumeDirs` | Additional configmap-reload volume directories | `{}`
-`configmapReload.extraConfigmapMounts` | Additional configmap-reload configMap mounts | `[]`
+`configmapReload.name` | configmap-reload container name | `configmap-reload`
 `configmapReload.resources` | configmap-reload pod resource requests & limits | `{}`
+`extraScrapeConfigs` | Prometheus server additional scrape configuration | ""
 `initChownData.enabled`  | If false, don't reset data ownership at startup | true
-`initChownData.name` | init-chown-data container name | `init-chown-data`
+`initChownData.image.pullPolicy` | init-chown-data container image pull policy | `IfNotPresent`
 `initChownData.image.repository` | init-chown-data container image repository | `busybox`
 `initChownData.image.tag` | init-chown-data container image tag | `latest`
-`initChownData.image.pullPolicy` | init-chown-data container image pull policy | `IfNotPresent`
+`initChownData.name` | init-chown-data container name | `init-chown-data`
 `initChownData.resources` | init-chown-data pod resource requests & limits | `{}`
+`kubeStateMetrics.args` | kube-state-metrics container arguments | `{}`
+`kubeStateMetrics.deploymentAnnotations` | annotations to be added to kube-state-metrics deployment | `{}`
 `kubeStateMetrics.enabled` | If true, create kube-state-metrics | `true`
-`kubeStateMetrics.name` | kube-state-metrics container name | `kube-state-metrics`
+`kubeStateMetrics.image.pullPolicy` | kube-state-metrics container image pull policy | `IfNotPresent`
 `kubeStateMetrics.image.repository` | kube-state-metrics container image repository| `quay.io/coreos/kube-state-metrics`
 `kubeStateMetrics.image.tag` | kube-state-metrics container image tag | `v1.5.0`
-`kubeStateMetrics.image.pullPolicy` | kube-state-metrics container image pull policy | `IfNotPresent`
-`kubeStateMetrics.args` | kube-state-metrics container arguments | `{}`
+`kubeStateMetrics.name` | kube-state-metrics container name | `kube-state-metrics`
 `kubeStateMetrics.nodeSelector` | node labels for kube-state-metrics pod assignment | `{}`
 `kubeStateMetrics.podAnnotations` | annotations to be added to kube-state-metrics pods | `{}`
-`kubeStateMetrics.deploymentAnnotations` | annotations to be added to kube-state-metrics deployment | `{}`
 `kubeStateMetrics.podSecurityPolicy.annotations` | Specify pod annotations in the pod security policy | `{}` |
-`kubeStateMetrics.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
-`kubeStateMetrics.replicaCount` | desired number of kube-state-metrics pods | `1`
 `kubeStateMetrics.priorityClassName` | kube-state-metrics priorityClassName | `nil`
+`kubeStateMetrics.replicaCount` | desired number of kube-state-metrics pods | `1`
 `kubeStateMetrics.resources` | kube-state-metrics resource requests and limits (YAML) | `{}`
 `kubeStateMetrics.securityContext` | Custom [security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) for kube-state-metrics containers | `{}`
 `kubeStateMetrics.service.annotations` | annotations for kube-state-metrics service | `{prometheus.io/scrape: "true"}`
@@ -181,22 +182,23 @@ Parameter | Description | Default
 `kubeStateMetrics.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `kubeStateMetrics.service.servicePort` | kube-state-metrics service port | `80`
 `kubeStateMetrics.service.type` | type of kube-state-metrics service to create | `ClusterIP`
+`kubeStateMetrics.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
+`networkPolicy.enabled` | Enable NetworkPolicy | `false` |
 `nodeExporter.enabled` | If true, create node-exporter | `true`
-`nodeExporter.name` | node-exporter container name | `node-exporter`
-`nodeExporter.image.repository` | node-exporter container image repository| `prom/node-exporter`
-`nodeExporter.image.tag` | node-exporter container image tag | `v0.18.0`
-`nodeExporter.image.pullPolicy` | node-exporter container image pull policy | `IfNotPresent`
 `nodeExporter.extraArgs` | Additional node-exporter container arguments | `{}`
-`nodeExporter.extraHostPathMounts` | Additional node-exporter hostPath mounts | `[]`
 `nodeExporter.extraConfigmapMounts` | Additional node-exporter configMap mounts | `[]`
+`nodeExporter.extraHostPathMounts` | Additional node-exporter hostPath mounts | `[]`
 `nodeExporter.hostNetwork` | If true, node-exporter pods share the host network namespace | `true`
 `nodeExporter.hostPID` | If true, node-exporter pods share the host PID namespace | `true`
+`nodeExporter.image.pullPolicy` | node-exporter container image pull policy | `IfNotPresent`
+`nodeExporter.image.repository` | node-exporter container image repository| `prom/node-exporter`
+`nodeExporter.image.tag` | node-exporter container image tag | `v0.18.0`
+`nodeExporter.name` | node-exporter container name | `node-exporter`
 `nodeExporter.nodeSelector` | node labels for node-exporter pod assignment | `{}`
-`nodeExporter.podAnnotations` | annotations to be added to node-exporter pods | `{}`
 `nodeExporter.pod.labels` | labels to be added to node-exporter pods | `{}`
+`nodeExporter.podAnnotations` | annotations to be added to node-exporter pods | `{}`
 `nodeExporter.podSecurityPolicy.annotations` | Specify pod annotations in the pod security policy | `{}` |
 `nodeExporter.podSecurityPolicy.enabled` | Specify if a Pod Security Policy for node-exporter must be created | `false`
-`nodeExporter.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `nodeExporter.priorityClassName` | node-exporter priorityClassName | `nil`
 `nodeExporter.resources` | node-exporter resource requests and limits (YAML) | `{}`
 `nodeExporter.securityContext` | securityContext for containers in pod | `{}`
@@ -208,33 +210,33 @@ Parameter | Description | Default
 `nodeExporter.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `nodeExporter.service.servicePort` | node-exporter service port | `9100`
 `nodeExporter.service.type` | type of node-exporter service to create | `ClusterIP`
+`nodeExporter.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `podSecurityPolicy.enabled` | If true, create & use pod security policies resources | `false`
 `pushgateway.enabled` | If true, create pushgateway | `true`
-`pushgateway.name` | pushgateway container name | `pushgateway`
+`pushgateway.extraArgs` | Additional pushgateway container arguments | `{}`
+`pushgateway.image.pullPolicy` | pushgateway container image pull policy | `IfNotPresent`
 `pushgateway.image.repository` | pushgateway container image repository | `prom/pushgateway`
 `pushgateway.image.tag` | pushgateway container image tag | `v0.8.0`
-`pushgateway.image.pullPolicy` | pushgateway container image pull policy | `IfNotPresent`
-`pushgateway.extraArgs` | Additional pushgateway container arguments | `{}`
-`pushgateway.ingress.enabled` | If true, pushgateway Ingress will be created | `false`
 `pushgateway.ingress.annotations` | pushgateway Ingress annotations | `{}`
+`pushgateway.ingress.enabled` | If true, pushgateway Ingress will be created | `false`
 `pushgateway.ingress.hosts` | pushgateway Ingress hostnames | `[]`
 `pushgateway.ingress.tls` | pushgateway Ingress TLS configuration (YAML) | `[]`
+`pushgateway.name` | pushgateway container name | `pushgateway`
 `pushgateway.nodeSelector` | node labels for pushgateway pod assignment | `{}`
-`pushgateway.podAnnotations` | annotations to be added to pushgateway pods | `{}`
-`pushgateway.podSecurityPolicy.annotations` | Specify pod annotations in the pod security policy | `{}` |
-`pushgateway.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
-`pushgateway.replicaCount` | desired number of pushgateway pods | `1`
-`pushgateway.schedulerName` | pushgateway alternate scheduler name | `nil`
-`pushgateway.persistentVolume.enabled` | If true, Prometheus pushgateway will create a Persistent Volume Claim | `false`
 `pushgateway.persistentVolume.accessModes` | Prometheus pushgateway data Persistent Volume access modes | `[ReadWriteOnce]`
 `pushgateway.persistentVolume.annotations` | Prometheus pushgateway data Persistent Volume annotations | `{}`
+`pushgateway.persistentVolume.enabled` | If true, Prometheus pushgateway will create a Persistent Volume Claim | `false`
 `pushgateway.persistentVolume.existingClaim` | Prometheus pushgateway data Persistent Volume existing claim name | `""`
 `pushgateway.persistentVolume.mountPath` | Prometheus pushgateway data Persistent Volume mount root path | `/data`
 `pushgateway.persistentVolume.size` | Prometheus pushgateway data Persistent Volume size | `2Gi`
 `pushgateway.persistentVolume.storageClass` | Prometheus server data Persistent Volume Storage Class |  `unset`
 `pushgateway.persistentVolume.subPath` | Subdirectory of Prometheus server data Persistent Volume to mount | `""`
+`pushgateway.podAnnotations` | annotations to be added to pushgateway pods | `{}`
+`pushgateway.podSecurityPolicy.annotations` | Specify pod annotations in the pod security policy | `{}` |
 `pushgateway.priorityClassName` | pushgateway priorityClassName | `nil`
+`pushgateway.replicaCount` | desired number of pushgateway pods | `1`
 `pushgateway.resources` | pushgateway pod resource requests & limits | `{}`
+`pushgateway.schedulerName` | pushgateway alternate scheduler name | `nil`
 `pushgateway.service.annotations` | annotations for pushgateway service | `{}`
 `pushgateway.service.clusterIP` | internal pushgateway cluster service IP | `""`
 `pushgateway.service.externalIPs` | pushgateway service external IP addresses | `[]`
@@ -242,60 +244,53 @@ Parameter | Description | Default
 `pushgateway.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `pushgateway.service.servicePort` | pushgateway service port | `9091`
 `pushgateway.service.type` | type of pushgateway service to create | `ClusterIP`
+`pushgateway.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `rbac.create` | If true, create & use RBAC resources | `true`
-`server.enabled` | If false, Prometheus server will not be created | `true`
-`server.name` | Prometheus server container name | `server`
-`server.image.repository` | Prometheus server container image repository | `prom/prometheus`
-`server.image.tag` | Prometheus server container image tag | `v2.11.1`
-`server.image.pullPolicy` | Prometheus server container image pull policy | `IfNotPresent`
-`server.enableAdminApi` |  If true, Prometheus administrative HTTP API will be enabled. Please note, that you should take care of administrative API access protection (ingress or some frontend Nginx with auth) before enabling it. | `false`
-`server.skipTSDBLock` |  If true, Prometheus skip TSDB locking. | `false`
-`server.configPath` |  Path to a prometheus server config file on the container FS  | `/etc/config/prometheus.yml`
-`server.global.scrape_interval` | How frequently to scrape targets by default | `1m`
-`server.global.scrape_timeout` | How long until a scrape request times out | `10s`
-`server.global.evaluation_interval` | How frequently to evaluate rules | `1m`
-`server.extraArgs` | Additional Prometheus server container arguments | `{}`
-`server.prefixURL` | The prefix slug at which the server can be accessed | ``
+`server.affinity` | pod affinity | `{}`
 `server.baseURL` | The external url at which the server can be accessed | ``
+`server.configMapOverrideName` | Prometheus server ConfigMap override where full-name is `{{.Release.Name}}-{{.Values.server.configMapOverrideName}}` and setting this value will prevent the default server ConfigMap from being generated | `""`
+`server.configPath` |  Path to a prometheus server config file on the container FS  | `/etc/config/prometheus.yml`
+`server.deploymentAnnotations` | annotations to be added to Prometheus server deployment | `{}`
+`server.emptyDir.sizeLimit` | emptyDir sizeLimit if a Persistent Volume is not used | `""`
+`server.enableAdminApi` |  If true, Prometheus administrative HTTP API will be enabled. Please note, that you should take care of administrative API access protection (ingress or some frontend Nginx with auth) before enabling it. | `false`
+`server.enabled` | If false, Prometheus server will not be created | `true`
 `server.env` | Prometheus server environment variables | `[]`
-`server.extraHostPathMounts` | Additional Prometheus server hostPath mounts | `[]`
+`server.extraArgs` | Additional Prometheus server container arguments | `{}`
 `server.extraConfigmapMounts` | Additional Prometheus server configMap mounts | `[]`
+`server.extraHostPathMounts` | Additional Prometheus server hostPath mounts | `[]`
 `server.extraSecretMounts` | Additional Prometheus server Secret mounts | `[]`
 `server.extraVolumeMounts` | Additional Prometheus server Volume mounts | `[]`
 `server.extraVolumes` | Additional Prometheus server Volumes | `[]`
-`server.configMapOverrideName` | Prometheus server ConfigMap override where full-name is `{{.Release.Name}}-{{.Values.server.configMapOverrideName}}` and setting this value will prevent the default server ConfigMap from being generated | `""`
-`server.ingress.enabled` | If true, Prometheus server Ingress will be created | `false`
+`server.global.evaluation_interval` | How frequently to evaluate rules | `1m`
+`server.global.scrape_interval` | How frequently to scrape targets by default | `1m`
+`server.global.scrape_timeout` | How long until a scrape request times out | `10s`
+`server.image.pullPolicy` | Prometheus server container image pull policy | `IfNotPresent`
+`server.image.repository` | Prometheus server container image repository | `prom/prometheus`
+`server.image.tag` | Prometheus server container image tag | `v2.11.1`
 `server.ingress.annotations` | Prometheus server Ingress annotations | `[]`
+`server.ingress.enabled` | If true, Prometheus server Ingress will be created | `false`
 `server.ingress.extraLabels` | Prometheus server Ingress additional labels | `{}`
 `server.ingress.hosts` | Prometheus server Ingress hostnames | `[]`
 `server.ingress.tls` | Prometheus server Ingress TLS configuration (YAML) | `[]`
+`server.name` | Prometheus server container name | `server`
 `server.nodeSelector` | node labels for Prometheus server pod assignment | `{}`
-`server.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
-`server.affinity` | pod affinity | `{}`
-`server.priorityClassName` | Prometheus server priorityClassName | `nil`
-`server.schedulerName` | Prometheus server alternate scheduler name | `nil`
-`server.persistentVolume.enabled` | If true, Prometheus server will create a Persistent Volume Claim | `true`
 `server.persistentVolume.accessModes` | Prometheus server data Persistent Volume access modes | `[ReadWriteOnce]`
 `server.persistentVolume.annotations` | Prometheus server data Persistent Volume annotations | `{}`
+`server.persistentVolume.enabled` | If true, Prometheus server will create a Persistent Volume Claim | `true`
 `server.persistentVolume.existingClaim` | Prometheus server data Persistent Volume existing claim name | `""`
 `server.persistentVolume.mountPath` | Prometheus server data Persistent Volume mount root path | `/data`
 `server.persistentVolume.size` | Prometheus server data Persistent Volume size | `8Gi`
 `server.persistentVolume.storageClass` | Prometheus server data Persistent Volume Storage Class |  `unset`
 `server.persistentVolume.subPath` | Subdirectory of Prometheus server data Persistent Volume to mount | `""`
-`server.emptyDir.sizeLimit` | emptyDir sizeLimit if a Persistent Volume is not used | `""`
 `server.podAnnotations` | annotations to be added to Prometheus server pods | `{}`
 `server.podLabels` | labels to be added to Prometheus server pods | `{}`
-`server.deploymentAnnotations` | annotations to be added to Prometheus server deployment | `{}`
 `server.podSecurityPolicy.annotations` | Specify pod annotations in the pod security policy | `{}` |
+`server.prefixURL` | The prefix slug at which the server can be accessed | ``
+`server.priorityClassName` | Prometheus server priorityClassName | `nil`
 `server.replicaCount` | desired number of Prometheus server pods | `1`
-`server.statefulSet.enabled` | If true, use a statefulset instead of a deployment for pod management | `false`
-`server.statefulSet.annotations` | annotations to be added to Prometheus server stateful set | `{}`
-`server.statefulSet.labels` | labels to be added to Prometheus server stateful set | `{}`
-`server.statefulSet.podManagementPolicy` | podManagementPolicy of server pods | `OrderedReady`
-`server.statefulSet.headless.annotations` | annotations for Prometheus server headless service | `{}`
-`server.statefulSet.headless.labels` | labels for Prometheus server headless service | `{}`
-`server.statefulSet.headless.servicePort` | Prometheus server headless service port | `80`
 `server.resources` | Prometheus server resource requests and limits | `{}`
+`server.retention` | (optional) Prometheus data retention | `"15d"`
+`server.schedulerName` | Prometheus server alternate scheduler name | `nil`
 `server.securityContext` | Custom [security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) for server containers | `{}`
 `server.service.annotations` | annotations for Prometheus server service | `{}`
 `server.service.clusterIP` | internal Prometheus server cluster service IP | `""`
@@ -306,6 +301,19 @@ Parameter | Description | Default
 `server.service.servicePort` | Prometheus server service port | `80`
 `server.service.type` | type of Prometheus server service to create | `ClusterIP`
 `server.sidecarContainers` | array of snippets with your sidecar containers for prometheus server | `""`
+`server.skipTSDBLock` |  If true, Prometheus skip TSDB locking. | `false`
+`server.statefulSet.annotations` | annotations to be added to Prometheus server stateful set | `{}`
+`server.statefulSet.enabled` | If true, use a statefulset instead of a deployment for pod management | `false`
+`server.statefulSet.headless.annotations` | annotations for Prometheus server headless service | `{}`
+`server.statefulSet.headless.labels` | labels for Prometheus server headless service | `{}`
+`server.statefulSet.headless.servicePort` | Prometheus server headless service port | `80`
+`server.statefulSet.labels` | labels to be added to Prometheus server stateful set | `{}`
+`server.statefulSet.podManagementPolicy` | podManagementPolicy of server pods | `OrderedReady`
+`server.terminationGracePeriodSeconds` | Prometheus server Pod termination grace period | `300`
+`server.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
+`serverFiles.alerts` | Prometheus server alerts configuration | `{}`
+`serverFiles.prometheus.yml` | Prometheus server scrape configuration | example configuration
+`serverFiles.rules` | Prometheus server rules configuration | `{}`
 `serviceAccounts.alertmanager.create` | If true, create the alertmanager service account | `true`
 `serviceAccounts.alertmanager.name` | name of the alertmanager service account to use or create | `{{ prometheus.alertmanager.fullname }}`
 `serviceAccounts.kubeStateMetrics.create` | If true, create the kubeStateMetrics service account | `true`
@@ -316,14 +324,6 @@ Parameter | Description | Default
 `serviceAccounts.pushgateway.name` | name of the pushgateway service account to use or create | `{{ prometheus.pushgateway.fullname }}`
 `serviceAccounts.server.create` | If true, create the server service account | `true`
 `serviceAccounts.server.name` | name of the server service account to use or create | `{{ prometheus.server.fullname }}`
-`server.terminationGracePeriodSeconds` | Prometheus server Pod termination grace period | `300`
-`server.retention` | (optional) Prometheus data retention | `"15d"`
-`serverFiles.alerts` | Prometheus server alerts configuration | `{}`
-`serverFiles.rules` | Prometheus server rules configuration | `{}`
-`serverFiles.prometheus.yml` | Prometheus server scrape configuration | example configuration
-`extraScrapeConfigs` | Prometheus server additional scrape configuration | ""
-`alertRelabelConfigs` | Prometheus server [alert relabeling configs](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#alert_relabel_configs) for H/A prometheus | ""
-`networkPolicy.enabled` | Enable NetworkPolicy | `false` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
