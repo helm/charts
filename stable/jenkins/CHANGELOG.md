@@ -10,12 +10,17 @@ NOTE: The change log until version 1.5.7 is auto generated based on git commits.
 
 [Jenkins Configuration as Code Plugin](https://github.com/jenkinsci/configuration-as-code-plugin) default configuration can now be enabled via `master.JCasC.defaultConfig`.
 
-Example `values.yaml` disables all XML configuration, enables JCasC, it's default config and configAutoReload:
+JCasC default configuration includes:
+  - Jenkins url
+  - disableRememberMe: false
+  - mode: NORMAL
+  - numExecutors: {{ .Values.master.numExecutors }}
+  - projectNamingStrategy: "standard"
+
+Example `values.yaml` which enables JCasC, it's default config and configAutoReload:
 
 ```
 master:
-  enableXmlConfig: false
-  javaOpts: "-Djenkins.install.runSetupWizard=false"
   JCasC:
     enabled: true
     defaultConfig: true

@@ -71,6 +71,18 @@ Returns the Jenkins URL
 Returns configuration as code default config
 */}}
 {{- define "jenkins.casc.defaults" -}}
+jenkins:
+  disableRememberMe: false
+  mode: NORMAL
+  numExecutors: {{ .Values.master.numExecutors }}
+  projectNamingStrategy: "standard"
+  markupFormatter:
+    {{- if .Values.master.enableRawHtmlMarkupFormatter }}
+    rawHtml:
+      disableSyntaxHighlighting: true
+    {{- else }}
+      "plainText"
+    {{- end }}
 unclassified:
   location:
     url: {{ template "jenkins.url" . }}
