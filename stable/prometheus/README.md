@@ -143,6 +143,7 @@ Parameter | Description | Default
 `alertmanager.statefulSet.headless.labels` | labels for alertmanager headless service | `{}`
 `alertmanager.statefulSet.headless.servicePort` | alertmanager headless service port | `80`
 `alertmanager.statefulSet.podManagementPolicy` | podManagementPolicy of alertmanager pods | `OrderedReady`
+`alertmanager.strategy.type` | alertmanager deployment strategy | `{ "type": "RollingUpdate" }`
 `alertmanager.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `alertmanagerFiles.alertmanager.yml` | Prometheus alertmanager configuration | example configuration
 `alertRelabelConfigs` | Prometheus server [alert relabeling configs](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#alert_relabel_configs) for H/A prometheus | ""
