@@ -133,7 +133,7 @@ data:
             </org.csanchez.jenkins.plugins.kubernetes.PodTemplate>
 {{- end -}}
           </templates>
-          <serverUrl>https://kubernetes.default</serverUrl>
+          <serverUrl>https://kubernetes.default:443</serverUrl>
           <skipTlsVerify>false</skipTlsVerify>
           <namespace>{{ template "jenkins.master.slaveKubernetesNamespace" . }}</namespace>
 {{- if .Values.master.slaveKubernetesNamespace }}
