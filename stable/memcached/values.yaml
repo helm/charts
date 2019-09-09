@@ -42,6 +42,12 @@ serviceAnnotations: {}
 ## StatefulSet or Deployment
 kind: StatefulSet
 
+## Update Strategy for the StatefulSet or Deployment
+## ref: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#update-strategies
+## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#updating-a-deployment
+updateStrategy:
+  type: RollingUpdate
+
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ##
