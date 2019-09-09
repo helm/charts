@@ -65,6 +65,10 @@ concourse:
     ##
     enableGlobalResources: true
 
+    ## The Future™ of resource checking.
+    ##
+    enableLidar: false
+
     ## Enable auditing for all api requests connected to builds.
     ##
     enableBuildAuditing: false
@@ -619,6 +623,10 @@ concourse:
       ## went missing from the worker.
       ##
       missingGracePeriod: 5m
+
+      ## Period after which to reap checks that are completed.
+      ##
+      checkRecyclePeriod: 6h
 
     syslog:
       ## Enables the emission of build logs to external log ingesters through

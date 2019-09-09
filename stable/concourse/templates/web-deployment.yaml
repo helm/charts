@@ -67,6 +67,10 @@ spec:
             - name: CONCOURSE_ENABLE_GLOBAL_RESOURCES
               value: {{ .Values.concourse.web.enableGlobalResources | quote }}
             {{- end }}
+            {{- if .Values.concourse.web.enableLidar }}
+            - name: CONCOURSE_ENABLE_LIDAR
+              value: {{ .Values.concourse.web.enableLidar | quote }}
+            {{- end }}
             {{- if .Values.concourse.web.enableBuildAuditing }}
             - name: CONCOURSE_ENABLE_BUILD_AUDITING
               value: {{ .Values.concourse.web.enableBuildAuditing | quote }}
@@ -637,6 +641,10 @@ spec:
             {{- if .Values.concourse.web.gc.missingGracePeriod }}
             - name: CONCOURSE_GC_MISSING_GRACE_PERIOD
               value: {{ .Values.concourse.web.gc.missingGracePeriod | quote }}
+            {{- end }}
+            {{- if .Values.concourse.web.gc.checkRecyclePeriod }}
+            - name: CONCOURSE_GC_CHECK_RECYCLE_PERIOD
+              value: {{ .Values.concourse.web.gc.checkRecyclePeriod | quote }}
             {{- end }}
             {{- if .Values.concourse.web.syslog.enabled }}
             {{- if .Values.concourse.web.syslog.hostname }}
