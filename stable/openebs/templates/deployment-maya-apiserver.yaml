@@ -13,6 +13,9 @@ metadata:
     openebs.io/version: {{ .Values.release.version }}
 spec:
   replicas: {{ .Values.apiserver.replicas }}
+  strategy:
+    type: "Recreate"
+    rollingUpdate: null
   selector:
     matchLabels:
       app: {{ template "openebs.name" . }}
@@ -45,17 +48,6 @@ spec:
         # This is supported for maya api server version 0.5.2 onwards
         #- name: OPENEBS_IO_K8S_MASTER
         #  value: "http://172.28.128.3:8080"
-        # OPENEBS_IO_INSTALL_DEFAULT_CSTOR_SPARSE_POOL decides whether default cstor sparse pool should be
-        # configured as a part of openebs installation.
-        # If "true" a default cstor sparse pool will be configured, if "false" it will not be configured.
-        - name: OPENEBS_IO_INSTALL_DEFAULT_CSTOR_SPARSE_POOL
-          value: "{{ .Values.apiserver.sparse.enabled }}"
-        - name: OPENEBS_IO_CSTOR_POOL_SPARSE_DIR
-          value: "{{ .Values.ndm.sparse.path }}"
-        - name: OPENEBS_IO_CREATE_DEFAULT_STORAGE_CONFIG
-          value: "{{ .Values.defaultStorageConfig.enabled }}"
-        - name: OPENEBS_IO_CSTOR_TARGET_DIR
-          value: "{{ .Values.ndm.sparse.path }}"
         # OPENEBS_NAMESPACE provides the namespace of this deployment as an
         # environment variable
         - name: OPENEBS_NAMESPACE
@@ -74,6 +66,44 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
+        # If OPENEBS_IO_CREATE_DEFAULT_STORAGE_CONFIG is false then OpenEBS default 
+        # storageclass and storagepool will not be created.
+        - name: OPENEBS_IO_CREATE_DEFAULT_STORAGE_CONFIG
+          value: "{{ .Values.defaultStorageConfig.enabled }}"
+        # OPENEBS_IO_INSTALL_DEFAULT_CSTOR_SPARSE_POOL decides whether default cstor sparse pool should be
+        # configured as a part of openebs installation.
+        # If "true" a default cstor sparse pool will be configured, if "false" it will not be configured.
+        # This value takes effect only if OPENEBS_IO_CREATE_DEFAULT_STORAGE_CONFIG
+        # is set to true
+        - name: OPENEBS_IO_INSTALL_DEFAULT_CSTOR_SPARSE_POOL
+          value: "{{ .Values.apiserver.sparse.enabled }}"
+        # OPENEBS_IO_CSTOR_TARGET_DIR can be used to specify the hostpath 
+        # to be used for saving the shared content between the side cars
+        # of cstor volume pod. 
+        # The default path used is /var/openebs/sparse
+        - name: OPENEBS_IO_CSTOR_TARGET_DIR
+          value: "{{ .Values.ndm.sparse.path }}"
+        # OPENEBS_IO_CSTOR_POOL_SPARSE_DIR can be used to specify the hostpath 
+        # to be used for saving the shared content between the side cars
+        # of cstor pool pod. This ENV is also used to indicate the location 
+        # of the sparse devices. 
+        # The default path used is /var/openebs/sparse
+        - name: OPENEBS_IO_CSTOR_POOL_SPARSE_DIR
+          value: "{{ .Values.ndm.sparse.path }}"
+        # OPENEBS_IO_JIVA_POOL_DIR can be used to specify the hostpath 
+        # to be used for default Jiva StoragePool loaded by OpenEBS
+        # The default path used is /var/openebs
+        # This value takes effect only if OPENEBS_IO_CREATE_DEFAULT_STORAGE_CONFIG
+        # is set to true
+        - name: OPENEBS_IO_JIVA_POOL_DIR
+          value: "{{ .Values.jiva.defaultStoragePath }}"
+        # OPENEBS_IO_LOCALPV_HOSTPATH_DIR can be used to specify the hostpath 
+        # to be used for default openebs-hostpath storageclass loaded by OpenEBS
+        # The default path used is /var/openebs/local
+        # This value takes effect only if OPENEBS_IO_CREATE_DEFAULT_STORAGE_CONFIG
+        # is set to true
+        - name: OPENEBS_IO_LOCALPV_HOSTPATH_DIR
+          value: "{{ .Values.localprovisioner.basePath }}"
         - name: OPENEBS_IO_JIVA_CONTROLLER_IMAGE
           value: "{{ .Values.jiva.image }}:{{ .Values.jiva.imageTag }}"
         - name: OPENEBS_IO_JIVA_REPLICA_IMAGE

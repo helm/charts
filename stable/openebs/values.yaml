@@ -12,14 +12,14 @@ serviceAccount:
 
 release:
   # "openebs.io/version" label for control plane components
-  version: "1.1.0"
+  version: "1.2.0"
 
 image:
   pullPolicy: IfNotPresent
 
 apiserver:
   image: "quay.io/openebs/m-apiserver"
-  imageTag: "1.1.0"
+  imageTag: "1.2.0"
   replicas: 1
   ports:
     externalPort: 5656
@@ -38,7 +38,7 @@ defaultStorageConfig:
 
 provisioner:
   image: "quay.io/openebs/openebs-k8s-provisioner"
-  imageTag: "1.1.0"
+  imageTag: "1.2.0"
   replicas: 1
   nodeSelector: {}
   tolerations: []
@@ -49,7 +49,7 @@ provisioner:
 
 localprovisioner:
   image: "quay.io/openebs/provisioner-localpv"
-  imageTag: "1.1.0"
+  imageTag: "1.2.0"
   helperImage: "quay.io/openebs/openebs-tools"
   helperImageTag: "3.8"
   replicas: 1
@@ -64,10 +64,10 @@ localprovisioner:
 snapshotOperator:
   controller:
     image: "quay.io/openebs/snapshot-controller"
-    imageTag: "1.1.0"
+    imageTag: "1.2.0"
   provisioner:
     image: "quay.io/openebs/snapshot-provisioner"
-    imageTag: "1.1.0"
+    imageTag: "1.2.0"
   replicas: 1
   upgradeStrategy: "Recreate"
   nodeSelector: {}
@@ -79,7 +79,7 @@ snapshotOperator:
 
 ndm:
   image: "quay.io/openebs/node-disk-manager-amd64"
-  imageTag: "v0.4.1"
+  imageTag: "v0.4.2"
   sparse:
     path: "/var/openebs/sparse"
     size: "10737418240"
@@ -91,13 +91,14 @@ ndm:
   probes:
     enableSeachest: false
   nodeSelector: {}
+  tolerations: []
   healthCheck:
     initialDelaySeconds: 30
     periodSeconds: 60
 
 ndmOperator:
   image: "quay.io/openebs/node-disk-operator-amd64"
-  imageTag: "v0.4.1"
+  imageTag: "v0.4.2"
   replicas: 1
   upgradeStrategy: Recreate
   nodeSelector: {}
@@ -111,7 +112,7 @@ ndmOperator:
 
 webhook:
   image: "quay.io/openebs/admission-server"
-  imageTag: "1.1.0"
+  imageTag: "1.2.0"
   generateTLS: true
   failurePolicy: Ignore
   replicas: 1
@@ -121,28 +122,29 @@ webhook:
 
 jiva:
   image: "quay.io/openebs/jiva"
-  imageTag: "1.1.0"
+  imageTag: "1.2.0"
   replicas: 3
+  defaultStoragePath: "/var/openebs"
 
 cstor:
   pool:
     image: "quay.io/openebs/cstor-pool"
-    imageTag: "1.1.0"
+    imageTag: "1.2.0"
   poolMgmt:
     image: "quay.io/openebs/cstor-pool-mgmt"
-    imageTag: "1.1.0"
+    imageTag: "1.2.0"
   target:
     image: "quay.io/openebs/cstor-istgt"
-    imageTag: "1.1.0"
+    imageTag: "1.2.0"
   volumeMgmt:
     image: "quay.io/openebs/cstor-volume-mgmt"
-    imageTag: "1.1.0"
+    imageTag: "1.2.0"
 
 policies:
   monitoring:
     enabled: true
     image: "quay.io/openebs/m-exporter"
-    imageTag: "1.1.0"
+    imageTag: "1.2.0"
 
 analytics:
   enabled: true
