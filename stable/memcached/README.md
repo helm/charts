@@ -62,6 +62,7 @@ The following table lists the configurable parameters of the Memcached chart and
 | `securityContext.enabled`  | Enable security context    | `true`                                                       |
 | `securityContext.fsGroup`  | Group ID for the container | `1001`                                                       |
 | `securityContext.runAsUser`| User ID for the container  | `1001`                                                       |
+| `updateStrategy.type`      | Update strategy for the StatefulSet/Deployment | `RollingUpdate`                          |
 
 The above parameters map to `memcached` params. For more information please refer to the [Memcached documentation](https://github.com/memcached/memcached/wiki/ConfiguringServer).
 
