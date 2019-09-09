@@ -24,12 +24,17 @@ spec:
     type: Recreate
   template:
     metadata:
-      {{- if .Values.enableMetrics }}
+    {{- if or .Values.podAnnotations .Values.enableMetrics }}
       annotations:
+      {{- if .Values.enableMetrics }}
         prometheus.io/scrape: "true"
         prometheus.io/port: "{{ .Values.metricsPort }}"
         prometheus.io/path: {{ .Values.metricsEndpoint }}
       {{- end }}
+      {{- if .Values.podAnnotations }}
+{{ toYaml .Values.podAnnotations | trim | indent 8 }}
+      {{- end }}
+    {{- end }}
       labels:
         app.kubernetes.io/name: {{ include "sparkoperator.name" . }}
         app.kubernetes.io/version: {{ .Values.operatorVersion }}
@@ -64,6 +69,7 @@ spec:
         - -controller-threads={{ .Values.controllerThreads }}
         - -resync-interval={{ .Values.resyncInterval }}
         - -logtostderr
+        - -enable-batch-scheduler={{ .Values.enableBatchScheduler }}
         {{- if .Values.enableMetrics }}
         - -enable-metrics=true
         - -metrics-labels=app_type

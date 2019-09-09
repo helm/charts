@@ -33,6 +33,8 @@ spec:
       serviceAccountName: {{ template "redis-ha.serviceAccountName" . }}-haproxy
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
       initContainers:
       - name: config-init
         image: {{ .Values.haproxy.image.repository }}:{{ .Values.haproxy.image.tag }}
@@ -76,6 +78,11 @@ spec:
         - name: redis
           containerPort: {{ default "6379" .Values.redis.port }}
           hostPort: 6379
+        {{- if .Values.haproxy.readOnly.enabled }}
+        - name: readonlyport
+          containerPort: {{ default "6380" .Values.haproxy.readOnly.port }}
+          hostPort: 6380
+        {{- end }}
         resources:
 {{ toYaml .Values.haproxy.resources | indent 10 }}
         volumeMounts:

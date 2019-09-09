@@ -222,6 +222,8 @@ controller:
     configMapKey: ""
 
   service:
+    enabled: true
+
     annotations: {}
     labels: {}
     omitClusterIP: false
