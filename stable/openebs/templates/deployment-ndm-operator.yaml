@@ -10,11 +10,13 @@ metadata:
     heritage: {{ .Release.Service }}
     component: ndm-operator
     openebs.io/component-name: ndm-operator
+    openebs.io/version: {{ .Values.release.version }}
     name: ndm-operator
 spec:
   replicas: {{ .Values.ndmOperator.replicas }}
   strategy:
-    type: {{ .Values.ndmOperator.upgradeStrategy }}
+    type: "Recreate"
+    rollingUpdate: null
   selector:
     matchLabels:
       app: {{ template "openebs.name" . }}
