@@ -72,7 +72,8 @@ condition_map = {
 header = '''# Generated from '%(name)s' from %(url)s
 # Do not change in-place! In order to change this file first read following link:
 # https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
-{{- if and (semverCompare ">=%(min_kubernetes)s" .Capabilities.KubeVersion.GitVersion) (semverCompare "<%(max_kubernetes)s" .Capabilities.KubeVersion.GitVersion) .Values.grafana.enabled .Values.grafana.defaultDashboardsEnabled%(condition)s }}
+{{- $kubeTargetVersion := default .Capabilities.KubeVersion.GitVersion .Values.kubeTargetVersionOverride }}
+{{- if and (semverCompare ">=%(min_kubernetes)s" $kubeTargetVersion) (semverCompare "<%(max_kubernetes)s" $kubeTargetVersion) .Values.grafana.enabled .Values.grafana.defaultDashboardsEnabled%(condition)s }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
