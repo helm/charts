@@ -8,6 +8,8 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     component: ndm
+    openebs.io/component-name: ndm
+    openebs.io/version: {{ .Values.release.version }}
 spec:
   updateStrategy:
     type: "RollingUpdate"
@@ -35,6 +37,8 @@ spec:
         securityContext:
           privileged: true
         env:
+        # namespace in which NDM is installed will be passed to NDM Daemonset
+        # as environment variable
         - name: NAMESPACE
           valueFrom:
             fieldRef:
@@ -118,4 +122,8 @@ spec:
 {{- if .Values.ndm.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.ndm.nodeSelector | indent 8 }}
+{{- end }}
+{{- if .Values.ndm.tolerations }}
+      tolerations:
+{{ toYaml .Values.ndm.tolerations | indent 8 }}
 {{- end }}
