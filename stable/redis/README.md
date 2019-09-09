@@ -1,3 +1,4 @@
+
 # Redis
 
 [Redis](http://redis.io/) is an advanced key-value cache and store. It is often referred to as a data structure server since keys can contain strings, hashes, lists, sets, sorted sets, bitmaps and hyperloglogs.
@@ -210,7 +211,7 @@ The following table lists the configurable parameters of the Redis chart and the
 | `volumePermissions.enabled`                   | Enable init container that changes volume permissions in the registry (for cases where the default k8s `runAsUser` and `fsUser` values do not work) | `false`                                                 |
 | `volumePermissions.image.registry`            | Init container volume-permissions image registry                                                                                                    | `docker.io`                                             |
 | `volumePermissions.image.repository`          | Init container volume-permissions image name                                                                                                        | `bitnami/minideb`                                       |
-| `volumePermissions.image.tag`                 | Init container volume-permissions image tag                                                                                                         | `latest`                                                |
+| `volumePermissions.image.tag`                 | Init container volume-permissions image tag                                                                                                         | `stretch`                                                |
 | `volumePermissions.image.pullPolicy`          | Init container volume-permissions image pull policy                                                                                                 | `Always`                                                |
 | `volumePermissions.resources       `          | Init container volume-permissions CPU/Memory resource requests/limits                                                                               | {}                                                      |
 | `slave.service.type`                          | Kubernetes Service type (redis slave)                                                                                                               | `ClusterIP`                                             |
@@ -287,7 +288,7 @@ The following table lists the configurable parameters of the Redis chart and the
 | `sysctlImage.command`                         | sysctlImage command to execute                                                                                                                      | []                                                      |
 | `sysctlImage.registry`                        | sysctlImage Init container registry                                                                                                                 | `docker.io`                                             |
 | `sysctlImage.repository`                      | sysctlImage Init container name                                                                                                                     | `bitnami/minideb`                                       |
-| `sysctlImage.tag`                             | sysctlImage Init container tag                                                                                                                      | `latest`                                                |
+| `sysctlImage.tag`                             | sysctlImage Init container tag                                                                                                                      | `stretch`                                                |
 | `sysctlImage.pullPolicy`                      | sysctlImage Init container pull policy                                                                                                              | `Always`                                                |
 | `sysctlImage.mountHostSys`                    | Mount the host `/sys` folder to `/host-sys`                                                                                                         | `false`                                                 |
 | `sysctlImage.resources`                       | sysctlImage Init container CPU/Memory resource requests/limits                                                                                      | {}                                                      |
@@ -311,6 +312,20 @@ $ helm install --name my-release -f values.yaml stable/redis
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
 > **Note for minikube users**: Current versions of minikube (v0.24.1 at the time of writing) provision `hostPath` persistent volumes that are only writable by root. Using chart defaults cause pod failure for the Redis pod as it attempts to write to the `/bitnami` directory. Consider installing Redis with `--set persistence.enabled=false`. See minikube issue [1990](https://github.com/kubernetes/minikube/issues/1990) for more information.
+
+### Using password file
+To use a password file for Redis you need to create a secret containing the password:
+
+```bash
+$ kubectl create secret generic redis-password-file --from-file=/tmp/redis-password
+```
+> *NOTE*: It is important that the file with the password must be called `redis-password`
+
+And deploy the Helm Chart using the secret name:
+
+```bash
+$ helm install stable/redis --set usePassword=true,usePasswordFile=true,existingSecret=redis-password-file,sentinels.enabled=true,metrics.enabled=true
+```
 
 ### Production configuration
 
@@ -388,7 +403,7 @@ sysctlImage:
     - /bin/sh
     - -c
     - |-
-      install_packages systemd
+      install_packages procps
       sysctl -w net.core.somaxconn=10000
       echo never > /host-sys/kernel/mm/transparent_hugepage/enabled
 ```

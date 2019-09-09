@@ -63,7 +63,7 @@ airflow:
     repository: puckel/docker-airflow
     ##
     ## image tag
-    tag: 1.10.3
+    tag: 1.10.4
     ##
     ## Image pull policy
     ## values: Always or IfNotPresent
@@ -493,8 +493,10 @@ postgresql:
 
   ##
   ## The name of an existing secret that contains the postgres password.
-  ## Note that the secret must have a key called postgres-password.
   existingSecret:
+
+  ## Name of the key containing the secret.
+  existingSecretKey: postgres-password
 
   ##
   ## If you are bringing your own PostgreSQL, you should set postgresHost and
@@ -538,8 +540,10 @@ redis:
 
   ##
   ## The name of an existing secret that contains the redis password.
-  ## Note that the secret must have a key called redis-password.
   existingSecret:
+
+  ## Name of the key containing the secret.
+  existingSecretKey: redis-password
 
   ##
   ## If you are bringing your own redis, you can set the host in redisHost.

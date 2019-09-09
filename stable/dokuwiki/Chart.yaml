@@ -1,6 +1,6 @@
 apiVersion: v1
 name: dokuwiki
-version: 5.2.1
+version: 5.2.4
 appVersion: 0.20180422.201901061035
 description: DokuWiki is a standards-compliant, simple to use wiki optimized for creating
   documentation. It is targeted at developer teams, workgroups, and small companies.

@@ -232,7 +232,7 @@ spec:
         resources:
           requests:
             storage: {{ .Values.slave.persistence.size | quote }}
-        storageClassName: {{ include "mariadb.slave.storageClass" . }}
+        {{ include "mariadb.slave.storageClass" . }}
 {{- else }}
         - name: "data"
           emptyDir: {}

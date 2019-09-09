@@ -43,14 +43,14 @@ charts = [
         'source': 'https://raw.githubusercontent.com/coreos/kube-prometheus/release-0.1/manifests/grafana-dashboardDefinitions.yaml',
         'destination': '../templates/grafana/dashboards',
         'type': 'yaml',
-        'min_kubernetes': '1.11.0-0',
+        'min_kubernetes': '1.10.0-0',
         'max_kubernetes': '1.14.0-0'
     },
     {
         'source': 'https://raw.githubusercontent.com/etcd-io/etcd/master/Documentation/op-guide/grafana.json',
         'destination': '../templates/grafana/dashboards',
         'type': 'json',
-        'min_kubernetes': '1.11.0-0',
+        'min_kubernetes': '1.10.0-0',
         'max_kubernetes': '1.14.0-0'
     },
 ]
@@ -63,7 +63,9 @@ condition_map = {
     'controller-manager': ' .Values.kubeControllerManager.enabled',
     'kubelet': ' .Values.kubelet.enabled',
     'proxy': ' .Values.kubeProxy.enabled',
-    'scheduler': ' .Values.kubeScheduler.enabled'
+    'scheduler': ' .Values.kubeScheduler.enabled',
+    'node-rsrc-use': ' .Values.nodeExporter.enabled',
+    'node-cluster-rsrc-use': ' .Values.nodeExporter.enabled'
 }
 
 # standard header

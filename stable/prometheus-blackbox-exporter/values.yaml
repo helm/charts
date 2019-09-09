@@ -1,5 +1,14 @@
 restartPolicy: Always
 
+podDisruptionBudget:
+  maxUnavailable: 0
+
+strategy:
+  rollingUpdate:
+    maxSurge: 1
+    maxUnavailable: 0
+  type: RollingUpdate
+
 image:
   repository: prom/blackbox-exporter
   tag: v0.14.0
@@ -37,6 +46,8 @@ resources: {}
   #   memory: 300Mi
   # requests:
   #   memory: 50Mi
+
+priorityClassName: ""
 
 service:
   annotations: {}
@@ -99,6 +110,7 @@ serviceMonitor:
   labels: {}
   interval: 30s
   scrapeTimeout: 30s
+  module: http_2xx
   # The URL that blackbox will scrape
   url: http://example.com/healthz
   # Optional human readable URL that will appear in Prometheus / AlertManager

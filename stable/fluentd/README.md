@@ -65,6 +65,9 @@ Parameter | Description | Default
 `nodeSelector` | node labels for pod assignment | `{}`
 `replicaCount` | desired number of pods | `1` ???
 `resources` | pod resource requests & limits | `{}`
+`rbac.create` | Specifies whether RBAC resources should be created | `true`
+`serviceAccount.create` | Specifies whether a service account should be created. | `true`
+`serviceAccount.name` | Name of the service account.
 `priorityClassName` | priorityClassName | `nil`
 `service.ports` | port definition for the service | See [values.yaml](values.yaml)
 `service.type` | type of service | `ClusterIP`
@@ -77,6 +80,7 @@ Parameter | Description | Default
 `autoscaling.minReplicas` | Set minimum number of replicas | `2`
 `autoscaling.maxReplicas` | Set maximum number of replicas | `5`
 `autoscaling.metrics` | metrics used for autoscaling | See [values.yaml](values.yaml)
+`terminationGracePeriodSeconds` | Optional duration in seconds the pod needs to terminate gracefully | `30`
 `metrics.enabled`                         | Set this to `true` to enable Prometheus metrics HTTP endpoint                         | `false`
 `metrics.service.port`                    | Prometheus metrics HTTP endpoint port                                                 | `24231`
 `metrics.serviceMonitor.enabled`          | Set this to `true` to create ServiceMonitor for Prometheus operator                   | `false`

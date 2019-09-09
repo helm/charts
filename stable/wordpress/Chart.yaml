@@ -1,7 +1,7 @@
 apiVersion: v1
 name: wordpress
-version: 7.2.1
-appVersion: 5.2.2
+version: 7.3.2
+appVersion: 5.2.3
 description: Web publishing platform for building blogs and websites.
 icon: https://bitnami.com/assets/stacks/wordpress/img/wordpress-stack-220x234.png
 keywords:
