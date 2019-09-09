@@ -14,7 +14,7 @@
 image:
   registry: docker.io
   repository: bitnami/drupal
-  tag: 8.7.7-debian-9-r2
+  tag: 8.7.7-debian-9-r5
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -262,7 +262,7 @@ metrics:
   image:
     registry: docker.io
     repository: bitnami/apache-exporter
-    tag: 0.7.0-debian-9-r47
+    tag: 0.7.0-debian-9-r50
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
