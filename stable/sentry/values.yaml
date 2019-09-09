@@ -188,15 +188,12 @@ ingress:
 
 postgresql:
   enabled: true
-  postgresDatabase: sentry
-  postgresUser: sentry
+  postgresqlDatabase: sentry
+  postgresqlUsername: postgres
   # Only used when internal PG is disabled
-  # postgresHost: postgres
-  # postgresPassword: postgres
-  # postgresPort: 5432
-  imageTag: "9.6"
-  persistence:
-    enabled: true
+  # postgresqlHost: postgres
+  # postgresqlPassword: postgres
+  # postgresqlPort: 5432
 
 redis:
   enabled: true

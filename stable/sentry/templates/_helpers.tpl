@@ -45,7 +45,7 @@ Set postgres host
 {{- if .Values.postgresql.enabled -}}
 {{- template "sentry.postgresql.fullname" . -}}
 {{- else -}}
-{{- .Values.postgresql.postgresHost | quote -}}
+{{- .Values.postgresql.postgresqlHost | quote -}}
 {{- end -}}
 {{- end -}}
 
@@ -67,7 +67,7 @@ Set postgres port
 {{- if .Values.postgresql.enabled -}}
     "5432"
 {{- else -}}
-{{- default "5432" .Values.postgresql.postgresPort | quote -}}
+{{- default "5432" .Values.postgresql.postgresqlPort | quote -}}
 {{- end -}}
 {{- end -}}
 
