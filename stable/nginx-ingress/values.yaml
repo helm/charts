@@ -222,6 +222,8 @@ controller:
     configMapKey: ""
 
   service:
+    enabled: true
+
     annotations: {}
     labels: {}
     omitClusterIP: false
@@ -384,6 +386,9 @@ defaultBackend:
 
   extraArgs: {}
 
+  serviceAccount:
+    create: true
+    name:
   ## Additional environment variables to set for defaultBackend pods
   extraEnvs: []
 
