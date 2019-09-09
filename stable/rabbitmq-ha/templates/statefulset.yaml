@@ -83,6 +83,16 @@ spec:
         - name: {{ .Chart.Name }}
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - /bin/sh
+            - -c
+          args:
+            - |
+                set -x &&
+                echo $RABBITMQ_ERLANG_COOKIE > /var/lib/rabbitmq/.erlang.cookie &&
+                chown rabbitmq:rabbitmq /var/lib/rabbitmq/.erlang.cookie &&
+                chmod 600 /var/lib/rabbitmq/.erlang.cookie &&
+                docker-entrypoint.sh rabbitmq-server
           ports:
             - name: epmd
               protocol: TCP
