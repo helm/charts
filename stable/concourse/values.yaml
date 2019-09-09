@@ -105,6 +105,10 @@ concourse:
     ##
     enableVolumeAuditing: false
 
+    ## Enable redacting secrets in build logs.
+    ##
+    enableRedactSecrets: false
+
     ## The number of attempts secret will be retried to be fetched,
     ## in case a retryable error happens.
     ##

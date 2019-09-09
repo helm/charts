@@ -107,6 +107,10 @@ spec:
             - name: CONCOURSE_ENABLE_VOLUME_AUDITING
               value: {{ .Values.concourse.web.enableVolumeAuditing | quote }}
             {{- end }}
+            {{- if .Values.concourse.web.enableRedactSecrets }}
+            - name: CONCOURSE_ENABLE_REDACT_SECRETS
+              value: {{ .Values.concourse.web.enableRedactSecrets | quote }}
+            {{- end }}
             {{- if .Values.concourse.web.secretRetryAttempts }}
             - name: CONCOURSE_SECRET_RETRY_ATTEMPTS
               value: {{ .Values.concourse.web.secretRetryAttempts | quote }}
