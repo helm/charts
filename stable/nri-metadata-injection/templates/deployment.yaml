@@ -8,6 +8,9 @@ metadata:
     {{- include "nri-metadata-injection.labels" . | nindent 4 }}
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      {{- include "nri-metadata-injection.appLabel" . | nindent 6 }}
   template:
     metadata:
       namespace: {{ .Release.Namespace }}
@@ -33,12 +36,24 @@ spec:
             port: 8080
           initialDelaySeconds: 1
           periodSeconds: 1
+        {{- if .Values.resources }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        {{- end }}
       volumes:
       - name: tls-key-cert-pair
         secret:
           secretName: {{ template "nri-metadata-injection.fullname" . }}
-      {{- if .Values.resources }}
-      resources:
-{{ toYaml .Values.resources | indent 8 }}
+      {{- if $.Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml $.Values.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      {{- end }}
+      {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
       {{- end }}
 {{- end }}

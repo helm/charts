@@ -20,6 +20,9 @@ This chart will deploy the [New Relic Infrastructure metadata injection webhook]
 | `serviveAccount.create`       | If true a service account would be created and assigned for the webhook and the job. | `true` |
 | `serviveAccount.name`         | The service account to assign to the webhook and the job. If `serviveAccount.create` is true then this name will be used when creating the service account; if this value is not set or it evaluates to false, then when creating the account the returned value from the template `nri-metadata-injection.fullname` will be used as name. | |
 | `customTLSCertificate`        | Use custom TLS certificate. Setting this options means that you will have to do some post install work as detailed in the *Manage custom certificates* section of the [official docs][1]. | `false` |
+| `nodeSelector`                | Node label to use for scheduling                             | `{}`                                |
+| `tolerations`                 | List of node taints to tolerate (requires Kubernetes >= 1.6) | `[]`                                |
+| `affinity`                    | Node affinity to use for scheduling                          | `{}`                                |
 
 ## Example
 
