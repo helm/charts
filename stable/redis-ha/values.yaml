@@ -26,6 +26,10 @@ serviceAccount:
 ## ref: https://cbonte.github.io/haproxy-dconv/1.9/intro.html
 haproxy:
   enabled: false
+  # Enable if you want a dedicated port in haproxy for redis-slaves
+  readOnly:
+    enabled: false
+    port: 6380
   replicas: 1
   image:
     repository: haproxy
@@ -90,6 +94,7 @@ redis:
     repl-diskless-sync: "yes"
     rdbcompression: "yes"
     rdbchecksum: "yes"
+
 
   ## Custom redis.conf files used to override default settings. If this file is
   ## specified then the redis.config above will be ignored.

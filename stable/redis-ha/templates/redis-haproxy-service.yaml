@@ -16,6 +16,12 @@ spec:
     port: {{ .Values.redis.port }}
     protocol: TCP
     targetPort: redis
+{{- if .Values.haproxy.readOnly.enabled }}  
+  - name: haproxyreadonly
+    port: {{ .Values.haproxy.readOnly.port }}
+    protocol: TCP
+    targetPort: {{ .Values.haproxy.readOnly.port }}
+{{- end }}
 {{- if .Values.exporter.enabled }}
   - name: exporter-port
     port: {{ .Values.haproxy.exporter.port }}
