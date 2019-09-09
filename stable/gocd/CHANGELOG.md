@@ -1,3 +1,5 @@
+### 1.17.0
+* [5916a7b](https://github.com/kubernetes/charts/commit/5916a7b): Bump up GoCD Version to 19.8.0
 ### 1.16.1
 
 * [c70a0b189](https://github.com/kubernetes/charts/commit/c70a0b189): Bump up kubernetes plugin version to v3.1.0
