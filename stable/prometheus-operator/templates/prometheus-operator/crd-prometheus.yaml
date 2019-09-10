@@ -2440,7 +2440,7 @@ spec:
               type: string
             walCompression:
               description: Enable compression of the write-ahead log using Snappy.
-              type: bool
+              type: boolean
             routePrefix:
               description: The route prefix Prometheus registers HTTP handlers for.
                 This is useful, if using ExternalURL and a proxy is rewriting HTTP
