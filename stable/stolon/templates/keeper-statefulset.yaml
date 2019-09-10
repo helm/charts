@@ -32,6 +32,8 @@ spec:
 {{- end }}
       serviceAccountName: {{ template "stolon.serviceAccountName" . }}
       terminationGracePeriodSeconds: 10
+      securityContext:
+        fsGroup: 1000
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -108,6 +110,10 @@ spec:
           volumeMounts:
           - name: data
             mountPath: /stolon-data
+{{- if .Values.tls.enabled }}
+          - name: certs
+            mountPath: /certs
+{{- end }}
 {{ if or (empty .Values.superuserSecret.name) (empty .Values.replicationSecret.name) }}
           - name: stolon-secrets
             mountPath: /etc/secrets/stolon
@@ -146,6 +152,12 @@ spec:
 {{ toYaml . | indent 8 }}
 {{- end }}
       volumes:
+{{- if .Values.tls.enabled }}
+        - name: certs
+          secret:
+            defaultMode: 0600
+            secretName: {{ if .Values.tls.existingSecret }}{{ .Values.tls.existingSecret }}{{ else }}{{ template "stolon.fullname" . }}-certs{{end}}
+{{ end }}
         - name: config
           configMap:
             name: {{ template "stolon.fullname" . }}

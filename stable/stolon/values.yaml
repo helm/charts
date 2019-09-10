@@ -57,8 +57,8 @@ store:
 #  endpoints: "http://stolon-consul:8500"
   kubeResourceKind: configmap
 
-pgParameters: {}
-  # maxConnections: 1000
+pgParameters:
+  # max_connections: "1000"
 
 ports:
   stolon:
@@ -73,6 +73,17 @@ job:
 clusterSpec: {}
   # sleepInterval: 1s
   # maxStandbys: 5
+
+## Enable support ssl into postgres, you must specify the certs.
+## ref: https://www.postgresql.org/docs/10/ssl-tcp.html
+##
+tls:
+  enabled: false
+  rootCa: |-
+  serverCrt: |-
+  serverKey: |-
+
+  # existingSecret: name-of-existing-secret-to-postgresql
 
 keeper:
   uid_prefix: "keeper"
