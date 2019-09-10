@@ -142,6 +142,20 @@ For example `repl-timeout 60` would be added to the `redis.config` section of th
     repl-timeout: "60"
 ```
 
+Note:
+
+1. Some config options should be renamed by redis version，e.g.:
+
+   ```
+   # In redis 5.x，see https://raw.githubusercontent.com/antirez/redis/5.0/redis.conf
+   min-replicas-to-write: 1
+   min-replicas-max-lag: 5
+   
+   # In redis 4.x and redis 3.x，see https://raw.githubusercontent.com/antirez/redis/4.0/redis.conf and https://raw.githubusercontent.com/antirez/redis/3.0/redis.conf
+   min-slaves-to-write 1
+   min-slaves-max-lag 5
+   ```
+
 Sentinel options supported must be in the the `sentinel <option> <master-group-name> <value>` format. For example, `sentinel down-after-milliseconds 30000` would be added to the `sentinel.config` section of the `values.yaml` as:
 
 ```yml
