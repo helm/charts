@@ -71,7 +71,7 @@ spec:
   retentionSize: {{ .Values.prometheus.prometheusSpec.retentionSize | quote }}
 {{- end }}
 {{- if .Values.prometheus.prometheusSpec.walCompression }}
-  walCompression: {{ .Values.prometheus.prometheusSpec.walCompression | quote }}
+  walCompression: {{ .Values.prometheus.prometheusSpec.walCompression }}
 {{- end }}
 {{- if .Values.prometheus.prometheusSpec.routePrefix }}
   routePrefix: {{ .Values.prometheus.prometheusSpec.routePrefix | quote  }}
