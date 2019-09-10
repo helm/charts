@@ -115,6 +115,10 @@ spec:
             - name: CONCOURSE_SECRET_CACHE_DURATION
               value: {{ .Values.concourse.web.secretCacheDuration | quote }}
             {{- end }}
+            {{- if .Values.concourse.web.secretCacheDurationNotFound }}
+            - name: CONCOURSE_SECRET_CACHE_DURATION_NOTFOUND
+              value: {{ .Values.concourse.web.secretCacheDurationNotFound | quote }}
+            {{- end }}
             {{- if .Values.concourse.web.secretCacheEnabled }}
             - name: CONCOURSE_SECRET_CACHE_ENABLED
               value: {{ .Values.concourse.web.secretCacheEnabled | quote }}
