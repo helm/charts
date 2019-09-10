@@ -9,6 +9,10 @@ metadata:
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+{{- if .Values.daemonsetAnnotations }}
+    annotations:
+{{ toYaml .Values.daemonsetAnnotations | indent 6 }}
+{{- end }}
 spec:
   template:
     metadata:
