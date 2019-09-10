@@ -77,6 +77,17 @@ spec:
           {{- else }}
           secretName: {{ template "spinnaker.fullname" . }}-registry
           {{- end }}
+      {{- if .Values.githubConfig }}
+      {{- if .Values.githubConfig.enabled }}
+      - name: github-account-passwords
+        secret:
+          {{- if .Values.githubConfig.accountPasswordsSecret }}
+          secretName: {{ .Values.githubConfig.accountPasswordsSecret }}
+          {{- else }}
+          secretName: {{ template "spinnaker.fullname" . }}-github-account-passwords
+          {{- end }}
+      {{- end }}
+      {{- end }}
       {{- if and .Values.s3.enabled .Values.s3.accessKey .Values.s3.secretKey }}
       - name: s3-secrets
         secret:
@@ -156,6 +167,12 @@ spec:
           mountPath: /opt/halyard/config
         - name: reg-secrets
           mountPath: /opt/registry/passwords
+        {{- if .Values.githubConfig }}
+        {{- if .Values.githubConfig.enabled }}
+        - name: github-account-passwords
+          mountPath: /opt/github/account-passwords
+        {{- end }}
+        {{- end }}
         {{- if .Values.halyard.env }}
         env:
 {{ toYaml .Values.halyard.env | indent 8 }}

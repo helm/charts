@@ -86,6 +86,65 @@ You can provide passwords as a Helm value, or you can use a pre-created secret c
 dockerRegistryAccountSecret: myregistry-secrets
 ```
 
+## GitHub provider configuration
+
+GitHub provider configuration only occurs when the `githubConfig` section is
+included in the values.  This is done in order to maintain backwards
+compatibility and avoid overwriting existing GitHub provider configuration.
+
+```yaml
+githubConfig:
+  enabled: true
+  accounts:
+  - name: account-with-token
+    token: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    username: someuser
+  - name: account-with-password
+    password: yyyyyyyyyyyyy
+    username: otheruser
+  absentAccounts:
+  - old-account-a
+  - old-account-b
+```
+
+The components of `githubConfig` are:
+- `enabled` - Toggles creation or destruction of GitHub provider resources
+  under the `githubConfig` section.  Also enables or disables the Spinnaker
+  GitHub provider via `hal config artifact github enable/disable`.  This is a
+  required field.
+- `absentAccounts` - Optional list of GitHub provider accounts to delete if
+  they exist.  These accounts are deleted irrespective of whether or not
+  `githubConfig.enable` is `true`.  Account deletions happen before creations.
+- `accountPasswordsSecret` - Optional string.  In the case you do not want to
+  keep passwords and tokens in the `accounts` list, provide the name of a self
+  managed secret containing the information.  The secret keys correspond to the
+  names in the `accounts` list.  The values are either the token, or a
+  combination of `username:password` in the case of passwords (refer to [hal
+  config artifact github account add][HAL_GITHUB_ADD] for more information).
+  Remember to set `useToken` in the `accounts` items accordingly when providing
+  `accountPasswordsSecret`.
+- `accounts` - A list of dictionaries containing the account `name` and GitHub
+  `username`.  When `accountPasswordsSecret` is not set provide either
+  `password`, `token`.  When `accountPasswordsSecret` is set include
+  `useToken`.
+
+The following is an example of when `accountPasswordsSecret` is utilized:
+
+```yaml
+githubConfig:
+  enabled: true
+  accountPasswordsSecret: my-github-account-secret
+  accounts:
+  - name: account-with-token
+    username: someuser
+    useToken: true
+  - name: account-with-password
+    username: otheruser
+    useToken: false
+```
+
+[HAL_GITHUB_ADD]: https://www.spinnaker.io/reference/halyard/commands/#hal-config-artifact-github-account-add
+
 ## Specifying persistent storage
 
 Spinnaker supports [many](https://www.spinnaker.io/setup/install/storage/) persistent storage types. Currently, this chart supports the following:

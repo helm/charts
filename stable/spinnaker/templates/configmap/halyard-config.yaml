@@ -121,3 +121,45 @@ data:
     {{- range $index, $feature := .Values.spinnakerFeatureFlags }}
     $HAL_COMMAND config features edit --{{ $feature }} true
     {{- end }}
+
+    #----
+    # Artifact - GitHub accounts
+    #----
+    {{ if .Values.githubConfig }}
+    # Absent GitHub accounts
+    {{- range $index, $accountName := .Values.githubConfig.absentAccounts }}
+    if $HAL_COMMAND config artifact github account get '{{ $accountName }}' > /dev/null 2>&1; then
+      $HAL_COMMAND config artifact github account delete '{{ $accountName }}'
+    fi
+    {{ end }}
+    {{- /* ↑ .Values.githubConfig.absentAccounts */ -}}
+
+    {{- $githubConfigEnabled := required "githubConfig.enabled must be defined when a githubConfig exists." .Values.githubConfig.enabled }}
+    {{- $githubState := $githubConfigEnabled | ternary "enable" "disable" }}
+    $HAL_COMMAND config artifact github {{ $githubState }}
+
+    {{ if .Values.githubConfig.enabled }}
+    {{- range $index, $account := .Values.githubConfig.accounts }}
+    # Add/edit account {{ $account.name }}
+    if $HAL_COMMAND config artifact github account get '{{ $account.name }}' > /dev/null 2>&1; then
+      GITHUB_COMMAND='edit'
+    else
+      GITHUB_COMMAND='add'
+    fi
+    $HAL_COMMAND config artifact github account $GITHUB_COMMAND '{{ $account.name }}' \
+        {{- if or $account.token $account.useToken }}
+        --token-file '/opt/github/account-passwords/{{ $account.name }}' \
+        --username '{{ $account.username }}'
+        {{- else }}
+        --username-password-file '/opt/github/account-passwords/{{ $account.name }}'
+        {{- end }}
+
+    {{ end }}
+    {{- /* ↑ range */ -}}
+    {{ end }}
+    {{- /* ↑ .Values.githubConfig.enable */ -}}
+    {{ else }}
+    {{- /* ↑ .Values.githubConfig */ -}}
+    # No `githubConfig` block, skipping.
+    {{ end }}
+    {{- /* ↑ .Values.githubConfig */ -}}

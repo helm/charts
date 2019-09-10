@@ -111,6 +111,25 @@ dockerRegistries:
 
 # dockerRegistryAccountSecret: myregistry-secrets
 
+# Refer to the "GitHub provider configuration" section in the README.md for
+# more information on `githubConfig`:
+# githubConfig:
+#   enabled: true
+#   # accountPasswordsSecret: my-github-account-secret
+#   accounts:
+#   - name: account-with-token
+#     token: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+#     username: someuser
+#     # Set `useToken` to true when `accountPasswordsSecret` is in use.
+#     #useToken: true
+#   - name: account-with-password
+#     password: yyyyyyyyyyyyy
+#     username: otheruser
+#   absentAccounts:
+#   - old-account-a
+#   - old-account-b
+
+
 kubeConfig:
   # Use this when you want to register arbitrary clusters with Spinnaker
   # Upload your ~/kube/.config to a secret
