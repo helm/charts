@@ -208,6 +208,10 @@ controller:
   #  requests:
   #    cpu: 100m
   #    memory: 64Mi
+  
+  vpa:
+    enabled: false
+    updateMode: Initial
 
   autoscaling:
     enabled: false
