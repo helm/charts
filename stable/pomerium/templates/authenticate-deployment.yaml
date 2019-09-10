@@ -15,7 +15,7 @@ metadata:
 {{ toYaml .Values.annotations | indent 4 }}
 {{- end }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ default .Values.replicaCount .Values.authenticate.replicaCount }}
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ template "pomerium.authenticate.name" . }}

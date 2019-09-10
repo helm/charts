@@ -16,6 +16,7 @@ metadata:
 {{ toYaml .Values.service.annotations | indent 4 }}
 {{- end }}
 spec:
+  clusterIP: None
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.externalPort }}
