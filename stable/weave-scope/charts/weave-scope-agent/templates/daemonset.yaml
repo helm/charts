@@ -30,7 +30,9 @@ spec:
           image: "{{ .Values.global.image.repository }}:{{ .Values.global.image.tag }}"
           imagePullPolicy: "{{ .Values.global.image.pullPolicy }}"
           args:
-            - '--no-app'
+            - '--mode=probe'
+            - '--probe-only'
+            - '--probe.kubernetes.role=host'
             - '--probe.docker.bridge={{ .Values.dockerBridge }}'
             - '--probe.docker=true'
             - '--probe.kubernetes=true'
@@ -71,5 +73,4 @@ spec:
       hostPID: true
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
-      serviceAccountName: {{ template "weave-scope-agent.serviceAccountName" . }}
 {{- end -}}
