@@ -15,6 +15,7 @@ controller:
   containerPort:
     http: 80
     https: 443
+
   # Will add custom configuration options to Nginx https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/
   config: {}
 

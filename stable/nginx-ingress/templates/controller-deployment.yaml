@@ -120,12 +120,11 @@ spec:
             successThreshold: {{ .Values.controller.livenessProbe.successThreshold }}
             failureThreshold: {{ .Values.controller.livenessProbe.failureThreshold }}
           ports:
-            - name: http
-              containerPort: {{ .Values.controller.containerPort.http }}
+          {{- range $key, $value := .Values.controller.containerPort }}
+            - name: {{ $key }}
+              containerPort: {{ $value }}
               protocol: TCP
-            - name: https
-              containerPort: {{ .Values.controller.containerPort.https }}
-              protocol: TCP
+          {{- end }} 
           {{- if .Values.controller.metrics.enabled }}
             - name: metrics
               containerPort: 10254
