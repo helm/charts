@@ -69,7 +69,9 @@ spec:
         - -controller-threads={{ .Values.controllerThreads }}
         - -resync-interval={{ .Values.resyncInterval }}
         - -logtostderr
+        {{- if .Values.enableBatchScheduler }}
         - -enable-batch-scheduler={{ .Values.enableBatchScheduler }}
+        {{- end }}
         {{- if .Values.enableMetrics }}
         - -enable-metrics=true
         - -metrics-labels=app_type
