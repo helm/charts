@@ -32,13 +32,11 @@ spec:
 {{ toYaml .Values.securityContext | indent 8 }}
       initContainers:
         - name: chmod-volume-mounts
-          command:
-          - chown
-          - 999:999
-          - -R
-          - /opt/sonarqube/temp
-          - /opt/sonarqube/logs
-          - /opt/sonarqube/data
+          command: 
+            - "sh"
+            - "-c"
+            - 'mkdir -p $(printf "/opt/sonarqube/${1-%s\n}" temp logs data extensions/downloads extensions/plugins/tmp extensions/plugins) &&
+               chown 999:999 -R $(printf "/opt/sonarqube/${1-%s\n}" temp logs data extensions/downloads extensions/plugins/tmp extensions/plugins)'
           image: busybox:1.31
           imagePullPolicy: IfNotPresent
           securityContext:
@@ -53,6 +51,15 @@ spec:
           - mountPath: /opt/sonarqube/data
             name: sonarqube
             subPath: data
+          - mountPath: /opt/sonarqube/extensions/plugins/tmp
+            name: sonarqube
+            subPath: tmp
+          - mountPath: /opt/sonarqube/extensions/downloads
+            name: sonarqube
+            subPath: downloads
+          - mountPath: /opt/sonarqube/extensions/plugins
+            name: sonarqube
+            subPath: plugins
         - name: init-sysctl
           image: busybox:1.31
           command:
