@@ -51,7 +51,7 @@ spec:
     {{- end }}
     {{- else }}
     {{- if .Values.additionalAffinities }}
-    {{ toYaml .Values.additionalAffinities | indent 8 }}
+{{ toYaml .Values.additionalAffinities | indent 8 }}
     {{- end }}
         podAntiAffinity:
     {{- if .Values.hardAntiAffinity }}

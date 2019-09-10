@@ -1,0 +1,34 @@
+{{- if .Values.haproxy.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "redis-ha.fullname" . }}-haproxy
+  labels:
+{{ include "labels.standard" . | indent 4 }}
+  annotations:
+  {{- if .Values.haproxy.service.annotations }}
+{{ toYaml .Values.haproxy.service.annotations | indent 4 }}
+  {{- end }}
+spec:
+  type: {{ default "ClusterIP" .Values.haproxy.service.type }}
+  ports:
+  - name: haproxy
+    port: {{ .Values.redis.port }}
+    protocol: TCP
+    targetPort: redis
+{{- if .Values.haproxy.readOnly.enabled }}  
+  - name: haproxyreadonly
+    port: {{ .Values.haproxy.readOnly.port }}
+    protocol: TCP
+    targetPort: {{ .Values.haproxy.readOnly.port }}
+{{- end }}
+{{- if .Values.exporter.enabled }}
+  - name: exporter-port
+    port: {{ .Values.haproxy.exporter.port }}
+    protocol: TCP
+    targetPort: exporter-port
+{{- end }}
+  selector:
+    release: {{ .Release.Name }}
+    app: {{ template "redis-ha.name" . }}-haproxy
+{{- end }}

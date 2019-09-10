@@ -21,10 +21,44 @@ serviceAccount:
   ## If not set and create is true, a name is generated using the redis-ha.fullname template
   # name:
 
+## Enables a HA Proxy for better LoadBalancing / Sentinel Master support. Automatically proxies to Redis master.
+## Recommend for externally exposed Redis clusters.
+## ref: https://cbonte.github.io/haproxy-dconv/1.9/intro.html
+haproxy:
+  enabled: false
+  # Enable if you want a dedicated port in haproxy for redis-slaves
+  readOnly:
+    enabled: false
+    port: 6380
+  replicas: 1
+  image:
+    repository: haproxy
+    tag: 2.0.4
+    pullPolicy: IfNotPresent
+  annotations: {}
+  resources: {}
+  ## Service type for HAProxy
+  ##
+  service:
+    type: ClusterIP
+    annotations: {}
+  serviceAccount:
+    create: true
+  ## Prometheus metric exporter for HAProxy.
+  ##
+  exporter:
+    image:
+      repository: quay.io/prometheus/haproxy-exporter
+      tag: v0.9.0
+    enabled: false
+    port: 9101
+  init:
+    resources: {}
+
+
 ## Role Based Access
 ## Ref: https://kubernetes.io/docs/admin/authorization/rbac/
 ##
-
 rbac:
   create: true
 
@@ -60,6 +94,7 @@ redis:
     repl-diskless-sync: "yes"
     rdbcompression: "yes"
     rdbchecksum: "yes"
+
 
   ## Custom redis.conf files used to override default settings. If this file is
   ## specified then the redis.config above will be ignored.
@@ -108,6 +143,7 @@ securityContext:
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+nodeSelector: {}
 
 ## Whether the Redis server pods should be forced to run on separate nodes.
 ## This is accomplished by setting their AntiAffinity with requiredDuringSchedulingIgnoredDuringExecution as opposed to preferred.

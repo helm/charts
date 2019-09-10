@@ -41,7 +41,7 @@ spec:
 {{- end }}
 {{- if .Values.prometheus.prometheusSpec.externalUrl }}
   externalUrl: "{{ .Values.prometheus.prometheusSpec.externalUrl }}"
-{{- else if .Values.prometheus.ingress.enabled }}
+{{- else if and .Values.prometheus.ingress.enabled .Values.prometheus.ingress.hosts }}
   externalUrl: "http://{{ index .Values.prometheus.ingress.hosts 0 }}{{ .Values.prometheus.prometheusSpec.routePrefix }}"
 {{- else }}
   externalUrl: http://{{ template "prometheus-operator.fullname" . }}-prometheus.{{ .Release.Namespace }}:9090
@@ -69,6 +69,9 @@ spec:
   retention: {{ .Values.prometheus.prometheusSpec.retention | quote  }}
 {{- if .Values.prometheus.prometheusSpec.retentionSize }}
   retentionSize: {{ .Values.prometheus.prometheusSpec.retentionSize | quote }}
+{{- end }}
+{{- if .Values.prometheus.prometheusSpec.walCompression }}
+  walCompression: {{ .Values.prometheus.prometheusSpec.walCompression | quote }}
 {{- end }}
 {{- if .Values.prometheus.prometheusSpec.routePrefix }}
   routePrefix: {{ .Values.prometheus.prometheusSpec.routePrefix | quote  }}

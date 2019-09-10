@@ -46,7 +46,7 @@ spec:
           securityContext:
             readOnlyRootFilesystem: true
             runAsNonRoot: true
-            runAsUser: 1001
+            runAsUser: {{ .Values.securityContext.runAsUser }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
       volumes:

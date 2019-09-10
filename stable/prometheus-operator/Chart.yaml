@@ -5,14 +5,13 @@ engine: gotpl
 maintainers:
   - name: gianrubio
     email: gianrubio@gmail.com
-  - name: anothertobi
   - name: vsliouniaev
 name: prometheus-operator
 sources:
   - https://github.com/coreos/prometheus-operator
   - https://coreos.com/operators/prometheus
-version: 6.7.3
-appVersion: 0.31.1
+version: 6.9.1
+appVersion: 0.32.0
 home: https://github.com/coreos/prometheus-operator
 keywords:
 - operator
