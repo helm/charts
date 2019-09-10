@@ -1,5 +1,5 @@
 description: A Helm chart for the Weave Scope cluster visualizer node agent.
-name: weave-scope-agent
+name: weave-scope-cluster-agent
 version: 1.1.5
 appVersion: 1.11.5
 keywords:
