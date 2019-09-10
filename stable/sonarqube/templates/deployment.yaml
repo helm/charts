@@ -31,6 +31,28 @@ spec:
       securityContext:
 {{ toYaml .Values.securityContext | indent 8 }}
       initContainers:
+        - name: chmod-volume-mounts
+          command:
+          - chown
+          - 999:999
+          - -R
+          - /opt/sonarqube/temp
+          - /opt/sonarqube/logs
+          - /opt/sonarqube/data
+          image: busybox:1.31
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            privileged: true
+          volumeMounts:
+          - mountPath: /opt/sonarqube/temp
+            name: sonarqube
+            subPath: temp
+          - mountPath: /opt/sonarqube/logs
+            name: sonarqube
+            subPath: logs
+          - mountPath: /opt/sonarqube/data
+            name: sonarqube
+            subPath: data
         - name: init-sysctl
           image: busybox:1.31
           command:
