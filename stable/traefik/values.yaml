@@ -39,6 +39,8 @@ debug:
 
 # logLevel: error
 
+# maxIdleConnsPerHost: 200
+
 deploymentStrategy: {}
   # rollingUpdate:
   #   maxSurge: 1
