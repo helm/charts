@@ -15,6 +15,9 @@ data:
     {{- else }}
     logLevel = {{ .Values.logLevel | default "info" | quote }}
     {{- end }}
+    {{- if .Values.maxIdleConnsPerHost }}
+    maxIdleConnsPerHost = {{ .Values.maxIdleConnsPerHost }}
+    {{- end }}
     {{- if .Values.sendAnonymousUsage }}
     sendAnonymousUsage = true
     {{- end }}
