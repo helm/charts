@@ -57,7 +57,7 @@ store:
 #  endpoints: "http://stolon-consul:8500"
   kubeResourceKind: configmap
 
-pgParameters:
+pgParameters: {}
   # max_connections: "1000"
 
 ports:
