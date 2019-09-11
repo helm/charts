@@ -44,6 +44,9 @@ spec:
               imagePullPolicy: {{ default .Values.image.pullPolicy .Values.cronjob.image.pullPolicy }}
               command: [ "curl" ]
               args:
+              {{- if .Values.cronjob.curlInsecure }}
+                - "-k"
+              {{- end }}
                 - "--fail"
                 - "-L"
               {{- if .Values.ingress.tls }}

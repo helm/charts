@@ -1,4 +1,4 @@
-{{- if eq .Values.controller.kind "Deployment" }}
+{{- if or (eq .Values.controller.kind "Deployment") (eq .Values.controller.kind "Both") }}
 {{- if .Values.controller.autoscaling.enabled }}
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler

@@ -9,14 +9,14 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     {{- with .Values.ingress.labels }}
-    {{ toYaml . | nindent 4 | trim }}
+    {{ toYaml . | nindent 4 }}
     {{- end }}
     {{- with .Values.anchoreGlobal.labels }}
-    {{ toYaml . | nindent 4 | trim }}
+    {{ toYaml . | nindent 4 }}
     {{- end }}
   {{- with .Values.ingress.annotations }}
   annotations:
-    {{ toYaml . | nindent 4 | trim }}
+    {{ toYaml . | nindent 4 }}
   {{- end }}
 spec:
   {{- if .Values.ingress.tls }}
