@@ -225,7 +225,7 @@ master:
       enabled: false
       image: shadwell/k8s-sidecar:0.0.2
       imagePullPolicy: IfNotPresent
-      resources:
+      resources: {}
         #   limits:
         #     cpu: 100m
         #     memory: 100Mi
@@ -470,7 +470,7 @@ serviceAccountAgent:
   annotations: {}
 
 ## Backup cronjob configuration
-## Ref: https://github.com/nuvo/kube-tasks
+## Ref: https://github.com/maorfr/kube-tasks
 backup:
   # Backup must use RBAC
   # So by enabling backup you are enabling RBAC specific for backup
@@ -485,10 +485,10 @@ backup:
     # Can also be done using environment variables
     iam.amazonaws.com/role: "jenkins"
   image:
-    repository: "nuvo/kube-tasks"
-    tag: "0.1.2"
+    repository: "maorfr/kube-tasks"
+    tag: "0.2.0"
   # Additional arguments for kube-tasks
-  # Ref: https://github.com/nuvo/kube-tasks#simple-backup
+  # Ref: https://github.com/maorfr/kube-tasks#simple-backup
   extraArgs: []
   # Add existingSecret for AWS credentials
   existingSecret: {}
@@ -511,8 +511,8 @@ backup:
       memory: 1Gi
       cpu: 1
   # Destination to store the backup artifacts
-  # Supported cloud storage services: AWS S3, Minio S3, Azure Blob Storage
+  # Supported cloud storage services: AWS S3, Minio S3, Azure Blob Storage, Google Cloud Storage
   # Additional support can added. Visit this repository for details
-  # Ref: https://github.com/nuvo/skbn
-  destination: "s3://nuvo-jenkins-data/backup"
+  # Ref: https://github.com/maorfr/skbn
+  destination: "s3://jenkins-data/backup"
 checkDeprecation: true

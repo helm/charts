@@ -61,7 +61,7 @@ and their default values.
 | Parameter                          | Description                                                                           | Default             |
 | ---------------------------------- | ------------------------------------------------------------------------------------- | ------------------- |
 | image.repository                   | Kong image                                                                            | `kong`              |
-| image.tag                          | Kong image version                                                                    | `1.2`               |
+| image.tag                          | Kong image version                                                                    | `1.3`               |
 | image.pullPolicy                   | Image pull policy                                                                     | `IfNotPresent`      |
 | image.pullSecrets                  | Image pull secrets                                                                    | `null`              |
 | replicaCount                       | Kong instance count                                                                   | `1`                 |
@@ -98,6 +98,7 @@ and their default values.
 | proxy.ingress.hosts                | List of ingress hosts.                                                                | `[]`                |
 | proxy.ingress.path                 | Ingress path.                                                                         | `/`                 |
 | proxy.ingress.annotations          | Ingress annotations. See documentation for your ingress controller for details        | `{}`                |
+| updateStrategy                     | update strategy for deployment                                                        | `{}`                |
 | env                                | Additional [Kong configurations](https://getkong.org/docs/latest/configuration/)      |                     |
 | runMigrations                      | Run Kong migrations job                                                               | `true`              |
 | readinessProbe                     | Kong readiness probe                                                                  |                     |
@@ -182,7 +183,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 ```console
 $ helm install stable/kong --name my-release \
-  --set=image.tag=1.2,env.database=cassandra,cassandra.enabled=true
+  --set=image.tag=1.3,env.database=cassandra,cassandra.enabled=true
 ```
 
 Alternatively, a YAML file that specifies the values for the above parameters

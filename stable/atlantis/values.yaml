@@ -202,4 +202,10 @@ environmentSecrets: []
 #   - name: THE_ENV_VAR
 #     secretKeyRef:
 #       name: the_k8s_secret_name
-#       value: the_key_of_the_value_in_the_secret
+#       key: the_key_of_the_value_in_the_secret
+
+# Optionally specify google service account credentials as Kubernetes secrets. If you are using the terraform google provider you can specify the credentials as "${file("/var/secrets/some-secret-name/key.json")}".
+googleServiceAccountSecrets: []
+# googleServiceAccountSecrets:
+#   - name: some-secret-name
+#     secretName: the_k8s_secret_name
