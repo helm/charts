@@ -161,6 +161,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `acme.persistence.existingClaim`       | An Existing PVC name                                                                                                         | `nil`                                             |
 | `acme.persistence.size`                | Minimum size of the volume requested                                                                                         | `1Gi`                                             |
 | `kvprovider.storeAcme`                 | Store acme certificates in KV Provider (needed for [HA](https://docs.traefik.io/configuration/acme/#as-a-key-value-store-entry)) | `false`                                       |
+| `kvprovider.acmeStorageLocation`                 | Path for storing acme data | `traefik/acme/account`                                       |
 | `kvprovider.importAcme`                | Import acme certificates from acme.json of a mounted pvc (see: acme.persistence.existingClaim)                               | `false`                                           |
 | `kvprovider.$name.endpoint`            | Endpoint of the provider like \<kv-provider-fqdn>:\<port>                                                                    | None                                              |
 | `kvprovider.$name.watch`               | Wether traefik should watch for changes                                                                                      | `true`                                            |
