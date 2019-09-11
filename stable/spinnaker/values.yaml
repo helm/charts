@@ -219,6 +219,7 @@ s3:
   # endpoint: ""
   # accessKey: ""
   # secretKey: ""
+  # assumeRole: "<role to assume>"
 
 # Azure Storage Account
 azs:

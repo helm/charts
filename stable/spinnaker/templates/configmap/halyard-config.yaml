@@ -54,6 +54,9 @@ data:
       {{- if .Values.s3.endpoint }}
       --endpoint {{ .Values.s3.endpoint }} \
       {{- end }}
+      {{- if .Values.s3.assumeRole }}
+      --assume-role {{ .Values.s3.assumeRole }} \
+      {{- end }}
       {{- if .Values.s3.accessKey }}
       --access-key-id "$(cat /opt/s3/accessKey)" \
       {{- end }}
