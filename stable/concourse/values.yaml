@@ -128,6 +128,11 @@ concourse:
     ##
     secretCacheDuration:
 
+    ## If the cache is enabled, secret not found responses will be cached for
+    ## this duration.
+    ##
+    secretCacheDurationNotFound:
+
     ## If the cache is enabled, expired items will be removed on this internal.
     ##
     secretCachePurgeInterval:
