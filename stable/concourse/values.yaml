@@ -69,6 +69,15 @@ concourse:
     ##
     enableLidar: false
 
+    ## Interval on which the resource scanner will run to see if new checks need
+    ## to be scheduled.
+    ##
+    lidarScannerInterval: 1m
+
+    ## Interval on which the resource checker runs any scheduled checks.
+    ##
+    lidarCheckerInterval: 10s
+
     ## Enable auditing for all api requests connected to builds.
     ##
     enableBuildAuditing: false

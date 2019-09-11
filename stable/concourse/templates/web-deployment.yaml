@@ -71,6 +71,14 @@ spec:
             - name: CONCOURSE_ENABLE_LIDAR
               value: {{ .Values.concourse.web.enableLidar | quote }}
             {{- end }}
+            {{- if .Values.concourse.web.lidarScannerInterval }}
+            - name: CONCOURSE_LIDAR_SCANNER_INTERVAL
+              value: {{ .Values.concourse.web.lidarScannerInterval | quote }}
+            {{- end }}
+            {{- if .Values.concourse.web.lidarCheckerInterval }}
+            - name: CONCOURSE_LIDAR_CHECKER_INTERVAL
+              value: {{ .Values.concourse.web.lidarCheckerInterval | quote }}
+            {{- end }}
             {{- if .Values.concourse.web.enableBuildAuditing }}
             - name: CONCOURSE_ENABLE_BUILD_AUDITING
               value: {{ .Values.concourse.web.enableBuildAuditing | quote }}
