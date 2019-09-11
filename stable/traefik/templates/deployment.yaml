@@ -134,7 +134,7 @@ spec:
         {{- end }}
         {{- end }}
         {{- end }}
-        {{- if .Values.acme.enabled }}
+        {{- if and (.Values.acme.enabled) (not .Values.kvprovider.storeAcme) }}
         - mountPath: /acme
           name: acme
         {{- end }}
@@ -195,7 +195,7 @@ spec:
       {{- end }}
       {{- end }}
       {{- end }}
-      {{- if .Values.acme.enabled }}
+      {{- if and (.Values.acme.enabled) (not .Values.kvprovider.storeAcme) }}
       - name: acme
       {{- if .Values.acme.persistence.enabled }}
         persistentVolumeClaim:
