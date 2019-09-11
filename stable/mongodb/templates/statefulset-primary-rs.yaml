@@ -68,7 +68,7 @@ spec:
       {{- if .Values.extraInitContainers }}
 {{ tpl .Values.extraInitContainers . | indent 6}}
       {{- end }}
-      {{- $needsVolumePermissions := and .Values.volumePermissions.enabled (and ( and .Values.peristence.enabled (not .Values.persistence.existingClaim) ) .Values.securityContext.enabled) }}
+      {{- $needsVolumePermissions := and .Values.volumePermissions.enabled (and ( and .Values.persistence.enabled (not .Values.persistence.existingClaim) ) .Values.securityContext.enabled) }}
       {{- if $needsVolumePermissions }}
       - name: volume-permissions
         image: {{ template "mongodb.volumePermissions.image" . }}
@@ -266,7 +266,7 @@ spec:
           configMap:
             name: {{ template "mongodb.fullname" . }}
         {{- end }}
-        {{- if not .Values.persisntence.enabled }}
+        {{- if not .Values.persistence.enabled }}
         - name: datadir
           emptyDir: {}
         {{- else }}
