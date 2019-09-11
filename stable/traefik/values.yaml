@@ -162,6 +162,7 @@ kvprovider:
 
   ## storeAcme has to be enabled to support HA Support using acme, but at least one kvprovider is needed
   storeAcme: false
+  acmeStorageLocation: traefik/acme/account
   importAcme: false
 
   # etcd:
