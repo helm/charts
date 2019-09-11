@@ -18,6 +18,7 @@ spec:
         chart: {{ template "traefik.chart" . }}
     spec:
       restartPolicy: Never
+      backoffLimit: 5
       containers:
         - name: storeconfig-job
           image: "{{ .Values.image }}:{{ .Values.imageTag }}"
