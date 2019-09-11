@@ -267,6 +267,10 @@ spec:
             - name: CONCOURSE_LOG_DB_QUERIES
               value: {{ .Values.concourse.web.logDbQueries | quote }}
             {{- end }}
+            {{- if .Values.concourse.web.logClusterName }}
+            - name: CONCOURSE_LOG_CLUSTER_NAME
+              value: {{ .Values.concourse.web.logClusterName | quote }}
+            {{- end }}
             {{- if .Values.concourse.web.buildTrackerInterval }}
             - name: CONCOURSE_BUILD_TRACKER_INTERVAL
               value: {{ .Values.concourse.web.buildTrackerInterval | quote  }}

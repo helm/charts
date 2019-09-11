@@ -244,6 +244,11 @@ concourse:
     ##
     logDbQueries: false
 
+    ## Log cluster name.
+    ##
+    logClusterName: false
+
+
     ## Interval on which to run build tracking.
     ##
     buildTrackerInterval: 10s
