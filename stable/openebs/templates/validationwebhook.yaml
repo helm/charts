@@ -34,6 +34,10 @@ webhooks:
         apiGroups: ["*"]
         apiVersions: ["*"]
         resources: ["persistentvolumeclaims"]
+      - operations: [ "CREATE", "UPDATE" ]
+        apiGroups: ["*"]
+        apiVersions: ["*"]
+        resources: ["cstorpoolclusters"]
 ---
 apiVersion: v1
 kind: Secret

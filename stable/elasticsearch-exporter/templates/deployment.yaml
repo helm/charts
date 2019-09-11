@@ -74,9 +74,9 @@ spec:
                     "--es.ssl-skip-verify",
                     {{- end }}
                     {{- if .Values.es.ssl.enabled }}
-                    "--es.ca=/ssl/ca.pem",
-                    "--es.client-cert=/ssl/client.pem",
-                    "--es.client-private-key=/ssl/client.key",
+                    "--es.ca={{.Values.es.ssl.ca.path | default "/ssl/ca.pem" }}",
+                    "--es.client-cert={{.Values.es.ssl.client.pemPath | default "/ssl/client.pem" }}",
+                    "--es.client-private-key={{.Values.es.ssl.client.keyPath | default "/ssl/client.key" }}",
                     {{- end }}
                     "--web.listen-address=:{{ .Values.service.httpPort }}",
                     "--web.telemetry-path={{ .Values.web.path }}"]
@@ -122,9 +122,16 @@ spec:
               exec:
                 command: ["/bin/bash", "-c", "sleep 20"]
           volumeMounts:
-            {{- if .Values.es.ssl.enabled }}
+            {{- if and .Values.es.ssl.enabled (eq .Values.es.ssl.useExistingSecrets false) }}
             - mountPath: /ssl
               name: ssl
+            {{- end }}
+            {{- range .Values.secretMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .path }}
+              {{- if .subPath }}
+              subPath: {{ .subPath }}
+              {{- end }}
             {{- end }}
 {{- if .Values.nodeSelector }}
       nodeSelector:
@@ -139,8 +146,13 @@ spec:
 {{ toYaml .Values.affinity | indent 8 }}
 {{- end }}
       volumes:
-        {{- if .Values.es.ssl.enabled }}
+        {{- if and .Values.es.ssl.enabled (eq .Values.es.ssl.useExistingSecrets false) }}
         - name: ssl
           secret:
             secretName: {{ template "elasticsearch-exporter.fullname" . }}-cert
+        {{- end }}
+        {{- range .Values.secretMounts }}
+        - name: {{ .name }}
+        secret:
+          secretName: {{ .secretName }}
         {{- end }}
