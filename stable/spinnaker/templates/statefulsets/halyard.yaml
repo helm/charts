@@ -51,6 +51,10 @@ spec:
           subPath: cacerts
           name: cacerts
         {{- end }}
+        {{- if .Values.halyard.env }}
+        env:
+{{ toYaml .Values.halyard.env | indent 8 }}
+        {{- end }}
       volumes:
       {{- if not .Values.halyard.persistence.enabled }}
       - name: halyard-home
