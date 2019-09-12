@@ -46,6 +46,9 @@ resources: {}
   #  cpu: 100m
   #  memory: 128Mi
 
+# Additional pod labels
+podLabels: {}
+
 nodeSelector: {}
 
 tolerations: []
