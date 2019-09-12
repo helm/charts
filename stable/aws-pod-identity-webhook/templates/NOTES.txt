@@ -1,0 +1,10 @@
+
+If this is your first installation of {{ .Chart.Name }} then you need to approve the certificate.
+
+Wait until the pod has started:
+
+  kubectl get pods -n {{ .Release.Namespace }} -l app.kubernetes.io/instance={{ .Release.Name }},app.kubernetes.io/name={{ include "aws-pod-identity-webhook.name" . }}
+
+Then approve the certificate:
+
+  kubectl certificate approve $(kubectl get csr -o jsonpath='{.items[?(@.spec.username=="system:serviceaccount:{{ .Release.Namespace }}:{{ include "aws-pod-identity-webhook.fullname" . }}")].metadata.name}')

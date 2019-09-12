@@ -1,0 +1,23 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ include "aws-pod-identity-webhook.fullname" . }}
+  labels:
+{{ include "aws-pod-identity-webhook.labels" . | indent 4 }}
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - create
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - get
+  - update
+  - patch
+  resourceNames:
+  - "{{ include "aws-pod-identity-webhook.fullname" . }}"

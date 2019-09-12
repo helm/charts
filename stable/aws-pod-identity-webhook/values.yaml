@@ -1,0 +1,18 @@
+image:
+  repository: 602401143452.dkr.ecr.us-west-2.amazonaws.com/eks/pod-identity-webhook
+  tag: latest
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+resources: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+priorityClassName: ""
