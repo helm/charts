@@ -181,6 +181,29 @@ datadog:
   #
   containerLogsPath: /var/lib/docker/containers
 
+  ## @param customLogFilesEnabled - boolean - optional - default: false
+  ## Enable this to define host logs to mount into the container.
+  ## ref: https://docs.datadoghq.com/agent/logs/?tab=tailexistingfiles#custom-log-collection
+  #
+  # customLogFilesEnabled: false
+
+  ## @param customLogFiles - array - optional - default: []
+  ## Format a list of files from the host to mount into the container. Format
+  ## must follow the "Custom log collection" format for files. Wildcard files
+  ## are NOT accepted at this time. In order for datadog to actually read these
+  ## logs, confd must also be updated. See the "customLogFiles" key in the confd
+  ## example.
+  ## ref: https://docs.datadoghq.com/agent/logs/?tab=tailexistingfiles#custom-log-collection
+  #
+  # customLogFiles:
+  # - type:     file
+  #   path:     /var/log/audit.log
+  #   service:  audit
+  #   source:   audit-logs
+  #   log_processing_rules:
+  #     - type: include_at_match
+  #       name: delete-only-logs
+  #       pattern: delete
 
   ## @param apmEnabled - boolean - optional - default: false
   ## Enable this to enable APM and tracing, on port 8126
@@ -237,6 +260,9 @@ datadog:
   #     init_config:
   #     instances:
   #       - kube_state_url: http://%%host%%:8080/metrics
+  #   customLogFiles.yaml: |-
+  #     logs:
+  #       {{- .Values.datadog.customLogFiles | toYaml | nindent 4 }}
 
   ## @param checksd - list of key:value strings - optional
   ## Provide additional custom checks as python code

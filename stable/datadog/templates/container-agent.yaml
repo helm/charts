@@ -134,6 +134,13 @@
       mountPath: {{ .Values.datadog.containerLogsPath | quote }}
       readOnly: true
     {{- end }}
+    {{- if .Values.datadog.customLogFilesEnabled }}
+    {{- range .Values.datadog.customLogFiles }}
+    - name: {{ .service }}
+      mountPath: {{ .path }}
+      readOnly: true
+    {{- end }}
+    {{- end }}
     {{- end }}
 {{- if .Values.datadog.volumeMounts }}
 {{ toYaml .Values.datadog.volumeMounts | indent 4 }}
