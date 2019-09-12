@@ -6,6 +6,7 @@ metadata:
   annotations:
     "helm.sh/hook": pre-install,pre-upgrade,post-install,post-upgrade
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+    "helm.sh/hook-delete-timeout": "600"
   labels:
     app: {{ template "prometheus-operator.name" $ }}-admission
 {{- include "prometheus-operator.labels" $ | indent 4 }}
