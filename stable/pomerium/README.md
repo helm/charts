@@ -2,6 +2,19 @@
 
 [Pomerium](https://pomerium.io) is an [open-source](https://github.com/pomerium/pomerium) tool for managing secure access to internal applications and resources.
 
+- [Pomerium](#pomerium)
+  - [TL;DR;](#tldr)
+  - [Install the chart](#install-the-chart)
+  - [Uninstalling the Chart](#uninstalling-the-chart)
+  - [Configuration](#configuration)
+  - [Changelog](#changelog)
+    - [2.0.0](#200)
+  - [Upgrading](#upgrading)
+    - [2.0.0](#200-1)
+  - [Metrics Discovery Configuration](#metrics-discovery-configuration)
+    - [Prometheus Operator](#prometheus-operator)
+    - [Prometheus kubernetes_sd_configs](#prometheus-kubernetessdconfigs)
+
 ## TL;DR;
 
 ```console
@@ -47,43 +60,94 @@ The command removes nearly all the Kubernetes components associated with the cha
 
 A full listing of Pomerium's configuration variables can be found on the [config reference page](https://www.pomerium.io/docs/config-reference.html).
 
-Parameter                         | Description                                                                                                                                                                                                | Default
---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------
-`config.rootDomain`               | Root Domain specifies the sub-domain handled by pomerium. [See more](https://www.pomerium.io/docs/config-reference.html#proxy-root-domains).                                                               | `corp.pomerium.io`
-`config.generateTLS`              | Generate a dummy Certificate Authority and certs for service communication. Manual CA and certs can be set in values.                                                                                      | `true`
-`config.sharedSecret`             | 256 bit key to secure service communication. [See more](https://www.pomerium.io/docs/config-reference.html#shared-secret).                                                                                 | 32 [random ascii chars](http://masterminds.github.io/sprig/strings.html)
-`config.cookieSecret`             | Cookie secret is a 32 byte key used to encrypt user sessions.                                                                                                                                              | 32 [random ascii chars](http://masterminds.github.io/sprig/strings.html)
-`config.policy`                   | Base64 encoded string containing the routes, and their access policies.                                                                                                                                    |
-`config.policyFile`               | Relative file location of the policy file which contains the routes, and their access policies.                                                                                                            | [See example](https://www.pomerium.io/docs/config-reference.html#policy) in values
-`authenticate.nameOverride`       | Name of the authenticate service.                                                                                                                                                                          |
-`authenticate.fullnameOverride`   | Full name of the authenticate service.                                                                                                                                                                     |
-`authenticate.redirectUrl`        | Redirect URL is the url the user will be redirected to following authentication with the third-party identity provider (IdP). [See more](https://www.pomerium.io/docs/config-reference.html#redirect-url). | `https://{{authenticate.name}}.{{config.rootDomain}}/oauth2/callback`
-`authenticate.idp.provider`       | Identity [Provider Name](https://www.pomerium.io/docs/config-reference.html#identity-provider-name).                                                                                                       | `google`
-`authenticate.idp.clientID`       | Identity Provider oauth [client ID](https://www.pomerium.io/docs/config-reference.html#identity-provider-client-id).                                                                                       | Required
-`authenticate.idp.clientSecret`   | Identity Provider oauth [client secret](https://www.pomerium.io/docs/config-reference.html#identity-provider-client-secret).                                                                               | Required
-`authenticate.idp.url`            | Identity [Provider URL](https://www.pomerium.io/docs/config-reference.html#identity-provider-url).                                                                                                         | Optional
-`authenticate.idp.serviceAccount` | Identity Provider [service account](https://www.pomerium.io/docs/config-reference.html#identity-provider-service-account).                                                                                 | Optional
-`proxy.nameOverride`              | Name of the proxy service.                                                                                                                                                                                 |
-`proxy.fullnameOverride`          | Full name of the proxy service.                                                                                                                                                                            |
-`proxy.authenticateServiceUrl`    | The externally accessible url for the authenticate service.                                                                                                                                                | `https://{{authenticate.name}}.{{config.rootDomain}}`
-`proxy.authorizeServiceUrl`       | The externally accessible url for the authorize service.                                                                                                                                                   | `https://{{authorize.name}}.{{config.rootDomain}}`
-`authorize.nameOverride`          | Name of the authorize service.                                                                                                                                                                             |
-`authorize.fullnameOverride`      | Full name of the authorize service.                                                                                                                                                                        |
-`images.server.repository`        | Pomerium image                                                                                                                                                                                             | `pomerium/pomerium`
-`images.server.tag`               | Pomerium image tag                                                                                                                                                                                         | `latest`
-`images.server.pullPolicy`        | Pomerium image pull policy                                                                                                                                                                                 | `Always`
-`service.annotations`             | Service annotations                                                                                                                                                                                        | `{}`
-`service.externalPort`            | Pomerium's port                                                                                                                                                                                            | `443`
-`service.type`                    | Service type (ClusterIP, NodePort or LoadBalancer)                                                                                                                                                         | `ClusterIP`
-`ingress.enabled`                 | Enables Ingress for pomerium                                                                                                                                                                               | `false`
-`ingress.annotations`             | Ingress annotations                                                                                                                                                                                        | `{}`
-`ingress.hosts`                   | Ingress accepted hostnames                                                                                                                                                                                 | `nil`
-`ingress.tls`                     | Ingress TLS configuration                                                                                                                                                                                  | `[]`
-`metrics.enabled`                     | Enable prometheus metrics endpoint                                                                                                                                                                                  | `false`
-`metrics.port`                     | Prometheus metrics endpoint port                                                                                                                                                                                  | `9090`
+| Parameter                           | Description                                                                                                                                                                                                | Default                                                                            |
+| ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `config.rootDomain`                 | Root Domain specifies the sub-domain handled by pomerium. [See more](https://www.pomerium.io/docs/config-reference.html#proxy-root-domains).                                                               | `corp.pomerium.io`                                                                 |
+| `config.generateTLS`                | Generate a dummy Certificate Authority and certs for service communication. Manual CA and certs can be set in values.                                                                                      | `true`                                                                             |
+| `config.sharedSecret`               | 256 bit key to secure service communication. [See more](https://www.pomerium.io/docs/config-reference.html#shared-secret).                                                                                 | 32 [random ascii chars](http://masterminds.github.io/sprig/strings.html)           |
+| `config.cookieSecret`               | Cookie secret is a 32 byte key used to encrypt user sessions.                                                                                                                                              | 32 [random ascii chars](http://masterminds.github.io/sprig/strings.html)           |
+| `config.policy`                     | Base64 encoded string containing the routes, and their access policies.                                                                                                                                    |
+| `config.policyFile`                 | Relative file location of the policy file which contains the routes, and their access policies.                                                                                                            | [See example](https://www.pomerium.io/docs/config-reference.html#policy) in values |
+| `authenticate.nameOverride`         | Name of the authenticate service.                                                                                                                                                                          |
+| `authenticate.fullnameOverride`     | Full name of the authenticate service.                                                                                                                                                                     |
+| `authenticate.redirectUrl`          | Redirect URL is the url the user will be redirected to following authentication with the third-party identity provider (IdP). [See more](https://www.pomerium.io/docs/config-reference.html#redirect-url). | `https://{{authenticate.name}}.{{config.rootDomain}}/oauth2/callback`              |
+| `authenticate.idp.provider`         | Identity [Provider Name](https://www.pomerium.io/docs/config-reference.html#identity-provider-name).                                                                                                       | `google`                                                                           |
+| `authenticate.idp.clientID`         | Identity Provider oauth [client ID](https://www.pomerium.io/docs/config-reference.html#identity-provider-client-id).                                                                                       | Required                                                                           |
+| `authenticate.idp.clientSecret`     | Identity Provider oauth [client secret](https://www.pomerium.io/docs/config-reference.html#identity-provider-client-secret).                                                                               | Required                                                                           |
+| `authenticate.idp.url`              | Identity [Provider URL](https://www.pomerium.io/docs/config-reference.html#identity-provider-url).                                                                                                         | Optional                                                                           |
+| `authenticate.idp.serviceAccount`   | Identity Provider [service account](https://www.pomerium.io/docs/config-reference.html#identity-provider-service-account).                                                                                 | Optional                                                                           |
+| `authenticate.replicaCount`         | Number of Authenticate pods to run                                                                                                                                                                         |                                                                                    | `1` |
+| `proxy.nameOverride`                | Name of the proxy service.                                                                                                                                                                                 |
+| `proxy.fullnameOverride`            | Full name of the proxy service.                                                                                                                                                                            |
+| `proxy.authenticateServiceUrl`      | The externally accessible url for the authenticate service.                                                                                                                                                | `https://{{authenticate.name}}.{{config.rootDomain}}`                              |
+| `proxy.authorizeServiceUrl`         | The externally accessible url for the authorize service.                                                                                                                                                   | `https://{{authorize.name}}.{{config.rootDomain}}`                                 |
+| `proxy.replicaCount`                | Number of Proxy pods to run                                                                                                                                                                                |                                                                                    | `1` |
+| `authorize.nameOverride`            | Name of the authorize service.                                                                                                                                                                             |
+| `authorize.fullnameOverride`        | Full name of the authorize service.                                                                                                                                                                        |
+| `authorize.replicaCount`            | Number of Authorize pods to run                                                                                                                                                                            |                                                                                    | `1` |
+| `images.server.repository`          | Pomerium image                                                                                                                                                                                             | `pomerium/pomerium`                                                                |
+| `images.server.tag`                 | Pomerium image tag                                                                                                                                                                                         | `latest`                                                                           |
+| `images.server.pullPolicy`          | Pomerium image pull policy                                                                                                                                                                                 | `Always`                                                                           |
+| `service.annotations`               | Service annotations                                                                                                                                                                                        | `{}`                                                                               |
+| `service.externalPort`              | Pomerium's port                                                                                                                                                                                            | `443`                                                                              |
+| `service.type`                      | Service type (ClusterIP, NodePort or LoadBalancer)                                                                                                                                                         | `ClusterIP`                                                                        |
+| `serviceMonitor.enabled`            | Create Prometheus Operator ServiceMonitor                                                                                                                                                                  | `false`                                                                            |
+| `serviceMonitor.namespace`          | Namespace to create the ServiceMonitor resource in                                                                                                                                                         | The namespace of the chart                                                         |
+| `serviceMonitor.labels`             | Additional labels to apply to the ServiceMonitor resource                                                                                                                                                  | `release: prometheus`                                                              |
+| `tracing.enabled`                   | Enable distributed tracing                                                                                                                                                                                 | `false`                                                                            |
+| `tracing.debug`                     | Set trace sampling to 100%.  Use with caution!                                                                                                                                                             | `false`                                                                            |
+| `tracing.provider`                  | Specifies the tracing provider to configure (Valid options: Jaeger)                                                                                                                                        | Required                                                                           |
+| `tracing.jaeger.collector_endpoint` | The jaeger collector endpoint                                                                                                                                                                              | Required                                                                           |
+| `tracing.jaeger.agent_endpoint`     | The jaeger agent endpoint                                                                                                                                                                                  | Required                                                                           |
+| `ingress.enabled`                   | Enables Ingress for pomerium                                                                                                                                                                               | `false`                                                                            |
+| `ingress.annotations`               | Ingress annotations                                                                                                                                                                                        | `{}`                                                                               |
+| `ingress.hosts`                     | Ingress accepted hostnames                                                                                                                                                                                 | `nil`                                                                              |
+| `ingress.tls`                       | Ingress TLS configuration                                                                                                                                                                                  | `[]`                                                                               |
+| `metrics.enabled`                   | Enable prometheus metrics endpoint                                                                                                                                                                         | `false`                                                                            |
+| `metrics.port`                      | Prometheus metrics endpoint port                                                                                                                                                                           | `9090`                                                                             |
+
+## Changelog
+
+### 2.0.0
+
+- Expose replica count for individual services
+- Switch Authorize service to CluserIP for client side load balancing
+  - You must run pomerium v0.3.0+ to support this feature correctly
+  
+## Upgrading
+
+### 2.0.0
+
+- You will need to run `helm upgrade --force` to recreate the authorize service correctly
 
 ## Metrics Discovery Configuration
 
+This chart provices two ways to surface metrics for discovery.  Under normal circumstances, you will only set up one method.
+
+### Prometheus Operator 
+
+This chart assumes you have already installed the Prometheus Operator CRDs.
+
+Example chart values:
+
+```yaml
+metrics:
+  enabled: true
+  port: 9090 # default
+serviceMonitor:
+  enabled: true
+  labels:
+    release: prometheus # default
+
+```
+
+Example ServiceMonitor configuration:
+
+```yaml
+    serviceMonitorSelector:
+      matchLabels:
+        release: prometheus # operator chart default
+```
 
 ### Prometheus kubernetes_sd_configs
 

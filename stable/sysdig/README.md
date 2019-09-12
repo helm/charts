@@ -41,13 +41,13 @@ The following table lists the configurable parameters of the Sysdig chart and th
 | ---                             | ---                                                                    | ---                                         |
 | `image.registry`                | Sysdig agent image registry                                            | `docker.io`                                 |
 | `image.repository`              | The image repository to pull from                                      | `sysdig/agent`                              |
-| `image.tag`                     | The image tag to pull                                                  | `0.90.3`                                    |
+| `image.tag`                     | The image tag to pull                                                  | `0.92.1`                                    |
 | `image.pullPolicy`              | The Image pull policy                                                  | `IfNotPresent`                              |
 | `image.pullSecrets`             | Image pull secrets                                                     | `nil`                                       |
-| `resources.requests.cpu`        | CPU requested for being run in a node                                  | `100m`                                      |
+| `resources.requests.cpu`        | CPU requested for being run in a node                                  | `600m`                                      |
 | `resources.requests.memory`     | Memory requested for being run in a node                               | `512Mi`                                     |
-| `resources.limits.cpu`          | CPU limit                                                              | `200m`                                      |
-| `resources.limits.memory`       | Memory limit                                                           | `1024Mi`                                    |
+| `resources.limits.cpu`          | CPU limit                                                              | `2000m`                                     |
+| `resources.limits.memory`       | Memory limit                                                           | `1536Mi`                                    |
 | `rbac.create`                   | If true, create & use RBAC resources                                   | `true`                                      |
 | `serviceAccount.create`         | Create serviceAccount                                                  | `true`                                      |
 | `serviceAccount.name`           | Use this value as serviceAccountName                                   | ` `                                         |
@@ -64,7 +64,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 ```bash
 $ helm install --name my-release \
-    --set sysdig.accessKey=YOUR-KEY-HERE,sysdig.settings.tags="role:webserver,location:europe" \
+    --set sysdig.accessKey=YOUR-KEY-HERE,sysdig.settings.tags="role:webserver\,location:europe" \
     stable/sysdig
 ```
 

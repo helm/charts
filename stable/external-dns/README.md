@@ -68,10 +68,17 @@ The following table lists the configurable parameters of the external-dns chart 
 | `aws.batchChangeSize`              | When using the AWS provider, set the maximum number of changes that will be applied in each batch        | `1000`                                                   |
 | `aws.zoneTags`                     | When using the AWS provider, filter for zones with these tags                                            | `[]`                                                     |
 | `azure.secretName`                 | When using the Azure provider, set the secret containing the `azure.json` file                           | `""`                                                     |
-| `azure.resourceGroup`               | When using the Azure provider, set the Azure Resource Group                                              | `""`                                                     |
+| `azure.resourceGroup`              | When using the Azure provider, set the Azure Resource Group                                              | `""`                                                     |
 | `cloudflare.apiKey`                | When using the Cloudflare provider, `CF_API_KEY` to set (optional)                                       | `""`                                                     |
 | `cloudflare.email`                 | When using the Cloudflare provider, `CF_API_EMAIL` to set (optional)                                     | `""`                                                     |
 | `cloudflare.proxied`               | When using the Cloudflare provider, enable the proxy feature (DDOS protection, CDN...) (optional)        | `true`                                                   |
+| `coredns.etcdEndpoints`            | When using the CoreDNS provider, set etcd backend endpoints (comma-separated list)                       | `"http://etcd-extdns:2379"`                              |
+| `coredns.etcdTLS.enabled`          | When using the CoreDNS provider, enable secure communication with etcd                                   | `false`                                                  |
+| `coredns.etcdTLS.secretName`       | When using the CoreDNS provider, specify a name of existing Secret with etcd certs and keys              | `"etcd-client-certs"`                                                     |
+| `coredns.etcdTLS.mountPath`        | When using the CoreDNS provider, set destination dir to mount data from `coredns.etcdTLS.secretName` to  | `"/etc/coredns/tls/etcd"`                                |
+| `coredns.etcdTLS.caFilename`       | When using the CoreDNS provider, specify CA PEM file name from the `coredns.etcdTLS.secretName`          | `"ca.crt"`                                               |
+| `coredns.etcdTLS.certFilename`     | When using the CoreDNS provider, specify cert PEM file name from the `coredns.etcdTLS.secretName`        | `"cert.pem"`                                             |
+| `coredns.etcdTLS.keyFilename`      | When using the CoreDNS provider, specify private key PEM file name from the `coredns.etcdTLS.secretName` | `"key.pem"`                                              |
 | `designate.customCA.enabled`       | When using the Designate provider, enable a custom CA (optional)                                         | false                                                    |
 | `designate.customCA.content`       | When using the Designate provider, set the content of the custom CA                                      | ""                                                       |
 | `designate.customCA.mountPath`     | When using the Designate provider, set the mountPath in which to mount the custom CA configuration       | "/config/designate"                                      |
@@ -135,6 +142,7 @@ The following table lists the configurable parameters of the external-dns chart 
 | `service.annotations`              | Annotations to add to service                                                                            | `{}`                                                     |
 | `rbac.create`                      | Wether to create & use RBAC resources or not                                                             | `false`                                                  |
 | `rbac.serviceAccountName`          | ServiceAccount (ignored if rbac.create == true)                                                          | `default`                                                |
+| `rbac.serviceAccountAnnotations`   | Additional Service Account annotations                                                                   | `{}`                                                     |
 | `rbac.apiVersion`                  | Version of the RBAC API                                                                                  | `v1beta1`                                                |
 | `rbac.pspEnabled`                  | PodSecurityPolicy                                                                                        | `false`                                                  |
 | `resources`                        | CPU/Memory resource requests/limits.                                                                     | `{}`                                                     |

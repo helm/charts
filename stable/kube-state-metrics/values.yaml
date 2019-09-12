@@ -2,7 +2,7 @@
 prometheusScrape: true
 image:
   repository: quay.io/coreos/kube-state-metrics
-  tag: v1.7.1
+  tag: v1.7.2
   pullPolicy: IfNotPresent
 
 replicas: 1
@@ -38,6 +38,7 @@ prometheus:
     enabled: false
     additionalLabels: {}
     namespace: ""
+    honorLabels: false
 
 ## Specify if a Pod Security Policy for kube-state-metrics must be created
 ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/

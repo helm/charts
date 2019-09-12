@@ -6,6 +6,7 @@
 #   imageRegistry: myRegistryName
 #   imagePullSecrets:
 #     - myRegistryKeySecretName
+#   storageClass: myStorageClass
 
 ## Use an alternate scheduler, e.g. "stork".
 ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
@@ -18,7 +19,7 @@
 image:
   registry: docker.io
   repository: bitnami/mariadb
-  tag: 10.3.16-debian-9-r38
+  tag: 10.3.18-debian-9-r0
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -52,7 +53,7 @@ volumePermissions:
   image:
     registry: docker.io
     repository: bitnami/minideb
-    tag: latest
+    tag: stretch
     pullPolicy: Always
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
@@ -165,8 +166,8 @@ master:
   ## Mariadb Master additional pod annotations
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
   # annotations:
-  #   - key: key1
-  #     value: value1
+  #   key: value
+  #   another-key: another-value
 
   ## MariaDB additional command line flags
   ## Can be used to specify command line flags, for example:
@@ -298,8 +299,8 @@ slave:
   ## Mariadb Slave additional pod annotations
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
   # annotations:
-  #   - key: key1
-  #     value: value1
+  #   key: value
+  #   another-key: another-value
 
   ## MariaDB additional command line flags
   ## Can be used to specify command line flags, for example:
@@ -412,7 +413,7 @@ metrics:
   image:
     registry: docker.io
     repository: bitnami/mysqld-exporter
-    tag: 0.12.0-debian-9-r2
+    tag: 0.12.1-debian-9-r44
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.

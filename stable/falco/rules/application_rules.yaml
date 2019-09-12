@@ -1,0 +1,189 @@
+#
+# Copyright (C) 2016-2018 Draios Inc dba Sysdig.
+#
+# This file is part of falco.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+- required_engine_version: 2
+
+################################################################
+# By default all application-related rules are disabled for
+# performance reasons. Depending on the application(s) you use,
+# uncomment the corresponding rule definitions for
+# application-specific activity monitoring.
+################################################################
+
+# Elasticsearch ports
+- macro: elasticsearch_cluster_port
+  condition: fd.sport=9300
+- macro: elasticsearch_api_port
+  condition: fd.sport=9200
+- macro: elasticsearch_port
+  condition: elasticsearch_cluster_port or elasticsearch_api_port
+
+# - rule: Elasticsearch unexpected network inbound traffic
+#   desc: inbound network traffic to elasticsearch on a port other than the standard ports
+#   condition: user.name = elasticsearch and inbound and not elasticsearch_port
+#   output: "Inbound network traffic to Elasticsearch on unexpected port (connection=%fd.name)"
+#   priority: WARNING
+
+# - rule: Elasticsearch unexpected network outbound traffic
+#   desc: outbound network traffic from elasticsearch on a port other than the standard ports
+#   condition: user.name = elasticsearch and outbound and not elasticsearch_cluster_port
+#   output: "Outbound network traffic from Elasticsearch on unexpected port (connection=%fd.name)"
+#   priority: WARNING
+
+
+# ActiveMQ ports
+- macro: activemq_cluster_port
+  condition: fd.sport=61616
+- macro: activemq_web_port
+  condition: fd.sport=8161
+- macro: activemq_port
+  condition: activemq_web_port or activemq_cluster_port
+
+# - rule: Activemq unexpected network inbound traffic
+#   desc: inbound network traffic to activemq on a port other than the standard ports
+#   condition: user.name = activemq and inbound and not activemq_port
+#   output: "Inbound network traffic to ActiveMQ on unexpected port (connection=%fd.name)"
+#   priority: WARNING
+
+# - rule: Activemq unexpected network outbound traffic
+#   desc: outbound network traffic from activemq on a port other than the standard ports
+#   condition: user.name = activemq and outbound and not activemq_cluster_port
+#   output: "Outbound network traffic from ActiveMQ on unexpected port (connection=%fd.name)"
+#   priority: WARNING
+
+
+# Cassandra ports
+# https://docs.datastax.com/en/cassandra/2.0/cassandra/security/secureFireWall_r.html
+- macro: cassandra_thrift_client_port
+  condition: fd.sport=9160
+- macro: cassandra_cql_port
+  condition: fd.sport=9042
+- macro: cassandra_cluster_port
+  condition: fd.sport=7000
+- macro: cassandra_ssl_cluster_port
+  condition: fd.sport=7001
+- macro: cassandra_jmx_port
+  condition: fd.sport=7199
+- macro: cassandra_port
+  condition: >
+    cassandra_thrift_client_port or
+    cassandra_cql_port or cassandra_cluster_port or
+    cassandra_ssl_cluster_port or cassandra_jmx_port
+
+# - rule: Cassandra unexpected network inbound traffic
+#   desc: inbound network traffic to cassandra on a port other than the standard ports
+#   condition: user.name = cassandra and inbound and not cassandra_port
+#   output: "Inbound network traffic to Cassandra on unexpected port (connection=%fd.name)"
+#   priority: WARNING
+
+# - rule: Cassandra unexpected network outbound traffic
+#   desc: outbound network traffic from cassandra on a port other than the standard ports
+#   condition: user.name = cassandra and outbound and not (cassandra_ssl_cluster_port or cassandra_cluster_port)
+#   output: "Outbound network traffic from Cassandra on unexpected port (connection=%fd.name)"
+#   priority: WARNING
+
+# Couchdb ports
+# https://github.com/davisp/couchdb/blob/master/etc/couchdb/local.ini
+- macro: couchdb_httpd_port
+  condition: fd.sport=5984
+- macro: couchdb_httpd_ssl_port
+  condition: fd.sport=6984
+# xxx can't tell what clustering ports are used. not writing rules for this
+# yet.
+
+# Fluentd ports
+- macro: fluentd_http_port
+  condition: fd.sport=9880
+- macro: fluentd_forward_port
+  condition: fd.sport=24224
+
+# - rule: Fluentd unexpected network inbound traffic
+#   desc: inbound network traffic to fluentd on a port other than the standard ports
+#   condition: user.name = td-agent and inbound and not (fluentd_forward_port or fluentd_http_port)
+#   output: "Inbound network traffic to Fluentd on unexpected port (connection=%fd.name)"
+#   priority: WARNING
+
+# - rule: Tdagent unexpected network outbound traffic
+#   desc: outbound network traffic from fluentd on a port other than the standard ports
+#   condition: user.name = td-agent and outbound and not fluentd_forward_port
+#   output: "Outbound network traffic from Fluentd on unexpected port (connection=%fd.name)"
+#   priority: WARNING
+
+# Gearman ports
+# http://gearman.org/protocol/
+# - rule: Gearman unexpected network outbound traffic
+#   desc: outbound network traffic from gearman on a port other than the standard ports
+#   condition: user.name = gearman and outbound and outbound and not fd.sport = 4730
+#   output: "Outbound network traffic from Gearman on unexpected port (connection=%fd.name)"
+#   priority: WARNING
+
+# Zookeeper
+- macro: zookeeper_port
+  condition: fd.sport = 2181
+
+# Kafka ports
+# - rule: Kafka unexpected network inbound traffic
+#   desc: inbound network traffic to kafka on a port other than the standard ports
+#   condition: user.name = kafka and inbound and fd.sport != 9092
+#   output: "Inbound network traffic to Kafka on unexpected port (connection=%fd.name)"
+#   priority: WARNING
+
+# Memcached ports
+# - rule: Memcached unexpected network inbound traffic
+#   desc: inbound network traffic to memcached on a port other than the standard ports
+#   condition: user.name = memcached and inbound and fd.sport != 11211
+#   output: "Inbound network traffic to Memcached on unexpected port (connection=%fd.name)"
+#   priority: WARNING
+
+# - rule: Memcached unexpected network outbound traffic
+#   desc: any outbound network traffic from memcached. memcached never initiates outbound connections.
+#   condition: user.name = memcached and outbound
+#   output: "Unexpected Memcached outbound connection (connection=%fd.name)"
+#   priority: WARNING
+
+
+# MongoDB ports
+- macro: mongodb_server_port
+  condition: fd.sport = 27017
+- macro: mongodb_shardserver_port
+  condition: fd.sport = 27018
+- macro: mongodb_configserver_port
+  condition: fd.sport = 27019
+- macro: mongodb_webserver_port
+  condition: fd.sport = 28017
+
+# - rule: Mongodb unexpected network inbound traffic
+#   desc: inbound network traffic to mongodb on a port other than the standard ports
+#   condition: >
+#     user.name = mongodb and inbound and not (mongodb_server_port or
+#     mongodb_shardserver_port or mongodb_configserver_port or mongodb_webserver_port)
+#   output: "Inbound network traffic to MongoDB on unexpected port (connection=%fd.name)"
+#   priority: WARNING
+
+# MySQL ports
+# - rule: Mysql unexpected network inbound traffic
+#   desc: inbound network traffic to mysql on a port other than the standard ports
+#   condition: user.name = mysql and inbound and fd.sport != 3306
+#   output: "Inbound network traffic to MySQL on unexpected port (connection=%fd.name)"
+#   priority: WARNING
+
+# - rule: HTTP server unexpected network inbound traffic
+#   desc: inbound network traffic to a http server program on a port other than the standard ports
+#   condition: proc.name in (http_server_binaries) and inbound and fd.sport != 80 and fd.sport != 443
+#   output: "Inbound network traffic to HTTP Server on unexpected port (connection=%fd.name)"
+#   priority: WARNING
