@@ -8,6 +8,6 @@ home: https://github.com/aws/amazon-eks-pod-identity-webhook
 sources:
 - https://github.com/aws/amazon-eks-pod-identity-webhook
 maintainers:
-- name: Micah Hausler
+- name: micahhausler
   email: hausler.m@gmail.com
 engine: gotpl
