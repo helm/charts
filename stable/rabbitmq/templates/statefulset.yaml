@@ -243,7 +243,7 @@ spec:
               name: {{ template "rabbitmq.secretPasswordName" . }}
               key: rabbitmq-password
         - name: RABBIT_URL
-          value: "http://localhost:{{ .Values.service.managerPort }}"
+          value: "http://127.0.0.1:{{ .Values.service.managerPort }}"
         - name: RABBIT_USER
           value: {{ .Values.rabbitmq.username }}
         {{ if .Values.metrics.capabilities }}
