@@ -106,6 +106,23 @@ datadog:
  logsConfigContainerCollectAll: true
 ```
 
+To collect custom logs, the following configuration could be used:
+
+```
+datadog:
+  (...)
+  logsEnabled: true
+  customLogFiles:
+  - type:     file
+    path:     <host-path/filename>  # Eg. /var/log/audit.log
+    service:  <service-name>        # Eg. audit
+    source:   <source-name>         # Eg. audit-logs
+  confd:
+    customLogFiles.yaml: |-
+      logs:
+        {{- .Values.datadog.customLogFiles | toYaml | nindent 4 }}
+```
+
 then upgrade your Datadog Helm chart:
 
 ```bash
@@ -184,6 +201,9 @@ datadog:
       instances:
         - host: "outside-k8s.example.com"
           port: 6379
+    customLogFiles.yaml: |-
+      logs:
+        {{- .Values.datadog.customLogFiles | toYaml | nindent 4 }}
 ```
 
 then upgrade your Datadog Helm chart:
@@ -261,6 +281,7 @@ helm install --name <RELEASE_NAME> \
 | `datadog.logLevel`                       | Agent log verbosity (possible values: trace, debug, info, warn, error, critical, and off) | `INFO`                                      |
 | `datadog.logsEnabled`                    | Enable log collection                                                                     | `nil`                                       |
 | `datadog.logsConfigContainerCollectAll`  | Collect logs from all containers                                                          | `nil`                                       |
+| `datadog.customLogFiles`                 | Definition of files from the host (see [Custom Log Collection](https://docs.datadoghq.com/agent/logs/?tab=tailexistingfiles#custom-log-collection))                                                                                    | `nil`                                       |
 | `datadog.logsPointerHostPath`            | Host path to store the log tailing state in                                               | `/var/lib/datadog-agent/logs`               |
 | `datadog.apmEnabled`                     | Enable tracing from the host                                                              | `nil`                                       |
 | `datadog.processAgentEnabled`            | Control live process and container monitoring. Possible values: `nil` for container monitoring only, `true` for container and process monitoring, `false` turns off process-agent | `nil`|

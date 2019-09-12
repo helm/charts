@@ -137,6 +137,12 @@ spec:
             path: {{ .Values.datadog.containerLogsPath | quote }}
           name: logcontainerpath
         {{- end }}
+        {{- range .Values.datadog.customLogFiles }}
+        - hostPath:
+            path: {{ .path | quote }}
+            type: File
+          name: {{ .service }}
+        {{- end }}
         {{- end }}
         {{- if or (kindIs "invalid" .Values.datadog.processAgentEnabled) .Values.datadog.processAgentEnabled .Values.systemProbe.enabled }}
         - hostPath:
