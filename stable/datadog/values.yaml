@@ -208,7 +208,7 @@ datadog:
   #
   # volumes:
   #   - hostPath:
-  #     path: <HOST_PATH>
+  #       path: <HOST_PATH>
   #     name: <VOLUME_NAME>
 
   ## @param volumeMounts - list of objects - optional
