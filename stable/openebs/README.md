@@ -46,10 +46,10 @@ The following table lists the configurable parameters of the OpenEBS chart and t
 | `provisioner.image`                     | Image for Provisioner                         | `quay.io/openebs/openebs-k8s-provisioner` |
 | `provisioner.imageTag`                  | Image Tag for Provisioner                     | `1.2.0`                                   |
 | `provisioner.replicas`                  | Number of Provisioner Replicas                | `1`                                       |
-| `localProvisioner.image`                | Image for localProvisioner                    | `quay.io/openebs/provisioner-localpv`     |
-| `localProvisioner.imageTag`             | Image Tag for localProvisioner                | `1.2.0`                                   |
-| `localProvisioner.replicas`             | Number of localProvisioner Replicas           | `1`                                       |
-| `localProvisioner.basePath`             | BasePath for hostPath volumes on Nodes        | `/var/openebs/local`                      |
+| `localprovisioner.image`                | Image for localProvisioner                    | `quay.io/openebs/provisioner-localpv`     |
+| `localprovisioner.imageTag`             | Image Tag for localProvisioner                | `1.2.0`                                   |
+| `localprovisioner.replicas`             | Number of localProvisioner Replicas           | `1`                                       |
+| `localprovisioner.basePath`             | BasePath for hostPath volumes on Nodes        | `/var/openebs/local`                      |
 | `webhook.image`                         | Image for admision server                     | `quay.io/openebs/admission-server`        |
 | `webhook.imageTag`                      | Image Tag for admission server                | `1.2.0`                                   |
 | `webhook.replicas`                      | Number of admission server Replicas           | `1`                                       |
