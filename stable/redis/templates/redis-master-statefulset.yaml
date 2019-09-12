@@ -24,7 +24,7 @@ spec:
 {{- if .Values.master.podLabels }}
 {{ toYaml .Values.master.podLabels | indent 8 }}
 {{- end }}
-{{- if .Values.metrics.podLabels }}
+{{- if and .Values.metrics.enabled .Values.metrics.podLabels }}
 {{ toYaml .Values.metrics.podLabels | indent 8 }}
 {{- end }}
 
@@ -35,7 +35,7 @@ spec:
       {{- if .Values.master.podAnnotations }}
 {{ toYaml .Values.master.podAnnotations | indent 8 }}
       {{- end }}
-      {{- if .Values.metrics.podAnnotations }}
+      {{- if and .Values.metrics.enabled .Values.metrics.podAnnotations }}
 {{ toYaml .Values.metrics.podAnnotations | indent 8 }}
       {{- end }}
     spec:
