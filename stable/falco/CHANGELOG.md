@@ -3,6 +3,12 @@
 This file documents all notable changes to Sysdig Falco Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v1.0.7
+
+### Minor Changes
+
+* Allow configuration using values for `nodeSelector` setting
+
 ## v1.0.6
 
 ### Minor Changes
