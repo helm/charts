@@ -66,12 +66,14 @@ The following table lists the configurable parameters of the mongodb chart and t
 | `init.resources`                    | Pod resource requests and limits (for init containers)                    | `{}`                                                |
 | `init.timeout`                      | The amount of time in seconds to wait for bootstrap to finish             | `900`                                               |
 | `metrics.enabled`                   | Enable Prometheus compatible metrics for pods and replicasets             | `false`                                             |
-| `metrics.image.repository`          | Image name for metrics exporter                                           | `bitnami/mongodb-exporter`                         |
-| `metrics.image.tag`                 | Image tag for metrics exporter                                            | `0.9.0-debian-9-r2`                                             |
+| `metrics.image.repository`          | Image name for metrics exporter                                           | `bitnami/mongodb-exporter`                          |
+| `metrics.image.tag`                 | Image tag for metrics exporter                                            | `0.9.0-debian-9-r2`                                 |
 | `metrics.image.pullPolicy`          | Image pull policy for metrics exporter                                    | `IfNotPresent`                                      |
 | `metrics.port`                      | Port for metrics exporter                                                 | `9216`                                              |
 | `metrics.path`                      | URL Path to expose metics                                                 | `/metrics`                                          |
 | `metrics.resources`                 | Metrics pod resource requests and limits                                  | `{}`                                                |
+| `metrics.securityContext.fsGroup`   | Group ID for the metrics container                                        | `1001`                                              |
+| `metrics.securityContext.runAsUser` | User ID for the metrics container                                         | `1001`                                              |
 | `metrics.socketTimeout`             | Time to wait for a non-responding socket                                  | `3s`                                                |
 | `metrics.syncTimeout`               | Time an operation with this session will wait before returning an error   | `1m`                                                |
 | `metrics.prometheusServiceDiscovery`| Adds annotations for Prometheus ServiceDiscovery                          | `true`                                              |

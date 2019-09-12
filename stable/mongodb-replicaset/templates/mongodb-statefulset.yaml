@@ -49,7 +49,7 @@ spec:
       securityContext:
         runAsUser: {{ .Values.securityContext.runAsUser }}
         fsGroup: {{ .Values.securityContext.fsGroup }}
-        runAsNonRoot: {{ .Values.securityContext.runAsNonRoot }}        
+        runAsNonRoot: {{ .Values.securityContext.runAsNonRoot }}
     {{- end }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       initContainers:
@@ -278,6 +278,11 @@ spec:
               containerPort: {{ .Values.metrics.port  }}
           resources:
 {{ toYaml .Values.metrics.resources | indent 12 }}
+          {{- if .Values.securityContext.enabled }}
+          securityContext:
+            runAsUser: {{ .Values.metrics.securityContext.runAsUser }}
+            fsGroup: {{ .Values.metrics.securityContext.fsGroup }}
+          {{- end }}
           livenessProbe:
             exec:
               command:
