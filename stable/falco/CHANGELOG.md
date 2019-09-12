@@ -2,6 +2,11 @@
 
 This file documents all notable changes to Sysdig Falco Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
+## v1.0.8
+
+### Minor Changes
+
+* Restrict the access to `/dev` on underlying host to read only
 
 ## v1.0.7
 
