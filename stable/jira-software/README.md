@@ -46,7 +46,7 @@ The following table lists the configurable parameters of the *Jira Software* cha
 | Parameter | Description | Default|
 | --- | --- | --- |
 | `image.repository` | Docker repository to use | `atlassian/jira-software` |
-| `image.tag` | Docker tag to use | `8.3.3` |
+| `image.tag` | Docker tag to use | `8.4.0` |
 | `image.pullPolicy` | Docker image pull policy | `IfNotPresent` |
 | `nameOverride` | String to partially override `jira-software.fullname` template (will prepend the release name) | `nil` |
 | `fullnameOverride` | String to fully override `jira-software.fullname` template | `nil`

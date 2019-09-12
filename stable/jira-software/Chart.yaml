@@ -1,7 +1,7 @@
 apiVersion: v1
 name: jira-software
-version: 0.0.1
-appVersion: 8.3.3
+version: 0.0.2
+appVersion: 8.4.0
 description: Atlassian Jira Software is built for every member of your software team to plan, track, and release great software.
 keywords:
 - jira
