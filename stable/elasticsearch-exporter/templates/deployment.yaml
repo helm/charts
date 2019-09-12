@@ -147,6 +147,6 @@ spec:
         {{- end }}
         {{- range .Values.secretMounts }}
         - name: {{ .name }}
-        secret:
-          secretName: {{ .secretName }}
+          secret:
+            secretName: {{ .secretName }}
         {{- end }}
