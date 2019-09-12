@@ -352,9 +352,8 @@ master:
     # The `groups` root object is added by default, simply add the rule entries
     alertingrules: []
 
-  # Jenkins master UI test
-  test:
-    enabled: true
+  # Can be used to disable rendering test resources when using helm template
+  test.enabled: true
 
 agent:
   enabled: true
