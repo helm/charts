@@ -96,6 +96,12 @@ EOSQL
         echo "GRANT ALL ON \`"$MYSQL_DATABASE"\`.* TO '"$MYSQL_USER"'@'%' ;" | "${mysql[@]}"
     fi
 
+    if [ "$METRICS_EXPORTER_PASSWORD" ]; then
+        echo "CREATE USER 'exporter'@'localhost' IDENTIFIED BY '"$METRICS_EXPORTER_PASSWORD"' ;\
+              GRANT PROCESS, REPLICATION CLIENT ON *.* TO 'exporter'@'localhost' ;\
+              GRANT SELECT ON performance_schema.* TO 'exporter'@'localhost' ;" | "${mysql[@]}"
+    fi
+
     echo 'FLUSH PRIVILEGES ;' | "${mysql[@]}"
     fi
 

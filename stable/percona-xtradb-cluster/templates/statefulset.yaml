@@ -67,6 +67,13 @@ spec:
             secretKeyRef:
               name: {{ template "percona-xtradb-cluster.fullname" . }}
               key: xtrabackup-password
+        {{- if .Values.metricsExporter.enabled }}
+        - name: METRICS_EXPORTER_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "percona-xtradb-cluster.fullname" . }}
+              key: exporter-password
+        {{- end }}
         - name: MYSQL_USER
           value: {{ default "" .Values.mysqlUser | quote }}
         - name: MYSQL_DATABASE
@@ -148,6 +155,14 @@ spec:
         args:
 {{ toYaml .Values.metricsExporter.argsOverrides | indent 8 }}
 {{- end }}
+        env:
+        - name: METRICS_EXPORTER_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "percona-xtradb-cluster.fullname" . }}
+              key: exporter-password
+        - name: DATA_SOURCE_NAME
+          value: "exporter:$(METRICS_EXPORTER_PASSWORD)@(localhost:3306)/"          
         ports:
         - name: metrics
           containerPort: 9104
