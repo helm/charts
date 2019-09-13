@@ -103,7 +103,7 @@ metricsExporter:
 
   ## Specify password for exporter user (if specified, replaces auto-generated password)
   ##
-  # exporterPassword: secure-password
+  # exporterPassword: 
 
 prometheus:
   ## Are you using [Prometheus Operator](https://coreos.com/operators/prometheus/docs/latest/user-guides/getting-started.html)?
