@@ -243,8 +243,14 @@ ingress:
   ## It is also possible to create and manage the certificates outside of this helm chart
   ## Please see README.md for more information
   # - name: testlink.local-tls
-  #   key:
-  #   certificate:
+  #   key: |-
+  #     -----BEGIN PRIVATE KEY-----
+  #     ...
+  #     -----END PRIVATE KEY-----
+  #   certificate: |-
+  #     -----BEGIN CERTIFICATE-----
+  #     ...
+  #     -----END CERTIFICATE-----
 
 ## Affinity for pod assignment
 ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
