@@ -148,7 +148,7 @@ with an extraLabel corresponding to your Prometheus scraper label selector. For 
 ```yaml
 serviceMonitor:
   enabled: true
-  extraLabels:
+  additionalLabels:
     prometheus-scraper: "default"
   interval: 10s
   jobLabel: "vault-exporter"
