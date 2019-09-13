@@ -94,6 +94,7 @@ The following table lists the configurable parameters of the Sonarqube chart and
 | `tolerations`                               | List of node taints to tolerate           | `[]`                                       |
 | `plugins.install`                           | List of plugins to install                | `[]`                                       |
 | `plugins.resources`                         | Plugin Pod resource requests & limits     | `{}`                                       |
+| `plugins.initSysctlContainerImage`          | Change init sysctl container image        | `busybox:1.31`                             |
 | `plugins.initContainerImage`                | Change init container image               | `[]`                                       |
 | `plugins.deleteDefaultPlugins`              | Remove default plugins and use plugins.install list | `[]`                             |
 | `podLabels`                                 | Map of labels to add to the pods          | `{}`                                       |
