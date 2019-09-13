@@ -50,8 +50,8 @@ podAnnotations: {}
 #   allowPrivilegeEscalation: false
 #   readOnlyRootFilesystem: true
 ## The two values below can be set here or at podLevel (using variable .securityContext)
-#   runAsUser: 1001    
-#   runAsGroup: 2001   
+#   runAsUser: 1001
+#   runAsGroup: 2001
 dashboardContainerSecurityContext: {}
 
 ## Node labels for pod assignment
