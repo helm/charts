@@ -39,15 +39,17 @@ extraEnv: []
 #   value: 'some value'
 
 # Annotations to be added to kubernetes dashboard pods
-podAnnotations:
-  seccomp.security.alpha.kubernetes.io/pod: 'runtime/default'
+## Recommended value
+# podAnnotations:
+#   seccomp.security.alpha.kubernetes.io/pod: 'runtime/default'
+podAnnotations: {}
 
 ## SecurityContext for the kubernetes dashboard container
-##
+## Recommended values
 # dashboardContainerSecurityContext:
 #   allowPrivilegeEscalation: false
 #   readOnlyRootFilesystem: true
-## The two values below can be set at podLevel instead, using variable .securityContext
+## The two values below can be set here or at podLevel (using variable .securityContext)
 #   runAsUser: 1001    
 #   runAsGroup: 2001   
 dashboardContainerSecurityContext: {}
