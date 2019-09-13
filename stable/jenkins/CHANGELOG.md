@@ -6,6 +6,10 @@ numbering uses [semantic versioning](http://semver.org).
 
 NOTE: The change log until version 1.5.7 is auto generated based on git commits. Those include a reference to the git commit to be able to get more details.
 
+## 1.6.1
+
+Print error message when `master.sidecars.configAutoReload.enabled` is `true`, but the admin user can't be found to configure the SSH key.
+
 ## 1.6.0
 
 Add support for Google Cloud Storage for backup CronJob (migrating from nuvo/kube-tasks to maorfr/kube-tasks)
