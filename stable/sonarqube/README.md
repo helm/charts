@@ -54,10 +54,12 @@ The following table lists the configurable parameters of the Sonarqube chart and
 | `ingress.tls`                               | Ingress secrets for TLS certificates      | `[]`                                       |
 | `livenessProbe.sonarWebContext`             | SonarQube web context for livenessProbe   | /                                          |
 | `readinessProbe.sonarWebContext`            | SonarQube web context for readinessProbe  | /                                          |
-| `service.type`                              | Kubernetes service type                   | `LoadBalancer`                             |
+| `service.type`                              | Kubernetes service type                   | `ClusterIP`                                |
+| `service.externalPort`                      | Kubernetes service port                   | `9000`                                     |
+| `service.internalPort`                      | Kubernetes container port                 | `9000`                                     |
 | `service.labels`                            | Kubernetes service labels                 | None                                       |
 | `service.annotations`                       | Kubernetes service annotations            | None                                       |
-| `service.loadBalancerSourceRanges`          | Kubernetes service LB Allowed inbound IP addresses | 0.0.0.0/0                            |
+| `service.loadBalancerSourceRanges`          | Kubernetes service LB Allowed inbound IP addresses | None                            |
 | `service.loadBalancerIP`                    | Kubernetes service LB Optional fixed external IP   | None                                       |
 | `persistence.enabled`                       | Flag for enabling persistent storage      | false                                      |
 | `persistence.annotations`                   | Kubernetes pvc annotations                | `{}`                                      |

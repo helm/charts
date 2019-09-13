@@ -17,7 +17,6 @@ securityContext:
   fsGroup: 999
 
 service:
-  name: sonarqube
   type: ClusterIP
   externalPort: 9000
   internalPort: 9000
