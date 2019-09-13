@@ -6,7 +6,9 @@ Further details can be found here: https://docs.aws.amazon.com/eks/latest/usergu
 
 ## Prerequisites
 
-- Kubernetes 1.13+
+- Kubernetes 1.12+
+
+For installation into a non-EKS cluster, see [Self-hosted Kubernetes setup](https://github.com/aws/amazon-eks-pod-identity-webhook/blob/master/SELF_HOSTED_SETUP.md)
 
 ## Installing the Chart
 
@@ -24,6 +26,8 @@ $ helm install --name my-release stable/aws-pod-identity-webhook --set caBundle=
 ```
 
 After installation you need to approve the certificate. Follow the chart notes after installation for this step.
+
+The webhook will request a new CSR prior expiry in 1 year. This new CSR will also need to be manually approved.
 
 ## Uninstalling the Chart
 

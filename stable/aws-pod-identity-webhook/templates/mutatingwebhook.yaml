@@ -12,7 +12,7 @@ webhooks:
       name: {{ include "aws-pod-identity-webhook.fullname" . }}
       namespace: {{ .Release.Namespace }}
       path: "/mutate"
-    caBundle: "{{ .Values.caBundle }}"
+    caBundle: {{ .Values.caBundle | quote }}
   rules:
   - operations: [ "CREATE" ]
     apiGroups: [""]

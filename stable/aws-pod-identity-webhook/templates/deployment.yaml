@@ -5,7 +5,7 @@ metadata:
   labels:
 {{ include "aws-pod-identity-webhook.labels" . | indent 4 }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicas }}
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "aws-pod-identity-webhook.name" . }}
@@ -31,18 +31,18 @@ spec:
         command:
         - /webhook
         - --in-cluster
-        - --namespace=default
+        - --namespace={{ .Release.Namespace }}
         - --service-name={{ include "aws-pod-identity-webhook.fullname" . }}
-        - --tls-secret=pod-identity-webhook
-        - --annotation-prefix=eks.amazonaws.com
-        - --token-audience=sts.amazonaws.com
+        - --tls-secret={{ .Values.tls_secret_name }}
+        - --annotation-prefix={{ .Values.annotation_prefix }}
+        - --token-audience={{ .Values.token_audience }}
         - --logtostderr
         volumeMounts:
         - name: webhook-certs
           mountPath: /var/run/app/certs
           readOnly: false
-          resources:
-            {{- toYaml .Values.resources | nindent 12 }}
+        resources:
+          {{- toYaml .Values.resources | nindent 10 }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

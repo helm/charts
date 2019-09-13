@@ -1,3 +1,9 @@
+tls_secret_name: pod-identity-webhook
+annotation_prefix: eks.amazonaws.com
+token_audience: sts.amazonaws.com
+
+replicas: 3
+
 image:
   repository: 602401143452.dkr.ecr.us-west-2.amazonaws.com/eks/pod-identity-webhook
   tag: latest

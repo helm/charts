@@ -20,4 +20,4 @@ rules:
   - update
   - patch
   resourceNames:
-  - "{{ include "aws-pod-identity-webhook.fullname" . }}"
+  - "{{ .Values.tls_secret_name }}"
