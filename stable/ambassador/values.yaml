@@ -184,7 +184,87 @@ tolerations: []
 
 affinity: {}
 
-# Enabling the prometheus exporter creates a sidecar and configures ambassador to use it
+ambassadorConfig: ""
+
+crds:
+  enabled: true
+  create: true
+  keep: true
+
+pro:
+  enabled: false
+  image:
+    repository: quay.io/datawire/ambassador_pro
+    tag: 0.7.0
+  # As of Ambassador Pro 0.6.0, both the RateLimitService and AuthService use the same port
+  ports:
+    auth: 8500
+    ratelimit: 8500
+  logLevel: info
+  # A license key is required to use Ambassador Pro.
+  # Get a license key by signing up for a free trial here: https://www.getambassador.io/pro/free-trial
+  licenseKey:
+    value: "{{INSERT LICENSE KEY HERE}}"
+    # The license key will be stored and read from a Kubernetes secret named ambassador-pro-license-key
+    # Set create: true for the first install and create: false for all subsequent installs
+    secret:
+      enabled: true
+      create: true
+  # Ambassador Pro environment variables can be found at https://www.getambassador.io/reference/pro/environment
+  # For consistency, AMBASSADOR_ID is copied over from the Ambassador env above and will be ignored if set here.
+  env:
+    {}
+  resources: {}
+  # If you want to specify resources, uncomment the following
+  # lines and remove the curly braces after 'resources:'.
+  # These are placeholder values and must be tuned.
+  #   limits:
+  #     cpu: 100m
+  #     memory: 256Mi
+  #   requests:
+  #     cpu: 50m
+  #     memory: 128Mi
+
+  authService:
+    enabled: true
+    # Set additional configuration options. See https://www.getambassador.io/reference/services/auth-service for more information
+    optional_configurations:
+      # include_body:
+      #   max_bytes: 4096
+      #   allow_partial: true
+      # status_on_error:
+      #   code: 403
+      # failure_mode_allow: false
+      # retry_policy:
+      #   retry_on: "5xx"
+      #   num_retries: 2
+      # add_linkerd_headers: true
+      # timeout_ms: 30000
+
+  rateLimit:
+    enabled: true
+    redis:
+      # Annotations for Ambassador Pro's redis instance.
+      annotations:
+        deployment:
+          {}
+        service:
+          {}
+      resources: {}
+      # If you want to specify resources, uncomment the following
+      # lines and remove the curly braces after 'resources:'.
+      # These are placeholder values and must be tuned.
+      #   limits:
+      #     cpu: 100m
+      #     memory: 256Mi
+      #   requests:
+      #     cpu: 50m
+      #     memory: 128Mi
+
+# DEPRECATED: Ambassador now exposes the /metrics endpoint in Envoy.
+# DEPRECATED: See https://www.getambassador.io/user-guide/monitoring#deployment for more information on how to use the /metrics endpoint
+#
+# DEPRECATED: Enabling the prometheus exporter creates a sidecar and configures ambassador to use it
 prometheusExporter:
   enabled: false
   repository: prom/statsd-exporter
@@ -210,28 +290,3 @@ prometheusExporter:
   #     timer_type: 'histogram'
   #     labels:
   #       cluster_name: "$1"
-
-ambassadorConfig: ""
-
-pro:
-  enabled: false
-  image:
-    repository: quay.io/datawire/ambassador_pro
-    tag: amb-sidecar-0.6.0
-  # As of Ambassador Pro 0.6.0, both the RateLimitService and AuthService use the same port
-  ports:
-    auth: 8500
-    ratelimit: 8500
-  logLevel: info
-  licenseKey:
-    value:
-    secret: false
-  # Ambassador Pro environment variables can be found at https://www.getambassador.io/reference/pro/environment
-  # For consistency, AMBASSADOR_ID is copied over from the Ambassador env above and will be ignored if set here.
-  env:
-    {}
-
-crds:
-  enabled: true
-  create: true
-  keep: true
