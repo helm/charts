@@ -89,6 +89,10 @@ spec:
 {{- end }}
           initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
           timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+{{- if .Values.podSecurityContext }}
+        securityContext:
+{{ toYaml .Values.podSecurityContext | indent 10 }}
+{{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
     {{- if .Values.image.pullSecrets }}

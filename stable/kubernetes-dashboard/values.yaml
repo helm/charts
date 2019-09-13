@@ -39,7 +39,17 @@ extraEnv: []
 #   value: 'some value'
 
 # Annotations to be added to kubernetes dashboard pods
-podAnnotations: {}
+podAnnotations:
+  seccomp.security.alpha.kubernetes.io/pod: 'runtime/default'
+
+## SecurityContext to be added to kubernetes dashboard pods
+##
+# podSecurityContext:
+#   allowPrivilegeEscalation: false
+#   readOnlyRootFilesystem: true
+#   runAsUser: 1001
+#   runAsGroup: 2001
+podSecurityContext: {}
 
 ## Node labels for pod assignment
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
