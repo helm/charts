@@ -183,6 +183,14 @@ volumes: []
   #   hostPath:
   #     path: /tmp
 
+secrets: {}
+  # json_key_file.json: |-
+  #   "sensitive": {
+  #     "data": "password"
+  #     }
+  #   }
+  # e.g. for https://www.elastic.co/guide/en/logstash/master/plugins-outputs-google_bigquery.html#plugins-outputs-google_bigquery-json_key_file
+
 exporter:
   logstash:
     enabled: false

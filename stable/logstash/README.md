@@ -110,6 +110,7 @@ The following table lists the configurable parameters of the chart and its defau
 | `persistence.size`              | Size for PVCs                                      | `2Gi`                                            |
 | `volumeMounts`                  | Volume mounts to configure for logstash container  | (see `values.yaml`)                              |
 | `volumes`                       | Volumes to configure for logstash container        | []                                               |
+| `secrets`                       | Secrets to create and mount to logstash container  | {}
 | `terminationGracePeriodSeconds` | Duration the pod needs to terminate gracefully     | `30`                                             |
 | `exporter.logstash`             | Prometheus logstash-exporter settings              | (see `values.yaml`)                              |
 | `exporter.logstash.enabled`     | Enables Prometheus logstash-exporter               | `false`                                          |

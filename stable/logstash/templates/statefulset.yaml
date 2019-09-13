@@ -96,6 +96,11 @@ spec:
 {{ toYaml .Values.resources | indent 12 }}
           volumeMounts:
 {{ toYaml .Values.volumeMounts | indent 12 }}
+{{- if .Values.secrets }}
+            - name: secrets
+              mountPath: /usr/share/logstash/secrets
+              readOnly: true
+{{- end }}
 
 {{- if .Values.exporter.logstash.enabled }}
         ## logstash-exporter
@@ -153,6 +158,12 @@ spec:
         - name: pipeline
           configMap:
             name: {{ template "logstash.fullname" . }}-pipeline
+    {{- if .Values.secrets }}
+        - name: secrets
+          secret:
+            defaultMode: 0400
+            secretName: {{ template "logstash.fullname" . }}-secrets
+    {{- end }}
     {{- with .Values.volumes }}
 {{ toYaml . | indent 8 }}
     {{- end }}
