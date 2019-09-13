@@ -293,8 +293,5 @@ spec:
           requests:
             storage: {{ .Values.persistence.size | quote }}
         {{ include "mongodb.storageClass" . }}
-{{- else }}
-        - name: datadir
-          emptyDir: {}
 {{- end }}
 {{- end }}
