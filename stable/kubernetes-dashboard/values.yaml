@@ -42,14 +42,15 @@ extraEnv: []
 podAnnotations:
   seccomp.security.alpha.kubernetes.io/pod: 'runtime/default'
 
-## SecurityContext to be added to kubernetes dashboard pods
+## SecurityContext for the kubernetes dashboard container
 ##
-# podSecurityContext:
+# dashboardContainerSecurityContext:
 #   allowPrivilegeEscalation: false
 #   readOnlyRootFilesystem: true
-#   runAsUser: 1001
-#   runAsGroup: 2001
-podSecurityContext: {}
+## The two values below can be set at podLevel instead, using variable .securityContext
+#   runAsUser: 1001    
+#   runAsGroup: 2001   
+dashboardContainerSecurityContext: {}
 
 ## Node labels for pod assignment
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
@@ -184,6 +185,12 @@ podDisruptionBudget:
   minAvailable:
   maxUnavailable:
 
+
+## PodSecurityContext for pod level securityContext
+##
+# securityContext:
+#   runAsUser: 1001
+#   runAsGroup: 2001
 securityContext: {}
 
 networkPolicy: false
