@@ -39,6 +39,12 @@ spec:
                 name: {{ template "neo4j.secrets.fullname" . }}
                 key: neo4j-password
           {{- end }}
+          {{- if .Values.metrics.prometheus.enabled }}
+          - name: NEO4J_metrics_prometheus_enabled
+            value: "true"
+          - name: NEO4J_metrics_prometheus_endpoint
+            value: 0.0.0.0:2004
+          {{- end }}
 {{- if .Values.readReplica.extraVars }}
 {{ toYaml .Values.readReplica.extraVars | indent 10 }}
 {{- end }}
@@ -63,6 +69,10 @@ spec:
           name: bolt
         - containerPort: 6000
           name: tx
+        {{- if .Values.metrics.prometheus.enabled }}
+        - containerPort: 2004
+          name: metrics
+        {{- end }}
         volumeMounts:
         - name: plugins
           mountPath: /plugins

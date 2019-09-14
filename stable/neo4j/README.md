@@ -80,6 +80,8 @@ their default values.
 | `readReplica.initContainers`          | Init containers to add to the replica pod. Example use case is a script that installs the APOC library                                  | `{}`                                            |
 | `resources`                           | Resources required (e.g. CPU, memory)                                                                                                   | `{}`                                            |
 | `clusterDomain`                       | Cluster domain                                                                                                                          | `cluster.local`                                 |
+| `metrics.prometheus.enabled`          | Whether or not prometheus metrics are enabled                                                                                           | `true`                                          |
+| `metrics.serviceMonitor.enabled`      | Whether to enabled service monitor for prometheus                                                                                       | `true`                                          |
 
 The above parameters map to the env variables defined in the
 [Neo4j docker image](https://github.com/neo4j/docker-neo4j).
