@@ -409,6 +409,18 @@ sysctlImage:
       sysctl -w net.core.somaxconn=10000
       echo never > /host-sys/kernel/mm/transparent_hugepage/enabled
 ```
+
+Alternatively, for Kubernetes 1.12+ you can set `securityContext.sysctls` which will configure sysctls for master and slave pods. Example:
+
+```yaml
+securityContext:
+  sysctls:
+  - name: net.core.somaxconn
+    value: "10000"
+```
+
+Note that this will not disable transparent huge tables.  
+
 ## Cluster topologies
 
 ### Default: Master-Slave
