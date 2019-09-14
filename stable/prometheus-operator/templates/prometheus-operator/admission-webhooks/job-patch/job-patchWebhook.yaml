@@ -5,7 +5,7 @@ metadata:
   name:  {{ template "prometheus-operator.fullname" . }}-admission-patch
   annotations:
     "helm.sh/hook": post-install,post-upgrade
-    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+    "helm.sh/hook-delete-policy": before-hook-creation
     "helm.sh/hook-delete-timeout": "600"
   labels:
     app: {{ template "prometheus-operator.name" $ }}-admission-patch
