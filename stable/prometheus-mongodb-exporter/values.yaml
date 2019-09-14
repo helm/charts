@@ -80,3 +80,5 @@ serviceMonitor:
   additionalLabels: {}
 
 tolerations: []
+
+serviceAccountName: "default"

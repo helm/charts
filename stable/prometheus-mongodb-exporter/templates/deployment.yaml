@@ -26,6 +26,9 @@ spec:
         app.kubernetes.io/name: {{ include "prometheus-mongodb-exporter.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
+    {{- if .Values.serviceAccountName }}
+      serviceAccountName: {{ .Values.serviceAccountName }}
+    {{- end }}
       containers:
       - name: mongodb-exporter
         env:

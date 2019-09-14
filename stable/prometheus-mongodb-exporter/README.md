@@ -51,6 +51,7 @@ podAnnotations:
 | `resources` | Pod resource requests and limits | `{}` |
 | `env` | Extra environment variables passed to pod | `{}` |
 | `securityContext` | Security context for the pod | See values.yaml |
+| `serviceAccountName` | Service account name for the pod | `default` |
 | `service.annotations` | Annotations to be added to the service | `{}` |
 | `service.port` | The port to expose | `9216` |
 | `service.type` | The type of service to expose | `ClusterIP` |
