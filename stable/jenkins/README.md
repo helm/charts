@@ -131,7 +131,8 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.route.path`               | Route path                           | Not set                                   |
 | `master.jenkinsUrlProtocol`       | Set protocol for JenkinsLocationConfiguration.xml | Set to `https` if `Master.ingress.tls`, `http` otherwise |
 | `master.JCasC.enabled`            | Wheter Jenkins Configuration as Code is enabled or not | `false`                 |
-| `master.JCasC.configScripts`      | List of Jenkins Config as Code scripts | False                                   |
+| `master.JCasC.defaultConfig`      | Enables default Jenkins configuration via configuration as code plugin | `false` |
+| `master.JCasC.configScripts`      | List of Jenkins Config as Code scripts |                                         |
 | `master.enableXmlConfig`          | enables configuration done via XML files | `false`                               |
 | `master.sidecars.configAutoReload` | Jenkins Config as Code auto-reload settings |                                   |
 | `master.sidecars.configAutoReload.enabled` | Jenkins Config as Code auto-reload settings (Attention: rbac needs to be enabled otherwise the sidecar can't read the config map) | `false`                                                      |
