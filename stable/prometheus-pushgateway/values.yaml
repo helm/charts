@@ -95,14 +95,16 @@ affinity: {}
 # Enable this if you're using https://github.com/coreos/prometheus-operator
 serviceMonitor:
   enabled: false
-  namespace: monitoring
-  # fallback to the prometheus default unless specified
-  # interval: 10s
-  ## Defaults to what's used if you follow CoreOS [Prometheus Install Instructions](https://github.com/helm/charts/tree/master/stable/prometheus-operator#tldr)
-  ## [Prometheus Selector Label](https://github.com/helm/charts/tree/master/stable/prometheus-operator#prometheus-operator-1)
-  ## [Kube Prometheus Selector Label](https://github.com/helm/charts/tree/master/stable/prometheus-operator#exporters)
-  selector:
-    prometheus: kube-prometheus
+  # Optional serviceMonitor labels
+  labels: {}
+  # Prometheus scrape_interval matching the regex [0-9]+(ms|[smhdwy])
+  # Uses the Prometheus server's default scrape_interval if not specified
+  interval: ''
+  # Label selector used by the serviceMonitor to match against the Pushgateway
+  # service. Defaults to this chart's release and app (fullname) if not specified.
+  # see [metav1.LabelSelector documentation](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#labelselector-v1-meta)
+  # for details
+  selector: {}
   # Retain the job and instance labels of the metrics pushed to the Pushgateway
   # [Scraping Pushgateway](https://github.com/prometheus/pushgateway#configure-the-pushgateway-as-a-target-to-scrape)
   honorLabels: true

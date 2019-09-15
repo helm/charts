@@ -3,13 +3,9 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: {{ template "prometheus-pushgateway.name" .  }}
-  {{- if .Values.serviceMonitor.namespace }}
-  namespace: {{ .Values.serviceMonitor.namespace }}
-  {{- end }}
+  namespace: {{ .Release.Namespace }}
   labels:
-    {{- range $key, $value := .Values.serviceMonitor.selector }}
-    {{ $key }}: {{ $value | quote }}
-    {{- end }}
+{{ template "prometheus-pushgateway.defaultLabels" merge (dict "extraLabels" .Values.serviceMonitor.labels) . }}
 spec:
   endpoints:
   - port: http
@@ -18,6 +14,11 @@ spec:
     {{- end }}
     honorLabels: {{ .Values.serviceMonitor.honorLabels }}
   selector:
+    {{- if .Values.serviceMonitor.selector }}
+    {{ toYaml .Values.serviceMonitor.selector }}
+    {{- else }}
     matchLabels:
       app: {{ template "prometheus-pushgateway.name" . }}
+      release: {{ .Release.Name }}
+    {{- end -}}
 {{- end -}}
