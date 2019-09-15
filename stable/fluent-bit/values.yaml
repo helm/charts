@@ -5,7 +5,7 @@ on_minikube: false
 image:
   fluent_bit:
     repository: fluent/fluent-bit
-    tag: 1.2.1
+    tag: 1.2.2
   pullPolicy: Always
 
 testFramework:
@@ -59,6 +59,7 @@ backend:
     type: flb_type
     logstash_prefix: kubernetes_cluster
     replace_dots: "On"
+    logstash_format: "On"
     time_key: "@timestamp"
     # Optional username credential for Elastic X-Pack access
     http_user:
@@ -96,6 +97,7 @@ backend:
     ## Specify the data format to be used in the HTTP request body
     ## Can be either 'msgpack' or 'json'
     format: msgpack
+    headers: []
 
 parsers:
   enabled: false

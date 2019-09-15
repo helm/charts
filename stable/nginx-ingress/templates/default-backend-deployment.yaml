@@ -53,6 +53,10 @@ spec:
           {{- end }}
           securityContext:
             runAsUser: {{ .Values.defaultBackend.image.runAsUser }}
+          {{- if .Values.defaultBackend.extraEnvs }}
+          env:
+{{ toYaml .Values.defaultBackend.extraEnvs | indent 12 }}
+          {{- end }}
           livenessProbe:
             httpGet:
               path: /healthz
@@ -83,6 +87,7 @@ spec:
       nodeSelector:
 {{ toYaml .Values.defaultBackend.nodeSelector | indent 8 }}
     {{- end }}
+      serviceAccountName: {{ template "nginx-ingress.defaultBackend.serviceAccountName" . }}
     {{- if .Values.defaultBackend.tolerations }}
       tolerations:
 {{ toYaml .Values.defaultBackend.tolerations | indent 8 }}

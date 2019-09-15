@@ -28,6 +28,7 @@ extraEnvVars:
 #        key: secret_key
 
 service:
+  annotations: {}
   type: ClusterIP
   # type: NodePort
   # nodePort:
@@ -146,6 +147,17 @@ resources: {}
   #  cpu: 500m
   #  memory: 200Mi
 
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
 ## Persist data to a persistent volume
 persistence:
   enabled: false
@@ -166,3 +178,26 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+# Enable autoscaling using HorizontalPodAutoscaler
+autoscaling:
+  enabled: false
+  minReplicas: 2
+  maxReplicas: 5
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 60
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 60
+
+# Consider to set higher value when using in conjuction with autoscaling
+# Full description about this field: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.15/#pod-v1-core
+terminationGracePeriodSeconds: 30

@@ -5,19 +5,25 @@ controller:
   name: controller
   image:
     repository: quay.io/kubernetes-ingress-controller/nginx-ingress-controller
-    tag: "0.25.0"
+    tag: "0.25.1"
     pullPolicy: IfNotPresent
     # www-data -> uid 33
     runAsUser: 33
+    allowPrivilegeEscalation: true
 
   # Configures the ports the nginx-controller listens on
   containerPort:
     http: 80
     https: 443
+
   # Will add custom configuration options to Nginx https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/
   config: {}
-  # Will add custom header to Nginx https://github.com/kubernetes/ingress-nginx/tree/master/docs/examples/customization/custom-headers
-  headers: {}
+
+  # Will add custom headers before sending traffic to backends according to https://github.com/kubernetes/ingress-nginx/tree/master/docs/examples/customization/custom-headers
+  proxySetHeaders: {}
+
+  # Will add custom headers before sending response traffic to the client according to: https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/#add-headers
+  addHeaders: {}
 
   # Required for use with CNI based kubernetes installations (such as ones set up by kubeadm),
   # since CNI and hostport don't mix yet. Can be deprecated once https://github.com/kubernetes/kubernetes/issues/23920
@@ -40,8 +46,6 @@ controller:
     hostPorts:
       http: 80
       https: 443
-      ## healthz endpoint
-      stats: 18080
 
   ## Required only if defaultBackend.enabled = false
   ## Must be <namespace>/<service_name>
@@ -80,6 +84,20 @@ controller:
   scope:
     enabled: false
     namespace: ""   # defaults to .Release.Namespace
+
+  ## Allows customization of the configmap / nginx-configmap namespace
+  ##
+  configMapNamespace: ""   # defaults to .Release.Namespace
+
+  ## Allows customization of the tcp-services-configmap namespace
+  ##
+  tcp:
+    configMapNamespace: ""   # defaults to .Release.Namespace
+
+  ## Allows customization of the udp-services-configmap namespace
+  ##
+  udp:
+    configMapNamespace: ""   # defaults to .Release.Namespace
 
   ## Additional command line arguments to pass to nginx-ingress-controller
   ## E.g. to specify the default SSL certificate you can use
@@ -121,7 +139,37 @@ controller:
   #    value: "value"
   #    effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
 
+  ## Affinity and anti-affinity
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  ##
   affinity: {}
+    # # An example of preferred pod anti-affinity, weight is in the range 1-100
+    # podAntiAffinity:
+    #   preferredDuringSchedulingIgnoredDuringExecution:
+    #   - weight: 100
+    #     podAffinityTerm:
+    #       labelSelector:
+    #         matchExpressions:
+    #         - key: app
+    #           operator: In
+    #           values:
+    #           - nginx-ingress
+    #       topologyKey: kubernetes.io/hostname
+
+    # # An example of required pod anti-affinity
+    # podAntiAffinity:
+    #   requiredDuringSchedulingIgnoredDuringExecution:
+    #   - labelSelector:
+    #       matchExpressions:
+    #       - key: app
+    #         operator: In
+    #         values:
+    #         - nginx-ingress
+    #     topologyKey: "kubernetes.io/hostname"
+
+  ## terminationGracePeriodSeconds
+  ##
+  terminationGracePeriodSeconds: 60
 
   ## Node labels for controller pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
@@ -175,6 +223,8 @@ controller:
     configMapKey: ""
 
   service:
+    enabled: true
+
     annotations: {}
     labels: {}
     omitClusterIP: false
@@ -260,26 +310,6 @@ controller:
   #   image: busybox
   #   command: ['sh', '-c', 'until nslookup myservice; do echo waiting for myservice; sleep 2; done;']
 
-
-  stats:
-    enabled: false
-
-    service:
-      annotations: {}
-      omitClusterIP: false
-      clusterIP: ""
-
-      ## List of IP addresses at which the stats service is available
-      ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
-      ##
-      externalIPs: []
-
-      loadBalancerIP: ""
-      loadBalancerSourceRanges: []
-      servicePort: 18080
-      type: ClusterIP
-
-
   metrics:
     enabled: false
 
@@ -307,6 +337,30 @@ controller:
       namespace: ""
       # honorLabels: true
 
+    prometheusRule:
+      enabled: false
+      additionalLabels: {}
+      namespace: ""
+      rules: []
+        # # These are just examples rules, please adapt them to your needs
+        # - alert: TooMany500s
+        #   expr: 100 * ( sum( nginx_ingress_controller_requests{status=~"5.+"} ) / sum(nginx_ingress_controller_requests) ) > 5
+        #   for: 1m
+        #   labels:
+        #     severity: critical
+        #   annotations:
+        #     description: Too many 5XXs
+        #     summary: More than 5% of the all requests did return 5XX, this require your attention
+        # - alert: TooMany400s
+        #   expr: 100 * ( sum( nginx_ingress_controller_requests{status=~"4.+"} ) / sum(nginx_ingress_controller_requests) ) > 5
+        #   for: 1m
+        #   labels:
+        #     severity: critical
+        #   annotations:
+        #     description: Too many 4XXs
+        #     summary: More than 5% of the all requests did return 4XX, this require your attention
+
+
   lifecycle: {}
 
   priorityClassName: ""
@@ -332,6 +386,12 @@ defaultBackend:
     runAsUser: 65534
 
   extraArgs: {}
+
+  serviceAccount:
+    create: true
+    name:
+  ## Additional environment variables to set for defaultBackend pods
+  extraEnvs: []
 
   port: 8080
 

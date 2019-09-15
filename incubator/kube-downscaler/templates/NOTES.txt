@@ -1,0 +1,3 @@
+To verify that kube-downscaler has started, run:
+
+  kubectl --namespace={{ .Release.Namespace }} get pods -l "app.kubernetes.io/name={{ include "kube-downscaler.name" . }},app.kubernetes.io/instance={{ .Release.Name }}"

@@ -1,6 +1,6 @@
 ## Default values for Traefik
 image: traefik
-imageTag: 1.7.12
+imageTag: 1.7.14
 
 ## Optionally specify an array of imagePullSecrets.
 ## Secrets must be manually created in the namespace.
@@ -38,6 +38,8 @@ debug:
   enabled: false
 
 # logLevel: error
+
+# maxIdleConnsPerHost: 200
 
 deploymentStrategy: {}
   # rollingUpdate:
@@ -141,6 +143,14 @@ ssl:
     # basic:
     #   testuser: $apr1$JXRA7j2s$LpVns9vsme8FHN0r.aSt11
 
+  # mtls:
+  #   enabled: true
+  #   optional: false
+  #   clientCaCerts: []
+  #   # When mTLS is enabled, the set of CA certificates used to validate client TLS certificates.
+  #   # https://docs.traefik.io/configuration/entrypoints/#tls-mutual-authentication
+  #   # CA certificates should be in PEM format.
+
 kvprovider:
   ## If you want to run Traefik in HA mode, you will need to setup a KV Provider. Therefore you can choose one of
   ## * etcd
@@ -152,6 +162,7 @@ kvprovider:
 
   ## storeAcme has to be enabled to support HA Support using acme, but at least one kvprovider is needed
   storeAcme: false
+  acmeStorageLocation: traefik/acme/account
   importAcme: false
 
   # etcd:
@@ -400,6 +411,15 @@ metrics:
     ## it to the dashboard service only
     restrictAccess: false
     # buckets: [0.1,0.3,1.2,5]
+  # serviceMonitor:
+    # When set true and if Prometheus Operator is installed then use a ServiceMonitor to configure scraping
+    # enabled: false
+    # Set the namespace the ServiceMonitor should be deployed
+    # namespace: monitoring
+    # Set how frequently Prometheus should scrape
+    # interval: 30s
+    # Set labels for the ServiceMonitor, use this to define your scrape label for Prometheus Operator
+    # labels:
   datadog:
     enabled: false
     # address: localhost:8125

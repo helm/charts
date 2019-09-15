@@ -7,10 +7,16 @@ metadata:
     helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     app.kubernetes.io/instance: "{{ .Release.Name }}"
     app.kubernetes.io/managed-by: "{{ .Release.Service }}"
-  {{- if .Values.prometheusScrape }}
+{{- if .Values.customLabels }}
+{{ toYaml .Values.customLabels | indent 4 }}
+{{- end }}
   annotations:
+    {{- if .Values.prometheusScrape }}
     prometheus.io/scrape: '{{ .Values.prometheusScrape }}'
-  {{- end }}
+    {{- end }}
+    {{- if .Values.service.annotations }}
+    {{- toYaml .Values.service.annotations | nindent 4 }}
+    {{- end }}
 spec:
   type: "{{ .Values.service.type }}"
   ports:

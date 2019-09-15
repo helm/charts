@@ -25,13 +25,16 @@ spec:
           command:
             - controller
           args:
-            - "--key-name"
+            - "--key-prefix"
             - "{{ .Values.secretName }}"
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: 8080
               name: http
+          volumeMounts:
+          - mountPath: /tmp
+            name: tmp
           livenessProbe:
             httpGet:
               path: /healthz
@@ -43,9 +46,12 @@ spec:
           securityContext:
             readOnlyRootFilesystem: true
             runAsNonRoot: true
-            runAsUser: 1001
+            runAsUser: {{ .Values.securityContext.runAsUser }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
+      volumes:
+      - name: tmp
+        emptyDir: {}
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

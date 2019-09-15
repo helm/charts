@@ -78,6 +78,10 @@ spec:
               mountPath: /usr/share/graylog/data/journal
             - mountPath: /k8s
               name: kubectl
+{{- if .Values.graylog.init.resources }}
+          resources:
+{{ toYaml .Values.graylog.init.resources | indent 12 }}
+{{- end }}
       containers:
         - name: graylog-server
           image: "{{ .Values.graylog.image.repository }}"

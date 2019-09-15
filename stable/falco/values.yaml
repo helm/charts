@@ -3,7 +3,7 @@
 image:
   registry: docker.io
   repository: falcosecurity/falco
-  tag: 0.15.3
+  tag: 0.17.0
   pullPolicy: IfNotPresent
 
 docker:
@@ -53,6 +53,9 @@ daemonset:
     # need it
     type: RollingUpdate
 
+  ## Extra environment variables that will be pass onto deployment pods
+  env: {}
+
 # If is behind a proxy you can set the proxy server
 proxy:
   httpProxy:
@@ -61,6 +64,9 @@ proxy:
 
 # Set daemonset timezone
 timezone:
+
+# Set daemonset priorityClassName
+priorityClassName:
 
 ebpf:
   # Enable eBPF support for Falco

@@ -53,6 +53,14 @@ else use user-provided URL
 {{- end -}}
 
 {{/*
+Derive offsets.topic.replication.factor in following priority order: configurationOverrides, replicas
+*/}}
+{{- define "kafka.replication.factor" }}
+{{- $replicationFactorOverride := index .Values "configurationOverrides" "offsets.topic.replication.factor" }}
+{{- default .Values.replicas $replicationFactorOverride }}
+{{- end -}}
+
+{{/*
 Create chart name and version as used by the chart label.
 */}}
 {{- define "kafka.chart" -}}

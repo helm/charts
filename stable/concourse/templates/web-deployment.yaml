@@ -59,6 +59,10 @@ spec:
             - name: CONCOURSE_CLUSTER_NAME
               value: {{ .Values.concourse.web.clusterName | quote }}
             {{- end }}
+            {{- if .Values.concourse.web.maxConns }}
+            - name: CONCOURSE_MAX_CONNS
+              value: {{ .Values.concourse.web.maxConns | quote }}
+            {{- end }}
             {{- if .Values.concourse.web.enableGlobalResources }}
             - name: CONCOURSE_ENABLE_GLOBAL_RESOURCES
               value: {{ .Values.concourse.web.enableGlobalResources | quote }}
@@ -126,6 +130,10 @@ spec:
             {{- if .Values.concourse.web.awsSsm.region }}
             - name: CONCOURSE_AWS_SSM_REGION
               value: {{ .Values.concourse.web.awsSsm.region | quote }}
+            {{- end }}
+            {{- if .Values.concourse.web.metrics.bufferSize }}
+            - name: CONCOURSE_METRICS_BUFFER_SIZE
+              value: {{ .Values.concourse.web.metrics.bufferSize | quote }}
             {{- end }}
             {{- if .Values.concourse.web.metrics.captureErrorMetrics }}
             - name: CONCOURSE_CAPTURE_ERROR_METRICS
@@ -231,6 +239,10 @@ spec:
             - name: CONCOURSE_CONTAINER_PLACEMENT_STRATEGY
               value: {{ .Values.concourse.web.containerPlacementStrategy | quote }}
             {{- end }}
+            {{- if .Values.concourse.web.limitActiveTasks }}
+            - name: CONCOURSE_MAX_ACTIVE_TASKS_PER_WORKER
+              value: {{ .Values.concourse.web.limitActiveTasks | quote }}
+            {{- end}}
             {{- if .Values.concourse.web.baggageclaimResponseHeaderTimeout }}
             - name: CONCOURSE_BAGGAGECLAIM_RESPONSE_HEADER_TIMEOUT
               value: {{ .Values.concourse.web.baggageclaimResponseHeaderTimeout | quote }}
@@ -479,6 +491,7 @@ spec:
             - name: CONCOURSE_CREDHUB_INSECURE_SKIP_VERIFY
               value: {{ .Values.concourse.web.credhub.insecureSkipVerify | quote }}
             {{- end }}
+            {{- if (eq .Values.concourse.web.credhub.authenticationMode "secrets") }}
             - name: CONCOURSE_CREDHUB_CLIENT_ID
               valueFrom:
                 secretKeyRef:
@@ -489,6 +502,18 @@ spec:
                 secretKeyRef:
                   name: {{ template "concourse.web.fullname" . }}
                   key: credhub-client-secret
+            {{- else if (eq .Values.concourse.web.credhub.authenticationMode "mtls") }}
+            - name: CONCOURSE_CREDHUB_CLIENT_CERT
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.web.fullname" . }}
+                  key: credhub-client-cert
+            - name: CONCOURSE_CREDHUB_CLIENT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.web.fullname" . }}
+                  key: credhub-client-key
+            {{- end }}
             {{- end }}
             {{- if .Values.concourse.web.noop }}
             - name: CONCOURSE_NOOP
@@ -535,6 +560,14 @@ spec:
             {{- if .Values.concourse.web.influxdb.enabled }}
             - name: CONCOURSE_INFLUXDB_URL
               value: {{ .Values.concourse.web.influxdb.url | quote }}
+            {{- if .Values.concourse.web.influxdb.batchSize }}
+            - name: CONCOURSE_INFLUXDB_BATCH_SIZE
+              value: {{.Values.concourse.web.influxdb.batchSize | quote }}
+            {{- end }}
+            {{- if .Values.concourse.web.influxdb.batchDuration }}
+            - name: CONCOURSE_INFLUXDB_BATCH_DURATION
+              value: {{.Values.concourse.web.influxdb.batchDuration | quote }}
+            {{- end }}
             - name: CONCOURSE_INFLUXDB_DATABASE
               value: {{ .Values.concourse.web.influxdb.database | quote }}
             - name: CONCOURSE_INFLUXDB_USERNAME

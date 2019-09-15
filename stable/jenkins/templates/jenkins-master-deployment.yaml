@@ -126,19 +126,23 @@ spec:
               {{- end }}
             - mountPath: /var/jenkins_config
               name: jenkins-config
+            {{- if .Values.master.enableXmlConfig }}
             {{- if .Values.master.credentialsXmlSecret }}
             - mountPath: /var/jenkins_credentials
               name: jenkins-credentials
               readOnly: true
             {{- end }}
-            {{- if .Values.master.secretsFilesSecret }}
-            - mountPath: /var/jenkins_secrets
-              name: jenkins-secrets
-              readOnly: true
-            {{- end }}
             {{- if .Values.master.jobs }}
             - mountPath: /var/jenkins_jobs
               name: jenkins-jobs
+              readOnly: true
+            {{- end }}
+            - mountPath: /usr/share/jenkins/ref/secrets/
+              name: secrets-dir
+            {{- end }}
+            {{- if .Values.master.secretsFilesSecret }}
+            - mountPath: /var/jenkins_secrets
+              name: jenkins-secrets
               readOnly: true
             {{- end }}
             {{- if .Values.master.installPlugins }}
@@ -147,10 +151,8 @@ spec:
             - mountPath: /var/jenkins_plugins
               name: plugin-dir
             {{- end }}
-            - mountPath: /usr/share/jenkins/ref/secrets/
-              name: secrets-dir
       containers:
-        - name: {{ template "jenkins.fullname" . }}
+        - name: jenkins
 {{- if .Values.master.imageTag }}
           image: "{{ .Values.master.image }}:{{ .Values.master.imageTag }}"
 {{- else }}
@@ -251,14 +253,10 @@ spec:
             - mountPath: /var/jenkins_config
               name: jenkins-config
               readOnly: true
+            {{- if .Values.master.enableXmlConfig }}
             {{- if .Values.master.credentialsXmlSecret }}
             - mountPath: /var/jenkins_credentials
               name: jenkins-credentials
-              readOnly: true
-            {{- end }}
-            {{- if .Values.master.secretsFilesSecret }}
-            - mountPath: /var/jenkins_secrets
-              name: jenkins-secrets
               readOnly: true
             {{- end }}
             {{- if .Values.master.jobs }}
@@ -266,14 +264,20 @@ spec:
               name: jenkins-jobs
               readOnly: true
             {{- end }}
+            - mountPath: /usr/share/jenkins/ref/secrets/
+              name: secrets-dir
+              readOnly: false
+            {{- end }}
+            {{- if or .Values.master.secretsFilesSecret }}
+            - mountPath: /var/jenkins_secrets
+              name: jenkins-secrets
+              readOnly: true
+            {{- end }}
             {{- if .Values.master.installPlugins }}
             - mountPath: /usr/share/jenkins/ref/plugins/
               name: plugin-dir
               readOnly: false
             {{- end }}
-            - mountPath: /usr/share/jenkins/ref/secrets/
-              name: secrets-dir
-              readOnly: false
             {{- if and (.Values.master.JCasC.enabled) (.Values.master.sidecars.configAutoReload.enabled) }}
             - name: sc-config-volume
               mountPath: {{ .Values.master.sidecars.configAutoReload.folder | default "/var/jenkins_home/casc_configs" | quote }}
@@ -340,27 +344,29 @@ spec:
       - name: jenkins-config
         configMap:
           name: {{ template "jenkins.fullname" . }}
+      {{- if .Values.master.enableXmlConfig }}
       {{- if .Values.master.credentialsXmlSecret }}
       - name: jenkins-credentials
         secret:
           secretName: {{ .Values.master.credentialsXmlSecret }}
-      {{- end }}
-      {{- if .Values.master.secretsFilesSecret }}
-      - name: jenkins-secrets
-        secret:
-          secretName: {{ .Values.master.secretsFilesSecret }}
       {{- end }}
       {{- if .Values.master.jobs }}
       - name: jenkins-jobs
         configMap:
           name: {{ template "jenkins.fullname" . }}-jobs
       {{- end }}
+      - name: secrets-dir
+        emptyDir: {}
+      {{- end }}
+      {{- if .Values.master.secretsFilesSecret }}
+      - name: jenkins-secrets
+        secret:
+          secretName: {{ .Values.master.secretsFilesSecret }}
+      {{- end }}
       {{- if .Values.master.installPlugins }}
       - name: plugin-dir
         emptyDir: {}
       {{- end }}
-      - name: secrets-dir
-        emptyDir: {}
       - name: jenkins-home
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:

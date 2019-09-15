@@ -33,8 +33,8 @@ The default configuration values for this chart are listed in `values.yaml`.
 
 | Parameter                             | Description                                                  | Default                                           |
 |---------------------------------------|-------------------------------------                         |---------------------------------------------------|
-| `image.repository`                    | Repository for container image                               | k8s.gcr.io/heapster                               |
-| `image.tag`                           | Container image tag                                          | v1.5.2                                            |
+| `image.repository`                    | Repository for container image                               | k8s.gcr.io/heapster-amd64                               |
+| `image.tag`                           | Container image tag                                          | v1.5.4                                            |
 | `image.pullPolicy`                    | Image pull policy                                            | IfNotPresent                                      |
 | `service.name`                        | Service port name                                            | api                                               |
 | `service.type`                        | Type for the service                                         | ClusterIP                                         |

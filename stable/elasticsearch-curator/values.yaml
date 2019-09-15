@@ -30,8 +30,8 @@ psp:
   create: false
 
 image:
-  repository: quay.io/pires/docker-elasticsearch-curator
-  tag: 5.5.4
+  repository: untergeek/curator
+  tag: 5.7.6
   pullPolicy: IfNotPresent
 
 hooks:
@@ -41,7 +41,7 @@ hooks:
 # run curator in dry-run mode
 dryrun: false
 
-command: ["curator"]
+command: ["/curator/curator"]
 env: {}
 
 configMaps:

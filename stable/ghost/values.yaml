@@ -6,6 +6,7 @@
 #   imageRegistry: myRegistryName
 #   imagePullSecrets:
 #     - myRegistryKeySecretName
+#   storageClass: myStorageClass
 
 ## Bitnami Ghost image version
 ## ref: https://hub.docker.com/r/bitnami/ghost/tags/
@@ -13,7 +14,7 @@
 image:
   registry: docker.io
   repository: bitnami/ghost
-  tag: 2.25.7-debian-9-r0
+  tag: 2.31.0-debian-9-r0
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -41,7 +42,7 @@ volumePermissions:
   image:
     registry: docker.io
     repository: bitnami/minideb
-    tag: latest
+    tag: stretch
     pullPolicy: Always
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
@@ -57,7 +58,6 @@ ghostProtocol: http
 # ghostHost:
 # ghostPort:
 ghostPath: /
-
 
 ## User of the application
 ## ref: https://github.com/bitnami/bitnami-docker-ghost#configuration
@@ -263,3 +263,8 @@ ingress:
   # - name: ghost.local-tls
   #   key:
   #   certificate:
+
+## Affinity for pod assignment
+## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+##
+affinity: {}
