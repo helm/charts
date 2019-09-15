@@ -8,6 +8,9 @@ metadata:
     helm.sh/chart: {{ include "honeydipper.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
+  {{- with .Values.drivers.webhook.service.annotations }}
+  annotations: {{ . | toJson }}
+  {{- end }}
 spec:
   type: {{ .Values.drivers.webhook.service.type }}
   ports:
