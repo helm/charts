@@ -137,6 +137,14 @@ data:
         TLS.Verify   {{ .Values.backend.splunk.tls_verify }}
         tls.debug {{ .Values.backend.splunk.tls_debug }}
         Message_Key   {{ .Values.backend.splunk.message_key }}
+{{ else if eq .Values.backend.type "gelf" }}
+    [OUTPUT]
+        Name gelf
+        Match {{ .Values.backend.gelf.match }}
+        Host {{ .Values.backend.gelf.host }}
+        Port {{ .Values.backend.gelf.port }}
+        Mode {{ .Values.backend.gelf.mode }}
+        Gelf_Short_Message_Key  {{ .Values.backend.gelf.gelf_short_message_key }}
 {{ else if eq .Values.backend.type "http" }}
     [OUTPUT]
         Name  http
