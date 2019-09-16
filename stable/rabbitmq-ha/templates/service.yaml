@@ -40,17 +40,23 @@ spec:
     - name: http
       protocol: TCP
       port: {{ .Values.rabbitmqManagerPort }}
+      {{- if eq .Values.service.type "NodePort" }}
       nodePort: {{ .Values.service.managerNodePort }}
+      {{- end }}
       targetPort: http
     - name: amqp
       protocol: TCP
       port: {{ .Values.rabbitmqNodePort }}
+      {{- if eq .Values.service.type "NodePort" }}
       nodePort: {{ .Values.service.amqpNodePort }}
+      {{- end }}
       targetPort: amqp
     - name: epmd
       protocol: TCP
       port: {{ .Values.rabbitmqEpmdPort }}
+      {{- if eq .Values.service.type "NodePort" }}
       nodePort: {{ .Values.service.epmdNodePort }}
+      {{- end }}
       targetPort: epmd
     {{- if .Values.rabbitmqSTOMPPlugin.enabled }}
     - name: stomp-tcp
