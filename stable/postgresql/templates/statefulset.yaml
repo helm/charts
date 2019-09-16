@@ -65,6 +65,18 @@ spec:
       {{- end }}
       {{- if and .Values.volumePermissions.enabled .Values.persistence.enabled }}
       initContainers:
+      - name: volume-permissions
+        image: {{ template "postgresql.volumePermissions.image" . }}
+        imagePullPolicy: "{{ .Values.volumePermissions.image.pullPolicy }}"
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        command: ["chown", "-R", "{{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }}", "{{ .Values.persistence.mountPath }}"]
+        securityContext:
+          runAsUser: {{ .Values.volumePermissions.securityContext.runAsUser }}
+        volumeMounts:
+          - name: data
+            mountPath: {{ .Values.persistence.mountPath }}
+            subPath: {{ .Values.persistence.subPath }}
       - name: init-chmod-data
         image: {{ template "postgresql.volumePermissions.image" . }}
         imagePullPolicy: "{{ .Values.volumePermissions.image.pullPolicy }}"
