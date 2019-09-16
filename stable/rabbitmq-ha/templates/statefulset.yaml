@@ -53,10 +53,7 @@ spec:
           - |
             set -ex
             cp /configmap/* /etc/rabbitmq
-            rm -f /var/lib/rabbitmq/.erlang.cookie
-            {{- if .Values.forceCookie }}
             echo "${RABBITMQ_ERLANG_COOKIE}" > /var/lib/rabbitmq/.erlang.cookie
-            {{- end }}
             {{- if .Values.forceBoot }}
             if [ -d "${RABBITMQ_MNESIA_DIR}" ]; then
               touch "${RABBITMQ_MNESIA_DIR}/force_load"

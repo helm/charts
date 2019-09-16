@@ -123,11 +123,6 @@ rabbitmqVhost: "/"
 ##
 # rabbitmqErlangCookie:
 
-## if forceCookie is true, then always write the erlang cookie
-## to the cookie file location (/var/lib/rabbitmq/.erlang.cookie)
-##
-forceCookie: false
-
 ## RabbitMQ Memory high watermark
 ## Ref: http://www.rabbitmq.com/memory.html
 ##
