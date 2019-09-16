@@ -152,7 +152,7 @@ spec:
           containerPort: {{ .Values.service.port }}
         {{- if .Values.rabbitmq.tls.enabled }}
         - name: amqp-ssl
-          containerPort: {{ .Values.service.SSLPort }}
+          containerPort: {{ .Values.service.tlsPort }}
         {{- end }}
         - name: dist
           containerPort: {{ .Values.service.distPort }}

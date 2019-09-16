@@ -18,7 +18,7 @@ spec:
     targetPort: amqp
 {{- if .Values.rabbitmq.tls.enabled }}
   - name: amqp-tls
-    port: {{ .Values.service.SSLPort }}
+    port: {{ .Values.service.tlsPort }}
     targetPort: amqp-tls
 {{- end }}
   - name: dist

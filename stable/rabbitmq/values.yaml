@@ -167,18 +167,18 @@ service:
   ##
   # nodePort: 30672
 
-  ## Node port ssl
+  ## Node port Tls
   ##
-  # nodeSSLPort: 30671
+  # nodeTlsPort: 30671
 
   ## Amqp port
   ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
   ##
   port: 5672
 
-  ## Amqp ssl port
+  ## Amqp Tls port
   ##
-  SSLPort: 5671
+  tlsPort: 5671
 
   ## Dist port
   ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables

@@ -18,7 +18,7 @@ data:
 {{ .Values.rabbitmq.extraConfiguration | indent 4 }}
 {{- if .Values.rabbitmq.tls.enabled }}
     ssl_options.verify={{ .Values.rabbitmq.tls.sslOptionsVerify }}
-    listeners.ssl.default={{ .Values.service.SSLPort }}
+    listeners.ssl.default={{ .Values.service.tlsPort }}
     ssl_options.fail_if_no_peer_cert={{ .Values.rabbitmq.tls.failIfNoPeerCert }}
     ssl_options.cacertfile = /opt/bitnami/rabbitmq/certs/ca_certificate.pem
     ssl_options.certfile = /opt/bitnami/rabbitmq/certs/server_certificate.pem

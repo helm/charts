@@ -78,7 +78,7 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `rabbitmq.configuration`             | Required cluster configuration                   | See values.yaml                                         |
 | `rabbitmq.extraConfiguration`        | Extra configuration to add to rabbitmq.conf      | See values.yaml                                         |
 | `rabbitmq.advancedConfiguration`     | Extra configuration (in classic format) to add to advanced.config    | See values.yaml                                         |
-| `rabbitmq.tls.enabled`                  | Enable ssl support to rabbitmq |   | `false`                     |
+| `rabbitmq.tls.enabled`                  | Enable TLS support to rabbitmq |   | `false`                     |
 | `rabbitmq.tls.failIfNoPeerCert`     | When set to true, TLS connection will be rejected if client fails to provide a certificate  | `true` |
 | `rabbitmq.tls.sslOptionsVerify`     | `verify_peer`  | Should [peer verification](https://www.rabbitmq.com/ssl.html#peer-verification) be enabled? |
 | `rabbitmq.tls.caCertificate`     | Ca certificate  | Certificate Authority (CA) bundle content |
@@ -87,10 +87,10 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `rabbitmq.tls.existingSecret`                                   | Existing secret with certificate content to rabbitmq credentials                                                                                                                  | `nil`                                                    |
 | `service.type`                       | Kubernetes Service type                          | `ClusterIP`                                             |
 | `service.port`                       | Amqp port                                        | `5672`                                                  |
-| `service.SSLPort`                   | Amqp ssl port                                    | `5671`                                                  |
+| `service.tlsPort`                   | Amqp TLS port                                    | `5671`                                                  |
 | `service.distPort`                   | Erlang distribution server port                  | `25672`                                                 |
 | `service.nodePort`                   | Node port override, if serviceType NodePort      | _random available between 30000-32767_                  |
-| `service.nodePortSSL`               | Node port override, if serviceType NodePort      | _random available between 30000-32767_                  |
+| `service.nodeTlsPort`                | Node port override, if serviceType NodePort      | _random available between 30000-32767_                  |
 | `service.managerPort`                | RabbitMQ Manager port                            | `15672`                                                 |
 | `persistence.enabled`                | Use a PVC to persist data                        | `true`                                                  |
 | `service.annotations`                | service annotations as an array                  | []                                                      |
