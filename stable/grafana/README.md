@@ -43,6 +43,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `image.pullSecrets`                       | Image pull secrets                            | `{}`                                                    |
 | `service.type`                            | Kubernetes service type                       | `ClusterIP`                                             |
 | `service.port`                            | Kubernetes port where service is exposed      | `80`                                                    |
+| `service.portName`                        | Name of the port on the service               | `service`                                               |
 | `service.targetPort`                      | Internal service is port                      | `3000`                                                  |
 | `service.annotations`                     | Service annotations                           | `{}`                                                    |
 | `service.labels`                          | Custom labels                                 | `{}`                                                    |
@@ -93,6 +94,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `annotations`                             | Deployment annotations                        | `{}`                                                    |
 | `labels`                                  | Deployment labels                             | `{}`                                                    |
 | `podAnnotations`                          | Pod annotations                               | `{}`                                                    |
+| `podPortName`                             | Name of the grafana port on the pod           | `grafana`                                               |
 | `sidecar.image`                           | Sidecar image                                 | `kiwigrid/k8s-sidecar:0.1.20`                           |
 | `sidecar.imagePullPolicy`                 | Sidecar image pull policy                     | `IfNotPresent`                                          |
 | `sidecar.resources`                       | Sidecar resources                             | `{}`                                                    |
