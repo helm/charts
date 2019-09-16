@@ -29,7 +29,7 @@ spec:
         {{- end }}
         - name: dockersocket
           hostPath:
-            path: /var/run/docker.sock
+            path: {{ .Values.dockerSocketPath }}
         {{- if .Values.secrets.peer.cert }}
         - name: id-cert
           secret:

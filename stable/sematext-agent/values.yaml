@@ -13,7 +13,7 @@ agent:
     API_SERVER_HOST: 0.0.0.0
     LOGGING_WRITE_EVENTS: false
     LOGGING_REQUEST_TRACKING: false
-    AUTODISCO_TEMPLATES_PATH: /etc/agent/autodisco.yml
+    AUTODISCO_ALLOWED_NAMESPACES: "default"
     LOGGING_LEVEL: warn
   resources: {}
 
@@ -25,6 +25,7 @@ logagent:
   config:
     LOGSENE_BULK_SIZE: "1000"
     LOGSENE_LOG_INTERVAL: "10000"
+  # Refer to logagent docs for custom config at https://sematext.com/docs/logagent/config-file/
   customConfigs: []
     # logagent.conf: |-
     #     options:

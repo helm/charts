@@ -1,10 +1,10 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "influxdb.fullname" . }}
+  name: "{{ template "influxdb.fullname" . }}"
   labels:
-    app: {{ template "influxdb.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: "{{ template "influxdb.fullname" . }}"
+    chart: "{{ template "influxdb.chart" . }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
@@ -15,6 +15,12 @@ spec:
         app: {{ template "influxdb.fullname" . }}
         release: "{{ .Release.Name }}"
     spec:
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end}}
+      {{- end }}
       containers:
       - name: {{ template "influxdb.fullname" . }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -24,42 +30,42 @@ spec:
         ports:
         - name: api
           containerPort: {{ .Values.config.http.bind_address }}
-        {{ if .Values.config.admin.enabled -}}
+        {{- if .Values.config.admin.enabled }}
         - name: admin
           containerPort: {{ .Values.config.admin.bind_address }}
         {{- end }}
-        {{ if .Values.config.graphite.enabled -}}
+        {{- if .Values.config.graphite.enabled }}
         - name: graphite
           containerPort: {{ .Values.config.graphite.bind_address }}
         {{- end }}
-        {{ if .Values.config.collectd.enabled -}}
+        {{- if .Values.config.collectd.enabled }}
         - name: collectd
           containerPort: {{ .Values.config.collectd.bind_address }}
         {{- end }}
-        {{ if .Values.config.udp.enabled -}}
+        {{- if .Values.config.udp.enabled }}
         - name: udp
           containerPort: {{ .Values.config.udp.bind_address }}
         {{- end }}
-        {{ if .Values.config.opentsdb.enabled -}}
+        {{- if .Values.config.opentsdb.enabled }}
         - name: opentsdb
           containerPort: {{ .Values.config.opentsdb.bind_address }}
         {{- end }}
-        {{ if .Values.env }}
+        {{- if .Values.env }}
         env:
 {{ toYaml .Values.env | indent 10 }}
         {{- end }}
         livenessProbe:
           httpGet:
-            path: /ping
+            path: {{ .Values.livenessProbe.probePath }}
             port: api
-          initialDelaySeconds: 30
-          timeoutSeconds: 5
+          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds | default 30 }}
+          timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds | default 5 }}
         readinessProbe:
           httpGet:
-            path: /ping
+            path: {{ .Values.readinessProbe.probePath }}
             port: api
-          initialDelaySeconds: 5
-          timeoutSeconds: 1
+          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds | default 5 }}
+          timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds | default 1 }}
         volumeMounts:
         - name: data
           mountPath: {{ .Values.config.storage_directory }}

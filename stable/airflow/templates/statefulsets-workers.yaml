@@ -50,17 +50,17 @@ spec:
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
       serviceAccountName: {{ template "airflow.serviceAccountName" . }}
-      {{- if .Values.nodeSelector }}
+      {{- if .Values.workers.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.nodeSelector | indent 8 }}
+{{ toYaml .Values.workers.nodeSelector | indent 8 }}
       {{- end }}
-      {{- if .Values.affinity }}
+      {{- if .Values.workers.affinity }}
       affinity:
-{{ toYaml .Values.affinity | indent 8 }}
+{{ toYaml .Values.workers.affinity | indent 8 }}
       {{- end }}
-      {{- if .Values.tolerations }}
+      {{- if .Values.workers.tolerations }}
       tolerations:
-{{ toYaml .Values.tolerations | indent 8 }}
+{{ toYaml .Values.workers.tolerations | indent 8 }}
       {{- end }}
 
       {{- if .Values.dags.initContainer.enabled }}
@@ -101,7 +101,6 @@ spec:
             - name: {{ . }}-volume
               readOnly: true
               mountPath: {{ $secretsDir }}/{{ . }}
-              subPath: {{ . }}
           {{- end }}
           {{- if .Values.persistence.enabled }}
             - name: dags-data

@@ -6,6 +6,7 @@
 #   imageRegistry: myRegistryName
 #   imagePullSecrets:
 #     - myRegistryKeySecretName
+#   storageClass: myStorageClass
 
 image:
   ## Bitnami MongoDB registry
@@ -17,7 +18,7 @@ image:
   ## Bitnami MongoDB image tag
   ## ref: https://hub.docker.com/r/bitnami/mongodb/tags/
   ##
-  tag: 4.0.10-debian-9-r39
+  tag: 4.0.12-debian-9-r22
   ## Specify a imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   ##
@@ -30,9 +31,35 @@ image:
   #   - myRegistryKeySecretName
 
   ## Set to true if you would like to see extra information on logs
-  ## It turns NAMI debugging in minideb
-  ## ref:  https://github.com/bitnami/minideb-extras/#turn-on-nami-debugging
+  ## It turns on Bitnami debugging in minideb-extras-base
+  ## ref:  https://github.com/bitnami/minideb-extras-base
   debug: false
+
+## String to partially override mongodb.fullname template (will maintain the release name)
+##
+# nameOverride:
+
+## String to fully override mongodb.fullname template
+##
+# fullnameOverride:
+
+## Init containers parameters:
+## volumePermissions: Change the owner and group of the persistent volume mountpoint to runAsUser:fsGroup values from the securityContext section.
+##
+volumePermissions:
+  enabled: false
+  image:
+    registry: docker.io
+    repository: bitnami/minideb
+    tag: stretch
+    pullPolicy: Always
+    ## Optionally specify an array of imagePullSecrets.
+    ## Secrets must be manually created in the namespace.
+    ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+    ##
+    # pullSecrets:
+    #   - myRegistryKeySecretName
+  resources: {}
 
 ## Enable authentication
 ## ref: https://docs.mongodb.com/manual/tutorial/enable-authentication/
@@ -140,11 +167,9 @@ replicaSet:
   pdb:
     enabled: true
     minAvailable:
-      primary: 1
       secondary: 1
       arbiter: 1
     # maxUnavailable:
-      # primary: 1
       # secondary: 1
       # arbiter: 1
 
@@ -163,6 +188,9 @@ podLabels: {}
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ##
 resources: {}
+# Define separate resources per arbiter, which are less then primary or secondary
+# used only when replica set is enabled
+resourcesArbiter: {}
 # limits:
 #   cpu: 500m
 #   memory: 512Mi
@@ -181,6 +209,8 @@ nodeSelector: {}
 ## Affinity
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 affinity: {}
+# Define separate affinity for arbiter pod
+affinityArbiter: {}
 
 ## Tolerations
 ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
@@ -225,18 +255,52 @@ persistence:
   size: 8Gi
   annotations: {}
 
-# Expose mongodb via ingress. This is possible if using nginx-ingress
-# https://kubernetes.github.io/ingress-nginx/user-guide/exposing-tcp-udp-services/
+## Configure the ingress resource that allows you to access the
+## MongoDB installation. Set up the URL
+## ref: http://kubernetes.io/docs/user-guide/ingress/
+##
 ingress:
+  ## Set to true to enable ingress record generation
   enabled: false
-  annotations: {}
-  labels: {}
-  paths:
-    - /
-  hosts: []
+
+  ## Set this to true in order to add the corresponding annotations for cert-manager
+  certManager: false
+
+  ## Ingress annotations done as key:value pairs
+  ## For a full list of possible ingress annotations, please see
+  ## ref: https://github.com/kubernetes/ingress-nginx/blob/master/docs/annotations.md
+  ##
+  ## If tls is set to true, annotation ingress.kubernetes.io/secure-backends: "true" will automatically be set
+  ## If certManager is set to true, annotation kubernetes.io/tls-acme: "true" will automatically be set
+  annotations:
+  #  kubernetes.io/ingress.class: nginx
+
+  ## The list of hostnames to be covered with this ingress record.
+  ## Most likely this will be just one host, but in the event more hosts are needed, this is an array
+  hosts:
+  - name: mongodb.local
+    path: /
+
+  ## The tls configuration for the ingress
+  ## see: https://kubernetes.io/docs/concepts/services-networking/ingress/#tls
   tls:
-    - secretName: secret-tls
-      hosts: []
+  - hosts:
+      - mongodb.local
+    secretName: mongodb.local-tls
+
+  secrets:
+  ## If you're providing your own certificates, please use this to add the certificates as secrets
+  ## key and certificate should start with -----BEGIN CERTIFICATE----- or
+  ## -----BEGIN RSA PRIVATE KEY-----
+  ##
+  ## name should line up with a tlsSecret set further up
+  ## If you're using cert-manager, this is unneeded, as it will create the secret for you if it is not set
+  ##
+  ## It is also possible to create and manage the certificates outside of this helm chart
+  ## Please see README.md for more information
+  # - name: airflow.local-tls
+  #   key:
+  #   certificate:
 
 ## Configure the options for init containers to be run before the main app containers
 ## are started. All init containers are run sequentially and must exit without errors
@@ -311,8 +375,8 @@ metrics:
 
   image:
     registry: docker.io
-    repository: forekshub/percona-mongodb-exporter
-    tag: latest
+    repository: bitnami/mongodb-exporter
+    tag: 0.9.0-debian-9-r2
     pullPolicy: Always
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.

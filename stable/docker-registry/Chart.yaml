@@ -1,7 +1,7 @@
 apiVersion: v1
 description: A Helm chart for Docker Registry
 name: docker-registry
-version: 1.8.0
+version: 1.8.2
 appVersion: 2.7.1
 home: https://hub.docker.com/_/registry/
 icon: https://hub.docker.com/public/images/logos/mini-logo.svg

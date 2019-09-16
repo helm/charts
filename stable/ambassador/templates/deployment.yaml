@@ -93,29 +93,38 @@ spec:
             {{- toYaml .Values.prometheusExporter.resources | nindent 12 }}
         {{- end }}
         - name: {{ .Chart.Name }}
+          {{- if and .Values.pro.enabled (gt .Values.pro.image.tag "0.6.0") }}
+          image: "{{ .Values.pro.image.repository }}:amb-core-{{ .Values.pro.image.tag }}"
+          {{ else }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          {{- end }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            {{- if .Values.service.http.enabled }}
-            - name: http
-              containerPort: {{ .Values.service.http.targetPort }}
-            {{- end }}
-            {{- if .Values.service.https.enabled }}
-            - name: https
-              containerPort: {{ .Values.service.https.targetPort }}
-            {{- end }}
+            {{- range .Values.service.ports }}
+            - name: {{ .name }}
+              containerPort: {{ .targetPort }}
+              {{- if .protocol }}
+              protocol: {{ .protocol }}
+              {{- end }}
+            {{- end}}
             - name: admin
               containerPort: 8877
-          {{- range $key := .Values.additionalTCPPorts }}
-            - name: "{{ $key }}-tcp"
-              containerPort: {{ $key }}
-              protocol: TCP
-          {{- end }}
           env:
             - name: HOST_IP
               valueFrom:
                 fieldRef:
                   fieldPath: status.hostIP
+            {{- if and .Values.pro.enabled (gt .Values.pro.image.tag "0.6.0") }}
+            - name: AMBASSADOR_LICENSE_KEY
+            {{- if .Values.pro.licenseKey.secret.enabled }}
+              valueFrom:
+                secretKeyRef:
+                  name: ambassador-pro-license-key
+                  key: key
+            {{ else }}
+              value: {{ .Values.pro.licenseKey.value }}
+            {{- end }}
+            {{- end }}
             {{- if .Values.prometheusExporter.enabled }}
             - name: STATSD_ENABLED
               value: "true"
@@ -165,25 +174,19 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
         {{- if .Values.pro.enabled }}
         - name: ambassador-pro
-          image: "{{ .Values.pro.image.repository }}:{{ .Values.pro.image.tag }}"
+          image: "{{ .Values.pro.image.repository }}:amb-sidecar-{{ .Values.pro.image.tag }}"
           ports:
           - name: grpc-auth
             containerPort: {{ .Values.pro.ports.auth }}
           - name: grpc-ratelimit
             containerPort: {{ .Values.pro.ports.ratelimit }}
-          - name: http-debug
-            containerPort: {{ .Values.pro.ports.ratelimitDebug }}
           env:
           - name: REDIS_SOCKET_TYPE
             value: tcp
           - name: REDIS_URL
-            value: ambassador-pro-redis:6379
-          - name: APRO_AUTH_PORT
+            value: {{ include "ambassador.fullname" . }}-pro-redis:6379
+          - name: APRO_HTTP_PORT
             value: "{{ .Values.pro.ports.auth }}"
-          - name: GRPC_PORT
-            value: "{{ .Values.pro.ports.ratelimit }}"
-          - name: DEBUG_PORT
-            value: "{{ .Values.pro.ports.ratelimitDebug }}"
           - name: APP_LOG_LEVEL
             value: "{{ .Values.pro.logLevel  }}"
           - name: AMBASSADOR_NAMESPACE
@@ -194,8 +197,12 @@ spec:
               fieldRef:
                 fieldPath: metadata.namespace
           {{- end }}
+          {{- if hasKey .Values.env "AMBASSADOR_ID" }}
+          - name: "AMBASSADOR_ID"
+            value: {{ .Values.env.AMBASSADOR_ID | quote }}
+          {{- end }}
           - name: AMBASSADOR_LICENSE_KEY
-          {{- if .Values.pro.licenseKey.secret }}
+          {{- if .Values.pro.licenseKey.secret.enabled }}
             valueFrom:
               secretKeyRef:
                 name: ambassador-pro-license-key
@@ -203,6 +210,17 @@ spec:
           {{ else }}
             value: {{ .Values.pro.licenseKey.value }}
           {{- end }}
+          {{- if .Values.pro.env }}
+          {{- range $key, $value := .Values.pro.env }}
+          {{- if eq $key "AMBASSADOR_ID" }}
+          {{- else}}
+          - name: {{ $key | upper | quote }}
+            value: {{ $value | quote }}
+          {{- end }}
+          {{- end }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.pro.resources | nindent 12 }}
         {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:

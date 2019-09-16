@@ -43,7 +43,7 @@ kubectl -n "$NAMESPACE" exec -it "$POD_NAME" /etc/openvpn/setup/newClientCert.sh
 kubectl -n "$NAMESPACE" exec -it "$POD_NAME" cat "/etc/openvpn/certs/pki/$KEY_NAME.ovpn" > "$KEY_NAME.ovpn"
 ```
 
-In order to revoke certificates in later steps: 
+In order to revoke certificates in later steps:
 ```bash
 #!/bin/bash
 
@@ -78,7 +78,9 @@ Parameter | Description | Default
 `service.type`                 | k8s service type exposing ports, e.g. `NodePort`                     | `LoadBalancer`
 `service.externalPort`         | TCP port reported when creating configuration files                  | `443`
 `service.internalPort`         | TCP port on which the service works                                  | `443`
+`service.hostPort`             | Expose openvpn directly using host port                              | `nil`
 `service.nodePort`             | NodePort value if service.type is `NodePort`                         | `nil` (auto-assigned)
+`service.clusterIP`            | clusterIP value if service.type is `ClusterIP`                       | `nil`
 `service.externalIPs`          | External IPs to listen on                                            | `[]`
 `resources.requests.cpu`       | OpenVPN cpu request                                                  | `300m`
 `resources.requests.memory`    | OpenVPN memory request                                               | `128Mi`
@@ -104,6 +106,9 @@ Parameter | Description | Default
 `openvpn.useCrl`               | Use/generate a certificate revocation list (crl.pem)                 | `false`
 `openvpn.taKey`                | Use/generate a ta.key file for hardening security                    | `false`
 `openvpn.cipher`               | Override the default cipher                                          | `nil` (OpenVPN default)
+`openvpn.istio.enabled`        | Enables istio support for openvpn clients                            | `false`
+`openvpn.istio.proxy.port`     | Istio proxy port                                                     | `15001`
+`openvpn.iptablesExtra`        | Custom iptables rules for clients                                    | `[]`
 `nodeSelector`                 | Node labels for pod assignment                                       | `{}`
 
 This chart has been engineered to use kube-dns and route all network traffic to kubernetes pods and services,

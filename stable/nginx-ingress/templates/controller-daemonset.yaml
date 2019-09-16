@@ -1,5 +1,6 @@
-{{- if eq .Values.controller.kind "DaemonSet" }}
+{{- if or (eq .Values.controller.kind "DaemonSet") (eq .Values.controller.kind "Both") }}
 {{- $useHostPort := .Values.controller.daemonset.useHostPort -}}
+{{- $hostPorts := .Values.controller.daemonset.hostPorts -}}
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
@@ -95,6 +96,7 @@ spec:
                 add:
                 - NET_BIND_SERVICE
             runAsUser: {{ .Values.controller.image.runAsUser }}
+            allowPrivilegeEscalation: {{ .Values.controller.image.allowPrivilegeEscalation }}
           {{- end }}
           env:
             - name: POD_NAME
@@ -119,26 +121,14 @@ spec:
             successThreshold: {{ .Values.controller.livenessProbe.successThreshold }}
             failureThreshold: {{ .Values.controller.livenessProbe.failureThreshold }}
           ports:
-            - name: http
-              containerPort: {{ .Values.controller.containerPort.http }}
+          {{- range $key, $value := .Values.controller.containerPort }}
+            - name: {{ $key }}
+              containerPort: {{ $value }}
               protocol: TCP
-              {{- if .Values.controller.daemonset.useHostPort }}
-              hostPort: {{ .Values.controller.daemonset.hostPorts.http }}
+              {{- if $useHostPort }}
+              hostPort: {{ index $hostPorts $key | default $value }}
               {{- end }}
-            - name: https
-              containerPort: {{ .Values.controller.containerPort.https }}
-              protocol: TCP
-              {{- if .Values.controller.daemonset.useHostPort }}
-              hostPort: {{ .Values.controller.daemonset.hostPorts.https }}
-              {{- end }}
-          {{- if .Values.controller.stats.enabled }}
-            - name: stats
-              containerPort: 18080
-              protocol: TCP
-              {{- if .Values.controller.daemonset.useHostPort }}
-              hostPort: {{ .Values.controller.daemonset.hostPorts.stats }}
-              {{- end }}
-          {{- end }}
+          {{- end }}    
           {{- if .Values.controller.metrics.enabled }}
             - name: metrics
               containerPort: 10254

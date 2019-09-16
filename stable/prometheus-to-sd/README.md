@@ -38,15 +38,15 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following table lists the configurable parameters and their default values.
 
-| Parameter          | Description                                                                               | Default                                     |
-| ------------------ | ----------------------------------------------------------------------------------------- | ------------------------------------------- |
-| `image.repository` | prometheus-to-sd image repository                                                         | `gcr.io/google-containers/prometheus-to-sd` |
-| `image.tag`        | prometheus-to-sd image tag                                                                | `v0.2.2`                                    |
-| `image.pullPolicy` | Image pull policy                                                                         | `IfNotPresent`                              |
-| `resources`        | CPU/Memory resource requests/limits                                                       | `{}`                                        |
-| `port`             | Profiler port                                                                             | `6060`                                      |
-| `metricSources`    | Sources for metrics in the next format: component-name:http://host:port?whitelisted=a,b,c | `{}`                                        |
-| `nodeSelector`     | node labels for pod assignment                                                            | `{}`                                        |
+| Parameter          | Description                                                                               | Default                                                    |
+| ------------------ | ----------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| `image.repository` | prometheus-to-sd image repository                                                         | `gcr.io/google-containers/prometheus-to-sd`                |
+| `image.tag`        | prometheus-to-sd image tag                                                                | `v0.5.2`                                                   |
+| `image.pullPolicy` | Image pull policy                                                                         | `IfNotPresent`                                             |
+| `resources`        | CPU/Memory resource requests/limits                                                       | `{}`                                                       |
+| `port`             | Profiler port                                                                             | `6060`                                                     |
+| `metricSources`    | Sources for metrics in the next format: component-name:http://host:port?whitelisted=a,b,c | `{"kube-state-metrics": "http://kube-state-metrics:8080"}` |
+| `nodeSelector`     | node labels for pod assignment                                                            | `{}`                                                       |
 
 For more information please refer to the [prometheus-to-sd](https://github.com/GoogleCloudPlatform/k8s-stackdriver/tree/master/prometheus-to-sd) documentation.
 

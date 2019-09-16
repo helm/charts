@@ -9,15 +9,16 @@ spec:
     matchLabels: {{ include "external-dns.matchLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- if or .Values.podAnnotations .Values.metrics.enabled }}
-      annotations: {{ include "external-dns.podAnnotations" . | nindent 8 }}
-      {{- end }}
       labels: {{ include "external-dns.labels" . | nindent 8 }}
+      annotations:
+        {{- if or .Values.podAnnotations .Values.metrics.enabled }}
+        {{ include "external-dns.podAnnotations" . | nindent 8 }}
+        {{- end }}
         {{- if or (and .Values.aws.credentials.secretKey .Values.aws.credentials.accessKey) .Values.cloudflare.apiKey .Values.digitalocean.apiToken (and .Values.infoblox.wapiUsername .Values.infoblox.wapiPassword) .Values.rfc2136.tsigSecret .Values.extraEnv .Values.google.serviceAccountKey }}
-        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum | trunc 63 }}
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
         {{- end }}
         {{- if and (eq .Values.provider "designate") .Values.designate.customCA.enabled }}
-        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum | trunc 63 }}
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         {{- end }}
     spec:
 {{- include "external-dns.imagePullSecrets" . | indent 6 }}
@@ -103,10 +104,13 @@ spec:
         - --aws-batch-change-size={{ .Values.aws.batchChangeSize }}
         {{- end }}
         {{- end }}
+        {{- range .Values.aws.zoneTags }}
+        - --aws-zone-tags={{ . }}
+        {{- end }}
         # Azure Arguments
         {{- if eq .Values.provider "azure" }}
-        {{- if .Values.azure.resoureGroup }}
-        - --azure-resource-group={{ .Values.azure.resoureGroup }}
+        {{- if .Values.azure.resourceGroup }}
+        - --azure-resource-group={{ .Values.azure.resourceGroup }}
         {{- end }}
         {{- end }}
         # Cloudflare arguments
@@ -152,6 +156,11 @@ spec:
         - --rfc2136-insecure
           {{- end }}
         {{- end }}
+        # PowerDNS arguments
+        {{- if eq .Values.provider "pdns" }}
+        - --pdns-server={{ .Values.pdns.apiUrl }}:{{ .Values.pdns.apiPort }}
+        - --pdns-api-key=$(PDNS_API_KEY)
+        {{- end }}
         # Extra arguments
         {{- range $key, $value := .Values.extraArgs }}
           {{- if $value }}
@@ -185,6 +194,19 @@ spec:
               key: cloudflare_api_key
         - name: CF_API_EMAIL
           value: {{ .Values.cloudflare.email | quote }}
+        {{- end }}
+        # CoreDNS environment variables
+        {{- if eq .Values.provider "coredns" }}
+        - name: ETCD_URLS
+          value: {{ .Values.coredns.etcdEndpoints | quote }}
+        {{- if .Values.coredns.etcdTLS.enabled }}
+        - name: ETCD_CERT_FILE
+          value: {{ .Values.coredns.etcdTLS.mountPath }}/{{ .Values.coredns.etcdTLS.certFilename }}
+        - name: ETCD_KEY_FILE
+          value: {{ .Values.coredns.etcdTLS.mountPath }}/{{ .Values.coredns.etcdTLS.keyFilename }}
+        - name: ETCD_CA_FILE
+          value: {{ .Values.coredns.etcdTLS.mountPath }}/{{ .Values.coredns.etcdTLS.caFilename }}
+        {{- end }}
         {{- end }}
         # DigitalOcean environment variables
         {{- if eq .Values.provider "digitalocean" }}
@@ -236,18 +258,17 @@ spec:
         - name: OPENSTACK_CA_FILE
           value: {{ .Values.designate.customCA.mountPath }}/{{ .Values.designate.customCA.filename }}
         {{- end }}
-        # Extra environment variables
-        {{- $root := . -}}
-        {{- range .Values.extraEnv }}
-        - name: {{ .name }}
+        # PowerDNS environment variables
+        {{- if and (eq .Values.provider "pdns") .Values.pdns.apiKey }}
+        - name: PDNS_API_KEY
           valueFrom:
-            {{- if .valueFrom }}
-{{ toYaml .valueFrom | indent 12 }}
-            {{- else }}
             secretKeyRef:
-              name: {{ template "external-dns.fullname" $root }}
-              key: {{ .name }}
-            {{- end }}
+              name: {{ template "external-dns.fullname" . }}
+              key: pdns_api_key
+        {{- end }}
+        # Extra environment variables
+        {{- if .Values.extraEnv }}
+        {{ toYaml .Values.extraEnv | nindent 8 }}
         {{- end }}
         ports:
         - name: http
@@ -275,6 +296,12 @@ spec:
           {{- else }}
           mountPath: /etc/kubernetes/
           {{- end }}
+          readOnly: true
+        {{- end }}
+        # CoreDNS mountPath(s)
+        {{- if and (eq .Values.provider "coredns") (.Values.coredns.etcdTLS.enabled) }}
+        - name: {{ .Values.coredns.etcdTLS.secretName }}
+          mountPath: {{ .Values.coredns.etcdTLS.mountPath }}
           readOnly: true
         {{- end }}
         # Google mountPath(s)
@@ -308,6 +335,13 @@ spec:
         secret:
           secretName: {{ .Values.azure.secretName }}
         {{- end }}
+      {{- end }}
+      # CoreDNS volume(s)
+      {{- if and (eq .Values.provider "coredns") (.Values.coredns.etcdTLS.enabled) }}
+      - name: {{ .Values.coredns.etcdTLS.secretName }}
+        secret:
+          secretName: {{ .Values.coredns.etcdTLS.secretName }}
+          defaultMode: 400
       {{- end }}
       # Google volume(s)
       {{- if eq .Values.provider "google" }}

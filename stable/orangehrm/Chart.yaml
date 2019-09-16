@@ -1,7 +1,7 @@
 apiVersion: v1
 name: orangehrm
-version: 4.4.4
-appVersion: 4.3.2-0
+version: 6.2.3
+appVersion: 4.3.3-0
 description: OrangeHRM is a free HR management system that offers a wealth of modules
   to suit the needs of your business.
 keywords:

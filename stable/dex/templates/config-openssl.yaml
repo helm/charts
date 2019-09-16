@@ -1,12 +1,9 @@
-{{- if .Values.certs.grpc.create }}
+{{- if and .Values.grpc .Values.certs.grpc.create }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
   labels:
-    app: {{ template "dex.name" . }}
-    chart: {{ template "dex.chart" . }}
-    heritage: "{{ .Release.Service }}"
-    release: "{{ .Release.Name }}"
+{{ include "dex.labels" . | indent 4 }}
   name: {{ template "dex.fullname" . }}-openssl-config
   annotations:
     "helm.sh/hook": post-install

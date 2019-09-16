@@ -9,7 +9,8 @@ This approach is the [current recommended method to achieve overprovisioning](ht
 ## Prerequisites
 
 - Kubernetes 1.11+ with Beta APIs enabled or 1.8-1.10 with alpha APIs enabled
-- Configure the `cluster-autoscaler` for [your k8s version](https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/FAQ.md#how-can-i-configure-overprovisioning-with-cluster-autoscaler). Usually just add `extraArgs.expendable-pods-priority-cutoff=-10` setting.
+- [Pod priority and preemption](https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/FAQ.md#how-can-i-configure-overprovisioning-with-cluster-autoscaler) enabled in your cluster.  Pod priority and preemption is enabled by default in Kubernetes >= 1.11.
+- `cluster-autoscaler` installed in your cluster with [`--expendable-pods-priority-cutoff=-10` ](https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/FAQ.md#how-does-cluster-autoscaler-work-with-pod-priority-and-preemption).  Priority cutoff has a default of `-10` in `cluster-autoscaler` >= 1.12.
 
 ## Installing the Chart
 
@@ -40,17 +41,19 @@ The following table lists the configurable parameters for this chart and their d
 | `priorityClassDefault.enabled`     | If true, enable default priorityClass             | `true`            |
 | `priorityClassDefault.name`        | Name of the default priorityClass                 | `default`         |
 | `priorityClassDefault.value`       | Priority value of the default priorityClass       | `0`               |
-| `replicaCount`                     | Number of replicas                                | `1`               |
-| `resources`                        | Resources for the overprovision pods              | `{}`              |
 | `image.repository`                 | Image repository                                  | `k8s.gcr.io/pause`|
 | `image.tag`                        | Image tag                                         | `3.1`             |
 | `image.pullPolicy`                 | Container pull policy                             | `IfNotPresent`    |
-| `affinity`                         | Map of node/pod affinities                        | `{}`              |
-| `nodeSelector`                     | Node labels for pod assignment                    | `{}`              |
-| `annotations`                      | Optional deployment annotations                   | `{}`              |
 | `fullnameOverride`                 | Override the fullname of the chart                | `nil`             |
 | `nameOverride`                     | Override the name of the chart                    | `nil`             |
-| `tolerations`                      | Optional deployment tolerations                   | `[]`              |
+| `deployments`                      | Define optional additional deployments            | `[]`              |
+| `deployments[].name`               | Name for additional deployments                   | ``                |
+| `deployments[].replicaCount`       | Number of replicas                                | `1`               |
+| `deployments[].resources`          | Resources for the overprovision pods              | `{}`              |
+| `deployments[].affinity`           | Map of node/pod affinities                        | `{}`              |
+| `deployments[].nodeSelector`       | Node labels for pod assignment                    | `{}`              |
+| `deployments[].tolerations`        | Optional deployment tolerations                   | `[]`              |
+
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install` or provide a YAML file containing the values for the above parameters:
 
