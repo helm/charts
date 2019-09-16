@@ -1,0 +1,14 @@
+{{- if .Values.prometheus.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "citus-postgresql.fullname" . }}-metric-exporter-queries
+  labels:
+    app: {{ template "citus-postgresql.name" . }}
+    chart: {{ template "citus-postgresql.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  queries.yaml: |
+  {{ printf .Values.prometheus.queries | indent 2 }}
+{{- end }}
