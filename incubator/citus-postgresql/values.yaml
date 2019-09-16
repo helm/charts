@@ -80,7 +80,7 @@ ssl:
 prometheus:
   enabled: true
   image: wrouesnel/postgres_exporter
-  imageTag: v0.4.7
+  imageTag: v0.5.1
   port: 9187
   resources:
     limits:
@@ -89,6 +89,248 @@ prometheus:
     requests:
       cpu: 100m
       memory: 256Mi
+  disableDefaultMetrics: true
+  logLevel: "info"
+  queries: |-
+    pg_replication:
+      query: "SELECT EXTRACT(EPOCH FROM (now() - pg_last_xact_replay_timestamp()))::INT as lag"
+      metrics:
+        - lag:
+            usage: "GAUGE"
+            description: "Replication lag behind master in seconds"
+
+      pg_postmaster:
+        query: "SELECT pg_postmaster_start_time as start_time_seconds from pg_postmaster_start_time()"
+        metrics:
+          - start_time_seconds:
+              usage: "GAUGE"
+              description: "Time at which postmaster started"
+
+      pg_stat_activity:
+        query: " SELECT * FROM pg_stat_activity WHERE query != '<IDLE>' AND query NOT ILIKE '%pg_stat_activity%' ORDER BY query_start desc"
+        metrics:
+          - datid:
+              usage: "LABEL"
+              description: "OID of the database this backend is connected to"
+          - datname:
+              usage: "LABEL"
+              description: "Name of the database this backend is connected to"
+          - pid:
+              usage: "LABEL"
+              description: "Process ID of this backend"
+          - usesysid:
+              usage: "LABEL"
+              description: "OID of the user logged into this backend"
+          - usename:
+              usage: "LABEL"
+              description: "Name of the user logged into this backend"
+          - application_name:
+              usage: "LABEL"
+              description: "Name of the application that is connected to this backend"
+          - client_addr:
+              usage: "LABEL"
+              description: "IP address of the client connected to this backend. If this field is null, it indicates either that the client is connected via a Unix socket on the server machine or that this is an internal process such as autovacuum."
+          - client_hostname:
+              usage: "LABEL"
+              description: "Host name of the connected client, as reported by a reverse DNS lookup of client_addr"
+          - client_port:
+              usage: "LABEL"
+              description: "TCP port number that the client is using for communication with this backend, or -1 if a Unix socket is used"
+          - wait_event_type:
+              usage: "LABEL"
+              description: "The type of event for which the backend is waiting, if any; otherwise NULL."
+          - wait_event:
+              usage: "LABEL"
+              description: "Wait event name if backend is currently waiting, otherwise NULL."
+          - state:
+              usage: "LABEL"
+              description: "Current overall state of this backend"
+          - backend_xid:
+              usage: "LABEL"
+              description: "Top-level transaction identifier of this backend, if any."
+          - backend_xmin:
+              usage: "LABEL"
+              description: "The current backend's xmin horizon."
+          - query:
+              usage: "LABEL"
+              description: "Text of this backend's most recent query"
+          - backend_type:
+              usage: "LABEL"
+              description: "Type of current backend"
+          - query_start:
+              usage: "GAUGE"
+              description: "Time when the currently active query was started, or if state is not active, when the last query was started"
+          - state_change:
+              usage: "GAUGE"
+              description: "Time when the state was last changed"
+          - backend_start:
+              usage: "GAUGE"
+              description: "Time when this process was started, i.e., when the client connected to the server"
+          - xact_start:
+              usage: "GAUGE"
+              description: "Time when this process' current transaction was started, or null if no transaction is active. If the current query is the first of its transaction, this column is equal to the query_start column."
+
+      pg_stat_user_tables:
+        query: "SELECT schemaname, relname, seq_scan, seq_tup_read, idx_scan, idx_tup_fetch, n_tup_ins, n_tup_upd, n_tup_del, n_tup_hot_upd, n_live_tup, n_dead_tup, n_mod_since_analyze, last_vacuum, last_autovacuum, last_analyze, last_autoanalyze, vacuum_count, autovacuum_count, analyze_count, autoanalyze_count FROM pg_stat_user_tables"
+        metrics:
+          - schemaname:
+              usage: "LABEL"
+              description: "Name of the schema that this table is in"
+          - relname:
+              usage: "LABEL"
+              description: "Name of this table"
+          - seq_scan:
+              usage: "COUNTER"
+              description: "Number of sequential scans initiated on this table"
+          - seq_tup_read:
+              usage: "COUNTER"
+              description: "Number of live rows fetched by sequential scans"
+          - idx_scan:
+              usage: "COUNTER"
+              description: "Number of index scans initiated on this table"
+          - idx_tup_fetch:
+              usage: "COUNTER"
+              description: "Number of live rows fetched by index scans"
+          - n_tup_ins:
+              usage: "COUNTER"
+              description: "Number of rows inserted"
+          - n_tup_upd:
+              usage: "COUNTER"
+              description: "Number of rows updated"
+          - n_tup_del:
+              usage: "COUNTER"
+              description: "Number of rows deleted"
+          - n_tup_hot_upd:
+              usage: "COUNTER"
+              description: "Number of rows HOT updated (i.e., with no separate index update required)"
+          - n_live_tup:
+              usage: "GAUGE"
+              description: "Estimated number of live rows"
+          - n_dead_tup:
+              usage: "GAUGE"
+              description: "Estimated number of dead rows"
+          - n_mod_since_analyze:
+              usage: "GAUGE"
+              description: "Estimated number of rows changed since last analyze"
+          - last_vacuum:
+              usage: "GAUGE"
+              description: "Last time at which this table was manually vacuumed (not counting VACUUM FULL)"
+          - last_autovacuum:
+              usage: "GAUGE"
+              description: "Last time at which this table was vacuumed by the autovacuum daemon"
+          - last_analyze:
+              usage: "GAUGE"
+              description: "Last time at which this table was manually analyzed"
+          - last_autoanalyze:
+              usage: "GAUGE"
+              description: "Last time at which this table was analyzed by the autovacuum daemon"
+          - vacuum_count:
+              usage: "COUNTER"
+              description: "Number of times this table has been manually vacuumed (not counting VACUUM FULL)"
+          - autovacuum_count:
+              usage: "COUNTER"
+              description: "Number of times this table has been vacuumed by the autovacuum daemon"
+          - analyze_count:
+              usage: "COUNTER"
+              description: "Number of times this table has been manually analyzed"
+          - autoanalyze_count:
+              usage: "COUNTER"
+              description: "Number of times this table has been analyzed by the autovacuum daemon"
+
+      pg_statio_user_tables:
+        query: "SELECT schemaname, relname, heap_blks_read, heap_blks_hit, idx_blks_read, idx_blks_hit, toast_blks_read, toast_blks_hit, tidx_blks_read, tidx_blks_hit FROM pg_statio_user_tables"
+        metrics:
+          - schemaname:
+              usage: "LABEL"
+              description: "Name of the schema that this table is in"
+          - relname:
+              usage: "LABEL"
+              description: "Name of this table"
+          - heap_blks_read:
+              usage: "COUNTER"
+              description: "Number of disk blocks read from this table"
+          - heap_blks_hit:
+              usage: "COUNTER"
+              description: "Number of buffer hits in this table"
+          - idx_blks_read:
+              usage: "COUNTER"
+              description: "Number of disk blocks read from all indexes on this table"
+          - idx_blks_hit:
+              usage: "COUNTER"
+              description: "Number of buffer hits in all indexes on this table"
+          - toast_blks_read:
+              usage: "COUNTER"
+              description: "Number of disk blocks read from this table's TOAST table (if any)"
+          - toast_blks_hit:
+              usage: "COUNTER"
+              description: "Number of buffer hits in this table's TOAST table (if any)"
+          - tidx_blks_read:
+              usage: "COUNTER"
+              description: "Number of disk blocks read from this table's TOAST table indexes (if any)"
+          - tidx_blks_hit:
+              usage: "COUNTER"
+              description: "Number of buffer hits in this table's TOAST table indexes (if any)"
+
+      pg_database:
+        query: " SELECT pg_database.datname, pg_database_size(pg_database.datname) as size FROM pg_database"
+        metrics:
+          - datname:
+              usage: "LABEL"
+              description: "Name of the database"
+          - size:
+              usage: "GAUGE"
+              description: "Disk space used by the database"
+
+      pg_disk_usage:
+        query: >-
+          SELECT *, pg_size_pretty(total_bytes) AS pretty_total_size, pg_size_pretty(index_bytes) AS PRETTY_INDEX_SIZE
+          , pg_size_pretty(toast_bytes) AS pretty_toast_size, pg_size_pretty(table_bytes) AS PRETTY_TABLE_SIZE
+          FROM (
+          SELECT *, total_bytes-index_bytes-COALESCE(toast_bytes,0) AS table_bytes FROM (
+          SELECT c.oid,nspname AS table_schema,
+          relname AS TABLE_NAME,
+          c.reltuples AS row_estimate,
+          pg_total_relation_size(c.oid) AS total_bytes,
+          pg_indexes_size(c.oid) AS index_bytes,
+          pg_total_relation_size(reltoastrelid) AS toast_bytes FROM pg_class c LEFT JOIN pg_namespace n ON n.oid = c.relnamespace
+          WHERE relkind = 'r') a) a
+        metrics:
+          - table_schema:
+              usage: "LABEL"
+              description: "Name of the schema that this table is in"
+          - table_name:
+              usage: "LABEL"
+              description: "Name of this table"
+          - pretty_table_size:
+              usage: "LABEL"
+              description: "Disk space used in this table"
+          - pretty_total_size:
+              usage: "LABEL"
+              description: "Total size of this table"
+          - pretty_index_size:
+              usage: "LABEL"
+              description: "Disk space used for indexes in this table"
+          - pretty_toast_size:
+              usage: "LABEL"
+              description: "Disk space used for Toast in this table"
+          - pretty_table_size:
+              usage: "LABEL"
+              description: "Disk space used in this table"
+          - row_estimate:
+              usage: "GAUGE"
+              description: "Number of rows in this table (estimated)"
+          - total_bytes:
+              usage: "GAUGE"
+              description: "Total size of this table"
+          - index_bytes:
+              usage: "GAUGE"
+              description: "Disk space used for indexes in this table"
+          - toast_bytes:
+              usage: "GAUGE"
+              description: "Disk space used for Toast in this table"
+          - table_bytes
+            usage: "GAUGE"
+            description: "Disk space usage of this table"
 
 ## Secrets
 superuser:
@@ -96,3 +338,4 @@ superuser:
   username: "postgres"
   database: "postgres"
   port: 5432
+

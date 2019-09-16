@@ -82,6 +82,7 @@ There are
 1. A headless [Service](https://kubernetes.io/docs/concepts/services-networking/service/#headless-services) `citus-postgresql-master` which serves as cluster internal endpoint to the Citus master node.
 1. A [ConfigMap](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/) `setup-config` which contains SQL scripts for provisioning master and worker nodes.
 1. A [ConfigMap](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/) `citus-postresql-ssl-settings` with SSL configuration for Citus nodes.
+1. A [ConfigMap](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/) `citus-postresql-metric-exporter-queries` with list of queries for custom Prometheus metrics.
 1. A [Secret](https://kubernetes.io/docs/concepts/configuration/secret/) `citus-postgresql-secret` that holds credentials for the superuser.
 1. A [Secret](https://kubernetes.io/docs/concepts/configuration/secret/) `citus-postgresql-pgpass` that deploys credentials for all nodes in the cluster as a [.pgpass](https://www.postgresql.org/docs/11/libpq-pgpass.html) file.
 1. A [Secret](https://kubernetes.io/docs/concepts/configuration/secret/) `citus-postgresql-ssl` that holds the SSL cert and key files.  
@@ -188,6 +189,9 @@ The [Citus Membership Mamanger](https://github.com/bakdata/citus-k8s-membership-
 | `prometheus.image` | Docker Image for Prometheus Exporter container. | `wrouesnel/postgres_exporter` |
 | `prometheus.imageTag` | Docker Image Tag for Prometheus Exporter container. | `v0.4.7` |
 | `prometheus.port` | Exporter Port which exposes metrics in Prometheus format for scraping. | `9187` |
+| `prometheus.logLevel` | Logging level. Can be one of debug, info, warn, error, fatal | `info` |
+| `prometheus.disableDefaultMetrics` | If yes, only metrics supplied from queries.yaml via --extend.query-path will be reported. | `false` |
+| `prometheus.queries` | Queries for custom metrics | see [here](https://github.com/wrouesnel/postgres_exporter/blob/master/queries.yaml) for an example |
 
 
 ### Secret Configuration
