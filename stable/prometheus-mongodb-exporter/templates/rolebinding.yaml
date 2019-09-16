@@ -1,0 +1,18 @@
+{{- if .Values.rbac.create -}}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: RoleBinding
+metadata:
+  name: {{ template "prometheus-mongodb-exporter.fullname" . }}
+  labels:
+    app: {{ template "prometheus-mongodb-exporter.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ template "prometheus-mongodb-exporter.fullname" . }}
+subjects:
+- kind: ServiceAccount
+  name: {{ template "prometheus-mongodb-exporter.serviceAccountName" . }}
+{{- end -}}

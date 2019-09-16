@@ -39,6 +39,9 @@ port: "9216"
 
 priorityClassName: ""
 
+rbac:
+  create: true
+
 readinessProbe:
   httpGet:
     path: /
@@ -72,6 +75,12 @@ service:
   port: 9216
   type: ClusterIP
 
+serviceAccount:
+  create: true
+  # If create is true and name is not set, then a name is generated using the
+  # fullname template.
+  name:
+
 serviceMonitor:
   enabled: true
   interval: 30s
@@ -80,5 +89,3 @@ serviceMonitor:
   additionalLabels: {}
 
 tolerations: []
-
-serviceAccountName: "default"

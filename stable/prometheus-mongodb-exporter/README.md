@@ -47,14 +47,16 @@ podAnnotations:
 | `podAnnotations` | Annotations to be added to all pods | `{}` |
 | `port` | The container port to listen on | `9216` |
 | `priorityClassName` | Pod priority class name | `` |
+| `rbac.create` | If `true`, create the RBAC resources | `true` |
 | `replicas` | Number of replicas in the replica set | `1` |
 | `resources` | Pod resource requests and limits | `{}` |
 | `env` | Extra environment variables passed to pod | `{}` |
 | `securityContext` | Security context for the pod | See values.yaml |
-| `serviceAccountName` | Service account name for the pod | `default` |
 | `service.annotations` | Annotations to be added to the service | `{}` |
 | `service.port` | The port to expose | `9216` |
 | `service.type` | The type of service to expose | `ClusterIP` |
+| `serviceAccount.create` | If `true`, create the service account | `true` |
+| `serviceAccount.name` | Name of the service account | `` |
 | `serviceMonitor.enabled` | Set to true if using the Prometheus Operator | `true` |
 | `serviceMonitor.interval` | Interval at which metrics should be scraped | `30s` |
 | `serviceMonitor.scrapeTimeout` | Interval at which metric scrapes should time out | `10s` |
