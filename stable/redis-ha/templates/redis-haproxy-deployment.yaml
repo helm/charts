@@ -26,7 +26,7 @@ spec:
         prometheus.io/scrape: "true"
         checksum/config: {{ include (print $.Template.BasePath "/redis-ha-configmap.yaml") . | sha256sum }}
       {{- if .Values.haproxy.annotations }}
-{{ toYaml .Values.haproxy.annotations . | indent 8 }}
+{{ toYaml .Values.haproxy.annotations | indent 8 }}
       {{- end }}
     spec:
       # Needed when using unmodified rbac-setup.yml
