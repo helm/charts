@@ -40,10 +40,7 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
     app.kubernetes.io/version: {{ .Chart.AppVersion }}
 spec:
-  {{- if .Values.clusterAgent.serviceType }}
-  type: {{ .Values.clusterAgent.serviceType }}
-  {{- end }}
-  type: ClusterIP
+  type: {{ .Values.clusterAgent.metricsProvider.service.type }}
   selector:
     app: {{ template "datadog.fullname" . }}-cluster-agent
   ports:

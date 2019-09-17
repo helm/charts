@@ -356,6 +356,15 @@ clusterAgent:
   metricsProvider:
     enabled: false
 
+    ## @param service - object - optional
+    ## Configuration for the service for the cluster-agent metrics server
+    #
+    service:
+      ## @param type - string - optional
+      ##
+      #
+      type: ClusterIP
+
   ## @param clusterChecks - object - required
   ## Enable the Cluster Checks feature on both the cluster-agents and the daemonset
   ## ref: https://docs.datadoghq.com/agent/autodiscovery/clusterchecks/
@@ -423,14 +432,6 @@ clusterAgent:
   ## Override the cluster-agent's readiness probe logic from the default:
   #
   # readinessProbe:
-
-  ## @param service - object - optional
-  ##
-  # serviceType: ClusterIP
-  ##
-  #
-  service:
-    type: ClusterIP
 
   ## @param useHostNetwork - boolean - optional
   ## Bind ports on the hostNetwork. Useful for CNI networking where hostPort might
