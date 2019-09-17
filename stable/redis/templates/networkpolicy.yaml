@@ -2,18 +2,18 @@
 kind: NetworkPolicy
 apiVersion: {{ template "networkPolicy.apiVersion" . }}
 metadata:
-  name: "{{ template "redis.fullname" . }}"
+  name: {{ template "redis.fullname" . }}
   labels:
     app: {{ template "redis.name" . }}
     chart: {{ template "redis.chart" . }}
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   podSelector:
     matchLabels:
       app: {{ template "redis.name" . }}
-      release: "{{ .Release.Name }}"
-  {{- if ge .Values.cluster.slaveCount 1.0 }}
+      release: {{ .Release.Name }}
+  {{- if .Values.cluster.enabled }}
   policyTypes:
     - Ingress
     - Egress
@@ -27,8 +27,8 @@ spec:
       to:
       - podSelector:
           matchLabels:
-            release: "{{ .Release.Name }}"
             app: {{ template "redis.name" . }}
+            release: {{ .Release.Name }}
   {{- end }}
   ingress:
     # Allow inbound connections
@@ -45,16 +45,16 @@ spec:
       {{- if .Values.metrics.enabled }}
       - podSelector:
           matchLabels:
-            release: "{{ .Release.Name }}"
-            role: metrics
             app: {{ template "redis.name" . }}
+            release: {{ .Release.Name }}
+            role: metrics
       {{- end }}
-      {{- if ge .Values.cluster.slaveCount 1.0 }}
+      {{- if .Values.cluster.enabled }}
       - podSelector:
           matchLabels:
-            release: "{{ .Release.Name }}"
-            role: slave
             app: {{ template "redis.name" . }}
+            release: {{ .Release.Name }}
+            role: slave
       {{- end }}
       {{- end }}
     {{- if .Values.metrics.enabled }}
