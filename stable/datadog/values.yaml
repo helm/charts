@@ -367,7 +367,8 @@ clusterAgent:
   # strategy:
   #   type: RollingUpdate
   #   rollingUpdate:
-  #     maxUnavailable: 10%
+  #     maxSurge: 1
+  #     maxUnavailable: 0
 
   ## @param podAnnotations - list of key:value strings - optional
   ## Annotations to add to the cluster-agents's pod(s)
@@ -691,7 +692,8 @@ clusterchecksDeployment:
   # strategy:
   #   type: RollingUpdate
   #   rollingUpdate:
-  #     maxUnavailable: 10%
+  #     maxSurge: 1
+  #     maxUnavailable: 1
 
   ## @param nodeSelector - object - optional
   ## Allow the ClusterChecks Deployment to schedule on selected nodes

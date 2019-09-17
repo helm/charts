@@ -16,7 +16,8 @@ spec:
 {{- else }}
     type: RollingUpdate
     rollingUpdate:
-      maxUnavailable: "10%"
+      maxSurge: 1
+      maxUnavailable: 1
 {{- end }}
   template:
     metadata:
