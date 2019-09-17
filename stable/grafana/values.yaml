@@ -90,6 +90,8 @@ downloadDashboards:
 ## Pod Annotations
 # podAnnotations: {}
 
+podPortName: grafana
+
 ## Deployment annotations
 # annotations: {}
 
@@ -104,6 +106,7 @@ service:
     # targetPort: 4181 To be used with a proxy extraContainer
   annotations: {}
   labels: {}
+  portName: service
 
 ingress:
   enabled: false
