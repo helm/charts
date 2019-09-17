@@ -1,6 +1,6 @@
 image:
   repository: atlassian/jira-software
-  tag: 8.4.0
+  tag: 8.4.1
   pullPolicy: IfNotPresent
 
 nameOverride: ""
