@@ -18,7 +18,7 @@ spec:
   selector:
     app: {{ template "minio.name" . }}
 ---
-apiVersion: apps/v1beta1
+apiVersion: {{ template "minio.statefulset.apiVersion" . }}
 kind: StatefulSet
 metadata:
   name: {{ template "minio.fullname" . }}
@@ -46,10 +46,10 @@ spec:
 {{- if .Values.podLabels }}
 {{ toYaml .Values.podLabels | indent 8 }}
 {{- end }}
-      {{- if .Values.podAnnotations }}
       annotations:
-{{ toYaml .Values.podAnnotations | indent 8 }}
-      {{- end }}
+        checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+{{- if .Values.podAnnotations }}{{ toYaml .Values.podAnnotations | indent 8 }}{{- end }}
     spec:
       {{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"
