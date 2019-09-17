@@ -8,7 +8,7 @@ schedulerName: "{{ .Values.schedulerName }}"
 {{- end }}
 {{- if .Values.securityContext }}
 securityContext:
-{{ toYaml .Values.securityContext | indent 8 }}
+{{ toYaml .Values.securityContext | indent 2 }}
 {{- end }}
 {{- if .Values.priorityClassName }}
 priorityClassName: {{ .Values.priorityClassName }}
@@ -24,7 +24,7 @@ initContainers:
       runAsUser: 0
     command: ["chown", "-R", "{{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.runAsUser }}", "/var/lib/grafana"]
     resources:
-{{ toYaml .Values.initChownData.resources | indent 12 }}
+{{ toYaml .Values.initChownData.resources | indent 6 }}
     volumeMounts:
       - name: storage
         mountPath: "/var/lib/grafana"
@@ -80,13 +80,13 @@ initContainers:
         value: "{{ .Values.sidecar.skipTlsVerify }}"
       {{- end }}
     resources:
-{{ toYaml .Values.sidecar.resources | indent 12 }}
+{{ toYaml .Values.sidecar.resources | indent 6 }}
     volumeMounts:
       - name: sc-datasources-volume
         mountPath: "/etc/grafana/provisioning/datasources"
 {{- end}}
 {{- if .Values.extraInitContainers }}
-{{ toYaml .Values.extraInitContainers | indent 8 }}
+{{ toYaml .Values.extraInitContainers | indent 2 }}
 {{- end }}
 {{- if .Values.image.pullSecrets }}
 imagePullSecrets:
@@ -115,7 +115,7 @@ containers:
         value: "{{ .Values.sidecar.skipTlsVerify }}"
       {{- end }}
     resources:
-{{ toYaml .Values.sidecar.resources | indent 12 }}
+{{ toYaml .Values.sidecar.resources | indent 6 }}
     volumeMounts:
       - name: sc-dashboard-volume
         mountPath: {{ .Values.sidecar.dashboards.folder | quote }}
@@ -258,25 +258,25 @@ containers:
           name: {{ .Values.envFromSecret }}
     {{- end }}
     livenessProbe:
-{{ toYaml .Values.livenessProbe | indent 12 }}
+{{ toYaml .Values.livenessProbe | indent 6 }}
     readinessProbe:
-{{ toYaml .Values.readinessProbe | indent 12 }}
+{{ toYaml .Values.readinessProbe | indent 6 }}
     resources:
-{{ toYaml .Values.resources | indent 12 }}
+{{ toYaml .Values.resources | indent 6 }}
 {{- if .Values.extraContainers }}
-{{ toYaml .Values.extraContainers | indent 8}}
+{{ toYaml .Values.extraContainers | indent 2}}
 {{- end }}
 {{- with .Values.nodeSelector }}
 nodeSelector:
-{{ toYaml . | indent 8 }}
+{{ toYaml . | indent 2 }}
 {{- end }}
 {{- with .Values.affinity }}
 affinity:
-{{ toYaml . | indent 8 }}
+{{ toYaml . | indent 2 }}
 {{- end }}
 {{- with .Values.tolerations }}
 tolerations:
-{{ toYaml . | indent 8 }}
+{{ toYaml . | indent 2 }}
 {{- end }}
 volumes:
   - name: config
