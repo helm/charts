@@ -78,7 +78,8 @@ data:
       echo "autopurge.snapRetainCount=$ZK_SNAP_RETAIN_COUNT" >> $ZK_CONFIG_FILE
       echo "autopurge.purgeInterval=$ZK_PURGE_INTERVAL" >> $ZK_CONFIG_FILE
       echo "4lw.commands.whitelist=*" >> $ZK_CONFIG_FILE
-
+      echo "quorumListenOnAllIPs=$ZK_QUORUM_LISTEN_ALL_IP" >> $ZK_CONFIG_FILE
+      
       for (( i=1; i<=$ZK_REPLICAS; i++ ))
       do
           echo "server.$i=$NAME-$((i-1)).$DOMAIN:$ZK_SERVER_PORT:$ZK_ELECTION_PORT" >> $ZK_CONFIG_FILE
