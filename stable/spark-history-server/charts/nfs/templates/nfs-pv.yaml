@@ -1,0 +1,19 @@
+{{- if .Values.enableExampleNFS }}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ .Values.pvName }}
+  labels:
+    app.kubernetes.io/name: {{ include "nfs.name" . }}
+    helm.sh/chart: {{ include "nfs.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  capacity:
+    storage: {{ .Values.pvStorage }}
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    server: {{ include "nfs.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+    path: "/"
+{{- end }}

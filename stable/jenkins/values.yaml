@@ -7,173 +7,425 @@
 # See templates/_helpers.tpl
 # nameOverride:
 # fullnameOverride:
+# namespaceOverride:
 
-Master:
-  Name: jenkins-master
-  Image: "jenkins/jenkins"
-  ImageTag: "lts"
-  ImagePullPolicy: "Always"
-# ImagePullSecret: jenkins
-  Component: "jenkins-master"
-  UseSecurity: true
-  HostNetworking: false
-  AdminUser: admin
-  # AdminPassword: <defaults to random>
+# For FQDN resolving of the master service. Change this value to match your existing configuration.
+# ref: https://github.com/kubernetes/dns/blob/master/docs/specification.md
+clusterZone: "cluster.local"
+
+master:
+  # Used for label app.kubernetes.io/component
+  componentName: "jenkins-master"
+  image: "jenkins/jenkins"
+  tag: "lts"
+  imagePullPolicy: "Always"
+  imagePullSecretName:
+  # Optionally configure lifetime for master-container
+  lifecycle:
+  #  postStart:
+  #    exec:
+  #      command:
+  #      - "uname"
+  #      - "-a"
+  numExecutors: 0
+  customJenkinsLabels: []
+  # configAutoReload requires UseSecurity is set to true:
+  useSecurity: true
+
+  # enables configuration done directly via XML files
+  # People who want to configure Jenkins via https://github.com/jenkinsci/configuration-as-code-plugin only can set it to false
+  enableXmlConfig: true
+  # Allows to configure different SecurityRealm using Jenkins XML
+  securityRealm: |-
+    <securityRealm class="hudson.security.LegacySecurityRealm"/>
+  # Allows to configure different AuthorizationStrategy using Jenkins XML
+  authorizationStrategy: |-
+     <authorizationStrategy class="hudson.security.FullControlOnceLoggedInAuthorizationStrategy">
+       <denyAnonymousReadAccess>true</denyAnonymousReadAccess>
+     </authorizationStrategy>
+  hostNetworking: false
+  # When enabling LDAP or another non-Jenkins identity source, the built-in admin account will no longer exist.
+  # Since the AdminUser is used by configAutoReload, in order to use configAutoReload you must change the
+  # .master.adminUser to a valid username on your LDAP (or other) server.  This user does not need
+  # to have administrator rights in Jenkins (the default Overall:Read is sufficient) nor will it be granted any
+  # additional rights.  Failure to do this will cause the sidecar container to fail to authenticate via SSH and enter
+  # a restart loop.  Likewise if you disable the non-Jenkins identity store and instead use the Jenkins internal one,
+  # you should revert master.adminUser to your preferred admin user:
+  adminUser: "admin"
+  # adminPassword: <defaults to random>
+  # adminSshKey: <defaults to auto-generated>
+  # If CasC auto-reload is enabled, an SSH (RSA) keypair is needed.  Can either provide your own, or leave unconfigured to allow a random key to be auto-generated.
+  # If you supply your own, it is recommended that the values file that contains your key not be committed to source control in an unencrypted format
+  rollingUpdate: {}
+  # Ignored if Persistence is enabled
+  # maxSurge: 1
+  # maxUnavailable: 25%
   resources:
     requests:
       cpu: "50m"
       memory: "256Mi"
     limits:
       cpu: "2000m"
-      memory: "2048Mi"
+      memory: "4096Mi"
   # Environment variables that get added to the init container (useful for e.g. http_proxy)
-  # InitContainerEnv:
+  # initContainerEnv:
   #   - name: http_proxy
   #     value: "http://192.168.64.1:3128"
-  # ContainerEnv:
+  # containerEnv:
   #   - name: http_proxy
   #     value: "http://192.168.64.1:3128"
   # Set min/max heap here if needed with:
-  # JavaOpts: "-Xms512m -Xmx512m"
-  # JenkinsOpts: ""
-  # JenkinsUriPrefix: "/jenkins"
-  # Enable pod security context (must be `true` if RunAsUser or FsGroup are set)
-  UsePodSecurityContext: true
-  # Set RunAsUser to 1000 to let Jenkins run as non-root user 'jenkins' which exists in 'jenkins/jenkins' docker image.
-  # When setting RunAsUser to a different value than 0 also set FsGroup to the same value:
-  # RunAsUser: <defaults to 0>
-  # FsGroup: <will be omitted in deployment if RunAsUser is 0>
-  ServicePort: 8080
+  # javaOpts: "-Xms512m -Xmx512m"
+  # jenkinsOpts: ""
+  # jenkinsUrl: ""
+  # If you set this prefix and use ingress controller then you might want to set the ingress path below
+  # jenkinsUriPrefix: "/jenkins"
+  # Enable pod security context (must be `true` if runAsUser or fsGroup are set)
+  usePodSecurityContext: true
+  # Set runAsUser to 1000 to let Jenkins run as non-root user 'jenkins' which exists in 'jenkins/jenkins' docker image.
+  # When setting runAsUser to a different value than 0 also set fsGroup to the same value:
+  # runAsUser: <defaults to 0>
+  # fsGroup: <will be omitted in deployment if runAsUser is 0>
+  servicePort: 8080
+  targetPort: 8080
   # For minikube, set this to NodePort, elsewhere use LoadBalancer
   # Use ClusterIP if your setup includes ingress controller
-  ServiceType: LoadBalancer
-  # Master Service annotations
-  ServiceAnnotations: {}
+  serviceType: LoadBalancer
+  # Jenkins master service annotations
+  serviceAnnotations: {}
+  # Jenkins master custom labels
+  deploymentLabels: {}
+  #   foo: bar
+  #   bar: foo
+  # Jenkins master service labels
+  serviceLabels: {}
   #   service.beta.kubernetes.io/aws-load-balancer-backend-protocol: https
+  # Put labels on Jenkins master pod
+  podLabels: {}
   # Used to create Ingress record (should used with ServiceType: ClusterIP)
-  # HostName: jenkins.cluster.local
-  # NodePort: <to set explicitly, choose port between 30000-32767
+  # nodePort: <to set explicitly, choose port between 30000-32767
   # Enable Kubernetes Liveness and Readiness Probes
   # ~ 2 minutes to allow Jenkins to restart when upgrading plugins. Set ReadinessTimeout to be shorter than LivenessTimeout.
-  HealthProbes: true
-  HealthProbesLivenessTimeout: 90
-  HealthProbesReadinessTimeout: 60
-  HealthProbeLivenessFailureThreshold: 12
-  SlaveListenerPort: 50000
-  DisabledAgentProtocols:
+  healthProbes: true
+  healthProbesLivenessTimeout: 5
+  healthProbesReadinessTimeout: 5
+  healthProbeLivenessPeriodSeconds: 10
+  healthProbeReadinessPeriodSeconds: 10
+  healthProbeLivenessFailureThreshold: 5
+  healthProbeReadinessFailureThreshold: 3
+  healthProbeLivenessInitialDelay: 90
+  healthProbeReadinessInitialDelay: 60
+  slaveListenerPort: 50000
+  slaveHostPort:
+  disabledAgentProtocols:
     - JNLP-connect
     - JNLP2-connect
-  CSRF:
-    DefaultCrumbIssuer:
-      Enabled: true
-      ProxyCompatability: true
-  CLI: false
-  # Kubernetes service type for the JNLP slave service
-  # SETTING THIS TO "LoadBalancer" IS A HUGE SECURITY RISK: https://github.com/kubernetes/charts/issues/1341
-  SlaveListenerServiceType: ClusterIP
-  SlaveListenerServiceAnnotations: {}
-  LoadBalancerSourceRanges:
+  csrf:
+    defaultCrumbIssuer:
+      enabled: true
+      proxyCompatability: true
+  cli: false
+  # Kubernetes service type for the JNLP agent service
+  # slaveListenerServiceType is the Kubernetes Service type for the JNLP agent service,
+  # either 'LoadBalancer', 'NodePort', or 'ClusterIP'
+  # Note if you set this to 'LoadBalancer', you *must* define annotations to secure it. By default
+  # this will be an external load balancer and allowing inbound 0.0.0.0/0, a HUGE
+  # security risk:  https://github.com/kubernetes/charts/issues/1341
+  slaveListenerServiceType: "ClusterIP"
+  slaveListenerServiceAnnotations: {}
+  slaveKubernetesNamespace:
+
+  # Example of 'LoadBalancer' type of agent listener with annotations securing it
+  # slaveListenerServiceType: LoadBalancer
+  # slaveListenerServiceAnnotations:
+  #   service.beta.kubernetes.io/aws-load-balancer-internal: "True"
+  #   service.beta.kubernetes.io/load-balancer-source-ranges: "172.0.0.0/8, 10.0.0.0/8"
+
+  # LoadBalancerSourcesRange is a list of allowed CIDR values, which are combined with ServicePort to
+  # set allowed inbound rules on the security group assigned to the master load balancer
+  loadBalancerSourceRanges:
   - 0.0.0.0/0
   # Optionally assign a known public LB IP
-  # LoadBalancerIP: 1.2.3.4
+  # loadBalancerIP: 1.2.3.4
   # Optionally configure a JMX port
-  # requires additional JavaOpts, ie
-  # JavaOpts: >
+  # requires additional javaOpts, ie
+  # javaOpts: >
   #   -Dcom.sun.management.jmxremote.port=4000
   #   -Dcom.sun.management.jmxremote.authenticate=false
   #   -Dcom.sun.management.jmxremote.ssl=false
-  # JMXPort: 4000
-  # Optionally configure other ports to expose in the Master container
-  ExtraPorts:
+  # jmxPort: 4000
+  # Optionally configure other ports to expose in the master container
+  extraPorts:
   # - name: BuildInfoProxy
   #   port: 9000
+
   # List of plugins to be install during Jenkins master start
-  InstallPlugins:
-    - kubernetes:1.12.4
-    - workflow-job:2.24
-    - workflow-aggregator:2.5
-    - credentials-binding:1.16
-    - git:3.9.1
+  installPlugins:
+    - kubernetes:1.18.1
+    - workflow-job:2.33
+    - workflow-aggregator:2.6
+    - credentials-binding:1.19
+    - git:3.11.0
+
+  # Enable to always override the installed plugins with the values of 'master.installPlugins' on upgrade or redeployment.
+  # overwritePlugins: true
+  # Enable HTML parsing using OWASP Markup Formatter Plugin (antisamy-markup-formatter), useful with ghprb plugin.
+  # The plugin is not installed by default, please update master.installPlugins.
+  enableRawHtmlMarkupFormatter: false
   # Used to approve a list of groovy functions in pipelines used the script-security plugin. Can be viewed under /scriptApproval
-  # ScriptApproval:
-  #   - "method groovy.json.JsonSlurperClassic parseText java.lang.String"
-  #   - "new groovy.json.JsonSlurperClassic"
+  scriptApproval:
+  #  - "method groovy.json.JsonSlurperClassic parseText java.lang.String"
+  #  - "new groovy.json.JsonSlurperClassic"
   # List of groovy init scripts to be executed during Jenkins master start
-  InitScripts:
+  initScripts:
   #  - |
   #    print 'adding global pipeline libraries, register properties, bootstrap jobs...'
   # Kubernetes secret that contains a 'credentials.xml' for Jenkins
-  # CredentialsXmlSecret: jenkins-credentials
+  # credentialsXmlSecret: jenkins-credentials
   # Kubernetes secret that contains files to be put in the Jenkins 'secrets' directory,
   # useful to manage encryption keys used for credentials.xml for instance (such as
   # master.key and hudson.util.Secret)
-  # SecretsFilesSecret: jenkins-secrets
+  # secretsFilesSecret: jenkins-secrets
   # Jenkins XML job configs to provision
-  # Jobs: |-
-  #   test: |-
-  #     <<xml here>>
-  CustomConfigMap: false
-  # By default, the configMap is only used to set the initial config the first time
-  # that the chart is installed.  Setting `OverwriteConfig` to `true` will overwrite
-  # the jenkins config with the contents of the configMap every time the pod starts.
-  OverwriteConfig: false
+  jobs: {}
+  #  test: |-
+  #    <<xml here>>
+
+  # Below is the implementation of Jenkins Configuration as Code.  Add a key under configScripts for each configuration area,
+  # where each corresponds to a plugin or section of the UI.  Each key (prior to | character) is just a label, and can be any value.
+  # Keys are only used to give the section a meaningful name.  The only restriction is they may only contain RFC 1123 \ DNS label
+  # characters: lowercase letters, numbers, and hyphens.  The keys become the name of a configuration yaml file on the master in
+  # /var/jenkins_home/casc_configs (by default) and will be processed by the Configuration as Code Plugin.  The lines after each |
+  # become the content of the configuration yaml file.  The first line after this is a JCasC root element, eg jenkins, credentials,
+  # etc.  Best reference is https://<jenkins_url>/configuration-as-code/reference.  The example below creates a welcome message:
+  JCasC:
+    enabled: false
+    defaultConfig: false
+    pluginVersion: "1.27"
+    # it's only used when plugin version is <=1.18 for later version the
+    # configuration as code support plugin is no longer needed
+    supportPluginVersion: "1.18"
+    configScripts:
+      welcome-message: |
+        jenkins:
+          systemMessage: Welcome to our CI\CD server.  This Jenkins is configured and managed 'as code'.
+
+  # Optionally specify additional init-containers
+  customInitContainers: []
+  # - name: custom-init
+  #   image: "alpine:3.7"
+  #   imagePullPolicy: Always
+  #   command: [ "uname", "-a" ]
+
+  sidecars:
+    configAutoReload:
+      # If enabled: true, Jenkins Configuration as Code will be reloaded on-the-fly without a reboot.  If false or not-specified,
+      # jcasc changes will cause a reboot and will only be applied at the subsequent start-up.  Auto-reload uses the Jenkins CLI
+      # over SSH to reapply config when changes to the configScripts are detected.  The admin user (or account you specify in
+      # master.adminUser) will have a random SSH private key (RSA 4096) assigned unless you specify adminSshKey.  This will be saved to a k8s secret.
+      enabled: false
+      image: shadwell/k8s-sidecar:0.0.2
+      imagePullPolicy: IfNotPresent
+      resources: {}
+        #   limits:
+        #     cpu: 100m
+        #     memory: 100Mi
+        #   requests:
+        #     cpu: 50m
+        #     memory: 50Mi
+      # SSH port value can be set to any unused TCP port.  The default, 1044, is a non-standard SSH port that has been chosen at random.
+      # Is only used to reload jcasc config from the sidecar container running in the Jenkins master pod.
+      # This TCP port will not be open in the pod (unless you specifically configure this), so Jenkins will not be
+      # accessible via SSH from outside of the pod.  Note if you use non-root pod privileges (runAsUser & fsGroup),
+      # this must be > 1024:
+      sshTcpPort: 1044
+      # folder in the pod that should hold the collected dashboards:
+      folder: "/var/jenkins_home/casc_configs"
+      # If specified, the sidecar will search for JCasC config-maps inside this namespace.
+      # Otherwise the namespace in which the sidecar is running will be used.
+      # It's also possible to specify ALL to search in all namespaces:
+      # searchNamespace:
+
+    # Allows you to inject additional/other sidecars
+    other:
+    ## The example below runs the client for https://smee.io as sidecar container next to Jenkins,
+    ## that allows to trigger build behind a secure firewall.
+    ## https://jenkins.io/blog/2019/01/07/webhook-firewalls/#triggering-builds-with-webhooks-behind-a-secure-firewall
+    ##
+    ## Note: To use it you should go to https://smee.io/new and update the url to the generete one.
+    # - name: smee
+    #   image: docker.io/twalter/smee-client:1.0.2
+    #   args: ["--port", "{{ .Values.master.servicePort }}", "--path", "/github-webhook/", "--url", "https://smee.io/new"]
+    #   resources:
+    #     limits:
+    #       cpu: 50m
+    #       memory: 128Mi
+    #     requests:
+    #       cpu: 10m
+    #       memory: 32Mi
   # Node labels and tolerations for pod assignment
   # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
   # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
-  NodeSelector: {}
-  Tolerations: {}
-  PodAnnotations: {}
+  nodeSelector: {}
+  tolerations: []
+  # Leverage a priorityClass to ensure your pods survive resource shortages
+  # ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
+  # priorityClass: system-cluster-critical
+  podAnnotations: {}
 
-  Ingress:
-    ApiVersion: extensions/v1beta1
-    Annotations: {}
+  # The below two configuration-related values are deprecated and replaced by Jenkins Configuration as Code (see above
+  # JCasC key).  They will be deleted in an upcoming version.
+  customConfigMap: false
+  # By default, the configMap is only used to set the initial config the first time
+  # that the chart is installed.  Setting `overwriteConfig` to `true` will overwrite
+  # the jenkins config with the contents of the configMap every time the pod starts.
+  # This will also overwrite all init scripts
+  overwriteConfig: false
+
+  # By default, the Jobs Map is only used to set the initial jobs the first time
+  # that the chart is installed.  Setting `overwriteJobs` to `true` will overwrite
+  # the jenkins jobs configuration with the contents of Jobs every time the pod starts.
+  overwriteJobs: false
+
+  ingress:
+    enabled: false
+    # For Kubernetes v1.14+, use 'networking.k8s.io/v1beta1'
+    apiVersion: "extensions/v1beta1"
+    labels: {}
+    annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
-
-    TLS:
+    # Set this path to jenkinsUriPrefix above or use annotations to rewrite path
+    # path: "/jenkins"
+    # configures the hostname e.g. jenkins.example.com
+    hostName:
+    tls:
     # - secretName: jenkins.cluster.local
     #   hosts:
     #     - jenkins.cluster.local
 
-Agent:
-  Enabled: true
-  Image: jenkins/jnlp-slave
-  ImageTag: 3.10-1
-  CustomJenkinsLabels: []
-# ImagePullSecret: jenkins
-  Component: "jenkins-slave"
-  Privileged: false
+  # If you're running on GKE and need to configure a backendconfig
+  # to finish ingress setup, use the following values.
+  # Docs: https://cloud.google.com/kubernetes-engine/docs/concepts/backendconfig
+  backendconfig:
+    enabled: false
+    apiVersion: "extensions/v1beta1"
+    name:
+    labels: {}
+    annotations: {}
+    spec: {}
+
+  # Openshift route
+  route:
+    enabled: false
+    labels: {}
+    annotations: {}
+    # path: "/jenkins"
+
+  additionalConfig: {}
+
+  # master.hostAliases allows for adding entries to Pod /etc/hosts:
+  # https://kubernetes.io/docs/concepts/services-networking/add-entries-to-pod-etc-hosts-with-host-aliases/
+  hostAliases: []
+  # - ip: 192.168.50.50
+  #   hostnames:
+  #     - something.local
+  # - ip: 10.0.50.50
+  #   hostnames:
+  #     - other.local
+
+  # Expose Prometheus metrics
+  prometheus:
+    # If enabled, add the prometheus plugin to the list of plugins to install
+    # https://plugins.jenkins.io/prometheus
+    enabled: false
+    # Additional labels to add to the ServiceMonitor object
+    serviceMonitorAdditionalLabels: {}
+    # Set a custom namespace where to deploy ServiceMonitor resource
+    # serviceMonitorNamespace: monitoring
+    scrapeInterval: 60s
+    # This is the default endpoint used by the prometheus plugin
+    scrapeEndpoint: /prometheus
+    # Additional labels to add to the PrometheusRule object
+    alertingRulesAdditionalLabels: {}
+    # An array of prometheus alerting rules
+    # See here: https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/
+    # The `groups` root object is added by default, simply add the rule entries
+    alertingrules: []
+
+agent:
+  enabled: true
+  image: "jenkins/jnlp-slave"
+  tag: "3.27-1"
+  customJenkinsLabels: []
+  # name of the secret to be used for image pulling
+  imagePullSecretName:
+  componentName: "jenkins-slave"
+  privileged: false
   resources:
     requests:
-      cpu: "200m"
-      memory: "256Mi"
+      cpu: "512m"
+      memory: "512Mi"
     limits:
-      cpu: "200m"
-      memory: "256Mi"
+      cpu: "512m"
+      memory: "512Mi"
   # You may want to change this to true while testing a new image
-  AlwaysPullImage: false
-  # Controls how slave pods are retained after the Jenkins build completes
+  alwaysPullImage: false
+  # Controls how agent pods are retained after the Jenkins build completes
   # Possible values: Always, Never, OnFailure
-  PodRetention: Never
+  podRetention: "Never"
   # You can define the volumes that you want to mount for this container
   # Allowed types are: ConfigMap, EmptyDir, HostPath, Nfs, Pod, Secret
   # Configure the attributes as they appear in the corresponding Java class for that type
   # https://github.com/jenkinsci/kubernetes-plugin/tree/master/src/main/java/org/csanchez/jenkins/plugins/kubernetes/volumes
+  # Pod-wide ennvironment, these vars are visible to any container in the agent pod
+  envVars:
+  # - name: PATH
+  #   value: /usr/local/bin
   volumes:
   # - type: Secret
   #   secretName: mysecret
   #   mountPath: /var/myapp/mysecret
-  NodeSelector: {}
+  # - type: EmptyDir
+  #   mountPath: "/var/lib/containers"
+  #   memory: false
+  nodeSelector: {}
   # Key Value selectors. Ex:
   # jenkins-agent: v1
 
-Persistence:
-  Enabled: true
-  ## A manually managed Persistent Volume and Claim
-  ## Requires Persistence.Enabled: true
-  ## If defined, PVC must be created manually before volume will be bound
-  # ExistingClaim:
+  # Executed command when side container gets started
+  command:
+  args:
+  # Side container name
+  sideContainerName: "jnlp"
+  # Doesn't allocate pseudo TTY by default
+  TTYEnabled: false
+  # Max number of spawned agent
+  containerCap: 10
+  # Pod name
+  podName: "default"
+  # Allows the Pod to remain active for reuse until the configured number of
+  # minutes has passed since the last step was executed on it.
+  idleMinutes: 0
+  # Raw yaml template for the Pod. For example this allows usage of toleration for agent pods.
+  # https://github.com/jenkinsci/kubernetes-plugin#using-yaml-to-define-pod-templates
+  # https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  yamlTemplate: ""
+  # yamlTemplate: |-
+  #   apiVersion: v1
+  #   kind: Pod
+  #   spec:
+  #     tolerations:
+  #     - key: "key"
+  #       operator: "Equal"
+  #       value: "value"
 
+persistence:
+  enabled: true
+  ## A manually managed Persistent Volume and Claim
+  ## Requires persistence.enabled: true
+  ## If defined, PVC must be created manually before volume will be bound
+  existingClaim:
   ## jenkins data Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
   ## If set to "-", storageClassName: "", which disables dynamic provisioning
@@ -181,11 +433,10 @@ Persistence:
   ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
   ##   GKE, AWS & OpenStack)
   ##
-  # StorageClass: "-"
-
-  Annotations: {}
-  AccessMode: ReadWriteOnce
-  Size: 8Gi
+  storageClass:
+  annotations: {}
+  accessMode: "ReadWriteOnce"
+  size: "8Gi"
   volumes:
   #  - name: nothing
   #    emptyDir: {}
@@ -194,18 +445,75 @@ Persistence:
   #    name: nothing
   #    readOnly: true
 
-NetworkPolicy:
+networkPolicy:
   # Enable creation of NetworkPolicy resources.
-  Enabled: false
+  enabled: false
   # For Kubernetes v1.4, v1.5 and v1.6, use 'extensions/v1beta1'
   # For Kubernetes v1.7, use 'networking.k8s.io/v1'
-  ApiVersion: extensions/v1beta1
+  apiVersion: networking.k8s.io/v1
 
 ## Install Default RBAC roles and bindings
 rbac:
-  install: false
-  serviceAccountName: default
-  # Role reference
-  roleRef: cluster-admin
-  # Role kind (RoleBinding or ClusterRoleBinding)
-  roleBindingKind: ClusterRoleBinding
+  create: true
+
+serviceAccount:
+  create: true
+  # The name of the service account is autogenerated by default
+  name:
+  annotations: {}
+
+serviceAccountAgent:
+  # Specifies whether a ServiceAccount should be created
+  create: false
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+  annotations: {}
+
+## Backup cronjob configuration
+## Ref: https://github.com/maorfr/kube-tasks
+backup:
+  # Backup must use RBAC
+  # So by enabling backup you are enabling RBAC specific for backup
+  enabled: false
+  # Used for label app.kubernetes.io/component
+  componentName: "backup"
+  # Schedule to run jobs. Must be in cron time format
+  # Ref: https://crontab.guru/
+  schedule: "0 2 * * *"
+  annotations:
+    # Example for authorization to AWS S3 using kube2iam
+    # Can also be done using environment variables
+    iam.amazonaws.com/role: "jenkins"
+  image:
+    repository: "maorfr/kube-tasks"
+    tag: "0.2.0"
+  # Additional arguments for kube-tasks
+  # Ref: https://github.com/maorfr/kube-tasks#simple-backup
+  extraArgs: []
+  # Add existingSecret for AWS credentials
+  existingSecret: {}
+  ## Example for using an existing secret
+   # jenkinsaws:
+  ## Use this key for AWS access key ID
+     # awsaccesskey: jenkins_aws_access_key
+  ## Use this key for AWS secret access key
+     # awssecretkey: jenkins_aws_secret_key
+  # Add additional environment variables
+  env:
+  # Example environment variable required for AWS credentials chain
+  - name: "AWS_REGION"
+    value: "us-east-1"
+  resources:
+    requests:
+      memory: 1Gi
+      cpu: 1
+    limits:
+      memory: 1Gi
+      cpu: 1
+  # Destination to store the backup artifacts
+  # Supported cloud storage services: AWS S3, Minio S3, Azure Blob Storage, Google Cloud Storage
+  # Additional support can added. Visit this repository for details
+  # Ref: https://github.com/maorfr/skbn
+  destination: "s3://jenkins-data/backup"
+checkDeprecation: true

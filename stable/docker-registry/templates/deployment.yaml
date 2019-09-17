@@ -19,6 +19,9 @@ spec:
       labels:
         app: {{ template "docker-registry.name" . }}
         release: {{ .Release.Name }}
+        {{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | indent 8 }}
+        {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
 {{- if $.Values.podAnnotations }}
@@ -46,21 +49,21 @@ spec:
           - serve
           - /etc/docker/registry/config.yml
           ports:
-            - containerPort: {{ .Values.service.port }}
+            - containerPort: 5000
           livenessProbe:
             httpGet:
 {{- if .Values.tlsSecretName }}
               scheme: HTTPS
 {{- end }}
               path: /
-              port: {{ .Values.service.port }}
+              port: 5000
           readinessProbe:
             httpGet:
 {{- if .Values.tlsSecretName }}
               scheme: HTTPS
 {{- end }}
               path: /
-              port: {{ .Values.service.port }}
+              port: 5000
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           env:
@@ -117,6 +120,10 @@ spec:
             {{- end }}
             - name: REGISTRY_STORAGE_S3_REGION
               value: {{ required ".Values.s3.region is required" .Values.s3.region }}
+          {{- if .Values.s3.regionEndpoint }}
+            - name: REGISTRY_STORAGE_S3_REGIONENDPOINT
+              value: {{ .Values.s3.regionEndpoint }}
+          {{- end }}
             - name: REGISTRY_STORAGE_S3_BUCKET
               value: {{ required ".Values.s3.bucket is required" .Values.s3.bucket }}
           {{- if .Values.s3.encrypt }}
@@ -142,6 +149,10 @@ spec:
                   key: swiftPassword
             - name: REGISTRY_STORAGE_SWIFT_CONTAINER
               value: {{ required ".Values.swift.container is required" .Values.swift.container }}
+{{- end }}
+{{- if .Values.persistence.deleteEnabled }}
+            - name: REGISTRY_STORAGE_DELETE_ENABLED
+              value: "true"
 {{- end }}
           volumeMounts:
 {{- if .Values.secrets.htpasswd }}

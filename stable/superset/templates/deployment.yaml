@@ -1,44 +1,50 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "superset.fullname" . }}
+  name: {{ include "superset.fullname" . }}
   labels:
-    app: {{ template "superset.name" . }}
-    chart: {{ template "superset.chart" . }}
+    app: {{ include "superset.name" . }}
+    chart: {{ include "superset.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ template "superset.name" . }}
+      app: {{ include "superset.name" . }}
       release: {{ .Release.Name }}
   template:
     metadata:
-      name: {{ template "superset.fullname" . }}
+      name: {{ include "superset.fullname" . }}
       labels:
-        app: {{ template "superset.name" . }}
-        chart: {{ template "superset.chart" . }}
+        app: {{ include "superset.name" . }}
+        chart: {{ include "superset.chart" . }}
         release: {{ .Release.Name }}
         heritage: {{ .Release.Service }}
+      annotations:
+        checksum/secrets: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+        {{- with .Values.deploymentAnnotations }}
+        {{- . | toYaml | nindent 8 }}
+        {{- end }}
     spec:
       securityContext:
-        runAsUser: 0
-        fsGroup: 0
+        runAsUser: 1000
+        fsGroup: 1000
       volumes:
-        - name: superset-init
+        - name: superset-configs
           secret:
-            secretName: {{ template "superset.fullname" . }}
-        - name: superset-server-config
-          configMap:
-            name: {{ template "superset.fullname" . }}
+            secretName: {{ include "superset.fullname" . }}
         - name: storage-volume
-        {{- if .Values.persistence.enabled }}
+          {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
-            claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "superset.fullname" . }}{{- end }}
-        {{- else }}
+            claimName: {{ .Values.persistence.existingClaim | default (include "superset.fullname" .) }}
+          {{- else }}
           emptyDir: {}
-        {{- end }}
+          {{- end }}
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.image.pullSecrets | indent 8 }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -46,47 +52,47 @@ spec:
           command: ["/bin/bash"]
           args: ["/home/superset/init_superset.sh" ]
           volumeMounts:
-            - name: superset-init
+            - name: superset-configs
               mountPath: /home/superset
-            - name: superset-server-config
-              mountPath: /etc/superset
             - name: storage-volume
               mountPath: /var/lib/superset
           ports:
             - name: http
               containerPort: 8088
               protocol: TCP
+          {{- if .Values.extraEnv }}
           env:
-          {{- range $key, $value := .Values.extraEnv }}
+            {{- range $key, $value := .Values.extraEnv }}
             - name: "{{ $key }}"
               value: "{{ $value }}"
+            {{- end }}
           {{- end }}
-        {{- if .Values.extraEnvFromSecret }}
+          {{- if .Values.extraEnvFromSecret }}
           envFrom:
             - secretRef:
                 name: {{ .Values.extraEnvFromSecret }}
-        {{- end }}
-    {{- with .Values.resources }}
+          {{- end }}
+          {{- with .Values.resources }}
           resources:
-{{ toYaml . | indent 12 }}
-    {{- end }}
-    {{- with .Values.livenessProbe }}
+            {{- . | toYaml | nindent 12 }}
+          {{- end }}
+          {{- with .Values.livenessProbe }}
           livenessProbe:
-{{ toYaml . | indent 12 }}
-    {{- end }}
-    {{- with .Values.readinessProbe }}
+            {{- . | toYaml | nindent 12 }}
+          {{- end }}
+          {{- with .Values.readinessProbe }}
           readinessProbe:
-{{ toYaml . | indent 12 }}
-    {{- end }}
-    {{- with .Values.nodeSelector }}
+            {{- . | toYaml | nindent 12 }}
+          {{- end }}
+      {{- with .Values.nodeSelector }}
       nodeSelector:
-{{ toYaml . | indent 8 }}
-    {{- end }}
-    {{- with .Values.affinity }}
+        {{- . | toYaml | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
       affinity:
-{{ toYaml . | indent 8 }}
-    {{- end }}
-    {{- with .Values.tolerations }}
+        {{- . | toYaml | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
       tolerations:
-{{ toYaml . | indent 8 }}
-    {{- end }}
+        {{- . | toYaml | nindent 8 }}
+      {{- end }}

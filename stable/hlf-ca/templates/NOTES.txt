@@ -28,6 +28,6 @@ Run the following commands to...
   kubectl exec $POD_NAME -- bash -c 'fabric-ca-client enroll -d -u http://$CA_ADMIN:$CA_PASSWORD@$SERVICE_DNS:{{ .Values.service.port }}'
 
 5. Update the chart without resetting a password:
-  export CA_ADMIN=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ include "hlf-ca.fullname" . }} -o jsonpath="{.data.CA_ADMIN}" | base64 --decode; echo)
-  export CA_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ include "hlf-ca.fullname" . }} -o jsonpath="{.data.CA_PASSWORD}" | base64 --decode; echo)
+  export CA_ADMIN=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ include "hlf-ca.fullname" . }}--ca -o jsonpath="{.data.CA_ADMIN}" | base64 --decode; echo)
+  export CA_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ include "hlf-ca.fullname" . }}--ca -o jsonpath="{.data.CA_PASSWORD}" | base64 --decode; echo)
   helm upgrade {{ .Release.Name }} stable/hlf-ca --namespace {{ .Release.Namespace }} -f my-values.yaml --set adminUsername=$CA_ADMIN,adminPassword=$CA_PASSWORD

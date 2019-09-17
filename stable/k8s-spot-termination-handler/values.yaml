@@ -1,0 +1,83 @@
+# Default values for k8s-spot-termination-handler.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+image:
+  repository: kubeaws/kube-spot-termination-notice-handler
+  tag: 1.13.7-1
+  pullPolicy: IfNotPresent
+
+# URL of EC2 spot instance termination notice endpoint
+noticeUrl: http://169.254.169.254/latest/meta-data/spot/termination-time
+
+# Poll the metadata every pollInterval seconds for termination events:
+pollInterval: 5
+
+# Set VERBOSE=1 to get more output
+# verbose: 1
+
+# Send notifications to a Slack webhook URL - replace with your own value and uncomment:
+# slackUrl: https://hooks.slack.com/services/EXAMPLE123/EXAMPLE123/example1234567
+
+# Set the cluster name to be reported in a Slack message
+# clusterName: test
+
+# Silence logspout by default - set to true to enable logs arriving in logspout
+enableLogspout: false
+
+# Trigger instance removal from AutoScaling Group on termination notice
+detachAsg: false
+
+# Grace period for node draining
+gracePeriod: 120
+
+## The name of a secret in the same kubernetes namespace which contain values to be added to the environment
+## This can be useful for auth tokens, etc
+envFromSecret: ""
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 10m
+  #   memory: 32Mi
+
+# Add a priority class to the deamonset
+priorityClassName: ""
+
+nodeSelector: {}
+  # "node-role.kubernetes.io/spot-worker": "true"
+
+tolerations: []
+  # - key: "dedicated"
+  #   operator: "Equal"
+  #   value: "gpu"
+  #   effect: "NoSchedule"
+
+affinity: {}
+hostNetwork: true
+
+# annotations to be added to pods
+podAnnotations: {}
+
+# If the spot handler was installed before Kubernetes version 1.6
+# then you need to explicitly set the value below otherwise
+# you will have to manually cycle your pods every time you perform the update.
+# Default value for Kubernetes v1.5 and before was "OnDelete".
+updateStrategy: RollingUpdate
+maxUnavailable: 1

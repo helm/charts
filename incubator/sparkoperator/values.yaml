@@ -1,10 +1,46 @@
 operatorImageName: gcr.io/spark-operator/spark-operator
-operatorVersion: v2.3.1-v1alpha1-latest
-operatorNamespace: spark-operator
-sparkJobNamespace: default
+operatorVersion: v2.4.0-v1beta1-0.9.0
+imagePullPolicy: IfNotPresent
 
-createOperatorNamespace: true
-createSparkJobNamespace: false
+rbac:
+  create: true
 
-enableWebhook: true
+serviceAccounts:
+  spark:
+    create: true
+    name:
+  sparkoperator:
+    create: true
+    name:
+
+sparkJobNamespace: ""
+
+enableWebhook: false
 enableMetrics: true
+
+controllerThreads: 10
+ingressUrlFormat: ""
+installCrds: true
+metricsPort: 10254
+metricsEndpoint: "/metrics"
+metricsPrefix: ""
+resyncInterval: 30
+webhookPort: 8080
+
+## Node labels for pod assignment
+## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+##
+nodeSelector: {}
+
+## Resources for the sparkoperator deployment
+## Ref: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
+##
+resources: {}
+
+logLevel: 2
+
+## Whether to enable batch scheduler for pod scheduling,
+## if enabled, end user can specify batch scheduler name in spark application.
+enableBatchScheduler: false
+
+podAnnotations: {}

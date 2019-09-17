@@ -1,3 +1,4 @@
+{{- if .Values.nexusProxy.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -20,8 +21,12 @@ metadata:
 {{- end }}
 spec:
   ports:
-    - name: {{ .Values.nexusProxy.name }}
-      port: {{ .Values.nexusProxy.port }}
+    - port: {{ .Values.nexusProxy.port }}
+{{- if .Values.nexusProxy.svcName }}
+      name: {{ .Values.nexusProxy.svcName }}
+{{- else }}
+      name: {{ template "nexus.fullname" . }}
+{{- end }}
       protocol: TCP
       targetPort: {{ .Values.nexusProxy.targetPort }}
   selector:
@@ -31,3 +36,4 @@ spec:
   {{- if and (eq .Values.nexus.service.type "ClusterIP") .Values.nexus.service.clusterIP }}
   clusterIP: {{ .Values.nexus.service.clusterIP }}
   {{- end }}
+{{- end }}

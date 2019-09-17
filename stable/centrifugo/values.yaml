@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: centrifugo/centrifugo
-  tag: 1.7.3
+  tag: v2.1.0
   pullPolicy: IfNotPresent
 
 service:
@@ -19,24 +19,32 @@ ingress:
   enabled: false
   hosts: []
   annotations:
-    kubernetes.io/ingress.class: nginx
-    ingress.kubernetes.io/upstream-fail-timeout: 60
-    ingress.kubernetes.io/upstream-max-fails: 2
-    ingress.kubernetes.io/proxy-read-timeout: 3600
-    ingress.kubernetes.io/proxy-send-timeout: 3600
+    # kubernetes.io/ingress.class: nginx
+    # ingress.kubernetes.io/upstream-fail-timeout: 60
+    # ingress.kubernetes.io/upstream-max-fails: 2
+    # ingress.kubernetes.io/proxy-read-timeout: 3600
+    # ingress.kubernetes.io/proxy-send-timeout: 3600
 
 config:
-  web: true
   namespaces:
+  - name: chat
+    anonymous: false
+    publish: true
+    join_leave: true
+    presence: true
+    presence_stats: true
+    history_size: 10
+    history_lifetime: 60
+    history_recover: true
   - name: public
     anonymous: true
     publish: true
-    watch: true
-    presence: true
     join_leave: true
+    presence: true
+    presence_stats: true
     history_size: 10
-    history_lifetime: 30
-    recover: true
+    history_lifetime: 60
+    history_recover: true
 
 ## Centrifugo secret
 ## Defaults to a random 10-character alphanumeric string if not set
@@ -50,6 +58,8 @@ admin:
   password: ""
 
 args:
-  - --web=true
+- --config=centrifugo/config.json
+- --admin
+- --health
 
 resources: {}

@@ -19,7 +19,7 @@ image:
 
   ## Prisma image version
   ##
-  tag: 1.15-heroku
+  tag: 1.29.1-heroku
 
   ## Specify an imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images

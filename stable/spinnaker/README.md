@@ -41,50 +41,50 @@ for Spinnaker. If you want to add arbitrary clusters need to do the following:
 
 1. Upload your kubeconfig to a secret with the key `config` in the cluster you are installing Spinnaker to.
 
-    ```shell
-    $ kubectl create secret generic --from-file=$HOME/.kube/config my-kubeconfig
-    ```
+```shell
+$ kubectl create secret generic --from-file=$HOME/.kube/config my-kubeconfig
+```
 
 1. Set the following values of the chart:
 
-    ```yaml
-    kubeConfig:
-      enabled: true
-      secretName: my-kubeconfig
-      secretKey: config
-      contexts:
-      # Names of contexts available in the uploaded kubeconfig
-      - my-context
-      # This is the context from the list above that you would like
-      # to deploy Spinnaker itself to.
-      deploymentContext: my-context
-    ```
+```yaml
+kubeConfig:
+  enabled: true
+  secretName: my-kubeconfig
+  secretKey: config
+  contexts:
+  # Names of contexts available in the uploaded kubeconfig
+  - my-context
+  # This is the context from the list above that you would like
+  # to deploy Spinnaker itself to.
+  deploymentContext: my-context
+```
 
 ## Specifying Docker Registries and Valid Images (Repositories)
 
 Spinnaker will only give you access to Docker images that have been whitelisted, if you're using a private registry or a private repository you also need to provide credentials.  Update the following values of the chart to do so:
 
-    ```yaml
-    dockerRegistries:
-    - name: dockerhub
-      address: index.docker.io
-      repositories:
-        - library/alpine
-        - library/ubuntu
-        - library/centos
-        - library/nginx
-    # - name: gcr
-    #   address: https://gcr.io
-    #   username: _json_key
-    #   password: '<INSERT YOUR SERVICE ACCOUNT JSON HERE>'
-    #   email: 1234@5678.com
-    ```
+```yaml
+dockerRegistries:
+- name: dockerhub
+  address: index.docker.io
+  repositories:
+    - library/alpine
+    - library/ubuntu
+    - library/centos
+    - library/nginx
+# - name: gcr
+#   address: https://gcr.io
+#   username: _json_key
+#   password: '<INSERT YOUR SERVICE ACCOUNT JSON HERE>'
+#   email: 1234@5678.com
+```
 
 You can provide passwords as a Helm value, or you can use a pre-created secret containing your registry passwords.  The secret should have an item per Registry in the format: `<registry name>: <password>`. In which case you'll specify the secret to use in `dockerRegistryAccountSecret` like so:
 
-    ```yaml
-    dockerRegistryAccountSecret: myregistry-secrets
-    ```
+```yaml
+dockerRegistryAccountSecret: myregistry-secrets
+```
 
 ## Specifying persistent storage
 
@@ -95,6 +95,37 @@ Spinnaker supports [many](https://www.spinnaker.io/setup/install/storage/) persi
 * Minio (local S3-compatible object store)
 * Redis
 * AWS S3
+
+## Use custom `cacerts`
+
+In environments with air-gapped setup, especially with internal tooling (repos) and self-signed certificates it is required to provide an adequate `cacerts` which overrides the default one:
+
+1. Create a yaml file `cacerts.yaml` with a secret that contanins the `cacerts`
+
+   ```yaml
+   apiVersion: v1
+   kind: Secret
+   metadata:
+     name: custom-cacerts
+   data:
+     cacerts: |
+       xxxxxxxxxxxxxxxxxxxxxxx
+   ```
+
+2. Upload your `cacerts.yaml` to a secret with the key you specify in `secretName` in the cluster you are installing Spinnaker to.
+
+   ```shell
+   $ kubectl apply -f cacerts.yaml
+   ```
+
+3. Set the following values of the chart:
+
+   ```yaml
+   customCerts:
+      ## Enable to override the default cacerts with your own one
+      enabled: false
+      secretName: custom-cacerts
+   ```
 
 ## Customizing your installation
 
@@ -134,16 +165,41 @@ If you would rather the chart make the config file for you, you can set `halyard
 halyard:
   additionalScripts:
     create: true
-    data: 
+    data:
       enable_oauth.sh: |-
         echo "Setting oauth2 security"
         $HAL_COMMAND config security authn oauth2 enable
   additionalSecrets:
     create: true
     data:
-      password.txt: aHVudGVyMgo=    
+      password.txt: aHVudGVyMgo=
   additionalConfigMaps:
     create: true
     data:
       metadata.xml: <xml><username>admin</username></xml>
+  additionalProfileConfigMaps:
+    create: true
+    data:
+      orca-local.yml: |-
+        tasks:
+          useManagedServiceAccounts: true
+```
+
+Any files added through `additionalConfigMaps` will be written to disk at `/opt/halyard/additionalConfigMaps`.
+
+### Set custom annotations for the halyard pod
+
+```yaml
+halyard:
+  annotations:
+    iam.amazonaws.com/role: <role_arn>
+```
+
+### Set environment variables on the halyard pod
+
+```yaml
+halyard:
+  env:
+    - name: JAVA_OPTS
+      value: -Dhttp.proxyHost=proxy.example.com
 ```

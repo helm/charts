@@ -1,0 +1,292 @@
+---
+# Default values for ambassador.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 3
+daemonSet: false
+
+# Enable autoscaling using HorizontalPodAutoscaler
+# daemonSet: true, autoscaling will be disabled
+autoscaling:
+  enabled: false
+  minReplicas: 2
+  maxReplicas: 5
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: 60
+    - type: Resource
+      resource:
+        name: memory
+        targetAverageUtilization: 60
+
+# namespace:
+  # name: default
+
+# Additional container environment variable
+env:
+  {}
+  # Exposing statistics via StatsD
+  # STATSD_ENABLED: true
+  # STATSD_HOST: statsd-sink
+  # sets the minimum number of seconds between Envoy restarts
+  # AMBASSADOR_RESTART_TIME: 15
+  # sets the number of seconds that the Envoy will wait for open connections to drain on a restart
+  # AMBASSADOR_DRAIN_TIME: 5
+  # sets the number of seconds that Ambassador will wait for the old Envoy to clean up and exit on a restart
+  # AMBASSADOR_SHUTDOWN_TIME: 10
+  # labels Ambassador with an ID to allow for configuring multiple Ambassadors in a cluster
+  # AMBASSADOR_ID: default
+
+imagePullSecrets: []
+
+securityContext:
+  runAsUser: 8888
+
+image:
+  repository: quay.io/datawire/ambassador
+  tag: 0.78.0
+  pullPolicy: IfNotPresent
+
+nameOverride: ""
+fullnameOverride: ""
+dnsPolicy: "ClusterFirst"
+hostNetwork: false
+
+service:
+  type: LoadBalancer
+
+  # Note that target http ports need to match your ambassador configurations service_port
+  # https://www.getambassador.io/reference/modules/#the-ambassador-module
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+      # protocol: TCP
+      # nodePort: 30080
+    - name: https
+      port: 443
+      targetPort: 8443
+      # protocol: TCP
+      # nodePort: 30443
+    # TCPMapping_Port
+      # port: 2222
+      # targetPort: 2222
+      # protocol: TCP
+      # nodePort: 30222
+
+  annotations:
+  #  Uncomment out fields you want to use.
+  #  See https://www.getambassador.io/reference/core/ambassador and
+  #  https://www.getambassador.io/reference/core/tls for more info
+  #  getambassador.io/config: |
+  #    ---
+  #    apiVersion: ambassador/v1
+  #    kind: TLSContext
+  #    name: ambassador
+  #    secret: ambassador-certs
+  #    hosts: ["*"]
+  #    ---
+  #    apiVersion: ambassador/v1
+  #    kind: Module
+  #    name: ambassador
+  #    config:
+  #      admin_port: 8001
+  #      diag_port: 8877
+  #      diagnostics:
+  #        enabled: true
+  #      enable_grpc_http11_bridge: false
+  #      enable_grpc_web: false
+  #      enable_http10: false
+  #      enable_ipv4: true
+  #      enable_ipv6: false
+  #      liveness_probe:
+  #        enabled: true
+  #      lua_scripts:
+  #      readiness_probe:
+  #        enabled: true
+  #      server_name: envoy
+  #      service_port: 8080
+  #      use_proxy_proto: false
+  #      use_remote_address: true
+  #      xff_num_trusted_hops: 0
+  #      x_forwarded_proto_redirect: false
+  #      load_balancer:
+  #        policy: round_robin
+  #      circuit_breakers:
+  #        max_connections: 2048
+  #      retry_policy:
+  #        retry_on: "5xx"
+  #      cors:
+
+adminService:
+  create: true
+  type: ClusterIP
+  port: 8877
+  # NodePort used if type is NodePort
+  # nodePort: 38877
+  annotations:
+    {}
+
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+  podSecurityPolicies:
+    {}
+
+scope:
+  # tells Ambassador to only use resources in the namespace or namespace set by namespace.name
+  singleNamespace: false
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+initContainers: []
+
+volumes: []
+
+volumeMounts: []
+
+podLabels:
+  {}
+
+podAnnotations:
+  {}
+  # prometheus.io/scrape: "true"
+  # prometheus.io/port: "9102"
+
+deploymentAnnotations:
+  {}
+  # configmap.reloader.stakater.com/auto: "true"
+
+resources:
+  {}
+  # If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+priorityClassName: ""
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+ambassadorConfig: ""
+
+crds:
+  enabled: true
+  create: true
+  keep: true
+
+pro:
+  enabled: false
+  image:
+    repository: quay.io/datawire/ambassador_pro
+    tag: 0.7.0
+  # As of Ambassador Pro 0.6.0, both the RateLimitService and AuthService use the same port
+  ports:
+    auth: 8500
+    ratelimit: 8500
+  logLevel: info
+  # A license key is required to use Ambassador Pro.
+  # Get a license key by signing up for a free trial here: https://www.getambassador.io/pro/free-trial
+  licenseKey:
+    value: "{{INSERT LICENSE KEY HERE}}"
+    # The license key will be stored and read from a Kubernetes secret named ambassador-pro-license-key
+    # Set create: true for the first install and create: false for all subsequent installs
+    secret:
+      enabled: true
+      create: true
+  # Ambassador Pro environment variables can be found at https://www.getambassador.io/reference/pro/environment
+  # For consistency, AMBASSADOR_ID is copied over from the Ambassador env above and will be ignored if set here.
+  env:
+    {}
+  resources: {}
+  # If you want to specify resources, uncomment the following
+  # lines and remove the curly braces after 'resources:'.
+  # These are placeholder values and must be tuned.
+  #   limits:
+  #     cpu: 100m
+  #     memory: 256Mi
+  #   requests:
+  #     cpu: 50m
+  #     memory: 128Mi
+
+  authService:
+    enabled: true
+    # Set additional configuration options. See https://www.getambassador.io/reference/services/auth-service for more information
+    optional_configurations:
+      # include_body:
+      #   max_bytes: 4096
+      #   allow_partial: true
+      # status_on_error:
+      #   code: 403
+      # failure_mode_allow: false
+      # retry_policy:
+      #   retry_on: "5xx"
+      #   num_retries: 2
+      # add_linkerd_headers: true
+      # timeout_ms: 30000
+
+  rateLimit:
+    enabled: true
+    redis:
+      # Annotations for Ambassador Pro's redis instance.
+      annotations:
+        deployment:
+          {}
+        service:
+          {}
+      resources: {}
+      # If you want to specify resources, uncomment the following
+      # lines and remove the curly braces after 'resources:'.
+      # These are placeholder values and must be tuned.
+      #   limits:
+      #     cpu: 100m
+      #     memory: 256Mi
+      #   requests:
+      #     cpu: 50m
+      #     memory: 128Mi
+
+# DEPRECATED: Ambassador now exposes the /metrics endpoint in Envoy.
+# DEPRECATED: See https://www.getambassador.io/user-guide/monitoring#deployment for more information on how to use the /metrics endpoint
+#
+# DEPRECATED: Enabling the prometheus exporter creates a sidecar and configures ambassador to use it
+prometheusExporter:
+  enabled: false
+  repository: prom/statsd-exporter
+  tag: v0.8.1
+  pullPolicy: IfNotPresent
+  resources: {}
+  # If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  #   limits:
+  #     cpu: 100m
+  #     memory: 256Mi
+  #   requests:
+  #     cpu: 50m
+  #     memory: 128Mi
+  # You can configure the statsd exporter to modify the behavior of mappings and other features.
+  # See documentation: https://github.com/prometheus/statsd_exporter/tree/v0.8.1#metric-mapping-and-configuration
+  # Uncomment the following line if you wish to specify a custom configuration:
+  # configuration: |
+  #   ---
+  #   mappings:
+  #   - match: 'envoy.cluster.*.upstream_cx_connect_ms'
+  #     name: "envoy_cluster_upstream_cx_connect_time"
+  #     timer_type: 'histogram'
+  #     labels:
+  #       cluster_name: "$1"

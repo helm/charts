@@ -4,13 +4,28 @@
 
 image:
   repository: hyperledger/fabric-orderer
-  tag: 1.2.0
+  tag: 1.3.0
   pullPolicy: IfNotPresent
 
 service:
   # Cluster IP or LoadBalancer
   type: ClusterIP
   port: 7050
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    # nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
+    # certmanager.k8s.io/cluster-issuer: "letsencrypt-staging"
+  path: /
+  hosts:
+    - hlf-ord.local
+  tls: []
+  #  - secretName: hlf-ord-tls
+  #    hosts:
+  #      - hlf-ord.local
 
 persistence:
   enabled: true
@@ -58,7 +73,9 @@ secrets:
     ## TLS secret, saved under keys 'tls.crt' and 'tls.key' (to conform with K8S nomenclature)
     # tls: hlf--ord1-tls
     ## TLS root CA certificate saved under key 'cert.pem'
-    # tlsRootCert: hlf--ord1-tlsrootcert
+    # tlsRootCert: hlf--ord-tlsrootcert
+    ## TLS client root CA certificates saved under any names (as there may be multiple)
+    # tlsClientRootCerts: hlf--peer-tlsrootcert
   ## This should contain "genesis" block derived from a configtx.yaml
   ## configtxgen -profile OrdererGenesis -outputBlock genesis.block
   # genesis: hlf--genesis

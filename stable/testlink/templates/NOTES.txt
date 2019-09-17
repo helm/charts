@@ -1,31 +1,32 @@
 {{- if or .Values.mariadb.enabled .Values.externalDatabase.host -}}
 1. Get the TestLink URL by running:
 
-{{- if contains "NodePort" .Values.serviceType }}
+{{- if contains "NodePort" .Values.service.type }}
 
-  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "fullname" . }})
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "testlink.fullname" . }})
   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
   echo "TestLink URL: http://$NODE_IP:$NODE_PORT/"
 
-{{- else if contains "LoadBalancer" .Values.serviceType }}
+{{- else if contains "LoadBalancer" .Values.service.type }}
 
   NOTE: It may take a few minutes for the LoadBalancer IP to be available.
-        Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "fullname" . }}'
+        Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "testlink.fullname" . }}'
 
-  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
-  echo "TestLink URL: http://$SERVICE_IP/"
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "testlink.fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
+{{- $port:=.Values.service.port | toString }}
+  echo "TestLink URL: http://$SERVICE_IP{{- if ne $port "80" }}:{{ .Values.service.port }}{{ end }}/"
 
-{{- else if contains "ClusterIP"  .Values.serviceType }}
+{{- else if contains "ClusterIP"  .Values.service.type }}
 
   echo "TestLink URL: http://127.0.0.1:8080/"
-  kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "fullname" . }} 8080:80
+  kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "testlink.fullname" . }} 8080:{{ .Values.service.port }}
 
 {{- end }}
 
 2. Get your TestLink login credentials by running:
 
     echo Username: {{ .Values.testlinkUsername }}
-    echo Password: $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.testlink-password}" | base64 --decode)
+    echo Password: $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "testlink.fullname" . }} -o jsonpath="{.data.testlink-password}" | base64 --decode)
 
 {{- else -}}
 
@@ -39,6 +40,13 @@ host. To configure TestLink to use and external database host:
 
 1. Complete your TestLink deployment by running:
 
-  helm upgrade {{ .Release.Name }} --set serviceType={{ .Values.serviceType }},mariadb.enabled=false,externalDatabase.host=YOUR_EXTERNAL_DATABASE_HOST stable/testlink
+  helm upgrade {{ .Release.Name }} --set service.type={{ .Values.service.type }},mariadb.enabled=false,externalDatabase.host=YOUR_EXTERNAL_DATABASE_HOST stable/testlink
+
+{{- end }}
+
+{{- if and (contains "bitnami/" .Values.image.repository) (not (.Values.image.tag | toString | regexFind "-r\\d+$|sha256:")) }}
+
+WARNING: Rolling tag detected ({{ .Values.image.repository }}:{{ .Values.image.tag }}), please note that it is strongly recommended to avoid using rolling tags in a production environment.
++info https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/
 
 {{- end }}

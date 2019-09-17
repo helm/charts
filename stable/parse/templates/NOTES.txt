@@ -1,5 +1,4 @@
 
-
 ******************************************************************
 *** PLEASE BE PATIENT: Parse may take a few minutes to install ***
 ******************************************************************
@@ -9,23 +8,31 @@ Parse Server
 
 1. Get your Parse Server URL:
 
-{{- if contains "NodePort" .Values.serviceType }}
+{{- if .Values.ingress.enabled }}
+{{ $ingressHost := first .Values.ingress.server.hosts }}
+
+  You should be able to access Parse Server through: {{- range .Values.ingress.server.hosts }} {{ if .tls }}https{{ else }}http{{ end }}://{{ .name }} {{- end }}
+  For instance:
+
+  export SERVICE_HOST={{ $ingressHost.name }}
+
+{{- else if contains "NodePort" .Values.service.type }}
 
   export NODE_PORT=$(kubectl get svc --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" {{ template "parse.fullname" . }})
   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
-  export SERVICE_IP=$NODE_IP:$NODE_PORT
+  export SERVICE_HOST=$NODE_IP:$NODE_PORT
 
-{{- else if contains "LoadBalancer" .Values.serviceType }}
+{{- else if contains "LoadBalancer" .Values.service.type }}
 
   NOTE: It may take a few minutes for the LoadBalancer IP to be available.
         Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "parse.fullname" . }}'
 
-  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "parse.fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}"):{{ .Values.server.port }}
+  export SERVICE_HOST=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "parse.fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}"):{{ .Values.server.port }}
 
-{{- else if contains "ClusterIP"  .Values.serviceType }}
+{{- else if contains "ClusterIP"  .Values.service.type }}
 
-  kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "parse.fullname" . }} {{ .Values.server.port }}:{{ .Values.server.port }}
-  export SERVICE_IP=127.0.0.1:{{ .Values.server.port }}
+  kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "parse.fullname" . }} 1337:{{ .Values.server.port }} &
+  export SERVICE_HOST=127.0.0.1:1337
 
 {{- end }}
 
@@ -35,12 +42,12 @@ Example Usage:
     -H "X-Parse-Application-Id: {{ .Values.server.appId }}" \
     -H "Content-Type: application/json" \
     -d '{"score":1337,"playerName":"Sean Plott","cheatMode":false}' \
-    http://$SERVICE_IP{{ .Values.server.mountPath }}/classes/GameScore
+    http://$SERVICE_HOST{{ .Values.server.mountPath }}/classes/GameScore
 
 {{ if .Values.dashboard.enabled -}}
 Parse Dashboard
 ---------------
-{{ if empty (include "parse.host" .) }}
+{{- if empty (include "parse.host" .) }}
 ###############################################################################
 ### ERROR: You did not provide an external host in your 'helm install' call ###
 ###############################################################################
@@ -58,16 +65,21 @@ service:
 
 2. Complete your Parse Dashboard deployment by running:
 
-  helm upgrade {{ .Release.Name }} \
-    --set server.host=$APP_HOST,server.port={{ .Values.server.port }},server.masterKey=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "parse.fullname" . }} -o jsonpath="{.data.master-key}" | base64 --decode),dashboard.username={{ .Values.dashboard.username }},dashboard.password=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "parse.fullname" . }} -o jsonpath="{.data.parse-dashboard-password}" | base64 --decode) stable/parse
+  helm upgrade {{ .Release.Name }} stable/{{ .Chart.Name }} \
+    --set server.host=$APP_HOST,server.port={{ .Values.server.port }},server.masterKey=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "parse.fullname" . }} -o jsonpath="{.data.master-key}" | base64 --decode),dashboard.username={{ .Values.dashboard.username }},dashboard.password=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "parse.fullname" . }} -o jsonpath="{.data.parse-dashboard-password}" | base64 --decode){{- if .Values.global }}{{- if .Values.global.imagePullSecrets }},global.imagePullSecrets={{ .Values.global.imagePullSecrets }}{{- end }}{{- end }}
 
-{{ else }}
-1. Get the Parse Dashboard URL by running:
+{{- else }}
 
-{{- if eq .Values.serviceType "ClusterIP" }}
+1. Get the Parse Dashboard URL:
+
+{{- if .Values.ingress.enabled }}
+
+  You should be able to access Parse Dashboard through: {{- range .Values.ingress.dashboard.hosts }} {{ if .tls }}https{{ else }}http{{ end }}://{{ .name }} {{- end }}
+
+{{- else if eq .Values.service.type "ClusterIP" }}
 
   echo "Parse Dashboard URL: http://127.0.0.1:4040/"
-  kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "parse.fullname" . }} 4040:4040
+  kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "parse.fullname" . }} 4040:{{ .Values.service.port }} &
 
 {{- else }}
 
@@ -81,3 +93,5 @@ service:
   echo Password: $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "parse.fullname" . }} -o jsonpath="{.data.parse-dashboard-password}" | base64 --decode)
 {{- end }}
 {{- end }}
+
+{{ include "parse.checkRollingTags" . }}

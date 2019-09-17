@@ -17,11 +17,20 @@ spec:
         app: {{ template "elasticsearch.name" . }}
         component: "{{ .Values.master.name }}"
         release: {{ .Release.Name }}
-        {{- if .Values.master.podAnnotations }}
+        role: master
+{{- if or .Values.master.podAnnotations (eq .Values.master.updateStrategy.type "RollingUpdate") }}
       annotations:
+      {{- if .Values.master.podAnnotations }}
 {{ toYaml .Values.master.podAnnotations | indent 8 }}
-        {{- end }}
+      {{- end }}
+      {{- if eq .Values.master.updateStrategy.type "RollingUpdate" }}
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+      {{- end }}
+{{- end }}
     spec:
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+      {{- end }}
       serviceAccountName: {{ template "elasticsearch.serviceAccountName.master" . }}
 {{- if .Values.master.priorityClassName }}
       priorityClassName: "{{ .Values.master.priorityClassName }}"
@@ -64,30 +73,55 @@ spec:
       tolerations:
 {{ toYaml .Values.master.tolerations | indent 8 }}
 {{- end }}
+{{- if .Values.master.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ .Values.master.terminationGracePeriodSeconds }}
+{{- end }}
+{{- if or .Values.extraInitContainers .Values.sysctlInitContainer.enabled .Values.chownInitContainer.enabled .Values.cluster.plugins }}
       initContainers:
+{{- end }}
+{{- if .Values.sysctlInitContainer.enabled }}
       # see https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html
       # and https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-configuration-memory.html#mlockall
       - name: "sysctl"
         image: "{{ .Values.initImage.repository }}:{{ .Values.initImage.tag }}"
         imagePullPolicy: {{ .Values.initImage.pullPolicy | quote }}
+        resources:
+{{ toYaml .Values.master.initResources | indent 12 }}
         command: ["sysctl", "-w", "vm.max_map_count=262144"]
         securityContext:
           privileged: true
+{{- end }}
+{{- if .Values.chownInitContainer.enabled }}
       - name: "chown"
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+        resources:
+{{ toYaml .Values.master.initResources | indent 12 }}
         command:
         - /bin/bash
         - -c
-        - chown -R elasticsearch:elasticsearch /usr/share/elasticsearch/data &&
-          chown -R elasticsearch:elasticsearch /usr/share/elasticsearch/logs
+        - >
+          set -e;
+          set -x;
+          chown elasticsearch:elasticsearch /usr/share/elasticsearch/data;
+          for datadir in $(find /usr/share/elasticsearch/data -mindepth 1 -maxdepth 1 -not -name ".snapshot"); do
+            chown -R elasticsearch:elasticsearch $datadir;
+          done;
+          chown elasticsearch:elasticsearch /usr/share/elasticsearch/logs;
+          for logfile in $(find /usr/share/elasticsearch/logs -mindepth 1 -maxdepth 1 -not -name ".snapshot"); do
+            chown -R elasticsearch:elasticsearch $logfile;
+          done
         securityContext:
           runAsUser: 0
         volumeMounts:
         - mountPath: /usr/share/elasticsearch/data
           name: data
+{{- end }}
 {{- if .Values.extraInitContainers }}
 {{ tpl .Values.extraInitContainers . | indent 6 }}
+{{- end }}
+{{- if .Values.cluster.plugins }}
+{{ include "plugin-installer" . | indent 6 }}
 {{- end }}
       containers:
       - name: elasticsearch
@@ -105,7 +139,7 @@ spec:
             resourceFieldRef:
               resource: limits.cpu
         - name: ES_JAVA_OPTS
-          value: "-Djava.net.preferIPv4Stack=true -Xms{{ .Values.master.heapSize }} -Xmx{{ .Values.master.heapSize }} {{ .Values.cluster.additionalJavaOpts }}"
+          value: "-Djava.net.preferIPv4Stack=true -Xms{{ .Values.master.heapSize }} -Xmx{{ .Values.master.heapSize }} {{ .Values.cluster.additionalJavaOpts }} {{ .Values.master.additionalJavaOpts }}"
         {{- range $key, $value :=  .Values.cluster.env }}
         - name: {{ $key }}
           value: {{ $value | quote }}
@@ -113,12 +147,13 @@ spec:
         resources:
 {{ toYaml .Values.master.resources | indent 12 }}
         readinessProbe:
-          httpGet:
-            path: /_cluster/health?local=true
-            port: 9200
-          initialDelaySeconds: 5
+{{ toYaml .Values.master.readinessProbe | indent 10 }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+        {{- if .Values.securityContext.enabled }}
+        securityContext:
+          runAsUser: {{ .Values.securityContext.runAsUser }}
+        {{- end }}
         ports:
         - containerPort: 9300
           name: transport
@@ -132,12 +167,16 @@ spec:
         - mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
           name: config
           subPath: elasticsearch.yml
-{{- if hasPrefix "2." .Values.image.tag }}
+{{- if .Values.cluster.plugins }}
+        - mountPath: /usr/share/elasticsearch/plugins/
+          name: plugindir
+{{- end }}
+{{- if hasPrefix "2." .Values.appVersion }}
         - mountPath: /usr/share/elasticsearch/config/logging.yml
           name: config
           subPath: logging.yml
 {{- end }}
-{{- if hasPrefix "5." .Values.image.tag }}
+{{- if hasPrefix "5." .Values.appVersion }}
         - mountPath: /usr/share/elasticsearch/config/log4j2.properties
           name: config
           subPath: log4j2.properties
@@ -147,6 +186,29 @@ spec:
           mountPath: "/usr/share/elasticsearch/config/elasticsearch.keystore"
           subPath: elasticsearch.keystore
           readOnly: true
+{{- end }}
+{{- if .Values.master.hooks.preStop }}
+        - name: config
+          mountPath: /master-pre-stop-hook.sh
+          subPath: master-pre-stop-hook.sh
+{{- end }}
+{{- if .Values.master.hooks.postStart }}
+        - name: config
+          mountPath: /master-post-start-hook.sh
+          subPath: master-post-start-hook.sh
+{{- end }}
+{{- if or .Values.master.hooks.preStop .Values.master.hooks.postStart }}
+        lifecycle:
+  {{- if .Values.master.hooks.preStop }}
+          preStop:
+            exec:
+              command: ["/bin/bash","/master-pre-stop-hook.sh"]
+  {{- end }}
+  {{- if .Values.master.hooks.postStart }}
+          postStart:
+            exec:
+              command: ["/bin/bash","/master-post-start-hook.sh"]
+  {{- end }}
 {{- end }}
 {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
@@ -158,6 +220,10 @@ spec:
       - name: config
         configMap:
           name: {{ template "elasticsearch.fullname" . }}
+{{- if .Values.cluster.plugins }}
+      - name: plugindir
+        emptyDir: {}
+{{- end }}
 {{- if .Values.cluster.keystoreSecret }}
       - name: keystore
         secret:
@@ -167,6 +233,7 @@ spec:
       - name: data
         emptyDir: {}
   {{- end }}
+  podManagementPolicy: {{ .Values.master.podManagementPolicy }}
   updateStrategy:
     type: {{ .Values.master.updateStrategy.type }}
   {{- if .Values.master.persistence.enabled }}

@@ -2,33 +2,41 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "phpbb.fullname" . }}
+  name: "{{ template "phpbb.fullname" . }}"
   labels:
-    app: {{ template "phpbb.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app: "{{ template "phpbb.fullname" . }}"
+    chart: "{{ template "phpbb.chart" . }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
 spec:
   selector:
     matchLabels:
-      app: {{ template "phpbb.fullname" . }}
-      release: "{{ .Release.Name }}"
+      app: "{{ template "phpbb.fullname" . }}"
+      release: {{ .Release.Name | quote }}
   replicas: 1
   template:
     metadata:
       labels:
-        app: {{ template "phpbb.fullname" . }}
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-        release: "{{ .Release.Name }}"
+        app: "{{ template "phpbb.fullname" . }}"
+        chart: "{{ template "phpbb.chart" . }}"
+        release: {{ .Release.Name | quote }}
+{{- if or .Values.podAnnotations .Values.metrics.enabled }}
+      annotations:
+  {{- if .Values.podAnnotations }}
+{{ toYaml .Values.podAnnotations | indent 8 }}
+  {{- end }}
+  {{- if .Values.metrics.podAnnotations }}
+{{ toYaml .Values.metrics.podAnnotations | indent 8 }}
+  {{- end }}
+{{- end }}
     spec:
-      {{- if .Values.image.pullSecrets }}
-      imagePullSecrets:
-      {{- range .Values.image.pullSecrets }}
-        - name: {{ . }}
-      {{- end}}
-      {{- end }}
+{{- include "phpbb.imagePullSecrets" . | indent 6 }}
+      hostAliases:
+      - ip: "127.0.0.1"
+        hostnames:
+        - "status.localhost"
       containers:
-      - name: {{ template "phpbb.fullname" . }}
+      - name: "{{ template "phpbb.fullname" . }}"
         image: {{ template "phpbb.image" . }}
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         env:
@@ -73,23 +81,33 @@ spec:
         - name: PHPBB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "phpbb.fullname" . }}
+              name: "{{ template "phpbb.fullname" . }}"
               key: phpbb-password
         - name: PHPBB_EMAIL
           value: {{ .Values.phpbbEmail | quote }}
+        {{- if .Values.smtpHost }}
         - name: SMTP_HOST
           value: {{ .Values.smtpHost | quote }}
+        {{- end }}
+        {{- if .Values.smtpPort }}
         - name: SMTP_PORT
           value: {{ .Values.smtpPort | quote }}
+        {{- end }}
+        {{- if .Values.smtpUser }}
         - name: SMTP_USER
           value: {{ .Values.smtpUser | quote }}
+        {{- end }}
+        {{- if .Values.smtpPassword }}
         - name: SMTP_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "phpbb.fullname" . }}
+              name: "{{ template "phpbb.fullname" . }}"
               key: smtp-password
+        {{- end }}
+        {{- if .Values.smtpProtocol }}
         - name: SMTP_PROTOCOL
           value: {{ default "" .Values.smtpProtocol | quote }}
+        {{- end }}
         ports:
         - name: http
           containerPort: 80
@@ -110,21 +128,39 @@ spec:
         volumeMounts:
         - name: phpbb-data
           mountPath: /bitnami/phpbb
-        - name: apache-data
-          mountPath: /bitnami/apache
+{{- if .Values.metrics.enabled }}
+      - name: metrics
+        image: {{ template "phpbb.metrics.image" . }}
+        imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
+        command: [ '/bin/apache_exporter', '-scrape_uri', 'http://status.localhost:80/server-status/?auto']
+        ports:
+        - name: metrics
+          containerPort: 9117
+        livenessProbe:
+          httpGet:
+            path: /metrics
+            port: metrics
+          initialDelaySeconds: 15
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /metrics
+            port: metrics
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+        resources:
+  {{ toYaml .Values.metrics.resources | indent 10 }}
+{{- end }}
       volumes:
       - name: phpbb-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "phpbb.fullname" . }}-phpbb
+          claimName: "{{ template "phpbb.fullname" . }}-phpbb"
       {{- else }}
         emptyDir: {}
       {{- end }}
-      - name: apache-data
-      {{- if .Values.persistence.enabled }}
-        persistentVolumeClaim:
-          claimName: {{ template "phpbb.fullname" . }}-apache
-      {{- else }}
-        emptyDir: {}
+      {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
       {{- end }}
 {{- end }}

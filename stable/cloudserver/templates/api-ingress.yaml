@@ -1,0 +1,40 @@
+{{- if .Values.api.ingress.enabled -}}
+{{- $fullName := include "cloudserver.fullname" . -}}
+{{- $servicePort := .Values.api.service.port -}}
+{{- $ingressPath := .Values.api.ingress.path -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ $fullName }}
+  labels:
+    app: {{ template "cloudserver.name" . }}
+    chart: {{ template "cloudserver.chart" . }}
+    component: api
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+{{- with .Values.api.ingress.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
+spec:
+{{- if .Values.api.ingress.tls }}
+  tls:
+  {{- range .Values.api.ingress.tls }}
+    - hosts:
+      {{- range .hosts }}
+        - {{ . }}
+      {{- end }}
+      secretName: {{ .secretName }}
+  {{- end }}
+{{- end }}
+  rules:
+  {{- range .Values.api.ingress.hosts }}
+    - host: {{ . }}
+      http:
+        paths:
+          - path: {{ $ingressPath }}
+            backend:
+              serviceName: {{ $fullName }}
+              servicePort: http
+  {{- end }}
+{{- end }}

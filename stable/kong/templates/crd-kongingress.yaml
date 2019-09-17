@@ -1,0 +1,137 @@
+{{- if and .Values.ingressController.enabled .Values.ingressController.installCRDs -}}
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: kongingresses.configuration.konghq.com
+  labels:
+    app: {{ template "kong.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  group: configuration.konghq.com
+  version: v1
+  scope: Namespaced
+  names:
+    kind: KongIngress
+    plural: kongingresses
+    shortNames:
+    - ki
+  validation:
+    openAPIV3Schema:
+      properties:
+        upstream:
+          type: object
+        route:
+          properties:
+            methods:
+              type: array
+              items:
+                type: string
+            regex_priority:
+              type: integer
+            strip_path:
+              type: boolean
+            preserve_host:
+              type: boolean
+            protocols:
+              type: array
+              items:
+                type: string
+                enum:
+                - http
+                - https
+        proxy:
+          type: object
+          properties:
+            protocol:
+              type: string
+              enum:
+              - http
+              - https
+            path:
+              type: string
+              pattern: ^/.*$
+            retries:
+              type: integer
+              minimum: 0
+            connect_timeout:
+              type: integer
+              minimum: 0
+            read_timeout:
+              type: integer
+              minimum: 0
+            write_timeout:
+              type: integer
+              minimum: 0
+        upstream:
+          type: object
+          properties:
+            hash_on:
+              type: string
+            hash_on_cookie:
+              type: string
+            hash_on_cookie_path:
+              type: string
+            hash_on_header:
+              type: string
+            hash_fallback_header:
+              type: string
+            hash_fallback:
+              type: string
+            slots:
+              type: integer
+              minimum: 10
+            healthchecks:
+              type: object
+              properties:
+                active:
+                  type: object
+                  properties:
+                    concurrency:
+                      type: integer
+                      minimum: 1
+                    timeout:
+                      type: integer
+                      minimum: 0
+                    http_path:
+                      type: string
+                      pattern: ^/.*$
+                    healthy: &healthy
+                      type: object
+                      properties:
+                        http_statuses:
+                          type: array
+                          items:
+                            type: integer
+                        interval:
+                          type: integer
+                          minimum: 0
+                        successes:
+                          type: integer
+                          minimum: 0
+                    unhealthy: &unhealthy
+                      type: object
+                      properties:
+                        http_failures:
+                          type: integer
+                          minimum: 0
+                        http_statuses:
+                          type: array
+                          items:
+                            type: integer
+                        interval:
+                          type: integer
+                          minimum: 0
+                        tcp_failures:
+                          type: integer
+                          minimum: 0
+                        timeout:
+                          type: integer
+                          minimum: 0
+                passive:
+                  type: object
+                  properties:
+                    healthy: *healthy
+                    unhealthy: *unhealthy
+{{- end -}}

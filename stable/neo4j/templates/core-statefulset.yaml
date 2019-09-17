@@ -35,7 +35,7 @@ spec:
           - name: NEO4J_causal__clustering_discovery__type
             value: DNS
           - name: NEO4J_causal__clustering_initial__discovery__members
-            value: "{{ template "neo4j.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:5000"
+            value: "{{ template "neo4j.fullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}:5000"
           {{- if .Values.authEnabled }}
           - name: NEO4J_SECRETS_PASSWORD
             valueFrom:
@@ -95,8 +95,25 @@ spec:
 {{ toYaml .Values.core.initContainers | indent 6 }}
 {{- end }}
       volumes:
+        {{- if not .Values.core.persistentVolume.enabled }}
+        - name: datadir
+          emptyDir: {}
+        {{- end }}
         - name: plugins
           emptyDir: {}
+{{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 6 }}
+{{- end }}
+{{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 6 }}
+{{- end }}
+{{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 6 }}
+{{- end }}
+  {{- if .Values.core.persistentVolume.enabled }}
   volumeClaimTemplates:
     - metadata:
         name: datadir
@@ -117,3 +134,4 @@ spec:
         resources:
           requests:
             storage: "{{ .Values.core.persistentVolume.size }}"
+  {{- end }}

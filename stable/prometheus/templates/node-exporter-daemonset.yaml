@@ -7,13 +7,12 @@ metadata:
 {{ toYaml .Values.nodeExporter.deploymentAnnotations | indent 4 }}
 {{- end }}
   labels:
-    app: {{ template "prometheus.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.nodeExporter.name }}"
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    {{- include "prometheus.nodeExporter.labels" . | nindent 4 }}
   name: {{ template "prometheus.nodeExporter.fullname" . }}
 spec:
+  selector:
+    matchLabels:
+      {{- include "prometheus.nodeExporter.matchLabels" . | nindent 6 }}
   {{- if .Values.nodeExporter.updateStrategy }}
   updateStrategy:
 {{ toYaml .Values.nodeExporter.updateStrategy | indent 4 }}
@@ -25,9 +24,7 @@ spec:
 {{ toYaml .Values.nodeExporter.podAnnotations | indent 8 }}
     {{- end }}
       labels:
-        app: {{ template "prometheus.name" . }}
-        component: "{{ .Values.nodeExporter.name }}"
-        release: {{ .Release.Name }}
+        {{- include "prometheus.nodeExporter.labels" . | nindent 8 }}
 {{- if .Values.nodeExporter.pod.labels }}
 {{ toYaml .Values.nodeExporter.pod.labels | indent 8 }}
 {{- end }}
@@ -67,12 +64,19 @@ spec:
             - name: {{ .name }}
               mountPath: {{ .mountPath }}
               readOnly: {{ .readOnly }}
+            {{- if .mountPropagation }}
+              mountPropagation: {{ .mountPropagation }}
+            {{- end }}
           {{- end }}
           {{- range .Values.nodeExporter.extraConfigmapMounts }}
             - name: {{ .name }}
               mountPath: {{ .mountPath }}
               readOnly: {{ .readOnly }}
           {{- end }}
+    {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+      {{ toYaml .Values.imagePullSecrets | indent 2 }}
+    {{- end }}
     {{- if .Values.nodeExporter.hostNetwork }}
       hostNetwork: true
     {{- end }}

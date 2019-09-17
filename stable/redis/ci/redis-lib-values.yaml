@@ -1,0 +1,13 @@
+## Redis library image
+## ref: https://hub.docker.com/r/library/redis/
+##
+image:
+  registry: docker.io
+  repository: redis
+  tag: '5.0.5'
+
+master:
+  command: "redis-server"
+
+slave:
+  command: "redis-server"

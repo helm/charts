@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: lmierzwa/karma
-  tag: v0.14
+  tag: v0.42
   pullPolicy: IfNotPresent
 
 nameOverride: ""
@@ -59,3 +59,69 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+securityContext: {}
+
+# configuration for liveness probe
+livenessProbe:
+  delay: 5
+  period: 5
+  path: /
+
+# configMap dictates if a configmap based configuration for Karma should be used
+# to provide advanced configuration. NOTE, you must use port 8080!
+configMap:
+  enabled: false
+  # rawConfig:
+  #   alertmanager:
+  #   interval: 30s
+  #   servers:
+  #     - name: local
+  #       uri: http://localhost:9093
+  #       timeout: 10s
+  #       proxy: true
+  #       headers:
+  #         x-auth-token: some-token
+  #         any-header: string-value
+  #     - name: client-auth
+  #       uri: https://localhost:9093
+  #       timeout: 10s
+  #       tls:
+  #         ca: /etc/ssl/certs/ca-bundle.crt
+  #         cert: /etc/karma/client.pem
+  #         key: /etc/karma/client.key
+  #   annotations:
+  #     default:
+  #       hidden: false
+  #     hidden:
+  #       - help
+  #     visible: []
+  #   filters:
+  #     default:
+  #       - "@receiver=by-cluster-service"
+  #   labels:
+  #     color:
+  #       static:
+  #         - job
+  #       unique:
+  #         - cluster
+  #         - instance
+  #         - "@receiver"
+  #     keep: []
+  #     strip: []
+  #   listen:
+  #     address: "0.0.0.0"
+  #     port: 8080
+  #     prefix: /
+  #   log:
+  #     config: false
+  #     level: info
+  #   jira:
+  #     - regex: DEVOPS-[0-9]+
+  #       uri: https://jira.example.com
+  #   receivers:
+  #     keep: []
+  #     strip: []
+  #   sentry:
+  #     private: secret
+  #   public: 123456789

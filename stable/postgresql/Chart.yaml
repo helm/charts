@@ -1,6 +1,7 @@
+apiVersion: v1
 name: postgresql
-version: 2.2.0
-appVersion: 10.5.0
+version: 6.3.7
+appVersion: 11.5.0
 description: Chart for PostgreSQL, an object-relational database management system (ORDBMS) with an emphasis on extensibility and on standards-compliance.
 keywords:
 - postgresql
@@ -16,4 +17,6 @@ sources:
 maintainers:
 - name: Bitnami
   email: containers@bitnami.com
+- name: desaintmartin
+  email: cedric@desaintmartin.fr
 engine: gotpl

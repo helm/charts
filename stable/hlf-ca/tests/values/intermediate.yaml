@@ -1,0 +1,18 @@
+## Name of CA, stored in FABRIC_CA_SERVER_CA_NAME (and the configMap "--config", if deploying a Root CA)
+caName: ica
+
+mysql:
+  enabled: true
+
+## Settings used in configMap "--config"
+config:
+  ## CSR pathlength in ca Server configuration file
+  csr:
+    ca:
+      pathlength: 0
+  ## "intermediate" is only specified for Intermediate CA's
+  intermediate:
+    parent:
+      chart: rca-hlf-ca
+      url: rca-hlf-ca
+      port: 7054

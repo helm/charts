@@ -1,53 +1,88 @@
 ## Rocket Chat image version
-## ref: https://hub.docker.com/r/library/rocket.chat/tags/
+## ref: https://hub.docker.com/r/rocketchat/rocket.chat/tags
 ##
-image: rocket.chat:0.69.1
-
-## Specify a imagePullPolicy
-## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
-## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
-##
-# imagePullPolicy:
+image:
+  repository: docker.io/rocketchat/rocket.chat
+  tag: 1.3.1
+  pullPolicy: IfNotPresent
 
 ## Host for the application
 ##
 # host:
 
-# Main RocketChat configuration:
-config:
-  SMTP_Host:
-  SMTP_Port:
-  SMTP_Username:
-  SMTP_Password:
-  From_Email:
-  Jitsi_Enabled: false
-  Jitsi_Domain: meet.jit.si
-  Jitsi_URL_Room_Prefix: RocketChat
-  Jitsi_Open_New_Window: false
-  Jitsi_Enable_Channels: false
-  Jitsi_Chrome_Extension:
-  WebRTC_Enable_Channel: false
-  WebRTC_Enable_Private: false
-  WebRTC_Enable_Direct: false
+replicaCount: 1
+minAvailable: 1
+
+smtp:
+  enabled: false
+  username:
+  password:
+  host:
+  port: 587
+
+# Extra env vars for Rocket.Chat:
+extraEnv:  # |
+  # - name: MONGO_OPTIONS
+  #   value: '{"ssl": "true"}'
+  # - name: MONGO_OPLOG_URL
+  #   value: mongodb://oploguser:password@rocket-1:27017/local&replicaSet=rs0
+
+## Pod anti-affinity can prevent the scheduler from placing RocketChat replicas on the same node.
+## The default value "soft" means that the scheduler should *prefer* to not schedule two replica pods onto the same node but no guarantee is provided.
+## The value "hard" means that the scheduler is *required* to not schedule two replica pods onto the same node.
+## The value "" will disable pod anti-affinity so that no anti-affinity rules will be configured.
+##
+podAntiAffinity: ""
+
+## If anti-affinity is enabled sets the topologyKey to use for anti-affinity.
+## This can be changed to, for example, failure-domain.beta.kubernetes.io/zone
+##
+podAntiAffinityTopologyKey: kubernetes.io/hostname
+
+## Assign custom affinity rules to the RocketChat instance
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+##
+affinity: {}
+# nodeAffinity:
+#   requiredDuringSchedulingIgnoredDuringExecution:
+#     nodeSelectorTerms:
+#     - matchExpressions:
+#       - key: kubernetes.io/e2e-az-name
+#         operator: In
+#         values:
+#         - e2e-az1
+#         - e2e-az2
+
+## MongoDB URL if using an externally provisioned MongoDB
+externalMongodbUrl:  # mongodb://user:password@localhost:27017/rocketchat
+externalMongodbOplogUrl:  # mongodb://user:password@localhost:27017/local?replicaSet=rs0&authSource=admin
 
 ##
 ## MongoDB chart configuration
+### ref https://github.com/helm/charts/tree/master/stable/mongodb#configuration
 ##
 mongodb:
-  ## MongoDB admin password
-  ### ref: https://github.com/bitnami/bitnami-docker-mongodb/blob/master/README.md#setting-the-root-password-on-first-run
-  ###
-  ## mongodbRootPassword:
-  #
-  ## MongoDB custom user and database
-  ## ref: https://github.com/bitnami/bitnami-docker-mongodb/blob/master/README.md#creating-a-user-and-database-on-first-run
-  ##
-  # mongodbUsername:
+  ## Enable or disable MongoDB dependency completely.
+  enabled: true
+
+  # mongodbRootPassword:
+
+  mongodbUsername: rocketchat
   # mongodbPassword:
-  # mongodbDatabase:
-  ## Enable persistence using Persistent Volume Claims
-  ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
-  ##
+  mongodbDatabase: rocketchat
+
+  replicaSet:
+    enabled: true
+    replicas:
+      secondary: 0
+      arbiter: 0
+    pdb:
+      minAvailable:
+        secondary: 0
+        arbiter: 0
+
+   # key:
+
   persistence:
     enabled: true
     ## mongodb data Persistent Volume Storage Class
@@ -65,7 +100,7 @@ mongodb:
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ##
 persistence:
-  enabled: true
+  enabled: false
   ## rocketchat data Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
   ## If set to "-", storageClassName: "", which disables dynamic provisioning
@@ -103,9 +138,26 @@ serviceAccount:
 ###
 ingress:
   enabled: false
-  annotations:
-    kubernetes.io/ingress.class: "nginx"
+  annotations: {}
+    # kubernetes.io/ingress.class: "nginx"
+  path: /
   tls:
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
+
+service:
+  annotations: {}
+  # service.beta.kubernetes.io/aws-load-balancer-internal: "0.0.0.0/0"
+
+  labels: {}
+  # key: value
+
+  ## ServiceType
+  ## ref: https://kubernetes.io/docs/user-guide/services/#publishing-services---service-types
+  type: ClusterIP
+
+  ## Optional static port assignment for service type NodePort.
+  # nodePort: 30000
+
+  port: 80

@@ -1,3 +1,4 @@
+{{- if .Values.sysdig.accessKey }}
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
@@ -16,27 +17,61 @@ spec:
         role: monitoring
     spec:
       serviceAccountName: {{ template "sysdig.serviceAccountName" .}}
+{{- if .Values.priorityClassName }}
+      priorityClassName: "{{ .Values.priorityClassName }}"
+{{- end }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
       hostPID: true
+      terminationGracePeriodSeconds: 5
+      {{- if .Values.daemonset.affinity }}
+      affinity:
+{{ toYaml .Values.daemonset.affinity | indent 8 }}
+      {{- end }}
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.image.pullSecrets | indent 8 }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: {{ template "sysdig.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           securityContext:
             privileged: true
+          {{- if .Values.ebpf.enabled }}
+          env:
+            - name: SYSDIG_BPF_PROBE
+              value:
+          {{- end }}
+          {{- if .Values.proxy.httpProxy }}
+            - name: http_proxy
+              value: {{ .Values.proxy.httpProxy }}
+          {{- end }}
+          {{- if .Values.proxy.httpsProxy }}
+            - name: https_proxy
+              value: {{ .Values.proxy.httpsProxy }}
+          {{- end }}
+          {{- if .Values.proxy.noProxy }}
+            - name: no_proxy
+              value: {{ .Values.proxy.noProxy }}
+          {{- end }}
+          {{- if .Values.timezone }}
+            - name: TZ
+              value: {{ .Values.timezone }}
+          {{- end }}
+          {{- range $key, $value := .Values.daemonset.env }}
+            - name: "{{ $key }}"
+              value: "{{ $value }}"
+          {{- end }}
           readinessProbe:
             exec:
-              command: [ "test", "-e", "/opt/draios/logs/draios.log" ]
+              command: [ "test", "-e", "/opt/draios/logs/running" ]
             initialDelaySeconds: 10
           volumeMounts:
-            - mountPath: /host/var/run/docker.sock
-              name: docker-sock
-              readOnly: false
             - mountPath: /host/dev
               name: dev-vol
               readOnly: false
@@ -52,23 +87,36 @@ spec:
             - mountPath: /host/usr
               name: usr-vol
               readOnly: true
+            - mountPath: /host/run
+              name: run-vol
+            - mountPath: /host/var/run
+              name: varrun-vol
             - mountPath: /dev/shm
               name: dshm
             - mountPath: /opt/draios/etc/kubernetes/config
               name: sysdig-agent-config
             - mountPath: /opt/draios/etc/kubernetes/secrets
               name: sysdig-agent-secrets
+            {{- if (and .Values.ebpf.enabled .Values.ebpf.settings.mountEtcVolume) }}
+            - mountPath: /host/etc
+              name: etc-fs
+              readOnly: true
+            {{- end }}
             {{- if .Values.customAppChecks }}
             - mountPath: /opt/draios/lib/python/checks.custom.d
               name: custom-app-checks-volume
             {{- end }}
+            - mountPath: /host/etc/os-release
+              name: osrel
+              readOnly: true
       volumes:
+        - name: osrel
+          hostPath:
+            path: /etc/os-release
+            type: FileOrCreate
         - name: dshm
           emptyDir:
             medium: Memory
-        - name: docker-sock
-          hostPath:
-            path: /var/run/docker.sock
         - name: dev-vol
           hostPath:
             path: /dev
@@ -84,6 +132,17 @@ spec:
         - name: usr-vol
           hostPath:
             path: /usr
+        - name: run-vol
+          hostPath:
+            path: /run
+        - name: varrun-vol
+          hostPath:
+            path: /var/run
+        {{- if (and .Values.ebpf.enabled .Values.ebpf.settings.mountEtcVolume) }}
+        - name: etc-fs
+          hostPath:
+            path: /etc
+        {{- end }}
         - name: sysdig-agent-config
           configMap:
             name: {{ template "sysdig.fullname" . }}
@@ -97,4 +156,5 @@ spec:
             name: {{ template "sysdig.fullname" . }}-custom-app-checks
         {{- end }}
   updateStrategy:
-    type: {{ default "OnDelete" .Values.daemonset.updateStrategy | quote }}
+{{ toYaml .Values.daemonset.updateStrategy | indent 4 }}
+{{- end }}

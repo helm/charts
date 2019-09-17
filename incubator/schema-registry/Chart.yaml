@@ -1,7 +1,7 @@
 name: schema-registry
 home: https://docs.confluent.io/current/schema-registry/docs/index.html
-version: 1.0.2
-appVersion: 4.1.1
+version: 1.1.6
+appVersion: 5.0.1
 keywords:
   - confluent
   - kafka

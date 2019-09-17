@@ -1,5 +1,5 @@
 {{- if .Values.coreDns.enabled }}
-apiVersion: monitoring.coreos.com/v1
+apiVersion: {{ printf "%s/v1" (.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
 kind: ServiceMonitor
 metadata:
   name: {{ template "prometheus-operator.fullname" . }}-coredns
@@ -17,6 +17,16 @@ spec:
       - "kube-system"
   endpoints:
   - port: http-metrics
-    interval: 15s
+    {{- if .Values.coreDns.serviceMonitor.interval}}
+    interval: {{ .Values.coreDns.serviceMonitor.interval }}
+    {{- end }}
     bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+{{- if .Values.coreDns.serviceMonitor.metricRelabelings }}
+    metricRelabelings:
+{{ tpl (toYaml .Values.coreDns.serviceMonitor.metricRelabelings | indent 4) . }}
+{{- end }}
+{{- if .Values.coreDns.serviceMonitor.relabelings }}
+    relabelings:
+{{ toYaml .Values.coreDns.serviceMonitor.relabelings | indent 4 }}
+{{- end }}
 {{- end }}

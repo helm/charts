@@ -1,13 +1,10 @@
+{{- if .Values.server.enabled -}}
 {{- if (empty .Values.server.configMapOverrideName) -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
   labels:
-    app: {{ template "prometheus.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.server.name }}"
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    {{- include "prometheus.server.labels" . | nindent 4 }}
   name: {{ template "prometheus.server.fullname" . }}
 data:
 {{- $root := . -}}
@@ -15,7 +12,7 @@ data:
   {{ $key }}: |
 {{- if eq $key "prometheus.yml" }}
     global:
-{{ $root.Values.server.global | toYaml | indent 6 }}
+{{ $root.Values.server.global | toYaml | trimSuffix "\n" | indent 6 }}
 {{- end }}
 {{ toYaml $value | default "{}" | indent 4 }}
 {{- if eq $key "prometheus.yml" -}}
@@ -46,6 +43,7 @@ data:
         - source_labels: [__meta_kubernetes_pod_container_port_number]
           regex:
           action: drop
+{{- end -}}
 {{- end -}}
 {{- end -}}
 {{- end -}}

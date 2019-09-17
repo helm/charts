@@ -53,12 +53,14 @@ svc/mymssql-mssql-linux   ClusterIP   10.104.152.61   <none>        1433/TCP   9
 
 ### SA Password Retrieval
 
-The sa password is a randomized in the secret.yaml file.  To retrieve the password, perform the following steps once you install the helm chart.
+The sa password is randomized in the secret.yaml file.  To retrieve the password, perform the following steps once you install the helm chart.
 
 ```console
 $ printf $(kubectl get secret --namespace default mymssql-mssql-linux-secret -o jsonpath="{.data.sapassword}" | base64 --decode);echo
 ...
 ```
+
+In case an existing secret is used, the sa password must be retrieved from that secret, of course.
 
 ## Connecting to SQL Server Instance
 
@@ -90,16 +92,28 @@ The configuration parameters in this section control the resources requested and
 | acceptEula.value | EULA that needs to be accepted.  It will need to be changed via commandline or values.yaml.    | `n`                              |
 | edition.value    | The edition of SQL Server to install.  See section [Editions](#sql-server-for-linux-editions). | `Express`                        |
 | sapassword       | Password for sa login                                                                          | `Random (20-AlphNum)`<sup>1<sup> |
+| existingSecret   | Name of an existing secret containing the sa password                                          | `Empty String`                   |
+| existingSecretKey| Name of key of the password in existing secret                                                 | `sapassword`                     |
 | image.repository | The docker hub repo for SQL Server                                                             | `microsoft/mssql-server-linux`   |
 | image.tag        | The tag for the image                                                                          | `2017-CU5`                       |
 | image.pullPolicy | The pull policy for the deployment                                                             | `IfNotPresent`                   |
+| image.pullSecrets   | Specify an image pull secret if needed  | `Commented Out`  |
 | nodeSelector     | Node labels for pod assignment                                                                 | `{}`                             |
+| service.headless   | Allows you to setup a headless service  | `false`  |
 | service.type     | Service Type                                                                                   | `ClusterIP`                      |
+| service.loadBalancerIP     | Loadbalancer IP                                                                                   | `nil`                      |
 | service.port     | Service Port                                                                                   | `1433`                           |
 | service.annotations | Kubernetes service annotations                                                              | `{}`                             |
+| service.labels   | Kubernetes service labels                                                                      | `{}`                             |
+| deployment.annotations | Kubernetes deployment annotations                                                        | `{}`                             |
+| deployment.labels | Kubernetes deployment labels                                                                  | `{}`                             |
+| pod.annotations   | Kubernetes pod annotations                                                                    | `{}`                             |
+| pod.labels        | Kubernetes pod labels                                                                         | `{}`                             |
 | collation        | Default collation for SQL Server                                                               | `SQL_Latin1_General_CP1_CI_AS`   |
 | lcid             | Default languages for SQL Server                                                               | `1033`                           |
 | hadr             | Enable Availability Group                                                                      | `0`                              |
+| agent.enabled    | Enable Agent                                                                                   | `false`                          |
+| schedulerName    | Name of the k8s scheduler (other than default)                                                 | `nil`                            |
 | persistence.enabled | Persist the Data and Log files for SQL Server                                               | `false`                          |
 | persistence.existingDataClaim | Identify an existing Claim to be used for the Data Directory                      | `Commented Out`                  |
 | persistence.existingTransactionLogClaim  | Identify an existing Claim to be used for the Log Directory            | `Commented Out`                  |
@@ -219,6 +233,7 @@ To change the language of the MSSQL installation, change the `lcid` key in the `
 1>select substring(convert(varchar(30),serverproperty('Collation')),1,30), substring(convert(varchar(20),serverproperty('lcid')),1,20);
 2>go
 ```
+
 ## Master database files
 
 As part of this chart the `master` database is configured to be installed based in the `/mssql-data/master`.

@@ -9,7 +9,15 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 data:
+  {{- if and .Values.sonarSecretKey (not .Values.sonarProperties) }}
+  sonar.properties: sonar.secretKeyPath=/opt/sonarqube/secret/sonar-secret.txt
+  {{- end }}
   {{- if .Values.sonarProperties }}
   sonar.properties:
-{{ toYaml .Values.sonarProperties | indent 4}}
-  {{- end}}
+  {{ range $key, $val := .Values.sonarProperties }}
+    {{ $key }}={{ $val }}
+  {{ end }}
+  {{- end }}
+    {{- if and .Values.sonarSecretKey .Values.sonarProperties }}
+      sonar.secretKeyPath=/opt/sonarqube/secret/sonar-secret.txt
+    {{- end }}

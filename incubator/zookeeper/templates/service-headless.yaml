@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "zookeeper.fullname" . }}-headless
+  name: {{ template "zookeeper.headless" . }}
   labels:
     app: {{ template "zookeeper.name" . }}
     chart: {{ template "zookeeper.chart" . }}
@@ -17,7 +17,7 @@ spec:
 {{- range $key, $port := .Values.ports }}
     - name: {{ $key }}
       port: {{ $port.containerPort }}
-      targetPort: {{ $port.name }}
+      targetPort: {{ $key }}
       protocol: {{ $port.protocol }}
 {{- end }}
   selector:

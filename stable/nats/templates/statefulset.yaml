@@ -1,3 +1,4 @@
+{{- if or (eq .Values.resourceType "statefulset") (not (contains .Values.resourceType "deployment")) }}
 apiVersion: apps/v1beta2
 kind: StatefulSet
 metadata:
@@ -12,9 +13,13 @@ spec:
   replicas: {{ .Values.replicaCount }}
   updateStrategy:
     type: {{ .Values.statefulset.updateStrategy }}
+    {{- if (eq "Recreate" .Values.statefulset.updateStrategy) }}
+    rollingUpdate: null
+    {{- else }}
     {{- if .Values.statefulset.rollingUpdatePartition }}
     rollingUpdate:
       partition: {{ .Values.statefulset.rollingUpdatePartition }}
+    {{- end }}
     {{- end }}
   selector:
     matchLabels:
@@ -29,19 +34,24 @@ spec:
         {{- if .Values.podLabels }}
 {{ toYaml .Values.podLabels | indent 8 }}
         {{- end }}
-      {{- if .Values.podAnnotations }}
+{{- if or .Values.podAnnotations .Values.metrics.enabled }}
       annotations:
+{{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
-      {{- end }}
+{{- end }}
+{{- if .Values.metrics.podAnnotations }}
+{{ toYaml .Values.metrics.podAnnotations | indent 8 }}
+{{- end }}
+{{- end }}
     spec:
-      {{- if .Values.image.pullSecrets }}
-      imagePullSecrets:
-{{ toYaml .Values.image.pullSecrets | indent 8 }}
-      {{- end }}
+{{- include "nats.imagePullSecrets" . | indent 6 }}
       {{- if .Values.securityContext.enabled }}
       securityContext:
         fsGroup: {{ .Values.securityContext.fsGroup }}
         runAsUser: {{ .Values.securityContext.runAsUser }}
+      {{- end }}
+      {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName | quote }}
       {{- end }}
       {{- if .Values.nodeSelector }}
       nodeSelector:
@@ -80,17 +90,24 @@ spec:
         image: {{ template "nats.image" . }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         command:
-        - gnatsd
+        - {{ .Values.natsFilename }}
         args:
         - -c
-        - /opt/bitnami/nats/gnatsd.conf
+        - /opt/bitnami/nats/{{ .Values.natsFilename }}.conf
+        # to ensure nats could run with non-root user, we put the configuration
+        # file under `/opt/bitnami/nats/{{ .Values.natsFilename }}.conf`, please check the link below
+        # for the implementation inside Dockerfile:
+        # - https://github.com/bitnami/bitnami-docker-nats/blob/master/1/debian-9/Dockerfile#L12
+        {{- if .Values.extraArgs }}
+{{ toYaml .Values.extraArgs | indent 8 }}
+        {{- end }}
         ports:
         - name: client
-          containerPort: {{ .Values.clientService.port }}
+          containerPort: {{ .Values.client.service.port }}
         - name: cluster
-          containerPort: {{ .Values.clusterService.port }}
+          containerPort: {{ .Values.cluster.service.port }}
         - name: monitoring
-          containerPort: {{ .Values.monitoringService.port }}
+          containerPort: {{ .Values.monitoring.service.port }}
         {{- if .Values.livenessProbe.enabled }}
         livenessProbe:
           httpGet:
@@ -117,12 +134,38 @@ spec:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
           - name: config
-            mountPath: /opt/bitnami/nats/gnatsd.conf
-            subPath: gnatsd.conf
+            mountPath: /opt/bitnami/nats/{{ .Values.natsFilename }}.conf
+            subPath: {{ .Values.natsFilename }}.conf
         {{- if .Values.sidecars }}
 {{ toYaml .Values.sidecars | indent 6 }}
         {{- end }}
+{{- if .Values.metrics.enabled }}
+      - name: metrics
+        image: {{ template "nats.metrics.image" . }}
+        imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
+        args:
+{{ toYaml .Values.metrics.args | indent 10 -}}
+          - "http://localhost:{{ .Values.monitoring.service.port }}"
+        ports:
+        - name: metrics
+          containerPort: {{ .Values.metrics.port }}
+        livenessProbe:
+          httpGet:
+            path: /metrics
+            port: metrics
+          initialDelaySeconds: 15
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /metrics
+            port: metrics
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+        resources:
+{{ toYaml .Values.metrics.resources | indent 10 }}
+{{- end }}
       volumes:
       - name: config
         configMap:
           name: {{ template "nats.fullname" . }}
+{{- end }}

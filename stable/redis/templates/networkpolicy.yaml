@@ -2,26 +2,60 @@
 kind: NetworkPolicy
 apiVersion: {{ template "networkPolicy.apiVersion" . }}
 metadata:
-  name: "{{ template "redis.fullname" . }}"
+  name: {{ template "redis.fullname" . }}
   labels:
     app: {{ template "redis.name" . }}
     chart: {{ template "redis.chart" . }}
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   podSelector:
     matchLabels:
       app: {{ template "redis.name" . }}
-      release: "{{ .Release.Name }}"
+      release: {{ .Release.Name }}
+  {{- if .Values.cluster.enabled }}
+  policyTypes:
+    - Ingress
+    - Egress
+  egress:
+    # Allow outbound connections to other cluster pods
+    - ports:
+      - port: {{ .Values.redisPort }}
+      {{- if .Values.sentinel.enabled }}
+      - port: {{ .Values.sentinel.port }}
+      {{- end }}
+      to:
+      - podSelector:
+          matchLabels:
+            app: {{ template "redis.name" . }}
+            release: {{ .Release.Name }}
+  {{- end }}
   ingress:
     # Allow inbound connections
     - ports:
-      - port: 6379
+      - port: {{ .Values.redisPort }}
+      {{- if .Values.sentinel.enabled }}
+      - port: {{ .Values.sentinel.port }}
+      {{- end }}
       {{- if not .Values.networkPolicy.allowExternal }}
       from:
-        - podSelector:
-            matchLabels:
-              {{ template "redis.fullname" . }}-client: "true"
+      - podSelector:
+          matchLabels:
+            {{ template "redis.fullname" . }}-client: "true"
+      {{- if .Values.metrics.enabled }}
+      - podSelector:
+          matchLabels:
+            app: {{ template "redis.name" . }}
+            release: {{ .Release.Name }}
+            role: metrics
+      {{- end }}
+      {{- if .Values.cluster.enabled }}
+      - podSelector:
+          matchLabels:
+            app: {{ template "redis.name" . }}
+            release: {{ .Release.Name }}
+            role: slave
+      {{- end }}
       {{- end }}
     {{- if .Values.metrics.enabled }}
     # Allow prometheus scrapes for metrics

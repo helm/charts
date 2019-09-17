@@ -1,0 +1,80 @@
+settings:
+  # Custom monitor definitions to add to Node Problem Detector - to be
+  # mounted at /custom-config. These are in addition to pre-packaged monitor
+  # definitions provided within the default docker image available at /config:
+  # https://github.com/kubernetes/node-problem-detector/tree/master/config
+  custom_monitor_definitions: {}
+    # docker-monitor-filelog.json: |
+    #   {
+    #     "plugin": "filelog",
+    #     "pluginConfig": {
+    #       "timestamp": "^time=\"(\\S*)\"",
+    #       "message": "msg=\"([^\n]*)\"",
+    #       "timestampFormat": "2006-01-02T15:04:05.999999999-07:00"
+    #     },
+    #     "logPath": "/var/log/docker.log",
+    #     "lookback": "5m",
+    #     "bufferSize": 10,
+    #     "source": "docker-monitor",
+    #     "conditions": [],
+    #     "rules": [
+    #       {
+    #         "type": "temporary",
+    #         "reason": "CorruptDockerImage",
+    #         "pattern": "Error trying v2 registry: failed to register layer: rename /var/lib/docker/image/(.+) /var/lib/docker/image/(.+): directory not empty.*"
+    #       }
+    #     ]
+    #   }
+  log_monitors:
+    - /config/kernel-monitor.json
+    - /config/docker-monitor.json
+    # An example of activating a custom log monitor definition in
+    # Node Problem Detector
+    # - /custom-config/docker-monitor-filelog.json
+  custom_plugin_monitors: []
+
+  prometheus_address: 0.0.0.0
+  prometheus_port: 20257
+
+hostpath:
+  logdir: /var/log/
+
+image:
+  repository: k8s.gcr.io/node-problem-detector
+  tag: v0.7.0
+  pullPolicy: IfNotPresent
+
+nameOverride: ""
+fullnameOverride: ""
+
+rbac:
+  create: true
+  pspEnabled: false
+
+# Flag to run Node Problem Detector on the host's network. This is typically
+# not recommended, but may be useful for certain use cases.
+hostNetwork: false
+
+priorityClassName: ""
+
+resources: {}
+
+annotations: {}
+
+tolerations: []
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+affinity: {}
+
+nodeSelector: {}
+
+metrics:
+  serviceMonitor:
+    enabled: false
+    additionalLabels: {}

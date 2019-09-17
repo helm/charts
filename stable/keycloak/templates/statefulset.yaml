@@ -25,16 +25,25 @@ spec:
       labels:
         app: {{ template "keycloak.name" . }}
         release: "{{ .Release.Name }}"
+      {{- if .Values.keycloak.podLabels }}
+{{ toYaml .Values.keycloak.podLabels | indent 8 }}
+      {{- end }}        
 {{- if .Values.keycloak.podAnnotations }}
       annotations:
 {{ toYaml .Values.keycloak.podAnnotations | indent 8 }}
 {{- end }}
     spec:
+{{- with .Values.keycloak.hostAliases }}
+      hostAliases:
+{{ toYaml . | indent 8 }}
+{{- end }}
       securityContext:
 {{ toYaml .Values.keycloak.securityContext | indent 8 }}
     {{- with .Values.keycloak.image.pullSecrets }}
       imagePullSecrets:
-{{ toYaml . | indent 8 }}
+      {{- range . }}
+        - name: {{ . }}
+      {{- end }}
     {{- end }}
     {{- if or .Values.keycloak.persistence.deployPostgres .Values.keycloak.extraInitContainers }}
       initContainers:
@@ -62,6 +71,10 @@ spec:
           imagePullPolicy: {{ .Values.keycloak.image.pullPolicy }}
           command:
             - /scripts/keycloak.sh
+        {{- if .Values.keycloak.lifecycleHooks }}
+          lifecycle:
+{{ tpl .Values.keycloak.lifecycleHooks . | indent 12 }}
+        {{- end }}
           env:
           {{- if .Release.IsInstall }}
             - name: KEYCLOAK_USER
@@ -69,8 +82,12 @@ spec:
             - name: KEYCLOAK_PASSWORD
               valueFrom:
                 secretKeyRef:
+                  {{- if .Values.keycloak.existingSecret }}
+                  name: {{ .Values.keycloak.existingSecret }}
+                  {{- else }}
                   name: {{ template "keycloak.fullname" . }}-http
-                  key: password
+                  {{- end }}
+                  key: {{ .Values.keycloak.existingSecretKey }}
           {{- end }}
           {{- if $highAvailability }}
             - name: JGROUPS_DISCOVERY_PROTOCOL
@@ -92,15 +109,23 @@ spec:
             - name: http
               containerPort: 8080
               protocol: TCP
+          {{- if $highAvailability }}
+            - name: jgroups
+              containerPort: 7600
+              protocol: TCP
+          {{- end }}
+{{- with .Values.keycloak.extraPorts }}
+{{ tpl . $ | indent 12 }}
+{{- end }}
           livenessProbe:
             httpGet:
-              path: /{{ .Values.keycloak.basepath }}/
+              path: {{ if ne .Values.keycloak.basepath "" }}/{{ .Values.keycloak.basepath }}{{ end }}/
               port: http
             initialDelaySeconds: {{ .Values.keycloak.livenessProbe.initialDelaySeconds }}
             timeoutSeconds: {{ .Values.keycloak.livenessProbe.timeoutSeconds }}
           readinessProbe:
             httpGet:
-              path: /{{ .Values.keycloak.basepath }}/
+              path: {{ if ne .Values.keycloak.basepath "" }}/{{ .Values.keycloak.basepath }}{{ end }}/realms/master
               port: http
             initialDelaySeconds: {{ .Values.keycloak.readinessProbe.initialDelaySeconds }}
             timeoutSeconds: {{ .Values.keycloak.readinessProbe.timeoutSeconds }}
@@ -121,6 +146,9 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
+{{- if .Values.keycloak.priorityClassName }}
+      priorityClassName: {{ .Values.keycloak.priorityClassName }}
+{{- end }}      
       terminationGracePeriodSeconds: 60
       volumes:
         - name: scripts

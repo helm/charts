@@ -4,16 +4,16 @@ kind: ConfigMap
 metadata:
   name: {{ template "fluent-bit.fullname" . }}-config
   labels:
-    app: {{ template "fluent-bit.fullname" . }}
+    app: {{ template "fluent-bit.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 data:
-  fluent-bit.conf: |-
+  fluent-bit-service.conf: |-
     [SERVICE]
-        Flush        1
+        Flush        {{ .Values.service.flush }}
         Daemon       Off
-        Log_Level    info
+        Log_Level    {{ .Values.service.logLevel }}
         Parsers_File parsers.conf
 {{- if .Values.parsers.enabled }}
         Parsers_File parsers_custom.conf
@@ -24,37 +24,56 @@ data:
         HTTP_Port    2020
 {{- end }}
 
+  fluent-bit-input.conf: |-
     [INPUT]
         Name             tail
-        Path             /var/log/containers/*.log
-        Parser           docker
+        Path             {{ .Values.input.tail.path }}
+        Parser           {{ .Values.input.tail.parser }}
         Tag              {{ .Values.filter.kubeTag }}.*
         Refresh_Interval 5
-        Mem_Buf_Limit    5MB
+        Mem_Buf_Limit    {{ .Values.input.tail.memBufLimit }}
         Skip_Long_Lines  On
 {{- if .Values.trackOffsets }}
         DB               /tail-db/tail-containers-state.db
         DB.Sync          Normal
 {{- end }}
-{{ .Values.extraInputs | indent 4 }}
+{{- if .Values.input.systemd.enabled }}
+    [INPUT]
+        Name            systemd
+        Tag             {{ .Values.input.systemd.tag }}
+{{- range $value := .Values.input.systemd.filters.systemdUnit }}
+        Systemd_Filter  _SYSTEMD_UNIT={{ $value }}
+{{- end }}
+        Max_Entries     {{ .Values.input.systemd.maxEntries }}
+        Read_From_Tail  {{ .Values.input.systemd.readFromTail }}
+{{- end }}
+{{ .Values.extraEntries.input | indent 8 }}
 
+  fluent-bit-filter.conf: |-
     [FILTER]
         Name                kubernetes
         Match               {{ .Values.filter.kubeTag }}.*
+        Kube_Tag_Prefix     {{ .Values.filter.kubeTagPrefix }}
         Kube_URL            {{ .Values.filter.kubeURL }}
         Kube_CA_File        {{ .Values.filter.kubeCAFile }}
         Kube_Token_File     {{ .Values.filter.kubeTokenFile }}
 {{- if .Values.filter.mergeJSONLog }}
         Merge_Log           On
 {{- end }}
+
+{{- if .Values.filter.mergeLogKey }}
+        Merge_Log_Key       {{ .Values.filter.mergeLogKey }}
+{{- end }}
+
 {{- if .Values.filter.enableParser }}
         K8S-Logging.Parser  On
 {{- end }}
 {{- if .Values.filter.enableExclude }}
         K8S-Logging.Exclude On
 {{- end }}
-{{ .Values.extraFilters | indent 4 }}
+{{ .Values.extraEntries.filter | indent 8 }}
 
+  fluent-bit-output.conf: |-
 {{ if eq .Values.backend.type "test" }}
     [OUTPUT]
         Name  file
@@ -76,11 +95,14 @@ data:
         Match *
         Host  {{ .Values.backend.es.host }}
         Port  {{ .Values.backend.es.port }}
-        Logstash_Format On
+        Logstash_Format {{ default "On" .Values.backend.es.logstash_format  }}
         Retry_Limit False
         Type  {{ .Values.backend.es.type }}
 {{- if .Values.backend.es.time_key }}
         Time_Key {{ .Values.backend.es.time_key }}
+{{- end }}
+{{- if .Values.backend.es.replace_dots }}
+        Replace_Dots {{ .Values.backend.es.replace_dots }}
 {{- end }}
 {{- if .Values.backend.es.logstash_prefix }}
         Logstash_Prefix {{ .Values.backend.es.logstash_prefix }}
@@ -89,7 +111,11 @@ data:
 {{- end }}
 {{- if .Values.backend.es.http_user }}
         HTTP_User {{ .Values.backend.es.http_user }}
+{{- if .Values.backend.es.http_passwd }}
         HTTP_Passwd {{ .Values.backend.es.http_passwd }}
+{{- else }}
+        HTTP_Passwd ${HTTP_PASSWORD}
+{{- end }}
 {{- end }}
 {{if eq .Values.backend.es.tls "on" }}
         tls {{ .Values.backend.es.tls }}
@@ -130,7 +156,14 @@ data:
 {{- end }}
         Format {{ .Values.backend.http.format }}
 {{- end }}
-{{ .Values.extraOutputs | indent 4 }}
+{{- range  .Values.backend.http.headers }}
+        Header  {{ . }}
+{{- end }}
+{{ .Values.extraEntries.output | indent 8 }}
+
+
+  fluent-bit.conf: |-
+{{ .Values.rawConfig | indent 4 }}
 
   parsers.conf: |-
 {{- if .Values.parsers.regex }}
@@ -153,7 +186,7 @@ data:
         Name        {{ .name }}
         Format      json
 {{- if .timeKeep }}
-        Time_Keep    {{ .timeKeep }}
+        Time_Keep   {{ .timeKeep }}
 {{- end }}
 {{- if .timeKey }}
         Time_Key    {{ .timeKey }}
@@ -163,6 +196,25 @@ data:
 {{- end }}
 {{- if .decodeFieldAs  }}
         Decode_Field_As {{ .decodeFieldAs }} {{ .decodeField | default "log" }}
+{{- end}}
+{{- if .extraEntries }}
+{{ .extraEntries | indent 8 }}
+{{- end }}
+{{ end }}
+{{- end }}
+{{- if .Values.parsers.logfmt }}
+{{- range .Values.parsers.logfmt }}
+    [PARSER]
+        Name        {{ .name }}
+        Format      logfmt
+{{- if .timeKey }}
+        Time_Key    {{ .timeKey }}
+{{- end }}
+{{- if .timeFormat }}
+        Time_Format {{ .timeFormat }}
+{{- end }}
+{{- if .extraEntries }}
+{{ .extraEntries | indent 8 }}
 {{- end }}
 {{ end }}
 {{- end }}

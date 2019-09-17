@@ -10,9 +10,9 @@ metadata:
     release: {{ .Release.Name | quote }}
   name: {{ template "nats.fullname" . }}
 data:
-  gnatsd.conf: |-
-    listen: 0.0.0.0:{{ .Values.clientService.port }}
-    http: 0.0.0.0:{{ .Values.monitoringService.port }}
+  {{ .Values.natsFilename }}.conf: |-
+    listen: 0.0.0.0:{{ .Values.client.service.port }}
+    http: 0.0.0.0:{{ .Values.monitoring.service.port }}
 
     # Authorization for client connections
     {{- if .Values.auth.enabled }}
@@ -33,17 +33,17 @@ data:
     logtime: {{ .Values.debug.logtime }}
 
     # Pid file
-    pid_file: "/tmp/gnatsd.pid"
+    pid_file: "/tmp/{{ .Values.natsFilename }}.pid"
 
     # Some system overides
     {{- if .Values.maxConnections }}
-    max_connections: {{ .Values.maxConnections }}
+    max_connections: {{ int .Values.maxConnections }}
     {{- end }}
     {{- if .Values.maxControlLine }}
-    max_control_line: {{ .Values.maxControlLine }}
+    max_control_line: {{ int .Values.maxControlLine }}
     {{- end }}
-    {{- if .Values.maxPayload }}    
-    max_payload: {{ .Values.maxPayload }}
+    {{- if .Values.maxPayload }}
+    max_payload: {{ int .Values.maxPayload }}
     {{- end }}
     {{- if .Values.writeDeadline }}
     write_deadline: {{ .Values.writeDeadline | quote }}
@@ -52,7 +52,7 @@ data:
 
     # Clustering definition
     cluster {
-      listen: 0.0.0.0:{{ .Values.clusterService.port }}
+      listen: 0.0.0.0:{{ .Values.cluster.service.port }}
 
       # Authorization for cluster connections
       {{- if .Values.clusterAuth.enabled }}
@@ -73,12 +73,12 @@ data:
       routes = [
         {{- if .Values.clusterAuth.enabled }}
         {{- if .Values.clusterAuth.user }}
-        nats://{{ .Values.clusterAuth.user }}:{{ $clusterAuthPwd }}@{{ template "nats.fullname" . }}-cluster:{{ .Values.clusterService.port }}
+        nats://{{ .Values.clusterAuth.user }}:{{ $clusterAuthPwd }}@{{ template "nats.fullname" . }}-cluster:{{ .Values.cluster.service.port }}
         {{- else if .Values.clusterAuth.token }}
-        nats://{{ .Values.clusterAuth.token }}@{{ template "nats.fullname" . }}-cluster:{{ .Values.clusterService.port }}
+        nats://{{ .Values.clusterAuth.token }}@{{ template "nats.fullname" . }}-cluster:{{ .Values.cluster.service.port }}
         {{- end }}
         {{- else }}
-        nats://{{ template "nats.fullname" . }}-cluster:{{ .Values.clusterService.port }}
+        nats://{{ template "nats.fullname" . }}-cluster:{{ .Values.cluster.service.port }}
         {{- end }}
       ]
     }

@@ -30,3 +30,14 @@ Create chart name and version as used by the chart label.
 {{- define "oauth2-proxy.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{/*
+Get the secret name.
+*/}}
+{{- define "oauth2-proxy.secretName" -}}
+{{- if .Values.config.existingSecret -}}
+{{- printf "%s" .Values.config.existingSecret -}}
+{{- else -}}
+{{- printf "%s" (include "oauth2-proxy.fullname" .) -}}
+{{- end -}}
+{{- end -}}

@@ -1,0 +1,87 @@
+{{- if .Values.backup.enabled }}
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: {{ template "jenkins.fullname" . }}-backup
+  namespace: {{ template "jenkins.namespace" . }}
+  labels:
+    "app.kubernetes.io/name": '{{ template "jenkins.name" .}}'
+    "helm.sh/chart": "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    "app.kubernetes.io/managed-by": "{{ .Release.Service }}"
+    "app.kubernetes.io/instance": "{{ .Release.Name }}"
+    "app.kubernetes.io/component": "{{ .Values.backup.componentName }}"
+spec:
+  schedule: {{ .Values.backup.schedule | quote }}
+  concurrencyPolicy: Forbid
+  startingDeadlineSeconds: 120
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          annotations:
+            {{ toYaml .Values.backup.annotations }}
+        spec:
+          restartPolicy: OnFailure
+          serviceAccountName: {{ template "jenkins.fullname" . }}-backup
+          containers:
+          - name: jenkins-backup
+            image: "{{ .Values.backup.image.repository }}:{{ .Values.backup.image.tag }}"
+            command: ["kube-tasks"]
+            args:
+            - simple-backup
+            - -n
+            - {{ template "jenkins.namespace" . }}
+            - -l
+            - app.kubernetes.io/instance={{ .Release.Name }}
+            - --container
+            - jenkins
+            - --path
+            - /var/jenkins_home
+            - --dst
+            - {{ .Values.backup.destination }}
+            {{- with .Values.backup.extraArgs }}
+{{ toYaml . | indent 12 }}
+            {{- end }}
+            {{- with .Values.backup.env }}
+            env:
+{{ toYaml . | indent 12 }}
+            {{- end }}
+            {{- if .Values.backup.existingSecret }}
+            {{- range $key,$value := .Values.backup.existingSecret }}
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $key }}
+                  key: {{ $value.awsaccesskey | quote }}
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $key }}
+                  key: {{ $value.awssecretkey | quote}}
+            {{- end }}
+            {{- end }}
+          {{- with .Values.backup.resources }}
+            resources:
+{{ toYaml . | indent 14 }}
+          {{- end }}
+          affinity:
+            podAffinity:
+              preferredDuringSchedulingIgnoredDuringExecution:
+              - weight: 100
+                podAffinityTerm:
+                  topologyKey: "kubernetes.io/hostname"
+                  labelSelector:
+                    matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                      - {{ template "jenkins.fullname" . }}
+                    - key: release
+                      operator: In
+                      values:
+                      - {{ .Release.Name }}
+      {{- with .Values.tolerations }}
+        tolerations:
+{{ toYaml . | indent 10 }}
+      {{- end }}
+{{- end }}

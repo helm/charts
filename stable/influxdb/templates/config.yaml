@@ -2,16 +2,16 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "influxdb.fullname" . }}
+  name: "{{ template "influxdb.fullname" . }}"
   labels:
-    app: {{ template "influxdb.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: "{{ template "influxdb.fullname" . }}"
+    chart: "{{ template "influxdb.chart" . }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 data:
   influxdb.conf: |+
     reporting-disabled = {{ .Values.config.reporting_disabled | default false }}
-    bind-address = ":{{ .Values.config.bind_address }}"
+    bind-address = ":{{ .Values.config.rpc.bind_address }}"
 
     [meta]
       dir = "{{ .Values.config.storage_directory }}/meta"
@@ -70,6 +70,7 @@ data:
     [http]
       enabled = {{ .Values.config.http.enabled }}
       bind-address = ":{{ .Values.config.http.bind_address }}"
+      flux-enabled = {{ .Values.config.http.flux_enabled }}
       auth-enabled = {{ .Values.config.http.auth_enabled }}
       log-enabled = {{ .Values.config.http.log_enabled }}
       write-tracing = {{ .Values.config.http.write_tracing }}
@@ -154,4 +155,7 @@ data:
       enabled = {{ .Values.config.continuous_queries.enabled }}
       run-interval = "{{ .Values.config.continuous_queries.run_interval }}"
 
-
+    [logging]
+      format =  "{{ .Values.config.logging.format }}"
+      level =  "{{ .Values.config.logging.level }}"
+      supress-logo = {{ .Values.config.logging.supress_logo }}

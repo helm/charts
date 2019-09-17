@@ -1,14 +1,28 @@
 # Default values for cert-manager.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
+global:
+  ## Reference to one or more secrets to be used when pulling images
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  ##
+  imagePullSecrets: []
+  # - name: "image-pull-secret"
+
+  # Optional priority class to be used for the cert-manager pods
+  priorityClassName: ""
+
 replicaCount: 1
+
+strategy: {}
+  # type: RollingUpdate
+  # rollingUpdate:
+  #   maxSurge: 0
+  #   maxUnavailable: 1
 
 image:
   repository: quay.io/jetstack/cert-manager-controller
-  tag: v0.5.0
+  tag: v0.6.2
   pullPolicy: IfNotPresent
-
-createCustomResource: true
 
 # Override the namespace used to store DNS provider credentials etc. for ClusterIssuer
 # resources. By default, the same namespace as cert-manager is deployed within is
@@ -18,8 +32,6 @@ clusterResourceNamespace: ""
 leaderElection:
   # Override the namespace used to store the ConfigMap for leader election
   namespace: ""
-
-certificateResourceShortNames: ["cert", "certs"]
 
 rbac:
   # Specifies whether RBAC resources should be created
@@ -47,6 +59,13 @@ resources: {}
   #   cpu: 10m
   #   memory: 32Mi
 
+# Pod Security Context
+# ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+securityContext:
+  enabled: false
+  fsGroup: 1001
+  runAsUser: 1001
+
 podAnnotations: {}
 
 podLabels: {}
@@ -70,12 +89,7 @@ ingressShim: {}
   # defaultACMEDNS01ChallengeProvider: ""
 
 webhook:
-  enabled: false
-
-# This is used by the static manifest generator in order to create a static
-# namespace manifest for the namespace that cert-manager is being installed
-# within. It should **not** be used if you are using Helm for deployment.
-createNamespaceResource: false
+  enabled: true
 
 # Use these variables to configure the HTTP_PROXY environment variables
 # http_proxy: "http://proxy:8080"

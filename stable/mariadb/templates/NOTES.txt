@@ -21,7 +21,7 @@ To connect to your database:
 
   1. Run a pod that you can use as a client:
 
-      kubectl run {{ template "mariadb.fullname" . }}-client --rm --tty -i --image  {{ template "mariadb.image" . }} --namespace {{ .Release.Namespace }} --command -- bash
+      kubectl run {{ template "mariadb.fullname" . }}-client --rm --tty -i --restart='Never' --image  {{ template "mariadb.image" . }} --namespace {{ .Release.Namespace }} --command -- bash
 
   2. To connect to master service (read/write):
 
@@ -40,3 +40,10 @@ To upgrade this helm chart:
 
       ROOT_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "mariadb.fullname" . }} -o jsonpath="{.data.mariadb-root-password}" | base64 --decode)
       helm upgrade {{ .Release.Name }} stable/mariadb --set rootUser.password=$ROOT_PASSWORD
+
+{{- if and (contains "bitnami/" .Values.image.repository) (not (.Values.image.tag | toString | regexFind "-r\\d+$|sha256:")) }}
+
+WARNING: Rolling tag detected ({{ .Values.image.repository }}:{{ .Values.image.tag }}), please note that it is strongly recommended to avoid using rolling tags in a production environment.
++info https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/
+
+{{- end }}

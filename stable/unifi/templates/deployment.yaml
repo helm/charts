@@ -3,21 +3,29 @@ kind: Deployment
 metadata:
   name: {{ template "unifi.fullname" . }}
   labels:
-    app: {{ template "unifi.name" . }}
-    chart: {{ template "unifi.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ include "unifi.name" . }}
+    helm.sh/chart: {{ include "unifi.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: 1
+  strategy:
+    type: {{ .Values.strategyType }}
   selector:
     matchLabels:
-      app: {{ template "unifi.name" . }}
-      release: {{ .Release.Name }}
+      app.kubernetes.io/name: {{ include "unifi.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ template "unifi.name" . }}
-        release: {{ .Release.Name }}
+        app.kubernetes.io/name: {{ include "unifi.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+      {{- if .Values.podAnnotations }}
+      annotations:
+        {{- range $key, $value := .Values.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
+      {{- end }}
     spec:
       containers:
         - name: {{ .Chart.Name }}
@@ -36,23 +44,33 @@ spec:
             - name: stun
               containerPort: 3478
               protocol: UDP
+          {{- if not .Values.runAsRoot }}
+          securityContext:
+            capabilities:
+              add:
+                - SETFCAP
+          {{- end }}
           livenessProbe:
             httpGet:
               path: /status
               port: https-gui
               scheme: HTTPS
-              initialDelaySeconds: 30
+            initialDelaySeconds: 30
           readinessProbe:
             httpGet:
               path: /status
               port: https-gui
               scheme: HTTPS
-              initialDelaySeconds: 15
+            initialDelaySeconds: 15
           env:
             - name: TZ
               value: "{{ .Values.timezone }}"
             - name: RUNAS_UID0
               value: "{{ .Values.runAsRoot }}"
+            - name: UNIFI_UID
+              value: "{{ .Values.UID }}"
+            - name: UNIFI_GID
+              value: "{{ .Values.GID }}"
             {{- if .Values.mongodb.enabled }}
             - name: DB_URI
               value: "{{ .Values.mongodb.dbUri }}"

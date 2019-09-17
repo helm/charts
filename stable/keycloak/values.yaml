@@ -11,7 +11,7 @@ keycloak:
 
   image:
     repository: jboss/keycloak
-    tag: 4.5.0.Final
+    tag: 5.0.0
     pullPolicy: IfNotPresent
 
     ## Optionally specify an array of imagePullSecrets.
@@ -19,7 +19,12 @@ keycloak:
     ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
     ##
     pullSecrets: []
-    #  - myRegistrKeySecretName
+    # - myRegistrKeySecretName
+
+  hostAliases: []
+  #  - ip: "1.2.3.4"
+  #    hostnames:
+  #      - "my.host.com"
 
   securityContext:
     runAsUser: 1000
@@ -38,15 +43,27 @@ keycloak:
   ## Custom script that is run before Keycloak is started.
   preStartScript:
 
+  ## lifecycleHooks defines the container lifecycle hooks
+  lifecycleHooks: |
+    # postStart:
+    #   exec:
+    #     command: ["/bin/sh", "-c", "ls"]
+
   ## Additional arguments to start command e.g. -Dkeycloak.import= to load a realm
   extraArgs: ""
 
   ## Username for the initial Keycloak admin user
   username: keycloak
 
-  ## Password for the initial Keycloak admin user
+  ## Password for the initial Keycloak admin user. Applicable only if existingSecret is not set.
   ## If not set, a random 10 characters password will be used
   password: ""
+
+  # Specifies an existing secret to be used for the admin password
+  existingSecret: ""
+
+  # The key in the existing secret that stores the password
+  existingSecretKey: password
 
   ## Allows the specification of additional environment variables for Keycloak
   extraEnv: |
@@ -56,6 +73,12 @@ keycloak:
     #   value: DEBUG
     # - name: CACHE_OWNERS
     #   value: "2"
+    # - name: DB_QUERY_TIMEOUT
+    #   value: "60"
+    # - name: DB_VALIDATE_ON_MATCH
+    #   value: true
+    # - name: DB_USE_CAST_FAIL
+    #   value: false
 
   affinity: |
     podAntiAffinity:
@@ -85,7 +108,12 @@ keycloak:
             topologyKey: failure-domain.beta.kubernetes.io/zone
 
   nodeSelector: {}
+  priorityClassName: ""
   tolerations: []
+
+  ## Additional pod labels
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+  podLabels: {}
 
   ## Extra Annotations to be added to pod
   podAnnotations: {}
@@ -105,40 +133,33 @@ keycloak:
     #   cpu: "100m"
     #   memory: "1024Mi"
 
-  ## WildFly CLI configurations. They all end up in the file 'keycloak.cli' configured in the configmap whichn is
+  ## WildFly CLI configurations. They all end up in the file 'keycloak.cli' configured in the configmap which is
   ## executed on server startup.
   cli:
-    ## Sets the node identifier to the node name (= pod name). Node identifiers have to be unique. They can have a
-    ## maximum length of 23 characters. Thus, the chart's fullname template truncates its length accordingly.
     nodeIdentifier: |
-      # Makes node identifier unique getting rid of a warning in the logs
-      /subsystem=transactions:write-attribute(name=node-identifier, value=${jboss.node.name})
+      {{ .Files.Get "scripts/node-identifier.cli" }}
 
     logging: |
-      # Allow log level to be configured via environment variable
-      /subsystem=logging/console-handler=CONSOLE:write-attribute(name=level, value=${env.WILDFLY_LOGLEVEL:INFO})
-      /subsystem=logging/root-logger=ROOT:write-attribute(name=level, value=${env.WILDFLY_LOGLEVEL:INFO})
-
-      # Log only to console
-      /subsystem=logging/root-logger=ROOT:write-attribute(name=handlers, value=[CONSOLE])
+      {{ .Files.Get "scripts/logging.cli" }}
 
     reverseProxy: |
-      /socket-binding-group=standard-sockets/socket-binding=proxy-https:add(port=443)
-      /subsystem=undertow/server=default-server/http-listener=default:write-attribute(name=redirect-socket, value=proxy-https)
-      /subsystem=undertow/server=default-server/http-listener=default:write-attribute(name=proxy-address-forwarding, value=true)
+      {{ .Files.Get "scripts/reverse-proxy.cli" }}
 
     ha: |
-      /subsystem=infinispan/cache-container=keycloak/distributed-cache=sessions:write-attribute(name=owners, value=${env.CACHE_OWNERS:2})
-      /subsystem=infinispan/cache-container=keycloak/distributed-cache=authenticationSessions:write-attribute(name=owners, value=${env.CACHE_OWNERS:2})
-      /subsystem=infinispan/cache-container=keycloak/distributed-cache=offlineSessions:write-attribute(name=owners, value=${env.CACHE_OWNERS:2})
-      /subsystem=infinispan/cache-container=keycloak/distributed-cache=loginFailures:write-attribute(name=owners, value=${env.CACHE_OWNERS:2})
+      {{ .Files.Get "scripts/ha.cli" }}
+
+    datasource: |
+      {{ .Files.Get "scripts/datasource.cli" }}
 
     # Custom CLI script
-    custom: ""
+    custom: |
 
   ## Add additional volumes and mounts, e. g. for custom themes
   extraVolumes: |
   extraVolumeMounts: |
+
+  ## Add additional ports, eg. for custom admin console
+  extraPorts: |
 
   podDisruptionBudget: {}
     # maxUnavailable: 1
@@ -159,6 +180,9 @@ keycloak:
     # nodePort: 30000
 
     port: 80
+
+    # Optional: jGroups port for high availability clustering
+    jgroupsPort: 7600
 
   ## Ingress configuration.
   ## ref: https://kubernetes.io/docs/user-guide/ingress/
@@ -228,7 +252,12 @@ postgresql:
     enabled: false
 
 test:
+  enabled: true
   image:
     repository: unguiculus/docker-python3-phantomjs-selenium
     tag: v1
     pullPolicy: IfNotPresent
+  securityContext:
+    runAsUser: 1000
+    fsGroup: 1000
+    runAsNonRoot: true

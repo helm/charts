@@ -1,9 +1,9 @@
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
-  name: fluent-bit
+  name: {{ template "fluent-bit.fullname" . }}
   labels:
-    app: {{ template "fluent-bit.fullname" . }}
+    app: {{ template "fluent-bit.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
@@ -13,32 +13,63 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "fluent-bit.fullname" . }}
+        app: {{ template "fluent-bit.name" . }}
         release: {{ .Release.Name }}
+{{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | indent 8 }}
+{{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
 {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
 {{- end }}
     spec:
+{{- if .Values.podSecurityContext }}
+      securityContext:
+{{ toYaml .Values.podSecurityContext | indent 8 }}
+{{- end }}
+{{- if .Values.priorityClassName }}
+      priorityClassName: "{{ .Values.priorityClassName }}"
+{{- end }}
 {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
 {{ toYaml .Values.image.pullSecrets | indent 8 }}
 {{- end }}
+      hostNetwork: {{ .Values.hostNetwork }}
+      dnsPolicy: {{ .Values.dnsPolicy }}
       serviceAccountName: {{ template "fluent-bit.serviceAccountName" . }}
       containers:
       - name: fluent-bit
         image: "{{ .Values.image.fluent_bit.repository }}:{{ .Values.image.fluent_bit.tag }}"
         imagePullPolicy: "{{ .Values.image.pullPolicy }}"
         env:
+{{- if .Values.backend.es.http_passwd_secret }}
+          - name: HTTP_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.backend.es.http_passwd_secret }}
+                key: {{ .Values.backend.es.http_passwd_secret_key }}
+{{- end }}
+{{- /* Only render empty array when no HTTP_PASSWORD */ -}}
+{{- if or .Values.env (not .Values.backend.es.http_passwd_secret) }}
 {{ toYaml .Values.env | indent 10 }}
+{{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
-{{- if .Values.metrics.enabled }}
+{{- if or .Values.metrics.enabled .Values.extraPorts }}
         ports:
-          - name: metrics
-            containerPort: 2020
-            protocol: TCP
+{{- if .Values.metrics.enabled }}
+        - name: metrics
+          containerPort: 2020
+          protocol: TCP
+{{- end -}}
+{{- if .Values.extraPorts }}
+{{ toYaml .Values.extraPorts | indent 8 }}
+{{- end }}
+{{- end }}
+{{- if .Values.securityContext }}
+        securityContext:
+{{ toYaml .Values.securityContext | indent 10 }}
 {{- end }}
         volumeMounts:
         - name: varlog
@@ -46,18 +77,41 @@ spec:
         - name: varlibdockercontainers
           mountPath: /var/lib/docker/containers
           readOnly: true
+      {{- if .Values.input.systemd.enabled }}
+        - name: etcmachineid
+          mountPath: /etc/machine-id
+          readOnly: true
+      {{- end }}
+{{- if .Values.fullConfigMap }}
+        - name: config
+          mountPath: /fluent-bit/etc
+{{- else }}
         - name: config
           mountPath: /fluent-bit/etc/fluent-bit.conf
           subPath: fluent-bit.conf
+        - name: config
+          mountPath: /fluent-bit/etc/fluent-bit-service.conf
+          subPath: fluent-bit-service.conf
+        - name: config
+          mountPath: /fluent-bit/etc/fluent-bit-input.conf
+          subPath: fluent-bit-input.conf
+        - name: config
+          mountPath: /fluent-bit/etc/fluent-bit-filter.conf
+          subPath: fluent-bit-filter.conf
+        - name: config
+          mountPath: /fluent-bit/etc/fluent-bit-output.conf
+          subPath: fluent-bit-output.conf
+
 {{- if .Values.parsers.enabled }}
         - name: config
           mountPath: /fluent-bit/etc/parsers_custom.conf
           subPath: parsers.conf
 {{- end }}
-{{- if .Values.backend.es.tls_ca }}
+{{- end }}
+{{- if or .Values.backend.es.tls_ca .Values.backend.es.tls_secret }}
         - name: es-tls-secret
           mountPath: /secure/es-tls-ca.crt
-          subPath: es-tls-ca.crt
+          subPath: {{ .Values.backend.es.tls_secret_ca_key | default "es-tls-ca.crt" | quote }}
 {{- end }}
 {{- if .Values.trackOffsets }}
         - name: tail-db
@@ -76,6 +130,10 @@ spec:
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
     {{- end }}
+      {{ if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+      {{- end }}
     {{- if .Values.tolerations }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
@@ -87,15 +145,21 @@ spec:
       - name: varlibdockercontainers
         hostPath:
           path: /var/lib/docker/containers
-{{- if .Values.backend.es.tls_ca }}
+    {{- if .Values.input.systemd.enabled }}
+      - name: etcmachineid
+        hostPath:
+          path: /etc/machine-id
+          type: File
+    {{- end }}
+{{- if or .Values.backend.es.tls_ca .Values.backend.es.tls_secret }}
       - name: es-tls-secret
         secret:
-          secretName: "{{ template "fluent-bit.fullname" . }}-es-tls-secret"
+          secretName: {{ .Values.backend.es.tls_secret | default ( print ( include "fluent-bit.fullname" . ) "-es-tls-secret" ) | quote }}
 {{- end }}
 {{- if .Values.trackOffsets }}
       - name: tail-db
         hostPath:
-          path: /var/lib/fluent-bit
+          path: {{ .Values.taildb.directory }}
           type: DirectoryOrCreate
 {{- end }}
       - name: config

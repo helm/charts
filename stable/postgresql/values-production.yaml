@@ -1,8 +1,13 @@
-## Global Docker image registry
-### Please, note that this will override the image registry for all the images, including dependencies, configured to use the global value
-###
-## global:
-##   imageRegistry:
+## Global Docker image parameters
+## Please, note that this will override the image parameters, including dependencies, configured to use the global value
+## Current available global Docker image parameters: imageRegistry and imagePullSecrets
+##
+global:
+  postgresql: {}
+#   imageRegistry: myRegistryName
+#   imagePullSecrets:
+#     - myRegistryKeySecretName
+#   storageClass: myStorageClass
 
 ## Bitnami PostgreSQL image version
 ## ref: https://hub.docker.com/r/bitnami/postgresql/tags/
@@ -10,24 +15,61 @@
 image:
   registry: docker.io
   repository: bitnami/postgresql
-  tag: 10.5.0
+  tag: 11.5.0-debian-9-r34
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   ##
-  pullPolicy: Always
-
+  pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
   ##
   # pullSecrets:
-  #   - myRegistrKeySecretName
+  #   - myRegistryKeySecretName
 
   ## Set to true if you would like to see extra information on logs
   ## It turns BASH and NAMI debugging in minideb
   ## ref:  https://github.com/bitnami/minideb-extras/#turn-on-bash-debugging
   debug: false
+
+## String to partially override postgresql.fullname template (will maintain the release name)
+##
+# nameOverride:
+
+## String to fully override postgresql.fullname template
+##
+# fullnameOverride:
+
+##
+## Init containers parameters:
+## volumePermissions: Change the owner of the persist volume mountpoint to RunAsUser:fsGroup
+##
+volumePermissions:
+  enabled: true
+  image:
+    registry: docker.io
+    repository: bitnami/minideb
+    tag: stretch
+    ## Specify a imagePullPolicy
+    ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
+    ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+    ##
+    pullPolicy: Always
+    ## Optionally specify an array of imagePullSecrets.
+    ## Secrets must be manually created in the namespace.
+    ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+    ##
+    # pullSecrets:
+    #   - myRegistryKeySecretName
+  ## Init container Security Context
+  securityContext:
+    runAsUser: 0
+
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName:
 
 ## Pod Security Context
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
@@ -37,11 +79,26 @@ securityContext:
   fsGroup: 1001
   runAsUser: 1001
 
+## Pod Service Account
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
+serviceAccount:
+  enabled: false
+  ## Name of an already existing service account. Setting this value disables the automatic service account creation.
+  # name:
+
 replication:
   enabled: true
   user: repl_user
   password: repl_password
-  slaveReplicas: 1
+  slaveReplicas: 2
+  ## Set synchronous commit mode: on, off, remote_apply, remote_write and local
+  ## ref: https://www.postgresql.org/docs/9.6/runtime-config-wal.html#GUC-WAL-LEVEL
+  synchronousCommit: "on"
+  ## From the number of `slaveReplicas` defined above, set the number of those that will have synchronous replication
+  ## NOTE: It cannot be > slaveReplicas
+  numSynchronousReplicas: 1
+  ## Replication Cluster application name. Useful for defining multiple replication policies
+  applicationName: my_application
 
 ## PostgreSQL admin user
 ## ref: https://github.com/bitnami/bitnami-docker-postgresql/blob/master/README.md#setting-the-root-password-on-first-run
@@ -52,15 +109,90 @@ postgresqlUsername: postgres
 ##
 # postgresqlPassword:
 
+## PostgreSQL password using existing secret
+## existingSecret: secret
+
+## Mount PostgreSQL secret as a file instead of passing environment variable
+# usePasswordFile: false
+
 ## Create a database
 ## ref: https://github.com/bitnami/bitnami-docker-postgresql/blob/master/README.md#creating-a-database-on-first-run
 ##
 # postgresqlDatabase:
 
+## PostgreSQL data dir
+## ref: https://github.com/bitnami/bitnami-docker-postgresql/blob/master/README.md
+##
+postgresqlDataDir: /bitnami/postgresql/data
+
+## Specify extra initdb args
+## ref: https://github.com/bitnami/bitnami-docker-postgresql/blob/master/README.md
+##
+# postgresqlInitdbArgs:
+
+## Specify a custom location for the PostgreSQL transaction log
+## ref: https://github.com/bitnami/bitnami-docker-postgresql/blob/master/README.md
+##
+# postgresqlInitdbWalDir:
+
+## PostgreSQL configuration
+## Specify runtime configuration parameters as a dict, using camelCase, e.g.
+## {"sharedBuffers": "500MB"}
+## Alternatively, you can put your postgresql.conf under the files/ directory
+## ref: https://www.postgresql.org/docs/current/static/runtime-config.html
+##
+# postgresqlConfiguration:
+
+## PostgreSQL extended configuration
+## As above, but _appended_ to the main configuration
+## Alternatively, you can put your *.conf under the files/conf.d/ directory
+## https://github.com/bitnami/bitnami-docker-postgresql#allow-settings-to-be-loaded-from-files-other-than-the-default-postgresqlconf
+##
+# postgresqlExtendedConf:
+
+## PostgreSQL client authentication configuration
+## Specify content for pg_hba.conf
+## Default: do not create pg_hba.conf
+## Alternatively, you can put your pg_hba.conf under the files/ directory
+# pgHbaConfiguration: |-
+#   local all all trust
+#   host all all localhost trust
+#   host mydatabase mysuser 192.168.0.0/24 md5
+
+## ConfigMap with PostgreSQL configuration
+## NOTE: This will override postgresqlConfiguration and pgHbaConfiguration
+# configurationConfigMap:
+
+## ConfigMap with PostgreSQL extended configuration
+# extendedConfConfigMap:
+
+## initdb scripts
+## Specify dictionary of scripts to be run at first boot
+## Alternatively, you can put your scripts under the files/docker-entrypoint-initdb.d directory
+##
+# initdbScripts:
+#   my_init_script.sh: |
+#      #!/bin/sh
+#      echo "Do something."
+
+## ConfigMap with scripts to be run at first boot
+## NOTE: This will override initdbScripts
+# initdbScriptsConfigMap:
+
+## Secret with scripts to be run at first boot (in case it contains sensitive information)
+## NOTE: This can work along initdbScripts or initdbScriptsConfigMap
+# initdbScriptsSecret:
+
+## Optional duration in seconds the pod needs to terminate gracefully.
+## ref: https://kubernetes.io/docs/concepts/workloads/pods/pod/#termination-of-pods
+##
+# terminationGracePeriodSeconds: 30
+
 ## PostgreSQL service configuration
 service:
   ## PosgresSQL service type
   type: ClusterIP
+  # clusterIP: None
   port: 5432
 
   ## Specify the nodePort value for the LoadBalancer and NodePort service types.
@@ -75,6 +207,12 @@ service:
   ##
   # loadBalancerIP:
 
+  ## Load Balancer sources
+  ## https://kubernetes.io/docs/tasks/access-application-cluster/configure-cloud-provider-firewall/#restrict-access-for-loadbalancer-service
+  ##
+  # loadBalancerSourceRanges:
+  # - 10.10.10.0/24
+
 ## PostgreSQL data Persistent Volume Storage Class
 ## If defined, storageClassName: <storageClass>
 ## If set to "-", storageClassName: "", which disables dynamic provisioning
@@ -84,17 +222,72 @@ service:
 ##
 persistence:
   enabled: true
+  ## A manually managed Persistent Volume and Claim
+  ## If defined, PVC must be created manually before volume will be bound
+  ## The value is evaluated as a template, so, for example, the name can depend on .Release or .Chart
+  ##
+  # existingClaim:
+
+  ## The path the volume will be mounted at, useful when using different
+  ## PostgreSQL images.
+  ##
+  mountPath: /bitnami/postgresql
+
+  ## The subdirectory of the volume to mount to, useful in dev environments
+  ## and one PV for multiple services.
+  ##
+  subPath: ""
+
   # storageClass: "-"
   accessModes:
     - ReadWriteOnce
   size: 8Gi
   annotations: {}
 
-## Node labels and tolerations for pod assignment
-## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
-## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
-nodeSelector: {}
-tolerations: []
+## updateStrategy for PostgreSQL StatefulSet and its slaves StatefulSets
+## ref: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#update-strategies
+updateStrategy:
+  type: RollingUpdate
+
+##
+## PostgreSQL Master parameters
+##
+master:
+  ## Node, affinity and tolerations labels for pod assignment
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
+  podLabels: {}
+  podAnnotations: {}
+  ## Additional PostgreSQL Master Volume mounts
+  ##
+  extraVolumeMounts: []
+  ## Additional PostgreSQL Master Volumes
+  ##
+  extraVolumes: []
+
+##
+## PostgreSQL Slave parameters
+##
+slave:
+  ## Node, affinity and tolerations labels for pod assignment
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
+  podLabels: {}
+  podAnnotations: {}
+  ## Additional PostgreSQL Slave Volume mounts
+  ##
+  extraVolumeMounts: []
+  ## Additional PostgreSQL Slave Volumes
+  ##
+  extraVolumes: []
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -139,32 +332,35 @@ readinessProbe:
 metrics:
   enabled: true
   # resources: {}
-  # podAnnotations: {}
   service:
     type: ClusterIP
     annotations:
       prometheus.io/scrape: "true"
       prometheus.io/port: "9187"
     loadBalancerIP:
+  serviceMonitor:
+    enabled: false
+    additionalLabels: {}
+    # namespace: monitoring
+    # interval: 30s
+    # scrapeTimeout: 10s
   image:
     registry: docker.io
-    repository: wrouesnel/postgres_exporter
-    tag: v0.4.6
+    repository: bitnami/postgres-exporter
+    tag: 0.5.1-debian-9-r48
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
     ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
     ##
     # pullSecrets:
-    #   - myRegistrKeySecretName
-
-  ## Metrics exporter labels and tolerations for pod assignment
-  # nodeSelector: {"beta.kubernetes.io/arch": "amd64"}
-  # tolerations: []
-
-  ## Metrics exporter pod Annotation and Labels
-  # podLabels: {}
-
+    #   - myRegistryKeySecretName
+  ## Pod Security Context
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+  ##
+  securityContext:
+    enabled: false
+    runAsUser: 1001
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
   ## Configure extra options for liveness and readiness probes
   livenessProbe:

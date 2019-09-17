@@ -23,13 +23,10 @@ spec:
       name: {{ template "k8s-prometheus-adapter.name" . }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/custom-metrics-configmap.yaml") . | sha256sum }}
+        {{- with .Values.podAnnotations }}
+        {{- toYaml . | trim | nindent 8 }}
+        {{- end }}
     spec:
-      securityContext:
-        allowPrivilegeEscalation: false
-        capabilities:
-          drop: ["all"]
-        runAsNonRoot: true
-        runAsUser: 10001
       serviceAccountName: {{ template "k8s-prometheus-adapter.serviceAccountName" . }}
       containers:
       - name: {{ .Chart.Name }}
@@ -38,14 +35,13 @@ spec:
         args:
         - /adapter
         - --secure-port=6443
-{{- if .Values.tls.enable }}
+        {{- if .Values.tls.enable }}
         - --tls-cert-file=/var/run/serving-cert/tls.crt
         - --tls-private-key-file=/var/run/serving-cert/tls.key
-{{- else }}
+        {{- end }}
         - --cert-dir=/tmp/cert
-{{- end }}
         - --logtostderr=true
-        - --prometheus-url={{ .Values.prometheus.url }}:{{ .Values.prometheus.port }}
+        - --prometheus-url={{ .Values.prometheus.url }}{{ if .Values.prometheus.port }}:{{ .Values.prometheus.port }}{{end}}
         - --metrics-relist-interval={{ .Values.metricsRelistInterval }}
         - --v={{ .Values.logLevel }}
         - --config=/etc/adapter/config.yaml
@@ -64,37 +60,49 @@ spec:
             port: https
             scheme: HTTPS
           initialDelaySeconds: 30
-{{- if .Values.resources }}
+        {{- if .Values.resources }}
         resources:
-{{ toYaml .Values.resources | indent 10 }}
-{{- end }}
+          {{- toYaml .Values.resources | nindent 10 }}
+        {{- end }}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ["all"]
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 10001
         volumeMounts:
         - mountPath: /etc/adapter/
           name: config
           readOnly: true
-{{- if .Values.tls.enable }}
+        - mountPath: /tmp
+          name: tmp
+        {{- if .Values.tls.enable }}
         - mountPath: /var/run/serving-cert
           name: volume-serving-cert
           readOnly: true
-{{- end }}
-    {{- with .Values.nodeSelector }}
+        {{- end }}
       nodeSelector:
-{{ toYaml . | indent 8 }}
-    {{- end }}
-    {{- with .Values.affinity }}
+        {{- toYaml .Values.nodeSelector | nindent 8 }}
       affinity:
-{{ toYaml . | indent 8 }}
-    {{- end }}
-    {{- with .Values.tolerations }}
+        {{- toYaml .Values.affinity | nindent 8 }}
+      priorityClassName: {{ .Values.priorityClassName }}
       tolerations:
-{{ toYaml . | indent 8 }}
-    {{- end }}
+        {{- toYaml .Values.tolerations | nindent 8 }}
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+        {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+        {{- end }}
+      {{- end }}
       volumes:
       - name: config
         configMap:
-          name: {{ template "k8s-prometheus-adapter.fullname" . }}
-{{- if .Values.tls.enable }}
+          name: {{ .Values.rules.existing | default (include "k8s-prometheus-adapter.fullname" . ) }}
+      - name: tmp
+        emptyDir: {}
+      {{- if .Values.tls.enable }}
       - name: volume-serving-cert
         secret:
           secretName: {{ template "k8s-prometheus-adapter.fullname" . }}
-{{- end }}
+      {{- end }}

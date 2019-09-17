@@ -5,22 +5,22 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: {{ template "mattermost-team-edition.fullname" . }}
+  name: {{ include "mattermost-team-edition.fullname" . }}
   labels:
-    chart: {{ template "mattermost-team-edition.chart" . }}
-    app: {{ template "mattermost-team-edition.fullname" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ include "mattermost-team-edition.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "mattermost-team-edition.chart" . }}
   annotations:
-{{ if .Values.ingress.tls }}
+    {{- if .Values.ingress.tls }}
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     kubernetes.io/tls-acme: "true"
-{{ else }}
+    {{- else }}
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
-{{ end }}
-{{ with $ingress.annotations }}
-{{ toYaml . | indent 4 }}
-{{ end }}
+    {{- end }}
+    {{- with $ingress.annotations }}
+    {{- . | toYaml | nindent 4 }}
+    {{- end }}
 spec:
   rules:
   {{ range $host := $ingress.hosts }}
@@ -34,6 +34,6 @@ spec:
   {{ end }}
   {{ if $ingress.tls }}
   tls:
-{{ toYaml $ingress.tls | indent 4 }}
+    {{- $ingress.tls | toYaml | nindent 4 }}
   {{ end }}
 {{ end }}

@@ -1,0 +1,166 @@
+## Hazelcast Jet image version
+## ref: https://hub.docker.com/r/hazelcast/hazelcast-jet/tags/
+##
+image:
+  # repository is the Hazelcast Jet image name
+  repository: "hazelcast/hazelcast-jet"
+  # tag is the Hazelcast Jet image tag
+  tag: "3.1"
+  # pullPolicy is the Docker image pull policy
+  # It's recommended to change this to 'Always' if the image tag is 'latest'
+  # ref: http://kubernetes.io/docs/user-guide/images/#updating-images
+  #
+  pullPolicy: IfNotPresent
+  # pullSecrets is an array of docker-registry secret names
+  # Secrets must be manually created in the namespace.
+  # ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  # pullSecrets:
+  # - myRegistryKeySecretName
+
+# Cluster settings
+cluster:
+  # memberCount is the number Hazelcast Jet members
+  memberCount: 2
+
+# Hazelcast Jet properties
+jet:
+  # rest is a flag used to enable REST endpoints for Hazelcast Jet member
+  rest: true
+  # javaOpts are additional JAVA_OPTS properties for Hazelcast Jet member
+  javaOpts:
+  # configurationFiles are Hazelcast Jet configuration files
+  configurationFiles:
+    hazelcast.yaml: |-
+      hazelcast:
+        network:
+          join:
+            multicast:
+              enabled: false
+            kubernetes:
+              enabled: true
+              namespace: ${namespace}
+              service-name: ${serviceName}
+              resolve-not-ready-addresses: true
+    hazelcast-jet.yaml: |-
+      hazelcast-jet:
+        instance:
+          # period between flow control packets in milliseconds
+          flow-control-period: 100
+          # number of backup copies to configure for Hazelcast IMaps used internally in a Jet job
+          backup-count: 1
+          # the delay after which auto-scaled jobs will restart if a new member is added to the
+          # cluster. The default is 10 seconds. Has no effect on jobs with auto scaling disabled
+          scale-up-delay-millis: 10000
+          # Sets whether lossless job restart is enabled for the node. With
+          # lossless restart you can restart the whole cluster without losing the
+          # jobs and their state. The feature is implemented on top of the Hot
+          # Restart feature of Hazelcast IMDG which persists the data to disk.
+          lossless-restart-enabled: false
+        edge-defaults:
+          # capacity of the concurrent SPSC queue between each two processors
+          queue-size: 1024
+          # network packet size limit in bytes, only applies to distributed edges
+          packet-size-limit: 16384
+          # receive window size multiplier, only applies to distributed edges
+          receive-window-multiplier: 3
+        metrics:
+          # whether metrics collection is enabled
+          enabled: true
+          # whether jmx mbean metrics collection is enabled
+          jmx-enabled: true
+          # the number of seconds the metrics will be retained on the instance
+          retention-seconds: 120
+          # the metrics collection interval in seconds
+          collection-interval-seconds: 5
+          # whether metrics should be collected for data structures. Metrics
+          # collection can have some overhead if there is a large number of data
+          # structures
+          metrics-for-data-structures: false
+
+# nodeSelector is an array of Hazelcast Node labels for POD assignments
+# ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+nodeSelector: {}
+
+gracefulShutdown:
+  enabled: true
+  maxWaitSeconds: 600
+
+# Hazelcast Liveness probe
+livenessProbe:
+  # enabled is a flag to used to enable liveness probe
+  enabled: true
+  # initialDelaySeconds is a delay before liveness probe is initiated
+  initialDelaySeconds: 30
+  # periodSeconds decides how often to perform the probe
+  periodSeconds: 10
+  # timeoutSeconds decides when the probe times out
+  timeoutSeconds: 5
+  # successThreshold is the minimum consecutive successes for the probe to be considered successful after having failed
+  successThreshold: 1
+  # failureThreshold is the minimum consecutive failures for the probe to be considered failed after having succeeded
+  failureThreshold: 3
+
+# Hazelcast Readiness probe
+readinessProbe:
+  # enabled is a flag to used to enable readiness probe
+  enabled: true
+  # initialDelaySeconds is a delay before readiness probe is initiated
+  initialDelaySeconds: 30
+  # periodSeconds decides how often to perform the probe
+  periodSeconds: 10
+  # timeoutSeconds decides when the probe times out
+  timeoutSeconds: 1
+  # successThreshold is the minimum consecutive successes for the probe to be considered successful after having failed
+  successThreshold: 1
+  # failureThreshold is the minimum consecutive failures for the probe to be considered failed after having succeeded
+  failureThreshold: 3
+
+# Configure resource requests and limits
+# ref: http://kubernetes.io/docs/user-guide/compute-resources/
+#
+# resources:
+#   requests:
+#     memory: 256Mi
+#     cpu: 100m
+
+# Hazelcast Service properties
+service:
+  # type defines the Kubernetes service type ('ClusterIP', 'LoadBalancer', or 'NodePort')
+  type: ClusterIP
+  # port is the Kubernetes service port
+  port: 5701
+  # clusterIP set to None makes the service headless
+  # It is required if DNS Lookup is used (https://github.com/hazelcast/hazelcast-kubernetes#dns-lookup)
+  # clusterIP: "None"
+
+# Role-based Access Control
+rbac:
+  # Specifies whether RBAC resources should be created
+  # It is not required if DNS Lookup is used (https://github.com/hazelcast/hazelcast-kubernetes#dns-lookup)
+  create: true
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+# Security Context properties
+securityContext:
+  # enabled is a flag to enable Security Context
+  enabled: true
+  # runAsUser is the user ID used to run the container
+  runAsUser: 1001
+  # fsGroup is the group ID associated with the container
+  fsGroup: 1001
+
+# Allows to enable a Prometheus to scrape pods
+metrics:
+  enabled: false
+  service:
+    type: ClusterIP
+    port: 8080
+    annotations:
+      prometheus.io/scrape: "true"
+      prometheus.io/path: "/metrics"

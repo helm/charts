@@ -1,4 +1,3 @@
-{{- if or .Values.sysdig.settings .Values.secure.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -10,6 +9,7 @@ metadata:
     heritage: "{{ .Release.Service }}"
 data:
   dragent.yaml: |
+    new_k8s: true
 {{- if .Values.secure.enabled }}
     security:
       enabled: true
@@ -20,5 +20,4 @@ data:
 {{- end }}
 {{- if .Values.sysdig.settings }}
 {{ toYaml .Values.sysdig.settings | indent 4 }}
-{{- end }}
 {{- end }}

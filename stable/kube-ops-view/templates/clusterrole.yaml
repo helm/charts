@@ -12,8 +12,7 @@ rules:
 - apiGroups: [""]
   resources: ["nodes", "pods"]
   verbs: ["list"]
-- apiGroups: [""]
-  resources: ["services/proxy"]
-  resourceNames: ["heapster"]
-  verbs: ["get"]
+- apiGroups: ["metrics.k8s.io"]
+  resources: ["nodes", "pods"]
+  verbs: ["get", "list"]
 {{- end -}}

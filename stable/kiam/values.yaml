@@ -11,8 +11,13 @@ agent:
 
   image:
     repository: quay.io/uswitch/kiam
-    tag: v3.0-rc1
+    tag: v3.3
     pullPolicy: IfNotPresent
+
+  ## agent whitelist of proxy routes matching this reg-ex
+  ##
+  # whiteListRouteRegexp:
+
 
   ## Logging settings
   ##
@@ -37,6 +42,16 @@ agent:
   ## Labels to be added to pods
   ##
   podLabels: {}
+  ## Annotations to be added to service
+  ##
+  serviceAnnotations: {}
+  ## Labels to be added to service
+  ##
+  serviceLabels: {}
+  ## Used to assign priority to agent pods
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
+  ##
+  priorityClassName: ""
   ## Strategy for DaemonSet updates (requires Kubernetes 1.6+)
   ## Ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/
   ##
@@ -57,6 +72,20 @@ agent:
   ## Agent container resources
   ## Ref https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
   ##
+
+  # Ref: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#affinity-v1-core
+  # Expects input structure as per specification for example:
+  #   affinity:
+  #     nodeAffinity:
+  #      requiredDuringSchedulingIgnoredDuringExecution:
+  #        nodeSelectorTerms:
+  #        - matchExpressions:
+  #          - key: foo.bar.com/role
+  #            operator: In
+  #            values:
+  #            - master
+  affinity: {}
+
   resources: {}
   ## Additional container arguments
   ##
@@ -87,6 +116,16 @@ agent:
     cert:
     key:
 
+  ## Secret name of agent's TLS certificates
+  ##
+  tlsSecret:
+
+  ## Agent TLS Certificate filenames
+  tlsCerts:
+    certFileName: cert
+    keyFileName: key
+    caFileName: ca
+
 server:
   ## If false, server will not be installed
   ##
@@ -98,7 +137,7 @@ server:
 
   image:
     repository: quay.io/uswitch/kiam
-    tag: v3.0-rc1
+    tag: v3.3
     pullPolicy: IfNotPresent
 
   ## Logging settings
@@ -115,10 +154,37 @@ server:
   ## Annotations to be added to pods
   ##
   podAnnotations: {}
+  ## Labels to be added to pods
+  ##
+  podLabels: {}
+  ## Annotations to be added to service
+  ##
+  serviceAnnotations: {}
+  ## Labels to be added to service
+  ##
+  serviceLabels: {}
+  ## Used to assign priority to server pods
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
+  ##
+  priorityClassName: ""
   ## Strategy for DaemonSet updates (requires Kubernetes 1.6+)
   ## Ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/
   ##
   updateStrategy: OnDelete
+
+  # Ref: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#affinity-v1-core
+  # Expects input structure as per specification for example:
+  #   affinity:
+  #     nodeAffinity:
+  #      requiredDuringSchedulingIgnoredDuringExecution:
+  #        nodeSelectorTerms:
+  #        - matchExpressions:
+  #          - key: foo.bar.com/role
+  #            operator: In
+  #            values:
+  #            - master
+  affinity: {}
+
   ## Node labels for pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
   ##
@@ -160,7 +226,7 @@ server:
 
   ## Server probe configuration
   probes:
-    serverAddress: localhost
+    serverAddress: 127.0.0.1
 
   ## Base64-encoded PEM values for server's CA certificate(s), certificate and private key
   ##
@@ -168,6 +234,10 @@ server:
     ca:
     cert:
     key:
+
+  ## Secret name of server's TLS certificates
+  ##
+  tlsSecret:
 
   ## Base ARN for IAM roles
   ## If not specified use EC2 metadata service to detect ARN prefix
@@ -187,9 +257,19 @@ server:
   ## Set this to true when running the servers on the same nodes as the agents
   useHostNetwork: false
 
+  ## Agent TLS Certificate filenames
+  tlsCerts:
+    certFileName: cert
+    keyFileName: key
+    caFileName: ca
+
 rbac:
   # Specifies whether RBAC resources should be created
   create: true
+
+psp:
+  # Specifies whether PodSecurityPolicies should be created
+  create: false
 
 serviceAccounts:
   agent:

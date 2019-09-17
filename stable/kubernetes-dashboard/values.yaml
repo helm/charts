@@ -5,22 +5,54 @@
 
 image:
   repository: k8s.gcr.io/kubernetes-dashboard-amd64
-  tag: v1.10.0
+  tag: v1.10.1
   pullPolicy: IfNotPresent
+  pullSecrets: []
 
 replicaCount: 1
 
+## Here annotations can be added to the kubernetes dashboard deployment
+annotations: {}
 ## Here labels can be added to the kubernetes dashboard deployment
 ##
 labels: {}
-# kubernetes.io/cluster-service: "true"
 # kubernetes.io/name: "Kubernetes Dashboard"
+
+
+## Enable possibility to skip login
+enableSkipLogin: false
+
+## Serve application over HTTP without TLS
+enableInsecureLogin: false
 
 ## Additional container arguments
 ##
 # extraArgs:
+#   - --enable-skip-login
 #   - --enable-insecure-login
 #   - --system-banner="Welcome to Kubernetes"
+
+## Additional container environment variables
+##
+extraEnv: []
+# - name: SOME_VAR
+#   value: 'some value'
+
+# Annotations to be added to kubernetes dashboard pods
+## Recommended value
+# podAnnotations:
+#   seccomp.security.alpha.kubernetes.io/pod: 'runtime/default'
+podAnnotations: {}
+
+## SecurityContext for the kubernetes dashboard container
+## Recommended values
+# dashboardContainerSecurityContext:
+#   allowPrivilegeEscalation: false
+#   readOnlyRootFilesystem: true
+## The two values below can be set here or at podLevel (using variable .securityContext)
+#   runAsUser: 1001
+#   runAsGroup: 2001
+dashboardContainerSecurityContext: {}
 
 ## Node labels for pod assignment
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
@@ -34,6 +66,11 @@ tolerations: []
 #    value: "value"
 #    effect: "NoSchedule|PreferNoSchedule|NoExecute"
 
+## Affinity
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+affinity: {}
+
+
 service:
   type: ClusterIP
   externalPort: 443
@@ -43,10 +80,17 @@ service:
   ##
   # nameOverride:
 
+  # LoadBalancerSourcesRange is a list of allowed CIDR values, which are combined with ServicePort to
+  # set allowed inbound rules on the security group assigned to the master load balancer
+  # loadBalancerSourceRanges: []
+
   ## Kubernetes Dashboard Service annotations
   ##
+  ## For GCE ingress, the following annotation is required:
+  ## service.alpha.kubernetes.io/app-protocols: '{"https":"HTTPS"}' if enableInsecureLogin=false
+  ## or
+  ## service.alpha.kubernetes.io/app-protocols: '{"http":"HTTP"}' if enableInsecureLogin=true
   annotations: {}
-  # foo.io/bar: "true"
 
   ## Here labels can be added to the Kubernetes Dashboard service
   ##
@@ -68,14 +112,25 @@ ingress:
 
   ## Kubernetes Dashboard Ingress annotations
   ##
+  ## Add custom labels
+  # labels:
+  #   key: value
   # annotations:
   #   kubernetes.io/ingress.class: nginx
-  #   nginx.ingress.kubernetes.io/secure-backends: "true"
   #   kubernetes.io/tls-acme: 'true'
+  ## If you plan to use TLS backend with enableInsecureLogin set to false
+  ## (default), you need to uncomment the below.
+  ## If you use ingress-nginx < 0.21.0
+  #   nginx.ingress.kubernetes.io/secure-backends: "true"
+  ## if you use ingress-nginx >= 0.21.0
+  #   nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
 
-  ## Kubernetes Dashboard Ingress path
+
+  ## Kubernetes Dashboard Ingress paths
   ##
-  path: /
+  paths:
+    - /
+  #  - /*
 
   ## Kubernetes Dashboard Ingress hostnames
   ## Must be provided if Ingress is enabled
@@ -99,6 +154,20 @@ rbac:
   # ServiceAccount (NOT RECOMMENDED).
   clusterAdminRole: false
 
+  # Start in ReadOnly mode.
+  # Only dashboard-related Secrets and ConfigMaps will still be available for writing.
+  #
+  # Turn OFF clusterAdminRole to use clusterReadOnlyRole.
+  #
+  # The basic idea of the clusterReadOnlyRole comparing to the clusterAdminRole
+  # is not to hide all the secrets and sensitive data but more
+  # to avoid accidental changes in the cluster outside the standard CI/CD.
+  #
+  # Same as for clusterAdminRole, it is NOT RECOMMENDED to use this version in production.
+  # Instead you should review the role and remove all potentially sensitive parts such as
+  # access to persistentvolumes, pods/log etc.
+  clusterReadOnlyRole: false
+
 serviceAccount:
   # Specifies whether a service account should be created
   create: true
@@ -111,3 +180,19 @@ livenessProbe:
   initialDelaySeconds: 30
   # Number of seconds to wait for probe response
   timeoutSeconds: 30
+
+podDisruptionBudget:
+  # https://kubernetes.io/docs/tasks/run-application/configure-pdb/
+  enabled: false
+  minAvailable:
+  maxUnavailable:
+
+
+## PodSecurityContext for pod level securityContext
+##
+# securityContext:
+#   runAsUser: 1001
+#   runAsGroup: 2001
+securityContext: {}
+
+networkPolicy: false

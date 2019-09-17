@@ -1,11 +1,18 @@
 apiVersion: v1
-description:
-  Configure external DNS servers (AWS Route53, Google CloudDNS and others)
-  for Kubernetes Ingresses and Services
 name: external-dns
-version: 0.7.8
-appVersion: 0.5.7
+version: 2.6.1
+appVersion: 0.5.16
+description: ExternalDNS is a Kubernetes addon that configures public DNS servers with information about exposed Kubernetes services to make them discoverable.
+keywords:
+- external-dns
+- network
+- dns
 home: https://github.com/kubernetes-incubator/external-dns
 sources:
-  - https://github.com/kubernetes-incubator/external-dns
+- https://github.com/kubernetes-incubator/external-dns
+- https://github.com/bitnami/bitnami-docker-external-dns
+maintainers:
+- name: Bitnami
+  email: containers@bitnami.com
 engine: gotpl
+icon: https://bitnami.com/assets/stacks/external-dns/img/external-dns-stack-110x117.png

@@ -1,0 +1,96 @@
+# If the admission webhook is enabled, then a post-install step is required
+# to generate and install the secret in the operator namespace.
+
+# In the post-install hook, the token corresponding to the operator service account
+# is used to authenticate with the Kubernetes API server to install the secret bundle.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "sparkoperator.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: {{ include "sparkoperator.name" . }}
+    helm.sh/chart: {{ include "sparkoperator.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "sparkoperator.name" . }}
+      app.kubernetes.io/version: {{ .Values.operatorVersion }}
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+    {{- if or .Values.podAnnotations .Values.enableMetrics }}
+      annotations:
+      {{- if .Values.enableMetrics }}
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "{{ .Values.metricsPort }}"
+        prometheus.io/path: {{ .Values.metricsEndpoint }}
+      {{- end }}
+      {{- if .Values.podAnnotations }}
+{{ toYaml .Values.podAnnotations | trim | indent 8 }}
+      {{- end }}
+    {{- end }}
+      labels:
+        app.kubernetes.io/name: {{ include "sparkoperator.name" . }}
+        app.kubernetes.io/version: {{ .Values.operatorVersion }}
+      initializers:
+        pending: []
+    spec:
+      serviceAccountName: {{ include "sparkoperator.serviceAccountName" . }}
+      {{- if .Values.enableWebhook }}
+      volumes:
+        - name: webhook-certs
+          secret:
+            secretName: spark-webhook-certs
+      {{- end }}
+      containers:
+      - name: sparkoperator
+        image: {{ .Values.operatorImageName }}:{{ .Values.operatorVersion }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        {{- if .Values.enableWebhook }}
+        volumeMounts:
+          - name: webhook-certs
+            mountPath: /etc/webhook-certs
+        {{- end }}
+        {{- if .Values.enableMetrics }}
+        ports:
+          - containerPort: {{ .Values.metricsPort }}
+        {{ end }}
+        args:
+        - -v={{ .Values.logLevel }}
+        - -namespace={{ .Values.sparkJobNamespace }}
+        - -ingress-url-format={{ .Values.ingressUrlFormat }}
+        - -install-crds={{ .Values.installCrds }}
+        - -controller-threads={{ .Values.controllerThreads }}
+        - -resync-interval={{ .Values.resyncInterval }}
+        - -logtostderr
+        {{- if .Values.enableBatchScheduler }}
+        - -enable-batch-scheduler={{ .Values.enableBatchScheduler }}
+        {{- end }}
+        {{- if .Values.enableMetrics }}
+        - -enable-metrics=true
+        - -metrics-labels=app_type
+        - -metrics-port={{ .Values.metricsPort }}
+        - -metrics-endpoint={{ .Values.metricsEndpoint }}
+        - -metrics-prefix={{ .Values.metricsPrefix }}
+        {{- end }}
+        {{- if .Values.enableWebhook }}
+        - -enable-webhook=true
+        - -webhook-svc-namespace={{ .Release.Namespace }}
+        - -webhook-port={{ .Values.webhookPort }}
+        - -webhook-svc-name={{ .Release.Name }}-webhook
+        - -webhook-config-name={{ include "sparkoperator.fullname" . }}-webhook-config
+        {{- end }}
+        {{- if .Values.resources }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        {{- end }}
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}

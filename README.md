@@ -60,17 +60,17 @@ Note: We use the same [workflow](https://github.com/kubernetes/community/blob/ma
 
 ## Owning and Maintaining A Chart
 
-Individual charts can be maintained by one or more members of the Kubernetes community. When someone maintains a chart they have the access to merge changes to that chart. To have merge access to a chart someone needs to:
+Individual charts can be maintained by one or more users of GitHub. When someone maintains a chart they have the access to merge changes to that chart. To have merge access to a chart someone needs to:
 
 1. Be listed on the chart, in the `Chart.yaml` file, as a maintainer. If you need sponsors and have contributed to the chart, please reach out to the existing maintainers, or if you are having trouble connecting with them, please reach out to one of the [OWNERS](OWNERS) of the charts repository.
 1. Be invited (and accept your invite) as a read-only collaborator on [this repo](https://github.com/helm/charts). This is required for @k8s-ci-robot [PR comment interaction](https://github.com/kubernetes/community/blob/master/contributors/guide/pull-requests.md).
 1. An OWNERS file needs to be added to a chart. That OWNERS file should list the maintainers' GitHub login names for both the reviewers and approvers sections. For an example see the [Drupal chart](stable/drupal/OWNERS). The `OWNERS` file should also be appended to the `.helmignore` file.
 
-Once these two steps are done a chart approver can merge pull requests following the directions in the [REVIEW_GUIDELINES.md](REVIEW_GUIDELINES.md) file.
+Once these three steps are done a chart approver can merge pull requests following the directions in the [REVIEW_GUIDELINES.md](REVIEW_GUIDELINES.md) file.
 
 ## Trusted Collaborator
 
-The `pull-charts-e2e` test run, that installs a chart to test it, is required before a pull request can be merged. These tests run automatically for members of the Helm Org and for chart OWNERS, listed in OWNERS files. For regular contributors who are trusted, in a manner similar to Kubernetes community members, we have trusted collaborators. These individuals can have their tests run automatically as well as mark other pull requests as ok to test by adding a comment of `/ok-to-test` on pull requests.
+The `pull-charts-e2e` test run, that installs a chart to test it, is required before a pull request can be merged. These tests run automatically for members of the Helm Org and for chart [repository collaborators](https://help.github.com/articles/adding-outside-collaborators-to-repositories-in-your-organization/). For regular contributors who are trusted, in a manner similar to Kubernetes community members, we have trusted collaborators. These individuals can have their tests run automatically as well as mark other pull requests as ok to test by adding a comment of `/ok-to-test` on pull requests.
 
 There are two paths to becoming a trusted collaborator. One only needs follow one of them.
 
@@ -99,3 +99,7 @@ To provide that support the API versions of objects should be those that work fo
 ## Status of the Project
 
 This project is still under active development, so you might run into [issues](https://github.com/helm/charts/issues). If you do, please don't be shy about letting us know, or better yet, contribute a fix or feature.
+
+## Happy Helming in China
+
+If you are in China, there are some problems to use upstream Helm Charts directly (e.g. images hosted on `gcr.io`, `quay.io`, and Charts hosted on `googleapis.com` etc), you can use this mirror repo at https://github.com/cloudnativeapp/charts which automatically sync & replace unavailable image & repo URLs in every Chart.

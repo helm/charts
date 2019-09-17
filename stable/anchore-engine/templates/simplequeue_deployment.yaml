@@ -1,0 +1,171 @@
+{{- $component := "simplequeue" -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "anchore-engine.simplequeue.fullname" . }}
+  labels:
+    app: {{ template "anchore-engine.fullname" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: {{ $component }}
+    {{- with .Values.anchoreSimpleQueue.labels }}
+    {{ toYaml . | nindent 4 }}
+    {{- end }}
+    {{- with .Values.anchoreGlobal.labels }}
+    {{ toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "anchore-engine.fullname" . }}
+      component: {{ $component }}
+  replicas: {{ .Values.anchoreSimpleQueue.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "anchore-engine.fullname" . }}
+        component: {{ $component }}
+        {{- with .Values.anchoreSimpleQueue.labels }}
+        {{ toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.anchoreGlobal.labels }}
+        {{ toYaml . | nindent 8 }}
+        {{- end }}
+      {{- with .Values.anchoreSimpleQueue.annotations }}
+      annotations:
+        {{ toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      containers:
+      {{- if .Values.cloudsql.enabled  }}
+      - name: cloudsql-proxy
+        image: {{ .Values.cloudsql.image.repository }}:{{ .Values.cloudsql.image.tag }}
+        imagePullPolicy: {{ .Values.cloudsql.image.pullPolicy }}
+        command: ["/cloud_sql_proxy"]
+        args:
+        - "-instances={{ .Values.cloudsql.instance }}=tcp:5432"
+        {{- if .Values.cloudsql.useExistingServiceAcc }}
+        - "-credential_file=/var/{{ .Values.cloudsql.serviceAccSecretName }}/{{ .Values.cloudsql.serviceAccJsonName }}"
+        volumeMounts:
+        - mountPath: /var/{{ .Values.cloudsql.serviceAccSecretName }}
+          name: {{ .Values.cloudsql.serviceAccSecretName }}
+          readOnly: true
+        {{- end }}
+      {{- end }}
+      - name: "{{ .Chart.Name }}-{{ $component }}"
+        image: {{ .Values.anchoreGlobal.image }}
+        imagePullPolicy: {{ .Values.anchoreGlobal.imagePullPolicy }}
+        command: ["anchore-manager"]
+        args: ["service", "start", "simplequeue"]
+        envFrom:
+        - secretRef:
+            name: {{ default (include "anchore-engine.fullname" .) .Values.anchoreGlobal.existingSecret }}
+        - configMapRef:
+            name: {{ template "anchore-engine.fullname" . }}
+        env:
+        {{- with .Values.anchoreGlobal.extraEnv }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.anchoreSimpleQueue.extraEnv }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+        - name: ANCHORE_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        ports:
+        - name: simplequeue
+          containerPort: {{ .Values.anchoreSimpleQueue.service.port }}
+        volumeMounts:
+        - name: config-volume
+          mountPath: /config/config.yaml
+          subPath: config.yaml
+        {{- if (.Values.anchoreGlobal.certStoreSecretName) }}
+        - name: certs
+          mountPath: /home/anchore/certs/
+          readOnly: true
+        {{- end }}
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: simplequeue
+            {{- if .Values.anchoreGlobal.internalServicesSsl.enabled }}
+            scheme: HTTPS
+            {{- end }}
+          initialDelaySeconds: 120
+          timeoutSeconds: 10
+          periodSeconds: 10
+          failureThreshold: 6
+          successThreshold: 1
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: simplequeue
+            {{- if .Values.anchoreGlobal.internalServicesSsl.enabled }}
+            scheme: HTTPS
+            {{- end }}
+          timeoutSeconds: 10
+          periodSeconds: 10
+          failureThreshold: 3
+          successThreshold: 1
+        resources:
+          {{ toYaml .Values.anchoreSimpleQueue.resources | nindent 10 }}
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ template "anchore-engine.fullname" .}}
+        {{- with .Values.anchoreGlobal.certStoreSecretName }}
+        - name: certs
+          secret:
+            secretName: {{ . }}
+        {{- end }}
+        {{- if .Values.cloudsql.useExistingServiceAcc }}
+        - name: {{ .Values.cloudsql.serviceAccSecretName }}
+          secret:
+            secretName: {{ .Values.cloudsql.serviceAccSecretName }}
+        {{- end }}
+      {{- with .Values.anchoreSimpleQueue.nodeSelector }}
+      nodeSelector:
+        {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.anchoreSimpleQueue.affinity }}
+      affinity:
+        {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.anchoreSimpleQueue.tolerations }}
+      tolerations:
+        {{ toYaml . | nindent 8 }}
+      {{- end }}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "anchore-engine.simplequeue.fullname" . }}
+  labels:
+    app: {{ template "anchore-engine.fullname" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: {{ $component }}
+    {{- with .Values.anchoreSimpleQueue.service.labels }}
+    {{ toYaml . | nindent 4 }}
+    {{- end }}
+    {{- with .Values.anchoreGlobal.labels }}
+    {{ toYaml . | nindent 4 }}
+    {{- end }}
+  {{- with .Values.anchoreSimpleQueue.service.annotations }}
+  annotations:
+    {{ toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  type: {{ .Values.anchoreSimpleQueue.service.type }}
+  ports:
+    - name: anchore-simplequeue-api
+      port: {{ .Values.anchoreSimpleQueue.service.port }}
+      targetPort: {{ .Values.anchoreSimpleQueue.service.port }}
+      protocol: TCP
+  selector:
+    app: {{ template "anchore-engine.fullname" . }}
+    component: {{ $component }}

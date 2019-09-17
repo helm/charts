@@ -1,0 +1,24 @@
+
+Kuberhealthy has been installed to your cluster!
+
+	Docker Image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+	Namespace: {{ .Release.Namespace }}
+	Service Type: {{ .Values.service.type }}
+	Service Port: {{ .Values.service.externalPort }}
+	Tolerates Masters: {{ .Values.tolerations.master }}
+{{- if .Values.prometheus.enabled -}}
+	Prometheus Scraping: {{ .Values.prometheus.enableScraping }}
+	Prometheus Alerting: {{ .Values.prometheus.enableAlerting }}
+{{- end -}}
+
+If you are using Prometheus alert manager for your alerts, Kuberhealthy should
+be good to go.  If you are going to manually scrape Kuberhealthy's status JSON 
+endpoint, you now need to expose Kuberhealthy to your scraper by editing the 
+service definition.  You can edit the service like this:
+
+    `kubectl -n kuberhealthy edit service kuberhealthy`
+
+Please remember that changing the service type to LoadBalancer may expose
+Kuberhealthy to the internet, which could cause error messages shown by 
+Kuberhealthy to be exposed to the public internet.
+

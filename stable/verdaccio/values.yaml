@@ -1,6 +1,6 @@
 image:
   repository: verdaccio/verdaccio
-  tag: 3.8.1
+  tag: 3.11.6
   pullPolicy: IfNotPresent
 
 service:
@@ -16,11 +16,15 @@ service:
   loadBalancerSourceRanges: []
   port: 4873
   type: ClusterIP
+  # nodePort: 31873
 
 ## Node labels for pod assignment
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
 ##
 nodeSelector: {}
+
+## Tolerations for nodes
+tolerations: []
 
 podAnnotations: {}
 replicaCount: 1

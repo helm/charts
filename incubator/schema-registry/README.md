@@ -62,15 +62,16 @@ The following table lists the configurable parameters of the SchemaRegistry char
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
 | `image` | The `SchemaRegistry` image repository | `confluentinc/cp-schema-registry` |
-| `imageTag` | The `SchemaRegistry` image tag | `4.0.1` |
+| `imageTag` | The `SchemaRegistry` image tag | `5.0.1` |
 | `imagePullPolicy` | Image Pull Policy | `IfNotPresent` |
 | `replicaCount` | The number of `SchemaRegistry` Pods in the Deployment | `1` |
 | `configurationOverrides` | `SchemaRegistry` [configuration setting](https://github.com/confluentinc/schema-registry/blob/master/docs/config.rst#configuration-options) overrides in the dictionary format `setting.name: value` | `{}` |
+| `podAnnotations` | Pod annotations. | ` ` |
 | `kafkaOpts` | Additional Java arguments to pass to Kafka. | ` ` |
 | `sasl.configPath` | where to store config for sasl configurations | `/etc/kafka-config` |
 | `sasl.scram.enabled` | whether sasl-scam is enabled | `false` |
 | `sasl.scram.init.image` | which image to use for initializing sasl scram | `confluentinc/cp-schema-registry` |
-| `sasl.scram.init.imageTag` | which version/tag to use for sasl scram init | `4.0.0` |
+| `sasl.scram.init.imageTag` | which version/tag to use for sasl scram init | `5.0.1` |
 | `sasl.scram.init.imagePullPolicy` | the sasl scram init pull policy | `IfNotPresent` |
 | `sasl.scram.clientUser` | the sasl scram user to use to authenticate to kafka | `kafka-client` |
 | `sasl.scram.clientPassword` | the sasl scram password to use to authenticate to kafka | `kafka-password` |
@@ -78,6 +79,8 @@ The following table lists the configurable parameters of the SchemaRegistry char
 | `sasl.scram.zookeeperClientPassword` | the sasl scram password to use to authenticate to zookeeper | `zookeeper-password` |
 | `resources` | CPU/Memory resource requests/limits | `{}` |
 | `servicePort` | The port on which the SchemaRegistry server will be exposed. | `8081` |
+| `service.annotations` | Additional annotations for the service | `{}` |
+| `service.labels` | Additional labels for the service | `{}` |
 | `overrideGroupId` | Group ID defaults to using Release Name so each release is its own Schema Registry worker group, it can be overridden | `{- .Release.Name -}}` |
 | `kafkaStore.overrideBootstrapServers` | Defaults to Kafka Servers in the same release, it can be overridden in case there was a separate release for Kafka Deploy | `{{- printf "PLAINTEXT://%s-kafka-headless:9092" .Release.Name }}`
 | `kafka.enabled` | If `true`, install Kafka/Zookeeper alongside the `SchemaRegistry`. This is intended for testing and argument-less helm installs of this chart only and should not be used in Production. | `true` |
@@ -90,4 +93,16 @@ The following table lists the configurable parameters of the SchemaRegistry char
 | `ingress.labels` | Additional labels for the ingress | `{}` |
 | `ingress.tls.enabled` | Enable TLS for the Ingress | `false` |
 | `ingress.tls.secretName` | Name of the Kubernetes `Secret` object to obtain the TLS certificate from | `schema-registry-tls` |
-
+| `external.enabled` | Enable LoadBalancer/Nodeport for Cloud Provider external load balancers | `false` |
+| `external.type` | set service type LoadBalancer/NodePort  | `LoadBalancer` |
+| `external.servicePort` | set service port | `443` |
+| `external.loadBalancerIP` | set Static IP for LoadBalancer | `""` |
+| `external.nodePort` | set Nodeport (valid range depends on CLoud Provider) | `""` |
+| `jmx.enabled` | Enable JMX? | `true` |
+| `jmx.port` | set JMX port | `5555` |
+| `prometheus.jmx.enabled` | Enable Prometheus JMX Exporter | `false` |
+| `prometheus.jmx.image` | Set Prometheus JMX Exporter image | `solsson/kafka-prometheus-jmx-exporter@sha256` |
+| `prometheus.jmx.imageTag` | Set Prometheus JMX Exporter image tag | `6f82e2b0464f50da8104acd7363fb9b995001ddff77d248379f8788e78946143` |
+| `prometheus.jmx.port` | Set Prometheus JMX Exporter port | `5556` |
+| `prometheus.jmx.resources` | Set Prometheus JMX Exporter resource requests & limits | `{}` |
+| `secrets` | Pass any secrets to the pods.The secret will be mounted to a specific path if required | `[]` |

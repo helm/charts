@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "gocd.fullname" . }}-agent
@@ -8,8 +8,16 @@ metadata:
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
     component: agent
+  annotations:
+  {{- range $key, $value := .Values.agent.annotations.deployment }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
 spec:
   replicas: {{ .Values.agent.replicaCount }}
+  {{- if .Values.agent.deployStrategy }}
+  strategy:
+{{ toYaml .Values.agent.deployStrategy | indent 4 }}
+  {{- end }}
   selector:
     matchLabels:
       app: {{ template "gocd.name" . }}
@@ -21,22 +29,35 @@ spec:
         app: {{ template "gocd.name" . }}
         release: {{ .Release.Name | quote }}
         component: agent
+      annotations:
+      {{- range $key, $value := .Values.agent.annotations.pod }}
+        {{ $key }}: {{ $value | quote }}
+      {{- end }}
     spec:
-      {{- if or .Values.agent.persistence.enabled .Values.agent.security.ssh.enabled }}
+      serviceAccountName: {{ template "gocd.agentServiceAccountName" . }}
+      securityContext:
+        runAsUser: {{ .Values.agent.securityContext.runAsUser }}
+        runAsGroup: {{ .Values.agent.securityContext.runAsGroup }}
+        fsGroup: {{ .Values.agent.securityContext.fsGroup }}
+      {{- if or .Values.agent.persistence.enabled (or .Values.agent.security.ssh.enabled .Values.agent.persistence.extraVolumes) }}
       volumes:
       {{- end }}
       {{- if .Values.agent.persistence.enabled }}
         - name: goagent-vol
           persistentVolumeClaim:
             claimName: {{ .Values.agent.persistence.existingClaim | default (printf "%s-%s" (include "gocd.fullname" .) "agent")  }}
-        {{- if ne (len .Values.agent.persistence.extraVolumes) 0 }}
+      {{- end }}
+      {{- if ne (len .Values.agent.persistence.extraVolumes) 0 }}
 {{ toYaml .Values.agent.persistence.extraVolumes | indent 8 }}
-        {{- end }}
       {{- end }}
       {{- if .Values.agent.security.ssh.enabled }}
         - name: ssh-secrets
           secret:
             secretName: {{ .Values.agent.security.ssh.secretName }}
+      {{- end }}
+      {{- if .Values.agent.initContainers }}
+      initContainers:
+{{ toYaml .Values.agent.initContainers | indent 8 }}
       {{- end }}
       containers:
         - name: {{ template "gocd.name" . }}-agent
@@ -64,7 +85,10 @@ spec:
             - name: AGENT_AUTO_REGISTER_RESOURCES
               value: {{ .Values.agent.env.agentAutoRegisterResources }}
             {{- end }}
-            {{- if .Values.agent.env.agentAutoRegisterEnvironemnts }}
+            {{- if .Values.agent.env.agentAutoRegisterEnvironments }}
+            - name: AGENT_AUTO_REGISTER_ENVIRONMENTS
+              value: {{ .Values.agent.env.agentAutoRegisterEnvironments }}
+            {{- else if .Values.agent.env.agentAutoRegisterEnvironemnts }}
             - name: AGENT_AUTO_REGISTER_ENVIRONMENTS
               value: {{ .Values.agent.env.agentAutoRegisterEnvironemnts }}
             {{- end }}
@@ -72,9 +96,9 @@ spec:
             - name: AGENT_AUTO_REGISTER_HOSTNAME
               value: {{ .Values.agent.env.agentAutoRegisterHostname }}
             {{- end }}
-            {{- if .Values.agent.env.goAgentSystemProperties }}
-            - name: GO_AGENT_SYSTEM_PROPERTIES
-              value: {{ .Values.agent.env.goAgentSystemProperties }}
+            {{- if .Values.agent.env.goAgentJvmOpts }}
+            - name: GOCD_AGENT_JVM_OPTS
+              value: {{ .Values.agent.env.goAgentJvmOpts }}
             {{- end }}
             {{- if .Values.agent.env.goAgentBootstrapperJvmArgs }}
             - name: AGENT_BOOTSTRAPPER_JVM_ARGS
@@ -101,7 +125,7 @@ spec:
               port: 8152
             initialDelaySeconds: {{ .Values.agent.healthCheck.initialDelaySeconds }}
           {{- end }}
-          {{- if or .Values.agent.persistence.enabled .Values.agent.security.ssh.enabled }}
+          {{- if or .Values.agent.persistence.enabled (or .Values.agent.security.ssh.enabled .Values.agent.persistence.extraVolumeMounts) }}
           volumeMounts:
           {{- end }}
           {{- if .Values.agent.persistence.enabled }}
@@ -111,17 +135,28 @@ spec:
             - name: {{ .Values.agent.persistence.name.dockerEntryPoint }}
               mountPath: /docker-entrypoint.d
               subPath: {{ .Values.agent.persistence.subpath.dockerEntryPoint }}
-            {{- if ne (len .Values.agent.persistence.extraVolumeMounts) 0 }}
+          {{- end }}
+          {{- if ne (len .Values.agent.persistence.extraVolumeMounts) 0 }}
 {{ toYaml .Values.agent.persistence.extraVolumeMounts | indent 12 }}
-            {{- end }}
           {{- end }}
           {{- if .Values.agent.security.ssh.enabled }}
             - name: ssh-secrets
               readOnly: true
               mountPath: /home/go/.ssh
           {{- end }}
+          {{- if .Values.agent.preStop }}
+          lifecycle:
+            preStop:
+              exec:
+               command:
+{{ toYaml .Values.agent.preStop | indent 18 }}
+          {{- end }}
           securityContext:
             privileged: {{ .Values.agent.privileged }}
+      {{- if .Values.agent.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ .Values.agent.terminationGracePeriodSeconds }}
+      {{- end }}
+      restartPolicy: {{ .Values.agent.restartPolicy }}
     {{- if .Values.agent.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.agent.nodeSelector | indent 8 }}

@@ -1,3 +1,6 @@
+{{- if and .Values.config.datasource.passwordSecret .Values.config.datasource.password -}}
+{{ fail (printf "ERROR: only one of .Values.config.datasource.passwordSecret and .Values.config.datasource.password must be defined") }}
+{{- end -}}
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
@@ -18,6 +21,9 @@ spec:
       labels:
         app: {{ template "prometheus-postgres-exporter.name" . }}
         release: {{ .Release.Name }}
+{{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | trim | indent 8 }}
+{{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
 {{- if .Values.annotations }}
@@ -33,11 +39,20 @@ spec:
           - "--disable-default-metrics"
           {{- end }}
           env:
-            - name: DATA_SOURCE_NAME
-              valueFrom:
-                secretKeyRef:
-                  key: data_source_name
-                  name: {{ template "prometheus-postgres-exporter.fullname" . }}
+          - name: DATA_SOURCE_URI
+            value: {{ template "prometheus-postgres-exporter.data_source_uri" . }}
+          - name: DATA_SOURCE_USER
+            value: {{ .Values.config.datasource.user }}
+          - name: DATA_SOURCE_PASS
+            valueFrom:
+              secretKeyRef:
+          {{- if .Values.config.datasource.passwordSecret }}
+                name: {{ .Values.config.datasource.passwordSecret.name }}
+                key: {{ .Values.config.datasource.passwordSecret.key }}
+          {{- else }}
+                name: {{ template "prometheus-postgres-exporter.fullname" . }}
+                key: data_source_password
+          {{- end }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
@@ -61,6 +76,8 @@ spec:
 {{- with .Values.extraContainers }}
 {{ tpl . $ | indent 8 }}
 {{- end }}
+      securityContext:
+{{ toYaml .Values.securityContext | indent 8 }}
      {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

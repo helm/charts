@@ -1,0 +1,279 @@
+## Official nextcloud image version
+## ref: https://hub.docker.com/r/library/nextcloud/tags/
+##
+image:
+  repository: nextcloud
+  tag: 16.0.3-apache
+  pullPolicy: IfNotPresent
+  # pullSecrets:
+  #   - myRegistrKeySecretName
+
+nameOverride: ""
+fullnameOverride: ""
+
+# Number of replicas to be deployed
+replicaCount: 1
+
+## Allowing use of ingress controllers
+## ref: https://kubernetes.io/docs/concepts/services-networking/ingress/
+##
+ingress:
+  enabled: false
+  annotations: {}
+  #  nginx.ingress.kubernetes.io/proxy-body-size: 4G
+  #  kubernetes.io/tls-acme: "true"
+  #  certmanager.k8s.io/cluster-issuer: letsencrypt-prod
+  #  nginx.ingress.kubernetes.io/server-snippet: |-
+  #    server_tokens off;
+  #    proxy_hide_header X-Powered-By;
+
+  #    rewrite ^/.well-known/webfinger /public.php?service=webfinger last;
+  #    rewrite ^/.well-known/host-meta /public.php?service=host-meta last;
+  #    rewrite ^/.well-known/host-meta.json /public.php?service=host-meta-json;
+  #    location = /.well-known/carddav {
+  #      return 301 $scheme://$host/remote.php/dav;
+  #    }
+  #    location = /.well-known/caldav {
+  #      return 301 $scheme://$host/remote.php/dav;
+  #    }
+  #    location = /robots.txt {
+  #      allow all;
+  #      log_not_found off;
+  #      access_log off;
+  #    }
+  #    location ~ \.(?:png|html|ttf|ico|jpg|jpeg)$ {
+  #      try_files $uri /index.php$request_uri;
+  #      # Optional: Don't log access to other assets
+  #      access_log off;
+  #    }
+  #    location ~ ^/(?:build|tests|config|lib|3rdparty|templates|data)/ {
+  #      deny all;
+  #    }
+  #    location ~ ^/(?:autotest|occ|issue|indie|db_|console) {
+  #      deny all;
+  #    }
+  #  tls:
+  #    - secretName: nextcloud-tls
+  #      hosts:
+  #        - nextcloud.kube.home
+  labels: {}
+
+nextcloud:
+  host: nextcloud.kube.home
+  username: admin
+  password: changeme
+  update: 0
+  datadir: /var/www/html/data
+  tableprefix:
+  mail:
+    enabled: false
+    fromAddress: user
+    domain: domain.com
+    smtp:
+      host: domain.com
+      secure: ssl
+      port: 465
+      authtype: LOGIN
+      name: user
+      password: pass
+  # PHP Configuration files
+  # Will be injected in /usr/local/etc/php/conf.d
+  phpConfigs: {}
+  # Default config files
+  # IMPORTANT: Will be used only if you put extra configs, otherwise default will come from nextcloud itself
+  # Default confgurations can be found here: https://github.com/nextcloud/docker/tree/master/16.0/apache/config
+  defaultConfigs:
+    # To protect /var/www/html/config
+    .htaccess: true
+    # Redis default configuration
+    redis.config.php: true
+    # Apache configuration for rewrite urls
+    apache-pretty-urls.config.php: true
+    # Define APCu as local cache
+    apcu.config.php: true
+    # Apps directory configs
+    apps.config.php: true
+    # Used for auto configure database
+    autoconfig.php: true
+    # SMTP default configuration
+    smtp.config.php: true
+  # Extra config files created in /var/www/html/config/
+  # ref: https://docs.nextcloud.com/server/15/admin_manual/configuration_server/config_sample_php_parameters.html#multiple-config-php-file
+  configs: {}
+
+  # For example, to use S3 as primary storage
+  # ref: https://docs.nextcloud.com/server/13/admin_manual/configuration_files/primary_storage.html#simple-storage-service-s3
+  #
+  #  configs:
+  #    s3.config.php: |-
+  #      <?php
+  #      $CONFIG = array (
+  #        'objectstore' => array(
+  #          'class' => '\\OC\\Files\\ObjectStore\\S3',
+  #          'arguments' => array(
+  #            'bucket'     => 'my-bucket',
+  #            'autocreate' => true,
+  #            'key'        => 'xxx',
+  #            'secret'     => 'xxx',
+  #            'region'     => 'us-east-1',
+  #            'use_ssl'    => true
+  #          )
+  #        )
+  #      );
+
+internalDatabase:
+  enabled: true
+  name: nextcloud
+
+##
+## External database configuration
+##
+externalDatabase:
+  enabled: false
+
+  ## Supported database engines: mysql or postgresql
+  type: mysql
+
+  ## Database host
+  host:
+
+  ## Database user
+  user: nextcloud
+
+  ## Database password
+  password:
+
+  ## Database name
+  database: nextcloud
+
+##
+## MariaDB chart configuration
+##
+mariadb:
+  ## Whether to deploy a mariadb server to satisfy the applications database requirements. To use an external database set this to false and configure the externalDatabase parameters
+  enabled: false
+
+  db:
+    name: nextcloud
+    user: nextcloud
+    password: changeme
+
+  ## Enable persistence using Persistent Volume Claims
+  ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+  ##
+  persistence:
+    enabled: false
+    accessMode: ReadWriteOnce
+    size: 8Gi
+
+redis:
+  enabled: false
+  usePassword: false
+
+## Cronjob to execute Nextcloud background tasks
+## ref: https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/background_jobs_configuration.html#cron-jobs
+##
+cronjob:
+  enabled: false
+  # Nexcloud image is used as default but only curl is needed
+  image: {}
+    # repository: nextcloud
+    # tag: 16.0.3-apache
+    # pullPolicy: IfNotPresent
+    # pullSecrets:
+    #   - myRegistrKeySecretName
+  # Every 15 minutes
+  # Note: Setting this to any any other value than 15 minutes might
+  #  cause issues with how nextcloud background jobs are executed
+  schedule: "*/15 * * * *"
+  annotations: {}
+  # Set curl's insecure option if you use e.g. self-signed certificates
+  curlInsecure: false
+  failedJobsHistoryLimit: 5
+  successfulJobsHistoryLimit: 2
+  # If not set, nextcloud deployment one will be set
+  # resources:
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #  cpu: 100m
+    #  memory: 128Mi
+    # requests:
+    #  cpu: 100m
+    #  memory: 128Mi
+
+  # If not set, nextcloud deployment one will be set
+  # nodeSelector: {}
+
+  # If not set, nextcloud deployment one will be set
+  # tolerations: []
+
+  # If not set, nextcloud deployment one will be set
+  # affinity: {}
+
+service:
+  type: ClusterIP
+  port: 8080
+  loadBalancerIP: nil
+
+## Enable persistence using Persistent Volume Claims
+## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+##
+persistence:
+  # Nextcloud Data (/var/www/html)
+  enabled: false
+  annotations: {}
+  ## nextcloud data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  # storageClass: "-"
+
+  ## A manually managed Persistent Volume and Claim
+  ## Requires persistence.enabled: true
+  ## If defined, PVC must be created manually before volume will be bound
+  # existingClaim:
+
+  accessMode: ReadWriteOnce
+  size: 8Gi
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+## Liveness and readiness probe values
+## Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes
+##
+livenessProbe:
+  enabled: true
+  initialDelaySeconds: 30
+  periodSeconds: 15
+  timeoutSeconds: 5
+  failureThreshold: 3
+  successThreshold: 1
+readinessProbe:
+  enabled: true
+  initialDelaySeconds: 30
+  periodSeconds: 15
+  timeoutSeconds: 5
+  failureThreshold: 3
+  successThreshold: 1
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

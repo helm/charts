@@ -20,6 +20,10 @@ rules:
       - namespaces
       - nodes
       - resourcequotas
+      - persistentvolumes
+      - persistentvolumeclaims
+      - configmaps
+      - secrets
     verbs:
       - get
       - list

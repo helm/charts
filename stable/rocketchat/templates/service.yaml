@@ -1,0 +1,30 @@
+{{- $service := .Values.service -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "rocketchat.fullname" . }}
+{{- with $service.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
+  labels:
+    app.kubernetes.io/name: {{ include "rocketchat.name" . }}
+    helm.sh/chart: {{ include "rocketchat.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- with $service.labels }}
+{{ toYaml . | indent 4 }}
+{{- end }}
+spec:
+  type: {{ $service.type }}
+  ports:
+  - name: http
+    port: {{ $service.port }}
+    targetPort: http
+    {{- if and (eq "NodePort" $service.type) $service.nodePort }}
+    nodePort: {{ $service.nodePort }}
+    {{- end }}
+    protocol: TCP
+  selector:
+    app.kubernetes.io/name: {{ include "rocketchat.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}

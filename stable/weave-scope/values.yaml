@@ -4,7 +4,7 @@ global:
   # global.image: the image that will be used for this release
   image:
     repository: weaveworks/scope
-    tag: "1.9.1"
+    tag: 1.11.5
     # global.image.pullPolicy: must be Always, IfNotPresent, or Never
     pullPolicy: "IfNotPresent"
   # global.service.*: the configuration of the service used to access the frontend
@@ -36,10 +36,30 @@ weave-scope-frontend:
         # cpu: ""
         # weave-scope-frontend.resources.limits.memory: memory limit in MiB (Mi)
         # memory: ""
+  flags: []
+  # weave-scope-frontend Ingress
+  ingress:
+    # If true, weave-scope-frontend ingress will be created
+    enabled: false
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    # weave-scope-frontend path(s) must be provided if Ingress is enabled
+    paths: []
+    # weave-scope-frontend hostname(s) must be provided if Ingress is enabled
+    hosts:
+      - weave-scope.example.test
+    # Ingress TLS secret
+    # Must be created manually in the namespace
+    tls: []
+    #  - secretName: weave-scope-example-tls
+    #    hosts:
+    #      - weave-scope.example.test
 
 # weave-scope-agent.* controls how the Weave Scope node agent pods are installed
 weave-scope-agent:
   enabled: true
+  flags: []
   # weave-scope-agent.dockerBridge: (required if agent.enabled == true) the name of the Docker bridge interface
   dockerBridge: "docker0"
   # weave-scope-agent.scopeFrontendAddr: the host:port of a Scope frontend to send data to
@@ -49,17 +69,8 @@ weave-scope-agent:
   # weave-scope-agent.probeToken is not needed for connecting to non-cloud Scope frontends
   probeToken: ""
   # weave-scope-agent.rbac.*: controls RBAC resource creation/use
-  rbac:
-    # weave-scope-agent.rbac.create: whether RBAC resources should be created
-    # weave-scope-agent.rbac.create *must* be set to false if RBAC is not enabled in the cluster
-    # weave-scope-agent.rbac.create *may* be set to false in an RBAC-enabled cluster to allow for external management of RBAC
-    create: true
-  serviceAccount:
-    # Specifies whether a ServiceAccount should be created
-    create: true
-    # The name of the ServiceAccount to use.
-    # If not set and create is true, a name is generated using the fullname template
-    # name: "weave-scope"
+  # Enabling readOnly adds --probe.no-controls to args list.
+  readOnly: false
   # weave-scope-agent.resources.*: controls requests/limits for the agent
   # weave-scope-agent.resources.* values are all optional but should not be set to empty values
   # resources:
@@ -72,4 +83,42 @@ weave-scope-agent:
       # weave-scope-agent.resources.limits.cpu: CPU limit in MHz (m)
       # cpu: ""
       # weave-scope-agent.resources.limits.memory: memory limit in MiB (Mi)
+      # memory: ""
+
+# weave-scope-agent.* controls how the Weave Scope node agent pods are installed
+weave-scope-cluster-agent:
+  enabled: true
+  flags: []
+  # weave-scope-cluster-agent.scopeFrontendAddr: the host:port of a Scope frontend to send data to
+  # weave-scope-cluster-agent.scopeFrontendAddr is only needed for some cases where the frontend is deployed separately from the agent
+  scopeFrontendAddr: ""
+  # weave-scope-cluster-agent.probeToken: the token used to connect to Weave Cloud
+  # weave-scope-cluster-agent.probeToken is not needed for connecting to non-cloud Scope frontends
+  probeToken: ""
+  # weave-scope-cluster-agent.rbac.*: controls RBAC resource creation/use
+  rbac:
+    # weave-scope-cluster-agent.rbac.create: whether RBAC resources should be created
+    # weave-scope-cluster-agent.rbac.create *must* be set to false if RBAC is not enabled in the cluster
+    # weave-scope-cluster-agent.rbac.create *may* be set to false in an RBAC-enabled cluster to allow for external management of RBAC
+    create: true
+  # Enabling readOnly adds --probe.no-controls to args list.
+  readOnly: false
+  serviceAccount:
+    # Specifies whether a ServiceAccount should be created
+    create: true
+    # The name of the ServiceAccount to use.
+    # If not set and create is true, a name is generated using the fullname template
+    # name: "weave-scope"
+  # weave-scope-cluster-agent.resources.*: controls requests/limits for the agent
+  # weave-scope-cluster-agent.resources.* values are all optional but should not be set to empty values
+  # resources:
+    # requests:
+      # weave-scope-cluster-agent.resources.requests.cpu: CPU req. in MHz (m)
+      # cpu: ""
+      # weave-scope-cluster-agent.resources.requests.memory: memory req. in MiB (Mi)
+      # memory: ""
+    # limits:
+      # weave-scope-cluster-agent.resources.limits.cpu: CPU limit in MHz (m)
+      # cpu: ""
+      # weave-scope-cluster-agent.resources.limits.memory: memory limit in MiB (Mi)
       # memory: ""

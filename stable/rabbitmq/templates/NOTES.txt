@@ -7,11 +7,11 @@ Credentials:
     echo "Password      : $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "rabbitmq.fullname" . }} -o jsonpath="{.data.rabbitmq-password}" | base64 --decode)"
     echo "ErLang Cookie : $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "rabbitmq.fullname" . }} -o jsonpath="{.data.rabbitmq-erlang-cookie}" | base64 --decode)"
 
-RabbitMQ can be accessed within the cluster on port {{ .Values.rabbitmq.nodePort }} at {{ template "rabbitmq.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+RabbitMQ can be accessed within the cluster on port {{ .Values.service.nodePort }} at {{ template "rabbitmq.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
 
 To access for outside the cluster, perform the following steps:
 
-{{- if contains "NodePort" .Values.serviceType }}
+{{- if contains "NodePort" .Values.service.type }}
 
 Obtain the NodePort IP and ports:
 
@@ -27,7 +27,7 @@ To Access the RabbitMQ Management interface:
 
     echo "URL : http://$NODE_IP:$NODE_PORT_STATS/"
 
-{{- else if contains "LoadBalancer" .Values.serviceType }}
+{{- else if contains "LoadBalancer" .Values.service.type }}
 
 Obtain the LoadBalancer IP:
 
@@ -38,22 +38,40 @@ NOTE: It may take a few minutes for the LoadBalancer IP to be available.
 
 To Access the RabbitMQ AMQP port:
 
-    echo "URL : amqp://$SERVICE_IP:{{ .Values.rabbitmq.nodePort }}/"
+    echo "URL : amqp://$SERVICE_IP:{{ .Values.service.port }}/"
 
 To Access the RabbitMQ Management interface:
 
-    echo "URL : http://$SERVICE_IP:{{ .Values.rabbitmq.managerPort }}/"
+    echo "URL : http://$SERVICE_IP:{{ .Values.service.managerPort }}/"
 
-{{- else if contains "ClusterIP"  .Values.serviceType }}
+{{- else if contains "ClusterIP"  .Values.service.type }}
 
 To Access the RabbitMQ AMQP port:
 
-    kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "rabbitmq.fullname" . }} {{ .Values.rabbitmq.nodePort }}:{{ .Values.rabbitmq.nodePort }}
-    echo "URL : amqp://127.0.0.1:{{ .Values.rabbitmq.nodePort }}/"
+    kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "rabbitmq.fullname" . }} {{ .Values.service.port }}:{{ .Values.service.port }}
+    echo "URL : amqp://127.0.0.1:{{ .Values.service.port }}/"
 
 To Access the RabbitMQ Management interface:
 
-    kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "rabbitmq.fullname" . }} {{ .Values.rabbitmq.managerPort }}:{{ .Values.rabbitmq.managerPort }}
-    echo "URL : http://127.0.0.1:{{ .Values.rabbitmq.managerPort }}/"
+    kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "rabbitmq.fullname" . }} {{ .Values.service.managerPort }}:{{ .Values.service.managerPort }}
+    echo "URL : http://127.0.0.1:{{ .Values.service.managerPort }}/"
+
+{{- end }}
+
+{{- if .Values.metrics.enabled }}
+
+To access the RabbitMQ Prometheus metrics, get the RabbitMQ Prometheus exporter URL by running:
+
+    echo "Prometheus Metrics URL: http://127.0.0.1:{{ .Values.metrics.port }}/metrics"
+    kubectl port-forward --namespace {{ .Release.Namespace }} {{ template "rabbitmq.fullname" . }}-0 {{ .Values.metrics.port }}:{{ .Values.metrics.port }}
+
+Then, open the URL obtained in a browser.
+
+{{- end }}
+
+{{- if and (contains "bitnami/" .Values.image.repository) (not (.Values.image.tag | toString | regexFind "-r\\d+$|sha256:")) }}
+
+WARNING: Rolling tag detected ({{ .Values.image.repository }}:{{ .Values.image.tag }}), please note that it is strongly recommended to avoid using rolling tags in a production environment.
++info https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/
 
 {{- end }}

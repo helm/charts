@@ -1,6 +1,7 @@
+apiVersion: v1
 name: redmine
-version: 6.0.1
-appVersion: 3.4.6
+version: 12.2.5
+appVersion: 4.0.4
 description: A flexible project management web application.
 keywords:
 - redmine

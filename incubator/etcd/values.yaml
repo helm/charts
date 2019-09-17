@@ -9,7 +9,7 @@ component: "etcd"
 replicas: 3
 image:
   repository: "k8s.gcr.io/etcd-amd64"
-  tag: "2.2.5"
+  tag: "3.2.26"
   pullPolicy: "IfNotPresent"
 resources: {}
 # We usually recommend not to specify default resources and to leave this as a conscious
@@ -23,6 +23,25 @@ resources: {}
 #  cpu: 100m
 #  memory: 128Mi
 
+# Authentication parameters
+##
+auth:
+  client:
+    ## Switch to encrypt client communication using TLS certificates
+    secureTransport: false
+    ## Switch to enable host authentication using TLS certificates. Requires existing secret.
+    enableAuthentication: false
+    ## Name of the existing secret containing cert files for peer communication.
+    # existingSecret:
+
+  peer:
+    ## Switch to encrypt peer communication using TLS certificates
+    secureTransport: false
+    ## Switch to automatically create the TLS certificates
+    useAutoTLS: false
+    ## Switch to enable host authentication using TLS certificates. Requires existing secret.
+    enableAuthentication: false
+
 persistentVolume:
   enabled: false
   # storage: "1Gi"
@@ -34,6 +53,11 @@ persistentVolume:
   ##   GKE, AWS & OpenStack)
   ##
   # storageClass: "-"
+
+## This is only available when persistentVolume is false:
+## If persistentVolume is not enabled, one can choose to use memory mode for ETCD by setting memoryMode to "true".
+## The system will create a volume with "medium: Memory"
+memoryMode: false
 
 ## Node labels and tolerations for pod assignment
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector

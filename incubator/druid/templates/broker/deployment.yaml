@@ -1,0 +1,89 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "druid.broker.fullname" . }}
+  labels:
+    app: {{ include "druid.name" . }}
+    chart: {{ include "druid.chart" . }}
+    component: {{ .Values.broker.name }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.broker.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "druid.name" . }}
+      release: {{ .Release.Name }}
+      component: {{ .Values.broker.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "druid.name" . }}
+        release: {{ .Release.Name }}
+        component: {{ .Values.broker.name }}
+      {{- with .Values.broker.podAnnotations }}
+      annotations:
+{{ toYaml . | indent 8 }}
+      {{- end }}        
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args: [ "broker" ]
+          env:
+          {{- if .Values.zookeeper.enabled }}
+          - name: ZOOKEEPER_HOST
+            value: {{ .Release.Name }}-zookeeper-headless:2181
+          {{- else }}
+          - name: ZOOKEEPER_HOST
+            value: {{ .Values.zkHosts }}
+          {{- end }}
+          {{- if .Values.mysql.enabled }}
+          - name: DB_HOST
+            value: {{ .Release.Name }}-mysql
+          - name: DB_TYPE
+            value: mysql
+          - name: DB_USERNAME
+            value: {{ .Values.mysql.mysqlUser }}
+          - name: DB_PASSWORD
+            value: {{ .Values.mysql.mysqlPassword }}
+          - name: DB_DBNAME
+            value: {{ .Values.mysql.mysqlDatabase }}
+          - name: DB_PORT
+            value: "3306"
+          {{- end }}
+          - name: JAVA_OPTS
+            value: {{ .Values.broker.javaOpts }}
+          {{- range $key, $value :=  .Values.env }}
+          - name: {{ $key }}
+            value: {{ $value | quote }}
+          {{- end }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.broker.port }}
+              protocol: TCP
+          livenessProbe:
+            initialDelaySeconds: 60
+            httpGet:
+              path: /status/health
+              port: {{ .Values.broker.port }}
+          readinessProbe:
+            initialDelaySeconds: 60
+            httpGet:
+              path: /status/health
+              port: {{ .Values.broker.port }}
+          resources:
+{{ toYaml .Values.broker.resources | indent 12 }}
+    {{- with .Values.broker.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.broker.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.broker.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

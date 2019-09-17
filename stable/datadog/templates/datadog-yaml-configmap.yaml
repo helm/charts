@@ -1,0 +1,31 @@
+{{- if .Values.daemonset.useConfigMap }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "datadog.fullname" . }}-datadog-yaml
+  labels:
+    app: "{{ template "datadog.fullname" . }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+  annotations:
+data:
+  datadog.yaml: |
+    ## Provides autodetected defaults, for kubernetes environments,
+    ## please see datadog.yaml.example for all supported options
+
+    # Autodiscovery for Kubernetes
+    listeners:
+      - name: kubelet
+    config_providers:
+      - name: kubelet
+        polling: true
+
+    # Enable APM by setting the DD_APM_ENABLED envvar to true, or override this configuration
+    apm_config:
+      enabled: false
+      apm_non_local_traffic: true
+
+    # Use java cgroup memory awareness
+    jmx_use_cgroup_memory_limit: true
+{{- end }}

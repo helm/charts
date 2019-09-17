@@ -1,13 +1,14 @@
+{{- if .Values.defaultBackend.enabled }}
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
   labels:
     app: {{ template "haproxy-ingress.name" . }}
     chart: {{ template "haproxy-ingress.chart" . }}
+    component: "{{ .Values.defaultBackend.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ .Values.defaultBackend.name }}
-  namespace: {{ .Release.Namespace }}
+  name: {{ template "haproxy-ingress.defaultBackend.fullname" . }}
 spec:
   selector:
     matchLabels:
@@ -15,17 +16,39 @@ spec:
       release: {{ .Release.Name }}
   template:
     metadata:
+    {{- if .Values.defaultBackend.podAnnotations }}
+      annotations:
+{{ toYaml .Values.defaultBackend.podAnnotations | indent 8 }}
+    {{- end }}
       labels:
         app: {{ template "haproxy-ingress.name" . }}
+        component: "{{ .Values.defaultBackend.name }}"
         release: {{ .Release.Name }}
+        {{- if .Values.defaultBackend.podLabels }}
+{{ toYaml .Values.defaultBackend.podLabels | indent 8 }}
+        {{- end }}
     spec:
       containers:
         - name: {{ .Values.defaultBackend.name }}
           image: "{{ .Values.defaultBackend.image.repository }}:{{ .Values.defaultBackend.image.tag }}"
           imagePullPolicy: "{{ .Values.defaultBackend.image.pullPolicy }}"
           ports:
-            - containerPort: 8080
+            - name: http
+              containerPort: 8080
+              protocol: TCP
           resources:
-            limits:
-              cpu: {{ .Values.defaultBackend.resources.cpu }}
-              memory: {{ .Values.defaultBackend.resources.memory }}
+{{ toYaml .Values.defaultBackend.resources | indent 12 }}
+    {{- if .Values.defaultBackend.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.defaultBackend.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.defaultBackend.tolerations }}
+      tolerations:
+{{ toYaml .Values.defaultBackend.tolerations | indent 8 }}
+    {{- end }}
+    {{- if .Values.defaultBackend.affinity }}
+      affinity:
+{{ toYaml .Values.defaultBackend.affinity | indent 8 }}
+    {{- end }}
+      terminationGracePeriodSeconds: 60
+{{- end }}

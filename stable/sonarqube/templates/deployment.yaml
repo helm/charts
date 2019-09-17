@@ -9,16 +9,40 @@ metadata:
     heritage: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.replicaCount }}
+{{- if .Values.deploymentStrategy }}
+  strategy:
+{{ toYaml .Values.deploymentStrategy | indent 4 }}
+{{- end }}
   template:
     metadata:
       labels:
         app: {{ template "sonarqube.name" . }}
         release: {{ .Release.Name }}
+{{- with .Values.podLabels }}
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{ if .Values.annotations}}
+      annotations:
+    {{- range $key, $value := .Values.annotations }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+{{- end }}
     spec:
-      {{- if .Values.plugins.install }}
+      securityContext:
+{{ toYaml .Values.securityContext | indent 8 }}
       initContainers:
+        - name: init-sysctl
+          image: {{ default "busybox:1.31" .Values.plugins.initSysctlContainerImage }}
+          command:
+          - sysctl
+          - -w
+          - vm.max_map_count=262144
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            privileged: true
+      {{- if .Values.plugins.install }}
         - name: install-plugins
-          image: joosthofman/wget:1.0
+          image: {{ default "joosthofman/wget:1.0" .Values.plugins.initContainerImage }}
           env:
             {{- range $key, $value := .Values.extraEnv }}
             - name: {{ $key }}
@@ -26,16 +50,17 @@ spec:
             {{- end }}
           command: ["sh",
             "-c",
-            "mkdir -p /opt/sonarqube/extensions/plugins/ &&
-            cp /tmp/scripts/install_plugins.sh /opt/sonarqube/extensions/plugins/install_plugins.sh &&
-            chmod 0775 /opt/sonarqube/extensions/plugins/install_plugins.sh &&
-            /opt/sonarqube/extensions/plugins/install_plugins.sh
+            "mkdir -p /opt/sonarqube/extensions/plugins/tmp &&
+            rm -f /opt/sonarqube/extensions/plugins/tmp/* &&
+            cp /tmp/scripts/install_plugins.sh /opt/sonarqube/extensions/plugins/tmp/install_plugins.sh &&
+            chmod 0775 /opt/sonarqube/extensions/plugins/tmp/install_plugins.sh &&
+            /opt/sonarqube/extensions/plugins/tmp/install_plugins.sh && pwd && ls -lah
             "
            ]
           volumeMounts:
-            - mountPath: /opt/sonarqube/extensions
+            - mountPath: /opt/sonarqube/extensions/plugins/tmp
               name: sonarqube
-              subPath: extensions
+              subPath: tmp
             - name: install-plugins
               mountPath: /tmp/scripts/
           resources:
@@ -67,15 +92,10 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: {{ .Values.service.internalPort }}
-          command: [
-              "sh",
-              "-ce",
-              "mkdir /scripts &&
-              cp /tmp-script/startup.sh /scripts/startup.sh &&
-              chmod 0755 /scripts/startup.sh &&
-              /scripts/startup.sh
-              "
-            ]
+          {{- if .Values.plugins.install }}
+          command:
+            - /tmp/scripts/copy_plugins.sh
+          {{- end }}
           env:
             {{- range $key, $value := .Values.extraEnv }}
             - name: {{ $key }}
@@ -91,10 +111,10 @@ spec:
               valueFrom:
                 secretKeyRef:
                   {{- if eq .Values.database.type "postgresql" }}
-                  name: {{- if .Values.postgresql.enabled }} {{ template "postgresql.fullname" .}} {{- else }} {{ template "sonarqube.fullname" . }} {{- end }}
+                  name: {{- if .Values.postgresql.enabled }} {{ template "postgresql.fullname" .}} {{- else if .Values.postgresql.postgresPasswordSecret }} {{ .Values.postgresql.postgresPasswordSecret }} {{- else }} {{ template "sonarqube.fullname" . }} {{- end }}
                   key: postgres-password
                   {{- else if eq .Values.database.type "mysql" }}
-                  name: {{- if .Values.mysql.enabled }} {{ template "mysql.fullname" .}} {{- else }} {{ template "sonarqube.fullname" . }} {{- end }}
+                  name: {{- if .Values.mysql.enabled }} {{ template "mysql.fullname" .}} {{- else if .Values.mysql.mysqlPasswordSecret }} {{ .Values.mysql.mysqlPasswordSecret }} {{- else }} {{ template "sonarqube.fullname" . }} {{- end }}
                   key: mysql-password
                   {{- end }}
             - name: SONARQUBE_JDBC_URL
@@ -105,33 +125,53 @@ spec:
               {{- end }}
           livenessProbe:
             httpGet:
-              path: /sessions/new
+              path: {{ .Values.livenessProbe.sonarWebContext }}sessions/new
               port: {{ .Values.service.internalPort }}
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
           readinessProbe:
             httpGet:
-              path: /sessions/new
+              path: {{ .Values.readinessProbe.sonarWebContext }}sessions/new
               port: {{ .Values.service.internalPort }}
             initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
             failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
           volumeMounts:
-            - mountPath: /opt/sonarqube/conf
-              name: sonarqube
-              subPath: conf
-            - mountPath: /tmp-script/
-              name: startup
             {{- if .Values.sonarProperties }}
-            - name: config
-              mountPath: /tmp/conf/
-            {{- end}}
+            - mountPath: /opt/sonarqube/conf/
+              name: config
+            {{- end }}
+            {{- if .Values.sonarSecretKey }}
+            - mountPath: /opt/sonarqube/secret/
+              name: secret
+            {{- end }}
+            {{- if .Values.customCerts.enabled }}
+            - mountPath: /etc/ssl/certs/java/cacerts
+              subPath: cacerts
+              name: cacerts
+            {{- end }}
             - mountPath: /opt/sonarqube/data
               name: sonarqube
               subPath: data
-            - mountPath: /opt/sonarqube/extensions
+            - mountPath: /opt/sonarqube/extensions/plugins/tmp
               name: sonarqube
-              subPath: extensions
+              subPath: tmp
+            - mountPath: /opt/sonarqube/extensions/downloads
+              name: sonarqube
+              subPath: downloads
+            - mountPath: /opt/sonarqube/extensions/plugins
+              name: sonarqube
+              subPath: plugins
+            - mountPath: /opt/sonarqube/temp
+              name: sonarqube
+              subPath: temp
+            - mountPath: /opt/sonarqube/logs
+              name: sonarqube
+              subPath: logs
+            - mountPath: /tmp
+              name: tmp-dir
+            - name: copy-plugins
+              mountPath: /tmp/scripts
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- if .Values.nodeSelector }}
@@ -147,7 +187,7 @@ spec:
 {{ toYaml .Values.affinity | indent 8 }}
     {{- end }}
       volumes:
-      {{- if .Values.sonarProperties}}
+      {{- if .Values.sonarProperties }}
       - name: config
         configMap:
           name: {{ template "sonarqube.fullname" . }}-config
@@ -155,18 +195,35 @@ spec:
           - key: sonar.properties
             path: sonar.properties
       {{- end }}
+      {{- if .Values.sonarSecretKey }}
+      - name: secret
+        secret:
+          secretName: {{ .Values.sonarSecretKey }}
+          items:
+          - key: sonar-secret.txt
+            path: sonar-secret.txt
+      {{- end }}
+      {{- if .Values.customCerts.enabled }}
+      - name: cacerts
+        secret:
+          secretName: {{ .Values.customCerts.secretName }}
+          items:
+          - key: cacerts
+            path: cacerts
+      {{- end }}
       - name: install-plugins
         configMap:
           name: {{ template "sonarqube.fullname" . }}-install-plugins
           items:
             - key: install_plugins.sh
               path: install_plugins.sh
-      - name: startup
+      - name: copy-plugins
         configMap:
-          name: {{ template "sonarqube.fullname" . }}-startup
+          name: {{ template "sonarqube.fullname" . }}-copy-plugins
+          defaultMode: 0755
           items:
-            - key: startup.sh
-              path: startup.sh
+            - key: copy_plugins.sh
+              path: copy_plugins.sh
       - name: sonarqube
         {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
@@ -174,3 +231,5 @@ spec:
         {{- else }}
         emptyDir: {}
         {{- end  }}
+      - name : tmp-dir
+        emptyDir: {}

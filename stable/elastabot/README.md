@@ -40,7 +40,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | elasticsearch.sslStrictEnabled | If true, the SSL/TLS certificates will be validated against known certificate authorities                                | `false`
 | elasticsearch.timeoutSeconds   | Number of seconds to wait for an Elasticsearch response                                                                  | `10`
 | elasticsearch.urlPrefix        | URL prefix for Elasticsearch, typically an empty string                                                                  |
-| elastalert.index               | The index prefix used by Elastalert within Elasticsearch, typically elastalert or elastalert_status                      | `elastalert_status`
+| elastalert.index               | The index prefix used by Elastalert within Elasticsearch, typically elastalert                                           | `elastalert`
 | elastalert.silenceMinutes      | Number of minutes to silence an acknowledge alert if a silence duration is not explicitly given with the ack command.    | `240`
 | elastalert.recentMinutes       | Number of minutes to look back through Elasticsearch indices for a matching triggered alert                              | `4320`
 | smtp.host                      | Hostname for the SMTP server                                                                                             |

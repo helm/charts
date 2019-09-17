@@ -1,3 +1,4 @@
+{{- if not .Values.sentinel.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -5,11 +6,10 @@ metadata:
   labels:
     app: {{ template "redis.name" . }}
     chart: {{ template "redis.chart" . }}
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
-{{- with .Values.master.service.annotations }}
-  annotations:
-{{ toYaml . | indent 4 }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+{{- if .Values.master.service.annotations }}
+  annotations: {{ toYaml .Values.master.service.annotations | nindent 4 }}
 {{- end }}
 spec:
   type: {{ .Values.master.service.type }}
@@ -26,5 +26,6 @@ spec:
     {{- end }}
   selector:
     app: {{ template "redis.name" . }}
-    release: "{{ .Release.Name }}"
+    release: {{ .Release.Name }}
     role: master
+{{- end }}

@@ -1,13 +1,14 @@
+apiVersion: v1
 name: phpmyadmin
-version: 1.2.2
-appVersion: 4.8.3
+version: 3.0.5
+appVersion: 4.9.0-1
 description: phpMyAdmin is an mysql administration frontend
 keywords:
 - mariadb
 - mysql
 - phpmyadmin
 home: https://www.phpmyadmin.net/
-icon: https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/PhpMyAdmin_logo.svg/800px-PhpMyAdmin_logo.svg.png
+icon: https://bitnami.com/assets/stacks/phpmyadmin/img/phpmyadmin-stack-220x234.png
 sources:
 - https://github.com/bitnami/bitnami-docker-phpmyadmin
 maintainers:

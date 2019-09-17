@@ -26,7 +26,7 @@ their default values.
 | `customArguments`                    | Additional custom arguments to give to kube-hunter    | `[]`                                         |
 | `image.pullPolicy`                   | Container pull policy                                 | `IfNotPresent`                               |
 | `image.repository`                   | Container image to use                                | `aquasec/kube-hunter`                        |
-| `image.tag`                          | Container image tag to deploy                         | `34`                                         |
+| `image.tag`                          | Container image tag to deploy                         | `312`                                        |
 | `cronjob.schedule`                   | Schedule for the CronJob                              | `0 1 * * *`                                  |
 | `cronjob.annotations`                | Annotations to add to the cronjob                     | {}                                           |
 | `cronjob.concurrencyPolicy`          | `Allow|Forbid|Replace` concurrent jobs                | `Forbid`                                     |

@@ -1,3 +1,5 @@
 sumologic:
   collectorUrl: https://endpoint1.collection.us2.sumologic.com/receiver/v1/http/1234
   excludePath: "[\"/mnt/log/*.log\", \"/var/log/*.log\", \"/mnt/log/*/*.log\"]"
+
+daemonset: {}

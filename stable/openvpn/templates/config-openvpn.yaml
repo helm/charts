@@ -11,17 +11,41 @@ data:
   setup-certs.sh: |-
     #!/bin/bash
     EASY_RSA_LOC="/etc/openvpn/certs"
+    cd $EASY_RSA_LOC
     SERVER_CERT="${EASY_RSA_LOC}/pki/issued/server.crt"
     if [ -e "$SERVER_CERT" ]
     then
       echo "found existing certs - reusing"
+      {{- if .Values.openvpn.useCrl }}
+      if [ ! -e ${EASY_RSA_LOC}/crl.pem ]
+      then
+        echo "generating missed crl file"
+        ./easyrsa gen-crl
+        cp ${EASY_RSA_LOC}/pki/crl.pem ${EASY_RSA_LOC}/crl.pem
+        chmod 644 ${EASY_RSA_LOC}/crl.pem
+      fi
+      {{- end }}
+      {{- if .Values.openvpn.taKey }}
+        if [ ! -e ${EASY_RSA_LOC}/pki/ta.key ]
+        then
+          echo "generating missed ta.key"
+          openvpn --genkey --secret ${EASY_RSA_LOC}/pki/ta.key
+        fi
+      {{- end }}
     else
       cp -R /usr/share/easy-rsa/* $EASY_RSA_LOC
-      cd $EASY_RSA_LOC
       ./easyrsa init-pki
       echo "ca\n" | ./easyrsa build-ca nopass
       ./easyrsa build-server-full server nopass
       ./easyrsa gen-dh
+      {{- if .Values.openvpn.useCrl }}
+      ./easyrsa gen-crl
+      cp ${EASY_RSA_LOC}/pki/crl.pem ${EASY_RSA_LOC}/crl.pem # Note: the pki/ directory is inaccessible after openvpn drops privileges, so we cp crl.pem to ${EASY_RSA_LOC} to allow CRL updates without a restart
+      chmod 644 ${EASY_RSA_LOC}/crl.pem
+      {{- end }}
+      {{- if .Values.openvpn.taKey }}
+      openvpn --genkey --secret ${EASY_RSA_LOC}/pki/ta.key
+      {{- end }}
     fi
 
 
@@ -36,6 +60,9 @@ data:
       nobind
       dev tun
       remote ${MY_IP_ADDR} {{ .Values.service.externalPort }} {{ .Values.openvpn.OVPN_PROTO }}
+      {{- if .Values.openvpn.cipher }}
+      cipher {{ .Values.openvpn.cipher }}
+      {{- end }}
       {{- if .Values.openvpn.redirectGateway }}
       redirect-gateway def1
       {{- end }}
@@ -48,12 +75,63 @@ data:
       <ca>
       `cat ${EASY_RSA_LOC}/pki/ca.crt`
       </ca>
+      {{- if .Values.openvpn.taKey }}
+      <tls-auth>
+      `cat ${EASY_RSA_LOC}/pki/ta.key`
+      </tls-auth>
+      key-direction 1
+      {{- end }}
       EOF
       cat pki/$1.ovpn
 
+  revokeClientCert.sh: |-
+      #!/bin/bash
+      EASY_RSA_LOC="/etc/openvpn/certs"
+      cd $EASY_RSA_LOC
+      ./easyrsa revoke $1 
+      ./easyrsa gen-crl
+      cp ${EASY_RSA_LOC}/pki/crl.pem ${EASY_RSA_LOC}
+      chmod 644 ${EASY_RSA_LOC}/crl.pem
+
   configure.sh: |-
       #!/bin/sh
+
+      cidr2mask() {
+         # Number of args to shift, 255..255, first non-255 byte, zeroes
+         set -- $(( 5 - ($1 / 8) )) 255 255 255 255 $(( (255 << (8 - ($1 % 8))) & 255 )) 0 0 0
+         [ $1 -gt 1 ] && shift "$1" || shift
+         echo ${1-0}.${2-0}.${3-0}.${4-0}
+      }
+
+      cidr2net() {
+          local i ip mask netOctets octets
+          ip="${1%/*}"
+          mask="${1#*/}"
+          octets=$(echo "$ip" | tr '.' '\n')
+
+          for octet in $octets; do
+              i=$((i+1))
+              if [ $i -le $(( mask / 8)) ]; then
+                  netOctets="$netOctets.$octet"
+              elif [ $i -eq  $(( mask / 8 +1 )) ]; then
+                  netOctets="$netOctets.$((((octet / ((256 / ((2**((mask % 8)))))))) * ((256 / ((2**((mask % 8))))))))"
+              else
+                  netOctets="$netOctets.0"
+              fi
+          done
+
+          echo ${netOctets#.}
+      }
+
       /etc/openvpn/setup/setup-certs.sh
+{{ if .Values.openvpn.istio.enabled }}
+      iptables -t nat -A PREROUTING -s {{ .Values.openvpn.OVPN_NETWORK }}/{{ .Values.openvpn.OVPN_SUBNET }} -i tun0 -p tcp -j REDIRECT --to-ports {{ .Values.openvpn.istio.proxy.port }}
+{{ end }}
+
+{{ range .Values.openvpn.iptablesExtra }}
+      iptables {{ . }}
+{{ end }}
+
       iptables -t nat -A POSTROUTING -s {{ .Values.openvpn.OVPN_NETWORK }}/{{ .Values.openvpn.OVPN_SUBNET }} -o eth0 -j MASQUERADE
       mkdir -p /dev/net
       if [ ! -c /dev/net/tun ]; then
@@ -65,9 +143,14 @@ data:
           cat "${OVPN_CONFIG}"
           echo ====================================
       fi
-      IP=$(ip route get 8.8.8.8 | awk '/8.8.8.8/ {print $NF}')
-      BASEIP=`echo $IP | cut -d"." -f1-3`
-      NETWORK=`echo $BASEIP".0"`
+
+      intAndIP="$(ip route get 8.8.8.8 | awk '/8.8.8.8/ {print $5 "-" $7}')"
+      int="${intAndIP%-*}"
+      ip="${intAndIP#*-}"
+      cidr="$(ip addr show dev "$int" | awk -vip="$ip" '($2 ~ ip) {print $2}')"
+
+      NETWORK="$(cidr2net $cidr)"
+      NETMASK="$(cidr2mask ${cidr#*/})"
       DNS=$(cat /etc/resolv.conf | grep -v '^#' | grep nameserver | awk '{print $2}')
       SEARCH=$(cat /etc/resolv.conf | grep -v '^#' | grep search | awk '{$1=""; print $0}')
       FORMATTED_SEARCH=""
@@ -78,16 +161,27 @@ data:
       sed 's|OVPN_K8S_SEARCH|'"${FORMATTED_SEARCH}"'|' -i /etc/openvpn/openvpn.conf
       sed 's|OVPN_K8S_DNS|'"${DNS}"'|' -i /etc/openvpn/openvpn.conf
       sed 's|NETWORK|'"${NETWORK}"'|' -i /etc/openvpn/openvpn.conf
+      sed 's|NETMASK|'"${NETMASK}"'|' -i /etc/openvpn/openvpn.conf
 
-      openvpn --config /etc/openvpn/openvpn.conf
+      # exec openvpn process so it receives lifecycle signals
+      exec openvpn --config /etc/openvpn/openvpn.conf
   openvpn.conf: |-
       server {{ .Values.openvpn.OVPN_NETWORK }} {{ .Values.openvpn.OVPN_SUBNET }}
       verb 3
+{{ if .Values.openvpn.useCrl }}
+      crl-verify /etc/openvpn/certs/crl.pem
+{{ end }}
       key /etc/openvpn/certs/pki/private/server.key
       ca /etc/openvpn/certs/pki/ca.crt
       cert /etc/openvpn/certs/pki/issued/server.crt
       dh /etc/openvpn/certs/pki/dh.pem
+{{ if .Values.openvpn.taKey }}
+      tls-auth /etc/openvpn/certs/pki/ta.key 0
+{{ end }}
 
+{{ if .Values.openvpn.cipher }}
+      cipher {{ .Values.openvpn.cipher }}
+{{ end }}
       key-direction 0
       keepalive 10 60
       persist-key
@@ -101,7 +195,7 @@ data:
       user nobody
       group nogroup
 
-      push "route NETWORK 255.255.240.0"
+      push "route NETWORK NETMASK"
 {{ if (.Values.openvpn.OVPN_K8S_POD_NETWORK) (.Values.openvpn.OVPN_K8S_POD_SUBNET) }}
       push "route {{ .Values.openvpn.OVPN_K8S_POD_NETWORK }} {{ .Values.openvpn.OVPN_K8S_POD_SUBNET }}"
 {{ end }}

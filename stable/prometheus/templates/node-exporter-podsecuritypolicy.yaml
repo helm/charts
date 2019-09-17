@@ -1,15 +1,11 @@
-{{- if .Values.rbac.create }}
-{{- if .Values.nodeExporter.podSecurityPolicy.enabled }}
+{{- if and .Values.nodeExporter.enabled .Values.rbac.create }}
+{{- if .Values.podSecurityPolicy.enabled }}
 apiVersion: extensions/v1beta1
 kind: PodSecurityPolicy
 metadata:
   name: {{ template "prometheus.nodeExporter.fullname" . }}
   labels:
-    app: {{ template "prometheus.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.nodeExporter.name }}"
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    {{- include "prometheus.nodeExporter.labels" . | nindent 4 }}
   annotations:
 {{- if .Values.nodeExporter.podSecurityPolicy.annotations }}
 {{ toYaml .Values.nodeExporter.podSecurityPolicy.annotations | indent 4 }}
@@ -23,7 +19,7 @@ spec:
     - 'configMap'
     - 'hostPath'
     - 'secret'
-  AllowedHostPaths:
+  allowedHostPaths:
     - pathPrefix: /proc
       readOnly: true
     - pathPrefix: /sys

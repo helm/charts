@@ -13,6 +13,7 @@ image:
 nfs:
   server:
   path: /ifs/kubernetes
+  mountOptions:
 
 # For creating the StorageClass automatically:
 storageClass:
@@ -47,6 +48,9 @@ rbac:
 # https://kubernetes.io/docs/concepts/policy/pod-security-policy/
 podSecurityPolicy:
   enabled: false
+
+## Set pod priorityClassName
+# priorityClassName: ""
 
 serviceAccount:
   # Specifies whether a ServiceAccount should be created

@@ -87,6 +87,12 @@ By default, this chart does not install a configuration for MetalLB, and simply
 warns you that you must follow [the configuration instructions on MetalLB's
 website][metallb-config] to create an appropriate ConfigMap.
 
+**Please note:** By default, this chart expects a ConfigMap named
+'metallb-config' within the same namespace as the chart is
+deployed. _This is different than the MetalLB documentation_, which
+asks you to create a ConfigMap in the `metallb-system` namespace, with
+the name of 'config'.
+
 For simple setups that only use MetalLB's [ARP mode][metallb-arpndp-concepts],
 you can specify a single IP range using the `arpAddresses` parameter to have the
 chart install a working configuration for you:
@@ -103,7 +109,7 @@ can provide it in the `config` parameter. The configuration format is
 
 ```console
 $ cat values.yaml
-config:
+configInline:
   peers:
   - peer-address: 10.0.0.1
     peer-asn: 64512
@@ -111,7 +117,7 @@ config:
   address-pools:
   - name: default
     protocol: bgp
-    cidr:
+    addresses:
     - 198.51.100.0/24
 
 $ helm install --name metallb -f values.yaml stable/metallb

@@ -3,10 +3,10 @@ apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
 metadata:
   labels:
-    app: {{ template "kube2iam.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ template "kube2iam.name" . }}
+    helm.sh/chart: {{ template "kube2iam.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
   name: {{ template "kube2iam.fullname" . }}
 rules:
   - apiGroups:
@@ -17,4 +17,5 @@ rules:
     verbs:
       - list
       - watch
+      - get
 {{- end -}}

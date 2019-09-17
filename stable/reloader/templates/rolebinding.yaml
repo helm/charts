@@ -1,0 +1,25 @@
+{{- if and (not (.Values.reloader.watchGlobally)) (.Values.reloader.rbac.enabled) }}
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: RoleBinding
+metadata:
+  labels: 
+{{ include "reloader-labels.chart" . | indent 4 }}
+{{ include "reloader-labels.selector" . | indent 4 }}
+{{- if .Values.reloader.rbac.labels }}
+{{ toYaml .Values.reloader.rbac.labels | indent 4 }}
+{{- end }}
+{{- if .Values.reloader.matchLabels }}
+{{ toYaml .Values.reloader.matchLabels | indent 4 }}
+{{- end }}
+  name: {{ template "reloader-fullname" . }}-role-binding
+  namespace: {{ .Release.Namespace }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ template "reloader-fullname" . }}-role
+subjects:
+  - kind: ServiceAccount
+    name: {{ template "serviceAccountName" . }}
+    namespace: {{ .Release.Namespace }}
+{{- end }}

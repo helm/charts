@@ -1,0 +1,396 @@
+## Global Docker image parameters
+## Please, note that this will override the image parameters, including dependencies, configured to use the global value
+## Current available global Docker image parameters: imageRegistry and imagePullSecrets
+##
+# global:
+#   imageRegistry: myRegistryName
+#   imagePullSecrets:
+#     - myRegistryKeySecretName
+
+## Bitnami external-dns image version
+## ref: https://hub.docker.com/r/bitnami/external-dns/tags/
+##
+image:
+  registry: docker.io
+  repository: bitnami/external-dns
+  tag: 0.5.16-debian-9-r8
+  ## Specify a imagePullPolicy
+  ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
+  ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+  ##
+  pullPolicy: IfNotPresent
+  ## Optionally specify an array of imagePullSecrets.
+  ## Secrets must be manually created in the namespace.
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  ##
+  # pullSecrets:
+  #   - myRegistryKeySecretName
+
+## String to partially override external-dns.fullname template (will maintain the release name)
+# nameOverride:
+
+## String to fully override external-dns.fullname template
+# fullnameOverride:
+
+## K8s resources type to be observed for new DNS entries by ExternalDNS
+##
+sources:
+- service
+- ingress
+# - crd
+
+## DNS provider where the DNS records will be created. Available providers are:
+## - aws, azure, cloudflare, coredns, designate, digitalocoean, google, infoblox, rfc2136
+##
+provider: aws
+
+## Whether to publish DNS records for ClusterIP services or not (optional)
+##
+publishInternalServices: false
+
+## AWS configuration to be set via arguments/env. variables
+##
+aws:
+  ## AWS credentials
+  ##
+  credentials:
+    secretKey: ""
+    accessKey: ""
+    ## pre external-dns 0.5.9 home dir should be `/root/.aws`
+    ##
+    mountPath: "/.aws"
+  ## AWS region
+  ##
+  region: "us-east-1"
+  ## Zone Filter. Available values are: public, private
+  ##
+  zoneType: ""
+  ## AWS Role to assume
+  ##
+  assumeRoleArn: ""
+  ## Maximum number of changes that will be applied in each batch
+  ##
+  batchChangeSize: 1000
+  ## Zone Tag Filter
+  ##
+  zoneTags: []
+
+## Azure configuration to be set via arguments/env. variables
+##
+azure:
+  ## When a secret to load azure.json is not specified,
+  ## the host's /etc/kubernetes/azure.json will be used
+  ##
+  secretName: ""
+  ## Azure resource group to use
+  ##
+  resourceGroup: ""
+
+## Cloudflare configuration to be set via arguments/env. variables
+##
+cloudflare:
+  ## `CF_API_KEY` to set in the environment
+  ##
+  apiKey: ""
+  ## `CF_API_EMAIL` to set in the environment
+  ##
+  email: ""
+  ## Enable the proxy feature of Cloudflare
+  ##
+  proxied: true
+
+## CoreDNS configuration to be set via arguments/env variables
+##
+coredns:
+  ## Comma-separated list of the etcd endpoints
+  ## Secure (https) endpoints can be used as well, in that case `etcdTLS` section
+  ## should be filled in accordingly
+  ##
+  etcdEndpoints: "https://etcd-extdns:2379"
+  ## Configuration of the secure communication and client authentication to the etcd cluster
+  ## If enabled all the values under this key must hold a valid data
+  ##
+  etcdTLS:
+    ## Enable or disable secure communication and client authentication to the etcd cluster
+    ##
+    enabled: true
+    ## Name of the existing secret containing cert files for client communication
+    ## ref: https://github.com/etcd-io/etcd/blob/master/Documentation/op-guide/security.md
+    ## ref (secret creation):
+    ##  https://github.com/bitnami/charts/tree/master/bitnami/etcd#configure-certificates-for-client-communication
+    ##
+    secretName: "etcd-client-certs"
+    ## Location of the mounted certificates inside external-dns pod
+    ##
+    mountPath: "/etc/coredns/tls/etcd"
+    ## CA PEM file used to sign etcd TLS cert, should exist in the secret provided above
+    ##
+    caFilename: "ca.crt"
+    ## Certificate PEM file, should exist in the secret provided above
+    ## Will be used by external-dns to authenticate against etcd
+    ##
+    certFilename: "cert.pem"
+    ## Private key PEM file, should exist in the secret provided above
+    ## Will be used by external-dns to authenticate against etcd
+    ##
+    keyFilename: "key.pem"
+
+## OpenStack Designate provider configuration to be set via arguments/env. variables
+##
+designate:
+  ## Use a custom CA (optional)
+  ##
+  customCA:
+    enabled: false
+    ## The content of the custom CA file
+    ##
+    content: ""
+    ## Location to mount custom CA
+    ##
+    mountPath: "/config/designate"
+    ## Custom CA filename
+    ##
+    filename: "designate-ca.pem"
+
+## DigitalOcean configuration to be set via arguments/env. variables
+##
+digitalocean:
+  ## `DO_TOKEN` to set in the environment
+  ##
+  apiToken: ""
+
+## Google configuration to be set via arguments/env. variables
+##
+google:
+  ## Google Project to use
+  ##
+  project: ""
+  ## Google Application Credentials
+  ##
+  serviceAccountSecret: ""
+  serviceAccountKey: ""
+
+## Infoblox configuration to be set via arguments/env. variables
+##
+infoblox:
+  ## Required keys
+  ##
+  wapiUsername: "admin"
+  wapiPassword: ""
+  gridHost: ""
+  ## Optional keys
+  ##
+  domainFilter: ""
+  noSslVerify: false
+  wapiPort: ""
+  wapiVersion: ""
+  wapiConnectionPoolSize: ""
+  wapiHttpTimeout: ""
+
+## RFC 2136 configuration to be set via arguments/env. variables
+##
+rfc2136:
+  host: ""
+  port: 53
+  zone: ""
+  tsigSecret: ""
+  tsigSecretAlg: hmac-sha256
+  tsigKeyname: externaldns-key
+  tsigAxfr: true
+
+## PowerDNS configuration to be set via arguments/env. variables
+##
+pdns:
+  apiUrl: ""
+  apiPort: "8081"
+  apiKey: ""
+
+## Limit possible target zones by domain suffixes (optional)
+##
+domainFilters: []
+## Limit possible target zones by zone id (optional)
+##
+zoneIdFilters: []
+## Filter sources managed by external-dns via annotation using label selector semantics (optional)
+##
+annotationFilter: ""
+## When enabled, prints DNS record changes rather than actually performing them
+##
+dryRun: false
+## Adjust the interval for DNS updates
+##
+interval: "1m"
+## Verbosity of the ExternalDNS logs. Available values are:
+## - panic, debug, info, warn, error, fatal
+##
+logLevel: info
+## Modify how DNS records are sychronized between sources and providers (options: sync, upsert-only)
+##
+policy: upsert-only
+## Registry Type. Available types are: txt, noop
+## ref: https://github.com/kubernetes-incubator/external-dns/blob/master/docs/proposal/registry.md
+##
+registry: "txt"
+## TXT Registry Identifier
+##
+txtOwnerId: ""
+## Prefix to create a TXT record with a name following the pattern prefix.<CNAME record>
+##
+# txtPrefix: ""
+## Load balancer service to be used; ie: custom-istio-namespace/custom-istio-ingressgateway.
+## Omit to use the default (istio-system/istio-ingressgateway)
+##
+istioIngressGateways: []
+
+## Extra Arguments to passed to external-dns
+##
+extraArgs: {}
+## Extra env. variable to set on external-dns container.
+##
+## extraEnv:
+## - name: VARNAME1
+##   value: value1
+## - name: VARNAME2
+##   valueFrom:
+##     secretKeyRef:
+##       name: existing-secret
+##       key: varname2-key
+extraEnv: []
+
+## Replica count
+##
+replicas: 3
+
+## Affinity for pod assignment (this value is evaluated as a template)
+## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+##
+affinity: {}
+## Node labels for pod assignment (this value is evaluated as a template)
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+##
+nodeSelector: {}
+## Tolerations for pod assignment (this value is evaluated as a template)
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
+##
+tolerations: []
+## Annotations for external-dns pods
+##
+podAnnotations: {}
+## Additional labels for the pod(s).
+##
+podLabels: {}
+## Pod priority class name
+##
+priorityClassName: ""
+
+## Installs the DNSEndpoint CRD
+##
+crd:
+  create: false
+  apiversion: ""
+  kind: ""
+
+## Kubernetes svc configutarion
+##
+service:
+  ## Kubernetes svc type
+  ##
+  type: ClusterIP
+  port: 7979
+  ## Specify the nodePort value for the LoadBalancer and NodePort service types for the client port
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
+  ##
+  # nodePort:
+  ## Static clusterIP or None for headless services
+  ##
+  # clusterIP: ""
+  ## External IP list to use with ClusterIP service type
+  ##
+  externalIPs: []
+  ## Use loadBalancerIP to request a specific static IP,
+  ## otherwise leave blank
+  ##
+  # loadBalancerIP:
+  ## Address that are allowed when svc is LoadBalancer
+  ##
+  loadBalancerSourceRanges: []
+  ## Provide any additional annotations which may be required. This can be used to
+  ## set the LoadBalancer service type to internal only.
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer
+  ##
+  annotations: {}
+
+## RBAC parameteres
+## https://kubernetes.io/docs/reference/access-authn-authz/rbac/
+##
+rbac:
+  create: false
+  ## Service Account for pods
+  ## https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
+  ##
+  serviceAccountName: default
+  ## Annotations for the Service Account
+  ##
+  serviceAccountAnnotations: {}
+  ## RBAC API version
+  ##
+  apiVersion: v1beta1
+  ## Podsecuritypolicy
+  ##
+  pspEnabled: false
+
+## Kubernetes Security Context
+## https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+##
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop: ["ALL"]
+podSecurityContext:
+  fsGroup: 1001
+  runAsUser: 1001
+  runAsNonRoot: true
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources: {}
+#  limits:
+#    cpu: 50m
+#    memory: 50Mi
+#  requests:
+#    memory: 50Mi
+#    cpu: 10m
+
+## Liveness Probe. The block is directly forwarded into the deployment, so you can use whatever livenessProbe configuration you want.
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
+##
+livenessProbe:
+  httpGet:
+    path: /healthz
+    port: http
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 2
+  successThreshold: 1
+## Readiness Probe. The block is directly forwarded into the deployment, so you can use whatever readinessProbe configuration you want.
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
+##
+readinessProbe:
+  httpGet:
+    path: /healthz
+    port: http
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 6
+  successThreshold: 1
+
+## Prometheus Exporter / Metrics
+##
+metrics:
+  enabled: true
+  ## Metrics exporter pod Annotation and Labels
+  ##

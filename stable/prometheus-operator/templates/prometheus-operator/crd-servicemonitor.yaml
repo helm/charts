@@ -1,31 +1,23 @@
 {{- if and .Values.prometheusOperator.enabled .Values.prometheusOperator.createCustomResource -}}
-# Source: https://github.com/coreos/prometheus-operator/blob/master/contrib/kube-prometheus/manifests/0prometheus-operator-0servicemonitorCustomResourceDefinition.yaml
+# Source: https://raw.githubusercontent.com/coreos/kube-prometheus/master/manifests/0prometheus-operator-0servicemonitorCustomResourceDefinition.yaml
 apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
 metadata:
   creationTimestamp: null
-  name: servicemonitors.monitoring.coreos.com
+  name: {{ printf "servicemonitors.%s" (.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
   labels:
     app: {{ template "prometheus-operator.name" . }}-operator
 {{ include "prometheus-operator.labels" . | indent 4 }}
   annotations:
-    "helm.sh/hook": crd-install
+{{- if .Values.prometheusOperator.cleanupCustomResourceBeforeInstall }}
     "helm.sh/hook-delete-policy": "before-hook-creation"
+{{- end }}
+    "helm.sh/hook": crd-install
 spec:
-  additionalPrinterColumns:
-  - JSONPath: .metadata.creationTimestamp
-    description: |-
-      CreationTimestamp is a timestamp representing the server time when this object was created. It is not guaranteed to be set in happens-before order across separate operations. Clients may not set this value. It is represented in RFC3339 form and is in UTC.
-
-      Populated by the system. Read-only. Null for lists. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#metadata
-    name: Age
-    type: date
-  group: monitoring.coreos.com
+  group: {{ .Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com" }}
   names:
     kind: ServiceMonitor
-    listKind: ServiceMonitorList
     plural: servicemonitors
-    singular: servicemonitor
   scope: Namespaced
   validation:
     openAPIV3Schema:
@@ -70,6 +62,7 @@ spec:
                             type: boolean
                         required:
                         - key
+                        type: object
                       username:
                         description: SecretKeySelector selects a key of a Secret.
                         properties:
@@ -86,6 +79,8 @@ spec:
                             type: boolean
                         required:
                         - key
+                        type: object
+                    type: object
                   bearerTokenFile:
                     description: File to read bearer token for scraping targets.
                     type: string
@@ -139,6 +134,7 @@ spec:
                             in a replace action. It is mandatory for replace actions.
                             Regex capture groups are available.
                           type: string
+                      type: object
                     type: array
                   params:
                     description: Optional HTTP URL parameters
@@ -156,7 +152,7 @@ spec:
                     type: string
                   relabelings:
                     description: 'RelabelConfigs to apply to samples before ingestion.
-                      More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#<relabel_config>'
+                      More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config'
                     items:
                       description: 'RelabelConfig allows dynamic rewriting of the
                         label set, being applied to samples before ingestion. It defines
@@ -174,7 +170,7 @@ spec:
                           type: integer
                         regex:
                           description: Regular expression against which the extracted
-                            value is matched. default is '(.*)'
+                            value is matched. defailt is '(.*)'
                           type: string
                         replacement:
                           description: Replacement value against which a regex replace
@@ -198,6 +194,7 @@ spec:
                             in a replace action. It is mandatory for replace actions.
                             Regex capture groups are available.
                           type: string
+                      type: object
                     type: array
                   scheme:
                     description: HTTP scheme to use for scraping.
@@ -227,6 +224,8 @@ spec:
                       serverName:
                         description: Used to verify the hostname for the targets.
                         type: string
+                    type: object
+                type: object
               type: array
             jobLabel:
               description: The label to use to retrieve the job name from.
@@ -244,6 +243,7 @@ spec:
                   items:
                     type: string
                   type: array
+              type: object
             podTargetLabels:
               description: PodTargetLabels transfers labels on the Kubernetes Pod
                 onto the target.
@@ -289,6 +289,7 @@ spec:
                     required:
                     - key
                     - operator
+                    type: object
                   type: array
                 matchLabels:
                   description: matchLabels is a map of {key,value} pairs. A single
@@ -297,6 +298,7 @@ spec:
                     "In", and the values array contains only "value". The requirements
                     are ANDed.
                   type: object
+              type: object
             targetLabels:
               description: TargetLabels transfers labels on the Kubernetes Service
                 onto the target.
@@ -306,5 +308,7 @@ spec:
           required:
           - endpoints
           - selector
+          type: object
+      type: object
   version: v1
 {{- end }}

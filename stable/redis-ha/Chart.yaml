@@ -1,3 +1,4 @@
+apiVersion: v1
 name: redis-ha
 home: http://redis.io/
 engine: gotpl
@@ -5,19 +6,19 @@ keywords:
 - redis
 - keyvalue
 - database
-version: 2.2.4
-appVersion: 4.0.11-r1
-description: Highly available Redis cluster with multiple sentinels and standbys.
+version: 3.7.8
+appVersion: 5.0.5
+description: Highly available Kubernetes implementation of Redis
 icon: https://upload.wikimedia.org/wikipedia/en/thumb/6/6b/Redis_Logo.svg/1200px-Redis_Logo.svg.png
 maintainers:
-  - email: ikaboubi@gmail.com
-    name: smileisak
-  - email: ianmaddox@google.com
-    name: ianmaddox
+- email: salimsalaues@gmail.com
+  name: ssalaues
+- email: aaron.layfield@gmail.com
+  name: dandydeveloper
 details:
-  This package provides a highly available Redis cluster with multiple sentinels and standbys.
-  Note the `redis-master` pod is used for bootstrapping only and can be deleted once
-  the cluster is up and running.
+  This Helm chart provides a highly available Redis implementation with a master/slave configuration
+  and uses Sentinel sidecars for failover management
 sources:
-  - https://github.com/smileisak/docker-images/tree/master/redis
-  - https://github.com/diegocn/docker-images/tree/master/redis
+- https://redis.io/download
+- https://github.com/scality/Zenko/tree/development/1.0/kubernetes/zenko/charts/redis-ha
+- https://github.com/oliver006/redis_exporter

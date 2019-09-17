@@ -1,45 +1,48 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: {{ template "fluentd-elasticsearch.fullname" . }}
+  name: {{ include "fluentd-elasticsearch.fullname" . }}
   labels:
-    app: {{ template "fluentd-elasticsearch.fullname" . }}
-    version: {{ .Values.image.tag }}
+    app.kubernetes.io/name: {{ include "fluentd-elasticsearch.name" . }}
+    helm.sh/chart: {{ include "fluentd-elasticsearch.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
     kubernetes.io/cluster-service: "true"
     addonmanager.kubernetes.io/mode: Reconcile
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    heritage: "{{ .Release.Service }}"
-    release: "{{ .Release.Name }}"
+{{- if .Values.annotations }}
+  annotations:    
+{{ toYaml .Values.annotations | indent 4 }}
+{{- end }}
 spec:
+  updateStrategy:
+{{ toYaml .Values.updateStrategy | indent 4 }}
   selector:
     matchLabels:
-      app: {{ template "fluentd-elasticsearch.fullname" . }}
-      release: "{{ .Release.Name }}"
+      app.kubernetes.io/name: {{ include "fluentd-elasticsearch.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ template "fluentd-elasticsearch.fullname" . }}
-        version: {{ .Values.image.tag }}
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-        heritage: "{{ .Release.Service }}"
+        app.kubernetes.io/name: {{ include "fluentd-elasticsearch.name" . }}
+        helm.sh/chart: {{ include "fluentd-elasticsearch.chart" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
         kubernetes.io/cluster-service: "true"
-        version: {{ .Values.image.tag }}
-        release: "{{ .Release.Name }}"
       # This annotation ensures that fluentd does not get evicted if the node
       # supports critical pod annotation based priority scheme.
       # Note that this does not guarantee admission on the nodes (#40573).
       annotations:
         scheduler.alpha.kubernetes.io/critical-pod: ''
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
-{{- if .Values.annotations }}
-{{ toYaml .Values.annotations | indent 8 }}
+{{- if .Values.podAnnotations }}
+{{ toYaml .Values.podAnnotations | indent 8 }}
 {{- end }}
     spec:
-      serviceAccountName: {{ template "fluentd-elasticsearch.fullname" . }}
+      serviceAccountName: {{ include "fluentd-elasticsearch.fullname" . }}
       containers:
-      - name: {{ template "fluentd-elasticsearch.fullname" . }}
+      - name: {{ include "fluentd-elasticsearch.fullname" . }}
         image:  "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         env:
         - name: FLUENTD_ARGS
           value: --no-supervisor -q
@@ -47,10 +50,31 @@ spec:
           value: {{ .Values.elasticsearch.host | quote }}
         - name: OUTPUT_PORT
           value: {{ .Values.elasticsearch.port | quote }}
+        - name: LOGSTASH_PREFIX
+          value: {{ .Values.elasticsearch.logstash_prefix | quote }}
+        - name: OUTPUT_SCHEME
+          value: {{ .Values.elasticsearch.scheme | quote }}
+        - name: OUTPUT_SSL_VERSION
+          value: {{ .Values.elasticsearch.ssl_version | quote }}
         - name: OUTPUT_BUFFER_CHUNK_LIMIT
           value: {{ .Values.elasticsearch.buffer_chunk_limit | quote }}
         - name: OUTPUT_BUFFER_QUEUE_LIMIT
           value: {{ .Values.elasticsearch.buffer_queue_limit | quote }}
+        {{- if .Values.env }}
+        {{- range $key, $value := .Values.env }}
+        - name: {{ $key }}
+          value: {{ $value | quote }}
+        {{- end }}
+        {{- end }}
+        {{- if .Values.secret }}
+        {{- range $key, $value := .Values.secret }}
+        - name: {{ .name }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ $value.secret_name }}
+              key: {{ $value.secret_key | quote }}
+        {{- end }}
+        {{- end }}
         - name: K8S_NODE_NAME
           valueFrom:
             fieldRef:
@@ -66,7 +90,7 @@ spec:
         - name: libsystemddir
           mountPath: /host/lib
           readOnly: true
-        - name: config-volume-{{ template "fluentd-elasticsearch.fullname" . }}
+        - name: config-volume
           mountPath: /etc/fluent/config.d
 {{- if .Values.extraVolumeMounts }}
 {{ toYaml .Values.extraVolumeMounts | indent 8 }}
@@ -75,6 +99,9 @@ spec:
 {{- range $port := .Values.service.ports }}
           - name: {{ $port.name }}
             containerPort: {{ $port.port }}
+{{- if $port.protocol }}
+            protocol: {{ $port.protocol }}
+{{- end }}
 {{- end }}
 {{- if .Values.livenessProbe.enabled }}
         # Liveness probe is aimed to help in situarions where fluentd
@@ -122,9 +149,9 @@ spec:
       - name: libsystemddir
         hostPath:
           path: /usr/lib64
-      - name: config-volume-{{ template "fluentd-elasticsearch.fullname" . }}
+      - name: config-volume
         configMap:
-          name: {{ template "fluentd-elasticsearch.fullname" . }}
+          name: {{ include "fluentd-elasticsearch.fullname" . }}
 {{- if .Values.extraVolumes }}
 {{ toYaml .Values.extraVolumes | indent 6 }}
 {{- end }}

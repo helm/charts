@@ -10,55 +10,143 @@ serviceAccount:
   create: true
   name:
 
+release:
+  # "openebs.io/version" label for control plane components
+  version: "1.2.0"
+
 image:
   pullPolicy: IfNotPresent
 
 apiserver:
-  image: "openebs/m-apiserver"
-  imageTag: "0.6.0"
+  image: "quay.io/openebs/m-apiserver"
+  imageTag: "1.2.0"
   replicas: 1
   ports:
     externalPort: 5656
     internalPort: 5656
+  sparse:
+    enabled: "false"
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  healthCheck:
+    initialDelaySeconds: 30
+    periodSeconds: 60
+
+defaultStorageConfig:
+  enabled: "true"
 
 provisioner:
-  image: "openebs/openebs-k8s-provisioner"
-  imageTag: "0.6.0"
+  image: "quay.io/openebs/openebs-k8s-provisioner"
+  imageTag: "1.2.0"
   replicas: 1
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  healthCheck:
+    initialDelaySeconds: 30
+    periodSeconds: 60
+
+localprovisioner:
+  image: "quay.io/openebs/provisioner-localpv"
+  imageTag: "1.2.0"
+  helperImage: "quay.io/openebs/openebs-tools"
+  helperImageTag: "3.8"
+  replicas: 1
+  basePath: "/var/openebs/local"
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  healthCheck:
+    initialDelaySeconds: 30
+    periodSeconds: 60
 
 snapshotOperator:
   controller:
-    image: "openebs/snapshot-controller"
-    imageTag: "0.6.0"
+    image: "quay.io/openebs/snapshot-controller"
+    imageTag: "1.2.0"
   provisioner:
-    image: "openebs/snapshot-provisioner"
-    imageTag: "0.6.0"
+    image: "quay.io/openebs/snapshot-provisioner"
+    imageTag: "1.2.0"
   replicas: 1
   upgradeStrategy: "Recreate"
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  healthCheck:
+    initialDelaySeconds: 30
+    periodSeconds: 60
+
+ndm:
+  image: "quay.io/openebs/node-disk-manager-amd64"
+  imageTag: "v0.4.2"
+  sparse:
+    path: "/var/openebs/sparse"
+    size: "10737418240"
+    count: "1"
+  filters:
+    excludeVendors: "CLOUDBYT,OpenEBS"
+    includePaths: ""
+    excludePaths: "loop,fd0,sr0,/dev/ram,/dev/dm-,/dev/md"
+  probes:
+    enableSeachest: false
+  nodeSelector: {}
+  tolerations: []
+  healthCheck:
+    initialDelaySeconds: 30
+    periodSeconds: 60
+
+ndmOperator:
+  image: "quay.io/openebs/node-disk-operator-amd64"
+  imageTag: "v0.4.2"
+  replicas: 1
+  upgradeStrategy: Recreate
+  nodeSelector: {}
+  tolerations: []
+  readinessCheck:
+    initialDelaySeconds: 4
+    periodSeconds: 10
+    failureThreshold: 1
+  cleanupImage: "quay.io/openebs/linux-utils"
+  cleanupImageTag: "3.9"
+
+webhook:
+  image: "quay.io/openebs/admission-server"
+  imageTag: "1.2.0"
+  generateTLS: true
+  failurePolicy: Ignore
+  replicas: 1
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
 
 jiva:
-  image: "openebs/jiva"
-  imageTag: "0.6.0"
+  image: "quay.io/openebs/jiva"
+  imageTag: "1.2.0"
   replicas: 3
-  replicaNodeSelector:
-    # Enable this option and specify the node label that will be used to
-    # select the nodes where replica pods are scheduled. To use this feature,
-    # the nodes should already be labeled with the key=value. For example:
-    # `kubectl label nodes <node-name> nodetype=storage
-    enabled: false
-    value: "nodetype=storage"
+  defaultStoragePath: "/var/openebs"
+
+cstor:
+  pool:
+    image: "quay.io/openebs/cstor-pool"
+    imageTag: "1.2.0"
+  poolMgmt:
+    image: "quay.io/openebs/cstor-pool-mgmt"
+    imageTag: "1.2.0"
+  target:
+    image: "quay.io/openebs/cstor-istgt"
+    imageTag: "1.2.0"
+  volumeMgmt:
+    image: "quay.io/openebs/cstor-volume-mgmt"
+    imageTag: "1.2.0"
 
 policies:
   monitoring:
     enabled: true
-    image: "openebs/m-exporter"
-    imageTag: "0.6.0"
+    image: "quay.io/openebs/m-exporter"
+    imageTag: "1.2.0"
+
+analytics:
+  enabled: true
+  # Specify in hours the duration after which a ping event needs to be sent.
+  pingInterval: "24h"

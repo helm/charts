@@ -1,0 +1,13 @@
+{{- if .Values.initScripts.enabled -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ template "influxdb.fullname" . }}-init"
+  labels:
+    app: "{{ template "influxdb.fullname" . }}"
+    chart: "{{ template "influxdb.chart" . }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+{{ toYaml .Values.initScripts.scripts | indent 2 }}
+{{- end -}}

@@ -10,9 +10,9 @@ This chart bootstraps a SonarQube instance with a PostgreSQL database.
 
 - Kubernetes 1.6+
 
-## Installing the chart:
+## Installing the chart
 
-To install the chart :
+To install the chart:
 
 ```bash
 $ helm install stable/sonarqube
@@ -39,34 +39,54 @@ The following table lists the configurable parameters of the Sonarqube chart and
 
 | Parameter                                   | Description                               | Default                                    |
 | ------------------------------------------  | ----------------------------------------  | -------------------------------------------|
+| `replicaCount`                              | Number of replicas deployed               | `1`                                        |
+| `deploymentStrategy`                        | Deployment strategy                       | `{}`                                       |
 | `image.repository`                          | image repository                          | `sonarqube`                                |
-| `image.tag`                                 | `sonarqube` image tag.                    | 6.5                                        |
+| `image.tag`                                 | `sonarqube` image tag.                    | `7.9-community`                            |
 | `image.pullPolicy`                          | Image pull policy                         | `IfNotPresent`                             |
 | `image.pullSecret`                          | imagePullSecret to use for private repository      |                                   |
+| `command`                                   | command to run in the container           | `nil` (need to be set prior to 6.7.6, and 7.4)      |
+| `securityContext.fsGroup`                   | Group applied to mounted directories/files|  `999`                                     |
 | `ingress.enabled`                           | Flag for enabling ingress                 | false                                      |
+| `ingress.labels`                            | Ingress additional labels                 | `{}`                                       |
+| `ingress.hosts[0].name`                     | Hostname to your SonarQube installation   | `sonar.organization.com`                   |
+| `ingress.hosts[0].path`                     | Path within the URL structure             | /                                          |
+| `ingress.tls`                               | Ingress secrets for TLS certificates      | `[]`                                       |
+| `livenessProbe.sonarWebContext`             | SonarQube web context for livenessProbe   | /                                          |
+| `readinessProbe.sonarWebContext`            | SonarQube web context for readinessProbe  | /                                          |
 | `service.type`                              | Kubernetes service type                   | `LoadBalancer`                             |
+| `service.labels`                            | Kubernetes service labels                 | None                                       |
 | `service.annotations`                       | Kubernetes service annotations            | None                                       |
 | `service.loadBalancerSourceRanges`          | Kubernetes service LB Allowed inbound IP addresses | 0.0.0.0/0                            |
 | `service.loadBalancerIP`                    | Kubernetes service LB Optional fixed external IP   | None                                       |
 | `persistence.enabled`                       | Flag for enabling persistent storage      | false                                      |
+| `persistence.annotations`                   | Kubernetes pvc annotations                | `{}`                                      |
+| `persistence.existingClaim`                 | Do not create a new PVC but use this one  | None                                       |
 | `persistence.storageClass`                  | Storage class to be used                  | "-"                                        |
 | `persistence.accessMode`                    | Volumes access mode to be set             | `ReadWriteOnce`                            |
 | `persistence.size`                          | Size of the volume                        | None                                     |
 | `sonarProperties`                           | Custom `sonar.properties` file            | None                                       |
-| `database.type`                             |Set to "mysql" to use mysql database       | `postgresql`|
+| `customCerts.enabled`                       | Use `customCerts.secretName`              | false                                      |
+| `customCerts.secretName`                    | Name of the secret which conatins your `cacerts` | false                                      |
+| `sonarSecretKey`                            | Name of existing secret used for settings encryption | None                            |
+| `sonarProperties`                           | Custom `sonar.properties` file            | `{}`                                       |
+| `database.type`                             | Set to "mysql" to use mysql database       | `postgresql`|
 | `postgresql.enabled`                        | Set to `false` to use external server / mysql database     | `true`                                     |
 | `postgresql.postgresServer`                 | Hostname of the external Postgresql server| `null`                                     |
+| `postgresql.postgresPasswordSecret`         | Secret containing the password of the external Postgresql server | `null`              |
 | `postgresql.postgresUser`                   | Postgresql database user                  | `sonarUser`                                |
 | `postgresql.postgresPassword`               | Postgresql database password              | `sonarPass`                                |
 | `postgresql.postgresDatabase`               | Postgresql database name                  | `sonarDB`                                  |
 | `postgresql.service.port`                   | Postgresql port                           | `5432`                                     |
 | `mysql.enabled`                             | Set to `false` to use external server / postgresql database        | `false`                                     |
 | `mysql.mysqlServer`                         | Hostname of the external Mysql server     | `null`                                     |
+| `mysql.mysqlPasswordSecret`                 | Secret containing the password of the external Mysql server | `null`                   |
 | `mysql.mysqlUser`                           | Mysql database user                       | `sonarUser`                                |
 | `mysql.mysqlPassword`                       | Mysql database password                   | `sonarPass`                                |
 | `mysql.mysqlDatabase`                       | Mysql database name                       | `sonarDB`                                  |
 | `mysql.mysqlParams`                         | Mysql parameters for JDBC connection string     | `{}`                                 |
 | `mysql.service.port`                        | Mysql port                                | `3306`                                     |
+| `annotations`                               | Sonarqube Pod annotations                 | `{}`                                       |
 | `resources`                                 | Sonarqube Pod resource requests & limits  | `{}`                                       |
 | `affinity`                                  | Node / Pod affinities                     | `{}`                                       |
 | `nodeSelector`                              | Node labels for pod assignment            | `{}`                                       |
@@ -74,7 +94,42 @@ The following table lists the configurable parameters of the Sonarqube chart and
 | `tolerations`                               | List of node taints to tolerate           | `[]`                                       |
 | `plugins.install`                           | List of plugins to install                | `[]`                                       |
 | `plugins.resources`                         | Plugin Pod resource requests & limits     | `{}`                                       |
+| `plugins.initContainerImage`                | Change init container image               | `joosthofman/wget:1.0`                     |
+| `plugins.initSysctlContainerImage`          | Change init sysctl container image        | `busybox:1.31`                             |
+| `plugins.deleteDefaultPlugins`              | Remove default plugins and use plugins.install list | `[]`                             |
+| `podLabels`                                 | Map of labels to add to the pods          | `{}`                                       |
 
 You can also configure values for the PostgreSQL / MySQL database via the Postgresql [README.md](https://github.com/kubernetes/charts/blob/master/stable/postgresql/README.md) / MySQL [README.md](https://github.com/kubernetes/charts/blob/master/stable/mysql/README.md)
 
 For overriding variables see: [Customizing the chart](https://docs.helm.sh/using_helm/#customizing-the-chart-before-installing)
+
+### Use custom `cacerts`
+
+In environments with air-gapped setup, especially with internal tooling (repos) and self-signed certificates it is required to provide an adequate `cacerts` which overrides the default one:
+
+1. Create a yaml file `cacerts.yaml` with a secret that contanins the `cacerts`
+
+   ```yaml
+   apiVersion: v1
+   kind: Secret
+   metadata:
+     name: my-cacerts
+   data:
+     cacerts: |
+       xxxxxxxxxxxxxxxxxxxxxxx
+   ```
+
+2. Upload your `cacerts.yaml` to a secret with the key you specify in `secretName` in the cluster you are installing Sonarqube to.
+
+   ```shell
+   $ kubectl apply -f cacerts.yaml
+   ```
+
+3. Set the following values of the chart:
+
+   ```yaml
+   customCerts:
+      ## Enable to override the default cacerts with your own one
+      enabled: false
+      secretName: my-cacerts
+   ```

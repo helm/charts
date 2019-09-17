@@ -1,0 +1,13 @@
+{{- if .Values.test.enabled -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "atlantis.fullname" . }}-tests
+data:
+  run.sh: |-
+    @test "Atlantis UI is available" {
+      ATLANTIS_URL={{ template "atlantis.url" . }}
+      echo "Trying Atlantis at: $ATLANTIS_URL"
+      curl $ATLANTIS_URL
+    }
+{{- end }}

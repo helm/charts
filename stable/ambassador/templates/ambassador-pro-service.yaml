@@ -1,0 +1,94 @@
+{{- if .Values.pro.enabled }}
+{{- if .Values.crds.enabled }}
+{{- if .Values.pro.authService.enabled }}
+---
+apiVersion: getambassador.io/v1
+kind: AuthService
+metadata:
+  name: ambassador-pro-auth
+spec:
+  proto: grpc
+  {{- if hasKey .Values.env "AMBASSADOR_ID" }}
+  ambassador_id: {{ .Values.env.AMBASSADOR_ID | quote }}
+  {{- end }}
+  auth_service: 127.0.0.1:{{ .Values.pro.ports.auth }}
+  {{- if .Values.pro.authService.optional_configurations }}
+  {{- toYaml .Values.pro.authService.optional_configurations | nindent 2}}
+  {{- end }}
+---
+apiVersion: getambassador.io/v1
+kind: Mapping
+metadata:
+  name: callback-mapping
+spec:
+  {{- if hasKey .Values.env "AMBASSADOR_ID" }}
+  ambassador_id: {{ .Values.env.AMBASSADOR_ID | quote }}
+  {{- end }}
+  prefix: /callback
+  service: NoTaReAlSeRvIcE
+{{- end -}}
+{{- if .Values.pro.rateLimit.enabled }}
+---
+apiVersion: getambassador.io/v1
+kind: RateLimitService
+metadata:
+  name: ambassador-pro-ratelimit
+spec:
+  {{- if hasKey .Values.env "AMBASSADOR_ID" }}
+  ambassador_id: {{ .Values.env.AMBASSADOR_ID | quote }}
+  {{- end }}
+  service: 127.0.0.1:{{ .Values.pro.ports.ratelimit }}
+{{- end }}
+{{- else }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "ambassador.fullname" . }}-pro
+  labels:
+    service: ambassador-pro
+    app.kubernetes.io/name: {{ include "ambassador.name" . }}
+    app.kubernetes.io/part-of: {{ .Release.Name }}
+    helm.sh/chart: {{ include "ambassador.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  annotations:
+    getambassador.io/config: |
+      {{- if .Values.pro.authService.enabled }}
+      ---
+      apiVersion: ambassador/v1
+      kind: AuthService
+      name: ambassador-pro-auth
+      proto: grpc
+      {{- if hasKey .Values.env "AMBASSADOR_ID" }}
+      ambassador_id: {{ .Values.env.AMBASSADOR_ID | quote }}
+      {{- end }}
+      auth_service: 127.0.0.1:{{ .Values.pro.ports.auth }}
+      {{- toYaml .Values.pro.authService.optional_configurations | nindent 6}}
+      ---
+      # This mapping needs to exist, but is never actually followed.
+      apiVersion: ambassador/v1
+      kind: Mapping
+      name: callback_mapping
+      {{- if hasKey .Values.env "AMBASSADOR_ID" }}
+      ambassador_id: {{ .Values.env.AMBASSADOR_ID | quote }}
+      {{- end }}
+      prefix: /callback
+      service: NoTaReAlSeRvIcE
+      {{- end }}
+      {{- if .Values.pro.rateLimit.enabled }}
+      ---
+      apiVersion: ambassador/v1
+      kind: RateLimitService
+      name: ambassador-pro-ratelimit
+      {{- if hasKey .Values.env "AMBASSADOR_ID" }}
+      ambassador_id: {{ .Values.env.AMBASSADOR_ID | quote }}
+      {{- end }}
+      service: 127.0.0.1:{{ .Values.pro.ports.ratelimit }}
+      {{- end }}
+spec:
+  ports:
+  - name: ratelimit-grpc
+    port: 80
+# {{- end }}
+{{- end }}

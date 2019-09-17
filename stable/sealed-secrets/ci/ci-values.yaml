@@ -1,0 +1,4 @@
+# CI is running on GKE, it requires the chart to clean up after itself so we cannot keep the CRD
+
+crd:
+  keep: false

@@ -13,7 +13,10 @@ spec:
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
         heritage: "{{ .Release.Service }}"
-      annotations: 
+      {{- if .Values.hub.podAnnotations }}
+      annotations:
+{{ toYaml .Values.hub.podAnnotations | indent 8 }}
+      {{- end}}
     spec:
       containers:
         - name: {{ .Chart.Name }}
@@ -29,14 +32,14 @@ spec:
               name: http
           livenessProbe:
             httpGet:
-              path: /wd/hub/status
+              path: {{ .Values.hub.probePath }}
               port: {{ .Values.hub.port }}
             initialDelaySeconds: 30
             periodSeconds: 5
             timeoutSeconds: {{ .Values.hub.livenessTimeout }}
           readinessProbe:
             httpGet:
-              path: /wd/hub/status
+              path: {{ .Values.hub.probePath }}
               port: {{ .Values.hub.port }}
             initialDelaySeconds: {{ .Values.hub.readinessDelay }}
             timeoutSeconds: {{ .Values.hub.readinessTimeout }}
@@ -73,19 +76,42 @@ spec:
             - name: GRID_MAX_SESSION
               value: {{ .Values.hub.gridMaxSession | quote }}
             {{- end }}
-            {{- if .Values.hub.gridUnregisterIfStillDownAfer }}
+            {{- if .Values.hub.gridUnregisterIfStillDownAfter }}
             - name: GRID_UNREGISTER_IF_STILL_DOWN_AFTER
-              value: {{ .Values.hub.gridUnregisterIfStillDownAfer | quote }}
+              value: {{ .Values.hub.gridUnregisterIfStillDownAfter | quote }}
             {{- end }}
             {{- if .Values.hub.timeZone }}
             - name: TZ
               value: {{ .Values.hub.timeZone | quote }}
             {{- end }}
+            {{- if .Values.hub.port }}
+            - name: GRID_HUB_PORT
+              value: {{ .Values.hub.port | quote }}
+            {{- end }}
+            {{- if .Values.hub.extraEnvs }}
+{{ toYaml .Values.hub.extraEnvs | indent 12 }}
+            {{- end }}
           resources:
-{{ toYaml .Values.hub.resources | indent 12 }}
+{{ toYaml .Values.hub.resources | trim | indent 12 -}}
+{{- if or .Values.global.imagePullSecrets .Values.hub.imagePullSecrets }}
+      imagePullSecrets: 
+      - name: {{ .Values.hub.imagePullSecrets | default .Values.global.imagePullSecrets | quote }}
+{{- end }}
       nodeSelector:
 {{- if .Values.hub.nodeSelector }}
-{{ toYaml .Values.hub.nodeSelector | indent 8  }}
+{{ toYaml .Values.hub.nodeSelector | trim | indent 8  }}
 {{- else if .Values.global.nodeSelector }}
-{{ toYaml .Values.global.nodeSelector | indent 8  }}
+{{ toYaml .Values.global.nodeSelector | trim | indent 8  }}
+{{- end }}
+      affinity:
+{{- if .Values.hub.affinity }}
+{{ toYaml .Values.hub.affinity | indent 8  }}
+{{- else if .Values.global.affinity }}
+{{ toYaml .Values.global.affinity | indent 8  }}
+{{- end }}
+      tolerations:
+{{- if .Values.hub.tolerations }}
+{{ toYaml .Values.hub.tolerations | indent 8  }}
+{{- else if .Values.global.tolerations }}
+{{ toYaml .Values.global.tolerations | indent 8  }}
 {{- end }}

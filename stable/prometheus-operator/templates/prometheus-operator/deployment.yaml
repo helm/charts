@@ -20,7 +20,14 @@ spec:
 {{- if .Values.prometheusOperator.podLabels }}
 {{ toYaml .Values.prometheusOperator.podLabels | indent 8 }}
 {{- end }}
+{{- if .Values.prometheusOperator.podAnnotations }}
+      annotations:
+{{ toYaml .Values.prometheusOperator.podAnnotations | indent 8 }}
+{{- end }}
     spec:
+    {{- if .Values.prometheusOperator.priorityClassName }}
+      priorityClassName: {{ .Values.prometheusOperator.priorityClassName }}
+    {{- end }}
       containers:
         - name: {{ template "prometheus-operator.name" . }}
           image: "{{ .Values.prometheusOperator.image.repository }}:{{ .Values.prometheusOperator.image.tag }}"
@@ -29,10 +36,23 @@ spec:
           {{- if .Values.prometheusOperator.kubeletService.enabled }}
             - --kubelet-service={{ .Values.prometheusOperator.kubeletService.namespace }}/{{ template "prometheus-operator.fullname" . }}-kubelet
           {{- end }}
+          {{- if .Values.prometheusOperator.logFormat }}
+            - --log-format={{ .Values.prometheusOperator.logFormat }}
+          {{- end }}
+          {{- if .Values.prometheusOperator.logLevel }}
+            - --log-level={{ .Values.prometheusOperator.logLevel }}
+          {{- end }}
             - --logtostderr=true
+            - --crd-apigroup={{ .Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com" }}
             - --localhost=127.0.0.1
             - --prometheus-config-reloader={{ .Values.prometheusOperator.prometheusConfigReloaderImage.repository }}:{{ .Values.prometheusOperator.prometheusConfigReloaderImage.tag }}
             - --config-reloader-image={{ .Values.prometheusOperator.configmapReloadImage.repository }}:{{ .Values.prometheusOperator.configmapReloadImage.tag }}
+          {{- if .Values.prometheusOperator.configReloaderCpu }}
+            - --config-reloader-cpu={{ .Values.prometheusOperator.configReloaderCpu }}
+          {{- end }}
+          {{- if .Values.prometheusOperator.configReloaderMemory }}
+            - --config-reloader-memory={{ .Values.prometheusOperator.configReloaderMemory }}
+          {{- end }}
           ports:
             - containerPort: 8080
               name: http
@@ -41,12 +61,44 @@ spec:
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
+        {{- if .Values.prometheusOperator.tlsProxy.enabled }}
+        - name: tls-proxy
+          image: {{ .Values.prometheusOperator.tlsProxy.image.repository }}:{{ .Values.prometheusOperator.tlsProxy.image.tag }}
+          imagePullPolicy: {{ .Values.prometheusOperator.tlsProxy.image.pullPolicy }}
+          args:
+            - server
+            - --listen=:8443
+            - --target=127.0.0.1:8080
+            - --key=cert/key
+            - --cert=cert/cert
+            - --disable-authentication
+{{- if .Values.prometheusOperator.tlsProxy.resources }}
+          resources:
+{{ toYaml .Values.prometheusOperator.tlsProxy.resources | indent 10 }}
+{{- end }}
+          volumeMounts:
+          - name: tls-proxy-secret
+            mountPath: /cert
+            readOnly: true
+          ports:
+            - containerPort: 8443
+              name: https
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+        {{- end }}
+{{- if .Values.prometheusOperator.tlsProxy.enabled }}
+      volumes:
+        - name: tls-proxy-secret
+          secret:
+            defaultMode: 420
+            secretName: {{ template "prometheus-operator.fullname" . }}-admission
+{{- end }}
+{{- if .Values.prometheusOperator.securityContext }}
       securityContext:
-        runAsNonRoot: true
-        runAsUser: 65534
-    {{- if .Values.global.rbac.create }}
+{{ toYaml .Values.prometheusOperator.securityContext | indent 8 }}
+{{- end }}
       serviceAccountName: {{ template "prometheus-operator.operator.serviceAccountName" . }}
-    {{- end }}
     {{- with .Values.prometheusOperator.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

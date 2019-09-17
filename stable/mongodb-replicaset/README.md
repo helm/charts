@@ -2,8 +2,9 @@
 
 ## Prerequisites Details
 
-* Kubernetes 1.8+ with Beta APIs enabled.
-* PV support on the underlying infrastructure.
+* Kubernetes 1.9+
+* Kubernetes beta APIs enabled only if `podDisruptionBudget` is enabled
+* PV support on the underlying infrastructure
 
 ## StatefulSet Details
 
@@ -37,34 +38,46 @@ The following table lists the configurable parameters of the mongodb chart and t
 | `replicaSetName`                    | The name of the replica set                                               | `rs0`                                               |
 | `podDisruptionBudget`               | Pod disruption budget                                                     | `{}`                                                |
 | `port`                              | MongoDB port                                                              | `27017`                                             |
-| `installImage.repository`           | Image name for the install container                                      | `k8s.gcr.io/mongodb-install`                        |
-| `installImage.tag`                  | Image tag for the install container                                       | `0.5`                                               |
+| `imagePullSecrets`                  | Image pull secrets                                                        | `[]`                                                |
+| `installImage.repository`           | Image name for the install container                                      | `unguiculus/mongodb-install`                        |
+| `installImage.tag`                  | Image tag for the install container                                       | `0.7`                                               |
 | `installImage.pullPolicy`           | Image pull policy for the init container that establishes the replica set | `IfNotPresent`                                      |
+| `copyConfigImage.repository`        | Image name for the copy config init container                             | `busybox`                                           |
+| `copyConfigImage.tag`               | Image tag for the copy config init container                              | `1.29.3`                                            |
+| `copyConfigImage.pullPolicy`        | Image pull policy for the copy config init container                      | `IfNotPresent`                                      |
 | `image.repository`                  | MongoDB image name                                                        | `mongo`                                             |
 | `image.tag`                         | MongoDB image tag                                                         | `3.6`                                               |
 | `image.pullPolicy`                  | MongoDB image pull policy                                                 | `IfNotPresent`                                      |
 | `podAnnotations`                    | Annotations to be added to MongoDB pods                                   | `{}`                                                |
-| `securityContext`                   | Security context for the pod                                              | `{runAsUser: 999, fsGroup: 999, runAsNonRoot: true}`|
+| `securityContext.enabled`           | Enable security context                                                   | `true`                                              |
+| `securityContext.fsGroup`           | Group ID for the container                                                | `999`                                               |
+| `securityContext.runAsUser`         | User ID for the container                                                 | `999`                                               |
+| `securityContext.runAsNonRoot`      |                                                                           | `true`                                              |
 | `resources`                         | Pod resource requests and limits                                          | `{}`                                                |
 | `persistentVolume.enabled`          | If `true`, persistent volume claims are created                           | `true`                                              |
 | `persistentVolume.storageClass`     | Persistent volume storage class                                           | ``                                                  |
-| `persistentVolume.accessMode`       | Persistent volume access modes                                            | `[ReadWriteOnce]`                                   |
+| `persistentVolume.accessModes`      | Persistent volume access modes                                            | `[ReadWriteOnce]`                                   |
 | `persistentVolume.size`             | Persistent volume size                                                    | `10Gi`                                              |
 | `persistentVolume.annotations`      | Persistent volume annotations                                             | `{}`                                                |
 | `terminationGracePeriodSeconds`     | Duration in seconds the pod needs to terminate gracefully                 | `30`                                                |
 | `tls.enabled`                       | Enable MongoDB TLS support including authentication                       | `false`                                             |
 | `tls.cacert`                        | The CA certificate used for the members                                   | Our self signed CA certificate                      |
 | `tls.cakey`                         | The CA key used for the members                                           | Our key for the self signed CA certificate          |
+| `init.resources`                    | Pod resource requests and limits (for init containers)                    | `{}`                                                |
+| `init.timeout`                      | The amount of time in seconds to wait for bootstrap to finish             | `900`                                               |
 | `metrics.enabled`                   | Enable Prometheus compatible metrics for pods and replicasets             | `false`                                             |
-| `metrics.image.repository`           | Image name for metrics exporter                                           | `ssalaues/mongodb-exporter`                         |
-| `metrics.image.tag`                  | Image tag for metrics exporter                                            | `0.6.1`                                             |
-| `metrics.image.pullPolicy`           | Image pull policy for metrics exporter                                    | `IfNotPresent`                                      |
-| `metrics.port`                       | Port for metrics exporter                                                 | `9216`                                              |
-| `metrics.path`                       | URL Path to expose metics                                                 | `/metrics`                                          |
-| `metrics.resources`                  | Metrics pod resource requests and limits                                  | `{}`                                                |
-| `metrics.socketTimeout`              | Time to wait for a non-responding socket                                  | `3s`                                                |
-| `metrics.syncTimeout`                | Time an operation with this session will wait before returning an error   | `1m`                                                |
-| `metrics.prometheusServiceDiscovery` | Adds annotations for Prometheus ServiceDiscovery                          | `true`                                              |
+| `metrics.image.repository`          | Image name for metrics exporter                                           | `bitnami/mongodb-exporter`                          |
+| `metrics.image.tag`                 | Image tag for metrics exporter                                            | `0.9.0-debian-9-r2`                                 |
+| `metrics.image.pullPolicy`          | Image pull policy for metrics exporter                                    | `IfNotPresent`                                      |
+| `metrics.port`                      | Port for metrics exporter                                                 | `9216`                                              |
+| `metrics.path`                      | URL Path to expose metics                                                 | `/metrics`                                          |
+| `metrics.resources`                 | Metrics pod resource requests and limits                                  | `{}`                                                |
+| `metrics.securityContext.enabled`   | Enable security context                                                   | `true`                                              |
+| `metrics.securityContext.fsGroup`   | Group ID for the metrics container                                        | `1001`                                              |
+| `metrics.securityContext.runAsUser` | User ID for the metrics container                                         | `1001`                                              |
+| `metrics.socketTimeout`             | Time to wait for a non-responding socket                                  | `3s`                                                |
+| `metrics.syncTimeout`               | Time an operation with this session will wait before returning an error   | `1m`                                                |
+| `metrics.prometheusServiceDiscovery`| Adds annotations for Prometheus ServiceDiscovery                          | `true`                                              |
 | `auth.enabled`                      | If `true`, keyfile access control is enabled                              | `false`                                             |
 | `auth.key`                          | Key for internal authentication                                           | ``                                                  |
 | `auth.existingKeySecret`            | If set, an existing secret with this name for the key is used             | ``                                                  |
@@ -72,6 +85,7 @@ The following table lists the configurable parameters of the mongodb chart and t
 | `auth.adminPassword`                | MongoDB admin password                                                    | ``                                                  |
 | `auth.metricsUser`                  | MongoDB clusterMonitor user                                               | ``                                                  |
 | `auth.metricsPassword`              | MongoDB clusterMonitor password                                           | ``                                                  |
+| `auth.existingMetricsSecret`        | If set, and existing secret with this name is used for the metrics user   | ``                                                  |
 | `auth.existingAdminSecret`          | If set, and existing secret with this name is used for the admin user     | ``                                                  |
 | `serviceAnnotations`                | Annotations to be added to the service                                    | `{}`                                                |
 | `configmap`                         | Content of the MongoDB config file                                        | ``                                                  |
@@ -79,6 +93,7 @@ The following table lists the configurable parameters of the mongodb chart and t
 | `nodeSelector`                      | Node labels for pod assignment                                            | `{}`                                                |
 | `affinity`                          | Node/pod affinities                                                       | `{}`                                                |
 | `tolerations`                       | List of node taints to tolerate                                           | `[]`                                                |
+| `priorityClassName`                 | Pod priority class name                                                   | ``                                                  |
 | `livenessProbe.failureThreshold`    | Liveness probe failure threshold                                          | `3`                                                 |
 | `livenessProbe.initialDelaySeconds` | Liveness probe initial delay seconds                                      | `30`                                                |
 | `livenessProbe.periodSeconds`       | Liveness probe period seconds                                             | `10`                                                |
@@ -146,11 +161,14 @@ configmap:
       mode: requireSSL
       CAFile: /data/configdb/tls.crt
       PEMKeyFile: /work-dir/mongo.pem
+      # Set to false to require mutual TLS encryption
+      allowConnectionsWithoutCertificates: true
   replication:
     replSetName: rs0
   security:
     authorization: enabled
-    clusterAuthMode: x509
+    # # Uncomment to enable mutual TLS encryption
+    # clusterAuthMode: x509
     keyFile: /keydir/key.txt
 ```
 

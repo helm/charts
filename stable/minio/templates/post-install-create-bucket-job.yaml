@@ -1,4 +1,4 @@
-{{- if .Values.defaultBucket.enabled }}
+{{- if or .Values.defaultBucket.enabled .Values.buckets }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -17,11 +17,22 @@ spec:
       labels:
         app: {{ template "minio.name" . }}
         release: {{ .Release.Name }}
+{{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | indent 8 }}
+{{- end }}
     spec:
       restartPolicy: OnFailure
 {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
+{{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
 {{- end }}
       volumes:
         - name: minio-configuration
@@ -30,7 +41,15 @@ spec:
             - configMap:
                 name: {{ template "minio.fullname" . }}
             - secret:
-                name: {{ template "minio.fullname" . }}
+                name: {{ if .Values.existingSecret }}{{ .Values.existingSecret }}{{ else }}{{ template "minio.fullname" . }}{{ end }}
+        {{- if .Values.tls.enabled }}
+        - name: cert-secret-volume-mc
+          secret:
+            secretName: {{ .Values.tls.certSecret }}
+            items:
+            - key: {{ .Values.tls.publicCrt }}
+              path: CAs/public.crt
+        {{ end }}
       containers:
       - name: minio-mc
         image: "{{ .Values.mcImage.repository }}:{{ .Values.mcImage.tag }}"
@@ -44,4 +63,10 @@ spec:
         volumeMounts:
           - name: minio-configuration
             mountPath: /config
+          {{- if .Values.tls.enabled }}
+          - name: cert-secret-volume-mc
+            mountPath: {{ .Values.configPathmc }}certs
+          {{ end }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
 {{- end }}

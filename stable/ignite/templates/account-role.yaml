@@ -1,0 +1,16 @@
+{{- if .Values.rbac.create }}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  name: {{ include "ignite.fullname" . }}
+rules:
+- apiGroups:
+  - ""
+  resources: # Here are resources you can access
+  - pods
+  - endpoints
+  verbs: # That is what you can do with them
+  - get
+  - list
+  - watch
+{{- end }}

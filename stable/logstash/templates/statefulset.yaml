@@ -10,6 +10,7 @@ metadata:
 spec:
   serviceName: {{ template "logstash.fullname" . }}
   replicas: {{ .Values.replicaCount }}
+  podManagementPolicy: {{ .Values.podManagementPolicy }}
   selector:
     matchLabels:
       app: {{ template "logstash.name" . }}
@@ -27,6 +28,7 @@ spec:
       {{- end }}
       annotations:
         checksum/patterns: {{ include (print $.Template.BasePath "/patterns-config.yaml") . | sha256sum }}
+        checksum/templates: {{ include (print $.Template.BasePath "/files-config.yaml") . | sha256sum }}
         checksum/pipeline: {{ include (print $.Template.BasePath "/pipeline-config.yaml") . | sha256sum }}
       {{- if .Values.podAnnotations }}
         ## Custom pod annotations
@@ -35,13 +37,20 @@ spec:
         {{- end }}
       {{- end }}
     spec:
+      {{- if .Values.priorityClassName }}
+      priorityClassName: "{{ .Values.priorityClassName }}"
+      {{- end }}
       securityContext:
-        runAsUser: 1000
-        fsGroup: 1000
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+        fsGroup: {{ .Values.securityContext.fsGroup }}
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
 {{ toYaml .Values.image.pullSecrets | indent 8 }}
       {{- end }}
+      initContainers:
+{{- if .Values.extraInitContainers }}
+{{ toYaml .Values.extraInitContainers | indent 8 }}
+{{- end }}
       containers:
 
         ## logstash
@@ -57,6 +66,10 @@ spec:
 {{ toYaml .Values.livenessProbe | indent 12 }}
           readinessProbe:
 {{ toYaml .Values.readinessProbe | indent 12 }}
+          {{- if .Values.args }}
+          args:
+{{ .Values.args | toYaml | indent 12 }}
+          {{- end }}
           env:
             ## Logstash monitoring API host and port env vars
             - name: HTTP_HOST
@@ -68,10 +81,16 @@ spec:
               value: {{ .Values.elasticsearch.host | quote }}
             - name: ELASTICSEARCH_PORT
               value: {{ .Values.elasticsearch.port | quote }}
+            # Logstash Java Options
+            - name: LS_JAVA_OPTS
+              value: {{ .Values.logstashJavaOpts }}
             ## Additional env vars
           {{- range $key, $value := .Values.config }}
             - name: {{ $key | upper | replace "." "_" }}
               value: {{ $value | quote }}
+          {{- end }}
+          {{- if .Values.extraEnv }}
+{{ .Values.extraEnv | toYaml | indent 12 }}
           {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
@@ -122,11 +141,15 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
+      serviceAccountName: {{ template "logstash.serviceAccountName" . }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       volumes:
         - name: patterns
           configMap:
             name: {{ template "logstash.fullname" . }}-patterns
+        - name: files
+          configMap:
+            name: {{ template "logstash.fullname" . }}-files
         - name: pipeline
           configMap:
             name: {{ template "logstash.fullname" . }}-pipeline

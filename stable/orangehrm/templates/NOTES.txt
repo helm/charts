@@ -4,24 +4,26 @@
 
 1. Get the OrangeHRM URL by running:
 
-{{- if contains "NodePort" .Values.serviceType }}
+{{- if contains "NodePort" .Values.service.type }}
 
   export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "orangehrm.fullname" . }})
   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
   echo "OrangeHRM URL: http://$NODE_IP:$NODE_PORT/"
 
-{{- else if contains "LoadBalancer" .Values.serviceType }}
+{{- else if contains "LoadBalancer" .Values.service.type }}
 
 ** Please ensure an external IP is associated to the {{ template "orangehrm.fullname" . }} service before proceeding **
 ** Watch the status using: kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "orangehrm.fullname" . }} **
 
   export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "orangehrm.fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
-  echo "OrangeHRM URL: http://$SERVICE_IP/"
 
-{{- else if contains "ClusterIP"  .Values.serviceType }}
+{{- $port:=.Values.service.port | toString }}
+  echo "OrangeHRM URL: http://$SERVICE_IP{{- if ne $port "80" }}:{{ .Values.service.port }}{{ end }}/"
+
+{{- else if contains "ClusterIP"  .Values.service.type }}
 
   echo "OrangeHRM URL: http://127.0.0.1:8080/"
-  kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "orangehrm.fullname" . }} 8080:80
+  kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "orangehrm.fullname" . }} 8080:{{ .Values.service.port }}
 
 {{- end }}
 
@@ -42,6 +44,13 @@ host. To configure OrangeHRM to use and external database host:
 
 1. Complete your OrangeHRM deployment by running:
 
-  helm upgrade {{ .Release.Name }} --set serviceType={{ .Values.serviceType }},mariadb.enabled=false,externalDatabase.host=YOUR_EXTERNAL_DATABASE_HOST stable/orangehrm
+  helm upgrade {{ .Release.Name }} --set service.type={{ .Values.service.type }},mariadb.enabled=false,externalDatabase.host=YOUR_EXTERNAL_DATABASE_HOST stable/orangehrm
+
+{{- end }}
+
+{{- if and (contains "bitnami/" .Values.image.repository) (not (.Values.image.tag | toString | regexFind "-r\\d+$|sha256:")) }}
+
+WARNING: Rolling tag detected ({{ .Values.image.repository }}:{{ .Values.image.tag }}), please note that it is strongly recommended to avoid using rolling tags in a production environment.
++info https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/
 
 {{- end }}

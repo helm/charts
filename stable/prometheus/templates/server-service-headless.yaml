@@ -1,0 +1,26 @@
+{{- if .Values.server.enabled -}}
+{{- if .Values.server.statefulSet.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+{{- if .Values.server.statefulSet.headless.annotations }}
+  annotations:
+{{ toYaml .Values.server.statefulSet.headless.annotations | indent 4 }}
+{{- end }}
+  labels:
+    {{- include "prometheus.server.labels" . | nindent 4 }}
+{{- if .Values.server.statefulSet.headless.labels }}
+{{ toYaml .Values.server.statefulSet.headless.labels | indent 4 }}
+{{- end }}
+  name: {{ template "prometheus.server.fullname" . }}-headless
+spec:
+  clusterIP: None
+  ports:
+    - name: http
+      port: {{ .Values.server.statefulSet.headless.servicePort }}
+      protocol: TCP
+      targetPort: 9090
+  selector:
+    {{- include "prometheus.server.matchLabels" . | nindent 4 }}
+{{- end -}}
+{{- end -}}

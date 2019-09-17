@@ -79,6 +79,8 @@ spec:
           value: {{ template "percona-xtradb-cluster.shortname" . }}
         - name: K8S_SERVICE_NAME
           value: {{ template "percona-xtradb-cluster.fullname" . }}-repl
+        - name: PXC_STRICT_MODE
+          value: {{ default "ENFORCING" .Values.pxc_strict_mode | quote }}
         - name: DEBUG
           value: "true"
         ports:
@@ -92,7 +94,10 @@ spec:
           containerPort: 4444
         livenessProbe:
           exec:
-            command: ["mysqladmin","ping"]
+            command:
+              - "/bin/bash"
+              - "-c"
+              - "mysqladmin ping || test -e /var/lib/mysql/sst_in_progress"
           initialDelaySeconds: 30
           timeoutSeconds: 2
         readinessProbe:
@@ -111,6 +116,10 @@ spec:
           mountPath: /root
         - name: var-log
           mountPath: /var/log
+        {{- if .Values.ssl.enabled }}
+        - name: certificates
+          mountPath: /ssl
+        {{- end }}
       {{ if .Values.logTail }}
       - name: "logs"
         image: "busybox:1.25.0"
@@ -123,10 +132,22 @@ spec:
         - name: var-log
           mountPath: /var/log
       {{ end }}
-      {{ if .Values.metricsExporter }}
+      {{ if .Values.metricsExporter.enabled }}
       - name: metrics
+        {{- if .Values.metricsExporter.tag }}
+        image: prom/mysqld-exporter:{{ .Values.metricsExporter.tag }}
+        {{- else }}
         image: prom/mysqld-exporter
+        {{- end }}
         imagePullPolicy: IfNotPresent
+{{- if .Values.metricsExporter.commandOverrides }}
+        command:
+{{ toYaml .Values.metricsExporter.commandOverrides | indent 8 }}
+{{- end }}
+{{- if .Values.metricsExporter.argsOverrides }}
+        args:
+{{ toYaml .Values.metricsExporter.argsOverrides | indent 8 }}
+{{- end }}
         ports:
         - name: metrics
           containerPort: 9104
@@ -159,6 +180,11 @@ spec:
       - name: mysql-data
         emptyDir: {}
       {{- end -}}
+      {{- if .Values.ssl.enabled }}
+      - name: certificates
+        secret:
+          secretName: {{ .Values.ssl.secret }}
+      {{- end }}
       {{- if .Values.tolerations }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}

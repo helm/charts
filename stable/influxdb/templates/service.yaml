@@ -5,10 +5,10 @@ metadata:
   annotations:
 {{ toYaml .Values.service.annotations | indent 4 }}
 {{- end }}
-  name: {{ template "influxdb.fullname" . }}
+  name: "{{ template "influxdb.fullname" . }}"
   labels:
-    app: {{ template "influxdb.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: "{{ template "influxdb.fullname" . }}"
+    chart: "{{ template "influxdb.chart" . }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
@@ -23,9 +23,9 @@ spec:
   {{- if .Values.service.loadBalancerIP }}
   loadBalancerIP: {{ .Values.service.loadBalancerIP }}
   {{- end }}
-  {{- if .Values.service.loadBalancerSourceRanges }}
+  {{- with .Values.service.loadBalancerSourceRanges }}
   loadBalancerSourceRanges:
-  {{ toYaml .Values.service.loadBalancerSourceRanges | indent 4 }}
+    {{- toYaml . | nindent 4 }}
   {{- end }}
   ports:
   {{- if .Values.config.http.enabled }}
@@ -57,6 +57,11 @@ spec:
   - name: opentsdb
     port: {{ .Values.config.opentsdb.bind_address }}
     targetPort: {{ .Values.config.opentsdb.bind_address }}
+  {{- end }}
+  {{- if .Values.config.rpc.enabled }}
+  - name: rpc
+    port: {{ .Values.config.rpc.bind_address }}
+    targetPort: {{ .Values.config.rpc.bind_address }}
   {{- end }}
   selector:
     app: {{ template "influxdb.fullname" . }}

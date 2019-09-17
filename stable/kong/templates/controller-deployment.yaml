@@ -1,0 +1,96 @@
+{{- if (and (.Values.ingressController.enabled) (not (eq .Values.env.database "off"))) }}
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: "{{ template "kong.fullname" . }}-controller"
+  labels:
+    app: "{{ template "kong.name" . }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+    component: "controller"
+spec:
+  replicas: {{ .Values.ingressController.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "kong.name" . }}
+      release: {{ .Release.Name }}
+      component: "controller"
+  template:
+    metadata:
+    {{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+    {{- end }}
+      labels:
+        app: {{ template "kong.name" . }}
+        release: {{ .Release.Name }}
+        component: "controller"
+    spec:
+      serviceAccountName: {{ template "kong.serviceAccountName" . }}
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end }}
+      {{- end }}
+      initContainers:
+      {{- include "kong.wait-for-db" . | nindent 6 }}
+      containers:
+      - name: admin-api
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+        - name: KONG_PROXY_LISTEN
+          value: 'off'
+        {{- if .Values.enterprise.enabled }}
+        {{- if .Values.enterprise.rbac.enabled }}
+        # TODO: uncomment this once we have a means of securely providing the
+        # controller its token using a secret.
+        #- name: KONG_ENFORCE_RBAC
+        #  value: "on"
+        {{- end }}
+        # the controller admin API should not receive requests to create admins or developers
+        # never enable SMTP on it as such
+        {{- if .Values.enterprise.smtp.enabled }}
+        - name: KONG_SMTP_MOCK
+          value: "on"
+        {{- else }}
+        - name: KONG_SMTP_MOCK
+          value: "on"
+        {{- end }}
+        {{- include "kong.license" . | nindent 8 }}
+        {{- end }}
+        {{- if .Values.admin.useTLS }}
+        - name: KONG_ADMIN_LISTEN
+          value: "0.0.0.0:{{ .Values.admin.containerPort }} ssl"
+        {{- else }}
+        - name: KONG_ADMIN_LISTEN
+          value: 0.0.0.0:{{ .Values.admin.containerPort }}
+        {{- end }}
+        {{- if .Values.postgresql.enabled }}
+        - name: KONG_PG_HOST
+          value: {{ template "kong.postgresql.fullname" . }}
+        - name: KONG_PG_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "kong.postgresql.fullname" . }}
+              key: postgresql-password
+        {{- end }}
+        {{- if .Values.cassandra.enabled }}
+        - name: KONG_CASSANDRA_CONTACT_POINTS
+          value: {{ template "kong.cassandra.fullname" . }}
+        {{- end }}
+        {{- include "kong.env" .  | indent 8 }}
+        ports:
+        - name: admin
+          containerPort: {{ .Values.admin.containerPort }}
+          protocol: TCP
+        readinessProbe:
+{{ toYaml .Values.readinessProbe | indent 10 }}
+        livenessProbe:
+{{ toYaml .Values.livenessProbe | indent 10 }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+      {{- include "kong.controller-container" . | nindent 6 }}
+{{- end -}}

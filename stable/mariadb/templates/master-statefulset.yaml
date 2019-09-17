@@ -4,7 +4,7 @@ metadata:
   name: {{ template "master.fullname" . }}
   labels:
     app: "{{ template "mariadb.name" . }}"
-    chart: {{ template "mariadb.chart" . }}
+    chart: "{{ template "mariadb.chart" . }}"
     component: "master"
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
@@ -13,25 +13,32 @@ spec:
     matchLabels:
       release: "{{ .Release.Name }}"
       component: "master"
-      app: {{ template "mariadb.name" . }}
+      app: "{{ template "mariadb.name" . }}"
   serviceName: "{{ template "master.fullname" . }}"
   replicas: 1
   updateStrategy:
-    type: RollingUpdate
+    type: {{ .Values.master.updateStrategy.type }}
+    {{- if (eq "Recreate" .Values.master.updateStrategy.type) }}
+    rollingUpdate: null
+    {{- end }}
   template:
     metadata:
       {{- if .Values.master.annotations }}
       annotations:
-        {{- range .Values.master.annotations }}
-        {{ .key }}: '{{ .value }}'
+        {{- range $key, $value := .Values.master.annotations }}
+        {{ $key }}: '{{ $value }}'
         {{- end }}
       {{- end }}
       labels:
         app: "{{ template "mariadb.name" . }}"
         component: "master"
         release: "{{ .Release.Name }}"
-        chart: {{ template "mariadb.chart" . }}
+        chart: "{{ template "mariadb.chart" . }}"
     spec:
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+      {{- end }}
+      serviceAccountName: "{{ template "mariadb.serviceAccountName" . }}"
       {{- if .Values.securityContext.enabled }}
       securityContext:
         fsGroup: {{ .Values.securityContext.fsGroup }}
@@ -69,25 +76,52 @@ spec:
 {{ toYaml . | indent 8 }}
       {{- end }}
       {{- end }}
+      {{- if .Values.master.nodeSelector }}
+      nodeSelector:
+        {{ toYaml .Values.master.nodeSelector | nindent 8 }}
+      {{- end -}}
       {{- with .Values.master.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
       {{- end }}
-      {{- if .Values.image.pullSecrets }}
-      imagePullSecrets:
-      {{- range .Values.image.pullSecrets }}
-        - name: {{ . }}
-      {{- end}}
+{{- include "mariadb.imagePullSecrets" . | indent 6 }}
+      initContainers:
+      {{- if .Values.master.extraInitContainers }}
+{{ tpl .Values.master.extraInitContainers . | indent 6}}
+      {{- end }}
+      {{- if and .Values.volumePermissions.enabled .Values.master.persistence.enabled }}
+      - name: volume-permissions
+        image: {{ template "mariadb.volumePermissions.image" . }}
+        imagePullPolicy: {{ .Values.volumePermissions.image.pullPolicy | quote }}
+        command: ["chown", "-R", "{{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }}", "{{ .Values.master.persistence.mountPath }}"]
+        securityContext:
+          runAsUser: 0
+        resources: {{ toYaml .Values.volumePermissions.resources | nindent 10 }}
+        volumeMounts:
+        - name: data
+          mountPath: {{ .Values.master.persistence.mountPath }}
       {{- end }}
       containers:
       - name: "mariadb"
         image: {{ template "mariadb.image" . }}
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         env:
+        {{- if .Values.image.debug}}
+        - name: BITNAMI_DEBUG
+          value: "true"
+        {{- end }}
+        {{- if .Values.master.extraFlags }}
+        - name: MARIADB_EXTRA_FLAGS
+          value: "{{ .Values.master.extraFlags }}"
+        {{- end }}
         - name: MARIADB_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
+            {{- if .Values.existingSecret }}
+              name: {{ .Values.existingSecret }}
+            {{- else }}
               name: {{ template "mariadb.fullname" . }}
+            {{- end }}
               key: mariadb-root-password
         {{- if .Values.db.user }}
         - name: MARIADB_USER
@@ -95,7 +129,11 @@ spec:
         - name: MARIADB_PASSWORD
           valueFrom:
             secretKeyRef:
+            {{- if .Values.existingSecret }}
+              name: {{ .Values.existingSecret }}
+            {{- else }}
               name: {{ template "mariadb.fullname" . }}
+            {{- end }}
               key: mariadb-password
         {{- end }}
         - name: MARIADB_DATABASE
@@ -108,7 +146,11 @@ spec:
         - name: MARIADB_REPLICATION_PASSWORD
           valueFrom:
             secretKeyRef:
+            {{- if .Values.existingSecret }}
+              name: {{ .Values.existingSecret }}
+            {{- else }}
               name: {{ template "mariadb.fullname" . }}
+            {{- end }}
               key: mariadb-replication-password
         {{- end }}
         ports:
@@ -138,29 +180,32 @@ spec:
 {{ toYaml .Values.master.resources | indent 10 }}
         volumeMounts:
         - name: data
-          mountPath: /bitnami/mariadb
-        {{- if  (.Files.Glob "files/docker-entrypoint-initdb.d/*[sh|sql|sql.gz]") }}
+          mountPath: {{ .Values.master.persistence.mountPath }}
+          {{- if .Values.master.persistence.subPath }}
+          subPath: {{ .Values.master.persistence.subPath }}
+          {{- end }}
+        {{- if or (.Files.Glob "files/docker-entrypoint-initdb.d/*.{sh,sql,sql.gz}") .Values.initdbScriptsConfigMap .Values.initdbScripts }}
         - name: custom-init-scripts
           mountPath: /docker-entrypoint-initdb.d
         {{- end }}
-{{- if .Values.master.config }}
+        {{- if .Values.master.config }}
         - name: config
           mountPath: /opt/bitnami/mariadb/conf/my.cnf
           subPath: my.cnf
-{{- if .Values.master.persistence.existingClaim }}
-        - name: {{ .Values.master.persistence.existingClaim }}
-          mountPath: {{ .Values.master.persistence.mountPath }}
-{{- end }}
-{{- end }}
+       {{- end }}
 {{- if .Values.metrics.enabled }}
       - name: metrics
-        image: {{ template "metrics.image" . }}
+        image: {{ template "mariadb.metrics.image" . }}
         imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
         env:
         - name: MARIADB_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
+            {{- if .Values.existingSecret }}
+              name: {{ .Values.existingSecret }}
+            {{- else }}
               name: {{ template "mariadb.fullname" . }}
+            {{- end }}
               key: mariadb-root-password
         command: [ 'sh', '-c', 'DATA_SOURCE_NAME="root:$MARIADB_ROOT_PASSWORD@(localhost:3306)/" /bin/mysqld_exporter' ]
         ports:
@@ -182,22 +227,24 @@ spec:
 {{ toYaml .Values.metrics.resources | indent 10 }}
 {{- end }}
       volumes:
-        {{- if and .Values.master.persistence.enabled .Values.master.persistence.existingClaim }}
-        - name: {{ .Values.master.persistence.existingClaim }}
-          persistentVolumeClaim:
-            claimName: {{ .Values.master.persistence.existingClaim }}
-        {{ end }}
         {{- if .Values.master.config }}
         - name: config
           configMap:
             name: {{ template "master.fullname" . }}
         {{- end }}
-        {{- if  (.Files.Glob "files/docker-entrypoint-initdb.d/*[sh|sql|sql.gz]") }}
+        {{- if or (.Files.Glob "files/docker-entrypoint-initdb.d/*.{sh,sql,sql.gz}") .Values.initdbScriptsConfigMap .Values.initdbScripts }}
         - name: custom-init-scripts
           configMap:
-            name: {{ template "master.fullname" . }}-init-scripts
+            name: {{ template "mariadb.initdbScriptsCM" . }}
         {{- end }}
-{{- if .Values.master.persistence.enabled }}
+{{- if and .Values.master.persistence.enabled .Values.master.persistence.existingClaim }}
+        - name: data
+          persistentVolumeClaim:
+            claimName: {{ .Values.master.persistence.existingClaim }}
+{{- else if not .Values.master.persistence.enabled }}
+        - name: data
+          emptyDir: {}
+{{- else if and .Values.master.persistence.enabled (not .Values.master.persistence.existingClaim) }}
   volumeClaimTemplates:
     - metadata:
         name: data
@@ -214,14 +261,5 @@ spec:
         resources:
           requests:
             storage: {{ .Values.master.persistence.size | quote }}
-      {{- if .Values.master.persistence.storageClass }}
-      {{- if (eq "-" .Values.master.persistence.storageClass) }}
-        storageClassName: ""
-      {{- else }}
-        storageClassName: {{ .Values.master.persistence.storageClass | quote }}
-      {{- end }}
-      {{- end }}
-{{- else }}
-        - name: "data"
-          emptyDir: {}
+        {{ include "mariadb.master.storageClass" . }}
 {{- end }}

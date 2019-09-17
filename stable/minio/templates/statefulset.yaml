@@ -1,6 +1,24 @@
 {{- if eq .Values.mode "distributed" }}
 {{ $nodeCount := .Values.replicas | int }}
-apiVersion: apps/v1beta1
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "minio.fullname" . }}-svc
+  labels:
+    app: {{ template "minio.name" . }}
+    chart: {{ template "minio.chart" . }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  clusterIP: None
+  ports:
+    - name: service
+      port: {{ .Values.service.port }}
+      protocol: TCP
+  selector:
+    app: {{ template "minio.name" . }}
+---
+apiVersion: {{ template "minio.statefulset.apiVersion" . }}
 kind: StatefulSet
 metadata:
   name: {{ template "minio.fullname" . }}
@@ -10,7 +28,10 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  serviceName: {{ template "minio.fullname" . }}
+  updateStrategy:
+    type: {{ .Values.StatefulSetUpdate.updateStrategy }}
+  podManagementPolicy: "Parallel"
+  serviceName: {{ template "minio.fullname" . }}-svc
   replicas: {{ .Values.replicas }}
   selector:
     matchLabels:
@@ -22,32 +43,51 @@ spec:
       labels:
         app: {{ template "minio.name" . }}
         release: {{ .Release.Name }}
+{{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | indent 8 }}
+{{- end }}
+      annotations:
+        checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+{{- if .Values.podAnnotations }}{{ toYaml .Values.podAnnotations | indent 8 }}{{- end }}
     spec:
       {{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"
       {{- end }}
+      serviceAccountName: {{ include "minio.serviceAccountName" . | quote }}
       containers:
         - name: {{ .Chart.Name }}
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command: [ "/bin/sh", 
-          "-ce", 
-          "cp /tmp/config.json {{ .Values.configPath }} &&
-          /usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} server
+          {{- if .Values.tls.enabled }}
+          command: [ "/bin/sh",
+          "-ce",
+          "/usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} server
           {{- range $i := until $nodeCount }}
-          http://{{ template `minio.fullname` $ }}-{{ $i }}.{{ template `minio.fullname` $ }}.{{ $.Release.Namespace }}.svc.cluster.local{{ $.Values.mountPath }}
+          https://{{ template `minio.fullname` $ }}-{{ $i }}.{{ template `minio.fullname` $ }}-svc.{{ $.Release.Namespace }}.svc.{{ $.Values.clusterDomain }}{{ $.Values.mountPath }}
           {{- end }}" ]
+          {{ else }}
+          command: [ "/bin/sh",
+          "-ce",
+          "/usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} server
+          {{- range $i := until $nodeCount }}
+          http://{{ template `minio.fullname` $ }}-{{ $i }}.{{ template `minio.fullname` $ }}-svc.{{ $.Release.Namespace }}.svc.{{ $.Values.clusterDomain }}{{ $.Values.mountPath }}
+          {{- end }}" ]
+          {{ end }}
           volumeMounts:
+            {{- if .Values.persistence.enabled }}
             - name: export
               mountPath: {{ .Values.mountPath }}
               {{- if and .Values.persistence.enabled .Values.persistence.subPath }}
               subPath: "{{ .Values.persistence.subPath }}"
               {{- end }}
-            - name: minio-server-config
-              mountPath: "/tmp/config.json"
-              subPath: config.json
+            {{ end }}
             - name: minio-config-dir
               mountPath: {{ .Values.configPath }}
+            {{- if .Values.tls.enabled }}
+            - name: cert-secret-volume
+              mountPath: {{ .Values.configPath }}certs
+            {{ end }}
           ports:
             - name: service
               containerPort: 9000
@@ -62,18 +102,19 @@ spec:
                 secretKeyRef:
                   name: {{ if .Values.existingSecret }}{{ .Values.existingSecret }}{{ else }}{{ template "minio.fullname" . }}{{ end }}
                   key: secretkey
-            {{- if .Values.minioConfig.browser }}
-            - name: MINIO_BROWSER
-              value: {{ .Values.minioConfig.browser | quote }}
-            {{- end }}
-            {{- if .Values.minioConfig.domain }}
-            - name: MINIO_DOMAIN
-              value: {{ .Values.minioConfig.domain | quote }}
-            {{- end }}
+            {{- range $key, $val := .Values.environment }}
+            - name: {{ $key }}
+              value: {{ $val | quote }}
+            {{- end}}
           livenessProbe:
             httpGet:
               path: /minio/health/live
               port: service
+              {{- if .Values.tls.enabled }}
+              scheme: HTTPS
+              {{ else }}
+              scheme: HTTP
+              {{- end }}
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
@@ -97,11 +138,21 @@ spec:
         - name: minio-user
           secret:
             secretName: {{ if .Values.existingSecret }}{{ .Values.existingSecret }}{{ else }}{{ template "minio.fullname" . }}{{ end }}
-        - name: minio-server-config
-          configMap:
-            name: {{ template "minio.fullname" . }}
         - name: minio-config-dir
           emptyDir: {}
+        {{- if .Values.tls.enabled }}
+        - name: cert-secret-volume
+          secret:
+            secretName: {{ .Values.tls.certSecret }}
+            items:
+            - key: {{ .Values.tls.publicCrt }}
+              path: public.crt
+            - key: {{ .Values.tls.privateKey }}
+              path: private.key
+            - key: {{ .Values.tls.publicCrt }}
+              path: CAs/public.crt
+        {{ end }}
+{{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
     - metadata:
         name: export
@@ -113,4 +164,5 @@ spec:
         resources:
           requests:
             storage: {{ .Values.persistence.size }}
+{{ end }}
 {{- end }}

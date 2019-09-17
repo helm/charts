@@ -1,14 +1,52 @@
-{{- if .Values.configmap }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  name: {{ template "redis.fullname" . }}
   labels:
     app: {{ template "redis.name" . }}
     chart: {{ template "redis.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "redis.fullname" . }}
 data:
   redis.conf: |-
-{{ .Values.configmap | indent 4 }}
+{{- if .Values.configmap }}
+    # User-supplied configuration:
+{{ tpl .Values.configmap . | indent 4 }}
+{{- end }}
+  master.conf: |-
+    dir {{ .Values.master.persistence.path }}
+{{- if .Values.master.configmap }}
+    # User-supplied master configuration:
+{{ tpl .Values.master.configmap . | indent 4 }}
+{{- end }}
+{{- if .Values.master.disableCommands }}
+{{- range .Values.master.disableCommands }}
+    rename-command {{ . }} ""
+{{- end }}
+{{- end }}
+  replica.conf: |-
+    dir {{ .Values.slave.persistence.path }}
+    slave-read-only yes
+{{- if .Values.slave.configmap }}
+    # User-supplied slave configuration:
+{{ tpl .Values.slave.configmap . | indent 4 }}
+{{- end }}
+{{- if .Values.slave.disableCommands }}
+{{- range .Values.slave.disableCommands }}
+    rename-command {{ . }} ""
+{{- end }}
+{{- end }}
+{{- if .Values.sentinel.enabled }}
+  sentinel.conf: |-
+    dir "/tmp"
+    bind 0.0.0.0
+    port {{ .Values.sentinel.port }}
+    sentinel monitor {{ .Values.sentinel.masterSet }} {{ template "redis.fullname" . }}-master-0.{{ template "redis.fullname" . }}-headless.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }} {{ .Values.redisPort }} {{ .Values.sentinel.quorum }}
+    sentinel down-after-milliseconds {{ .Values.sentinel.masterSet }} {{ .Values.sentinel.downAfterMilliseconds }}
+    sentinel failover-timeout {{ .Values.sentinel.masterSet }} {{ .Values.sentinel.failoverTimeout }}
+    sentinel parallel-syncs {{ .Values.sentinel.masterSet }} {{ .Values.sentinel.parallelSyncs }}
+{{- if .Values.sentinel.configmap }}
+    # User-supplied sentinel configuration:
+{{ tpl .Values.sentinel.configmap . | indent 4 }}
+{{- end }}
 {{- end }}

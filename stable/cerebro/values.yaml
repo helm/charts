@@ -1,12 +1,18 @@
 replicaCount: 1
 revisionHistoryLimit: 3
+env:
+  # AUTH_TYPE: "basic"
+  # BASIC_AUTH_USER: "admin"
 
 image:
   repository: lmenezes/cerebro
   # Note: when updating the version, ensure `config` and the ConfigMap are kept
   # in sync with the default configuration of the upstream image
-  tag: 0.8.1
+  tag: 0.8.4
   pullPolicy: IfNotPresent
+
+deployment:
+  annotations: {}
 
 service:
   type: ClusterIP
@@ -19,6 +25,7 @@ ingress:
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
+  labels: {}
   path: /
   hosts:
     - chart-example.local
@@ -27,6 +34,11 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  runAsGroup: 1000
+
 resources: {}
 
 nodeSelector: {}
@@ -34,6 +46,9 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+# Reference to a Secret object with environment variables
+# envFromSecretRef: 'my-secret-ref'
 
 config:
   basePath: '/'

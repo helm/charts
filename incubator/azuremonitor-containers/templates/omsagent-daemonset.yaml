@@ -4,9 +4,10 @@ kind: DaemonSet
 metadata:
  name: omsagent
  namespace: kube-system
- chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
- release: {{ .Release.Name }}
- heritage: {{ .Release.Service }}
+ labels:
+   chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+   release: {{ .Release.Name }}
+   heritage: {{ .Release.Service }}
 spec:
  updateStrategy:
   type: RollingUpdate
@@ -17,6 +18,7 @@ spec:
    annotations:
     agentVersion: {{ .Values.omsagent.image.tag }}
     dockerProviderVersion: {{ .Values.omsagent.image.dockerProviderVersion }}
+    schema-versions: "v1"
   spec:
    {{- if .Values.omsagent.rbac }}
    serviceAccountName: omsagent
@@ -34,8 +36,8 @@ spec:
        env:
        - name: ACS_RESOURCE_NAME
          value: {{ .Values.omsagent.env.clusterName | quote }}
-       - name: DISABLE_KUBE_SYSTEM_LOG_COLLECTION
-         value: {{ .Values.omsagent.env.doNotCollectKubeSystemLogs | quote }}
+       - name: CONTROLLER_TYPE
+         value: "DaemonSet"
        - name: NODE_IP
          valueFrom:
             fieldRef:
@@ -48,21 +50,29 @@ spec:
        - containerPort: 25224
          protocol: UDP
        volumeMounts:
-        - mountPath: /var/run/docker.sock
+        - mountPath: /hostfs
+          name: host-root
+          readOnly: true
+        - mountPath: /var/run/host
           name: docker-sock
         - mountPath: /var/log
           name: host-log
         - mountPath: /var/lib/docker/containers
           name: containerlog-path
+        - mountPath: /etc/kubernetes/host
+          name: azure-json-path
         - mountPath: /etc/omsagent-secret
           name: omsagent-secret
+          readOnly: true
+        - mountPath: /etc/config/settings
+          name: settings-vol-config
           readOnly: true
        livenessProbe:
         exec:
          command:
          - /bin/bash
          - -c
-         - ps -ef | grep omsagent | grep -v "grep"
+         - "/opt/livenessprobe.sh"
         initialDelaySeconds: 60
         periodSeconds: 60
    nodeSelector:
@@ -74,9 +84,12 @@ spec:
       value: "true"
       effect: "NoSchedule"
    volumes:
+    - name: host-root
+      hostPath:
+       path: /
     - name: docker-sock
       hostPath:
-       path: /var/run/docker.sock
+       path: /var/run
     - name: container-hostname
       hostPath:
        path: /etc/hostname
@@ -86,7 +99,14 @@ spec:
     - name: containerlog-path
       hostPath:
        path: /var/lib/docker/containers
+    - name: azure-json-path
+      hostPath:
+       path: /etc/kubernetes
     - name: omsagent-secret
       secret:
        secretName: omsagent-secret
+    - name: settings-vol-config
+      configMap:
+        name: container-azm-ms-agentconfig
+        optional: true
 {{- end }}

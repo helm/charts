@@ -31,7 +31,7 @@ spec:
           - name: NEO4J_causal__clustering_discovery__type
             value: DNS
           - name: NEO4J_causal__clustering_initial__discovery__members
-            value: "{{ template "neo4j.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:5000"
+            value: "{{ template "neo4j.fullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}:5000"
           {{- if .Values.authEnabled }}
           - name: NEO4J_SECRETS_PASSWORD
             valueFrom:
@@ -66,12 +66,26 @@ spec:
         volumeMounts:
         - name: plugins
           mountPath: /plugins
+        resources:
+{{ toYaml .Values.readReplica.resources | indent 10 }}
 {{- if .Values.core.sidecarContainers }}
 {{ toYaml .Values.core.sidecarContainers | indent 6 }}
 {{- end }}
 {{- if .Values.readReplica.initContainers }}
       initContainers:
 {{ toYaml .Values.readReplica.initContainers | indent 6 }}
+{{- end }}
+{{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 6 }}
+{{- end }}
+{{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 6 }}
+{{- end }}
+{{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 6 }}
 {{- end }}
       volumes:
         - name: plugins

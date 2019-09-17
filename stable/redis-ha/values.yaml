@@ -1,54 +1,251 @@
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ##
-resources:
-  server:
-    requests:
-      memory: 200Mi
-      cpu: 100m
-    limits:
-      memory: 700Mi
-  sentinel:
-    requests:
-      memory: 200Mi
-      cpu: 100m
-    limits:
-      memory: 200Mi
+image:
+  repository: redis
+  tag: 5.0.5-alpine
+  pullPolicy: IfNotPresent
+## replicas number for each component
+replicas: 3
 
-## Node labels, tolerations, and affinities for pod assignment
+## Custom labels for the redis pod
+labels: {}
+
+## Pods Service Account
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
+serviceAccount:
+  ## Specifies whether a ServiceAccount should be created
+  ##
+  create: true
+  ## The name of the ServiceAccount to use.
+  ## If not set and create is true, a name is generated using the redis-ha.fullname template
+  # name:
+
+## Enables a HA Proxy for better LoadBalancing / Sentinel Master support. Automatically proxies to Redis master.
+## Recommend for externally exposed Redis clusters.
+## ref: https://cbonte.github.io/haproxy-dconv/1.9/intro.html
+haproxy:
+  enabled: false
+  # Enable if you want a dedicated port in haproxy for redis-slaves
+  readOnly:
+    enabled: false
+    port: 6380
+  replicas: 1
+  image:
+    repository: haproxy
+    tag: 2.0.4
+    pullPolicy: IfNotPresent
+  annotations: {}
+  resources: {}
+  ## Service type for HAProxy
+  ##
+  service:
+    type: ClusterIP
+    annotations: {}
+  serviceAccount:
+    create: true
+  ## Prometheus metric exporter for HAProxy.
+  ##
+  exporter:
+    image:
+      repository: quay.io/prometheus/haproxy-exporter
+      tag: v0.9.0
+    enabled: false
+    port: 9101
+  init:
+    resources: {}
+
+
+## Role Based Access
+## Ref: https://kubernetes.io/docs/admin/authorization/rbac/
+##
+rbac:
+  create: true
+
+sysctlImage:
+  enabled: false
+  command: []
+  registry: docker.io
+  repository: bitnami/minideb
+  tag: latest
+  pullPolicy: Always
+  mountHostSys: false
+
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName:
+
+## Redis specific configuration options
+redis:
+  port: 6379
+  masterGroupName: mymaster
+  config:
+    ## Additional redis conf options can be added below
+    ## For all available options see http://download.redis.io/redis-stable/redis.conf
+    min-replicas-to-write: 1
+    min-replicas-max-lag: 5   # Value in seconds
+    maxmemory: "0"       # Max memory to use for each redis instance. Default is unlimited.
+    maxmemory-policy: "volatile-lru"  # Max memory policy to use for each redis instance. Default is volatile-lru.
+    # Determines if scheduled RDB backups are created. Default is false.
+    # Please note that local (on-disk) RDBs will still be created when re-syncing with a new slave. The only way to prevent this is to enable diskless replication.
+    save: "900 1"
+    # When enabled, directly sends the RDB over the wire to slaves, without using the disk as intermediate storage. Default is false.
+    repl-diskless-sync: "yes"
+    rdbcompression: "yes"
+    rdbchecksum: "yes"
+
+
+  ## Custom redis.conf files used to override default settings. If this file is
+  ## specified then the redis.config above will be ignored.
+  # customConfig: |-
+      # Define configuration here
+
+  resources: {}
+  #  requests:
+  #    memory: 200Mi
+  #    cpu: 100m
+  #  limits:
+  #    memory: 700Mi
+
+## Sentinel specific configuration options
+sentinel:
+  port: 26379
+  quorum: 2
+  config:
+    ## Additional sentinel conf options can be added below. Only options that
+    ## are expressed in the format simialar to 'sentinel xxx mymaster xxx' will
+    ## be properly templated.
+    ## For available options see http://download.redis.io/redis-stable/sentinel.conf
+    down-after-milliseconds: 10000
+    ## Failover timeout value in milliseconds
+    failover-timeout: 180000
+    parallel-syncs: 5
+
+  ## Custom sentinel.conf files used to override default settings. If this file is
+  ## specified then the sentinel.config above will be ignored.
+  # customConfig: |-
+      # Define configuration here
+
+  resources: {}
+  #  requests:
+  #    memory: 200Mi
+  #    cpu: 100m
+  #  limits:
+  #    memory: 200Mi
+
+securityContext:
+  runAsUser: 1000
+  fsGroup: 1000
+  runAsNonRoot: true
+
+## Node labels, affinity, and tolerations for pod assignment
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
-podAntiAffinity:
-  sentinel: soft
-  server: soft
+nodeSelector: {}
 
-## Redis image version
-redis_image: quay.io/smile/redis:4.0.11-r1
-## replicas number for each component
-replicas:
-  servers: 3
-  sentinels: 3
-servers:
-  serviceType: ClusterIP  # [ClusterIP|LoadBalancer]
-  annotations: {}
+## Whether the Redis server pods should be forced to run on separate nodes.
+## This is accomplished by setting their AntiAffinity with requiredDuringSchedulingIgnoredDuringExecution as opposed to preferred.
+## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#inter-pod-affinity-and-anti-affinity-beta-feature
+##
+hardAntiAffinity: true
 
-rbac:
-  # Specifies whether RBAC resources should be created
-  create: true
+## Additional affinities to add to the Redis server pods.
+##
+## Example:
+##   nodeAffinity:
+##     preferredDuringSchedulingIgnoredDuringExecution:
+##       - weight: 50
+##         preference:
+##           matchExpressions:
+##             - key: spot
+##               operator: NotIn
+##               values:
+##                 - "true"
+##
+## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+##
+additionalAffinities: {}
 
-serviceAccount:
-  # Specifies whether a ServiceAccount should be created
-  create: true
-  # The name of the ServiceAccount to use.
-  # If not set and create is true, a name is generated using the fullname template
-  name:
+## Override all other affinity settings for the Redis server pods with a string.
+##
+## Example:
+## affinity: |
+##   podAntiAffinity:
+##     requiredDuringSchedulingIgnoredDuringExecution:
+##       - labelSelector:
+##           matchLabels:
+##             app: {{ template "redis-ha.name" . }}
+##             release: {{ .Release.Name }}
+##         topologyKey: kubernetes.io/hostname
+##     preferredDuringSchedulingIgnoredDuringExecution:
+##       - weight: 100
+##         podAffinityTerm:
+##           labelSelector:
+##             matchLabels:
+##               app:  {{ template "redis-ha.name" . }}
+##               release: {{ .Release.Name }}
+##           topologyKey: failure-domain.beta.kubernetes.io/zone
+##
+affinity: |
+
+# Prometheus exporter specific configuration options
+exporter:
+  enabled: false
+  image: oliver006/redis_exporter
+  tag: v0.31.0
+  pullPolicy: IfNotPresent
+
+  # prometheus port & scrape path
+  port: 9121
+  scrapePath: /metrics
+
+  # cpu/memory resource limits/requests
+  resources: {}
+
+  # Additional args for redis exporter
+  extraArgs: {}
+
+podDisruptionBudget: {}
+  # maxUnavailable: 1
+  # minAvailable: 1
 
 ## Configures redis with AUTH (requirepass & masterauth conf params)
 auth: false
+# redisPassword:
 
-## Redis password
-## Defaults to a random 10-character alphanumeric string if not set and auth is true
-## ref: https://github.com/kubernetes/charts/blob/master/stable/redis-ha/templates/redis-auth-secret.yaml
-##
-## redisPassword:
+## Use existing secret containing key `authKey` (ignores redisPassword)
+# existingSecret:
+
+## Defines the key holding the redis password in existing secret.
+authKey: auth
+
+persistentVolume:
+  enabled: true
+  ## redis-ha data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  # storageClass: "-"
+  accessModes:
+    - ReadWriteOnce
+  size: 10Gi
+  annotations: {}
+init:
+  resources: {}
+
+# To use a hostPath for data, set persistentVolume.enabled to false
+# and define hostPath.path.
+# Warning: this might overwrite existing folders on the host system!
+hostPath:
+  ## path is evaluated as template so placeholders are replaced
+  # path: "/data/{{ .Release.Name }}"
+
+  # if chown is true, an init-container with root permissions is launched to
+  # change the owner of the hostPath folder to the user defined in the
+  # security context
+  chown: true

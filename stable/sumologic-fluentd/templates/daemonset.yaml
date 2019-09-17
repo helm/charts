@@ -1,4 +1,4 @@
-{{- if .Values.sumologic.collectorUrl -}}
+{{- if (or (.Values.sumologic.collectorUrlExistingSecret) (.Values.sumologic.collectorUrl)) -}}
 # Sumologic collector URL is required
 apiVersion: extensions/v1beta1
 kind: DaemonSet
@@ -21,6 +21,9 @@ spec:
         app: {{ template "sumologic-fluentd.name" . }}
         release: {{ .Release.Name }}
     spec:
+      {{- if .Values.daemonset.priorityClassName }}
+      priorityClassName: {{ .Values.daemonset.priorityClassName }}
+      {{- end }}
       containers:
         - name: {{ template "sumologic-fluentd.fullname" . }}
           image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
@@ -52,15 +55,23 @@ spec:
               {{- else }}
             - name: fluentd-user-conf
               mountPath: /fluentd/conf.d/user
-              readOnly: true           
+              readOnly: true
               {{- end }}
             {{- end }}
           env:
             - name: COLLECTOR_URL
               valueFrom:
                 secretKeyRef:
-                  name: "{{ template "sumologic-fluentd.fullname-secrets" . }}"
+            {{- if .Values.sumologic.collectorUrlExistingSecret }}
+                  name: "{{ .Values.sumologic.collectorUrlExistingSecret }}"
+            {{- else }}
+                  name: "{{ template "sumologic-fluentd.fullname" . }}"
+            {{- end }}
                   key: collector-url
+            - name: K8S_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
             - name: FLUENTD_SOURCE
               value: {{ quote .Values.sumologic.fluentdSource }}
             {{- if .Values.sumologic.fluentdUserConfigDir }}
@@ -147,6 +158,14 @@ spec:
             - name: ADD_TIMESTAMP
               value: {{ quote .Values.sumologic.addTimeStamp }}
             {{- end }}
+            {{- if quote .Values.sumologic.addTime }}
+            - name: ADD_TIME
+              value: {{ quote .Values.sumologic.addTime }}
+            {{- end }}
+            {{- if quote .Values.sumologic.addStream }}
+            - name: ADD_STREAM
+              value: {{ quote .Values.sumologic.addStream }}
+            {{- end }}
             {{- if quote .Values.sumologic.verifySsl }}
             - name: VERIFY_SSL
               value: {{ quote .Values.sumologic.verifySsl }}
@@ -179,6 +198,9 @@ spec:
             - name: ENABLE_STAT_WATCHER
               value: {{ quote .Values.sumologic.enableStatWatcher }}
             {{- end }}
+{{- if .Values.extraEnv }}
+{{ toYaml .Values.extraEnv | indent 12 }}
+{{- end }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "sumologic-fluentd.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       volumes:
         - name: pos-files
@@ -207,7 +229,15 @@ spec:
         {{- end }}
     {{- if .Values.tolerations }}
       tolerations:
-{{ toYaml .Values.tolerations | indent 8 }}
+    {{ toYaml .Values.tolerations | indent 8 }}
+    {{- end }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+    {{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+    {{ if .Values.affinity }}
+      affinity:
+    {{ toYaml .Values.affinity | indent 8 }}
     {{- end }}
   updateStrategy:
     type: "{{ .Values.updateStrategy }}"

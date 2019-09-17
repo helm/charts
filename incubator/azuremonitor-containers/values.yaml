@@ -6,10 +6,10 @@
 ## ref: https://github.com/Microsoft/OMS-docker/tree/ci_feature_prod
 omsagent:
   image:
-    tag: "ciprod07312018"
+    tag: "ciprod07092019"
     pullPolicy: IfNotPresent
-    dockerProviderVersion: "2.0.0-4"
-    agentVersion: "1.6.0-163"
+    dockerProviderVersion: "6.0.0-0"
+    agentVersion: "1.10.0.1"
 ## To get your workspace id and key do the following
 ## You can create a Azure Loganalytics workspace from portal.azure.com and get its ID & PRIMARY KEY from 'Advanced Settings' tab in the Ux.
 
@@ -18,8 +18,7 @@ omsagent:
     key: <your_workspace_key>
   domain: opinsights.azure.com
   env:
-    clusterName: <your_cluster_name>
-    doNotCollectKubeSystemLogs: "true"
+    clusterName: <my_Acs-engine_k8s_cluster_RG_ResourceID>
     azureLogAnalyticsCloud: "AzureCloud"
   rbac: true
 
@@ -29,15 +28,15 @@ omsagent:
   resources:
     daemonset:
       requests:
-        cpu: 50m
-        memory: 200Mi
+        cpu: 75m
+        memory: 225Mi
       limits:
         cpu: 150m
-        memory: 750Mi
+        memory: 600Mi
     deployment:
       requests:
         cpu: 50m
-        memory: 100Mi
+        memory: 175Mi
       limits:
         cpu: 150m
         memory: 500Mi

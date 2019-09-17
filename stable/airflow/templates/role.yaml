@@ -1,0 +1,24 @@
+{{ if .Values.rbac.create }}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: Role
+metadata:
+  name: {{ template "airflow.fullname" . }}
+  labels:
+    app: {{ template "airflow.name" . }}
+    chart: {{ template "airflow.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+rules:
+- apiGroups: [""]
+  resources:
+  - pods
+  verbs: ["create", "get", "delete", "list", "watch"]
+- apiGroups: [""]
+  resources:
+  - "pods/log"
+  verbs: ["get", "list"]
+- apiGroups: [""]
+  resources:
+  - "pods/exec"
+  verbs: ["create", "get"]
+{{ end }}

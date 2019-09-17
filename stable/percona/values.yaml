@@ -1,3 +1,7 @@
+## percona image
+## ref: https://hub.docker.com/_/percona/
+image: "percona"
+
 ## percona image version
 ## ref: https://hub.docker.com/r/library/percona/tags/
 ##
@@ -26,6 +30,11 @@ imageTag: "5.7.17"
 ## ref: http://kubernetes.io/docs/user-guide/images/#updating-images
 ##
 imagePullPolicy: IfNotPresent
+
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName: "default-scheduler"
 
 ## Persist data to a persistent volume
 persistence:
@@ -59,3 +68,8 @@ nodeSelector: {}
 ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
 ##
 tolerations: []
+
+## Affinity labels for pod assignment
+## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+##
+affinity: {}

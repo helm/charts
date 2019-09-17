@@ -1,27 +1,43 @@
-{{- if not .Values.Master.CustomConfigMap }}
+{{- if not .Values.master.customConfigMap }}
 
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ template "jenkins.fullname" . }}
+  namespace: {{ template "jenkins.namespace" . }}
+  labels:
+    "app.kubernetes.io/name": '{{ template "jenkins.name" .}}'
+    "helm.sh/chart": "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    "app.kubernetes.io/managed-by": "{{ .Release.Service }}"
+    "app.kubernetes.io/instance": "{{ .Release.Name }}"
+    "app.kubernetes.io/component": "{{ .Values.master.componentName }}"
 data:
+{{- if .Values.master.enableXmlConfig }}
   config.xml: |-
     <?xml version='1.0' encoding='UTF-8'?>
     <hudson>
       <disabledAdministrativeMonitors/>
-      <version>{{ .Values.Master.ImageTag }}</version>
-      <numExecutors>0</numExecutors>
+{{- if .Values.master.imageTag }}
+      <version>{{ .Values.master.imageTag }}</version>
+{{- else }}
+      <version>{{ .Values.master.tag }}</version>
+{{- end }}
+      <numExecutors>{{ .Values.master.numExecutors }}</numExecutors>
       <mode>NORMAL</mode>
-      <useSecurity>{{ .Values.Master.UseSecurity }}</useSecurity>
-      <authorizationStrategy class="hudson.security.FullControlOnceLoggedInAuthorizationStrategy">
-        <denyAnonymousReadAccess>true</denyAnonymousReadAccess>
-      </authorizationStrategy>
-      <securityRealm class="hudson.security.LegacySecurityRealm"/>
+      <useSecurity>{{ .Values.master.useSecurity }}</useSecurity>
+{{ .Values.master.authorizationStrategy | indent 6 }}
+{{ .Values.master.securityRealm | indent 6 }}
       <disableRememberMe>false</disableRememberMe>
       <projectNamingStrategy class="jenkins.model.ProjectNamingStrategy$DefaultProjectNamingStrategy"/>
       <workspaceDir>${JENKINS_HOME}/workspace/${ITEM_FULLNAME}</workspaceDir>
       <buildsDir>${ITEM_ROOTDIR}/builds</buildsDir>
+{{- if .Values.master.enableRawHtmlMarkupFormatter }}
+      <markupFormatter class="hudson.markup.RawHtmlMarkupFormatter" plugin="antisamy-markup-formatter">
+        <disableSyntaxHighlighting>true</disableSyntaxHighlighting>
+      </markupFormatter>
+{{- else }}
       <markupFormatter class="hudson.markup.EscapedMarkupFormatter"/>
+{{- end }}
       <jdks/>
       <viewsTabBar class="hudson.views.DefaultViewsTabBar"/>
       <myViewsTabBar class="hudson.views.DefaultMyViewsTabBar"/>
@@ -29,23 +45,24 @@ data:
         <org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud plugin="kubernetes@{{ template "jenkins.kubernetes-version" . }}">
           <name>kubernetes</name>
           <templates>
-{{- if .Values.Agent.Enabled }}
+{{- if .Values.agent.enabled }}
             <org.csanchez.jenkins.plugins.kubernetes.PodTemplate>
               <inheritFrom></inheritFrom>
-              <name>default</name>
+              <name>{{ .Values.agent.podName }}</name>
               <instanceCap>2147483647</instanceCap>
-              <idleMinutes>0</idleMinutes>
-              <label>{{ .Release.Name }}-{{ .Values.Agent.Component }} {{ .Values.Agent.CustomJenkinsLabels  | join " " }}</label>
+              <idleMinutes>{{ .Values.agent.idleMinutes }}</idleMinutes>
+              <label>{{ .Release.Name }}-{{ .Values.agent.componentName }} {{ .Values.agent.customJenkinsLabels  | join " " }}</label>
+              <serviceAccount>{{ include "jenkins.serviceAccountAgentName" . }}</serviceAccount>
               <nodeSelector>
                 {{- $local := dict "first" true }}
-                {{- range $key, $value := .Values.Agent.NodeSelector }}
+                {{- range $key, $value := .Values.agent.nodeSelector }}
                   {{- if not $local.first }},{{- end }}
                   {{- $key }}={{ $value }}
                   {{- $_ := set $local "first" false }}
                 {{- end }}</nodeSelector>
                 <nodeUsageMode>NORMAL</nodeUsageMode>
               <volumes>
-{{- range $index, $volume := .Values.Agent.volumes }}
+{{- range $index, $volume := .Values.agent.volumes }}
                 <org.csanchez.jenkins.plugins.kubernetes.volumes.{{ $volume.type }}Volume>
 {{- range $key, $value := $volume }}{{- if not (eq $key "type") }}
                   <{{ $key }}>{{ $value }}</{{ $key }}>
@@ -55,68 +72,82 @@ data:
               </volumes>
               <containers>
                 <org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
-                  <name>jnlp</name>
-                  <image>{{ .Values.Agent.Image }}:{{ .Values.Agent.ImageTag }}</image>
-{{- if .Values.Agent.Privileged }}
+                  <name>{{ .Values.agent.sideContainerName }}</name>
+{{- if .Values.agent.imageTag }}
+                  <image>{{ .Values.agent.image }}:{{ .Values.agent.imageTag }}</image>
+{{- else }}
+                  <image>{{ .Values.agent.image }}:{{ .Values.agent.tag }}</image>
+{{- end }}
+{{- if .Values.agent.privileged }}
                   <privileged>true</privileged>
 {{- else }}
                   <privileged>false</privileged>
 {{- end }}
-                  <alwaysPullImage>{{ .Values.Agent.AlwaysPullImage }}</alwaysPullImage>
+                  <alwaysPullImage>{{ .Values.agent.alwaysPullImage }}</alwaysPullImage>
                   <workingDir>/home/jenkins</workingDir>
-                  <command></command>
+                  <command>{{ .Values.agent.command }}</command>
+{{- if .Values.agent.args }}
+                  <args>{{ .Values.agent.args }}</args>
+{{- else }}
                   <args>${computer.jnlpmac} ${computer.name}</args>
-                  <ttyEnabled>false</ttyEnabled>
+{{- end }}
+                  <ttyEnabled>{{ .Values.agent.TTYEnabled }}</ttyEnabled>
                   # Resources configuration is a little hacky. This was to prevent breaking
                   # changes, and should be cleanned up in the future once everybody had
                   # enough time to migrate.
-                  <resourceRequestCpu>{{.Values.Agent.Cpu | default .Values.Agent.resources.requests.cpu}}</resourceRequestCpu>
-                  <resourceRequestMemory>{{.Values.Agent.Memory | default .Values.Agent.resources.requests.memory}}</resourceRequestMemory>
-                  <resourceLimitCpu>{{.Values.Agent.Cpu | default .Values.Agent.resources.limits.cpu}}</resourceLimitCpu>
-                  <resourceLimitMemory>{{.Values.Agent.Memory | default .Values.Agent.resources.limits.memory}}</resourceLimitMemory>
+                  <resourceRequestCpu>{{.Values.agent.resources.requests.cpu}}</resourceRequestCpu>
+                  <resourceRequestMemory>{{.Values.agent.resources.requests.memory}}</resourceRequestMemory>
+                  <resourceLimitCpu>{{.Values.agent.resources.limits.cpu}}</resourceLimitCpu>
+                  <resourceLimitMemory>{{.Values.agent.resources.limits.memory}}</resourceLimitMemory>
                   <envVars>
                     <org.csanchez.jenkins.plugins.kubernetes.ContainerEnvVar>
                       <key>JENKINS_URL</key>
-{{- if .Values.Master.SlaveKubernetesNamespace }}
-                      <value>http://{{ template "jenkins.fullname" . }}.{{.Release.Namespace}}:{{.Values.Master.ServicePort}}{{ default "" .Values.Master.JenkinsUriPrefix }}</value>
-{{- else }}
-                      <value>http://{{ template "jenkins.fullname" . }}:{{.Values.Master.ServicePort}}{{ default "" .Values.Master.JenkinsUriPrefix }}</value>
-{{- end }}
+                      <value>http://{{ template "jenkins.fullname" . }}.{{ template "jenkins.namespace" . }}.svc.{{.Values.clusterZone}}:{{.Values.master.servicePort}}{{ default "" .Values.master.jenkinsUriPrefix }}</value>
                     </org.csanchez.jenkins.plugins.kubernetes.ContainerEnvVar>
                   </envVars>
                 </org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
               </containers>
-              <envVars/>
+              <envVars>
+{{- range $index, $var := .Values.agent.envVars }}
+                <org.csanchez.jenkins.plugins.kubernetes.PodEnvVar>
+                  <key>{{ $var.name }}</key>
+                  <value>{{ $var.value }}</value>
+                </org.csanchez.jenkins.plugins.kubernetes.PodEnvVar>
+{{- end }}
+              </envVars>
               <annotations/>
-{{- if .Values.Agent.ImagePullSecret }}
+{{- if .Values.agent.imagePullSecretName }}
               <imagePullSecrets>
                 <org.csanchez.jenkins.plugins.kubernetes.PodImagePullSecret>
-                  <name>{{ .Values.Agent.ImagePullSecret }}</name>
+                  <name>{{ .Values.agent.imagePullSecretName }}</name>
                 </org.csanchez.jenkins.plugins.kubernetes.PodImagePullSecret>
               </imagePullSecrets>
 {{- else }}
               <imagePullSecrets/>
 {{- end }}
               <nodeProperties/>
+{{- if .Values.agent.yamlTemplate }}
+              <yaml>{{ tpl .Values.agent.yamlTemplate . | html | indent 4 | trim }}</yaml>
+{{- end }}
               <podRetention class="org.csanchez.jenkins.plugins.kubernetes.pod.retention.Default"/>
             </org.csanchez.jenkins.plugins.kubernetes.PodTemplate>
 {{- end -}}
           </templates>
           <serverUrl>https://kubernetes.default</serverUrl>
           <skipTlsVerify>false</skipTlsVerify>
-          <namespace>{{ default .Release.Namespace .Values.Master.SlaveKubernetesNamespace }}</namespace>
-{{- if .Values.Master.SlaveKubernetesNamespace }}
-          <jenkinsUrl>http://{{ template "jenkins.fullname" . }}.{{.Release.Namespace}}:{{.Values.Master.ServicePort}}{{ default "" .Values.Master.JenkinsUriPrefix }}</jenkinsUrl>
-          <jenkinsTunnel>{{ template "jenkins.fullname" . }}-agent.{{.Release.Namespace}}:{{ .Values.Master.SlaveListenerPort }}</jenkinsTunnel>
+          <namespace>{{ template "jenkins.master.slaveKubernetesNamespace" . }}</namespace>
+{{- if .Values.master.slaveKubernetesNamespace }}
+          <jenkinsUrl>http://{{ template "jenkins.fullname" . }}.{{ template "jenkins.namespace" . }}:{{.Values.master.servicePort}}{{ default "" .Values.master.jenkinsUriPrefix }}</jenkinsUrl>
+          <jenkinsTunnel>{{ template "jenkins.fullname" . }}-agent.{{ template "jenkins.namespace" . }}:{{ .Values.master.slaveListenerPort }}</jenkinsTunnel>
 {{- else }}
-          <jenkinsUrl>http://{{ template "jenkins.fullname" . }}:{{.Values.Master.ServicePort}}{{ default "" .Values.Master.JenkinsUriPrefix }}</jenkinsUrl>
-          <jenkinsTunnel>{{ template "jenkins.fullname" . }}-agent:{{ .Values.Master.SlaveListenerPort }}</jenkinsTunnel>
+          <jenkinsUrl>http://{{ template "jenkins.fullname" . }}:{{.Values.master.servicePort}}{{ default "" .Values.master.jenkinsUriPrefix }}</jenkinsUrl>
+          <jenkinsTunnel>{{ template "jenkins.fullname" . }}-agent:{{ .Values.master.slaveListenerPort }}</jenkinsTunnel>
 {{- end }}
-          <containerCap>10</containerCap>
+          <containerCap>{{ .Values.agent.containerCap }}</containerCap>
           <retentionTimeout>5</retentionTimeout>
           <connectTimeout>0</connectTimeout>
           <readTimeout>0</readTimeout>
-          <podRetention class="org.csanchez.jenkins.plugins.kubernetes.pod.retention.{{ .Values.Agent.PodRetention }}"/>
+          <podRetention class="org.csanchez.jenkins.plugins.kubernetes.pod.retention.{{ .Values.agent.podRetention }}"/>
         </org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud>
       </clouds>
       <quietPeriod>5</quietPeriod>
@@ -131,16 +162,16 @@ data:
         </hudson.model.AllView>
       </views>
       <primaryView>All</primaryView>
-      <slaveAgentPort>{{ .Values.Master.SlaveListenerPort }}</slaveAgentPort>
+      <slaveAgentPort>{{ .Values.master.slaveListenerPort }}</slaveAgentPort>
       <disabledAgentProtocols>
-{{- range .Values.Master.DisabledAgentProtocols }}
+{{- range .Values.master.disabledAgentProtocols }}
         <string>{{ . }}</string>
 {{- end }}
       </disabledAgentProtocols>
-      <label></label>
-{{- if .Values.Master.CSRF.DefaultCrumbIssuer.Enabled }}
+      <label>{{ .Values.master.customJenkinsLabels | join " " }}</label>
+{{- if .Values.master.csrf.defaultCrumbIssuer.enabled }}
       <crumbIssuer class="hudson.security.csrf.DefaultCrumbIssuer">
-{{- if .Values.Master.CSRF.DefaultCrumbIssuer.ProxyCompatability }}
+{{- if .Values.master.csrf.defaultCrumbIssuer.proxyCompatability }}
         <excludeClientIPFromCrumb>true</excludeClientIPFromCrumb>
 {{- end }}
       </crumbIssuer>
@@ -149,13 +180,13 @@ data:
       <globalNodeProperties/>
       <noUsageStatistics>true</noUsageStatistics>
     </hudson>
-{{- if .Values.Master.ScriptApproval }}
+{{- if .Values.master.scriptApproval }}
   scriptapproval.xml: |-
     <?xml version='1.0' encoding='UTF-8'?>
     <scriptApproval plugin="script-security@1.27">
       <approvedScriptHashes/>
       <approvedSignatures>
-{{- range $key, $val := .Values.Master.ScriptApproval }}
+{{- range $key, $val := .Values.master.scriptApproval }}
         <string>{{ $val }}</string>
 {{- end }}
       </approvedSignatures>
@@ -169,75 +200,148 @@ data:
   jenkins.model.JenkinsLocationConfiguration.xml: |-
     <?xml version='1.1' encoding='UTF-8'?>
     <jenkins.model.JenkinsLocationConfiguration>
-      <adminAddress>{{ default "" .Values.Master.JenkinsAdminEmail }}</adminAddress>
-{{- if .Values.Master.HostName }}
-{{- if .Values.Master.Ingress.TLS }}
-      <jenkinsUrl>https://{{ .Values.Master.HostName }}{{ default "" .Values.Master.JenkinsUriPrefix }}</jenkinsUrl>
-{{- else }}
-      <jenkinsUrl>http://{{ .Values.Master.HostName }}{{ default "" .Values.Master.JenkinsUriPrefix }}</jenkinsUrl>
-{{- end }}
-{{- else }}
-      <jenkinsUrl>http://{{ template "jenkins.fullname" . }}:{{.Values.Master.ServicePort}}{{ default "" .Values.Master.JenkinsUriPrefix }}</jenkinsUrl>
-{{- end}}
+      <adminAddress>{{ default "" .Values.master.jenkinsAdminEmail }}</adminAddress>
+      <jenkinsUrl>{{ template "jenkins.url" . }}</jenkinsUrl>
     </jenkins.model.JenkinsLocationConfiguration>
   jenkins.CLI.xml: |-
     <?xml version='1.1' encoding='UTF-8'?>
     <jenkins.CLI>
-{{- if .Values.Master.CLI }}
+{{- if .Values.master.cli }}
       <enabled>true</enabled>
 {{- else }}
       <enabled>false</enabled>
 {{- end }}
     </jenkins.CLI>
+{{- end }}
   apply_config.sh: |-
     mkdir -p /usr/share/jenkins/ref/secrets/;
+{{- if .Values.master.enableXmlConfig }}
     echo "false" > /usr/share/jenkins/ref/secrets/slave-to-master-security-kill-switch;
-{{- if .Values.Master.OverwriteConfig }}
+{{- if .Values.master.overwriteConfig }}
     cp /var/jenkins_config/config.xml /var/jenkins_home;
     cp /var/jenkins_config/jenkins.CLI.xml /var/jenkins_home;
     cp /var/jenkins_config/jenkins.model.JenkinsLocationConfiguration.xml /var/jenkins_home;
+  {{- if .Values.master.additionalConfig }}
+  {{- range $key, $val := .Values.master.additionalConfig }}
+    cp /var/jenkins_config/{{- $key }} /var/jenkins_home;
+  {{- end }}
+  {{- end }}
 {{- else }}
-    cp --no-clobber /var/jenkins_config/config.xml /var/jenkins_home;
-    cp --no-clobber /var/jenkins_config/jenkins.CLI.xml /var/jenkins_home;
-    cp --no-clobber /var/jenkins_config/jenkins.model.JenkinsLocationConfiguration.xml /var/jenkins_home;
+    yes n | cp -i /var/jenkins_config/config.xml /var/jenkins_home;
+    yes n | cp -i /var/jenkins_config/jenkins.CLI.xml /var/jenkins_home;
+    yes n | cp -i /var/jenkins_config/jenkins.model.JenkinsLocationConfiguration.xml /var/jenkins_home;
+  {{- if .Values.master.additionalConfig }}
+  {{- range $key, $val := .Values.master.additionalConfig }}
+    yes n | cp -i /var/jenkins_config/{{- $key }} /var/jenkins_home;
+  {{- end }}
+  {{- end }}
 {{- end }}
-{{- if .Values.Master.InstallPlugins }}
+{{- end }}
+{{- if .Values.master.overwritePlugins }}
+    # remove all plugins from shared volume
+    rm -rf /var/jenkins_home/plugins/*
+{{- end }}
+{{- if .Values.master.installPlugins }}
     # Install missing plugins
     cp /var/jenkins_config/plugins.txt /var/jenkins_home;
     rm -rf /usr/share/jenkins/ref/plugins/*.lock
     /usr/local/bin/install-plugins.sh `echo $(cat /var/jenkins_home/plugins.txt)`;
     # Copy plugins to shared volume
-    cp -n /usr/share/jenkins/ref/plugins/* /var/jenkins_plugins;
+    yes n | cp -i /usr/share/jenkins/ref/plugins/* /var/jenkins_plugins/;
 {{- end }}
-{{- if .Values.Master.ScriptApproval }}
-    cp -n /var/jenkins_config/scriptapproval.xml /var/jenkins_home/scriptApproval.xml;
+{{- if .Values.master.scriptApproval }}
+    yes n | cp -i /var/jenkins_config/scriptapproval.xml /var/jenkins_home/scriptApproval.xml;
 {{- end }}
-{{- if .Values.Master.InitScripts }}
+{{- if and (.Values.master.JCasC.enabled) (.Values.master.sidecars.configAutoReload.enabled) }}
+  {{- if not .Values.master.initScripts }}
     mkdir -p /var/jenkins_home/init.groovy.d/;
-    cp -n /var/jenkins_config/*.groovy /var/jenkins_home/init.groovy.d/
+    yes n | cp -i /var/jenkins_config/*.groovy /var/jenkins_home/init.groovy.d/;
+  {{- end }}
 {{- end }}
-{{- if .Values.Master.CredentialsXmlSecret }}
-    cp -n /var/jenkins_credentials/credentials.xml /var/jenkins_home;
+{{- if .Values.master.initScripts }}
+    mkdir -p /var/jenkins_home/init.groovy.d/;
+    {{- if .Values.master.overwriteConfig }}
+    rm -f /var/jenkins_home/init.groovy.d/*.groovy
+    {{- end }}
+    yes n | cp -i /var/jenkins_config/*.groovy /var/jenkins_home/init.groovy.d/;
 {{- end }}
-{{- if .Values.Master.SecretsFilesSecret }}
-    cp -n /var/jenkins_secrets/* /usr/share/jenkins/ref/secrets;
+{{- if .Values.master.JCasC.enabled }}
+  {{- if .Values.master.sidecars.configAutoReload.enabled }}
+    bash -c 'ssh-keygen -y -f <(echo "${ADMIN_PRIVATE_KEY}") > /var/jenkins_home/key.pub'
+  {{- else }}
+    mkdir -p /var/jenkins_home/casc_configs;
+    rm -rf /var/jenkins_home/casc_configs/*
+    cp -v /var/jenkins_config/*.yaml /var/jenkins_home/casc_configs
+  {{- end }}
 {{- end }}
-{{- if .Values.Master.Jobs }}
+{{- if .Values.master.enableXmlConfig }}
+{{- if .Values.master.credentialsXmlSecret }}
+    yes n | cp -i /var/jenkins_credentials/credentials.xml /var/jenkins_home;
+{{- end }}
+{{- if .Values.master.jobs }}
     for job in $(ls /var/jenkins_jobs); do
       mkdir -p /var/jenkins_home/jobs/$job
-      cp -n /var/jenkins_jobs/$job /var/jenkins_home/jobs/$job/config.xml
+      yes {{ if not .Values.master.overwriteJobs }}n{{ end }} | cp -i /var/jenkins_jobs/$job /var/jenkins_home/jobs/$job/config.xml
     done
 {{- end }}
-{{- range $key, $val := .Values.Master.InitScripts }}
+{{- end }}
+{{- if .Values.master.secretsFilesSecret }}
+    yes n | cp -i /var/jenkins_secrets/* /usr/share/jenkins/ref/secrets/;
+{{- end }}
+{{- range $key, $val := .Values.master.initScripts }}
   init{{ $key }}.groovy: |-
 {{ $val | indent 4 }}
 {{- end }}
+{{- if .Values.master.JCasC.enabled }}
+  {{- if .Values.master.sidecars.configAutoReload.enabled }}
+  init-add-ssh-key-to-admin.groovy: |-
+    import jenkins.security.*
+    import hudson.model.User
+    import jenkins.model.Jenkins
+    User user = User.get("{{ .Values.master.adminUser | default "admin" }}", false)
+    if (user == null) {
+      System.err.println("ERROR: user '{{ .Values.master.adminUser | default "admin" }}' not found! Can't configure SSH key which is needed to reload JCasC config!")
+    } else {
+      String sshKeyString = new File('/var/jenkins_home/key.pub').text
+      keys_param = new org.jenkinsci.main.modules.cli.auth.ssh.UserPropertyImpl(sshKeyString)
+      user.addProperty(keys_param)
+      def inst = Jenkins.getInstance()
+      def sshDesc = inst.getDescriptor("org.jenkinsci.main.modules.sshd.SSHD")
+      sshDesc.setPort({{ .Values.master.sidecars.configAutoReload.sshTcpPort | default 1044 }})
+      sshDesc.getActualPort()
+      sshDesc.save()
+    }
+  {{- else }}
+# Only add config to this script if we aren't auto-reloading otherwise the pod will restart upon each config change:
+{{- if .Values.master.JCasC.defaultConfig }}
+  jcasc-default-config.yaml: |-
+    {{- include "jenkins.casc.defaults" . |nindent 4}}
+{{- end }}
+{{- range $key, $val := .Values.master.JCasC.configScripts }}
+  {{ $key }}.yaml: |-
+{{ tpl $val $| indent 4 }}
+{{- end }}
+{{- end }}
+{{- end }}
   plugins.txt: |-
-{{- if .Values.Master.InstallPlugins }}
-{{- range $index, $val := .Values.Master.InstallPlugins }}
+{{- if .Values.master.installPlugins }}
+{{- range $index, $val := .Values.master.installPlugins }}
 {{ $val | indent 4 }}
+{{- end }}
+{{- if .Values.master.JCasC.enabled }}
+  {{- if not (contains "configuration-as-code" (quote .Values.master.installPlugins)) }}
+    configuration-as-code:{{ .Values.master.JCasC.pluginVersion }}
+  {{- end }}
+  {{- if semverCompare "<=1.19" (printf "%v" .Values.master.JCasC.pluginVersion) }}
+    {{- if not (contains "configuration-as-code-support" (quote .Values.master.installPlugins)) }}
+    configuration-as-code-support:{{ .Values.master.JCasC.supportPluginVersion }}
+    {{- end }}
+  {{- end }}
 {{- end }}
 {{- end }}
 {{ else }}
 {{ include "override_config_map" . }}
 {{- end -}}
+{{- if .Values.master.additionalConfig }}
+{{- toYaml .Values.master.additionalConfig | indent 2 }}
+{{- end }}

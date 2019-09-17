@@ -36,14 +36,42 @@ data:
 
     echo "No configuration found in cruise-config.xml. Using default preconfigure_server scripts to configure server" >> /godata/logs/preconfigure.log
 
+    echo "Trying to configure cluster profile." >> /godata/logs/preconfigure.log
+
+    (curl --fail -i 'http://localhost:8153/go/api/admin/elastic/cluster_profiles' \
+      -H'Accept: application/vnd.go.cd.v1+json'  \
+      -H 'Content-Type: application/json' \
+      -X POST -d '{
+        "id": "k8-cluster-profile",
+        "plugin_id": "cd.go.contrib.elasticagent.kubernetes",
+        "properties": [
+              {
+                "key": "go_server_url",
+                "value": "https://{{ template "gocd.fullname" . }}-server:{{ .Values.server.service.httpsPort }}/go"
+            },
+            {
+                "key": "kubernetes_cluster_url",
+                "value": "https://'$KUBERNETES_SERVICE_HOST':'$KUBERNETES_SERVICE_PORT_HTTPS'"
+              },
+              {
+                "key": "namespace",
+                "value": "{{ .Release.Namespace }}"
+              },
+              {
+                "key": "security_token",
+                "value": "'$KUBE_TOKEN'"
+              }
+          ]
+      }' >> /godata/logs/preconfigure.log)
+
     echo "Trying to create an elastic profile now." >> /godata/logs/preconfigure.log
 
     (curl --fail -i 'http://localhost:8153/go/api/elastic/profiles' \
-      -H 'Accept: application/vnd.go.cd.v1+json' \
+      -H 'Accept: application/vnd.go.cd.v2+json' \
       -H 'Content-Type: application/json' \
       -X POST -d '{
         "id": "demo-app",
-        "plugin_id": "cd.go.contrib.elasticagent.kubernetes",
+        "cluster_profile_id": "k8-cluster-profile",
         "properties": [
           {
             "key": "Image",
@@ -51,11 +79,11 @@ data:
           },
           {
             "key": "PodConfiguration",
-            "value": "apiVersion: v1\nkind: Pod\nmetadata:\n  name: pod-name-prefix-{\{ POD_POSTFIX }\}\n  labels:\n    app: web\nspec:\n  containers:\n    - name: gocd-agent-container-{\{ CONTAINER_POSTFIX }\}\n      image: {\{ GOCD_AGENT_IMAGE }\}:{\{ LATEST_VERSION }\}\n      securityContext:\n        privileged: true"
+            "value": "apiVersion: v1\nkind: Pod\nmetadata:\n  name: gocd-agent-{{ `{{ POD_POSTFIX }}` }}\n  labels:\n    app: web\nspec:\n  serviceAccountName: {{ template "gocd.agentServiceAccountName" . }}\n  containers:\n    - name: gocd-agent-container-{{ `{{ CONTAINER_POSTFIX }}` }}\n      image: gocd/gocd-agent-docker-dind:v{{ .Chart.AppVersion }}\n      securityContext:\n        privileged: true"
           },
           {
-            "key": "SpecifiedUsingPodConfiguration",
-            "value": "false"
+            "key": "PodSpecType",
+            "value": "yaml"
           },
           {
             "key": "Privileged",
@@ -64,42 +92,15 @@ data:
         ]
       }' >> /godata/logs/preconfigure.log)
 
-    echo "Trying to configure plugin settings." >> /godata/logs/preconfigure.log
-
-    (curl --fail -i 'http://localhost:8153/go/api/admin/plugin_settings' \
-      -H 'Accept: application/vnd.go.cd.v1+json' \
-      -H 'Content-Type: application/json' \
-      -X POST -d '{
-        "plugin_id": "cd.go.contrib.elasticagent.kubernetes",
-        "configuration": [
-          {
-            "key": "go_server_url",
-            "value": "https://{{ template "gocd.fullname" . }}-server:{{ .Values.server.service.httpsPort }}/go"
-          },
-          {
-            "key": "kubernetes_cluster_url",
-            "value": "https://'$KUBERNETES_SERVICE_HOST':'$KUBERNETES_SERVICE_PORT_HTTPS'"
-          },
-          {
-            "key": "namespace",
-            "value": "{{ .Release.Namespace }}"
-          },
-          {
-            "key": "security_token",
-            "value": "'$KUBE_TOKEN'"
-          }
-        ]
-      }' >> /godata/logs/preconfigure.log)
-
     echo "Trying to creating a hello world pipeline." >> /godata/logs/preconfigure.log
 
     (curl --fail -i 'http://localhost:8153/go/api/admin/pipelines' \
-      -H 'Accept: application/vnd.go.cd.v5+json' \
+      -H 'Accept: application/vnd.go.cd.v8+json' \
       -H 'Content-Type: application/json' \
       -X POST -d '{ "group": "sample",
                     "pipeline": {
                       "label_template": "${COUNT}",
-                      "name": "hello_world",
+                      "name": "getting_started_pipeline",
                       "materials": [
                         {
                           "type": "git",
@@ -120,11 +121,20 @@ data:
                                 {
                                   "type": "exec",
                                   "attributes": {
-                                    "command": "echo",
-                                    "arguments": [
-                                      "Hello World"
-                                    ]
+                                    "command": "./build"
                                   }
+                                }
+                              ],
+                              "tabs": [
+                                {
+                                  "name": "Sample",
+                                  "path": "my-artifact.html"
+                                }
+                              ],
+                              "artifacts": [
+                                {
+                                  "type": "build",
+                                  "source": "my-artifact.html"
                                 }
                               ]
                             }

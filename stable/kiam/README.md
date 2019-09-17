@@ -17,7 +17,8 @@ This chart bootstraps a [kiam](https://github.com/uswitch/kiam) deployment on a 
 
 ## Installing the Chart
 
-In order for the chart to configure kiam correctly during the installation process you should have created and installed TLS certificates and private keys as described [here](https://github.com/uswitch/kiam/blob/master/docs/TLS.md).
+The chart generates a self signed TLS certificate by default.
+If you want to create and install your own, you can create TLS certificates and private keys as described [here](https://github.com/uswitch/kiam/blob/master/docs/TLS.md).
 
 > **Tip**: The `hosts` field in the kiam server certificate should include the value _release-name_-server:_server-service-port_, e.g. `my-release-server:443`
 
@@ -26,7 +27,7 @@ In order for the chart to configure kiam correctly during the installation proce
 {"level":"warning","msg":"error finding role for pod: rpc error: code = Unavailable desc = there is no connection available","pod.ip":"100.120.0.2","time":"2018-05-24T04:11:25Z"}
 ```
 
-Define values `agent.tlsFiles.ca`, `agent.tlsFiles.cert`, `agent.tlsFiles.key`, `server.tlsFiles.ca`, `server.tlsFiles.cert` and `agent.tlsFiles.key` to be the base64-encoded contents (.e.g. using the `base64` command) of the generated PEM files.
+Define values `agent.tlsFiles.ca`, `agent.tlsFiles.cert`, `agent.tlsFiles.key`, `server.tlsFiles.ca`, `server.tlsFiles.cert` and `server.tlsFiles.key` to be the base64-encoded contents (.e.g. using the `base64` command) of the generated PEM files.
 For example
 
 ```yaml
@@ -41,6 +42,30 @@ server:
     key: LS0tL...
     cert: LS0tL...
     ca: LS0tL...
+```
+
+Define secret name values `agent.tlsSecret` and `server.tlsSecret` if TLS certificates secrets have already created instead of `tlsFiles`.
+
+```yaml
+agent:
+  tlsSecret: kiam-agent-tls
+
+server:
+  tlsSecret: kiam-server-tls
+```
+Define TLS certificate names to use in kiam command line arguments as follows.
+```yaml
+agent:
+  tlsCerts:
+    certFileName: cert
+    keyFileName: key
+    caFileName: ca
+
+server:
+  tlsCerts:
+    certFileName: cert
+    keyFileName: key
+    caFileName: ca
 ```
 
 To install the chart with the release name `my-release`:
@@ -70,9 +95,10 @@ Parameter | Description | Default
 `agent.enabled` | If true, create agent | `true`
 `agent.name` | Agent container name | `agent`
 `agent.image.repository` | Agent image | `quay.io/uswitch/kiam`
-`agent.image.tag` | Agent image tag | `v2.8`
+`agent.image.tag` | Agent image tag | `v3.3`
 `agent.image.pullPolicy` | Agent image pull policy | `IfNotPresent`
 `agent.dnsPolicy` | Agent pod DNS policy | `ClusterFirstWithHostNet`
+`agent.whiteListRouteRegexp` | Agent pod whitelist metadata API path argument regex  | `{}`
 `agent.extraArgs` | Additional agent container arguments | `{}`
 `agent.extraEnv` | Additional agent container environment variables | `{}`
 `agent.extraHostPathMounts` | Additional agent container hostPath mounts | `[]`
@@ -89,17 +115,22 @@ Parameter | Description | Default
 `agent.prometheus.syncInterval` | Agent Prometheus synchronization interval | `5s`
 `agent.podAnnotations` | Annotations to be added to agent pods | `{}`
 `agent.podLabels` | Labels to be added to agent pods | `{}`
+`agent.priorityClassName` | Agent pods priority class name | `""`
 `agent.resources` | Agent container resources | `{}`
+`agent.serviceAnnotations` | Annotations to be added to agent service | `{}`
+`agent.serviceLabels` | Labels to be added to agent service | `{}`
+`agent.tlsSecret` | Secret name for the agent's TLS certificates | `null`
 `agent.tlsFiles.ca` | Base64 encoded string for the agent's CA certificate(s) | `null`
 `agent.tlsFiles.cert` | Base64 encoded strings for the agent's certificate | `null`
 `agent.tlsFiles.key` | Base64 encoded strings for the agent's private key | `null`
 `agent.tolerations` | Tolerations to be applied to agent pods | `[]`
+`agent.affinity` | Node affinity for pod assignment | `{}`
 `agent.updateStrategy` | Strategy for agent DaemonSet updates (requires Kubernetes 1.6+) | `OnDelete`
 `server.enabled` | If true, create server | `true`
 `server.name` | Server container name | `server`
 `server.gatewayTimeoutCreation` | Server's timeout when creating the kiam gateway | `50ms`
 `server.image.repository` | Server image | `quay.io/uswitch/kiam`
-`server.image.tag` | Server image tag | `v2.8`
+`server.image.tag` | Server image tag | `v3.3`
 `server.image.pullPolicy` | Server image pull policy | `Always`
 `server.assumeRoleArn` | IAM role for the server to assume before processing requests | `null`
 `server.cache.syncInterval` | Pod cache synchronization interval | `1m`
@@ -114,19 +145,25 @@ Parameter | Description | Default
 `server.prometheus.syncInterval` | Server Prometheus synchronization interval | `5s`
 `server.podAnnotations` | Annotations to be added to server pods | `{}`
 `server.podLabels` | Labels to be added to server pods | `{}`
-`server.probes.serverAddress` | Address that readyness and liveness probes will hit | `localhost`
+`server.probes.serverAddress` | Address that readyness and liveness probes will hit | `127.0.0.1`
+`server.priorityClassName` | Server pods priority class name | `""`
 `server.resources` | Server container resources | `{}`
 `server.roleBaseArn` | Base ARN for IAM roles. If not specified use EC2 metadata service to detect ARN prefix | `null`
 `server.sessionDuration` | Session duration for STS tokens generated by the server | `15m`
+`server.serviceAnnotations` | Annotations to be added to server service | `{}`
+`server.serviceLabels` | Labels to be added to server service | `{}`
 `server.service.port` | Server service port | `443`
 `server.service.targetPort` | Server service target port | `443`
+`server.tlsSecret` | Secret name for the server's TLS certificates | `null`
 `server.tlsFiles.ca` | Base64 encoded string for the server's CA certificate(s) | `null`
 `server.tlsFiles.cert` | Base64 encoded strings for the server's certificate | `null`
 `server.tlsFiles.key` | Base64 encoded strings for the server's private key | `null`
 `server.tolerations` | Tolerations to be applied to server pods | `[]`
+`server.affinity` | Node affinity for pod assignment | `{}`
 `server.updateStrategy` | Strategy for server DaemonSet updates (requires Kubernetes 1.6+) | `OnDelete`
 `server.useHostNetwork` | If true, use hostNetwork on server to bypass agent iptable rules | `false`
 `rbac.create` | If `true`, create & use RBAC resources | `true`
+`psp.create` | If `true`, create Pod Security Policies for the agent and server when enabled | `false`
 `serviceAccounts.agent.create` | If true, create the agent service account | `true`
 `serviceAccounts.agent.name` | Name of the agent service account to use or create | `{{ kiam.agent.fullname }}`
 `serviceAccounts.server.create` | If true, create the server service account | `true`

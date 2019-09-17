@@ -20,13 +20,21 @@ spec:
         app: {{ template "owncloud.fullname" . }}
         chart: {{ template "owncloud.chart" . }}
         release: "{{ .Release.Name }}"
+{{- if or .Values.podAnnotations .Values.metrics.enabled }}
+      annotations:
+  {{- if .Values.podAnnotations }}
+{{ toYaml .Values.podAnnotations | indent 8 }}
+  {{- end }}
+  {{- if .Values.metrics.podAnnotations }}
+{{ toYaml .Values.metrics.podAnnotations | indent 8 }}
+  {{- end }}
+{{- end }}
     spec:
-      {{- if .Values.image.pullSecrets }}
-      imagePullSecrets:
-      {{- range .Values.image.pullSecrets }}
-        - name: {{ . }}
-      {{- end}}
-      {{- end }}
+{{- include "owncloud.imagePullSecrets" . | indent 6 }}
+      hostAliases:
+      - ip: "127.0.0.1"
+        hostnames:
+        - "status.localhost"
       containers:
       - name: {{ template "owncloud.fullname" . }}
         image: {{ template "owncloud.image" . }}
@@ -63,8 +71,9 @@ spec:
               name: {{ printf "%s-%s" .Release.Name "externaldb" }}
               key: db-password
         {{- end }}
+{{- $port:=.Values.service.port | toString }}
         - name: OWNCLOUD_HOST
-          value: {{ include "owncloud.host" . | quote }}
+          value: "{{ include "owncloud.host" . }}{{- if ne $port "80" }}:{{ .Values.service.port }}{{ end }}"
         - name: OWNCLOUD_USERNAME
           value: {{ default "" .Values.owncloudUsername | quote }}
         - name: OWNCLOUD_PASSWORD
@@ -102,8 +111,29 @@ spec:
         volumeMounts:
         - name: owncloud-data
           mountPath: /bitnami/owncloud
-        - name: apache-data
-          mountPath: /bitnami/apache
+{{- if .Values.metrics.enabled }}
+      - name: metrics
+        image: {{ template "owncloud.metrics.image" . }}
+        imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
+        command: [ '/bin/apache_exporter', '-scrape_uri', 'http://status.localhost:80/server-status/?auto']
+        ports:
+        - name: metrics
+          containerPort: 9117
+        livenessProbe:
+          httpGet:
+            path: /metrics
+            port: metrics
+          initialDelaySeconds: 15
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /metrics
+            port: metrics
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+        resources:
+  {{ toYaml .Values.metrics.resources | indent 10 }}
+{{- end }}
       volumes:
       - name: owncloud-data
       {{- if .Values.persistence.enabled }}
@@ -112,11 +142,8 @@ spec:
       {{- else }}
         emptyDir: {}
       {{- end }}
-      - name: apache-data
-      {{- if .Values.persistence.enabled }}
-        persistentVolumeClaim:
-          claimName: {{ if .Values.persistence.apache.existingClaim }}{{ .Values.persistence.apache.existingClaim }}{{- else }}{{ template "owncloud.fullname" . }}-apache{{- end }}
-      {{- else }}
-        emptyDir: {}
+      {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
       {{- end }}
 {{- end -}}

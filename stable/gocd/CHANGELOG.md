@@ -1,3 +1,168 @@
+### 1.17.0
+* [5916a7b](https://github.com/kubernetes/charts/commit/5916a7b): Bump up GoCD Version to 19.8.0
+### 1.16.1
+
+* [c70a0b189](https://github.com/kubernetes/charts/commit/c70a0b189): Bump up kubernetes plugin version to v3.1.0
+
+### 1.16.0
+
+* [7872692](https://github.com/kubernetes/charts/commit/7872692): Update Pipeline config API version, use getting started repo's script for task
+
+### 1.15.0
+
+* [723e309](https://github.com/kubernetes/charts/commit/723e309):
+- Bump up GoCD Version to 19.7.0
+
+### 1.14.0
+
+* [c191fb46c](https://github.com/kubernetes/charts/commit/c191fb46c):
+
+- Bump up GoCD Version to 19.6.0
+- Add an option to specify security constraint for server and agent pod.
+- Remove `server.env.goServerSystemProperties` in favor of `server.env.goServerJvmOpts`
+- Remove `server.env.goAgentSystemProperties` in favor of `server.env.goAgentJvmOpts`
+
+### 1.13.0
+
+* [484a09ef1](https://github.com/kubernetes/charts/commit/484a09ef1):
+
+- Bump up GoCD docker registry artifact plugin version from v1.0.1-92 to v1.1.0-104
+
+### 1.12.0
+
+* [fa4bef2](https://github.com/kubernetes/charts/commit/fa4bef2):
+
+- Update API versions of Deployment and RBAC resources
+
+### 1.11.0
+
+* [8207b8c](https://github.com/kubernetes/charts/commit/8207b8c):
+
+- Bump up GoCD Version to 19.5.0
+
+### 1.10.0
+
+* [554019b](https://github.com/kubernetes/charts/commit/554019b):
+
+- Bump up GoCD Version to 19.4.0
+
+### 1.9.1
+
+- Add support for Deployment and Pod annotations.
+
+### 1.9.0
+
+- Bump up k8s elastic agent plugin to latest.
+- Bump up GoCD Version to 19.3.0
+
+### 1.8.1
+
+* [0f99647](https://github.com/helm/charts/commit/0f99647):
+
+- Update docker registry artifact plugin to latest stable release.
+
+### 1.8.0
+
+* [8ec8c89](https://github.com/helm/charts/commit/8ec8c89):
+
+- Update agent image to gocd-agent-alpine-3.9
+
+* [dcd3332](https://github.com/helm/charts/commit/dcd3332):
+
+- Introduce server and agent pre stop hooks for users to optionally provide pre stop scripts.
+
+### 1.7.1
+
+* [0b0e2bf](https://github.com/kubernetes/charts/commit/0b0e2bf):
+
+- Bump k8s elastic agent plugin to latest.
+
+### 1.7.0
+
+* [908b129](https://github.com/kubernetes/charts/commit/908b129):
+
+- Bump up GoCD Version to 19.2.0
+
+### 1.6.6
+
+* [84bd7fe](https://github.com/kubernetes/charts/commit/f44d408):
+
+- If there is no host in template ingress.yaml, use default backend.
+
+### 1.6.5
+
+* [f44d408](https://github.com/kubernetes/charts/commit/f44d408):
+
+- Bump up GoCD Version to 19.1.0
+
+### 1.6.4
+
+* [ec15367](https://github.com/kubernetes/charts/commit/ec15367):
+
+- Bump up the version of docker registry artifact plugin to latest.
+
+### 1.6.3
+
+* [bca4092f](https://github.com/kubernetes/charts/commit/bca4092f):
+  - Fixes regression of functionality that allows for extra volumes and mounts regardless of whether persistence and ssh is enabled
+
+### 1.6.2
+
+* [fe985d7](https://github.com/kubernetes/charts/commit/fe985d7):
+  - Deprecate agent.env.agentAutoRegisterEnvironemnts in favour of agent.env.agentAutoRegisterEnvironments.
+
+  *Please note that the deprecated property will be removed in GoCD 19.3.0 (that is, when Chart.appVersion is 19.3.0). Users are encouraged to use the new property `agent.env.agentAutoRegisterEnvironments`.*
+
+### 1.6.1
+
+* [28d5416](https://github.com/kubernetes/charts/commit/28d5416):
+  - Add sheroy to owners
+
+### 1.6.0
+
+* [7002dac](https://github.com/kubernetes/charts/commit/7002dac):
+  - add option to specify init containers and restart policy for server and agent
+
+### 1.5.13
+
+* [223b59f](https://github.com/kubernetes/charts/commit/223b59f):
+  - Fix typo in README.
+
+### 1.5.12
+
+* [72aa74f1](https://github.com/kubernetes/charts/commit/72aa74f1):
+  - Removes the namespace list permission for the service account being created.
+
+### 1.5.11
+
+* [a8f4e6c9](https://github.com/kubernetes/charts/commit/a8f4e6c9):
+  - Bump up GoCD app version to 18.12.0
+
+### 1.5.10
+
+* [87b3a755](https://github.com/kubernetes/charts/commit/87b3a755):
+  - Allow the override of the preconfigure command
+
+### 1.5.9
+
+* [6547ba84](https://github.com/kubernetes/charts/commit/6547ba84):
+  - Introduces the ability to configure agent service accounts
+
+### 1.5.8
+
+* [cee475aa](https://github.com/kubernetes/charts/commit/cee475aa):
+  - Enable extra volume mounts without persistence
+
+### 1.5.7
+
+* [c663a531](https://github.com/kubernetes/charts/commit/c663a531):
+  - Bump up GoCD app version to 18.11.0
+
+### 1.5.6
+
+* [32de4923](https://github.com/kubernetes/charts/commit/32de4923)
+  - Deployment strategy value
+
 ### 1.5.5
 
 * [22f3354](https://github.com/helm/charts/commit/22f3354):
@@ -9,12 +174,14 @@
   - Update README with link to "Intro to GoCD" guide
 
 ### 1.5.3
+
 * [65fa6218](https://github.com/kubernetes/charts/commit/65fa6218):
   - Affinity setting in agent and server deployments
 * [587d7a37](https://github.com/kubernetes/charts/commit/587d7a37):
   - Invalid nodeSelector reference for agent deployment
 
 ### 1.5.2
+
 * [17fa5c8e](https://github.com/kubernetes/charts/commit/17fa5c8e): Fix agent kube resources typo.
 
 ### 1.5.1
@@ -48,7 +215,7 @@
   - Updated post install script
        * From GoCD version 18.8.0 pipeline created using api is already in
          unpaused state
-  
+
 ### 1.3.6
 
 * [b7d596e](https://github.com/helm/charts/pull/7476/commits/b7d596e): Fixed role configuration instructions in README file.

@@ -1,0 +1,34 @@
+{{- if .Values.graylog.ingress.enabled -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+  {{- range $key, $value := .Values.graylog.ingress.annotations }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
+  labels:
+    app.kubernetes.io/name: {{ template "graylog.name" . }}
+    helm.sh/chart: {{ template "graylog.chart" . }}
+    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+    app.kubernetes.io/instance: "{{ .Release.Name }}"
+    app.kubernetes.io/version: "{{ .Chart.AppVersion }}"
+    app.kubernetes.io/component: "web"
+  name: {{ template "graylog.fullname" . }}-web
+spec:
+  rules:
+  {{- range .Values.graylog.ingress.hosts }}
+    - host: {{ . }}
+      http:
+        paths:
+          - backend:
+              serviceName: {{ template "graylog.fullname" $ }}-web
+              servicePort: graylog
+            {{- if $.Values.graylog.ingress.path }}
+            path: {{ $.Values.graylog.ingress.path }}
+            {{- end -}}
+  {{- end -}}
+  {{- if .Values.graylog.ingress.tls }}
+  tls:
+{{ toYaml .Values.graylog.ingress.tls | indent 4 }}
+  {{- end -}}
+{{- end -}}

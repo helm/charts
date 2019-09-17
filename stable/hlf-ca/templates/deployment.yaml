@@ -10,6 +10,10 @@ spec:
     matchLabels:
       app: {{ include "hlf-ca.name" . }}
       release: {{ .Release.Name }}
+  # Ensure we allow our pod to be unavailable, so we can upgrade
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 1
   template:
     metadata:
       labels:
@@ -99,7 +103,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: {{ template "postgresql.fullname" . }}
-                  key: postgres-password
+                  key: postgresql-password
             {{- end }}
             {{- if .Values.mysql.enabled }}
             # MySQL Database
@@ -151,7 +155,7 @@ spec:
             {{- if (and .Values.config.mountTLS .Values.ingress.tls) }}
             - name: tls-secret
               readOnly: true
-              mountPath: /var/hyperledger/tls_secret
+              mountPath: /var/hyperledger/tls/secret
             {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}

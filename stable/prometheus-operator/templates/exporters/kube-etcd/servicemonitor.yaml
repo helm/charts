@@ -1,5 +1,5 @@
 {{- if .Values.kubeEtcd.enabled }}
-apiVersion: monitoring.coreos.com/v1
+apiVersion: {{ printf "%s/v1" (.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
 kind: ServiceMonitor
 metadata:
   name: {{ template "prometheus-operator.fullname" . }}-kube-etcd
@@ -17,7 +17,9 @@ spec:
       - "kube-system"
   endpoints:
   - port: http-metrics
-    interval: 15s
+    {{- if .Values.kubeEtcd.serviceMonitor.interval }}
+    interval: {{ .Values.kubeEtcd.serviceMonitor.interval }}
+    {{- end }}
     bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
     {{- if eq .Values.kubeEtcd.serviceMonitor.scheme "https" }}
     scheme: https
@@ -36,4 +38,12 @@ spec:
       {{- end}}
       insecureSkipVerify: {{ .Values.kubeEtcd.serviceMonitor.insecureSkipVerify }}
     {{- end }}
+{{- if .Values.kubeEtcd.serviceMonitor.metricRelabelings }}
+    metricRelabelings:
+{{ tpl (toYaml .Values.kubeEtcd.serviceMonitor.metricRelabelings | indent 4) . }}
+{{- end }}
+{{- if .Values.kubeEtcd.serviceMonitor.relabelings }}
+    relabelings:
+{{ toYaml .Values.kubeEtcd.serviceMonitor.relabelings | indent 4 }}
+{{- end }}
 {{- end }}

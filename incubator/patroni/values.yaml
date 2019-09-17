@@ -4,7 +4,7 @@ image:
   # Image was built from
   # https://github.com/zalando/spilo/tree/master/postgres-appliance
   repository: registry.opensource.zalan.do/acid/spilo-10
-  tag: 1.4-p7
+  tag: 1.4-p16
   pullPolicy: IfNotPresent
 
 # Credentials used by Patroni
@@ -17,9 +17,14 @@ credentials:
 
 # Distribution Configuration stores
 # Please note that only one of the following stores should be enabled.
+kubernetes:
+  dcs:
+    enable: true
+  configmaps:
+    enable: false
 etcd:
-  enable: true
-  deployChart: true
+  enable: false
+  deployChart: false
   # If not deploying etcd chart, fill-in value for etcd service
   # <service>.<namespace>.svc.cluster.local
   host:
@@ -31,6 +36,14 @@ zookeeper:
   # If not deploying etcd chart, fill-in list of ZooKeeper members in format:
   # 'host1:port1','host2:port2','etc...'
   hosts:
+consul:
+  enable: false
+  deployChart: false
+  # Leave blank to use vendored consul chart
+  hosts:
+
+# Extra custom environment variables.
+env: {}
 
 walE:
   # Specifies whether Wal-E should be enabled
@@ -52,6 +65,7 @@ walE:
   backupThresholdPercentage: 30
 
 persistentVolume:
+  enabled: true
   size: 1G
   ## database data Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
@@ -60,7 +74,7 @@ persistentVolume:
   ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
   ##   GKE, AWS & OpenStack)
   ##
-  storageClass: "-"
+  # storageClass: "-"
   subPath: ""
   mountPath: "/home/postgres/pgdata"
   annotations: {}
@@ -84,7 +98,7 @@ nodeSelector: {}
 tolerations: []
 
 # https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
-affinity: |
+affinityTemplate: |
   podAntiAffinity:
     preferredDuringSchedulingIgnoredDuringExecution:
     - weight: 100
@@ -94,6 +108,12 @@ affinity: |
           matchLabels:
             app:  {{ template "patroni.name" . }}
             release: {{ .Release.Name | quote }}
+affinity: {}
+
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName:
 
 rbac:
   # Specifies whether RBAC resources should be created

@@ -3,10 +3,7 @@ kind: Deployment
 metadata:
   name: {{ template "prometheus-pushgateway.fullname" . }}
   labels:
-    app: {{ template "prometheus-pushgateway.name" . }}
-    chart: {{ template "prometheus-pushgateway.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+{{ template "prometheus-pushgateway.defaultLabels" merge (dict "extraLabels" .Values.podLabels) .  }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -19,13 +16,17 @@ spec:
         app: {{ template "prometheus-pushgateway.name" . }}
         release: {{ .Release.Name }}
       annotations:
-{{ toYaml .Values.podAnnotations | indent 8 }}        
+{{ toYaml .Values.podAnnotations | indent 8 }}
     spec:
       serviceAccountName: {{ template "prometheus-pushgateway.serviceAccountName" . }}
       containers:
         - name: pushgateway
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+        {{- if .Values.extraVars }}
+          env:
+{{ toYaml .Values.extraVars | indent 12 }}
+        {{- end }}
         {{- if .Values.extraArgs }}
           args:
 {{ toYaml .Values.extraArgs | indent 12 }}

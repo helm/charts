@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "cloudserver.localdata.fullname" . }}
+  labels:
+    app: {{ template "cloudserver.name" . }}
+    chart: {{ template "cloudserver.chart" . }}
+    component: localdata
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  type: ClusterIP
+  ports:
+    - name: localdata
+      port: 9991
+      protocol: TCP
+      targetPort: localdata
+  selector:
+    app: {{ template "cloudserver.name" . }}
+    component: localdata
+    release: {{ .Release.Name }}

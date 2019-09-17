@@ -41,19 +41,23 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following table lists the configurable parameters of the jaeger-operator chart and their default values.
 
-Parameter | Description | Default
---- | --- | ---
-`image.repository` | controller container image repository | `jaegertracing/jaeger-operator`
-`image.tag` | controller container image tag | `1.7.0`
-`image.pullPolicy` | controller container image pull policy | `IfNotPresent`
-`rbac.create` | all required roles and SA will be created | `true`
-`resources` | k8s pod resorces | `None`
-`nodeSelector` | Node labels for pod assignment | `{}`
-`tolerations` | Toleration labels for pod assignment | `[]`
-`affinity` | Affinity settings for pod assignment | `{}`
+| Parameter               | Description                                                                                                 | Default                         |
+|:------------------------|:------------------------------------------------------------------------------------------------------------|:--------------------------------|
+| `image.repository`      | Controller container image repository                                                                       | `jaegertracing/jaeger-operator` |
+| `image.tag`             | Controller container image tag                                                                              | `1.13.1`                        |
+| `image.pullPolicy`      | Controller container image pull policy                                                                      | `IfNotPresent`                  |
+| `rbac.create`           | All required roles and rolebindings will be created                                                         | `true`                          |
+| `serviceAccount.create` | Service account to use                                                                                      | `true`                          |
+| `rbac.pspEnabled`       | Pod security policy for pod will be created and included in rbac role                                       | `false`                         |
+| `rbac.clusterRole`      | ClusterRole will be used by operator ServiceAccount                                                         | `false`                         |
+| `serviceAccount.name`   | Service account name to use. If not set and create is true, a name is generated using the fullname template | ``                              |
+| `resources`             | K8s pod resorces                                                                                            | `None`                          |
+| `nodeSelector`          | Node labels for pod assignment                                                                              | `{}`                            |
+| `tolerations`           | Toleration labels for pod assignment                                                                        | `[]`                            |
+| `affinity`              | Affinity settings for pod assignment                                                                        | `{}`                            |
+| `securityContext`       | Security context for pod                                                                                    | `{}`                            |
 
-
-Specify each parameter you'd like to override using a YAML file as described above in the [installation](#Installing the Chart) section.
+Specify each parameter you'd like to override using a YAML file as described above in the [installation](#installing-the-chart) section.
 
 You can also specify any non-array parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
@@ -68,7 +72,7 @@ $ helm install stable/jaeger-operator --name my-release \
 The simplest possible way to install is by creating a YAML file like the following:
 
 ```YAML
-apiVersion: io.jaegertracing/v1alpha1
+apiVersion: jaegertracing.io/v1
 kind: Jaeger
 metadata:
   name: simplest
@@ -88,7 +92,7 @@ After that just deploy the following manifest:
 
 ```YAML
 # setup an elasticsearch with `make es`
-apiVersion: io.jaegertracing/v1alpha1
+apiVersion: jaegertracing.io/v1
 kind: Jaeger
 metadata:
   name: simple-prod

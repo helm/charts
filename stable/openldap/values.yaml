@@ -3,24 +3,45 @@
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
+
+# Define deployment strategy - IMPORTANT: use rollingUpdate: null when use Recreate strategy.
+# It prevents from merging with existing map keys which are forbidden.
+strategy: {}
+  # type: RollingUpdate
+  # rollingUpdate:
+  #   maxSurge: 1
+  #   maxUnavailable: 0
+  #
+  # or
+  #
+  # type: Recreate
+  # rollingUpdate: null
 image:
   # From repository https://github.com/osixia/docker-openldap
   repository: osixia/openldap
-  tag: 1.2.1
+  tag: 1.2.4
   pullPolicy: IfNotPresent
 
 # Spcifies an existing secret to be used for admin and config user passwords
 existingSecret: ""
 
+# settings for enabling TLS
+tls:
+  enabled: false
+  secret: ""  # The name of a kubernetes.io/tls type secret to use for TLS
+  CA:
+    enabled: false
+    secret: ""  # The name of a generic secret to use for custom CA certificate (ca.crt)
 ## Add additional labels to all resources
 extraLabels: {}
-
+## Add additional annotations to pods
+podAnnotations: {}
 service:
   annotations: {}
   clusterIP: ""
 
   ldapPort: 389
-  sslLdapPort: 636
+  sslLdapPort: 636  # Only used if tls.enabled is true
   ## List of IP addresses at which the service is available
   ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
   ##
@@ -64,6 +85,7 @@ persistence:
   # storageClass: "-"
   accessMode: ReadWriteOnce
   size: 8Gi
+  # existingClaim: ""
 
 resources: {}
  # requests:
@@ -72,6 +94,14 @@ resources: {}
  # limits:
  #   cpu: "500m"
  #   memory: "512Mi"
+
+initResources: {}
+ # requests:
+ #   cpu: "100m"
+ #   memory: "128Mi"
+ # limits:
+ #   cpu: "100m"
+ #   memory: "128Mi"
 
 nodeSelector: {}
 

@@ -26,7 +26,7 @@ spec:
       {{- end }}
       terminationGracePeriodSeconds: 30
       containers:
-      - name: {{ .Values.agent.name }}
+      - name: agent
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         args:

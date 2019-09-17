@@ -1,8 +1,8 @@
+apiVersion: v1
 name: ghost
-version: 5.3.5
-appVersion: 2.3.0
-description: A simple, powerful publishing platform that allows you to share your
-  stories with the world
+version: 7.2.4
+appVersion: 2.31.0
+description: A simple, powerful publishing platform that allows you to share your stories with the world
 keywords:
 - ghost
 - blog

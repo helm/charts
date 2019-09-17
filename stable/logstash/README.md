@@ -69,31 +69,39 @@ Please review the following links that expound on current best practices.
 
 The following table lists the configurable parameters of the chart and its default values.
 
-|              Parameter      |                    Description                     |                     Default                      |
-| --------------------------- | -------------------------------------------------- | ------------------------------------------------ |
+|              Parameter          |                    Description                     |                     Default                      |
+| ------------------------------- | -------------------------------------------------- | ------------------------------------------------ |
 | `replicaCount`                  | Number of replicas                                 | `1`                                              |
 | `podDisruptionBudget`           | Pod disruption budget                              | `maxUnavailable: 1`                              |
 | `updateStrategy`                | Update strategy                                    | `type: RollingUpdate`                            |
 | `image.repository`              | Container image name                               | `docker.elastic.co/logstash/logstash-oss`        |
-| `image.tag`                     | Container image tag                                | `6.4.2`                                          |
+| `image.tag`                     | Container image tag                                | `7.1.1`                                          |
 | `image.pullPolicy`              | Container image pull policy                        | `IfNotPresent`                                   |
 | `service.type`                  | Service type (ClusterIP, NodePort or LoadBalancer) | `ClusterIP`                                      |
 | `service.annotations`           | Service annotations                                | `{}`                                             |
 | `service.ports`                 | Ports exposed by service                           | beats                                            |
 | `service.loadBalancerIP`        | The load balancer IP for the service               | unset                                            |
+| `service.loadBalancerSourceRanges` | CIDR ranges to allow access to load balancer       | unset                                            |
 | `service.clusterIP`             | The cluster IP for the service                     | unset                                            |
+| `service.nodePort`              | The nodePort for the service                       | unset                                            |
+| `service.externalTrafficPolicy` | Set externalTrafficPolicy                          | unset                                            |
 | `ports`                         | Ports exposed by logstash container                | beats                                            |
 | `ingress.enabled`               | Enables Ingress                                    | `false`                                          |
 | `ingress.annotations`           | Ingress annotations                                | `{}`                                             |
 | `ingress.path`                  | Ingress path                                       | `/`                                              |
 | `ingress.hosts`                 | Ingress accepted hostnames                         | `["logstash.cluster.local"]`                     |
 | `ingress.tls`                   | Ingress TLS configuration                          | `[]`                                             |
+| `logstashJavaOpts`              | Java options for logstash like heap size           | `"-Xmx1g -Xms1g"`                                |
 | `resources`                     | Pod resource requests & limits                     | `{}`                                             |
+| `priorityClassName`             | priorityClassName                                  | `nil`                                            |
 | `nodeSelector`                  | Node selector                                      | `{}`                                             |
 | `tolerations`                   | Tolerations                                        | `[]`                                             |
 | `affinity`                      | Affinity or Anti-Affinity                          | `{}`                                             |
 | `podAnnotations`                | Pod annotations                                    | `{}`                                             |
 | `podLabels`                     | Pod labels                                         | `{}`                                             |
+| `extraEnv`                      | Extra pod environment variables                    | `[]`                                             |
+| `extraInitContainers`           | Add additional initContainers                      | `[]`                                             |
+| `podManagementPolicy`           | podManagementPolicy of the StatefulSet             | `OrderedReady`                                   |
 | `livenessProbe`                 | Liveness probe settings for logstash container     | (see `values.yaml`)                              |
 | `readinessProbe`                | Readiness probe settings for logstash container    | (see `values.yaml`)                              |
 | `persistence.enabled`           | Enable persistence                                 | `true`                                           |
@@ -101,14 +109,27 @@ The following table lists the configurable parameters of the chart and its defau
 | `persistence.accessMode`        | Access mode for PVCs                               | `ReadWriteOnce`                                  |
 | `persistence.size`              | Size for PVCs                                      | `2Gi`                                            |
 | `volumeMounts`                  | Volume mounts to configure for logstash container  | (see `values.yaml`)                              |
-| `volumes`                       | Volumes to configure for logstash container        | []                              |
-| `terminationGracePeriodSeconds` | Duration the pod needs to terminate gracefully     | `30`
+| `volumes`                       | Volumes to configure for logstash container        | []                                               |
+| `terminationGracePeriodSeconds` | Duration the pod needs to terminate gracefully     | `30`                                             |
 | `exporter.logstash`             | Prometheus logstash-exporter settings              | (see `values.yaml`)                              |
 | `exporter.logstash.enabled`     | Enables Prometheus logstash-exporter               | `false`                                          |
+| `exporter.serviceMonitor.enabled` | If true, a ServiceMonitor CRD is created for a prometheus operator | `false`
+| `exporter.serviceMonitor.namespace` | If set, the ServiceMonitor will be installed in a different namespace  | `""`
+| `exporter.serviceMonitor.labels` | Labels for prometheus operator | `{}`
+| `exporter.serviceMonitor.interval` | Interval at which metrics should be scraped | `10s`
+| `exporter.serviceMonitor.scrapeTimeout` | Timeout after which the scrape is ended | `10s`
+| `exporter.serviceMonitor.scheme` | Scheme to use for scraping | `http`
 | `elasticsearch.host`            | ElasticSearch hostname                             | `elasticsearch-client.default.svc.cluster.local` |
 | `elasticsearch.port`            | ElasticSearch port                                 | `9200`                                           |
 | `config`                        | Logstash configuration key-values                  | (see `values.yaml`)                              |
 | `patterns`                      | Logstash patterns configuration                    | `nil`                                            |
+| `files`                         | Logstash custom files configuration                | `nil`                                            |
+| `binaryFiles`                   | Logstash custom binary files                       | `nil`                                            |
 | `inputs`                        | Logstash inputs configuration                      | beats                                            |
 | `filters`                       | Logstash filters configuration                     | `nil`                                            |
 | `outputs`                       | Logstash outputs configuration                     | elasticsearch                                    |
+| `securityContext.fsGroup`       | Group ID for the container                         | `1000`                                           |
+| `securityContext.runAsUser`     | User ID for the container                          | `1000`                                           |
+| `args`                          | Additional arguments to pass to Logstash           | `1000`                                           |
+| `serviceAccount.create`         | Specifies if a ServiceAccount should be created    | `true`                                           |
+| `serviceAccount.name`           | The name of the ServiceAccount to use              | `""`                                             |

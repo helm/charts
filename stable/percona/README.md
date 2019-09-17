@@ -1,6 +1,6 @@
 # Percona
 
-[Percona Server](https://MySQL.org) for MySQL® is a free, fully compatible, enhanced, open source drop-in replacement for MySQL that provides superior performance, scalability and instrumentation. With over 3,000,000 downloads, Percona Server for MySQL's self-tuning algorithms and support for extremely high-performance hardware delivers excellent performance and reliability. 
+[Percona Server](https://MySQL.org) for MySQL® is a free, fully compatible, enhanced, open source drop-in replacement for MySQL that provides superior performance, scalability and instrumentation. With over 3,000,000 downloads, Percona Server for MySQL's self-tuning algorithms and support for extremely high-performance hardware delivers excellent performance and reliability.
 
 Notable users include Netflix, Amazon Web Services, Alcatel-Lucent, and Smug Mug.
 
@@ -48,12 +48,14 @@ The following table lists the configurable parameters of the Percona chart and t
 
 | Parameter                  | Description                        | Default                                                    |
 | -----------------------    | ---------------------------------- | ---------------------------------------------------------- |
+| `image`                    | `percona` image.                   | Percona official image on Docker Hub                       |
 | `imageTag`                 | `percona` image tag.                 | Most recent release                                        |
 | `imagePullPolicy`          | Image pull policy                  | `IfNotPresent`                                             |
 | `perconaRootPassword`        | Password for the `root` user.      | `nil`                                                      |
 | `perconaUser`                | Username of new user to create.    | `nil`                                                      |
 | `perconaPassword`            | Password for the new user.         | `nil`                                                      |
 | `perconaDatabase`            | Name for new database to create.   | `nil`                                                      |
+| `schedulerName`            | Name of the k8s scheduler (other than default)  | `nil`                                         |
 | `persistence.enabled`      | Create a volume to store data      | false                                                       |
 | `persistence.size`         | Size of persistent volume claim    | 8Gi RW                                                     |
 | `persistence.storageClass` | Type of persistent volume claim    | nil  (uses alpha storage class annotation)                 |
@@ -61,6 +63,7 @@ The following table lists the configurable parameters of the Percona chart and t
 | `resources`                | CPU/Memory resource requests/limits | Memory: `256Mi`, CPU: `100m`                              |
 | `nodeSelector`             | Node labels for pod assignment     | `{}`							|
 | `tolerations`              | Node labels for pod assignment     | `[]`							|
+| `affinity`                 | Node labels for pod assignment     | `{}`                            |
 
 Some of the parameters above map to the env variables defined in the [Percona Server DockerHub image](https://hub.docker.com/_/percona/).
 

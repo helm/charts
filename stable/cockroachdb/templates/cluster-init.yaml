@@ -8,6 +8,15 @@ metadata:
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
 spec:
   template:
+    metadata:
+{{- if and (.Values.NetworkPolicy.Enabled) (not .Values.NetworkPolicy.AllowExternal) }}
+      labels:
+        {{.Release.Name}}-{{.Values.Component}}-client: "true"
+{{- end }}
+{{- if .Values.ExtraInitAnnotations }}
+      annotations:
+{{ toYaml .Values.ExtraInitAnnotations | indent 8 }}
+{{- end }}
     spec:
 {{- if .Values.Secure.Enabled }}
       serviceAccountName: {{ template "cockroachdb.serviceAccountName" . }}
@@ -39,6 +48,8 @@ spec:
       - name: cluster-init
         image: "{{ .Values.Image }}:{{ .Values.ImageTag }}"
         imagePullPolicy: "{{ .Values.ImagePullPolicy }}"
+        resources:
+{{ toYaml .Values.InitPodResources | indent 10 }}
 {{- if .Values.Secure.Enabled }}
         volumeMounts:
         - name: client-certs

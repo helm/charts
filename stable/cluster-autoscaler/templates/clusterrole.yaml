@@ -3,10 +3,7 @@ apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
 metadata:
   labels:
-    app: {{ template "cluster-autoscaler.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+{{ include "cluster-autoscaler.labels" . | indent 4 }}
   name: {{ template "cluster-autoscaler.fullname" . }}
 rules:
   - apiGroups:
@@ -60,6 +57,15 @@ rules:
       - list
       - get
   - apiGroups:
+    - batch
+    resources:
+      - jobs
+      - cronjobs
+    verbs:
+      - watch
+      - list
+      - get
+  - apiGroups:
       - extensions
     resources:
       - replicasets
@@ -78,6 +84,8 @@ rules:
   - apiGroups:
     - apps
     resources:
+    - daemonsets
+    - replicasets
     - statefulsets
     verbs:
     - watch
@@ -91,13 +99,20 @@ rules:
     - watch
     - list
     - get
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+    verbs:
+      - list
+      - watch
 {{- if .Values.rbac.pspEnabled }}
   - apiGroups:
     - extensions
     resources:
     - podsecuritypolicies
     resourceNames:
-    - privileged-{{ template "cluster-autoscaler.fullname" . }}
+    - {{ template "cluster-autoscaler.fullname" . }}
     verbs:
     - use
 {{- end -}}

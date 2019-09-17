@@ -22,6 +22,10 @@ spec:
         checksum/confd-config: {{ tpl (toYaml .Values.datadog.confd) . | sha256sum }}
         checksum/checksd-config: {{ tpl (toYaml .Values.datadog.checksd) . | sha256sum }}
     spec:
+      {{- if .Values.datadog.securityContext }}
+      securityContext:
+{{ toYaml .Values.datadog.securityContext | indent 8 }}
+      {{- end }}
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
 {{ toYaml .Values.image.pullSecrets | indent 8 }}
@@ -34,7 +38,7 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         resources:
-{{ toYaml .Values.datadog.resources | indent 12 }}
+{{ toYaml .Values.datadog.resources | indent 10 }}
         ports:
         - containerPort: 8125
           name: dogstatsdport
@@ -50,6 +54,14 @@ spec:
               secretKeyRef:
                 name: {{ template "datadog.apiSecretName" . }}
                 key: api-key
+          {{- if .Values.datadog.site }}
+          - name: DD_SITE
+            value: {{ .Values.datadog.site | quote }}
+          {{- end }}
+          {{- if .Values.datadog.dd_url }}
+          - name: DD_DD_URL
+            value: {{ .Values.datadog.dd_url | quote }}
+          {{- end }}
           {{- if .Values.datadog.logLevel }}
           - name: DD_LOG_LEVEL
             value: {{ .Values.datadog.logLevel | quote }}
@@ -57,6 +69,10 @@ spec:
           {{- if .Values.datadog.nonLocalTraffic }}
           - name: DD_DOGSTATSD_NON_LOCAL_TRAFFIC
             value: {{ .Values.datadog.nonLocalTraffic | quote }}
+          {{- end }}
+          {{- if .Values.datadog.dogstatsdOriginDetection }}
+          - name: DD_DOGSTATSD_ORIGIN_DETECTION
+            value: {{ .Values.datadog.dogstatsdOriginDetection | quote }}
           {{- end }}
           {{- if .Values.datadog.tags }}
           - name: DD_TAGS
@@ -76,6 +92,10 @@ spec:
           - name: DD_CRI_SOCKET_PATH
             value: {{ .Values.datadog.criSocketPath | quote }}
           {{- end }}
+          {{- if .Values.datadog.useDogStatsDSocketVolume }}
+          - name: DD_DOGSTATSD_SOCKET
+            value: {{ default "/var/run/datadog/dsd.socket" .Values.datadog.dogStatsDSocketPath | quote }}
+          {{- end }}
 {{- if .Values.datadog.env }}
 {{ toYaml .Values.datadog.env | indent 10 }}
 {{- end }}
@@ -84,6 +104,10 @@ spec:
           - name: runtimesocket
             mountPath: {{ default "/var/run/docker.sock" .Values.datadog.criSocketPath | quote }}
             readOnly: true
+          {{- end }}
+          {{- if .Values.datadog.useDogStatsDSocketVolume }}
+          - name: dsdsocket
+            mountPath: "/var/run/datadog"
           {{- end }}
           - name: procdir
             mountPath: /host/proc
@@ -104,17 +128,28 @@ spec:
 {{- if .Values.datadog.volumeMounts }}
 {{ toYaml .Values.datadog.volumeMounts | indent 10 }}
 {{- end }}
+{{- if .Values.datadog.livenessProbe }}
+        livenessProbe:
+{{ toYaml .Values.datadog.livenessProbe | indent 10 }}
+{{- else }}
         livenessProbe:
           exec:
             command:
             - ./probe.sh
           initialDelaySeconds: 15
           periodSeconds: 5
+          failureThreshold: 6
+{{- end }}
       volumes:
         {{- if .Values.datadog.useCriSocketVolume }}
         - hostPath:
             path: {{ default "/var/run/docker.sock" .Values.datadog.criSocketPath | quote }}
           name: runtimesocket
+        {{- end }}
+        {{- if .Values.datadog.useDogStatsDSocketVolume }}
+        - hostPath:
+            path: "/var/run/datadog/"
+          name: dsdsocket
         {{- end }}
         - hostPath:
             path: /proc
@@ -125,12 +160,12 @@ spec:
         {{- if (or (.Values.datadog.confd) (.Values.datadog.autoconf)) }}
         - name: confd
           configMap:
-            name: {{ template "datadog.confd.fullname" . }}
+            name: {{ template "datadog.fullname" . }}-confd
         {{- end }}
         {{- if .Values.datadog.checksd }}
         - name: checksd
           configMap:
-            name: {{ template "datadog.checksd.fullname" . }}
+            name: {{ template "datadog.fullname" . }}-checksd
         {{- end }}
 {{- if .Values.datadog.volumes }}
 {{ toYaml .Values.datadog.volumes | indent 8 }}

@@ -28,7 +28,7 @@ The following table lists the configurable parameters of the consul chart and th
 | ----------------------- | ----------------------------------    | ---------------------------------------------------------- |
 | `Name`                  | Consul statefulset name               | `consul`                                                   |
 | `Image`                 | Container image name                  | `consul`                                                   |
-| `ImageTag`              | Container image tag                   | `1.0.0`                                                    |
+| `ImageTag`              | Container image tag                   | `1.5.2`                                                    |
 | `ImagePullPolicy`       | Container pull policy                 | `Always`                                                   |
 | `Replicas`              | k8s statefulset replicas              | `3`                                                        |
 | `Component`             | k8s selector key                      | `consul`                                                   |
@@ -36,6 +36,8 @@ The following table lists the configurable parameters of the consul chart and th
 | `Cpu`                   | container requested cpu               | `100m`                                                     |
 | `DatacenterName`        | Consul Datacenter Name                | `dc1` (The consul default)                                 |
 | `DisableHostNodeId`     | Disable Node Id creation (uses random)| `false`                                                    |
+| `joinPeers`             | Set list of hosts for -retry-join     | `[]`                                                       |
+| `joinWan`               | Set list of hosts for -retry-join-wan | `[]`                                                       |
 | `EncryptGossip`         | Whether or not gossip is encrypted    | `true`                                                     |
 | `GossipKey`             | Gossip-key to use by all members      | `nil`                                                      |
 | `Storage`               | Persistent volume size                | `1Gi`                                                      |
@@ -55,10 +57,24 @@ The following table lists the configurable parameters of the consul chart and th
 | `tolerations`           | Tolerations for pod assignment        | `[]`                                                       |
 | `maxUnavailable`        | Pod disruption Budget maxUnavailable  | `1`                                                        |
 | `ui.enabled`            | Enable Consul Web UI                  | `true`                                                     |
+| `uiIngress.enabled`     | Create Ingress for Consul Web UI      | `false`                                                    |
+| `uiIngress.annotations` | Associate annotations to the Ingress  | `{}`                                                       |
+| `uiIngress.labels`      | Associate labels to the Ingress       | `{}`                                                       |
+| `uiIngress.hosts`       | Associate hosts with the Ingress      | `[]`                                                       |
+| `uiIngress.tls`         | Associate TLS with the Ingress        | `[]`                                                       |
 | `uiService.enabled`     | Create dedicated Consul Web UI svc    | `true`                                                     |
 | `uiService.type`        | Dedicate Consul Web UI svc type       | `NodePort`                                                 |
-| `test.image`            | Test container image requires kubectl + bash (used for helm test)      | `lachlanevenson/k8s-kubectl` |
+| `uiService.annotations` | Extra annotations for UI service      | `{}`                                                       |
+| `acl.enabled`           | Enable basic ACL configuration        | `false`                                                    |
+| `acl.masterToken`       | Master token that was provided in consul ACL config file | `""`                                    |
+| `acl.agentToken`        | Agent token that was provided in consul ACL config file | `""`                                     |
+| `test.image`            | Test container image requires kubectl + bash (used for helm test)   | `lachlanevenson/k8s-kubectl` |
 | `test.imageTag`         | Test container image tag  (used for helm test)     | `v1.4.8-bash`                                 |
+| `test.rbac.create`                      | Create rbac for test container                 | `false`                           |
+| `test.rbac.serviceAccountName`          | Name of existed service account for test container    | ``                         |
+| `additionalLabels`      | Add labels to Pod and StatefulSet     | `{}`                                                       |
+| `lifecycle`             | Lifecycle configuration, in YAML, for StatefulSet | `nil`                                          |
+| `forceIpv6`             | force to listen on IPv6 address                                                                    |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
@@ -101,6 +117,7 @@ $ kubectl delete pvc -l component=${RELEASE-NAME}-consul
 ## Pitfalls
 
 * When ACLs are enabled and `acl_default_policy` is set to `deny`, it is necessary to set the `acl_token` to a token that can perform at least the `consul members`, otherwise the kubernetes liveness probe will keep failing and the containers will be killed every 5 minutes.
+  * Basic ACLs configuration can be done by setting `acl.enabled` to `true`, and setting values for `acl.masterToken` and `acl.agentToken`.
 
 ## Testing
 

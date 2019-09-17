@@ -1,0 +1,17 @@
+{{- if .Values.endpoints }}
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: {{ template "prometheus-node-exporter.fullname" . }}
+  labels:
+{{ include "prometheus-node-exporter.labels" . | indent 4 }}
+subsets:
+  - addresses:
+      {{- range .Values.endpoints }}
+      - ip: {{ . }}
+      {{- end }}
+    ports:
+      - name: metrics
+        port: 9100
+        protocol: TCP
+{{- end }}

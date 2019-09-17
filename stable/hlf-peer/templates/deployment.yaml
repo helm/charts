@@ -29,7 +29,7 @@ spec:
         {{- end }}
         - name: dockersocket
           hostPath:
-            path: /var/run/docker.sock
+            path: {{ .Values.dockerSocketPath }}
         {{- if .Values.secrets.peer.cert }}
         - name: id-cert
           secret:
@@ -58,12 +58,24 @@ spec:
         {{- if .Values.secrets.peer.tlsRootCert }}
         - name: tls-rootcert
           secret:
-          secretName: {{ .Values.secrets.peer.tlsRootCert }}
+            secretName: {{ .Values.secrets.peer.tlsRootCert }}
         {{- end }}
-        {{- if .Values.secrets.channel }}
-        - name: channel
+        {{- if .Values.secrets.peer.tlsClient }}
+        - name: tls-client
           secret:
-            secretName: {{ .Values.secrets.channel }}
+            secretName: {{ .Values.secrets.peer.tlsClient }}
+        {{- end }}
+        {{- if .Values.secrets.peer.tlsClientRootCert }}
+        - name: tls-clientrootcert
+          secret:
+            secretName: {{ .Values.secrets.peer.tlsClientRootCert }}
+        {{- end }}
+        {{- if .Values.secrets.channels }}
+          {{- range .Values.secrets.channels }}
+        - name: {{ . }}
+          secret:
+            secretName: {{ . }}
+          {{- end }}
         {{- end }}
         {{- if .Values.secrets.adminCert }}
         - name: admin-cert
@@ -75,15 +87,10 @@ spec:
           secret:
             secretName: {{ .Values.secrets.adminKey }}
         {{- end }}
-        {{- if .Values.secrets.caPeerServerTls }}
-        - name: ca-peer-server-tls
+        {{- if .Values.secrets.ordTlsRootCert }}
+        - name: ord-tls-rootcert
           secret:
-            secretName: {{ .Values.secrets.caPeerServerTls }}
-        {{- end }}
-        {{- if .Values.secrets.caOrdServerTls }}
-        - name: ca-ord-server-tls
-          secret:
-            secretName: {{ .Values.secrets.caOrdServerTls }}
+            secretName: {{ .Values.secrets.ordTlsRootCert }}
         {{- end }}
       containers:
         - name: peer
@@ -96,9 +103,22 @@ spec:
             - name: event
               containerPort: 7053
               protocol: TCP
-          # TODO: Add liveness and readiness probes
+          livenessProbe:
+            exec:
+              command:
+              - ls
+              - /var/hyperledger
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          # TODO: Improve readiness probe (ideally `ps aux | awk '$11=="orderer"'`)
+          readinessProbe:
+            exec:
+              command:
+              - ls
+              - /var/hyperledger
+            initialDelaySeconds: 15
           command:
-            - sh
+            - bash
             - -c
             - |
               # To avoid having separate secrets for CouchDB and HLF
@@ -122,6 +142,11 @@ spec:
                 mkdir -p ${FABRIC_CFG_PATH}
                 cp -r /etc/hyperledger/fabric/core.yaml ${FABRIC_CFG_PATH}
                 ls ${FABRIC_CFG_PATH}
+              fi
+
+              if [ $CORE_PEER_TLS_CLIENTAUTHREQUIRED ]
+              then
+                export CORE_PEER_TLS_CLIENTROOTCAS_FILES=$(ls -d $CORE_PEER_TLS_CLIENTROOTCAS_FILES)
               fi
 
               echo ">\033[0;35m peer node start \033[0m"
@@ -159,16 +184,30 @@ spec:
               name: intcacert
             {{- end }}
             {{- if .Values.secrets.peer.tls }}
-            - mountPath: /var/hyperledger/msp_tls
+            - mountPath: /var/hyperledger/tls/server/pair
               name: tls
             {{- end }}
             {{- if .Values.secrets.peer.tlsRootCert }}
-            - mountPath: /var/hyperledger/msp_tls
+            - mountPath: /var/hyperledger/tls/server/cert
               name: tls-rootcert
             {{- end }}
-            {{- if .Values.secrets.channel }}
-            - mountPath: /hl_config/channel
-              name: channel
+            {{- if .Values.secrets.peer.tlsClient }}
+            - mountPath: /var/hyperledger/tls/client/pair
+              name: tls-client
+            {{- end }}
+            {{- if .Values.secrets.peer.tlsClientRootCert }}
+            - mountPath: /var/hyperledger/tls/client/cert
+              name: tls-clientrootcert
+            {{- end }}
+            {{- if .Values.secrets.ordTlsRootCert }}
+            - mountPath: /var/hyperledger/tls/ord/cert
+              name: ord-tls-rootcert
+            {{- end }}
+            {{- if .Values.secrets.channels }}
+              {{- range .Values.secrets.channels }}
+            - mountPath: /hl_config/channel/{{ . }}
+              name: {{ . }}
+              {{- end }}
             {{- end }}
             {{- if .Values.secrets.adminCert }}
             - mountPath: /var/hyperledger/admin_msp/admincerts

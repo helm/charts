@@ -45,7 +45,7 @@ Parameter                        | Description                                  
 `serviceAccount.create`          | If true, create a service account for Prisma | `true`
 `serviceAccount.name`            | Name of the service account to create or use | `{{ prisma.fullname }}`
 `image.repository`               | Prisma image repository                      | `prismagraphql/prisma`
-`image.tag`                      | Prisma image tag                             | `1.15-heroku`
+`image.tag`                      | Prisma image tag                             | `1.29.1-heroku`
 `image.pullPolicy`               | Image pull policy                            | `IfNotPresent`
 `database.connector`             | Database connector                           | `postgres`
 `database.host`                  | Host for the database endpoint               | `""`

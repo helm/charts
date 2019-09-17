@@ -8,8 +8,17 @@ restartPolicy: Always
 
 image:
   repository: justwatch/elasticsearch_exporter
-  tag: 1.0.2
+  tag: 1.1.0
   pullPolicy: IfNotPresent
+  pullSecret: ""
+
+## Set enabled to false if you don't want securityContext
+## in your Deployment.
+## The below values are the default for kubernetes.
+## Openshift won't deploy with runAsUser: 1000 without additional permissions.
+securityContext:
+  enabled: true  # Should be set to false when running on OpenShift
+  runAsUser: 1000
 
 resources: {}
   # requests:
@@ -27,10 +36,29 @@ tolerations: {}
 
 podAnnotations: {}
 
+affinity: {}
+
 service:
   type: ClusterIP
   httpPort: 9108
+  metricsPort:
+    name: http
   annotations: {}
+  labels: {}
+
+## Extra environment variables that will be passed into the exporter pod
+## example:
+## env:
+##   KEY_1: value1
+##   KEY_2: value2
+# env:
+
+# A list of secrets and their paths to mount inside the pod
+# This is useful for mounting certificates for security
+secretMounts: []
+#  - name: elastic-certs
+#    secretName: elastic-certs
+#    path: /ssl
 
 es:
   ## Address (host and port) of the Elasticsearch node we should connect to.
@@ -38,7 +66,7 @@ es:
   ## of a remote Elasticsearch server. When basic auth is needed,
   ## specify as: <proto>://<user>:<password>@<host>:<port>. e.g., http://admin:pass@localhost:9200.
   ##
-  uri: localhost:9200
+  uri: http://localhost:9200
 
   ## If true, query stats for all nodes in the cluster, rather than just the
   ## node we connect to.
@@ -49,14 +77,36 @@ es:
   ##
   indices: true
 
+  ## If true, query stats for shards in the cluster.
+  ##
+  shards: true
+
+  ## If true, query stats for snapshots in the cluster.
+  ##
+  snapshots: true
+
+  ## If true, query stats for cluster settings.
+  ##
+  cluster_settings: false
+
   ## Timeout for trying to get stats from Elasticsearch. (ex: 20s)
   ##
   timeout: 30s
+
+  ## Skip SSL verification when connecting to Elasticsearch
+  ## (only available if image.tag >= 1.0.4rc1)
+  ##
+  sslSkipVerify: false
+
 
   ssl:
     ## If true, a secure connection to ES cluster is used (requires SSL certs below)
     ##
     enabled: false
+
+    ## If true, certs from secretMounts will be need to be referenced instead of certs below
+    ##
+    useExistingSecrets: false
 
     ca:
 
@@ -64,17 +114,66 @@ es:
       ##
       # pem:
 
+      # Path of ca pem file which should match a secretMount path
+      # path: /ssl/ca.pem
     client:
 
       ## PEM that contains the client cert to connect to Elasticsearch.
       ##
       # pem:
 
+      # Path of client pem file which should match a secretMount path
+      # pemPath: /ssl/client.pem
+
       ## Private key for client auth when connecting to Elasticsearch
       ##
       # key:
 
+      # Path of client key file which should match a secretMount path
+      # keyPath: /ssl/client.key
 web:
   ## Path under which to expose metrics.
   ##
   path: /metrics
+
+serviceMonitor:
+  ## If true, a ServiceMonitor CRD is created for a prometheus operator
+  ## https://github.com/coreos/prometheus-operator
+  ##
+  enabled: false
+  #  namespace: monitoring
+  labels: {}
+  interval: 10s
+  scrapeTimeout: 10s
+  scheme: http
+
+prometheusRule:
+  ## If true, a PrometheusRule CRD is created for a prometheus operator
+  ## https://github.com/coreos/prometheus-operator
+  ##
+  enabled: false
+  #  namespace: monitoring
+  labels: {}
+  rules: []
+    # - record: elasticsearch_filesystem_data_used_percent
+    #   expr: 100 * (elasticsearch_filesystem_data_size_bytes - elasticsearch_filesystem_data_free_bytes)
+    #     / elasticsearch_filesystem_data_size_bytes
+    # - record: elasticsearch_filesystem_data_free_percent
+    #   expr: 100 - elasticsearch_filesystem_data_used_percent
+    # - alert: ElasticsearchTooFewNodesRunning
+    #   expr: elasticsearch_cluster_health_number_of_nodes < 3
+    #   for: 5m
+    #   labels:
+    #     severity: critical
+    #   annotations:
+    #     description: There are only {{$value}} < 3 ElasticSearch nodes running
+    #     summary: ElasticSearch running on less than 3 nodes
+    # - alert: ElasticsearchHeapTooHigh
+    #   expr: elasticsearch_jvm_memory_used_bytes{area="heap"} / elasticsearch_jvm_memory_max_bytes{area="heap"}
+    #     > 0.9
+    #   for: 15m
+    #   labels:
+    #     severity: critical
+    #   annotations:
+    #     description: The heap usage is over 90% for 15m
+    #     summary: ElasticSearch node {{$labels.node}} heap usage is high

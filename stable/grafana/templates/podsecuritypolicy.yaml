@@ -3,6 +3,7 @@ apiVersion: extensions/v1beta1
 kind: PodSecurityPolicy
 metadata:
   name: {{ template "grafana.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "grafana.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
@@ -10,14 +11,28 @@ metadata:
     release: {{ .Release.Name }}
   annotations:
     seccomp.security.alpha.kubernetes.io/allowedProfileNames: 'docker/default'
-    apparmor.security.beta.kubernetes.io/allowedProfileNames: 'runtime/default'
     seccomp.security.alpha.kubernetes.io/defaultProfileName:  'docker/default'
+    {{- if .Values.rbac.pspUseAppArmor }}
+    apparmor.security.beta.kubernetes.io/allowedProfileNames: 'runtime/default'
     apparmor.security.beta.kubernetes.io/defaultProfileName:  'runtime/default'
+    {{- end }}
 spec:
   privileged: false
   allowPrivilegeEscalation: false
   requiredDropCapabilities:
-    - ALL
+    # Default set from Docker, without DAC_OVERRIDE or CHOWN
+    - FOWNER
+    - FSETID
+    - KILL
+    - SETGID
+    - SETUID
+    - SETPCAP
+    - NET_BIND_SERVICE
+    - NET_RAW
+    - SYS_CHROOT
+    - MKNOD
+    - AUDIT_WRITE
+    - SETFCAP
   volumes:
     - 'configMap'
     - 'emptyDir'

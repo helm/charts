@@ -1,3 +1,4 @@
+{{- if not .Values.server.kubernetes.enabled -}}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -33,9 +34,13 @@ spec:
       nodeSelector:
 {{ toYaml .Values.agent.nodeSelector | indent 8 }}
 {{- end }}
+{{- with .Values.agent.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 6 }}
+{{- end }}
       serviceAccountName: {{ template "drone.serviceAccountName" . }}
       containers:
-      - name: {{ template "drone.fullname" . }}-agent
+      - name: agent
         image: "{{ .Values.images.agent.repository }}:{{ .Values.images.agent.tag }}"
         imagePullPolicy: {{ .Values.images.agent.pullPolicy }}
         ports:
@@ -43,9 +48,9 @@ spec:
           containerPort: 3000
           protocol: TCP
         env:
-          - name: DRONE_SERVER
-            value: {{ template "drone.fullname" . }}:9000
-          - name: DRONE_SECRET
+          - name: DRONE_RPC_SERVER
+            value: http://{{ template "drone.fullname" . }}
+          - name: DRONE_RPC_SECRET
             valueFrom:
               secretKeyRef:
                 name: {{ template "drone.fullname" . }}
@@ -58,28 +63,6 @@ spec:
           - name: {{ $key }}
             value: {{ $value | quote }}
           {{- end }}
-{{- if .Values.agent.livenessProbe.enabled }}
-        livenessProbe:
-          httpGet:
-            path: "/healthz"
-            port: http
-          initialDelaySeconds: {{ .Values.agent.livenessProbe.initialDelaySeconds }}
-          periodSeconds: {{ .Values.agent.livenessProbe.periodSeconds }}
-          timeoutSeconds: {{ .Values.agent.livenessProbe.timeoutSeconds }}
-          successThreshold: {{ .Values.agent.livenessProbe.successThreshold }}
-          failureThreshold: {{ .Values.agent.livenessProbe.failureThreshold }}
-{{- end }}
-{{- if .Values.agent.readinessProbe.enabled }}
-        readinessProbe:
-          httpGet:
-            path: "/healthz"
-            port: http
-          initialDelaySeconds: {{ .Values.agent.readinessProbe.initialDelaySeconds }}
-          periodSeconds: {{ .Values.agent.readinessProbe.periodSeconds }}
-          timeoutSeconds: {{ .Values.agent.readinessProbe.timeoutSeconds }}
-          successThreshold: {{ .Values.agent.readinessProbe.successThreshold }}
-          failureThreshold: {{ .Values.agent.readinessProbe.failureThreshold }}
-{{- end }}
         resources:
 {{ toYaml .Values.agent.resources | indent 10 }}
 {{- if not .Values.dind.enabled }}
@@ -88,12 +71,19 @@ spec:
         volumeMounts:
           - mountPath: /var/run/docker.sock
             name: docker-socket
+      {{- with .Values.agent.volumeMounts }}
+          {{- toYaml . | nindent 10 }}
+      {{- end }}
       volumes:
         - name: docker-socket
           hostPath:
             path: /var/run/docker.sock
 {{- else }}
-      - name: {{ template "drone.fullname" . }}-dind
+      {{- with .Values.agent.volumeMounts }}
+        volumeMounts:
+          {{- toYaml . | nindent 10 }}
+      {{- end }}
+      - name: dind
         image: "{{ .Values.images.dind.repository }}:{{ .Values.images.dind.tag }}"
         imagePullPolicy: {{ .Values.images.dind.pullPolicy }}
 {{- if .Values.dind.command }}
@@ -116,7 +106,14 @@ spec:
         volumeMounts:
           - name: docker-graph-storage
             mountPath: /var/lib/docker
+      {{- with .Values.dind.volumeMounts }}
+          {{- toYaml . | nindent 10 }}
+      {{- end }}
       volumes:
       - name: docker-graph-storage
         emptyDir: {}
 {{- end }}
+    {{- with .Values.agent.volumes }}
+        {{- toYaml . | nindent 6 }}
+    {{- end }}
+{{- end -}}

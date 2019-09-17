@@ -1,8 +1,12 @@
-## Global Docker image registry
-## Please, note that this will override the image registry for all the images, including dependencies, configured to use the global value
+## Global Docker image parameters
+## Please, note that this will override the image parameters, including dependencies, configured to use the global value
+## Current available global Docker image parameters: imageRegistry and imagePullSecrets
 ##
 # global:
-#   imageRegistry:
+#   imageRegistry: myRegistryName
+#   imagePullSecrets:
+#     - myRegistryKeySecretName
+#   storageClass: myStorageClass
 
 ## Bitnami DokuWiki image version
 ## ref: https://hub.docker.com/r/bitnami/dokuwiki/tags/
@@ -10,7 +14,7 @@
 image:
   registry: docker.io
   repository: bitnami/dokuwiki
-  tag: 0.20180422.201805030840
+  tag: 0.20180422.201901061035-debian-9-r214
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -21,7 +25,15 @@ image:
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
   ##
   # pullSecrets:
-  #   - myRegistrKeySecretName
+  #   - myRegistryKeySecretName
+
+## String to partially override dokuwiki.fullname template (will maintain the release name)
+##
+# nameOverride:
+
+## String to fully override dokuwiki.fullname template
+##
+# fullnameOverride:
 
 ## User of the application
 ## ref: https://github.com/bitnami/bitnami-docker-dokuwiki#environment-variables
@@ -59,6 +71,10 @@ service:
   ## otherwise leave blank
   ##
   # loadBalancerIP:
+  # HTTP Port
+  port: 80
+  # HTTPS Port
+  httpsPort: 443
   ## Use nodePorts to requets some specific ports when usin NodePort
   ## nodePorts:
   ##   http: <to set explicitly, choose port between 30000-32767>
@@ -123,17 +139,6 @@ ingress:
 ##
 persistence:
   enabled: true
-  apache:
-    ## Apache data Persistent Volume Storage Class
-    ## If defined, storageClassName: <storageClass>
-    ## If set to "-", storageClassName: "", which disables dynamic provisioning
-    ## If undefined (the default) or set to null, no storageClassName spec is
-    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
-    ##   GKE, AWS & OpenStack)
-    ##
-    # storageClass: "-"
-    accessMode: ReadWriteOnce
-    size: 1Gi
   dokuwiki:
     ## Dokuwiki data Persistent Volume Storage Class
     ## If defined, storageClassName: <storageClass>
@@ -176,3 +181,31 @@ readinessProbe:
 nodeSelector: {}
 tolerations: []
 affinity: {}
+
+## Pod annotations
+## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+##
+podAnnotations: {}
+## Prometheus Exporter / Metrics
+##
+metrics:
+  enabled: false
+  image:
+    registry: docker.io
+    repository: bitnami/apache-exporter
+    tag: 0.7.0-debian-9-r50
+    pullPolicy: IfNotPresent
+    ## Optionally specify an array of imagePullSecrets.
+    ## Secrets must be manually created in the namespace.
+    ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+    ##
+    # pullSecrets:
+    #   - myRegistryKeySecretName
+  ## Metrics exporter pod Annotation and Labels
+  podAnnotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "9117"
+    ## Metrics exporter resource requests and limits
+    ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+    ##
+  # resources: {}

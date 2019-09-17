@@ -28,13 +28,37 @@ spec:
 {{ toYaml .Values.annotations | indent 8 }}
 {{- end }}
     spec:
+{{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+{{- end }}
+      serviceAccount: {{ template "stackdriver-exporter.serviceAccountName" . }}
       restartPolicy: {{ .Values.restartPolicy }}
+      volumes:
+      {{- if .Values.stackdriver.serviceAccountSecret }}
+        - name: stackdriver-service-account
+          secret:
+            secretName: {{ .Values.stackdriver.serviceAccountSecret | quote }}
+      {{- else if .Values.stackdriver.serviceAccountKey }}
+        - name: stackdriver-service-account
+          secret:
+            secretName: {{ template "stackdriver-exporter.fullname" . }}
+      {{- end}}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["stackdriver_exporter"]
+          volumeMounts:
+          {{- if or .Values.stackdriver.serviceAccountSecret .Values.stackdriver.serviceAccountKey }}
+            - name: stackdriver-service-account
+              mountPath: /etc/secrets/service-account/
+          {{- end}}
           env:
+          {{- if or .Values.stackdriver.serviceAccountSecret .Values.stackdriver.serviceAccountKey }}
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: /etc/secrets/service-account/credentials.json
+          {{- end }}
             - name: STACKDRIVER_EXPORTER_GOOGLE_PROJECT_ID
               value: {{ .Values.stackdriver.projectId | quote }}
             - name: STACKDRIVER_EXPORTER_MONITORING_METRICS_TYPE_PREFIXES
@@ -47,6 +71,16 @@ spec:
               value: {{ .Values.web.listenAddress | quote }}
             - name: STACKDRIVER_EXPORTER_WEB_TELEMETRY_PATH
               value: {{ .Values.web.path | quote }}
+            - name: STACKDRIVER_EXPORTER_MAX_RETRIES
+              value: {{ .Values.stackdriver.maxRetries | quote }}
+            - name: STACKDRIVER_EXPORTER_HTTP_TIMEOUT
+              value: {{ .Values.stackdriver.httpTimeout | quote }}
+            - name: STACKDRIVER_EXPORTER_MAX_BACKOFF_DURATION
+              value: {{ .Values.stackdriver.maxBackoff | quote }}
+            - name: STACKDRIVER_EXPORTER_BACKODFF_JITTER_BASE
+              value: {{ .Values.stackdriver.backoffJitter | quote }}
+            - name: STACKDRIVER_EXPORTER_RETRY_STATUSES
+              value: {{ .Values.stackdriver.retryStatuses | quote}}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           ports:
@@ -58,9 +92,18 @@ spec:
               port: http
             initialDelaySeconds: 30
             timeoutSeconds: 10
-          livenessProbe:
+          readinessProbe:
             httpGet:
               path: /health
               port: http
             initialDelaySeconds: 10
             timeoutSeconds: 10
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+{{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+    {{- end }}
+

@@ -1,0 +1,18 @@
+{{- if .Values.enableExampleNFS }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.pvcName }}
+  labels:
+    app.kubernetes.io/name: {{ include "nfs.name" . }}
+    helm.sh/chart: {{ include "nfs.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: ""
+  resources:
+    requests:
+      storage: {{ .Values.pvcStorage }}
+{{- end }}

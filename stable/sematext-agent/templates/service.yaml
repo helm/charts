@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "sematext-agent.fullname" . }}
+  labels:
+    app: {{ template "sematext-agent.name" . }}
+    chart: {{ template "sematext-agent.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.agent.service.type }}
+  ports:
+    - port: {{ .Values.agent.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app: {{ template "sematext-agent.name" . }}
+    release: {{ .Release.Name }}

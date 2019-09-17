@@ -1,0 +1,55 @@
+{{- if ne .Values.auth.domain "<your_auth_domain>" -}}
+{{- $fullName := include "buzzfeed-sso.fullname" . -}}
+{{- $authDomain := .Values.auth.domain -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ $fullName }}
+  labels:
+    app: {{ template "buzzfeed-sso.name" . }}
+    chart: {{ template "buzzfeed-sso.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+{{- range $key, $value := .Values.ingress.extraLabels }}
+    {{ $key }}: {{ $value }}
+{{- end }}
+{{- with .Values.ingress.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
+spec:
+{{- if or .Values.auth.tls .Values.ingress.tls }}
+  tls:
+  {{- if .Values.auth.tls }}
+    - hosts:
+        - {{ $authDomain }}
+      secretName: {{ .Values.auth.tls.secretName -}}
+  {{- end }}
+  {{- range .Values.ingress.tls }}
+    - hosts:
+      {{- range .hosts }}
+        - {{ . }}
+      {{- end }}
+      secretName: {{ .secretName }}
+  {{- end }}
+{{- end }}
+  rules:
+    # Upstreams that need SSO authentication
+  {{- range .Values.ingress.hosts }}
+    - host: {{ .domain }}
+      http:
+        paths:
+          - path: {{ .path }}
+            backend:
+              serviceName: {{ $fullName }}-proxy
+              servicePort: http
+  {{- end }}
+    # Global SSO used in the callback for login
+    - host: {{ $authDomain }}
+      http:
+        paths:
+          - path: {{ .Values.auth.ingressPath }}
+            backend:
+              serviceName: {{ $fullName }}-auth
+              servicePort: http
+{{- end }}

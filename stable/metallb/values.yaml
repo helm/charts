@@ -17,10 +17,14 @@ existingConfigMap: metallb-config
 #
 # Refer to https://metallb.universe.tf/configuration/ for
 # available options.
-configInline:
+configInline: {}
 
 rbac:
   # create specifies whether to install and use RBAC rules.
+  create: true
+
+psp:
+  # create specifies whether to install and use Pod Security Policies.
   create: true
 
 prometheus:
@@ -33,6 +37,40 @@ prometheus:
   # monitoring configuration. If you use the Prometheus operator, this
   # can be left at false.
   scrapeAnnotations: false
+
+  # Prometheus Operator service monitors
+  serviceMonitor:
+
+    # enable support for Prometheus Operator
+    enabled: false
+
+    # Job label for scrape target
+    jobLabel: metallb
+
+    # Scrape interval. If not set, the Prometheus default scrape interval is used.
+    interval: ""
+
+    # 	metric relabel configs to apply to samples before ingestion.
+    metricRelabelings: []
+    # - action: keep
+    #   regex: 'kube_(daemonset|deployment|pod|namespace|node|statefulset).+'
+    #   sourceLabels: [__name__]
+
+    # 	relabel configs to apply to samples before ingestion.
+    relabelings: []
+    # - sourceLabels: [__meta_kubernetes_pod_node_name]
+    #   separator: ;
+    #   regex: ^(.*)$
+    #   target_label: nodename
+    #   replacement: $1
+    #   action: replace
+
+  # Prometheus Operator alertmanager alerts
+  prometheusRule:
+
+    # enable alertmanager alerts
+    enabled: false
+
 
 serviceAccounts:
   controller:
@@ -53,7 +91,7 @@ serviceAccounts:
 controller:
   image:
     repository: metallb/controller
-    tag: v0.7.3
+    tag: v0.8.1
     pullPolicy: IfNotPresent
   resources: {}
     # limits:
@@ -68,7 +106,7 @@ controller:
 speaker:
   image:
     repository: metallb/speaker
-    tag: v0.7.3
+    tag: v0.8.1
     pullPolicy: IfNotPresent
   resources: {}
     # limits:

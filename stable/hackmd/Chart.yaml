@@ -1,7 +1,7 @@
 name: hackmd
 apiVersion: v1
-version: "0.1.1"
-appVersion: "1.0.1"
+version: "1.2.1"
+appVersion: "1.3.0-alpine"
 description: Realtime collaborative markdown notes on all platforms.
 icon: https://hackmd.io/favicon.png
 keywords:

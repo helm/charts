@@ -1,9 +1,20 @@
 global:
   ## NodeSelector to be used in every deployment
   ## hub, chrome, firefox, chromeDebug and firefoxDebug
-  ## can also be spceifed at chart level see below
+  ## can also be specified at chart level see below
   nodeSelector:
   #  label: value
+  ## Configure HostAliases
+  hostAliases: []
+  affinity:
+  #  label: value
+  tolerations:
+  #  label: value
+  ## imagePullSecrets is the secret to use to pull the image from in case of a private flavour image
+  ## to be used in every deployment hub, chrome, firefox, chromeDebug and firefoxDebug
+  ## can also be specified at chart level see below.
+  ## Specifying secret at a chart level will override the global option
+  imagePullSecrets:
 
 hub:
   ## The repository and image
@@ -12,7 +23,10 @@ hub:
 
   ## The tag for the image
   ## ref: https://hub.docker.com/r/selenium/hub/tags/
-  tag: "3.14.0"
+  tag: "3.141.59"
+
+  ## imagePullSecrets is the secret to use to pull the image from in case of a private flavour image
+  # imagePullSecrets: "regcred"
 
   ## Specify an imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -21,14 +35,32 @@ hub:
   ## The port which the hub listens on
   port: 4444
 
-  ## Timeout for probe Hub readiness via HTTP request on Hub status
+  ## The port the service listens on
+  servicePort: 4444
+
+  ## nodePort - The node port the service exposed on
+  # nodePort: 30044
+
+  ## Timeout for probe Hub readiness via HTTP request on hub.probePath
   readinessTimeout: 1
 
   ## Initial delay before performing the first readinessProbe
   readinessDelay: 15
 
-  ## Timeout for probe Hub liveness via HTTP request on Hub status
+  ## Timeout for probe Hub liveness via HTTP request on hub.probePath
   livenessTimeout: 1
+
+  ## Path for checking readiness and liveness via HTTP Request
+  probePath: "/wd/hub/status"
+
+  ## Additional environment variables to set
+  extraEnvs: []
+  # extraEnvs:
+  #   - name: FOO
+  #     valueFrom:
+  #       secretKeyRef:
+  #         key: FOO
+  #         name: secret-resource
 
   ## Set the JAVA_TOOL_OPTIONS environment variable
   ## If you find your selenium hub is OOMKilled, try adding -XX:+UseSerialGC
@@ -53,6 +85,9 @@ hub:
     limits:
       cpu: ".5"
       memory: "512Mi"
+
+  ## Configure annotations on the hub pod
+  podAnnotations: {}
 
   ## The type of service to create
   ##   Values: ClusterIP, NodePort, LoadBalancer, or ExternalName
@@ -87,7 +122,7 @@ hub:
   # gridBrowserTimeout: 0
   # gridMaxSession: 5
   ## In milliseconds
-  # gridUnregisterIfStillDownAfer: 30000
+  # gridUnregisterIfStillDownAfter: 30000
   # timeZone: UTC
 
   ## NodeSelector to be used for the hub
@@ -117,7 +152,10 @@ chrome:
 
   ## The tag for the image
   ## ref: https://hub.docker.com/r/selenium/node-chrome/tags/
-  tag: "3.14.0"
+  tag: "3.141.59"
+
+  ## imagePullSecrets is the secret to use to pull the image from in case of a private flavour image
+  # imagePullSecrets: "regcred"
 
   ## Specify an imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -125,6 +163,18 @@ chrome:
 
   ## The number of pods in the deployment
   replicas: 1
+
+  ## Configure annotations on the chrome pods
+  podAnnotations: {}
+
+  ## Additional environment variables to set
+  extraEnvs: []
+  # extraEnvs:
+  #   - name: FOO
+  #     valueFrom:
+  #       secretKeyRef:
+  #         key: FOO
+  #         name: secret-resource
 
   ## Set the JAVA_TOOL_OPTIONS environment variable
   ## If you find your selenium node is OOMKilled, try adding -XX:+UseSerialGC
@@ -193,7 +243,10 @@ chromeDebug:
 
   ## The tag for the image
   ## ref: https://hub.docker.com/r/selenium/node-chrome-debug/tags/
-  tag: "3.14.0"
+  tag: "3.141.59"
+
+  ## imagePullSecrets is the secret to use to pull the image from in case of a private flavour image
+  # imagePullSecrets: "regcred"
 
   ## Specify an imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -201,6 +254,18 @@ chromeDebug:
 
   ## The number of pods in the deployment
   replicas: 1
+
+  ## Configure annotations on the chrome debug pods
+  podAnnotations: {}
+
+  ## Additional environment variables to set
+  extraEnvs: []
+  # extraEnvs:
+  #   - name: FOO
+  #     valueFrom:
+  #       secretKeyRef:
+  #         key: FOO
+  #         name: secret-resource
 
   ## Set the JAVA_TOOL_OPTIONS environment variable
   ## If you find your selenium hub is OOMKilled, try adding -XX:+UseSerialGC
@@ -268,7 +333,10 @@ firefox:
 
   ## The tag for the image
   ## ref: https://hub.docker.com/r/selenium/node-firefox/tags/
-  tag: "3.14.0"
+  tag: "3.141.59"
+
+  ## imagePullSecrets is the secret to use to pull the image from in case of a private flavour image
+  # imagePullSecrets: "regcred"
 
   ## Specify an imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -276,6 +344,18 @@ firefox:
 
   ## The number of pods in the deployment
   replicas: 1
+
+  ## Configure annotations on the firefox pods
+  podAnnotations: {}
+
+  ## Additional environment variables to set
+  extraEnvs: []
+  # extraEnvs:
+  #   - name: FOO
+  #     valueFrom:
+  #       secretKeyRef:
+  #         key: FOO
+  #         name: secret-resource
 
   ## Set the JAVA_TOOL_OPTIONS environment variable
   ## If you find your selenium hub is OOMKilled, try adding -XX:+UseSerialGC
@@ -330,7 +410,10 @@ firefoxDebug:
 
   ## The tag for the image
   ## ref: https://hub.docker.com/r/selenium/node-firefox-debug/tags/
-  tag: "3.14.0"
+  tag: "3.141.59"
+
+  ## imagePullSecrets is the secret to use to pull the image from in case of a private flavour image
+  # imagePullSecrets: "regcred"
 
   ## Specify an imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -338,6 +421,18 @@ firefoxDebug:
 
   ## The number of pods in the deployment
   replicas: 1
+
+  ## Configure annotations on the firefox debug pods
+  podAnnotations: {}
+
+  ## Additional environment variables to set
+  extraEnvs: []
+  # extraEnvs:
+  #   - name: FOO
+  #     valueFrom:
+  #       secretKeyRef:
+  #         key: FOO
+  #         name: secret-resource
 
   ## Set the JAVA_TOOL_OPTIONS environment variable
   ## If you find your selenium hub is OOMKilled, try adding -XX:+UseSerialGC

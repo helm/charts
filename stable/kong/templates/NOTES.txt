@@ -37,7 +37,11 @@ use one of the addresses listed below
 
 2. Kong Proxy can be accessed inside the cluster using:
      DNS={{ template "kong.fullname" . }}-proxy.{{ .Release.Namespace }}.svc.cluster.local
-     PORT={{ .Values.proxy.servicePort }}
+     {{- if .Values.proxy.tls.enabled -}}
+        PORT={{ .Values.proxy.tls.servicePort }}
+     {{- else -}}
+        PORT={{ .Values.proxy.http.servicePort }}
+     {{- end -}}
 
 
 To connect from outside the K8s cluster:
@@ -69,5 +73,9 @@ use one of the addresses listed below
 
      # Execute the following commands to route the connection to proxy SSL port:
      export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "release={{ .Release.Name }}, app={{ template "kong.name" . }}" -o jsonpath="{.items[0].metadata.name}")
-     kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME {{ .Values.proxy.servicePort }}:{{ .Values.proxy.servicePort }}
+     {{- if .Values.proxy.tls.enabled -}}
+        kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME {{ .Values.proxy.tls.servicePort }}:{{ .Values.proxy.tls.servicePort }}
+     {{- else -}}
+        kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME {{ .Values.proxy.http.servicePort }}:{{ .Values.proxy.http.servicePort }}
+     {{- end -}}
    {{- end }}

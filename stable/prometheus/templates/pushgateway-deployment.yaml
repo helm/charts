@@ -3,13 +3,15 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    app: {{ template "prometheus.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.pushgateway.name }}"
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    {{- include "prometheus.pushgateway.labels" . | nindent 4 }}
   name: {{ template "prometheus.pushgateway.fullname" . }}
 spec:
+  selector:
+    {{- if .Values.schedulerName }}
+    schedulerName: "{{ .Values.schedulerName }}"
+    {{- end }}
+    matchLabels:
+      {{- include "prometheus.pushgateway.matchLabels" . | nindent 6 }}
   replicas: {{ .Values.pushgateway.replicaCount }}
   template:
     metadata:
@@ -18,9 +20,7 @@ spec:
 {{ toYaml .Values.pushgateway.podAnnotations | indent 8 }}
     {{- end }}
       labels:
-        app: {{ template "prometheus.name" . }}
-        component: "{{ .Values.pushgateway.name }}"
-        release: {{ .Release.Name }}
+        {{- include "prometheus.pushgateway.labels" . | nindent 8 }}
     spec:
       serviceAccountName: {{ template "prometheus.serviceAccountName.pushgateway" . }}
 {{- if .Values.pushgateway.priorityClassName }}
@@ -48,6 +48,16 @@ spec:
             timeoutSeconds: 10
           resources:
 {{ toYaml .Values.pushgateway.resources | indent 12 }}
+          {{- if .Values.pushgateway.persistentVolume.enabled }}
+          volumeMounts:
+            - name: storage-volume
+              mountPath: "{{ .Values.pushgateway.persistentVolume.mountPath }}"
+              subPath: "{{ .Values.pushgateway.persistentVolume.subPath }}"
+          {{- end }}
+    {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+      {{ toYaml .Values.imagePullSecrets | indent 2 }}
+    {{- end }}
     {{- if .Values.pushgateway.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.pushgateway.nodeSelector | indent 8 }}
@@ -64,4 +74,10 @@ spec:
       affinity:
 {{ toYaml .Values.pushgateway.affinity | indent 8 }}
     {{- end }}
+      {{- if .Values.pushgateway.persistentVolume.enabled }}
+      volumes:
+        - name: storage-volume
+          persistentVolumeClaim:
+            claimName: {{ if .Values.pushgateway.persistentVolume.existingClaim }}{{ .Values.pushgateway.persistentVolume.existingClaim }}{{- else }}{{ template "prometheus.pushgateway.fullname" . }}{{- end }}
+      {{- end -}}
 {{- end }}

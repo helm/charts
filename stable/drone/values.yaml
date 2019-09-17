@@ -1,12 +1,10 @@
-appVersion: "0.8.6"
-
 images:
   ## The official drone (server) image, change tag to use a different version.
   ## ref: https://hub.docker.com/r/drone/drone/tags/
   ##
   server:
     repository: "docker.io/drone/drone"
-    tag: 0.8.6
+    tag: 1.3.1
     pullPolicy: IfNotPresent
 
   ## The official drone (agent) image, change tag to use a different version.
@@ -14,7 +12,7 @@ images:
   ##
   agent:
     repository: "docker.io/drone/agent"
-    tag: 0.8.6
+    tag: 1.3.1
     pullPolicy: IfNotPresent
 
   ## The official docker (dind) image, change tag to use a different version.
@@ -36,6 +34,19 @@ service:
   ## Service type can be set to ClusterIP, NodePort or LoadBalancer.
   ##
   type: ClusterIP
+
+  ## Specify a load balancer IP address to use if your provider supports it.
+  # loadBalancerIP:
+
+  ## Drone Service annotations
+  ##
+  # annotations:
+  #   service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
+  #   service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:xx-xxxx-x:xxxxxxxxxxx:certificate/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx
+  #   external-dns.alpha.kubernetes.io/hostname: drone.domain.tld.
+
+  ## set to true if you want to expose drone's GRPC via the service (for external access)
+  exposeGRPC: false
 
 ingress:
   ## If true, Drone Ingress will be created.
@@ -61,31 +72,88 @@ ingress:
   #     hosts:
   #       - drone.domain.io
 
+sourceControl:
+  ## your source control provider: github,gitlab,gitea,gogs,bitbucketCloud,bitbucketServer
+  provider:
+  ## secret containing your source control provider secrets, keys provided below.
+  ## if left blank will assume a secret based on the release name of the chart.
+  secret:
+  ## Fill in the correct values for your chosen source control provider
+  ## Any key in this list with the suffix `Key` will be fetched from the
+  ## secret named above, if not provided the secret it will be created as
+  ## `<fullName>-source-control` using for the key "ClientSecretKey" and
+  # "clientSecretValue" for the value. Be awere to not leak shis file with your password
+  github:
+    clientID:
+    clientSecretKey: clientSecret
+    clientSecretValue:
+    server: https://github.com
+  gitlab:
+    clientID:
+    clientSecretKey: clientSecret
+    clientSecretValue:
+    server:
+  gitea:
+    server:
+  gogs:
+    server:
+  bitbucketCloud:
+    clientID:
+    clientSecretKey: clientSecret
+    clientSecretValue:
+  bitbucketServer:
+    server:
+    consumerKey: consumerKey
+    privateKey: privateKey
+    username:
+    passwordKey: password
+
 server:
   ## If not set, it will be autofilled with the cluster host.
-  ## Host must be in "<scheme>://<hostname>" format.
+  ## Host shoud be just the hostname.
   ##
-  # host: "https://drone.domain.io"
+  # host: "drone.domain.io"
+
+  ## protocol should be http or https
+  protocol: http
+
+  ## rpcProtocol for rpc connection to the server should be http or https
+  rpcProtocol: http
+
+  ## Initial admin user
+  ## Leaving this blank may make it impossible to log into drone.
+  ## Set to a valid oauth user from your git/oauth server
+  ## For more complex user creation you can use env variables below instead.
+  adminUser:
+
+  ## Configures Drone to authenticate when cloning public repositories. This is only required
+  ## when your source code management system (e.g. GitHub Enterprise) has private mode enabled.
+  alwaysAuth: false
+
+  ## Configures drone to use kubernetes to run pipelines rather than agents, if enabled
+  ## will not deploy any agents.
+  kubernetes:
+    ## set to true if you want drone to use kubernetes to run pipelines
+    enabled: true
+    ## you can run pipeline jobs in another namespace, if you choose to do this
+    ## you'll need to create that namespace manually.
+    # namespace:
+
+    ## alternative service account to create to create drone pipelines. this account
+    ## will be given cluster-admin rights.
+    ## if not set the rights will be given to the default drone service account name.
+    # pipelineServiceAccount:
 
   ## Drone server configuration.
   ## Values in here get injected as environment variables.
-  ## ref: http://readme.drone.io/admin/installation-reference
+  ## You can set up remote database servers etc using environment
+  ## variables.
+  ## ref: https://docs.drone.io/reference/server/
   ##
   env:
-    DRONE_DEBUG: "false"
+    DRONE_LOGS_DEBUG: "false"
     DRONE_DATABASE_DRIVER: "sqlite3"
     DRONE_DATABASE_DATASOURCE: "/var/lib/drone/drone.sqlite"
-
-    ## Drone requires some environment variables to bootstrap the
-    ## git service or it won't start up.
-    ## Uncomment this and add your own custom configuration.
-    ##
-    # DRONE_PROVIDER: "github"
-    # DRONE_OPEN: "true"
-    # DRONE_GITHUB: "true"
-    # DRONE_ORGS: "my-github-org,my-other-github-org"
-    # DRONE_ADMIN:"admin-1,admin-2"
-    # DRONE_GITHUB_CLIENT: "github-oauth2-client-id"
 
   ## Secret environment variables are configured in `server.envSecrets`.
   ## Each item in `server.envSecrets` references a Kubernetes Secret.
@@ -127,6 +195,11 @@ server:
   ##
   nodeSelector: {}
 
+  ## Node taints to tolerate
+  ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  ##
+  tolerations: []
+
   ## additional siecar containers, e. g. for a database proxy, such as Google's cloudsql-proxy.
   ## ex: https://github.com/kubernetes/charts/tree/master/stable/keycloak
   ##
@@ -139,10 +212,10 @@ server:
 agent:
   ## Drone agent configuration.
   ## Values in here get injected as environment variables.
-  ## ref: http://readme.drone.io/admin/installation-reference
+  ## ref: https://docs.drone.io/reference/agent/
   ##
   env:
-    DRONE_DEBUG: "false"
+    DRONE_LOGS_DEBUG: "false"
 
   ## Number of drone agent replicas
   replicas: 1
@@ -151,6 +224,34 @@ agent:
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
   ##
   annotations: {}
+
+  ## Additional volumes e.g. for shared caching between agents on different nodes or
+  ## shared cache between agents on the same node when using dind or
+  ## for a global docker login config as per
+  ## Option 2 ref: https://discourse.drone.io/t/how-to-pull-private-images-with-1-0/3155
+  ## Note: Option 2 also requires DRONE_DOCKER_CONFIG: /root/.docker/config.json env var in agent
+  ## NB: This will make the credentials available globally to all builds and all repositories
+  # volumes:
+  # - name: docker-config
+  #   secret:
+  #     defaultMode: 420
+  #     items:
+  #     - key: .dockerconfigjson
+  #       path: config.json
+  #     secretName: drone-docker-config
+  # - name: persistent-data
+  #   persistentVolumeClaim:
+  #     claimName: drone-agent-pvc
+  # - name: cache
+  #   hostPath:
+  #     path: /drone-cache
+  #     type: Directory
+
+  ## Volume mount into agent container
+  # volumeMounts:
+  # - name: docker-config
+  #   mountPath: /root/.docker
+  #   readOnly: true
 
   ## CPU and memory limits for drone agent
   ##
@@ -164,20 +265,9 @@ agent:
 
   ## Liveness and readiness probe values
   ## Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes
-  livenessProbe:
-    enabled: true
-    failureThreshold: 3
-    initialDelaySeconds: 0
-    periodSeconds: 10
-    successThreshold: 1
-    timeoutSeconds: 1
-  readinessProbe:
-    enabled: true
-    failureThreshold: 3
-    initialDelaySeconds: 0
-    periodSeconds: 10
-    successThreshold: 1
-    timeoutSeconds: 1
+  ## drone agent does not currently have a health endpoint to check against.
+  livenessProbe: {}
+  readinessProbe: {}
 
   ## Use an alternate scheduler, e.g. "stork".
   ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
@@ -193,6 +283,11 @@ agent:
   ## ref: https://kubernetes.io/docs/user-guide/node-selection
   ##
   nodeSelector: {}
+
+  ## Node taints to tolerate
+  ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  ##
+  tolerations: []
 
 dind:
   ## Enable or disable DinD
@@ -218,6 +313,15 @@ dind:
   ## ref: https://docs.docker.com/engine/userguide/storagedriver/selectadriver/
   ##
   driver: overlay2
+
+  ## Volume mount into dind container
+  ## Volumes are defined under agent values.
+  # volumeMounts:
+  # - mountPath: /root/.docker
+  #   name: docker-config
+  #   readOnly: true
+  # - name: persistent-data
+  #   mountPath: /mnt/drone-cache
 
   ## CPU and memory limits for dind
   ##

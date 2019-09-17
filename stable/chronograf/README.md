@@ -43,8 +43,45 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The configurable parameters of the Chronograf chart and 
+The configurable parameters of the Chronograf chart and
 their descriptions can be seen in `values.yaml`. The [full image documentation](https://quay.io/influxdb/chronograf) contains more information about running Chronograf in docker.
+
+The following table lists the configurable parameters of the chronograf chart and their default values.
+
+| Parameter                    | Description                                                                                               | Default                                     |
+|:-----------------------------|:----------------------------------------------------------------------------------------------------------|:--------------------------------------------|
+| `image.repository`           | controller container image repository                                                                     | quay.io/influxdb/chronograf                 |
+| `image.tag`                  | controller container image tag                                                                            | 1.7.12                                      |
+| `image.pullPolicy`           | controller container image pull policy                                                                    | IfNotPresent                                |
+| `service.type`               | ClusterIP, NodePort, or LoadBalancer                                                                      | ClusterIP                                   |
+| `persistence.enabled`        | Use a PVC to persist data                                                                                 | `true`                                      |
+| `persistence.storageClass`   | Storage class of backing PVC                                                                              | `nil` (uses alpha storage class annotation) |
+| `persistence.accessModes`    | Use volume as ReadOnly or ReadWrite                                                                       | `[ReadWriteOnce]`                           |
+| `persistence.size`           | Size of data volume                                                                                       | `8Gi`                                       |
+| `ingress.enabled`            | Enable ingress controller resource                                                                        | false                                       |
+| `ingress.hostname`           | Ingress resource hostnames                                                                                | chronograf.foobar.com                       |
+| `ingress.tls`                | Ingress TLS configuration                                                                                 | false                                       |
+| `ingress.annotations`        | Ingress annotations configuration                                                                         | null                                        |
+| `oauth.enabled`              | Need to set to true to use any of the oauth options                                                       | false                                       |
+| `oauth.token_secret`         | Used for JWT to support running multiple copies of Chronograf                                             | CHANGE_ME                                   |
+| `oauth.github.enabled`       | Enable oauth github                                                                                       | false                                       |
+| `oauth.github.client_id`     | oauth github client_id                                                                                    | CHANGE_ME                                   |
+| `oauth.github.client_secret` | This is a comma separated list of GH organizations                                                        | CHANGE_ME                                   |
+| `oauth.github.gh_orgs`       | oauth github                                                                                              | ""                                          |
+| `oauth.google.enabled`       | Enable oauth google                                                                                       | false                                       |
+| `oauth.google.client_id`     | oauth google                                                                                              | CHANGE_ME                                   |
+| `oauth.google.client_secret` | This is a comma separated list of GH organizations                                                        | CHANGE_ME                                   |
+| `oauth.google.public_url`    | oauth google                                                                                              | ""                                          |
+| `oauth.google.domains`       | This is a comma separated list of Google Apps domains                                                     | ""                                          |
+| `oauth.heroku.enabled`       | Enable oauth heroku                                                                                       | false                                       |
+| `oauth.heroku.client_id`     | oauth heroku client_id                                                                                    | CHANGE_ME                                   |
+| `oauth.heroku.client_secret` | This is a comma separated list of Heroku organizations                                                    | CHANGE_ME                                   |
+| `oauth.heroku.gh_orgs`       | oauth github                                                                                              | ""                                          |
+| `env`                        | Extra environment variables that will be passed onto deployment pods                                      | {}                                          |
+| `envFromSecret`              | The name of a secret in the same kubernetes namespace which contain values to be added to the environment | {}                                          |
+| `nodeSelector`               | Node labels for pod assignment                                                                            | {}                                          |
+| `tolerations`                | Toleration labels for pod assignment                                                                      | []                                          |
+| `affinity`                   | Affinity settings for pod assignment                                                                      | {}                                          |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
@@ -69,3 +106,32 @@ $ helm install --name my-release -f values.yaml stable/chronograf
 The [Chronograf](https://quay.io/influxdb/chronograf) image stores data in the `/var/lib/chronograf` directory in the container.
 
 The chart optionally mounts a [Persistent Volume](http://kubernetes.io/docs/user-guide/persistent-volumes/) at this location. The volume is created using dynamic volume provisioning.
+
+## OAuth Using Kubernetes Secret
+
+OAuth, among other things, can be configured in Chronograf using environment variables. For more information please see https://docs.influxdata.com/chronograf/latest/administration/managing-security
+
+Taking Google as an example, to use an existing Kubernetes Secret that contains sensitive information (`GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`), e.g.:
+
+```
+apiVersion: v1
+kind: Secret
+metadata:
+  name: chronograf-google-env-secrets
+  namespace: tick
+type: Opaque
+data:
+    GOOGLE_CLIENT_ID: <BASE64_ENCODED_GOOGLE_CLIENT_ID>
+    GOOGLE_CLIENT_SECRET: <BASE64_ENCODED_GOOGLE_CLIENT_SECRET>
+```
+
+in conjunction with less sensitive information such as `GOOGLE_DOMAINS` and `PUBLIC_URL`, one can make use of the chart's `envFromSecret` and `env` values, e.g. a values file can have the following:
+
+```
+[...]
+env:
+  GOOGLE_DOMAINS: "yourdomain.com"
+  PUBLIC_URL: "https://chronograf.yourdomain.com"
+envFromSecret: chronograf-google-env-secrets
+[...]
+```

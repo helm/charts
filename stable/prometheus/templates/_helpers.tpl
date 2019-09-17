@@ -7,6 +7,69 @@ Expand the name of the chart.
 {{- end -}}
 
 {{/*
+Create unified labels for prometheus components
+*/}}
+{{- define "prometheus.common.matchLabels" -}}
+app: {{ template "prometheus.name" . }}
+release: {{ .Release.Name }}
+{{- end -}}
+
+{{- define "prometheus.common.metaLabels" -}}
+chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+heritage: {{ .Release.Service }}
+{{- end -}}
+
+{{- define "prometheus.alertmanager.labels" -}}
+{{ include "prometheus.alertmanager.matchLabels" . }}
+{{ include "prometheus.common.metaLabels" . }}
+{{- end -}}
+
+{{- define "prometheus.alertmanager.matchLabels" -}}
+component: {{ .Values.alertmanager.name | quote }}
+{{ include "prometheus.common.matchLabels" . }}
+{{- end -}}
+
+{{- define "prometheus.kubeStateMetrics.labels" -}}
+{{ include "prometheus.kubeStateMetrics.matchLabels" . }}
+{{ include "prometheus.common.metaLabels" . }}
+{{- end -}}
+
+{{- define "prometheus.kubeStateMetrics.matchLabels" -}}
+component: {{ .Values.kubeStateMetrics.name | quote }}
+{{ include "prometheus.common.matchLabels" . }}
+{{- end -}}
+
+{{- define "prometheus.nodeExporter.labels" -}}
+{{ include "prometheus.nodeExporter.matchLabels" . }}
+{{ include "prometheus.common.metaLabels" . }}
+{{- end -}}
+
+{{- define "prometheus.nodeExporter.matchLabels" -}}
+component: {{ .Values.nodeExporter.name | quote }}
+{{ include "prometheus.common.matchLabels" . }}
+{{- end -}}
+
+{{- define "prometheus.pushgateway.labels" -}}
+{{ include "prometheus.pushgateway.matchLabels" . }}
+{{ include "prometheus.common.metaLabels" . }}
+{{- end -}}
+
+{{- define "prometheus.pushgateway.matchLabels" -}}
+component: {{ .Values.pushgateway.name | quote }}
+{{ include "prometheus.common.matchLabels" . }}
+{{- end -}}
+
+{{- define "prometheus.server.labels" -}}
+{{ include "prometheus.server.matchLabels" . }}
+{{ include "prometheus.common.metaLabels" . }}
+{{- end -}}
+
+{{- define "prometheus.server.matchLabels" -}}
+component: {{ .Values.server.name | quote }}
+{{ include "prometheus.common.matchLabels" . }}
+{{- end -}}
+
+{{/*
 Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}

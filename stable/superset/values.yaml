@@ -8,8 +8,9 @@ replicaCount: 1
 ## Set default image, imageTag, and imagePullPolicy.
 image:
   repository: "amancevice/superset"
-  tag: "0.24.0"
+  tag: "0.28.1"
   pullPolicy: "IfNotPresent"
+  pullSecrets: []
 
 initFile: |-
   /usr/local/bin/superset-init --username admin --firstname admin --lastname user --email admin@fab.org --password admin
@@ -47,6 +48,12 @@ configFile: |-
   # Set this API key to enable Mapbox visualizations
   MAPBOX_API_KEY = ''
 
+## Extra confiuguration files and their content to be made available next to the config file
+extraConfigFiles: {}
+  ## custom_sso_security_manager.py: |-
+  ##   from superset.security import SupersetSecurityManager
+  ##   ...
+
 ## Extra environment variables that will be passed onto deployment pod
 ##
 extraEnv: {}
@@ -55,6 +62,10 @@ extraEnv: {}
 ## This can be useful for secret keys, etc
 ##
 extraEnvFromSecret: ""
+
+## Deployment level annotations
+## Useful for passing other third party annotations to interact with eg. kube2iam.
+deploymentAnnotations: {}
 
 persistence:
 
@@ -95,6 +106,16 @@ persistence:
 service:
   type: ClusterIP
   port: 9000
+
+  ## service annotations
+  annotations: {}
+    # service.beta.kubernetes.io/aws-load-balancer-internal: "true"
+    # external-dns.alpha.kubernetes.io/hostname: "superset.domain.com"
+
+  ## loadbalancer source ranges. only used when service.type is "LoadBalancer"
+  loadBalancerSourceRanges: []
+  # - 172.31.0.0/16
+
 
 ingress:
   ## If true, superset Ingress will be created
@@ -155,7 +176,7 @@ resources: {}
 ##
 livenessProbe:
   httpGet:
-    path: /
+    path: /health
     port: http
   initialDelaySeconds: 80
   timeoutSeconds: 5
@@ -163,7 +184,7 @@ livenessProbe:
   failureThreshold: 2
 readinessProbe:
   httpGet:
-    path: /
+    path: /health
     port: http
   initialDelaySeconds: 60
   timeoutSeconds: 5

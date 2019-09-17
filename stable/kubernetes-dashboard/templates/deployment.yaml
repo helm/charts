@@ -1,13 +1,16 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "kubernetes-dashboard.fullname" . }}
+{{- if .Values.annotations }}
+  annotations:
+{{ toYaml .Values.annotations | indent 4 }}
+{{- end }}
   labels:
     app: {{ template "kubernetes-dashboard.name" . }}
     chart: {{ template "kubernetes-dashboard.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-    kubernetes.io/cluster-service: "true"
 {{- if .Values.labels }}
 {{ toYaml .Values.labels | indent 4 }}
 {{- end }}
@@ -18,27 +21,55 @@ spec:
       maxSurge: 0
       maxUnavailable: 1
     type: RollingUpdate
+  selector:
+    matchLabels:
+      app: {{ template "kubernetes-dashboard.name" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
+    {{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+    {{- end }}
       labels:
         app: {{ template "kubernetes-dashboard.name" . }}
         release: {{ .Release.Name }}
-        kubernetes.io/cluster-service: "true"
     spec:
+      {{- if .Values.securityContext }}
+      securityContext:
+{{ toYaml .Values.securityContext | indent 8 }}
+      {{- end }}
       serviceAccountName: {{ template "kubernetes-dashboard.serviceAccountName" . }}
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         args:
+{{- if .Values.enableSkipLogin }}
+          - --enable-skip-login
+{{- end }}        
+{{- if .Values.enableInsecureLogin }}
+          - --enable-insecure-login
+{{- else }}
           - --auto-generate-certificates
+{{- end }}
 {{- if .Values.extraArgs }}
 {{ toYaml .Values.extraArgs | indent 10 }}
 {{- end }}
+{{- if .Values.extraEnv }}
+        env:
+{{ toYaml .Values.extraEnv | indent 10 }}
+{{- end }}
         ports:
+{{- if .Values.enableInsecureLogin }}
+        - name: http
+          containerPort: 9090
+          protocol: TCP
+{{- else }}
         - name: https
           containerPort: 8443
           protocol: TCP
+{{- end }}
         volumeMounts:
         - name: kubernetes-dashboard-certs
           mountPath: /certs
@@ -47,13 +78,29 @@ spec:
           name: tmp-volume
         livenessProbe:
           httpGet:
+{{- if .Values.enableInsecureLogin }}
+            scheme: HTTP
+            path: /
+            port: 9090
+{{- else }}
             scheme: HTTPS
             path: /
             port: 8443
+{{- end }}
           initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
           timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+{{- if .Values.dashboardContainerSecurityContext }}
+        securityContext:
+{{ toYaml .Values.dashboardContainerSecurityContext | indent 10 }}
+{{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
+    {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end }}
+    {{- end }}
     {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
@@ -67,4 +114,8 @@ spec:
     {{- if .Values.tolerations }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
+    {{- end }}
+    {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
     {{- end }}

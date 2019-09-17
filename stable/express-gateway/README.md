@@ -49,7 +49,7 @@ and their default values.
 | Parameter            | Description                                                                                            | Default                          |
 |----------------------|--------------------------------------------------------------------------------------------------------|----------------------------------|
 | image.repository     | Express Gateway image                                                                                  | `expressgateway/express-gateway` |
-| image.tag            | Express Gateway image version                                                                          | `1.12.1`                         |
+| image.tag            | Express Gateway image version                                                                          | `v1.16.8`               |
 | image.pullPolicy     | Image pull policy                                                                                      | `IfNotPresent`                   |
 | replicaCount         | Express Gateway instance count                                                                         | `1`                              |
 | admin.servicePort    | TCP port on which the Express Gateway admin service is exposed                                         | `9876`                           |

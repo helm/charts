@@ -44,14 +44,18 @@ Create an application key at https://app.datadoghq.com/account/settings#api
     {{- end }}
   {{- end }}
 
-  {{- if not .Values.clusterAgent.token }}
+  {{- if and (not .Values.clusterAgent.token) (not .Values.clusterAgent.tokenExistingSecret) }}
 
 ##############################################################################
-####               ERROR: You did not set a clusterAgent.token            ####
+####               INFO: You did not set a clusterAgent.token            ####
 ##############################################################################
 
-Make sure to change the default token! Set clusterAgent.token to any string of
-at least 32 upper and lower case alpha characters.
+Because you enabled the Cluster Agent but did not either provide a token or a reference to an existing token via '{{ .Values.clusterAgent.tokenExistingSecret }}', a random token was generated.
+This token is used to secure the communication between the Agents and the Cluster Agent.
+
+Make sure to recreate all pods on upgrade (with the --recreate-pods flag) to ensure all
+agents use the same shared token.
+
   {{- end }}
 
 {{- end }}
@@ -85,7 +89,7 @@ chart if your use case still requires a separate Deployment.
 
 The autoconf value is deprecated, Autodiscovery templates can now
 be safely moved to the confd value. As a temporary measure, both
-values were merged into the {{ template "datadog.confd.fullname" . }} configmap,
+values were merged into the {{ template "datadog.fullname" . }}-confd configmap,
 but this will be removed in a future chart release.
 Please note that duplicate file names may have conflicted during
 the merge. In that case, the confd entry will take precedence.

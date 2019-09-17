@@ -8,7 +8,7 @@ metadata:
   name: {{ template "traefik.fullname" . }}
   labels:
     app: {{ template "traefik.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: {{ template "traefik.chart" . }}
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
 spec:
@@ -33,10 +33,17 @@ spec:
       {{- end }}
       labels:
         app: {{ template "traefik.name" . }}
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        chart: {{ template "traefik.chart" . }}
         release: {{ .Release.Name | quote }}
         heritage: {{ .Release.Service | quote }}
+        {{- if .Values.deployment.podLabels }}
+{{ toYaml .Values.deployment.podLabels | indent 8 }}
+        {{- end }}
     spec:
+      {{- if .Values.securityContext }}
+      securityContext:
+{{ toYaml .Values.securityContext | indent 8 }}
+      {{- end }}
       {{- if .Values.rbac.enabled }}
       serviceAccountName: {{ template "traefik.fullname" . }}
       {{- else }}
@@ -51,89 +58,144 @@ spec:
       affinity:
 {{ toYaml .Values.affinity | indent 8 }}
       {{- end }}
+      {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName | quote }}
+      {{- end }}
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.imagePullSecrets }}
+        - name: {{ . }}
+      {{- end }}
+      {{- end }}
       containers:
       - image: {{ .Values.image }}:{{ .Values.imageTag }}
         name: {{ template "traefik.fullname" . }}
         resources:
+        {{- if or .Values.cpuRequest .Values.memoryRequest .Values.cpuLimit .Values.memoryLimit }}
           requests:
             cpu: {{ .Values.cpuRequest | quote }}
             memory: {{ .Values.memoryRequest | quote }}
           limits:
             cpu: {{ .Values.cpuLimit | quote }}
             memory: {{ .Values.memoryLimit | quote }}
+        {{- else }}
+{{ toYaml .Values.resources | indent 10 }}
+        {{- end }}
         readinessProbe:
-          tcpSocket:
-            port: 80
+          httpGet:
+            path: /ping
+            port: {{ template "traefik.containerPort.http" . }}
           failureThreshold: 1
           initialDelaySeconds: 10
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 2
         livenessProbe:
-          tcpSocket:
-            port: 80
+          httpGet:
+            path: /ping
+            port: {{ template "traefik.containerPort.http" . }}
           failureThreshold: 3
           initialDelaySeconds: 10
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 2
-        {{- if and .Values.acme.enabled (eq .Values.acme.challengeType "dns-01") .Values.acme.dnsProvider.name }}
+        {{- if or (and .Values.acme.enabled (eq .Values.acme.challengeType "dns-01") .Values.acme.dnsProvider.name) .Values.env }}
         env:
-        {{- range $k, $_ := (index .Values.acme.dnsProvider .Values.acme.dnsProvider.name) }}
+        {{- range $k, $v := (index .Values.acme.dnsProvider .Values.acme.dnsProvider.name) }}
+          {{- if or $v $.Values.acme.dnsProvider.existingSecretName }}
           - name: {{ $k }}
             valueFrom:
               secretKeyRef:
+              {{- if $.Values.acme.dnsProvider.existingSecretName }}
+                name: {{ $.Values.acme.dnsProvider.existingSecretName }}
+              {{- else }}
                 name: {{ template "traefik.fullname" $ }}-dnsprovider-config
+              {{- end }}
                 key: {{ $k }}
+          {{- end }}
+        {{- end }}
+        {{- if .Values.env }}
+{{ toYaml .Values.env | indent 10 }}
         {{- end }}
         {{- end }}
         volumeMounts:
+        {{- if .Values.extraVolumeMounts }}{{ toYaml .Values.extraVolumeMounts | trim | nindent 8 }}{{ end }}
         - mountPath: /config
           name: config
-        {{- if and .Values.ssl.enabled (not .Values.ssl.upstream) }}
+        {{- if .Values.ssl.enabled }}
+        {{- if not .Values.ssl.upstream }}
         - mountPath: /ssl
           name: ssl
         {{- end }}
-        {{- if .Values.acme.enabled }}
+        {{- if .Values.ssl.mtls }}
+        {{- if .Values.ssl.mtls.enabled }}
+        - mountPath: /mtls
+          name: mtls
+        {{- end }}
+        {{- end }}
+        {{- end }}
+        {{- if and (.Values.acme.enabled) (not .Values.kvprovider.storeAcme) }}
         - mountPath: /acme
           name: acme
         {{- end }}
+        {{- if .Values.configFiles }}
+        - mountPath: /configs
+          name: {{ template "traefik.fullname" $ }}-configs
+        {{ end }}
+        {{- if .Values.secretFiles }}
+        - mountPath: /secrets
+          name: {{ template "traefik.fullname" $ }}-secrets
+        {{- end }}
         ports:
         - name: http
-          containerPort: 80
+          containerPort: {{ template "traefik.containerPort.http" . }}
           {{- if .Values.deployment.hostPort.httpEnabled }}
-          hostPort: 80
+          hostPort: {{ default 80 .Values.deployment.hostPort.httpPort }}
           {{- end }}
           protocol: TCP
         - name: httpn
           containerPort: 8880
           protocol: TCP
         - name: https
-          containerPort: 443
+          containerPort: {{ template "traefik.containerPort.https" . }}
           {{- if .Values.deployment.hostPort.httpsEnabled }}
-          hostPort: 443
+          hostPort: {{ default 443 .Values.deployment.hostPort.httpsPort }}
           {{- end }}
           protocol: TCP
-        {{- if .Values.dashboard.enabled }}
+        {{- if or .Values.dashboard.enabled .Values.metrics.prometheus.enabled }}
         - name: dash
           containerPort: 8080
           {{- if .Values.deployment.hostPort.dashboardEnabled }}
-          hostPort: 8080
+          hostPort: {{ default 8080 .Values.deployment.hostPort.dashboardPort }}
           {{- end }}
           protocol: TCP
         {{- end }}
         args:
         - --configfile=/config/traefik.toml
+        {{- range .Values.startupArguments }}
+        - {{ . }}
+        {{- end }}
+
       volumes:
+      {{- if .Values.extraVolumes  }}{{ toYaml .Values.extraVolumes | trim | nindent 6 }}{{ end }}
       - name: config
         configMap:
           name: {{ template "traefik.fullname" . }}
-      {{- if and .Values.ssl.enabled (not .Values.ssl.upstream) }}
+      {{- if .Values.ssl.enabled }}
+      {{- if not .Values.ssl.upstream }}
       - name: ssl
         secret:
           secretName: {{ template "traefik.fullname" . }}-default-cert
       {{- end }}
-      {{- if .Values.acme.enabled }}
+      {{- if .Values.ssl.mtls }}
+      {{- if .Values.ssl.mtls.enabled }}
+      - name: mtls
+        configMap:
+          name: {{ template "traefik.fullname" . }}-client-ca-certs
+      {{- end }}
+      {{- end }}
+      {{- end }}
+      {{- if and (.Values.acme.enabled) (not .Values.kvprovider.storeAcme) }}
       - name: acme
       {{- if .Values.acme.persistence.enabled }}
         persistentVolumeClaim:
@@ -141,6 +203,16 @@ spec:
       {{- else }}
         emptyDir: {}
       {{- end }}
+      {{- end }}
+      {{- if .Values.configFiles }}
+      - name: {{ template "traefik.fullname" $ }}-configs
+        configMap:
+          name: {{ template "traefik.fullname" $ }}-configs
+      {{ end }}
+      {{- if .Values.secretFiles }}
+      - name: {{ template "traefik.fullname" $ }}-secrets
+        secret:
+          secretName: {{ template "traefik.fullname" $ }}-secrets
       {{- end }}
       {{- if and (.Values.tolerations) (semverCompare "^1.6-0" .Capabilities.KubeVersion.GitVersion) }}
       tolerations:
