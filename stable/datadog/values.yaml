@@ -99,6 +99,14 @@ datadog:
   #
   logLevel: INFO
 
+  ## @param nodeLabelsAsTags - list of key:value strings - optional
+  ## Provide a mapping of Kubernetes Node Labels to Datadog Tags.
+  #
+  # nodeLabelsAsTags:
+  #   beta.kubernetes.io/instance-type: aws-instance-type
+  #   kubernetes.io/role: kube_role
+  #   <KUBERNETES_NODE_LABEL>: <DATADOG_TAG_KEY>
+
   ## @param podLabelsAsTags - list of key:value strings - optional
   ## Provide a mapping of Kubernetes Labels to Datadog Tags.
   #
