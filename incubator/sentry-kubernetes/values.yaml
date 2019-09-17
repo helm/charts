@@ -27,3 +27,6 @@ serviceAccount:
 rbac:
   # Specifies whether RBAC resources should be created
   create: true
+
+# Set priorityCLassName in deployment
+# priorityClassName: ""
