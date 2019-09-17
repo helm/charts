@@ -244,9 +244,9 @@ ingress:
   ## Please see README.md for more information
   # - name: testlink.local-tls
   #   key: |-
-  #     -----BEGIN PRIVATE KEY-----
+  #     -----BEGIN RSA PRIVATE KEY-----
   #     ...
-  #     -----END PRIVATE KEY-----
+  #     -----END RSA PRIVATE KEY-----
   #   certificate: |-
   #     -----BEGIN CERTIFICATE-----
   #     ...
