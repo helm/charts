@@ -175,7 +175,13 @@ For more details, please refer to [the documentation](https://docs.datadoghq.com
 
 ### Kubernetes Labels and Annotations
 
-To map Kubernetes pod labels and annotations to Datadog tags, provide a dictionary with kubernetes labels/annotations as keys and Datadog tags key as values in your [datadog-values.yaml](values.yaml) file:
+To map Kubernetes node labels and pod labels and annotations to Datadog tags, provide a dictionary with kubernetes labels/annotations as keys and Datadog tags key as values in your [datadog-values.yaml](values.yaml) file:
+
+```yaml
+nodeLabelsAsTags:
+  beta.kubernetes.io/instance-type: aws_instance_type
+  kubernetes.io/role: kube_role
+```
 
 ```yaml
 podAnnotationsAsTags:
@@ -248,6 +254,7 @@ helm install --name <RELEASE_NAME> \
 | `datadog.dogStatsDSocketPath`            | Custom path to the socket, has to be located in the `/var/run/datadog` folder path        | `/var/run/datadog/dsd.socket`               |
 | `datadog.volumes`                        | Additional volumes for the daemonset or deployment                                        | `nil`                                       |
 | `datadog.volumeMounts`                   | Additional volumeMounts for the daemonset or deployment                                   | `nil`                                       |
+| `datadog.nodeLabelsAsTags`               | Kubernetes Node Labels to Datadog Tags mapping                                            | `nil`                                       |
 | `datadog.podAnnotationsAsTags`           | Kubernetes Annotations to Datadog Tags mapping                                            | `nil`                                       |
 | `datadog.podLabelsAsTags`                | Kubernetes Labels to Datadog Tags mapping                                                 | `nil`                                       |
 | `datadog.resources.requests.cpu`         | CPU resource requests                                                                     | `200m`                                      |
