@@ -117,11 +117,13 @@ spec:
             initialDelaySeconds: 30
             timeoutSeconds: 3
             periodSeconds: 5
-          {{- if .Values.log4jProperties }}
           volumeMounts:
+            - name: data
+              mountPath: /metabase.db/
+            {{- if .Values.log4jProperties }}
             - name: config
               mountPath: /tmp/conf/
-          {{- end}}
+            {{- end}}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}
@@ -137,6 +139,13 @@ spec:
 {{ toYaml . | indent 8 }}
     {{- end }}
       volumes:
+        - name: data
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ template "metabase.fullname" . }}
+        {{- else }}
+          emptyDir: {}
+        {{- end -}}
         {{- if .Values.log4jProperties}}
         - name: config
           configMap:
