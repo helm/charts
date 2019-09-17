@@ -88,6 +88,7 @@ and their default values.
 | proxy.tls.servicePort              | Service port to use for TLS                                                           | 8443                |
 | proxy.tls.nodePort                 | Node port to use for TLS                                                              | 32443               |
 | proxy.tls.hostPort                 | Host port to use for TLS                                                              |                     |
+| proxy.tls.overrideServiceTargetPort| Override service port to use for TLS without touching Kong containerPort              |                     |
 | proxy.type                         | k8s service type. Options: NodePort, ClusterIP, LoadBalancer                          | `NodePort`          |
 | proxy.loadBalancerSourceRanges     | Limit proxy access to CIDRs if set and service type is `LoadBalancer`                 | `[]`                |
 | proxy.loadBalancerIP               | To reuse an existing ingress static IP for the admin service                          |                     |
