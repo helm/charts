@@ -26,33 +26,45 @@ spec:
    serviceAccountName: omsagent
   {{- end }}
    containers:
-     - name: omsagent 
-       image: "microsoft/oms:{{ .Values.omsagent.image.tag }}"
+     - name: omsagent
+       {{- if .Values.omsagent.domain "opinsights.azure.cn" }}
+       image: "dockerhub.azk8s.cn/microsoft/oms:{{ .Values.omsagent.image.tag }}"
+       {{ else }}
+       image: "mcr.microsoft.com/azuremonitor/containerinsights/ciprod:{{ .Values.omsagent.image.tag }}"
+       {{- end }}
        imagePullPolicy: IfNotPresent
        resources:
 {{ toYaml .Values.omsagent.resources.deployment | indent 9 }}
        env:
        - name: ACS_RESOURCE_NAME
          value: {{ .Values.omsagent.env.clusterName | quote }}
+       - name: AZURE_LOGANALYTICS_CLOUD
+         {{- if .Values.omsagent.domain "opinsights.azure.cn" }}
+         value: "AzureChinaCloud"
+         {{ else if .Values.omsagent.domain "opinsights.azure.us"}}
+         value: "AzureUSGovernment"
+         {{ else }}
+         value: "AzureCloud"
+         {{- end }}
        - name: DISABLE_KUBE_SYSTEM_LOG_COLLECTION
          value: {{ .Values.omsagent.env.doNotCollectKubeSystemLogs | quote }}
        - name: NODE_IP
          valueFrom:
             fieldRef:
-              fieldPath: status.hostIP  
+              fieldPath: status.hostIP
        securityContext:
          privileged: true
        ports:
        - containerPort: 25225
-         protocol: TCP 
+         protocol: TCP
        - containerPort: 25224
          protocol: UDP
        volumeMounts:
         - mountPath: /var/run/docker.sock
           name: docker-sock
-        - mountPath: /var/log 
+        - mountPath: /var/log
           name: host-log
-        - mountPath: /var/lib/docker/containers 
+        - mountPath: /var/lib/docker/containers
           name: containerlog-path
         - mountPath: /etc/omsagent-secret
           name: omsagent-secret
@@ -71,7 +83,7 @@ spec:
     beta.kubernetes.io/os: linux
     kubernetes.io/role: agent
    volumes:
-    - name: docker-sock 
+    - name: docker-sock
       hostPath:
        path: /var/run/docker.sock
     - name: container-hostname
@@ -89,4 +101,4 @@ spec:
     - name: omsagent-rs-config
       configMap:
         name: omsagent-rs-config
-{{- end }} 
+{{- end }}

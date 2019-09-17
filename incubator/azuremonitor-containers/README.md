@@ -56,7 +56,7 @@ The following table lists the configurable parameters of the MSOMS chart and the
 | `omsagent.image.pullPolicy`| `msoms` image pull policy.         | IfNotPresent                                                                     |
 | `omsagent.secret.wsid`     | Azure Log analytics workspace id                   | Does not have a default value, needs to be provided                              |
 | `omsagent.secret.key`      | Azure Log analytics workspace key                  | Does not have a default value, needs to be provided                              |
-| `omsagent.domain`          | Azure Log analytics cloud domain (public / govt)   | opinsights.azure.com (Public cloud as default), opinsights.azure.us (Govt Cloud) |
+| `omsagent.domain`          | Azure Log analytics cloud domain (public / govt)   | opinsights.azure.com (Azure Public cloud as default), opinsights.azure.us (Azure Govt Cloud), opinsights.azure.cn (Azure China Cloud) |
 | `omsagent.env.clusterName`             | Name of your cluster      | Does not have a default value, needs to be provided       |
 |`omsagent.env.doNotCollectKubeSystemLogs`| Disable collecting logs from containers in 'kube-system' namespace | true|
 | `omsagent.rbac`             | rbac enabled/disabled      | true  (i.e enabled)     |

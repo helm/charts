@@ -20,6 +20,7 @@ omsagent:
   env:
     clusterName: <your_cluster_name>
     doNotCollectKubeSystemLogs: "true"
+    azureLogAnalyticsCloud: "AzureCloud"
   rbac: true
 
 ## Configure resource requests and limits
