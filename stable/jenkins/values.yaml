@@ -364,11 +364,11 @@ agent:
   privileged: false
   resources:
     requests:
-      cpu: "200m"
-      memory: "256Mi"
+      cpu: "512m"
+      memory: "512Mi"
     limits:
-      cpu: "200m"
-      memory: "256Mi"
+      cpu: "512m"
+      memory: "512Mi"
   # You may want to change this to true while testing a new image
   alwaysPullImage: false
   # Controls how agent pods are retained after the Jenkins build completes

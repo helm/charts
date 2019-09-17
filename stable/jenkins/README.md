@@ -188,7 +188,7 @@ Some third-party systems, e.g. GitHub, use HTML-formatted data in their payload 
 | `agent.imagePullSecret`    | Agent image pull secret                         | Not set                |
 | `agent.tag`                | Agent image tag                                 | `3.27-1`               |
 | `agent.privileged`         | Agent privileged container                      | `false`                |
-| `agent.resources`          | Resources allocation (Requests and Limits)      | `{requests: {cpu: 200m, memory: 256Mi}, limits: {cpu: 200m, memory: 256Mi}}`|
+| `agent.resources`          | Resources allocation (Requests and Limits)      | `{requests: {cpu: 512m, memory: 512Mi}, limits: {cpu: 512m, memory: 512Mi}}`|
 | `agent.volumes`            | Additional volumes                              | `nil`                  |
 | `agent.envVars`            | Environment variables for the agent Pod         | Not set                |
 | `agent.command`            | Executed command when side container starts     | Not set                |
