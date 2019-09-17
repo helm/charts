@@ -278,6 +278,14 @@ env:
   ZOO_AUTOPURGE_SNAPRETAINCOUNT: 3
   ZOO_STANDALONE_ENABLED: false
 
+  ## When ZK_QUORUM_LISTEN_ALL_IP is set to true, the ZooKeeper server will listen for
+  ## connections from its peers on all available IP addresses, and not only the address
+  ## configured in the server list of the configuration file. It affects the connections
+  ## handling the ZAB protocol and the Fast Leader Election protocol. Default value is
+  ## false.  Set to true when using Istio
+
+  ZK_QUORUM_LISTEN_ALL_IP: false
+  
 jobs:
   ## ref: http://zookeeper.apache.org/doc/r3.4.10/zookeeperProgrammers.html#ch_zkSessions
   chroots:
