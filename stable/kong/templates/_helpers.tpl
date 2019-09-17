@@ -123,6 +123,18 @@ Create the ingress servicePort value string
 {{- end -}}
 {{- end -}}
 
+{{/*
+Generate an appropriate external URL from a Kong service's ingress configuration
+/*}}
+
+{{- define "kong.ingress.serviceUrl" -}}
+{{- if .tls -}}
+    https://{{ .hostname }}
+{{- else -}}
+    http://{{ .hostname }}
+{{- end -}}
+{{- end -}}
+
 
 {{- define "kong.env" -}}
 {{- range $key, $val := .Values.env }}
