@@ -208,10 +208,10 @@ containers:
         mountPath: {{ .mountPath }}
     {{- end }}
     ports:
-      - name: service
+      - name: {{ .Values.service.portName }}
         containerPort: {{ .Values.service.port }}
         protocol: TCP
-      - name: grafana
+      - name: {{ .Values.podPortName }}
         containerPort: 3000
         protocol: TCP
     env:
