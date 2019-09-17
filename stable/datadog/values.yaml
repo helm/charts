@@ -580,7 +580,7 @@ daemonset:
   # updateStrategy:
   #   type: RollingUpdate
   #   rollingUpdate:
-  #     maxUnavailable: 10%
+  #     maxUnavailable: "10%"
 
   ## @param priorityClassName - string - optional
   ## Sets PriorityClassName if defined.
