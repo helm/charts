@@ -54,7 +54,7 @@ spec:
             {{- end }}
           volumeMounts:
             - name: data
-              mountPath: "/hackmd/public/uploads"
+              mountPath: "/codimd/public/uploads"
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}
