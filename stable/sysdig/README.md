@@ -52,6 +52,7 @@ The following table lists the configurable parameters of the Sysdig chart and th
 | `serviceAccount.create`         | Create serviceAccount                                                  | `true`                                      |
 | `serviceAccount.name`           | Use this value as serviceAccountName                                   | ` `                                         |
 | `daemonset.updateStrategy.type` | The updateStrategy for updating the daemonset                          | `RollingUpdate`                             |
+| `daemonset.affinity`            | Node affinities                                                        | `nil`                                       |
 | `ebpf.enabled`                  | Enable eBPF support for Sysdig instead of `sysdig-probe` kernel module | `false`                                     |
 | `ebpf.settings.mountEtcVolume`  | Needed to detect which kernel version are running in Google COS        | `true`                                      |
 | `sysdig.accessKey`              | Your Sysdig Monitor Access Key                                         | `Nil` You must provide your own key         |
