@@ -180,7 +180,7 @@ If you want to add Prometheus alerting rules you can simply enable the alerts an
 the defaults rules you want to use. You can add as many custom rules as you want. For example:
 
 ```yaml
-  alerts:
+  prometheusRules:
     enabled: true
     defaultRules:
       vaultUp: true
