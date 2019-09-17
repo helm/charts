@@ -6,7 +6,7 @@ clusterDomain: cluster.local
 ##
 image:
   repository: minio/minio
-  tag: RELEASE.2019-08-01T22-18-54Z
+  tag: RELEASE.2019-08-07T01-59-21Z
   pullPolicy: IfNotPresent
 
 ## Set default image, imageTag, and imagePullPolicy for the `mc` (the minio
@@ -14,7 +14,7 @@ image:
 ##
 mcImage:
   repository: minio/mc
-  tag: RELEASE.2019-07-31T19-17-35Z
+  tag: RELEASE.2019-08-07T23-14-43Z
   pullPolicy: IfNotPresent
 
 ## minio server mode, i.e. standalone or distributed.
@@ -39,6 +39,7 @@ priorityClassName: ""
 
 ## Set default accesskey, secretkey, Minio config file path, volume mount path and
 ## number of nodes (only used for Minio distributed mode)
+## AccessKey and secretKey is generated when not set
 ## Distributed Minio ref: https://docs.minio.io/docs/distributed-minio-quickstart-guide
 ##
 existingSecret: ""

@@ -51,6 +51,7 @@ The following table lists the configurable parameters of the JasperReports chart
 |----------------------------------|----------------------------------------------|----------------------------------------------------------|
 | `global.imageRegistry`           | Global Docker image registry                 | `nil`                                                    |
 | `global.imagePullSecrets`        | Global Docker registry secret names as an array | `[]` (does not add image pull secrets to deployed pods) |
+| `global.storageClass`                     | Global storage class for dynamic provisioning                                               | `nil`                                                        |
 | `image.registry`                 | JasperReports image registry                 | `docker.io`                                              |
 | `image.repository`               | JasperReports Image name                     | `bitnami/jasperreports`                                  |
 | `image.tag`                      | JasperReports Image tag                      | `{TAG_NAME}`                                             |
@@ -98,6 +99,7 @@ The following table lists the configurable parameters of the JasperReports chart
 | `persistence.accessMode`         | PVC Access Mode for JasperReports volume     | `ReadWriteOnce`                                          |
 | `persistence.size`               | PVC Storage Request for JasperReports volume | `8Gi`                                                    |
 | `resources`                      | CPU/Memory resource requests/limits          | `{Memory: 512Mi, CPU: 300m}`                             |
+| `affinity`                       | Map of node/pod affinities                   | `{}`                                                     |
 
 The above parameters map to the env variables defined in [bitnami/jasperreports](http://github.com/bitnami/bitnami-docker-jasperreports). For more information please refer to the [bitnami/jasperreports](http://github.com/bitnami/bitnami-docker-jasperreports) image documentation.
 

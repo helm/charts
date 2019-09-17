@@ -8,14 +8,14 @@ metadata:
     chart: {{ template "redis.chart" . }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
-{{- if .Values.master.service.annotations }}
+{{- if .Values.sentinel.service.annotations }}
   annotations:
-{{ toYaml .Values.master.service.annotations | indent 4 }}
+{{ toYaml .Values.sentinel.service.annotations | indent 4 }}
 {{- end }}
 spec:
-  type: {{ .Values.master.service.type }}
-  {{ if eq .Values.master.service.type "LoadBalancer" -}} {{ if .Values.master.service.loadBalancerIP -}}
-  loadBalancerIP: {{ .Values.master.service.loadBalancerIP }}
+  type: {{ .Values.sentinel.service.type }}
+  {{ if eq .Values.sentinel.service.type "LoadBalancer" -}} {{ if .Values.sentinel.service.loadBalancerIP -}}
+  loadBalancerIP: {{ .Values.sentinel.service.loadBalancerIP }}
   {{ end -}}
   {{- end -}}
   ports:

@@ -10,7 +10,7 @@ For ES 5.x:
 $ helm install stable/elastalert
 ```
 
-For ES 6.x:
+For ES 6 and newer:
 
 ```console
 $ helm install stable/elastalert --set writebackIndex=elastalert
@@ -52,7 +52,7 @@ The command removes all the Kubernetes components associated with the chart and 
 |       Parameter          |                    Description                    |             Default             |
 | ------------------------ | ------------------------------------------------- | ------------------------------- |
 | `image.repository`       | docker image                                      | jertel/elastalert-docker        |
-| `image.tag`              | docker image tag                                  | 0.1.39                          |
+| `image.tag`              | docker image tag                                  | 0.2.1                           |
 | `image.pullPolicy`       | image pull policy                                 | IfNotPresent                    |
 | `command`                | command override for container                    | `NULL`                          |
 | `args`                   | args override for container                       | `NULL`                          |

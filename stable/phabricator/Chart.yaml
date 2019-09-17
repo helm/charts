@@ -1,7 +1,7 @@
 apiVersion: v1
 name: phabricator
-version: 6.2.1
-appVersion: 2019.31.0
+version: 7.0.7
+appVersion: 2019.37.0
 description: Collection of open source web applications that help software companies build better software.
 keywords:
 - phabricator

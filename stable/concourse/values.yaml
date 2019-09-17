@@ -19,7 +19,7 @@ image: concourse/concourse
 ##      of `concourse/concourse`.
 ## Ref: https://hub.docker.com/r/concourse/concourse/tags/
 ##
-imageTag: "5.4.0"
+imageTag: "5.5.0"
 
 ## Specific image digest to use in place of a tag.
 ## Ref: https://kubernetes.io/docs/concepts/configuration/overview/#container-images
@@ -55,6 +55,10 @@ concourse:
     ## A name for this Concourse cluster, to be displayed on the dashboard page.
     ##
     clusterName:
+
+    ## The maximum number of open connections for a connection pool
+    ##
+    maxConns:
 
     ## Enable equivalent resources across pipelines and teams to share a single version history.
     ## Ref: https://concourse-ci.org/global-resources.html
@@ -199,8 +203,19 @@ concourse:
     resourceTypeCheckingInterval: 1m
 
     ## Method by which a worker is selected during container placement.
-    ## Possible values: volume-locality | random | fewest-build-containers
+    ## Possible values: volume-locality | random | fewest-build-containers| limit-active-tasks
     containerPlacementStrategy: volume-locality
+
+    ## Maximum allowed number of active build tasks per worker.
+    ##
+    ## Has effect only when containerPlacementStrategy is set to use
+    ## limit-active-tasks placement strategy.
+    ##
+    ## ps.: 0 means no limit.
+    ##
+    ## ref: https://concourse-ci.org/container-placement.html#limit-active-tasks-strategy
+    ##
+    limitActiveTasks:
 
     ## How long to wait for Baggageclaim to send the response header.
     ##
@@ -486,6 +501,10 @@ concourse:
       ##
       captureErrorMetrics: false
 
+      ## The size of the buffer used in emitting event metrics.
+      ##
+      bufferSize:
+
     datadog:
       enabled: false
 
@@ -507,6 +526,15 @@ concourse:
 
     influxdb:
       enabled: false
+
+      ## Number of points to batch together when emitting to InfluxDB
+      ##
+      batchSize:
+
+      ## The duration to wait before emitting a batch of points to InfluxDB,
+      ## disregarding # the batch size.
+      ##
+      batchDuration:
 
       ## InfluxDB server address to emit points to.
       ## Example: http://127.0.0.1:8086

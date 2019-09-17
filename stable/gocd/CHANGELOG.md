@@ -1,6 +1,18 @@
+### 1.17.0
+* [5916a7b](https://github.com/kubernetes/charts/commit/5916a7b): Bump up GoCD Version to 19.8.0
+### 1.16.1
+
+* [c70a0b189](https://github.com/kubernetes/charts/commit/c70a0b189): Bump up kubernetes plugin version to v3.1.0
+
+### 1.16.0
+
+* [7872692](https://github.com/kubernetes/charts/commit/7872692): Update Pipeline config API version, use getting started repo's script for task
+
 ### 1.15.0
+
 * [723e309](https://github.com/kubernetes/charts/commit/723e309):
 - Bump up GoCD Version to 19.7.0
+
 ### 1.14.0
 
 * [c191fb46c](https://github.com/kubernetes/charts/commit/c191fb46c):

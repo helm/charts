@@ -1,52 +1,179 @@
-apiVersion: apps/v1beta1
+---
+
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "hubot.fullname" . }}
   labels:
-    app: {{ template "hubot.name" . }}
-    chart: {{ template "hubot.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+{{ include "hubot.labels" . | indent 4 }}
+{{- if .Values.extraLabels }}
+{{ toYaml .Values.extraLabels | indent 4 }}
+{{- end }}
 spec:
   replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: {{ .Values.strategyType }}
   selector:
     matchLabels:
-      app: {{ template "hubot.name" . }}
-      release: {{ .Release.Name }}
+      app.kubernetes.io/name: {{ include "hubot.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/config-cm.yaml") . | sha256sum }}
+        checksum/secret-config: {{ include (print $.Template.BasePath "/config-secret.yaml") . | sha256sum }}
+        checksum/external-scripts.json: {{ include (print $.Template.BasePath "/external-scripts-cm.yaml") . | sha256sum }}
+        {{- if .Values.scripts }}
+        checksum/scripts: {{ include (print $.Template.BasePath "/scripts-cm.yaml") . | sha256sum }}
+        {{- end }}
       labels:
-        app: {{ template "hubot.name" . }}
-        release: {{ .Release.Name }}
+        app.kubernetes.io/name: {{ include "hubot.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
-      volumes:
-        - name: {{ template "hubot.fullname" . }}-scripts
-          configMap:
-            name: {{ template "hubot.fullname" . }}-scripts
+      initContainers:
+        {{- if .Values.redis.enabled }}
+        - name: wait-for-redis
+          image: busybox
+          env:
+          - name: HUBOT_REDIS_HOST
+            value: {{ template "hubot.redis.fullname" . }}-master
+          - name: HUBOT_REDIS_PORT
+            value: "{{ .Values.redis.master.service.port }}"
+          command: [ "/bin/sh", "-c", "until nc -zv $HUBOT_REDIS_HOST $HUBOT_REDIS_PORT -w1; do echo 'waiting for redis'; sleep 1; done" ]
+        {{- end }}
+        {{- if .Values.scriptsRepo.enabled }}
+        - name: checkout-scripts-repo
+          image: {{ .Values.scriptsRepo.image }}
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: scripts
+              mountPath: /tmp/git
+          env:
+            - name: GIT_SYNC_DEST
+              value: "scripts"
+            - name: GIT_SYNC_REPO
+              value: {{ .Values.scriptsRepo.repository | quote }}
+            - name: GIT_SYNC_ONE_TIME
+              value: "true"
+            - name: GIT_SYNC_DEPTH
+              value: "1"
+          {{- if .Values.scriptsRepo.branch }}
+            - name: GIT_SYNC_BRANCH
+              value: {{ .Values.scriptsRepo.branch }}
+          {{- end }}
+          {{- if .Values.scriptsRepo.username }}
+          {{- if .Values.scriptsRepo.existingSecretName }}
+            - name: GIT_SYNC_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.scriptsRepo.existingSecretName }}
+                  key: username
+            - name: GIT_SYNC_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.scriptsRepo.existingSecretName }}
+                  key: password
+          {{- else }}
+            - name: GIT_SYNC_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "hubot.fullname" . }}-scripts-repo
+                  key: username
+            - name: GIT_SYNC_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "hubot.fullname" . }}-scripts-repo
+                  key: password
+          {{- end }}
+          {{- end }}
+          {{- end }}
       containers:
-        - name: {{ .Chart.Name }}
+        - name: hubot
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args:
+{{ toYaml .Values.args | indent 12 }}
+        {{- if .Values.extraArgs }}
+{{ toYaml .Values.extraArgs | indent 12 }}
+        {{- end }}
+        {{- if .Values.tty }}
+          tty: true
+        {{- end }}
           ports:
             - name: http
               containerPort: 8080
               protocol: TCP
           livenessProbe:
-            tcpSocket:
-              port: 8080
+            httpGet:
+              path: /health
+              port: http
           readinessProbe:
-            tcpSocket:
-              port: 8080
+            httpGet:
+              path: /health
+              port: http
           volumeMounts:
-            - name: {{ template "hubot.fullname" . }}-scripts
-              mountPath: {{ .Values.hubot.scriptsFolder }}
+            - name: {{ template "hubot.fullname" . }}-external-scripts
+              mountPath: /home/hubot/external-scripts.json
+              subPath: external-scripts.json
+              readOnly: true
+            {{- range .Values.extraConfigmapMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              readOnly: {{ .readOnly }}
+            {{- end }}
+            {{- if .Values.scriptsRepo.enabled }}
+            - name: scripts
+              mountPath: /home/hubot/scripts
+              subPath: scripts
+            {{- end }}
+            {{- if .Values.scripts }}
+              {{- range keys .Values.scripts }}
+            - name: "{{ template "hubot.fullname" $ }}-scripts"
+              mountPath: "/home/hubot/scripts/{{ . }}"
+              subPath: "{{ . }}"
+              {{- end }}
+            {{- end }}
+
+          env:
+        {{- if .Values.redis.enabled }}
+            - name: REDIS_URL
+              value: redis://{{ template "hubot.redis.fullname" . }}-master:{{ .Values.redis.port }}/hubot
+        {{- end }}
+            - name: EXTRA_PACKAGES
+              value: {{ (join "," .Values.extraPackages) | quote }}
           envFrom:
-            - secretRef:
-                name: {{ template "hubot.fullname" . }}
+          {{- if .Values.config }}
             - configMapRef:
-                name: {{ template "hubot.fullname" . }}
+                name: {{ template "hubot.fullname" . }}-config
+          {{- end }}
+          {{- if .Values.secretConfig }}
+            - secretRef:
+                name: {{ template "hubot.fullname" . }}-config
+          {{- end }}
+          {{- if .Values.existingSecretConfigName }}
+            - secretRef:
+                name: {{ .Values.existingSecretConfigName }}
+          {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
+      volumes:
+    {{- if .Values.scriptsRepo.enabled }}
+        - name: scripts
+          emptyDir: {}
+    {{- end }}
+        - name: {{ template "hubot.fullname" . }}-external-scripts
+          configMap:
+            name: {{ template "hubot.fullname" . }}-external-scripts
+      {{- range .Values.extraConfigmapMounts }}
+        - name: {{ .name }}
+          configMap:
+            name: {{ .configMap }}
+      {{- end }}
+      {{- if .Values.scripts }}
+        - name: {{ template "hubot.fullname" . }}-scripts
+          configMap:
+            name: {{ template "hubot.fullname" . }}-scripts
+      {{- end }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
@@ -58,4 +185,8 @@ spec:
     {{- with .Values.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+        - name: {{ .Values.imagePullSecrets }}
     {{- end }}

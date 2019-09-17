@@ -44,12 +44,17 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `backend.es.index`         | Elastic Index name | `kubernetes_cluster` |
 | `backend.es.type`          | Elastic Type name | `flb_type` |
 | `backend.es.time_key`          | Elastic Time Key | `@timestamp` |
+| `backend.es.logstash_format`          | Enable Logstash format compatibility. | `On` |
 | `backend.es.logstash_prefix`  | Index Prefix. If Logstash_Prefix is equals to 'mydata' your index will become 'mydata-YYYY.MM.DD'. | `kubernetes_cluster` |
 | `backend.es.replace_dots`     | Enable/Disable Replace_Dots option. | `On` |
 | `backend.es.http_user`        | Optional username credential for Elastic X-Pack access. | `` |
-| `backend.es.http_passwd:`     | Password for user defined in HTTP_User. | `` |
+| `backend.es.http_passwd`      | Password for user defined in HTTP_User. | `` |
+| `backend.es.http_passwd_secret`     | Secret name for password for user defined in HTTP_User. | `` |
+| `backend.es.http_passwd_secret_key` | Secret key for password for user defined in HTTP_User. | `` |
 | `backend.es.tls`              | Enable or disable TLS support | `off` |
 | `backend.es.tls_verify`       | Force certificate validation  | `on` |
+| `backend.es.tls_secret`        | Existing secret storing TLS CA certificate for the Elastic instance. Specify if tls: on. Overrides `backend.es.tls_ca` | `` |
+| `backend.es.tls_secret_ca_key` | Existing secret key storing TLS CA certificate for the Elastic instance. Specify if tls: on.                           | `` |
 | `backend.es.tls_ca`           | TLS CA certificate for the Elastic instance (in PEM format). Specify if tls: on. | `` |
 | `backend.es.tls_debug`        | Set TLS debug verbosity level. It accept the following values: 0-4 | `1` |
 | **HTTP Backend**              |
@@ -59,6 +64,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `backend.http.http_user`        | Optional username credential for Basic Authentication. | `` |
 | `backend.http.http_passwd:`     | Password for user defined in HTTP_User. | `` |
 | `backend.http.format`         | Specify the data format to be used in the HTTP request body, by default it uses msgpack, optionally it can be set to json.  | `msgpack` |
+| `backend.http.headers`          | HTTP Headers | `[]` |
 | `backend.http.tls`              | Enable or disable TLS support | `off` |
 | `backend.http.tls_verify`       | Force certificate validation  | `on` |
 | `backend.http.tls_debug`        | Set TLS debug verbosity level. It accept the following values: 0-4 | `1` |

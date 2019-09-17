@@ -8,6 +8,15 @@ image:
   # pullSecrets:
   #   - registry-secret
 
+## Customize livenessProbe and readinessProbe
+## ref: https://docs.influxdata.com/influxdb/v1.7/tools/api/#ping-http-endpoint
+##
+livenessProbe:
+  probePath: "/ping"
+
+readinessProbe:
+  probePath: "/ping"
+
 ## Specify a service type
 ## NodePort is default
 ## ref: http://kubernetes.io/docs/user-guide/services/
@@ -185,6 +194,7 @@ config:
     enabled: true
     bind_address: 8086
     auth_enabled: false
+    flux_enabled: true
     log_enabled: true
     write_tracing: false
     pprof_enabled: true
@@ -270,7 +280,17 @@ backup:
   enabled: false
   schedule: "0 0 * * *"
   annotations: {}
-  destination: gs://bucket/influxdb
-  # Google Cloud Storage
-  gcs:
-    serviceAccountSecret: influxdb-backup-key
+
+  ## Google Cloud Storage
+  ## Secret is expected to have key stored in `key.json` field
+  # gcs:
+  #    serviceAccountSecret: influxdb-backup-key
+  #    destination: gs://bucket/influxdb
+
+  ## Azure
+  ## Secret is expected to have connection string stored in `connection-string` field
+  ## Existing container will be used or private one withing storage account will be created.
+  # azure:
+  #   storageAccountSecret: influxdb-backup-azure-key
+  #   destination_container: influxdb-container
+  #   destination_path: ""

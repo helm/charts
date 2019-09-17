@@ -1,0 +1,13 @@
+{{- if .Values.config }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "hubot.fullname" . }}-config
+  labels:
+{{ include "hubot.labels" . | indent 4 }}
+{{- if .Values.extraLabels }}
+{{ toYaml .Values.extraLabels | indent 4 }}
+{{- end }}
+data:
+{{ toYaml .Values.config | indent 2 }}
+{{- end }}

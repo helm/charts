@@ -108,7 +108,7 @@ spec:
               path: /
               port: {{ .Values.service.internalPort }}
             initialDelaySeconds: 120
-            timeoutSeconds: 5
+            timeoutSeconds: 30
             failureThreshold: 6
           readinessProbe:
             httpGet:
@@ -124,9 +124,17 @@ spec:
           {{- end}}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
-    {{- if .Values.nodeSelector }}
+    {{- with .Values.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.nodeSelector | indent 8 }}
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
     {{- end }}
       volumes:
         {{- if .Values.log4jProperties}}

@@ -1,7 +1,7 @@
 apiVersion: v1
 name: mariadb
-version: 6.7.4
-appVersion: 10.3.17
+version: 6.8.10
+appVersion: 10.3.18
 description: Fast, reliable, scalable, and easy to use open-source relational database system. MariaDB Server is intended for mission-critical, heavy-load production systems as well as for embedding into mass-deployed software. Highly available MariaDB cluster.
 keywords:
 - mariadb
