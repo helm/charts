@@ -328,9 +328,9 @@ prometheus:
           - toast_bytes:
               usage: "GAUGE"
               description: "Disk space used for Toast in this table"
-          - table_bytes
-            usage: "GAUGE"
-            description: "Disk space usage of this table"
+          - table_bytes:
+              usage: "GAUGE"
+              description: "Disk space usage of this table"
 
 ## Secrets
 superuser:
