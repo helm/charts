@@ -2438,6 +2438,9 @@ spec:
             retentionSize:
               description: Maximum amount of disk space used by blocks.
               type: string
+            walCompression:
+              description: Enable compression of the write-ahead log using Snappy.
+              type: boolean
             routePrefix:
               description: The route prefix Prometheus registers HTTP handlers for.
                 This is useful, if using ExternalURL and a proxy is rewriting HTTP

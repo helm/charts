@@ -3,6 +3,22 @@
 This file documents all notable changes to Ambassador Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v4.0.0
+
+### Breaking Changes
+
+- Introduces the performance tuned and certified build of open source Ambassador, Ambassador core
+- The license key is now stored and read from a Kubernetes secret by default
+- Added `.Values.pro.licenseKey.secret.enabled` `.Values.pro.licenseKey.secret.create` fields to allow multiple releases in the same namespace to use the same license key secret.
+
+### Minor Changes
+
+- Introduces the ability to configure resource limits for both Ambassador Pro and it's redis instance
+- Introduces the ability to configure additional `AuthService` options (see [AuthService documentation](https://www.getambassador.io/reference/services/auth-service/))
+- The ambassador-pro-auth `AuthService` and ambassador-pro-ratelimit `RateLimitService` and now created as CRDs when `.Values.crds.enabled: true`
+- Fixed misnamed selector for redis instance that failed in an edge case
+- Exposes annotations for redis deployment and service
+
 ## v3.0.0
 
 ### Breaking Changes

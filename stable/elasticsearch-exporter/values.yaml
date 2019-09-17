@@ -56,15 +56,9 @@ service:
 # A list of secrets and their paths to mount inside the pod
 # This is useful for mounting certificates for security
 secretMounts: []
-#  - name: ca
-#    secretName: elastic-ca
-#    path: /ssl/ca.pem
-#  - name: elastic-client-pem
-#    secretName: elastic-client-pem
-#    path: /ssl/client.pem
-#  - name: elastic-client-key
-#    secretName: elastic-client-key
-#    path: /ssl/client.key
+#  - name: elastic-certs
+#    secretName: elastic-certs
+#    path: /ssl
 
 es:
   ## Address (host and port) of the Elasticsearch node we should connect to.
@@ -121,7 +115,7 @@ es:
       # pem:
 
       # Path of ca pem file which should match a secretMount path
-      # pemPath: /ssl/ca.pem
+      # path: /ssl/ca.pem
     client:
 
       ## PEM that contains the client cert to connect to Elasticsearch.
