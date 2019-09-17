@@ -1,0 +1,60 @@
+{{- if .Values.daemonset.enabled }}
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ template "clamav.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ template "clamav.name" . }}
+    helm.sh/chart: {{ template "clamav.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ template "clamav.name" . }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ template "clamav.name" . }}
+    spec:
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        effect: NoSchedule
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        resources:
+          limits:
+            cpu: 800m
+            memory: 3Gi
+          requests:
+            cpu: 300m
+            memory: 1Gi
+{{- if .Values.clamPathConfig }}
+        volumeMounts:
+        - name: data-vol
+          mountPath: /data
+        - name: host-fs
+          mountPath: /host-fs
+          readOnly: true
+        - name: logs
+          mountPath: /logs
+{{- end }}
+        livenessProbe:
+          exec:
+            command:
+              - /health.sh
+          initialDelaySeconds: 60
+          periodSeconds: 30
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: data-vol
+        emptyDir: {}
+      - name: host-fs
+        hostPath:
+          path: /
+      - name: logs
+        hostPath:
+          path: /var/log/clamav
+{{ end }}
