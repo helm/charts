@@ -12,6 +12,9 @@ image:
 nameOverride: ""
 fullnameOverride: ""
 
+daemonset:
+  enabled: true
+
 service:
   type: ClusterIP
   port: 3310
@@ -29,22 +32,33 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
+# Use with DaemonSet enable!
+clamPathConfig:
+  volumeMounts:
+  - name: data-vol
+    mountPath: /data
+  - name: host-fs
+    mountPath: /host-fs
+    readOnly: true
+  - name: logs
+    mountPath: /logs
+
 # Use freshclamConfig to define the content of /etc/clamav/freshclam.conf. Example:
 # freshclamConfig: |
 #   HTTPProxyServer your-proxy.example.com
 #   HTTPProxyPort 8080
 
-resources: {}
+resources:
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #  cpu: 100m
-  #  memory: 128Mi
-  # requests:
-  #  cpu: 100m
-  #  memory: 128Mi
+  limits:
+    cpu: 800m
+    memory: 2048Mi
+  requests:
+    cpu: 400m
+    memory: 768Mi
 
 # Additional pod labels
 podLabels: {}
