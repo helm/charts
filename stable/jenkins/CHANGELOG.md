@@ -6,6 +6,10 @@ numbering uses [semantic versioning](http://semver.org).
 
 NOTE: The change log until version 1.5.7 is auto generated based on git commits. Those include a reference to the git commit to be able to get more details.
 
+## 1.7.1
+
+Update the default requirements for jenkins-slave to 512Mi which fixes frequently encountered [issue #3723](https://github.com/helm/charts/issues/3723)
+
 ## 1.7.0
 
 [Jenkins Configuration as Code Plugin](https://github.com/jenkinsci/configuration-as-code-plugin) default configuration can now be enabled via `master.JCasC.defaultConfig`.
