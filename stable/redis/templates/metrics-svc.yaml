@@ -6,12 +6,11 @@ metadata:
   labels:
     app: {{ template "redis.name" . }}
     chart: {{ template "redis.chart" . }}
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
-{{- if .Values.metrics.service.annotations }}
-  annotations:
-{{ toYaml .Values.metrics.service.annotations | indent 4 }}
-{{- end }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  {{- if .Values.metrics.service.annotations }}
+  annotations: {{ toYaml .Values.metrics.service.annotations | nindent 4 }}
+  {{- end }}
 spec:
   type: {{ .Values.metrics.service.type }}
   {{ if eq .Values.metrics.service.type "LoadBalancer" -}} {{ if .Values.metrics.service.loadBalancerIP -}}
