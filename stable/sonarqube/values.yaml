@@ -8,7 +8,7 @@ deploymentStrategy: {}
 
 image:
   repository: sonarqube
-  tag: 7.9-community
+  tag: 7.9.1-community
   # If using a private repository, the name of the imagePullSecret to use
   # pullSecret: my-repo-secret
 

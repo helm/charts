@@ -42,7 +42,7 @@ The following table lists the configurable parameters of the Sonarqube chart and
 | `replicaCount`                              | Number of replicas deployed               | `1`                                        |
 | `deploymentStrategy`                        | Deployment strategy                       | `{}`                                       |
 | `image.repository`                          | image repository                          | `sonarqube`                                |
-| `image.tag`                                 | `sonarqube` image tag.                    | `7.9-community`                            |
+| `image.tag`                                 | `sonarqube` image tag.                    | `7.9.1-community`                            |
 | `image.pullPolicy`                          | Image pull policy                         | `IfNotPresent`                             |
 | `image.pullSecret`                          | imagePullSecret to use for private repository      |                                   |
 | `command`                                   | command to run in the container           | `nil` (need to be set prior to 6.7.6, and 7.4)      |
