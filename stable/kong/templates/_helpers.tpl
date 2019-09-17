@@ -125,7 +125,7 @@ Create the ingress servicePort value string
 
 {{/*
 Generate an appropriate external URL from a Kong service's ingress configuration
-/*}}
+*/}}
 
 {{- define "kong.ingress.serviceUrl" -}}
 {{- if .tls -}}
