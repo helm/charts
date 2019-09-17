@@ -96,16 +96,17 @@ The following table lists the configurable parameters of the Vault chart and the
 | `vaultExporter.pullPolicy`        | Image pull policy that sould be used     | `IfNotPresent`                      |
 | `vaultExporter.vaultAddress`      | Vault address that exporter should use   | `127.0.0.1:8200`                    |
 | `vaultExporter.tlsCAFile`         | Vault TLS CA certificate mount path      | `/vault/tls/ca.crt`                 |
-| `vaultExporter.serviceMonitor.enabled`    | Specifies whether a Prometheus ServiceMonitor should be created | `false`|
-| `vaultExporter.serviceMonitor.additionalLabels`| Additional labels for Service Monitor | `{}`                                |
-| `vaultExporter.serviceMonitor.interval`   | Prometheus scrape interval       | `10s`                               |
-| `vaultExporter.serviceMonitor.jobLabel`   | Prometheus job label             | `vault-exporter`                    |
-| `vaultExporter.alerts.enabled`            | Specifies whether a Prometheus Alert Rule should be created                  | `false`          |
-| `vaultExporter.alerts.defaultRules.vaultUp`           | Specifies whether the vaultUp rule should be included            | `true`           |
-| `vaultExporter.alerts.defaultRules.vaultUninitialized`| Specifies whether the vaultUninitialized rule should be included | `true`           |
-| `vaultExporter.alerts.defaultRules.vaultSealed`       | Specifies whether the vaulSealed rule should be included         | `true`           |
-| `vaultExporter.alerts.defaultRules.vaultStandby`      | Specifies whether the vaultStandy rule should be included        | `false`          |
-| `vaultExporter.alerts.extraRules`                     | Custom extra rules                                               | `[]`             |
+| `serviceMonitor.enabled`          | Specifies whether a Prometheus ServiceMonitor should be created | `false`|
+| `serviceMonitor.additionalLabels` | Additional labels for Service Monitor    | `{}`                                |
+| `serviceMonitor.podPortName`      | Name of the port of the pod to scrape    | `metrics`                           |
+| `serviceMonitor.interval`         | Prometheus scrape interval               | `10s`                               |
+| `serviceMonitor.jobLabel`         | Prometheus job label                     | `vault-exporter`                    |
+| `prometheusRules.enabled`         | Specifies whether a Prometheus Alert Rule should be created                     | `false`          |
+| `prometheusRules.defaultRules.vaultUp`           | Specifies whether the vaultUp rule should be included            | `true`           |
+| `prometheusRules.defaultRules.vaultUninitialized`| Specifies whether the vaultUninitialized rule should be included | `true`           |
+| `prometheusRules.defaultRules.vaultSealed`       | Specifies whether the vaulSealed rule should be included         | `true`           |
+| `prometheusRules.defaultRules.vaultStandby`      | Specifies whether the vaultStandy rule should be included        | `false`          |
+| `prometheusRules.extraRules`                     | Custom extra rules                                               | `[]`             |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
@@ -152,6 +153,27 @@ serviceMonitor:
     prometheus-scraper: "default"
   interval: 10s
   jobLabel: "vault-exporter"
+```
+
+If you do not want to use the default vaultExporter container, but use your own, you can declare it in the `vault.extraContainer` part. But you have to expose a __named__ port for the metrics and set this name in the `serviceMonitor.podPortName`. For exmaple:
+
+```yaml
+vaultExporter:
+  enabled: false
+
+serviceMonitor:
+  enabled: true
+  additionalLabels:
+    prometheus-scraper: "default"
+  podPortName: "metricPort"
+
+vault:
+  extraContainer:
+  - name: my-vault-exporter
+    image: my-vault-exporter:latest
+    ports:
+    - containerPort: 8080
+      name: metricPort
 ```
 
 If you want to add Prometheus alerting rules you can simply enable the alerts and disabling/enabling

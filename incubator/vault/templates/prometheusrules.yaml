@@ -1,4 +1,4 @@
-{{- if .Values.vaultExporter.alerts.enabled -}}
+{{- if .Values.prometheusRules.enabled -}}
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
@@ -8,15 +8,15 @@ metadata:
     chart: {{ template "vault.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-{{- if .Values.vaultExporter.serviceMonitor.additionalLabels }}
-{{ toYaml .Values.vaultExporter.serviceMonitor.additionalLabels | indent 4 }}
+{{- if .Values.serviceMonitor.additionalLabels }}
+{{ toYaml .Values.serviceMonitor.additionalLabels | indent 4 }}
 {{- end }}
 spec:
   groups:
   # Adapted from https://github.com/bosh-prometheus/prometheus-boshrelease/blob/master/jobs/vault_alerts/templates/vault.alerts.yml
   - name: vault.rules
     rules:
-      {{- if .Values.vaultExporter.alerts.defaultRules.vaultUp }}
+      {{- if .Values.prometheusRules.defaultRules.vaultUp }}
       - alert: VaultUp
         expr: vault_up{app="{{ template "vault.name" . }}", release="{{ .Release.Name }}"} == 0
         for: 10m
@@ -28,7 +28,7 @@ spec:
           description: "The Vault instance {{`{{$labels.pod_name}}`}} has been down for the last 10m"
       {{- end }}
 
-      {{- if .Values.vaultExporter.alerts.defaultRules.vaultUninitialized }}
+      {{- if .Values.prometheusRules.defaultRules.vaultUninitialized }}
       - alert: VaultUninitialized
         expr: vault_initialized{app="{{ template "vault.name" . }}", release="{{ .Release.Name }}"} == 0
         for: 10m
@@ -40,7 +40,7 @@ spec:
           description: "The Vault instance {{`{{$labels.pod_name}}`}} has been uninitialized for the last 10m"
       {{- end }}
 
-      {{- if .Values.vaultExporter.alerts.defaultRules.vaultSealed }}
+      {{- if .Values.prometheusRules.defaultRules.vaultSealed }}
       - alert: VaultSealed
         expr: vault_sealed{app="{{ template "vault.name" . }}", release="{{ .Release.Name }}"} == 1
         for: 5m
@@ -52,7 +52,7 @@ spec:
           description: "The Vault instance {{`{{$labels.pod_name}}`}} has been sealed for the last 5m"
       {{- end }}
 
-      {{- if .Values.vaultExporter.alerts.defaultRules.vaultStandby }}
+      {{- if .Values.prometheusRules.defaultRules.vaultStandby }}
       - alert: VaultStandby
         expr: vault_standby{app="{{ template "vault.name" . }}", release="{{ .Release.Name }}"} == 1
         for: 10m
@@ -63,7 +63,7 @@ spec:
           summary: "Vault instance {{`{{$labels.pod_name}}`}} is in standby mode"
           description: "The Vault instance {{`{{$labels.pod_name}}`}} has been in standby mode for the last 10m"
       {{- end }}
-{{- if .Values.vaultExporter.alerts.extraRules }}
-{{ toYaml .Values.vaultExporter.alerts.extraRules | indent 6 }}
+{{- if .Values.prometheusRules.extraRules }}
+{{ toYaml .Values.prometheusRules.extraRules | indent 6 }}
 {{- end }}
 {{- end -}}

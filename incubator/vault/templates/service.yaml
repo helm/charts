@@ -30,10 +30,10 @@ spec:
     protocol: TCP
     targetPort: {{ .Values.service.port }}
     name: api
-  {{- if .Values.vaultExporter.serviceMonitor.enabled }}
+  {{- if .Values.serviceMonitor.enabled }}
   - port: 9410
     protocol: TCP
-    targetPort: metrics
+    targetPort: {{ .Values.serviceMonitor.podPortName }}
     name: metrics
   {{- end }}
   {{- if .Values.service.clusterExternalPort }}

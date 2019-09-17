@@ -1,4 +1,4 @@
-{{- if .Values.vaultExporter.serviceMonitor.enabled -}}
+{{- if .Values.serviceMonitor.enabled -}}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
@@ -8,15 +8,15 @@ metadata:
     chart: {{ template "vault.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-{{- if .Values.vaultExporter.serviceMonitor.additionalLabels }}
-{{ toYaml .Values.vaultExporter.serviceMonitor.additionalLabels | indent 4 }}
+{{- if .Values.serviceMonitor.additionalLabels }}
+{{ toYaml .Values.serviceMonitor.additionalLabels | indent 4 }}
 {{- end }}
 spec:
   endpoints:
   - port: "metrics"
-    interval: {{ .Values.vaultExporter.serviceMonitor.interval }}
+    interval: {{ .Values.serviceMonitor.interval }}
     honorLabels: true
-  jobLabel: {{ .Values.vaultExporter.serviceMonitor.jobLabel}}
+  jobLabel: {{ .Values.serviceMonitor.jobLabel}}
   selector:
     matchLabels:
       app: {{ template "vault.name" . }}
