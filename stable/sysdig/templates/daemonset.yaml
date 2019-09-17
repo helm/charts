@@ -26,6 +26,10 @@ spec:
       dnsPolicy: ClusterFirstWithHostNet
       hostPID: true
       terminationGracePeriodSeconds: 5
+      {{- if .Values.daemonset.affinity }}
+      affinity:
+{{ toYaml .Values.daemonset.affinity | indent 8 }}
+      {{- end }}
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
 {{ toYaml .Values.image.pullSecrets | indent 8 }}

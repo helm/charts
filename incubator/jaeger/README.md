@@ -249,6 +249,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `schema.image`                           | Image to setup cassandra schema     |  `jaegertracing/jaeger-cassandra-schema` |
 | `schema.mode`                            | Schema mode (prod or test)          |  `prod`                                  |
 | `schema.pullPolicy`                      | Schema image pullPolicy             |  `IfNotPresent`                          |
+| `schema.activeDeadlineSeconds`           | Deadline in seconds for cassandra schema creation job to complete |  `120`                            |
 | `serviceAccounts.agent.create`              | Create service account   |  `true`                                  |
 | `serviceAccounts.agent.name`              | The name of the ServiceAccount to use. If not set and create is true, a name is generated using the fullname template  |  ``                                  |
 | `serviceAccounts.cassandraSchema.create`              | Create service account   |  `true`                                  |
