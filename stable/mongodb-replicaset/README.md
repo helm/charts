@@ -72,6 +72,7 @@ The following table lists the configurable parameters of the mongodb chart and t
 | `metrics.port`                      | Port for metrics exporter                                                 | `9216`                                              |
 | `metrics.path`                      | URL Path to expose metics                                                 | `/metrics`                                          |
 | `metrics.resources`                 | Metrics pod resource requests and limits                                  | `{}`                                                |
+| `metrics.securityContext.enabled`   | Enable security context                                                   | `true`                                              |
 | `metrics.securityContext.fsGroup`   | Group ID for the metrics container                                        | `1001`                                              |
 | `metrics.securityContext.runAsUser` | User ID for the metrics container                                         | `1001`                                              |
 | `metrics.socketTimeout`             | Time to wait for a non-responding socket                                  | `3s`                                                |

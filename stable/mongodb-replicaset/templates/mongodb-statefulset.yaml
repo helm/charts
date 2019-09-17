@@ -249,7 +249,7 @@ spec:
             {{- end }}
               --mongodb.socket-timeout={{ .Values.metrics.socketTimeout }}
               --mongodb.sync-timeout={{ .Values.metrics.syncTimeout }}
-              --web.metrics-path={{ .Values.metrics.path }}
+              --web.telemetry-path={{ .Values.metrics.path }}
               --web.listen-address=:{{ .Values.metrics.port }}
           volumeMounts:
           {{- if and (.Values.tls.enabled) }}
@@ -278,7 +278,7 @@ spec:
               containerPort: {{ .Values.metrics.port  }}
           resources:
 {{ toYaml .Values.metrics.resources | indent 12 }}
-          {{- if .Values.securityContext.enabled }}
+          {{- if .Values.metrics.securityContext.enabled }}
           securityContext:
             runAsUser: {{ .Values.metrics.securityContext.runAsUser }}
             fsGroup: {{ .Values.metrics.securityContext.fsGroup }}

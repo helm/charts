@@ -62,6 +62,7 @@ metrics:
   prometheusServiceDiscovery: true
   resources: {}
   securityContext:
+    enabled: true
     runAsUser: 1001
     fsGroup: 1001
 
