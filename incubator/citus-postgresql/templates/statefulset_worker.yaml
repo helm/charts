@@ -45,6 +45,16 @@ spec:
         env:
         - name: DATA_SOURCE_NAME
           value: postgresql://postgres@127.0.0.1:{{ .Values.superuser.port }}?sslmode=disable
+        args:
+        {{- if .Values.prometheus.disableDefaultMetrics }}
+        - "--disable-default-metrics"
+        {{- end }}
+        - "--extend.query-path=/etc/queries.yaml"
+        - "--log.level={{ .Values.prometheus.logLevel }}"
+        volumeMounts:
+        - name: queries
+          mountPath: /etc/queries.yaml
+          subPath: queries.yaml
       {{- end }}
       - name: citus
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
@@ -125,6 +135,13 @@ spec:
         - name: ssl-config
           configMap:
             name: {{ template "citus-postgresql.fullname" . }}-ssl-settings
+            defaultMode: 420
+        {{ end }}
+        {{- if .Values.prometheus.enabled }}
+        - name: queries
+          configMap:
+            name: {{ template "citus-postgresql.fullname" . }}-metric-exporter-queries
+            defaultMode: 420
         {{ end }}
   volumeClaimTemplates:
   - metadata:
