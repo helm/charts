@@ -1,0 +1,12 @@
+Puppet Server has been installed/upgraded.
+
+Release Name: "{{ template "puppetserver.fullname" . }}"
+Service Name: "puppet"
+Service Port: "{{.Values.puppetserver.service.port}}"
+Control Repo: "{{.Values.puppetserver.puppeturl}}"
+{{- if .Values.hiera.hieradataurl }}
+Hieradata Repo: "{{.Values.hiera.hieradataurl}}"
+{{- end }}
+
+If you need to get your password for PuppetDB and PostgreSQL:
+$ printf $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "puppetdb.secret" . }} -o jsonpath="{.data.password}" | base64 --decode);echo

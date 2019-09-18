@@ -3,14 +3,15 @@ description: Puppet automates the delivery and operation of software.
 name: puppetserver
 version: 0.2.0
 appVersion: 6.6.0
-home: https://hub.docker.com/u/puppet
+keywords: ["puppet", "puppetserver", "automation", "iac", "infrastructure", "ci", "cd"]
+home: https://puppet.com/
 icon: https://secure.gravatar.com/avatar/fdd009b7c1ec96e088b389f773e87aec.jpg?s=80&r=g&d=mm
 sources:
 - https://github.com/puppetlabs/pupperware/
 maintainers:
-- name: Miroslav Hadzhiev
+- name: Xtigyro
   email: miroslav.hadzhiev@gmail.com
-- name: Scott Cressi
+- name: scottcressi
   email: scottcressi@gmail.com
 engine: gotpl
 tillerVersion: ">=2.8.0"
