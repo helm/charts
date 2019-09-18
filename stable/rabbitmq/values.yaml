@@ -190,6 +190,7 @@ securityContext:
   enabled: true
   fsGroup: 1001
   runAsUser: 1001
+  extra: {}
 
 persistence:
   ## this enables PVC templates that will create one per pod
