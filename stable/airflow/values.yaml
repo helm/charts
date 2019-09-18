@@ -221,6 +221,9 @@ web:
   ##
   ## Secrets which will be mounted as a file at `secretsDir/<secret name>`.
   secrets: []
+  ##
+  ## Mount dags volume as read-only
+  dagsReadOnly: false
 
 ##
 ## Workers configuration

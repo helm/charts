@@ -104,6 +104,7 @@ spec:
               subPath: {{ .Values.persistence.subPath | default "" }}
           {{- else if .Values.dags.initContainer.enabled }}
             - name: dags-data
+              readOnly: { .Values.web.dagsReadOnly }
               mountPath: {{ .Values.dags.path }}
           {{- end }}
           {{- if .Values.logsPersistence.enabled }}
