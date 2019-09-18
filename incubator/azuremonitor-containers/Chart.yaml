@@ -16,6 +16,7 @@ keywords:
   - kubernetesmonitoring
   - acs-engine
   - aks-engine
+  - azurestack
   - containerlogs
   - containerhealth
   - containermonitoring
