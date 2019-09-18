@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: puppetboard
+  labels:
+    {{- include "puppetserver.puppetboard.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "puppetserver.puppetboard.matchLabels" . | nindent 6 }}
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        {{- include "puppetserver.puppetboard.labels" . | nindent 8 }}
+    spec:
+      hostname: puppetboard
+      containers:
+        - name: puppetboard
+          image: "{{.Values.puppetboard.image}}:{{.Values.puppetboard.tag}}"
+          imagePullPolicy: "{{.Values.puppetboard.pullPolicy}}"
+          ports:
+          env:
+            - name: "PUPPETDB_HOST"
+              value: "puppetdb"
+            - name: "PUPPETDB_PORT"
+              value: "8080"
+          ports:
+            - name: puppetboard
+              containerPort: 8000

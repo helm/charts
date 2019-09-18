@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: "puppet"
+  labels:
+    {{- include "puppetserver.puppetserver.labels" . | nindent 4 }}
+{{- if .Values.puppetserver.service.labels }}
+{{ toYaml .Values.puppetserver.service.labels | indent 4 }}
+{{- end }}
+{{- if .Values.puppetserver.service.annotations }}
+  annotations:
+{{ toYaml .Values.puppetserver.service.annotations | indent 4 }}
+{{- end }}
+spec:
+  ports:
+    - name: "puppetserver"
+      port: {{.Values.puppetserver.service.port}}
+  selector:
+    {{- include "puppetserver.puppetserver.matchLabels" . | nindent 4 }}
+  type: {{ .Values.puppetserver.service.type }}
+  {{- if .Values.puppetserver.service.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.puppetserver.service.loadBalancerIP }}
+  {{- end }}

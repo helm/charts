@@ -1,0 +1,47 @@
+{{- if .Values.puppetserver.puppeturl }}
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: r10k-deploy
+  labels:
+    {{- include "puppetserver.r10k.labels" . | nindent 4 }}
+spec:
+  schedule: "{{.Values.r10k.cronJob.schedule}}"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: r10k
+              image: "{{.Values.r10k.image}}:{{.Values.r10k.tag}}"
+              imagePullPolicy: "{{.Values.r10k.pullPolicy}}"
+              args:
+              - deploy
+              - environment
+              - --config
+              - /etc/puppetlabs/puppet/r10k.yaml
+              volumeMounts:
+                {{- if and (.Values.r10k.viaSsh.enabled) (.Values.r10k.viaSsh.credentials.ssh.value) (.Values.r10k.viaSsh.credentials.known_hosts.value) }}
+                - name: r10k-secret
+                  mountPath: /root/.ssh
+                {{- end }}
+                - name: r10k-volume
+                  mountPath: /etc/puppetlabs/puppet/r10k.yaml
+                  subPath: r10k.yaml
+                - name: puppet-code-storage
+                  mountPath: /etc/puppetlabs/code/
+          restartPolicy: OnFailure
+          volumes:
+            - name: puppet-code-storage
+              persistentVolumeClaim:
+                claimName: puppet-code-claim
+            - name: r10k-volume
+              configMap:
+                name: r10k-config
+            {{- if and (.Values.r10k.viaSsh.enabled) (.Values.r10k.viaSsh.credentials.ssh.value) (.Values.r10k.viaSsh.credentials.known_hosts.value) }}
+            - name: r10k-secret
+              secret:
+                secretName: {{ template "r10k.secret" . }}
+                defaultMode: 288 # = mode 0440
+            {{- end -}}
+{{- end }}

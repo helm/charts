@@ -1,0 +1,10 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: manifests-config
+  labels:
+    {{- include "puppetserver.puppetserver.labels" . | nindent 4 }}
+data:
+  site.pp: |
+    hiera_include('classes')

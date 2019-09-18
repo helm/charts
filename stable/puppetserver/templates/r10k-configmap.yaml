@@ -1,0 +1,24 @@
+{{- if .Values.puppetserver.puppeturl }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: r10k-config
+  labels:
+    {{- include "puppetserver.r10k.labels" . | nindent 4 }}
+data:
+  r10k.yaml: |
+             :cachedir: '/var/tmp/r10k_cache'
+             sources:
+               repositories:
+                 remote: '{{.Values.puppetserver.puppeturl}}'
+                 basedir: '/etc/puppetlabs/code/environments'
+             git:
+               provider: 'rugged' # Either 'shellgit' or 'rugged', defaults to 'shellgit'
+               {{- if and (.Values.r10k.viaSsh.enabled) (.Values.r10k.viaSsh.credentials.ssh.value) (.Values.r10k.viaSsh.credentials.known_hosts.value) }}
+               private_key: '/root/.ssh/id_rsa'
+               {{- end }}
+               {{- if and (.Values.r10k.viaHttps.credentials.username) (.Values.r10k.viaHttps.credentials.password) }}
+               username: '{{.Values.r10k.viaHttps.credentials.username}}'
+               password: '{{.Values.r10k.viaHttps.credentials.password}}'
+               {{- end }}
+{{- end }}

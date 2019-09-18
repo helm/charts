@@ -1,0 +1,11 @@
+{{- if .Values.hiera.config }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hiera-config
+  labels:
+    {{- include "puppetserver.hiera.labels" . | nindent 4 }}
+data:
+  hiera.yaml: |-
+{{ .Values.hiera.config | indent 4 }}
+{{- end }}

@@ -1,0 +1,141 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "puppetserver.fullname" . }}
+  labels:
+    {{- include "puppetserver.puppetserver.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "puppetserver.puppetserver.matchLabels" . | nindent 6 }}
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        {{- include "puppetserver.puppetserver.labels" . | nindent 8 }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/hiera-configmap.yaml") . | sha256sum }}
+    spec:
+      hostname: "puppet"
+      initContainers:
+        - name: create-puppet-r10k-dir
+          image: "{{.Values.puppetserver.image}}:{{.Values.puppetserver.tag}}"
+          imagePullPolicy: "{{.Values.puppetserver.pullPolicy}}"
+          command: ["sh", "-c", "mkdir -p /etc/puppetlabs/code/environments"]
+          securityContext:
+            runAsUser: 999 # "puppet" user
+          volumeMounts:
+            - name: puppet-code-storage
+              mountPath: /etc/puppetlabs/code/
+      containers:
+        - name: {{ template "puppetserver.fullname" . }}
+          image: "{{.Values.puppetserver.image}}:{{.Values.puppetserver.tag}}"
+          imagePullPolicy: "{{.Values.puppetserver.pullPolicy}}"
+          env:
+            # necessary to set certname and server in puppet.conf, required by
+            # puppetserver ca cli application
+            - name: PUPPETSERVER_HOSTNAME
+              value: "puppet"
+            - name: DNS_ALT_NAMES
+              value: "{{.Values.puppetserver.fqdns.alternateServerNames}}"
+            - name: PUPPETDB_SERVER_URLS
+              value: https://puppetdb:8081
+          ports:
+            - containerPort: 8140
+          volumeMounts:
+            - name: puppet-code-storage
+              mountPath: /etc/puppetlabs/code/
+            - name: puppet-puppet-storage
+              mountPath: /etc/puppetlabs/puppet/
+            - name: puppet-serverdata-storage
+              mountPath: /opt/puppetlabs/server/data/puppetserver/
+            - name: puppet-hiera-storage
+              mountPath: /hiera
+            {{- if .Values.hiera.config }}
+            - name: hiera-volume
+              mountPath: /etc/puppetlabs/puppet/hiera.yaml
+              subPath: hiera.yaml
+            {{- end }}
+            - name: manifests-volume
+              mountPath: /etc/puppetlabs/puppet/manifests/site.pp
+              subPath: site.pp
+            {{- if .Values.hiera.eyaml.public_key }}
+            - name: eyamlpub-volume
+              mountPath: /etc/puppetlabs/puppet/keys/public_key.pkcs7.pem
+              subPath: public_key.pkcs7.pem
+            {{- end }}
+            {{- if .Values.hiera.eyaml.private_key }}
+            - name: eyamlpriv-volume
+              mountPath: /etc/puppetlabs/puppet/keys/private_key.pkcs7.pem
+              subPath: private_key.pkcs7.pem
+            {{- end }}
+        {{- if .Values.hiera.hieradataurl }}
+        - name: git-sync-hiera
+          image: "{{.Values.git_sync.image}}:{{.Values.git_sync.tag}}"
+          imagePullPolicy: "{{.Values.git_sync.pullPolicy}}"
+          args:
+            {{- if and (.Values.git_sync.viaSsh.enabled) (.Values.git_sync.viaSsh.credentials.ssh.value) (.Values.git_sync.viaSsh.credentials.known_hosts.value) }}
+            - --ssh
+            {{- end }}
+            {{- if and (.Values.git_sync.viaHttps.credentials.username) (.Values.git_sync.viaHttps.credentials.password) }}
+            - --username={{.Values.git_sync.viaHttps.credentials.username}}
+            - --password={{.Values.git_sync.viaHttps.credentials.password}}
+            {{- end }}
+            - --repo={{ .Values.hiera.hieradataurl }}
+            {{- if .Values.git_sync.branch }}
+            - --branch={{ .Values.git_sync.branch }}
+            {{- end }}
+            - --dest=data
+            - --wait=120
+          securityContext:
+            runAsUser: 65533 # git-sync user
+          volumeMounts:
+            {{- if and (.Values.git_sync.viaSsh.enabled) (.Values.git_sync.viaSsh.credentials.ssh.value) (.Values.git_sync.viaSsh.credentials.known_hosts.value) }}
+            - name: git-secret
+              mountPath: /etc/git-secret
+            {{- end }}
+            - name: puppet-hiera-storage
+              mountPath: /tmp/
+        {{- end }}
+      {{- if (.Values.hiera.hieradataurl) }}
+      securityContext:
+        fsGroup: 65533 # to make SSH key readable
+      {{- end }}
+      volumes:
+        - name: puppet-code-storage
+          persistentVolumeClaim:
+            claimName: puppet-code-claim
+        - name: puppet-puppet-storage
+          persistentVolumeClaim:
+            claimName: puppet-puppet-claim
+        - name: puppet-serverdata-storage
+          persistentVolumeClaim:
+            claimName: puppet-serverdata-claim
+        - name: puppet-hiera-storage
+          persistentVolumeClaim:
+            claimName: puppet-hiera-claim
+        {{- if .Values.hiera.config }}
+        - name: hiera-volume
+          configMap:
+            name: hiera-config
+        {{- end }}
+        - name: manifests-volume
+          configMap:
+            name: manifests-config
+        {{- if .Values.hiera.eyaml.public_key }}
+        - name: eyamlpub-volume
+          configMap:
+            name: eyamlpub-config
+        {{- end }}
+        {{- if .Values.hiera.eyaml.private_key }}
+        - name: eyamlpriv-volume
+          configMap:
+            name: eyamlpriv-config
+        {{- end }}
+        {{- if and (.Values.git_sync.viaSsh.enabled) (.Values.git_sync.viaSsh.credentials.ssh.value) (.Values.git_sync.viaSsh.credentials.known_hosts.value) }}
+        - name: git-secret
+          secret:
+            secretName: {{ template "git_sync.secret" . }}
+            defaultMode: 288 # = mode 0440
+        {{- end -}}

@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: puppetdb
+  labels:
+    {{- include "puppetserver.puppetdb.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "puppetserver.puppetdb.matchLabels" . | nindent 6 }}
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        {{- include "puppetserver.puppetdb.labels" . | nindent 8 }}
+    spec:
+      hostname: puppetdb
+      containers:
+        - name: puppetdb
+          image: "{{.Values.puppetdb.image}}:{{.Values.puppetdb.tag}}"
+          imagePullPolicy: "{{.Values.puppetdb.pullPolicy}}"
+          env:
+            - name: PUPPETSERVER_HOSTNAME
+              value: "puppet"
+            - name: PUPPETDB_POSTGRES_HOSTNAME
+              value: "postgres"
+            - name: PUPPETDB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "puppetdb.secret" . }}
+                  key: {{ template "puppetdb.passwordKey" . }}
+            - name: PUPPETDB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "puppetdb.secret" . }}
+                  key: username
+          ports:
+            - containerPort: 8080
+            - containerPort: 8081
+          volumeMounts:
+            - name: puppetdb-storage
+              mountPath: /etc/puppetlabs/puppet/ssl/
+      volumes:
+        - name: puppetdb-storage
+          persistentVolumeClaim:
+            claimName: puppetdb-claim

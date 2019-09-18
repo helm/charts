@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+  labels:
+    {{- include "puppetserver.postgres.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "puppetserver.postgres.matchLabels" . | nindent 6 }}
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        {{- include "puppetserver.postgres.labels" . | nindent 8 }}
+    spec:
+      hostname: postgres
+      containers:
+        - name: postgres
+          image: "{{.Values.postgres.image}}:{{.Values.postgres.tag}}"
+          imagePullPolicy: "{{.Values.postgres.pullPolicy}}"
+          env:
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "puppetdb.secret" . }}
+                  key: {{ template "puppetdb.passwordKey" . }}
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "puppetdb.secret" . }}
+                  key: username
+            - name: POSTGRES_DB
+              value: puppetdb
+          ports:
+            - name: postgres
+              containerPort: 5432
+          volumeMounts:
+            - name: postgres-storage
+              mountPath: /var/lib/postgresql/data/
+            - name: postgres-custom-extensions
+              mountPath: /docker-entrypoint-initdb.d
+      volumes:
+        - name: postgres-storage
+          persistentVolumeClaim:
+            claimName: postgres-claim
+        - name: postgres-custom-extensions
+          configMap:
+            name: postgres-custom-extensions
