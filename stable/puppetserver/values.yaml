@@ -156,6 +156,7 @@ puppetdb:
       existingSecretKey: ""
 
 puppetboard:
+  enabled: false
   name: puppetboard
   image: puppet/puppetboard
   tag: 0.3.0

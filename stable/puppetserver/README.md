@@ -123,6 +123,7 @@ Parameter | Description | Default
 `puppetdb.credentials.value.password`| puppetdb password |`20-char randomly generated`
 `puppetdb.credentials.password.existingSecret`| k8s secret that holds puppetdb password |``
 `puppetdb.credentials.password.existingSecretKey`| k8s secret key that holds puppetdb password |``
+`puppetboard.enabled` | puppetboard availability | `false`
 `puppetboard.name` | puppetboard component label | `puppetboard`
 `puppetboard.image` | puppetboard img | `puppet/puppetboard`
 `puppetboard.tag` | puppetboard img tag | `0.3.0`

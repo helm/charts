@@ -1,3 +1,4 @@
+{{- if .Values.puppetboard.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -31,3 +32,4 @@ spec:
           ports:
             - name: puppetboard
               containerPort: 8000
+{{- end }}
