@@ -44,7 +44,7 @@ spec:
           kubelet_volume_stats_capacity_bytes{job="kubelet"}
         ) < 15
         and
-        predict_linear(kubelet_volume_stats_available_bytes{job="kubelet"}[6h], 4 * 24 * 3600) < 0
+        predict_linear((avg by (persistentvolumeclaim, namespace) (kubelet_volume_stats_available_bytes{job="kubelet"}))[6h:], 4 * 24 * 3600) < 0
       for: 5m
       labels:
         severity: critical
