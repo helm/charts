@@ -293,6 +293,14 @@ master:
     minAvailable: 1
     # maxUnavailable: 1
 
+  ## Allow customization of the service resource
+  ##
+  service:
+    ## Add custom annotations to the service
+    ##
+    annotations: {}
+      # external-dns.alpha.kubernetes.io/hostname: db.example.com
+
 slave:
   replicas: 1
 
@@ -407,6 +415,14 @@ slave:
     enabled: false
     minAvailable: 1
     # maxUnavailable: 1
+
+  ## Allow customization of the service resource
+  ##
+  service:
+    ## Add custom annotations to the service
+    ##
+    annotations: {}
+      # external-dns.alpha.kubernetes.io/hostname: rodb.example.com
 
 metrics:
   enabled: false
