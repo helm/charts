@@ -1,0 +1,27 @@
+{{ if and .Values.metricsExporter.enabled .Values.prometheus.operator.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ template "percona-xtradb-cluster.fullname" . }}
+{{- if .Values.prometheus.operator.serviceMonitor.namespace }}
+  namespace: {{ .Values.prometheus.operator.serviceMonitor.namespace }}
+{{- end }}
+  labels:
+    app: {{ template "percona-xtradb-cluster.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+{{- if .Values.prometheus.operator.serviceMonitor.selector }}
+{{ toYaml .Values.prometheus.operator.serviceMonitor.selector | indent 4 }}
+{{- end }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "percona-xtradb-cluster.fullname" . }}
+      release: {{ .Release.Name }}
+  endpoints:
+  - port: metrics
+    interval: {{ .Values.prometheus.operator.serviceMonitor.interval }}
+  namespaceSelector:
+    any: true
+{{ end }}

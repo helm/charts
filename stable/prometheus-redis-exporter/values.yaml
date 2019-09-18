@@ -13,20 +13,21 @@ serviceAccount:
 replicaCount: 1
 image:
   repository: oliver006/redis_exporter
-  tag: v0.25.0
+  tag: v1.0.4
   pullPolicy: IfNotPresent
 extraArgs: {}
 # Additional Environment variables
 env: {}
-  # - name: REDIS_PASSWORD
-  #   valueFrom:
-  #     secretKeyRef:
-  #       key: redis-password
-  #       name: redis-config-0.0.2
+# - name: REDIS_PASSWORD
+#   valueFrom:
+#     secretKeyRef:
+#       key: redis-password
+#       name: redis-config-0.0.2
 service:
   type: ClusterIP
   port: 9121
   annotations: {}
+  labels: {}
     # prometheus.io/path: /metrics
     # prometheus.io/port: "9121"
     # prometheus.io/scrape: "true"
@@ -36,3 +37,22 @@ annotations: {}
 #  prometheus.io/path: /metrics
 #  prometheus.io/port: "9121"
 #  prometheus.io/scrape: "true"
+
+serviceMonitor:
+  # When set true then use a ServiceMonitor to configure scraping
+  enabled: false
+  # Set the namespace the ServiceMonitor should be deployed
+  # namespace: monitoring
+  # Set how frequently Prometheus should scrape
+  # interval: 30s
+  # Set path to redis-exporter telemtery-path
+  # telemetryPath: /metrics
+  # Set labels for the ServiceMonitor, use this to define your scrape label for Prometheus Operator
+  # labels:
+  # Set timeout for scrape
+  # timeout: 10s
+
+# Used to mount a LUA-Script via config map and use it for metrics-collection
+# script:
+#   configmap: prometheus-redis-exporter-script
+#   keyname: script

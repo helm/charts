@@ -1,5 +1,5 @@
-{{- if and .Release.IsInstall .Values.prometheusOperator.enabled .Values.prometheusOperator.createCustomResource -}}
-# Source https://github.com/coreos/prometheus-operator/blob/master/contrib/kube-prometheus/manifests/0prometheus-operator-0prometheusruleCustomResourceDefinition.yaml
+{{- if and .Values.prometheusOperator.enabled .Values.prometheusOperator.createCustomResource -}}
+# Source https://raw.githubusercontent.com/coreos/kube-prometheus/master/manifests/0prometheus-operator-0prometheusruleCustomResourceDefinition.yaml
 apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
 metadata:
@@ -9,23 +9,15 @@ metadata:
     app: {{ template "prometheus-operator.name" . }}-operator
 {{ include "prometheus-operator.labels" . | indent 4 }}
   annotations:
-    "helm.sh/hook": crd-install
+{{- if .Values.prometheusOperator.cleanupCustomResourceBeforeInstall }}
     "helm.sh/hook-delete-policy": "before-hook-creation"
+{{- end }}
+    "helm.sh/hook": crd-install
 spec:
-  additionalPrinterColumns:
-  - JSONPath: .metadata.creationTimestamp
-    description: |-
-      CreationTimestamp is a timestamp representing the server time when this object was created. It is not guaranteed to be set in happens-before order across separate operations. Clients may not set this value. It is represented in RFC3339 form and is in UTC.
-
-      Populated by the system. Read-only. Null for lists. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#metadata
-    name: Age
-    type: date
   group: {{ .Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com" }}
   names:
     kind: PrometheusRule
-    listKind: PrometheusRuleList
     plural: prometheusrules
-    singular: prometheusrule
   scope: Namespaced
   validation:
     openAPIV3Schema:
@@ -114,6 +106,7 @@ spec:
                         type: string
                     required:
                     - name
+                    type: object
                   type: array
                 result:
                   description: Status is a return value for calls that don't return
@@ -166,6 +159,7 @@ spec:
                                   cause of the error. If this value is empty there
                                   is no information available.
                                 type: string
+                            type: object
                           type: array
                         group:
                           description: The group attribute of the resource associated
@@ -193,6 +187,7 @@ spec:
                           description: 'UID of the resource. (when there is a single
                             resource which can be described). More info: http://kubernetes.io/docs/user-guide/identifiers#uids'
                           type: string
+                      type: object
                     kind:
                       description: 'Kind is a string value representing the REST resource
                         this object represents. Servers may infer this from the endpoint
@@ -214,11 +209,12 @@ spec:
                             server has more data available. The value is opaque and
                             may be used to issue another request to the endpoint that
                             served this list to retrieve the next set of available
-                            objects. Continuing a list may not be possible if the
-                            server configuration has changed or more than a few minutes
-                            have passed. The resourceVersion field returned when using
-                            this continue value will be identical to the value in
-                            the first response.
+                            objects. Continuing a consistent list may not be possible
+                            if the server configuration has changed or more than a
+                            few minutes have passed. The resourceVersion field returned
+                            when using this continue value will be identical to the
+                            value in the first response, unless you have received
+                            this token from an error message.
                           type: string
                         resourceVersion:
                           description: 'String that identifies the server''s internal
@@ -232,6 +228,7 @@ spec:
                           description: selfLink is a URL representing this object.
                             Populated by the system. Read-only.
                           type: string
+                      type: object
                     reason:
                       description: A machine-readable description of why this operation
                         is in the "Failure" status. If this value is empty there is
@@ -242,13 +239,52 @@ spec:
                       description: 'Status of the operation. One of: "Success" or
                         "Failure". More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#spec-and-status'
                       type: string
+                  type: object
               required:
               - pending
+              type: object
             labels:
               description: 'Map of string keys and values that can be used to organize
                 and categorize (scope and select) objects. May match selectors of
                 replication controllers and services. More info: http://kubernetes.io/docs/user-guide/labels'
               type: object
+            managedFields:
+              description: |-
+                ManagedFields maps workflow-id and version to the set of fields that are managed by that workflow. This is mostly for internal housekeeping, and users typically shouldn't need to set or understand this field. A workflow can be the user's name, a controller's name, or the name of a specific apply path like "ci-cd". The set of fields is always in the version that the workflow used when modifying the object.
+
+                This field is alpha and can be changed or removed without notice.
+              items:
+                description: ManagedFieldsEntry is a workflow-id, a FieldSet and the
+                  group version of the resource that the fieldset applies to.
+                properties:
+                  apiVersion:
+                    description: APIVersion defines the version of this resource that
+                      this field set applies to. The format is "group/version" just
+                      like the top-level APIVersion field. It is necessary to track
+                      the version of a field set because it cannot be automatically
+                      converted.
+                    type: string
+                  fields:
+                    description: 'Fields stores a set of fields in a data structure
+                      like a Trie. To understand how this is used, see: https://github.com/kubernetes-sigs/structured-merge-diff'
+                    type: object
+                  manager:
+                    description: Manager is an identifier of the workflow managing
+                      these fields.
+                    type: string
+                  operation:
+                    description: Operation is the type of operation which lead to
+                      this ManagedFieldsEntry being created. The only valid values
+                      for this field are 'Apply' and 'Update'.
+                    type: string
+                  time:
+                    description: Time is a wrapper around time.Time which supports
+                      correct marshaling to YAML and JSON.  Wrappers are provided
+                      for many of the factory methods that the time package offers.
+                    format: date-time
+                    type: string
+                type: object
+              type: array
             name:
               description: 'Name must be unique within a namespace. Is required when
                 creating resources, although some resources may allow a client to
@@ -270,8 +306,9 @@ spec:
                 There cannot be more than one managing controller.
               items:
                 description: OwnerReference contains enough information to let you
-                  identify an owning object. Currently, an owning object must be in
-                  the same namespace, so there is no namespace field.
+                  identify an owning object. An owning object must be in the same
+                  namespace as the dependent, or be cluster-scoped, so there is no
+                  namespace field.
                 properties:
                   apiVersion:
                     description: API version of the referent.
@@ -300,6 +337,7 @@ spec:
                 - kind
                 - name
                 - uid
+                type: object
               type: array
             resourceVersion:
               description: |-
@@ -317,6 +355,7 @@ spec:
 
                 Populated by the system. Read-only. More info: http://kubernetes.io/docs/user-guide/identifiers#uids
               type: string
+          type: object
         spec:
           description: PrometheusRuleSpec contains specification parameters for a
             Rule.
@@ -351,10 +390,14 @@ spec:
                           type: string
                       required:
                       - expr
+                      type: object
                     type: array
                 required:
                 - name
                 - rules
+                type: object
               type: array
+          type: object
+      type: object
   version: v1
 {{- end }}

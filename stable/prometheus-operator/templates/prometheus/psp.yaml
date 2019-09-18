@@ -44,4 +44,8 @@ spec:
       - min: 0
         max: 65535
   readOnlyRootFilesystem: false
+{{- if .Values.prometheus.podSecurityPolicy.allowedCapabilities }}
+  allowedCapabilities:
+{{ toYaml .Values.prometheus.podSecurityPolicy.allowedCapabilities | indent 4 }}
+{{- end }}
 {{- end }}

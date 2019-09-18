@@ -1,0 +1,23 @@
+apiVersion: v1
+appVersion: 0.78.0
+description: A Helm chart for Datawire Ambassador
+name: ambassador
+version: 4.0.0
+icon: https://www.getambassador.io/images/logo.png
+home: https://www.getambassador.io/
+sources:
+  - https://github.com/datawire/ambassador
+  - https://github.com/prometheus/statsd_exporter
+keywords:
+  - api gateway
+  - ambassador
+  - datawire
+  - envoy
+maintainers:
+  - name: flydiverny
+    email: markus@maga.se
+  - name: kflynn
+    email: flynn@datawire.io
+  - name: nbkrause
+    email: nkrause@datawire.io
+engine: gotpl

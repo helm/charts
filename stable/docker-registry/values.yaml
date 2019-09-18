@@ -10,10 +10,11 @@ updateStrategy:
   #   maxUnavailable: 0
 
 podAnnotations: {}
+podLabels: {}
 
 image:
   repository: registry
-  tag: 2.6.2
+  tag: 2.7.1
   pullPolicy: IfNotPresent
 # imagePullSecrets:
     # - name: docker
@@ -116,6 +117,10 @@ securityContext:
   fsGroup: 1000
 
 priorityClassName: ""
+
+podDisruptionBudget: {}
+  # maxUnavailable: 1
+  # minAvailable: 2
 
 nodeSelector: {}
 

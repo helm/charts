@@ -7,6 +7,9 @@ metadata:
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+{{- if .Values.deployment.labels }}
+{{ toYaml .Values.deployment.labels | indent 4 }}
+{{- end }}
 {{- if .Values.deployment.annotations }}
   annotations:
 {{ toYaml .Values.deployment.annotations | indent 4 }}
@@ -22,7 +25,17 @@ spec:
       labels:
         app: {{ template "mssql.name" . }}
         release: {{ .Release.Name }}
+{{- if .Values.pod.labels }}
+{{ toYaml .Values.pod.labels | indent 8 }}
+{{- end }}
+{{- if .Values.pod.annotations }}
+      annotations:
+{{ toYaml .Values.pod.annotations | indent 8 }}
+{{- end }}
     spec:
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -39,8 +52,8 @@ spec:
             - name: SA_PASSWORD
               valueFrom:
                secretKeyRef:
-                 name: {{ template "mssql.fullname" . }}-secret
-                 key: sapassword
+                 name: {{ template "mssql.secret" . }}
+                 key: {{ template "mssql.passwordKey" . }}
             - name: MSSQL_DATA_DIR
               value: /mssql-data/data
             - name: MSSQL_LOG_DIR
@@ -59,6 +72,8 @@ spec:
               value: /mssql-data/master/mastlog.ldf
             - name: MSSQL_ENABLE_HADR
               value: "{{ .Values.hadr }}"
+            - name: MSSQL_AGENT_ENABLED
+              value: {{ .Values.agent.enabled | quote }}
             {{ if .Values.resources.limits.memory }}
             - name: MSSQL_MEMORY_LIMIT_MB
               valueFrom:

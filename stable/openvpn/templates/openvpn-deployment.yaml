@@ -35,11 +35,27 @@ spec:
         command: ["/etc/openvpn/setup/configure.sh"]
         ports:
         - containerPort: {{ .Values.service.internalPort }}
+          {{- if .Values.service.hostPort }}
+          hostPort: {{ .Values.service.hostPort }}
+          {{- end }}
           name: openvpn
         securityContext:
           capabilities:
             add:
               - NET_ADMIN
+        readinessProbe:
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          successThreshold: 2
+          exec:
+            command:
+            - nc
+        {{- if eq .Values.openvpn.OVPN_PROTO "udp" }}
+            - -u
+        {{- end }}
+            - -z
+            - 127.0.0.1
+            - "{{ .Values.service.internalPort }}"
         resources:
           requests:
             cpu: "{{ .Values.resources.requests.cpu }}"
@@ -69,7 +85,7 @@ spec:
         {{- else if .Values.openvpn.keystoreSecret }}
         secret:
           secretName: "{{ .Values.openvpn.keystoreSecret }}"
-          defaultMode: 448
+          defaultMode: 0600
           items:
           - key: "server.key"
             path: "pki/private/server.key"
@@ -79,6 +95,19 @@ spec:
             path: "pki/issued/server.crt"
           - key: "dh.pem"
             path: "pki/dh.pem"
+          {{- if .Values.openvpn.useCrl }}
+          - key: "crl.pem"
+            path: "crl.pem"
+            mode: 0644
+          {{- end }}
+          {{- if .Values.openvpn.taKey }}
+          - key: "ta.key"
+            path: "pki/ta.key"
+          {{- end }}
         {{- else }}
         emptyDir: {}
         {{- end -}}
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+        {{ toYaml .Values.nodeSelector }}
+      {{- end }}

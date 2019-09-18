@@ -1,27 +1,44 @@
 image:
   repository: "docker.elastic.co/kibana/kibana-oss"
-  tag: "6.5.4"
+  tag: "6.7.0"
   pullPolicy: "IfNotPresent"
+
+testFramework:
+  enabled: "true"
+  image: "dduportal/bats"
+  tag: "0.4.0"
 
 commandline:
   args: []
 
 env: {}
-  # All Kibana configuration options are adjustable via env vars.
-  # To adjust a config option to an env var uppercase + replace `.` with `_`
-  # Ref: https://www.elastic.co/guide/en/kibana/current/settings.html
-  #
-  # ELASTICSEARCH_URL: http://elasticsearch-client:9200
+  ## All Kibana configuration options are adjustable via env vars.
+  ## To adjust a config option to an env var uppercase + replace `.` with `_`
+  ## Ref: https://www.elastic.co/guide/en/kibana/current/settings.html
+  ## For kibana < 6.6, use ELASTICSEARCH_URL instead
+  # ELASTICSEARCH_HOSTS: http://elasticsearch-client:9200
   # SERVER_PORT: 5601
   # LOGGING_VERBOSE: "true"
   # SERVER_DEFAULTROUTE: "/app/kibana"
+
+envFromSecrets: {}
+  ## Create a secret manually. Reference it here to inject environment variables
+  # ELASTICSEARCH_USERNAME:
+  #   from:
+  #     secret: secret-name-here
+  #     key: ELASTICSEARCH_USERNAME
+  # ELASTICSEARCH_PASSWORD:
+  #   from:
+  #     secret: secret-name-here
+  #     key: ELASTICSEARCH_PASSWORD
 
 files:
   kibana.yml:
     ## Default Kibana configuration from kibana-docker.
     server.name: kibana
     server.host: "0"
-    elasticsearch.url: http://elasticsearch:9200
+    ## For kibana < 6.6, use elasticsearch.url instead
+    elasticsearch.hosts: http://elasticsearch:9200
 
     ## Custom config properties below
     ## Ref: https://www.elastic.co/guide/en/kibana/current/settings.html
@@ -34,6 +51,8 @@ deployment:
 
 service:
   type: ClusterIP
+  # clusterIP: None
+  # portName: kibana-svc
   externalPort: 443
   internalPort: 5601
   # authProxyPort: 5602 To be used with authProxyEnabled and a proxy extraContainer
@@ -55,6 +74,7 @@ service:
     # kubernetes.io/cluster-service: "true"
   ## Limit load balancer source ips to list of CIDRs (where available)
   # loadBalancerSourceRanges: []
+  selector: {}
 
 ingress:
   enabled: false
@@ -79,11 +99,13 @@ serviceAccount:
 
 livenessProbe:
   enabled: false
+  path: /status
   initialDelaySeconds: 30
   timeoutSeconds: 10
 
 readinessProbe:
   enabled: false
+  path: /status
   initialDelaySeconds: 30
   timeoutSeconds: 10
   periodSeconds: 10
@@ -105,6 +127,11 @@ extraContainers: |
 #   ports:
 #     - name: web
 #       containerPort: 9090
+
+extraVolumeMounts: []
+
+extraVolumes: []
+
 resources: {}
   # limits:
   #   cpu: 100m
@@ -131,10 +158,14 @@ podAnnotations: {}
 replicaCount: 1
 revisionHistoryLimit: 3
 
+# Custom labels for pod assignment
+podLabels: {}
+
 # To export a dashboard from a running Kibana 6.3.x use:
 # curl --user <username>:<password> -XGET https://kibana.yourdomain.com:5601/api/kibana/dashboards/export?dashboard=<some-dashboard-uuid> > my-dashboard.json
 # A dashboard is defined by a name and a string with the json payload or the download url
 dashboardImport:
+  enabled: false
   timeout: 60
   xpackauth:
     enabled: false
@@ -153,7 +184,7 @@ plugins:
   # Use <plugin_name,version,url> to add/upgrade plugin
   values:
     # - elastalert-kibana-plugin,1.0.1,https://github.com/bitsensor/elastalert-kibana-plugin/releases/download/1.0.1/elastalert-kibana-plugin-1.0.1-6.4.2.zip
-    # - logtrail,0.1.30,https://github.com/sivasamyk/logtrail/releases/download/v0.1.30/logtrail-6.4.2-0.1.30.zip
+    # - logtrail,0.1.31,https://github.com/sivasamyk/logtrail/releases/download/v0.1.31/logtrail-6.6.0-0.1.31.zip
     # - other_plugin
 
 persistentVolumeClaim:
@@ -186,3 +217,24 @@ extraConfigMapMounts: []
   #   configMap: kibana-logtrail
   #   mountPath: /usr/share/kibana/plugins/logtrail/logtrail.json
   #   subPath: logtrail.json
+
+# Add your own init container or uncomment and modify the given example.
+initContainers: {}
+  ## Don't start kibana till Elasticsearch is reachable.
+  ## Ensure that it is available at http://elasticsearch:9200
+  ##
+  # es-check:  # <- will be used as container name
+  #   image: "appropriate/curl:latest"
+  #   imagePullPolicy: "IfNotPresent"
+  #   command:
+  #     - "/bin/sh"
+  #     - "-c"
+  #     - |
+  #       is_down=true
+  #       while "$is_down"; do
+  #         if curl -sSf --fail-early --connect-timeout 5 http://elasticsearch:9200; then
+  #           is_down=false
+  #         else
+  #           sleep 5
+  #         fi
+  #       done

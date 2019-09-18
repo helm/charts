@@ -1,8 +1,8 @@
 apiVersion: v1
-appVersion: 2.0.0
+appVersion: 2.4.1
 description: A Helm chart to help backup MySQL databases using mysqldump
 name: mysqldump
-version: 2.1.2
+version: 2.6.0
 keywords:
 - mysql
 - mysqldump
@@ -17,3 +17,5 @@ maintainers:
   email: username.taken@gmail.com
 - name: monotek
   email: monotek23@gmail.com
+- name: axdotl
+  email: axel.koehler@kiwigrid.com

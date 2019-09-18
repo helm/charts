@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "fullname" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        env:
+          - name: FLAGS
+            value: {{ .Values.hoverflyFlags }}
+        args: ["$(FLAGS)"]
+        ports:
+        - containerPort: {{ .Values.service.adminPort }}
+        - containerPort: {{ .Values.service.proxyPort }}
+        livenessProbe:
+          httpGet:
+            path: {{ .Values.healthcheckEndpoint }}
+            port: {{ .Values.service.adminPort }}
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+        readinessProbe:
+          httpGet:
+            path: {{ .Values.healthcheckEndpoint }}
+            port: {{ .Values.service.adminPort }}
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+        resources:
+{{ toYaml .Values.resources | indent 12 }}

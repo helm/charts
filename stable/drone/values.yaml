@@ -4,7 +4,7 @@ images:
   ##
   server:
     repository: "docker.io/drone/drone"
-    tag: 1.0.0-rc.4
+    tag: 1.3.1
     pullPolicy: IfNotPresent
 
   ## The official drone (agent) image, change tag to use a different version.
@@ -12,7 +12,7 @@ images:
   ##
   agent:
     repository: "docker.io/drone/agent"
-    tag: 1.0.0-rc.4
+    tag: 1.3.1
     pullPolicy: IfNotPresent
 
   ## The official docker (dind) image, change tag to use a different version.
@@ -80,15 +80,18 @@ sourceControl:
   secret:
   ## Fill in the correct values for your chosen source control provider
   ## Any key in this list with the suffix `Key` will be fetched from the
-  ## secret named above, if not provided the secret will default to
-  ## `<fullName>-source-control`
+  ## secret named above, if not provided the secret it will be created as
+  ## `<fullName>-source-control` using for the key "ClientSecretKey" and
+  # "clientSecretValue" for the value. Be awere to not leak shis file with your password
   github:
     clientID:
     clientSecretKey: clientSecret
+    clientSecretValue:
     server: https://github.com
   gitlab:
     clientID:
     clientSecretKey: clientSecret
+    clientSecretValue:
     server:
   gitea:
     server:
@@ -96,7 +99,8 @@ sourceControl:
     server:
   bitbucketCloud:
     clientID:
-    clientSecret: clientSecret
+    clientSecretKey: clientSecret
+    clientSecretValue:
   bitbucketServer:
     server:
     consumerKey: consumerKey
@@ -110,8 +114,11 @@ server:
   ##
   # host: "drone.domain.io"
 
-  ## protocol should be http:// or https://
-  protocol: http://
+  ## protocol should be http or https
+  protocol: http
+
+  ## rpcProtocol for rpc connection to the server should be http or https
+  rpcProtocol: http
 
   ## Initial admin user
   ## Leaving this blank may make it impossible to log into drone.
@@ -188,6 +195,11 @@ server:
   ##
   nodeSelector: {}
 
+  ## Node taints to tolerate
+  ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  ##
+  tolerations: []
+
   ## additional siecar containers, e. g. for a database proxy, such as Google's cloudsql-proxy.
   ## ex: https://github.com/kubernetes/charts/tree/master/stable/keycloak
   ##
@@ -212,6 +224,34 @@ agent:
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
   ##
   annotations: {}
+
+  ## Additional volumes e.g. for shared caching between agents on different nodes or
+  ## shared cache between agents on the same node when using dind or
+  ## for a global docker login config as per
+  ## Option 2 ref: https://discourse.drone.io/t/how-to-pull-private-images-with-1-0/3155
+  ## Note: Option 2 also requires DRONE_DOCKER_CONFIG: /root/.docker/config.json env var in agent
+  ## NB: This will make the credentials available globally to all builds and all repositories
+  # volumes:
+  # - name: docker-config
+  #   secret:
+  #     defaultMode: 420
+  #     items:
+  #     - key: .dockerconfigjson
+  #       path: config.json
+  #     secretName: drone-docker-config
+  # - name: persistent-data
+  #   persistentVolumeClaim:
+  #     claimName: drone-agent-pvc
+  # - name: cache
+  #   hostPath:
+  #     path: /drone-cache
+  #     type: Directory
+
+  ## Volume mount into agent container
+  # volumeMounts:
+  # - name: docker-config
+  #   mountPath: /root/.docker
+  #   readOnly: true
 
   ## CPU and memory limits for drone agent
   ##
@@ -244,6 +284,11 @@ agent:
   ##
   nodeSelector: {}
 
+  ## Node taints to tolerate
+  ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  ##
+  tolerations: []
+
 dind:
   ## Enable or disable DinD
   ## If disabled, the drone agent will spawn docker containers on the host. Pay
@@ -268,6 +313,15 @@ dind:
   ## ref: https://docs.docker.com/engine/userguide/storagedriver/selectadriver/
   ##
   driver: overlay2
+
+  ## Volume mount into dind container
+  ## Volumes are defined under agent values.
+  # volumeMounts:
+  # - mountPath: /root/.docker
+  #   name: docker-config
+  #   readOnly: true
+  # - name: persistent-data
+  #   mountPath: /mnt/drone-cache
 
   ## CPU and memory limits for dind
   ##

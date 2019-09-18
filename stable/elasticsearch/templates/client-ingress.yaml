@@ -11,9 +11,14 @@ metadata:
     component: "{{ .Values.client.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-{{- with .Values.client.ingress.annotations }}
   annotations:
+{{- with .Values.client.ingress.annotations }}
 {{ toYaml . | indent 4 }}
+{{- end }}
+{{- if and ( .Values.client.ingress.user ) ( .Values.client.ingress.password ) }}
+    nginx.ingress.kubernetes.io/auth-type: basic
+    nginx.ingress.kubernetes.io/auth-secret: '{{ include "elasticsearch.client.fullname" . }}-auth'
+    nginx.ingress.kubernetes.io/auth-realm: "Authentication-Required"
 {{- end }}
 spec:
 {{- if .Values.client.ingress.tls }}

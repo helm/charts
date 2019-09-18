@@ -1,36 +1,43 @@
-1. Get your '{{ .Values.Master.AdminUser }}' user password by running:
-  printf $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "jenkins.fullname" . }} -o jsonpath="{.data.jenkins-admin-password}" | base64 --decode);echo
+1. Get your '{{ .Values.master.adminUser }}' user password by running:
+  printf $(kubectl get secret --namespace {{ template "jenkins.namespace" . }} {{ template "jenkins.fullname" . }} -o jsonpath="{.data.jenkins-admin-password}" | base64 --decode);echo
 
-{{- if .Values.Master.HostName }}
+{{- if .Values.master.ingress.hostName }}
 
-2. Visit http://{{ .Values.Master.HostName }}
+2. Visit http://{{ .Values.master.ingress.hostName }}
 {{- else }}
 2. Get the Jenkins URL to visit by running these commands in the same shell:
-{{- if contains "NodePort" .Values.Master.ServiceType }}
-  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "jenkins.fullname" . }})
-  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+{{- if contains "NodePort" .Values.master.serviceType }}
+  export NODE_PORT=$(kubectl get --namespace {{ template "jenkins.namespace" . }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "jenkins.fullname" . }})
+  export NODE_IP=$(kubectl get nodes --namespace {{ template "jenkins.namespace" . }} -o jsonpath="{.items[0].status.addresses[0].address}")
   echo http://$NODE_IP:$NODE_PORT/login
 
-{{- else if contains "LoadBalancer" .Values.Master.ServiceType }}
+{{- else if contains "LoadBalancer" .Values.master.serviceType }}
   NOTE: It may take a few minutes for the LoadBalancer IP to be available.
-        You can watch the status of by running 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "jenkins.fullname" . }}'
-  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "jenkins.fullname" . }} --template "{{ "{{ range (index .status.loadBalancer.ingress 0) }}{{ . }}{{ end }}" }}")
-  echo http://$SERVICE_IP:{{ .Values.Master.ServicePort }}/login
+        You can watch the status of by running 'kubectl get svc --namespace {{ template "jenkins.namespace" . }} -w {{ template "jenkins.fullname" . }}'
+  export SERVICE_IP=$(kubectl get svc --namespace {{ template "jenkins.namespace" . }} {{ template "jenkins.fullname" . }} --template "{{ "{{ range (index .status.loadBalancer.ingress 0) }}{{ . }}{{ end }}" }}")
+  echo http://$SERVICE_IP:{{ .Values.master.servicePort }}/login
 
-{{- else if contains "ClusterIP"  .Values.Master.ServiceType }}
-  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "component={{ .Release.Name }}-{{ .Values.Master.Component }}" -o jsonpath="{.items[0].metadata.name}")
-  echo http://127.0.0.1:{{ .Values.Master.ServicePort }}
-  kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME {{ .Values.Master.ServicePort }}:{{ .Values.Master.ServicePort }}
+{{- else if contains "ClusterIP"  .Values.master.serviceType }}
+  export POD_NAME=$(kubectl get pods --namespace {{ template "jenkins.namespace" . }} -l "app.kubernetes.io/component={{ .Values.master.componentName }}" -l "app.kubernetes.io/instance={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
+  echo http://127.0.0.1:{{ .Values.master.servicePort }}
+  kubectl --namespace {{ template "jenkins.namespace" . }} port-forward $POD_NAME {{ .Values.master.servicePort }}:{{ .Values.master.servicePort }}
 
 {{- end }}
 {{- end }}
 
-3. Login with the password from step 1 and the username: {{ .Values.Master.AdminUser }}
+3. Login with the password from step 1 and the username: {{ .Values.master.adminUser }}
+{{ if .Values.master.JCasC.enabled }}
+4. Use Jenkins Configuration as Code by specifying configScripts in your values.yaml file, see documentation: http://{{ .Values.master.ingress.hostName }}/configuration-as-code and examples: https://github.com/jenkinsci/configuration-as-code-plugin/tree/master/demos
+{{- end }}
 
 For more information on running Jenkins on Kubernetes, visit:
 https://cloud.google.com/solutions/jenkins-on-container-engine
+{{- if .Values.master.JCasC.enabled }}
+For more information about Jenkins Configuration as Code, visit:
+https://jenkins.io/projects/jcasc/
+{{- end }}
 
-{{- if .Values.Persistence.Enabled }}
+{{- if .Values.persistence.enabled }}
 {{- else }}
 #################################################################################
 ######   WARNING: Persistence is disabled!!! You will lose your data when   #####
@@ -38,8 +45,16 @@ https://cloud.google.com/solutions/jenkins-on-container-engine
 #################################################################################
 {{- end }}
 
-{{- if .Values.rbac.install }}
-Configure the Kubernetes plugin in Jenkins to use the following Service Account name {{ template "jenkins.fullname" . }} using the following steps:
-  Create a Jenkins credential of type Kubernetes service account with service account name {{ template "jenkins.fullname" . }}
-  Under configure Jenkins -- Update the credentials config in the cloud section to use the service account credential you created in the step above.
+{{- if .Values.master.imageTag }}
+#################################################################################
+######   WARNING: `master.imageTag` will be obsoleted soon!!!               #####
+######            It has been renamed to `master.tag`.                      #####
+#################################################################################
+{{- end }}
+
+{{- if .Values.agent.imageTag }}
+#################################################################################
+######   WARNING: `agent.imageTag` will be obsoleted soon!!!                #####
+######            It has been renamed to `agent.tag`.                       #####
+#################################################################################
 {{- end }}

@@ -1,3 +1,4 @@
+---
 {{- if .Values.controller.tcp }}
 apiVersion: v1
 kind: ConfigMap
@@ -10,5 +11,7 @@ metadata:
     heritage: {{ .Release.Service }}
   name: {{ template "haproxy-ingress.controller.fullname" . }}-tcp
 data:
-{{ toYaml .Values.controller.tcp | indent 2 }}
+{{- range $key, $value := .Values.controller.tcp }}
+  {{ tpl $key $ | quote }}: {{ tpl $value $ | quote }}
+{{- end }}
 {{- end }}

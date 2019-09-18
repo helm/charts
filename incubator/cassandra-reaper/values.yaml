@@ -1,0 +1,40 @@
+# Default values for cassandra-reaper.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+nameOverride: ""
+fullnameOverride: ""
+
+replicaCount: 1
+
+image:
+  repository: thelastpickle/cassandra-reaper
+  tag: 1.3.0
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  labels: {}
+  path: /
+  hosts: []
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+  basicAuth:
+    enabled: false
+    name: ~
+    # base64 encoded version of the basic auth file
+    secret: ~
+
+env: {}
+resources: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}

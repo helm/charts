@@ -1,0 +1,19 @@
+{{- if .Values.rbac.create }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ template "sematext-agent.fullname" . }}
+  labels:
+    app: {{ template "sematext-agent.name" . }}
+    chart: {{ template "sematext-agent.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ template "sematext-agent.fullname" . }}
+subjects:
+- kind: ServiceAccount
+  name: {{ template "sematext-agent.serviceAccountName" . }}
+  namespace: {{ .Release.Namespace }}
+{{- end }}

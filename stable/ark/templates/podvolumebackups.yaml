@@ -9,6 +9,7 @@ metadata:
     app: {{ template "ark.name" . }}
   annotations:
     "helm.sh/hook": crd-install
+    "helm.sh/hook-delete-policy": "before-hook-creation"
 spec:
   group: ark.heptio.com
   version: v1

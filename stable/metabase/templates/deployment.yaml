@@ -11,6 +11,11 @@ spec:
   replicas: {{ .Values.replicaCount }}
   template:
     metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
+        {{- if .Values.podAnnotations }}
+{{ toYaml .Values.podAnnotations | trim | indent 8 }}
+        {{- end }}
       labels:
         app: {{ template "metabase.name" . }}
         release: {{ .Release.Name }}
@@ -81,9 +86,14 @@ spec:
             value: {{ .Values.password.length | quote }}
           - name: JAVA_TIMEZONE
             value: {{ .Values.timeZone }}
-          {{- if .Values.javaToolOptions }}
-          - name: JAVA_TOOL_OPTIONS
-            value: {{ .Values.javaToolOptions | quote }}
+          {{- if .Values.javaOpts }}
+          - name: JAVA_OPTS
+            value: {{ .Values.javaOpts | quote }}
+          {{- else }}
+            {{- if .Values.log4jProperties }}
+          - name: JAVA_OPTS
+            value: "-Dlog4j.configuration=file:/tmp/conf/log4j.properties"
+            {{- end }}
           {{- end }}
           {{- if .Values.pluginsDirectory }}
           - name: MB_PLUGINS_DIR
@@ -98,7 +108,7 @@ spec:
               path: /
               port: {{ .Values.service.internalPort }}
             initialDelaySeconds: 120
-            timeoutSeconds: 5
+            timeoutSeconds: 30
             failureThreshold: 6
           readinessProbe:
             httpGet:
@@ -107,9 +117,31 @@ spec:
             initialDelaySeconds: 30
             timeoutSeconds: 3
             periodSeconds: 5
+          {{- if .Values.log4jProperties }}
+          volumeMounts:
+            - name: config
+              mountPath: /tmp/conf/
+          {{- end}}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
-    {{- if .Values.nodeSelector }}
+    {{- with .Values.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.nodeSelector | indent 8 }}
+{{ toYaml . | indent 8 }}
     {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+      volumes:
+        {{- if .Values.log4jProperties}}
+        - name: config
+          configMap:
+            name: {{ template "metabase.fullname" . }}-config
+            items:
+            - key: log4j.properties
+              path: log4j.properties
+        {{- end }}

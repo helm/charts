@@ -13,17 +13,17 @@ rules:
     resources: ["services", "pods", "replicationcontrollers", "persistentvolumeclaims"]
     verbs: ["get", "list", "watch", "create", "delete", "update"]
   - apiGroups: [""]
-    resources: ["configmaps", "secrets"]
+    resources: ["configmaps", "secrets", "pods/log", "pods/status"]
     verbs: ["get", "list", "watch"]
   - apiGroups: ["apps"]
     resources: ["statefulsets", "deployments", "replicasets"]
     verbs: ["get", "list", "watch", "create", "delete", "update", "patch"]
   - apiGroups: ["extensions"]
-    resources: ["deployments", "replicasets", "jobs"]
+    resources: ["deployments", "replicasets"]
     verbs: ["get", "list", "watch", "create", "delete", "update", "patch"]
   - apiGroups: ["batch"]
-    resources: ["cronjobs"]
-    verbs: ["create", "delete", "get", "list", "watch"]
+    resources: ["cronjobs", "jobs"]
+    verbs: ["create", "delete", "get", "list", "watch", "update", "patch"]
 ---
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1

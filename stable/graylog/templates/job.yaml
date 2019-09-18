@@ -1,0 +1,62 @@
+{{ if .Values.graylog.provisioner.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "graylog.fullname" . }}-provisioner-job
+  labels:
+    app.kubernetes.io/name: {{ template "graylog.name" . }}
+    helm.sh/chart: {{ template "graylog.chart" . }}
+    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+    app.kubernetes.io/instance: "{{ .Release.Name }}"
+    app.kubernetes.io/version: "{{ .Chart.AppVersion }}"
+spec:
+  template:
+    spec:
+      metadata:
+        labels:
+          app.kubernetes.io/name: {{ template "graylog.name" . }}
+          helm.sh/chart: {{ template "graylog.chart" . }}
+          app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+          app.kubernetes.io/instance: "{{ .Release.Name }}"
+          app.kubernetes.io/version: "{{ .Chart.AppVersion }}"
+      containers:
+      - name: {{ template "graylog.fullname" . }}-provisioner-job
+        image: alpine:latest
+        command: ["/bin/sh"]
+        env:
+          - name: GRAYLOG_PASSWORD_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "graylog.fullname" . }}
+                key: graylog-password-secret
+        args:
+          - -c
+          - |
+            apk update && apk add --no-cache curl bash && bash /configmap/script.sh
+        volumeMounts:
+          - name: configmap
+            mountPath: /configmap
+      volumes:
+        - name: configmap
+          configMap:
+            name: {{ template "graylog.fullname" . }}-provisioner-job
+            items:
+              - key: script.sh
+                path: script.sh
+                mode: 365
+      restartPolicy: OnFailure
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "graylog.fullname" . }}-provisioner-job
+  labels:
+    app.kubernetes.io/name: {{ template "graylog.name" . }}
+    helm.sh/chart: {{ template "graylog.chart" . }}
+    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+    app.kubernetes.io/instance: "{{ .Release.Name }}"
+    app.kubernetes.io/version: "{{ .Chart.AppVersion }}"
+data:
+  script.sh: |
+{{ .Values.graylog.provisioner.script | indent 4 }}
+{{ end }}

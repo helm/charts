@@ -49,11 +49,14 @@ The following table lists the configurable parameters of the mongodb chart and t
 | `image.tag`                         | MongoDB image tag                                                         | `3.6`                                               |
 | `image.pullPolicy`                  | MongoDB image pull policy                                                 | `IfNotPresent`                                      |
 | `podAnnotations`                    | Annotations to be added to MongoDB pods                                   | `{}`                                                |
-| `securityContext`                   | Security context for the pod                                              | `{runAsUser: 999, fsGroup: 999, runAsNonRoot: true}`|
+| `securityContext.enabled`           | Enable security context                                                   | `true`                                              |
+| `securityContext.fsGroup`           | Group ID for the container                                                | `999`                                               |
+| `securityContext.runAsUser`         | User ID for the container                                                 | `999`                                               |
+| `securityContext.runAsNonRoot`      |                                                                           | `true`                                              |
 | `resources`                         | Pod resource requests and limits                                          | `{}`                                                |
 | `persistentVolume.enabled`          | If `true`, persistent volume claims are created                           | `true`                                              |
 | `persistentVolume.storageClass`     | Persistent volume storage class                                           | ``                                                  |
-| `persistentVolume.accessMode`       | Persistent volume access modes                                            | `[ReadWriteOnce]`                                   |
+| `persistentVolume.accessModes`      | Persistent volume access modes                                            | `[ReadWriteOnce]`                                   |
 | `persistentVolume.size`             | Persistent volume size                                                    | `10Gi`                                              |
 | `persistentVolume.annotations`      | Persistent volume annotations                                             | `{}`                                                |
 | `terminationGracePeriodSeconds`     | Duration in seconds the pod needs to terminate gracefully                 | `30`                                                |
@@ -63,12 +66,15 @@ The following table lists the configurable parameters of the mongodb chart and t
 | `init.resources`                    | Pod resource requests and limits (for init containers)                    | `{}`                                                |
 | `init.timeout`                      | The amount of time in seconds to wait for bootstrap to finish             | `900`                                               |
 | `metrics.enabled`                   | Enable Prometheus compatible metrics for pods and replicasets             | `false`                                             |
-| `metrics.image.repository`          | Image name for metrics exporter                                           | `ssalaues/mongodb-exporter`                         |
-| `metrics.image.tag`                 | Image tag for metrics exporter                                            | `0.6.1`                                             |
+| `metrics.image.repository`          | Image name for metrics exporter                                           | `bitnami/mongodb-exporter`                          |
+| `metrics.image.tag`                 | Image tag for metrics exporter                                            | `0.9.0-debian-9-r2`                                 |
 | `metrics.image.pullPolicy`          | Image pull policy for metrics exporter                                    | `IfNotPresent`                                      |
 | `metrics.port`                      | Port for metrics exporter                                                 | `9216`                                              |
 | `metrics.path`                      | URL Path to expose metics                                                 | `/metrics`                                          |
 | `metrics.resources`                 | Metrics pod resource requests and limits                                  | `{}`                                                |
+| `metrics.securityContext.enabled`   | Enable security context                                                   | `true`                                              |
+| `metrics.securityContext.fsGroup`   | Group ID for the metrics container                                        | `1001`                                              |
+| `metrics.securityContext.runAsUser` | User ID for the metrics container                                         | `1001`                                              |
 | `metrics.socketTimeout`             | Time to wait for a non-responding socket                                  | `3s`                                                |
 | `metrics.syncTimeout`               | Time an operation with this session will wait before returning an error   | `1m`                                                |
 | `metrics.prometheusServiceDiscovery`| Adds annotations for Prometheus ServiceDiscovery                          | `true`                                              |
@@ -79,6 +85,7 @@ The following table lists the configurable parameters of the mongodb chart and t
 | `auth.adminPassword`                | MongoDB admin password                                                    | ``                                                  |
 | `auth.metricsUser`                  | MongoDB clusterMonitor user                                               | ``                                                  |
 | `auth.metricsPassword`              | MongoDB clusterMonitor password                                           | ``                                                  |
+| `auth.existingMetricsSecret`        | If set, and existing secret with this name is used for the metrics user   | ``                                                  |
 | `auth.existingAdminSecret`          | If set, and existing secret with this name is used for the admin user     | ``                                                  |
 | `serviceAnnotations`                | Annotations to be added to the service                                    | `{}`                                                |
 | `configmap`                         | Content of the MongoDB config file                                        | ``                                                  |

@@ -1,6 +1,7 @@
+apiVersion: v1
 name: dex
-version: 0.7.0
-appVersion: 2.14.0
+version: 2.3.1
+appVersion: 2.19.0
 description: CoreOS Dex
 keywords:
 - dex
@@ -16,3 +17,5 @@ maintainers:
   email: shane.starcher@gmail.com
 - name: rendhalver
   email: pete.brown@powerhrg.com
+- name: vi7
+  email: vi7alya@gmail.com

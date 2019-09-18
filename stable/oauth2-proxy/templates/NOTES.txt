@@ -1,1 +1,3 @@
-Note this chart is deprecated and is no longer maintained because upstream was abandoned. 
+To verify that oauth2-proxy has started, run:
+
+  kubectl --namespace={{ .Release.Namespace }} get pods -l "app={{ template "oauth2-proxy.fullname" . }}"

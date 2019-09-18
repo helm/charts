@@ -1,6 +1,6 @@
 image:
   repository: docker.elastic.co/beats/auditbeat
-  tag: 6.5.4
+  tag: 6.7.0
   pullPolicy: IfNotPresent
 
 config:

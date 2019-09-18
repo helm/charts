@@ -23,6 +23,18 @@ spec:
         imagePullPolicy: Always
         resources:
 {{ toYaml .Values.resources | indent 10 }}
+        readinessProbe:
+          exec:
+            command: 
+{{ toYaml .Values.readinessProbe.command | indent 14 }}
+          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+        livenessProbe:
+          exec:
+            command:
+{{ toYaml .Values.livenessProbe.command | indent 14 }}
+          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
         env:
         - name: EULA
           value: {{ .Values.minecraftServer.eula | quote }}
@@ -73,6 +85,10 @@ spec:
           value: {{ .Values.minecraftServer.enableCommandBlock | quote }}
         - name: FORCE_gameMode
           value: {{ .Values.minecraftServer.forcegameMode | quote }}
+        {{- if .Values.minecraftServer.forceReDownload }}
+        - name: FORCE_REDOWNLOAD
+          value: "TRUE"
+        {{- end }}
         - name: GENERATE_STRUCTURES
           value: {{ .Values.minecraftServer.generateStructures | quote }}
         - name: HARDCORE
@@ -117,8 +133,12 @@ spec:
         {{- end }}
         - name: ONLINE_MODE
           value: {{ .Values.minecraftServer.onlineMode | quote }}
+        - name: MEMORY
+          value: {{ .Values.minecraftServer.memory | quote }}
         - name: JVM_OPTS
           value: {{ .Values.minecraftServer.jvmOpts | quote }}
+        - name: JVM_XX_OPTS
+          value: {{ .Values.minecraftServer.jvmXXOpts | quote }}
 
         {{- if .Values.minecraftServer.rcon.enabled }}
         - name: ENABLE_RCON
@@ -135,6 +155,11 @@ spec:
           value: "true"
         - name: QUERY_PORT
           value: {{ .Values.minecraftServer.query.port }}
+        {{- end }}
+
+        {{- range $key, $value := .Values.extraEnv }}
+        - name: {{ $key }}
+          value: {{ $value }}
         {{- end }}
 
         ports:
@@ -157,4 +182,16 @@ spec:
       {{- else }}
         emptyDir: {}
       {{- end }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+    {{- end }}
+    {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+    {{- end }}
 {{ end }}

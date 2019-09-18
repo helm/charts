@@ -16,10 +16,7 @@ spec:
   serviceAccountName: {{ template "prometheus-operator.alertmanager.serviceAccountName" . }}
 {{- if .Values.alertmanager.alertmanagerSpec.externalUrl }}
   externalUrl: "{{ .Values.alertmanager.alertmanagerSpec.externalUrl }}"
-{{- end }}
-{{- if .Values.alertmanager.alertmanagerSpec.externalUrl }}
-  externalUrl: "{{ .Values.alertmanager.alertmanagerSpec.externalUrl }}"
-{{- else if .Values.alertmanager.ingress.enabled }}
+{{- else if and .Values.alertmanager.ingress.enabled .Values.alertmanager.ingress.hosts }}
   externalUrl: "http://{{ index .Values.alertmanager.ingress.hosts 0 }}{{ .Values.alertmanager.alertmanagerSpec.routePrefix }}"
 {{- else }}
   externalUrl: http://{{ template "prometheus-operator.fullname" . }}-alertmanager.{{ .Release.Namespace }}:9093
@@ -29,6 +26,7 @@ spec:
 {{ toYaml .Values.alertmanager.alertmanagerSpec.nodeSelector | indent 4 }}
 {{- end }}
   paused: {{ .Values.alertmanager.alertmanagerSpec.paused }}
+  logFormat: {{ .Values.alertmanager.alertmanagerSpec.logFormat | quote  }}
   logLevel:  {{ .Values.alertmanager.alertmanagerSpec.logLevel | quote  }}
   retention: {{ .Values.alertmanager.alertmanagerSpec.retention | quote  }}
 {{- if .Values.alertmanager.alertmanagerSpec.secrets }}
@@ -58,26 +56,30 @@ spec:
   podMetadata:
 {{ toYaml .Values.alertmanager.alertmanagerSpec.podMetadata | indent 4 }}
 {{- end }}
-{{- if eq .Values.alertmanager.alertmanagerSpec.podAntiAffinity "hard" }}
+{{- if or .Values.alertmanager.alertmanagerSpec.podAntiAffinity .Values.alertmanager.alertmanagerSpec.affinity }}
   affinity:
+{{- if .Values.alertmanager.alertmanagerSpec.affinity }}
+{{ toYaml .Values.alertmanager.alertmanagerSpec.affinity | indent 4 }}
+{{- end }}
+{{- if eq .Values.alertmanager.alertmanagerSpec.podAntiAffinity "hard" }}
     podAntiAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
-      - topologyKey: kubernetes.io/hostname
+      - topologyKey: {{ .Values.alertmanager.alertmanagerSpec.podAntiAffinityTopologyKey }}
         labelSelector:
           matchLabels:
             app: alertmanager
             alertmanager: {{ template "prometheus-operator.fullname" . }}-alertmanager
 {{- else if eq .Values.alertmanager.alertmanagerSpec.podAntiAffinity "soft" }}
-  affinity:
     podAntiAffinity:
       preferredDuringSchedulingIgnoredDuringExecution:
       - weight: 100
         podAffinityTerm:
-          topologyKey: kubernetes.io/hostname
+          topologyKey: {{ .Values.alertmanager.alertmanagerSpec.podAntiAffinityTopologyKey }}
           labelSelector:
             matchLabels:
               app: alertmanager
               alertmanager: {{ template "prometheus-operator.fullname" . }}-alertmanager
+{{- end }}
 {{- end }}
 {{- if .Values.alertmanager.alertmanagerSpec.tolerations }}
   tolerations:

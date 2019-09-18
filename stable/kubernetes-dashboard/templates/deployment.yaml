@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "kubernetes-dashboard.fullname" . }}
@@ -11,7 +11,6 @@ metadata:
     chart: {{ template "kubernetes-dashboard.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-    kubernetes.io/cluster-service: "true"
 {{- if .Values.labels }}
 {{ toYaml .Values.labels | indent 4 }}
 {{- end }}
@@ -22,6 +21,10 @@ spec:
       maxSurge: 0
       maxUnavailable: 1
     type: RollingUpdate
+  selector:
+    matchLabels:
+      app: {{ template "kubernetes-dashboard.name" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
     {{- if .Values.podAnnotations }}
@@ -31,8 +34,11 @@ spec:
       labels:
         app: {{ template "kubernetes-dashboard.name" . }}
         release: {{ .Release.Name }}
-        kubernetes.io/cluster-service: "true"
     spec:
+      {{- if .Values.securityContext }}
+      securityContext:
+{{ toYaml .Values.securityContext | indent 8 }}
+      {{- end }}
       serviceAccountName: {{ template "kubernetes-dashboard.serviceAccountName" . }}
       containers:
       - name: {{ .Chart.Name }}
@@ -49,6 +55,10 @@ spec:
 {{- end }}
 {{- if .Values.extraArgs }}
 {{ toYaml .Values.extraArgs | indent 10 }}
+{{- end }}
+{{- if .Values.extraEnv }}
+        env:
+{{ toYaml .Values.extraEnv | indent 10 }}
 {{- end }}
         ports:
 {{- if .Values.enableInsecureLogin }}
@@ -79,8 +89,18 @@ spec:
 {{- end }}
           initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
           timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+{{- if .Values.dashboardContainerSecurityContext }}
+        securityContext:
+{{ toYaml .Values.dashboardContainerSecurityContext | indent 10 }}
+{{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
+    {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end }}
+    {{- end }}
     {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
@@ -96,6 +116,6 @@ spec:
 {{ toYaml .Values.tolerations | indent 8 }}
     {{- end }}
     {{- if .Values.affinity }}
-        affinity:
+      affinity:
 {{ toYaml .Values.affinity | indent 8 }}
     {{- end }}

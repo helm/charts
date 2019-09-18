@@ -54,6 +54,9 @@ spec:
           hostPath:
             path: {{ .hostPath }}
       {{- end }}
+      {{- if .Values.server.priorityClassName }}
+      priorityClassName: {{ .Values.server.priorityClassName | quote }}
+      {{- end }}
       containers:
         - name: {{ template "kiam.name" . }}-{{ .Values.server.name }}
           image: "{{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}"

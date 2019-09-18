@@ -8,6 +8,8 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     component: snapshot-operator
+    openebs.io/component-name: openebs-snapshot-operator
+    openebs.io/version: {{ .Values.release.version }}
 spec:
   replicas: {{ .Values.snapshotOperator.replicas }}
   selector:
@@ -15,13 +17,17 @@ spec:
       app: {{ template "openebs.name" . }}
       release: {{ .Release.Name }}
   strategy:
-    type: {{ .Values.snapshotOperator.upgradeStrategy }}
+    type: "Recreate"
+    rollingUpdate: null
   template:
     metadata:
       labels:
         app: {{ template "openebs.name" . }}
         release: {{ .Release.Name }}
         component: snapshot-operator
+        name: openebs-snapshot-operator
+        openebs.io/version: {{ .Values.release.version }}
+        openebs.io/component-name: openebs-snapshot-operator
     spec:
       serviceAccountName: {{ template "openebs.serviceAccountName" . }}
       containers:
@@ -53,6 +59,13 @@ spec:
         # This is supported for openebs snapshot controller version 0.6-RC1 onwards
         - name: OPENEBS_MAYA_SERVICE_NAME
           value: "{{ template "openebs.fullname" . }}-apiservice"
+        livenessProbe:
+          exec:
+            command:
+            - pgrep
+            - ".*controller"
+          initialDelaySeconds: {{ .Values.snapshotOperator.healthCheck.initialDelaySeconds }}
+          periodSeconds: {{ .Values.snapshotOperator.healthCheck.periodSeconds }}
       - name: {{ template "openebs.name" . }}-snapshot-provisioner
         image: "{{ .Values.snapshotOperator.provisioner.image }}:{{ .Values.snapshotOperator.provisioner.imageTag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
@@ -81,6 +94,13 @@ spec:
         # This is supported for openebs snapshot provisioner version 0.6-RC1 onwards
         - name: OPENEBS_MAYA_SERVICE_NAME
           value: "{{ template "openebs.fullname" . }}-apiservice"
+        livenessProbe:
+          exec:
+            command:
+            - pgrep
+            - ".*provisioner"
+          initialDelaySeconds: {{ .Values.snapshotOperator.healthCheck.initialDelaySeconds }}
+          periodSeconds: {{ .Values.snapshotOperator.healthCheck.periodSeconds }}
 {{- if .Values.snapshotOperator.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.snapshotOperator.nodeSelector | indent 8 }}

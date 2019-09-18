@@ -1,6 +1,7 @@
+apiVersion: v1
 name: opencart
-version: 4.0.4
-appVersion: 3.0.3-1
+version: 6.2.1
+appVersion: 3.0.3-2
 description: A free and open source e-commerce platform for online merchants. It provides a professional and reliable foundation for a successful online store.
 keywords:
 - opencart

@@ -1,5 +1,8 @@
-# Generated from 'k8s-cluster-rsrc-use' from https://raw.githubusercontent.com/coreos/prometheus-operator/master/contrib/kube-prometheus/manifests/grafana-dashboardDefinitions.yaml
-{{- if and .Values.grafana.enabled .Values.grafana.defaultDashboardsEnabled }}
+# Generated from 'k8s-cluster-rsrc-use' from https://raw.githubusercontent.com/coreos/kube-prometheus/release-0.1/manifests/grafana-dashboardDefinitions.yaml
+# Do not change in-place! In order to change this file first read following link:
+# https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
+{{- $kubeTargetVersion := default .Capabilities.KubeVersion.GitVersion .Values.kubeTargetVersionOverride }}
+{{- if and (semverCompare ">=1.10.0-0" $kubeTargetVersion) (semverCompare "<1.14.0-0" $kubeTargetVersion) .Values.grafana.enabled .Values.grafana.defaultDashboardsEnabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -40,7 +43,7 @@ data:
                         "dashes": false,
                         "datasource": "$datasource",
                         "fill": 10,
-                        "id": 0,
+                        "id": 1,
                         "legend": {
                             "avg": false,
                             "current": false,
@@ -69,7 +72,7 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "node:node_cpu_utilisation:avg1m * node:node_num_cpu:sum / scalar(sum(node:node_num_cpu:sum))",
+                                "expr": "node:cluster_cpu_utilisation:ratio{cluster=\"$cluster\"}",
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "{{`{{node}}`}}",
@@ -84,7 +87,7 @@ data:
                         "timeShift": null,
                         "title": "CPU Utilisation",
                         "tooltip": {
-                            "shared": true,
+                            "shared": false,
                             "sort": 0,
                             "value_type": "individual"
                         },
@@ -126,7 +129,7 @@ data:
                         "dashes": false,
                         "datasource": "$datasource",
                         "fill": 10,
-                        "id": 1,
+                        "id": 2,
                         "legend": {
                             "avg": false,
                             "current": false,
@@ -155,7 +158,7 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "node:node_cpu_saturation_load1: / scalar(sum(min(kube_pod_info) by (node)))",
+                                "expr": "node:node_cpu_saturation_load1:{cluster=\"$cluster\"} / scalar(sum(min(kube_pod_info{cluster=\"$cluster\"}) by (node)))",
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "{{`{{node}}`}}",
@@ -170,7 +173,7 @@ data:
                         "timeShift": null,
                         "title": "CPU Saturation (Load1)",
                         "tooltip": {
-                            "shared": true,
+                            "shared": false,
                             "sort": 0,
                             "value_type": "individual"
                         },
@@ -224,7 +227,7 @@ data:
                         "dashes": false,
                         "datasource": "$datasource",
                         "fill": 10,
-                        "id": 2,
+                        "id": 3,
                         "legend": {
                             "avg": false,
                             "current": false,
@@ -253,7 +256,7 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "node:node_memory_utilisation:ratio",
+                                "expr": "node:cluster_memory_utilisation:ratio{cluster=\"$cluster\"}",
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "{{`{{node}}`}}",
@@ -268,7 +271,7 @@ data:
                         "timeShift": null,
                         "title": "Memory Utilisation",
                         "tooltip": {
-                            "shared": true,
+                            "shared": false,
                             "sort": 0,
                             "value_type": "individual"
                         },
@@ -310,7 +313,7 @@ data:
                         "dashes": false,
                         "datasource": "$datasource",
                         "fill": 10,
-                        "id": 3,
+                        "id": 4,
                         "legend": {
                             "avg": false,
                             "current": false,
@@ -339,7 +342,7 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "node:node_memory_swap_io_bytes:sum_rate",
+                                "expr": "node:node_memory_swap_io_bytes:sum_rate{cluster=\"$cluster\"}",
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "{{`{{node}}`}}",
@@ -354,7 +357,7 @@ data:
                         "timeShift": null,
                         "title": "Memory Saturation (Swap I/O)",
                         "tooltip": {
-                            "shared": true,
+                            "shared": false,
                             "sort": 0,
                             "value_type": "individual"
                         },
@@ -408,7 +411,7 @@ data:
                         "dashes": false,
                         "datasource": "$datasource",
                         "fill": 10,
-                        "id": 4,
+                        "id": 5,
                         "legend": {
                             "avg": false,
                             "current": false,
@@ -437,7 +440,7 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "node:node_disk_utilisation:avg_irate / scalar(:kube_pod_info_node_count:)",
+                                "expr": "node:node_disk_utilisation:avg_irate{cluster=\"$cluster\"} / scalar(:kube_pod_info_node_count:{cluster=\"$cluster\"})",
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "{{`{{node}}`}}",
@@ -452,7 +455,7 @@ data:
                         "timeShift": null,
                         "title": "Disk IO Utilisation",
                         "tooltip": {
-                            "shared": true,
+                            "shared": false,
                             "sort": 0,
                             "value_type": "individual"
                         },
@@ -494,7 +497,7 @@ data:
                         "dashes": false,
                         "datasource": "$datasource",
                         "fill": 10,
-                        "id": 5,
+                        "id": 6,
                         "legend": {
                             "avg": false,
                             "current": false,
@@ -523,7 +526,7 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "node:node_disk_saturation:avg_irate / scalar(:kube_pod_info_node_count:)",
+                                "expr": "node:node_disk_saturation:avg_irate{cluster=\"$cluster\"} / scalar(:kube_pod_info_node_count:{cluster=\"$cluster\"})",
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "{{`{{node}}`}}",
@@ -538,7 +541,7 @@ data:
                         "timeShift": null,
                         "title": "Disk IO Saturation",
                         "tooltip": {
-                            "shared": true,
+                            "shared": false,
                             "sort": 0,
                             "value_type": "individual"
                         },
@@ -592,7 +595,7 @@ data:
                         "dashes": false,
                         "datasource": "$datasource",
                         "fill": 10,
-                        "id": 6,
+                        "id": 7,
                         "legend": {
                             "avg": false,
                             "current": false,
@@ -621,7 +624,7 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "node:node_net_utilisation:sum_irate",
+                                "expr": "node:node_net_utilisation:sum_irate{cluster=\"$cluster\"}",
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "{{`{{node}}`}}",
@@ -636,7 +639,7 @@ data:
                         "timeShift": null,
                         "title": "Net Utilisation (Transmitted)",
                         "tooltip": {
-                            "shared": true,
+                            "shared": false,
                             "sort": 0,
                             "value_type": "individual"
                         },
@@ -678,7 +681,7 @@ data:
                         "dashes": false,
                         "datasource": "$datasource",
                         "fill": 10,
-                        "id": 7,
+                        "id": 8,
                         "legend": {
                             "avg": false,
                             "current": false,
@@ -707,7 +710,7 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "node:node_net_saturation:sum_irate",
+                                "expr": "node:node_net_saturation:sum_irate{cluster=\"$cluster\"}",
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "{{`{{node}}`}}",
@@ -722,7 +725,7 @@ data:
                         "timeShift": null,
                         "title": "Net Saturation (Dropped)",
                         "tooltip": {
-                            "shared": true,
+                            "shared": false,
                             "sort": 0,
                             "value_type": "individual"
                         },
@@ -776,7 +779,7 @@ data:
                         "dashes": false,
                         "datasource": "$datasource",
                         "fill": 10,
-                        "id": 8,
+                        "id": 9,
                         "legend": {
                             "avg": false,
                             "current": false,
@@ -805,7 +808,7 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "sum(max(node_filesystem_size_bytes{fstype=\u007e\"ext[234]|btrfs|xfs|zfs\"} - node_filesystem_avail_bytes{fstype=\u007e\"ext[234]|btrfs|xfs|zfs\"}) by (device,pod,namespace)) by (pod,namespace)\n/ scalar(sum(max(node_filesystem_size_bytes{fstype=\u007e\"ext[234]|btrfs|xfs|zfs\"}) by (device,pod,namespace)))\n* on (namespace, pod) group_left (node) node_namespace_pod:kube_pod_info:\n",
+                                "expr": "sum(max(node_filesystem_size_bytes{fstype=~\"ext[234]|btrfs|xfs|zfs\", cluster=\"$cluster\"} - node_filesystem_avail_bytes{fstype=~\"ext[234]|btrfs|xfs|zfs\", cluster=\"$cluster\"}) by (device,pod,namespace)) by (pod,namespace)\n/ scalar(sum(max(node_filesystem_size_bytes{fstype=~\"ext[234]|btrfs|xfs|zfs\", cluster=\"$cluster\"}) by (device,pod,namespace)))\n* on (namespace, pod) group_left (node) node_namespace_pod:kube_pod_info:{cluster=\"$cluster\"}\n",
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "{{`{{node}}`}}",
@@ -820,7 +823,7 @@ data:
                         "timeShift": null,
                         "title": "Disk Capacity",
                         "tooltip": {
-                            "shared": true,
+                            "shared": false,
                             "sort": 0,
                             "value_type": "individual"
                         },
@@ -865,7 +868,7 @@ data:
         "schemaVersion": 14,
         "style": "dark",
         "tags": [
-
+            "kubernetes-mixin"
         ],
         "templating": {
             "list": [
@@ -884,6 +887,33 @@ data:
                     "refresh": 1,
                     "regex": "",
                     "type": "datasource"
+                },
+                {
+                    "allValue": null,
+                    "current": {
+                        "text": "prod",
+                        "value": "prod"
+                    },
+                    "datasource": "$datasource",
+                    "hide": 2,
+                    "includeAll": false,
+                    "label": "cluster",
+                    "multi": false,
+                    "name": "cluster",
+                    "options": [
+
+                    ],
+                    "query": "label_values(kube_node_info, cluster)",
+                    "refresh": 1,
+                    "regex": "",
+                    "sort": 2,
+                    "tagValuesQuery": "",
+                    "tags": [
+
+                    ],
+                    "tagsQuery": "",
+                    "type": "query",
+                    "useTags": false
                 }
             ]
         },
@@ -917,7 +947,7 @@ data:
             ]
         },
         "timezone": "",
-        "title": "K8s / USE Method / Cluster",
+        "title": "Kubernetes / USE Method / Cluster",
         "uid": "a6e7d1362e1ddbb79db21d5bb40d7137",
         "version": 0
     }

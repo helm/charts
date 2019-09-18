@@ -4,80 +4,98 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "anchore-engine.enterprise-ui.fullname" . | quote }}
+  name: {{ include "anchore-engine.enterprise-ui.fullname" . }}
   labels:
-    app: {{ include "anchore-engine.fullname" . | quote }}
+    app: {{ include "anchore-engine.fullname" . }}
     component: {{ $component }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    {{- with .Values.anchoreEnterpriseUi.labels }}
+    {{ toYaml . | nindent 4 }}
+    {{- end }}
+    {{- with .Values.anchoreGlobal.labels }}
+    {{ toYaml . | nindent 4 }}
+    {{- end }}
 spec:
   selector:
     matchLabels:
-      app: "{{ template "anchore-engine.fullname" .}}"
+      app: {{ template "anchore-engine.fullname" . }}
       component: {{ $component }}
   replicas: 1
   template:
     metadata:
       labels:
-        app: "{{ template "anchore-engine.fullname" . }}"
+        app: {{ template "anchore-engine.fullname" . }}
         component: {{ $component }}
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-        release: "{{ .Release.Name }}"
-        heritage: "{{ .Release.Service }}"
-{{- if .Values.anchoreEnterpriseUi.annotations }}
+        release: {{ .Release.Name }}
+        heritage: {{ .Release.Service }}
+        {{- with .Values.anchoreEnterpriseUi.labels }}
+        {{ toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.anchoreGlobal.labels }}
+        {{ toYaml . | nindent 8 }}
+        {{- end }}
+      {{- with .Values.anchoreEnterpriseUi.annotations }}
       annotations:
-{{ toYaml .Values.anchoreEnterpriseUi.annotations | indent 8 }}
-{{- end }}
+        {{ toYaml . | nindent 8 }}
+      {{- end }}
     spec:
-      volumes:
-      - name: anchore-license
-        secret:
-          secretName: {{ .Values.anchoreEnterpriseGlobal.licenseSecretName }}
       imagePullSecrets:
       - name: {{ .Values.anchoreEnterpriseGlobal.imagePullSecretName }}
       containers:
-      - name: {{ .Chart.Name }}-{{ $component }}
-        image: {{ .Values.anchoreEnterpriseUi.image.repository }}:{{ .Values.anchoreEnterpriseUi.image.tag }}
-        imagePullPolicy: {{ .Values.anchoreEnterpriseUi.image.pullPolicy }}
+      {{- if .Values.cloudsql.enabled  }}
+      - name: cloudsql-proxy
+        image: {{ .Values.cloudsql.image.repository }}:{{ .Values.cloudsql.image.tag }}
+        imagePullPolicy: {{ .Values.cloudsql.image.pullPolicy }}
+        command: ["/cloud_sql_proxy"]
+        args:
+        - "-instances={{ .Values.cloudsql.instance }}=tcp:5432"
+        {{- if .Values.cloudsql.useExistingServiceAcc }}
+        - "-credential_file=/var/{{ .Values.cloudsql.serviceAccSecretName }}/{{ .Values.cloudsql.serviceAccJsonName }}"
+        volumeMounts:
+        - mountPath: /var/{{ .Values.cloudsql.serviceAccSecretName }}
+          name: {{ .Values.cloudsql.serviceAccSecretName }}
+          readOnly: true
+        {{- end }}
+      {{- end }}
+      - name: "{{ .Chart.Name }}-{{ $component }}"
+        image: {{ .Values.anchoreEnterpriseUi.image }}
+        imagePullPolicy: {{ .Values.anchoreEnterpriseUi.imagePullPolicy }}
         env:
-        - name: REDIS_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ template "redis.fullname" . }}
-              key: redis-password
-        {{- if and (index .Values "anchore-ui-redis" "externalEndpoint") (not (index .Values "anchore-ui-redis" "enabled")) }}
-        - name: ANCHORE_REDIS_URI
-          value: {{ index .Values "anchore-ui-redis" "externalEndpoint" | quote }}
-        {{- else }}
-        - name: ANCHORE_REDIS_URI
-          value: {{ printf "redis://:$(REDIS_PASSWORD)@%s-master:6379" ( include "redis.fullname" . ) }}
+        {{ if .Values.anchoreGlobal.dbConfig.ssl }}
+        - name: PGSSLROOTCERT
+          value: /home/anchore/certs/{{ .Values.anchoreGlobal.dbConfig.sslRootCertName }}
         {{- end }}
-        - name: ANCHORE_ENGINE_URI
-          value: 'http://{{ template "anchore-engine.api.fullname" . }}:{{ .Values.anchoreApi.service.port }}/v1'
-        - name: ANCHORE_LICENSE_PATH
-          value: '/'
-        {{- if .Values.anchoreEnterpriseRbac.enabled }}
-        - name: ANCHORE_RBAC_URI
-          value: 'http://{{ template "anchore-engine.api.fullname" . }}:{{ .Values.anchoreEnterpriseRbac.service.apiPort }}/v1'
+        {{ with .Values.anchoreEnterpriseUi.ldapsRootCaCertName }}
+        - name: NODE_EXTRA_CA_CERTS
+          value: /home/anchore/certs/{{- . }}
         {{- end }}
-        - name: ANCHORE_ENABLE_SSL
-          value: '{{ .Values.anchoreEnterpriseUi.enableSsl }}'
-        - name: ANCHORE_ENABLE_PROXY
-          value: '{{ .Values.anchoreEnterpriseUi.enableProxy }}'
-        - name: ANCHORE_ALLOW_SHARED_LOGIN
-          value: '{{ .Values.anchoreEnterpriseUi.enableSharedLogin }}'
+        {{- with .Values.anchoreGlobal.extraEnv }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.anchoreEnterpriseUi.extraEnv }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
         ports:
         - containerPort: 3000
           protocol: TCP
           name: enterprise-ui
         volumeMounts:
         - name: anchore-license
-          mountPath: "/license.yaml"
+          mountPath: /home/anchore/license.yaml
           subPath: license.yaml
+        - name: anchore-ui-config
+          mountPath: /config/config-ui.yaml
+          subPath: config-ui.yaml
+        {{- if (.Values.anchoreGlobal.certStoreSecretName) }}
+        - name: certs
+          mountPath: /home/anchore/certs/
+          readOnly: true
+        {{- end }}
         livenessProbe:
-          httpGet:
-            path: /
+          tcpSocket:
             port: enterprise-ui
           initialDelaySeconds: 120
           periodSeconds: 10
@@ -91,19 +109,36 @@ spec:
           failureThreshold: 3
           successThreshold: 1
         resources:
-{{ toYaml .Values.anchoreEnterpriseUi.resources | indent 10 }}
-    {{- if .Values.anchoreEnterpriseUi.nodeSelector }}
+          {{ toYaml .Values.anchoreEnterpriseUi.resources | nindent 10 }}
+      volumes:
+      - name: anchore-license
+        secret:
+          secretName: {{ .Values.anchoreEnterpriseGlobal.licenseSecretName }}
+      - name: anchore-ui-config
+        secret:
+          secretName: {{ template "anchore-engine.enterprise-ui.fullname" . }}
+      {{- with .Values.anchoreGlobal.certStoreSecretName }}
+      - name: certs
+        secret:
+          secretName: {{ . }}
+      {{- end }}
+      {{- if .Values.cloudsql.useExistingServiceAcc }}
+      - name: {{ .Values.cloudsql.serviceAccSecretName }}
+        secret:
+          secretName: {{ .Values.cloudsql.serviceAccSecretName }}
+      {{- end }}
+      {{- with .Values.anchoreEnterpriseUi.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.anchoreEnterpriseUi.nodeSelector | indent 8 }}
-    {{- end }}
-    {{- with .Values.anchoreEnterpriseUi.affinity }}
+        {{ toYaml .Values.anchoreEnterpriseUi.nodeSelector | nindent 8 }}
+      {{- end }}
+      {{- with .Values.anchoreEnterpriseUi.affinity }}
       affinity:
-{{ toYaml . | indent 8 }}
-    {{- end }}
-    {{- with .Values.anchoreEnterpriseUi.tolerations }}
+        {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.anchoreEnterpriseUi.tolerations }}
       tolerations:
-{{ toYaml . | indent 8 }}
-    {{- end }}
+        {{ toYaml . | nindent 8 }}
+     {{- end }}
 
 ---
 apiVersion: v1
@@ -111,17 +146,23 @@ kind: Service
 metadata:
   name: {{ include "anchore-engine.enterprise-ui.fullname" . | quote }}
   labels:
-    app: "{{ template "anchore-engine.fullname" . }}"
+    app: {{ template "anchore-engine.fullname" . }}
     component: {{ $component }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
-  {{- if .Values.anchoreEnterpriseUi.service.annotations }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    {{- with .Values.anchoreEnterpriseUi.service.labels }}
+    {{ toYaml . | nindent 4 }}
+    {{- end }}
+    {{- with .Values.anchoreGlobal.labels }}
+    {{ toYaml . | nindent 4 }}
+    {{- end }}
+  {{- with .Values.anchoreEnterpriseUi.service.annotations }}
   annotations:
-{{ toYaml .Values.anchoreEnterpriseUi.service.annotations | indent 4 }}
+    {{ toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  sessionAffinity: ClientIP
+  sessionAffinity: {{ .Values.anchoreEnterpriseUi.service.sessionAffinity }}
   type: {{ .Values.anchoreEnterpriseUi.service.type }}
   ports:
     - name: enterprise-ui
@@ -129,7 +170,7 @@ spec:
       protocol: TCP
       targetPort: 3000
   selector:
-    app: "{{ template "anchore-engine.fullname" . }}"
+    app: {{ template "anchore-engine.fullname" . }}
     component: {{ $component }}
 
 {{- end -}}

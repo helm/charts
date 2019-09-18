@@ -13,6 +13,11 @@ image:
 service:
   type: ClusterIP
 
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName:
+
 ## Persist data to a persistent volume
 persistence:
   enabled: true
@@ -94,6 +99,7 @@ readinessProbe:
   timeoutSeconds: 5
   successThreshold: 1
   failureThreshold: 3
+  address: "${POD_IP}"
 
 ## Configure node selector. Edit code below for adding selector to pods
 ## ref: https://kubernetes.io/docs/user-guide/node-selection/
@@ -148,8 +154,12 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   # name:
 
+# Use host network for Cassandra pods
+# You must pass seed list into config.seeds property if set to true
+hostNetwork: false
+
 ## Backup cronjob configuration
-## Ref: https://github.com/nuvo/cain
+## Ref: https://github.com/maorfr/cain
 backup:
   enabled: false
 
@@ -167,11 +177,11 @@ backup:
     iam.amazonaws.com/role: cain
 
   image:
-    repos: nuvo/cain
-    tag: 0.4.1
+    repository: maorfr/cain
+    tag: 0.6.0
 
   # Additional arguments for cain
-  # Ref: https://github.com/nuvo/cain#usage
+  # Ref: https://github.com/maorfr/cain#usage
   extraArgs: []
 
   # Add additional environment variables
@@ -188,18 +198,31 @@ backup:
       memory: 1Gi
       cpu: 1
 
+  # Name of the secret containing the credentials of the service account used by GOOGLE_APPLICATION_CREDENTIALS, as a credentials.json file
+  # google:
+    # serviceAccountSecret:
+
   # Destination to store the backup artifacts
-  # Supported cloud storage services: AWS S3, Minio S3, Azure Blob Storage
+  # Supported cloud storage services: AWS S3, Minio S3, Azure Blob Storage, Google Cloud Storage
   # Additional support can added. Visit this repository for details
-  # Ref: https://github.com/nuvo/skbn
+  # Ref: https://github.com/maorfr/skbn
   destination: s3://bucket/cassandra
 
 ## Cassandra exported configuration
 ## ref: https://github.com/criteo/cassandra_exporter
 exporter:
+  # If exporter is enabled this will create a ServiceMonitor by default as well
+  servicemonitor: true
   enabled: false
   image:
     repo: criteord/cassandra_exporter
     tag: 2.0.2
   port: 5556
   jvmOpts: ""
+  resources: {}
+    # limits:
+    #   cpu: 1
+    #   memory: 1Gi
+    # requests:
+    #   cpu: 1
+    #   memory: 1Gi

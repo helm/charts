@@ -1,16 +1,12 @@
 {{- if and .Values.podSecurityPolicy.enabled -}}
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
-{{- if .Capabilities.APIVersions.Has "rbac.authorization.k8s.io/v1beta1" }}
-apiVersion: rbac.authorization.k8s.io/v1beta1
-{{- else if .Capabilities.APIVersions.Has "rbac.authorization.k8s.io/v1alpha1" }}
-apiVersion: rbac.authorization.k8s.io/v1alpha1
-{{- end }}
 metadata:
   labels:
-    app: {{ template "kube-state-metrics.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ template "kube-state-metrics.name" . }}
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
   name: psp-{{ template "kube-state-metrics.fullname" . }}
 rules:
 - apiGroups: ['extensions']

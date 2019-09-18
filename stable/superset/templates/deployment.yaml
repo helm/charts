@@ -23,10 +23,13 @@ spec:
         heritage: {{ .Release.Service }}
       annotations:
         checksum/secrets: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+        {{- with .Values.deploymentAnnotations }}
+        {{- . | toYaml | nindent 8 }}
+        {{- end }}
     spec:
       securityContext:
-        runAsUser: 0
-        fsGroup: 0
+        runAsUser: 1000
+        fsGroup: 1000
       volumes:
         - name: superset-configs
           secret:
@@ -38,6 +41,10 @@ spec:
           {{- else }}
           emptyDir: {}
           {{- end }}
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.image.pullSecrets | indent 8 }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -53,7 +60,7 @@ spec:
             - name: http
               containerPort: 8088
               protocol: TCP
-          {{- with .Values.extraEnv }}
+          {{- if .Values.extraEnv }}
           env:
             {{- range $key, $value := .Values.extraEnv }}
             - name: "{{ $key }}"

@@ -3,9 +3,10 @@
 # https://github.com/metabase/metabase/issues/2754
 # NOTE: Should remain 1
 replicaCount: 1
+podAnnotations: {}
 image:
   repository: metabase/metabase
-  tag: v0.30.1
+  tag: v0.32.9
   pullPolicy: IfNotPresent
 
 # Config Jetty web server
@@ -44,7 +45,7 @@ password:
 
 timeZone: UTC
 emojiLogging: true
-# javaToolOptions:
+# javaOpts:
 # pluginsDirectory:
 
 service:
@@ -74,6 +75,12 @@ ingress:
     # - secretName: metabase-tls
     #   hosts:
     #     - metabase.domain.com
+
+# A custom log4j.properties file can be provided using a multiline YAML string.
+# See https://github.com/metabase/metabase/blob/master/resources/log4j.properties
+#
+# log4jProperties:
+
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
@@ -85,3 +92,18 @@ resources: {}
   # requests:
   #  cpu: 100m
   #  memory: 128Mi
+
+## Node labels for pod assignment
+## ref: https://kubernetes.io/docs/user-guide/node-selection/
+#
+nodeSelector: {}
+
+## Tolerations for pod assignment
+## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+##
+tolerations: []
+
+## Affinity for pod assignment
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+##
+affinity: {}

@@ -34,11 +34,39 @@
     {{- end }}
   {{- end }}
 * If this is your first time using Concourse, follow the tutorials at https://concourse-ci.org/tutorials.html
+
+{{- if .Values.worker.enabled }}
+{{- if .Values.concourse.worker.baggageclaim.driver }}
 {{- if contains "naive" .Values.concourse.worker.baggageclaim.driver }}
 
 *******************
 ******WARNING******
 *******************
 
-You are using the "naive" baggage claim driver, which is also the default value for this chart. This is the default for compatibility reasons, but is very space inefficient, and should be changed to either "btrfs" (recommended) or "overlay" depending on that filesystem's support in the Linux kernel your cluster is using. Please see https://github.com/concourse/concourse/issues/1230 and https://github.com/concourse/concourse/issues/1966 for background.
+You are using the "naive" baggage claim driver, which is also the default value for this chart.
+
+This is the default for compatibility reasons, but is very space inefficient, and should be changed to either "btrfs" (recommended) or "overlay" depending on that filesystem's support in the Linux kernel your cluster is using.
+
+Please see https://github.com/concourse/concourse/issues/1230 and https://github.com/concourse/concourse/issues/1966 for background.
+
+{{- end }}
+{{- end }}
+{{- end }}
+
+
+
+{{- if .Values.concourse.web.localAuth.enabled }}
+{{- if contains "test:test" .Values.secrets.localUsers }}
+
+*******************
+******WARNING******
+*******************
+
+You're using the default "test" user with the default "test" password.
+
+Make sure you either disable local auth or change the combination to something more secure, preferably specifying a password in the bcrypted form.
+
+Please see `README.md` for examples.
+
+{{- end }}
 {{- end }}

@@ -1,4 +1,4 @@
-{{- if eq .Values.controller.kind "Deployment" }}
+{{ if eq .Values.controller.kind "Deployment" -}}
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
@@ -36,7 +36,15 @@ spec:
 {{ toYaml .Values.controller.podLabels | indent 8 }}
         {{- end }}
     spec:
+    {{- if .Values.controller.podAffinity }}
+      affinity:
+{{ toYaml .Values.controller.podAffinity | indent 8 }}
+    {{- end }}
       serviceAccountName: {{ template "haproxy-ingress.serviceAccountName" . }}
+    {{- if .Values.controller.initContainers }}
+      initContainers:
+{{ toYaml .Values.controller.initContainers | indent 8 }}
+    {{- end }}
       containers:
         - name: haproxy-ingress
           image:  "{{ .Values.controller.image.repository }}:{{ .Values.controller.image.tag }}"
@@ -57,10 +65,12 @@ spec:
             {{- end }}
           {{- end }}
           ports:
+          {{- if .Values.controller.enableStaticPorts }}
             - name: http
               containerPort: 80
             - name: https
               containerPort: 443
+          {{- end }}
           {{- if .Values.controller.stats.enabled }}
             - name: stats
               containerPort: {{ .Values.controller.stats.port }}
@@ -69,8 +79,8 @@ spec:
             - name: healthz
               containerPort: {{ .Values.controller.healthzPort }}
           {{- range $key, $value := .Values.controller.tcp }}
-            - name: "{{ $key }}-tcp"
-              containerPort: {{ $key }}
+            - name: "{{ tpl $key $ }}-tcp"
+              containerPort: {{ tpl $key $ }}
               protocol: TCP
           {{- end }}
           livenessProbe:
@@ -112,20 +122,16 @@ spec:
 {{- end }}
           resources:
 {{ toYaml .Values.controller.resources | indent 12 }}
-      {{- if .Values.controller.accessLogsSidecar }}
+      {{- if .Values.controller.logs.enabled }}
         - name: access-logs
-          image: whereisaaron/kube-syslog-sidecar
+          image:  "{{ .Values.controller.logs.image.repository }}:{{ .Values.controller.logs.image.tag }}"
+          imagePullPolicy: "{{ .Values.controller.logs.image.pullPolicy }}"
           ports:
             - name: udp
               containerPort: 514
               protocol: UDP
           resources:
-            limits:
-              cpu: 200m
-              memory: 512Mi
-            requests:
-              cpu: 100m
-              memory: 256Mi
+{{ toYaml .Values.controller.logs.resources | indent 12 }}
       {{- end }}
       {{- if and .Values.controller.stats.enabled .Values.controller.metrics.enabled }}
         - name: prometheus-exporter
@@ -133,22 +139,28 @@ spec:
           imagePullPolicy: "{{ .Values.controller.metrics.image.pullPolicy }}"
           args:
             - '--haproxy.scrape-uri=http://localhost:{{ .Values.controller.stats.port }}/haproxy?stats;csv'
+          {{- range $key, $value := .Values.controller.metrics.extraArgs }}
+            {{- if $value }}
+            - --{{ $key }}={{ $value }}
+            {{- else }}
+            - --{{ $key }}
+            {{- end }}
+          {{- end }}
           ports:
             - name: metrics
               containerPort: 9101
               protocol: TCP
-          readinessProbe:
+          livenessProbe:
             httpGet:
               path: /
-              port: 9101
+              port: metrics
           resources:
-            limits:
-              cpu: 200m
-              memory: 512Mi
-            requests:
-              cpu: 100m
-              memory: 256Mi
+{{ toYaml .Values.controller.metrics.resources | indent 12 }}
       {{- end }}
+{{- if .Values.controller.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.controller.imagePullSecrets | indent 8 }}
+{{- end }}
 {{- if .Values.controller.template }}
       volumes:
         - name: haproxy-template
@@ -173,5 +185,8 @@ spec:
     {{- if .Values.controller.securityContext }}
       securityContext:
 {{ toYaml .Values.controller.securityContext | indent 8 }}
+    {{- end }}
+    {{- if .Values.controller.priorityClassName }}
+      priorityClassName: {{ .Values.controller.priorityClassName | quote }}
     {{- end }}
 {{- end }}

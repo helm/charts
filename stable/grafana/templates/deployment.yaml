@@ -1,12 +1,17 @@
+{{ if (or (not .Values.persistence.enabled) (eq .Values.persistence.type "pvc")) }}
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
   name: {{ template "grafana.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "grafana.name" . }}
     chart: {{ template "grafana.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+{{- if .Values.labels }}
+{{ toYaml .Values.labels | indent 4 }}
+{{- end }}
 {{- with .Values.annotations }}
   annotations:
 {{ toYaml . | indent 4 }}
@@ -17,310 +22,25 @@ spec:
     matchLabels:
       app: {{ template "grafana.name" . }}
       release: {{ .Release.Name }}
+{{- with .Values.deploymentStrategy }}
   strategy:
-    type: {{ .Values.deploymentStrategy }}
-  {{- if ne .Values.deploymentStrategy "RollingUpdate" }}
-    rollingUpdate: null
-  {{- end }}
+{{ toYaml . | trim | indent 4 }}
+{{- end }}
   template:
     metadata:
       labels:
         app: {{ template "grafana.name" . }}
         release: {{ .Release.Name }}
-{{- with .Values.podAnnotations }}
       annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum/dashboards-json-config: {{ include (print $.Template.BasePath "/dashboards-json-configmap.yaml") . | sha256sum }}
+        checksum/sc-dashboard-provider-config: {{ include (print $.Template.BasePath "/configmap-dashboard-provider.yaml") . | sha256sum }}
+{{- if not .Values.admin.existingSecret }}
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+{{- end }}
+{{- with .Values.podAnnotations }}
 {{ toYaml . | indent 8 }}
 {{- end }}
     spec:
-      serviceAccountName: {{ template "grafana.serviceAccountName" . }}
-{{- if .Values.schedulerName }}
-      schedulerName: "{{ .Values.schedulerName }}"
+      {{- include "grafana.pod" . | nindent 6 }}
 {{- end }}
-{{- if .Values.securityContext }}
-      securityContext:
-{{ toYaml .Values.securityContext | indent 8 }}
-{{- end }}
-{{- if .Values.priorityClassName }}
-      priorityClassName: {{ .Values.priorityClassName }}
-{{- end }}
-{{- if ( or .Values.persistence.enabled .Values.dashboards ) }}
-      initContainers:
-{{- end }}
-{{- if .Values.persistence.enabled }}
-        - name: init-chown-data
-          image: "{{ .Values.chownDataImage.repository }}:{{ .Values.chownDataImage.tag }}"
-          imagePullPolicy: {{ .Values.chownDataImage.pullPolicy }}
-          securityContext:
-            runAsUser: 0
-          command: ["chown", "-R", "{{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.runAsUser }}", "/var/lib/grafana"]
-          volumeMounts:
-            - name: storage
-              mountPath: "/var/lib/grafana"
-{{- if .Values.persistence.subPath }}
-              subPath: {{ .Values.persistence.subPath }}
-{{- end }}
-{{- end }}
-{{- if .Values.dashboards }}
-        - name: download-dashboards
-          image: "{{ .Values.downloadDashboardsImage.repository }}:{{ .Values.downloadDashboardsImage.tag }}"
-          imagePullPolicy: {{ .Values.downloadDashboardsImage.pullPolicy }}
-          command: ["sh", "/etc/grafana/download_dashboards.sh"]
-          volumeMounts:
-            - name: config
-              mountPath: "/etc/grafana/download_dashboards.sh"
-              subPath: download_dashboards.sh
-            - name: storage
-              mountPath: "/var/lib/grafana"
-{{- if .Values.persistence.subPath }}
-              subPath: {{ .Values.persistence.subPath }}
-{{- end }}
-          {{- range .Values.extraSecretMounts }}
-            - name: {{ .name }}
-              mountPath: {{ .mountPath }}
-              readOnly: {{ .readOnly }}
-          {{- end }}
-{{- end }}
-      {{- if .Values.image.pullSecrets }}
-      imagePullSecrets:
-      {{- range .Values.image.pullSecrets }}
-        - name: {{ . }}
-      {{- end}}
-      {{- end }}
-      containers:
-{{- if .Values.sidecar.dashboards.enabled }}
-        - name: {{ template "grafana.name" . }}-sc-dashboard
-          image: "{{ .Values.sidecar.image }}"
-          imagePullPolicy: {{ .Values.sidecar.imagePullPolicy }}
-          env:
-            - name: LABEL
-              value: "{{ .Values.sidecar.dashboards.label }}"
-            - name: FOLDER
-              value: "{{ .Values.sidecar.dashboards.folder }}"
-            {{- if .Values.sidecar.dashboards.searchNamespace }}
-            - name: NAMESPACE
-              value: "{{ .Values.sidecar.dashboards.searchNamespace }}"
-            {{- end }}
-          resources:
-{{ toYaml .Values.sidecar.resources | indent 12 }}
-          volumeMounts:
-            - name: sc-dashboard-volume
-              mountPath: {{ .Values.sidecar.dashboards.folder | quote }}
-{{- end}}
-{{- if .Values.sidecar.datasources.enabled }}
-        - name: {{ template "grafana.name" . }}-sc-datasources
-          image: "{{ .Values.sidecar.image }}"
-          imagePullPolicy: {{ .Values.sidecar.imagePullPolicy }}
-          env:
-            - name: LABEL
-              value: "{{ .Values.sidecar.datasources.label }}"
-            - name: FOLDER
-              value: "/etc/grafana/provisioning/datasources"
-            {{- if .Values.sidecar.datasources.searchNamespace }}
-            - name: NAMESPACE
-              value: "{{ .Values.sidecar.datasources.searchNamespace }}"
-            {{- end }}
-          resources:
-{{ toYaml .Values.sidecar.resources | indent 12 }}
-          volumeMounts:
-            - name: sc-datasources-volume
-              mountPath: "/etc/grafana/provisioning/datasources"
-{{- end}}
-        - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          volumeMounts:
-            - name: config
-              mountPath: "/etc/grafana/grafana.ini"
-              subPath: grafana.ini
-            {{- if not .Values.admin.existingSecret }}
-            - name: ldap
-              mountPath: "/etc/grafana/ldap.toml"
-              subPath: ldap.toml
-            {{- end }}
-            {{- range .Values.extraConfigmapMounts }}
-            - name: {{ .name }}
-              mountPath: {{ .mountPath }}
-              readOnly: {{ .readOnly }}
-            {{- end }}
-            - name: storage
-              mountPath: "/var/lib/grafana"
-{{- if .Values.persistence.subPath }}
-              subPath: {{ .Values.persistence.subPath }}
-{{- end }}
-{{- if .Values.dashboards }}
-  {{- range $provider, $dashboards := .Values.dashboards }}
-    {{- range $key, $value := $dashboards }}
-      {{- if hasKey $value "json" }}
-            - name: dashboards-{{ $provider }}
-              mountPath: "/var/lib/grafana/dashboards/{{ $provider }}/{{ $key }}.json"
-              subPath: "{{ $key }}.json"
-      {{- end }}
-    {{- end }}
-  {{- end }}
-{{- end -}}
-{{- if .Values.dashboardsConfigMaps }}
-  {{- range keys .Values.dashboardsConfigMaps }}
-            - name: dashboards-{{ . }}
-              mountPath: "/var/lib/grafana/dashboards/{{ . }}"
-  {{- end }}
-{{- end }}
-{{- if .Values.datasources }}
-            - name: config
-              mountPath: "/etc/grafana/provisioning/datasources/datasources.yaml"
-              subPath: datasources.yaml
-{{- end }}
-{{- if .Values.dashboardProviders }}
-            - name: config
-              mountPath: "/etc/grafana/provisioning/dashboards/dashboardproviders.yaml"
-              subPath: dashboardproviders.yaml
-{{- end }}
-{{- if .Values.sidecar.dashboards.enabled }}
-            - name: sc-dashboard-volume
-              mountPath: {{ .Values.sidecar.dashboards.folder | quote }}
-            - name: sc-dashboard-provider
-              mountPath: "/etc/grafana/provisioning/dashboards/sc-dashboardproviders.yaml"
-              subPath: provider.yaml
-{{- end}}
-{{- if .Values.sidecar.datasources.enabled }}
-            - name: sc-datasources-volume
-              mountPath: "/etc/grafana/provisioning/datasources"
-{{- end}}
-          {{- range .Values.extraSecretMounts }}
-            - name: {{ .name }}
-              mountPath: {{ .mountPath }}
-              readOnly: {{ .readOnly }}
-          {{- end }}
-          {{- range .Values.extraVolumeMounts }}
-            - name: {{ .name }}
-              mountPath: {{ .mountPath }}
-              readOnly: {{ .readOnly }}
-          {{- end }}
-          ports:
-            - name: service
-              containerPort: {{ .Values.service.port }}
-              protocol: TCP
-            - name: grafana
-              containerPort: 3000
-              protocol: TCP
-          env:
-            - name: GF_SECURITY_ADMIN_USER
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.admin.existingSecret | default (include "grafana.fullname" .) }}
-                  key: {{ .Values.admin.userKey | default "admin-user" }}
-            - name: GF_SECURITY_ADMIN_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.admin.existingSecret | default (include "grafana.fullname" .) }}
-                  key: {{ .Values.admin.passwordKey | default "admin-password" }}
-            {{- if .Values.plugins }}
-            - name: GF_INSTALL_PLUGINS
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ template "grafana.fullname" . }}
-                  key: plugins
-            {{- end }}
-            {{- if .Values.smtp.existingSecret }}
-            - name: GF_SMTP_USER
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.smtp.existingSecret }}
-                  key: {{ .Values.smtp.userKey | default "user" }}
-            - name: GF_SMTP_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.smtp.existingSecret }}
-                  key: {{ .Values.smtp.passwordKey | default "password" }}
-            {{- end }}
-{{- range $key, $value := .Values.env }}
-            - name: "{{ $key }}"
-              value: "{{ $value }}"
-{{- end }}
-          {{- if .Values.envFromSecret }}
-          envFrom:
-            - secretRef:
-                name: {{ .Values.envFromSecret }}
-          {{- end }}
-          livenessProbe:
-{{ toYaml .Values.livenessProbe | indent 12 }}
-          readinessProbe:
-{{ toYaml .Values.readinessProbe | indent 12 }}
-          resources:
-{{ toYaml .Values.resources | indent 12 }}
-    {{- with .Values.nodeSelector }}
-      nodeSelector:
-{{ toYaml . | indent 8 }}
-    {{- end }}
-    {{- with .Values.affinity }}
-      affinity:
-{{ toYaml . | indent 8 }}
-    {{- end }}
-    {{- with .Values.tolerations }}
-      tolerations:
-{{ toYaml . | indent 8 }}
-    {{- end }}
-      volumes:
-        - name: config
-          configMap:
-            name: {{ template "grafana.fullname" . }}
-      {{- range .Values.extraConfigmapMounts }}
-        - name: {{ .name }}
-          configMap:
-            name: {{ .configMap }}
-      {{- end }}
-        {{- if .Values.dashboards }}
-          {{- range keys .Values.dashboards }}
-        - name: dashboards-{{ . }}
-          configMap:
-            name: {{ template "grafana.fullname" $ }}-dashboards-{{ . }}
-          {{- end }}
-        {{- end }}
-        {{- if .Values.dashboardsConfigMaps }}
-          {{ $root := . }}
-          {{- range $provider, $name := .Values.dashboardsConfigMaps }}
-        - name: dashboards-{{ $provider }}
-          configMap:
-            name: {{ tpl $name $root }}
-          {{- end }}
-        {{- end }}
-        {{- if not .Values.admin.existingSecret }}
-        - name: ldap
-          secret:
-            {{- if .Values.ldap.existingSecret }}
-            secretName: {{ .Values.ldap.existingSecret }}
-            {{- else }}
-            secretName: {{ template "grafana.fullname" . }}
-            {{- end }}
-            items:
-              - key: ldap-toml
-                path: ldap.toml
-        {{- end }}
-        - name: storage
-      {{- if .Values.persistence.enabled }}
-          persistentVolumeClaim:
-            claimName: {{ .Values.persistence.existingClaim | default (include "grafana.fullname" .) }}
-      {{- else }}
-          emptyDir: {}
-      {{- end -}}
-      {{- if .Values.sidecar.dashboards.enabled }}
-        - name: sc-dashboard-volume
-          emptyDir: {}
-        - name: sc-dashboard-provider
-          configMap:
-            name: {{ template "grafana.fullname" . }}-config-dashboards
-      {{- end }}
-      {{- if .Values.sidecar.datasources.enabled }}
-        - name: sc-datasources-volume
-          emptyDir: {}
-      {{- end -}}
-      {{- range .Values.extraSecretMounts }}
-        - name: {{ .name }}
-          secret:
-            secretName: {{ .secretName }}
-            defaultMode: {{ .defaultMode }}
-      {{- end }}
-      {{- range .Values.extraVolumeMounts }}
-        - name: {{ .name }}
-          persistentVolumeClaim:
-            claimName: {{ .existingClaim }}
-      {{- end }}

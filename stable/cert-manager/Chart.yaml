@@ -1,6 +1,6 @@
 name: cert-manager
-version: v0.6.0
-appVersion: v0.6.0
+version: v0.6.7
+appVersion: v0.6.2
 description: A Helm chart for cert-manager
 home: https://github.com/jetstack/cert-manager
 keywords:
@@ -10,6 +10,11 @@ keywords:
   - tls
 sources:
   - https://github.com/jetstack/cert-manager
-maintainers:
-  - name: munnerz
-    email: james@jetstack.io
+# Deprecated charts cannot have maintainers
+maintainers: []
+  # - name: munnerz
+  #   email: james@jetstack.io
+# This version of the Helm chart is deprecated.
+# All future updates should be instead made to the official cert-manager
+# repository, found at https://github.com/jetstack/cert-manager/tree/master/deploy
+deprecated: true

@@ -1,5 +1,8 @@
-# Generated from 'statefulset' from https://raw.githubusercontent.com/coreos/prometheus-operator/master/contrib/kube-prometheus/manifests/grafana-dashboardDefinitions.yaml
-{{- if and .Values.grafana.enabled .Values.grafana.defaultDashboardsEnabled }}
+# Generated from 'statefulset' from https://raw.githubusercontent.com/coreos/kube-prometheus/release-0.1/manifests/grafana-dashboardDefinitions.yaml
+# Do not change in-place! In order to change this file first read following link:
+# https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
+{{- $kubeTargetVersion := default .Capabilities.KubeVersion.GitVersion .Values.kubeTargetVersionOverride }}
+{{- if and (semverCompare ">=1.10.0-0" $kubeTargetVersion) (semverCompare "<1.14.0-0" $kubeTargetVersion) .Values.grafana.enabled .Values.grafana.defaultDashboardsEnabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -13,6 +16,12 @@ metadata:
 data:
   statefulset.json: |-
     {
+        "__inputs": [
+
+        ],
+        "__requires": [
+
+        ],
         "annotations": {
             "list": [
 
@@ -92,7 +101,7 @@ data:
                         "tableColumn": "",
                         "targets": [
                             {
-                                "expr": "sum(rate(container_cpu_usage_seconds_total{job=\"kubelet\", namespace=\"$namespace\", pod_name=\u007e\"$statefulset.*\"}[3m]))",
+                                "expr": "sum(rate(container_cpu_usage_seconds_total{job=\"kubelet\", cluster=\"$cluster\", namespace=\"$namespace\", pod_name=~\"$statefulset.*\"}[3m]))",
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "",
@@ -101,6 +110,9 @@ data:
                         ],
                         "thresholds": "",
                         "title": "CPU",
+                        "tooltip": {
+                            "shared": false
+                        },
                         "type": "singlestat",
                         "valueFontSize": "80%",
                         "valueMaps": [
@@ -172,7 +184,7 @@ data:
                         "tableColumn": "",
                         "targets": [
                             {
-                                "expr": "sum(container_memory_usage_bytes{job=\"kubelet\", namespace=\"$namespace\", pod_name=\u007e\"$statefulset.*\"}) / 1024^3",
+                                "expr": "sum(container_memory_usage_bytes{job=\"kubelet\", cluster=\"$cluster\", namespace=\"$namespace\", pod_name=~\"$statefulset.*\"}) / 1024^3",
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "",
@@ -181,6 +193,9 @@ data:
                         ],
                         "thresholds": "",
                         "title": "Memory",
+                        "tooltip": {
+                            "shared": false
+                        },
                         "type": "singlestat",
                         "valueFontSize": "80%",
                         "valueMaps": [
@@ -252,7 +267,7 @@ data:
                         "tableColumn": "",
                         "targets": [
                             {
-                                "expr": "sum(rate(container_network_transmit_bytes_total{job=\"kubelet\", namespace=\"$namespace\", pod_name=\u007e\"$statefulset.*\"}[3m])) + sum(rate(container_network_receive_bytes_total{namespace=\"$namespace\",pod_name=\u007e\"$statefulset.*\"}[3m]))",
+                                "expr": "sum(rate(container_network_transmit_bytes_total{job=\"kubelet\", cluster=\"$cluster\", namespace=\"$namespace\", pod_name=~\"$statefulset.*\"}[3m])) + sum(rate(container_network_receive_bytes_total{cluster=\"$cluster\", namespace=\"$namespace\",pod_name=~\"$statefulset.*\"}[3m]))",
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "",
@@ -261,6 +276,9 @@ data:
                         ],
                         "thresholds": "",
                         "title": "Network",
+                        "tooltip": {
+                            "shared": false
+                        },
                         "type": "singlestat",
                         "valueFontSize": "80%",
                         "valueMaps": [
@@ -347,7 +365,7 @@ data:
                         "tableColumn": "",
                         "targets": [
                             {
-                                "expr": "max(kube_statefulset_replicas{job=\"kube-state-metrics\", namespace=\"$namespace\", statefulset=\"$statefulset\"}) without (instance, pod)",
+                                "expr": "max(kube_statefulset_replicas{job=\"kube-state-metrics\", cluster=\"$cluster\", namespace=\"$namespace\", statefulset=\"$statefulset\"}) without (instance, pod)",
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "",
@@ -356,6 +374,9 @@ data:
                         ],
                         "thresholds": "",
                         "title": "Desired Replicas",
+                        "tooltip": {
+                            "shared": false
+                        },
                         "type": "singlestat",
                         "valueFontSize": "80%",
                         "valueMaps": [
@@ -428,7 +449,7 @@ data:
                         "tableColumn": "",
                         "targets": [
                             {
-                                "expr": "min(kube_statefulset_status_replicas_current{job=\"kube-state-metrics\", namespace=\"$namespace\", statefulset=\"$statefulset\"}) without (instance, pod)",
+                                "expr": "min(kube_statefulset_status_replicas_current{job=\"kube-state-metrics\", cluster=\"$cluster\", namespace=\"$namespace\", statefulset=\"$statefulset\"}) without (instance, pod)",
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "",
@@ -437,6 +458,9 @@ data:
                         ],
                         "thresholds": "",
                         "title": "Replicas of current version",
+                        "tooltip": {
+                            "shared": false
+                        },
                         "type": "singlestat",
                         "valueFontSize": "80%",
                         "valueMaps": [
@@ -509,7 +533,7 @@ data:
                         "tableColumn": "",
                         "targets": [
                             {
-                                "expr": "max(kube_statefulset_status_observed_generation{job=\"kube-state-metrics\",  namespace=\"$namespace\", statefulset=\"$statefulset\"}) without (instance, pod)",
+                                "expr": "max(kube_statefulset_status_observed_generation{job=\"kube-state-metrics\", cluster=\"$cluster\", namespace=\"$namespace\", statefulset=\"$statefulset\"}) without (instance, pod)",
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "",
@@ -518,6 +542,9 @@ data:
                         ],
                         "thresholds": "",
                         "title": "Observed Generation",
+                        "tooltip": {
+                            "shared": false
+                        },
                         "type": "singlestat",
                         "valueFontSize": "80%",
                         "valueMaps": [
@@ -590,7 +617,7 @@ data:
                         "tableColumn": "",
                         "targets": [
                             {
-                                "expr": "max(kube_statefulset_metadata_generation{job=\"kube-state-metrics\", statefulset=\"$statefulset\", namespace=\"$namespace\"}) without (instance, pod)",
+                                "expr": "max(kube_statefulset_metadata_generation{job=\"kube-state-metrics\", statefulset=\"$statefulset\", cluster=\"$cluster\", namespace=\"$namespace\"}) without (instance, pod)",
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "",
@@ -599,6 +626,9 @@ data:
                         ],
                         "thresholds": "",
                         "title": "Metadata Generation",
+                        "tooltip": {
+                            "shared": false
+                        },
                         "type": "singlestat",
                         "valueFontSize": "80%",
                         "valueMaps": [
@@ -666,35 +696,35 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "max(kube_statefulset_replicas{job=\"kube-state-metrics\", statefulset=\"$statefulset\",namespace=\"$namespace\"}) without (instance, pod)",
+                                "expr": "max(kube_statefulset_replicas{job=\"kube-state-metrics\", statefulset=\"$statefulset\", cluster=\"$cluster\", namespace=\"$namespace\"}) without (instance, pod)",
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "replicas specified",
                                 "refId": "A"
                             },
                             {
-                                "expr": "max(kube_statefulset_status_replicas{job=\"kube-state-metrics\", statefulset=\"$statefulset\",namespace=\"$namespace\"}) without (instance, pod)",
+                                "expr": "max(kube_statefulset_status_replicas{job=\"kube-state-metrics\", statefulset=\"$statefulset\", cluster=\"$cluster\", namespace=\"$namespace\"}) without (instance, pod)",
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "replicas created",
                                 "refId": "B"
                             },
                             {
-                                "expr": "min(kube_statefulset_status_replicas_ready{job=\"kube-state-metrics\", statefulset=\"$statefulset\",namespace=\"$namespace\"}) without (instance, pod)",
+                                "expr": "min(kube_statefulset_status_replicas_ready{job=\"kube-state-metrics\", statefulset=\"$statefulset\", cluster=\"$cluster\", namespace=\"$namespace\"}) without (instance, pod)",
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "ready",
                                 "refId": "C"
                             },
                             {
-                                "expr": "min(kube_statefulset_status_replicas_current{job=\"kube-state-metrics\", statefulset=\"$statefulset\",namespace=\"$namespace\"}) without (instance, pod)",
+                                "expr": "min(kube_statefulset_status_replicas_current{job=\"kube-state-metrics\", statefulset=\"$statefulset\", cluster=\"$cluster\", namespace=\"$namespace\"}) without (instance, pod)",
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "replicas of current version",
                                 "refId": "D"
                             },
                             {
-                                "expr": "min(kube_statefulset_status_replicas_updated{job=\"kube-state-metrics\", statefulset=\"$statefulset\",namespace=\"$namespace\"}) without (instance, pod)",
+                                "expr": "min(kube_statefulset_status_replicas_updated{job=\"kube-state-metrics\", statefulset=\"$statefulset\", cluster=\"$cluster\", namespace=\"$namespace\"}) without (instance, pod)",
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "updated",
@@ -708,7 +738,7 @@ data:
                         "timeShift": null,
                         "title": "Replicas",
                         "tooltip": {
-                            "shared": true,
+                            "shared": false,
                             "sort": 0,
                             "value_type": "individual"
                         },
@@ -754,7 +784,7 @@ data:
         "schemaVersion": 14,
         "style": "dark",
         "tags": [
-
+            "kubernetes-mixin"
         ],
         "templating": {
             "list": [
@@ -773,6 +803,32 @@ data:
                     "refresh": 1,
                     "regex": "",
                     "type": "datasource"
+                },
+                {
+                    "allValue": null,
+                    "current": {
+
+                    },
+                    "datasource": "$datasource",
+                    "hide": 2,
+                    "includeAll": false,
+                    "label": "cluster",
+                    "multi": false,
+                    "name": "cluster",
+                    "options": [
+
+                    ],
+                    "query": "label_values(kube_statefulset_metadata_generation, cluster)",
+                    "refresh": 2,
+                    "regex": "",
+                    "sort": 0,
+                    "tagValuesQuery": "",
+                    "tags": [
+
+                    ],
+                    "tagsQuery": "",
+                    "type": "query",
+                    "useTags": false
                 },
                 {
                     "allValue": null,
@@ -858,7 +914,7 @@ data:
             ]
         },
         "timezone": "",
-        "title": "StatefulSets",
+        "title": "Kubernetes / StatefulSets",
         "uid": "a31c1f46e6f727cb37c0d731a7245005",
         "version": 0
     }

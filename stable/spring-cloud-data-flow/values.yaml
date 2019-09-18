@@ -1,13 +1,4 @@
 # Default values for spring-cloud-data-flow.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
-dataflowUsername: user
-dataflowPassword: password
-dataflowRoles: ROLE_VIEW, ROLE_CREATE
-dataflowAdminUsername: admin
-dataflowAdminPassword: admin
-dataflowAdminRoles: ROLE_MANAGE, ROLE_VIEW
-
 rbac:
   # Specifies whether RBAC resources should be created
   create: true
@@ -19,13 +10,24 @@ serviceAccount:
   # If not set and create is true, a name is generated using the serviceAccountName template
   name:
 
+initContainers:
+  dbWait:
+    image: "busybox"
+    tag: "1.30.1"
+    imagePullPolicy: IfNotPresent
+
 server:
-  image: springcloud/spring-cloud-dataflow-server-kubernetes
-  version: 1.7.2.RELEASE
+  image: springcloud/spring-cloud-dataflow-server
+  version: 2.2.1.RELEASE
   imagePullPolicy: IfNotPresent
+  platformName: default
+  trustCerts: false
   service:
     type: LoadBalancer
     externalPort: 80
+    annotations: {}
+    labels: {}
+  configMap:
   resources: {}
   #  limits:
   #    cpu: 1.0
@@ -36,25 +38,14 @@ server:
 
 skipper:
   image: springcloud/spring-cloud-skipper-server
-  version: 1.1.2.RELEASE
+  version: 2.1.2.RELEASE
   imagePullPolicy: IfNotPresent
-  platformName: minikube
+  platformName: default
   service:
     type: ClusterIP
-  resources: {}
-  #  limits:
-  #    cpu: 1.0
-  #    memory: 1024Mi
-  #  requests:
-  #    cpu: 0.5
-  #    memory: 640Mi
-
-metrics:
-  image: springcloud/metrics-collector-rabbit
-  version: 2.0.0.RELEASE
-  imagePullPolicy: IfNotPresent
-  service:
-    type: ClusterIP
+    annotations: {}
+    labels: {}
+  configMap:
   resources: {}
   #  limits:
   #    cpu: 1.0
@@ -73,7 +64,34 @@ deployer:
     initialDelaySeconds: 90
 
 rabbitmq:
+  enabled: true
   rabbitmqUsername: user
 
+rabbitmq-ha:
+  enabled: false
+  rabbitmqUsername: user
+
+kafka:
+  enabled: false
+  replicas: 1
+  configurationOverrides:
+    "offsets.topic.replication.factor": 1
+    "confluent.support.metrics.enable": false
+  zookeeper:
+    replicaCount: 1
+
 mysql:
+  enabled: true
   mysqlDatabase: dataflow
+
+## If you are using an external database,
+## you must specify the following database details
+database:
+  driver:
+  scheme:
+  host:
+  port:
+  user: scdf
+  password:
+  dataflow: dataflow
+  skipper: skipper

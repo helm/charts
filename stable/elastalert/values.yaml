@@ -28,7 +28,7 @@ image:
   # docker image
   repository: jertel/elastalert-docker
   # docker image tag
-  tag: 0.1.38
+  tag: 0.2.1
   pullPolicy: IfNotPresent
 resources: {}
 
@@ -63,6 +63,14 @@ elasticsearch:
   #   - name: es-certs
   #     mountPath: /certs
   #     readOnly: true
+
+extraConfigOptions: {}
+  # # Options to propagate to all rules, e.g. a common slack_webhook_url or kibana_url
+  # # Please note at the time of implementing this value, it will not work for required_locals
+  # # Which MUST be set at the rule level, these are: ['alert', 'type', 'name', 'index']
+  # generate_kibana_link: true
+  # kibana_url: https://kibana.yourdomain.com
+  # slack_webhook_url: dummy
 
 # Command and args override for container e.g. (https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/)
 # command: ["YOUR_CUSTOM_COMMAND"]
@@ -112,3 +120,18 @@ nodeSelector: {}
 #     value: "infra_worker"
 #     effect: "NoSchedule"
 tolerations: []
+
+extraVolumes: []
+  # - name: smtp-auth
+  #   secret:
+  #     secretName: elastalert-smtp-auth
+  #     items:
+  #       - key: smtp_auth.yaml
+  #         path: smtp_auth.yaml
+  #         mode: 0400
+
+extraVolumeMounts: []
+  # - name: smtp-auth
+  #   mountPath: /opt/config-smtp/smtp_auth.yaml
+  #   subPath: smtp_auth.yaml
+  #   readOnly: true

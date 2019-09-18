@@ -12,19 +12,26 @@ spec:
     matchLabels:
       app.kubernetes.io/name: {{ include "node-problem-detector.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
+      app: {{ include "node-problem-detector.name" . }}
   template:
     metadata:
       labels:
         app.kubernetes.io/name: {{ include "node-problem-detector.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
+        app: {{ include "node-problem-detector.name" . }}
       annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum/config: {{ include (print $.Template.BasePath "/custom-config-configmap.yaml") . | sha256sum }}
         scheduler.alpha.kubernetes.io/critical-pod: ''
 {{- if .Values.annotations }}
 {{ toYaml .Values.annotations | indent 8 }}
 {{- end }}
     spec:
       serviceAccountName: {{ template "node-problem-detector.serviceAccountName" . }}
+      hostNetwork: {{ .Values.hostNetwork }}
+      terminationGracePeriodSeconds: 30
+      {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName | quote }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image:  "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -32,7 +39,7 @@ spec:
           command:
             - "/bin/sh"
             - "-c"
-            - "exec /node-problem-detector --logtostderr --system-log-monitors={{- range $index, $monitor := .Values.settings.log_monitors }}{{if ne $index 0}},{{end}}/config/{{ $monitor }}{{- end }} {{- if .Values.settings.custom_plugin_monitors }} --custom-plugin-monitors={{- range $index, $monitor := .Values.settings.custom_plugin_monitors }}{{if ne $index 0}},{{end}}{{ $monitor }}{{- end }} {{- end }}"
+            - "exec /node-problem-detector --logtostderr --system-log-monitors={{- range $index, $monitor := .Values.settings.log_monitors }}{{if ne $index 0}},{{end}}{{ $monitor }}{{- end }} {{- if .Values.settings.custom_plugin_monitors }} --custom-plugin-monitors={{- range $index, $monitor := .Values.settings.custom_plugin_monitors }}{{if ne $index 0}},{{end}}{{ $monitor }}{{- end }} {{- end }} --prometheus-address={{ .Values.settings.prometheus_address }} --prometheus-port={{ .Values.settings.prometheus_port }}"
           securityContext:
             privileged: true
           env:
@@ -46,10 +53,12 @@ spec:
             - name: localtime
               mountPath: /etc/localtime
               readOnly: true
-            - name: config
-              mountPath: /config
+            - name: custom-config
+              mountPath: /custom-config
               readOnly: true
-          terminationGracePeriodSeconds: 30
+          ports:
+            - containerPort: {{ .Values.settings.prometheus_port }}
+              name: exporter
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.affinity }}
@@ -60,6 +69,10 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
       volumes:
         - name: log
           hostPath:
@@ -68,11 +81,6 @@ spec:
           hostPath:
             path: /etc/localtime
             type: "FileOrCreate"
-        - name: config
+        - name: custom-config
           configMap:
-            name: {{ include "node-problem-detector.fullname" . }}
-            items:
-            {{- range $index, $monitor := .Values.settings.log_monitors }}
-            - key: {{ $monitor }}
-              path: {{ $monitor }}
-            {{- end }}
+            name: {{ include "node-problem-detector.customConfig" . }}

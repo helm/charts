@@ -1,3 +1,4 @@
+{{ if not .Values.worker.config.configmapName }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -9,3 +10,4 @@ metadata:
     app: {{ template "locust.fullname" . }}
 data:
 {{ (.Files.Glob "tasks/*").AsConfig | indent 2 }}
+{{ end }}

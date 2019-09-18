@@ -3,7 +3,7 @@
 
 image:
   repository: expressgateway/express-gateway
-  tag: v1.13.0
+  tag: v1.16.8
   pullPolicy: IfNotPresent
 
 # Specify Express Gateway Admin API

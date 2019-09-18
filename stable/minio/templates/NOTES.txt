@@ -4,7 +4,7 @@ Minio can be accessed via port {{ .Values.service.port }} on the following DNS n
 
 To access Minio from localhost, run the below commands:
 
-  1. export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "release={{ template "minio.fullname" . }}" -o jsonpath="{.items[0].metadata.name}")
+  1. export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
 
   2. kubectl port-forward $POD_NAME 9000 --namespace {{ .Release.Namespace }}
 

@@ -1,0 +1,179 @@
+{{- if .Values.agent.key -}}
+{{- if or .Values.zone.name .Values.cluster.name -}}
+apiVersion: apps/v1beta2
+kind: DaemonSet
+metadata:
+  name: {{ template "instana-agent.fullname" . }}
+  labels:
+    {{- include "instana-agent.commonLabels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "instana-agent.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "instana-agent.commonLabels" . | nindent 8 }}
+      {{- if .Values.agent.pod.annotations }}
+      annotations:
+        {{- toYaml .Values.agent.pod.annotations | nindent 8 }}
+      {{- end }}
+    spec:
+      serviceAccount: {{ template "instana-agent.serviceAccountName" . }}
+      hostIPC: true
+      hostNetwork: true
+      hostPID: true
+      containers:
+        - name: {{ template "instana-agent.name" . }}
+          image: "{{ .Values.agent.image.name }}:{{ .Values.agent.image.tag }}"
+          imagePullPolicy: {{ .Values.agent.image.pullPolicy }}
+          env:
+            - name: INSTANA_AGENT_LEADER_ELECTOR_PORT
+              value: {{ .Values.agent.leaderElectorPort | quote }}
+            - name: INSTANA_ZONE
+              value: {{ .Values.zone.name | quote }}
+            - name: INSTANA_KUBERNETES_CLUSTER_NAME
+              value: {{ .Values.cluster.name | quote }}
+            - name: INSTANA_AGENT_ENDPOINT
+              value: {{ .Values.agent.endpointHost | quote }}
+            - name: INSTANA_AGENT_ENDPOINT_PORT
+              value: {{ .Values.agent.endpointPort | quote }}
+            - name: INSTANA_AGENT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "instana-agent.fullname" . }}-agent-secret
+                  key: key
+            {{- if .Values.agent.mode }}
+            - name: INSTANA_AGENT_MODE
+              value: {{ .Values.agent.mode | quote }}
+            {{- end }}
+            {{- if .Values.agent.downloadKey }}
+            - name: INSTANA_DOWNLOAD_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "instana-agent.fullname" . }}-download-secret
+                  key: key
+            {{- end }}
+            {{- if .Values.agent.proxyHost }}
+            - name: INSTANA_AGENT_PROXY_HOST
+              value: {{ .Values.agent.proxyHost | quote }}
+            {{- end }}
+            {{- if .Values.agent.proxyPort }}
+            - name: INSTANA_AGENT_PROXY_PORT
+              value: {{ .Values.agent.proxyPort | quote }}
+            {{- end }}
+            {{- if .Values.agent.proxyProtocol }}
+            - name: INSTANA_AGENT_PROXY_PROTOCOL
+              value: {{ .Values.agent.proxyProtocol | quote }}
+            {{- end }}
+            {{- if .Values.agent.proxyUser }}
+            - name: INSTANA_AGENT_PROXY_USER
+              value: {{ .Values.agent.proxyUser | quote }}
+            {{- end }}
+            {{- if .Values.agent.proxyPassword }}
+            - name: INSTANA_AGENT_PROXY_PASSWORD
+              value: {{ .Values.agent.proxyPassword | quote }}
+            {{- end }}
+            {{- if .Values.agent.proxyUseDNS }}
+            - name: INSTANA_AGENT_PROXY_USE_DNS
+              value: {{ .Values.agent.proxyUseDNS | quote }}
+            {{- end }}
+            {{- if .Values.agent.listenAddress }}
+            - name: INSTANA_AGENT_HTTP_LISTEN
+              value: {{ .Values.agent.listenAddress | quote }}
+            {{- end }}
+            {{- if .Values.agent.redactKubernetesSecrets }}
+            - name: INSTANA_KUBERNETES_REDACT_SECRETS
+              value: {{ .Values.agent.redactKubernetesSecrets | quote }}
+            {{- end }}
+            - name: JAVA_OPTS
+              value: "-Xmx{{ div (default 512 .Values.agent.pod.requests.memory) 3 }}M -XX:+ExitOnOutOfMemoryError"
+            - name: INSTANA_AGENT_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - name: dev
+              mountPath: /dev
+            - name: run
+              mountPath: /run
+            - name: var-run
+              mountPath: /var/run
+            - name: sys
+              mountPath: /sys
+            - name: var-log
+              mountPath: /var/log
+            - name: machine-id
+              mountPath: /etc/machine-id
+            - name: configuration
+              subPath: configuration.yaml
+              mountPath: /root/configuration.yaml
+          livenessProbe:
+            httpGet:
+              path: /status
+              port: 42699
+            initialDelaySeconds: 75
+            periodSeconds: 5
+          resources:
+            requests:
+              memory: "{{ default 512 .Values.agent.pod.requests.memory }}Mi"
+              cpu: {{ default 0.5 .Values.agent.pod.requests.cpu }}
+            limits:
+              memory: "{{ default 512 .Values.agent.pod.limits.memory }}Mi"
+              cpu: {{ default 1.5 .Values.agent.pod.limits.cpu }}
+          ports:
+            - containerPort: 42699
+        - name: {{ template "instana-agent.name" . }}-leader-elector
+          image: instana/leader-elector:0.5.4
+          env:
+            - name: INSTANA_AGENT_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          command:
+            - "/app/server"
+            - "--election=instana"
+            - "--http=localhost:{{ default 42655 .Values.agent.leaderElectorPort }}"
+            - "--id=$(INSTANA_AGENT_POD_NAME)"
+          resources:
+            requests:
+              cpu: 0.1
+              memory: 64Mi
+          livenessProbe:
+            httpGet:
+              path: /status
+              port: 42699
+            initialDelaySeconds: 75
+            periodSeconds: 5
+          ports:
+            - containerPort: {{ .Values.agent.leaderElectorPort }}
+      {{- if .Values.agent.pod.tolerations }}
+      tolerations:
+        {{- toYaml .Values.agent.pod.tolerations | nindent 8 }}
+      {{- end }}
+      volumes:
+        - name: dev
+          hostPath:
+            path: /dev
+        - name: run
+          hostPath:
+            path: /run
+        - name: var-run
+          hostPath:
+            path: /var/run
+        - name: sys
+          hostPath:
+            path: /sys
+        - name: var-log
+          hostPath:
+            path: /var/log
+        - name: machine-id
+          hostPath:
+            path: /etc/machine-id
+        - name: configuration
+          configMap:
+            name: {{ template "instana-agent.fullname" . }}
+{{- end -}}
+{{- end -}}

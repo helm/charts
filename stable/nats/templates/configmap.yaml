@@ -10,7 +10,7 @@ metadata:
     release: {{ .Release.Name | quote }}
   name: {{ template "nats.fullname" . }}
 data:
-  gnatsd.conf: |-
+  {{ .Values.natsFilename }}.conf: |-
     listen: 0.0.0.0:{{ .Values.client.service.port }}
     http: 0.0.0.0:{{ .Values.monitoring.service.port }}
 
@@ -33,17 +33,17 @@ data:
     logtime: {{ .Values.debug.logtime }}
 
     # Pid file
-    pid_file: "/tmp/gnatsd.pid"
+    pid_file: "/tmp/{{ .Values.natsFilename }}.pid"
 
     # Some system overides
     {{- if .Values.maxConnections }}
-    max_connections: {{ .Values.maxConnections }}
+    max_connections: {{ int .Values.maxConnections }}
     {{- end }}
     {{- if .Values.maxControlLine }}
-    max_control_line: {{ .Values.maxControlLine }}
+    max_control_line: {{ int .Values.maxControlLine }}
     {{- end }}
-    {{- if .Values.maxPayload }}    
-    max_payload: {{ .Values.maxPayload }}
+    {{- if .Values.maxPayload }}
+    max_payload: {{ int .Values.maxPayload }}
     {{- end }}
     {{- if .Values.writeDeadline }}
     write_deadline: {{ .Values.writeDeadline | quote }}

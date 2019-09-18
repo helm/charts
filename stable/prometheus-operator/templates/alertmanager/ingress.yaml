@@ -1,6 +1,8 @@
 {{- if and .Values.alertmanager.enabled .Values.alertmanager.ingress.enabled }}
-{{- $routePrefix := .Values.alertmanager.alertmanagerSpec.routePrefix }}
 {{- $serviceName := printf "%s-%s" (include "prometheus-operator.fullname" .) "alertmanager" }}
+{{- $servicePort := 9093 -}}
+{{- $routePrefix := list .Values.alertmanager.alertmanagerSpec.routePrefix }}
+{{- $paths := .Values.alertmanager.ingress.paths | default $routePrefix -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -17,17 +19,30 @@ metadata:
 {{ include "prometheus-operator.labels" . | indent 4 }}
 spec:
   rules:
-    {{- range $host := .Values.alertmanager.ingress.hosts }}
-    - host: {{ . }}
+  {{- if .Values.alertmanager.ingress.hosts }}
+  {{- range $host := .Values.alertmanager.ingress.hosts }}
+    - host: {{ tpl $host $ }}
       http:
         paths:
-          - path: "{{ $routePrefix }}"
+  {{- range $p := $paths }}
+          - path: {{ tpl $p $ }}
             backend:
               serviceName: {{ $serviceName }}
-              servicePort: 9093
-    {{- end }}
-{{- if .Values.alertmanager.ingress.tls }}
+              servicePort: {{ $servicePort }}
+  {{- end -}}
+  {{- end -}}
+  {{- else }}
+    - http:
+        paths:
+  {{- range $p := $paths }}
+          - path: {{ tpl $p $ }}
+            backend:
+              serviceName: {{ $serviceName }}
+              servicePort: {{ $servicePort }}
+  {{- end -}}
+  {{- end -}}
+  {{- if .Values.alertmanager.ingress.tls }}
   tls:
 {{ toYaml .Values.alertmanager.ingress.tls | indent 4 }}
-{{- end }}
-{{- end }}
+  {{- end -}}
+{{- end -}}

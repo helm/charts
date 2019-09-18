@@ -1,0 +1,12 @@
+{{- if .Values.podDisruptionBudget -}}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ template "prometheus-pushgateway.fullname" . }}
+  labels: {{ include "prometheus-pushgateway.defaultLabels" . | indent 4 }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "prometheus-pushgateway.name" . }}
+{{ toYaml .Values.podDisruptionBudget | indent 2 }}
+{{- end -}}

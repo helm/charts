@@ -1,5 +1,5 @@
-{{- if and .Release.IsInstall .Values.prometheusOperator.enabled .Values.prometheusOperator.createCustomResource -}}
-# Source https://github.com/coreos/prometheus-operator/blob/master/contrib/kube-prometheus/manifests/0prometheus-operator-0alertmanagerCustomResourceDefinition.yaml
+{{- if and .Values.prometheusOperator.enabled .Values.prometheusOperator.createCustomResource -}}
+# Source https://raw.githubusercontent.com/coreos/kube-prometheus/master/manifests/0prometheus-operator-0alertmanagerCustomResourceDefinition.yaml
 apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
 metadata:
@@ -9,8 +9,10 @@ metadata:
     app: {{ template "prometheus-operator.name" . }}-operator
 {{ include "prometheus-operator.labels" . | indent 4 }}
   annotations:
-    "helm.sh/hook": crd-install
+{{- if .Values.prometheusOperator.cleanupCustomResourceBeforeInstall }}
     "helm.sh/hook-delete-policy": "before-hook-creation"
+{{- end }}
+    "helm.sh/hook": crd-install
 spec:
   group: {{ .Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com" }}
   names:
@@ -742,7 +744,6 @@ spec:
                         configMapRef:
                           description: |-
                             ConfigMapEnvSource selects a ConfigMap to populate the environment variables with.
-
                             The contents of the target ConfigMap's Data field will represent the key-value pairs as environment variables.
                           properties:
                             name:
@@ -758,7 +759,6 @@ spec:
                         secretRef:
                           description: |-
                             SecretEnvSource selects a Secret to populate the environment variables with.
-
                             The contents of the target Secret's Data field will represent the key-value pairs as environment variables.
                           properties:
                             name:
@@ -1323,8 +1323,7 @@ spec:
                     type: boolean
                   volumeDevices:
                     description: volumeDevices is the list of block devices to be
-                      used by the container. This is an alpha feature and may change
-                      in the future.
+                      used by the container. This is a beta feature.
                     items:
                       description: volumeDevice describes a mapping of a raw block
                         device within a container.
@@ -1385,6 +1384,12 @@ spec:
               description: The external URL the Alertmanager instances will be available
                 under. This is necessary to generate correct URLs. This is necessary
                 if Alertmanager is not served from root of a DNS name.
+              type: string
+            image:
+              description: Image if specified has precedence over baseImage, tag and
+                sha combinations. Specifying the version is still necessary to ensure
+                the Prometheus Operator knows what version of Alertmanager is being
+                configured.
               type: string
             imagePullSecrets:
               description: An optional list of references to secrets in the same namespace
@@ -1459,9 +1464,7 @@ spec:
                 generateName:
                   description: |-
                     GenerateName is an optional prefix, used by the server, to generate a unique name ONLY IF the Name field has not been provided. If this field is used, the name returned to the client will be different than the name passed. This value will also be combined with a unique suffix. The provided value has the same validation rules as the Name field, and may be truncated by the length of the suffix required to make the value unique on the server.
-
                     If this field is specified and the generated name exists, the server will NOT return a 409 - instead, it will either return 201 Created or 500 with Reason ServerTimeout indicating a unique name could not be found in the time allotted, and the client should retry (optionally after the time indicated in the Retry-After header).
-
                     Applied only if Name is not specified. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#idempotency
                   type: string
                 generation:
@@ -1525,7 +1528,6 @@ spec:
                                   field:
                                     description: |-
                                       The field of the resource that has caused this error, as named by its JSON serialization. May include dot and postfix notation for nested attributes. Arrays are zero-indexed.  Fields may appear more than once in an array of causes due to fields having multiple errors. Optional.
-
                                       Examples:
                                         "name" - the field "name" on the current resource
                                         "items[0].name" - the field "name" on the first array entry in "items"
@@ -1638,7 +1640,6 @@ spec:
                 namespace:
                   description: |-
                     Namespace defines the space within each name must be unique. An empty namespace is equivalent to the "default" namespace, but "default" is the canonical representation. Not all objects are required to be scoped to a namespace - the value of this field for those objects will be empty.
-
                     Must be a DNS_LABEL. Cannot be updated. More info: http://kubernetes.io/docs/user-guide/namespaces
                   type: string
                 ownerReferences:
@@ -1649,8 +1650,9 @@ spec:
                     set to true. There cannot be more than one managing controller.
                   items:
                     description: OwnerReference contains enough information to let
-                      you identify an owning object. Currently, an owning object must
-                      be in the same namespace, so there is no namespace field.
+                      you identify an owning object. An owning object must be in the
+                      same namespace as the dependent, or be cluster-scoped, so there
+                      is no namespace field.
                     properties:
                       apiVersion:
                         description: API version of the referent.
@@ -1684,7 +1686,6 @@ spec:
                 resourceVersion:
                   description: |-
                     An opaque value that represents the internal version of this object that can be used by clients to determine when objects have changed. May be used for optimistic concurrency, change detection, and the watch operation on a resource or set of resources. Clients must treat these values as opaque and passed unmodified back to the server. They may only be valid for a particular resource or set of resources.
-
                     Populated by the system. Read-only. Value must be treated as opaque by clients and . More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#concurrency-control-and-consistency
                   type: string
                 selfLink:
@@ -1694,7 +1695,6 @@ spec:
                 uid:
                   description: |-
                     UID is the unique in time and space value for this object. It is typically generated by the server on successful creation of a resource and is not allowed to change on PUT operations.
-
                     Populated by the system. Read-only. More info: http://kubernetes.io/docs/user-guide/identifiers#uids
                   type: string
             priorityClassName:
@@ -1721,8 +1721,8 @@ spec:
                   type: object
             retention:
               description: Time duration Alertmanager shall retain data for. Default
-                is '120h', and must match the regular expression `[0-9]+(ms|s|m|h|d|w|y)`
-                (milliseconds seconds minutes hours days weeks years).
+                is '120h', and must match the regular expression `[0-9]+(ms|s|m|h)`
+                (milliseconds seconds minutes hours).
               type: string
             routePrefix:
               description: The route prefix Alertmanager registers HTTP handlers for.
@@ -1747,9 +1747,7 @@ spec:
                 fsGroup:
                   description: |-
                     A special supplemental group that applies to all containers in a pod. Some volume types allow the Kubelet to change the ownership of that volume to be owned by the pod:
-
                     1. The owning GID will be the FSGroup 2. The setgid bit is set (new files created in the volume will be owned by FSGroup) 3. The permission bits are OR'd with rw-rw----
-
                     If unset, the Kubelet will not modify the ownership and permissions of any volume.
                   format: int64
                   type: integer
@@ -1838,11 +1836,6 @@ spec:
                 is specified, then by default an [EmptyDir](https://kubernetes.io/docs/concepts/storage/volumes/#emptydir)
                 will be used.
               properties:
-                class:
-                  description: 'Name of the StorageClass to use when requesting storage
-                    provisioning. More info: https://kubernetes.io/docs/user-guide/persistent-volumes/#storageclasses
-                    (DEPRECATED - instead use `volumeClaimTemplate.spec.storageClassName`)'
-                  type: string
                 emptyDir:
                   description: Represents an empty directory for a pod. Empty directory
                     volumes support ownership management and SELinux relabeling.
@@ -1853,63 +1846,6 @@ spec:
                         Must be an empty string (default) or Memory. More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir'
                       type: string
                     sizeLimit: {}
-                resources:
-                  description: ResourceRequirements describes the compute resource
-                    requirements.
-                  properties:
-                    limits:
-                      description: 'Limits describes the maximum amount of compute
-                        resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/'
-                      type: object
-                    requests:
-                      description: 'Requests describes the minimum amount of compute
-                        resources required. If Requests is omitted for a container,
-                        it defaults to Limits if that is explicitly specified, otherwise
-                        to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/'
-                      type: object
-                selector:
-                  description: A label selector is a label query over a set of resources.
-                    The result of matchLabels and matchExpressions are ANDed. An empty
-                    label selector matches all objects. A null label selector matches
-                    no objects.
-                  properties:
-                    matchExpressions:
-                      description: matchExpressions is a list of label selector requirements.
-                        The requirements are ANDed.
-                      items:
-                        description: A label selector requirement is a selector that
-                          contains values, a key, and an operator that relates the
-                          key and values.
-                        properties:
-                          key:
-                            description: key is the label key that the selector applies
-                              to.
-                            type: string
-                          operator:
-                            description: operator represents a key's relationship
-                              to a set of values. Valid operators are In, NotIn, Exists
-                              and DoesNotExist.
-                            type: string
-                          values:
-                            description: values is an array of string values. If the
-                              operator is In or NotIn, the values array must be non-empty.
-                              If the operator is Exists or DoesNotExist, the values
-                              array must be empty. This array is replaced during a
-                              strategic merge patch.
-                            items:
-                              type: string
-                            type: array
-                        required:
-                        - key
-                        - operator
-                      type: array
-                    matchLabels:
-                      description: matchLabels is a map of {key,value} pairs. A single
-                        {key,value} in the matchLabels map is equivalent to an element
-                        of matchExpressions, whose key field is "key", the operator
-                        is "In", and the values array contains only "value". The requirements
-                        are ANDed.
-                      type: object
                 volumeClaimTemplate:
                   description: PersistentVolumeClaim is a user's request for and claim
                     to a persistent volume
@@ -1977,9 +1913,7 @@ spec:
                         generateName:
                           description: |-
                             GenerateName is an optional prefix, used by the server, to generate a unique name ONLY IF the Name field has not been provided. If this field is used, the name returned to the client will be different than the name passed. This value will also be combined with a unique suffix. The provided value has the same validation rules as the Name field, and may be truncated by the length of the suffix required to make the value unique on the server.
-
                             If this field is specified and the generated name exists, the server will NOT return a 409 - instead, it will either return 201 Created or 500 with Reason ServerTimeout indicating a unique name could not be found in the time allotted, and the client should retry (optionally after the time indicated in the Retry-After header).
-
                             Applied only if Name is not specified. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#idempotency
                           type: string
                         generation:
@@ -2047,7 +1981,6 @@ spec:
                                           field:
                                             description: |-
                                               The field of the resource that has caused this error, as named by its JSON serialization. May include dot and postfix notation for nested attributes. Arrays are zero-indexed.  Fields may appear more than once in an array of causes due to fields having multiple errors. Optional.
-
                                               Examples:
                                                 "name" - the field "name" on the current resource
                                                 "items[0].name" - the field "name" on the first array entry in "items"
@@ -2168,7 +2101,6 @@ spec:
                         namespace:
                           description: |-
                             Namespace defines the space within each name must be unique. An empty namespace is equivalent to the "default" namespace, but "default" is the canonical representation. Not all objects are required to be scoped to a namespace - the value of this field for those objects will be empty.
-
                             Must be a DNS_LABEL. Cannot be updated. More info: http://kubernetes.io/docs/user-guide/namespaces
                           type: string
                         ownerReferences:
@@ -2180,9 +2112,9 @@ spec:
                             There cannot be more than one managing controller.
                           items:
                             description: OwnerReference contains enough information
-                              to let you identify an owning object. Currently, an
-                              owning object must be in the same namespace, so there
-                              is no namespace field.
+                              to let you identify an owning object. An owning object
+                              must be in the same namespace as the dependent, or be
+                              cluster-scoped, so there is no namespace field.
                             properties:
                               apiVersion:
                                 description: API version of the referent.
@@ -2217,7 +2149,6 @@ spec:
                         resourceVersion:
                           description: |-
                             An opaque value that represents the internal version of this object that can be used by clients to determine when objects have changed. May be used for optimistic concurrency, change detection, and the watch operation on a resource or set of resources. Clients must treat these values as opaque and passed unmodified back to the server. They may only be valid for a particular resource or set of resources.
-
                             Populated by the system. Read-only. Value must be treated as opaque by clients and . More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#concurrency-control-and-consistency
                           type: string
                         selfLink:
@@ -2227,7 +2158,6 @@ spec:
                         uid:
                           description: |-
                             UID is the unique in time and space value for this object. It is typically generated by the server on successful creation of a resource and is not allowed to change on PUT operations.
-
                             Populated by the system. Read-only. More info: http://kubernetes.io/docs/user-guide/identifiers#uids
                           type: string
                     spec:
@@ -2327,8 +2257,7 @@ spec:
                         volumeMode:
                           description: volumeMode defines what type of volume is required
                             by the claim. Value of Filesystem is implied when not
-                            included in claim spec. This is an alpha feature and may
-                            change in the future.
+                            included in claim spec. This is a beta feature.
                           type: string
                         volumeName:
                           description: VolumeName is the binding reference to the

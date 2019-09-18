@@ -1,40 +1,35 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "testlink.fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app: "{{ template "testlink.fullname" . }}"
+    chart: "{{ template "testlink.chart" . }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Name | quote }}
 spec:
   selector:
     matchLabels:
-      app: {{ template "fullname" . }}
-      release: "{{ .Release.Name }}"
+      app: "{{ template "testlink.fullname" . }}"
+      release: {{ .Release.Name | quote }}
   replicas: 1
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-        release: "{{ .Release.Name }}"
+        app: "{{ template "testlink.fullname" . }}"
+        chart: "{{ template "testlink.chart" . }}"
+        release: {{ .Release.Name | quote }}
 {{- if or .Values.podAnnotations .Values.metrics.enabled }}
       annotations:
-  {{- if .Values.podAnnotations }}
+{{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
-  {{- end }}
-  {{- if .Values.metrics.podAnnotations }}
+{{- end }}
+{{- if .Values.metrics.podAnnotations }}
 {{ toYaml .Values.metrics.podAnnotations | indent 8 }}
-  {{- end }}
+{{- end }}
 {{- end }}
     spec:
-      {{- if .Values.image.pullSecrets }}
-      imagePullSecrets:
-        {{- range .Values.image.pullSecrets }}
-        - name: {{ . }}
-        {{- end }}
-      {{- end }}
+{{- include "testlink.imagePullSecrets" . | indent 6 }}
       {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
@@ -44,7 +39,7 @@ spec:
         hostnames:
         - "status.localhost"
       containers:
-      - name: {{ template "fullname" . }}
+      - name: {{ template "testlink.fullname" . }}
         image: {{ template "testlink.image" . }}
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         env:
@@ -84,7 +79,7 @@ spec:
         - name: TESTLINK_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "testlink.fullname" . }}
               key: testlink-password
         - name: TESTLINK_EMAIL
           value: {{ default "" .Values.testlinkEmail | quote }}
@@ -92,19 +87,29 @@ spec:
           value: {{ default "" .Values.testlinkLanguage | quote }}
         - name: SMTP_ENABLE
           value: {{ .Values.smtpEnable | quote }}
+        {{- if .Values.smtpConnectionMode }}
         - name: SMTP_CONNECTION_MODE
           value: {{ .Values.smtpConnectionMode | quote }}
+        {{- end }}
+        {{- if .Values.smtpHost }}
         - name: SMTP_HOST
           value: {{ .Values.smtpHost | quote }}
+        {{- end }}
+        {{- if .Values.smtpPort }}
         - name: SMTP_PORT
           value: {{ .Values.smtpPort | quote }}
+        {{- end }}
+        {{- if .Values.smtpUser }}
         - name: SMTP_USER
           value: {{ .Values.smtpUser | quote }}
+        {{- end }}
+        {{- if .Values.smtpPassword }}
         - name: SMTP_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "testlink.fullname" . }}
               key: smtp-password
+        {{- end }}
         ports:
         - name: http
           containerPort: 80
@@ -125,11 +130,9 @@ spec:
         volumeMounts:
         - name: testlink-data
           mountPath: /bitnami/testlink
-        - name: apache-data
-          mountPath: /bitnami/apache
 {{- if .Values.metrics.enabled }}
       - name: metrics
-        image: {{ template "metrics.image" . }}
+        image: {{ template "testlink.metrics.image" . }}
         imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
         command: [ '/bin/apache_exporter', '-scrape_uri', 'http://status.localhost:80/server-status/?auto']
         ports:
@@ -148,20 +151,17 @@ spec:
           initialDelaySeconds: 5
           timeoutSeconds: 1
         resources:
-  {{ toYaml .Values.metrics.resources | indent 10 }}
+{{ toYaml .Values.metrics.resources | indent 10 }}
 {{- end }}
       volumes:
       - name: testlink-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "fullname" . }}-testlink
+          claimName: {{ template "testlink.fullname" . }}-testlink
       {{- else }}
         emptyDir: {}
       {{- end }}
-      - name: apache-data
-      {{- if .Values.persistence.enabled }}
-        persistentVolumeClaim:
-          claimName: {{ template "fullname" . }}-apache
-      {{- else }}
-        emptyDir: {}
+      {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
       {{- end }}

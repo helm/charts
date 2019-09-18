@@ -4,7 +4,7 @@ metadata:
   name: {{ template "vault.fullname" . }}
   labels:
     app: {{ template "vault.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    chart: {{ template "vault.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 {{- if .Values.labels }}
@@ -18,77 +18,31 @@ spec:
     type: RollingUpdate
     rollingUpdate:
       maxUnavailable: 1
+  {{- if .Values.minReadySeconds }}
+  minReadySeconds: {{ .Values.minReadySeconds }}
+  {{- end }}
   template:
     metadata:
       labels:
         app: {{ template "vault.name" . }}
         release: {{ .Release.Name }}
-      annotations:
-{{ toYaml .Values.podAnnotations | indent 8 }}
-    spec:
-      containers:
-      - name: {{ .Chart.Name }}
-        image: "{{ .Values.image.repository }}:{{ default .Chart.AppVersion .Values.image.tag }}"
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
-        {{- if .Values.vault.dev }}
-        command: ["vault", "server", "-dev", "-dev-listen-address", "[::]:8200"]
-        {{- else }}
-        command: ["vault", "server", "-config", "/vault/config/config.json"]
-        {{- end }}
-        {{- if .Values.lifecycle }}
-        lifecycle:
-{{ tpl .Values.lifecycle . | indent 10 }}
-        {{- end }}
-        ports:
-        - containerPort: {{ .Values.service.port }}
-          name: api
-        - containerPort: 8201
-          name: cluster-address
-        livenessProbe:
-          # Alive if it is listening for clustering traffic
-          tcpSocket:
-            port: {{ .Values.service.port }}
-        readinessProbe:
-          # Ready depends on preference
-          httpGet:
-            path: /v1/sys/health?
-              {{- if .Values.vault.readiness.readyIfSealed -}}sealedcode=204&{{- end }}
-              {{- if .Values.vault.readiness.readyIfStandby -}}standbycode=204&{{- end }}
-              {{- if .Values.vault.readiness.readyIfUninitialized -}}uninitcode=204&{{- end }}
-            port: {{ .Values.service.port }}
-            scheme: {{ if .Values.vault.config.listener.tcp.tls_disable -}}HTTP{{- else -}}HTTPS{{- end }}
-        securityContext:
-          readOnlyRootFilesystem: true
-          capabilities:
-            add:
-            - IPC_LOCK
-        env:
-          - name: POD_IP
-            valueFrom:
-              fieldRef:
-                fieldPath: status.podIP
-          - name: VAULT_CLUSTER_ADDR
-            value: "https://$(POD_IP):8201"
-          - name: VAULT_LOG_LEVEL
-            value: {{ .Values.vault.logLevel | quote }}
-        {{- if .Values.vault.extraEnv }}
-{{ toYaml .Values.vault.extraEnv | indent 10 }}
-        {{- end }}
-        volumeMounts:
-        - name: vault-config
-          mountPath: /vault/config/
-        - name: vault-root
-          mountPath: /root/
-        {{- range .Values.vault.customSecrets }}
-        - name: {{ .secretName | replace "." "-"}}
-          mountPath: {{ .mountPath }}
-        {{- end }}
-{{- if .Values.vault.extraContainers }}
-{{ toYaml .Values.vault.extraContainers | indent 6}}
+{{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | indent 8 }}
 {{- end }}
-        resources:
-{{ toYaml .Values.resources | indent 10 }}
-      {{- if .Values.affinity }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{- range $key, $value := .Values.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
+    spec:
+      {{- if .Values.vault.extraInitContainers }}
+      initContainers:
+{{ tpl (toYaml .Values.vault.extraInitContainers) . | indent 6 }}
+      {{- end }}
+      {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName }}
+      {{- end }}
+      containers:
       {{- if .Values.consulAgent.join }}
       - name: {{ .Chart.Name }}-consul-agent
         image: "{{ .Values.consulAgent.repository }}:{{ .Values.consulAgent.tag }}"
@@ -113,26 +67,140 @@ spec:
               GOSSIP_KEY="-config-file /etc/consul/encrypt.json"
             fi
             {{- end }}
+            {{- if .Values.vault.config.storage.consul.token }}
+            echo "{\"acl\":{\"tokens\":{\"agent\":\"{{ .Values.vault.config.storage.consul.token }}\"}}}" > /etc/consul/agent-token.json
+            AGENT_TOKEN="-config-file /etc/consul/agent-token.json"
+            {{- end }}
 
             exec /bin/consul agent \
               $GOSSIP_KEY \
+              $AGENT_TOKEN \
               -join={{- .Values.consulAgent.join }} \
               -data-dir=/etc/consul
+        resources:
+{{ toYaml .Values.consulAgent.resources | indent 10 }}
       {{- end }}
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ default .Chart.AppVersion .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        {{- if .Values.vault.dev }}
+        command: ["vault", "server", "-dev", "-dev-listen-address", "[::]:8200"]
+        {{- else }}
+        command: ["vault", "server", "-config", "/vault/config/config.json"]
+        {{- end }}
+        {{- if .Values.vault.extraArgs }}
+        args:
+{{ tpl (toYaml .Values.vault.extraArgs) . | indent 10 }}
+        {{- end }}
+        {{- if .Values.lifecycle }}
+        lifecycle:
+{{ tpl (toYaml .Values.lifecycle) . | indent 10 }}
+        {{- end }}
+        ports:
+        - containerPort: {{ .Values.service.port }}
+          name: api
+        - containerPort: {{ .Values.service.clusterPort }}
+          name: cluster-address
+        livenessProbe:
+          # Alive if Vault is successfully responding to requests
+          httpGet:
+            path: /v1/sys/health?standbyok=true&
+              {{- if .Values.vault.liveness.aliveIfUninitialized -}}uninitcode=204&{{- end }}
+              {{- if .Values.vault.liveness.aliveIfSealed -}}sealedcode=204&{{- end }}
+            port: {{ .Values.service.port }}
+            scheme: {{ if .Values.vault.config.listener.tcp.tls_disable -}}HTTP{{- else -}}HTTPS{{- end }}
+          initialDelaySeconds: {{ .Values.vault.liveness.initialDelaySeconds }}
+          periodSeconds: {{ .Values.vault.liveness.periodSeconds }}
+        readinessProbe:
+          # Ready depends on preference
+          httpGet:
+            path: /v1/sys/health?
+              {{- if .Values.vault.readiness.readyIfSealed -}}sealedcode=204&{{- end }}
+              {{- if .Values.vault.readiness.readyIfStandby -}}standbycode=204&{{- end }}
+              {{- if .Values.vault.readiness.readyIfUninitialized -}}uninitcode=204&{{- end }}
+            port: {{ .Values.service.port }}
+            scheme: {{ if .Values.vault.config.listener.tcp.tls_disable -}}HTTP{{- else -}}HTTPS{{- end }}
+          initialDelaySeconds: {{ .Values.vault.readiness.initialDelaySeconds }}
+          periodSeconds: {{ .Values.vault.readiness.periodSeconds }}
+        securityContext:
+          readOnlyRootFilesystem: true
+          capabilities:
+            add:
+            - IPC_LOCK
+        env:
+          - name: POD_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+          - name: VAULT_API_ADDR
+            value: "https://$(POD_IP):8200"
+        {{- if not .Values.vault.dev }}
+          - name: VAULT_CLUSTER_ADDR
+            value: "https://$(POD_IP):8201"
+        {{- end }}
+          - name: VAULT_LOG_LEVEL
+            value: {{ .Values.vault.logLevel | quote }}
+        {{- if .Values.vault.extraEnv }}
+{{ toYaml .Values.vault.extraEnv | indent 10 }}
+        {{- end }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        volumeMounts:
+        - name: vault-config
+          mountPath: /vault/config/
+        - name: vault-root
+          mountPath: /root/
+        {{- if .Values.vault.extraVolumeMounts }}
+{{ toYaml .Values.vault.extraVolumeMounts | indent 8 }}
+        {{- end }}
+{{- if .Values.vault.extraContainers }}
+{{ tpl (toYaml .Values.vault.extraContainers) . | indent 6}}
+{{- end }}
+      {{- if .Values.vaultExporter.enabled }}
+      - name: {{ .Chart.Name }}-exporter
+        image: "{{ .Values.vaultExporter.repository }}:{{ .Values.vaultExporter.tag }}"
+        imagePullPolicy: {{ .Values.vaultExporter.pullPolicy }}
+        securityContext:
+          readOnlyRootFilesystem: true
+        env:
+          - name: VAULT_ADDR
+            {{- if .Values.vault.config.listener.tcp.tls_disable }}
+            value: "http://{{ .Values.vaultExporter.vaultAddress }}"
+            {{- else }}
+            value: "https://{{ .Values.vaultExporter.vaultAddress }}"
+            {{- end }}
+          {{- if .Values.vaultExporter.tlsCAFile }}
+          - name: VAULT_CACERT
+            value: {{ .Values.vaultExporter.tlsCAFile | quote }}
+          {{- end }}
+        {{- range .Values.vault.customSecrets }}
+        volumeMounts:
+        - name: {{ .secretName | replace "." "-"}}
+          mountPath: {{ .mountPath }}
+        {{- end }}
+        ports:
+        - containerPort: 9410
+          name: metrics
+      {{- end }}
+      {{- if .Values.affinity }}
       affinity:
-{{ tpl .Values.affinity . | indent 8 }}
+{{ tpl (toYaml .Values.affinity) . | indent 8 }}
       {{- end }}
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      {{- end }}
+      serviceAccountName: {{ template "vault.serviceAccountName" . }}
       volumes:
         - name: vault-config
           configMap:
-            name: "{{ template "vault.fullname" . }}-config"
+            name: {{ if .Values.vault.existingConfigName }}{{ .Values.vault.existingConfigName }}{{- else }}"{{ template "vault.fullname" . }}-config"{{- end }}
         - name: vault-root
           emptyDir: {}
-        {{- range .Values.vault.customSecrets }}
-        - name: {{ .secretName | replace "." "-"}}
-          secret:
-            secretName: {{ .secretName }}
-        {{- end }}
 {{- if .Values.vault.extraVolumes }}
 {{ toYaml .Values.vault.extraVolumes | indent 8}}
 {{- end }}

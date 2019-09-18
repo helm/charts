@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 image:
   repository: gcr.io/google-containers/fluentd-elasticsearch
-  tag: v2.3.1
+  tag: v2.4.0
   pullPolicy: IfNotPresent
   # pullSecrets:
   #   - secret1
@@ -19,14 +19,35 @@ output:
 
 env: {}
 
+# Extra Environment Values - allows yaml definitions
+extraEnvVars:
+#  - name: VALUE_FROM_SECRET
+#    valueFrom:
+#      secretKeyRef:
+#        name: secret_name
+#        key: secret_key
+
 service:
+  annotations: {}
   type: ClusterIP
-  # type: nodePort:
-  externalPort: 80
+  # type: NodePort
+  # nodePort:
+  # Used to create Service records
   ports:
     - name: "monitor-agent"
       protocol: TCP
       containerPort: 24220
+
+metrics:
+  enabled: false
+  service:
+    port: 24231
+  serviceMonitor:
+    enabled: false
+    additionalLabels: {}
+    # namespace: monitoring
+    # interval: 30s
+    # scrapeTimeout: 10s
 
 annotations: {}
 #  prometheus.io/scrape: "true"
@@ -34,20 +55,23 @@ annotations: {}
 
 ingress:
   enabled: false
-  # Used to create an Ingress and Service record.
-  # hosts:
-  #   - name: "http-input.local"
-  #     protocol: TCP
-  #     serviceName: http-input
-  #     servicePort: 9880
   annotations:
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
-  tls:
-    # Secrets must be manually created in the namespace.
-    # - secretName: http-input-tls
-    #   hosts:
-    #     - http-input.local
+    kubernetes.io/ingress.class: nginx
+#    kubernetes.io/tls-acme: "true"
+#    # Depending on which version of ingress controller you may need to configure properly - https://kubernetes.github.io/ingress-nginx/examples/rewrite/#rewrite-target
+#    nginx.ingress.kubernetes.io/rewrite-target: /
+  labels: []
+  # If doing TCP or UDP ingress rule don't forget to update your Ingress Controller to accept TCP connections - https://kubernetes.github.io/ingress-nginx/user-guide/exposing-tcp-udp-services/
+  hosts:
+#     - name: "http-input.local"
+#       protocol: TCP
+#       servicePort: 9880
+#       path: /
+  tls: {}
+  # Secrets must be manually created in the namespace.
+#    - secretName: http-input-tls
+#      hosts:
+#        - http-input.local
 
 configMaps:
   general.conf: |
@@ -123,6 +147,17 @@ resources: {}
   #  cpu: 500m
   #  memory: 200Mi
 
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
 ## Persist data to a persistent volume
 persistence:
   enabled: false
@@ -143,3 +178,26 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+# Enable autoscaling using HorizontalPodAutoscaler
+autoscaling:
+  enabled: false
+  minReplicas: 2
+  maxReplicas: 5
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 60
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 60
+
+# Consider to set higher value when using in conjuction with autoscaling
+# Full description about this field: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.15/#pod-v1-core
+terminationGracePeriodSeconds: 30

@@ -38,7 +38,7 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         resources:
-{{ toYaml .Values.datadog.resources | indent 12 }}
+{{ toYaml .Values.datadog.resources | indent 10 }}
         ports:
         - containerPort: 8125
           name: dogstatsdport
@@ -70,6 +70,10 @@ spec:
           - name: DD_DOGSTATSD_NON_LOCAL_TRAFFIC
             value: {{ .Values.datadog.nonLocalTraffic | quote }}
           {{- end }}
+          {{- if .Values.datadog.dogstatsdOriginDetection }}
+          - name: DD_DOGSTATSD_ORIGIN_DETECTION
+            value: {{ .Values.datadog.dogstatsdOriginDetection | quote }}
+          {{- end }}
           {{- if .Values.datadog.tags }}
           - name: DD_TAGS
             value: {{ .Values.datadog.tags | quote }}
@@ -88,6 +92,10 @@ spec:
           - name: DD_CRI_SOCKET_PATH
             value: {{ .Values.datadog.criSocketPath | quote }}
           {{- end }}
+          {{- if .Values.datadog.useDogStatsDSocketVolume }}
+          - name: DD_DOGSTATSD_SOCKET
+            value: {{ default "/var/run/datadog/dsd.socket" .Values.datadog.dogStatsDSocketPath | quote }}
+          {{- end }}
 {{- if .Values.datadog.env }}
 {{ toYaml .Values.datadog.env | indent 10 }}
 {{- end }}
@@ -96,6 +104,10 @@ spec:
           - name: runtimesocket
             mountPath: {{ default "/var/run/docker.sock" .Values.datadog.criSocketPath | quote }}
             readOnly: true
+          {{- end }}
+          {{- if .Values.datadog.useDogStatsDSocketVolume }}
+          - name: dsdsocket
+            mountPath: "/var/run/datadog"
           {{- end }}
           - name: procdir
             mountPath: /host/proc
@@ -134,6 +146,11 @@ spec:
             path: {{ default "/var/run/docker.sock" .Values.datadog.criSocketPath | quote }}
           name: runtimesocket
         {{- end }}
+        {{- if .Values.datadog.useDogStatsDSocketVolume }}
+        - hostPath:
+            path: "/var/run/datadog/"
+          name: dsdsocket
+        {{- end }}
         - hostPath:
             path: /proc
           name: procdir
@@ -143,12 +160,12 @@ spec:
         {{- if (or (.Values.datadog.confd) (.Values.datadog.autoconf)) }}
         - name: confd
           configMap:
-            name: {{ template "datadog.confd.fullname" . }}
+            name: {{ template "datadog.fullname" . }}-confd
         {{- end }}
         {{- if .Values.datadog.checksd }}
         - name: checksd
           configMap:
-            name: {{ template "datadog.checksd.fullname" . }}
+            name: {{ template "datadog.fullname" . }}-checksd
         {{- end }}
 {{- if .Values.datadog.volumes }}
 {{ toYaml .Values.datadog.volumes | indent 8 }}

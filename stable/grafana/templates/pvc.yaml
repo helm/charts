@@ -1,8 +1,9 @@
-{{- if and .Values.persistence.enabled (not .Values.persistence.existingClaim) }}
+{{- if and .Values.persistence.enabled (not .Values.persistence.existingClaim) (eq .Values.persistence.type "pvc")}}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: {{ template "grafana.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "grafana.name" . }}
     chart: {{ template "grafana.chart" . }}
@@ -10,6 +11,10 @@ metadata:
     heritage: {{ .Release.Service }}
   {{- with .Values.persistence.annotations  }}
   annotations:
+{{ toYaml . | indent 4 }}
+  {{- end }}
+  {{- with .Values.persistence.finalizers  }}
+  finalizers:
 {{ toYaml . | indent 4 }}
   {{- end }}
 spec:

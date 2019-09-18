@@ -2,9 +2,13 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 replicaCount: 1
+
+ # This will use the default deployment strategy unless it is overriden
+deploymentStrategy: {}
+
 image:
   repository: sonarqube
-  tag: 7.4-community
+  tag: 7.9-community
   # If using a private repository, the name of the imagePullSecret to use
   # pullSecret: my-repo-secret
 
@@ -28,13 +32,22 @@ ingress:
   enabled: false
   # Used to create an Ingress record.
   hosts:
-    - sonar.organization.com
+    - name: sonar.organization.com
+      # default paths for "/" and "/*" will be added
+      path: /
+      # If a different path is defined, that path and {path}/* will be added to the ingress resource
+      # path: /sonarqube
   annotations: {}
   # kubernetes.io/ingress.class: nginx
   # kubernetes.io/tls-acme: "true"
   # This property allows for reports up to a certain size to be uploaded to SonarQube
   # nginx.ingress.kubernetes.io/proxy-body-size: "8m"
-  tls: {}
+
+# Additional labels for Ingress manifest file
+  # labels:
+  #  traffic-type: external
+  #  traffic-type: internal
+  tls: []
   # Secrets must be manually created in the namespace.
   # - secretName: chart-example-tls
   #   hosts:
@@ -63,14 +76,25 @@ readinessProbe:
   initialDelaySeconds: 60
   periodSeconds: 30
   failureThreshold: 6
+  # If an ingress *path* other than the root (/) is defined, it should be reflected here
+  # A trailing "/" must be included
   sonarWebContext: /
+  # sonarWebContext: /sonarqube/
 livenessProbe:
   initialDelaySeconds: 60
   periodSeconds: 30
+  # If an ingress *path* other than the root (/) is defined, it should be reflected here
+  # A trailing "/" must be included
   sonarWebContext: /
+  # sonarWebContext: /sonarqube/
 
 # Set extra env variables. Like proxy settings.
 extraEnv: {}
+  # If an ingress *path* is defined, it should be reflected here
+  # sonar.web.context: /sonarqube
+
+# Set annotations for pods
+annotations: {}
 
 resources: {}
 # We usually recommend not to specify default resources and to leave this as a conscious
@@ -85,6 +109,13 @@ resources: {}
 #  memory: 128Mi
 persistence:
   enabled: false
+  ## Set annotations on pvc
+  annotations: {}
+
+  ## Specify an existing volume claim instead of creating a new one.
+  ## When using this option all following options like storageClass, accessMode and size are ignored.
+  # existingClaim:
+
   ## If defined, storageClassName: <storageClass>
   ## If set to "-", storageClassName: "", which disables dynamic provisioning
   ## If undefined (the default) or set to null, no storageClassName spec is
@@ -103,16 +134,29 @@ persistence:
 #    - "https://github.com/SonarSource/sonar-ldap/releases/download/2.2-RC3/sonar-ldap-plugin-2.2.0.601.jar"
 plugins:
   install: []
+
+  # initContainerImage: alpine:3.9
+  # deleteDefaultPlugins: true
   resources: {}
   # We allow the plugins init container to have a separate resources declaration because
   # the initContainer does not take as much resources.
 
-# A custom sonar.properties file can be provided using a multiline YAML string.
+# A custom sonar.properties file can be provided via dictionary.
 # For example:
-# sonarProperties: |
-#   sonar.forceAuthentication=true
-#   sonar.security.realm=LDAP
-#   ldap.url=ldaps://organization.com
+# sonarProperties:
+#   sonar.forceAuthentication: true
+#   sonar.security.realm: LDAP
+#   ldap.url: ldaps://organization.com
+
+# Kubernetes secret that contains the encryption key for the sonarqube instance.
+# The secret must contain the key 'sonar-secret.txt'.
+# The 'sonar.secretKeyPath' property will be set automatically.
+# sonarSecretKey: "settings-encryption-secret"
+
+customCerts:
+  ## Enable to override the default cacerts with your own one
+  enabled: false
+  secretName: my-cacerts
 
 ## Configuration value to select database type
 ## Option to use "postgresql" or "mysql" database type, by default "postgresql" is chosen
@@ -159,3 +203,8 @@ mysql:
   # Specify the TCP port that mySQL should use
   service:
     port: 3306
+#
+# Additional labels to add to the pods:
+# podLabels:
+#   key: value
+podLabels: {}

@@ -15,60 +15,49 @@ spec:
       app: {{ template "kong.name" . }}
       release: {{ .Release.Name }}
       component: app
+  {{- if .Values.updateStrategy }}
+  strategy:
+{{ toYaml .Values.updateStrategy | indent 4 }}
+  {{- end }}
+
   template:
     metadata:
-    {{- if .Values.podAnnotations }}
       annotations:
+        {{- if (and (not .Values.ingressController.enabled) (eq .Values.env.database "off" )) }}
+        {{- if .Values.dblessConfig.config }}
+        checksum/dbless.config: {{ toYaml .Values.dblessConfig.config | sha256sum }}
+        {{- end }}
+        {{- end }}
+        {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
-    {{- end }}
+        {{- end }}
       labels:
         app: {{ template "kong.name" . }}
         release: {{ .Release.Name }}
         component: app
     spec:
+      {{- if (and (.Values.ingressController.enabled) (eq .Values.env.database "off")) }}
+      serviceAccountName: {{ template "kong.serviceAccountName" . }}
+      {{ end }}
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
       {{- range .Values.image.pullSecrets }}
         - name: {{ . }}
       {{- end }}
       {{- end }}
+      {{- if not (eq .Values.env.database "off") }}
       initContainers:
-      - name: wait-for-db
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        env:
-        - name: KONG_PROXY_ACCESS_LOG
-          value: "/dev/stdout"
-        - name: KONG_ADMIN_ACCESS_LOG
-          value: "/dev/stdout"
-        - name: KONG_PROXY_ERROR_LOG
-          value: "/dev/stderr"
-        - name: KONG_ADMIN_ERROR_LOG
-          value: "/dev/stderr"
-        {{- if .Values.postgresql.enabled }}
-        - name: KONG_PG_HOST
-          value: {{ template "kong.postgresql.fullname" . }}
-        - name: KONG_PG_PORT
-          value: "{{ .Values.postgresql.service.port }}"
-        - name: KONG_PG_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ template "kong.postgresql.fullname" . }}
-              key: postgresql-password
-        {{- end }}
-        {{- if .Values.cassandra.enabled }}
-        - name: KONG_CASSANDRA_CONTACT_POINTS
-          value: {{ template "kong.cassandra.fullname" . }}
-        {{- end }}
-        {{- range $key, $val := .Values.env }}
-        - name: KONG_{{ $key | upper}}
-          value: {{ $val | quote }}
-        {{- end}}
-        command: [ "/bin/sh", "-c", "until kong start; do echo 'waiting for db'; sleep 1; done; kong stop" ]
+      {{- include "kong.wait-for-db" . | nindent 6 }}
+      {{ end }}
       containers:
+      {{- if (and (.Values.ingressController.enabled) (eq .Values.env.database "off")) }}
+      {{- include "kong.controller-container" . | nindent 6 }}
+      {{ end }}
       - name: {{ template "kong.name" . }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
+        {{- if not .Values.env.admin_listen }}
         {{- if .Values.admin.useTLS }}
         - name: KONG_ADMIN_LISTEN
           value: "0.0.0.0:{{ .Values.admin.containerPort }} ssl"
@@ -76,22 +65,88 @@ spec:
         - name: KONG_ADMIN_LISTEN
           value: 0.0.0.0:{{ .Values.admin.containerPort }}
         {{- end }}
+        {{- end }}
+        {{- if not .Values.env.proxy_listen }}
         - name: KONG_PROXY_LISTEN
           value: {{ template "kong.kongProxyListenValue" . }}
+        {{- end }}
+        {{- if and (not .Values.env.admin_gui_listen) (.Values.enterprise.enabled) }}
+        - name: KONG_ADMIN_GUI_LISTEN
+          value: {{ template "kong.kongManagerListenValue" . }}
+        {{- end }}
+        {{- if and (not .Values.env.portal_gui_listen) (.Values.enterprise.enabled) (.Values.enterprise.portal.enabled) }}
+        - name: KONG_PORTAL_GUI_LISTEN
+          value: {{ template "kong.kongPortalListenValue" . }}
+        {{- end }}
+        {{- if and (not .Values.env.portal_api_listen) (.Values.enterprise.enabled) (.Values.enterprise.portal.enabled) }}
+        - name: KONG_PORTAL_API_LISTEN
+          value: {{ template "kong.kongPortalApiListenValue" . }}
+        {{- end }}
         - name: KONG_NGINX_DAEMON
           value: "off"
-        - name: KONG_PROXY_ACCESS_LOG
-          value: "/dev/stdout"
-        - name: KONG_ADMIN_ACCESS_LOG
-          value: "/dev/stdout"
-        - name: KONG_PROXY_ERROR_LOG
-          value: "/dev/stderr"
-        - name: KONG_ADMIN_ERROR_LOG
-          value: "/dev/stderr"
-        {{- range $key, $val := .Values.env }}
-        - name: KONG_{{ $key | upper}}
-          value: {{ $val | quote }}
-        {{- end}}
+        {{- if .Values.enterprise.enabled }}
+        {{- if .Values.enterprise.vitals.enabled }}
+        - name: KONG_VITALS
+          value: "on"
+        {{- end }}
+        {{- if .Values.enterprise.portal.enabled }}
+        - name: KONG_PORTAL
+          value: "on"
+        {{- if .Values.enterprise.portal.portal_auth }}
+        - name: KONG_PORTAL_AUTH
+          value: {{ .Values.enterprise.portal.portal_auth }}
+        - name: KONG_PORTAL_SESSION_CONF
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.enterprise.portal.session_conf_secret }}
+              key: portal_session_conf
+        {{- end }}
+        {{- end }}
+        {{- if .Values.enterprise.rbac.enabled }}
+        - name: KONG_ENFORCE_RBAC
+          value: "on"
+        - name: KONG_ADMIN_GUI_AUTH
+          value: {{ .Values.enterprise.rbac.admin_gui_auth | default "basic-auth" }}
+        - name: KONG_ADMIN_GUI_AUTH_CONF
+          value: '{{ toJson .Values.enterprise.rbac.admin_gui_auth_conf }}'
+        - name: KONG_ADMIN_GUI_SESSION_CONF
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.enterprise.rbac.session_conf_secret }}
+              key: admin_gui_session_conf
+        {{- end }}
+        {{- if .Values.enterprise.smtp.enabled }}
+        - name: KONG_PORTAL_EMAILS_FROM
+          value: {{ .Values.enterprise.smtp.portal_emails_from }}
+        - name: KONG_PORTAL_EMAILS_REPLY_TO
+          value: {{ .Values.enterprise.smtp.portal_emails_reply_to }}
+        - name: KONG_ADMIN_EMAILS_FROM
+          value: {{ .Values.enterprise.smtp.admin_emails_from }}
+        - name: KONG_ADMIN_EMAILS_REPLY_TO
+          value: {{ .Values.enterprise.smtp.admin_emails_reply_to }}
+        - name: KONG_SMTP_HOST
+          value: {{ .Values.enterprise.smtp.smtp_host }}
+        - name: KONG_SMTP_PORT
+          value: {{ .Values.enterprise.smtp.smtp_port }}
+        - name: KONG_SMTP_STARTTLS
+          value: {{ .Values.enterprise.smtp.smtp_starttls }}
+        {{- if .Values.enterprise.smtp.auth.smtp_username }}
+        - name: KONG_SMTP_USERNAME
+          value: {{ .Values.enterprise.smtp.auth.smtp_username }}
+        - name: KONG_SMTP_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.enterprise.smtp.auth.smtp_password }}
+              key: smtp_password
+        {{- end }}
+        {{- else }}
+        - name: KONG_SMTP_MOCK
+          value: "on"
+        {{- end }}
+        {{- include "kong.license" . | nindent 8 }}
+        {{- end }}
+        - name: KONG_NGINX_HTTP_INCLUDE
+          value: /kong/servers.conf
         {{- if .Values.postgresql.enabled }}
         - name: KONG_PG_HOST
           value: {{ template "kong.postgresql.fullname" . }}
@@ -107,20 +162,94 @@ spec:
         - name: KONG_CASSANDRA_CONTACT_POINTS
           value: {{ template "kong.cassandra.fullname" . }}
         {{- end }}
+        {{- if (and (not .Values.ingressController.enabled) (eq .Values.env.database "off")) }}
+        - name: KONG_DECLARATIVE_CONFIG
+          value: "/kong_dbless/kong.yml"
+        {{- end }}
+        {{- include "kong.env" .  | indent 8 }}
         ports:
         - name: admin
           containerPort: {{ .Values.admin.containerPort }}
+          {{- if .Values.admin.hostPort }}
+          hostPort: {{ .Values.admin.hostPort }}
+          {{- end}}
           protocol: TCP
         {{- if .Values.proxy.http.enabled }}
         - name: proxy
           containerPort: {{ .Values.proxy.http.containerPort }}
+          {{- if .Values.proxy.http.hostPort }}
+          hostPort: {{ .Values.proxy.http.hostPort }}
+          {{- end}}
           protocol: TCP
         {{- end }}
         {{- if .Values.proxy.tls.enabled }}
         - name: proxy-tls
           containerPort: {{ .Values.proxy.tls.containerPort }}
+          {{- if .Values.proxy.tls.hostPort }}
+          hostPort: {{ .Values.proxy.tls.hostPort }}
+          {{- end}}
           protocol: TCP
         {{- end }}
+        - name: metrics
+          containerPort: 9542
+          protocol: TCP
+        {{- if .Values.enterprise.enabled }}
+        {{- if .Values.manager.http.enabled }}
+        - name: manager
+          containerPort: {{ .Values.manager.http.containerPort }}
+          {{- if .Values.manager.http.hostPort }}
+          hostPort: {{ .Values.manager.http.hostPort }}
+          {{- end}}
+          protocol: TCP
+        {{- end }}
+        {{- if .Values.manager.tls.enabled }}
+        - name: manager-tls
+          containerPort: {{ .Values.manager.tls.containerPort }}
+          {{- if .Values.manager.tls.hostPort }}
+          hostPort: {{ .Values.manager.tls.hostPort }}
+          {{- end}}
+          protocol: TCP
+        {{- end }}
+        {{- if .Values.portal.http.enabled }}
+        - name: portal
+          containerPort: {{ .Values.portal.http.containerPort }}
+          {{- if .Values.portal.http.hostPort }}
+          hostPort: {{ .Values.portal.http.hostPort }}
+          {{- end}}
+          protocol: TCP
+        {{- end }}
+        {{- if .Values.portal.tls.enabled }}
+        - name: portal-tls
+          containerPort: {{ .Values.portal.tls.containerPort }}
+          {{- if .Values.portal.tls.hostPort }}
+          hostPort: {{ .Values.portal.tls.hostPort }}
+          {{- end}}
+          protocol: TCP
+        {{- end }}
+        {{- if .Values.portalapi.http.enabled }}
+        - name: portalapi
+          containerPort: {{ .Values.portalapi.http.containerPort }}
+          {{- if .Values.portalapi.http.hostPort }}
+          hostPort: {{ .Values.portalapi.http.hostPort }}
+          {{- end}}
+          protocol: TCP
+        {{- end }}
+        {{- if .Values.portalapi.tls.enabled }}
+        - name: portalapi-tls
+          containerPort: {{ .Values.portalapi.tls.containerPort }}
+          {{- if .Values.portalapi.tls.hostPort }}
+          hostPort: {{ .Values.portalapi.tls.hostPort }}
+          {{- end}}
+          protocol: TCP
+        {{- end }}
+        {{- end }}
+        volumeMounts:
+          - name: custom-nginx-template-volume
+            mountPath: /kong
+          {{- if (and (not .Values.ingressController.enabled) (eq .Values.env.database "off")) }}
+          - name: kong-custom-dbless-config-volume
+            mountPath: /kong_dbless/
+          {{- end }}
         readinessProbe:
 {{ toYaml .Values.readinessProbe | indent 10 }}
         livenessProbe:
@@ -137,3 +266,16 @@ spec:
     {{- end }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
+      volumes:
+        - name: custom-nginx-template-volume
+          configMap:
+            name: {{ template "kong.fullname" . }}-default-custom-server-blocks
+{{- if (and (not .Values.ingressController.enabled) (eq .Values.env.database "off")) }}
+        - name: kong-custom-dbless-config-volume
+          configMap:
+            {{- if .Values.dblessConfig.configMap }}
+            name: {{ .Values.dblessConfig.configMap }}
+            {{- else }}
+            name: {{ template "kong.dblessConfig.fullname" . }}
+            {{- end }}
+{{- end }}

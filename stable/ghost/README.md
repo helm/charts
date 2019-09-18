@@ -14,7 +14,7 @@ This chart bootstraps a [Ghost](https://github.com/bitnami/bitnami-docker-ghost)
 
 It also packages the [Bitnami MariaDB chart](https://github.com/kubernetes/charts/tree/master/stable/mariadb) which is required for bootstrapping a MariaDB deployment for the database requirements of the Ghost application.
 
-Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters.
+Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters. This chart has been tested to work with NGINX Ingress, cert-manager, fluentd and Prometheus on top of the [BKPR](https://kubeprod.io/).
 
 ## Prerequisites
 
@@ -50,16 +50,21 @@ The following table lists the configurable parameters of the Ghost chart and the
 | Parameter                           | Description                                                   | Default                                                  |
 |-------------------------------------|---------------------------------------------------------------|----------------------------------------------------------|
 | `global.imageRegistry`              | Global Docker image registry                                  | `nil`                                                    |
+| `global.imagePullSecrets`           | Global Docker registry secret names as an array               | `[]` (does not add image pull secrets to deployed pods)  |
+| `global.storageClass`                     | Global storage class for dynamic provisioning                                               | `nil`                                                        |
 | `image.registry`                    | Ghost image registry                                          | `docker.io`                                              |
 | `image.repository`                  | Ghost Image name                                              | `bitnami/ghost`                                          |
-| `image.tag`                         | Ghost Image tag                                               | `{VERSION}`                                              |
-| `image.pullPolicy`                  | Image pull policy                                             | `Always` if `imageTag` is `latest`, else `IfNotPresent`  |
+| `image.tag`                         | Ghost Image tag                                               | `{TAG_NAME}`                                             |
+| `image.pullPolicy`                  | Image pull policy                                             | `IfNotPresent`                                           |
 | `image.pullSecrets`                 | Specify docker-registry secret names as an array              | `[]` (does not add image pull secrets to deployed pods)  |
+| `nameOverride`                      | String to partially override ghost.fullname template with a string (will prepend the release name) | `nil`               |
+| `fullnameOverride`                  | String to fully override ghost.fullname template with a string                                     | `nil`               |
 | `volumePermissions.image.registry`  | Init container volume-permissions image registry              | `docker.io`                                              |
 | `volumePermissions.image.repository`| Init container volume-permissions image name                  | `bitnami/minideb`                                        |
-| `volumePermissions.image.tag`       | Init container volume-permissions image tag                   | `latest`                                                 |
+| `volumePermissions.image.tag`       | Init container volume-permissions image tag                   | `stretch`                                                 |
 | `volumePermissions.image.pullPolicy`| Init container volume-permissions image pull policy           | `Always`                                                 |
 | `ghostHost`                         | Ghost host to create application URLs                         | `nil`                                                    |
+| `ghostPort`                         | Ghost port to use in application URLs (defaults to `service.port` if `nil`) | `nil`                                      |
 | `ghostProtocol`                     | Protocol (http or https) to use in the application URLs       | `http`                                                   |
 | `ghostPath`                         | Ghost path to create application URLs                         | `nil`                                                    |
 | `ghostUsername`                     | User of the application                                       | `user@example.com`                                       |
@@ -81,13 +86,14 @@ The following table lists the configurable parameters of the Ghost chart and the
 | `service.nodePorts.http`            | Kubernetes http node port                                     | `""`                                                     |
 | `service.externalTrafficPolicy`     | Enable client source IP preservation                          | `Cluster`                                                |
 | `service.loadBalancerIP`            | LoadBalancerIP for the Ghost service                          | ``                                                       |
-| `service.annotations`            | Service annotations                          | ``                                                       |
+| `service.annotations`               | Service annotations                                           | ``                                                       |
 | `ingress.enabled`                   | Enable ingress controller resource                            | `false`                                                  |
 | `ingress.annotations`               | Ingress annotations                                           | `[]`                                                     |
 | `ingress.certManager`               | Add annotations for cert-manager                              | `false`                                                  |
 | `ingress.hosts[0].name`             | Hostname to your Ghost installation                           | `ghost.local`                                            |
 | `ingress.hosts[0].path`             | Path within the url structure                                 | `/`                                                      |
 | `ingress.hosts[0].tls`              | Utilize TLS backend in ingress                                | `false`                                                  |
+| `ingress.hosts[0].tlsHosts`         | Array of TLS hosts for ingress record (defaults to `ingress.hosts[0].name` if `nil`)                               | `nil`                                                  |
 | `ingress.hosts[0].tlsSecret`        | TLS Secret (certificates)                                     | `ghost.local-tls-secret`                                 |
 | `ingress.secrets[0].name`           | TLS Secret Name                                               | `nil`                                                    |
 | `ingress.secrets[0].certificate`    | TLS Secret Certificate                                        | `nil`                                                    |
@@ -108,6 +114,7 @@ The following table lists the configurable parameters of the Ghost chart and the
 | `persistence.size`                  | PVC Storage Request for Ghost volume                          | `8Gi`                                                    |
 | `persistence.path`                  | Path to mount the volume at, to use other images              | `/bitnami`                                               |
 | `resources`                         | CPU/Memory resource requests/limits                           | Memory: `512Mi`, CPU: `300m`                             |
+| `affinity`                          | Map of node/pod affinities                                    | `{}`                                                     |
 
 The above parameters map to the env variables defined in [bitnami/ghost](http://github.com/bitnami/bitnami-docker-ghost). For more information please refer to the [bitnami/ghost](http://github.com/bitnami/bitnami-docker-ghost) image documentation.
 
@@ -142,6 +149,12 @@ $ helm install --name my-release -f values.yaml stable/ghost
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+### [Rolling VS Immutable tags](https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/)
+
+It is strongly recommended to use immutable tags in a production environment. This ensures your deployment does not change automatically if the same tag is updated with a different image.
+
+Bitnami will release a new chart updating its containers if a new version of the main container, significant changes, or critical vulnerabilities exist.
 
 ## Using an existing database
 

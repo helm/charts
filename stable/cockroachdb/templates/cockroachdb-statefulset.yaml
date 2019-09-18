@@ -192,6 +192,10 @@ spec:
       component: "{{ .Release.Name }}-{{ .Values.Component }}"
   template:
     metadata:
+{{- if .Values.ExtraAnnotations }}
+      annotations:
+{{ toYaml .Values.ExtraAnnotations | indent 8 }}
+{{- end }}
       labels:
         heritage: {{ .Release.Service | quote }}
         release: {{ .Release.Name | quote }}
@@ -283,6 +287,9 @@ spec:
           value: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}.{{ .Release.Namespace }}.svc.{{ .Values.ClusterDomain }}"
         - name: COCKROACH_CHANNEL
           value: kubernetes-helm
+{{- if .Values.ExtraEnvArgs }}
+{{ toYaml .Values.ExtraEnvArgs | indent 8 }}
+{{- end }}
         volumeMounts:
         - name: datadir
           mountPath: /cockroach/cockroach-data
@@ -290,12 +297,17 @@ spec:
         - name: certs
           mountPath: /cockroach/cockroach-certs
 {{- end }}
+{{- range .Values.ExtraSecretMounts }}
+        - name: extra-secret-{{ . }}
+          mountPath: /etc/cockroach/secrets/{{ . }}
+          readOnly: true
+{{- end }}
         command:
           - "/bin/bash"
           - "-ecx"
             # The use of qualified `hostname -f` is crucial:
             # Other nodes aren't able to look up the unqualified hostname.
-          - "exec /cockroach/cockroach start --logtostderr {{ if .Values.Secure.Enabled }}--certs-dir /cockroach/cockroach-certs{{ else }}--insecure{{ end }} --advertise-host $(hostname).${STATEFULSET_FQDN} --http-host 0.0.0.0 --http-port {{ .Values.InternalHttpPort }} --port {{ .Values.InternalGrpcPort }} --cache {{ .Values.CacheSize }} --max-sql-memory {{ .Values.MaxSQLMemory }} {{ if .Values.Locality }}--locality={{.Values.Locality }}{{ end }} --join {{ if .Values.JoinExisting }}{{ join "," .Values.JoinExisting }}{{ else }}${STATEFULSET_NAME}-0.${STATEFULSET_FQDN}:{{ .Values.InternalGrpcPort }},${STATEFULSET_NAME}-1.${STATEFULSET_FQDN}:{{ .Values.InternalGrpcPort }},${STATEFULSET_NAME}-2.${STATEFULSET_FQDN}:{{ .Values.InternalGrpcPort }}{{ end }}"
+          - "exec /cockroach/cockroach start --logtostderr {{ if .Values.Secure.Enabled }}--certs-dir /cockroach/cockroach-certs{{ else }}--insecure{{ end }} --advertise-host $(hostname).${STATEFULSET_FQDN} --http-host 0.0.0.0 --http-port {{ .Values.InternalHttpPort }} --port {{ .Values.InternalGrpcPort }} --cache {{ .Values.CacheSize }} --max-sql-memory {{ .Values.MaxSQLMemory }} {{ if .Values.Locality }}--locality={{.Values.Locality }}{{ end }} --join {{ if .Values.JoinExisting }}{{ join "," .Values.JoinExisting }}{{ else }}${STATEFULSET_NAME}-0.${STATEFULSET_FQDN}:{{ .Values.InternalGrpcPort }},${STATEFULSET_NAME}-1.${STATEFULSET_FQDN}:{{ .Values.InternalGrpcPort }},${STATEFULSET_NAME}-2.${STATEFULSET_FQDN}:{{ .Values.InternalGrpcPort }}{{ end }}{{ range .Values.ExtraArgs }} {{ . }}{{ end }}"
       # No pre-stop hook is required, a SIGTERM plus some time is all that's
       # needed for graceful shutdown of a node.
       terminationGracePeriodSeconds: 60
@@ -306,6 +318,11 @@ spec:
 {{- if .Values.Secure.Enabled }}
       - name: certs
         emptyDir: {}
+{{- end }}
+{{- range .Values.ExtraSecretMounts }}
+      - name: extra-secret-{{ . }}
+        secret:
+          secretName: {{ . }}
 {{- end }}
   podManagementPolicy: {{ .Values.PodManagementPolicy }}
   updateStrategy:

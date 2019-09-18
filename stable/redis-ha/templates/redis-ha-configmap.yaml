@@ -10,7 +10,7 @@ metadata:
 data:
   redis.conf: |
 {{- if .Values.redis.customConfig }}
-{{ .Values.redis.customConfig | indent 4 }}
+{{ tpl .Values.redis.customConfig . | indent 4 }}
 {{- else }}
     dir "/data"
     {{- range $key, $value := .Values.redis.config }}
@@ -24,7 +24,7 @@ data:
 
   sentinel.conf: |
 {{- if .Values.sentinel.customConfig }}
-{{ .Values.sentinel.customConfig | indent 4 }}
+{{ tpl .Values.sentinel.customConfig . | indent 4 }}
 {{- else }}
     dir "/data"
     {{- $root := . -}}
@@ -50,8 +50,9 @@ data:
     set -eu
 
     sentinel_update() {
-        echo "Updating sentinel config"
-        sed -i "1s/^/$(cat sentinel-id)\\n/" "$SENTINEL_CONF"
+        echo "Updating sentinel config with master $MASTER"
+        eval MY_SENTINEL_ID="\${SENTINEL_ID_$INDEX}"
+        sed -i "1s/^/sentinel myid $MY_SENTINEL_ID\\n/" "$SENTINEL_CONF"
         sed -i "2s/^/sentinel monitor $MASTER_GROUP $1 $REDIS_PORT $QUORUM \\n/" "$SENTINEL_CONF"
         echo "sentinel announce-ip $ANNOUNCE_IP" >> $SENTINEL_CONF
         echo "sentinel announce-port $SENTINEL_PORT" >> $SENTINEL_CONF
@@ -65,9 +66,6 @@ data:
     }
 
     copy_config() {
-        if [ -f "$SENTINEL_CONF" ]; then
-            grep "sentinel myid" "$SENTINEL_CONF" > sentinel-id || true
-        fi
         cp /readonly-config/redis.conf "$REDIS_CONF"
         cp /readonly-config/sentinel.conf "$SENTINEL_CONF"
     }
@@ -76,8 +74,9 @@ data:
         echo "Setting up defaults"
         if [ "$INDEX" = "0" ]; then
             echo "Setting this pod as the default master"
-            sed -i "s/^.*slaveof.*//" "$REDIS_CONF"
+            redis_update "$ANNOUNCE_IP"
             sentinel_update "$ANNOUNCE_IP"
+            sed -i "s/^.*slaveof.*//" "$REDIS_CONF"
         else
             DEFAULT_MASTER="$(getent hosts "$SERVICE-announce-0" | awk '{ print $1 }')"
             if [ -z "$DEFAULT_MASTER" ]; then
@@ -131,7 +130,109 @@ data:
 
     if [ "${AUTH:-}" ]; then
         echo "Setting auth values"
-        sed -i "s/replace-default-auth/$AUTH/" "$REDIS_CONF" "$SENTINEL_CONF"
+        ESCAPED_AUTH=$(echo "$AUTH" | sed -e 's/[\/&]/\\&/g');
+        sed -i "s/replace-default-auth/${ESCAPED_AUTH}/" "$REDIS_CONF" "$SENTINEL_CONF"
     fi
 
     echo "Ready..."
+{{ if .Values.haproxy.enabled }}
+  haproxy.cfg: |-
+{{- if .Values.haproxy.customConfig }}
+{{ .Values.haproxy.customConfig | indent 4}}
+{{- else }}
+    defaults REDIS
+      mode tcp
+      timeout connect  4s
+      timeout server  30s
+      timeout client  30s
+
+    listen health_check_http_url
+      bind :8888
+      mode http
+      monitor-uri /healthz
+      option      dontlognull
+
+    {{- $root := . }}
+    {{- $fullName := include "redis-ha.fullname" . }}
+    {{- $replicas := int .Values.replicas }}
+    {{- range $i := until $replicas }}
+    # Check Sentinel and whether they are nominated master
+    backend check_if_redis_is_master_{{ $i }}
+      mode tcp
+      option tcp-check
+      tcp-check connect
+      {{- if $root.auth }}
+      tcp-check send AUTH\ {{ $root.redisPassword }}\r\n
+      tcp-check expect string +OK
+      {{- end }}
+      tcp-check send PING\r\n
+      tcp-check expect string +PONG
+      tcp-check send SENTINEL\ get-master-addr-by-name\ mymaster\r\n
+      tcp-check expect string REPLACE_ANNOUNCE{{ $i }}
+      tcp-check send QUIT\r\n
+      tcp-check expect string +OK
+      {{- range $i := until $replicas }}
+      server R{{ $i }} {{ $fullName }}-announce-{{ $i }}:26379 check inter 1s
+      {{- end }}
+    {{- end }}
+
+    # decide redis backend to use
+    #master
+    frontend ft_redis_master
+      bind *:6379
+      use_backend bk_redis_master
+    {{ if .Values.haproxy.readOnly.enabled }}
+    #slave
+    frontend ft_redis_slave
+      bind *:6380
+      use_backend bk_redis_slave
+    {{- end }} 
+    # Check all redis servers to see if they think they are master
+    backend bk_redis_master
+      mode tcp
+      option tcp-check
+      tcp-check connect
+      {{- if .Values.auth }}
+      tcp-check send AUTH\ {{ .Values.redisPassword }}\r\n
+      tcp-check expect string +OK
+      {{- end }}
+      tcp-check send PING\r\n
+      tcp-check expect string +PONG
+      tcp-check send info\ replication\r\n
+      tcp-check expect string role:master
+      tcp-check send QUIT\r\n
+      tcp-check expect string +OK
+      {{- range $i := until $replicas }}
+      use-server R{{ $i }} if { srv_is_up(R{{ $i }}) } { nbsrv(check_if_redis_is_master_{{ $i }}) ge 2 }
+      server R{{ $i }} {{ $fullName }}-announce-{{ $i }}:6379 check inter 1s fall 1 rise 1
+      {{- end }}     
+    {{ if .Values.haproxy.readOnly.enabled }}
+    backend bk_redis_slave
+      mode tcp
+      option tcp-check
+      tcp-check connect
+      {{- if .Values.auth }}
+      tcp-check send AUTH\ {{ .Values.redisPassword }}\r\n
+      tcp-check expect string +OK
+      {{- end }}
+      tcp-check send PING\r\n
+      tcp-check expect string +PONG
+      tcp-check send info\ replication\r\n
+      tcp-check expect  string role:slave
+      tcp-check send QUIT\r\n
+      tcp-check expect string +OK
+      {{- range $i := until $replicas }}
+      server R{{ $i }} {{ $fullName }}-announce-{{ $i }}:6379 check inter 1s fall 1 rise 1
+      {{- end }}
+    {{- end }}
+{{- end }}
+{{- end }}
+  haproxy_init.sh: | 
+    HAPROXY_CONF=/data/haproxy.cfg
+    cp /readonly/haproxy.cfg "$HAPROXY_CONF"
+    {{- $fullName := include "redis-ha.fullname" . }}
+    {{- $replicas := int .Values.replicas }}
+    {{- range $i := until $replicas }}
+    ANNOUNCE_IP{{ $i }}=$(getent hosts "{{ $fullName }}-announce-{{ $i }}" | awk '{ print $1 }')
+    sed -i "s/REPLACE_ANNOUNCE{{ $i }}/$ANNOUNCE_IP{{ $i }}/" "$HAPROXY_CONF"
+    {{- end }}

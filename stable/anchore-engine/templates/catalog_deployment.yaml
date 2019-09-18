@@ -2,41 +2,74 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: "{{ template "anchore-engine.catalog.fullname" . }}"
+  name: {{ template "anchore-engine.catalog.fullname" . }}
   labels:
-    app: "{{ template "anchore-engine.fullname" . }}"
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app: {{ template "anchore-engine.fullname" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
     component: {{ $component }}
+    {{- with .Values.anchoreCatalog.labels }}
+    {{ toYaml . | nindent 4 }}
+    {{- end }}
+    {{- with .Values.anchoreGlobal.labels }}
+    {{ toYaml . | nindent 4 }}
+    {{- end }}
 spec:
   selector:
     matchLabels:
-      app: "{{ template "anchore-engine.fullname" . }}"
+      app: {{ template "anchore-engine.fullname" . }}
       component: {{ $component }}
   replicas: {{ .Values.anchoreCatalog.replicaCount }}
   template:
     metadata:
       labels:
-        app: "{{ template "anchore-engine.fullname" . }}"
+        app: {{ template "anchore-engine.fullname" . }}
         component: {{ $component }}
-{{- if .Values.anchoreCatalog.annotations }}
+        {{- with .Values.anchoreCatalog.labels }}
+        {{ toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.anchoreGlobal.labels }}
+        {{ toYaml . | nindent 8 }}
+        {{- end }}
+      {{- with .Values.anchoreCatalog.annotations }}
       annotations:
-{{ toYaml .Values.anchoreCatalog.annotations | indent 8 }}
-{{- end }}
+        {{ toYaml . | nindent 8 }}
+      {{- end }}
     spec:
       containers:
+      {{- if .Values.cloudsql.enabled  }}
+      - name: cloudsql-proxy
+        image: {{ .Values.cloudsql.image.repository }}:{{ .Values.cloudsql.image.tag }}
+        imagePullPolicy: {{ .Values.cloudsql.image.pullPolicy }}
+        command: ["/cloud_sql_proxy"]
+        args:
+        - "-instances={{ .Values.cloudsql.instance }}=tcp:5432"
+        {{- if .Values.cloudsql.useExistingServiceAcc }}
+        - "-credential_file=/var/{{ .Values.cloudsql.serviceAccSecretName }}/{{ .Values.cloudsql.serviceAccJsonName }}"
+        volumeMounts:
+        - mountPath: /var/{{ .Values.cloudsql.serviceAccSecretName }}
+          name: {{ .Values.cloudsql.serviceAccSecretName }}
+          readOnly: true
+        {{- end }}
+      {{- end }}
       - name: {{ .Chart.Name }}-{{ $component }}
-        image: {{ .Values.anchoreGlobal.image.repository }}:{{ .Values.anchoreGlobal.image.tag }}
-        imagePullPolicy: {{ .Values.anchoreGlobal.image.pullPolicy }}
-        command: ["/usr/local/bin/anchore-manager"]
+        image: {{ .Values.anchoreGlobal.image }}
+        imagePullPolicy: {{ .Values.anchoreGlobal.imagePullPolicy }}
+        command: ["anchore-manager"]
         args: ["service", "start", "catalog"]
         envFrom:
         - secretRef:
-            name: {{ template "anchore-engine.fullname" . }}
+            name: {{ default (include "anchore-engine.fullname" .) .Values.anchoreGlobal.existingSecret }}
         - configMapRef:
             name: {{ template "anchore-engine.fullname" . }}
         env:
+        {{- with .Values.anchoreGlobal.extraEnv }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.anchoreCatalog.extraEnv }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
         - name: ANCHORE_POD_NAME
           valueFrom:
             fieldRef:
@@ -48,15 +81,18 @@ spec:
         - name: config-volume
           mountPath: /config/config.yaml
           subPath: config.yaml
-        {{- if .Values.anchoreGlobal.internalServicesSslEnabled }}
+        {{- if (.Values.anchoreGlobal.certStoreSecretName) }}
         - name: certs
-          mountPath: {{ default "/certs" .Values.anchoreGlobal.internalServicesSsl.certDir }}
+          mountPath: /home/anchore/certs/
           readOnly: true
         {{- end }}
         livenessProbe:
           httpGet:
             path: /health
             port: catalog
+            {{- if .Values.anchoreGlobal.internalServicesSsl.enabled }}
+            scheme: HTTPS
+            {{- end }}
           initialDelaySeconds: 120
           timeoutSeconds: 10
           periodSeconds: 10
@@ -66,33 +102,41 @@ spec:
           httpGet:
             path: /health
             port: catalog
+            {{- if .Values.anchoreGlobal.internalServicesSsl.enabled }}
+            scheme: HTTPS
+            {{- end }}
           timeoutSeconds: 10
           periodSeconds: 10
           failureThreshold: 3
           successThreshold: 1
         resources:
-{{ toYaml .Values.anchoreCatalog.resources | indent 10 }}
+          {{ toYaml .Values.anchoreCatalog.resources | nindent 10 }}
       volumes:
         - name: config-volume
           configMap:
-            name: {{ template "anchore-engine.fullname" .}}
-        {{- if .Values.anchoreGlobal.internalServicesSslEnabled }}
+            name: {{ template "anchore-engine.fullname" . }}
+        {{- with .Values.anchoreGlobal.certStoreSecretName }}
         - name: certs
           secret:
-            secretName: {{ .Values.anchoreGlobal.internalServicesSsl.certSecret }}
+            secretName: {{ . }}
         {{- end }}
-    {{- if .Values.anchoreCatalog.nodeSelector }}
+        {{- if .Values.cloudsql.useExistingServiceAcc }}
+        - name: {{ .Values.cloudsql.serviceAccSecretName }}
+          secret:
+            secretName: {{ .Values.cloudsql.serviceAccSecretName }}
+        {{- end }}
+      {{- with .Values.anchoreCatalog.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.anchoreCatalog.nodeSelector | indent 8 }}
-    {{- end }}
-    {{- with .Values.anchoreCatalog.affinity }}
+        {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.anchoreCatalog.affinity }}
       affinity:
-{{ toYaml . | indent 8 }}
-    {{- end }}
-    {{- with .Values.anchoreCatalog.tolerations }}
+        {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.anchoreCatalog.tolerations }}
       tolerations:
-{{ toYaml . | indent 8 }}
-    {{- end }}
+        {{ toYaml . | nindent 8 }}
+      {{- end }}
 
 ---
 apiVersion: v1
@@ -105,9 +149,15 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     component: {{ $component }}
-  {{- if .Values.anchoreCatalog.service.annotations }}
+    {{- with .Values.anchoreCatalog.service.labels }}
+    {{ toYaml . | nindent 4 }}
+    {{- end }}
+    {{- with .Values.anchoreGlobal.labels }}
+    {{ toYaml . | nindent 4 }}
+    {{- end }}
+  {{- with .Values.anchoreCatalog.service.annotations }}
   annotations:
-{{ toYaml .Values.anchoreCatalog.service.annotations | indent 4 }}
+    {{ toYaml .Values.anchoreCatalog.service.annotations | nindent 4 }}
   {{- end }}
 spec:
   type: {{ .Values.anchoreCatalog.service.type }}

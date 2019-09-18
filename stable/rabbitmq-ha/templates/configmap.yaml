@@ -3,9 +3,10 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ template "rabbitmq-ha.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "rabbitmq-ha.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    chart: {{ template "rabbitmq-ha.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 {{- if .Values.extraLabels }}
@@ -113,4 +114,9 @@ data:
 
 {{ .Values.extraConfig | indent 4 }}
 
+{{- end }}
+
+{{- if .Values.advancedConfig }}
+  advanced.config: |
+{{ .Values.advancedConfig | indent 4 }}
 {{- end }}

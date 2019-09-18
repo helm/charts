@@ -34,6 +34,15 @@ rules:
 - apiGroups: [""]
   resources: ["services", "endpoints", "nodes"]
   verbs: ["get", "list", "watch"]
+- apiGroups: [""]
+  resources: ["events"]
+  verbs: ["create", "patch"]
+{{- if .Values.psp.create }}
+- apiGroups: ["extensions"]
+  resources: ["podsecuritypolicies"]
+  resourceNames: [{{ printf "%s-speaker" (include "metallb.fullname" .) | quote}}]
+  verbs: ["use"]
+{{- end }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
@@ -48,9 +57,6 @@ rules:
 - apiGroups: [""]
   resources: ["configmaps"]
   verbs: ["get", "list", "watch"]
-- apiGroups: [""]
-  resources: ["events"]
-  verbs: ["create"]
 ---
 
 ## Role bindings

@@ -2,6 +2,11 @@ apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
   name: {{ template "memcached.fullname" . }}
+  labels:
+    app: {{ template "memcached.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
 spec:
   selector:
     matchLabels:
@@ -10,4 +15,3 @@ spec:
       release: "{{ .Release.Name }}"
       heritage: "{{ .Release.Service }}"
   minAvailable: {{ .Values.pdbMinAvailable }}
-  

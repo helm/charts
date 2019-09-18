@@ -21,9 +21,13 @@ spec:
         app: {{ template "couchdb.name" . }}
         release: {{ .Release.Name }}
     spec:
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+      {{- end }}
       initContainers:
         - name: init-copy
-          image: busybox
+          image: "{{ .Values.initImage.repository }}:{{ .Values.initImage.tag }}"
+          imagePullPolicy: {{ .Values.initImage.pullPolicy }}
           command: ['sh','-c','cp /tmp/chart.ini /default.d; ls -lrt /default.d;']
           volumeMounts:
           - name: config
@@ -94,8 +98,13 @@ spec:
         - name: couchdb-statefulset-assembler
           image: "{{ .Values.helperImage.repository }}:{{ .Values.helperImage.tag }}"
           imagePullPolicy: {{ .Values.helperImage.pullPolicy }}
-{{- if not .Values.allowAdminParty }}
           env:
+            - name: COUCHDB_CLUSTER_SIZE
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "couchdb.fullname" . }}
+                  key: clusterSize
+{{- if not .Values.allowAdminParty }}
             - name: COUCHDB_USER
               valueFrom:
                 secretKeyRef:
@@ -106,6 +115,11 @@ spec:
                 secretKeyRef:
                   name: {{ template "couchdb.fullname" . }}
                   key: adminPassword
+{{- end }}
+{{- if .Values.enableSearch }}
+        - name: clouseau
+          image: "{{ .Values.searchImage.repository }}:{{ .Values.searchImage.tag }}"
+          imagePullPolicy: {{ .Values.searchImage.pullPolicy }}
 {{- end }}
 {{- if .Values.nodeSelector }}
       nodeSelector:

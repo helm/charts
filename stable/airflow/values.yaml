@@ -1,9 +1,37 @@
 # Duplicate this file and put your customization here
 
-
 ##
 ## common settings and setting for the webserver
 airflow:
+  extraConfigmapMounts: []
+  # - name: extra-metadata
+  #   mountPath: /opt/metadata
+  #   configMap: airflow-metadata
+  #   readOnly: true
+  #
+  # Example of configmap mount with subPath
+  # - name: extra-metadata
+  #   mountPath: /opt/metadata/file.yaml
+  #   configMap: airflow-metadata
+  #   readOnly: true
+  #   subPath: file.yaml
+
+
+  ##
+  ## Extra environment variables to mount in the web, scheduler, and worker pods:
+  extraEnv:
+  #  - name: AIRFLOW__CORE__FERNET_KEY
+  #    valueFrom:
+  #      secretKeyRef:
+  #        name: airflow
+  #        key: fernet_key
+  #  - name: AIRFLOW__LDAP__BIND_PASSWORD
+  #    valueFrom:
+  #      secretKeyRef:
+  #        name: ldap
+  #        key: password
+
+
   ##
   ## You will need to define your fernet key:
   ## Generate fernetKey with:
@@ -11,7 +39,9 @@ airflow:
   ## fernetKey: ABCDABCDABCDABCDABCDABCDABCDABCDABCDABCD
   fernetKey: ""
   service:
+    annotations: {}
     type: ClusterIP
+    externalPort: 8080
   ##
   ## The executor to use.
   ##
@@ -33,7 +63,7 @@ airflow:
     repository: puckel/docker-airflow
     ##
     ## image tag
-    tag: 1.10.0-4
+    tag: 1.10.4
     ##
     ## Image pull policy
     ## values: Always or IfNotPresent
@@ -42,7 +72,7 @@ airflow:
     ## image pull secret for private images
     pullSecret:
   ##
-  ## Set schedulerNumRuns to control how the schduler behaves:
+  ## Set schedulerNumRuns to control how the scheduler behaves:
   ##   -1 will let him looping indefinitively but it will never update the DAG
   ##   1 will have the scheduler quit after each refresh, but kubernetes will restart it.
   ##
@@ -62,15 +92,12 @@ airflow:
   schedulerDoPickle: true
   ##
   ## Number of replicas for web server.
-  ## For the moment, we recommend to leave this value to 1, since the webserver instance performs
-  ## the 'initdb' operation, starting more replicas will cause all the web containers to execute
-  ## it, which may cause unwanted issues on the database.
   webReplicas: 1
   ##
   ## Custom airflow configuration environment variables
   ## Use this to override any airflow setting settings defining environment variables in the
   ## following form: AIRFLOW__<section>__<key>.
-  ## See the Airflow documentation: http://airflow.readthedocs.io/en/latest/configuration.html?highlight=__CORE__#setting-configuration-options)
+  ## See the Airflow documentation: https://airflow.readthedocs.io/en/stable/howto/set-config.html?highlight=setting-configuration
   ## Example:
   ##   config:
   ##     AIRFLOW__CORE__EXPOSE_CONFIG: "True"
@@ -91,7 +118,110 @@ airflow:
   ##   - id: my_aws
   ##     type: aws
   ##     extra: '{"aws_access_key_id": "**********", "aws_secret_access_key": "***", "region_name":"eu-central-1"}'
-  connections: {}
+  connections: []
+
+  ## Add airflow variables
+  ## This should be a json string with your variables in it
+  ## Examples:
+  ##   variables: '{ "environment": "dev" }'
+  variables: {}
+
+  ## Add airflow ppols
+  ## This should be a json string with your pools in it
+  ## Examples:
+  ##   pools: '{ "example": { "description": "This is an example of a pool", "slots": 2 } }'
+  pools: {}
+
+  ##
+  ## Annotations for the Scheduler, Worker and Web pods
+  podAnnotations: {}
+    ## Example:
+    ## iam.amazonaws.com/role: airflow-Role
+  extraContainers: []
+  ## Additional containers to run alongside the Scheduler, Worker and Web pods
+  ## This could, for example, be used to run a sidecar that syncs DAGs from object storage.
+  # - name: s3-sync
+  #   image: my-user/s3sync:latest
+  #   volumeMounts:
+  #   - name: synchronised-dags
+  #     mountPath: /dags
+  extraVolumeMounts: []
+  ## Additional volumeMounts to the main containers in the Scheduler, Worker and Web pods.
+  # - name: synchronised-dags
+  #   mountPath: /usr/local/airflow/dags
+  extraVolumes: []
+  ## Additional volumes for the Scheduler, Worker and Web pods.
+  # - name: synchronised-dags
+  #   emptyDir: {}
+
+  ##
+  ## Run initdb when the scheduler starts.
+  initdb: true
+
+
+scheduler:
+  resources: {}
+    # limits:
+    #   cpu: "1000m"
+    #   memory: "1Gi"
+    # requests:
+    #   cpu: "500m"
+    #   memory: "512Mi"
+
+  ## Support Node, affinity and tolerations for scheduler pod assignment
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
+
+flower:
+  resources: {}
+    # limits:
+    #   cpu: "100m"
+    #   memory: "128Mi"
+    # requests:
+    #   cpu: "100m"
+    #   memory: "128Mi"
+  service:
+    annotations: {}
+    type: ClusterIP
+    externalPort: 5555
+
+  ## Support Node, affinity and tolerations for flower pod assignment
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
+
+web:
+  resources: {}
+    # limits:
+    #   cpu: "300m"
+    #   memory: "1Gi"
+    # requests:
+    #   cpu: "100m"
+    #   memory: "512Mi"
+  initialStartupDelay: "60"
+  initialDelaySeconds: "360"
+
+  ## Support Node, affinity and tolerations for web pod assignment
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
+  ##
+  ## Directory in which to mount secrets on webserver nodes.
+  secretsDir: /var/airflow/secrets
+  ##
+  ## Secrets which will be mounted as a file at `secretsDir/<secret name>`.
+  secrets: []
+
 ##
 ## Workers configuration
 workers:
@@ -110,10 +240,9 @@ workers:
     #   memory: "512Mi"
   ##
   ## Annotations for the Worker pods
-  pod:
-    annotations:
-      ## Example:
-      ## iam.amazonaws.com/role: airflow-worker-Role
+  podAnnotations: {}
+    ## Example:
+    ## iam.amazonaws.com/role: airflow-Role
   ##
   ## Celery worker configuration
   celery:
@@ -127,6 +256,13 @@ workers:
   ## Secrets which will be mounted as a file at `secretsDir/<secret name>`.
   secrets: []
 
+  ## Support Node, affinity and tolerations for worker pod assignment
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
 
 ##
 ## Ingress configuration
@@ -158,11 +294,15 @@ ingress:
     ## Annotations for the webserver
     ## Airflow webserver handles relative path completely, just let your load balancer give the HTTP
     ## header like the requested URL (no special configuration neeed)
-    annotations:
+    annotations: {}
       ##
       ## Example for Traefik:
       # traefik.frontend.rule.type: PathPrefix
       # kubernetes.io/ingress.class: traefik
+    ##
+    ## Configure the web liveness path.
+    ## Defaults to the templated value `{{ ingress.web.path }}/health`
+    livenessPath:
     tls:
       ## Set to "true" to enable TLS termination at the ingress
       enabled: false
@@ -217,7 +357,7 @@ ingress:
     ##              }
     ##            }
     ## ==== IF YOU HAVE FLOWER > JANUARY 2018, NO MORE NEED TO STRIP THE PREFIX ====================
-    annotations:
+    annotations: {}
       ##
       ## NOTE: it is important here to have your reverse proxy strip the path/rewrite the URL
       ## Example for Traefik:
@@ -241,6 +381,8 @@ persistence:
   ##
   ## Existing claim to use
   # existingClaim: nil
+  ## Existing claim's subPath to use, e.g. "dags" (optional)
+  # subPath: ""
   ##
   ## Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
@@ -254,6 +396,32 @@ persistence:
   ## Persistant storage size request
   size: 1Gi
 
+##
+## Storage configuration for logs
+logsPersistence:
+  ##
+  ## enable persistance storage
+  enabled: false
+  ##
+  ## Existing claim to use
+  # existingClaim: nil
+  ## Existing claim's subPath to use, e.g. "logs" (optional)
+  # subPath: ""
+  ##
+  ## Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  ## A configuration for shared log storage requires a `storageClass` that
+  ## supports the `ReadWriteMany` accessMode, such as NFS or AWS EFS.
+  # storageClass: default
+  accessMode: ReadWriteOnce
+  ##
+  ## Persistant storage size request
+  size: 1Gi
 
 ##
 ## Configure DAGs deployment and update
@@ -274,6 +442,8 @@ dags:
     ##
     ## branch name, tag or sha1 to reset to
     ref: master
+    ## pre-created secret with key, key.pub and known_hosts file for private repos
+    secret: ""
   initContainer:
     ## Fetch the source code when the pods starts
     enabled: false
@@ -282,12 +452,17 @@ dags:
       ## docker-airflow image
       repository: alpine/git
       ## image tag
-      tag: 1.0.4
+      tag: 1.0.7
       ## Image pull policy
       ## values: Always or IfNotPresent
       pullPolicy: IfNotPresent
     ## install requirements.txt dependencies automatically
     installRequirements: true
+
+##
+## Configure logs
+logs:
+  path: /usr/local/airflow/logs
 
 ##
 ##  Enable RBAC
@@ -306,10 +481,6 @@ serviceAccount:
   ## If not set and create is true, a name is generated using the fullname template
   name:
 
-##
-## Define existing secret for postgresql and redis
-## If not specified, creates secret with postgres and redis values
-existingAirflowSecret: ""
 
 ##
 ## Configuration values for the postgresql dependency.
@@ -319,12 +490,17 @@ postgresql:
   ## Use the PostgreSQL chart dependency.
   ## Set to false if bringing your own PostgreSQL.
   enabled: true
+
   ##
-  ## If bringing your own PostgreSQL, the full uri to use
-  ## e.g. postgres://airflow:changeme@my-postgres.com:5432/airflow?sslmode=disable
-  # uri:
+  ## The name of an existing secret that contains the postgres password.
+  existingSecret:
+
+  ## Name of the key containing the secret.
+  existingSecretKey: postgres-password
+
   ##
-  ## PostgreSQL hostname
+  ## If you are bringing your own PostgreSQL, you should set postgresHost and
+  ## also probably service.port, postgresUser, postgresPassword, and postgresDatabase
   ## postgresHost:
   ##
   ## PostgreSQL port
@@ -361,8 +537,20 @@ redis:
   ## Use the redis chart dependency.
   ## Set to false if bringing your own redis.
   enabled: true
+
+  ##
+  ## The name of an existing secret that contains the redis password.
+  existingSecret:
+
+  ## Name of the key containing the secret.
+  existingSecretKey: redis-password
+
+  ##
+  ## If you are bringing your own redis, you can set the host in redisHost.
+  ## redisHost:
   ##
   ## Redis password
+  ##
   password: airflow
   ##
   ## Master configuration
@@ -389,3 +577,27 @@ redis:
   ## Disable cluster management by default.
   cluster:
     enabled: false
+
+# Enable this if you're using https://github.com/coreos/prometheus-operator
+# Don't forget you need to install something like https://github.com/epoch8/airflow-exporter in your airflow docker container
+serviceMonitor:
+  enabled: false
+  interval: "30s"
+  path: /admin/metrics
+  ## [Kube Prometheus Selector Label](https://github.com/helm/charts/tree/master/stable/prometheus-operator#exporters)
+  selector:
+    prometheus: kube-prometheus
+
+# Enable this if you're using https://github.com/coreos/prometheus-operator
+prometheusRule:
+  enabled: false
+  ## Namespace in which the prometheus rule is created
+  # namespace: monitoring
+  ## Define individual alerting rules as required
+  ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#rulegroup
+  ##      https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/
+  groups: {}
+
+  ## Used to pass Labels that are used by the Prometheus installed in your cluster to select Prometheus Rules to work with
+  ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#prometheusspec
+  additionalLabels: {}

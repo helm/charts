@@ -6,7 +6,7 @@ clusterDomain: cluster.local
 ##
 image:
   repository: minio/minio
-  tag: RELEASE.2019-01-10T00-21-20Z
+  tag: RELEASE.2019-08-07T01-59-21Z
   pullPolicy: IfNotPresent
 
 ## Set default image, imageTag, and imagePullPolicy for the `mc` (the minio
@@ -14,7 +14,7 @@ image:
 ##
 mcImage:
   repository: minio/mc
-  tag: RELEASE.2019-01-10T00-38-22Z
+  tag: RELEASE.2019-08-07T23-14-43Z
   pullPolicy: IfNotPresent
 
 ## minio server mode, i.e. standalone or distributed.
@@ -39,6 +39,7 @@ priorityClassName: ""
 
 ## Set default accesskey, secretkey, Minio config file path, volume mount path and
 ## number of nodes (only used for Minio distributed mode)
+## AccessKey and secretKey is generated when not set
 ## Distributed Minio ref: https://docs.minio.io/docs/distributed-minio-quickstart-guide
 ##
 existingSecret: ""
@@ -78,6 +79,7 @@ persistence:
   ## Storage class of PV to bind. By default it looks for standard storage class.
   ## If the PV uses a different storage class, specify that here.
   # storageClass: standard
+  # VolumeName: ""
   accessMode: ReadWriteOnce
   size: 10Gi
 
@@ -95,7 +97,7 @@ service:
   type: ClusterIP
   clusterIP: ~
   port: 9000
-  # nodePort: 31311
+  nodePort: 31311
   # externalIPs:
   #   - externalIp1
   annotations: {}
@@ -103,11 +105,19 @@ service:
     # prometheus.io/path:   '/minio/prometheus/metrics'
     # prometheus.io/port:   '9000'
 
+## Configure Ingress based on the documentation here: https://kubernetes.io/docs/concepts/services-networking/ingress/
+##
+
 ingress:
   enabled: false
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
+    # kubernetes.io/ingress.allow-http: "false"
+    # kubernetes.io/ingress.global-static-ip-name: ""
+    # nginx.ingress.kubernetes.io/secure-backends: "true"
+    # nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    # nginx.ingress.kubernetes.io/whitelist-source-range: 0.0.0.0/0
   path: /
   hosts:
     - chart-example.local
@@ -122,6 +132,12 @@ ingress:
 nodeSelector: {}
 tolerations: []
 affinity: {}
+
+# Additational pod annotations
+podAnnotations: {}
+
+# Additional pod labels
+podLabels: {}
 
 ## Liveness and Readiness probe values.
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
@@ -171,6 +187,7 @@ buckets: []
 s3gateway:
   enabled: false
   replicas: 4
+  serviceEndpoint: ""
 
 ## Use minio as an azure blob gateway, you should disable data persistence so no volume claim are created.
 ## https://docs.minio.io/docs/minio-gateway-for-azure
@@ -190,6 +207,12 @@ gcsgateway:
   gcsKeyJson: ""
   # Google cloud project-id
   projectId: ""
+
+ossgateway:
+  enabled: false
+  # Number of parallel instances
+  replicas: 4
+  endpointURL: ""
 
 ## Use minio on NAS backend
 ## https://docs.minio.io/docs/minio-gateway-for-nas
@@ -227,96 +250,23 @@ environment:
   # MINIO_DOMAIN: ""
   ## Add other environment variables relevant to Minio server here. These values will be added to the container(s) as this Chart is deployed
 
-## https://docs.minio.io/docs/minio-bucket-notification-guide
-## https://github.com/minio/minio/blob/master/docs/config
-minioConfig:
-  region: "us-east-1"
-  browser: "on"
-  domain: ""
-  worm: "off"
-  storageClass:
-    standardStorageClass: ""
-    reducedRedundancyStorageClass: ""
-  cache:
-    drives: []
-    expiry: 90
-    maxuse: 80
-    exclude: []
-  aqmp:
-    enable: false
-    url: ""
-    exchange: ""
-    routingKey: ""
-    exchangeType: ""
-    deliveryMode: 0
-    mandatory: false
-    immediate: false
-    durable: false
-    internal: false
-    noWait: false
-    autoDeleted: false
-  nats:
-    enable: false
-    address: ""
-    subject: ""
-    username: ""
-    password: ""
-    token: ""
-    secure: false
-    pingInterval: 0
-    enableStreaming: false
-    clusterID: ""
-    clientID: ""
-    async: false
-    maxPubAcksInflight: 0
-  elasticsearch:
-    enable: false
-    format: "namespace"
-    url: ""
-    index: ""
-  redis:
-    enable: false
-    format: "namespace"
-    address: ""
-    password: ""
-    key: ""
-  postgresql:
-    enable: false
-    format: "namespace"
-    connectionString: ""
-    table: ""
-    host: ""
-    port: ""
-    user: ""
-    password: ""
-    database: ""
-  kafka:
-    enable: false
-    brokers: "null"
-    topic: ""
-  webhook:
-    enable: false
-    endpoint: ""
-  mysql:
-    enable: false
-    format: "namespace"
-    dsnString: ""
-    table: ""
-    host: ""
-    port: ""
-    user: ""
-    password: ""
-    database: ""
-  mqtt:
-    enable: false
-    broker: ""
-    topic: ""
-    qos: 0
-    clientId: ""
-    username: ""
-    password: ""
-    reconnectInterval: 0
-    keepAliveInterval: 0
 networkPolicy:
   enabled: false
   allowExternal: true
+
+## Specify the service account to use for the Minio pods. If 'create' is set to 'false'
+## and 'name' is left unspecified, the account 'default' will be used.
+serviceAccount:
+  create: true
+  ## The name of the service account to use. If 'create' is 'true', a service account with that name
+  ## will be created. Otherwise, a name will be auto-generated.
+  name:
+
+metrics:
+  # Metrics can not be disabled yet: https://github.com/minio/minio/issues/7493
+  serviceMonitor:
+    enabled: false
+    additionalLabels: {}
+    # namespace: monitoring
+    # interval: 30s
+    # scrapeTimeout: 10s

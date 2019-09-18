@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: wrouesnel/postgres_exporter
-  tag: v0.4.7
+  tag: v0.5.1
   pullPolicy: IfNotPresent
 
 service:
@@ -16,6 +16,20 @@ service:
   name: http
   labels: {}
   annotations: {}
+
+serviceMonitor:
+  # When set true then use a ServiceMonitor to configure scraping
+  enabled: false
+  # Set the namespace the ServiceMonitor should be deployed
+  # namespace: monitoring
+  # Set how frequently Prometheus should scrape
+  # interval: 30s
+  # Set path to cloudwatch-exporter telemtery-path
+  # telemetryPath: /metrics
+  # Set labels for the ServiceMonitor, use this to define your scrape label for Prometheus Operator
+  # labels:
+  # Set timeout for scrape
+  # timeout: 10s
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -41,11 +55,22 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name:
 
+securityContext: {}
+  # The securityContext this Pod should use. See https://kubernetes.io/docs/concepts/policy/security-context/ for more.
+  # runAsUser: 65534
+
 config:
   datasource:
     host:
-    user:
-    password:
+    user: postgres
+    # Only one of password and passwordSecret can be specified
+    password: somepassword
+    # Specify passwordSecret if DB password is stored in secret.
+    passwordSecret: {}
+    # Secret name
+    #  name:
+    # Password key inside secret
+    #  key:
     port: "5432"
     database: ''
     sslmode: disable

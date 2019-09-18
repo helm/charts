@@ -25,5 +25,9 @@ items:
     {{- end }}
       selector:
 {{ toYaml .selector | indent 8 }}
+    {{- if .targetLabels }}
+      targetLabels:
+{{ toYaml .targetLabels | indent 8 }}
+    {{- end }}
 {{- end }}
 {{- end }}

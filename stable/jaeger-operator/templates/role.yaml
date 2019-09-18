@@ -1,21 +1,12 @@
 {{- if .Values.rbac.create }}
-kind: Role
-apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: {{ if .Values.rbac.clusterRole }}Cluster{{ end }}Role
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: {{ include "jaeger-operator.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    app.kubernetes.io/name: {{ include "jaeger-operator.name" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
-    helm.sh/chart: {{ include "jaeger-operator.chart" . }}
+{{ include "jaeger-operator.labels" . | indent 4 }}
 rules:
-- apiGroups:
-  - io.jaegertracing
-  resources:
-  - "*"
-  verbs:
-  - "*"
 - apiGroups:
   - ""
   resources:
@@ -26,8 +17,9 @@ rules:
   - events
   - configmaps
   - secrets
+  - serviceaccounts
   verbs:
-  - "*"
+  - '*'
 - apiGroups:
   - apps
   resources:
@@ -36,11 +28,56 @@ rules:
   - replicasets
   - statefulsets
   verbs:
-  - "*"
+  - '*'
+- apiGroups:
+  - monitoring.coreos.com
+  resources:
+  - servicemonitors
+  verbs:
+  - get
+  - create
+- apiGroups:
+  - io.jaegertracing
+  resources:
+  - '*'
+  verbs:
+  - '*'
 - apiGroups:
   - extensions
   resources:
   - ingresses
   verbs:
   - "*"
+- apiGroups:
+  - batch
+  resources:
+  - jobs
+  - cronjobs
+  verbs:
+  - "*"
+- apiGroups:
+  - route.openshift.io
+  resources:
+  - routes
+  verbs:
+  - "*"
+- apiGroups:
+  - logging.openshift.io
+  resources:
+  - elasticsearches
+  verbs:
+  - '*'
+- apiGroups:
+  - jaegertracing.io
+  resources:
+  - '*'
+  verbs:
+  - '*'
+{{- if .Values.rbac.pspEnabled }}
+- apiGroups: ['policy']
+  resources: ['podsecuritypolicies']
+  verbs:     ['use']
+  resourceNames:
+  - {{ include "jaeger-operator.fullname" . }}-operator-psp
+{{- end }}
 {{- end }}

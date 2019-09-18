@@ -1,7 +1,8 @@
+apiVersion: v1
 description: ElastAlert is a simple framework for alerting on anomalies, spikes, or other patterns of interest from data in Elasticsearch.
 name: elastalert
-version: 0.10.0
-appVersion: 0.1.38
+version: 1.2.0
+appVersion: 0.2.1
 home: https://github.com/Yelp/elastalert
 icon: https://static-www.elastic.co/assets/blteb1c97719574938d/logo-elastic-elasticsearch-lt.svg
 sources:

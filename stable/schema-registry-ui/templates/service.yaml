@@ -14,6 +14,12 @@ metadata:
     {{- end }}
   {{- end }}
 spec:
+  {{- if .Values.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+    {{- range $cidr := .Values.service.loadBalancerSourceRanges }}
+    - {{ $cidr }}
+    {{- end }}
+  {{- end }}
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}

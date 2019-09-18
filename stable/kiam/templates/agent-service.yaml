@@ -1,0 +1,38 @@
+{{- if .Values.agent.enabled -}}
+{{- if .Values.agent.prometheus.scrape -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "kiam.fullname" . }}-agent
+  labels:
+    app: {{ template "kiam.name" . }}
+    chart: {{ template "kiam.chart" . }}
+    component: "{{ .Values.agent.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    {{- range $key, $value := .Values.agent.serviceLabels }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+  {{- if or .Values.agent.serviceAnnotations .Values.agent.prometheus.scrape }}
+  annotations:
+    {{- range $key, $value := .Values.agent.serviceAnnotations }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+    {{- if .Values.agent.prometheus.scrape }}
+    prometheus.io/scrape: "true"
+    prometheus.io/port: {{ .Values.agent.prometheus.port | quote }}
+    {{- end }}
+  {{- end }}
+spec:
+  clusterIP: None
+  selector:
+    app: {{ template "kiam.name" . }}
+    component: "{{ .Values.agent.name }}"
+    release: {{ .Release.Name }}
+  ports:
+    - name: metrics
+      port: {{ .Values.agent.prometheus.port }}
+      targetPort: {{ .Values.agent.prometheus.port }}
+      protocol: TCP
+{{- end -}}
+{{- end }}

@@ -15,8 +15,12 @@ spec:
       release: {{ .Release.Name }}
   template:
     metadata:
-    {{- if .Values.podAnnotations }}
       annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum/config-emails: {{ include (print $.Template.BasePath "/configmap-authenticated-emails-file.yaml") . | sha256sum }}
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+        checksum/google-secret: {{ include (print $.Template.BasePath "/google-secret.yaml") . | sha256sum }}
+    {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
     {{- end }}
       labels:
@@ -34,6 +38,7 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         args:
+          - --http-address=0.0.0.0:4180
         {{- range $key, $value := .Values.extraArgs }}
           {{- if $value }}
           - --{{ $key }}={{ $value }}
@@ -41,7 +46,7 @@ spec:
           - --{{ $key }}
           {{- end }}
         {{- end }}
-        {{- if .Values.config.configFile }}
+        {{- if or .Values.config.existingConfig .Values.config.configFile }}
           - --config=/etc/oauth2_proxy/oauth2_proxy.cfg
         {{- end }}
         {{- if .Values.authenticatedEmailsFile.enabled }}
@@ -51,52 +56,100 @@ spec:
           - --authenticated-emails-file=/etc/oauth2-proxy/authenticated-emails-list
         {{- end }}
         {{- end }}
+        {{- with .Values.config.google }}
+        {{- if and .adminEmail (or .serviceAccountJson .existingSecret) }}
+          - --google-admin-email={{ .adminEmail }}
+          - --google-service-account-json=/google/service-account.json
+        {{- end }}
+        {{- end }}
+        {{- if .Values.htpasswdFile.enabled }}
+          - --htpasswd-file=/etc/oauth2_proxy/htpasswd/users.txt
+        {{- end }}
         env:
         - name: OAUTH2_PROXY_CLIENT_ID
           valueFrom:
             secretKeyRef:
-              name:  {{ template "oauth2-proxy.fullname" . }}
+              name:  {{ template "oauth2-proxy.secretName" . }}
               key: client-id
         - name: OAUTH2_PROXY_CLIENT_SECRET
           valueFrom:
             secretKeyRef:
-              name:  {{ template "oauth2-proxy.fullname" . }}
+              name:  {{ template "oauth2-proxy.secretName" . }}
               key: client-secret
         - name: OAUTH2_PROXY_COOKIE_SECRET
           valueFrom:
             secretKeyRef:
-              name:  {{ template "oauth2-proxy.fullname" . }}
+              name:  {{ template "oauth2-proxy.secretName" . }}
               key: cookie-secret
+        {{- if .Values.extraEnv }}
+{{ toYaml .Values.extraEnv | indent 8 }}
+        {{- end }}
         ports:
           - containerPort: 4180
             name: http
             protocol: TCP
+{{- if .Values.livenessProbe.enabled }}
         livenessProbe:
           httpGet:
             path: /ping
             port: http
+          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+          timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+{{- end }}
+{{- if .Values.readinessProbe.enabled }}
         readinessProbe:
           httpGet:
             path: /ping
             port: http
+          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+          timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.readinessProbe.successThreshold }}
+          periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+{{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
-{{- if .Values.config.configFile }}
+{{- with .Values.config.google }}
+{{- if and .adminEmail (or .serviceAccountJson .existingSecret) }}
+        - name: google-secret
+          mountPath: /google
+          readOnly: true
+{{- end }}
+{{- end }}
+{{- if or .Values.config.existingConfig .Values.config.configFile }}
         - mountPath: /etc/oauth2_proxy
-          name: {{ template "oauth2-proxy.fullname" . }}-configmap
+          name: configmain
 {{- end }}
 {{- if .Values.authenticatedEmailsFile.enabled }}
         - mountPath: /etc/oauth2-proxy
-          name: {{ template "oauth2-proxy.fullname" . }}-configaccesslist
+          name: configaccesslist
+          readOnly: true
+{{- end }}
+{{- if .Values.htpasswdFile.enabled }}
+        - mountPath: /etc/oauth2_proxy/htpasswd
+          name: {{ template "oauth2-proxy.fullname" . }}-htpasswd-file
           readOnly: true
 {{- end }}
       volumes:
-{{- if .Values.config.configFile }}
+{{- with .Values.config.google }}
+{{- if and .adminEmail (or .serviceAccountJson .existingSecret) }}
+      - name: google-secret
+        secret:
+          secretName: {{ if .existingSecret }}{{ .existingSecret }}{{ else }} {{ template "oauth2-proxy.secretName" . }}{{ end }}
+{{- end }}
+{{- end }}
+
+{{- if .Values.htpasswdFile.enabled }}
+      - name: {{ template "oauth2-proxy.fullname" . }}-htpasswd-file
+        secret:
+          secretName: {{ if .Values.htpasswdFile.existingSecret }}{{ .Values.htpasswdFile.existingSecret }}{{ else }} {{ template "oauth2-proxy.fullname" . }}-htpasswd-file {{ end }}
+{{- end }}
+
+{{- if or .Values.config.existingConfig .Values.config.configFile }}
       - configMap:
           defaultMode: 420
-          name: {{ template "oauth2-proxy.fullname" . }}
-        name: {{ template "oauth2-proxy.fullname" . }}-configmap
+          name: {{ if .Values.config.existingConfig }}{{ .Values.config.existingConfig }}{{ else }}{{ template "oauth2-proxy.fullname" . }}{{ end }}
+        name: configmain
 {{- end }}
 {{- if .Values.authenticatedEmailsFile.enabled }}
       - configMap:
@@ -112,8 +165,9 @@ spec:
 {{- else }}
             path: authenticated-emails-list
 {{- end }}
-        name: {{ template "oauth2-proxy.fullname" . }}-configaccesslist
+        name: configaccesslist
 {{- end }}
+
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
 {{ toYaml .Values.imagePullSecrets | indent 8 }}

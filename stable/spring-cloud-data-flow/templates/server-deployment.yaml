@@ -27,17 +27,8 @@ spec:
         image: {{ .Values.server.image }}:{{ .Values.server.version }}
         imagePullPolicy: {{ .Values.server.imagePullPolicy }}
         volumeMounts:
-          - name: data-flow
-            mountPath: /etc/secrets/data-flow
-            readOnly: true
-          - name: rabbitmq
-            mountPath: /etc/secrets/rabbitmq
-            readOnly: true
-          - name: mysql
-            mountPath: /etc/secrets/mysql
-            readOnly: true
-          - name: redis
-            mountPath: /etc/secrets/redis
+          - name: database
+            mountPath: /etc/secrets/database
             readOnly: true
         ports:
         - containerPort: 8080
@@ -48,9 +39,6 @@ spec:
           httpGet:
             path: /management/health
             port: http
-            httpHeaders:
-            - name: Authorization
-              value: 'Basic {{ printf "%s:%s" .Values.dataflowAdminUsername .Values.dataflowAdminPassword | b64enc }}'
           initialDelaySeconds: 120
           periodSeconds: 15
           timeoutSeconds: 5
@@ -58,9 +46,6 @@ spec:
           httpGet:
             path: /management/health
             port: http
-            httpHeaders:
-            - name: Authorization
-              value: 'Basic {{ printf "%s:%s" .Values.dataflowAdminUsername .Values.dataflowAdminPassword | b64enc }}'
           initialDelaySeconds: 60
           periodSeconds: 15
           timeoutSeconds: 5
@@ -73,48 +58,37 @@ spec:
           value: '8080'
         - name: SPRING_CLOUD_CONFIG_ENABLED
           value: 'false'
-        - name: SPRING_CLOUD_DATAFLOW_FEATURES_ANALYTICS_ENABLED
+        - name: SPRING_CLOUD_KUBERNETES_SECRETS_ENABLE_API
           value: 'true'
         - name: SPRING_CLOUD_DATAFLOW_FEATURES_SCHEDULES_ENABLED
           value: 'true'
-        - name: SPRING_CLOUD_DEPLOYER_KUBERNETES_CREATE_DEPLOYMENT
-          value: 'true'
-        - name: SPRING_CLOUD_DEPLOYER_KUBERNETES_CPU
-          value: '{{ .Values.deployer.resourceLimits.cpu }}'
-        - name: SPRING_CLOUD_DEPLOYER_KUBERNETES_MEMORY
-          value: '{{ .Values.deployer.resourceLimits.memory }}'
-        - name: SPRING_CLOUD_DEPLOYER_KUBERNETES_READINESS_PROBE_DELAY
-          value: '{{ .Values.deployer.readinessProbe.initialDelaySeconds }}'
-        - name: SPRING_CLOUD_DEPLOYER_KUBERNETES_LIVENESS_PROBE_DELAY
-          value: '{{ .Values.deployer.livenessProbe.initialDelaySeconds }}'
-        - name: SPRING_CLOUD_KUBERNETES_CONFIG_NAME
-          value: {{ template "scdf.fullname" . }}-server
-        - name: SPRING_CLOUD_KUBERNETES_SECRETS_ENABLE_API
-          value: 'true'
         - name: SPRING_CLOUD_KUBERNETES_SECRETS_PATHS
           value: /etc/secrets
-        - name: SPRING_CLOUD_DATAFLOW_FEATURES_SKIPPER_ENABLED
-          value: 'true'
+        - name: SPRING_CLOUD_KUBERNETES_CONFIG_NAME
+          {{- if .Values.server.configMap }}
+          value: {{ .Values.server.configMap | quote }}
+          {{- else }}
+          value: {{ template "scdf.fullname" . }}-server
+          {{- end }}
         - name: SPRING_CLOUD_SKIPPER_CLIENT_SERVER_URI
           value: 'http://${{ printf "{" }}{{ template "scdf.envname" . }}_SKIPPER_SERVICE_HOST}/api'
-        - name: SPRING_CLOUD_DATAFLOW_METRICS_COLLECTOR_URI
-          value: 'http://${{ printf "{" }}{{ template "scdf.envname" . }}_METRICS_SERVICE_HOST}'
         - name: SPRING_CLOUD_DATAFLOW_SERVER_URI
           value: 'http://${{ printf "{" }}{{ template "scdf.envname" . }}_SERVER_SERVICE_HOST}:${{ printf "{" }}{{ template "scdf.envname" . }}_SERVER_SERVICE_PORT}'
-          # Maven repo for metadata artifact resolution plus metrics destination for all stream apps
         - name: SPRING_APPLICATION_JSON
-          value: "{ \"maven\": { \"local-repository\": null, \"remote-repositories\": { \"repo1\": { \"url\": \"https://repo.spring.io/libs-snapshot\"} } }, \"spring.cloud.dataflow.application-properties.stream.spring.cloud.stream.bindings.applicationMetrics.destination\": \"metrics\" }"
+          value: "{ \"maven\": { \"local-repository\": null, \"remote-repositories\": { \"repo1\": { \"url\": \"https://repo.spring.io/libs-snapshot\"} } } }"
+        - name: KUBERNETES_TRUST_CERTIFICATES
+          value: {{ .Values.server.trustCerts | quote }}
       volumes:
-        - name: data-flow
+        - name: database
           secret:
-            secretName: {{ template "scdf.fullname" . }}
-        - name: rabbitmq
-          secret:
-            secretName: {{ printf "%s-%s" .Release.Name "rabbitmq" | trunc 63 | trimSuffix "-" }}
-        - name: mysql
-          secret:
+            {{- if .Values.mysql.enabled }}
             secretName: {{ printf "%s-%s" .Release.Name "mysql" | trunc 63 | trimSuffix "-" }}
-        - name: redis
-          secret:
-            secretName: {{ printf "%s-%s" .Release.Name "redis" | trunc 63 | trimSuffix "-" }}
+            {{- else }}
+            secretName: {{ printf "%s-%s" .Release.Name "database" | trunc 63 | trimSuffix "-" }}
+            {{- end }}
+      initContainers:
+      - name: init-db-wait
+        image: {{ .Values.initContainers.dbWait.image }}:{{ .Values.initContainers.dbWait.tag }}
+        imagePullPolicy: {{ .Values.initContainers.dbWait.imagePullPolicy }}
+        command: ['sh', '-c', 'until nc -w3 -z {{ template "scdf.database.host" . }} {{ template "scdf.database.port" . }}; do echo waiting for database; sleep 3; done;']
       serviceAccountName: {{ template "scdf.serviceAccountName" . }}

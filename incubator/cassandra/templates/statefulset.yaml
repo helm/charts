@@ -30,6 +30,10 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
 {{- end }}
     spec:
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+      {{- end }}
+      hostNetwork: {{ .Values.hostNetwork }}
 {{- if .Values.selector }}
 {{ toYaml .Values.selector | indent 6 }}
 {{- end }}
@@ -50,6 +54,8 @@ spec:
 {{- if .Values.exporter.enabled }}
       - name: cassandra-exporter
         image: "{{ .Values.exporter.image.repo }}:{{ .Values.exporter.image.tag }}"
+        resources:
+{{ toYaml .Values.exporter.resources | indent 10 }}
         env:
           - name: CASSANDRA_EXPORTER_CONFIG_listenPort
             value: {{ .Values.exporter.port | quote }}
@@ -86,7 +92,11 @@ spec:
         {{- $seed_size := default 1 .Values.config.seed_size | int -}}
         {{- $global := . }}
         - name: CASSANDRA_SEEDS
+          {{- if .Values.hostNetwork }}
+          value: {{ required "You must fill \".Values.config.seeds\" with list of Cassandra seeds when hostNetwork is set to true" .Values.config.seeds | quote }}
+          {{- else }}
           value: "{{- range $i, $e := until $seed_size }}{{ template "cassandra.fullname" $global }}-{{ $i }}.{{ template "cassandra.fullname" $global }}.{{ $global.Release.Namespace }}.svc.{{ $global.Values.config.cluster_domain }}{{- if (lt ( add1 $i ) $seed_size ) }},{{- end }}{{- end }}"
+          {{- end }}
         - name: MAX_HEAP_SIZE
           value: {{ default "8192M" .Values.config.max_heap_size | quote }}
         - name: HEAP_NEWSIZE
@@ -119,7 +129,7 @@ spec:
           failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
         readinessProbe:
           exec:
-            command: [ "/bin/sh", "-c", "nodetool status | grep -E \"^UN\\s+${POD_IP}\"" ]
+            command: [ "/bin/sh", "-c", "nodetool status | grep -E \"^UN\\s+{{ .Values.readinessProbe.address }}\"" ]
           initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
           timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
@@ -176,9 +186,7 @@ spec:
       name: data
       labels:
         app: {{ template "cassandra.name" . }}
-        chart: {{ template "cassandra.chart" . }}
         release: {{ .Release.Name }}
-        heritage: {{ .Release.Service }}
     spec:
       accessModes:
         - {{ .Values.persistence.accessMode | quote }}

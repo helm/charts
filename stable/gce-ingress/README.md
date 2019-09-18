@@ -1,6 +1,6 @@
 # gce-ingress
 
-[gce-ingress](https://github.com/kubernetes/gce-gce) is an Ingress controller that configures GCE loadbalancers
+[ingress-gce](https://github.com/kubernetes/ingress-gce) is an Ingress controller that configures GCE loadbalancers
 
 To use, add the `kubernetes.io/ingress.class: "gce"` annotation to your Ingress resources.
 
@@ -65,6 +65,8 @@ Parameter | Description | Default
 `defaultBackend.replicaCount` | desired number of default backend pods | `1`
 `defaultBackend.resources` | default backend pod resource requests & limits | `{}`
 `rbac.enabled` | use RBAC ? | `true`
+`secret` | the name of the secret containing your google creds json | ``
+`secretKey` | override the key containing your google creds json | ``
 
 ```console
 $ helm install stable/gce-ingress --name my-release

@@ -1,0 +1,15 @@
+{{- if .Values.ambassadorConfig }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: '{{ include "ambassador.fullname" . }}-file-config'
+  labels:
+    app.kubernetes.io/name: {{ include "ambassador.name" . }}
+    app.kubernetes.io/part-of: {{ .Release.Name }}
+    helm.sh/chart: {{ include "ambassador.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+data:
+  ambassadorConfig: |-
+    {{- .Values.ambassadorConfig | nindent 4 }}
+{{- end }}

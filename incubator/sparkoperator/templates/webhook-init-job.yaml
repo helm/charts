@@ -3,9 +3,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: {{ include "sparkoperator.fullname" . }}-init
-  annotations:
-    "helm.sh/hook": post-install, post-upgrade
-    "helm.sh/hook-delete-policy": hook-succeeded
+  namespace: {{ .Release.Namespace }}
   labels:
     app.kubernetes.io/name: {{ include "sparkoperator.name" . }}
     helm.sh/chart: {{ include "sparkoperator.chart" . }}

@@ -6,7 +6,7 @@
 {{- if .Values.ingress.enabled }}
 From outside the cluster, the server URL(s) are:
 {{- range .Values.ingress.hosts }}
-     http://{{ . }}
+     {{ $.Values.server.protocol }}://{{ . }}
 {{- end }}
 
 {{- else if contains "NodePort" .Values.service.type }}
@@ -29,7 +29,7 @@ Get the Drone URL by running:
 Get the Drone URL by running:
   export POD_NAME=$(kubectl get pods -n {{ .Release.Namespace }} -l "component=server,app={{ template "drone.name" . }},release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
   echo http://127.0.0.1:8000/
-  kubectl -n {{ .Release.Namespace }} port-forward $POD_NAME 8000:8000
+  kubectl -n {{ .Release.Namespace }} port-forward $POD_NAME 8000:80
 {{- end }}
 {{- else -}}
 ##############################################################################
@@ -47,7 +47,7 @@ control provider:
       --reuse-values \
       --set 'sourceControl.provider=github' \
       --set 'sourceControl.github.clientID=github-oauth2-client-id' \
-      --set 'souceControl.secret=drone-server-secrets' \
+      --set 'sourceControl.secret=drone-server-secrets' \
       stable/drone
 
 Currently supported providers:

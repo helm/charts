@@ -1,5 +1,8 @@
 # Generated from 'etcd' from https://raw.githubusercontent.com/etcd-io/etcd/master/Documentation/op-guide/grafana.json
-{{- if and .Values.grafana.enabled .Values.grafana.defaultDashboardsEnabled .Values.kubeEtcd.enabled }}
+# Do not change in-place! In order to change this file first read following link:
+# https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
+{{- $kubeTargetVersion := default .Capabilities.KubeVersion.GitVersion .Values.kubeTargetVersionOverride }}
+{{- if and (semverCompare ">=1.10.0-0" $kubeTargetVersion) (semverCompare "<1.14.0-0" $kubeTargetVersion) .Values.grafana.enabled .Values.grafana.defaultDashboardsEnabled .Values.kubeEtcd.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -22,7 +25,7 @@ data:
         "hideControls": false,
         "id": 6,
         "links": [],
-        "refresh": false,
+        "refresh": "10s",
         "rows": [
             {
                 "collapse": false,

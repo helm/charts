@@ -1,0 +1,167 @@
+{{- if or (.Values.infraToken) (.Values.logsToken) (.Values.containerToken) }}
+{{- if .Capabilities.APIVersions.Has "apps/v1" }}
+apiVersion: apps/v1
+{{- else }}
+apiVersion: extensions/v1beta1
+{{- end }}
+kind: DaemonSet
+metadata:
+  name: {{ template "sematext-agent.fullname" . }}
+  labels:
+    app: {{ template "sematext-agent.name" . }}
+    chart: {{ template "sematext-agent.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "sematext-agent.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "sematext-agent.name" . }}
+        release: {{ .Release.Name }}
+      annotations:
+        checksum/config-agent: {{ include (print $.Template.BasePath "/configmap-agent.yaml") . | sha256sum }}
+        checksum/config-agent-autodisco: {{ include (print $.Template.BasePath "/configmap-agent-autodisco.yaml") . | sha256sum }}
+        checksum/config-logagent: {{ include (print $.Template.BasePath "/configmap-logagent.yaml") . | sha256sum }}
+        checksum/config-logagent-custom-configs: {{ include (print $.Template.BasePath "/configmap-logagent-custom-configs.yaml") . | sha256sum }}
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+    spec:
+      serviceAccountName: {{ template "sematext-agent.serviceAccountName" . }}
+      containers:
+        {{- if or (.Values.containerToken) (.Values.infraToken) }}
+        - name: agent
+          image: "{{ .Values.agent.image.repository }}:{{ .Values.agent.image.tag }}"
+          imagePullPolicy: {{ .Values.agent.image.pullPolicy }}
+          env:
+          - name: INFRA_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "sematext-agent.fullname" . }}
+                key: infra-token
+          - name: CONTAINER_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "sematext-agent.fullname" . }}
+                key: container-token
+          - name: LOGS_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "sematext-agent.fullname" . }}
+                key: logs-token
+          - name: NODE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+          - name: STA_NAMESPACE
+            valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+          envFrom:
+          - configMapRef:
+              name: {{ template "sematext-agent.fullname" . }}-agent
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: {{ .Values.agent.service.port }}
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: {{ .Values.agent.service.port }}
+          volumeMounts:
+            - name: hostfs
+              mountPath: /hostfs
+              readOnly: true
+            - name: sysfs
+              mountPath: /hostfs/sys
+              readOnly: true
+            - name: passwd
+              mountPath: /etc/passwd
+              readOnly: true
+            - name: group
+              mountPath: /etc/group
+              readOnly: true
+            - name: debugfs
+              mountPath: /sys/kernel/debug
+            - name: run
+              mountPath: /var/run/
+          securityContext:
+            privileged: true
+          ports:
+            - name: http
+              containerPort: {{ .Values.agent.service.port }}
+              protocol: TCP
+          resources:
+{{ toYaml .Values.agent.resources | indent 12 }}
+        {{- end }}
+        {{- if .Values.logsToken }}
+        - name: logagent
+          image: "{{ .Values.logagent.image.repository }}:{{ .Values.logagent.image.tag }}"
+          imagePullPolicy: {{ .Values.logagent.image.pullPolicy }}
+          env:
+          - name: LOGS_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "sematext-agent.fullname" . }}
+                key: logs-token
+          envFrom:
+          - configMapRef:
+              name: {{ template "sematext-agent.fullname" . }}-logagent
+          volumeMounts:
+            - name: docker-sock
+              mountPath: /var/run/docker.sock
+            {{- if .Values.logagent.customConfigs }}
+            - mountPath: /etc/sematext
+              name: logagent-config-volume
+            {{- end }}
+            {{- if .Values.logagent.extraHostVolumeMounts }}
+            {{- range $_, $mount := .Values.logagent.extraHostVolumeMounts }}
+            - name: {{ $mount.name }}
+              mountPath: {{ $mount.mountPath }}
+            {{- end }}
+            {{- end }}
+          resources:
+{{ toYaml .Values.logagent.resources | indent 12 }}
+          {{- end }}
+      volumes:
+        - name: hostfs
+          hostPath:
+            path: /
+        - name: sysfs
+          hostPath:
+            path: /sys
+        - name: passwd
+          hostPath:
+            path: /etc/passwd
+        - name: group
+          hostPath:
+            path: /etc/group
+        - name: debugfs
+          hostPath:
+            path: /sys/kernel/debug
+        - name: run
+          hostPath:
+            path: /var/run/
+        {{- if .Values.logagent.customConfigs }}
+        - name: logagent-config-volume
+          configMap:
+            name: {{ template "sematext-agent.fullname" . }}-logagent-custom-configs
+        {{- end }}
+        {{- if .Values.logagent.extraHostVolumeMounts }}
+        {{- range $_, $mount := .Values.logagent.extraHostVolumeMounts }}
+        - name: {{ $mount.name }}
+          hostPath:
+            path: {{ $mount.hostPath }}
+        {{- end }}
+        {{- end }}
+      {{ if .Values.imagePullSecrets }}
+      imagePullSecrets:
+        - name: {{ .Values.imagePullSecrets }}
+      {{- end }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+{{- end }}

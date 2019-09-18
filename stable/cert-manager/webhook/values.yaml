@@ -28,7 +28,7 @@ resources: {}
 
 image:
   repository: quay.io/jetstack/cert-manager-webhook
-  tag: v0.6.0
+  tag: v0.6.2
   pullPolicy: IfNotPresent
 
 caSyncImage:

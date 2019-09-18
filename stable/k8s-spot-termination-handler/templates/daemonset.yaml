@@ -1,28 +1,83 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: {{ include "k8s-spot-termination-handler.fullname" . }}
+  name: {{ template "k8s-spot-termination-handler.fullname" . }}
   labels:
-    app.kubernetes.io/name: {{ include "k8s-spot-termination-handler.name" . }}
-    helm.sh/chart: {{ include "k8s-spot-termination-handler.chart" . }}
+    app.kubernetes.io/name: {{ template "k8s-spot-termination-handler.name" . }}
+    helm.sh/chart: {{ template "k8s-spot-termination-handler.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ template "k8s-spot-termination-handler.name" . }}
+      app.kubernetes.io/instance:  {{ .Release.Name }}
+  {{- if .Values.updateStrategy }}
+  updateStrategy:
+    type: {{ .Values.updateStrategy }}
+    {{- if and .Values.updateStrategy (eq .Values.updateStrategy "RollingUpdate") }}
+    rollingUpdate:
+      maxUnavailable: {{ default 1 .Values.maxUnavailable }}
+    {{- end }}
+  {{- end }}
   template:
     metadata:
+      {{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+      {{- end }}
       labels:
-        app.kubernetes.io/name: {{ include "k8s-spot-termination-handler.name" . }}
+        app.kubernetes.io/name: {{ template "k8s-spot-termination-handler.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
+      hostNetwork: {{ .Values.hostNetwork }}
+      serviceAccountName: {{ template "k8s-spot-termination-handler.serviceAccountName" . }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
-            - name: NODE_NAME
+            {{- with .Values.verbose }}
+            - name: VERBOSE
+              value: {{ . | quote }}
+            {{- end }}
+            {{- with .Values.noticeUrl }}
+            - name: NOTICE_URL
+              value: {{ . | quote }}
+            {{- end }}
+            {{- if not .Values.enableLogspout }}
+            - name: LOGSPOUT
+              value: "ignore"
+            {{- end }}
+            {{- with .Values.slackUrl }}
+            - name: SLACK_URL
+              value: {{ . | quote }}
+            {{- end }}
+            {{- with .Values.detachAsg }}
+            - name: DETACH_ASG
+              value: {{ . | quote }}
+            {{- end }}
+            {{- with .Values.gracePeriod }}
+            - name: GRACE_PERIOD
+              value: {{ . | quote }}
+            {{- end }}
+            - name: POLL_INTERVAL
+              value: {{ .Values.pollInterval | quote }}
+            - name: CLUSTER
+              value: {{ .Values.clusterName | quote }}
+            - name: POD_NAME
               valueFrom:
                 fieldRef:
-                  fieldPath: spec.nodeName
+                  fieldPath: metadata.name
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          {{- if .Values.envFromSecret }}
+          envFrom:
+            - secretRef:
+                name: {{ .Values.envFromSecret }}
+          {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}
@@ -36,4 +91,7 @@ spec:
     {{- with .Values.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName }}
     {{- end }}

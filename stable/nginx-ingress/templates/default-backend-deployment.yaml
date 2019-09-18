@@ -35,6 +35,10 @@ spec:
 {{- if .Values.defaultBackend.priorityClassName }}
       priorityClassName: "{{ .Values.defaultBackend.priorityClassName }}"
 {{- end }}
+      {{- if .Values.defaultBackend.podSecurityContext }}
+      securityContext:
+{{ toYaml .Values.defaultBackend.podSecurityContext | indent 8 }}
+      {{- end }}
       containers:
         - name: {{ template "nginx-ingress.name" . }}-{{ .Values.defaultBackend.name }}
           image: "{{ .Values.defaultBackend.image.repository }}:{{ .Values.defaultBackend.image.tag }}"
@@ -47,13 +51,32 @@ spec:
             - --{{ $key }}
             {{- end }}
           {{- end }}
+          securityContext:
+            runAsUser: {{ .Values.defaultBackend.image.runAsUser }}
+          {{- if .Values.defaultBackend.extraEnvs }}
+          env:
+{{ toYaml .Values.defaultBackend.extraEnvs | indent 12 }}
+          {{- end }}
           livenessProbe:
             httpGet:
               path: /healthz
               port: {{ .Values.defaultBackend.port }}
               scheme: HTTP
-            initialDelaySeconds: 30
-            timeoutSeconds: 5
+            initialDelaySeconds: {{ .Values.defaultBackend.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.defaultBackend.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.defaultBackend.livenessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.defaultBackend.livenessProbe.successThreshold }}
+            failureThreshold: {{ .Values.defaultBackend.livenessProbe.failureThreshold }}
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: {{ .Values.defaultBackend.port }}
+              scheme: HTTP
+            initialDelaySeconds: {{ .Values.defaultBackend.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.defaultBackend.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.defaultBackend.readinessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.defaultBackend.readinessProbe.successThreshold }}
+            failureThreshold: {{ .Values.defaultBackend.readinessProbe.failureThreshold }}
           ports:
             - name: http
               containerPort: {{ .Values.defaultBackend.port }}
@@ -64,6 +87,7 @@ spec:
       nodeSelector:
 {{ toYaml .Values.defaultBackend.nodeSelector | indent 8 }}
     {{- end }}
+      serviceAccountName: {{ template "nginx-ingress.defaultBackend.serviceAccountName" . }}
     {{- if .Values.defaultBackend.tolerations }}
       tolerations:
 {{ toYaml .Values.defaultBackend.tolerations | indent 8 }}

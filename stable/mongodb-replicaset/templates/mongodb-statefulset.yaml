@@ -45,8 +45,12 @@ spec:
         - name: {{ . }}
       {{- end}}
     {{- end }}
+    {{- if .Values.securityContext.enabled }}
       securityContext:
-{{ toYaml .Values.securityContext | indent 8 }}
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+        runAsNonRoot: {{ .Values.securityContext.runAsNonRoot }}
+    {{- end }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       initContainers:
         - name: copy-config
@@ -230,23 +234,23 @@ spec:
           imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
           command:
             - sh
-            - -ec
+            - -c
             - >-
               /bin/mongodb_exporter
             {{- if .Values.auth.enabled }}
-              -mongodb.uri mongodb://$METRICS_USER:$METRICS_PASSWORD@localhost:{{ .Values.port }}
+              --mongodb.uri mongodb://$METRICS_USER:$METRICS_PASSWORD@localhost:{{ .Values.port }}
             {{- else }}
-              -mongodb.uri mongodb://localhost:{{ .Values.port }}
+              --mongodb.uri mongodb://localhost:{{ .Values.port }}
             {{- end }}
             {{- if .Values.tls.enabled }}
-              -mongodb.tls
-              -mongodb.tls-ca=/ca/tls.crt
-              -mongodb.tls-cert=/work-dir/mongo.pem
+              --mongodb.tls
+              --mongodb.tls-ca=/ca/tls.crt
+              --mongodb.tls-cert=/work-dir/mongo.pem
             {{- end }}
-              -mongodb.socket-timeout={{ .Values.metrics.socketTimeout }}
-              -mongodb.sync-timeout={{ .Values.metrics.syncTimeout }}
-              -web.metrics-path={{ .Values.metrics.path }}
-              -web.listen-address=:{{ .Values.metrics.port }}
+              --mongodb.socket-timeout={{ .Values.metrics.socketTimeout }}
+              --mongodb.sync-timeout={{ .Values.metrics.syncTimeout }}
+              --web.telemetry-path={{ .Values.metrics.path }}
+              --web.listen-address=:{{ .Values.metrics.port }}
           volumeMounts:
           {{- if and (.Values.tls.enabled) }}
             - name: ca
@@ -274,6 +278,11 @@ spec:
               containerPort: {{ .Values.metrics.port  }}
           resources:
 {{ toYaml .Values.metrics.resources | indent 12 }}
+          {{- if .Values.metrics.securityContext.enabled }}
+          securityContext:
+            runAsUser: {{ .Values.metrics.securityContext.runAsUser }}
+            fsGroup: {{ .Values.metrics.securityContext.fsGroup }}
+          {{- end }}
           livenessProbe:
             exec:
               command:
@@ -292,8 +301,8 @@ spec:
                   -mongodb.tls-cert=/work-dir/mongo.pem
                 {{- end }}
                   -test
-              initialDelaySeconds: 30
-              periodSeconds: 10
+            initialDelaySeconds: 30
+            periodSeconds: 10
 {{ end }}
    {{- with .Values.nodeSelector }}
       nodeSelector:
@@ -337,7 +346,7 @@ spec:
         name: datadir
         annotations:
         {{- range $key, $value := .Values.persistentVolume.annotations }}
-          {{ $key }}: {{ $value }}
+          {{ $key }}: "{{ $value }}"
         {{- end }}
       spec:
         accessModes:

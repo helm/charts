@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
-  name: fluent-bit
+  name: {{ template "fluent-bit.fullname" . }}
   labels:
     app: {{ template "fluent-bit.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
@@ -15,12 +15,22 @@ spec:
       labels:
         app: {{ template "fluent-bit.name" . }}
         release: {{ .Release.Name }}
+{{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | indent 8 }}
+{{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
 {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
 {{- end }}
     spec:
+{{- if .Values.podSecurityContext }}
+      securityContext:
+{{ toYaml .Values.podSecurityContext | indent 8 }}
+{{- end }}
+{{- if .Values.priorityClassName }}
+      priorityClassName: "{{ .Values.priorityClassName }}"
+{{- end }}
 {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
 {{ toYaml .Values.image.pullSecrets | indent 8 }}
@@ -33,7 +43,17 @@ spec:
         image: "{{ .Values.image.fluent_bit.repository }}:{{ .Values.image.fluent_bit.tag }}"
         imagePullPolicy: "{{ .Values.image.pullPolicy }}"
         env:
+{{- if .Values.backend.es.http_passwd_secret }}
+          - name: HTTP_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.backend.es.http_passwd_secret }}
+                key: {{ .Values.backend.es.http_passwd_secret_key }}
+{{- end }}
+{{- /* Only render empty array when no HTTP_PASSWORD */ -}}
+{{- if or .Values.env (not .Values.backend.es.http_passwd_secret) }}
 {{ toYaml .Values.env | indent 10 }}
+{{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
 {{- if or .Values.metrics.enabled .Values.extraPorts }}
@@ -46,6 +66,10 @@ spec:
 {{- if .Values.extraPorts }}
 {{ toYaml .Values.extraPorts | indent 8 }}
 {{- end }}
+{{- end }}
+{{- if .Values.securityContext }}
+        securityContext:
+{{ toYaml .Values.securityContext | indent 10 }}
 {{- end }}
         volumeMounts:
         - name: varlog
@@ -64,7 +88,7 @@ spec:
 {{- else }}
         - name: config
           mountPath: /fluent-bit/etc/fluent-bit.conf
-          subPath: fluent-bit.conf     
+          subPath: fluent-bit.conf
         - name: config
           mountPath: /fluent-bit/etc/fluent-bit-service.conf
           subPath: fluent-bit-service.conf
@@ -77,17 +101,17 @@ spec:
         - name: config
           mountPath: /fluent-bit/etc/fluent-bit-output.conf
           subPath: fluent-bit-output.conf
-          
+
 {{- if .Values.parsers.enabled }}
         - name: config
           mountPath: /fluent-bit/etc/parsers_custom.conf
           subPath: parsers.conf
 {{- end }}
 {{- end }}
-{{- if .Values.backend.es.tls_ca }}
+{{- if or .Values.backend.es.tls_ca .Values.backend.es.tls_secret }}
         - name: es-tls-secret
           mountPath: /secure/es-tls-ca.crt
-          subPath: es-tls-ca.crt
+          subPath: {{ .Values.backend.es.tls_secret_ca_key | default "es-tls-ca.crt" | quote }}
 {{- end }}
 {{- if .Values.trackOffsets }}
         - name: tail-db
@@ -106,6 +130,10 @@ spec:
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
     {{- end }}
+      {{ if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+      {{- end }}
     {{- if .Values.tolerations }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
@@ -123,15 +151,15 @@ spec:
           path: /etc/machine-id
           type: File
     {{- end }}
-{{- if .Values.backend.es.tls_ca }}
+{{- if or .Values.backend.es.tls_ca .Values.backend.es.tls_secret }}
       - name: es-tls-secret
         secret:
-          secretName: "{{ template "fluent-bit.fullname" . }}-es-tls-secret"
+          secretName: {{ .Values.backend.es.tls_secret | default ( print ( include "fluent-bit.fullname" . ) "-es-tls-secret" ) | quote }}
 {{- end }}
 {{- if .Values.trackOffsets }}
       - name: tail-db
         hostPath:
-          path: /var/lib/fluent-bit
+          path: {{ .Values.taildb.directory }}
           type: DirectoryOrCreate
 {{- end }}
       - name: config

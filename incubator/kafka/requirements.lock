@@ -1,6 +1,6 @@
 dependencies:
 - name: zookeeper
   repository: https://kubernetes-charts-incubator.storage.googleapis.com/
-  version: 1.2.0
-digest: sha256:48de211cbffc0b7df9995edc4fd5d693e8bbc94e684aa83c11e6f94803f0e8b9
-generated: 2018-11-26T17:47:36.893674-05:00
+  version: 2.0.0
+digest: sha256:a564a1ed1f76137e5562d5fb598f45998812fa166e94fc1ba44a2f7774df920d
+generated: 2019-08-13T14:56:29.724627+01:00

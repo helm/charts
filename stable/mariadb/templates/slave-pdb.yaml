@@ -1,0 +1,26 @@
+{{- if .Values.replication.enabled }}
+{{- if .Values.slave.podDisruptionBudget.enabled }}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ template "mariadb.fullname" . }}
+  labels:
+    app: "{{ template "mariadb.name" . }}"
+    component: "slave"
+    chart: {{ template "mariadb.chart" . }}
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+spec:
+{{- if .Values.slave.podDisruptionBudget.minAvailable }}
+  minAvailable: {{ .Values.slave.podDisruptionBudget.minAvailable }}
+{{- end }}
+{{- if .Values.slave.podDisruptionBudget.maxUnavailable }}
+  maxUnavailable: {{ .Values.slave.podDisruptionBudget.maxUnavailable }}
+{{- end }}
+  selector:
+    matchLabels:
+      app: "{{ template "mariadb.name" . }}"
+      component: "slave"
+      release: {{ .Release.Name | quote }}
+{{- end }}
+{{- end }}

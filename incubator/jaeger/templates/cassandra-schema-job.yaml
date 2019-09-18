@@ -3,53 +3,41 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ template "jaeger.fullname" . }}-cassandra-schema
+  name: {{ include "jaeger.fullname" . }}-cassandra-schema
   labels:
-    app: {{ template "jaeger.name" . }}
-    jaeger-infra: cassandra-schema-job
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    component: cassandra-schema
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ include "jaeger.name" . }}
+    helm.sh/chart: {{ include "jaeger.chart" . }}
+    app.kubernetes.io/component: cassandra-schema
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
 {{- if .Values.schema.annotations }}
   annotations:
 {{ toYaml .Values.schema.annotations | indent 4 }}
 {{- end }}
 spec:
-  activeDeadlineSeconds: 120
+  activeDeadlineSeconds: {{ .Values.schema.activeDeadlineSeconds }}
   template:
     metadata:
-      name: {{ template "jaeger.fullname" . }}-cassandra-schema
+      name: {{ include "jaeger.fullname" . }}-cassandra-schema
 {{- if .Values.schema.podLabels }}
       labels:
 {{ toYaml .Values.schema.podLabels | indent 8 }}
 {{- end }}
     spec:
+      serviceAccountName: {{ include "jaeger.fullname" . }}-cassandra-schema
       containers:
-      - name: {{ template "jaeger.fullname" . }}-cassandra-schema
+      - name: {{ include "jaeger.fullname" . }}-cassandra-schema
         image: {{ .Values.schema.image }}:{{ .Values.tag }}
         imagePullPolicy: {{ .Values.schema.pullPolicy }}
         env:
         - name: CQLSH_HOST
-          valueFrom:
-            configMapKeyRef:
-              name: {{ template "jaeger.fullname" . }}
-              key: cassandra.servers
+          value: {{ template "cassandra.host" . }}
         - name: MODE
-          valueFrom:
-            configMapKeyRef:
-              name: {{ template "jaeger.fullname" . }}
-              key: cassandra.schema.mode
+          value: {{ .Values.schema.mode | quote }}
         - name: DATACENTER
-          valueFrom:
-            configMapKeyRef:
-              name: {{ template "jaeger.fullname" . }}
-              key: cassandra.datacenter.name
+          value: {{ .Values.cassandra.config.dc_name | quote }}
         - name: CASSANDRA_PORT
-          valueFrom:
-            configMapKeyRef:
-              name: {{ template "jaeger.fullname" . }}
-              key: cassandra.port
+          value: {{ .Values.storage.cassandra.port | quote }}
         resources:
 {{ toYaml .Values.schema.resources | indent 10 }}
       restartPolicy: OnFailure

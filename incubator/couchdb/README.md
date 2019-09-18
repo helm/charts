@@ -1,5 +1,8 @@
 # CouchDB
 
+This chart has been promoted to stable, so the version in the incubator is now
+deprecated.
+
 Apache CouchDB is a database featuring seamless multi-master sync, that scales
 from big data to mobile, with an intuitive HTTP/JSON API and designed for
 reliability.
@@ -95,9 +98,11 @@ CouchDB chart and their default values:
 | `couchdbConfig`                 | Map allowing override elements of server .ini config  | chttpd.bind_address=any                |
 | `allowAdminParty`               | If enabled, start cluster without admin account       | false (requires creating a Secret)     |
 | `createAdminSecret`             | If enabled, create an admin account and cookie secret | true                                   |
+| `schedulerName`                 | Name of the k8s scheduler (other than default)        | `nil`                                  |
 | `erlangFlags`                   | Map of flags supplied to the underlying Erlang VM     | name: couchdb, setcookie: monster
 | `persistentVolume.enabled`      | Boolean determining whether to attach a PV to each node | false
 | `persistentVolume.size`         | If enabled, the size of the persistent volume to attach                          | 10Gi
+| `enableSearch`                  | Adds a sidecar for Lucene-powered text search         | false                                  |
 
 A variety of other parameters are also configurable. See the comments in the
 `values.yaml` file for further details:
@@ -113,6 +118,12 @@ A variety of other parameters are also configurable. See the comments in the
 | `image.repository`              | couchdb                                |
 | `image.tag`                     | 2.3.0                                  |
 | `image.pullPolicy`              | IfNotPresent                           |
+| `searchImage.repository`        | kocolosk/couchdb-search                |
+| `searchImage.tag`               | 0.1.0                                  |
+| `searchImage.pullPolicy`        | IfNotPresent                           |
+| `initImage.repository`          | busybox                                |
+| `initImage.tag`                 | latest                                 |
+| `initImage.pullPolicy`          | Always                                 |
 | `ingress.enabled`               | false                                  |
 | `ingress.hosts`                 | chart-example.local                    |
 | `ingress.annotations`           |                                        |
@@ -122,6 +133,7 @@ A variety of other parameters are also configurable. See the comments in the
 | `podManagementPolicy`           | Parallel                               |
 | `affinity`                      |                                        |
 | `resources`                     |                                        |
+| `service.annotations`           |                                        |
 | `service.enabled`               | true                                   |
 | `service.type`                  | ClusterIP                              |
 | `service.externalPort`          | 5984                                   |

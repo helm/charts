@@ -1,4 +1,4 @@
-{{- if .Values.cluster.enabled }}
+{{- if and .Values.cluster.enabled (not .Values.sentinel.enabled) }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -6,8 +6,8 @@ metadata:
   labels:
     app: {{ template "redis.name" . }}
     chart: {{ template "redis.chart" . }}
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 {{- if .Values.slave.service.annotations }}
   annotations:
 {{ toYaml .Values.slave.service.annotations | indent 4 }}
@@ -20,13 +20,13 @@ spec:
   {{- end -}}
   ports:
   - name: redis
-    port: 6379
+    port: {{ .Values.slave.service.port }}
     targetPort: redis
     {{- if .Values.slave.service.nodePort }}
     nodePort: {{ .Values.slave.service.nodePort }}
     {{- end }}
   selector:
     app: {{ template "redis.name" . }}
-    release: "{{ .Release.Name }}"
+    release: {{ .Release.Name }}
     role: slave
-{{- end}}
+{{- end }}

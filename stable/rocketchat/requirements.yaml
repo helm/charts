@@ -1,4 +1,5 @@
 dependencies:
 - name: mongodb
-  version: 5.1.x
+  version: 7.x
   repository: https://kubernetes-charts.storage.googleapis.com/
+  condition: mongodb.enabled

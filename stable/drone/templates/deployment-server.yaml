@@ -38,9 +38,13 @@ spec:
       nodeSelector:
 {{ toYaml .Values.server.nodeSelector | indent 8 }}
 {{- end }}
+{{- with .Values.server.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 6 }}
+{{- end }}
       serviceAccountName: {{ template "drone.serviceAccountName" . }}
       containers:
-      - name: {{ template "drone.fullname" . }}-server
+      - name: server
         image: "{{ .Values.images.server.repository }}:{{ .Values.images.server.tag }}"
         imagePullPolicy: {{ .Values.images.server.pullPolicy }}
         env:
@@ -51,8 +55,11 @@ spec:
             value: {{ default .Release.Namespace .Values.server.kubernetes.namespace }}
           - name: DRONE_KUBERNETES_SERVICE_ACCOUNT
             value: {{ template "drone.pipelineServiceAccount" . }}
+        {{- else }}
+          - name: DRONE_AGENTS_ENABLED
+            value: "true"
         {{- end }}
-          - name: DRONE_ALWAYS_AUTH
+          - name: DRONE_GIT_ALWAYS_AUTH
             value: {{ .Values.server.alwaysAuth | quote }}
           - name: DRONE_SERVER_HOST
           {{- if hasKey .Values.server "host" }}
@@ -60,7 +67,11 @@ spec:
           {{- else }}
             value: "{{ template "drone.fullname" . }}"
           {{- end }}
-          - name: DRONE_SERVER_PROTOCOL
+          - name: DRONE_RPC_PROTO
+            value: "{{ .Values.server.rpcProtocol }}"
+          - name: DRONE_RPC_HOST
+            value: {{ template "drone.fullname" . }}.{{ .Release.Namespace }}:{{ .Values.service.httpPort }}
+          - name: DRONE_SERVER_PROTO
             value: {{ .Values.server.protocol }}
           {{- if .Values.server.adminUser }}
           - name: DRONE_USER_CREATE
@@ -102,12 +113,25 @@ spec:
         resources:
 {{ toYaml .Values.server.resources | indent 10 }}
         volumeMounts:
-          - name: data
-            mountPath: /var/lib/drone
+        {{ if eq .Values.sourceControl.provider "bitbucketServer" -}}
+        - name: bitbucket-private-key
+          mountPath: /etc/bitbucket
+          readOnly: true
+        {{ end }}
+        - name: data
+          mountPath: /var/lib/drone
 {{- with .Values.server.extraContainers }}
 {{ tpl . $ | indent 6 }}
 {{- end }}
       volumes:
+      {{ if eq .Values.sourceControl.provider "bitbucketServer" -}}
+      - name: bitbucket-private-key
+        secret:
+          secretName: {{ template "drone.sourceControlSecret" . }}
+          items:
+            - key: {{ .Values.sourceControl.bitbucketServer.privateKey }}
+              path: key.pem
+      {{ end -}}
       - name: data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:

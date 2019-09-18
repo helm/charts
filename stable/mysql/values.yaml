@@ -37,6 +37,11 @@ testFramework:
 ##
 imagePullPolicy: IfNotPresent
 
+## Additionnal arguments that are passed to the MySQL container.
+## For example use --default-authentication-plugin=mysql_native_password if older clients need to
+## connect to a MySQL 8 instance.
+args: []
+
 extraVolumes: |
   # - name: extras
   #   emptyDir: {}
@@ -60,6 +65,11 @@ extraInitContainers: |
 ## Node selector
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
 nodeSelector: {}
+
+## Tolerations for pod assignment
+## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+##
+tolerations: []
 
 livenessProbe:
   initialDelaySeconds: 30
@@ -90,6 +100,17 @@ persistence:
   size: 8Gi
   annotations: {}
 
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName:
+
+## Security context
+securityContext:
+  enabled: false
+  runAsUser: 999
+  fsGroup: 999
+
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ##
@@ -97,6 +118,9 @@ resources:
   requests:
     memory: 256Mi
     cpu: 100m
+
+# Custom mysql configuration files path
+configurationFilesPath: /etc/mysql/conf.d/
 
 # Custom mysql configuration files used to override default mysql settings
 configurationFiles: {}
@@ -129,6 +153,10 @@ metrics:
   readinessProbe:
     initialDelaySeconds: 5
     timeoutSeconds: 1
+  flags: []
+  serviceMonitor:
+    enabled: false
+    additionalLabels: {}
 
 ## Configure the service
 ## ref: http://kubernetes.io/docs/user-guide/services/
@@ -139,6 +167,7 @@ service:
   type: ClusterIP
   port: 3306
   # nodePort: 32000
+  # loadBalancerIP:
 
 ssl:
   enabled: false
@@ -165,8 +194,20 @@ ssl:
 ## Example: 'Australia/Sydney'
 # timezone:
 
+# Deployment Annotations
+deploymentAnnotations: {}
+
 # To be added to the database server pod(s)
 podAnnotations: {}
+podLabels: {}
 
 ## Set pod priorityClassName
 # priorityClassName: {}
+
+
+## Init container resources defaults
+initContainer:
+  resources:
+    requests:
+      memory: 10Mi
+      cpu: 10m

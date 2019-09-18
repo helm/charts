@@ -1,4 +1,4 @@
-{{- if .Values.rbac.create }}
+{{- if and .Values.rbac.create (not .Values.rbac.namespaced) }}
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
@@ -12,11 +12,16 @@ metadata:
 {{ toYaml . | indent 4 }}
 {{- end }}
   name: {{ template "grafana.fullname" . }}-clusterrole
-{{- if or .Values.sidecar.dashboards.enabled .Values.sidecar.datasources.enabled }}
+{{- if or .Values.sidecar.dashboards.enabled (or .Values.sidecar.datasources.enabled .Values.rbac.extraClusterRoleRules) }}
 rules:
+{{- if or .Values.sidecar.dashboards.enabled .Values.sidecar.datasources.enabled }}
 - apiGroups: [""] # "" indicates the core API group
-  resources: ["configmaps"]
+  resources: ["configmaps", "secrets"]
   verbs: ["get", "watch", "list"]
+{{- end}}
+{{- with .Values.rbac.extraClusterRoleRules }}
+{{ toYaml . | indent 0 }}
+{{- end}}
 {{- else }}
 rules: []
 {{- end}}

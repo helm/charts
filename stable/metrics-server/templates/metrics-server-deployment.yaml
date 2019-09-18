@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "metrics-server.fullname" . }}
@@ -18,30 +18,64 @@ spec:
       labels:
         app: {{ template "metrics-server.name" . }}
         release: {{ .Release.Name }}
+      {{- with .Values.podAnnotations }}
+      annotations:
+      {{- range $key, $value := . }}
+        {{ $key }}: {{ $value | quote }}
+      {{- end }}
+      {{- end }}
     spec:
+    {{- if .Values.priorityClassName }}
+      priorityClassName: "{{ .Values.priorityClassName }}"
+    {{- end }}
+    {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.imagePullSecrets }}
+        - name: {{ . }}
+      {{- end }}
+    {{- end }}
       serviceAccountName: {{ template "metrics-server.serviceAccountName" . }}
+{{- if .Values.hostNetwork.enabled }}
+      hostNetwork: true
+{{- end }}
       containers:
         - name: metrics-server
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command:
             - /metrics-server
+            - --cert-dir=/tmp
+            - --logtostderr
+            - --secure-port=8443
             {{- range .Values.args }}
             - {{ . | quote }}
             {{- end }}
-        {{- with .Values.resources }}
+          ports:
+          - containerPort: 8443
+            name: https
+          livenessProbe:
+            {{- toYaml .Values.livenessProbe | trim | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .Values.readinessProbe | trim | nindent 12 }}
           resources:
-{{ toYaml . | indent 12 }}
-        {{- end }}
-    {{- with .Values.nodeSelector }}
+            {{- toYaml .Values.resources | trim | nindent 12 }}
+          securityContext:
+            {{- toYaml .Values.securityContext | trim | nindent 12 }}
+          volumeMounts:
+          - name: tmp
+            mountPath: /tmp
+          {{- with .Values.extraVolumeMounts }}
+          {{- toYaml . | nindent 10 }}
+          {{- end }}
       nodeSelector:
-{{ toYaml . | indent 8 }}
-    {{- end }}
-    {{- with .Values.affinity }}
+        {{- toYaml .Values.nodeSelector | trim | nindent 8 }}
       affinity:
-{{ toYaml . | indent 8 }}
-    {{- end }}
-    {{- with .Values.tolerations }}
+        {{- toYaml .Values.affinity | trim | nindent 8 }}
       tolerations:
-{{ toYaml . | indent 8 }}
-    {{- end }}
+        {{- toYaml .Values.tolerations | trim | nindent 8 }}
+      volumes:
+      - name: tmp
+        emptyDir: {}
+      {{- with .Values.extraVolumes }}
+      {{- toYaml . | nindent 6}}
+      {{- end }}

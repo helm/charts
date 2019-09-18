@@ -5,7 +5,7 @@ metadata:
   name: {{ template "parse.fullname" . }}-dashboard
   labels:
     app: {{ template "parse.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: {{ template "parse.chart" . }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
     component: "dashboard"
@@ -29,12 +29,7 @@ spec:
         fsGroup: {{ .Values.dashboard.securityContext.fsGroup }}
         runAsUser: {{ .Values.dashboard.securityContext.runAsUser }}
       {{- end }}
-      {{- if .Values.dashboard.image.pullSecrets }}
-      imagePullSecrets:
-      {{- range .Values.dashboard.image.pullSecrets }}
-        - name: {{ . }}
-      {{- end}}
-      {{- end }}
+{{- include "parse.imagePullSecrets" . | indent 6 }}
       containers:
       - name: {{ template "parse.fullname" . }}
         image: {{ template "parse.dashboard.image" . }}
@@ -49,8 +44,10 @@ spec:
               key: parse-dashboard-password
         - name: PARSE_HOST
           value: {{ include "parse.host" . | quote }}
+        - name: PARSE_USE_HOSTNAME
+          value: {{ ternary "yes" "no" .Values.ingress.enabled | quote }}
         - name: PARSE_PORT_NUMBER
-          value: {{ .Values.server.port | quote }}
+          value: {{ include "parse.external-port" . | quote }}
         - name: PARSE_APP_ID
           value: {{ .Values.server.appId | quote }}
         - name: PARSE_MASTER_KEY
@@ -81,4 +78,8 @@ spec:
       volumes:
       - name: parse-dashboard-data
         emptyDir: {}
+      {{- with .Values.dashboard.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+      {{- end }}
 {{- end -}}

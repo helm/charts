@@ -1,0 +1,38 @@
+reloader:
+  watchGlobally: true
+  matchLabels: {}
+  deployment:
+    annotations: {}
+    labels:
+      provider: stakater
+      group: com.stakater.platform
+    image:
+      name: stakater/reloader
+      tag: "v0.0.29"
+      pullPolicy: IfNotPresent
+    # Support for extra environment variables.
+    env:
+      # Open supports Key value pair as environment variables.
+      open:
+      # secret supports Key value pair as environment variables. It gets the values based on keys from default reloader secret if any.
+      secret:
+      # field supports Key value pair as environment variables. It gets the values from other fields of pod.
+      field:
+  rbac:
+    enabled: true
+    labels: {}
+  # Service account config for the agent pods
+  serviceAccount:
+    # Specifies whether a ServiceAccount should be created
+    create: true
+    labels: {}
+    # The name of the ServiceAccount to use.
+    # If not set and create is true, a name is generated using the fullname template
+    name:
+  # Optional flags to pass to the Reloader entrypoint
+  # Example:
+  #   custom_annotations:
+  #     configmap: "my.company.com/configmap"
+  #     secret: "my.company.com/secret"
+  custom_annotations: {}
+  nodeSelector: {}

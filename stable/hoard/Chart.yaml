@@ -1,6 +1,6 @@
 name: hoard
-version: 0.6.0
-appVersion: 1.1.5
+version: 0.7.0
+appVersion: 3.0.1
 description: Hoard is a stateless, deterministically encrypted, content-addressed object store
 home: https://github.com/monax/hoard
 icon: https://pbs.twimg.com/profile_images/781959787856687105/76s1CJER_400x400.jpg
@@ -8,6 +8,8 @@ keywords:
 - s3
 - aws
 - gcp
+- azure
+- ipfs
 - envelope encryption
 - content addressable
 - distributed file storage

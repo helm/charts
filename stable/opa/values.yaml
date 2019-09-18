@@ -3,13 +3,38 @@
 #
 # The 'opa' key embeds an OPA configuration file. See
 # https://www.openpolicyagent.org/docs/configuration.html for more details.
+# If no default config wanted just set opa: false
 opa:
   services:
     controller:
       url: "https://www.openpolicyagent.org"
   bundle:
     service: controller
-    name: "kubernetes/admission"
+    name: "helm-kubernetes-quickstart"
+  default_decision: "/helm_kubernetes_quickstart/main"
+
+# Setup the webhook using cert-manager
+certManager:
+  enabled: false
+
+# Expose the prometheus scraping endpoint
+prometheus:
+  enabled: false
+
+# Annotations in the deployment template
+annotations:
+  {}
+
+# Bootstrap policies to load upon startup
+# Define policies in the form of:
+# <policyName> : |-
+#   <regoBody>
+# For example, to mask the entire input body in the decision logs:
+# bootstrapPolicies:
+#   log: |-
+#     package system.log
+#     mask["/input"]
+bootstrapPolicies: {}
 
 # To enforce mutating policies, change to MutatingWebhookConfiguration.
 admissionControllerKind: ValidatingWebhookConfiguration
@@ -17,6 +42,14 @@ admissionControllerKind: ValidatingWebhookConfiguration
 # To _fail closed_ on failures, change to Fail. During initial testing, we
 # recommend leaving the failure policy as Ignore.
 admissionControllerFailurePolicy: Ignore
+
+# Adds a namespace selector to the admission controller webhook
+admissionControllerNamespaceSelector:
+  matchExpressions:
+    - {key: openpolicyagent.org/webhook, operator: NotIn, values: [ignore]}
+
+# SideEffectClass for the webhook, setting to None enables dry-run
+admissionControllerSideEffect: Unknown
 
 # To restrict the kinds of operations and resources that are subject to OPA
 # policy checks, see the settings below. By default, all resources and
@@ -26,6 +59,13 @@ admissionControllerRules:
     apiGroups: ["*"]
     apiVersions: ["*"]
     resources: ["*"]
+
+# Controls a PodDisruptionBudget for the OPA pod. Suggested use if having opa
+# always running for admission control is important
+podDisruptionBudget:
+  enabled: false
+  minAvailable: 1
+# maxUnavailable: 1
 
 # The helm Chart will automatically generate a CA and server certificate for
 # the OPA. If you want to supply your own certificates, set the field below to
@@ -43,9 +83,48 @@ admissionControllerCA: ""
 admissionControllerCert: ""
 admissionControllerKey: ""
 
+authz:
+  # Disable if you don't want authorization.
+  # Mostly useful for debugging.
+  enabled: true
+
 # Docker image and tag to deploy.
 image: openpolicyagent/opa
-imageTag: 0.10.1
+imageTag: 0.10.7
+imagePullPolicy: IfNotPresent
+
+# Port to which the opa pod will bind itself
+# NOTE IF you use a different port make sure it maches the ones in the readinessProbe
+# and livenessProbe
+port: 443
+
+mgmt:
+  enabled: true
+  image: openpolicyagent/kube-mgmt
+  imageTag: 0.8
+  imagePullPolicy: IfNotPresent
+  extraArgs: []
+  resources: {}
+  configmapPolicies:
+# NOTE IF you use these, remember to update the RBAC rules below to allow
+#      permissions to get, list, watch, patch and update configmaps
+    enabled: false
+    namespaces: [opa, kube-federation-scheduling-policy]
+    requireLabel: true
+  replicate:
+# NOTE IF you use these, remember to update the RBAC rules below to allow
+#      permissions to replicate these things
+    cluster: []
+#     - [group/]version/resource
+    namespace: []
+#     - [group/]version/resource
+    path: kubernetes
+
+# Log level for OPA ('debug', 'info', 'error') (app default=info)
+logLevel: info
+
+# Log format for OPA ('text', 'json') (app default=text)
+logFormat: text
 
 # Number of OPA replicas to deploy. OPA maintains an eventually consistent
 # cache of policies and data. If you want high availability you can deploy two
@@ -68,6 +147,16 @@ rbac:
   # If true, create & use RBAC resources
   #
   create: true
+  rules:
+    cluster: []
+    # - apiGroups:
+    #     - ""
+    #   resources:
+    #   - namespaces
+    #   verbs:
+    #   - get
+    #   - list
+    #   - watch
 
 serviceAccount:
   # Specifies whether a ServiceAccount should be created
@@ -82,19 +171,24 @@ sar:
   enabled: false
   image: lachlanevenson/k8s-kubectl
   imageTag: latest
+  imagePullPolicy: IfNotPresent
+  resources: {}
 
 # To control the liveness and readiness probes change the fields below.
 readinessProbe:
   httpGet:
-    path: /
+    path: /health
     scheme: HTTPS
     port: 443
-    initialDelaySeconds: 3
-    periodSeconds: 5
+  initialDelaySeconds: 3
+  periodSeconds: 5
 livenessProbe:
   httpGet:
-    path: /
+    path: /health
     scheme: HTTPS
     port: 443
-    initialDelaySeconds: 3
-    periodSeconds: 5
+  initialDelaySeconds: 3
+  periodSeconds: 5
+
+# Set a priorityClass using priorityClassName
+# priorityClassName:

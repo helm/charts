@@ -6,6 +6,16 @@ metadata:
     {{- include "prometheus.kubeStateMetrics.labels" . | nindent 4 }}
   name: {{ template "prometheus.kubeStateMetrics.fullname" . }}
 rules:
+{{- if .Values.podSecurityPolicy.enabled }}
+  - apiGroups:
+    - extensions
+    resources:
+    - podsecuritypolicies
+    verbs:
+    - use
+    resourceNames:
+    - {{ template "prometheus.kubeStateMetrics.fullname" . }}
+{{- end }}
   - apiGroups:
       - ""
     resources:
@@ -30,6 +40,7 @@ rules:
     resources:
       - daemonsets
       - deployments
+      - ingresses
       - replicasets
     verbs:
       - list
@@ -37,6 +48,8 @@ rules:
   - apiGroups:
       - apps
     resources:
+      - daemonsets
+      - deployments
       - statefulsets
     verbs:
       - get
@@ -61,6 +74,13 @@ rules:
       - policy
     resources:
       - poddisruptionbudgets
+    verbs:
+      - list
+      - watch
+  - apiGroups:
+      - certificates.k8s.io
+    resources:
+      - certificatesigningrequests
     verbs:
       - list
       - watch
