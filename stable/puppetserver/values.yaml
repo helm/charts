@@ -1,4 +1,4 @@
-# Available parameters and their default values for the Puppet Server chart.
+# Default values for puppetserver.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
@@ -7,57 +7,75 @@ puppetserver:
   image: puppet/puppetserver
   tag: 6.6.0
   pullPolicy: IfNotPresent
-  # Fully qualified domain names (FQDN's) to register
-  # the Puppet Server to be internally reachable via DNS.
-  # That is necessary to configure "certname" and "server" in `puppet.conf`.
-  # Required by Puppet server CA CLI application.
-  # "serverName" is mandatory and pre-set to "puppet".
-  # "serverName" variable is going to be made editable when
-  # this bug with the PuppetDB Docker image is resolved.
-  # Gitissue:
-  # "alternateServerNames" is optional.
+  resources: {}
+  #  requests:
+  #    memory: 512Mi
+  #    cpu: 500m
+  #  limits:
+  #    memory: 768Mi
+  #    cpu: 750m
+  ## Fully qualified domain names (FQDN's) to register
+  ## the Puppet Server to be internally reachable via DNS.
+  ## That is necessary to configure "certname" and "server" in `puppet.conf`.
+  ## Required by Puppet server CA CLI application.
+  ## "serverName" is mandatory and pre-set to "puppet".
+  ## "serverName" variable is going to be made editable when
+  ## this bug with the PuppetDB Docker image is resolved.
+  ## Gitissue:
+  ## "alternateServerNames" is optional.
+  ##
   fqdns:
-    alternateServerNames: "" # Comma-separated
+    alternateServerNames: ""   # Comma-separated
   service:
     type: LoadBalancer
     port: 8140
     annotations: {}
     labels: {}
     loadBalancerIP: ""
-  # The pattern of managing Hieradata in a separate repository is
-  # both common and acceptable. Doing so provides the ability to decouple
-  # the management of configuration data from that of the Puppet code base.
-  # A separate Hieradata Repo can be included in the "hiera" section in this file.
-  puppeturl: "" # git@github.com:$SOMEUSER/puppet.git
+  ## The pattern of managing Hieradata in a separate repository is
+  ## both common and acceptable. Doing so provides the ability to decouple
+  ## the management of configuration data from that of the Puppet code base.
+  ## A separate Hieradata Repo can be included in the "hiera" section in this file.
+  ##
+  puppeturl: ""   # git@github.com:$SOMEUSER/puppet.git
 
 git_sync:
   name: git_sync
   image: k8s.gcr.io/git-sync
   tag: v3.1.2
   pullPolicy: IfNotPresent
+  resources: {}
+  #  requests:
+  #    memory: 200Mi
+  #    cpu: 200m
+  #  limits:
+  #    memory: 400Mi
+  #    cpu: 400m
   branch: ""
-  # Cloning via HTTPS method and its creds (if a private repo)
+  ## Cloning via HTTPS method and its creds (if a private repo)
+  ##
   viaHttps:
     enabled: true
     credentials:
       username: ""
-      # The password might be your user-generated token
-      # in case MFA is enabled.
+      ## The password might be your user-generated token
+      ## in case MFA is enabled.
       password: ""
-      # Or set the "username" and "password" from a pre-existing K8s secret
+      ## Or set the "username" and "password" from a pre-existing K8s secret
       existingSecret: ""
-  # Cloning via SSH method and its creds
+  ## Cloning via SSH method and its creds
+  ##
   viaSsh:
     enabled: false
     credentials:
       ssh:
-        # A multi-line string
-        value: # |-
+        ## A multi-line string
+        value: |-
       known_hosts:
-        # A multi-line string
-        value: # |-
-      # Or set the git-sync Known Hosts file and SSH Private Key
-      # from a pre-existing K8s secret
+        ## A multi-line string
+        value: |-
+      ## Or set the git-sync Known Hosts file and SSH Private Key
+      ## from a pre-existing K8s secret
       existingSecret: ""
 
 r10k:
@@ -65,30 +83,39 @@ r10k:
   image: puppet/r10k
   tag: 3.3.1
   pullPolicy: IfNotPresent
+  resources: {}
+  #  requests:
+  #    memory: 256Mi
+  #    cpu: 250m
+  #  limits:
+  #    memory: 512Mi
+  #    cpu: 500m
   cronJob:
     schedule: "*/2 * * * *"
-  # Cloning via HTTPS method and its creds (if a private repo)
+  ## Cloning via HTTPS method and its creds (if a private repo)
+  ##
   viaHttps:
     enabled: true
     credentials:
       username: ""
-      # The password might be your user-generated token
-      # in case MFA is enabled.
+      ## The password might be your user-generated token
+      ## in case MFA is enabled.
       password: ""
-      # Or set the "username" and "password" from a pre-existing K8s secret
+      ## Or set the "username" and "password" from a pre-existing K8s secret
       existingSecret: ""
-  # Cloning via SSH method and its creds
+  ## Cloning via SSH method and its creds
+  ##
   viaSsh:
     enabled: false
     credentials:
       ssh:
-        # A multi-line string
-        value: # |-
+        ## A multi-line string
+        value: |-
       known_hosts:
-        # A multi-line string
-        value: # |-
-      # Or set the git-sync Known Hosts file and SSH Private Key
-      # from a pre-existing K8s secret
+        ## A multi-line string
+        value: |-
+      ## Or set the git-sync Known Hosts file and SSH Private Key
+      ## from a pre-existing K8s secret
       existingSecret: ""
 
 postgres:
@@ -96,21 +123,35 @@ postgres:
   image: postgres
   tag: 9.6.15
   pullPolicy: IfNotPresent
-  # "credentials" section is going to be added when
-  # this bug with the PuppetDB Docker image is resolved.
-  # Gitissue:
+  resources: {}
+  #  requests:
+  #    memory: 512Mi
+  #    cpu: 500m
+  #  limits:
+  #    memory: 768Mi
+  #    cpu: 750m
+  ## "credentials" section is going to be added when
+  ## this bug with the PuppetDB Docker image is resolved.
+  ## Gitissue:
 
 puppetdb:
   name: puppetdb
   image: puppet/puppetdb
   tag: 6.6.0
   pullPolicy: IfNotPresent
+  resources: {}
+  #  requests:
+  #    memory: 512Mi
+  #    cpu: 500m
+  #  limits:
+  #    memory: 768Mi
+  #    cpu: 750m
   credentials:
     username: puppetdb
-    # Override the 20-char random "password" in templates/puppetdb-secret.yaml
+    ## Override the 20-char random "password" in templates/puppetdb-secret.yaml
     password:
       value: ""
-      # Or set the PuppetDB password from a pre-existing K8s secret
+      ## Or set the PuppetDB password from a pre-existing K8s secret
       existingSecret: ""
       existingSecretKey: ""
 
@@ -119,14 +160,22 @@ puppetboard:
   image: puppet/puppetboard
   tag: 0.3.0
   pullPolicy: IfNotPresent
+  resources: {}
+  #  requests:
+  #    memory: 368Mi
+  #    cpu: 300m
+  #  limits:
+  #    memory: 768Mi
+  #    cpu: 500m
 
 hiera:
   name: hiera
-  hieradataurl: "" # git@github.com:$SOMEUSER/hieradata.git
-  # If "hiera.config" is set, the pre-filled value of ":eyaml::datadir:"
-  # must be kept unchanged.
-  # A multi-line string
-  config: # |-
+  hieradataurl: ""   # git@github.com:$SOMEUSER/hieradata.git
+  ## If "hiera.config" is set, the pre-filled value of ":eyaml::datadir:"
+  ## must be kept unchanged.
+  ## A multi-line string
+  ##
+  config: |-
   #  :backends:
   #    - eyaml
   #  :hierarchy:
@@ -137,9 +186,11 @@ hiera:
   #    :pkcs7_private_key: /etc/puppetlabs/puppet/keys/private_key.pkcs7.pem
   #    :pkcs7_public_key:  /etc/puppetlabs/puppet/keys/public_key.pkcs7.pem
   eyaml:
-    # A multi-line string
-    private_key: # |-
-                  # SOMEPRIVKEY
-    # A multi-line string
-    public_key: # |-
+    ## A multi-line string
+    ##
+    private_key: |-
+                 # SOMEPRIVKEY
+    ## A multi-line string
+    ##
+    public_key: |-
                 # SOMEPUBKEY

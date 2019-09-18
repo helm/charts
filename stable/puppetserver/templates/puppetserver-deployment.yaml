@@ -22,6 +22,8 @@ spec:
         - name: create-puppet-r10k-dir
           image: "{{.Values.puppetserver.image}}:{{.Values.puppetserver.tag}}"
           imagePullPolicy: "{{.Values.puppetserver.pullPolicy}}"
+          resources:
+          {{ toYaml .Values.puppetserver.resources | nindent 12 }}
           command: ["sh", "-c", "mkdir -p /etc/puppetlabs/code/environments"]
           securityContext:
             runAsUser: 999 # "puppet" user
@@ -32,6 +34,8 @@ spec:
         - name: {{ template "puppetserver.fullname" . }}
           image: "{{.Values.puppetserver.image}}:{{.Values.puppetserver.tag}}"
           imagePullPolicy: "{{.Values.puppetserver.pullPolicy}}"
+          resources:
+          {{ toYaml .Values.puppetserver.resources | nindent 12 }}
           env:
             # necessary to set certname and server in puppet.conf, required by
             # puppetserver ca cli application
@@ -74,6 +78,8 @@ spec:
         - name: git-sync-hiera
           image: "{{.Values.git_sync.image}}:{{.Values.git_sync.tag}}"
           imagePullPolicy: "{{.Values.git_sync.pullPolicy}}"
+          resources:
+          {{ toYaml .Values.git_sync.resources | nindent 12 }}
           args:
             {{- if and (.Values.git_sync.viaSsh.enabled) (.Values.git_sync.viaSsh.credentials.ssh.value) (.Values.git_sync.viaSsh.credentials.known_hosts.value) }}
             - --ssh

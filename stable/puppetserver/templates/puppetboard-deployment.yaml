@@ -20,6 +20,8 @@ spec:
         - name: puppetboard
           image: "{{.Values.puppetboard.image}}:{{.Values.puppetboard.tag}}"
           imagePullPolicy: "{{.Values.puppetboard.pullPolicy}}"
+          resources:
+          {{ toYaml .Values.puppetserver.resources | nindent 12 }}
           ports:
           env:
             - name: "PUPPETDB_HOST"

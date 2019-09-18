@@ -20,6 +20,8 @@ spec:
         - name: postgres
           image: "{{.Values.postgres.image}}:{{.Values.postgres.tag}}"
           imagePullPolicy: "{{.Values.postgres.pullPolicy}}"
+          resources:
+          {{ toYaml .Values.puppetserver.resources | nindent 12 }}
           env:
             - name: POSTGRES_PASSWORD
               valueFrom:
