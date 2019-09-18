@@ -42,6 +42,8 @@ tolerations: []
 
 affinity: {}
 
+securityContext: {}
+
 podLabels: {}
 
 podAnnotations: {}
