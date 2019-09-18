@@ -2,7 +2,11 @@
 apiVersion: v1
 kind: Service
 metadata:
+  {{- if .Values.service.name }}
+  name: {{ .Values.service.name }}
+  {{- else }}
   name: {{ template "mongodb.fullname" . }}
+  {{- end }}
   labels:
     app: {{ template "mongodb.name" . }}
     chart: {{ template "mongodb.chart" . }}

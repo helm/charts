@@ -116,6 +116,9 @@ clusterDomain: cluster.local
 
 ## Kubernetes service type
 service:
+  ## Setting the name of a service explicitly is optional und not recommended. But if you want
+  ## to make it easier for a application to find the database you can set it.
+  # name: svc-mongo 
   annotations: {}
   type: ClusterIP
   # clusterIP: None
