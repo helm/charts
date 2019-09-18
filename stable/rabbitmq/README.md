@@ -94,6 +94,7 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `securityContext.enabled`            | Enable security context                          | `true`                                                  |
 | `securityContext.fsGroup`            | Group ID for the container                       | `1001`                                                  |
 | `securityContext.runAsUser`          | User ID for the container                        | `1001`                                                  |
+| `securityContext.extra`              | Extra securityContext configuration              | {}                                                      |
 | `resources`                          | resource needs and limits to apply to the pod    | {}                                                      |
 | `replicas`                           | Replica count                                    | `1`                                                     |
 | `priorityClassName`                  | Pod priority class name                          | ``                                                      |
