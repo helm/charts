@@ -178,6 +178,9 @@ spec:
         - name: {{ .secretName | replace "." "-"}}
           mountPath: {{ .mountPath }}
         {{- end }}
+        ports:
+        - containerPort: 9410
+          name: metrics
       {{- end }}
       {{- if .Values.affinity }}
       affinity:

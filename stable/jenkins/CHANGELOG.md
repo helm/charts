@@ -6,6 +6,93 @@ numbering uses [semantic versioning](http://semver.org).
 
 NOTE: The change log until version 1.5.7 is auto generated based on git commits. Those include a reference to the git commit to be able to get more details.
 
+## 1.7.1
+
+Update the default requirements for jenkins-slave to 512Mi which fixes frequently encountered [issue #3723](https://github.com/helm/charts/issues/3723)
+
+## 1.7.0
+
+[Jenkins Configuration as Code Plugin](https://github.com/jenkinsci/configuration-as-code-plugin) default configuration can now be enabled via `master.JCasC.defaultConfig`.
+
+JCasC default configuration includes:
+  - Jenkins url
+  - Admin email `master.jenkinsAdminEmail`
+  - crumbIssuer
+  - disableRememberMe: false
+  - mode: NORMAL
+  - numExecutors: {{ .Values.master.numExecutors }}
+  - projectNamingStrategy: "standard"
+  - kubernetes plugin
+    - containerCapStr via `agent.containerCap`
+    - jenkinsTunnel
+    - jenkinsUrl
+    - maxRequestsPerHostStr: "32"
+    - name: "kubernetes"
+    - namespace
+    - serverUrl: "https://kubernetes.default"
+    - template
+      - containers
+        - alwaysPullImage: `agent.alwaysPullImage`
+        - args
+        - command
+        - envVars
+        - image: `agent.image:agent.imageTag`
+        - name: `.agent.sideContainerName`
+        - privileged: `.agent.privileged`
+        - resourceLimitCpu: `agent.resources.limits.cpu`
+        - resourceLimitMemory: `agent.resources.limits.memory`
+        - resourceRequestCpu: `agent.resources.requests.cpu`
+        - resourceRequestMemory: `agent.resources.requests.memory`
+        - ttyEnabled: `agent.TTYEnabled`
+        - workingDir: "/home/jenkins"
+      - idleMinutes: `agent.idleMinutes`
+      - instanceCap: 2147483647
+      - imagePullSecrets:
+        - name: `.agent.imagePullSecretName`
+      - label
+      - name
+      - nodeUsageMode: "NORMAL"
+      - podRetention: `agent.podRetention`
+      - serviceAccount
+      - showRawYaml: true
+      - slaveConnectTimeoutStr: "100"
+      - yaml: `agent.yamlTemplate`
+      - yamlMergeStrategy: "override"
+  - security:
+    - apiToken:
+      - creationOfLegacyTokenEnabled: false
+      - tokenGenerationOnCreationEnabled: false
+      - usageStatisticsEnabled: true
+
+Example `values.yaml` which enables JCasC, it's default config and configAutoReload:
+
+```
+master:
+  JCasC:
+    enabled: true
+    defaultConfig: true
+  sidecars:
+    configAutoReload:
+      enabled: true
+```
+
+add master.JCasC.defaultConfig and configure location
+
+- JCasC configuration is stored in template `jenkins.casc.defaults`
+  so that it can be used in `config.yaml` and `jcasc-config.yaml`
+  depending on if configAutoReload is enabled or not
+
+- Jenkins Location (URL) is configured to provide a startin point
+  for the config
+
+## 1.6.1
+
+Print error message when `master.sidecars.configAutoReload.enabled` is `true`, but the admin user can't be found to configure the SSH key.
+
+## 1.6.0
+
+Add support for Google Cloud Storage for backup CronJob (migrating from nuvo/kube-tasks to maorfr/kube-tasks)
+
 ## 1.5.9
 
 Fixed a warning when sidecar resources are provided through a parent chart or override values

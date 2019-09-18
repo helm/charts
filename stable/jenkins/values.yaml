@@ -200,6 +200,7 @@ master:
   # etc.  Best reference is https://<jenkins_url>/configuration-as-code/reference.  The example below creates a welcome message:
   JCasC:
     enabled: false
+    defaultConfig: false
     pluginVersion: "1.27"
     # it's only used when plugin version is <=1.18 for later version the
     # configuration as code support plugin is no longer needed
@@ -363,11 +364,11 @@ agent:
   privileged: false
   resources:
     requests:
-      cpu: "200m"
-      memory: "256Mi"
+      cpu: "512m"
+      memory: "512Mi"
     limits:
-      cpu: "200m"
-      memory: "256Mi"
+      cpu: "512m"
+      memory: "512Mi"
   # You may want to change this to true while testing a new image
   alwaysPullImage: false
   # Controls how agent pods are retained after the Jenkins build completes
@@ -409,7 +410,7 @@ agent:
   # Raw yaml template for the Pod. For example this allows usage of toleration for agent pods.
   # https://github.com/jenkinsci/kubernetes-plugin#using-yaml-to-define-pod-templates
   # https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
-  yamlTemplate:
+  yamlTemplate: ""
   # yamlTemplate: |-
   #   apiVersion: v1
   #   kind: Pod
@@ -470,7 +471,7 @@ serviceAccountAgent:
   annotations: {}
 
 ## Backup cronjob configuration
-## Ref: https://github.com/nuvo/kube-tasks
+## Ref: https://github.com/maorfr/kube-tasks
 backup:
   # Backup must use RBAC
   # So by enabling backup you are enabling RBAC specific for backup
@@ -485,10 +486,10 @@ backup:
     # Can also be done using environment variables
     iam.amazonaws.com/role: "jenkins"
   image:
-    repository: "nuvo/kube-tasks"
-    tag: "0.1.2"
+    repository: "maorfr/kube-tasks"
+    tag: "0.2.0"
   # Additional arguments for kube-tasks
-  # Ref: https://github.com/nuvo/kube-tasks#simple-backup
+  # Ref: https://github.com/maorfr/kube-tasks#simple-backup
   extraArgs: []
   # Add existingSecret for AWS credentials
   existingSecret: {}
@@ -511,8 +512,8 @@ backup:
       memory: 1Gi
       cpu: 1
   # Destination to store the backup artifacts
-  # Supported cloud storage services: AWS S3, Minio S3, Azure Blob Storage
+  # Supported cloud storage services: AWS S3, Minio S3, Azure Blob Storage, Google Cloud Storage
   # Additional support can added. Visit this repository for details
-  # Ref: https://github.com/nuvo/skbn
-  destination: "s3://nuvo-jenkins-data/backup"
+  # Ref: https://github.com/maorfr/skbn
+  destination: "s3://jenkins-data/backup"
 checkDeprecation: true

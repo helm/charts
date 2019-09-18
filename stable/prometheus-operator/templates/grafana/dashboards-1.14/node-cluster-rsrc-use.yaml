@@ -1,11 +1,12 @@
-# Generated from 'k8s-node-rsrc-use' from https://raw.githubusercontent.com/coreos/kube-prometheus/master/manifests/grafana-dashboardDefinitions.yaml
+# Generated from 'node-cluster-rsrc-use' from https://raw.githubusercontent.com/coreos/kube-prometheus/master/manifests/grafana-dashboardDefinitions.yaml
 # Do not change in-place! In order to change this file first read following link:
 # https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
-{{- if and (semverCompare ">=1.14.0-0" .Capabilities.KubeVersion.GitVersion) (semverCompare "<1.16.0-0" .Capabilities.KubeVersion.GitVersion) .Values.grafana.enabled .Values.grafana.defaultDashboardsEnabled }}
+{{- $kubeTargetVersion := default .Capabilities.KubeVersion.GitVersion .Values.kubeTargetVersionOverride }}
+{{- if and (semverCompare ">=1.14.0-0" $kubeTargetVersion) (semverCompare "<1.16.0-0" $kubeTargetVersion) .Values.grafana.enabled .Values.grafana.defaultDashboardsEnabled .Values.nodeExporter.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ printf "%s-%s" (include "prometheus-operator.fullname" $) "k8s-node-rsrc-use" | trunc 63 | trimSuffix "-" }}
+  name: {{ printf "%s-%s" (include "prometheus-operator.fullname" $) "node-cluster-rsrc-use" | trunc 63 | trimSuffix "-" }}
   labels:
     {{- if $.Values.grafana.sidecar.dashboards.label }}
     {{ $.Values.grafana.sidecar.dashboards.label }}: "1"
@@ -13,7 +14,7 @@ metadata:
     app: {{ template "prometheus-operator.name" $ }}-grafana
 {{ include "prometheus-operator.labels" $ | indent 4 }}
 data:
-  k8s-node-rsrc-use.json: |-
+  node-cluster-rsrc-use.json: |-
     {
         "annotations": {
             "list": [
@@ -41,7 +42,7 @@ data:
                         "dashLength": 10,
                         "dashes": false,
                         "datasource": "$datasource",
-                        "fill": 1,
+                        "fill": 10,
                         "id": 1,
                         "legend": {
                             "avg": false,
@@ -53,7 +54,7 @@ data:
                             "values": false
                         },
                         "lines": true,
-                        "linewidth": 1,
+                        "linewidth": 0,
                         "links": [
 
                         ],
@@ -67,15 +68,15 @@ data:
                         ],
                         "spaceLength": 10,
                         "span": 6,
-                        "stack": false,
+                        "stack": true,
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "node:node_cpu_utilisation:avg1m{cluster=\"$cluster\", node=\"$node\"}",
+                                "expr": "(\n  instance:node_cpu_utilisation:rate1m{job=\"node-exporter\"}\n*\n  instance:node_num_cpu:sum{job=\"node-exporter\"}\n/ ignoring (instance) group_left\n  sum without (instance) (instance:node_num_cpu:sum{job=\"node-exporter\"})\n)\n",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "Utilisation",
-                                "legendLink": null,
+                                "legendFormat": "{{`{{instance}}`}}",
+                                "legendLink": "/dashboard/file/node-rsrc-use.json",
                                 "step": 10
                             }
                         ],
@@ -105,7 +106,7 @@ data:
                                 "format": "percentunit",
                                 "label": null,
                                 "logBase": 1,
-                                "max": null,
+                                "max": 1,
                                 "min": 0,
                                 "show": true
                             },
@@ -127,7 +128,7 @@ data:
                         "dashLength": 10,
                         "dashes": false,
                         "datasource": "$datasource",
-                        "fill": 1,
+                        "fill": 10,
                         "id": 2,
                         "legend": {
                             "avg": false,
@@ -139,7 +140,7 @@ data:
                             "values": false
                         },
                         "lines": true,
-                        "linewidth": 1,
+                        "linewidth": 0,
                         "links": [
 
                         ],
@@ -153,15 +154,15 @@ data:
                         ],
                         "spaceLength": 10,
                         "span": 6,
-                        "stack": false,
+                        "stack": true,
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "node:node_cpu_saturation_load1:{cluster=\"$cluster\", node=\"$node\"}",
+                                "expr": "(\n  instance:node_load1_per_cpu:ratio{job=\"node-exporter\"}\n/ ignoring (instance) group_left\n  count without (instance) (instance:node_load1_per_cpu:ratio{job=\"node-exporter\"})\n)\n",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "Saturation",
-                                "legendLink": null,
+                                "legendFormat": "{{`{{instance}}`}}",
+                                "legendLink": "/dashboard/file/node-rsrc-use.json",
                                 "step": 10
                             }
                         ],
@@ -170,7 +171,7 @@ data:
                         ],
                         "timeFrom": null,
                         "timeShift": null,
-                        "title": "CPU Saturation (Load1)",
+                        "title": "CPU Saturation (load1 per CPU)",
                         "tooltip": {
                             "shared": false,
                             "sort": 0,
@@ -191,7 +192,7 @@ data:
                                 "format": "percentunit",
                                 "label": null,
                                 "logBase": 1,
-                                "max": null,
+                                "max": 1,
                                 "min": 0,
                                 "show": true
                             },
@@ -225,7 +226,7 @@ data:
                         "dashLength": 10,
                         "dashes": false,
                         "datasource": "$datasource",
-                        "fill": 1,
+                        "fill": 10,
                         "id": 3,
                         "legend": {
                             "avg": false,
@@ -237,7 +238,7 @@ data:
                             "values": false
                         },
                         "lines": true,
-                        "linewidth": 1,
+                        "linewidth": 0,
                         "links": [
 
                         ],
@@ -251,15 +252,15 @@ data:
                         ],
                         "spaceLength": 10,
                         "span": 6,
-                        "stack": false,
+                        "stack": true,
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "node:node_memory_utilisation:{cluster=\"$cluster\", node=\"$node\"}",
+                                "expr": "(\n  instance:node_memory_utilisation:ratio{job=\"node-exporter\"}\n/ ignoring (instance) group_left\n  count without (instance) (instance:node_memory_utilisation:ratio{job=\"node-exporter\"})\n)\n",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "Memory",
-                                "legendLink": null,
+                                "legendFormat": "{{`{{instance}}`}}",
+                                "legendLink": "/dashboard/file/node-rsrc-use.json",
                                 "step": 10
                             }
                         ],
@@ -289,7 +290,7 @@ data:
                                 "format": "percentunit",
                                 "label": null,
                                 "logBase": 1,
-                                "max": null,
+                                "max": 1,
                                 "min": 0,
                                 "show": true
                             },
@@ -311,7 +312,7 @@ data:
                         "dashLength": 10,
                         "dashes": false,
                         "datasource": "$datasource",
-                        "fill": 1,
+                        "fill": 10,
                         "id": 4,
                         "legend": {
                             "avg": false,
@@ -323,7 +324,7 @@ data:
                             "values": false
                         },
                         "lines": true,
-                        "linewidth": 1,
+                        "linewidth": 0,
                         "links": [
 
                         ],
@@ -337,15 +338,15 @@ data:
                         ],
                         "spaceLength": 10,
                         "span": 6,
-                        "stack": false,
+                        "stack": true,
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "node:node_memory_swap_io_bytes:sum_rate{cluster=\"$cluster\", node=\"$node\"}",
+                                "expr": "instance:node_memory_swap_io_pages:rate1m{job=\"node-exporter\"}",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "Swap IO",
-                                "legendLink": null,
+                                "legendFormat": "{{`{{instance}}`}}",
+                                "legendLink": "/dashboard/file/node-rsrc-use.json",
                                 "step": 10
                             }
                         ],
@@ -354,7 +355,7 @@ data:
                         ],
                         "timeFrom": null,
                         "timeShift": null,
-                        "title": "Memory Saturation (Swap I/O)",
+                        "title": "Memory Saturation (Swapped Pages)",
                         "tooltip": {
                             "shared": false,
                             "sort": 0,
@@ -372,7 +373,7 @@ data:
                         },
                         "yaxes": [
                             {
-                                "format": "Bps",
+                                "format": "rps",
                                 "label": null,
                                 "logBase": 1,
                                 "max": null,
@@ -409,7 +410,7 @@ data:
                         "dashLength": 10,
                         "dashes": false,
                         "datasource": "$datasource",
-                        "fill": 1,
+                        "fill": 10,
                         "id": 5,
                         "legend": {
                             "avg": false,
@@ -421,7 +422,223 @@ data:
                             "values": false
                         },
                         "lines": true,
-                        "linewidth": 1,
+                        "linewidth": 0,
+                        "links": [
+
+                        ],
+                        "nullPointMode": "null as zero",
+                        "percentage": false,
+                        "pointradius": 5,
+                        "points": false,
+                        "renderer": "flot",
+                        "seriesOverrides": [
+                            {
+                                "alias": "/ Receive/",
+                                "stack": "A"
+                            },
+                            {
+                                "alias": "/ Transmit/",
+                                "stack": "B",
+                                "transform": "negative-Y"
+                            }
+                        ],
+                        "spaceLength": 10,
+                        "span": 6,
+                        "stack": true,
+                        "steppedLine": false,
+                        "targets": [
+                            {
+                                "expr": "instance:node_network_receive_bytes_excluding_lo:rate1m{job=\"node-exporter\"}",
+                                "format": "time_series",
+                                "intervalFactor": 2,
+                                "legendFormat": "{{`{{instance}}`}} Receive",
+                                "legendLink": "/dashboard/file/node-rsrc-use.json",
+                                "step": 10
+                            },
+                            {
+                                "expr": "instance:node_network_transmit_bytes_excluding_lo:rate1m{job=\"node-exporter\"}",
+                                "format": "time_series",
+                                "intervalFactor": 2,
+                                "legendFormat": "{{`{{instance}}`}} Transmit",
+                                "legendLink": "/dashboard/file/node-rsrc-use.json",
+                                "step": 10
+                            }
+                        ],
+                        "thresholds": [
+
+                        ],
+                        "timeFrom": null,
+                        "timeShift": null,
+                        "title": "Net Utilisation (Bytes Receive/Transmit)",
+                        "tooltip": {
+                            "shared": false,
+                            "sort": 0,
+                            "value_type": "individual"
+                        },
+                        "type": "graph",
+                        "xaxis": {
+                            "buckets": null,
+                            "mode": "time",
+                            "name": null,
+                            "show": true,
+                            "values": [
+
+                            ]
+                        },
+                        "yaxes": [
+                            {
+                                "format": "Bps",
+                                "label": null,
+                                "logBase": 1,
+                                "max": null,
+                                "min": null,
+                                "show": true
+                            },
+                            {
+                                "format": "short",
+                                "label": null,
+                                "logBase": 1,
+                                "max": null,
+                                "min": null,
+                                "show": false
+                            }
+                        ]
+                    },
+                    {
+                        "aliasColors": {
+
+                        },
+                        "bars": false,
+                        "dashLength": 10,
+                        "dashes": false,
+                        "datasource": "$datasource",
+                        "fill": 10,
+                        "id": 6,
+                        "legend": {
+                            "avg": false,
+                            "current": false,
+                            "max": false,
+                            "min": false,
+                            "show": true,
+                            "total": false,
+                            "values": false
+                        },
+                        "lines": true,
+                        "linewidth": 0,
+                        "links": [
+
+                        ],
+                        "nullPointMode": "null as zero",
+                        "percentage": false,
+                        "pointradius": 5,
+                        "points": false,
+                        "renderer": "flot",
+                        "seriesOverrides": [
+                            {
+                                "alias": "/ Receive/",
+                                "stack": "A"
+                            },
+                            {
+                                "alias": "/ Transmit/",
+                                "stack": "B",
+                                "transform": "negative-Y"
+                            }
+                        ],
+                        "spaceLength": 10,
+                        "span": 6,
+                        "stack": true,
+                        "steppedLine": false,
+                        "targets": [
+                            {
+                                "expr": "instance:node_network_receive_drop_excluding_lo:rate1m{job=\"node-exporter\"}",
+                                "format": "time_series",
+                                "intervalFactor": 2,
+                                "legendFormat": "{{`{{instance}}`}} Receive",
+                                "legendLink": "/dashboard/file/node-rsrc-use.json",
+                                "step": 10
+                            },
+                            {
+                                "expr": "instance:node_network_transmit_drop_excluding_lo:rate1m{job=\"node-exporter\"}",
+                                "format": "time_series",
+                                "intervalFactor": 2,
+                                "legendFormat": "{{`{{instance}}`}} Transmit",
+                                "legendLink": "/dashboard/file/node-rsrc-use.json",
+                                "step": 10
+                            }
+                        ],
+                        "thresholds": [
+
+                        ],
+                        "timeFrom": null,
+                        "timeShift": null,
+                        "title": "Net Saturation (Drops Receive/Transmit)",
+                        "tooltip": {
+                            "shared": false,
+                            "sort": 0,
+                            "value_type": "individual"
+                        },
+                        "type": "graph",
+                        "xaxis": {
+                            "buckets": null,
+                            "mode": "time",
+                            "name": null,
+                            "show": true,
+                            "values": [
+
+                            ]
+                        },
+                        "yaxes": [
+                            {
+                                "format": "rps",
+                                "label": null,
+                                "logBase": 1,
+                                "max": null,
+                                "min": null,
+                                "show": true
+                            },
+                            {
+                                "format": "short",
+                                "label": null,
+                                "logBase": 1,
+                                "max": null,
+                                "min": null,
+                                "show": false
+                            }
+                        ]
+                    }
+                ],
+                "repeat": null,
+                "repeatIteration": null,
+                "repeatRowId": null,
+                "showTitle": true,
+                "title": "Network",
+                "titleSize": "h6"
+            },
+            {
+                "collapse": false,
+                "height": "250px",
+                "panels": [
+                    {
+                        "aliasColors": {
+
+                        },
+                        "bars": false,
+                        "dashLength": 10,
+                        "dashes": false,
+                        "datasource": "$datasource",
+                        "fill": 10,
+                        "id": 7,
+                        "legend": {
+                            "avg": false,
+                            "current": false,
+                            "max": false,
+                            "min": false,
+                            "show": true,
+                            "total": false,
+                            "values": false
+                        },
+                        "lines": true,
+                        "linewidth": 0,
                         "links": [
 
                         ],
@@ -435,15 +652,15 @@ data:
                         ],
                         "spaceLength": 10,
                         "span": 6,
-                        "stack": false,
+                        "stack": true,
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "node:node_disk_utilisation:avg_irate{cluster=\"$cluster\", node=\"$node\"}",
+                                "expr": "(\n  instance_device:node_disk_io_time_seconds:rate1m{job=\"node-exporter\"}\n/ ignoring (instance, device) group_left\n  count without (instance, device) (instance_device:node_disk_io_time_seconds:rate1m{job=\"node-exporter\"})\n)\n",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "Utilisation",
-                                "legendLink": null,
+                                "legendFormat": "{{`{{instance}}`}} {{`{{device}}`}}",
+                                "legendLink": "/dashboard/file/node-rsrc-use.json",
                                 "step": 10
                             }
                         ],
@@ -473,7 +690,7 @@ data:
                                 "format": "percentunit",
                                 "label": null,
                                 "logBase": 1,
-                                "max": null,
+                                "max": 1,
                                 "min": 0,
                                 "show": true
                             },
@@ -495,8 +712,8 @@ data:
                         "dashLength": 10,
                         "dashes": false,
                         "datasource": "$datasource",
-                        "fill": 1,
-                        "id": 6,
+                        "fill": 10,
+                        "id": 8,
                         "legend": {
                             "avg": false,
                             "current": false,
@@ -507,7 +724,7 @@ data:
                             "values": false
                         },
                         "lines": true,
-                        "linewidth": 1,
+                        "linewidth": 0,
                         "links": [
 
                         ],
@@ -521,15 +738,15 @@ data:
                         ],
                         "spaceLength": 10,
                         "span": 6,
-                        "stack": false,
+                        "stack": true,
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "node:node_disk_saturation:avg_irate{cluster=\"$cluster\", node=\"$node\"}",
+                                "expr": "(\n  instance_device:node_disk_io_time_weighted_seconds:rate1m{job=\"node-exporter\"}\n/ ignoring (instance, device) group_left\n  count without (instance, device) (instance_device:node_disk_io_time_weighted_seconds:rate1m{job=\"node-exporter\"})\n)\n",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "Saturation",
-                                "legendLink": null,
+                                "legendFormat": "{{`{{instance}}`}} {{`{{device}}`}}",
+                                "legendLink": "/dashboard/file/node-rsrc-use.json",
                                 "step": 10
                             }
                         ],
@@ -559,7 +776,7 @@ data:
                                 "format": "percentunit",
                                 "label": null,
                                 "logBase": 1,
-                                "max": null,
+                                "max": 1,
                                 "min": 0,
                                 "show": true
                             },
@@ -578,7 +795,7 @@ data:
                 "repeatIteration": null,
                 "repeatRowId": null,
                 "showTitle": true,
-                "title": "Disk",
+                "title": "Disk IO",
                 "titleSize": "h6"
             },
             {
@@ -593,191 +810,7 @@ data:
                         "dashLength": 10,
                         "dashes": false,
                         "datasource": "$datasource",
-                        "fill": 1,
-                        "id": 7,
-                        "legend": {
-                            "avg": false,
-                            "current": false,
-                            "max": false,
-                            "min": false,
-                            "show": true,
-                            "total": false,
-                            "values": false
-                        },
-                        "lines": true,
-                        "linewidth": 1,
-                        "links": [
-
-                        ],
-                        "nullPointMode": "null as zero",
-                        "percentage": false,
-                        "pointradius": 5,
-                        "points": false,
-                        "renderer": "flot",
-                        "seriesOverrides": [
-
-                        ],
-                        "spaceLength": 10,
-                        "span": 6,
-                        "stack": false,
-                        "steppedLine": false,
-                        "targets": [
-                            {
-                                "expr": "node:node_net_utilisation:sum_irate{cluster=\"$cluster\", node=\"$node\"}",
-                                "format": "time_series",
-                                "intervalFactor": 2,
-                                "legendFormat": "Utilisation",
-                                "legendLink": null,
-                                "step": 10
-                            }
-                        ],
-                        "thresholds": [
-
-                        ],
-                        "timeFrom": null,
-                        "timeShift": null,
-                        "title": "Net Utilisation (Transmitted)",
-                        "tooltip": {
-                            "shared": false,
-                            "sort": 0,
-                            "value_type": "individual"
-                        },
-                        "type": "graph",
-                        "xaxis": {
-                            "buckets": null,
-                            "mode": "time",
-                            "name": null,
-                            "show": true,
-                            "values": [
-
-                            ]
-                        },
-                        "yaxes": [
-                            {
-                                "format": "Bps",
-                                "label": null,
-                                "logBase": 1,
-                                "max": null,
-                                "min": 0,
-                                "show": true
-                            },
-                            {
-                                "format": "short",
-                                "label": null,
-                                "logBase": 1,
-                                "max": null,
-                                "min": null,
-                                "show": false
-                            }
-                        ]
-                    },
-                    {
-                        "aliasColors": {
-
-                        },
-                        "bars": false,
-                        "dashLength": 10,
-                        "dashes": false,
-                        "datasource": "$datasource",
-                        "fill": 1,
-                        "id": 8,
-                        "legend": {
-                            "avg": false,
-                            "current": false,
-                            "max": false,
-                            "min": false,
-                            "show": true,
-                            "total": false,
-                            "values": false
-                        },
-                        "lines": true,
-                        "linewidth": 1,
-                        "links": [
-
-                        ],
-                        "nullPointMode": "null as zero",
-                        "percentage": false,
-                        "pointradius": 5,
-                        "points": false,
-                        "renderer": "flot",
-                        "seriesOverrides": [
-
-                        ],
-                        "spaceLength": 10,
-                        "span": 6,
-                        "stack": false,
-                        "steppedLine": false,
-                        "targets": [
-                            {
-                                "expr": "node:node_net_saturation:sum_irate{cluster=\"$cluster\", node=\"$node\"}",
-                                "format": "time_series",
-                                "intervalFactor": 2,
-                                "legendFormat": "Saturation",
-                                "legendLink": null,
-                                "step": 10
-                            }
-                        ],
-                        "thresholds": [
-
-                        ],
-                        "timeFrom": null,
-                        "timeShift": null,
-                        "title": "Net Saturation (Dropped)",
-                        "tooltip": {
-                            "shared": false,
-                            "sort": 0,
-                            "value_type": "individual"
-                        },
-                        "type": "graph",
-                        "xaxis": {
-                            "buckets": null,
-                            "mode": "time",
-                            "name": null,
-                            "show": true,
-                            "values": [
-
-                            ]
-                        },
-                        "yaxes": [
-                            {
-                                "format": "Bps",
-                                "label": null,
-                                "logBase": 1,
-                                "max": null,
-                                "min": 0,
-                                "show": true
-                            },
-                            {
-                                "format": "short",
-                                "label": null,
-                                "logBase": 1,
-                                "max": null,
-                                "min": null,
-                                "show": false
-                            }
-                        ]
-                    }
-                ],
-                "repeat": null,
-                "repeatIteration": null,
-                "repeatRowId": null,
-                "showTitle": true,
-                "title": "Net",
-                "titleSize": "h6"
-            },
-            {
-                "collapse": false,
-                "height": "250px",
-                "panels": [
-                    {
-                        "aliasColors": {
-
-                        },
-                        "bars": false,
-                        "dashLength": 10,
-                        "dashes": false,
-                        "datasource": "$datasource",
-                        "fill": 1,
+                        "fill": 10,
                         "id": 9,
                         "legend": {
                             "avg": false,
@@ -789,7 +822,7 @@ data:
                             "values": false
                         },
                         "lines": true,
-                        "linewidth": 1,
+                        "linewidth": 0,
                         "links": [
 
                         ],
@@ -803,15 +836,15 @@ data:
                         ],
                         "spaceLength": 10,
                         "span": 12,
-                        "stack": false,
+                        "stack": true,
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "node:node_filesystem_usage:{cluster=\"$cluster\"}\n* on (namespace, pod) group_left (node) node_namespace_pod:kube_pod_info:{cluster=\"$cluster\", node=\"$node\"}\n",
+                                "expr": "(\n  sum without (device) (\n    max without (fstype, mountpoint) (\n      node_filesystem_size_bytes{job=\"node-exporter\", } - node_filesystem_avail_bytes{job=\"node-exporter\", }\n    )\n  ) \n/ ignoring (instance) group_left\n  sum without (instance, device) (\n    max without (fstype, mountpoint) (\n      node_filesystem_size_bytes{job=\"node-exporter\", }\n    )\n  )\n)  \n",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{device}}`}}",
-                                "legendLink": null,
+                                "legendFormat": "{{`{{instance}}`}}",
+                                "legendLink": "/dashboard/file/node-rsrc-use.json",
                                 "step": 10
                             }
                         ],
@@ -820,7 +853,7 @@ data:
                         ],
                         "timeFrom": null,
                         "timeShift": null,
-                        "title": "Disk Utilisation",
+                        "title": "Disk Space Utilisation",
                         "tooltip": {
                             "shared": false,
                             "sort": 0,
@@ -841,7 +874,7 @@ data:
                                 "format": "percentunit",
                                 "label": null,
                                 "logBase": 1,
-                                "max": null,
+                                "max": 1,
                                 "min": 0,
                                 "show": true
                             },
@@ -860,14 +893,14 @@ data:
                 "repeatIteration": null,
                 "repeatRowId": null,
                 "showTitle": true,
-                "title": "Disk",
+                "title": "Disk Space",
                 "titleSize": "h6"
             }
         ],
         "schemaVersion": 14,
         "style": "dark",
         "tags": [
-            "kubernetes-mixin"
+
         ],
         "templating": {
             "list": [
@@ -886,60 +919,6 @@ data:
                     "refresh": 1,
                     "regex": "",
                     "type": "datasource"
-                },
-                {
-                    "allValue": null,
-                    "current": {
-                        "text": "prod",
-                        "value": "prod"
-                    },
-                    "datasource": "$datasource",
-                    "hide": 2,
-                    "includeAll": false,
-                    "label": "cluster",
-                    "multi": false,
-                    "name": "cluster",
-                    "options": [
-
-                    ],
-                    "query": "label_values(kube_node_info, cluster)",
-                    "refresh": 1,
-                    "regex": "",
-                    "sort": 2,
-                    "tagValuesQuery": "",
-                    "tags": [
-
-                    ],
-                    "tagsQuery": "",
-                    "type": "query",
-                    "useTags": false
-                },
-                {
-                    "allValue": null,
-                    "current": {
-                        "text": "prod",
-                        "value": "prod"
-                    },
-                    "datasource": "$datasource",
-                    "hide": 0,
-                    "includeAll": false,
-                    "label": "node",
-                    "multi": false,
-                    "name": "node",
-                    "options": [
-
-                    ],
-                    "query": "label_values(kube_node_info{cluster=\"$cluster\"}, node)",
-                    "refresh": 1,
-                    "regex": "",
-                    "sort": 2,
-                    "tagValuesQuery": "",
-                    "tags": [
-
-                    ],
-                    "tagsQuery": "",
-                    "type": "query",
-                    "useTags": false
                 }
             ]
         },
@@ -973,8 +952,8 @@ data:
             ]
         },
         "timezone": "",
-        "title": "Kubernetes / USE Method / Node",
-        "uid": "4ac4f123aae0ff6dbaf4f4f66120033b",
+        "title": "USE Method / Cluster",
+        "uid": "3e97d1d02672cdd0861f4c97c64f89b2",
         "version": 0
     }
 {{- end }}
