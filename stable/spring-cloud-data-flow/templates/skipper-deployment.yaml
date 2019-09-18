@@ -66,7 +66,11 @@ spec:
         - name: SPRING_CLOUD_KUBERNETES_SECRETS_PATHS
           value: /etc/secrets
         - name: SPRING_CLOUD_KUBERNETES_CONFIG_NAME
+          {{- if .Values.skipper.configMap }}
+          value: {{ .Values.skipper.configMap | quote }}
+          {{- else }}
           value: {{ template "scdf.fullname" . }}-skipper
+          {{- end }}
         {{- if or .Values.rabbitmq.enabled (index .Values "rabbitmq-ha" "enabled") }}
         - name: RABBITMQ_PASSWORD
           valueFrom:
@@ -78,6 +82,8 @@ spec:
               {{- end }}
               key: rabbitmq-password
         {{- end }}
+        - name: KUBERNETES_TRUST_CERTIFICATES
+          value: {{ .Values.skipper.trustCerts | quote }}
       volumes:
         {{- if or .Values.rabbitmq.enabled (index .Values "rabbitmq-ha" "enabled") }}
         - name: rabbitmq
@@ -110,7 +116,7 @@ spec:
             secretKeyRef:
               name: {{ printf "%s-%s" .Release.Name "mysql" | trunc 63 | trimSuffix "-" }}
               key: mysql-root-password
-        command: 
+        command:
         - 'sh'
         - '-c'
         - 'mysql -h {{ template "scdf.database.host" . }} -P {{ template "scdf.database.port" . }} -u root -e "CREATE DATABASE IF NOT EXISTS {{ template "scdf.database.skipper" . }};"'

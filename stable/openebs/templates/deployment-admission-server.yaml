@@ -8,8 +8,13 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     component: admission-webhook
+    openebs.io/component-name: admission-webhook
+    openebs.io/version: {{ .Values.release.version }}
 spec:
   replicas: {{ .Values.webhook.replicas }}
+  strategy:
+    type: "Recreate"
+    rollingUpdate: null
   selector:
     matchLabels:
       app: admission-webhook
@@ -18,6 +23,7 @@ spec:
       labels:
         app: admission-webhook
         name: admission-webhook
+        release: {{ .Release.Name }}
         openebs.io/version: {{ .Values.release.version }}
         openebs.io/component-name: admission-webhook
     spec:

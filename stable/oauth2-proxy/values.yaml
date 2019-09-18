@@ -40,6 +40,7 @@ image:
   # - name: myRegistryKeySecretName
 
 extraArgs: {}
+extraEnv: []
 
 # To authorize individual email addresses
 # That is part of extraArgs but since this needs special treatment we need to do a separate section

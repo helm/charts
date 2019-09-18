@@ -10,6 +10,15 @@ metadata:
     heritage: {{ .Release.Service | quote }}
 spec:
   replicas: {{ .Values.clusterAgent.replicas }}
+  strategy:
+{{- if .Values.clusterAgent.strategy }}
+{{ toYaml .Values.clusterAgent.strategy | indent 4 }}
+{{- else }}
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+{{- end }}
   selector:
     matchLabels:
       app: {{ template "datadog.fullname" . }}-cluster-agent
@@ -116,7 +125,7 @@ spec:
           - name: DD_CLUSTER_AGENT_AUTH_TOKEN
             valueFrom:
               secretKeyRef:
-                name: {{ template "datadog.fullname" . }}-cluster-agent
+                name: {{ template "clusterAgent.tokenSecretName" . }}
                 key: token
           - name: DD_KUBE_RESOURCES_NAMESPACE
             value: {{ .Release.Namespace }}

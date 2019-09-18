@@ -14,6 +14,9 @@ spec:
       labels:
         app: {{ template "falco.fullname" .}}
         role: security
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum/rules: {{ include (print $.Template.BasePath "/configmap-rules.yaml") . | sha256sum }}
     spec:
       serviceAccountName: {{ template "falco.serviceAccountName" .}}
       {{- if (and .Values.ebpf.enabled .Values.ebpf.settings.hostNetwork) }}
@@ -22,6 +25,10 @@ spec:
       {{- end }}
 {{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"
+{{- end }}
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
 {{- end }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
@@ -221,6 +228,8 @@ spec:
                 path: falco_rules.yaml
               - key: falco_rules.local.yaml
                 path: falco_rules.local.yaml
+              - key: application_rules.yaml
+                path: rules.available/application_rules.yaml
               {{- if .Values.falco.webserver.enabled }}
               - key: k8s_audit_rules.yaml
                 path: k8s_audit_rules.yaml

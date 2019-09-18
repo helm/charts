@@ -68,7 +68,7 @@ Parameter | Description | Default
 `controller.scope.enabled` | limit the scope of the ingress controller | `false` (watch all namespaces)
 `controller.scope.namespace` | namespace to watch for ingress | `""` (use the release namespace)
 `controller.extraArgs` | Additional controller container arguments | `{}`
-`controller.kind` | install as Deployment or DaemonSet | `Deployment`
+`controller.kind` | install as Deployment, DaemonSet or Both | `Deployment`
 `controller.autoscaling.enabled` | If true, creates Horizontal Pod Autoscaler | false
 `controller.autoscaling.minReplicas` | If autoscaling enabled, this field sets minimum replica count | `2`
 `controller.autoscaling.maxReplicas` | If autoscaling enabled, this field sets maximum replica count | `11`
@@ -94,6 +94,7 @@ Parameter | Description | Default
 `controller.service.labels` | labels for controller service | `{}`
 `controller.publishService.enabled` | if true, the controller will set the endpoint records on the ingress objects to reflect those on the service | `false`
 `controller.publishService.pathOverride` | override of the default publish-service name | `""`
+`controller.service.enabled` | if disabled no service will be created. This is especially useful when `controller.kind` is set to `DaemonSet` and `controller.daemonset.useHostPorts` is `true` | true
 `controller.service.clusterIP` | internal controller cluster service IP | `""`
 `controller.service.omitClusterIP` | To omit the `clusterIP` from the controller service | `false`
 `controller.service.externalIPs` | controller service external IP addresses. Do not set this when `controller.hostNetwork` is set to `true` and `kube-proxy` is used as there will be a port-conflict for port `80` | `[]`
@@ -138,6 +139,10 @@ Parameter | Description | Default
 `controller.metrics.serviceMonitor.additionalLabels` | Additional labels that can be used so ServiceMonitor will be discovered by Prometheus | `{}`
 `controller.metrics.serviceMonitor.namespace` | namespace where servicemonitor resource should be created | `the same namespace as nginx ingress`
 `controller.metrics.serviceMonitor.honorLabels` | honorLabels chooses the metric's labels on collisions with target labels. | `false`
+`controller.metrics.prometheusRule.enabled` | Set this to `true` to create prometheusRules for Prometheus operator | `false`
+`controller.metrics.prometheusRule.additionalLabels` | Additional labels that can be used so prometheusRules will be discovered by Prometheus | `{}`
+`controller.metrics.prometheusRule.namespace` | namespace where prometheusRules resource should be created | `the same namespace as nginx ingress`
+`controller.metrics.prometheusRule.rules` | [rules](https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/) to be prometheus in YAML format, check values for an example. | `[]`
 `controller.customTemplate.configMapName` | configMap containing a custom nginx template | `""`
 `controller.customTemplate.configMapKey` | configMap key containing the nginx template | `""`
 `controller.addHeaders` | configMap key:value pairs containing [custom headers](https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/#add-headers) added before sending response to the client | `{}`
@@ -154,6 +159,7 @@ Parameter | Description | Default
 `defaultBackend.image.pullPolicy` | default backend container image pull policy | `IfNotPresent`
 `defaultBackend.image.runAsUser` | User ID of the controller process. Value depends on the Linux distribution used inside of the container image. By default uses nobody user. | `65534`
 `defaultBackend.extraArgs` | Additional default backend container arguments | `{}`
+`defaultBackend.extraEnvs` | any additional environment variables to set in the defaultBackend pods | `[]`
 `defaultBackend.port` | Http port number | `8080`
 `defaultBackend.livenessProbe.initialDelaySeconds` | Delay before liveness probe is initiated | 30
 `defaultBackend.livenessProbe.periodSeconds` | How often to perform the probe | 10
@@ -185,8 +191,10 @@ Parameter | Description | Default
 `imagePullSecrets` | name of Secret resource containing private registry credentials | `nil`
 `rbac.create` | if `true`, create & use RBAC resources | `true`
 `podSecurityPolicy.enabled` | if `true`, create & use Pod Security Policy resources | `false`
-`serviceAccount.create` | if `true`, create a service account | `true`
-`serviceAccount.name` | The name of the service account to use. If not set and `create` is `true`, a name is generated using the fullname template. | ``
+`serviceAccount.create` | if `true`, create a service account for the controller | `true`
+`serviceAccount.name` | The name of the controller service account to use. If not set and `create` is `true`, a name is generated using the fullname template. | ``
+`serviceAccount.backend.create` | if `true`, create a backend service account. Only useful if you need a pod security policy to run the backend. | `true`
+`serviceAccount.backend.name` | The name of the backend service account to use. If not set and `create` is `true`, a name is generated using the fullname template. Only useful if you need a pod security policy to run the backend. | ``
 `revisionHistoryLimit` | The number of old history to retain to allow rollback. | `10`
 `tcp` | TCP service key:value pairs. The value is evaluated as a template. | `{}`
 `udp` | UDP service key:value pairs The value is evaluated as a template. | `{}`
@@ -247,7 +255,7 @@ controller:
 
 ## AWS L7 ELB with SSL Termination
 
-Annotate the controller as shown in the [nginx-ingress l7 patch](https://github.com/kubernetes/ingress-nginx/blob/master/deploy/provider/aws/service-l7.yaml):
+Annotate the controller as shown in the [nginx-ingress l7 patch](https://github.com/kubernetes/ingress-nginx/blob/master/deploy/aws/l7/service-l7.yaml):
 
 ```yaml
 controller:

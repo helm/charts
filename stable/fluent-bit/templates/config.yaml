@@ -95,7 +95,7 @@ data:
         Match *
         Host  {{ .Values.backend.es.host }}
         Port  {{ .Values.backend.es.port }}
-        Logstash_Format On
+        Logstash_Format {{ default "On" .Values.backend.es.logstash_format  }}
         Retry_Limit False
         Type  {{ .Values.backend.es.type }}
 {{- if .Values.backend.es.time_key }}
@@ -155,6 +155,9 @@ data:
         Proxy {{ .Values.backend.http.proxy }}
 {{- end }}
         Format {{ .Values.backend.http.format }}
+{{- end }}
+{{- range  .Values.backend.http.headers }}
+        Header  {{ . }}
 {{- end }}
 {{ .Values.extraEntries.output | indent 8 }}
 

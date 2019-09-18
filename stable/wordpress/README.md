@@ -51,6 +51,7 @@ The following table lists the configurable parameters of the WordPress chart and
 | -------------------------------- | ----------------------------------------------------------------------------- | ------------------------------------------------------------ |
 | `global.imageRegistry`           | Global Docker image registry                                                  | `nil`                                                        |
 | `global.imagePullSecrets`        | Global Docker registry secret names as an array                               | `[]` (does not add image pull secrets to deployed pods)      |
+| `global.storageClass`                     | Global storage class for dynamic provisioning                                               | `nil`                                                        |
 | `image.registry`                 | WordPress image registry                                                      | `docker.io`                                                  |
 | `image.repository`               | WordPress image name                                                          | `bitnami/wordpress`                                          |
 | `image.tag`                      | WordPress image tag                                                           | `{TAG_NAME}`                                                 |
@@ -91,6 +92,7 @@ The following table lists the configurable parameters of the WordPress chart and
 | `service.type`                   | Kubernetes Service type                                                       | `LoadBalancer`                                               |
 | `service.port`                   | Service HTTP port                                                             | `80`                                                         |
 | `service.httpsPort`              | Service HTTPS port                                                            | `443`                                                        |
+| `service.httpsTargetPort`              | Service Target HTTPS port                                                            | `https`                                                        |
 | `service.metricsPort`              | Service Metrics port                                                            | `9117`                                                        |
 | `service.externalTrafficPolicy`  | Enable client source IP preservation                                          | `Cluster`                                                    |
 | `service.nodePorts.http`         | Kubernetes http node port                                                     | `""`                                                         |

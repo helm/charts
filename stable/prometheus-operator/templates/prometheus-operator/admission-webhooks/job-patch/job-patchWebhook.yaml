@@ -14,6 +14,10 @@ spec:
   template:
     metadata:
       name:  {{ template "prometheus-operator.fullname" . }}-admission-patch
+{{- with .Values.prometheusOperator.admissionWebhooks.patch.podAnnotations }}
+      annotations:
+{{ toYaml .  | indent 8 }}
+{{- end }}
       labels:
         app: {{ template "prometheus-operator.name" $ }}-admission-patch
 {{- include "prometheus-operator.labels" $ | indent 8 }}
@@ -33,6 +37,10 @@ spec:
             - --patch-failure-policy={{ .Values.prometheusOperator.admissionWebhooks.failurePolicy }}
       restartPolicy: OnFailure
       serviceAccountName: {{ template "prometheus-operator.fullname" . }}-admission
+      {{- with .Values.prometheusOperator.admissionWebhooks.patch.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+      {{- end }}
       securityContext:
         runAsNonRoot: true
         runAsUser: 2000
