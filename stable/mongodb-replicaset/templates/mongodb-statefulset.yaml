@@ -287,20 +287,20 @@ spec:
             exec:
               command:
                 - sh
-                - -ec
+                - -c
                 - >-
                   /bin/mongodb_exporter
                 {{- if .Values.auth.enabled }}
-                  -mongodb.uri mongodb://$METRICS_USER:$METRICS_PASSWORD@localhost:{{ .Values.port }}
+                  --mongodb.uri mongodb://$METRICS_USER:$METRICS_PASSWORD@localhost:{{ .Values.port }}
                 {{- else }}
-                  -mongodb.uri mongodb://localhost:{{ .Values.port }}
+                  --mongodb.uri mongodb://localhost:{{ .Values.port }}
                 {{- end }}
                 {{- if .Values.tls.enabled }}
-                  -mongodb.tls
-                  -mongodb.tls-ca=/ca/tls.crt
-                  -mongodb.tls-cert=/work-dir/mongo.pem
+                  --mongodb.tls
+                  --mongodb.tls-ca=/ca/tls.crt
+                  --mongodb.tls-cert=/work-dir/mongo.pem
                 {{- end }}
-                  -test
+                  --test
             initialDelaySeconds: 30
             periodSeconds: 10
 {{ end }}
