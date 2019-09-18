@@ -48,6 +48,19 @@ hazelcast:
   # configurationFiles are any additional Hazelcast configuration files
   # configurationFiles:
 
+# affinity specifies the affinity/anti-affinity of different pods. The commented out
+# example below shows how you could ensure your hazelcast pods are scheduled on
+# different Kubernetes nodes
+affinity:
+#  podAntiAffinity:
+#    requiredDuringSchedulingIgnoredDuringExecution:
+#    - labelSelector:
+#        matchExpressions:
+#        - key: app.kubernetes.io/name
+#          operator: In
+#          values:
+#          - hazelcast
+#      topologyKey: kubernetes.io/hostname
 
 # nodeSelector is an array of Hazelcast Node labels for POD assignments
 # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
