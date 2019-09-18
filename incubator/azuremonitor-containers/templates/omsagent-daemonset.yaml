@@ -25,7 +25,7 @@ spec:
    {{- end }}
    containers:
      - name: omsagent
-       {{- if .Values.omsagent.domain "opinsights.azure.cn" }}
+       {{- if eq .Values.omsagent.domain "opinsights.azure.cn" }}
        image: "dockerhub.azk8s.cn/microsoft/oms:{{ .Values.omsagent.image.tag }}"
        {{ else }}
        image: "mcr.microsoft.com/azuremonitor/containerinsights/ciprod:{{ .Values.omsagent.image.tag }}"

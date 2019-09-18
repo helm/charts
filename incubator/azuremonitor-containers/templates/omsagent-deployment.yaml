@@ -29,7 +29,7 @@ spec:
   {{- end }}
    containers:
      - name: omsagent
-       {{- if .Values.omsagent.domain "opinsights.azure.cn" }}
+       {{- if  eq .Values.omsagent.domain "opinsights.azure.cn" }}
        image: "dockerhub.azk8s.cn/microsoft/oms:{{ .Values.omsagent.image.tag }}"
        {{ else }}
        image: "mcr.microsoft.com/azuremonitor/containerinsights/ciprod:{{ .Values.omsagent.image.tag }}"
@@ -40,14 +40,6 @@ spec:
        env:
        - name: ACS_RESOURCE_NAME
          value: {{ .Values.omsagent.env.clusterName | quote }}
-       - name: AZURE_LOGANALYTICS_CLOUD
-         {{- if .Values.omsagent.domain "opinsights.azure.cn" }}
-         value: "AzureChinaCloud"
-         {{ else if .Values.omsagent.domain "opinsights.azure.us"}}
-         value: "AzureUSGovernment"
-         {{ else }}
-         value: "AzureCloud"
-         {{- end }}
        - name: DISABLE_KUBE_SYSTEM_LOG_COLLECTION
          value: {{ .Values.omsagent.env.doNotCollectKubeSystemLogs | quote }}
        - name: CONTROLLER_TYPE
