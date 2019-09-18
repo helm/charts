@@ -36,6 +36,9 @@ spec:
   loadBalancerSourceRanges:
 {{ toYaml .Values.service.loadBalancerSourceRanges | indent 4 }}
 {{- end }}
+{{- if .Values.service.publishNotReadyAddresses }}
+  publishNotReadyAddresses: {{ .Values.service.publishNotReadyAddresses }}
+{{- end }}
   ports:
     - name: http
       protocol: TCP

@@ -312,6 +312,8 @@ service:
   amqpNodePort: null
   managerNodePort: null
 
+  publishNotReadyAddresses: false
+
 podManagementPolicy: OrderedReady
 
 ## Statefulsets rolling update update strategy
