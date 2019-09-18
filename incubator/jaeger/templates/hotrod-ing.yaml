@@ -22,12 +22,12 @@ spec:
     - host: {{ $host }}
       http:
         paths:
-          - path: /
+          - path: {{ default "/" $path }}
             backend:
               serviceName: {{ $serviceName }}-hotrod
               servicePort: {{ $servicePort }}
     {{- end -}}
-  {{- if .Values.hotrod.ingress.tls }}
+  {{ - if .Values.hotrod.ingress.tls }}
   tls:
 {{ toYaml .Values.hotrod.ingress.tls | indent 4 }}
   {{- end -}}
