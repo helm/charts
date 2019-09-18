@@ -28,4 +28,4 @@ sources:
   - https://github.com/Microsoft/OMS-docker/tree/ci_feature_prod
 maintainers:
   - name: vishiy
-    email: visnara@microsoft.com 
+    email: visnara@microsoft.com
