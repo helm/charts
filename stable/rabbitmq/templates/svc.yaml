@@ -39,6 +39,14 @@ spec:
     {{- else if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nodePort))) }}
     nodePort: {{ .Values.service.nodePort }}
     {{- end }}
+  {{- if .Values.rabbitmq.tls.enabled }}
+  - name: amqp-ssl
+    port: {{ .Values.service.tlsPort }}
+    targetPort: amqp-ssl
+    {{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nodeTlsPort))) }}
+    nodePort: {{ .Values.service.nodeTlsPort }}
+    {{- end }}
+  {{- end }}
   - name: dist
     port: {{ .Values.service.distPort }}
     targetPort: dist
