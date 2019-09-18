@@ -277,6 +277,9 @@ spec:
       securityContext:
         fsGroup: {{ .Values.securityContext.fsGroup }}
         runAsUser: {{ .Values.securityContext.runAsUser }}
+        {{- if .Values.securityContext.extra }}
+        {{- toYaml .Values.securityContext.extra | nindent 8 }}
+        {{- end }}
       {{- end }}
       volumes:
         - name: config-volume
