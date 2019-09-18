@@ -134,6 +134,10 @@ spec:
         volumeMounts:
           - name: config-volume
             mountPath: /opt/bitnami/rabbitmq/conf
+          {{- if .Values.rabbitmq.tls.enabled }}
+          - name: {{ template "rabbitmq.fullname" . }}-certs
+            mountPath: /opt/bitnami/rabbitmq/certs
+          {{- end }}
           - name: data
             mountPath: "{{ .Values.persistence.path }}"
           {{- if .Values.rabbitmq.loadDefinition.enabled }}
@@ -146,6 +150,10 @@ spec:
           containerPort: 4369
         - name: amqp
           containerPort: {{ .Values.service.port }}
+        {{- if .Values.rabbitmq.tls.enabled }}
+        - name: amqp-ssl
+          containerPort: {{ .Values.service.tlsPort }}
+        {{- end }}
         - name: dist
           containerPort: {{ .Values.service.distPort }}
         - name: stats
@@ -272,7 +280,6 @@ spec:
         resources:
 {{ toYaml .Values.metrics.resources | indent 10 }}
 {{- end }}
-
       {{- if .Values.securityContext.enabled }}
       securityContext:
         fsGroup: {{ .Values.securityContext.fsGroup }}
@@ -282,6 +289,18 @@ spec:
         {{- end }}
       {{- end }}
       volumes:
+        {{- if .Values.rabbitmq.tls.enabled }}
+        - name: {{ template "rabbitmq.fullname" . }}-certs
+          secret:
+            secretName: {{ if .Values.rabbitmq.tls.existingSecret }}{{ .Values.rabbitmq.tls.existingSecret }}{{- else }}{{ template "rabbitmq.fullname" . }}-certs{{- end }}
+            items:
+            - key: ca_certificate.pem
+              path: ca_certificate.pem
+            - key: server_certificate.pem
+              path: server_certificate.pem
+            - key: server_key.pem
+              path: server_key.pem
+          {{- end }}
         - name: config-volume
           configMap:
             name: {{ template "rabbitmq.fullname" . }}-config
