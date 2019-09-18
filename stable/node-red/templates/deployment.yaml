@@ -45,7 +45,7 @@ spec:
             - name: TZ
               value: "{{ .Values.timezone }}"
           {{- with .Values.extraEnvs }}
-{{ toYaml .Values.extraEnvs | indent 12 }}
+{{ toYaml . | indent 12 }}
           {{- end }}
           volumeMounts:
             - name: data
