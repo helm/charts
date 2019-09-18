@@ -44,12 +44,17 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `backend.es.index`         | Elastic Index name | `kubernetes_cluster` |
 | `backend.es.type`          | Elastic Type name | `flb_type` |
 | `backend.es.time_key`          | Elastic Time Key | `@timestamp` |
+| `backend.es.logstash_format`          | Enable Logstash format compatibility. | `On` |
 | `backend.es.logstash_prefix`  | Index Prefix. If Logstash_Prefix is equals to 'mydata' your index will become 'mydata-YYYY.MM.DD'. | `kubernetes_cluster` |
 | `backend.es.replace_dots`     | Enable/Disable Replace_Dots option. | `On` |
 | `backend.es.http_user`        | Optional username credential for Elastic X-Pack access. | `` |
-| `backend.es.http_passwd:`     | Password for user defined in HTTP_User. | `` |
+| `backend.es.http_passwd`      | Password for user defined in HTTP_User. | `` |
+| `backend.es.http_passwd_secret`     | Secret name for password for user defined in HTTP_User. | `` |
+| `backend.es.http_passwd_secret_key` | Secret key for password for user defined in HTTP_User. | `` |
 | `backend.es.tls`              | Enable or disable TLS support | `off` |
 | `backend.es.tls_verify`       | Force certificate validation  | `on` |
+| `backend.es.tls_secret`        | Existing secret storing TLS CA certificate for the Elastic instance. Specify if tls: on. Overrides `backend.es.tls_ca` | `` |
+| `backend.es.tls_secret_ca_key` | Existing secret key storing TLS CA certificate for the Elastic instance. Specify if tls: on.                           | `` |
 | `backend.es.tls_ca`           | TLS CA certificate for the Elastic instance (in PEM format). Specify if tls: on. | `` |
 | `backend.es.tls_debug`        | Set TLS debug verbosity level. It accept the following values: 0-4 | `1` |
 | **HTTP Backend**              |
@@ -59,6 +64,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `backend.http.http_user`        | Optional username credential for Basic Authentication. | `` |
 | `backend.http.http_passwd:`     | Password for user defined in HTTP_User. | `` |
 | `backend.http.format`         | Specify the data format to be used in the HTTP request body, by default it uses msgpack, optionally it can be set to json.  | `msgpack` |
+| `backend.http.headers`          | HTTP Headers | `[]` |
 | `backend.http.tls`              | Enable or disable TLS support | `off` |
 | `backend.http.tls_verify`       | Force certificate validation  | `on` |
 | `backend.http.tls_debug`        | Set TLS debug verbosity level. It accept the following values: 0-4 | `1` |
@@ -100,8 +106,8 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `filter.mergeJSONLog`              | If the log field content is a JSON string map, append the map fields as part of the log structure         | `true`                                 |
 | `filter.mergeLogKey`               | If set, append the processed log keys under a new root key specified by this variable. | `nil` |
 | `image.fluent_bit.repository`      | Image                                      | `fluent/fluent-bit`                               |
-| `image.fluent_bit.tag`             | Image tag                                  | `1.1.3`                                          |
-| `image.pullPolicy`                 | Image pull policy                          | `IfNotPresent`                                          |
+| `image.fluent_bit.tag`             | Image tag                                  | `1.2.2`                                           |
+| `image.pullPolicy`                 | Image pull policy                          | `Always`                                          |
 | `nameOverride`                     | Override name of app                   | `nil`                                        |
 | `fullnameOverride`                 | Override full name of app              | `nil`                                        |
 | `image.pullSecrets`                | Specify image pull secrets                 | `nil`                                             |
@@ -119,6 +125,8 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `serviceAccount.name`              | The name of the ServiceAccount to use.     | `NULL`                                            |
 | `rawConfig`                        | Raw contents of fluent-bit.conf            | `@INCLUDE fluent-bit-service.conf`<br>`@INCLUDE fluent-bit-input.conf`<br>`@INCLUDE fluent-bit-filter.conf`<br>` @INCLUDE fluent-bit-output.conf`                                                                         |
 | `resources`                        | Pod resource requests & limits                                 | `{}`                          |
+| `securityContext`                  | [Security settings for a container](https://kubernetes.io/docs/concepts/policy/security-context) | `{}` |
+| `podSecurityContext`               | [Security settings for a pod](https://kubernetes.io/docs/concepts/policy/security-context)       | `{}` |
 | `hostNetwork`                      | Use host's network                         | `false`                                           |
 | `dnsPolicy`                        | Specifies the dnsPolicy to use             | `ClusterFirst`                                    |
 | `priorityClassName`                | Specifies the priorityClassName to use     | `NULL`                                            |

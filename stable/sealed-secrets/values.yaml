@@ -1,6 +1,6 @@
 image:
   repository: quay.io/bitnami/sealed-secrets-controller
-  tag: v0.7.0
+  tag: v0.8.1
   pullPolicy: IfNotPresent
 
 resources: {}
@@ -17,6 +17,7 @@ serviceAccount:
 rbac:
   # rbac.create: `true` if rbac resources should be created
   create: true
+  pspEnabled: false
 
 # secretName: The name of the TLS secret containing the key used to encrypt secrets
 secretName: "sealed-secrets-key"
@@ -28,3 +29,7 @@ crd:
   keep: true
 
 networkPolicy: false
+
+securityContext:
+  # securityContext.runAsUser defines under which user the operator Pod and its containers/processes run.
+  runAsUser: 1001

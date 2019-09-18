@@ -1,11 +1,11 @@
-  # Minikube stores its logs in a separate directory.
-# enable if started in minikube.
+# Minikube stores its logs in a separate directory.
+# Enable if you install the chart in minikube.
 on_minikube: false
 
 image:
   fluent_bit:
     repository: fluent/fluent-bit
-    tag: 1.2.0
+    tag: 1.2.2
   pullPolicy: Always
 
 testFramework:
@@ -59,6 +59,7 @@ backend:
     type: flb_type
     logstash_prefix: kubernetes_cluster
     replace_dots: "On"
+    logstash_format: "On"
     time_key: "@timestamp"
     # Optional username credential for Elastic X-Pack access
     http_user:
@@ -96,6 +97,7 @@ backend:
     ## Specify the data format to be used in the HTTP request body
     ## Can be either 'msgpack' or 'json'
     format: msgpack
+    headers: []
 
 parsers:
   enabled: false
@@ -269,3 +271,15 @@ serviceAccount:
   # The name of the ServiceAccount to use.
   # If not set and create is true, a name is generated using the fullname template
   name:
+
+## Specifies security settings for a container
+## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
+securityContext: {}
+  # securityContext:
+  #   privileged: true
+
+## Specifies security settings for a pod
+## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
+podSecurityContext: {}
+  # podSecurityContext:
+  #   runAsUser: 1000

@@ -2,7 +2,7 @@
 prometheusScrape: true
 image:
   repository: quay.io/coreos/kube-state-metrics
-  tag: v1.6.0
+  tag: v1.7.2
   pullPolicy: IfNotPresent
 
 replicas: 1
@@ -13,6 +13,9 @@ service:
   type: ClusterIP
   nodePort: 0
   loadBalancerIP: ""
+  annotations: {}
+
+customLabels: {}
 
 hostNetwork: false
 
@@ -35,6 +38,7 @@ prometheus:
     enabled: false
     additionalLabels: {}
     namespace: ""
+    honorLabels: false
 
 ## Specify if a Pod Security Policy for kube-state-metrics must be created
 ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/
@@ -100,6 +104,8 @@ collectors:
   secrets: true
   services: true
   statefulsets: true
+  storageclasses: true
+  verticalpodautoscalers: false
 
 # Namespace to be enabled for collecting resources. By default all namespaces are collected.
 # namespace: ""

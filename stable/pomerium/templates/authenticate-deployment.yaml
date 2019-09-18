@@ -15,7 +15,7 @@ metadata:
 {{ toYaml .Values.annotations | indent 4 }}
 {{- end }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ default .Values.replicaCount .Values.authenticate.replicaCount }}
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ template "pomerium.authenticate.name" . }}
@@ -23,7 +23,9 @@ spec:
   template:
     metadata:
       annotations:
-        config/checksum: {{ print .Values.config.extraOpts | sha256sum }}
+        {{- /* policy is already covered by hot-reloading */}}
+        checksum/config: {{ print .Values.config.extraOpts | sha256sum }}
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
 {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
 {{- end }}
@@ -113,6 +115,9 @@ spec:
           - containerPort: 443
             name: https
             protocol: TCP
+          - containerPort: {{ .Values.metrics.port }}
+            name: metrics
+            protocol: TCP
         livenessProbe:
           httpGet:
             path: /ping
@@ -123,6 +128,8 @@ spec:
             path: /ping
             port: https
             scheme: HTTPS
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
 {{- if or .Values.config.existingConfig .Values.config.policy }}
         volumeMounts:
         - mountPath: /etc/pomerium/

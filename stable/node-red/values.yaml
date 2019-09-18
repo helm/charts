@@ -7,7 +7,7 @@ strategyType: Recreate
 
 image:
   repository: nodered/node-red-docker
-  tag: 0.20.5-slim-v8
+  tag: 0.20.7-slim-v8
   pullPolicy: IfNotPresent
 
 nameOverride: ""
@@ -15,6 +15,7 @@ fullnameOverride: ""
 
 flows: "flows.json"
 # nodeOptions: ""
+extraEnvs: []
 timezone: "UTC"
 
 service:

@@ -4,6 +4,18 @@ image:
   repository: "influxdb"
   tag: "1.7.6-alpine"
   pullPolicy: IfNotPresent
+  ## If specified, use these secrets to access the images
+  # pullSecrets:
+  #   - registry-secret
+
+## Customize livenessProbe and readinessProbe
+## ref: https://docs.influxdata.com/influxdb/v1.7/tools/api/#ping-http-endpoint
+##
+livenessProbe:
+  probePath: "/ping"
+
+readinessProbe:
+  probePath: "/ping"
 
 ## Specify a service type
 ## NodePort is default
@@ -122,7 +134,7 @@ tolerations: []
 ## The InfluxDB image uses several environment variables to automatically
 ## configure certain parts of the server.
 ## Ref: https://hub.docker.com/_/influxdb/
-env:
+env: {}
   # - name: INFLUXDB_DB
   #   value: "demo"
 
@@ -182,6 +194,7 @@ config:
     enabled: true
     bind_address: 8086
     auth_enabled: false
+    flux_enabled: true
     log_enabled: true
     write_tracing: false
     pprof_enabled: true
@@ -262,3 +275,22 @@ initScripts:
   scripts:
     init.iql: |+
       CREATE DATABASE "telegraf" WITH DURATION 30d REPLICATION 1 NAME "rp_30d"
+
+backup:
+  enabled: false
+  schedule: "0 0 * * *"
+  annotations: {}
+
+  ## Google Cloud Storage
+  ## Secret is expected to have key stored in `key.json` field
+  # gcs:
+  #    serviceAccountSecret: influxdb-backup-key
+  #    destination: gs://bucket/influxdb
+
+  ## Azure
+  ## Secret is expected to have connection string stored in `connection-string` field
+  ## Existing container will be used or private one withing storage account will be created.
+  # azure:
+  #   storageAccountSecret: influxdb-backup-azure-key
+  #   destination_container: influxdb-container
+  #   destination_path: ""

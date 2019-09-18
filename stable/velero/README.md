@@ -1,8 +1,14 @@
 # Velero-server
 
-This helm chart installs Velero version v1.0.0
-https://github.com/heptio/velero/tree/v1.0.0
+This helm chart installs Velero version v1.1.0
+https://github.com/heptio/velero/tree/v1.1.0
 
+
+## Upgrading to v1.1.0
+
+As of v1.1.0, Heptio Velero is no longer backwards-compatible with Heptio Ark.
+
+The [instructions found here](https://velero.io/docs/v1.1.0/upgrade-to-1.1/) will assist you in upgrading from version v1.0.0 to v1.1.0
 
 ## Upgrading to v1.0.0
 
@@ -85,6 +91,7 @@ Parameter | Description | Default
 `credentials.existingSecret` | If specified and `useSecret` is `true`, uses an existing secret with this name instead of creating one | ``
 `credentials.useSecret` | Whether a secret should be used. Set this to `false` when using `kube2iam` | `true`
 `credentials.secretContents` | Contents for the credentials secret | `{}`
+`snapshotsEnabled` | If `true`, create volumesnapshotlocation crd. Set this to `false` to disable snapshot feature | `true`
 `deployRestic` | If `true`, enable restic deployment | `false`
 `metrics.enabled` | Set this to `true` to enable exporting Prometheus monitoring metrics | `false`
 `metrics.scrapeInterval` | Scrape interval for the Prometheus ServiceMonitor | `30s`

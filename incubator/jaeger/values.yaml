@@ -88,6 +88,8 @@ schema:
   ## Additional pod labels
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   podLabels: {}
+  # Deadline for cassandra schema creation job
+  activeDeadlineSeconds: 120
 
 # Begin: Override values on the Elasticsearch subchart to customize for Jaeger
 elasticsearch:
@@ -174,6 +176,12 @@ collector:
   ## Allow the scheduling on tainted nodes (requires Kubernetes >= 1.6)
   ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
   tolerations: []
+  extraConfigmapMounts: []
+  # - name: jaeger-tls
+  #   mountPath: /tls
+  #   subPath: ""
+  #   configMap: jaeger-tls
+  #   readOnly: true
 
 query:
   enabled: true
@@ -220,6 +228,12 @@ query:
   ## Allow the scheduling on tainted nodes (requires Kubernetes >= 1.6)
   ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
   tolerations: []
+  extraConfigmapMounts: []
+  # - name: jaeger-tls
+  #   mountPath: /tls
+  #   subPath: ""
+  #   configMap: jaeger-tls
+  #   readOnly: true
 
 spark:
   enabled: false

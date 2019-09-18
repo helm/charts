@@ -10,6 +10,15 @@ metadata:
     heritage: {{ .Release.Service | quote }}
 spec:
   replicas: {{ .Values.clusterchecksDeployment.replicas }}
+  strategy:
+{{- if .Values.clusterchecksDeployment.strategy }}
+{{ toYaml .Values.clusterchecksDeployment.strategy | indent 4 }}
+{{- else }}
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+{{- end }}
   template:
     metadata:
       labels:
@@ -40,7 +49,7 @@ spec:
           - name: DD_CLUSTER_AGENT_AUTH_TOKEN
             valueFrom:
               secretKeyRef:
-                name: {{ template "datadog.fullname" . }}-cluster-agent
+                name: {{ template "clusterAgent.tokenSecretName" . }}
                 key: token
           - name: DD_CLUSTER_AGENT_ENABLED
             value: {{ .Values.clusterAgent.enabled | quote }}
@@ -95,5 +104,9 @@ spec:
       {{- if .Values.clusterchecksDeployment.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.clusterchecksDeployment.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.clusterchecksDeployment.tolerations }}
+      tolerations:
+{{ toYaml .Values.clusterchecksDeployment.tolerations | indent 8 }}
       {{- end }}
 {{ end }}

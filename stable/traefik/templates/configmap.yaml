@@ -15,6 +15,9 @@ data:
     {{- else }}
     logLevel = {{ .Values.logLevel | default "info" | quote }}
     {{- end }}
+    {{- if .Values.maxIdleConnsPerHost }}
+    maxIdleConnsPerHost = {{ .Values.maxIdleConnsPerHost }}
+    {{- end }}
     {{- if .Values.sendAnonymousUsage }}
     sendAnonymousUsage = true
     {{- end }}
@@ -31,7 +34,7 @@ data:
     {{- end }}
     [entryPoints]
       [entryPoints.http]
-      address = ":80"
+      address = ":{{ template "traefik.containerPort.http" . }}"
       compress = {{ .Values.gzip.enabled }}
       {{- if .Values.forwardAuth }}
       {{- if has "http" .Values.forwardAuth.entryPoints }}
@@ -64,7 +67,7 @@ data:
       {{- if .Values.whiteListSourceRange }}
       {{ template "traefik.whiteListSourceRange" . }}
       {{- end }}
-      address = ":443"
+      address = ":{{ template "traefik.containerPort.https" . }}"
       compress = {{ .Values.gzip.enabled }}
       {{- if .Values.forwardAuth }}
       {{- if has "https" .Values.forwardAuth.entryPoints }}
@@ -91,6 +94,13 @@ data:
           {{- end }}
           {{- if .Values.ssl.sniStrict }}
           sniStrict = true
+          {{- end }}
+          {{- if .Values.ssl.mtls }}
+          {{- if .Values.ssl.mtls.enabled }}
+          [entryPoints.https.tls.ClientCA]
+          {{ template "traefik.ssl.mtls.clientCAs" . }}
+          optional = {{ .Values.ssl.mtls.optional }}
+          {{- end }}
           {{- end }}
           [[entryPoints.https.tls.certificates]]
           CertFile = "/ssl/tls.crt"
@@ -259,9 +269,10 @@ data:
     {{- end }}
     {{- if .Values.acme.enabled }}
     [acme]
+    KeyType = {{ .Values.acme.keyType | quote }}
     email = {{ .Values.acme.email | quote }}
     {{- if .Values.kvprovider.storeAcme }}
-    storage = "traefik/acme/account"
+    storage = "{{ .Values.kvprovider.acmeStorageLocation }}"
     {{- if .Values.kvprovider.importAcme }}
     storageFile = "/acme/acme.json"
     {{- end }}
@@ -319,7 +330,7 @@ data:
         buckets = [
           {{- range $idx, $element := .Values.metrics.prometheus.buckets }}
               {{- if $idx }},{{ end }}
-              {{- printf "%.1f" $element }}
+              {{- printf "%f" $element }}
           {{- end -}}
           ]
         {{- end -}}

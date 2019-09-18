@@ -33,12 +33,15 @@ settings:
     # - /custom-config/docker-monitor-filelog.json
   custom_plugin_monitors: []
 
+  prometheus_address: 0.0.0.0
+  prometheus_port: 20257
+
 hostpath:
   logdir: /var/log/
 
 image:
   repository: k8s.gcr.io/node-problem-detector
-  tag: v0.6.3
+  tag: v0.7.0
   pullPolicy: IfNotPresent
 
 nameOverride: ""
@@ -46,6 +49,7 @@ fullnameOverride: ""
 
 rbac:
   create: true
+  pspEnabled: false
 
 # Flag to run Node Problem Detector on the host's network. This is typically
 # not recommended, but may be useful for certain use cases.
@@ -67,3 +71,10 @@ serviceAccount:
   name:
 
 affinity: {}
+
+nodeSelector: {}
+
+metrics:
+  serviceMonitor:
+    enabled: false
+    additionalLabels: {}

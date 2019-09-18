@@ -72,7 +72,7 @@ spec:
           - |
             mkdir -p {{ .Values.persistence.mountPath }}/data
             chmod 700 {{ .Values.persistence.mountPath }}/data
-            find {{ .Values.persistence.mountPath }} -mindepth 1 -maxdepth 1 -not -name ".snapshot" -not -name "lost+found" | \
+            find {{ .Values.persistence.mountPath }} -mindepth 0 -maxdepth 1 -not -name ".snapshot" -not -name "lost+found" | \
               xargs chown -R {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }}
         securityContext:
           runAsUser: {{ .Values.volumePermissions.securityContext.runAsUser }}
@@ -94,6 +94,8 @@ spec:
         env:
         - name: BITNAMI_DEBUG
           value: {{ ternary "true" "false" .Values.image.debug | quote }}
+        - name: POSTGRESQL_VOLUME_DIR
+          value: "{{ .Values.persistence.mountPath }}"
         - name: POSTGRESQL_PORT_NUMBER
           value: "{{ template "postgresql.port" . }}"
         {{- if .Values.persistence.mountPath }}
@@ -230,12 +232,6 @@ spec:
         resources:
           requests:
             storage: {{ .Values.persistence.size | quote }}
-      {{- if .Values.persistence.storageClass }}
-      {{- if (eq "-" .Values.persistence.storageClass) }}
-        storageClassName: ""
-      {{- else }}
-        storageClassName: "{{ .Values.persistence.storageClass }}"
-      {{- end }}
-      {{- end }}
+        {{ include "postgresql.storageClass" . }}
 {{- end }}
 {{- end }}

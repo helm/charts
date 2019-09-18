@@ -24,6 +24,10 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
 {{- end }}
     spec:
+{{- if .Values.podSecurityContext }}
+      securityContext:
+{{ toYaml .Values.podSecurityContext | indent 8 }}
+{{- end }}
 {{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"
 {{- end }}
@@ -39,7 +43,17 @@ spec:
         image: "{{ .Values.image.fluent_bit.repository }}:{{ .Values.image.fluent_bit.tag }}"
         imagePullPolicy: "{{ .Values.image.pullPolicy }}"
         env:
+{{- if .Values.backend.es.http_passwd_secret }}
+          - name: HTTP_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.backend.es.http_passwd_secret }}
+                key: {{ .Values.backend.es.http_passwd_secret_key }}
+{{- end }}
+{{- /* Only render empty array when no HTTP_PASSWORD */ -}}
+{{- if or .Values.env (not .Values.backend.es.http_passwd_secret) }}
 {{ toYaml .Values.env | indent 10 }}
+{{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
 {{- if or .Values.metrics.enabled .Values.extraPorts }}
@@ -52,6 +66,10 @@ spec:
 {{- if .Values.extraPorts }}
 {{ toYaml .Values.extraPorts | indent 8 }}
 {{- end }}
+{{- end }}
+{{- if .Values.securityContext }}
+        securityContext:
+{{ toYaml .Values.securityContext | indent 10 }}
 {{- end }}
         volumeMounts:
         - name: varlog
@@ -90,10 +108,10 @@ spec:
           subPath: parsers.conf
 {{- end }}
 {{- end }}
-{{- if .Values.backend.es.tls_ca }}
+{{- if or .Values.backend.es.tls_ca .Values.backend.es.tls_secret }}
         - name: es-tls-secret
           mountPath: /secure/es-tls-ca.crt
-          subPath: es-tls-ca.crt
+          subPath: {{ .Values.backend.es.tls_secret_ca_key | default "es-tls-ca.crt" | quote }}
 {{- end }}
 {{- if .Values.trackOffsets }}
         - name: tail-db
@@ -133,10 +151,10 @@ spec:
           path: /etc/machine-id
           type: File
     {{- end }}
-{{- if .Values.backend.es.tls_ca }}
+{{- if or .Values.backend.es.tls_ca .Values.backend.es.tls_secret }}
       - name: es-tls-secret
         secret:
-          secretName: "{{ template "fluent-bit.fullname" . }}-es-tls-secret"
+          secretName: {{ .Values.backend.es.tls_secret | default ( print ( include "fluent-bit.fullname" . ) "-es-tls-secret" ) | quote }}
 {{- end }}
 {{- if .Values.trackOffsets }}
       - name: tail-db

@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "sentry.fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "sentry.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -63,15 +63,25 @@ data:
     # Uploaded media uses these `filestore` settings. The available
     # backends are either `filesystem` or `s3`.
 
-    # filestore.backend: 'filesystem'
-    # filestore.options:
-    #   location: '/tmp/sentry-files'
+    filestore.backend: '{{ .Values.filestore.backend }}'
+    {{- if eq .Values.filestore.backend "filesystem" }}
+    filestore.options:
+      location: '{{ .Values.filestore.filesystem.path }}'
 
-    # filestore.backend: 's3'
-    # filestore.options:
-    #   access_key: 'AKIXXXXXX'
-    #   secret_key: 'XXXXXXX'
-    #   bucket_name: 's3-bucket-name'
+    {{ end }}
+    {{- if eq .Values.filestore.backend "gcs" }}
+    filestore.options:
+      bucket_name: '{{ .Values.filestore.gcs.bucketName }}'
+
+    {{ end }}
+    {{- if eq .Values.filestore.backend "s3" }}
+    filestore.options:
+      access_key: '{{ .Values.filestore.s3.accessKey }}'
+      secret_key: '{{ .Values.filestore.s3.secretKey }}'
+      bucket_name: '{{ .Values.filestore.s3.bucketName }}'
+
+    {{ end }}
+
 {{ .Values.config.configYml | indent 4 }}
   sentry.conf.py: |-
     # This file is just Python, with a touch of Django which means
@@ -292,18 +302,6 @@ data:
 
     SENTRY_DIGESTS = 'sentry.digests.backends.redis.RedisBackend'
 
-    ################
-    # File storage #
-    ################
-
-    # Uploaded media uses these `filestore` settings. The available
-    # backends are either `filesystem` or `s3`.
-
-    SENTRY_OPTIONS['filestore.backend'] = 'filesystem'
-    SENTRY_OPTIONS['filestore.options'] = {
-        'location': env('SENTRY_FILESTORE_DIR'),
-    }
-
     ##############
     # Web Server #
     ##############
@@ -384,7 +382,7 @@ data:
 {{- if .Values.metrics.enabled }}
     SENTRY_METRICS_BACKEND = 'sentry.metrics.statsd.StatsdMetricsBackend'
     SENTRY_METRICS_OPTIONS = {
-        'host': '{{ template "fullname" . }}-metrics',
+        'host': '{{ template "sentry.fullname" . }}-metrics',
         'port': 9125,
     }
 {{- end }} 

@@ -45,70 +45,86 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following table lists the configurable parameters of the nextcloud chart and their default values.
 
-|              Parameter              |                   Description                 |                         Default                         |
-|-------------------------------------|-----------------------------------------------|-------------------------------------------------------- |
-| `image.repository`                  | nextcloud Image name                          | `nextcloud`                                             |
-| `image.tag`                         | nextcloud Image tag                           | `{VERSION}`                                             |
-| `image.pullPolicy`                  | Image pull policy                             | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
-| `image.pullSecrets`                 | Specify image pull secrets                    | `nil`                                                   |
-| `ingress.enabled`                   | Enable use of ingress controllers             | `false`                                                 |
-| `ingress.servicePort`               | Ingress' backend servicePort                  | `http`                                                  |
-| `ingress.annotations`               | An array of service annotations               | `nil`                                                   |
-| `ingress.tls`                       | Ingress TLS configuration                     | `[]`                                                    |
-| `nextcloud.host`                    | nextcloud host to create application URLs     | `nextcloud.kube.home`                                   |
-| `nextcloud.username`                | User of the application                       | `admin`                                                 |
-| `nextcloud.password`                | Application password                          | `changeme`                                              |
-| `nextcloud.update`                  | Trigger update if custom command is used      | `0`                                                     |
-| `nextcloud.datadir`                 | nextcloud data dir location                   | `/var/www/html/data`                                    |
-| `nextcloud.tableprefix`             | nextcloud db table prefix                     | `''`                                                    |
-| `nextcloud.mail.enabled`            | Whether to enable/disable email settings      | `false`                                                 |
-| `nextcloud.mail.fromAddress`        | nextcloud mail send from field                | `nil`                                                   |
-| `nextcloud.mail.domain`             | nextcloud mail domain                         | `nil`                                                   |
-| `nextcloud.mail.smtp.host`          | SMTP hostname                                 | `nil`                                                   |
-| `nextcloud.mail.smtp.secure`        | SMTP connection `ssl` or empty                | `''`                                                    |
-| `nextcloud.mail.smtp.port`          | Optional SMTP port                            | `nil`                                                   |
-| `nextcloud.mail.smtp.authtype`      | SMTP authentication method                    | `LOGIN`                                                 |
-| `nextcloud.mail.smtp.name`          | SMTP username                                 | `''`                                                    |
-| `nextcloud.mail.smtp.password`      | SMTP password                                 | `''`                                                    |
-| `internalDatabase.enabled`          | Whether to use internal sqlite database       | `true`                                                  |
-| `internalDatabase.database`         | Name of the existing database                 | `nextcloud`                                             |
-| `externalDatabase.enabled`          | Whether to use external database              | `false`                                                 |
-| `externalDatabase.type`             | External database type: `mysql`, `postgresql` | `mysql`                                                 |
-| `externalDatabase.host`             | Host of the external database                 | `nil`                                                   |
-| `externalDatabase.database`         | Name of the existing database                 | `nextcloud`                                             |
-| `externalDatabase.user`             | Existing username in the external db          | `nextcloud`                                             |
-| `externalDatabase.password`         | Password for the above username               | `nil`                                                   |
-| `mariadb.enabled`                   | Whether to use the MariaDB chart              | `false`                                                 |
-| `mariadb.db.name`                   | Database name to create                       | `nextcloud`                                             |
-| `mariadb.db.password`               | Password for the database                     | `changeme`                                              |
-| `mariadb.db.user`                   | Database user to create                       | `nextcloud`                                             |
-| `mariadb.rootUser.password`         | MariaDB admin password                        | `nil`                                                   |
-| `redis.enabled`                     | Whether to install/use redis for locking      | `false`                                                 |
-| `cronjob.enabled`                   | Whether to enable/disable cronjob             | `false`                                                 |
-| `cronjob.schedule`                  | Schedule for the CronJob                      | `*/15 * * * *`                                          |
-| `cronjob.annotations`               | Annotations to add to the cronjob             | {}                                                      |
-| `cronjob.failedJobsHistoryLimit`    | Specify the number of failed Jobs to keep     | `5`                                                     |
-| `cronjob.successfulJobsHistoryLimit`| Specify the number of completed Jobs to keep  | `2`                                                     |
-| `service.type`                      | Kubernetes Service type                       | `ClusterIp`                                             |
-| `service.loadBalancerIP`            | LoadBalancerIp for service type LoadBalancer  | `nil`                                                   |
-| `persistence.enabled`               | Enable persistence using PVC                  | `false`                                                 |
-| `persistence.storageClass`          | PVC Storage Class for nextcloud volume        | `nil` (uses alpha storage class annotation)             |
-| `persistence.existingClaim`         | An Existing PVC name for nextcloud volume     | `nil` (uses alpha storage class annotation)             |
-| `persistence.accessMode`            | PVC Access Mode for nextcloud volume          | `ReadWriteOnce`                                         |
-| `persistence.size`                  | PVC Storage Request for nextcloud volume      | `8Gi`                                                   |
-| `resources`                         | CPU/Memory resource requests/limits           | `{}`                                                    |
-| `livenessProbe.enabled`             | Turn on and off liveness probe                | `true`                                                  |
-| `livenessProbe.initialDelaySeconds` | Delay before liveness probe is initiated      | `30`                                                    |
-| `livenessProbe.periodSeconds`       | How often to perform the probe                | `15`                                                    |
-| `livenessProbe.timeoutSeconds`      | When the probe times out                      | `5`                                                     |
-| `livenessProbe.failureThreshold`    | Minimum consecutive failures for the probe    | `3`                                                     |
-| `livenessProbe.successThreshold`    | Minimum consecutive successes for the probe   | `1`                                                     |
-| `readinessProbe.enabled`            | Turn on and off readiness probe               | `true`                                                  |
-| `readinessProbe.initialDelaySeconds`| Delay before readiness probe is initiated     | `30`                                                    |
-| `readinessProbe.periodSeconds`      | How often to perform the probe                | `15`                                                    |
-| `readinessProbe.timeoutSeconds`     | When the probe times out                      | `5`                                                     |
-| `readinessProbe.failureThreshold`   | Minimum consecutive failures for the probe    | `3`                                                     |
-| `readinessProbe.successThreshold`   | Minimum consecutive successes for the probe   | `1`                                                     |
+| Parameter                                                    | Description                                             | Default                                                 |
+| ------------------------------------------------------------ | ------------------------------------------------------- | ------------------------------------------------------- |
+| `image.repository`                                           | nextcloud Image name                                    | `nextcloud`                                             |
+| `image.tag`                                                  | nextcloud Image tag                                     | `{VERSION}`                                             |
+| `image.pullPolicy`                                           | Image pull policy                                       | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
+| `image.pullSecrets`                                          | Specify image pull secrets                              | `nil`                                                   |
+| `ingress.enabled`                                            | Enable use of ingress controllers                       | `false`                                                 |
+| `ingress.servicePort`                                        | Ingress' backend servicePort                            | `http`                                                  |
+| `ingress.annotations`                                        | An array of service annotations                         | `nil`                                                   |
+| `ingress.labels`                                        | An array of service labels                         | `nil`                                                   |
+| `ingress.tls`                                                | Ingress TLS configuration                               | `[]`                                                    |
+| `nextcloud.host`                                             | nextcloud host to create application URLs               | `nextcloud.kube.home`                                   |
+| `nextcloud.username`                                         | User of the application                                 | `admin`                                                 |
+| `nextcloud.password`                                         | Application password                                    | `changeme`                                              |
+| `nextcloud.update`                                           | Trigger update if custom command is used                | `0`                                                     |
+| `nextcloud.datadir`                                          | nextcloud data dir location                             | `/var/www/html/data`                                    |
+| `nextcloud.tableprefix`                                      | nextcloud db table prefix                               | `''`                                                    |
+| `nextcloud.mail.enabled`                                     | Whether to enable/disable email settings                | `false`                                                 |
+| `nextcloud.mail.fromAddress`                                 | nextcloud mail send from field                          | `nil`                                                   |
+| `nextcloud.mail.domain`                                      | nextcloud mail domain                                   | `nil`                                                   |
+| `nextcloud.mail.smtp.host`                                   | SMTP hostname                                           | `nil`                                                   |
+| `nextcloud.mail.smtp.secure`                                 | SMTP connection `ssl` or empty                          | `''`                                                    |
+| `nextcloud.mail.smtp.port`                                   | Optional SMTP port                                      | `nil`                                                   |
+| `nextcloud.mail.smtp.authtype`                               | SMTP authentication method                              | `LOGIN`                                                 |
+| `nextcloud.mail.smtp.name`                                   | SMTP username                                           | `''`                                                    |
+| `nextcloud.mail.smtp.password`                               | SMTP password                                           | `''`                                                    |
+| `nextcloud.configs`                                          | Config files created in `/var/www/html/config`          | `{}`                                                    |
+| `nextcloud.phpConfigs`                                       | PHP Config files created in `/usr/local/etc/php/conf.d` | `{}`                                                    |
+| `nextcloud.defaultConfigs.\.htaccess`                        | Default .htaccess to protect `/var/www/html/config`     | `true`                                                  |
+| `nextcloud.defaultConfigs.\.redis\.config\.php`              | Default Redis configuration                             | `true`                                                  |
+| `nextcloud.defaultConfigs.\.apache-pretty-urls\.config\.php` | Default Apache configuration for rewrite urls           | `true`                                                  |
+| `nextcloud.defaultConfigs.\.apcu\.config\.php`               | Default configuration to define APCu as local cache     | `true`                                                  |
+| `nextcloud.defaultConfigs.\.apps\.config\.php`               | Default configuration for apps                          | `true`                                                  |
+| `nextcloud.defaultConfigs.\.autoconfig\.php`                 | Default auto-configuration for databases                | `true`                                                  |
+| `nextcloud.defaultConfigs.\.smtp\.config\.php`               | Default configuration for smtp                          | `true`                                                  |
+| `internalDatabase.enabled`                                   | Whether to use internal sqlite database                 | `true`                                                  |
+| `internalDatabase.database`                                  | Name of the existing database                           | `nextcloud`                                             |
+| `externalDatabase.enabled`                                   | Whether to use external database                        | `false`                                                 |
+| `externalDatabase.type`                                      | External database type: `mysql`, `postgresql`           | `mysql`                                                 |
+| `externalDatabase.host`                                      | Host of the external database                           | `nil`                                                   |
+| `externalDatabase.database`                                  | Name of the existing database                           | `nextcloud`                                             |
+| `externalDatabase.user`                                      | Existing username in the external db                    | `nextcloud`                                             |
+| `externalDatabase.password`                                  | Password for the above username                         | `nil`                                                   |
+| `mariadb.enabled`                                            | Whether to use the MariaDB chart                        | `false`                                                 |
+| `mariadb.db.name`                                            | Database name to create                                 | `nextcloud`                                             |
+| `mariadb.db.password`                                        | Password for the database                               | `changeme`                                              |
+| `mariadb.db.user`                                            | Database user to create                                 | `nextcloud`                                             |
+| `mariadb.rootUser.password`                                  | MariaDB admin password                                  | `nil`                                                   |
+| `redis.enabled`                                              | Whether to install/use redis for locking                | `false`                                                 |
+| `cronjob.enabled`                                            | Whether to enable/disable cronjob                       | `false`                                                 |
+| `cronjob.schedule`                                           | Schedule for the CronJob                                | `*/15 * * * *`                                          |
+| `cronjob.annotations`                                        | Annotations to add to the cronjob                       | {}                                                      |
+| `cronjob.curlInsecure`                                       | Set insecure (-k) option to curl                        | false                                                   |
+| `cronjob.failedJobsHistoryLimit`                             | Specify the number of failed Jobs to keep               | `5`                                                     |
+| `cronjob.successfulJobsHistoryLimit`                         | Specify the number of completed Jobs to keep            | `2`                                                     |
+| `cronjob.resources`                                          | Cronjob Resources                                       | `nil`                                                   |
+| `cronjob.nodeSelector`                                       | Cronjob Node selector                                   | `nil`                                                   |
+| `cronjob.tolerations`                                        | Cronjob tolerations                                     | `nil`                                                   |
+| `cronjob.affinity`                                           | Cronjob affinity                                        | `nil`                                                   |
+| `service.type`                                               | Kubernetes Service type                                 | `ClusterIp`                                             |
+| `service.loadBalancerIP`                                     | LoadBalancerIp for service type LoadBalancer            | `nil`                                                   |
+| `persistence.enabled`                                        | Enable persistence using PVC                            | `false`                                                 |
+| `persistence.annotations`                                    | PVC annotations                                         | `{}`                                                    |
+| `persistence.storageClass`                                   | PVC Storage Class for nextcloud volume                  | `nil` (uses alpha storage class annotation)             |
+| `persistence.existingClaim`                                  | An Existing PVC name for nextcloud volume               | `nil` (uses alpha storage class annotation)             |
+| `persistence.accessMode`                                     | PVC Access Mode for nextcloud volume                    | `ReadWriteOnce`                                         |
+| `persistence.size`                                           | PVC Storage Request for nextcloud volume                | `8Gi`                                                   |
+| `resources`                                                  | CPU/Memory resource requests/limits                     | `{}`                                                    |
+| `livenessProbe.enabled`                                      | Turn on and off liveness probe                          | `true`                                                  |
+| `livenessProbe.initialDelaySeconds`                          | Delay before liveness probe is initiated                | `30`                                                    |
+| `livenessProbe.periodSeconds`                                | How often to perform the probe                          | `15`                                                    |
+| `livenessProbe.timeoutSeconds`                               | When the probe times out                                | `5`                                                     |
+| `livenessProbe.failureThreshold`                             | Minimum consecutive failures for the probe              | `3`                                                     |
+| `livenessProbe.successThreshold`                             | Minimum consecutive successes for the probe             | `1`                                                     |
+| `readinessProbe.enabled`                                     | Turn on and off readiness probe                         | `true`                                                  |
+| `readinessProbe.initialDelaySeconds`                         | Delay before readiness probe is initiated               | `30`                                                    |
+| `readinessProbe.periodSeconds`                               | How often to perform the probe                          | `15`                                                    |
+| `readinessProbe.timeoutSeconds`                              | When the probe times out                                | `5`                                                     |
+| `readinessProbe.failureThreshold`                            | Minimum consecutive failures for the probe              | `3`                                                     |
+| `readinessProbe.successThreshold`                            | Minimum consecutive successes for the probe             | `1`                                                     |
 
 > **Note**:
 >
@@ -157,3 +173,31 @@ To use this functionality, set `cronjob.enabled` parameter to `true` and switch 
 See the [Configuration](#configuration) section for further configuration of the cronjob resource.
 
 > **Note**: For the cronjobs to work correctly, ingress must be also enabled (set `ingress.enabled` to `true`) and `nextcloud.host` has to be publicly resolvable.
+
+## Multiple config.php file
+
+Nextcloud supports loading configuration parameters from multiple files.
+You can add arbitrary files ending with `.config.php` in the `config/` directory.
+See [documentation](https://docs.nextcloud.com/server/15/admin_manual/configuration_server/config_sample_php_parameters.html#multiple-config-php-file).
+
+For example, following config will configure Nextcloud with [S3 as primary storage](https://docs.nextcloud.com/server/13/admin_manual/configuration_files/primary_storage.html#simple-storage-service-s3) by creating file `/var/www/html/config/s3.config.php`:
+
+```yaml
+nextcloud:
+  configs:
+    s3.config.php: |-
+      <?php
+      $CONFIG = array (
+        'objectstore' => array(
+          'class' => '\\OC\\Files\\ObjectStore\\S3',
+          'arguments' => array(
+            'bucket'     => 'my-bucket',
+            'autocreate' => true,
+            'key'        => 'xxx',
+            'secret'     => 'xxx',
+            'region'     => 'us-east-1',
+            'use_ssl'    => true
+          )
+        )
+      );
+```
