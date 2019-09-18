@@ -109,9 +109,11 @@ spec:
           - configMapRef:
               name: {{ template "sematext-agent.fullname" . }}-logagent
           volumeMounts:
+            - name: run
+              mountPath: /var/run/
             {{- if .Values.logagent.customConfigs }}
-            - mountPath: /etc/sematext
-              name: logagent-config-volume
+            - name: logagent-config-volume
+              mountPath: /etc/sematext
             {{- end }}
             {{- if .Values.logagent.extraHostVolumeMounts }}
             {{- range $_, $mount := .Values.logagent.extraHostVolumeMounts }}
