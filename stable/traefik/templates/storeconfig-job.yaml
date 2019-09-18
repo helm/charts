@@ -30,6 +30,10 @@ spec:
             name: config
           - mountPath: /acme
             name: acme
+          {{- if .Values.env }}
+          env:
+{{ toYaml .Values.env | indent 12 }}
+          {{- end }}
       volumes:
       - name: config
         configMap:
