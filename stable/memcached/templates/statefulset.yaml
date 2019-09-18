@@ -14,7 +14,7 @@ spec:
   replicas: {{ .Values.replicaCount }}
   {{- if .Values.priorityClassName -}}
   priorityClassName: "{{ .Values.priorityClassName }}"
-  {{- end -}} }}
+  {{- end -}}
   template:
     metadata:
       labels:
