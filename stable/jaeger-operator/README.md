@@ -86,7 +86,7 @@ $ kubectl apply -f simplest.yaml
 
 ### Creating a new Jaeger with ElasticSearch
 
-To do that you need to have an ElasticSearch installed in your Kubernetes cluster or install one using the [Helm Chart](https://github.com/helm/charts/tree/master/incubator/elasticsearch) available for that.
+To do that you need to have an ElasticSearch installed in your Kubernetes cluster or install one using the [Helm Chart](https://github.com/helm/charts/tree/master/stable/elasticsearch) available for that.
 
 After that just deploy the following manifest:
 
