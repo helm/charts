@@ -63,7 +63,7 @@ server:
   image:
     registry: docker.io
     repository: bitnami/parse
-    tag: 3.9.0-debian-9-r0
+    tag: 3.9.0-debian-9-r8
     ## Specify a imagePullPolicy
     ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
     ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -104,18 +104,42 @@ server:
   ##
   # masterKey:
 
-  ## Configure resource requests and limits
+  ## Parse Server pods' resource requests and limits
   ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
   ##
-  resources:
-    # requests:
-    #   memory: 512Mi
-    #   cpu: 300m
+  resources: {}
+  ## Parse Server pods' liveness and readiness probes
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
+  ##
+  livenessProbe:
+    enabled: true
+    initialDelaySeconds: 120
+    periodSeconds: 10
+    timeoutSeconds: 5
+    successThreshold: 1
+    failureThreshold: 5
+  readinessProbe:
+    enabled: true
+    initialDelaySeconds: 30
+    periodSeconds: 5
+    timeoutSeconds: 5
+    successThreshold: 1
+    failureThreshold: 5
 
-  ## Affinity for pod assignment
+  ## Affinity for pod assignment. Evaluated as a template
   ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
   ##
   affinity: {}
+
+  ## Node labels for pod assignment. Evaluated as a template
+  ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+  ##
+  nodeSelector: {}
+
+  ## Tolerations for pod assignment. Evaluated as a template
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  ##
+  tolerations: {}
 
 dashboard:
   ## Enable deployment of Parse Dashboard
@@ -128,7 +152,7 @@ dashboard:
   image:
     registry: docker.io
     repository: bitnami/parse-dashboard
-    tag: 1.4.3-debian-9-r46
+    tag: 2.0.3-debian-9-r1
     ## Specify a imagePullPolicy
     ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
     ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -165,18 +189,42 @@ dashboard:
   ##
   appName: MyDashboard
 
-  ## Configure resource requests and limits
+  ## Parse Dashboard pods' resource requests and limits
   ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
   ##
   resources: {}
-    # requests:
-    #   memory: 512Mi
-    #   cpu: 300m
+  ## Parse Dashboard pods' liveness and readiness probes
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
+  ##
+  livenessProbe:
+    enabled: true
+    initialDelaySeconds: 240
+    periodSeconds: 10
+    timeoutSeconds: 5
+    successThreshold: 1
+    failureThreshold: 5
+  readinessProbe:
+    enabled: true
+    initialDelaySeconds: 30
+    periodSeconds: 5
+    timeoutSeconds: 5
+    successThreshold: 1
+    failureThreshold: 5
 
-  ## Affinity for pod assignment
+  ## Affinity for pod assignment. Evaluated as a template
   ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
   ##
   affinity: {}
+
+  ## Node labels for pod assignment. Evaluated as a template
+  ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+  ##
+  nodeSelector: {}
+
+  ## Tolerations for pod assignment. Evaluated as a template
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  ##
+  tolerations: {}
 
 ## Configure the ingress resource that allows you to access the
 ## Parse installation.
