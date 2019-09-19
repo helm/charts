@@ -93,6 +93,9 @@ openvpn:
   # conf: |
   #  max-clients 100
   #  client-to-client
+  # Arbitrary lines appended to the end of the client configuration file
+  # clientConf: |
+  #  auth SHA256
   # Enable istio support for openvpn connections
   istio:
     enabled: false

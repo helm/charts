@@ -81,6 +81,9 @@ data:
       </tls-auth>
       key-direction 1
       {{- end }}
+      {{- if .Values.openvpn.clientConf }}
+{{ indent 6 .Values.openvpn.clientConf }}
+      {{- end }}
       EOF
       cat pki/$1.ovpn
 

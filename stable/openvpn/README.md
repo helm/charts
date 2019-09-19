@@ -102,6 +102,7 @@ Parameter | Description | Default
 `openvpn.OVPN_K8S_SVC_SUBNET`  | Kubernetes service network subnet (optional)                         | `nil`
 `openvpn.dhcpOptionDomain`     | Push a `dhcp-option DOMAIN` config                                   | `true`
 `openvpn.conf`                 | Arbitrary lines appended to the end of the server configuration file | `nil`
+`openvpn.clientConf`           | Arbitrary lines appended to the end of the client configuration file | `nil`
 `openvpn.redirectGateway`      | Redirect all client traffic through VPN                              | `true`
 `openvpn.useCrl`               | Use/generate a certificate revocation list (crl.pem)                 | `false`
 `openvpn.taKey`                | Use/generate a ta.key file for hardening security                    | `false`
