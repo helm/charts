@@ -1,28 +1,29 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "parse.fullname" . }}-server
-  labels:
-    app: {{ template "parse.name" . }}
-    chart: {{ template "parse.chart" . }}
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
-    component: "server"
+  name: {{ include "parse.fullname" . }}-server
+  labels: {{ include "parse.labels" . | nindent 4 }}
+    app.kubernetes.io/component: server
+spec:
 spec:
   selector:
-    matchLabels:
-      app: {{ template "parse.name" . }}
-      release: "{{ .Release.Name }}"
-      component: "server"
+    matchLabels: {{ include "parse.matchLabels" . | nindent 6 }}
+      app.kubernetes.io/component: server
   replicas: 1
   template:
     metadata:
-      labels:
-        app: {{ template "parse.name" . }}
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-        release: "{{ .Release.Name }}"
-        component: "server"
+      labels: {{ include "parse.labels" . | nindent 8 }}
+        app.kubernetes.io/component: server
     spec:
+      {{- with .Values.server.affinity }}
+      affinity: {{ tpl (toYaml .) $ | nindent 8 }}
+      {{- end }}
+      {{- with .Values.server.nodeSelector }}
+      nodeSelector: {{ tpl (toYaml .) $ | nindent 8 }}
+      {{- end }}
+      {{- with .Values.server.tolerations }}
+      tolerations: {{ tpl (toYaml .) $ | nindent 8 }}
+      {{- end }}
       {{- if .Values.server.securityContext.enabled }}
       securityContext:
         fsGroup: {{ .Values.server.securityContext.fsGroup }}
@@ -32,7 +33,7 @@ spec:
       {{- if and .Values.volumePermissions.enabled .Values.persistence.enabled }}
       initContainers:
       - name: volume-permissions
-        image: {{ template "parse.volumePermissions.image" . }}
+        image: {{ include "parse.volumePermissions.image" . }}
         imagePullPolicy: {{ .Values.volumePermissions.image.pullPolicy | quote }}
         command: ["chown", "-R", "{{ .Values.server.securityContext.runAsUser }}:{{ .Values.server.securityContext.fsGroup }}", "/bitnami/parse"]
         securityContext:
@@ -43,8 +44,8 @@ spec:
           mountPath: /bitnami/parse
       {{- end }}
       containers:
-      - name: {{ template "parse.fullname" . }}
-        image: {{ template "parse.server.image" . }}
+      - name: parse
+        image: {{ include "parse.server.image" . }}
         imagePullPolicy: {{ .Values.server.image.pullPolicy | quote }}
         env:
         - name: PARSE_HOST
@@ -58,22 +59,23 @@ spec:
         - name: PARSE_MASTER_KEY
           valueFrom:
             secretKeyRef:
-              name: {{ template "parse.fullname" . }}
+              name: {{ include "parse.fullname" . }}
               key: master-key
         - name: MONGODB_HOST
-          value: {{ template "parse.mongodb.fullname" . }}
+          value: {{ include "parse.mongodb.fullname" . }}
         - name: MONGODB_PORT
           value: "27017"
         {{- if .Values.mongodb.usePassword }}
         - name: MONGODB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "parse.mongodb.fullname" . }}
+              name: {{ include "parse.mongodb.fullname" . }}
               key: mongodb-root-password
         {{- end }}
         ports:
         - name: server-http
           containerPort: {{ .Values.server.port }}
+        {{- if and .Values.server.livenessProbe.enabled }}
         livenessProbe:
           httpGet:
             path: {{ .Values.server.mountPath }}/users
@@ -81,7 +83,13 @@ spec:
             httpHeaders:
             - name: X-Parse-Application-Id
               value: {{ .Values.server.appId }}
-          initialDelaySeconds: 120
+          initialDelaySeconds: {{ .Values.server.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.server.livenessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.server.livenessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.server.livenessProbe.successThreshold }}
+          failureThreshold: {{ .Values.server.livenessProbe.failureThreshold }}
+        {{- end }}
+        {{- if and .Values.server.readinessProbe.enabled }}
         readinessProbe:
           httpGet:
             path: {{ .Values.server.mountPath }}/users
@@ -89,9 +97,15 @@ spec:
             httpHeaders:
             - name: X-Parse-Application-Id
               value: {{ .Values.server.appId }}
-          initialDelaySeconds: 30
-        resources:
-{{ toYaml .Values.server.resources | indent 10 }}
+          initialDelaySeconds: {{ .Values.server.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.server.readinessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.server.readinessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.server.readinessProbe.successThreshold }}
+          failureThreshold: {{ .Values.server.readinessProbe.failureThreshold }}
+        {{- end }}
+        {{- if .Values.server.resources }}
+        resources: {{- toYaml .Values.server.resources | nindent 10 }}
+        {{- end }}
         volumeMounts:
         - name: parse-data
           mountPath: /bitnami/parse
@@ -99,11 +113,7 @@ spec:
       - name: parse-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "parse.fullname" . }}
+          claimName: {{ include "parse.fullname" . }}
       {{- else }}
         emptyDir: {}
-      {{- end }}
-      {{- with .Values.server.affinity }}
-      affinity:
-{{ toYaml . | indent 8 }}
       {{- end }}

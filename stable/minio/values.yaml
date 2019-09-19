@@ -22,6 +22,9 @@ mcImage:
 ##
 mode: standalone
 
+## Additional arguments to pass to minio binary
+extraArgs: []
+
 ## Update strategy for Deployments
 DeploymentUpdate:
   type: RollingUpdate

@@ -42,6 +42,18 @@ spec:
          valueFrom:
             fieldRef:
               fieldPath: status.hostIP
+       {{- if .Values.omsagent.logsettings.logflushintervalsecs }}
+       - name: FBIT_SERVICE_FLUSH_INTERVAL
+         value: {{ .Values.omsagent.logsettings.logflushintervalsecs | quote }}
+       {{- end }}
+       {{- if .Values.omsagent.logsettings.tailbufchunksizemegabytes }}
+       - name: FBIT_TAIL_BUFFER_CHUNK_SIZE
+         value: {{ .Values.omsagent.logsettings.tailbufchunksizemegabytes | quote }}
+       {{- end }}
+       {{- if .Values.omsagent.logsettings.tailbufmaxsizemegabytes }}
+       - name: FBIT_TAIL_BUFFER_MAX_SIZE
+         value: {{ .Values.omsagent.logsettings.tailbufmaxsizemegabytes | quote }}
+       {{- end }}
        securityContext:
          privileged: true
        ports:

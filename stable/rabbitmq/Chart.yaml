@@ -1,7 +1,7 @@
 apiVersion: v1
 name: rabbitmq
-version: 6.5.0
-appVersion: 3.7.17
+version: 6.7.2
+appVersion: 3.7.18
 description: Open source message broker software that implements the Advanced Message Queuing Protocol (AMQP)
 keywords:
 - rabbitmq

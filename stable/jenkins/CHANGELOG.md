@@ -6,6 +6,10 @@ numbering uses [semantic versioning](http://semver.org).
 
 NOTE: The change log until version 1.5.7 is auto generated based on git commits. Those include a reference to the git commit to be able to get more details.
 
+## 1.7.2
+
+Update kubernetes-plugin to version 1.18.2 which fixes frequently encountered [JENKINS-59000](https://issues.jenkins-ci.org/plugins/servlet/mobile#issue/JENKINS-59000)
+
 ## 1.7.1
 
 Update the default requirements for jenkins-slave to 512Mi which fixes frequently encountered [issue #3723](https://github.com/helm/charts/issues/3723)

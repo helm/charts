@@ -108,3 +108,7 @@ $ helm install --name myrelease-1 -f values.yaml incubator/azuremonitor-containe
 After you successfully deploy the chart, you will be able to see your data in the [azure portal](aka.ms/azmon-containers)
 
 If you need help with this chart, please reach us out through [this](mailto:askcoin@microsoft.com) email.
+
+## Custom resource
+
+Starting with chart version 2.0.0, chart will create a CRD (healthstates.azmon.container.insights) in kube-system namespace. This is used by the agent for cluster health monitoring.
