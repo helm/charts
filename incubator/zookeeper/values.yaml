@@ -285,7 +285,7 @@ env:
   ## false.  Set to true when using Istio
 
   ZK_QUORUM_LISTEN_ALL_IP: false
-  
+
 jobs:
   ## ref: http://zookeeper.apache.org/doc/r3.4.10/zookeeperProgrammers.html#ch_zkSessions
   chroots:
