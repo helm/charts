@@ -15,6 +15,7 @@ fullnameOverride: ""
 
 flows: "flows.json"
 # nodeOptions: ""
+extraEnvs: []
 timezone: "UTC"
 
 service:

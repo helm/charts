@@ -26,6 +26,10 @@ serviceAccount:
 ## ref: https://cbonte.github.io/haproxy-dconv/1.9/intro.html
 haproxy:
   enabled: false
+  # Enable if you want a dedicated port in haproxy for redis-slaves
+  readOnly:
+    enabled: false
+    port: 6380
   replicas: 1
   image:
     repository: haproxy
@@ -79,8 +83,8 @@ redis:
   config:
     ## Additional redis conf options can be added below
     ## For all available options see http://download.redis.io/redis-stable/redis.conf
-    min-slaves-to-write: 1
-    min-slaves-max-lag: 5   # Value in seconds
+    min-replicas-to-write: 1
+    min-replicas-max-lag: 5   # Value in seconds
     maxmemory: "0"       # Max memory to use for each redis instance. Default is unlimited.
     maxmemory-policy: "volatile-lru"  # Max memory policy to use for each redis instance. Default is volatile-lru.
     # Determines if scheduled RDB backups are created. Default is false.
@@ -90,6 +94,7 @@ redis:
     repl-diskless-sync: "yes"
     rdbcompression: "yes"
     rdbchecksum: "yes"
+
 
   ## Custom redis.conf files used to override default settings. If this file is
   ## specified then the redis.config above will be ignored.

@@ -149,6 +149,21 @@ Helper for containerPort (http)
 {{- end -}}
 
 {{/*
+Helper for RBAC Scope
+If Kubernetes namespace selection is defined and the (one) selected
+namespace is the release namespace Cluster scope is unnecessary.
+*/}}
+{{- define "traefik.rbac.scope" -}}
+	{{- if .Values.kubernetes -}}
+		{{- if not (eq (.Values.kubernetes.namespaces | default (list) | toString) (list .Release.Namespace | toString)) -}}
+		Cluster
+		{{- end -}}
+	{{- else -}}
+	Cluster
+	{{- end -}}
+{{- end -}}
+
+{{/*
 Helper for containerPort (https)
 */}}
 {{- define "traefik.containerPort.https" -}}
