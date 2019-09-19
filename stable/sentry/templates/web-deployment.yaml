@@ -131,7 +131,7 @@ spec:
             path: /_health/
             port: {{ .Values.service.internalPort }}
             scheme: HTTP
-          initialDelaySeconds: 50
+          initialDelaySeconds: {{ .Values.web.probeInitialDelaySeconds }}
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 2
@@ -141,7 +141,7 @@ spec:
             path: /_health/
             port: {{ .Values.service.internalPort }}
             scheme: HTTP
-          initialDelaySeconds: 50
+          initialDelaySeconds: {{ .Values.web.probeInitialDelaySeconds }}
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 2

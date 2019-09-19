@@ -76,6 +76,7 @@ Parameter                                            | Description              
 `web.affinity`                                       | Affinity settings for web pod assignment                                                                   | `{}`
 `web.schedulerName`                                  | Name of an alternate scheduler for web pod                                                                 | `nil`
 `web.tolerations`                                    | Toleration labels for web pod assignment                                                                   | `[]`
+`web.probeInitialDelaySeconds`                       | The number of seconds before the probe doing healthcheck                                          | `50`
 `cron.podAnnotations`                                | Cron pod annotations                                                                                       | `{}`
 `cron.podLabels`                                     | Worker pod extra labels                                                                                    | `{}`
 `cron.replicacount`                                  | Amount of cron pods to run                                                                                 | `1`
