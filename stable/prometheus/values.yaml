@@ -543,7 +543,7 @@ server:
   ##
   image:
     repository: prom/prometheus
-    tag: v2.11.1
+    tag: v2.12
     pullPolicy: IfNotPresent
 
   ## prometheus server priorityClassName
@@ -798,6 +798,15 @@ server:
     # requests:
     #   cpu: 500m
     #   memory: 512Mi
+
+  ## Vertical Pod Autoscaler config
+  ## Ref: https://github.com/kubernetes/autoscaler/tree/master/vertical-pod-autoscaler
+  verticalAutoscaler:
+    ## If true a VPA object will be created for the controller (either StatefulSet or Deployemnt, based on above configs)
+    enabled: false
+    # updateMode: "Auto"
+    # containerPolicies:
+    # - containerName: 'prometheus-server'
 
   ## Security context to be added to server pods
   ##
