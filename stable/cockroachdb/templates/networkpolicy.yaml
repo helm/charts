@@ -1,4 +1,3 @@
-{{- if .Values.Secure.Enabled }}
 {{- if .Values.NetworkPolicy.Enabled }}
 kind: NetworkPolicy
 apiVersion: {{ template "cockroachdb.networkPolicy.apiVersion" . }}
@@ -42,5 +41,4 @@ spec:
   # Allow connections from Prometheus.
   - ports:
     - port: {{.Values.ExternalHttpPort}}
-{{- end }}
 {{- end }}
