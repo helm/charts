@@ -51,18 +51,19 @@ The following table lists the configurable parameters of the MSOMS chart and the
 
 The following table lists the configurable parameters of the MSOMS chart and their default values.
 
-| Parameter                  | Description                        | Default                                                                          |
-| -----------------------    | ---------------------------------- | -------------------------------------------------------------------------------- |
-| `omsagent.image.tag`       | `msoms` image tag.                 | Most recent release                                                              |
-| `omsagent.image.pullPolicy`| `msoms` image pull policy.         | IfNotPresent                                                                     |
-| `omsagent.secret.wsid`     | Azure Log analytics workspace id                   | Does not have a default value, needs to be provided                              |
-| `omsagent.secret.key`      | Azure Log analytics workspace key                  | Does not have a default value, needs to be provided                              |
+| Parameter                  | Description                                             | Default                                                                          |
+| -----------------------    | --------------------------------------------------------| -------------------------------------------------------------------------------- |
+| `omsagent.image.tag`       | `msoms` image tag.                                      | Most recent release                                                              |
+| `omsagent.image.pullPolicy`| `msoms` image pull policy.                              | IfNotPresent                                                                     |
+| `omsagent.secret.wsid`     | Azure Log analytics workspace id                        | Does not have a default value, needs to be provided                              |
+| `omsagent.secret.key`      | Azure Log analytics workspace key                       | Does not have a default value, needs to be provided                              |
 | `omsagent.domain`          | Azure Log analytics cloud domain (public,china, govt)   | opinsights.azure.com (Public cloud as default), opinsights.azure.cn (China Cloud), opinsights.azure.us (Govt Cloud) |
-| `omsagent.env.clusterName` | Name of your cluster      | Does not have a default value, needs to be provided |
-| `omsagent.rbac`             | rbac enabled/disabled      | true  (i.e enabled)     |
+| `omsagent.env.clusterName` | Name of your cluster                                    | Does not have a default value, needs to be provided                                                                 |
+| `omsagent.rbac`            | rbac enabled/disabled                                   | true  (i.e enabled)                                                                                                 |
 
 ### Note
-Parameter `omsagent.env.doNotCollectKubeSystemLogs` has been removed starting chart version 1.0.0. Refer to 'Agent data collection settings' section below to configure it using configmap.
+- Parameter `omsagent.env.doNotCollectKubeSystemLogs` has been removed starting chart version 1.0.0. Refer to 'Agent data collection settings' section below to configure it using configmap.
+- onboarding of multiple clusters with the same cluster name to same log analytics workspace not supported. If need this configuration, use the cluster FQDN name rather than cluster dns prefix to avoid collision with clusterName
 
 ## Agent data collection settings
 
