@@ -332,6 +332,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `alertmanager.podDisruptionBudget.enabled` | If true, create a pod disruption budget for Alertmanager pods. The created resource cannot be modified once created - it must be deleted to perform a change | `false` |
 | `alertmanager.podDisruptionBudget.maxUnavailable` | Maximum number / percentage of pods that may be made unavailable | `""` |
 | `alertmanager.podDisruptionBudget.minAvailable` | Minimum number / percentage of pods that should remain scheduled | `1` |
+| `alertmanager.secret.annotations` | Alertmanager Secret annotations | `{}` |
 | `alertmanager.service.annotations` | Alertmanager Service annotations | `{}` |
 | `alertmanager.service.clusterIP` | Alertmanager service clusterIP IP | `""` |
 | `alertmanager.service.externalIPs` | List of IP addresses at which the Alertmanager server service is available | `[]` |

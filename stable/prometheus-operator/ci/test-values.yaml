@@ -170,6 +170,11 @@ alertmanager:
     #   hosts:
     #   - alertmanager.example.com
 
+  ## Configuration for Alertmanager secret
+  ##
+  secret:
+    annotations: {}
+
   ## Configuration for Alertmanager service
   ##
   service:
