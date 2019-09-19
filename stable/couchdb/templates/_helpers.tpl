@@ -61,3 +61,15 @@ Generates a comma delimited list of nodes in the cluster
     {{ $.Values.erlangFlags.name }}@{{ template "couchdb.fullname" $ }}-{{ $index0 }}.{{ template "couchdb.fullname" $ }}.{{ $.Release.Namespace }}.svc.{{ $.Values.dns.clusterDomainSuffix }}{{ if ne $index1 $nodeCount }},{{ end }}
   {{- end -}}
 {{- end -}}
+
+
+{{/*
+If serviceAccount.name is specified, use that, else use the couchdb instance name
+*/}}
+{{- define "couchdb.serviceAccount" -}}
+{{- if .Values.serviceAccount.name -}}
+{{- .Values.serviceAccount.name }}
+{{- else -}}
+{{- template "couchdb.fullname" . -}}
+{{- end -}}
+{{- end -}}

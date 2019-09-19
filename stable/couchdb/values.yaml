@@ -30,6 +30,14 @@ adminUsername: admin
 ##
 # schedulerName:
 
+# Use a service account
+serviceAccount:
+  enabled: true
+  create: true
+# name:
+# imagePullSecrets:
+# - name: myimagepullsecret
+
 ## The storage volume used by each Pod in the StatefulSet. If a
 ## persistentVolume is not enabled, the Pods will use `emptyDir` ephemeral
 ## local storage. Setting the storageClass attribute to "-" disables dynamic
