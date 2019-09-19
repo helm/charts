@@ -392,5 +392,7 @@ readinessProbe:
 ##
 metrics:
   enabled: true
+  serviceMonitor:
+    enabled: true
   ## Metrics exporter pod Annotation and Labels
   ##

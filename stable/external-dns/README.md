@@ -149,7 +149,8 @@ The following table lists the configurable parameters of the external-dns chart 
 | `livenessProbe`                    | Deployment Liveness Probe                                                                                | See `values.yaml`                                        |
 | `readinessProbe`                   | Deployment Readiness Probe                                                                               | See `values.yaml`                                        |
 | `metrics.enabled`                  | Enable prometheus to access external-dns metrics endpoint                                                | `false`                                                  |
-| `metrics.podAnnotations`           | Annotations for enabling prometheus to access the metrics endpoint                                       | {`prometheus.io/scrape: "true",prometheus.io/port: "7979"`} |
+| `metrics.serviceMonitor.enabled`   | Enable prometheus-operator service monitor                                                               | `false`                                                  |
+| `metrics.podAnnotations`           | Annotations for enabling prometheus to access the metrics endpoint                                       | `{}`                                                     |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

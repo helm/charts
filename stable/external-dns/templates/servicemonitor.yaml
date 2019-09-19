@@ -1,0 +1,16 @@
+{{- if .Values.metrics.serviceMonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ template "external-dns.fullname" . }}
+  labels: {{ include "external-dns.labels" . | nindent 4 }}
+spec:
+  endpoints:
+    - port: http
+      path: /metrics
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
+  selector:
+    matchLabels: {{ include "external-dns.labels" . | nindent 4 }}
+{{- end }}
