@@ -21,6 +21,11 @@ allowAdminParty: false
 ##    created ahead of time.
 createAdminSecret: true
 
+## When enabled, will deploy a networkpolicy that allows CouchDB pods to
+## communicate with each other for clustering and ingress on port 5984
+networkPolicy:
+  enabled: true
+
 adminUsername: admin
 # adminPassword: this_is_not_secure
 # cookieAuthSecret: neither_is_this

@@ -131,3 +131,4 @@ A variety of other parameters are also configurable. See the comments in the
 | `service.type`                  | ClusterIP                              |
 | `service.externalPort`          | 5984                                   |
 | `dns.clusterDomainSuffix`       | cluster.local                          |
+| `networkPolicy.enabled`         | true                                   |
