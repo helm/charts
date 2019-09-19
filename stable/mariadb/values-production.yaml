@@ -293,6 +293,13 @@ master:
     minAvailable: 1
     # maxUnavailable: 1
 
+  ## Allow customization of the service resource
+  ##
+  service:
+    ## Add custom annotations to the service
+    ##
+    annotations: {}
+
 slave:
   replicas: 2
 
@@ -407,6 +414,13 @@ slave:
     enabled: false
     minAvailable: 1
     # maxUnavailable: 1
+
+  ## Allow customization of the service resource
+  ##
+  service:
+    ## Add custom annotations to the service
+    ##
+    annotations: {}
 
 metrics:
   enabled: true

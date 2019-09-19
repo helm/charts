@@ -103,3 +103,6 @@ extraVolumes: |
 
 # To be added to the server pod(s)
 podAnnotations: {}
+
+## Set pod priority class
+# priorityClassName: ""

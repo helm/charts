@@ -88,6 +88,8 @@ schema:
   ## Additional pod labels
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   podLabels: {}
+  # Deadline for cassandra schema creation job
+  activeDeadlineSeconds: 120
 
 # Begin: Override values on the Elasticsearch subchart to customize for Jaeger
 elasticsearch:
