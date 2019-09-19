@@ -60,6 +60,10 @@ affinity:
 #          operator: In
 #          values:
 #          - hazelcast
+#        - key: role
+#          operator: In
+#          values:
+#          - hazelcast
 #      topologyKey: kubernetes.io/hostname
 
 # nodeSelector is an array of Hazelcast Node labels for POD assignments
