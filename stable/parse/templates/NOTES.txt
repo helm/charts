@@ -89,7 +89,7 @@ service:
 
 {{- end }}
 
-2. Get your Parsh Dashboard login credentials by running:
+2. Get your Parse Dashboard login credentials by running:
 
   echo Username: {{ .Values.dashboard.username }}
   echo Password: $(kubectl get secret --namespace {{ .Release.Namespace }} {{ include "parse.fullname" . }} -o jsonpath="{.data.parse-dashboard-password}" | base64 --decode)
