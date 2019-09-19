@@ -4,6 +4,12 @@ apiVersion: v1
 data:
   kube.conf: |
     # Fluentd config file for OMS Docker - cluster components (kubeAPI)
+    #fluent forward plugin
+     <source>
+      type forward
+      port 25227
+      bind 0.0.0.0
+     </source>
 
      #Kubernetes pod inventory
      <source>
@@ -52,6 +58,14 @@ data:
       log_level debug
      </source>
 
+     #Kubernetes health
+     <source>
+      type kubehealth
+      tag oms.api.KubeHealth.ReplicaSet
+      run_interval 60s
+      log_level debug
+     </source>
+
      #cadvisor perf- Windows nodes
      <source>
       type wincadvisorperf
@@ -72,6 +86,11 @@ data:
       custom_metrics_azure_regions eastus,southcentralus,westcentralus,westus2,southeastasia,northeurope,westEurope
       metrics_to_collect cpuUsageNanoCores,memoryWorkingSetBytes
       log_level info
+     </filter>
+
+     #health model aggregation filter
+     <filter oms.api.KubeHealth**>
+      type filter_health_model_builder
      </filter>
 
      <match oms.containerinsights.KubePodInventory**>
@@ -219,6 +238,18 @@ data:
       retry_wait 30s
       max_retry_wait 9m
       retry_mdm_post_wait_minutes 60
+     </match>
+
+     <match oms.api.KubeHealth.AgentCollectionTime**>
+      type out_oms_api
+      log_level debug
+      buffer_chunk_limit 10m
+      buffer_type file
+      buffer_path %STATE_DIR_WS%/out_oms_api_kubehealth*.buffer
+      buffer_queue_limit 10
+      flush_interval 20s
+      retry_limit 10
+      retry_wait 30s
      </match>
 metadata:
   name: omsagent-rs-config
