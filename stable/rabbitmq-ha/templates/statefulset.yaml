@@ -53,7 +53,7 @@ spec:
           - |
             set -ex
             cp /configmap/* /etc/rabbitmq
-            rm -f /var/lib/rabbitmq/.erlang.cookie
+            echo "${RABBITMQ_ERLANG_COOKIE}" > /var/lib/rabbitmq/.erlang.cookie
             {{- if .Values.forceBoot }}
             if [ -d "${RABBITMQ_MNESIA_DIR}" ]; then
               touch "${RABBITMQ_MNESIA_DIR}/force_load"
@@ -67,6 +67,11 @@ spec:
                 fieldPath: metadata.name
           - name: RABBITMQ_MNESIA_DIR
             value: /var/lib/rabbitmq/mnesia/rabbit@$(POD_NAME).{{ template "rabbitmq-ha.fullname" . }}-discovery.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}
+          - name: RABBITMQ_ERLANG_COOKIE
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "rabbitmq-ha.secretName" . }}
+                key: rabbitmq-erlang-cookie
           resources:
 {{ toYaml .Values.initContainer.resources | indent 12 }}
           volumeMounts:
@@ -164,7 +169,7 @@ spec:
             {{- range $key, $value := .Values.env }}
             - name: {{ $key }}
               value: {{ $value | quote }}
-            {{- end }}            
+            {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           volumeMounts:

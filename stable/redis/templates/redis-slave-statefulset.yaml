@@ -6,33 +6,31 @@ metadata:
   labels:
     app: {{ template "redis.name" . }}
     chart: {{ template "redis.chart" . }}
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
 {{- if .Values.slave.updateStrategy }}
   strategy:
 {{ toYaml .Values.slave.updateStrategy | indent 4 }}
 {{- end }}
-{{- if .Values.cluster.slaveCount }}
   replicas: {{ .Values.cluster.slaveCount }}
-{{- end }}
   serviceName: {{ template "redis.fullname" . }}-headless
   selector:
     matchLabels:
-        release: "{{ .Release.Name }}"
-        role: slave
-        app: {{ template "redis.name" . }}
+      app: {{ template "redis.name" . }}
+      release: {{ .Release.Name }}
+      role: slave
   template:
     metadata:
       labels:
-        release: "{{ .Release.Name }}"
+        app: {{ template "redis.name" . }}
+        release: {{ .Release.Name }}
         chart: {{ template "redis.chart" . }}
         role: slave
-        app: {{ template "redis.name" . }}
       {{- if .Values.slave.podLabels }}
 {{ toYaml .Values.slave.podLabels | indent 8 }}
       {{- end }}
-      {{- if .Values.metrics.podLabels }}
+      {{- if and .Values.metrics.enabled .Values.metrics.podLabels }}
 {{ toYaml .Values.metrics.podLabels | indent 8 }}
       {{- end }}
       annotations:
@@ -42,7 +40,7 @@ spec:
       {{- if .Values.slave.podAnnotations }}
 {{ toYaml .Values.slave.podAnnotations | indent 8 }}
       {{- end }}
-      {{- if .Values.metrics.podAnnotations }}
+      {{- if and .Values.metrics.enabled .Values.metrics.podAnnotations }}
 {{ toYaml .Values.metrics.podAnnotations | indent 8 }}
       {{- end }}
     spec:
@@ -394,10 +392,10 @@ spec:
     - metadata:
         name: redis-data
         labels:
-          app: "{{ template "redis.name" . }}"
-          component: "slave"
-          release: {{ .Release.Name | quote }}
-          heritage: {{ .Release.Service | quote }}
+          app: {{ template "redis.name" . }}
+          release: {{ .Release.Name }}
+          heritage: {{ .Release.Service }}
+          component: slave
       spec:
         accessModes:
         {{- range .Values.slave.persistence.accessModes }}
