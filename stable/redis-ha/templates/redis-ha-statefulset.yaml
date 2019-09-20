@@ -148,11 +148,11 @@ spec:
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         command:
-        - redis-server
+        - redis-server 
         args:
         - /data/conf/redis.conf
-{{- if .Values.auth }}
         env:
+        {{- if .Values.auth }}
         - name: AUTH
           valueFrom:
             secretKeyRef:
@@ -162,7 +162,7 @@ spec:
               name: {{ template "redis-ha.fullname" . }}
             {{- end }}
               key: {{ .Values.authKey }}
-{{- end }}
+        {{- end }}
         livenessProbe:
           tcpSocket:
             port: {{ .Values.redis.port }}
@@ -216,7 +216,7 @@ spec:
         {{- end }}
         env:
           - name: REDIS_ADDR
-            value: redis://localhost:6379
+            value: redis://localhost:{{ .Values.redis.port }}
         {{- if .Values.auth }}
           - name: REDIS_PASSWORD
             valueFrom:
