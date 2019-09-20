@@ -1,7 +1,7 @@
 apiVersion: v1
 description: CoreOS etcd-operator Helm chart for Kubernetes
 name: etcd-operator
-version: 0.9.1
+version: 0.10.0
 appVersion: 0.9.4
 home: https://github.com/coreos/etcd-operator
 icon: https://raw.githubusercontent.com/coreos/etcd/master/logos/etcd-horizontal-color.png
