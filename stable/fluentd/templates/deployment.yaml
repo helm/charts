@@ -43,7 +43,7 @@ spec:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-      {{- if .Values.plugins.enabled }}
+      {{- if and (.Values.plugins.enabled) (gt (len .Values.plugins.pluginsList) 0) }}
         command: ["/bin/sh", "-c", "/etc/fluent/config.d/install-plugins.sh"]
       {{- end }}
         env:

@@ -27,7 +27,7 @@ data:
       @type prometheus_output_monitor
     </source>
 {{- end }}
-{{- if .Values.plugins.enabled }}
+{{- if and (.Values.plugins.enabled) (gt (len .Values.plugins.pluginsList) 0) }}
   install-plugins.sh: |-
     #!/bin/sh
   {{- range $plugin := .Values.plugins.pluginsList }}
