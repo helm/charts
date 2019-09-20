@@ -118,6 +118,10 @@ rbac:
   ##
   serviceAccountName: default
 
+  serviceAccount:
+    # If rbac.create is true, apply these annotations to the generated service account
+    annotations: {}
+
 resources: {}
   # limits:
   #   cpu: 100m
