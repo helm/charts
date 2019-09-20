@@ -13,6 +13,7 @@ data:
 {{ tpl .Values.redis.customConfig . | indent 4 }}
 {{- else }}
     dir "/data"
+    port {{ .Values.redis.port }}
     {{- range $key, $value := .Values.redis.config }}
     {{ $key }} {{ $value }}
     {{- end }}
@@ -179,12 +180,12 @@ data:
     # decide redis backend to use
     #master
     frontend ft_redis_master
-      bind *:6379
+      bind *:{{ $root.Values.redis.port }}
       use_backend bk_redis_master
     {{ if .Values.haproxy.readOnly.enabled }}
     #slave
     frontend ft_redis_slave
-      bind *:6380
+      bind *:{{ .Values.haproxy.readOnly.port }}
       use_backend bk_redis_slave
     {{- end }} 
     # Check all redis servers to see if they think they are master
@@ -204,7 +205,7 @@ data:
       tcp-check expect string +OK
       {{- range $i := until $replicas }}
       use-server R{{ $i }} if { srv_is_up(R{{ $i }}) } { nbsrv(check_if_redis_is_master_{{ $i }}) ge 2 }
-      server R{{ $i }} {{ $fullName }}-announce-{{ $i }}:6379 check inter 1s fall 1 rise 1
+      server R{{ $i }} {{ $fullName }}-announce-{{ $i }}:{{ $root.Values.redis.port }} check inter 1s fall 1 rise 1
       {{- end }}     
     {{ if .Values.haproxy.readOnly.enabled }}
     backend bk_redis_slave
@@ -222,7 +223,7 @@ data:
       tcp-check send QUIT\r\n
       tcp-check expect string +OK
       {{- range $i := until $replicas }}
-      server R{{ $i }} {{ $fullName }}-announce-{{ $i }}:6379 check inter 1s fall 1 rise 1
+      server R{{ $i }} {{ $fullName }}-announce-{{ $i }}:{{ $root.Values.redis.port }} check inter 1s fall 1 rise 1
       {{- end }}
     {{- end }}
 {{- end }}

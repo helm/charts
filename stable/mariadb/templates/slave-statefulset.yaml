@@ -1,5 +1,5 @@
 {{- if .Values.replication.enabled }}
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ template "slave.fullname" . }}
