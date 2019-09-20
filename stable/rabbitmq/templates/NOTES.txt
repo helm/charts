@@ -58,6 +58,17 @@ To Access the RabbitMQ Management interface:
 
 {{- end }}
 
+{{- if .Values.metrics.enabled }}
+
+To access the RabbitMQ Prometheus metrics, get the RabbitMQ Prometheus exporter URL by running:
+
+    echo "Prometheus Metrics URL: http://127.0.0.1:{{ .Values.metrics.port }}/metrics"
+    kubectl port-forward --namespace {{ .Release.Namespace }} {{ template "rabbitmq.fullname" . }}-0 {{ .Values.metrics.port }}:{{ .Values.metrics.port }}
+
+Then, open the URL obtained in a browser.
+
+{{- end }}
+
 {{- if and (contains "bitnami/" .Values.image.repository) (not (.Values.image.tag | toString | regexFind "-r\\d+$|sha256:")) }}
 
 WARNING: Rolling tag detected ({{ .Values.image.repository }}:{{ .Values.image.tag }}), please note that it is strongly recommended to avoid using rolling tags in a production environment.

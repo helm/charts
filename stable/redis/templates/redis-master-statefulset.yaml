@@ -5,29 +5,28 @@ metadata:
   labels:
     app: {{ template "redis.name" . }}
     chart: {{ template "redis.chart" . }}
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   selector:
     matchLabels:
-      release: "{{ .Release.Name }}"
-      role: master
       app: {{ template "redis.name" . }}
+      release: {{ .Release.Name }}
+      role: master
   serviceName: {{ template "redis.fullname" . }}-headless
   template:
     metadata:
       labels:
-        release: "{{ .Release.Name }}"
-        chart: {{ template "redis.chart" . }}
-        role: master
         app: {{ template "redis.name" . }}
+        chart: {{ template "redis.chart" . }}
+        release: {{ .Release.Name }}
+        role: master
 {{- if .Values.master.podLabels }}
 {{ toYaml .Values.master.podLabels | indent 8 }}
 {{- end }}
-{{- if .Values.metrics.podLabels }}
+{{- if and .Values.metrics.enabled .Values.metrics.podLabels }}
 {{ toYaml .Values.metrics.podLabels | indent 8 }}
 {{- end }}
-
       annotations:
         checksum/health: {{ include (print $.Template.BasePath "/health-configmap.yaml") . | sha256sum }}
         checksum/configmap: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
@@ -35,7 +34,7 @@ spec:
       {{- if .Values.master.podAnnotations }}
 {{ toYaml .Values.master.podAnnotations | indent 8 }}
       {{- end }}
-      {{- if .Values.metrics.podAnnotations }}
+      {{- if and .Values.metrics.enabled .Values.metrics.podAnnotations }}
 {{ toYaml .Values.metrics.podAnnotations | indent 8 }}
       {{- end }}
     spec:
@@ -197,7 +196,7 @@ spec:
           fi
           echo "Getting information about current running sentinels"
           # Get information from existing sentinels
-          existing_sentinels=$(timeout -s 9 {{ .Values.sentinel.initialCheckTimeout }} redis-cli --raw -h {{ template "redis.fullname" . }} -a $REDIS_PASSWORD -p {{ .Values.sentinel.service.sentinelPort }} SENTINEL sentinels {{ .Values.sentinel.masterSet }})
+          existing_sentinels=$(timeout -s 9 {{ .Values.sentinel.initialCheckTimeout }} redis-cli --raw -h {{ template "redis.fullname" . }} -a "$REDIS_PASSWORD" -p {{ .Values.sentinel.service.sentinelPort }} SENTINEL sentinels {{ .Values.sentinel.masterSet }})
           echo "$existing_sentinels" | awk -f /health/parse_sentinels.awk | tee -a  /opt/bitnami/redis-sentinel/etc/sentinel.conf
 
           redis-server /opt/bitnami/redis-sentinel/etc/sentinel.conf --sentinel
@@ -269,6 +268,14 @@ spec:
       - name: metrics
         image: {{ template "redis.metrics.image" . }}
         imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
+        command:
+        - /bin/bash
+        - -c
+        - |
+          if [[ -f '/secrets/redis-password' ]]; then
+           export REDIS_PASSWORD=$(cat /secrets/redis-password)
+          fi
+          redis_exporter
         args:
         {{- range $key, $value := .Values.metrics.extraArgs }}
           - --{{ $key }}={{ $value }}
@@ -276,17 +283,12 @@ spec:
         env:
         - name: REDIS_ALIAS
           value: {{ template "redis.fullname" . }}
-        {{- if .Values.usePassword }}
-        {{- if .Values.usePasswordFile }}
-        - name: REDIS_PASSWORD_FILE
-          value: "/secrets/redis-password"
-        {{- else }}
+        {{- if and .Values.usePassword (not .Values.usePasswordFile) }}
         - name: REDIS_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "redis.secretName" . }}
               key: redis-password
-        {{- end }}
         {{- end }}
         volumeMounts:
         {{- if .Values.usePasswordFile }}
@@ -373,10 +375,10 @@ spec:
     - metadata:
         name: redis-data
         labels:
-          app: "{{ template "redis.name" . }}"
-          component: "master"
-          release: {{ .Release.Name | quote }}
-          heritage: {{ .Release.Service | quote }}
+          app: {{ template "redis.name" . }}
+          release: {{ .Release.Name }}
+          heritage: {{ .Release.Service }}
+          component: master
       spec:
         accessModes:
         {{- range .Values.master.persistence.accessModes }}
@@ -385,13 +387,7 @@ spec:
         resources:
           requests:
             storage: {{ .Values.master.persistence.size | quote }}
-      {{- if .Values.master.persistence.storageClass }}
-      {{- if (eq "-" .Values.master.persistence.storageClass) }}
-        storageClassName: ""
-      {{- else }}
-        storageClassName: {{ .Values.master.persistence.storageClass | quote }}
-      {{- end }}
-      {{- end }}
+        {{ include "redis.master.storageClass" . }}
   {{- end }}
   updateStrategy:
     type: {{ .Values.master.statefulset.updateStrategy }}

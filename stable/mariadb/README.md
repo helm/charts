@@ -51,6 +51,7 @@ The following table lists the configurable parameters of the MariaDB chart and t
 |-------------------------------------------|-----------------------------------------------------|-------------------------------------------------------------------|
 | `global.imageRegistry`                    | Global Docker image registry                        | `nil`                                                             |
 | `global.imagePullSecrets`                 | Global Docker registry secret names as an array     | `[]` (does not add image pull secrets to deployed pods)           |
+| `global.storageClass`                     | Global storage class for dynamic provisioning                                               | `nil`                                                        |
 | `image.registry`                          | MariaDB image registry                              | `docker.io`                                                       |
 | `image.repository`                        | MariaDB Image name                                  | `bitnami/mariadb`                                                 |
 | `image.tag`                               | MariaDB Image tag                                   | `{TAG_NAME}`                                                      |
@@ -62,11 +63,12 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `volumePermissions.enabled`          | Enable init container that changes volume permissions in the data directory (for cases where the default k8s `runAsUser` and `fsUser` values do not work) | `false`                                                      |
 | `volumePermissions.image.registry`   | Init container volume-permissions image registry                                                                                                          | `docker.io`                                                  |
 | `volumePermissions.image.repository` | Init container volume-permissions image name                                                                                                              | `bitnami/minideb`                                            |
-| `volumePermissions.image.tag`        | Init container volume-permissions image tag                                                                                                               | `latest`                                                     |
+| `volumePermissions.image.tag`        | Init container volume-permissions image tag                                                                                                               | `stretch`                                                     |
 | `volumePermissions.image.pullPolicy` | Init container volume-permissions image pull policy                                                                                                       | `Always`                                                     |
 | `volumePermissions.resources`        | Init container resource requests/limit                                                                                                                    | `nil`                                                        |
 | `service.type`                            | Kubernetes service type                             | `ClusterIP`                                                       |
-| `service.clusterIp`                       | Specific cluster IP when service type is cluster IP. Use None for headless service | `nil`                              |
+| `service.clusterIp.master`                | Specific cluster IP for master when service type is cluster IP. Use None for headless service | `nil`                   |
+| `service.clusterIp.slave`                 | Specific cluster IP for slave when service type is cluster IP. Use None for headless service | `nil`                    |
 | `service.port`                            | MySQL service port                                  | `3306`                                                            |
 | `serviceAccount.create`                   | Specifies whether a ServiceAccount should be created | `false`                                                          |
 | `serviceAccount.name`                     | The name of the ServiceAccount to create            | Generated using the mariadb.fullname template                     |
@@ -122,6 +124,7 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `master.podDisruptionBudget.enabled`      | If true, create a pod disruption budget for master pods. | `false`                                                      |
 | `master.podDisruptionBudget.minAvailable` | Minimum number / percentage of pods that should remain scheduled | `1`                                                  |
 | `master.podDisruptionBudget.maxUnavailable`| Maximum number / percentage of pods that may be made unavailable | `nil`                                               |
+| `master.service.annotations`              | Master service annotations                          | `{}`                                                              |
 | `slave.replicas`                          | Desired number of slave replicas                    | `1`                                                               |
 | `slave.annotations[].key`                 | key for the the annotation list item                | `nil`                                                             |
 | `slave.annotations[].value`               | value for the the annotation list item              | `nil`                                                             |
@@ -154,6 +157,7 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `slave.podDisruptionBudget.enabled`       | If true, create a pod disruption budget for slave pods. | `false`                                                       |
 | `slave.podDisruptionBudget.minAvailable`  | Minimum number / percentage of pods that should remain scheduled | `1`                                                  |
 | `slave.podDisruptionBudget.maxUnavailable`| Maximum number / percentage of pods that may be made unavailable | `nil`                                                |
+| `slave.service.annotations`               | Slave service annotations                           | `{}`                                                              |
 | `metrics.enabled`                         | Start a side-car prometheus exporter                | `false`                                                           |
 | `metrics.image.registry`                  | Exporter image registry                             | `docker.io`                                                       |
 | `metrics.image.repository`                | Exporter image name                                 | `bitnami/mysqld-exporter`                                         |
@@ -254,7 +258,7 @@ The feature allows for specifying a template string for a initContainer in the m
 master:
   extraInitContainers: |
     - name: initcontainer
-      image: bitnami/minideb:latest
+      image: bitnami/minideb:stretch
       command: ["/bin/sh", "-c"]
       args:
         - install_packages curl && curl http://api-service.local/db/starting;

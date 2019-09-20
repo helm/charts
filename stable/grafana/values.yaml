@@ -3,6 +3,14 @@ rbac:
   pspEnabled: true
   pspUseAppArmor: true
   namespaced: false
+  extraRoleRules: []
+  # - apiGroups: []
+  #   resources: []
+  #   verbs: []
+  extraClusterRoleRules: []
+  # - apiGroups: []
+  #   resources: []
+  #   verbs: []
 serviceAccount:
   create: true
   name:
@@ -35,7 +43,7 @@ livenessProbe:
 
 image:
   repository: grafana/grafana
-  tag: 6.2.5
+  tag: 6.3.5
   pullPolicy: IfNotPresent
 
   ## Optionally specify an array of imagePullSecrets.
@@ -58,6 +66,7 @@ securityContext:
 extraConfigmapMounts: []
   # - name: certs-configmap
   #   mountPath: /etc/grafana/ssl/
+  #   subPath: certificates.crt # (optional)
   #   configMap: certs-configmap
   #   readOnly: true
 
@@ -75,8 +84,13 @@ downloadDashboardsImage:
   tag: latest
   pullPolicy: IfNotPresent
 
+downloadDashboards:
+  env: {}
+
 ## Pod Annotations
 # podAnnotations: {}
+
+podPortName: grafana
 
 ## Deployment annotations
 # annotations: {}
@@ -92,6 +106,7 @@ service:
     # targetPort: 4181 To be used with a proxy extraContainer
   annotations: {}
   labels: {}
+  portName: service
 
 ingress:
   enabled: false
@@ -102,6 +117,12 @@ ingress:
   path: /
   hosts:
     - chart-example.local
+  ## Extra paths to prepend to every host configuration. This is useful when working with annotation based services.
+  extraPaths: []
+  # - path: /*
+  #   backend:
+  #     serviceName: ssl-redirect
+  #     servicePort: use-annotation
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
@@ -153,6 +174,7 @@ extraContainers: |
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ##
 persistence:
+  type: pvc
   enabled: false
   # storageClassName: default
   accessModes:
@@ -381,7 +403,7 @@ smtp:
 ## Sidecars that collect the configmaps with specified label and stores the included files them into the respective folders
 ## Requires at least Grafana 5 to work and can't be used together with parameters dashboardProviders, datasources and dashboards
 sidecar:
-  image: kiwigrid/k8s-sidecar:0.0.18
+  image: kiwigrid/k8s-sidecar:0.1.20
   imagePullPolicy: IfNotPresent
   resources: {}
 #   limits:

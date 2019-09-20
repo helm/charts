@@ -1,5 +1,5 @@
 {{- if eq .Values.mode "standalone" }}
-apiVersion: apps/v1beta2
+apiVersion: {{ template "minio.deployment.apiVersion" . }}
 kind: Deployment
 metadata:
   name: {{ template "minio.fullname" . }}
@@ -43,10 +43,13 @@ spec:
       labels:
         app: {{ template "minio.name" . }}
         release: {{ .Release.Name }}
-      {{- if .Values.podAnnotations }}
+{{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | indent 8 }}
+{{- end }}
       annotations:
-{{ toYaml .Values.podAnnotations | indent 8 }}
-      {{- end }}
+        checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+{{- if .Values.podAnnotations }}{{ toYaml .Values.podAnnotations | indent 8 }}{{- end }}
     spec:
   {{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"
@@ -89,6 +92,10 @@ spec:
           {{- end }}
           {{- end }}
           {{- end }}
+          {{- if .Values.extraArgs }}
+          args:
+{{ toYaml .Values.extraArgs | indent 12 }}
+          {{- end  }}
           volumeMounts:
             {{- if and .Values.persistence.enabled (not .Values.gcsgateway.enabled) (not .Values.azuregateway.enabled) (not .Values.s3gateway.enabled) }}
             - name: export

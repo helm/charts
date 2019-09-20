@@ -1,7 +1,7 @@
 apiVersion: v1
 name: coredns
-version: 1.5.6
-appVersion: 1.5.2
+version: 1.7.3
+appVersion: 1.6.3
 description: CoreDNS is a DNS server that chains plugins and provides Kubernetes DNS Services
 keywords:
 - coredns
@@ -18,3 +18,5 @@ maintainers:
   email: shashidhara.huawei@gmail.com
 - name: andor44
   email: andor44@gmail.com
+- name: mrueg
+  email: manuel@rueg.eu

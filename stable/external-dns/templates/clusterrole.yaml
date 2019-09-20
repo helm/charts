@@ -17,6 +17,7 @@ rules:
   - watch
 - apiGroups:
   - extensions
+  - "networking.k8s.io" # k8s 1.14+
   resources:
   - ingresses
   verbs:
@@ -39,4 +40,12 @@ rules:
   - get
   - list
   - watch
+{{- if .Values.crd.create }}
+- apiGroups:
+  - externaldns.k8s.io
+  resources:
+  - dnsendpoints/status
+  verbs:
+  - update
+{{- end }}
 {{- end }}

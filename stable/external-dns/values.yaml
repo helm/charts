@@ -13,7 +13,7 @@
 image:
   registry: docker.io
   repository: bitnami/external-dns
-  tag: 0.5.15-debian-9-r1
+  tag: 0.5.17-debian-9-r0
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -40,7 +40,7 @@ sources:
 # - crd
 
 ## DNS provider where the DNS records will be created. Available providers are:
-## - aws, azure, cloudflare, designate, digitalocoean, google, infoblox, rfc2136
+## - aws, azure, cloudflare, coredns, designate, digitalocoean, google, infoblox, rfc2136
 ##
 provider: aws
 
@@ -98,6 +98,42 @@ cloudflare:
   ## Enable the proxy feature of Cloudflare
   ##
   proxied: true
+
+## CoreDNS configuration to be set via arguments/env variables
+##
+coredns:
+  ## Comma-separated list of the etcd endpoints
+  ## Secure (https) endpoints can be used as well, in that case `etcdTLS` section
+  ## should be filled in accordingly
+  ##
+  etcdEndpoints: "http://etcd-extdns:2379"
+  ## Configuration of the secure communication and client authentication to the etcd cluster
+  ## If enabled all the values under this key must hold a valid data
+  ##
+  etcdTLS:
+    ## Enable or disable secure communication and client authentication to the etcd cluster
+    ##
+    enabled: false
+    ## Name of the existing secret containing cert files for client communication
+    ## ref: https://github.com/etcd-io/etcd/blob/master/Documentation/op-guide/security.md
+    ## ref (secret creation):
+    ##  https://github.com/bitnami/charts/tree/master/bitnami/etcd#configure-certificates-for-client-communication
+    ##
+    secretName: "etcd-client-certs"
+    ## Location of the mounted certificates inside external-dns pod
+    ##
+    mountPath: "/etc/coredns/tls/etcd"
+    ## CA PEM file used to sign etcd TLS cert, should exist in the secret provided above
+    ##
+    caFilename: "ca.crt"
+    ## Certificate PEM file, should exist in the secret provided above
+    ## Will be used by external-dns to authenticate against etcd
+    ##
+    certFilename: "cert.pem"
+    ## Private key PEM file, should exist in the secret provided above
+    ## Will be used by external-dns to authenticate against etcd
+    ##
+    keyFilename: "key.pem"
 
 ## OpenStack Designate provider configuration to be set via arguments/env. variables
 ##
@@ -209,9 +245,17 @@ istioIngressGateways: []
 ## Extra Arguments to passed to external-dns
 ##
 extraArgs: {}
-## Extra env. variable to set on external-dns container
+## Extra env. variable to set on external-dns container.
 ##
-extraEnv: {}
+## extraEnv:
+## - name: VARNAME1
+##   value: value1
+## - name: VARNAME2
+##   valueFrom:
+##     secretKeyRef:
+##       name: existing-secret
+##       key: varname2-key
+extraEnv: []
 
 ## Replica count
 ##
@@ -285,6 +329,9 @@ rbac:
   ## https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
   ##
   serviceAccountName: default
+  ## Annotations for the Service Account
+  ##
+  serviceAccountAnnotations: {}
   ## RBAC API version
   ##
   apiVersion: v1beta1

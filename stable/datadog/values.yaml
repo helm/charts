@@ -16,9 +16,9 @@ image:
 
   ## @param tag - string - required
   ## Define the Agent version to use.
-  ## Use 6.12.1-jmx to enable jmx fetch collection
+  ## Use 6.13.0-jmx to enable jmx fetch collection
   #
-  tag: 6.12.1
+  tag: 6.13.0
 
   ## @param pullPolicy - string - required
   ## The Kubernetes pull policy.
@@ -98,6 +98,14 @@ datadog:
   ## trace, debug, info, warn, error, critical, and off
   #
   logLevel: INFO
+
+  ## @param nodeLabelsAsTags - list of key:value strings - optional
+  ## Provide a mapping of Kubernetes Node Labels to Datadog Tags.
+  #
+  # nodeLabelsAsTags:
+  #   beta.kubernetes.io/instance-type: aws-instance-type
+  #   kubernetes.io/role: kube_role
+  #   <KUBERNETES_NODE_LABEL>: <DATADOG_TAG_KEY>
 
   ## @param podLabelsAsTags - list of key:value strings - optional
   ## Provide a mapping of Kubernetes Labels to Datadog Tags.
@@ -208,7 +216,7 @@ datadog:
   #
   # volumes:
   #   - hostPath:
-  #     path: <HOST_PATH>
+  #       path: <HOST_PATH>
   #     name: <VOLUME_NAME>
 
   ## @param volumeMounts - list of objects - optional
@@ -360,6 +368,16 @@ clusterAgent:
   #   exec:
   #     command: ["/bin/true"]
 
+  ## @param strategy - string - optional
+  ## Allow the Cluster Agent deployment to perform a rolling update on helm update
+  ## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
+  #
+  # strategy:
+  #   type: RollingUpdate
+  #   rollingUpdate:
+  #     maxSurge: 1
+  #     maxUnavailable: 0
+
   ## @param podAnnotations - list of key:value strings - optional
   ## Annotations to add to the cluster-agents's pod(s)
   #
@@ -395,16 +413,32 @@ kubeStateMetrics:
 
 kube-state-metrics:
   rbac:
-
     ## @param created - boolean - required
     ## If true, create & use RBAC resources
     #
     create: true
 
-    ## @param serviceAccountName - string - required
-    ## Ignored if rbac.create is true
+  serviceAccount:
+    ## @param created - boolean - required
+    ## If true, create ServiceAccount, require rbac kube-state-metrics.rbac.create true
     #
-    serviceAccountName: default
+    create: true
+    ## @param name - string - required
+    ## The name of the ServiceAccount to use.
+    ## If not set and create is true, a name is generated using the fullname template
+    #
+    name:
+
+  ## @param resources - object - optional
+  ## Resource requests and limits for the kube-state-metrics container.
+  #
+  # resources:
+  #   requests:
+  #     cpu: 200m
+  #     memory: 256Mi
+  #   limits:
+  #     cpu: 200m
+  #     memory: 256Mi
 
 daemonset:
 
@@ -551,7 +585,10 @@ daemonset:
   ## Allow the DaemonSet to perform a rolling update on helm update
   ## ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/
   #
-  # updateStrategy: RollingUpdate
+  # updateStrategy:
+  #   type: RollingUpdate
+  #   rollingUpdate:
+  #     maxUnavailable: "10%"
 
   ## @param priorityClassName - string - optional
   ## Sets PriorityClassName if defined.
@@ -656,8 +693,18 @@ clusterchecksDeployment:
   #
   # affinity:
 
+  ## @param strategy - string - optional
+  ## Allow the ClusterChecks deployment to perform a rolling update on helm update
+  ## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
+  #
+  # strategy:
+  #   type: RollingUpdate
+  #   rollingUpdate:
+  #     maxSurge: 1
+  #     maxUnavailable: 0
+
   ## @param nodeSelector - object - optional
-  ## Allow the ClusterChecks Deploument to schedule on selected nodes
+  ## Allow the ClusterChecks Deployment to schedule on selected nodes
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
   #
   # nodeSelector: {}
@@ -666,7 +713,7 @@ clusterchecksDeployment:
   ## Tolerations for pod assignment
   ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
   #
-  tolerations: []
+  # tolerations: []
 
   ## @param livenessProbe - object - optional
   ## Override the agent's liveness probe logic from the default:

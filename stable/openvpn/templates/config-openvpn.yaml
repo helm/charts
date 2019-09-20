@@ -11,12 +11,13 @@ data:
   setup-certs.sh: |-
     #!/bin/bash
     EASY_RSA_LOC="/etc/openvpn/certs"
+    cd $EASY_RSA_LOC
     SERVER_CERT="${EASY_RSA_LOC}/pki/issued/server.crt"
     if [ -e "$SERVER_CERT" ]
     then
       echo "found existing certs - reusing"
       {{- if .Values.openvpn.useCrl }}
-      if [ ! -e ${EASY_RSA_LOC}/pki/crl.pem ]
+      if [ ! -e ${EASY_RSA_LOC}/crl.pem ]
       then
         echo "generating missed crl file"
         ./easyrsa gen-crl
@@ -33,7 +34,6 @@ data:
       {{- end }}
     else
       cp -R /usr/share/easy-rsa/* $EASY_RSA_LOC
-      cd $EASY_RSA_LOC
       ./easyrsa init-pki
       echo "ca\n" | ./easyrsa build-ca nopass
       ./easyrsa build-server-full server nopass
@@ -125,7 +125,11 @@ data:
 
       /etc/openvpn/setup/setup-certs.sh
 {{ if .Values.openvpn.istio.enabled }}
-      iptables -t nat -A ISTIO_INBOUND -s {{ .Values.openvpn.OVPN_NETWORK }}/{{ .Values.openvpn.OVPN_SUBNET }} -i tun0 -p tcp -j REDIRECT --to-ports {{ .Values.openvpn.istio.proxy.port }}
+      iptables -t nat -A PREROUTING -s {{ .Values.openvpn.OVPN_NETWORK }}/{{ .Values.openvpn.OVPN_SUBNET }} -i tun0 -p tcp -j REDIRECT --to-ports {{ .Values.openvpn.istio.proxy.port }}
+{{ end }}
+
+{{ range .Values.openvpn.iptablesExtra }}
+      iptables {{ . }}
 {{ end }}
 
       iptables -t nat -A POSTROUTING -s {{ .Values.openvpn.OVPN_NETWORK }}/{{ .Values.openvpn.OVPN_SUBNET }} -o eth0 -j MASQUERADE

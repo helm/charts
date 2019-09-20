@@ -1,23 +1,22 @@
 # Default values for etcd-operator.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
+global:
+  ## Reference to one or more secrets to be used when pulling images
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  ##
+  imagePullSecrets: []
+  # - name: "image-pull-secret"
 
 ## Install Default RBAC roles and bindings
 rbac:
   create: true
-  apiVersion: v1beta1
+  apiVersion: v1
 
-## Service account names and whether to create them
+## Service account name and whether to create it
 serviceAccount:
-  etcdOperatorServiceAccount:
-    create: true
-    name:
-  backupOperatorServiceAccount:
-    create: true
-    name:
-  restoreOperatorServiceAccount:
-    create: true
-    name:
+  create: true
+  name:
 
 # Select what to deploy
 deployments:
@@ -43,7 +42,7 @@ etcdOperator:
   replicaCount: 1
   image:
     repository: quay.io/coreos/etcd-operator
-    tag: v0.9.3
+    tag: v0.9.4
     pullPolicy: Always
   resources:
     cpu: 100m
@@ -75,7 +74,7 @@ backupOperator:
   replicaCount: 1
   image:
     repository: quay.io/coreos/etcd-operator
-    tag: v0.9.3
+    tag: v0.9.4
     pullPolicy: Always
   resources:
     cpu: 100m
@@ -91,6 +90,8 @@ backupOperator:
   ## additional command arguments go here; will be translated to `--key=value` form
   ## e.g., analytics: true
   commandArgs: {}
+  securityContext: {}
+  tolerations: []
 
 # restore spec
 restoreOperator:
@@ -98,7 +99,7 @@ restoreOperator:
   replicaCount: 1
   image:
     repository: quay.io/coreos/etcd-operator
-    tag: v0.9.3
+    tag: v0.9.4
     pullPolicy: Always
   port: 19999
   resources:
@@ -116,6 +117,8 @@ restoreOperator:
   ## additional command arguments go here; will be translated to `--key=value` form
   ## e.g., analytics: true
   commandArgs: {}
+  securityContext: {}
+  tolerations: []
 
 ## etcd-cluster specific values
 etcdCluster:
@@ -150,3 +153,5 @@ etcdCluster:
     ## Node labels for etcd pod assignment
     ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
     nodeSelector: {}
+    securityContext: {}
+    tolerations: []

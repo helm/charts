@@ -24,7 +24,6 @@ spec:
         release: {{ .Release.Name }}
       annotations:
         checksum/config-agent: {{ include (print $.Template.BasePath "/configmap-agent.yaml") . | sha256sum }}
-        checksum/config-agent-autodisco: {{ include (print $.Template.BasePath "/configmap-agent-autodisco.yaml") . | sha256sum }}
         checksum/config-logagent: {{ include (print $.Template.BasePath "/configmap-logagent.yaml") . | sha256sum }}
         checksum/config-logagent-custom-configs: {{ include (print $.Template.BasePath "/configmap-logagent-custom-configs.yaml") . | sha256sum }}
         checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
@@ -71,26 +70,22 @@ spec:
               path: /health
               port: {{ .Values.agent.service.port }}
           volumeMounts:
-            - name: procfs
-              mountPath: /host/proc
+            - name: hostfs
+              mountPath: /hostfs
               readOnly: true
             - name: sysfs
-              mountPath: /host/sys
+              mountPath: /hostfs/sys
               readOnly: true
-            - name: etc
-              mountPath: /host/etc
+            - name: passwd
+              mountPath: /etc/passwd
+              readOnly: true
+            - name: group
+              mountPath: /etc/group
               readOnly: true
             - name: debugfs
               mountPath: /sys/kernel/debug
-            - name: docker-sock
-              mountPath: /var/run/docker.sock
-            - name: journal
-              mountPath: /opt/spm/st-agent
-            - name: lib
-              mountPath: /host/usr/lib
-              readOnly: true
-            - name: autodisco-template
-              mountPath: /etc/agent
+            - name: run
+              mountPath: /var/run/
           securityContext:
             privileged: true
           ports:
@@ -114,11 +109,11 @@ spec:
           - configMapRef:
               name: {{ template "sematext-agent.fullname" . }}-logagent
           volumeMounts:
-            - name: docker-sock
-              mountPath: /var/run/docker.sock
+            - name: run
+              mountPath: /var/run/
             {{- if .Values.logagent.customConfigs }}
-            - mountPath: /etc/sematext
-              name: logagent-config-volume
+            - name: logagent-config-volume
+              mountPath: /etc/sematext
             {{- end }}
             {{- if .Values.logagent.extraHostVolumeMounts }}
             {{- range $_, $mount := .Values.logagent.extraHostVolumeMounts }}
@@ -130,27 +125,24 @@ spec:
 {{ toYaml .Values.logagent.resources | indent 12 }}
           {{- end }}
       volumes:
-        - name: procfs
+        - name: hostfs
           hostPath:
-            path: /proc
+            path: /
         - name: sysfs
           hostPath:
             path: /sys
-        - name: etc
+        - name: passwd
           hostPath:
-            path: /etc
+            path: /etc/passwd
+        - name: group
+          hostPath:
+            path: /etc/group
         - name: debugfs
           hostPath:
             path: /sys/kernel/debug
-        - name: docker-sock
+        - name: run
           hostPath:
-            path: /var/run/docker.sock
-        - name: journal
-          hostPath:
-            path: /opt/spm/st-agent
-        - name: lib
-          hostPath:
-            path: /host/usr/lib
+            path: /var/run/
         {{- if .Values.logagent.customConfigs }}
         - name: logagent-config-volume
           configMap:
@@ -163,9 +155,6 @@ spec:
             path: {{ $mount.hostPath }}
         {{- end }}
         {{- end }}
-        - name: autodisco-template
-          configMap:
-            name: {{ template "sematext-agent.fullname" . }}-agent-autodisco
       {{ if .Values.imagePullSecrets }}
       imagePullSecrets:
         - name: {{ .Values.imagePullSecrets }}

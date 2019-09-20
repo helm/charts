@@ -16,6 +16,37 @@ vaultExporter:
   pullPolicy: IfNotPresent
   vaultAddress: 127.0.0.1:8200
   # tlsCAFile: /vault/tls/ca.crt
+
+# Prometheus operator Service Monitor:
+serviceMonitor:
+  enabled: false
+  additionalLabels: {}
+    # prometheus-scraper: "default"
+  podPortName: "metrics"
+  interval: 10s
+  jobLabel: "vault-exporter"
+# Prometheus operator Rules:
+prometheusRules:
+  enabled: false
+  defaultRules:
+    # Triggered when pod is not up
+    vaultUp: true
+    # Triggered when vault is not initialzed
+    vaultUninitialized: true
+    # Triggered when vault is sealed
+    vaultSealed: true
+    # Triggered when vault is in standby mode
+    vaultStandby: false
+  extraRules: []
+  # - alert: VaultStandby
+  #   expr: vault_standby{app="vault", release="vault"} == 1
+  #   for: 1m
+  #   labels:
+  #     service: vault
+  #     severity: critical
+  #   annotations:
+  #     summary: "Vault instance {{$labels.pod_name}} is in standby mode"
+
 consulAgent:
   repository: consul
   tag: 1.4.0
@@ -145,6 +176,10 @@ serviceAccount:
   ## Specifies whether a ServiceAccount should be created
   ##
   create: true
+  ## Annotations to set for the ServiceAccount
+  # annotations:
+    # my-annotation: my-annotation-value
+  annotations: {}
   ## The name of the ServiceAccount to use.
   ## If not set and create is true, a name is generated using the fullname template
   name:
@@ -227,8 +262,10 @@ vault:
       #   path: ""
       #
       # etcd:
-      #   address: ""
+      #   address: "http://vault-etcd:2379"
       #   path: "vault/"
+      #   etcd_api: "v3"
+      #   ha_enabled: "true"
       #
       # s3:
       #   bucket: ""

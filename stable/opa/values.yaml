@@ -17,6 +17,25 @@ opa:
 certManager:
   enabled: false
 
+# Expose the prometheus scraping endpoint
+prometheus:
+  enabled: false
+
+# Annotations in the deployment template
+annotations:
+  {}
+
+# Bootstrap policies to load upon startup
+# Define policies in the form of:
+# <policyName> : |-
+#   <regoBody>
+# For example, to mask the entire input body in the decision logs:
+# bootstrapPolicies:
+#   log: |-
+#     package system.log
+#     mask["/input"]
+bootstrapPolicies: {}
+
 # To enforce mutating policies, change to MutatingWebhookConfiguration.
 admissionControllerKind: ValidatingWebhookConfiguration
 
@@ -29,10 +48,9 @@ admissionControllerNamespaceSelector:
   matchExpressions:
     - {key: openpolicyagent.org/webhook, operator: NotIn, values: [ignore]}
 
-# SideEffectClass for the webhook, setting to None enables dry-run,
-# if you want to disable the admissionControllerSideEffect option or in case
-# you're using a Kubernetes version older than 1.12, you just need to comment
-# the line below.
+# SideEffectClass for the webhook, setting to None enables dry-run.
+# To disable or in case you're using a Kubernetes version older than 1.12,
+# set a comment in the line below.
 admissionControllerSideEffect: Unknown
 
 # To restrict the kinds of operations and resources that are subject to OPA
