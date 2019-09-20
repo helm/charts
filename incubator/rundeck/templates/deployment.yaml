@@ -51,7 +51,7 @@ spec:
               name: {{ .Release.Name }}-environment-configmap
           env:
             - name: RUNDECK_GRAILS_URL
-              value: "http://{{ include "rundeck.name" . }}.{{ .Release.Namespace }}.svc.cluster.local"
+              value: "{{ .Values.rundeck.env.RUNDECK_GRAILS_URL }}"
             - name: RUNDECK_SERVER_FORWARDED
               value: "true"
             - name: RUNDECK_LOGGING_STRATEGY
@@ -68,6 +68,8 @@ spec:
           - name: aws-credentials
             mountPath: /home/rundeck/.aws/credentials
         {{- end }}
+          - name: kubernetes-secrets
+            mountPath: /home/rundeck/.kube/config
           ports:
             - name: rundeck
               containerPort: 4440
@@ -106,6 +108,9 @@ spec:
           secret:
             secretName: {{ .Values.rundeck.awsCredentialsSecret}}
         {{- end }}
+        - name: kubernetes-secrets
+          secret:
+            secretName: kubernetes-secrets
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

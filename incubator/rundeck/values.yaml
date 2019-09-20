@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: rundeck/rundeck
-  tag: 3.0.16
+  tag: 3.0.23
   pullPolicy: IfNotPresent
 
 rundeck:
@@ -25,6 +25,7 @@ rundeck:
     # RUNDECK_CONFIG_STORAGE_CONVERTER_1_CONFIG_PASSWORD: ${RUNDECK_STORAGE_PASSWORD}
   # sshSecrets: "ssh-secret"
   awsCredentialsSecret: ""
+  kubernetesConfig: ""
 
 nameOverride: ""
 fullnameOverride: ""
