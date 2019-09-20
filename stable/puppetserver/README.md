@@ -136,13 +136,13 @@ Parameter | Description | Default
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
-```console
+```bash
 helm install --namespace puppetserver --name puppetserver stable/puppetserver --set puppetserver.puppeturl='https://github.com/$SOMEUSER/puppet.git',hiera.hieradataurl='https://github.com/$SOMEUSER/hieradata.git'
 ```
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
-```console
+```bash
 helm install --namespace puppetserver --name puppetserver stable/puppetserver -f values.yaml
 ```
 
