@@ -18,8 +18,7 @@ omsagent:
     key: <your_workspace_key>
   domain: opinsights.azure.com
   env:
-    clusterName: <my_Acs-engine_k8s_cluster_RG_ResourceID>
-    azureLogAnalyticsCloud: "AzureCloud"
+    clusterName: <your_cluster_name>
   rbac: true
   logsettings:
     logflushintervalsecs: ""
