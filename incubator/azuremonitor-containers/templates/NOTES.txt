@@ -35,6 +35,7 @@ This deployment will not complete. To proceed, run
 
 {{ .Release.Name }} deployment is complete. 
 Data should start flowing to the Log Analytics workspace shortly. 
-Proceed to https://aka.ms/azmon-containers if you would like to view this data.
+Proceed to https://aka.ms/azmon-containers for the clusters in Azure Public Cloud and for the clusters in Azure china
+https://aka.ms/multi-cluster-mooncake to view health and monitoring data of your clusters
 
 {{- end }}

@@ -24,8 +24,12 @@ spec:
    serviceAccountName: omsagent
    {{- end }}
    containers:
-     - name: omsagent 
+     - name: omsagent
+       {{- if eq .Values.omsagent.domain "opinsights.azure.cn" }}
+       image: "dockerhub.azk8s.cn/microsoft/oms:{{ .Values.omsagent.image.tag }}"
+       {{ else }}
        image: "mcr.microsoft.com/azuremonitor/containerinsights/ciprod:{{ .Values.omsagent.image.tag }}"
+       {{- end }}
        imagePullPolicy: IfNotPresent
        resources:
 {{ toYaml .Values.omsagent.resources.daemonset | indent 9 }}

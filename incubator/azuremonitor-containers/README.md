@@ -51,18 +51,19 @@ The following table lists the configurable parameters of the MSOMS chart and the
 
 The following table lists the configurable parameters of the MSOMS chart and their default values.
 
-| Parameter                  | Description                        | Default                                                                          |
-| -----------------------    | ---------------------------------- | -------------------------------------------------------------------------------- |
-| `omsagent.image.tag`       | `msoms` image tag.                 | Most recent release                                                              |
-| `omsagent.image.pullPolicy`| `msoms` image pull policy.         | IfNotPresent                                                                     |
-| `omsagent.secret.wsid`     | Azure Log analytics workspace id                   | Does not have a default value, needs to be provided                              |
-| `omsagent.secret.key`      | Azure Log analytics workspace key                  | Does not have a default value, needs to be provided                              |
-| `omsagent.domain`          | Azure Log analytics cloud domain (public / govt)   | opinsights.azure.com (Public cloud as default), opinsights.azure.us (Govt Cloud) |
-| `omsagent.env.clusterName` | Name of your cluster      | Does not have a default value, needs to be provided. If AKS-Engine or ACS-Engine K8S cluster, it is recommended to provide either one of the below as cluster name, to be able to use Azure Container monitoring User experience (aka.ms/azmon-containers)  <br/> <br/> - Azure Resource group resource ID of ACS-Engine cluster  <br/> - Provide a friendly name here and ensure this name is used to 'tag' the cluster master node(s) - see step-3 in pre-requisites above |
-| `omsagent.rbac`             | rbac enabled/disabled      | true  (i.e enabled)     |
+| Parameter                  | Description                                             | Default                                                                          |
+| -----------------------    | --------------------------------------------------------| -------------------------------------------------------------------------------- |
+| `omsagent.image.tag`       | `msoms` image tag.                                      | Most recent release                                                              |
+| `omsagent.image.pullPolicy`| `msoms` image pull policy.                              | IfNotPresent                                                                     |
+| `omsagent.secret.wsid`     | Azure Log analytics workspace id                        | Does not have a default value, needs to be provided                              |
+| `omsagent.secret.key`      | Azure Log analytics workspace key                       | Does not have a default value, needs to be provided                              |
+| `omsagent.domain`          | Azure Log analytics cloud domain (public,china, govt)   | opinsights.azure.com (Public cloud as default), opinsights.azure.cn (China Cloud), opinsights.azure.us (Govt Cloud) |
+| `omsagent.env.clusterName` | Name of your cluster                                    | Does not have a default value, needs to be provided                                                                 |
+| `omsagent.rbac`            | rbac enabled/disabled                                   | true  (i.e enabled)                                                                                                 |
 
 ### Note
-Parameter `omsagent.env.doNotCollectKubeSystemLogs` has been removed starting chart version 1.0.0. Refer to 'Agent data collection settings' section below to configure it using configmap.
+- Parameter `omsagent.env.doNotCollectKubeSystemLogs` has been removed starting chart version 1.0.0. Refer to 'Agent data collection settings' section below to configure it using configmap.
+- onboarding of multiple clusters with the same cluster name to same log analytics workspace not supported. If need this configuration, use the cluster FQDN name rather than cluster dns prefix to avoid collision with clusterName
 
 ## Agent data collection settings
 
@@ -72,10 +73,28 @@ You can create a Azure Loganalytics workspace from portal.azure.com and get its 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
+### To Use Azure Log Analytics Workspace in Public Cloud
 ```bash
 
 $ helm install --name myrelease-1 \
---set omsagent.secret.wsid=<your_workspace_id>,omsagent.secret.key=<your_workspace_key>,omsagent.env.clusterName=<my_AKS-Engine_k8s_cluster_RG_ResourceID>  incubator/azuremonitor-containers
+--set omsagent.secret.wsid=<your_workspace_id>,omsagent.secret.key=<your_workspace_key>,omsagent.env.clusterName=<your_cluster_name>
+  incubator/azuremonitor-containers
+```
+
+### To Use Azure Log Analytics Workspace in Azure China Cloud
+
+```bash
+
+$ helm install --name myrelease-1 \
+--set omsagent.domain=opinsights.azure.cn,omsagent.secret.wsid=<your_workspace_id>,omsagent.secret.key=<your_workspace_key>,omsagent.env.clusterName=<your_cluster_name>  incubator/azuremonitor-containers
+```
+
+### To Use Azure Log Analytics Workspace in Azure Government Cloud
+
+```bash
+
+$ helm install --name myrelease-1 \
+--set omsagent.domain=opinsights.azure.us,omsagent.secret.wsid=<your_workspace_id>,omsagent.secret.key=<your_workspace_key>,omsagent.env.clusterName=<your_cluster_name>  incubator/azuremonitor-containers
 ```
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
@@ -86,7 +105,9 @@ $ helm install --name myrelease-1 -f values.yaml incubator/azuremonitor-containe
 
 ```
 
-After you successfully deploy the chart, you will be able to see your data in the [azure portal](aka.ms/azmon-containers)
+After you successfully deploy the chart, you will be able to see your data in
+- [azure public cloud portal](https://aka.ms/azmon-containers) for the clusters in Azure Public Cloud
+- [azure china cloud portal](https://aka.ms/multi-cluster-mooncake) for the clusters in Azure China Cloud
 
 If you need help with this chart, please reach us out through [this](mailto:askcoin@microsoft.com) email.
 
