@@ -67,6 +67,9 @@ Parameter | Description | Default
 `resources` | pod resource requests & limits | `{}`
 `plugins.enabled` | Enable Plugins Installation | `false`
 `plugins.pluginsList` | List of plugins to install | `[]`
+`rbac.create` | Specifies whether RBAC resources should be created | `true`
+`serviceAccount.create` | Specifies whether a service account should be created. | `true`
+`serviceAccount.name` | Name of the service account.
 `priorityClassName` | priorityClassName | `nil`
 `service.ports` | port definition for the service | See [values.yaml](values.yaml)
 `service.type` | type of service | `ClusterIP`

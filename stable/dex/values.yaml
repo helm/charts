@@ -4,7 +4,7 @@
 # name: value
 
 image: quay.io/dexidp/dex
-imageTag: "v2.17.0"
+imageTag: "v2.19.0"
 imagePullPolicy: "IfNotPresent"
 
 inMiniKube: false
@@ -166,6 +166,7 @@ config:
 #      redirectURI: https://dex.minikube.local:5556/callback
 #      org: kubernetes
   oauth2:
+    alwaysShowLoginScreen: false
     skipApprovalScreen: true
 
 #  staticClients:
@@ -182,3 +183,6 @@ config:
 #     hash: "$2a$10$2b2cU8CPhOTaGrs1HRQuAueS7JTT5ZHsHSzYiFPm1leZck7Mc8T4W"
 #     username: "admin"
 #     userID: "08a8684b-db88-4b73-90a9-3cd1661f5466"
+
+# frontend:
+#   logoURL: https://example.com/yourlogo.png

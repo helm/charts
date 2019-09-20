@@ -6,13 +6,15 @@ keywords:
 - redis
 - keyvalue
 - database
-version: 3.7.2
+version: 3.7.8
 appVersion: 5.0.5
 description: Highly available Kubernetes implementation of Redis
 icon: https://upload.wikimedia.org/wikipedia/en/thumb/6/6b/Redis_Logo.svg/1200px-Redis_Logo.svg.png
 maintainers:
 - email: salimsalaues@gmail.com
   name: ssalaues
+- email: aaron.layfield@gmail.com
+  name: dandydeveloper
 details:
   This Helm chart provides a highly available Redis implementation with a master/slave configuration
   and uses Sentinel sidecars for failover management

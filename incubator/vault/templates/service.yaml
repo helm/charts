@@ -30,6 +30,12 @@ spec:
     protocol: TCP
     targetPort: {{ .Values.service.port }}
     name: api
+  {{- if .Values.serviceMonitor.enabled }}
+  - port: 9410
+    protocol: TCP
+    targetPort: {{ .Values.serviceMonitor.podPortName }}
+    name: metrics
+  {{- end }}
   {{- if .Values.service.clusterExternalPort }}
   - port: {{ .Values.service.clusterExternalPort }}
     protocol: TCP
