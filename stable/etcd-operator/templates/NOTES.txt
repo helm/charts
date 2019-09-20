@@ -1,10 +1,4 @@
-{{- $clusterEnabled := (and (not .Release.IsInstall) .Values.customResources.createEtcdClusterCRD) -}}
-{{- if and .Release.IsInstall .Values.customResources.createEtcdClusterCRD -}}
-Not enabling cluster, the ThirdPartResource must be installed before you can create a Cluster. Continuing rest of normal deployment.
-
-{{ end -}}
-
-{{- if $clusterEnabled -}}
+{{- if .Values.customResources.createEtcdClusterCRD -}}
 1. Watch etcd cluster start
   kubectl get pods -l etcd_cluster={{ .Values.etcdCluster.name }} --namespace {{ .Release.Namespace }} -w
 
@@ -25,7 +19,7 @@ Not enabling cluster, the ThirdPartResource must be installed before you can cre
 
 {{- else -}}
 1. etcd-operator deployed.
-  If you would like to deploy an etcd-cluster set cluster.enabled to true in values.yaml
+  If you would like to deploy an etcd-cluster set 'customResources.createEtcdClusterCRD' to true in values.yaml
   Check the etcd-operator logs
     export POD=$(kubectl get pods -l app={{ template "etcd-operator.fullname" . }} --namespace {{ .Release.Namespace }} --output name)
     kubectl logs $POD --namespace={{ .Release.Namespace }}
