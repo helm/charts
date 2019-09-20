@@ -24,17 +24,18 @@
 
 {{- if or (eq .Values.omsagent.secret.key "<your_workspace_key>") (eq .Values.omsagent.secret.wsid "<your_workspace_id>") (eq .Values.omsagent.env.clusterName "<your_cluster_name>")}}
 
-This deployment will not complete. To proceed, run 
+This deployment will not complete. To proceed, run
  helm upgrade {{ .Release.Name }} \
    --set omsagent.secret.wsid=<your_workspace_id> \
-   --set omsagent.secret.key=<your_workspace_key> \ 
+   --set omsagent.secret.key=<your_workspace_key> \
    --set omsagent.env.clusterName=<your_cluster_name> \
    incubator/azuremonitor-containers
-   
+
 {{- else -}}
 
-{{ .Release.Name }} deployment is complete. 
-Data should start flowing to the Log Analytics workspace shortly. 
-Proceed to https://aka.ms/azmon-containers if you would like to view this data.
+{{ .Release.Name }} deployment is complete.
+Data should start flowing to the Log Analytics workspace shortly.
+Proceed to https://aka.ms/azmon-containers for the clusters in Azure Public Cloud and for the clusters in Azure china
+https://aka.ms/multi-cluster-mooncake to view health and monitoring data of your clusters
 
 {{- end }}
