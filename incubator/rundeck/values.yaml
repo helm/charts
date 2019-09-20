@@ -10,6 +10,7 @@ image:
   pullPolicy: IfNotPresent
 
 rundeck:
+  adminUser: "admin:admin,user,admin,architect,deploy,build"
   env:
     RUNDECK_GRAILS_URL: "http://{{ .Release.Name }}.{{ .Release.Namespace }}.svc.cluster.local"
     RUNDECK_SERVER_FORWARDED: "true"
@@ -25,6 +26,7 @@ rundeck:
     # RUNDECK_CONFIG_STORAGE_CONVERTER_1_CONFIG_PASSWORD: ${RUNDECK_STORAGE_PASSWORD}
   # sshSecrets: "ssh-secret"
   awsCredentialsSecret: ""
+  awsVolumeId: ""
   kubernetesConfig: ""
 
 nameOverride: ""

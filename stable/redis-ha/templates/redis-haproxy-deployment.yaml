@@ -26,7 +26,7 @@ spec:
         prometheus.io/scrape: "true"
         checksum/config: {{ include (print $.Template.BasePath "/redis-ha-configmap.yaml") . | sha256sum }}
       {{- if .Values.haproxy.annotations }}
-{{ toYaml .Values.haproxy.annotations . | indent 8 }}
+{{ toYaml .Values.haproxy.annotations | indent 8 }}
       {{- end }}
     spec:
       # Needed when using unmodified rbac-setup.yml
@@ -77,11 +77,9 @@ spec:
         ports:
         - name: redis
           containerPort: {{ default "6379" .Values.redis.port }}
-          hostPort: 6379
         {{- if .Values.haproxy.readOnly.enabled }}
         - name: readonlyport
           containerPort: {{ default "6380" .Values.haproxy.readOnly.port }}
-          hostPort: 6380
         {{- end }}
         resources:
 {{ toYaml .Values.haproxy.resources | indent 10 }}
