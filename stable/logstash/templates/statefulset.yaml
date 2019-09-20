@@ -78,7 +78,7 @@ spec:
               value: {{ .Values.exporter.logstash.target.port | quote }}
             ## Elasticsearch output
             - name: ELASTICSEARCH_HOST
-              value: {{ .Values.elasticsearch.host | quote }}
+              value: {{ tpl (.Values.elasticsearch.host | toString) $ | quote }}
             - name: ELASTICSEARCH_PORT
               value: {{ .Values.elasticsearch.port | quote }}
             # Logstash Java Options
