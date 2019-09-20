@@ -81,6 +81,11 @@ spec:
           {{- if and (.Values.controller.reportNodeInternalIp) (.Values.controller.hostNetwork)}}
             - --report-node-internal-ip-address={{ .Values.controller.reportNodeInternalIp }}
           {{- end }}
+          {{- if .Values.controller.admissionWebhooks.enabled }}
+            - --validating-webhook=:{{ .Values.controller.admissionWebhooks.port }}
+            - --validating-webhook-certificate=/usr/local/certificates/cert
+            - --validating-webhook-key=/usr/local/certificates/key
+          {{- end }}
           {{- range $key, $value := .Values.controller.extraArgs }}
             {{- if $value }}
             - --{{ $key }}={{ $value }}
@@ -134,6 +139,11 @@ spec:
               containerPort: 10254
               protocol: TCP
           {{- end }}
+          {{- if .Values.controller.admissionWebhooks.enabled }}
+            - name: webhook
+              containerPort: {{ .Values.controller.admissionWebhooks.port }}
+              protocol: TCP
+          {{- end }}
           {{- range $key, $value := .Values.tcp }}
             - name: "{{ $key }}-tcp"
               containerPort: {{ $key }}
@@ -160,12 +170,17 @@ spec:
             timeoutSeconds: {{ .Values.controller.readinessProbe.timeoutSeconds }}
             successThreshold: {{ .Values.controller.readinessProbe.successThreshold }}
             failureThreshold: {{ .Values.controller.readinessProbe.failureThreshold }}
-{{- if (or .Values.controller.customTemplate.configMapName .Values.controller.extraVolumeMounts) }}
+{{- if (or .Values.controller.customTemplate.configMapName .Values.controller.extraVolumeMounts .Values.controller.admissionWebhooks.enabled) }}
           volumeMounts:
 {{- end }}
 {{- if .Values.controller.customTemplate.configMapName }}
             - mountPath: /etc/nginx/template
               name: nginx-template-volume
+              readOnly: true
+{{- end }}
+{{- if .Values.controller.admissionWebhooks.enabled }}
+            - name: webhook-cert
+              mountPath: "/usr/local/certificates/"
               readOnly: true
 {{- end }}
 {{- if .Values.controller.extraVolumeMounts }}
@@ -195,7 +210,7 @@ spec:
     {{- end }}
       serviceAccountName: {{ template "nginx-ingress.serviceAccountName" . }}
       terminationGracePeriodSeconds: 60
-{{- if (or .Values.controller.customTemplate.configMapName .Values.controller.extraVolumes) }}
+{{- if (or .Values.controller.customTemplate.configMapName .Values.controller.extraVolumeMounts .Values.controller.admissionWebhooks.enabled) }}
       volumes:
 {{- end }}
 {{- if .Values.controller.customTemplate.configMapName }}
@@ -205,6 +220,11 @@ spec:
             items:
             - key: {{ .Values.controller.customTemplate.configMapKey }}
               path: nginx.tmpl
+{{- end }}
+{{- if .Values.controller.admissionWebhooks.enabled }}
+        - name: webhook-cert
+          secret:
+            secretName: {{ template "nginx-ingress.fullname". }}-admission
 {{- end }}
 {{- if .Values.controller.extraVolumes }}
 {{ toYaml .Values.controller.extraVolumes | indent 8}}
