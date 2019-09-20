@@ -18,7 +18,7 @@ data:
             echo "Failed $n times to get members from {{ template "consul.fullname" . }}-$i"
             exit 1
           fi
-          sleep 10
+          sleep 15
         done
       done
     }
