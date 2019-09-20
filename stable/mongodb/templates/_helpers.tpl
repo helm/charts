@@ -227,8 +227,8 @@ but Helm 2.9 and 2.10 does not support it, so we need to implement this if-else 
 {{- end -}}
 
 {{/*
-Return  the proper Service name depending if an explicit service name is set
-in the values file. If the name is not explicitly it will take the "mongodb.fullname"
+Returns the proper Service name depending if an explicit service name is set
+in the values file. If the name is set not explicitly it will take the "mongodb.fullname"
 */}}
 {{- define "mongodb.serviceName" -}}
   {{- if .Values.service.name -}}
