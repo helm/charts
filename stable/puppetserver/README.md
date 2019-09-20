@@ -17,7 +17,7 @@
 You can install the chart with the release name `puppetserver` as below.
 
 ```bash
-helm install --namespace puppetserver --name puppetserver stable/puppetserver --set puppetserver.puppeturl='https://github.com/$SOMEUSER/puppet.git' --set hiera.hieradataurl='https://github.com/$SOMEUSER/hieradata.git'
+helm install --namespace puppetserver --name puppetserver stable/puppetserver --set puppetserver.puppeturl='https://github.com/$SOMEUSER/control-repo.git'
 ```
 
 > Note - If you do not specify a name, helm will select a name for you.
