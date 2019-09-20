@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "mongodb.fullname" . }}-headless
+  name: {{ template "mongodb.serviceName" . }}-headless
   labels:
     app: {{ template "mongodb.name" . }}
     chart: {{ template "mongodb.chart" . }}
