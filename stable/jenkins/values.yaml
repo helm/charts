@@ -352,8 +352,8 @@ master:
     # The `groups` root object is added by default, simply add the rule entries
     alertingrules: []
 
-  # Can be used to disable rendering test resources when using helm template
-  test.enabled: true
+  # Can be used to disable rendering master test resources when using helm template
+  testEnabled: true
 
 agent:
   enabled: true

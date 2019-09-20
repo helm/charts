@@ -1,4 +1,4 @@
-{{- if .Values.master.test.enabled }}
+{{- if .Values.master.testEnabled }}
 apiVersion: v1
 kind: Pod
 metadata:
