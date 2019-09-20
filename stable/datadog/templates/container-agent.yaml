@@ -3,6 +3,10 @@
   image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
   imagePullPolicy: {{ .Values.image.pullPolicy }}
   command: ["agent", "start"]
+  {{- if .Values.daemonset.containers.agent.securityContext }}
+  securityContext:
+    {{ toYaml .Values.daemonset.containers.agent.securityContext | nindent 4 }}
+  {{- end }}
   resources:
 {{ toYaml .Values.daemonset.containers.agent.resources | indent 4 }}
   ports:

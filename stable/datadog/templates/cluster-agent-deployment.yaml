@@ -53,10 +53,18 @@ spec:
       imagePullSecrets:
 {{ toYaml .Values.clusterAgent.image.pullSecrets | indent 8 }}
       {{- end }}
+      {{- if .Values.clusterAgent.securityContext }}
+      securityContext:
+        {{ toYaml .Values.clusterAgent.securityContext | nindent 8 }}
+      {{- end }}
       containers:
       - name: {{ .Values.clusterAgent.containerName }}
         image: "{{ .Values.clusterAgent.image.repository }}:{{ .Values.clusterAgent.image.tag }}"
         imagePullPolicy: {{ .Values.clusterAgent.image.pullPolicy }}
+        {{- if .Values.clusterAgent.containerSecurityContext }}
+        securityContext:
+          {{ toYaml .Values.clusterAgent.containerSecurityContext | nindent 10 }}
+        {{- end }}
         resources:
 {{ toYaml .Values.clusterAgent.resources | indent 10 }}
         ports:

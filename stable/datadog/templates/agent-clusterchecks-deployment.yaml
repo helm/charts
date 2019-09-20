@@ -30,10 +30,18 @@ spec:
       {{- else }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "datadog.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       {{- end }}
+      {{- if .Values.clusterchecksDeployment.securityContext }}
+      securityContext:
+        {{ toYaml .Values.clusterchecksDeployment.securityContext | nindent 8 }}
+      {{- end }}
       containers:
       - name: {{ default .Chart.Name .Values.datadog.name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+        {{- if .Values.clusterchecksDeployment.containerSecurityContext }}
+        securityContext:
+          {{ toYaml .Values.clusterchecksDeployment.containerSecurityContext | nindent 10 }}
+        {{- end }}
         env:
           - name: DD_API_KEY
             valueFrom:

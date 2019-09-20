@@ -3,6 +3,10 @@
   image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
   imagePullPolicy: {{ .Values.image.pullPolicy }}
   command: ["trace-agent", "--config=/etc/datadog-agent/datadog.yaml"]
+  {{- if .Values.daemonset.containers.traceAgent.securityContext }}
+  securityContext:
+    {{ toYaml .Values.daemonset.containers.traceAgent.securityContext | nindent 4 }}
+  {{- end }}
   resources:
 {{ toYaml .Values.daemonset.containers.traceAgent.resources | indent 4 }}
   ports:

@@ -2,6 +2,10 @@
 - name: {{ default .Chart.Name .Values.datadog.name }}
   image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
   imagePullPolicy: {{ .Values.image.pullPolicy }}
+  {{- if .Values.daemonset.containers.agent.securityContext }}
+  securityContext:
+    {{ toYaml .Values.daemonset.containers.agent.securityContext | nindent 4 }}
+  {{- end }}
   resources:
 {{ toYaml .Values.datadog.resources | indent 4 }}
   ports:

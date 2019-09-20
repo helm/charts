@@ -261,7 +261,7 @@ helm install --name <RELEASE_NAME> \
 | `datadog.resources.limits.cpu`           | CPU resource limits                                                                       | `200m`                                      |
 | `datadog.resources.requests.memory`      | Memory resource requests                                                                  | `256Mi`                                     |
 | `datadog.resources.limits.memory`        | Memory resource limits                                                                    | `256Mi`                                     |
-| `datadog.securityContext`                | Allows you to overwrite the default securityContext applied to the container              | `nil`                                       |
+| `datadog.securityContext`                | Allows you to overwrite the default PodSecurityContext on the Daemonset or Deployment     | `nil`                                       |
 | `datadog.livenessProbe`                  | Overrides the default liveness probe                                                      | http port 5555                              |
 | `datadog.hostname`                       | Set the hostname (write it in datadog.conf)                                               | `nil`                                       |
 | `datadog.acInclude`                      | Include containers based on image name                                                    | `nil`                                       |
@@ -280,18 +280,21 @@ helm install --name <RELEASE_NAME> \
 | `daemonset.containers.agent.resources.requests.cpu`       | CPU resource requests for the agent container                                          | `200m`                                        |
 | `daemonset.containers.agent.resources.limits.memory`      | Memory resource limits for the agent container                                         | `256Mi`                                       |
 | `daemonset.containers.agent.resources.requests.memory`    | Memory resource requests for the agent container                                       | `256Mi`                                       |
+| `daemonset.containers.agent.securityContext`              | Allows you to overwrite the default container SecurityContext for the agent container  | `nil`                                       |
 | `daemonset.containers.processAgent.env`                          | Additional list of environment variables to use in the process-agent container         | `nil`                                         |
 | `daemonset.containers.processAgent.logLevel`                     | Process agent log verbosity                                                            | `INFO`                                        |
 | `daemonset.containers.processAgent.resources.limits.cpu`         | CPU resource limits for the process-agent container                                    | `100m`                                        |
 | `daemonset.containers.processAgent.resources.requests.cpu`       | CPU resource requests for the process-agent container                                  | `100m`                                        |
 | `daemonset.containers.processAgent.resources.limits.memory`      | Memory resource limits for the process-agent container                                 | `200Mi`                                       |
 | `daemonset.containers.processAgent.resources.requests.memory`    | Memory resource requests for the process-agent container                               | `200Mi`                                       |
+| `daemonset.containers.processAgent.securityContext`              | Allows you to overwrite the default container SecurityContext for the process-agent container  | `nil`                                       |
 | `daemonset.containers.traceAgent.env`                            | Additional list of environment variables to use in the trace-agent container           | `nil`                                         |
 | `daemonset.containers.traceAgent.logLevel`                       | Trace agent log verbosity                                                              | `INFO`                                        |
 | `daemonset.containers.traceAgent.resources.limits.cpu`           | CPU resource limits for the trace-agent container                                      | `100m`                                        |
 | `daemonset.containers.traceAgent.resources.requests.cpu`         | CPU resource requests for the trace-agent container                                    | `100m`                                        |
 | `daemonset.containers.traceAgent.resources.limits.memory`        | Memory resource limits for the trace-agent container                                   | `200Mi`                                       |
 | `daemonset.containers.traceAgent.resources.requests.memory`      | Memory resource requests for the trace-agent container                                 | `200Mi`                                       |
+| `daemonset.containers.traceAgent.securityContext`                | Allows you to overwrite the default container SecurityContext for the trace-agent container  | `nil`                                       |
 | `daemonset.priorityClassName`            | Which Priority Class to associate with the daemonset                                      | `nil`                                       |
 | `daemonset.updateStrategy`               | Which update strategy to deploy the daemonset                                             | RollingUpdate with 10% maxUnavailable       |
 | `datadog.leaderElection`                 | Enable the leader Election feature                                                        | `false`                                     |
@@ -300,6 +303,7 @@ helm install --name <RELEASE_NAME> \
 | `deployment.affinity`                    | Node / Pod affinities                                                                     | `{}`                                        |
 | `deployment.tolerations`                 | List of node taints to tolerate                                                           | `[]`                                        |
 | `deployment.priorityClassName`           | Which Priority Class to associate with the deployment                                     | `nil`                                       |
+| `deployment.securityContext`             | Allows you to overwrite the default container SecurityContext on the Deployment           | `nil`                                       |
 | `kubeStateMetrics.enabled`               | If true, create kube-state-metrics                                                        | `true`                                      |
 | `kube-state-metrics.rbac.create`         | If true, create & use RBAC resources for kube-state-metrics                               | `true`                                      |
 | `kube-state-metrics.serviceAccount.create`                 | If true, create & use serviceAccount                                    | `true`                                      |
@@ -326,6 +330,8 @@ helm install --name <RELEASE_NAME> \
 | `clusterAgent.livenessProbe`             | Overrides the default liveness probe                                                      | http port 443 if external metrics enabled   |
 | `clusterAgent.readinessProbe`            | Overrides the default readiness probe                                                     | http port 443 if external metrics enabled   |
 | `clusterAgent.strategy`                  | Which update strategy to deploy the cluster-agent                                         | RollingUpdate with 0 maxUnavailable, 1 maxSurge |
+| `clusterAgent.securityContext`           | Allows you to overwrite the default PodSecurityContext on the cluster-agent pods          | `nil`                                       |
+| `clusterAgent.containerSecurityContext`  | Allows you to overwrite the default container SecurityContext for the cluster-agent       | `nil`                                       |
 | `clusterchecksDeployment.enabled`        | Enable Datadog agent deployment dedicated for running Cluster Checks. It allows having different resources (Request/Limit) for Cluster Checks agent pods.  | `false` |
 | `clusterchecksDeployment.env`                            | Additional Datadog environment variables for Cluster Checks Deployment                        | `nil`                                       |
 | `clusterchecksDeployment.resources.requests.cpu`         | CPU resource requests                                                                         | `200m`                                      |
@@ -339,3 +345,5 @@ helm install --name <RELEASE_NAME> \
 | `clusterchecksDeployment.rbac.dedicated`                  | If true, use dedicated RBAC resources for clusterchecks agent's pods                          | `false`                                     |
 | `clusterchecksDeployment.rbac.serviceAccount`            | existing ServiceAccount to use (ignored if rbac.create=true) for clusterchecks                | `default`                                   |
 | `clusterchecksDeployment.strategy`                       | Which update strategy to deploy the Cluster Checks Deployment                                 | RollingUpdate with 0 maxUnavailable, 1 maxSurge |
+| `clusterchecksDeployment.securityContext`                | Allows you to overwrite the default PodSecurityContext on the clusterchecks pods              | `nil`                                       |
+| `clusterchecksDeployment.containerSecurityContext`       | Allows you to overwrite the default container SecurityContext on the clusterchecks            | `nil`                                       |

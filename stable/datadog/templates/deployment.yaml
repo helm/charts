@@ -37,6 +37,10 @@ spec:
       - name: {{ default .Chart.Name .Values.datadog.name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+        {{- if .Values.deployment.securityContext }}
+        securityContext:
+          {{ toYaml .Values.deployment.securityContext | nindent 10 }}
+        {{- end }}
         resources:
 {{ toYaml .Values.datadog.resources | indent 10 }}
         ports:
