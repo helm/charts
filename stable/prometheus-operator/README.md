@@ -460,6 +460,7 @@ For a full list of configurable values please refer to the [Grafana chart](https
 | `kubelet.serviceMonitor.cAdvisorRelabelings` | The `relabel_configs` for scraping cAdvisor. | `` |
 | `kubelet.serviceMonitor.https` | Enable scraping of the kubelet over HTTPS. For more information, see https://github.com/coreos/prometheus-operator/issues/926 | `true` |
 | `kubelet.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
+| `kubelet.serviceMonitor.scrapeTimeout` | Scrape timeout. If not set, the Prometheus default scrape timeout is used | `nil` |
 | `kubelet.serviceMonitor.metricRelabelings` | The `metric_relabel_configs` for scraping kubelet. | `` |
 | `kubelet.serviceMonitor.relabelings` | The `relabel_configs` for scraping kubelet. | `` |
 | `nodeExporter.enabled` | Deploy the `prometheus-node-exporter` and scrape it | `true` |

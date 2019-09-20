@@ -516,6 +516,10 @@ kubelet:
     ##
     interval: ""
 
+    ## Scrape timeout. If not set, the Prometheus default scrape timeout is used.
+    ##
+    scrapeTimeout: ""
+
     ## Enable scraping the kubelet over https. For requirements to enable this see
     ## https://github.com/coreos/prometheus-operator/issues/926
     ##
