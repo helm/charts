@@ -164,6 +164,7 @@ Parameter | Description | Default
 `server.useHostNetwork` | If true, use hostNetwork on server to bypass agent iptable rules | `false`
 `rbac.create` | If `true`, create & use RBAC resources | `true`
 `psp.create` | If `true`, create Pod Security Policies for the agent and server when enabled | `false`
+`imagePullSecret` | The name of the secret to use if pulling from a private registry | `nil`
 `serviceAccounts.agent.create` | If true, create the agent service account | `true`
 `serviceAccounts.agent.name` | Name of the agent service account to use or create | `{{ kiam.agent.fullname }}`
 `serviceAccounts.server.create` | If true, create the server service account | `true`

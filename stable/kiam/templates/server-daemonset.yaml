@@ -143,6 +143,10 @@ spec:
           resources:
 {{ toYaml .Values.server.resources | indent 12 }}
         {{- end }}
+      {{- if .Values.imagePullSecret }}
+      imagePullSecrets:
+        - name: {{ .Values.imagePullSecret }}
+      {{- end }}
   updateStrategy:
     type: {{ .Values.server.updateStrategy }}
 {{- end }}

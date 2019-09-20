@@ -1,5 +1,8 @@
 extraArgs: {}
 
+## The name of the secret to use if pulling images from a private registry.
+#imagePullSecret: test
+
 agent:
   ## If false, agent will not be installed
   ##
