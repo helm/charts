@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: "{{ template "consul.fullname" . }}"
@@ -156,7 +156,7 @@ spec:
               JOIN_LAN=""
               for THIS_PEER in $JOIN_PEERS; do
                   # Make sure we can resolve hostname and ping IP
-                  if PEER_IP="$(ping -c 1 $THIS_PEER | awk -F'[()]' '/PING/{print $2}')" && [ "$PEER_IP" != "" ]; then 
+                  if PEER_IP="$(ping -c 1 $THIS_PEER | awk -F'[()]' '/PING/{print $2}')" && [ "$PEER_IP" != "" ]; then
                     if [ "${PEER_IP}" != "${POD_IP}" ]; then
                       JOIN_LAN="${JOIN_LAN}${JOIN_LAN:+ } -retry-join=$THIS_PEER"
                     fi
@@ -187,7 +187,7 @@ spec:
               JOIN_WAN=""
               for THIS_PEER in $WAN_PEERS; do
                   # We don't care if we can ping the peer, but we do care that we can get its IP
-                  if PEER_IP="$( ( ping -c 1 $THIS_PEER || true ) | awk -F'[()]' '/PING/{print $2}')" && [ "$PEER_IP" != "" ]; then 
+                  if PEER_IP="$( ( ping -c 1 $THIS_PEER || true ) | awk -F'[()]' '/PING/{print $2}')" && [ "$PEER_IP" != "" ]; then
                     if [ "${PEER_IP}" != "${POD_IP}" ]; then
                       JOIN_WAN="${JOIN_WAN}${JOIN_WAN:+ } -retry-join-wan=$THIS_PEER"
                     fi
