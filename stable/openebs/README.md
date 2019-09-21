@@ -39,27 +39,33 @@ The following table lists the configurable parameters of the OpenEBS chart and t
 | ----------------------------------------| --------------------------------------------- | ----------------------------------------- |
 | `rbac.create`                           | Enable RBAC Resources                         | `true`                                    |
 | `image.pullPolicy`                      | Container pull policy                         | `IfNotPresent`                            |
+| `apiserver.enabled`                     | Enable API Server                             | `true`                                    |
 | `apiserver.image`                       | Image for API Server                          | `quay.io/openebs/m-apiserver`             |
 | `apiserver.imageTag`                    | Image Tag for API Server                      | `1.2.0`                                   |
 | `apiserver.replicas`                    | Number of API Server Replicas                 | `1`                                       |
 | `apiserver.sparse.enabled`              | Create Sparse Pool based on Sparsefile        | `false`                                   |
+| `provisioner.enabled`                   | Enable Provisioner                            | `true`                                    |
 | `provisioner.image`                     | Image for Provisioner                         | `quay.io/openebs/openebs-k8s-provisioner` |
 | `provisioner.imageTag`                  | Image Tag for Provisioner                     | `1.2.0`                                   |
 | `provisioner.replicas`                  | Number of Provisioner Replicas                | `1`                                       |
+| `localprovisioner.enabled`              | Enable localProvisioner                       | `true`                                    |
 | `localprovisioner.image`                | Image for localProvisioner                    | `quay.io/openebs/provisioner-localpv`     |
 | `localprovisioner.imageTag`             | Image Tag for localProvisioner                | `1.2.0`                                   |
 | `localprovisioner.replicas`             | Number of localProvisioner Replicas           | `1`                                       |
 | `localprovisioner.basePath`             | BasePath for hostPath volumes on Nodes        | `/var/openebs/local`                      |
-| `webhook.image`                         | Image for admision server                     | `quay.io/openebs/admission-server`        |
+| `webhook.enabled`                       | Enable admission server                       | `true`                                    |
+| `webhook.image`                         | Image for admission server                    | `quay.io/openebs/admission-server`        |
 | `webhook.imageTag`                      | Image Tag for admission server                | `1.2.0`                                   |
 | `webhook.replicas`                      | Number of admission server Replicas           | `1`                                       |
+| `snapshotOperator.enabled`              | Enable Snapshot Provisioner                   | `true`                                    |
 | `snapshotOperator.provisioner.image`    | Image for Snapshot Provisioner                | `quay.io/openebs/snapshot-provisioner`    |
 | `snapshotOperator.provisioner.imageTag` | Image Tag for Snapshot Provisioner            | `1.2.0`                                   |
 | `snapshotOperator.controller.image`     | Image for Snapshot Controller                 | `quay.io/openebs/snapshot-controller`     |
 | `snapshotOperator.controller.imageTag`  | Image Tag for Snapshot Controller             | `1.2.0`                                   |
 | `snapshotOperator.replicas`             | Number of Snapshot Operator Replicas          | `1`                                       |
+| `ndm.enabled`                           | Enable Node Disk Manager                      | `true`                                    |
 | `ndm.image`                             | Image for Node Disk Manager                   | `quay.io/openebs/node-disk-manager-amd64` |
-| `ndm.imageTag`                          | Image Tag for Node Disk Manager               | `v0.4.2`                              |
+| `ndm.imageTag`                          | Image Tag for Node Disk Manager               | `v0.4.2`                                  |
 | `ndm.sparse.path`                       | Directory where Sparse files are created      | `/var/openebs/sparse`                     |
 | `ndm.sparse.size`                       | Size of the sparse file in bytes              | `10737418240`                             |
 | `ndm.sparse.count`                      | Number of sparse files to be created          | `1`                                       |
@@ -68,8 +74,9 @@ The following table lists the configurable parameters of the OpenEBS chart and t
 | `ndm.filters.includePaths`              | Include devices with specified path patterns  | `""`                                      |
 | `ndm.filters.excludePaths`              | Exclude devices with specified path patterns  | `loop,fd0,sr0,/dev/ram,/dev/dm-,/dev/md`  |
 | `ndm.probes.enableSeachest`             | Enable Seachest probe for NDM                 | `false`                                   |
+| `ndmOperator.enabled`                   | Enable NDM Operator                           | `true`                                    |
 | `ndmOperator.image`                     | Image for NDM Operator                        | `quay.io/openebs/node-disk-operator-amd64`|
-| `ndmOperator.imageTag`                  | Image Tag for NDM Operator                    | `v0.4.2`                              |
+| `ndmOperator.imageTag`                  | Image Tag for NDM Operator                    | `v0.4.2`                                  |
 | `jiva.image`                            | Image for Jiva                                | `quay.io/openebs/jiva`                    |
 | `jiva.imageTag`                         | Image Tag for Jiva                            | `1.2.0`                                   |
 | `jiva.replicas`                         | Number of Jiva Replicas                       | `3`                                       |
