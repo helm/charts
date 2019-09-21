@@ -27,7 +27,7 @@ spec:
           serviceName: {{ $.Values.service.servicename }}
         {{- else }}
           serviceName: {{ default $serviceName .service }}
-        {{- end }}  
+        {{- end }}
           servicePort: {{ default $servicePort .port }}
       {{- end }}
       - path: {{ default "/" .path | quote }}
@@ -36,7 +36,7 @@ spec:
           serviceName: {{ $.Values.service.servicename }}
         {{- else }}
           serviceName: {{ default $serviceName .service }}
-        {{- end }} 
+        {{- end }}
           servicePort: {{ default $servicePort .servicePort }}
   {{- end }}
   tls:
