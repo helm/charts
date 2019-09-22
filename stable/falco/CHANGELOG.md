@@ -3,6 +3,12 @@
 This file documents all notable changes to Sysdig Falco Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v1.0.10
+
+### Minor Changes
+
+* Migrate API versions from deprecated, removed versions to support Kubernetes v1.16
+
 ## v1.0.9
 
 ### Minor Changes
