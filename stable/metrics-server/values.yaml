@@ -40,7 +40,8 @@ args: []
 
 resources: {}
 
-nodeSelector: {}
+nodeSelector:
+  beta.kubernetes.io/arch: amd64
 
 tolerations: []
 
