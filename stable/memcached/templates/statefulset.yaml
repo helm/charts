@@ -12,6 +12,9 @@ spec:
   serviceName: {{ template "memcached.fullname" . }}
   {{- end }}
   replicas: {{ .Values.replicaCount }}
+  {{- if .Values.priorityClassName -}}
+  priorityClassName: "{{ .Values.priorityClassName }}"
+  {{- end }}
   template:
     metadata:
       labels:
@@ -119,3 +122,8 @@ spec:
       affinity:
 {{ toYaml . | trim | indent 8}}
 {{- end }}
+  updateStrategy:
+    type: {{ .Values.updateStrategy.type }}
+    {{- if (eq "Recreate" .Values.updateStrategy.type) }}
+    rollingUpdate: null
+    {{- end }}

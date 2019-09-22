@@ -1,5 +1,5 @@
 {{- if include "owncloud.host" . -}}
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "owncloud.fullname" . }}
@@ -141,5 +141,9 @@ spec:
           claimName: {{ if .Values.persistence.owncloud.existingClaim }}{{ .Values.persistence.owncloud.existingClaim }}{{- else }}{{ template "owncloud.fullname" . }}-owncloud{{- end }}
       {{- else }}
         emptyDir: {}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
       {{- end }}
 {{- end -}}

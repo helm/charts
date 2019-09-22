@@ -76,6 +76,8 @@ spec:
           value: 'http://${{ printf "{" }}{{ template "scdf.envname" . }}_SERVER_SERVICE_HOST}:${{ printf "{" }}{{ template "scdf.envname" . }}_SERVER_SERVICE_PORT}'
         - name: SPRING_APPLICATION_JSON
           value: "{ \"maven\": { \"local-repository\": null, \"remote-repositories\": { \"repo1\": { \"url\": \"https://repo.spring.io/libs-snapshot\"} } } }"
+        - name: KUBERNETES_TRUST_CERTIFICATES
+          value: {{ .Values.server.trustCerts | quote }}
       volumes:
         - name: database
           secret:

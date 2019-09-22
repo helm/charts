@@ -131,6 +131,12 @@ spec:
 {{ toYaml .Values.daemonset.nodeSelector | indent 8 }}
       {{- end }}
   updateStrategy:
-    type: {{ default "RollingUpdate" .Values.daemonset.updateStrategy | quote }}
+{{- if .Values.daemonset.updateStrategy }}
+{{ toYaml .Values.daemonset.updateStrategy | indent 4 }}
+{{- else }}
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: "10%"
+{{- end }}
 {{ end }}
 {{ end }}

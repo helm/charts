@@ -1,33 +1,32 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ template "redis.fullname" . }}-master
   labels:
     app: {{ template "redis.name" . }}
     chart: {{ template "redis.chart" . }}
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   selector:
     matchLabels:
-      release: "{{ .Release.Name }}"
-      role: master
       app: {{ template "redis.name" . }}
+      release: {{ .Release.Name }}
+      role: master
   serviceName: {{ template "redis.fullname" . }}-headless
   template:
     metadata:
       labels:
-        release: "{{ .Release.Name }}"
-        chart: {{ template "redis.chart" . }}
-        role: master
         app: {{ template "redis.name" . }}
+        chart: {{ template "redis.chart" . }}
+        release: {{ .Release.Name }}
+        role: master
 {{- if .Values.master.podLabels }}
 {{ toYaml .Values.master.podLabels | indent 8 }}
 {{- end }}
-{{- if .Values.metrics.podLabels }}
+{{- if and .Values.metrics.enabled .Values.metrics.podLabels }}
 {{ toYaml .Values.metrics.podLabels | indent 8 }}
 {{- end }}
-
       annotations:
         checksum/health: {{ include (print $.Template.BasePath "/health-configmap.yaml") . | sha256sum }}
         checksum/configmap: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
@@ -35,7 +34,7 @@ spec:
       {{- if .Values.master.podAnnotations }}
 {{ toYaml .Values.master.podAnnotations | indent 8 }}
       {{- end }}
-      {{- if .Values.metrics.podAnnotations }}
+      {{- if and .Values.metrics.enabled .Values.metrics.podAnnotations }}
 {{ toYaml .Values.metrics.podAnnotations | indent 8 }}
       {{- end }}
     spec:
@@ -376,10 +375,10 @@ spec:
     - metadata:
         name: redis-data
         labels:
-          app: "{{ template "redis.name" . }}"
-          component: "master"
-          release: {{ .Release.Name | quote }}
-          heritage: {{ .Release.Service | quote }}
+          app: {{ template "redis.name" . }}
+          release: {{ .Release.Name }}
+          heritage: {{ .Release.Service }}
+          component: master
       spec:
         accessModes:
         {{- range .Values.master.persistence.accessModes }}
