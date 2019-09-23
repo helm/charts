@@ -14,7 +14,7 @@ fullnameOverride: ""
 
 # Specify a CA cert to trust for self signed certificates at the Oauth2 URLs.  Be careful to indent one level beyond the
 # trustedCACert key:
-#trustedCACert: |-
+# trustedCACert: |-
 #  -----BEGIN CERTIFICATE-----
 #  ...
 #  -----END CERTIFICATE-----
