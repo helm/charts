@@ -19,7 +19,7 @@
 image:
   registry: docker.io
   repository: bitnami/mariadb
-  tag: 10.3.17-debian-9-r37
+  tag: 10.3.18-debian-9-r0
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -166,8 +166,8 @@ master:
   ## Mariadb Master additional pod annotations
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
   # annotations:
-  #   - key: key1
-  #     value: value1
+  #   key: value
+  #   another-key: another-value
 
   ## MariaDB additional command line flags
   ## Can be used to specify command line flags, for example:
@@ -293,14 +293,22 @@ master:
     minAvailable: 1
     # maxUnavailable: 1
 
+  ## Allow customization of the service resource
+  ##
+  service:
+    ## Add custom annotations to the service
+    ##
+    annotations: {}
+      # external-dns.alpha.kubernetes.io/hostname: db.example.com
+
 slave:
   replicas: 1
 
   ## Mariadb Slave additional pod annotations
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
   # annotations:
-  #   - key: key1
-  #     value: value1
+  #   key: value
+  #   another-key: another-value
 
   ## MariaDB additional command line flags
   ## Can be used to specify command line flags, for example:
@@ -408,12 +416,20 @@ slave:
     minAvailable: 1
     # maxUnavailable: 1
 
+  ## Allow customization of the service resource
+  ##
+  service:
+    ## Add custom annotations to the service
+    ##
+    annotations: {}
+      # external-dns.alpha.kubernetes.io/hostname: rodb.example.com
+
 metrics:
   enabled: false
   image:
     registry: docker.io
     repository: bitnami/mysqld-exporter
-    tag: 0.12.1-debian-9-r36
+    tag: 0.12.1-debian-9-r44
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.

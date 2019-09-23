@@ -78,10 +78,19 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `rabbitmq.configuration`             | Required cluster configuration                   | See values.yaml                                         |
 | `rabbitmq.extraConfiguration`        | Extra configuration to add to rabbitmq.conf      | See values.yaml                                         |
 | `rabbitmq.advancedConfiguration`     | Extra configuration (in classic format) to add to advanced.config    | See values.yaml                                         |
+| `rabbitmq.tls.enabled`                  | Enable TLS support to rabbitmq |   | `false`                     |
+| `rabbitmq.tls.failIfNoPeerCert`     | When set to true, TLS connection will be rejected if client fails to provide a certificate  | `true` |
+| `rabbitmq.tls.sslOptionsVerify`     | `verify_peer`  | Should [peer verification](https://www.rabbitmq.com/ssl.html#peer-verification) be enabled? |
+| `rabbitmq.tls.caCertificate`     | Ca certificate  | Certificate Authority (CA) bundle content |
+| `rabbitmq.tls.serverCertificate`     | Server certificate  | Server certificate content |
+| `rabbitmq.tls.serverKey`     | Server Key  | Server private key content |
+| `rabbitmq.tls.existingSecret`                                   | Existing secret with certificate content to rabbitmq credentials                                                                                                                  | `nil`                                                    |
 | `service.type`                       | Kubernetes Service type                          | `ClusterIP`                                             |
 | `service.port`                       | Amqp port                                        | `5672`                                                  |
+| `service.tlsPort`                   | Amqp TLS port                                    | `5671`                                                  |
 | `service.distPort`                   | Erlang distribution server port                  | `25672`                                                 |
 | `service.nodePort`                   | Node port override, if serviceType NodePort      | _random available between 30000-32767_                  |
+| `service.nodeTlsPort`                | Node port override, if serviceType NodePort      | _random available between 30000-32767_                  |
 | `service.managerPort`                | RabbitMQ Manager port                            | `15672`                                                 |
 | `persistence.enabled`                | Use a PVC to persist data                        | `true`                                                  |
 | `service.annotations`                | service annotations as an array                  | []                                                      |
@@ -280,6 +289,45 @@ The chart mounts a [Persistent Volume](http://kubernetes.io/docs/user-guide/pers
 ```bash
 $ helm install --set persistence.existingClaim=PVC_NAME rabbitmq
 ```
+
+### Adjust permissions of the persistence volume mountpoint
+
+As the image runs as non-root by default, it is necessary to adjust the ownership of the persistent volume so that the container can write data into it.
+
+By default, the chart is configured to use Kubernetes Security Context to automatically change the ownership of the volume. However, this feature does not work in all Kubernetes distributions.
+As an alternative, this chart supports using an `initContainer` to change the ownership of the volume before mounting it in the final destination.
+
+You can enable this `initContainer` by setting `volumePermissions.enabled` to `true`.
+
+## Enabling TLS support
+
+To enable TLS support you must generate the certificates using RabbitMQ [documentation](https://www.rabbitmq.com/ssl.html#automated-certificate-generation).
+
+You must include in your values.yaml the caCertificate, serverCertificate and serverKey files.
+
+```yaml
+  caCertificate: |-
+    -----BEGIN CERTIFICATE-----
+    MIIDRTCCAi2gAwIBAgIJAJPh+paO6a3cMA0GCSqGSIb3DQEBCwUAMDExIDAeBgNV
+    ...
+    -----END CERTIFICATE-----
+  serverCertificate: |-
+    -----BEGIN CERTIFICATE-----
+    MIIDqjCCApKgAwIBAgIBATANBgkqhkiG9w0BAQsFADAxMSAwHgYDVQQDDBdUTFNH
+    ...
+    -----END CERTIFICATE-----
+  serverKey: |-
+    -----BEGIN RSA PRIVATE KEY-----
+    MIIEpAIBAAKCAQEA2iX3M4d3LHrRAoVUbeFZN3EaGzKhyBsz7GWwTgETiNj+AL7p
+    ....
+    -----END RSA PRIVATE KEY-----
+```
+
+This will be generate a secret with the certs, but is possible specify an existing secret using `existingSecret: name-of-existing-secret-to-rabbitmq`
+
+Disabling [failIfNoPeerCert](https://www.rabbitmq.com/ssl.html#peer-verification-configuration) allows a TLS connection if client fails to provide a certificate
+
+[sslOptionsVerify](https://www.rabbitmq.com/ssl.html#peer-verification-configuration): When the sslOptionsVerify option is set to verify_peer, the client does send us a certificate, the node must perform peer verification. When set to verify_none, peer verification will be disabled and certificate exchange won't be performed.
 
 ## Upgrading
 

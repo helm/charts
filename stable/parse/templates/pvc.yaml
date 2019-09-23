@@ -2,12 +2,8 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ template "parse.fullname" . }}
-  labels:
-    app: {{ template "parse.name" . }}
-    chart: {{ template "parse.chart" . }}
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+  name: {{ include "parse.fullname" . }}
+  labels: {{ include "parse.labels" . | nindent 4 }}
 spec:
   accessModes:
     - {{ .Values.persistence.accessMode | quote }}

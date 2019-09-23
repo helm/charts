@@ -32,7 +32,7 @@ spec:
 {{ toYaml .Values.securityContext | indent 8 }}
       initContainers:
         - name: init-sysctl
-          image: busybox:1.31
+          image: {{ default "busybox:1.31" .Values.plugins.initSysctlContainerImage }}
           command:
           - sysctl
           - -w

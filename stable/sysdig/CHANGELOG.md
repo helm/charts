@@ -3,6 +3,12 @@
 This file documents all notable changes to Sysdig Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v1.4.16
+
+### Minor changes
+
+* Allow the DaemonSet to schedule using affinity rules
+
 ## v1.4.15
 
 ### Minor changes
