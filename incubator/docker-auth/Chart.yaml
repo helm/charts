@@ -7,6 +7,7 @@ keywords:
 - docker
 - registry
 - docker-auth
+home: https://github.com/cesanta/docker_auth
 sources:
 - https://github.com/cesanta/docker_auth
 maintainers:
