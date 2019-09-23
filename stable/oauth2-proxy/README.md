@@ -79,6 +79,7 @@ Parameter | Description | Default
 `readinessProbe.successThreshold` | number of successes | 1
 `replicaCount` | desired number of pods | `1`
 `resources` | pod resource requests & limits | `{}`
+`secretAnnotations` | annotations to add to the config secret | `{}`
 `service.port` | port for the service | `80`
 `service.type` | type of service | `ClusterIP`
 `service.clusterIP` | cluster ip address | `nil`
