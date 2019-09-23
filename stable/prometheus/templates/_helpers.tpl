@@ -173,6 +173,26 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- end -}}
 
 {{/*
+Return the appropriate apiVersion for deployment.
+*/}}
+{{- define "prometheus.deployment.apiVersion" -}}
+{{- if semverCompare "<1.9-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- print "extensions/v1beta1" -}}
+{{- else if semverCompare "^1.9-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- print "apps/v1" -}}
+{{- end -}}
+{{- end -}}
+{{/*
+Return the appropriate apiVersion for daemonset.
+*/}}
+{{- define "prometheus.daemonset.apiVersion" -}}
+{{- if semverCompare "<1.9-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- print "extensions/v1beta1" -}}
+{{- else if semverCompare "^1.9-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- print "apps/v1" -}}
+{{- end -}}
+{{- end -}}
+{{/*
 Return the appropriate apiVersion for networkpolicy.
 */}}
 {{- define "prometheus.networkPolicy.apiVersion" -}}
