@@ -182,6 +182,16 @@ Return the appropriate apiVersion for networkpolicy.
 {{- print "networking.k8s.io/v1" -}}
 {{- end -}}
 {{- end -}}
+{{/*
+Return the appropriate apiVersion for podsecuritypolicy.
+*/}}
+{{- define "prometheus.podSecurityPolicy.apiVersion" -}}
+{{- if semverCompare ">=1.3-0, <1.10-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- print "extensions/v1beta1" -}}
+{{- else if semverCompare "^1.10-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- print "policy/v1beta1 " -}}
+{{- end -}}
+{{- end -}}
 
 {{/*
 Create the name of the service account to use for the alertmanager component
