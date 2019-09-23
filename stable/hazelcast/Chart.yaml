@@ -1,5 +1,5 @@
 name: hazelcast
-version: 2.1.0
+version: 2.2.0
 appVersion: "3.12.2"
 tillerVersion: ">=2.7.2"
 kubeVersion: ">=1.9.0-0"
