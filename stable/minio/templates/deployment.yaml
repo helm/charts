@@ -18,6 +18,15 @@ spec:
     {{- else }}
     rollingUpdate: null
     {{- end}}
+  {{- if .Values.securityContext.enabled }}
+  securityContext:
+    {{- if .Values.securityContext.runAsUser is not none}}
+      runAsUser: {{ .Values.securityContext.runAsUser }}
+    {{- end }}
+    {{- if .Values.securityContext.runAsGroup is not none}}
+      runAsGroup: {{ .Values.securityContext.runAsGroup }}
+    {{- end }}
+  {{- end }}
   {{- if .Values.nasgateway.enabled }}
   replicas: {{ .Values.nasgateway.replicas }}
   {{- end }}
