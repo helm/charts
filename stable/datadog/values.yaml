@@ -317,6 +317,11 @@ systemProbe:
   #
   bpfDebug: false
 
+  ## @param apparmor profile - string - required
+  ## specify a apparmor profile for system-probe
+  #
+  apparmor: unconfined
+
 ## @param clusterAgent - object - required
 ## This is the Datadog Cluster Agent implementation that handles cluster-wide
 ## metrics more cleanly, separates concerns for better rbac, and implements
