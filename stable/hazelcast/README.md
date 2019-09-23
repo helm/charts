@@ -54,6 +54,7 @@ The following table lists the configurable parameters of the Hazelcast chart and
 | `hazelcast.existingConfigMap`              | ConfigMap which contains Hazelcast configuration file(s) that are used instead hazelcast.yaml embedded into values.yaml | `nil`                                                |
 | `hazelcast.yaml`                           | Hazelcast YAML Configuration (`hazelcast.yaml` embedded into `values.yaml`)                                    | `{DEFAULT_HAZELCAST_YAML}`                           |
 | `hazelcast.configurationFiles`             | Hazelcast configuration files                                                                                  | `nil`                                                |
+| `affinity`                             | Hazelcast Node affinity                                                                       | `nil`                                                |
 | `nodeSelector`                             | Hazelcast Node labels for pod assignment                                                                       | `nil`                                                |
 | `hostPort`                                 | Port under which Hazelcast PODs are exposed on the host machines                                               | `nil`                                                |
 | `gracefulShutdown.enabled`                 | Turn on and off Graceful Shutdown                                                                              | `true`                                               |
