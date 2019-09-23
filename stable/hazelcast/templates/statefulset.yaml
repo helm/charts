@@ -44,6 +44,10 @@ spec:
         runAsNonRoot: true
         runAsUser: {{ .Values.securityContext.runAsUser }}
         fsGroup: {{ .Values.securityContext.fsGroup }}
+      {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+      {{- end }}
       containers:
       - name: {{ template "hazelcast.fullname" . }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
