@@ -163,3 +163,6 @@ spec:
         secret:
           secretName: {{ .Values.filestore.gcs.secretName }}
       {{ end }}
+      {{- if .Values.web.priorityClassName }}
+      priorityClassName: "{{ .Values.web.priorityClassName }}"
+      {{- end }}
