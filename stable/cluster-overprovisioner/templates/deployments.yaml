@@ -16,6 +16,7 @@ metadata:
   name: "{{ $fullname }}-{{ .name }}"
   labels:
     app.kubernetes.io/name: {{ $name }}
+    cluster-overprovisioner-name: {{ .name }}
     helm.sh/chart: {{ $chart }}
     app.kubernetes.io/instance: {{ $relName }}
     app.kubernetes.io/managed-by: {{ $relService }}
@@ -24,11 +25,13 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ $name }}
+      cluster-overprovisioner-name: {{ .name }}
       app.kubernetes.io/instance: {{ $relName }}
   template:
     metadata:
       labels:
         app.kubernetes.io/name: {{ $name }}
+        cluster-overprovisioner-name: {{ .name }}
         app.kubernetes.io/instance: {{ $relName }}
     spec:
       priorityClassName: {{ $priorityClassName }}
