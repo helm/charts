@@ -12,9 +12,12 @@ image:
 nameOverride: ""
 fullnameOverride: ""
 
-# The filename of a root CA cert to trust for self signed certificates at the Oauth2 URLs.  If specified, the file
-# must be created in this directory containing the certificate (in format: -----BEGIN CERTIFICATE----- ...):
-# trustedCAFile: rootca.crt
+# Specify a CA cert to trust for self signed certificates at the Oauth2 URLs.  Be careful to indent one level beyond the
+# trustedCACert key:
+#trustedCACert: |-
+#  -----BEGIN CERTIFICATE-----
+#  ...
+#  -----END CERTIFICATE-----
 
 gangway:
   # The address to listen on. Defaults to 0.0.0.0 to listen on all interfaces.

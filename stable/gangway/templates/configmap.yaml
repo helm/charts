@@ -10,10 +10,10 @@ metadata:
 data:
   gangway.yaml: |
     {{- .Values.gangway | toYaml | nindent 4 }}
-    {{- if .Values.trustedCAFile }}
+    {{- if .Values.trustedCACert }}
     trustedCAPath: /gangway/rootca.crt
   rootca.crt: |
-    {{ .Files.Get .Values.trustedCAFile | nindent 4}}
+    {{ .Values.trustedCACert | nindent 4}}
     {{ end }}
 
 
