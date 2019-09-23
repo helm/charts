@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "docker-auth.name" . }}
+data:
+  auth_config.yml: |
+    server:
+      addr: ":{{ .Values.service.targetPort }}"
+    token:
+      issuer: "{{ .Values.configmap.data.token.issuer }}"  # Must match issuer in the Registry config.
+      expiration: {{ .Values.configmap.data.token.expiration }}
+      certificate: "/config/certs/server.pem"
+      key: "/config/certs/server.key"
+    users:
+      # Password is specified as a BCrypt hash. Use `htpasswd -nB USERNAME` to generate.
+      "{{ .Values.configmap.data.users.admin.username }}":
+        password: "{{ .Values.configmap.data.users.admin.password }}"
+      "{{ .Values.configmap.data.users.test.username }}":
+        password: "{{ .Values.configmap.data.users.test.password }}"
+    acl:
+      - match: {account: "{{ .Values.configmap.data.users.admin.username }}"}
+        actions: ["{{ .Values.configmap.data.users.admin.actions }}"]
+      - match: {account: "{{ .Values.configmap.data.users.test.username }}"}
+        actions: ["{{ .Values.configmap.data.users.test.actions }}"]

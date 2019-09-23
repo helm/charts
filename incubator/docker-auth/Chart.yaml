@@ -1,0 +1,15 @@
+apiVersion: v1
+appVersion: "1.4.0"
+description: Docker Registry V2 authentication server
+name: docker-auth
+version: 1.0.0
+keywords:
+- docker
+- registry
+- docker-auth
+sources:
+- https://github.com/cesanta/docker_auth
+maintainers:
+- name: duyanghao
+  email: 1294057873@qq.com
+engine: gotpl
