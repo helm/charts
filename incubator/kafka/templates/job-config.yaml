@@ -5,17 +5,13 @@ kind: Job
 metadata:
   name: "{{ template "kafka.fullname" . }}-config-{{ $scriptHash }}"
   labels:
-    app: {{ template "kafka.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    heritage: "{{ .Release.Service }}"
-    release: "{{ .Release.Name }}"
+  {{- include "kafka.config.labels" . | nindent 4 }}
 spec:
   backoffLimit: {{ .Values.configJob.backoffLimit }}
   template:
     metadata:
       labels:
-        app: {{ template "kafka.fullname" . }}
-        release: "{{ .Release.Name }}"
+      {{- include "kafka.config.matchLabels" . | nindent 8 }}
     spec:
       restartPolicy: OnFailure
       volumes:

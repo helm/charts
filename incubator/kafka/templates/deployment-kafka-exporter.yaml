@@ -4,16 +4,12 @@ kind: Deployment
 metadata:
   name: {{ template "kafka.fullname" . }}-exporter
   labels:
-    app: "{{ template "kafka.name" . }}"
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+  {{- include "kafka.monitor.labels" . | nindent 4 }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ template "kafka.name" . }}-exporter
-      release: {{ .Release.Name }}
+    {{- include "kafka.monitor.matchLabels" . | nindent 6 }}
   template:
     metadata:
       annotations:
