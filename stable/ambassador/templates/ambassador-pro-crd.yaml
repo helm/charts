@@ -3,6 +3,11 @@ apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
 metadata:
   name: filterpolicies.getambassador.io
+  annotations:
+    "helm.sh/hook": crd-install
+  {{ if .Values.crds.keep }}
+    "helm.sh/resource-policy": keep
+  {{ end }}
 spec:
   group: getambassador.io
   version: v1beta2
@@ -22,6 +27,11 @@ apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
 metadata:
   name: filters.getambassador.io
+  annotations:
+    "helm.sh/hook": crd-install
+  {{ if .Values.crds.keep }}
+    "helm.sh/resource-policy": keep
+  {{ end }}
 spec:
   group: getambassador.io
   version: v1beta2
@@ -41,6 +51,11 @@ apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
 metadata:
   name: ratelimits.getambassador.io
+  annotations:
+    "helm.sh/hook": crd-install
+  {{ if .Values.crds.keep }}
+    "helm.sh/resource-policy": keep
+  {{ end }}
 spec:
   group: getambassador.io
   version: v1beta1
