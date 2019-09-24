@@ -1246,10 +1246,10 @@ prometheus:
     annotations: {}
     labels: {}
 
-    ## Final form of the hostname for each per replica ingress is 
+    ## Final form of the hostname for each per replica ingress is
     ## {{ ingressPerReplica.hostPrefix }}-{{ $replicaNumber }}.{{ ingressPerReplica.hostDomain }}
     ##
-    ## Prefix for the per replica ingress that will have `-$replicaNumber` 
+    ## Prefix for the per replica ingress that will have `-$replicaNumber`
     ## appended to the end
     hostPrefix: ""
     ## Domain that will be used for the per replica ingress
