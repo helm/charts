@@ -55,6 +55,10 @@ haproxy:
     port: 9101
   init:
     resources: {}
+  timeout:
+    connect: 4s
+    server: 30s
+    client: 30s
 
 
 ## Role Based Access
