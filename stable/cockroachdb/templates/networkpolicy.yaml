@@ -1,5 +1,4 @@
 {{- if .Values.NetworkPolicy.Enabled }}
----
 kind: NetworkPolicy
 apiVersion: {{ template "cockroachdb.networkPolicy.apiVersion" . }}
 metadata:
