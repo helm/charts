@@ -1,5 +1,5 @@
 {{- if or (eq .Values.controller.kind "Deployment") (eq .Values.controller.kind "Both") }}
-apiVersion: extensions/v1beta1
+apiVersion: {{ .Values.controller.apiVersion }}
 kind: Deployment
 metadata:
   labels:
@@ -10,6 +10,14 @@ metadata:
     release: {{ .Release.Name }}
   name: {{ template "nginx-ingress.controller.fullname" . }}
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "nginx-ingress.name" . }}
+      component: "{{ .Values.controller.name }}"
+      release: {{ .Release.Name }}
+      {{- if .Values.controller.podLabels }}
+{{ toYaml .Values.controller.podLabels | indent 6 }}
+      {{- end }}
   replicas: {{ .Values.controller.replicaCount }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   strategy:
@@ -129,7 +137,7 @@ spec:
             - name: {{ $key }}
               containerPort: {{ $value }}
               protocol: TCP
-          {{- end }} 
+          {{- end }}
           {{- if .Values.controller.metrics.enabled }}
             - name: metrics
               containerPort: 10254
