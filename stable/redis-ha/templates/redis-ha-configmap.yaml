@@ -143,9 +143,9 @@ data:
 {{- else }}
     defaults REDIS
       mode tcp
-      timeout connect  4s
-      timeout server  30s
-      timeout client  30s
+      timeout connect  {{ .Values.haproxy.timeout.connect }}
+      timeout server  {{ .Values.haproxy.timeout.server }}
+      timeout client  {{ .Values.haproxy.timeout.client }}
 
     listen health_check_http_url
       bind :8888
