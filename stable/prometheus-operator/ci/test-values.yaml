@@ -1182,6 +1182,27 @@ prometheus:
 
     sessionAffinity: ""
 
+  ## Configuration for creating a separate Service for each statefulset Prometheus replica
+  ##
+  servicePerReplica:
+    enabled: false
+    annotations: {}
+
+    ## To be used with a proxy extraContainer port
+    targetPort: 9090
+
+    ## Port to expose on each node
+    ## Only used if servicePerReplica.type is 'NodePort'
+    ##
+    nodePort: 30091
+
+    ## Loadbalancer source IP ranges
+    ## Only used if servicePerReplica.type is "loadbalancer"
+    loadBalancerSourceRanges: []
+    ## Service type
+    ##
+    type: ClusterIP
+
   ## Configure pod disruption budgets for Prometheus
   ## ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/#specifying-a-poddisruptionbudget
   ## This configuration is immutable once created and will require the PDB to be deleted to be changed
@@ -1217,10 +1238,31 @@ prometheus:
       #   hosts:
       #     - prometheus.example.com
 
-  ## Configure additional options for default pod security policy for Prometheus
-  ## ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/
-  podSecurityPolicy:
-    allowedCapabilities: []
+  ## Configuration for creating an Ingress that will map to each Prometheus replica service
+  ## prometheus.servicePerReplica must be enabled
+  ##
+  ingressPerReplica:
+    enabled: false
+    annotations: {}
+    labels: {}
+
+    ## Final form of the hostname for each per replica ingress is 
+    ## {{ ingressPerReplica.hostPrefix }}-{{ $replicaNumber }}.{{ ingressPerReplica.hostDomain }}
+    ##
+    ## Prefix for the per replica ingress that will have `-$replicaNumber` 
+    ## appended to the end
+    hostPrefix: ""
+    ## Domain that will be used for the per replica ingress
+    hostDomain: ""
+
+    ## Paths to use for ingress rules
+    ##
+    paths: []
+    # - /
+
+    ## Secret name containing the TLS certificate for Prometheus per replica ingress
+    ## Secret must be manually created in the namespace
+    tlsSecretName: ""
 
   serviceMonitor:
     ## Scrape interval. If not set, the Prometheus default scrape interval is used.

@@ -1,0 +1,40 @@
+{{- if and .Values.prometheus.enabled .Values.prometheus.servicePerReplica.enabled }}
+{{- $count := .Values.prometheus.prometheusSpec.replicas | int -}}
+{{- $serviceValues := .Values.prometheus.servicePerReplica -}}
+{{ range $i, $e := until $count }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "prometheus-operator.fullname" $ }}-prometheus-{{ $i }}
+  labels:
+    app: {{ include "prometheus-operator.name" $ }}-prometheus
+{{ include "prometheus-operator.labels" $ | indent 4 }}
+{{- if $serviceValues.annotations }}
+  annotations:
+{{ toYaml $serviceValues.annotations | indent 4 }}
+{{- end }}
+spec:
+{{- if $serviceValues.clusterIP }}
+  clusterIP: {{ $serviceValues.clusterIP }}
+{{- end }}
+{{- if $serviceValues.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+  {{- range $cidr := $serviceValues.loadBalancerSourceRanges }}
+    - {{ $cidr }}
+  {{- end }}
+{{- end }}
+  ports:
+    - name: web
+      {{- if eq $serviceValues.type "NodePort" }}
+      nodePort: {{ $serviceValues.nodePort }}
+      {{- end }}
+      port: 9090
+      targetPort: {{ $serviceValues.targetPort }}
+  selector:
+    app: prometheus
+    prometheus: {{ include "prometheus-operator.fullname" $ }}-prometheus
+    statefulset.kubernetes.io/pod-name: prometheus-{{ include "prometheus-operator.fullname" $ }}-prometheus-{{ $i }}
+  type: "{{ $serviceValues.type }}"
+{{- end }}
+{{- end }}

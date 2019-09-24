@@ -223,6 +223,13 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheus.ingress.labels` | Prometheus Ingress additional labels | `{}` |
 | `prometheus.ingress.paths` | Prometheus Ingress paths | `[]` |
 | `prometheus.ingress.tls` | Prometheus Ingress TLS configuration (YAML) | `[]` |
+| `prometheus.ingressPerReplica.annotations` | Prometheus pre replica Ingress annotations | `{}` |
+| `prometheus.ingressPerReplica.enabled` | If true, create an Ingress for each Prometheus server replica in the StatefulSet | `false` |
+| `prometheus.ingressPerReplica.hostPrefix` |  | `""` |
+| `prometheus.ingressPerReplica.hostDomain` |  | `""` |
+| `prometheus.ingressPerReplica.labels` | Prometheus per replica Ingress additional labels | `{}` |
+| `prometheus.ingressPerReplica.paths` | Prometheus per replica Ingress paths | `[]` |
+| `prometheus.ingressPerReplica.tlsSecretName` | Secret name containing the TLS certificate for Prometheus per replica ingress | `[]` |
 | `prometheus.podDisruptionBudget.enabled` | If true, create a pod disruption budget for prometheus pods. The created resource cannot be modified once created - it must be deleted to perform a change | `false` |
 | `prometheus.podDisruptionBudget.maxUnavailable` | Maximum number / percentage of pods that may be made unavailable | `""` |
 | `prometheus.podDisruptionBudget.minAvailable` | Minimum number / percentage of pods that should remain scheduled | `1` |
@@ -292,6 +299,13 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheus.serviceMonitor.metricRelabelings` | The `metric_relabel_configs` for scraping the prometheus instance. | `` |
 | `prometheus.serviceMonitor.relabelings` | The `relabel_configs` for scraping the prometheus instance. | `` |
 | `prometheus.serviceMonitor.selfMonitor` | Create a `serviceMonitor` to automatically monitor the prometheus instance | `true` |
+| `prometheus.servicePerReplica.annotations` | Prometheus per replica Service Annotations | `{}` |
+| `prometheus.servicePerReplica.enabled` | If true, create a Service for each Prometheus server replica in the StatefulSet | `false` |
+| `prometheus.servicePerReplica.labels` | Prometheus per replica Service Labels | `{}` |
+| `prometheus.servicePerReplica.loadBalancerSourceRanges` | Prometheus per replica Service Loadbalancer Source Ranges | `[]` |
+| `prometheus.servicePerReplica.nodePort` |  Prometheus per replica service port for NodePort Service type | `30091` |
+| `prometheus.servicePerReplica.targetPort` |  Prometheus per replica Service internal port | `9090` |
+| `prometheus.servicePerReplica.type` |  Prometheus per replica Service type | `ClusterIP` |
 
 ### Alertmanager
 | Parameter | Description | Default |
