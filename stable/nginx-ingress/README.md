@@ -68,7 +68,7 @@ Parameter | Description | Default
 `controller.scope.enabled` | limit the scope of the ingress controller | `false` (watch all namespaces)
 `controller.scope.namespace` | namespace to watch for ingress | `""` (use the release namespace)
 `controller.extraArgs` | Additional controller container arguments | `{}`
-`controller.kind` | install as Deployment or DaemonSet | `Deployment`
+`controller.kind` | install as Deployment, DaemonSet or Both | `Deployment`
 `controller.autoscaling.enabled` | If true, creates Horizontal Pod Autoscaler | false
 `controller.autoscaling.minReplicas` | If autoscaling enabled, this field sets minimum replica count | `2`
 `controller.autoscaling.maxReplicas` | If autoscaling enabled, this field sets maximum replica count | `11`
@@ -94,6 +94,7 @@ Parameter | Description | Default
 `controller.service.labels` | labels for controller service | `{}`
 `controller.publishService.enabled` | if true, the controller will set the endpoint records on the ingress objects to reflect those on the service | `false`
 `controller.publishService.pathOverride` | override of the default publish-service name | `""`
+`controller.service.enabled` | if disabled no service will be created. This is especially useful when `controller.kind` is set to `DaemonSet` and `controller.daemonset.useHostPorts` is `true` | true
 `controller.service.clusterIP` | internal controller cluster service IP | `""`
 `controller.service.omitClusterIP` | To omit the `clusterIP` from the controller service | `false`
 `controller.service.externalIPs` | controller service external IP addresses. Do not set this when `controller.hostNetwork` is set to `true` and `kube-proxy` is used as there will be a port-conflict for port `80` | `[]`
@@ -142,6 +143,24 @@ Parameter | Description | Default
 `controller.metrics.prometheusRule.additionalLabels` | Additional labels that can be used so prometheusRules will be discovered by Prometheus | `{}`
 `controller.metrics.prometheusRule.namespace` | namespace where prometheusRules resource should be created | `the same namespace as nginx ingress`
 `controller.metrics.prometheusRule.rules` | [rules](https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/) to be prometheus in YAML format, check values for an example. | `[]`
+`controller.admissionWebhooks.enabled` | Create Ingress admission webhooks. Validating webhook will check the ingress syntax. | `false`
+`controller.admissionWebhooks.failurePolicy` | Failure policy for admission webhooks | `Fail`
+`controller.admissionWebhooks.port` | Admission webhook port | `8080`
+`controller.admissionWebhooks.service.annotations` | Annotations for admission webhook service | `{}`
+`controller.admissionWebhooks.service.omitClusterIP` | To omit the `clusterIP` from the admission webhook service | `false`
+`controller.admissionWebhooks.service.clusterIP` | cluster IP address to assign to admission webhook service | `""`
+`controller.admissionWebhooks.service.externalIPs` | Admission webhook service external IP addresses | `[]`
+`controller.admissionWebhooks.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
+`controller.admissionWebhooks.service.loadBalancerSourceRanges` | List of IP CIDRs allowed access to load balancer (if supported) | `[]`
+`controller.admissionWebhooks.service.servicePort` | Admission webhook service port | `443`
+`controller.admissionWebhooks.service.type` | Type of admission webhook service to create | `ClusterIP`
+`controller.admissionWebhooks.patch.enabled` | If true, will use a pre and post install hooks to generate a CA and certificate to use for the prometheus operator tls proxy, and patch the created webhooks with the CA. | `true`
+`controller.admissionWebhooks.patch.image.repository` | Repository to use for the webhook integration jobs | `jettech/kube-webhook-certgen`
+`controller.admissionWebhooks.patch.image.tag` |  Tag to use for the webhook integration jobs | `v1.0.0`
+`controller.admissionWebhooks.patch.image.pullPolicy` | Image pull policy for the webhook integration jobs | `IfNotPresent`
+`controller.admissionWebhooks.patch.priorityClassName` | Priority class for the webhook integration jobs | `""`
+`controller.admissionWebhooks.patch.podAnnotations` | Annotations for the webhook job pods | `{}`
+`controller.admissionWebhooks.patch.nodeSelector` | Node selector for running admission hook patch jobs | `{}`
 `controller.customTemplate.configMapName` | configMap containing a custom nginx template | `""`
 `controller.customTemplate.configMapKey` | configMap key containing the nginx template | `""`
 `controller.addHeaders` | configMap key:value pairs containing [custom headers](https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/#add-headers) added before sending response to the client | `{}`
@@ -190,8 +209,10 @@ Parameter | Description | Default
 `imagePullSecrets` | name of Secret resource containing private registry credentials | `nil`
 `rbac.create` | if `true`, create & use RBAC resources | `true`
 `podSecurityPolicy.enabled` | if `true`, create & use Pod Security Policy resources | `false`
-`serviceAccount.create` | if `true`, create a service account | `true`
-`serviceAccount.name` | The name of the service account to use. If not set and `create` is `true`, a name is generated using the fullname template. | ``
+`serviceAccount.create` | if `true`, create a service account for the controller | `true`
+`serviceAccount.name` | The name of the controller service account to use. If not set and `create` is `true`, a name is generated using the fullname template. | ``
+`serviceAccount.backend.create` | if `true`, create a backend service account. Only useful if you need a pod security policy to run the backend. | `true`
+`serviceAccount.backend.name` | The name of the backend service account to use. If not set and `create` is `true`, a name is generated using the fullname template. Only useful if you need a pod security policy to run the backend. | ``
 `revisionHistoryLimit` | The number of old history to retain to allow rollback. | `10`
 `tcp` | TCP service key:value pairs. The value is evaluated as a template. | `{}`
 `udp` | UDP service key:value pairs The value is evaluated as a template. | `{}`
@@ -279,6 +300,12 @@ controller:
     annotations:
       domainName: "kubernetes-example.com"
 ```
+
+## Ingress Admission Webhooks
+
+With nginx-ingress-controller version 0.25+, the nginx ingress controller pod exposes an endpoint that will integrate with the `validatingwebhookconfiguration` Kubernetes feature to prevent bad ingress from being added to the cluster.
+
+With nginx-ingress-controller in 0.25.* work only with kubernetes 1.14+, 0.26 fix [this issue](https://github.com/kubernetes/ingress-nginx/pull/4521)
 
 ## Helm error when upgrading: spec.clusterIP: Invalid value: ""
 

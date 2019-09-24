@@ -114,6 +114,7 @@ The following table lists the configurable parameters of the MediaWiki chart and
 | `readinessProbe.failureThreshold`    | Minimum consecutive failures to be considered failed        | 6                                                       |
 | `readinessProbe.successThreshold`    | Minimum consecutive successes to be considered successful   | 1                                                       |
 | `podAnnotations`                     | Pod annotations                                             | `{}`                                                    |
+| `affinity`                           | Map of node/pod affinities                                  | `{}`                                                    |
 | `metrics.enabled`                    | Start a side-car prometheus exporter                        | `false`                                                 |
 | `metrics.image.registry`             | Apache exporter image registry                              | `docker.io`                                             |
 | `metrics.image.repository`           | Apache exporter image name                                  | `bitnami/apache-exporter`                               |

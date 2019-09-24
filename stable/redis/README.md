@@ -137,6 +137,7 @@ The following table lists the configurable parameters of the Redis chart and the
 | `cluster.enabled`                             | Use master-slave topology                                                                                                                           | `true`                                                  |
 | `cluster.slaveCount`                          | Number of slaves                                                                                                                                    | `1`                                                     |
 | `existingSecret`                              | Name of existing secret object (for password authentication)                                                                                        | `nil`                                                   |
+| `existingSecretPasswordKey`                   | Name of key containing password to be retrieved from the existing secret                                                                                                 | `nil`                                                   |  
 | `usePassword`                                 | Use password                                                                                                                                        | `true`                                                  |
 | `usePasswordFile`                             | Mount passwords as files instead of environment variables                                                                                           | `false`                                                 |
 | `password`                                    | Redis password (ignored if existingSecret set)                                                                                                      | Randomly generated                                      |
@@ -211,7 +212,7 @@ The following table lists the configurable parameters of the Redis chart and the
 | `volumePermissions.enabled`                   | Enable init container that changes volume permissions in the registry (for cases where the default k8s `runAsUser` and `fsUser` values do not work) | `false`                                                 |
 | `volumePermissions.image.registry`            | Init container volume-permissions image registry                                                                                                    | `docker.io`                                             |
 | `volumePermissions.image.repository`          | Init container volume-permissions image name                                                                                                        | `bitnami/minideb`                                       |
-| `volumePermissions.image.tag`                 | Init container volume-permissions image tag                                                                                                         | `latest`                                                |
+| `volumePermissions.image.tag`                 | Init container volume-permissions image tag                                                                                                         | `stretch`                                                |
 | `volumePermissions.image.pullPolicy`          | Init container volume-permissions image pull policy                                                                                                 | `Always`                                                |
 | `volumePermissions.resources       `          | Init container volume-permissions CPU/Memory resource requests/limits                                                                               | {}                                                      |
 | `slave.service.type`                          | Kubernetes Service type (redis slave)                                                                                                               | `ClusterIP`                                             |
@@ -288,7 +289,7 @@ The following table lists the configurable parameters of the Redis chart and the
 | `sysctlImage.command`                         | sysctlImage command to execute                                                                                                                      | []                                                      |
 | `sysctlImage.registry`                        | sysctlImage Init container registry                                                                                                                 | `docker.io`                                             |
 | `sysctlImage.repository`                      | sysctlImage Init container name                                                                                                                     | `bitnami/minideb`                                       |
-| `sysctlImage.tag`                             | sysctlImage Init container tag                                                                                                                      | `latest`                                                |
+| `sysctlImage.tag`                             | sysctlImage Init container tag                                                                                                                      | `stretch`                                                |
 | `sysctlImage.pullPolicy`                      | sysctlImage Init container pull policy                                                                                                              | `Always`                                                |
 | `sysctlImage.mountHostSys`                    | Mount the host `/sys` folder to `/host-sys`                                                                                                         | `false`                                                 |
 | `sysctlImage.resources`                       | sysctlImage Init container CPU/Memory resource requests/limits                                                                                      | {}                                                      |
@@ -403,7 +404,7 @@ sysctlImage:
     - /bin/sh
     - -c
     - |-
-      install_packages systemd
+      install_packages procps
       sysctl -w net.core.somaxconn=10000
       echo never > /host-sys/kernel/mm/transparent_hugepage/enabled
 ```

@@ -1,5 +1,5 @@
 {{- if include "host" . -}}
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "suitecrm.fullname" . }}
@@ -156,5 +156,9 @@ spec:
           claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "suitecrm.fullname" . }}-suitecrm{{- end }}
       {{- else }}
         emptyDir: {}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
       {{- end }}
 {{- end -}}

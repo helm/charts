@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "drupal.fullname" . }}
@@ -138,4 +138,8 @@ spec:
           claimName: {{ .Values.persistence.drupal.existingClaim | default (printf "%s-drupal" (include "drupal.fullname" .)) }}
       {{- else }}
         emptyDir: {}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
       {{- end }}

@@ -99,7 +99,7 @@ spec:
           args:
             - server
             {{- if .Values.config }}
-            - --config /etc/atlantis/atlantis.yaml
+            - --config=/etc/atlantis/atlantis.yaml
             {{- end }}
           ports:
           - name: atlantis
