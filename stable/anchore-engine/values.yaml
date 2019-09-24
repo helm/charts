@@ -251,6 +251,12 @@ anchoreApi:
     annotations: {}
     label: {}
 
+  # (Optional) Overrides for constructing API URLs.  All values are optional.
+  # external:
+  #   use_tls: true
+  #   hostname: anchore-api.example.com
+  #   port: 8443
+
   # resources:
   #  limits:
   #    cpu: 100m
