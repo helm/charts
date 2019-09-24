@@ -108,8 +108,8 @@ The following table lists the configurable parameters of the MinIO chart and the
 | `existingSecret`                          | Name of existing secret with access and secret key.                                                                                     | `""`                                       |
 | `accessKey`                               | Default access key (5 to 20 characters)                                                                                                 | `AKIAIOSFODNN7EXAMPLE`                     |
 | `secretKey`                               | Default secret key (8 to 40 characters)                                                                                                 | `wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY` |
-| `configPath`                              | Default config file location                                                                                                            | `~/.minio`                                 |
-| `configPathmc`                            | Default config file location for MinIO client - mc                                                                                      | `~/.mc`                                    |
+| `configPath`                              | Default config file location                                                                                                            | `/etc/minio`                                 |
+| `configPathmc`                            | Default config file location for MinIO client - mc                                                                                      | `/etc/mc`                                    |
 | `mountPath`                               | Default mount location for persistent drive                                                                                             | `/export`                                  |
 | `clusterDomain`                           | domain name of kubernetes cluster where pod is running.                                                                                 | `cluster.local`                            |
 | `service.type`                            | Kubernetes service type                                                                                                                 | `ClusterIP`                                |
@@ -167,6 +167,10 @@ The following table lists the configurable parameters of the MinIO chart and the
 | `metrics.serviceMonitor.namespace`        | Optional namespace in which to create ServiceMonitor                                                                                    | `nil`                                      |
 | `metrics.serviceMonitor.interval`         | Scrape interval. If not set, the Prometheus default scrape interval is used                                                             | `nil`                                      |
 | `metrics.serviceMonitor.scrapeTimeout`    | Scrape timeout. If not set, the Prometheus default scrape timeout is used                                                               | `nil`                                      |
+| `securityContext.enabled`    | Will allow changing the UID or GID from root. If true, one of securityContext.runAsUser or securityContext.runAsGroup must be defined                                                             | `false`                                      |
+
+| `securityContext.runAsUser`    | The user id to run the minio process as within the pod                                                              | `1000`                                      |
+| `securityContext.runAsUser`    | The group id to run the minio process as within the pod                                                              | `nil`                                      |
 
 Some of the parameters above map to the env variables defined in the [MinIO DockerHub image](https://hub.docker.com/r/minio/minio/).
 
