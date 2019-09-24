@@ -110,7 +110,7 @@ data:
 
     $HAL_COMMAND config provider kubernetes account $PROVIDER_COMMAND {{ $context }} --docker-registries dockerhub \
                 --context {{ $context }} {{ if not $.Values.kubeConfig.enabled }}--service-account true{{ end }} \
-                {{ if $.Values.kubeConfig.enabled }}--kubeconfig-file /opt/kube/{{ $.Values.kubeConfig.secretKey }}{{ end }} \
+                {{ if $.Values.kubeConfig.enabled }}--kubeconfig-file {{ template "spinnaker.kubeconfig" $ }}{{ end }} \
                 {{ if $.Values.kubeConfig.onlySpinnakerManaged.enabled }}--only-spinnaker-managed true{{ end }} \
                 --omit-namespaces={{ template "omittedNameSpaces" $ }} --provider-version v2
     {{- end }}

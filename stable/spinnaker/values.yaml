@@ -117,6 +117,11 @@ kubeConfig:
   enabled: false
   secretName: my-kubeconfig
   secretKey: config
+  # Use this when you want to configure halyard to reference a kubeconfig from s3
+  # This allows you to keep your kubeconfig in an encrypted s3 bucket
+  # For more info visit:
+  #   https://www.spinnaker.io/reference/halyard/secrets/s3-secrets/#secrets-in-s3
+  # encryptedKubeconfig: encrypted:s3!r:us-west-2!b:mybucket!f:mykubeconfig
   # List of contexts from the kubeconfig to make available to Spinnaker
   contexts:
   - default
