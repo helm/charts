@@ -440,6 +440,18 @@ metrics:
     prometheus.io/scrape: "true"
     prometheus.io/port: "9104"
 
+  ## Extra args to be passed to mysqld_exporter
+  ## ref: https://github.com/prometheus/mysqld_exporter/
+  ##
+  extraArgs: []
+    # - --collect.info_schema.clientstats
+    # - --collect.info_schema.innodb_metrics
+    # - --collect.info_schema.innodb_tablespaces
+    # - --collect.info_schema.query_response_time
+    # - --collect.info_schema.tables
+    # - --collect.info_schema.tables.databases=*
+    # - --collect.info_schema.userstats
+
   # Enable this if you're using https://github.com/coreos/prometheus-operator
   serviceMonitor:
     enabled: false
