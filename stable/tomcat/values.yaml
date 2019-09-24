@@ -41,16 +41,16 @@ env: []
   # - name: env
   #   value: test
 
-extraVolumes: |
+extraVolumes: []
   # - name: extra
   #   emptyDir: {}
 
-extraVolumeMounts: |
+extraVolumeMounts: []
   # - name: extra
   #   mountPath: /usr/local/tomcat/webapps/app
   #   readOnly: true
 
-extraInitContainers: |
+extraInitContainers: []
   # - name: do-something
   #   image: busybox
   #   command: ['do', 'something']

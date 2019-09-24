@@ -22,8 +22,8 @@ spec:
       volumes:
         - name: app-volume
           emptyDir: {}
-        {{- if .Values.extraVolumes }}
-{{ tpl .Values.extraVolumes . | indent 8 }}
+        {{- with .Values.extraVolumes }}
+{{ toYaml . | indent 8 }}
         {{- end }}
       initContainers:
         - name: war
@@ -36,8 +36,8 @@ spec:
           volumeMounts:
             - name: app-volume
               mountPath: /app
-        {{- if .Values.extraInitContainers }}
-{{ tpl .Values.extraInitContainers . | indent 8 }}
+        {{- with .Values.extraInitContainers }}
+{{ toYaml . | indent 8 }}
         {{- end }}
 
       containers:
@@ -51,8 +51,8 @@ spec:
           volumeMounts:
             - name: app-volume
               mountPath: {{ .Values.deploy.directory }}
-            {{- if .Values.extraVolumeMounts }}
-{{ tpl .Values.extraVolumeMounts . | indent 12 }}
+            {{- with .Values.extraVolumeMounts }}
+{{ toYaml . | indent 12 }}
             {{- end }}
           ports:
             - containerPort: {{ .Values.service.internalPort }}
