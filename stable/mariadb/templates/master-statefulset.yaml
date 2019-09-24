@@ -213,7 +213,7 @@ spec:
           - >-
             DATA_SOURCE_NAME="root:$MARIADB_ROOT_PASSWORD@(localhost:3306)/"
             /bin/mysqld_exporter
-            {{- range .Values.metrics.extraArgs }}
+            {{- range .Values.metrics.extraArgs.master }}
             {{ . }}
             {{- end }}
         ports:
