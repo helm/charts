@@ -41,6 +41,7 @@ haproxy:
   ##
   service:
     type: ClusterIP
+    loadBalancerIP:
     annotations: {}
   serviceAccount:
     create: true
