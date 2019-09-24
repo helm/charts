@@ -1,0 +1,11 @@
+{{- if .Values.serviceAccount.typhaCpha.create }}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ template "calico.serviceAccountName.typhaCpha" . }}
+  labels:
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    app: {{ template "calico.fullname" . }}
+{{- end }}

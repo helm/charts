@@ -1,0 +1,128 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "calico.fullname" . }}-typha
+  labels:
+    app: {{ template "calico.name" . }}-typha
+    chart: {{ template "calico.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+{{- with .Values.typha.labels }}
+{{ toYaml . | indent 4 }}
+{{- end }}
+{{- with .Values.typha.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "calico.name" . }}-typha
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "calico.name" . }}-typha
+        chart: {{ template "calico.chart" . }}
+        release: {{ .Release.Name }}
+        heritage: {{ .Release.Service }}
+      {{- with .Values.typha.podLabels }}
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+      {{- if .Values.typha.prometheusScrapeAnnotations }}
+        prometheus.io/scrape: "true"
+        {{- with .Values.typha.ports.metrics }}
+        prometheus.io/port: '{{ default "9093" .port }}'
+        {{- end }}
+      {{- end }}
+    {{- with .Values.typha.podAnnotations }}
+{{ toYaml . $ | indent 8 }}
+    {{- end }}
+    spec:
+    {{- if .Values.priorityClassCluster.create }}
+      priorityClassName: '{{ template "calico.fullname" . }}-{{ .Values.priorityClassCluster.nameSuffix }}'
+    {{- else }}
+      {{- with .Values.priorityClassCluster.name }}
+      priorityClassName: {{ . }}
+      {{- end }}
+    {{- end }}
+      nodeSelector:
+        beta.kubernetes.io/os: linux
+      {{- with .Values.typha.nodeSelector }}
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      tolerations:
+        # Mark the pod as a critical add-on for rescheduling.
+        - key: CriticalAddonsOnly
+          operator: Exists
+      {{- with .Values.typha.tolerations }}
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      hostNetwork: true
+      serviceAccountName: {{ template "calico.serviceAccountName.calico" . }}
+      automountServiceAccountToken: {{ .Values.serviceAccount.calico.automountToken }}
+    {{- if .Values.typha.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.typha.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end }}
+    {{- end }}
+      containers:
+        - image: "{{ .Values.typha.image.registry }}/{{ .Values.typha.image.name }}:{{ .Values.typha.image.tag }}"
+          name: calico-typha
+          ports:
+            {{- range $k, $v := .Values.typha.ports }}
+            - containerPort: {{ $v.port }}
+              name: {{ $k }}
+              protocol: {{ $v.protocol }}
+            {{- end }}
+          env:
+          {{- range $k, $v := .Values.typha.env }}
+            - name: {{ $k }}
+              value: "{{ tpl $v $ }}"
+          {{- end }}
+        {{- with .Values.typha.livenessProbe }}
+          livenessProbe:
+{{ tpl . $ | indent 12 }}
+        {{- end }}
+        {{- with .Values.typha.readinessProbe }}
+          readinessProbe:
+{{ tpl . $ | indent 12 }}
+        {{- end }}
+        {{- with .Values.typha.resources }}
+          resources:
+{{ toYaml . | indent 12 }}
+        {{- end }}
+        {{- if or .Values.typha.cert.create .Values.typha.volumeMounts }}
+          volumeMounts:
+          {{- with .Values.typha.volumeMounts }}
+{{ toYaml . | indent 12 }}
+          {{- end }}
+          {{- with .Values.typha.cert.create }}
+            - name: cert
+              mountPath: "/etc/typha/cert.pem"
+              subPath: "cert.pem"
+              readOnly: true
+            - name: cert
+              mountPath: "/etc/typha/key.pem"
+              subPath: "key.pem"
+              readOnly: true
+            - name: cert
+              mountPath: "/etc/typha/ca.pem"
+              subPath: "ca.pem"
+              readOnly: true
+          {{- end }}
+        {{- end }}
+    {{- if or .Values.typha.cert.create .Values.typha.volumes }}
+      volumes:
+      {{- with .Values.typha.volumes }}
+{{ toYaml . | indent 8 }}
+      {{- end }}
+    {{- if and .Values.typha.cert.create }}
+        - name: cert
+          secret:
+            secretName: {{ template "calico.fullname" . }}-typha-cert
+    {{- end }}
+    {{- end }}

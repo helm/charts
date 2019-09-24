@@ -1,0 +1,363 @@
+## Pods Service Account
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
+serviceAccount:
+  calico:
+    ## Specifies whether a ServiceAccount should be created
+    create: true
+    ## The name of the ServiceAccount to use.
+    ## If not set and create is true, a name is generated using the redis-ha.fullname template
+    # name:
+    automountToken: true
+  typhaCpha:
+    ## Specifies whether a ServiceAccount for cluster autoscaler should be created
+    create: true
+    ## The name of the ServiceAccount to use.
+    ## If not set and create is true, a name is generated using the redis-ha.fullname template
+    # name:
+    automountToken: false
+
+# node priority class
+priorityClassNode:
+  # Pod priorityClassName. Set to null to skip setting
+  name: system-node-critical
+  # Create a custom priorityClass
+  create: false
+  nameSuffix: node-high
+  value: 1001000
+  globalDefault: false
+  description: |
+    Custom PriorityClass for calico resources
+  labels: {}
+  annotations: {}
+
+# cluster priority class
+priorityClassCluster:
+  # Pod priorityClassName. Set to null to skip setting
+  name: system-cluster-critical
+  # Create a custom priorityClass
+  create: false
+  nameSuffix: cluster-high
+  value: 1000000
+  globalDefault: false
+  description: |
+    Custom PriorityClass for calico resources
+  labels: {}
+  annotations: {}
+
+calicoNode:
+  image:
+    registry: quay.io
+    name: calico/node
+    tag: v3.3.6
+    pullPolicy: IfNotPresent
+    # pullSecrets:
+
+  # Calico resources
+  # resources: {}
+
+  ## DaemonSet annotations
+  annotations: {}
+  ## DaemonSet labels
+  labels: {}
+  ## Pod annotations
+  podAnnotations: {}
+  ## Pod labels
+  podLabels: {}
+
+  ## OpenSource Calico only supports Linux
+  linuxOnly: true
+
+  ## Pod NodeSelector
+  # nodeSelector:
+
+  ## Node labels, affinity, and tolerations for pod assignment
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  # affinity: |
+
+  ## Pod tolerations
+  # tolerations:
+
+  ## Add prometheus annotations
+  ## prometheus.io/scrape
+  ## prometheus.io/port
+  ## You will also need to set these variables:
+  ## ref: https://docs.projectcalico.org/v3.7/reference/felix/configuration
+  ## FELIX_PROMETHEUSMETRICSENABLED
+  ## FELIX_PROMETHEUSMETRICSPORT
+  prometheusScrapeAnnotations: true
+
+  ports:
+    metrics:
+      port: 9091
+      protocol: TCP
+
+  ## Pod environment
+  ## dynamic values are allowed, like: FOO: "{{ .Values.bar }}"   
+  env:
+    # Use Kubernetes API as the backing datastore.
+    DATASTORE_TYPE: "kubernetes"
+    # Use eni not cali for interface prefix
+    FELIX_INTERFACEPREFIX: "eni"
+    # Enable felix info logging.
+    FELIX_LOGSEVERITYSCREEN: "info"
+    # Don't enable BGP.
+    CALICO_NETWORKING_BACKEND: "none"
+    # Cluster type to identify the deployment type
+    CLUSTER_TYPE: "k8s,ecs"
+    # Disable file logging so `kubectl logs` works.
+    CALICO_DISABLE_FILE_LOGGING: "true"
+    FELIX_TYPHAK8SSERVICENAME: '{{ template "calico.fullname" . }}-typha'
+    FELIX_TYPHAK8SNAMESPACE: '{{ .Release.Namespace }}'
+    # Set Felix endpoint to host default action to ACCEPT.
+    FELIX_DEFAULTENDPOINTTOHOSTACTION: "ACCEPT"
+    # This will make Felix honor AWS VPC CNI's mangle table
+    # rules.
+    FELIX_IPTABLESMANGLEALLOWACTION: "Return"
+    # Disable IPV6 on Kubernetes.
+    FELIX_IPV6SUPPORT: "false"
+    # Wait for the datastore.
+    WAIT_FOR_DATASTORE: "true"
+    FELIX_LOGSEVERITYSYS: "none"
+    FELIX_PROMETHEUSMETRICSENABLED: "true"
+    FELIX_PROMETHEUSMETRICSPORT: "{{ .Values.calicoNode.ports.metrics.port }}"
+    NO_DEFAULT_POOLS: "true"
+    FELIX_HEALTHENABLED: "true"
+    # No IP address needed
+    IP: ""
+    # Configure TLS - make sure to provide certificates via cert parameter or with a custom mount
+    # FELIX_TYPHACAFILE: '/etc/felix/ca.pem'
+    # FELIX_TYPHACERTFILE: '/etc/felix/cert.pem'
+    # FELIX_TYPHAKEYFILE: '/etc/felix/key.pem'
+    # FELIX_TYPHACN: 'yourcnhere'
+
+  ## Calico-node livenessProbe configuration
+  livenessProbe: |
+    httpGet:
+      path: /liveness
+      port: 9099
+      host: localhost
+    periodSeconds: 10
+    initialDelaySeconds: 10
+    failureThreshold: 6
+
+  # Calico-node readinessProbe configuration
+  readinessProbe: |
+    exec:
+      command:
+        - /bin/calico-node
+        - -felix-ready
+    periodSeconds: 10
+
+  ## Certificate configuration
+  ## Make sure to configure Typha and clients with environment variables accordingly
+  ## https://docs.projectcalico.org/v3.7/reference/typha/configuration
+  cert:
+    # create and mount certificate files from variables below
+    create: false
+    clientCertContents: ""
+    clientKeyContents: ""
+    serverCAContents: ""
+
+  ## Custom volumeMounts
+  # volumeMounts:
+
+  ## Custom volumes
+  # volumes:
+
+typha:
+  image:
+    registry: quay.io
+    name: calico/typha
+    tag: v3.3.6
+    pullPolicy: IfNotPresent
+    # pullSecrets:
+
+  # Typha resources
+  # resources: {}
+
+  ## Deployment annotations
+  annotations: {}
+  ## Deployment labels
+  labels: {}
+  ## Pod annotations
+  podAnnotations: {}
+  ## Pod labels
+  podLabels: {}
+
+  ## Pod NodeSelector
+  # nodeSelector:
+
+  ## Pod tolerations
+  # tolerations:
+
+  ## Node labels, affinity, and tolerations for pod assignment
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  # affinity: |
+
+  ## Add prometheus annotations
+  ## prometheus.io/scrape
+  ## prometheus.io/port
+  ## You will also need to set these variables:
+  ## TYPHA_PROMETHEUSMETRICSENABLED
+  ## TYPHA_PROMETHEUSMETRICSPORT
+  prometheusScrapeAnnotations: true
+
+  ports:
+    calico-typha:
+      port: 5473
+      protocol: TCP
+    metrics:
+      port: 9093
+      protocol: TCP
+    health:
+      port: 9098
+      protocol: TCP
+
+  ## Pod environment
+  ## dynamic values are allowed, like: FOO: "{{ .Values.bar }}"   
+  env:
+    # Use eni not cali for interface prefix
+    FELIX_INTERFACEPREFIX: "eni"
+    TYPHA_LOGFILEPATH: "none"
+    TYPHA_LOGSEVERITYSYS: "none"
+    TYPHA_LOGSEVERITYSCREEN: "info"
+    TYPHA_PROMETHEUSMETRICSENABLED: "true"
+    TYPHA_CONNECTIONREBALANCINGMODE: "kubernetes"
+    TYPHA_PROMETHEUSMETRICSPORT: "{{ .Values.typha.ports.metrics.port }}"
+    TYPHA_DATASTORETYPE: "kubernetes"
+    TYPHA_MAXCONNECTIONSLOWERLIMIT: "1"
+    TYPHA_HEALTHENABLED: "true"
+    TYPHA_HEALTHPORT: "{{ .Values.typha.ports.health.port }}"
+    TYPHA_K8SSERVICENAME: '{{ template "calico.fullname" . }}-typha'
+    TYPHA_K8SNAMESPACE: '{{ .Release.Namespace }}'
+    # This will make Felix honor AWS VPC CNI's mangle table
+    # rules.
+    FELIX_IPTABLESMANGLEALLOWACTION: "Return"
+    # Configure TLS - make sure to provide certificates via cert parameter or with a custom mount
+    # TYPHA_CAFILE: '/etc/typha/ca.pem'
+    # TYPHA_SERVERCERTFILE: '/etc/typha/cert.pem'
+    # TYPHA_SERVERKEYFILE: '/etc/typha/key.pem'
+    # TYPHA_CLIENTCN: 'addclientcnhere'
+
+  ## Typha livenessProve
+  livenessProbe: |
+    exec:
+      command:
+        - calico-typha
+        - check
+        - liveness
+    periodSeconds: 30
+    initialDelaySeconds: 30
+
+  ## Typha readinessProbe
+  readinessProbe: |
+    exec:
+      command:
+        - calico-typha
+        - check
+        - readiness
+    periodSeconds: 10
+
+  ## Additional labels and annotations for typha resources
+  podDisruptionBudgetLabels: {}
+  podDisruptionBudgetAnnotations: {}
+  serviceLabels: {}
+  serviceAnnotations: {}
+
+  ## Certificate configuration
+  ## Make sure to configure Typha and clients with environment variables accordingly
+  ## https://docs.projectcalico.org/v3.7/reference/typha/configuration
+  cert:
+    # create and mount certificate files from variables below
+    create: false
+    serverCertContents: ""
+    serverKeyContents: ""
+    clientCAContents: ""
+
+  ## Custom volumeMounts
+  # volumeMounts:
+
+  ## Custom volumes
+  # volumes:
+
+# Typha propotional cluster autoscaler
+typhaCpha:
+  image:
+    registry: k8s.gcr.io
+    name: cluster-proportional-autoscaler-amd64
+    tag: 1.1.2
+    pullPolicy: IfNotPresent
+    # pullSecrets:
+
+  replicas: 1
+
+  # Autoscaler resources
+  resources:
+    requests:
+      cpu: 10m
+    limits:
+      cpu: 10m
+
+  ## Deployment annotations
+  annotations: {}
+  ## Deployment labels
+  labels: {}
+  ## Pod annotations
+  podAnnotations: {}
+  ## Pod labels
+  podLabels: {}
+
+  ## Pod NodeSelector
+  # nodeSelector:
+
+  ## Node labels, affinity, and tolerations for pod assignment
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  # affinity: |
+
+  ## Pod tolerations
+  # tolerations:
+
+  ## Autoscaler livenessProbe configuration
+  # livenessProbe: |
+
+  # Autoscaler readinessProbe configuration
+  # readinessProbe: |
+
+  ladder: |
+    {
+      "coresToReplicas": [],
+      "nodesToReplicas":
+      [
+        [1, 1],
+        [10, 2],
+        [100, 3],
+        [250, 4],
+        [500, 5],
+        [1000, 6],
+        [1500, 7],
+        [2000, 8]
+      ]
+    }
+
+  ## Args for autoscaler pod
+  ## dynamic values are allowed, like: FOO: "{{ .Values.bar }}"   
+  args:
+    configmap: '{{ template "calico.fullname" . }}-typha-cpha'
+    target: 'deployment/{{ template "calico.fullname" . }}-typha'
+    logtostderr: "true"
+    namespace: "{{ .Release.Namespace }}"
+    v: "2"
+
+testFramework:
+  image:
+    registry: docker.io
+    name: busybox
+    tag: latest
+    pullPolicy: IfNotPresent
+    # pullSecrets:

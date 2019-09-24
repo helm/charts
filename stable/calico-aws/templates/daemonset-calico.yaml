@@ -1,0 +1,181 @@
+kind: DaemonSet
+apiVersion: apps/v1
+metadata:
+  name: {{ template "calico.fullname" . }}-node
+  labels:
+    app: {{ template "calico.name" . }}-node
+    chart: {{ template "calico.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  {{- if .Values.calicoNode.labels }}
+{{ toYaml .Values.calicoNode.labels | indent 4 }}
+  {{- end }}
+{{- with .Values.calicoNode.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "calico.name" . }}-node
+      release: {{ .Release.Name }}
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: {{ template "calico.name" . }}-node
+        chart: {{ template "calico.chart" . }}
+        release: {{ .Release.Name }}
+        heritage: {{ .Release.Service }}
+      {{- with .Values.calicoNode.podLabels }}
+{{ toYaml . | indent 8 }}
+      {{- end }}
+    {{- if or .Values.calicoNode.prometheusScrapeAnnotations .Values.calicoNode.podAnnotations }}
+      annotations:
+      {{- if .Values.calicoNode.prometheusScrapeAnnotations }}
+        prometheus.io/scrape: "true"
+        {{- with .Values.calicoNode.ports.metrics }}
+        prometheus.io/port: '{{ default "9091" .port }}'
+        {{- end }}
+      {{- end }}
+      {{- with .Values.calicoNode.podAnnotations }}
+{{ toYaml . | indent 8 }}
+      {{- end }}
+    {{- end }}
+    spec:
+    {{- if .Values.priorityClassNode.create }}
+      priorityClassName: '{{ template "calico.fullname" . }}-{{ .Values.priorityClassNode.nameSuffix }}'
+    {{- else }}
+      {{- with .Values.priorityClassNode.name }}
+      priorityClassName: {{ . }}
+      {{- end }}
+    {{- end }}
+    {{- if or .Values.calicoNode.nodeSelector .Values.calicoNode.linuxOnly }}
+      nodeSelector:
+      {{- if .Values.calicoNode.linuxOnly }}
+        beta.kubernetes.io/os: linux
+      {{- end }}
+      {{- with .Values.calicoNode.nodeSelector }}
+{{ toYaml . | indent 8 }}
+      {{- end }}
+    {{- end }}
+      tolerations:
+        # Make sure calico/node gets scheduled on all nodes.
+        - effect: NoSchedule
+          operator: Exists
+        # Mark the pod as a critical add-on for rescheduling.
+        - key: CriticalAddonsOnly
+          operator: Exists
+        - effect: NoExecute
+          operator: Exists
+      {{- with .Values.calicoNode.tolerations }}
+{{ toYaml . | indent 8 }}
+      {{- end }}
+    {{- with .Values.calicoNode.affinity }}
+      affinity:
+{{ tpl . $ | indent 8 }}
+    {{- end }}
+      hostNetwork: true
+      serviceAccountName: {{ template "calico.serviceAccountName.calico" . }}
+      automountServiceAccountToken: {{ .Values.serviceAccount.calico.automountToken }}
+      # Minimize downtime during a rolling upgrade or deletion; tell Kubernetes to do a "force
+      # deletion": https://kubernetes.io/docs/concepts/workloads/pods/pod/#termination-of-pods.
+      terminationGracePeriodSeconds: 0
+    {{- if .Values.calicoNode.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.calicoNode.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end }}
+    {{- end }}
+      containers:
+        # Runs calico/node container on each Kubernetes node.  This
+        # container programs network policy and routes on each
+        # host.
+        - name: calico-node
+          image: "{{ .Values.calicoNode.image.registry }}/{{ .Values.calicoNode.image.name }}:{{ .Values.calicoNode.image.tag }}"
+          ports:
+            {{- range $k, $v := .Values.calicoNode.ports }}
+            - containerPort: {{ $v.port }}
+              name: {{ $k }}
+              protocol: {{ $v.protocol }}
+            {{- end }}
+          env:
+          {{- range $k, $v := .Values.calicoNode.env }}
+            - name: {{ $k }}
+              value: "{{ tpl $v $ }}"
+          {{- end }}
+            # Set based on the k8s node name.
+            - name: NODENAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+          securityContext:
+            privileged: true
+        {{- with .Values.calicoNode.livenessProbe }}
+          livenessProbe:
+{{ tpl . $ | indent 12 }}
+        {{- end }}
+        {{- with .Values.calicoNode.readinessProbe }}
+          readinessProbe:
+{{ tpl . $ | indent 12 }}
+        {{- end }}
+        {{- with .Values.calicoNode.resources }}
+          resources:
+{{ toYaml . | indent 12 }}
+        {{- end }}
+          volumeMounts:
+            - mountPath: /lib/modules
+              name: lib-modules
+              readOnly: true
+            - mountPath: /run/xtables.lock
+              name: xtables-lock
+              readOnly: false
+            - mountPath: /var/run/calico
+              name: var-run-calico
+              readOnly: false
+            - mountPath: /var/lib/calico
+              name: var-lib-calico
+              readOnly: false
+          {{- with .Values.calicoNode.volumeMounts }}
+{{ toYaml . | indent 12 }}
+          {{- end }}
+        {{- if and .Values.calicoNode.cert.create }}
+            - name: cert
+              mountPath: "/etc/felix/cert.pem"
+              subPath: "cert.pem"
+              readOnly: true
+            - name: cert
+              mountPath: "/etc/felix/key.pem"
+              subPath: "key.pem"
+              readOnly: true
+            - name: cert
+              mountPath: "/etc/felix/ca.pem"
+              subPath: "ca.pem"
+              readOnly: true
+        {{- end }}
+      volumes:
+        # Used to ensure proper kmods are installed.
+        - name: lib-modules
+          hostPath:
+            path: /lib/modules
+        - name: var-run-calico
+          hostPath:
+            path: /var/run/calico
+        - name: var-lib-calico
+          hostPath:
+            path: /var/lib/calico
+        - name: xtables-lock
+          hostPath:
+            path: /run/xtables.lock
+            type: FileOrCreate
+      {{- with .Values.calicoNode.volumes }}
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- if and .Values.calicoNode.cert.create }}
+        - name: cert
+          secret:
+            secretName: {{ template "calico.fullname" . }}-calico-cert
+      {{- end }}

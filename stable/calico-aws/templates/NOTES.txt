@@ -1,0 +1,12 @@
+Project Calico resources have been installed.
+
+Please perform the following checks:
+  * Check resource readiness
+  * Check Typha logs
+  * Check Calico node logs
+
+!!! Important Notice !!!
+This Helm Chart is designed to work on AWS EKS. Even though you can install it to other Kubernetes clusters, it will not perform network configuration.
+
+You can now create a network policy to verify your installation works as expected.
+Network Policies documentation: https://kubernetes.io/docs/concepts/services-networking/network-policies

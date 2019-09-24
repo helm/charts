@@ -1,0 +1,43 @@
+{{- if .Values.priorityClassNode.create }}
+---
+apiVersion: scheduling.k8s.io/v1beta1
+kind: PriorityClass
+metadata:
+  name: '{{ template "calico.fullname" . }}-{{ .Values.priorityClassNode.nameSuffix }}'
+  app: {{ template "calico.name" . }}
+  chart: {{ template "calico.chart" . }}
+  release: {{ .Release.Name }}
+  heritage: {{ .Release.Service }}
+{{- with .Values.priorityClassNode.labels }}
+{{ toYaml . | indent 2 }}
+{{- end }}
+{{- with .Values.priorityClassNode.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
+value: {{ .Values.priorityClassNode.value }}
+globalDefault: {{ .Values.priorityClassNode.globalDefault }}
+description: "{{ .Values.priorityClassNode.description }}"
+{{- end }}
+
+{{- if .Values.priorityClassCluster.create }}
+---
+apiVersion: scheduling.k8s.io/v1beta1
+kind: PriorityClass
+metadata:
+  name: '{{ template "calico.fullname" . }}-{{ .Values.priorityClassCluster.nameSuffix }}'
+  app: {{ template "calico.name" . }}
+  chart: {{ template "calico.chart" . }}
+  release: {{ .Release.Name }}
+  heritage: {{ .Release.Service }}
+{{- with .Values.priorityClassCluster.labels }}
+{{ toYaml . | indent 2 }}
+{{- end }}
+{{- with .Values.priorityClassCluster.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
+value: {{ .Values.priorityClassCluster.value }}
+globalDefault: {{ .Values.priorityClassCluster.globalDefault }}
+description: "{{ .Values.priorityClassCluster.description }}"
+{{- end }}

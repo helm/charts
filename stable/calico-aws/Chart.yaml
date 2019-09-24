@@ -1,0 +1,15 @@
+version: 0.1.0
+apiVersion: v1
+name: calico-aws
+appVersion: 1.5.3
+description: Unofficial implementation of Calico configuration for AWS EKS
+sources:
+  - https://github.com/aws/amazon-vpc-cni-k8s/blob/master/config/v1.5/aws-k8s-cni.yaml
+  - https://github.com/projectcalico/typha
+  - https://github.com/projectcalico/felix
+maintainers:
+  - name: gp42
+    url: https://github.com/gp42
+    email: gennadiy.potapov@gmail.com
+engine: gotpl
+icon: https://raw.githubusercontent.com/projectcalico/calico/master/images/felix_icon.png

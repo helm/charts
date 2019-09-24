@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "calico.fullname" . }}-typha-cpha
+  labels:
+    app: {{ template "calico.name" . }}-typha-cpha
+    chart: {{ template "calico.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  {{- with .Values.typhaCpha.labels }}
+{{ toYaml . | indent 4 }}
+  {{- end }}
+{{- with .Values.typhaCpha.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "calico.name" . }}-typha-cpha
+      release: {{ .Release.Name }}
+  replicas: {{ .Values.typhaCpha.replicas }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "calico.name" . }}-typha-cpha
+        chart: {{ template "calico.chart" . }}
+        release: {{ .Release.Name }}
+        heritage: {{ .Release.Service }}
+      {{- with .Values.typhaCpha.podLabels }}
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      annotations:
+    {{- with .Values.typhaCpha.podAnnotations }}
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    spec:
+    {{- if .Values.priorityClassCluster.create }}
+      priorityClassName: '{{ template "calico.fullname" . }}-{{ .Values.priorityClassCluster.nameSuffix }}'
+    {{- else }}
+      {{- with .Values.priorityClassCluster.name }}      
+      priorityClassName: {{ . }}
+      {{- end }}
+    {{- end }}
+      nodeSelector:
+        beta.kubernetes.io/os: linux
+      {{- with .Values.typhaCpha.nodeSelector }}
+{{ toYaml . | indent 8 }}
+      {{- end }}
+    {{- with .Values.typhaCpha.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+      serviceAccountName: {{ template "calico.serviceAccountName.typhaCpha" . }}
+      automountServiceAccountToken: {{ .Values.serviceAccount.calico.automountToken }}
+    {{- if .Values.typhaCpha.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.typhaCpha.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end }}
+    {{- end }}
+      containers:
+        - image: "{{ .Values.typhaCpha.image.registry }}/{{ .Values.typhaCpha.image.name }}:{{ .Values.typhaCpha.image.tag }}"
+          name: autoscaler
+          command:
+            - /cluster-proportional-autoscaler
+          {{- with .Values.typhaCpha.args }}
+            {{- range $k, $v := . }}
+            - "--{{ $k }}={{ tpl $v $ }}"
+            {{- end }}
+          {{- end }}
+        {{- with .Values.typhaCpha.resources }}
+          resources:
+{{ toYaml . | indent 12 }}
+        {{- end }}
+        {{- with .Values.typhaCpha.livenessProbe }}
+          livenessProbe:
+{{ tpl . $ | indent 12 }}
+        {{- end }}
+        {{- with .Values.typhaCpha.readinessProbe }}
+          readinessProbe:
+{{ tpl . $ | indent 12 }}
+        {{- end }}

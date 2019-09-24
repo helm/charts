@@ -1,0 +1,11 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ template "calico.fullname" . }}-typha-cpha
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ template "calico.fullname" . }}-typha-cpha
+subjects:
+  - kind: ServiceAccount
+    name: {{ template "calico.fullname" . }}-typha-cpha

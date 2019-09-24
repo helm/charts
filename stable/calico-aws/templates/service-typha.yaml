@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "calico.fullname" . }}-typha
+  labels:
+    app: {{ template "calico.name" . }}-typha
+    chart: {{ template "calico.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  {{- with .Values.typha.servicelabels }}
+{{ toYaml . | indent 4 }}
+  {{- end }}
+  {{- with .Values.typha.serviceAnnotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+  {{- end }}
+spec:
+  ports:
+    - port: {{ (index .Values.typha.ports "calico-typha").port }}
+      protocol: {{ (index .Values.typha.ports "calico-typha").protocol }}
+      targetPort: calico-typha
+      name: calico-typha
+  selector:
+    app: {{ template "calico.name" . }}-typha
+    release: {{ .Release.Name }}

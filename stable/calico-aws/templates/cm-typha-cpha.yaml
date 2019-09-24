@@ -1,0 +1,12 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ template "calico.fullname" . }}-typha-cpha
+  labels:
+    app: {{ template "calico.name" . }}-typha-cpha
+    chart: {{ template "calico.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  ladder: |-
+{{ .Values.typhaCpha.ladder | indent 4 }}
