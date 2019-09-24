@@ -50,6 +50,9 @@ spec:
                   app:  {{ template "memcached.fullname" . }}
                   release: {{ .Release.Name | quote }}
         {{- end }}
+      {{- if .Values.priorityClassName }}
+      priorityClassName: "{{ .Values.priorityClassName }}"
+      {{- end }}
       containers:
       - name: {{ template "memcached.fullname" . }}
         image: {{ .Values.image }}

@@ -49,6 +49,9 @@ spec:
          protocol: TCP 
        - containerPort: 25224
          protocol: UDP
+       - containerPort: 25227
+         protocol: TCP
+         name: in-rs-tcp
        volumeMounts:
         - mountPath: /var/run/host
           name: docker-sock
