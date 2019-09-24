@@ -11,6 +11,9 @@ controller:
     runAsUser: 33
     allowPrivilegeEscalation: true
 
+  # Can be changed to old api for compatibility reasons: extensions/v1beta1
+  apiVersion: apps/v1
+
   # Configures the ports the nginx-controller listens on
   containerPort:
     http: 80
@@ -403,6 +406,9 @@ defaultBackend:
   ## If false, controller.defaultBackendService must be provided
   ##
   enabled: true
+
+  # Can be changed to old api for compatibility reasons: extensions/v1beta1
+  apiVersion: apps/v1
 
   name: default-backend
   image:
