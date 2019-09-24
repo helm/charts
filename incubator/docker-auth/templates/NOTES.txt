@@ -23,8 +23,12 @@
 auth:
   token:
     autoredirect: false
+{{- if .Values.ingress.enabled }}
 {{- range $host := .Values.ingress.hosts }}
-    realm: http{{ if $.Values.ingress.tls }}s{{ end }}://{{ . }}{{ $.Values.ingress.path }}
+    {{- range .paths }}
+    realm: http{{ if $.Values.ingress.tls }}s{{ end }}://{{ $host.host }}{{ . }}
+    {{- end }}
+{{- end }}
 {{- end }}
     service: token-service
     issuer: Acme auth server

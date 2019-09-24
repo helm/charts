@@ -12,13 +12,6 @@ data:
       certificate: "/config/certs/server.pem"
       key: "/config/certs/server.key"
     users:
-      # Password is specified as a BCrypt hash. Use `htpasswd -nB USERNAME` to generate.
-      "{{ .Values.configmap.data.users.admin.username }}":
-        password: "{{ .Values.configmap.data.users.admin.password }}"
-      "{{ .Values.configmap.data.users.test.username }}":
-        password: "{{ .Values.configmap.data.users.test.password }}"
+      {{ .Values.configmap.data.users | toYaml | nindent 6 }}
     acl:
-      - match: {account: "{{ .Values.configmap.data.users.admin.username }}"}
-        actions: ["{{ .Values.configmap.data.users.admin.actions }}"]
-      - match: {account: "{{ .Values.configmap.data.users.test.username }}"}
-        actions: ["{{ .Values.configmap.data.users.test.actions }}"]
+      {{ .Values.configmap.data.acl | toYaml | nindent 6 }}
