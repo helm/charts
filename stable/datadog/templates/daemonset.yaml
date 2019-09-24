@@ -1,6 +1,12 @@
 {{- if .Values.daemonset.enabled }}
 {{- if (or (.Values.datadog.apiKeyExistingSecret) (.Values.datadog.apiKey)) }}
+{{- if .Capabilities.APIVersions.Has "apps/v1" }}
+apiVersion: apps/v1
+{{- else if .Capabilities.APIVersions.Has "extensions/v1beta1" }}
 apiVersion: extensions/v1beta1
+{{- else }}
+apiVersion: apps/v1
+{{- end }}
 kind: DaemonSet
 metadata:
   name: {{ template "datadog.fullname" . }}
@@ -10,6 +16,12 @@ metadata:
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "datadog.fullname" . }}
+        {{- if .Values.daemonset.podLabels }}
+{{ toYaml .Values.daemonset.podLabels | indent 6 }}
+        {{- end }}
   template:
     metadata:
       labels:
