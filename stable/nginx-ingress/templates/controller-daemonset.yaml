@@ -15,11 +15,7 @@ spec:
   selector:
     matchLabels:
       app: {{ template "nginx-ingress.name" . }}
-      component: "{{ .Values.controller.name }}"
       release: {{ .Release.Name }}
-      {{- if .Values.controller.podLabels }}
-{{ toYaml .Values.controller.podLabels | indent 6}}
-      {{- end }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   updateStrategy:
 {{ toYaml .Values.controller.updateStrategy | indent 4 }}

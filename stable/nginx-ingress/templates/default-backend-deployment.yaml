@@ -13,11 +13,7 @@ spec:
   selector:
     matchLabels:
       app: {{ template "nginx-ingress.name" . }}
-      component: "{{ .Values.defaultBackend.name }}"
       release: {{ .Release.Name }}
-      {{- if .Values.defaultBackend.podLabels }}
-{{ toYaml .Values.defaultBackend.podLabels | indent 6 }}
-      {{- end }}
   replicas: {{ .Values.defaultBackend.replicaCount }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   template:
