@@ -31,7 +31,7 @@ helm delete <release_name>
 Follow the steps listed in [Kubernetes Network Policies] (https://kubernetes.io/docs/concepts/services-networking/network-policies/) documentation to make sure service works as expected.
 
 ## Namespace
-Default setup is using built in priorityclasses (_system-cluster-critical_ and _system-node-critical_) which are currently restricted to _kube-system_ namespace.
+Default setup is using built in priority classes (_system-cluster-critical_ and _system-node-critical_) which are currently restricted to _kube-system_ namespace.
 Follow [this github issue] (https://github.com/kubernetes/kubernetes/issues/76308) to see if anything has changed.
 
 It is possible to run typha in a custom namespace, in this case you either need to create a custom priority class:

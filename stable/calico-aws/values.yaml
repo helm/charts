@@ -353,11 +353,3 @@ typhaCpha:
     logtostderr: "true"
     namespace: "{{ .Release.Namespace }}"
     v: "2"
-
-testFramework:
-  image:
-    registry: docker.io
-    name: busybox
-    tag: latest
-    pullPolicy: IfNotPresent
-    # pullSecrets:
