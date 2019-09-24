@@ -74,6 +74,15 @@ spec:
           http://{{ template `minio.fullname` $ }}-{{ $i }}.{{ template `minio.fullname` $ }}-svc.{{ $.Release.Namespace }}.svc.{{ $.Values.clusterDomain }}{{ $.Values.mountPath }}
           {{- end }}" ]
           {{ end }}
+          {{- if .Values.securityContext.enabled }}
+          securityContext:
+            {{- if .Values.securityContext.runAsUser }}
+              runAsUser: {{ .Values.securityContext.runAsUser }}
+            {{- end }}
+            {{- if .Values.securityContext.runAsGroup }}
+              runAsGroup: {{ .Values.securityContext.runAsGroup }}
+            {{- end }}
+          {{- end }}
           {{- if .Values.extraArgs }}
           args:
 {{ toYaml .Values.extraArgs | indent 12 }}

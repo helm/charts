@@ -48,10 +48,17 @@ priorityClassName: ""
 existingSecret: ""
 accessKey: "AKIAIOSFODNN7EXAMPLE"
 secretKey: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
-configPath: "/root/.minio/"
-configPathmc: "/root/.mc/"
+configPath: "/etc/minio/"
+configPathmc: "/etc/mc/"
 mountPath: "/export"
 replicas: 4
+
+## Disabled securityContext by default
+## runAsUser and runAsGroup are available to configure
+securityContext:
+  enabled: false
+  runAsUser: 1000
+  runAsGroup: 1000
 
 ## TLS Settings for Minio
 tls:

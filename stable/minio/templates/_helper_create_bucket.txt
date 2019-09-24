@@ -10,7 +10,12 @@ connectToMinio() {
   ACCESS=$(cat /config/accesskey) ; SECRET=$(cat /config/secretkey) ;
   set +e ; # The connections to minio are allowed to fail.
   echo "Connecting to Minio server: $SCHEME://$MINIO_ENDPOINT:$MINIO_PORT" ;
-  MC_COMMAND="mc config host add myminio $SCHEME://$MINIO_ENDPOINT:$MINIO_PORT $ACCESS $SECRET" ;
+  {{- if .Values.configPathmc }}
+  CONFIG_DIR="--config-dir {{ .Values.configPathmc }}"
+  {{- else }}
+  CONFIG_DIR=""
+  {{- end }}
+  MC_COMMAND="mc $CONFIG_DIR config host add myminio $SCHEME://$MINIO_ENDPOINT:$MINIO_PORT $ACCESS $SECRET" ;
   $MC_COMMAND ;
   STATUS=$? ;
   until [ $STATUS = 0 ]
@@ -32,7 +37,7 @@ connectToMinio() {
 # Check if the bucket exists, by using the exit code of `mc ls`
 checkBucketExists() {
   BUCKET=$1
-  CMD=$(/usr/bin/mc ls myminio/$BUCKET > /dev/null 2>&1)
+  CMD=$(/usr/bin/mc $CONFIG_DIR ls myminio/$BUCKET > /dev/null 2>&1)
   return $?
 }
 
@@ -49,7 +54,7 @@ createBucket() {
     if checkBucketExists $BUCKET ; then
       echo "Purging bucket '$BUCKET'."
       set +e ; # don't exit if this fails
-      /usr/bin/mc rm -r --force myminio/$BUCKET
+      /usr/bin/mc $CONFIG_DIR rm -r --force myminio/$BUCKET
       set -e ; # reset `e` as active
     else
       echo "Bucket '$BUCKET' does not exist, skipping purge."
@@ -59,7 +64,7 @@ createBucket() {
   # Create the bucket if it does not exist
   if ! checkBucketExists $BUCKET ; then
     echo "Creating bucket '$BUCKET'"
-    /usr/bin/mc mb myminio/$BUCKET
+    /usr/bin/mc $CONFIG_DIR mb myminio/$BUCKET
   else
     echo "Bucket '$BUCKET' already exists."
   fi
@@ -67,7 +72,7 @@ createBucket() {
   # At this point, the bucket should exist, skip checking for existence
   # Set policy on the bucket
   echo "Setting policy of bucket '$BUCKET' to '$POLICY'."
-  /usr/bin/mc policy set $POLICY myminio/$BUCKET
+  /usr/bin/mc $CONFIG_DIR policy set $POLICY myminio/$BUCKET
 }
 
 # Try connecting to Minio instance

@@ -35,6 +35,8 @@ spec:
 {{ toYaml . | indent 8 }}
 {{- end }}
       volumes:
+        - name: mc-configuration
+          emptydir: {}
         - name: minio-configuration
           projected:
             sources:
@@ -61,12 +63,23 @@ spec:
           - name: MINIO_PORT
             value: {{ .Values.service.port | quote }}
         volumeMounts:
+          - name: mc-configuration
+            mountPath: {{ .Values.configPathmc }}
           - name: minio-configuration
             mountPath: /config
           {{- if .Values.tls.enabled }}
           - name: cert-secret-volume-mc
             mountPath: {{ .Values.configPathmc }}certs
           {{ end }}
+        {{- if .Values.securityContext.enabled }}
+        securityContext:
+          {{- if .Values.securityContext.runAsUser }}
+            runAsUser: {{ .Values.securityContext.runAsUser }}
+          {{- end }}
+          {{- if .Values.securityContext.runAsGroup }}
+            runAsGroup: {{ .Values.securityContext.runAsGroup }}
+          {{- end }}
+        {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
 {{- end }}
