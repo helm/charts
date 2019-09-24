@@ -12,9 +12,6 @@ spec:
   serviceName: {{ template "memcached.fullname" . }}
   {{- end }}
   replicas: {{ .Values.replicaCount }}
-  {{- if .Values.priorityClassName -}}
-  priorityClassName: "{{ .Values.priorityClassName }}"
-  {{- end }}
   template:
     metadata:
       labels:
