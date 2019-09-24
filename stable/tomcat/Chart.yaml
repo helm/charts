@@ -2,8 +2,8 @@ apiVersion: v1
 name: tomcat
 description: Deploy a basic tomcat application server with sidecar as web archive container
 icon: http://tomcat.apache.org/res/images/tomcat.png
-version: 0.2.0
-appVersion: 7.0
+version: 0.3.0
+appVersion: "7.0"
 home: https://github.com/yahavb
 maintainers:
   - name: yahavb
