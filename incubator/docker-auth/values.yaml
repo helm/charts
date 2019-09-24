@@ -34,7 +34,7 @@ configmap:
         comment: "Admin has full access to everything."
       - match: {account: "test"}
         actions: ["pull"]
-        comment: "User \"test\" can pull stuff." 
+        comment: "User \"test\" can pull stuff."
 
 nameOverride: ""
 fullnameOverride: ""

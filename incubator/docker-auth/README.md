@@ -79,7 +79,7 @@ The following table lists the configurable parameters of the docker-auth chart a
 | `secret.data.server.certificate`                                                               | Content of server.pem                                                                                                                                                                                                                                                                         |                        |
 | `secret.data.server.key`                                                        | Content of server.key                                                                                                                                                                                                                                                                                                                           |                           |
 | **Configmap**                                                                  |
-| `configmap.data.token.issuer` | Must match issuer in the Registry config | `Acme auth server` |
+| `configmap.data.token.issuer` | Must match issuer in the Registry config | `Acme auth server`                  |
 | `configmap.data.token.expiration`                                                     | Token Expiration                                                   | `900`                                |
 | `configmap.data.users` | Static user map |  |
 | `configmap.data.acl` | ACL specifies who can do what. If the match section of an entry matches the request, the set of allowed actions will be applied to the token request and a ticket will be issued only for those of the requested actions that are allowed by the rule.|  |
