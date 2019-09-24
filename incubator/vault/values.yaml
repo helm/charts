@@ -278,7 +278,7 @@ vault:
       #   bucket: ""
       #   # Use a custom secret to mount this file.
       #   credentials_file: ""
-    backendPolicy: 
+    backendPolicy:
 
 rbac:
    ## Enable RBAC
