@@ -16,9 +16,8 @@ spec:
     - 'configMap'
     - 'secret'
     - 'hostPath'
-  allowedHostPaths:
-    - pathPrefix: {{ .Values.sslCertHostPath }}
 {{- if eq .Values.cloudProvider "gce" }}
+  allowedHostPaths:
     - pathPrefix: {{ .Values.cloudConfigPath }}
 {{- end }}
   hostNetwork: false

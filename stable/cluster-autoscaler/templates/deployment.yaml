@@ -162,15 +162,12 @@ spec:
             - containerPort: 8085
           resources:
 {{ toYaml .Values.resources | indent 12 }}
+          {{- if eq .Values.cloudProvider "gce" }}
           volumeMounts:
-            - name: ssl-certs
-              mountPath: {{ .Values.sslCertPath }}
-              readOnly: true
-            {{- if eq .Values.cloudProvider "gce" }}
             - name: cloudconfig
               mountPath: {{ .Values.cloudConfigPath }}
               readOnly: true
-            {{- end }}
+          {{- end }}
     {{- if .Values.affinity }}
       affinity:
 {{ toYaml .Values.affinity | indent 8 }}
@@ -182,15 +179,12 @@ spec:
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "cluster-autoscaler.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
+      {{- if eq .Values.cloudProvider "gce" }}
       volumes:
-        - name: ssl-certs
-          hostPath:
-            path: {{ .Values.sslCertHostPath }}
-        {{- if eq .Values.cloudProvider "gce" }}
         - name: cloudconfig
           hostPath:
             path: {{ .Values.cloudConfigPath }}
-        {{- end }}
+      {{- end }}
     {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
       {{- range .Values.image.pullSecrets }}
