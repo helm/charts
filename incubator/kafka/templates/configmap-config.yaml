@@ -4,10 +4,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   labels:
-    app: {{ template "kafka.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    heritage: "{{ .Release.Service }}"
-    release: "{{ .Release.Name }}"
+  {{- include "kafka.config.labels" . | nindent 4 }}
   name: {{ template "kafka.fullname" . }}-config
 data:
   runtimeConfig.sh: |
