@@ -36,10 +36,7 @@ metadata:
     {{- end }}
   name: {{ $root.Release.Name }}-{{ $i }}-external
   labels:
-    app: {{ include "kafka.name" $root }}
-    chart: {{ $root.Chart.Name }}-{{ $root.Chart.Version }}
-    release: {{ $root.Release.Name }}
-    heritage: {{ $root.Release.Service }}
+  {{- include "kafka.broker.labels" $root | nindent 4 }}
     pod: {{ $responsiblePod | quote }}
 spec:
   type: {{ $root.Values.external.type }}
@@ -65,8 +62,7 @@ spec:
   loadBalancerIP: {{ index $root.Values.external.loadBalancerIP $i }} 
   {{- end }}
   selector:
-    app: {{ include "kafka.name" $root }}
-    release: {{ $root.Release.Name }}
+    {{- include "kafka.broker.matchLabels" $root | nindent 6 }}
     statefulset.kubernetes.io/pod-name: {{ $responsiblePod | quote }}
   {{- end }}
 {{- end }}
