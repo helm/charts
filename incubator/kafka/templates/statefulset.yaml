@@ -4,15 +4,11 @@ kind: StatefulSet
 metadata:
   name: {{ include "kafka.fullname" . }}
   labels:
-    app: {{ include "kafka.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+  {{- include "kafka.broker.labels" . | nindent 4 }}
 spec:
   selector:
     matchLabels:
-      app: {{ include "kafka.name" . }}
-      release: {{ .Release.Name }}
+    {{- include "kafka.broker.matchLabels" . | nindent 6 }}
   serviceName: {{ include "kafka.fullname" . }}-headless
   podManagementPolicy: {{ .Values.podManagementPolicy }}
   updateStrategy:
@@ -31,8 +27,7 @@ spec:
 {{- end }}
 {{- end }}
       labels:
-        app: {{ include "kafka.name" . }}
-        release: {{ .Release.Name }}
+      {{- include "kafka.broker.labels" . | nindent 8 }}
         {{- if .Values.podLabels }}
         ## Custom pod labels
 {{ toYaml .Values.podLabels | indent 8 }}
