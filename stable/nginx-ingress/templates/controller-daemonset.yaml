@@ -1,7 +1,7 @@
 {{- if or (eq .Values.controller.kind "DaemonSet") (eq .Values.controller.kind "Both") }}
 {{- $useHostPort := .Values.controller.daemonset.useHostPort -}}
 {{- $hostPorts := .Values.controller.daemonset.hostPorts -}}
-apiVersion: extensions/v1beta1
+apiVersion: {{ .Values.controller.apiVersion }}
 kind: DaemonSet
 metadata:
   labels:
@@ -12,6 +12,10 @@ metadata:
     release: {{ .Release.Name }}
   name: {{ template "nginx-ingress.controller.fullname" . }}
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "nginx-ingress.name" . }}
+      release: {{ .Release.Name }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   updateStrategy:
 {{ toYaml .Values.controller.updateStrategy | indent 4 }}
@@ -133,7 +137,7 @@ spec:
               {{- if $useHostPort }}
               hostPort: {{ index $hostPorts $key | default $value }}
               {{- end }}
-          {{- end }}    
+          {{- end }}
           {{- if .Values.controller.metrics.enabled }}
             - name: metrics
               containerPort: 10254
