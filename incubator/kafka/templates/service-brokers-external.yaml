@@ -62,7 +62,7 @@ spec:
   loadBalancerIP: {{ index $root.Values.external.loadBalancerIP $i }} 
   {{- end }}
   selector:
-    {{- include "kafka.broker.matchLabels" $root | nindent 6 }}
+    {{- include "kafka.broker.matchLabels" $root | nindent 4 }}
     statefulset.kubernetes.io/pod-name: {{ $responsiblePod | quote }}
   {{- end }}
 {{- end }}
