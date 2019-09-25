@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "vault.fullname" . }}
@@ -13,6 +13,13 @@ metadata:
   annotations:
 {{ toYaml .Values.annotations | indent 4 }}
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "vault.name" . }}
+      release: {{ .Release.Name }}
+{{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | indent 6 }}
+{{- end }}
   replicas: {{ .Values.replicaCount }}
   strategy:
     type: RollingUpdate

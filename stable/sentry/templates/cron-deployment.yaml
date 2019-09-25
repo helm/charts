@@ -131,3 +131,6 @@ spec:
       {{- else }}
         emptyDir: {}
       {{ end }}
+      {{- if .Values.cron.priorityClassName }}
+      priorityClassName: "{{ .Values.cron.priorityClassName }}"
+      {{- end }}

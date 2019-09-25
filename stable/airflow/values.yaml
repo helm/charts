@@ -137,6 +137,17 @@ airflow:
   podAnnotations: {}
     ## Example:
     ## iam.amazonaws.com/role: airflow-Role
+
+  extraInitContainers: []
+  ## Additional init containers to run before the Scheduler pods.
+  ## for example, be used to run a sidecar that chown Logs storage .
+  # - name: volume-mount-hack
+  #   image: busybox
+  #   command: ["sh", "-c", "chown -R 1000:1000 logs"]
+  #   volumeMounts:
+  #     - mountPath: /usr/local/airflow/logs
+  #       name: logs-data
+
   extraContainers: []
   ## Additional containers to run alongside the Scheduler, Worker and Web pods
   ## This could, for example, be used to run a sidecar that syncs DAGs from object storage.
