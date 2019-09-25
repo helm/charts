@@ -190,7 +190,15 @@ spec:
               name: {{ template "mariadb.fullname" . }}
             {{- end }}
               key: mariadb-root-password
-        command: [ 'sh', '-c', 'DATA_SOURCE_NAME="root:$MARIADB_MASTER_ROOT_PASSWORD@(localhost:3306)/" /bin/mysqld_exporter' ]
+        command:
+          - sh
+          - -c
+          - >-
+            DATA_SOURCE_NAME="root:$MARIADB_ROOT_PASSWORD@(localhost:3306)/"
+            /bin/mysqld_exporter
+            {{- range .Values.metrics.extraArgs.slave }}
+            {{ . }}
+            {{- end }}
         ports:
         - name: metrics
           containerPort: 9104
