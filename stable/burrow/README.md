@@ -67,7 +67,7 @@ The following table lists the configurable parameters of the Burrow chart and it
 | `env` | environment variables to configure burrow | `{}` |
 | `extraArgs` | extra arguments to give to the build in `burrow start` command | `{}` |
 | `image.repository` | image repository | `"hyperledger/burrow"` |
-| `image.tag` | image tag | `"0.25.1"` |
+| `image.tag` | image tag | `"0.28.2"` |
 | `image.pullPolicy` | image pull policy | `"IfNotPresent"` |
 | `livenessProbe.enabled` | enable liveness checks | `true` |
 | `livenessProbe.path` | http endpoint | `"/status?block_seen_time_within=3m"` |
