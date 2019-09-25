@@ -14,5 +14,5 @@ spec:
   resources:
     requests:
       storage: {{ .Values.persistence.size | quote }}
-  storageClassName: {{ include "ghost.storageClass" . }}
+  {{ include "ghost.storageClass" . }}
 {{- end -}}

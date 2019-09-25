@@ -41,6 +41,9 @@ spec:
       {{- if .Values.worker.schedulerName }}
       schedulerName: "{{ .Values.worker.schedulerName }}"
       {{- end }}
+      {{- if .Values.worker.priorityClassName }}
+      priorityClassName: "{{ .Values.worker.priorityClassName }}"
+      {{- end }}
       {{- if .Values.image.imagePullSecrets }}
       imagePullSecrets:
 {{ toYaml .Values.image.imagePullSecrets | indent 8 }}

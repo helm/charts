@@ -3,11 +3,24 @@
 This file documents all notable changes to Sysdig Falco Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v1.0.7
+
+### Minor Changes
+
+* Allow configuration using values for `nodeSelector` setting
+
+## v1.0.6
+
+### Minor Changes
+
+* Falco does a rollingUpgrade when the falco or falco-rules configMap changes
+  with a helm upgrade
+
 ## v1.0.5
 
 ### Minor Changes
 
-* Add 3 resources (`daemonsets`, `deployments`, `replicasets`) to the ClusterRole resource list  
+* Add 3 resources (`daemonsets`, `deployments`, `replicasets`) to the ClusterRole resource list
   Ref: [PR#514](https://github.com/falcosecurity/falco/pull/514) from Falco repository
 
 ## v1.0.4

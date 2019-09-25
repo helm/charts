@@ -345,6 +345,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `airflow.extraEnv`                       | specify additional environment variables to mount       | `{}`                      |
 | `airflow.extraConfigmapMounts`           | Additional configMap volume mounts on the airflow pods. | `[]`                      |
 | `airflow.podAnnotations`                 | annotations for scheduler, worker and web pods          | `{}`                      |
+| `airflow.extraInitContainers`            | additional Init Containers to run in the scheduler pods | `[]`                      |
 | `airflow.extraContainers`                | additional containers to run in the scheduler, worker & web pods | `[]`             |
 | `airflow.extraVolumeMounts`              | additional volumeMounts to the main container in scheduler, worker & web pods | `[]`|
 | `airflow.extraVolumes`                   | additional volumes for the scheduler, worker & web pods | `[]`                      |
@@ -408,7 +409,8 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `serviceAccount.create`                  | create a service account                                | `true`                    |
 | `serviceAccount.name`                    | the service account name                                | ``                        |
 | `postgresql.enabled`                     | create a postgres server                                | `true`                    |
-| `postgresql.existingSecret`              | The name of an existing secret with a key `postgres-password` to use as the password  | `nil` |
+| `postgresql.existingSecret`              | The name of an existing secret with a key named `postgresql.existingSecretKey` to use as the password  | `nil` |
+| `postgresql.existingSecretKey`           | The name of the key containing the password in the secret named `postgresql.existingSecret`  | `postgres-password` |
 | `postgresql.uri`                         | full URL to custom postgres setup                       | (undefined)               |
 | `postgresql.postgresHost`                | PostgreSQL Hostname                                     | (undefined)               |
 | `postgresql.postgresUser`                | PostgreSQL User                                         | `postgres`                |
@@ -418,7 +420,8 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `postgresql.persistance.storageClass`    | Persistant class                                        | (undefined)               |
 | `postgresql.persistance.accessMode`      | Access mode                                             | `ReadWriteOnce`           |
 | `redis.enabled`                          | Create a Redis cluster                                  | `true`                    |
-| `redis.existingSecret`                   | The name of an existing secret with a key `redis-password` to use as the password  | `nil` |
+| `redis.existingSecret`                   | The name of an existing secret with a key named `redis.existingSecretKey` to use as the password  | `nil` |
+| `redis.existingSecretKey`                | The name of the key containing the password in the secret named `redis.existingSecret`  | `redis-password` |
 | `redis.redisHost`                        | Redis Hostname                                          | (undefined)               |
 | `redis.password`                         | Redis password                                          | `airflow`                 |
 | `redis.master.persistence.enabled`       | Enable Redis PVC                                        | `false`                   |

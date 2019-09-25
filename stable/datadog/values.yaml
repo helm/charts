@@ -99,6 +99,14 @@ datadog:
   #
   logLevel: INFO
 
+  ## @param nodeLabelsAsTags - list of key:value strings - optional
+  ## Provide a mapping of Kubernetes Node Labels to Datadog Tags.
+  #
+  # nodeLabelsAsTags:
+  #   beta.kubernetes.io/instance-type: aws-instance-type
+  #   kubernetes.io/role: kube_role
+  #   <KUBERNETES_NODE_LABEL>: <DATADOG_TAG_KEY>
+
   ## @param podLabelsAsTags - list of key:value strings - optional
   ## Provide a mapping of Kubernetes Labels to Datadog Tags.
   #
@@ -208,7 +216,7 @@ datadog:
   #
   # volumes:
   #   - hostPath:
-  #     path: <HOST_PATH>
+  #       path: <HOST_PATH>
   #     name: <VOLUME_NAME>
 
   ## @param volumeMounts - list of objects - optional
@@ -359,6 +367,16 @@ clusterAgent:
   # livenessProbe:
   #   exec:
   #     command: ["/bin/true"]
+
+  ## @param strategy - string - optional
+  ## Allow the Cluster Agent deployment to perform a rolling update on helm update
+  ## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
+  #
+  # strategy:
+  #   type: RollingUpdate
+  #   rollingUpdate:
+  #     maxSurge: 1
+  #     maxUnavailable: 0
 
   ## @param podAnnotations - list of key:value strings - optional
   ## Annotations to add to the cluster-agents's pod(s)
@@ -567,7 +585,10 @@ daemonset:
   ## Allow the DaemonSet to perform a rolling update on helm update
   ## ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/
   #
-  # updateStrategy: RollingUpdate
+  # updateStrategy:
+  #   type: RollingUpdate
+  #   rollingUpdate:
+  #     maxUnavailable: "10%"
 
   ## @param priorityClassName - string - optional
   ## Sets PriorityClassName if defined.
@@ -672,8 +693,18 @@ clusterchecksDeployment:
   #
   # affinity:
 
+  ## @param strategy - string - optional
+  ## Allow the ClusterChecks deployment to perform a rolling update on helm update
+  ## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
+  #
+  # strategy:
+  #   type: RollingUpdate
+  #   rollingUpdate:
+  #     maxSurge: 1
+  #     maxUnavailable: 0
+
   ## @param nodeSelector - object - optional
-  ## Allow the ClusterChecks Deploument to schedule on selected nodes
+  ## Allow the ClusterChecks Deployment to schedule on selected nodes
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
   #
   # nodeSelector: {}

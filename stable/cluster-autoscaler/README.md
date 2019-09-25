@@ -140,8 +140,6 @@ Parameter | Description | Default
 `autoscalingGroupsnamePrefix[].name` | GCE MIG name prefix (the full name is invalid) | None. Required for `cloudProvider=gce`
 `autoscalingGroupsnamePrefix[].maxSize` | maximum MIG size | None. Required for `cloudProvider=gce`
 `autoscalingGroupsnamePrefix[].minSize` | minimum MIG size |  None. Required for `cloudProvider=gce`
-`sslCertPath` | Path on the pod where ssl ca cert exists | `/etc/ssl/certs/ca-certificates.crt`
-`sslCertHostPath` | Path on the host where ssl ca cert exists | `/etc/ssl/certs/ca-certificates.crt`
 `cloudProvider` | `aws` or `spotinst` are currently supported for AWS. `gce` for GCE. `azure` for Azure AKS | `aws`
 `image.repository` | Image | `k8s.gcr.io/cluster-autoscaler`
 `image.tag` | Image tag  | `v1.13.1`
@@ -157,6 +155,7 @@ Parameter | Description | Default
 `deployment.apiVersion` | apiVersion for the deployment | `extensions/v1beta1`
 `rbac.create` | If true, create & use RBAC resources | `false`
 `rbac.serviceAccountName` | existing ServiceAccount to use (ignored if rbac.create=true) | `default`
+`rbac.serviceAccountAnnotations` | Additional Service Account annotations	| `{}`
 `rbac.pspEnabled` | Must be used with `rbac.create` true. If true, creates & uses RBAC resources required in the cluster with [Pod Security Policies](https://kubernetes.io/docs/concepts/policy/pod-security-policy/) enabled. | `false`
 `replicaCount` | desired number of pods | `1`
 `priorityClassName` | priorityClassName | `nil`

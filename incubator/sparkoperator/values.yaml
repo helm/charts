@@ -32,4 +32,15 @@ webhookPort: 8080
 ##
 nodeSelector: {}
 
+## Resources for the sparkoperator deployment
+## Ref: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
+##
+resources: {}
+
 logLevel: 2
+
+## Whether to enable batch scheduler for pod scheduling,
+## if enabled, end user can specify batch scheduler name in spark application.
+enableBatchScheduler: false
+
+podAnnotations: {}

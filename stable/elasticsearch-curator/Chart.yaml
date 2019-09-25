@@ -2,7 +2,7 @@ apiVersion: v1
 appVersion: "5.5.4"
 description: A Helm chart for Elasticsearch Curator
 name: elasticsearch-curator
-version: 2.0.0
+version: 2.0.1
 home: https://github.com/elastic/curator
 keywords:
 - curator

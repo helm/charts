@@ -7,10 +7,6 @@ priorityClassDefault:
   name: default
   value: 0
 
-replicaCount: 1
-
-resources: {}
-
 image:
   repository: k8s.gcr.io/pause
   tag: 3.1
@@ -20,8 +16,10 @@ nameOverride: ""
 
 fullnameOverride: ""
 
-nodeSelector: {}
-
-tolerations: []
-
-affinity: {}
+deployments: []
+  # - name: default
+  #   replicaCount: 1
+  #   nodeSelector: {}
+  #   resources: {}
+  #   tolerations: []
+  #   affinity: {}
