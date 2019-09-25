@@ -148,8 +148,9 @@ Parameter | Description | Default
 `extraArgs` | additional container arguments | `{}`
 `podDisruptionBudget` | Pod disruption budget | `maxUnavailable: 1`
 `extraEnv` | additional container environment variables | `{}`
-`envFromConfigMap` |  additional container environment variables from a configmap | `[]`
-`envFromSecret` | additional container environment variables from secret | `nil`
+`envFromConfigMap` | additional container environment variables from a configmap | `{}`
+`envFromSecret` | secret name containing keys that will be exposed as envs | `nil`
+`extraEnvSecrets` | additional container environment variables from a secret | `{}`
 `nodeSelector` | node labels for pod assignment | `{}`
 `podAnnotations` | annotations to add to each pod | `{}`
 `deployment.apiVersion` | apiVersion for the deployment | `extensions/v1beta1`
