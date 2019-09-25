@@ -135,7 +135,6 @@ priorityClassName: ""
 
 service:
   annotations: {}
-  clusterIP: ""
 
   ## List of IP addresses at which the service is available
   ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
