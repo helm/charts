@@ -80,7 +80,11 @@ spec:
           {{- range $key, $value := .Values.secretMounts }}
             - name: {{ $key }}
               mountPath: {{ $value.mountPath }}
-          {{- end }}
+            {{- end }}
+
+{{ if .Values.sidecarContainersTemplate -}}
+{{ tpl .Values.sidecarContainersTemplate $ | indent 8 }}
+      {{ end -}}
 
     {{- with .Values.nodeSelector }}
       nodeSelector:

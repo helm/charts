@@ -258,6 +258,25 @@ files:
 #     - name: xds
 #       mountPath: /srv/runtime
 
+## Sidecar containers
+# sidecarContainersTemplate: |-
+#   - name: xds-update
+#     image: mumoshu/envoy-xds-configmap-loader:canary-6090275
+#     command:
+#     - envoy-xds-configmap-loader
+#     args:
+#     - --configmap={{ template "envoy.fullname" . }}-xds
+#     - --sync-interval=5s
+#     - --insecure
+#     env:
+#     - name: POD_NAMESPACE
+#       valueFrom:
+#         fieldRef:
+#           fieldPath: metadata.namespace
+#     volumeMounts:
+#     - name: xds
+#       mountPath: /srv/runtime
+
 ## ServiceMonitor consumed by prometheus-operator
 serviceMonitor:
   ## If the operator is installed in your cluster, set to true to create a Service Monitor Entry
