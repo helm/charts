@@ -162,7 +162,6 @@ Parameter | Description | Default
 `dnsPolicy` | dnsPolicy | `nil`
 `resources` | pod resource requests & limits | `{}`
 `service.annotations` | annotations to add to service | none
-`service.clusterIP` | IP address to assign to service | `""`
 `service.externalIPs` | service external IP addresses | `[]`
 `service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
