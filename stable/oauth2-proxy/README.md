@@ -53,9 +53,11 @@ Parameter | Description | Default
 `config.google.existingConfig` | existing Kubernetes configmap to use for the service account file. See [google secret template](https://github.com/helm/charts/blob/master/stable/oauth2-proxy/templates/google-secret.yaml) for the required values | `nil`
 `extraArgs` | key:value list of extra arguments to give the binary | `{}`
 `extraEnv` | key:value list of extra environment variables to give the binary | `[]`
+`extraVolumes` | list of extra volumes | `[]`
+`extraVolumeMounts` | list of extra volumeMounts | `[]`
 `htpasswdFile.enabled` | enable htpasswd-file option | `false`
 `htpasswdFile.entries` | list of [SHA encrypted user:passwords](https://pusher.github.io/oauth2_proxy/configuration#command-line-options) | `{}`
-`htpasswdFile.existingSecret` | existing Kubernetes secret to use for OAuth2 htpasswd file` | `""`
+`htpasswdFile.existingSecret` | existing Kubernetes secret to use for OAuth2 htpasswd file | `""`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
 `image.repository` | Image repository | `quay.io/pusher/oauth2_proxy`
 `image.tag` | Image tag | `v3.2.0`
@@ -84,7 +86,7 @@ Parameter | Description | Default
 `service.clusterIP` | cluster ip address | `nil`
 `service.loadBalancerIP` | ip of load balancer | `nil`
 `service.loadBalancerSourceRanges` | allowed source ranges in load balancer | `nil`
-`tolerations` | List of node taints to tolerate | `[]`
+`tolerations` | list of node taints to tolerate | `[]`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
@@ -100,3 +102,34 @@ $ helm install stable/oauth2-proxy --name my-release -f values.yaml
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+## SSL Configuration
+
+See: [SSL Configuration](https://pusher.github.io/oauth2_proxy/tls-configuration).
+Use ```values.yaml``` like:
+
+```yaml
+...
+extraArgs:
+  tls-cert: /path/to/cert.pem
+  tls-key: /path/to/cert.key
+
+extraVolumes:
+  - name: ssl-cert
+    secret:
+      secretName: my-ssl-secret
+
+extraVolumeMounts:
+  - mountPath: /path/to/
+    name: ssl-cert
+...
+```
+
+With a secret called `my-ssl-secret`:
+
+```yaml
+...
+data:
+  cert.pem: AB..==
+  cert.key: CD..==
+```
