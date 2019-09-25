@@ -17,7 +17,7 @@ This [Helm](https://github.com/kubernetes/helm) chart installs [docker_auth](htt
 Install the docker-auth helm chart with a release name `my-release`:
 
 ```bash
-# helm install --name=docker-auth docker-auth
+$ helm install --name=docker-auth docker-auth
 NAME:   docker-auth
 LAST DEPLOYED: Mon Sep 23 17:43:25 2019
 NAMESPACE: default
@@ -66,7 +66,7 @@ auth:
 To uninstall/delete the `my-release` deployment:
 
 ```bash
-# helm delete --purge docker-auth
+$ helm delete --purge docker-auth
 ```
 
 ## Configuration
