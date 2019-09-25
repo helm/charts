@@ -81,7 +81,10 @@ spec:
           volumeMounts:
             - name: config
               mountPath: /config
-          {{- range $key, $value := .Values.secretMounts }}
+          {{- if .Values.volumeMounts }}
+{{ toYaml .Values.volumeMounts | indent 12 }}
+            {{- end }}
+            {{- range $key, $value := .Values.secretMounts }}
             - name: {{ $key }}
               mountPath: {{ $value.mountPath }}
             {{- end }}
@@ -106,6 +109,9 @@ spec:
         - name: config
           configMap:
             name: {{ template "envoy.fullname" . }}
+      {{- if .Values.volumes }}
+{{ toYaml .Values.volumes | indent 8 }}
+      {{- end }}
       {{- range $key, $value := .Values.secretMounts }}
         - name: {{ $key }}
           secret:

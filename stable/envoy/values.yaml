@@ -244,6 +244,16 @@ files:
 #         tls_context:
 #           sni: www.google.com
 
+## Additional volumes to be added to Envoy pods
+# volumes:
+# - name: xds
+#   emptyDir: {}
+
+## Additional volume mounts to be added to Envoy containers(Primary containers of Envoy pods)
+# volumeMounts:
+# - name: xds
+#   mountPath: /srv/runtime
+
 ## Init containers
 # initContainersTemplate: |-
 #   - name: xds-init
