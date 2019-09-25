@@ -11,6 +11,12 @@ service:
   port: 9091
   targetPort: 9091
 
+    ## Annotations.
+    ##
+    # annotations:
+    #   cloud.google.com/load-balancer-type: 'Internal'
+    #   service.beta.kubernetes.io/aws-load-balancer-internal: 'true'
+
 # Optional pod annotations
 podAnnotations: {}
 
