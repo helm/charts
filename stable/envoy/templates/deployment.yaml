@@ -42,6 +42,10 @@ spec:
       priorityClassName: "{{ .Values.priorityClassName }}"
 {{- end }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      {{ if .Values.initContainersTemplate -}}
+      initContainers:
+{{ tpl .Values.initContainersTemplate $ | indent 8 }}
+      {{ end -}}
       containers:
 
         - name: envoy
