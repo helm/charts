@@ -116,8 +116,7 @@ clusterDomain: cluster.local
 
 ## Kubernetes service type
 service:
-  ## Specify an explicit service name. This is not recommended in general and therefore
-  ## disabled by default. The service name will be set to the fullname of the chart.
+  ## Specify an explicit service name.
   # name: svc-mongo
   annotations: {}
   type: ClusterIP
