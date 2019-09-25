@@ -13,7 +13,10 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 spec:
+  {{- if .Capabilities.APIVersions.Has "batch/v1alpha1" }}
+  # Alpha feature since k8s 1.12
   ttlSecondsAfterFinished: 0
+  {{- end }}
   template:
     metadata:
       name:   {{ template "nginx-ingress.fullname" . }}-admission-patch
