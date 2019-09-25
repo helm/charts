@@ -81,6 +81,14 @@ spec:
         - name: config-volume
           mountPath: /config/config.yaml
           subPath: config.yaml
+        {{- if .Values.anchoreGlobal.openShiftDeployment }}
+        - name: service-config-volume
+          mountPath: /anchore_service_config
+        - name: logs
+          mountPath: /var/log/anchore
+        - name: run
+          mountPath: /var/run/anchore
+        {{- end }}
         {{- if (.Values.anchoreGlobal.certStoreSecretName) }}
         - name: certs
           mountPath: /home/anchore/certs/
@@ -115,6 +123,14 @@ spec:
         - name: config-volume
           configMap:
             name: {{ template "anchore-engine.fullname" .}}
+        {{- if .Values.anchoreGlobal.openShiftDeployment }}
+        - name: service-config-volume
+          emptyDir: {}
+        - name: logs
+          emptyDir: {}
+        - name: run
+          emptyDir: {}
+        {{- end }}
         {{- with .Values.anchoreGlobal.certStoreSecretName }}
         - name: certs
           secret:
