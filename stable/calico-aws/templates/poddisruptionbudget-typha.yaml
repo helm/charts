@@ -9,7 +9,7 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
   {{- with .Values.typha.podDisruptionBudgetLabels }}
-{{ toYaml . | indent 6 }}
+{{ toYaml . | indent 4 }}
   {{- end }}
 {{- with .Values.typha.podDisruptionBudgetAnnotations }}
   annotations:
