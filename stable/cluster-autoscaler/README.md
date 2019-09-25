@@ -30,6 +30,17 @@ $ helm del --purge my-release
 Once the old release is deleted, the new 2.X release can be installed using the standard instructions.
 Note that autoscaling will not occur during the time between deletion and installation.
 
+## Upgrading from 4.X to 5.X
+
+In order to upgrade to chart version 5.X from <=4.X, deleting the old helm release first is required.
+
+```console
+$ helm del --purge my-release
+```
+
+Once the old release is deleted, the new 5.X release can be installed using the standard instructions.
+Note that autoscaling will not occur during the time between deletion and installation.
+
 ## Installing the Chart
 
 **By default, no deployment is created and nothing will autoscale**.
