@@ -91,6 +91,14 @@ spec:
         {{- end }}
         - name: {{ $component }}-scratch
           mountPath: {{ .Values.anchoreGlobal.scratchVolume.mountPath }}
+        {{- if .Values.anchoreGlobal.openShiftDeployment }}
+        - name: service-config-volume
+          mountPath: /anchore_service_config
+        - name: logs
+          mountPath: /var/log/anchore
+        - name: run
+          mountPath: /var/run/anchore
+        {{- end }}
         livenessProbe:
           httpGet:
             path: /health
@@ -120,6 +128,14 @@ spec:
         - name: config-volume
           configMap:
             name: {{ template "anchore-engine.fullname" .}}
+        {{- if .Values.anchoreGlobal.openShiftDeployment }}
+        - name: service-config-volume
+          emptyDir: {}
+        - name: logs
+          emptyDir: {}
+        - name: run
+          emptyDir: {}
+        {{- end }}
         - name: analyzer-config-volume
           configMap:
             name: {{ template "anchore-engine.analyzer.fullname" . }}

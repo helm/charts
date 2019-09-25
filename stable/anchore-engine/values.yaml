@@ -13,11 +13,28 @@ postgresql:
   # Set to the host and port. eg. mypostgres.myserver.io:5432
   externalEndpoint: Null
 
-  # Configure size of the persitant volume used with helm managed chart.
+  # Configure size of the persistent volume used with helm managed chart.
   # This should be commented out if using an external endpoint.
   persistence:
     resourcePolicy: nil
     size: 20Gi
+
+  # If running operator on OpenShift - uncomment the image, imageTag & extraEnv values below.
+  # image: registry.access.redhat.com/rhscl/postgresql-96-rhel7
+  # imageTag: latest
+  # extraEnv:
+  # - name: POSTGRESQL_USER
+  #   value: anchoreengine
+  # - name: POSTGRESQL_PASSWORD
+  #   value: anchore-postgres,123
+  # - name: POSTGRESQL_DATABASE
+  #   value: anchore
+  # - name: PGUSER
+  #   value: postgres
+  # - name: LD_LIBRARY_PATH
+  #   value: /opt/rh/rh-postgresql96/root/usr/lib64
+  # - name: PATH
+  #   value: /opt/rh/rh-postgresql96/root/usr/bin:/opt/app-root/src/bin:/opt/app-root/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 # Google CloudSQL support in GKE via gce-proxy
 cloudsql:
@@ -68,6 +85,9 @@ anchoreGlobal:
   # Image used for all anchore engine deployments (excluding enterprise components).
   image: docker.io/anchore/anchore-engine:v0.5.0
   imagePullPolicy: IfNotPresent
+
+  # Set this value to True to setup the chart for OpenShift deployment compatability.
+  openShiftDeployment: False
 
   # Add additionnal labels to all kubernetes resources
   labels: {}
@@ -473,6 +493,23 @@ anchore-feeds-db:
   persistence:
     resourcePolicy: nil
     size: 20Gi
+
+  # If running operator on OpenShift - uncomment the image, imageTag & extraEnv values below.
+  # image: registry.access.redhat.com/rhscl/postgresql-96-rhel7
+  # imageTag: latest
+  # extraEnv:
+  # - name: POSTGRESQL_USER
+  #   value: anchoreengine
+  # - name: POSTGRESQL_PASSWORD
+  #   value: anchore-postgres,123
+  # - name: POSTGRESQL_DATABASE
+  #   value: anchore
+  # - name: PGUSER
+  #   value: postgres
+  # - name: LD_LIBRARY_PATH
+  #   value: /opt/rh/rh-postgresql96/root/usr/lib64
+  # - name: PATH
+  #   value: /opt/rh/rh-postgresql96/root/usr/bin:/opt/app-root/src/bin:/opt/app-root/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 # Configure & enable the Anchore Enterprise on-prem feeds service.
 anchoreEnterpriseFeeds:
