@@ -1,10 +1,9 @@
 image:
   repository: hyperledger/burrow
-  tag: 0.25.1
+  tag: 0.28.2
   pullPolicy: IfNotPresent
 
 chain:
-  nodes: 1
   logLevel: info
   extraSeeds: []
   testing: false
@@ -53,10 +52,10 @@ config:
         OutputType: "stderr"
         Format: "json"
 
-validatorAddresses:
-  Validator_0:
-    Address: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-    NodeAddress: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+validators:
+- name: Validator_0
+  address: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+  nodeAddress: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 
 contracts:
   # wait required to ensure chain readiness

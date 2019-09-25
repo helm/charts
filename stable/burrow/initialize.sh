@@ -52,15 +52,12 @@ data:
 EOF
 
 cat >$valsTemplate <<EOF
-chain:
-  nodes: $CHAIN_NODES
-
-validatorAddresses:
+validators:
   <<- range .Config.Validators >>
-  << .Name >>:
-    Address: << .Address ->>
+  - name: << .Name >>:
+    address: << .Address ->>
     <<if .NodeAddress >>
-    NodeAddress: << .NodeAddress >>
+    nodeAddress: << .NodeAddress >>
     <<- end ->>
   <<- end >>
 EOF
