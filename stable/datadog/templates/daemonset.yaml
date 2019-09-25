@@ -34,6 +34,10 @@ spec:
         checksum/autoconf-config: {{ tpl (toYaml .Values.datadog.autoconf) . | sha256sum }}
         checksum/confd-config: {{ tpl (toYaml .Values.datadog.confd) . | sha256sum }}
         checksum/checksd-config: {{ tpl (toYaml .Values.datadog.checksd) . | sha256sum }}
+        {{- if and .Values.systemProbe.enabled .Values.daemonset.useDedicatedContainers }}
+        container.apparmor.security.beta.kubernetes.io/system-probe: {{ .Values.systemProbe.apparmor }}
+        container.seccomp.security.alpha.kubernetes.io/system-probe: localhost/system-probe
+        {{- end }}
       {{- if .Values.daemonset.podAnnotations }}
 {{ toYaml .Values.daemonset.podAnnotations | indent 8 }}
       {{- end }}
@@ -62,14 +66,22 @@ spec:
         {{- if .Values.datadog.apmEnabled }}
           {{- include "container-trace-agent" . | nindent 8 }}
         {{- end }}
-        {{- if .Values.datadog.processAgentEnabled }}
+        {{- if or (kindIs "invalid" .Values.datadog.processAgentEnabled) .Values.datadog.processAgentEnabled }}
           {{- include "container-process-agent" . | nindent 8 }}
         {{- end }}
-      initContainers:
-        {{ include "containers-init" . | nindent 8 }}
+        {{- if .Values.systemProbe.enabled }}
+          {{- include "container-system-probe" . | nindent 8 }}
+        {{- end }}
       {{- else }}
         {{- include "container-agents" . | nindent 8 }}
       {{- end}}
+      {{- if .Values.daemonset.useDedicatedContainers }}
+      initContainers:
+        {{ include "containers-init" . | nindent 8 }}
+        {{- if .Values.systemProbe.enabled }}
+          {{ include "system-probe-init" . | nindent 8 }}
+        {{- end }}
+      {{- end }}
       volumes:
         {{- if .Values.daemonset.useDedicatedContainers }}
         - name: config
@@ -116,10 +128,26 @@ spec:
           name: logcontainerpath
         {{- end }}
         {{- end }}
-        {{- if .Values.datadog.processAgentEnabled }}
+        {{- if or .Values.datadog.processAgentEnabled .Values.systemProbe.enabled }}
         - hostPath:
             path: /etc/passwd
           name: passwd
+        {{- end }}
+        {{- if and .Values.systemProbe.enabled .Values.daemonset.useDedicatedContainers }}
+        - name: datadog-agent-security
+          configMap:
+            name: datadog-agent-security
+        - name: sysprobe-config
+          configMap:
+            name: system-probe-config
+        - hostPath:
+            path: {{ .Values.systemProbe.seccompRoot }}
+          name: seccomp-root
+        - hostPath:
+            path: /sys/kernel/debug
+          name: debugfs
+        - name: sysprobe-socket-dir
+          emptyDir: {}
         {{- end }}
         {{- if .Values.daemonset.useConfigMap }}
         - name: {{ template "datadog.fullname" . }}-datadog-yaml
