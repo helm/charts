@@ -29,6 +29,11 @@ args:
   - -c
   - /config/envoy.yaml
 
+## Args template allows you to use Chart template expressions to dynamically generate args
+# argsTemplate: |-
+#   - -c
+#   - /docker-entrypoint.sh envoy --service-node ${POD_NAME} --service-cluster {{ template "envoy.fullname" . }} -l debug -c /config/envoy.yaml
+
 ## Client service.
 service:
   enabled: true

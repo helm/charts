@@ -54,7 +54,11 @@ spec:
           command:
 {{ toYaml .Values.command | indent 12 }}
           args:
+          {{- if $.Values.argsTemplate }}
+{{ tpl $.Values.argsTemplate $ | indent 12}}
+          {{- else }}
 {{ toYaml .Values.args | indent 12 }}
+          {{- end }}
           ports:
 {{- with .Values.ports }}
   {{- range $key, $port := . }}
