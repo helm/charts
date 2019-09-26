@@ -1,0 +1,7 @@
+tektonPipelinesController:
+  image: gcr.io/tekton-releases/github.com/tektoncd/pipeline/cmd/controller@sha256:85b932024e07dc2538dece0d979fc0030211600e07ff6fb18935cd7a6b56bad6
+  replicas: 1
+tektonPipelinesWebhook:
+  replicas: 1
+  webhook:
+    image: gcr.io/tekton-releases/github.com/tektoncd/pipeline/cmd/webhook@sha256:59be4e291f510bced7c138e92cbfee1ea58e0a48969fbaa3a055c1537d77bfd9

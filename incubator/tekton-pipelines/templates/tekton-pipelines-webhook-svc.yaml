@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels: {{ include "labels" . | nindent 4 }} {{ "app: \"tekton-pipelines-webhook\"" | nindent 4 }}
+  name: tekton-pipelines-webhook
+  namespace: tekton-pipelines
+spec:
+  ports:
+  - port: 443
+    targetPort: 8443
+  selector:
+    app: tekton-pipelines-webhook
