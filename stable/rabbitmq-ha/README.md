@@ -247,9 +247,9 @@ Similar to custom ConfigMap, `existingSecret` can be used to override the defaul
 `rabbitmqCert.existingSecret` can be used to override the default certificates. The custom secret must provide
 the following keys:
 
-* `rabbitmq-user`
+* `rabbitmq-username`
 * `rabbitmq-password`
-* `rabbitmq-management-user`
+* `rabbitmq-management-username`
 * `rabbitmq-management-password`
 * `rabbitmq-erlang-cookie`
 * `definitions.json` (the name can be altered by setting the `definitionsSource`)
