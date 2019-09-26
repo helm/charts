@@ -18,6 +18,8 @@ spec:
   template:
     metadata:
       name: "{{ .Release.Name }}-user-create"
+      annotations:
+        checksum/secrets.yaml: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
       labels:
         app: {{ template "sentry.fullname" . }}
         release: "{{ .Release.Name }}"
