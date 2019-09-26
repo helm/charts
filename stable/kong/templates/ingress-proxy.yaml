@@ -2,6 +2,7 @@
 {{- $serviceName := include "kong.fullname" . -}}
 {{- $servicePort := include "kong.ingress.servicePort" .Values.proxy -}}
 {{- $path := .Values.proxy.ingress.path -}}
+{{- $hosts_count := len .Values.proxy.ingress.hosts -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -17,6 +18,14 @@ metadata:
     {{- end }}
 spec:
   rules:
+    {{- if eq $hosts_count 0 }}
+    - http:
+        paths:
+          - path: {{ $path }}
+            backend:
+              serviceName: {{ $serviceName }}-proxy
+              servicePort: {{ $servicePort }}
+    {{ else -}}
     {{- range $host := .Values.proxy.ingress.hosts }}
     - host: {{ $host }}
       http:
@@ -25,6 +34,7 @@ spec:
             backend:
               serviceName: {{ $serviceName }}-proxy
               servicePort: {{ $servicePort }}
+    {{- end -}}
     {{- end -}}
   {{- if .Values.proxy.ingress.tls }}
   tls:
