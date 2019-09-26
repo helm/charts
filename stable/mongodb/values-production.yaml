@@ -332,30 +332,36 @@ readinessProbe:
 initConfigMap: {}
 #  name: "init-config-map"
 
-# Entries for the MongoDB config file
+## Entries for the MongoDB config file. For documentation of all options, see:
+##   http://docs.mongodb.org/manual/reference/configuration-options/
+##
 configmap:
-#  # Where and how to store data.
+#  # where and how to store data.
 #  storage:
-#    dbPath: /opt/bitnami/mongodb/data/db
+#    dbPath: /bitnami/mongodb/data/db
 #    journal:
 #      enabled: true
-#    #engine:
-#    #wiredTiger:
+#    directoryPerDB: false
 #  # where to write logging data.
 #  systemLog:
 #    destination: file
+#    quiet: false
 #    logAppend: true
+#    logRotate: reopen
 #    path: /opt/bitnami/mongodb/logs/mongodb.log
+#    verbosity: 0
 #  # network interfaces
 #  net:
 #    port: 27017
-#    bindIp: 0.0.0.0
 #    unixDomainSocket:
 #      enabled: true
 #      pathPrefix: /opt/bitnami/mongodb/tmp
+#    ipv6: false
+#    bindIpAll: true
 #  # replica set options
-#  replication:
-#    replSetName: replicaset
+#  #replication:
+#    #replSetName: replicaset
+#    #enableMajorityReadConcern: true
 #  # process management options
 #  processManagement:
 #     fork: false
@@ -365,8 +371,8 @@ configmap:
 #     enableLocalhostAuthBypass: true
 #  # security options
 #  security:
-#    authorization: enabled
-#    keyFile: /opt/bitnami/mongodb/conf/keyfile
+#    authorization: disabled
+#    #keyFile: /opt/bitnami/mongodb/conf/keyfile
 
 ## Prometheus Exporter / Metrics
 ##
