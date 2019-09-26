@@ -218,7 +218,7 @@ spec:
           - "--undefok=enable_ysql"
           {{ if not $root.Values.disableYsql }}
           - "--enable_ysql=true"
-          {{ else}}
+          {{ else }}
           - "--enable_ysql=false"
           {{ end }}
           - "--metric_node_name=$(HOSTNAME)"
@@ -257,7 +257,7 @@ spec:
           - "--undefok=num_cpus"
           {{- range $flag, $override := $root.Values.gflags.tserver }}
           - "--{{ $flag }}={{ $override }}"
-          {{- end}}
+          {{- end }}
           {{ if $root.Values.tls.enabled }}
           - "--certs_dir=/opt/certs/yugabyte"
           {{- end }}
