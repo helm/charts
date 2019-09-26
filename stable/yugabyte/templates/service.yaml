@@ -215,8 +215,11 @@ spec:
           - "--master_addresses={{ template "yugabyte.master_addresses" $root }}"
           - "--replication_factor={{ $root.Values.replicas.master }}"
           {{ end }}
+          - "--undefok=enable_ysql"
           {{ if not $root.Values.disableYsql }}
-          - "--use_initial_sys_catalog_snapshot=true"
+          - "--enable_ysql=true"
+          {{ else}}
+          - "--enable_ysql=false"
           {{ end }}
           - "--metric_node_name=$(HOSTNAME)"
           - "--memory_limit_hard_bytes={{ template "yugabyte.memory_hard_limit" $root.Values.resource.master }}"
@@ -235,9 +238,12 @@ spec:
           - "--server_broadcast_addresses={{ printf "$(HOSTNAME).%s.$(NAMESPACE).svc.%s" .name $root.Values.domainName }}:9100"
           - "--rpc_bind_addresses={{ printf "$(HOSTNAME).%s.$(NAMESPACE).svc.%s" .name $root.Values.domainName }}"
           - "--cql_proxy_bind_address={{ printf "$(HOSTNAME).%s.$(NAMESPACE).svc.%s" .name $root.Values.domainName }}"
+          - "--undefok=enable_ysql"
           {{ if not $root.Values.disableYsql }}
-          - "--start_pgsql_proxy"
+          - "--enable_ysql=true"
           - "--pgsql_proxy_bind_address={{ printf "$(POD_IP)" }}:5433"
+          {{ else }}
+          - "--enable_ysql=false"
           {{ end }}
           {{ if $root.Values.isMultiAz }}
           - "--tserver_master_addrs={{ $root.Values.masterAddresses}}"
