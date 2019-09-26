@@ -47,7 +47,7 @@ spec:
       containers:
       - name: redis
         image: redis:5.0.1
+        resources:
+          {{- toYaml .Values.pro.rateLimit.redis.resources | nindent 10 }}
       restartPolicy: Always
-      resources:
-        {{- toYaml .Values.pro.rateLimit.redis.resources | nindent 8 }}
 {{- end -}}

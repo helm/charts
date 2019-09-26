@@ -48,15 +48,12 @@ azureUseManagedIdentityExtension: false
 # Currently only `gce`, `aws`, `azure` & `spotinst` are supported
 cloudProvider: aws
 
-sslCertPath: /etc/ssl/certs/ca-certificates.crt
-sslCertHostPath: /etc/ssl/certs/ca-certificates.crt
-
 # Configuration file for cloud provider
 cloudConfigPath: /etc/gce.conf
 
 image:
   repository: k8s.gcr.io/cluster-autoscaler
-  tag: v1.13.1
+  tag: v1.13.7
   pullPolicy: IfNotPresent
 
   ## Optionally specify an array of imagePullSecrets.
@@ -138,7 +135,6 @@ priorityClassName: ""
 
 service:
   annotations: {}
-  clusterIP: ""
 
   ## List of IP addresses at which the service is available
   ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
