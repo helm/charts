@@ -20,7 +20,6 @@ image:
 command:
   - /usr/local/bin/envoy
 args:
-  - --v2-config-only
   - -l
   - $loglevel
   - -c
