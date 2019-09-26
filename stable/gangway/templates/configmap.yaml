@@ -13,7 +13,7 @@ data:
     {{- if .Values.trustedCACert }}
     trustedCAPath: /gangway/rootca.crt
   rootca.crt: |
-    {{ .Values.trustedCACert | nindent 4}}
+    {{- .Values.trustedCACert | nindent 4}}
     {{ end }}
 
 
