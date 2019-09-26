@@ -28,20 +28,20 @@ spec:
             - name: http
               containerPort: 80
               protocol: TCP
-              livenessProbe:
-                httpGet:
-                  path: /
-                  port: 80
-                  scheme: HTTP
-                initialDelaySeconds: 60
-                periodSeconds: 120
-              readinessProbe:
-                httpGet:
-                  path: /
-                  port: 80
-                  scheme: HTTP
-                initialDelaySeconds: 10
-                periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+              scheme: HTTP
+            initialDelaySeconds: 60
+            periodSeconds: 120
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 5
           volumeMounts:
             - name: nginx-config
               mountPath: /etc/nginx
