@@ -5,7 +5,7 @@
 apiVersion: getambassador.io/v1
 kind: AuthService
 metadata:
-  name: ambassador-pro-auth
+  name: {{ include "ambassador.fullname" . }}-pro-auth
 spec:
   proto: grpc
   {{- if hasKey .Values.env "AMBASSADOR_ID" }}
@@ -19,7 +19,7 @@ spec:
 apiVersion: getambassador.io/v1
 kind: Mapping
 metadata:
-  name: callback-mapping
+  name: {{ include "ambassador.fullname" . }}-callback-mapping
 spec:
   {{- if hasKey .Values.env "AMBASSADOR_ID" }}
   ambassador_id: {{ .Values.env.AMBASSADOR_ID | quote }}
@@ -32,7 +32,7 @@ spec:
 apiVersion: getambassador.io/v1
 kind: RateLimitService
 metadata:
-  name: ambassador-pro-ratelimit
+  name: {{ include "ambassador.fullname" . }}-pro-ratelimit
 spec:
   {{- if hasKey .Values.env "AMBASSADOR_ID" }}
   ambassador_id: {{ .Values.env.AMBASSADOR_ID | quote }}
@@ -58,7 +58,7 @@ metadata:
       ---
       apiVersion: ambassador/v1
       kind: AuthService
-      name: ambassador-pro-auth
+      name: {{ include "ambassador.fullname" . }}-pro-auth
       proto: grpc
       {{- if hasKey .Values.env "AMBASSADOR_ID" }}
       ambassador_id: {{ .Values.env.AMBASSADOR_ID | quote }}
@@ -69,7 +69,7 @@ metadata:
       # This mapping needs to exist, but is never actually followed.
       apiVersion: ambassador/v1
       kind: Mapping
-      name: callback_mapping
+      name: {{ include "ambassador.fullname" . }}-callback_mapping
       {{- if hasKey .Values.env "AMBASSADOR_ID" }}
       ambassador_id: {{ .Values.env.AMBASSADOR_ID | quote }}
       {{- end }}
@@ -80,7 +80,7 @@ metadata:
       ---
       apiVersion: ambassador/v1
       kind: RateLimitService
-      name: ambassador-pro-ratelimit
+      name: {{ include "ambassador.fullname" . }}-pro-ratelimit
       {{- if hasKey .Values.env "AMBASSADOR_ID" }}
       ambassador_id: {{ .Values.env.AMBASSADOR_ID | quote }}
       {{- end }}
