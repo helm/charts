@@ -103,6 +103,9 @@ spec:
           {{- if .Values.collector.samplingConfig}}
           - name: SAMPLING_STRATEGIES_FILE
             value: /etc/conf/strategies.json
+          {{- if hasKey .Values.collector.service "zipkinPort" }}
+          - name: COLLECTOR_ZIPKIN_HTTP_PORT
+            value: {{ .Values.collector.service.zipkinPort }}
           {{- end }}
         ports:
         - containerPort: {{ .Values.collector.service.grpcPort }}
@@ -117,9 +120,11 @@ spec:
         - containerPort: 14269
           name: admin
           protocol: TCP
+        {{- if hasKey .Values.collector.service "zipkinPort" }}
         - containerPort: {{ .Values.collector.service.zipkinPort }}
           name: zipkin
           protocol: TCP
+        {{- end }}}
         readinessProbe:
           httpGet:
             path: /
