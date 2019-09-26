@@ -75,6 +75,9 @@ spec:
       {{- end }}
       {{- end }}
       containers:
+      {{- if .Values.additionalContainers }}
+{{ toYaml .Values.additionalContainers | indent 6 }}
+      {{- end }}
       - image: {{ .Values.image }}:{{ .Values.imageTag }}
         name: {{ template "traefik.fullname" . }}
         resources:

@@ -510,3 +510,13 @@ extraVolumes: []
 extraVolumeMounts: []
 #   - name: example-name
 #     mountPath: /path/in/container
+
+# Any extra containers to define for the Traefik pod
+additionalContainers: []
+#  - image: custom:image
+#    name: custom_image_name
+#    ports:
+#      - name: datadog
+#        containerPort: 8125
+#        protocol: UDP
+#    (...)

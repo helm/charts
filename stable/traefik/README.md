@@ -251,8 +251,9 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `forwardAuth.entryPoints`              | Enable forward authentication for these entryPoints: "http", "https", "httpn"                                                |                                                   |
 | `forwardAuth.address`                  | URL for forward authentication                                                                                               |                                                   |
 | `forwardAuth.trustForwardHeader`       | Trust X-Forwarded-* headers                                                                                                  |                                                   |
-| `extraVolumeMounts`      | Any extra volumes mounts to define for the Traefik container                                                                                                                                                                                                               | `[]`                                                                                                                      |
-| `extraVolumes`           | Any extra volumes to define for the pod                                                                                                                                                                                                                                     | `[]`                                                                                                                      |
+| `extraVolumeMounts`                    | Any extra volumes mounts to define for the Traefik container                                                                 | `[]`                                              |
+| `extraVolumes`                         | Any extra volumes to define for the pod                                                                                      | `[]`                                              |
+| `additionalContainers`                 | Any extra containers to define for the Traefik pod                                                                           | `[]`                                              |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 
