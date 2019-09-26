@@ -13,16 +13,13 @@ strategy: |
     maxUnavailable: 1
 
 image:
-  repository: envoyproxy/envoy-alpine
-  tag: d920944aed67425f91fc203774aebce9609e5d9a
-  ## ^ ref: https://github.com/envoyproxy/envoy/commit/d920944aed67425f91fc203774aebce9609e5d9a
+  repository: envoyproxy/envoy
+  tag: v1.11.1
   pullPolicy: IfNotPresent
 
 command:
-  - /usr/bin/dumb-init
-  - --
-args:
   - /usr/local/bin/envoy
+args:
   - --v2-config-only
   - -l
   - $loglevel
