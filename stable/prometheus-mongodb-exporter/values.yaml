@@ -39,9 +39,6 @@ port: "9216"
 
 priorityClassName: ""
 
-rbac:
-  create: true
-
 readinessProbe:
   httpGet:
     path: /

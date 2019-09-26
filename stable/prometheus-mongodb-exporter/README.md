@@ -47,7 +47,6 @@ podAnnotations:
 | `podAnnotations` | Annotations to be added to all pods | `{}` |
 | `port` | The container port to listen on | `9216` |
 | `priorityClassName` | Pod priority class name | `` |
-| `rbac.create` | If `true`, create the RBAC resources | `true` |
 | `replicas` | Number of replicas in the replica set | `1` |
 | `resources` | Pod resource requests and limits | `{}` |
 | `env` | Extra environment variables passed to pod | `{}` |
