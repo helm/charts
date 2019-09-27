@@ -426,3 +426,9 @@ serviceMonitor:
   # interval: 10s
   # Specifies namespace, where ServiceMonitor should be installed
   # namespace: monitoring
+  # The prometheus-operator selects scrape targets via a label on the ServiceMonitor,
+  # this label can be custom per the operators configuration.
+  prometheusOperatorServiceMonitorSelector:
+    enabled: false
+    matchLabels:
+      prometheus: somelabel
