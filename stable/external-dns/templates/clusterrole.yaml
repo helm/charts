@@ -41,14 +41,27 @@ rules:
   {{- end }}
   resources:
   {{- if .Values.crd.create }}
-  - dnsendpoints/status
+  - dnsendpoints
   {{- else }}
-  - {{ printf "%ss/status" (.Values.crd.kind | lower) }}
+  - {{ printf "%ss" (.Values.crd.kind | lower) }}
   {{- end }}
   verbs:
   - get
   - list
   - watch
+- apiGroups:
+  {{- if .Values.crd.create }}
+  - externaldns.k8s.io
+  {{- else }}
+  - {{ $api := splitn "/" 2 .Values.crd.apiversion }}{{ $api._0 }}
+  {{- end }}
+  resources:
+  {{- if .Values.crd.create }}
+  - dnsendpoints/status
+  {{- else }}
+  - {{ printf "%ss/status" (.Values.crd.kind | lower) }}
+  {{- end }}
+  verbs:
   - update
 {{- end }}
 {{- end }}

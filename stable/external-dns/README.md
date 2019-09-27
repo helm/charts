@@ -109,7 +109,7 @@ The following table lists the configurable parameters of the external-dns chart 
 | `annotationFilter`                 | Filter sources managed by external-dns via annotation using label selector (optional)                    | `""`                                                     |
 | `domainFilters`                    | Limit possible target zones by domain suffixes (optional)                                                | `[]`                                                     |
 | `zoneIdFilters`                    | Limit possible target zones by zone id (optional)                                                        | `[]`                                                     |
-| `crd.create`                       | Install the integrated DNSEndpoint CRD                                                                   | `false`                                                  |
+| `crd.create`                       | Install and use the integrated DNSEndpoint CRD                                                           | `false`                                                  |
 | `crd.apiversion`                   | Sets the API version for the CRD to watch                                                                | `""`                                                     |
 | `crd.kind`                         | Sets the kind for the CRD to watch                                                                       | `""`                                                     |
 | `dryRun`                           | When enabled, prints DNS record changes rather than actually performing them (optional)                  | `false`                                                  |
