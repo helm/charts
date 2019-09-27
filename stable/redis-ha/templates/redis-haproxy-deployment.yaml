@@ -24,7 +24,7 @@ spec:
         prometheus.io/path: /metrics
         prometheus.io/port: "9101"
         prometheus.io/scrape: "true"
-        checksum/config: {{ include (print $.Template.BasePath "/redis-ha-configmap.yaml") . | sha256sum }}
+        checksum/config: {{ print (include "config-haproxy.cfg" .) (include "config-haproxy_init.sh" .) | sha256sum }}
       {{- if .Values.haproxy.annotations }}
 {{ toYaml .Values.haproxy.annotations | indent 8 }}
       {{- end }}
