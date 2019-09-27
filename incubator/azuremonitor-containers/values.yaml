@@ -6,7 +6,7 @@
 ## ref: https://github.com/Microsoft/OMS-docker/tree/ci_feature_prod
 omsagent:
   image:
-    tag: "ciprod09092019"
+    tag: "ciprod09262019"
     pullPolicy: IfNotPresent
     dockerProviderVersion: "7.0.0-1"
     agentVersion: "1.10.0.1"

@@ -20,7 +20,8 @@ This article describes how to set up and use [Azure Monitor - Containers](https:
 
 2. [Add the 'AzureMonitor-Containers' Solution to your Log Analytics workspace.](http://aka.ms/coinhelmdoc)
 
-3. [For AKS-Engine or ACS-Engine K8S cluster, add required tags on cluster resources, to be able to use Azure Container monitoring User experience (aka.ms/azmon-containers)](http://aka.ms/coin-acs-tag-doc)
+3. [For AKS-Engine or ACS-Engine K8S cluster hosted in Azure, add required tags on cluster resources, to be able to use Azure Container monitoring User experience (aka.ms/azmon-containers)](http://aka.ms/coin-acs-tag-doc)
+     > Note: Pre-requisite #3 not applicable for the AKS-Engine or ACS-Engine clusters hosted in Azure Stack or On-premise.
 
 ---
 
