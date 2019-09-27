@@ -125,6 +125,14 @@ The following table lists the configurable parameters of the Instana chart and t
 | `podSecurityPolicy.enable`         | Whether a PodSecurityPolicy should be authorized for the Instana Agent pods. Requires `rbac.create` to be `true` as well. | `false` See [PodSecurityPolicy](https://docs.instana.io/quick_start/agent_setup/container/kubernetes/#podsecuritypolicy) for more details. |
 | `podSecurityPolicy.name`           | Name of an _existing_ PodSecurityPolicy to authorize for the Instana Agent pods. If not provided and `podSecurityPolicy.enable` is `true`, a PodSecurityPolicy will be created for you. | `nil` |
 
+#### Development and debugging options
+
+These options will be rarely used outside of development or debugging of the agent.
+
+|             Parameter              |            Description                                                  |                    Default                                                                                  |
+|------------------------------------|-------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------|
+| `agent.host.repository`            | Host path to mount as the agent maven repository                        | `nil`                                                                                                       |
+
 ### Agent
 
 To configure the agent, you can either:
