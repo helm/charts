@@ -32,7 +32,7 @@ spec:
     port: {{ .Values.collector.service.zipkinPort }}
     protocol: TCP
     targetPort: zipkin
-  {{- end }}}
+  {{- end }}
   selector:
     app.kubernetes.io/name: {{ include "jaeger.name" . }}
     app.kubernetes.io/component: collector
