@@ -59,7 +59,7 @@ The following table lists the configurable parameters of the external-dns chart 
 | `sources`                          | K8s resources type to be observed for new DNS entries by ExternalDNS                                     | `[service, ingress]`                                     |
 | `provider`                         | DNS provider where the DNS records will be created (mandatory) (options: aws, azure, google, ...)        | `aws`                                                    |
 | `namespace`                        | Limit sources of endpoints to a specific namespace (default: all namespaces)                             | `""`                                                     |
-| `fqdnTemplates`                    | Combine FQDN template and annotations instead of overwriting (optional)                                  | `[]`                                                     |
+| `fqdnTemplates`                    | A list of templated string that's used to generate DNS names from sources that don't define a hostname themselves (optional)   | `[]`                               |
 | `combineFQDNAnnotation`            | Combine FQDN template and annotations instead of overwriting (optional)                                  | `false`                                                  |
 | `ignoreHostnameAnnotation`         | Ignore hostname annotation when generating DNS names, valid only when fqdn-template is set (optional)    | `false`                                                  |
 | `publishInternalServices`          | Whether to publish DNS records for ClusterIP services or not                                             | `false`                                                  |
