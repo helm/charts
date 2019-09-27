@@ -58,7 +58,13 @@ The following table lists the configurable parameters of the external-dns chart 
 | `fullnameOverride`                 | String to fully override external-dns.fullname template with a string                                    | `nil`                                                    |
 | `sources`                          | K8s resources type to be observed for new DNS entries by ExternalDNS                                     | `[service, ingress]`                                     |
 | `provider`                         | DNS provider where the DNS records will be created (mandatory) (options: aws, azure, google, ...)        | `aws`                                                    |
+| `namespace`                        | Limit sources of endpoints to a specific namespace (default: all namespaces)                             | `""`                                                     |
+| `fqdnTemplates`                    | Combine FQDN template and annotations instead of overwriting (optional)                                  | `[]`                                                     |
+| `combineFQDNAnnotation`            | Combine FQDN template and annotations instead of overwriting (optional)                                  | `false`                                                  |
+| `ignoreHostnameAnnotation`         | Ignore hostname annotation when generating DNS names, valid only when fqdn-template is set (optional)    | `false`                                                  |
 | `publishInternalServices`          | Whether to publish DNS records for ClusterIP services or not                                             | `false`                                                  |
+| `publishHostIP`                    | Allow external-dns to publish host-ip for headless services (optional)                                   | `false`                                                  |
+| `serviceTypeFilter`                | The service types to take care about (default: all, options: ClusterIP, NodePort, LoadBalancer, ExternalName)   | `[]`                                              |
 | `aws.credentials.accessKey`        | When using the AWS provider, set `aws_access_key_id` in the AWS credentials (optional)                   | `""`                                                     |
 | `aws.credentials.secretKey`        | When using the AWS provider, set `aws_secret_access_key` in the AWS credentials (optional)               | `""`                                                     |
 | `aws.credentials.mountPath`        | When using the AWS provider, determine `mountPath` for `credentials` secret                              | `"/.aws"`                                                |
