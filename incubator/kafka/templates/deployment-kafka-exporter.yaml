@@ -18,8 +18,7 @@ spec:
         prometheus.io/port: {{ .Values.prometheus.kafka.port | quote }}
 {{- end }}
       labels:
-        app: {{ template "kafka.name" . }}-exporter
-        release: {{ .Release.Name }}
+      {{- include "kafka.monitor.labels" . | nindent 8 }}
     spec:
       containers:
       - image: "{{ .Values.prometheus.kafka.image }}:{{ .Values.prometheus.kafka.imageTag }}"
