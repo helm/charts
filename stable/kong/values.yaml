@@ -420,6 +420,15 @@ dblessConfig:
       #     paths:
       #     - "/example"
 
+# Inject specified secrets as a volume in Kong Container at path /etc/secrets/{secret-name}/
+# This can be used to override default SSL certificates
+# Example configuration
+# secretVolumes:
+# - kong-proxy-tls
+# - kong-admin-tls
+secretVolumes: []
+
+
 serviceMonitor:
   # Specifies whether ServiceMonitor for Prometheus operator should be created
   enabled: false
