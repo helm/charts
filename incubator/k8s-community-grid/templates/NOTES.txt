@@ -1,0 +1,2 @@
+To get logs for all Pods
+kubectl logs -f -l app={{ include "k8s-community-grid.name" . }} --all-containers -n  {{ .Release.Namespace }}

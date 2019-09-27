@@ -1,0 +1,31 @@
+priorityClassName: community-work
+priorityClassValue: 1
+
+image:
+  repository: yipikaye/community-worker
+  iname: community-worker
+  tag: latest
+  pullPolicy: IfNotPresent
+
+#Resources
+limits:
+  cpu: 
+  memory: 
+requests:
+  cpu: 
+  memory: 
+
+##--attach_project", 
+project: "www.worldcommunitygrid.org"
+accountKey: "74bb7c9b222da499033a307a7e5003c8"
+
+## set_proxy_settings 
+http_server_name: '""'
+http_server_port: '""'
+http_user_name: '""'
+http_user_passwd: '""'
+socks_server_name: '""'
+socks_server_port: '""'
+socks_version: '""'
+socks5_user_name: '""'
+socks5_user_passwd: '""'

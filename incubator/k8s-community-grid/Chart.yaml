@@ -1,0 +1,16 @@
+apiVersion: v1
+appVersion: "2.1"
+description: A Helm chart for World Communit Grid on Kubernetes
+name: k8s-community-grid
+version: 0.2.0
+description: This is a simple way to run the World Community Grid to further cancer research on Kubernetes.
+keywords:
+  - world community grid boinc cancer charity
+home: https://github.com/yipikaye/k8s-community-grid
+sources:
+  - https://github.com/yipikaye/k8s-community-grid
+maintainers: 
+  - name: Ash Simpson 
+    email: ash.simpson@gmail.com
+    url: https://github.com/yipikaye/k8s-community-grid
+icon: https://github.com/yipikaye/k8s-community-grid/blob/master/icon.png?raw=true

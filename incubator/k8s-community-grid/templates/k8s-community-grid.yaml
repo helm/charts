@@ -1,0 +1,45 @@
+### Help improve the odds for cancer patients!
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: {{ .Values.priorityClassName }}
+value: {{ .Values.priorityClassValue }}
+globalDefault: false
+description: "This priority class should be used for chairty work only."
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ include "k8s-community-grid.name" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ include "k8s-community-grid.name" . }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ include "k8s-community-grid.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "k8s-community-grid.name" . }}
+    spec:
+      priorityClassName: {{ .Values.priorityClassName }}
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        effect: NoSchedule
+      terminationGracePeriodSeconds: 30
+      containers:
+      - image: {{ .Values.image.repository }}
+        name: {{ .Values.image.iname }}
+        args: ["--attach_project", {{ .Values.project | quote }}, {{ .Values.accountKey | quote}}]
+        resources:
+          limits:
+            cpu: {{ .Values.limits.cpu }}
+            memory: {{ .Values.limits.memory }}
+          requests:
+            cpu: {{ .Values.requests.cpu }}
+            memory: {{ .Values.requests.memory }}
+        lifecycle:
+          postStart:
+            exec:
+              command: ["/usr/bin/boinccmd", "--set_proxy_settings", {{ .Values.http_server_name }}, {{ .Values.http_server_port }}, {{ .Values.http_user_name }}, {{ .Values.http_user_passwd }}, {{ .Values.socks_server_name }}, {{ .Values.socks_server_port }}, {{ .Values.socks_version }}, {{ .Values.socks5_user_name }}, {{ .Values.socks5_user_passwd }}]
