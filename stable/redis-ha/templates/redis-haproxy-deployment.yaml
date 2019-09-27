@@ -30,7 +30,9 @@ spec:
       {{- end }}
     spec:
       # Needed when using unmodified rbac-setup.yml
+      {{ if .Values.haproxy.serviceAccount.create }}
       serviceAccountName: {{ template "redis-ha.serviceAccountName" . }}-haproxy
+      {{ end }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
       tolerations:
