@@ -127,9 +127,9 @@ spec:
         - name: KONG_SMTP_HOST
           value: {{ .Values.enterprise.smtp.smtp_host }}
         - name: KONG_SMTP_PORT
-          value: {{ .Values.enterprise.smtp.smtp_port }}
+          value: {{ .Values.enterprise.smtp.smtp_port | quote }}
         - name: KONG_SMTP_STARTTLS
-          value: {{ .Values.enterprise.smtp.smtp_starttls }}
+          value: {{ .Values.enterprise.smtp.smtp_starttls | quote }}
         {{- if .Values.enterprise.smtp.auth.smtp_username }}
         - name: KONG_SMTP_USERNAME
           value: {{ .Values.enterprise.smtp.auth.smtp_username }}
