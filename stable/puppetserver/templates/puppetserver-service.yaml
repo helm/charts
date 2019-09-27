@@ -4,13 +4,13 @@ metadata:
   name: "puppet"
   labels:
     {{- include "puppetserver.puppetserver.labels" . | nindent 4 }}
-{{- if .Values.puppetserver.service.labels }}
-{{ toYaml .Values.puppetserver.service.labels | indent 4 }}
-{{- end }}
-{{- if .Values.puppetserver.service.annotations }}
+  {{- if .Values.puppetserver.service.labels }}
+    {{ toYaml .Values.puppetserver.service.labels | indent 4 }}
+  {{- end }}
+  {{- if .Values.puppetserver.service.annotations }}
   annotations:
-{{ toYaml .Values.puppetserver.service.annotations | indent 4 }}
-{{- end }}
+    {{ toYaml .Values.puppetserver.service.annotations | indent 4 }}
+  {{- end }}
 spec:
   ports:
     - name: "puppetserver"
