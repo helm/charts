@@ -248,3 +248,4 @@ WARNING: Rolling tag detected ({{ .Values.image.repository }}:{{ .Values.image.t
 +info https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/
 {{- end }}
 {{- end -}}
+
