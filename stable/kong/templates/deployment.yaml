@@ -250,9 +250,9 @@ spec:
           - name: kong-custom-dbless-config-volume
             mountPath: /kong_dbless/
           {{- end }}
-          {{ if .Values.secretVolume }}
-          - name: secret-volume
-            mountPath: /etc/secrets
+          {{- range .Values.secretVolumes }}
+          - name:  {{ . }}
+            mountPath: /etc/secrets/{{ . }}
           {{- end }}
         readinessProbe:
 {{ toYaml .Values.readinessProbe | indent 10 }}
@@ -284,8 +284,8 @@ spec:
             {{- end }}
 {{- end }}
 
-{{ if .Values.secretVolume }}
-        - name: secret-volume
+{{- range $secretVolume := .Values.secretVolumes }}
+        - name: {{ . }}
           secret:
-            secretName: {{ .Values.secretVolume }}
+            secretName: {{ . }}
 {{- end }}
