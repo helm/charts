@@ -25,4 +25,3 @@ deployments: []
   #   tolerations: []
   #   affinity: {}
   #   labels: {}
-
