@@ -7,5 +7,5 @@ metadata:
     {{- include "puppetserver.hiera.labels" . | nindent 4 }}
 data:
   hiera.yaml: |-
-{{ .Values.hiera.config | indent 4 }}
+    {{ .Values.hiera.config | indent 4 }}
 {{- end }}
