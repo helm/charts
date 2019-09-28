@@ -16,6 +16,9 @@ strategy: {}
   #
   # type: Recreate
   # rollingUpdate: null
+
+apiVersion: apps/v1
+
 image:
   # From repository https://github.com/osixia/docker-openldap
   repository: osixia/openldap

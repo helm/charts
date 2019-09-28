@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: {{ .Values.apiVersion }}
 kind: Deployment
 metadata:
   name:  {{ template "openldap.fullname" . }}
