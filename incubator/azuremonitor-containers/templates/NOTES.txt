@@ -34,10 +34,14 @@ This deployment will not complete. To proceed, run
 {{- else -}}
 
 {{ .Release.Name }} deployment is complete.
+{{ .Values.omsagent.domain}} is configured Azure Log Analytics Workspace Domain.
 Data should start flowing to the Log Analytics workspace shortly.
-Proceed to below links to view health and monitoring data of your clusters
-- https://aka.ms/azmon-containers for the clusters which are configured to use Log Analytics workspace in Azure Public Cloud
-- https://aka.ms/azmon-containers-mooncake, for the clusters which are configured to use Log Analytics workspace in Azure China Cloud
-- https://aka.ms/azmon-containers-fairfax, for the clusters which are configured to use Log Analytics workspace in Azure US Government Cloud
-
+Proceed to below link to view health and monitoring data of your clusters
+{{- if eq (.Values.omsagent.domain | lower)  "opinsights.azure.com" }}
+- Azure Public Cloud Portal URL : https://aka.ms/azmon-containers
+{{- else if eq (.Values.omsagent.domain | lower)  "opinsights.azure.cn"  }}
+- Azure US Government Cloud Portal URL: https://aka.ms/azmon-containers-mooncake
+{{- else }}
+- Azure US Government Cloud Portal URL: https://aka.ms/azmon-containers-fairfax
+{{- end }}
 {{- end }}
