@@ -60,6 +60,8 @@ proxy:
 
 service:
   # Service type can be set to ClusterIP, NodePort or LoadBalancer.
+  authorize:
+    headless: true
   type: ClusterIP
   externalPort: 443
   annotations:
