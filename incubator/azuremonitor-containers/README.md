@@ -112,7 +112,7 @@ $ helm install --name myrelease-1 -f values.yaml incubator/azuremonitor-containe
 After you successfully deploy the chart, you will be able to see your data in
 - [azure public cloud portal](https://aka.ms/azmon-containers) for the clusters in Azure Public Cloud
 - [azure china cloud portal](https://aka.ms/azmon-containers-mooncake) for the clusters in Azure China Cloud
-- [azure china cloud portal](https://aka.ms/azmon-containers-fairfax) for the clusters in Azure US Government Cloud
+- [azure us government cloud portal](https://aka.ms/azmon-containers-fairfax) for the clusters in Azure US Government Cloud
 
 If you need help with this chart, please reach us out through [this](mailto:askcoin@microsoft.com) email.
 

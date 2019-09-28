@@ -40,8 +40,12 @@ Proceed to below link to view health and monitoring data of your clusters
 {{- if eq (.Values.omsagent.domain | lower)  "opinsights.azure.com" }}
 - Azure Public Cloud Portal URL : https://aka.ms/azmon-containers
 {{- else if eq (.Values.omsagent.domain | lower)  "opinsights.azure.cn"  }}
-- Azure US Government Cloud Portal URL: https://aka.ms/azmon-containers-mooncake
-{{- else }}
+- Azure China Cloud Portal URL: https://aka.ms/azmon-containers-mooncake
+{{- else if eq (.Values.omsagent.domain | lower)  "opinsights.azure.us"  }}
 - Azure US Government Cloud Portal URL: https://aka.ms/azmon-containers-fairfax
+{{- else }}
+########################################################################################
+####   ERROR: Provided omsagent.domain value either invalid or not supported        ####
+########################################################################################
 {{- end }}
 {{- end }}
