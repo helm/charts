@@ -42,7 +42,7 @@ spec:
             - containerPort: 8081
           volumeMounts:
             - name: puppetdb-storage
-              mountPath: /etc/puppetlabs/puppet/ssl/
+              mountPath: /opt/puppetlabs/server/data/puppetdb/certs/
       volumes:
         - name: puppetdb-storage
           persistentVolumeClaim:

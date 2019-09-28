@@ -45,6 +45,8 @@ spec:
               value: "{{.Values.puppetserver.fqdns.alternateServerNames}}"
             - name: PUPPETDB_SERVER_URLS
               value: https://puppetdb:8081
+            - name: CA_ALLOW_SUBJECT_ALT_NAMES
+              value: "true"
           ports:
             - containerPort: 8140
           volumeMounts:
