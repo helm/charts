@@ -102,7 +102,7 @@ podLabels: {}
 replicaCount: 1
 
 deployment:
-  apiVersion: "extensions/v1beta1"
+  apiVersion: "apps/v1"
 
 rbac:
   ## If true, create & use RBAC resources

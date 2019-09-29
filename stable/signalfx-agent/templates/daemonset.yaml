@@ -1,5 +1,5 @@
 {{- if and .Values.clusterName .Values.signalFxAccessToken -}}
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: {{ template "signalfx-agent.fullname" . }}

@@ -2,7 +2,7 @@ apiVersion: v1
 name: keel
 description: DEPRECATED Open source, tool for automating Kubernetes deployment updates. Keel
   is stateless, robust and lightweight.
-version: 0.6.1
+version: 0.6.2
 appVersion: 0.9.5
 keywords:
 - kubernetes deployment

@@ -69,7 +69,7 @@ The following table lists the configurable parameters of the ownCloud chart and 
 | `ingress.secrets[0].name`           | TLS Secret Name                            | `nil`                                                   |
 | `ingress.secrets[0].certificate`    | TLS Secret Certificate                     | `nil`                                                   |
 | `ingress.secrets[0].key`            | TLS Secret Key                             | `nil`                                                   |
-| `networkPolicyApiVersion`           | The kubernetes network API version         | `extensions/v1beta1`                                    |
+| `networkPolicyApiVersion`           | The kubernetes network API version         | `apps/v1`                                    |
 | `owncloudHost`                      | ownCloud host to create application URLs   | `nil`                                                   |
 | `owncloudLoadBalancerIP`            | `loadBalancerIP` for the owncloud Service  | `nil`                                                   |
 | `owncloudUsername`                  | User of the application                    | `user`                                                  |

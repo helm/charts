@@ -1,5 +1,5 @@
 {{- if .Values.fakeEventGenerator.enabled }}
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "falco.fullname" . }}-event-generator

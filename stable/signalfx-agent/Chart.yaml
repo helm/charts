@@ -7,7 +7,7 @@ deprecated: true
 description: DEPRECATED The SignalFx Kubernetes agent
 name: signalfx-agent
 appVersion: 3.6.1
-version: 0.3.1
+version: 0.3.2
 keywords:
 - monitoring
 - alerting

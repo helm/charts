@@ -2,7 +2,7 @@ apiVersion: v1
 name: signalsciences
 home: https://signalsciences.com
 icon: https://dashboard.signalsciences.net/static/images/logo-icon-color.svg
-version: 1.0.0
+version: 1.0.1
 appVersion: 3.12.1
 description: SignalSciences is a web application firewall. This chart is the installable agent.
 keywords:
