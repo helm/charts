@@ -52,7 +52,9 @@ spec:
 {{ toYaml .Values.extraInitContainers | indent 8 }}
 {{- end }}
       containers:
-
+{{- if .Values.extraContainers }}
+{{ toYaml .Values.extraContainers | indent 8 }}
+{{- end }}
         ## logstash
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
