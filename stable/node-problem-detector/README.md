@@ -51,12 +51,13 @@ The following table lists the configurable parameters for this chart and their d
 | `settings.custom_monitor_definitions` | User-specified custom monitor definitions  | `{}`                                                         |
 | `settings.log_monitors`               | System log monitor config files            | `/config/kernel-monitor.json`, `/config/docker-monitor.json` |
 | `settings.custom_plugin_monitors`     | Custom plugin monitor config files         | `[]`                                                         |
-| `settings.prometheus_address`         | Prometheus exporter address                | `0.0.0.0`                                                         |
-| `settings.prometheus_port`            | Prometheus exporter port                   | `20257`                                                         |
+| `settings.prometheus_address`         | Prometheus exporter address                | `0.0.0.0`                                                    |
+| `settings.prometheus_port`            | Prometheus exporter port                   | `20257`                                                      |
 | `serviceAccount.create`               | Whether a ServiceAccount should be created | `true`                                                       |
 | `serviceAccount.name`                 | Name of the ServiceAccount to create       | Generated value from template                                |
 | `tolerations`                         | Optional daemonset tolerations             | `[]`                                                         |
 | `nodeSelector`                        | Optional daemonset nodeSelector            | `{}`                                                         |
+| `env`                                 | Optional daemonset environment variables   | `[]`                                                         |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install` or provide a YAML file containing the values for the above parameters:
 
