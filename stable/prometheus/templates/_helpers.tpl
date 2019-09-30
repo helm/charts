@@ -245,6 +245,6 @@ Return the apiVerion of deployment.
 {{- if semverCompare "<1.14-0" .Capabilities.KubeVersion.GitVersion -}}
 {{- print "extensions/v1beta1" -}}
 {{- else if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
-{{- print "app/v1" -}}
+{{- print "apps/v1" -}}
 {{- end -}}
 {{- end -}}
