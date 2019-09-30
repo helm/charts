@@ -53,6 +53,13 @@ service:
 ##   KEY_2: value2
 # env:
 
+# A list of secrets and their paths to mount inside the pod
+# This is useful for mounting certificates for security
+secretMounts: []
+#  - name: elastic-certs
+#    secretName: elastic-certs
+#    path: /ssl
+
 es:
   ## Address (host and port) of the Elasticsearch node we should connect to.
   ## This could be a local node (localhost:9200, for instance), or the address
@@ -97,22 +104,33 @@ es:
     ##
     enabled: false
 
+    ## If true, certs from secretMounts will be need to be referenced instead of certs below
+    ##
+    useExistingSecrets: false
+
     ca:
 
       ## PEM that contains trusted CAs used for setting up secure Elasticsearch connection
       ##
       # pem:
 
+      # Path of ca pem file which should match a secretMount path
+      # path: /ssl/ca.pem
     client:
 
       ## PEM that contains the client cert to connect to Elasticsearch.
       ##
       # pem:
 
+      # Path of client pem file which should match a secretMount path
+      # pemPath: /ssl/client.pem
+
       ## Private key for client auth when connecting to Elasticsearch
       ##
       # key:
 
+      # Path of client key file which should match a secretMount path
+      # keyPath: /ssl/client.key
 web:
   ## Path under which to expose metrics.
   ##

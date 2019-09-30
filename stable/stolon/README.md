@@ -89,6 +89,8 @@ Kubernetes is the default store backend. `consul`, `etcdv2` or `etcdv3` can also
 | `sentinel.podDisruptionBudget.enabled`  | If true, create a pod disruption budget for sentinel pods. | `false`                                          |
 | `sentinel.podDisruptionBudget.minAvailable` | Minimum number / percentage of pods that should remain scheduled | `""`                                   |
 | `sentinel.podDisruptionBudget.maxUnavailable` | Maximum number / percentage of pods that may be made unavailable | `""`                                 |
+| `initdbScripts` | Dictionary of scripts. Executed after cluster startup | `nil`                                 |
+| `nodePostStartScript` | Dictionary of scripts. Executed after the node startup | `nil`                                 |
 
 
 [pgconf]: https://github.com/postgres/postgres/blob/master/src/backend/utils/misc/postgresql.conf.sample

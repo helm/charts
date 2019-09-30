@@ -8,6 +8,13 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
+{{- if .Values.skipper.service.labels }}
+{{ toYaml .Values.skipper.service.labels | indent 4 }}
+{{- end }}
+{{- if .Values.skipper.service.annotations }}
+  annotations:
+{{ toYaml .Values.skipper.service.annotations | indent 4 }}
+{{- end }}
 spec:
   type: {{ .Values.skipper.service.type }}
   ports:

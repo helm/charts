@@ -163,6 +163,8 @@ podLabels: {}
   # service: broker
   # team: developers
 
+podDisruptionBudget: {}
+  # maxUnavailable: 1  # Limits how many Kafka pods may be unavailable due to voluntary disruptions.
 
 ## Configuration Overrides. Specify any Kafka settings you would like set on the StatefulSet
 ## here in map format, as defined in the official docs.

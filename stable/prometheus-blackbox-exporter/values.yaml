@@ -1,8 +1,17 @@
 restartPolicy: Always
 
+podDisruptionBudget:
+  maxUnavailable: 0
+
+strategy:
+  rollingUpdate:
+    maxSurge: 1
+    maxUnavailable: 0
+  type: RollingUpdate
+
 image:
   repository: prom/blackbox-exporter
-  tag: v0.14.0
+  tag: v0.15.0
   pullPolicy: IfNotPresent
 
   ## Optionally specify an array of imagePullSecrets.
@@ -37,6 +46,8 @@ resources: {}
   #   memory: 300Mi
   # requests:
   #   memory: 50Mi
+
+priorityClassName: ""
 
 service:
   annotations: {}

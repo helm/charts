@@ -56,7 +56,7 @@ The following table lists the configurable parameters of the Blackbox-Exporter c
 | `configmapReload.resources`            | configmap-reload pod resource requests & limits   | `{}`                          |
 | `extraArgs`                            | Optional flags for blackbox                       | `[]`                          |
 | `image.repository`                     | container image repository                        | `prom/blackbox-exporter`      |
-| `image.tag`                            | container image tag                               | `v0.14.0`                     |
+| `image.tag`                            | container image tag                               | `v0.15.0`                     |
 | `image.pullPolicy`                     | container image pull policy                       | `IfNotPresent`                |
 | `image.pullSecrets`                    | container image pull secrets                      | `[]`                          |
 | `ingress.annotations`                  | Ingress annotations                               | None                          |
@@ -70,6 +70,8 @@ The following table lists the configurable parameters of the Blackbox-Exporter c
 | `tolerations`                          | node tolerations for pod assignment               | `[]`                          |
 | `affinity`                             | node affinity for pod assignment                  | `{}`                          |
 | `podAnnotations`                       | annotations to add to each pod                    | `{}`                          |
+| `podDisruptionBudget`                  | pod disruption budget                             | `{maxUnavailable: 0}`         |
+| `priorityClassName`                    | priority class name                               | None                          |
 | `resources`                            | pod resource requests & limits                    | `{}`                          |
 | `restartPolicy`                        | container restart policy                          | `Always`                      |
 | `service.annotations`                  | annotations for the service                       | `{}`                          |
@@ -83,6 +85,7 @@ The following table lists the configurable parameters of the Blackbox-Exporter c
 | `serviceMonitor.module`                | The module that blackbox will use if serviceMonitor is enabled | `http_2xx` |
 | `serviceMonitor.url`                   | The URL that blackbox will scrape if serviceMonitor is enabled | `http://example.com/healthz` |
 | `serviceMonitor.urlHumanReadable`      | Optional human readable URL that will appear in Prometheus / AlertManager | `nil` |
+| `strategy`                             | strategy used to replace old Pods with new ones   | `{"rollingUpdate":{"maxSurge":1,"maxUnavailable":0},"type":"RollingUpdate"}` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

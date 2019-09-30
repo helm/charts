@@ -137,6 +137,17 @@ airflow:
   podAnnotations: {}
     ## Example:
     ## iam.amazonaws.com/role: airflow-Role
+
+  extraInitContainers: []
+  ## Additional init containers to run before the Scheduler pods.
+  ## for example, be used to run a sidecar that chown Logs storage .
+  # - name: volume-mount-hack
+  #   image: busybox
+  #   command: ["sh", "-c", "chown -R 1000:1000 logs"]
+  #   volumeMounts:
+  #     - mountPath: /usr/local/airflow/logs
+  #       name: logs-data
+
   extraContainers: []
   ## Additional containers to run alongside the Scheduler, Worker and Web pods
   ## This could, for example, be used to run a sidecar that syncs DAGs from object storage.
@@ -294,7 +305,7 @@ ingress:
     ## Annotations for the webserver
     ## Airflow webserver handles relative path completely, just let your load balancer give the HTTP
     ## header like the requested URL (no special configuration neeed)
-    annotations:
+    annotations: {}
       ##
       ## Example for Traefik:
       # traefik.frontend.rule.type: PathPrefix
@@ -357,7 +368,7 @@ ingress:
     ##              }
     ##            }
     ## ==== IF YOU HAVE FLOWER > JANUARY 2018, NO MORE NEED TO STRIP THE PREFIX ====================
-    annotations:
+    annotations: {}
       ##
       ## NOTE: it is important here to have your reverse proxy strip the path/rewrite the URL
       ## Example for Traefik:
@@ -443,7 +454,7 @@ dags:
     ## branch name, tag or sha1 to reset to
     ref: master
     ## pre-created secret with key, key.pub and known_hosts file for private repos
-    secret: {}
+    secret: ""
   initContainer:
     ## Fetch the source code when the pods starts
     enabled: false

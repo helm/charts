@@ -142,6 +142,7 @@ The following table lists the configurable parameters of the external-dns chart 
 | `service.annotations`              | Annotations to add to service                                                                            | `{}`                                                     |
 | `rbac.create`                      | Wether to create & use RBAC resources or not                                                             | `false`                                                  |
 | `rbac.serviceAccountName`          | ServiceAccount (ignored if rbac.create == true)                                                          | `default`                                                |
+| `rbac.serviceAccountAnnotations`   | Additional Service Account annotations                                                                   | `{}`                                                     |
 | `rbac.apiVersion`                  | Version of the RBAC API                                                                                  | `v1beta1`                                                |
 | `rbac.pspEnabled`                  | PodSecurityPolicy                                                                                        | `false`                                                  |
 | `resources`                        | CPU/Memory resource requests/limits.                                                                     | `{}`                                                     |

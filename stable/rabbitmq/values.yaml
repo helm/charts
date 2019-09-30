@@ -14,7 +14,7 @@
 image:
   registry: docker.io
   repository: bitnami/rabbitmq
-  tag: 3.7.17-debian-9-r0
+  tag: 3.7.18-debian-9-r1
 
   ## set to true if you would like to see extra information on logs
   ## it turns BASH and NAMI debugging in minideb
@@ -147,6 +147,18 @@ rabbitmq:
   ## Use this as additional configuraton in classic config format (Erlang term configuration format)
   advancedConfiguration: |-
 
+  ## Enable encryption to rabbitmq
+  ## ref: https://www.rabbitmq.com/ssl.html
+  ##
+  tls:
+    enabled: false
+    failIfNoPeerCert: true
+    sslOptionsVerify: verify_peer
+    caCertificate: |-
+    serverCertificate: |-
+    serverKey: |-
+    # existingSecret: name-of-existing-secret-to-rabbitmq
+
 ## Kubernetes service type
 service:
   type: ClusterIP
@@ -155,10 +167,18 @@ service:
   ##
   # nodePort: 30672
 
+  ## Node port Tls
+  ##
+  # nodeTlsPort: 30671
+
   ## Amqp port
   ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
   ##
   port: 5672
+
+  ## Amqp Tls port
+  ##
+  tlsPort: 5671
 
   ## Dist port
   ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
@@ -190,6 +210,7 @@ securityContext:
   enabled: true
   fsGroup: 1001
   runAsUser: 1001
+  extra: {}
 
 persistence:
   ## this enables PVC templates that will create one per pod
@@ -297,7 +318,7 @@ metrics:
   image:
     registry: docker.io
     repository: bitnami/rabbitmq-exporter
-    tag: 0.29.0-debian-9-r3
+    tag: 0.29.0-debian-9-r40
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
@@ -310,6 +331,10 @@ metrics:
   env: {}
   ## Metrics exporter port
   port: 9419
+  ## RabbitMQ address to connect to (from the same Pod, usually the local loopback address).
+  ## If your Kubernetes cluster does not support IPv6, you can change to `127.0.0.1` in order to force IPv4.
+  ## ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-overview/#networking
+  rabbitmqAddress: localhost
   ## Comma-separated list of extended scraping capabilities supported by the target RabbitMQ server
   ## ref: https://github.com/kbudde/rabbitmq_exporter#extended-rabbitmq-capabilities
   capabilities: "bert,no_sort"
