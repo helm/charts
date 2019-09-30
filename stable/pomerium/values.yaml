@@ -60,6 +60,8 @@ proxy:
 
 service:
   # Service type can be set to ClusterIP, NodePort or LoadBalancer.
+  authorize:
+    headless: true
   type: ClusterIP
   externalPort: 443
   annotations:
@@ -120,7 +122,7 @@ extraVolumes: {}
 
 image:
   repository: "pomerium/pomerium"
-  tag: "v0.3.0"
+  tag: "v0.3.1"
   pullPolicy: "IfNotPresent"
 
 metrics:

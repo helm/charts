@@ -123,6 +123,15 @@ data:
         endpoint_hostname: {{ template "anchore-engine.api.fullname" . }}
         listen: 0.0.0.0
         port: {{ .Values.anchoreApi.service.port }}
+        {{- if .Values.anchoreApi.external }}
+        {{- if .Values.anchoreApi.external.use_tls }}
+        external_tls: {{ .Values.anchoreApi.external.use_tls }}
+        {{- end }}
+        {{- if .Values.anchoreApi.external.hostname }}
+        external_hostname: {{ .Values.anchoreApi.external.hostname }}
+        {{- end }}
+        external_port: {{ .Values.anchoreApi.external.port | default "null" }}
+        {{- end }}
         {{- if and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseRbac.enabled }}
         authorization_handler: external
         authorization_handler_config:

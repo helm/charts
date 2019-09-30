@@ -66,6 +66,7 @@ Parameter                                            | Description              
 `image.tag`                                          | Sentry image tag                                                                                           | `9.1.1`
 `imagePullPolicy`                                    | Image pull policy                                                                                          | `IfNotPresent`
 `imagePullSecrets`                                   | Specify image pull secrets                                                                                 | `[]`
+`sentrySecret`                                       | Specify SENTRY_SECRET_KEY. If isn't specified it will be generated automatically.                          | `nil`
 `web.podAnnotations`                                 | Web pod annotations                                                                                        | `{}`
 `web.podLabels`                                      | Worker pod extra labels                                                                                    | `{}`
 `web.replicacount`                                   | Amount of web pods to run                                                                                  | `1`
@@ -77,6 +78,7 @@ Parameter                                            | Description              
 `web.schedulerName`                                  | Name of an alternate scheduler for web pod                                                                 | `nil`
 `web.tolerations`                                    | Toleration labels for web pod assignment                                                                   | `[]`
 `web.probeInitialDelaySeconds`                       | The number of seconds before the probe doing healthcheck                                          | `50`
+`web.priorityClassName`                              | The priorityClassName on web deployment                                                                    | `nil`
 `cron.podAnnotations`                                | Cron pod annotations                                                                                       | `{}`
 `cron.podLabels`                                     | Worker pod extra labels                                                                                    | `{}`
 `cron.replicacount`                                  | Amount of cron pods to run                                                                                 | `1`
@@ -86,6 +88,7 @@ Parameter                                            | Description              
 `cron.affinity`                                      | Affinity settings for cron pod assignment                                                                  | `{}`
 `cron.schedulerName`                                 | Name of an alternate scheduler for cron pod                                                                | `nil`
 `cron.tolerations`                                   | Toleration labels for cron pod assignment                                                                  | `[]`
+`cron.priorityClassName`                             | The priorityClassName on cron deployment                                                                   | `nil`
 `worker.podAnnotations`                              | Worker pod annotations                                                                                     | `{}`
 `worker.podLabels`                                   | Worker pod extra labels                                                                                    | `{}`
 `worker.replicacount`                                | Amount of worker pods to run                                                                               | `2`
@@ -96,6 +99,7 @@ Parameter                                            | Description              
 `worker.affinity`                                    | Affinity settings for worker pod assignment                                                                | `{}`
 `worker.tolerations`                                 | Toleration labels for worker pod assignment                                                                | `[]`
 `worker.concurrency`                                 | Celery worker concurrency                                                                                  | `nil`
+`worker.priorityClassName`                           | The priorityClassName on workers deployment                                                                | `nil`
 `user.create`                                        | Create the default admin                                                                                   | `true`
 `user.email`                                         | Username for default admin                                                                                 | `admin@sentry.local`
 `email.from_address`                                 | Email notifications are from                                                                               | `smtp`

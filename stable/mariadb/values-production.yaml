@@ -440,6 +440,47 @@ metrics:
     prometheus.io/scrape: "true"
     prometheus.io/port: "9104"
 
+  ## Extra args to be passed to mysqld_exporter
+  ## ref: https://github.com/prometheus/mysqld_exporter/
+  ##
+  extraArgs:
+    master: []
+    slave: []
+      # - --collect.auto_increment.columns
+      # - --collect.binlog_size
+      # - --collect.engine_innodb_status
+      # - --collect.engine_tokudb_status
+      # - --collect.global_status
+      # - --collect.global_variables
+      # - --collect.info_schema.clientstats
+      # - --collect.info_schema.innodb_metrics
+      # - --collect.info_schema.innodb_tablespaces
+      # - --collect.info_schema.innodb_cmp
+      # - --collect.info_schema.innodb_cmpmem
+      # - --collect.info_schema.processlist
+      # - --collect.info_schema.processlist.min_time
+      # - --collect.info_schema.query_response_time
+      # - --collect.info_schema.tables
+      # - --collect.info_schema.tables.databases
+      # - --collect.info_schema.tablestats
+      # - --collect.info_schema.userstats
+      # - --collect.perf_schema.eventsstatements
+      # - --collect.perf_schema.eventsstatements.digest_text_limit
+      # - --collect.perf_schema.eventsstatements.limit
+      # - --collect.perf_schema.eventsstatements.timelimit
+      # - --collect.perf_schema.eventswaits
+      # - --collect.perf_schema.file_events
+      # - --collect.perf_schema.file_instances
+      # - --collect.perf_schema.indexiowaits
+      # - --collect.perf_schema.tableiowaits
+      # - --collect.perf_schema.tablelocks
+      # - --collect.perf_schema.replication_group_member_stats
+      # - --collect.slave_status
+      # - --collect.slave_hosts
+      # - --collect.heartbeat
+      # - --collect.heartbeat.database
+      # - --collect.heartbeat.table
+
   # Enable this if you're using https://github.com/coreos/prometheus-operator
   serviceMonitor:
     enabled: false
