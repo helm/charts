@@ -8,7 +8,7 @@ This chart adds the Instana Agent to all schedulable nodes (e.g. by default, not
 
 ## Prerequisites
 
-Kubernetes 1.8.x - 1.13.x
+Kubernetes 1.9.x - 1.14.x
 
 Working `helm` and `tiller`.
 
@@ -100,8 +100,8 @@ The following table lists the configurable parameters of the Instana chart and t
 | `agent.image.tag`                  | The image tag to pull                                                   | `1.0.17`                                                                                                    |
 | `agent.image.pullPolicy`           | Image pull policy                                                       | `IfNotPresent`                                                                                              |
 | `agent.leaderElectorPort`          | Instana leader elector sidecar port                                     | `42655`                                                                                                     |
-| `agent.endpointHost`               | Instana agent backend endpoint host                                     | `saas-us-west-2.instana.io`                                                                                 |
-| `agent.endpointPort`               | Instana agent backend endpoint port                                     | `443`                                                                                                       |
+| `agent.endpointHost`               | Instana Agent backend endpoint host                                     | `saas-us-west-2.instana.io`                                                                                 |
+| `agent.endpointPort`               | Instana Agent backend endpoint port                                     | `443`                                                                                                       |
 | `agent.downloadKey`                | Your Instana Download key                                               | `nil` You must provide your own download key                                                                |
 | `agent.mode`                       | Agent mode (Supported values are APM, INFRASTRUCTURE, AWS)              | `APM`                                                                                                       |
 | `agent.pod.annotations`            | Additional annotations to apply to the pod                              | `{}`                                                                                                        |
@@ -122,6 +122,8 @@ The following table lists the configurable parameters of the Instana chart and t
 | `rbac.create`                      | Whether RBAC resources should be created                                | `true`                                                                                                      |
 | `serviceAccount.create`            | Whether a ServiceAccount should be created                              | `true`                                                                                                      |
 | `serviceAccount.name`              | Name of the ServiceAccount to use                                       | `instana-agent`                                                                                             |
+| `podSecurityPolicy.enable`         | Whether a PodSecurityPolicy should be authorized for the Instana Agent pods. Requires `rbac.create` to be `true` as well. | `false` See [PodSecurityPolicy](https://docs.instana.io/quick_start/agent_setup/container/kubernetes/#podsecuritypolicy) for more details. |
+| `podSecurityPolicy.name`           | Name of an _existing_ PodSecurityPolicy to authorize for the Instana Agent pods. If not provided and `podSecurityPolicy.enable` is `true`, a PodSecurityPolicy will be created for you. | `nil` |
 
 ### Agent
 
@@ -130,4 +132,4 @@ To configure the agent, you can either:
 - edit the [config map](templates/configmap.yaml), or
 - provide the configuration via the `agent.configuration_yaml` parameter in [values.yaml](values.yaml)
 
-This configuration will be used for all instana agents on all nodes. Visit the [agent configuration documentation](https://docs.instana.io/quick_start/agent_configuration/#configuration) for more details on configuration options.
+This configuration will be used for all Instana Agents on all nodes. Visit the [agent configuration documentation](https://docs.instana.io/quick_start/agent_configuration/#configuration) for more details on configuration options.
